@@ -313,8 +313,8 @@ html_content = """<!DOCTYPE html>
           title="คัดลอกสรุปผลและไฮไลท์สัปดาห์ปัจจุบันลงคลิปบอร์ด"
         >
           <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-          <span class="hidden sm:inline">คัดลอกสรุปส่ง LINE</span>
-          <span class="sm:hidden text-[11px]">ส่ง LINE</span>
+          <span class="hidden sm:inline">Text Summary</span>
+          <span class="sm:hidden text-[11px]">Text Summary</span>
         </button>
       </div>
 
@@ -327,13 +327,13 @@ html_content = """<!DOCTYPE html>
           data-tab-target="gameweek-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs"
         >
-          LIVE (Gameweek Hub)
+          LIVE
         </button>
         <button 
           data-tab-target="prizes-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 border border-transparent hover:text-slate-900 hover:bg-slate-100"
         >
-          เงินรางวัล & รอบเคลียร์
+          สรุปรางวัล
         </button>
         <button 
           data-tab-target="hall-of-fame-view" 
@@ -360,7 +360,7 @@ html_content = """<!DOCTYPE html>
   <!-- MAIN CONTAINER -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-3.5 sm:py-6 space-y-4 sm:space-y-6">
 
-    <!-- ==================== 2. แท็บ 1: ผลสด & สัปดาห์ (LIVE - GAMEWEEK HUB) ==================== -->
+    <!-- ==================== 2. แท็บ 1: ผลสด & สัปดาห์ (LIVE) ==================== -->
     <div id="gameweek-view" class="tab-content space-y-4 sm:space-y-6">
       
       <!-- 1. ส่วนหัวของหน้า (Section Header) -->
@@ -393,7 +393,7 @@ html_content = """<!DOCTYPE html>
               <h3 class="text-sm sm:text-base font-bold text-slate-900">
                 ตารางคะแนนประจำสัปดาห์นี้
               </h3>
-              <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">คะแนนสุทธิ = แต้มดิบ - แต้มลบจากการย้ายตัว (Hits)</p>
+              <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">คะแนนสุทธิ = แต้มดิบ - แต้มลบจากการย้ายตัว (Hits) | หากคะแนนเท่ากันครองอันดับร่วม</p>
             </div>
             <span id="gw-table-badge" class="text-[10px] sm:text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 px-2 sm:px-3 py-0.5 sm:py-1 rounded-xl font-display flex-shrink-0">
               MATCHDAY STANDINGS
@@ -427,7 +427,7 @@ html_content = """<!DOCTYPE html>
               <h3 class="text-sm sm:text-base font-bold text-slate-900">
                 ตารางคะแนนรวมสะสม (Overall Standings)
               </h3>
-              <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">อันดับคะแนนรวมสะสมของทั้ง 12 ทีม</p>
+              <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">อันดับคะแนนรวมสะสมของทั้ง 12 ทีม | หากคะแนนรวมเท่ากันครองอันดับร่วม</p>
             </div>
           </div>
 
@@ -460,21 +460,21 @@ html_content = """<!DOCTYPE html>
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 relative z-10">
           <div>
             <span class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-500 font-bold">TOTAL PRIZE MATRIX</span>
-            <h2 class="text-xl sm:text-3xl font-bold text-slate-900 font-display mt-0.5">สรุปเงินรางวัลรวม 22,000 บาท</h2>
-            <p class="text-[11px] sm:text-sm text-slate-500 mt-0.5">11 ทีม × ค่าสมัคร 2,000 บาท | แบ่ง 3 หมวดรางวัล</p>
+            <h2 class="text-xl sm:text-3xl font-bold text-slate-900 font-display mt-0.5">สรุปเงินรางวัลรวม 22,000 THB</h2>
+            <p class="text-[11px] sm:text-sm text-slate-500 mt-0.5">11 ทีม × ค่าสมัคร 2,000 THB | แบ่ง 3 หมวดรางวัล (หากคะแนนเท่ากันหารเงินรางวัลร่วมกัน)</p>
           </div>
           <div class="grid grid-cols-3 gap-2 sm:gap-3">
             <div class="bg-slate-50 border border-slate-200 p-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-center">
               <span class="text-[9px] sm:text-[11px] text-slate-500 block leading-tight">แชมป์ 38 วีค</span>
-              <strong class="text-slate-900 font-display text-xs sm:text-base block mt-0.5">13,300 บ.</strong>
+              <strong class="text-slate-900 font-display text-xs sm:text-base block mt-0.5">13,300 THB</strong>
             </div>
             <div class="bg-slate-50 border border-slate-200 p-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-center">
               <span class="text-[9px] sm:text-[11px] text-slate-500 block leading-tight">บอลถ้วย</span>
-              <strong class="text-slate-900 font-display text-xs sm:text-base block mt-0.5">1,650 บ.</strong>
+              <strong class="text-slate-900 font-display text-xs sm:text-base block mt-0.5">1,650 THB</strong>
             </div>
             <div class="bg-slate-50 border border-slate-200 p-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-center">
               <span class="text-[9px] sm:text-[11px] text-slate-500 block leading-tight">แชมป์ลีก</span>
-              <strong class="text-slate-900 font-display text-xs sm:text-base block mt-0.5">7,050 บ.</strong>
+              <strong class="text-slate-900 font-display text-xs sm:text-base block mt-0.5">7,050 THB</strong>
             </div>
           </div>
         </div>
@@ -487,7 +487,7 @@ html_content = """<!DOCTYPE html>
             <h3 class="text-sm sm:text-base font-bold text-slate-900">
               ตารางสรุปเงินรางวัลสะสมของทั้ง 12 ทีม (ที่ได้รับจริง ณ ปัจจุบัน)
             </h3>
-            <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">เงินรางวัลแชมป์วีคคำนวณเฉพาะสัปดาห์ที่แข่งเสร็จสิ้นแล้ว (350 บ./ครั้ง) | บอลถ้วยและแชมป์ลีกจะสรุปผลใน GW 38</p>
+            <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">เงินรางวัลแชมป์วีคคำนวณเฉพาะสัปดาห์ที่แข่งเสร็จสิ้นแล้ว (350 THB/ครั้ง หากแชมป์ร่วมหารเท่า) | บอลถ้วยและแชมป์ลีกสรุปผลใน GW 38</p>
           </div>
         </div>
 
@@ -498,7 +498,7 @@ html_content = """<!DOCTYPE html>
                 <th class="py-2.5 px-1.5 sm:px-3.5 text-center w-8 sm:w-12">อันดับ</th>
                 <th class="py-2.5 px-2 sm:px-3.5">ทีม / ผู้จัดการ</th>
                 <th class="py-2.5 px-1 sm:px-3.5 text-center w-16 sm:w-24 text-slate-700">ชนะวีค</th>
-                <th class="py-2.5 px-2 sm:px-3.5 text-center hidden sm:table-cell">แชมป์วีค (350 บ.)</th>
+                <th class="py-2.5 px-2 sm:px-3.5 text-center hidden sm:table-cell">แชมป์วีค (350 THB)</th>
                 <th class="py-2.5 px-2 sm:px-3.5 text-center hidden md:table-cell">บอลถ้วย</th>
                 <th class="py-2.5 px-2 sm:px-3.5 text-center hidden md:table-cell">แชมป์ฤดูกาล</th>
                 <th class="py-2.5 px-1.5 sm:px-3.5 text-center w-20 sm:w-28 text-slate-900">รวมเงินที่ได้รับจริง</th>
@@ -542,7 +542,7 @@ html_content = """<!DOCTYPE html>
             <h3 class="text-sm sm:text-base font-bold text-slate-900">
               สถิติเชิงลึกและประสิทธิภาพการเล่นของทั้ง 12 ทีม
             </h3>
-            <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">สถิติคะแนนเฉลี่ย, อัตราติด Top 3, แต้มสูงสุด/ต่ำสุด และแต้มลบสะสม</p>
+            <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">สถิติคะแนนเฉลี่ย, อัตราติด Top 3, แต้มสูงสุด/ต่ำสุด และแต้มลบสะสม (หากสถิติเท่ากันครองอันดับร่วม)</p>
           </div>
         </div>
 
@@ -584,7 +584,7 @@ html_content = """<!DOCTYPE html>
         <div>
           <span class="text-[11px] uppercase tracking-widest text-slate-500 font-bold font-display">OFFICIAL LEAGUE RULES & PRIZE MATRIX</span>
           <h2 class="text-xl sm:text-2xl font-bold text-slate-900 font-display mt-0.5">กติกาแฟนตาซี เซียนอยู่รู หมูอยู่ตึก (ฤดูกาล 2026/27)</h2>
-          <p class="text-xs text-slate-500 mt-0.5">LEAGUE ID: <strong class="text-slate-800">40700</strong> | สมาชิก 11-12 ทีม | ค่าสมัคร 2,000 บาท/ทีม | งบเงินรางวัลรวม <strong>22,000 บาท</strong></p>
+          <p class="text-xs text-slate-500 mt-0.5">LEAGUE ID: <strong class="text-slate-800">40700</strong> | สมาชิก 11-12 ทีม | ค่าสมัคร 2,000 THB/ทีม | งบเงินรางวัลรวม <strong>22,000 THB</strong></p>
         </div>
         <div class="flex items-center gap-2">
           <span class="bg-slate-100 text-slate-700 border border-slate-200 text-xs px-3 py-1 rounded-xl font-bold font-display">38 GAMEWEEKS</span>
@@ -606,12 +606,12 @@ html_content = """<!DOCTYPE html>
             <div class="space-y-2 text-xs text-slate-600">
               <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
                 <strong class="text-slate-900 block mb-0.5">• รูปแบบ & สมาชิก:</strong>
-                <span>11-12 ทีม แข่งขัน 38 สัปดาห์ (GW 1 - 38) ชิงเงินรางวัลรวม 22,000 บาท (ค่าสมัคร 2,000 บ./ทีม)</span>
+                <span>11-12 ทีม แข่งขัน 38 สัปดาห์ (GW 1 - 38) ชิงเงินรางวัลรวม 22,000 THB (ค่าสมัคร 2,000 THB/ทีม)</span>
               </div>
 
               <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
-                <strong class="text-slate-900 block mb-0.5">• แชมป์วีค 38 สัปดาห์ (งบ 13,300 บ.):</strong>
-                <span>สัปดาห์ละ <strong>350 บาท</strong> คิดจากแต้มสุทธิ (Net Points = แต้มดิบ - Hits) เฉพาะสัปดาห์ที่แข่งจบแล้ว (หากแต้มเท่ากันหารรางวัลเท่ากัน)</span>
+                <strong class="text-slate-900 block mb-0.5">• แชมป์วีค 38 สัปดาห์ (งบ 13,300 THB):</strong>
+                <span>สัปดาห์ละ <strong>350 THB</strong> คิดจากแต้มสุทธิ (Net Points = แต้มดิบ - Hits) เฉพาะสัปดาห์ที่แข่งจบแล้ว (<strong>หากคะแนนเท่ากันครองแชมป์ร่วมและหารเงินรางวัลเท่ากันทุกทีม</strong>)</span>
               </div>
             </div>
           </div>
@@ -634,13 +634,16 @@ html_content = """<!DOCTYPE html>
               <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
                 <div class="flex justify-between items-center mb-1">
                   <strong class="text-slate-900">• แชมป์ลีก 4 อันดับ:</strong>
-                  <span class="font-bold text-slate-800">รวม 7,050 บ.</span>
+                  <span class="font-bold text-slate-800">รวม 7,050 THB</span>
                 </div>
                 <div class="grid grid-cols-2 gap-1 text-[11px] text-slate-600">
-                  <span>อันดับ 1: <strong class="text-slate-900">3,500 บ.</strong></span>
-                  <span>อันดับ 2: <strong class="text-slate-900">2,000 บ.</strong></span>
-                  <span>อันดับ 3: <strong class="text-slate-900">1,000 บ.</strong></span>
-                  <span>อันดับ 4: <strong class="text-slate-900">550 บ.</strong></span>
+                  <span>อันดับ 1: <strong class="text-slate-900">3,500 THB</strong></span>
+                  <span>อันดับ 2: <strong class="text-slate-900">2,000 THB</strong></span>
+                  <span>อันดับ 3: <strong class="text-slate-900">1,000 THB</strong></span>
+                  <span>อันดับ 4: <strong class="text-slate-900">550 THB</strong></span>
+                </div>
+                <div class="text-[10px] text-slate-500 mt-1 pt-1 border-t border-slate-200/60">
+                  * กรณีคะแนนรวมเท่ากันในอันดับรางวัล จะรวมเงินรางวัลตามตำแหน่งที่ได้รับร่วมกันแล้วหารแบ่งเท่ากัน
                 </div>
               </div>
 
@@ -648,11 +651,11 @@ html_content = """<!DOCTYPE html>
               <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
                 <div class="flex justify-between items-center mb-1">
                   <strong class="text-slate-900">• บอลถ้วย (Knockout):</strong>
-                  <span class="font-bold text-slate-800">รวม 1,650 บ.</span>
+                  <span class="font-bold text-slate-800">รวม 1,650 THB</span>
                 </div>
                 <div class="grid grid-cols-2 gap-1 text-[11px] text-slate-600">
-                  <span>แชมป์บอลถ้วย: <strong class="text-slate-900">1,000 บ.</strong></span>
-                  <span>รองแชมป์: <strong class="text-slate-900">650 บ.</strong></span>
+                  <span>แชมป์บอลถ้วย: <strong class="text-slate-900">1,000 THB</strong></span>
+                  <span>รองแชมป์: <strong class="text-slate-900">650 THB</strong></span>
                 </div>
               </div>
             </div>
@@ -672,17 +675,17 @@ html_content = """<!DOCTYPE html>
             </div>
 
             <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80 text-xs text-slate-600 space-y-1">
-              <div class="flex justify-between py-0.5 border-b border-slate-200/60"><span>รอบ 1 (GW 1-6):</span><strong class="text-slate-900">2,100 บ.</strong></div>
-              <div class="flex justify-between py-0.5 border-b border-slate-200/60"><span>รอบ 2 (GW 7-12):</span><strong class="text-slate-700">2,100 บ.</strong></div>
-              <div class="flex justify-between py-0.5 border-b border-slate-200/60"><span>รอบ 3 (GW 13-18):</span><strong class="text-slate-700">2,100 บ.</strong></div>
-              <div class="flex justify-between py-0.5 border-b border-slate-200/60"><span>รอบ 4 (GW 19-24):</span><strong class="text-slate-700">2,100 บ.</strong></div>
-              <div class="flex justify-between py-0.5 border-b border-slate-200/60"><span>รอบ 5 (GW 25-30):</span><strong class="text-slate-700">2,100 บ.</strong></div>
-              <div class="flex justify-between py-0.5 text-slate-900"><span>รอบ 6 (GW 31-38):</span><strong>11,500 บ.*</strong></div>
+              <div class="flex justify-between py-0.5 border-b border-slate-200/60"><span>รอบ 1 (GW 1-6):</span><strong class="text-slate-900">2,100 THB</strong></div>
+              <div class="flex justify-between py-0.5 border-b border-slate-200/60"><span>รอบ 2 (GW 7-12):</span><strong class="text-slate-700">2,100 THB</strong></div>
+              <div class="flex justify-between py-0.5 border-b border-slate-200/60"><span>รอบ 3 (GW 13-18):</span><strong class="text-slate-700">2,100 THB</strong></div>
+              <div class="flex justify-between py-0.5 border-b border-slate-200/60"><span>รอบ 4 (GW 19-24):</span><strong class="text-slate-700">2,100 THB</strong></div>
+              <div class="flex justify-between py-0.5 border-b border-slate-200/60"><span>รอบ 5 (GW 25-30):</span><strong class="text-slate-700">2,100 THB</strong></div>
+              <div class="flex justify-between py-0.5 text-slate-900"><span>รอบ 6 (GW 31-38):</span><strong>11,500 THB*</strong></div>
             </div>
           </div>
 
           <div class="text-[10px] text-slate-400 pt-2 border-t border-slate-100">
-            * รอบ 6 รวมงบวีค 2,800 บ. + ถ้วย 1,650 บ. + แชมป์ลีก 7,050 บ.
+            * รอบ 6 รวมงบวีค 2,800 THB + ถ้วย 1,650 THB + แชมป์ลีก 7,050 THB
           </div>
         </div>
 
@@ -806,37 +809,47 @@ html_content = """<!DOCTYPE html>
         }
 
         const sorted = [...gwData.results].sort((a, b) => b.net_points - a.net_points);
-        const leader = sorted[0];
-        const runnerUp = sorted[1] || leader;
-        const diff = leader.net_points - runnerUp.net_points;
+        const highestNet = sorted[0].net_points;
+        const winners = sorted.filter(r => r.net_points === highestNet);
         const isFinished = gwData.is_finished === true;
-        const isJoint = diff === 0 && leader.entry_id !== runnerUp.entry_id;
+        const isJoint = winners.length > 1;
+        const leader = winners[0];
+        const winnerNames = winners.map(w => w.team_name).join(' & ');
 
         const hitTakers = sorted.filter(t => t.hits > 0);
         const mostHits = hitTakers.length > 0 ? [...hitTakers].sort((a, b) => b.hits - a.hits)[0] : null;
 
         if (isFinished) {
-          const finishedTemplates = [
-            `สุดยอดฟอร์มสัปดาห์นี้ ${leader.team_name} โชว์เก๋าคว้าแชมป์ GW ${gwNumber} ฟันแต้มสุทธิ ${leader.net_points} แต้ม รับเงินรางวัล 350 บาทเข้ากระเป๋าเหน่งๆ`,
-            `${leader.team_name} ของผู้จัดการ ${leader.player_name} ร้อนแรงเกินต้าน กดไป ${leader.net_points} แต้มสุทธิ ซิวแชมป์วีค ${gwNumber} ไปครองอย่างสมศักดิ์ศรี`,
-            `ไร้ข้อกังขา! ${leader.team_name} ${leader.captain ? 'ได้กัปตัน ' + leader.captain + ' ช่วยแบก' : 'ระเบิดฟอร์มจัดจ้าน'} กวาด ${leader.net_points} แต้ม เข้าป้ายแชมป์ Gameweek ${gwNumber} สำเร็จ`,
-            `เซียนตัวจริงสัปดาห์นี้ต้องยกให้ ${leader.team_name} ซัดไป ${leader.net_points} แต้ม คว้าแชมป์ Gameweek ${gwNumber} พร้อมเงินรางวัล 350 บาทแบบไร้รอยต่อ`
-          ];
-          return finishedTemplates[Math.floor(Math.random() * finishedTemplates.length)];
+          if (isJoint) {
+            const splitPrize = (350 / winners.length).toLocaleString();
+            return `เดือดจัด! GW ${gwNumber} แต้มสุทธิเท่ากันที่ ${highestNet} แต้ม ทำให้ ${winnerNames} คว้าแชมป์ร่วมประจำสัปดาห์ แบ่งเงินรางวัลกันทีมละ ${splitPrize} THB อย่างสมศักดิ์ศรี`;
+          } else {
+            const finishedTemplates = [
+              `สุดยอดฟอร์มสัปดาห์นี้ ${leader.team_name} โชว์เก๋าคว้าแชมป์ GW ${gwNumber} ฟันแต้มสุทธิ ${leader.net_points} แต้ม รับเงินรางวัล 350 THB เข้ากระเป๋าเหน่งๆ`,
+              `${leader.team_name} ของผู้จัดการ ${leader.player_name} ร้อนแรงเกินต้าน กดไป ${leader.net_points} แต้มสุทธิ ซิวแชมป์วีค ${gwNumber} ไปครองอย่างสมศักดิ์ศรี`,
+              `ไร้ข้อกังขา! ${leader.team_name} ${leader.captain ? 'ได้กัปตัน ' + leader.captain + ' ช่วยแบก' : 'ระเบิดฟอร์มจัดจ้าน'} กวาด ${leader.net_points} แต้ม เข้าป้ายแชมป์ Gameweek ${gwNumber} สำเร็จ`,
+              `เซียนตัวจริงสัปดาห์นี้ต้องยกให้ ${leader.team_name} ซัดไป ${leader.net_points} แต้ม คว้าแชมป์ Gameweek ${gwNumber} พร้อมเงินรางวัล 350 THB แบบไร้รอยต่อ`
+            ];
+            return finishedTemplates[Math.floor(Math.random() * finishedTemplates.length)];
+          }
         } else {
-          const liveTemplates = [
-            `สถานการณ์ล่าสุด GW ${gwNumber} ${leader.team_name} กำลังนำจ่าฝูงที่ ${leader.net_points} แต้มสุทธิ ${leader.captain ? '(กัปตัน ' + leader.captain + ')' : ''} เกมยังไม่จบอย่าเพิ่งนับศพทหาร`,
-            `เดือดจัดกลางสัปดาห์! ${leader.team_name} ขึ้นแท่นผู้นำชั่วคราวด้วย ${leader.net_points} แต้ม ${runnerUp && !isJoint ? 'นำอันดับสอง ' + diff + ' แต้ม' : 'ขับเคี่ยวแต้มเท่ากัน'} รอลุ้นคู่ที่เหลือ`,
-            `${leader.team_name} กุมความได้เปรียบสดๆ ที่ ${leader.net_points} แต้มสุทธิ ${mostHits ? 'ขณะที่ ' + mostHits.team_name + ' โดนหักย้ายตัวไป -' + mostHits.hits + ' แต้ม' : ''} รอดูว่าใครจะปาดหน้าท้ายวีค`,
-            `ผู้นำชั่วคราว GW ${gwNumber} คือ ${leader.team_name} (${leader.net_points} แต้ม) ผลยังไม่นิ่ง คะแนนโบนัสและการแข่งขันที่เหลือพร้อมพลิกโผได้ทุกนาที`
-          ];
-          return liveTemplates[Math.floor(Math.random() * liveTemplates.length)];
+          if (isJoint) {
+            return `สถานการณ์สูสีสุดขีด! GW ${gwNumber} มีผู้นำร่วม ${winners.length} ทีม คือ ${winnerNames} ที่แต้มสุทธิเท่ากันเป๊ะ ${highestNet} แต้ม เกมยังไม่จบอย่าเพิ่งนับศพทหาร`;
+          } else {
+            const liveTemplates = [
+              `สถานการณ์ล่าสุด GW ${gwNumber} ${leader.team_name} กำลังนำจ่าฝูงที่ ${leader.net_points} แต้มสุทธิ ${leader.captain ? '(กัปตัน ' + leader.captain + ')' : ''} เกมยังไม่จบอย่าเพิ่งนับศพทหาร`,
+              `เดือดจัดกลางสัปดาห์! ${leader.team_name} ขึ้นแท่นผู้นำชั่วคราวด้วย ${leader.net_points} แต้ม รอลุ้นคู่ที่เหลือในสนาม`,
+              `${leader.team_name} กุมความได้เปรียบสดๆ ที่ ${leader.net_points} แต้มสุทธิ ${mostHits ? 'ขณะที่ ' + mostHits.team_name + ' โดนหักย้ายตัวไป -' + mostHits.hits + ' แต้ม' : ''} รอดูว่าใครจะปาดหน้าท้ายวีค`,
+              `ผู้นำชั่วคราว GW ${gwNumber} คือ ${leader.team_name} (${leader.net_points} แต้ม) ผลยังไม่นิ่ง คะแนนโบนัสและการแข่งขันที่เหลือพร้อมพลิกโผได้ทุกนาที`
+            ];
+            return liveTemplates[Math.floor(Math.random() * liveTemplates.length)];
+          }
         }
       }
     }
 
     /**
-     * Main Application Controller (Fully Dynamic & Connected to Real FPL Data)
+     * Main Application Controller (Fully Dynamic & Connected to Real FPL Data with Ties Handling & THB Currency)
      */
     class StandaloneApp {
       constructor() {
@@ -868,7 +881,7 @@ html_content = """<!DOCTYPE html>
       }
 
       /**
-       * Dynamic Calculation: Overall Standings from All Available Gameweeks
+       * Dynamic Calculation: Overall Standings with Standard Competition Ranking for Ties
        */
       getComputedStandings() {
         const teamsMap = {};
@@ -902,14 +915,21 @@ html_content = """<!DOCTYPE html>
         });
 
         const list = Object.values(teamsMap).sort((a, b) => b.total - a.total);
-        list.forEach((t, idx) => {
-          t.rank = idx + 1;
-        });
+        
+        // Standard Competition Ranking (1224) for ties
+        let currentRank = 1;
+        for (let i = 0; i < list.length; i++) {
+          if (i > 0 && list[i].total < list[i - 1].total) {
+            currentRank = i + 1;
+          }
+          list[i].rank = currentRank;
+        }
+
         return list;
       }
 
       /**
-       * Dynamic Calculation: Prizes Leaderboard
+       * Dynamic Calculation: Prizes Leaderboard with Season Prize Pool Splitting for Ties (in THB)
        */
       getComputedPrizes() {
         const standings = this.getComputedStandings();
@@ -926,7 +946,7 @@ html_content = """<!DOCTYPE html>
           };
         });
 
-        // Scan only finished gameweeks
+        // Scan all finished gameweeks for weekly prizes (split if joint winners)
         Object.keys(this.data.gameweeks || {}).forEach(gwKey => {
           const gw = this.data.gameweeks[gwKey];
           if (gw && gw.is_finished === true && gw.results && gw.results.length > 0) {
@@ -937,7 +957,7 @@ html_content = """<!DOCTYPE html>
 
             winners.forEach(w => {
               if (teamsMap[w.entry_id]) {
-                teamsMap[w.entry_id].weeklyWins += (winners.length > 1 ? 0.5 : 1);
+                teamsMap[w.entry_id].weeklyWins += (winners.length > 1 ? (1 / winners.length) : 1);
                 teamsMap[w.entry_id].wonGWs.push(parseInt(gwKey));
                 teamsMap[w.entry_id].weeklyPrize += prizePerWinner;
                 teamsMap[w.entry_id].actualTotal += prizePerWinner;
@@ -946,6 +966,31 @@ html_content = """<!DOCTYPE html>
           }
         });
 
+        // Season Prize Split Logic for Ties across positions 1 to 4
+        const seasonPrizePools = [3500, 2000, 1000, 550];
+        const n = standings.length;
+        let i = 0;
+        while (i < n) {
+          let j = i;
+          while (j < n && standings[j].total === standings[i].total) {
+            j++;
+          }
+          const groupSize = j - i;
+          let pool = 0;
+          for (let pos = i; pos < Math.min(j, seasonPrizePools.length); pos++) {
+            pool += seasonPrizePools[pos];
+          }
+          const prizePerTeam = pool > 0 ? (pool / groupSize) : 0;
+          for (let k = i; k < j; k++) {
+            const eid = standings[k].entry_id;
+            if (teamsMap[eid]) {
+              teamsMap[eid].projectedSeasonPrize = prizePerTeam;
+              teamsMap[eid].isSeasonPrizeTied = groupSize > 1 && prizePerTeam > 0;
+            }
+          }
+          i = j;
+        }
+
         return Object.values(teamsMap).sort((a, b) => {
           if (b.actualTotal !== a.actualTotal) return b.actualTotal - a.actualTotal;
           return b.total - a.total;
@@ -953,7 +998,7 @@ html_content = """<!DOCTYPE html>
       }
 
       /**
-       * Dynamic Calculation: Hall of Fame Records & Deep Dive
+       * Dynamic Calculation: Hall of Fame Records & Deep Dive (Handles Tied Records)
        */
       getComputedHallOfFame() {
         const standings = this.getComputedStandings();
@@ -961,22 +1006,36 @@ html_content = """<!DOCTYPE html>
         const prizesMap = {};
         prizes.forEach(p => { prizesMap[p.entry_id] = p; });
 
-        let highestGWScore = { score: 0, teamName: '-', playerName: '-', gw: 1 };
-        let mostWeeklyWins = { weeklyWins: 0, teamName: '-', playerName: '-' };
-        let bestBenchPoints = { points: 0, teamName: '-', playerName: '-', gw: 1 };
+        let highestScoreVal = 0;
+        let highestScoreTeams = [];
+
+        let bestBenchVal = 0;
+        let bestBenchTeams = [];
 
         const totalGWs = Object.keys(this.data.gameweeks || {}).length || 1;
 
-        // Scan all gameweek results for records
+        // Scan all gameweeks for records
         Object.keys(this.data.gameweeks || {}).forEach(gwKey => {
           const gw = this.data.gameweeks[gwKey];
           if (gw && gw.results) {
             gw.results.forEach(r => {
-              if (r.net_points > highestGWScore.score) {
-                highestGWScore = { score: r.net_points, teamName: r.team_name, playerName: r.player_name, gw: parseInt(gwKey) };
+              if (r.net_points > highestScoreVal) {
+                highestScoreVal = r.net_points;
+                highestScoreTeams = [{ teamName: r.team_name, playerName: r.player_name, gw: parseInt(gwKey) }];
+              } else if (r.net_points === highestScoreVal) {
+                if (!highestScoreTeams.some(item => item.teamName === r.team_name && item.gw === parseInt(gwKey))) {
+                  highestScoreTeams.push({ teamName: r.team_name, playerName: r.player_name, gw: parseInt(gwKey) });
+                }
               }
-              if ((r.bench_points || 0) > bestBenchPoints.points) {
-                bestBenchPoints = { points: r.bench_points || 0, teamName: r.team_name, playerName: r.player_name, gw: parseInt(gwKey) };
+
+              const bench = r.bench_points || 0;
+              if (bench > bestBenchVal) {
+                bestBenchVal = bench;
+                bestBenchTeams = [{ teamName: r.team_name, playerName: r.player_name, gw: parseInt(gwKey) }];
+              } else if (bench === bestBenchVal && bench > 0) {
+                if (!bestBenchTeams.some(item => item.teamName === r.team_name && item.gw === parseInt(gwKey))) {
+                  bestBenchTeams.push({ teamName: r.team_name, playerName: r.player_name, gw: parseInt(gwKey) });
+                }
               }
             });
           }
@@ -984,16 +1043,12 @@ html_content = """<!DOCTYPE html>
 
         // Most weekly wins
         const sortedByWins = [...prizes].sort((a, b) => b.weeklyWins - a.weeklyWins);
-        if (sortedByWins.length > 0 && sortedByWins[0].weeklyWins > 0) {
-          mostWeeklyWins = { weeklyWins: sortedByWins[0].weeklyWins, teamName: sortedByWins[0].entry_name, playerName: sortedByWins[0].player_name };
-        } else if (sortedByWins.length > 0) {
-          mostWeeklyWins = { weeklyWins: 0, teamName: sortedByWins[0].entry_name, playerName: sortedByWins[0].player_name };
-        }
+        const maxWins = sortedByWins.length > 0 ? sortedByWins[0].weeklyWins : 0;
+        const mostWinsTeams = sortedByWins.filter(t => t.weeklyWins === maxWins && maxWins > 0);
 
         // Leader / Highest Avg
-        const highestAvgTeam = standings.length > 0 
-          ? { avgNetPoints: (standings[0].total / totalGWs).toFixed(1), teamName: standings[0].entry_name, playerName: standings[0].player_name }
-          : { avgNetPoints: 0, teamName: '-', playerName: '-' };
+        const maxTotal = standings.length > 0 ? standings[0].total : 0;
+        const leaderTeams = standings.filter(t => t.total === maxTotal);
 
         // Team stats deep dive table
         const teamStats = standings.map(t => {
@@ -1003,7 +1058,6 @@ html_content = """<!DOCTYPE html>
           const low = gwScores.length > 0 ? Math.min(...gwScores) : 0;
           const avg = (t.total / (gwScores.length || 1)).toFixed(1);
 
-          // Calculate % Top 3 finishes in gameweeks
           let top3Count = 0;
           Object.keys(this.data.gameweeks || {}).forEach(gwKey => {
             const gw = this.data.gameweeks[gwKey];
@@ -1029,7 +1083,31 @@ html_content = """<!DOCTYPE html>
         });
 
         return {
-          records: { highestGWScore, mostWeeklyWins, highestAvgTeam, bestBenchPoints },
+          records: {
+            highestGWScore: {
+              score: highestScoreVal,
+              teams: highestScoreTeams,
+              teamName: highestScoreTeams.map(t => t.teamName).join(' & '),
+              playerName: highestScoreTeams.map(t => t.playerName).join(', '),
+              gwText: highestScoreTeams.map(t => `GW ${t.gw}`).join(', ')
+            },
+            mostWeeklyWins: {
+              weeklyWins: maxWins,
+              teamName: mostWinsTeams.length > 0 ? mostWinsTeams.map(t => t.entry_name).join(' & ') : standings[0].entry_name,
+              playerName: mostWinsTeams.length > 0 ? mostWinsTeams.map(t => t.player_name).join(', ') : standings[0].player_name
+            },
+            highestAvgTeam: {
+              avgNetPoints: (maxTotal / totalGWs).toFixed(1),
+              teamName: leaderTeams.map(t => t.entry_name).join(' & '),
+              playerName: leaderTeams.map(t => t.player_name).join(', ')
+            },
+            bestBenchPoints: {
+              points: bestBenchVal,
+              teamName: bestBenchTeams.map(t => t.teamName).join(' & '),
+              playerName: bestBenchTeams.map(t => t.playerName).join(', '),
+              gwText: bestBenchTeams.map(t => `GW ${t.gw}`).join(', ')
+            }
+          },
           teamStats: teamStats
         };
       }
@@ -1065,19 +1143,15 @@ html_content = """<!DOCTYPE html>
           btn.addEventListener('click', (e) => {
             const targetId = btn.getAttribute('data-tab-target');
             
-            // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(tc => tc.classList.add('hidden'));
             
-            // Show active tab
             const activeTab = document.getElementById(targetId);
             if (activeTab) activeTab.classList.remove('hidden');
 
-            // Reset tab styles
             tabBtns.forEach(b => {
               b.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 border border-transparent hover:text-slate-900 hover:bg-slate-100';
             });
 
-            // Set active style
             btn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs';
           });
         });
@@ -1170,12 +1244,26 @@ html_content = """<!DOCTYPE html>
           };
         }).sort((a, b) => b.net_points - a.net_points);
 
-        const leader = results[0];
-        const isJoint = results[1] && results[1].net_points === leader.net_points;
-        const chipBadge = leader.chip ? `<span class="chip-badge badge-${leader.chip.toLowerCase()}">${leader.chip}</span>` : '';
+        // Assign standard competition ranks (1224) for tied net points
+        let currentRank = 1;
+        for (let i = 0; i < results.length; i++) {
+          if (i > 0 && results[i].net_points < results[i - 1].net_points) {
+            currentRank = i + 1;
+          }
+          results[i].gw_rank = currentRank;
+        }
+
+        const highestNet = results[0].net_points;
+        const winners = results.filter(r => r.net_points === highestNet);
+        const isJoint = winners.length > 1;
+        const leader = winners[0];
 
         // 3A: Finished Gameweek
         if (isFinished) {
+          const winnerNamesDisplay = winners.map(w => w.team_name).join(' & ');
+          const managerNamesDisplay = winners.map(w => w.player_name).join(' & ');
+          const captainsDisplay = winners.filter(w => w.captain && w.captain !== '-').map(w => `${w.team_name}: ${w.captain}`).join(' | ');
+
           container.innerHTML = `
             <div class="relative overflow-hidden glass-card rounded-2xl sm:rounded-3xl p-3.5 sm:p-7 border border-slate-200">
               <div class="relative z-10">
@@ -1185,13 +1273,19 @@ html_content = """<!DOCTYPE html>
                       WIN
                     </div>
                     <div class="min-w-0">
-                      <span class="text-[10px] sm:text-[11px] uppercase tracking-widest text-slate-500 font-bold font-display block leading-none">GAMEWEEK ${this.selectedGW} CHAMPION</span>
-                      <h3 class="text-base sm:text-2xl font-bold text-slate-900 tracking-tight mt-0.5 leading-tight truncate">แชมป์ประจำสัปดาห์</h3>
+                      <span class="text-[10px] sm:text-[11px] uppercase tracking-widest text-slate-500 font-bold font-display block leading-none">
+                        GAMEWEEK ${this.selectedGW} ${isJoint ? `JOINT CHAMPIONS (${winners.length} ทีม)` : 'CHAMPION'}
+                      </span>
+                      <h3 class="text-base sm:text-2xl font-bold text-slate-900 tracking-tight mt-0.5 leading-tight truncate">
+                        ${isJoint ? 'แชมป์ร่วมประจำสัปดาห์' : 'แชมป์ประจำสัปดาห์'}
+                      </h3>
                     </div>
                   </div>
 
                   <div class="self-start sm:self-auto flex items-center gap-1.5 bg-slate-100 border border-slate-200 px-2.5 sm:px-3.5 py-1 rounded-xl">
-                    <span class="text-slate-800 font-bold text-[11px] sm:text-xs font-display">${isJoint ? 'แชมป์ร่วมประจำสัปดาห์' : 'สรุปผลประจำสัปดาห์'}</span>
+                    <span class="text-slate-800 font-bold text-[11px] sm:text-xs font-display">
+                      ${isJoint ? `แชมป์ร่วม ${winners.length} ทีม (หาร 350 THB)` : 'สรุปผลประจำสัปดาห์'}
+                    </span>
                   </div>
                 </div>
 
@@ -1200,13 +1294,13 @@ html_content = """<!DOCTYPE html>
                   <div class="md:col-span-2">
                     <div class="flex items-center gap-2 mb-1 flex-wrap">
                       <h4 class="text-lg sm:text-2xl font-bold text-slate-900 tracking-tight break-words">
-                        ${leader.team_name} ${isJoint ? '& ' + results[1].team_name : ''}
+                        ${winnerNamesDisplay}
                       </h4>
-                      ${chipBadge}
+                      ${winners.map(w => w.chip ? `<span class="chip-badge badge-${w.chip.toLowerCase()} font-display">${w.chip}</span>` : '').join('')}
                     </div>
                     <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs sm:text-sm text-slate-600">
-                      <span>ผู้จัดการ: <strong class="text-slate-900 font-semibold">${leader.player_name} ${isJoint ? '& ' + results[1].player_name : ''}</strong></span>
-                      ${leader.captain ? `<span class="text-slate-700 font-medium">• กัปตัน: <strong>${leader.captain}</strong></span>` : ''}
+                      <span>ผู้จัดการ: <strong class="text-slate-900 font-semibold">${managerNamesDisplay}</strong></span>
+                      ${captainsDisplay ? `<span class="text-slate-700 font-medium">• กัปตัน: <strong>${captainsDisplay}</strong></span>` : ''}
                     </div>
                   </div>
 
@@ -1258,6 +1352,9 @@ html_content = """<!DOCTYPE html>
           `;
         } else {
           // 3B: Live Gameweek
+          const winnerNamesDisplay = winners.map(w => w.team_name).join(' & ');
+          const managerNamesDisplay = winners.map(w => w.player_name).join(' & ');
+
           container.innerHTML = `
             <div class="relative overflow-hidden glass-card rounded-2xl sm:rounded-3xl p-3.5 sm:p-7 border border-slate-200">
               <div class="relative z-10">
@@ -1267,14 +1364,20 @@ html_content = """<!DOCTYPE html>
                       LIVE
                     </div>
                     <div class="min-w-0">
-                      <span class="text-[10px] sm:text-[11px] uppercase tracking-widest text-slate-500 font-bold font-display block leading-none">GAMEWEEK ${this.selectedGW} (IN PROGRESS)</span>
-                      <h3 class="text-base sm:text-2xl font-bold text-slate-900 tracking-tight mt-0.5 leading-tight truncate">ผู้นำคะแนนประจำสัปดาห์ชั่วคราว</h3>
+                      <span class="text-[10px] sm:text-[11px] uppercase tracking-widest text-slate-500 font-bold font-display block leading-none">
+                        GAMEWEEK ${this.selectedGW} (IN PROGRESS)
+                      </span>
+                      <h3 class="text-base sm:text-2xl font-bold text-slate-900 tracking-tight mt-0.5 leading-tight truncate">
+                        ${isJoint ? 'ผู้นำคะแนนร่วมประจำสัปดาห์ชั่วคราว' : 'ผู้นำคะแนนประจำสัปดาห์ชั่วคราว'}
+                      </h3>
                     </div>
                   </div>
 
                   <div class="self-start sm:self-auto flex items-center gap-1.5 bg-slate-100 border border-slate-200 px-2.5 sm:px-3.5 py-1 rounded-xl">
                     <span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
-                    <span class="text-slate-800 font-bold text-[11px] sm:text-xs font-display">กำลังแข่งขัน (ยังไม่จบสัปดาห์)</span>
+                    <span class="text-slate-800 font-bold text-[11px] sm:text-xs font-display">
+                      ${isJoint ? `นำร่วม ${winners.length} ทีม (ยังไม่จบสัปดาห์)` : 'กำลังแข่งขัน (ยังไม่จบสัปดาห์)'}
+                    </span>
                   </div>
                 </div>
 
@@ -1283,12 +1386,12 @@ html_content = """<!DOCTYPE html>
                   <div class="md:col-span-2">
                     <div class="flex items-center gap-2 mb-1 flex-wrap">
                       <h4 class="text-lg sm:text-2xl font-bold text-slate-900 tracking-tight break-words">
-                        ${leader.team_name} ${isJoint ? '& ' + results[1].team_name : ''}
+                        ${winnerNamesDisplay}
                       </h4>
-                      ${chipBadge}
+                      ${winners.map(w => w.chip ? `<span class="chip-badge badge-${w.chip.toLowerCase()} font-display">${w.chip}</span>` : '').join('')}
                     </div>
                     <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs sm:text-sm text-slate-600">
-                      <span>ผู้นำคะแนน: <strong class="text-slate-900 font-semibold">${leader.player_name} ${isJoint ? '& ' + results[1].player_name : ''}</strong></span>
+                      <span>ผู้นำคะแนน: <strong class="text-slate-900 font-semibold">${managerNamesDisplay}</strong></span>
                       ${leader.captain ? `<span class="text-slate-700 font-medium">• กัปตัน: <strong>${leader.captain}</strong></span>` : ''}
                     </div>
                     <p class="text-[10px] sm:text-[11px] text-slate-500 mt-1">หมายเหตุ: ผลคะแนนจะสรุปอย่างเป็นทางการเมื่อแข่งครบทุกคู่ในสัปดาห์</p>
@@ -1342,16 +1445,17 @@ html_content = """<!DOCTYPE html>
           `;
         }
 
-        // 4. Matchday Table (Responsive on Phone / Tablet)
+        // 4. Matchday Table (Shows shared ranks for ties)
         let matchdayHtml = '';
-        results.forEach((team, idx) => {
-          const rankBadge = idx === 0 
+        results.forEach((team) => {
+          const rank = team.gw_rank;
+          const rankBadge = rank === 1 
             ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-900 text-white font-bold text-[10px] sm:text-xs flex items-center justify-center font-display shadow-xs">1</span>'
-            : idx === 1
+            : rank === 2
               ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-200 text-slate-800 font-bold text-[10px] sm:text-xs flex items-center justify-center font-display">2</span>'
-              : idx === 2
+              : rank === 3
                 ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-100 text-slate-700 font-bold text-[10px] sm:text-xs flex items-center justify-center font-display">3</span>'
-                : `<span class="text-slate-400 text-xs font-medium font-display">${idx + 1}</span>`;
+                : `<span class="text-slate-400 text-xs font-medium font-display">${rank}</span>`;
 
           const chip = team.chip ? `<span class="chip-badge badge-${team.chip.toLowerCase()} font-display">${team.chip}</span>` : '';
           const hits = team.hits > 0 ? `<span class="text-rose-600 font-bold font-display text-xs sm:text-sm">-${team.hits}</span>` : '<span class="text-slate-300 font-display text-xs sm:text-sm">-</span>';
@@ -1366,11 +1470,11 @@ html_content = """<!DOCTYPE html>
                 </button>
                 <div class="flex items-center gap-1.5 text-[11px] text-slate-500 mt-0.5">
                   <span class="truncate max-w-[110px] sm:max-w-none">${team.player_name}</span>
-                  <span class="sm:hidden text-slate-600 font-medium">• (C) ${team.captain || '-'}</span>
+                  <span class="sm:hidden text-slate-600 font-medium">• (C) ${(team.captain || '-').replace(/\s*\(C\)/gi, '').trim()}</span>
                 </div>
               </td>
               <td class="py-2.5 px-2 sm:px-3.5 text-center hidden sm:table-cell">
-                <span class="text-xs text-slate-600 font-medium">${team.captain || '-'}</span>
+                <span class="text-xs text-slate-600 font-medium">${team.captain && team.captain !== '-' ? team.captain.replace(/\s*\(C\)/gi, '').trim() + ' (C)' : '-'}</span>
               </td>
               <td class="py-2.5 px-1 sm:px-3.5 text-center font-display font-medium text-slate-700 text-xs sm:text-sm">${team.points}</td>
               <td class="py-2.5 px-1 sm:px-3.5 text-center">${hits}</td>
@@ -1385,7 +1489,7 @@ html_content = """<!DOCTYPE html>
         });
         matchdayBody.innerHTML = matchdayHtml;
 
-        // 5. Overall Standings Table (Computed Dynamically)
+        // 5. Overall Standings Table (Shows shared ranks & TOP badges for ties)
         const computedStandings = this.getComputedStandings();
         let overallHtml = '';
         computedStandings.forEach((team) => {
@@ -1426,24 +1530,27 @@ html_content = """<!DOCTYPE html>
         const computedPrizes = this.getComputedPrizes();
 
         let prizeHtml = '';
-        computedPrizes.forEach((t, idx) => {
+        computedPrizes.forEach((t) => {
           const actualTotal = t.actualTotal;
+          const rank = t.rank;
           prizeHtml += `
             <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-100">
-              <td class="py-2.5 px-1.5 sm:px-3.5 font-display font-bold text-center text-xs sm:text-sm text-slate-800">${idx + 1}</td>
+              <td class="py-2.5 px-1.5 sm:px-3.5 font-display font-bold text-center text-xs sm:text-sm text-slate-800">${rank}</td>
               <td class="py-2.5 px-2 sm:px-3.5">
                 <span class="font-bold text-xs sm:text-sm text-slate-900 block truncate max-w-[130px] sm:max-w-none">${t.entry_name}</span>
                 <span class="text-[11px] text-slate-500 truncate block max-w-[110px] sm:max-w-none">${t.player_name}</span>
               </td>
               <td class="py-2.5 px-1 sm:px-3.5 text-center font-display font-bold text-slate-800 text-xs sm:text-sm">
-                ${t.weeklyWins > 0 ? t.weeklyWins + ' ครั้ง' : '0'}
+                ${t.weeklyWins > 0 ? (Number.isInteger(t.weeklyWins) ? t.weeklyWins : t.weeklyWins.toFixed(1)) + ' ครั้ง' : '0'}
                 ${t.wonGWs.length > 0 ? `<span class="block text-[8px] sm:text-[10px] text-slate-400 font-normal font-display">(GW ${t.wonGWs.join(', ')})</span>` : ''}
               </td>
-              <td class="py-2.5 px-2 sm:px-3.5 text-center font-display text-slate-700 text-xs sm:text-sm hidden sm:table-cell">${t.weeklyPrize > 0 ? t.weeklyPrize.toLocaleString() + ' บาท' : '-'}</td>
+              <td class="py-2.5 px-2 sm:px-3.5 text-center font-display text-slate-700 text-xs sm:text-sm hidden sm:table-cell">${t.weeklyPrize > 0 ? t.weeklyPrize.toLocaleString() + ' THB' : '-'}</td>
               <td class="py-2.5 px-2 sm:px-3.5 text-center font-display text-slate-400 text-[11px] sm:text-xs hidden md:table-cell">-</td>
-              <td class="py-2.5 px-2 sm:px-3.5 text-center font-display text-slate-400 text-[11px] sm:text-xs hidden md:table-cell">-</td>
+              <td class="py-2.5 px-2 sm:px-3.5 text-center font-display text-slate-400 text-[11px] sm:text-xs hidden md:table-cell">
+                ${t.projectedSeasonPrize > 0 ? `<span class="text-slate-600 font-medium">รอจบ GW 38 (${t.projectedSeasonPrize.toLocaleString()} THB)</span>` : '-'}
+              </td>
               <td class="py-2.5 px-1.5 sm:px-3.5 text-center font-display font-bold text-xs sm:text-base text-slate-900">
-                ${actualTotal > 0 ? actualTotal.toLocaleString() + ' บ.' : '-'}
+                ${actualTotal > 0 ? actualTotal.toLocaleString() + ' THB' : '-'}
               </td>
             </tr>
           `;
@@ -1492,13 +1599,13 @@ html_content = """<!DOCTYPE html>
                   <span class="text-[9px] sm:text-[11px] px-2 py-0.5 rounded-full border ${badgeClass} font-semibold flex-shrink-0">${statusText}</span>
                 </div>
                 <h4 class="text-sm sm:text-base font-bold text-slate-900 font-display mb-0.5">GW ${p.startGW} - ${p.endGW} (${p.weeks} สัปดาห์)</h4>
-                <p class="text-[11px] sm:text-xs text-slate-500 mb-2.5 sm:mb-3">งบแชมป์วีค: <strong class="text-slate-800">${p.weeklyBudget.toLocaleString()} บาท</strong> ${p.hasCup ? '+ ถ้วย & ลีก' : ''}</p>
+                <p class="text-[11px] sm:text-xs text-slate-500 mb-2.5 sm:mb-3">งบแชมป์วีค: <strong class="text-slate-800">${p.weeklyBudget.toLocaleString()} THB</strong> ${p.hasCup ? '+ ถ้วย & ลีก' : ''}</p>
                 
                 <div class="bg-slate-50 rounded-xl p-2.5 sm:p-3.5 mb-2.5 sm:mb-3.5 border border-slate-200/80">
                   <span class="text-[9px] sm:text-[11px] uppercase tracking-wider text-slate-500 font-bold block mb-1">สรุปแชมป์วีคที่สรุปผลแล้ว:</span>
                   ${isP1 ? `
                     <div class="space-y-1 text-xs">
-                      <div class="flex justify-between items-center"><span class="text-slate-800 truncate max-w-[130px] sm:max-w-none">1. GEMINI UNITED (GW 1)</span><strong class="text-slate-900 flex-shrink-0">350 บ.</strong></div>
+                      <div class="flex justify-between items-center"><span class="text-slate-800 truncate max-w-[130px] sm:max-w-none">1. Siampathy (GW 1)</span><strong class="text-slate-900 flex-shrink-0">350 THB</strong></div>
                       <div class="flex justify-between items-center text-slate-500"><span>- GW 2 (กำลังเตะ)</span><span class="text-rose-600 font-medium">รอจบวีค</span></div>
                       <div class="flex justify-between items-center text-slate-400"><span>- GW 3 - 6</span><span>รอแข่ง</span></div>
                     </div>
@@ -1507,7 +1614,7 @@ html_content = """<!DOCTYPE html>
               </div>
 
               <div class="pt-2 sm:pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-                <span class="text-xs text-slate-500">จ่ายแล้ว: <strong class="text-slate-900 font-display font-bold">${isP1 ? '350' : '0'} บ.</strong></span>
+                <span class="text-xs text-slate-500">จ่ายแล้ว: <strong class="text-slate-900 font-display font-bold">${isP1 ? '350' : '0'} THB</strong></span>
                 ${buttonHtml}
               </div>
             </div>
@@ -1531,7 +1638,7 @@ html_content = """<!DOCTYPE html>
                 <span class="text-[9px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold block mb-0.5 truncate">คะแนนสูงสุด 1 วีค</span>
                 <div class="flex items-baseline gap-1 my-0.5">
                   <span class="text-xl sm:text-3xl font-black text-slate-900 font-display">${records.highestGWScore.score}</span>
-                  <span class="text-[8px] sm:text-xs text-slate-500 font-medium font-display">PTS (GW ${records.highestGWScore.gw})</span>
+                  <span class="text-[8px] sm:text-xs text-slate-500 font-medium font-display">PTS (${records.highestGWScore.gwText})</span>
                 </div>
               </div>
               <div>
@@ -1573,7 +1680,7 @@ html_content = """<!DOCTYPE html>
                 <span class="text-[9px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold block mb-0.5 truncate">สำรองแต้มกระจาย</span>
                 <div class="flex items-baseline gap-1 my-0.5">
                   <span class="text-xl sm:text-3xl font-black text-slate-900 font-display">${records.bestBenchPoints.points}</span>
-                  <span class="text-[8px] sm:text-xs text-slate-500 font-medium font-display">BENCH (GW ${records.bestBenchPoints.gw})</span>
+                  <span class="text-[8px] sm:text-xs text-slate-500 font-medium font-display">BENCH (${records.bestBenchPoints.gwText})</span>
                 </div>
               </div>
               <div>
@@ -1586,10 +1693,11 @@ html_content = """<!DOCTYPE html>
 
         if (hofTable) {
           let hofHtml = '';
-          teamStats.forEach((t, idx) => {
+          teamStats.forEach((t) => {
+            const rank = t.rank || (standings.find(s => s.entry_id === t.entry_id)?.rank || 1);
             hofHtml += `
               <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-100">
-                <td class="py-2.5 px-1.5 sm:px-3.5 font-display font-bold text-center text-slate-500 text-xs sm:text-sm">${idx + 1}</td>
+                <td class="py-2.5 px-1.5 sm:px-3.5 font-display font-bold text-center text-slate-500 text-xs sm:text-sm">${rank}</td>
                 <td class="py-2.5 px-2 sm:px-3.5">
                   <span class="font-bold text-xs sm:text-sm text-slate-900 block truncate max-w-[130px] sm:max-w-none">${t.teamName}</span>
                   <span class="text-[11px] text-slate-500 truncate block max-w-[110px] sm:max-w-none">${t.playerName}</span>
@@ -1618,7 +1726,7 @@ html_content = """<!DOCTYPE html>
               <div>
                 <span class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-500 font-bold font-display">MINI-LEAGUE KNOCKOUT TOURNAMENT</span>
                 <h3 class="text-lg sm:text-2xl font-bold text-slate-900 tracking-tight mt-0.5">ฟุตบอลถ้วยแฟนตาซี (League Cup)</h3>
-                <p class="text-xs sm:text-sm text-slate-500 mt-0.5">การแข่งขันแบบแพ้คัดออก (Knockout) เงินรางวัลรวม 1,650 บาท</p>
+                <p class="text-xs sm:text-sm text-slate-500 mt-0.5">การแข่งขันแบบแพ้คัดออก (Knockout) เงินรางวัลรวม 1,650 THB</p>
               </div>
               <div class="self-start sm:self-auto flex items-center gap-2 bg-slate-100 border border-slate-200 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl">
                 <span class="w-2 h-2 rounded-full bg-slate-400"></span>
@@ -1631,13 +1739,13 @@ html_content = """<!DOCTYPE html>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
             <div class="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-200 text-center">
               <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">CUP CHAMPION (แชมป์บอลถ้วย)</span>
-              <h4 class="text-2xl sm:text-3xl font-black text-slate-900 font-display mt-1 sm:mt-2 mb-0.5 sm:mb-1">1,000 บาท</h4>
+              <h4 class="text-2xl sm:text-3xl font-black text-slate-900 font-display mt-1 sm:mt-2 mb-0.5 sm:mb-1">1,000 THB</h4>
               <span class="text-[11px] sm:text-xs text-slate-500 mt-0.5 block">สถานะ: รอผลการแข่งขันรอบชิงชนะเลิศ</span>
             </div>
 
             <div class="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-200 text-center">
               <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">CUP RUNNER-UP (รองแชมป์บอลถ้วย)</span>
-              <h4 class="text-2xl sm:text-3xl font-black text-slate-900 font-display mt-1 sm:mt-2 mb-0.5 sm:mb-1">650 บาท</h4>
+              <h4 class="text-2xl sm:text-3xl font-black text-slate-900 font-display mt-1 sm:mt-2 mb-0.5 sm:mb-1">650 THB</h4>
               <span class="text-[11px] sm:text-xs text-slate-500 mt-0.5 block">สถานะ: รอผลการแข่งขันรอบชิงชนะเลิศ</span>
             </div>
           </div>
@@ -1742,7 +1850,9 @@ html_content = """<!DOCTYPE html>
 
         const isFinished = gwData.is_finished === true;
         const sorted = [...gwData.results].sort((a, b) => b.net_points - a.net_points);
-        const leader = sorted[0];
+        const highestNet = sorted[0].net_points;
+        const winners = sorted.filter(r => r.net_points === highestNet);
+        const isJoint = winners.length > 1;
         const currentLiveNote = this.getNoteForCurrentGW();
 
         const hitTakers = sorted.filter(t => t.hits > 0).map(t => `${t.team_name} (-${t.hits})`).join(', ');
@@ -1752,12 +1862,23 @@ html_content = """<!DOCTYPE html>
         text += `สรุปผล Gameweek ${this.selectedGW} (${isFinished ? 'จบการแข่งขัน' : 'กำลังแข่งขัน'})\n\n`;
 
         if (isFinished) {
-          text += `แชมป์ประจำสัปดาห์: ${leader.team_name} (${leader.player_name})\n`;
-          text += `แต้มสุทธิ: ${leader.net_points} pts (แต้มดิบ ${leader.points} | Hits -${leader.hits})\n`;
-          text += `เงินรางวัล: 350 บาท\n\n`;
+          if (isJoint) {
+            text += `แชมป์ร่วมประจำสัปดาห์ (${winners.length} ทีม): ${winners.map(w => w.team_name + ' (' + w.player_name + ')').join(' & ')}\n`;
+            text += `แต้มสุทธิ: ${highestNet} pts\n`;
+            text += `เงินรางวัล: หารแบ่งทีมละ ${(350 / winners.length).toLocaleString()} THB\n\n`;
+          } else {
+            text += `แชมป์ประจำสัปดาห์: ${winners[0].team_name} (${winners[0].player_name})\n`;
+            text += `แต้มสุทธิ: ${winners[0].net_points} pts (แต้มดิบ ${winners[0].points} | Hits -${winners[0].hits})\n`;
+            text += `เงินรางวัล: 350 THB\n\n`;
+          }
         } else {
-          text += `ผู้นำคะแนนสด: ${leader.team_name} (${leader.player_name})\n`;
-          text += `แต้มสุทธิชั่วคราว: ${leader.net_points} pts (แต้มดิบ ${leader.points} | Hits -${leader.hits})\n\n`;
+          if (isJoint) {
+            text += `ผู้นำคะแนนสดร่วม (${winners.length} ทีม): ${winners.map(w => w.team_name + ' (' + w.player_name + ')').join(' & ')}\n`;
+            text += `แต้มสุทธิชั่วคราว: ${highestNet} pts\n\n`;
+          } else {
+            text += `ผู้นำคะแนนสด: ${winners[0].team_name} (${winners[0].player_name})\n`;
+            text += `แต้มสุทธิชั่วคราว: ${winners[0].net_points} pts (แต้มดิบ ${winners[0].points} | Hits -${winners[0].hits})\n\n`;
+          }
         }
 
         text += `ไฮไลท์เด็ด:\n"${currentLiveNote}"\n\n`;
@@ -1785,10 +1906,10 @@ html_content = """<!DOCTYPE html>
 
         let text = `สรุปยอดเงินรางวัล เซียนอยู่รู หมูอยู่ตึก\n`;
         text += `รอบที่ ${p.phase} (Gameweek ${p.startGW} - ${p.endGW})\n`;
-        text += `งบแชมป์วีค: ${p.weeklyBudget.toLocaleString()} บาท\n\n`;
+        text += `งบแชมป์วีค: ${p.weeklyBudget.toLocaleString()} THB\n\n`;
 
         if (p.phase === 1) {
-          text += `1. GEMINI UNITED (Micky) : 350 บาท (แชมป์ GW 1)\n`;
+          text += `1. Siampathy (Peeranat) : 350 THB (แชมป์ GW 1)\n`;
           text += `GW 2-6: รอการแข่งขัน\n\n`;
         }
 
@@ -1817,4 +1938,4 @@ with open('preview.html', 'w', encoding='utf-8') as f:
 with open('index.html', 'w', encoding='utf-8') as f:
     f.write(html_content)
 
-print("Successfully regenerated fully dynamic preview.html and index.html!")
+print("Successfully updated all currency labels to THB!")
