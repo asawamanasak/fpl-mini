@@ -290,13 +290,13 @@
         </div>
 
         <button 
-          onclick="app.shareCurrentGameweek()"
-          class="flex items-center gap-1 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-white transition-all shadow-sm active:scale-95 flex-shrink-0"
-          title="คัดลอกสรุปผลและไฮไลท์สัปดาห์ปัจจุบันลงคลิปบอร์ด"
+          id="btn-text-summary"
+          onclick="window.app ? window.app.shareCurrentGameweek() : shareCurrentGameweekFallback()"
+          class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-white transition-all shadow-sm active:scale-95 flex-shrink-0 cursor-pointer"
+          title="คัดลอกสรุปผลและไฮไลท์สัปดาห์ปัจจุบันสำหรับส่งลง LINE"
         >
           <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-          <span class="hidden sm:inline">Text Summary</span>
-          <span class="sm:hidden text-[11px]">Text Summary</span>
+          <span class="font-bold">Text Summary</span>
         </button>
       </div>
 
@@ -5407,126 +5407,144 @@
       }
 
       shareCurrentGameweek() {
-        const gwData = this.data.gameweeks[this.selectedGW];
-        if (!gwData || !gwData.results) return;
-
-        const isFinished = gwData.is_finished === true;
-        const sorted = [...gwData.results].sort((a, b) => b.net_points - a.net_points);
-        const highestNet = sorted[0].net_points;
-        const winners = sorted.filter(r => r.net_points === highestNet);
-        const isJoint = winners.length > 1;
-        const currentLiveNote = this.getNoteForCurrentGW();
-
-        const chipDict = {
-          'bboost': 'Bench Boost',
-          '3xc': 'Triple Captain',
-          'wildcard': 'Wildcard',
-          'freehit': 'Free Hit'
-        };
-
-        const hitTakers = sorted.filter(t => t.hits > 0).map(t => `${t.team_name} (-${t.hits})`).join(', ');
-        const chipsUsed = sorted.filter(t => t.chip).map(t => `${t.team_name} (${chipDict[t.chip] || t.chip})`).join(', ');
-
-        const statusStr = isFinished ? 'จบการแข่งขัน' : 'กำลังแข่งขัน';
-        let text = `เซียนอยู่รู หมูอยู่ตึก (League 40700)
-`;
-        text += `สรุปผล Gameweek ${this.selectedGW} (${statusStr})
-
-`;
-
-        if (isFinished) {
-          if (isJoint) {
-            text += `แชมป์ร่วมประจำสัปดาห์ (${winners.length} ทีม):
-`;
-            winners.forEach(w => {
-              const capt = (w.captain && w.captain !== '-') ? ` | กัปตัน: ${w.captain.replace(/\s*\(C\)/gi, '').trim()}` : '';
-              text += `• ${w.team_name} (${w.player_name}) - ${w.net_points} pts (ดิบ ${w.points}${w.hits > 0 ? ' | Hits -' + w.hits : ''}${capt})
-`;
-            });
-            text += `เงินรางวัล: หารแบ่งทีมละ ${(350 / winners.length).toLocaleString()} THB
-
-`;
-          } else {
-            const w = winners[0];
-            const capt = (w.captain && w.captain !== '-') ? ` | กัปตัน: ${w.captain.replace(/\s*\(C\)/gi, '').trim()}` : '';
-            const chipStr = w.chip ? ` | ใช้ชิป: ${chipDict[w.chip] || w.chip}` : '';
-            text += `แชมป์ประจำสัปดาห์: ${w.team_name} (${w.player_name})
-`;
-            text += `แต้มสุทธิ: ${w.net_points} pts (แต้มดิบ ${w.points} | Hits -${w.hits}${capt}${chipStr})
-`;
-            text += `เงินรางวัล: 350 THB
-
-`;
+        try {
+          const gwKey = String(this.selectedGW || 2);
+          const gwData = (this.data && this.data.gameweeks) ? (this.data.gameweeks[gwKey] || this.data.gameweeks[this.selectedGW]) : null;
+          if (!gwData || !gwData.results || gwData.results.length === 0) {
+            alert('กำลังโหลดข้อมูล Gameweek กรุณาลองใหม่อีกครั้ง');
+            return;
           }
-        } else {
-          if (isJoint) {
-            text += `ผู้นำคะแนนสดร่วม (${winners.length} ทีม):
+
+          const isFinished = Boolean(gwData.is_finished);
+          const sorted = [...gwData.results].sort((a, b) => b.net_points - a.net_points);
+          const highestNet = sorted[0].net_points;
+          const winners = sorted.filter(r => r.net_points === highestNet);
+          const isJoint = winners.length > 1;
+          const currentLiveNote = this.getNoteForCurrentGW ? this.getNoteForCurrentGW() : 'สถานการณ์กำลังเข้มข้น!';
+
+          const hitTakers = sorted
+            .filter(t => (t.hits || 0) > 0)
+            .map(t => `${t.team_name} (-${t.hits})`)
+            .join(', ');
+
+          const chipDict = {
+            'bboost': 'bboost',
+            '3xc': '3xc',
+            'wildcard': 'wildcard',
+            'freehit': 'freehit'
+          };
+          const chipsUsed = sorted
+            .filter(t => t.chip)
+            .map(t => `${t.team_name} (${chipDict[t.chip] || t.chip})`)
+            .join(', ');
+
+          const statusStr = isFinished ? 'จบการแข่งขัน' : 'กำลังแข่งขัน';
+          let text = `เซียนอยู่รู หมูอยู่ตึก (League 40700)
 `;
-            winners.forEach(w => {
-              const capt = (w.captain && w.captain !== '-') ? ` | กัปตัน: ${w.captain.replace(/\s*\(C\)/gi, '').trim()}` : '';
-              text += `• ${w.team_name} (${w.player_name}) - ${w.net_points} pts (ดิบ ${w.points}${w.hits > 0 ? ' | Hits -' + w.hits : ''}${capt})
+          text += `สรุปผล Gameweek ${gwKey} (${statusStr})
+
 `;
-            });
-            text += `
+
+          if (isFinished) {
+            if (isJoint) {
+              text += `แชมป์ร่วมประจำสัปดาห์ (${winners.length} ทีม): ` + winners.map(w => `${w.team_name} (${w.player_name})`).join(' & ') + `
 `;
+              text += `แต้มสุทธิ: ${highestNet} pts
+`;
+              text += `เงินรางวัล: หารแบ่งทีมละ ${(350 / winners.length).toLocaleString()} THB
+
+`;
+            } else {
+              const w = winners[0];
+              text += `แชมป์ประจำสัปดาห์: ${w.team_name} (${w.player_name})
+`;
+              text += `แต้มสุทธิ: ${w.net_points} pts (แต้มดิบ ${w.points} | Hits -${w.hits || 0})
+`;
+              text += `เงินรางวัล: 350 THB
+
+`;
+            }
           } else {
-            const w = winners[0];
-            const capt = (w.captain && w.captain !== '-') ? ` | กัปตัน: ${w.captain.replace(/\s*\(C\)/gi, '').trim()}` : '';
-            const chipStr = w.chip ? ` | ใช้ชิป: ${chipDict[w.chip] || w.chip}` : '';
-            text += `ผู้นำคะแนนสด: ${w.team_name} (${w.player_name})
+            if (isJoint) {
+              text += `ผู้นำคะแนนสดร่วม (${winners.length} ทีม): ` + winners.map(w => `${w.team_name} (${w.player_name})`).join(' & ') + `
 `;
-            text += `แต้มสุทธิชั่วคราว: ${w.net_points} pts (แต้มดิบ ${w.points} | Hits -${w.hits}${capt}${chipStr})
+              text += `แต้มสุทธิชั่วคราว: ${highestNet} pts
 
 `;
+            } else {
+              const w = winners[0];
+              text += `ผู้นำคะแนนสด: ${w.team_name} (${w.player_name})
+`;
+              text += `แต้มสุทธิชั่วคราว: ${w.net_points} pts (แต้มดิบ ${w.points} | Hits -${w.hits || 0})
+
+`;
+            }
           }
-        }
 
-        text += `ไฮไลท์เด็ด:
+          text += `ไฮไลท์เด็ด:
 "${currentLiveNote}"
 
 `;
 
-        if (hitTakers) text += `ทีมติดลบย้ายตัว: ${hitTakers}
+          if (hitTakers) {
+            text += `ทีมติดลบย้ายตัว: ${hitTakers}
 `;
-        if (chipsUsed) text += `ชิปที่ใช้งาน: ${chipsUsed}
+          }
+          if (chipsUsed) {
+            text += `ชิปที่ใช้งาน: ${chipsUsed}
 `;
+          }
+          if (hitTakers || chipsUsed) {
+            text += `
+`;
+          }
 
-        text += `
-สรุปคะแนน 5 อันดับแรก GW ${this.selectedGW}:
+          text += `สรุปคะแนน 5 อันดับแรก GW ${gwKey}:
 `;
-        sorted.slice(0, 5).forEach((t, i) => {
-          const hitsStr = t.hits > 0 ? ` -${t.hits}` : '';
-          const chipTag = t.chip ? ` [${chipDict[t.chip] || t.chip}]` : '';
-          text += `${i + 1}. ${t.team_name} : ${t.net_points} pts (ดิบ ${t.points}${hitsStr})${chipTag}
+          sorted.slice(0, 5).forEach((t, i) => {
+            const hitsStr = (t.hits && t.hits > 0) ? ` -${t.hits}` : '';
+            text += `${i + 1}. ${t.team_name} : ${t.net_points} pts (ดิบ ${t.points}${hitsStr})
 `;
-        });
+          });
 
-        // Add Overall Top 3
-        const overallStandings = this.getComputedStandings();
-        if (overallStandings && overallStandings.length >= 3) {
           text += `
-จ่าฝูงคะแนนรวมสะสม Top 3:
-`;
-          text += `🥇 1. ${overallStandings[0].entry_name} (${overallStandings[0].total} pts)
-`;
-          text += `🥈 2. ${overallStandings[1].entry_name} (${overallStandings[1].total} pts)
-`;
-          text += `🥉 3. ${overallStandings[2].entry_name} (${overallStandings[2].total} pts)
-`;
-        }
-
-        text += `
 ดูตารางคะแนนและเงินรางวัลเต็มๆ ได้ที่:
 https://asawamanasak.github.io/fpl-mini/`;
 
-        // Copy with fallback
-        if (navigator.clipboard && navigator.clipboard.writeText) {
+          // Execute Copy with universal fallback
+          this.executeCopyText(text);
+        } catch (err) {
+          console.error('Error generating summary:', err);
+          alert('เกิดข้อผิดพลาดในการสร้างสรุปผล กรุณาลองใหม่อีกครั้ง');
+        }
+      }
+
+      executeCopyText(text) {
+        // Method 1: navigator.clipboard
+        if (navigator.clipboard && window.isSecureContext) {
           navigator.clipboard.writeText(text).then(() => {
             this.showCopyToast();
           }).catch(() => {
             this.showCopyModal(text);
           });
         } else {
+          // Method 2: execCommand fallback
+          try {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            if (successful) {
+              this.showCopyToast();
+              return;
+            }
+          } catch (e) {}
           this.showCopyModal(text);
         }
       }
@@ -5536,7 +5554,7 @@ https://asawamanasak.github.io/fpl-mini/`;
         if (!toast) {
           toast = document.createElement('div');
           toast.id = 'copy-toast-banner';
-          toast.className = 'fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700 text-xs sm:text-sm font-semibold transition-all transform duration-300';
+          toast.className = 'fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700 text-xs sm:text-sm font-semibold transition-all transform duration-300';
           toast.innerHTML = `
             <svg class="w-5 h-5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
             <span>คัดลอกสรุปผลลงคลิปบอร์ดแล้ว! พร้อมส่งลง LINE ได้ทันที</span>
@@ -5548,7 +5566,7 @@ https://asawamanasak.github.io/fpl-mini/`;
         setTimeout(() => {
           toast.style.opacity = '0';
           toast.style.transform = 'translateY(10px)';
-        }, 3500);
+        }, 3000);
       }
 
       showCopyModal(text) {
@@ -5561,7 +5579,7 @@ https://asawamanasak.github.io/fpl-mini/`;
             <div class="bg-white rounded-3xl p-5 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200">
               <div class="flex items-center justify-between mb-3">
                 <h3 class="text-sm sm:text-base font-bold text-slate-900">Text Summary (สำหรับส่ง LINE)</h3>
-                <button onclick="document.getElementById('text-summary-preview-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">✕</button>
+                <button onclick="document.getElementById('text-summary-preview-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
               </div>
               <textarea id="summary-textarea-box" rows="12" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 font-mono focus:outline-none" readonly></textarea>
               <div class="mt-4 flex gap-2 justify-end">
