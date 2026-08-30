@@ -182,73 +182,90 @@ html_content = """<!DOCTYPE html>
       scroll-snap-align: center;
     }
 
-    /* Football Pitch Styling */
+    /* Authentic Football Pitch System (4-Tier Vertical Formation) */
     .fpl-pitch {
-      background: radial-gradient(circle at center, #1e5a29 0%, #15421c 70%, #0d2c13 100%);
+      background: linear-gradient(180deg, #15803d 0%, #166534 50%, #14532d 100%);
       position: relative;
       border-radius: 1.25rem;
-      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      border: 2px solid rgba(255, 255, 255, 0.4);
       overflow: hidden;
-      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 340px;
-      padding: 1rem 0.25rem;
+      min-height: 420px;
+      padding: 0.75rem 0.25rem;
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.4);
     }
 
     @media (min-width: 640px) {
       .fpl-pitch {
-        min-height: 400px;
+        min-height: 480px;
         padding: 1.25rem 0.5rem;
       }
     }
 
-    .fpl-pitch::before {
-      content: '';
+    .pitch-center-line {
       position: absolute;
       top: 50%;
       left: 0;
       right: 0;
-      height: 2px;
-      background: rgba(255, 255, 255, 0.25);
+      height: 1.5px;
+      background: rgba(255, 255, 255, 0.35);
       pointer-events: none;
+      z-index: 1;
     }
 
-    .fpl-pitch::after {
-      content: '';
+    .pitch-center-circle {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 60px;
-      height: 60px;
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, 0.25);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
       pointer-events: none;
+      z-index: 1;
     }
 
-    @media (min-width: 640px) {
-      .fpl-pitch::after {
-        width: 70px;
-        height: 70px;
-      }
+    .pitch-penalty-top {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 45px;
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      border-top: 0;
+      border-bottom-left-radius: 6px;
+      border-bottom-right-radius: 6px;
+      pointer-events: none;
+      z-index: 1;
     }
 
-    .fpl-pitch-line {
+    .pitch-penalty-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 45px;
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      border-bottom: 0;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .fpl-pitch-row {
       display: flex;
-      justify-content: space-around;
+      justify-content: space-evenly;
       align-items: center;
       width: 100%;
       position: relative;
       z-index: 10;
-      margin: 0.15rem 0;
-    }
-
-    @media (min-width: 640px) {
-      .fpl-pitch-line {
-        margin: 0.25rem 0;
-      }
+      padding: 0.15rem 0;
     }
 
     /* Chip Badges */
@@ -698,32 +715,54 @@ html_content = """<!DOCTYPE html>
   <!-- ==================== 6. หน้าต่างป๊อปอัป ==================== -->
 
   <!-- 6.1 ผังสนามจัดทัพนักเตะ -->
-  <div id="team-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden" onclick="if (event.target === this) app.closeTeamModal()">
-    <div class="bg-white rounded-3xl p-6 max-w-2xl w-full border border-slate-200 shadow-2xl relative max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
-        <div>
-          <span class="text-xs uppercase tracking-wider text-slate-500 font-bold">ข้อมูลการจัดทัพสัปดาห์นี้</span>
-          <h3 id="team-modal-title" class="text-xl font-bold text-slate-900">ชื่อทีม</h3>
+    <!-- 6.1 หน้าต่างดูแผนจัดตัวนักเตะ (Team Squad Modal) -->
+  <div id="team-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-xs hidden transition-all duration-200" onclick="if (event.target === this) app.closeTeamModal()">
+    <div class="bg-white rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200 max-h-[94vh] overflow-y-auto" onclick="event.stopPropagation()">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3 sm:mb-4">
+        <div class="min-w-0 pr-2">
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">ข้อมูลขุมกำลัง & การจัดทัพ</span>
+            <span id="team-modal-chip-badge" class="hidden"></span>
+          </div>
+          <h3 id="team-modal-title" class="text-base sm:text-xl font-bold text-slate-900 truncate mt-0.5">ชื่อทีม</h3>
+          <p id="team-modal-subtitle" class="text-[11px] sm:text-xs text-slate-500 mt-0.5 flex items-center gap-1.5 flex-wrap">
+            <span id="team-modal-manager">ผู้จัดการ: -</span>
+            <span>•</span>
+            <span id="team-modal-formation" class="font-bold text-slate-700">แผน: -</span>
+            <span>•</span>
+            <span id="team-modal-pts" class="font-bold text-emerald-600">แต้มสด: - pts</span>
+          </p>
         </div>
-        <button onclick="app.closeTeamModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
+        <button onclick="app.closeTeamModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 font-bold transition-colors cursor-pointer text-base flex-shrink-0">✕</button>
       </div>
 
-      <!-- Pitch -->
-      <div class="fpl-pitch p-4 min-h-[360px] flex flex-col justify-around rounded-2xl mb-4">
-        <div id="team-pitch-container" class="grid grid-cols-4 gap-2">
-          <!-- Starting 11 -->
+      <!-- Authentic FPL Pitch (Vertical 4-Tier: GKP -> DEF -> MID -> FWD) -->
+      <div class="fpl-pitch rounded-2xl mb-3.5 relative overflow-hidden shadow-inner flex flex-col justify-between py-2 sm:py-3 px-1">
+        <div class="pitch-penalty-top"></div>
+        <div class="pitch-center-circle"></div>
+        <div class="pitch-center-line"></div>
+        <div class="pitch-penalty-bottom"></div>
+
+        <!-- 4 Separate Formation Rows -->
+        <div id="pitch-line-gkp" class="fpl-pitch-row"></div>
+        <div id="pitch-line-def" class="fpl-pitch-row"></div>
+        <div id="pitch-line-mid" class="fpl-pitch-row"></div>
+        <div id="pitch-line-fwd" class="fpl-pitch-row"></div>
+      </div>
+
+      <!-- Substitutes Box -->
+      <div class="bg-slate-50 rounded-2xl p-3 sm:p-4 border border-slate-200/80">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">ตัวสำรอง (Substitutes)</span>
+          <span id="team-modal-bench-total" class="text-[10px] sm:text-xs text-slate-500 font-bold font-display"></span>
+        </div>
+        <div id="team-bench-container" class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
+          <!-- 4 Bench Player Cards -->
         </div>
       </div>
 
-      <!-- Bench -->
-      <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200/80">
-        <span class="text-xs uppercase tracking-wider text-slate-500 font-bold block mb-2">ตัวสำรอง (Substitutes)</span>
-        <div id="team-bench-container" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          <!-- Bench players -->
-        </div>
-      </div>
     </div>
   </div>
 
@@ -2010,12 +2049,35 @@ html_content = """<!DOCTYPE html>
       }
 
       openTeamModal(entryId, teamName) {
-        document.getElementById('team-modal-title').innerText = teamName;
-        const pitch = document.getElementById('team-pitch-container');
-        const bench = document.getElementById('team-bench-container');
+        const teamObj = (this.data.teams || []).find(t => t.entry_id === entryId) || {};
+        const gwResults = ((this.data.gameweeks || {})[String(this.selectedGW)] || {}).results || [];
+        const matchdayRes = gwResults.find(r => r.entry_id === entryId) || {};
+
+        document.getElementById('team-modal-title').innerText = teamObj.entry_name || teamName;
+        document.getElementById('team-modal-manager').innerText = `ผู้จัดการ: ${teamObj.player_name || matchdayRes.player_name || '-'}`;
+        document.getElementById('team-modal-pts').innerText = `แต้ม GW ${this.selectedGW}: ${matchdayRes.net_points || 0} pts`;
+
+        const chipBadge = document.getElementById('team-modal-chip-badge');
+        if (chipBadge) {
+          if (matchdayRes.chip) {
+            chipBadge.className = `chip-badge badge-${matchdayRes.chip.toLowerCase()} font-display`;
+            chipBadge.innerText = matchdayRes.chip.toUpperCase();
+            chipBadge.classList.remove('hidden');
+          } else {
+            chipBadge.classList.add('hidden');
+          }
+        }
 
         const squadKey = `${entryId}_${this.selectedGW}`;
-        const squad = this.data.squads[squadKey] || Object.values(this.data.squads)[0];
+        const squad = (this.data.squads || {})[squadKey] || Object.values(this.data.squads || {})[0];
+
+        const gkpLine = document.getElementById('pitch-line-gkp');
+        const defLine = document.getElementById('pitch-line-def');
+        const midLine = document.getElementById('pitch-line-mid');
+        const fwdLine = document.getElementById('pitch-line-fwd');
+        const benchContainer = document.getElementById('team-bench-container');
+        const benchTotal = document.getElementById('team-modal-bench-total');
+        const formationEl = document.getElementById('team-modal-formation');
 
         if (squad && squad.starting) {
           const gks = squad.starting.filter(p => p.pos === 'GKP');
@@ -2023,45 +2085,70 @@ html_content = """<!DOCTYPE html>
           const mids = squad.starting.filter(p => p.pos === 'MID');
           const fwds = squad.starting.filter(p => p.pos === 'FWD');
 
-          const renderPlayerCard = (p) => `
-            <div class="flex flex-col items-center justify-center p-0.5 text-center flex-1 max-w-[56px] xs:max-w-[64px] sm:max-w-[80px]">
-              <div class="relative">
-                <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-slate-900 border-2 ${p.is_captain ? 'border-amber-400 ring-2 ring-amber-400/30' : p.is_vice ? 'border-slate-300' : 'border-emerald-400/50'} flex items-center justify-center shadow-md">
-                  <span class="text-[8px] sm:text-[10px] font-bold text-white">${p.pos}</span>
-                </div>
-                ${p.is_captain ? '<span class="absolute -top-1 -right-1 bg-amber-400 text-slate-950 font-black text-[7px] sm:text-[8px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-display shadow">C</span>' : ''}
-                ${p.is_vice ? '<span class="absolute -top-1 -right-1 bg-slate-200 text-slate-950 font-black text-[7px] sm:text-[8px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-display shadow">V</span>' : ''}
-              </div>
-              <span class="font-bold text-[9px] sm:text-[11px] text-white bg-black/80 px-1 py-0.5 rounded mt-0.5 truncate max-w-full block">${p.name}</span>
-              <span class="text-[8px] sm:text-[10px] font-bold text-emerald-300 font-display mt-0.5">${p.points} pts</span>
-            </div>
-          `;
+          if (formationEl) {
+            formationEl.innerText = `แผน: ${defs.length}-${mids.length}-${fwds.length}`;
+          }
 
-          pitch.innerHTML = `
-            <div class="fpl-pitch-line">${gks.map(renderPlayerCard).join('')}</div>
-            <div class="fpl-pitch-line">${defs.map(renderPlayerCard).join('')}</div>
-            <div class="fpl-pitch-line">${mids.map(renderPlayerCard).join('')}</div>
-            <div class="fpl-pitch-line">${fwds.map(renderPlayerCard).join('')}</div>
-          `;
+          const renderPlayerCard = (p, count) => {
+            const isCap = Boolean(p.is_captain);
+            const isVice = Boolean(p.is_vice);
+
+            return `
+              <div class="flex flex-col items-center justify-center p-0.5 text-center flex-shrink-0 transition-transform active:scale-95" style="width: ${100 / Math.max(count, 3)}%; max-width: 76px;">
+                <!-- Avatar Circle -->
+                <div class="relative flex items-center justify-center">
+                  <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-900 border-2 ${isCap ? 'border-amber-400 ring-2 ring-amber-400/40' : isVice ? 'border-slate-300 ring-1 ring-slate-300/40' : 'border-white/80'} flex items-center justify-center shadow-md">
+                    <span class="text-[8px] sm:text-[9px] font-black text-white tracking-tighter font-display">${p.pos}</span>
+                  </div>
+                  ${isCap ? '<span class="absolute -top-1.5 -right-1.5 bg-amber-400 text-slate-950 font-black text-[7.5px] sm:text-[8.5px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-display shadow-md border border-amber-300 animate-pulse">C</span>' : ''}
+                  ${isVice ? '<span class="absolute -top-1.5 -right-1.5 bg-slate-200 text-slate-950 font-black text-[7.5px] sm:text-[8.5px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-display shadow-md border border-slate-300">V</span>' : ''}
+                </div>
+
+                <!-- Name Pill -->
+                <div class="bg-slate-950/90 text-white font-bold text-[9px] sm:text-[10px] px-1 py-0.5 rounded mt-1 shadow-sm w-full truncate text-center border border-white/10 leading-tight">
+                  ${p.name}
+                </div>
+
+                <!-- Points Pill -->
+                <div class="bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-[8.5px] sm:text-[9.5px] font-black font-display px-1.5 py-0.2 rounded mt-0.5 shadow-xs">
+                  ${p.points} pts
+                </div>
+              </div>
+            `;
+          };
+
+          if (gkpLine) gkpLine.innerHTML = gks.map(p => renderPlayerCard(p, gks.length)).join('');
+          if (defLine) defLine.innerHTML = defs.map(p => renderPlayerCard(p, defs.length)).join('');
+          if (midLine) midLine.innerHTML = mids.map(p => renderPlayerCard(p, mids.length)).join('');
+          if (fwdLine) fwdLine.innerHTML = fwds.map(p => renderPlayerCard(p, fwds.length)).join('');
         }
 
         if (squad && squad.bench) {
+          let bPoints = 0;
           let bHtml = '';
           squad.bench.forEach(p => {
+            bPoints += (p.points || 0);
             bHtml += `
               <div class="bg-white border border-slate-200 rounded-xl p-2 sm:p-2.5 flex items-center justify-between shadow-xs">
-                <div class="flex items-center gap-2">
-                  <span class="text-[9px] sm:text-[10px] font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded font-display">${p.pos}</span>
-                  <span class="text-xs font-bold text-slate-900">${p.name}</span>
+                <div class="flex items-center gap-1.5 min-w-0 pr-1">
+                  <span class="text-[8px] sm:text-[9px] font-bold text-slate-700 bg-slate-100 px-1 py-0.5 rounded font-display flex-shrink-0">${p.pos}</span>
+                  <span class="text-[11px] sm:text-xs font-bold text-slate-900 truncate">${p.name}</span>
                 </div>
-                <span class="text-xs font-bold text-slate-500 font-display">${p.points} pts</span>
+                <span class="text-[11px] sm:text-xs font-bold text-slate-500 font-display flex-shrink-0">${p.points} pts</span>
               </div>
             `;
           });
-          bench.innerHTML = bHtml;
+          if (benchContainer) benchContainer.innerHTML = bHtml;
+          if (benchTotal) {
+            const isBBoost = matchdayRes.chip === 'bboost';
+            benchTotal.innerHTML = isBBoost 
+              ? `<span class="text-emerald-600 font-bold">รวม ${bPoints} pts (⚡ Bench Boost นับแต้ม)</span>`
+              : `รวม ${bPoints} pts`;
+          }
         }
 
-        document.getElementById('team-modal').classList.remove('hidden');
+        const modal = document.getElementById('team-modal');
+        if (modal) modal.classList.remove('hidden');
       }
 
       closeTeamModal() {
