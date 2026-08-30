@@ -1697,4 +1697,9 @@ html_content = """<!DOCTYPE html>
 with open('preview.html', 'w', encoding='utf-8') as f:
     f.write(html_content)
 
+with open('index.html', 'w', encoding='utf-8') as f:
+    f.write(html_content)
+
+print("Updated preview.html and index.html with 100% identical standalone engine!")
+
 print("Updated preview.html with dynamic LiveCommentaryEngine (thought fresh every time)!")
