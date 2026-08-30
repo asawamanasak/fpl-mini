@@ -1034,6 +1034,9 @@ html_content = """<!DOCTYPE html>
       /**
        * Dynamic Calculation: Overall Standings with Standard Competition Ranking for Ties
        */
+      /**
+       * Dynamic Calculation: Overall Standings with Standard Competition Ranking (1224) and Medal Distribution
+       */
       getComputedStandings() {
         const teamsMap = {};
         (this.data.teams || []).forEach(t => {
@@ -1066,14 +1069,45 @@ html_content = """<!DOCTYPE html>
         });
 
         const list = Object.values(teamsMap).sort((a, b) => b.total - a.total);
+        const seasonPrizePools = [3500, 2000, 1000, 550];
         
-        // Standard Competition Ranking (1224) for ties
-        let currentRank = 1;
-        for (let i = 0; i < list.length; i++) {
-          if (i > 0 && list[i].total < list[i - 1].total) {
-            currentRank = i + 1;
+        // Standard Competition Ranking (1224) & Shifted Prize Pools
+        const n = list.length;
+        let i = 0;
+        while (i < n) {
+          let j = i;
+          while (j < n && list[j].total === list[i].total) {
+            j++;
           }
-          list[i].rank = currentRank;
+          
+          const groupSize = j - i;
+          const groupRank = i + 1;
+          
+          // Sum up the prize pool across the consumed positions
+          let pool = 0;
+          for (let pos = i; pos < Math.min(j, seasonPrizePools.length); pos++) {
+            pool += seasonPrizePools[pos];
+          }
+          const prizePerTeam = pool > 0 ? (pool / groupSize) : 0;
+
+          // Determine Medal:
+          // Position 0 -> 🥇
+          // Position 1 -> 🥈
+          // Position 2 -> 🥉
+          // Subsequent positions -> no medal
+          let medal = '';
+          if (i === 0) medal = '🥇';
+          else if (i === 1) medal = '🥈';
+          else if (i === 2) medal = '🥉';
+
+          for (let k = i; k < j; k++) {
+            list[k].rank = groupRank;
+            list[k].is_tied = groupSize > 1;
+            list[k].tied_count = groupSize;
+            list[k].projectedSeasonPrize = prizePerTeam;
+            list[k].medal = medal;
+          }
+          i = j;
         }
 
         return list;
@@ -1396,12 +1430,20 @@ html_content = """<!DOCTYPE html>
         }).sort((a, b) => b.net_points - a.net_points);
 
         // Assign standard competition ranks (1224) for tied net points
-        let currentRank = 1;
-        for (let i = 0; i < results.length; i++) {
-          if (i > 0 && results[i].net_points < results[i - 1].net_points) {
-            currentRank = i + 1;
+        const numTeams = results.length;
+        let mIdx = 0;
+        while (mIdx < numTeams) {
+          let nextIdx = mIdx;
+          while (nextIdx < numTeams && results[nextIdx].net_points === results[mIdx].net_points) {
+            nextIdx++;
           }
-          results[i].gw_rank = currentRank;
+          const tiedCount = nextIdx - mIdx;
+          const groupRank = mIdx + 1;
+          for (let k = mIdx; k < nextIdx; k++) {
+            results[k].gw_rank = groupRank;
+            results[k].is_tied = tiedCount > 1;
+          }
+          mIdx = nextIdx;
         }
 
         const highestNet = results[0].net_points;
@@ -1646,13 +1688,9 @@ html_content = """<!DOCTYPE html>
         computedStandings.forEach((team) => {
           const rank = team.rank;
           const isTop3 = rank <= 3;
-          const rankBadge = rank === 1 
-            ? '<span class="text-xs sm:text-sm flex-shrink-0" title="อันดับ 1 เหรียญทอง">🥇</span>'
-            : rank === 2
-              ? '<span class="text-xs sm:text-sm flex-shrink-0" title="อันดับ 2 เหรียญเงิน">🥈</span>'
-              : rank === 3
-                ? '<span class="text-xs sm:text-sm flex-shrink-0" title="อันดับ 3 เหรียญทองแดง">🥉</span>'
-                : '';
+          const rankBadge = team.medal 
+            ? `<span class="text-xs sm:text-sm flex-shrink-0" title="อันดับ ${rank} ${team.medal === '🥇' ? 'เหรียญทอง' : team.medal === '🥈' ? 'เหรียญเงิน' : 'เหรียญทองแดง'}">${team.medal}</span>`
+            : '';
 
           overallHtml += `
             <tr class="hover:bg-slate-50/80 transition-colors border-b border-slate-100 ${isTop3 ? 'bg-slate-50/40' : ''}">
