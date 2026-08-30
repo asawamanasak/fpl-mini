@@ -1,81 +1,132 @@
-/* Modern Sleek OLED Dark Theme & Clean Typography */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700;800&display=swap');
+/* Sukhumvit Set Typography & Modern Clean Light Theme */
+
+/* 1. Sukhumvit Set Font-Face Declarations */
+@font-face {
+  font-family: 'Sukhumvit Set';
+  src: local('Sukhumvit Set'),
+       local('SukhumvitSet-Text'),
+       url('../fonts/SukhumvitSet-Text.ttf') format('truetype'),
+       url('./fonts/SukhumvitSet-Text.ttf') format('truetype'),
+       url('https://raw.githubusercontent.com/bluenex/baansuan_prannok/master/fonts/sukhumvit-set/SukhumvitSet-Text.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sukhumvit Set';
+  src: local('Sukhumvit Set Medium'),
+       local('SukhumvitSet-Medium'),
+       url('../fonts/SukhumvitSet-Medium.ttf') format('truetype'),
+       url('./fonts/SukhumvitSet-Medium.ttf') format('truetype'),
+       url('https://raw.githubusercontent.com/bluenex/baansuan_prannok/master/fonts/sukhumvit-set/SukhumvitSet-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sukhumvit Set';
+  src: local('Sukhumvit Set SemiBold'),
+       local('SukhumvitSet-SemiBold'),
+       url('../fonts/SukhumvitSet-SemiBold.ttf') format('truetype'),
+       url('./fonts/SukhumvitSet-SemiBold.ttf') format('truetype'),
+       url('https://raw.githubusercontent.com/bluenex/baansuan_prannok/master/fonts/sukhumvit-set/SukhumvitSet-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sukhumvit Set';
+  src: local('Sukhumvit Set Bold'),
+       local('SukhumvitSet-Bold'),
+       url('../fonts/SukhumvitSet-Bold.ttf') format('truetype'),
+       url('./fonts/SukhumvitSet-Bold.ttf') format('truetype'),
+       url('https://raw.githubusercontent.com/bluenex/baansuan_prannok/master/fonts/sukhumvit-set/SukhumvitSet-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
-  --bg-black: #050507;
-  --card-black: #0d0d11;
-  --card-black-elevated: #131318;
-  --card-border: #22222b;
-  --card-border-glow: #00ff87;
-  --accent-emerald: #00ff87;
-  --accent-cyan: #00f0ff;
-  --accent-gold: #ffbe1a;
-  --accent-rose: #ff3366;
+  --font-family: 'Sukhumvit Set', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --bg-main: #f8fafc;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --accent-emerald: #059669;
+  --accent-blue: #2563eb;
+  --accent-rose: #e11d48;
+}
+
+* {
+  font-family: var(--font-family) !important;
 }
 
 body {
-  font-family: 'Prompt', 'Plus Jakarta Sans', sans-serif;
-  background-color: #050507;
-  color: #f8fafc;
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(0, 255, 135, 0.05) 0px, transparent 45%),
-    radial-gradient(at 100% 0%, rgba(0, 240, 255, 0.05) 0px, transparent 45%),
-    radial-gradient(at 50% 100%, rgba(255, 190, 26, 0.03) 0px, transparent 60%);
-  background-attachment: fixed;
+  font-family: var(--font-family) !important;
+  background-color: #f8fafc;
+  color: #0f172a;
   letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .font-display {
-  font-family: 'Plus Jakarta Sans', 'Prompt', sans-serif;
+  font-family: var(--font-family) !important;
 }
 
-/* Modern Sleek Black Cards */
+/* Modern Clean White Cards */
 .glass-card {
-  background: rgba(13, 13, 17, 0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
 }
 
 .glass-card-elevated {
-  background: rgba(19, 19, 24, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 14px 40px -12px rgba(0, 0, 0, 0.85);
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
 }
 
 .glass-card-glow {
-  background: linear-gradient(145deg, rgba(16, 16, 22, 0.95), rgba(10, 10, 14, 0.95));
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 255, 135, 0.35);
-  box-shadow: 0 0 35px rgba(0, 255, 135, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: #ffffff;
+  border: 1.5px solid #10b981;
+  box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.12);
 }
 
 .glass-card-gold {
-  background: linear-gradient(145deg, rgba(20, 17, 10, 0.95), rgba(12, 11, 8, 0.95));
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 190, 26, 0.35);
-  box-shadow: 0 0 35px rgba(255, 190, 26, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: #ffffff;
+  border: 1.5px solid #f59e0b;
+  box-shadow: 0 4px 14px 0 rgba(245, 158, 11, 0.12);
 }
 
-/* Custom Scrollbar for GW selector */
+.glass-card-live {
+  background: #ffffff;
+  border: 1.5px solid #0284c7;
+  box-shadow: 0 4px 14px 0 rgba(2, 132, 199, 0.12);
+}
+
+/* Scrollbars for Light Theme */
 .scrollbar-thin::-webkit-scrollbar {
-  height: 4px;
-  width: 4px;
+  height: 5px;
+  width: 5px;
 }
 .scrollbar-thin::-webkit-scrollbar-track {
-  background: #08080b;
+  background: #f1f5f9;
   border-radius: 9999px;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #272732;
+  background: #cbd5e1;
   border-radius: 9999px;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: #00ff87;
+  background: #94a3b8;
 }
 
-/* Hide scrollbar for clean touch swiping */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -94,14 +145,14 @@ body {
   scroll-snap-align: center;
 }
 
-/* Football Pitch Styling - Authentic Formation Layout */
+/* Football Pitch Styling */
 .fpl-pitch {
-  background: radial-gradient(circle at center, #184e20 0%, #103816 70%, #0a240e 100%);
+  background: radial-gradient(circle at center, #1e5a29 0%, #15421c 70%, #0d2c13 100%);
   position: relative;
   border-radius: 1.25rem;
-  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
   overflow: hidden;
-  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.7);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -123,7 +174,7 @@ body {
   left: 0;
   right: 0;
   height: 2px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.25);
   pointer-events: none;
 }
 
@@ -136,7 +187,7 @@ body {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.25);
   pointer-events: none;
 }
 
@@ -163,18 +214,11 @@ body {
   }
 }
 
-/* Mobile Touch Optimization & Safe Area */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-  footer {
-    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
-  }
-}
-
 /* Chip Badges */
 .chip-badge {
   font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   padding: 0.15rem 0.45rem;
   border-radius: 0.35rem;
   display: inline-flex;
@@ -183,30 +227,30 @@ body {
 }
 
 .badge-3xc {
-  background: #7928ca;
-  color: #fff;
-  border: 1px solid #ff007a;
+  background: #fdf2f8;
+  color: #be185d;
+  border: 1px solid #fbcfe8;
 }
 .badge-bboost {
-  background: #0070f3;
-  color: #fff;
-  border: 1px solid #00dfd8;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
 }
 .badge-freehit {
-  background: #e65100;
-  color: #fff;
-  border: 1px solid #ff9100;
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
 }
 .badge-wildcard {
-  background: #2e7d32;
-  color: #fff;
-  border: 1px solid #76ff03;
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
 }
 
 /* Modal Backdrop */
 .modal-backdrop {
-  background: rgba(0, 0, 0, 0.88);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
