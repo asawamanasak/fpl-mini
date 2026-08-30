@@ -2058,15 +2058,9 @@ html_content = """<!DOCTYPE html>
             .map(t => `${t.team_name} (-${t.hits})`)
             .join(', ');
 
-          const chipDict = {
-            'bboost': 'bboost',
-            '3xc': '3xc',
-            'wildcard': 'wildcard',
-            'freehit': 'freehit'
-          };
           const chipsUsed = sorted
             .filter(t => t.chip)
-            .map(t => `${t.team_name} (${chipDict[t.chip] || t.chip})`)
+            .map(t => `${t.team_name} (${t.chip})`)
             .join(', ');
 
           const statusStr = isFinished ? 'จบการแข่งขัน' : 'กำลังแข่งขัน';
@@ -2115,93 +2109,93 @@ html_content = """<!DOCTYPE html>
 
           text += `\nดูตารางคะแนนและเงินรางวัลเต็มๆ ได้ที่:\nhttps://asawamanasak.github.io/fpl-mini/`;
 
-          // Execute Copy with universal fallback
-          this.executeCopyText(text);
+          // Always display modal and perform copy
+          this.openTextSummaryModal(text);
         } catch (err) {
           console.error('Error generating summary:', err);
           alert('เกิดข้อผิดพลาดในการสร้างสรุปผล กรุณาลองใหม่อีกครั้ง');
         }
       }
 
-      executeCopyText(text) {
-        // Method 1: navigator.clipboard
-        if (navigator.clipboard && window.isSecureContext) {
-          navigator.clipboard.writeText(text).then(() => {
-            this.showCopyToast();
-          }).catch(() => {
-            this.showCopyModal(text);
-          });
-        } else {
-          // Method 2: execCommand fallback
-          try {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-999999px';
-            textArea.style.top = '-999999px';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            const successful = document.execCommand('copy');
-            document.body.removeChild(textArea);
-            if (successful) {
-              this.showCopyToast();
-              return;
-            }
-          } catch (e) {}
-          this.showCopyModal(text);
-        }
-      }
-
-      showCopyToast() {
-        let toast = document.getElementById('copy-toast-banner');
-        if (!toast) {
-          toast = document.createElement('div');
-          toast.id = 'copy-toast-banner';
-          toast.className = 'fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700 text-xs sm:text-sm font-semibold transition-all transform duration-300';
-          toast.innerHTML = `
-            <svg class="w-5 h-5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-            <span>คัดลอกสรุปผลลงคลิปบอร์ดแล้ว! พร้อมส่งลง LINE ได้ทันที</span>
-          `;
-          document.body.appendChild(toast);
-        }
-        toast.style.opacity = '1';
-        toast.style.transform = 'translateY(0)';
-        setTimeout(() => {
-          toast.style.opacity = '0';
-          toast.style.transform = 'translateY(10px)';
-        }, 3000);
-      }
-
-      showCopyModal(text) {
-        let modal = document.getElementById('text-summary-preview-modal');
+      openTextSummaryModal(text) {
+        let modal = document.getElementById('text-summary-modal');
         if (!modal) {
           modal = document.createElement('div');
-          modal.id = 'text-summary-preview-modal';
-          modal.className = 'fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4';
+          modal.id = 'text-summary-modal';
+          modal.className = 'fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4';
           modal.innerHTML = `
-            <div class="bg-white rounded-3xl p-5 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200">
-              <div class="flex items-center justify-between mb-3">
-                <h3 class="text-sm sm:text-base font-bold text-slate-900">Text Summary (สำหรับส่ง LINE)</h3>
-                <button onclick="document.getElementById('text-summary-preview-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+            <div class="bg-white rounded-3xl p-5 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200 animate-in fade-in zoom-in duration-150">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900">Text Summary สำหรับส่ง LINE</h3>
+                </div>
+                <button onclick="document.getElementById('text-summary-modal').classList.add('hidden')" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 font-bold transition-colors">✕</button>
               </div>
-              <textarea id="summary-textarea-box" rows="12" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 font-mono focus:outline-none" readonly></textarea>
-              <div class="mt-4 flex gap-2 justify-end">
-                <button onclick="document.getElementById('text-summary-preview-modal').classList.add('hidden')" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">ปิด</button>
-                <button onclick="
-                  const t = document.getElementById('summary-textarea-box');
-                  t.select();
-                  document.execCommand('copy');
-                  alert('คัดลอกสำเร็จ!');
-                  document.getElementById('text-summary-preview-modal').classList.add('hidden');
-                " class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 text-white hover:bg-slate-800">คัดลอกข้อความ</button>
+
+              <div class="mt-3.5">
+                <p class="text-xs text-slate-500 mb-2">ข้อความสรุปผลพร้อมนำไปแชร์ลงกลุ่ม LINE ได้ทันที:</p>
+                <textarea id="text-summary-content" rows="12" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs text-slate-800 font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 select-all shadow-inner" readonly></textarea>
+              </div>
+
+              <div class="mt-4 flex items-center justify-between pt-2 border-t border-slate-100">
+                <span id="copy-status-hint" class="text-xs font-semibold text-emerald-600 flex items-center gap-1.5 opacity-0 transition-opacity">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  คัดลอกลงคลิปบอร์ดแล้ว!
+                </span>
+                <div class="flex items-center gap-2">
+                  <button onclick="document.getElementById('text-summary-modal').classList.add('hidden')" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors">
+                    ปิด
+                  </button>
+                  <button id="btn-modal-copy" onclick="app.copyFromModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white shadow-md active:scale-95 transition-all">
+                    <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                    คัดลอกข้อความ
+                  </button>
+                </div>
               </div>
             </div>
           `;
           document.body.appendChild(modal);
         }
-        document.getElementById('summary-textarea-box').value = text;
+
+        const textarea = document.getElementById('text-summary-content');
+        if (textarea) {
+          textarea.value = text;
+        }
         modal.classList.remove('hidden');
+
+        // Automatically perform copy
+        this.copyFromModal();
+      }
+
+      copyFromModal() {
+        const textarea = document.getElementById('text-summary-content');
+        if (!textarea) return;
+
+        textarea.focus();
+        textarea.select();
+        textarea.setSelectionRange(0, 99999);
+
+        let copied = false;
+        try {
+          copied = document.execCommand('copy');
+        } catch (e) {
+          copied = false;
+        }
+
+        if (!copied && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(textarea.value).then(() => {
+            copied = true;
+          }).catch(() => {});
+        }
+
+        const hint = document.getElementById('copy-status-hint');
+        if (hint) {
+          hint.style.opacity = '1';
+          setTimeout(() => {
+            hint.style.opacity = '0';
+          }, 3000);
+        }
       }
 
       copyPhaseShareText(phaseNum) {
