@@ -851,6 +851,156 @@ html_content = """<!DOCTYPE html>
     /**
      * Main Application Controller (Fully Dynamic & Connected to Real FPL Data with Ties Handling & THB Currency)
      */
+    
+    /**
+     * Hybrid Model: Background Live Fetcher from Official FPL API
+     */
+    class ClientLiveSync {
+      static async fetchWithProxy(targetUrl) {
+        const proxies = [
+          (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+          (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+          (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`
+        ];
+
+        for (const proxy of proxies) {
+          try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 6000);
+            const res = await fetch(proxy(targetUrl), { signal: controller.signal });
+            clearTimeout(timeoutId);
+            if (res.ok) {
+              const data = await res.json();
+              return data;
+            }
+          } catch (e) {
+            // try next proxy
+          }
+        }
+        return null;
+      }
+
+      static async checkAndSyncLive(app) {
+        try {
+          const cacheKey = 'fpl_live_sync_40700';
+          const cached = localStorage.getItem(cacheKey);
+          if (cached) {
+            const parsed = JSON.parse(cached);
+            if (Date.now() - parsed.timestamp < 2 * 60 * 1000) { // 2 mins cache
+              if (parsed.data) {
+                app.data = parsed.data;
+                app.renderGameweekView();
+                app.renderPrizesView();
+                app.renderHallOfFameView();
+                ClientLiveSync.updateHeaderBadge(true);
+                return;
+              }
+            }
+          }
+
+          // Fetch fresh league standings
+          const leagueData = await ClientLiveSync.fetchWithProxy('https://fantasy.premierleague.com/api/leagues-classic/40700/standings/');
+          if (!leagueData || !leagueData.standings || !leagueData.standings.results) return;
+
+          // Fetch bootstrap-static for current event
+          const bootData = await ClientLiveSync.fetchWithProxy('https://fantasy.premierleague.com/api/bootstrap-static/');
+          if (!bootData || !bootData.events) return;
+
+          const currentEvent = bootData.events.find(e => e.is_current) || bootData.events[0];
+          const currentGW = currentEvent.id;
+
+          // Fetch event live points
+          const eventLive = await ClientLiveSync.fetchWithProxy(`https://fantasy.premierleague.com/api/event/${currentGW}/live/`);
+          if (!eventLive || !eventLive.elements) return;
+
+          const livePointsMap = {};
+          eventLive.elements.forEach(el => {
+            livePointsMap[el.id] = el.stats ? el.stats.total_points : 0;
+          });
+
+          const elementsInfo = {};
+          (bootData.elements || []).forEach(p => {
+            elementsInfo[p.id] = p;
+          });
+
+          // Fetch picks for each team in current gameweek
+          const updatedResults = [];
+          for (const t of leagueData.standings.results) {
+            const eid = t.entry;
+            const picksData = await ClientLiveSync.fetchWithProxy(`https://fantasy.premierleague.com/api/entry/${eid}/event/${currentGW}/picks/`);
+            if (picksData && picksData.picks) {
+              const hist = picksData.entry_history || {};
+              const hits = hist.event_transfers_cost || 0;
+              let startingPts = 0;
+              let benchPts = 0;
+              let captainName = '-';
+
+              picksData.picks.forEach(p => {
+                const pid = p.element;
+                const mult = p.multiplier || 1;
+                const pInfo = elementsInfo[pid] || {};
+                const pPts = livePointsMap[pid] || 0;
+
+                if (p.is_captain) {
+                  captainName = pInfo.web_name || 'Captain';
+                }
+
+                if (p.position <= 11) {
+                  startingPts += (pPts * mult);
+                } else {
+                  benchPts += pPts;
+                }
+              });
+
+              updatedResults.push({
+                entry_id: eid,
+                team_name: t.entry_name,
+                player_name: t.player_name,
+                points: startingPts,
+                hits: hits,
+                net_points: startingPts - hits,
+                captain: captainName,
+                chip: picksData.active_chip || null,
+                bench_points: benchPts
+              });
+            }
+          }
+
+          if (updatedResults.length > 0) {
+            app.data.gameweeks[String(currentGW)] = {
+              gw: currentGW,
+              is_finished: currentEvent.finished,
+              results: updatedResults
+            };
+
+            // Save to localStorage
+            localStorage.setItem(cacheKey, JSON.stringify({
+              timestamp: Date.now(),
+              data: app.data
+            }));
+
+            // Re-render
+            app.renderGameweekView();
+            app.renderPrizesView();
+            app.renderHallOfFameView();
+            ClientLiveSync.updateHeaderBadge(true);
+          }
+        } catch (e) {
+          console.log('[Live Sync] Using embedded baseline snapshot.');
+        }
+      }
+
+      static updateHeaderBadge(isLiveSynced) {
+        const badge = document.getElementById('api-status-text');
+        if (badge) {
+          badge.innerHTML = `
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-600 mr-2 animate-pulse"></span>
+            ${isLiveSynced ? 'อัปเดตสดจาก FPL API (Live Sync)' : 'Gameweek 2 กำลังแข่งขัน (Live)'}
+          `;
+        }
+      }
+    }
+
     class StandaloneApp {
       constructor() {
         this.data = MOCK_DATA;
@@ -869,6 +1019,7 @@ html_content = """<!DOCTYPE html>
         this.renderPrizesView();
         this.renderHallOfFameView();
         this.renderCupView();
+        setTimeout(() => ClientLiveSync.checkAndSyncLive(this), 300);
       }
 
       initKeyboardShortcuts() {
@@ -1496,11 +1647,11 @@ html_content = """<!DOCTYPE html>
           const rank = team.rank;
           const isTop3 = rank <= 3;
           const rankBadge = rank === 1 
-            ? '<span class="text-[8px] sm:text-[10px] bg-slate-900 text-white px-1 sm:px-2 py-0.5 rounded font-bold font-display flex-shrink-0">TOP 1</span>'
+            ? '<span class="text-xs sm:text-sm flex-shrink-0" title="อันดับ 1 เหรียญทอง">🥇</span>'
             : rank === 2
-              ? '<span class="text-[8px] sm:text-[10px] bg-slate-200 text-slate-800 px-1 sm:px-2 py-0.5 rounded font-bold font-display flex-shrink-0">TOP 2</span>'
+              ? '<span class="text-xs sm:text-sm flex-shrink-0" title="อันดับ 2 เหรียญเงิน">🥈</span>'
               : rank === 3
-                ? '<span class="text-[8px] sm:text-[10px] bg-slate-100 text-slate-700 border border-slate-200 px-1 sm:px-2 py-0.5 rounded font-bold font-display flex-shrink-0">TOP 3</span>'
+                ? '<span class="text-xs sm:text-sm flex-shrink-0" title="อันดับ 3 เหรียญทองแดง">🥉</span>'
                 : '';
 
           overallHtml += `
