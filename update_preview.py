@@ -2048,49 +2048,169 @@ html_content = """<!DOCTYPE html>
         const isJoint = winners.length > 1;
         const currentLiveNote = this.getNoteForCurrentGW();
 
-        const hitTakers = sorted.filter(t => t.hits > 0).map(t => `${t.team_name} (-${t.hits})`).join(', ');
-        const chipsUsed = sorted.filter(t => t.chip).map(t => `${t.team_name} (${t.chip})`).join(', ');
+        const chipDict = {
+          'bboost': 'Bench Boost',
+          '3xc': 'Triple Captain',
+          'wildcard': 'Wildcard',
+          'freehit': 'Free Hit'
+        };
 
-        let text = `เซียนอยู่รู หมูอยู่ตึก (League 40700)\n`;
-        text += `สรุปผล Gameweek ${this.selectedGW} (${isFinished ? 'จบการแข่งขัน' : 'กำลังแข่งขัน'})\n\n`;
+        const hitTakers = sorted.filter(t => t.hits > 0).map(t => `${t.team_name} (-${t.hits})`).join(', ');
+        const chipsUsed = sorted.filter(t => t.chip).map(t => `${t.team_name} (${chipDict[t.chip] || t.chip})`).join(', ');
+
+        const statusStr = isFinished ? 'จบการแข่งขัน' : 'กำลังแข่งขัน';
+        let text = `เซียนอยู่รู หมูอยู่ตึก (League 40700)
+`;
+        text += `สรุปผล Gameweek ${this.selectedGW} (${statusStr})
+
+`;
 
         if (isFinished) {
           if (isJoint) {
-            text += `แชมป์ร่วมประจำสัปดาห์ (${winners.length} ทีม): ${winners.map(w => w.team_name + ' (' + w.player_name + ')').join(' & ')}\n`;
-            text += `แต้มสุทธิ: ${highestNet} pts\n`;
-            text += `เงินรางวัล: หารแบ่งทีมละ ${(350 / winners.length).toLocaleString()} THB\n\n`;
+            text += `แชมป์ร่วมประจำสัปดาห์ (${winners.length} ทีม):
+`;
+            winners.forEach(w => {
+              const capt = (w.captain && w.captain !== '-') ? ` | กัปตัน: ${w.captain.replace(/\s*\(C\)/gi, '').trim()}` : '';
+              text += `• ${w.team_name} (${w.player_name}) - ${w.net_points} pts (ดิบ ${w.points}${w.hits > 0 ? ' | Hits -' + w.hits : ''}${capt})
+`;
+            });
+            text += `เงินรางวัล: หารแบ่งทีมละ ${(350 / winners.length).toLocaleString()} THB
+
+`;
           } else {
-            text += `แชมป์ประจำสัปดาห์: ${winners[0].team_name} (${winners[0].player_name})\n`;
-            text += `แต้มสุทธิ: ${winners[0].net_points} pts (แต้มดิบ ${winners[0].points} | Hits -${winners[0].hits})\n`;
-            text += `เงินรางวัล: 350 THB\n\n`;
+            const w = winners[0];
+            const capt = (w.captain && w.captain !== '-') ? ` | กัปตัน: ${w.captain.replace(/\s*\(C\)/gi, '').trim()}` : '';
+            const chipStr = w.chip ? ` | ใช้ชิป: ${chipDict[w.chip] || w.chip}` : '';
+            text += `แชมป์ประจำสัปดาห์: ${w.team_name} (${w.player_name})
+`;
+            text += `แต้มสุทธิ: ${w.net_points} pts (แต้มดิบ ${w.points} | Hits -${w.hits}${capt}${chipStr})
+`;
+            text += `เงินรางวัล: 350 THB
+
+`;
           }
         } else {
           if (isJoint) {
-            text += `ผู้นำคะแนนสดร่วม (${winners.length} ทีม): ${winners.map(w => w.team_name + ' (' + w.player_name + ')').join(' & ')}\n`;
-            text += `แต้มสุทธิชั่วคราว: ${highestNet} pts\n\n`;
+            text += `ผู้นำคะแนนสดร่วม (${winners.length} ทีม):
+`;
+            winners.forEach(w => {
+              const capt = (w.captain && w.captain !== '-') ? ` | กัปตัน: ${w.captain.replace(/\s*\(C\)/gi, '').trim()}` : '';
+              text += `• ${w.team_name} (${w.player_name}) - ${w.net_points} pts (ดิบ ${w.points}${w.hits > 0 ? ' | Hits -' + w.hits : ''}${capt})
+`;
+            });
+            text += `
+`;
           } else {
-            text += `ผู้นำคะแนนสด: ${winners[0].team_name} (${winners[0].player_name})\n`;
-            text += `แต้มสุทธิชั่วคราว: ${winners[0].net_points} pts (แต้มดิบ ${winners[0].points} | Hits -${winners[0].hits})\n\n`;
+            const w = winners[0];
+            const capt = (w.captain && w.captain !== '-') ? ` | กัปตัน: ${w.captain.replace(/\s*\(C\)/gi, '').trim()}` : '';
+            const chipStr = w.chip ? ` | ใช้ชิป: ${chipDict[w.chip] || w.chip}` : '';
+            text += `ผู้นำคะแนนสด: ${w.team_name} (${w.player_name})
+`;
+            text += `แต้มสุทธิชั่วคราว: ${w.net_points} pts (แต้มดิบ ${w.points} | Hits -${w.hits}${capt}${chipStr})
+
+`;
           }
         }
 
-        text += `ไฮไลท์เด็ด:\n"${currentLiveNote}"\n\n`;
+        text += `ไฮไลท์เด็ด:
+"${currentLiveNote}"
 
-        if (hitTakers) text += `ทีมติดลบย้ายตัว: ${hitTakers}\n`;
-        if (chipsUsed) text += `ชิปที่ใช้งาน: ${chipsUsed}\n`;
+`;
 
-        text += `\nสรุปคะแนน 5 อันดับแรก GW ${this.selectedGW}:\n`;
+        if (hitTakers) text += `ทีมติดลบย้ายตัว: ${hitTakers}
+`;
+        if (chipsUsed) text += `ชิปที่ใช้งาน: ${chipsUsed}
+`;
+
+        text += `
+สรุปคะแนน 5 อันดับแรก GW ${this.selectedGW}:
+`;
         sorted.slice(0, 5).forEach((t, i) => {
-          text += `${i + 1}. ${t.team_name} : ${t.net_points} pts (ดิบ ${t.points}${t.hits > 0 ? ' -' + t.hits : ''})\n`;
+          const hitsStr = t.hits > 0 ? ` -${t.hits}` : '';
+          const chipTag = t.chip ? ` [${chipDict[t.chip] || t.chip}]` : '';
+          text += `${i + 1}. ${t.team_name} : ${t.net_points} pts (ดิบ ${t.points}${hitsStr})${chipTag}
+`;
         });
 
-        text += `\nดูตารางคะแนนและเงินรางวัลเต็มๆ ได้ที่:\nhttps://asawamanasak.github.io/fpl-mini/`;
+        // Add Overall Top 3
+        const overallStandings = this.getComputedStandings();
+        if (overallStandings && overallStandings.length >= 3) {
+          text += `
+จ่าฝูงคะแนนรวมสะสม Top 3:
+`;
+          text += `🥇 1. ${overallStandings[0].entry_name} (${overallStandings[0].total} pts)
+`;
+          text += `🥈 2. ${overallStandings[1].entry_name} (${overallStandings[1].total} pts)
+`;
+          text += `🥉 3. ${overallStandings[2].entry_name} (${overallStandings[2].total} pts)
+`;
+        }
 
-        navigator.clipboard.writeText(text).then(() => {
-          alert('คัดลอกสรุปผล Gameweek ลงคลิปบอร์ดแล้ว! พร้อมวางส่งในกลุ่ม LINE ได้ทันที');
-        }).catch(() => {
-          prompt('คัดลอกข้อความสรุปด้านล่างนี้เพื่อส่งใน LINE:', text);
-        });
+        text += `
+ดูตารางคะแนนและเงินรางวัลเต็มๆ ได้ที่:
+https://asawamanasak.github.io/fpl-mini/`;
+
+        // Copy with fallback
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            this.showCopyToast();
+          }).catch(() => {
+            this.showCopyModal(text);
+          });
+        } else {
+          this.showCopyModal(text);
+        }
+      }
+
+      showCopyToast() {
+        let toast = document.getElementById('copy-toast-banner');
+        if (!toast) {
+          toast = document.createElement('div');
+          toast.id = 'copy-toast-banner';
+          toast.className = 'fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700 text-xs sm:text-sm font-semibold transition-all transform duration-300';
+          toast.innerHTML = `
+            <svg class="w-5 h-5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            <span>คัดลอกสรุปผลลงคลิปบอร์ดแล้ว! พร้อมส่งลง LINE ได้ทันที</span>
+          `;
+          document.body.appendChild(toast);
+        }
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(10px)';
+        }, 3500);
+      }
+
+      showCopyModal(text) {
+        let modal = document.getElementById('text-summary-preview-modal');
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = 'text-summary-preview-modal';
+          modal.className = 'fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4';
+          modal.innerHTML = `
+            <div class="bg-white rounded-3xl p-5 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm sm:text-base font-bold text-slate-900">Text Summary (สำหรับส่ง LINE)</h3>
+                <button onclick="document.getElementById('text-summary-preview-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">✕</button>
+              </div>
+              <textarea id="summary-textarea-box" rows="12" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 font-mono focus:outline-none" readonly></textarea>
+              <div class="mt-4 flex gap-2 justify-end">
+                <button onclick="document.getElementById('text-summary-preview-modal').classList.add('hidden')" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">ปิด</button>
+                <button onclick="
+                  const t = document.getElementById('summary-textarea-box');
+                  t.select();
+                  document.execCommand('copy');
+                  alert('คัดลอกสำเร็จ!');
+                  document.getElementById('text-summary-preview-modal').classList.add('hidden');
+                " class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 text-white hover:bg-slate-800">คัดลอกข้อความ</button>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(modal);
+        }
+        document.getElementById('summary-textarea-box').value = text;
+        modal.classList.remove('hidden');
       }
 
       copyPhaseShareText(phaseNum) {
