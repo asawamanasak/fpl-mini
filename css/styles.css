@@ -105,8 +105,15 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 400px;
-  padding: 1.25rem 0.5rem;
+  min-height: 340px;
+  padding: 1rem 0.25rem;
+}
+
+@media (min-width: 640px) {
+  .fpl-pitch {
+    min-height: 400px;
+    padding: 1.25rem 0.5rem;
+  }
 }
 
 .fpl-pitch::before {
@@ -126,11 +133,18 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.15);
   pointer-events: none;
+}
+
+@media (min-width: 640px) {
+  .fpl-pitch::after {
+    width: 70px;
+    height: 70px;
+  }
 }
 
 .fpl-pitch-line {
@@ -140,7 +154,13 @@ body {
   width: 100%;
   position: relative;
   z-index: 10;
-  margin: 0.25rem 0;
+  margin: 0.15rem 0;
+}
+
+@media (min-width: 640px) {
+  .fpl-pitch-line {
+    margin: 0.25rem 0;
+  }
 }
 
 /* Mobile Touch Optimization & Safe Area */

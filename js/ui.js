@@ -96,84 +96,84 @@ class UIRenderer {
     if (isFinished) {
       // Finished: Declare Weekly Champion
       container.innerHTML = `
-        <div class="relative overflow-hidden glass-card-glow rounded-3xl p-4 sm:p-7 border border-[#00ff87]/30">
+        <div class="relative overflow-hidden glass-card-glow rounded-2xl sm:rounded-3xl p-3.5 sm:p-7 border border-[#00ff87]/30">
           <div class="absolute -right-16 -top-16 w-64 h-64 bg-[#00ff87]/10 rounded-full blur-3xl pointer-events-none"></div>
           <div class="absolute -left-16 -bottom-16 w-64 h-64 bg-[#00f0ff]/10 rounded-full blur-3xl pointer-events-none"></div>
 
           <div class="relative z-10">
-            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#00ff87]/15 border border-[#00ff87]/30 flex items-center justify-center text-[#00ff87] font-black text-xs font-display">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3 sm:mb-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#00ff87]/15 border border-[#00ff87]/30 flex items-center justify-center text-[#00ff87] font-black text-xs font-display flex-shrink-0">
                   WIN
                 </div>
-                <div>
-                  <span class="text-[11px] uppercase tracking-widest text-[#00ff87] font-bold font-display">GAMEWEEK ${gwNumber} CHAMPION</span>
-                  <h3 class="text-lg sm:text-2xl font-black text-white tracking-tight">แชมป์ประจำสัปดาห์</h3>
+                <div class="min-w-0">
+                  <span class="text-[10px] sm:text-[11px] uppercase tracking-widest text-[#00ff87] font-bold font-display block leading-none">GAMEWEEK ${gwNumber} CHAMPION</span>
+                  <h3 class="text-base sm:text-2xl font-black text-white tracking-tight mt-0.5 leading-tight truncate">แชมป์ประจำสัปดาห์</h3>
                 </div>
               </div>
 
-              <div class="flex items-center gap-2 bg-[#00ff87]/10 border border-[#00ff87]/30 px-3.5 py-1.5 rounded-xl">
-                <span class="text-[#00ff87] font-bold text-xs sm:text-sm font-display">${isJoint ? 'แชมป์ร่วมประจำสัปดาห์' : 'สรุปผลประจำสัปดาห์'}</span>
+              <div class="self-start sm:self-auto flex items-center gap-1.5 bg-[#00ff87]/10 border border-[#00ff87]/30 px-2.5 sm:px-3.5 py-1 rounded-xl">
+                <span class="text-[#00ff87] font-bold text-[11px] sm:text-xs font-display">${isJoint ? 'แชมป์ร่วมประจำสัปดาห์' : 'สรุปผลประจำสัปดาห์'}</span>
               </div>
             </div>
 
             <!-- Team Details & Stats Box -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center bg-[#08080c] border border-white/[0.08] rounded-2xl p-4 sm:p-5 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 items-center bg-[#08080c] border border-white/[0.08] rounded-xl sm:rounded-2xl p-3 sm:p-5 mb-3 sm:mb-4">
               <div class="md:col-span-2">
                 <div class="flex items-center gap-2 mb-1 flex-wrap">
-                  <h4 class="text-xl sm:text-3xl font-black text-white tracking-tight">
+                  <h4 class="text-lg sm:text-3xl font-black text-white tracking-tight break-words">
                     ${leader.entry_name || leader.team_name} ${isJoint ? '& ' + gwResult.winners[1].entry_name : ''}
                   </h4>
                   ${chipBadge}
                 </div>
-                <p class="text-slate-400 text-xs sm:text-sm flex items-center gap-2 flex-wrap">
-                  <span>ผู้จัดการ: <strong class="text-slate-100 font-semibold">${leader.player_name} ${isJoint ? '& ' + gwResult.winners[1].player_name : ''}</strong></span>
-                  ${leader.captain ? `<span>• กัปตัน: <span class="text-[#00f0ff] font-semibold">${leader.captain}</span></span>` : ''}
-                </p>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs sm:text-sm text-slate-300">
+                  <span>ผู้จัดการ: <strong class="text-white font-semibold">${leader.player_name} ${isJoint ? '& ' + gwResult.winners[1].player_name : ''}</strong></span>
+                  ${leader.captain ? `<span class="text-[#00f0ff] font-medium">• กัปตัน: <strong>${leader.captain}</strong></span>` : ''}
+                </div>
               </div>
 
               <!-- 3-Box Stats Widget (Responsive on Mobile) -->
-              <div class="grid grid-cols-3 gap-2 bg-[#050507] p-2.5 sm:p-3 rounded-xl border border-white/[0.05] text-center">
+              <div class="grid grid-cols-3 gap-1.5 sm:gap-2 bg-[#050507] p-2 sm:p-3 rounded-xl border border-white/[0.05] text-center">
                 <div>
-                  <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-semibold font-display">RAW PTS</span>
+                  <span class="block text-[9px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-semibold font-display">RAW PTS</span>
                   <span class="text-base sm:text-lg font-bold text-slate-200 font-display">${leader.points}</span>
                 </div>
                 <div class="border-x border-white/[0.08]">
-                  <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-rose-400 font-semibold font-display">HITS</span>
+                  <span class="block text-[9px] sm:text-[11px] uppercase tracking-wider text-rose-400 font-semibold font-display">HITS</span>
                   <span class="text-base sm:text-lg font-bold ${leader.hits > 0 ? 'text-rose-400' : 'text-slate-500'} font-display">${leader.hits > 0 ? `-${leader.hits}` : '0'}</span>
                 </div>
                 <div>
-                  <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00ff87] font-extrabold font-display">NET PTS</span>
-                  <span class="text-xl sm:text-2xl font-black text-[#00ff87] font-display">${leader.net_points}</span>
+                  <span class="block text-[9px] sm:text-[11px] uppercase tracking-wider text-[#00ff87] font-extrabold font-display">NET PTS</span>
+                  <span class="text-lg sm:text-2xl font-black text-[#00ff87] font-display">${leader.net_points}</span>
                 </div>
               </div>
             </div>
 
             <!-- Tagline (Dynamic Live - Borbou Style) -->
-            <div class="bg-gradient-to-r from-[#14141b] via-[#0d0d12] to-[#14141b] border border-white/[0.1] rounded-2xl p-3.5 sm:p-4 flex items-center justify-between gap-3">
-              <div class="flex-1">
-                <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-bold block font-display">CHAMPION HIGHLIGHT NOTE</span>
-                <p id="current-gw-note-text" class="text-xs sm:text-sm font-medium text-slate-200 mt-0.5 leading-snug">
-                  "${taglineObj.text}"
-                </p>
+            <div class="bg-gradient-to-r from-[#14141b] via-[#0d0d12] to-[#14141b] border border-white/[0.1] rounded-xl sm:rounded-2xl p-3 sm:p-4">
+              <div class="flex items-center justify-between gap-2 mb-1">
+                <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-bold font-display">CHAMPION HIGHLIGHT NOTE</span>
+                <div class="flex items-center gap-1 flex-shrink-0">
+                  <button 
+                    onclick="app.regenerateTagline(${gwNumber})"
+                    class="p-1.5 sm:p-2 text-slate-400 hover:text-[#00ff87] hover:bg-white/[0.08] rounded-lg transition-all"
+                    title="สุ่มคิดโน้ตใหม่"
+                  >
+                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                  </button>
+                  <button 
+                    id="tagline-edit-btn"
+                    onclick="app.openTaglineModal(${gwNumber}, '${taglineObj.text.replace(/'/g, "\\'")}')"
+                    class="p-1.5 sm:p-2 text-slate-400 hover:text-white hover:bg-white/[0.08] rounded-lg transition-all"
+                    title="แก้ไขโน้ตด้วยตนเอง"
+                  >
+                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                  </button>
+                </div>
               </div>
-              <div class="flex items-center gap-1 flex-shrink-0">
-                <button 
-                  onclick="app.regenerateTagline(${gwNumber})"
-                  class="p-2 text-slate-400 hover:text-[#00ff87] hover:bg-white/[0.08] rounded-xl transition-all"
-                  title="สุ่มคิดโน้ตใหม่"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                </button>
-                <button 
-                  id="tagline-edit-btn"
-                  onclick="app.openTaglineModal(${gwNumber}, '${taglineObj.text.replace(/'/g, "\\'")}')"
-                  class="p-2 text-slate-400 hover:text-white hover:bg-white/[0.08] rounded-xl transition-all"
-                  title="แก้ไขโน้ตด้วยตนเอง"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                </button>
-              </div>
+              <p id="current-gw-note-text" class="text-xs sm:text-sm font-medium text-slate-200 leading-relaxed">
+                "${taglineObj.text}"
+              </p>
             </div>
           </div>
         </div>
@@ -181,85 +181,85 @@ class UIRenderer {
     } else {
       // Live / In Progress: Do NOT award prize yet!
       container.innerHTML = `
-        <div class="relative overflow-hidden glass-card-live rounded-3xl p-4 sm:p-7 border border-[#00f0ff]/30">
+        <div class="relative overflow-hidden glass-card-live rounded-2xl sm:rounded-3xl p-3.5 sm:p-7 border border-[#00f0ff]/30">
           <div class="absolute -right-16 -top-16 w-64 h-64 bg-[#00f0ff]/10 rounded-full blur-3xl pointer-events-none"></div>
 
           <div class="relative z-10">
-            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#00f0ff]/15 border border-[#00f0ff]/30 flex items-center justify-center text-[#00f0ff] font-black text-xs font-display">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3 sm:mb-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#00f0ff]/15 border border-[#00f0ff]/30 flex items-center justify-center text-[#00f0ff] font-black text-xs font-display flex-shrink-0">
                   LIVE
                 </div>
-                <div>
-                  <span class="text-[11px] uppercase tracking-widest text-[#00f0ff] font-bold font-display">GAMEWEEK ${gwNumber} (IN PROGRESS)</span>
-                  <h3 class="text-lg sm:text-2xl font-black text-white tracking-tight">ผู้นำคะแนนประจำสัปดาห์ชั่วคราว</h3>
+                <div class="min-w-0">
+                  <span class="text-[10px] sm:text-[11px] uppercase tracking-widest text-[#00f0ff] font-bold font-display block leading-none">GAMEWEEK ${gwNumber} (IN PROGRESS)</span>
+                  <h3 class="text-base sm:text-2xl font-black text-white tracking-tight mt-0.5 leading-tight truncate">ผู้นำคะแนนประจำสัปดาห์ชั่วคราว</h3>
                 </div>
               </div>
 
-              <div class="flex items-center gap-2 bg-[#00f0ff]/10 border border-[#00f0ff]/30 px-3.5 py-1.5 rounded-xl">
+              <div class="self-start sm:self-auto flex items-center gap-1.5 bg-[#00f0ff]/10 border border-[#00f0ff]/30 px-2.5 sm:px-3.5 py-1 rounded-xl">
                 <span class="w-2 h-2 rounded-full bg-[#00f0ff] animate-ping"></span>
-                <span class="text-[#00f0ff] font-bold text-xs sm:text-sm font-display">กำลังแข่งขัน (ยังไม่จบสัปดาห์)</span>
+                <span class="text-[#00f0ff] font-bold text-[11px] sm:text-xs font-display">กำลังแข่งขัน (ยังไม่จบสัปดาห์)</span>
               </div>
             </div>
 
             <!-- Team Details & Stats Box -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center bg-[#08080c] border border-white/[0.08] rounded-2xl p-4 sm:p-5 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 items-center bg-[#08080c] border border-white/[0.08] rounded-xl sm:rounded-2xl p-3 sm:p-5 mb-3 sm:mb-4">
               <div class="md:col-span-2">
                 <div class="flex items-center gap-2 mb-1 flex-wrap">
-                  <h4 class="text-xl sm:text-3xl font-black text-white tracking-tight">
+                  <h4 class="text-lg sm:text-3xl font-black text-white tracking-tight break-words">
                     ${leader.entry_name || leader.team_name} ${isJoint ? '& ' + gwResult.winners[1].entry_name : ''}
                   </h4>
                   ${chipBadge}
                 </div>
-                <p class="text-slate-400 text-xs sm:text-sm flex items-center gap-2 flex-wrap">
-                  <span>ผู้นำคะแนน: <strong class="text-slate-100 font-semibold">${leader.player_name} ${isJoint ? '& ' + gwResult.winners[1].player_name : ''}</strong></span>
-                  ${leader.captain ? `<span>• กัปตัน: <span class="text-[#00f0ff] font-semibold">${leader.captain}</span></span>` : ''}
-                </p>
-                <p class="text-[11px] text-slate-400 mt-1">หมายเหตุ: ผลคะแนนจะสรุปอย่างเป็นทางการเมื่อแข่งครบทุกคู่ในสัปดาห์</p>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs sm:text-sm text-slate-300">
+                  <span>ผู้นำคะแนน: <strong class="text-white font-semibold">${leader.player_name} ${isJoint ? '& ' + gwResult.winners[1].player_name : ''}</strong></span>
+                  ${leader.captain ? `<span class="text-[#00f0ff] font-medium">• กัปตัน: <strong>${leader.captain}</strong></span>` : ''}
+                </div>
+                <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1">หมายเหตุ: ผลคะแนนจะสรุปอย่างเป็นทางการเมื่อแข่งครบทุกคู่ในสัปดาห์</p>
               </div>
 
               <!-- 3-Box Stats Widget (Responsive on Mobile) -->
-              <div class="grid grid-cols-3 gap-2 bg-[#050507] p-2.5 sm:p-3 rounded-xl border border-white/[0.05] text-center">
+              <div class="grid grid-cols-3 gap-1.5 sm:gap-2 bg-[#050507] p-2 sm:p-3 rounded-xl border border-white/[0.05] text-center">
                 <div>
-                  <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-semibold font-display">RAW PTS</span>
+                  <span class="block text-[9px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-semibold font-display">RAW PTS</span>
                   <span class="text-base sm:text-lg font-bold text-slate-200 font-display">${leader.points}</span>
                 </div>
                 <div class="border-x border-white/[0.08]">
-                  <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-rose-400 font-semibold font-display">HITS</span>
+                  <span class="block text-[9px] sm:text-[11px] uppercase tracking-wider text-rose-400 font-semibold font-display">HITS</span>
                   <span class="text-base sm:text-lg font-bold ${leader.hits > 0 ? 'text-rose-400' : 'text-slate-500'} font-display">${leader.hits > 0 ? `-${leader.hits}` : '0'}</span>
                 </div>
                 <div>
-                  <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-extrabold font-display">LIVE NET</span>
-                  <span class="text-xl sm:text-2xl font-black text-[#00f0ff] font-display">${leader.net_points}</span>
+                  <span class="block text-[9px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-extrabold font-display">LIVE NET</span>
+                  <span class="text-lg sm:text-2xl font-black text-[#00f0ff] font-display">${leader.net_points}</span>
                 </div>
               </div>
             </div>
 
             <!-- Tagline (Dynamic Live - Borbou Style) -->
-            <div class="bg-gradient-to-r from-[#14141b] via-[#0d0d12] to-[#14141b] border border-white/[0.1] rounded-2xl p-3.5 sm:p-4 flex items-center justify-between gap-3">
-              <div class="flex-1">
-                <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-bold block font-display">MATCHDAY LIVE NOTE</span>
-                <p id="current-gw-note-text" class="text-xs sm:text-sm font-medium text-slate-200 mt-0.5 leading-snug">
-                  "${taglineObj.text}"
-                </p>
+            <div class="bg-gradient-to-r from-[#14141b] via-[#0d0d12] to-[#14141b] border border-white/[0.1] rounded-xl sm:rounded-2xl p-3 sm:p-4">
+              <div class="flex items-center justify-between gap-2 mb-1">
+                <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-bold font-display">MATCHDAY LIVE NOTE</span>
+                <div class="flex items-center gap-1 flex-shrink-0">
+                  <button 
+                    onclick="app.regenerateTagline(${gwNumber})"
+                    class="p-1.5 sm:p-2 text-slate-400 hover:text-[#00ff87] hover:bg-white/[0.08] rounded-lg transition-all"
+                    title="สุ่มคิดโน้ตใหม่"
+                  >
+                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                  </button>
+                  <button 
+                    id="tagline-edit-btn"
+                    onclick="app.openTaglineModal(${gwNumber}, '${taglineObj.text.replace(/'/g, "\\'")}')"
+                    class="p-1.5 sm:p-2 text-slate-400 hover:text-white hover:bg-white/[0.08] rounded-lg transition-all"
+                    title="แก้ไขโน้ตด้วยตนเอง"
+                  >
+                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                  </button>
+                </div>
               </div>
-              <div class="flex items-center gap-1 flex-shrink-0">
-                <button 
-                  onclick="app.regenerateTagline(${gwNumber})"
-                  class="p-2 text-slate-400 hover:text-[#00ff87] hover:bg-white/[0.08] rounded-xl transition-all"
-                  title="สุ่มคิดโน้ตใหม่"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                </button>
-                <button 
-                  id="tagline-edit-btn"
-                  onclick="app.openTaglineModal(${gwNumber}, '${taglineObj.text.replace(/'/g, "\\'")}')"
-                  class="p-2 text-slate-400 hover:text-white hover:bg-white/[0.08] rounded-xl transition-all"
-                  title="แก้ไขโน้ตด้วยตนเอง"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                </button>
-              </div>
+              <p id="current-gw-note-text" class="text-xs sm:text-sm font-medium text-slate-200 leading-relaxed">
+                "${taglineObj.text}"
+              </p>
             </div>
           </div>
         </div>
@@ -283,38 +283,38 @@ class UIRenderer {
     gwResult.standings.forEach((team, idx) => {
       const isTop = idx === 0;
       const rankBadge = isTop 
-        ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#ffbe1a] text-slate-950 font-black text-[11px] sm:text-xs flex items-center justify-center font-display shadow-md shadow-[#ffbe1a]/30">1</span>'
+        ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#ffbe1a] text-slate-950 font-black text-[10px] sm:text-xs flex items-center justify-center font-display shadow-md shadow-[#ffbe1a]/30">1</span>'
         : idx === 1
-          ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-300 text-slate-950 font-black text-[11px] sm:text-xs flex items-center justify-center font-display">2</span>'
+          ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-300 text-slate-950 font-black text-[10px] sm:text-xs flex items-center justify-center font-display">2</span>'
           : idx === 2
-            ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-700 text-white font-black text-[11px] sm:text-xs flex items-center justify-center font-display">3</span>'
-            : `<span class="text-slate-400 text-xs font-bold font-display pl-1.5 sm:pl-2">${idx + 1}</span>`;
+            ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-700 text-white font-black text-[10px] sm:text-xs flex items-center justify-center font-display">3</span>'
+            : `<span class="text-slate-400 text-xs font-bold font-display">${idx + 1}</span>`;
 
       const chipBadge = team.chip ? `<span class="chip-badge badge-${team.chip.toLowerCase()} font-display">${team.chip}</span>` : '';
       const hitsBadge = team.hits > 0 ? `<span class="text-rose-400 font-bold font-display text-xs sm:text-sm">-${team.hits}</span>` : '<span class="text-slate-600 font-display text-xs sm:text-sm">-</span>';
 
       html += `
         <tr class="hover:bg-white/[0.03] transition-colors border-b border-white/[0.02]">
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center">${rankBadge}</td>
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5">
+          <td class="py-2.5 px-1.5 sm:px-3.5 text-center">${rankBadge}</td>
+          <td class="py-2.5 px-2 sm:px-3.5">
             <button onclick="app.openTeamModal(${team.entry_id}, '${team.entry_name || team.team_name}')" class="text-left font-bold text-xs sm:text-sm text-slate-100 hover:text-[#00f0ff] transition-colors flex items-center gap-1.5 flex-wrap">
-              <span>${team.entry_name || team.team_name}</span>
+              <span class="break-words">${team.entry_name || team.team_name}</span>
               ${chipBadge}
             </button>
-            <div class="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
-              <span>${team.player_name}</span>
+            <div class="flex items-center gap-1.5 text-[11px] text-slate-400 mt-0.5">
+              <span class="truncate max-w-[110px] sm:max-w-none">${team.player_name}</span>
               <span class="sm:hidden text-[#00f0ff] font-medium">• (C) ${team.captain || '-'}</span>
             </div>
           </td>
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center hidden sm:table-cell">
+          <td class="py-2.5 px-2 sm:px-3.5 text-center hidden sm:table-cell">
             <span class="text-xs text-[#00f0ff] font-medium">${team.captain || '-'}</span>
           </td>
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-medium text-slate-300 text-xs sm:text-sm">${team.points}</td>
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center">${hitsBadge}</td>
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center">
-            <span class="text-sm sm:text-base font-black font-display text-slate-100">${team.net_points}</span>
+          <td class="py-2.5 px-1 sm:px-3.5 text-center font-display font-medium text-slate-300 text-xs sm:text-sm">${team.points}</td>
+          <td class="py-2.5 px-1 sm:px-3.5 text-center">${hitsBadge}</td>
+          <td class="py-2.5 px-1.5 sm:px-3.5 text-center">
+            <span class="text-xs sm:text-base font-black font-display text-slate-100">${team.net_points}</span>
           </td>
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center hidden sm:table-cell">
+          <td class="py-2.5 px-2 sm:px-3.5 text-center hidden sm:table-cell">
             <span class="text-xs text-slate-400 font-display">${team.bench_points !== undefined ? team.bench_points : '-'}</span>
           </td>
         </tr>
@@ -341,27 +341,27 @@ class UIRenderer {
       const rank = team.rank || (idx + 1);
       const isTop3 = rank <= 3;
       const rankBadge = rank === 1 
-        ? '<span class="text-[9px] sm:text-[10px] bg-[#ffbe1a]/15 text-[#ffbe1a] border border-[#ffbe1a]/30 px-1.5 sm:px-2 py-0.5 rounded-md font-bold font-display">TOP 1</span>'
+        ? '<span class="text-[8px] sm:text-[10px] bg-[#ffbe1a]/15 text-[#ffbe1a] border border-[#ffbe1a]/30 px-1 sm:px-2 py-0.5 rounded font-bold font-display flex-shrink-0">TOP 1</span>'
         : rank === 2
-          ? '<span class="text-[9px] sm:text-[10px] bg-slate-300/15 text-slate-200 border border-slate-300/30 px-1.5 sm:px-2 py-0.5 rounded-md font-bold font-display">TOP 2</span>'
+          ? '<span class="text-[8px] sm:text-[10px] bg-slate-300/15 text-slate-200 border border-slate-300/30 px-1 sm:px-2 py-0.5 rounded font-bold font-display flex-shrink-0">TOP 2</span>'
           : rank === 3
-            ? '<span class="text-[9px] sm:text-[10px] bg-amber-700/20 text-amber-300 border border-amber-600/30 px-1.5 sm:px-2 py-0.5 rounded-md font-bold font-display">TOP 3</span>'
+            ? '<span class="text-[8px] sm:text-[10px] bg-amber-700/20 text-amber-300 border border-amber-600/30 px-1 sm:px-2 py-0.5 rounded font-bold font-display flex-shrink-0">TOP 3</span>'
             : '';
 
       html += `
-        <tr class="hover:bg-white/[0.03] transition-colors ${isTop3 ? 'bg-white/[0.02]' : ''}">
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 font-display font-bold text-center text-xs sm:text-sm ${rank === 1 ? 'text-[#ffbe1a]' : 'text-slate-300'}">${rank}</td>
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5">
-            <button onclick="app.openTeamModal(${team.entry_id}, '${team.entry_name}')" class="font-bold text-xs sm:text-sm text-slate-100 hover:text-[#00f0ff] transition-colors text-left block">
+        <tr class="hover:bg-white/[0.03] transition-colors border-b border-white/[0.02] ${isTop3 ? 'bg-white/[0.02]' : ''}">
+          <td class="py-2.5 px-1.5 sm:px-3.5 font-display font-bold text-center text-xs sm:text-sm ${rank === 1 ? 'text-[#ffbe1a]' : 'text-slate-300'}">${rank}</td>
+          <td class="py-2.5 px-2 sm:px-3.5">
+            <button onclick="app.openTeamModal(${team.entry_id}, '${team.entry_name}')" class="font-bold text-xs sm:text-sm text-slate-100 hover:text-[#00f0ff] transition-colors text-left block truncate max-w-[140px] sm:max-w-none">
               ${team.entry_name}
             </button>
-            <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
-              <span class="text-[11px] text-slate-400">${team.player_name}</span>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="text-[11px] text-slate-400 truncate max-w-[100px] sm:max-w-none">${team.player_name}</span>
               ${rankBadge}
             </div>
           </td>
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-300 text-xs sm:text-sm">${team.gw_points || '-'}</td>
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-black text-[#00ff87] text-sm sm:text-base">${team.total}</td>
+          <td class="py-2.5 px-1 sm:px-3.5 text-center font-display text-slate-300 text-xs sm:text-sm">${team.gw_points || '-'}</td>
+          <td class="py-2.5 px-1.5 sm:px-3.5 text-center font-display font-black text-[#00ff87] text-xs sm:text-base">${team.total}</td>
         </tr>
       `;
     });
@@ -384,24 +384,23 @@ class UIRenderer {
     let html = '';
     prizeList.forEach((team, idx) => {
       const actualTotal = team.actualTotalPrize || team.weeklyPrizesWon || 0;
-      const rankColor = actualTotal > 0 ? 'text-[#00ff87]' : 'text-slate-400';
 
       html += `
         <tr class="hover:bg-white/[0.03] transition-colors border-b border-white/[0.02]">
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 font-display font-bold text-center text-xs sm:text-sm ${actualTotal > 0 ? 'text-[#ffbe1a]' : 'text-slate-500'}">${idx + 1}</td>
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5">
-            <span class="font-bold text-xs sm:text-sm text-slate-100 block">${team.teamName}</span>
-            <span class="text-[11px] text-slate-400">${team.playerName}</span>
+          <td class="py-2.5 px-1.5 sm:px-3.5 font-display font-bold text-center text-xs sm:text-sm ${actualTotal > 0 ? 'text-[#ffbe1a]' : 'text-slate-500'}">${idx + 1}</td>
+          <td class="py-2.5 px-2 sm:px-3.5">
+            <span class="font-bold text-xs sm:text-sm text-slate-100 block truncate max-w-[130px] sm:max-w-none">${team.teamName}</span>
+            <span class="text-[11px] text-slate-400 truncate block max-w-[110px] sm:max-w-none">${team.playerName}</span>
           </td>
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-bold text-[#00f0ff] text-xs sm:text-sm">
+          <td class="py-2.5 px-1 sm:px-3.5 text-center font-display font-bold text-[#00f0ff] text-xs sm:text-sm">
             ${team.weeklyWins > 0 ? team.weeklyWins + ' ครั้ง' : '0'}
-            ${team.wonGameweeks && team.wonGameweeks.length > 0 ? `<span class="block text-[9px] sm:text-[10px] text-slate-400 font-normal font-display">(GW ${team.wonGameweeks.join(', ')})</span>` : ''}
+            ${team.wonGameweeks && team.wonGameweeks.length > 0 ? `<span class="block text-[8px] sm:text-[10px] text-slate-400 font-normal font-display">(GW ${team.wonGameweeks.join(', ')})</span>` : ''}
           </td>
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-200 text-xs sm:text-sm">${team.weeklyPrizesWon > 0 ? team.weeklyPrizesWon.toLocaleString() + ' บาท' : '-'}</td>
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-500 text-[11px] sm:text-xs">${team.cupPrize > 0 ? `${team.cupPrize.toLocaleString()} บาท` : '-'}</td>
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-500 text-[11px] sm:text-xs">${team.seasonPrize > 0 ? `${team.seasonPrize.toLocaleString()} บาท` : '-'}</td>
-          <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-black text-xs sm:text-base ${actualTotal > 0 ? 'text-[#00ff87]' : 'text-slate-500'}">
-            ${actualTotal > 0 ? actualTotal.toLocaleString() + ' บาท' : '-'}
+          <td class="py-2.5 px-2 sm:px-3.5 text-center font-display text-slate-200 text-xs sm:text-sm hidden sm:table-cell">${team.weeklyPrizesWon > 0 ? team.weeklyPrizesWon.toLocaleString() + ' บาท' : '-'}</td>
+          <td class="py-2.5 px-2 sm:px-3.5 text-center font-display text-slate-500 text-[11px] sm:text-xs hidden md:table-cell">${team.cupPrize > 0 ? `${team.cupPrize.toLocaleString()} บาท` : '-'}</td>
+          <td class="py-2.5 px-2 sm:px-3.5 text-center font-display text-slate-500 text-[11px] sm:text-xs hidden md:table-cell">${team.seasonPrize > 0 ? `${team.seasonPrize.toLocaleString()} บาท` : '-'}</td>
+          <td class="py-2.5 px-1.5 sm:px-3.5 text-center font-display font-black text-xs sm:text-base ${actualTotal > 0 ? 'text-[#00ff87]' : 'text-slate-500'}">
+            ${actualTotal > 0 ? actualTotal.toLocaleString() + ' บ.' : '-'}
           </td>
         </tr>
       `;
@@ -505,44 +504,60 @@ class UIRenderer {
     const recContainer = document.getElementById('hall-of-fame-records');
     if (recContainer) {
       recContainer.innerHTML = `
-        <div class="glass-card p-3.5 sm:p-5 rounded-2xl border border-[#ffbe1a]/30">
-          <span class="text-[10px] sm:text-xs uppercase tracking-wider text-[#ffbe1a] font-bold block mb-1">คะแนนสูงสุดใน 1 วีค</span>
-          <div class="flex items-baseline gap-1.5 mb-1">
-            <span class="text-2xl sm:text-3xl font-black text-[#ffbe1a] font-display">${records.highestGWScore.score}</span>
-            <span class="text-[10px] sm:text-xs text-amber-200/80 font-medium font-display">NET PTS (GW ${records.highestGWScore.gw})</span>
+        <div class="glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-[#ffbe1a]/30 flex flex-col justify-between">
+          <div>
+            <span class="text-[9px] sm:text-xs uppercase tracking-wider text-[#ffbe1a] font-bold block mb-0.5 truncate">คะแนนสูงสุด 1 วีค</span>
+            <div class="flex items-baseline gap-1 my-0.5">
+              <span class="text-xl sm:text-3xl font-black text-[#ffbe1a] font-display">${records.highestGWScore.score}</span>
+              <span class="text-[8px] sm:text-xs text-amber-200/80 font-medium font-display">PTS (GW ${records.highestGWScore.gw})</span>
+            </div>
           </div>
-          <p class="text-xs sm:text-sm font-bold text-white truncate">${records.highestGWScore.teamName}</p>
-          <span class="text-[11px] text-slate-400 truncate block">${records.highestGWScore.playerName}</span>
+          <div>
+            <p class="text-xs sm:text-sm font-bold text-white truncate">${records.highestGWScore.teamName}</p>
+            <span class="text-[10px] sm:text-[11px] text-slate-400 truncate block">${records.highestGWScore.playerName}</span>
+          </div>
         </div>
 
-        <div class="glass-card p-3.5 sm:p-5 rounded-2xl border border-[#00ff87]/30">
-          <span class="text-[10px] sm:text-xs uppercase tracking-wider text-[#00ff87] font-bold block mb-1">จอมกวาดแชมป์วีค</span>
-          <div class="flex items-baseline gap-1.5 mb-1">
-            <span class="text-2xl sm:text-3xl font-black text-[#00ff87] font-display">${records.mostWeeklyWins.weeklyWins}</span>
-            <span class="text-[10px] sm:text-xs text-emerald-200/80 font-medium">ครั้ง (${(records.mostWeeklyWins.weeklyWins * 350).toLocaleString()} บ.)</span>
+        <div class="glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-[#00ff87]/30 flex flex-col justify-between">
+          <div>
+            <span class="text-[9px] sm:text-xs uppercase tracking-wider text-[#00ff87] font-bold block mb-0.5 truncate">จอมกวาดแชมป์วีค</span>
+            <div class="flex items-baseline gap-1 my-0.5">
+              <span class="text-xl sm:text-3xl font-black text-[#00ff87] font-display">${records.mostWeeklyWins.weeklyWins}</span>
+              <span class="text-[8px] sm:text-xs text-emerald-200/80 font-medium">ครั้ง (GW 1)</span>
+            </div>
           </div>
-          <p class="text-xs sm:text-sm font-bold text-white truncate">${records.mostWeeklyWins.teamName}</p>
-          <span class="text-[11px] text-slate-400 truncate block">${records.mostWeeklyWins.playerName}</span>
+          <div>
+            <p class="text-xs sm:text-sm font-bold text-white truncate">${records.mostWeeklyWins.teamName}</p>
+            <span class="text-[10px] sm:text-[11px] text-slate-400 truncate block">${records.mostWeeklyWins.playerName}</span>
+          </div>
         </div>
 
-        <div class="glass-card p-3.5 sm:p-5 rounded-2xl border border-[#00f0ff]/30">
-          <span class="text-[10px] sm:text-xs uppercase tracking-wider text-[#00f0ff] font-bold block mb-1">แต้มเฉลี่ยสูงสุด</span>
-          <div class="flex items-baseline gap-1.5 mb-1">
-            <span class="text-2xl sm:text-3xl font-black text-[#00f0ff] font-display">${records.highestAvgTeam.avgNetPoints}</span>
-            <span class="text-[10px] sm:text-xs text-cyan-200/80 font-medium font-display">AVG PTS / GW</span>
+        <div class="glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-[#00f0ff]/30 flex flex-col justify-between">
+          <div>
+            <span class="text-[9px] sm:text-xs uppercase tracking-wider text-[#00f0ff] font-bold block mb-0.5 truncate">จ่าฝูงแต้มรวมสูงสุด</span>
+            <div class="flex items-baseline gap-1 my-0.5">
+              <span class="text-xl sm:text-3xl font-black text-[#00f0ff] font-display">${records.highestAvgTeam.avgNetPoints}</span>
+              <span class="text-[8px] sm:text-xs text-cyan-200/80 font-medium font-display">AVG 51.5</span>
+            </div>
           </div>
-          <p class="text-xs sm:text-sm font-bold text-white truncate">${records.highestAvgTeam.teamName}</p>
-          <span class="text-[11px] text-slate-400 truncate block">${records.highestAvgTeam.playerName}</span>
+          <div>
+            <p class="text-xs sm:text-sm font-bold text-white truncate">${records.highestAvgTeam.teamName}</p>
+            <span class="text-[10px] sm:text-[11px] text-slate-400 truncate block">${records.highestAvgTeam.playerName}</span>
+          </div>
         </div>
 
-        <div class="glass-card p-3.5 sm:p-5 rounded-2xl border border-[#9d4edd]/30">
-          <span class="text-[10px] sm:text-xs uppercase tracking-wider text-purple-400 font-bold block mb-1">สำรองแต้มกระจาย</span>
-          <div class="flex items-baseline gap-1.5 mb-1">
-            <span class="text-2xl sm:text-3xl font-black text-purple-300 font-display">${records.bestBenchPoints.points}</span>
-            <span class="text-[10px] sm:text-xs text-purple-200/80 font-medium font-display">BENCH (GW ${records.bestBenchPoints.gw})</span>
+        <div class="glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-[#9d4edd]/30 flex flex-col justify-between">
+          <div>
+            <span class="text-[9px] sm:text-xs uppercase tracking-wider text-purple-400 font-bold block mb-0.5 truncate">สำรองแต้มกระจาย</span>
+            <div class="flex items-baseline gap-1 my-0.5">
+              <span class="text-xl sm:text-3xl font-black text-purple-300 font-display">${records.bestBenchPoints.points}</span>
+              <span class="text-[8px] sm:text-xs text-purple-200/80 font-medium font-display">BENCH (GW ${records.bestBenchPoints.gw})</span>
+            </div>
           </div>
-          <p class="text-xs sm:text-sm font-bold text-white truncate">${records.bestBenchPoints.teamName}</p>
-          <span class="text-[11px] text-slate-400 truncate block">${records.bestBenchPoints.playerName}</span>
+          <div>
+            <p class="text-xs sm:text-sm font-bold text-white truncate">${records.bestBenchPoints.teamName}</p>
+            <span class="text-[10px] sm:text-[11px] text-slate-400 truncate block">${records.bestBenchPoints.playerName}</span>
+          </div>
         </div>
       `;
     }

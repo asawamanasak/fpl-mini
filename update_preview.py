@@ -225,21 +225,21 @@ html_content = """<!DOCTYPE html>
 
   <!-- ==================== 1. ส่วนหัวเว็บ (HEADER & GLOBAL NAVIGATION) ==================== -->
   <header class="border-b border-white/[0.08] bg-[#08080c]/90 backdrop-blur-2xl sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3.5 sm:py-4 flex flex-wrap items-center justify-between gap-3">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-4 flex items-center justify-between gap-2">
       
       <!-- 1.1 ข้อมูลประจำลีก (League Identity) -->
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#14141b] border border-white/[0.1] flex items-center justify-center text-[#00ff87] font-black text-sm sm:text-base font-display">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#14141b] border border-white/[0.1] flex items-center justify-center text-[#00ff87] font-black text-xs sm:text-base font-display flex-shrink-0">
           FPL
         </div>
-        <div>
-          <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="text-base sm:text-xl font-extrabold text-white tracking-tight">เซียนอยู่รู หมูอยู่ตึก</h1>
-            <span class="text-[10px] sm:text-[11px] font-bold bg-[#14141b] text-[#00ff87] border border-[#00ff87]/30 px-2 py-0.5 rounded-full font-display">
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <h1 class="text-sm sm:text-xl font-extrabold text-white tracking-tight truncate">เซียนอยู่รู หมูอยู่ตึก</h1>
+            <span class="text-[9px] sm:text-[11px] font-bold bg-[#14141b] text-[#00ff87] border border-[#00ff87]/30 px-1.5 sm:px-2 py-0.5 rounded-full font-display flex-shrink-0">
               LEAGUE 40700
             </span>
           </div>
-          <p class="text-xs text-slate-400 mt-0.5 flex items-center gap-2 flex-wrap font-medium">
+          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5 flex items-center gap-1.5 font-medium truncate">
             <span>ฤดูกาล 2026/27</span>
             <span>•</span>
             <span>12 ทีมสมาชิก</span>
@@ -248,54 +248,55 @@ html_content = """<!DOCTYPE html>
       </div>
 
       <!-- 1.2 แถบสถานะระบบ & 1.3 ปุ่ม Action หลัก -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        <div id="api-status-text" class="text-xs text-slate-300 hidden sm:flex items-center bg-[#0d0d12] px-3.5 py-1.5 rounded-xl border border-white/[0.08]">
+      <div class="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+        <div id="api-status-text" class="text-xs text-slate-300 hidden md:flex items-center bg-[#0d0d12] px-3.5 py-1.5 rounded-xl border border-white/[0.08]">
           <span class="inline-block w-2 h-2 rounded-full bg-[#ff3366] mr-2 animate-pulse"></span>
           Gameweek 2 กำลังแข่งขัน (Live)
         </div>
 
         <button 
           onclick="app.shareCurrentGameweek()"
-          class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl bg-[#14141b] hover:bg-[#1a1a24] border border-white/[0.1] text-xs font-bold text-white transition-all shadow-md active:scale-95"
+          class="flex items-center gap-1 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-[#14141b] hover:bg-[#1a1a24] border border-white/[0.1] text-xs font-bold text-white transition-all shadow-md active:scale-95 flex-shrink-0"
           title="คัดลอกสรุปผลและไฮไลท์สัปดาห์ปัจจุบันลงคลิปบอร์ด"
         >
           <svg class="w-3.5 h-3.5 text-[#00ff87]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-          <span>คัดลอกสรุปส่ง LINE</span>
+          <span class="hidden sm:inline">คัดลอกสรุปส่ง LINE</span>
+          <span class="sm:hidden text-[11px]">ส่ง LINE</span>
         </button>
       </div>
 
     </div>
 
     <!-- 1.4 แถบเมนู 5 แท็บหลัก -->
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-      <nav class="flex space-x-1.5 sm:space-x-2.5 overflow-x-auto touch-scroll no-scrollbar py-2 border-t border-white/[0.06]">
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 border-t border-white/[0.06]">
+      <nav class="flex space-x-1 sm:space-x-2.5 overflow-x-auto touch-scroll no-scrollbar py-1.5 sm:py-2">
         <button 
           data-tab-target="gameweek-view" 
-          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-[#00ff87]/15 text-[#00ff87] border border-[#00ff87]/40"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-[#00ff87]/15 text-[#00ff87] border border-[#00ff87]/40"
         >
           LIVE (Gameweek Hub)
         </button>
         <button 
           data-tab-target="prizes-view" 
-          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
         >
           เงินรางวัล & รอบเคลียร์
         </button>
         <button 
           data-tab-target="hall-of-fame-view" 
-          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
         >
           Hall of Fame
         </button>
         <button 
           data-tab-target="cup-view" 
-          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
         >
           บอลถ้วย
         </button>
         <button 
           data-tab-target="rules-view" 
-          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
         >
           กติกาของลีก
         </button>
@@ -304,25 +305,23 @@ html_content = """<!DOCTYPE html>
   </header>
 
   <!-- MAIN CONTAINER -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-3.5 sm:py-6 space-y-4 sm:space-y-6">
 
     <!-- ==================== 2. แท็บ 1: ผลสด & สัปดาห์ (LIVE - GAMEWEEK HUB) ==================== -->
-    <div id="gameweek-view" class="tab-content space-y-6">
+    <div id="gameweek-view" class="tab-content space-y-4 sm:space-y-6">
       
       <!-- 1. ส่วนหัวของหน้า (Section Header) -->
-      <div class="flex items-center justify-between gap-4">
-        <div>
-          <h2 class="text-base sm:text-lg font-bold text-white tracking-tight">
-            เลือกรอบการแข่งขัน (GW 1 - 38)
-          </h2>
-        </div>
-        <span class="text-xs font-bold text-slate-400 font-display bg-[#0d0d12] border border-white/[0.08] px-3 py-1 rounded-xl">
+      <div class="flex items-center justify-between gap-2">
+        <h2 class="text-sm sm:text-lg font-bold text-white tracking-tight">
+          เลือกรอบการแข่งขัน (GW 1 - 38)
+        </h2>
+        <span class="text-[10px] sm:text-xs font-bold text-slate-400 font-display bg-[#0d0d12] border border-white/[0.08] px-2 sm:px-3 py-0.5 sm:py-1 rounded-xl flex-shrink-0">
           GAMEWEEK MATCHDAY
         </span>
       </div>
 
       <!-- 2. แถบเลื่อนเลือกสัปดาห์ (Gameweek Selector: เล็กลง 50%) -->
-      <div id="gw-selector-container" class="flex gap-1.5 overflow-x-auto scrollbar-thin pb-2 pt-1">
+      <div id="gw-selector-container" class="flex gap-1 sm:gap-1.5 overflow-x-auto touch-scroll no-scrollbar pb-1.5 pt-0.5">
         <!-- Dynamic Compact GW buttons -->
       </div>
 
@@ -332,33 +331,33 @@ html_content = """<!DOCTYPE html>
       </div>
 
       <!-- 4. ตารางคะแนนประจำสัปดาห์ & 5. ตารางคะแนนรวมสะสม -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
         
         <!-- 4. ตารางคะแนนประจำสัปดาห์ (Matchday Score Table) -->
-        <div class="lg:col-span-7 glass-card rounded-2xl p-5 sm:p-6 border border-white/[0.08]">
-          <div class="flex items-center justify-between mb-4">
+        <div class="lg:col-span-7 glass-card rounded-2xl p-3.5 sm:p-6 border border-white/[0.08]">
+          <div class="flex items-center justify-between mb-3 sm:mb-4">
             <div>
-              <h3 class="text-base sm:text-lg font-bold text-white">
+              <h3 class="text-sm sm:text-lg font-bold text-white">
                 ตารางคะแนนประจำสัปดาห์นี้
               </h3>
-              <p class="text-xs text-slate-400 mt-0.5">คะแนนสุทธิ = แต้มดิบ - แต้มลบจากการย้ายตัว (Hits)</p>
+              <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">คะแนนสุทธิ = แต้มดิบ - แต้มลบจากการย้ายตัว (Hits)</p>
             </div>
-            <span id="gw-table-badge" class="text-xs font-bold text-[#00ff87] bg-[#00ff87]/10 border border-[#00ff87]/30 px-3 py-1 rounded-xl font-display">
+            <span id="gw-table-badge" class="text-[10px] sm:text-xs font-bold text-[#00ff87] bg-[#00ff87]/10 border border-[#00ff87]/30 px-2 sm:px-3 py-0.5 sm:py-1 rounded-xl font-display flex-shrink-0">
               MATCHDAY STANDINGS
             </span>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm">
-              <thead class="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/[0.08]">
+          <div class="overflow-x-auto no-scrollbar">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/[0.08]">
                 <tr>
-                  <th class="py-3 px-3.5">อันดับ</th>
-                  <th class="py-3 px-3.5">ทีม / ผู้จัดการ</th>
-                  <th class="py-3 px-3.5 text-center">กัปตัน (C)</th>
-                  <th class="py-3 px-3.5 text-center">แต้มดิบ</th>
-                  <th class="py-3 px-3.5 text-center text-rose-400">Hits</th>
-                  <th class="py-3 px-3.5 text-center text-[#00ff87]">แต้มสุทธิ</th>
-                  <th class="py-3 px-3.5 text-center text-slate-400">สำรอง</th>
+                  <th class="py-2.5 px-1.5 sm:px-3.5 text-center w-8 sm:w-12">อันดับ</th>
+                  <th class="py-2.5 px-2 sm:px-3.5">ทีม / ผู้จัดการ</th>
+                  <th class="py-2.5 px-2 sm:px-3.5 text-center hidden sm:table-cell">กัปตัน (C)</th>
+                  <th class="py-2.5 px-1 sm:px-3.5 text-center w-12 sm:w-16">แต้มดิบ</th>
+                  <th class="py-2.5 px-1 sm:px-3.5 text-center w-10 sm:w-14 text-rose-400">Hits</th>
+                  <th class="py-2.5 px-1.5 sm:px-3.5 text-center w-14 sm:w-20 text-[#00ff87]">แต้มสุทธิ</th>
+                  <th class="py-2.5 px-2 sm:px-3.5 text-center hidden sm:table-cell text-slate-400">สำรอง</th>
                 </tr>
               </thead>
               <tbody id="matchday-table-body" class="divide-y divide-white/[0.04]">
@@ -369,24 +368,24 @@ html_content = """<!DOCTYPE html>
         </div>
 
         <!-- 5. ตารางคะแนนรวมสะสม (Overall Standings) -->
-        <div class="lg:col-span-5 glass-card rounded-2xl p-5 sm:p-6 border border-white/[0.08]">
-          <div class="flex items-center justify-between mb-4">
+        <div class="lg:col-span-5 glass-card rounded-2xl p-3.5 sm:p-6 border border-white/[0.08]">
+          <div class="flex items-center justify-between mb-3 sm:mb-4">
             <div>
-              <h3 class="text-base sm:text-lg font-bold text-white">
+              <h3 class="text-sm sm:text-lg font-bold text-white">
                 ตารางคะแนนรวมสะสม (Overall Standings)
               </h3>
-              <p class="text-xs text-slate-400 mt-0.5">อันดับคะแนนรวมสะสมของทั้ง 12 ทีม</p>
+              <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">อันดับคะแนนรวมสะสมของทั้ง 12 ทีม</p>
             </div>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm">
-              <thead class="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/[0.08]">
+          <div class="overflow-x-auto no-scrollbar">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/[0.08]">
                 <tr>
-                  <th class="py-3 px-3.5 text-center">อันดับ</th>
-                  <th class="py-3 px-3.5">ทีม</th>
-                  <th class="py-3 px-3.5 text-center text-slate-300">GW</th>
-                  <th class="py-3 px-3.5 text-center text-[#00ff87]">แต้มรวม</th>
+                  <th class="py-2.5 px-1.5 sm:px-3.5 text-center w-8 sm:w-12">อันดับ</th>
+                  <th class="py-2.5 px-2 sm:px-3.5">ทีม / ผู้จัดการ</th>
+                  <th class="py-2.5 px-1 sm:px-3.5 text-center w-10 sm:w-14 text-slate-300">GW</th>
+                  <th class="py-2.5 px-1.5 sm:px-3.5 text-center w-14 sm:w-20 text-[#00ff87]">แต้มรวม</th>
                 </tr>
               </thead>
               <tbody id="overall-standings-body" class="divide-y divide-white/[0.04]">
@@ -401,55 +400,55 @@ html_content = """<!DOCTYPE html>
     </div>
 
     <!-- ==================== 3. แท็บ 2: เงินรางวัล & รอบเคลียร์ ==================== -->
-    <div id="prizes-view" class="tab-content hidden space-y-6">
+    <div id="prizes-view" class="tab-content hidden space-y-4 sm:space-y-6">
       
       <!-- 3.1 ป้ายสรุปงบเงินรางวัลรวม -->
-      <div class="glass-card-gold rounded-3xl p-6 sm:p-8 border border-[#ffbe1a]/30 relative overflow-hidden">
-        <div class="flex flex-wrap items-center justify-between gap-6 relative z-10">
+      <div class="glass-card-gold rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-[#ffbe1a]/30 relative overflow-hidden">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 relative z-10">
           <div>
-            <span class="text-xs uppercase tracking-widest text-[#ffbe1a] font-bold">TOTAL PRIZE MATRIX</span>
-            <h2 class="text-2xl sm:text-3xl font-black text-white font-display mt-1">สรุปเงินรางวัลรวม 22,000 บาท</h2>
-            <p class="text-xs sm:text-sm text-slate-300 mt-1">11 ทีม × ค่าสมัคร 2,000 บาท | แบ่ง 3 หมวดรางวัล</p>
+            <span class="text-[10px] sm:text-xs uppercase tracking-widest text-[#ffbe1a] font-bold">TOTAL PRIZE MATRIX</span>
+            <h2 class="text-xl sm:text-3xl font-black text-white font-display mt-0.5">สรุปเงินรางวัลรวม 22,000 บาท</h2>
+            <p class="text-[11px] sm:text-sm text-slate-300 mt-0.5">11 ทีม × ค่าสมัคร 2,000 บาท | แบ่ง 3 หมวดรางวัล</p>
           </div>
-          <div class="flex flex-wrap items-center gap-3">
-            <div class="bg-[#08080c]/90 border border-white/[0.1] px-4 py-2.5 rounded-2xl text-center">
-              <span class="text-[11px] text-slate-400 block">แชมป์ 38 วีค (350 บ.)</span>
-              <strong class="text-[#00ff87] font-display text-base">13,300 บาท</strong>
+          <div class="grid grid-cols-3 gap-2 sm:gap-3">
+            <div class="bg-[#08080c]/90 border border-white/[0.1] p-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-center">
+              <span class="text-[9px] sm:text-[11px] text-slate-400 block leading-tight">แชมป์ 38 วีค</span>
+              <strong class="text-[#00ff87] font-display text-xs sm:text-base block mt-0.5">13,300 บ.</strong>
             </div>
-            <div class="bg-[#08080c]/90 border border-white/[0.1] px-4 py-2.5 rounded-2xl text-center">
-              <span class="text-[11px] text-slate-400 block">บอลถ้วย (2 รางวัล)</span>
-              <strong class="text-[#ffbe1a] font-display text-base">1,650 บาท</strong>
+            <div class="bg-[#08080c]/90 border border-white/[0.1] p-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-center">
+              <span class="text-[9px] sm:text-[11px] text-slate-400 block leading-tight">บอลถ้วย</span>
+              <strong class="text-[#ffbe1a] font-display text-xs sm:text-base block mt-0.5">1,650 บ.</strong>
             </div>
-            <div class="bg-[#08080c]/90 border border-white/[0.1] px-4 py-2.5 rounded-2xl text-center">
-              <span class="text-[11px] text-slate-400 block">แชมป์ฤดูกาล (4 รางวัล)</span>
-              <strong class="text-[#9d4edd] font-display text-base">7,050 บาท</strong>
+            <div class="bg-[#08080c]/90 border border-white/[0.1] p-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl text-center">
+              <span class="text-[9px] sm:text-[11px] text-slate-400 block leading-tight">แชมป์ลีก</span>
+              <strong class="text-[#9d4edd] font-display text-xs sm:text-base block mt-0.5">7,050 บ.</strong>
             </div>
           </div>
         </div>
       </div>
 
       <!-- 3.2 ตารางเงินรางวัลสะสมของทั้ง 12 ทีม -->
-      <div class="glass-card rounded-2xl p-5 sm:p-6 border border-white/[0.08]">
-        <div class="flex items-center justify-between mb-4">
+      <div class="glass-card rounded-2xl p-3.5 sm:p-6 border border-white/[0.08]">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
           <div>
-            <h3 class="text-base sm:text-lg font-bold text-white">
+            <h3 class="text-sm sm:text-lg font-bold text-white">
               ตารางสรุปเงินรางวัลสะสมของทั้ง 12 ทีม (ที่ได้รับจริง ณ ปัจจุบัน)
             </h3>
-            <p class="text-xs text-slate-400 mt-0.5">เงินรางวัลแชมป์วีคคำนวณเฉพาะสัปดาห์ที่แข่งเสร็จสิ้นแล้ว (350 บ./ครั้ง) | รางวัลบอลถ้วยและแชมป์ฤดูกาลจะสรุปผลเมื่อจบการแข่งขันใน GW 38</p>
+            <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">เงินรางวัลแชมป์วีคคำนวณเฉพาะสัปดาห์ที่แข่งเสร็จสิ้นแล้ว (350 บ./ครั้ง) | บอลถ้วยและแชมป์ลีกจะสรุปผลใน GW 38</p>
           </div>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <thead class="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/[0.08]">
+        <div class="overflow-x-auto no-scrollbar">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/[0.08]">
               <tr>
-                <th class="py-3 px-3.5 text-center">อันดับ</th>
-                <th class="py-3 px-3.5">ทีม / ผู้จัดการ</th>
-                <th class="py-3 px-3.5 text-center text-[#00f0ff]">ชนะวีค</th>
-                <th class="py-3 px-3.5 text-center">แชมป์วีค (350 บ.)</th>
-                <th class="py-3 px-3.5 text-center text-[#ffbe1a]">บอลถ้วย</th>
-                <th class="py-3 px-3.5 text-center text-[#9d4edd]">แชมป์ฤดูกาล</th>
-                <th class="py-3 px-3.5 text-center text-[#00ff87]">รวมเงินรางวัลที่ได้รับจริง</th>
+                <th class="py-2.5 px-1.5 sm:px-3.5 text-center w-8 sm:w-12">อันดับ</th>
+                <th class="py-2.5 px-2 sm:px-3.5">ทีม / ผู้จัดการ</th>
+                <th class="py-2.5 px-1 sm:px-3.5 text-center w-16 sm:w-24 text-[#00f0ff]">ชนะวีค</th>
+                <th class="py-2.5 px-2 sm:px-3.5 text-center hidden sm:table-cell">แชมป์วีค (350 บ.)</th>
+                <th class="py-2.5 px-2 sm:px-3.5 text-center hidden md:table-cell text-[#ffbe1a]">บอลถ้วย</th>
+                <th class="py-2.5 px-2 sm:px-3.5 text-center hidden md:table-cell text-[#9d4edd]">แชมป์ฤดูกาล</th>
+                <th class="py-2.5 px-1.5 sm:px-3.5 text-center w-20 sm:w-28 text-[#00ff87]">รวมเงินที่ได้รับจริง</th>
               </tr>
             </thead>
             <tbody id="prize-leaderboard-body" class="divide-y divide-white/[0.04]">
@@ -461,14 +460,14 @@ html_content = """<!DOCTYPE html>
 
       <!-- 3.3 การ์ดรอบเคลียร์เงินรางวัล 6 Phase -->
       <div>
-        <div class="mb-4">
-          <h3 class="text-base sm:text-lg font-bold text-white">
+        <div class="mb-3 sm:mb-4">
+          <h3 class="text-sm sm:text-lg font-bold text-white">
             รอบเคลียร์เงินรางวัล 6 Phase (ทุก 6 GW / ท้าย 8 GW)
           </h3>
-          <p class="text-xs text-slate-400 mt-0.5">สรุปยอดเงินรางวัลที่ต้องโอนเคลียร์ให้สมาชิกในแต่ละรอบ</p>
+          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">สรุปยอดเงินรางวัลที่ต้องโอนเคลียร์ให้สมาชิกในแต่ละรอบ</p>
         </div>
 
-        <div id="settlement-phases-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div id="settlement-phases-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
           <!-- Dynamic Phase Cards -->
         </div>
       </div>
@@ -476,36 +475,36 @@ html_content = """<!DOCTYPE html>
     </div>
 
     <!-- ==================== 4. แท็บ 3: HALL OF FAME ==================== -->
-    <div id="hall-of-fame-view" class="tab-content hidden space-y-6">
+    <div id="hall-of-fame-view" class="tab-content hidden space-y-4 sm:space-y-6">
       
       <!-- 4.1 การ์ดสถิติไฮไลท์ 4 ด้าน -->
-      <div id="hall-of-fame-records" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div id="hall-of-fame-records" class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         <!-- Dynamic Record Cards -->
       </div>
 
       <!-- 4.2 ตารางสถิติเชิงลึก 12 ทีม -->
-      <div class="glass-card rounded-2xl p-5 sm:p-6 border border-white/[0.08]">
-        <div class="flex items-center justify-between mb-4">
+      <div class="glass-card rounded-2xl p-3.5 sm:p-6 border border-white/[0.08]">
+        <div class="flex items-center justify-between mb-3 sm:mb-4">
           <div>
-            <h3 class="text-base sm:text-lg font-bold text-white">
+            <h3 class="text-sm sm:text-lg font-bold text-white">
               สถิติเชิงลึกและประสิทธิภาพการเล่นของทั้ง 12 ทีม
             </h3>
-            <p class="text-xs text-slate-400 mt-0.5">สถิติคะแนนเฉลี่ย, อัตราติด Top 3, แต้มสูงสุด/ต่ำสุด และแต้มลบสะสม</p>
+            <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">สถิติคะแนนเฉลี่ย, อัตราติด Top 3, แต้มสูงสุด/ต่ำสุด และแต้มลบสะสม</p>
           </div>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <thead class="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/[0.08]">
+        <div class="overflow-x-auto no-scrollbar">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/[0.08]">
               <tr>
-                <th class="py-3 px-3.5 text-center">อันดับ</th>
-                <th class="py-3 px-3.5">ทีม / ผู้จัดการ</th>
-                <th class="py-3 px-3.5 text-center text-[#00ff87]">แชมป์วีค (ครั้ง)</th>
-                <th class="py-3 px-3.5 text-center text-[#00f0ff]">แต้มเฉลี่ย/GW</th>
-                <th class="py-3 px-3.5 text-center">แต้มสูงสุด</th>
-                <th class="py-3 px-3.5 text-center">แต้มต่ำสุด</th>
-                <th class="py-3 px-3.5 text-center text-rose-400">แต้มลบรวม</th>
-                <th class="py-3 px-3.5 text-center text-[#9d4edd]">% ติด Top 3</th>
+                <th class="py-2.5 px-1.5 sm:px-3.5 text-center w-8 sm:w-12">อันดับ</th>
+                <th class="py-2.5 px-2 sm:px-3.5">ทีม / ผู้จัดการ</th>
+                <th class="py-2.5 px-1 sm:px-3.5 text-center w-12 sm:w-16 text-[#00ff87]">แชมป์วีค</th>
+                <th class="py-2.5 px-1 sm:px-3.5 text-center w-14 sm:w-20 text-[#00f0ff]">เฉลี่ย/GW</th>
+                <th class="py-2.5 px-2 sm:px-3.5 text-center hidden sm:table-cell">สูงสุด</th>
+                <th class="py-2.5 px-2 sm:px-3.5 text-center hidden sm:table-cell">ต่ำสุด</th>
+                <th class="py-2.5 px-2 sm:px-3.5 text-center hidden sm:table-cell text-rose-400">Hits รวม</th>
+                <th class="py-2.5 px-1 sm:px-3.5 text-center w-14 sm:w-20 text-[#9d4edd]">% Top 3</th>
               </tr>
             </thead>
             <tbody id="hall-of-fame-table-body" class="divide-y divide-white/[0.04]">
@@ -1021,84 +1020,84 @@ html_content = """<!DOCTYPE html>
         // 3A: Finished Gameweek
         if (isFinished) {
           container.innerHTML = `
-            <div class="relative overflow-hidden glass-card-glow rounded-3xl p-4 sm:p-7 border border-[#00ff87]/30">
+            <div class="relative overflow-hidden glass-card-glow rounded-2xl sm:rounded-3xl p-3.5 sm:p-7 border border-[#00ff87]/30">
               <div class="absolute -right-16 -top-16 w-64 h-64 bg-[#00ff87]/10 rounded-full blur-3xl pointer-events-none"></div>
               <div class="absolute -left-16 -bottom-16 w-64 h-64 bg-[#00f0ff]/10 rounded-full blur-3xl pointer-events-none"></div>
 
               <div class="relative z-10">
-                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                  <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#00ff87]/15 border border-[#00ff87]/30 flex items-center justify-center text-[#00ff87] font-black text-xs font-display">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3 sm:mb-4">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#00ff87]/15 border border-[#00ff87]/30 flex items-center justify-center text-[#00ff87] font-black text-xs font-display flex-shrink-0">
                       WIN
                     </div>
-                    <div>
-                      <span class="text-[11px] uppercase tracking-widest text-[#00ff87] font-bold font-display">GAMEWEEK ${this.selectedGW} CHAMPION</span>
-                      <h3 class="text-lg sm:text-2xl font-black text-white tracking-tight">แชมป์ประจำสัปดาห์</h3>
+                    <div class="min-w-0">
+                      <span class="text-[10px] sm:text-[11px] uppercase tracking-widest text-[#00ff87] font-bold font-display block leading-none">GAMEWEEK ${this.selectedGW} CHAMPION</span>
+                      <h3 class="text-base sm:text-2xl font-black text-white tracking-tight mt-0.5 leading-tight truncate">แชมป์ประจำสัปดาห์</h3>
                     </div>
                   </div>
 
-                  <div class="flex items-center gap-2 bg-[#00ff87]/10 border border-[#00ff87]/30 px-3.5 py-1.5 rounded-xl">
-                    <span class="text-[#00ff87] font-bold text-xs sm:text-sm font-display">${isJoint ? 'แชมป์ร่วมประจำสัปดาห์' : 'สรุปผลประจำสัปดาห์'}</span>
+                  <div class="self-start sm:self-auto flex items-center gap-1.5 bg-[#00ff87]/10 border border-[#00ff87]/30 px-2.5 sm:px-3.5 py-1 rounded-xl">
+                    <span class="text-[#00ff87] font-bold text-[11px] sm:text-xs font-display">${isJoint ? 'แชมป์ร่วมประจำสัปดาห์' : 'สรุปผลประจำสัปดาห์'}</span>
                   </div>
                 </div>
 
                 <!-- Team Details & Responsive Stats Box -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center bg-[#08080c] border border-white/[0.08] rounded-2xl p-4 sm:p-5 mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 items-center bg-[#08080c] border border-white/[0.08] rounded-xl sm:rounded-2xl p-3 sm:p-5 mb-3 sm:mb-4">
                   <div class="md:col-span-2">
                     <div class="flex items-center gap-2 mb-1 flex-wrap">
-                      <h4 class="text-xl sm:text-3xl font-black text-white tracking-tight">
+                      <h4 class="text-lg sm:text-3xl font-black text-white tracking-tight break-words">
                         ${leader.team_name} ${isJoint ? '& ' + results[1].team_name : ''}
                       </h4>
                       ${chipBadge}
                     </div>
-                    <p class="text-slate-400 text-xs sm:text-sm flex items-center gap-2 flex-wrap">
-                      <span>ผู้จัดการ: <strong class="text-slate-100 font-semibold">${leader.player_name} ${isJoint ? '& ' + results[1].player_name : ''}</strong></span>
-                      ${leader.captain ? `<span>• กัปตัน: <span class="text-[#00f0ff] font-semibold">${leader.captain}</span></span>` : ''}
-                    </p>
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs sm:text-sm text-slate-300">
+                      <span>ผู้จัดการ: <strong class="text-white font-semibold">${leader.player_name} ${isJoint ? '& ' + results[1].player_name : ''}</strong></span>
+                      ${leader.captain ? `<span class="text-[#00f0ff] font-medium">• กัปตัน: <strong>${leader.captain}</strong></span>` : ''}
+                    </div>
                   </div>
 
                   <!-- 3-Box Stats Widget -->
-                  <div class="grid grid-cols-3 gap-2 bg-[#050507] p-2.5 sm:p-3 rounded-xl border border-white/[0.05] text-center">
+                  <div class="grid grid-cols-3 gap-1.5 sm:gap-2 bg-[#050507] p-2 sm:p-3 rounded-xl border border-white/[0.05] text-center">
                     <div>
-                      <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-semibold font-display">RAW PTS</span>
+                      <span class="block text-[9px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-semibold font-display">RAW PTS</span>
                       <span class="text-base sm:text-lg font-bold text-slate-200 font-display">${leader.points}</span>
                     </div>
                     <div class="border-x border-white/[0.08]">
-                      <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-rose-400 font-semibold font-display">HITS</span>
+                      <span class="block text-[9px] sm:text-[11px] uppercase tracking-wider text-rose-400 font-semibold font-display">HITS</span>
                       <span class="text-base sm:text-lg font-bold ${leader.hits > 0 ? 'text-rose-400' : 'text-slate-500'} font-display">${leader.hits > 0 ? `-${leader.hits}` : '0'}</span>
                     </div>
                     <div>
-                      <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00ff87] font-extrabold font-display">NET PTS</span>
-                      <span class="text-xl sm:text-2xl font-black text-[#00ff87] font-display">${leader.net_points}</span>
+                      <span class="block text-[9px] sm:text-[11px] uppercase tracking-wider text-[#00ff87] font-extrabold font-display">NET PTS</span>
+                      <span class="text-lg sm:text-2xl font-black text-[#00ff87] font-display">${leader.net_points}</span>
                     </div>
                   </div>
                 </div>
 
                 <!-- 3.5 Champion Highlight Note (Borbou Style - Dynamic Live) -->
-                <div class="bg-gradient-to-r from-[#14141b] via-[#0d0d12] to-[#14141b] border border-white/[0.1] rounded-2xl p-3.5 sm:p-4 flex items-center justify-between gap-3">
-                  <div class="flex-1">
-                    <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-bold block font-display">CHAMPION HIGHLIGHT NOTE</span>
-                    <p id="current-gw-note-text" class="text-xs sm:text-sm font-medium text-slate-200 mt-0.5 leading-snug">
-                      "${currentLiveNote}"
-                    </p>
+                <div class="bg-gradient-to-r from-[#14141b] via-[#0d0d12] to-[#14141b] border border-white/[0.1] rounded-xl sm:rounded-2xl p-3 sm:p-4">
+                  <div class="flex items-center justify-between gap-2 mb-1">
+                    <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-bold font-display">CHAMPION HIGHLIGHT NOTE</span>
+                    <div class="flex items-center gap-1 flex-shrink-0">
+                      <button 
+                        onclick="app.regenerateLiveNote()"
+                        class="p-1.5 sm:p-2 text-slate-400 hover:text-[#00ff87] hover:bg-white/[0.08] rounded-lg transition-all"
+                        title="สุ่มคิดโน้ตสดใหม่"
+                      >
+                        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                      </button>
+                      <button 
+                        id="tagline-edit-btn"
+                        onclick="app.openTaglineModal(${this.selectedGW}, '${currentLiveNote.replace(/'/g, "\\'")}')"
+                        class="p-1.5 sm:p-2 text-slate-400 hover:text-white hover:bg-white/[0.08] rounded-lg transition-all"
+                        title="แก้ไขโน้ตด้วยตนเอง"
+                      >
+                        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                      </button>
+                    </div>
                   </div>
-                  <div class="flex items-center gap-1 flex-shrink-0">
-                    <button 
-                      onclick="app.regenerateLiveNote()"
-                      class="p-2 text-slate-400 hover:text-[#00ff87] hover:bg-white/[0.08] rounded-xl transition-all"
-                      title="สุ่มคิดโน้ตสดใหม่"
-                    >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                    </button>
-                    <button 
-                      id="tagline-edit-btn"
-                      onclick="app.openTaglineModal(${this.selectedGW}, '${currentLiveNote.replace(/'/g, "\\'")}')"
-                      class="p-2 text-slate-400 hover:text-white hover:bg-white/[0.08] rounded-xl transition-all"
-                      title="แก้ไขโน้ตด้วยตนเอง"
-                    >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                    </button>
-                  </div>
+                  <p id="current-gw-note-text" class="text-xs sm:text-sm font-medium text-slate-200 leading-relaxed">
+                    "${currentLiveNote}"
+                  </p>
                 </div>
               </div>
             </div>
@@ -1106,85 +1105,85 @@ html_content = """<!DOCTYPE html>
         } else {
           // 3B: Live Gameweek
           container.innerHTML = `
-            <div class="relative overflow-hidden glass-card-live rounded-3xl p-4 sm:p-7 border border-[#00f0ff]/30">
+            <div class="relative overflow-hidden glass-card-live rounded-2xl sm:rounded-3xl p-3.5 sm:p-7 border border-[#00f0ff]/30">
               <div class="absolute -right-16 -top-16 w-64 h-64 bg-[#00f0ff]/10 rounded-full blur-3xl pointer-events-none"></div>
 
               <div class="relative z-10">
-                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                  <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#00f0ff]/15 border border-[#00f0ff]/30 flex items-center justify-center text-[#00f0ff] font-black text-xs font-display">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3 sm:mb-4">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#00f0ff]/15 border border-[#00f0ff]/30 flex items-center justify-center text-[#00f0ff] font-black text-xs font-display flex-shrink-0">
                       LIVE
                     </div>
-                    <div>
-                      <span class="text-[11px] uppercase tracking-widest text-[#00f0ff] font-bold font-display">GAMEWEEK ${this.selectedGW} (IN PROGRESS)</span>
-                      <h3 class="text-lg sm:text-2xl font-black text-white tracking-tight">ผู้นำคะแนนประจำสัปดาห์ชั่วคราว</h3>
+                    <div class="min-w-0">
+                      <span class="text-[10px] sm:text-[11px] uppercase tracking-widest text-[#00f0ff] font-bold font-display block leading-none">GAMEWEEK ${this.selectedGW} (IN PROGRESS)</span>
+                      <h3 class="text-base sm:text-2xl font-black text-white tracking-tight mt-0.5 leading-tight truncate">ผู้นำคะแนนประจำสัปดาห์ชั่วคราว</h3>
                     </div>
                   </div>
 
-                  <div class="flex items-center gap-2 bg-[#00f0ff]/10 border border-[#00f0ff]/30 px-3.5 py-1.5 rounded-xl">
+                  <div class="self-start sm:self-auto flex items-center gap-1.5 bg-[#00f0ff]/10 border border-[#00f0ff]/30 px-2.5 sm:px-3.5 py-1 rounded-xl">
                     <span class="w-2 h-2 rounded-full bg-[#00f0ff] animate-ping"></span>
-                    <span class="text-[#00f0ff] font-bold text-xs sm:text-sm font-display">กำลังแข่งขัน (ยังไม่จบสัปดาห์)</span>
+                    <span class="text-[#00f0ff] font-bold text-[11px] sm:text-xs font-display">กำลังแข่งขัน (ยังไม่จบสัปดาห์)</span>
                   </div>
                 </div>
 
                 <!-- Team Details & Responsive Stats Box -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center bg-[#08080c] border border-white/[0.08] rounded-2xl p-4 sm:p-5 mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 items-center bg-[#08080c] border border-white/[0.08] rounded-xl sm:rounded-2xl p-3 sm:p-5 mb-3 sm:mb-4">
                   <div class="md:col-span-2">
                     <div class="flex items-center gap-2 mb-1 flex-wrap">
-                      <h4 class="text-xl sm:text-3xl font-black text-white tracking-tight">
+                      <h4 class="text-lg sm:text-3xl font-black text-white tracking-tight break-words">
                         ${leader.team_name} ${isJoint ? '& ' + results[1].team_name : ''}
                       </h4>
                       ${chipBadge}
                     </div>
-                    <p class="text-slate-400 text-xs sm:text-sm flex items-center gap-2 flex-wrap">
-                      <span>ผู้นำคะแนน: <strong class="text-slate-100 font-semibold">${leader.player_name} ${isJoint ? '& ' + results[1].player_name : ''}</strong></span>
-                      ${leader.captain ? `<span>• กัปตัน: <span class="text-[#00f0ff] font-semibold">${leader.captain}</span></span>` : ''}
-                    </p>
-                    <p class="text-[11px] text-slate-400 mt-1">หมายเหตุ: ผลคะแนนจะสรุปอย่างเป็นทางการเมื่อแข่งครบทุกคู่ในสัปดาห์</p>
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-xs sm:text-sm text-slate-300">
+                      <span>ผู้นำคะแนน: <strong class="text-white font-semibold">${leader.player_name} ${isJoint ? '& ' + results[1].player_name : ''}</strong></span>
+                      ${leader.captain ? `<span class="text-[#00f0ff] font-medium">• กัปตัน: <strong>${leader.captain}</strong></span>` : ''}
+                    </div>
+                    <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1">หมายเหตุ: ผลคะแนนจะสรุปอย่างเป็นทางการเมื่อแข่งครบทุกคู่ในสัปดาห์</p>
                   </div>
 
                   <!-- 3-Box Stats Widget -->
-                  <div class="grid grid-cols-3 gap-2 bg-[#050507] p-2.5 sm:p-3 rounded-xl border border-white/[0.05] text-center">
+                  <div class="grid grid-cols-3 gap-1.5 sm:gap-2 bg-[#050507] p-2 sm:p-3 rounded-xl border border-white/[0.05] text-center">
                     <div>
-                      <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-semibold font-display">RAW PTS</span>
+                      <span class="block text-[9px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-semibold font-display">RAW PTS</span>
                       <span class="text-base sm:text-lg font-bold text-slate-200 font-display">${leader.points}</span>
                     </div>
                     <div class="border-x border-white/[0.08]">
-                      <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-rose-400 font-semibold font-display">HITS</span>
+                      <span class="block text-[9px] sm:text-[11px] uppercase tracking-wider text-rose-400 font-semibold font-display">HITS</span>
                       <span class="text-base sm:text-lg font-bold ${leader.hits > 0 ? 'text-rose-400' : 'text-slate-500'} font-display">${leader.hits > 0 ? `-${leader.hits}` : '0'}</span>
                     </div>
                     <div>
-                      <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-extrabold font-display">LIVE NET</span>
-                      <span class="text-xl sm:text-2xl font-black text-[#00f0ff] font-display">${leader.net_points}</span>
+                      <span class="block text-[9px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-extrabold font-display">LIVE NET</span>
+                      <span class="text-lg sm:text-2xl font-black text-[#00f0ff] font-display">${leader.net_points}</span>
                     </div>
                   </div>
                 </div>
 
                 <!-- 3.5 Matchday Live Note (Borbou Style - Dynamic Live) -->
-                <div class="bg-gradient-to-r from-[#14141b] via-[#0d0d12] to-[#14141b] border border-white/[0.1] rounded-2xl p-3.5 sm:p-4 flex items-center justify-between gap-3">
-                  <div class="flex-1">
-                    <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-bold block font-display">MATCHDAY LIVE NOTE</span>
-                    <p id="current-gw-note-text" class="text-xs sm:text-sm font-medium text-slate-200 mt-0.5 leading-snug">
-                      "${currentLiveNote}"
-                    </p>
+                <div class="bg-gradient-to-r from-[#14141b] via-[#0d0d12] to-[#14141b] border border-white/[0.1] rounded-xl sm:rounded-2xl p-3 sm:p-4">
+                  <div class="flex items-center justify-between gap-2 mb-1">
+                    <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-bold font-display">MATCHDAY LIVE NOTE</span>
+                    <div class="flex items-center gap-1 flex-shrink-0">
+                      <button 
+                        onclick="app.regenerateLiveNote()"
+                        class="p-1.5 sm:p-2 text-slate-400 hover:text-[#00ff87] hover:bg-white/[0.08] rounded-lg transition-all"
+                        title="สุ่มคิดโน้ตสดใหม่"
+                      >
+                        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                      </button>
+                      <button 
+                        id="tagline-edit-btn"
+                        onclick="app.openTaglineModal(${this.selectedGW}, '${currentLiveNote.replace(/'/g, "\\'")}')"
+                        class="p-1.5 sm:p-2 text-slate-400 hover:text-white hover:bg-white/[0.08] rounded-lg transition-all"
+                        title="แก้ไขโน้ตด้วยตนเอง"
+                      >
+                        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                      </button>
+                    </div>
                   </div>
-                  <div class="flex items-center gap-1 flex-shrink-0">
-                    <button 
-                      onclick="app.regenerateLiveNote()"
-                      class="p-2 text-slate-400 hover:text-[#00ff87] hover:bg-white/[0.08] rounded-xl transition-all"
-                      title="สุ่มคิดโน้ตสดใหม่"
-                    >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                    </button>
-                    <button 
-                      id="tagline-edit-btn"
-                      onclick="app.openTaglineModal(${this.selectedGW}, '${currentLiveNote.replace(/'/g, "\\'")}')"
-                      class="p-2 text-slate-400 hover:text-white hover:bg-white/[0.08] rounded-xl transition-all"
-                      title="แก้ไขโน้ตด้วยตนเอง"
-                    >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                    </button>
-                  </div>
+                  <p id="current-gw-note-text" class="text-xs sm:text-sm font-medium text-slate-200 leading-relaxed">
+                    "${currentLiveNote}"
+                  </p>
                 </div>
               </div>
             </div>
@@ -1195,38 +1194,38 @@ html_content = """<!DOCTYPE html>
         let matchdayHtml = '';
         results.forEach((team, idx) => {
           const rankBadge = idx === 0 
-            ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#ffbe1a] text-slate-950 font-black text-[11px] sm:text-xs flex items-center justify-center font-display shadow-md shadow-[#ffbe1a]/30">1</span>'
+            ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#ffbe1a] text-slate-950 font-black text-[10px] sm:text-xs flex items-center justify-center font-display shadow-md shadow-[#ffbe1a]/30">1</span>'
             : idx === 1
-              ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-300 text-slate-950 font-black text-[11px] sm:text-xs flex items-center justify-center font-display">2</span>'
+              ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-300 text-slate-950 font-black text-[10px] sm:text-xs flex items-center justify-center font-display">2</span>'
               : idx === 2
-                ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-700 text-white font-black text-[11px] sm:text-xs flex items-center justify-center font-display">3</span>'
-                : `<span class="text-slate-400 text-xs font-bold font-display pl-1.5 sm:pl-2">${idx + 1}</span>`;
+                ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-700 text-white font-black text-[10px] sm:text-xs flex items-center justify-center font-display">3</span>'
+                : `<span class="text-slate-400 text-xs font-bold font-display">${idx + 1}</span>`;
 
           const chip = team.chip ? `<span class="chip-badge badge-${team.chip.toLowerCase()} font-display">${team.chip}</span>` : '';
           const hits = team.hits > 0 ? `<span class="text-rose-400 font-bold font-display text-xs sm:text-sm">-${team.hits}</span>` : '<span class="text-slate-600 font-display text-xs sm:text-sm">-</span>';
 
           matchdayHtml += `
             <tr class="hover:bg-white/[0.03] transition-colors border-b border-white/[0.02]">
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center">${rankBadge}</td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5">
+              <td class="py-2.5 px-1.5 sm:px-3.5 text-center">${rankBadge}</td>
+              <td class="py-2.5 px-2 sm:px-3.5">
                 <button onclick="app.openTeamModal(${team.entry_id}, '${team.team_name}')" class="text-left font-bold text-xs sm:text-sm text-slate-100 hover:text-[#00f0ff] transition-colors flex items-center gap-1.5 flex-wrap">
-                  <span>${team.team_name}</span>
+                  <span class="break-words">${team.team_name}</span>
                   ${chip}
                 </button>
-                <div class="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
-                  <span>${team.player_name}</span>
+                <div class="flex items-center gap-1.5 text-[11px] text-slate-400 mt-0.5">
+                  <span class="truncate max-w-[110px] sm:max-w-none">${team.player_name}</span>
                   <span class="sm:hidden text-[#00f0ff] font-medium">• (C) ${team.captain || '-'}</span>
                 </div>
               </td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center hidden sm:table-cell">
+              <td class="py-2.5 px-2 sm:px-3.5 text-center hidden sm:table-cell">
                 <span class="text-xs text-[#00f0ff] font-medium">${team.captain || '-'}</span>
               </td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-medium text-slate-300 text-xs sm:text-sm">${team.points}</td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center">${hits}</td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center">
-                <span class="text-sm sm:text-base font-black font-display text-slate-100">${team.net_points}</span>
+              <td class="py-2.5 px-1 sm:px-3.5 text-center font-display font-medium text-slate-300 text-xs sm:text-sm">${team.points}</td>
+              <td class="py-2.5 px-1 sm:px-3.5 text-center">${hits}</td>
+              <td class="py-2.5 px-1.5 sm:px-3.5 text-center">
+                <span class="text-xs sm:text-base font-black font-display text-slate-100">${team.net_points}</span>
               </td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center hidden sm:table-cell">
+              <td class="py-2.5 px-2 sm:px-3.5 text-center hidden sm:table-cell">
                 <span class="text-xs text-slate-400 font-display">${team.bench_points}</span>
               </td>
             </tr>
@@ -1240,27 +1239,27 @@ html_content = """<!DOCTYPE html>
           const rank = team.rank;
           const isTop3 = rank <= 3;
           const rankBadge = rank === 1 
-            ? '<span class="text-[9px] sm:text-[10px] bg-[#ffbe1a]/15 text-[#ffbe1a] border border-[#ffbe1a]/30 px-1.5 sm:px-2 py-0.5 rounded-md font-bold font-display">TOP 1</span>'
+            ? '<span class="text-[8px] sm:text-[10px] bg-[#ffbe1a]/15 text-[#ffbe1a] border border-[#ffbe1a]/30 px-1 sm:px-2 py-0.5 rounded font-bold font-display flex-shrink-0">TOP 1</span>'
             : rank === 2
-              ? '<span class="text-[9px] sm:text-[10px] bg-slate-300/15 text-slate-200 border border-slate-300/30 px-1.5 sm:px-2 py-0.5 rounded-md font-bold font-display">TOP 2</span>'
+              ? '<span class="text-[8px] sm:text-[10px] bg-slate-300/15 text-slate-200 border border-slate-300/30 px-1 sm:px-2 py-0.5 rounded font-bold font-display flex-shrink-0">TOP 2</span>'
               : rank === 3
-                ? '<span class="text-[9px] sm:text-[10px] bg-amber-700/20 text-amber-300 border border-amber-600/30 px-1.5 sm:px-2 py-0.5 rounded-md font-bold font-display">TOP 3</span>'
+                ? '<span class="text-[8px] sm:text-[10px] bg-amber-700/20 text-amber-300 border border-amber-600/30 px-1 sm:px-2 py-0.5 rounded font-bold font-display flex-shrink-0">TOP 3</span>'
                 : '';
 
           overallHtml += `
             <tr class="hover:bg-white/[0.03] transition-colors border-b border-white/[0.02] ${isTop3 ? 'bg-white/[0.02]' : ''}">
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 font-display font-bold text-center text-xs sm:text-sm ${rank === 1 ? 'text-[#ffbe1a]' : 'text-slate-300'}">${rank}</td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5">
-                <button onclick="app.openTeamModal(${team.entry_id}, '${team.entry_name}')" class="font-bold text-xs sm:text-sm text-slate-100 hover:text-[#00f0ff] transition-colors text-left block">
+              <td class="py-2.5 px-1.5 sm:px-3.5 font-display font-bold text-center text-xs sm:text-sm ${rank === 1 ? 'text-[#ffbe1a]' : 'text-slate-300'}">${rank}</td>
+              <td class="py-2.5 px-2 sm:px-3.5">
+                <button onclick="app.openTeamModal(${team.entry_id}, '${team.entry_name}')" class="font-bold text-xs sm:text-sm text-slate-100 hover:text-[#00f0ff] transition-colors text-left block truncate max-w-[140px] sm:max-w-none">
                   ${team.entry_name}
                 </button>
-                <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                  <span class="text-[11px] text-slate-400">${team.player_name}</span>
+                <div class="flex items-center gap-1.5 mt-0.5">
+                  <span class="text-[11px] text-slate-400 truncate max-w-[100px] sm:max-w-none">${team.player_name}</span>
                   ${rankBadge}
                 </div>
               </td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-300 text-xs sm:text-sm">${team.gw_points}</td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-black text-[#00ff87] text-sm sm:text-base">${team.total}</td>
+              <td class="py-2.5 px-1 sm:px-3.5 text-center font-display text-slate-300 text-xs sm:text-sm">${team.gw_points}</td>
+              <td class="py-2.5 px-1.5 sm:px-3.5 text-center font-display font-black text-[#00ff87] text-xs sm:text-base">${team.total}</td>
             </tr>
           `;
         });
@@ -1275,7 +1274,6 @@ html_content = """<!DOCTYPE html>
           306983: { wins: 1, wonGW: [1], name: 'GEMINI UNITED', player: 'Micky Asawamanasak', weeklyPrize: 350, cupPrize: 0, seasonPrize: 0 }
         };
 
-        // เรียงลำดับ: ผู้ที่ได้เงินรางวัลจริงแล้วขึ้นก่อน (GEMINI UNITED) ตามด้วยทีมอื่นๆ เรียงตามคะแนนรวม
         const sortedForPrize = [...this.standings].map(t => {
           const pw = prizeWinnersMap[t.entry_id] || { wins: 0, wonGW: [], weeklyPrize: 0, cupPrize: 0, seasonPrize: 0 };
           const actualTotal = pw.weeklyPrize;
@@ -1298,20 +1296,20 @@ html_content = """<!DOCTYPE html>
           const actualTotal = t.actualTotal;
           prizeHtml += `
             <tr class="hover:bg-white/[0.03] transition-colors border-b border-white/[0.02]">
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 font-display font-bold text-center text-xs sm:text-sm ${actualTotal > 0 ? 'text-[#ffbe1a]' : 'text-slate-500'}">${idx + 1}</td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5">
-                <span class="font-bold text-xs sm:text-sm text-slate-100 block">${t.entry_name}</span>
-                <span class="text-[11px] text-slate-400">${t.player_name}</span>
+              <td class="py-2.5 px-1.5 sm:px-3.5 font-display font-bold text-center text-xs sm:text-sm ${actualTotal > 0 ? 'text-[#ffbe1a]' : 'text-slate-500'}">${idx + 1}</td>
+              <td class="py-2.5 px-2 sm:px-3.5">
+                <span class="font-bold text-xs sm:text-sm text-slate-100 block truncate max-w-[130px] sm:max-w-none">${t.entry_name}</span>
+                <span class="text-[11px] text-slate-400 truncate block max-w-[110px] sm:max-w-none">${t.player_name}</span>
               </td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-bold text-[#00f0ff] text-xs sm:text-sm">
+              <td class="py-2.5 px-1 sm:px-3.5 text-center font-display font-bold text-[#00f0ff] text-xs sm:text-sm">
                 ${t.wins > 0 ? t.wins + ' ครั้ง' : '0'}
-                ${t.wonGW.length > 0 ? `<span class="block text-[9px] sm:text-[10px] text-slate-400 font-normal font-display">(GW ${t.wonGW.join(', ')})</span>` : ''}
+                ${t.wonGW.length > 0 ? `<span class="block text-[8px] sm:text-[10px] text-slate-400 font-normal font-display">(GW ${t.wonGW.join(', ')})</span>` : ''}
               </td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-200 text-xs sm:text-sm">${t.weeklyPrize > 0 ? t.weeklyPrize.toLocaleString() + ' บาท' : '-'}</td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-500 text-[11px] sm:text-xs">-</td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-500 text-[11px] sm:text-xs">-</td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-black text-xs sm:text-base ${actualTotal > 0 ? 'text-[#00ff87]' : 'text-slate-500'}">
-                ${actualTotal > 0 ? actualTotal.toLocaleString() + ' บาท' : '-'}
+              <td class="py-2.5 px-2 sm:px-3.5 text-center font-display text-slate-200 text-xs sm:text-sm hidden sm:table-cell">${t.weeklyPrize > 0 ? t.weeklyPrize.toLocaleString() + ' บาท' : '-'}</td>
+              <td class="py-2.5 px-2 sm:px-3.5 text-center font-display text-slate-500 text-[11px] sm:text-xs hidden md:table-cell">-</td>
+              <td class="py-2.5 px-2 sm:px-3.5 text-center font-display text-slate-500 text-[11px] sm:text-xs hidden md:table-cell">-</td>
+              <td class="py-2.5 px-1.5 sm:px-3.5 text-center font-display font-black text-xs sm:text-base ${actualTotal > 0 ? 'text-[#00ff87]' : 'text-slate-500'}">
+                ${actualTotal > 0 ? actualTotal.toLocaleString() + ' บ.' : '-'}
               </td>
             </tr>
           `;
@@ -1322,7 +1320,7 @@ html_content = """<!DOCTYPE html>
         let phaseHtml = '';
         this.config.settlementPhases.forEach(p => {
           const isP1 = p.phase === 1;
-          const isCompleted = false; // Phase 1 is at GW 2 (1/6 finished), others not reached yet
+          const isCompleted = false;
           const isCurrent = isP1;
 
           const badgeClass = isCompleted 
@@ -1334,48 +1332,48 @@ html_content = """<!DOCTYPE html>
           const statusText = isCompleted 
             ? 'เสร็จสิ้นรอบแล้ว' 
             : isCurrent 
-              ? 'ยังไม่ครบรอบ (แข่งไปแล้ว 1/6 GW)' 
+              ? 'ยังไม่ครบรอบ (1/6 GW)' 
               : 'ยังไม่ถึงรอบ';
 
           const buttonHtml = isCompleted
             ? `<button 
                 onclick="app.copyPhaseShareText(${p.phase})" 
-                class="text-xs bg-[#14141b] hover:bg-[#1a1a24] text-[#00ff87] font-bold px-3.5 py-2 rounded-xl border border-[#00ff87]/40 transition-all flex items-center gap-1.5 active:scale-95 shadow-md min-h-[38px]"
+                class="text-xs bg-[#14141b] hover:bg-[#1a1a24] text-[#00ff87] font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl border border-[#00ff87]/40 transition-all flex items-center gap-1.5 active:scale-95 shadow-md min-h-[36px]"
               >
                 <span>ส่ง LINE</span>
               </button>`
             : `<button 
                 disabled 
-                class="text-xs bg-[#08080c] text-slate-600 px-3.5 py-2 rounded-xl border border-white/[0.04] cursor-not-allowed opacity-40 select-none min-h-[38px]"
+                class="text-xs bg-[#08080c] text-slate-600 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl border border-white/[0.04] cursor-not-allowed opacity-40 select-none min-h-[36px]"
                 title="ยังแข่งไม่ครบจำนวนสัปดาห์ในรอบนี้"
               >
                 <span>ยังไม่ครบรอบ</span>
               </button>`;
 
           phaseHtml += `
-            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-white/[0.08] flex flex-col justify-between ${!isCompleted ? 'opacity-85' : ''}">
+            <div class="glass-card rounded-xl sm:rounded-2xl p-3.5 sm:p-5 border border-white/[0.08] flex flex-col justify-between ${!isCompleted ? 'opacity-85' : ''}">
               <div>
-                <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center justify-between gap-2 mb-2 sm:mb-3">
                   <span class="text-[11px] sm:text-xs uppercase tracking-wider font-extrabold ${isCompleted ? 'text-[#00ff87]' : isCurrent ? 'text-[#00f0ff]' : 'text-slate-500'} font-display">${p.name}</span>
-                  <span class="text-[10px] sm:text-[11px] px-2.5 py-0.5 rounded-full border ${badgeClass} font-semibold">${statusText}</span>
+                  <span class="text-[9px] sm:text-[11px] px-2 py-0.5 rounded-full border ${badgeClass} font-semibold flex-shrink-0">${statusText}</span>
                 </div>
-                <h4 class="text-base sm:text-lg font-black text-white font-display mb-1">GW ${p.startGW} - ${p.endGW} (${p.weeks} สัปดาห์)</h4>
-                <p class="text-xs text-slate-400 mb-3">งบแชมป์วีค: <strong class="text-slate-200">${p.weeklyBudget.toLocaleString()} บาท</strong> ${p.hasCup ? '+ บอลถ้วย & แชมป์ลีก' : ''}</p>
+                <h4 class="text-sm sm:text-lg font-black text-white font-display mb-0.5">GW ${p.startGW} - ${p.endGW} (${p.weeks} สัปดาห์)</h4>
+                <p class="text-[11px] sm:text-xs text-slate-400 mb-2.5 sm:mb-3">งบแชมป์วีค: <strong class="text-slate-200">${p.weeklyBudget.toLocaleString()} บาท</strong> ${p.hasCup ? '+ ถ้วย & ลีก' : ''}</p>
                 
-                <div class="bg-[#08080c] rounded-xl p-3 sm:p-3.5 mb-3.5 border border-white/[0.04]">
-                  <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-bold block mb-1.5">สรุปแชมป์วีคที่สรุปผลแล้ว:</span>
+                <div class="bg-[#08080c] rounded-xl p-2.5 sm:p-3.5 mb-2.5 sm:mb-3.5 border border-white/[0.04]">
+                  <span class="text-[9px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-bold block mb-1">สรุปแชมป์วีคที่สรุปผลแล้ว:</span>
                   ${isP1 ? `
-                    <div class="space-y-1.5 text-xs">
-                      <div class="flex justify-between items-center"><span class="text-slate-200">1. GEMINI UNITED (แชมป์ GW 1)</span><strong class="text-[#00ff87]">350 บาท</strong></div>
-                      <div class="flex justify-between items-center text-slate-400"><span>- GW 2 (กำลังแข่งขัน)</span><span class="text-rose-400">รอจบสัปดาห์</span></div>
+                    <div class="space-y-1 text-xs">
+                      <div class="flex justify-between items-center"><span class="text-slate-200 truncate max-w-[130px] sm:max-w-none">1. GEMINI UNITED (GW 1)</span><strong class="text-[#00ff87] flex-shrink-0">350 บ.</strong></div>
+                      <div class="flex justify-between items-center text-slate-400"><span>- GW 2 (กำลังเตะ)</span><span class="text-rose-400">รอจบวีค</span></div>
                       <div class="flex justify-between items-center text-slate-600"><span>- GW 3 - 6</span><span>รอแข่ง</span></div>
                     </div>
-                  ` : '<p class="text-xs text-slate-500 py-2 text-center">รอผลการแข่งขันในรอบนี้</p>'}
+                  ` : '<p class="text-xs text-slate-500 py-1 text-center">รอผลการแข่งขันในรอบนี้</p>'}
                 </div>
               </div>
 
-              <div class="pt-3 border-t border-white/[0.06] flex items-center justify-between">
-                <span class="text-xs text-slate-400">จ่ายแล้ว: <strong class="${isCompleted ? 'text-[#00ff87]' : 'text-slate-300'} font-display font-bold">${isP1 ? '350' : '0'} บาท</strong></span>
+              <div class="pt-2 sm:pt-3 border-t border-white/[0.06] flex items-center justify-between gap-2">
+                <span class="text-xs text-slate-400">จ่ายแล้ว: <strong class="${isCompleted ? 'text-[#00ff87]' : 'text-slate-300'} font-display font-bold">${isP1 ? '350' : '0'} บ.</strong></span>
                 ${buttonHtml}
               </div>
             </div>
@@ -1389,44 +1387,60 @@ html_content = """<!DOCTYPE html>
         const hofTable = document.getElementById('hall-of-fame-table-body');
 
         recordsContainer.innerHTML = `
-          <div class="glass-card p-3.5 sm:p-5 rounded-2xl border border-[#ffbe1a]/30">
-            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-[#ffbe1a] font-bold block mb-1">คะแนนสูงสุดใน 1 วีค</span>
-            <div class="flex items-baseline gap-1.5 mb-1">
-              <span class="text-2xl sm:text-3xl font-black text-[#ffbe1a] font-display">78</span>
-              <span class="text-[10px] sm:text-xs text-amber-200/80 font-medium font-display">NET PTS (GW 1)</span>
+          <div class="glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-[#ffbe1a]/30 flex flex-col justify-between">
+            <div>
+              <span class="text-[9px] sm:text-xs uppercase tracking-wider text-[#ffbe1a] font-bold block mb-0.5 truncate">คะแนนสูงสุด 1 วีค</span>
+              <div class="flex items-baseline gap-1 my-0.5">
+                <span class="text-xl sm:text-3xl font-black text-[#ffbe1a] font-display">78</span>
+                <span class="text-[8px] sm:text-xs text-amber-200/80 font-medium font-display">PTS (GW 1)</span>
+              </div>
             </div>
-            <p class="text-xs sm:text-sm font-bold text-white truncate">GEMINI UNITED</p>
-            <span class="text-[11px] text-slate-400 truncate block">Micky Asawamanasak</span>
+            <div>
+              <p class="text-xs sm:text-sm font-bold text-white truncate">GEMINI UNITED</p>
+              <span class="text-[10px] sm:text-[11px] text-slate-400 truncate block">Micky Asawamanasak</span>
+            </div>
           </div>
 
-          <div class="glass-card p-3.5 sm:p-5 rounded-2xl border border-[#00ff87]/30">
-            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-[#00ff87] font-bold block mb-1">จอมกวาดแชมป์วีค</span>
-            <div class="flex items-baseline gap-1.5 mb-1">
-              <span class="text-2xl sm:text-3xl font-black text-[#00ff87] font-display">1</span>
-              <span class="text-[10px] sm:text-xs text-emerald-200/80 font-medium">ครั้ง (GW 1)</span>
+          <div class="glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-[#00ff87]/30 flex flex-col justify-between">
+            <div>
+              <span class="text-[9px] sm:text-xs uppercase tracking-wider text-[#00ff87] font-bold block mb-0.5 truncate">จอมกวาดแชมป์วีค</span>
+              <div class="flex items-baseline gap-1 my-0.5">
+                <span class="text-xl sm:text-3xl font-black text-[#00ff87] font-display">1</span>
+                <span class="text-[8px] sm:text-xs text-emerald-200/80 font-medium">ครั้ง (GW 1)</span>
+              </div>
             </div>
-            <p class="text-xs sm:text-sm font-bold text-white truncate">GEMINI UNITED</p>
-            <span class="text-[11px] text-slate-400 truncate block">Micky Asawamanasak</span>
+            <div>
+              <p class="text-xs sm:text-sm font-bold text-white truncate">GEMINI UNITED</p>
+              <span class="text-[10px] sm:text-[11px] text-slate-400 truncate block">Micky Asawamanasak</span>
+            </div>
           </div>
 
-          <div class="glass-card p-3.5 sm:p-5 rounded-2xl border border-[#00f0ff]/30">
-            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-[#00f0ff] font-bold block mb-1">จ่าฝูงแต้มรวมสูงสุด</span>
-            <div class="flex items-baseline gap-1.5 mb-1">
-              <span class="text-2xl sm:text-3xl font-black text-[#00f0ff] font-display">103</span>
-              <span class="text-[10px] sm:text-xs text-cyan-200/80 font-medium font-display">AVG 51.5 / GW</span>
+          <div class="glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-[#00f0ff]/30 flex flex-col justify-between">
+            <div>
+              <span class="text-[9px] sm:text-xs uppercase tracking-wider text-[#00f0ff] font-bold block mb-0.5 truncate">จ่าฝูงแต้มรวมสูงสุด</span>
+              <div class="flex items-baseline gap-1 my-0.5">
+                <span class="text-xl sm:text-3xl font-black text-[#00f0ff] font-display">103</span>
+                <span class="text-[8px] sm:text-xs text-cyan-200/80 font-medium font-display">AVG 51.5</span>
+              </div>
             </div>
-            <p class="text-xs sm:text-sm font-bold text-white truncate">Cody Travers</p>
-            <span class="text-[11px] text-slate-400 truncate block">Alesandro Nuyie</span>
+            <div>
+              <p class="text-xs sm:text-sm font-bold text-white truncate">Cody Travers</p>
+              <span class="text-[10px] sm:text-[11px] text-slate-400 truncate block">Alesandro Nuyie</span>
+            </div>
           </div>
 
-          <div class="glass-card p-3.5 sm:p-5 rounded-2xl border border-[#9d4edd]/30">
-            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-purple-400 font-bold block mb-1">สำรองแต้มกระจาย</span>
-            <div class="flex items-baseline gap-1.5 mb-1">
-              <span class="text-2xl sm:text-3xl font-black text-purple-300 font-display">15</span>
-              <span class="text-[10px] sm:text-xs text-purple-200/80 font-medium font-display">BENCH (GW 1)</span>
+          <div class="glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-[#9d4edd]/30 flex flex-col justify-between">
+            <div>
+              <span class="text-[9px] sm:text-xs uppercase tracking-wider text-purple-400 font-bold block mb-0.5 truncate">สำรองแต้มกระจาย</span>
+              <div class="flex items-baseline gap-1 my-0.5">
+                <span class="text-xl sm:text-3xl font-black text-purple-300 font-display">15</span>
+                <span class="text-[8px] sm:text-xs text-purple-200/80 font-medium font-display">BENCH (GW 1)</span>
+              </div>
             </div>
-            <p class="text-xs sm:text-sm font-bold text-white truncate">Anjoni Iraola</p>
-            <span class="text-[11px] text-slate-400 truncate block">pilan liu</span>
+            <div>
+              <p class="text-xs sm:text-sm font-bold text-white truncate">Anjoni Iraola</p>
+              <span class="text-[10px] sm:text-[11px] text-slate-400 truncate block">pilan liu</span>
+            </div>
           </div>
         `;
 
@@ -1449,17 +1463,17 @@ html_content = """<!DOCTYPE html>
         hofData.forEach((t, idx) => {
           hofHtml += `
             <tr class="hover:bg-white/[0.03] transition-colors border-b border-white/[0.02]">
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 font-display font-bold text-center text-slate-400 text-xs sm:text-sm">${idx + 1}</td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5">
-                <span class="font-bold text-xs sm:text-sm text-slate-100 block">${t.name}</span>
-                <span class="text-[11px] text-slate-400">${t.manager}</span>
+              <td class="py-2.5 px-1.5 sm:px-3.5 font-display font-bold text-center text-slate-400 text-xs sm:text-sm">${idx + 1}</td>
+              <td class="py-2.5 px-2 sm:px-3.5">
+                <span class="font-bold text-xs sm:text-sm text-slate-100 block truncate max-w-[130px] sm:max-w-none">${t.name}</span>
+                <span class="text-[11px] text-slate-400 truncate block max-w-[110px] sm:max-w-none">${t.manager}</span>
               </td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-black text-[#00ff87] text-xs sm:text-sm">${t.wins}</td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-bold text-[#00f0ff] text-xs sm:text-sm">${t.avg}</td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-300 text-xs sm:text-sm">${t.high}</td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-500 text-xs sm:text-sm">${t.low}</td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-rose-400 text-xs sm:text-sm">-${t.hits}</td>
-              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-[#9d4edd] font-semibold text-xs sm:text-sm">${t.top3}%</td>
+              <td class="py-2.5 px-1 sm:px-3.5 text-center font-display font-black text-[#00ff87] text-xs sm:text-sm">${t.wins}</td>
+              <td class="py-2.5 px-1 sm:px-3.5 text-center font-display font-bold text-[#00f0ff] text-xs sm:text-sm">${t.avg}</td>
+              <td class="py-2.5 px-2 sm:px-3.5 text-center font-display text-slate-300 text-xs sm:text-sm hidden sm:table-cell">${t.high}</td>
+              <td class="py-2.5 px-2 sm:px-3.5 text-center font-display text-slate-500 text-xs sm:text-sm hidden sm:table-cell">${t.low}</td>
+              <td class="py-2.5 px-2 sm:px-3.5 text-center font-display text-rose-400 text-xs sm:text-sm hidden sm:table-cell">-${t.hits}</td>
+              <td class="py-2.5 px-1 sm:px-3.5 text-center font-display text-[#9d4edd] font-semibold text-xs sm:text-sm">${t.top3}%</td>
             </tr>
           `;
         });
@@ -1472,14 +1486,14 @@ html_content = """<!DOCTYPE html>
 
         container.innerHTML = `
           <!-- Header Banner -->
-          <div class="glass-card rounded-3xl p-6 sm:p-8 border border-white/[0.08] relative overflow-hidden">
-            <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-white/[0.08] relative overflow-hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
               <div>
-                <span class="text-xs uppercase tracking-widest text-[#00f0ff] font-bold font-display">MINI-LEAGUE KNOCKOUT TOURNAMENT</span>
-                <h3 class="text-2xl sm:text-3xl font-black text-white tracking-tight mt-1">ฟุตบอลถ้วยแฟนตาซี (League Cup)</h3>
-                <p class="text-xs sm:text-sm text-slate-300 mt-1">การแข่งขันแบบแพ้คัดออก (Knockout) เงินรางวัลรวม 1,650 บาท</p>
+                <span class="text-[10px] sm:text-xs uppercase tracking-widest text-[#00f0ff] font-bold font-display">MINI-LEAGUE KNOCKOUT TOURNAMENT</span>
+                <h3 class="text-lg sm:text-3xl font-black text-white tracking-tight mt-0.5">ฟุตบอลถ้วยแฟนตาซี (League Cup)</h3>
+                <p class="text-xs sm:text-sm text-slate-300 mt-0.5">การแข่งขันแบบแพ้คัดออก (Knockout) เงินรางวัลรวม 1,650 บาท</p>
               </div>
-              <div class="flex items-center gap-2 bg-[#14141b] border border-white/[0.1] px-4 py-2 rounded-2xl">
+              <div class="self-start sm:self-auto flex items-center gap-2 bg-[#14141b] border border-white/[0.1] px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl">
                 <span class="w-2 h-2 rounded-full bg-amber-400"></span>
                 <span class="text-slate-300 font-bold text-xs sm:text-sm font-display">ยังไม่เริ่มการแข่งขัน (รอระบบ FPL)</span>
               </div>
@@ -1487,26 +1501,26 @@ html_content = """<!DOCTYPE html>
           </div>
 
           <!-- Prize Cards -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="glass-card-gold rounded-3xl p-6 border border-[#ffbe1a]/30 text-center">
-              <span class="text-xs uppercase tracking-wider text-[#ffbe1a] font-bold font-display">CUP CHAMPION (แชมป์บอลถ้วย)</span>
-              <h4 class="text-3xl font-black text-white font-display mt-2 mb-1">1,000 บาท</h4>
-              <span class="text-xs text-amber-200/80 mt-1 block">สถานะ: รอผลการแข่งขันรอบชิงชนะเลิศ</span>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
+            <div class="glass-card-gold rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-[#ffbe1a]/30 text-center">
+              <span class="text-[10px] sm:text-xs uppercase tracking-wider text-[#ffbe1a] font-bold font-display">CUP CHAMPION (แชมป์บอลถ้วย)</span>
+              <h4 class="text-2xl sm:text-3xl font-black text-white font-display mt-1 sm:mt-2 mb-0.5 sm:mb-1">1,000 บาท</h4>
+              <span class="text-[11px] sm:text-xs text-amber-200/80 mt-0.5 block">สถานะ: รอผลการแข่งขันรอบชิงชนะเลิศ</span>
             </div>
 
-            <div class="glass-card rounded-3xl p-6 border border-white/[0.1] text-center">
-              <span class="text-xs uppercase tracking-wider text-slate-300 font-bold font-display">CUP RUNNER-UP (รองแชมป์บอลถ้วย)</span>
-              <h4 class="text-3xl font-black text-white font-display mt-2 mb-1">650 บาท</h4>
-              <span class="text-xs text-slate-400 mt-1 block">สถานะ: รอผลการแข่งขันรอบชิงชนะเลิศ</span>
+            <div class="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/[0.1] text-center">
+              <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-300 font-bold font-display">CUP RUNNER-UP (รองแชมป์บอลถ้วย)</span>
+              <h4 class="text-2xl sm:text-3xl font-black text-white font-display mt-1 sm:mt-2 mb-0.5 sm:mb-1">650 บาท</h4>
+              <span class="text-[11px] sm:text-xs text-slate-400 mt-0.5 block">สถานะ: รอผลการแข่งขันรอบชิงชนะเลิศ</span>
             </div>
           </div>
 
           <!-- Tournament Status Box -->
-          <div class="glass-card rounded-3xl p-8 border border-white/[0.08] text-center">
-            <div class="w-16 h-16 rounded-2xl bg-[#00f0ff]/10 border border-[#00f0ff]/20 flex items-center justify-center mx-auto mb-4 text-[#00f0ff]">
-              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          <div class="glass-card rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/[0.08] text-center">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-[#00f0ff]/10 border border-[#00f0ff]/20 flex items-center justify-center mx-auto mb-3 sm:mb-4 text-[#00f0ff]">
+              <svg class="w-6 h-6 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
             </div>
-            <h4 class="text-lg sm:text-xl font-bold text-white mb-2">หน้านี้จะแสดงผลผังการแข่งขันและผลคะแนนเมื่อบอลถ้วยจบลงแล้ว</h4>
+            <h4 class="text-base sm:text-xl font-bold text-white mb-1.5 sm:mb-2">หน้านี้จะแสดงผลผังการแข่งขันและผลคะแนนเมื่อบอลถ้วยจบลงแล้ว</h4>
             <p class="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto leading-relaxed">
               การแข่งขันฟุตบอลถ้วยของมินิลีก (Mini-League Cup) จะเริ่มแข่งขันตามรอบที่ระบบ FPL กำหนด 
               โดยระบบจะทำการจับสลากประกบคู่แข่งขันแบบน็อกเอาต์แพ้คัดออก (รอบ 8 ทีม, รอบรองชนะเลิศ และรอบชิงชนะเลิศ) 
@@ -1531,16 +1545,16 @@ html_content = """<!DOCTYPE html>
           const fwds = squad.starting.filter(p => p.pos === 'FWD');
 
           const renderPlayerCard = (p) => `
-            <div class="flex flex-col items-center justify-center p-0.5 text-center flex-1 max-w-[68px] sm:max-w-[85px]">
+            <div class="flex flex-col items-center justify-center p-0.5 text-center flex-1 max-w-[56px] xs:max-w-[64px] sm:max-w-[80px]">
               <div class="relative">
-                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-900/90 border-2 ${p.is_captain ? 'border-[#ffbe1a] ring-2 ring-[#ffbe1a]/30' : p.is_vice ? 'border-slate-300' : 'border-emerald-400/50'} flex items-center justify-center shadow-lg">
-                  <span class="text-[10px] sm:text-xs font-bold text-slate-200">${p.pos}</span>
+                <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-slate-900/90 border-2 ${p.is_captain ? 'border-[#ffbe1a] ring-2 ring-[#ffbe1a]/30' : p.is_vice ? 'border-slate-300' : 'border-emerald-400/50'} flex items-center justify-center shadow-lg">
+                  <span class="text-[8px] sm:text-[10px] font-bold text-slate-200">${p.pos}</span>
                 </div>
-                ${p.is_captain ? '<span class="absolute -top-1 -right-1 bg-[#ffbe1a] text-slate-950 font-black text-[8px] sm:text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-display shadow">C</span>' : ''}
-                ${p.is_vice ? '<span class="absolute -top-1 -right-1 bg-slate-300 text-slate-950 font-black text-[8px] sm:text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-display shadow">V</span>' : ''}
+                ${p.is_captain ? '<span class="absolute -top-1 -right-1 bg-[#ffbe1a] text-slate-950 font-black text-[7px] sm:text-[8px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-display shadow">C</span>' : ''}
+                ${p.is_vice ? '<span class="absolute -top-1 -right-1 bg-slate-300 text-slate-950 font-black text-[7px] sm:text-[8px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-display shadow">V</span>' : ''}
               </div>
-              <span class="font-bold text-[10px] sm:text-xs text-white bg-black/80 px-1.5 py-0.5 rounded mt-1 truncate max-w-full block">${p.name}</span>
-              <span class="text-[9px] sm:text-[10px] font-black text-[#00ff87] font-display mt-0.5">${p.points} pts</span>
+              <span class="font-bold text-[9px] sm:text-[11px] text-white bg-black/80 px-1 py-0.5 rounded mt-0.5 truncate max-w-full block">${p.name}</span>
+              <span class="text-[8px] sm:text-[10px] font-black text-[#00ff87] font-display mt-0.5">${p.points} pts</span>
             </div>
           `;
 
@@ -1556,9 +1570,9 @@ html_content = """<!DOCTYPE html>
           let bHtml = '';
           squad.bench.forEach(p => {
             bHtml += `
-              <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between">
+              <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2 sm:p-2.5 flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                  <span class="text-[10px] font-bold text-slate-400 bg-slate-950 px-1.5 py-0.5 rounded font-display">${p.pos}</span>
+                  <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 bg-slate-950 px-1.5 py-0.5 rounded font-display">${p.pos}</span>
                   <span class="text-xs font-bold text-slate-200">${p.name}</span>
                 </div>
                 <span class="text-xs font-black text-slate-400 font-display">${p.points} pts</span>
