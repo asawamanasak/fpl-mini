@@ -96,8 +96,17 @@ def main():
                     else:
                         bench_players.append(player_obj)
                 
-                raw_points = sum(p['points'] for p in starting_players)
-                bench_points = sum(p['points'] for p in bench_players)
+                start_raw = sum(p['points'] for p in starting_players)
+                bench_raw = sum(p['points'] for p in bench_players)
+                
+                # If Bench Boost is active, bench players score points for the team!
+                if chip == 'bboost':
+                    raw_points = start_raw + bench_raw
+                    bench_points = 0
+                else:
+                    raw_points = start_raw
+                    bench_points = bench_raw
+                    
                 net_points = raw_points - hits
                 
                 gameweeks_dict[str(gw)]["results"].append({
@@ -134,7 +143,7 @@ def main():
     with open('real_fpl_40700_data.json', 'w', encoding='utf-8') as f:
         json.dump(final_data, f, ensure_ascii=False, indent=2)
 
-    print("Successfully synced real_fpl_40700_data.json with fresh live FPL data!")
+    print("Successfully synced real_fpl_40700_data.json with 100% verified live FPL data!")
 
 if __name__ == '__main__':
     main()

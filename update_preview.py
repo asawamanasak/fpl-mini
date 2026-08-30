@@ -935,6 +935,7 @@ html_content = """<!DOCTYPE html>
               let benchPts = 0;
               let captainName = '-';
 
+              const chip = picksData.active_chip || null;
               picksData.picks.forEach(p => {
                 const pid = p.element;
                 const mult = p.multiplier || 1;
@@ -948,20 +949,23 @@ html_content = """<!DOCTYPE html>
                 if (p.position <= 11) {
                   startingPts += (pPts * mult);
                 } else {
-                  benchPts += pPts;
+                  benchPts += (pPts * mult);
                 }
               });
+
+              const rawPoints = (chip === 'bboost') ? (startingPts + benchPts) : startingPts;
+              const displayBenchPts = (chip === 'bboost') ? 0 : benchPts;
 
               updatedResults.push({
                 entry_id: eid,
                 team_name: t.entry_name,
                 player_name: t.player_name,
-                points: startingPts,
+                points: rawPoints,
                 hits: hits,
-                net_points: startingPts - hits,
+                net_points: rawPoints - hits,
                 captain: captainName,
-                chip: picksData.active_chip || null,
-                bench_points: benchPts
+                chip: chip,
+                bench_points: displayBenchPts
               });
             }
           }

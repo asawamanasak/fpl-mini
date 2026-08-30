@@ -867,12 +867,12 @@
           "entry_id": 306983,
           "team_name": "GEMINI UNITED",
           "player_name": "Micky Asawamanasak",
-          "points": 53,
+          "points": 78,
           "hits": 0,
-          "net_points": 53,
+          "net_points": 78,
           "captain": "B.Fernandes",
           "chip": "bboost",
-          "bench_points": 25
+          "bench_points": 0
         },
         {
           "entry_id": 2999763,
@@ -994,12 +994,12 @@
           "entry_id": 73489,
           "team_name": "Some might say",
           "player_name": "FAme Pakviwat",
-          "points": 53,
+          "points": 77,
           "hits": 0,
-          "net_points": 53,
+          "net_points": 77,
           "captain": "B.Fernandes",
           "chip": "bboost",
-          "bench_points": 24
+          "bench_points": 0
         },
         {
           "entry_id": 306983,
@@ -4304,6 +4304,7 @@
               let benchPts = 0;
               let captainName = '-';
 
+              const chip = picksData.active_chip || null;
               picksData.picks.forEach(p => {
                 const pid = p.element;
                 const mult = p.multiplier || 1;
@@ -4317,20 +4318,23 @@
                 if (p.position <= 11) {
                   startingPts += (pPts * mult);
                 } else {
-                  benchPts += pPts;
+                  benchPts += (pPts * mult);
                 }
               });
+
+              const rawPoints = (chip === 'bboost') ? (startingPts + benchPts) : startingPts;
+              const displayBenchPts = (chip === 'bboost') ? 0 : benchPts;
 
               updatedResults.push({
                 entry_id: eid,
                 team_name: t.entry_name,
                 player_name: t.player_name,
-                points: startingPts,
+                points: rawPoints,
                 hits: hits,
-                net_points: startingPts - hits,
+                net_points: rawPoints - hits,
                 captain: captainName,
-                chip: picksData.active_chip || null,
-                bench_points: benchPts
+                chip: chip,
+                bench_points: displayBenchPts
               });
             }
           }
