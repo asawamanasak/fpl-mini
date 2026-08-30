@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เซียนอยู่รู หมูอยู่ตึก 2026/27 | FPL League 40700</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            theme: {
+              black: '#050507',
+              card: '#0d0d12',
+              elevated: '#14141b',
+              border: '#1f1f2a',
+              emerald: '#00ff87',
+              cyan: '#00f0ff',
+              gold: '#ffbe1a',
+              rose: '#ff3366',
+              purple: '#9d4edd'
+            }
+          },
+          fontFamily: {
+            sans: ['Prompt', 'Plus Jakarta Sans', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'Prompt', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Google Fonts & Custom CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-screen flex flex-col bg-[#050507] text-slate-100 antialiased selection:bg-[#00ff87] selection:text-slate-950">
+
+  <!-- TOP HEADER / HERO -->
+  <header class="border-b border-white/[0.08] bg-[#08080c]/90 backdrop-blur-2xl sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand & League Info -->
+      <div class="flex items-center gap-3.5">
+        <div class="w-10 h-10 rounded-xl bg-[#14141b] border border-white/[0.1] flex items-center justify-center text-[#00ff87] font-black text-base font-display">
+          FPL
+        </div>
+        <div>
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <h1 class="text-lg sm:text-xl font-extrabold text-white tracking-tight">เซียนอยู่รู หมูอยู่ตึก</h1>
+            <span class="text-[11px] font-bold bg-[#14141b] text-[#00ff87] border border-[#00ff87]/30 px-2.5 py-0.5 rounded-full font-display">
+              LEAGUE 40700
+            </span>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5 flex items-center gap-2 flex-wrap font-medium">
+            <span>ฤดูกาล 2026/27</span>
+            <span>•</span>
+            <span>12 ทีมสมาชิก</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Action & Real-time Status -->
+      <div class="flex items-center gap-3">
+        <div id="api-status-text" class="text-xs text-slate-400 hidden sm:flex items-center bg-[#0d0d12] px-3 py-1.5 rounded-xl border border-white/[0.06]">
+          <span class="inline-block w-2 h-2 rounded-full bg-[#00ff87] mr-2 animate-pulse"></span>
+          กำลังเชื่อมต่อ FPL API...
+        </div>
+
+        <button 
+          id="refresh-btn" 
+          class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#14141b] hover:bg-[#1a1a24] border border-white/[0.1] text-xs font-bold text-white transition-all shadow-md active:scale-95"
+          title="อัปเดตข้อมูลสดล่าสุด"
+        >
+          <svg id="loading-spinner" class="w-3.5 h-3.5 animate-spin hidden text-[#00ff87]" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>อัปเดตข้อมูลสด</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- NAVIGATION TABS -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav class="flex space-x-2 sm:space-x-3 overflow-x-auto scrollbar-thin py-2.5 border-t border-white/[0.06]">
+        <button 
+          data-tab-target="gameweek-view" 
+          class="tab-nav-btn flex-shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-[#00ff87]/15 text-[#00ff87] border border-[#00ff87]/40"
+        >
+          LIVE (Gameweek Hub)
+        </button>
+        <button 
+          data-tab-target="prizes-view" 
+          class="tab-nav-btn flex-shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+        >
+          เงินรางวัล & รอบเคลียร์
+        </button>
+        <button 
+          data-tab-target="hall-of-fame-view" 
+          class="tab-nav-btn flex-shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+        >
+          Hall of Fame
+        </button>
+        <button 
+          data-tab-target="cup-view" 
+          class="tab-nav-btn flex-shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+        >
+          บอลถ้วย
+        </button>
+        <button 
+          data-tab-target="rules-view" 
+          class="tab-nav-btn flex-shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+        >
+          กติกาของลีก
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- ==================== TAB 1: GAMEWEEK VIEW ==================== -->
+    <div id="gameweek-view" class="tab-content space-y-6">
+      
+      <!-- 1. ส่วนหัวของหน้า (Section Header) -->
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-white tracking-tight">
+            เลือกรอบการแข่งขัน (GW 1 - 38)
+          </h2>
+        </div>
+        <span class="text-xs font-bold text-slate-400 font-display bg-[#0d0d12] border border-white/[0.08] px-3 py-1 rounded-xl">
+          GAMEWEEK MATCHDAY
+        </span>
+      </div>
+
+      <!-- Gameweek Selector Horizontal Bar -->
+      <div id="gw-selector-container" class="flex gap-2.5 overflow-x-auto scrollbar-thin pb-2 pt-1">
+        <!-- Dynamic GW buttons -->
+      </div>
+
+      <!-- GW Champion Card & Tagline -->
+      <div id="champion-card-container">
+        <!-- Dynamic Champion card -->
+      </div>
+
+      <!-- Tables Grid: Matchday Results & Overall Standings -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left: Matchday Scores (Net Points & Hits) -->
+        <div class="lg:col-span-7 glass-card rounded-2xl p-5 sm:p-6 border border-white/[0.08]">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-base sm:text-lg font-bold text-white">
+                อันดับคะแนนประจำสัปดาห์นี้
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">คะแนนสุทธิ = แต้มดิบ - แต้มลบจากการย้ายตัว (Hits)</p>
+            </div>
+            <span class="text-xs font-bold text-[#00ff87] bg-[#00ff87]/10 border border-[#00ff87]/30 px-3 py-1 rounded-xl font-display">
+              MATCHDAY STANDINGS
+            </span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead class="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/[0.08]">
+                <tr>
+                  <th class="py-3 px-3.5">อันดับ</th>
+                  <th class="py-3 px-3.5">ทีม / ผู้จัดการ</th>
+                  <th class="py-3 px-3.5 text-center">กัปตัน (C)</th>
+                  <th class="py-3 px-3.5 text-center">แต้มดิบ</th>
+                  <th class="py-3 px-3.5 text-center text-rose-400">Hits</th>
+                  <th class="py-3 px-3.5 text-center text-[#00ff87]">แต้มสุทธิ</th>
+                  <th class="py-3 px-3.5 text-center text-slate-400">สำรอง</th>
+                </tr>
+              </thead>
+              <tbody id="matchday-table-body" class="divide-y divide-white/[0.04]">
+                <!-- Dynamic rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right: Overall League Table -->
+        <div class="lg:col-span-5 glass-card rounded-2xl p-5 sm:p-6 border border-white/[0.08]">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-base sm:text-lg font-bold text-white">
+                ตารางคะแนนรวมสะสม (Overall Standings)
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">อันดับคะแนนรวมสะสมของทั้ง 12 ทีม</p>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead class="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/[0.08]">
+                <tr>
+                  <th class="py-3 px-3.5 text-center">อันดับ</th>
+                  <th class="py-3 px-3.5">ทีม</th>
+                  <th class="py-3 px-3.5 text-center text-slate-300">GW</th>
+                  <th class="py-3 px-3.5 text-center text-[#00ff87]">แต้มรวม</th>
+                </tr>
+              </thead>
+              <tbody id="overall-standings-body" class="divide-y divide-white/[0.04]">
+                <!-- Dynamic rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================== TAB 2: PRIZES & SETTLEMENTS VIEW ==================== -->
+    <div id="prizes-view" class="tab-content hidden space-y-6">
+      
+      <!-- Prize Pool Overview Banner -->
+      <div class="glass-card-gold rounded-3xl p-6 sm:p-8 border border-[#ffbe1a]/30 relative overflow-hidden">
+        <div class="flex flex-wrap items-center justify-between gap-6 relative z-10">
+          <div>
+            <span class="text-xs uppercase tracking-widest text-[#ffbe1a] font-bold">TOTAL PRIZE MATRIX</span>
+            <h2 class="text-2xl sm:text-3xl font-black text-white font-display mt-1">สรุปเงินรางวัลรวม 22,000 บาท</h2>
+            <p class="text-xs sm:text-sm text-slate-300 mt-1">11 ทีม × ค่าสมัคร 2,000 บาท | แบ่ง 3 หมวดรางวัล</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="bg-[#08080c]/90 border border-white/[0.1] px-4 py-2.5 rounded-2xl text-center">
+              <span class="text-[11px] text-slate-400 block">แชมป์ 38 วีค (350 บ.)</span>
+              <strong class="text-[#00ff87] font-display text-base">13,300 บาท</strong>
+            </div>
+            <div class="bg-[#08080c]/90 border border-white/[0.1] px-4 py-2.5 rounded-2xl text-center">
+              <span class="text-[11px] text-slate-400 block">บอลถ้วย (2 รางวัล)</span>
+              <strong class="text-[#ffbe1a] font-display text-base">1,650 บาท</strong>
+            </div>
+            <div class="bg-[#08080c]/90 border border-white/[0.1] px-4 py-2.5 rounded-2xl text-center">
+              <span class="text-[11px] text-slate-400 block">แชมป์ฤดูกาล (4 รางวัล)</span>
+              <strong class="text-[#9d4edd] font-display text-base">7,050 บาท</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Prize Money Leaderboard -->
+      <div class="glass-card rounded-2xl p-5 sm:p-6 border border-white/[0.08]">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-white">
+              ตารางสรุปเงินรางวัลสะสมของทั้ง 12 ทีม (ที่ได้รับจริง ณ ปัจจุบัน)
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">เงินรางวัลแชมป์วีคคำนวณเฉพาะสัปดาห์ที่แข่งเสร็จสิ้นแล้ว (350 บ./ครั้ง) | รางวัลบอลถ้วยและแชมป์ฤดูกาลจะสรุปผลเมื่อจบการแข่งขันใน GW 38</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/[0.08]">
+              <tr>
+                <th class="py-3 px-3.5 text-center">อันดับ</th>
+                <th class="py-3 px-3.5">ทีม / ผู้จัดการ</th>
+                <th class="py-3 px-3.5 text-center text-[#00f0ff]">ชนะวีค</th>
+                <th class="py-3 px-3.5 text-center">แชมป์วีค (350 บ.)</th>
+                <th class="py-3 px-3.5 text-center text-[#ffbe1a]">บอลถ้วย</th>
+                <th class="py-3 px-3.5 text-center text-[#9d4edd]">แชมป์ฤดูกาล</th>
+                <th class="py-3 px-3.5 text-center text-[#00ff87]">รวมเงินรางวัลที่ได้รับจริง</th>
+              </tr>
+            </thead>
+            <tbody id="prize-leaderboard-body" class="divide-y divide-white/[0.04]">
+              <!-- Dynamic Rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Settlement Phases (รอบ 1 - 6) -->
+      <div>
+        <div class="mb-4">
+          <h3 class="text-base sm:text-lg font-bold text-white">
+            รอบเคลียร์เงินรางวัล 6 Phase (ทุก 6 GW / ท้าย 8 GW)
+          </h3>
+          <p class="text-xs text-slate-400 mt-0.5">สรุปยอดเงินรางวัลที่ต้องโอนเคลียร์ให้สมาชิกในแต่ละรอบ</p>
+        </div>
+
+        <div id="settlement-phases-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Dynamic Phase Cards -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==================== TAB 3: HALL OF FAME & STATISTICS ==================== -->
+    <div id="hall-of-fame-view" class="tab-content hidden space-y-6">
+      
+      <!-- Top Record Cards -->
+      <div id="hall-of-fame-records" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Dynamic Record Cards -->
+      </div>
+
+      <!-- Comprehensive Stats Table -->
+      <div class="glass-card rounded-2xl p-5 sm:p-6 border border-white/[0.08]">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-white">
+              สถิติเชิงลึกและประสิทธิภาพการเล่นของทั้ง 12 ทีม
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">สถิติคะแนนเฉลี่ย, อัตราติด Top 3, แต้มสูงสุด/ต่ำสุด และแต้มลบสะสม</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="text-[11px] uppercase tracking-wider text-slate-400 border-b border-white/[0.08]">
+              <tr>
+                <th class="py-3 px-3.5 text-center">อันดับ</th>
+                <th class="py-3 px-3.5">ทีม / ผู้จัดการ</th>
+                <th class="py-3 px-3.5 text-center text-[#00ff87]">แชมป์วีค (ครั้ง)</th>
+                <th class="py-3 px-3.5 text-center text-[#00f0ff]">แต้มเฉลี่ย/GW</th>
+                <th class="py-3 px-3.5 text-center">แต้มสูงสุด</th>
+                <th class="py-3 px-3.5 text-center">แต้มต่ำสุด</th>
+                <th class="py-3 px-3.5 text-center text-rose-400">แต้มลบรวม</th>
+                <th class="py-3 px-3.5 text-center text-[#9d4edd]">% ติด Top 3</th>
+              </tr>
+            </thead>
+            <tbody id="hall-of-fame-table-body" class="divide-y divide-white/[0.04]">
+              <!-- Dynamic rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==================== TAB 4: CUP TOURNAMENT ==================== -->
+    <div id="cup-view" class="tab-content hidden space-y-6">
+      <div id="cup-tournament-container">
+        <!-- Dynamic Cup Tree and Matches -->
+      </div>
+    </div>
+
+    <!-- ==================== TAB 5: LEAGUE RULES ==================== -->
+    <div id="rules-view" class="tab-content hidden space-y-4">
+      
+      <!-- Top Overview Banner -->
+      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-white/[0.08] flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <span class="text-[11px] uppercase tracking-widest text-[#00ff87] font-extrabold font-display">OFFICIAL LEAGUE RULES & PRIZE MATRIX</span>
+          <h2 class="text-xl sm:text-2xl font-black text-white font-display mt-0.5">กติกาแฟนตาซี เซียนอยู่รู หมูอยู่ตึก (ฤดูกาล 2026/27)</h2>
+          <p class="text-xs text-slate-400 mt-0.5">LEAGUE ID: <strong class="text-slate-200">40700</strong> | สมาชิก 11-12 ทีม | ค่าสมัคร 2,000 บาท/ทีม | งบเงินรางวัลรวม <strong>22,000 บาท</strong></p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="bg-[#00ff87]/15 text-[#00ff87] border border-[#00ff87]/30 text-xs px-3 py-1 rounded-xl font-bold font-display">38 GAMEWEEKS</span>
+          <span class="bg-[#ffbe1a]/15 text-[#ffbe1a] border border-[#ffbe1a]/30 text-xs px-3 py-1 rounded-xl font-bold font-display">22,000 THB POOL</span>
+        </div>
+      </div>
+
+      <!-- 3-Column Grid: Fully fits on one screen without scrolling -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <!-- Column 1: ข้อมูลลีก & แชมป์ประจำสัปดาห์ -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-white/[0.08] flex flex-col justify-between space-y-3">
+          <div>
+            <div class="flex items-center gap-2 mb-2 pb-2 border-b border-white/[0.06]">
+              <span class="w-6 h-6 rounded-lg bg-[#00f0ff]/15 text-[#00f0ff] font-bold text-xs flex items-center justify-center font-display">1</span>
+              <h3 class="font-bold text-white text-sm">การแข่งขัน & แชมป์สัปดาห์</h3>
+            </div>
+            
+            <div class="space-y-2 text-xs text-slate-300">
+              <div class="bg-[#08080c] p-2.5 rounded-xl border border-white/[0.04]">
+                <strong class="text-slate-100 block mb-0.5">• รูปแบบ & สมาชิก:</strong>
+                <span>11-12 ทีม แข่งขัน 38 สัปดาห์ (GW 1 - 38) ชิงเงินรางวัลรวม 22,000 บาท (ค่าสมัคร 2,000 บ./ทีม)</span>
+              </div>
+
+              <div class="bg-[#08080c] p-2.5 rounded-xl border border-white/[0.04]">
+                <strong class="text-[#00ff87] block mb-0.5">• แชมป์วีค 38 สัปดาห์ (งบ 13,300 บ.):</strong>
+                <span>สัปดาห์ละ <strong>350 บาท</strong> คิดจากแต้มสุทธิ (Net Points = แต้มดิบ - Hits) เฉพาะสัปดาห์ที่แข่งจบแล้ว (หากแต้มเท่ากันหารรางวัลเท่ากัน)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-500 pt-2 border-t border-white/[0.04]">
+            * หักแต้มย้ายทีม (Hits) มีผลโดยตรงต่อการตัดสินแชมป์วีค
+          </div>
+        </div>
+
+        <!-- Column 2: รางวัลแชมป์ฤดูกาล & บอลถ้วย -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-white/[0.08] flex flex-col justify-between space-y-3">
+          <div>
+            <div class="flex items-center gap-2 mb-2 pb-2 border-b border-white/[0.06]">
+              <span class="w-6 h-6 rounded-lg bg-[#ffbe1a]/15 text-[#ffbe1a] font-bold text-xs flex items-center justify-center font-display">2</span>
+              <h3 class="font-bold text-white text-sm">แชมป์ฤดูกาล & บอลถ้วย</h3>
+            </div>
+
+            <div class="space-y-2 text-xs text-slate-300">
+              <!-- แชมป์ลีก -->
+              <div class="bg-[#08080c] p-2.5 rounded-xl border border-white/[0.04]">
+                <div class="flex justify-between items-center mb-1">
+                  <strong class="text-[#9d4edd]">• แชมป์ลีก 4 อันดับ:</strong>
+                  <span class="font-bold text-slate-200">รวม 7,050 บ.</span>
+                </div>
+                <div class="grid grid-cols-2 gap-1 text-[11px] text-slate-300">
+                  <span>อันดับ 1: <strong class="text-[#ffbe1a]">3,500 บ.</strong></span>
+                  <span>อันดับ 2: <strong class="text-slate-200">2,000 บ.</strong></span>
+                  <span>อันดับ 3: <strong class="text-amber-400">1,000 บ.</strong></span>
+                  <span>อันดับ 4: <strong class="text-slate-400">550 บ.</strong></span>
+                </div>
+              </div>
+
+              <!-- บอลถ้วย -->
+              <div class="bg-[#08080c] p-2.5 rounded-xl border border-white/[0.04]">
+                <div class="flex justify-between items-center mb-1">
+                  <strong class="text-[#ffbe1a]">• บอลถ้วย (Knockout):</strong>
+                  <span class="font-bold text-slate-200">รวม 1,650 บ.</span>
+                </div>
+                <div class="grid grid-cols-2 gap-1 text-[11px] text-slate-300">
+                  <span>แชมป์บอลถ้วย: <strong class="text-[#ffbe1a]">1,000 บ.</strong></span>
+                  <span>รองแชมป์: <strong class="text-slate-300">650 บ.</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-500 pt-2 border-t border-white/[0.04]">
+            * สรุปผลและมอบเงินรางวัลเมื่อสิ้นสุดการแข่งขันใน GW 38
+          </div>
+        </div>
+
+        <!-- Column 3: รอบเคลียร์เงินรางวัล 6 Phase -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-white/[0.08] flex flex-col justify-between space-y-3">
+          <div>
+            <div class="flex items-center gap-2 mb-2 pb-2 border-b border-white/[0.06]">
+              <span class="w-6 h-6 rounded-lg bg-[#00ff87]/15 text-[#00ff87] font-bold text-xs flex items-center justify-center font-display">3</span>
+              <h3 class="font-bold text-white text-sm">รอบเคลียร์เงินรางวัล (6 Phase)</h3>
+            </div>
+
+            <div class="bg-[#08080c] p-2.5 rounded-xl border border-white/[0.04] text-xs text-slate-300 space-y-1">
+              <div class="flex justify-between py-0.5 border-b border-white/[0.03]"><span>รอบ 1 (GW 1-6):</span><strong class="text-[#00ff87]">2,100 บ.</strong></div>
+              <div class="flex justify-between py-0.5 border-b border-white/[0.03]"><span>รอบ 2 (GW 7-12):</span><strong class="text-slate-300">2,100 บ.</strong></div>
+              <div class="flex justify-between py-0.5 border-b border-white/[0.03]"><span>รอบ 3 (GW 13-18):</span><strong class="text-slate-300">2,100 บ.</strong></div>
+              <div class="flex justify-between py-0.5 border-b border-white/[0.03]"><span>รอบ 4 (GW 19-24):</span><strong class="text-slate-300">2,100 บ.</strong></div>
+              <div class="flex justify-between py-0.5 border-b border-white/[0.03]"><span>รอบ 5 (GW 25-30):</span><strong class="text-slate-300">2,100 บ.</strong></div>
+              <div class="flex justify-between py-0.5 text-[#ffbe1a]"><span>รอบ 6 (GW 31-38):</span><strong>11,500 บ.*</strong></div>
+            </div>
+          </div>
+
+          <div class="text-[10px] text-slate-500 pt-2 border-t border-white/[0.04]">
+            * รอบ 6 รวมงบวีค 2,800 บ. + ถ้วย 1,650 บ. + แชมป์ลีก 7,050 บ.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. Team Squad Deep Dive Pitch Modal -->
+  <div id="team-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="glass-card rounded-3xl p-6 max-w-2xl w-full border border-white/[0.1] shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-4">
+        <div>
+          <span class="text-xs uppercase tracking-wider text-[#00ff87] font-bold">ข้อมูลการจัดทัพสัปดาห์นี้</span>
+          <h3 id="team-modal-title" class="text-xl font-extrabold text-white">ชื่อทีม</h3>
+        </div>
+        <button onclick="app.closeTeamModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <!-- Pitch -->
+      <div class="fpl-pitch p-4 min-h-[360px] flex flex-col justify-around rounded-2xl mb-4">
+        <div id="team-pitch-container" class="grid grid-cols-4 gap-2">
+          <!-- Starting 11 -->
+        </div>
+      </div>
+
+      <!-- Bench -->
+      <div class="bg-[#08080c] rounded-2xl p-4 border border-white/[0.06]">
+        <span class="text-xs uppercase tracking-wider text-slate-400 font-bold block mb-2">ตัวสำรอง (Substitutes)</span>
+        <div id="team-bench-container" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <!-- Bench players -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Tagline Editor Modal -->
+  <div id="tagline-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="glass-card rounded-3xl p-6 max-w-lg w-full border border-purple-500/40 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-4">
+        <h3 id="tagline-modal-title" class="text-lg font-bold text-white">แก้ไขจุดเด่น / Tagline ประจำสัปดาห์</h3>
+        <button onclick="app.closeTaglineModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <p class="text-xs text-slate-400">ใส่ข้อความไฮไลท์ หรือโน้ตจุดเด่นของทีมที่ได้แชมป์วีคนี้ เพื่อแสดงบนหน้าเว็บและส่งลงกลุ่ม LINE:</p>
+        <textarea 
+          id="tagline-input" 
+          rows="3" 
+          class="w-full bg-[#08080c] border border-white/[0.1] rounded-xl p-3 text-sm text-white focus:outline-none focus:border-[#00ff87]"
+          placeholder="เช่น ฮาลันด์กดแฮตทริกพาซิว 350 บาทแบบไร้เทียมทาน"
+        ></textarea>
+
+        <div class="flex justify-end gap-2">
+          <button onclick="app.closeTaglineModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white">ยกเลิก</button>
+          <button id="tagline-save-btn" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#00ff87] hover:bg-[#00e676] text-slate-950 shadow-lg shadow-[#00ff87]/20">บันทึกข้อความ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/[0.06] bg-[#050507] py-6 text-center text-xs text-slate-500 mt-auto">
+    <div class="max-w-7xl mx-auto px-4">
+      <p class="font-medium text-slate-400">เซียนอยู่รู หมูอยู่ตึก ฤดูกาล 2026/27 • League ID: 40700</p>
+      <p class="mt-1 text-[11px] text-slate-600">Fantasy Premier League Mini-League Presentation Dashboard | Ready for GitHub Pages</p>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT MODULES -->
+  <script src="js/config.js"></script>
+  <script src="js/mockData.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/calculator.js"></script>
+  <script src="js/taglines.js"></script>
+  <script src="js/share.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

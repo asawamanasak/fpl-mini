@@ -1,0 +1,148 @@
+/* Modern Sleek OLED Dark Theme & Clean Typography */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --bg-black: #050507;
+  --card-black: #0d0d11;
+  --card-black-elevated: #131318;
+  --card-border: #22222b;
+  --card-border-glow: #00ff87;
+  --accent-emerald: #00ff87;
+  --accent-cyan: #00f0ff;
+  --accent-gold: #ffbe1a;
+  --accent-rose: #ff3366;
+}
+
+body {
+  font-family: 'Prompt', 'Plus Jakarta Sans', sans-serif;
+  background-color: #050507;
+  color: #f8fafc;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(0, 255, 135, 0.05) 0px, transparent 45%),
+    radial-gradient(at 100% 0%, rgba(0, 240, 255, 0.05) 0px, transparent 45%),
+    radial-gradient(at 50% 100%, rgba(255, 190, 26, 0.03) 0px, transparent 60%);
+  background-attachment: fixed;
+  letter-spacing: -0.01em;
+}
+
+.font-display {
+  font-family: 'Plus Jakarta Sans', 'Prompt', sans-serif;
+}
+
+/* Modern Sleek Black Cards */
+.glass-card {
+  background: rgba(13, 13, 17, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+}
+
+.glass-card-elevated {
+  background: rgba(19, 19, 24, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 14px 40px -12px rgba(0, 0, 0, 0.85);
+}
+
+.glass-card-glow {
+  background: linear-gradient(145deg, rgba(16, 16, 22, 0.95), rgba(10, 10, 14, 0.95));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 255, 135, 0.35);
+  box-shadow: 0 0 35px rgba(0, 255, 135, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.glass-card-gold {
+  background: linear-gradient(145deg, rgba(20, 17, 10, 0.95), rgba(12, 11, 8, 0.95));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 190, 26, 0.35);
+  box-shadow: 0 0 35px rgba(255, 190, 26, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Custom Scrollbar for GW selector */
+.scrollbar-thin::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #08080b;
+  border-radius: 9999px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #272732;
+  border-radius: 9999px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #00ff87;
+}
+
+/* Football Pitch Styling */
+.fpl-pitch {
+  background: linear-gradient(180deg, #0f3813 0%, #174d1c 50%, #0f3813 100%);
+  position: relative;
+  border-radius: 1.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6);
+}
+
+.fpl-pitch::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.fpl-pitch::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Chip Badges */
+.chip-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.badge-3xc {
+  background: #7928ca;
+  color: #fff;
+  border: 1px solid #ff007a;
+}
+.badge-bboost {
+  background: #0070f3;
+  color: #fff;
+  border: 1px solid #00dfd8;
+}
+.badge-freehit {
+  background: #e65100;
+  color: #fff;
+  border: 1px solid #ff9100;
+}
+.badge-wildcard {
+  background: #2e7d32;
+  color: #fff;
+  border: 1px solid #76ff03;
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(12px);
+}
+

@@ -1,0 +1,86 @@
+# เซียนอยู่รู หมูอยู่ตึก (ฤดูกาล 2026/27)
+### Fantasy Premier League Mini-League Presentation Dashboard (League ID: 40700)
+
+เว็บแอปพลิเคชัน Presentation และ Dashboard แสดงผลคะแนน Real-time สรุปเงินรางวัล 22,000 บาท สถิติรวม Hall of Fame และรอบเคลียร์เงินรางวัล สำหรับสมาชิกลีก "เซียนอยู่รู หมูอยู่ตึก"
+
+---
+
+## จุดเด่นของระบบ (Key Features)
+
+1. **ผลการแข่งขันสด & ย้อนหลัง (GW 1 - 38):**
+   - ดึงข้อมูลสดจาก Fantasy Premier League API และดูย้อนหลังได้ทุก Gameweek
+   - แสดงแชมป์ประจำสัปดาห์ (Weekly Champion) พร้อมแต้มสุทธิ (หักลบแต้มย้ายตัว Hits เรียบร้อย)
+   - Champion Highlight Note: มีระบบวิเคราะห์จุดเด่นของทีมแชมป์ประจำสัปดาห์อัตโนมัติ พร้อมปุ่มให้แอดมินแก้ไขหรือใส่ข้อความสรุปได้เอง
+   - มีปุ่ม "คัดลอกสรุปผลส่ง LINE" ก๊อปปี้ข้อความจัดฟอร์แมตสะอาดตานำไปแปะในกลุ่มแชทได้ทันที
+
+2. **ตารางสรุปเงินรางวัล 22,000 บาท & รอบเคลียร์ยอด (Settlement Phases):**
+   - Leaderboard เงินรางวัลสะสม: รวมยอดแชมป์วีค + บอลถ้วย + แชมป์ลีก ของสมาชิกทั้งหมด
+   - รอบเคลียร์เงิน 6 Phase: แบ่งรอบเคลียร์เงินทุก 6 GW และรอบท้ายฤดูกาล 8 GW ตามกติกา
+     - รอบที่ 1: GW 1 - 6 (รวม 2,100 บาท)
+     - รอบที่ 2: GW 7 - 12 (รวม 2,100 บาท)
+     - รอบที่ 3: GW 13 - 18 (รวม 2,100 บาท)
+     - รอบที่ 4: GW 19 - 24 (รวม 2,100 บาท)
+     - รอบที่ 5: GW 25 - 30 (รวม 2,100 บาท)
+     - รอบที่ 6: GW 31 - 38 (รวม 2,800 บาท + บอลถ้วย 1,650 บาท + แชมป์ลีก 7,050 บาท)
+
+3. **Hall of Fame & สถิติรวม:**
+   - สถิติคะแนนสูงสุดใน 1 วีค, จอมกวาดแชมป์วีค, ทีมฟอร์มสม่ำเสมอแต้มเฉลี่ยสูงสุด, แต้มม้านั่งสำรอง
+   - ตารางสถิติเชิงลึก (อัตราการติด Top 3, แต้มต่ำสุด, แต้มลบสะสม)
+
+4. **ฟุตบอลถ้วย (Cup Tournament):**
+   - ติดตามผลแชมป์บอลถ้วย (1,000 บาท) และรองแชมป์บอลถ้วย (650 บาท)
+
+5. **Team Squad Deep Dive:**
+   - คลิกที่ชื่อทีมเพื่อดูผังสนาม 11 ตัวจริง + ตัวสำรอง 4 คน, กัปตัน, รองกัปตัน และชิปที่ใช้
+
+---
+
+## วิธีการนำขึ้น GitHub Pages (Deployment Guide)
+
+ไฟล์ทั้งหมดถูกออกแบบให้อยู่ในรูปแบบ Client-side Static Web (HTML/CSS/JS) ทำให้สามารถเปิดใช้งานบน GitHub Pages ได้ฟรีทันทีโดยไม่ต้องรัน Build หรือ Server:
+
+### ขั้นตอนที่ 1: อัปโหลดโค้ดขึ้น GitHub Repository
+1. สร้าง New Repository บน GitHub.com (เช่น ตั้งชื่อว่า `fpl-sian-yoo-roo`)
+2. อัปโหลดไฟล์ทั้งหมดในโฟลเดอร์นี้ขึ้นไปที่ Branch `main`:
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial FPL 40700 presentation dashboard"
+   git branch -M main
+   git remote add origin https://github.com/<YOUR_USERNAME>/<YOUR_REPO_NAME>.git
+   git push -u origin main
+   ```
+
+### ขั้นตอนที่ 2: เปิดใช้งาน GitHub Pages
+1. ไปที่แท็บ Settings ของ Repository บน GitHub
+2. เมนูด้านซ้ายเลือก Pages
+3. ในหัวข้อ Build and deployment > Branch:
+   - เลือก Branch: `main`
+   - เลือก Folder: `/ (root)`
+4. กด Save
+
+### ขั้นตอนที่ 3: รับ URL พร้อมแชร์
+รอประมาณ 1 นาที GitHub จะสร้างลิงก์สำหรับเข้าชมให้ เช่น:
+https://<YOUR_USERNAME>.github.io/<YOUR_REPO_NAME>/
+สามารถนำลิงก์นี้ไปแชร์ให้เพื่อนๆ ในลีกเข้ามาดูผลคะแนนและเงินรางวัลได้ทันที
+
+---
+
+## โครงสร้างโปรเจกต์ (File Structure)
+
+```
+├── preview.html        # หน้าพรีวิวแบบ Standalone เปิดดูได้ทันทีโดยไม่ต้องรัน Server
+├── index.html          # หน้าเว็บหลัก Single-Page Dashboard สำหรับขึ้น GitHub Pages
+├── css/
+│   └── styles.css      # Minimalist OLED Dark theme & layout styling
+├── js/
+│   ├── config.js       # ค่าคอนฟิกลีก 40700, โครงสร้างเงินรางวัล 22,000 บาท, รอบ 6 Phase
+│   ├── mockData.js     # ข้อมูลจริง 12 ทีมจาก FPL League 40700
+│   ├── api.js          # ระบบดึงข้อมูลจาก FPL API พร้อม Multi-tier CORS Proxy Fallback
+│   ├── calculator.js   # สูตรคำนวณแต้มสุทธิ (หัก Hits), แชมป์วีค 350 บ., สถิติ Hall of Fame
+│   ├── taglines.js     # ระบบวิเคราะห์จุดเด่นทีมแชมป์ + ระบบแก้ไขเอง
+│   ├── share.js        # ฟังก์ชันคัดลอกสรุปผลลง LINE
+│   ├── ui.js           # ระบบแสดงผล DOM, ตารางคะแนน, การ์ดแชมป์, ผังสนาม
+│   └── app.js          # Controller หลัก ควบคุมการทำงาน
+└── README.md           # คู่มือและเอกสารกติกา
+```
