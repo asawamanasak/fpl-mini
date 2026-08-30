@@ -258,9 +258,25 @@ class App {
     if (gwData && gwData.results) {
       const isFinished = gwData.is_finished === true;
       const gwResult = this.calculator.calculateGameweekResult(gwNumber, gwData.results, isFinished);
-      this.taglines.regenerateFreshTagline(gwNumber, gwResult);
-      this.renderSelectedGameweek();
-      this.share.showToast('คิดสดและเขียนโน้ตใหม่เรียบร้อยแล้ว');
+      const newTagline = this.taglines.regenerateFreshTagline(gwNumber, gwResult);
+
+      // Write new note directly into the card without pop-up
+      const noteEl = document.getElementById('current-gw-note-text');
+      if (noteEl) {
+        noteEl.style.transition = 'opacity 0.15s ease-out';
+        noteEl.style.opacity = '0.2';
+        setTimeout(() => {
+          noteEl.innerText = `"${newTagline.text}"`;
+          noteEl.style.opacity = '1';
+        }, 150);
+
+        const editBtn = document.getElementById('tagline-edit-btn');
+        if (editBtn) {
+          editBtn.setAttribute('onclick', `app.openTaglineModal(${gwNumber}, '${newTagline.text.replace(/'/g, "\\'")}')`);
+        }
+      } else {
+        this.renderSelectedGameweek();
+      }
     }
   }
 

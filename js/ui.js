@@ -153,7 +153,7 @@ class UIRenderer {
             <div class="bg-gradient-to-r from-[#14141b] via-[#0d0d12] to-[#14141b] border border-white/[0.1] rounded-2xl p-3.5 sm:p-4 flex items-center justify-between gap-3">
               <div class="flex-1">
                 <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-bold block font-display">CHAMPION HIGHLIGHT NOTE</span>
-                <p class="text-xs sm:text-sm font-medium text-slate-200 mt-0.5 leading-snug">
+                <p id="current-gw-note-text" class="text-xs sm:text-sm font-medium text-slate-200 mt-0.5 leading-snug">
                   "${taglineObj.text}"
                 </p>
               </div>
@@ -166,6 +166,7 @@ class UIRenderer {
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                 </button>
                 <button 
+                  id="tagline-edit-btn"
                   onclick="app.openTaglineModal(${gwNumber}, '${taglineObj.text.replace(/'/g, "\\'")}')"
                   class="p-2 text-slate-400 hover:text-white hover:bg-white/[0.08] rounded-xl transition-all"
                   title="แก้ไขโน้ตด้วยตนเอง"
@@ -238,7 +239,7 @@ class UIRenderer {
             <div class="bg-gradient-to-r from-[#14141b] via-[#0d0d12] to-[#14141b] border border-white/[0.1] rounded-2xl p-3.5 sm:p-4 flex items-center justify-between gap-3">
               <div class="flex-1">
                 <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-bold block font-display">MATCHDAY LIVE NOTE</span>
-                <p class="text-xs sm:text-sm font-medium text-slate-200 mt-0.5 leading-snug">
+                <p id="current-gw-note-text" class="text-xs sm:text-sm font-medium text-slate-200 mt-0.5 leading-snug">
                   "${taglineObj.text}"
                 </p>
               </div>
@@ -251,6 +252,7 @@ class UIRenderer {
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                 </button>
                 <button 
+                  id="tagline-edit-btn"
                   onclick="app.openTaglineModal(${gwNumber}, '${taglineObj.text.replace(/'/g, "\\'")}')"
                   class="p-2 text-slate-400 hover:text-white hover:bg-white/[0.08] rounded-xl transition-all"
                   title="แก้ไขโน้ตด้วยตนเอง"

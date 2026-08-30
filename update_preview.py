@@ -913,8 +913,23 @@ html_content = """<!DOCTYPE html>
         if (!gwData) return;
         const freshNote = LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData);
         this.liveNotesCache[this.selectedGW] = freshNote;
-        this.renderGameweekView();
-        this.showToast('คิดสดและเขียนโน้ตใหม่เรียบร้อยแล้ว');
+
+        const noteEl = document.getElementById('current-gw-note-text');
+        if (noteEl) {
+          noteEl.style.transition = 'opacity 0.15s ease-out';
+          noteEl.style.opacity = '0.2';
+          setTimeout(() => {
+            noteEl.innerText = `"${freshNote}"`;
+            noteEl.style.opacity = '1';
+          }, 150);
+
+          const editBtn = document.getElementById('tagline-edit-btn');
+          if (editBtn) {
+            editBtn.setAttribute('onclick', `app.openTaglineModal(${this.selectedGW}, '${freshNote.replace(/'/g, "\\'")}')`);
+          }
+        } else {
+          this.renderGameweekView();
+        }
       }
 
       getNoteForCurrentGW() {
@@ -1076,6 +1091,7 @@ html_content = """<!DOCTYPE html>
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                     </button>
                     <button 
+                      id="tagline-edit-btn"
                       onclick="app.openTaglineModal(${this.selectedGW}, '${currentLiveNote.replace(/'/g, "\\'")}')"
                       class="p-2 text-slate-400 hover:text-white hover:bg-white/[0.08] rounded-xl transition-all"
                       title="แก้ไขโน้ตด้วยตนเอง"
@@ -1161,6 +1177,7 @@ html_content = """<!DOCTYPE html>
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                     </button>
                     <button 
+                      id="tagline-edit-btn"
                       onclick="app.openTaglineModal(${this.selectedGW}, '${currentLiveNote.replace(/'/g, "\\'")}')"
                       class="p-2 text-slate-400 hover:text-white hover:bg-white/[0.08] rounded-xl transition-all"
                       title="แก้ไขโน้ตด้วยตนเอง"
