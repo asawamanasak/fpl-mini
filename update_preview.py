@@ -1373,11 +1373,7 @@ html_content = """<!DOCTYPE html>
         
         const noteEl = document.getElementById('current-gw-note-text');
         if (noteEl) {
-          noteEl.style.opacity = '0';
-          setTimeout(() => {
-            noteEl.innerText = `"${newNote}"`;
-            noteEl.style.opacity = '1';
-          }, 150);
+          noteEl.innerText = `"${newNote}"`;
         }
       }
 
@@ -2074,17 +2070,24 @@ html_content = """<!DOCTYPE html>
       }
 
       openTaglineModal(gw, text) {
-        document.getElementById('tagline-modal-title').innerText = `แก้ไขจุดเด่น Gameweek ${gw}`;
+        const titleEl = document.getElementById('tagline-modal-title');
+        if (titleEl) titleEl.innerText = `แก้ไขจุดเด่น Gameweek ${gw}`;
         const input = document.getElementById('tagline-input');
-        input.value = text;
-        document.getElementById('tagline-modal').classList.remove('hidden');
-        input.focus();
+        if (input) {
+          input.value = text;
+          if (typeof input.focus === 'function') input.focus();
+        }
+        const modal = document.getElementById('tagline-modal');
+        if (modal) modal.classList.remove('hidden');
 
-        document.getElementById('tagline-save-btn').onclick = () => {
-          this.liveNotesCache[gw] = input.value;
-          this.closeTaglineModal();
-          this.renderGameweekView();
-        };
+        const saveBtn = document.getElementById('tagline-save-btn');
+        if (saveBtn) {
+          saveBtn.onclick = () => {
+            if (input) this.liveNotesCache[gw] = input.value;
+            this.closeTaglineModal();
+            this.renderGameweekView();
+          };
+        }
       }
 
       shareCurrentGameweek() {
