@@ -89,35 +89,35 @@
     </div>
 
     <!-- NAVIGATION TABS -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <nav class="flex space-x-2 sm:space-x-3 overflow-x-auto scrollbar-thin py-2.5 border-t border-white/[0.06]">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <nav class="flex space-x-1.5 sm:space-x-2.5 overflow-x-auto touch-scroll no-scrollbar py-2 border-t border-white/[0.06]">
         <button 
           data-tab-target="gameweek-view" 
-          class="tab-nav-btn flex-shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-[#00ff87]/15 text-[#00ff87] border border-[#00ff87]/40"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-[#00ff87]/15 text-[#00ff87] border border-[#00ff87]/40"
         >
           LIVE (Gameweek Hub)
         </button>
         <button 
           data-tab-target="prizes-view" 
-          class="tab-nav-btn flex-shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
         >
           เงินรางวัล & รอบเคลียร์
         </button>
         <button 
           data-tab-target="hall-of-fame-view" 
-          class="tab-nav-btn flex-shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
         >
           Hall of Fame
         </button>
         <button 
           data-tab-target="cup-view" 
-          class="tab-nav-btn flex-shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
         >
           บอลถ้วย
         </button>
         <button 
           data-tab-target="rules-view" 
-          class="tab-nav-btn flex-shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
         >
           กติกาของลีก
         </button>
@@ -126,25 +126,25 @@
   </header>
 
   <!-- MAIN CONTAINER -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6">
 
     <!-- ==================== TAB 1: GAMEWEEK VIEW ==================== -->
-    <div id="gameweek-view" class="tab-content space-y-6">
+    <div id="gameweek-view" class="tab-content space-y-4 sm:space-y-6">
       
       <!-- 1. ส่วนหัวของหน้า (Section Header) -->
-      <div class="flex items-center justify-between gap-4">
+      <div class="flex items-center justify-between gap-3">
         <div>
-          <h2 class="text-base sm:text-lg font-bold text-white tracking-tight">
+          <h2 class="text-sm sm:text-lg font-bold text-white tracking-tight">
             เลือกรอบการแข่งขัน (GW 1 - 38)
           </h2>
         </div>
-        <span class="text-xs font-bold text-slate-400 font-display bg-[#0d0d12] border border-white/[0.08] px-3 py-1 rounded-xl">
+        <span class="text-[10px] sm:text-xs font-bold text-slate-400 font-display bg-[#0d0d12] border border-white/[0.08] px-2.5 sm:px-3 py-1 rounded-xl">
           GAMEWEEK MATCHDAY
         </span>
       </div>
 
       <!-- Gameweek Selector Horizontal Bar -->
-      <div id="gw-selector-container" class="flex gap-2.5 overflow-x-auto scrollbar-thin pb-2 pt-1">
+      <div id="gw-selector-container" class="flex gap-2 sm:gap-2.5 overflow-x-auto touch-scroll no-scrollbar pb-2 pt-1">
         <!-- Dynamic GW buttons -->
       </div>
 
@@ -478,15 +478,15 @@
       </div>
 
       <!-- Pitch -->
-      <div class="fpl-pitch p-4 min-h-[360px] flex flex-col justify-around rounded-2xl mb-4">
-        <div id="team-pitch-container" class="grid grid-cols-4 gap-2">
-          <!-- Starting 11 -->
+      <div class="fpl-pitch p-3 sm:p-5 rounded-2xl mb-4">
+        <div id="team-pitch-container" class="flex flex-col justify-between h-full min-h-[380px]">
+          <!-- Starting 11 (4 tactical formation lines: GK, DEF, MID, FWD) -->
         </div>
       </div>
 
       <!-- Bench -->
-      <div class="bg-[#08080c] rounded-2xl p-4 border border-white/[0.06]">
-        <span class="text-xs uppercase tracking-wider text-slate-400 font-bold block mb-2">ตัวสำรอง (Substitutes)</span>
+      <div class="bg-[#08080c] rounded-2xl p-3 sm:p-4 border border-white/[0.06]">
+        <span class="text-[11px] sm:text-xs uppercase tracking-wider text-slate-400 font-bold block mb-2">ตัวสำรอง (Substitutes)</span>
         <div id="team-bench-container" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
           <!-- Bench players -->
         </div>

@@ -116,8 +116,8 @@ html_content = """<!DOCTYPE html>
 
     /* Scrollbar */
     .scrollbar-thin::-webkit-scrollbar {
-      height: 5px;
-      width: 5px;
+      height: 4px;
+      width: 4px;
     }
     .scrollbar-thin::-webkit-scrollbar-track {
       background: #08080c;
@@ -131,14 +131,38 @@ html_content = """<!DOCTYPE html>
       background: #00ff87;
     }
 
-    /* Pitch Styling */
+    /* Hide scrollbar for clean touch swiping */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .touch-scroll {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+    }
+
+    .snap-center-item {
+      scroll-snap-align: center;
+    }
+
+    /* Pitch Styling - Authentic Formation Layout */
     .fpl-pitch {
-      background: linear-gradient(180deg, #0f3813 0%, #174d1c 50%, #0f3813 100%);
+      background: radial-gradient(circle at center, #184e20 0%, #103816 70%, #0a240e 100%);
       position: relative;
       border-radius: 1.25rem;
-      border: 2px solid rgba(255, 255, 255, 0.15);
+      border: 1.5px solid rgba(255, 255, 255, 0.18);
       overflow: hidden;
-      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6);
+      box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 380px;
+      padding: 1.25rem 0.5rem;
     }
     .fpl-pitch::before {
       content: '';
@@ -147,7 +171,8 @@ html_content = """<!DOCTYPE html>
       left: 0;
       right: 0;
       height: 2px;
-      background: rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.15);
+      pointer-events: none;
     }
     .fpl-pitch::after {
       content: '';
@@ -155,18 +180,29 @@ html_content = """<!DOCTYPE html>
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 76px;
-      height: 76px;
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, 0.18);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      pointer-events: none;
+    }
+
+    .fpl-pitch-line {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 100%;
+      position: relative;
+      z-index: 10;
+      margin: 0.25rem 0;
     }
 
     /* Chip Badges */
     .chip-badge {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       font-weight: 800;
-      padding: 0.2rem 0.5rem;
-      border-radius: 0.4rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 0.35rem;
       display: inline-flex;
       align-items: center;
       letter-spacing: 0.05em;
@@ -181,6 +217,7 @@ html_content = """<!DOCTYPE html>
     .modal-backdrop {
       background: rgba(0, 0, 0, 0.88);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
   </style>
 </head>
@@ -188,17 +225,17 @@ html_content = """<!DOCTYPE html>
 
   <!-- ==================== 1. ส่วนหัวเว็บ (HEADER & GLOBAL NAVIGATION) ==================== -->
   <header class="border-b border-white/[0.08] bg-[#08080c]/90 backdrop-blur-2xl sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3.5 sm:py-4 flex flex-wrap items-center justify-between gap-3">
       
       <!-- 1.1 ข้อมูลประจำลีก (League Identity) -->
-      <div class="flex items-center gap-3.5">
-        <div class="w-10 h-10 rounded-xl bg-[#14141b] border border-white/[0.1] flex items-center justify-center text-[#00ff87] font-black text-base font-display">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#14141b] border border-white/[0.1] flex items-center justify-center text-[#00ff87] font-black text-sm sm:text-base font-display">
           FPL
         </div>
         <div>
-          <div class="flex items-center gap-2.5 flex-wrap">
-            <h1 class="text-lg sm:text-xl font-extrabold text-white tracking-tight">เซียนอยู่รู หมูอยู่ตึก</h1>
-            <span class="text-[11px] font-bold bg-[#14141b] text-[#00ff87] border border-[#00ff87]/30 px-2.5 py-0.5 rounded-full font-display">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="text-base sm:text-xl font-extrabold text-white tracking-tight">เซียนอยู่รู หมูอยู่ตึก</h1>
+            <span class="text-[10px] sm:text-[11px] font-bold bg-[#14141b] text-[#00ff87] border border-[#00ff87]/30 px-2 py-0.5 rounded-full font-display">
               LEAGUE 40700
             </span>
           </div>
@@ -211,15 +248,15 @@ html_content = """<!DOCTYPE html>
       </div>
 
       <!-- 1.2 แถบสถานะระบบ & 1.3 ปุ่ม Action หลัก -->
-      <div class="flex items-center gap-3">
-        <div id="api-status-text" class="text-xs text-slate-300 flex items-center bg-[#0d0d12] px-3.5 py-1.5 rounded-xl border border-white/[0.08]">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <div id="api-status-text" class="text-xs text-slate-300 hidden sm:flex items-center bg-[#0d0d12] px-3.5 py-1.5 rounded-xl border border-white/[0.08]">
           <span class="inline-block w-2 h-2 rounded-full bg-[#ff3366] mr-2 animate-pulse"></span>
           Gameweek 2 กำลังแข่งขัน (Live)
         </div>
 
         <button 
           onclick="app.shareCurrentGameweek()"
-          class="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#14141b] hover:bg-[#1a1a24] border border-white/[0.1] text-xs font-bold text-white transition-all shadow-md active:scale-95"
+          class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl bg-[#14141b] hover:bg-[#1a1a24] border border-white/[0.1] text-xs font-bold text-white transition-all shadow-md active:scale-95"
           title="คัดลอกสรุปผลและไฮไลท์สัปดาห์ปัจจุบันลงคลิปบอร์ด"
         >
           <svg class="w-3.5 h-3.5 text-[#00ff87]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
@@ -230,35 +267,35 @@ html_content = """<!DOCTYPE html>
     </div>
 
     <!-- 1.4 แถบเมนู 5 แท็บหลัก -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <nav class="flex space-x-2 sm:space-x-3 overflow-x-auto scrollbar-thin py-2.5 border-t border-white/[0.06]">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <nav class="flex space-x-1.5 sm:space-x-2.5 overflow-x-auto touch-scroll no-scrollbar py-2 border-t border-white/[0.06]">
         <button 
           data-tab-target="gameweek-view" 
-          class="tab-nav-btn flex-shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-[#00ff87]/15 text-[#00ff87] border border-[#00ff87]/40"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-[#00ff87]/15 text-[#00ff87] border border-[#00ff87]/40"
         >
           LIVE (Gameweek Hub)
         </button>
         <button 
           data-tab-target="prizes-view" 
-          class="tab-nav-btn flex-shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
         >
           เงินรางวัล & รอบเคลียร์
         </button>
         <button 
           data-tab-target="hall-of-fame-view" 
-          class="tab-nav-btn flex-shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
         >
           Hall of Fame
         </button>
         <button 
           data-tab-target="cup-view" 
-          class="tab-nav-btn flex-shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
         >
           บอลถ้วย
         </button>
         <button 
           data-tab-target="rules-view" 
-          class="tab-nav-btn flex-shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-slate-400 border border-transparent hover:text-white hover:bg-white/[0.04]"
         >
           กติกาของลีก
         </button>
@@ -267,7 +304,7 @@ html_content = """<!DOCTYPE html>
   </header>
 
   <!-- MAIN CONTAINER -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6">
 
     <!-- ==================== 2. แท็บ 1: ผลสด & สัปดาห์ (LIVE - GAMEWEEK HUB) ==================== -->
     <div id="gameweek-view" class="tab-content space-y-6">
@@ -903,7 +940,7 @@ html_content = """<!DOCTYPE html>
             html += `
               <button 
                 onclick="app.selectGameweek(${gw})"
-                class="flex-shrink-0 px-2.5 py-1 rounded-xl font-medium text-xs transition-all duration-150 flex flex-col items-center min-w-[48px] ${
+                class="flex-shrink-0 snap-center-item px-2 sm:px-2.5 py-1 rounded-xl font-medium text-xs transition-all duration-150 flex flex-col items-center min-w-[50px] sm:min-w-[54px] active:scale-95 ${
                   isSelected 
                     ? 'bg-[#00ff87] text-slate-950 font-black shadow-md shadow-[#00ff87]/20 scale-105 border-0' 
                     : 'bg-[#0d0d12] hover:bg-[#14141b] text-slate-200 border border-white/[0.08]'
@@ -925,7 +962,7 @@ html_content = """<!DOCTYPE html>
           } else {
             html += `
               <div 
-                class="flex-shrink-0 px-2.5 py-1 rounded-xl text-xs flex flex-col items-center min-w-[48px] bg-[#08080c] text-slate-600 border border-white/[0.03] cursor-not-allowed opacity-40 select-none"
+                class="flex-shrink-0 snap-center-item px-2 sm:px-2.5 py-1 rounded-xl text-xs flex flex-col items-center min-w-[50px] sm:min-w-[54px] bg-[#08080c] text-slate-600 border border-white/[0.03] cursor-not-allowed opacity-40 select-none"
                 title="ยังไม่ถึงสัปดาห์การแข่งขัน"
               >
                 <span class="text-[8px] uppercase font-medium text-slate-600 font-display leading-none">WEEK</span>
@@ -969,66 +1006,68 @@ html_content = """<!DOCTYPE html>
         // 3A: Finished Gameweek
         if (isFinished) {
           container.innerHTML = `
-            <div class="relative overflow-hidden glass-card-glow rounded-3xl p-6 sm:p-8">
+            <div class="relative overflow-hidden glass-card-glow rounded-3xl p-4 sm:p-7 border border-[#00ff87]/30">
               <div class="absolute -right-16 -top-16 w-64 h-64 bg-[#00ff87]/10 rounded-full blur-3xl pointer-events-none"></div>
               <div class="absolute -left-16 -bottom-16 w-64 h-64 bg-[#00f0ff]/10 rounded-full blur-3xl pointer-events-none"></div>
 
               <div class="relative z-10">
-                <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
-                  <div class="flex items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-[#00ff87]/15 border border-[#00ff87]/30 flex items-center justify-center text-[#00ff87] font-black text-xs font-display">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#00ff87]/15 border border-[#00ff87]/30 flex items-center justify-center text-[#00ff87] font-black text-xs font-display">
                       WIN
                     </div>
                     <div>
-                      <span class="text-xs uppercase tracking-widest text-[#00ff87] font-bold font-display">GAMEWEEK ${this.selectedGW} CHAMPION</span>
-                      <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight">แชมป์ประจำสัปดาห์</h3>
+                      <span class="text-[11px] uppercase tracking-widest text-[#00ff87] font-bold font-display">GAMEWEEK ${this.selectedGW} CHAMPION</span>
+                      <h3 class="text-lg sm:text-2xl font-black text-white tracking-tight">แชมป์ประจำสัปดาห์</h3>
                     </div>
                   </div>
 
-                  <div class="flex items-center gap-2 bg-[#00ff87]/10 border border-[#00ff87]/30 px-4 py-2 rounded-2xl">
+                  <div class="flex items-center gap-2 bg-[#00ff87]/10 border border-[#00ff87]/30 px-3.5 py-1.5 rounded-xl">
                     <span class="text-[#00ff87] font-bold text-xs sm:text-sm font-display">${isJoint ? 'แชมป์ร่วมประจำสัปดาห์' : 'สรุปผลประจำสัปดาห์'}</span>
                   </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center bg-[#08080c] border border-white/[0.08] rounded-2xl p-5 mb-5">
+                <!-- Team Details & Responsive Stats Box -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center bg-[#08080c] border border-white/[0.08] rounded-2xl p-4 sm:p-5 mb-4">
                   <div class="md:col-span-2">
                     <div class="flex items-center gap-2 mb-1 flex-wrap">
-                      <h4 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                      <h4 class="text-xl sm:text-3xl font-black text-white tracking-tight">
                         ${leader.team_name} ${isJoint ? '& ' + results[1].team_name : ''}
                       </h4>
                       ${chipBadge}
                     </div>
-                    <p class="text-slate-400 text-sm flex items-center gap-2 flex-wrap">
+                    <p class="text-slate-400 text-xs sm:text-sm flex items-center gap-2 flex-wrap">
                       <span>ผู้จัดการ: <strong class="text-slate-100 font-semibold">${leader.player_name} ${isJoint ? '& ' + results[1].player_name : ''}</strong></span>
                       ${leader.captain ? `<span>• กัปตัน: <span class="text-[#00f0ff] font-semibold">${leader.captain}</span></span>` : ''}
                     </p>
                   </div>
 
-                  <div class="flex items-center justify-start md:justify-end gap-5 border-t md:border-t-0 border-white/[0.08] pt-3 md:pt-0">
-                    <div class="text-center">
-                      <span class="block text-[11px] uppercase tracking-wider text-slate-400 font-semibold font-display">RAW PTS</span>
-                      <span class="text-lg font-bold text-slate-300 font-display">${leader.points}</span>
+                  <!-- 3-Box Stats Widget -->
+                  <div class="grid grid-cols-3 gap-2 bg-[#050507] p-2.5 sm:p-3 rounded-xl border border-white/[0.05] text-center">
+                    <div>
+                      <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-semibold font-display">RAW PTS</span>
+                      <span class="text-base sm:text-lg font-bold text-slate-200 font-display">${leader.points}</span>
                     </div>
-                    <div class="text-center">
-                      <span class="block text-[11px] uppercase tracking-wider text-rose-400 font-semibold font-display">HITS</span>
-                      <span class="text-lg font-bold ${leader.hits > 0 ? 'text-rose-400' : 'text-slate-500'} font-display">${leader.hits > 0 ? `-${leader.hits}` : '0'}</span>
+                    <div class="border-x border-white/[0.08]">
+                      <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-rose-400 font-semibold font-display">HITS</span>
+                      <span class="text-base sm:text-lg font-bold ${leader.hits > 0 ? 'text-rose-400' : 'text-slate-500'} font-display">${leader.hits > 0 ? `-${leader.hits}` : '0'}</span>
                     </div>
-                    <div class="text-center pl-3 border-l border-white/[0.1]">
-                      <span class="block text-[11px] uppercase tracking-wider text-[#00ff87] font-extrabold font-display">NET PTS</span>
-                      <span class="text-3xl font-black text-[#00ff87] font-display">${leader.net_points}</span>
+                    <div>
+                      <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00ff87] font-extrabold font-display">NET PTS</span>
+                      <span class="text-xl sm:text-2xl font-black text-[#00ff87] font-display">${leader.net_points}</span>
                     </div>
                   </div>
                 </div>
 
                 <!-- 3.5 Champion Highlight Note (Borbou Style - Dynamic Live) -->
-                <div class="bg-gradient-to-r from-[#14141b] via-[#0d0d12] to-[#14141b] border border-white/[0.1] rounded-2xl p-4 flex items-center justify-between gap-3">
+                <div class="bg-gradient-to-r from-[#14141b] via-[#0d0d12] to-[#14141b] border border-white/[0.1] rounded-2xl p-3.5 sm:p-4 flex items-center justify-between gap-3">
                   <div class="flex-1">
-                    <span class="text-[11px] uppercase tracking-wider text-[#00f0ff] font-bold block font-display">CHAMPION HIGHLIGHT NOTE</span>
-                    <p id="current-gw-note-text" class="text-sm sm:text-base font-medium text-slate-200 mt-0.5 leading-snug">
+                    <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-bold block font-display">CHAMPION HIGHLIGHT NOTE</span>
+                    <p id="current-gw-note-text" class="text-xs sm:text-sm font-medium text-slate-200 mt-0.5 leading-snug">
                       "${currentLiveNote}"
                     </p>
                   </div>
-                  <div class="flex items-center gap-1.5 flex-shrink-0">
+                  <div class="flex items-center gap-1 flex-shrink-0">
                     <button 
                       onclick="app.regenerateLiveNote()"
                       class="p-2 text-slate-400 hover:text-[#00ff87] hover:bg-white/[0.08] rounded-xl transition-all"
@@ -1051,67 +1090,69 @@ html_content = """<!DOCTYPE html>
         } else {
           // 3B: Live Gameweek
           container.innerHTML = `
-            <div class="relative overflow-hidden glass-card-live rounded-3xl p-6 sm:p-8">
-              <div class="absolute -right-16 -top-16 w-64 h-64 bg-[#ff3366]/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative overflow-hidden glass-card-live rounded-3xl p-4 sm:p-7 border border-[#00f0ff]/30">
+              <div class="absolute -right-16 -top-16 w-64 h-64 bg-[#00f0ff]/10 rounded-full blur-3xl pointer-events-none"></div>
 
               <div class="relative z-10">
-                <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
-                  <div class="flex items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-[#ff3366]/15 border border-[#ff3366]/30 flex items-center justify-center text-[#ff3366] font-black text-xs font-display">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#00f0ff]/15 border border-[#00f0ff]/30 flex items-center justify-center text-[#00f0ff] font-black text-xs font-display">
                       LIVE
                     </div>
                     <div>
-                      <span class="text-xs uppercase tracking-widest text-[#ff3366] font-bold font-display">GAMEWEEK ${this.selectedGW} (IN PROGRESS)</span>
-                      <h3 class="text-xl sm:text-2xl font-black text-white tracking-tight">ผู้นำคะแนนประจำสัปดาห์ชั่วคราว</h3>
+                      <span class="text-[11px] uppercase tracking-widest text-[#00f0ff] font-bold font-display">GAMEWEEK ${this.selectedGW} (IN PROGRESS)</span>
+                      <h3 class="text-lg sm:text-2xl font-black text-white tracking-tight">ผู้นำคะแนนประจำสัปดาห์ชั่วคราว</h3>
                     </div>
                   </div>
 
-                  <div class="flex items-center gap-2 bg-[#ff3366]/10 border border-[#ff3366]/30 px-4 py-2 rounded-2xl">
-                    <span class="w-2 h-2 rounded-full bg-[#ff3366] animate-ping"></span>
-                    <span class="text-[#ff3366] font-bold text-xs sm:text-sm font-display">กำลังแข่งขัน (ยังไม่จบสัปดาห์)</span>
+                  <div class="flex items-center gap-2 bg-[#00f0ff]/10 border border-[#00f0ff]/30 px-3.5 py-1.5 rounded-xl">
+                    <span class="w-2 h-2 rounded-full bg-[#00f0ff] animate-ping"></span>
+                    <span class="text-[#00f0ff] font-bold text-xs sm:text-sm font-display">กำลังแข่งขัน (ยังไม่จบสัปดาห์)</span>
                   </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center bg-[#08080c] border border-white/[0.08] rounded-2xl p-5 mb-5">
+                <!-- Team Details & Responsive Stats Box -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center bg-[#08080c] border border-white/[0.08] rounded-2xl p-4 sm:p-5 mb-4">
                   <div class="md:col-span-2">
                     <div class="flex items-center gap-2 mb-1 flex-wrap">
-                      <h4 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                      <h4 class="text-xl sm:text-3xl font-black text-white tracking-tight">
                         ${leader.team_name} ${isJoint ? '& ' + results[1].team_name : ''}
                       </h4>
                       ${chipBadge}
                     </div>
-                    <p class="text-slate-400 text-sm flex items-center gap-2 flex-wrap">
+                    <p class="text-slate-400 text-xs sm:text-sm flex items-center gap-2 flex-wrap">
                       <span>ผู้นำคะแนน: <strong class="text-slate-100 font-semibold">${leader.player_name} ${isJoint ? '& ' + results[1].player_name : ''}</strong></span>
                       ${leader.captain ? `<span>• กัปตัน: <span class="text-[#00f0ff] font-semibold">${leader.captain}</span></span>` : ''}
                     </p>
-                    <p class="text-xs text-slate-400 mt-1">หมายเหตุ: ผลคะแนนจะสรุปอย่างเป็นทางการเมื่อแข่งครบทุกคู่ในสัปดาห์</p>
+                    <p class="text-[11px] text-slate-400 mt-1">หมายเหตุ: ผลคะแนนจะสรุปอย่างเป็นทางการเมื่อแข่งครบทุกคู่ในสัปดาห์</p>
                   </div>
 
-                  <div class="flex items-center justify-start md:justify-end gap-5 border-t md:border-t-0 border-white/[0.08] pt-3 md:pt-0">
-                    <div class="text-center">
-                      <span class="block text-[11px] uppercase tracking-wider text-slate-400 font-semibold font-display">RAW PTS</span>
-                      <span class="text-lg font-bold text-slate-300 font-display">${leader.points}</span>
+                  <!-- 3-Box Stats Widget -->
+                  <div class="grid grid-cols-3 gap-2 bg-[#050507] p-2.5 sm:p-3 rounded-xl border border-white/[0.05] text-center">
+                    <div>
+                      <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-semibold font-display">RAW PTS</span>
+                      <span class="text-base sm:text-lg font-bold text-slate-200 font-display">${leader.points}</span>
                     </div>
-                    <div class="text-center">
-                      <span class="block text-[11px] uppercase tracking-wider text-rose-400 font-semibold font-display">HITS</span>
-                      <span class="text-lg font-bold ${leader.hits > 0 ? 'text-rose-400' : 'text-slate-500'} font-display">${leader.hits > 0 ? `-${leader.hits}` : '0'}</span>
+                    <div class="border-x border-white/[0.08]">
+                      <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-rose-400 font-semibold font-display">HITS</span>
+                      <span class="text-base sm:text-lg font-bold ${leader.hits > 0 ? 'text-rose-400' : 'text-slate-500'} font-display">${leader.hits > 0 ? `-${leader.hits}` : '0'}</span>
                     </div>
-                    <div class="text-center pl-3 border-l border-white/[0.1]">
-                      <span class="block text-[11px] uppercase tracking-wider text-[#00f0ff] font-extrabold font-display">LIVE NET PTS</span>
-                      <span class="text-3xl font-black text-[#00f0ff] font-display">${leader.net_points}</span>
+                    <div>
+                      <span class="block text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-extrabold font-display">LIVE NET</span>
+                      <span class="text-xl sm:text-2xl font-black text-[#00f0ff] font-display">${leader.net_points}</span>
                     </div>
                   </div>
                 </div>
 
                 <!-- 3.5 Matchday Live Note (Borbou Style - Dynamic Live) -->
-                <div class="bg-gradient-to-r from-[#14141b] via-[#0d0d12] to-[#14141b] border border-white/[0.1] rounded-2xl p-4 flex items-center justify-between gap-3">
+                <div class="bg-gradient-to-r from-[#14141b] via-[#0d0d12] to-[#14141b] border border-white/[0.1] rounded-2xl p-3.5 sm:p-4 flex items-center justify-between gap-3">
                   <div class="flex-1">
-                    <span class="text-[11px] uppercase tracking-wider text-[#00f0ff] font-bold block font-display">MATCHDAY LIVE NOTE</span>
-                    <p id="current-gw-note-text" class="text-sm sm:text-base font-medium text-slate-200 mt-0.5 leading-snug">
+                    <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#00f0ff] font-bold block font-display">MATCHDAY LIVE NOTE</span>
+                    <p id="current-gw-note-text" class="text-xs sm:text-sm font-medium text-slate-200 mt-0.5 leading-snug">
                       "${currentLiveNote}"
                     </p>
                   </div>
-                  <div class="flex items-center gap-1.5 flex-shrink-0">
+                  <div class="flex items-center gap-1 flex-shrink-0">
                     <button 
                       onclick="app.regenerateLiveNote()"
                       class="p-2 text-slate-400 hover:text-[#00ff87] hover:bg-white/[0.08] rounded-xl transition-all"
@@ -1133,62 +1174,76 @@ html_content = """<!DOCTYPE html>
           `;
         }
 
-        // 4. Matchday Table
+        // 4. Matchday Table (Responsive on Phone / Tablet)
         let matchdayHtml = '';
         results.forEach((team, idx) => {
-          const rankText = idx + 1;
-          const chip = team.chip ? `<span class="chip-badge badge-${team.chip.toLowerCase()} ml-2 font-display">${team.chip}</span>` : '';
-          const hits = team.hits > 0 ? `<span class="text-rose-400 font-bold font-display">-${team.hits}</span>` : '<span class="text-slate-600 font-display">-</span>';
+          const rankBadge = idx === 0 
+            ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#ffbe1a] text-slate-950 font-black text-[11px] sm:text-xs flex items-center justify-center font-display shadow-md shadow-[#ffbe1a]/30">1</span>'
+            : idx === 1
+              ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-300 text-slate-950 font-black text-[11px] sm:text-xs flex items-center justify-center font-display">2</span>'
+              : idx === 2
+                ? '<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-700 text-white font-black text-[11px] sm:text-xs flex items-center justify-center font-display">3</span>'
+                : `<span class="text-slate-400 text-xs font-bold font-display pl-1.5 sm:pl-2">${idx + 1}</span>`;
+
+          const chip = team.chip ? `<span class="chip-badge badge-${team.chip.toLowerCase()} font-display">${team.chip}</span>` : '';
+          const hits = team.hits > 0 ? `<span class="text-rose-400 font-bold font-display text-xs sm:text-sm">-${team.hits}</span>` : '<span class="text-slate-600 font-display text-xs sm:text-sm">-</span>';
 
           matchdayHtml += `
-            <tr class="hover:bg-white/[0.03] transition-colors">
-              <td class="py-3 px-3.5 font-display font-bold ${idx < 3 ? 'text-[#ffbe1a]' : 'text-slate-400'}">${rankText}</td>
-              <td class="py-3 px-3.5">
-                <button onclick="app.openTeamModal(${team.entry_id}, '${team.team_name}')" class="text-left font-bold text-slate-100 hover:text-[#00f0ff] transition-colors flex items-center gap-1.5 flex-wrap">
+            <tr class="hover:bg-white/[0.03] transition-colors border-b border-white/[0.02]">
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center">${rankBadge}</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5">
+                <button onclick="app.openTeamModal(${team.entry_id}, '${team.team_name}')" class="text-left font-bold text-xs sm:text-sm text-slate-100 hover:text-[#00f0ff] transition-colors flex items-center gap-1.5 flex-wrap">
                   <span>${team.team_name}</span>
                   ${chip}
                 </button>
-                <span class="text-xs text-slate-400 block">${team.player_name}</span>
+                <div class="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5">
+                  <span>${team.player_name}</span>
+                  <span class="sm:hidden text-[#00f0ff] font-medium">• (C) ${team.captain || '-'}</span>
+                </div>
               </td>
-              <td class="py-3 px-3.5 text-center text-xs text-[#00f0ff] font-medium">${team.captain || '-'}</td>
-              <td class="py-3 px-3.5 text-center font-display font-medium text-slate-300">${team.points}</td>
-              <td class="py-3 px-3.5 text-center">${hits}</td>
-              <td class="py-3 px-3.5 text-center">
-                <span class="text-base font-black font-display text-slate-100">${team.net_points}</span>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center hidden sm:table-cell">
+                <span class="text-xs text-[#00f0ff] font-medium">${team.captain || '-'}</span>
               </td>
-              <td class="py-3 px-3.5 text-center text-xs text-slate-400 font-display">${team.bench_points}</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-medium text-slate-300 text-xs sm:text-sm">${team.points}</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center">${hits}</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center">
+                <span class="text-sm sm:text-base font-black font-display text-slate-100">${team.net_points}</span>
+              </td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center hidden sm:table-cell">
+                <span class="text-xs text-slate-400 font-display">${team.bench_points}</span>
+              </td>
             </tr>
           `;
         });
         matchdayBody.innerHTML = matchdayHtml;
 
-        // 5. Overall Standings Table
+        // 5. Overall Standings Table (Responsive on Phone / Tablet)
         let overallHtml = '';
         this.standings.forEach((team, idx) => {
           const rank = team.rank;
           const isTop3 = rank <= 3;
           const rankBadge = rank === 1 
-            ? '<span class="text-[10px] bg-[#ffbe1a]/15 text-[#ffbe1a] border border-[#ffbe1a]/30 px-2 py-0.5 rounded-md font-bold font-display">TOP 1</span>'
+            ? '<span class="text-[9px] sm:text-[10px] bg-[#ffbe1a]/15 text-[#ffbe1a] border border-[#ffbe1a]/30 px-1.5 sm:px-2 py-0.5 rounded-md font-bold font-display">TOP 1</span>'
             : rank === 2
-              ? '<span class="text-[10px] bg-slate-300/15 text-slate-200 border border-slate-300/30 px-2 py-0.5 rounded-md font-bold font-display">TOP 2</span>'
+              ? '<span class="text-[9px] sm:text-[10px] bg-slate-300/15 text-slate-200 border border-slate-300/30 px-1.5 sm:px-2 py-0.5 rounded-md font-bold font-display">TOP 2</span>'
               : rank === 3
-                ? '<span class="text-[10px] bg-amber-700/20 text-amber-300 border border-amber-600/30 px-2 py-0.5 rounded-md font-bold font-display">TOP 3</span>'
+                ? '<span class="text-[9px] sm:text-[10px] bg-amber-700/20 text-amber-300 border border-amber-600/30 px-1.5 sm:px-2 py-0.5 rounded-md font-bold font-display">TOP 3</span>'
                 : '';
 
           overallHtml += `
-            <tr class="hover:bg-white/[0.03] transition-colors ${isTop3 ? 'bg-white/[0.02]' : ''}">
-              <td class="py-3 px-3.5 font-display font-bold text-center ${rank === 1 ? 'text-[#ffbe1a]' : 'text-slate-300'}">${rank}</td>
-              <td class="py-3 px-3.5">
-                <button onclick="app.openTeamModal(${team.entry_id}, '${team.entry_name}')" class="font-bold text-slate-100 hover:text-[#00f0ff] transition-colors text-left block">
+            <tr class="hover:bg-white/[0.03] transition-colors border-b border-white/[0.02] ${isTop3 ? 'bg-white/[0.02]' : ''}">
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 font-display font-bold text-center text-xs sm:text-sm ${rank === 1 ? 'text-[#ffbe1a]' : 'text-slate-300'}">${rank}</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5">
+                <button onclick="app.openTeamModal(${team.entry_id}, '${team.entry_name}')" class="font-bold text-xs sm:text-sm text-slate-100 hover:text-[#00f0ff] transition-colors text-left block">
                   ${team.entry_name}
                 </button>
-                <div class="flex items-center gap-2 mt-0.5 flex-wrap">
-                  <span class="text-xs text-slate-400">${team.player_name}</span>
+                <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                  <span class="text-[11px] text-slate-400">${team.player_name}</span>
                   ${rankBadge}
                 </div>
               </td>
-              <td class="py-3 px-3.5 text-center font-display text-slate-300 text-sm">${team.gw_points}</td>
-              <td class="py-3 px-3.5 text-center font-display font-black text-[#00ff87] text-base">${team.total}</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-300 text-xs sm:text-sm">${team.gw_points}</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-black text-[#00ff87] text-sm sm:text-base">${team.total}</td>
             </tr>
           `;
         });
@@ -1225,20 +1280,20 @@ html_content = """<!DOCTYPE html>
         sortedForPrize.forEach((t, idx) => {
           const actualTotal = t.actualTotal;
           prizeHtml += `
-            <tr class="hover:bg-white/[0.03] transition-colors">
-              <td class="py-3.5 px-3.5 font-display font-bold text-center ${actualTotal > 0 ? 'text-[#ffbe1a]' : 'text-slate-500'}">${idx + 1}</td>
-              <td class="py-3.5 px-3.5">
-                <span class="font-bold text-slate-100 block">${t.entry_name}</span>
-                <span class="text-xs text-slate-400">${t.player_name}</span>
+            <tr class="hover:bg-white/[0.03] transition-colors border-b border-white/[0.02]">
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 font-display font-bold text-center text-xs sm:text-sm ${actualTotal > 0 ? 'text-[#ffbe1a]' : 'text-slate-500'}">${idx + 1}</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5">
+                <span class="font-bold text-xs sm:text-sm text-slate-100 block">${t.entry_name}</span>
+                <span class="text-[11px] text-slate-400">${t.player_name}</span>
               </td>
-              <td class="py-3.5 px-3.5 text-center font-display font-bold text-[#00f0ff]">
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-bold text-[#00f0ff] text-xs sm:text-sm">
                 ${t.wins > 0 ? t.wins + ' ครั้ง' : '0'}
-                ${t.wonGW.length > 0 ? `<span class="block text-[10px] text-slate-400 font-normal font-display">(GW ${t.wonGW.join(', ')})</span>` : ''}
+                ${t.wonGW.length > 0 ? `<span class="block text-[9px] sm:text-[10px] text-slate-400 font-normal font-display">(GW ${t.wonGW.join(', ')})</span>` : ''}
               </td>
-              <td class="py-3.5 px-3.5 text-center font-display text-slate-200">${t.weeklyPrize > 0 ? t.weeklyPrize.toLocaleString() + ' บาท' : '-'}</td>
-              <td class="py-3.5 px-3.5 text-center font-display text-slate-500 text-xs">-</td>
-              <td class="py-3.5 px-3.5 text-center font-display text-slate-500 text-xs">-</td>
-              <td class="py-3.5 px-3.5 text-center font-display font-black text-base sm:text-lg ${actualTotal > 0 ? 'text-[#00ff87]' : 'text-slate-500'}">
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-200 text-xs sm:text-sm">${t.weeklyPrize > 0 ? t.weeklyPrize.toLocaleString() + ' บาท' : '-'}</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-500 text-[11px] sm:text-xs">-</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-500 text-[11px] sm:text-xs">-</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-black text-xs sm:text-base ${actualTotal > 0 ? 'text-[#00ff87]' : 'text-slate-500'}">
                 ${actualTotal > 0 ? actualTotal.toLocaleString() + ' บาท' : '-'}
               </td>
             </tr>
@@ -1268,30 +1323,30 @@ html_content = """<!DOCTYPE html>
           const buttonHtml = isCompleted
             ? `<button 
                 onclick="app.copyPhaseShareText(${p.phase})" 
-                class="text-xs bg-[#14141b] hover:bg-[#1a1a24] text-[#00ff87] font-bold px-3.5 py-1.5 rounded-xl border border-[#00ff87]/40 transition-all flex items-center gap-1.5 active:scale-95 shadow-md"
+                class="text-xs bg-[#14141b] hover:bg-[#1a1a24] text-[#00ff87] font-bold px-3.5 py-2 rounded-xl border border-[#00ff87]/40 transition-all flex items-center gap-1.5 active:scale-95 shadow-md min-h-[38px]"
               >
                 <span>ส่ง LINE</span>
               </button>`
             : `<button 
                 disabled 
-                class="text-xs bg-[#08080c] text-slate-600 px-3.5 py-1.5 rounded-xl border border-white/[0.04] cursor-not-allowed opacity-40 select-none"
+                class="text-xs bg-[#08080c] text-slate-600 px-3.5 py-2 rounded-xl border border-white/[0.04] cursor-not-allowed opacity-40 select-none min-h-[38px]"
                 title="ยังแข่งไม่ครบจำนวนสัปดาห์ในรอบนี้"
               >
                 <span>ยังไม่ครบรอบ</span>
               </button>`;
 
           phaseHtml += `
-            <div class="glass-card rounded-2xl p-5 border border-white/[0.08] flex flex-col justify-between ${!isCompleted ? 'opacity-85' : ''}">
+            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-white/[0.08] flex flex-col justify-between ${!isCompleted ? 'opacity-85' : ''}">
               <div>
                 <div class="flex items-center justify-between mb-3">
-                  <span class="text-xs uppercase tracking-wider font-extrabold ${isCompleted ? 'text-[#00ff87]' : isCurrent ? 'text-[#00f0ff]' : 'text-slate-500'} font-display">${p.name}</span>
-                  <span class="text-[11px] px-2.5 py-0.5 rounded-full border ${badgeClass} font-semibold">${statusText}</span>
+                  <span class="text-[11px] sm:text-xs uppercase tracking-wider font-extrabold ${isCompleted ? 'text-[#00ff87]' : isCurrent ? 'text-[#00f0ff]' : 'text-slate-500'} font-display">${p.name}</span>
+                  <span class="text-[10px] sm:text-[11px] px-2.5 py-0.5 rounded-full border ${badgeClass} font-semibold">${statusText}</span>
                 </div>
-                <h4 class="text-lg font-black text-white font-display mb-1">GW ${p.startGW} - ${p.endGW} (${p.weeks} สัปดาห์)</h4>
-                <p class="text-xs text-slate-400 mb-4">งบแชมป์วีค: <strong class="text-slate-200">${p.weeklyBudget.toLocaleString()} บาท</strong> ${p.hasCup ? '+ บอลถ้วย & แชมป์ลีก' : ''}</p>
+                <h4 class="text-base sm:text-lg font-black text-white font-display mb-1">GW ${p.startGW} - ${p.endGW} (${p.weeks} สัปดาห์)</h4>
+                <p class="text-xs text-slate-400 mb-3">งบแชมป์วีค: <strong class="text-slate-200">${p.weeklyBudget.toLocaleString()} บาท</strong> ${p.hasCup ? '+ บอลถ้วย & แชมป์ลีก' : ''}</p>
                 
-                <div class="bg-[#08080c] rounded-xl p-3.5 mb-4 border border-white/[0.04]">
-                  <span class="text-[11px] uppercase tracking-wider text-slate-400 font-bold block mb-2">สรุปแชมป์วีคที่สรุปผลแล้ว:</span>
+                <div class="bg-[#08080c] rounded-xl p-3 sm:p-3.5 mb-3.5 border border-white/[0.04]">
+                  <span class="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 font-bold block mb-1.5">สรุปแชมป์วีคที่สรุปผลแล้ว:</span>
                   ${isP1 ? `
                     <div class="space-y-1.5 text-xs">
                       <div class="flex justify-between items-center"><span class="text-slate-200">1. GEMINI UNITED (แชมป์ GW 1)</span><strong class="text-[#00ff87]">350 บาท</strong></div>
@@ -1317,44 +1372,44 @@ html_content = """<!DOCTYPE html>
         const hofTable = document.getElementById('hall-of-fame-table-body');
 
         recordsContainer.innerHTML = `
-          <div class="glass-card p-5 rounded-2xl border border-[#ffbe1a]/30">
-            <span class="text-xs uppercase tracking-wider text-[#ffbe1a] font-bold block mb-1">คะแนนสูงสุดใน 1 วีค (จบแล้ว)</span>
-            <div class="flex items-baseline gap-2 mb-1">
-              <span class="text-3xl font-black text-[#ffbe1a] font-display">78</span>
-              <span class="text-xs text-amber-200/80 font-medium font-display">NET PTS (GW 1)</span>
+          <div class="glass-card p-3.5 sm:p-5 rounded-2xl border border-[#ffbe1a]/30">
+            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-[#ffbe1a] font-bold block mb-1">คะแนนสูงสุดใน 1 วีค</span>
+            <div class="flex items-baseline gap-1.5 mb-1">
+              <span class="text-2xl sm:text-3xl font-black text-[#ffbe1a] font-display">78</span>
+              <span class="text-[10px] sm:text-xs text-amber-200/80 font-medium font-display">NET PTS (GW 1)</span>
             </div>
-            <p class="text-sm font-bold text-white">GEMINI UNITED</p>
-            <span class="text-xs text-slate-400">Micky Asawamanasak</span>
+            <p class="text-xs sm:text-sm font-bold text-white truncate">GEMINI UNITED</p>
+            <span class="text-[11px] text-slate-400 truncate block">Micky Asawamanasak</span>
           </div>
 
-          <div class="glass-card p-5 rounded-2xl border border-[#00ff87]/30">
-            <span class="text-xs uppercase tracking-wider text-[#00ff87] font-bold block mb-1">จอมกวาดแชมป์วีค</span>
-            <div class="flex items-baseline gap-2 mb-1">
-              <span class="text-3xl font-black text-[#00ff87] font-display">1</span>
-              <span class="text-xs text-emerald-200/80 font-medium">ครั้ง (GW 1)</span>
+          <div class="glass-card p-3.5 sm:p-5 rounded-2xl border border-[#00ff87]/30">
+            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-[#00ff87] font-bold block mb-1">จอมกวาดแชมป์วีค</span>
+            <div class="flex items-baseline gap-1.5 mb-1">
+              <span class="text-2xl sm:text-3xl font-black text-[#00ff87] font-display">1</span>
+              <span class="text-[10px] sm:text-xs text-emerald-200/80 font-medium">ครั้ง (GW 1)</span>
             </div>
-            <p class="text-sm font-bold text-white">GEMINI UNITED</p>
-            <span class="text-xs text-slate-400">Micky Asawamanasak</span>
+            <p class="text-xs sm:text-sm font-bold text-white truncate">GEMINI UNITED</p>
+            <span class="text-[11px] text-slate-400 truncate block">Micky Asawamanasak</span>
           </div>
 
-          <div class="glass-card p-5 rounded-2xl border border-[#00f0ff]/30">
-            <span class="text-xs uppercase tracking-wider text-[#00f0ff] font-bold block mb-1">จ่าฝูงแต้มรวมสูงสุด</span>
-            <div class="flex items-baseline gap-2 mb-1">
-              <span class="text-3xl font-black text-[#00f0ff] font-display">103</span>
-              <span class="text-xs text-cyan-200/80 font-medium font-display">AVG 51.5 / GW</span>
+          <div class="glass-card p-3.5 sm:p-5 rounded-2xl border border-[#00f0ff]/30">
+            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-[#00f0ff] font-bold block mb-1">จ่าฝูงแต้มรวมสูงสุด</span>
+            <div class="flex items-baseline gap-1.5 mb-1">
+              <span class="text-2xl sm:text-3xl font-black text-[#00f0ff] font-display">103</span>
+              <span class="text-[10px] sm:text-xs text-cyan-200/80 font-medium font-display">AVG 51.5 / GW</span>
             </div>
-            <p class="text-sm font-bold text-white">Cody Travers</p>
-            <span class="text-xs text-slate-400">Alesandro Nuyie</span>
+            <p class="text-xs sm:text-sm font-bold text-white truncate">Cody Travers</p>
+            <span class="text-[11px] text-slate-400 truncate block">Alesandro Nuyie</span>
           </div>
 
-          <div class="glass-card p-5 rounded-2xl border border-[#9d4edd]/30">
-            <span class="text-xs uppercase tracking-wider text-purple-400 font-bold block mb-1">ตัวสำรองแต้มกระจาย</span>
-            <div class="flex items-baseline gap-2 mb-1">
-              <span class="text-3xl font-black text-purple-300 font-display">15</span>
-              <span class="text-xs text-purple-200/80 font-medium font-display">BENCH PTS (GW 1)</span>
+          <div class="glass-card p-3.5 sm:p-5 rounded-2xl border border-[#9d4edd]/30">
+            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-purple-400 font-bold block mb-1">สำรองแต้มกระจาย</span>
+            <div class="flex items-baseline gap-1.5 mb-1">
+              <span class="text-2xl sm:text-3xl font-black text-purple-300 font-display">15</span>
+              <span class="text-[10px] sm:text-xs text-purple-200/80 font-medium font-display">BENCH (GW 1)</span>
             </div>
-            <p class="text-sm font-bold text-white">Anjoni Iraola</p>
-            <span class="text-xs text-slate-400">pilan liu</span>
+            <p class="text-xs sm:text-sm font-bold text-white truncate">Anjoni Iraola</p>
+            <span class="text-[11px] text-slate-400 truncate block">pilan liu</span>
           </div>
         `;
 
@@ -1376,18 +1431,18 @@ html_content = """<!DOCTYPE html>
         let hofHtml = '';
         hofData.forEach((t, idx) => {
           hofHtml += `
-            <tr class="hover:bg-white/[0.03] transition-colors">
-              <td class="py-3 px-3.5 font-display font-bold text-center text-slate-400">${idx + 1}</td>
-              <td class="py-3 px-3.5">
-                <span class="font-bold text-slate-100 block">${t.name}</span>
-                <span class="text-xs text-slate-400">${t.manager}</span>
+            <tr class="hover:bg-white/[0.03] transition-colors border-b border-white/[0.02]">
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 font-display font-bold text-center text-slate-400 text-xs sm:text-sm">${idx + 1}</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5">
+                <span class="font-bold text-xs sm:text-sm text-slate-100 block">${t.name}</span>
+                <span class="text-[11px] text-slate-400">${t.manager}</span>
               </td>
-              <td class="py-3 px-3.5 text-center font-display font-black text-[#00ff87]">${t.wins}</td>
-              <td class="py-3 px-3.5 text-center font-display font-bold text-[#00f0ff]">${t.avg}</td>
-              <td class="py-3 px-3.5 text-center font-display text-slate-300">${t.high}</td>
-              <td class="py-3 px-3.5 text-center font-display text-slate-500">${t.low}</td>
-              <td class="py-3 px-3.5 text-center font-display text-rose-400">-${t.hits}</td>
-              <td class="py-3 px-3.5 text-center font-display text-[#9d4edd] font-semibold">${t.top3}%</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-black text-[#00ff87] text-xs sm:text-sm">${t.wins}</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display font-bold text-[#00f0ff] text-xs sm:text-sm">${t.avg}</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-300 text-xs sm:text-sm">${t.high}</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-slate-500 text-xs sm:text-sm">${t.low}</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-rose-400 text-xs sm:text-sm">-${t.hits}</td>
+              <td class="py-2.5 px-2 sm:py-3.5 sm:px-3.5 text-center font-display text-[#9d4edd] font-semibold text-xs sm:text-sm">${t.top3}%</td>
             </tr>
           `;
         });
@@ -1453,23 +1508,31 @@ html_content = """<!DOCTYPE html>
         const squad = this.data.squads[squadKey] || Object.values(this.data.squads)[0];
 
         if (squad && squad.starting) {
-          let pHtml = '';
-          squad.starting.forEach(p => {
-            pHtml += `
-              <div class="flex flex-col items-center justify-center p-1 text-center">
-                <div class="relative">
-                  <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900 border-2 ${p.is_captain ? 'border-[#ffbe1a]' : 'border-slate-400'} flex items-center justify-center shadow-md">
-                    <span class="text-xs font-bold text-slate-200">${p.pos}</span>
-                  </div>
-                  ${p.is_captain ? '<span class="absolute -top-1 -right-1 bg-[#ffbe1a] text-slate-950 font-black text-[9px] px-1 rounded-full font-display">C</span>' : ''}
-                  ${p.is_vice ? '<span class="absolute -top-1 -right-1 bg-slate-300 text-slate-950 font-black text-[9px] px-1 rounded-full font-display">V</span>' : ''}
+          const gks = squad.starting.filter(p => p.pos === 'GKP');
+          const defs = squad.starting.filter(p => p.pos === 'DEF');
+          const mids = squad.starting.filter(p => p.pos === 'MID');
+          const fwds = squad.starting.filter(p => p.pos === 'FWD');
+
+          const renderPlayerCard = (p) => `
+            <div class="flex flex-col items-center justify-center p-0.5 text-center flex-1 max-w-[68px] sm:max-w-[85px]">
+              <div class="relative">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-900/90 border-2 ${p.is_captain ? 'border-[#ffbe1a] ring-2 ring-[#ffbe1a]/30' : p.is_vice ? 'border-slate-300' : 'border-emerald-400/50'} flex items-center justify-center shadow-lg">
+                  <span class="text-[10px] sm:text-xs font-bold text-slate-200">${p.pos}</span>
                 </div>
-                <span class="font-bold text-[11px] sm:text-xs text-white bg-slate-950/80 px-2 py-0.5 rounded mt-1 truncate max-w-[80px]">${p.name}</span>
-                <span class="text-[10px] font-black text-[#00ff87] font-display">${p.points} pts</span>
+                ${p.is_captain ? '<span class="absolute -top-1 -right-1 bg-[#ffbe1a] text-slate-950 font-black text-[8px] sm:text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-display shadow">C</span>' : ''}
+                ${p.is_vice ? '<span class="absolute -top-1 -right-1 bg-slate-300 text-slate-950 font-black text-[8px] sm:text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-display shadow">V</span>' : ''}
               </div>
-            `;
-          });
-          pitch.innerHTML = pHtml;
+              <span class="font-bold text-[10px] sm:text-xs text-white bg-black/80 px-1.5 py-0.5 rounded mt-1 truncate max-w-full block">${p.name}</span>
+              <span class="text-[9px] sm:text-[10px] font-black text-[#00ff87] font-display mt-0.5">${p.points} pts</span>
+            </div>
+          `;
+
+          pitch.innerHTML = `
+            <div class="fpl-pitch-line">${gks.map(renderPlayerCard).join('')}</div>
+            <div class="fpl-pitch-line">${defs.map(renderPlayerCard).join('')}</div>
+            <div class="fpl-pitch-line">${mids.map(renderPlayerCard).join('')}</div>
+            <div class="fpl-pitch-line">${fwds.map(renderPlayerCard).join('')}</div>
+          `;
         }
 
         if (squad && squad.bench) {

@@ -184,19 +184,31 @@ class App {
     const squad = (this.leagueData.squads && this.leagueData.squads[squadKey]) || this.leagueData.sample_squad;
 
     if (pitch && squad && squad.starting) {
-      pitch.innerHTML = squad.starting.map(p => `
-        <div class="flex flex-col items-center justify-center p-1 text-center">
+      const gks = squad.starting.filter(p => p.pos === 'GKP');
+      const defs = squad.starting.filter(p => p.pos === 'DEF');
+      const mids = squad.starting.filter(p => p.pos === 'MID');
+      const fwds = squad.starting.filter(p => p.pos === 'FWD');
+
+      const renderPlayerCard = (p) => `
+        <div class="flex flex-col items-center justify-center p-0.5 text-center flex-1 max-w-[68px] sm:max-w-[85px]">
           <div class="relative">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900 border-2 ${p.is_captain ? 'border-[#ffbe1a]' : 'border-slate-400'} flex items-center justify-center shadow-md">
-              <span class="text-xs font-bold text-slate-200">${p.pos}</span>
+            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-900/90 border-2 ${p.is_captain ? 'border-[#ffbe1a] ring-2 ring-[#ffbe1a]/30' : p.is_vice ? 'border-slate-300' : 'border-emerald-400/50'} flex items-center justify-center shadow-lg">
+              <span class="text-[10px] sm:text-xs font-bold text-slate-200">${p.pos}</span>
             </div>
-            ${p.is_captain ? '<span class="absolute -top-1 -right-1 bg-[#ffbe1a] text-slate-950 font-black text-[9px] px-1 rounded-full font-display">C</span>' : ''}
-            ${p.is_vice ? '<span class="absolute -top-1 -right-1 bg-slate-300 text-slate-950 font-black text-[9px] px-1 rounded-full font-display">V</span>' : ''}
+            ${p.is_captain ? '<span class="absolute -top-1 -right-1 bg-[#ffbe1a] text-slate-950 font-black text-[8px] sm:text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-display shadow">C</span>' : ''}
+            ${p.is_vice ? '<span class="absolute -top-1 -right-1 bg-slate-300 text-slate-950 font-black text-[8px] sm:text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-display shadow">V</span>' : ''}
           </div>
-          <span class="font-bold text-[11px] sm:text-xs text-white bg-slate-950/80 px-2 py-0.5 rounded mt-1 truncate max-w-[80px]">${p.name}</span>
-          <span class="text-[10px] font-black text-[#00ff87] font-display">${p.points} pts</span>
+          <span class="font-bold text-[10px] sm:text-xs text-white bg-black/80 px-1.5 py-0.5 rounded mt-1 truncate max-w-full block">${p.name}</span>
+          <span class="text-[9px] sm:text-[10px] font-black text-[#00ff87] font-display mt-0.5">${p.points} pts</span>
         </div>
-      `).join('');
+      `;
+
+      pitch.innerHTML = `
+        <div class="fpl-pitch-line">${gks.map(renderPlayerCard).join('')}</div>
+        <div class="fpl-pitch-line">${defs.map(renderPlayerCard).join('')}</div>
+        <div class="fpl-pitch-line">${mids.map(renderPlayerCard).join('')}</div>
+        <div class="fpl-pitch-line">${fwds.map(renderPlayerCard).join('')}</div>
+      `;
     }
 
     if (bench && squad && squad.bench) {
