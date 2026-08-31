@@ -36,10 +36,11 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add real_fpl_40700_data.json index.html preview.html
+          git add -A
           if git diff --staged --quiet; then
-            echo "No changes detected. Skipping commit."
+            echo "No changes detected in FPL data or dashboards. Skipping commit."
           else
             git commit -m "Auto-sync live FPL data [skip ci]"
-            git push
+            git pull --rebase origin main || true
+            git push origin main
           fi

@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "1 ก.ย. 2026, 02:51 น.",
-    "last_sync_iso": "2026-09-01 02:51:36"
+    "last_sync": "1 ก.ย. 2026, 03:02 น.",
+    "last_sync_iso": "2026-09-01 03:02:15"
   },
   "teams": [
     {
@@ -259,9 +259,9 @@
           "entry_id": 2206758,
           "team_name": "ใครไม่พีค",
           "player_name": "Isriya Paireepairit",
-          "points": 97,
+          "points": 96,
           "hits": 0,
-          "net_points": 97,
+          "net_points": 96,
           "captain": "B.Fernandes",
           "chip": null,
           "bench_points": 3
@@ -2393,7 +2393,7 @@
           "name": "Gabriel",
           "pos": "DEF",
           "team": "ARS",
-          "points": 2,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },

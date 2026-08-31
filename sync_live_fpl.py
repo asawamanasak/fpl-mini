@@ -7,10 +7,17 @@ from concurrent.futures import ThreadPoolExecutor
 
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)'}
 
-def fetch(url):
-    req = urllib.request.Request(url, headers=headers)
-    with urllib.request.urlopen(req, timeout=15) as resp:
-        return json.loads(resp.read().decode('utf-8'))
+def fetch(url, retries=3, delay=1.5):
+    for attempt in range(retries):
+        try:
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                return json.loads(resp.read().decode('utf-8'))
+        except Exception as e:
+            if attempt == retries - 1:
+                print(f"Failed to fetch {url} after {retries} attempts: {e}")
+                raise e
+            time.sleep(delay * (attempt + 1))
 
 def main():
     start_time = time.time()
