@@ -567,7 +567,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
   <!-- 6.1 หน้าต่างดูแผนจัดตัวนักเตะ (Team Squad Modal) -->
   <div id="team-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-xs hidden transition-all duration-200" onclick="if (event.target === this) app.closeTeamModal()">
-    <div class="bg-white rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200 max-h-[94vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <div class="bg-white rounded-3xl p-4 sm:p-6 max-w-xl w-full shadow-2xl border border-slate-200 max-h-[94vh] overflow-y-auto" onclick="event.stopPropagation()">
       
       <!-- Header -->
       <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3 sm:mb-4">
@@ -608,7 +608,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">ตัวสำรอง (Substitutes)</span>
           <span id="team-modal-bench-total" class="text-[10px] sm:text-xs text-slate-500 font-bold font-display"></span>
         </div>
-        <div id="team-bench-container" class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
+        <div id="team-bench-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
           <!-- 4 Bench Player Cards -->
         </div>
       </div>
@@ -1944,12 +1944,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           squad.bench.forEach(p => {
             bPoints += (p.points || 0);
             bHtml += `
-              <div class="bg-white border border-slate-200 rounded-xl p-2 sm:p-2.5 flex items-center justify-between shadow-xs">
-                <div class="flex items-center gap-1.5 min-w-0 pr-1">
-                  <span class="text-[8px] sm:text-[9px] font-bold text-slate-700 bg-slate-100 px-1 py-0.5 rounded font-display flex-shrink-0">${p.pos}</span>
-                  <span class="text-[11px] sm:text-xs font-bold text-slate-900 truncate">${p.name}</span>
+              <div class="bg-white border border-slate-200 rounded-xl p-2.5 sm:p-3 flex items-center justify-between shadow-xs hover:border-slate-300 transition-colors">
+                <div class="flex items-center gap-2 min-w-0 pr-2">
+                  <span class="text-[9px] sm:text-[10px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md font-display flex-shrink-0">${p.pos}</span>
+                  <span class="text-xs sm:text-sm font-bold text-slate-900 truncate">${p.name}</span>
                 </div>
-                <span class="text-[11px] sm:text-xs font-bold text-slate-500 font-display flex-shrink-0">${p.points} pts</span>
+                <span class="text-xs sm:text-xs font-bold text-slate-700 font-display flex-shrink-0 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-lg">${p.points} pts</span>
               </div>
             `;
           });

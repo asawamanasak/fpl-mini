@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "1 ก.ย. 2026, 03:23 น.",
-    "last_sync_iso": "2026-09-01 03:23:44"
+    "last_sync": "1 ก.ย. 2026, 03:28 น.",
+    "last_sync_iso": "2026-09-01 03:28:42"
   },
   "teams": [
     {
@@ -226,9 +226,9 @@
           "entry_id": 306983,
           "team_name": "GEMINI UNITED",
           "player_name": "Micky Asawamanasak",
-          "points": 109,
+          "points": 110,
           "hits": 0,
-          "net_points": 109,
+          "net_points": 110,
           "captain": "B.Fernandes",
           "chip": null,
           "bench_points": 16
@@ -2007,7 +2007,7 @@
           "name": "White",
           "pos": "DEF",
           "team": "ARS",
-          "points": 6,
+          "points": 7,
           "is_captain": false,
           "is_vice": false
         },
