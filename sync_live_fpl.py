@@ -1,3 +1,4 @@
+from datetime import datetime, timezone, timedelta
 import urllib.request
 import json
 import time
@@ -129,11 +130,20 @@ def main():
             except Exception as e:
                 print(f"Error fetching team {eid} GW {gw}: {e}")
 
+    # Generate Thailand timestamp for last sync
+    thai_months = ['', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
+    tz_th = timezone(timedelta(hours=7))
+    now_th = datetime.now(tz_th)
+    sync_time_str = f"{now_th.day} {thai_months[now_th.month]} {now_th.year}, {now_th.strftime('%H:%M น.')}"
+    sync_iso_str = now_th.strftime('%Y-%m-%d %H:%M:%S')
+
     final_data = {
         "league": {
             "id": 40700,
             "name": league_data['league']['name'],
-            "season": "2026/27"
+            "season": "2026/27",
+            "last_sync": sync_time_str,
+            "last_sync_iso": sync_iso_str
         },
         "teams": teams_list,
         "gameweeks": gameweeks_dict,

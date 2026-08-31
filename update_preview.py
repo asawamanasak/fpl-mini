@@ -308,6 +308,12 @@ html_content = """<!DOCTYPE html>
             <span class="text-[9px] sm:text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200 px-1.5 sm:px-2 py-0.5 rounded-full font-display flex-shrink-0">
               LEAGUE 40700
             </span>
+            <span class="text-[9px] sm:text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200 px-2 sm:px-2.5 py-0.5 rounded-full font-display flex-shrink-0 flex items-center gap-1.5 shadow-xs" title="วันเวลาที่ GitHub Cloud ซิงค์ข้อมูลล่าสุด">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
+              <span>Last Sync: <strong id="header-last-sync" class="text-slate-900 font-bold font-display">' + str(data.get('league', {}).get('last_sync') or '31 ส.ค. 2026, 19:28 น.') + '</strong></span>
+            </span>
+              <span>SYNC: <strong id="header-last-sync" class="text-slate-800 font-bold font-display">' + str(data.get('league', {}).get('last_sync') or 'ล่าสุด') + '</strong></span>
+            </span>
           </div>
           <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5 flex items-center gap-1.5 font-medium truncate">
             <span>ฤดูกาล 2026/27</span>
