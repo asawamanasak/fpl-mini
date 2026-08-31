@@ -2263,19 +2263,13 @@ def main():
     with open(os.path.join(base_dir, '404.html'), 'w', encoding='utf-8') as f:
         f.write(root_html)
 
-    # 2. Generate dedicated folder entry points for 40700 and 675290
-    dir_40700 = os.path.join(base_dir, '40700')
-    dir_675290 = os.path.join(base_dir, '675290')
-    os.makedirs(dir_40700, exist_ok=True)
-    os.makedirs(dir_675290, exist_ok=True)
-
-    html_40700 = generate_html(multi_data, leagues_config, default_league_id='40700')
-    with open(os.path.join(dir_40700, 'index.html'), 'w', encoding='utf-8') as f:
-        f.write(html_40700)
-
-    html_675290 = generate_html(multi_data, leagues_config, default_league_id='675290')
-    with open(os.path.join(dir_675290, 'index.html'), 'w', encoding='utf-8') as f:
-        f.write(html_675290)
+    # 2. Generate dedicated folder entry points for all configured leagues dynamically
+    for lid in leagues_config.keys():
+        dir_league = os.path.join(base_dir, str(lid))
+        os.makedirs(dir_league, exist_ok=True)
+        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid))
+        with open(os.path.join(dir_league, 'index.html'), 'w', encoding='utf-8') as f:
+            f.write(html_league)
 
     print("Successfully updated update_preview.py and generated all HTML files with user requested UX/UI modifications!")
     
