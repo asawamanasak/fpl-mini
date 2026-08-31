@@ -1437,11 +1437,9 @@
         const hofColWins = document.getElementById('hof-col-wins');
         const maxGW = Number(this.multiData.max_gw) || 2;
 
-        const isWeekly = (this.config.features.prize_model === 'weekly');
-        if (hofColWins) hofColWins.innerText = isWeekly ? 'แชมป์วีค' : 'คะแนนสูงสุด GW';
+        if (hofColWins) hofColWins.innerText = 'อันดับ 1 (ครั้ง)';
 
         let highGW = { score: 0, team: '-', gw: 1 };
-        let mostWins = { wins: 0, team: '-' };
         let bestBench = { bench: 0, team: '-', gw: 1 };
 
         const teamStats = {};
@@ -1484,32 +1482,45 @@
         const sortedStats = Object.values(teamStats).sort((a, b) => b.total_net - a.total_net);
         const leader = sortedStats[0] || { team_name: '-', total_net: 0, scores: [0] };
 
+        // Accurately compute team(s) with most GW #1 finishes
+        let mostWinsCount = 0;
+        let mostWinsTeams = [];
+        sortedStats.forEach(t => {
+          if (t.wins > mostWinsCount) {
+            mostWinsCount = t.wins;
+            mostWinsTeams = [t.team_name];
+          } else if (t.wins === mostWinsCount && t.wins > 0) {
+            mostWinsTeams.push(t.team_name);
+          }
+        });
+        const mostWinsName = mostWinsTeams.length > 0 ? mostWinsTeams.join(', ') : '-';
+
         if (recordsContainer) {
           recordsContainer.innerHTML = `
             <div class="glass-card rounded-2xl p-4 border border-slate-200">
-              <span class="text-[10px] uppercase font-bold text-slate-400 block font-display">คะแนนสูงสุด 1 วีค</span>
+              <span class="text-[10px] uppercase font-bold text-slate-400 block font-display">แต้มสูงสุดใน 1 วีค</span>
               <div class="text-xl font-black text-slate-900 mt-1 font-display">${highGW.score} <span class="text-xs">PTS</span></div>
               <div class="text-xs font-bold text-slate-700 truncate mt-0.5">${highGW.team}</div>
               <div class="text-[10px] text-slate-500 font-display">Gameweek ${highGW.gw}</div>
             </div>
 
             <div class="glass-card rounded-2xl p-4 border border-slate-200">
-              <span class="text-[10px] uppercase font-bold text-slate-400 block font-display">${isWeekly ? 'จอมกวาดแชมป์วีค' : 'คะแนนสูงสุด GW'}</span>
-              <div class="text-xl font-black text-slate-900 mt-1 font-display">${leader.wins} <span class="text-xs">ครั้ง</span></div>
-              <div class="text-xs font-bold text-slate-700 truncate mt-0.5">${leader.team_name}</div>
+              <span class="text-[10px] uppercase font-bold text-slate-400 block font-display">ครองอันดับ 1 มากที่สุด</span>
+              <div class="text-xl font-black text-slate-900 mt-1 font-display">${mostWinsCount} <span class="text-xs">ครั้ง</span></div>
+              <div class="text-xs font-bold text-slate-700 truncate mt-0.5">${mostWinsName}</div>
               <div class="text-[10px] text-slate-500 font-display">ตลอดฤดูกาล</div>
             </div>
 
             <div class="glass-card rounded-2xl p-4 border border-slate-200">
-              <span class="text-[10px] uppercase font-bold text-slate-400 block font-display">จ่าฝูงแต้มรวมสูงสุด</span>
-              <div class="text-xl font-black text-slate-900 mt-1 font-display">${(leader.total_net / Math.max(leader.scores.length, 1)).toFixed(1)} <span class="text-xs">AVG/GW</span></div>
+              <span class="text-[10px] uppercase font-bold text-slate-400 block font-display">จ่าฝูงคะแนนรวม</span>
+              <div class="text-xl font-black text-slate-900 mt-1 font-display">${leader.total_net} <span class="text-xs">PTS</span></div>
               <div class="text-xs font-bold text-slate-700 truncate mt-0.5">${leader.team_name}</div>
-              <div class="text-[10px] text-slate-500 font-display">รวม ${leader.total_net} pts</div>
+              <div class="text-[10px] text-slate-500 font-display">เฉลี่ย ${(leader.total_net / Math.max(leader.scores.length, 1)).toFixed(1)} pts/GW</div>
             </div>
 
             <div class="glass-card rounded-2xl p-4 border border-slate-200">
-              <span class="text-[10px] uppercase font-bold text-slate-400 block font-display">สำรองแต้มกระจาย</span>
-              <div class="text-xl font-black text-slate-900 mt-1 font-display">${bestBench.bench} <span class="text-xs">BENCH</span></div>
+              <span class="text-[10px] uppercase font-bold text-slate-400 block font-display">แต้มสำรองสูงสุด 1 วีค</span>
+              <div class="text-xl font-black text-slate-900 mt-1 font-display">${bestBench.bench} <span class="text-xs">PTS</span></div>
               <div class="text-xs font-bold text-slate-700 truncate mt-0.5">${bestBench.team}</div>
               <div class="text-[10px] text-slate-500 font-display">Gameweek ${bestBench.gw}</div>
             </div>
