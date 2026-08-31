@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "1 ก.ย. 2026, 02:34 น.",
-    "last_sync_iso": "2026-09-01 02:34:49"
+    "last_sync": "1 ก.ย. 2026, 02:41 น.",
+    "last_sync_iso": "2026-09-01 02:41:17"
   },
   "teams": [
     {
@@ -226,9 +226,9 @@
           "entry_id": 306983,
           "team_name": "GEMINI UNITED",
           "player_name": "Micky Asawamanasak",
-          "points": 100,
+          "points": 99,
           "hits": 0,
-          "net_points": 100,
+          "net_points": 99,
           "captain": "B.Fernandes",
           "chip": null,
           "bench_points": 16
@@ -259,9 +259,9 @@
           "entry_id": 2206758,
           "team_name": "ใครไม่พีค",
           "player_name": "Isriya Paireepairit",
-          "points": 96,
+          "points": 98,
           "hits": 0,
-          "net_points": 96,
+          "net_points": 98,
           "captain": "B.Fernandes",
           "chip": null,
           "bench_points": 3
@@ -292,9 +292,9 @@
           "entry_id": 2999763,
           "team_name": "Cody Travers",
           "player_name": "Alesandro Nuyie",
-          "points": 72,
+          "points": 71,
           "hits": 4,
-          "net_points": 68,
+          "net_points": 67,
           "captain": "Haaland",
           "chip": null,
           "bench_points": 3
@@ -319,7 +319,7 @@
           "net_points": 56,
           "captain": "Haaland",
           "chip": null,
-          "bench_points": 12
+          "bench_points": 11
         },
         {
           "entry_id": 5470959,
@@ -336,9 +336,9 @@
           "entry_id": 2191555,
           "team_name": "1234 Barbyu Barbyu",
           "player_name": "Maew Mohawk",
-          "points": 59,
+          "points": 58,
           "hits": 4,
-          "net_points": 55,
+          "net_points": 54,
           "captain": "Haaland",
           "chip": null,
           "bench_points": 3
@@ -2007,7 +2007,7 @@
           "name": "White",
           "pos": "DEF",
           "team": "ARS",
-          "points": 2,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -2393,7 +2393,7 @@
           "name": "Gabriel",
           "pos": "DEF",
           "team": "ARS",
-          "points": 1,
+          "points": 3,
           "is_captain": false,
           "is_vice": false
         },
@@ -2787,7 +2787,7 @@
           "name": "Ødegaard",
           "pos": "MID",
           "team": "ARS",
-          "points": 2,
+          "points": 1,
           "is_captain": false,
           "is_vice": true
         },
@@ -3113,7 +3113,7 @@
           "name": "Cash",
           "pos": "DEF",
           "team": "AVL",
-          "points": 3,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         }
@@ -3315,7 +3315,7 @@
           "name": "Saka",
           "pos": "MID",
           "team": "ARS",
-          "points": 2,
+          "points": 1,
           "is_captain": false,
           "is_vice": true
         },
