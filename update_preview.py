@@ -504,8 +504,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 <th class="py-2 px-2 sm:px-3 text-center">แต้มเฉลี่ย</th>
                 <th class="py-2 px-2 sm:px-3 text-center">แต้มสูงสุด</th>
                 <th class="py-2 px-2 sm:px-3 text-center">แต้มต่ำสุด</th>
-                <th class="py-2 px-2 sm:px-3 text-center">แต้มลบสะสม</th>
-                <th class="py-2 px-2 sm:px-3 text-right">Top 3 Rate</th>
+                <th class="py-2 px-2 sm:px-3 text-right">แต้มลบสะสม</th>
               </tr>
             </thead>
             <tbody id="hall-of-fame-table-body" class="divide-y divide-slate-100 text-xs sm:text-sm">
@@ -1544,10 +1543,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   <div class="text-[11px] text-slate-500">${t.player_name}</div>
                 </td>
                 ${scoreCols}
-                <td class="py-2.5 px-2 text-right font-display font-black text-xs sm:text-sm text-slate-900">${t.month_total}</td>
-                <td class="py-2.5 px-2 text-right font-display font-bold text-xs ${isLeader ? 'text-emerald-600' : 'text-slate-400'}">
-                  ${isLeader ? '🏆 ชิง 500 THB' : '-'}
-                </td>
+                <td class="py-2.5 px-2 text-right font-display font-black text-xs sm:text-sm ${isLeader ? 'text-emerald-700 font-bold' : 'text-slate-900'}">${t.month_total}</td>
               </tr>
             `;
           });
@@ -1594,14 +1590,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               </div>
 
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100 mb-3">
-                  <div>
-                    <span class="text-[10px] uppercase font-bold text-slate-500 font-display">MONTHLY STANDINGS LEADERBOARD</span>
-                    <h3 class="text-sm sm:text-base font-bold text-slate-900 font-display">ตารางคะแนนประจำเดือน: ${curMonth.month}</h3>
-                  </div>
-                  <span class="text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-xl font-display self-start sm:self-auto">
-                    ชิงเงินรางวัล ${curMonth.budget}
-                  </span>
+                <div class="pb-3 border-b border-slate-100 mb-3">
+                  <span class="text-[10px] uppercase font-bold text-slate-500 font-display">MONTHLY STANDINGS LEADERBOARD</span>
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900 font-display">ตารางคะแนนประจำเดือน: ${curMonth.month}</h3>
                 </div>
 
                 <div class="flex space-x-1.5 overflow-x-auto touch-scroll no-scrollbar pb-2.5 mb-2 border-b border-slate-100">
@@ -1616,7 +1607,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                         <th class="py-2 px-2">ทีม & ผู้จัดการ</th>
                         ${curMonth.gw_list.map(g => `<th class="py-2 px-2 text-center">GW ${g}</th>`).join('')}
                         <th class="py-2 px-2 text-right">แต้มรวมเดือน</th>
-                        <th class="py-2 px-2 text-right">สถานะ</th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 text-xs sm:text-sm">
@@ -1754,8 +1744,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display font-black text-slate-900">${avg}</td>
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display text-emerald-600 font-bold">${high}</td>
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display text-slate-500">${low}</td>
-                <td class="py-2.5 px-2 sm:px-3 text-center font-display text-rose-600 font-bold">-${t.total_hits}</td>
-                <td class="py-2.5 px-2 sm:px-3 text-right font-display font-bold text-slate-800">${top3Rate}%</td>
+                <td class="py-2.5 px-2 sm:px-3 text-right font-display text-rose-600 font-bold">-${t.total_hits}</td>
               </tr>
             `;
           });
