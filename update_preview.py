@@ -678,8 +678,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
     /**
      * Dynamic Live Commentary Engine (Borbou Style)
      */
+    /**
+     * Dynamic Live Commentary Engine (Borbou Style - บอ.บู๋ จัดจ้าน มันส์ ดิบเถื่อน ฮา)
+     */
     class LiveCommentaryEngine {
-      static generateFreshNote(gwNumber, gwData, leagueName) {
+      static generateFreshNote(gwNumber, gwData, leagueName, forceRandom = false) {
         if (!gwData || !gwData.results || gwData.results.length === 0) {
           return `Gameweek นี้กำลังรอผลการแข่งขันจากสนามจริง`;
         }
@@ -689,24 +692,122 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const second = sorted[1];
         const isFinished = Boolean(gwData.is_finished);
         const diff = top.net_points - (second ? second.net_points : 0);
+        const winners = sorted.filter(r => r.net_points === top.net_points);
+        const isJoint = winners.length > 1;
+        const captName = (top.captain || '-').replace(/\s*\(C\)/gi, '').trim();
 
-        const finishedPunchlines = [
-          `"${top.team_name}" โชว์ฟอร์มโหด กดไป ${top.net_points} แต้ม ฟาดอันดับ 1 GW ${gwNumber} สบายเกือก!`,
-          `จอมยุทธ์แห่งสัปดาห์! "${top.team_name}" ซัดไปเน้นๆ ${top.net_points} แต้ม เข้าป้ายแต้มสูงสุดแบบไร้เทียมทาน`,
-          `เกมจบแต่ความฟินไม่จบ! "${top.team_name}" รัวแต้มกระจาย ${top.net_points} pts คว้าชัยสัปดาห์นี้สมศักดิ์ศรี`,
-          `สมราคาเต็งหนึ่ง! "${top.team_name}" เก็บไป ${top.net_points} แต้ม ลอยลำคว้าคะแนนสูงสุดสัปดาห์นี้ไปครอง`
-        ];
+        const templates = [];
 
-        const livePunchlines = [
-          `สถานการณ์ล่าสุด GW ${gwNumber}! "${top.team_name}" กำลังนำเดี่ยวที่ ${top.net_points} แต้ม (${top.chip ? 'ใช้ชิป ' + top.chip.toUpperCase() : 'กัปตัน ' + (top.captain || '-')})`,
-          `เดือดจัดกลางตาราง! "${top.team_name}" ยึดจ่าฝูงชั่วคราว ${top.net_points} แต้ม ตามมาติดๆ ด้วย "${second ? second.team_name : 'อันดับสอง'}" (${second ? second.net_points : 0} pts)`,
-          `บอลยังไม่จบอย่าเพิ่งนับศพทหาร! "${top.team_name}" ซัดนำ ${top.net_points} แต้ม ขยับลุ้นคะแนนสูงสุดแบบสุดมันส์!`,
-          `GW ${gwNumber} ซัดกันนัว! "${top.team_name}" พุ่งทะยานขึ้นเบอร์ 1 ด้วยแต้มสุทธิ ${top.net_points} แต้ม`
-        ];
+        if (isFinished) {
+          // 1. Joint Champions (แชมป์ร่วม)
+          if (isJoint) {
+            const names = winners.map(w => `"${w.team_name}"`).join(' กับ ');
+            templates.push(
+              `กินกันไม่ลงโว้ย! ${names} ซัดไปคนละ ${top.net_points} แต้มเท่ากันเป๊ะ กอดคอคว้าแชมป์ร่วม GW ${gwNumber} แบ่งเงินรางวัลกันไปคนละครึ่งสุดแฮปปี้!`,
+              `ดวลกันเดือดจนเสมอกันเฉย! ${names} รัวคนละ ${top.net_points} pts บอลจบอารมณ์ไม่จบ กอดคอกันฟินแบบหารสอง!`,
+              `สูสีจนไม่มีใครยอมใคร! ${names} เข้าป้ายที่ ${top.net_points} แต้มเท่ากัน ครองบัลลังก์ร่วมสัปดาห์นี้อย่างสมศักดิ์ศรี!`,
+              `แชมป์คู่เฉยเลยพี่น้อง! ${names} จัดไปเน้นๆ ${top.net_points} แต้ม สัปดาห์นี้แบ่งความมันส์กันไปเต็มคาราเบล!`
+            );
+          }
 
-        const list = isFinished ? finishedPunchlines : livePunchlines;
-        const seed = (gwNumber * 7 + top.net_points + diff) % list.length;
-        return list[seed];
+          // 2. Blowout Win (ขาดลอย ทิ้งห่าง)
+          if (diff >= 12) {
+            templates.push(
+              `ขาดลอยแบบไม่ต้องสืบ! "${top.team_name}" ซัดไป ${top.net_points} แต้ม ทิ้งห่างอันดับสองถึง ${diff} แต้ม สัปดาห์นี้เดินแอ็คหล่อๆ กินเต็มข้อ ล่อเต็มแข้ง!`,
+              `สอนบอลแบบหมดทางสู้! "${top.team_name}" กดไป ${top.net_points} แต้ม ทิ้งห่าง ${diff} แต้ม ขยี้คู่แข่งจนหาทางกลับบ้านไม่ถูก สัปดาห์นี้ยกให้เป็นเทพเจ้าแฟนตาซี!`,
+              `ฟอร์มโหดเหมือนโกรธใครมา! "${top.team_name}" ฟาด ${top.net_points} แต้ม ชนะขาดลอย ${diff} แต้ม ยืนหนึ่งบนยอดเขาสูงแบบไร้คู่ต่อกร!`,
+              `ไร้เทียมทานช็อตนี้! "${top.team_name}" กระหน่ำไป ${top.net_points} แต้ม ทิ้งห่าง ${diff} แต้ม เล่นเอากองเชียร์คู่แข่งถึงกับต้องกุมขมับ!`,
+              `ม้วนเดียวจบ! "${top.team_name}" จัดไป ${top.net_points} แต้ม หนีอันดับสอง ${diff} แต้ม คว้าแชมป์วีคแบบไม่ต้องลุ้นให้เหนื่อยใจ!`,
+              `ขาดกระจุย! "${top.team_name}" ตบหน้าทุกความหวัง กดไป ${top.net_points} แต้ม ทิ้ง ${diff} แต้มขาดลอย ฟาดแต้มสูงสุดประจำสัปดาห์ไปนอนกอด!`,
+              `โชว์คลาสระดับเวิลด์คลาส! "${top.team_name}" ซัด ${top.net_points} แต้ม ถลุงแต้มห่าง ${diff} แต้ม วีคนี้ขอคารวะหนึ่งจอก!`,
+              `ใครก็ได้เอาลงที! "${top.team_name}" เก็บไป ${top.net_points} แต้ม ทิ้งห่าง ${diff} แต้ม ร้อนแรงยิ่งกว่าแดดเมืองไทย!`
+            );
+          }
+
+          // 3. Close / Nail-Biter Finish (เฉียดฉิว เบียดปลายจมูก)
+          if (diff > 0 && diff <= 4 && second) {
+            templates.push(
+              `เฉียดฉิวระดับมิลลิเมตร! "${top.team_name}" เบียดเข้าป้ายด้วย ${top.net_points} แต้ม ชนะ "${second.team_name}" แค่ ${diff} แต้มเดียวเท่านั้น ลุ้นจนเกือบหัวใจวาย!`,
+              `ปาดหน้าเค้กวินาทีสุดท้าย! "${top.team_name}" ซัด ${top.net_points} แต้ม เฉือน "${second.team_name}" แค่ ${diff} แต้ม ปล่อยให้อันดับสองยืนงงในดงแฟนตาซี!`,
+              `เบียดกันเลือดซิป! "${top.team_name}" แซงเข้าป้าย ${top.net_points} แต้ม เฉือนชนะ ${diff} แต้ม เกมแบบนี้ใจไม่ถึงจริงอยู่ยาก!`,
+              `ดราม่าท้ายเกม! "${top.team_name}" เข้าวิน ${top.net_points} แต้ม เหนือกว่า "${second.team_name}" แค่ก้าวเดียว (${diff} pts) เกือบโดนปาดหน้าเส้นชัย!`,
+              `เสียวไส้ระดับสิบ! "${top.team_name}" คว้าชัย ${top.net_points} แต้ม ชนะอันดับสองแบบเฉียดเส้นตายแค่ ${diff} แต้ม เฮลั่นซอย!`,
+              `ปาดเหงื่อกันทั้งลีก! "${top.team_name}" คว้าแต้มสูงสุด ${top.net_points} แต้ม เฉือน "${second.team_name}" แค่ ${diff} แต้ม บุญพาวาสนาส่งแท้ๆ!`,
+              `ลมแทบจับ! "${top.team_name}" เก็บไป ${top.net_points} แต้ม เฉือนชนะ ${diff} แต้มแบบบีบหัวใจสุดๆ ยิ้มรับสัปดาห์นี้อย่างสะใจ!`
+            );
+          }
+
+          // 4. Captain Masterclass & Chip Shockers
+          if (captName && captName !== '-') {
+            templates.push(
+              `กัปตันร่างทอง! "${top.team_name}" ไว้วางใจ ${captName} สวมปลอกแขนกดแต้มรัวๆ พาพุ่งเข้าป้าย ${top.net_points} แต้ม กึ๋นจัดปลัดบอก!`,
+              `เลือกกัปตันถูก ชีวิตเปลี่ยนทันที! "${top.team_name}" ได้ ${captName} แบกทีมคว้า ${top.net_points} แต้ม ปล่อยให้คนอื่นอิจฉาตาร้อน!`,
+              `แต้มระเบิดถังขี้! "${top.team_name}" พึ่งพา ${captName} และฟอร์มเพื่อนร่วมทีม กดไปเน้นๆ ${top.net_points} แต้ม ฟาดอันดับ 1 ไปครอง!`,
+              `กัปตันไม่ทำให้ผิดหวัง! "${top.team_name}" วางหมากฉลาดเลือก ${captName} นำทัพโกย ${top.net_points} pts คว้าชัยสัปดาห์นี้แบบหล่อๆ!`
+            );
+          }
+
+          if (top.chip) {
+            templates.push(
+              `ชิปพิฆาต! "${top.team_name}" เปิดชิป ${top.chip.toUpperCase()} กอบโกยแต้มทะลุเป้า ${top.net_points} แต้ม วางแผนมาเนียนกริ๊บจนต้องปรบมือให้!`,
+              `จังหวะใช้ชิปโคตรเซียน! "${top.team_name}" กดชิป ${top.chip.toUpperCase()} ปั๊มคะแนนทะลัก ${top.net_points} แต้ม กวาดชัยชนะสัปดาห์นี้ไปแบบไร้ข้อกังขา!`
+            );
+          }
+
+          // 5. Transfer Hits Penalty & Still Won
+          if (top.hits > 0) {
+            templates.push(
+              `โดนลบแต้มแล้วไง ใครแคร์! "${top.team_name}" โดนลบไป -${top.hits} แต้ม แต่ยังซัดสุทธิ ${top.net_points} แต้ม ลอยลำเข้าป้ายอันดับ 1 หน้าตาเฉย!`,
+              `หักลบแต้มแล้วยังโหด! "${top.team_name}" ย้ายตัวติดลบ (-${top.hits}) แต่แต้มรวมยังยืนหนึ่งที่ ${top.net_points} แต้ม เอาอะไรมาต้าน!`,
+              `ไม่เสียแรงที่ยอมติดลบ! "${top.team_name}" ยอมจ่ายค่าครู -${top.hits} แต้ม แลกกับการคว้าชัย ${top.net_points} แต้ม การลงทุนมีความเสี่ยงแต่คุ้มจัด!`
+            );
+          }
+
+          // 6. General Borbou-style Finishers
+          templates.push(
+            `"${top.team_name}" โชว์ฟอร์มโหด กดไป ${top.net_points} แต้ม ฟาดอันดับ 1 GW ${gwNumber} สบายเกือก!`,
+            `จอมยุทธ์แห่งสัปดาห์! "${top.team_name}" ซัดไปเน้นๆ ${top.net_points} แต้ม เข้าป้ายแต้มสูงสุดแบบไร้เทียมทาน`,
+            `เกมจบแต่ความฟินไม่จบ! "${top.team_name}" รัวแต้มกระจาย ${top.net_points} pts คว้าชัยสัปดาห์นี้สมศักดิ์ศรี`,
+            `สมราคาเต็งหนึ่ง! "${top.team_name}" เก็บไป ${top.net_points} แต้ม ลอยลำคว้าคะแนนสูงสุดสัปดาห์นี้ไปครอง`,
+            `แชมป์วีคไม่พูดเยอะ เจ็บคอ! "${top.team_name}" ทุบไป ${top.net_points} แต้ม ปล่อยให้ทีมอื่นมองตาปริบๆ!`,
+            `จัดหนักจัดเต็ม! "${top.team_name}" ฟาดคะแนนสุดดุดัน ${top.net_points} แต้ม สัปดาห์นี้ขอเดินยืดอกเต็มภาคภูมิ!`,
+            `ผลงานระดับมาสเตอร์พีซ! "${top.team_name}" กดไป ${top.net_points} แต้ม สะกดคำว่าแพ้ไม่เป็นใน GW ${gwNumber}!`,
+            `ของแทร่แน่นอน! "${top.team_name}" เก็บ ${top.net_points} แต้ม ฟาดแชมป์ประจำสัปดาห์ไปนอนกอดสบายใจเฉิบ!`,
+            `ตบโต๊ะสะใจ! "${top.team_name}" โกย ${top.net_points} แต้ม เข้าวินอันดับ 1 GW ${gwNumber} แบบสะใจแฟนบอล!`,
+            `สุดในรุ่น! "${top.team_name}" คว้าคะแนนสูงสุด ${top.net_points} แต้ม สัปดาห์นี้บอกเลยว่าพี่เค้ามาเพื่อเป็นแชมป์!`,
+            `เปิดเพลงฉลองได้เลย! "${top.team_name}" รัว ${top.net_points} แต้ม ปิดจ๊อบสัปดาห์นี้อย่างงดงามพระรามแปด!`,
+            `ฟอร์มดุระดับสิบกะโหลก! "${top.team_name}" ซัดไป ${top.net_points} แต้ม ฟาดแต้มสูงสุดประจำสัปดาห์แบบไร้ข้อกังขา!`
+          );
+
+        } else {
+          // LIVE Ongoing Thrillers (กำลังแข่งขันสด)
+          templates.push(
+            `สดๆ ร้อนๆ กลางตาราง! "${top.team_name}" ยึดจ่าฝูงชั่วคราวที่ ${top.net_points} แต้ม (${top.chip ? 'ใช้ชิป ' + top.chip.toUpperCase() : 'กัปตัน ' + captName}) แต่บอกเลยว่าบอลยังไม่จบอย่าเพิ่งนับศพทหาร!`,
+            `นำอยู่แต่ยังวางใจไม่ได้! "${top.team_name}" ซัดนำเดี่ยว ${top.net_points} แต้ม ตามหลังมาติดๆ คือ "${second ? second.team_name : 'อันดับสอง'}" (${second ? second.net_points : 0} pts) หายใจรดต้นคอสุดๆ!`,
+            `เดือดทะลุปรอท! "${top.team_name}" พุ่งทะยานขึ้นเบอร์ 1 สดๆ ${top.net_points} แต้ม ใครจะโดนปาดหรือใครจะเข้าวิน ต้องลุ้นกันจนนกหวีดหมดเวลา!`,
+            `ซัดกันนัวเนีย! "${top.team_name}" กำลังนำที่ ${top.net_points} แต้ม กัปตัน ${captName} กำลังลงสนาม คืนนี้มีดราม่าแน่นอน!`,
+            `ผู้นำสดสัปดาห์นี้! "${top.team_name}" โชว์ฟอร์มโหดยึดที่ 1 ชั่วคราว ${top.net_points} แต้ม อันดับ 2 ไล่บี้แค่ ${diff} แต้ม มันส์หยดติ๋ง!`,
+            `สถานการณ์สด GW ${gwNumber}! "${top.team_name}" ฟอร์มดุซัดไป ${top.net_points} แต้ม แฟนบอลนั่งไม่ติดเก้าอี้ ลุ้นแต้มโบนัสท้ายเกมกันตาแตก!`,
+            `เก้าอี้จ่าฝูงสั่นคลอน! "${top.team_name}" นำที่ ${top.net_points} แต้ม แต่ข้างหลังไล่กวดกันตาแทบไม่กะพริบ!`,
+            `เกมยังเปิดกว้าง! "${top.team_name}" ซัดนำชั่วคราว ${top.net_points} แต้ม สัปดาห์นี้ใครจะเข้าป้ายยังต้องลุ้นกันเหงื่อตก!`,
+            `ลุ้นกันมันส์หยด! "${top.team_name}" กดนำไปก่อน ${top.net_points} แต้ม บอลยังเตะไม่ครบทุกคู่ อะไรก็เกิดขึ้นได้ในโลกแฟนตาซี!`,
+            `เดือดจัดทุกคู่! "${top.team_name}" ครองอันดับ 1 ชั่วคราว ${top.net_points} แต้ม แต้มสดขยับแบบเรียลไทม์สุดระทึก!`,
+            `สดจากสนาม! "${top.team_name}" ซัดนำที่ ${top.net_points} แต้ม กัปตัน ${captName} พาฟิน แต่ห้ามกะพริบตาเด็ดขาด!`,
+            `สถานการณ์ล่าสุด GW ${gwNumber}! "${top.team_name}" กำลังนำเดี่ยวที่ ${top.net_points} แต้ม เกมนี้ยังมีพลิกได้ตลอดเวลา!`
+          );
+        }
+
+        if (templates.length === 0) {
+          return `"${top.team_name}" เก็บไป ${top.net_points} แต้ม ประจำสัปดาห์ที่ ${gwNumber}`;
+        }
+
+        if (forceRandom) {
+          const randIdx = Math.floor(Math.random() * templates.length);
+          return templates[randIdx];
+        }
+
+        const seed = Math.abs((Number(gwNumber) * 13 + Number(top.net_points) * 7 + diff * 3)) % templates.length;
+        return templates[seed];
       }
     }
 
@@ -1088,18 +1189,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
               </div>
 
-              <!-- Highlight Note -->
-              <div class="mt-3.5 pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-600">
-                <div class="flex items-center gap-2 pr-2">
+              <!-- Highlight Note (Borbou Style with Copy & Refresh Buttons, No Edit Pencil) -->
+              <div class="mt-3.5 pt-3 border-t border-slate-200/80 flex items-center justify-between gap-2 text-xs text-slate-600">
+                <div class="flex items-center gap-2 pr-2 min-w-0">
                   <span class="text-slate-400 flex-shrink-0">💬</span>
-                  <span id="current-gw-note-text" class="italic font-medium text-slate-700">"${currentLiveNote}"</span>
+                  <span id="current-gw-note-text" class="italic font-medium text-slate-700 break-words">"${currentLiveNote}"</span>
                 </div>
-                <div class="flex items-center gap-1 flex-shrink-0">
-                  <button onclick="app.regenerateLiveNote()" class="p-1 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="สุ่มคิดข้อความใหม่">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                <div class="flex items-center gap-1.5 flex-shrink-0">
+                  <span id="quote-copy-indicator" class="text-[10px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 hidden sm:inline-block">คัดลอกแล้ว!</span>
+                  <button onclick="app.copyHighlightQuote()" class="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="คัดลอกพาดหัวบทวิเคราะห์ (Copy Quote)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                   </button>
-                  <button onclick="app.openTaglineModal(${this.selectedGW}, '${currentLiveNote.replace(/'/g, "\\'")}')" class="p-1 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="แก้ไขข้อความ">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                  <button onclick="app.regenerateLiveNote()" class="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋ (Refresh Analysis)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                   </button>
                 </div>
               </div>
@@ -1824,12 +1926,50 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
       regenerateLiveNote() {
         const gw = this.selectedGW;
         const gwData = this.data.gameweeks ? this.data.gameweeks[gw] : null;
-        const newNote = LiveCommentaryEngine.generateFreshNote(gw, gwData, this.data.name);
-        this.liveNotesCache[gw] = newNote;
+        const newNote = LiveCommentaryEngine.generateFreshNote(gw, gwData, this.data.name, true);
+        const cacheKey = `${this.activeLeagueId}_${gw}`;
+        this.liveNotesCache[cacheKey] = newNote;
         
         const noteEl = document.getElementById('current-gw-note-text');
         if (noteEl) {
           noteEl.innerText = `"${newNote}"`;
+        }
+      }
+
+      copyHighlightQuote() {
+        const noteEl = document.getElementById('current-gw-note-text');
+        if (!noteEl) return;
+        const text = noteEl.innerText.replace(/^"|"$/g, '').trim();
+        if (!text) return;
+
+        if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => this.showQuoteCopyIndicator()).catch(() => this.fallbackCopyQuote(text));
+        } else {
+          this.fallbackCopyQuote(text);
+        }
+      }
+
+      fallbackCopyQuote(text) {
+        if (typeof document !== 'undefined') {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          try {
+            document.execCommand('copy');
+            this.showQuoteCopyIndicator();
+          } catch (e) {}
+          document.body.removeChild(ta);
+        }
+      }
+
+      showQuoteCopyIndicator() {
+        const ind = document.getElementById('quote-copy-indicator');
+        if (ind) {
+          ind.classList.remove('opacity-0');
+          setTimeout(() => {
+            ind.classList.add('opacity-0');
+          }, 2000);
         }
       }
 
