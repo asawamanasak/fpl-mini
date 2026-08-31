@@ -310,9 +310,7 @@ html_content = """<!DOCTYPE html>
             </span>
             <span class="text-[9px] sm:text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200 px-2 sm:px-2.5 py-0.5 rounded-full font-display flex-shrink-0 flex items-center gap-1.5 shadow-xs" title="วันเวลาที่ GitHub Cloud ซิงค์ข้อมูลล่าสุด">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
-              <span>Last Sync: <strong id="header-last-sync" class="text-slate-900 font-bold font-display">' + str(data.get('league', {}).get('last_sync') or '31 ส.ค. 2026, 19:28 น.') + '</strong></span>
-            </span>
-              <span>SYNC: <strong id="header-last-sync" class="text-slate-800 font-bold font-display">' + str(data.get('league', {}).get('last_sync') or 'ล่าสุด') + '</strong></span>
+              <span>Last Sync: <strong id="header-last-sync" class="text-slate-900 font-bold font-display">__LAST_SYNC_VAL__</strong></span>
             </span>
           </div>
           <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5 flex items-center gap-1.5 font-medium truncate">
@@ -2351,6 +2349,9 @@ html_content = """<!DOCTYPE html>
 </body>
 </html>
 """
+
+last_sync_formatted = fpl_data.get('league', {}).get('last_sync', '31/08/2026 07:33 PM')
+html_content = html_content.replace('__LAST_SYNC_VAL__', last_sync_formatted)
 
 # Write to preview.html (for local verification)
 with open('preview.html', 'w', encoding='utf-8') as f:
