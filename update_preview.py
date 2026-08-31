@@ -1199,7 +1199,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   <span id="current-gw-note-text" class="italic font-medium text-slate-700 break-words">"${currentLiveNote}"</span>
                 </div>
                 <div class="flex items-center gap-1.5 flex-shrink-0">
-                  <span id="quote-copy-indicator" class="text-[10px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 hidden sm:inline-block">คัดลอกแล้ว!</span>
+                  <span id="quote-copy-indicator" class="text-[11px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 inline-block font-display">Copied!</span>
                   <button onclick="app.copyHighlightQuote()" class="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="คัดลอกพาดหัวบทวิเคราะห์ (Copy Quote)">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                   </button>
@@ -2040,11 +2040,29 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
       showQuoteCopyIndicator() {
         const ind = document.getElementById('quote-copy-indicator');
         if (ind) {
+          ind.innerText = 'Copied!';
           ind.classList.remove('opacity-0');
           setTimeout(() => {
             ind.classList.add('opacity-0');
-          }, 2000);
+          }, 1800);
         }
+
+        // Mobile on-screen notification toast
+        let toast = document.getElementById('global-copied-toast');
+        if (!toast) {
+          toast = document.createElement('div');
+          toast.id = 'global-copied-toast';
+          toast.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white font-bold text-xs px-4 py-2 rounded-full shadow-2xl border border-slate-700/80 z-50 flex items-center gap-1.5 transition-all duration-200 opacity-0 pointer-events-none translate-y-2 backdrop-blur-xs font-display';
+          toast.innerHTML = '<svg class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span>Copied!</span>';
+          document.body.appendChild(toast);
+        }
+
+        toast.classList.remove('opacity-0', 'translate-y-2');
+        toast.classList.add('opacity-100', 'translate-y-0');
+        setTimeout(() => {
+          toast.classList.remove('opacity-100', 'translate-y-0');
+          toast.classList.add('opacity-0', 'translate-y-2');
+        }, 1600);
       }
 
       shareCurrentGameweek() {
