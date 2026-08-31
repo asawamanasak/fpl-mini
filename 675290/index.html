@@ -1099,9 +1099,11 @@
                     <span class="break-words">${team.team_name}</span>
                     ${chip}
                   </button>
-                  <div class="flex items-center gap-1.5 text-[11px] text-slate-500 mt-0.5">
-                    <span class="truncate max-w-[110px] sm:max-w-none">${team.player_name}</span>
-                    <span class="sm:hidden text-slate-600 font-medium">• (C) ${(team.captain || '-').replace(/\s*\(C\)/gi, '').trim()}</span>
+                  <div class="text-[11px] text-slate-500 mt-0.5">
+                    <div class="truncate">${team.player_name}</div>
+                    <div class="sm:hidden text-[10.5px] text-slate-600 font-medium mt-0.5 truncate">
+                      (C) ${(team.captain || '-').replace(/\s*\(C\)/gi, '').trim()}
+                    </div>
                   </div>
                 </td>
                 <td class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">
