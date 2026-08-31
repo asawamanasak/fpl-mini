@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "1 ก.ย. 2026, 03:43 น.",
-    "last_sync_iso": "2026-09-01 03:43:41"
+    "last_sync": "1 ก.ย. 2026, 04:03 น.",
+    "last_sync_iso": "2026-09-01 04:03:43"
   },
   "teams": [
     {
@@ -259,9 +259,9 @@
           "entry_id": 2206758,
           "team_name": "ใครไม่พีค",
           "player_name": "Isriya Paireepairit",
-          "points": 106,
+          "points": 108,
           "hits": 0,
-          "net_points": 106,
+          "net_points": 108,
           "captain": "B.Fernandes",
           "chip": null,
           "bench_points": 4
@@ -336,9 +336,9 @@
           "entry_id": 2604490,
           "team_name": "Leibniz FC",
           "player_name": "Ataro Munson",
-          "points": 56,
+          "points": 57,
           "hits": 0,
-          "net_points": 56,
+          "net_points": 57,
           "captain": "Haaland",
           "chip": null,
           "bench_points": 11
@@ -2393,7 +2393,7 @@
           "name": "Gabriel",
           "pos": "DEF",
           "team": "ARS",
-          "points": 6,
+          "points": 8,
           "is_captain": false,
           "is_vice": false
         },
@@ -3283,7 +3283,7 @@
           "name": "Zubimendi",
           "pos": "MID",
           "team": "ARS",
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
