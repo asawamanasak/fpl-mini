@@ -378,15 +378,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         <!-- Rendered dynamically -->
       </div>
 
-      <!-- 2.3 ตารางคะแนนประจำสัปดาห์ & 2.4 ตารางคะแนนรวมสะสม -->
+      <!-- 2.3 ตารางคะแนนประจำสัปดาห์ & 2.4 ตารางคะแนนรวมสะสม (Distinct Visual Theming) -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         
-        <!-- ซ้าย: ตารางคะแนนสัปดาห์ปัจจุบัน (Matchday Standings) -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
+        <!-- ซ้าย: ตารางคะแนนสัปดาห์ปัจจุบัน (Matchday Standings - Emerald Live Theme) -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 border-t-4 border-t-emerald-500 shadow-xs relative">
           <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
             <div>
-              <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">MATCHDAY STANDINGS</span>
-              <h3 id="matchday-table-title" class="text-sm sm:text-base font-bold text-slate-900 font-display">ตารางคะแนน Gameweek 2</h3>
+              <span class="text-[10px] sm:text-xs uppercase tracking-wider text-emerald-600 font-bold font-display flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                MATCHDAY STANDINGS
+              </span>
+              <h3 id="matchday-table-title" class="text-sm sm:text-base font-bold text-slate-900 font-display mt-0.5">ตารางคะแนน Gameweek 2</h3>
             </div>
             <span id="matchday-table-badge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
               ผลการแข่งขัน
@@ -396,13 +399,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display">
+                <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
                   <th class="py-2 px-2 sm:px-3 text-center w-8">#</th>
                   <th class="py-2 px-2 sm:px-3">ทีม & ผู้จัดการ</th>
                   <th class="py-2 px-2 sm:px-3 text-center hidden sm:table-cell">กัปตัน (C)</th>
                   <th class="py-2 px-1 sm:px-3 text-center">แต้มดิบ</th>
                   <th class="py-2 px-1 sm:px-3 text-center">แต้มลบ</th>
-                  <th class="py-2 px-2 sm:px-3 text-right">แต้มสุทธิ</th>
+                  <th class="py-2 px-2 sm:px-3 text-right text-emerald-700 font-bold">แต้มสุทธิ</th>
                 </tr>
               </thead>
               <tbody id="matchday-table-body" class="divide-y divide-slate-100 text-xs sm:text-sm">
@@ -412,14 +415,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           </div>
         </div>
 
-        <!-- ขวา: ตารางคะแนนรวมสะสม (Overall Standings) -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
+        <!-- ขวา: ตารางคะแนนรวมสะสม (Overall Standings - Royal Blue Championship Theme) -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 border-t-4 border-t-blue-600 shadow-xs relative">
           <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
             <div>
-              <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">OVERALL LEADERBOARD</span>
-              <h3 class="text-sm sm:text-base font-bold text-slate-900 font-display">ตารางคะแนนรวมสะสม</h3>
+              <span class="text-[10px] sm:text-xs uppercase tracking-wider text-blue-600 font-bold font-display flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                OVERALL LEADERBOARD
+              </span>
+              <h3 class="text-sm sm:text-base font-bold text-slate-900 font-display mt-0.5">ตารางคะแนนรวมสะสม</h3>
             </div>
-            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 font-display">
+            <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 font-display">
               หลังจบ GW <span id="overall-gw-num">2</span>
             </span>
           </div>
@@ -427,11 +433,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display">
+                <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-blue-50/30">
                   <th class="py-2 px-2 sm:px-3 text-center w-8">#</th>
                   <th class="py-2 px-2 sm:px-3">ทีม & ผู้จัดการ</th>
                   <th class="py-2 px-2 sm:px-3 text-center">GW ล่าสุด</th>
-                  <th class="py-2 px-2 sm:px-3 text-right">แต้มรวม</th>
+                  <th class="py-2 px-2 sm:px-3 text-right text-blue-800 font-bold">แต้มรวม</th>
                 </tr>
               </thead>
               <tbody id="overall-standings-body" class="divide-y divide-slate-100 text-xs sm:text-sm">
@@ -1110,8 +1116,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             const isWinner = (idx === 0);
 
             mHtml += `
-              <tr class="hover:bg-slate-50 transition-colors ${isWinner ? 'bg-amber-50/30 font-semibold' : ''}">
-                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold ${isWinner ? 'text-amber-600' : 'text-slate-500'}">${idx + 1}</td>
+              <tr class="hover:bg-slate-50 transition-colors ${isWinner ? 'bg-emerald-50/30 font-semibold' : ''}">
+                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold ${isWinner ? 'text-emerald-700' : 'text-slate-500'}">${idx + 1}</td>
                 <td class="py-2.5 px-2 sm:px-3">
                   <button onclick="app.openTeamModal(${team.entry_id}, '${team.team_name.replace(/'/g, "\\'")}')" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-slate-600 transition-colors flex items-center gap-1.5 flex-wrap cursor-pointer">
                     <span class="break-words">${team.team_name}</span>
@@ -1129,7 +1135,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 </td>
                 <td class="py-2.5 px-1 sm:px-3 text-center font-display font-medium text-slate-700 text-xs sm:text-sm">${team.points}</td>
                 <td class="py-2.5 px-1 sm:px-3 text-center">${hits}</td>
-                <td class="py-2.5 px-2 sm:px-3 text-right font-display font-bold text-xs sm:text-sm text-slate-900">${team.net_points}</td>
+                <td class="py-2.5 px-2 sm:px-3 text-right font-display font-bold text-xs sm:text-sm text-emerald-700">${team.net_points}</td>
               </tr>
             `;
           });
@@ -1169,22 +1175,22 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
           let oHtml = '';
           overallSorted.forEach((team, idx) => {
-            let rankBadge = `${idx + 1}`;
-            if (idx === 0) rankBadge = '🥇';
-            else if (idx === 1) rankBadge = '🥈';
-            else if (idx === 2) rankBadge = '🥉';
+            let rankBadge = `<span class="text-slate-500 font-bold">${idx + 1}</span>`;
+            if (idx === 0) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
+            else if (idx === 1) rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
+            else if (idx === 2) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
 
             oHtml += `
-              <tr class="hover:bg-slate-50 transition-colors ${idx < 3 ? 'bg-slate-50/50' : ''}">
+              <tr class="hover:bg-blue-50/40 transition-colors ${idx < 3 ? 'bg-blue-50/20' : ''}">
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-2 sm:px-3">
-                  <button onclick="app.openTeamModal(${team.entry_id}, '${team.team_name.replace(/'/g, "\\'")}')" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-slate-600 transition-colors block truncate cursor-pointer">
+                  <button onclick="app.openTeamModal(${team.entry_id}, '${team.team_name.replace(/'/g, "\\'")}')" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors block truncate cursor-pointer">
                     ${team.team_name}
                   </button>
                   <span class="text-[11px] text-slate-500 block truncate">${team.player_name}</span>
                 </td>
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-600">${team.last_gw_pts}</td>
-                <td class="py-2.5 px-2 sm:px-3 text-right font-display font-black text-xs sm:text-sm text-slate-900">${team.total_points}</td>
+                <td class="py-2.5 px-2 sm:px-3 text-right font-display font-black text-xs sm:text-sm text-blue-900">${team.total_points}</td>
               </tr>
             `;
           });
