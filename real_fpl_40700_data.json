@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "1 ก.ย. 2026, 16:30 น.",
-    "last_sync_iso": "2026-09-01 16:30:17"
+    "last_sync": "1 ก.ย. 2026, 16:47 น.",
+    "last_sync_iso": "2026-09-01 16:47:58"
   },
   "teams": [
     {
@@ -270,12 +270,12 @@
           "entry_id": 1206581,
           "team_name": "TK.FPL",
           "player_name": "Teerasade Khemprasit",
-          "points": 119,
+          "points": 125,
           "hits": 4,
-          "net_points": 115,
+          "net_points": 121,
           "captain": "B.Fernandes",
           "chip": null,
-          "bench_points": 8
+          "bench_points": 2
         },
         {
           "entry_id": 5660962,
@@ -336,12 +336,12 @@
           "entry_id": 2604490,
           "team_name": "Leibniz FC",
           "player_name": "Ataro Munson",
-          "points": 57,
+          "points": 61,
           "hits": 0,
-          "net_points": 57,
+          "net_points": 61,
           "captain": "Haaland",
           "chip": null,
-          "bench_points": 11
+          "bench_points": 7
         }
       ]
     }
@@ -2524,6 +2524,14 @@
           "is_vice": false
         },
         {
+          "name": "Davis",
+          "pos": "DEF",
+          "team": "IPS",
+          "points": 6,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
           "name": "B.Fernandes",
           "pos": "MID",
           "team": "MUN",
@@ -2544,14 +2552,6 @@
           "pos": "MID",
           "team": "MUN",
           "points": 11,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Reed",
-          "pos": "MID",
-          "team": "FUL",
-          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
@@ -2598,10 +2598,10 @@
           "is_vice": false
         },
         {
-          "name": "Davis",
-          "pos": "DEF",
-          "team": "IPS",
-          "points": 6,
+          "name": "Reed",
+          "pos": "MID",
+          "team": "FUL",
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
@@ -3264,10 +3264,10 @@
           "is_vice": false
         },
         {
-          "name": "Muñoz",
+          "name": "Truffert",
           "pos": "DEF",
-          "team": "CRY",
-          "points": 0,
+          "team": "BOU",
+          "points": 4,
           "is_captain": false,
           "is_vice": false
         },
@@ -3275,14 +3275,6 @@
           "name": "Van Hecke",
           "pos": "DEF",
           "team": "TOT",
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Zubimendi",
-          "pos": "MID",
-          "team": "ARS",
           "points": 1,
           "is_captain": false,
           "is_vice": false
@@ -3316,6 +3308,14 @@
           "pos": "MID",
           "team": "LEE",
           "points": 4,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Zubimendi",
+          "pos": "MID",
+          "team": "ARS",
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -3354,10 +3354,10 @@
           "is_vice": false
         },
         {
-          "name": "Truffert",
+          "name": "Muñoz",
           "pos": "DEF",
-          "team": "BOU",
-          "points": 4,
+          "team": "CRY",
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
