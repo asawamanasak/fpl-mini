@@ -19,6 +19,20 @@ def fetch(url, retries=3, delay=1.5):
                 raise e
             time.sleep(delay * (attempt + 1))
 
+def is_gw_fixtures_finished(gw_id):
+    """
+    Smart Fixture-Aware Finish Check:
+    Check FPL fixtures API to verify if all fixtures for the Gameweek have finished.
+    Returns True if all fixtures have started and are finished (or provisional finished).
+    """
+    try:
+        fixtures = fetch(f'https://fantasy.premierleague.com/api/fixtures/?event={gw_id}')
+        if fixtures and len(fixtures) > 0:
+            return all(f.get('started') and (f.get('finished') or f.get('finished_provisional')) for f in fixtures)
+    except Exception as e:
+        print(f"Notice checking fixtures for GW {gw_id}: {e}")
+    return False
+
 def main():
     start_time = time.time()
     print("Fetching bootstrap-static...")
@@ -30,6 +44,19 @@ def main():
     events = boot['events']
     current_event = next((e for e in events if e['is_current']), events[0])
     max_gw = current_event['id']
+
+    # Smart Fixture-Aware Finish Check for all active gameweeks
+    gw_status_map = {}
+    for gw_info in events:
+        gw_id = gw_info['id']
+        if gw_id <= max_gw:
+            if gw_info.get('finished', False):
+                gw_status_map[gw_id] = True
+            else:
+                is_finished = is_gw_fixtures_finished(gw_id)
+                gw_status_map[gw_id] = is_finished
+                if is_finished:
+                    print(f" -> Smart Fixture Check: GW {gw_id} matches all finished! Marked as finished.")
 
     # Load leagues config
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -91,7 +118,7 @@ def main():
                 if gw_id <= max_gw:
                     gameweeks_dict[str(gw_id)] = {
                         "gw": gw_id,
-                        "is_finished": gw_info['finished'],
+                        "is_finished": gw_status_map.get(gw_id, gw_info['finished']),
                         "results": []
                     }
 
