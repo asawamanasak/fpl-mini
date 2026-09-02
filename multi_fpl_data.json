@@ -1,6 +1,6 @@
 {
-  "last_sync": "2 ก.ย. 2026, 21:48 น.",
-  "last_sync_iso": "2026-09-02 21:48:25",
+  "last_sync": "2 ก.ย. 2026, 22:11 น.",
+  "last_sync_iso": "2026-09-02 22:11:58",
   "max_gw": 2,
   "leagues": {
     "40700": {
@@ -577,7 +577,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 9,
               "is_captain": false,
               "is_vice": false
@@ -661,7 +661,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 9,
               "is_captain": false,
               "is_vice": false
@@ -2089,7 +2089,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 4,
               "is_captain": false,
               "is_vice": false
@@ -2173,7 +2173,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 4,
               "is_captain": false,
               "is_vice": false
@@ -4974,7 +4974,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 9,
               "is_captain": false,
               "is_vice": false
@@ -5620,7 +5620,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 9,
               "is_captain": false,
               "is_vice": false
@@ -6318,7 +6318,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 9,
               "is_captain": false,
               "is_vice": false
@@ -6814,7 +6814,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 9,
               "is_captain": false,
               "is_vice": false
@@ -7712,7 +7712,7 @@
             {
               "name": "Enzo",
               "pos": "MID",
-              "team": "CHE",
+              "team": "MCI",
               "points": 1,
               "is_captain": false,
               "is_vice": false
@@ -8258,7 +8258,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 9,
               "is_captain": false,
               "is_vice": false
@@ -8334,7 +8334,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 9,
               "is_captain": false,
               "is_vice": false
@@ -8822,7 +8822,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 9,
               "is_captain": false,
               "is_vice": false
@@ -9216,7 +9216,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 9,
               "is_captain": false,
               "is_vice": false
@@ -9696,7 +9696,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 9,
               "is_captain": false,
               "is_vice": false
@@ -11274,7 +11274,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 4,
               "is_captain": false,
               "is_vice": false
@@ -11862,7 +11862,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 4,
               "is_captain": false,
               "is_vice": false
@@ -12618,7 +12618,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 4,
               "is_captain": false,
               "is_vice": false
@@ -13114,7 +13114,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 4,
               "is_captain": false,
               "is_vice": false
@@ -14062,7 +14062,7 @@
             {
               "name": "Enzo",
               "pos": "MID",
-              "team": "CHE",
+              "team": "MCI",
               "points": 0,
               "is_captain": false,
               "is_vice": false
@@ -14516,7 +14516,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 4,
               "is_captain": false,
               "is_vice": false
@@ -14634,7 +14634,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 4,
               "is_captain": false,
               "is_vice": false
@@ -15130,7 +15130,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 4,
               "is_captain": false,
               "is_vice": false
@@ -15516,7 +15516,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 4,
               "is_captain": false,
               "is_vice": false
@@ -15996,7 +15996,7 @@
             {
               "name": "Ndiaye",
               "pos": "MID",
-              "team": "EVE",
+              "team": "MCI",
               "points": 4,
               "is_captain": false,
               "is_vice": false
