@@ -292,6 +292,13 @@ def main():
                         return (gw, eid, result_item, squad_item)
                     except Exception as err:
                         print(f"Error {eid} GW {gw}: {err}")
+                        if cached_gw_data and cached_squads:
+                            c_gw = cached_gw_data.get(str(gw), {})
+                            c_res = next((r for r in c_gw.get("results", []) if r.get("entry_id") == eid), None)
+                            c_sq = cached_squads.get(f"{eid}_{gw}")
+                            if c_res and c_sq:
+                                print(f" -> Recovered cached data for team {eid} GW {gw} following fetch error.")
+                                return (gw, eid, c_res, c_sq)
                         return None
 
                 with ThreadPoolExecutor(max_workers=10) as executor:

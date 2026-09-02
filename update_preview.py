@@ -1391,7 +1391,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               <tr class="hover:bg-slate-50 transition-colors ${idx < 3 && wins > 0 ? 'bg-amber-50/20' : ''}">
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-500">${idx + 1}</td>
                 <td class="py-2.5 px-2 sm:px-3">
-                  <div class="font-bold text-xs sm:text-sm text-slate-900">${t.entry_name}</div>
+                  <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${t.entry_name}</button>
                   <div class="text-[11px] text-slate-500">${t.player_name}</div>
                 </td>
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-800">${wins}</td>
@@ -1556,6 +1556,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           const monthlyMap = {};
           (this.data.teams || []).forEach(t => {
             monthlyMap[t.entry_id] = {
+              entry_id: t.entry_id,
               team_name: t.entry_name,
               player_name: t.player_name,
               gw_scores: {},
@@ -1605,7 +1606,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               <tr class="hover:bg-slate-50 transition-colors ${isLeader ? 'bg-emerald-50/30 font-semibold' : ''}">
                 <td class="py-2.5 px-2 text-center font-display font-bold ${isLeader ? 'text-emerald-600' : 'text-slate-500'}">${idx + 1}</td>
                 <td class="py-2.5 px-2">
-                  <div class="font-bold text-xs sm:text-sm text-slate-900">${t.team_name}</div>
+                  <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${t.team_name}</button>
                   <div class="text-[11px] text-slate-500">${t.player_name}</div>
                 </td>
                 ${scoreCols}
@@ -1712,6 +1713,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const teamStats = {};
         (this.data.teams || []).forEach(t => {
           teamStats[t.entry_id] = {
+            entry_id: t.entry_id,
             team_name: t.entry_name,
             player_name: t.player_name,
             total_net: 0,
@@ -1805,7 +1807,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             html += `
               <tr class="hover:bg-slate-50 transition-colors">
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-500">${idx + 1}</td>
-                <td class="py-2.5 px-2 sm:px-3 font-bold text-xs sm:text-sm text-slate-900">${t.team_name}</td>
+                <td class="py-2.5 px-2 sm:px-3">
+                  <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${t.team_name}</button>
+                  <div class="text-[11px] text-slate-500">${t.player_name || ''}</div>
+                </td>
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-800">${t.wins}</td>
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display font-black text-slate-900">${avg}</td>
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display text-emerald-600 font-bold">${high}</td>
