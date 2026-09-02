@@ -248,6 +248,7 @@ def main():
                                 "name": el_info.get('web_name', 'Player'),
                                 "pos": pos_code,
                                 "team": team_code,
+                                "team_code": el_info.get('team_code', 0),
                                 "points": p_pts * mult if mult > 0 else p_pts,
                                 "is_captain": is_cap,
                                 "is_vice": is_vice

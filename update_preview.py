@@ -564,6 +564,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
   </main>
 
+  <!-- 5.5 Footer & Site Visitor Counter -->
+  <footer class="w-full py-6 text-center select-none">
+    <div class="max-w-7xl mx-auto px-4 flex items-center justify-center">
+      <span id="site-visitor-counter" class="inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-400 font-normal tracking-wide">
+        <svg class="w-3.5 h-3.5 text-slate-400/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+        </svg>
+        <span id="visitor-counter-text">Visitors: ...</span>
+      </span>
+    </div>
+  </footer>
+
   <!-- 6. Interactive Modal Systems -->
 
   <!-- 6.1 หน้าต่างดูแผนจัดตัวนักเตะ (Team Squad Modal) -->
@@ -836,6 +849,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
     }
 
     /**
+     * Official Premier League Club Kit Mapping (Team Short Name -> Kit Code)
+     */
+    const FPL_TEAM_CODES = {
+      'ARS': 3, 'AVL': 7, 'BOU': 91, 'BRE': 94, 'BHA': 36,
+      'CHE': 8, 'COV': 9, 'CRY': 31, 'EVE': 11, 'FUL': 54,
+      'HUL': 88, 'IPS': 40, 'LEE': 2, 'LIV': 14, 'MCI': 43,
+      'MUN': 1, 'NEW': 4, 'NFO': 17, 'TOT': 6, 'SUN': 56
+    };
+
+    /**
      * Standalone Multi-League Application
      */
     class StandaloneApp {
@@ -903,6 +926,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         this.updateHeaderInfo();
         this.initTabNavigation();
         this.renderAll();
+        this.initVisitorCounter();
       }
 
       toggleLeagueDropdown(event) {
@@ -1196,7 +1220,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                       ${badgeTitle}
                     </span>
                   </div>
-                  <h2 class="text-lg sm:text-2xl font-bold text-slate-900 tracking-tight mt-0.5">${leader.team_name}</h2>
+                  <button onclick="app.openTeamModal(${leader.entry_id})" class="text-left group cursor-pointer block">
+                    <h2 class="text-lg sm:text-2xl font-bold text-slate-900 group-hover:text-blue-700 tracking-tight mt-0.5 transition-colors">${leader.team_name}</h2>
+                  </button>
                   <p class="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">ผู้จัดการ: ${leader.player_name} • (C) <strong>${(leader.captain || '-').replace(/\\s*\\(C\\)/gi, '').trim()}</strong></p>
                 </div>
 
@@ -1244,7 +1270,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               <tr class="hover:bg-slate-50 transition-colors ${isWinner ? 'bg-emerald-50/30 font-semibold' : ''}">
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold ${isWinner ? 'text-emerald-700' : 'text-slate-500'}">${idx + 1}</td>
                 <td class="py-2.5 px-2 sm:px-3">
-                  <button onclick="app.openTeamModal(${team.entry_id}, '${team.team_name.replace(/'/g, "\\'")}')" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-slate-600 transition-colors flex items-center gap-1.5 flex-wrap cursor-pointer">
+                  <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-slate-600 transition-colors flex items-center gap-1.5 flex-wrap cursor-pointer">
                     <span class="break-words">${team.team_name}</span>
                     ${chip}
                   </button>
@@ -1309,7 +1335,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               <tr class="hover:bg-blue-50/40 transition-colors ${idx < 3 ? 'bg-blue-50/20' : ''}">
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-2 sm:px-3">
-                  <button onclick="app.openTeamModal(${team.entry_id}, '${team.team_name.replace(/'/g, "\\'")}')" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors block truncate cursor-pointer">
+                  <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors block truncate cursor-pointer">
                     ${team.team_name}
                   </button>
                   <span class="text-[11px] text-slate-500 block truncate">${team.player_name}</span>
@@ -1336,8 +1362,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
         if (isWeekly) {
           if (tagEl) tagEl.innerText = 'WEEKLY PRIZES';
-          if (titleEl) titleEl.innerText = 'สรุปเงินรางวัลแชมป์สัปดาห์';
-          if (subEl) subEl.innerText = `ชิงเงินรางวัลรวม ${this.config.total_pool} (แชมป์สัปดาห์ละ ${this.config.features.weekly_prize_amount} THB x 38 สัปดาห์ = 13,300 THB)`;
+          const weeklyAmount = this.config.features.weekly_prize_amount || 350;
+          const weeklyTotal = weeklyAmount * 38;
+          if (subEl) subEl.innerText = `ชิงเงินรางวัลรวม ${this.config.total_pool} (แชมป์สัปดาห์ละ ${weeklyAmount.toLocaleString()} THB x 38 สัปดาห์ = ${weeklyTotal.toLocaleString()} THB)`;
 
           const maxGW = Number(this.multiData.max_gw) || 2;
           const winsCount = {};
@@ -1353,8 +1380,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               });
             }
           }
-
-          const weeklyAmount = this.config.features.weekly_prize_amount || 350;
           const sortedTeams = [...(this.data.teams || [])].sort((a, b) => (winsCount[b.entry_id] || 0) - (winsCount[a.entry_id] || 0));
 
           let tableRows = '';
@@ -1928,14 +1953,27 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         }
       }
 
-      openTeamModal(entryId, teamName) {
-        const teamObj = (this.data.teams || []).find(t => t.entry_id === entryId) || {};
-        const gwResults = ((this.data.gameweeks || {})[String(this.selectedGW)] || {}).results || [];
-        const matchdayRes = gwResults.find(r => r.entry_id === entryId) || {};
+      getPlayerShirtUrl(p) {
+        const isGk = (p.pos === 'GKP');
+        const teamCode = p.team_code || FPL_TEAM_CODES[p.team] || 0;
+        const suffix = isGk ? '_1-66.webp' : '-66.webp';
+        return `https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${teamCode}${suffix}`;
+      }
 
-        document.getElementById('team-modal-title').innerText = teamObj.entry_name || teamName;
-        document.getElementById('team-modal-manager').innerText = `ผู้จัดการ: ${teamObj.player_name || matchdayRes.player_name || '-'}`;
-        document.getElementById('team-modal-pts').innerText = `แต้ม GW ${this.selectedGW}: ${matchdayRes.net_points || 0} pts`;
+      openTeamModal(entryId) {
+        const entryIdNum = Number(entryId);
+        const teamObj = (this.data.teams || []).find(t => Number(t.entry_id) === entryIdNum) || {};
+        const gwResults = ((this.data.gameweeks || {})[String(this.selectedGW)] || {}).results || [];
+        const matchdayRes = gwResults.find(r => Number(r.entry_id) === entryIdNum) || {};
+
+        const titleEl = document.getElementById('team-modal-title');
+        if (titleEl) titleEl.innerText = teamObj.entry_name || matchdayRes.team_name || 'ชื่อทีม';
+
+        const managerEl = document.getElementById('team-modal-manager');
+        if (managerEl) managerEl.innerText = `ผู้จัดการ: ${teamObj.player_name || matchdayRes.player_name || '-'}`;
+
+        const ptsEl = document.getElementById('team-modal-pts');
+        if (ptsEl) ptsEl.innerText = `แต้ม GW ${this.selectedGW}: ${matchdayRes.net_points !== undefined ? matchdayRes.net_points : 0} pts`;
 
         const chipBadge = document.getElementById('team-modal-chip-badge');
         if (chipBadge) {
@@ -1948,8 +1986,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
         }
 
-        const squadKey = `${entryId}_${this.selectedGW}`;
-        const squad = (this.data.squads || {})[squadKey] || Object.values(this.data.squads || {})[0];
+        const squadKey = `${entryIdNum}_${this.selectedGW}`;
+        const squad = (this.data.squads || {})[squadKey];
 
         const gkpLine = document.getElementById('pitch-line-gkp');
         const defLine = document.getElementById('pitch-line-def');
@@ -1958,6 +1996,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const benchContainer = document.getElementById('team-bench-container');
         const benchTotal = document.getElementById('team-modal-bench-total');
         const formationEl = document.getElementById('team-modal-formation');
+
+        if (!squad || !squad.starting || squad.starting.length === 0) {
+          if (formationEl) formationEl.innerText = 'แผน: -';
+          if (gkpLine) gkpLine.innerHTML = '';
+          if (defLine) defLine.innerHTML = '<div class="text-center text-white/80 py-8 font-bold text-xs w-full">ยังไม่มีข้อมูลแผนการจัดทัพในสัปดาห์นี้</div>';
+          if (midLine) midLine.innerHTML = '';
+          if (fwdLine) fwdLine.innerHTML = '';
+          if (benchContainer) benchContainer.innerHTML = '<div class="text-center text-slate-400 py-4 col-span-2 text-xs">ไม่มีข้อมูลตัวสำรอง</div>';
+          if (benchTotal) benchTotal.innerHTML = '';
+          const modal = document.getElementById('team-modal');
+          if (modal) modal.classList.remove('hidden');
+          return;
+        }
 
         if (squad && squad.starting) {
           const gks = squad.starting.filter(p => p.pos === 'GKP');
@@ -1972,18 +2023,23 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           const renderPlayerCard = (p, count) => {
             const isCap = Boolean(p.is_captain);
             const isVice = Boolean(p.is_vice);
+            const shirtUrl = this.getPlayerShirtUrl(p);
 
             return `
-              <div class="flex flex-col items-center justify-center p-0.5 text-center flex-shrink-0 transition-transform active:scale-95" style="width: ${100 / Math.max(count, 3)}%; max-width: 76px;">
-                <div class="relative flex items-center justify-center">
-                  <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-900 border-2 ${isCap ? 'border-amber-400 ring-2 ring-amber-400/40' : isVice ? 'border-slate-300 ring-1 ring-slate-300/40' : 'border-white/80'} flex items-center justify-center shadow-md">
-                    <span class="text-[8px] sm:text-[9px] font-black text-white tracking-tighter font-display">${p.pos}</span>
-                  </div>
-                  ${isCap ? '<span class="absolute -top-1.5 -right-1.5 bg-amber-400 text-slate-950 font-black text-[7.5px] sm:text-[8.5px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-display shadow-md border border-amber-300 animate-pulse">C</span>' : ''}
-                  ${isVice ? '<span class="absolute -top-1.5 -right-1.5 bg-slate-200 text-slate-950 font-black text-[7.5px] sm:text-[8.5px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-display shadow-md border border-slate-300">V</span>' : ''}
+              <div class="flex flex-col items-center justify-center p-0.5 text-center flex-shrink-0 transition-transform active:scale-95 group" style="width: ${100 / Math.max(count, 3)}%; max-width: 76px;">
+                <div class="relative flex items-center justify-center mb-0.5">
+                  <img 
+                    src="${shirtUrl}" 
+                    alt="${p.team || ''}" 
+                    class="w-9 h-10 sm:w-11 sm:h-12 md:w-12 md:h-14 object-contain drop-shadow-md transition-transform group-hover:scale-105"
+                    loading="lazy"
+                    onerror="this.onerror=null; this.src='https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_0-66.webp';"
+                  />
+                  ${isCap ? '<span class="absolute -top-1 -right-1 bg-amber-400 text-slate-950 font-black text-[8px] sm:text-[9px] w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full flex items-center justify-center font-display shadow-md border border-amber-300 animate-pulse z-10">C</span>' : ''}
+                  ${isVice ? '<span class="absolute -top-1 -right-1 bg-slate-200 text-slate-950 font-black text-[8px] sm:text-[9px] w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full flex items-center justify-center font-display shadow-md border border-slate-300 z-10">V</span>' : ''}
                 </div>
 
-                <div class="bg-slate-950/90 text-white font-bold text-[9px] sm:text-[10px] px-1 py-0.5 rounded mt-1 shadow-sm w-full truncate text-center border border-white/10 leading-tight">
+                <div class="bg-slate-950/90 text-white font-bold text-[9px] sm:text-[10px] px-1 py-0.5 rounded shadow-sm w-full truncate text-center border border-white/10 leading-tight">
                   ${p.name}
                 </div>
 
@@ -2005,9 +2061,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           let bHtml = '';
           squad.bench.forEach(p => {
             bPoints += (p.points || 0);
+            const shirtUrl = this.getPlayerShirtUrl(p);
             bHtml += `
-              <div class="bg-white border border-slate-200 rounded-xl p-2.5 sm:p-3 flex items-center justify-between shadow-xs hover:border-slate-300 transition-colors">
+              <div class="bg-white border border-slate-200 rounded-xl p-2 sm:p-2.5 flex items-center justify-between shadow-xs hover:border-slate-300 transition-colors">
                 <div class="flex items-center gap-2 min-w-0 pr-2">
+                  <img 
+                    src="${shirtUrl}" 
+                    alt="${p.team || ''}" 
+                    class="w-6 h-7 sm:w-7 sm:h-8 object-contain drop-shadow-xs flex-shrink-0"
+                    loading="lazy"
+                    onerror="this.onerror=null; this.src='https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_0-66.webp';"
+                  />
                   <span class="text-[9px] sm:text-[10px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md font-display flex-shrink-0">${p.pos}</span>
                   <span class="text-xs sm:text-sm font-bold text-slate-900 truncate">${p.name}</span>
                 </div>
@@ -2298,12 +2362,82 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const modal = document.getElementById('text-summary-modal');
         if (modal) modal.classList.add('hidden');
       }
+
+      initVisitorCounter() {
+        const counterEl = document.getElementById('visitor-counter-text');
+        if (!counterEl) return;
+
+        let cached = null;
+        let lastCountedStr = null;
+        try {
+          if (typeof localStorage !== 'undefined') {
+            cached = localStorage.getItem('fpl_visitor_count');
+            lastCountedStr = localStorage.getItem('fpl_visitor_last_counted');
+          }
+        } catch (e) {}
+
+        // Display cached count immediately to eliminate loading delay
+        if (cached) {
+          const num = parseInt(cached, 10);
+          if (!isNaN(num)) {
+            counterEl.textContent = `Visitors: ${num.toLocaleString()}`;
+          }
+        }
+
+        // 1-Hour Cooldown per browser to prevent refresh/F5 count abuse
+        const COOLDOWN_MS = 60 * 60 * 1000; // 1 hour in milliseconds
+        const now = Date.now();
+        if (lastCountedStr && cached) {
+          const lastCounted = parseInt(lastCountedStr, 10);
+          if (!isNaN(lastCounted) && (now - lastCounted < COOLDOWN_MS)) {
+            // Still within 1-hour cooldown window: keep cached count and skip API call
+            return;
+          }
+        }
+
+        // Outside cooldown: Fetch live visitor count (sitewide path: asawamanasak-fpl-mini)
+        fetch('https://api.visitorbadge.io/api/visitors?path=asawamanasak-fpl-mini')
+          .then(res => {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.text();
+          })
+          .then(svgText => {
+            const match = svgText.match(/VISITORS:\s*([\d,]+)/i);
+            if (match && match[1]) {
+              const count = parseInt(match[1].replace(/,/g, ''), 10);
+              if (!isNaN(count)) {
+                try {
+                  if (typeof localStorage !== 'undefined') {
+                    localStorage.setItem('fpl_visitor_count', count.toString());
+                    localStorage.setItem('fpl_visitor_last_counted', now.toString());
+                  }
+                } catch (e) {}
+                counterEl.textContent = `Visitors: ${count.toLocaleString()}`;
+              }
+            }
+          })
+          .catch(err => {
+            console.debug('Visitor count unavailable:', err);
+            if (!cached) {
+              counterEl.textContent = 'Visitors: -';
+            }
+          });
+      }
     }
 
     if (typeof document !== 'undefined') {
       document.addEventListener('DOMContentLoaded', () => {
         window.app = new StandaloneApp(MULTI_LEAGUE_DATA, LEAGUES_CONFIG, INITIAL_DEFAULT_LEAGUE);
         window.app.init();
+      });
+
+      // Keyboard Accessibility: Escape key closes any active modal
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && window.app) {
+          window.app.closeTeamModal();
+          window.app.closeTextSummaryModal();
+          window.app.closeTaglineModal();
+        }
       });
     }
   </script>
