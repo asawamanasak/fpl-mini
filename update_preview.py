@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Generate standalone preview.html, index.html, 404.html, 40700/index.html, and 675290/index.html
+Generate standalone preview.html, index.html, 404.html, 40700/index.html, 675290/index.html, and 38491/index.html
 Supporting clean short user URLs:
 - https://asawamanasak.github.io/fpl-mini/40700
 - https://asawamanasak.github.io/fpl-mini/675290
+- https://asawamanasak.github.io/fpl-mini/38491
 """
 
 import json
@@ -950,7 +951,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             const basePath = isGitHubPages ? '/fpl-mini/' : '/';
             window.history.replaceState(null, '', basePath + this.activeLeagueId);
           } else {
-            const newUrl = window.location.pathname.replace(/\/(40700|675290)\/index\.html/, '') + '?league=' + this.activeLeagueId;
+            const newUrl = window.location.pathname.replace(/\/\d+\/index\.html/, '') + '?league=' + this.activeLeagueId;
             window.history.replaceState(null, '', newUrl);
           }
         }
@@ -1491,12 +1492,33 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 </div>
               </div>
 
+              ${phasesHtml ? `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
                 <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">รอบเคลียร์เงินรางวัล 6 งวด</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   ${phasesHtml}
                 </div>
-              </div>
+              </div>` : `
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
+                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">โครงสร้างเงินรางวัลประจำฤดูกาล & การบริหารกองกลาง</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">แชมป์ประจำสัปดาห์ (38 สัปดาห์)</span>
+                    <div class="text-xl font-black text-slate-900 mt-1 font-display">${((this.config.features.weekly_prize_amount || 500) * 38).toLocaleString()} <span class="text-xs">THB</span></div>
+                    <div class="text-xs text-slate-600 mt-0.5 font-medium">สัปดาห์ละ ${this.config.features.weekly_prize_amount || 500} THB x 38 สัปดาห์</div>
+                  </div>
+                  <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">แชมป์ฤดูกาล (รวม 5 อันดับ)</span>
+                    <div class="text-xl font-black text-slate-900 mt-1 font-display">9,500 <span class="text-xs">THB</span></div>
+                    <div class="text-xs text-slate-600 mt-0.5 font-medium">แชมป์ 4,500 / รอง 2,500 / ที่ 3 1,000 / ที่ 4-5 500</div>
+                  </div>
+                  <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">ผู้ประสานงาน & ดูแลกองกลาง</span>
+                    <div class="text-base font-bold text-slate-900 mt-1">${this.config.coordinator || 'เฟม (Some might say)'}</div>
+                    <div class="text-xs text-slate-600 mt-0.5 font-medium">เก็บเงินงวดเดียวเต็มจำนวน (${this.config.entry_fee || '1,900 THB'})</div>
+                  </div>
+                </div>
+              </div>`}
             `;
           }
 
@@ -1781,8 +1803,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         if (!hasCup) return;
 
         const is40700 = (this.activeLeagueId === '40700');
+        const is38491 = (this.activeLeagueId === '38491');
         if (prizeBadge) {
-          prizeBadge.innerText = is40700 ? '1,650 THB PRIZE' : 'CUP TOURNAMENT';
+          prizeBadge.innerText = is40700 ? '1,650 THB PRIZE' : (is38491 ? '1,000 THB PRIZE' : 'CUP TOURNAMENT');
         }
 
         if (container) {
@@ -1816,6 +1839,26 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 <div class="text-3xl mb-2">⚔️</div>
                 <h4 class="text-base font-bold text-slate-900">รอบการแข่งขัน Knockout Cup</h4>
                 <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">ระบบของเว็บไซต์ Official FPL จะทำการจับคู่รอบ Knockout อัตโนมัติเมื่อถึงสัปดาห์ที่กำหนด</p>
+              </div>
+            `;
+          } else if (is38491) {
+            container.innerHTML = `
+              <div class="glass-card rounded-2xl p-5 border border-slate-200">
+                <div class="flex items-center gap-3.5">
+                  <div class="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black font-display shadow-md">🏆</div>
+                  <div>
+                    <span class="text-xs uppercase font-bold text-amber-700 font-display">MINI-LEAGUE CUP CHAMPION</span>
+                    <h3 class="text-lg font-bold text-slate-900">แชมป์ลีคคัพ (เริ่ม Gameweek 35)</h3>
+                    <div class="text-sm font-black text-emerald-600 font-display mt-0.5">1,000 THB</div>
+                    <p class="text-xs text-slate-500 mt-1">* เริ่มแข่งขันใน Gameweek 35 (สงวนสิทธิ์ไม่นับรวมทีมที่ไม่ได้ชำระค่าสมัคร)</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="glass-card rounded-2xl p-5 border border-slate-200 text-center py-8">
+                <div class="text-3xl mb-2">⚔️</div>
+                <h4 class="text-base font-bold text-slate-900">ระบบจับคู่รอบ Knockout (เริ่ม GW 35)</h4>
+                <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">ระบบ Official FPL Cup จะเริ่มจัดประกบคู่แข่งขันแบบแพ้คัดออกอัตโนมัติในสัปดาห์ที่ 35 สมาชิกที่ชนะในแต่ละรอบจะผ่านเข้าสู่รอบต่อไปจนถึงรอบชิงชนะเลิศ</p>
               </div>
             `;
           } else {
