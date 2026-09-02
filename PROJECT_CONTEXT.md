@@ -180,3 +180,18 @@ flowchart TD
 2. **Head-to-Head & Cup Bracket Visualization:** ผังสายการแข่งขันบอลถ้วยแบบอินเทอร์แอคทีฟ
 3. **Player Transfer Analytics:** กราฟวิเคราะห์การซื้อขายตัวผู้เล่นรายสัปดาห์ (Transfers In/Out)
 4. **Export as Image (Social Share Card):** แปลงตารางสรุปผลและผังสนามเป็นรูปภาพ PNG เพื่อแชร์ลงโซเชียลมีเดีย
+
+---
+
+## ⏪ 9. ระบบ Rollback & Milestone Management
+
+โปรเจกต์นี้มีระบบจัดการเวอร์ชันย้อนหลังและจุดบันทึกการพัฒนา (Milestone) สำหรับเวลาเพิ่มทีม/ลีกใหม่:
+* **ข้อตกลงการตั้งชื่อ (Naming Convention):** ใช้ชื่อ `rollback_(จำนวนทีมหรือลีก)` เช่น:
+  * `rollback_2` : รองรับ 2 ลีก (40700, 675290)
+  * `rollback_3` : รองรับ 3 ลีก (40700, 675290, 38491) พร้อมเสื้อแข่งจริงครบทุกสโมสร, ผังจัดทีม 4 ชั้น, และระบบ Quote-Safe
+* **เครื่องมือนำทาง (`./rollback.sh`):**
+  * ดูรายชื่อ rollback ทั้งหมด: `./rollback.sh list`
+  * ย้ายไปยังเวอร์ชันที่ต้องการ: `./rollback.sh go 2` หรือ `./rollback.sh go 3`
+  * กลับมายังเวอร์ชันล่าสุด: `./rollback.sh main`
+  * บันทึก milestone ใหม่พร้อม push ขึ้น GitHub อัตโนมัติ: `./rollback.sh save 4`
+
