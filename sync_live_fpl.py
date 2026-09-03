@@ -43,6 +43,67 @@ def atomic_json_dump(data, file_path):
         json.dump(data, f, ensure_ascii=False, indent=2)
     os.replace(temp_path, file_path)
 
+def check_data_has_changed(cached_data, new_output):
+    """
+    Compare cached data and new output to detect any meaningful changes:
+    - Gameweek count / max_gw
+    - League structure or team count
+    - Team scores (points, hits, net_points, captain, chip) in any gameweek
+    - Gameweek is_finished status
+    Returns True if data changed, False if 100% identical.
+    """
+    if not cached_data or "leagues" not in cached_data:
+        return True
+
+    if cached_data.get("max_gw") != new_output.get("max_gw"):
+        return True
+
+    cached_leagues = cached_data.get("leagues", {})
+    new_leagues = new_output.get("leagues", {})
+
+    if set(cached_leagues.keys()) != set(new_leagues.keys()):
+        return True
+
+    for lid, new_l in new_leagues.items():
+        cached_l = cached_leagues.get(lid, {})
+        
+        # Compare teams count
+        if len(cached_l.get("teams", [])) != len(new_l.get("teams", [])):
+            return True
+
+        # Compare gameweeks results
+        cached_gws = cached_l.get("gameweeks", {})
+        new_gws = new_l.get("gameweeks", {})
+
+        if set(cached_gws.keys()) != set(new_gws.keys()):
+            return True
+
+        for gw_str, new_gw in new_gws.items():
+            cached_gw = cached_gws.get(gw_str, {})
+            if cached_gw.get("is_finished") != new_gw.get("is_finished"):
+                return True
+            
+            # Compare results list
+            c_res = {r["entry_id"]: r for r in cached_gw.get("results", [])}
+            n_res = {r["entry_id"]: r for r in new_gw.get("results", [])}
+
+            if set(c_res.keys()) != set(n_res.keys()):
+                return True
+
+            for eid, nr in n_res.items():
+                cr = c_res.get(eid)
+                if not cr:
+                    return True
+                # Check points, hits, net_points, captain, chip
+                if (cr.get("points") != nr.get("points") or
+                    cr.get("hits") != nr.get("hits") or
+                    cr.get("net_points") != nr.get("net_points") or
+                    cr.get("captain") != nr.get("captain") or
+                    cr.get("chip") != nr.get("chip")):
+                    return True
+
+    return False
+
 def main():
     parser = argparse.ArgumentParser(description="FPL Live Data Sync Engine")
     parser.add_argument('--force', action='store_true', help="Force full re-sync for all GWs (bypass cache)")
@@ -158,15 +219,17 @@ def main():
             league_resp = fetch(f'https://fantasy.premierleague.com/api/leagues-classic/{lid}/standings/')
             league_name = league_resp['league']['name']
             standings_teams = league_resp['standings']['results']
-            print(f" -> {league_name}: {len(standings_teams)} teams")
-
-            teams_list = []
-            for t in standings_teams:
-                teams_list.append({
-                    "entry_id": t['entry'],
-                    "entry_name": t['entry_name'],
-                    "player_name": t['player_name']
-                })
+            cached_league = cached_data.get("leagues", {}).get(lid_str, {}) if cached_data else {}
+            if cached_league and len(cached_league.get("teams", [])) == len(standings_teams):
+                teams_list = cached_league["teams"]
+            else:
+                teams_list = []
+                for t in standings_teams:
+                    teams_list.append({
+                        "entry_id": t['entry'],
+                        "entry_name": t['entry_name'],
+                        "player_name": t['player_name']
+                    })
 
             gameweeks_dict = {}
             for gw_id in range(1, max_gw + 1):
@@ -177,8 +240,6 @@ def main():
                 }
 
             squads_dict = {}
-
-            cached_league = cached_data.get("leagues", {}).get(lid_str, {}) if cached_data else {}
             cached_gw_data = cached_league.get("gameweeks", {})
             cached_squads = cached_league.get("squads", {})
 
@@ -328,6 +389,34 @@ def main():
 
         except Exception as e:
             print(f"Error processing league {lid}: {e}")
+
+    # 4.5 Smart Commit: Detect if any scores, standings, or GW status changed
+    has_changed = check_data_has_changed(cached_data, multi_league_output)
+
+    # Heartbeat: Allow sync if it's been more than 6 hours since last sync
+    HEARTBEAT_INTERVAL_SECONDS = 6 * 3600  # 6 hours
+    last_sync_iso = cached_data.get("last_sync_iso") if cached_data else None
+    is_heartbeat = False
+    if last_sync_iso:
+        try:
+            last_dt = datetime.strptime(last_sync_iso, '%Y-%m-%d %H:%M:%S').replace(tzinfo=tz_th)
+            if (now_th - last_dt).total_seconds() >= HEARTBEAT_INTERVAL_SECONDS:
+                is_heartbeat = True
+                print(f" -> [Smart Commit] Periodic Heartbeat triggered (> {HEARTBEAT_INTERVAL_SECONDS // 3600}h since last sync).")
+        except Exception:
+            is_heartbeat = True
+
+    if not has_changed and not is_heartbeat and not args.force and cached_data:
+        print("\n⚡ [Smart Commit] No matchday score changes detected.")
+        print(f"   Preserving sync timestamp: {cached_data.get('last_sync')}")
+        print("   Skipping redundant Git commit (Zero Git Bloat) 🚀")
+        sync_time_str = cached_data.get("last_sync", sync_time_str)
+        sync_iso_str = cached_data.get("last_sync_iso", sync_iso_str)
+        multi_league_output["last_sync"] = sync_time_str
+        multi_league_output["last_sync_iso"] = sync_iso_str
+    else:
+        change_reason = "Points/Rank change" if has_changed else ("Heartbeat" if is_heartbeat else "Initial/Force sync")
+        print(f"\n🚀 [Smart Commit] Live data update triggered: {change_reason} -> Updating sync timestamp to {sync_time_str}")
 
     # 5. Write multi_fpl_data.json atomically
     atomic_json_dump(multi_league_output, multi_json_path)
