@@ -122,6 +122,13 @@ def main():
         multi_json_path = os.path.join(base_dir, 'multi_fpl_data.json')
         if os.path.exists(multi_json_path):
             print("   Safely preserving existing cached data without crash.")
+            try:
+                with open(multi_json_path, 'r', encoding='utf-8') as f:
+                    c_data = json.load(f)
+                c_data["sync_status"] = "offline"
+                atomic_json_dump(c_data, multi_json_path)
+            except Exception:
+                pass
             print("   Dashboard will continue serving latest available scores. Exiting cleanly (code 0).")
             return
         else:
@@ -218,6 +225,7 @@ def main():
     multi_league_output = {
         "last_sync": sync_time_str,
         "last_sync_iso": sync_iso_str,
+        "sync_status": "ok",
         "max_gw": max_gw,
         "leagues": {}
     }

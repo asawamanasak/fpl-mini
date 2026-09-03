@@ -290,10 +290,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             <span id="header-season">ฤดูกาล 2026/27</span>
             <span class="text-slate-300 hidden sm:inline">•</span>
             
-            <!-- Last Sync Badge -->
-            <span id="header-last-sync-badge" class="inline-flex items-center gap-1 text-[10.5px] sm:text-[11px] font-medium text-emerald-800" title="วันเวลาที่ GitHub Cloud ซิงค์ข้อมูลล่าสุด">
-              <span id="header-last-sync-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
-              <span>Last Sync: <strong id="header-last-sync" class="text-slate-900 font-bold font-display">__LAST_SYNC__</strong></span>
+            <!-- Last Sync Badge with Connection Indicator -->
+            <span id="header-last-sync-badge" class="inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-slate-700 bg-slate-100/90 border border-slate-200/80 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs" title="ระบบเชื่อมต่อ Auto-Sync ปกติ (Online)">
+              <span>Last Sync: <strong id="header-last-sync" class="text-slate-900 font-bold">__LAST_SYNC__</strong></span>
+              <span id="header-last-sync-icon" class="inline-flex items-center" title="ระบบเชื่อมต่อ Auto-Sync ปกติ (Online)">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
+              </span>
             </span>
           </div>
 
@@ -1025,9 +1027,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
         const gwStatusEl = document.getElementById('header-gw-status');
         const gwStatusBox = document.getElementById('api-status-text');
-        const lastSyncBox = document.getElementById('header-last-sync-badge');
         const gwStatusDot = document.getElementById('header-gw-status-dot');
-        const lastSyncDot = document.getElementById('header-last-sync-dot');
+        const lastSyncIcon = document.getElementById('header-last-sync-icon');
+        const lastSyncBadge = document.getElementById('header-last-sync-badge');
 
         if (gwStatusEl) {
           gwStatusEl.innerText = isCurFinished 
@@ -1037,14 +1039,45 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
         if (isCurFinished) {
           if (gwStatusBox) gwStatusBox.className = 'text-xs font-medium text-slate-700 hidden md:flex items-center bg-slate-100 px-3.5 py-1.5 rounded-xl border border-slate-200';
-          if (lastSyncBox) lastSyncBox.className = 'text-[9px] sm:text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200 px-2 sm:px-2.5 py-0.5 rounded-full font-display flex-shrink-0 flex items-center gap-1.5 shadow-xs';
           if (gwStatusDot) gwStatusDot.className = 'inline-block w-2 h-2 rounded-full bg-slate-400 mr-2';
-          if (lastSyncDot) lastSyncDot.className = 'w-1.5 h-1.5 rounded-full bg-slate-400 flex-shrink-0';
         } else {
           if (gwStatusBox) gwStatusBox.className = 'text-xs font-semibold text-emerald-900 hidden md:flex items-center bg-emerald-50 px-3.5 py-1.5 rounded-xl border border-emerald-300 shadow-xs animate-pulse';
-          if (lastSyncBox) lastSyncBox.className = 'text-[9px] sm:text-[11px] font-semibold bg-emerald-50 text-emerald-900 border border-emerald-300 px-2 sm:px-2.5 py-0.5 rounded-full font-display flex-shrink-0 flex items-center gap-1.5 shadow-xs animate-pulse';
           if (gwStatusDot) gwStatusDot.className = 'inline-block w-2 h-2 rounded-full bg-emerald-600 mr-2';
-          if (lastSyncDot) lastSyncDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0';
+        }
+
+        // Auto-Sync Connection Status (Green = Connected/Healthy, Red = Disconnected/Error)
+        let isSyncHealthy = true;
+        let syncStatusTitle = 'ระบบเชื่อมต่อ Auto-Sync ปกติ (Online)';
+
+        if (this.multiData && this.multiData.sync_status === 'offline') {
+          isSyncHealthy = false;
+          syncStatusTitle = 'ไม่สามารถเชื่อมต่อระบบ Auto-Sync ได้ (Offline/Error)';
+        } else if (this.multiData && this.multiData.last_sync_iso) {
+          try {
+            const syncTime = new Date(this.multiData.last_sync_iso.replace(' ', 'T') + '+07:00');
+            const now = new Date();
+            const diffHours = (now - syncTime) / (1000 * 60 * 60);
+            if (diffHours > 24) {
+              isSyncHealthy = false;
+              syncStatusTitle = 'ไม่พบสัญญาณ Auto-Sync นานกว่า 24 ชม. (Offline)';
+            }
+          } catch (e) {}
+        }
+
+        if (lastSyncIcon) {
+          if (isSyncHealthy) {
+            lastSyncIcon.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block" title="' + syncStatusTitle + '"></span>';
+          } else {
+            lastSyncIcon.innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-500 inline-block animate-ping" title="' + syncStatusTitle + '"></span>';
+          }
+          lastSyncIcon.setAttribute('title', syncStatusTitle);
+        }
+
+        if (lastSyncBadge) {
+          lastSyncBadge.setAttribute('title', syncStatusTitle);
+          if (!isSyncHealthy) {
+            lastSyncBadge.className = 'inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-rose-800 bg-rose-50 border border-rose-200 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs';
+          }
         }
 
         // Check Cup Feature Flag
