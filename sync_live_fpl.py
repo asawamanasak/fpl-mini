@@ -279,6 +279,11 @@ def main():
                             break
                     if not all_squads_present:
                         can_use_cache = False
+                    else:
+                        cached_res = cached_gw.get("results", [])
+                        if not cached_res or all(r.get("points", 0) == 0 and r.get("net_points", 0) == 0 for r in cached_res):
+                            print(f" -> Cache for League {lid} GW {gw} contains corrupt 0-point data. Refetching...")
+                            can_use_cache = False
 
                 if can_use_cache:
                     print(f" -> Reusing cached data for League {lid} GW {gw} (Finished)")
