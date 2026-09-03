@@ -842,10 +842,12 @@
         }
 
         let queryLeague = '';
+        let queryTab = '';
         try {
           if (typeof URLSearchParams !== 'undefined' && window.location && window.location.search) {
             const urlParams = new URLSearchParams(window.location.search);
             queryLeague = urlParams.get('league') || '';
+            queryTab = urlParams.get('tab') || '';
           }
         } catch (e) {}
 
@@ -880,7 +882,7 @@
         
         this.selectedGW = Number(this.multiData.max_gw) || 2;
         this.selectedMonthId = 1;
-        this.activeTab = 'gameweek-view';
+        this.activeTab = queryTab || 'gameweek-view';
         this.liveNotesCache = {};
       }
 
@@ -889,6 +891,9 @@
         this.updateHeaderInfo();
         this.initTabNavigation();
         this.renderAll();
+        if (this.activeTab && this.activeTab !== 'gameweek-view') {
+          this.switchTab(this.activeTab);
+        }
         this.initVisitorCounter();
       }
 
