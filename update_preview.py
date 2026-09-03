@@ -403,12 +403,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             <table class="w-full text-left border-collapse">
               <thead class="sticky top-0 bg-white/95 backdrop-blur-xs z-10 shadow-2xs">
                 <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
-                  <th class="py-2 px-2 sm:px-3 text-center w-8">#</th>
-                  <th class="py-2 px-2 sm:px-3">ทีม & ผู้จัดการ</th>
+                  <th class="py-2 px-1 sm:px-2 text-center w-7 sm:w-8">#</th>
+                  <th class="py-2 px-1.5 sm:px-3">ทีม & ผู้จัดการ</th>
                   <th class="py-2 px-2 sm:px-3 text-center hidden sm:table-cell">กัปตัน (C)</th>
-                  <th class="py-2 px-1 sm:px-3 text-center">แต้มดิบ</th>
-                  <th class="py-2 px-1 sm:px-3 text-center">แต้มลบ</th>
-                  <th class="py-2 px-2 sm:px-3 text-right text-emerald-700 font-bold">แต้มสุทธิ</th>
+                  <th class="py-2 px-1 sm:px-2 text-center w-9 sm:w-12 text-[10px] sm:text-[11px]">ดิบ</th>
+                  <th class="py-2 px-1 sm:px-2 text-center w-9 sm:w-12 text-[10px] sm:text-[11px]">ลบ</th>
+                  <th class="py-2 px-1.5 sm:px-3 text-right w-14 sm:w-16 text-emerald-700 font-bold">แต้มสุทธิ</th>
                 </tr>
               </thead>
               <tbody id="matchday-table-body" class="divide-y divide-slate-100 text-xs sm:text-sm">
@@ -437,10 +437,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             <table class="w-full text-left border-collapse">
               <thead class="sticky top-0 bg-white/95 backdrop-blur-xs z-10 shadow-2xs">
                 <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-blue-50/30">
-                  <th class="py-2 px-2 sm:px-3 text-center w-8">#</th>
-                  <th class="py-2 px-2 sm:px-3">ทีม & ผู้จัดการ</th>
-                  <th class="py-2 px-2 sm:px-3 text-center">GW ล่าสุด</th>
-                  <th class="py-2 px-2 sm:px-3 text-right text-blue-800 font-bold">แต้มรวม</th>
+                  <th class="py-2 px-1 sm:px-2 text-center w-7 sm:w-8">#</th>
+                  <th class="py-2 px-1.5 sm:px-3">ทีม & ผู้จัดการ</th>
+                  <th class="py-2 px-1 sm:px-3 text-center w-12 sm:w-16 text-[10px] sm:text-[11px]">GW ล่าสุด</th>
+                  <th class="py-2 px-1.5 sm:px-3 text-right w-14 sm:w-16 text-blue-800 font-bold">แต้มรวม</th>
                 </tr>
               </thead>
               <tbody id="overall-standings-body" class="divide-y divide-slate-100 text-xs sm:text-sm">
@@ -638,6 +638,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         <div>
           <label class="block text-xs font-bold text-slate-500 mb-1.5 font-display">ข้อความไฮไลท์สัปดาห์นี้:</label>
           <textarea id="tagline-input" rows="3" class="w-full border border-slate-300 rounded-2xl p-3 text-sm focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 resize-none font-medium"></textarea>
+          <p class="text-[11px] text-slate-400 mt-1.5 leading-normal">💡 ข้อความนี้จะถูกบันทึกบนเครื่องของคุณ และนำไปใช้เมื่อกดปุ่มคัดลอก (Copy) ส่งเข้าห้อง LINE</p>
         </div>
         <div class="flex justify-end gap-2 pt-2">
           <button onclick="app.closeTaglineModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer">ยกเลิก</button>
@@ -1258,12 +1259,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             badgeTitle = isFinished ? 'คะแนนสูงสุดประจำสัปดาห์ (Top Scorer)' : 'ผู้นำคะแนนสดประจำสัปดาห์ (Live Leader)';
           }
 
-          const winnerNames = topWinners.map(w => w.team_name).join(' & ');
-          const managerNames = topWinners.map(w => `${w.player_name} • (C) <strong>${(w.captain || '-').replace(/\s*\(C\)/gi, '').trim()}</strong>`).join('<br/>');
+          const winnerNames = topWinners.length > 2 
+            ? `${topWinners[0].team_name}, ${topWinners[1].team_name} และอีก ${topWinners.length - 2} ทีม` 
+            : topWinners.map(w => w.team_name).join(' & ');
+          const managerNames = topWinners.length > 2
+            ? `${topWinners[0].player_name}, ${topWinners[1].player_name} และอีก ${topWinners.length - 2} คน`
+            : topWinners.map(w => `${w.player_name} • (C) <strong>${(w.captain || '-').replace(/\s*\(C\)/gi, '').trim()}</strong>`).join('<br/>');
 
           championCard.innerHTML = `
             <div class="glass-card rounded-2xl p-4 sm:p-5 border ${isFinished ? 'border-amber-300 bg-amber-50/20' : 'border-emerald-300 bg-emerald-50/20'} shadow-sm relative overflow-hidden">
-              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                 
                 <div>
                   <div class="flex items-center gap-2">
@@ -1277,8 +1282,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   <p class="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">${managerNames}</p>
                 </div>
 
-                <div class="flex items-center gap-3 self-end sm:self-center">
-                  <div class="text-right">
+                <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 border-slate-100 sm:border-transparent">
+                  <div class="text-left sm:text-right">
                     <span class="text-[10px] sm:text-xs text-slate-500 uppercase font-bold font-display block">แต้มสุทธิ (Net Pts)</span>
                     <span class="text-2xl sm:text-3xl font-black text-slate-900 font-display">${leader.net_points} <span class="text-xs font-bold text-slate-500">pts</span></span>
                   </div>
@@ -1291,13 +1296,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               </div>
 
               <!-- Highlight Note (Borbou Style with Edit, Copy & Refresh Buttons) -->
-              <div class="mt-3.5 pt-3 border-t border-slate-200/80 flex items-center justify-between gap-2 text-xs text-slate-600">
-                <div class="flex items-center gap-2 pr-2 min-w-0">
-                  <span id="current-gw-note-text" class="italic font-medium text-slate-700 break-words">${currentLiveNote}</span>
+              <div class="mt-3.5 pt-3 border-t border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600">
+                <div class="min-w-0 pr-1">
+                  <span id="current-gw-note-text" class="italic font-medium text-slate-700 leading-relaxed break-words">${currentLiveNote}</span>
                 </div>
-                <div class="flex items-center gap-1.5 flex-shrink-0">
+                <div class="flex items-center justify-end gap-1 flex-shrink-0 self-end sm:self-center pt-1 sm:pt-0">
                   <span id="quote-copy-indicator" class="text-[11px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 inline-block font-display">Copied!</span>
-                  <button onclick="app.openTaglineModal(app.selectedGW, document.getElementById('current-gw-note-text').innerText.replace(/^&quot;|&quot;$/g, ''))" class="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="แก้ไขข้อความไฮไลท์ (Edit Tagline)">
+                  <button onclick="app.openTaglineModal(app.selectedGW, document.getElementById('current-gw-note-text').innerText.trim())" class="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="แก้ไขข้อความไฮไลท์ (Edit Tagline)">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                   </button>
                   <button onclick="app.copyHighlightQuote()" class="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="คัดลอกพาดหัวบทวิเคราะห์ (Copy Quote)">
@@ -1322,15 +1327,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
             mHtml += `
               <tr class="hover:bg-slate-50 transition-colors ${isWinner ? 'bg-emerald-50/30 font-semibold' : ''}">
-                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold ${isWinner ? 'text-emerald-700' : 'text-slate-500'}">${team.rank}</td>
-                <td class="py-2.5 px-2 sm:px-3">
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold ${isWinner ? 'text-emerald-700' : 'text-slate-500'}">${team.rank}</td>
+                <td class="py-2.5 px-1.5 sm:px-3 min-w-0">
                   <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-slate-600 transition-colors flex items-center gap-1.5 flex-wrap cursor-pointer">
                     <span class="break-words">${this.escapeHtml(team.team_name)}</span>
                     ${chip}
                   </button>
                   <div class="text-[11px] text-slate-500 mt-0.5">
                     <div class="truncate">${this.escapeHtml(team.player_name)}</div>
-                    <div class="sm:hidden text-[10.5px] text-slate-600 font-medium mt-0.5 truncate">
+                    <div class="sm:hidden text-[10px] text-slate-600 font-medium mt-0.5 truncate">
                       (C) ${(team.captain || '-').replace(/\s*\(C\)/gi, '').trim()}
                     </div>
                   </div>
@@ -1338,9 +1343,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 <td class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">
                   <span class="text-xs text-slate-600 font-medium">${team.captain && team.captain !== '-' ? team.captain.replace(/\s*\(C\)/gi, '').trim() + ' (C)' : '-'}</span>
                 </td>
-                <td class="py-2.5 px-1 sm:px-3 text-center font-display font-medium text-slate-700 text-xs sm:text-sm">${team.points}</td>
-                <td class="py-2.5 px-1 sm:px-3 text-center">${hits}</td>
-                <td class="py-2.5 px-2 sm:px-3 text-right font-display font-bold text-xs sm:text-sm text-emerald-700">${team.net_points}</td>
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-medium text-slate-700 text-xs sm:text-sm">${team.points}</td>
+                <td class="py-2.5 px-1 sm:px-2 text-center text-xs sm:text-sm">${hits}</td>
+                <td class="py-2.5 px-1.5 sm:px-3 text-right font-display font-bold text-xs sm:text-sm text-emerald-700">${team.net_points}</td>
               </tr>
             `;
           });
@@ -1394,15 +1399,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
             oHtml += `
               <tr class="hover:bg-blue-50/40 transition-colors ${team.overall_rank <= 3 ? 'bg-blue-50/20' : ''}">
-                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
-                <td class="py-2.5 px-2 sm:px-3">
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
+                <td class="py-2.5 px-1.5 sm:px-3 min-w-0">
                   <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors block truncate cursor-pointer">
                     ${this.escapeHtml(team.team_name)}
                   </button>
                   <span class="text-[11px] text-slate-500 block truncate">${this.escapeHtml(team.player_name)}</span>
                 </td>
-                <td class="py-2.5 px-2 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-600">${team.last_gw_pts}</td>
-                <td class="py-2.5 px-2 sm:px-3 text-right font-display font-black text-xs sm:text-sm text-blue-900">${team.total_points}</td>
+                <td class="py-2.5 px-1 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-600">${team.last_gw_pts}</td>
+                <td class="py-2.5 px-1.5 sm:px-3 text-right font-display font-black text-xs sm:text-sm text-blue-900">${team.total_points}</td>
               </tr>
             `;
           });
