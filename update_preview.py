@@ -381,21 +381,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         <!-- Rendered dynamically -->
       </div>
 
-      <!-- 2.2.5 Real-Time Team Search / Quick Filter Bar -->
-      <div class="glass-card rounded-2xl p-2.5 sm:p-3 border border-slate-200 flex items-center justify-between gap-3 shadow-2xs">
-        <div class="flex items-center gap-2 flex-1 max-w-md">
-          <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          <input 
-            type="text" 
-            id="team-search-input" 
-            placeholder="ค้นหาชื่อทีม หรือ ผู้จัดการ..." 
-            oninput="app.setSearchQuery(this.value)"
-            class="w-full text-xs sm:text-sm bg-transparent border-none outline-none text-slate-900 placeholder-slate-400 font-medium"
-          />
-        </div>
-        <span id="search-filter-count" class="text-[11px] font-semibold text-slate-400 font-display flex-shrink-0"></span>
-      </div>
-
       <!-- 2.3 ตารางคะแนนประจำสัปดาห์ & 2.4 ตารางคะแนนรวมสะสม (Distinct Visual Theming) -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         
@@ -507,10 +492,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           </div>
         </div>
 
-        <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0">
+        <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 max-h-[600px] touch-scroll">
           <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display">
+            <thead class="sticky top-0 bg-white/95 backdrop-blur-xs z-10 shadow-2xs">
+              <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
                 <th class="py-2 px-2 sm:px-3 text-center w-8">#</th>
                 <th class="py-2 px-2 sm:px-3">ทีม</th>
                 <th class="py-2 px-2 sm:px-3 text-center" id="hof-col-wins">#1 GAMEWEEK</th>
@@ -595,8 +580,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
   <div id="team-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-xs hidden transition-all duration-200" onclick="if (event.target === this) app.closeTeamModal()">
     <div class="bg-white rounded-3xl p-4 sm:p-6 max-w-xl w-full shadow-2xl border border-slate-200 max-h-[94vh] overflow-y-auto" onclick="event.stopPropagation()">
       
-      <!-- Header -->
-      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3 sm:mb-4">
+      <!-- Header (Sticky at top when scrolling through pitch and bench) -->
+      <div class="sticky top-0 bg-white/95 backdrop-blur-md z-30 -mt-4 sm:-mt-6 -mx-4 sm:-mx-6 px-4 sm:px-6 pt-4 sm:pt-6 pb-3 border-b border-slate-100 mb-3 sm:mb-4 flex items-center justify-between shadow-2xs">
         <div class="min-w-0 pr-2">
           <div class="flex items-center gap-2">
             <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">ข้อมูลขุมกำลัง & การจัดทัพ</span>
@@ -931,12 +916,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         this.selectedMonthId = 1;
         this.activeTab = 'gameweek-view';
         this.liveNotesCache = {};
-        this.searchQuery = '';
-      }
-
-      setSearchQuery(q) {
-        this.searchQuery = (q || '').trim().toLowerCase();
-        this.renderGameweekView();
       }
 
       init() {
@@ -1280,46 +1259,37 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         }
 
         // 2. Render Matchday Table Body
-        const q = this.searchQuery;
-        const filteredMatchday = q 
-          ? sorted.filter(t => (t.team_name || '').toLowerCase().includes(q) || (t.player_name || '').toLowerCase().includes(q))
-          : sorted;
-
         if (matchdayBody) {
           let mHtml = '';
-          if (filteredMatchday.length === 0) {
-            mHtml = '<tr><td colspan="6" class="text-center py-8 text-xs text-slate-400 font-medium">ไม่พบทีมที่ตรงกับคำค้นหา</td></tr>';
-          } else {
-            filteredMatchday.forEach((team, idx) => {
-              const chip = team.chip ? `<span class="chip-badge badge-${team.chip.toLowerCase()} font-display">${team.chip.toUpperCase()}</span>` : '';
-              const hits = team.hits > 0 ? `<span class="text-rose-600 font-bold font-display">-${team.hits}</span>` : '<span class="text-slate-400">-</span>';
-              const isWinner = (team.rank === 1);
+          sorted.forEach((team) => {
+            const chip = team.chip ? `<span class="chip-badge badge-${team.chip.toLowerCase()} font-display">${team.chip.toUpperCase()}</span>` : '';
+            const hits = team.hits > 0 ? `<span class="text-rose-600 font-bold font-display">-${team.hits}</span>` : '<span class="text-slate-400">-</span>';
+            const isWinner = (team.rank === 1);
 
-              mHtml += `
-                <tr class="hover:bg-slate-50 transition-colors ${isWinner ? 'bg-emerald-50/30 font-semibold' : ''}">
-                  <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold ${isWinner ? 'text-emerald-700' : 'text-slate-500'}">${team.rank}</td>
-                  <td class="py-2.5 px-2 sm:px-3">
-                    <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-slate-600 transition-colors flex items-center gap-1.5 flex-wrap cursor-pointer">
-                      <span class="break-words">${team.team_name}</span>
-                      ${chip}
-                    </button>
-                    <div class="text-[11px] text-slate-500 mt-0.5">
-                      <div class="truncate">${team.player_name}</div>
-                      <div class="sm:hidden text-[10.5px] text-slate-600 font-medium mt-0.5 truncate">
-                        (C) ${(team.captain || '-').replace(/\s*\(C\)/gi, '').trim()}
-                      </div>
+            mHtml += `
+              <tr class="hover:bg-slate-50 transition-colors ${isWinner ? 'bg-emerald-50/30 font-semibold' : ''}">
+                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold ${isWinner ? 'text-emerald-700' : 'text-slate-500'}">${team.rank}</td>
+                <td class="py-2.5 px-2 sm:px-3">
+                  <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-slate-600 transition-colors flex items-center gap-1.5 flex-wrap cursor-pointer">
+                    <span class="break-words">${team.team_name}</span>
+                    ${chip}
+                  </button>
+                  <div class="text-[11px] text-slate-500 mt-0.5">
+                    <div class="truncate">${team.player_name}</div>
+                    <div class="sm:hidden text-[10.5px] text-slate-600 font-medium mt-0.5 truncate">
+                      (C) ${(team.captain || '-').replace(/\s*\(C\)/gi, '').trim()}
                     </div>
-                  </td>
-                  <td class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">
-                    <span class="text-xs text-slate-600 font-medium">${team.captain && team.captain !== '-' ? team.captain.replace(/\s*\(C\)/gi, '').trim() + ' (C)' : '-'}</span>
-                  </td>
-                  <td class="py-2.5 px-1 sm:px-3 text-center font-display font-medium text-slate-700 text-xs sm:text-sm">${team.points}</td>
-                  <td class="py-2.5 px-1 sm:px-3 text-center">${hits}</td>
-                  <td class="py-2.5 px-2 sm:px-3 text-right font-display font-bold text-xs sm:text-sm text-emerald-700">${team.net_points}</td>
-                </tr>
-              `;
-            });
-          }
+                  </div>
+                </td>
+                <td class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">
+                  <span class="text-xs text-slate-600 font-medium">${team.captain && team.captain !== '-' ? team.captain.replace(/\s*\(C\)/gi, '').trim() + ' (C)' : '-'}</span>
+                </td>
+                <td class="py-2.5 px-1 sm:px-3 text-center font-display font-medium text-slate-700 text-xs sm:text-sm">${team.points}</td>
+                <td class="py-2.5 px-1 sm:px-3 text-center">${hits}</td>
+                <td class="py-2.5 px-2 sm:px-3 text-right font-display font-bold text-xs sm:text-sm text-emerald-700">${team.net_points}</td>
+              </tr>
+            `;
+          });
           matchdayBody.innerHTML = mHtml;
         }
 
@@ -1357,41 +1327,28 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             team.overall_rank = i + 1;
           });
 
-          const filteredOverall = q
-            ? overallSorted.filter(t => (t.team_name || '').toLowerCase().includes(q) || (t.player_name || '').toLowerCase().includes(q))
-            : overallSorted;
-
           let oHtml = '';
-          if (filteredOverall.length === 0) {
-            oHtml = '<tr><td colspan="4" class="text-center py-8 text-xs text-slate-400 font-medium">ไม่พบทีมที่ตรงกับคำค้นหา</td></tr>';
-          } else {
-            filteredOverall.forEach((team) => {
-              let rankBadge = `<span class="text-slate-500 font-bold">${team.overall_rank}</span>`;
-              if (team.overall_rank === 1) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
-              else if (team.overall_rank === 2) rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
-              else if (team.overall_rank === 3) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
+          overallSorted.forEach((team) => {
+            let rankBadge = `<span class="text-slate-500 font-bold">${team.overall_rank}</span>`;
+            if (team.overall_rank === 1) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
+            else if (team.overall_rank === 2) rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
+            else if (team.overall_rank === 3) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
 
-              oHtml += `
-                <tr class="hover:bg-blue-50/40 transition-colors ${team.overall_rank <= 3 ? 'bg-blue-50/20' : ''}">
-                  <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
-                  <td class="py-2.5 px-2 sm:px-3">
-                    <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors block truncate cursor-pointer">
-                      ${team.team_name}
-                    </button>
-                    <span class="text-[11px] text-slate-500 block truncate">${team.player_name}</span>
-                  </td>
-                  <td class="py-2.5 px-2 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-600">${team.last_gw_pts}</td>
-                  <td class="py-2.5 px-2 sm:px-3 text-right font-display font-black text-xs sm:text-sm text-blue-900">${team.total_points}</td>
-                </tr>
-              `;
-            });
-          }
+            oHtml += `
+              <tr class="hover:bg-blue-50/40 transition-colors ${team.overall_rank <= 3 ? 'bg-blue-50/20' : ''}">
+                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
+                <td class="py-2.5 px-2 sm:px-3">
+                  <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors block truncate cursor-pointer">
+                    ${team.team_name}
+                  </button>
+                  <span class="text-[11px] text-slate-500 block truncate">${team.player_name}</span>
+                </td>
+                <td class="py-2.5 px-2 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-600">${team.last_gw_pts}</td>
+                <td class="py-2.5 px-2 sm:px-3 text-right font-display font-black text-xs sm:text-sm text-blue-900">${team.total_points}</td>
+              </tr>
+            `;
+          });
           overallBody.innerHTML = oHtml;
-        }
-
-        const countEl = document.getElementById('search-filter-count');
-        if (countEl) {
-          countEl.innerText = q ? `พบ ${filteredMatchday.length} ทีม` : `${(this.data.teams || []).length} ทีมสมาชิก`;
         }
       }
 
@@ -1546,10 +1503,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             mainContainer.innerHTML = `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
                 <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">ตารางเงินรางวัลสะสมของสมาชิก</h3>
-                <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0">
+                <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 max-h-[550px] touch-scroll">
                   <table class="w-full text-left border-collapse">
-                    <thead>
-                      <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display">
+                    <thead class="sticky top-0 bg-white/95 backdrop-blur-xs z-10 shadow-2xs">
+                      <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
                         <th class="py-2 px-2 sm:px-3 text-center w-8">#</th>
                         <th class="py-2 px-2 sm:px-3">ทีม & ผู้จัดการ</th>
                         <th class="py-2 px-2 sm:px-3 text-center">แชมป์วีค</th>
@@ -1712,10 +1669,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   ${monthSelectorBtns}
                 </div>
 
-                <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0">
+                <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 max-h-[550px] touch-scroll">
                   <table class="w-full text-left border-collapse">
-                    <thead>
-                      <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display">
+                    <thead class="sticky top-0 bg-white/95 backdrop-blur-xs z-10 shadow-2xs">
+                      <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
                         <th class="py-2 px-2 text-center w-8">#</th>
                         <th class="py-2 px-2">ทีม & ผู้จัดการ</th>
                         ${curMonth.gw_list.map(g => `<th class="py-2 px-2 text-center">GW ${g}</th>`).join('')}
