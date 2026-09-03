@@ -194,9 +194,11 @@ flowchart TD
 * **ข้อตกลงการตั้งชื่อ (Naming Convention):** ใช้ชื่อ `rollback_(จำนวนทีมหรือลีก)` เช่น:
   * `rollback_2` : รองรับ 2 ลีก (40700, 675290)
   * `rollback_3` : รองรับ 3 ลีก (40700, 675290, 38491) พร้อมเสื้อแข่งจริงครบทุกสโมสร, ผังจัดทีม 4 ชั้น, และระบบ Quote-Safe
+  * `rollback_4` : แก้ไขการแสดงผลอันดับเวลาค้นหาทีม
+  * `rollback_5` : รองรับ 3 ลีกสมบูรณ์แบบ, คำนวณอันดับ Tied Rank, แบ่งเงินรางวัลแชมป์ร่วม, ปรับ UX ตารางมือถือไม่ล้นขอบ, และตัดปุ่มดินสอแก้ไขออก
 * **เครื่องมือนำทาง (`./rollback.sh`):**
   * ดูรายชื่อ rollback ทั้งหมด: `./rollback.sh list`
-  * ย้ายไปยังเวอร์ชันที่ต้องการ: `./rollback.sh go 2` หรือ `./rollback.sh go 3`
+  * ย้ายไปยังเวอร์ชันที่ต้องการ: `./rollback.sh go 2`, `./rollback.sh go 3`, หรือ `./rollback.sh go 5`
   * กลับมายังเวอร์ชันล่าสุด: `./rollback.sh main`
-  * บันทึก milestone ใหม่พร้อม push ขึ้น GitHub อัตโนมัติ: `./rollback.sh save 4`
+  * บันทึก milestone ใหม่: `./rollback.sh save <number>`
 
