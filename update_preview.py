@@ -1214,6 +1214,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         }
 
         const sorted = [...gwData.results].sort((a, b) => b.net_points - a.net_points);
+        sorted.forEach((team, i) => {
+          team.rank = i + 1;
+        });
         const leader = sorted[0];
 
         // 1. Render Spotlight Card (Clean layout with NO icon image box)
@@ -1290,11 +1293,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             filteredMatchday.forEach((team, idx) => {
               const chip = team.chip ? `<span class="chip-badge badge-${team.chip.toLowerCase()} font-display">${team.chip.toUpperCase()}</span>` : '';
               const hits = team.hits > 0 ? `<span class="text-rose-600 font-bold font-display">-${team.hits}</span>` : '<span class="text-slate-400">-</span>';
-              const isWinner = (!q && idx === 0);
+              const isWinner = (team.rank === 1);
 
               mHtml += `
                 <tr class="hover:bg-slate-50 transition-colors ${isWinner ? 'bg-emerald-50/30 font-semibold' : ''}">
-                  <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold ${isWinner ? 'text-emerald-700' : 'text-slate-500'}">${idx + 1}</td>
+                  <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold ${isWinner ? 'text-emerald-700' : 'text-slate-500'}">${team.rank}</td>
                   <td class="py-2.5 px-2 sm:px-3">
                     <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-slate-600 transition-colors flex items-center gap-1.5 flex-wrap cursor-pointer">
                       <span class="break-words">${team.team_name}</span>
@@ -1350,6 +1353,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
 
           const overallSorted = Object.values(overallMap).sort((a, b) => b.total_points - a.total_points);
+          overallSorted.forEach((team, i) => {
+            team.overall_rank = i + 1;
+          });
+
           const filteredOverall = q
             ? overallSorted.filter(t => (t.team_name || '').toLowerCase().includes(q) || (t.player_name || '').toLowerCase().includes(q))
             : overallSorted;
@@ -1358,14 +1365,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           if (filteredOverall.length === 0) {
             oHtml = '<tr><td colspan="4" class="text-center py-8 text-xs text-slate-400 font-medium">ไม่พบทีมที่ตรงกับคำค้นหา</td></tr>';
           } else {
-            filteredOverall.forEach((team, idx) => {
-              let rankBadge = `<span class="text-slate-500 font-bold">${idx + 1}</span>`;
-              if (!q && idx === 0) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
-              else if (!q && idx === 1) rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
-              else if (!q && idx === 2) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
+            filteredOverall.forEach((team) => {
+              let rankBadge = `<span class="text-slate-500 font-bold">${team.overall_rank}</span>`;
+              if (team.overall_rank === 1) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
+              else if (team.overall_rank === 2) rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
+              else if (team.overall_rank === 3) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
 
               oHtml += `
-                <tr class="hover:bg-blue-50/40 transition-colors ${idx < 3 && !q ? 'bg-blue-50/20' : ''}">
+                <tr class="hover:bg-blue-50/40 transition-colors ${team.overall_rank <= 3 ? 'bg-blue-50/20' : ''}">
                   <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                   <td class="py-2.5 px-2 sm:px-3">
                     <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors block truncate cursor-pointer">
