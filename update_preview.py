@@ -497,14 +497,29 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
-                <th class="py-2 px-2 sm:px-3 text-center w-8">#</th>
-                <th class="py-2 px-2 sm:px-3">ทีม</th>
-                <th class="py-2 px-2 sm:px-3 text-center" id="hof-col-wins">#1 GAMEWEEK</th>
-                <th class="py-2 px-2 sm:px-3 text-center">แต้มเฉลี่ย</th>
-                <th class="py-2 px-2 sm:px-3 text-center">แต้มสูงสุด</th>
-                <th class="py-2 px-2 sm:px-3 text-center">แต้มต่ำสุด</th>
-                <th class="py-2 px-2 sm:px-3 text-right">แต้มลบสะสม</th>
+              <tr class="border-b border-slate-100 text-[10px] sm:text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
+                <th class="py-2.5 px-1 sm:px-2 text-center w-7 sm:w-8 whitespace-nowrap">#</th>
+                <th class="py-2.5 px-1.5 sm:px-3 min-w-0 whitespace-nowrap">ทีม</th>
+                <th class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap" id="hof-col-wins">
+                  <span class="sm:hidden">#1 GW</span>
+                  <span class="hidden sm:inline">#1 GAMEWEEK</span>
+                </th>
+                <th class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap">
+                  <span class="sm:hidden">เฉลี่ย</span>
+                  <span class="hidden sm:inline">แต้มเฉลี่ย</span>
+                </th>
+                <th class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap">
+                  <span class="sm:hidden">สูงสุด</span>
+                  <span class="hidden sm:inline">แต้มสูงสุด</span>
+                </th>
+                <th class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap">
+                  <span class="sm:hidden">ต่ำสุด</span>
+                  <span class="hidden sm:inline">แต้มต่ำสุด</span>
+                </th>
+                <th class="py-2.5 px-1.5 sm:px-3 text-right whitespace-nowrap">
+                  <span class="sm:hidden">แต้มลบ</span>
+                  <span class="hidden sm:inline">แต้มลบสะสม</span>
+                </th>
               </tr>
             </thead>
             <tbody id="hall-of-fame-table-body" class="divide-y divide-slate-100 text-xs sm:text-sm">
@@ -1778,7 +1793,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const hofColWins = document.getElementById('hof-col-wins');
         const maxGW = Number(this.multiData.max_gw) || 2;
 
-        if (hofColWins) hofColWins.innerText = '#1 GAMEWEEK';
+        if (hofColWins) hofColWins.innerHTML = '<span class="sm:hidden">#1 GW</span><span class="hidden sm:inline">#1 GAMEWEEK</span>';
 
         let highGW = { score: 0, team: '-', gw: 1 };
         let bestBench = { bench: 0, team: '-', gw: 1 };
@@ -1885,16 +1900,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
             html += `
               <tr class="hover:bg-slate-50 transition-colors">
-                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-500">${idx + 1}</td>
-                <td class="py-2.5 px-2 sm:px-3">
-                  <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${this.escapeHtml(t.team_name)}</button>
-                  <div class="text-[11px] text-slate-500">${this.escapeHtml(t.player_name || '')}</div>
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500 whitespace-nowrap">${idx + 1}</td>
+                <td class="py-2.5 px-1.5 sm:px-3 min-w-0">
+                  <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block truncate">${this.escapeHtml(t.team_name)}</button>
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 truncate">${this.escapeHtml(t.player_name || '')}</div>
                 </td>
-                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-800">${winsDisp}</td>
-                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-black text-slate-900">${avg}</td>
-                <td class="py-2.5 px-2 sm:px-3 text-center font-display text-emerald-600 font-bold">${high}</td>
-                <td class="py-2.5 px-2 sm:px-3 text-center font-display text-slate-500">${low}</td>
-                <td class="py-2.5 px-2 sm:px-3 text-right font-display ${t.total_hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'}">${t.total_hits > 0 ? `-${t.total_hits}` : '-'}</td>
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-800 whitespace-nowrap">${winsDisp}</td>
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-black text-slate-900 whitespace-nowrap">${avg}</td>
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display text-emerald-600 font-bold whitespace-nowrap">${high}</td>
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display text-slate-500 whitespace-nowrap">${low}</td>
+                <td class="py-2.5 px-1.5 sm:px-3 text-right font-display whitespace-nowrap ${t.total_hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'}">${t.total_hits > 0 ? `-${t.total_hits}` : '-'}</td>
               </tr>
             `;
           });
