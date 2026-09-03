@@ -399,16 +399,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             </span>
           </div>
 
-          <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 max-h-[600px] touch-scroll">
+          <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
             <table class="w-full text-left border-collapse">
-              <thead class="sticky top-0 bg-white/95 backdrop-blur-xs z-10 shadow-2xs">
+              <thead>
                 <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
-                  <th class="py-2 px-1 sm:px-2 text-center w-7 sm:w-8">#</th>
-                  <th class="py-2 px-1.5 sm:px-3">ทีม & ผู้จัดการ</th>
-                  <th class="py-2 px-2 sm:px-3 text-center hidden sm:table-cell">กัปตัน (C)</th>
-                  <th class="py-2 px-1 sm:px-2 text-center w-9 sm:w-12 text-[10px] sm:text-[11px]">ดิบ</th>
-                  <th class="py-2 px-1 sm:px-2 text-center w-9 sm:w-12 text-[10px] sm:text-[11px]">ลบ</th>
-                  <th class="py-2 px-1.5 sm:px-3 text-right w-14 sm:w-16 text-emerald-700 font-bold">แต้มสุทธิ</th>
+                  <th class="py-2.5 px-1 sm:px-2 text-center w-7 sm:w-8">#</th>
+                  <th class="py-2.5 px-1.5 sm:px-3 min-w-0">ทีม & ผู้จัดการ</th>
+                  <th class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">(C)</th>
+                  <th class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap text-[10px] sm:text-[11px]">คะแนนดิบ</th>
+                  <th class="py-2.5 px-1 sm:px-2 text-center w-8 sm:w-10 text-[10px] sm:text-[11px]">ลบ</th>
+                  <th class="py-2.5 px-1.5 sm:px-3 text-right w-14 sm:w-16 text-emerald-700 font-bold">แต้มสุทธิ</th>
                 </tr>
               </thead>
               <tbody id="matchday-table-body" class="divide-y divide-slate-100 text-xs sm:text-sm">
@@ -433,14 +433,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             </span>
           </div>
 
-          <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 max-h-[600px] touch-scroll">
+          <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
             <table class="w-full text-left border-collapse">
-              <thead class="sticky top-0 bg-white/95 backdrop-blur-xs z-10 shadow-2xs">
+              <thead>
                 <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-blue-50/30">
-                  <th class="py-2 px-1 sm:px-2 text-center w-7 sm:w-8">#</th>
-                  <th class="py-2 px-1.5 sm:px-3">ทีม & ผู้จัดการ</th>
-                  <th class="py-2 px-1 sm:px-3 text-center w-12 sm:w-16 text-[10px] sm:text-[11px]">GW ล่าสุด</th>
-                  <th class="py-2 px-1.5 sm:px-3 text-right w-14 sm:w-16 text-blue-800 font-bold">แต้มรวม</th>
+                  <th class="py-2.5 px-1 sm:px-2 text-center w-7 sm:w-8">#</th>
+                  <th class="py-2.5 px-1.5 sm:px-3 min-w-0">ทีม & ผู้จัดการ</th>
+                  <th class="py-2.5 px-1 sm:px-3 text-center w-12 sm:w-16 text-[10px] sm:text-[11px]">GW ล่าสุด</th>
+                  <th class="py-2.5 px-1.5 sm:px-3 text-right w-14 sm:w-16 text-blue-800 font-bold">แต้มรวม</th>
                 </tr>
               </thead>
               <tbody id="overall-standings-body" class="divide-y divide-slate-100 text-xs sm:text-sm">
@@ -492,9 +492,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           </div>
         </div>
 
-        <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 max-h-[600px] touch-scroll">
+        <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
           <table class="w-full text-left border-collapse">
-            <thead class="sticky top-0 bg-white/95 backdrop-blur-xs z-10 shadow-2xs">
+            <thead>
               <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
                 <th class="py-2 px-2 sm:px-3 text-center w-8">#</th>
                 <th class="py-2 px-2 sm:px-3">ทีม</th>
@@ -1535,9 +1535,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             mainContainer.innerHTML = `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
                 <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">ตารางเงินรางวัลสะสมของสมาชิก</h3>
-                <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 max-h-[550px] touch-scroll">
+                <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
                   <table class="w-full text-left border-collapse">
-                    <thead class="sticky top-0 bg-white/95 backdrop-blur-xs z-10 shadow-2xs">
+                    <thead>
                       <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
                         <th class="py-2 px-2 sm:px-3 text-center w-8">#</th>
                         <th class="py-2 px-2 sm:px-3">ทีม & ผู้จัดการ</th>
@@ -1701,9 +1701,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   ${monthSelectorBtns}
                 </div>
 
-                <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 max-h-[550px] touch-scroll">
+                <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
                   <table class="w-full text-left border-collapse">
-                    <thead class="sticky top-0 bg-white/95 backdrop-blur-xs z-10 shadow-2xs">
+                    <thead>
                       <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
                         <th class="py-2 px-2 text-center w-8">#</th>
                         <th class="py-2 px-2">ทีม & ผู้จัดการ</th>

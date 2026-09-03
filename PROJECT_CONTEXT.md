@@ -196,9 +196,10 @@ flowchart TD
   * `rollback_3` : รองรับ 3 ลีก (40700, 675290, 38491) พร้อมเสื้อแข่งจริงครบทุกสโมสร, ผังจัดทีม 4 ชั้น, และระบบ Quote-Safe
   * `rollback_4` : แก้ไขการแสดงผลอันดับเวลาค้นหาทีม
   * `rollback_5` : รองรับ 3 ลีกสมบูรณ์แบบ, คำนวณอันดับ Tied Rank, แบ่งเงินรางวัลแชมป์ร่วม, ปรับ UX ตารางมือถือไม่ล้นขอบ, และตัดปุ่มดินสอแก้ไขออก
+  * `rollback_6` : ยกเลิก Inner Scroll + Sticky Header Table ทั้งหมด, เปลี่ยนหัวตาราง GAMEWEEK STANDING เป็น 'คะแนนดิบ' และ '(C)'
 * **เครื่องมือนำทาง (`./rollback.sh`):**
   * ดูรายชื่อ rollback ทั้งหมด: `./rollback.sh list`
-  * ย้ายไปยังเวอร์ชันที่ต้องการ: `./rollback.sh go 2`, `./rollback.sh go 3`, หรือ `./rollback.sh go 5`
+  * ย้ายไปยังเวอร์ชันที่ต้องการ: `./rollback.sh go 2`, `./rollback.sh go 3`, `./rollback.sh go 5`, หรือ `./rollback.sh go 6`
   * กลับมายังเวอร์ชันล่าสุด: `./rollback.sh main`
   * บันทึก milestone ใหม่: `./rollback.sh save <number>`
 
