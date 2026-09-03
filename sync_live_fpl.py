@@ -112,9 +112,22 @@ def main():
     start_time = time.time()
     print(f"[{datetime.now().strftime('%H:%M:%S')}] Starting FPL Sync Engine (force={args.force})...")
 
-    # 1. Fetch bootstrap-static
+    # 1. Fetch bootstrap-static (with FPL Maintenance Window resiliency)
     print("Fetching bootstrap-static...")
-    boot = fetch('https://fantasy.premierleague.com/api/bootstrap-static/')
+    try:
+        boot = fetch('https://fantasy.premierleague.com/api/bootstrap-static/')
+    except Exception as e:
+        print(f"\n⚠️  [Resilience Notice] FPL API unavailable (possible maintenance / 503 / network issue): {e}")
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        multi_json_path = os.path.join(base_dir, 'multi_fpl_data.json')
+        if os.path.exists(multi_json_path):
+            print("   Safely preserving existing cached data without crash.")
+            print("   Dashboard will continue serving latest available scores. Exiting cleanly (code 0).")
+            return
+        else:
+            print("   Fatal: No existing cache found to fall back to.")
+            raise e
+
     elements = {p['id']: p for p in boot['elements']}
     teams_by_id = {t['id']: t['short_name'] for t in boot['teams']}
     element_types = {et['id']: et['singular_name_short'] for et in boot['element_types']}
@@ -362,7 +375,7 @@ def main():
                                 return (gw, eid, c_res, c_sq)
                         return None
 
-                with ThreadPoolExecutor(max_workers=10) as executor:
+                with ThreadPoolExecutor(max_workers=8) as executor:
                     fetched_results = list(executor.map(process_team_picks, work_items))
 
                 for res in fetched_results:

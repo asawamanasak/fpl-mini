@@ -926,6 +926,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         this.initVisitorCounter();
       }
 
+      escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
       toggleLeagueDropdown(event) {
         if (event) event.stopPropagation();
         const menu = document.getElementById('league-dropdown-menu');
@@ -1271,11 +1281,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold ${isWinner ? 'text-emerald-700' : 'text-slate-500'}">${team.rank}</td>
                 <td class="py-2.5 px-2 sm:px-3">
                   <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-slate-600 transition-colors flex items-center gap-1.5 flex-wrap cursor-pointer">
-                    <span class="break-words">${team.team_name}</span>
+                    <span class="break-words">${this.escapeHtml(team.team_name)}</span>
                     ${chip}
                   </button>
                   <div class="text-[11px] text-slate-500 mt-0.5">
-                    <div class="truncate">${team.player_name}</div>
+                    <div class="truncate">${this.escapeHtml(team.player_name)}</div>
                     <div class="sm:hidden text-[10.5px] text-slate-600 font-medium mt-0.5 truncate">
                       (C) ${(team.captain || '-').replace(/\s*\(C\)/gi, '').trim()}
                     </div>
@@ -1339,9 +1349,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-2 sm:px-3">
                   <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors block truncate cursor-pointer">
-                    ${team.team_name}
+                    ${this.escapeHtml(team.team_name)}
                   </button>
-                  <span class="text-[11px] text-slate-500 block truncate">${team.player_name}</span>
+                  <span class="text-[11px] text-slate-500 block truncate">${this.escapeHtml(team.player_name)}</span>
                 </td>
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-600">${team.last_gw_pts}</td>
                 <td class="py-2.5 px-2 sm:px-3 text-right font-display font-black text-xs sm:text-sm text-blue-900">${team.total_points}</td>
@@ -1394,8 +1404,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               <tr class="hover:bg-slate-50 transition-colors ${idx < 3 && wins > 0 ? 'bg-amber-50/20' : ''}">
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-500">${idx + 1}</td>
                 <td class="py-2.5 px-2 sm:px-3">
-                  <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${t.entry_name}</button>
-                  <div class="text-[11px] text-slate-500">${t.player_name}</div>
+                  <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${this.escapeHtml(t.entry_name)}</button>
+                  <div class="text-[11px] text-slate-500">${this.escapeHtml(t.player_name)}</div>
                 </td>
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-800">${wins}</td>
                 <td class="py-2.5 px-2 sm:px-3 text-right font-display font-black text-emerald-600">${actualPrize.toLocaleString()} THB</td>
@@ -1832,18 +1842,28 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const prizeBadge = document.getElementById('cup-prize-badge');
         const container = document.getElementById('cup-tournament-container');
 
-        const hasCup = Boolean(this.config.features && this.config.features.has_cup);
+        const feat = (this.config && this.config.features) || {};
+        const hasCup = Boolean(feat.has_cup);
         if (!hasCup) return;
 
-        const is40700 = (this.activeLeagueId === '40700');
-        const is38491 = (this.activeLeagueId === '38491');
+        const champPrize = feat.cup_champion_prize;
+        const runnerPrize = feat.cup_runner_up_prize;
+        const startGW = feat.cup_start_gw;
+
         if (prizeBadge) {
-          prizeBadge.innerText = is40700 ? '1,650 THB PRIZE' : (is38491 ? '1,000 THB PRIZE' : 'CUP TOURNAMENT');
+          if (champPrize && runnerPrize) {
+            prizeBadge.innerText = `${champPrize} + ${runnerPrize} PRIZE`;
+          } else if (champPrize) {
+            prizeBadge.innerText = `${champPrize} PRIZE`;
+          } else {
+            prizeBadge.innerText = 'CUP TOURNAMENT';
+          }
         }
 
         if (container) {
-          if (is40700) {
-            container.innerHTML = `
+          let prizeCardsHtml = '';
+          if (champPrize && runnerPrize) {
+            prizeCardsHtml = `
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="glass-card rounded-2xl p-5 border border-slate-200">
                   <div class="flex items-center gap-3">
@@ -1851,7 +1871,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                     <div>
                       <span class="text-xs uppercase font-bold text-amber-700 font-display">CUP CHAMPION</span>
                       <h3 class="text-lg font-bold text-slate-900">แชมป์ฟุตบอลถ้วย (CUP)</h3>
-                      <div class="text-sm font-black text-emerald-600 font-display mt-0.5">1,000 THB</div>
+                      <div class="text-sm font-black text-emerald-600 font-display mt-0.5">${champPrize}</div>
                     </div>
                   </div>
                 </div>
@@ -1862,58 +1882,53 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                     <div>
                       <span class="text-xs uppercase font-bold text-slate-600 font-display">RUNNER-UP</span>
                       <h3 class="text-lg font-bold text-slate-900">รองแชมป์ฟุตบอลถ้วย (CUP)</h3>
-                      <div class="text-sm font-black text-emerald-600 font-display mt-0.5">650 THB</div>
+                      <div class="text-sm font-black text-emerald-600 font-display mt-0.5">${runnerPrize}</div>
                     </div>
                   </div>
                 </div>
               </div>
-
-              <div class="glass-card rounded-2xl p-5 border border-slate-200 text-center py-8">
-                <div class="text-3xl mb-2">⚔️</div>
-                <h4 class="text-base font-bold text-slate-900">รอบการแข่งขัน Knockout Cup</h4>
-                <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">ระบบของเว็บไซต์ Official FPL จะทำการจับคู่รอบ Knockout อัตโนมัติเมื่อถึงสัปดาห์ที่กำหนด</p>
-              </div>
             `;
-          } else if (is38491) {
-            container.innerHTML = `
+          } else if (champPrize) {
+            prizeCardsHtml = `
               <div class="glass-card rounded-2xl p-5 border border-slate-200">
                 <div class="flex items-center gap-3.5">
                   <div class="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black font-display shadow-md">🏆</div>
                   <div>
                     <span class="text-xs uppercase font-bold text-amber-700 font-display">MINI-LEAGUE CUP CHAMPION</span>
-                    <h3 class="text-lg font-bold text-slate-900">แชมป์ลีคคัพ (เริ่ม Gameweek 35)</h3>
-                    <div class="text-sm font-black text-emerald-600 font-display mt-0.5">1,000 THB</div>
-                    <p class="text-xs text-slate-500 mt-1">* เริ่มแข่งขันใน Gameweek 35 (สงวนสิทธิ์ไม่นับรวมทีมที่ไม่ได้ชำระค่าสมัคร)</p>
+                    <h3 class="text-lg font-bold text-slate-900">แชมป์ลีคคัพ ${startGW ? `(เริ่ม Gameweek ${startGW})` : ''}</h3>
+                    <div class="text-sm font-black text-emerald-600 font-display mt-0.5">${champPrize}</div>
+                    ${startGW ? `<p class="text-xs text-slate-500 mt-1">* เริ่มแข่งขันใน Gameweek ${startGW} (สงวนสิทธิ์เฉพาะทีมที่ชำระค่าสมัครครบถ้วน)</p>` : ''}
                   </div>
                 </div>
               </div>
-
-              <div class="glass-card rounded-2xl p-5 border border-slate-200 text-center py-8">
-                <div class="text-3xl mb-2">⚔️</div>
-                <h4 class="text-base font-bold text-slate-900">ระบบจับคู่รอบ Knockout (เริ่ม GW 35)</h4>
-                <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">ระบบ Official FPL Cup จะเริ่มจัดประกบคู่แข่งขันแบบแพ้คัดออกอัตโนมัติในสัปดาห์ที่ 35 สมาชิกที่ชนะในแต่ละรอบจะผ่านเข้าสู่รอบต่อไปจนถึงรอบชิงชนะเลิศ</p>
-              </div>
             `;
           } else {
-            container.innerHTML = `
+            prizeCardsHtml = `
               <div class="glass-card rounded-2xl p-5 border border-slate-200">
                 <div class="flex items-center gap-3.5">
                   <div class="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black font-display shadow-md">🏆</div>
                   <div>
-                    <span class="text-xs uppercase font-bold text-amber-700 font-display">NUDNEE CUP TOURNAMENT</span>
+                    <span class="text-xs uppercase font-bold text-amber-700 font-display">${this.data.name || 'MINI-LEAGUE'} CUP</span>
                     <h3 class="text-lg font-bold text-slate-900">รางวัลผู้ชนะ Cup (บอลถ้วย)</h3>
-                    <p class="text-xs text-slate-600 mt-0.5">รอสรุปจำนวนคนเพื่อประกาศสัปดาห์ที่เริ่มแข่งขัน และจัดสรรเงินรางวัลตามยอดสมัคร</p>
+                    <p class="text-xs text-slate-600 mt-0.5">รอสรุปสัปดาห์ที่เริ่มแข่งขัน และจัดสรรเงินรางวัลตามยอดสมัคร</p>
                   </div>
                 </div>
               </div>
-
-              <div class="glass-card rounded-2xl p-5 border border-slate-200 text-center py-8">
-                <div class="text-3xl mb-2">⚔️</div>
-                <h4 class="text-base font-bold text-slate-900">ระบบจับคู่รอบ Knockout</h4>
-                <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">ระบบ Official FPL Cup จะจับคู่แข่งแบบแพ้คัดออกอัตโนมัติ สมาชิกที่ชนะในแต่ละสัปดาห์จะผ่านเข้าสู่รอบต่อไป</p>
-              </div>
             `;
           }
+
+          const gwInfoText = startGW 
+            ? `ระบบ Official FPL Cup จะเริ่มจัดประกบคู่แข่งขันแบบแพ้คัดออกอัตโนมัติในสัปดาห์ที่ ${startGW} สมาชิกที่ชนะในแต่ละรอบจะผ่านเข้าสู่รอบต่อไปจนถึงรอบชิงชนะเลิศ`
+            : `ระบบ Official FPL Cup จะทำการจับคู่รอบ Knockout อัตโนมัติเมื่อถึงสัปดาห์ที่กำหนด สมาชิกที่ชนะในแต่ละสัปดาห์จะผ่านเข้าสู่รอบต่อไป`;
+
+          container.innerHTML = `
+            ${prizeCardsHtml}
+            <div class="glass-card rounded-2xl p-5 border border-slate-200 text-center py-8">
+              <div class="text-3xl mb-2">⚔️</div>
+              <h4 class="text-base font-bold text-slate-900">รอบการแข่งขัน Knockout Cup ${startGW ? `(เริ่ม GW ${startGW})` : ''}</h4>
+              <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">${gwInfoText}</p>
+            </div>
+          `;
         }
       }
 
@@ -1965,10 +1980,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const isGk = (p.pos === 'GKP');
         const teamCode = p.team_code || FPL_TEAM_CODES[p.team] || 0;
         const suffix = isGk ? '_1-66.webp' : '-66.webp';
-        const inSubdir = (window.location && window.location.pathname && (
-          window.location.pathname.includes('/40700') ||
-          window.location.pathname.includes('/675290') ||
-          window.location.pathname.includes('/38491')
+        const configuredIds = Object.keys(this.configs || {});
+        const inSubdir = Boolean(window.location && window.location.pathname && (
+          configuredIds.some(lid => window.location.pathname.includes('/' + lid))
         ));
         const prefix = inSubdir ? '../' : './';
         return `${prefix}images/shirts/shirt_${teamCode}${suffix}`;
@@ -2505,14 +2519,7 @@ def main():
         with open(os.path.join(dir_league, 'index.html'), 'w', encoding='utf-8') as f:
             f.write(html_league)
 
-    print("Successfully updated update_preview.py and generated all HTML files with user requested UX/UI modifications!")
-    
-    # Auto-stage all generated files for Git / GitHub Actions
-    import subprocess
-    try:
-        subprocess.run(['git', 'add', '-A'], check=False)
-    except Exception:
-        pass
+    print("Successfully generated all HTML dashboard files on local!")
 
 if __name__ == '__main__':
     main()
