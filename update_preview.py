@@ -627,27 +627,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
     </div>
   </div>
 
-  <!-- 6.2 หน้าต่างแก้ไขไฮไลท์ -->
-  <div id="tagline-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-xs hidden" onclick="if (event.target === this) app.closeTaglineModal()">
-    <div class="bg-white rounded-3xl p-5 sm:p-6 max-w-md w-full shadow-2xl border border-slate-200" onclick="event.stopPropagation()">
-      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
-        <h3 id="tagline-modal-title" class="text-base sm:text-lg font-bold text-slate-900 font-display">แก้ไขจุดเด่น Gameweek</h3>
-        <button onclick="app.closeTaglineModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 font-bold transition-colors cursor-pointer text-base">✕</button>
-      </div>
-      <div class="space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-slate-500 mb-1.5 font-display">ข้อความไฮไลท์สัปดาห์นี้:</label>
-          <textarea id="tagline-input" rows="3" class="w-full border border-slate-300 rounded-2xl p-3 text-sm focus:outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 resize-none font-medium"></textarea>
-          <p class="text-[11px] text-slate-400 mt-1.5 leading-normal">💡 ข้อความนี้จะถูกบันทึกบนเครื่องของคุณ และนำไปใช้เมื่อกดปุ่มคัดลอก (Copy) ส่งเข้าห้อง LINE</p>
-        </div>
-        <div class="flex justify-end gap-2 pt-2">
-          <button onclick="app.closeTaglineModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer">ยกเลิก</button>
-          <button id="tagline-save-btn" class="px-5 py-2 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-xl transition-colors shadow-sm cursor-pointer">บันทึกข้อความ</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- 6.3 หน้าต่าง Text Summary Modal สำหรับส่ง LINE -->
   <div id="text-summary-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-xs hidden transition-all duration-200" onclick="if (event.target === this) app.closeTextSummaryModal()">
     <div class="bg-white rounded-3xl p-5 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200 max-h-[92vh] flex flex-col justify-between" onclick="event.stopPropagation()">
@@ -699,30 +678,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
      * ระบบวิเคราะห์สด 3 ตอน: ประโยคเปิดหัวตามชิป/แต้ม + เจาะลึกแท็กติก (Hits/สำรอง/กัปตัน) + ลูกเตือนกวนๆ ปิดท้าย
      */
     class LiveCommentaryEngine {
-      static getStorageKey(leagueId, gw) {
-        return `fpl_custom_tagline_${leagueId}_${gw}`;
-      }
-
-      static getCustomTagline(leagueId, gw) {
-        if (typeof localStorage === 'undefined') return null;
-        try {
-          return localStorage.getItem(this.getStorageKey(leagueId, gw));
-        } catch (e) {
-          return null;
-        }
-      }
-
-      static saveCustomTagline(leagueId, gw, text) {
-        if (typeof localStorage === 'undefined') return;
-        try {
-          if (text && text.trim()) {
-            localStorage.setItem(this.getStorageKey(leagueId, gw), text.trim());
-          } else {
-            localStorage.removeItem(this.getStorageKey(leagueId, gw));
-          }
-        } catch (e) {}
-      }
-
       static generateFreshNote(gwNumber, gwData, leagueName, forceRandom = false) {
         if (!gwData || !gwData.results || gwData.results.length === 0) {
           return `Gameweek นี้กำลังรอผลการแข่งขันจากสนามจริง`;
@@ -1246,8 +1201,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         // 1. Render Spotlight Card (Clean layout with Edit, Copy, and Refresh buttons)
         if (championCard && leader) {
           const cacheKey = `${this.activeLeagueId}_${this.selectedGW}`;
-          const customTag = LiveCommentaryEngine.getCustomTagline(this.activeLeagueId, this.selectedGW);
-          const currentLiveNote = customTag || this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name);
+          const currentLiveNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name);
           this.liveNotesCache[cacheKey] = currentLiveNote;
 
           const isWeekly = (this.config.features.prize_model === 'weekly');
@@ -1295,16 +1249,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
               </div>
 
-              <!-- Highlight Note (Borbou Style with Edit, Copy & Refresh Buttons) -->
+              <!-- Highlight Note (Borbou Style with Copy & Refresh Buttons) -->
               <div class="mt-3.5 pt-3 border-t border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600">
                 <div class="min-w-0 pr-1">
                   <span id="current-gw-note-text" class="italic font-medium text-slate-700 leading-relaxed break-words">${currentLiveNote}</span>
                 </div>
                 <div class="flex items-center justify-end gap-1 flex-shrink-0 self-end sm:self-center pt-1 sm:pt-0">
                   <span id="quote-copy-indicator" class="text-[11px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 inline-block font-display">Copied!</span>
-                  <button onclick="app.openTaglineModal(app.selectedGW, document.getElementById('current-gw-note-text').innerText.trim())" class="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="แก้ไขข้อความไฮไลท์ (Edit Tagline)">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                  </button>
                   <button onclick="app.copyHighlightQuote()" class="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="คัดลอกพาดหัวบทวิเคราะห์ (Copy Quote)">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                   </button>
@@ -2208,42 +2159,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         if (modal) modal.classList.add('hidden');
       }
 
-      openTaglineModal(gw, text) {
-        const titleEl = document.getElementById('tagline-modal-title');
-        if (titleEl) titleEl.innerText = `แก้ไขจุดเด่น Gameweek ${gw}`;
-        const input = document.getElementById('tagline-input');
-        if (input) {
-          input.value = text;
-          if (typeof input.focus === 'function') input.focus();
-        }
-        const modal = document.getElementById('tagline-modal');
-        if (modal) modal.classList.remove('hidden');
-
-        const saveBtn = document.getElementById('tagline-save-btn');
-        if (saveBtn) {
-          saveBtn.onclick = () => {
-            const val = input ? input.value : '';
-            LiveCommentaryEngine.saveCustomTagline(this.activeLeagueId, gw, val);
-            const cacheKey = `${this.activeLeagueId}_${gw}`;
-            this.liveNotesCache[cacheKey] = val;
-            this.closeTaglineModal();
-            this.renderGameweekView();
-          };
-        }
-      }
-
-      closeTaglineModal() {
-        const modal = document.getElementById('tagline-modal');
-        if (modal) modal.classList.add('hidden');
-      }
-
       regenerateLiveNote() {
         const gw = this.selectedGW;
         const gwData = this.data.gameweeks ? this.data.gameweeks[String(gw)] : null;
         const newNote = LiveCommentaryEngine.generateFreshNote(gw, gwData, this.data.name, true);
         const cacheKey = `${this.activeLeagueId}_${gw}`;
         this.liveNotesCache[cacheKey] = newNote;
-        LiveCommentaryEngine.saveCustomTagline(this.activeLeagueId, gw, null);
         
         const noteEl = document.getElementById('current-gw-note-text');
         if (noteEl) {
@@ -2551,7 +2472,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         if (e.key === 'Escape' && window.app) {
           window.app.closeTeamModal();
           window.app.closeTextSummaryModal();
-          window.app.closeTaglineModal();
         }
       });
     }
