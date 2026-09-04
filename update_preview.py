@@ -1313,7 +1313,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         let curRank = 1;
         sorted.forEach((team, i) => {
           if (i > 0 && team.net_points < sorted[i - 1].net_points) {
-            curRank = i + 1;
+            curRank++;
           }
           team.rank = curRank;
         });
@@ -1557,7 +1557,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           let curOverallRank = 1;
           overallSorted.forEach((team, i) => {
             if (i > 0 && team.total_points < overallSorted[i - 1].total_points) {
-              curOverallRank = i + 1;
+              curOverallRank++;
             }
             team.overall_rank = curOverallRank;
           });
@@ -1844,7 +1844,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           let curMonthlyRank = 1;
           monthlySorted.forEach((t, idx) => {
             if (idx > 0 && t.month_total < monthlySorted[idx - 1].month_total) {
-              curMonthlyRank = idx + 1;
+              curMonthlyRank++;
             }
             t.rank = curMonthlyRank;
           });
