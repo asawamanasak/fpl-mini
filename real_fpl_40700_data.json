@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "4 ก.ย. 2026, 20:47 น.",
-    "last_sync_iso": "2026-09-04 20:47:20"
+    "last_sync": "4 ก.ย. 2026, 23:05 น.",
+    "last_sync_iso": "2026-09-04 23:05:36"
   },
   "teams": [
     {
@@ -74,17 +74,6 @@
       "is_finished": true,
       "results": [
         {
-          "entry_id": 73489,
-          "team_name": "Some might say",
-          "player_name": "FAme Pakviwat",
-          "points": 49,
-          "hits": 0,
-          "net_points": 49,
-          "captain": "B.Fernandes",
-          "chip": null,
-          "bench_points": 8
-        },
-        {
           "entry_id": 306983,
           "team_name": "GEMINI UNITED",
           "player_name": "Micky Asawamanasak",
@@ -94,50 +83,6 @@
           "captain": "B.Fernandes",
           "chip": "bboost",
           "bench_points": 0
-        },
-        {
-          "entry_id": 5950381,
-          "team_name": "SUN-KUNG-JI",
-          "player_name": "Athit Rattanawipapong",
-          "points": 60,
-          "hits": 0,
-          "net_points": 60,
-          "captain": "Haaland",
-          "chip": null,
-          "bench_points": 5
-        },
-        {
-          "entry_id": 2189419,
-          "team_name": "1234-Ultrasmooth-",
-          "player_name": "Maew Mohawk",
-          "points": 55,
-          "hits": 0,
-          "net_points": 55,
-          "captain": "B.Fernandes",
-          "chip": null,
-          "bench_points": 2
-        },
-        {
-          "entry_id": 1206581,
-          "team_name": "TK.FPL",
-          "player_name": "Teerasade Khemprasit",
-          "points": 32,
-          "hits": 0,
-          "net_points": 32,
-          "captain": "B.Fernandes",
-          "chip": null,
-          "bench_points": 2
-        },
-        {
-          "entry_id": 2206758,
-          "team_name": "ใครไม่พีค",
-          "player_name": "Isriya Paireepairit",
-          "points": 42,
-          "hits": 0,
-          "net_points": 42,
-          "captain": "B.Fernandes",
-          "chip": null,
-          "bench_points": 2
         },
         {
           "entry_id": 5660962,
@@ -162,6 +107,39 @@
           "bench_points": 1
         },
         {
+          "entry_id": 5950381,
+          "team_name": "SUN-KUNG-JI",
+          "player_name": "Athit Rattanawipapong",
+          "points": 60,
+          "hits": 0,
+          "net_points": 60,
+          "captain": "Haaland",
+          "chip": null,
+          "bench_points": 5
+        },
+        {
+          "entry_id": 2604490,
+          "team_name": "Leibniz FC",
+          "player_name": "Ataro Munson",
+          "points": 56,
+          "hits": 0,
+          "net_points": 56,
+          "captain": "Haaland",
+          "chip": null,
+          "bench_points": 10
+        },
+        {
+          "entry_id": 2189419,
+          "team_name": "1234-Ultrasmooth-",
+          "player_name": "Maew Mohawk",
+          "points": 55,
+          "hits": 0,
+          "net_points": 55,
+          "captain": "B.Fernandes",
+          "chip": null,
+          "bench_points": 2
+        },
+        {
           "entry_id": 197082,
           "team_name": "Mary Jojibana",
           "player_name": "Kavinjet Tantitanasap",
@@ -171,6 +149,17 @@
           "captain": "Tzolis",
           "chip": null,
           "bench_points": 13
+        },
+        {
+          "entry_id": 73489,
+          "team_name": "Some might say",
+          "player_name": "FAme Pakviwat",
+          "points": 49,
+          "hits": 0,
+          "net_points": 49,
+          "captain": "B.Fernandes",
+          "chip": null,
+          "bench_points": 8
         },
         {
           "entry_id": 2191555,
@@ -195,15 +184,26 @@
           "bench_points": 15
         },
         {
-          "entry_id": 2604490,
-          "team_name": "Leibniz FC",
-          "player_name": "Ataro Munson",
-          "points": 56,
+          "entry_id": 2206758,
+          "team_name": "ใครไม่พีค",
+          "player_name": "Isriya Paireepairit",
+          "points": 42,
           "hits": 0,
-          "net_points": 56,
-          "captain": "Haaland",
+          "net_points": 42,
+          "captain": "B.Fernandes",
           "chip": null,
-          "bench_points": 10
+          "bench_points": 2
+        },
+        {
+          "entry_id": 1206581,
+          "team_name": "TK.FPL",
+          "player_name": "Teerasade Khemprasit",
+          "points": 32,
+          "hits": 0,
+          "net_points": 32,
+          "captain": "B.Fernandes",
+          "chip": null,
+          "bench_points": 2
         }
       ]
     },
@@ -223,15 +223,15 @@
           "bench_points": 0
         },
         {
-          "entry_id": 306983,
-          "team_name": "GEMINI UNITED",
-          "player_name": "Micky Asawamanasak",
-          "points": 110,
-          "hits": 0,
-          "net_points": 110,
+          "entry_id": 1206581,
+          "team_name": "TK.FPL",
+          "player_name": "Teerasade Khemprasit",
+          "points": 125,
+          "hits": 4,
+          "net_points": 121,
           "captain": "B.Fernandes",
           "chip": null,
-          "bench_points": 16
+          "bench_points": 2
         },
         {
           "entry_id": 5950381,
@@ -245,26 +245,15 @@
           "bench_points": 20
         },
         {
-          "entry_id": 2189419,
-          "team_name": "1234-Ultrasmooth-",
-          "player_name": "Maew Mohawk",
-          "points": 107,
+          "entry_id": 306983,
+          "team_name": "GEMINI UNITED",
+          "player_name": "Micky Asawamanasak",
+          "points": 110,
           "hits": 0,
-          "net_points": 107,
+          "net_points": 110,
           "captain": "B.Fernandes",
           "chip": null,
-          "bench_points": 4
-        },
-        {
-          "entry_id": 1206581,
-          "team_name": "TK.FPL",
-          "player_name": "Teerasade Khemprasit",
-          "points": 125,
-          "hits": 4,
-          "net_points": 121,
-          "captain": "B.Fernandes",
-          "chip": null,
-          "bench_points": 2
+          "bench_points": 16
         },
         {
           "entry_id": 2206758,
@@ -278,15 +267,26 @@
           "bench_points": 4
         },
         {
-          "entry_id": 5660962,
-          "team_name": "Siampathy",
-          "player_name": "Peeranat Hunthanee",
-          "points": 82,
+          "entry_id": 2189419,
+          "team_name": "1234-Ultrasmooth-",
+          "player_name": "Maew Mohawk",
+          "points": 107,
           "hits": 0,
-          "net_points": 82,
-          "captain": "Haaland",
+          "net_points": 107,
+          "captain": "B.Fernandes",
           "chip": null,
-          "bench_points": 6
+          "bench_points": 4
+        },
+        {
+          "entry_id": 197082,
+          "team_name": "Mary Jojibana",
+          "player_name": "Kavinjet Tantitanasap",
+          "points": 94,
+          "hits": 0,
+          "net_points": 94,
+          "captain": "Calafiori",
+          "chip": null,
+          "bench_points": 4
         },
         {
           "entry_id": 2999763,
@@ -300,15 +300,15 @@
           "bench_points": 3
         },
         {
-          "entry_id": 197082,
-          "team_name": "Mary Jojibana",
-          "player_name": "Kavinjet Tantitanasap",
-          "points": 94,
+          "entry_id": 5660962,
+          "team_name": "Siampathy",
+          "player_name": "Peeranat Hunthanee",
+          "points": 82,
           "hits": 0,
-          "net_points": 94,
-          "captain": "Calafiori",
+          "net_points": 82,
+          "captain": "Haaland",
           "chip": null,
-          "bench_points": 4
+          "bench_points": 6
         },
         {
           "entry_id": 2191555,

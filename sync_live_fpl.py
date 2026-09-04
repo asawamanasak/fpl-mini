@@ -267,44 +267,51 @@ def main():
             work_items = []
             for gw in range(1, max_gw + 1):
                 gw_is_finished = gw_status_map.get(gw, False)
-                cached_gw = cached_gw_data.get(str(gw))
+                cached_gw = cached_gw_data.get(str(gw), {})
+                cached_res = cached_gw.get("results", [])
                 
-                # Check if we can reuse finished cached GW data
-                can_use_cache = (
-                    not args.force and
-                    gw_is_finished and
-                    cached_gw and
-                    cached_gw.get("is_finished") and
-                    len(cached_gw.get("results", [])) == len(standings_teams)
-                )
-
-                if can_use_cache:
-                    all_squads_present = True
+                # Check if cached results exist and are non-corrupted (> 0 pts)
+                has_corrupt_cache = (not cached_res) or all(r.get("points", 0) == 0 and r.get("net_points", 0) == 0 for r in cached_res)
+                
+                if not args.force and gw_is_finished and cached_gw.get("is_finished") and not has_corrupt_cache:
+                    cached_res_map = {r["entry_id"]: r for r in cached_res if (r.get("points", 0) > 0 or r.get("net_points", 0) > 0)}
+                    
+                    teams_to_fetch_gw = []
                     for t_obj in standings_teams:
-                        s_key = f"{t_obj['entry']}_{gw}"
-                        if s_key not in cached_squads:
-                            all_squads_present = False
-                            break
-                    if not all_squads_present:
-                        can_use_cache = False
+                        eid = t_obj['entry']
+                        s_key = f"{eid}_{gw}"
+                        if eid in cached_res_map and s_key in cached_squads:
+                            gameweeks_dict[str(gw)]["results"].append(cached_res_map[eid])
+                            squads_dict[s_key] = cached_squads.get(s_key)
+                        else:
+                            teams_to_fetch_gw.append(t_obj)
+                            
+                    if len(teams_to_fetch_gw) == 0:
+                        print(f" -> Reusing cached data for League {lid} GW {gw} (Finished, {len(standings_teams)} teams)")
+                        gameweeks_dict[str(gw)]["is_finished"] = True
+                        continue
                     else:
-                        cached_res = cached_gw.get("results", [])
-                        if not cached_res or all(r.get("points", 0) == 0 and r.get("net_points", 0) == 0 for r in cached_res):
-                            print(f" -> Cache for League {lid} GW {gw} contains corrupt 0-point data. Refetching...")
-                            can_use_cache = False
-
-                if can_use_cache:
-                    print(f" -> Reusing cached data for League {lid} GW {gw} (Finished)")
-                    gameweeks_dict[str(gw)]["results"] = cached_gw.get("results", [])
-                    gameweeks_dict[str(gw)]["is_finished"] = True
-                    for t_obj in standings_teams:
-                        s_key = f"{t_obj['entry']}_{gw}"
-                        squads_dict[s_key] = cached_squads.get(s_key)
+                        print(f" -> Reused {len(gameweeks_dict[str(gw)]['results'])} cached teams, fetching {len(teams_to_fetch_gw)} new/missing teams for League {lid} GW {gw}...")
+                        for t_obj in teams_to_fetch_gw:
+                            work_items.append((t_obj, gw))
                 else:
                     for t_obj in standings_teams:
                         work_items.append((t_obj, gw))
 
             if work_items:
+                # Ensure live elements are available for any GW present in work_items
+                work_gws = set(gw for (_, gw) in work_items)
+                for wgw in work_gws:
+                    if wgw not in live_by_gw or not live_by_gw[wgw]:
+                        try:
+                            print(f" -> Fetching live elements for GW {wgw} (required for team picks)...")
+                            live_data = fetch(f'https://fantasy.premierleague.com/api/event/{wgw}/live/')
+                            live_by_gw[wgw] = {el['id']: el['stats']['total_points'] for el in live_data['elements']}
+                        except Exception as e:
+                            print(f"Error fetching live GW {wgw}: {e}")
+                            if wgw not in live_by_gw:
+                                live_by_gw[wgw] = {}
+
                 print(f" -> Fetching {len(work_items)} team-gameweek picks for League {lid}...")
 
                 def process_team_picks(entry_tuple):
@@ -357,6 +364,11 @@ def main():
                             raw_points = start_raw
                             bench_pts_disp = bench_raw
                             
+                        # Resiliency fallback: If player points sum is 0 but official entry_history has points, use official points
+                        official_pts = hist.get('points')
+                        if raw_points == 0 and official_pts is not None and official_pts > 0:
+                            raw_points = official_pts
+
                         net_points = raw_points - hits
                         
                         result_item = {
@@ -374,7 +386,7 @@ def main():
                         squad_item = {
                             "starting": starters,
                             "bench": bench,
-                            "automatic_subs": auto_subs
+                            "auto_subs": auto_subs
                         }
                         return (gw, eid, result_item, squad_item)
                     except Exception as err:
@@ -396,6 +408,12 @@ def main():
                         gw, eid, result_item, squad_item = res
                         gameweeks_dict[str(gw)]["results"].append(result_item)
                         squads_dict[f"{eid}_{gw}"] = squad_item
+
+            # Sort and finalize all gameweeks results
+            for gw in range(1, max_gw + 1):
+                gw_str = str(gw)
+                gameweeks_dict[gw_str]["results"].sort(key=lambda x: x.get("net_points", 0), reverse=True)
+                gameweeks_dict[gw_str]["is_finished"] = gw_status_map.get(gw, False)
 
             multi_league_output["leagues"][str(lid)] = {
                 "id": lid,
