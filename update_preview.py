@@ -6,6 +6,8 @@ Supporting clean short user URLs:
 - https://asawamanasak.github.io/fpl-mini/40700
 - https://asawamanasak.github.io/fpl-mini/675290
 - https://asawamanasak.github.io/fpl-mini/38491
+
+Build Version: 2026.08.31.01
 """
 
 import json
