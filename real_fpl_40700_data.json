@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "5 ก.ย. 2026, 02:24 น.",
-    "last_sync_iso": "2026-09-05 02:24:31"
+    "last_sync": "5 ก.ย. 2026, 02:44 น.",
+    "last_sync_iso": "2026-09-05 02:44:05"
   },
   "teams": [
     {
@@ -408,17 +408,6 @@
           "bench_points": 0
         },
         {
-          "entry_id": 2191555,
-          "team_name": "1234 Barbyu Barbyu",
-          "player_name": "Maew Mohawk",
-          "points": 1,
-          "hits": 0,
-          "net_points": 1,
-          "captain": "Haaland",
-          "chip": null,
-          "bench_points": 0
-        },
-        {
           "entry_id": 5950381,
           "team_name": "SUN-KUNG-JI",
           "player_name": "Athit Rattanawipapong",
@@ -455,6 +444,17 @@
           "entry_id": 2999763,
           "team_name": "Cody Travers",
           "player_name": "Alesandro Nuyie",
+          "points": 0,
+          "hits": 0,
+          "net_points": 0,
+          "captain": "Haaland",
+          "chip": null,
+          "bench_points": 0
+        },
+        {
+          "entry_id": 2191555,
+          "team_name": "1234 Barbyu Barbyu",
+          "player_name": "Maew Mohawk",
           "points": 0,
           "hits": 0,
           "net_points": 0,
@@ -5588,7 +5588,7 @@
           "pos": "MID",
           "team": "IPS",
           "team_code": 40,
-          "points": 1,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
