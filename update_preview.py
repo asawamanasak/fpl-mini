@@ -432,7 +432,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               </span>
               <h3 class="text-sm sm:text-base font-bold text-slate-900 font-display mt-0.5">ตารางคะแนนรวมสะสม</h3>
             </div>
-            <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 font-display">
+            <span id="overall-gw-pill" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 font-display">
               หลังจบ GW <span id="overall-gw-num">2</span>
             </span>
           </div>
@@ -706,6 +706,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const top = sorted[0];
         const second = sorted[1];
         const isFinished = Boolean(gwData.is_finished);
+        const isStarted = gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || sorted.some(r => r.points > 0));
+
+        if (!isStarted) {
+          const preMatchNotes = [
+            `เดดไลน์ปิดเรียบร้อย! คืนนี้เตรียมเปิดฟลอร์ Gameweek ${gwNumber} ส่องดูการวางหมากในลีกบอกเลยว่าไม่มีใครยอมใคร ใครจะยืนหนึ่งรอดูในสนามจริง!`,
+            `ส่องขุมกำลัง Gameweek ${gwNumber} ล็อกทีมส่งชื่อเสร็จสรรพ บอลยังไม่เตะแต่เริ่มได้กลิ่นความระทึก ใครเลือกกัปตันถูกตัวเตรียมเฮสนั่นรู!`,
+            `จัดทัพพร้อมรบ Gameweek ${gwNumber}! ลีกนี้ใส่ยับทุกสัปดาห์ รอดูกระสุนนัดแรกคิกออฟคืนนี้ ใครของแทร่เดี๋ยวรู้เรื่อง!`,
+            `เข้าสู่โหมดรอคิกออฟ Gameweek ${gwNumber}! ส่งรายชื่อครบถ้วน เตรียมลุ้นกันตัวโก่ง ใครจัดตัวแม่นเดี๋ยวแต้มลั่นทุ่งแน่นอน!`
+          ];
+          const pick = forceRandom ? Math.floor(Math.random() * preMatchNotes.length) : Math.abs(Number(gwNumber) * 13) % preMatchNotes.length;
+          return preMatchNotes[pick];
+        }
+
         const diff = top.net_points - (second ? second.net_points : 0);
         const winners = sorted.filter(r => r.net_points === top.net_points);
         const isJoint = winners.length > 1;
@@ -742,7 +755,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
         // If no chip or margin based
         if (isJoint || diff === 0) {
-          const names = winners.map(w => `"${w.team_name}"`).join(' กับ ');
+          let names = '';
+          if (winners.length === 2) {
+            names = `"${winners[0].team_name}" กับ "${winners[1].team_name}"`;
+          } else if (winners.length > 2) {
+            names = `"${winners[0].team_name}", "${winners[1].team_name}" และเพื่อนร่วมลีกอีก ${winners.length - 2} ทีม`;
+          } else {
+            names = `"${top.team_name}"`;
+          }
           leadOptions.push(
             `กินกันไม่ลงโว้ย! ${names} ซัดไปคนละ ${top.net_points} แต้มเท่ากันเป๊ะ กอดคอคว้าแชมป์ร่วม GW ${gwNumber} แบ่งเงินรางวัลกันคนละครึ่งสุดแฮปปี้!`,
             `ดวลกันเดือดจนเสมอกันเฉย! ${names} รัวคนละ ${top.net_points} pts กอดคอกันฟินแบบหารสอง!`
@@ -879,11 +899,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
         let queryLeague = '';
         let queryTab = '';
+        let queryGW = '';
         try {
           if (typeof URLSearchParams !== 'undefined' && window.location && window.location.search) {
             const urlParams = new URLSearchParams(window.location.search);
             queryLeague = urlParams.get('league') || '';
             queryTab = urlParams.get('tab') || '';
+            queryGW = urlParams.get('gw') || '';
           }
         } catch (e) {}
 
@@ -916,7 +938,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         this.data = this.multiData.leagues[this.activeLeagueId] || Object.values(this.multiData.leagues)[0];
         this.config = this.configs[this.activeLeagueId] || Object.values(this.configs)[0];
         
-        this.selectedGW = Number(this.multiData.max_gw) || 2;
+        const maxGW = Number(this.multiData.max_gw) || 2;
+        const latestGWData = this.data && this.data.gameweeks ? this.data.gameweeks[String(maxGW)] : null;
+        const isLatestStarted = latestGWData ? (latestGWData.is_started !== undefined ? Boolean(latestGWData.is_started) : (Boolean(latestGWData.is_finished) || (latestGWData.results && latestGWData.results.some(r => r.points > 0)))) : false;
+        
+        const queryGWNum = Number(queryGW);
+        if (queryGWNum >= 1 && queryGWNum <= maxGW) {
+          this.selectedGW = queryGWNum;
+        } else {
+          this.selectedGW = (!isLatestStarted && maxGW > 1) ? (maxGW - 1) : maxGW;
+        }
         this.selectedMonthId = 1;
         this.activeTab = queryTab || 'gameweek-view';
         this.liveNotesCache = {};
@@ -1042,10 +1073,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         if (memberEl) memberEl.innerText = `${(this.data.teams || []).length} ทีมสมาชิก`;
         if (lastSyncEl) lastSyncEl.innerText = this.multiData.last_sync || 'ล่าสุด';
 
-        // Check if latest gameweek is currently live or finished
+        // Check if latest gameweek is currently live, finished, or upcoming (pre-match)
         const maxGW = Number(this.multiData.max_gw) || 2;
         const curGWData = this.data.gameweeks ? this.data.gameweeks[String(maxGW)] : null;
         const isCurFinished = Boolean(curGWData && curGWData.is_finished);
+        const isCurStarted = curGWData ? (curGWData.is_started !== undefined ? Boolean(curGWData.is_started) : (isCurFinished || (curGWData.results && curGWData.results.some(r => r.points > 0)))) : false;
 
         const gwStatusEl = document.getElementById('header-gw-status');
         const gwStatusBox = document.getElementById('api-status-text');
@@ -1054,17 +1086,24 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const lastSyncBadge = document.getElementById('header-last-sync-badge');
 
         if (gwStatusEl) {
-          gwStatusEl.innerText = isCurFinished 
-            ? `Gameweek ${maxGW} จบการแข่งขัน (Finished)` 
-            : `Gameweek ${maxGW} กำลังแข่งขัน (Live)`;
+          if (isCurFinished) {
+            gwStatusEl.innerText = `Gameweek ${maxGW} จบการแข่งขัน (Finished)`;
+          } else if (isCurStarted) {
+            gwStatusEl.innerText = `Gameweek ${maxGW} กำลังแข่งขัน (Live)`;
+          } else {
+            gwStatusEl.innerText = `Gameweek ${maxGW} รอคิกออฟ (Upcoming)`;
+          }
         }
 
         if (isCurFinished) {
           if (gwStatusBox) gwStatusBox.className = 'text-xs font-medium text-slate-700 hidden md:flex items-center bg-slate-100 px-3.5 py-1.5 rounded-xl border border-slate-200';
           if (gwStatusDot) gwStatusDot.className = 'inline-block w-2 h-2 rounded-full bg-slate-400 mr-2';
-        } else {
+        } else if (isCurStarted) {
           if (gwStatusBox) gwStatusBox.className = 'text-xs font-semibold text-emerald-900 hidden md:flex items-center bg-emerald-50 px-3.5 py-1.5 rounded-xl border border-emerald-300 shadow-xs animate-pulse';
           if (gwStatusDot) gwStatusDot.className = 'inline-block w-2 h-2 rounded-full bg-emerald-600 mr-2';
+        } else {
+          if (gwStatusBox) gwStatusBox.className = 'text-xs font-semibold text-indigo-900 hidden md:flex items-center bg-indigo-50 px-3.5 py-1.5 rounded-xl border border-indigo-200 shadow-xs';
+          if (gwStatusDot) gwStatusDot.className = 'inline-block w-2 h-2 rounded-full bg-indigo-500 mr-2';
         }
 
         // Auto-Sync Connection Status (Green = Connected/Healthy, Red = Disconnected/Error)
@@ -1170,6 +1209,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           const isPlayed = (gw <= maxGW);
           const gwData = this.data.gameweeks ? this.data.gameweeks[String(gw)] : null;
           const isFinished = Boolean(gwData && gwData.is_finished);
+          const isStarted = gwData ? (gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || (gwData.results && gwData.results.some(r => r.points > 0)))) : false;
 
           let badgeClass = 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed opacity-60';
           let statusText = 'LOCKED';
@@ -1182,13 +1222,21 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               } else {
                 badgeClass = 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 cursor-pointer';
               }
-            } else {
-              // Not finished -> LIVE & Pulsing Box!
+            } else if (isStarted) {
+              // Not finished, but matches started -> LIVE & Pulsing Box!
               statusText = 'LIVE';
               if (isSelected) {
                 badgeClass = 'bg-slate-900 text-white border-2 border-emerald-400 shadow-md cursor-pointer scale-105 animate-pulse';
               } else {
                 badgeClass = 'bg-emerald-50/70 text-emerald-900 border border-emerald-300 hover:bg-emerald-100 cursor-pointer animate-pulse';
+              }
+            } else {
+              // Pre-match / Squads locked -> Upcoming
+              statusText = 'Upcoming';
+              if (isSelected) {
+                badgeClass = 'bg-indigo-950 text-white border-2 border-indigo-400 shadow-md cursor-pointer scale-105';
+              } else {
+                badgeClass = 'bg-indigo-50/80 text-indigo-900 border border-indigo-200 hover:bg-indigo-100 cursor-pointer';
               }
             }
           }
@@ -1232,12 +1280,33 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         }
 
         const isFinished = Boolean(gwData.is_finished);
+        const isStarted = gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || (gwData.results && gwData.results.some(r => r.points > 0)));
+
+        const overallPill = document.getElementById('overall-gw-pill');
+        if (overallPill) {
+          if (isFinished) {
+            overallPill.innerText = `หลังจบ GW ${this.selectedGW}`;
+          } else if (isStarted) {
+            overallPill.innerText = `คะแนนสด GW ${this.selectedGW}`;
+          } else {
+            overallPill.innerText = `ก่อนแข่ง GW ${this.selectedGW}`;
+          }
+        } else if (overallNum) {
+          overallNum.innerText = this.selectedGW;
+        }
+
         if (tableTitle) tableTitle.innerText = `ตารางคะแนน Gameweek ${this.selectedGW}`;
         if (tableBadge) {
-          tableBadge.innerText = isFinished ? 'ผลการแข่งขันทางการ' : 'กำลังแข่งขัน (Live)';
-          tableBadge.className = isFinished 
-            ? 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200'
-            : 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 animate-pulse';
+          if (isFinished) {
+            tableBadge.innerText = 'ผลการแข่งขันทางการ';
+            tableBadge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200';
+          } else if (isStarted) {
+            tableBadge.innerText = 'กำลังแข่งขัน (Live)';
+            tableBadge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 animate-pulse';
+          } else {
+            tableBadge.innerText = 'รอคิกออฟ (Upcoming)';
+            tableBadge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200';
+          }
         }
 
         const sorted = [...gwData.results].sort((a, b) => b.net_points - a.net_points);
@@ -1253,87 +1322,172 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const leader = sorted[0];
         const isJointWinner = topWinners.length > 1;
 
-        // 1. Render Spotlight Card (Clean layout with Edit, Copy, and Refresh buttons)
+        // 1. Render Spotlight Card (Pre-Match Lineup Preview OR Live Leader / Weekly Winner)
         if (championCard && leader) {
           const cacheKey = `${this.activeLeagueId}_${this.selectedGW}`;
           const currentLiveNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name);
           this.liveNotesCache[cacheKey] = currentLiveNote;
 
-          const isWeekly = (this.config.features.prize_model === 'weekly');
+          if (!isStarted) {
+            // Render PRE-MATCH Tactical Lineup Preview
+            const captainCounts = {};
+            const chipCounts = {};
+            let totalHitsCount = 0;
+            let totalHitsPoints = 0;
 
-          let badgeTitle = isFinished 
-            ? (isJointWinner ? 'แชมป์ร่วมประจำสัปดาห์ (Joint Weekly Winners)' : 'แชมป์ประจำสัปดาห์ (Weekly Winner)')
-            : (isJointWinner ? 'ผู้นำคะแนนสดร่วม (Joint Live Leaders)' : 'ผู้นำคะแนนสด (Live Leader)');
-          if (!isWeekly) {
-            badgeTitle = isFinished ? 'คะแนนสูงสุดประจำสัปดาห์ (Top Scorer)' : 'ผู้นำคะแนนสดประจำสัปดาห์ (Live Leader)';
+            gwData.results.forEach(t => {
+              if (t.captain && t.captain !== '-') {
+                const cName = t.captain.replace(/\s*\(C\)/gi, '').trim();
+                captainCounts[cName] = (captainCounts[cName] || 0) + 1;
+              }
+              if (t.chip) {
+                const ch = t.chip.toUpperCase();
+                chipCounts[ch] = (chipCounts[ch] || 0) + 1;
+              }
+              if (t.hits > 0) {
+                totalHitsCount++;
+                totalHitsPoints += t.hits;
+              }
+            });
+
+            const sortedCaptains = Object.entries(captainCounts).sort((a, b) => b[1] - a[1]).slice(0, 3);
+            const topCaptainsText = sortedCaptains.map(([name, cnt]) => `${name} (${cnt})`).join(', ') || '-';
+            const chipsList = Object.entries(chipCounts).map(([ch, cnt]) => `${ch} (${cnt})`).join(', ') || 'ไม่มีทีมเปิดชิป';
+            const hitsText = totalHitsCount > 0 ? `${totalHitsCount} ทีม (-${totalHitsPoints} pts)` : 'ไม่มีทีมเสียแต้มลบ';
+
+            championCard.innerHTML = `
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-indigo-200 bg-indigo-50/25 shadow-sm relative overflow-hidden">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-indigo-700 font-display">
+                        พรีวิวสัปดาห์การแข่งขัน (GAMEWEEK PREVIEW)
+                      </span>
+                      <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200">รอคิกออฟ</span>
+                    </div>
+                    <h2 class="text-lg sm:text-2xl font-bold text-slate-900 tracking-tight mt-0.5">Gameweek ${this.selectedGW} ส่งรายชื่อเรียบร้อยแล้ว</h2>
+                    <p class="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">รอการแข่งขันคู่แรกเริ่มเตะ • สถิติการจัดทีมและวางหมากในลีก</p>
+                  </div>
+
+                  <div class="w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 border-slate-100 sm:border-transparent flex items-center justify-start sm:justify-end gap-3 text-left sm:text-right">
+                    <div>
+                      <span class="text-[10px] sm:text-xs text-slate-500 uppercase font-bold font-display block">จำนวนทีมในลีก</span>
+                      <span class="text-xl sm:text-2xl font-black text-slate-900 font-display">${gwData.results.length} <span class="text-xs font-bold text-slate-500">ทีม</span></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tactical Grid for Pre-Match -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-3.5 pt-3 border-t border-indigo-100 text-xs">
+                  <div class="bg-white/80 rounded-xl p-2.5 border border-indigo-100/80">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display block">กัปตันยอดฮิต (Top Captains)</span>
+                    <span class="font-bold text-slate-900 text-xs mt-0.5 block truncate">${topCaptainsText}</span>
+                  </div>
+                  <div class="bg-white/80 rounded-xl p-2.5 border border-indigo-100/80">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display block">ชิปที่ใช้งาน (Active Chips)</span>
+                    <span class="font-bold text-slate-900 text-xs mt-0.5 block truncate">${chipsList}</span>
+                  </div>
+                  <div class="bg-white/80 rounded-xl p-2.5 border border-indigo-100/80">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display block">แต้มลบย้ายตัว (Hits Taken)</span>
+                    <span class="font-bold text-slate-900 text-xs mt-0.5 block truncate">${hitsText}</span>
+                  </div>
+                </div>
+
+                <!-- Highlight Note (Borbou Style with Copy & Refresh Buttons) -->
+                <div class="mt-3 pt-3 border-t border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600">
+                  <div class="min-w-0 pr-1">
+                    <span id="current-gw-note-text" class="italic font-medium text-slate-700 leading-relaxed break-words">${currentLiveNote}</span>
+                  </div>
+                  <div class="flex items-center justify-end gap-1 flex-shrink-0 self-end sm:self-center pt-1 sm:pt-0">
+                    <span id="quote-copy-indicator" class="text-[11px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 inline-block font-display">Copied!</span>
+                    <button onclick="app.copyHighlightQuote()" class="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="คัดลอกบทวิเคราะห์ (Copy Quote)">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                    </button>
+                    <button onclick="app.regenerateLiveNote()" class="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋ (Refresh Analysis)">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          } else {
+            // Standard In-Play or Finished Spotlight Card
+            const isWeekly = (this.config.features.prize_model === 'weekly');
+            let badgeTitle = isFinished 
+              ? (isJointWinner ? 'แชมป์ร่วมประจำสัปดาห์ (Joint Weekly Winners)' : 'แชมป์ประจำสัปดาห์ (Weekly Winner)')
+              : (isJointWinner ? 'ผู้นำคะแนนสดร่วม (Joint Live Leaders)' : 'ผู้นำคะแนนสด (Live Leader)');
+            if (!isWeekly) {
+              badgeTitle = isFinished ? 'คะแนนสูงสุดประจำสัปดาห์ (Top Scorer)' : 'ผู้นำคะแนนสดประจำสัปดาห์ (Live Leader)';
+            }
+
+            const winnerNames = topWinners.length > 2 
+              ? `${topWinners[0].team_name}, ${topWinners[1].team_name} และอีก ${topWinners.length - 2} ทีม` 
+              : topWinners.map(w => w.team_name).join(' & ');
+            const managerNames = topWinners.length > 2
+              ? `${topWinners[0].player_name}, ${topWinners[1].player_name} และอีก ${topWinners.length - 2} คน`
+              : topWinners.map(w => `${w.player_name} • (C) <strong>${(w.captain || '-').replace(/\s*\(C\)/gi, '').trim()}</strong>`).join('<br/>');
+
+            championCard.innerHTML = `
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border ${isFinished ? 'border-amber-300 bg-amber-50/20' : 'border-emerald-300 bg-emerald-50/20'} shadow-sm relative overflow-hidden">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                  
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider ${isFinished ? 'text-amber-700' : 'text-emerald-700'} font-display">
+                        ${badgeTitle}
+                      </span>
+                    </div>
+                    <button onclick="app.openTeamModal(${leader.entry_id})" class="text-left group cursor-pointer block">
+                      <h2 class="text-lg sm:text-2xl font-bold text-slate-900 group-hover:text-blue-700 tracking-tight mt-0.5 transition-colors">${winnerNames}</h2>
+                    </button>
+                    <p class="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">${managerNames}</p>
+                  </div>
+
+                  <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 border-slate-100 sm:border-transparent">
+                    <div class="text-left sm:text-right">
+                      <span class="text-[10px] sm:text-xs text-slate-500 uppercase font-bold font-display block">แต้มสุทธิ (Net Pts)</span>
+                      <span class="text-2xl sm:text-3xl font-black text-slate-900 font-display">${leader.net_points} <span class="text-xs font-bold text-slate-500">pts</span></span>
+                    </div>
+                    <div class="text-right pl-3 border-l border-slate-200">
+                      <span class="text-[10px] text-slate-400 block font-display">แต้มดิบ: ${leader.points}</span>
+                      <span class="text-[10px] ${leader.hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'} block font-display">แต้มลบ: ${leader.hits > 0 ? `-${leader.hits}` : '-'}</span>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- Highlight Note (Borbou Style with Copy & Refresh Buttons) -->
+                <div class="mt-3.5 pt-3 border-t border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600">
+                  <div class="min-w-0 pr-1">
+                    <span id="current-gw-note-text" class="italic font-medium text-slate-700 leading-relaxed break-words">${currentLiveNote}</span>
+                  </div>
+                  <div class="flex items-center justify-end gap-1 flex-shrink-0 self-end sm:self-center pt-1 sm:pt-0">
+                    <span id="quote-copy-indicator" class="text-[11px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 inline-block font-display">Copied!</span>
+                    <button onclick="app.copyHighlightQuote()" class="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="คัดลอกพาดหัวบทวิเคราะห์ (Copy Quote)">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                    </button>
+                    <button onclick="app.regenerateLiveNote()" class="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋ (Refresh Analysis)">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
           }
-
-          const winnerNames = topWinners.length > 2 
-            ? `${topWinners[0].team_name}, ${topWinners[1].team_name} และอีก ${topWinners.length - 2} ทีม` 
-            : topWinners.map(w => w.team_name).join(' & ');
-          const managerNames = topWinners.length > 2
-            ? `${topWinners[0].player_name}, ${topWinners[1].player_name} และอีก ${topWinners.length - 2} คน`
-            : topWinners.map(w => `${w.player_name} • (C) <strong>${(w.captain || '-').replace(/\s*\(C\)/gi, '').trim()}</strong>`).join('<br/>');
-
-          championCard.innerHTML = `
-            <div class="glass-card rounded-2xl p-4 sm:p-5 border ${isFinished ? 'border-amber-300 bg-amber-50/20' : 'border-emerald-300 bg-emerald-50/20'} shadow-sm relative overflow-hidden">
-              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-                
-                <div>
-                  <div class="flex items-center gap-2">
-                    <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider ${isFinished ? 'text-amber-700' : 'text-emerald-700'} font-display">
-                      ${badgeTitle}
-                    </span>
-                  </div>
-                  <button onclick="app.openTeamModal(${leader.entry_id})" class="text-left group cursor-pointer block">
-                    <h2 class="text-lg sm:text-2xl font-bold text-slate-900 group-hover:text-blue-700 tracking-tight mt-0.5 transition-colors">${winnerNames}</h2>
-                  </button>
-                  <p class="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">${managerNames}</p>
-                </div>
-
-                <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 border-slate-100 sm:border-transparent">
-                  <div class="text-left sm:text-right">
-                    <span class="text-[10px] sm:text-xs text-slate-500 uppercase font-bold font-display block">แต้มสุทธิ (Net Pts)</span>
-                    <span class="text-2xl sm:text-3xl font-black text-slate-900 font-display">${leader.net_points} <span class="text-xs font-bold text-slate-500">pts</span></span>
-                  </div>
-                  <div class="text-right pl-3 border-l border-slate-200">
-                    <span class="text-[10px] text-slate-400 block font-display">แต้มดิบ: ${leader.points}</span>
-                    <span class="text-[10px] ${leader.hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'} block font-display">แต้มลบ: ${leader.hits > 0 ? `-${leader.hits}` : '-'}</span>
-                  </div>
-                </div>
-
-              </div>
-
-              <!-- Highlight Note (Borbou Style with Copy & Refresh Buttons) -->
-              <div class="mt-3.5 pt-3 border-t border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600">
-                <div class="min-w-0 pr-1">
-                  <span id="current-gw-note-text" class="italic font-medium text-slate-700 leading-relaxed break-words">${currentLiveNote}</span>
-                </div>
-                <div class="flex items-center justify-end gap-1 flex-shrink-0 self-end sm:self-center pt-1 sm:pt-0">
-                  <span id="quote-copy-indicator" class="text-[11px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 inline-block font-display">Copied!</span>
-                  <button onclick="app.copyHighlightQuote()" class="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="คัดลอกพาดหัวบทวิเคราะห์ (Copy Quote)">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                  </button>
-                  <button onclick="app.regenerateLiveNote()" class="p-1.5 text-slate-400 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer" title="สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋ (Refresh Analysis)">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          `;
         }
 
         // 2. Render Matchday Table Body
         if (matchdayBody) {
           let mHtml = '';
-          sorted.forEach((team) => {
+          sorted.forEach((team, idx) => {
             const chip = team.chip ? `<span class="chip-badge badge-${team.chip.toLowerCase()} font-display">${team.chip.toUpperCase()}</span>` : '';
             const hits = team.hits > 0 ? `<span class="text-rose-600 font-bold font-display">-${team.hits}</span>` : '<span class="text-slate-400">-</span>';
-            const isWinner = (team.rank === 1);
+            const isWinner = isStarted && (team.rank === 1);
+            const rankDisplay = isStarted ? team.rank : (idx + 1);
 
             mHtml += `
               <tr class="hover:bg-slate-50 transition-colors ${isWinner ? 'bg-emerald-50/30 font-semibold' : ''}">
-                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold ${isWinner ? 'text-emerald-700' : 'text-slate-500'}">${team.rank}</td>
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold ${isWinner ? 'text-emerald-700' : 'text-slate-500'}">${rankDisplay}</td>
                 <td class="py-2.5 px-1.5 sm:px-3 min-w-0">
                   <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-slate-600 transition-colors flex items-center gap-1.5 flex-wrap cursor-pointer">
                     <span class="break-words">${this.escapeHtml(team.team_name)}</span>
@@ -1351,7 +1505,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 </td>
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display font-medium text-slate-700 text-xs sm:text-sm">${team.points}</td>
                 <td class="py-2.5 px-1 sm:px-2 text-center text-xs sm:text-sm">${hits}</td>
-                <td class="py-2.5 px-1.5 sm:px-3 text-right font-display font-bold text-xs sm:text-sm text-emerald-700">${team.net_points}</td>
+                <td class="py-2.5 px-1.5 sm:px-3 text-right font-display font-bold text-xs sm:text-sm ${isStarted ? 'text-emerald-700' : 'text-slate-700'}">${team.net_points}</td>
               </tr>
             `;
           });
@@ -1376,14 +1530,26 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           for (let g = 1; g <= maxGW; g++) {
             const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
             if (gData && gData.results) {
-              gData.results.forEach(r => {
-                if (overallMap[r.entry_id]) {
-                  overallMap[r.entry_id].total_points += r.net_points;
-                  if (g === this.selectedGW) {
+              const gIsStarted = gData.is_started !== undefined 
+                ? Boolean(gData.is_started) 
+                : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+
+              // Only accumulate into overall total if gameweek has actually started!
+              if (gIsStarted) {
+                gData.results.forEach(r => {
+                  if (overallMap[r.entry_id]) {
+                    overallMap[r.entry_id].total_points += r.net_points;
+                  }
+                });
+              }
+
+              if (g === this.selectedGW) {
+                gData.results.forEach(r => {
+                  if (overallMap[r.entry_id]) {
                     overallMap[r.entry_id].last_gw_pts = r.net_points;
                   }
-                }
-              });
+                });
+              }
             }
           }
 
@@ -1658,17 +1824,30 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             curMonth.gw_list.forEach(gwNum => {
               const gData = this.data.gameweeks ? this.data.gameweeks[String(gwNum)] : null;
               if (gData && gData.results) {
-                gData.results.forEach(r => {
-                  if (monthlyMap[r.entry_id]) {
-                    monthlyMap[r.entry_id].gw_scores[gwNum] = r.net_points;
-                    monthlyMap[r.entry_id].month_total += r.net_points;
-                  }
-                });
+                const gIsStarted = gData.is_started !== undefined 
+                  ? Boolean(gData.is_started) 
+                  : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+
+                if (gIsStarted) {
+                  gData.results.forEach(r => {
+                    if (monthlyMap[r.entry_id]) {
+                      monthlyMap[r.entry_id].gw_scores[gwNum] = r.net_points;
+                      monthlyMap[r.entry_id].month_total += r.net_points;
+                    }
+                  });
+                }
               }
             });
           }
 
           const monthlySorted = Object.values(monthlyMap).sort((a, b) => b.month_total - a.month_total);
+          let curMonthlyRank = 1;
+          monthlySorted.forEach((t, idx) => {
+            if (idx > 0 && t.month_total < monthlySorted[idx - 1].month_total) {
+              curMonthlyRank = idx + 1;
+            }
+            t.rank = curMonthlyRank;
+          });
 
           let monthSelectorBtns = '';
           (this.config.monthly_schedule || []).forEach(m => {
@@ -1684,20 +1863,22 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           });
 
           let monthlyTableRows = '';
-          monthlySorted.forEach((t, idx) => {
-            const isLeader = (idx === 0);
+          monthlySorted.forEach((t) => {
+            const isLeader = (t.rank === 1 && t.month_total > 0);
             let scoreCols = '';
             curMonth.gw_list.forEach(gwNum => {
-              const pts = t.gw_scores[gwNum] !== undefined ? t.gw_scores[gwNum] : '-';
+              const gData = this.data.gameweeks ? this.data.gameweeks[String(gwNum)] : null;
+              const gIsStarted = gData ? (gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || (gData.results && gData.results.some(r => r.points > 0)))) : false;
+              const pts = (gIsStarted && t.gw_scores[gwNum] !== undefined) ? t.gw_scores[gwNum] : '-';
               scoreCols += `<td class="py-2.5 px-2 text-center font-display text-xs text-slate-600">${pts}</td>`;
             });
 
             monthlyTableRows += `
               <tr class="hover:bg-slate-50 transition-colors ${isLeader ? 'bg-emerald-50/30 font-semibold' : ''}">
-                <td class="py-2.5 px-2 text-center font-display font-bold ${isLeader ? 'text-emerald-600' : 'text-slate-500'}">${idx + 1}</td>
+                <td class="py-2.5 px-2 text-center font-display font-bold ${isLeader ? 'text-emerald-600' : 'text-slate-500'}">${t.rank}</td>
                 <td class="py-2.5 px-2">
-                  <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${t.team_name}</button>
-                  <div class="text-[11px] text-slate-500">${t.player_name}</div>
+                  <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${this.escapeHtml(t.team_name)}</button>
+                  <div class="text-[11px] text-slate-500">${this.escapeHtml(t.player_name)}</div>
                 </td>
                 ${scoreCols}
                 <td class="py-2.5 px-2 text-right font-display font-black text-xs sm:text-sm ${isLeader ? 'text-emerald-700 font-bold' : 'text-slate-900'}">${t.month_total}</td>

@@ -22,19 +22,27 @@ def fetch(url, retries=3, delay=1.5):
                 raise e
             time.sleep(delay * (attempt + 1))
 
-def is_gw_fixtures_finished(gw_id):
+def get_gw_fixture_status(gw_id):
     """
-    Smart Fixture-Aware Finish Check:
-    Check FPL fixtures API to verify if all fixtures for the Gameweek have finished.
-    Returns True if all fixtures have started and are finished (or provisional finished).
+    Smart Fixture-Aware Status Check:
+    Check FPL fixtures API to verify if fixtures have started or finished.
+    Returns (is_started, is_finished).
+    - is_started: True if at least one fixture has started.
+    - is_finished: True if all fixtures have started and finished (or provisionally finished).
     """
     try:
         fixtures = fetch(f'https://fantasy.premierleague.com/api/fixtures/?event={gw_id}')
         if fixtures and len(fixtures) > 0:
-            return all(f.get('started') and (f.get('finished') or f.get('finished_provisional')) for f in fixtures)
+            is_started = any(bool(f.get('started')) for f in fixtures)
+            is_finished = all(bool(f.get('started')) and (bool(f.get('finished')) or bool(f.get('finished_provisional'))) for f in fixtures)
+            return is_started, is_finished
     except Exception as e:
         print(f"Notice checking fixtures for GW {gw_id}: {e}")
-    return False
+    return False, False
+
+def is_gw_fixtures_finished(gw_id):
+    _, finished = get_gw_fixture_status(gw_id)
+    return finished
 
 def atomic_json_dump(data, file_path):
     """Safely write JSON to a temp file first, then atomically replace the target file."""
@@ -80,7 +88,7 @@ def check_data_has_changed(cached_data, new_output):
 
         for gw_str, new_gw in new_gws.items():
             cached_gw = cached_gws.get(gw_str, {})
-            if cached_gw.get("is_finished") != new_gw.get("is_finished"):
+            if cached_gw.get("is_finished") != new_gw.get("is_finished") or cached_gw.get("is_started") != new_gw.get("is_started"):
                 return True
             
             # Compare results list
@@ -143,21 +151,26 @@ def main():
     current_event = next((e for e in events if e['is_current']), events[0])
     max_gw = current_event['id']
 
-    # 2. Determine Smart Finished status for all GWs up to max_gw
+    # 2. Determine Smart Finished and Started status for all GWs up to max_gw
     gw_status_map = {}
+    gw_started_map = {}
     for gw_info in events:
         gw_id = gw_info['id']
         if gw_id <= max_gw:
             bootstrap_finished = bool(gw_info.get('finished'))
             if bootstrap_finished:
                 gw_status_map[gw_id] = True
+                gw_started_map[gw_id] = True
             else:
-                fixtures_fin = is_gw_fixtures_finished(gw_id)
+                is_started, fixtures_fin = get_gw_fixture_status(gw_id)
                 gw_status_map[gw_id] = fixtures_fin
+                gw_started_map[gw_id] = is_started or fixtures_fin
                 if fixtures_fin:
                     print(f" -> Smart Fixture Check: GW {gw_id} matches all finished! Marked as finished.")
-                else:
+                elif is_started:
                     print(f" -> GW {gw_id}: Currently LIVE in progress.")
+                else:
+                    print(f" -> GW {gw_id}: Pre-Match / Squads locked (0 matches kicked off).")
 
     # 3. Load leagues config
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -257,6 +270,7 @@ def main():
                 gameweeks_dict[str(gw_id)] = {
                     "gw": gw_id,
                     "is_finished": gw_status_map.get(gw_id, False),
+                    "is_started": gw_started_map.get(gw_id, False),
                     "results": []
                 }
 
@@ -289,6 +303,7 @@ def main():
                     if len(teams_to_fetch_gw) == 0:
                         print(f" -> Reusing cached data for League {lid} GW {gw} (Finished, {len(standings_teams)} teams)")
                         gameweeks_dict[str(gw)]["is_finished"] = True
+                        gameweeks_dict[str(gw)]["is_started"] = True
                         continue
                     else:
                         print(f" -> Reused {len(gameweeks_dict[str(gw)]['results'])} cached teams, fetching {len(teams_to_fetch_gw)} new/missing teams for League {lid} GW {gw}...")
@@ -414,6 +429,7 @@ def main():
                 gw_str = str(gw)
                 gameweeks_dict[gw_str]["results"].sort(key=lambda x: x.get("net_points", 0), reverse=True)
                 gameweeks_dict[gw_str]["is_finished"] = gw_status_map.get(gw, False)
+                gameweeks_dict[gw_str]["is_started"] = gw_started_map.get(gw, False)
 
             multi_league_output["leagues"][str(lid)] = {
                 "id": lid,
