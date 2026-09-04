@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "5 ก.ย. 2026, 03:44 น.",
-    "last_sync_iso": "2026-09-05 03:44:18"
+    "last_sync": "5 ก.ย. 2026, 04:06 น.",
+    "last_sync_iso": "2026-09-05 04:06:03"
   },
   "teams": [
     {
@@ -471,7 +471,7 @@
           "net_points": -4,
           "captain": "Haaland",
           "chip": "3xc",
-          "bench_points": 2
+          "bench_points": 4
         },
         {
           "entry_id": 2206758,
@@ -482,7 +482,7 @@
           "net_points": -4,
           "captain": "Haaland",
           "chip": null,
-          "bench_points": 1
+          "bench_points": 3
         }
       ]
     }
@@ -4783,7 +4783,7 @@
           "pos": "DEF",
           "team": "IPS",
           "team_code": 40,
-          "points": 1,
+          "points": 3,
           "is_captain": false,
           "is_vice": false
         }
@@ -5209,7 +5209,7 @@
           "pos": "DEF",
           "team": "IPS",
           "team_code": 40,
-          "points": 1,
+          "points": 3,
           "is_captain": false,
           "is_vice": false
         }
