@@ -1997,29 +1997,45 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
         for (let g = 1; g <= maxGW; g++) {
           const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
-          if (gData && gData.results && gData.is_finished) {
-            const sorted = [...gData.results].sort((a, b) => b.net_points - a.net_points);
-            const highPts = sorted[0].net_points;
-            const topWinners = sorted.filter(x => x.net_points === highPts);
-            const winCredit = 1 / topWinners.length;
+          if (gData && gData.results) {
+            const gIsStarted = gData.is_started !== undefined 
+              ? Boolean(gData.is_started) 
+              : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
 
-            sorted.forEach((r, idx) => {
-              const ts = teamStats[r.entry_id];
-              if (ts) {
-                ts.total_net += r.net_points;
-                ts.scores.push(r.net_points);
-                ts.total_hits += (r.hits || 0);
-                if (r.net_points === highPts) ts.wins += winCredit;
-                if (idx < 3) ts.top3 += 1;
+            // Cumulative transfer hits are locked in at deadline; accumulate for all started gameweeks
+            if (gIsStarted) {
+              gData.results.forEach(r => {
+                const ts = teamStats[r.entry_id];
+                if (ts) {
+                  ts.total_hits += (r.hits || 0);
+                }
+              });
+            }
 
-                if (r.net_points > highGW.score) {
-                  highGW = { score: r.net_points, team: r.team_name, gw: g };
+            // Gameweek performance records, averages, highs/lows, and wins are evaluated only for finished gameweeks
+            if (gData.is_finished) {
+              const sorted = [...gData.results].sort((a, b) => b.net_points - a.net_points);
+              const highPts = sorted[0].net_points;
+              const topWinners = sorted.filter(x => x.net_points === highPts);
+              const winCredit = 1 / topWinners.length;
+
+              sorted.forEach((r, idx) => {
+                const ts = teamStats[r.entry_id];
+                if (ts) {
+                  ts.total_net += r.net_points;
+                  ts.scores.push(r.net_points);
+                  if (r.net_points === highPts) ts.wins += winCredit;
+                  if (idx < 3) ts.top3 += 1;
+
+                  if (r.net_points > highGW.score) {
+                    highGW = { score: r.net_points, team: r.team_name, gw: g };
+                  }
+                  if (r.bench_points > bestBench.bench) {
+                    bestBench = { bench: r.bench_points, team: r.team_name, gw: g };
+                  }
                 }
-                if (r.bench_points > bestBench.bench) {
-                  bestBench = { bench: r.bench_points, team: r.team_name, gw: g };
-                }
-              }
-            });
+              });
+            }
           }
         }
 
@@ -2074,7 +2090,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
         if (tableBody) {
           let html = '';
+          let curHofRank = 1;
           sortedStats.forEach((t, idx) => {
+            if (idx > 0 && t.total_net < sortedStats[idx - 1].total_net) {
+              curHofRank++;
+            }
             const avg = (t.total_net / Math.max(t.scores.length, 1)).toFixed(1);
             const high = t.scores.length > 0 ? Math.max(...t.scores) : 0;
             const low = t.scores.length > 0 ? Math.min(...t.scores) : 0;
@@ -2083,7 +2103,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
             html += `
               <tr class="hover:bg-slate-50 transition-colors">
-                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500 whitespace-nowrap">${idx + 1}</td>
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500 whitespace-nowrap">${curHofRank}</td>
                 <td class="py-2.5 px-1.5 sm:px-3 min-w-0">
                   <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block truncate">${this.escapeHtml(t.team_name)}</button>
                   <div class="text-[10px] sm:text-[11px] text-slate-500 truncate">${this.escapeHtml(t.player_name || '')}</div>
