@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "5 ก.ย. 2026, 19:31 น.",
-    "last_sync_iso": "2026-09-05 19:31:39"
+    "last_sync": "5 ก.ย. 2026, 19:48 น.",
+    "last_sync_iso": "2026-09-05 19:48:15"
   },
   "teams": [
     {
@@ -378,9 +378,9 @@
           "entry_id": 306983,
           "team_name": "GEMINI UNITED",
           "player_name": "Micky Asawamanasak",
-          "points": 15,
+          "points": 14,
           "hits": 0,
-          "net_points": 15,
+          "net_points": 14,
           "captain": "Haaland",
           "chip": "wildcard",
           "bench_points": 3
@@ -389,9 +389,9 @@
           "entry_id": 197082,
           "team_name": "Mary Jojibana",
           "player_name": "Kavinjet Tantitanasap",
-          "points": 12,
+          "points": 11,
           "hits": 0,
-          "net_points": 12,
+          "net_points": 11,
           "captain": "Haaland",
           "chip": "wildcard",
           "bench_points": 0
@@ -4026,7 +4026,7 @@
           "pos": "FWD",
           "team": "NEW",
           "team_code": 4,
-          "points": 1,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
@@ -4594,7 +4594,7 @@
           "pos": "FWD",
           "team": "NEW",
           "team_code": 4,
-          "points": 1,
+          "points": 0,
           "is_captain": false,
           "is_vice": true
         },
