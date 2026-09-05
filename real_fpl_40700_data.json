@@ -405,7 +405,7 @@
           "net_points": 41,
           "captain": "Haaland",
           "chip": "wildcard",
-          "bench_points": 6
+          "bench_points": 5
         },
         {
           "entry_id": 5950381,
@@ -4614,7 +4614,7 @@
           "pos": "GKP",
           "team": "HUL",
           "team_code": 88,
-          "points": 2,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
