@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "5 ก.ย. 2026, 18:43 น.",
-    "last_sync_iso": "2026-09-05 18:43:30"
+    "last_sync": "5 ก.ย. 2026, 19:07 น.",
+    "last_sync_iso": "2026-09-05 19:07:43"
   },
   "teams": [
     {
@@ -389,9 +389,9 @@
           "entry_id": 197082,
           "team_name": "Mary Jojibana",
           "player_name": "Kavinjet Tantitanasap",
-          "points": 13,
+          "points": 12,
           "hits": 0,
-          "net_points": 13,
+          "net_points": 12,
           "captain": "Haaland",
           "chip": "wildcard",
           "bench_points": 0
@@ -405,17 +405,6 @@
           "net_points": 3,
           "captain": "Haaland",
           "chip": "3xc",
-          "bench_points": 0
-        },
-        {
-          "entry_id": 2189419,
-          "team_name": "1234-Ultrasmooth-",
-          "player_name": "Maew Mohawk",
-          "points": 1,
-          "hits": 0,
-          "net_points": 1,
-          "captain": "Haaland",
-          "chip": "wildcard",
           "bench_points": 0
         },
         {
@@ -452,6 +441,17 @@
           "bench_points": 0
         },
         {
+          "entry_id": 2189419,
+          "team_name": "1234-Ultrasmooth-",
+          "player_name": "Maew Mohawk",
+          "points": 0,
+          "hits": 0,
+          "net_points": 0,
+          "captain": "Haaland",
+          "chip": "wildcard",
+          "bench_points": 0
+        },
+        {
           "entry_id": 2999763,
           "team_name": "Cody Travers",
           "player_name": "Alesandro Nuyie",
@@ -463,17 +463,6 @@
           "bench_points": 0
         },
         {
-          "entry_id": 2206758,
-          "team_name": "ใครไม่พีค",
-          "player_name": "Isriya Paireepairit",
-          "points": 1,
-          "hits": 4,
-          "net_points": -3,
-          "captain": "Haaland",
-          "chip": null,
-          "bench_points": 3
-        },
-        {
           "entry_id": 1206581,
           "team_name": "TK.FPL",
           "player_name": "Teerasade Khemprasit",
@@ -483,6 +472,17 @@
           "captain": "Haaland",
           "chip": "3xc",
           "bench_points": 4
+        },
+        {
+          "entry_id": 2206758,
+          "team_name": "ใครไม่พีค",
+          "player_name": "Isriya Paireepairit",
+          "points": 0,
+          "hits": 4,
+          "net_points": -4,
+          "captain": "Haaland",
+          "chip": null,
+          "bench_points": 3
         }
       ]
     }
@@ -4389,7 +4389,7 @@
           "pos": "DEF",
           "team": "NEW",
           "team_code": 4,
-          "points": 1,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
@@ -4522,7 +4522,7 @@
           "pos": "DEF",
           "team": "NEW",
           "team_code": 4,
-          "points": 1,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
@@ -4957,7 +4957,7 @@
           "pos": "DEF",
           "team": "NEW",
           "team_code": 4,
-          "points": 1,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
