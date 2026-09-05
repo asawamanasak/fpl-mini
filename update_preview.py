@@ -429,6 +429,32 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
       color: #c7d2fe !important;
     }
 
+    /* Header League ID Badge (กล่องสีเข้มขึ้น ตัวหนังสือคมชัด) */
+    .dark #header-league-id-badge {
+      background-color: #0f172a !important;
+      color: #93c5fd !important;
+      border-color: #1e3a8a !important;
+    }
+
+    /* Live Gameweek Selector Button Pulse */
+    @keyframes liveGreenPulse {
+      0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      }
+      50% {
+        opacity: 0.75;
+        box-shadow: 0 0 10px 3px rgba(16, 185, 129, 0.5);
+      }
+    }
+    .btn-live-pulse {
+      animation: liveGreenPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    .dark .text-emerald-700 {
+      color: #34d399 !important;
+    }
+
     /* Football Pitch Player Cards in Dark Mode */
     .dark .fpl-pitch .bg-white\/90 {
       background-color: rgba(15, 23, 42, 0.92) !important;
@@ -661,7 +687,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-blue-50/30">
+                <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
                   <th class="py-2.5 px-1 sm:px-2 text-center w-7 sm:w-8">#</th>
                   <th class="py-2.5 px-1.5 sm:px-3 min-w-0">ทีม & ผู้จัดการ</th>
                   <th class="py-2.5 px-1 sm:px-3 text-center w-12 sm:w-16 text-[10px] sm:text-[11px]">GW ล่าสุด</th>
@@ -1476,12 +1502,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 badgeClass = 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 cursor-pointer';
               }
             } else if (isStarted) {
-              // Not finished, but matches started -> LIVE & Pulsing Box!
+              // Not finished, but matches started -> LIVE & Pulsing Green Button!
               statusText = 'LIVE';
               if (isSelected) {
-                badgeClass = 'bg-slate-900 text-white border-2 border-emerald-400 shadow-md cursor-pointer scale-105 animate-pulse';
+                badgeClass = 'bg-emerald-600 hover:bg-emerald-500 text-white border-2 border-emerald-300 shadow-lg shadow-emerald-900/40 cursor-pointer scale-105 btn-live-pulse font-bold';
               } else {
-                badgeClass = 'bg-emerald-50/70 text-emerald-900 border border-emerald-300 hover:bg-emerald-100 cursor-pointer animate-pulse';
+                badgeClass = 'bg-emerald-600/85 hover:bg-emerald-600 text-white border-2 border-emerald-400 shadow-md cursor-pointer btn-live-pulse font-bold';
               }
             } else {
               // Pre-match / Squads locked -> Upcoming
@@ -1738,9 +1764,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             const isWinner = isStarted && (team.rank === 1);
             const rankDisplay = isStarted ? team.rank : (idx + 1);
 
+            let rankBadge = `<span class="text-slate-500 font-bold">${rankDisplay}</span>`;
+            if (isStarted) {
+              if (team.rank === 1) rankBadge = `<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">${isJointWinner ? 'T1' : '1'}</span>`;
+              else if (team.rank === 2) rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
+              else if (team.rank === 3) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
+            }
+
             mHtml += `
-              <tr class="hover:bg-slate-50 transition-colors ${isWinner ? 'bg-emerald-50/30 font-semibold' : ''}">
-                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold ${isWinner ? 'text-emerald-700' : 'text-slate-500'}">${rankDisplay}</td>
+              <tr class="hover:bg-blue-50/40 transition-colors ${isWinner ? 'bg-blue-50/20 font-semibold' : ''}">
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-1.5 sm:px-3 min-w-0">
                   <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-slate-600 transition-colors flex items-center gap-1.5 flex-wrap cursor-pointer">
                     <span class="break-words">${this.escapeHtml(team.team_name)}</span>
