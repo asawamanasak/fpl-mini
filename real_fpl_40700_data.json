@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "5 ก.ย. 2026, 23:44 น.",
-    "last_sync_iso": "2026-09-05 23:44:02"
+    "last_sync": "6 ก.ย. 2026, 00:25 น.",
+    "last_sync_iso": "2026-09-06 00:25:28"
   },
   "teams": [
     {
@@ -405,7 +405,7 @@
           "net_points": 41,
           "captain": "Haaland",
           "chip": "wildcard",
-          "bench_points": 7
+          "bench_points": 6
         },
         {
           "entry_id": 5950381,
@@ -427,15 +427,15 @@
           "net_points": 33,
           "captain": "Haaland",
           "chip": "wildcard",
-          "bench_points": 1
+          "bench_points": 0
         },
         {
           "entry_id": 1206581,
           "team_name": "TK.FPL",
           "player_name": "Teerasade Khemprasit",
-          "points": 37,
+          "points": 36,
           "hits": 4,
-          "net_points": 33,
+          "net_points": 32,
           "captain": "Haaland",
           "chip": "3xc",
           "bench_points": 5
@@ -4490,7 +4490,7 @@
           "pos": "DEF",
           "team": "HUL",
           "team_code": 88,
-          "points": 1,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
@@ -4614,7 +4614,7 @@
           "pos": "GKP",
           "team": "HUL",
           "team_code": 88,
-          "points": 3,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -4682,7 +4682,7 @@
           "pos": "DEF",
           "team": "HUL",
           "team_code": 88,
-          "points": 1,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
