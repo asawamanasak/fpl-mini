@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "6 ก.ย. 2026, 01:07 น.",
-    "last_sync_iso": "2026-09-06 01:07:06"
+    "last_sync": "6 ก.ย. 2026, 01:12 น.",
+    "last_sync_iso": "2026-09-06 01:12:59"
   },
   "teams": [
     {
@@ -28,34 +28,14 @@
       "player_name": "Maew Mohawk"
     },
     {
-      "entry_id": 1206581,
-      "entry_name": "TK.FPL",
-      "player_name": "Teerasade Khemprasit"
-    },
-    {
-      "entry_id": 2206758,
-      "entry_name": "ใครไม่พีค",
-      "player_name": "Isriya Paireepairit"
-    },
-    {
-      "entry_id": 5660962,
-      "entry_name": "Siampathy",
-      "player_name": "Peeranat Hunthanee"
-    },
-    {
-      "entry_id": 2999763,
-      "entry_name": "Cody Travers",
-      "player_name": "Alesandro Nuyie"
-    },
-    {
       "entry_id": 197082,
       "entry_name": "Mary Jojibana",
       "player_name": "Kavinjet Tantitanasap"
     },
     {
-      "entry_id": 2191555,
-      "entry_name": "1234 Barbyu Barbyu",
-      "player_name": "Maew Mohawk"
+      "entry_id": 1206581,
+      "entry_name": "TK.FPL",
+      "player_name": "Teerasade Khemprasit"
     },
     {
       "entry_id": 5470959,
@@ -63,9 +43,29 @@
       "player_name": "pilan liu"
     },
     {
+      "entry_id": 2206758,
+      "entry_name": "ใครไม่พีค",
+      "player_name": "Isriya Paireepairit"
+    },
+    {
+      "entry_id": 2999763,
+      "entry_name": "Cody Travers",
+      "player_name": "Alesandro Nuyie"
+    },
+    {
       "entry_id": 2604490,
       "entry_name": "Leibniz FC",
       "player_name": "Ataro Munson"
+    },
+    {
+      "entry_id": 5660962,
+      "entry_name": "Siampathy",
+      "player_name": "Peeranat Hunthanee"
+    },
+    {
+      "entry_id": 2191555,
+      "entry_name": "1234 Barbyu Barbyu",
+      "player_name": "Maew Mohawk"
     }
   ],
   "gameweeks": {

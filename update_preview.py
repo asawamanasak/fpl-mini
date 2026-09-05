@@ -1823,17 +1823,31 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               // Only accumulate into overall total if gameweek has actually started!
               if (gIsStarted) {
                 gData.results.forEach(r => {
-                  if (overallMap[r.entry_id]) {
-                    overallMap[r.entry_id].total_points += r.net_points;
+                  if (!overallMap[r.entry_id]) {
+                    overallMap[r.entry_id] = {
+                      entry_id: r.entry_id,
+                      team_name: r.team_name,
+                      player_name: r.player_name,
+                      total_points: 0,
+                      last_gw_pts: 0
+                    };
                   }
+                  overallMap[r.entry_id].total_points += r.net_points;
                 });
               }
 
               if (g === this.selectedGW) {
                 gData.results.forEach(r => {
-                  if (overallMap[r.entry_id]) {
-                    overallMap[r.entry_id].last_gw_pts = r.net_points;
+                  if (!overallMap[r.entry_id]) {
+                    overallMap[r.entry_id] = {
+                      entry_id: r.entry_id,
+                      team_name: r.team_name,
+                      player_name: r.player_name,
+                      total_points: 0,
+                      last_gw_pts: 0
+                    };
                   }
+                  overallMap[r.entry_id].last_gw_pts = r.net_points;
                 });
               }
             }
@@ -1908,10 +1922,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 const prizePerWinner = weeklyAmount / winners.length;
                 const winCredit = 1 / winners.length;
                 winners.forEach(r => {
-                  if (winsCount[r.entry_id] !== undefined) {
-                    winsCount[r.entry_id] += winCredit;
-                    prizeEarnings[r.entry_id] += prizePerWinner;
+                  if (winsCount[r.entry_id] === undefined) {
+                    winsCount[r.entry_id] = 0;
+                    prizeEarnings[r.entry_id] = 0;
                   }
+                  winsCount[r.entry_id] += winCredit;
+                  prizeEarnings[r.entry_id] += prizePerWinner;
                 });
               }
             }
@@ -2116,10 +2132,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
                 if (gIsStarted) {
                   gData.results.forEach(r => {
-                    if (monthlyMap[r.entry_id]) {
-                      monthlyMap[r.entry_id].gw_scores[gwNum] = r.net_points;
-                      monthlyMap[r.entry_id].month_total += r.net_points;
+                    if (!monthlyMap[r.entry_id]) {
+                      monthlyMap[r.entry_id] = {
+                        entry_id: r.entry_id,
+                        team_name: r.team_name,
+                        player_name: r.player_name,
+                        gw_scores: {},
+                        month_total: 0
+                      };
                     }
+                    monthlyMap[r.entry_id].gw_scores[gwNum] = r.net_points;
+                    monthlyMap[r.entry_id].month_total += r.net_points;
                   });
                 }
               }
@@ -2291,10 +2314,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             // Cumulative transfer hits are locked in at deadline; accumulate for all started gameweeks
             if (gIsStarted) {
               gData.results.forEach(r => {
-                const ts = teamStats[r.entry_id];
-                if (ts) {
-                  ts.total_hits += (r.hits || 0);
+                if (!teamStats[r.entry_id]) {
+                  teamStats[r.entry_id] = {
+                    entry_id: r.entry_id,
+                    team_name: r.team_name,
+                    player_name: r.player_name,
+                    total_net: 0,
+                    scores: [],
+                    total_hits: 0,
+                    wins: 0,
+                    top3: 0
+                  };
                 }
+                teamStats[r.entry_id].total_hits += (r.hits || 0);
               });
             }
 
@@ -2306,19 +2338,29 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               const winCredit = 1 / topWinners.length;
 
               sorted.forEach((r, idx) => {
+                if (!teamStats[r.entry_id]) {
+                  teamStats[r.entry_id] = {
+                    entry_id: r.entry_id,
+                    team_name: r.team_name,
+                    player_name: r.player_name,
+                    total_net: 0,
+                    scores: [],
+                    total_hits: 0,
+                    wins: 0,
+                    top3: 0
+                  };
+                }
                 const ts = teamStats[r.entry_id];
-                if (ts) {
-                  ts.total_net += r.net_points;
-                  ts.scores.push(r.net_points);
-                  if (r.net_points === highPts) ts.wins += winCredit;
-                  if (idx < 3) ts.top3 += 1;
+                ts.total_net += r.net_points;
+                ts.scores.push(r.net_points);
+                if (r.net_points === highPts) ts.wins += winCredit;
+                if (idx < 3) ts.top3 += 1;
 
-                  if (r.net_points > highGW.score) {
-                    highGW = { score: r.net_points, team: r.team_name, gw: g };
-                  }
-                  if (r.bench_points > bestBench.bench) {
-                    bestBench = { bench: r.bench_points, team: r.team_name, gw: g };
-                  }
+                if (r.net_points > highGW.score) {
+                  highGW = { score: r.net_points, team: r.team_name, gw: g };
+                }
+                if (r.bench_points > bestBench.bench) {
+                  bestBench = { bench: r.bench_points, team: r.team_name, gw: g };
                 }
               });
             }
@@ -2381,10 +2423,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             if (idx > 0 && t.total_net < sortedStats[idx - 1].total_net) {
               curHofRank++;
             }
-            const avg = (t.total_net / Math.max(t.scores.length, 1)).toFixed(1);
-            const high = t.scores.length > 0 ? Math.max(...t.scores) : 0;
-            const low = t.scores.length > 0 ? Math.min(...t.scores) : 0;
-            const top3Rate = ((t.top3 / Math.max(t.scores.length, 1)) * 100).toFixed(0);
+            const avg = t.scores.length > 0 ? (t.total_net / t.scores.length).toFixed(1) : '-';
+            const high = t.scores.length > 0 ? Math.max(...t.scores) : '-';
+            const low = t.scores.length > 0 ? Math.min(...t.scores) : '-';
+            const top3Rate = t.scores.length > 0 ? ((t.top3 / t.scores.length) * 100).toFixed(0) : '0';
             const winsDisp = (t.wins % 1 === 0) ? t.wins : t.wins.toFixed(1);
 
             html += `

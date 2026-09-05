@@ -1,4 +1,5 @@
 import urllib.request
+import urllib.error
 import json
 import time
 import os
@@ -16,6 +17,14 @@ def fetch(url, retries=3, delay=1.5):
             req = urllib.request.Request(url, headers=headers)
             with urllib.request.urlopen(req, timeout=15) as resp:
                 return json.loads(resp.read().decode('utf-8'))
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                # 404 Not Found is deterministic; do not retry
+                raise e
+            if attempt == retries - 1:
+                print(f"Failed to fetch {url} after {retries} attempts: {e}")
+                raise e
+            time.sleep(delay * (attempt + 1))
         except Exception as e:
             if attempt == retries - 1:
                 print(f"Failed to fetch {url} after {retries} attempts: {e}")
@@ -250,20 +259,37 @@ def main():
         league_name_cfg = lcfg.get('name', 'League')
         print(f"\nProcessing League {lid} ({league_name_cfg})...")
         try:
-            league_resp = fetch(f'https://fantasy.premierleague.com/api/leagues-classic/{lid}/standings/')
-            league_name = league_resp['league']['name']
-            standings_teams = league_resp['standings']['results']
+            page = 1
+            standings_teams = []
+            league_name = league_name_cfg
+            while True:
+                league_resp = fetch(f'https://fantasy.premierleague.com/api/leagues-classic/{lid}/standings/?page_standings={page}')
+                if 'league' in league_resp and 'name' in league_resp['league']:
+                    league_name = league_resp['league']['name']
+                results = league_resp.get('standings', {}).get('results', [])
+                standings_teams.extend(results)
+                has_next = league_resp.get('standings', {}).get('has_next', False)
+                if not has_next or not results:
+                    break
+                page += 1
+
+            # Deduplicate by entry_id if needed
+            seen_entries = set()
+            unique_standings_teams = []
+            for t in standings_teams:
+                if t['entry'] not in seen_entries:
+                    seen_entries.add(t['entry'])
+                    unique_standings_teams.append(t)
+            standings_teams = unique_standings_teams
+
             cached_league = cached_data.get("leagues", {}).get(lid_str, {}) if cached_data else {}
-            if cached_league and len(cached_league.get("teams", [])) == len(standings_teams):
-                teams_list = cached_league["teams"]
-            else:
-                teams_list = []
-                for t in standings_teams:
-                    teams_list.append({
-                        "entry_id": t['entry'],
-                        "entry_name": t['entry_name'],
-                        "player_name": t['player_name']
-                    })
+            teams_list = []
+            for t in standings_teams:
+                teams_list.append({
+                    "entry_id": t['entry'],
+                    "entry_name": t['entry_name'],
+                    "player_name": t['player_name']
+                })
 
             gameweeks_dict = {}
             for gw_id in range(1, max_gw + 1):
@@ -288,12 +314,15 @@ def main():
                 has_corrupt_cache = (not cached_res) or all(r.get("points", 0) == 0 and r.get("net_points", 0) == 0 for r in cached_res)
                 
                 if not args.force and gw_is_finished and cached_gw.get("is_finished") and not has_corrupt_cache:
-                    cached_res_map = {r["entry_id"]: r for r in cached_res if (r.get("points", 0) > 0 or r.get("net_points", 0) > 0)}
+                    cached_res_map = {r["entry_id"]: r for r in cached_res if (r.get("points", 0) > 0 or r.get("net_points", 0) > 0 or f"{r['entry_id']}_{gw}" in cached_squads)}
                     
                     teams_to_fetch_gw = []
                     for t_obj in standings_teams:
                         eid = t_obj['entry']
                         s_key = f"{eid}_{gw}"
+                        if s_key in cached_squads and cached_squads[s_key] and cached_squads[s_key].get("dnp"):
+                            squads_dict[s_key] = cached_squads[s_key]
+                            continue
                         if eid in cached_res_map and s_key in cached_squads:
                             gameweeks_dict[str(gw)]["results"].append(cached_res_map[eid])
                             squads_dict[s_key] = cached_squads.get(s_key)
@@ -410,9 +439,22 @@ def main():
                             c_gw = cached_gw_data.get(str(gw), {})
                             c_res = next((r for r in c_gw.get("results", []) if r.get("entry_id") == eid), None)
                             c_sq = cached_squads.get(f"{eid}_{gw}")
+                            if c_sq and c_sq.get("dnp"):
+                                return (gw, eid, None, c_sq)
                             if c_res and c_sq:
                                 print(f" -> Recovered cached data for team {eid} GW {gw} following fetch error.")
                                 return (gw, eid, c_res, c_sq)
+                        
+                        # Resilient fallback for 404 / late joiner / missing event picks (did not play)
+                        if "404" in str(err) or "Not Found" in str(err):
+                            print(f" -> Team {eid} was not active in GW {gw} (404/joined late). Marking as DNP.")
+                            dnp_squad = {
+                                "dnp": True,
+                                "starting": [],
+                                "bench": [],
+                                "auto_subs": []
+                            }
+                            return (gw, eid, None, dnp_squad)
                         return None
 
                 with ThreadPoolExecutor(max_workers=8) as executor:
@@ -421,8 +463,10 @@ def main():
                 for res in fetched_results:
                     if res:
                         gw, eid, result_item, squad_item = res
-                        gameweeks_dict[str(gw)]["results"].append(result_item)
-                        squads_dict[f"{eid}_{gw}"] = squad_item
+                        if result_item:
+                            gameweeks_dict[str(gw)]["results"].append(result_item)
+                        if squad_item:
+                            squads_dict[f"{eid}_{gw}"] = squad_item
 
             # Sort and finalize all gameweeks results
             for gw in range(1, max_gw + 1):
