@@ -20,14 +20,46 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
     last_sync_str = str(multi_data.get("last_sync") or "31 ส.ค. 2026, 22:30 น.")
 
     html_template = """<!DOCTYPE html>
-<html lang="th" class="h-full bg-slate-50">
+<html lang="th" class="h-full bg-slate-50 dark:bg-slate-950 transition-colors duration-150">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>FPL Dashboard - มินิลีกแฟนตาซี</title>
   
+  <script>
+    (function() {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var urlTheme = params.get('theme');
+        var savedTheme = localStorage.getItem('fpl_theme');
+        var systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var shouldBeDark = (urlTheme === 'dark') || (!urlTheme && (savedTheme === 'dark' || (!savedTheme && systemDark)));
+        if (urlTheme === 'light') shouldBeDark = false;
+
+        if (shouldBeDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {}
+    })();
+
+    window.toggleThemeFallback = function() {
+      var isDark = document.documentElement.classList.toggle('dark');
+      try {
+        localStorage.setItem('fpl_theme', isDark ? 'dark' : 'light');
+      } catch (e) {}
+      if (window.app && window.app.updateThemeIcons) {
+        window.app.updateThemeIcons(isDark);
+      }
+    };
+  </script>
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @variant dark (&:where(.dark, .dark *));
+  </style>
 
   <style>
     /* Sukhumvit Set Font-Face Declarations */
@@ -237,6 +269,177 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
     .badge-bboost, .badge-bench_boost { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
     .badge-freehit { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
     .badge-wildcard { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+
+    /* ==================== DARK MODE THEME ==================== */
+    html.dark {
+      color-scheme: dark;
+    }
+
+    .dark body {
+      background-color: #0b1120 !important;
+      color: #f1f5f9 !important;
+    }
+
+    .dark header {
+      background-color: rgba(15, 23, 42, 0.95) !important;
+      border-color: #1e293b !important;
+    }
+
+    .dark .glass-card {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .dark .border-slate-200,
+    .dark .border-slate-100,
+    .dark .border-slate-200\/80 {
+      border-color: #334155 !important;
+    }
+
+    .dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+    .dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+      border-color: #334155 !important;
+    }
+
+    .dark .bg-slate-50,
+    .dark .bg-slate-50\/50,
+    .dark .bg-slate-100,
+    .dark .bg-slate-100\/90 {
+      background-color: #0f172a !important;
+    }
+
+    .dark .bg-white {
+      background-color: #1e293b !important;
+    }
+
+    .dark .text-slate-900 {
+      color: #f8fafc !important;
+    }
+
+    .dark .text-slate-800 {
+      color: #e2e8f0 !important;
+    }
+
+    .dark .text-slate-700 {
+      color: #cbd5e1 !important;
+    }
+
+    .dark .text-slate-600 {
+      color: #94a3b8 !important;
+    }
+
+    .dark .text-slate-500 {
+      color: #94a3b8 !important;
+    }
+
+    .dark .hover\:bg-slate-50:hover,
+    .dark .hover\:bg-slate-100:hover {
+      background-color: #334155 !important;
+    }
+
+    .dark .hover\:text-slate-900:hover {
+      color: #ffffff !important;
+    }
+
+    .dark .hover\:text-blue-700:hover {
+      color: #60a5fa !important;
+    }
+
+    .dark .text-blue-900 {
+      color: #93c5fd !important;
+    }
+
+    .dark .bg-blue-50\/20 {
+      background-color: rgba(30, 58, 138, 0.25) !important;
+    }
+
+    .dark .hover\:bg-blue-50\/40:hover {
+      background-color: rgba(30, 58, 138, 0.45) !important;
+    }
+
+    .dark .scrollbar-thin::-webkit-scrollbar-track {
+      background: #0f172a !important;
+    }
+
+    .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+      background: #334155 !important;
+    }
+
+    .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+      background: #475569 !important;
+    }
+
+    /* Modals & Dropdowns in Dark Mode */
+    .dark #team-modal-content,
+    .dark #summary-modal-content,
+    .dark #text-summary-modal > div:last-child,
+    .dark #team-modal > div:last-child {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      color: #f8fafc !important;
+    }
+
+    .dark #team-modal .sticky.top-0 {
+      background-color: rgba(30, 41, 59, 0.95) !important;
+      border-color: #334155 !important;
+    }
+
+    .dark #league-dropdown-menu {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .dark #league-dropdown-menu button:hover {
+      background-color: #334155 !important;
+    }
+
+    .dark textarea#text-summary-content {
+      background-color: #0f172a !important;
+      color: #e2e8f0 !important;
+      border-color: #334155 !important;
+    }
+
+    /* Live note / Spotlight preview in Dark Mode */
+    .dark .bg-amber-50,
+    .dark .bg-amber-50\/80,
+    .dark .bg-amber-50\/20 {
+      background-color: rgba(120, 53, 15, 0.25) !important;
+      border-color: rgba(217, 119, 6, 0.4) !important;
+    }
+    .dark .text-amber-900,
+    .dark .text-amber-800 {
+      color: #fde68a !important;
+    }
+
+    .dark .bg-emerald-50 {
+      background-color: rgba(6, 78, 59, 0.3) !important;
+      border-color: rgba(16, 185, 129, 0.4) !important;
+    }
+    .dark .text-emerald-900 {
+      color: #a7f3d0 !important;
+    }
+
+    .dark .bg-indigo-50 {
+      background-color: rgba(49, 46, 129, 0.3) !important;
+      border-color: rgba(99, 102, 241, 0.4) !important;
+    }
+    .dark .text-indigo-900 {
+      color: #c7d2fe !important;
+    }
+
+    /* Football Pitch Player Cards in Dark Mode */
+    .dark .fpl-pitch .bg-white\/90 {
+      background-color: rgba(15, 23, 42, 0.92) !important;
+      color: #f8fafc !important;
+    }
+    .dark .fpl-pitch .text-slate-900 {
+      color: #f8fafc !important;
+    }
+    .dark .fpl-pitch .text-slate-500 {
+      color: #94a3b8 !important;
+    }
   </style>
 </head>
 <body class="h-full flex flex-col selection:bg-slate-900 selection:text-white" onclick="app && app.closeLeagueDropdownIfClickedOutside(event)">
@@ -311,6 +514,24 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           <span id="header-gw-status">Gameweek 2 กำลังแข่งขัน (Live)</span>
         </div>
 
+        <!-- Dark Mode Toggle Button -->
+        <button 
+          id="btn-theme-toggle"
+          onclick="window.app ? window.app.toggleTheme() : (window.toggleThemeFallback && window.toggleThemeFallback())"
+          class="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all shadow-2xs active:scale-95 flex-shrink-0 cursor-pointer"
+          title="สลับโหมดสว่าง / โหมดมืด (Dark Mode)"
+          aria-label="Toggle Dark Mode"
+        >
+          <!-- Moon icon (shows in light mode) -->
+          <svg id="theme-icon-moon" class="w-4 h-4 block dark:hidden text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+          </svg>
+          <!-- Sun icon (shows in dark mode) -->
+          <svg id="theme-icon-sun" class="w-4 h-4 hidden dark:block text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+        </button>
+
         <button 
           id="btn-text-summary"
           onclick="window.app ? window.app.shareCurrentGameweek() : shareCurrentGameweekFallback()"
@@ -329,33 +550,33 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
       <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto touch-scroll no-scrollbar py-1.5 sm:py-2">
         <button 
           data-tab-target="gameweek-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white"
         >
           LIVE
         </button>
         <button 
           id="tab-btn-prizes"
           data-tab-target="prizes-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 border border-transparent hover:text-slate-900 hover:bg-slate-100"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
         >
           สรุปรางวัล
         </button>
         <button 
           data-tab-target="hall-of-fame-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 border border-transparent hover:text-slate-900 hover:bg-slate-100"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
         >
           Hall of Fame
         </button>
         <button 
           id="tab-btn-cup"
           data-tab-target="cup-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 border border-transparent hover:text-slate-900 hover:bg-slate-100"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
         >
           CUP
         </button>
         <button 
           data-tab-target="rules-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 border border-transparent hover:text-slate-900 hover:bg-slate-100"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
         >
           กติกาของลีก
         </button>
@@ -954,6 +1175,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
       }
 
       init() {
+        this.initTheme();
         this.renderLeagueDropdown();
         this.updateHeaderInfo();
         this.initTabNavigation();
@@ -962,6 +1184,37 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           this.switchTab(this.activeTab);
         }
         this.initVisitorCounter();
+      }
+
+      initTheme() {
+        const isDark = document.documentElement.classList.contains('dark');
+        this.updateThemeIcons(isDark);
+      }
+
+      toggleTheme() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        try {
+          localStorage.setItem('fpl_theme', isDark ? 'dark' : 'light');
+        } catch (e) {}
+        this.updateThemeIcons(isDark);
+      }
+
+      updateThemeIcons(isDark) {
+        const moonIcon = document.getElementById('theme-icon-moon');
+        const sunIcon = document.getElementById('theme-icon-sun');
+        if (moonIcon && sunIcon) {
+          if (isDark) {
+            moonIcon.classList.add('hidden');
+            moonIcon.classList.remove('block');
+            sunIcon.classList.remove('hidden');
+            sunIcon.classList.add('block');
+          } else {
+            moonIcon.classList.remove('hidden');
+            moonIcon.classList.add('block');
+            sunIcon.classList.add('hidden');
+            sunIcon.classList.remove('block');
+          }
+        }
       }
 
       escapeHtml(str) {
@@ -1173,8 +1426,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         document.querySelectorAll('.tab-nav-btn').forEach(btn => {
           const isTarget = btn.getAttribute('data-tab-target') === target;
           btn.className = isTarget 
-            ? 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs'
-            : 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 border border-transparent hover:text-slate-900 hover:bg-slate-100';
+            ? 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white'
+            : 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800';
         });
 
         this.renderCurrentTab();
