@@ -413,9 +413,31 @@
           "player_name": "Athit Rattanawipapong",
           "points": 3,
           "hits": 0,
-          "net_points": 3,
+          "net_points": 12,
           "captain": "Haaland",
           "chip": "3xc",
+          "bench_points": 3
+        },
+        {
+          "entry_id": 5950381,
+          "team_name": "SUN-KUNG-JI",
+          "player_name": "Athit Rattanawipapong",
+          "points": 6,
+          "hits": 0,
+          "net_points": 6,
+          "captain": "Haaland",
+          "chip": "3xc",
+          "bench_points": 2
+        },
+        {
+          "entry_id": 2189419,
+          "team_name": "1234-Ultrasmooth-",
+          "player_name": "Maew Mohawk",
+          "points": 6,
+          "hits": 0,
+          "net_points": 6,
+          "captain": "Haaland",
+          "chip": "wildcard",
           "bench_points": 0
         },
         {
@@ -3954,7 +3976,7 @@
           "pos": "DEF",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -4035,7 +4057,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 2,
           "is_captain": true,
           "is_vice": false
         }
@@ -4132,7 +4154,7 @@
           "pos": "MID",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -4177,7 +4199,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 3,
           "is_captain": true,
           "is_vice": false
         }
@@ -4206,7 +4228,7 @@
           "pos": "DEF",
           "team": "COV",
           "team_code": 9,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -4215,7 +4237,7 @@
           "pos": "DEF",
           "team": "COV",
           "team_code": 9,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         }
@@ -4310,7 +4332,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 3,
           "is_captain": true,
           "is_vice": false
         },
@@ -4339,7 +4361,7 @@
           "pos": "DEF",
           "team": "COV",
           "team_code": 9,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -4348,7 +4370,7 @@
           "pos": "DEF",
           "team": "COV",
           "team_code": 9,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -4407,7 +4429,7 @@
           "pos": "MID",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -4452,7 +4474,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 2,
           "is_captain": true,
           "is_vice": false
         },
@@ -4567,7 +4589,7 @@
           "pos": "MID",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -4603,7 +4625,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 2,
           "is_captain": true,
           "is_vice": false
         }
@@ -4700,7 +4722,7 @@
           "pos": "MID",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -4727,7 +4749,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 3,
           "is_captain": true,
           "is_vice": false
         },
@@ -5029,7 +5051,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 2,
           "is_captain": true,
           "is_vice": false
         }
@@ -5067,7 +5089,7 @@
           "pos": "DEF",
           "team": "COV",
           "team_code": 9,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         }
@@ -5117,7 +5139,7 @@
           "pos": "MID",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -5162,7 +5184,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 2,
           "is_captain": true,
           "is_vice": false
         },
@@ -5232,7 +5254,7 @@
           "pos": "DEF",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -5304,7 +5326,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 2,
           "is_captain": true,
           "is_vice": false
         },
@@ -5446,7 +5468,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 3,
           "is_captain": true,
           "is_vice": false
         },
@@ -5561,7 +5583,7 @@
           "pos": "MID",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -5597,7 +5619,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 0,
+          "points": 2,
           "is_captain": true,
           "is_vice": false
         }
@@ -5626,7 +5648,7 @@
           "pos": "DEF",
           "team": "COV",
           "team_code": 9,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
