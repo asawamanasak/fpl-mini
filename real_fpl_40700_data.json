@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "6 ก.ย. 2026, 23:07 น.",
-    "last_sync_iso": "2026-09-06 23:07:12"
+    "last_sync": "6 ก.ย. 2026, 23:28 น.",
+    "last_sync_iso": "2026-09-06 23:28:15"
   },
   "teams": [
     {
@@ -378,9 +378,9 @@
           "entry_id": 306983,
           "team_name": "GEMINI UNITED",
           "player_name": "Micky Asawamanasak",
-          "points": 54,
+          "points": 53,
           "hits": 0,
-          "net_points": 54,
+          "net_points": 53,
           "captain": "Haaland",
           "chip": "wildcard",
           "bench_points": 10
@@ -422,9 +422,9 @@
           "entry_id": 2189419,
           "team_name": "1234-Ultrasmooth-",
           "player_name": "Maew Mohawk",
-          "points": 47,
+          "points": 46,
           "hits": 0,
-          "net_points": 47,
+          "net_points": 46,
           "captain": "Haaland",
           "chip": "wildcard",
           "bench_points": 6
@@ -441,17 +441,6 @@
           "bench_points": 4
         },
         {
-          "entry_id": 5950381,
-          "team_name": "SUN-KUNG-JI",
-          "player_name": "Athit Rattanawipapong",
-          "points": 45,
-          "hits": 0,
-          "net_points": 45,
-          "captain": "Haaland",
-          "chip": "3xc",
-          "bench_points": 7
-        },
-        {
           "entry_id": 2999763,
           "team_name": "Cody Travers",
           "player_name": "Alesandro Nuyie",
@@ -461,6 +450,17 @@
           "captain": "Haaland",
           "chip": null,
           "bench_points": 12
+        },
+        {
+          "entry_id": 5950381,
+          "team_name": "SUN-KUNG-JI",
+          "player_name": "Athit Rattanawipapong",
+          "points": 44,
+          "hits": 0,
+          "net_points": 44,
+          "captain": "Haaland",
+          "chip": "3xc",
+          "bench_points": 7
         },
         {
           "entry_id": 5660962,
@@ -4159,7 +4159,7 @@
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 1,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
@@ -4283,7 +4283,7 @@
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 1,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
@@ -4425,7 +4425,7 @@
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 1,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
