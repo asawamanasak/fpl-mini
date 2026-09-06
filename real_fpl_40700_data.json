@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "7 ก.ย. 2026, 00:25 น.",
-    "last_sync_iso": "2026-09-07 00:25:59"
+    "last_sync": "7 ก.ย. 2026, 00:43 น.",
+    "last_sync_iso": "2026-09-07 00:43:25"
   },
   "teams": [
     {
@@ -349,7 +349,7 @@
     },
     "3": {
       "gw": 3,
-      "is_finished": false,
+      "is_finished": true,
       "is_started": true,
       "results": [
         {
