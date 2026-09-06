@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "6 ก.ย. 2026, 21:27 น.",
-    "last_sync_iso": "2026-09-06 21:27:08"
+    "last_sync": "6 ก.ย. 2026, 21:44 น.",
+    "last_sync_iso": "2026-09-06 21:44:26"
   },
   "teams": [
     {
@@ -378,9 +378,9 @@
           "entry_id": 73489,
           "team_name": "Some might say",
           "player_name": "FAme Pakviwat",
-          "points": 53,
+          "points": 56,
           "hits": 0,
-          "net_points": 53,
+          "net_points": 56,
           "captain": "Haaland",
           "chip": "3xc",
           "bench_points": 13
@@ -482,7 +482,7 @@
           "net_points": 31,
           "captain": "Haaland",
           "chip": null,
-          "bench_points": 12
+          "bench_points": 13
         }
       ]
     }
@@ -3945,7 +3945,7 @@
           "pos": "GKP",
           "team": "MUN",
           "team_code": 1,
-          "points": 7,
+          "points": 10,
           "is_captain": false,
           "is_vice": false
         },
@@ -5191,7 +5191,7 @@
           "pos": "DEF",
           "team": "MUN",
           "team_code": 1,
-          "points": 6,
+          "points": 7,
           "is_captain": false,
           "is_vice": false
         },
