@@ -1292,16 +1292,35 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
         } catch (e) {}
 
-        // Update clean URL
-        if (window.history && window.history.replaceState) {
-          if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
-            const isGitHubPages = window.location.pathname.includes('/fpl-mini');
-            const basePath = isGitHubPages ? '/fpl-mini/' : '/';
-            window.history.replaceState(null, '', basePath + this.activeLeagueId);
-          } else {
-            const newUrl = window.location.pathname.replace(/\/\d+\/index\.html/, '') + '?league=' + this.activeLeagueId;
-            window.history.replaceState(null, '', newUrl);
+        // Safely update clean URL without ever breaking script execution
+        try {
+          if (window.history && window.history.replaceState) {
+            if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+              const isGitHubPages = window.location.pathname.includes('/fpl-mini');
+              const basePath = isGitHubPages ? '/fpl-mini/' : '/';
+              const configuredIds = Object.keys(this.configs || {});
+              const currentInSubdir = configuredIds.some(lid => window.location.pathname.includes('/' + lid));
+
+              if (currentInSubdir) {
+                let newPath = window.location.pathname;
+                configuredIds.forEach(lid => {
+                  newPath = newPath.replace(new RegExp('/' + lid + '(/index\\.html|/)?$'), '/' + this.activeLeagueId + '/');
+                });
+                window.history.replaceState(null, '', newPath);
+              } else {
+                window.history.replaceState(null, '', basePath + '?league=' + this.activeLeagueId);
+              }
+            } else {
+              // Local file:// protocol: never strip directories or trigger SecurityError
+              const currentPath = window.location.pathname;
+              window.history.replaceState(null, '', currentPath + '?league=' + this.activeLeagueId);
+            }
           }
+        } catch (e) {
+          console.warn('replaceState skipped:', e);
+          try {
+            window.location.hash = this.activeLeagueId;
+          } catch (err) {}
         }
 
         const menu = document.getElementById('league-dropdown-menu');
@@ -2592,9 +2611,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const isGk = (p.pos === 'GKP');
         const teamCode = p.team_code || FPL_TEAM_CODES[p.team] || 0;
         const suffix = isGk ? '_1-66.webp' : '-66.webp';
+
+        // For HTTP/HTTPS, compute root-relative URL for 100% rock-solid asset resolution
+        if (window.location && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
+          const isGitHubPages = window.location.pathname.includes('/fpl-mini');
+          const basePath = isGitHubPages ? '/fpl-mini/' : '/';
+          return `${basePath}images/shirts/shirt_${teamCode}${suffix}`;
+        }
+
+        // For local file:// protocol:
         const configuredIds = Object.keys(this.configs || {});
         const inSubdir = Boolean(window.location && window.location.pathname && (
-          configuredIds.some(lid => window.location.pathname.includes('/' + lid))
+          configuredIds.some(lid => window.location.pathname.includes('/' + lid + '/') || window.location.pathname.endsWith('/' + lid))
         ));
         const prefix = inSubdir ? '../' : './';
         return `${prefix}images/shirts/shirt_${teamCode}${suffix}`;
@@ -2602,9 +2630,31 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
       openTeamModal(entryId) {
         const entryIdNum = Number(entryId);
-        const teamObj = (this.data.teams || []).find(t => Number(t.entry_id) === entryIdNum) || {};
-        const gwResults = ((this.data.gameweeks || {})[String(this.selectedGW)] || {}).results || [];
-        const matchdayRes = gwResults.find(r => Number(r.entry_id) === entryIdNum) || {};
+        let teamObj = (this.data.teams || []).find(t => Number(t.entry_id) === entryIdNum);
+        if (!teamObj && this.multiData && this.multiData.leagues) {
+          for (const l of Object.values(this.multiData.leagues)) {
+            const found = (l.teams || []).find(t => Number(t.entry_id) === entryIdNum);
+            if (found) {
+              teamObj = found;
+              break;
+            }
+          }
+        }
+        teamObj = teamObj || {};
+
+        let gwResults = ((this.data.gameweeks || {})[String(this.selectedGW)] || {}).results || [];
+        let matchdayRes = gwResults.find(r => Number(r.entry_id) === entryIdNum);
+        if (!matchdayRes && this.multiData && this.multiData.leagues) {
+          for (const l of Object.values(this.multiData.leagues)) {
+            const gr = ((l.gameweeks || {})[String(this.selectedGW)] || {}).results || [];
+            const found = gr.find(r => Number(r.entry_id) === entryIdNum);
+            if (found) {
+              matchdayRes = found;
+              break;
+            }
+          }
+        }
+        matchdayRes = matchdayRes || {};
 
         const titleEl = document.getElementById('team-modal-title');
         if (titleEl) titleEl.innerText = teamObj.entry_name || matchdayRes.team_name || 'ชื่อทีม';
@@ -2627,7 +2677,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         }
 
         const squadKey = `${entryIdNum}_${this.selectedGW}`;
-        const squad = (this.data.squads || {})[squadKey];
+        let squad = (this.data.squads || {})[squadKey];
+        if (!squad && this.multiData && this.multiData.leagues) {
+          for (const l of Object.values(this.multiData.leagues)) {
+            if (l.squads && l.squads[squadKey]) {
+              squad = l.squads[squadKey];
+              break;
+            }
+          }
+        }
 
         const gkpLine = document.getElementById('pitch-line-gkp');
         const defLine = document.getElementById('pitch-line-def');
@@ -2640,7 +2698,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         if (!squad || !squad.starting || squad.starting.length === 0) {
           if (formationEl) formationEl.innerText = 'แผน: -';
           if (gkpLine) gkpLine.innerHTML = '';
-          if (defLine) defLine.innerHTML = '<div class="text-center text-white/80 py-8 font-bold text-xs w-full">ยังไม่มีข้อมูลแผนการจัดทัพในสัปดาห์นี้</div>';
+          const emptyMsg = (squad && squad.dnp) 
+            ? `ทีมนี้เข้าร่วมการแข่งขันหลังจากสัปดาห์นี้ (ไม่ได้ส่งทีมใน GW ${this.selectedGW})`
+            : 'ยังไม่มีข้อมูลแผนการจัดทัพในสัปดาห์นี้';
+          if (defLine) defLine.innerHTML = `<div class="text-center text-white/80 py-8 font-bold text-xs w-full">${emptyMsg}</div>`;
           if (midLine) midLine.innerHTML = '';
           if (fwdLine) fwdLine.innerHTML = '';
           if (benchContainer) benchContainer.innerHTML = '<div class="text-center text-slate-400 py-4 col-span-2 text-xs">ไม่มีข้อมูลตัวสำรอง</div>';
