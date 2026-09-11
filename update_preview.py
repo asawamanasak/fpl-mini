@@ -412,6 +412,29 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
     .dark .text-amber-800 {
       color: #fde68a !important;
     }
+    .dark .text-amber-700,
+    .dark .text-amber-600 {
+      color: #fbbf24 !important;
+    }
+    .dark .bg-amber-100 {
+      background-color: rgba(180, 83, 9, 0.3) !important;
+      border-color: rgba(245, 158, 11, 0.45) !important;
+    }
+    .dark .border-amber-300 {
+      border-color: rgba(245, 158, 11, 0.45) !important;
+    }
+
+    .dark .text-blue-800,
+    .dark .text-blue-700 {
+      color: #60a5fa !important;
+    }
+    .dark .bg-blue-100 {
+      background-color: rgba(30, 58, 138, 0.35) !important;
+      border-color: rgba(59, 130, 246, 0.45) !important;
+    }
+    .dark .border-blue-300 {
+      border-color: rgba(59, 130, 246, 0.45) !important;
+    }
 
     .dark .bg-emerald-50 {
       background-color: rgba(6, 78, 59, 0.3) !important;
@@ -2204,10 +2227,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
             if (isLeader) {
               rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
-              prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-800 border border-amber-300 font-display flex-shrink-0">แชมป์เดือน ${champPrize} THB</span>`;
+              prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600/50 font-display flex-shrink-0">แชมป์เดือน ${champPrize} THB</span>`;
             } else if (isRunnerUp) {
               rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
-              prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-100 text-blue-800 border border-blue-300 font-display flex-shrink-0">รองแชมป์ ${runnerPrize} THB</span>`;
+              prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-600/50 font-display flex-shrink-0">รองแชมป์ ${runnerPrize} THB</span>`;
             }
 
             let scoreCols = '';
@@ -2215,11 +2238,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               const gData = this.data.gameweeks ? this.data.gameweeks[String(gwNum)] : null;
               const gIsStarted = gData ? (gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || (gData.results && gData.results.some(r => r.points > 0)))) : false;
               const pts = (gIsStarted && t.gw_scores[gwNum] !== undefined) ? t.gw_scores[gwNum] : '-';
-              scoreCols += `<td class="py-2.5 px-2 text-center font-display text-xs text-slate-600">${pts}</td>`;
+              scoreCols += `<td class="py-2.5 px-2 text-center font-display text-xs text-slate-600 dark:text-slate-300">${pts}</td>`;
             });
 
             monthlyTableRows += `
-              <tr class="hover:bg-slate-50 transition-colors ${isLeader ? 'bg-amber-50/20 font-semibold' : (isRunnerUp ? 'bg-blue-50/20' : '')}">
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${isLeader ? 'bg-amber-50/20 font-semibold' : (isRunnerUp ? 'bg-blue-50/20' : '')}">
                 <td class="py-2.5 px-2 text-center font-display font-bold">${rankBadge}</td>
                 <td class="py-2.5 px-2">
                   <div class="flex items-center gap-1.5 flex-wrap">
@@ -2229,7 +2252,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   <div class="text-[11px] text-slate-500">${this.escapeHtml(t.player_name)}</div>
                 </td>
                 ${scoreCols}
-                <td class="py-2.5 px-2 text-right font-display font-black text-xs sm:text-sm ${isLeader ? 'text-amber-700 font-bold' : (isRunnerUp ? 'text-blue-700 font-bold' : 'text-slate-900')}">${t.month_total}</td>
+                <td class="py-2.5 px-2 text-right font-display font-black text-xs sm:text-sm ${isLeader ? 'text-amber-700 dark:text-amber-400 font-bold' : (isRunnerUp ? 'text-blue-700 dark:text-blue-400 font-bold' : 'text-slate-900 dark:text-slate-100')}">${t.month_total}</td>
               </tr>
             `;
           });
