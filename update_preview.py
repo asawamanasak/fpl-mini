@@ -2125,9 +2125,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
 
         } else {
+          const feat = (this.config && this.config.features) || {};
+          const champPrize = feat.monthly_champion_prize || 600;
+          const runnerPrize = feat.monthly_runner_up_prize || 400;
+          const totalMonthly = feat.total_monthly_budget || '10,000 THB';
+
           if (tagEl) tagEl.innerText = 'MONTHLY AWARDS (10 MONTHS) & SEASON POOL';
           if (titleEl) titleEl.innerText = 'สรุปรางวัลประจำเดือน & กองกลางการกุศล';
-          if (subEl) subEl.innerText = `รางวัลประจำเดือน เดือนละ ${this.config.features.monthly_prize_amount} THB (10 เดือน = ${this.config.features.total_monthly_budget}) • เงินเกิน 17,000 THB บริจาค รพ. 50% / สมทบรางวัล 50%`;
+          if (subEl) subEl.innerText = `รางวัลประจำเดือน: แชมป์ ${champPrize} THB • รองแชมป์ ${runnerPrize} THB (10 เดือน = ${totalMonthly}) • กองกลางรวม ${this.config.total_pool || '36,000 THB'}`;
 
           const curMonth = (this.config.monthly_schedule || []).find(m => m.id === this.selectedMonthId) || this.config.monthly_schedule[0];
           const monthlyMap = {};
@@ -2193,6 +2198,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           let monthlyTableRows = '';
           monthlySorted.forEach((t) => {
             const isLeader = (t.rank === 1 && t.month_total > 0);
+            const isRunnerUp = (t.rank === 2 && t.month_total > 0);
+            let rankBadge = `<span class="text-slate-500 font-bold">${t.rank}</span>`;
+            let prizePill = '';
+
+            if (isLeader) {
+              rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
+              prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-800 border border-amber-300 font-display flex-shrink-0">แชมป์เดือน ${champPrize} THB</span>`;
+            } else if (isRunnerUp) {
+              rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
+              prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-100 text-blue-800 border border-blue-300 font-display flex-shrink-0">รองแชมป์ ${runnerPrize} THB</span>`;
+            }
+
             let scoreCols = '';
             curMonth.gw_list.forEach(gwNum => {
               const gData = this.data.gameweeks ? this.data.gameweeks[String(gwNum)] : null;
@@ -2202,14 +2219,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             });
 
             monthlyTableRows += `
-              <tr class="hover:bg-slate-50 transition-colors ${isLeader ? 'bg-emerald-50/30 font-semibold' : ''}">
-                <td class="py-2.5 px-2 text-center font-display font-bold ${isLeader ? 'text-emerald-600' : 'text-slate-500'}">${t.rank}</td>
+              <tr class="hover:bg-slate-50 transition-colors ${isLeader ? 'bg-amber-50/20 font-semibold' : (isRunnerUp ? 'bg-blue-50/20' : '')}">
+                <td class="py-2.5 px-2 text-center font-display font-bold">${rankBadge}</td>
                 <td class="py-2.5 px-2">
-                  <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${this.escapeHtml(t.team_name)}</button>
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${this.escapeHtml(t.team_name)}</button>
+                    ${prizePill}
+                  </div>
                   <div class="text-[11px] text-slate-500">${this.escapeHtml(t.player_name)}</div>
                 </td>
                 ${scoreCols}
-                <td class="py-2.5 px-2 text-right font-display font-black text-xs sm:text-sm ${isLeader ? 'text-emerald-700 font-bold' : 'text-slate-900'}">${t.month_total}</td>
+                <td class="py-2.5 px-2 text-right font-display font-black text-xs sm:text-sm ${isLeader ? 'text-amber-700 font-bold' : (isRunnerUp ? 'text-blue-700 font-bold' : 'text-slate-900')}">${t.month_total}</td>
               </tr>
             `;
           });
@@ -2226,7 +2246,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   <div class="text-[11px] text-slate-500">สัปดาห์แข่งขัน: <strong>${m.gws}</strong></div>
                 </div>
                 <div class="mt-2 pt-2 border-t border-slate-200/80 flex items-center justify-between text-xs">
-                  <span class="text-slate-500">รางวัลประจำเดือน:</span>
+                  <span class="text-slate-500">รางวัล:</span>
                   <strong class="text-emerald-600 font-display">${m.budget}</strong>
                 </div>
               </div>
@@ -2235,24 +2255,34 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
           if (mainContainer) {
             mainContainer.innerHTML = `
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div class="glass-card rounded-2xl p-4 border border-slate-200">
                   <span class="text-[10px] uppercase font-bold text-slate-400 font-display">รางวัลประจำเดือน (10 เดือน)</span>
-                  <div class="text-xl font-black text-slate-900 mt-1 font-display">5,000 <span class="text-xs">THB</span></div>
-                  <div class="text-xs text-slate-600 mt-0.5 font-medium">เดือนละ 500 THB (ส.ค. - พ.ค.)</div>
+                  <div class="text-xl font-black text-slate-900 mt-1 font-display">10,000 <span class="text-xs">THB</span></div>
+                  <div class="text-xs text-slate-600 mt-0.5 font-medium">แชมป์ 600 / รอง 400 (ส.ค. - พ.ค.)</div>
                 </div>
 
                 <div class="glass-card rounded-2xl p-4 border border-slate-200">
-                  <span class="text-[10px] uppercase font-bold text-slate-400 font-display">รางวัลประจำฤดูกาล</span>
-                  <div class="text-xl font-black text-slate-900 mt-1 font-display">3 - 5 <span class="text-xs">รางวัล</span></div>
-                  <div class="text-xs text-slate-600 mt-0.5 font-medium">ตามยอดเงินกองกลางที่ลงสมัคร</div>
+                  <span class="text-[10px] uppercase font-bold text-slate-400 font-display">รางวัลประจำฤดูกาล (5 อันดับ)</span>
+                  <div class="text-xl font-black text-slate-900 mt-1 font-display">13,500 <span class="text-xs">THB</span></div>
+                  <div class="text-xs text-slate-600 mt-0.5 font-medium">อันดับ 1-5 (5k / 3.5k / 2.5k / 1.5k / 1k)</div>
                 </div>
 
                 <div class="glass-card rounded-2xl p-4 border border-slate-200">
-                  <span class="text-[10px] uppercase font-bold text-slate-400 font-display">เงินส่วนเกิน 17,000 THB</span>
-                  <div class="text-xl font-black text-rose-600 mt-1 font-display">50% <span class="text-xs text-slate-600">บริจาค รพ.</span></div>
-                  <div class="text-xs text-slate-600 mt-0.5 font-medium">อีก 50% สมทบรางวัลฤดูกาล</div>
+                  <span class="text-[10px] uppercase font-bold text-slate-400 font-display">แชมป์ฟุตบอลถ้วย (CUP)</span>
+                  <div class="text-xl font-black text-amber-600 mt-1 font-display">3,000 <span class="text-xs">THB</span></div>
+                  <div class="text-xs text-slate-600 mt-0.5 font-medium">วัดผลคะแนนหากตกรอบพร้อมกัน</div>
                 </div>
+
+                <div class="glass-card rounded-2xl p-4 border border-slate-200">
+                  <span class="text-[10px] uppercase font-bold text-slate-400 font-display">บริจาคการกุศล</span>
+                  <div class="text-xl font-black text-rose-600 mt-1 font-display">9,500 <span class="text-xs">THB</span></div>
+                  <div class="text-xs text-slate-600 mt-0.5 font-medium">ร่วมบริจาคทำบุญให้แก่โรงพยาบาล</div>
+                </div>
+              </div>
+
+              <div class="text-right text-[11px] text-slate-400 -mt-1 font-medium">
+                *** เงินรางวัลอาจมีการเพิ่มเติม ถ้าในระหว่างสิบเดือนของฤดูกาล มีผู้ลงเล่นประจำเดือน
               </div>
 
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
@@ -2283,7 +2313,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               </div>
 
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
-                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">กำหนดการแข่งขันประจำเดือนทั้ง 10 เดือน (งบ 5,000 THB)</h3>
+                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">กำหนดการแข่งขันประจำเดือนทั้ง 10 เดือน (งบ ${totalMonthly})</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   ${scheduleCards}
                 </div>
@@ -2520,6 +2550,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               </div>
             `;
           } else if (champPrize) {
+            const cupNote = feat.cup_rule_note || '';
             prizeCardsHtml = `
               <div class="glass-card rounded-2xl p-5 border border-slate-200">
                 <div class="flex items-center gap-3.5">
@@ -2528,6 +2559,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                     <span class="text-xs uppercase font-bold text-amber-700 font-display">MINI-LEAGUE CUP CHAMPION</span>
                     <h3 class="text-lg font-bold text-slate-900">แชมป์ลีคคัพ ${startGW ? `(เริ่ม Gameweek ${startGW})` : ''}</h3>
                     <div class="text-sm font-black text-emerald-600 font-display mt-0.5">${champPrize}</div>
+                    ${cupNote ? `<p class="text-xs text-amber-600 font-semibold mt-1">* ${cupNote}</p>` : ''}
                     ${startGW ? `<p class="text-xs text-slate-500 mt-1">* เริ่มแข่งขันใน Gameweek ${startGW} (สงวนสิทธิ์เฉพาะทีมที่ชำระค่าสมัครครบถ้วน)</p>` : ''}
                   </div>
                 </div>
