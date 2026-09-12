@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "13 ก.ย. 2026, 01:07 น.",
-    "last_sync_iso": "2026-09-13 01:07:15"
+    "last_sync": "13 ก.ย. 2026, 01:29 น.",
+    "last_sync_iso": "2026-09-13 01:29:18"
   },
   "teams": [
     {
@@ -536,6 +536,17 @@
           "bench_points": 1
         },
         {
+          "entry_id": 2189419,
+          "team_name": "1234-Ultrasmooth-",
+          "player_name": "Maew Mohawk",
+          "points": 33,
+          "hits": 0,
+          "net_points": 33,
+          "captain": "B.Fernandes",
+          "chip": null,
+          "bench_points": 1
+        },
+        {
           "entry_id": 5950381,
           "team_name": "SUN-KUNG-JI",
           "player_name": "Athit Rattanawipapong",
@@ -547,23 +558,12 @@
           "bench_points": 4
         },
         {
-          "entry_id": 2189419,
-          "team_name": "1234-Ultrasmooth-",
-          "player_name": "Maew Mohawk",
-          "points": 31,
-          "hits": 0,
-          "net_points": 31,
-          "captain": "B.Fernandes",
-          "chip": null,
-          "bench_points": 1
-        },
-        {
           "entry_id": 2604490,
           "team_name": "Leibniz FC",
           "player_name": "Ataro Munson",
-          "points": 28,
+          "points": 30,
           "hits": 0,
-          "net_points": 28,
+          "net_points": 30,
           "captain": "Haaland",
           "chip": null,
           "bench_points": 3
@@ -583,9 +583,9 @@
           "entry_id": 5470959,
           "team_name": "Anjoni Iraola",
           "player_name": "pilan liu",
-          "points": 24,
+          "points": 26,
           "hits": 0,
-          "net_points": 24,
+          "net_points": 26,
           "captain": "Isak",
           "chip": null,
           "bench_points": 10
@@ -6388,7 +6388,7 @@
           "pos": "DEF",
           "team": "EVE",
           "team_code": 11,
-          "points": 9,
+          "points": 11,
           "is_captain": false,
           "is_vice": false
         },
@@ -6672,7 +6672,7 @@
           "pos": "DEF",
           "team": "TOT",
           "team_code": 6,
-          "points": 6,
+          "points": 8,
           "is_captain": false,
           "is_vice": false
         },
@@ -7249,7 +7249,7 @@
           "pos": "DEF",
           "team": "TOT",
           "team_code": 6,
-          "points": 6,
+          "points": 8,
           "is_captain": false,
           "is_vice": false
         },
