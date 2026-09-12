@@ -61,8 +61,59 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
     @variant dark (&:where(.dark, .dark *));
   </style>
 
+  <!-- Google Fonts: Sarabun -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&display=swap" rel="stylesheet">
+
   <style>
-    /* Sukhumvit Set Font-Face Declarations */
+    /* Sarabun Font-Face Declarations */
+    @font-face {
+      font-family: 'Sarabun';
+      src: local('Sarabun'),
+           local('Sarabun Regular'),
+           url('./fonts/Sarabun-Regular.ttf') format('truetype'),
+           url('../fonts/Sarabun-Regular.ttf') format('truetype'),
+           url('https://fonts.gstatic.com/s/sarabun/v17/DtVjJx26TKEr37c9WBI.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Sarabun';
+      src: local('Sarabun Medium'),
+           url('./fonts/Sarabun-Medium.ttf') format('truetype'),
+           url('../fonts/Sarabun-Medium.ttf') format('truetype'),
+           url('https://fonts.gstatic.com/s/sarabun/v17/DtVmJx26TKEr37c9YOZqulw.ttf') format('truetype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Sarabun';
+      src: local('Sarabun SemiBold'),
+           url('./fonts/Sarabun-SemiBold.ttf') format('truetype'),
+           url('../fonts/Sarabun-SemiBold.ttf') format('truetype'),
+           url('https://fonts.gstatic.com/s/sarabun/v17/DtVmJx26TKEr37c9YMptulw.ttf') format('truetype');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Sarabun';
+      src: local('Sarabun Bold'),
+           url('./fonts/Sarabun-Bold.ttf') format('truetype'),
+           url('../fonts/Sarabun-Bold.ttf') format('truetype'),
+           url('https://fonts.gstatic.com/s/sarabun/v17/DtVmJx26TKEr37c9YK5sulw.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* Sukhumvit Set Font-Face Declarations (Fallback) */
     @font-face {
       font-family: 'Sukhumvit Set';
       src: local('Sukhumvit Set'),
@@ -112,7 +163,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
     }
 
     :root {
-      --font-family: 'Sukhumvit Set', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-family: 'Sarabun', 'Sukhumvit Set', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
     * {
