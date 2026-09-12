@@ -1269,7 +1269,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         } else {
           this.selectedGW = (!isLatestStarted && maxGW > 1) ? (maxGW - 1) : maxGW;
         }
-        this.selectedMonthId = 1;
+        const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
+        this.selectedMonthId = activeMonth ? activeMonth.id : 1;
         this.activeTab = queryTab || 'gameweek-view';
         this.liveNotesCache = {};
       }
@@ -1359,6 +1360,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         this.activeLeagueId = String(leagueId);
         this.data = this.multiData.leagues[this.activeLeagueId];
         this.config = this.configs[this.activeLeagueId];
+        const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
+        this.selectedMonthId = activeMonth ? activeMonth.id : 1;
         
         try {
           if (typeof localStorage !== 'undefined') {
@@ -1629,6 +1632,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
       selectGW(gw) {
         this.selectedGW = gw;
+        const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(gw));
+        if (activeMonth) {
+          this.selectedMonthId = activeMonth.id;
+        }
         this.renderGWSelector();
         this.renderGameweekView();
       }
@@ -2256,15 +2263,39 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             t.rank = curMonthlyRank;
           });
 
+          const curMonthGWList = curMonth.gw_list || [];
+          const curMonthIsFinished = (curMonthGWList.length > 0 && curMonthGWList.every(g => {
+            const gd = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+            return gd && gd.is_finished;
+          }));
+          const curMonthIsStarted = curMonthGWList.some(g => {
+            const gd = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+            return gd ? (gd.is_started !== undefined ? Boolean(gd.is_started) : (Boolean(gd.is_finished) || (gd.results && gd.results.some(r => r.points > 0)))) : false;
+          });
+
+          let curMonthBadge = '';
+          if (curMonthIsFinished) {
+            curMonthBadge = `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-display flex-shrink-0">จบการแข่งขันแล้ว</span>`;
+          } else if (curMonthIsStarted) {
+            curMonthBadge = `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-display flex-shrink-0 animate-pulse">กำลังแข่งขัน</span>`;
+          } else {
+            curMonthBadge = `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-600 font-display flex-shrink-0">รอการแข่งขัน</span>`;
+          }
+
           let monthSelectorBtns = '';
           (this.config.monthly_schedule || []).forEach(m => {
             const isSel = (m.id === this.selectedMonthId);
+            const mGWList = m.gw_list || [];
+            const mFinished = (mGWList.length > 0 && mGWList.every(g => {
+              const gd = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+              return gd && gd.is_finished;
+            }));
             monthSelectorBtns += `
               <button 
                 onclick="app.selectMonth(${m.id})"
                 class="flex-shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer font-display ${isSel ? 'bg-slate-900 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}"
               >
-                ${m.month.split(' ')[0]} (${m.gws})
+                ${m.month.split(' ')[0]} (${m.gws}) ${mFinished ? '✓' : ''}
               </button>
             `;
           });
@@ -2310,19 +2341,155 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
           let scheduleCards = '';
           (this.config.monthly_schedule || []).forEach(m => {
+            const gwList = m.gw_list || [];
+            let finishedGWCount = 0;
+            let startedGWCount = 0;
+
+            gwList.forEach(gNum => {
+              const gData = this.data.gameweeks ? this.data.gameweeks[String(gNum)] : null;
+              if (gData) {
+                if (gData.is_finished) finishedGWCount++;
+                const isSt = gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || (gData.results && gData.results.some(r => r.points > 0)));
+                if (isSt) startedGWCount++;
+              }
+            });
+
+            const isMonthFinished = (gwList.length > 0 && finishedGWCount === gwList.length);
+            const isMonthOngoing = (!isMonthFinished && startedGWCount > 0);
+
+            let badgeHtml = '';
+            if (isMonthFinished) {
+              badgeHtml = `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-display flex-shrink-0">จบการแข่งขันแล้ว</span>`;
+            } else if (isMonthOngoing) {
+              badgeHtml = `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-display flex-shrink-0 animate-pulse">กำลังแข่งขัน</span>`;
+            } else {
+              badgeHtml = `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-600 font-display flex-shrink-0">รอการแข่งขัน</span>`;
+            }
+
+            // Calculate team scores for this month
+            const monthTeamMap = {};
+            (this.data.teams || []).forEach(t => {
+              monthTeamMap[t.entry_id] = {
+                entry_id: t.entry_id,
+                team_name: t.entry_name,
+                player_name: t.player_name,
+                total: 0
+              };
+            });
+
+            if (startedGWCount > 0) {
+              gwList.forEach(gNum => {
+                const gData = this.data.gameweeks ? this.data.gameweeks[String(gNum)] : null;
+                if (gData && gData.results) {
+                  const isSt = gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+                  if (isSt) {
+                    gData.results.forEach(r => {
+                      if (!monthTeamMap[r.entry_id]) {
+                        monthTeamMap[r.entry_id] = { entry_id: r.entry_id, team_name: r.team_name, player_name: r.player_name, total: 0 };
+                      }
+                      monthTeamMap[r.entry_id].total += (r.net_points || 0);
+                    });
+                  }
+                }
+              });
+            }
+
+            const sortedMonthTeams = Object.values(monthTeamMap).sort((a, b) => b.total - a.total);
+
+            let winnersSummaryHtml = '';
+            if (isMonthFinished && sortedMonthTeams.length > 0 && sortedMonthTeams[0].total > 0) {
+              const topPts = sortedMonthTeams[0].total;
+              const topChamps = sortedMonthTeams.filter(t => t.total === topPts);
+
+              let champRows = '';
+              let runnerRows = '';
+              let totalPaidThisMonth = 0;
+
+              if (topChamps.length > 1) {
+                const splitAmt = (champPrize + runnerPrize) / topChamps.length;
+                totalPaidThisMonth = champPrize + runnerPrize;
+                champRows = topChamps.map(c => `
+                  <div class="flex items-center justify-between text-xs py-0.5">
+                    <div class="truncate pr-2">
+                      <span class="font-bold text-amber-700 dark:text-amber-400">🥇 แชมป์ร่วม: ${this.escapeHtml(c.team_name)}</span>
+                      <span class="text-[10px] text-slate-500">(${c.total} pts)</span>
+                    </div>
+                    <span class="font-bold font-display text-emerald-700 flex-shrink-0">${splitAmt.toLocaleString()} THB</span>
+                  </div>
+                `).join('');
+              } else {
+                const champ = topChamps[0];
+                totalPaidThisMonth += champPrize;
+                champRows = `
+                  <div class="flex items-center justify-between text-xs py-0.5">
+                    <div class="truncate pr-2">
+                      <span class="font-bold text-amber-700 dark:text-amber-400">🥇 แชมป์เดือน: ${this.escapeHtml(champ.team_name)}</span>
+                      <span class="text-[10px] text-slate-500">(${champ.total} pts)</span>
+                    </div>
+                    <span class="font-bold font-display text-emerald-700 flex-shrink-0">${champPrize.toLocaleString()} THB</span>
+                  </div>
+                `;
+
+                const secondPts = sortedMonthTeams.find(t => t.total < topPts)?.total;
+                if (secondPts !== undefined && secondPts > 0) {
+                  const topRunners = sortedMonthTeams.filter(t => t.total === secondPts);
+                  const splitRunnerAmt = runnerPrize / topRunners.length;
+                  totalPaidThisMonth += runnerPrize;
+                  runnerRows = topRunners.map(r => `
+                    <div class="flex items-center justify-between text-xs py-0.5">
+                      <div class="truncate pr-2">
+                        <span class="font-bold text-blue-700 dark:text-blue-400">🥈 รองแชมป์: ${this.escapeHtml(r.team_name)}</span>
+                        <span class="text-[10px] text-slate-500">(${r.total} pts)</span>
+                      </div>
+                      <span class="font-bold font-display text-emerald-700 flex-shrink-0">${splitRunnerAmt.toLocaleString()} THB</span>
+                    </div>
+                  `).join('');
+                }
+              }
+
+              winnersSummaryHtml = `
+                <div class="mt-2.5 pt-2.5 border-t border-slate-200/80 space-y-1">
+                  <div class="text-[10px] font-bold text-slate-500 uppercase font-display">สรุปทีมที่ได้รับเงินรางวัลประจำเดือน:</div>
+                  ${champRows}
+                  ${runnerRows}
+                  <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-dashed border-slate-200 font-bold text-slate-800">
+                    <span>ยอดเงินรางวัลรวมเดือนนี้</span>
+                    <span class="text-emerald-700 font-display">${totalPaidThisMonth.toLocaleString()} THB</span>
+                  </div>
+                </div>
+              `;
+            } else if (isMonthOngoing && sortedMonthTeams.length > 0 && sortedMonthTeams[0].total > 0) {
+              const curLead = sortedMonthTeams[0];
+              winnersSummaryHtml = `
+                <div class="mt-2.5 pt-2.5 border-t border-slate-200/80 space-y-1">
+                  <div class="text-[10px] font-bold text-emerald-700 uppercase font-display flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    ผู้นำคะแนนสดปัจจุบัน:
+                  </div>
+                  <div class="flex items-center justify-between text-xs py-0.5">
+                    <span class="font-bold text-slate-900 truncate pr-2">${this.escapeHtml(curLead.team_name)}</span>
+                    <span class="font-bold text-emerald-700 font-display flex-shrink-0">${curLead.total} pts</span>
+                  </div>
+                </div>
+              `;
+            } else {
+              winnersSummaryHtml = `
+                <div class="mt-2 text-[11px] text-slate-400 italic">
+                  รอการแข่งขันในสัปดาห์ ${m.gws}
+                </div>
+              `;
+            }
+
             scheduleCards += `
               <div class="bg-slate-50 p-3.5 sm:p-4 rounded-2xl border border-slate-200 flex flex-col justify-between">
                 <div>
-                  <div class="flex items-center justify-between mb-1">
-                    <span class="text-xs font-bold text-slate-900 font-display">${m.month}</span>
-                    <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${m.status.includes('กำลัง') ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}">${m.status}</span>
+                  <div class="flex items-center justify-between mb-1 gap-1">
+                    <span class="text-xs font-bold text-slate-900 font-display">${m.month} (${m.gws})</span>
+                    ${badgeHtml}
                   </div>
-                  <div class="text-[11px] text-slate-500">สัปดาห์แข่งขัน: <strong>${m.gws}</strong></div>
+                  <div class="text-xs text-slate-500 mt-1">งบประมาณ: <strong class="text-slate-800 font-display">${m.budget}</strong></div>
                 </div>
-                <div class="mt-2 pt-2 border-t border-slate-200/80 flex items-center justify-between text-xs">
-                  <span class="text-slate-500">รางวัล:</span>
-                  <strong class="text-emerald-600 font-display">${m.budget}</strong>
-                </div>
+                ${winnersSummaryHtml}
               </div>
             `;
           });
@@ -2360,9 +2527,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               </div>
 
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
-                <div class="pb-3 border-b border-slate-100 mb-3">
-                  <span class="text-[10px] uppercase font-bold text-slate-500 font-display">MONTHLY STANDINGS LEADERBOARD</span>
-                  <h3 class="text-sm sm:text-base font-bold text-slate-900 font-display">ตารางคะแนนประจำเดือน: ${curMonth.month}</h3>
+                <div class="flex flex-wrap items-center justify-between pb-3 border-b border-slate-100 mb-3 gap-2">
+                  <div>
+                    <span class="text-[10px] uppercase font-bold text-slate-500 font-display">MONTHLY STANDINGS LEADERBOARD</span>
+                    <h3 class="text-sm sm:text-base font-bold text-slate-900 font-display">ตารางคะแนนประจำเดือน: ${curMonth.month} (${curMonth.gws})</h3>
+                  </div>
+                  ${curMonthBadge}
                 </div>
 
                 <div class="flex space-x-1.5 overflow-x-auto touch-scroll no-scrollbar pb-2.5 mb-2 border-b border-slate-100">
