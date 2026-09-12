@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "13 ก.ย. 2026, 01:29 น.",
-    "last_sync_iso": "2026-09-13 01:29:18"
+    "last_sync": "13 ก.ย. 2026, 02:06 น.",
+    "last_sync_iso": "2026-09-13 02:06:06"
   },
   "teams": [
     {
@@ -495,9 +495,9 @@
           "entry_id": 1206581,
           "team_name": "TK.FPL",
           "player_name": "Teerasade Khemprasit",
-          "points": 48,
+          "points": 50,
           "hits": 4,
-          "net_points": 44,
+          "net_points": 46,
           "captain": "João Pedro",
           "chip": null,
           "bench_points": 1
@@ -506,9 +506,9 @@
           "entry_id": 73489,
           "team_name": "Some might say",
           "player_name": "FAme Pakviwat",
-          "points": 39,
+          "points": 42,
           "hits": 0,
-          "net_points": 39,
+          "net_points": 42,
           "captain": "Palmer",
           "chip": "wildcard",
           "bench_points": 3
@@ -517,9 +517,9 @@
           "entry_id": 2206758,
           "team_name": "ใครไม่พีค",
           "player_name": "Isriya Paireepairit",
-          "points": 39,
+          "points": 42,
           "hits": 0,
-          "net_points": 39,
+          "net_points": 42,
           "captain": "João Pedro",
           "chip": null,
           "bench_points": 2
@@ -528,9 +528,9 @@
           "entry_id": 2999763,
           "team_name": "Cody Travers",
           "player_name": "Alesandro Nuyie",
-          "points": 37,
+          "points": 40,
           "hits": 0,
-          "net_points": 37,
+          "net_points": 40,
           "captain": "João Pedro",
           "chip": null,
           "bench_points": 1
@@ -539,9 +539,9 @@
           "entry_id": 2189419,
           "team_name": "1234-Ultrasmooth-",
           "player_name": "Maew Mohawk",
-          "points": 33,
+          "points": 36,
           "hits": 0,
-          "net_points": 33,
+          "net_points": 36,
           "captain": "B.Fernandes",
           "chip": null,
           "bench_points": 1
@@ -550,9 +550,9 @@
           "entry_id": 5950381,
           "team_name": "SUN-KUNG-JI",
           "player_name": "Athit Rattanawipapong",
-          "points": 32,
+          "points": 35,
           "hits": 0,
-          "net_points": 32,
+          "net_points": 35,
           "captain": "Palmer",
           "chip": null,
           "bench_points": 4
@@ -561,9 +561,9 @@
           "entry_id": 2604490,
           "team_name": "Leibniz FC",
           "player_name": "Ataro Munson",
-          "points": 30,
+          "points": 31,
           "hits": 0,
-          "net_points": 30,
+          "net_points": 31,
           "captain": "Haaland",
           "chip": null,
           "bench_points": 3
@@ -572,9 +572,9 @@
           "entry_id": 306983,
           "team_name": "GEMINI UNITED",
           "player_name": "Micky Asawamanasak",
-          "points": 26,
+          "points": 29,
           "hits": 0,
-          "net_points": 26,
+          "net_points": 29,
           "captain": "Palmer",
           "chip": null,
           "bench_points": 9
@@ -583,20 +583,20 @@
           "entry_id": 5470959,
           "team_name": "Anjoni Iraola",
           "player_name": "pilan liu",
-          "points": 26,
+          "points": 29,
           "hits": 0,
-          "net_points": 26,
+          "net_points": 29,
           "captain": "Isak",
           "chip": null,
-          "bench_points": 10
+          "bench_points": 11
         },
         {
           "entry_id": 5660962,
           "team_name": "Siampathy",
           "player_name": "Peeranat Hunthanee",
-          "points": 24,
+          "points": 28,
           "hits": 0,
-          "net_points": 24,
+          "net_points": 28,
           "captain": "Calafiori",
           "chip": "wildcard",
           "bench_points": 7
@@ -605,9 +605,9 @@
           "entry_id": 197082,
           "team_name": "Mary Jojibana",
           "player_name": "Kavinjet Tantitanasap",
-          "points": 22,
+          "points": 26,
           "hits": 0,
-          "net_points": 22,
+          "net_points": 26,
           "captain": "Calafiori",
           "chip": null,
           "bench_points": 4
@@ -616,9 +616,9 @@
           "entry_id": 2191555,
           "team_name": "1234 Barbyu Barbyu",
           "player_name": "Maew Mohawk",
-          "points": 12,
+          "points": 16,
           "hits": 0,
-          "net_points": 12,
+          "net_points": 16,
           "captain": "Calafiori",
           "chip": null,
           "bench_points": 2
@@ -5820,7 +5820,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -5829,7 +5829,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -5856,7 +5856,7 @@
           "pos": "MID",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -5962,7 +5962,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -5971,7 +5971,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -5989,7 +5989,7 @@
           "pos": "MID",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6086,7 +6086,7 @@
           "pos": "GKP",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6095,7 +6095,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6104,7 +6104,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6228,7 +6228,7 @@
           "pos": "GKP",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6237,7 +6237,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6370,7 +6370,7 @@
           "pos": "GKP",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6379,7 +6379,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": true
         },
@@ -6406,7 +6406,7 @@
           "pos": "MID",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6512,7 +6512,7 @@
           "pos": "GKP",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6521,7 +6521,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6557,7 +6557,7 @@
           "pos": "MID",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": true
         },
@@ -6654,7 +6654,7 @@
           "pos": "GKP",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6663,7 +6663,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6699,7 +6699,7 @@
           "pos": "MID",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6782,7 +6782,7 @@
           "pos": "MID",
           "team": "SUN",
           "team_code": 56,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         }
@@ -6796,7 +6796,7 @@
           "pos": "GKP",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6823,7 +6823,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6859,7 +6859,7 @@
           "pos": "MID",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": true
         },
@@ -6938,7 +6938,7 @@
           "pos": "GKP",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6956,7 +6956,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 2,
           "is_captain": true,
           "is_vice": false
         },
@@ -6974,7 +6974,7 @@
           "pos": "MID",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -7080,7 +7080,7 @@
           "pos": "GKP",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -7089,7 +7089,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 2,
           "is_captain": true,
           "is_vice": false
         },
@@ -7143,7 +7143,7 @@
           "pos": "MID",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -7240,7 +7240,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -7364,7 +7364,7 @@
           "pos": "GKP",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -7391,7 +7391,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 2,
           "is_captain": true,
           "is_vice": false
         },
@@ -7436,7 +7436,7 @@
           "pos": "MID",
           "team": "ARS",
           "team_code": 3,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": true
         },
