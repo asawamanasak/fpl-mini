@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "12 ก.ย. 2026, 22:44 น.",
-    "last_sync_iso": "2026-09-12 22:44:19"
+    "last_sync": "12 ก.ย. 2026, 23:06 น.",
+    "last_sync_iso": "2026-09-12 23:06:45"
   },
   "teams": [
     {
@@ -495,9 +495,9 @@
           "entry_id": 1206581,
           "team_name": "TK.FPL",
           "player_name": "Teerasade Khemprasit",
-          "points": 44,
+          "points": 48,
           "hits": 4,
-          "net_points": 40,
+          "net_points": 44,
           "captain": "João Pedro",
           "chip": null,
           "bench_points": 1
@@ -558,6 +558,17 @@
           "bench_points": 2
         },
         {
+          "entry_id": 5660962,
+          "team_name": "Siampathy",
+          "player_name": "Peeranat Hunthanee",
+          "points": 24,
+          "hits": 0,
+          "net_points": 24,
+          "captain": "Calafiori",
+          "chip": "wildcard",
+          "bench_points": 7
+        },
+        {
           "entry_id": 2189419,
           "team_name": "1234-Ultrasmooth-",
           "player_name": "Maew Mohawk",
@@ -578,17 +589,6 @@
           "captain": "Calafiori",
           "chip": null,
           "bench_points": 4
-        },
-        {
-          "entry_id": 5660962,
-          "team_name": "Siampathy",
-          "player_name": "Peeranat Hunthanee",
-          "points": 22,
-          "hits": 0,
-          "net_points": 22,
-          "captain": "Calafiori",
-          "chip": "wildcard",
-          "bench_points": 7
         },
         {
           "entry_id": 2604490,
@@ -6246,7 +6246,7 @@
           "pos": "DEF",
           "team": "IPS",
           "team_code": 40,
-          "points": 10,
+          "points": 14,
           "is_captain": false,
           "is_vice": false
         },
@@ -7125,7 +7125,7 @@
           "pos": "MID",
           "team": "BOU",
           "team_code": 91,
-          "points": 2,
+          "points": 4,
           "is_captain": false,
           "is_vice": false
         },
