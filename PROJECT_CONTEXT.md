@@ -207,9 +207,10 @@ flowchart TD
   * `rollback_4` : แก้ไขการแสดงผลอันดับเวลาค้นหาทีม
   * `rollback_5` : รองรับ 3 ลีกสมบูรณ์แบบ, คำนวณอันดับ Tied Rank, แบ่งเงินรางวัลแชมป์ร่วม, ปรับ UX ตารางมือถือไม่ล้นขอบ, และตัดปุ่มดินสอแก้ไขออก
   * `rollback_6` : ยกเลิก Inner Scroll + Sticky Header Table ทั้งหมด, เปลี่ยนหัวตาราง GAMEWEEK STANDING เป็น 'คะแนนดิบ' และ '(C)'
+  * `rollback_14` : ปรับเปลี่ยนฟอนต์ของทั้งระบบเป็น Sarabun (Google Fonts + Local Fallback TTF)
 * **เครื่องมือนำทาง (`./rollback.sh`):**
   * ดูรายชื่อ rollback ทั้งหมด: `./rollback.sh list`
-  * ย้ายไปยังเวอร์ชันที่ต้องการ: `./rollback.sh go 2`, `./rollback.sh go 3`, `./rollback.sh go 5`, หรือ `./rollback.sh go 6`
+  * ย้ายไปยังเวอร์ชันที่ต้องการ: `./rollback.sh go <number>`
   * กลับมายังเวอร์ชันล่าสุด: `./rollback.sh main`
   * บันทึก milestone ใหม่: `./rollback.sh save <number>`
 
