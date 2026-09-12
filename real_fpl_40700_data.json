@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "12 ก.ย. 2026, 23:06 น.",
-    "last_sync_iso": "2026-09-12 23:06:45"
+    "last_sync": "12 ก.ย. 2026, 23:44 น.",
+    "last_sync_iso": "2026-09-12 23:44:31"
   },
   "teams": [
     {
@@ -517,9 +517,9 @@
           "entry_id": 2999763,
           "team_name": "Cody Travers",
           "player_name": "Alesandro Nuyie",
-          "points": 35,
+          "points": 36,
           "hits": 0,
-          "net_points": 35,
+          "net_points": 36,
           "captain": "João Pedro",
           "chip": null,
           "bench_points": 1
@@ -528,9 +528,9 @@
           "entry_id": 73489,
           "team_name": "Some might say",
           "player_name": "FAme Pakviwat",
-          "points": 32,
+          "points": 33,
           "hits": 0,
-          "net_points": 32,
+          "net_points": 33,
           "captain": "Palmer",
           "chip": "wildcard",
           "bench_points": 3
@@ -555,7 +555,7 @@
           "net_points": 26,
           "captain": "Palmer",
           "chip": null,
-          "bench_points": 2
+          "bench_points": 3
         },
         {
           "entry_id": 5660962,
@@ -572,12 +572,23 @@
           "entry_id": 2189419,
           "team_name": "1234-Ultrasmooth-",
           "player_name": "Maew Mohawk",
-          "points": 22,
+          "points": 23,
           "hits": 0,
-          "net_points": 22,
+          "net_points": 23,
           "captain": "B.Fernandes",
           "chip": null,
           "bench_points": 1
+        },
+        {
+          "entry_id": 2604490,
+          "team_name": "Leibniz FC",
+          "player_name": "Ataro Munson",
+          "points": 23,
+          "hits": 0,
+          "net_points": 23,
+          "captain": "Haaland",
+          "chip": null,
+          "bench_points": 3
         },
         {
           "entry_id": 197082,
@@ -591,26 +602,15 @@
           "bench_points": 4
         },
         {
-          "entry_id": 2604490,
-          "team_name": "Leibniz FC",
-          "player_name": "Ataro Munson",
-          "points": 22,
-          "hits": 0,
-          "net_points": 22,
-          "captain": "Haaland",
-          "chip": null,
-          "bench_points": 3
-        },
-        {
           "entry_id": 5470959,
           "team_name": "Anjoni Iraola",
           "player_name": "pilan liu",
-          "points": 16,
+          "points": 18,
           "hits": 0,
-          "net_points": 16,
+          "net_points": 18,
           "captain": "Isak",
           "chip": null,
-          "bench_points": 3
+          "bench_points": 4
         },
         {
           "entry_id": 2191555,
@@ -5802,7 +5802,7 @@
           "pos": "GKP",
           "team": "TOT",
           "team_code": 6,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6045,7 +6045,7 @@
           "pos": "GKP",
           "team": "TOT",
           "team_code": 6,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6442,7 +6442,7 @@
           "pos": "FWD",
           "team": "EVE",
           "team_code": 11,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6530,7 +6530,7 @@
           "pos": "DEF",
           "team": "EVE",
           "team_code": 11,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6814,7 +6814,7 @@
           "pos": "DEF",
           "team": "TOT",
           "team_code": 6,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6868,7 +6868,7 @@
           "pos": "FWD",
           "team": "EVE",
           "team_code": 11,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6897,7 +6897,7 @@
           "pos": "GKP",
           "team": "TOT",
           "team_code": 6,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -7249,7 +7249,7 @@
           "pos": "DEF",
           "team": "TOT",
           "team_code": 6,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
