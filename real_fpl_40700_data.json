@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "13 ก.ย. 2026, 23:46 น.",
-    "last_sync_iso": "2026-09-13 23:46:16"
+    "last_sync": "14 ก.ย. 2026, 00:06 น.",
+    "last_sync_iso": "2026-09-14 00:06:12"
   },
   "teams": [
     {
@@ -23,24 +23,24 @@
       "player_name": "Athit Rattanawipapong"
     },
     {
-      "entry_id": 2189419,
-      "entry_name": "1234-Ultrasmooth-",
-      "player_name": "Maew Mohawk"
-    },
-    {
       "entry_id": 1206581,
       "entry_name": "TK.FPL",
       "player_name": "Teerasade Khemprasit"
     },
     {
-      "entry_id": 2999763,
-      "entry_name": "Cody Travers",
-      "player_name": "Alesandro Nuyie"
+      "entry_id": 2189419,
+      "entry_name": "1234-Ultrasmooth-",
+      "player_name": "Maew Mohawk"
     },
     {
       "entry_id": 2206758,
       "entry_name": "ใครไม่พีค",
       "player_name": "Isriya Paireepairit"
+    },
+    {
+      "entry_id": 2999763,
+      "entry_name": "Cody Travers",
+      "player_name": "Alesandro Nuyie"
     },
     {
       "entry_id": 197082,
@@ -58,14 +58,14 @@
       "player_name": "pilan liu"
     },
     {
-      "entry_id": 2191555,
-      "entry_name": "1234 Barbyu Barbyu",
-      "player_name": "Maew Mohawk"
-    },
-    {
       "entry_id": 2604490,
       "entry_name": "Leibniz FC",
       "player_name": "Ataro Munson"
+    },
+    {
+      "entry_id": 2191555,
+      "entry_name": "1234 Barbyu Barbyu",
+      "player_name": "Maew Mohawk"
     }
   ],
   "gameweeks": {
@@ -495,21 +495,10 @@
           "entry_id": 1206581,
           "team_name": "TK.FPL",
           "player_name": "Teerasade Khemprasit",
-          "points": 90,
+          "points": 98,
           "hits": 4,
-          "net_points": 86,
+          "net_points": 94,
           "captain": "João Pedro",
-          "chip": null,
-          "bench_points": 1
-        },
-        {
-          "entry_id": 2189419,
-          "team_name": "1234-Ultrasmooth-",
-          "player_name": "Maew Mohawk",
-          "points": 80,
-          "hits": 0,
-          "net_points": 80,
-          "captain": "B.Fernandes",
           "chip": null,
           "bench_points": 1
         },
@@ -517,64 +506,75 @@
           "entry_id": 2206758,
           "team_name": "ใครไม่พีค",
           "player_name": "Isriya Paireepairit",
-          "points": 80,
+          "points": 89,
           "hits": 0,
-          "net_points": 80,
+          "net_points": 89,
           "captain": "João Pedro",
           "chip": null,
-          "bench_points": 3
+          "bench_points": 4
         },
         {
           "entry_id": 5950381,
           "team_name": "SUN-KUNG-JI",
           "player_name": "Athit Rattanawipapong",
-          "points": 79,
+          "points": 85,
           "hits": 0,
-          "net_points": 79,
+          "net_points": 85,
           "captain": "Palmer",
           "chip": null,
           "bench_points": 4
+        },
+        {
+          "entry_id": 2189419,
+          "team_name": "1234-Ultrasmooth-",
+          "player_name": "Maew Mohawk",
+          "points": 85,
+          "hits": 0,
+          "net_points": 85,
+          "captain": "B.Fernandes",
+          "chip": null,
+          "bench_points": 1
         },
         {
           "entry_id": 73489,
           "team_name": "Some might say",
           "player_name": "FAme Pakviwat",
-          "points": 77,
+          "points": 84,
           "hits": 0,
-          "net_points": 77,
+          "net_points": 84,
           "captain": "Palmer",
           "chip": "wildcard",
           "bench_points": 3
         },
         {
-          "entry_id": 306983,
-          "team_name": "GEMINI UNITED",
-          "player_name": "Micky Asawamanasak",
-          "points": 70,
-          "hits": 0,
-          "net_points": 70,
-          "captain": "Palmer",
-          "chip": null,
-          "bench_points": 8
-        },
-        {
           "entry_id": 197082,
           "team_name": "Mary Jojibana",
           "player_name": "Kavinjet Tantitanasap",
-          "points": 69,
+          "points": 78,
           "hits": 0,
-          "net_points": 69,
+          "net_points": 78,
           "captain": "Calafiori",
           "chip": null,
           "bench_points": 4
         },
         {
+          "entry_id": 306983,
+          "team_name": "GEMINI UNITED",
+          "player_name": "Micky Asawamanasak",
+          "points": 77,
+          "hits": 0,
+          "net_points": 77,
+          "captain": "Palmer",
+          "chip": null,
+          "bench_points": 19
+        },
+        {
           "entry_id": 5660962,
           "team_name": "Siampathy",
           "player_name": "Peeranat Hunthanee",
-          "points": 66,
+          "points": 74,
           "hits": 0,
-          "net_points": 66,
+          "net_points": 74,
           "captain": "Calafiori",
           "chip": "wildcard",
           "bench_points": 8
@@ -583,9 +583,9 @@
           "entry_id": 2999763,
           "team_name": "Cody Travers",
           "player_name": "Alesandro Nuyie",
-          "points": 63,
+          "points": 71,
           "hits": 0,
-          "net_points": 63,
+          "net_points": 71,
           "captain": "João Pedro",
           "chip": null,
           "bench_points": 1
@@ -594,9 +594,9 @@
           "entry_id": 5470959,
           "team_name": "Anjoni Iraola",
           "player_name": "pilan liu",
-          "points": 51,
+          "points": 59,
           "hits": 0,
-          "net_points": 51,
+          "net_points": 59,
           "captain": "Isak",
           "chip": null,
           "bench_points": 10
@@ -605,9 +605,9 @@
           "entry_id": 2191555,
           "team_name": "1234 Barbyu Barbyu",
           "player_name": "Maew Mohawk",
-          "points": 49,
+          "points": 59,
           "hits": 0,
-          "net_points": 49,
+          "net_points": 59,
           "captain": "Calafiori",
           "chip": null,
           "bench_points": 3
@@ -616,9 +616,9 @@
           "entry_id": 2604490,
           "team_name": "Leibniz FC",
           "player_name": "Ataro Munson",
-          "points": 41,
+          "points": 58,
           "hits": 0,
-          "net_points": 41,
+          "net_points": 58,
           "captain": "Haaland",
           "chip": null,
           "bench_points": 12
@@ -1053,155 +1053,6 @@
       ],
       "auto_subs": []
     },
-    "2189419_1": {
-      "starting": [
-        {
-          "name": "Raya",
-          "pos": "GKP",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 6,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Calafiori",
-          "pos": "DEF",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 9,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Shaw",
-          "pos": "DEF",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Diop",
-          "pos": "DEF",
-          "team": "IPS",
-          "team_code": 40,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "B.Fernandes",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 4,
-          "is_captain": true,
-          "is_vice": false
-        },
-        {
-          "name": "Palmer",
-          "pos": "MID",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 13,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Foden",
-          "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Mbeumo",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Tzolis",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 6,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Thiago",
-          "pos": "FWD",
-          "team": "BRE",
-          "team_code": 94,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": true
-        },
-        {
-          "name": "João Pedro",
-          "pos": "FWD",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 11,
-          "is_captain": false,
-          "is_vice": false
-        }
-      ],
-      "bench": [
-        {
-          "name": "Dubravka",
-          "pos": "GKP",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Richarlison",
-          "pos": "FWD",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Pedro Porro",
-          "pos": "DEF",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Mukiele",
-          "pos": "DEF",
-          "team": "SUN",
-          "team_code": 56,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        }
-      ],
-      "auto_subs": [
-        {
-          "entry": 2189419,
-          "element_in": 259,
-          "element_out": 533,
-          "event": 1
-        }
-      ]
-    },
     "1206581_1": {
       "starting": [
         {
@@ -1351,7 +1202,7 @@
         }
       ]
     },
-    "2999763_1": {
+    "2189419_1": {
       "starting": [
         {
           "name": "Raya",
@@ -1372,15 +1223,6 @@
           "is_vice": false
         },
         {
-          "name": "James",
-          "pos": "DEF",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
           "name": "Shaw",
           "pos": "DEF",
           "team": "MUN",
@@ -1390,43 +1232,43 @@
           "is_vice": false
         },
         {
-          "name": "O'Reilly",
+          "name": "Diop",
           "pos": "DEF",
-          "team": "MCI",
-          "team_code": 43,
+          "team": "IPS",
+          "team_code": 40,
           "points": 2,
           "is_captain": false,
           "is_vice": false
         },
         {
-          "name": "Cherki",
+          "name": "B.Fernandes",
           "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 8,
-          "is_captain": false,
+          "team": "MUN",
+          "team_code": 1,
+          "points": 4,
+          "is_captain": true,
           "is_vice": false
         },
         {
-          "name": "Ødegaard",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 11,
-          "is_captain": false,
-          "is_vice": true
-        },
-        {
-          "name": "Rogers",
+          "name": "Palmer",
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 8,
+          "points": 13,
           "is_captain": false,
           "is_vice": false
         },
         {
-          "name": "Cunha",
+          "name": "Foden",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Mbeumo",
           "pos": "MID",
           "team": "MUN",
           "team_code": 1,
@@ -1435,13 +1277,22 @@
           "is_vice": false
         },
         {
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 4,
-          "is_captain": true,
+          "name": "Tzolis",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 6,
+          "is_captain": false,
           "is_vice": false
+        },
+        {
+          "name": "Thiago",
+          "pos": "FWD",
+          "team": "BRE",
+          "team_code": 94,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": true
         },
         {
           "name": "João Pedro",
@@ -1464,6 +1315,15 @@
           "is_vice": false
         },
         {
+          "name": "Richarlison",
+          "pos": "FWD",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
           "name": "Pedro Porro",
           "pos": "DEF",
           "team": "TOT",
@@ -1473,25 +1333,23 @@
           "is_vice": false
         },
         {
-          "name": "Beto",
-          "pos": "FWD",
-          "team": "EVE",
-          "team_code": 11,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Hughes",
-          "pos": "MID",
-          "team": "CRY",
-          "team_code": 31,
+          "name": "Mukiele",
+          "pos": "DEF",
+          "team": "SUN",
+          "team_code": 56,
           "points": 0,
           "is_captain": false,
           "is_vice": false
         }
       ],
-      "auto_subs": []
+      "auto_subs": [
+        {
+          "entry": 2189419,
+          "element_in": 259,
+          "element_out": 533,
+          "event": 1
+        }
+      ]
     },
     "2206758_1": {
       "starting": [
@@ -1641,6 +1499,148 @@
           "event": 1
         }
       ]
+    },
+    "2999763_1": {
+      "starting": [
+        {
+          "name": "Raya",
+          "pos": "GKP",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 6,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Calafiori",
+          "pos": "DEF",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 9,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "James",
+          "pos": "DEF",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Shaw",
+          "pos": "DEF",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "O'Reilly",
+          "pos": "DEF",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Cherki",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Ødegaard",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 11,
+          "is_captain": false,
+          "is_vice": true
+        },
+        {
+          "name": "Rogers",
+          "pos": "MID",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Cunha",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 4,
+          "is_captain": true,
+          "is_vice": false
+        },
+        {
+          "name": "João Pedro",
+          "pos": "FWD",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 11,
+          "is_captain": false,
+          "is_vice": false
+        }
+      ],
+      "bench": [
+        {
+          "name": "Dubravka",
+          "pos": "GKP",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Pedro Porro",
+          "pos": "DEF",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Beto",
+          "pos": "FWD",
+          "team": "EVE",
+          "team_code": 11,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Hughes",
+          "pos": "MID",
+          "team": "CRY",
+          "team_code": 31,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        }
+      ],
+      "auto_subs": []
     },
     "197082_1": {
       "starting": [
@@ -2075,148 +2075,6 @@
       ],
       "auto_subs": []
     },
-    "2191555_1": {
-      "starting": [
-        {
-          "name": "Raya",
-          "pos": "GKP",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 6,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Aina",
-          "pos": "DEF",
-          "team": "NFO",
-          "team_code": 17,
-          "points": 5,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "O'Reilly",
-          "pos": "DEF",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Calafiori",
-          "pos": "DEF",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 9,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "James",
-          "pos": "DEF",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Rogers",
-          "pos": "MID",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 8,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Semenyo",
-          "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Mbeumo",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Saka",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 9,
-          "is_captain": false,
-          "is_vice": true
-        },
-        {
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 4,
-          "is_captain": true,
-          "is_vice": false
-        },
-        {
-          "name": "Richarlison",
-          "pos": "FWD",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        }
-      ],
-      "bench": [
-        {
-          "name": "Dubravka",
-          "pos": "GKP",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "George Hemmings",
-          "pos": "MID",
-          "team": "AVL",
-          "team_code": 7,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "van Ewijk",
-          "pos": "DEF",
-          "team": "COV",
-          "team_code": 9,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Kusi-Asare",
-          "pos": "FWD",
-          "team": "FUL",
-          "team_code": 54,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        }
-      ],
-      "auto_subs": []
-    },
     "2604490_1": {
       "starting": [
         {
@@ -2353,6 +2211,148 @@
           "team": "AVL",
           "team_code": 7,
           "points": -1,
+          "is_captain": false,
+          "is_vice": false
+        }
+      ],
+      "auto_subs": []
+    },
+    "2191555_1": {
+      "starting": [
+        {
+          "name": "Raya",
+          "pos": "GKP",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 6,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Aina",
+          "pos": "DEF",
+          "team": "NFO",
+          "team_code": 17,
+          "points": 5,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "O'Reilly",
+          "pos": "DEF",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Calafiori",
+          "pos": "DEF",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 9,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "James",
+          "pos": "DEF",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Rogers",
+          "pos": "MID",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Semenyo",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Mbeumo",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Saka",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 9,
+          "is_captain": false,
+          "is_vice": true
+        },
+        {
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 4,
+          "is_captain": true,
+          "is_vice": false
+        },
+        {
+          "name": "Richarlison",
+          "pos": "FWD",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        }
+      ],
+      "bench": [
+        {
+          "name": "Dubravka",
+          "pos": "GKP",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "George Hemmings",
+          "pos": "MID",
+          "team": "AVL",
+          "team_code": 7,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "van Ewijk",
+          "pos": "DEF",
+          "team": "COV",
+          "team_code": 9,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Kusi-Asare",
+          "pos": "FWD",
+          "team": "FUL",
+          "team_code": 54,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         }
@@ -2785,148 +2785,6 @@
       ],
       "auto_subs": []
     },
-    "2189419_2": {
-      "starting": [
-        {
-          "name": "Raya",
-          "pos": "GKP",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 6,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Calafiori",
-          "pos": "DEF",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 11,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Pedro Porro",
-          "pos": "DEF",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Gvardiol",
-          "pos": "DEF",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 5,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Tzolis",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "B.Fernandes",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 46,
-          "is_captain": true,
-          "is_vice": false
-        },
-        {
-          "name": "Palmer",
-          "pos": "MID",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 7,
-          "is_captain": false,
-          "is_vice": true
-        },
-        {
-          "name": "Mbeumo",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 11,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Foden",
-          "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 9,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Thiago",
-          "pos": "FWD",
-          "team": "BRE",
-          "team_code": 94,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "João Pedro",
-          "pos": "FWD",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 9,
-          "is_captain": false,
-          "is_vice": false
-        }
-      ],
-      "bench": [
-        {
-          "name": "Dubravka",
-          "pos": "GKP",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Shaw",
-          "pos": "DEF",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Richarlison",
-          "pos": "FWD",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Diop",
-          "pos": "DEF",
-          "team": "IPS",
-          "team_code": 40,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        }
-      ],
-      "auto_subs": []
-    },
     "1206581_2": {
       "starting": [
         {
@@ -3076,7 +2934,7 @@
         }
       ]
     },
-    "2999763_2": {
+    "2189419_2": {
       "starting": [
         {
           "name": "Raya",
@@ -3097,75 +2955,75 @@
           "is_vice": false
         },
         {
-          "name": "Mendy",
+          "name": "Pedro Porro",
           "pos": "DEF",
-          "team": "HUL",
-          "team_code": 88,
+          "team": "TOT",
+          "team_code": 6,
           "points": 1,
           "is_captain": false,
           "is_vice": false
         },
         {
-          "name": "O'Reilly",
+          "name": "Gvardiol",
           "pos": "DEF",
           "team": "MCI",
           "team_code": 43,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Cherki",
-          "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 14,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Ødegaard",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": true
-        },
-        {
-          "name": "Rogers",
-          "pos": "MID",
-          "team": "CHE",
-          "team_code": 8,
           "points": 5,
           "is_captain": false,
           "is_vice": false
         },
         {
-          "name": "Cunha",
+          "name": "Tzolis",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "B.Fernandes",
           "pos": "MID",
           "team": "MUN",
           "team_code": 1,
+          "points": 46,
+          "is_captain": true,
+          "is_vice": false
+        },
+        {
+          "name": "Palmer",
+          "pos": "MID",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 7,
+          "is_captain": false,
+          "is_vice": true
+        },
+        {
+          "name": "Mbeumo",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 11,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Foden",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
           "points": 9,
           "is_captain": false,
           "is_vice": false
         },
         {
-          "name": "Barry",
+          "name": "Thiago",
           "pos": "FWD",
-          "team": "EVE",
-          "team_code": 11,
+          "team": "BRE",
+          "team_code": 94,
           "points": 2,
           "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 26,
-          "is_captain": true,
           "is_vice": false
         },
         {
@@ -3198,20 +3056,20 @@
           "is_vice": false
         },
         {
-          "name": "Pedro Porro",
-          "pos": "DEF",
+          "name": "Richarlison",
+          "pos": "FWD",
           "team": "TOT",
           "team_code": 6,
-          "points": 1,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
         {
-          "name": "Hughes",
-          "pos": "MID",
-          "team": "CRY",
-          "team_code": 31,
-          "points": 0,
+          "name": "Diop",
+          "pos": "DEF",
+          "team": "IPS",
+          "team_code": 40,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         }
@@ -3354,6 +3212,148 @@
           "team": "IPS",
           "team_code": 40,
           "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        }
+      ],
+      "auto_subs": []
+    },
+    "2999763_2": {
+      "starting": [
+        {
+          "name": "Raya",
+          "pos": "GKP",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 6,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Calafiori",
+          "pos": "DEF",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 11,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Mendy",
+          "pos": "DEF",
+          "team": "HUL",
+          "team_code": 88,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "O'Reilly",
+          "pos": "DEF",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Cherki",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 14,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Ødegaard",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 3,
+          "is_captain": false,
+          "is_vice": true
+        },
+        {
+          "name": "Rogers",
+          "pos": "MID",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 5,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Cunha",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 9,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Barry",
+          "pos": "FWD",
+          "team": "EVE",
+          "team_code": 11,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 26,
+          "is_captain": true,
+          "is_vice": false
+        },
+        {
+          "name": "João Pedro",
+          "pos": "FWD",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 9,
+          "is_captain": false,
+          "is_vice": false
+        }
+      ],
+      "bench": [
+        {
+          "name": "Dubravka",
+          "pos": "GKP",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Shaw",
+          "pos": "DEF",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Pedro Porro",
+          "pos": "DEF",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Hughes",
+          "pos": "MID",
+          "team": "CRY",
+          "team_code": 31,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         }
@@ -3786,148 +3786,6 @@
       ],
       "auto_subs": []
     },
-    "2191555_2": {
-      "starting": [
-        {
-          "name": "Raya",
-          "pos": "GKP",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 6,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Aina",
-          "pos": "DEF",
-          "team": "NFO",
-          "team_code": 17,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "O'Reilly",
-          "pos": "DEF",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Calafiori",
-          "pos": "DEF",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 11,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "James",
-          "pos": "DEF",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Rogers",
-          "pos": "MID",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 5,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Semenyo",
-          "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 5,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Mbeumo",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 11,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Saka",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 11,
-          "is_captain": false,
-          "is_vice": true
-        },
-        {
-          "name": "Enciso",
-          "pos": "MID",
-          "team": "IPS",
-          "team_code": 40,
-          "points": 5,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 26,
-          "is_captain": true,
-          "is_vice": false
-        }
-      ],
-      "bench": [
-        {
-          "name": "Dubravka",
-          "pos": "GKP",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Thomas-Asante",
-          "pos": "FWD",
-          "team": "COV",
-          "team_code": 9,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "van Ewijk",
-          "pos": "DEF",
-          "team": "COV",
-          "team_code": 9,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Kusi-Asare",
-          "pos": "FWD",
-          "team": "FUL",
-          "team_code": 54,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        }
-      ],
-      "auto_subs": []
-    },
     "2604490_2": {
       "starting": [
         {
@@ -4076,6 +3934,148 @@
           "event": 2
         }
       ]
+    },
+    "2191555_2": {
+      "starting": [
+        {
+          "name": "Raya",
+          "pos": "GKP",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 6,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Aina",
+          "pos": "DEF",
+          "team": "NFO",
+          "team_code": 17,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "O'Reilly",
+          "pos": "DEF",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Calafiori",
+          "pos": "DEF",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 11,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "James",
+          "pos": "DEF",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Rogers",
+          "pos": "MID",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 5,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Semenyo",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 5,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Mbeumo",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 11,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Saka",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 11,
+          "is_captain": false,
+          "is_vice": true
+        },
+        {
+          "name": "Enciso",
+          "pos": "MID",
+          "team": "IPS",
+          "team_code": 40,
+          "points": 5,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 26,
+          "is_captain": true,
+          "is_vice": false
+        }
+      ],
+      "bench": [
+        {
+          "name": "Dubravka",
+          "pos": "GKP",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Thomas-Asante",
+          "pos": "FWD",
+          "team": "COV",
+          "team_code": 9,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "van Ewijk",
+          "pos": "DEF",
+          "team": "COV",
+          "team_code": 9,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Kusi-Asare",
+          "pos": "FWD",
+          "team": "FUL",
+          "team_code": 54,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        }
+      ],
+      "auto_subs": []
     },
     "73489_3": {
       "starting": [
@@ -4503,6 +4503,148 @@
       ],
       "auto_subs": []
     },
+    "1206581_3": {
+      "starting": [
+        {
+          "name": "Raya",
+          "pos": "GKP",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 3,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Calafiori",
+          "pos": "DEF",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Hume",
+          "pos": "DEF",
+          "team": "SUN",
+          "team_code": 56,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Ajayi",
+          "pos": "DEF",
+          "team": "HUL",
+          "team_code": 88,
+          "points": 5,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "B.Fernandes",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": true
+        },
+        {
+          "name": "Semenyo",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 6,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Mbeumo",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Groß",
+          "pos": "MID",
+          "team": "BHA",
+          "team_code": 36,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 27,
+          "is_captain": true,
+          "is_vice": false
+        },
+        {
+          "name": "João Pedro",
+          "pos": "FWD",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Calvert-Lewin",
+          "pos": "FWD",
+          "team": "LEE",
+          "team_code": 2,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        }
+      ],
+      "bench": [
+        {
+          "name": "Dovin",
+          "pos": "GKP",
+          "team": "COV",
+          "team_code": 9,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Hughes",
+          "pos": "MID",
+          "team": "CRY",
+          "team_code": 31,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Davis",
+          "pos": "DEF",
+          "team": "IPS",
+          "team_code": 40,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Diop",
+          "pos": "DEF",
+          "team": "IPS",
+          "team_code": 40,
+          "points": 3,
+          "is_captain": false,
+          "is_vice": false
+        }
+      ],
+      "auto_subs": []
+    },
     "2189419_3": {
       "starting": [
         {
@@ -4645,7 +4787,7 @@
       ],
       "auto_subs": []
     },
-    "1206581_3": {
+    "2206758_3": {
       "starting": [
         {
           "name": "Raya",
@@ -4657,7 +4799,25 @@
           "is_vice": false
         },
         {
-          "name": "Calafiori",
+          "name": "Guéhi",
+          "pos": "DEF",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Dedić",
+          "pos": "DEF",
+          "team": "NEW",
+          "team_code": 4,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Gabriel",
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
@@ -4666,20 +4826,20 @@
           "is_vice": false
         },
         {
-          "name": "Hume",
-          "pos": "DEF",
-          "team": "SUN",
-          "team_code": 56,
-          "points": 1,
+          "name": "Yalcouyé",
+          "pos": "MID",
+          "team": "BHA",
+          "team_code": 36,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
         {
-          "name": "Ajayi",
-          "pos": "DEF",
-          "team": "HUL",
-          "team_code": 88,
-          "points": 5,
+          "name": "Schade",
+          "pos": "MID",
+          "team": "BRE",
+          "team_code": 94,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -4693,47 +4853,11 @@
           "is_vice": true
         },
         {
-          "name": "Semenyo",
+          "name": "Tzolis",
           "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 6,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Mbeumo",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 8,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Groß",
-          "pos": "MID",
-          "team": "BHA",
-          "team_code": 36,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 27,
-          "is_captain": true,
-          "is_vice": false
-        },
-        {
-          "name": "João Pedro",
-          "pos": "FWD",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 1,
+          "team": "ARS",
+          "team_code": 3,
+          "points": 5,
           "is_captain": false,
           "is_vice": false
         },
@@ -4745,33 +4869,51 @@
           "points": 1,
           "is_captain": false,
           "is_vice": false
+        },
+        {
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 18,
+          "is_captain": true,
+          "is_vice": false
+        },
+        {
+          "name": "João Pedro",
+          "pos": "FWD",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
         }
       ],
       "bench": [
         {
-          "name": "Dovin",
+          "name": "Palmer",
           "pos": "GKP",
-          "team": "COV",
-          "team_code": 9,
+          "team": "IPS",
+          "team_code": 40,
           "points": 0,
           "is_captain": false,
           "is_vice": false
         },
         {
-          "name": "Hughes",
-          "pos": "MID",
-          "team": "CRY",
-          "team_code": 31,
-          "points": 1,
+          "name": "Maguire",
+          "pos": "DEF",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
         {
-          "name": "Davis",
-          "pos": "DEF",
-          "team": "IPS",
-          "team_code": 40,
-          "points": 1,
+          "name": "George Hemmings",
+          "pos": "MID",
+          "team": "AVL",
+          "team_code": 7,
+          "points": 3,
           "is_captain": false,
           "is_vice": false
         },
@@ -4935,148 +5077,6 @@
           "event": 3
         }
       ]
-    },
-    "2206758_3": {
-      "starting": [
-        {
-          "name": "Raya",
-          "pos": "GKP",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Guéhi",
-          "pos": "DEF",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 8,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Dedić",
-          "pos": "DEF",
-          "team": "NEW",
-          "team_code": 4,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Gabriel",
-          "pos": "DEF",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Yalcouyé",
-          "pos": "MID",
-          "team": "BHA",
-          "team_code": 36,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Schade",
-          "pos": "MID",
-          "team": "BRE",
-          "team_code": 94,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "B.Fernandes",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": true
-        },
-        {
-          "name": "Tzolis",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 5,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Calvert-Lewin",
-          "pos": "FWD",
-          "team": "LEE",
-          "team_code": 2,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 18,
-          "is_captain": true,
-          "is_vice": false
-        },
-        {
-          "name": "João Pedro",
-          "pos": "FWD",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        }
-      ],
-      "bench": [
-        {
-          "name": "Palmer",
-          "pos": "GKP",
-          "team": "IPS",
-          "team_code": 40,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Maguire",
-          "pos": "DEF",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "George Hemmings",
-          "pos": "MID",
-          "team": "AVL",
-          "team_code": 7,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Diop",
-          "pos": "DEF",
-          "team": "IPS",
-          "team_code": 40,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": false
-        }
-      ],
-      "auto_subs": []
     },
     "197082_3": {
       "starting": [
@@ -5504,6 +5504,148 @@
       ],
       "auto_subs": []
     },
+    "2604490_3": {
+      "starting": [
+        {
+          "name": "Kelleher",
+          "pos": "GKP",
+          "team": "BRE",
+          "team_code": 94,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Guéhi",
+          "pos": "DEF",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Muñoz",
+          "pos": "DEF",
+          "team": "NFO",
+          "team_code": 17,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Van Hecke",
+          "pos": "DEF",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Zubimendi",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Wirtz",
+          "pos": "MID",
+          "team": "LIV",
+          "team_code": 14,
+          "points": 3,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Rogers",
+          "pos": "MID",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 6,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Szoboszlai",
+          "pos": "MID",
+          "team": "LIV",
+          "team_code": 14,
+          "points": 3,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Stach",
+          "pos": "MID",
+          "team": "LEE",
+          "team_code": 2,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 18,
+          "is_captain": true,
+          "is_vice": false
+        },
+        {
+          "name": "Isak",
+          "pos": "FWD",
+          "team": "LIV",
+          "team_code": 14,
+          "points": 13,
+          "is_captain": false,
+          "is_vice": true
+        }
+      ],
+      "bench": [
+        {
+          "name": "Verbruggen",
+          "pos": "GKP",
+          "team": "BHA",
+          "team_code": 36,
+          "points": 3,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Evanilson",
+          "pos": "FWD",
+          "team": "BOU",
+          "team_code": 91,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Truffert",
+          "pos": "DEF",
+          "team": "BOU",
+          "team_code": 91,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Cash",
+          "pos": "DEF",
+          "team": "AVL",
+          "team_code": 7,
+          "points": 6,
+          "is_captain": false,
+          "is_vice": false
+        }
+      ],
+      "auto_subs": []
+    },
     "2191555_3": {
       "starting": [
         {
@@ -5653,148 +5795,6 @@
         }
       ]
     },
-    "2604490_3": {
-      "starting": [
-        {
-          "name": "Kelleher",
-          "pos": "GKP",
-          "team": "BRE",
-          "team_code": 94,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Guéhi",
-          "pos": "DEF",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 8,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Muñoz",
-          "pos": "DEF",
-          "team": "NFO",
-          "team_code": 17,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Van Hecke",
-          "pos": "DEF",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 8,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Zubimendi",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Wirtz",
-          "pos": "MID",
-          "team": "LIV",
-          "team_code": 14,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Rogers",
-          "pos": "MID",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 6,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Szoboszlai",
-          "pos": "MID",
-          "team": "LIV",
-          "team_code": 14,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Stach",
-          "pos": "MID",
-          "team": "LEE",
-          "team_code": 2,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 18,
-          "is_captain": true,
-          "is_vice": false
-        },
-        {
-          "name": "Isak",
-          "pos": "FWD",
-          "team": "LIV",
-          "team_code": 14,
-          "points": 13,
-          "is_captain": false,
-          "is_vice": true
-        }
-      ],
-      "bench": [
-        {
-          "name": "Verbruggen",
-          "pos": "GKP",
-          "team": "BHA",
-          "team_code": 36,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Evanilson",
-          "pos": "FWD",
-          "team": "BOU",
-          "team_code": 91,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Truffert",
-          "pos": "DEF",
-          "team": "BOU",
-          "team_code": 91,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Cash",
-          "pos": "DEF",
-          "team": "AVL",
-          "team_code": 7,
-          "points": 6,
-          "is_captain": false,
-          "is_vice": false
-        }
-      ],
-      "auto_subs": []
-    },
     "73489_4": {
       "starting": [
         {
@@ -5892,7 +5892,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 1,
+          "points": 8,
           "is_captain": false,
           "is_vice": true
         }
@@ -6034,7 +6034,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 1,
+          "points": 8,
           "is_captain": false,
           "is_vice": false
         }
@@ -6063,7 +6063,7 @@
           "pos": "DEF",
           "team": "MCI",
           "team_code": 43,
-          "points": 1,
+          "points": 12,
           "is_captain": false,
           "is_vice": false
         },
@@ -6131,7 +6131,7 @@
           "pos": "MID",
           "team": "MUN",
           "team_code": 1,
-          "points": 3,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -6167,7 +6167,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 1,
+          "points": 8,
           "is_captain": false,
           "is_vice": false
         },
@@ -6215,6 +6215,148 @@
           "team": "BRE",
           "team_code": 94,
           "points": 4,
+          "is_captain": false,
+          "is_vice": false
+        }
+      ],
+      "auto_subs": []
+    },
+    "1206581_4": {
+      "starting": [
+        {
+          "name": "Raya",
+          "pos": "GKP",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 14,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Calafiori",
+          "pos": "DEF",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 6,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Davis",
+          "pos": "DEF",
+          "team": "IPS",
+          "team_code": 40,
+          "points": 14,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Ajayi",
+          "pos": "DEF",
+          "team": "HUL",
+          "team_code": 88,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "B.Fernandes",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Semenyo",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 3,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Hughes",
+          "pos": "MID",
+          "team": "CRY",
+          "team_code": 31,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Groß",
+          "pos": "MID",
+          "team": "BHA",
+          "team_code": 36,
+          "points": 17,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Rogers",
+          "pos": "MID",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": true
+        },
+        {
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "João Pedro",
+          "pos": "FWD",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 24,
+          "is_captain": true,
+          "is_vice": false
+        }
+      ],
+      "bench": [
+        {
+          "name": "Steele",
+          "pos": "GKP",
+          "team": "BHA",
+          "team_code": 36,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Calvert-Lewin",
+          "pos": "FWD",
+          "team": "LEE",
+          "team_code": 2,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Diop",
+          "pos": "DEF",
+          "team": "IPS",
+          "team_code": 40,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Hume",
+          "pos": "DEF",
+          "team": "SUN",
+          "team_code": 56,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         }
@@ -6273,7 +6415,7 @@
           "pos": "MID",
           "team": "MUN",
           "team_code": 1,
-          "points": 6,
+          "points": 4,
           "is_captain": true,
           "is_vice": false
         },
@@ -6309,7 +6451,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 1,
+          "points": 8,
           "is_captain": false,
           "is_vice": false
         },
@@ -6363,7 +6505,7 @@
       ],
       "auto_subs": []
     },
-    "1206581_4": {
+    "2206758_4": {
       "starting": [
         {
           "name": "Raya",
@@ -6375,29 +6517,47 @@
           "is_vice": false
         },
         {
-          "name": "Calafiori",
+          "name": "Guéhi",
           "pos": "DEF",
-          "team": "ARS",
-          "team_code": 3,
+          "team": "MCI",
+          "team_code": 43,
           "points": 6,
           "is_captain": false,
           "is_vice": false
         },
         {
-          "name": "Davis",
+          "name": "Dedić",
           "pos": "DEF",
-          "team": "IPS",
-          "team_code": 40,
-          "points": 14,
+          "team": "NEW",
+          "team_code": 4,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
         {
-          "name": "Ajayi",
+          "name": "Gabriel",
           "pos": "DEF",
-          "team": "HUL",
-          "team_code": 88,
-          "points": 1,
+          "team": "ARS",
+          "team_code": 3,
+          "points": 9,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Yalcouyé",
+          "pos": "MID",
+          "team": "BHA",
+          "team_code": 36,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Schade",
+          "pos": "MID",
+          "team": "BRE",
+          "team_code": 94,
+          "points": 15,
           "is_captain": false,
           "is_vice": false
         },
@@ -6406,52 +6566,34 @@
           "pos": "MID",
           "team": "MUN",
           "team_code": 1,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Tzolis",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
           "points": 3,
           "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Semenyo",
-          "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Hughes",
-          "pos": "MID",
-          "team": "CRY",
-          "team_code": 31,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Groß",
-          "pos": "MID",
-          "team": "BHA",
-          "team_code": 36,
-          "points": 17,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Rogers",
-          "pos": "MID",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 8,
-          "is_captain": false,
           "is_vice": true
+        },
+        {
+          "name": "Calvert-Lewin",
+          "pos": "FWD",
+          "team": "LEE",
+          "team_code": 2,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
         },
         {
           "name": "Haaland",
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 1,
+          "points": 8,
           "is_captain": false,
           "is_vice": false
         },
@@ -6467,20 +6609,29 @@
       ],
       "bench": [
         {
-          "name": "Steele",
+          "name": "Palmer",
           "pos": "GKP",
-          "team": "BHA",
-          "team_code": 36,
+          "team": "IPS",
+          "team_code": 40,
           "points": 0,
           "is_captain": false,
           "is_vice": false
         },
         {
-          "name": "Calvert-Lewin",
-          "pos": "FWD",
-          "team": "LEE",
-          "team_code": 2,
-          "points": 0,
+          "name": "Maguire",
+          "pos": "DEF",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "George Hemmings",
+          "pos": "MID",
+          "team": "AVL",
+          "team_code": 7,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -6490,15 +6641,6 @@
           "team": "IPS",
           "team_code": 40,
           "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Hume",
-          "pos": "DEF",
-          "team": "SUN",
-          "team_code": 56,
-          "points": 0,
           "is_captain": false,
           "is_vice": false
         }
@@ -6575,7 +6717,7 @@
           "pos": "MID",
           "team": "MUN",
           "team_code": 1,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -6593,7 +6735,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 1,
+          "points": 8,
           "is_captain": false,
           "is_vice": false
         },
@@ -6640,148 +6782,6 @@
           "pos": "MID",
           "team": "CRY",
           "team_code": 31,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        }
-      ],
-      "auto_subs": []
-    },
-    "2206758_4": {
-      "starting": [
-        {
-          "name": "Raya",
-          "pos": "GKP",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 14,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Guéhi",
-          "pos": "DEF",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Dedić",
-          "pos": "DEF",
-          "team": "NEW",
-          "team_code": 4,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Gabriel",
-          "pos": "DEF",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 9,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Yalcouyé",
-          "pos": "MID",
-          "team": "BHA",
-          "team_code": 36,
-          "points": 8,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Schade",
-          "pos": "MID",
-          "team": "BRE",
-          "team_code": 94,
-          "points": 15,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "B.Fernandes",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Tzolis",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": true
-        },
-        {
-          "name": "Calvert-Lewin",
-          "pos": "FWD",
-          "team": "LEE",
-          "team_code": 2,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "João Pedro",
-          "pos": "FWD",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 24,
-          "is_captain": true,
-          "is_vice": false
-        }
-      ],
-      "bench": [
-        {
-          "name": "Palmer",
-          "pos": "GKP",
-          "team": "IPS",
-          "team_code": 40,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Maguire",
-          "pos": "DEF",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "George Hemmings",
-          "pos": "MID",
-          "team": "AVL",
-          "team_code": 7,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Diop",
-          "pos": "DEF",
-          "team": "IPS",
-          "team_code": 40,
           "points": 1,
           "is_captain": false,
           "is_vice": false
@@ -6841,7 +6841,7 @@
           "pos": "MID",
           "team": "MCI",
           "team_code": 43,
-          "points": 1,
+          "points": 3,
           "is_captain": false,
           "is_vice": false
         },
@@ -6886,7 +6886,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 1,
+          "points": 8,
           "is_captain": false,
           "is_vice": true
         }
@@ -6992,7 +6992,7 @@
           "pos": "MID",
           "team": "MUN",
           "team_code": 1,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -7028,7 +7028,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 1,
+          "points": 8,
           "is_captain": false,
           "is_vice": true
         }
@@ -7143,7 +7143,7 @@
           "pos": "MID",
           "team": "MUN",
           "team_code": 1,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -7161,7 +7161,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 1,
+          "points": 8,
           "is_captain": false,
           "is_vice": true
         },
@@ -7215,148 +7215,6 @@
       ],
       "auto_subs": []
     },
-    "2191555_4": {
-      "starting": [
-        {
-          "name": "Raya",
-          "pos": "GKP",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 14,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Aina",
-          "pos": "DEF",
-          "team": "NFO",
-          "team_code": 17,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Ajayi",
-          "pos": "DEF",
-          "team": "HUL",
-          "team_code": 88,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Calafiori",
-          "pos": "DEF",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 12,
-          "is_captain": true,
-          "is_vice": false
-        },
-        {
-          "name": "James",
-          "pos": "DEF",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Rogers",
-          "pos": "MID",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 8,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Semenyo",
-          "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Mbeumo",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Saka",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 8,
-          "is_captain": false,
-          "is_vice": true
-        },
-        {
-          "name": "Wissa",
-          "pos": "FWD",
-          "team": "NEW",
-          "team_code": 4,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        }
-      ],
-      "bench": [
-        {
-          "name": "Dubravka",
-          "pos": "GKP",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Enciso",
-          "pos": "MID",
-          "team": "IPS",
-          "team_code": 40,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "Thomas-Asante",
-          "pos": "FWD",
-          "team": "COV",
-          "team_code": 9,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false
-        },
-        {
-          "name": "van Ewijk",
-          "pos": "DEF",
-          "team": "COV",
-          "team_code": 9,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false
-        }
-      ],
-      "auto_subs": []
-    },
     "2604490_4": {
       "starting": [
         {
@@ -7373,7 +7231,7 @@
           "pos": "DEF",
           "team": "MCI",
           "team_code": 43,
-          "points": 3,
+          "points": 6,
           "is_captain": false,
           "is_vice": false
         },
@@ -7445,7 +7303,7 @@
           "pos": "FWD",
           "team": "MCI",
           "team_code": 43,
-          "points": 2,
+          "points": 16,
           "is_captain": true,
           "is_vice": false
         },
@@ -7492,6 +7350,148 @@
           "pos": "DEF",
           "team": "AVL",
           "team_code": 7,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        }
+      ],
+      "auto_subs": []
+    },
+    "2191555_4": {
+      "starting": [
+        {
+          "name": "Raya",
+          "pos": "GKP",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 14,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Aina",
+          "pos": "DEF",
+          "team": "NFO",
+          "team_code": 17,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Ajayi",
+          "pos": "DEF",
+          "team": "HUL",
+          "team_code": 88,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Calafiori",
+          "pos": "DEF",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 12,
+          "is_captain": true,
+          "is_vice": false
+        },
+        {
+          "name": "James",
+          "pos": "DEF",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Rogers",
+          "pos": "MID",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Semenyo",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 3,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Mbeumo",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Saka",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": true
+        },
+        {
+          "name": "Wissa",
+          "pos": "FWD",
+          "team": "NEW",
+          "team_code": 4,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false
+        }
+      ],
+      "bench": [
+        {
+          "name": "Dubravka",
+          "pos": "GKP",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Enciso",
+          "pos": "MID",
+          "team": "IPS",
+          "team_code": 40,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "Thomas-Asante",
+          "pos": "FWD",
+          "team": "COV",
+          "team_code": 9,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false
+        },
+        {
+          "name": "van Ewijk",
+          "pos": "DEF",
+          "team": "COV",
+          "team_code": 9,
           "points": 0,
           "is_captain": false,
           "is_vice": false
