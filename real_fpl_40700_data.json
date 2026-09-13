@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "13 ก.ย. 2026, 21:44 น.",
-    "last_sync_iso": "2026-09-13 21:44:48"
+    "last_sync": "13 ก.ย. 2026, 22:06 น.",
+    "last_sync_iso": "2026-09-13 22:06:32"
   },
   "teams": [
     {
@@ -495,9 +495,9 @@
           "entry_id": 1206581,
           "team_name": "TK.FPL",
           "player_name": "Teerasade Khemprasit",
-          "points": 82,
+          "points": 85,
           "hits": 4,
-          "net_points": 78,
+          "net_points": 81,
           "captain": "João Pedro",
           "chip": null,
           "bench_points": 1
@@ -506,12 +506,34 @@
           "entry_id": 73489,
           "team_name": "Some might say",
           "player_name": "FAme Pakviwat",
-          "points": 73,
+          "points": 76,
           "hits": 0,
-          "net_points": 73,
+          "net_points": 76,
           "captain": "Palmer",
           "chip": "wildcard",
           "bench_points": 3
+        },
+        {
+          "entry_id": 5950381,
+          "team_name": "SUN-KUNG-JI",
+          "player_name": "Athit Rattanawipapong",
+          "points": 75,
+          "hits": 0,
+          "net_points": 75,
+          "captain": "Palmer",
+          "chip": null,
+          "bench_points": 4
+        },
+        {
+          "entry_id": 2189419,
+          "team_name": "1234-Ultrasmooth-",
+          "player_name": "Maew Mohawk",
+          "points": 73,
+          "hits": 0,
+          "net_points": 73,
+          "captain": "B.Fernandes",
+          "chip": null,
+          "bench_points": 1
         },
         {
           "entry_id": 2206758,
@@ -525,26 +547,15 @@
           "bench_points": 2
         },
         {
-          "entry_id": 5950381,
-          "team_name": "SUN-KUNG-JI",
-          "player_name": "Athit Rattanawipapong",
-          "points": 72,
+          "entry_id": 306983,
+          "team_name": "GEMINI UNITED",
+          "player_name": "Micky Asawamanasak",
+          "points": 69,
           "hits": 0,
-          "net_points": 72,
+          "net_points": 69,
           "captain": "Palmer",
           "chip": null,
-          "bench_points": 4
-        },
-        {
-          "entry_id": 2189419,
-          "team_name": "1234-Ultrasmooth-",
-          "player_name": "Maew Mohawk",
-          "points": 70,
-          "hits": 0,
-          "net_points": 70,
-          "captain": "B.Fernandes",
-          "chip": null,
-          "bench_points": 1
+          "bench_points": 9
         },
         {
           "entry_id": 197082,
@@ -556,17 +567,6 @@
           "captain": "Calafiori",
           "chip": null,
           "bench_points": 4
-        },
-        {
-          "entry_id": 306983,
-          "team_name": "GEMINI UNITED",
-          "player_name": "Micky Asawamanasak",
-          "points": 65,
-          "hits": 0,
-          "net_points": 65,
-          "captain": "Palmer",
-          "chip": null,
-          "bench_points": 9
         },
         {
           "entry_id": 5660962,
@@ -621,7 +621,7 @@
           "net_points": 36,
           "captain": "Haaland",
           "chip": null,
-          "bench_points": 11
+          "bench_points": 12
         }
       ]
     }
@@ -5865,7 +5865,7 @@
           "pos": "MID",
           "team": "BHA",
           "team_code": 36,
-          "points": 14,
+          "points": 17,
           "is_captain": false,
           "is_vice": false
         },
@@ -5944,7 +5944,7 @@
           "pos": "GKP",
           "team": "BHA",
           "team_code": 36,
-          "points": 7,
+          "points": 8,
           "is_captain": false,
           "is_vice": false
         },
@@ -5980,7 +5980,7 @@
           "pos": "MID",
           "team": "BHA",
           "team_code": 36,
-          "points": 14,
+          "points": 17,
           "is_captain": false,
           "is_vice": false
         },
@@ -6122,7 +6122,7 @@
           "pos": "MID",
           "team": "BHA",
           "team_code": 36,
-          "points": 14,
+          "points": 17,
           "is_captain": false,
           "is_vice": false
         },
@@ -6291,7 +6291,7 @@
           "pos": "MID",
           "team": "BHA",
           "team_code": 36,
-          "points": 14,
+          "points": 17,
           "is_captain": false,
           "is_vice": false
         },
@@ -6442,7 +6442,7 @@
           "pos": "MID",
           "team": "BHA",
           "team_code": 36,
-          "points": 14,
+          "points": 17,
           "is_captain": false,
           "is_vice": false
         },
@@ -7465,7 +7465,7 @@
           "pos": "GKP",
           "team": "BHA",
           "team_code": 36,
-          "points": 7,
+          "points": 8,
           "is_captain": false,
           "is_vice": false
         },
