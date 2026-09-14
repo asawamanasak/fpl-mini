@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "15 ก.ย. 2026, 03:28 น.",
-    "last_sync_iso": "2026-09-15 03:28:54"
+    "last_sync": "15 ก.ย. 2026, 03:47 น.",
+    "last_sync_iso": "2026-09-15 03:47:03"
   },
   "teams": [
     {
@@ -492,6 +492,17 @@
       "is_started": true,
       "results": [
         {
+          "entry_id": 73489,
+          "team_name": "Some might say",
+          "player_name": "FAme Pakviwat",
+          "points": 99,
+          "hits": 0,
+          "net_points": 99,
+          "captain": "Palmer",
+          "chip": "wildcard",
+          "bench_points": 3
+        },
+        {
           "entry_id": 2206758,
           "team_name": "ใครไม่พีค",
           "player_name": "Isriya Paireepairit",
@@ -500,17 +511,6 @@
           "net_points": 99,
           "captain": "João Pedro",
           "chip": null,
-          "bench_points": 3
-        },
-        {
-          "entry_id": 73489,
-          "team_name": "Some might say",
-          "player_name": "FAme Pakviwat",
-          "points": 97,
-          "hits": 0,
-          "net_points": 97,
-          "captain": "Palmer",
-          "chip": "wildcard",
           "bench_points": 3
         },
         {
@@ -5811,7 +5811,7 @@
           "pos": "DEF",
           "team": "LEE",
           "team_code": 2,
-          "points": 12,
+          "points": 14,
           "is_captain": false,
           "is_vice": false
         },
