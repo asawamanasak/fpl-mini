@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "19 ก.ย. 2026, 03:27 น.",
-    "last_sync_iso": "2026-09-19 03:27:54"
+    "last_sync": "19 ก.ย. 2026, 03:45 น.",
+    "last_sync_iso": "2026-09-19 03:45:16"
   },
   "teams": [
     {
@@ -634,9 +634,20 @@
           "entry_id": 2604490,
           "team_name": "Leibniz FC",
           "player_name": "Ataro Munson",
-          "points": 8,
+          "points": 9,
           "hits": 0,
-          "net_points": 8,
+          "net_points": 9,
+          "captain": "Haaland",
+          "chip": null,
+          "bench_points": 0
+        },
+        {
+          "entry_id": 2206758,
+          "team_name": "ใครไม่พีค",
+          "player_name": "Isriya Paireepairit",
+          "points": 6,
+          "hits": 0,
+          "net_points": 6,
           "captain": "Haaland",
           "chip": null,
           "bench_points": 0
@@ -659,17 +670,6 @@
           "points": 4,
           "hits": 0,
           "net_points": 4,
-          "captain": "Haaland",
-          "chip": null,
-          "bench_points": 0
-        },
-        {
-          "entry_id": 2206758,
-          "team_name": "ใครไม่พีค",
-          "player_name": "Isriya Paireepairit",
-          "points": 3,
-          "hits": 0,
-          "net_points": 3,
           "captain": "Haaland",
           "chip": null,
           "bench_points": 0
@@ -8409,7 +8409,7 @@
           "pos": "MID",
           "team": "BRE",
           "team_code": 94,
-          "points": 3,
+          "points": 6,
           "is_captain": false,
           "is_vice": false
         },
@@ -9065,7 +9065,7 @@
           "pos": "GKP",
           "team": "BRE",
           "team_code": 94,
-          "points": 6,
+          "points": 7,
           "is_captain": false,
           "is_vice": false
         },
