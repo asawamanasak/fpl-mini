@@ -1,6 +1,6 @@
 {
-  "last_sync": "19 ก.ย. 2026, 02:43 น.",
-  "last_sync_iso": "2026-09-19 02:43:50",
+  "last_sync": "19 ก.ย. 2026, 03:06 น.",
+  "last_sync_iso": "2026-09-19 03:06:37",
   "sync_status": "ok",
   "max_gw": 5,
   "leagues": {
@@ -12327,6 +12327,17 @@
               "bench_points": 0
             },
             {
+              "entry_id": 1506698,
+              "team_name": "An-Ahn-trasmooth",
+              "player_name": "natthaphon timmuang",
+              "points": 3,
+              "hits": 0,
+              "net_points": 3,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 1
+            },
+            {
               "entry_id": 73489,
               "team_name": "Some might say",
               "player_name": "FAme Pakviwat",
@@ -12632,7 +12643,7 @@
               "net_points": 1,
               "captain": "Haaland",
               "chip": null,
-              "bench_points": 1
+              "bench_points": 3
             },
             {
               "entry_id": 2913117,
@@ -12803,17 +12814,6 @@
               "entry_id": 8845986,
               "team_name": "Chong United",
               "player_name": "Chong ThirtyOne",
-              "points": 1,
-              "hits": 0,
-              "net_points": 1,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 1
-            },
-            {
-              "entry_id": 1506698,
-              "team_name": "An-Ahn-trasmooth",
-              "player_name": "natthaphon timmuang",
               "points": 1,
               "hits": 0,
               "net_points": 1,
@@ -50908,7 +50908,7 @@
               "pos": "DEF",
               "team": "BRE",
               "team_code": 94,
-              "points": 1,
+              "points": 3,
               "is_captain": false,
               "is_vice": false
             }
@@ -55626,7 +55626,7 @@
               "pos": "DEF",
               "team": "BRE",
               "team_code": 94,
-              "points": 1,
+              "points": 3,
               "is_captain": false,
               "is_vice": false
             },
@@ -56682,7 +56682,7 @@
               "net_points": 2,
               "captain": "Haaland",
               "chip": null,
-              "bench_points": 1
+              "bench_points": 3
             },
             {
               "entry_id": 5523000,
@@ -56704,7 +56704,7 @@
               "net_points": 2,
               "captain": "Haaland",
               "chip": null,
-              "bench_points": 1
+              "bench_points": 3
             },
             {
               "entry_id": 5119430,
@@ -65900,7 +65900,7 @@
               "pos": "DEF",
               "team": "BRE",
               "team_code": 94,
-              "points": 1,
+              "points": 3,
               "is_captain": false,
               "is_vice": false
             },
@@ -67462,7 +67462,7 @@
               "pos": "DEF",
               "team": "BRE",
               "team_code": 94,
-              "points": 1,
+              "points": 3,
               "is_captain": false,
               "is_vice": false
             },
