@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "19 ก.ย. 2026, 03:06 น.",
-    "last_sync_iso": "2026-09-19 03:06:37"
+    "last_sync": "19 ก.ย. 2026, 03:27 น.",
+    "last_sync_iso": "2026-09-19 03:27:54"
   },
   "teams": [
     {
@@ -631,12 +631,12 @@
       "is_started": true,
       "results": [
         {
-          "entry_id": 73489,
-          "team_name": "Some might say",
-          "player_name": "FAme Pakviwat",
-          "points": 2,
+          "entry_id": 2604490,
+          "team_name": "Leibniz FC",
+          "player_name": "Ataro Munson",
+          "points": 8,
           "hits": 0,
-          "net_points": 2,
+          "net_points": 8,
           "captain": "Haaland",
           "chip": null,
           "bench_points": 0
@@ -645,53 +645,20 @@
           "entry_id": 197082,
           "team_name": "Mary Jojibana",
           "player_name": "Kavinjet Tantitanasap",
-          "points": 2,
+          "points": 5,
           "hits": 0,
-          "net_points": 2,
+          "net_points": 5,
           "captain": "Haaland",
           "chip": null,
           "bench_points": 0
         },
         {
-          "entry_id": 2604490,
-          "team_name": "Leibniz FC",
-          "player_name": "Ataro Munson",
-          "points": 2,
+          "entry_id": 73489,
+          "team_name": "Some might say",
+          "player_name": "FAme Pakviwat",
+          "points": 4,
           "hits": 0,
-          "net_points": 2,
-          "captain": "Haaland",
-          "chip": null,
-          "bench_points": 0
-        },
-        {
-          "entry_id": 5950381,
-          "team_name": "SUN-KUNG-JI",
-          "player_name": "Athit Rattanawipapong",
-          "points": 1,
-          "hits": 0,
-          "net_points": 1,
-          "captain": "Haaland",
-          "chip": null,
-          "bench_points": 3
-        },
-        {
-          "entry_id": 306983,
-          "team_name": "GEMINI UNITED",
-          "player_name": "Micky Asawamanasak",
-          "points": 1,
-          "hits": 0,
-          "net_points": 1,
-          "captain": "Haaland",
-          "chip": null,
-          "bench_points": 0
-        },
-        {
-          "entry_id": 1206581,
-          "team_name": "TK.FPL",
-          "player_name": "Teerasade Khemprasit",
-          "points": 1,
-          "hits": 0,
-          "net_points": 1,
+          "net_points": 4,
           "captain": "Haaland",
           "chip": null,
           "bench_points": 0
@@ -700,9 +667,42 @@
           "entry_id": 2206758,
           "team_name": "ใครไม่พีค",
           "player_name": "Isriya Paireepairit",
-          "points": 1,
+          "points": 3,
           "hits": 0,
-          "net_points": 1,
+          "net_points": 3,
+          "captain": "Haaland",
+          "chip": null,
+          "bench_points": 0
+        },
+        {
+          "entry_id": 5950381,
+          "team_name": "SUN-KUNG-JI",
+          "player_name": "Athit Rattanawipapong",
+          "points": 2,
+          "hits": 0,
+          "net_points": 2,
+          "captain": "Haaland",
+          "chip": null,
+          "bench_points": 3
+        },
+        {
+          "entry_id": 306983,
+          "team_name": "GEMINI UNITED",
+          "player_name": "Micky Asawamanasak",
+          "points": 2,
+          "hits": 0,
+          "net_points": 2,
+          "captain": "Haaland",
+          "chip": null,
+          "bench_points": 0
+        },
+        {
+          "entry_id": 1206581,
+          "team_name": "TK.FPL",
+          "player_name": "Teerasade Khemprasit",
+          "points": 2,
+          "hits": 0,
+          "net_points": 2,
           "captain": "Haaland",
           "chip": null,
           "bench_points": 0
@@ -711,9 +711,9 @@
           "entry_id": 2999763,
           "team_name": "Cody Travers",
           "player_name": "Alesandro Nuyie",
-          "points": 1,
+          "points": 2,
           "hits": 0,
-          "net_points": 1,
+          "net_points": 2,
           "captain": "Haaland",
           "chip": null,
           "bench_points": 0
@@ -722,9 +722,9 @@
           "entry_id": 5470959,
           "team_name": "Anjoni Iraola",
           "player_name": "pilan liu",
-          "points": 1,
+          "points": 2,
           "hits": 0,
-          "net_points": 1,
+          "net_points": 2,
           "captain": "Isak",
           "chip": null,
           "bench_points": 0
@@ -733,9 +733,9 @@
           "entry_id": 5660962,
           "team_name": "Siampathy",
           "player_name": "Peeranat Hunthanee",
-          "points": 1,
+          "points": 2,
           "hits": 0,
-          "net_points": 1,
+          "net_points": 2,
           "captain": "Ødegaard",
           "chip": null,
           "bench_points": 0
@@ -744,9 +744,9 @@
           "entry_id": 2191555,
           "team_name": "1234 Barbyu Barbyu",
           "player_name": "Maew Mohawk",
-          "points": 1,
+          "points": 2,
           "hits": 0,
-          "net_points": 1,
+          "net_points": 2,
           "captain": "Haaland",
           "chip": "wildcard",
           "bench_points": 0
@@ -755,9 +755,9 @@
           "entry_id": 2189419,
           "team_name": "1234-Ultrasmooth-",
           "player_name": "Maew Mohawk",
-          "points": 2,
+          "points": 5,
           "hits": 4,
-          "net_points": -2,
+          "net_points": 1,
           "captain": "Gibbs-White",
           "chip": null,
           "bench_points": 0
@@ -7690,7 +7690,7 @@
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -7699,7 +7699,7 @@
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": true
         },
@@ -7841,7 +7841,7 @@
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -7992,7 +7992,7 @@
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -8134,7 +8134,7 @@
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -8276,7 +8276,7 @@
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -8285,7 +8285,7 @@
           "pos": "MID",
           "team": "BRE",
           "team_code": 94,
-          "points": 1,
+          "points": 3,
           "is_captain": false,
           "is_vice": false
         },
@@ -8409,7 +8409,7 @@
           "pos": "MID",
           "team": "BRE",
           "team_code": 94,
-          "points": 1,
+          "points": 3,
           "is_captain": false,
           "is_vice": false
         },
@@ -8560,7 +8560,7 @@
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -8569,7 +8569,7 @@
           "pos": "MID",
           "team": "BRE",
           "team_code": 94,
-          "points": 1,
+          "points": 3,
           "is_captain": false,
           "is_vice": false
         },
@@ -8693,7 +8693,7 @@
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -8817,7 +8817,7 @@
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -8995,7 +8995,7 @@
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -9065,7 +9065,7 @@
           "pos": "GKP",
           "team": "BRE",
           "team_code": 94,
-          "points": 1,
+          "points": 6,
           "is_captain": false,
           "is_vice": false
         },
@@ -9110,7 +9110,7 @@
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -9243,7 +9243,7 @@
           "pos": "MID",
           "team": "CHE",
           "team_code": 8,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
