@@ -504,34 +504,46 @@
       animation: liveGreenPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
 
-    @keyframes tabBoxPulse {
+    @keyframes tabGreenPulse {
       0%, 100% {
-        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
-        border-color: rgba(59, 130, 246, 0.8);
-        background-color: rgba(59, 130, 246, 0.08);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45);
+        border-color: rgba(16, 185, 129, 0.85);
+        background-color: rgba(16, 185, 129, 0.08);
       }
       50% {
-        box-shadow: 0 0 12px 3px rgba(59, 130, 246, 0.65);
-        border-color: rgba(37, 99, 235, 1);
-        background-color: rgba(59, 130, 246, 0.22);
+        box-shadow: 0 0 14px 3px rgba(16, 185, 129, 0.65);
+        border-color: rgba(5, 150, 105, 1);
+        background-color: rgba(16, 185, 129, 0.22);
       }
     }
-    @keyframes tabBoxPulseActive {
+    @keyframes tabGreenPulseActive {
       0%, 100% {
-        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55);
         filter: brightness(1);
       }
       50% {
-        box-shadow: 0 0 14px 4px rgba(59, 130, 246, 0.8);
-        filter: brightness(1.2);
+        box-shadow: 0 0 16px 4px rgba(16, 185, 129, 0.85);
+        filter: brightness(1.15);
       }
     }
     .tab-pulse-live {
-      animation: tabBoxPulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
-      border: 1px solid rgba(59, 130, 246, 0.8) !important;
+      animation: tabGreenPulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+      border: 1px solid rgba(16, 185, 129, 0.8) !important;
+      color: #059669 !important;
     }
-    .tab-pulse-live.bg-slate-900 {
-      animation: tabBoxPulseActive 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+    .dark .tab-pulse-live {
+      color: #34d399 !important;
+    }
+    .tab-pulse-live-active {
+      animation: tabGreenPulseActive 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+      background-color: #059669 !important;
+      color: #ffffff !important;
+      border: 1px solid #10b981 !important;
+    }
+    .dark .tab-pulse-live-active {
+      background-color: #059669 !important;
+      color: #ffffff !important;
+      border: 1px solid #34d399 !important;
     }
 
     .dark .text-emerald-700 {
@@ -668,7 +680,7 @@
           data-tab-target="highlights-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
         >
-          Weekly Highlight
+          <span id="tab-highlights-live-dot" class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping mr-1.5 align-middle hidden"></span>Weekly Highlight
         </button>
         <button 
           id="tab-btn-prizes"
@@ -800,7 +812,7 @@
       <!-- Top Overview Banner (Minimal) -->
       <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-4">
         <div class="flex items-center gap-2.5">
-          <div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+          <div id="highlights-live-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
           <h2 id="highlights-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">Weekly Highlight</h2>
         </div>
         <div class="flex items-center gap-2">
@@ -1596,16 +1608,36 @@
 
       updateHighlightsTabBlink() {
         const tabBtn = document.getElementById('tab-btn-highlights');
+        const liveDot = document.getElementById('tab-highlights-live-dot');
+        const bannerDot = document.getElementById('highlights-live-dot');
         if (!tabBtn) return;
         const gwKey = String(this.selectedGW);
         const gwData = this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
         const isFinished = gwData ? Boolean(gwData.is_finished) : false;
+        const isActive = this.activeTab === 'highlights-view';
 
-        // กล่อง Tab จะกะพริบจนกว่าจะสรุปจบ Gameweek
+        // กล่อง Tab และไฟแสดงสถานะจะเปลี่ยนเป็นสีเขียวและกะพริบจนกว่าจะสรุปจบ Gameweek
         if (!isFinished) {
-          tabBtn.classList.add('tab-pulse-live');
+          if (isActive) {
+            tabBtn.className = 'tab-nav-btn tab-pulse-live-active flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-emerald-600 text-white border border-emerald-500 shadow-xs dark:bg-emerald-600 dark:text-white dark:border-emerald-400';
+          } else {
+            tabBtn.className = 'tab-nav-btn tab-pulse-live flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-emerald-600 dark:text-emerald-400 border border-emerald-500/80 bg-emerald-500/10 hover:bg-emerald-500/20';
+          }
+          if (liveDot) liveDot.classList.remove('hidden');
+          if (bannerDot) {
+            bannerDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]';
+          }
         } else {
-          tabBtn.classList.remove('tab-pulse-live');
+          if (isActive) {
+            tabBtn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white border border-transparent';
+          } else {
+            tabBtn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800';
+          }
+          tabBtn.classList.remove('tab-pulse-live', 'tab-pulse-live-active');
+          if (liveDot) liveDot.classList.add('hidden');
+          if (bannerDot) {
+            bannerDot.className = 'w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-600';
+          }
         }
       }
 
@@ -2066,6 +2098,7 @@
 
         if (titleEl) titleEl.innerText = `Weekly Highlight Gameweek ${this.selectedGW}`;
         if (gwBadge) gwBadge.innerText = `สัปดาห์ที่ ${this.selectedGW}`;
+        this.updateHighlightsTabBlink();
 
         if (!grid) return;
 
