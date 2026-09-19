@@ -655,6 +655,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           LIVE
         </button>
         <button 
+          id="tab-btn-highlights"
+          data-tab-target="highlights-view" 
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
+        >
+          ไฮไลท์ประจำสัปดาห์
+        </button>
+        <button 
           id="tab-btn-prizes"
           data-tab-target="prizes-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -776,6 +783,28 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         </div>
 
       </div>
+    </div>
+
+    <!-- ==================== TAB: ไฮไลท์ประจำสัปดาห์ (HIGHLIGHTS VIEW) ==================== -->
+    <div id="highlights-view" class="tab-content hidden space-y-4">
+      
+      <!-- Top Overview Banner -->
+      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">สรุปรางวัล & ไฮไลท์เด่นประจำสัปดาห์</span>
+          <h2 id="highlights-overview-title" class="text-lg sm:text-xl font-bold text-slate-900 font-display mt-0.5">ไฮไลท์ประจำสัปดาห์</h2>
+          <p id="highlights-overview-subtitle" class="text-xs text-slate-500 mt-0.5">วิเคราะห์ฟอร์ม เจาะลึกสถิติ ย้ายตัว เปิดชิป และที่สุดของแต่ละสัปดาห์</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="highlights-gw-badge" class="bg-slate-100 text-slate-700 border border-slate-200 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
+        </div>
+      </div>
+
+      <!-- 14 Awards Cards Grid -->
+      <div id="highlights-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+        <!-- Rendered dynamically -->
+      </div>
+
     </div>
 
     <!-- ==================== TAB 2: สรุปรางวัล & รายเดือน (PRIZES & MONTHLY VIEW) ==================== -->
@@ -1558,6 +1587,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
       renderAll() {
         this.renderGWSelector();
         this.renderGameweekView();
+        this.renderHighlightsView();
         this.renderPrizesView();
         this.renderHallOfFameView();
         this.renderCupView();
@@ -1566,6 +1596,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
       renderCurrentTab() {
         if (this.activeTab === 'gameweek-view') this.renderGameweekView();
+        else if (this.activeTab === 'highlights-view') this.renderHighlightsView();
         else if (this.activeTab === 'prizes-view') this.renderPrizesView();
         else if (this.activeTab === 'hall-of-fame-view') this.renderHallOfFameView();
         else if (this.activeTab === 'cup-view') this.renderCupView();
@@ -1638,6 +1669,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         }
         this.renderGWSelector();
         this.renderGameweekView();
+        this.renderHighlightsView();
       }
 
       renderGameweekView() {
@@ -1985,6 +2017,417 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           });
           overallBody.innerHTML = oHtml;
         }
+      }
+
+      getChipNameThai(chip) {
+        if (!chip) return '-';
+        const c = String(chip).toLowerCase();
+        if (c === 'wildcard') return 'ไวลด์การ์ด';
+        if (c === 'bboost') return 'เบนช์ บูสต์';
+        if (c === '3xc') return 'ทริปเปิ้ล กัปตัน';
+        if (c === 'freehit') return 'ฟรีฮิต';
+        return chip.toUpperCase();
+      }
+
+      renderHighlightsView() {
+        const gwKey = String(this.selectedGW);
+        const gwData = this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
+        
+        const titleEl = document.getElementById('highlights-overview-title');
+        const subEl = document.getElementById('highlights-overview-subtitle');
+        const gwBadge = document.getElementById('highlights-gw-badge');
+        const grid = document.getElementById('highlights-cards-grid');
+
+        if (titleEl) titleEl.innerText = `ไฮไลท์ประจำสัปดาห์ Gameweek ${this.selectedGW}`;
+        if (subEl) subEl.innerText = `วิเคราะห์ฟอร์ม เจาะลึกสถิติ ย้ายตัว เปิดชิป และที่สุดของสัปดาห์ที่ ${this.selectedGW}`;
+        if (gwBadge) gwBadge.innerText = `สัปดาห์ที่ ${this.selectedGW}`;
+
+        if (!grid) return;
+
+        if (!gwData || !gwData.results || gwData.results.length === 0) {
+          grid.innerHTML = '<div class="col-span-full py-12 text-center text-slate-400 font-medium font-display">ยังไม่มีข้อมูลในสัปดาห์นี้</div>';
+          return;
+        }
+
+        const isFinished = Boolean(gwData.is_finished);
+        const isStarted = gwData.is_started !== undefined 
+          ? Boolean(gwData.is_started) 
+          : (isFinished || (gwData.results && gwData.results.some(r => r.points > 0)));
+
+        if (!isStarted) {
+          grid.innerHTML = `
+            <div class="col-span-full py-12 text-center text-slate-400 font-medium font-display glass-card rounded-2xl p-6 border border-slate-200">
+              <div class="text-2xl mb-2">⏳</div>
+              <div class="text-slate-700 dark:text-slate-200 font-bold text-base">Gameweek ${this.selectedGW} ยังไม่เริ่มการแข่งขัน</div>
+              <p class="text-xs text-slate-400 mt-1">ไฮไลท์และรางวัลต่างๆ จะประมวลผลทันทีเมื่อเริ่มคิกออฟ</p>
+            </div>
+          `;
+          return;
+        }
+
+        const results = [...gwData.results];
+        const sortedByNet = [...results].sort((a, b) => b.net_points - a.net_points);
+        const avgNet = results.reduce((sum, r) => sum + r.net_points, 0) / results.length;
+
+        // Card builder helper
+        const renderCard = (cfg) => {
+          let themeBg = '';
+          let iconBg = '';
+          let badgeColor = '';
+
+          if (cfg.theme === 'green') {
+            themeBg = 'border-emerald-200 bg-gradient-to-r from-emerald-50/70 via-white to-emerald-50/30 dark:from-emerald-950/20 dark:via-slate-900 dark:to-emerald-950/10 dark:border-emerald-800/50';
+            iconBg = 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300';
+            badgeColor = 'text-emerald-700 dark:text-emerald-400 font-bold';
+          } else if (cfg.theme === 'red') {
+            themeBg = 'border-rose-200 bg-gradient-to-r from-rose-50/70 via-white to-rose-50/30 dark:from-rose-950/20 dark:via-slate-900 dark:to-rose-950/10 dark:border-rose-800/50';
+            iconBg = 'bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-300';
+            badgeColor = 'text-rose-700 dark:text-rose-400 font-bold';
+          } else if (cfg.theme === 'purple') {
+            themeBg = 'border-indigo-200 bg-gradient-to-r from-indigo-50/70 via-white to-indigo-50/30 dark:from-indigo-950/20 dark:via-slate-900 dark:to-indigo-950/10 dark:border-indigo-800/50';
+            iconBg = 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-300';
+            badgeColor = 'text-indigo-700 dark:text-indigo-400 font-bold';
+          } else {
+            themeBg = 'border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/40';
+            iconBg = 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
+            badgeColor = 'text-slate-700 dark:text-slate-300 font-bold';
+          }
+
+          if (!cfg.winner) {
+            return `
+              <div class="rounded-2xl p-4 sm:p-4.5 border ${themeBg} flex flex-col justify-between transition-all">
+                <div class="flex items-start gap-3">
+                  <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-lg ${iconBg}">
+                    ${cfg.icon}
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <h4 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display leading-tight">${cfg.title}</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${cfg.subtitle}</p>
+                  </div>
+                </div>
+                <div class="mt-3 pt-2.5 border-t border-slate-200/60 dark:border-slate-800/60 text-xs text-slate-400 italic">
+                  ${cfg.emptyMsg || 'ไม่มีข้อมูลในสัปดาห์นี้'}
+                </div>
+              </div>
+            `;
+          }
+
+          return `
+            <div class="rounded-2xl p-4 sm:p-4.5 border ${themeBg} flex flex-col justify-between transition-all hover:shadow-xs">
+              <div class="flex items-start gap-3">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-lg ${iconBg}">
+                  ${cfg.icon}
+                </div>
+                <div class="min-w-0 flex-1">
+                  <h4 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display leading-tight">${cfg.title}</h4>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${cfg.subtitle}</p>
+                </div>
+              </div>
+              <div class="mt-3 pt-2.5 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between gap-2">
+                <div class="min-w-0 pr-2">
+                  <button onclick="app.openTeamModal(${cfg.winner.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 hover:text-blue-700 transition-colors cursor-pointer truncate block">
+                    ${this.escapeHtml(cfg.winner.team_name)}
+                  </button>
+                  <div class="text-[11px] text-slate-500 truncate">${this.escapeHtml(cfg.winner.player_name)}</div>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <span class="text-xs sm:text-sm font-display ${badgeColor}">${cfg.statText}</span>
+                </div>
+              </div>
+              ${cfg.detailHtml ? `<div class="mt-2 text-[10.5px] text-slate-600 dark:text-slate-400 bg-white/70 dark:bg-slate-800/50 px-2.5 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800 leading-relaxed">${cfg.detailHtml}</div>` : ''}
+            </div>
+          `;
+        };
+
+        // 1. แต้มสูงสุดประจำสัปดาห์
+        const topGunWinner = sortedByNet[0];
+        const card1 = renderCard({
+          icon: '🏆',
+          title: 'แต้มสูงสุดประจำสัปดาห์',
+          subtitle: 'ทำคะแนนสุทธิได้สูงที่สุดในสัปดาห์นี้',
+          theme: 'green',
+          winner: topGunWinner,
+          statText: `${topGunWinner ? topGunWinner.net_points : 0} แต้ม`,
+          detailHtml: topGunWinner ? `แต้มดิบ ${topGunWinner.points} แต้ม${topGunWinner.hits > 0 ? ` • หักลบ ${topGunWinner.hits} แต้ม` : ''} • กัปตัน: ${topGunWinner.captain || '-'}` : null
+        });
+
+        // 2. สัปดาห์สุดหิน (แต้มต่ำสุด)
+        const toughWinner = sortedByNet[sortedByNet.length - 1];
+        const card2 = renderCard({
+          icon: '🌧️',
+          title: 'สัปดาห์สุดหิน (แต้มต่ำสุด)',
+          subtitle: 'ทำคะแนนสุทธิต่ำที่สุดในสัปดาห์นี้',
+          theme: 'red',
+          winner: toughWinner,
+          statText: `${toughWinner ? toughWinner.net_points : 0} แต้ม`,
+          detailHtml: toughWinner ? `แต้มดิบ ${toughWinner.points} แต้ม${toughWinner.hits > 0 ? ` • หักลบ ${toughWinner.hits} แต้ม` : ''}` : null
+        });
+
+        // 3. คัมแบ็กยอดเยี่ยม & 4. สไลเดอร์ประจำสัปดาห์ (Rank Changes)
+        let comebackWinner = null;
+        let comebackStat = '';
+        let comebackDetail = '';
+        let comebackEmpty = '';
+
+        let crasherWinner = null;
+        let crasherStat = '';
+        let crasherDetail = '';
+        let crasherEmpty = '';
+
+        if (this.selectedGW === 1) {
+          comebackEmpty = 'สัปดาห์แรกของการแข่งขัน (ยังไม่มีการเปลี่ยนแปลงอันดับ)';
+          crasherEmpty = 'สัปดาห์แรกของการแข่งขัน (ยังไม่มีการเปลี่ยนแปลงอันดับ)';
+        } else {
+          // Compute cumulative standings up to (gw - 1) and up to gw
+          const prevTotals = {};
+          const currTotals = {};
+
+          (this.data.teams || []).forEach(t => {
+            prevTotals[t.entry_id] = 0;
+            currTotals[t.entry_id] = 0;
+          });
+
+          for (let g = 1; g <= this.selectedGW; g++) {
+            const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+            if (gData && gData.results) {
+              gData.results.forEach(r => {
+                if (g < this.selectedGW) {
+                  prevTotals[r.entry_id] = (prevTotals[r.entry_id] || 0) + (r.net_points || 0);
+                }
+                currTotals[r.entry_id] = (currTotals[r.entry_id] || 0) + (r.net_points || 0);
+              });
+            }
+          }
+
+          const prevRanked = Object.keys(prevTotals).map(eid => ({ entry_id: Number(eid), pts: prevTotals[eid] })).sort((a, b) => b.pts - a.pts);
+          const currRanked = Object.keys(currTotals).map(eid => ({ entry_id: Number(eid), pts: currTotals[eid] })).sort((a, b) => b.pts - a.pts);
+
+          const prevRankMap = {};
+          prevRanked.forEach((item, idx) => prevRankMap[item.entry_id] = idx + 1);
+          const currRankMap = {};
+          currRanked.forEach((item, idx) => currRankMap[item.entry_id] = idx + 1);
+
+          const rankDiffs = results.map(r => {
+            const pR = prevRankMap[r.entry_id] || results.length;
+            const cR = currRankMap[r.entry_id] || results.length;
+            return {
+              result: r,
+              prevRank: pR,
+              currRank: cR,
+              diff: pR - cR // positive = rise, negative = fall
+            };
+          });
+
+          const maxRise = [...rankDiffs].sort((a, b) => b.diff - a.diff)[0];
+          if (maxRise && maxRise.diff > 0) {
+            comebackWinner = maxRise.result;
+            comebackStat = `+${maxRise.diff} อันดับ`;
+            comebackDetail = `ไต่อันดับจากที่ ${maxRise.prevRank} ขึ้นมาอยู่ที่ ${maxRise.currRank} ของลีก`;
+          } else {
+            comebackEmpty = 'ไม่มีทีมที่อันดับขยับขึ้นในสัปดาห์นี้';
+          }
+
+          const maxFall = [...rankDiffs].sort((a, b) => a.diff - b.diff)[0];
+          if (maxFall && maxFall.diff < 0) {
+            crasherWinner = maxFall.result;
+            crasherStat = `${maxFall.diff} อันดับ`;
+            crasherDetail = `อันดับร่วงจากที่ ${maxFall.prevRank} หล่นไปอยู่ที่ ${maxFall.currRank} ของลีก`;
+          } else {
+            crasherEmpty = 'ไม่มีทีมที่อันดับร่วงลงในสัปดาห์นี้';
+          }
+        }
+
+        const card3 = renderCard({
+          icon: '🚀',
+          title: 'คัมแบ็กยอดเยี่ยม (ไต่อันดับสูงสุด)',
+          subtitle: 'อันดับรวมในลีกพุ่งขึ้นมามากที่สุด',
+          theme: 'green',
+          winner: comebackWinner,
+          statText: comebackStat,
+          detailHtml: comebackDetail,
+          emptyMsg: comebackEmpty
+        });
+
+        const card4 = renderCard({
+          icon: '📉',
+          title: 'สไลเดอร์ประจำสัปดาห์ (อันดับร่วงหนักสุด)',
+          subtitle: 'อันดับรวมในลีกหล่นลงไปมากที่สุด',
+          theme: 'red',
+          winner: crasherWinner,
+          statText: crasherStat,
+          detailHtml: crasherDetail,
+          emptyMsg: crasherEmpty
+        });
+
+        // 5. เซียนเปิดชิป
+        const chipTeams = results.filter(r => r.chip && r.chip !== '-').sort((a, b) => b.net_points - a.net_points);
+        const chipMasterWinner = chipTeams[0] || null;
+        const card5 = renderCard({
+          icon: '⚡',
+          title: 'เซียนเปิดชิป',
+          subtitle: 'ทำคะแนนได้สูงสุดจากทีมที่เปิดใช้งานชิปพิเศษ',
+          theme: 'green',
+          winner: chipMasterWinner,
+          statText: chipMasterWinner ? `${chipMasterWinner.net_points} แต้ม` : '',
+          detailHtml: chipMasterWinner ? `เปิดใช้งานชิป: <strong>${this.getChipNameThai(chipMasterWinner.chip)}</strong>` : null,
+          emptyMsg: 'ไม่มีทีมเปิดใช้งานชิปในสัปดาห์นี้'
+        });
+
+        // 6. นักรบไร้ชิป
+        const noChipTeams = results.filter(r => !r.chip || r.chip === '-').sort((a, b) => b.net_points - a.net_points);
+        const noChipWinner = noChipTeams[0] || null;
+        const card6 = renderCard({
+          icon: '🛡️',
+          title: 'นักรบไร้ชิป',
+          subtitle: 'ทำแต้มสูงสุดโดยไม่พึ่งพาชิปพิเศษใดๆ',
+          theme: 'green',
+          winner: noChipWinner,
+          statText: noChipWinner ? `${noChipWinner.net_points} แต้ม` : '',
+          detailHtml: noChipWinner ? `ทำแต้มเพียวโดยไม่ได้เปิดใช้งานชิปพิเศษ` : null,
+          emptyMsg: 'ทุกทีมเปิดใช้งานชิปในสัปดาห์นี้'
+        });
+
+        // 7. ทีมมูลค่าสูงสุด (เศรษฐีประจำลีก)
+        const valueSorted = [...results].sort((a, b) => (b.team_value || 100.0) - (a.team_value || 100.0));
+        const valueWinner = valueSorted[0] || null;
+        const card7 = renderCard({
+          icon: '💰',
+          title: 'ทีมมูลค่าสูงสุด (เศรษฐีประจำลีก)',
+          subtitle: 'มูลค่าทีมรวมสูงสุดในลีก',
+          theme: 'green',
+          winner: valueWinner,
+          statText: valueWinner ? `£${valueWinner.team_value || 100.0}m` : '',
+          detailHtml: valueWinner ? `มูลค่าทีม: £${valueWinner.team_value || 100.0}m${valueWinner.bank ? ` • เงินในธนาคาร: £${valueWinner.bank}m` : ''}` : null
+        });
+
+        // 8. เปิดชิปกร่อย (แต้มต่ำกว่าค่าเฉลี่ยลีก)
+        const lowChipTeams = results.filter(r => r.chip && r.chip !== '-' && r.net_points < avgNet).sort((a, b) => a.net_points - b.net_points);
+        const lowChipWinner = lowChipTeams[0] || null;
+        const card8 = renderCard({
+          icon: '🥀',
+          title: 'เปิดชิปกร่อย (แต้มต่ำกว่าค่าเฉลี่ย)',
+          subtitle: 'เปิดใช้ชิปพิเศษแต่คะแนนต่ำกว่าค่าเฉลี่ยของลีก',
+          theme: 'red',
+          winner: lowChipWinner,
+          statText: lowChipWinner ? `${lowChipWinner.net_points} แต้ม` : '',
+          detailHtml: lowChipWinner ? `เปิดชิป: ${this.getChipNameThai(lowChipWinner.chip)} ได้ ${lowChipWinner.net_points} แต้ม (ค่าเฉลี่ยลีก ${avgNet.toFixed(1)} แต้ม)` : null,
+          emptyMsg: 'ไม่มีทีมเปิดชิปที่ได้แต้มต่ำกว่าค่าเฉลี่ยของลีก'
+        });
+
+        // 9. เสียดายแต้มสำรอง (สำรองแต้มทะลัก)
+        const benchTeams = results.filter(r => r.chip !== 'bboost').sort((a, b) => (b.bench_points || 0) - (a.bench_points || 0));
+        const benchWinner = (benchTeams[0] && benchTeams[0].bench_points > 0) ? benchTeams[0] : null;
+        const card9 = renderCard({
+          icon: '🪑',
+          title: 'เสียดายแต้มสำรอง (สำรองแต้มทะลัก)',
+          subtitle: 'แต้มตัวสำรองสูงที่สุด โดยไม่ได้เปิดเบนช์บูสต์',
+          theme: 'red',
+          winner: benchWinner,
+          statText: benchWinner ? `${benchWinner.bench_points} แต้ม` : '',
+          detailHtml: benchWinner ? `มีแต้มติดอยู่บนม้านั่งสำรอง ${benchWinner.bench_points} แต้ม (ไม่ได้ใช้ชิปเบนช์บูสต์)` : null,
+          emptyMsg: 'ไม่มีทีมที่มีแต้มค้างบนม้านั่งสำรองในสัปดาห์นี้'
+        });
+
+        // 10. จอมกล้าท้าลบ (สายยอมลบแต้ม)
+        const hitTeams = results.filter(r => r.hits > 0).sort((a, b) => b.hits - a.hits);
+        const hitWinner = hitTeams[0] || null;
+        const card10 = renderCard({
+          icon: '🎯',
+          title: 'จอมกล้าท้าลบ (สายยอมลบแต้ม)',
+          subtitle: 'ยอมเสียแต้มลบจากการย้ายตัวมากที่สุด',
+          theme: 'purple',
+          winner: hitWinner,
+          statText: hitWinner ? `-${hitWinner.hits} แต้ม` : '',
+          detailHtml: hitWinner ? `ยอมหักลบแต้มย้ายตัว ${hitWinner.hits} แต้ม (ย้ายตัวเกินโควตา ${hitWinner.hits / 4} คน)` : null,
+          emptyMsg: 'ไม่มีทีมเสียแต้มลบย้ายตัวในสัปดาห์นี้'
+        });
+
+        // 11. เซียนซื้อขายตัว (ดึงตัวเข้าเป้า)
+        const goodTxTeams = results.filter(r => r.transfers_count > 0 && r.transfers_net_impact > 0).sort((a, b) => b.transfers_net_impact - a.transfers_net_impact);
+        const goodTxWinner = goodTxTeams[0] || null;
+        let goodTxDetail = '';
+        if (goodTxWinner) {
+          const moveDesc = (goodTxWinner.transfer_moves && goodTxWinner.transfer_moves.length > 0)
+            ? goodTxWinner.transfer_moves.map(m => `${m.in} (${m.in_pts > 0 ? '+' : ''}${m.in_pts}) แทน ${m.out} (${m.out_pts})`).join(', ')
+            : '';
+          goodTxDetail = `กำไรจากตัวย้าย ${goodTxWinner.transfers_pts_gain >= 0 ? '+' : ''}${goodTxWinner.transfers_pts_gain} แต้ม • แต้มลบ -${goodTxWinner.hits || 0}${moveDesc ? ` • ${moveDesc}` : ''}`;
+        }
+        const card11 = renderCard({
+          icon: '🏹',
+          title: 'เซียนซื้อขายตัว (ดึงตัวเข้าเป้า)',
+          subtitle: 'ผลต่างคะแนนจากการซื้อขายตัวสุทธิดีที่สุด (รวมหักลบแต้มย้าย)',
+          theme: 'green',
+          winner: goodTxWinner,
+          statText: goodTxWinner ? `+${goodTxWinner.transfers_net_impact} แต้ม` : '',
+          detailHtml: goodTxDetail,
+          emptyMsg: 'ไม่มีทีมที่ได้ผลต่างคะแนนย้ายตัวเป็นบวกในสัปดาห์นี้'
+        });
+
+        // 12. ดีลผิดจังหวะ (ย้ายตัวติดลบ)
+        const badTxTeams = results.filter(r => r.transfers_count > 0 && r.transfers_net_impact < 0).sort((a, b) => a.transfers_net_impact - b.transfers_net_impact);
+        const badTxWinner = badTxTeams[0] || null;
+        let badTxDetail = '';
+        if (badTxWinner) {
+          const moveDesc = (badTxWinner.transfer_moves && badTxWinner.transfer_moves.length > 0)
+            ? badTxWinner.transfer_moves.map(m => `${m.in} (${m.in_pts}) แทน ${m.out} (${m.out_pts})`).join(', ')
+            : '';
+          badTxDetail = `ขาดทุนจากตัวย้าย ${badTxWinner.transfers_pts_gain} แต้ม • แต้มลบ -${badTxWinner.hits || 0}${moveDesc ? ` • ${moveDesc}` : ''}`;
+        }
+        const card12 = renderCard({
+          icon: '🕸️',
+          title: 'ดีลผิดจังหวะ (ย้ายตัวติดลบ)',
+          subtitle: 'ผลต่างคะแนนจากการซื้อขายตัวสุทธิต่ำที่สุด (รวมหักลบแต้มย้าย)',
+          theme: 'red',
+          winner: badTxWinner,
+          statText: badTxWinner ? `${badTxWinner.transfers_net_impact} แต้ม` : '',
+          detailHtml: badTxDetail,
+          emptyMsg: 'ไม่มีทีมที่ขาดทุนแต้มจากการย้ายตัวในสัปดาห์นี้'
+        });
+
+        // 13. ยอมลบแล้วเจ็บ
+        const painfulTeams = results.filter(r => r.hits > 0 && r.transfers_net_impact < 0).sort((a, b) => a.transfers_net_impact - b.transfers_net_impact);
+        const painfulWinner = painfulTeams[0] || null;
+        const card13 = renderCard({
+          icon: '🩹',
+          title: 'ยอมลบแล้วเจ็บ',
+          subtitle: 'ยอมเสียแต้มลบ (Hits) แต่ผลต่างแต้มย้ายตัวสุทธิติดลบ',
+          theme: 'red',
+          winner: painfulWinner,
+          statText: painfulWinner ? `${painfulWinner.transfers_net_impact} แต้ม` : '',
+          detailHtml: painfulWinner ? `ยอมหักลบแต้มย้าย -${painfulWinner.hits} แต้ม แต่ผลงานตัวย้ายสุทธิได้ ${painfulWinner.transfers_net_impact} แต้ม (ไม่คุ้มค่า)` : null,
+          emptyMsg: 'ไม่มีทีมที่ยอมเสียแต้มลบแล้วผลงานติดลบในสัปดาห์นี้'
+        });
+
+        // 14. เปลี่ยนตัวเดียวเปรี้ยง
+        const singleTxTeams = results.filter(r => r.transfers_count === 1 && r.transfers_net_impact > 0).sort((a, b) => b.transfers_net_impact - a.transfers_net_impact);
+        const singleTxWinner = singleTxTeams[0] || null;
+        let singleTxDetail = '';
+        if (singleTxWinner) {
+          if (singleTxWinner.transfer_moves && singleTxWinner.transfer_moves.length > 0) {
+            const m = singleTxWinner.transfer_moves[0];
+            singleTxDetail = `ดึง ${m.in} (${m.in_pts > 0 ? '+' : ''}${m.in_pts} แต้ม) แทน ${m.out} (${m.out_pts} แต้ม)`;
+          } else {
+            singleTxDetail = `ย้ายตัวเพียงคนเดียวและสร้างผลต่างแต้มบวก +${singleTxWinner.transfers_net_impact} แต้ม`;
+          }
+        }
+        const card14 = renderCard({
+          icon: '🎯',
+          title: 'เปลี่ยนตัวเดียวเปรี้ยง',
+          subtitle: 'เปลี่ยนตัวเพียงตำแหน่งเดียว แล้วสร้างผลต่างแต้มบวกได้ดีที่สุด',
+          theme: 'green',
+          winner: singleTxWinner,
+          statText: singleTxWinner ? `+${singleTxWinner.transfers_net_impact} แต้ม` : '',
+          detailHtml: singleTxDetail,
+          emptyMsg: 'ไม่มีทีมย้ายตัว 1 คนที่ได้ผลงานบวกในสัปดาห์นี้'
+        });
+
+        // Assemble all 14 cards
+        grid.innerHTML = [
+          card1, card2, card3, card4,
+          card5, card6, card7, card8,
+          card9, card10, card11, card12,
+          card13, card14
+        ].join('');
       }
 
       renderPrizesView() {

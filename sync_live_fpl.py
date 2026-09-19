@@ -237,6 +237,18 @@ def main():
         else:
             print(f"Skipping live elements fetch for completed GW {gw} (using cached squad points).")
 
+    def ensure_live_gw(gw_num):
+        if gw_num not in live_by_gw or not live_by_gw[gw_num]:
+            try:
+                print(f" -> Fetching live elements for GW {gw_num}...")
+                ld = fetch(f'https://fantasy.premierleague.com/api/event/{gw_num}/live/')
+                live_by_gw[gw_num] = {el['id']: el['stats']['total_points'] for el in ld['elements']}
+            except Exception as err:
+                print(f"Error fetching live GW {gw_num}: {err}")
+                if gw_num not in live_by_gw:
+                    live_by_gw[gw_num] = {}
+        return live_by_gw[gw_num]
+
     # Thai timestamp formatting
     thai_months = ['', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
     tz_th = timezone(timedelta(hours=7))
@@ -310,10 +322,11 @@ def main():
                 cached_gw = cached_gw_data.get(str(gw), {})
                 cached_res = cached_gw.get("results", [])
                 
-                # Check if cached results exist and are non-corrupted (> 0 pts)
+                # Check if cached results exist and are non-corrupted (> 0 pts) and contain enriched transfer data
                 has_corrupt_cache = (not cached_res) or all(r.get("points", 0) == 0 and r.get("net_points", 0) == 0 for r in cached_res)
+                needs_enrichment = any(r.get("team_value") is None or r.get("transfers_net_impact") is None for r in cached_res)
                 
-                if not args.force and gw_is_finished and cached_gw.get("is_finished") and not has_corrupt_cache:
+                if not args.force and gw_is_finished and cached_gw.get("is_finished") and not has_corrupt_cache and not needs_enrichment:
                     cached_res_map = {r["entry_id"]: r for r in cached_res if (r.get("points", 0) > 0 or r.get("net_points", 0) > 0 or f"{r['entry_id']}_{gw}" in cached_squads)}
                     
                     teams_to_fetch_gw = []
@@ -383,6 +396,7 @@ def main():
                             p_pts = live_by_gw.get(gw, {}).get(pid, 0)
                             
                             p_obj = {
+                                "id": pid,
                                 "name": el_info.get('web_name', 'Player'),
                                 "pos": pos_code,
                                 "team": team_code,
@@ -414,6 +428,9 @@ def main():
                             raw_points = official_pts
 
                         net_points = raw_points - hits
+                        team_val = round((hist.get('value') or 1000) / 10.0, 1)
+                        team_bank = round((hist.get('bank') or 0) / 10.0, 1)
+                        event_tx = hist.get('event_transfers', 0)
                         
                         result_item = {
                             "entry_id": eid,
@@ -424,7 +441,10 @@ def main():
                             "net_points": net_points,
                             "captain": capt_name,
                             "chip": chip,
-                            "bench_points": bench_pts_disp
+                            "bench_points": bench_pts_disp,
+                            "team_value": team_val,
+                            "bank": team_bank,
+                            "transfers_count": event_tx
                         }
                         
                         squad_item = {
@@ -467,6 +487,70 @@ def main():
                             gameweeks_dict[str(gw)]["results"].append(result_item)
                         if squad_item:
                             squads_dict[f"{eid}_{gw}"] = squad_item
+
+                # Helper to extract player element ID safely
+                def extract_pid(p):
+                    if isinstance(p, dict):
+                        if "id" in p and p["id"]:
+                            return p["id"]
+                        for el_id, el in elements.items():
+                            if el.get("web_name") == p.get("name"):
+                                return el_id
+                    return None
+
+                # Calculate transfer impact between consecutive GWs for each team
+                for gw in range(1, max_gw + 1):
+                    gw_str = str(gw)
+                    gw_live = ensure_live_gw(gw) if gw > 1 else None
+                    for r in gameweeks_dict[gw_str]["results"]:
+                        eid = r["entry_id"]
+                        if gw == 1:
+                            r["transfers_count"] = 0
+                            r["transfers_pts_gain"] = 0
+                            r["transfers_net_impact"] = 0
+                            r["transfer_moves"] = []
+                        else:
+                            sq_curr = squads_dict.get(f"{eid}_{gw}")
+                            sq_prev = squads_dict.get(f"{eid}_{gw-1}")
+                            if sq_curr and sq_prev:
+                                curr_ids = set(extract_pid(p) for p in sq_curr.get("starting", []) + sq_curr.get("bench", []) if extract_pid(p) is not None)
+                                prev_ids = set(extract_pid(p) for p in sq_prev.get("starting", []) + sq_prev.get("bench", []) if extract_pid(p) is not None)
+                                tin = curr_ids - prev_ids
+                                tout = prev_ids - curr_ids
+                                pts_in = sum(gw_live.get(pid, 0) for pid in tin) if gw_live else 0
+                                pts_out = sum(gw_live.get(pid, 0) for pid in tout) if gw_live else 0
+                                moves_gain = pts_in - pts_out
+                                net_impact = moves_gain - r.get("hits", 0)
+
+                                moves = []
+                                in_list = list(tin)
+                                out_list = list(tout)
+                                max_len = max(len(in_list), len(out_list))
+                                for i in range(max_len):
+                                    m_in_id = in_list[i] if i < len(in_list) else None
+                                    m_out_id = out_list[i] if i < len(out_list) else None
+                                    m_in_name = elements.get(m_in_id, {}).get("web_name", "-") if m_in_id else "-"
+                                    m_out_name = elements.get(m_out_id, {}).get("web_name", "-") if m_out_id else "-"
+                                    m_in_pts = gw_live.get(m_in_id, 0) if (gw_live and m_in_id) else 0
+                                    m_out_pts = gw_live.get(m_out_id, 0) if (gw_live and m_out_id) else 0
+                                    moves.append({
+                                        "in": m_in_name,
+                                        "in_pts": m_in_pts,
+                                        "out": m_out_name,
+                                        "out_pts": m_out_pts,
+                                        "net": m_in_pts - m_out_pts
+                                    })
+
+                                r["transfers_count"] = len(tin)
+                                r["transfers_pts_gain"] = moves_gain
+                                r["transfers_net_impact"] = net_impact
+                                r["transfer_moves"] = moves
+                            else:
+                                if "transfers_count" not in r:
+                                    r["transfers_count"] = 0
+                                r["transfers_pts_gain"] = 0
+                                r["transfers_net_impact"] = -r.get("hits", 0)
+                                r["transfer_moves"] = []
 
             # Sort and finalize all gameweeks results
             for gw in range(1, max_gw + 1):
