@@ -670,6 +670,7 @@
     <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 border-t border-slate-200/80">
       <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto touch-scroll no-scrollbar py-1.5 sm:py-2">
         <button 
+          id="tab-btn-live"
           data-tab-target="gameweek-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white"
         >
@@ -680,7 +681,7 @@
           data-tab-target="highlights-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
         >
-          <span id="tab-highlights-live-dot" class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-ping mr-1.5 align-middle hidden"></span>Weekly Highlight
+          Weekly Highlight
         </button>
         <button 
           id="tab-btn-prizes"
@@ -812,7 +813,6 @@
       <!-- Top Overview Banner (Minimal) -->
       <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-4">
         <div class="flex items-center gap-2.5">
-          <div id="highlights-live-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
           <h2 id="highlights-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">Weekly Highlight</h2>
         </div>
         <div class="flex items-center gap-2">
@@ -1607,36 +1607,51 @@
       }
 
       updateHighlightsTabBlink() {
-        const tabBtn = document.getElementById('tab-btn-highlights');
-        const liveDot = document.getElementById('tab-highlights-live-dot');
-        const bannerDot = document.getElementById('highlights-live-dot');
-        if (!tabBtn) return;
+        const liveTabBtn = document.getElementById('tab-btn-live');
+        const hlTabBtn = document.getElementById('tab-btn-highlights');
         const gwKey = String(this.selectedGW);
         const gwData = this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
         const isFinished = gwData ? Boolean(gwData.is_finished) : false;
-        const isActive = this.activeTab === 'highlights-view';
 
-        // กล่อง Tab และไฟแสดงสถานะจะเปลี่ยนเป็นสีเขียวและกะพริบจนกว่าจะสรุปจบ Gameweek
+        // ทั้งสองหัวข้อ (LIVE และ Weekly Highlight) จะกระพริบเป็นสีเขียวเหมือนกันขณะที่เกมวีคกำลังแข่งขันและยังไม่จบ
         if (!isFinished) {
-          if (isActive) {
-            tabBtn.className = 'tab-nav-btn tab-pulse-live-active flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-emerald-600 text-white border border-emerald-500 shadow-xs dark:bg-emerald-600 dark:text-white dark:border-emerald-400';
-          } else {
-            tabBtn.className = 'tab-nav-btn tab-pulse-live flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-emerald-600 dark:text-emerald-400 border border-emerald-500/80 bg-emerald-500/10 hover:bg-emerald-500/20';
+          if (liveTabBtn) {
+            const isLiveActive = this.activeTab === 'gameweek-view';
+            if (isLiveActive) {
+              liveTabBtn.className = 'tab-nav-btn tab-pulse-live-active flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-emerald-600 text-white border border-emerald-500 shadow-xs dark:bg-emerald-600 dark:text-white dark:border-emerald-400';
+            } else {
+              liveTabBtn.className = 'tab-nav-btn tab-pulse-live flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-emerald-600 dark:text-emerald-400 border border-emerald-500/80 bg-emerald-500/10 hover:bg-emerald-500/20';
+            }
           }
-          if (liveDot) liveDot.classList.remove('hidden');
-          if (bannerDot) {
-            bannerDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]';
+
+          if (hlTabBtn) {
+            const isHlActive = this.activeTab === 'highlights-view';
+            if (isHlActive) {
+              hlTabBtn.className = 'tab-nav-btn tab-pulse-live-active flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-emerald-600 text-white border border-emerald-500 shadow-xs dark:bg-emerald-600 dark:text-white dark:border-emerald-400';
+            } else {
+              hlTabBtn.className = 'tab-nav-btn tab-pulse-live flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-emerald-600 dark:text-emerald-400 border border-emerald-500/80 bg-emerald-500/10 hover:bg-emerald-500/20';
+            }
           }
         } else {
-          if (isActive) {
-            tabBtn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white border border-transparent';
-          } else {
-            tabBtn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800';
+          // หากจบการแข่งขันเกมวีคนั้นแล้ว ทั้งสองปุ่มจะหยุดกระพริบ และกลับสู่โทนสีปกติ
+          if (liveTabBtn) {
+            const isLiveActive = this.activeTab === 'gameweek-view';
+            if (isLiveActive) {
+              liveTabBtn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white border border-transparent';
+            } else {
+              liveTabBtn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800';
+            }
+            liveTabBtn.classList.remove('tab-pulse-live', 'tab-pulse-live-active');
           }
-          tabBtn.classList.remove('tab-pulse-live', 'tab-pulse-live-active');
-          if (liveDot) liveDot.classList.add('hidden');
-          if (bannerDot) {
-            bannerDot.className = 'w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-600';
+
+          if (hlTabBtn) {
+            const isHlActive = this.activeTab === 'highlights-view';
+            if (isHlActive) {
+              hlTabBtn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white border border-transparent';
+            } else {
+              hlTabBtn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800';
+            }
+            hlTabBtn.classList.remove('tab-pulse-live', 'tab-pulse-live-active');
           }
         }
       }
