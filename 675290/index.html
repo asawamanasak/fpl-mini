@@ -2081,26 +2081,31 @@
         const sortedByNet = [...results].sort((a, b) => b.net_points - a.net_points);
         const avgNet = results.reduce((sum, r) => sum + r.net_points, 0) / results.length;
 
-        // Minimal Card builder helper (No subtitles, minimal readable layout)
+        const ICONS = {
+          star: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`,
+          layers: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>`,
+          rotateCcw: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>`,
+          chartDown: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><polyline points="7 10 11 8 13 13 17 16"></polyline></svg>`,
+          trophy: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 4h16v6a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6V4z"></path><path d="M12 16v4"></path><path d="M8 20h8"></path></svg>`,
+          award: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>`,
+          arrowUp: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>`
+        };
+
+        // Minimal Card builder helper (Circular Monochrome Vector Icons, No subtitles)
         const renderCard = (cfg) => {
-          let iconBg = '';
           let badgeColor = '';
           let cardHover = '';
 
           if (cfg.theme === 'green') {
-            iconBg = 'bg-emerald-100/80 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300';
             badgeColor = 'text-emerald-700 dark:text-emerald-400';
             cardHover = 'hover:border-emerald-300 dark:hover:border-emerald-700/60';
           } else if (cfg.theme === 'red') {
-            iconBg = 'bg-rose-100/80 text-rose-700 dark:bg-rose-900/50 dark:text-rose-300';
             badgeColor = 'text-rose-700 dark:text-rose-400';
             cardHover = 'hover:border-rose-300 dark:hover:border-rose-700/60';
           } else if (cfg.theme === 'purple') {
-            iconBg = 'bg-indigo-100/80 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300';
             badgeColor = 'text-indigo-700 dark:text-indigo-400';
             cardHover = 'hover:border-indigo-300 dark:hover:border-indigo-700/60';
           } else {
-            iconBg = 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
             badgeColor = 'text-slate-700 dark:text-slate-300';
             cardHover = 'hover:border-slate-300 dark:hover:border-slate-700';
           }
@@ -2109,7 +2114,7 @@
             return `
               <div class="glass-card rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between transition-all">
                 <div class="flex items-center gap-2.5">
-                  <span class="w-7 h-7 rounded-lg flex items-center justify-center text-sm flex-shrink-0 ${iconBg}">
+                  <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 flex items-center justify-center flex-shrink-0 shadow-2xs">
                     ${cfg.icon}
                   </span>
                   <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 font-display truncate">${cfg.title}</h4>
@@ -2124,10 +2129,10 @@
           return `
             <div class="glass-card rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between transition-all ${cardHover}">
               
-              <!-- Header: Icon & Title Only (No Subtitle) -->
+              <!-- Header: Monochrome Vector Icon & Title -->
               <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2.5 min-w-0">
-                  <span class="w-7 h-7 rounded-lg flex items-center justify-center text-sm flex-shrink-0 ${iconBg}">
+                  <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-slate-200 dark:border-slate-700/80 bg-white/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center flex-shrink-0 shadow-2xs">
                     ${cfg.icon}
                   </span>
                   <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 font-display truncate">${cfg.title}</h4>
@@ -2161,7 +2166,7 @@
         // 1. แต้มสูงสุด
         const topGunWinner = sortedByNet[0];
         const card1 = renderCard({
-          icon: '🏆',
+          icon: ICONS.star,
           title: 'แต้มสูงสุด',
           theme: 'green',
           winner: topGunWinner,
@@ -2172,7 +2177,7 @@
         // 2. แต้มต่ำสุด
         const toughWinner = sortedByNet[sortedByNet.length - 1];
         const card2 = renderCard({
-          icon: '🌧️',
+          icon: ICONS.layers,
           title: 'แต้มต่ำสุด',
           theme: 'red',
           winner: toughWinner,
@@ -2254,7 +2259,7 @@
         }
 
         const card3 = renderCard({
-          icon: '🚀',
+          icon: ICONS.rotateCcw,
           title: 'ไต่อันดับสูงสุด',
           theme: 'green',
           winner: comebackWinner,
@@ -2264,7 +2269,7 @@
         });
 
         const card4 = renderCard({
-          icon: '📉',
+          icon: ICONS.chartDown,
           title: 'อันดับร่วงหนักสุด',
           theme: 'red',
           winner: crasherWinner,
@@ -2277,7 +2282,7 @@
         const chipTeams = results.filter(r => r.chip && r.chip !== '-').sort((a, b) => b.net_points - a.net_points);
         const chipMasterWinner = chipTeams[0] || null;
         const card5 = renderCard({
-          icon: '⚡',
+          icon: ICONS.trophy,
           title: 'เซียนเปิดชิป',
           theme: 'green',
           winner: chipMasterWinner,
@@ -2290,7 +2295,7 @@
         const noChipTeams = results.filter(r => !r.chip || r.chip === '-').sort((a, b) => b.net_points - a.net_points);
         const noChipWinner = noChipTeams[0] || null;
         const card6 = renderCard({
-          icon: '🛡️',
+          icon: ICONS.award,
           title: 'นักรบไร้ชิป',
           theme: 'green',
           winner: noChipWinner,
@@ -2303,7 +2308,7 @@
         const valueSorted = [...results].sort((a, b) => (b.team_value || 100.0) - (a.team_value || 100.0));
         const valueWinner = valueSorted[0] || null;
         const card7 = renderCard({
-          icon: '💰',
+          icon: ICONS.trophy,
           title: 'เศรษฐีประจำลีก',
           theme: 'green',
           winner: valueWinner,
@@ -2315,7 +2320,7 @@
         const lowChipTeams = results.filter(r => r.chip && r.chip !== '-' && r.net_points < avgNet).sort((a, b) => a.net_points - b.net_points);
         const lowChipWinner = lowChipTeams[0] || null;
         const card8 = renderCard({
-          icon: '🥀',
+          icon: ICONS.layers,
           title: 'Chip ไม่ช่วยอะไร',
           theme: 'red',
           winner: lowChipWinner,
@@ -2328,7 +2333,7 @@
         const benchTeams = results.filter(r => r.chip !== 'bboost').sort((a, b) => (b.bench_points || 0) - (a.bench_points || 0));
         const benchWinner = (benchTeams[0] && benchTeams[0].bench_points > 0) ? benchTeams[0] : null;
         const card9 = renderCard({
-          icon: '🪑',
+          icon: ICONS.layers,
           title: 'สำรองแต้มทะลัก',
           theme: 'red',
           winner: benchWinner,
@@ -2341,7 +2346,7 @@
         const hitTeams = results.filter(r => r.hits > 0).sort((a, b) => b.hits - a.hits);
         const hitWinner = hitTeams[0] || null;
         const card10 = renderCard({
-          icon: '🎯',
+          icon: ICONS.arrowUp,
           title: "ผู้กล้าท้า 'ลบ'",
           theme: 'purple',
           winner: hitWinner,
@@ -2361,7 +2366,7 @@
           goodTxDetail = `กำไรจากตัวย้าย ${goodTxWinner.transfers_pts_gain >= 0 ? '+' : ''}${goodTxWinner.transfers_pts_gain} แต้ม • แต้มลบ -${goodTxWinner.hits || 0}${moveDesc ? ` • ${moveDesc}` : ''}`;
         }
         const card11 = renderCard({
-          icon: '🏹',
+          icon: ICONS.trophy,
           title: 'เทพ Scout ซื้อตัวเข้าเป้า',
           theme: 'green',
           winner: goodTxWinner,
@@ -2381,7 +2386,7 @@
           badTxDetail = `ขาดทุนจากตัวย้าย ${badTxWinner.transfers_pts_gain} แต้ม • แต้มลบ -${badTxWinner.hits || 0}${moveDesc ? ` • ${moveDesc}` : ''}`;
         }
         const card12 = renderCard({
-          icon: '🕸️',
+          icon: ICONS.layers,
           title: 'ดีลผิดจังหวะ',
           theme: 'red',
           winner: badTxWinner,
@@ -2394,7 +2399,7 @@
         const painfulTeams = results.filter(r => r.hits > 0 && r.transfers_net_impact < 0).sort((a, b) => a.transfers_net_impact - b.transfers_net_impact);
         const painfulWinner = painfulTeams[0] || null;
         const card13 = renderCard({
-          icon: '🩹',
+          icon: ICONS.layers,
           title: 'ยอมติดลบก็ยังเจ็บ',
           theme: 'red',
           winner: painfulWinner,
@@ -2416,7 +2421,7 @@
           }
         }
         const card14 = renderCard({
-          icon: '🎯',
+          icon: ICONS.award,
           title: 'Supersub ทำงาน',
           theme: 'green',
           winner: singleTxWinner,
