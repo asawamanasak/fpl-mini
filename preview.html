@@ -504,6 +504,23 @@
       animation: liveGreenPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
 
+    @keyframes tabBoxPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+        border-color: rgba(59, 130, 246, 0.8);
+        opacity: 1;
+      }
+      50% {
+        box-shadow: 0 0 10px 2px rgba(59, 130, 246, 0.6);
+        border-color: rgba(99, 102, 241, 0.9);
+        opacity: 0.7;
+      }
+    }
+    .tab-pulse-live {
+      animation: tabBoxPulse 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+      border: 1px solid rgba(59, 130, 246, 0.8) !important;
+    }
+
     .dark .text-emerald-700 {
       color: #34d399 !important;
     }
@@ -638,7 +655,7 @@
           data-tab-target="highlights-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
         >
-          ไฮไลท์ประจำสัปดาห์
+          Weekly Highlight
         </button>
         <button 
           id="tab-btn-prizes"
@@ -764,18 +781,17 @@
       </div>
     </div>
 
-    <!-- ==================== TAB: ไฮไลท์ประจำสัปดาห์ (HIGHLIGHTS VIEW) ==================== -->
+    <!-- ==================== TAB: WEEKLY HIGHLIGHT ==================== -->
     <div id="highlights-view" class="tab-content hidden space-y-4">
       
-      <!-- Top Overview Banner -->
-      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">สรุปรางวัล & ไฮไลท์เด่นประจำสัปดาห์</span>
-          <h2 id="highlights-overview-title" class="text-lg sm:text-xl font-bold text-slate-900 font-display mt-0.5">ไฮไลท์ประจำสัปดาห์</h2>
-          <p id="highlights-overview-subtitle" class="text-xs text-slate-500 mt-0.5">วิเคราะห์ฟอร์ม เจาะลึกสถิติ ย้ายตัว เปิดชิป และที่สุดของแต่ละสัปดาห์</p>
+      <!-- Top Overview Banner (Minimal) -->
+      <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+          <h2 id="highlights-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">Weekly Highlight</h2>
         </div>
         <div class="flex items-center gap-2">
-          <span id="highlights-gw-badge" class="bg-slate-100 text-slate-700 border border-slate-200 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
+          <span id="highlights-gw-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
         </div>
       </div>
 
@@ -1545,6 +1561,7 @@
             this.switchTab(target);
           });
         });
+        this.updateHighlightsTabBlink();
       }
 
       switchTab(target) {
@@ -1560,7 +1577,23 @@
             : 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800';
         });
 
+        this.updateHighlightsTabBlink();
         this.renderCurrentTab();
+      }
+
+      updateHighlightsTabBlink() {
+        const tabBtn = document.getElementById('tab-btn-highlights');
+        if (!tabBtn) return;
+        const gwKey = String(this.selectedGW);
+        const gwData = this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
+        const isFinished = gwData ? Boolean(gwData.is_finished) : false;
+
+        // กล่อง Tab จะกะพริบจนกว่าจะสรุปจบ Gameweek
+        if (!isFinished) {
+          tabBtn.classList.add('tab-pulse-live');
+        } else {
+          tabBtn.classList.remove('tab-pulse-live');
+        }
       }
 
       renderAll() {
@@ -1571,6 +1604,7 @@
         this.renderHallOfFameView();
         this.renderCupView();
         this.renderRulesView();
+        this.updateHighlightsTabBlink();
       }
 
       renderCurrentTab() {
@@ -1649,6 +1683,7 @@
         this.renderGWSelector();
         this.renderGameweekView();
         this.renderHighlightsView();
+        this.updateHighlightsTabBlink();
       }
 
       renderGameweekView() {
@@ -2013,12 +2048,10 @@
         const gwData = this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
         
         const titleEl = document.getElementById('highlights-overview-title');
-        const subEl = document.getElementById('highlights-overview-subtitle');
         const gwBadge = document.getElementById('highlights-gw-badge');
         const grid = document.getElementById('highlights-cards-grid');
 
-        if (titleEl) titleEl.innerText = `ไฮไลท์ประจำสัปดาห์ Gameweek ${this.selectedGW}`;
-        if (subEl) subEl.innerText = `วิเคราะห์ฟอร์ม เจาะลึกสถิติ ย้ายตัว เปิดชิป และที่สุดของสัปดาห์ที่ ${this.selectedGW}`;
+        if (titleEl) titleEl.innerText = `Weekly Highlight Gameweek ${this.selectedGW}`;
         if (gwBadge) gwBadge.innerText = `สัปดาห์ที่ ${this.selectedGW}`;
 
         if (!grid) return;
@@ -2038,7 +2071,7 @@
             <div class="col-span-full py-12 text-center text-slate-400 font-medium font-display glass-card rounded-2xl p-6 border border-slate-200">
               <div class="text-2xl mb-2">⏳</div>
               <div class="text-slate-700 dark:text-slate-200 font-bold text-base">Gameweek ${this.selectedGW} ยังไม่เริ่มการแข่งขัน</div>
-              <p class="text-xs text-slate-400 mt-1">ไฮไลท์และรางวัลต่างๆ จะประมวลผลทันทีเมื่อเริ่มคิกออฟ</p>
+              <p class="text-xs text-slate-400 mt-1">ไฮไลท์ประจำสัปดาห์จะประมวลผลทันทีเมื่อเริ่มคิกออฟ</p>
             </div>
           `;
           return;
@@ -2048,43 +2081,40 @@
         const sortedByNet = [...results].sort((a, b) => b.net_points - a.net_points);
         const avgNet = results.reduce((sum, r) => sum + r.net_points, 0) / results.length;
 
-        // Card builder helper
+        // Minimal Card builder helper (No subtitles, minimal readable layout)
         const renderCard = (cfg) => {
-          let themeBg = '';
           let iconBg = '';
           let badgeColor = '';
+          let cardHover = '';
 
           if (cfg.theme === 'green') {
-            themeBg = 'border-emerald-200 bg-gradient-to-r from-emerald-50/70 via-white to-emerald-50/30 dark:from-emerald-950/20 dark:via-slate-900 dark:to-emerald-950/10 dark:border-emerald-800/50';
-            iconBg = 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300';
-            badgeColor = 'text-emerald-700 dark:text-emerald-400 font-bold';
+            iconBg = 'bg-emerald-100/80 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300';
+            badgeColor = 'text-emerald-700 dark:text-emerald-400';
+            cardHover = 'hover:border-emerald-300 dark:hover:border-emerald-700/60';
           } else if (cfg.theme === 'red') {
-            themeBg = 'border-rose-200 bg-gradient-to-r from-rose-50/70 via-white to-rose-50/30 dark:from-rose-950/20 dark:via-slate-900 dark:to-rose-950/10 dark:border-rose-800/50';
-            iconBg = 'bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-300';
-            badgeColor = 'text-rose-700 dark:text-rose-400 font-bold';
+            iconBg = 'bg-rose-100/80 text-rose-700 dark:bg-rose-900/50 dark:text-rose-300';
+            badgeColor = 'text-rose-700 dark:text-rose-400';
+            cardHover = 'hover:border-rose-300 dark:hover:border-rose-700/60';
           } else if (cfg.theme === 'purple') {
-            themeBg = 'border-indigo-200 bg-gradient-to-r from-indigo-50/70 via-white to-indigo-50/30 dark:from-indigo-950/20 dark:via-slate-900 dark:to-indigo-950/10 dark:border-indigo-800/50';
-            iconBg = 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-300';
-            badgeColor = 'text-indigo-700 dark:text-indigo-400 font-bold';
+            iconBg = 'bg-indigo-100/80 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300';
+            badgeColor = 'text-indigo-700 dark:text-indigo-400';
+            cardHover = 'hover:border-indigo-300 dark:hover:border-indigo-700/60';
           } else {
-            themeBg = 'border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-900/40';
             iconBg = 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
-            badgeColor = 'text-slate-700 dark:text-slate-300 font-bold';
+            badgeColor = 'text-slate-700 dark:text-slate-300';
+            cardHover = 'hover:border-slate-300 dark:hover:border-slate-700';
           }
 
           if (!cfg.winner) {
             return `
-              <div class="rounded-2xl p-4 sm:p-4.5 border ${themeBg} flex flex-col justify-between transition-all">
-                <div class="flex items-start gap-3">
-                  <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-lg ${iconBg}">
+              <div class="glass-card rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between transition-all">
+                <div class="flex items-center gap-2.5">
+                  <span class="w-7 h-7 rounded-lg flex items-center justify-center text-sm flex-shrink-0 ${iconBg}">
                     ${cfg.icon}
-                  </div>
-                  <div class="min-w-0 flex-1">
-                    <h4 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display leading-tight">${cfg.title}</h4>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${cfg.subtitle}</p>
-                  </div>
+                  </span>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 font-display truncate">${cfg.title}</h4>
                 </div>
-                <div class="mt-3 pt-2.5 border-t border-slate-200/60 dark:border-slate-800/60 text-xs text-slate-400 italic">
+                <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 text-[11px] text-slate-400 italic">
                   ${cfg.emptyMsg || 'ไม่มีข้อมูลในสัปดาห์นี้'}
                 </div>
               </div>
@@ -2092,28 +2122,38 @@
           }
 
           return `
-            <div class="rounded-2xl p-4 sm:p-4.5 border ${themeBg} flex flex-col justify-between transition-all hover:shadow-xs">
-              <div class="flex items-start gap-3">
-                <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-lg ${iconBg}">
-                  ${cfg.icon}
-                </div>
-                <div class="min-w-0 flex-1">
-                  <h4 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display leading-tight">${cfg.title}</h4>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${cfg.subtitle}</p>
+            <div class="glass-card rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between transition-all ${cardHover}">
+              
+              <!-- Header: Icon & Title Only (No Subtitle) -->
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="w-7 h-7 rounded-lg flex items-center justify-center text-sm flex-shrink-0 ${iconBg}">
+                    ${cfg.icon}
+                  </span>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 font-display truncate">${cfg.title}</h4>
                 </div>
               </div>
-              <div class="mt-3 pt-2.5 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between gap-2">
+
+              <!-- Manager & Stat -->
+              <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
                 <div class="min-w-0 pr-2">
-                  <button onclick="app.openTeamModal(${cfg.winner.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 hover:text-blue-700 transition-colors cursor-pointer truncate block">
+                  <button onclick="app.openTeamModal(${cfg.winner.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer truncate block">
                     ${this.escapeHtml(cfg.winner.team_name)}
                   </button>
-                  <div class="text-[11px] text-slate-500 truncate">${this.escapeHtml(cfg.winner.player_name)}</div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(cfg.winner.player_name)}</div>
                 </div>
                 <div class="text-right flex-shrink-0">
-                  <span class="text-xs sm:text-sm font-display ${badgeColor}">${cfg.statText}</span>
+                  <span class="text-xs sm:text-sm font-extrabold font-display ${badgeColor}">${cfg.statText}</span>
                 </div>
               </div>
-              ${cfg.detailHtml ? `<div class="mt-2 text-[10.5px] text-slate-600 dark:text-slate-400 bg-white/70 dark:bg-slate-800/50 px-2.5 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800 leading-relaxed">${cfg.detailHtml}</div>` : ''}
+
+              <!-- Minimal Detail Pill -->
+              ${cfg.detailHtml ? `
+                <div class="mt-2 text-[10.5px] text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 px-2.5 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800/80 leading-relaxed">
+                  ${cfg.detailHtml}
+                </div>
+              ` : ''}
+
             </div>
           `;
         };
@@ -2123,7 +2163,6 @@
         const card1 = renderCard({
           icon: '🏆',
           title: 'แต้มสูงสุดประจำสัปดาห์',
-          subtitle: 'ทำคะแนนสุทธิได้สูงที่สุดในสัปดาห์นี้',
           theme: 'green',
           winner: topGunWinner,
           statText: `${topGunWinner ? topGunWinner.net_points : 0} แต้ม`,
@@ -2135,7 +2174,6 @@
         const card2 = renderCard({
           icon: '🌧️',
           title: 'สัปดาห์สุดหิน (แต้มต่ำสุด)',
-          subtitle: 'ทำคะแนนสุทธิต่ำที่สุดในสัปดาห์นี้',
           theme: 'red',
           winner: toughWinner,
           statText: `${toughWinner ? toughWinner.net_points : 0} แต้ม`,
@@ -2157,7 +2195,6 @@
           comebackEmpty = 'สัปดาห์แรกของการแข่งขัน (ยังไม่มีการเปลี่ยนแปลงอันดับ)';
           crasherEmpty = 'สัปดาห์แรกของการแข่งขัน (ยังไม่มีการเปลี่ยนแปลงอันดับ)';
         } else {
-          // Compute cumulative standings up to (gw - 1) and up to gw
           const prevTotals = {};
           const currTotals = {};
 
@@ -2219,7 +2256,6 @@
         const card3 = renderCard({
           icon: '🚀',
           title: 'คัมแบ็กยอดเยี่ยม (ไต่อันดับสูงสุด)',
-          subtitle: 'อันดับรวมในลีกพุ่งขึ้นมามากที่สุด',
           theme: 'green',
           winner: comebackWinner,
           statText: comebackStat,
@@ -2230,7 +2266,6 @@
         const card4 = renderCard({
           icon: '📉',
           title: 'สไลเดอร์ประจำสัปดาห์ (อันดับร่วงหนักสุด)',
-          subtitle: 'อันดับรวมในลีกหล่นลงไปมากที่สุด',
           theme: 'red',
           winner: crasherWinner,
           statText: crasherStat,
@@ -2244,7 +2279,6 @@
         const card5 = renderCard({
           icon: '⚡',
           title: 'เซียนเปิดชิป',
-          subtitle: 'ทำคะแนนได้สูงสุดจากทีมที่เปิดใช้งานชิปพิเศษ',
           theme: 'green',
           winner: chipMasterWinner,
           statText: chipMasterWinner ? `${chipMasterWinner.net_points} แต้ม` : '',
@@ -2258,7 +2292,6 @@
         const card6 = renderCard({
           icon: '🛡️',
           title: 'นักรบไร้ชิป',
-          subtitle: 'ทำแต้มสูงสุดโดยไม่พึ่งพาชิปพิเศษใดๆ',
           theme: 'green',
           winner: noChipWinner,
           statText: noChipWinner ? `${noChipWinner.net_points} แต้ม` : '',
@@ -2272,20 +2305,18 @@
         const card7 = renderCard({
           icon: '💰',
           title: 'ทีมมูลค่าสูงสุด (เศรษฐีประจำลีก)',
-          subtitle: 'มูลค่าทีมรวมสูงสุดในลีก',
           theme: 'green',
           winner: valueWinner,
           statText: valueWinner ? `£${valueWinner.team_value || 100.0}m` : '',
           detailHtml: valueWinner ? `มูลค่าทีม: £${valueWinner.team_value || 100.0}m${valueWinner.bank ? ` • เงินในธนาคาร: £${valueWinner.bank}m` : ''}` : null
         });
 
-        // 8. เปิดชิปกร่อย (แต้มต่ำกว่าค่าเฉลี่ยลีก)
+        // 8. เปิดชิปกร่อย (แต้มต่ำกว่าค่าเฉลี่ย)
         const lowChipTeams = results.filter(r => r.chip && r.chip !== '-' && r.net_points < avgNet).sort((a, b) => a.net_points - b.net_points);
         const lowChipWinner = lowChipTeams[0] || null;
         const card8 = renderCard({
           icon: '🥀',
           title: 'เปิดชิปกร่อย (แต้มต่ำกว่าค่าเฉลี่ย)',
-          subtitle: 'เปิดใช้ชิปพิเศษแต่คะแนนต่ำกว่าค่าเฉลี่ยของลีก',
           theme: 'red',
           winner: lowChipWinner,
           statText: lowChipWinner ? `${lowChipWinner.net_points} แต้ม` : '',
@@ -2299,7 +2330,6 @@
         const card9 = renderCard({
           icon: '🪑',
           title: 'เสียดายแต้มสำรอง (สำรองแต้มทะลัก)',
-          subtitle: 'แต้มตัวสำรองสูงที่สุด โดยไม่ได้เปิดเบนช์บูสต์',
           theme: 'red',
           winner: benchWinner,
           statText: benchWinner ? `${benchWinner.bench_points} แต้ม` : '',
@@ -2313,7 +2343,6 @@
         const card10 = renderCard({
           icon: '🎯',
           title: 'จอมกล้าท้าลบ (สายยอมลบแต้ม)',
-          subtitle: 'ยอมเสียแต้มลบจากการย้ายตัวมากที่สุด',
           theme: 'purple',
           winner: hitWinner,
           statText: hitWinner ? `-${hitWinner.hits} แต้ม` : '',
@@ -2334,7 +2363,6 @@
         const card11 = renderCard({
           icon: '🏹',
           title: 'เซียนซื้อขายตัว (ดึงตัวเข้าเป้า)',
-          subtitle: 'ผลต่างคะแนนจากการซื้อขายตัวสุทธิดีที่สุด (รวมหักลบแต้มย้าย)',
           theme: 'green',
           winner: goodTxWinner,
           statText: goodTxWinner ? `+${goodTxWinner.transfers_net_impact} แต้ม` : '',
@@ -2355,7 +2383,6 @@
         const card12 = renderCard({
           icon: '🕸️',
           title: 'ดีลผิดจังหวะ (ย้ายตัวติดลบ)',
-          subtitle: 'ผลต่างคะแนนจากการซื้อขายตัวสุทธิต่ำที่สุด (รวมหักลบแต้มย้าย)',
           theme: 'red',
           winner: badTxWinner,
           statText: badTxWinner ? `${badTxWinner.transfers_net_impact} แต้ม` : '',
@@ -2369,7 +2396,6 @@
         const card13 = renderCard({
           icon: '🩹',
           title: 'ยอมลบแล้วเจ็บ',
-          subtitle: 'ยอมเสียแต้มลบ (Hits) แต่ผลต่างแต้มย้ายตัวสุทธิติดลบ',
           theme: 'red',
           winner: painfulWinner,
           statText: painfulWinner ? `${painfulWinner.transfers_net_impact} แต้ม` : '',
@@ -2392,7 +2418,6 @@
         const card14 = renderCard({
           icon: '🎯',
           title: 'เปลี่ยนตัวเดียวเปรี้ยง',
-          subtitle: 'เปลี่ยนตัวเพียงตำแหน่งเดียว แล้วสร้างผลต่างแต้มบวกได้ดีที่สุด',
           theme: 'green',
           winner: singleTxWinner,
           statText: singleTxWinner ? `+${singleTxWinner.transfers_net_impact} แต้ม` : '',
@@ -2407,6 +2432,8 @@
           card9, card10, card11, card12,
           card13, card14
         ].join('');
+
+        this.updateHighlightsTabBlink();
       }
 
       renderPrizesView() {
