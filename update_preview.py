@@ -2179,29 +2179,29 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           `;
         };
 
-        // 1. แต้มสูงสุดประจำสัปดาห์
+        // 1. แต้มสูงสุด
         const topGunWinner = sortedByNet[0];
         const card1 = renderCard({
           icon: '🏆',
-          title: 'แต้มสูงสุดประจำสัปดาห์',
+          title: 'แต้มสูงสุด',
           theme: 'green',
           winner: topGunWinner,
           statText: `${topGunWinner ? topGunWinner.net_points : 0} แต้ม`,
           detailHtml: topGunWinner ? `แต้มดิบ ${topGunWinner.points} แต้ม${topGunWinner.hits > 0 ? ` • หักลบ ${topGunWinner.hits} แต้ม` : ''} • กัปตัน: ${topGunWinner.captain || '-'}` : null
         });
 
-        // 2. สัปดาห์สุดหิน (แต้มต่ำสุด)
+        // 2. แต้มต่ำสุด
         const toughWinner = sortedByNet[sortedByNet.length - 1];
         const card2 = renderCard({
           icon: '🌧️',
-          title: 'สัปดาห์สุดหิน (แต้มต่ำสุด)',
+          title: 'แต้มต่ำสุด',
           theme: 'red',
           winner: toughWinner,
           statText: `${toughWinner ? toughWinner.net_points : 0} แต้ม`,
           detailHtml: toughWinner ? `แต้มดิบ ${toughWinner.points} แต้ม${toughWinner.hits > 0 ? ` • หักลบ ${toughWinner.hits} แต้ม` : ''}` : null
         });
 
-        // 3. คัมแบ็กยอดเยี่ยม & 4. สไลเดอร์ประจำสัปดาห์ (Rank Changes)
+        // 3. ไต่อันดับสูงสุด & 4. อันดับร่วงหนักสุด (Rank Changes)
         let comebackWinner = null;
         let comebackStat = '';
         let comebackDetail = '';
@@ -2276,7 +2276,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
         const card3 = renderCard({
           icon: '🚀',
-          title: 'คัมแบ็กยอดเยี่ยม (ไต่อันดับสูงสุด)',
+          title: 'ไต่อันดับสูงสุด',
           theme: 'green',
           winner: comebackWinner,
           statText: comebackStat,
@@ -2286,7 +2286,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
         const card4 = renderCard({
           icon: '📉',
-          title: 'สไลเดอร์ประจำสัปดาห์ (อันดับร่วงหนักสุด)',
+          title: 'อันดับร่วงหนักสุด',
           theme: 'red',
           winner: crasherWinner,
           statText: crasherStat,
@@ -2320,24 +2320,24 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: 'ทุกทีมเปิดใช้งานชิปในสัปดาห์นี้'
         });
 
-        // 7. ทีมมูลค่าสูงสุด (เศรษฐีประจำลีก)
+        // 7. เศรษฐีประจำลีก
         const valueSorted = [...results].sort((a, b) => (b.team_value || 100.0) - (a.team_value || 100.0));
         const valueWinner = valueSorted[0] || null;
         const card7 = renderCard({
           icon: '💰',
-          title: 'ทีมมูลค่าสูงสุด (เศรษฐีประจำลีก)',
+          title: 'เศรษฐีประจำลีก',
           theme: 'green',
           winner: valueWinner,
           statText: valueWinner ? `£${valueWinner.team_value || 100.0}m` : '',
           detailHtml: valueWinner ? `มูลค่าทีม: £${valueWinner.team_value || 100.0}m${valueWinner.bank ? ` • เงินในธนาคาร: £${valueWinner.bank}m` : ''}` : null
         });
 
-        // 8. เปิดชิปกร่อย (แต้มต่ำกว่าค่าเฉลี่ย)
+        // 8. Chip ไม่ช่วยอะไร
         const lowChipTeams = results.filter(r => r.chip && r.chip !== '-' && r.net_points < avgNet).sort((a, b) => a.net_points - b.net_points);
         const lowChipWinner = lowChipTeams[0] || null;
         const card8 = renderCard({
           icon: '🥀',
-          title: 'เปิดชิปกร่อย (แต้มต่ำกว่าค่าเฉลี่ย)',
+          title: 'Chip ไม่ช่วยอะไร',
           theme: 'red',
           winner: lowChipWinner,
           statText: lowChipWinner ? `${lowChipWinner.net_points} แต้ม` : '',
@@ -2345,12 +2345,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: 'ไม่มีทีมเปิดชิปที่ได้แต้มต่ำกว่าค่าเฉลี่ยของลีก'
         });
 
-        // 9. เสียดายแต้มสำรอง (สำรองแต้มทะลัก)
+        // 9. สำรองแต้มทะลัก
         const benchTeams = results.filter(r => r.chip !== 'bboost').sort((a, b) => (b.bench_points || 0) - (a.bench_points || 0));
         const benchWinner = (benchTeams[0] && benchTeams[0].bench_points > 0) ? benchTeams[0] : null;
         const card9 = renderCard({
           icon: '🪑',
-          title: 'เสียดายแต้มสำรอง (สำรองแต้มทะลัก)',
+          title: 'สำรองแต้มทะลัก',
           theme: 'red',
           winner: benchWinner,
           statText: benchWinner ? `${benchWinner.bench_points} แต้ม` : '',
@@ -2358,12 +2358,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: 'ไม่มีทีมที่มีแต้มค้างบนม้านั่งสำรองในสัปดาห์นี้'
         });
 
-        // 10. จอมกล้าท้าลบ (สายยอมลบแต้ม)
+        // 10. ผู้กล้าท้า 'ลบ'
         const hitTeams = results.filter(r => r.hits > 0).sort((a, b) => b.hits - a.hits);
         const hitWinner = hitTeams[0] || null;
         const card10 = renderCard({
           icon: '🎯',
-          title: 'จอมกล้าท้าลบ (สายยอมลบแต้ม)',
+          title: "ผู้กล้าท้า 'ลบ'",
           theme: 'purple',
           winner: hitWinner,
           statText: hitWinner ? `-${hitWinner.hits} แต้ม` : '',
@@ -2371,7 +2371,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: 'ไม่มีทีมเสียแต้มลบย้ายตัวในสัปดาห์นี้'
         });
 
-        // 11. เซียนซื้อขายตัว (ดึงตัวเข้าเป้า)
+        // 11. เทพ Scout ซื้อตัวเข้าเป้า
         const goodTxTeams = results.filter(r => r.transfers_count > 0 && r.transfers_net_impact > 0).sort((a, b) => b.transfers_net_impact - a.transfers_net_impact);
         const goodTxWinner = goodTxTeams[0] || null;
         let goodTxDetail = '';
@@ -2383,7 +2383,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         }
         const card11 = renderCard({
           icon: '🏹',
-          title: 'เซียนซื้อขายตัว (ดึงตัวเข้าเป้า)',
+          title: 'เทพ Scout ซื้อตัวเข้าเป้า',
           theme: 'green',
           winner: goodTxWinner,
           statText: goodTxWinner ? `+${goodTxWinner.transfers_net_impact} แต้ม` : '',
@@ -2391,7 +2391,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: 'ไม่มีทีมที่ได้ผลต่างคะแนนย้ายตัวเป็นบวกในสัปดาห์นี้'
         });
 
-        // 12. ดีลผิดจังหวะ (ย้ายตัวติดลบ)
+        // 12. ดีลผิดจังหวะ
         const badTxTeams = results.filter(r => r.transfers_count > 0 && r.transfers_net_impact < 0).sort((a, b) => a.transfers_net_impact - b.transfers_net_impact);
         const badTxWinner = badTxTeams[0] || null;
         let badTxDetail = '';
@@ -2403,7 +2403,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         }
         const card12 = renderCard({
           icon: '🕸️',
-          title: 'ดีลผิดจังหวะ (ย้ายตัวติดลบ)',
+          title: 'ดีลผิดจังหวะ',
           theme: 'red',
           winner: badTxWinner,
           statText: badTxWinner ? `${badTxWinner.transfers_net_impact} แต้ม` : '',
@@ -2411,12 +2411,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: 'ไม่มีทีมที่ขาดทุนแต้มจากการย้ายตัวในสัปดาห์นี้'
         });
 
-        // 13. ยอมลบแล้วเจ็บ
+        // 13. ยอมติดลบก็ยังเจ็บ
         const painfulTeams = results.filter(r => r.hits > 0 && r.transfers_net_impact < 0).sort((a, b) => a.transfers_net_impact - b.transfers_net_impact);
         const painfulWinner = painfulTeams[0] || null;
         const card13 = renderCard({
           icon: '🩹',
-          title: 'ยอมลบแล้วเจ็บ',
+          title: 'ยอมติดลบก็ยังเจ็บ',
           theme: 'red',
           winner: painfulWinner,
           statText: painfulWinner ? `${painfulWinner.transfers_net_impact} แต้ม` : '',
@@ -2424,7 +2424,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: 'ไม่มีทีมที่ยอมเสียแต้มลบแล้วผลงานติดลบในสัปดาห์นี้'
         });
 
-        // 14. เปลี่ยนตัวเดียวเปรี้ยง
+        // 14. Supersub ทำงาน
         const singleTxTeams = results.filter(r => r.transfers_count === 1 && r.transfers_net_impact > 0).sort((a, b) => b.transfers_net_impact - a.transfers_net_impact);
         const singleTxWinner = singleTxTeams[0] || null;
         let singleTxDetail = '';
@@ -2438,7 +2438,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         }
         const card14 = renderCard({
           icon: '🎯',
-          title: 'เปลี่ยนตัวเดียวเปรี้ยง',
+          title: 'Supersub ทำงาน',
           theme: 'green',
           winner: singleTxWinner,
           statText: singleTxWinner ? `+${singleTxWinner.transfers_net_impact} แต้ม` : '',
