@@ -834,7 +834,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
       <!-- Top Overview Banner (Minimal) -->
       <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-4">
         <div class="flex items-center gap-2.5">
-          <h2 id="highlights-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">Weekly Highlight</h2>
+          <h2 id="highlights-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">Awards of the Week</h2>
         </div>
         <div class="flex items-center gap-2">
           <span id="highlights-gw-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
@@ -2114,13 +2114,23 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         }
       }
 
-      getChipNameThai(chip) {
+      getChipCode(chip) {
+        if (!chip) return '';
+        const c = String(chip).toLowerCase();
+        if (c === 'wildcard') return 'WC';
+        if (c === 'bboost') return 'BB';
+        if (c === '3xc') return 'TC';
+        if (c === 'freehit') return 'FH';
+        return chip.toUpperCase();
+      }
+
+      getChipName(chip) {
         if (!chip) return '-';
         const c = String(chip).toLowerCase();
-        if (c === 'wildcard') return 'ไวลด์การ์ด';
-        if (c === 'bboost') return 'เบนช์ บูสต์';
-        if (c === '3xc') return 'ทริปเปิ้ล กัปตัน';
-        if (c === 'freehit') return 'ฟรีฮิต';
+        if (c === 'wildcard') return 'Wildcard';
+        if (c === 'bboost') return 'Bench Boost';
+        if (c === '3xc') return 'Triple Captain';
+        if (c === 'freehit') return 'Free Hit';
         return chip.toUpperCase();
       }
 
@@ -2132,14 +2142,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const gwBadge = document.getElementById('highlights-gw-badge');
         const grid = document.getElementById('highlights-cards-grid');
 
-        if (titleEl) titleEl.innerText = `Weekly Highlight Gameweek ${this.selectedGW}`;
-        if (gwBadge) gwBadge.innerText = `สัปดาห์ที่ ${this.selectedGW}`;
+        if (titleEl) titleEl.innerText = 'Awards of the Week';
+        if (gwBadge) gwBadge.innerText = `Gameweek ${this.selectedGW}`;
         this.updateHighlightsTabBlink();
 
         if (!grid) return;
 
         if (!gwData || !gwData.results || gwData.results.length === 0) {
-          grid.innerHTML = '<div class="col-span-full py-12 text-center text-slate-400 font-medium font-display">ยังไม่มีข้อมูลในสัปดาห์นี้</div>';
+          grid.innerHTML = '<div class="col-span-full py-12 text-center text-slate-400 font-medium font-display">No data available for this Gameweek</div>';
           return;
         }
 
@@ -2152,8 +2162,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           grid.innerHTML = `
             <div class="col-span-full py-12 text-center text-slate-400 font-medium font-display glass-card rounded-2xl p-6 border border-slate-200">
               <div class="text-2xl mb-2">⏳</div>
-              <div class="text-slate-700 dark:text-slate-200 font-bold text-base">Gameweek ${this.selectedGW} ยังไม่เริ่มการแข่งขัน</div>
-              <p class="text-xs text-slate-400 mt-1">ไฮไลท์ประจำสัปดาห์จะประมวลผลทันทีเมื่อเริ่มคิกออฟ</p>
+              <div class="text-slate-700 dark:text-slate-200 font-bold text-base">Gameweek ${this.selectedGW} has not started yet</div>
+              <p class="text-xs text-slate-400 mt-1">Weekly awards will update live as matches kick off</p>
             </div>
           `;
           return;
@@ -2173,7 +2183,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           arrowUp: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>`
         };
 
-        // Minimal Card builder helper (Circular Monochrome Vector Icons, No subtitles)
+        // LiveFPL-style Award Card builder
         const renderCard = (cfg) => {
           let badgeColor = '';
           let cardHover = '';
@@ -2199,10 +2209,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 flex items-center justify-center flex-shrink-0 shadow-2xs">
                     ${cfg.icon}
                   </span>
-                  <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 font-display truncate">${cfg.title}</h4>
+                  <div class="min-w-0">
+                    <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 font-display truncate">${cfg.title}</h4>
+                    <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium truncate">${cfg.subtitle}</p>
+                  </div>
                 </div>
                 <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 text-[11px] text-slate-400 italic">
-                  ${cfg.emptyMsg || 'ไม่มีข้อมูลในสัปดาห์นี้'}
+                  ${cfg.emptyMsg || 'No data this week'}
                 </div>
               </div>
             `;
@@ -2211,32 +2224,29 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           return `
             <div class="glass-card rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between transition-all ${cardHover}">
               
-              <!-- Header: Monochrome Vector Icon & Title -->
-              <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2.5 min-w-0">
-                  <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-slate-200 dark:border-slate-700/80 bg-white/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center flex-shrink-0 shadow-2xs">
-                    ${cfg.icon}
-                  </span>
+              <!-- Header: Vector Icon, English Title & Subtitle -->
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-slate-200 dark:border-slate-700/80 bg-white/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center flex-shrink-0 shadow-2xs">
+                  ${cfg.icon}
+                </span>
+                <div class="min-w-0">
                   <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 font-display truncate">${cfg.title}</h4>
+                  <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium truncate">${cfg.subtitle}</p>
                 </div>
               </div>
 
-              <!-- Manager & Stat -->
-              <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
-                <div class="min-w-0 pr-2">
-                  <button onclick="app.openTeamModal(${cfg.winner.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer truncate block">
-                    ${this.escapeHtml(cfg.winner.team_name)}
-                  </button>
-                  <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(cfg.winner.player_name)}</div>
-                </div>
-                <div class="text-right flex-shrink-0">
-                  <span class="text-xs sm:text-sm font-extrabold font-display ${badgeColor}">${cfg.statText}</span>
-                </div>
+              <!-- Manager Line: Player Name — Team Name (Stats) -->
+              <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-baseline gap-1.5 text-xs sm:text-sm">
+                <span class="text-slate-600 dark:text-slate-400 font-medium truncate">${this.escapeHtml(cfg.winner.player_name)} —</span>
+                <button onclick="app.openTeamModal(${cfg.winner.entry_id})" class="font-bold text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer truncate">
+                  ${this.escapeHtml(cfg.winner.team_name)}
+                </button>
+                <span class="font-extrabold font-display ${badgeColor}">${cfg.statText}</span>
               </div>
 
               <!-- Minimal Detail Pill -->
               ${cfg.detailHtml ? `
-                <div class="mt-2 text-[10.5px] text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 px-2.5 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800/80 leading-relaxed">
+                <div class="mt-2 text-[10.5px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 px-2.5 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800/80 leading-relaxed">
                   ${cfg.detailHtml}
                 </div>
               ` : ''}
@@ -2245,29 +2255,31 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           `;
         };
 
-        // 1. แต้มสูงสุด
+        // 1. Top Gun
         const topGunWinner = sortedByNet[0];
         const card1 = renderCard({
           icon: ICONS.star,
-          title: 'แต้มสูงสุด',
+          title: 'Top Gun',
+          subtitle: 'Highest Gameweek score',
           theme: 'green',
           winner: topGunWinner,
-          statText: `${topGunWinner ? topGunWinner.net_points : 0} แต้ม`,
-          detailHtml: topGunWinner ? `แต้มดิบ ${topGunWinner.points} แต้ม${topGunWinner.hits > 0 ? ` • หักลบ ${topGunWinner.hits} แต้ม` : ''} • กัปตัน: ${topGunWinner.captain || '-'}` : null
+          statText: topGunWinner ? `(${topGunWinner.net_points} pts)` : '',
+          detailHtml: topGunWinner ? `Captain: <strong>${this.escapeHtml(topGunWinner.captain || '-')}</strong> • Raw: ${topGunWinner.points} pts${topGunWinner.hits > 0 ? ` • Hits: -${topGunWinner.hits}` : ''}` : null
         });
 
-        // 2. แต้มต่ำสุด
+        // 2. Tough Week
         const toughWinner = sortedByNet[sortedByNet.length - 1];
         const card2 = renderCard({
-          icon: ICONS.layers,
-          title: 'แต้มต่ำสุด',
+          icon: ICONS.chartDown,
+          title: 'Tough Week',
+          subtitle: 'Lowest Gameweek score',
           theme: 'red',
           winner: toughWinner,
-          statText: `${toughWinner ? toughWinner.net_points : 0} แต้ม`,
-          detailHtml: toughWinner ? `แต้มดิบ ${toughWinner.points} แต้ม${toughWinner.hits > 0 ? ` • หักลบ ${toughWinner.hits} แต้ม` : ''}` : null
+          statText: toughWinner ? `(${toughWinner.net_points} pts)` : '',
+          detailHtml: toughWinner ? `Raw: ${toughWinner.points} pts${toughWinner.hits > 0 ? ` • Hits: -${toughWinner.hits}` : ''}` : null
         });
 
-        // 3. ไต่อันดับสูงสุด & 4. อันดับร่วงหนักสุด (Rank Changes)
+        // 3. Comeback Kid & 4. Rank Crasher
         let comebackWinner = null;
         let comebackStat = '';
         let comebackDetail = '';
@@ -2279,8 +2291,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         let crasherEmpty = '';
 
         if (this.selectedGW === 1) {
-          comebackEmpty = 'สัปดาห์แรกของการแข่งขัน (ยังไม่มีการเปลี่ยนแปลงอันดับ)';
-          crasherEmpty = 'สัปดาห์แรกของการแข่งขัน (ยังไม่มีการเปลี่ยนแปลงอันดับ)';
+          comebackEmpty = 'First gameweek of the season';
+          crasherEmpty = 'First gameweek of the season';
         } else {
           const prevTotals = {};
           const currTotals = {};
@@ -2324,25 +2336,26 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           const maxRise = [...rankDiffs].sort((a, b) => b.diff - a.diff)[0];
           if (maxRise && maxRise.diff > 0) {
             comebackWinner = maxRise.result;
-            comebackStat = `+${maxRise.diff} อันดับ`;
-            comebackDetail = `ไต่อันดับจากที่ ${maxRise.prevRank} ขึ้นมาอยู่ที่ ${maxRise.currRank} ของลีก`;
+            comebackStat = `(+${maxRise.diff})`;
+            comebackDetail = `Rose from rank ${maxRise.prevRank} to rank ${maxRise.currRank}`;
           } else {
-            comebackEmpty = 'ไม่มีทีมที่อันดับขยับขึ้นในสัปดาห์นี้';
+            comebackEmpty = 'No rank rise this week';
           }
 
           const maxFall = [...rankDiffs].sort((a, b) => a.diff - b.diff)[0];
           if (maxFall && maxFall.diff < 0) {
             crasherWinner = maxFall.result;
-            crasherStat = `${maxFall.diff} อันดับ`;
-            crasherDetail = `อันดับร่วงจากที่ ${maxFall.prevRank} หล่นไปอยู่ที่ ${maxFall.currRank} ของลีก`;
+            crasherStat = `(${maxFall.diff})`;
+            crasherDetail = `Fell from rank ${maxFall.prevRank} to rank ${maxFall.currRank}`;
           } else {
-            crasherEmpty = 'ไม่มีทีมที่อันดับร่วงลงในสัปดาห์นี้';
+            crasherEmpty = 'No rank fall this week';
           }
         }
 
         const card3 = renderCard({
           icon: ICONS.rotateCcw,
-          title: 'ไต่อันดับสูงสุด',
+          title: 'Comeback Kid',
+          subtitle: 'Biggest rank rise',
           theme: 'green',
           winner: comebackWinner,
           statText: comebackStat,
@@ -2352,7 +2365,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
         const card4 = renderCard({
           icon: ICONS.chartDown,
-          title: 'อันดับร่วงหนักสุด',
+          title: 'Rank Crasher',
+          subtitle: 'Biggest rank fall',
           theme: 'red',
           winner: crasherWinner,
           statText: crasherStat,
@@ -2360,156 +2374,177 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: crasherEmpty
         });
 
-        // 5. เซียนเปิดชิป
+        // 5. Chip Master
         const chipTeams = results.filter(r => r.chip && r.chip !== '-').sort((a, b) => b.net_points - a.net_points);
         const chipMasterWinner = chipTeams[0] || null;
         const card5 = renderCard({
           icon: ICONS.trophy,
-          title: 'เซียนเปิดชิป',
+          title: 'Chip Master',
+          subtitle: chipMasterWinner ? `Best score with a chip (${this.getChipCode(chipMasterWinner.chip)})` : 'Best score with a chip',
           theme: 'green',
           winner: chipMasterWinner,
-          statText: chipMasterWinner ? `${chipMasterWinner.net_points} แต้ม` : '',
-          detailHtml: chipMasterWinner ? `เปิดใช้งานชิป: <strong>${this.getChipNameThai(chipMasterWinner.chip)}</strong>` : null,
-          emptyMsg: 'ไม่มีทีมเปิดใช้งานชิปในสัปดาห์นี้'
+          statText: chipMasterWinner ? `(${chipMasterWinner.net_points} pts)` : '',
+          detailHtml: chipMasterWinner ? `Active Chip: <strong>${this.getChipName(chipMasterWinner.chip)}</strong>` : null,
+          emptyMsg: 'No chips played this week'
         });
 
-        // 6. นักรบไร้ชิป
+        // 6. No-Chip Warrior
         const noChipTeams = results.filter(r => !r.chip || r.chip === '-').sort((a, b) => b.net_points - a.net_points);
         const noChipWinner = noChipTeams[0] || null;
         const card6 = renderCard({
           icon: ICONS.award,
-          title: 'นักรบไร้ชิป',
+          title: 'No-Chip Warrior',
+          subtitle: 'Best score without playing a chip',
           theme: 'green',
           winner: noChipWinner,
-          statText: noChipWinner ? `${noChipWinner.net_points} แต้ม` : '',
-          detailHtml: noChipWinner ? `ทำแต้มเพียวโดยไม่ได้เปิดใช้งานชิปพิเศษ` : null,
-          emptyMsg: 'ทุกทีมเปิดใช้งานชิปในสัปดาห์นี้'
+          statText: noChipWinner ? `(${noChipWinner.net_points} pts)` : '',
+          detailHtml: noChipWinner ? 'Played without an active chip' : null,
+          emptyMsg: 'All teams played a chip this week'
         });
 
-        // 7. เศรษฐีประจำลีก
+        // 7. Value King
         const valueSorted = [...results].sort((a, b) => (b.team_value || 100.0) - (a.team_value || 100.0));
         const valueWinner = valueSorted[0] || null;
         const card7 = renderCard({
           icon: ICONS.trophy,
-          title: 'เศรษฐีประจำลีก',
+          title: 'Value King',
+          subtitle: 'Highest Team Value',
           theme: 'green',
           winner: valueWinner,
-          statText: valueWinner ? `£${valueWinner.team_value || 100.0}m` : '',
-          detailHtml: valueWinner ? `มูลค่าทีม: £${valueWinner.team_value || 100.0}m${valueWinner.bank ? ` • เงินในธนาคาร: £${valueWinner.bank}m` : ''}` : null
+          statText: valueWinner ? `(£${valueWinner.team_value || 100.0})` : '',
+          detailHtml: valueWinner ? `Team Value: £${valueWinner.team_value || 100.0}m${valueWinner.bank ? ` • In the bank: £${valueWinner.bank}m` : ''}` : null,
+          emptyMsg: 'No team value data available'
         });
 
-        // 8. Chip ไม่ช่วยอะไร
+        // 8. Wildcard Wasteland
         const lowChipTeams = results.filter(r => r.chip && r.chip !== '-' && r.net_points < avgNet).sort((a, b) => a.net_points - b.net_points);
         const lowChipWinner = lowChipTeams[0] || null;
         const card8 = renderCard({
           icon: ICONS.layers,
-          title: 'Chip ไม่ช่วยอะไร',
+          title: lowChipWinner ? (this.getChipCode(lowChipWinner.chip) === 'WC' ? 'Wildcard Wasteland' : `${this.getChipName(lowChipWinner.chip)} Wasteland`) : 'Wildcard Wasteland',
+          subtitle: lowChipWinner ? `${this.getChipName(lowChipWinner.chip)} played but below league average` : 'Wildcard played but below league average',
           theme: 'red',
           winner: lowChipWinner,
-          statText: lowChipWinner ? `${lowChipWinner.net_points} แต้ม` : '',
-          detailHtml: lowChipWinner ? `เปิดชิป: ${this.getChipNameThai(lowChipWinner.chip)} ได้ ${lowChipWinner.net_points} แต้ม (ค่าเฉลี่ยลีก ${avgNet.toFixed(1)} แต้ม)` : null,
-          emptyMsg: 'ไม่มีทีมเปิดชิปที่ได้แต้มต่ำกว่าค่าเฉลี่ยของลีก'
+          statText: lowChipWinner ? `(${lowChipWinner.net_points} vs avg ${avgNet.toFixed(1)})` : '',
+          detailHtml: lowChipWinner ? `Played ${this.getChipName(lowChipWinner.chip)}: ${lowChipWinner.net_points} pts (league avg ${avgNet.toFixed(1)} pts)` : null,
+          emptyMsg: 'No chip played below league average'
         });
 
-        // 9. สำรองแต้มทะลัก
+        // 9. Bench Disaster
         const benchTeams = results.filter(r => r.chip !== 'bboost').sort((a, b) => (b.bench_points || 0) - (a.bench_points || 0));
         const benchWinner = (benchTeams[0] && benchTeams[0].bench_points > 0) ? benchTeams[0] : null;
         const card9 = renderCard({
           icon: ICONS.layers,
-          title: 'สำรองแต้มทะลัก',
+          title: 'Bench Disaster',
+          subtitle: benchWinner ? (benchWinner.bench_points >= 20 ? 'Left 20+ points on the bench (no Bench Boost)' : (benchWinner.bench_points >= 10 ? 'Left 10+ points on the bench (no Bench Boost)' : 'Left points on the bench (no Bench Boost)')) : 'Left 20+ points on the bench (no Bench Boost)',
           theme: 'red',
           winner: benchWinner,
-          statText: benchWinner ? `${benchWinner.bench_points} แต้ม` : '',
-          detailHtml: benchWinner ? `มีแต้มติดอยู่บนม้านั่งสำรอง ${benchWinner.bench_points} แต้ม (ไม่ได้ใช้ชิปเบนช์บูสต์)` : null,
-          emptyMsg: 'ไม่มีทีมที่มีแต้มค้างบนม้านั่งสำรองในสัปดาห์นี้'
+          statText: benchWinner ? `(${benchWinner.bench_points} pts)` : '',
+          detailHtml: benchWinner ? `${benchWinner.bench_points} points on bench without Bench Boost` : null,
+          emptyMsg: 'No bench points left this week'
         });
 
-        // 10. ผู้กล้าท้า 'ลบ'
+        // 10. YOLO Manager
         const hitTeams = results.filter(r => r.hits > 0).sort((a, b) => b.hits - a.hits);
         const hitWinner = hitTeams[0] || null;
         const card10 = renderCard({
           icon: ICONS.arrowUp,
-          title: "ผู้กล้าท้า 'ลบ'",
+          title: 'YOLO Manager',
+          subtitle: 'Most transfer hits taken',
           theme: 'purple',
           winner: hitWinner,
-          statText: hitWinner ? `-${hitWinner.hits} แต้ม` : '',
-          detailHtml: hitWinner ? `ยอมหักลบแต้มย้ายตัว ${hitWinner.hits} แต้ม (ย้ายตัวเกินโควตา ${hitWinner.hits / 4} คน)` : null,
-          emptyMsg: 'ไม่มีทีมเสียแต้มลบย้ายตัวในสัปดาห์นี้'
+          statText: hitWinner ? `(${hitWinner.hits} pts)` : '',
+          detailHtml: hitWinner ? `Took -${hitWinner.hits} pts in transfer penalties (${hitWinner.hits / 4} extra transfer${hitWinner.hits / 4 > 1 ? 's' : ''})` : null,
+          emptyMsg: 'No transfer hits taken this week'
         });
 
-        // 11. เทพ Scout ซื้อตัวเข้าเป้า
+        // 11. Sharpest Trader
         const goodTxTeams = results.filter(r => r.transfers_count > 0 && r.transfers_net_impact > 0).sort((a, b) => b.transfers_net_impact - a.transfers_net_impact);
         const goodTxWinner = goodTxTeams[0] || null;
         let goodTxDetail = '';
+        let goodTxStat = '';
         if (goodTxWinner) {
-          const moveDesc = (goodTxWinner.transfer_moves && goodTxWinner.transfer_moves.length > 0)
-            ? goodTxWinner.transfer_moves.map(m => `${m.in} (${m.in_pts > 0 ? '+' : ''}${m.in_pts}) แทน ${m.out} (${m.out_pts})`).join(', ')
-            : '';
-          goodTxDetail = `กำไรจากตัวย้าย ${goodTxWinner.transfers_pts_gain >= 0 ? '+' : ''}${goodTxWinner.transfers_pts_gain} แต้ม • แต้มลบ -${goodTxWinner.hits || 0}${moveDesc ? ` • ${moveDesc}` : ''}`;
+          goodTxStat = `(${goodTxWinner.transfers_net_impact >= 0 ? '+' : ''}${goodTxWinner.transfers_net_impact} net; ${goodTxWinner.transfers_pts_gain >= 0 ? '+' : ''}${goodTxWinner.transfers_pts_gain} from moves, ${goodTxWinner.hits ? `-${goodTxWinner.hits}` : '0'} hits)`;
+          if (goodTxWinner.transfer_moves && goodTxWinner.transfer_moves.length > 0) {
+            goodTxDetail = goodTxWinner.transfer_moves.map(m => `<strong>${m.in}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts}) in for <strong>${m.out}</strong> (${m.out_pts})`).join(', ');
+          }
         }
         const card11 = renderCard({
-          icon: ICONS.trophy,
-          title: 'เทพ Scout ซื้อตัวเข้าเป้า',
+          icon: ICONS.award,
+          title: 'Sharpest Trader',
+          subtitle: 'Best net transfer impact (includes hits)',
           theme: 'green',
           winner: goodTxWinner,
-          statText: goodTxWinner ? `+${goodTxWinner.transfers_net_impact} แต้ม` : '',
+          statText: goodTxStat,
           detailHtml: goodTxDetail,
-          emptyMsg: 'ไม่มีทีมที่ได้ผลต่างคะแนนย้ายตัวเป็นบวกในสัปดาห์นี้'
+          emptyMsg: 'No positive transfer impact this week'
         });
 
-        // 12. ดีลผิดจังหวะ
+        // 12. Transfer Tangle
         const badTxTeams = results.filter(r => r.transfers_count > 0 && r.transfers_net_impact < 0).sort((a, b) => a.transfers_net_impact - b.transfers_net_impact);
         const badTxWinner = badTxTeams[0] || null;
         let badTxDetail = '';
+        let badTxStat = '';
         if (badTxWinner) {
-          const moveDesc = (badTxWinner.transfer_moves && badTxWinner.transfer_moves.length > 0)
-            ? badTxWinner.transfer_moves.map(m => `${m.in} (${m.in_pts}) แทน ${m.out} (${m.out_pts})`).join(', ')
-            : '';
-          badTxDetail = `ขาดทุนจากตัวย้าย ${badTxWinner.transfers_pts_gain} แต้ม • แต้มลบ -${badTxWinner.hits || 0}${moveDesc ? ` • ${moveDesc}` : ''}`;
+          badTxStat = `(${badTxWinner.transfers_net_impact} net; ${badTxWinner.transfers_pts_gain >= 0 ? '+' : ''}${badTxWinner.transfers_pts_gain} from moves, ${badTxWinner.hits ? `-${badTxWinner.hits}` : '0'} hits)`;
+          if (badTxWinner.transfer_moves && badTxWinner.transfer_moves.length > 0) {
+            badTxDetail = badTxWinner.transfer_moves.map(m => `<strong>${m.in}</strong> (${m.in_pts}) in for <strong>${m.out}</strong> (${m.out_pts})`).join(', ');
+          }
         }
         const card12 = renderCard({
           icon: ICONS.layers,
-          title: 'ดีลผิดจังหวะ',
+          title: 'Transfer Tangle',
+          subtitle: 'Worst net transfer impact (includes hits)',
           theme: 'red',
           winner: badTxWinner,
-          statText: badTxWinner ? `${badTxWinner.transfers_net_impact} แต้ม` : '',
+          statText: badTxStat,
           detailHtml: badTxDetail,
-          emptyMsg: 'ไม่มีทีมที่ขาดทุนแต้มจากการย้ายตัวในสัปดาห์นี้'
+          emptyMsg: 'No negative transfer impact this week'
         });
 
-        // 13. ยอมติดลบก็ยังเจ็บ
+        // 13. Painful Hit
         const painfulTeams = results.filter(r => r.hits > 0 && r.transfers_net_impact < 0).sort((a, b) => a.transfers_net_impact - b.transfers_net_impact);
         const painfulWinner = painfulTeams[0] || null;
+        let painfulDetail = '';
+        let painfulStat = '';
+        if (painfulWinner) {
+          painfulStat = `(${painfulWinner.transfers_net_impact} net; ${painfulWinner.transfers_pts_gain >= 0 ? '+' : ''}${painfulWinner.transfers_pts_gain} from moves, -${painfulWinner.hits} hits)`;
+          if (painfulWinner.transfer_moves && painfulWinner.transfer_moves.length > 0) {
+            painfulDetail = painfulWinner.transfer_moves.map(m => `<strong>${m.in}</strong> in for <strong>${m.out}</strong>`).join(', ');
+          }
+        }
         const card13 = renderCard({
           icon: ICONS.layers,
-          title: 'ยอมติดลบก็ยังเจ็บ',
+          title: 'Painful Hit',
+          subtitle: "Took a hit and it didn't pay off",
           theme: 'red',
           winner: painfulWinner,
-          statText: painfulWinner ? `${painfulWinner.transfers_net_impact} แต้ม` : '',
-          detailHtml: painfulWinner ? `ยอมหักลบแต้มย้าย -${painfulWinner.hits} แต้ม แต่ผลงานตัวย้ายสุทธิได้ ${painfulWinner.transfers_net_impact} แต้ม (ไม่คุ้มค่า)` : null,
-          emptyMsg: 'ไม่มีทีมที่ยอมเสียแต้มลบแล้วผลงานติดลบในสัปดาห์นี้'
+          statText: painfulStat,
+          detailHtml: painfulDetail,
+          emptyMsg: 'No hits that resulted in a loss this week'
         });
 
-        // 14. Supersub ทำงาน
+        // 14. One-Move Master
         const singleTxTeams = results.filter(r => r.transfers_count === 1 && r.transfers_net_impact > 0).sort((a, b) => b.transfers_net_impact - a.transfers_net_impact);
         const singleTxWinner = singleTxTeams[0] || null;
         let singleTxDetail = '';
+        let singleTxStat = '';
         if (singleTxWinner) {
-          if (singleTxWinner.transfer_moves && singleTxWinner.transfer_moves.length > 0) {
+          singleTxStat = `(+${singleTxWinner.transfers_net_impact} net from 1 move)`;
+          if (singleTxWinner.transfer_moves && singleTxWinner.transfer_moves[0]) {
             const m = singleTxWinner.transfer_moves[0];
-            singleTxDetail = `ดึง ${m.in} (${m.in_pts > 0 ? '+' : ''}${m.in_pts} แต้ม) แทน ${m.out} (${m.out_pts} แต้ม)`;
-          } else {
-            singleTxDetail = `ย้ายตัวเพียงคนเดียวและสร้างผลต่างแต้มบวก +${singleTxWinner.transfers_net_impact} แต้ม`;
+            singleTxDetail = `<strong>${m.in}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts} pts) in for <strong>${m.out}</strong> (${m.out_pts} pts)`;
           }
         }
         const card14 = renderCard({
           icon: ICONS.award,
-          title: 'Supersub ทำงาน',
+          title: 'One-Move Master',
+          subtitle: 'Single transfer that made a positive difference',
           theme: 'green',
           winner: singleTxWinner,
-          statText: singleTxWinner ? `+${singleTxWinner.transfers_net_impact} แต้ม` : '',
+          statText: singleTxStat,
           detailHtml: singleTxDetail,
-          emptyMsg: 'ไม่มีทีมย้ายตัว 1 คนที่ได้ผลงานบวกในสัปดาห์นี้'
+          emptyMsg: 'No single transfers with positive difference'
         });
 
         // Assemble all 14 cards
