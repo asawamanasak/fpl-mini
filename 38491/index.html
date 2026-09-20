@@ -813,7 +813,7 @@
       <!-- Top Overview Banner (Minimal) -->
       <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-4">
         <div class="flex items-center gap-2.5">
-          <h2 id="highlights-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">Awards of the Week <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(ไฮไลท์ประจำสัปดาห์)</span></h2>
+          <h2 id="highlights-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">Weekly Highlights <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(ไฮไลท์ประจำสัปดาห์)</span></h2>
         </div>
         <div class="flex items-center gap-2">
           <span id="highlights-gw-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
@@ -2121,7 +2121,7 @@
         const gwBadge = document.getElementById('highlights-gw-badge');
         const grid = document.getElementById('highlights-cards-grid');
 
-        if (titleEl) titleEl.innerHTML = 'Awards of the Week <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(ไฮไลท์ประจำสัปดาห์)</span>';
+        if (titleEl) titleEl.innerHTML = 'Weekly Highlights <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(ไฮไลท์ประจำสัปดาห์)</span>';
         if (gwBadge) gwBadge.innerText = `Gameweek ${this.selectedGW}`;
         this.updateHighlightsTabBlink();
 
