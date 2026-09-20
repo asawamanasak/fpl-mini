@@ -2172,6 +2172,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const results = [...gwData.results];
         const sortedByNet = [...results].sort((a, b) => b.net_points - a.net_points);
         const avgNet = results.reduce((sum, r) => sum + r.net_points, 0) / results.length;
+        const avgRawPoints = results.reduce((sum, r) => sum + r.points, 0) / results.length;
 
         const ICONS = {
           star: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`,
@@ -2416,18 +2417,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: 'No team value data available'
         });
 
-        // 8. Wildcard Wasteland
-        const lowChipTeams = results.filter(r => r.chip && r.chip !== '-' && r.net_points < avgNet).sort((a, b) => a.net_points - b.net_points);
-        const lowChipWinner = lowChipTeams[0] || null;
+        // 8. Wildcard Wasteland (Players who played Wildcard below league raw average)
+        const lowWcTeams = results.filter(r => r.chip === 'wildcard' && r.points < avgRawPoints).sort((a, b) => a.points - b.points);
+        const lowWcWinner = lowWcTeams[0] || null;
         const card8 = renderCard({
           icon: ICONS.layers,
-          title: lowChipWinner ? (this.getChipCode(lowChipWinner.chip) === 'WC' ? 'Wildcard Wasteland' : `${this.getChipName(lowChipWinner.chip)} Wasteland`) : 'Wildcard Wasteland',
-          subtitle: lowChipWinner ? `${this.getChipName(lowChipWinner.chip)} played but below league average` : 'Wildcard played but below league average',
+          title: 'Wildcard Wasteland',
+          subtitle: 'Wildcard played but below league average',
           theme: 'red',
-          winner: lowChipWinner,
-          statText: lowChipWinner ? `(${lowChipWinner.net_points} vs avg ${avgNet.toFixed(1)})` : '',
-          detailHtml: lowChipWinner ? `Played ${this.getChipName(lowChipWinner.chip)}: ${lowChipWinner.net_points} pts (league avg ${avgNet.toFixed(1)} pts)` : null,
-          emptyMsg: 'No chip played below league average'
+          winner: lowWcWinner,
+          statText: lowWcWinner ? `(${lowWcWinner.points} vs avg ${avgRawPoints.toFixed(1)})` : '',
+          detailHtml: lowWcWinner ? `Played Wildcard: ${lowWcWinner.points} pts (league avg ${avgRawPoints.toFixed(1)} pts)` : null,
+          emptyMsg: 'No Wildcard played below league average'
         });
 
         // 9. Bench Disaster
@@ -2444,8 +2445,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: 'No bench points left this week'
         });
 
-        // 10. YOLO Manager
-        const hitTeams = results.filter(r => r.hits > 0).sort((a, b) => b.hits - a.hits);
+        // Non-Wildcard/FreeHit teams for regular transfer awards
+        const nonWcTeams = results.filter(r => r.chip !== 'wildcard' && r.chip !== 'freehit');
+
+        // 10. YOLO Manager (Most transfer hits taken, excluding Wildcard/Free Hit)
+        const hitTeams = nonWcTeams.filter(r => r.hits > 0).sort((a, b) => b.hits - a.hits);
         const hitWinner = hitTeams[0] || null;
         const card10 = renderCard({
           icon: ICONS.arrowUp,
@@ -2458,13 +2462,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: 'No transfer hits taken this week'
         });
 
-        // 11. Sharpest Trader
-        const goodTxTeams = results.filter(r => r.transfers_count > 0 && r.transfers_net_impact > 0).sort((a, b) => b.transfers_net_impact - a.transfers_net_impact);
+        // 11. Sharpest Trader (Best net transfer impact, excluding Wildcard/Free Hit)
+        const goodTxTeams = nonWcTeams.filter(r => (r.transfers_count || 0) > 0 && (r.transfers_net_impact || 0) > 0).sort((a, b) => b.transfers_net_impact - a.transfers_net_impact);
         const goodTxWinner = goodTxTeams[0] || null;
         let goodTxDetail = '';
         let goodTxStat = '';
         if (goodTxWinner) {
-          goodTxStat = `(${goodTxWinner.transfers_net_impact >= 0 ? '+' : ''}${goodTxWinner.transfers_net_impact} net; ${goodTxWinner.transfers_pts_gain >= 0 ? '+' : ''}${goodTxWinner.transfers_pts_gain} from moves, ${goodTxWinner.hits ? `-${goodTxWinner.hits}` : '0'} hits)`;
+          const hitsStr = goodTxWinner.hits > 0 ? `-${goodTxWinner.hits} hits` : '0 hits';
+          const movesSign = goodTxWinner.transfers_pts_gain >= 0 ? '+' : '';
+          goodTxStat = `(+${goodTxWinner.transfers_net_impact} net; ${movesSign}${goodTxWinner.transfers_pts_gain} from moves, ${hitsStr})`;
           if (goodTxWinner.transfer_moves && goodTxWinner.transfer_moves.length > 0) {
             goodTxDetail = goodTxWinner.transfer_moves.map(m => `<strong>${m.in}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts}) in for <strong>${m.out}</strong> (${m.out_pts})`).join(', ');
           }
@@ -2480,13 +2486,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: 'No positive transfer impact this week'
         });
 
-        // 12. Transfer Tangle
-        const badTxTeams = results.filter(r => r.transfers_count > 0 && r.transfers_net_impact < 0).sort((a, b) => a.transfers_net_impact - b.transfers_net_impact);
+        // 12. Transfer Tangle (Worst net transfer impact, excluding Wildcard/Free Hit)
+        const badTxTeams = nonWcTeams.filter(r => (r.transfers_count || 0) > 0 && (r.transfers_net_impact || 0) < 0).sort((a, b) => a.transfers_net_impact - b.transfers_net_impact);
         const badTxWinner = badTxTeams[0] || null;
         let badTxDetail = '';
         let badTxStat = '';
         if (badTxWinner) {
-          badTxStat = `(${badTxWinner.transfers_net_impact} net; ${badTxWinner.transfers_pts_gain >= 0 ? '+' : ''}${badTxWinner.transfers_pts_gain} from moves, ${badTxWinner.hits ? `-${badTxWinner.hits}` : '0'} hits)`;
+          const hitsStr = badTxWinner.hits > 0 ? `-${badTxWinner.hits} hits` : '0 hits';
+          const movesSign = badTxWinner.transfers_pts_gain >= 0 ? '+' : '';
+          badTxStat = `(${badTxWinner.transfers_net_impact} net; ${movesSign}${badTxWinner.transfers_pts_gain} from moves, ${hitsStr})`;
           if (badTxWinner.transfer_moves && badTxWinner.transfer_moves.length > 0) {
             badTxDetail = badTxWinner.transfer_moves.map(m => `<strong>${m.in}</strong> (${m.in_pts}) in for <strong>${m.out}</strong> (${m.out_pts})`).join(', ');
           }
@@ -2502,30 +2510,57 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: 'No negative transfer impact this week'
         });
 
-        // 13. Painful Hit
-        const painfulTeams = results.filter(r => r.hits > 0 && r.transfers_net_impact < 0).sort((a, b) => a.transfers_net_impact - b.transfers_net_impact);
-        const painfulWinner = painfulTeams[0] || null;
-        let painfulDetail = '';
-        let painfulStat = '';
-        if (painfulWinner) {
-          painfulStat = `(${painfulWinner.transfers_net_impact} net; ${painfulWinner.transfers_pts_gain >= 0 ? '+' : ''}${painfulWinner.transfers_pts_gain} from moves, -${painfulWinner.hits} hits)`;
-          if (painfulWinner.transfer_moves && painfulWinner.transfer_moves.length > 0) {
-            painfulDetail = painfulWinner.transfer_moves.map(m => `<strong>${m.in}</strong> in for <strong>${m.out}</strong>`).join(', ');
+        // 13. Hit Hero OR Painful Hit (Dynamic in LiveFPL: Hit Hero if any hit profited, Painful Hit if all hits lost)
+        const hitCandidates = nonWcTeams.filter(r => r.hits > 0);
+        const profitableHits = hitCandidates.filter(r => (r.transfers_net_impact || 0) > 0).sort((a, b) => b.transfers_net_impact - a.transfers_net_impact);
+        const failedHits = hitCandidates.filter(r => (r.transfers_net_impact || 0) < 0).sort((a, b) => a.transfers_net_impact - b.transfers_net_impact);
+
+        let hitAwardWinner = null;
+        let hitAwardTitle = 'Hit Hero';
+        let hitAwardSub = 'Took a hit but still profited overall';
+        let hitAwardTheme = 'green';
+        let hitAwardIcon = ICONS.award;
+        let hitAwardStat = '';
+        let hitAwardDetail = '';
+        let hitAwardEmpty = 'No transfer hits taken this week';
+
+        if (profitableHits.length > 0) {
+          hitAwardWinner = profitableHits[0];
+          hitAwardTitle = 'Hit Hero';
+          hitAwardSub = 'Took a hit but still profited overall';
+          hitAwardTheme = 'green';
+          hitAwardIcon = ICONS.award;
+          const movesSign = hitAwardWinner.transfers_pts_gain >= 0 ? '+' : '';
+          hitAwardStat = `(+${hitAwardWinner.transfers_net_impact} net; ${movesSign}${hitAwardWinner.transfers_pts_gain} from moves, -${hitAwardWinner.hits} hits)`;
+          if (hitAwardWinner.transfer_moves && hitAwardWinner.transfer_moves.length > 0) {
+            hitAwardDetail = hitAwardWinner.transfer_moves.map(m => `<strong>${m.in}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts}) in for <strong>${m.out}</strong> (${m.out_pts})`).join(', ');
+          }
+        } else if (failedHits.length > 0) {
+          hitAwardWinner = failedHits[0];
+          hitAwardTitle = 'Painful Hit';
+          hitAwardSub = "Took a hit and it didn't pay off";
+          hitAwardTheme = 'red';
+          hitAwardIcon = ICONS.layers;
+          const movesSign = hitAwardWinner.transfers_pts_gain >= 0 ? '+' : '';
+          hitAwardStat = `(${hitAwardWinner.transfers_net_impact} net; ${movesSign}${hitAwardWinner.transfers_pts_gain} from moves, -${hitAwardWinner.hits} hits)`;
+          if (hitAwardWinner.transfer_moves && hitAwardWinner.transfer_moves.length > 0) {
+            hitAwardDetail = hitAwardWinner.transfer_moves.map(m => `<strong>${m.in}</strong> (${m.in_pts}) in for <strong>${m.out}</strong> (${m.out_pts})`).join(', ');
           }
         }
+
         const card13 = renderCard({
-          icon: ICONS.layers,
-          title: 'Painful Hit',
-          subtitle: "Took a hit and it didn't pay off",
-          theme: 'red',
-          winner: painfulWinner,
-          statText: painfulStat,
-          detailHtml: painfulDetail,
-          emptyMsg: 'No hits that resulted in a loss this week'
+          icon: hitAwardIcon,
+          title: hitAwardTitle,
+          subtitle: hitAwardSub,
+          theme: hitAwardTheme,
+          winner: hitAwardWinner,
+          statText: hitAwardStat,
+          detailHtml: hitAwardDetail,
+          emptyMsg: hitAwardEmpty
         });
 
-        // 14. One-Move Master
-        const singleTxTeams = results.filter(r => r.transfers_count === 1 && r.transfers_net_impact > 0).sort((a, b) => b.transfers_net_impact - a.transfers_net_impact);
+        // 14. One-Move Master (Single transfer that made a positive difference, excluding Wildcard/Free Hit)
+        const singleTxTeams = nonWcTeams.filter(r => (r.transfers_count || 0) === 1 && (r.transfers_net_impact || 0) > 0).sort((a, b) => b.transfers_net_impact - a.transfers_net_impact);
         const singleTxWinner = singleTxTeams[0] || null;
         let singleTxDetail = '';
         let singleTxStat = '';

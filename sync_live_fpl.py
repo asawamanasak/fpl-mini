@@ -511,7 +511,16 @@ def main():
                             r["transfer_moves"] = []
                         else:
                             sq_curr = squads_dict.get(f"{eid}_{gw}")
-                            sq_prev = squads_dict.get(f"{eid}_{gw-1}")
+                            # If previous gameweek was Free Hit, the baseline squad reverts back to before Free Hit
+                            prev_gw = gw - 1
+                            while prev_gw >= 1:
+                                prev_res = gameweeks_dict.get(str(prev_gw), {}).get("results", [])
+                                prev_r = next((x for x in prev_res if x.get("entry_id") == eid), None)
+                                if prev_r and prev_r.get("chip") == "freehit":
+                                    prev_gw -= 1
+                                else:
+                                    break
+                            sq_prev = squads_dict.get(f"{eid}_{prev_gw}")
                             if sq_curr and sq_prev:
                                 curr_ids = set(extract_pid(p) for p in sq_curr.get("starting", []) + sq_curr.get("bench", []) if extract_pid(p) is not None)
                                 prev_ids = set(extract_pid(p) for p in sq_prev.get("starting", []) + sq_prev.get("bench", []) if extract_pid(p) is not None)
