@@ -2409,7 +2409,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const card7 = renderCard({
           icon: ICONS.trophy,
           title: 'Value King',
-          subtitle: 'Highest Team Value <span class="text-slate-500 dark:text-slate-400 font-normal">(เสี่ยใหญ่พอร์ตโต)</span>',
+          subtitle: 'Highest Team Value <span class="text-slate-500 dark:text-slate-400 font-normal">(ใครอยากเป็นเศรษฐี... ฉันน่ะสิ ฉันน่ะสิ)</span>',
           theme: 'green',
           winner: valueWinner,
           statText: valueWinner ? `(£${valueWinner.team_value || 100.0})` : '',
