@@ -834,7 +834,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
       <!-- Top Overview Banner (Minimal) -->
       <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-4">
         <div class="flex items-center gap-2.5">
-          <h2 id="highlights-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">Awards of the Week</h2>
+          <h2 id="highlights-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">Awards of the Week <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(ไฮไลท์ประจำสัปดาห์)</span></h2>
         </div>
         <div class="flex items-center gap-2">
           <span id="highlights-gw-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
@@ -2142,7 +2142,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const gwBadge = document.getElementById('highlights-gw-badge');
         const grid = document.getElementById('highlights-cards-grid');
 
-        if (titleEl) titleEl.innerText = 'Awards of the Week';
+        if (titleEl) titleEl.innerHTML = 'Awards of the Week <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(ไฮไลท์ประจำสัปดาห์)</span>';
         if (gwBadge) gwBadge.innerText = `Gameweek ${this.selectedGW}`;
         this.updateHighlightsTabBlink();
 
@@ -2212,7 +2212,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   </span>
                   <div class="min-w-0">
                     <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 font-display truncate">${cfg.title}</h4>
-                    <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium truncate">${cfg.subtitle}</p>
+                    <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium leading-tight mt-0.5">${cfg.subtitle}</p>
                   </div>
                 </div>
                 <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 text-[11px] text-slate-400 italic">
@@ -2225,14 +2225,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           return `
             <div class="glass-card rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between transition-all ${cardHover}">
               
-              <!-- Header: Vector Icon, English Title & Subtitle -->
+              <!-- Header: Vector Icon, English Title & Subtitle with Thai Tag -->
               <div class="flex items-center gap-2.5 min-w-0">
                 <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-slate-200 dark:border-slate-700/80 bg-white/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center flex-shrink-0 shadow-2xs">
                   ${cfg.icon}
                 </span>
                 <div class="min-w-0">
                   <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 font-display truncate">${cfg.title}</h4>
-                  <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium truncate">${cfg.subtitle}</p>
+                  <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium leading-tight mt-0.5">${cfg.subtitle}</p>
                 </div>
               </div>
 
@@ -2261,7 +2261,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const card1 = renderCard({
           icon: ICONS.star,
           title: 'Top Gun',
-          subtitle: 'Highest Gameweek score',
+          subtitle: 'Highest Gameweek score <span class="text-slate-500 dark:text-slate-400 font-normal">(แต้มโหดสุดในวีค)</span>',
           theme: 'green',
           winner: topGunWinner,
           statText: topGunWinner ? `(${topGunWinner.net_points} pts)` : '',
@@ -2273,7 +2273,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const card2 = renderCard({
           icon: ICONS.chartDown,
           title: 'Tough Week',
-          subtitle: 'Lowest Gameweek score',
+          subtitle: 'Lowest Gameweek score <span class="text-slate-500 dark:text-slate-400 font-normal">(ยับเยินสุดในวีค)</span>',
           theme: 'red',
           winner: toughWinner,
           statText: toughWinner ? `(${toughWinner.net_points} pts)` : '',
@@ -2356,7 +2356,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const card3 = renderCard({
           icon: ICONS.rotateCcw,
           title: 'Comeback Kid',
-          subtitle: 'Biggest rank rise',
+          subtitle: 'Biggest rank rise <span class="text-slate-500 dark:text-slate-400 font-normal">(ไต่แรงแซงโค้ง)</span>',
           theme: 'green',
           winner: comebackWinner,
           statText: comebackStat,
@@ -2367,7 +2367,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const card4 = renderCard({
           icon: ICONS.chartDown,
           title: 'Rank Crasher',
-          subtitle: 'Biggest rank fall',
+          subtitle: 'Biggest rank fall <span class="text-slate-500 dark:text-slate-400 font-normal">(รูดยับลงเหว)</span>',
           theme: 'red',
           winner: crasherWinner,
           statText: crasherStat,
@@ -2381,7 +2381,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const card5 = renderCard({
           icon: ICONS.trophy,
           title: 'Chip Master',
-          subtitle: chipMasterWinner ? `Best score with a chip (${this.getChipCode(chipMasterWinner.chip)})` : 'Best score with a chip',
+          subtitle: chipMasterWinner ? `Best score with a chip (${this.getChipCode(chipMasterWinner.chip)}) <span class="text-slate-500 dark:text-slate-400 font-normal">(กางการ์ดอย่างเซียน)</span>` : 'Best score with a chip <span class="text-slate-500 dark:text-slate-400 font-normal">(กางการ์ดอย่างเซียน)</span>',
           theme: 'green',
           winner: chipMasterWinner,
           statText: chipMasterWinner ? `(${chipMasterWinner.net_points} pts)` : '',
@@ -2395,7 +2395,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const card6 = renderCard({
           icon: ICONS.award,
           title: 'No-Chip Warrior',
-          subtitle: 'Best score without playing a chip',
+          subtitle: 'Best score without playing a chip <span class="text-slate-500 dark:text-slate-400 font-normal">(ตัวตึงไม่ง้อชิป)</span>',
           theme: 'green',
           winner: noChipWinner,
           statText: noChipWinner ? `(${noChipWinner.net_points} pts)` : '',
@@ -2409,7 +2409,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const card7 = renderCard({
           icon: ICONS.trophy,
           title: 'Value King',
-          subtitle: 'Highest Team Value',
+          subtitle: 'Highest Team Value <span class="text-slate-500 dark:text-slate-400 font-normal">(เสี่ยใหญ่พอร์ตโต)</span>',
           theme: 'green',
           winner: valueWinner,
           statText: valueWinner ? `(£${valueWinner.team_value || 100.0})` : '',
@@ -2423,7 +2423,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const card8 = renderCard({
           icon: ICONS.layers,
           title: 'Wildcard Wasteland',
-          subtitle: 'Wildcard played but below league average',
+          subtitle: 'Wildcard played but below league average <span class="text-slate-500 dark:text-slate-400 font-normal">(เปิดการ์ดแต่ยังกริบ)</span>',
           theme: 'red',
           winner: lowWcWinner,
           statText: lowWcWinner ? `(${lowWcWinner.points} vs avg ${avgRawPoints.toFixed(1)})` : '',
@@ -2437,7 +2437,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const card9 = renderCard({
           icon: ICONS.layers,
           title: 'Bench Disaster',
-          subtitle: benchWinner ? (benchWinner.bench_points >= 20 ? 'Left 20+ points on the bench (no Bench Boost)' : (benchWinner.bench_points >= 10 ? 'Left 10+ points on the bench (no Bench Boost)' : 'Left points on the bench (no Bench Boost)')) : 'Left 20+ points on the bench (no Bench Boost)',
+          subtitle: benchWinner ? (benchWinner.bench_points >= 20 ? 'Left 20+ points on the bench <span class="text-slate-500 dark:text-slate-400 font-normal">(สำรองแต้มทะลัก)</span>' : (benchWinner.bench_points >= 10 ? 'Left 10+ points on the bench <span class="text-slate-500 dark:text-slate-400 font-normal">(สำรองแต้มทะลัก)</span>' : 'Points left on the bench <span class="text-slate-500 dark:text-slate-400 font-normal">(สำรองแต้มทะลัก)</span>')) : 'Left 20+ points on the bench <span class="text-slate-500 dark:text-slate-400 font-normal">(สำรองแต้มทะลัก)</span>',
           theme: 'red',
           winner: benchWinner,
           statText: benchWinner ? `(${benchWinner.bench_points} pts)` : '',
@@ -2454,7 +2454,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const card10 = renderCard({
           icon: ICONS.arrowUp,
           title: 'YOLO Manager',
-          subtitle: 'Most transfer hits taken',
+          subtitle: 'Most transfer hits taken <span class="text-slate-500 dark:text-slate-400 font-normal">(สายลบไม่ยั้ง)</span>',
           theme: 'purple',
           winner: hitWinner,
           statText: hitWinner ? `(${hitWinner.hits} pts)` : '',
@@ -2478,7 +2478,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const card11 = renderCard({
           icon: ICONS.award,
           title: 'Sharpest Trader',
-          subtitle: 'Best net transfer impact (includes hits)',
+          subtitle: 'Best net transfer impact <span class="text-slate-500 dark:text-slate-400 font-normal">(ดึงตัวเข้าเป้าสุดปัง)</span>',
           theme: 'green',
           winner: goodTxWinner,
           statText: goodTxStat,
@@ -2502,7 +2502,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const card12 = renderCard({
           icon: ICONS.layers,
           title: 'Transfer Tangle',
-          subtitle: 'Worst net transfer impact (includes hits)',
+          subtitle: 'Worst net transfer impact <span class="text-slate-500 dark:text-slate-400 font-normal">(ดึงผิดชีวิตเปลี่ยน)</span>',
           theme: 'red',
           winner: badTxWinner,
           statText: badTxStat,
@@ -2517,7 +2517,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
         let hitAwardWinner = null;
         let hitAwardTitle = 'Hit Hero';
-        let hitAwardSub = 'Took a hit but still profited overall';
+        let hitAwardSub = 'Took a hit but still profited overall <span class="text-slate-500 dark:text-slate-400 font-normal">(ยอมลบแต่จบกำไร)</span>';
         let hitAwardTheme = 'green';
         let hitAwardIcon = ICONS.award;
         let hitAwardStat = '';
@@ -2527,7 +2527,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         if (profitableHits.length > 0) {
           hitAwardWinner = profitableHits[0];
           hitAwardTitle = 'Hit Hero';
-          hitAwardSub = 'Took a hit but still profited overall';
+          hitAwardSub = 'Took a hit but still profited overall <span class="text-slate-500 dark:text-slate-400 font-normal">(ยอมลบแต่จบกำไร)</span>';
           hitAwardTheme = 'green';
           hitAwardIcon = ICONS.award;
           const movesSign = hitAwardWinner.transfers_pts_gain >= 0 ? '+' : '';
@@ -2538,7 +2538,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         } else if (failedHits.length > 0) {
           hitAwardWinner = failedHits[0];
           hitAwardTitle = 'Painful Hit';
-          hitAwardSub = "Took a hit and it didn't pay off";
+          hitAwardSub = 'Took a hit and it didn\\\'t pay off <span class="text-slate-500 dark:text-slate-400 font-normal">(ยอมลบแต่จบเจ็บ)</span>';
           hitAwardTheme = 'red';
           hitAwardIcon = ICONS.layers;
           const movesSign = hitAwardWinner.transfers_pts_gain >= 0 ? '+' : '';
@@ -2568,13 +2568,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           singleTxStat = `(+${singleTxWinner.transfers_net_impact} net from 1 move)`;
           if (singleTxWinner.transfer_moves && singleTxWinner.transfer_moves[0]) {
             const m = singleTxWinner.transfer_moves[0];
-            singleTxDetail = `<strong>${m.in}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts} pts) in for <strong>${m.out}</strong> (${m.out_pts} pts)`;
+            singleTxDetail = `<strong>${m.in}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts} pts) in for <strong>${m.out}</strong> (${m.out_pts})`;
           }
         }
         const card14 = renderCard({
           icon: ICONS.award,
           title: 'One-Move Master',
-          subtitle: 'Single transfer that made a positive difference',
+          subtitle: 'Single transfer that made a positive difference <span class="text-slate-500 dark:text-slate-400 font-normal">(ย้ายตัวเดียวเสียวทั้งลีก)</span>',
           theme: 'green',
           winner: singleTxWinner,
           statText: singleTxStat,
