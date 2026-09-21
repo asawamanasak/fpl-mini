@@ -2300,8 +2300,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             }
           }
 
-          const prevRanked = Object.keys(prevTotals).map(eid => ({ entry_id: Number(eid), pts: prevTotals[eid] })).sort((a, b) => b.pts - a.pts);
-          const currRanked = Object.keys(currTotals).map(eid => ({ entry_id: Number(eid), pts: currTotals[eid] })).sort((a, b) => b.pts - a.pts);
+          const teamOrderMap = {};
+          (this.data.teams || []).forEach((t, idx) => {
+            teamOrderMap[t.entry_id] = idx;
+          });
+
+          const prevRanked = Object.keys(prevTotals)
+            .map(eid => ({ entry_id: Number(eid), pts: prevTotals[eid] }))
+            .sort((a, b) => (b.pts - a.pts) || ((teamOrderMap[a.entry_id] ?? 999) - (teamOrderMap[b.entry_id] ?? 999)));
+          const currRanked = Object.keys(currTotals)
+            .map(eid => ({ entry_id: Number(eid), pts: currTotals[eid] }))
+            .sort((a, b) => (b.pts - a.pts) || ((teamOrderMap[a.entry_id] ?? 999) - (teamOrderMap[b.entry_id] ?? 999)));
 
           const prevRankMap = {};
           prevRanked.forEach((item, idx) => prevRankMap[item.entry_id] = idx + 1);
@@ -2311,8 +2320,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           const teamsMetaMap = {};
           (this.data.teams || []).forEach(t => teamsMetaMap[t.entry_id] = t);
 
+          const currentMaxGW = Number(this.multiData && this.multiData.max_gw) || 1;
           let rankDiffs = [];
-          if (this.selectedGW === this.data.max_gw && this.data.teams && this.data.teams.some(t => t.last_rank && t.rank)) {
+          if (this.selectedGW === currentMaxGW && this.data.teams && this.data.teams.some(t => t.last_rank && t.rank)) {
             rankDiffs = results.map(r => {
               const tm = teamsMetaMap[r.entry_id] || {};
               const pR = tm.last_rank || results.length;
