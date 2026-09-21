@@ -2440,7 +2440,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const card9 = renderCard({
           icon: ICONS.layers,
           title: 'Bench Disaster',
-          subtitle: 'Left 20+ points on the bench <span class="text-slate-500 dark:text-slate-400 font-normal">(สำรองแต้มทะลัก)</span>',
+          subtitle: 'Left 20+ points on the bench (no Bench Boost) <span class="text-slate-500 dark:text-slate-400 font-normal">(สำรองแต้มทะลัก)</span>',
           theme: 'red',
           winner: benchWinner,
           statText: benchWinner ? `(${benchWinner.bench_points} pts)` : '',
@@ -2513,56 +2513,54 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: 'No negative transfer impact this week'
         });
 
-        // 13. Hit Hero OR Painful Hit (Dynamic in LiveFPL: Hit Hero if any hit profited, Painful Hit if all hits lost)
+        // 13. Hit Hero (Took a hit but still profited overall, excluding Wildcard/Free Hit)
         const hitCandidates = nonWcTeams.filter(r => r.hits > 0);
         const profitableHits = hitCandidates.filter(r => (r.transfers_net_impact || 0) > 0).sort((a, b) => b.transfers_net_impact - a.transfers_net_impact);
-        const failedHits = hitCandidates.filter(r => (r.transfers_net_impact || 0) < 0).sort((a, b) => a.transfers_net_impact - b.transfers_net_impact);
-
-        let hitAwardWinner = null;
-        let hitAwardTitle = 'Hit Hero';
-        let hitAwardSub = 'Took a hit but still profited overall <span class="text-slate-500 dark:text-slate-400 font-normal">(ยอมลบแต่จบกำไร)</span>';
-        let hitAwardTheme = 'green';
-        let hitAwardIcon = ICONS.award;
-        let hitAwardStat = '';
-        let hitAwardDetail = '';
-        let hitAwardEmpty = 'No transfer hits taken this week';
-
-        if (profitableHits.length > 0) {
-          hitAwardWinner = profitableHits[0];
-          hitAwardTitle = 'Hit Hero';
-          hitAwardSub = 'Took a hit but still profited overall <span class="text-slate-500 dark:text-slate-400 font-normal">(ยอมลบแต่จบกำไร)</span>';
-          hitAwardTheme = 'green';
-          hitAwardIcon = ICONS.award;
-          const movesSign = hitAwardWinner.transfers_pts_gain >= 0 ? '+' : '';
-          hitAwardStat = `(+${hitAwardWinner.transfers_net_impact} net; ${movesSign}${hitAwardWinner.transfers_pts_gain} from moves, -${hitAwardWinner.hits} hits)`;
-          if (hitAwardWinner.transfer_moves && hitAwardWinner.transfer_moves.length > 0) {
-            hitAwardDetail = hitAwardWinner.transfer_moves.map(m => `<strong>${m.in}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts}) in for <strong>${m.out}</strong> (${m.out_pts})`).join(', ');
-          }
-        } else if (failedHits.length > 0) {
-          hitAwardWinner = failedHits[0];
-          hitAwardTitle = 'Painful Hit';
-          hitAwardSub = 'Took a hit and it didn\\\'t pay off <span class="text-slate-500 dark:text-slate-400 font-normal">(ยอมลบแต่จบเจ็บ)</span>';
-          hitAwardTheme = 'red';
-          hitAwardIcon = ICONS.layers;
-          const movesSign = hitAwardWinner.transfers_pts_gain >= 0 ? '+' : '';
-          hitAwardStat = `(${hitAwardWinner.transfers_net_impact} net; ${movesSign}${hitAwardWinner.transfers_pts_gain} from moves, -${hitAwardWinner.hits} hits)`;
-          if (hitAwardWinner.transfer_moves && hitAwardWinner.transfer_moves.length > 0) {
-            hitAwardDetail = hitAwardWinner.transfer_moves.map(m => `<strong>${m.in}</strong> (${m.in_pts}) in for <strong>${m.out}</strong> (${m.out_pts})`).join(', ');
+        const hitHeroWinner = profitableHits[0] || null;
+        let hitHeroDetail = '';
+        let hitHeroStat = '';
+        if (hitHeroWinner) {
+          const movesSign = hitHeroWinner.transfers_pts_gain >= 0 ? '+' : '';
+          hitHeroStat = `(+${hitHeroWinner.transfers_net_impact} net; ${movesSign}${hitHeroWinner.transfers_pts_gain} from moves, -${hitHeroWinner.hits} hits)`;
+          if (hitHeroWinner.transfer_moves && hitHeroWinner.transfer_moves.length > 0) {
+            hitHeroDetail = hitHeroWinner.transfer_moves.map(m => `<strong>${m.in}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts}) in for <strong>${m.out}</strong> (${m.out_pts})`).join(', ');
           }
         }
-
         const card13 = renderCard({
-          icon: hitAwardIcon,
-          title: hitAwardTitle,
-          subtitle: hitAwardSub,
-          theme: hitAwardTheme,
-          winner: hitAwardWinner,
-          statText: hitAwardStat,
-          detailHtml: hitAwardDetail,
-          emptyMsg: hitAwardEmpty
+          icon: ICONS.award,
+          title: 'Hit Hero',
+          subtitle: 'Took a hit but still profited overall <span class="text-slate-500 dark:text-slate-400 font-normal">(ยอมลบแต่จบกำไร)</span>',
+          theme: 'green',
+          winner: hitHeroWinner,
+          statText: hitHeroStat,
+          detailHtml: hitHeroDetail,
+          emptyMsg: 'No profitable hits this week'
         });
 
-        // 14. One-Move Master (Single transfer that made a positive difference, excluding Wildcard/Free Hit)
+        // 14. Painful Hit (Took a hit and it didn't pay off, excluding Wildcard/Free Hit)
+        const failedHits = hitCandidates.filter(r => (r.transfers_net_impact || 0) < 0).sort((a, b) => a.transfers_net_impact - b.transfers_net_impact);
+        const painfulHitWinner = failedHits[0] || null;
+        let painfulHitDetail = '';
+        let painfulHitStat = '';
+        if (painfulHitWinner) {
+          const movesSign = painfulHitWinner.transfers_pts_gain >= 0 ? '+' : '';
+          painfulHitStat = `(${painfulHitWinner.transfers_net_impact} net; ${movesSign}${painfulHitWinner.transfers_pts_gain} from moves, -${painfulHitWinner.hits} hits)`;
+          if (painfulHitWinner.transfer_moves && painfulHitWinner.transfer_moves.length > 0) {
+            painfulHitDetail = painfulHitWinner.transfer_moves.map(m => `<strong>${m.in}</strong> (${m.in_pts}) in for <strong>${m.out}</strong> (${m.out_pts})`).join(', ');
+          }
+        }
+        const card14 = renderCard({
+          icon: ICONS.layers,
+          title: 'Painful Hit',
+          subtitle: 'Took a hit and it didn\\\'t pay off <span class="text-slate-500 dark:text-slate-400 font-normal">(ยอมลบแต่จบเจ็บ)</span>',
+          theme: 'red',
+          winner: painfulHitWinner,
+          statText: painfulHitStat,
+          detailHtml: painfulHitDetail,
+          emptyMsg: 'No painful hits this week'
+        });
+
+        // 15. One-Move Master (Single transfer that made a positive difference, excluding Wildcard/Free Hit)
         const singleTxTeams = nonWcTeams.filter(r => (r.transfers_count || 0) === 1 && (r.transfers_net_impact || 0) > 0).sort((a, b) => b.transfers_net_impact - a.transfers_net_impact);
         const singleTxWinner = singleTxTeams[0] || null;
         let singleTxDetail = '';
@@ -2574,7 +2572,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             singleTxDetail = `<strong>${m.in}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts} pts) in for <strong>${m.out}</strong> (${m.out_pts})`;
           }
         }
-        const card14 = renderCard({
+        const card15 = renderCard({
           icon: ICONS.award,
           title: 'One-Move Master',
           subtitle: 'Single transfer that made a positive difference <span class="text-slate-500 dark:text-slate-400 font-normal">(ย้ายตัวเดียวเสียวทั้งลีก)</span>',
@@ -2590,7 +2588,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           card1, card2, card3, card4,
           card5, card6, card7, card8,
           card9, card10, card11, card12,
-          card13, card14
+          card13, card14, card15
         ].filter(Boolean).join('');
 
         this.updateHighlightsTabBlink();
