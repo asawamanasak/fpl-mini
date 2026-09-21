@@ -2204,22 +2204,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
 
           if (!cfg.winner) {
-            return `
-              <div class="glass-card rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between transition-all">
-                <div class="flex items-center gap-2.5">
-                  <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 flex items-center justify-center flex-shrink-0 shadow-2xs">
-                    ${cfg.icon}
-                  </span>
-                  <div class="min-w-0">
-                    <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 font-display truncate">${cfg.title}</h4>
-                    <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium leading-tight mt-0.5">${cfg.subtitle}</p>
-                  </div>
-                </div>
-                <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 text-[11px] text-slate-400 italic">
-                  ${cfg.emptyMsg || 'No data this week'}
-                </div>
-              </div>
-            `;
+            return '';
           }
 
           return `
@@ -2323,19 +2308,37 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           const currRankMap = {};
           currRanked.forEach((item, idx) => currRankMap[item.entry_id] = idx + 1);
 
-          const rankDiffs = results.map(r => {
-            const pR = prevRankMap[r.entry_id] || results.length;
-            const cR = currRankMap[r.entry_id] || results.length;
-            return {
-              result: r,
-              prevRank: pR,
-              currRank: cR,
-              diff: pR - cR // positive = rise, negative = fall
-            };
-          });
+          const teamsMetaMap = {};
+          (this.data.teams || []).forEach(t => teamsMetaMap[t.entry_id] = t);
 
-          const maxRise = [...rankDiffs].sort((a, b) => b.diff - a.diff)[0];
-          if (maxRise && maxRise.diff > 0) {
+          let rankDiffs = [];
+          if (this.selectedGW === this.data.max_gw && this.data.teams && this.data.teams.some(t => t.last_rank && t.rank)) {
+            rankDiffs = results.map(r => {
+              const tm = teamsMetaMap[r.entry_id] || {};
+              const pR = tm.last_rank || results.length;
+              const cR = tm.rank || results.length;
+              return {
+                result: r,
+                prevRank: pR,
+                currRank: cR,
+                diff: pR - cR
+              };
+            });
+          } else {
+            rankDiffs = results.map(r => {
+              const pR = prevRankMap[r.entry_id] || results.length;
+              const cR = currRankMap[r.entry_id] || results.length;
+              return {
+                result: r,
+                prevRank: pR,
+                currRank: cR,
+                diff: pR - cR
+              };
+            });
+          }
+
+          const maxRise = [...rankDiffs].filter(r => r.diff > 0).sort((a, b) => (b.diff - a.diff) || (b.prevRank - a.prevRank))[0];
+          if (maxRise) {
             comebackWinner = maxRise.result;
             comebackStat = `(+${maxRise.diff})`;
             comebackDetail = `Rose from rank ${maxRise.prevRank} to rank ${maxRise.currRank}`;
@@ -2343,8 +2346,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             comebackEmpty = 'No rank rise this week';
           }
 
-          const maxFall = [...rankDiffs].sort((a, b) => a.diff - b.diff)[0];
-          if (maxFall && maxFall.diff < 0) {
+          const maxFall = [...rankDiffs].filter(r => r.diff < 0).sort((a, b) => (a.diff - b.diff) || (b.prevRank - a.prevRank))[0];
+          if (maxFall) {
             crasherWinner = maxFall.result;
             crasherStat = `(${maxFall.diff})`;
             crasherDetail = `Fell from rank ${maxFall.prevRank} to rank ${maxFall.currRank}`;
@@ -2404,7 +2407,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         });
 
         // 7. Value King
-        const valueSorted = [...results].sort((a, b) => (b.team_value || 100.0) - (a.team_value || 100.0));
+        const valueSorted = [...results].sort((a, b) => ((b.team_value || 100.0) - (a.team_value || 100.0)) || ((a.bank || 0) - (b.bank || 0)));
         const valueWinner = valueSorted[0] || null;
         const card7 = renderCard({
           icon: ICONS.trophy,
@@ -2431,18 +2434,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: 'No Wildcard played below league average'
         });
 
-        // 9. Bench Disaster
-        const benchTeams = results.filter(r => r.chip !== 'bboost').sort((a, b) => (b.bench_points || 0) - (a.bench_points || 0));
-        const benchWinner = (benchTeams[0] && benchTeams[0].bench_points > 0) ? benchTeams[0] : null;
+        // 9. Bench Disaster (Left 20+ points on the bench without Bench Boost)
+        const benchTeams = results.filter(r => r.chip !== 'bboost' && (r.bench_points || 0) >= 20).sort((a, b) => (b.bench_points || 0) - (a.bench_points || 0));
+        const benchWinner = benchTeams[0] || null;
         const card9 = renderCard({
           icon: ICONS.layers,
           title: 'Bench Disaster',
-          subtitle: benchWinner ? (benchWinner.bench_points >= 20 ? 'Left 20+ points on the bench <span class="text-slate-500 dark:text-slate-400 font-normal">(สำรองแต้มทะลัก)</span>' : (benchWinner.bench_points >= 10 ? 'Left 10+ points on the bench <span class="text-slate-500 dark:text-slate-400 font-normal">(สำรองแต้มทะลัก)</span>' : 'Points left on the bench <span class="text-slate-500 dark:text-slate-400 font-normal">(สำรองแต้มทะลัก)</span>')) : 'Left 20+ points on the bench <span class="text-slate-500 dark:text-slate-400 font-normal">(สำรองแต้มทะลัก)</span>',
+          subtitle: 'Left 20+ points on the bench <span class="text-slate-500 dark:text-slate-400 font-normal">(สำรองแต้มทะลัก)</span>',
           theme: 'red',
           winner: benchWinner,
           statText: benchWinner ? `(${benchWinner.bench_points} pts)` : '',
           detailHtml: benchWinner ? `${benchWinner.bench_points} points on bench without Bench Boost` : null,
-          emptyMsg: 'No bench points left this week'
+          emptyMsg: 'No bench disaster (20+ pts) this week'
         });
 
         // Non-Wildcard/FreeHit teams for regular transfer awards
@@ -2582,13 +2585,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           emptyMsg: 'No single transfers with positive difference'
         });
 
-        // Assemble all 14 cards
+        // Assemble all cards with winners
         grid.innerHTML = [
           card1, card2, card3, card4,
           card5, card6, card7, card8,
           card9, card10, card11, card12,
           card13, card14
-        ].join('');
+        ].filter(Boolean).join('');
 
         this.updateHighlightsTabBlink();
       }

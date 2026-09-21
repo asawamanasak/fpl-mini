@@ -225,15 +225,18 @@ def main():
                 gws_to_fetch_live.add(gw)
 
     live_by_gw = {}
+    live_mins_by_gw = {}
     for gw in range(1, max_gw + 1):
         if gw in gws_to_fetch_live:
             try:
                 print(f"Fetching live elements for GW {gw}...")
                 live_data = fetch(f'https://fantasy.premierleague.com/api/event/{gw}/live/')
                 live_by_gw[gw] = {el['id']: el['stats']['total_points'] for el in live_data['elements']}
+                live_mins_by_gw[gw] = {el['id']: el['stats']['minutes'] for el in live_data['elements']}
             except Exception as e:
                 print(f"Error fetching live GW {gw}: {e}")
                 live_by_gw[gw] = {}
+                live_mins_by_gw[gw] = {}
         else:
             print(f"Skipping live elements fetch for completed GW {gw} (using cached squad points).")
 
@@ -243,10 +246,13 @@ def main():
                 print(f" -> Fetching live elements for GW {gw_num}...")
                 ld = fetch(f'https://fantasy.premierleague.com/api/event/{gw_num}/live/')
                 live_by_gw[gw_num] = {el['id']: el['stats']['total_points'] for el in ld['elements']}
+                live_mins_by_gw[gw_num] = {el['id']: el['stats']['minutes'] for el in ld['elements']}
             except Exception as err:
                 print(f"Error fetching live GW {gw_num}: {err}")
                 if gw_num not in live_by_gw:
                     live_by_gw[gw_num] = {}
+                if gw_num not in live_mins_by_gw:
+                    live_mins_by_gw[gw_num] = {}
         return live_by_gw[gw_num]
 
     # Thai timestamp formatting
@@ -300,7 +306,9 @@ def main():
                 teams_list.append({
                     "entry_id": t['entry'],
                     "entry_name": t['entry_name'],
-                    "player_name": t['player_name']
+                    "player_name": t['player_name'],
+                    "rank": t.get('rank'),
+                    "last_rank": t.get('last_rank')
                 })
 
             gameweeks_dict = {}
@@ -364,10 +372,13 @@ def main():
                             print(f" -> Fetching live elements for GW {wgw} (required for team picks)...")
                             live_data = fetch(f'https://fantasy.premierleague.com/api/event/{wgw}/live/')
                             live_by_gw[wgw] = {el['id']: el['stats']['total_points'] for el in live_data['elements']}
+                            live_mins_by_gw[wgw] = {el['id']: el['stats']['minutes'] for el in live_data['elements']}
                         except Exception as e:
                             print(f"Error fetching live GW {wgw}: {e}")
                             if wgw not in live_by_gw:
                                 live_by_gw[wgw] = {}
+                            if wgw not in live_mins_by_gw:
+                                live_mins_by_gw[wgw] = {}
 
                 print(f" -> Fetching {len(work_items)} team-gameweek picks for League {lid}...")
 
@@ -384,44 +395,121 @@ def main():
                         starters = []
                         bench = []
                         capt_name = '-'
-                        
-                        for p in picks_resp.get('picks', []):
+                        picks = picks_resp.get('picks', [])
+                        live_pts_gw = live_by_gw.get(gw, {})
+                        live_mins_gw = live_mins_by_gw.get(gw, {})
+
+                        # Identify captain and vice captain
+                        cap_pick = next((p for p in picks if p.get('is_captain')), None)
+                        vice_pick = next((p for p in picks if p.get('is_vice_captain')), None)
+                        cap_mins = live_mins_gw.get(cap_pick['element'], 0) if cap_pick else 0
+                        cap_mult = cap_pick.get('multiplier', 1) if cap_pick else 1
+                        vice_mult = vice_pick.get('multiplier', 1) if vice_pick else 1
+
+                        if cap_pick and cap_mins == 0 and vice_pick:
+                            actual_cap_mult = 1
+                            actual_vice_mult = cap_mult
+                        else:
+                            actual_cap_mult = cap_mult
+                            actual_vice_mult = vice_mult
+
+                        # Check if official auto_subs exist, otherwise simulate live autosubs
+                        actual_starters_picks = [p for p in picks if p.get('position', 1) <= 11]
+                        actual_bench_picks = [p for p in picks if p.get('position', 1) > 11]
+                        final_auto_subs = list(auto_subs)
+
+                        if auto_subs:
+                            # Apply official FPL auto_subs to pick assignments
+                            for sub in auto_subs:
+                                el_in = sub.get('element_in')
+                                el_out = sub.get('element_out')
+                                s_match = next((p for p in actual_starters_picks if p['element'] == el_out), None)
+                                b_match = next((p for p in actual_bench_picks if p['element'] == el_in), None)
+                                if s_match and b_match:
+                                    s_idx = actual_starters_picks.index(s_match)
+                                    b_idx = actual_bench_picks.index(b_match)
+                                    actual_starters_picks[s_idx] = b_match
+                                    actual_bench_picks[b_idx] = s_match
+                        elif chip != 'bboost':
+                            # Simulate live autosubs according to FPL rules
+                            if len(actual_bench_picks) > 0:
+                                gk_s = actual_starters_picks[0]
+                                gk_b = actual_bench_picks[0]
+                                if live_mins_gw.get(gk_s['element'], 0) == 0 and live_mins_gw.get(gk_b['element'], 0) > 0:
+                                    actual_starters_picks[0] = gk_b
+                                    actual_bench_picks[0] = gk_s
+                                    final_auto_subs.append({'element_in': gk_b['element'], 'element_out': gk_s['element']})
+
+                            bench_outfield = [p for p in actual_bench_picks if elements.get(p['element'], {}).get('element_type') != 1]
+                            for i in range(1, len(actual_starters_picks)):
+                                sp = actual_starters_picks[i]
+                                if live_mins_gw.get(sp['element'], 0) == 0:
+                                    for b_idx, bp in enumerate(bench_outfield):
+                                        if live_mins_gw.get(bp['element'], 0) > 0:
+                                            temp = list(actual_starters_picks)
+                                            temp[i] = bp
+                                            defs = sum(1 for p in temp if elements.get(p['element'], {}).get('element_type') == 2)
+                                            fwds = sum(1 for p in temp if elements.get(p['element'], {}).get('element_type') == 4)
+                                            if defs >= 3 and fwds >= 1:
+                                                actual_starters_picks[i] = bp
+                                                final_auto_subs.append({'element_in': bp['element'], 'element_out': sp['element']})
+                                                bench_outfield.pop(b_idx)
+                                                break
+
+                        for p in actual_starters_picks:
                             pid = p['element']
-                            mult = p.get('multiplier', 1)
+                            mult = actual_cap_mult if p.get('is_captain') else (actual_vice_mult if p.get('is_vice_captain') else 1)
                             is_cap = p.get('is_captain', False)
                             is_vice = p.get('is_vice_captain', False)
                             el_info = elements.get(pid, {})
                             team_code = teams_by_id.get(el_info.get('team'), 'PL')
                             pos_code = element_types.get(el_info.get('element_type'), 'MID')
-                            p_pts = live_by_gw.get(gw, {}).get(pid, 0)
-                            
+                            p_pts = live_pts_gw.get(pid, 0)
                             p_obj = {
                                 "id": pid,
                                 "name": el_info.get('web_name', 'Player'),
                                 "pos": pos_code,
                                 "team": team_code,
                                 "team_code": el_info.get('team_code', 0),
-                                "points": p_pts * mult if mult > 0 else p_pts,
+                                "points": p_pts * mult,
                                 "is_captain": is_cap,
                                 "is_vice": is_vice
                             }
                             if is_cap:
                                 capt_name = el_info.get('web_name', 'Captain')
-                            if p.get('position', 1) <= 11:
-                                starters.append(p_obj)
-                            else:
-                                bench.append(p_obj)
-                        
+                            starters.append(p_obj)
+
+                        rem_bench_picks = [p for p in picks if p not in actual_starters_picks]
+                        for p in rem_bench_picks:
+                            pid = p['element']
+                            is_cap = p.get('is_captain', False)
+                            is_vice = p.get('is_vice_captain', False)
+                            el_info = elements.get(pid, {})
+                            team_code = teams_by_id.get(el_info.get('team'), 'PL')
+                            pos_code = element_types.get(el_info.get('element_type'), 'MID')
+                            p_pts = live_pts_gw.get(pid, 0)
+                            p_obj = {
+                                "id": pid,
+                                "name": el_info.get('web_name', 'Player'),
+                                "pos": pos_code,
+                                "team": team_code,
+                                "team_code": el_info.get('team_code', 0),
+                                "points": p_pts,
+                                "is_captain": is_cap,
+                                "is_vice": is_vice
+                            }
+                            bench.append(p_obj)
+
                         start_raw = sum(p['points'] for p in starters)
                         bench_raw = sum(p['points'] for p in bench)
-                        
+
                         if chip == 'bboost':
                             raw_points = start_raw + bench_raw
                             bench_pts_disp = 0
                         else:
                             raw_points = start_raw
                             bench_pts_disp = bench_raw
-                            
+
                         # Resiliency fallback: If player points sum is 0 but official entry_history has points, use official points
                         official_pts = hist.get('points')
                         if raw_points == 0 and official_pts is not None and official_pts > 0:
@@ -431,7 +519,7 @@ def main():
                         team_val = round((hist.get('value') or 1000) / 10.0, 1)
                         team_bank = round((hist.get('bank') or 0) / 10.0, 1)
                         event_tx = hist.get('event_transfers', 0)
-                        
+
                         result_item = {
                             "entry_id": eid,
                             "team_name": t_obj['entry_name'],
@@ -446,11 +534,11 @@ def main():
                             "bank": team_bank,
                             "transfers_count": event_tx
                         }
-                        
+
                         squad_item = {
                             "starting": starters,
                             "bench": bench,
-                            "auto_subs": auto_subs
+                            "auto_subs": final_auto_subs
                         }
                         return (gw, eid, result_item, squad_item)
                     except Exception as err:
