@@ -2325,7 +2325,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           if (this.selectedGW === currentMaxGW && this.data.teams && this.data.teams.some(t => t.last_rank && t.rank)) {
             rankDiffs = results.map(r => {
               const tm = teamsMetaMap[r.entry_id] || {};
-              const pR = tm.last_rank || results.length;
+              const pR = (tm.last_rank !== undefined && tm.last_rank !== null) ? tm.last_rank : results.length;
               const cR = tm.rank || results.length;
               return {
                 result: r,
