@@ -5,6 +5,7 @@ import time
 import os
 import sys
 import argparse
+import subprocess
 from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor
 
@@ -52,6 +53,47 @@ def get_gw_fixture_status(gw_id):
 def is_gw_fixtures_finished(gw_id):
     _, finished = get_gw_fixture_status(gw_id)
     return finished
+
+def get_active_in_play_fixture_count(gw_id):
+    """
+    Check FPL fixtures API to count fixtures currently in-play.
+    A match is considered in-play if:
+    - started is True
+    - finished is False
+    - finished_provisional is False
+    """
+    try:
+        fixtures = fetch(f'https://fantasy.premierleague.com/api/fixtures/?event={gw_id}')
+        if fixtures and len(fixtures) > 0:
+            return sum(1 for f in fixtures if bool(f.get('started')) and not bool(f.get('finished')) and not bool(f.get('finished_provisional')))
+    except Exception as e:
+        print(f"Notice checking in-play fixtures for GW {gw_id}: {e}")
+    return 0
+
+def trigger_publish():
+    """Regenerate dashboard HTML presentations and commit/push updates to GitHub."""
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    update_script = os.path.join(base_dir, "update_preview.py")
+    try:
+        print("\n -> [Live Matchday Publisher] Regenerating dashboard presentations...")
+        subprocess.run([sys.executable, update_script], check=True, cwd=base_dir)
+        subprocess.run(["git", "config", "user.name", "github-actions[bot]"], cwd=base_dir)
+        subprocess.run(["git", "config", "user.email", "github-actions[bot]@users.noreply.github.com"], cwd=base_dir)
+        subprocess.run(["git", "add", "-A"], check=True, cwd=base_dir)
+        diff_chk = subprocess.run(["git", "diff", "--staged", "--quiet"], cwd=base_dir)
+        if diff_chk.returncode != 0:
+            commit_msg = "Auto-sync live FPL data (in-play update) [skip ci]"
+            subprocess.run(["git", "commit", "-m", commit_msg], check=True, cwd=base_dir)
+            push_res = subprocess.run(["git", "push"], cwd=base_dir)
+            if push_res.returncode != 0:
+                print("Notice: Git push conflict, rebasing...")
+                subprocess.run(["git", "pull", "--rebase"], cwd=base_dir)
+                subprocess.run(["git", "push"], cwd=base_dir)
+            print("🚀 [Live Matchday Publisher] Successfully pushed live in-play update to GitHub!")
+        else:
+            print("   No staged changes to commit.")
+    except Exception as e:
+        print(f"Notice during live matchday publish: {e}")
 
 def atomic_json_dump(data, file_path):
     """Safely write JSON to a temp file first, then atomically replace the target file."""
@@ -121,11 +163,7 @@ def check_data_has_changed(cached_data, new_output):
 
     return False
 
-def main():
-    parser = argparse.ArgumentParser(description="FPL Live Data Sync Engine")
-    parser.add_argument('--force', action='store_true', help="Force full re-sync for all GWs (bypass cache)")
-    args = parser.parse_args()
-
+def sync_once(args):
     start_time = time.time()
     print(f"[{datetime.now().strftime('%H:%M:%S')}] Starting FPL Sync Engine (force={args.force})...")
 
@@ -147,7 +185,7 @@ def main():
             except Exception:
                 pass
             print("   Dashboard will continue serving latest available scores. Exiting cleanly (code 0).")
-            return
+            return False, 0, 1
         else:
             print("   Fatal: No existing cache found to fall back to.")
             raise e
@@ -386,16 +424,24 @@ def main():
                     t_obj, gw = entry_tuple
                     eid = t_obj['entry']
                     try:
-                        picks_resp = fetch(f'https://fantasy.premierleague.com/api/entry/{eid}/event/{gw}/picks/')
-                        hist = picks_resp.get('entry_history', {})
-                        chip = picks_resp.get('active_chip')
-                        hits = hist.get('event_transfers_cost', 0)
-                        auto_subs = picks_resp.get('automatic_subs', [])
-                        
+                        s_key = f"{eid}_{gw}"
+                        cached_sq = cached_squads.get(s_key)
+                        if not args.force and cached_sq and cached_sq.get("raw_picks"):
+                            picks = cached_sq.get("raw_picks", [])
+                            hist = cached_sq.get("raw_hist", {})
+                            chip = cached_sq.get("chip")
+                            hits = hist.get('event_transfers_cost', cached_sq.get("hits", 0))
+                            auto_subs = cached_sq.get("auto_subs", [])
+                        else:
+                            picks_resp = fetch(f'https://fantasy.premierleague.com/api/entry/{eid}/event/{gw}/picks/')
+                            hist = picks_resp.get('entry_history', {})
+                            chip = picks_resp.get('active_chip')
+                            hits = hist.get('event_transfers_cost', 0)
+                            auto_subs = picks_resp.get('automatic_subs', [])
+                            picks = picks_resp.get('picks', [])
                         starters = []
                         bench = []
                         capt_name = '-'
-                        picks = picks_resp.get('picks', [])
                         live_pts_gw = live_by_gw.get(gw, {})
                         live_mins_gw = live_mins_by_gw.get(gw, {})
 
@@ -538,7 +584,11 @@ def main():
                         squad_item = {
                             "starting": starters,
                             "bench": bench,
-                            "auto_subs": final_auto_subs
+                            "auto_subs": final_auto_subs,
+                            "raw_picks": picks,
+                            "raw_hist": hist,
+                            "chip": chip,
+                            "hits": hits
                         }
                         return (gw, eid, result_item, squad_item)
                     except Exception as err:
@@ -754,6 +804,65 @@ def main():
                 f.write(summary_md)
         except Exception as e:
             print(f"Notice: Could not write GITHUB_STEP_SUMMARY: {e}")
+
+    active_in_play = get_active_in_play_fixture_count(max_gw)
+    return has_changed, active_in_play, max_gw
+
+def main():
+    parser = argparse.ArgumentParser(description="FPL Live Data Sync Engine")
+    parser.add_argument('--force', action='store_true', help="Force full re-sync for all GWs (bypass cache)")
+    parser.add_argument('--live-loop', action='store_true', help="Run continuous live polling daemon during matchday in-play window")
+    parser.add_argument('--max-minutes', type=int, default=14, help="Max duration in minutes to keep daemon alive (default: 14)")
+    parser.add_argument('--interval', type=int, default=60, help="Polling interval in seconds during in-play (default: 60)")
+    parser.add_argument('--push', action='store_true', help="Automatically commit and push when live scores change")
+    args = parser.parse_args()
+
+    has_changed, in_play_count, max_gw = sync_once(args)
+
+    is_ci = os.environ.get("GITHUB_ACTIONS") == "true"
+    should_loop = args.live_loop or is_ci
+    should_push = args.push or is_ci
+
+    if not should_loop:
+        return
+
+    if in_play_count == 0:
+        print(f"\n⚡ [Matchday Live Daemon] No active in-play matches in GW {max_gw}. Finished single sync.")
+        return
+
+    print(f"\n🔥 [Matchday Live Daemon] {in_play_count} Premier League match(es) actively in-play in GW {max_gw}!")
+    print(f"   Entering continuous polling loop (interval: {args.interval}s, max runtime: {args.max_minutes}m, push={should_push})...")
+
+    if has_changed and should_push:
+        trigger_publish()
+
+    loop_start = time.time()
+    iteration = 1
+    while True:
+        elapsed = time.time() - loop_start
+        if elapsed >= args.max_minutes * 60:
+            print(f"\n⏱️ Reached max daemon runtime ({args.max_minutes}m). Exiting cleanly for next scheduled trigger.")
+            break
+
+        time.sleep(args.interval)
+        iteration += 1
+
+        in_play_count = get_active_in_play_fixture_count(max_gw)
+        if in_play_count == 0:
+            print(f"\n🏁 All matches in this slot have concluded. Performing final sync and closing daemon.")
+            has_changed, _, _ = sync_once(args)
+            if has_changed and should_push:
+                trigger_publish()
+            break
+
+        print(f"\n--- [Daemon Iteration {iteration} | Elapsed: {int(elapsed)}s] Polling live points ({in_play_count} match in-play)... ---")
+        has_changed, _, _ = sync_once(args)
+        if has_changed:
+            print(f"⚽ [Score Change Detected] Live scores updated at {datetime.now().strftime('%H:%M:%S')}!")
+            if should_push:
+                trigger_publish()
+        else:
+            print(f"   No score changes at {datetime.now().strftime('%H:%M:%S')}. Waiting next poll ({args.interval}s)...")
 
 if __name__ == '__main__':
     main()
