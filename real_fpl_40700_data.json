@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "11 ต.ค. 2026, 01:39 น.",
-    "last_sync_iso": "2026-10-11 01:39:56"
+    "last_sync": "11 ต.ค. 2026, 04:59 น.",
+    "last_sync_iso": "2026-10-11 04:59:21"
   },
   "teams": [
     {
@@ -1951,7 +1951,7 @@
           "net_points": 57,
           "captain": "Saka",
           "chip": null,
-          "bench_points": 0,
+          "bench_points": 2,
           "team_value": 102.0,
           "bank": 1.7,
           "transfers_count": 0,
@@ -20132,7 +20132,7 @@
           "pos": "DEF",
           "team": "LEE",
           "team_code": 2,
-          "points": 0,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
