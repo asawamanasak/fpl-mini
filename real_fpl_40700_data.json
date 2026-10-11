@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "11 ต.ค. 2026, 20:45 น.",
-    "last_sync_iso": "2026-10-11 20:45:17"
+    "last_sync": "11 ต.ค. 2026, 20:48 น.",
+    "last_sync_iso": "2026-10-11 20:48:27"
   },
   "teams": [
     {
@@ -1968,7 +1968,7 @@
           "net_points": 57,
           "captain": "Saka",
           "chip": null,
-          "bench_points": 6,
+          "bench_points": 4,
           "team_value": 102.0,
           "bank": 1.7,
           "transfers_count": 0,
@@ -2034,7 +2034,7 @@
           "net_points": 45,
           "captain": "B.Fernandes",
           "chip": null,
-          "bench_points": 4,
+          "bench_points": 2,
           "team_value": 101.8,
           "bank": 1.2,
           "transfers_count": 1,
@@ -20122,7 +20122,7 @@
           "pos": "DEF",
           "team": "HUL",
           "team_code": 88,
-          "points": 3,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -21898,7 +21898,7 @@
           "pos": "DEF",
           "team": "HUL",
           "team_code": 88,
-          "points": 3,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
