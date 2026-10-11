@@ -2036,7 +2036,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               team_name: t.entry_name,
               player_name: t.player_name,
               total_points: 0,
-              last_gw_pts: 0
+              last_gw_pts: 0,
+              last_gw_raw: 0,
+              last_gw_hits: 0
             };
           });
 
@@ -2056,7 +2058,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                       team_name: r.team_name,
                       player_name: r.player_name,
                       total_points: 0,
-                      last_gw_pts: 0
+                      last_gw_pts: 0,
+                      last_gw_raw: 0,
+                      last_gw_hits: 0
                     };
                   }
                   overallMap[r.entry_id].total_points += r.net_points;
@@ -2071,10 +2075,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                       team_name: r.team_name,
                       player_name: r.player_name,
                       total_points: 0,
-                      last_gw_pts: 0
+                      last_gw_pts: 0,
+                      last_gw_raw: 0,
+                      last_gw_hits: 0
                     };
                   }
                   overallMap[r.entry_id].last_gw_pts = r.net_points;
+                  overallMap[r.entry_id].last_gw_raw = r.points;
+                  overallMap[r.entry_id].last_gw_hits = r.hits || 0;
                 });
               }
             }
@@ -2096,6 +2104,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             else if (team.overall_rank === 2) rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
             else if (team.overall_rank === 3) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
 
+            const rawScore = team.last_gw_raw !== undefined ? team.last_gw_raw : team.last_gw_pts;
+            const hitsBadge = team.last_gw_hits > 0 ? `<span class="text-[10px] sm:text-[11px] font-bold text-rose-500 dark:text-rose-400 font-display ml-0.5">(-${team.last_gw_hits})</span>` : '';
+
             oHtml += `
               <tr class="hover:bg-blue-50/40 transition-colors ${team.overall_rank <= 3 ? 'bg-blue-50/20' : ''}">
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
@@ -2105,7 +2116,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   </button>
                   <span class="text-[11px] text-slate-500 block truncate">${this.escapeHtml(team.player_name)}</span>
                 </td>
-                <td class="py-2.5 px-1 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-600">${team.last_gw_pts}</td>
+                <td class="py-2.5 px-1 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-700 dark:text-slate-300 whitespace-nowrap"><span class="font-semibold">${rawScore}</span>${hitsBadge}</td>
                 <td class="py-2.5 px-1.5 sm:px-3 text-right font-display font-black text-xs sm:text-sm text-blue-900">${team.total_points}</td>
               </tr>
             `;
