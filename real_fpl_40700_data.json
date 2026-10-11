@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "11 ต.ค. 2026, 04:59 น.",
-    "last_sync_iso": "2026-10-11 04:59:21"
+    "last_sync": "11 ต.ค. 2026, 07:45 น.",
+    "last_sync_iso": "2026-10-11 07:45:24"
   },
   "teams": [
     {
@@ -1919,7 +1919,7 @@
           "net_points": 61,
           "captain": "João Pedro",
           "chip": null,
-          "bench_points": 4,
+          "bench_points": 6,
           "team_value": 100.0,
           "bank": 1.8,
           "transfers_count": 2,
@@ -2071,9 +2071,9 @@
           "entry_id": 2604490,
           "team_name": "Leibniz FC",
           "player_name": "Ataro Munson",
-          "points": 30,
+          "points": 32,
           "hits": 0,
-          "net_points": 30,
+          "net_points": 32,
           "captain": "Haaland",
           "chip": null,
           "bench_points": 8,
@@ -22214,7 +22214,7 @@
           "pos": "DEF",
           "team": "TOT",
           "team_code": 6,
-          "points": 1,
+          "points": 3,
           "is_captain": false,
           "is_vice": false
         }
@@ -22990,7 +22990,7 @@
           "pos": "DEF",
           "team": "TOT",
           "team_code": 6,
-          "points": 1,
+          "points": 3,
           "is_captain": false,
           "is_vice": false
         },
