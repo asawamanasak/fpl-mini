@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "11 ต.ค. 2026, 20:50 น.",
-    "last_sync_iso": "2026-10-11 20:50:36"
+    "last_sync": "11 ต.ค. 2026, 20:51 น.",
+    "last_sync_iso": "2026-10-11 20:51:42"
   },
   "teams": [
     {
@@ -1823,7 +1823,7 @@
           "net_points": 69,
           "captain": "João Pedro",
           "chip": null,
-          "bench_points": 10,
+          "bench_points": 9,
           "team_value": 102.0,
           "bank": 1.5,
           "transfers_count": 1,
@@ -1843,9 +1843,9 @@
           "entry_id": 2999763,
           "team_name": "Cody Travers",
           "player_name": "Alesandro Nuyie",
-          "points": 72,
+          "points": 71,
           "hits": 8,
-          "net_points": 64,
+          "net_points": 63,
           "captain": "Groß",
           "chip": null,
           "bench_points": 5,
@@ -1891,8 +1891,8 @@
           "team_value": 101.4,
           "bank": 0.0,
           "transfers_count": 2,
-          "transfers_pts_gain": 14,
-          "transfers_net_impact": 14,
+          "transfers_pts_gain": 15,
+          "transfers_net_impact": 15,
           "transfer_moves": [
             {
               "in": "Gonzalo",
@@ -1905,8 +1905,8 @@
               "in": "De Cuyper",
               "in_pts": 15,
               "out": "N.Williams",
-              "out_pts": 1,
-              "net": 14
+              "out_pts": 0,
+              "net": 15
             }
           ]
         },
@@ -2054,9 +2054,9 @@
           "entry_id": 2191555,
           "team_name": "1234 Barbyu Barbyu",
           "player_name": "Maew Mohawk",
-          "points": 35,
+          "points": 34,
           "hits": 0,
-          "net_points": 35,
+          "net_points": 34,
           "captain": "Saka",
           "chip": null,
           "bench_points": 3,
@@ -21326,7 +21326,7 @@
           "pos": "DEF",
           "team": "NFO",
           "team_code": 17,
-          "points": 1,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         }
@@ -21510,7 +21510,7 @@
           "pos": "DEF",
           "team": "NFO",
           "team_code": 17,
-          "points": 1,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },
@@ -23266,7 +23266,7 @@
           "pos": "DEF",
           "team": "NFO",
           "team_code": 17,
-          "points": 1,
+          "points": 0,
           "is_captain": false,
           "is_vice": false
         },

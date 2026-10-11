@@ -1,6 +1,6 @@
 {
-  "last_sync": "11 ต.ค. 2026, 20:50 น.",
-  "last_sync_iso": "2026-10-11 20:50:36",
+  "last_sync": "11 ต.ค. 2026, 20:51 น.",
+  "last_sync_iso": "2026-10-11 20:51:42",
   "sync_status": "ok",
   "max_gw": 6,
   "leagues": {
@@ -1825,7 +1825,7 @@
               "net_points": 69,
               "captain": "João Pedro",
               "chip": null,
-              "bench_points": 10,
+              "bench_points": 9,
               "team_value": 102.0,
               "bank": 1.5,
               "transfers_count": 1,
@@ -1845,9 +1845,9 @@
               "entry_id": 2999763,
               "team_name": "Cody Travers",
               "player_name": "Alesandro Nuyie",
-              "points": 72,
+              "points": 71,
               "hits": 8,
-              "net_points": 64,
+              "net_points": 63,
               "captain": "Groß",
               "chip": null,
               "bench_points": 5,
@@ -1893,8 +1893,8 @@
               "team_value": 101.4,
               "bank": 0.0,
               "transfers_count": 2,
-              "transfers_pts_gain": 14,
-              "transfers_net_impact": 14,
+              "transfers_pts_gain": 15,
+              "transfers_net_impact": 15,
               "transfer_moves": [
                 {
                   "in": "Gonzalo",
@@ -1907,8 +1907,8 @@
                   "in": "De Cuyper",
                   "in_pts": 15,
                   "out": "N.Williams",
-                  "out_pts": 1,
-                  "net": 14
+                  "out_pts": 0,
+                  "net": 15
                 }
               ]
             },
@@ -2056,9 +2056,9 @@
               "entry_id": 2191555,
               "team_name": "1234 Barbyu Barbyu",
               "player_name": "Maew Mohawk",
-              "points": 35,
+              "points": 34,
               "hits": 0,
-              "net_points": 35,
+              "net_points": 34,
               "captain": "Saka",
               "chip": null,
               "bench_points": 3,
@@ -21328,7 +21328,7 @@
               "pos": "DEF",
               "team": "NFO",
               "team_code": 17,
-              "points": 1,
+              "points": 0,
               "is_captain": false,
               "is_vice": false
             }
@@ -21512,7 +21512,7 @@
               "pos": "DEF",
               "team": "NFO",
               "team_code": 17,
-              "points": 1,
+              "points": 0,
               "is_captain": false,
               "is_vice": false
             },
@@ -23268,7 +23268,7 @@
               "pos": "DEF",
               "team": "NFO",
               "team_code": 17,
-              "points": 1,
+              "points": 0,
               "is_captain": false,
               "is_vice": false
             },
@@ -32636,8 +32636,8 @@
               "team_value": 100.1,
               "bank": 0.0,
               "transfers_count": 9,
-              "transfers_pts_gain": -3,
-              "transfers_net_impact": -3,
+              "transfers_pts_gain": -2,
+              "transfers_net_impact": -2,
               "transfer_moves": [
                 {
                   "in": "Gibbs-White",
@@ -32692,8 +32692,8 @@
                   "in": "Groß",
                   "in_pts": 6,
                   "out": "Aina",
-                  "out_pts": 1,
-                  "net": 5
+                  "out_pts": 0,
+                  "net": 6
                 },
                 {
                   "in": "Schade",
@@ -32713,7 +32713,7 @@
               "net_points": 69,
               "captain": "João Pedro",
               "chip": null,
-              "bench_points": 10,
+              "bench_points": 9,
               "team_value": 102.0,
               "bank": 1.5,
               "transfers_count": 1,
@@ -32867,6 +32867,38 @@
               ]
             },
             {
+              "entry_id": 2741115,
+              "team_name": "Xabibi",
+              "player_name": "Rachata Suksuratchai",
+              "points": 62,
+              "hits": 0,
+              "net_points": 62,
+              "captain": "Palmer",
+              "chip": null,
+              "bench_points": 3,
+              "team_value": 101.9,
+              "bank": 0.1,
+              "transfers_count": 2,
+              "transfers_pts_gain": 1,
+              "transfers_net_impact": 1,
+              "transfer_moves": [
+                {
+                  "in": "Gibbs-White",
+                  "in_pts": 1,
+                  "out": "Isak",
+                  "out_pts": 0,
+                  "net": 1
+                },
+                {
+                  "in": "Kostoulas",
+                  "in_pts": 1,
+                  "out": "Yalcouyé",
+                  "out_pts": 1,
+                  "net": 0
+                }
+              ]
+            },
+            {
               "entry_id": 6799761,
               "team_name": "Marty FC",
               "player_name": "Mart Wonlopsiri",
@@ -32973,6 +33005,45 @@
               ]
             },
             {
+              "entry_id": 9851677,
+              "team_name": "VNWA",
+              "player_name": "Virunan Chiddaycha",
+              "points": 61,
+              "hits": 0,
+              "net_points": 61,
+              "captain": "Rogers",
+              "chip": null,
+              "bench_points": 2,
+              "team_value": 101.8,
+              "bank": 8.2,
+              "transfers_count": 3,
+              "transfers_pts_gain": 1,
+              "transfers_net_impact": 1,
+              "transfer_moves": [
+                {
+                  "in": "Bogle",
+                  "in_pts": 1,
+                  "out": "Guéhi",
+                  "out_pts": 0,
+                  "net": 1
+                },
+                {
+                  "in": "Groß",
+                  "in_pts": 6,
+                  "out": "Palmer",
+                  "out_pts": 8,
+                  "net": -2
+                },
+                {
+                  "in": "Tarkowski",
+                  "in_pts": 4,
+                  "out": "Gabriel",
+                  "out_pts": 2,
+                  "net": 2
+                }
+              ]
+            },
+            {
               "entry_id": 5485365,
               "team_name": "AlonsoOut",
               "player_name": "Pongpon Bangvijit",
@@ -33005,38 +33076,6 @@
               "transfers_pts_gain": 0,
               "transfers_net_impact": 0,
               "transfer_moves": []
-            },
-            {
-              "entry_id": 2741115,
-              "team_name": "Xabibi",
-              "player_name": "Rachata Suksuratchai",
-              "points": 59,
-              "hits": 0,
-              "net_points": 59,
-              "captain": "Palmer",
-              "chip": null,
-              "bench_points": 3,
-              "team_value": 101.9,
-              "bank": 0.1,
-              "transfers_count": 2,
-              "transfers_pts_gain": 1,
-              "transfers_net_impact": 1,
-              "transfer_moves": [
-                {
-                  "in": "Gibbs-White",
-                  "in_pts": 1,
-                  "out": "Isak",
-                  "out_pts": 0,
-                  "net": 1
-                },
-                {
-                  "in": "Kostoulas",
-                  "in_pts": 1,
-                  "out": "Yalcouyé",
-                  "out_pts": 1,
-                  "net": 0
-                }
-              ]
             },
             {
               "entry_id": 697377,
@@ -33134,45 +33173,6 @@
                   "out": "B.Fernandes",
                   "out_pts": 1,
                   "net": 8
-                }
-              ]
-            },
-            {
-              "entry_id": 9851677,
-              "team_name": "VNWA",
-              "player_name": "Virunan Chiddaycha",
-              "points": 58,
-              "hits": 0,
-              "net_points": 58,
-              "captain": "Rogers",
-              "chip": null,
-              "bench_points": 2,
-              "team_value": 101.8,
-              "bank": 8.2,
-              "transfers_count": 3,
-              "transfers_pts_gain": -2,
-              "transfers_net_impact": -2,
-              "transfer_moves": [
-                {
-                  "in": "Bogle",
-                  "in_pts": 1,
-                  "out": "Guéhi",
-                  "out_pts": 0,
-                  "net": 1
-                },
-                {
-                  "in": "Groß",
-                  "in_pts": 6,
-                  "out": "Palmer",
-                  "out_pts": 8,
-                  "net": -2
-                },
-                {
-                  "in": "Tarkowski",
-                  "in_pts": 1,
-                  "out": "Gabriel",
-                  "out_pts": 2,
-                  "net": -1
                 }
               ]
             },
@@ -33297,8 +33297,8 @@
               "team_value": 101.3,
               "bank": 0.4,
               "transfers_count": 12,
-              "transfers_pts_gain": 9,
-              "transfers_net_impact": 9,
+              "transfers_pts_gain": 10,
+              "transfers_net_impact": 10,
               "transfer_moves": [
                 {
                   "in": "Raya",
@@ -33360,8 +33360,8 @@
                   "in": "Vuskovic",
                   "in_pts": 8,
                   "out": "N.Williams",
-                  "out_pts": 1,
-                  "net": 7
+                  "out_pts": 0,
+                  "net": 8
                 },
                 {
                   "in": "Barry",
@@ -33508,56 +33508,6 @@
               ]
             },
             {
-              "entry_id": 4763492,
-              "team_name": "ColeRogers",
-              "player_name": "Thanwa Lujintanon",
-              "points": 55,
-              "hits": 0,
-              "net_points": 55,
-              "captain": "Ødegaard",
-              "chip": null,
-              "bench_points": 2,
-              "team_value": 101.6,
-              "bank": 3.2,
-              "transfers_count": 1,
-              "transfers_pts_gain": -1,
-              "transfers_net_impact": -1,
-              "transfer_moves": [
-                {
-                  "in": "Ødegaard",
-                  "in_pts": 1,
-                  "out": "Saka",
-                  "out_pts": 2,
-                  "net": -1
-                }
-              ]
-            },
-            {
-              "entry_id": 7661163,
-              "team_name": "MorganLoma888",
-              "player_name": "Artist Cheamcharoen",
-              "points": 55,
-              "hits": 0,
-              "net_points": 55,
-              "captain": "Rogers",
-              "chip": null,
-              "bench_points": 0,
-              "team_value": 100.6,
-              "bank": 0.4,
-              "transfers_count": 1,
-              "transfers_pts_gain": 1,
-              "transfers_net_impact": 1,
-              "transfer_moves": [
-                {
-                  "in": "Kostoulas",
-                  "in_pts": 1,
-                  "out": "David",
-                  "out_pts": 0,
-                  "net": 1
-                }
-              ]
-            },
-            {
               "entry_id": 4954101,
               "team_name": "Char&Rei Club",
               "player_name": "Jan Puchong",
@@ -33570,8 +33520,8 @@
               "team_value": 99.4,
               "bank": 2.4,
               "transfers_count": 10,
-              "transfers_pts_gain": 35,
-              "transfers_net_impact": 35,
+              "transfers_pts_gain": 36,
+              "transfers_net_impact": 36,
               "transfer_moves": [
                 {
                   "in": "Hall",
@@ -33605,8 +33555,8 @@
                   "in": "Kostoulas",
                   "in_pts": 1,
                   "out": "N.Williams",
-                  "out_pts": 1,
-                  "net": 0
+                  "out_pts": 0,
+                  "net": 1
                 },
                 {
                   "in": "Willock",
@@ -33642,6 +33592,56 @@
                   "out": "Lammens",
                   "out_pts": 2,
                   "net": -1
+                }
+              ]
+            },
+            {
+              "entry_id": 4763492,
+              "team_name": "ColeRogers",
+              "player_name": "Thanwa Lujintanon",
+              "points": 54,
+              "hits": 0,
+              "net_points": 54,
+              "captain": "Ødegaard",
+              "chip": null,
+              "bench_points": 2,
+              "team_value": 101.6,
+              "bank": 3.2,
+              "transfers_count": 1,
+              "transfers_pts_gain": -1,
+              "transfers_net_impact": -1,
+              "transfer_moves": [
+                {
+                  "in": "Ødegaard",
+                  "in_pts": 1,
+                  "out": "Saka",
+                  "out_pts": 2,
+                  "net": -1
+                }
+              ]
+            },
+            {
+              "entry_id": 7661163,
+              "team_name": "MorganLoma888",
+              "player_name": "Artist Cheamcharoen",
+              "points": 54,
+              "hits": 0,
+              "net_points": 54,
+              "captain": "Rogers",
+              "chip": null,
+              "bench_points": 0,
+              "team_value": 100.6,
+              "bank": 0.4,
+              "transfers_count": 1,
+              "transfers_pts_gain": 1,
+              "transfers_net_impact": 1,
+              "transfer_moves": [
+                {
+                  "in": "Kostoulas",
+                  "in_pts": 1,
+                  "out": "David",
+                  "out_pts": 0,
+                  "net": 1
                 }
               ]
             },
@@ -33707,7 +33707,7 @@
               "net_points": 52,
               "captain": "Saka",
               "chip": null,
-              "bench_points": 16,
+              "bench_points": 15,
               "team_value": 102.1,
               "bank": 0.0,
               "transfers_count": 0,
@@ -33790,12 +33790,29 @@
               ]
             },
             {
+              "entry_id": 306983,
+              "team_name": "GEMINI UNITED",
+              "player_name": "Micky Asawamanasak",
+              "points": 51,
+              "hits": 0,
+              "net_points": 51,
+              "captain": "Palmer",
+              "chip": null,
+              "bench_points": 15,
+              "team_value": 101.7,
+              "bank": 1.4,
+              "transfers_count": 0,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": 0,
+              "transfer_moves": []
+            },
+            {
               "entry_id": 7927547,
               "team_name": "NK",
               "player_name": "Goprex Nakhun",
-              "points": 52,
+              "points": 51,
               "hits": 0,
-              "net_points": 52,
+              "net_points": 51,
               "captain": "João Pedro",
               "chip": null,
               "bench_points": 2,
@@ -33820,23 +33837,6 @@
                   "net": 6
                 }
               ]
-            },
-            {
-              "entry_id": 306983,
-              "team_name": "GEMINI UNITED",
-              "player_name": "Micky Asawamanasak",
-              "points": 51,
-              "hits": 0,
-              "net_points": 51,
-              "captain": "Palmer",
-              "chip": null,
-              "bench_points": 15,
-              "team_value": 101.7,
-              "bank": 1.4,
-              "transfers_count": 0,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": []
             },
             {
               "entry_id": 7058770,
@@ -34098,12 +34098,51 @@
               ]
             },
             {
-              "entry_id": 6579206,
-              "team_name": "ทีมของ Noom",
-              "player_name": "Noom Poom",
+              "entry_id": 3564816,
+              "team_name": "taloombon",
+              "player_name": "Vithaya Thongyuyong",
               "points": 41,
               "hits": 0,
               "net_points": 41,
+              "captain": "Groß",
+              "chip": null,
+              "bench_points": 3,
+              "team_value": 100.3,
+              "bank": 0.6,
+              "transfers_count": 3,
+              "transfers_pts_gain": 5,
+              "transfers_net_impact": 5,
+              "transfer_moves": [
+                {
+                  "in": "Groß",
+                  "in_pts": 6,
+                  "out": "Kayode",
+                  "out_pts": 0,
+                  "net": 6
+                },
+                {
+                  "in": "Tarkowski",
+                  "in_pts": 4,
+                  "out": "João Pedro",
+                  "out_pts": 12,
+                  "net": -8
+                },
+                {
+                  "in": "Evanilson",
+                  "in_pts": 7,
+                  "out": "Kluivert",
+                  "out_pts": 0,
+                  "net": 7
+                }
+              ]
+            },
+            {
+              "entry_id": 6579206,
+              "team_name": "ทีมของ Noom",
+              "player_name": "Noom Poom",
+              "points": 40,
+              "hits": 0,
+              "net_points": 40,
               "captain": "Haaland",
               "chip": null,
               "bench_points": 3,
@@ -34127,8 +34166,8 @@
               "team_value": 100.2,
               "bank": 1.0,
               "transfers_count": 7,
-              "transfers_pts_gain": 16,
-              "transfers_net_impact": 16,
+              "transfers_pts_gain": 17,
+              "transfers_net_impact": 17,
               "transfer_moves": [
                 {
                   "in": "Barnes",
@@ -34176,10 +34215,27 @@
                   "in": "Gonzalo",
                   "in_pts": 2,
                   "out": "N.Williams",
-                  "out_pts": 1,
-                  "net": 1
+                  "out_pts": 0,
+                  "net": 2
                 }
               ]
+            },
+            {
+              "entry_id": 3181562,
+              "team_name": "SLA",
+              "player_name": "Boom Paka",
+              "points": 39,
+              "hits": 0,
+              "net_points": 39,
+              "captain": "Wissa",
+              "chip": null,
+              "bench_points": 12,
+              "team_value": 101.2,
+              "bank": 0.5,
+              "transfers_count": 0,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": 0,
+              "transfer_moves": []
             },
             {
               "entry_id": 6417622,
@@ -34203,45 +34259,6 @@
                   "out": "Hume",
                   "out_pts": 1,
                   "net": 3
-                }
-              ]
-            },
-            {
-              "entry_id": 3564816,
-              "team_name": "taloombon",
-              "player_name": "Vithaya Thongyuyong",
-              "points": 38,
-              "hits": 0,
-              "net_points": 38,
-              "captain": "Groß",
-              "chip": null,
-              "bench_points": 3,
-              "team_value": 100.3,
-              "bank": 0.6,
-              "transfers_count": 3,
-              "transfers_pts_gain": 2,
-              "transfers_net_impact": 2,
-              "transfer_moves": [
-                {
-                  "in": "Groß",
-                  "in_pts": 6,
-                  "out": "Kayode",
-                  "out_pts": 0,
-                  "net": 6
-                },
-                {
-                  "in": "Tarkowski",
-                  "in_pts": 1,
-                  "out": "João Pedro",
-                  "out_pts": 12,
-                  "net": -11
-                },
-                {
-                  "in": "Evanilson",
-                  "in_pts": 7,
-                  "out": "Kluivert",
-                  "out_pts": 0,
-                  "net": 7
                 }
               ]
             },
@@ -34313,23 +34330,6 @@
               ]
             },
             {
-              "entry_id": 3181562,
-              "team_name": "SLA",
-              "player_name": "Boom Paka",
-              "points": 36,
-              "hits": 0,
-              "net_points": 36,
-              "captain": "Wissa",
-              "chip": null,
-              "bench_points": 12,
-              "team_value": 101.2,
-              "bank": 0.5,
-              "transfers_count": 0,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": []
-            },
-            {
               "entry_id": 6651911,
               "team_name": "VERPERSAI33",
               "player_name": "Rukpoom Kaewpichai",
@@ -34341,6 +34341,118 @@
               "bench_points": 3,
               "team_value": 99.8,
               "bank": 1.1,
+              "transfers_count": 0,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": 0,
+              "transfer_moves": []
+            },
+            {
+              "entry_id": 2550771,
+              "team_name": "petepong",
+              "player_name": "Petepong Phasukyud",
+              "points": 36,
+              "hits": 0,
+              "net_points": 36,
+              "captain": "João Pedro",
+              "chip": "wildcard",
+              "bench_points": 8,
+              "team_value": 99.4,
+              "bank": 8.0,
+              "transfers_count": 11,
+              "transfers_pts_gain": 6,
+              "transfers_net_impact": 6,
+              "transfer_moves": [
+                {
+                  "in": "A.Becker",
+                  "in_pts": 0,
+                  "out": "Maatsen",
+                  "out_pts": 0,
+                  "net": 0
+                },
+                {
+                  "in": "Janelt",
+                  "in_pts": 3,
+                  "out": "Kluivert",
+                  "out_pts": 0,
+                  "net": 3
+                },
+                {
+                  "in": "Araujo",
+                  "in_pts": 0,
+                  "out": "B.Fernandes",
+                  "out_pts": 1,
+                  "net": -1
+                },
+                {
+                  "in": "Barnes",
+                  "in_pts": 0,
+                  "out": "Igor Jesus",
+                  "out_pts": 0,
+                  "net": 0
+                },
+                {
+                  "in": "Tarkowski",
+                  "in_pts": 4,
+                  "out": "Fernandes",
+                  "out_pts": 1,
+                  "net": 3
+                },
+                {
+                  "in": "Bogle",
+                  "in_pts": 1,
+                  "out": "Steele",
+                  "out_pts": 0,
+                  "net": 1
+                },
+                {
+                  "in": "Kostoulas",
+                  "in_pts": 1,
+                  "out": "van Ewijk",
+                  "out_pts": 0,
+                  "net": 1
+                },
+                {
+                  "in": "Davis",
+                  "in_pts": 1,
+                  "out": "Pedro Porro",
+                  "out_pts": 0,
+                  "net": 1
+                },
+                {
+                  "in": "Groß",
+                  "in_pts": 6,
+                  "out": "M.Sangaré",
+                  "out_pts": 1,
+                  "net": 5
+                },
+                {
+                  "in": "Schade",
+                  "in_pts": 1,
+                  "out": "Aina",
+                  "out_pts": 0,
+                  "net": 1
+                },
+                {
+                  "in": "Belloumi",
+                  "in_pts": 0,
+                  "out": "Palmer",
+                  "out_pts": 8,
+                  "net": -8
+                }
+              ]
+            },
+            {
+              "entry_id": 7669019,
+              "team_name": "G7GOT FC",
+              "player_name": "Pradanai Nateprasertkul",
+              "points": 35,
+              "hits": 0,
+              "net_points": 35,
+              "captain": "B.Fernandes",
+              "chip": null,
+              "bench_points": 5,
+              "team_value": 99.9,
+              "bank": 0.5,
               "transfers_count": 0,
               "transfers_pts_gain": 0,
               "transfers_net_impact": 0,
@@ -34403,118 +34515,6 @@
               "transfer_moves": []
             },
             {
-              "entry_id": 2550771,
-              "team_name": "petepong",
-              "player_name": "Petepong Phasukyud",
-              "points": 33,
-              "hits": 0,
-              "net_points": 33,
-              "captain": "João Pedro",
-              "chip": "wildcard",
-              "bench_points": 8,
-              "team_value": 99.4,
-              "bank": 8.0,
-              "transfers_count": 11,
-              "transfers_pts_gain": 2,
-              "transfers_net_impact": 2,
-              "transfer_moves": [
-                {
-                  "in": "A.Becker",
-                  "in_pts": 0,
-                  "out": "Maatsen",
-                  "out_pts": 0,
-                  "net": 0
-                },
-                {
-                  "in": "Janelt",
-                  "in_pts": 3,
-                  "out": "Kluivert",
-                  "out_pts": 0,
-                  "net": 3
-                },
-                {
-                  "in": "Araujo",
-                  "in_pts": 0,
-                  "out": "B.Fernandes",
-                  "out_pts": 1,
-                  "net": -1
-                },
-                {
-                  "in": "Barnes",
-                  "in_pts": 0,
-                  "out": "Igor Jesus",
-                  "out_pts": 0,
-                  "net": 0
-                },
-                {
-                  "in": "Tarkowski",
-                  "in_pts": 1,
-                  "out": "Fernandes",
-                  "out_pts": 1,
-                  "net": 0
-                },
-                {
-                  "in": "Bogle",
-                  "in_pts": 1,
-                  "out": "Steele",
-                  "out_pts": 0,
-                  "net": 1
-                },
-                {
-                  "in": "Kostoulas",
-                  "in_pts": 1,
-                  "out": "van Ewijk",
-                  "out_pts": 0,
-                  "net": 1
-                },
-                {
-                  "in": "Davis",
-                  "in_pts": 1,
-                  "out": "Pedro Porro",
-                  "out_pts": 0,
-                  "net": 1
-                },
-                {
-                  "in": "Groß",
-                  "in_pts": 6,
-                  "out": "M.Sangaré",
-                  "out_pts": 1,
-                  "net": 5
-                },
-                {
-                  "in": "Schade",
-                  "in_pts": 1,
-                  "out": "Aina",
-                  "out_pts": 1,
-                  "net": 0
-                },
-                {
-                  "in": "Belloumi",
-                  "in_pts": 0,
-                  "out": "Palmer",
-                  "out_pts": 8,
-                  "net": -8
-                }
-              ]
-            },
-            {
-              "entry_id": 7669019,
-              "team_name": "G7GOT FC",
-              "player_name": "Pradanai Nateprasertkul",
-              "points": 32,
-              "hits": 0,
-              "net_points": 32,
-              "captain": "B.Fernandes",
-              "chip": null,
-              "bench_points": 5,
-              "team_value": 99.9,
-              "bank": 0.5,
-              "transfers_count": 0,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": []
-            },
-            {
               "entry_id": 8845986,
               "team_name": "Chong United",
               "player_name": "Chong ThirtyOne",
@@ -34526,23 +34526,6 @@
               "bench_points": 17,
               "team_value": 100.0,
               "bank": 0.4,
-              "transfers_count": 0,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": []
-            },
-            {
-              "entry_id": 7460858,
-              "team_name": "(busy)",
-              "player_name": "Korkiat Chartprasert",
-              "points": 29,
-              "hits": 0,
-              "net_points": 29,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 20,
-              "team_value": 101.2,
-              "bank": 0.8,
               "transfers_count": 0,
               "transfers_pts_gain": 0,
               "transfers_net_impact": 0,
@@ -34572,6 +34555,23 @@
                   "net": -8
                 }
               ]
+            },
+            {
+              "entry_id": 7460858,
+              "team_name": "(busy)",
+              "player_name": "Korkiat Chartprasert",
+              "points": 28,
+              "hits": 0,
+              "net_points": 28,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 20,
+              "team_value": 101.2,
+              "bank": 0.8,
+              "transfers_count": 0,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": 0,
+              "transfer_moves": []
             },
             {
               "entry_id": 2913117,
@@ -34651,9 +34651,9 @@
               "entry_id": 2208018,
               "team_name": "Bangkorn 11",
               "player_name": "Dow K",
-              "points": 16,
+              "points": 15,
               "hits": 0,
-              "net_points": 16,
+              "net_points": 15,
               "captain": "Haaland",
               "chip": null,
               "bench_points": 14,
@@ -125721,7 +125721,7 @@
               "pos": "DEF",
               "team": "EVE",
               "team_code": 11,
-              "points": 1,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -127027,7 +127027,7 @@
               "pos": "DEF",
               "team": "NFO",
               "team_code": 17,
-              "points": 1,
+              "points": 0,
               "is_captain": false,
               "is_vice": false
             }
@@ -130283,7 +130283,7 @@
               "pos": "DEF",
               "team": "NFO",
               "team_code": 17,
-              "points": 1,
+              "points": 0,
               "is_captain": false,
               "is_vice": false
             }
@@ -132529,7 +132529,7 @@
               "pos": "DEF",
               "team": "NFO",
               "team_code": 17,
-              "points": 1,
+              "points": 0,
               "is_captain": false,
               "is_vice": false
             },
@@ -133427,7 +133427,7 @@
               "pos": "DEF",
               "team": "EVE",
               "team_code": 11,
-              "points": 1,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -133753,7 +133753,7 @@
               "pos": "MID",
               "team": "EVE",
               "team_code": 11,
-              "points": 4,
+              "points": 3,
               "is_captain": false,
               "is_vice": false
             },
@@ -134601,7 +134601,7 @@
               "pos": "DEF",
               "team": "EVE",
               "team_code": 11,
-              "points": 1,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -134917,7 +134917,7 @@
               "pos": "DEF",
               "team": "NFO",
               "team_code": 17,
-              "points": 1,
+              "points": 0,
               "is_captain": false,
               "is_vice": false
             },
@@ -135519,7 +135519,7 @@
               "pos": "MID",
               "team": "EVE",
               "team_code": 11,
-              "points": 4,
+              "points": 3,
               "is_captain": false,
               "is_vice": false
             },
@@ -136377,7 +136377,7 @@
               "pos": "DEF",
               "team": "EVE",
               "team_code": 11,
-              "points": 1,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -137285,7 +137285,7 @@
               "pos": "DEF",
               "team": "NFO",
               "team_code": 17,
-              "points": 1,
+              "points": 0,
               "is_captain": false,
               "is_vice": false
             },
@@ -138173,7 +138173,7 @@
               "pos": "DEF",
               "team": "NFO",
               "team_code": 17,
-              "points": 1,
+              "points": 0,
               "is_captain": false,
               "is_vice": false
             },
@@ -140807,7 +140807,7 @@
               "pos": "DEF",
               "team": "EVE",
               "team_code": 11,
-              "points": 1,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -141123,7 +141123,7 @@
               "pos": "DEF",
               "team": "EVE",
               "team_code": 11,
-              "points": 1,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -144166,7 +144166,7 @@
               "net_points": 55,
               "captain": "B.Fernandes",
               "chip": null,
-              "bench_points": 5,
+              "bench_points": 4,
               "team_value": 100.2,
               "bank": 0.0,
               "transfers_count": 1,
@@ -144233,7 +144233,7 @@
               "net_points": 51,
               "captain": "Haaland",
               "chip": null,
-              "bench_points": 1,
+              "bench_points": 0,
               "team_value": 100.8,
               "bank": 1.4,
               "transfers_count": 1,
@@ -144258,7 +144258,7 @@
               "net_points": 51,
               "captain": "B.Fernandes",
               "chip": null,
-              "bench_points": 3,
+              "bench_points": 2,
               "team_value": 102.2,
               "bank": 2.9,
               "transfers_count": 1,
@@ -144350,7 +144350,7 @@
               "net_points": 40,
               "captain": "Groß",
               "chip": null,
-              "bench_points": 1,
+              "bench_points": 0,
               "team_value": 100.6,
               "bank": 0.2,
               "transfers_count": 2,
@@ -144377,9 +144377,9 @@
               "entry_id": 3628087,
               "team_name": "21",
               "player_name": "Tanapat Namyai",
-              "points": 35,
+              "points": 34,
               "hits": 0,
-              "net_points": 35,
+              "net_points": 34,
               "captain": "Rogers",
               "chip": "wildcard",
               "bench_points": 1,
@@ -144419,10 +144419,10 @@
                 },
                 {
                   "in": "Grealish",
-                  "in_pts": 2,
+                  "in_pts": 1,
                   "out": "Semenyo",
                   "out_pts": 0,
-                  "net": 2
+                  "net": 1
                 },
                 {
                   "in": "Robertson",
@@ -144449,8 +144449,8 @@
                   "in": "Leno",
                   "in_pts": 2,
                   "out": "N.Williams",
-                  "out_pts": 1,
-                  "net": 1
+                  "out_pts": 0,
+                  "net": 2
                 },
                 {
                   "in": "Haaland",
@@ -144472,9 +144472,9 @@
               "entry_id": 348997,
               "team_name": "นายโบ๊ท",
               "player_name": "ฐิติพงศ์ วงศ์อัครวัต",
-              "points": 21,
+              "points": 20,
               "hits": 0,
-              "net_points": 21,
+              "net_points": 20,
               "captain": "Saka",
               "chip": null,
               "bench_points": 5,
@@ -144489,9 +144489,9 @@
               "entry_id": 122482,
               "team_name": "ทีมของ Atthasit",
               "player_name": "Atthasit Wongjohn",
-              "points": 18,
+              "points": 21,
               "hits": 4,
-              "net_points": 14,
+              "net_points": 17,
               "captain": "Ødegaard",
               "chip": null,
               "bench_points": 4,
@@ -168249,7 +168249,7 @@
               "pos": "DEF",
               "team": "NFO",
               "team_code": 17,
-              "points": 1,
+              "points": 0,
               "is_captain": false,
               "is_vice": false
             }
@@ -168821,7 +168821,7 @@
               "pos": "DEF",
               "team": "NFO",
               "team_code": 17,
-              "points": 1,
+              "points": 0,
               "is_captain": false,
               "is_vice": false
             },
@@ -169413,7 +169413,7 @@
               "pos": "DEF",
               "team": "NFO",
               "team_code": 17,
-              "points": 1,
+              "points": 0,
               "is_captain": false,
               "is_vice": false
             },
@@ -169729,7 +169729,7 @@
               "pos": "DEF",
               "team": "NFO",
               "team_code": 17,
-              "points": 1,
+              "points": 0,
               "is_captain": false,
               "is_vice": false
             }
@@ -170219,7 +170219,7 @@
               "pos": "MID",
               "team": "EVE",
               "team_code": 11,
-              "points": 2,
+              "points": 1,
               "is_captain": false,
               "is_vice": false
             },
@@ -170505,7 +170505,7 @@
               "pos": "DEF",
               "team": "NFO",
               "team_code": 17,
-              "points": 1,
+              "points": 0,
               "is_captain": false,
               "is_vice": false
             },
@@ -171077,7 +171077,7 @@
               "pos": "DEF",
               "team": "EVE",
               "team_code": 11,
-              "points": 1,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
