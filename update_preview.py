@@ -781,9 +781,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   <th class="py-2.5 px-1 sm:px-2 text-center w-7 sm:w-8">#</th>
                   <th class="py-2.5 px-1.5 sm:px-3 min-w-0">ทีม & ผู้จัดการ</th>
                   <th class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">กัปตัน</th>
-                  <th class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap text-[10px] sm:text-[11px]">คะแนนดิบ</th>
-                  <th class="py-2.5 px-1 sm:px-2 text-center w-8 sm:w-10 text-[10px] sm:text-[11px]">ลบ</th>
-                  <th class="py-2.5 px-1.5 sm:px-3 text-right w-14 sm:w-16 text-emerald-700 font-bold">แต้มสุทธิ</th>
+                  <th class="py-2.5 px-1 sm:px-2 text-center text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-400 font-bold whitespace-nowrap">คะแนนสด (GW)</th>
+                  <th class="py-2.5 px-1 sm:px-2 text-center w-8 sm:w-10 text-[10px] sm:text-[11px]">แต้มลบ</th>
+                  <th class="py-2.5 px-1.5 sm:px-3 text-right w-14 sm:w-16 text-[10px] sm:text-[11px] text-slate-500 font-bold">แต้มสุทธิ</th>
                 </tr>
               </thead>
               <tbody id="matchday-table-body" class="divide-y divide-slate-100 text-xs sm:text-sm">
@@ -1093,7 +1093,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           return `Gameweek นี้กำลังรอผลการแข่งขันจากสนามจริง`;
         }
 
-        const sorted = [...gwData.results].sort((a, b) => b.net_points - a.net_points);
+        const sorted = [...gwData.results].sort((a, b) => (b.points - a.points) || (b.net_points - a.net_points));
         const top = sorted[0];
         const second = sorted[1];
         const isFinished = Boolean(gwData.is_finished);
@@ -1110,11 +1110,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           return preMatchNotes[pick];
         }
 
-        const diff = top.net_points - (second ? second.net_points : 0);
-        const winners = sorted.filter(r => r.net_points === top.net_points);
+        const diff = top.points - (second ? second.points : 0);
+        const winners = sorted.filter(r => r.points === top.points);
         const isJoint = winners.length > 1;
         const captName = (top.captain || '-').replace(/\s*\(C\)/gi, '').trim();
-        const isCentury = top.net_points >= 100;
+        const isCentury = top.points >= 100;
         const chip = (top.chip || '').toLowerCase();
 
         // 1. LEAD PHRASE (ประโยคเปิดตัวนำ)
@@ -1123,24 +1123,24 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         // Check chips first
         if (chip === 'bboost' || chip === 'bench_boost') {
           leadOptions.push(
-            `"${top.team_name}" เปิดหัวก็บ้าพลัง งัดการ์ด Bench Boost ขนมาทั้งตำบล กวาด ${top.net_points} แต้ม ยึดหัวหาดแบบหล่อๆ`,
-            `ของแทร่ไม่ต้องพูดเยอะ! "${top.team_name}" สวมวิญญาณป๋า งัด Bench Boost โกย ${top.net_points} แต้ม ฟันแชมป์วีคสบายแฮ!`,
-            `"${top.team_name}" ปล่อยของแต่หัววัน เปิดชิป Bench Boost ตัวจริงก็มา สำรองก็ยิง ล่อไป ${top.net_points} แต้ม ขึ้นนำแบบไร้ข้อกังขา!`
+            `"${top.team_name}" เปิดหัวก็บ้าพลัง งัดการ์ด Bench Boost ขนมาทั้งตำบล กวาด ${top.points} แต้ม ยึดหัวหาดแบบหล่อๆ`,
+            `ของแทร่ไม่ต้องพูดเยอะ! "${top.team_name}" สวมวิญญาณป๋า งัด Bench Boost โกย ${top.points} แต้ม ฟันแชมป์วีคสบายแฮ!`,
+            `"${top.team_name}" ปล่อยของแต่หัววัน เปิดชิป Bench Boost ตัวจริงก็มา สำรองก็ยิง ล่อไป ${top.points} แต้ม ขึ้นนำแบบไร้ข้อกังขา!`
           );
         } else if (chip === '3xc' || chip === 'triple_captain') {
           leadOptions.push(
-            `"${top.team_name}" ใส่ 3XC ทริปเปิ้ลกัปตันเต็มข้อ ล่อไป ${top.net_points} แต้ม คว้าแชมป์วีคแบบไม่ต้องสืบ!`,
-            `เลือกกัปตัน ${captName} ถูกคู่ กดการ์ด 3XC ระเบิดฟอร์ม กวาด ${top.net_points} แต้ม ยึดจ่าฝูงคนเดียวแบบเหงาๆ!`
+            `"${top.team_name}" ใส่ 3XC ทริปเปิ้ลกัปตันเต็มข้อ ล่อไป ${top.points} แต้ม คว้าแชมป์วีคแบบไม่ต้องสืบ!`,
+            `เลือกกัปตัน ${captName} ถูกคู่ กดการ์ด 3XC ระเบิดฟอร์ม กวาด ${top.points} แต้ม ยึดจ่าฝูงคนเดียวแบบเหงาๆ!`
           );
         } else if (chip === 'freehit') {
           leadOptions.push(
-            `"${top.team_name}" งัดชิป Free Hit สลับไพ่ทั้งสำรับ กวาด ${top.net_points} แต้ม ทะยานขึ้นนำอย่างหล่อ!`,
-            `เปิดการ์ด Free Hit แก้ทางแบบเซียน! "${top.team_name}" โกย ${top.net_points} แต้ม สะบัดคู่แข่งกระจุย!`
+            `"${top.team_name}" งัดชิป Free Hit สลับไพ่ทั้งสำรับ กวาด ${top.points} แต้ม ทะยานขึ้นนำอย่างหล่อ!`,
+            `เปิดการ์ด Free Hit แก้ทางแบบเซียน! "${top.team_name}" โกย ${top.points} แต้ม สะบัดคู่แข่งกระจุย!`
           );
         } else if (chip === 'wildcard') {
           leadOptions.push(
-            `"${top.team_name}" ผ่าตัดทีมด้วย Wildcard ชุบชีวิตใหม่ ซัดไป ${top.net_points} แต้ม ยึดจ่าฝูงแบบสะใจโก๋!`,
-            `ยกเครื่องใหม่ไฉไลกว่าเดิม! "${top.team_name}" งัด Wildcard มาปราบเซียน กวาดไปเน้นๆ ${top.net_points} แต้ม!`
+            `"${top.team_name}" ผ่าตัดทีมด้วย Wildcard ชุบชีวิตใหม่ ซัดไป ${top.points} แต้ม ยึดจ่าฝูงแบบสะใจโก๋!`,
+            `ยกเครื่องใหม่ไฉไลกว่าเดิม! "${top.team_name}" งัด Wildcard มาปราบเซียน กวาดไปเน้นๆ ${top.points} แต้ม!`
           );
         }
 
@@ -1155,41 +1155,41 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             names = `"${top.team_name}"`;
           }
           leadOptions.push(
-            `กินกันไม่ลงโว้ย! ${names} ซัดไปคนละ ${top.net_points} แต้มเท่ากันเป๊ะ กอดคอคว้าแชมป์ร่วม GW ${gwNumber} แบ่งเงินรางวัลกันคนละครึ่งสุดแฮปปี้!`,
-            `ดวลกันเดือดจนเสมอกันเฉย! ${names} รัวคนละ ${top.net_points} pts กอดคอกันฟินแบบหารสอง!`
+            `กินกันไม่ลงโว้ย! ${names} ซัดไปคนละ ${top.points} แต้มเท่ากันเป๊ะ กอดคอคว้าแชมป์ร่วม GW ${gwNumber} แบ่งเงินรางวัลกันคนละครึ่งสุดแฮปปี้!`,
+            `ดวลกันเดือดจนเสมอกันเฉย! ${names} รัวคนละ ${top.points} pts กอดคอกันฟินแบบหารสอง!`
           );
         } else if (isCentury) {
           leadOptions.push(
-            `สะเด่าไปเลยไปน้องงง!! "${top.team_name}" ซัดแต้มทะลุร้อยไปที่ ${top.net_points} แต้ม ทิ้งห่างอันดับสองขาดลอย ${diff} แต้ม หวานเจี๊ยบบบ!`,
-            `แต้มระเบิดถังขี้! "${top.team_name}" ซัดแต้มทะลัก ${top.net_points} แต้ม ฉีกหนี ${diff} แต้ม สะเด่าไปเลยอีน้องงง เต็มคาราเบล!`,
-            `ร้อยแต้มแตกเฉยพี่น้อง! "${top.team_name}" ฟอร์มระดับสิบกะโหลก ซัด ${top.net_points} แต้ม แดกเต็มข้อ ล่อเต็มแข้ง ทิ้งห่าง ${diff} แต้ม สัปดาห์นี้เดินยืดอกอย่างราชา!`,
-            `หวานเจี๊ยบบบ! "${top.team_name}" ระเบิดฟอร์มเทพ ซัดไปเน้นๆ ${top.net_points} แต้ม ใครจะตามทันต้องจุดธูปขอพร สะเด่าไปเลยไปน้อง!`
+            `สะเด่าไปเลยไปน้องงง!! "${top.team_name}" ซัดแต้มทะลุร้อยไปที่ ${top.points} แต้ม ทิ้งห่างอันดับสองขาดลอย ${diff} แต้ม หวานเจี๊ยบบบ!`,
+            `แต้มระเบิดถังขี้! "${top.team_name}" ซัดแต้มทะลัก ${top.points} แต้ม ฉีกหนี ${diff} แต้ม สะเด่าไปเลยอีน้องงง เต็มคาราเบล!`,
+            `ร้อยแต้มแตกเฉยพี่น้อง! "${top.team_name}" ฟอร์มระดับสิบกะโหลก ซัด ${top.points} แต้ม แดกเต็มข้อ ล่อเต็มแข้ง ทิ้งห่าง ${diff} แต้ม สัปดาห์นี้เดินยืดอกอย่างราชา!`,
+            `หวานเจี๊ยบบบ! "${top.team_name}" ระเบิดฟอร์มเทพ ซัดไปเน้นๆ ${top.points} แต้ม ใครจะตามทันต้องจุดธูปขอพร สะเด่าไปเลยไปน้อง!`
           );
         } else if (diff === 1 && second) {
           leadOptions.push(
-            `หัวใจจะวาย! "${top.team_name}" เบียดชนะ "${second.team_name}" ปลายจมูกแค่ 1 แต้มเดียวเท่านั้น (${top.net_points} pts) เข้าป้ายแชมป์แบบสะใจโก๋!`,
-            `ปาดหน้าเค้กวินาทีสุดท้าย! "${top.team_name}" ซัด ${top.net_points} แต้ม เฉือน "${second.team_name}" แค่ 1 แต้ม ชนะแต้มเดียวก็คือชนะ ร้องไห้ทำไม!`,
-            `เบียดกันเลือดซิป! "${top.team_name}" แซงเข้าป้าย ${top.net_points} แต้ม เฉือนชนะแค่ก้าวเดียว (${diff} pt) เกือบโดนปาดหน้าเส้นชัย!`
+            `หัวใจจะวาย! "${top.team_name}" เบียดชนะ "${second.team_name}" ปลายจมูกแค่ 1 แต้มเดียวเท่านั้น (${top.points} pts) เข้าป้ายแชมป์แบบสะใจโก๋!`,
+            `ปาดหน้าเค้กวินาทีสุดท้าย! "${top.team_name}" ซัด ${top.points} แต้ม เฉือน "${second.team_name}" แค่ 1 แต้ม ชนะแต้มเดียวก็คือชนะ ร้องไห้ทำไม!`,
+            `เบียดกันเลือดซิป! "${top.team_name}" แซงเข้าป้าย ${top.points} แต้ม เฉือนชนะแค่ก้าวเดียว (${diff} pt) เกือบโดนปาดหน้าเส้นชัย!`
           );
-        } else if (diff >= 15 || top.net_points >= 75) {
+        } else if (diff >= 15 || top.points >= 75) {
           leadOptions.push(
-            `ขาดลอยแบบไม่ต้องสืบ! "${top.team_name}" ซัดไป ${top.net_points} แต้ม ทิ้งห่างอันดับสองถึง ${diff} แต้ม สัปดาห์นี้เดินแอ็คหล่อๆ กินเต็มข้อ ล่อเต็มแข้ง!`,
-            `ฟอร์มอย่างโหด โกรธใครมา! "${top.team_name}" ฟาด ${top.net_points} แต้ม ชนะขาดลอย ${diff} แต้ม ยืนหนึ่งบนยอดเขาสูงแบบไร้คู่ต่อกร!`,
-            `ม้วนเดียวจบ! "${top.team_name}" จัดไป ${top.net_points} แต้ม หนีอันดับสอง ${diff} แต้ม คว้าแชมป์วีคแบบไม่ต้องลุ้นให้เหนื่อยใจ!`,
-            `สอนบอลแบบหมดทางสู้! "${top.team_name}" กดไป ${top.net_points} แต้ม ทิ้งห่าง ${diff} แต้ม ขยี้คู่แข่งจนหาทางกลับบ้านไม่ถูก สัปดาห์นี้ยกให้เป็นเทพเจ้าแฟนตาซี!`
+            `ขาดลอยแบบไม่ต้องสืบ! "${top.team_name}" ซัดไป ${top.points} แต้ม ทิ้งห่างอันดับสองถึง ${diff} แต้ม สัปดาห์นี้เดินแอ็คหล่อๆ กินเต็มข้อ ล่อเต็มแข้ง!`,
+            `ฟอร์มอย่างโหด โกรธใครมา! "${top.team_name}" ฟาด ${top.points} แต้ม ชนะขาดลอย ${diff} แต้ม ยืนหนึ่งบนยอดเขาสูงแบบไร้คู่ต่อกร!`,
+            `ม้วนเดียวจบ! "${top.team_name}" จัดไป ${top.points} แต้ม หนีอันดับสอง ${diff} แต้ม คว้าแชมป์วีคแบบไม่ต้องลุ้นให้เหนื่อยใจ!`,
+            `สอนบอลแบบหมดทางสู้! "${top.team_name}" กดไป ${top.points} แต้ม ทิ้งห่าง ${diff} แต้ม ขยี้คู่แข่งจนหาทางกลับบ้านไม่ถูก สัปดาห์นี้ยกให้เป็นเทพเจ้าแฟนตาซี!`
           );
         } else {
           leadOptions.push(
-            `ฟอร์มกำลังเข้าฝัก! "${top.team_name}" วางหมากเฉียบคม อาศัยกัปตัน ${captName} โกย ${top.net_points} แต้ม คว้าชัยสัปดาห์นี้อย่างสมศักดิ์ศรี!`,
-            `จ่าฝูงฟอร์มดุ! "${top.team_name}" กดไป ${top.net_points} แต้ม หนีอันดับสอง ${diff} แต้ม คว้าแชมป์วีคไปนอนกอดสบายเกือก!`,
-            `คุมสถานการณ์ได้อยู่หมัด! "${top.team_name}" ซัดไป ${top.net_points} แต้ม ทิ้งห่าง ${diff} แต้ม เดินหน้าโกยเงินรางวัลต่อเนื่อง!`
+            `ฟอร์มกำลังเข้าฝัก! "${top.team_name}" วางหมากเฉียบคม อาศัยกัปตัน ${captName} โกย ${top.points} แต้ม คว้าชัยสัปดาห์นี้อย่างสมศักดิ์ศรี!`,
+            `จ่าฝูงฟอร์มดุ! "${top.team_name}" กดไป ${top.points} แต้ม หนีอันดับสอง ${diff} แต้ม คว้าแชมป์วีคไปนอนกอดสบายเกือก!`,
+            `คุมสถานการณ์ได้อยู่หมัด! "${top.team_name}" ซัดไป ${top.points} แต้ม ทิ้งห่าง ${diff} แต้ม เดินหน้าโกยเงินรางวัลต่อเนื่อง!`
           );
         }
 
         // Pick Lead
         let pickIndex = forceRandom 
           ? Math.floor(Math.random() * leadOptions.length)
-          : Math.abs(Number(gwNumber) * 17 + Number(top.net_points) * 11) % leadOptions.length;
+          : Math.abs(Number(gwNumber) * 17 + Number(top.points) * 11) % leadOptions.length;
         let leadSentence = leadOptions[pickIndex] || leadOptions[0];
 
         // 2. TACTICAL MIDDLE (เจาะลึกแท็กติก: แต้มลบ Hits / ตัวสำรอง Bench King / กัปตันนอกสายตา)
@@ -1815,16 +1815,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
         }
 
-        const sorted = [...gwData.results].sort((a, b) => b.net_points - a.net_points);
+        const sorted = [...gwData.results].sort((a, b) => (b.points - a.points) || (b.net_points - a.net_points));
         let curRank = 1;
         sorted.forEach((team, i) => {
-          if (i > 0 && team.net_points < sorted[i - 1].net_points) {
+          if (i > 0 && team.points < sorted[i - 1].points) {
             curRank++;
           }
           team.rank = curRank;
         });
-        const highestScore = sorted[0].net_points;
-        const topWinners = sorted.filter(r => r.net_points === highestScore);
+        const highestScore = sorted[0].points;
+        const topWinners = sorted.filter(r => r.points === highestScore);
         const leader = sorted[0];
         const isJointWinner = topWinners.length > 1;
 
@@ -1951,12 +1951,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
                   <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 border-slate-100 sm:border-transparent">
                     <div class="text-left sm:text-right">
-                      <span class="text-[10px] sm:text-xs text-slate-500 uppercase font-bold font-display block">แต้มสุทธิ (Net Pts)</span>
-                      <span class="text-2xl sm:text-3xl font-black text-slate-900 font-display">${leader.net_points} <span class="text-xs font-bold text-slate-500">pts</span></span>
+                      <span class="text-[10px] sm:text-xs text-slate-500 uppercase font-bold font-display block">คะแนนสด (Live Pts)</span>
+                      <span class="text-2xl sm:text-3xl font-black text-slate-900 font-display">${leader.points} <span class="text-xs font-bold text-slate-500">pts</span></span>
                     </div>
                     <div class="text-right pl-3 border-l border-slate-200">
-                      <span class="text-[10px] text-slate-400 block font-display">แต้มดิบ: ${leader.points}</span>
                       <span class="text-[10px] ${leader.hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'} block font-display">แต้มลบ: ${leader.hits > 0 ? `-${leader.hits}` : '-'}</span>
+                      <span class="text-[9px] text-slate-400 block font-display">${leader.hits > 0 ? 'หักในแต้มรวม' : 'ไม่มีแต้มลบ'}</span>
                     </div>
                   </div>
 
@@ -2016,9 +2016,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 <td class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">
                   <span class="text-xs text-slate-600 font-medium">${team.captain && team.captain !== '-' ? team.captain.replace(/\s*\(C\)/gi, '').trim() + ' (C)' : '-'}</span>
                 </td>
-                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-medium text-slate-700 text-xs sm:text-sm">${team.points}</td>
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-xs sm:text-sm ${isStarted ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700'}">${team.points}</td>
                 <td class="py-2.5 px-1 sm:px-2 text-center text-xs sm:text-sm">${hits}</td>
-                <td class="py-2.5 px-1.5 sm:px-3 text-right font-display font-bold text-xs sm:text-sm ${isStarted ? 'text-emerald-700' : 'text-slate-700'}">${team.net_points}</td>
+                <td class="py-2.5 px-1.5 sm:px-3 text-right font-display font-medium text-xs sm:text-sm text-slate-600 dark:text-slate-400">${team.net_points}</td>
               </tr>
             `;
           });
@@ -2253,27 +2253,28 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         };
 
         // 1. Top Gun
-        const topGunWinner = sortedByNet[0];
+        const sortedByRaw = [...results].sort((a, b) => (b.points - a.points) || (b.net_points - a.net_points));
+        const topGunWinner = sortedByRaw[0];
         const card1 = renderCard({
           icon: ICONS.star,
           title: 'Top Gun',
           subtitle: 'Highest Gameweek score <span class="text-slate-500 dark:text-slate-400 font-normal">(แต้มโหดสุดในวีค)</span>',
           theme: 'green',
           winner: topGunWinner,
-          statText: topGunWinner ? `(${topGunWinner.net_points} pts)` : '',
-          detailHtml: topGunWinner ? `Captain: <strong>${this.escapeHtml(topGunWinner.captain || '-')}</strong> • Raw: ${topGunWinner.points} pts${topGunWinner.hits > 0 ? ` • Hits: -${topGunWinner.hits}` : ''}` : null
+          statText: topGunWinner ? `(${topGunWinner.points} pts)` : '',
+          detailHtml: topGunWinner ? `Captain: <strong>${this.escapeHtml(topGunWinner.captain || '-')}</strong>${topGunWinner.hits > 0 ? ` • แต้มลบ: -${topGunWinner.hits} (หักในแต้มรวม)` : ''}` : null
         });
 
         // 2. Tough Week
-        const toughWinner = sortedByNet[sortedByNet.length - 1];
+        const toughWinner = sortedByRaw[sortedByRaw.length - 1];
         const card2 = renderCard({
           icon: ICONS.chartDown,
           title: 'Tough Week',
           subtitle: 'Lowest Gameweek score <span class="text-slate-500 dark:text-slate-400 font-normal">(ยับเยินสุดในวีค)</span>',
           theme: 'red',
           winner: toughWinner,
-          statText: toughWinner ? `(${toughWinner.net_points} pts)` : '',
-          detailHtml: toughWinner ? `Raw: ${toughWinner.points} pts${toughWinner.hits > 0 ? ` • Hits: -${toughWinner.hits}` : ''}` : null
+          statText: toughWinner ? `(${toughWinner.points} pts)` : '',
+          detailHtml: toughWinner ? `${toughWinner.hits > 0 ? `แต้มลบ: -${toughWinner.hits} (หักในแต้มรวม)` : 'คะแนนตาม Official'}` : null
         });
 
         // 3. Comeback Kid & 4. Rank Crasher
@@ -3786,9 +3787,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
 
           const isFinished = Boolean(gwData.is_finished);
-          const sorted = [...gwData.results].sort((a, b) => b.net_points - a.net_points);
-          const highestNet = sorted[0].net_points;
-          const winners = sorted.filter(r => r.net_points === highestNet);
+          const sorted = [...gwData.results].sort((a, b) => (b.points - a.points) || (b.net_points - a.net_points));
+          const highestScore = sorted[0].points;
+          const winners = sorted.filter(r => r.points === highestScore);
           const isJoint = winners.length > 1;
 
           const noteEl = document.getElementById('current-gw-note-text');
@@ -3813,7 +3814,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               }
               const w0 = winners[0];
               const hitsStr = (w0.hits && w0.hits > 0) ? ` | แต้มลบ: -${w0.hits}` : '';
-              text += `แต้มสุทธิ: ${w0.net_points} pts (แต้มดิบ ${w0.points}${hitsStr})\n`;
+              text += `คะแนน: ${w0.points} pts (สุทธิ ${w0.net_points}${hitsStr})\n`;
               const weeklyPrize = this.config.features.weekly_prize_amount || 350;
               const prizePerTeam = isJoint ? (weeklyPrize / winners.length).toFixed(0) : weeklyPrize;
               text += `เงินรางวัล: ${prizePerTeam} THB${isJoint ? ' / ทีม (หารเท่า)' : ''}\n`;
@@ -3821,13 +3822,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               text += `👑 คะแนนสูงสุด Gameweek ${gwKey}: ${winners[0].team_name} (${winners[0].player_name})\n`;
               const w0 = winners[0];
               const hitsStr = (w0.hits && w0.hits > 0) ? ` | แต้มลบ: -${w0.hits}` : '';
-              text += `แต้มสุทธิ: ${w0.net_points} pts (แต้มดิบ ${w0.points}${hitsStr})\n`;
+              text += `คะแนน: ${w0.points} pts (สุทธิ ${w0.net_points}${hitsStr})\n`;
             }
           } else {
             text += `⚡ ผู้นำคะแนนสด (ชั่วคราว): ${winners[0].team_name} (${winners[0].player_name})\n`;
             const w0 = winners[0];
-            const hitsStr = (w0.hits && w0.hits > 0) ? ` | แต้มลบ: -${w0.hits}` : '';
-            text += `แต้มสุทธิ: ${w0.net_points} pts (แต้มดิบ ${w0.points}${hitsStr})\n`;
+            const hitsStr = (w0.hits && w0.hits > 0) ? ` | แต้มลบ: -${w0.hits} (หักในคะแนนรวม)` : '';
+            text += `คะแนนสด: ${w0.points} pts (ตรงกับ Official)${hitsStr}\n`;
             if (w0.chip) {
               text += `ชิปที่ใช้: ${w0.chip.toUpperCase()}\n`;
             }
