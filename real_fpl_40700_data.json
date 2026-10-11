@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "11 ต.ค. 2026, 07:45 น.",
-    "last_sync_iso": "2026-10-11 07:45:24"
+    "last_sync": "11 ต.ค. 2026, 20:43 น.",
+    "last_sync_iso": "2026-10-11 20:43:07"
   },
   "teams": [
     {
@@ -1818,12 +1818,12 @@
           "entry_id": 197082,
           "team_name": "Mary Jojibana",
           "player_name": "Kavinjet Tantitanasap",
-          "points": 68,
+          "points": 69,
           "hits": 0,
-          "net_points": 68,
+          "net_points": 69,
           "captain": "João Pedro",
           "chip": null,
-          "bench_points": 8,
+          "bench_points": 11,
           "team_value": 102.0,
           "bank": 1.5,
           "transfers_count": 1,
@@ -1843,17 +1843,17 @@
           "entry_id": 2999763,
           "team_name": "Cody Travers",
           "player_name": "Alesandro Nuyie",
-          "points": 71,
+          "points": 72,
           "hits": 8,
-          "net_points": 63,
+          "net_points": 64,
           "captain": "Groß",
           "chip": null,
           "bench_points": 5,
           "team_value": 101.4,
           "bank": 1.4,
           "transfers_count": 3,
-          "transfers_pts_gain": 22,
-          "transfers_net_impact": 14,
+          "transfers_pts_gain": 21,
+          "transfers_net_impact": 13,
           "transfer_moves": [
             {
               "in": "Kostoulas",
@@ -1873,8 +1873,8 @@
               "in": "Groß",
               "in_pts": 6,
               "out": "Delap",
-              "out_pts": 0,
-              "net": 6
+              "out_pts": 1,
+              "net": 5
             }
           ]
         },
@@ -1891,8 +1891,8 @@
           "team_value": 101.4,
           "bank": 0.0,
           "transfers_count": 2,
-          "transfers_pts_gain": 15,
-          "transfers_net_impact": 15,
+          "transfers_pts_gain": 14,
+          "transfers_net_impact": 14,
           "transfer_moves": [
             {
               "in": "Gonzalo",
@@ -1905,8 +1905,8 @@
               "in": "De Cuyper",
               "in_pts": 15,
               "out": "N.Williams",
-              "out_pts": 0,
-              "net": 15
+              "out_pts": 1,
+              "net": 14
             }
           ]
         },
@@ -1914,12 +1914,12 @@
           "entry_id": 5470959,
           "team_name": "Anjoni Iraola",
           "player_name": "pilan liu",
-          "points": 61,
+          "points": 62,
           "hits": 0,
-          "net_points": 61,
+          "net_points": 62,
           "captain": "João Pedro",
           "chip": null,
-          "bench_points": 6,
+          "bench_points": 8,
           "team_value": 100.0,
           "bank": 1.8,
           "transfers_count": 2,
@@ -1943,6 +1943,23 @@
           ]
         },
         {
+          "entry_id": 5660962,
+          "team_name": "Siampathy",
+          "player_name": "Peeranat Hunthanee",
+          "points": 58,
+          "hits": 0,
+          "net_points": 58,
+          "captain": "Ødegaard",
+          "chip": null,
+          "bench_points": 4,
+          "team_value": 100.6,
+          "bank": 0.1,
+          "transfers_count": 0,
+          "transfers_pts_gain": 0,
+          "transfers_net_impact": 0,
+          "transfer_moves": []
+        },
+        {
           "entry_id": 73489,
           "team_name": "Some might say",
           "player_name": "FAme Pakviwat",
@@ -1951,26 +1968,9 @@
           "net_points": 57,
           "captain": "Saka",
           "chip": null,
-          "bench_points": 2,
+          "bench_points": 7,
           "team_value": 102.0,
           "bank": 1.7,
-          "transfers_count": 0,
-          "transfers_pts_gain": 0,
-          "transfers_net_impact": 0,
-          "transfer_moves": []
-        },
-        {
-          "entry_id": 5660962,
-          "team_name": "Siampathy",
-          "player_name": "Peeranat Hunthanee",
-          "points": 57,
-          "hits": 0,
-          "net_points": 57,
-          "captain": "Ødegaard",
-          "chip": null,
-          "bench_points": 2,
-          "team_value": 100.6,
-          "bank": 0.1,
           "transfers_count": 0,
           "transfers_pts_gain": 0,
           "transfers_net_impact": 0,
@@ -1980,9 +1980,9 @@
           "entry_id": 306983,
           "team_name": "GEMINI UNITED",
           "player_name": "Micky Asawamanasak",
-          "points": 50,
+          "points": 51,
           "hits": 0,
-          "net_points": 50,
+          "net_points": 51,
           "captain": "Palmer",
           "chip": null,
           "bench_points": 15,
@@ -2002,7 +2002,7 @@
           "net_points": 49,
           "captain": "Groß",
           "chip": null,
-          "bench_points": 1,
+          "bench_points": 2,
           "team_value": 100.8,
           "bank": 4.6,
           "transfers_count": 2,
@@ -2029,24 +2029,24 @@
           "entry_id": 2189419,
           "team_name": "1234-Ultrasmooth-",
           "player_name": "Maew Mohawk",
-          "points": 44,
+          "points": 45,
           "hits": 0,
-          "net_points": 44,
+          "net_points": 45,
           "captain": "B.Fernandes",
           "chip": null,
-          "bench_points": 1,
+          "bench_points": 5,
           "team_value": 101.8,
           "bank": 1.2,
           "transfers_count": 1,
-          "transfers_pts_gain": 1,
-          "transfers_net_impact": 1,
+          "transfers_pts_gain": -1,
+          "transfers_net_impact": -1,
           "transfer_moves": [
             {
               "in": "B.Fernandes",
               "in_pts": 1,
               "out": "Gibbs-White",
-              "out_pts": 0,
-              "net": 1
+              "out_pts": 2,
+              "net": -1
             }
           ]
         },
@@ -2054,9 +2054,9 @@
           "entry_id": 2191555,
           "team_name": "1234 Barbyu Barbyu",
           "player_name": "Maew Mohawk",
-          "points": 33,
+          "points": 37,
           "hits": 0,
-          "net_points": 33,
+          "net_points": 37,
           "captain": "Saka",
           "chip": null,
           "bench_points": 3,
@@ -20122,7 +20122,7 @@
           "pos": "DEF",
           "team": "HUL",
           "team_code": 88,
-          "points": 0,
+          "points": 4,
           "is_captain": false,
           "is_vice": false
         },
@@ -20142,7 +20142,7 @@
           "pos": "MID",
           "team": "HUL",
           "team_code": 88,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         }
@@ -20602,7 +20602,7 @@
           "pos": "DEF",
           "team": "HUL",
           "team_code": 88,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -21020,7 +21020,7 @@
           "pos": "DEF",
           "team": "HUL",
           "team_code": 88,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -21194,7 +21194,7 @@
           "pos": "DEF",
           "team": "HUL",
           "team_code": 88,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -21296,7 +21296,7 @@
           "pos": "GKP",
           "team": "HUL",
           "team_code": 88,
-          "points": 0,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -21326,7 +21326,7 @@
           "pos": "DEF",
           "team": "NFO",
           "team_code": 17,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         }
@@ -21510,7 +21510,7 @@
           "pos": "DEF",
           "team": "NFO",
           "team_code": 17,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -21806,7 +21806,7 @@
           "pos": "DEF",
           "team": "HUL",
           "team_code": 88,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -21898,7 +21898,7 @@
           "pos": "DEF",
           "team": "HUL",
           "team_code": 88,
-          "points": 0,
+          "points": 4,
           "is_captain": false,
           "is_vice": false
         },
@@ -22092,7 +22092,7 @@
           "pos": "DEF",
           "team": "HUL",
           "team_code": 88,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -22194,7 +22194,7 @@
           "pos": "FWD",
           "team": "EVE",
           "team_code": 11,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -22204,7 +22204,7 @@
           "pos": "DEF",
           "team": "HUL",
           "team_code": 88,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -22408,7 +22408,7 @@
           "pos": "DEF",
           "team": "HUL",
           "team_code": 88,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -22480,7 +22480,7 @@
           "pos": "GKP",
           "team": "HUL",
           "team_code": 88,
-          "points": 0,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -23266,7 +23266,7 @@
           "pos": "DEF",
           "team": "NFO",
           "team_code": 17,
-          "points": 0,
+          "points": 3,
           "is_captain": false,
           "is_vice": false
         },
@@ -23286,7 +23286,7 @@
           "pos": "DEF",
           "team": "HUL",
           "team_code": 88,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
