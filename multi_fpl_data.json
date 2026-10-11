@@ -1,6 +1,6 @@
 {
-  "last_sync": "11 ต.ค. 2026, 20:48 น.",
-  "last_sync_iso": "2026-10-11 20:48:27",
+  "last_sync": "11 ต.ค. 2026, 20:49 น.",
+  "last_sync_iso": "2026-10-11 20:49:32",
   "sync_status": "ok",
   "max_gw": 6,
   "leagues": {
@@ -1825,7 +1825,7 @@
               "net_points": 69,
               "captain": "João Pedro",
               "chip": null,
-              "bench_points": 11,
+              "bench_points": 10,
               "team_value": 102.0,
               "bank": 1.5,
               "transfers_count": 1,
@@ -1953,7 +1953,7 @@
               "net_points": 58,
               "captain": "Ødegaard",
               "chip": null,
-              "bench_points": 4,
+              "bench_points": 3,
               "team_value": 100.6,
               "bank": 0.1,
               "transfers_count": 0,
@@ -21298,7 +21298,7 @@
               "pos": "GKP",
               "team": "HUL",
               "team_code": 88,
-              "points": 2,
+              "points": 1,
               "is_captain": false,
               "is_vice": false
             },
@@ -22482,7 +22482,7 @@
               "pos": "GKP",
               "team": "HUL",
               "team_code": 88,
-              "points": 2,
+              "points": 1,
               "is_captain": false,
               "is_vice": false
             },
@@ -32713,7 +32713,7 @@
               "net_points": 69,
               "captain": "João Pedro",
               "chip": null,
-              "bench_points": 11,
+              "bench_points": 10,
               "team_value": 102.0,
               "bank": 1.5,
               "transfers_count": 1,
@@ -32900,12 +32900,12 @@
               "net_points": 61,
               "captain": "Saka",
               "chip": "wildcard",
-              "bench_points": 3,
+              "bench_points": 2,
               "team_value": 100.4,
               "bank": 1.0,
               "transfers_count": 9,
-              "transfers_pts_gain": 21,
-              "transfers_net_impact": 21,
+              "transfers_pts_gain": 20,
+              "transfers_net_impact": 20,
               "transfer_moves": [
                 {
                   "in": "Hall",
@@ -32965,10 +32965,10 @@
                 },
                 {
                   "in": "Tzolakis",
-                  "in_pts": 2,
+                  "in_pts": 1,
                   "out": "Haaland",
                   "out_pts": 0,
-                  "net": 2
+                  "net": 1
                 }
               ]
             },
@@ -33508,6 +33508,31 @@
               ]
             },
             {
+              "entry_id": 4763492,
+              "team_name": "ColeRogers",
+              "player_name": "Thanwa Lujintanon",
+              "points": 55,
+              "hits": 0,
+              "net_points": 55,
+              "captain": "Ødegaard",
+              "chip": null,
+              "bench_points": 2,
+              "team_value": 101.6,
+              "bank": 3.2,
+              "transfers_count": 1,
+              "transfers_pts_gain": -1,
+              "transfers_net_impact": -1,
+              "transfer_moves": [
+                {
+                  "in": "Ødegaard",
+                  "in_pts": 1,
+                  "out": "Saka",
+                  "out_pts": 2,
+                  "net": -1
+                }
+              ]
+            },
+            {
               "entry_id": 7661163,
               "team_name": "MorganLoma888",
               "player_name": "Artist Cheamcharoen",
@@ -33621,48 +33646,6 @@
               ]
             },
             {
-              "entry_id": 3948485,
-              "team_name": "ClubHellness",
-              "player_name": "ฐานุพงศ์ อัครพิริยวณิช",
-              "points": 53,
-              "hits": 0,
-              "net_points": 53,
-              "captain": "Saka",
-              "chip": null,
-              "bench_points": 16,
-              "team_value": 102.1,
-              "bank": 0.0,
-              "transfers_count": 0,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": []
-            },
-            {
-              "entry_id": 4763492,
-              "team_name": "ColeRogers",
-              "player_name": "Thanwa Lujintanon",
-              "points": 53,
-              "hits": 0,
-              "net_points": 53,
-              "captain": "Ødegaard",
-              "chip": null,
-              "bench_points": 3,
-              "team_value": 101.6,
-              "bank": 3.2,
-              "transfers_count": 1,
-              "transfers_pts_gain": -1,
-              "transfers_net_impact": -1,
-              "transfer_moves": [
-                {
-                  "in": "Ødegaard",
-                  "in_pts": 1,
-                  "out": "Saka",
-                  "out_pts": 2,
-                  "net": -1
-                }
-              ]
-            },
-            {
               "entry_id": 3540927,
               "team_name": "TORTERM 1144",
               "player_name": "Torphong Kul-on",
@@ -33714,6 +33697,23 @@
                   "net": 15
                 }
               ]
+            },
+            {
+              "entry_id": 3948485,
+              "team_name": "ClubHellness",
+              "player_name": "ฐานุพงศ์ อัครพิริยวณิช",
+              "points": 52,
+              "hits": 0,
+              "net_points": 52,
+              "captain": "Saka",
+              "chip": null,
+              "bench_points": 16,
+              "team_value": 102.1,
+              "bank": 0.0,
+              "transfers_count": 0,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": 0,
+              "transfer_moves": []
             },
             {
               "entry_id": 4552878,
@@ -33952,31 +33952,6 @@
               ]
             },
             {
-              "entry_id": 3488930,
-              "team_name": "boatieee",
-              "player_name": "boatieee sangtong",
-              "points": 50,
-              "hits": 0,
-              "net_points": 50,
-              "captain": "Palmer",
-              "chip": null,
-              "bench_points": 8,
-              "team_value": 101.6,
-              "bank": 3.1,
-              "transfers_count": 1,
-              "transfers_pts_gain": -1,
-              "transfers_net_impact": -1,
-              "transfer_moves": [
-                {
-                  "in": "Ødegaard",
-                  "in_pts": 1,
-                  "out": "Saka",
-                  "out_pts": 2,
-                  "net": -1
-                }
-              ]
-            },
-            {
               "entry_id": 5972003,
               "team_name": "YoullneverAIMalone",
               "player_name": "Aim Sirampuj",
@@ -34023,6 +33998,31 @@
                   "out": "Tzolis",
                   "out_pts": 0,
                   "net": 1
+                }
+              ]
+            },
+            {
+              "entry_id": 3488930,
+              "team_name": "boatieee",
+              "player_name": "boatieee sangtong",
+              "points": 49,
+              "hits": 0,
+              "net_points": 49,
+              "captain": "Palmer",
+              "chip": null,
+              "bench_points": 8,
+              "team_value": 101.6,
+              "bank": 3.1,
+              "transfers_count": 1,
+              "transfers_pts_gain": -1,
+              "transfers_net_impact": -1,
+              "transfer_moves": [
+                {
+                  "in": "Ødegaard",
+                  "in_pts": 1,
+                  "out": "Saka",
+                  "out_pts": 2,
+                  "net": -1
                 }
               ]
             },
@@ -34098,6 +34098,23 @@
               ]
             },
             {
+              "entry_id": 6579206,
+              "team_name": "ทีมของ Noom",
+              "player_name": "Noom Poom",
+              "points": 41,
+              "hits": 0,
+              "net_points": 41,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 3,
+              "team_value": 100.3,
+              "bank": 0.2,
+              "transfers_count": 0,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": 0,
+              "transfer_moves": []
+            },
+            {
               "entry_id": 1493046,
               "team_name": "See you next season!",
               "player_name": "patchara eaimtrakul",
@@ -34163,23 +34180,6 @@
                   "net": 1
                 }
               ]
-            },
-            {
-              "entry_id": 6579206,
-              "team_name": "ทีมของ Noom",
-              "player_name": "Noom Poom",
-              "points": 39,
-              "hits": 0,
-              "net_points": 39,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 3,
-              "team_value": 100.3,
-              "bank": 0.2,
-              "transfers_count": 0,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": []
             },
             {
               "entry_id": 6417622,
@@ -34506,7 +34506,7 @@
               "net_points": 32,
               "captain": "B.Fernandes",
               "chip": null,
-              "bench_points": 6,
+              "bench_points": 5,
               "team_value": 99.9,
               "bank": 0.5,
               "transfers_count": 0,
@@ -126885,7 +126885,7 @@
               "pos": "GKP",
               "team": "EVE",
               "team_code": 11,
-              "points": 2,
+              "points": 1,
               "is_captain": false,
               "is_vice": false
             },
@@ -130253,7 +130253,7 @@
               "pos": "GKP",
               "team": "HUL",
               "team_code": 88,
-              "points": 2,
+              "points": 1,
               "is_captain": false,
               "is_vice": false
             },
@@ -132029,7 +132029,7 @@
               "pos": "GKP",
               "team": "HUL",
               "team_code": 88,
-              "points": 2,
+              "points": 1,
               "is_captain": false,
               "is_vice": false
             },
@@ -133509,7 +133509,7 @@
               "pos": "GKP",
               "team": "HUL",
               "team_code": 88,
-              "points": 2,
+              "points": 1,
               "is_captain": false,
               "is_vice": false
             },
@@ -134049,7 +134049,7 @@
               "pos": "MID",
               "team": "EVE",
               "team_code": 11,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -134101,7 +134101,7 @@
               "pos": "GKP",
               "team": "HUL",
               "team_code": 88,
-              "points": 2,
+              "points": 1,
               "is_captain": false,
               "is_vice": false
             },
@@ -135519,7 +135519,7 @@
               "pos": "MID",
               "team": "EVE",
               "team_code": 11,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -135765,7 +135765,7 @@
               "pos": "GKP",
               "team": "HUL",
               "team_code": 88,
-              "points": 2,
+              "points": 1,
               "is_captain": false,
               "is_vice": false
             },
@@ -144208,31 +144208,6 @@
               ]
             },
             {
-              "entry_id": 2673517,
-              "team_name": "dontecrybby",
-              "player_name": "ภูชิต เสริฐนวลแสง",
-              "points": 52,
-              "hits": 0,
-              "net_points": 52,
-              "captain": "Wissa",
-              "chip": null,
-              "bench_points": 2,
-              "team_value": 101.1,
-              "bank": 0.2,
-              "transfers_count": 1,
-              "transfers_pts_gain": 1,
-              "transfers_net_impact": 1,
-              "transfer_moves": [
-                {
-                  "in": "Schade",
-                  "in_pts": 1,
-                  "out": "Anderson",
-                  "out_pts": 0,
-                  "net": 1
-                }
-              ]
-            },
-            {
               "entry_id": 5119430,
               "team_name": "Geordie's Club",
               "player_name": "Park Howdy",
@@ -144283,7 +144258,7 @@
               "net_points": 51,
               "captain": "B.Fernandes",
               "chip": null,
-              "bench_points": 4,
+              "bench_points": 3,
               "team_value": 102.2,
               "bank": 2.9,
               "transfers_count": 1,
@@ -144294,6 +144269,31 @@
                   "in": "Kostoulas",
                   "in_pts": 1,
                   "out": "Wissa",
+                  "out_pts": 0,
+                  "net": 1
+                }
+              ]
+            },
+            {
+              "entry_id": 2673517,
+              "team_name": "dontecrybby",
+              "player_name": "ภูชิต เสริฐนวลแสง",
+              "points": 51,
+              "hits": 0,
+              "net_points": 51,
+              "captain": "Wissa",
+              "chip": null,
+              "bench_points": 2,
+              "team_value": 101.1,
+              "bank": 0.2,
+              "transfers_count": 1,
+              "transfers_pts_gain": 1,
+              "transfers_net_impact": 1,
+              "transfer_moves": [
+                {
+                  "in": "Schade",
+                  "in_pts": 1,
+                  "out": "Anderson",
                   "out_pts": 0,
                   "net": 1
                 }
@@ -144489,9 +144489,9 @@
               "entry_id": 122482,
               "team_name": "ทีมของ Atthasit",
               "player_name": "Atthasit Wongjohn",
-              "points": 19,
+              "points": 18,
               "hits": 4,
-              "net_points": 15,
+              "net_points": 14,
               "captain": "Ødegaard",
               "chip": null,
               "bench_points": 4,
@@ -169699,7 +169699,7 @@
               "pos": "GKP",
               "team": "HUL",
               "team_code": 88,
-              "points": 2,
+              "points": 1,
               "is_captain": false,
               "is_vice": false
             },
@@ -170771,7 +170771,7 @@
               "pos": "GKP",
               "team": "HUL",
               "team_code": 88,
-              "points": 2,
+              "points": 1,
               "is_captain": false,
               "is_vice": false
             },
@@ -171067,7 +171067,7 @@
               "pos": "GKP",
               "team": "EVE",
               "team_code": 11,
-              "points": 2,
+              "points": 1,
               "is_captain": false,
               "is_vice": false
             },
