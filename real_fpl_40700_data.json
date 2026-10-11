@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "11 ต.ค. 2026, 20:44 น.",
-    "last_sync_iso": "2026-10-11 20:44:12"
+    "last_sync": "11 ต.ค. 2026, 20:45 น.",
+    "last_sync_iso": "2026-10-11 20:45:17"
   },
   "teams": [
     {
@@ -1823,7 +1823,7 @@
           "net_points": 69,
           "captain": "João Pedro",
           "chip": null,
-          "bench_points": 10,
+          "bench_points": 11,
           "team_value": 102.0,
           "bank": 1.5,
           "transfers_count": 1,
@@ -1951,7 +1951,7 @@
           "net_points": 58,
           "captain": "Ødegaard",
           "chip": null,
-          "bench_points": 3,
+          "bench_points": 4,
           "team_value": 100.6,
           "bank": 0.1,
           "transfers_count": 0,
@@ -2038,15 +2038,15 @@
           "team_value": 101.8,
           "bank": 1.2,
           "transfers_count": 1,
-          "transfers_pts_gain": -1,
-          "transfers_net_impact": -1,
+          "transfers_pts_gain": 0,
+          "transfers_net_impact": 0,
           "transfer_moves": [
             {
               "in": "B.Fernandes",
               "in_pts": 1,
               "out": "Gibbs-White",
-              "out_pts": 2,
-              "net": -1
+              "out_pts": 1,
+              "net": 0
             }
           ]
         },
@@ -21296,7 +21296,7 @@
           "pos": "GKP",
           "team": "HUL",
           "team_code": 88,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -22480,7 +22480,7 @@
           "pos": "GKP",
           "team": "HUL",
           "team_code": 88,
-          "points": 1,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
