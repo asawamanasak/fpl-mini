@@ -2959,6 +2959,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             t.rank = curMonthlyRank;
           });
 
+          let curEligibleMonthlyRank = 1;
+          monthlySorted.forEach((t) => {
+            if (this.isPrizeEligible(t.entry_id)) {
+              t.eligible_monthly_rank = curEligibleMonthlyRank++;
+            } else {
+              t.eligible_monthly_rank = null;
+            }
+          });
+
           const curMonthGWList = curMonth.gw_list || [];
           const curMonthIsFinished = (curMonthGWList.length > 0 && curMonthGWList.every(g => {
             const gd = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
@@ -2998,8 +3007,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
           let monthlyTableRows = '';
           monthlySorted.forEach((t) => {
-            const isLeader = (t.rank === 1 && t.month_total > 0);
-            const isRunnerUp = (t.rank === 2 && t.month_total > 0);
+            const isEligible = this.isPrizeEligible(t.entry_id);
+            const isLeader = isEligible && (t.eligible_monthly_rank === 1 && t.month_total > 0);
+            const isRunnerUp = isEligible && (t.eligible_monthly_rank === 2 && t.month_total > 0);
             let rankBadge = `<span class="text-slate-500 font-bold">${t.rank}</span>`;
             let prizePill = '';
 
@@ -3026,6 +3036,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${this.escapeHtml(t.team_name)}</button>
                     ${prizePill}
+                    ${this.getPrizeBadge(t.entry_id)}
                   </div>
                   <div class="text-[11px] text-slate-500">${this.escapeHtml(t.player_name)}</div>
                 </td>
@@ -3091,11 +3102,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             }
 
             const sortedMonthTeams = Object.values(monthTeamMap).sort((a, b) => b.total - a.total);
+            const eligibleMonthTeams = sortedMonthTeams.filter(t => this.isPrizeEligible(t.entry_id));
 
             let winnersSummaryHtml = '';
-            if (isMonthFinished && sortedMonthTeams.length > 0 && sortedMonthTeams[0].total > 0) {
-              const topPts = sortedMonthTeams[0].total;
-              const topChamps = sortedMonthTeams.filter(t => t.total === topPts);
+            if (isMonthFinished && eligibleMonthTeams.length > 0 && eligibleMonthTeams[0].total > 0) {
+              const topPts = eligibleMonthTeams[0].total;
+              const topChamps = eligibleMonthTeams.filter(t => t.total === topPts);
 
               let champRows = '';
               let runnerRows = '';
@@ -3126,9 +3138,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   </div>
                 `;
 
-                const secondPts = sortedMonthTeams.find(t => t.total < topPts)?.total;
+                const secondPts = eligibleMonthTeams.find(t => t.total < topPts)?.total;
                 if (secondPts !== undefined && secondPts > 0) {
-                  const topRunners = sortedMonthTeams.filter(t => t.total === secondPts);
+                  const topRunners = eligibleMonthTeams.filter(t => t.total === secondPts);
                   const splitRunnerAmt = runnerPrize / topRunners.length;
                   totalPaidThisMonth += runnerPrize;
                   runnerRows = topRunners.map(r => `
@@ -3154,13 +3166,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   </div>
                 </div>
               `;
-            } else if (isMonthOngoing && sortedMonthTeams.length > 0 && sortedMonthTeams[0].total > 0) {
-              const curLead = sortedMonthTeams[0];
+            } else if (isMonthOngoing && eligibleMonthTeams.length > 0 && eligibleMonthTeams[0].total > 0) {
+              const curLead = eligibleMonthTeams[0];
               winnersSummaryHtml = `
                 <div class="mt-2.5 pt-2.5 border-t border-slate-200/80 space-y-1">
                   <div class="text-[10px] font-bold text-emerald-700 uppercase font-display flex items-center gap-1">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    ผู้นำคะแนนสดปัจจุบัน:
+                    ผู้นำคะแนนสดชิงรางวัล:
                   </div>
                   <div class="flex items-center justify-between text-xs py-0.5">
                     <span class="font-bold text-slate-900 truncate pr-2">${this.escapeHtml(curLead.team_name)}</span>
