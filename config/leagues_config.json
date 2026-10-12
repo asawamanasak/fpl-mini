@@ -6,6 +6,10 @@
     "season": "2026/27",
     "entry_fee": "2,000 THB/ทีม",
     "total_pool": "22,000 THB",
+    "non_prize_teams": [
+      2999763,
+      2191555
+    ],
     "features": {
       "prize_model": "weekly",
       "weekly_prize_amount": 350,

@@ -1088,7 +1088,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
      * ระบบวิเคราะห์สด 3 ตอน: ประโยคเปิดหัวตามชิป/แต้ม + เจาะลึกแท็กติก (Hits/สำรอง/กัปตัน) + ลูกเตือนกวนๆ ปิดท้าย
      */
     class LiveCommentaryEngine {
-      static generateFreshNote(gwNumber, gwData, leagueName, forceRandom = false) {
+      static generateFreshNote(gwNumber, gwData, leagueName, forceRandom = false, nonPrizeTeams = []) {
         if (!gwData || !gwData.results || gwData.results.length === 0) {
           return `Gameweek นี้กำลังรอผลการแข่งขันจากสนามจริง`;
         }
@@ -1108,6 +1108,23 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           ];
           const pick = forceRandom ? Math.floor(Math.random() * preMatchNotes.length) : Math.abs(Number(gwNumber) * 13) % preMatchNotes.length;
           return preMatchNotes[pick];
+        }
+
+        // Check if overall top scorer is playing for fun (non-prize team)
+        const isTopNonPrize = nonPrizeTeams && nonPrizeTeams.some(id => Number(id) === Number(top.entry_id));
+        if (isTopNonPrize) {
+          const eligibleSorted = sorted.filter(r => !nonPrizeTeams.some(id => Number(id) === Number(r.entry_id)));
+          if (eligibleSorted.length > 0) {
+            const eligibleTop = eligibleSorted[0];
+            const nonPrizeOptions = [
+              `ทีม "${top.team_name}" ระเบิดฟอร์มจัดหนัก ${top.points} แต้ม แต่น่าเสียดายที่เป็นทีมร่วมสนุก สิทธิ์แชมป์เงินรางวัลสัปดาห์นี้เลยส่งต่อให้ "${eligibleTop.team_name}" (${eligibleTop.points} pts) รับทรัพย์ไปเต็มๆ! แดกเต็มข้อ ล่อเต็มแข้ง หวานเจี๊ยบบบ!`,
+              `ของแทร่ไม่ต้องพูดเยอะ! "${top.team_name}" กดไป ${top.points} แต้มในฐานะทีมร่วมสนุก ก่อนส่งไม้ต่อเงินรางวัลวีคนี้ให้ "${eligibleTop.team_name}" (${eligibleTop.points} pts) ส้มหล่นหวานเจี๊ยบ! ใครตามไม่ทัน...ก็ต้องอยู่รูต่อไป!`,
+              `อันดับหนึ่งตารางคะแนนวีคนี้ยกให้ "${top.team_name}" (${top.points} pts) แต่สำหรับแชมป์เงินรางวัลประจำสัปดาห์ ตกเป็นของ "${eligibleTop.team_name}" (${eligibleTop.points} pts) เซียนอยู่รูของจริงไม่ต้องบรรยายเยอะ!`,
+              `"${top.team_name}" มาเพื่อความบันเทิง โกยไป ${top.points} แต้มแบบไร้ความกดดัน ส่วนเงินรางวัลสัปดาห์นี้ตกเป็นของ "${eligibleTop.team_name}" (${eligibleTop.points} pts) ฟันแชมป์วีคสบายแฮ!`
+            ];
+            const pick = forceRandom ? Math.floor(Math.random() * nonPrizeOptions.length) : Math.abs(Number(gwNumber) * 17) % nonPrizeOptions.length;
+            return nonPrizeOptions[pick];
+          }
         }
 
         const diff = top.points - (second ? second.points : 0);
@@ -1823,15 +1840,22 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
           team.rank = curRank;
         });
-        const highestScore = sorted[0].points;
-        const topWinners = sorted.filter(r => r.points === highestScore);
-        const leader = sorted[0];
-        const isJointWinner = topWinners.length > 1;
+
+        const eligibleResults = sorted.filter(r => this.isPrizeEligible(r.entry_id));
+        const eligibleHighestScore = eligibleResults.length > 0 ? eligibleResults[0].points : 0;
+        const eligibleTopWinners = eligibleResults.filter(r => r.points === eligibleHighestScore);
+        const prizeLeader = eligibleTopWinners[0] || sorted[0];
+        const isJointPrizeWinner = eligibleTopWinners.length > 1;
+
+        const overallTop = sorted[0];
+        const hasPassedPrize = !this.isPrizeEligible(overallTop.entry_id) && eligibleTopWinners.length > 0;
+        const leader = prizeLeader;
 
         // 1. Render Spotlight Card (Pre-Match Lineup Preview OR Live Leader / Weekly Winner)
         if (championCard && leader) {
           const cacheKey = `${this.activeLeagueId}_${this.selectedGW}`;
-          const currentLiveNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name);
+          const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
+          const currentLiveNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList);
           this.liveNotesCache[cacheKey] = currentLiveNote;
 
           if (!isStarted) {
@@ -1917,24 +1941,34 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               </div>
             `;
           } else {
-            // Standard In-Play or Finished Spotlight Card
+            // Standard In-Play or Finished Spotlight Card (Crown Prize-Eligible Leader)
             const isWeekly = (this.config.features.prize_model === 'weekly');
             let badgeTitle = isFinished 
-              ? (isJointWinner ? 'แชมป์ร่วมประจำสัปดาห์ (Joint Weekly Winners)' : 'แชมป์ประจำสัปดาห์ (Weekly Winner)')
-              : (isJointWinner ? 'ผู้นำคะแนนสดร่วม (Joint Live Leaders)' : 'ผู้นำคะแนนสด (Live Leader)');
+              ? (isJointPrizeWinner ? 'แชมป์ร่วมประจำสัปดาห์ (Joint Weekly Winners)' : 'แชมป์ประจำสัปดาห์ (Weekly Winner)')
+              : (isJointPrizeWinner ? 'ผู้นำคะแนนสดร่วม (Joint Live Leaders)' : 'ผู้นำคะแนนสด (Live Leader)');
             if (!isWeekly) {
               badgeTitle = isFinished ? 'คะแนนสูงสุดประจำสัปดาห์ (Top Scorer)' : 'ผู้นำคะแนนสดประจำสัปดาห์ (Live Leader)';
             }
 
-            const winnerNames = topWinners.length > 2 
-              ? `${topWinners[0].team_name}, ${topWinners[1].team_name} และอีก ${topWinners.length - 2} ทีม` 
-              : topWinners.map(w => w.team_name).join(' & ');
-            const managerNames = topWinners.length > 2
-              ? `${topWinners[0].player_name}, ${topWinners[1].player_name} และอีก ${topWinners.length - 2} คน`
-              : topWinners.map(w => `${w.player_name} • (C) <strong>${(w.captain || '-').replace(/\s*\(C\)/gi, '').trim()}</strong>`).join('<br/>');
+            const winnerNames = eligibleTopWinners.length > 2 
+              ? `${eligibleTopWinners[0].team_name}, ${eligibleTopWinners[1].team_name} และอีก ${eligibleTopWinners.length - 2} ทีม` 
+              : eligibleTopWinners.map(w => w.team_name).join(' & ');
+            const managerNames = eligibleTopWinners.length > 2
+              ? `${eligibleTopWinners[0].player_name}, ${eligibleTopWinners[1].player_name} และอีก ${eligibleTopWinners.length - 2} คน`
+              : eligibleTopWinners.map(w => `${w.player_name} • (C) <strong>${(w.captain || '-').replace(/\s*\(C\)/gi, '').trim()}</strong>`).join('<br/>');
+
+            const passNoteHtml = hasPassedPrize ? `
+              <div class="mb-3 px-3.5 py-2.5 rounded-xl bg-amber-500/10 border border-amber-300 dark:border-amber-700/60 flex items-start gap-2.5 text-xs text-amber-900 dark:text-amber-200">
+                <span class="text-base flex-shrink-0">💡</span>
+                <div class="leading-relaxed">
+                  <strong class="font-bold">หมายเหตุการมอบรางวัล:</strong> ทีม <strong>${this.escapeHtml(overallTop.team_name)}</strong> (${overallTop.points} pts) ทำคะแนนสูงสุดในสัปดาห์นี้แต่เป็นทีมร่วมสนุก จึงส่งมอบสิทธิ์รับรางวัลประจำสัปดาห์ให้แก่ <strong>${this.escapeHtml(prizeLeader.team_name)}</strong> (${prizeLeader.points} pts)
+                </div>
+              </div>
+            ` : '';
 
             championCard.innerHTML = `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border ${isFinished ? 'border-amber-300 bg-amber-50/20' : 'border-emerald-300 bg-emerald-50/20'} shadow-sm relative overflow-hidden">
+                ${passNoteHtml}
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                   
                   <div>
@@ -1943,7 +1977,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                         ${badgeTitle}
                       </span>
                     </div>
-                    <button onclick="app.openTeamModal(${leader.entry_id})" class="text-left group cursor-pointer block">
+                    <button onclick="app.openTeamModal(${prizeLeader.entry_id})" class="text-left group cursor-pointer block">
                       <h2 class="text-lg sm:text-2xl font-bold text-slate-900 group-hover:text-blue-700 tracking-tight mt-0.5 transition-colors">${winnerNames}</h2>
                     </button>
                     <p class="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">${managerNames}</p>
@@ -1952,11 +1986,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 border-slate-100 sm:border-transparent">
                     <div class="text-left sm:text-right">
                       <span class="text-[10px] sm:text-xs text-slate-500 uppercase font-bold font-display block">คะแนนสด (Live Pts)</span>
-                      <span class="text-2xl sm:text-3xl font-black text-slate-900 font-display">${leader.points} <span class="text-xs font-bold text-slate-500">pts</span></span>
+                      <span class="text-2xl sm:text-3xl font-black text-slate-900 font-display">${prizeLeader.points} <span class="text-xs font-bold text-slate-500">pts</span></span>
                     </div>
                     <div class="text-right pl-3 border-l border-slate-200">
-                      <span class="text-[10px] ${leader.hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'} block font-display">แต้มลบ: ${leader.hits > 0 ? `-${leader.hits}` : '-'}</span>
-                      <span class="text-[9px] text-slate-400 block font-display">${leader.hits > 0 ? 'หักในแต้มรวม' : 'ไม่มีแต้มลบ'}</span>
+                      <span class="text-[10px] ${prizeLeader.hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'} block font-display">แต้มลบ: ${prizeLeader.hits > 0 ? `-${prizeLeader.hits}` : '-'}</span>
+                      <span class="text-[9px] text-slate-400 block font-display">${prizeLeader.hits > 0 ? 'หักในแต้มรวม' : 'ไม่มีแต้มลบ'}</span>
                     </div>
                   </div>
 
@@ -1988,12 +2022,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           sorted.forEach((team, idx) => {
             const chip = team.chip ? `<span class="chip-badge badge-${team.chip.toLowerCase()} font-display">${team.chip.toUpperCase()}</span>` : '';
             const hits = team.hits > 0 ? `<span class="text-rose-600 font-bold font-display">-${team.hits}</span>` : '<span class="text-slate-400">-</span>';
-            const isWinner = isStarted && (team.rank === 1);
+            const isPrize = this.isPrizeEligible(team.entry_id);
+            const prizeBadge = this.getPrizeBadge(team.entry_id);
+            const isWinner = isStarted && isPrize && eligibleTopWinners.some(w => w.entry_id === team.entry_id);
             const rankDisplay = isStarted ? team.rank : (idx + 1);
 
             let rankBadge = `<span class="text-slate-500 font-bold">${rankDisplay}</span>`;
             if (isStarted) {
-              if (team.rank === 1) rankBadge = `<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">${isJointWinner ? 'T1' : '1'}</span>`;
+              if (team.rank === 1) rankBadge = `<span class="w-5 h-5 rounded-full ${isPrize ? 'bg-amber-400 text-slate-950' : 'bg-slate-200 text-slate-700'} font-black inline-flex items-center justify-center text-[10px] shadow-xs">${overallTop.points === team.points && sorted.filter(r => r.points === team.points).length > 1 ? 'T1' : '1'}</span>`;
               else if (team.rank === 2) rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
               else if (team.rank === 3) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
             }
@@ -2002,10 +2038,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               <tr class="hover:bg-blue-50/40 transition-colors ${isWinner ? 'bg-blue-50/20 font-semibold' : ''}">
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-1.5 sm:px-3 min-w-0">
-                  <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-slate-600 transition-colors flex items-center gap-1.5 flex-wrap cursor-pointer">
-                    <span class="break-words">${this.escapeHtml(team.team_name)}</span>
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-slate-600 transition-colors cursor-pointer">
+                      <span class="break-words">${this.escapeHtml(team.team_name)}</span>
+                    </button>
                     ${chip}
-                  </button>
+                    ${prizeBadge}
+                  </div>
                   <div class="text-[11px] text-slate-500 mt-0.5">
                     <div class="truncate">${this.escapeHtml(team.player_name)}</div>
                     <div class="sm:hidden text-[10px] text-slate-600 font-medium mt-0.5 truncate">
@@ -2099,8 +2138,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
           let oHtml = '';
           overallSorted.forEach((team) => {
+            const isPrize = this.isPrizeEligible(team.entry_id);
+            const prizeBadge = this.getPrizeBadge(team.entry_id);
+
             let rankBadge = `<span class="text-slate-500 font-bold">${team.overall_rank}</span>`;
-            if (team.overall_rank === 1) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
+            if (team.overall_rank === 1) rankBadge = `<span class="w-5 h-5 rounded-full ${isPrize ? 'bg-amber-400 text-slate-950' : 'bg-slate-200 text-slate-700'} font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>`;
             else if (team.overall_rank === 2) rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
             else if (team.overall_rank === 3) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
 
@@ -2108,12 +2150,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             const hitsBadge = team.last_gw_hits > 0 ? `<span class="text-[10px] sm:text-[11px] font-bold text-rose-500 dark:text-rose-400 font-display ml-0.5">(-${team.last_gw_hits})</span>` : '';
 
             oHtml += `
-              <tr class="hover:bg-blue-50/40 transition-colors ${team.overall_rank <= 3 ? 'bg-blue-50/20' : ''}">
+              <tr class="hover:bg-blue-50/40 transition-colors ${team.overall_rank <= 3 && isPrize ? 'bg-blue-50/20' : ''}">
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-1.5 sm:px-3 min-w-0">
-                  <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors block truncate cursor-pointer">
-                    ${this.escapeHtml(team.team_name)}
-                  </button>
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors block truncate cursor-pointer">
+                      ${this.escapeHtml(team.team_name)}
+                    </button>
+                    ${prizeBadge}
+                  </div>
                   <span class="text-[11px] text-slate-500 block truncate">${this.escapeHtml(team.player_name)}</span>
                 </td>
                 <td class="py-2.5 px-1 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-700 dark:text-slate-300 whitespace-nowrap"><span class="font-semibold">${rawScore}</span>${hitsBadge}</td>
@@ -2143,6 +2188,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         if (c === '3xc') return 'Triple Captain';
         if (c === 'freehit') return 'Free Hit';
         return chip.toUpperCase();
+      }
+
+      isPrizeEligible(entryId) {
+        if (!this.config || !this.config.non_prize_teams) return true;
+        const numId = Number(entryId);
+        return !this.config.non_prize_teams.some(id => Number(id) === numId);
+      }
+
+      getPrizeBadge(entryId) {
+        if (this.isPrizeEligible(entryId)) return '';
+        return `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 ml-1.5" title="ทีมนี้เข้าร่วมเล่นสนุก ไม่ได้ลงชิงเงินรางวัล">ร่วมสนุก</span>`;
       }
 
       renderHighlightsView() {
@@ -2238,6 +2294,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 <button onclick="app.openTeamModal(${cfg.winner.entry_id})" class="font-bold text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer truncate">
                   ${this.escapeHtml(cfg.winner.team_name)}
                 </button>
+                ${this.getPrizeBadge(cfg.winner.entry_id)}
                 <span class="font-extrabold font-display ${badgeColor}">${cfg.statText}</span>
               </div>
 
@@ -2644,7 +2701,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           for (let g = 1; g <= maxGW; g++) {
             const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
             if (gData && gData.results && gData.is_finished) {
-              const sorted = [...gData.results].sort((a, b) => b.net_points - a.net_points);
+              const eligibleResults = gData.results.filter(r => this.isPrizeEligible(r.entry_id));
+              const sorted = [...eligibleResults].sort((a, b) => b.net_points - a.net_points);
               if (sorted.length > 0) {
                 const high = sorted[0].net_points;
                 const winners = sorted.filter(r => r.net_points === high);
@@ -2662,6 +2720,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             }
           }
           const sortedTeams = [...(this.data.teams || [])].sort((a, b) => {
+            const aEligible = this.isPrizeEligible(a.entry_id) ? 1 : 0;
+            const bEligible = this.isPrizeEligible(b.entry_id) ? 1 : 0;
+            if (aEligible !== bEligible) return bEligible - aEligible;
             if ((prizeEarnings[b.entry_id] || 0) !== (prizeEarnings[a.entry_id] || 0)) {
               return (prizeEarnings[b.entry_id] || 0) - (prizeEarnings[a.entry_id] || 0);
             }
@@ -2670,19 +2731,24 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
           let tableRows = '';
           sortedTeams.forEach((t, idx) => {
+            const isEligible = this.isPrizeEligible(t.entry_id);
             const wins = winsCount[t.entry_id] || 0;
             const actualPrize = prizeEarnings[t.entry_id] || 0;
-            const winsDisplay = (wins % 1 === 0) ? wins : wins.toFixed(1);
+            const winsDisplay = isEligible ? ((wins % 1 === 0) ? wins : wins.toFixed(1)) : '-';
+            const prizeDisplay = isEligible ? `${actualPrize.toLocaleString()} THB` : '<span class="text-slate-400 font-normal">ร่วมสนุก (ไม่มีรางวัล)</span>';
 
             tableRows += `
-              <tr class="hover:bg-slate-50 transition-colors ${idx < 3 && wins > 0 ? 'bg-amber-50/20' : ''}">
-                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-500">${idx + 1}</td>
+              <tr class="hover:bg-slate-50 transition-colors ${idx < 3 && wins > 0 && isEligible ? 'bg-amber-50/20' : ''}">
+                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-500">${isEligible ? (idx + 1) : '-'}</td>
                 <td class="py-2.5 px-2 sm:px-3">
-                  <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${this.escapeHtml(t.entry_name)}</button>
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${this.escapeHtml(t.entry_name)}</button>
+                    ${this.getPrizeBadge(t.entry_id)}
+                  </div>
                   <div class="text-[11px] text-slate-500">${this.escapeHtml(t.player_name)}</div>
                 </td>
                 <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-800">${winsDisplay}</td>
-                <td class="py-2.5 px-2 sm:px-3 text-right font-display font-black text-emerald-600">${actualPrize.toLocaleString()} THB</td>
+                <td class="py-2.5 px-2 sm:px-3 text-right font-display font-black text-emerald-600">${prizeDisplay}</td>
               </tr>
             `;
           });
@@ -2702,7 +2768,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
                 if (gData && gData.results && gData.is_finished) {
                   finishedGWCount++;
-                  const sorted = [...gData.results].sort((a, b) => b.net_points - a.net_points);
+                  const eligibleResults = gData.results.filter(r => this.isPrizeEligible(r.entry_id));
+                  const sorted = [...eligibleResults].sort((a, b) => b.net_points - a.net_points);
                   if (sorted.length > 0) {
                     const topScore = sorted[0].net_points;
                     const topTeams = sorted.filter(r => r.net_points === topScore);
@@ -3254,11 +3321,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
             // Gameweek performance records, averages, highs/lows, and wins are evaluated only for finished gameweeks
             if (gData.is_finished) {
-              const sorted = [...gData.results].sort((a, b) => b.net_points - a.net_points);
-              const highPts = sorted[0].net_points;
-              const topWinners = sorted.filter(x => x.net_points === highPts);
-              const winCredit = 1 / topWinners.length;
+              const eligibleResults = gData.results.filter(r => this.isPrizeEligible(r.entry_id));
+              const eligibleSorted = [...eligibleResults].sort((a, b) => b.net_points - a.net_points);
+              const highEligiblePts = eligibleSorted.length > 0 ? eligibleSorted[0].net_points : 0;
+              const topEligibleWinners = eligibleSorted.filter(x => x.net_points === highEligiblePts);
+              const winCredit = topEligibleWinners.length > 0 ? 1 / topEligibleWinners.length : 0;
 
+              const sorted = [...gData.results].sort((a, b) => b.net_points - a.net_points);
               sorted.forEach((r, idx) => {
                 if (!teamStats[r.entry_id]) {
                   teamStats[r.entry_id] = {
@@ -3275,7 +3344,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 const ts = teamStats[r.entry_id];
                 ts.total_net += r.net_points;
                 ts.scores.push(r.net_points);
-                if (r.net_points === highPts) ts.wins += winCredit;
+                if (this.isPrizeEligible(r.entry_id) && r.net_points === highEligiblePts) {
+                  ts.wins += winCredit;
+                }
                 if (idx < 3) ts.top3 += 1;
 
                 if (r.net_points > highGW.score) {
@@ -3292,15 +3363,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const sortedStats = Object.values(teamStats).sort((a, b) => b.total_net - a.total_net);
         const leader = sortedStats[0] || { team_name: '-', total_net: 0, scores: [0] };
 
-        // Accurately compute team(s) with most GW #1 finishes
+        // Accurately compute team(s) with most GW #1 finishes (prize eligible only)
         let mostWinsCount = 0;
         let mostWinsTeams = [];
         sortedStats.forEach(t => {
-          if (t.wins > mostWinsCount) {
-            mostWinsCount = t.wins;
-            mostWinsTeams = [t.team_name];
-          } else if (t.wins === mostWinsCount && t.wins > 0) {
-            mostWinsTeams.push(t.team_name);
+          if (this.isPrizeEligible(t.entry_id)) {
+            if (t.wins > mostWinsCount) {
+              mostWinsCount = t.wins;
+              mostWinsTeams = [t.team_name];
+            } else if (t.wins === mostWinsCount && t.wins > 0) {
+              mostWinsTeams.push(t.team_name);
+            }
           }
         });
         const mostWinsDisplay = (mostWinsCount % 1 === 0) ? mostWinsCount : mostWinsCount.toFixed(1);
@@ -3319,7 +3392,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               <span class="text-[10px] uppercase font-bold text-slate-400 block font-display">ครองอันดับ 1 มากที่สุด</span>
               <div class="text-xl font-black text-slate-900 mt-1 font-display">${mostWinsDisplay} <span class="text-xs">ครั้ง</span></div>
               <div class="text-xs font-bold text-slate-700 truncate mt-0.5">${mostWinsName}</div>
-              <div class="text-[10px] text-slate-500 font-display">ตลอดฤดูกาล</div>
+              <div class="text-[10px] text-slate-500 font-display">ตลอดฤดูกาล (ชิงเงินรางวัล)</div>
             </div>
 
             <div class="glass-card rounded-2xl p-4 border border-slate-200">
@@ -3355,7 +3428,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               <tr class="hover:bg-slate-50 transition-colors">
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500 whitespace-nowrap">${curHofRank}</td>
                 <td class="py-2.5 px-1.5 sm:px-3 min-w-0">
-                  <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block truncate">${this.escapeHtml(t.team_name)}</button>
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block truncate">${this.escapeHtml(t.team_name)}</button>
+                    ${this.getPrizeBadge(t.entry_id)}
+                  </div>
                   <div class="text-[10px] sm:text-[11px] text-slate-500 truncate">${this.escapeHtml(t.player_name || '')}</div>
                 </td>
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-800 whitespace-nowrap">${winsDisp}</td>
@@ -3475,7 +3551,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const cardsContainer = document.getElementById('rules-cards-container');
 
         if (titleEl) titleEl.innerText = `กติกาแฟนตาซี ${this.data.name} (${this.data.season || '2026/27'})`;
-        if (descEl) descEl.innerHTML = `LEAGUE ID: <strong class="text-slate-800">${this.activeLeagueId}</strong> | สมาชิก ${(this.data.teams || []).length} ทีม | ค่าสมัคร: ${this.config.entry_fee} | กองกลาง: <strong>${this.config.total_pool}</strong>`;
+        const nonPrizeCount = (this.config && this.config.non_prize_teams) ? this.config.non_prize_teams.length : 0;
+        const totalTeams = (this.data.teams || []).length;
+        const prizeTeamsCount = totalTeams - nonPrizeCount;
+        const teamDesc = nonPrizeCount > 0 
+          ? `สมาชิก ${totalTeams} ทีม (ชิงรางวัล ${prizeTeamsCount} ทีม, ร่วมสนุก ${nonPrizeCount} ทีม)`
+          : `สมาชิก ${totalTeams} ทีม`;
+        if (descEl) descEl.innerHTML = `LEAGUE ID: <strong class="text-slate-800">${this.activeLeagueId}</strong> | ${teamDesc} | ค่าสมัคร: ${this.config.entry_fee} | กองกลาง: <strong>${this.config.total_pool}</strong>`;
         if (badgeEl) badgeEl.innerText = this.config.total_pool || 'OFFICIAL RULES';
 
         if (cardsContainer && this.config.rules_cards) {
@@ -3712,7 +3794,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
       regenerateLiveNote() {
         const gw = this.selectedGW;
         const gwData = this.data.gameweeks ? this.data.gameweeks[String(gw)] : null;
-        const newNote = LiveCommentaryEngine.generateFreshNote(gw, gwData, this.data.name, true);
+        const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
+        const newNote = LiveCommentaryEngine.generateFreshNote(gw, gwData, this.data.name, true, nonPrizeList);
         const cacheKey = `${this.activeLeagueId}_${gw}`;
         this.liveNotesCache[cacheKey] = newNote;
         
@@ -3788,14 +3871,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
           const isFinished = Boolean(gwData.is_finished);
           const sorted = [...gwData.results].sort((a, b) => (b.points - a.points) || (b.net_points - a.net_points));
-          const highestScore = sorted[0].points;
-          const winners = sorted.filter(r => r.points === highestScore);
-          const isJoint = winners.length > 1;
+          const eligibleResults = sorted.filter(r => this.isPrizeEligible(r.entry_id));
+          const eligibleHighestScore = eligibleResults.length > 0 ? eligibleResults[0].points : 0;
+          const eligibleWinners = eligibleResults.filter(r => r.points === eligibleHighestScore);
+          const isJointPrize = eligibleWinners.length > 1;
+          const overallTop = sorted[0];
+          const hasPassedPrize = !this.isPrizeEligible(overallTop.entry_id) && eligibleWinners.length > 0;
+          const prizeLeader = eligibleWinners[0] || overallTop;
 
           const noteEl = document.getElementById('current-gw-note-text');
           let currentLiveNote = noteEl ? noteEl.innerText.replace(/^"|"$/g, '').trim() : '';
           if (!currentLiveNote) {
-            currentLiveNote = this.liveNotesCache[this.selectedGW] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name);
+            const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
+            currentLiveNote = this.liveNotesCache[this.selectedGW] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList);
           }
 
           const isWeekly = (this.config.features.prize_model === 'weekly');
@@ -3806,27 +3894,33 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
           if (isFinished) {
             if (isWeekly) {
-              if (isJoint) {
-                const names = winners.map(w => `${w.team_name} (${w.player_name})`).join(' & ');
-                text += `🏆 แชมป์ร่วมประจำสัปดาห์ (${winners.length} ทีม): ${names}\n`;
-              } else {
-                text += `🏆 แชมป์ประจำสัปดาห์: ${winners[0].team_name} (${winners[0].player_name})\n`;
+              if (hasPassedPrize) {
+                text += `💡 หมายเหตุ: ทีม ${overallTop.team_name} ทำแต้มสูงสุดสัปดาห์นี้ (${overallTop.points} pts) แต่เป็นทีมร่วมสนุก จึงส่งมอบสิทธิ์เงินรางวัลประจำสัปดาห์ให้แก่ทีมถัดไป\n`;
               }
-              const w0 = winners[0];
+              if (isJointPrize) {
+                const names = eligibleWinners.map(w => `${w.team_name} (${w.player_name})`).join(' & ');
+                text += `🏆 แชมป์ร่วมประจำสัปดาห์ (${eligibleWinners.length} ทีม): ${names}\n`;
+              } else {
+                text += `🏆 แชมป์ประจำสัปดาห์: ${prizeLeader.team_name} (${prizeLeader.player_name})\n`;
+              }
+              const w0 = prizeLeader;
               const hitsStr = (w0.hits && w0.hits > 0) ? ` | แต้มลบ: -${w0.hits}` : '';
               text += `คะแนน: ${w0.points} pts (สุทธิ ${w0.net_points}${hitsStr})\n`;
               const weeklyPrize = this.config.features.weekly_prize_amount || 350;
-              const prizePerTeam = isJoint ? (weeklyPrize / winners.length).toFixed(0) : weeklyPrize;
-              text += `เงินรางวัล: ${prizePerTeam} THB${isJoint ? ' / ทีม (หารเท่า)' : ''}\n`;
+              const prizePerTeam = isJointPrize ? (weeklyPrize / eligibleWinners.length).toFixed(0) : weeklyPrize;
+              text += `เงินรางวัล: ${prizePerTeam} THB${isJointPrize ? ' / ทีม (หารเท่า)' : ''}\n`;
             } else {
-              text += `👑 คะแนนสูงสุด Gameweek ${gwKey}: ${winners[0].team_name} (${winners[0].player_name})\n`;
-              const w0 = winners[0];
+              text += `👑 คะแนนสูงสุด Gameweek ${gwKey}: ${overallTop.team_name} (${overallTop.player_name})\n`;
+              const w0 = overallTop;
               const hitsStr = (w0.hits && w0.hits > 0) ? ` | แต้มลบ: -${w0.hits}` : '';
               text += `คะแนน: ${w0.points} pts (สุทธิ ${w0.net_points}${hitsStr})\n`;
             }
           } else {
-            text += `⚡ ผู้นำคะแนนสด (ชั่วคราว): ${winners[0].team_name} (${winners[0].player_name})\n`;
-            const w0 = winners[0];
+            if (hasPassedPrize) {
+              text += `💡 หมายเหตุ: ทีม ${overallTop.team_name} (${overallTop.points} pts) นำคะแนนสดสูงสุด (ร่วมสนุก) • สิทธิ์ชิงเงินรางวัลส่งต่อให้ ${prizeLeader.team_name}\n`;
+            }
+            text += `⚡ ผู้นำคะแนนสดชิงรางวัล: ${prizeLeader.team_name} (${prizeLeader.player_name})\n`;
+            const w0 = prizeLeader;
             const hitsStr = (w0.hits && w0.hits > 0) ? ` | แต้มลบ: -${w0.hits} (หักในคะแนนรวม)` : '';
             text += `คะแนนสด: ${w0.points} pts (ตรงกับ Official)${hitsStr}\n`;
             if (w0.chip) {
@@ -3876,7 +3970,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           sorted.slice(0, 5).forEach((t, i) => {
             const hitsPart = (t.hits && t.hits > 0) ? ` (-${t.hits})` : '';
             const chipPart = t.chip ? ` [${t.chip.toUpperCase()}]` : '';
-            text += `${i + 1}. ${t.team_name}: ${t.net_points} pts${hitsPart}${chipPart}\n`;
+            const funTag = !this.isPrizeEligible(t.entry_id) ? ' (ร่วมสนุก)' : '';
+            text += `${i + 1}. ${t.team_name}${funTag}: ${t.net_points} pts${hitsPart}${chipPart}\n`;
           });
 
           text += `\n🌐 ตรวจสอบผลสด & อันดับตารางเต็มได้ที่:\nhttps://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`;
