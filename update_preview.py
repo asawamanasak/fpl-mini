@@ -1833,10 +1833,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         }
 
         const sorted = [...gwData.results].sort((a, b) => (b.points - a.points) || (b.net_points - a.net_points));
-        let curRank = 1;
-        sorted.forEach((team, i) => {
-          if (i > 0 && team.points < sorted[i - 1].points) {
+        let curRank = 0;
+        let prevEligiblePoints = null;
+        let eligiblePreCount = 0;
+        sorted.forEach((team) => {
+          if (!this.isPrizeEligible(team.entry_id)) {
+            team.rank = null;
+            team.preRank = null;
+            return;
+          }
+          eligiblePreCount++;
+          team.preRank = eligiblePreCount;
+          if (prevEligiblePoints === null || team.points < prevEligiblePoints) {
             curRank++;
+            prevEligiblePoints = team.points;
           }
           team.rank = curRank;
         });
@@ -2025,13 +2035,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             const isPrize = this.isPrizeEligible(team.entry_id);
             const prizeBadge = this.getPrizeBadge(team.entry_id);
             const isWinner = isStarted && isPrize && eligibleTopWinners.some(w => w.entry_id === team.entry_id);
-            const rankDisplay = isStarted ? team.rank : (idx + 1);
+            const rankDisplay = isStarted ? team.rank : team.preRank;
 
-            let rankBadge = `<span class="text-slate-500 font-bold">${rankDisplay}</span>`;
-            if (isStarted) {
-              if (team.rank === 1) rankBadge = `<span class="w-5 h-5 rounded-full ${isPrize ? 'bg-amber-400 text-slate-950' : 'bg-slate-200 text-slate-700'} font-black inline-flex items-center justify-center text-[10px] shadow-xs">${overallTop.points === team.points && sorted.filter(r => r.points === team.points).length > 1 ? 'T1' : '1'}</span>`;
+            let rankBadge = '';
+            if (!isPrize) {
+              rankBadge = this.getNonPrizeRankBadge();
+            } else if (isStarted) {
+              if (team.rank === 1) rankBadge = `<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">${eligibleTopWinners.length > 1 ? 'T1' : '1'}</span>`;
               else if (team.rank === 2) rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
               else if (team.rank === 3) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
+              else rankBadge = `<span class="text-slate-500 font-bold">${team.rank}</span>`;
+            } else {
+              rankBadge = `<span class="text-slate-500 font-bold">${rankDisplay}</span>`;
             }
 
             mHtml += `
@@ -2128,10 +2143,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
 
           const overallSorted = Object.values(overallMap).sort((a, b) => b.total_points - a.total_points);
-          let curOverallRank = 1;
-          overallSorted.forEach((team, i) => {
-            if (i > 0 && team.total_points < overallSorted[i - 1].total_points) {
+          let curOverallRank = 0;
+          let prevEligibleTotal = null;
+          overallSorted.forEach((team) => {
+            if (!this.isPrizeEligible(team.entry_id)) {
+              team.overall_rank = null;
+              return;
+            }
+            if (prevEligibleTotal === null || team.total_points < prevEligibleTotal) {
               curOverallRank++;
+              prevEligibleTotal = team.total_points;
             }
             team.overall_rank = curOverallRank;
           });
@@ -2141,16 +2162,24 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             const isPrize = this.isPrizeEligible(team.entry_id);
             const prizeBadge = this.getPrizeBadge(team.entry_id);
 
-            let rankBadge = `<span class="text-slate-500 font-bold">${team.overall_rank}</span>`;
-            if (team.overall_rank === 1) rankBadge = `<span class="w-5 h-5 rounded-full ${isPrize ? 'bg-amber-400 text-slate-950' : 'bg-slate-200 text-slate-700'} font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>`;
-            else if (team.overall_rank === 2) rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
-            else if (team.overall_rank === 3) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
+            let rankBadge = '';
+            if (!isPrize) {
+              rankBadge = this.getNonPrizeRankBadge();
+            } else if (team.overall_rank === 1) {
+              rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
+            } else if (team.overall_rank === 2) {
+              rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
+            } else if (team.overall_rank === 3) {
+              rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
+            } else {
+              rankBadge = `<span class="text-slate-500 font-bold">${team.overall_rank}</span>`;
+            }
 
             const rawScore = team.last_gw_raw !== undefined ? team.last_gw_raw : team.last_gw_pts;
             const hitsBadge = team.last_gw_hits > 0 ? `<span class="text-[10px] sm:text-[11px] font-bold text-rose-500 dark:text-rose-400 font-display ml-0.5">(-${team.last_gw_hits})</span>` : '';
 
             oHtml += `
-              <tr class="hover:bg-blue-50/40 transition-colors ${team.overall_rank <= 3 && isPrize ? 'bg-blue-50/20' : ''}">
+              <tr class="hover:bg-blue-50/40 transition-colors ${team.overall_rank && team.overall_rank <= 3 && isPrize ? 'bg-blue-50/20' : ''}">
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-1.5 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
@@ -2199,6 +2228,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
       getPrizeBadge(entryId) {
         if (this.isPrizeEligible(entryId)) return '';
         return `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 ml-1.5" title="ทีมนี้เข้าร่วมเล่นสนุก ไม่ได้ลงชิงเงินรางวัล">ร่วมสนุก</span>`;
+      }
+
+      getNonPrizeRankBadge() {
+        return '<span class="w-5 h-5 rounded-full border border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800/80 inline-flex items-center justify-center flex-shrink-0" title="ทีมร่วมสนุก (ไม่นับอันดับ)"></span>';
       }
 
       renderHighlightsView() {
@@ -2739,7 +2772,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
             tableRows += `
               <tr class="hover:bg-slate-50 transition-colors ${idx < 3 && wins > 0 && isEligible ? 'bg-amber-50/20' : ''}">
-                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-500">${isEligible ? (idx + 1) : '-'}</td>
+                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-500">${isEligible ? (idx + 1) : this.getNonPrizeRankBadge()}</td>
                 <td class="py-2.5 px-2 sm:px-3">
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${this.escapeHtml(t.entry_name)}</button>
@@ -2951,21 +2984,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
 
           const monthlySorted = Object.values(monthlyMap).sort((a, b) => b.month_total - a.month_total);
-          let curMonthlyRank = 1;
-          monthlySorted.forEach((t, idx) => {
-            if (idx > 0 && t.month_total < monthlySorted[idx - 1].month_total) {
+          let curMonthlyRank = 0;
+          let prevEligibleMonthTotal = null;
+          monthlySorted.forEach((t) => {
+            if (!this.isPrizeEligible(t.entry_id)) {
+              t.rank = null;
+              t.eligible_monthly_rank = null;
+              return;
+            }
+            if (prevEligibleMonthTotal === null || t.month_total < prevEligibleMonthTotal) {
               curMonthlyRank++;
+              prevEligibleMonthTotal = t.month_total;
             }
             t.rank = curMonthlyRank;
-          });
-
-          let curEligibleMonthlyRank = 1;
-          monthlySorted.forEach((t) => {
-            if (this.isPrizeEligible(t.entry_id)) {
-              t.eligible_monthly_rank = curEligibleMonthlyRank++;
-            } else {
-              t.eligible_monthly_rank = null;
-            }
+            t.eligible_monthly_rank = curMonthlyRank;
           });
 
           const curMonthGWList = curMonth.gw_list || [];
@@ -3010,15 +3042,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             const isEligible = this.isPrizeEligible(t.entry_id);
             const isLeader = isEligible && (t.eligible_monthly_rank === 1 && t.month_total > 0);
             const isRunnerUp = isEligible && (t.eligible_monthly_rank === 2 && t.month_total > 0);
-            let rankBadge = `<span class="text-slate-500 font-bold">${t.rank}</span>`;
+            let rankBadge = '';
             let prizePill = '';
 
-            if (isLeader) {
+            if (!isEligible) {
+              rankBadge = this.getNonPrizeRankBadge();
+            } else if (isLeader) {
               rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
               prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600/50 font-display flex-shrink-0">แชมป์เดือน ${champPrize} THB</span>`;
             } else if (isRunnerUp) {
               rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
               prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-600/50 font-display flex-shrink-0">รองแชมป์ ${runnerPrize} THB</span>`;
+            } else {
+              rankBadge = `<span class="text-slate-500 font-bold">${t.rank}</span>`;
             }
 
             let scoreCols = '';
@@ -3425,11 +3461,26 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
         if (tableBody) {
           let html = '';
-          let curHofRank = 1;
-          sortedStats.forEach((t, idx) => {
-            if (idx > 0 && t.total_net < sortedStats[idx - 1].total_net) {
-              curHofRank++;
+          let curHofRank = 0;
+          let prevHofTotal = null;
+          sortedStats.forEach((t) => {
+            const isPrize = this.isPrizeEligible(t.entry_id);
+            if (!isPrize) {
+              t.hof_rank = null;
+              return;
             }
+            if (prevHofTotal === null || t.total_net < prevHofTotal) {
+              curHofRank++;
+              prevHofTotal = t.total_net;
+            }
+            t.hof_rank = curHofRank;
+          });
+
+          sortedStats.forEach((t) => {
+            const isPrize = this.isPrizeEligible(t.entry_id);
+            const rankBadge = isPrize 
+              ? `<span class="text-slate-500 font-bold">${t.hof_rank}</span>` 
+              : this.getNonPrizeRankBadge();
             const avg = t.scores.length > 0 ? (t.total_net / t.scores.length).toFixed(1) : '-';
             const high = t.scores.length > 0 ? Math.max(...t.scores) : '-';
             const low = t.scores.length > 0 ? Math.min(...t.scores) : '-';
@@ -3438,7 +3489,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
             html += `
               <tr class="hover:bg-slate-50 transition-colors">
-                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500 whitespace-nowrap">${curHofRank}</td>
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500 whitespace-nowrap">${rankBadge}</td>
                 <td class="py-2.5 px-1.5 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block truncate">${this.escapeHtml(t.team_name)}</button>
