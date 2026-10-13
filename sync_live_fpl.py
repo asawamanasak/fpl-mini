@@ -349,7 +349,9 @@ def sync_once(args):
                     "entry_name": t['entry_name'],
                     "player_name": t['player_name'],
                     "rank": t.get('rank'),
-                    "last_rank": t.get('last_rank')
+                    "last_rank": t.get('last_rank'),
+                    "total_points": t.get('total'),
+                    "event_total": t.get('event_total')
                 })
 
             gameweeks_dict = {}
@@ -381,7 +383,18 @@ def sync_once(args):
                 cached_checked = cached_gw.get("data_checked", False)
                 gw_fully_finalized = (cached_checked or (gw < max_gw and is_checked))
 
-                if not args.force and gw_is_finished and cached_gw.get("is_finished") and gw_fully_finalized and not has_corrupt_cache and not needs_enrichment:
+                # Check for points mismatch against official event_total for max_gw
+                has_points_mismatch = False
+                if gw == max_gw and gw_is_finished and cached_res:
+                    c_pts_map = {r.get("entry_id"): r.get("points") for r in cached_res}
+                    for t_obj in standings_teams:
+                        ev_tot = t_obj.get('event_total')
+                        if ev_tot is not None and t_obj['entry'] in c_pts_map:
+                            if c_pts_map[t_obj['entry']] != ev_tot:
+                                has_points_mismatch = True
+                                break
+
+                if not args.force and gw_is_finished and cached_gw.get("is_finished") and gw_fully_finalized and not has_corrupt_cache and not needs_enrichment and not has_points_mismatch:
                     cached_res_map = {r["entry_id"]: r for r in cached_res if (r.get("points", 0) > 0 or r.get("net_points", 0) > 0 or f"{r['entry_id']}_{gw}" in cached_squads)}
                     
                     teams_to_fetch_gw = []
@@ -612,6 +625,17 @@ def sync_once(args):
                             gameweeks_dict[str(gw)]["results"].append(result_item)
                         if squad_item:
                             squads_dict[f"{eid}_{gw}"] = squad_item
+
+                # Resiliency: Strictly deduplicate results by entry_id for all gameweeks
+                for gw_key in gameweeks_dict:
+                    seen_eids = set()
+                    unique_res = []
+                    for r in gameweeks_dict[gw_key]["results"]:
+                        reid = r.get("entry_id")
+                        if reid not in seen_eids:
+                            seen_eids.add(reid)
+                            unique_res.append(r)
+                    gameweeks_dict[gw_key]["results"] = unique_res
 
                 # Helper to extract player element ID safely
                 def extract_pid(p):

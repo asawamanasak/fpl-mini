@@ -1832,8 +1832,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
         }
 
-        const sorted = [...gwData.results].sort((a, b) => (b.points - a.points) || (b.net_points - a.net_points));
-        let curRank = 0;
+        const isWeeklyPrize = (this.config.features && this.config.features.prize_model === 'weekly');
+        const scoreProp = (isFinished && isWeeklyPrize) ? 'net_points' : 'points';
+        const sorted = [...gwData.results].sort((a, b) => (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points));
+        let curRank = 1;
         let prevEligiblePoints = null;
         let eligiblePreCount = 0;
         sorted.forEach((team) => {
@@ -1844,16 +1846,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
           eligiblePreCount++;
           team.preRank = eligiblePreCount;
-          if (prevEligiblePoints === null || team.points < prevEligiblePoints) {
-            curRank++;
-            prevEligiblePoints = team.points;
+          if (prevEligiblePoints !== null && team[scoreProp] < prevEligiblePoints) {
+            curRank = eligiblePreCount;
           }
+          prevEligiblePoints = team[scoreProp];
           team.rank = curRank;
         });
 
         const eligibleResults = sorted.filter(r => this.isPrizeEligible(r.entry_id));
-        const isWeeklyPrize = (this.config.features && this.config.features.prize_model === 'weekly');
-        const scoreProp = (isFinished && isWeeklyPrize) ? 'net_points' : 'points';
         const eligibleSortedByPrize = [...eligibleResults].sort((a, b) => (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points));
         const eligibleHighestScore = eligibleSortedByPrize.length > 0 ? eligibleSortedByPrize[0][scoreProp] : 0;
         const eligibleTopWinners = eligibleSortedByPrize.filter(r => r[scoreProp] === eligibleHighestScore);
@@ -2092,6 +2092,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               entry_id: t.entry_id,
               team_name: t.entry_name,
               player_name: t.player_name,
+              fpl_rank: t.rank || 999,
               total_points: 0,
               last_gw_pts: 0,
               last_gw_raw: 0,
@@ -2099,7 +2100,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             };
           });
 
-          for (let g = 1; g <= maxGW; g++) {
+          const targetGW = Math.min(Number(this.selectedGW) || maxGW, maxGW);
+          for (let g = 1; g <= targetGW; g++) {
             const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
             if (gData && gData.results) {
               const gIsStarted = gData.is_started !== undefined 
@@ -2108,12 +2110,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
               // Only accumulate into overall total if gameweek has actually started!
               if (gIsStarted) {
+                const seenInGw = new Set();
                 gData.results.forEach(r => {
+                  if (seenInGw.has(r.entry_id)) return;
+                  seenInGw.add(r.entry_id);
                   if (!overallMap[r.entry_id]) {
                     overallMap[r.entry_id] = {
                       entry_id: r.entry_id,
                       team_name: r.team_name,
                       player_name: r.player_name,
+                      fpl_rank: 999,
                       total_points: 0,
                       last_gw_pts: 0,
                       last_gw_raw: 0,
@@ -2126,37 +2132,30 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
               if (g === this.selectedGW) {
                 gData.results.forEach(r => {
-                  if (!overallMap[r.entry_id]) {
-                    overallMap[r.entry_id] = {
-                      entry_id: r.entry_id,
-                      team_name: r.team_name,
-                      player_name: r.player_name,
-                      total_points: 0,
-                      last_gw_pts: 0,
-                      last_gw_raw: 0,
-                      last_gw_hits: 0
-                    };
+                  if (overallMap[r.entry_id]) {
+                    overallMap[r.entry_id].last_gw_pts = r.net_points;
+                    overallMap[r.entry_id].last_gw_raw = r.points;
+                    overallMap[r.entry_id].last_gw_hits = r.hits || 0;
                   }
-                  overallMap[r.entry_id].last_gw_pts = r.net_points;
-                  overallMap[r.entry_id].last_gw_raw = r.points;
-                  overallMap[r.entry_id].last_gw_hits = r.hits || 0;
                 });
               }
             }
           }
 
-          const overallSorted = Object.values(overallMap).sort((a, b) => b.total_points - a.total_points);
-          let curOverallRank = 0;
+          const overallSorted = Object.values(overallMap).sort((a, b) => (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999)));
+          let curOverallRank = 1;
+          let eligibleCount = 0;
           let prevEligibleTotal = null;
           overallSorted.forEach((team) => {
             if (!this.isPrizeEligible(team.entry_id)) {
               team.overall_rank = null;
               return;
             }
-            if (prevEligibleTotal === null || team.total_points < prevEligibleTotal) {
-              curOverallRank++;
-              prevEligibleTotal = team.total_points;
+            eligibleCount++;
+            if (prevEligibleTotal !== null && team.total_points < prevEligibleTotal) {
+              curOverallRank = eligibleCount;
             }
+            prevEligibleTotal = team.total_points;
             team.overall_rank = curOverallRank;
           });
 
