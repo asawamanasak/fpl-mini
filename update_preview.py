@@ -1852,8 +1852,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         });
 
         const eligibleResults = sorted.filter(r => this.isPrizeEligible(r.entry_id));
-        const eligibleHighestScore = eligibleResults.length > 0 ? eligibleResults[0].points : 0;
-        const eligibleTopWinners = eligibleResults.filter(r => r.points === eligibleHighestScore);
+        const isWeeklyPrize = (this.config.features && this.config.features.prize_model === 'weekly');
+        const scoreProp = (isFinished && isWeeklyPrize) ? 'net_points' : 'points';
+        const eligibleSortedByPrize = [...eligibleResults].sort((a, b) => (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points));
+        const eligibleHighestScore = eligibleSortedByPrize.length > 0 ? eligibleSortedByPrize[0][scoreProp] : 0;
+        const eligibleTopWinners = eligibleSortedByPrize.filter(r => r[scoreProp] === eligibleHighestScore);
         const prizeLeader = eligibleTopWinners[0] || sorted[0];
         const isJointPrizeWinner = eligibleTopWinners.length > 1;
 
@@ -1971,7 +1974,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               <div class="mb-3 px-3.5 py-2.5 rounded-xl bg-amber-500/10 border border-amber-300 dark:border-amber-700/60 flex items-start gap-2.5 text-xs text-amber-900 dark:text-amber-200">
                 <span class="text-base flex-shrink-0">💡</span>
                 <div class="leading-relaxed">
-                  <strong class="font-bold">หมายเหตุการมอบรางวัล:</strong> ทีม <strong>${this.escapeHtml(overallTop.team_name)}</strong> (${overallTop.points} pts) ทำคะแนนสูงสุดในสัปดาห์นี้แต่เป็นทีมร่วมสนุก จึงส่งมอบสิทธิ์รับรางวัลประจำสัปดาห์ให้แก่ <strong>${this.escapeHtml(prizeLeader.team_name)}</strong> (${prizeLeader.points} pts)
+                  <strong class="font-bold">หมายเหตุการมอบรางวัล:</strong> ทีม <strong>${this.escapeHtml(overallTop.team_name)}</strong> (${overallTop.points} pts) ทำคะแนนสูงสุดในสัปดาห์นี้แต่เป็นทีมร่วมสนุก จึงส่งมอบสิทธิ์รับรางวัลประจำสัปดาห์ให้แก่ <strong>${this.escapeHtml(prizeLeader.team_name)}</strong> (${(isFinished && isWeeklyPrize) ? prizeLeader.net_points : prizeLeader.points} pts)
                 </div>
               </div>
             ` : '';
@@ -1995,12 +1998,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
                   <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 border-slate-100 sm:border-transparent">
                     <div class="text-left sm:text-right">
-                      <span class="text-[10px] sm:text-xs text-slate-500 uppercase font-bold font-display block">คะแนนสด (Live Pts)</span>
-                      <span class="text-2xl sm:text-3xl font-black text-slate-900 font-display">${prizeLeader.points} <span class="text-xs font-bold text-slate-500">pts</span></span>
+                      <span class="text-[10px] sm:text-xs text-slate-500 uppercase font-bold font-display block">${isFinished ? (isWeeklyPrize ? 'แต้มสุทธิ (Net Pts)' : 'คะแนนทางการ') : 'คะแนนสด (Live Pts)'}</span>
+                      <span class="text-2xl sm:text-3xl font-black text-slate-900 font-display">${(isFinished && isWeeklyPrize) ? prizeLeader.net_points : prizeLeader.points} <span class="text-xs font-bold text-slate-500">pts</span></span>
                     </div>
                     <div class="text-right pl-3 border-l border-slate-200">
                       <span class="text-[10px] ${prizeLeader.hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'} block font-display">แต้มลบ: ${prizeLeader.hits > 0 ? `-${prizeLeader.hits}` : '-'}</span>
-                      <span class="text-[9px] text-slate-400 block font-display">${prizeLeader.hits > 0 ? 'หักในแต้มรวม' : 'ไม่มีแต้มลบ'}</span>
+                      <span class="text-[9px] text-slate-400 block font-display">${prizeLeader.hits > 0 ? ((isFinished && isWeeklyPrize) ? 'หักในแต้มสุทธิแล้ว' : 'หักในแต้มรวม') : 'ไม่มีแต้มลบ'}</span>
                     </div>
                   </div>
 
@@ -3038,6 +3041,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           });
 
           let monthlyTableRows = '';
+          const eligibleMonthSorted = monthlySorted.filter(x => this.isPrizeEligible(x.entry_id) && x.month_total > 0);
+          const topChampsInMonth = eligibleMonthSorted.filter(x => x.eligible_monthly_rank === 1);
+          const topRunnersInMonth = eligibleMonthSorted.filter(x => x.eligible_monthly_rank === 2);
+          const leaderCount = topChampsInMonth.length;
+          const runnerCount = topRunnersInMonth.length;
+          const splitChampAmt = leaderCount > 0 ? Math.floor((champPrize + (leaderCount > 1 ? runnerPrize : 0)) / leaderCount) : champPrize;
+          const splitRunnerAmt = runnerCount > 0 ? Math.floor(runnerPrize / runnerCount) : runnerPrize;
+
           monthlySorted.forEach((t) => {
             const isEligible = this.isPrizeEligible(t.entry_id);
             const isLeader = isEligible && (t.eligible_monthly_rank === 1 && t.month_total > 0);
@@ -3049,10 +3060,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               rankBadge = this.getNonPrizeRankBadge();
             } else if (isLeader) {
               rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
-              prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600/50 font-display flex-shrink-0">แชมป์เดือน ${champPrize} THB</span>`;
+              if (leaderCount > 1) {
+                prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600/50 font-display flex-shrink-0">แชมป์ร่วม (หาร ${leaderCount}) ${splitChampAmt.toLocaleString()} THB</span>`;
+              } else {
+                prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600/50 font-display flex-shrink-0">แชมป์เดือน ${champPrize} THB</span>`;
+              }
             } else if (isRunnerUp) {
               rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
-              prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-600/50 font-display flex-shrink-0">รองแชมป์ ${runnerPrize} THB</span>`;
+              if (runnerCount > 1) {
+                prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-600/50 font-display flex-shrink-0">รองแชมป์ร่วม (หาร ${runnerCount}) ${splitRunnerAmt.toLocaleString()} THB</span>`;
+              } else {
+                prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-600/50 font-display flex-shrink-0">รองแชมป์ ${runnerPrize} THB</span>`;
+              }
             } else {
               rankBadge = `<span class="text-slate-500 font-bold">${t.rank}</span>`;
             }
@@ -3150,8 +3169,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               let totalPaidThisMonth = 0;
 
               if (topChamps.length > 1) {
-                const splitAmt = (champPrize + runnerPrize) / topChamps.length;
-                totalPaidThisMonth = champPrize + runnerPrize;
+                const splitAmt = Math.floor((champPrize + runnerPrize) / topChamps.length);
+                totalPaidThisMonth = splitAmt * topChamps.length;
                 champRows = topChamps.map(c => `
                   <div class="flex items-center justify-between text-xs py-0.5">
                     <div class="truncate pr-2">
@@ -3177,8 +3196,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 const secondPts = eligibleMonthTeams.find(t => t.total < topPts)?.total;
                 if (secondPts !== undefined && secondPts > 0) {
                   const topRunners = eligibleMonthTeams.filter(t => t.total === secondPts);
-                  const splitRunnerAmt = runnerPrize / topRunners.length;
-                  totalPaidThisMonth += runnerPrize;
+                  const splitRunnerAmt = Math.floor(runnerPrize / topRunners.length);
+                  totalPaidThisMonth += splitRunnerAmt * topRunners.length;
                   runnerRows = topRunners.map(r => `
                     <div class="flex items-center justify-between text-xs py-0.5">
                       <div class="truncate pr-2">
@@ -3781,7 +3800,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 <div class="relative flex items-center justify-center mb-0.5">
                   <img 
                     src="${shirtUrl}" 
-                    alt="${p.team || ''}" 
+                    alt="${this.escapeHtml(p.team || '')}" 
                     width="44"
                     height="52"
                     decoding="async"
@@ -3794,7 +3813,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 </div>
 
                 <div class="bg-slate-950/90 text-white font-bold text-[9px] sm:text-[10px] px-1 py-0.5 rounded shadow-sm w-full truncate text-center border border-white/10 leading-tight">
-                  ${p.name}
+                  ${this.escapeHtml(p.name)}
                 </div>
 
                 <div class="bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-[8.5px] sm:text-[9.5px] font-black font-display px-1.5 py-0.2 rounded mt-0.5 shadow-xs">
@@ -3821,7 +3840,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 <div class="flex items-center gap-2 min-w-0 pr-2">
                   <img 
                     src="${shirtUrl}" 
-                    alt="${p.team || ''}" 
+                    alt="${this.escapeHtml(p.team || '')}" 
                     width="28"
                     height="32"
                     decoding="async"
@@ -3830,7 +3849,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                     onerror="this.onerror=null; this.src='https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_0-66.webp';"
                   />
                   <span class="text-[9px] sm:text-[10px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md font-display flex-shrink-0">${p.pos}</span>
-                  <span class="text-xs sm:text-sm font-bold text-slate-900 truncate">${p.name}</span>
+                  <span class="text-xs sm:text-sm font-bold text-slate-900 truncate">${this.escapeHtml(p.name)}</span>
                 </div>
                 <span class="text-xs sm:text-xs font-bold text-slate-700 font-display flex-shrink-0 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-lg">${p.points} pts</span>
               </div>

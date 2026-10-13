@@ -201,10 +201,13 @@ def sync_once(args):
     # 2. Determine Smart Finished and Started status for all GWs up to max_gw
     gw_status_map = {}
     gw_started_map = {}
+    gw_checked_map = {}
     for gw_info in events:
         gw_id = gw_info['id']
         if gw_id <= max_gw:
             bootstrap_finished = bool(gw_info.get('finished'))
+            data_checked = bool(gw_info.get('data_checked'))
+            gw_checked_map[gw_id] = data_checked
             if bootstrap_finished:
                 gw_status_map[gw_id] = True
                 gw_started_map[gw_id] = True
@@ -213,7 +216,7 @@ def sync_once(args):
                 gw_status_map[gw_id] = fixtures_fin
                 gw_started_map[gw_id] = is_started or fixtures_fin
                 if fixtures_fin:
-                    print(f" -> Smart Fixture Check: GW {gw_id} matches all finished! Marked as finished.")
+                    print(f" -> Smart Fixture Check: GW {gw_id} matches all finished! Marked as finished (provisional).")
                 elif is_started:
                     print(f" -> GW {gw_id}: Currently LIVE in progress.")
                 else:
@@ -247,7 +250,7 @@ def sync_once(args):
     # Determine which GWs need live points fetched
     gws_to_fetch_live = set()
     for gw in range(1, max_gw + 1):
-        if args.force or not gw_status_map.get(gw, False):
+        if args.force or not gw_status_map.get(gw, False) or (gw == max_gw and not gw_checked_map.get(gw, False)):
             gws_to_fetch_live.add(gw)
         else:
             needs_gw = False
@@ -355,6 +358,7 @@ def sync_once(args):
                     "gw": gw_id,
                     "is_finished": gw_status_map.get(gw_id, False),
                     "is_started": gw_started_map.get(gw_id, False),
+                    "data_checked": gw_checked_map.get(gw_id, False),
                     "results": []
                 }
 
@@ -372,7 +376,12 @@ def sync_once(args):
                 has_corrupt_cache = (not cached_res) or all(r.get("points", 0) == 0 and r.get("net_points", 0) == 0 for r in cached_res)
                 needs_enrichment = any(r.get("team_value") is None or r.get("transfers_net_impact") is None for r in cached_res)
                 
-                if not args.force and gw_is_finished and cached_gw.get("is_finished") and not has_corrupt_cache and not needs_enrichment:
+                # Resiliency: If GW is the latest one (max_gw) and data_checked just finalized, do not reuse old provisional cache!
+                is_checked = gw_checked_map.get(gw, False)
+                cached_checked = cached_gw.get("data_checked", False)
+                gw_fully_finalized = (cached_checked or (gw < max_gw and is_checked))
+
+                if not args.force and gw_is_finished and cached_gw.get("is_finished") and gw_fully_finalized and not has_corrupt_cache and not needs_enrichment:
                     cached_res_map = {r["entry_id"]: r for r in cached_res if (r.get("points", 0) > 0 or r.get("net_points", 0) > 0 or f"{r['entry_id']}_{gw}" in cached_squads)}
                     
                     teams_to_fetch_gw = []
@@ -467,11 +476,18 @@ def sync_once(args):
                                     s_idx = actual_starters_picks.index(s_match)
                                     b_idx = actual_bench_picks.index(b_match)
                                     b_match_copy = dict(b_match)
-                                    b_match_copy['multiplier'] = s_match.get('multiplier', 1)
+                                    b_match_copy['multiplier'] = 1
                                     s_match_copy = dict(s_match)
                                     s_match_copy['multiplier'] = 0
                                     actual_starters_picks[s_idx] = b_match_copy
                                     actual_bench_picks[b_idx] = s_match_copy
+
+                                    # If the subbed-out player was captain, promote vice-captain
+                                    if s_match.get('is_captain'):
+                                        cap_mult = s_match.get('multiplier', 2)
+                                        vc_match = next((p for p in actual_starters_picks if p.get('is_vice_captain')), None)
+                                        if vc_match:
+                                            vc_match['multiplier'] = cap_mult
 
                         for p in actual_starters_picks:
                             pid = p['element']
@@ -527,9 +543,9 @@ def sync_once(args):
                             raw_points = start_raw
                             bench_pts_disp = bench_raw
 
-                        # Resiliency fallback: If player points sum is 0 but official entry_history has points, use official points
+                        # Resiliency: If GW is finished, official entry_history points is the authoritative finalized score
                         official_pts = hist.get('points')
-                        if raw_points == 0 and official_pts is not None and official_pts > 0:
+                        if official_pts is not None and (raw_points == 0 or gw_is_finished):
                             raw_points = official_pts
 
                         net_points = raw_points - hits
