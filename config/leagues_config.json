@@ -389,7 +389,7 @@
       "has_monthly_prizes": false,
       "has_cup": true,
       "cup_start_gw": 35,
-      "cup_champion_prize": "1,000 THB",
+      "cup_champion_prize": "500 THB",
       "cup_runner_up_prize": null
     },
     "season_prizes": {
@@ -435,7 +435,7 @@
           },
           {
             "label": "แชมป์ลีคคัพ (เริ่ม GW 35)",
-            "desc": "1,000 THB เริ่มแข่งขันตั้งแต่ Gameweek 35 (ไม่นับรวมทีมที่ไม่ได้ชำระค่าสมัคร)"
+            "desc": "500 THB เริ่มแข่งขันตั้งแต่ Gameweek 35 (ไม่นับรวมทีมที่ไม่ได้ชำระค่าสมัคร)"
           }
         ],
         "footer": "* แชมป์ฤดูกาลมีเงินรางวัลรวม 9,000 THB (รวม 5 อันดับ) คิดจากแต้มสุทธิหลังจบ GW 38"
