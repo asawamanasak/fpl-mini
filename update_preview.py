@@ -2013,7 +2013,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               <div class="mb-3 px-3.5 py-2.5 rounded-xl bg-amber-500/10 border border-amber-300 dark:border-amber-700/60 flex items-start gap-2.5 text-xs text-amber-900 dark:text-amber-200">
                 <span class="text-base flex-shrink-0">💡</span>
                 <div class="leading-relaxed">
-                  <strong class="font-bold">หมายเหตุการมอบรางวัล:</strong> ทีม <strong>${this.escapeHtml(overallTop.team_name)}</strong> (${overallTop.points} pts) ทำคะแนนสูงสุดในสัปดาห์นี้แต่เป็นทีมร่วมสนุก จึงส่งมอบสิทธิ์รับรางวัลประจำสัปดาห์ให้แก่ <strong>${this.escapeHtml(prizeLeader.team_name)}</strong> (${(isFinished && isWeeklyPrize) ? prizeLeader.net_points : prizeLeader.points} pts)
+                  <strong class="font-bold">หมายเหตุการมอบรางวัล:</strong> ทีม <strong>${this.escapeHtml(overallTop.team_name)}</strong> (${overallTop.points} pts${overallTop.hits > 0 ? `, แต้มสุทธิ ${overallTop.net_points} pts หักย้าย -${overallTop.hits}` : ''}) ทำคะแนนสูงสุดในสัปดาห์นี้แต่เป็นทีมร่วมสนุก จึงส่งมอบสิทธิ์รับรางวัลประจำสัปดาห์ให้แก่ <strong>${this.escapeHtml(prizeLeader.team_name)}</strong> (${(isFinished && isWeeklyPrize) ? prizeLeader.net_points : prizeLeader.points} pts)
                 </div>
               </div>
             ` : '';
@@ -2970,7 +2970,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   </div>
                   <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <span class="text-[10px] uppercase font-bold text-slate-400 font-display">แชมป์ฤดูกาล (รวม 5 อันดับ)</span>
-                    <div class="text-xl font-black text-slate-900 mt-1 font-display">9,500 <span class="text-xs">THB</span></div>
+                    <div class="text-xl font-black text-slate-900 mt-1 font-display">9,000 <span class="text-xs">THB</span></div>
                     <div class="text-xs text-slate-600 mt-0.5 font-medium">แชมป์ 4,500 / รอง 2,500 / ที่ 3 1,000 / ที่ 4-5 500</div>
                   </div>
                   <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
@@ -3244,15 +3244,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 const secondPts = eligibleMonthTeams.find(t => t.total < topPts)?.total;
                 if (secondPts !== undefined && secondPts > 0) {
                   const topRunners = eligibleMonthTeams.filter(t => t.total === secondPts);
-                  const splitRunnerAmt = Math.floor(runnerPrize / topRunners.length);
-                  totalPaidThisMonth += splitRunnerAmt * topRunners.length;
+                  const isJointRunner = topRunners.length > 1;
+                  const splitRunnerAmt = (runnerPrize / topRunners.length);
+                  const splitRunnerDisplay = (topRunners.length > 1 && runnerPrize % topRunners.length !== 0)
+                    ? `${splitRunnerAmt.toFixed(2)} THB`
+                    : `${splitRunnerAmt.toLocaleString()} THB`;
+                  totalPaidThisMonth += runnerPrize;
                   runnerRows = topRunners.map(r => `
                     <div class="flex items-center justify-between text-xs py-0.5">
                       <div class="truncate pr-2">
-                        <span class="font-bold text-blue-700 dark:text-blue-400">🥈 รองแชมป์: ${this.escapeHtml(r.team_name)}</span>
+                        <span class="font-bold text-blue-700 dark:text-blue-400">🥈 ${isJointRunner ? `รองแชมป์ร่วม (หาร ${topRunners.length}):` : 'รองแชมป์:'} ${this.escapeHtml(r.team_name)}</span>
                         <span class="text-[10px] text-slate-500">(${r.total} pts)</span>
                       </div>
-                      <span class="font-bold font-display text-emerald-700 flex-shrink-0">${splitRunnerAmt.toLocaleString()} THB</span>
+                      <span class="font-bold font-display text-emerald-700 flex-shrink-0">${splitRunnerDisplay}</span>
                     </div>
                   `).join('');
                 }
@@ -3476,7 +3480,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         }
 
         const sortedStats = Object.values(teamStats).sort((a, b) => b.total_net - a.total_net);
-        const leader = sortedStats[0] || { team_name: '-', total_net: 0, scores: [0] };
+        const overallTopLeader = sortedStats[0] || { team_name: '-', total_net: 0, scores: [0] };
+        const eligibleSortedStats = sortedStats.filter(t => this.isPrizeEligible(t.entry_id));
+        const eligibleLeader = eligibleSortedStats[0] || overallTopLeader;
+        const leader = eligibleLeader;
+        const isNonPrizeOverallLead = (overallTopLeader.entry_id !== eligibleLeader.entry_id);
 
         // Accurately compute team(s) with most GW #1 finishes (prize eligible only)
         let mostWinsCount = 0;
@@ -3511,10 +3519,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             </div>
 
             <div class="glass-card rounded-2xl p-4 border border-slate-200">
-              <span class="text-[10px] uppercase font-bold text-slate-400 block font-display">จ่าฝูงคะแนนรวม</span>
+              <span class="text-[10px] uppercase font-bold text-slate-400 block font-display">จ่าฝูงคะแนนรวม (ชิงรางวัล)</span>
               <div class="text-xl font-black text-slate-900 mt-1 font-display">${leader.total_net} <span class="text-xs">PTS</span></div>
               <div class="text-xs font-bold text-slate-700 truncate mt-0.5">${this.escapeHtml(leader.team_name)}</div>
-              <div class="text-[10px] text-slate-500 font-display">เฉลี่ย ${(leader.total_net / Math.max(leader.scores.length, 1)).toFixed(1)} pts/GW</div>
+              <div class="text-[10px] text-slate-500 font-display">${isNonPrizeOverallLead ? `*ทีมร่วมสนุกนำ: ${this.escapeHtml(overallTopLeader.team_name)} (${overallTopLeader.total_net} pts)` : `เฉลี่ย ${(leader.total_net / Math.max(leader.scores.length, 1)).toFixed(1)} pts/GW`}</div>
             </div>
 
             <div class="glass-card rounded-2xl p-4 border border-slate-200">
@@ -3528,7 +3536,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
         if (tableBody) {
           let html = '';
-          let curHofRank = 0;
+          let curHofRank = 1;
+          let eligibleCount = 0;
           let prevHofTotal = null;
           sortedStats.forEach((t) => {
             const isPrize = this.isPrizeEligible(t.entry_id);
@@ -3536,10 +3545,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               t.hof_rank = null;
               return;
             }
-            if (prevHofTotal === null || t.total_net < prevHofTotal) {
-              curHofRank++;
-              prevHofTotal = t.total_net;
+            eligibleCount++;
+            if (prevHofTotal !== null && t.total_net < prevHofTotal) {
+              curHofRank = eligibleCount;
             }
+            prevHofTotal = t.total_net;
             t.hof_rank = curHofRank;
           });
 
@@ -3999,11 +4009,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             return;
           }
 
+          const isWeekly = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
           const isFinished = Boolean(gwData.is_finished);
-          const sorted = [...gwData.results].sort((a, b) => (b.points - a.points) || (b.net_points - a.net_points));
+          const scoreProp = (isFinished && isWeekly) ? 'net_points' : 'points';
+          const sorted = [...gwData.results].sort((a, b) => (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points));
           const eligibleResults = sorted.filter(r => this.isPrizeEligible(r.entry_id));
-          const eligibleHighestScore = eligibleResults.length > 0 ? eligibleResults[0].points : 0;
-          const eligibleWinners = eligibleResults.filter(r => r.points === eligibleHighestScore);
+          const eligibleHighestScore = eligibleResults.length > 0 ? eligibleResults[0][scoreProp] : 0;
+          const eligibleWinners = eligibleResults.filter(r => r[scoreProp] === eligibleHighestScore);
           const isJointPrize = eligibleWinners.length > 1;
           const overallTop = sorted[0];
           const hasPassedPrize = !this.isPrizeEligible(overallTop.entry_id) && eligibleWinners.length > 0;
@@ -4015,8 +4027,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
             currentLiveNote = this.liveNotesCache[this.selectedGW] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList);
           }
-
-          const isWeekly = (this.config.features.prize_model === 'weekly');
 
           let text = `${this.data.name} (League ${this.activeLeagueId})\n`;
           text += `สรุปผล Gameweek ${gwKey} (${isFinished ? 'จบการแข่งขัน' : 'กำลังแข่งขัน'})\n`;
@@ -4071,7 +4081,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   });
                 }
               });
-              const topM = Object.values(monthlyScores).sort((a, b) => b.pts - a.pts)[0];
+              const eligibleMonthly = Object.entries(monthlyScores)
+                .filter(([eid]) => this.isPrizeEligible(eid))
+                .map(([, t]) => t)
+                .sort((a, b) => b.pts - a.pts);
+              const topM = eligibleMonthly[0];
               if (topM) {
                 text += `\n📅 สถานการณ์รางวัลประจำเดือน (${curMonth.month} - ชิง ${curMonth.budget}):\n`;
                 text += `• จ่าฝูงเดือนนี้: ${topM.name} (${topM.pts} pts)\n`;
@@ -4344,7 +4358,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             const isStarted = gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || gwData.results.some(r => r.points > 0));
             const statusText = isFinished ? 'จบการแข่งขัน' : (isStarted ? 'กำลังแข่งขัน (Live)' : 'รอคิกออฟ');
 
-            const sortedGWResults = [...gwData.results].sort((a, b) => (b.points - a.points) || (b.net_points - a.net_points));
+            const isWeeklyPrize = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
+            const scoreProp = (isFinished && isWeeklyPrize) ? 'net_points' : 'points';
+            const sortedGWResults = [...gwData.results].sort((a, b) => (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points));
 
             let prizeRank = 1;
             let eCount = 0;
@@ -4358,7 +4374,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 return;
               }
               eCount++;
-              const score = isFinished ? r.net_points : r.points;
+              const score = r[scoreProp];
               if (prevScore !== null && score < prevScore) {
                 prizeRank = eCount;
               }
@@ -4575,22 +4591,53 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 .filter(t => t.is_prize)
                 .sort((a, b) => b.pts - a.pts);
 
-              const champ = sortedMonth[0] || {};
-              const runner = sortedMonth[1] || {};
+              if (sortedMonth.length === 0 || sortedMonth[0].pts === 0) {
+                prizeRows.push([
+                  m.month,
+                  m.gws,
+                  isMonthFin ? 'จบการแข่งขัน' : (m.status || 'รอการแข่งขัน'),
+                  '-', '-', 0, 0,
+                  '-', '-', 0, 0
+                ]);
+              } else {
+                const topScore = sortedMonth[0].pts;
+                const topChamps = sortedMonth.filter(t => t.pts === topScore);
+                let topRunners = [];
+                let champPayout = champAmount;
+                let runnerPayout = runnerAmount;
 
-              prizeRows.push([
-                m.month,
-                m.gws,
-                isMonthFin ? 'จบการแข่งขัน (มอบรางวัลแล้ว)' : (m.status || 'รอการแข่งขัน'),
-                champ.team_name || '-',
-                champ.player_name || '-',
-                champ.pts || 0,
-                isMonthFin ? champAmount : 0,
-                runner.team_name || '-',
-                runner.player_name || '-',
-                runner.pts || 0,
-                isMonthFin ? runnerAmount : 0
-              ]);
+                if (topChamps.length > 1) {
+                  champPayout = Math.floor((champAmount + runnerAmount) / topChamps.length);
+                  runnerPayout = 0;
+                } else {
+                  const secondScore = sortedMonth.find(t => t.pts < topScore)?.pts;
+                  if (secondScore !== undefined && secondScore > 0) {
+                    topRunners = sortedMonth.filter(t => t.pts === secondScore);
+                    runnerPayout = (topRunners.length > 1 && runnerAmount % topRunners.length !== 0)
+                      ? Number((runnerAmount / topRunners.length).toFixed(2))
+                      : Math.round(runnerAmount / topRunners.length);
+                  }
+                }
+
+                const champNames = topChamps.map(c => c.team_name).join(', ');
+                const champManagers = topChamps.map(c => c.player_name).join(', ');
+                const runnerNames = topRunners.map(r => r.team_name).join(', ') || '-';
+                const runnerManagers = topRunners.map(r => r.player_name).join(', ') || '-';
+
+                prizeRows.push([
+                  m.month,
+                  m.gws,
+                  isMonthFin ? 'จบการแข่งขัน (มอบรางวัลแล้ว)' : (m.status || 'รอการแข่งขัน'),
+                  champNames + (topChamps.length > 1 ? ` (แชมป์ร่วม ${topChamps.length} ทีม)` : ''),
+                  champManagers,
+                  topScore,
+                  isMonthFin ? (topChamps.length > 1 ? `${champPayout} / ทีม` : champPayout) : 0,
+                  runnerNames + (topRunners.length > 1 ? ` (รองแชมป์ร่วม ${topRunners.length} ทีม)` : ''),
+                  runnerManagers,
+                  topRunners.length > 0 ? topRunners[0].pts : 0,
+                  isMonthFin ? (topRunners.length > 1 ? `${runnerPayout} / ทีม` : runnerPayout) : 0
+                ]);
+              }
             });
 
             // Season & Central pool / Charity
