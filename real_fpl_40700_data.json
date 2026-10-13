@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "12 ต.ค. 2026, 20:25 น.",
-    "last_sync_iso": "2026-10-12 20:25:40"
+    "last_sync": "13 ต.ค. 2026, 07:45 น.",
+    "last_sync_iso": "2026-10-13 07:45:48"
   },
   "teams": [
     {
@@ -1811,7 +1811,7 @@
     },
     "6": {
       "gw": 6,
-      "is_finished": false,
+      "is_finished": true,
       "is_started": true,
       "results": [
         {
@@ -1857,9 +1857,9 @@
           "entry_id": 197082,
           "team_name": "Mary Jojibana",
           "player_name": "Kavinjet Tantitanasap",
-          "points": 78,
+          "points": 80,
           "hits": 0,
-          "net_points": 78,
+          "net_points": 80,
           "captain": "João Pedro",
           "chip": null,
           "bench_points": 11,
@@ -1919,7 +1919,7 @@
           "net_points": 68,
           "captain": "B.Fernandes",
           "chip": null,
-          "bench_points": 8,
+          "bench_points": 18,
           "team_value": 101.4,
           "bank": 0.0,
           "transfers_count": 2,
@@ -2012,9 +2012,9 @@
           "entry_id": 306983,
           "team_name": "GEMINI UNITED",
           "player_name": "Micky Asawamanasak",
-          "points": 57,
+          "points": 59,
           "hits": 0,
-          "net_points": 57,
+          "net_points": 59,
           "captain": "Palmer",
           "chip": null,
           "bench_points": 19,
@@ -2068,6 +2068,23 @@
           "transfer_moves": []
         },
         {
+          "entry_id": 2191555,
+          "team_name": "1234 Barbyu Barbyu",
+          "player_name": "Maew Mohawk",
+          "points": 45,
+          "hits": 0,
+          "net_points": 45,
+          "captain": "Saka",
+          "chip": null,
+          "bench_points": 9,
+          "team_value": 100.5,
+          "bank": 0.2,
+          "transfers_count": 0,
+          "transfers_pts_gain": 0,
+          "transfers_net_impact": 0,
+          "transfer_moves": []
+        },
+        {
           "entry_id": 2206758,
           "team_name": "ใครไม่พีค",
           "player_name": "Isriya Paireepairit",
@@ -2098,23 +2115,6 @@
               "net": 3
             }
           ]
-        },
-        {
-          "entry_id": 2191555,
-          "team_name": "1234 Barbyu Barbyu",
-          "player_name": "Maew Mohawk",
-          "points": 43,
-          "hits": 0,
-          "net_points": 43,
-          "captain": "Saka",
-          "chip": null,
-          "bench_points": 9,
-          "team_value": 100.5,
-          "bank": 0.2,
-          "transfers_count": 0,
-          "transfers_pts_gain": 0,
-          "transfers_net_impact": 0,
-          "transfer_moves": []
         }
       ]
     }
@@ -20418,7 +20418,7 @@
           "pos": "DEF",
           "team": "COV",
           "team_code": 9,
-          "points": 0,
+          "points": 4,
           "is_captain": false,
           "is_vice": false
         },
@@ -20428,7 +20428,7 @@
           "pos": "DEF",
           "team": "COV",
           "team_code": 9,
-          "points": 0,
+          "points": 6,
           "is_captain": false,
           "is_vice": false
         },
@@ -20682,7 +20682,7 @@
           "pos": "FWD",
           "team": "NEW",
           "team_code": 4,
-          "points": 0,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -21560,7 +21560,7 @@
           "pos": "FWD",
           "team": "NEW",
           "team_code": 4,
-          "points": 0,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
@@ -23346,7 +23346,7 @@
           "pos": "FWD",
           "team": "NEW",
           "team_code": 4,
-          "points": 0,
+          "points": 2,
           "is_captain": false,
           "is_vice": false
         },
