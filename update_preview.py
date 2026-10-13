@@ -61,6 +61,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
     @variant dark (&:where(.dark, .dark *));
   </style>
 
+  <!-- SheetJS (xlsx) for Export Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
   <!-- Google Fonts: Sarabun -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -675,13 +678,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         </button>
 
         <button 
-          id="btn-text-summary"
-          onclick="window.app ? window.app.shareCurrentGameweek() : shareCurrentGameweekFallback()"
-          class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-white transition-all shadow-sm active:scale-95 flex-shrink-0 cursor-pointer"
-          title="คัดลอกสรุปผลและไฮไลท์สัปดาห์ปัจจุบันสำหรับส่งลง LINE"
+          id="btn-export-excel"
+          onclick="window.app ? window.app.exportToExcel() : (window.exportToExcelFallback ? window.exportToExcelFallback() : null)"
+          class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 border border-emerald-600 text-xs font-semibold text-white transition-all shadow-sm active:scale-95 flex-shrink-0 cursor-pointer"
+          title="Export ข้อมูลทั้งหมดทุก Gameweek, Leaderboard และสรุปเงินรางวัลเป็นไฟล์ Excel (.xlsx)"
         >
-          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-          <span class="font-bold">Text Summary</span>
+          <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          <span class="font-bold">Export Excel</span>
         </button>
       </div>
 
@@ -4133,6 +4136,542 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         if (modal) modal.classList.add('hidden');
       }
 
+      showToast(msg, type = 'success') {
+        if (typeof document === 'undefined') return;
+        let toast = document.getElementById('global-copied-toast');
+        if (!toast) {
+          toast = document.createElement('div');
+          toast.id = 'global-copied-toast';
+          toast.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white font-bold text-xs px-4 py-2 rounded-full shadow-2xl border border-slate-700/80 z-50 flex items-center gap-1.5 transition-all duration-200 opacity-0 pointer-events-none translate-y-2 backdrop-blur-xs font-display';
+          document.body.appendChild(toast);
+        }
+        const icon = (type === 'error') 
+          ? '<svg class="w-3.5 h-3.5 text-rose-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>'
+          : '<svg class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>';
+        toast.innerHTML = `${icon}<span>${msg}</span>`;
+        toast.classList.remove('opacity-0', 'translate-y-2');
+        toast.classList.add('opacity-100', 'translate-y-0');
+        if (this._toastTimer) clearTimeout(this._toastTimer);
+        this._toastTimer = setTimeout(() => {
+          toast.classList.remove('opacity-100', 'translate-y-0');
+          toast.classList.add('opacity-0', 'translate-y-2');
+        }, 2500);
+      }
+
+      exportToExcel() {
+        try {
+          this.showToast('กำลังจัดเตรียมข้อมูลเพื่อ Export Excel...');
+          const leagueName = (this.data && this.data.name) ? this.data.name : `League_${this.activeLeagueId}`;
+          const cleanLeagueName = leagueName.replace(/[\\/*?:"<>|]/g, '_').trim();
+          const maxGW = Number(this.multiData && this.multiData.max_gw) || 1;
+          const dateStr = new Date().toISOString().slice(0, 10);
+          const fileName = `FPL_${cleanLeagueName}_${this.activeLeagueId}_AllGWs_${dateStr}.xlsx`;
+
+          // ====================================================
+          // 1. DATA PREPARATION: TOTAL LEADERBOARD
+          // ====================================================
+          const leaderHeaders = [
+            'อันดับ (Rank)',
+            'ชื่อทีม (Team Name)',
+            'ผู้จัดการ (Manager)',
+            'FPL ID',
+            'สถานะ (Status)',
+            'คะแนนรวมสุทธิ (Total Net Pts)'
+          ];
+          for (let g = 1; g <= maxGW; g++) {
+            leaderHeaders.push(`GW ${g}`);
+          }
+          leaderHeaders.push(
+            'แต้มลบรวม (Total Hits)',
+            'ชิปที่ใช้ไป (Chips Used)',
+            'มูลค่าทีม (£M)',
+            'เงินในธนาคาร (£M)'
+          );
+
+          const teams = this.data.teams || [];
+          const teamStats = teams.map(t => {
+            const eid = Number(t.entry_id);
+            const isPrize = this.isPrizeEligible(eid);
+            let totalNet = 0;
+            let totalHits = 0;
+            const gwPoints = {};
+            const chipsUsed = [];
+            let latestValue = 100.0;
+            let latestBank = 0.0;
+
+            for (let g = 1; g <= maxGW; g++) {
+              const gwData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+              if (gwData && gwData.results) {
+                const res = gwData.results.find(r => Number(r.entry_id) === eid);
+                if (res) {
+                  gwPoints[g] = res.net_points;
+                  totalNet += (res.net_points || 0);
+                  totalHits += (res.hits || 0);
+                  if (res.chip) {
+                    chipsUsed.push(`${res.chip.toUpperCase()}(GW${g})`);
+                  }
+                  if (res.team_value !== undefined) latestValue = res.team_value;
+                  if (res.bank !== undefined) latestBank = res.bank;
+                } else {
+                  gwPoints[g] = '-';
+                }
+              } else {
+                gwPoints[g] = '-';
+              }
+            }
+
+            return {
+              entry_id: eid,
+              team_name: t.entry_name || t.team_name,
+              player_name: t.player_name,
+              is_prize: isPrize,
+              total_net: totalNet,
+              gw_points: gwPoints,
+              total_hits: totalHits,
+              chips_used: chipsUsed.join(', ') || '-',
+              team_value: latestValue,
+              bank: latestBank,
+              fpl_rank: t.rank || 999
+            };
+          });
+
+          // Sort by cumulative total net points descending
+          teamStats.sort((a, b) => (b.total_net - a.total_net) || (a.fpl_rank - b.fpl_rank));
+
+          let curPrizeRank = 1;
+          let eligibleCount = 0;
+          let prevTotal = null;
+          teamStats.forEach(t => {
+            if (!t.is_prize) {
+              t.displayRank = 'ร่วมสนุก';
+              return;
+            }
+            eligibleCount++;
+            if (prevTotal !== null && t.total_net < prevTotal) {
+              curPrizeRank = eligibleCount;
+            }
+            prevTotal = t.total_net;
+            t.displayRank = curPrizeRank;
+          });
+
+          const leaderRows = [leaderHeaders];
+          teamStats.forEach(t => {
+            const row = [
+              t.displayRank,
+              t.team_name,
+              t.player_name,
+              t.entry_id,
+              t.is_prize ? 'แข่งขันชิงรางวัล' : 'ร่วมสนุก',
+              t.total_net
+            ];
+            for (let g = 1; g <= maxGW; g++) {
+              row.push(t.gw_points[g]);
+            }
+            row.push(
+              t.total_hits,
+              t.chips_used,
+              t.team_value,
+              t.bank
+            );
+            leaderRows.push(row);
+          });
+
+          // ====================================================
+          // 2. DATA PREPARATION: GAMEWEEK STANDINGS
+          // ====================================================
+          const gwHeaders = [
+            'Gameweek',
+            'สถานะสัปดาห์ (GW Status)',
+            'อันดับ GW (GW Rank)',
+            'ชื่อทีม (Team Name)',
+            'ผู้จัดการ (Manager)',
+            'FPL ID',
+            'สถานะทีม (Team Status)',
+            'คะแนนดิบ (Raw Points)',
+            'แต้มลบ (Hits)',
+            'คะแนนสุทธิ (Net Points)',
+            'กัปตัน (Captain)',
+            'ชิปที่ใช้ (Chip Used)',
+            'แต้มตัวสำรอง (Bench)',
+            'จำนวนย้ายตัว (Transfers)',
+            'ผลต่างแต้มย้ายตัว (Transfer Net Impact)'
+          ];
+
+          const gwRows = [gwHeaders];
+          for (let g = 1; g <= maxGW; g++) {
+            const gwData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+            if (!gwData || !gwData.results || gwData.results.length === 0) continue;
+
+            const isFinished = Boolean(gwData.is_finished);
+            const isStarted = gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || gwData.results.some(r => r.points > 0));
+            const statusText = isFinished ? 'จบการแข่งขัน' : (isStarted ? 'กำลังแข่งขัน (Live)' : 'รอคิกออฟ');
+
+            const sortedGWResults = [...gwData.results].sort((a, b) => (b.points - a.points) || (b.net_points - a.net_points));
+
+            let prizeRank = 1;
+            let eCount = 0;
+            let prevScore = null;
+            const rankMap = {};
+
+            sortedGWResults.forEach(r => {
+              const isPrize = this.isPrizeEligible(r.entry_id);
+              if (!isPrize) {
+                rankMap[r.entry_id] = 'ร่วมสนุก';
+                return;
+              }
+              eCount++;
+              const score = isFinished ? r.net_points : r.points;
+              if (prevScore !== null && score < prevScore) {
+                prizeRank = eCount;
+              }
+              prevScore = score;
+              rankMap[r.entry_id] = prizeRank;
+            });
+
+            sortedGWResults.forEach(r => {
+              const isPrize = this.isPrizeEligible(r.entry_id);
+              gwRows.push([
+                `GW ${g}`,
+                statusText,
+                rankMap[r.entry_id] || '-',
+                r.team_name,
+                r.player_name,
+                r.entry_id,
+                isPrize ? 'แข่งขันชิงรางวัล' : 'ร่วมสนุก',
+                r.points !== undefined ? r.points : 0,
+                r.hits !== undefined ? r.hits : 0,
+                r.net_points !== undefined ? r.net_points : 0,
+                r.captain ? r.captain.replace(/\s*\(C\)/gi, '').trim() : '-',
+                r.chip ? r.chip.toUpperCase() : '-',
+                r.bench_points !== undefined ? r.bench_points : 0,
+                r.transfers_count !== undefined ? r.transfers_count : 0,
+                r.transfers_net_impact !== undefined ? r.transfers_net_impact : 0
+              ]);
+            });
+          }
+
+          // ====================================================
+          // 3. DATA PREPARATION: PRIZE SUMMARY
+          // ====================================================
+          const prizeRows = [];
+          const feat = (this.config && this.config.features) || {};
+          const isWeekly = (feat.prize_model === 'weekly');
+
+          if (isWeekly) {
+            prizeRows.push(['=== สรุปแชมป์เงินรางวัลประจำสัปดาห์ (WEEKLY PRIZE WINNERS) ===']);
+            prizeRows.push([
+              'Gameweek',
+              'สถานะ',
+              'ทีมที่ได้รับรางวัล',
+              'ผู้จัดการ',
+              'FPL ID',
+              'คะแนนดิบ',
+              'แต้มลบ (Hits)',
+              'คะแนนสุทธิ',
+              'เงินรางวัล (THB)',
+              'หมายเหตุ'
+            ]);
+
+            const weeklyPrize = feat.weekly_prize_amount || (this.activeLeagueId === '38491' ? 500 : 350);
+            const teamWinnings = {};
+            teams.forEach(t => {
+              teamWinnings[t.entry_id] = {
+                team_name: t.entry_name,
+                player_name: t.player_name,
+                is_prize: this.isPrizeEligible(t.entry_id),
+                win_count: 0,
+                won_gws: [],
+                total_prize: 0
+              };
+            });
+
+            for (let g = 1; g <= maxGW; g++) {
+              const gwData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+              if (!gwData || !gwData.results) continue;
+              const isFin = Boolean(gwData.is_finished);
+              const eligible = gwData.results.filter(r => this.isPrizeEligible(r.entry_id));
+              const sortedAll = [...gwData.results].sort((a, b) => b.net_points - a.net_points);
+              const topAll = sortedAll[0];
+              const hasPassed = topAll && !this.isPrizeEligible(topAll.entry_id);
+
+              if (eligible.length > 0) {
+                const sortedEligible = [...eligible].sort((a, b) => b.net_points - a.net_points);
+                const topScore = sortedEligible[0].net_points;
+                const winners = sortedEligible.filter(r => r.net_points === topScore);
+                const prizePerTeam = Math.round(weeklyPrize / winners.length);
+
+                winners.forEach(w => {
+                  if (isFin) {
+                    if (teamWinnings[w.entry_id]) {
+                      teamWinnings[w.entry_id].win_count += 1 / winners.length;
+                      teamWinnings[w.entry_id].won_gws.push(`GW${g}`);
+                      teamWinnings[w.entry_id].total_prize += prizePerTeam;
+                    }
+                  }
+                  const note = winners.length > 1
+                    ? `แชมป์ร่วม ${winners.length} ทีม (หารเท่า)`
+                    : (hasPassed ? `ส่งมอบสิทธิ์จากทีมร่วมสนุก (${topAll.team_name})` : 'แชมป์เดี่ยว');
+
+                  prizeRows.push([
+                    `GW ${g}`,
+                    isFin ? 'จบการแข่งขัน (รับรางวัลแล้ว)' : 'กำลังแข่งขัน (ผู้นำชั่วคราว)',
+                    w.team_name,
+                    w.player_name,
+                    w.entry_id,
+                    w.points,
+                    w.hits || 0,
+                    w.net_points,
+                    isFin ? prizePerTeam : 0,
+                    note
+                  ]);
+                });
+              }
+            }
+
+            // Summary Table: Total Winnings by Team
+            prizeRows.push([]);
+            prizeRows.push(['=== สรุปยอดเงินรางวัลสะสมรายทีม (TOTAL PRIZE WINNINGS PER TEAM) ===']);
+            prizeRows.push([
+              'อันดับเงินรางวัล',
+              'ชื่อทีม',
+              'ผู้จัดการ',
+              'FPL ID',
+              'สถานะ',
+              'จำนวนแชมป์วีค (ครั้ง)',
+              'สัปดาห์ที่ชนะ',
+              'เงินรางวัลรวมสะสม (THB)'
+            ]);
+
+            const sortedWinnings = Object.values(teamWinnings)
+              .filter(t => t.is_prize)
+              .sort((a, b) => b.total_prize - a.total_prize);
+
+            sortedWinnings.forEach((t, idx) => {
+              const winCountDisp = (t.win_count % 1 === 0) ? t.win_count : t.win_count.toFixed(1);
+              prizeRows.push([
+                idx + 1,
+                t.team_name,
+                t.player_name,
+                t.entry_id,
+                'แข่งขันชิงรางวัล',
+                winCountDisp,
+                t.won_gws.join(', ') || '-',
+                t.total_prize
+              ]);
+            });
+
+            // Settlement Phases if configured
+            if (this.config.settlement_phases) {
+              prizeRows.push([]);
+              prizeRows.push(['=== รอบเคลียร์เงินรางวัล 6 งวด (SETTLEMENT PHASES) ===']);
+              prizeRows.push(['งวดที่', 'สัปดาห์ (GWs)', 'งบประมาณ', 'สถานะ']);
+              this.config.settlement_phases.forEach(p => {
+                prizeRows.push([p.title, p.gws, p.budget, p.status || '-']);
+              });
+            }
+
+            // Season & Cup Prizes
+            if (this.config.season_prizes) {
+              prizeRows.push([]);
+              prizeRows.push(['=== รางวัลประจำฤดูกาล & บอลถ้วย (SEASON & CUP PRIZES) ===']);
+              prizeRows.push(['รางวัล', 'จำนวนเงิน']);
+              Object.entries(this.config.season_prizes).forEach(([k, v]) => {
+                prizeRows.push([`อันดับ ${k}`, v]);
+              });
+              if (feat.cup_champion_prize) {
+                prizeRows.push(['แชมป์บอลถ้วย (CUP)', feat.cup_champion_prize]);
+              }
+            }
+
+          } else {
+            // Monthly League (e.g. 675290)
+            prizeRows.push(['=== สรุปรางวัลประจำเดือน 10 เดือน (MONTHLY AWARDS) ===']);
+            prizeRows.push([
+              'เดือน',
+              'สัปดาห์แข่งขัน (GWs)',
+              'สถานะ',
+              'แชมป์ประจำเดือน',
+              'ผู้จัดการ (แชมป์)',
+              'คะแนนสุทธิเดือนนี้',
+              'เงินรางวัลแชมป์ (THB)',
+              'รองแชมป์ประจำเดือน',
+              'ผู้จัดการ (รองแชมป์)',
+              'คะแนนสุทธิ',
+              'เงินรางวัลรองแชมป์ (THB)'
+            ]);
+
+            const monthlySchedule = this.config.monthly_schedule || [];
+            const champAmount = feat.monthly_champion_prize || 600;
+            const runnerAmount = feat.monthly_runner_up_prize || 400;
+
+            monthlySchedule.forEach(m => {
+              const gwList = m.gw_list || [];
+              const monthTotals = {};
+              teams.forEach(t => {
+                monthTotals[t.entry_id] = {
+                  entry_id: t.entry_id,
+                  team_name: t.entry_name,
+                  player_name: t.player_name,
+                  is_prize: this.isPrizeEligible(t.entry_id),
+                  pts: 0
+                };
+              });
+
+              gwList.forEach(g => {
+                const gd = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+                if (gd && gd.results) {
+                  gd.results.forEach(r => {
+                    if (monthTotals[r.entry_id]) {
+                      monthTotals[r.entry_id].pts += (r.net_points || 0);
+                    }
+                  });
+                }
+              });
+
+              const isMonthFin = gwList.length > 0 && gwList.every(g => {
+                const gd = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+                return gd && gd.is_finished;
+              });
+
+              const sortedMonth = Object.values(monthTotals)
+                .filter(t => t.is_prize)
+                .sort((a, b) => b.pts - a.pts);
+
+              const champ = sortedMonth[0] || {};
+              const runner = sortedMonth[1] || {};
+
+              prizeRows.push([
+                m.month,
+                m.gws,
+                isMonthFin ? 'จบการแข่งขัน (มอบรางวัลแล้ว)' : (m.status || 'รอการแข่งขัน'),
+                champ.team_name || '-',
+                champ.player_name || '-',
+                champ.pts || 0,
+                isMonthFin ? champAmount : 0,
+                runner.team_name || '-',
+                runner.player_name || '-',
+                runner.pts || 0,
+                isMonthFin ? runnerAmount : 0
+              ]);
+            });
+
+            // Season & Central pool / Charity
+            prizeRows.push([]);
+            prizeRows.push(['=== รางวัลประจำฤดูกาล บอลถ้วย และเงินบริจาคการกุศล ===']);
+            prizeRows.push(['หมวดหมู่', 'รายละเอียด / จำนวนเงิน']);
+            prizeRows.push(['อันดับ 1 ประจำฤดูกาล', '5,000 THB']);
+            prizeRows.push(['อันดับ 2 ประจำฤดูกาล', '3,500 THB']);
+            prizeRows.push(['อันดับ 3 ประจำฤดูกาล', '2,500 THB']);
+            prizeRows.push(['อันดับ 4 ประจำฤดูกาล', '1,500 THB']);
+            prizeRows.push(['อันดับ 5 ประจำฤดูกาล', '1,000 THB']);
+            if (feat.cup_champion_prize) {
+              prizeRows.push(['แชมป์บอลถ้วย (CUP)', feat.cup_champion_prize]);
+            }
+            if (feat.charity_donation) {
+              prizeRows.push(['บริจาคการกุศลให้โรงพยาบาล', feat.charity_donation]);
+            }
+            if (this.config.total_pool) {
+              prizeRows.push(['กองกลางรวมทั้งหมด', this.config.total_pool]);
+            }
+          }
+
+          // ====================================================
+          // 4. WRITE EXCEL VIA SHEETJS OR FALLBACK
+          // ====================================================
+          if (typeof XLSX !== 'undefined' && XLSX.utils && XLSX.writeFile) {
+            const wb = XLSX.utils.book_new();
+
+            const wsLeader = XLSX.utils.aoa_to_sheet(leaderRows);
+            const wsGW = XLSX.utils.aoa_to_sheet(gwRows);
+            const wsPrize = XLSX.utils.aoa_to_sheet(prizeRows);
+
+            const calcWidths = (rows) => {
+              const widths = [];
+              rows.forEach(r => {
+                r.forEach((val, i) => {
+                  const str = (val === null || val === undefined) ? '' : String(val);
+                  widths[i] = Math.max(widths[i] || 10, Math.min(str.length + 3, 40));
+                });
+              });
+              return widths.map(w => ({ wch: w }));
+            };
+
+            wsLeader['!cols'] = calcWidths(leaderRows);
+            wsGW['!cols'] = calcWidths(gwRows);
+            wsPrize['!cols'] = calcWidths(prizeRows);
+
+            XLSX.utils.book_append_sheet(wb, wsLeader, 'Total Leaderboard');
+            XLSX.utils.book_append_sheet(wb, wsGW, 'Gameweek Standings');
+            XLSX.utils.book_append_sheet(wb, wsPrize, 'Prize Summary');
+
+            XLSX.writeFile(wb, fileName);
+            this.showToast('ดาวน์โหลดไฟล์ Excel เรียบร้อยแล้ว!');
+          } else {
+            this.exportExcelXmlFallback(leaderRows, gwRows, prizeRows, fileName.replace(/\.xlsx$/i, '.xls'));
+            this.showToast('ดาวน์โหลดไฟล์ Excel เรียบร้อยแล้ว!');
+          }
+
+        } catch (err) {
+          console.error('Export Excel failed:', err);
+          this.showToast('เกิดข้อผิดพลาดในการส่งออก Excel', 'error');
+          if (typeof alert !== 'undefined') {
+            alert('ไม่สามารถสร้างไฟล์ Excel ได้: ' + (err.message || err));
+          }
+        }
+      }
+
+      exportExcelXmlFallback(leaderRows, gwRows, prizeRows, fileName) {
+        const escapeXml = (unsafe) => {
+          if (unsafe === null || unsafe === undefined) return '';
+          return String(unsafe)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&apos;');
+        };
+
+        const rowsToXmlTable = (rows) => {
+          let out = '<Table>';
+          rows.forEach(r => {
+            out += '<Row>';
+            r.forEach(cell => {
+              const isNum = typeof cell === 'number';
+              const type = isNum ? 'Number' : 'String';
+              out += `<Cell><Data ss:Type="${type}">${escapeXml(cell)}</Data></Cell>`;
+            });
+            out += '</Row>';
+          });
+          out += '</Table>';
+          return out;
+        };
+
+        const xmlParts = [
+          '<?xml version="1.0" encoding="UTF-8"?>',
+          '<?mso-application progid="Excel.Sheet"?>',
+          '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"',
+          ' xmlns:o="urn:schemas-microsoft-com:office:office"',
+          ' xmlns:x="urn:schemas-microsoft-com:office:excel"',
+          ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"',
+          ' xmlns:html="http://www.w3.org/TR/REC-html40">',
+          '  <Worksheet ss:Name="Total Leaderboard">' + rowsToXmlTable(leaderRows) + '</Worksheet>',
+          '  <Worksheet ss:Name="Gameweek Standings">' + rowsToXmlTable(gwRows) + '</Worksheet>',
+          '  <Worksheet ss:Name="Prize Summary">' + rowsToXmlTable(prizeRows) + '</Worksheet>',
+          '</Workbook>'
+        ];
+        const xml = xmlParts.join('');
+
+        const blob = new Blob(['\\uFEFF', xml], { type: 'application/vnd.ms-excel;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+
       initVisitorCounter() {
         const counterEl = document.getElementById('visitor-counter-text');
         if (!counterEl) return;
@@ -4208,6 +4747,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           window.app.closeTextSummaryModal();
         }
       });
+
+      window.exportToExcelFallback = function() {
+        if (window.app && typeof window.app.exportToExcel === 'function') {
+          window.app.exportToExcel();
+        } else {
+          alert('ระบบกำลังโหลดข้อมูล กรุณารอสักครู่แล้วคลิกใหม่อีกครั้ง');
+        }
+      };
     }
   </script>
 </body>
