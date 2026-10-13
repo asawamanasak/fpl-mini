@@ -2812,10 +2812,30 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           });
 
           let tableRows = '';
+          let hasRenderedNonPrizeHeader = false;
+          let totalDistributedWins = 0;
+          let totalDistributedPrize = 0;
+
           sortedTeams.forEach((t, idx) => {
             const isEligible = this.isPrizeEligible(t.entry_id);
             const wins = winsCount[t.entry_id] || 0;
             const actualPrize = prizeEarnings[t.entry_id] || 0;
+            if (isEligible) {
+              totalDistributedWins += wins;
+              totalDistributedPrize += actualPrize;
+            }
+
+            if (!isEligible && !hasRenderedNonPrizeHeader) {
+              hasRenderedNonPrizeHeader = true;
+              tableRows += `
+                <tr class="bg-slate-100/75 dark:bg-slate-800/60 border-y border-slate-200/80 dark:border-slate-700/80">
+                  <td colspan="4" class="py-2 px-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
+                    ทีมร่วมสนุก (ไม่นำมาคิดคำนวณเงินรางวัล)
+                  </td>
+                </tr>
+              `;
+            }
+
             const winsDisplay = isEligible ? ((wins % 1 === 0) ? wins : wins.toFixed(1)) : '-';
             const prizeDisplay = isEligible ? `${actualPrize.toLocaleString()} THB` : '<span class="text-slate-400 font-normal">ร่วมสนุก (ไม่มีรางวัล)</span>';
 
@@ -2943,6 +2963,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                     <tbody class="divide-y divide-slate-100 text-xs sm:text-sm">
                       ${tableRows}
                     </tbody>
+                    <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-display text-xs sm:text-sm font-bold">
+                      <tr>
+                        <td colspan="2" class="py-3 px-2 sm:px-3 text-slate-700 dark:text-slate-300">
+                          <div class="flex items-center gap-1.5 flex-wrap">
+                            <span>ยอดรวมเงินรางวัลสะสมที่มอบไปแล้ว</span>
+                            <span class="text-[11px] font-normal text-slate-500 font-display">(จบแล้ว ${Math.round(totalDistributedWins)} วีค)</span>
+                          </div>
+                        </td>
+                        <td class="py-3 px-2 sm:px-3 text-center text-slate-800 dark:text-slate-200 font-bold">${totalDistributedWins % 1 === 0 ? totalDistributedWins : totalDistributedWins.toFixed(1)}</td>
+                        <td class="py-3 px-2 sm:px-3 text-right font-black text-emerald-600 dark:text-emerald-400">${totalDistributedPrize.toLocaleString()} THB</td>
+                      </tr>
+                    </tfoot>
                   </table>
                 </div>
               </div>
@@ -3026,7 +3058,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             });
           }
 
-          const monthlySorted = Object.values(monthlyMap).sort((a, b) => b.month_total - a.month_total);
+          const monthlySorted = Object.values(monthlyMap).sort((a, b) => {
+            const aEligible = this.isPrizeEligible(a.entry_id) ? 1 : 0;
+            const bEligible = this.isPrizeEligible(b.entry_id) ? 1 : 0;
+            if (aEligible !== bEligible) return bEligible - aEligible;
+            return b.month_total - a.month_total;
+          });
           let curMonthlyRank = 1;
           let eligibleMonthlyCount = 0;
           let prevEligibleMonthTotal = null;
@@ -3083,6 +3120,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           });
 
           let monthlyTableRows = '';
+          let hasRenderedMonthlyNonPrizeHeader = false;
           const eligibleMonthSorted = monthlySorted.filter(x => this.isPrizeEligible(x.entry_id) && x.month_total > 0);
           const topChampsInMonth = eligibleMonthSorted.filter(x => x.eligible_monthly_rank === 1);
           const topRunnersInMonth = eligibleMonthSorted.filter(x => x.eligible_monthly_rank === 2);
@@ -3093,6 +3131,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
           monthlySorted.forEach((t) => {
             const isEligible = this.isPrizeEligible(t.entry_id);
+
+            if (!isEligible && !hasRenderedMonthlyNonPrizeHeader) {
+              hasRenderedMonthlyNonPrizeHeader = true;
+              monthlyTableRows += `
+                <tr class="bg-slate-100/75 dark:bg-slate-800/60 border-y border-slate-200/80 dark:border-slate-700/80">
+                  <td colspan="${curMonth.gw_list.length + 3}" class="py-2 px-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
+                    ทีมร่วมสนุก (ไม่นำมาคิดคำนวณเงินรางวัล)
+                  </td>
+                </tr>
+              `;
+            }
             const isLeader = isEligible && (t.eligible_monthly_rank === 1 && t.month_total > 0);
             const isRunnerUp = isEligible && (t.eligible_monthly_rank === 2 && t.month_total > 0);
             let rankBadge = '';
@@ -3361,6 +3410,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                     <tbody class="divide-y divide-slate-100 text-xs sm:text-sm">
                       ${monthlyTableRows}
                     </tbody>
+                    <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-display text-xs sm:text-sm font-bold">
+                      <tr>
+                        <td colspan="2" class="py-3 px-2 sm:px-3 text-slate-700 dark:text-slate-300">
+                          <div class="flex items-center gap-1.5 flex-wrap">
+                            <span>งบประมาณรางวัลประจำเดือน: ${curMonth.month}</span>
+                            <span class="text-[11px] font-normal text-slate-500 font-display">(${curMonthIsFinished ? 'มอบรางวัลเรียบร้อย' : (curMonthIsStarted ? 'กำลังแข่งขัน' : 'รอการแข่งขัน')})</span>
+                          </div>
+                        </td>
+                        <td colspan="${curMonth.gw_list.length}" class="py-3 px-2 text-center text-[11px] text-slate-500 font-normal">
+                          แชมป์ 600 THB • รองแชมป์ 400 THB
+                        </td>
+                        <td class="py-3 px-2 sm:px-3 text-right font-black text-emerald-600 dark:text-emerald-400">${curMonthIsFinished ? '1,000 THB' : (feat.monthly_prize_amount || 1000).toLocaleString() + ' THB'}</td>
+                      </tr>
+                    </tfoot>
                   </table>
                 </div>
               </div>
