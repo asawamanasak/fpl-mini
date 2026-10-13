@@ -2842,7 +2842,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               const startGW = parseInt(parts[0]) || 1;
               const endGW = parseInt(parts[1]) || 6;
 
-              const phaseWinners = {};
+              const phaseGWEntries = [];
               let phaseTotalPaid = 0;
               let finishedGWCount = 0;
 
@@ -2857,16 +2857,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                     const topTeams = sorted.filter(r => r.net_points === topScore);
                     const prizePerTeam = (this.config.features.weekly_prize_amount || 350) / topTeams.length;
                     topTeams.forEach(t => {
-                      if (!phaseWinners[t.entry_id]) {
-                        phaseWinners[t.entry_id] = {
-                          team_name: t.team_name,
-                          player_name: t.player_name,
-                          amount: 0,
-                          gws: []
-                        };
-                      }
-                      phaseWinners[t.entry_id].amount += prizePerTeam;
-                      phaseWinners[t.entry_id].gws.push(`GW ${g}`);
+                      phaseGWEntries.push({
+                        gw: g,
+                        entry_id: t.entry_id,
+                        team_name: t.team_name,
+                        player_name: t.player_name,
+                        amount: prizePerTeam,
+                        is_joint: topTeams.length > 1
+                      });
                       phaseTotalPaid += prizePerTeam;
                     });
                   }
@@ -2886,23 +2884,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               }
 
               let winnersListHtml = '';
-              const winnerKeys = Object.keys(phaseWinners);
-              if (winnerKeys.length > 0) {
+              if (phaseGWEntries.length > 0) {
                 winnersListHtml = `
                   <div class="mt-2.5 pt-2.5 border-t border-slate-200/80 space-y-1">
                     <div class="text-[10px] font-bold text-slate-500 uppercase font-display">สรุปทีมที่ได้รับเงินรางวัลรอบนี้:</div>
-                    ${winnerKeys.map(eid => {
-                      const w = phaseWinners[eid];
-                      return `
-                        <div class="flex items-center justify-between text-xs py-0.5">
-                          <div class="truncate pr-2">
-                            <span class="font-bold text-slate-900">${this.escapeHtml(w.team_name)}</span>
-                            <span class="text-[10px] text-slate-500">(${w.gws.join(', ')})</span>
-                          </div>
-                          <span class="font-bold font-display text-emerald-700 flex-shrink-0">${w.amount.toLocaleString()} THB</span>
+                    ${phaseGWEntries.map(w => `
+                      <div class="flex items-center justify-between text-xs py-0.5">
+                        <div class="truncate pr-2">
+                          <span class="font-bold text-slate-900">${this.escapeHtml(w.team_name)}</span>
+                          <span class="text-[10px] text-slate-500">(${'GW ' + w.gw}${w.is_joint ? ' แชมป์ร่วม' : ''})</span>
                         </div>
-                      `;
-                    }).join('')}
+                        <span class="font-bold font-display text-emerald-700 flex-shrink-0">${w.amount.toLocaleString()} THB</span>
+                      </div>
+                    `).join('')}
                     <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-dashed border-slate-200 font-bold text-slate-800">
                       <span>ยอดเงินรางวัลรวมรอบนี้</span>
                       <span class="text-emerald-700 font-display">${phaseTotalPaid.toLocaleString()} THB</span>
