@@ -377,6 +377,9 @@
     "season": "2026/27",
     "entry_fee": "1,900 THB/ทีม (50 THB x 38 วีค)",
     "total_pool": "28,500 THB",
+    "non_prize_teams": [
+      306983
+    ],
     "coordinator": "เฟม (Some might say)",
     "payment_method": "ระบบเก็บเงินงวดเดียวเต็มจำนวน 1,900 THB/ทีม โดยมี 'เฟม' เป็นผู้ประสานงานและเก็บเงินกองกลางไว้ให้",
     "features": {
