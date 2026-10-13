@@ -43,8 +43,11 @@ def get_gw_fixture_status(gw_id):
     try:
         fixtures = fetch(f'https://fantasy.premierleague.com/api/fixtures/?event={gw_id}')
         if fixtures and len(fixtures) > 0:
-            is_started = any(bool(f.get('started')) for f in fixtures)
-            is_finished = all(bool(f.get('started')) and (bool(f.get('finished')) or bool(f.get('finished_provisional'))) for f in fixtures)
+            active_fixtures = [f for f in fixtures if not bool(f.get('postponed'))]
+            if not active_fixtures:
+                return False, False
+            is_started = any(bool(f.get('started')) for f in active_fixtures)
+            is_finished = all(bool(f.get('started')) and (bool(f.get('finished')) or bool(f.get('finished_provisional'))) for f in active_fixtures)
             return is_started, is_finished
     except Exception as e:
         print(f"Notice checking fixtures for GW {gw_id}: {e}")
@@ -61,11 +64,13 @@ def get_active_in_play_fixture_count(gw_id):
     - started is True
     - finished is False
     - finished_provisional is False
+    - not postponed
     """
     try:
         fixtures = fetch(f'https://fantasy.premierleague.com/api/fixtures/?event={gw_id}')
         if fixtures and len(fixtures) > 0:
-            return sum(1 for f in fixtures if bool(f.get('started')) and not bool(f.get('finished')) and not bool(f.get('finished_provisional')))
+            active_fixtures = [f for f in fixtures if not bool(f.get('postponed'))]
+            return sum(1 for f in active_fixtures if bool(f.get('started')) and not bool(f.get('finished')) and not bool(f.get('finished_provisional')))
     except Exception as e:
         print(f"Notice checking in-play fixtures for GW {gw_id}: {e}")
     return 0
@@ -735,6 +740,15 @@ def sync_once(args):
 
         except Exception as e:
             print(f"Error processing league {lid}: {e}")
+            if cached_data and "leagues" in cached_data and str(lid) in cached_data["leagues"]:
+                print(f" -> [Resilience] Safely preserving existing cached data for League {lid}.")
+                multi_league_output["leagues"][str(lid)] = cached_data["leagues"][str(lid)]
+                summary_stats.append({
+                    "id": lid,
+                    "name": cached_data["leagues"][str(lid)].get("name", f"League {lid}"),
+                    "teams_count": len(cached_data["leagues"][str(lid)].get("teams", [])),
+                    "gws_count": max_gw
+                })
 
     # 4.5 Smart Commit: Detect if any scores, standings, or GW status changed
     has_changed = check_data_has_changed(cached_data, multi_league_output)

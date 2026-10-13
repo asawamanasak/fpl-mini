@@ -1093,7 +1093,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           return `Gameweek นี้กำลังรอผลการแข่งขันจากสนามจริง`;
         }
 
-        const sorted = [...gwData.results].sort((a, b) => (b.points - a.points) || (b.net_points - a.net_points));
+        const clean = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        const sorted = [...gwData.results].map(r => ({
+          ...r,
+          team_name: clean(r.team_name),
+          player_name: clean(r.player_name),
+          captain: clean(r.captain)
+        })).sort((a, b) => (b.points - a.points) || (b.net_points - a.net_points));
         const top = sorted[0];
         const second = sorted[1];
         const isFinished = Boolean(gwData.is_finished);
