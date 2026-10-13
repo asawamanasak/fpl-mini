@@ -506,6 +506,8 @@ def sync_once(args):
                                         vc_match = next((p for p in actual_starters_picks if p.get('is_vice_captain')), None)
                                         if vc_match:
                                             vc_match['multiplier'] = cap_mult
+                                            vc_match['is_captain'] = True
+                                        s_match_copy['is_captain'] = False
 
                         for p in actual_starters_picks:
                             pid = p['element']
@@ -686,8 +688,8 @@ def sync_once(args):
                                 net_impact = moves_gain - r.get("hits", 0)
 
                                 moves = []
-                                in_list = list(tin)
-                                out_list = list(tout)
+                                in_list = sorted(list(tin), key=lambda x: elements.get(x, {}).get('element_type', 99))
+                                out_list = sorted(list(tout), key=lambda x: elements.get(x, {}).get('element_type', 99))
                                 max_len = max(len(in_list), len(out_list))
                                 for i in range(max_len):
                                     m_in_id = in_list[i] if i < len(in_list) else None
