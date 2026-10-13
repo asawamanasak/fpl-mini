@@ -1964,11 +1964,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             }
 
             const winnerNames = eligibleTopWinners.length > 2 
-              ? `${eligibleTopWinners[0].team_name}, ${eligibleTopWinners[1].team_name} และอีก ${eligibleTopWinners.length - 2} ทีม` 
-              : eligibleTopWinners.map(w => w.team_name).join(' & ');
+              ? `${this.escapeHtml(eligibleTopWinners[0].team_name)}, ${this.escapeHtml(eligibleTopWinners[1].team_name)} และอีก ${eligibleTopWinners.length - 2} ทีม` 
+              : eligibleTopWinners.map(w => this.escapeHtml(w.team_name)).join(' & ');
             const managerNames = eligibleTopWinners.length > 2
-              ? `${eligibleTopWinners[0].player_name}, ${eligibleTopWinners[1].player_name} และอีก ${eligibleTopWinners.length - 2} คน`
-              : eligibleTopWinners.map(w => `${w.player_name} • (C) <strong>${(w.captain || '-').replace(/\s*\(C\)/gi, '').trim()}</strong>`).join('<br/>');
+              ? `${this.escapeHtml(eligibleTopWinners[0].player_name)}, ${this.escapeHtml(eligibleTopWinners[1].player_name)} และอีก ${eligibleTopWinners.length - 2} คน`
+              : eligibleTopWinners.map(w => `${this.escapeHtml(w.player_name)} • (C) <strong>${this.escapeHtml((w.captain || '-').replace(/\s*\(C\)/gi, '').trim())}</strong>`).join('<br/>');
 
             const passNoteHtml = hasPassedPrize ? `
               <div class="mb-3 px-3.5 py-2.5 rounded-xl bg-amber-500/10 border border-amber-300 dark:border-amber-700/60 flex items-start gap-2.5 text-xs text-amber-900 dark:text-amber-200">
@@ -2849,7 +2849,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                       return `
                         <div class="flex items-center justify-between text-xs py-0.5">
                           <div class="truncate pr-2">
-                            <span class="font-bold text-slate-900">${w.team_name}</span>
+                            <span class="font-bold text-slate-900">${this.escapeHtml(w.team_name)}</span>
                             <span class="text-[10px] text-slate-500">(${w.gws.join(', ')})</span>
                           </div>
                           <span class="font-bold font-display text-emerald-700 flex-shrink-0">${w.amount.toLocaleString()} THB</span>
@@ -2986,7 +2986,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
 
           const monthlySorted = Object.values(monthlyMap).sort((a, b) => b.month_total - a.month_total);
-          let curMonthlyRank = 0;
+          let curMonthlyRank = 1;
+          let eligibleMonthlyCount = 0;
           let prevEligibleMonthTotal = null;
           monthlySorted.forEach((t) => {
             if (!this.isPrizeEligible(t.entry_id)) {
@@ -2994,10 +2995,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               t.eligible_monthly_rank = null;
               return;
             }
-            if (prevEligibleMonthTotal === null || t.month_total < prevEligibleMonthTotal) {
-              curMonthlyRank++;
-              prevEligibleMonthTotal = t.month_total;
+            eligibleMonthlyCount++;
+            if (prevEligibleMonthTotal !== null && t.month_total < prevEligibleMonthTotal) {
+              curMonthlyRank = eligibleMonthlyCount;
             }
+            prevEligibleMonthTotal = t.month_total;
             t.rank = curMonthlyRank;
             t.eligible_monthly_rank = curMonthlyRank;
           });
