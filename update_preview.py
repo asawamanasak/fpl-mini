@@ -2060,26 +2060,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               badgeIcon = isFinished ? '👑' : '🟢';
             }
 
-            let prizePillHtml = '';
-            if (isWeeklyPrize) {
-              const weeklyPrize = this.config.features.weekly_prize_amount || 350;
-              if (isFinished) {
-                const prizePerTeam = isJointPrizeWinner ? (weeklyPrize / eligibleTopWinners.length).toFixed(0) : weeklyPrize;
-                prizePillHtml = `
-                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black bg-emerald-600/15 text-emerald-800 dark:text-emerald-300 border border-emerald-400/40 dark:border-emerald-500/30 font-display shadow-2xs">
-                    <span>💰</span>
-                    <span>${Number(prizePerTeam).toLocaleString()} THB${isJointPrizeWinner ? ' / ทีม' : ''}</span>
-                  </span>
-                `;
-              } else if (weeklyPrize) {
-                prizePillHtml = `
-                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-300/40 dark:border-amber-600/30 font-display">
-                    <span>ชิง ${Number(weeklyPrize).toLocaleString()} THB</span>
-                  </span>
-                `;
-              }
-            }
-
             const winnerNames = eligibleTopWinners.length > 2 
               ? `${this.escapeHtml(eligibleTopWinners[0].team_name)}, ${this.escapeHtml(eligibleTopWinners[1].team_name)} และอีก ${eligibleTopWinners.length - 2} ทีม` 
               : eligibleTopWinners.map(w => this.escapeHtml(w.team_name)).join(' & ');
@@ -2107,7 +2087,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                         <span class="text-xs">${badgeIcon}</span>
                         <span>${badgeTitle}</span>
                       </span>
-                      ${prizePillHtml}
                     </div>
                     <button onclick="app.openTeamModal(${prizeLeader.entry_id})" class="text-left group cursor-pointer block">
                       <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white group-hover:text-amber-700 dark:group-hover:text-amber-400 tracking-tight transition-colors">${winnerNames}</h2>
