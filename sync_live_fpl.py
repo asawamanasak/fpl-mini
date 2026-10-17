@@ -36,25 +36,33 @@ def get_gw_fixture_status(gw_id):
     """
     Smart Fixture-Aware Status Check:
     Check FPL fixtures API to verify if fixtures have started or finished.
-    Returns (is_started, is_finished).
+    Returns (is_started, is_finished, finished_teams).
     - is_started: True if at least one fixture has started.
     - is_finished: True if all fixtures have started and finished (or provisionally finished).
+    - finished_teams: Set of team IDs whose active fixtures in this GW have all finished.
     """
     try:
         fixtures = fetch(f'https://fantasy.premierleague.com/api/fixtures/?event={gw_id}')
         if fixtures and len(fixtures) > 0:
             active_fixtures = [f for f in fixtures if not bool(f.get('postponed'))]
             if not active_fixtures:
-                return False, False
+                return False, False, set()
             is_started = any(bool(f.get('started')) for f in active_fixtures)
             is_finished = all(bool(f.get('started')) and (bool(f.get('finished')) or bool(f.get('finished_provisional'))) for f in active_fixtures)
-            return is_started, is_finished
+            team_fixtures = {}
+            for f in active_fixtures:
+                f_done = bool(f.get('started')) and (bool(f.get('finished')) or bool(f.get('finished_provisional')))
+                for tid in (f.get('team_h'), f.get('team_a')):
+                    if tid is not None:
+                        team_fixtures.setdefault(tid, []).append(f_done)
+            finished_teams = {tid for tid, done_list in team_fixtures.items() if done_list and all(done_list)}
+            return is_started, is_finished, finished_teams
     except Exception as e:
         print(f"Notice checking fixtures for GW {gw_id}: {e}")
-    return False, False
+    return False, False, set()
 
 def is_gw_fixtures_finished(gw_id):
-    _, finished = get_gw_fixture_status(gw_id)
+    _, finished, _ = get_gw_fixture_status(gw_id)
     return finished
 
 def get_active_in_play_fixture_count(gw_id):
@@ -82,6 +90,8 @@ def trigger_publish():
     """Regenerate dashboard HTML presentations and commit/push updates to GitHub."""
     base_dir = os.path.dirname(os.path.abspath(__file__))
     update_script = os.path.join(base_dir, "update_preview.py")
+    multi_json_path = os.path.join(base_dir, "multi_fpl_data.json")
+    real_json_path = os.path.join(base_dir, "real_fpl_40700_data.json")
     try:
         print("\n -> [Live Matchday Publisher] Regenerating dashboard presentations...")
         subprocess.run([sys.executable, update_script], check=True, cwd=base_dir)
@@ -94,9 +104,23 @@ def trigger_publish():
             subprocess.run(["git", "commit", "-m", commit_msg], check=True, cwd=base_dir)
             push_res = subprocess.run(["git", "push"], cwd=base_dir)
             if push_res.returncode != 0:
-                print("Notice: Git push conflict, resetting to origin/main and regenerating...")
+                print("Notice: Git push conflict, preserving fresh sync data and resetting to origin/main...")
+                saved_multi = None
+                saved_real = None
+                if os.path.exists(multi_json_path):
+                    with open(multi_json_path, "r", encoding="utf-8") as f:
+                        saved_multi = f.read()
+                if os.path.exists(real_json_path):
+                    with open(real_json_path, "r", encoding="utf-8") as f:
+                        saved_real = f.read()
                 subprocess.run(["git", "fetch", "origin", "main"], check=True, cwd=base_dir)
                 subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, cwd=base_dir)
+                if saved_multi is not None:
+                    with open(multi_json_path, "w", encoding="utf-8") as f:
+                        f.write(saved_multi)
+                if saved_real is not None:
+                    with open(real_json_path, "w", encoding="utf-8") as f:
+                        f.write(saved_real)
                 subprocess.run([sys.executable, update_script], check=True, cwd=base_dir)
                 subprocess.run(["git", "add", "-A"], check=True, cwd=base_dir)
                 retry_diff = subprocess.run(["git", "diff", "--staged", "--quiet"], cwd=base_dir)
@@ -153,7 +177,9 @@ def check_data_has_changed(cached_data, new_output):
 
         for gw_str, new_gw in new_gws.items():
             cached_gw = cached_gws.get(gw_str, {})
-            if cached_gw.get("is_finished") != new_gw.get("is_finished") or cached_gw.get("is_started") != new_gw.get("is_started"):
+            if (cached_gw.get("is_finished") != new_gw.get("is_finished") or
+                cached_gw.get("is_started") != new_gw.get("is_started") or
+                cached_gw.get("data_checked") != new_gw.get("data_checked")):
                 return True
             
             # Compare results list
@@ -167,12 +193,13 @@ def check_data_has_changed(cached_data, new_output):
                 cr = c_res.get(eid)
                 if not cr:
                     return True
-                # Check points, hits, net_points, captain, chip
+                # Check points, hits, net_points, captain, chip, bench_points
                 if (cr.get("points") != nr.get("points") or
                     cr.get("hits") != nr.get("hits") or
                     cr.get("net_points") != nr.get("net_points") or
                     cr.get("captain") != nr.get("captain") or
-                    cr.get("chip") != nr.get("chip")):
+                    cr.get("chip") != nr.get("chip") or
+                    cr.get("bench_points") != nr.get("bench_points")):
                     return True
 
     return False
@@ -216,6 +243,7 @@ def sync_once(args):
     gw_status_map = {}
     gw_started_map = {}
     gw_checked_map = {}
+    gw_finished_teams_map = {}
     for gw_info in events:
         gw_id = gw_info['id']
         if gw_id <= max_gw:
@@ -225,10 +253,12 @@ def sync_once(args):
             if bootstrap_finished:
                 gw_status_map[gw_id] = True
                 gw_started_map[gw_id] = True
+                gw_finished_teams_map[gw_id] = set(teams_by_id.keys())
             else:
-                is_started, fixtures_fin = get_gw_fixture_status(gw_id)
+                is_started, fixtures_fin, fin_teams = get_gw_fixture_status(gw_id)
                 gw_status_map[gw_id] = fixtures_fin
                 gw_started_map[gw_id] = is_started or fixtures_fin
+                gw_finished_teams_map[gw_id] = fin_teams
                 if fixtures_fin:
                     print(f" -> Smart Fixture Check: GW {gw_id} matches all finished! Marked as finished (provisional).")
                 elif is_started:
@@ -383,8 +413,10 @@ def sync_once(args):
             cached_squads = cached_league.get("squads", {})
 
             work_items = []
+            gw_can_reuse_raw_picks_map = {}
             for gw in range(1, max_gw + 1):
                 gw_is_finished = gw_status_map.get(gw, False)
+                gw_is_started = gw_started_map.get(gw, False)
                 cached_gw = cached_gw_data.get(str(gw), {})
                 cached_res = cached_gw.get("results", [])
                 
@@ -408,6 +440,14 @@ def sync_once(args):
                                 has_points_mismatch = True
                                 break
 
+                # Only reuse raw_picks when:
+                # 1. GW is live in progress (started but not finished -> picks are locked and automatic_subs haven't run yet), OR
+                # 2. GW is finished, fully finalized (data_checked settled), and has no points mismatch.
+                gw_can_reuse_raw_picks_map[gw] = (
+                    (not gw_is_finished and gw_is_started)
+                    or (gw_is_finished and gw_fully_finalized and not has_points_mismatch and not has_corrupt_cache)
+                )
+
                 if not args.force and gw_is_finished and cached_gw.get("is_finished") and gw_fully_finalized and not has_corrupt_cache and not needs_enrichment and not has_points_mismatch:
                     cached_res_map = {r["entry_id"]: r for r in cached_res if (r.get("points", 0) > 0 or r.get("net_points", 0) > 0 or f"{r['entry_id']}_{gw}" in cached_squads)}
                     
@@ -415,7 +455,7 @@ def sync_once(args):
                     for t_obj in standings_teams:
                         eid = t_obj['entry']
                         s_key = f"{eid}_{gw}"
-                        if s_key in cached_squads and cached_squads[s_key] and cached_squads[s_key].get("dnp"):
+                        if (gw < max_gw or gw_is_started) and s_key in cached_squads and cached_squads[s_key] and cached_squads[s_key].get("dnp"):
                             squads_dict[s_key] = cached_squads[s_key]
                             continue
                         if eid in cached_res_map and s_key in cached_squads:
@@ -460,10 +500,13 @@ def sync_once(args):
                     t_obj, gw = entry_tuple
                     eid = t_obj['entry']
                     this_gw_finished = gw_status_map.get(gw, False)
+                    this_gw_started = gw_started_map.get(gw, False)
+                    this_gw_checked = gw_checked_map.get(gw, False)
+                    can_reuse_raw_picks = gw_can_reuse_raw_picks_map.get(gw, False)
                     try:
                         s_key = f"{eid}_{gw}"
                         cached_sq = cached_squads.get(s_key)
-                        if not args.force and cached_sq and cached_sq.get("raw_picks"):
+                        if not args.force and can_reuse_raw_picks and cached_sq and cached_sq.get("raw_picks"):
                             picks = cached_sq.get("raw_picks", [])
                             hist = cached_sq.get("raw_hist", {})
                             chip = cached_sq.get("chip")
@@ -495,7 +538,8 @@ def sync_once(args):
                         actual_starters_picks = [dict(p) for p in raw_picks if p.get('position', 1) <= 11]
                         actual_bench_picks = [dict(p) for p in raw_picks if p.get('position', 1) > 11]
                         final_auto_subs = list(auto_subs)
-                        default_cap_mult = 3 if chip == '3xc' else 2
+                        is_bboost = chip in ('bboost', 'bench_boost')
+                        default_cap_mult = 3 if chip in ('3xc', 'triple_captain') else 2
 
                         # Apply official FPL automatic substitutions (when confirmed by FPL)
                         if auto_subs:
@@ -517,26 +561,31 @@ def sync_once(args):
                                     # If the subbed-out player was captain, promote vice-captain
                                     if s_match.get('is_captain'):
                                         cap_mult = s_match.get('multiplier') if s_match.get('multiplier', 0) >= 2 else default_cap_mult
-                                        vc_match = next((p for p in actual_starters_picks if p.get('is_vice_captain')), None)
+                                        vc_pool = actual_starters_picks + (actual_bench_picks if is_bboost else [])
+                                        vc_match = next((p for p in vc_pool if p.get('is_vice_captain')), None)
                                         if vc_match:
                                             vc_match['multiplier'] = cap_mult
                                             vc_match['is_captain'] = True
                                         s_match_copy['is_captain'] = False
 
-                        # Also handle case where starting captain played 0 mins and was NOT subbed out
-                        # (e.g. no eligible bench sub), or FPL already promoted vice-captain multiplier >= 2
-                        active_cap = next((p for p in actual_starters_picks if p.get('is_captain')), None)
-                        active_vc = next((p for p in actual_starters_picks if p.get('is_vice_captain')), None)
+                        # Also handle case where starting captain played 0 mins and their club's fixture(s) finished
+                        # (or FPL already promoted vice-captain multiplier >= 2), including Bench Boost VC
+                        vc_search_pool = actual_starters_picks + (actual_bench_picks if is_bboost else [])
+                        active_cap = next((p for p in vc_search_pool if p.get('is_captain')), None)
+                        active_vc = next((p for p in vc_search_pool if p.get('is_vice_captain')), None)
+                        cap_team_id = elements.get(active_cap['element'], {}).get('team') if active_cap else None
+                        cap_fixture_finished = this_gw_finished or (cap_team_id in gw_finished_teams_map.get(gw, set()))
                         if active_vc and (
                             active_vc.get('multiplier', 1) >= 2
                             or (active_cap and active_cap.get('multiplier') == 0)
-                            or (this_gw_finished and active_cap and live_mins_gw.get(active_cap['element'], 0) == 0 and live_mins_gw.get(active_vc['element'], 0) > 0)
+                            or (cap_fixture_finished and active_cap and live_mins_gw.get(active_cap['element'], 0) == 0 and live_mins_gw.get(active_vc['element'], 0) > 0)
                         ):
                             active_vc['multiplier'] = active_vc.get('multiplier') if active_vc.get('multiplier', 1) >= 2 else default_cap_mult
                             active_vc['is_captain'] = True
                             if active_cap and active_cap['element'] != active_vc['element']:
                                 active_cap['is_captain'] = False
-                                active_cap['multiplier'] = 0
+                                if active_cap.get('multiplier', 1) > 1:
+                                    active_cap['multiplier'] = 1
 
                         for p in actual_starters_picks:
                             pid = p['element']
@@ -563,6 +612,7 @@ def sync_once(args):
 
                         for p in actual_bench_picks:
                             pid = p['element']
+                            mult = p.get('multiplier', 1) if is_bboost else 1
                             is_cap = p.get('is_captain', False)
                             is_vice = p.get('is_vice_captain', False)
                             el_info = elements.get(pid, {})
@@ -575,25 +625,28 @@ def sync_once(args):
                                 "pos": pos_code,
                                 "team": team_code,
                                 "team_code": el_info.get('team_code', 0),
-                                "points": p_pts,
+                                "points": p_pts * (mult if mult > 0 else 1),
                                 "is_captain": is_cap,
                                 "is_vice": is_vice
                             }
+                            if is_cap:
+                                capt_name = el_info.get('web_name', 'Captain')
                             bench.append(p_obj)
 
                         start_raw = sum(p['points'] for p in starters)
                         bench_raw = sum(p['points'] for p in bench)
 
-                        if chip == 'bboost':
+                        if is_bboost:
                             raw_points = start_raw + bench_raw
                             bench_pts_disp = 0
                         else:
                             raw_points = start_raw
                             bench_pts_disp = bench_raw
 
-                        # Resiliency: If GW is finished, official entry_history points is the authoritative finalized score
+                        # Resiliency: Only override with official entry_history points once data_checked is True (settled)
+                        # or if live raw_points is 0 while official_pts > 0.
                         official_pts = hist.get('points')
-                        if official_pts is not None and (raw_points == 0 or this_gw_finished):
+                        if official_pts is not None and official_pts > 0 and (raw_points == 0 or (this_gw_finished and this_gw_checked)):
                             raw_points = official_pts
 
                         net_points = raw_points - hits
@@ -632,14 +685,14 @@ def sync_once(args):
                             c_gw = cached_gw_data.get(str(gw), {})
                             c_res = next((r for r in c_gw.get("results", []) if r.get("entry_id") == eid), None)
                             c_sq = cached_squads.get(f"{eid}_{gw}")
-                            if c_sq and c_sq.get("dnp"):
+                            if (gw < max_gw or this_gw_started) and c_sq and c_sq.get("dnp"):
                                 return (gw, eid, None, c_sq)
                             if c_res and c_sq:
                                 print(f" -> Recovered cached data for team {eid} GW {gw} following fetch error.")
                                 return (gw, eid, c_res, c_sq)
                         
-                        # Resilient fallback for 404 / late joiner / missing event picks (did not play)
-                        if "404" in str(err) or "Not Found" in str(err):
+                        # Resilient fallback for 404 / late joiner / missing event picks (only mark DNP after GW starts)
+                        if ("404" in str(err) or "Not Found" in str(err)) and (gw < max_gw or this_gw_started):
                             print(f" -> Team {eid} was not active in GW {gw} (404/joined late). Marking as DNP.")
                             dnp_squad = {
                                 "dnp": True,
@@ -684,8 +737,17 @@ def sync_once(args):
                 # Calculate transfer impact between consecutive GWs for each team
                 for gw in range(1, max_gw + 1):
                     gw_str = str(gw)
+                    gw_res_list = gameweeks_dict[gw_str]["results"]
+                    if (
+                        not args.force
+                        and gw < max_gw
+                        and gw_status_map.get(gw, False)
+                        and gw_res_list
+                        and all(r.get("transfers_net_impact") is not None and r.get("transfer_moves") is not None for r in gw_res_list)
+                    ):
+                        continue
                     gw_live = ensure_live_gw(gw) if gw > 1 else None
-                    for r in gameweeks_dict[gw_str]["results"]:
+                    for r in gw_res_list:
                         eid = r["entry_id"]
                         if gw == 1:
                             r["transfers_count"] = 0
@@ -879,6 +941,11 @@ def main():
 
     if not should_loop:
         return
+
+    if in_play_count is None:
+        print(f"\n⚠️ [Matchday Live Daemon] Transient error checking in-play fixtures for GW {max_gw}. Retrying in 3s...")
+        time.sleep(3)
+        in_play_count = get_active_in_play_fixture_count(max_gw)
 
     if not in_play_count:
         print(f"\n⚡ [Matchday Live Daemon] No active in-play matches in GW {max_gw}. Finished single sync.")

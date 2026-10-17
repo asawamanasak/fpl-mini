@@ -1169,7 +1169,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
     class LiveCommentaryEngine {
       static _refreshStep = 0;
 
-      static generateFreshNote(gwNumber, gwData, leagueName, forceRandom = false, nonPrizeTeams = [], leagueData = null) {
+      static generateFreshNote(gwNumber, gwData, leagueName, forceRandom = false, nonPrizeTeams = [], leagueData = null, isWeeklyPrize = true) {
         if (!gwData || !gwData.results || gwData.results.length === 0) {
           return `Gameweek นี้กำลังรอผลการแข่งขันจากสนามจริง`;
         }
@@ -1182,7 +1182,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const clean = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         const isFinished = Boolean(gwData.is_finished);
         const isStarted = gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || (gwData.results && gwData.results.some(r => r.points > 0)));
-        const scoreKey = isFinished ? 'net_points' : 'points';
+        const scoreKey = (isFinished || isWeeklyPrize) ? 'net_points' : 'points';
         const sorted = [...gwData.results].map(r => ({
           ...r,
           team_name: clean(r.team_name),
@@ -1267,7 +1267,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         if (leagueData && leagueData.gameweeks && Number(gwNumber) > 1) {
           const prevGwData = leagueData.gameweeks[String(Number(gwNumber) - 1)];
           if (prevGwData && prevGwData.results && prevGwData.results.length > 0) {
-            const prevKey = prevGwData.is_finished ? 'net_points' : 'points';
+            const prevKey = (prevGwData.is_finished || isWeeklyPrize) ? 'net_points' : 'points';
             const prevElig = prevGwData.results.filter(r => !isNonPrize(r.entry_id)).sort((a, b) => b[prevKey] - a[prevKey]);
             if (prevElig[0] && Number(prevElig[0].entry_id) === Number(top.entry_id)) {
               isBackToBack = true;
@@ -1323,7 +1323,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
 
           // Score & Margin-based leads
-          if (isJoint || diff === 0) {
+          if (isJoint && winners.length > 1) {
             const names = winners.length === 2
               ? `"${winners[0].team_name}" กับ "${winners[1].team_name}"`
               : `"${winners[0].team_name}", "${winners[1].team_name}" และเพื่อนร่วมลีกอีก ${winners.length - 2} ทีม`;
@@ -1410,7 +1410,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         }
 
         // Storyline C: Bench Tragedy (แต้มสำรองระเบิดคาซุ้มม้านั่ง)
-        const benchCandidates = sorted.filter(t => (t.bench_points || 0) >= 10 && (t.chip || '').toLowerCase() !== 'bboost');
+        const benchCandidates = sorted.filter(t => (t.bench_points || 0) >= 10 && !['bboost', 'bench_boost'].includes((t.chip || '').toLowerCase()));
         const benchKing = benchCandidates.sort((a, b) => (b.bench_points || 0) - (a.bench_points || 0))[0];
         if (benchKing) {
           let benchHeroText = '';
@@ -1470,13 +1470,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         // Storyline F: Heavy Hit Takers (แก๊งยอมเจ็บกดแต้มลบ)
         const hitTakers = sorted.filter(t => t.hits > 0).sort((a, b) => b.hits - a.hits);
         if (hitTakers.length > 0) {
-          const topHit = hitTakers[0];
-          const hitNames = hitTakers.slice(0, 2).map(t => `"${t.team_name}" (-${t.hits})`).join(' และ ');
-          if (topHit[scoreKey] >= avgScore) {
+          const profitingHits = hitTakers.filter(t => t[scoreKey] >= avgScore);
+          const strugglingHits = hitTakers.filter(t => t[scoreKey] < avgScore);
+          if (profitingHits.length > 0) {
+            const hitNames = profitingHits.slice(0, 2).map(t => `"${t.team_name}" (-${t.hits})`).join(' และ ');
             midOptions.push(
-              `ด้านสายลุยอย่าง ${hitNames} ยอมกัดฟันเสียแต้มลบผ่าตัดทีม แต่ผลลัพธ์คุ้มค่าเหนื่อยเก็บแต้มสุทธิเหนือค่าเฉลี่ยของลีกได้สำเร็จ`
+              `ด้านสายลุยอย่าง ${hitNames} ยอมกัดฟันเสียแต้มลบผ่าตัดทีม แต่ผลลัพธ์คุ้มค่าเหนื่อยเก็บแต้มเหนือค่าเฉลี่ยของลีกได้สำเร็จ`
             );
-          } else {
+          } else if (strugglingHits.length > 0) {
+            const hitNames = strugglingHits.slice(0, 2).map(t => `"${t.team_name}" (-${t.hits})`).join(' และ ');
             midOptions.push(
               `ส่วนแก๊งมือลั่นอย่าง ${hitNames} ยอมเสียค่าปรับติดลบแก้เกมแต่ยังไม่ฟื้น ต้องรอลุ้นถอนทุนคืนในสัปดาห์หน้า`
             );
@@ -1776,7 +1778,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           html += `
             <button onclick="app.switchLeague('${lid}')" class="w-full text-left px-3 py-2 text-xs font-bold text-slate-800 hover:bg-blue-50/60 rounded-xl flex items-center justify-between transition-colors cursor-pointer ${isCurrent ? 'bg-blue-50 border border-blue-200/80 text-blue-950 font-black' : ''}">
               <div>
-                <div class="${isCurrent ? 'text-blue-950 font-black' : 'text-slate-900'}">${lData.name}</div>
+                <div class="${isCurrent ? 'text-blue-950 font-black' : 'text-slate-900'}">${this.escapeHtml(lData.name)}</div>
                 <div class="text-[10px] text-slate-500 font-normal">League ${lid} • ${memberCount} ทีม</div>
               </div>
               ${isCurrent ? '<span class="text-blue-600 font-black text-xs font-display">✓ กำลังดู</span>' : ''}
@@ -2103,7 +2105,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         }
 
         const isWeeklyPrize = (this.config.features && this.config.features.prize_model === 'weekly');
-        const scoreProp = (isFinished && isWeeklyPrize) ? 'net_points' : 'points';
+        const scoreProp = (isFinished || isWeeklyPrize) ? 'net_points' : 'points';
         const sorted = [...gwData.results].sort((a, b) => (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points));
         let curRank = 1;
         let prevEligiblePoints = null;
@@ -2131,14 +2133,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const isJointPrizeWinner = eligibleTopWinners.length > 1;
 
         const overallTop = sorted[0];
-        const hasPassedPrize = !this.isPrizeEligible(overallTop.entry_id) && eligibleTopWinners.length > 0;
+        const hasPassedPrize = !this.isPrizeEligible(overallTop.entry_id) && eligibleTopWinners.length > 0 && overallTop[scoreProp] > prizeLeader[scoreProp];
         const leader = prizeLeader;
 
         // 1. Render Spotlight Card (Pre-Match Lineup Preview OR Live Leader / Weekly Winner)
         if (championCard && leader) {
           const cacheKey = `${this.activeLeagueId}_${this.selectedGW}`;
           const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
-          const currentLiveNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data);
+          const currentLiveNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeeklyPrize);
           this.liveNotesCache[cacheKey] = currentLiveNote;
 
           if (!isStarted) {
@@ -2164,8 +2166,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             });
 
             const sortedCaptains = Object.entries(captainCounts).sort((a, b) => b[1] - a[1]).slice(0, 3);
-            const topCaptainsText = sortedCaptains.map(([name, cnt]) => `${name} (${cnt})`).join(', ') || '-';
-            const chipsList = Object.entries(chipCounts).map(([ch, cnt]) => `${ch} (${cnt})`).join(', ') || 'ไม่มีทีมเปิดชิป';
+            const topCaptainsText = sortedCaptains.map(([name, cnt]) => `${this.escapeHtml(name)} (${cnt})`).join(', ') || '-';
+            const chipsList = Object.entries(chipCounts).map(([ch, cnt]) => `${this.escapeHtml(ch)} (${cnt})`).join(', ') || 'ไม่มีทีมเปิดชิป';
             const hitsText = totalHitsCount > 0 ? `${totalHitsCount} ทีม (-${totalHitsPoints} pts)` : 'ไม่มีทีมเสียแต้มลบ';
 
             championCard.innerHTML = `
@@ -2249,7 +2251,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             const passNoteHtml = hasPassedPrize ? `
               <div class="mt-3 px-3.5 py-2.5 rounded-xl bg-amber-100/80 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 text-xs text-amber-950 dark:text-amber-200 shadow-2xs">
                 <div class="leading-relaxed">
-                  <strong class="font-bold">หมายเหตุการมอบรางวัล:</strong> ทีม <strong>${this.escapeHtml(overallTop.team_name)}</strong> (${overallTop.points} pts${overallTop.hits > 0 ? `, แต้มสุทธิ ${overallTop.net_points} pts หักย้าย -${overallTop.hits}` : ''}) ทำคะแนนสูงสุดในสัปดาห์นี้แต่เป็นทีมร่วมสนุก จึงส่งมอบสิทธิ์รับรางวัลประจำสัปดาห์ให้แก่ <strong>${this.escapeHtml(prizeLeader.team_name)}</strong> (${(isFinished && isWeeklyPrize) ? prizeLeader.net_points : prizeLeader.points} pts)
+                  <strong class="font-bold">หมายเหตุการมอบรางวัล:</strong> ทีม <strong>${this.escapeHtml(overallTop.team_name)}</strong> (${overallTop.points} pts${overallTop.hits > 0 ? `, แต้มสุทธิ ${overallTop.net_points} pts หักย้าย -${overallTop.hits}` : ''}) ทำคะแนนสูงสุดในสัปดาห์นี้แต่เป็นทีมร่วมสนุก จึงส่งมอบสิทธิ์รับรางวัลประจำสัปดาห์ให้แก่ <strong>${this.escapeHtml(prizeLeader.team_name)}</strong> (${prizeLeader[scoreProp]} pts)
                 </div>
               </div>
             ` : '';
@@ -2274,12 +2276,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 ${isFinished ? 'border-amber-200/70' : 'border-emerald-200/70'} dark:border-slate-700">
                     <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xs px-3.5 py-2 rounded-xl border ${isFinished ? 'border-amber-200/90' : 'border-emerald-200/90'} dark:border-slate-700 shadow-2xs flex items-center gap-3">
                       <div class="text-left sm:text-right">
-                        <span class="text-[10px] sm:text-[11px] ${isFinished ? 'text-amber-900/80' : 'text-emerald-900/80'} dark:text-slate-400 uppercase font-bold font-display block leading-tight">${isFinished ? (isWeeklyPrize ? 'แต้มสุทธิ (Net Pts)' : 'คะแนนทางการ') : 'คะแนนสด (Live Pts)'}</span>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-display leading-none">${(isFinished && isWeeklyPrize) ? prizeLeader.net_points : prizeLeader.points} <span class="text-xs font-bold text-slate-500 dark:text-slate-400">pts</span></span>
+                        <span class="text-[10px] sm:text-[11px] ${isFinished ? 'text-amber-900/80' : 'text-emerald-900/80'} dark:text-slate-400 uppercase font-bold font-display block leading-tight">${isFinished ? (isWeeklyPrize ? 'แต้มสุทธิ (Net Pts)' : 'คะแนนทางการ') : (isWeeklyPrize ? 'แต้มสุทธิสด (Live Net)' : 'คะแนนสด (Live Pts)')}</span>
+                        <span class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-display leading-none">${prizeLeader[scoreProp]} <span class="text-xs font-bold text-slate-500 dark:text-slate-400">pts</span></span>
                       </div>
                       <div class="text-right pl-3 border-l ${isFinished ? 'border-amber-200/90' : 'border-emerald-200/90'} dark:border-slate-700">
                         <span class="text-[10px] ${prizeLeader.hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'} block font-display">แต้มลบ: ${prizeLeader.hits > 0 ? `-${prizeLeader.hits}` : '-'}</span>
-                        <span class="text-[9px] text-slate-400 block font-display">${prizeLeader.hits > 0 ? ((isFinished && isWeeklyPrize) ? 'หักในแต้มสุทธิแล้ว' : 'หักในแต้มรวม') : 'ไม่มีแต้มลบ'}</span>
+                        <span class="text-[9px] text-slate-400 block font-display">${prizeLeader.hits > 0 ? ((isFinished || isWeeklyPrize) ? 'หักในแต้มสุทธิแล้ว' : 'หักในแต้มรวม') : 'ไม่มีแต้มลบ'}</span>
                       </div>
                     </div>
                   </div>
@@ -2344,12 +2346,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   <div class="text-[11px] text-slate-500 mt-0.5">
                     <div class="truncate">${this.escapeHtml(team.player_name)}</div>
                     <div class="sm:hidden text-[10px] text-slate-600 font-medium mt-0.5 truncate">
-                      (C) ${(team.captain || '-').replace(/\s*\(C\)/gi, '').trim()}
+                      (C) ${this.escapeHtml((team.captain || '-').replace(/\s*\(C\)/gi, '').trim())}
                     </div>
                   </div>
                 </td>
                 <td class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">
-                  <span class="text-xs text-slate-600 font-medium">${team.captain && team.captain !== '-' ? team.captain.replace(/\s*\(C\)/gi, '').trim() + ' (C)' : '-'}</span>
+                  <span class="text-xs text-slate-600 font-medium">${team.captain && team.captain !== '-' ? this.escapeHtml(team.captain.replace(/\s*\(C\)/gi, '').trim()) + ' (C)' : '-'}</span>
                 </td>
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-xs sm:text-sm ${isStarted ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700'}">${team.points}</td>
                 <td class="py-2.5 px-1 sm:px-2 text-center text-xs sm:text-sm">${hits}</td>
@@ -2875,7 +2877,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           const movesSign = goodTxWinner.transfers_pts_gain >= 0 ? '+' : '';
           goodTxStat = `(+${goodTxWinner.transfers_net_impact} net; ${movesSign}${goodTxWinner.transfers_pts_gain} from moves, ${hitsStr})`;
           if (goodTxWinner.transfer_moves && goodTxWinner.transfer_moves.length > 0) {
-            goodTxDetail = goodTxWinner.transfer_moves.map(m => `<strong>${m.in}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts}) in for <strong>${m.out}</strong> (${m.out_pts})`).join(', ');
+            goodTxDetail = goodTxWinner.transfer_moves.map(m => `<strong>${this.escapeHtml(m.in)}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts}) in for <strong>${this.escapeHtml(m.out)}</strong> (${m.out_pts})`).join(', ');
           }
         }
         const card11 = renderCard({
@@ -2899,7 +2901,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           const movesSign = badTxWinner.transfers_pts_gain >= 0 ? '+' : '';
           badTxStat = `(${badTxWinner.transfers_net_impact} net; ${movesSign}${badTxWinner.transfers_pts_gain} from moves, ${hitsStr})`;
           if (badTxWinner.transfer_moves && badTxWinner.transfer_moves.length > 0) {
-            badTxDetail = badTxWinner.transfer_moves.map(m => `<strong>${m.in}</strong> (${m.in_pts}) in for <strong>${m.out}</strong> (${m.out_pts})`).join(', ');
+            badTxDetail = badTxWinner.transfer_moves.map(m => `<strong>${this.escapeHtml(m.in)}</strong> (${m.in_pts}) in for <strong>${this.escapeHtml(m.out)}</strong> (${m.out_pts})`).join(', ');
           }
         }
         const card12 = renderCard({
@@ -2923,7 +2925,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           const movesSign = hitHeroWinner.transfers_pts_gain >= 0 ? '+' : '';
           hitHeroStat = `(+${hitHeroWinner.transfers_net_impact} net; ${movesSign}${hitHeroWinner.transfers_pts_gain} from moves, -${hitHeroWinner.hits} hits)`;
           if (hitHeroWinner.transfer_moves && hitHeroWinner.transfer_moves.length > 0) {
-            hitHeroDetail = hitHeroWinner.transfer_moves.map(m => `<strong>${m.in}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts}) in for <strong>${m.out}</strong> (${m.out_pts})`).join(', ');
+            hitHeroDetail = hitHeroWinner.transfer_moves.map(m => `<strong>${this.escapeHtml(m.in)}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts}) in for <strong>${this.escapeHtml(m.out)}</strong> (${m.out_pts})`).join(', ');
           }
         }
         const card13 = renderCard({
@@ -2946,7 +2948,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           const movesSign = painfulHitWinner.transfers_pts_gain >= 0 ? '+' : '';
           painfulHitStat = `(${painfulHitWinner.transfers_net_impact} net; ${movesSign}${painfulHitWinner.transfers_pts_gain} from moves, -${painfulHitWinner.hits} hits)`;
           if (painfulHitWinner.transfer_moves && painfulHitWinner.transfer_moves.length > 0) {
-            painfulHitDetail = painfulHitWinner.transfer_moves.map(m => `<strong>${m.in}</strong> (${m.in_pts}) in for <strong>${m.out}</strong> (${m.out_pts})`).join(', ');
+            painfulHitDetail = painfulHitWinner.transfer_moves.map(m => `<strong>${this.escapeHtml(m.in)}</strong> (${m.in_pts}) in for <strong>${this.escapeHtml(m.out)}</strong> (${m.out_pts})`).join(', ');
           }
         }
         const card14 = renderCard({
@@ -2969,7 +2971,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           singleTxStat = `(+${singleTxWinner.transfers_net_impact} net from 1 move)`;
           if (singleTxWinner.transfer_moves && singleTxWinner.transfer_moves[0]) {
             const m = singleTxWinner.transfer_moves[0];
-            singleTxDetail = `<strong>${m.in}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts} pts) in for <strong>${m.out}</strong> (${m.out_pts})`;
+            singleTxDetail = `<strong>${this.escapeHtml(m.in)}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts} pts) in for <strong>${this.escapeHtml(m.out)}</strong> (${m.out_pts})`;
           }
         }
         const card15 = renderCard({
@@ -3956,7 +3958,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 <div class="flex items-center gap-3.5">
                   <div class="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black font-display shadow-md">🏆</div>
                   <div>
-                    <span class="text-xs uppercase font-bold text-amber-700 font-display">${this.data.name || 'MINI-LEAGUE'} CUP</span>
+                    <span class="text-xs uppercase font-bold text-amber-700 font-display">${this.escapeHtml(this.data.name || 'MINI-LEAGUE')} CUP</span>
                     <h3 class="text-lg font-bold text-slate-900">รางวัลผู้ชนะ Cup (บอลถ้วย)</h3>
                     <p class="text-xs text-slate-600 mt-0.5">รอสรุปสัปดาห์ที่เริ่มแข่งขัน และจัดสรรเงินรางวัลตามยอดสมัคร</p>
                   </div>
@@ -4211,7 +4213,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           });
           if (benchContainer) benchContainer.innerHTML = bHtml;
           if (benchTotal) {
-            const isBBoost = matchdayRes.chip === 'bboost';
+            const isBBoost = ['bboost', 'bench_boost'].includes((matchdayRes.chip || '').toLowerCase());
             benchTotal.innerHTML = isBBoost 
               ? `<span class="text-emerald-600 font-bold">รวม ${bPoints} pts (⚡ Bench Boost นับแต้ม)</span>`
               : `รวม ${bPoints} pts`;
@@ -4231,7 +4233,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const gw = this.selectedGW;
         const gwData = this.data.gameweeks ? this.data.gameweeks[String(gw)] : null;
         const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
-        const newNote = LiveCommentaryEngine.generateFreshNote(gw, gwData, this.data.name, true, nonPrizeList, this.data);
+        const isWeeklyPrize = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
+        const newNote = LiveCommentaryEngine.generateFreshNote(gw, gwData, this.data.name, true, nonPrizeList, this.data, isWeeklyPrize);
         const cacheKey = `${this.activeLeagueId}_${gw}`;
         this.liveNotesCache[cacheKey] = newNote;
         
@@ -4307,22 +4310,22 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
           const isWeekly = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
           const isFinished = Boolean(gwData.is_finished);
-          const scoreProp = (isFinished && isWeekly) ? 'net_points' : 'points';
+          const scoreProp = (isFinished || isWeekly) ? 'net_points' : 'points';
           const sorted = [...gwData.results].sort((a, b) => (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points));
           const eligibleResults = sorted.filter(r => this.isPrizeEligible(r.entry_id));
           const eligibleHighestScore = eligibleResults.length > 0 ? eligibleResults[0][scoreProp] : 0;
           const eligibleWinners = eligibleResults.filter(r => r[scoreProp] === eligibleHighestScore);
           const isJointPrize = eligibleWinners.length > 1;
           const overallTop = sorted[0];
-          const hasPassedPrize = !this.isPrizeEligible(overallTop.entry_id) && eligibleWinners.length > 0;
           const prizeLeader = eligibleWinners[0] || overallTop;
+          const hasPassedPrize = !this.isPrizeEligible(overallTop.entry_id) && eligibleWinners.length > 0 && overallTop[scoreProp] > prizeLeader[scoreProp];
 
           const noteEl = document.getElementById('current-gw-note-text');
           let currentLiveNote = noteEl ? noteEl.innerText.replace(/^"|"$/g, '').trim() : '';
           if (!currentLiveNote) {
             const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
             const cacheKey = `${this.activeLeagueId}_${this.selectedGW}`;
-            const rawHtmlNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data);
+            const rawHtmlNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeekly);
             currentLiveNote = String(rawHtmlNote).replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
           }
 
