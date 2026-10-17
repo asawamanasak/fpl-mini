@@ -3036,7 +3036,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
         if (isWeekly) {
           if (tagEl) tagEl.innerText = 'WEEKLY PRIZES';
-          const weeklyAmount = this.config.features.weekly_prize_amount || 350;
+          const weeklyAmount = this.config.features.weekly_prize_amount || 300;
           const weeklyTotal = weeklyAmount * 38;
           if (subEl) subEl.innerText = `ชิงเงินรางวัลรวม ${this.config.total_pool} (แชมป์สัปดาห์ละ ${weeklyAmount.toLocaleString()} THB x 38 สัปดาห์ = ${weeklyTotal.toLocaleString()} THB)`;
 
@@ -3143,7 +3143,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   if (sorted.length > 0) {
                     const topScore = sorted[0].net_points;
                     const topTeams = sorted.filter(r => r.net_points === topScore);
-                    const prizePerTeam = (this.config.features.weekly_prize_amount || 350) / topTeams.length;
+                    const prizePerTeam = (this.config.features.weekly_prize_amount || 300) / topTeams.length;
                     topTeams.forEach(t => {
                       phaseGWEntries.push({
                         gw: g,
@@ -3252,6 +3252,26 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">รอบเคลียร์เงินรางวัล 6 งวด</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   ${phasesHtml}
+                </div>
+              </div>
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
+                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">โครงสร้างเงินรางวัลรวมทั้งฤดูกาล (${this.config.total_pool || '20,000 THB'})</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">รางวัลแชมป์วีค (38 วีค)</span>
+                    <div class="text-xl font-black text-slate-900 mt-1 font-display">${weeklyTotal.toLocaleString()} <span class="text-xs">THB</span></div>
+                    <div class="text-xs text-slate-600 mt-0.5 font-medium">วีคละ ${weeklyAmount.toLocaleString()} THB x 38 รางวัล</div>
+                  </div>
+                  <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">รางวัลแชมป์บอลถ้วย (Cup)</span>
+                    <div class="text-xl font-black text-slate-900 mt-1 font-display">1,550 <span class="text-xs">THB</span></div>
+                    <div class="text-xs text-slate-600 mt-0.5 font-medium">แชมป์ ${this.config.cup_champion_prize || '1,000 THB'} / รองแชมป์ ${this.config.cup_runner_up_prize || '550 THB'}</div>
+                  </div>
+                  <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">รางวัลแชมป์ฤดูกาล</span>
+                    <div class="text-xl font-black text-slate-900 mt-1 font-display">7,050 <span class="text-xs">THB</span></div>
+                    <div class="text-xs text-slate-600 mt-0.5 font-medium">ที่ 1: 3,500 / ที่ 2: 2,000 / ที่ 3: 1,000 / ที่ 4: 550</div>
+                  </div>
                 </div>
               </div>` : `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
@@ -4374,7 +4394,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               const w0 = prizeLeader;
               const hitsStr = (w0.hits && w0.hits > 0) ? ` | แต้มลบ: -${w0.hits}` : '';
               text += `คะแนน: ${w0.points} pts (สุทธิ ${w0.net_points}${hitsStr})\n`;
-              const weeklyPrize = this.config.features.weekly_prize_amount || 350;
+              const weeklyPrize = this.config.features.weekly_prize_amount || 300;
               const prizePerTeam = isJointPrize ? (weeklyPrize / eligibleWinners.length).toFixed(0) : weeklyPrize;
               text += `เงินรางวัล: ${prizePerTeam} THB${isJointPrize ? ' / ทีม (หารเท่า)' : ''}\n`;
             } else {
