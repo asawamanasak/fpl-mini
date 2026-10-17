@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "17 ต.ค. 2026, 21:00 น.",
-    "last_sync_iso": "2026-10-17 21:00:32"
+    "last_sync": "17 ต.ค. 2026, 21:03 น.",
+    "last_sync_iso": "2026-10-17 21:03:39"
   },
   "teams": [
     {
@@ -2155,6 +2155,31 @@
       "data_checked": false,
       "results": [
         {
+          "entry_id": 5470959,
+          "team_name": "Anjoni Iraola",
+          "player_name": "pilan liu",
+          "points": 8,
+          "hits": 0,
+          "net_points": 8,
+          "captain": "Haaland",
+          "chip": "bboost",
+          "bench_points": 0,
+          "team_value": 100.3,
+          "bank": 0.6,
+          "transfers_count": 1,
+          "transfers_pts_gain": 0,
+          "transfers_net_impact": 0,
+          "transfer_moves": [
+            {
+              "in": "Barcola",
+              "in_pts": 1,
+              "out": "Szoboszlai",
+              "out_pts": 1,
+              "net": 0
+            }
+          ]
+        },
+        {
           "entry_id": 73489,
           "team_name": "Some might say",
           "player_name": "FAme Pakviwat",
@@ -2180,29 +2205,46 @@
           ]
         },
         {
-          "entry_id": 5470959,
-          "team_name": "Anjoni Iraola",
-          "player_name": "pilan liu",
-          "points": 6,
+          "entry_id": 2189419,
+          "team_name": "1234-Ultrasmooth-",
+          "player_name": "Maew Mohawk",
+          "points": 5,
           "hits": 0,
-          "net_points": 6,
+          "net_points": 5,
           "captain": "Haaland",
-          "chip": "bboost",
-          "bench_points": 0,
-          "team_value": 100.3,
-          "bank": 0.6,
+          "chip": null,
+          "bench_points": 1,
+          "team_value": 102.3,
+          "bank": 0.3,
           "transfers_count": 1,
           "transfers_pts_gain": 0,
           "transfers_net_impact": 0,
           "transfer_moves": [
             {
-              "in": "Barcola",
+              "in": "De Cuyper",
               "in_pts": 0,
-              "out": "Szoboszlai",
+              "out": "Ajayi",
               "out_pts": 0,
               "net": 0
             }
           ]
+        },
+        {
+          "entry_id": 2604490,
+          "team_name": "Leibniz FC",
+          "player_name": "Ataro Munson",
+          "points": 5,
+          "hits": 0,
+          "net_points": 5,
+          "captain": "Haaland",
+          "chip": null,
+          "bench_points": 0,
+          "team_value": 100.1,
+          "bank": 0.0,
+          "transfers_count": 0,
+          "transfers_pts_gain": 0,
+          "transfers_net_impact": 0,
+          "transfer_moves": []
         },
         {
           "entry_id": 5950381,
@@ -2213,7 +2255,7 @@
           "net_points": 4,
           "captain": "Haaland",
           "chip": null,
-          "bench_points": 0,
+          "bench_points": 1,
           "team_value": 101.8,
           "bank": 0.0,
           "transfers_count": 0,
@@ -2230,7 +2272,7 @@
           "net_points": 4,
           "captain": "Haaland",
           "chip": "3xc",
-          "bench_points": 0,
+          "bench_points": 1,
           "team_value": 101.9,
           "bank": 0.3,
           "transfers_count": 2,
@@ -2287,7 +2329,7 @@
           "net_points": 4,
           "captain": "Haaland",
           "chip": null,
-          "bench_points": 0,
+          "bench_points": 1,
           "team_value": 102.7,
           "bank": 2.0,
           "transfers_count": 1,
@@ -2302,48 +2344,6 @@
               "net": 0
             }
           ]
-        },
-        {
-          "entry_id": 2189419,
-          "team_name": "1234-Ultrasmooth-",
-          "player_name": "Maew Mohawk",
-          "points": 4,
-          "hits": 0,
-          "net_points": 4,
-          "captain": "Haaland",
-          "chip": null,
-          "bench_points": 1,
-          "team_value": 102.3,
-          "bank": 0.3,
-          "transfers_count": 1,
-          "transfers_pts_gain": 0,
-          "transfers_net_impact": 0,
-          "transfer_moves": [
-            {
-              "in": "De Cuyper",
-              "in_pts": 0,
-              "out": "Ajayi",
-              "out_pts": 0,
-              "net": 0
-            }
-          ]
-        },
-        {
-          "entry_id": 2604490,
-          "team_name": "Leibniz FC",
-          "player_name": "Ataro Munson",
-          "points": 2,
-          "hits": 0,
-          "net_points": 2,
-          "captain": "Haaland",
-          "chip": null,
-          "bench_points": 0,
-          "team_value": 100.1,
-          "bank": 0.0,
-          "transfers_count": 0,
-          "transfers_pts_gain": 0,
-          "transfers_net_impact": 0,
-          "transfer_moves": []
         },
         {
           "entry_id": 2191555,
@@ -2443,12 +2443,12 @@
           "net_points": 0,
           "captain": "Haaland",
           "chip": null,
-          "bench_points": 0,
+          "bench_points": 1,
           "team_value": 100.8,
           "bank": 0.3,
           "transfers_count": 3,
-          "transfers_pts_gain": -1,
-          "transfers_net_impact": -5,
+          "transfers_pts_gain": 0,
+          "transfers_net_impact": -4,
           "transfer_moves": [
             {
               "in": "Bogle",
@@ -2459,10 +2459,10 @@
             },
             {
               "in": "Janelt",
-              "in_pts": 0,
+              "in_pts": 1,
               "out": "George",
               "out_pts": 1,
-              "net": -1
+              "net": 0
             },
             {
               "in": "Groß",
@@ -24402,7 +24402,7 @@
           "pos": "MID",
           "team": "BRE",
           "team_code": 94,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         }
@@ -24698,7 +24698,7 @@
           "pos": "MID",
           "team": "LIV",
           "team_code": 14,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         }
@@ -25566,7 +25566,7 @@
           "pos": "MID",
           "team": "BRE",
           "team_code": 94,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -25770,7 +25770,7 @@
           "pos": "DEF",
           "team": "LIV",
           "team_code": 14,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -25800,7 +25800,7 @@
           "pos": "MID",
           "team": "LIV",
           "team_code": 14,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": true
         },
@@ -26106,7 +26106,7 @@
           "pos": "MID",
           "team": "BRE",
           "team_code": 94,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -26750,7 +26750,7 @@
           "pos": "MID",
           "team": "BRE",
           "team_code": 94,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -26924,7 +26924,7 @@
           "pos": "GKP",
           "team": "BRE",
           "team_code": 94,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -26984,7 +26984,7 @@
           "pos": "MID",
           "team": "LIV",
           "team_code": 14,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": false
         },
@@ -27024,7 +27024,7 @@
           "pos": "FWD",
           "team": "LIV",
           "team_code": 14,
-          "points": 0,
+          "points": 1,
           "is_captain": false,
           "is_vice": true
         }
