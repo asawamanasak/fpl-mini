@@ -57,13 +57,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
   <meta name="apple-mobile-web-app-title" content="FPL Dashboard">
 
   <!-- Favicons & App Shortcut Icons (Chrome / Safari / iOS / Android) -->
-  <link rel="icon" type="image/x-icon" href="__ASSET_PREFIX__favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="__ASSET_PREFIX__images/icons/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="__ASSET_PREFIX__images/icons/favicon-16x16.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="__ASSET_PREFIX__images/icons/favicon-192x192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="__ASSET_PREFIX__images/icons/favicon-512x512.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="__ASSET_PREFIX__images/icons/apple-touch-icon.png">
-  <link rel="manifest" href="__ASSET_PREFIX__site.webmanifest">
+  <link rel="shortcut icon" href="__ASSET_PREFIX__favicon.ico?v=2">
+  <link rel="icon" type="image/x-icon" href="__ASSET_PREFIX__favicon.ico?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="__ASSET_PREFIX__images/icons/favicon-32x32.png?v=2">
+  <link rel="icon" type="image/png" sizes="16x16" href="__ASSET_PREFIX__images/icons/favicon-16x16.png?v=2">
+  <link rel="icon" type="image/png" sizes="192x192" href="__ASSET_PREFIX__images/icons/favicon-192x192.png?v=2">
+  <link rel="icon" type="image/png" sizes="512x512" href="__ASSET_PREFIX__images/icons/favicon-512x512.png?v=2">
+  <link rel="apple-touch-icon" sizes="180x180" href="__ASSET_PREFIX__images/icons/apple-touch-icon.png?v=2">
+  <link rel="manifest" href="__ASSET_PREFIX__site.webmanifest?v=2">
 
   <!-- Open Graph / Social Media Share Thumbnail -->
   <meta property="og:type" content="website">
