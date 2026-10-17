@@ -1,0 +1,29 @@
+{
+  "name": "FPL Dashboard - มินิลีกแฟนตาซี",
+  "short_name": "FPL Dashboard",
+  "description": "ระบบรายงานผลคะแนนสด ตารางคะแนน และเงินรางวัล FPL มินิลีก",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "images/icons/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/icons/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "images/icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

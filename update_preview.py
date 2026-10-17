@@ -41,6 +41,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
     multi_data_json_str = json.dumps(pruned_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     leagues_config_json_str = json.dumps(leagues_config, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     default_lid_code = f'"{default_league_id}"' if default_league_id else 'null'
+    asset_prefix = "../" if default_league_id else "./"
     last_sync_str = str(multi_data.get("last_sync") or "31 ส.ค. 2026, 22:30 น.")
 
     html_template = """<!DOCTYPE html>
@@ -49,6 +50,32 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>FPL Dashboard - มินิลีกแฟนตาซี</title>
+  <meta name="description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPL มินิลีก">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FPL Dashboard">
+
+  <!-- Favicons & App Shortcut Icons (Chrome / Safari / iOS / Android) -->
+  <link rel="icon" type="image/x-icon" href="__ASSET_PREFIX__favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="__ASSET_PREFIX__images/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="__ASSET_PREFIX__images/icons/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="__ASSET_PREFIX__images/icons/favicon-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="__ASSET_PREFIX__images/icons/favicon-512x512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="__ASSET_PREFIX__images/icons/apple-touch-icon.png">
+  <link rel="manifest" href="__ASSET_PREFIX__site.webmanifest">
+
+  <!-- Open Graph / Social Media Share Thumbnail -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="FPL Dashboard - มินิลีกแฟนตาซี">
+  <meta property="og:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPL มินิลีก">
+  <meta property="og:image" content="https://asawamanasak.github.io/fpl-mini/images/icons/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FPL Dashboard - มินิลีกแฟนตาซี">
+  <meta name="twitter:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPL มินิลีก">
+  <meta name="twitter:image" content="https://asawamanasak.github.io/fpl-mini/images/icons/og-image.png">
   
   <script>
     (function() {
@@ -5156,6 +5183,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
     html = html.replace('__MULTI_DATA_JSON__', multi_data_json_str)
     html = html.replace('__LEAGUES_CONFIG_JSON__', leagues_config_json_str)
     html = html.replace('__DEFAULT_LID__', default_lid_code)
+    html = html.replace('__ASSET_PREFIX__', asset_prefix)
     return html
 
 def main():
