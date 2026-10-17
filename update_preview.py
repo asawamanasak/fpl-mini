@@ -4043,7 +4043,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const teamDesc = nonPrizeCount > 0 
           ? `สมาชิก ${totalTeams} ทีม (ชิงรางวัล ${prizeTeamsCount} ทีม, ร่วมสนุก ${nonPrizeCount} ทีม)`
           : `สมาชิก ${totalTeams} ทีม`;
-        if (descEl) descEl.innerHTML = `LEAGUE ID: <strong class="text-slate-800">${this.activeLeagueId}</strong> | ${teamDesc} | ค่าสมัคร: ${this.config.entry_fee} | กองกลาง: <strong>${this.config.total_pool}</strong>`;
+
+        if (descEl) {
+          descEl.innerHTML = `
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-2 text-xs">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-semibold border border-blue-200/60 dark:border-blue-800/60">League ID: ${this.activeLeagueId}</span>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">${teamDesc}</span>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-semibold border border-emerald-200/60 dark:border-emerald-800/60">ค่าสมัคร: ${this.config.entry_fee}</span>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 font-bold border border-amber-200/60 dark:border-amber-800/60">กองกลาง: ${this.config.total_pool}</span>
+            </div>
+          `;
+        }
         if (badgeEl) badgeEl.innerText = this.config.total_pool || 'OFFICIAL RULES';
 
         if (cardsContainer && this.config.rules_cards) {
@@ -4051,26 +4061,49 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           this.config.rules_cards.forEach((card, idx) => {
             let itemsHtml = '';
             card.items.forEach(item => {
+              let formattedDesc = '';
+              if (item.desc) {
+                const lines = item.desc.split('\\n').map(l => l.trim()).filter(Boolean);
+                if (lines.length > 1) {
+                  const listItems = lines.map(line => {
+                    const isBullet = line.startsWith('•') || line.startsWith('-');
+                    const content = isBullet ? line.replace(/^[•\\-]\\s*/, '') : line;
+                    return `
+                      <li class="flex items-start gap-2 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">
+                        <span class="text-blue-500 dark:text-blue-400 font-bold leading-tight select-none mt-0.5">•</span>
+                        <span class="flex-1">${content}</span>
+                      </li>
+                    `;
+                  }).join('');
+                  formattedDesc = `<ul class="space-y-1.5 mt-2 pl-0.5">${listItems}</ul>`;
+                } else {
+                  formattedDesc = `<p class="mt-1.5 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">${item.desc}</p>`;
+                }
+              }
+
               itemsHtml += `
-                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
-                  <strong class="text-slate-900 block mb-0.5">• ${item.label}:</strong>
-                  <span>${item.desc}</span>
+                <div class="bg-slate-50/90 dark:bg-slate-900/60 p-3.5 sm:p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 transition-colors shadow-2xs">
+                  <div class="flex items-center gap-2 border-b border-slate-200/40 dark:border-slate-800/60 pb-1.5">
+                    <span class="w-2 h-2 rounded-full bg-blue-500 dark:bg-blue-400 flex-shrink-0"></span>
+                    <strong class="text-slate-900 dark:text-slate-100 font-bold text-xs sm:text-sm tracking-tight">${item.label}</strong>
+                  </div>
+                  ${formattedDesc}
                 </div>
               `;
             });
 
             html += `
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 flex flex-col justify-between space-y-3">
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3.5 shadow-2xs">
                 <div>
-                  <div class="flex items-center gap-2 mb-2 pb-2 border-b border-slate-100">
-                    <span class="w-6 h-6 rounded-lg bg-slate-100 text-slate-800 font-bold text-xs flex items-center justify-center font-display">${idx + 1}</span>
-                    <h3 class="font-bold text-slate-900 text-sm">${card.title}</h3>
+                  <div class="flex items-center gap-2 mb-3 pb-2.5 border-b border-slate-100 dark:border-slate-800/80">
+                    <span class="w-6 h-6 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center justify-center font-display border border-blue-200/50 dark:border-blue-800/50">${idx + 1}</span>
+                    <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight">${card.title}</h3>
                   </div>
-                  <div class="space-y-2 text-xs text-slate-600">
+                  <div class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
                     ${itemsHtml}
                   </div>
                 </div>
-                <div class="text-[11px] text-slate-400 pt-2 border-t border-slate-100">
+                <div class="text-[11px] text-slate-400 dark:text-slate-500 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 leading-normal">
                   ${card.footer || ''}
                 </div>
               </div>
