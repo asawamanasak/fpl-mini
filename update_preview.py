@@ -2212,8 +2212,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                     <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-0.5">รอการแข่งขันคู่แรกเริ่มเตะ • สถิติการจัดทีมและวางหมากในลีก</p>
                   </div>
 
-                  <div class="w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 border-indigo-100 dark:border-slate-700 flex items-center justify-start sm:justify-end gap-3 text-left sm:text-right">
-                    <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xs px-3.5 py-2 rounded-xl border border-indigo-200/90 dark:border-slate-700 shadow-2xs">
+                  <div class="w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 border-indigo-100 dark:border-slate-700 flex items-center justify-end gap-3 text-right">
+                    <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xs px-3.5 py-2 rounded-xl border border-indigo-200/90 dark:border-slate-700 shadow-2xs ml-auto sm:ml-0">
                       <span class="text-[10px] text-indigo-900/80 dark:text-slate-400 uppercase font-bold font-display block">จำนวนทีมในลีก</span>
                       <span class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display">${gwData.results.length} <span class="text-xs font-bold text-slate-500 dark:text-slate-400">ทีม</span></span>
                     </div>
@@ -2300,9 +2300,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                     <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-0.5">${managerNames}</p>
                   </div>
 
-                  <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 ${isFinished ? 'border-amber-200/70' : 'border-emerald-200/70'} dark:border-slate-700">
-                    <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xs px-3.5 py-2 rounded-xl border ${isFinished ? 'border-amber-200/90' : 'border-emerald-200/90'} dark:border-slate-700 shadow-2xs flex items-center gap-3">
-                      <div class="text-left sm:text-right">
+                  <div class="flex items-center justify-end gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 ${isFinished ? 'border-amber-200/70' : 'border-emerald-200/70'} dark:border-slate-700">
+                    <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xs px-3.5 py-2 rounded-xl border ${isFinished ? 'border-amber-200/90' : 'border-emerald-200/90'} dark:border-slate-700 shadow-2xs flex items-center gap-3 ml-auto sm:ml-0">
+                      <div class="text-right">
                         <span class="text-[10px] sm:text-[11px] ${isFinished ? 'text-amber-900/80' : 'text-emerald-900/80'} dark:text-slate-400 uppercase font-bold font-display block leading-tight">${isFinished ? (isWeeklyPrize ? 'แต้มสุทธิ (Net Pts)' : 'คะแนนทางการ') : (isWeeklyPrize ? 'แต้มสุทธิสด (Live Net)' : 'คะแนนสด (Live Pts)')}</span>
                         <span class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-display leading-none">${prizeLeader[scoreProp]} <span class="text-xs font-bold text-slate-500 dark:text-slate-400">pts</span></span>
                       </div>
