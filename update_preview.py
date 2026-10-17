@@ -1688,7 +1688,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         if (lastSyncBadge) {
           lastSyncBadge.setAttribute('title', syncStatusTitle);
           if (!isSyncHealthy) {
-            lastSyncBadge.className = 'inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-rose-800 bg-rose-50 border border-rose-200 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs';
+            lastSyncBadge.className = 'inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-rose-800 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs';
+          } else {
+            lastSyncBadge.className = 'inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-slate-700 bg-slate-100/90 border border-slate-200/80 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs';
           }
         }
 
@@ -2068,8 +2070,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               : eligibleTopWinners.map(w => `${this.escapeHtml(w.player_name)} • (C) <strong>${this.escapeHtml((w.captain || '-').replace(/\s*\(C\)/gi, '').trim())}</strong>`).join('<br/>');
 
             const passNoteHtml = hasPassedPrize ? `
-              <div class="mb-3 px-3.5 py-2.5 rounded-xl bg-amber-100/80 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 flex items-start gap-2.5 text-xs text-amber-950 dark:text-amber-200 shadow-2xs">
-                <span class="text-base flex-shrink-0">💡</span>
+              <div class="mt-3 px-3.5 py-2.5 rounded-xl bg-amber-100/80 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 text-xs text-amber-950 dark:text-amber-200 shadow-2xs">
                 <div class="leading-relaxed">
                   <strong class="font-bold">หมายเหตุการมอบรางวัล:</strong> ทีม <strong>${this.escapeHtml(overallTop.team_name)}</strong> (${overallTop.points} pts${overallTop.hits > 0 ? `, แต้มสุทธิ ${overallTop.net_points} pts หักย้าย -${overallTop.hits}` : ''}) ทำคะแนนสูงสุดในสัปดาห์นี้แต่เป็นทีมร่วมสนุก จึงส่งมอบสิทธิ์รับรางวัลประจำสัปดาห์ให้แก่ <strong>${this.escapeHtml(prizeLeader.team_name)}</strong> (${(isFinished && isWeeklyPrize) ? prizeLeader.net_points : prizeLeader.points} pts)
                 </div>
@@ -2078,7 +2079,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
             championCard.innerHTML = `
               <div class="${isFinished ? 'winner-spotlight-card' : 'live-leader-spotlight-card'} rounded-2xl p-4 sm:p-5 relative overflow-hidden transition-all duration-200">
-                ${passNoteHtml}
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                   
                   <div>
@@ -2124,6 +2124,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                     </button>
                   </div>
                 </div>
+                ${passNoteHtml}
               </div>
             `;
           }
