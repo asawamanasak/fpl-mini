@@ -38,8 +38,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             "gameweeks": l_obj.get("gameweeks", {}),
             "squads": pruned_squads
         }
-    multi_data_json_str = json.dumps(pruned_data, ensure_ascii=False, separators=(',', ':'))
-    leagues_config_json_str = json.dumps(leagues_config, ensure_ascii=False, separators=(',', ':'))
+    multi_data_json_str = json.dumps(pruned_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+    leagues_config_json_str = json.dumps(leagues_config, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     default_lid_code = f'"{default_league_id}"' if default_league_id else 'null'
     last_sync_str = str(multi_data.get("last_sync") or "31 ส.ค. 2026, 22:30 น.")
 
@@ -3419,8 +3419,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div class="glass-card rounded-2xl p-4 border border-slate-200">
                   <span class="text-[10px] uppercase font-bold text-slate-400 font-display">รางวัลประจำเดือน (10 เดือน)</span>
-                  <div class="text-xl font-black text-slate-900 mt-1 font-display">10,000 <span class="text-xs">THB</span></div>
-                  <div class="text-xs text-slate-600 mt-0.5 font-medium">แชมป์ 600 / รอง 400 (ส.ค. - พ.ค.)</div>
+                  <div class="text-xl font-black text-slate-900 mt-1 font-display">${((feat.monthly_prize_amount || (champPrize + runnerPrize)) * 10).toLocaleString()} <span class="text-xs">THB</span></div>
+                  <div class="text-xs text-slate-600 mt-0.5 font-medium">แชมป์ ${champPrize.toLocaleString()} / รอง ${runnerPrize.toLocaleString()} (ส.ค. - พ.ค.)</div>
                 </div>
 
                 <div class="glass-card rounded-2xl p-4 border border-slate-200">
@@ -3481,9 +3481,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                           </div>
                         </td>
                         <td colspan="${curMonth.gw_list.length}" class="py-3 px-2 text-center text-[11px] text-slate-500 font-normal">
-                          แชมป์ 600 THB • รองแชมป์ 400 THB
+                          แชมป์ ${champPrize.toLocaleString()} THB • รองแชมป์ ${runnerPrize.toLocaleString()} THB
                         </td>
-                        <td class="py-3 px-2 sm:px-3 text-right font-black text-emerald-600 dark:text-emerald-400">${curMonthIsFinished ? '1,000 THB' : (feat.monthly_prize_amount || 1000).toLocaleString() + ' THB'}</td>
+                        <td class="py-3 px-2 sm:px-3 text-right font-black text-emerald-600 dark:text-emerald-400">${(feat.monthly_prize_amount || (champPrize + runnerPrize)).toLocaleString()} THB</td>
                       </tr>
                     </tfoot>
                   </table>

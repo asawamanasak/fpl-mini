@@ -65,15 +65,18 @@ def get_active_in_play_fixture_count(gw_id):
     - finished is False
     - finished_provisional is False
     - not postponed
+    Returns None if a transient network error occurs so callers can distinguish
+    between '0 matches in-play' and 'API temporarily unreachable'.
     """
     try:
         fixtures = fetch(f'https://fantasy.premierleague.com/api/fixtures/?event={gw_id}')
-        if fixtures and len(fixtures) > 0:
+        if isinstance(fixtures, list):
             active_fixtures = [f for f in fixtures if not bool(f.get('postponed'))]
             return sum(1 for f in active_fixtures if bool(f.get('started')) and not bool(f.get('finished')) and not bool(f.get('finished_provisional')))
+        return 0
     except Exception as e:
         print(f"Notice checking in-play fixtures for GW {gw_id}: {e}")
-    return 0
+        return None
 
 def trigger_publish():
     """Regenerate dashboard HTML presentations and commit/push updates to GitHub."""
@@ -91,9 +94,15 @@ def trigger_publish():
             subprocess.run(["git", "commit", "-m", commit_msg], check=True, cwd=base_dir)
             push_res = subprocess.run(["git", "push"], cwd=base_dir)
             if push_res.returncode != 0:
-                print("Notice: Git push conflict, rebasing...")
-                subprocess.run(["git", "pull", "--rebase"], cwd=base_dir)
-                subprocess.run(["git", "push"], cwd=base_dir)
+                print("Notice: Git push conflict, resetting to origin/main and regenerating...")
+                subprocess.run(["git", "fetch", "origin", "main"], check=True, cwd=base_dir)
+                subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, cwd=base_dir)
+                subprocess.run([sys.executable, update_script], check=True, cwd=base_dir)
+                subprocess.run(["git", "add", "-A"], check=True, cwd=base_dir)
+                retry_diff = subprocess.run(["git", "diff", "--staged", "--quiet"], cwd=base_dir)
+                if retry_diff.returncode != 0:
+                    subprocess.run(["git", "commit", "-m", commit_msg], check=True, cwd=base_dir)
+                    subprocess.run(["git", "push", "origin", "main"], check=True, cwd=base_dir)
             print("🚀 [Live Matchday Publisher] Successfully pushed live in-play update to GitHub!")
         else:
             print("   No staged changes to commit.")
@@ -450,6 +459,7 @@ def sync_once(args):
                 def process_team_picks(entry_tuple):
                     t_obj, gw = entry_tuple
                     eid = t_obj['entry']
+                    this_gw_finished = gw_status_map.get(gw, False)
                     try:
                         s_key = f"{eid}_{gw}"
                         cached_sq = cached_squads.get(s_key)
@@ -472,18 +482,22 @@ def sync_once(args):
                         live_pts_gw = live_by_gw.get(gw, {})
                         live_mins_gw = live_mins_by_gw.get(gw, {})
 
-                        # Identify captain
-                        cap_pick = next((p for p in picks if p.get('is_captain')), None)
+                        # Clone picks so cached_sq['raw_picks'] is never mutated in-place
+                        raw_picks = [dict(p) for p in picks]
+
+                        # Identify initial captain
+                        cap_pick = next((p for p in raw_picks if p.get('is_captain')), None)
                         if cap_pick:
                             el_info = elements.get(cap_pick['element'], {})
                             capt_name = el_info.get('web_name', 'Captain')
 
-                        # Starters and bench according to official FPL picks
-                        actual_starters_picks = [p for p in picks if p.get('position', 1) <= 11]
-                        actual_bench_picks = [p for p in picks if p.get('position', 1) > 11]
+                        # Starters and bench cloned independently for safe substitution/promotion
+                        actual_starters_picks = [dict(p) for p in raw_picks if p.get('position', 1) <= 11]
+                        actual_bench_picks = [dict(p) for p in raw_picks if p.get('position', 1) > 11]
                         final_auto_subs = list(auto_subs)
+                        default_cap_mult = 3 if chip == '3xc' else 2
 
-                        # Only apply official FPL automatic substitutions (when confirmed by FPL)
+                        # Apply official FPL automatic substitutions (when confirmed by FPL)
                         if auto_subs:
                             for sub in auto_subs:
                                 el_in = sub.get('element_in')
@@ -494,7 +508,7 @@ def sync_once(args):
                                     s_idx = actual_starters_picks.index(s_match)
                                     b_idx = actual_bench_picks.index(b_match)
                                     b_match_copy = dict(b_match)
-                                    b_match_copy['multiplier'] = 1
+                                    b_match_copy['multiplier'] = b_match.get('multiplier') if b_match.get('multiplier', 0) > 0 else 1
                                     s_match_copy = dict(s_match)
                                     s_match_copy['multiplier'] = 0
                                     actual_starters_picks[s_idx] = b_match_copy
@@ -502,12 +516,27 @@ def sync_once(args):
 
                                     # If the subbed-out player was captain, promote vice-captain
                                     if s_match.get('is_captain'):
-                                        cap_mult = s_match.get('multiplier', 2)
+                                        cap_mult = s_match.get('multiplier') if s_match.get('multiplier', 0) >= 2 else default_cap_mult
                                         vc_match = next((p for p in actual_starters_picks if p.get('is_vice_captain')), None)
                                         if vc_match:
                                             vc_match['multiplier'] = cap_mult
                                             vc_match['is_captain'] = True
                                         s_match_copy['is_captain'] = False
+
+                        # Also handle case where starting captain played 0 mins and was NOT subbed out
+                        # (e.g. no eligible bench sub), or FPL already promoted vice-captain multiplier >= 2
+                        active_cap = next((p for p in actual_starters_picks if p.get('is_captain')), None)
+                        active_vc = next((p for p in actual_starters_picks if p.get('is_vice_captain')), None)
+                        if active_vc and (
+                            active_vc.get('multiplier', 1) >= 2
+                            or (active_cap and active_cap.get('multiplier') == 0)
+                            or (this_gw_finished and active_cap and live_mins_gw.get(active_cap['element'], 0) == 0 and live_mins_gw.get(active_vc['element'], 0) > 0)
+                        ):
+                            active_vc['multiplier'] = active_vc.get('multiplier') if active_vc.get('multiplier', 1) >= 2 else default_cap_mult
+                            active_vc['is_captain'] = True
+                            if active_cap and active_cap['element'] != active_vc['element']:
+                                active_cap['is_captain'] = False
+                                active_cap['multiplier'] = 0
 
                         for p in actual_starters_picks:
                             pid = p['element']
@@ -532,8 +561,7 @@ def sync_once(args):
                                 capt_name = el_info.get('web_name', 'Captain')
                             starters.append(p_obj)
 
-                        rem_bench_picks = [p for p in picks if p not in actual_starters_picks]
-                        for p in rem_bench_picks:
+                        for p in actual_bench_picks:
                             pid = p['element']
                             is_cap = p.get('is_captain', False)
                             is_vice = p.get('is_vice_captain', False)
@@ -565,7 +593,7 @@ def sync_once(args):
 
                         # Resiliency: If GW is finished, official entry_history points is the authoritative finalized score
                         official_pts = hist.get('points')
-                        if official_pts is not None and (raw_points == 0 or gw_is_finished):
+                        if official_pts is not None and (raw_points == 0 or this_gw_finished):
                             raw_points = official_pts
 
                         net_points = raw_points - hits
@@ -592,7 +620,7 @@ def sync_once(args):
                             "starting": starters,
                             "bench": bench,
                             "auto_subs": final_auto_subs,
-                            "raw_picks": picks,
+                            "raw_picks": raw_picks,
                             "raw_hist": hist,
                             "chip": chip,
                             "hits": hits
@@ -644,14 +672,13 @@ def sync_once(args):
                             unique_res.append(r)
                     gameweeks_dict[gw_key]["results"] = unique_res
 
-                # Helper to extract player element ID safely
+                # Precompute O(1) web_name lookup map and helper to extract player element ID safely
+                web_name_to_id = {el.get("web_name"): el_id for el_id, el in elements.items() if el.get("web_name")}
                 def extract_pid(p):
                     if isinstance(p, dict):
                         if "id" in p and p["id"]:
                             return p["id"]
-                        for el_id, el in elements.items():
-                            if el.get("web_name") == p.get("name"):
-                                return el_id
+                        return web_name_to_id.get(p.get("name"))
                     return None
 
                 # Calculate transfer impact between consecutive GWs for each team
@@ -853,7 +880,7 @@ def main():
     if not should_loop:
         return
 
-    if in_play_count == 0:
+    if not in_play_count:
         print(f"\n⚡ [Matchday Live Daemon] No active in-play matches in GW {max_gw}. Finished single sync.")
         return
 
@@ -875,6 +902,9 @@ def main():
         iteration += 1
 
         in_play_count = get_active_in_play_fixture_count(max_gw)
+        if in_play_count is None:
+            print(f"\n⚠️ [Daemon Iteration {iteration}] Transient network error checking in-play fixtures. Continuing to next poll...")
+            continue
         if in_play_count == 0:
             print(f"\n🏁 All matches in this slot have concluded. Performing final sync and closing daemon.")
             has_changed, _, _ = sync_once(args)
