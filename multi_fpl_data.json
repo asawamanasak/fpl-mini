@@ -1,6 +1,6 @@
 {
-  "last_sync": "18 ต.ค. 2026, 23:08 น.",
-  "last_sync_iso": "2026-10-18 23:08:43",
+  "last_sync": "18 ต.ค. 2026, 23:09 น.",
+  "last_sync_iso": "2026-10-18 23:09:47",
   "sync_status": "ok",
   "max_gw": 7,
   "leagues": {
@@ -168383,6 +168383,31 @@
               "transfer_moves": []
             },
             {
+              "entry_id": 4127573,
+              "team_name": "Sia Nu",
+              "player_name": "Bewz Benjaphonkul",
+              "points": 71,
+              "hits": 0,
+              "net_points": 71,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 4,
+              "team_value": 101.2,
+              "bank": 2.3,
+              "transfers_count": 1,
+              "transfers_pts_gain": 11,
+              "transfers_net_impact": 11,
+              "transfer_moves": [
+                {
+                  "in": "Evanilson",
+                  "in_pts": 12,
+                  "out": "Wissa",
+                  "out_pts": 1,
+                  "net": 11
+                }
+              ]
+            },
+            {
               "entry_id": 306983,
               "team_name": "GEMINI UNITED",
               "player_name": "Micky Asawamanasak",
@@ -168411,31 +168436,6 @@
                   "out": "Ødegaard",
                   "out_pts": 1,
                   "net": 10
-                }
-              ]
-            },
-            {
-              "entry_id": 4127573,
-              "team_name": "Sia Nu",
-              "player_name": "Bewz Benjaphonkul",
-              "points": 68,
-              "hits": 0,
-              "net_points": 68,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 4,
-              "team_value": 101.2,
-              "bank": 2.3,
-              "transfers_count": 1,
-              "transfers_pts_gain": 11,
-              "transfers_net_impact": 11,
-              "transfer_moves": [
-                {
-                  "in": "Evanilson",
-                  "in_pts": 12,
-                  "out": "Wissa",
-                  "out_pts": 1,
-                  "net": 11
                 }
               ]
             },
@@ -168640,6 +168640,31 @@
               "transfer_moves": []
             },
             {
+              "entry_id": 122482,
+              "team_name": "ทีมของ Atthasit",
+              "player_name": "Atthasit Wongjohn",
+              "points": 55,
+              "hits": 0,
+              "net_points": 55,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 19,
+              "team_value": 101.4,
+              "bank": 3.6,
+              "transfers_count": 1,
+              "transfers_pts_gain": 3,
+              "transfers_net_impact": 3,
+              "transfer_moves": [
+                {
+                  "in": "Rice",
+                  "in_pts": 4,
+                  "out": "Saka",
+                  "out_pts": 1,
+                  "net": 3
+                }
+              ]
+            },
+            {
               "entry_id": 5523000,
               "team_name": "K.Wit",
               "player_name": "Krisana Witthayaanumas",
@@ -168678,31 +168703,6 @@
                   "out": "Furo",
                   "out_pts": 0,
                   "net": 12
-                }
-              ]
-            },
-            {
-              "entry_id": 122482,
-              "team_name": "ทีมของ Atthasit",
-              "player_name": "Atthasit Wongjohn",
-              "points": 52,
-              "hits": 0,
-              "net_points": 52,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 19,
-              "team_value": 101.4,
-              "bank": 3.6,
-              "transfers_count": 1,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": [
-                {
-                  "in": "Rice",
-                  "in_pts": 1,
-                  "out": "Saka",
-                  "out_pts": 1,
-                  "net": 0
                 }
               ]
             },
@@ -199284,7 +199284,7 @@
               "pos": "MID",
               "team": "ARS",
               "team_code": 3,
-              "points": 1,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -201978,7 +201978,7 @@
               "pos": "MID",
               "team": "ARS",
               "team_code": 3,
-              "points": 1,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
