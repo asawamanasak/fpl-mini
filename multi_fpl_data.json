@@ -1,6 +1,6 @@
 {
-  "last_sync": "18 ต.ค. 2026, 23:06 น.",
-  "last_sync_iso": "2026-10-18 23:06:38",
+  "last_sync": "18 ต.ค. 2026, 23:08 น.",
+  "last_sync_iso": "2026-10-18 23:08:43",
   "sync_status": "ok",
   "max_gw": 7,
   "leagues": {
@@ -2160,9 +2160,9 @@
               "entry_id": 306983,
               "team_name": "GEMINI UNITED",
               "player_name": "Micky Asawamanasak",
-              "points": 66,
+              "points": 68,
               "hits": 0,
-              "net_points": 66,
+              "net_points": 68,
               "captain": "Haaland",
               "chip": "3xc",
               "bench_points": 21,
@@ -2214,6 +2214,23 @@
               ]
             },
             {
+              "entry_id": 5950381,
+              "team_name": "SUN-KUNG-JI",
+              "player_name": "Athit Rattanawipapong",
+              "points": 60,
+              "hits": 0,
+              "net_points": 60,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": -2,
+              "team_value": 101.8,
+              "bank": 0.0,
+              "transfers_count": 0,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": 0,
+              "transfer_moves": []
+            },
+            {
               "entry_id": 197082,
               "team_name": "Mary Jojibana",
               "player_name": "Kavinjet Tantitanasap",
@@ -2237,23 +2254,6 @@
                   "net": 11
                 }
               ]
-            },
-            {
-              "entry_id": 5950381,
-              "team_name": "SUN-KUNG-JI",
-              "player_name": "Athit Rattanawipapong",
-              "points": 58,
-              "hits": 0,
-              "net_points": 58,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": -2,
-              "team_value": 101.8,
-              "bank": 0.0,
-              "transfers_count": 0,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": []
             },
             {
               "entry_id": 2604490,
@@ -2369,6 +2369,31 @@
               ]
             },
             {
+              "entry_id": 73489,
+              "team_name": "Some might say",
+              "player_name": "FAme Pakviwat",
+              "points": 51,
+              "hits": 0,
+              "net_points": 51,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 6,
+              "team_value": 102.5,
+              "bank": 1.8,
+              "transfers_count": 1,
+              "transfers_pts_gain": 2,
+              "transfers_net_impact": 2,
+              "transfer_moves": [
+                {
+                  "in": "De Cuyper",
+                  "in_pts": 6,
+                  "out": "Hall",
+                  "out_pts": 4,
+                  "net": 2
+                }
+              ]
+            },
+            {
               "entry_id": 1206581,
               "team_name": "TK.FPL",
               "player_name": "Teerasade Khemprasit",
@@ -2397,31 +2422,6 @@
                   "out": "Hughes",
                   "out_pts": 1,
                   "net": -1
-                }
-              ]
-            },
-            {
-              "entry_id": 73489,
-              "team_name": "Some might say",
-              "player_name": "FAme Pakviwat",
-              "points": 49,
-              "hits": 0,
-              "net_points": 49,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 6,
-              "team_value": 102.5,
-              "bank": 1.8,
-              "transfers_count": 1,
-              "transfers_pts_gain": 2,
-              "transfers_net_impact": 2,
-              "transfer_moves": [
-                {
-                  "in": "De Cuyper",
-                  "in_pts": 6,
-                  "out": "Hall",
-                  "out_pts": 4,
-                  "net": 2
                 }
               ]
             },
@@ -23996,7 +23996,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -24282,7 +24282,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -24578,7 +24578,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -38763,37 +38763,12 @@
           "data_checked": false,
           "results": [
             {
-              "entry_id": 7927547,
-              "team_name": "NK",
-              "player_name": "Goprex Nakhun",
-              "points": 68,
-              "hits": 0,
-              "net_points": 68,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 4,
-              "team_value": 100.2,
-              "bank": 5.2,
-              "transfers_count": 1,
-              "transfers_pts_gain": 5,
-              "transfers_net_impact": 5,
-              "transfer_moves": [
-                {
-                  "in": "De Cuyper",
-                  "in_pts": 6,
-                  "out": "Muñoz",
-                  "out_pts": 1,
-                  "net": 5
-                }
-              ]
-            },
-            {
               "entry_id": 103641,
               "team_name": "SkyMaxHero",
               "player_name": "Kraiwut Sewatanon",
-              "points": 67,
+              "points": 69,
               "hits": 0,
-              "net_points": 67,
+              "net_points": 69,
               "captain": "Haaland",
               "chip": "3xc",
               "bench_points": 7,
@@ -38805,29 +38780,12 @@
               "transfer_moves": []
             },
             {
-              "entry_id": 2741115,
-              "team_name": "Xabibi",
-              "player_name": "Rachata Suksuratchai",
-              "points": 66,
-              "hits": 0,
-              "net_points": 66,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 0,
-              "team_value": 102.5,
-              "bank": 0.1,
-              "transfers_count": 0,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": []
-            },
-            {
               "entry_id": 306983,
               "team_name": "GEMINI UNITED",
               "player_name": "Micky Asawamanasak",
-              "points": 66,
+              "points": 68,
               "hits": 0,
-              "net_points": 66,
+              "net_points": 68,
               "captain": "Haaland",
               "chip": "3xc",
               "bench_points": 21,
@@ -38854,12 +38812,37 @@
               ]
             },
             {
+              "entry_id": 7927547,
+              "team_name": "NK",
+              "player_name": "Goprex Nakhun",
+              "points": 68,
+              "hits": 0,
+              "net_points": 68,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 4,
+              "team_value": 100.2,
+              "bank": 5.2,
+              "transfers_count": 1,
+              "transfers_pts_gain": 5,
+              "transfers_net_impact": 5,
+              "transfer_moves": [
+                {
+                  "in": "De Cuyper",
+                  "in_pts": 6,
+                  "out": "Muñoz",
+                  "out_pts": 1,
+                  "net": 5
+                }
+              ]
+            },
+            {
               "entry_id": 2472694,
               "team_name": "Godzilbu United",
               "player_name": "Tanapan Jongsaksawat",
-              "points": 64,
+              "points": 66,
               "hits": 0,
-              "net_points": 64,
+              "net_points": 66,
               "captain": "Haaland",
               "chip": null,
               "bench_points": 8,
@@ -38886,12 +38869,29 @@
               ]
             },
             {
+              "entry_id": 2741115,
+              "team_name": "Xabibi",
+              "player_name": "Rachata Suksuratchai",
+              "points": 66,
+              "hits": 0,
+              "net_points": 66,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 0,
+              "team_value": 102.5,
+              "bank": 0.1,
+              "transfers_count": 0,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": 0,
+              "transfer_moves": []
+            },
+            {
               "entry_id": 3806029,
               "team_name": "huGo with the Flo",
               "player_name": "Man Laosathirawong",
-              "points": 63,
+              "points": 65,
               "hits": 0,
-              "net_points": 63,
+              "net_points": 65,
               "captain": "Haaland",
               "chip": "bboost",
               "bench_points": 0,
@@ -39123,29 +39123,12 @@
               ]
             },
             {
-              "entry_id": 697377,
-              "team_name": "GOBBIEZ UNITED",
-              "player_name": "Vutthipong Patirop",
-              "points": 57,
-              "hits": 0,
-              "net_points": 57,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 9,
-              "team_value": 102.6,
-              "bank": 0.0,
-              "transfers_count": 0,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": []
-            },
-            {
               "entry_id": 4097503,
               "team_name": "Teshimo Hokum",
               "player_name": "Te Shimo",
-              "points": 57,
+              "points": 59,
               "hits": 0,
-              "net_points": 57,
+              "net_points": 59,
               "captain": "Haaland",
               "chip": "3xc",
               "bench_points": 3,
@@ -39168,9 +39151,9 @@
               "entry_id": 3269963,
               "team_name": "Whitecat United",
               "player_name": "Siwawut Sewatanon",
-              "points": 56,
+              "points": 58,
               "hits": 0,
-              "net_points": 56,
+              "net_points": 58,
               "captain": "Groß",
               "chip": null,
               "bench_points": 14,
@@ -39185,9 +39168,9 @@
               "entry_id": 1189463,
               "team_name": "ReVoltz",
               "player_name": "warit ratchaneekorn",
-              "points": 56,
+              "points": 58,
               "hits": 0,
-              "net_points": 56,
+              "net_points": 58,
               "captain": "Haaland",
               "chip": null,
               "bench_points": 3,
@@ -39207,12 +39190,29 @@
               ]
             },
             {
+              "entry_id": 697377,
+              "team_name": "GOBBIEZ UNITED",
+              "player_name": "Vutthipong Patirop",
+              "points": 57,
+              "hits": 0,
+              "net_points": 57,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 11,
+              "team_value": 102.6,
+              "bank": 0.0,
+              "transfers_count": 0,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": 0,
+              "transfer_moves": []
+            },
+            {
               "entry_id": 53478,
               "team_name": "San",
               "player_name": "San T",
-              "points": 54,
+              "points": 56,
               "hits": 0,
-              "net_points": 54,
+              "net_points": 56,
               "captain": "Haaland",
               "chip": null,
               "bench_points": 8,
@@ -39235,9 +39235,9 @@
               "entry_id": 2176238,
               "team_name": "Ziang's Team",
               "player_name": "Ziang Dui",
-              "points": 54,
+              "points": 56,
               "hits": 0,
-              "net_points": 54,
+              "net_points": 56,
               "captain": "Haaland",
               "chip": null,
               "bench_points": 4,
@@ -39253,6 +39253,38 @@
                   "out": "Maatsen",
                   "out_pts": 0,
                   "net": 0
+                }
+              ]
+            },
+            {
+              "entry_id": 5741248,
+              "team_name": "Brankal x 4EVE",
+              "player_name": "Kittipong Suwanjinda",
+              "points": 55,
+              "hits": 0,
+              "net_points": 55,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 5,
+              "team_value": 102.1,
+              "bank": 0.7,
+              "transfers_count": 2,
+              "transfers_pts_gain": 4,
+              "transfers_net_impact": 4,
+              "transfer_moves": [
+                {
+                  "in": "Van Hecke",
+                  "in_pts": 0,
+                  "out": "Ajayi",
+                  "out_pts": 2,
+                  "net": -2
+                },
+                {
+                  "in": "De Cuyper",
+                  "in_pts": 6,
+                  "out": "Gvardiol",
+                  "out_pts": 0,
+                  "net": 6
                 }
               ]
             },
@@ -39292,38 +39324,6 @@
                   "out": "Tzolis",
                   "out_pts": 0,
                   "net": 4
-                }
-              ]
-            },
-            {
-              "entry_id": 5741248,
-              "team_name": "Brankal x 4EVE",
-              "player_name": "Kittipong Suwanjinda",
-              "points": 53,
-              "hits": 0,
-              "net_points": 53,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 5,
-              "team_value": 102.1,
-              "bank": 0.7,
-              "transfers_count": 2,
-              "transfers_pts_gain": 4,
-              "transfers_net_impact": 4,
-              "transfer_moves": [
-                {
-                  "in": "Van Hecke",
-                  "in_pts": 0,
-                  "out": "Ajayi",
-                  "out_pts": 2,
-                  "net": -2
-                },
-                {
-                  "in": "De Cuyper",
-                  "in_pts": 6,
-                  "out": "Gvardiol",
-                  "out_pts": 0,
-                  "net": 6
                 }
               ]
             },
@@ -39370,6 +39370,48 @@
               ]
             },
             {
+              "entry_id": 2690262,
+              "team_name": "BZ dé CHIPOTLÉ",
+              "player_name": "Benz Piyawat",
+              "points": 52,
+              "hits": 0,
+              "net_points": 52,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 4,
+              "team_value": 100.9,
+              "bank": 0.0,
+              "transfers_count": 0,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": 0,
+              "transfer_moves": []
+            },
+            {
+              "entry_id": 73489,
+              "team_name": "Some might say",
+              "player_name": "FAme Pakviwat",
+              "points": 51,
+              "hits": 0,
+              "net_points": 51,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 6,
+              "team_value": 102.5,
+              "bank": 1.8,
+              "transfers_count": 1,
+              "transfers_pts_gain": 2,
+              "transfers_net_impact": 2,
+              "transfer_moves": [
+                {
+                  "in": "De Cuyper",
+                  "in_pts": 6,
+                  "out": "Hall",
+                  "out_pts": 4,
+                  "net": 2
+                }
+              ]
+            },
+            {
               "entry_id": 2919864,
               "team_name": "johnnn",
               "player_name": "Pakanan Nark-in",
@@ -39378,7 +39420,7 @@
               "net_points": 51,
               "captain": "Haaland",
               "chip": null,
-              "bench_points": 6,
+              "bench_points": 8,
               "team_value": 101.7,
               "bank": 1.6,
               "transfers_count": 1,
@@ -39391,6 +39433,31 @@
                   "out": "Szoboszlai",
                   "out_pts": 1,
                   "net": -1
+                }
+              ]
+            },
+            {
+              "entry_id": 3104306,
+              "team_name": "kawinsat",
+              "player_name": "Kawin Satirapatanakiat",
+              "points": 50,
+              "hits": 0,
+              "net_points": 50,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 1,
+              "team_value": 101.9,
+              "bank": 0.2,
+              "transfers_count": 1,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": 0,
+              "transfer_moves": [
+                {
+                  "in": "Cherki",
+                  "in_pts": 0,
+                  "out": "Gibbs-White",
+                  "out_pts": 0,
+                  "net": 0
                 }
               ]
             },
@@ -39459,6 +39526,80 @@
               ]
             },
             {
+              "entry_id": 6417622,
+              "team_name": "Xforplaygame",
+              "player_name": "X Gamer",
+              "points": 50,
+              "hits": 0,
+              "net_points": 50,
+              "captain": "Haaland",
+              "chip": "wildcard",
+              "bench_points": 6,
+              "team_value": 101.5,
+              "bank": 0.1,
+              "transfers_count": 8,
+              "transfers_pts_gain": -20,
+              "transfers_net_impact": -20,
+              "transfer_moves": [
+                {
+                  "in": "Donnarumma",
+                  "in_pts": 1,
+                  "out": "Roefs",
+                  "out_pts": 2,
+                  "net": -1
+                },
+                {
+                  "in": "Bogle",
+                  "in_pts": 2,
+                  "out": "Diop",
+                  "out_pts": 3,
+                  "net": -1
+                },
+                {
+                  "in": "De Cuyper",
+                  "in_pts": 6,
+                  "out": "van Ewijk",
+                  "out_pts": 0,
+                  "net": 6
+                },
+                {
+                  "in": "Cherki",
+                  "in_pts": 0,
+                  "out": "B.Fernandes",
+                  "out_pts": 1,
+                  "net": -1
+                },
+                {
+                  "in": "Palmer",
+                  "in_pts": 2,
+                  "out": "Neto",
+                  "out_pts": 15,
+                  "net": -13
+                },
+                {
+                  "in": "Groß",
+                  "in_pts": 5,
+                  "out": "Belloumi",
+                  "out_pts": 2,
+                  "net": 3
+                },
+                {
+                  "in": "E.Le Fée",
+                  "in_pts": 2,
+                  "out": "Gomez",
+                  "out_pts": 8,
+                  "net": -6
+                },
+                {
+                  "in": "N.Jackson",
+                  "in_pts": 2,
+                  "out": "Isak",
+                  "out_pts": 9,
+                  "net": -7
+                }
+              ]
+            },
+            {
               "entry_id": 1493046,
               "team_name": "See you next season!",
               "player_name": "patchara eaimtrakul",
@@ -39522,48 +39663,6 @@
                   "out": "Gakpo",
                   "out_pts": 0,
                   "net": 0
-                }
-              ]
-            },
-            {
-              "entry_id": 2690262,
-              "team_name": "BZ dé CHIPOTLÉ",
-              "player_name": "Benz Piyawat",
-              "points": 50,
-              "hits": 0,
-              "net_points": 50,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 4,
-              "team_value": 100.9,
-              "bank": 0.0,
-              "transfers_count": 0,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": []
-            },
-            {
-              "entry_id": 73489,
-              "team_name": "Some might say",
-              "player_name": "FAme Pakviwat",
-              "points": 49,
-              "hits": 0,
-              "net_points": 49,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 6,
-              "team_value": 102.5,
-              "bank": 1.8,
-              "transfers_count": 1,
-              "transfers_pts_gain": 2,
-              "transfers_net_impact": 2,
-              "transfer_moves": [
-                {
-                  "in": "De Cuyper",
-                  "in_pts": 6,
-                  "out": "Hall",
-                  "out_pts": 4,
-                  "net": 2
                 }
               ]
             },
@@ -39649,6 +39748,23 @@
               ]
             },
             {
+              "entry_id": 2913117,
+              "team_name": "IRONKEN",
+              "player_name": "Papungkorn Ingkanont",
+              "points": 49,
+              "hits": 0,
+              "net_points": 49,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 9,
+              "team_value": 99.8,
+              "bank": 1.0,
+              "transfers_count": 0,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": 0,
+              "transfer_moves": []
+            },
+            {
               "entry_id": 3488930,
               "team_name": "boatieee",
               "player_name": "boatieee sangtong",
@@ -39706,105 +39822,6 @@
               ]
             },
             {
-              "entry_id": 3104306,
-              "team_name": "kawinsat",
-              "player_name": "Kawin Satirapatanakiat",
-              "points": 48,
-              "hits": 0,
-              "net_points": 48,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 1,
-              "team_value": 101.9,
-              "bank": 0.2,
-              "transfers_count": 1,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": [
-                {
-                  "in": "Cherki",
-                  "in_pts": 0,
-                  "out": "Gibbs-White",
-                  "out_pts": 0,
-                  "net": 0
-                }
-              ]
-            },
-            {
-              "entry_id": 6417622,
-              "team_name": "Xforplaygame",
-              "player_name": "X Gamer",
-              "points": 48,
-              "hits": 0,
-              "net_points": 48,
-              "captain": "Haaland",
-              "chip": "wildcard",
-              "bench_points": 6,
-              "team_value": 101.5,
-              "bank": 0.1,
-              "transfers_count": 8,
-              "transfers_pts_gain": -20,
-              "transfers_net_impact": -20,
-              "transfer_moves": [
-                {
-                  "in": "Donnarumma",
-                  "in_pts": 1,
-                  "out": "Roefs",
-                  "out_pts": 2,
-                  "net": -1
-                },
-                {
-                  "in": "Bogle",
-                  "in_pts": 2,
-                  "out": "Diop",
-                  "out_pts": 3,
-                  "net": -1
-                },
-                {
-                  "in": "De Cuyper",
-                  "in_pts": 6,
-                  "out": "van Ewijk",
-                  "out_pts": 0,
-                  "net": 6
-                },
-                {
-                  "in": "Cherki",
-                  "in_pts": 0,
-                  "out": "B.Fernandes",
-                  "out_pts": 1,
-                  "net": -1
-                },
-                {
-                  "in": "Palmer",
-                  "in_pts": 2,
-                  "out": "Neto",
-                  "out_pts": 15,
-                  "net": -13
-                },
-                {
-                  "in": "Groß",
-                  "in_pts": 5,
-                  "out": "Belloumi",
-                  "out_pts": 2,
-                  "net": 3
-                },
-                {
-                  "in": "E.Le Fée",
-                  "in_pts": 2,
-                  "out": "Gomez",
-                  "out_pts": 8,
-                  "net": -6
-                },
-                {
-                  "in": "N.Jackson",
-                  "in_pts": 2,
-                  "out": "Isak",
-                  "out_pts": 9,
-                  "net": -7
-                }
-              ]
-            },
-            {
               "entry_id": 3948485,
               "team_name": "ClubHellness",
               "player_name": "ฐานุพงศ์ อัครพิริยวณิช",
@@ -39813,26 +39830,9 @@
               "net_points": 47,
               "captain": "Haaland",
               "chip": null,
-              "bench_points": 4,
+              "bench_points": 6,
               "team_value": 102.9,
               "bank": 0.0,
-              "transfers_count": 0,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": []
-            },
-            {
-              "entry_id": 2913117,
-              "team_name": "IRONKEN",
-              "player_name": "Papungkorn Ingkanont",
-              "points": 47,
-              "hits": 0,
-              "net_points": 47,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 9,
-              "team_value": 99.8,
-              "bank": 1.0,
               "transfers_count": 0,
               "transfers_pts_gain": 0,
               "transfers_net_impact": 0,
@@ -39867,6 +39867,31 @@
                   "out": "Isak",
                   "out_pts": 9,
                   "net": -8
+                }
+              ]
+            },
+            {
+              "entry_id": 6799761,
+              "team_name": "Marty FC",
+              "player_name": "Mart Wonlopsiri",
+              "points": 45,
+              "hits": 0,
+              "net_points": 45,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 6,
+              "team_value": 101.5,
+              "bank": 1.9,
+              "transfers_count": 1,
+              "transfers_pts_gain": -1,
+              "transfers_net_impact": -1,
+              "transfer_moves": [
+                {
+                  "in": "Cherki",
+                  "in_pts": 0,
+                  "out": "Szoboszlai",
+                  "out_pts": 1,
+                  "net": -1
                 }
               ]
             },
@@ -39910,31 +39935,6 @@
               ]
             },
             {
-              "entry_id": 6799761,
-              "team_name": "Marty FC",
-              "player_name": "Mart Wonlopsiri",
-              "points": 43,
-              "hits": 0,
-              "net_points": 43,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 6,
-              "team_value": 101.5,
-              "bank": 1.9,
-              "transfers_count": 1,
-              "transfers_pts_gain": -1,
-              "transfers_net_impact": -1,
-              "transfer_moves": [
-                {
-                  "in": "Cherki",
-                  "in_pts": 0,
-                  "out": "Szoboszlai",
-                  "out_pts": 1,
-                  "net": -1
-                }
-              ]
-            },
-            {
               "entry_id": 5956924,
               "team_name": "nachai 5 fc",
               "player_name": "Arporn Meebangyang",
@@ -39963,6 +39963,38 @@
                   "out": "Szoboszlai",
                   "out_pts": 1,
                   "net": 0
+                }
+              ]
+            },
+            {
+              "entry_id": 2208018,
+              "team_name": "Bangkorn 11",
+              "player_name": "Dow K",
+              "points": 43,
+              "hits": 0,
+              "net_points": 43,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 8,
+              "team_value": 101.0,
+              "bank": 0.9,
+              "transfers_count": 2,
+              "transfers_pts_gain": -8,
+              "transfers_net_impact": -8,
+              "transfer_moves": [
+                {
+                  "in": "Cherki",
+                  "in_pts": 0,
+                  "out": "Szoboszlai",
+                  "out_pts": 1,
+                  "net": -1
+                },
+                {
+                  "in": "João Pedro",
+                  "in_pts": 2,
+                  "out": "Isak",
+                  "out_pts": 9,
+                  "net": -7
                 }
               ]
             },
@@ -40047,38 +40079,6 @@
                   "out": "Saka",
                   "out_pts": 1,
                   "net": -1
-                }
-              ]
-            },
-            {
-              "entry_id": 2208018,
-              "team_name": "Bangkorn 11",
-              "player_name": "Dow K",
-              "points": 41,
-              "hits": 0,
-              "net_points": 41,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 8,
-              "team_value": 101.0,
-              "bank": 0.9,
-              "transfers_count": 2,
-              "transfers_pts_gain": -8,
-              "transfers_net_impact": -8,
-              "transfer_moves": [
-                {
-                  "in": "Cherki",
-                  "in_pts": 0,
-                  "out": "Szoboszlai",
-                  "out_pts": 1,
-                  "net": -1
-                },
-                {
-                  "in": "João Pedro",
-                  "in_pts": 2,
-                  "out": "Isak",
-                  "out_pts": 9,
-                  "net": -7
                 }
               ]
             },
@@ -40283,9 +40283,9 @@
               "entry_id": 5715428,
               "team_name": "Art _smooth",
               "player_name": "kanawat yapong",
-              "points": 27,
+              "points": 29,
               "hits": 0,
-              "net_points": 27,
+              "net_points": 29,
               "captain": "Barcola",
               "chip": null,
               "bench_points": 3,
@@ -147857,7 +147857,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -148153,7 +148153,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -148541,7 +148541,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -149337,7 +149337,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -149623,7 +149623,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -149939,7 +149939,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -150501,7 +150501,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -150919,7 +150919,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -151113,7 +151113,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -151797,7 +151797,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -152583,7 +152583,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -153767,7 +153767,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -154461,7 +154461,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -154645,7 +154645,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -154961,7 +154961,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -156727,7 +156727,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -157329,7 +157329,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -157901,7 +157901,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -160279,7 +160279,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -160585,7 +160585,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -162351,7 +162351,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -168383,6 +168383,38 @@
               "transfer_moves": []
             },
             {
+              "entry_id": 306983,
+              "team_name": "GEMINI UNITED",
+              "player_name": "Micky Asawamanasak",
+              "points": 68,
+              "hits": 0,
+              "net_points": 68,
+              "captain": "Haaland",
+              "chip": "3xc",
+              "bench_points": 21,
+              "team_value": 101.9,
+              "bank": 0.3,
+              "transfers_count": 2,
+              "transfers_pts_gain": 7,
+              "transfers_net_impact": 7,
+              "transfer_moves": [
+                {
+                  "in": "Calafiori",
+                  "in_pts": 1,
+                  "out": "Egan",
+                  "out_pts": 4,
+                  "net": -3
+                },
+                {
+                  "in": "Manzambi",
+                  "in_pts": 11,
+                  "out": "Ødegaard",
+                  "out_pts": 1,
+                  "net": 10
+                }
+              ]
+            },
+            {
               "entry_id": 4127573,
               "team_name": "Sia Nu",
               "player_name": "Bewz Benjaphonkul",
@@ -168436,38 +168468,6 @@
                   "out": "Barry",
                   "out_pts": 2,
                   "net": 0
-                }
-              ]
-            },
-            {
-              "entry_id": 306983,
-              "team_name": "GEMINI UNITED",
-              "player_name": "Micky Asawamanasak",
-              "points": 66,
-              "hits": 0,
-              "net_points": 66,
-              "captain": "Haaland",
-              "chip": "3xc",
-              "bench_points": 21,
-              "team_value": 101.9,
-              "bank": 0.3,
-              "transfers_count": 2,
-              "transfers_pts_gain": 7,
-              "transfers_net_impact": 7,
-              "transfer_moves": [
-                {
-                  "in": "Calafiori",
-                  "in_pts": 1,
-                  "out": "Egan",
-                  "out_pts": 4,
-                  "net": -3
-                },
-                {
-                  "in": "Manzambi",
-                  "in_pts": 11,
-                  "out": "Ødegaard",
-                  "out_pts": 1,
-                  "net": 10
                 }
               ]
             },
@@ -168564,7 +168564,7 @@
               "net_points": 57,
               "captain": "Haaland",
               "chip": "freehit",
-              "bench_points": 5,
+              "bench_points": 7,
               "team_value": 101.3,
               "bank": 0.2,
               "transfers_count": 7,
@@ -168640,6 +168640,23 @@
               "transfer_moves": []
             },
             {
+              "entry_id": 5523000,
+              "team_name": "K.Wit",
+              "player_name": "Krisana Witthayaanumas",
+              "points": 54,
+              "hits": 0,
+              "net_points": 54,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 15,
+              "team_value": 101.9,
+              "bank": 2.7,
+              "transfers_count": 0,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": 0,
+              "transfer_moves": []
+            },
+            {
               "entry_id": 7717588,
               "team_name": "Sek_Loso FC",
               "player_name": "Man Sairada",
@@ -168663,23 +168680,6 @@
                   "net": 12
                 }
               ]
-            },
-            {
-              "entry_id": 5523000,
-              "team_name": "K.Wit",
-              "player_name": "Krisana Witthayaanumas",
-              "points": 52,
-              "hits": 0,
-              "net_points": 52,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 15,
-              "team_value": 101.9,
-              "bank": 2.7,
-              "transfers_count": 0,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": []
             },
             {
               "entry_id": 122482,
@@ -168707,29 +168707,12 @@
               ]
             },
             {
-              "entry_id": 4194662,
-              "team_name": "Chatiwat's Team",
-              "player_name": "Chatiwat Piyarom",
-              "points": 51,
-              "hits": 0,
-              "net_points": 51,
-              "captain": "Haaland",
-              "chip": null,
-              "bench_points": 5,
-              "team_value": 101.0,
-              "bank": 0.7,
-              "transfers_count": 0,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": []
-            },
-            {
               "entry_id": 73489,
               "team_name": "Some might say",
               "player_name": "FAme Pakviwat",
-              "points": 49,
+              "points": 51,
               "hits": 0,
-              "net_points": 49,
+              "net_points": 51,
               "captain": "Haaland",
               "chip": null,
               "bench_points": 6,
@@ -168747,6 +168730,23 @@
                   "net": 2
                 }
               ]
+            },
+            {
+              "entry_id": 4194662,
+              "team_name": "Chatiwat's Team",
+              "player_name": "Chatiwat Piyarom",
+              "points": 51,
+              "hits": 0,
+              "net_points": 51,
+              "captain": "Haaland",
+              "chip": null,
+              "bench_points": 5,
+              "team_value": 101.0,
+              "bank": 0.7,
+              "transfers_count": 0,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": 0,
+              "transfer_moves": []
             },
             {
               "entry_id": 7669033,
@@ -197784,7 +197784,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -198070,7 +198070,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -198958,7 +198958,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
@@ -201724,7 +201724,7 @@
               "pos": "DEF",
               "team": "ARS",
               "team_code": 3,
-              "points": 2,
+              "points": 4,
               "is_captain": false,
               "is_vice": false
             },
