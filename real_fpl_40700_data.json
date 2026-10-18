@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "18 ต.ค. 2026, 22:55 น.",
-    "last_sync_iso": "2026-10-18 22:55:14"
+    "last_sync": "18 ต.ค. 2026, 22:59 น.",
+    "last_sync_iso": "2026-10-18 22:59:22"
   },
   "teams": [
     {
@@ -13,8 +13,8 @@
       "player_name": "FAme Pakviwat",
       "rank": 1,
       "last_rank": 1,
-      "total_points": 507,
-      "event_total": 48
+      "total_points": 510,
+      "event_total": 51
     },
     {
       "entry_id": 5950381,
@@ -22,8 +22,8 @@
       "player_name": "Athit Rattanawipapong",
       "rank": 2,
       "last_rank": 2,
-      "total_points": 497,
-      "event_total": 57
+      "total_points": 500,
+      "event_total": 60
     },
     {
       "entry_id": 306983,
@@ -31,8 +31,8 @@
       "player_name": "Micky Asawamanasak",
       "rank": 3,
       "last_rank": 3,
-      "total_points": 487,
-      "event_total": 62
+      "total_points": 490,
+      "event_total": 65
     },
     {
       "entry_id": 1206581,
@@ -2158,9 +2158,9 @@
           "entry_id": 306983,
           "team_name": "GEMINI UNITED",
           "player_name": "Micky Asawamanasak",
-          "points": 65,
+          "points": 64,
           "hits": 0,
-          "net_points": 65,
+          "net_points": 64,
           "captain": "Haaland",
           "chip": "3xc",
           "bench_points": 21,
@@ -2215,9 +2215,9 @@
           "entry_id": 5950381,
           "team_name": "SUN-KUNG-JI",
           "player_name": "Athit Rattanawipapong",
-          "points": 60,
+          "points": 59,
           "hits": 0,
-          "net_points": 60,
+          "net_points": 59,
           "captain": "Haaland",
           "chip": null,
           "bench_points": -2,
@@ -2335,31 +2335,6 @@
           ]
         },
         {
-          "entry_id": 73489,
-          "team_name": "Some might say",
-          "player_name": "FAme Pakviwat",
-          "points": 51,
-          "hits": 0,
-          "net_points": 51,
-          "captain": "Haaland",
-          "chip": null,
-          "bench_points": 6,
-          "team_value": 102.5,
-          "bank": 1.8,
-          "transfers_count": 1,
-          "transfers_pts_gain": 2,
-          "transfers_net_impact": 2,
-          "transfer_moves": [
-            {
-              "in": "De Cuyper",
-              "in_pts": 6,
-              "out": "Hall",
-              "out_pts": 4,
-              "net": 2
-            }
-          ]
-        },
-        {
           "entry_id": 1206581,
           "team_name": "TK.FPL",
           "player_name": "Teerasade Khemprasit",
@@ -2419,6 +2394,31 @@
               "in_pts": 2,
               "out": "Schade",
               "out_pts": 0,
+              "net": 2
+            }
+          ]
+        },
+        {
+          "entry_id": 73489,
+          "team_name": "Some might say",
+          "player_name": "FAme Pakviwat",
+          "points": 50,
+          "hits": 0,
+          "net_points": 50,
+          "captain": "Haaland",
+          "chip": null,
+          "bench_points": 6,
+          "team_value": 102.5,
+          "bank": 1.8,
+          "transfers_count": 1,
+          "transfers_pts_gain": 2,
+          "transfers_net_impact": 2,
+          "transfer_moves": [
+            {
+              "in": "De Cuyper",
+              "in_pts": 6,
+              "out": "Hall",
+              "out_pts": 4,
               "net": 2
             }
           ]
@@ -23994,7 +23994,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 4,
+          "points": 3,
           "is_captain": false,
           "is_vice": false
         },
@@ -24280,7 +24280,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 4,
+          "points": 3,
           "is_captain": false,
           "is_vice": false
         },
@@ -24576,7 +24576,7 @@
           "pos": "DEF",
           "team": "ARS",
           "team_code": 3,
-          "points": 4,
+          "points": 3,
           "is_captain": false,
           "is_vice": false
         },
