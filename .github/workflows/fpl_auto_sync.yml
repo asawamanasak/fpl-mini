@@ -9,14 +9,9 @@ on:
 permissions:
   contents: write
 
-permissions:
-  contents: write
-
 concurrency:
   group: fpl-sync
   cancel-in-progress: false
-
-jobs:
 
 jobs:
   sync-fpl-data:
