@@ -9,6 +9,10 @@ on:
 permissions:
   contents: write
 
+  concurrency:
+  group: fpl-sync
+  cancel-in-progress: false
+
 jobs:
   sync-fpl-data:
     runs-on: ubuntu-latest
