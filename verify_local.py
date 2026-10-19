@@ -81,7 +81,8 @@ def main():
         '40700/index.html',
         '675290/index.html',
         '38491/index.html',
-        '1101958/index.html'
+        '1101958/index.html',
+        '438691/index.html'
     ]
     for rf in required_files:
         fpath = os.path.join(base_dir, rf)
@@ -95,7 +96,7 @@ def main():
     print("\nStep 5: Testing Front-End JavaScript Runtime (Headless Chrome)...")
     chrome_bin = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
     if os.path.exists(chrome_bin):
-        pages_to_test = ['preview.html', '40700/index.html', '675290/index.html', '38491/index.html', '1101958/index.html']
+        pages_to_test = ['preview.html', '40700/index.html', '675290/index.html', '38491/index.html', '1101958/index.html', '438691/index.html']
         for p in pages_to_test:
             target_url = f"file://{os.path.join(base_dir, p)}"
             out = subprocess.run([

@@ -4746,8 +4746,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             tierCounts[t.entry_id] = { 1: 0, 2: 0, 3: 0 };
           });
 
-          const multiTierGWEntries = [];
-
           for (let g = 1; g <= maxGW; g++) {
             const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
             if (gData && gData.results && gData.is_finished) {
@@ -4763,12 +4761,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               });
               if (sorted.length > 0) {
                 const payouts = this.calculateWeeklyTierPrizes(sorted, tierPrizes, g);
-                if (hasMultiTier) {
-                  multiTierGWEntries.push({
-                    gw: g,
-                    payouts: payouts
-                  });
-                }
                 payouts.forEach(p => {
                   if (winsCount[p.entry_id] === undefined) {
                     winsCount[p.entry_id] = 0;
@@ -4966,41 +4958,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             });
           }
 
-          let multiTierHistoryHtml = '';
-          if (hasMultiTier && multiTierGWEntries.length > 0) {
-            multiTierHistoryHtml = multiTierGWEntries.map(entry => {
-              return `
-                <div class="bg-slate-50/80 dark:bg-slate-800/60 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700/80 flex flex-col justify-between shadow-2xs">
-                  <div>
-                    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-200/80 dark:border-slate-700/80">
-                      <span class="text-xs font-black text-slate-900 dark:text-white font-display">Gameweek ${entry.gw}</span>
-                      <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">จบการแข่งขัน</span>
-                    </div>
-                    <div class="space-y-1.5 text-xs">
-                      ${entry.payouts.map(p => {
-                        const medal = p.rank === 1 ? '🥇 ที่ 1' : (p.rank === 2 ? '🥈 ที่ 2' : '🥉 ที่ 3');
-                        const cardBg = p.rank === 1 
-                          ? 'bg-amber-100/70 dark:bg-amber-950/40 text-amber-950 dark:text-amber-200 border-amber-300 dark:border-amber-700/60' 
-                          : (p.rank === 2 
-                            ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-200 border-slate-200 dark:border-slate-700' 
-                            : 'bg-amber-50/60 dark:bg-amber-950/20 text-amber-900 dark:text-amber-300 border-amber-200/60 dark:border-amber-800/40');
-                        return `
-                          <div class="p-2 rounded-xl border ${cardBg} flex items-center justify-between shadow-2xs">
-                            <div class="truncate pr-2">
-                              <span class="font-bold text-[10px] block">${medal}${p.isJoint ? ` (เสมอ ${p.jointCount})` : ''}</span>
-                              <span class="font-bold truncate block text-xs">${this.escapeHtml(p.team_name)}</span>
-                              <span class="text-[10px] text-slate-500 dark:text-slate-400 block truncate">${this.escapeHtml(p.player_name)} (${p.net_points} pts)${p.tieBreakNote ? ` • <span class="text-amber-600 dark:text-amber-400">⚡ Tie-break</span>` : ''}</span>
-                            </div>
-                            <span class="font-black font-display text-emerald-700 dark:text-emerald-400 text-xs flex-shrink-0">${p.prize.toLocaleString()} THB</span>
-                          </div>
-                        `;
-                      }).join('')}
-                    </div>
-                  </div>
-                </div>
-              `;
-            }).join('');
-          }
+
 
           let total1st = 0, total2nd = 0, total3rd = 0;
           if (hasMultiTier) {
@@ -5066,17 +5024,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   </table>
                 </div>
               </div>
-
-              ${multiTierHistoryHtml ? `
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
-                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-                  <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">ประวัติผู้ชนะรางวัลประจำสัปดาห์ 3 อันดับ (GW 1 - ${maxGW})</h3>
-                  <span class="text-[11px] font-bold text-slate-500 font-display">สัปดาห์ละ ${weeklyAmount.toLocaleString()} THB (ที่ 1: ${weeklyPrizesConfig['1st'].toLocaleString()} / ที่ 2: ${weeklyPrizesConfig['2nd'].toLocaleString()} / ที่ 3: ${weeklyPrizesConfig['3rd'].toLocaleString()} THB)</span>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                  ${multiTierHistoryHtml}
-                </div>
-              </div>` : ''}
 
               ${phasesHtml ? `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">

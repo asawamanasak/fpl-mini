@@ -285,7 +285,8 @@ def sync_once(args):
             "40700": {"id": 40700, "name": "เซียนอยู่รู หมูอยู่ตึก"},
             "675290": {"id": 675290, "name": "NudNee"},
             "38491": {"id": 38491, "name": "รอ แมน โอน"},
-            "1101958": {"id": 1101958, "name": "Barley's Official League"}
+            "1101958": {"id": 1101958, "name": "Barley's Official League"},
+            "438691": {"id": 438691, "name": "2 spade"}
         }
 
     # 4. Load existing multi_fpl_data.json for Incremental Sync caching

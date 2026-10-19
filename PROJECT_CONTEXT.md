@@ -14,6 +14,7 @@
   * ลีก 675290 (NudNee): `https://asawamanasak.github.io/fpl-mini/675290`
   * ลีก 38491 (รอ แมน โอน): `https://asawamanasak.github.io/fpl-mini/38491`
   * ลีก 1101958 (Barley's Official League): `https://asawamanasak.github.io/fpl-mini/1101958`
+  * ลีก 438691 (2 spade): `https://asawamanasak.github.io/fpl-mini/438691`
 * **Repository:** `https://github.com/asawamanasak/fpl-mini`
 
 ---
@@ -150,6 +151,24 @@ flowchart TD
      * อันดับ 1: 6,000 บาท
      * อันดับ 2: 3,600 บาท
      * อันดับ 3: 2,400 บาท
+
+### ลีก 5: 438691 - "2 spade"
+* **สมาชิก:** 12 ทีม
+  * BMFC™ (ID: 7501)
+  * MFV F.C. (ID: 5003235)
+  * Natthapol's Team (ID: 5528308)
+  * ทีมของ Thanakorn (ID: 145471)
+  * Kafare (ID: 6657991)
+  * TopPP FC (ID: 2239943)
+  * Shoot FC (ID: 3578457)
+  * JOEYMON #10 (ID: 2378313)
+  * H (ID: 6183614)
+  * RJarnOat (ID: 2576501)
+  * suriya's Team (ID: 957697)
+  * KFC (ID: 5564358)
+* **ค่าสมัคร:** รอระบุกติกา
+* **งบประมาณรางวัลรวม:** รอระบุกติกา
+* **โครงสร้างรางวัล:** รอแอดมินแจ้งรายละเอียดเพิ่มเติม
 
 ---
 

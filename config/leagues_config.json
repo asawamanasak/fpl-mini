@@ -512,5 +512,34 @@
         "footer": "* มอบรางวัลหลังจบการแข่งขัน GW 38 ครบถ้วนสมบูรณ์"
       }
     ]
+  },
+  "438691": {
+    "id": 438691,
+    "name": "2 spade",
+    "short_name": "2 spade",
+    "season": "2026/27",
+    "entry_fee": "รอระบุกติกา",
+    "total_pool": "รอระบุกติกา",
+    "non_prize_teams": [],
+    "features": {
+      "prize_model": "weekly",
+      "weekly_prize_amount": 0,
+      "has_settlement_phases": false,
+      "has_monthly_prizes": false,
+      "has_cup": false
+    },
+    "season_prizes": {},
+    "rules_cards": [
+      {
+        "title": "โครงสร้างลีก & กติกาการแข่งขัน",
+        "items": [
+          {
+            "label": "ลีก 2 spade (ID: 438691)",
+            "desc": "• จำนวนทีมแข่งขัน: 12 ทีม\n• ค่าสมัคร & กองกลาง: รอระบุกติกา\n• การบริหารเงินรางวัล: รอแอดมินแจ้งรายละเอียดเพิ่มเติม"
+          }
+        ],
+        "footer": "* อยู่ระหว่างการรอระบุกติกาการแข่งขันและโครงสร้างเงินรางวัล"
+      }
+    ]
   }
 }
