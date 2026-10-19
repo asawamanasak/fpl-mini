@@ -22,6 +22,11 @@ def fetch(url, retries=3, delay=1.5):
             if e.code == 404:
                 # 404 Not Found is deterministic; do not retry
                 raise e
+            if e.code == 429:
+                wait_time = delay * (attempt + 2) * 2
+                print(f"Rate limited (429) fetching {url}. Waiting {wait_time:.1f}s before retry...")
+                time.sleep(wait_time)
+                continue
             if attempt == retries - 1:
                 print(f"Failed to fetch {url} after {retries} attempts: {e}")
                 raise e
@@ -588,7 +593,7 @@ def sync_once(args):
                         if active_vc and (
                             active_vc.get('multiplier', 1) >= 2
                             or (active_cap and active_cap.get('multiplier') == 0)
-                            or (cap_fixture_finished and active_cap and live_mins_gw.get(active_cap['element'], 0) == 0 and live_mins_gw.get(active_vc['element'], 0) > 0)
+                            or (cap_fixture_finished and active_cap and live_mins_gw.get(active_cap['element'], 0) == 0)
                         ):
                             active_vc['multiplier'] = active_vc.get('multiplier') if active_vc.get('multiplier', 1) >= 2 else default_cap_mult
                             active_vc['is_captain'] = True
@@ -720,9 +725,10 @@ def sync_once(args):
                                 "auto_subs": []
                             }
                             return (gw, eid, None, dnp_squad)
+                        print(f"⚠️ [WARNING] Failed to fetch team {eid} for GW {gw} and no valid cache exists! Team may be missing from this run.")
                         return None
 
-                with ThreadPoolExecutor(max_workers=8) as executor:
+                with ThreadPoolExecutor(max_workers=5) as executor:
                     fetched_results = list(executor.map(process_team_picks, work_items))
 
                 for res in fetched_results:
@@ -867,9 +873,10 @@ def sync_once(args):
     print(f"Fetching Transfer Suggestions for upcoming GW {upcoming_gw}...")
     try:
         ts_url = f'https://fontendfunctionsnortheuropenew.azurewebsites.net/api/TransferSuggestionsFunction?gameweeks={upcoming_gw}&generalSuggestions=1'
+        azure_key = os.environ.get('AZURE_TRANSFER_FUNCTION_KEY', 'db059d47-8b44-476a-9dfc-509bceb87bee')
         ts_req = urllib.request.Request(ts_url, headers={
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
-            'FunctionKey': 'db059d47-8b44-476a-9dfc-509bceb87bee'
+            'FunctionKey': azure_key
         })
         with urllib.request.urlopen(ts_req, timeout=12) as resp:
             ts_data = json.loads(resp.read().decode('utf-8'))

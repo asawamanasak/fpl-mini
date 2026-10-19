@@ -14,34 +14,42 @@ Build Version: 2026.08.31.01
 import json
 import os
 
-def generate_html(multi_data, leagues_config, default_league_id=None):
-    # Performance Optimization: Deep-strip raw_picks and raw_hist before serializing into HTML
-    pruned_data = {
-        "last_sync": multi_data.get("last_sync"),
-        "last_sync_iso": multi_data.get("last_sync_iso"),
-        "sync_status": multi_data.get("sync_status"),
-        "max_gw": multi_data.get("max_gw"),
-        "transfer_suggestions": multi_data.get("transfer_suggestions", {}),
-        "leagues": {}
-    }
-    for lid, l_obj in multi_data.get("leagues", {}).items():
-        pruned_squads = {}
-        for s_key, s_data in l_obj.get("squads", {}).items():
-            if isinstance(s_data, dict):
-                pruned_sq = {k: v for k, v in s_data.items() if k not in ("raw_picks", "raw_hist")}
-                pruned_squads[s_key] = pruned_sq
-            else:
-                pruned_squads[s_key] = s_data
-        pruned_data["leagues"][lid] = {
-            "id": l_obj.get("id"),
-            "name": l_obj.get("name"),
-            "season": l_obj.get("season"),
-            "teams": l_obj.get("teams", []),
-            "gameweeks": l_obj.get("gameweeks", {}),
-            "squads": pruned_squads
+def generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=None, precomputed_cfg_str=None):
+    if precomputed_json_str is None:
+        # Performance Optimization: Deep-strip raw_picks and raw_hist before serializing into HTML
+        pruned_data = {
+            "last_sync": multi_data.get("last_sync"),
+            "last_sync_iso": multi_data.get("last_sync_iso"),
+            "sync_status": multi_data.get("sync_status"),
+            "max_gw": multi_data.get("max_gw"),
+            "transfer_suggestions": multi_data.get("transfer_suggestions", {}),
+            "leagues": {}
         }
-    multi_data_json_str = json.dumps(pruned_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
-    leagues_config_json_str = json.dumps(leagues_config, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+        for lid, l_obj in multi_data.get("leagues", {}).items():
+            pruned_squads = {}
+            for s_key, s_data in l_obj.get("squads", {}).items():
+                if isinstance(s_data, dict):
+                    pruned_sq = {k: v for k, v in s_data.items() if k not in ("raw_picks", "raw_hist")}
+                    pruned_squads[s_key] = pruned_sq
+                else:
+                    pruned_squads[s_key] = s_data
+            pruned_data["leagues"][lid] = {
+                "id": l_obj.get("id"),
+                "name": l_obj.get("name"),
+                "season": l_obj.get("season"),
+                "teams": l_obj.get("teams", []),
+                "gameweeks": l_obj.get("gameweeks", {}),
+                "squads": pruned_squads
+            }
+        multi_data_json_str = json.dumps(pruned_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+    else:
+        multi_data_json_str = precomputed_json_str
+
+    if precomputed_cfg_str is None:
+        leagues_config_json_str = json.dumps(leagues_config, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+    else:
+        leagues_config_json_str = precomputed_cfg_str
+
     default_lid_code = f'"{default_league_id}"' if default_league_id else 'null'
     asset_prefix = "../" if default_league_id else "./"
     last_sync_str = str(multi_data.get("last_sync") or "31 ส.ค. 2026, 22:30 น.")
@@ -2542,9 +2550,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
             let penaltyPayoutsHtml = '';
             if (isFinished && this.config.features && this.config.features.has_weekly_penalties) {
-              const penalties = [1000, 800, 600, 400, 200];
-              const rankLabels = ['💀 บ๊วย', '⚠️ รองบ๊วย', '⚠️ ท้าย 3', '⚠️ ท้าย 4', '⚠️ ท้าย 5'];
-              const bottom5 = eligibleSortedByPrize.slice(-5).reverse();
+              const weeklyPenalties = this.calculateWeeklyPenalties(eligibleSortedByPrize, this.selectedGW);
               penaltyPayoutsHtml = `
                 <div class="mt-3 pt-3 border-t ${isFinished ? 'border-amber-200/80 dark:border-amber-900/60' : 'border-emerald-200/80 dark:border-emerald-900/60'}">
                   <div class="text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2 font-display flex items-center justify-between flex-wrap gap-1">
@@ -2552,20 +2558,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                     <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">+2,800 THB สะสมเข้ากองกลาง</span>
                   </div>
                   <div class="grid grid-cols-1 sm:grid-cols-5 gap-2">
-                    ${bottom5.map((team, i) => {
-                      const fine = penalties[i];
-                      const label = rankLabels[i];
-                      const cardStyle = i === 0 
+                    ${weeklyPenalties.map((p, i) => {
+                      const cardStyle = p.bottomTierIndex === 0 
                         ? 'bg-rose-100/80 dark:bg-rose-950/50 border-rose-300 dark:border-rose-700/60 text-rose-950 dark:text-rose-200' 
                         : 'bg-rose-50/60 dark:bg-rose-950/20 border-rose-200/70 dark:border-rose-800/40 text-rose-900 dark:text-rose-300';
                       return `
                         <div class="p-2 rounded-xl border ${cardStyle} text-xs shadow-2xs">
                           <div class="flex items-center justify-between">
-                            <span class="font-bold text-[10px] block">${label}</span>
-                            <span class="font-black text-rose-600 dark:text-rose-400 text-xs">-${fine.toLocaleString()} THB</span>
+                            <span class="font-bold text-[10px] block">${p.rankLabel}</span>
+                            <span class="font-black text-rose-600 dark:text-rose-400 text-xs">-${p.fine.toLocaleString()} THB</span>
                           </div>
-                          <div class="font-bold truncate mt-1 text-slate-900 dark:text-white">${this.escapeHtml(team.team_name)}</div>
-                          <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(team.player_name)} (${team.net_points} pts)</div>
+                          <div class="font-bold truncate mt-1 text-slate-900 dark:text-white">${this.escapeHtml(p.team_name)}</div>
+                          <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(p.player_name)} (${p.net_points} pts)</div>
                         </div>
                       `;
                     }).join('')}
@@ -2633,6 +2637,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         // 2. Render Matchday Table Body
         if (matchdayBody) {
           let mHtml = '';
+          const weeklyPenaltiesMap = {};
+          let weeklyWinnerPrize = 200;
+          if (this.config.features && this.config.features.has_weekly_penalties) {
+            const penaltiesList = this.calculateWeeklyPenalties(eligibleSortedByPrize, this.selectedGW);
+            penaltiesList.forEach(p => {
+              weeklyPenaltiesMap[p.entry_id] = p;
+            });
+            const topPayouts = this.calculateWeeklyTierPrizes(eligibleSortedByPrize, [this.config.features.weekly_prize_amount || 200], this.selectedGW);
+            if (topPayouts && topPayouts.length > 0) {
+              weeklyWinnerPrize = topPayouts[0].prize;
+            }
+          }
+
           sorted.forEach((team, idx) => {
             const chip = team.chip ? `<span class="chip-badge badge-${team.chip.toLowerCase()} font-display">${team.chip.toUpperCase()}</span>` : '';
             const hits = team.hits > 0 ? `<span class="text-rose-600 font-bold font-display">-${team.hits}</span>` : '<span class="text-slate-400">-</span>';
@@ -2656,21 +2673,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             let penaltyBadgeHtml = '';
             let penaltyRowBg = '';
             if (this.config.features && this.config.features.has_weekly_penalties && isPrize && isStarted) {
-              const eligibleCount = sorted.filter(t => this.isPrizeEligible(t.entry_id)).length;
               if (team.rank === 1) {
-                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950/40 dark:text-amber-200 ml-1">🏆 +200</span>`;
-              } else if (team.rank === eligibleCount) {
-                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-rose-100 text-rose-900 border border-rose-300 dark:bg-rose-950/40 dark:text-rose-200 ml-1">💀 -1,000</span>`;
-                penaltyRowBg = 'bg-rose-50/40 dark:bg-rose-950/20';
-              } else if (team.rank === eligibleCount - 1) {
-                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-800 border border-rose-200 dark:bg-rose-950/30 dark:text-rose-300 ml-1">⚠️ -800</span>`;
-                penaltyRowBg = 'bg-rose-50/20 dark:bg-rose-950/10';
-              } else if (team.rank === eligibleCount - 2) {
-                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 ml-1">⚠️ -600</span>`;
-              } else if (team.rank === eligibleCount - 3) {
-                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 ml-1">⚠️ -400</span>`;
-              } else if (team.rank === eligibleCount - 4) {
-                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 ml-1">⚠️ -200</span>`;
+                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950/40 dark:text-amber-200 ml-1">🏆 +${weeklyWinnerPrize}</span>`;
+              } else if (weeklyPenaltiesMap[team.entry_id]) {
+                const p = weeklyPenaltiesMap[team.entry_id];
+                const prefix = p.bottomTierIndex === 0 ? '💀' : '⚠️';
+                const cardStyle = p.bottomTierIndex === 0 
+                  ? 'bg-rose-100 text-rose-900 border border-rose-300 dark:bg-rose-950/40 dark:text-rose-200' 
+                  : (p.bottomTierIndex === 1
+                      ? 'bg-rose-50 text-rose-800 border border-rose-200 dark:bg-rose-950/30 dark:text-rose-300'
+                      : 'bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-300');
+                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold ${cardStyle} ml-1">${prefix} -${p.fine.toLocaleString()}</span>`;
+                penaltyRowBg = p.bottomTierIndex === 0 ? 'bg-rose-50/40 dark:bg-rose-950/20' : (p.bottomTierIndex === 1 ? 'bg-rose-50/20 dark:bg-rose-950/10' : '');
               }
             }
 
@@ -2986,6 +3000,91 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           currentTierIndex += count;
         }
         return payouts;
+      }
+
+      calculateWeeklyPenalties(eligibleSorted, gw = null) {
+        if (!eligibleSorted || eligibleSorted.length === 0) return [];
+        const effectiveGW = gw || this.selectedGW;
+        const useTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
+
+        // Sort ascending (lowest/worst score first)
+        const sortedBottom = [...eligibleSorted].sort((a, b) => {
+          const scoreA = a.net_points !== undefined ? a.net_points : a.points;
+          const scoreB = b.net_points !== undefined ? b.net_points : b.points;
+          if (scoreA !== scoreB) return scoreA - scoreB;
+          if (useTieBreaker) {
+            // compareTeamPlayerScores returns negative if A beats B (A is better/higher).
+            // For ascending (worst first), if A beats B, B is worse, so B should come first.
+            return -this.compareTeamPlayerScores(a.entry_id, b.entry_id, effectiveGW);
+          }
+          return 0;
+        });
+
+        const penaltyTiers = [1000, 800, 600, 400, 200];
+        const rankLabels = ['💀 บ๊วย', '⚠️ รองบ๊วย', '⚠️ ท้าย 3', '⚠️ ท้าย 4', '⚠️ ท้าย 5'];
+
+        const groups = [];
+        sortedBottom.forEach(team => {
+          const score = team.net_points !== undefined ? team.net_points : team.points;
+          const lastGroup = groups[groups.length - 1];
+          let isSameGroup = false;
+          if (lastGroup && lastGroup.score === score) {
+            if (useTieBreaker) {
+              const prevTeam = lastGroup.teams[0];
+              if (this.compareTeamPlayerScores(team.entry_id, prevTeam.entry_id, effectiveGW) === 0) {
+                isSameGroup = true;
+              }
+            } else {
+              isSameGroup = true;
+            }
+          }
+          if (isSameGroup) {
+            lastGroup.teams.push(team);
+          } else {
+            groups.push({ score: score, teams: [team] });
+          }
+        });
+
+        const penalties = [];
+        let currentTierIndex = 0;
+
+        for (const group of groups) {
+          if (currentTierIndex >= penaltyTiers.length) break;
+
+          const count = group.teams.length;
+          let poolForGroup = 0;
+          const startIndex = currentTierIndex;
+          const endIndex = Math.min(currentTierIndex + count, penaltyTiers.length);
+
+          for (let i = startIndex; i < endIndex; i++) {
+            poolForGroup += penaltyTiers[i];
+          }
+
+          const finePerTeam = poolForGroup > 0 ? Math.round(poolForGroup / count) : 0;
+          const isJoint = count > 1;
+          const baseLabel = rankLabels[startIndex] || `⚠️ ท้าย ${startIndex + 1}`;
+          const label = isJoint ? `${baseLabel}ร่วม` : baseLabel;
+
+          group.teams.forEach(team => {
+            if (finePerTeam > 0) {
+              penalties.push({
+                entry_id: team.entry_id,
+                team_name: team.team_name,
+                player_name: team.player_name,
+                net_points: team.net_points !== undefined ? team.net_points : team.points,
+                fine: finePerTeam,
+                rankLabel: label,
+                bottomTierIndex: startIndex,
+                isJoint: isJoint,
+                jointCount: count
+              });
+            }
+          });
+
+          currentTierIndex += count;
+        }
+
+        return penalties;
       }
 
       isPrizeEligible(entryId) {
@@ -4838,28 +4937,27 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
               if (sorted.length > 0) {
                 if (hasWeeklyPenalties) {
+                  const winnerPayouts = this.calculateWeeklyTierPrizes(sorted, [this.config.features.weekly_prize_amount || 200], g);
+                  winnerPayouts.forEach(p => {
+                    winsCount[p.entry_id] = (winsCount[p.entry_id] || 0) + (1 / p.jointCount);
+                    prizeEarnings[p.entry_id] = (prizeEarnings[p.entry_id] || 0) + p.prize;
+                  });
                   const winner = sorted[0];
-                  winsCount[winner.entry_id] = (winsCount[winner.entry_id] || 0) + 1;
-                  prizeEarnings[winner.entry_id] = (prizeEarnings[winner.entry_id] || 0) + (this.config.features.weekly_prize_amount || 200);
 
-                  const penalties = [1000, 800, 600, 400, 200];
-                  const rankLabels = ['💀 บ๊วย', '⚠️ รองบ๊วย', '⚠️ ท้าย 3', '⚠️ ท้าย 4', '⚠️ ท้าย 5'];
+                  const weeklyPenalties = this.calculateWeeklyPenalties(sorted, g);
                   const bottomList = [];
-                  for (let i = 0; i < 5 && i < sorted.length; i++) {
-                    const tIndex = sorted.length - 1 - i;
-                    const penalizedTeam = sorted[tIndex];
-                    const fineAmt = penalties[i];
-                    finesPaid[penalizedTeam.entry_id] = (finesPaid[penalizedTeam.entry_id] || 0) + fineAmt;
-                    dangerCount[penalizedTeam.entry_id] = (dangerCount[penalizedTeam.entry_id] || 0) + 1;
+                  weeklyPenalties.forEach(p => {
+                    finesPaid[p.entry_id] = (finesPaid[p.entry_id] || 0) + p.fine;
+                    dangerCount[p.entry_id] = (dangerCount[p.entry_id] || 0) + 1;
                     bottomList.push({
-                      rankLabel: rankLabels[i],
-                      fine: fineAmt,
-                      team_name: penalizedTeam.team_name,
-                      player_name: penalizedTeam.player_name,
-                      net_points: penalizedTeam.net_points,
-                      entry_id: penalizedTeam.entry_id
+                      rankLabel: p.rankLabel,
+                      fine: p.fine,
+                      team_name: p.team_name,
+                      player_name: p.player_name,
+                      net_points: p.net_points,
+                      entry_id: p.entry_id
                     });
-                  }
+                  });
                   penaltyHistoryEntries.push({
                     gw: g,
                     winner: winner,
@@ -7460,8 +7558,36 @@ def main():
     with open(config_path, 'r', encoding='utf-8') as f:
         leagues_config = json.load(f)
 
+    # Performance Optimization: Deep-strip raw_picks and serialize JSON strings once
+    pruned_data = {
+        "last_sync": multi_data.get("last_sync"),
+        "last_sync_iso": multi_data.get("last_sync_iso"),
+        "sync_status": multi_data.get("sync_status"),
+        "max_gw": multi_data.get("max_gw"),
+        "transfer_suggestions": multi_data.get("transfer_suggestions", {}),
+        "leagues": {}
+    }
+    for lid, l_obj in multi_data.get("leagues", {}).items():
+        pruned_squads = {}
+        for s_key, s_data in l_obj.get("squads", {}).items():
+            if isinstance(s_data, dict):
+                pruned_sq = {k: v for k, v in s_data.items() if k not in ("raw_picks", "raw_hist")}
+                pruned_squads[s_key] = pruned_sq
+            else:
+                pruned_squads[s_key] = s_data
+        pruned_data["leagues"][lid] = {
+            "id": l_obj.get("id"),
+            "name": l_obj.get("name"),
+            "season": l_obj.get("season"),
+            "teams": l_obj.get("teams", []),
+            "gameweeks": l_obj.get("gameweeks", {}),
+            "squads": pruned_squads
+        }
+    multi_data_json_str = json.dumps(pruned_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+    leagues_config_json_str = json.dumps(leagues_config, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+
     # 1. Generate root files
-    root_html = generate_html(multi_data, leagues_config, default_league_id=None)
+    root_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=multi_data_json_str, precomputed_cfg_str=leagues_config_json_str)
     with open(os.path.join(base_dir, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(root_html)
 
@@ -7475,7 +7601,7 @@ def main():
     for lid in leagues_config.keys():
         dir_league = os.path.join(base_dir, str(lid))
         os.makedirs(dir_league, exist_ok=True)
-        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid))
+        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid), precomputed_json_str=multi_data_json_str, precomputed_cfg_str=leagues_config_json_str)
         with open(os.path.join(dir_league, 'index.html'), 'w', encoding='utf-8') as f:
             f.write(html_league)
 
