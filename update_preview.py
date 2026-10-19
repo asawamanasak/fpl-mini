@@ -3948,7 +3948,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               </td>
               <td class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">
                 <div class="inline-flex flex-col items-center">
-                  <span class="text-xs font-bold text-slate-900 dark:text-white font-display">${remainingCount} / ${totalCardsPossible} ใบ</span>
+                  <span class="text-xs font-bold text-slate-900 dark:text-white font-display">${remainingCount} / ${totalCardsPossible}</span>
                   <div class="w-14 sm:w-16 bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden mt-1">
                     <div class="${meterColor} h-full" style="width: ${(remainingCount / totalCardsPossible) * 100}%"></div>
                   </div>
