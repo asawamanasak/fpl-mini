@@ -4737,10 +4737,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           const maxGW = Number(this.multiData.max_gw) || 2;
           const winsCount = {};
           const prizeEarnings = {};
+          const tierCounts = {};
+          const hasMultiTier = Boolean(weeklyPrizesConfig && Object.keys(weeklyPrizesConfig).length > 1);
+
           (this.data.teams || []).forEach(t => {
             winsCount[t.entry_id] = 0;
             prizeEarnings[t.entry_id] = 0;
+            tierCounts[t.entry_id] = { 1: 0, 2: 0, 3: 0 };
           });
+
+          const multiTierGWEntries = [];
 
           for (let g = 1; g <= maxGW; g++) {
             const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
@@ -4757,14 +4763,22 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               });
               if (sorted.length > 0) {
                 const payouts = this.calculateWeeklyTierPrizes(sorted, tierPrizes, g);
+                if (hasMultiTier) {
+                  multiTierGWEntries.push({
+                    gw: g,
+                    payouts: payouts
+                  });
+                }
                 payouts.forEach(p => {
                   if (winsCount[p.entry_id] === undefined) {
                     winsCount[p.entry_id] = 0;
                     prizeEarnings[p.entry_id] = 0;
+                    tierCounts[p.entry_id] = { 1: 0, 2: 0, 3: 0 };
                   }
                   if (p.rank === 1) {
                     winsCount[p.entry_id] += (1 / p.jointCount);
                   }
+                  tierCounts[p.entry_id][p.rank] = (tierCounts[p.entry_id][p.rank] || 0) + (1 / p.jointCount);
                   prizeEarnings[p.entry_id] += p.prize;
                 });
               }
@@ -4776,6 +4790,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             if (aEligible !== bEligible) return bEligible - aEligible;
             if ((prizeEarnings[b.entry_id] || 0) !== (prizeEarnings[a.entry_id] || 0)) {
               return (prizeEarnings[b.entry_id] || 0) - (prizeEarnings[a.entry_id] || 0);
+            }
+            if (hasMultiTier) {
+              if ((tierCounts[b.entry_id]?.[1] || 0) !== (tierCounts[a.entry_id]?.[1] || 0)) {
+                return (tierCounts[b.entry_id]?.[1] || 0) - (tierCounts[a.entry_id]?.[1] || 0);
+              }
+              if ((tierCounts[b.entry_id]?.[2] || 0) !== (tierCounts[a.entry_id]?.[2] || 0)) {
+                return (tierCounts[b.entry_id]?.[2] || 0) - (tierCounts[a.entry_id]?.[2] || 0);
+              }
+              return (tierCounts[b.entry_id]?.[3] || 0) - (tierCounts[a.entry_id]?.[3] || 0);
             }
             return (winsCount[b.entry_id] || 0) - (winsCount[a.entry_id] || 0);
           });
@@ -4798,7 +4821,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               hasRenderedNonPrizeHeader = true;
               tableRows += `
                 <tr class="bg-slate-100/75 dark:bg-slate-800/60 border-y border-slate-200/80 dark:border-slate-700/80">
-                  <td colspan="4" class="py-2 px-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
+                  <td colspan="${hasMultiTier ? 6 : 4}" class="py-2 px-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
                     ทีมร่วมสนุก (ไม่นำมาคิดคำนวณเงินรางวัล)
                   </td>
                 </tr>
@@ -4808,9 +4831,37 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             const winsDisplay = isEligible ? ((wins % 1 === 0) ? wins : wins.toFixed(1)) : '-';
             const prizeDisplay = isEligible ? `${actualPrize.toLocaleString()} THB` : '<span class="text-slate-400 font-normal">ร่วมสนุก (ไม่มีรางวัล)</span>';
 
+            let countCellsHtml = '';
+            if (hasMultiTier) {
+              const r1 = tierCounts[t.entry_id]?.[1] || 0;
+              const r2 = tierCounts[t.entry_id]?.[2] || 0;
+              const r3 = tierCounts[t.entry_id]?.[3] || 0;
+
+              const formatTierBadge = (cnt, badgeStyle) => {
+                if (!isEligible) return '<span class="text-slate-400 font-normal">-</span>';
+                if (cnt === 0) return '<span class="text-slate-300 dark:text-slate-600 font-normal text-xs">-</span>';
+                const disp = (cnt % 1 === 0) ? cnt : cnt.toFixed(1);
+                return `<span class="inline-flex items-center justify-center font-black font-display text-xs ${badgeStyle} px-2 py-0.5 rounded-lg min-w-[24px] shadow-2xs">${disp}</span>`;
+              };
+
+              const r1Html = formatTierBadge(r1, 'bg-amber-400 text-slate-950');
+              const r2Html = formatTierBadge(r2, 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100');
+              const r3Html = formatTierBadge(r3, 'bg-amber-700/20 text-amber-900 dark:text-amber-200 border border-amber-300/40');
+
+              countCellsHtml = `
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display">${r1Html}</td>
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display">${r2Html}</td>
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display">${r3Html}</td>
+              `;
+            } else {
+              countCellsHtml = `
+                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-800 dark:text-slate-200">${winsDisplay}</td>
+              `;
+            }
+
             tableRows += `
-              <tr class="hover:bg-slate-50 transition-colors ${idx < 3 && wins > 0 && isEligible ? 'bg-amber-50/20' : ''}">
-                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-500">${isEligible ? (idx + 1) : this.getNonPrizeRankBadge()}</td>
+              <tr class="hover:bg-slate-50 transition-colors ${idx < 3 && (wins > 0 || actualPrize > 0) && isEligible ? 'bg-amber-50/20' : ''}">
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500">${isEligible ? (idx + 1) : this.getNonPrizeRankBadge()}</td>
                 <td class="py-2.5 px-2 sm:px-3">
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${this.escapeHtml(t.entry_name)}</button>
@@ -4818,7 +4869,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   </div>
                   <div class="text-[11px] text-slate-500">${this.escapeHtml(t.player_name)}</div>
                 </td>
-                <td class="py-2.5 px-2 sm:px-3 text-center font-display font-bold text-slate-800">${winsDisplay}</td>
+                ${countCellsHtml}
                 <td class="py-2.5 px-2 sm:px-3 text-right font-display font-black text-emerald-600">${prizeDisplay}</td>
               </tr>
             `;
@@ -4915,6 +4966,53 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             });
           }
 
+          let multiTierHistoryHtml = '';
+          if (hasMultiTier && multiTierGWEntries.length > 0) {
+            multiTierHistoryHtml = multiTierGWEntries.map(entry => {
+              return `
+                <div class="bg-slate-50/80 dark:bg-slate-800/60 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700/80 flex flex-col justify-between shadow-2xs">
+                  <div>
+                    <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-200/80 dark:border-slate-700/80">
+                      <span class="text-xs font-black text-slate-900 dark:text-white font-display">Gameweek ${entry.gw}</span>
+                      <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">จบการแข่งขัน</span>
+                    </div>
+                    <div class="space-y-1.5 text-xs">
+                      ${entry.payouts.map(p => {
+                        const medal = p.rank === 1 ? '🥇 ที่ 1' : (p.rank === 2 ? '🥈 ที่ 2' : '🥉 ที่ 3');
+                        const cardBg = p.rank === 1 
+                          ? 'bg-amber-100/70 dark:bg-amber-950/40 text-amber-950 dark:text-amber-200 border-amber-300 dark:border-amber-700/60' 
+                          : (p.rank === 2 
+                            ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-200 border-slate-200 dark:border-slate-700' 
+                            : 'bg-amber-50/60 dark:bg-amber-950/20 text-amber-900 dark:text-amber-300 border-amber-200/60 dark:border-amber-800/40');
+                        return `
+                          <div class="p-2 rounded-xl border ${cardBg} flex items-center justify-between shadow-2xs">
+                            <div class="truncate pr-2">
+                              <span class="font-bold text-[10px] block">${medal}${p.isJoint ? ` (เสมอ ${p.jointCount})` : ''}</span>
+                              <span class="font-bold truncate block text-xs">${this.escapeHtml(p.team_name)}</span>
+                              <span class="text-[10px] text-slate-500 dark:text-slate-400 block truncate">${this.escapeHtml(p.player_name)} (${p.net_points} pts)${p.tieBreakNote ? ` • <span class="text-amber-600 dark:text-amber-400">⚡ Tie-break</span>` : ''}</span>
+                            </div>
+                            <span class="font-black font-display text-emerald-700 dark:text-emerald-400 text-xs flex-shrink-0">${p.prize.toLocaleString()} THB</span>
+                          </div>
+                        `;
+                      }).join('')}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          }
+
+          let total1st = 0, total2nd = 0, total3rd = 0;
+          if (hasMultiTier) {
+            sortedTeams.forEach(t => {
+              if (this.isPrizeEligible(t.entry_id)) {
+                total1st += tierCounts[t.entry_id]?.[1] || 0;
+                total2nd += tierCounts[t.entry_id]?.[2] || 0;
+                total3rd += tierCounts[t.entry_id]?.[3] || 0;
+              }
+            });
+          }
+
           if (mainContainer) {
             mainContainer.innerHTML = `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
@@ -4923,9 +5021,24 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   <table class="w-full text-left border-collapse">
                     <thead>
                       <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
-                        <th class="py-2 px-2 sm:px-3 text-center w-8">#</th>
+                        <th class="py-2 px-1 sm:px-2 text-center w-8">#</th>
                         <th class="py-2 px-2 sm:px-3">ทีม & ผู้จัดการ</th>
+                        ${hasMultiTier ? `
+                        <th class="py-2 px-1 sm:px-2 text-center w-12 sm:w-16">
+                          <span class="hidden sm:inline">🥇 ที่ 1</span>
+                          <span class="sm:hidden">🥇 1</span>
+                        </th>
+                        <th class="py-2 px-1 sm:px-2 text-center w-12 sm:w-16">
+                          <span class="hidden sm:inline">🥈 ที่ 2</span>
+                          <span class="sm:hidden">🥈 2</span>
+                        </th>
+                        <th class="py-2 px-1 sm:px-2 text-center w-12 sm:w-16">
+                          <span class="hidden sm:inline">🥉 ที่ 3</span>
+                          <span class="sm:hidden">🥉 3</span>
+                        </th>
+                        ` : `
                         <th class="py-2 px-2 sm:px-3 text-center">แชมป์วีค</th>
+                        `}
                         <th class="py-2 px-2 sm:px-3 text-right">เงินรางวัลสะสม</th>
                       </tr>
                     </thead>
@@ -4937,16 +5050,33 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                         <td colspan="2" class="py-3 px-2 sm:px-3 text-slate-700 dark:text-slate-300">
                           <div class="flex items-center gap-1.5 flex-wrap">
                             <span>ยอดรวมเงินรางวัลสะสมที่มอบไปแล้ว</span>
-                            <span class="text-[11px] font-normal text-slate-500 font-display">(จบแล้ว ${Math.round(totalDistributedWins)} วีค)</span>
+                            <span class="text-[11px] font-normal text-slate-500 font-display">(จบแล้ว ${Math.round(hasMultiTier ? total1st : totalDistributedWins)} วีค)</span>
                           </div>
                         </td>
+                        ${hasMultiTier ? `
+                        <td class="py-3 px-1 sm:px-2 text-center text-amber-600 dark:text-amber-400 font-black font-display">${total1st % 1 === 0 ? total1st : total1st.toFixed(1)}</td>
+                        <td class="py-3 px-1 sm:px-2 text-center text-slate-700 dark:text-slate-300 font-black font-display">${total2nd % 1 === 0 ? total2nd : total2nd.toFixed(1)}</td>
+                        <td class="py-3 px-1 sm:px-2 text-center text-amber-800 dark:text-amber-300 font-black font-display">${total3rd % 1 === 0 ? total3rd : total3rd.toFixed(1)}</td>
+                        ` : `
                         <td class="py-3 px-2 sm:px-3 text-center text-slate-800 dark:text-slate-200 font-bold">${totalDistributedWins % 1 === 0 ? totalDistributedWins : totalDistributedWins.toFixed(1)}</td>
+                        `}
                         <td class="py-3 px-2 sm:px-3 text-right font-black text-emerald-600 dark:text-emerald-400">${totalDistributedPrize.toLocaleString()} THB</td>
                       </tr>
                     </tfoot>
                   </table>
                 </div>
               </div>
+
+              ${multiTierHistoryHtml ? `
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
+                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">ประวัติผู้ชนะรางวัลประจำสัปดาห์ 3 อันดับ (GW 1 - ${maxGW})</h3>
+                  <span class="text-[11px] font-bold text-slate-500 font-display">สัปดาห์ละ ${weeklyAmount.toLocaleString()} THB (ที่ 1: ${weeklyPrizesConfig['1st'].toLocaleString()} / ที่ 2: ${weeklyPrizesConfig['2nd'].toLocaleString()} / ที่ 3: ${weeklyPrizesConfig['3rd'].toLocaleString()} THB)</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                  ${multiTierHistoryHtml}
+                </div>
+              </div>` : ''}
 
               ${phasesHtml ? `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
