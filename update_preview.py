@@ -5275,16 +5275,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   </table>
                 </div>
               </div>
-              ${multiTierHistoryHtml ? `
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
-                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-                  <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">ประวัติผู้ชนะรางวัลประจำสัปดาห์ 3 อันดับ (GW 1 - ${maxGW})</h3>
-                  <span class="text-[11px] font-bold text-slate-500 font-display">สัปดาห์ละ ${weeklyAmount.toLocaleString()} THB (ที่ 1: ${weeklyPrizesConfig['1st'].toLocaleString()} / ที่ 2: ${weeklyPrizesConfig['2nd'].toLocaleString()} / ที่ 3: ${weeklyPrizesConfig['3rd'].toLocaleString()} THB)</span>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                  ${multiTierHistoryHtml}
-                </div>
-              </div>` : ''}
 
               ${hasWeeklyPenalties ? `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
