@@ -2660,17 +2660,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               if (team.rank === 1) {
                 penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950/40 dark:text-amber-200 ml-1">🏆 +200</span>`;
               } else if (team.rank === eligibleCount) {
-                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-rose-100 text-rose-900 border border-rose-300 dark:bg-rose-950/40 dark:text-rose-200 ml-1">💀 บ๊วย -1,000</span>`;
+                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-rose-100 text-rose-900 border border-rose-300 dark:bg-rose-950/40 dark:text-rose-200 ml-1">💀 -1,000</span>`;
                 penaltyRowBg = 'bg-rose-50/40 dark:bg-rose-950/20';
               } else if (team.rank === eligibleCount - 1) {
-                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-800 border border-rose-200 dark:bg-rose-950/30 dark:text-rose-300 ml-1">⚠️ รองบ๊วย -800</span>`;
+                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-800 border border-rose-200 dark:bg-rose-950/30 dark:text-rose-300 ml-1">⚠️ -800</span>`;
                 penaltyRowBg = 'bg-rose-50/20 dark:bg-rose-950/10';
               } else if (team.rank === eligibleCount - 2) {
-                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 ml-1">⚠️ ท้าย 3 -600</span>`;
+                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 ml-1">⚠️ -600</span>`;
               } else if (team.rank === eligibleCount - 3) {
-                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 ml-1">⚠️ ท้าย 4 -400</span>`;
+                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 ml-1">⚠️ -400</span>`;
               } else if (team.rank === eligibleCount - 4) {
-                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 ml-1">⚠️ ท้าย 5 -200</span>`;
+                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 ml-1">⚠️ -200</span>`;
               }
             }
 
