@@ -5219,11 +5219,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                         <th class="py-2 px-1 sm:px-2 text-center w-8">#</th>
                         <th class="py-2 px-2 sm:px-3">ทีม & ผู้จัดการ</th>
                         ${hasWeeklyPenalties ? `
-                        <th class="py-2 px-1 sm:px-2 text-center w-14">🏆 แชมป์</th>
-                        <th class="py-2 px-1 sm:px-2 text-center w-14">⚠️ โดนปรับ</th>
-                        <th class="py-2 px-2 sm:px-3 text-right">💸 ค่าปรับสะสม</th>
-                        <th class="py-2 px-2 sm:px-3 text-right">💰 รางวัลสะสม</th>
-                        <th class="py-2 px-2 sm:px-3 text-right font-black">⚖️ ยอดสุทธิ Net</th>
+                        <th class="py-2 px-1 sm:px-2 text-center w-14">แชมป์</th>
+                        <th class="py-2 px-1 sm:px-2 text-center w-14">โดนปรับ</th>
+                        <th class="py-2 px-2 sm:px-3 text-right">ค่าปรับสะสม</th>
+                        <th class="py-2 px-2 sm:px-3 text-right">รางวัลสะสม</th>
+                        <th class="py-2 px-2 sm:px-3 text-right font-black">ยอดสุทธิ Net</th>
                         ` : (hasMultiTier ? `
                         <th class="py-2 px-1 sm:px-2 text-center w-12 sm:w-16">
                           <span class="hidden sm:inline">🥇 ที่ 1</span>
@@ -5275,18 +5275,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   </table>
                 </div>
               </div>
-
-              ${penaltyHistoryHtml ? `
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
-                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-                  <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">ประวัติแชมป์วีค & ผู้เสียค่าปรับ 5 อันดับท้ายรายสัปดาห์ (GW 1 - ${maxGW})</h3>
-                  <span class="text-[11px] font-bold text-slate-500 font-display">ค่าปรับรวม 3,000 THB - หักแชมป์ 200 THB = เข้ากองกลางสุทธิ +2,800 THB/วีค</span>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  ${penaltyHistoryHtml}
-                </div>
-              </div>` : ''}
-
               ${multiTierHistoryHtml ? `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
                 <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
