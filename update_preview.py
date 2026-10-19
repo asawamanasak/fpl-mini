@@ -20,6 +20,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         "last_sync_iso": multi_data.get("last_sync_iso"),
         "sync_status": multi_data.get("sync_status"),
         "max_gw": multi_data.get("max_gw"),
+        "transfer_suggestions": multi_data.get("transfer_suggestions", {}),
         "leagues": {}
     }
     for lid, l_obj in multi_data.get("leagues", {}).items():
@@ -674,6 +675,48 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
       border: 1px solid #34d399 !important;
     }
 
+    @keyframes tabBluePulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.45);
+        border-color: rgba(59, 130, 246, 0.85);
+        background-color: rgba(37, 99, 235, 0.08);
+      }
+      50% {
+        box-shadow: 0 0 14px 3px rgba(37, 99, 235, 0.7);
+        border-color: rgba(29, 78, 216, 1);
+        background-color: rgba(37, 99, 235, 0.22);
+      }
+    }
+    @keyframes tabBluePulseActive {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.55);
+        filter: brightness(1);
+      }
+      50% {
+        box-shadow: 0 0 16px 4px rgba(37, 99, 235, 0.85);
+        filter: brightness(1.15);
+      }
+    }
+    .tab-pulse-comp {
+      animation: tabBluePulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+      border: 1px solid rgba(59, 130, 246, 0.8) !important;
+      color: #2563eb !important;
+    }
+    .dark .tab-pulse-comp {
+      color: #60a5fa !important;
+    }
+    .tab-pulse-comp-active {
+      animation: tabBluePulseActive 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+      background-color: #2563eb !important;
+      color: #ffffff !important;
+      border: 1px solid #3b82f6 !important;
+    }
+    .dark .tab-pulse-comp-active {
+      background-color: #2563eb !important;
+      color: #ffffff !important;
+      border: 1px solid #60a5fa !important;
+    }
+
     .dark .text-emerald-700 {
       color: #34d399 !important;
     }
@@ -810,6 +853,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
         >
           Weekly Highlight
+        </button>
+        <button 
+          id="tab-btn-competition"
+          data-tab-target="competition-view" 
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
+        >
+          Competition
         </button>
         <button 
           id="tab-btn-prizes"
@@ -950,6 +1000,54 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
       <!-- 14 Awards Cards Grid -->
       <div id="highlights-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+        <!-- Rendered dynamically -->
+      </div>
+
+    </div>
+
+    <!-- ==================== TAB: COMPETITION ==================== -->
+    <div id="competition-view" class="tab-content hidden space-y-6">
+      
+      <!-- Top Overview Banner -->
+      <div class="glass-card rounded-2xl px-4 py-3.5 sm:px-6 sm:py-4.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <span class="text-[10px] sm:text-xs uppercase tracking-wider text-blue-600 dark:text-blue-400 font-bold font-display flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+            COMPETITION INTEL & SQUAD ANALYTICS
+          </span>
+          <h2 id="competition-overview-title" class="text-base sm:text-xl font-bold text-slate-900 dark:text-white font-display mt-0.5">
+            Competition <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(ข้อมูลเจาะลึกคู่แข่ง & การวิเคราะห์ขุมกำลัง)</span>
+          </h2>
+          <p id="competition-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            ส่องการ์ดคงเหลือของคู่แข่ง, นักเตะยอดนิยมมหาชน, ตัวทีเด็ดดิฟเฟอเรนเชียล และคำแนะนำการย้ายตัวประจำสัปดาห์
+          </p>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <span id="competition-league-badge" class="bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
+          <span id="competition-gw-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
+        </div>
+      </div>
+
+      <!-- Section 1: Card Available -->
+      <div id="competition-cards-section" class="space-y-4">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Section 2: Important Players & Differential Players (Side-by-side Grid) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <!-- Left: Important Players (> 70%) -->
+        <div id="competition-important-section" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Right: Differential Players (< 20%) -->
+        <div id="competition-differential-section" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Section 3: Transfer Suggestions -->
+      <div id="competition-transfers-section" class="space-y-4">
         <!-- Rendered dynamically -->
       </div>
 
@@ -1141,6 +1239,32 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- 6.2 หน้าต่างข้อมูล Projected Points Modal (FPL Gameweek Explanation) -->
+  <div id="projected-points-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-xs hidden transition-all duration-200" onclick="if (event.target === this) app.closeProjectedPointsModal()">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold flex items-center justify-center text-sm font-display">Pts</span>
+          <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">Projected Points (คะแนนคาดการณ์)</h3>
+        </div>
+        <button onclick="app.closeProjectedPointsModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold transition-colors cursor-pointer text-base">✕</button>
+      </div>
+      <div class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 space-y-2.5 leading-relaxed">
+        <p>
+          คะแนนคาดการณ์ (Projected Points) คือการประเมินคะแนนโดยประมาณที่นักเตะน่าจะทำได้ในสัปดาห์ถัดไป จาก AI Algorithm
+        </p>
+        <div class="bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-800/60 rounded-xl p-3 text-xs text-blue-900 dark:text-blue-200">
+          <strong class="font-bold">เงื่อนไขสำคัญ:</strong> ข้อมูลนี้สมมติว่าผู้เล่นมีชื่อลงเล่นเป็นตัวจริงในสนาม ผู้จัดการทีมควรตรวจสอบอาการบาดเจ็บหรือโอกาสการโรเตชันของนักเตะก่อนตัดสินใจกดย้ายทีมจริง
+        </div>
+      </div>
+      <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+        <button onclick="app.closeProjectedPointsModal()" class="px-4 py-2 bg-slate-900 dark:bg-blue-600 text-white font-bold rounded-xl text-xs hover:bg-slate-800 dark:hover:bg-blue-700 transition-colors cursor-pointer">
+          เข้าใจแล้ว
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1945,11 +2069,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
       updateHighlightsTabBlink() {
         const liveTabBtn = document.getElementById('tab-btn-live');
         const hlTabBtn = document.getElementById('tab-btn-highlights');
+        const compTabBtn = document.getElementById('tab-btn-competition');
         const gwKey = String(this.selectedGW);
         const gwData = this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
         const isFinished = gwData ? Boolean(gwData.is_finished) : false;
 
-        // ทั้งสองหัวข้อ (LIVE และ Weekly Highlight) จะกระพริบเป็นสีเขียวเหมือนกันขณะที่เกมวีคกำลังแข่งขันและยังไม่จบ
+        // สลับการกระพริบระหว่าง [LIVE & Weekly Highlight] กับ [Competition]:
+        // 1. ขณะที่เกมวีคกำลังแข่งขัน (isFinished = false): LIVE และ Weekly Highlight กระพริบสีเขียว ส่วน Competition หยุดกระพริบ
+        // 2. เมื่อเกมวีคจบการแข่งขันแล้ว (isFinished = true): LIVE และ Weekly Highlight หยุดกระพริบ ส่วน Competition ขึ้นกระพริบแทน เพื่อเตือนให้ User เข้ามาดู/วางแผนจัดตัวก่อนสัปดาห์ถัดไปจะเริ่ม
         if (!isFinished) {
           if (liveTabBtn) {
             const isLiveActive = this.activeTab === 'gameweek-view';
@@ -1968,8 +2095,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               hlTabBtn.className = 'tab-nav-btn tab-pulse-live flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-emerald-600 dark:text-emerald-400 border border-emerald-500/80 bg-emerald-500/10 hover:bg-emerald-500/20';
             }
           }
+
+          if (compTabBtn) {
+            const isCompActive = this.activeTab === 'competition-view';
+            if (isCompActive) {
+              compTabBtn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white border border-transparent';
+            } else {
+              compTabBtn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800';
+            }
+            compTabBtn.classList.remove('tab-pulse-comp', 'tab-pulse-comp-active');
+          }
         } else {
-          // หากจบการแข่งขันเกมวีคนั้นแล้ว ทั้งสองปุ่มจะหยุดกระพริบ และกลับสู่โทนสีปกติ
+          // หากจบการแข่งขันเกมวีคนั้นแล้ว ทั้งสองปุ่ม (LIVE และ Weekly Highlight) จะหยุดกระพริบ และกลับสู่โทนสีปกติ
           if (liveTabBtn) {
             const isLiveActive = this.activeTab === 'gameweek-view';
             if (isLiveActive) {
@@ -1989,6 +2126,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             }
             hlTabBtn.classList.remove('tab-pulse-live', 'tab-pulse-live-active');
           }
+
+          // Competition ขึ้นกระพริบแทน!
+          if (compTabBtn) {
+            const isCompActive = this.activeTab === 'competition-view';
+            if (isCompActive) {
+              compTabBtn.className = 'tab-nav-btn tab-pulse-comp-active flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-blue-600 text-white border border-blue-500 shadow-xs dark:bg-blue-600 dark:text-white dark:border-blue-400';
+            } else {
+              compTabBtn.className = 'tab-nav-btn tab-pulse-comp flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-blue-600 dark:text-blue-400 border border-blue-500/80 bg-blue-500/10 hover:bg-blue-500/20';
+            }
+          }
         }
       }
 
@@ -1996,6 +2143,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         this.renderGWSelector();
         this.renderGameweekView();
         this.renderHighlightsView();
+        this.renderCompetitionView();
         this.renderPrizesView();
         this.renderHallOfFameView();
         this.renderCupView();
@@ -2006,6 +2154,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
       renderCurrentTab() {
         if (this.activeTab === 'gameweek-view') this.renderGameweekView();
         else if (this.activeTab === 'highlights-view') this.renderHighlightsView();
+        else if (this.activeTab === 'competition-view') this.renderCompetitionView();
         else if (this.activeTab === 'prizes-view') this.renderPrizesView();
         else if (this.activeTab === 'hall-of-fame-view') this.renderHallOfFameView();
         else if (this.activeTab === 'cup-view') this.renderCupView();
@@ -2080,6 +2229,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         this.renderGWSelector();
         this.renderGameweekView();
         this.renderHighlightsView();
+        this.renderCompetitionView();
         this.updateHighlightsTabBlink();
         this.renderCurrentTab();
       }
@@ -3022,6 +3172,1255 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         ].filter(Boolean).join('');
 
         this.updateHighlightsTabBlink();
+      }
+
+      // ==================== TAB: COMPETITION VIEW ====================
+
+      getLeaderboardTeams() {
+        const leagueData = this.data;
+        if (!leagueData) return [];
+        const teams = leagueData.teams || [];
+        const maxGW = Number(this.multiData.max_gw) || 1;
+
+        const overallMap = {};
+        teams.forEach(t => {
+          overallMap[t.entry_id] = {
+            ...t,
+            entry_id: t.entry_id,
+            entry_name: t.entry_name,
+            player_name: t.player_name,
+            fpl_rank: Number(t.rank) || 999,
+            total_points: 0
+          };
+        });
+
+        for (let g = 1; g <= maxGW; g++) {
+          const gData = leagueData.gameweeks ? leagueData.gameweeks[String(g)] : null;
+          if (gData && gData.results) {
+            const gIsStarted = gData.is_started !== undefined 
+              ? Boolean(gData.is_started) 
+              : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+
+            if (gIsStarted) {
+              const seenInGw = new Set();
+              gData.results.forEach(r => {
+                if (seenInGw.has(r.entry_id)) return;
+                seenInGw.add(r.entry_id);
+                if (overallMap[r.entry_id]) {
+                  overallMap[r.entry_id].total_points += (r.net_points || 0);
+                }
+              });
+            }
+          }
+        }
+
+        const sorted = Object.values(overallMap).sort((a, b) => 
+          (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999))
+        );
+
+        let curRank = 1;
+        let prevPoints = null;
+        sorted.forEach((team, idx) => {
+          if (prevPoints !== null && team.total_points < prevPoints) {
+            curRank = idx + 1;
+          }
+          prevPoints = team.total_points;
+          team.leaderboard_rank = curRank;
+        });
+
+        return sorted;
+      }
+
+      setCompCardFilter(filter) {
+        this.compCardFilter = filter;
+        this.updateCompCardFilterButtons();
+        this.renderCompetitionCardsTableOnly();
+      }
+
+      updateCompCardFilterButtons() {
+        const filter = this.compCardFilter || 'all';
+        document.querySelectorAll('.comp-card-filter-btn').forEach(btn => {
+          const bFilter = btn.getAttribute('data-filter');
+          const isActive = (bFilter === filter);
+          if (isActive) {
+            let activeBg = 'bg-blue-600 text-white shadow-xs ring-2 ring-blue-500/40';
+            if (bFilter === 'tc') activeBg = 'bg-pink-600 text-white shadow-xs ring-2 ring-pink-500/40';
+            else if (bFilter === 'bb') activeBg = 'bg-blue-600 text-white shadow-xs ring-2 ring-blue-500/40';
+            else if (bFilter === 'fh') activeBg = 'bg-amber-600 text-white shadow-xs ring-2 ring-amber-500/40';
+            else if (bFilter === 'wc1') activeBg = 'bg-emerald-600 text-white shadow-xs ring-2 ring-emerald-500/40';
+            btn.className = `comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${activeBg} cursor-pointer`;
+          } else {
+            btn.className = 'comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60 cursor-pointer';
+          }
+        });
+
+        // Top summary cards active state
+        ['wc1', 'fh', 'tc', 'bb'].forEach(k => {
+          const cardEl = document.getElementById(`comp-summary-card-${k}`);
+          if (cardEl) {
+            if (k === filter) {
+              cardEl.classList.add('ring-2', 'ring-blue-500', 'dark:ring-blue-400');
+            } else {
+              cardEl.classList.remove('ring-2', 'ring-blue-500', 'dark:ring-blue-400');
+            }
+          }
+        });
+      }
+
+      setCompCardSearch(val) {
+        this.compCardSearch = (val || '').toLowerCase().trim();
+        this.renderCompetitionCardsTableOnly();
+      }
+
+      setCompDiffPosFilter(pos) {
+        this.compDiffPosFilter = pos;
+        this.renderCompetitionDiffPlayersOnly();
+      }
+
+      setCompDiffSearch(val) {
+        this.compDiffSearch = (val || '').toLowerCase().trim();
+        this.renderCompetitionDiffPlayersOnly();
+      }
+
+      setCompTransferTeam(entryId) {
+        this.compTransferTeam = entryId ? String(entryId) : '';
+        this.renderCompetitionTransfersOnly();
+      }
+
+      setCompTransferMobileView(view) {
+        this.compTransferMobileView = view;
+        this.renderCompetitionTransfersOnly();
+      }
+
+      showProjectedPointsModal() {
+        const modal = document.getElementById('projected-points-modal');
+        if (modal) modal.classList.remove('hidden');
+      }
+
+      closeProjectedPointsModal() {
+        const modal = document.getElementById('projected-points-modal');
+        if (modal) modal.classList.add('hidden');
+      }
+
+      toggleImportantTeamList(pid) {
+        const el = document.getElementById(`important-teams-${pid}`);
+        const btn = document.getElementById(`important-btn-${pid}`);
+        if (!el) return;
+        if (el.classList.contains('hidden')) {
+          el.classList.remove('hidden');
+          if (btn) btn.innerText = '▲ ซ่อนรายชื่อทีม';
+        } else {
+          el.classList.add('hidden');
+          if (btn) btn.innerText = '▼ ดูรายชื่อทีมที่เลือก';
+        }
+      }
+
+      renderCompetitionView() {
+        const leagueData = this.data;
+        if (!leagueData) return;
+        const teams = this.getLeaderboardTeams();
+        const totalTeams = teams.length;
+        if (totalTeams === 0) return;
+
+        const currentGw = this.selectedGW;
+        const maxGw = Number(this.multiData.max_gw) || currentGw;
+
+        // Set state defaults
+        this.compCardFilter = this.compCardFilter || 'all';
+        this.compCardSearch = this.compCardSearch || '';
+        this.compDiffPosFilter = this.compDiffPosFilter || 'ALL';
+        this.compDiffSearch = this.compDiffSearch || '';
+        this.compTransferTeam = this.compTransferTeam || '';
+        this.compTransferMobileView = this.compTransferMobileView || 'both';
+
+        // Update Header Badges
+        const leagueBadge = document.getElementById('competition-league-badge');
+        const gwBadge = document.getElementById('competition-gw-badge');
+        if (leagueBadge) leagueBadge.innerText = leagueData.name || `League ${this.activeLeagueId}`;
+        if (gwBadge) gwBadge.innerText = `Gameweek ${currentGw}`;
+
+        // 1. Render Card Available
+        this.renderCompetitionCards(teams, totalTeams, maxGw);
+
+        // 2. Render Important & Differential Players
+        this.renderCompetitionPlayers(teams, totalTeams, currentGw);
+
+        // 3. Render Transfer Suggestions
+        this.renderCompetitionTransfers(teams, totalTeams, currentGw);
+      }
+
+      // --- Part 1: Cards Available ---
+      renderCompetitionCards(teams, totalTeams, maxGw) {
+        const container = document.getElementById('competition-cards-section');
+        if (!container) return;
+
+        const sortedTeams = this.getLeaderboardTeams();
+        const leagueData = this.data;
+
+        // Compute chip usage map for all teams across all gameweeks
+        const chipsByTeam = {};
+        let totalWc1Avail = 0;
+        let totalFhAvail = 0;
+        let totalTcAvail = 0;
+        let totalBbAvail = 0;
+
+        sortedTeams.forEach(t => {
+          const eid = Number(t.entry_id);
+          const usage = { wc1: null, wc2: null, fh: null, tc: null, bb: null };
+
+          for (let gw = 1; gw <= maxGw; gw++) {
+            const gwData = leagueData.gameweeks ? leagueData.gameweeks[String(gw)] : null;
+            if (gwData && gwData.results) {
+              const r = gwData.results.find(res => Number(res.entry_id) === eid);
+              if (r && r.chip) {
+                const c = String(r.chip).toLowerCase().trim();
+                if (c === 'wildcard') {
+                  if (gw <= 19) usage.wc1 = gw;
+                  else usage.wc2 = gw;
+                } else if (c === 'freehit') {
+                  usage.fh = gw;
+                } else if (c === '3xc' || c === 'triple_captain') {
+                  usage.tc = gw;
+                } else if (c === 'bboost' || c === 'bench_boost') {
+                  usage.bb = gw;
+                }
+              }
+            }
+            // Check squads as fallback for live active chip
+            const sqKey = `${eid}_${gw}`;
+            const sq = leagueData.squads ? leagueData.squads[sqKey] : null;
+            if (sq && sq.chip) {
+              const c = String(sq.chip).toLowerCase().trim();
+              if (c === 'wildcard') {
+                if (gw <= 19 && usage.wc1 === null) usage.wc1 = gw;
+                else if (gw > 19 && usage.wc2 === null) usage.wc2 = gw;
+              } else if (c === 'freehit' && usage.fh === null) {
+                usage.fh = gw;
+              } else if ((c === '3xc' || c === 'triple_captain') && usage.tc === null) {
+                usage.tc = gw;
+              } else if ((c === 'bboost' || c === 'bench_boost') && usage.bb === null) {
+                usage.bb = gw;
+              }
+            }
+          }
+
+          chipsByTeam[eid] = usage;
+
+          if (usage.wc1 === null && maxGw <= 19) totalWc1Avail++;
+          if (usage.fh === null) totalFhAvail++;
+          if (usage.tc === null) totalTcAvail++;
+          if (usage.bb === null) totalBbAvail++;
+        });
+
+        this.cachedChipsByTeam = chipsByTeam;
+
+        // Render Top 4 Summary Cards + Filter Tabs + Table Container
+        container.innerHTML = `
+          <!-- Section Title -->
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800">
+            <div>
+              <span class="text-[10px] sm:text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold font-display flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                CHIPS AVAILABILITY MATRIX
+              </span>
+              <h3 class="text-sm sm:text-lg font-bold text-slate-900 dark:text-white font-display mt-0.5">
+                Card Available <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(สถานะการ์ดคงเหลือของทุกทีมในลีก %)</span>
+              </h3>
+            </div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">
+              รวม <strong class="text-slate-900 dark:text-white">${totalTeams}</strong> ทีม
+            </div>
+          </div>
+
+          <!-- 4 Chip Summary Stats (Clickable to Filter) -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+            
+            <!-- WC 1 -->
+            <div id="comp-summary-card-wc1" onclick="app.setCompCardFilter('wc1')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 border-l-4 border-l-emerald-500 shadow-2xs cursor-pointer hover:border-emerald-400 transition-all">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Wildcard 1 (GW 1-19)</span>
+                <span class="chip-badge badge-wildcard">WC</span>
+              </div>
+              <div class="mt-2 flex items-baseline gap-1.5">
+                <span class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalWc1Avail}</span>
+                <span class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">/ ${totalTeams} ทีม</span>
+                <span class="ml-auto text-xs font-bold text-emerald-600 dark:text-emerald-400 font-display">${Math.round(totalWc1Avail / totalTeams * 100)}%</span>
+              </div>
+              <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate">เปลี่ยนตัวฟรีไม่จำกัด (ถึง GW 19)</p>
+            </div>
+
+            <!-- Free Hit -->
+            <div id="comp-summary-card-fh" onclick="app.setCompCardFilter('fh')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 border-l-4 border-l-amber-500 shadow-2xs cursor-pointer hover:border-amber-400 transition-all">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Free Hit</span>
+                <span class="chip-badge badge-freehit">FH</span>
+              </div>
+              <div class="mt-2 flex items-baseline gap-1.5">
+                <span class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalFhAvail}</span>
+                <span class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">/ ${totalTeams} ทีม</span>
+                <span class="ml-auto text-xs font-bold text-amber-600 dark:text-amber-400 font-display">${Math.round(totalFhAvail / totalTeams * 100)}%</span>
+              </div>
+              <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate">จัดทีมใหม่ฟรี 1 วีค</p>
+            </div>
+
+            <!-- Triple Captain -->
+            <div id="comp-summary-card-tc" onclick="app.setCompCardFilter('tc')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 border-l-4 border-l-pink-500 shadow-2xs cursor-pointer hover:border-pink-400 transition-all">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Triple Captain</span>
+                <span class="chip-badge badge-3xc">3xC</span>
+              </div>
+              <div class="mt-2 flex items-baseline gap-1.5">
+                <span class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalTcAvail}</span>
+                <span class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">/ ${totalTeams} ทีม</span>
+                <span class="ml-auto text-xs font-bold text-pink-600 dark:text-pink-400 font-display">${Math.round(totalTcAvail / totalTeams * 100)}%</span>
+              </div>
+              <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate">คะแนนกัปตันคูณ 3 แต้ม</p>
+            </div>
+
+            <!-- Bench Boost -->
+            <div id="comp-summary-card-bb" onclick="app.setCompCardFilter('bb')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 border-l-4 border-l-blue-500 shadow-2xs cursor-pointer hover:border-blue-400 transition-all">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Bench Boost</span>
+                <span class="chip-badge badge-bboost">BB</span>
+              </div>
+              <div class="mt-2 flex items-baseline gap-1.5">
+                <span class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalBbAvail}</span>
+                <span class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">/ ${totalTeams} ทีม</span>
+                <span class="ml-auto text-xs font-bold text-blue-600 dark:text-blue-400 font-display">${Math.round(totalBbAvail / totalTeams * 100)}%</span>
+              </div>
+              <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate">นับแต้มผู้เล่นสำรองทั้ง 4 ตัว</p>
+            </div>
+
+          </div>
+
+          <!-- Controls: Filters & Search -->
+          <div class="glass-card rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+            <!-- Filter Pills (Scrollable on Mobile) -->
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-scroll py-0.5 -mx-1 px-1">
+              <button onclick="app.setCompCardFilter('all')" data-filter="all" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'all' ? 'bg-blue-600 text-white shadow-xs ring-2 ring-blue-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60'} cursor-pointer">
+                ทั้งหมด (${totalTeams})
+              </button>
+              <button onclick="app.setCompCardFilter('tc')" data-filter="tc" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'tc' ? 'bg-pink-600 text-white shadow-xs ring-2 ring-pink-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60'} cursor-pointer">
+                3xC (${totalTcAvail})
+              </button>
+              <button onclick="app.setCompCardFilter('bb')" data-filter="bb" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'bb' ? 'bg-blue-600 text-white shadow-xs ring-2 ring-blue-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60'} cursor-pointer">
+                BB (${totalBbAvail})
+              </button>
+              <button onclick="app.setCompCardFilter('fh')" data-filter="fh" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'fh' ? 'bg-amber-600 text-white shadow-xs ring-2 ring-amber-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60'} cursor-pointer">
+                Free Hit (${totalFhAvail})
+              </button>
+              <button onclick="app.setCompCardFilter('wc1')" data-filter="wc1" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'wc1' ? 'bg-emerald-600 text-white shadow-xs ring-2 ring-emerald-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60'} cursor-pointer">
+                Wildcard 1 (${totalWc1Avail})
+              </button>
+            </div>
+
+            <!-- Search Box -->
+            <div class="relative w-full sm:w-64">
+              <input 
+                type="text" 
+                id="comp-card-search-input" 
+                placeholder="ค้นหาชื่อทีม หรือ ผู้จัดการ..." 
+                value="${this.escapeHtml(this.compCardSearch)}"
+                oninput="app.setCompCardSearch(this.value)"
+                class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              ${this.compCardSearch ? `<button onclick="document.getElementById('comp-card-search-input').value=''; app.setCompCardSearch('')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs cursor-pointer">✕</button>` : ''}
+            </div>
+          </div>
+
+          <!-- Cards Table Container -->
+          <div id="comp-cards-table-container" class="glass-card rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-2xs">
+            <!-- Table body populated by renderCompetitionCardsTableOnly -->
+          </div>
+        `;
+
+        this.renderCompetitionCardsTableOnly();
+      }
+
+      renderCompetitionCardsTableOnly() {
+        const tableContainer = document.getElementById('comp-cards-table-container');
+        if (!tableContainer) return;
+
+        const maxGw = Number(this.multiData.max_gw) || this.selectedGW;
+        const showWc2 = maxGw >= 20;
+        const totalCardsPossible = showWc2 ? 5 : 4;
+
+        const allTeams = this.getLeaderboardTeams();
+        const chipsByTeam = this.cachedChipsByTeam || {};
+
+        const search = this.compCardSearch || '';
+        const filter = this.compCardFilter || 'all';
+
+        let filteredTeams = allTeams;
+
+        if (search) {
+          filteredTeams = filteredTeams.filter(t => 
+            (t.entry_name || '').toLowerCase().includes(search) || 
+            (t.player_name || '').toLowerCase().includes(search)
+          );
+        }
+
+        if (filter === 'tc') {
+          filteredTeams = filteredTeams.filter(t => chipsByTeam[t.entry_id]?.tc === null);
+        } else if (filter === 'bb') {
+          filteredTeams = filteredTeams.filter(t => chipsByTeam[t.entry_id]?.bb === null);
+        } else if (filter === 'fh') {
+          filteredTeams = filteredTeams.filter(t => chipsByTeam[t.entry_id]?.fh === null);
+        } else if (filter === 'wc1') {
+          filteredTeams = filteredTeams.filter(t => chipsByTeam[t.entry_id]?.wc1 === null && maxGw <= 19);
+        }
+
+        if (filteredTeams.length === 0) {
+          tableContainer.innerHTML = `
+            <div class="p-8 text-center text-slate-400 dark:text-slate-500 text-xs">
+              ไม่พบทีมที่ตรงกับเงื่อนไขการค้นหา
+            </div>
+          `;
+          return;
+        }
+
+        const badgeAvail = `
+          <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800 whitespace-nowrap">
+            <svg class="w-3 h-3 text-emerald-600 dark:text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            Available
+          </span>
+        `;
+
+        const badgeUsed = (gw) => `
+          <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-medium bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 whitespace-nowrap line-through decoration-slate-400">
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-400 flex-shrink-0"></span>
+            GW ${gw}
+          </span>
+        `;
+
+        const badgeWc2Upcoming = `
+          <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/50 dark:text-indigo-300 dark:border-indigo-800 whitespace-nowrap">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0"></span>
+            เริ่มใช้ GW 20
+          </span>
+        `;
+
+        const badgeExpired = `
+          <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-medium bg-slate-100 text-slate-400 border border-slate-200 dark:bg-slate-800 dark:text-slate-500 whitespace-nowrap">
+            หมดอายุ
+          </span>
+        `;
+
+        let rowsHtml = '';
+        filteredTeams.forEach((t) => {
+          const usage = chipsByTeam[t.entry_id] || { wc1: null, wc2: null, fh: null, tc: null, bb: null };
+
+          // Remaining cards count (Season total in-play)
+          const remainingCount = (usage.wc1 ? 0 : 1) + 
+                                 (showWc2 ? (usage.wc2 ? 0 : 1) : 0) + 
+                                 (usage.fh ? 0 : 1) + 
+                                 (usage.tc ? 0 : 1) + 
+                                 (usage.bb ? 0 : 1);
+
+          // Wildcard 1
+          let wc1Badge = badgeAvail;
+          if (usage.wc1) wc1Badge = badgeUsed(usage.wc1);
+          else if (maxGw > 19) wc1Badge = badgeExpired;
+
+          // Wildcard 2 (rendered only if showWc2 is true)
+          let wc2Badge = badgeWc2Upcoming;
+          if (usage.wc2) wc2Badge = badgeUsed(usage.wc2);
+          else if (maxGw >= 20) wc2Badge = badgeAvail;
+
+          // Free Hit
+          const fhBadge = usage.fh ? badgeUsed(usage.fh) : badgeAvail;
+
+          // Triple Captain
+          const tcBadge = usage.tc ? badgeUsed(usage.tc) : badgeAvail;
+
+          // Bench Boost
+          const bbBadge = usage.bb ? badgeUsed(usage.bb) : badgeAvail;
+
+          const meterColor = remainingCount >= (totalCardsPossible * 0.75) ? 'bg-emerald-500' : (remainingCount >= (totalCardsPossible * 0.5) ? 'bg-amber-500' : 'bg-rose-500');
+
+          // Medal / Rank styling from Total Leaderboard
+          let rankBadge = '';
+          if (t.leaderboard_rank === 1) {
+            rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
+          } else if (t.leaderboard_rank === 2) {
+            rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
+          } else if (t.leaderboard_rank === 3) {
+            rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 dark:text-amber-300 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
+          } else {
+            rankBadge = `<span class="text-slate-500 dark:text-slate-400 font-bold">${t.leaderboard_rank}</span>`;
+          }
+
+          rowsHtml += `
+            <tr class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/80">
+              <td class="py-2.5 px-2 text-center text-xs font-bold w-8 sm:w-10 sticky left-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/60 z-10">
+                ${rankBadge}
+              </td>
+              <td class="py-2.5 px-2.5 sm:px-3 min-w-[130px] sm:min-w-[180px] max-w-[160px] sm:max-w-[220px] sticky left-8 sm:left-10 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/60 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
+                <button onclick="app.openTeamModal(${t.entry_id})" class="text-left group cursor-pointer block truncate w-full">
+                  <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+                    ${this.escapeHtml(t.entry_name)}
+                  </div>
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 truncate flex items-center gap-1.5">
+                    <span>${this.escapeHtml(t.player_name)}</span>
+                    <span class="text-[10px] font-mono text-blue-600 dark:text-blue-400 font-bold">(${t.total_points} pts)</span>
+                  </div>
+                </button>
+              </td>
+              <td class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">
+                <div class="inline-flex flex-col items-center">
+                  <span class="text-xs font-bold text-slate-900 dark:text-white font-display">${remainingCount} / ${totalCardsPossible} ใบ</span>
+                  <div class="w-14 sm:w-16 bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden mt-1">
+                    <div class="${meterColor} h-full" style="width: ${(remainingCount / totalCardsPossible) * 100}%"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="py-2.5 px-2 sm:px-3 text-center">
+                ${wc1Badge}
+              </td>
+              ${showWc2 ? `<td class="py-2.5 px-2 sm:px-3 text-center">${wc2Badge}</td>` : ''}
+              <td class="py-2.5 px-2 sm:px-3 text-center">
+                ${fhBadge}
+              </td>
+              <td class="py-2.5 px-2 sm:px-3 text-center">
+                ${tcBadge}
+              </td>
+              <td class="py-2.5 px-2 sm:px-3 text-center">
+                ${bbBadge}
+              </td>
+            </tr>
+          `;
+        });
+
+        tableContainer.innerHTML = `
+          <!-- Mobile Scroll Affordance Bar -->
+          <div class="sm:hidden flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 px-3 py-1.5 bg-slate-50/80 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+            <span class="flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+              เรียงตาม Total Leaderboard
+            </span>
+            <span class="text-[10px] text-slate-400 font-medium">👉 เลื่อนขวาดูสถานะการ์ด</span>
+          </div>
+
+          <div class="overflow-x-auto touch-scroll no-scrollbar">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-50/70 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider">
+                  <th class="py-2.5 px-2 text-center w-8 sm:w-10 sticky left-0 bg-slate-50 dark:bg-slate-800 z-20">#</th>
+                  <th class="py-2.5 px-2.5 sm:px-3 sticky left-8 sm:left-10 bg-slate-50 dark:bg-slate-800 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">ทีม & ผู้จัดการ</th>
+                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">การ์ดคงเหลือ</th>
+                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Wildcard 1</th>
+                  ${showWc2 ? '<th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Wildcard 2</th>' : ''}
+                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Free Hit</th>
+                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Triple Capt</th>
+                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Bench Boost</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80">
+                ${rowsHtml}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      // --- Part 2: Important & Differential Players ---
+      renderCompetitionPlayers(teams, totalTeams, currentGw) {
+        const leagueData = this.data;
+        const maxGw = Number(this.multiData.max_gw) || currentGw;
+
+        // Compute player counts across all teams in the active league
+        const pCounts = {};
+
+        teams.forEach(t => {
+          const eid = Number(t.entry_id);
+          let sq = leagueData.squads ? leagueData.squads[`${eid}_${currentGw}`] : null;
+          if (!sq && leagueData.squads) {
+            sq = leagueData.squads[`${eid}_${maxGw}`];
+          }
+          if (!sq) return;
+
+          const allPicks = (sq.starting || []).concat(sq.bench || []);
+          allPicks.forEach(p => {
+            const pid = p.id;
+            if (!pCounts[pid]) {
+              pCounts[pid] = {
+                id: pid,
+                name: p.name,
+                pos: p.pos || 'MID',
+                team: p.team || 'UNK',
+                team_code: p.team_code || FPL_TEAM_CODES[p.team] || 0,
+                count: 0,
+                teams: []
+              };
+            }
+            pCounts[pid].count += 1;
+            pCounts[pid].teams.push({
+              entry_id: eid,
+              team_name: t.entry_name,
+              player_name: t.player_name
+            });
+          });
+        });
+
+        this.cachedPlayerCounts = pCounts;
+
+        // 1. Important Players (> 70%)
+        const importantSection = document.getElementById('competition-important-section');
+        if (importantSection) {
+          const importantList = Object.values(pCounts)
+            .filter(p => (p.count / totalTeams) > 0.70)
+            .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+
+          let impHtml = `
+            <div>
+              <!-- Header -->
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
+                <div>
+                  <span class="text-[10px] sm:text-xs uppercase tracking-wider text-blue-600 dark:text-blue-400 font-bold font-display flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    TEMPLATE PICKS
+                  </span>
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">
+                    Important Players <span class="text-xs font-normal text-slate-500 dark:text-slate-400 font-sans">(มหาชน > 70%)</span>
+                  </h3>
+                </div>
+                <span class="px-2.5 py-1 rounded-xl text-xs font-bold font-display bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                  ${importantList.length} คน
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mb-3.5">
+                นักเตะที่ถูกเลือกมากกว่า 70% ของลีก เป็นตัวหลักที่ต้องมีเพื่อรักษาระยะห่างแต้ม
+              </p>
+
+              <!-- Players List -->
+              <div class="space-y-3">
+          `;
+
+          if (importantList.length === 0) {
+            impHtml += `
+              <div class="p-6 text-center text-slate-400 dark:text-slate-500 text-xs bg-slate-50/50 dark:bg-slate-800/30 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
+                ไม่มีนักเตะที่ถูกเลือกเกิน 70% ใน Gameweek นี้
+              </div>
+            `;
+          } else {
+            const posBadgeColors = {
+              'GKP': 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
+              'DEF': 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300',
+              'MID': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300',
+              'FWD': 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
+            };
+
+            importantList.forEach(p => {
+              const pct = (p.count / totalTeams) * 100;
+              const shirtUrl = this.getPlayerShirtUrl(p);
+              const posColor = posBadgeColors[p.pos] || 'bg-slate-100 text-slate-800';
+
+              impHtml += `
+                <div class="bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl p-3 border border-slate-200/80 dark:border-slate-800 transition-all">
+                  <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <img src="${shirtUrl}" alt="${p.team}" class="w-8 h-8 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_0-66.webp';" />
+                      <div class="min-w-0">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                          <span class="font-bold text-slate-900 dark:text-white text-sm truncate">${this.escapeHtml(p.name)}</span>
+                          <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${posColor}">${p.pos}</span>
+                          <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">${p.team}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                      <div class="text-xs font-black text-blue-600 dark:text-blue-400 font-display">${pct.toFixed(1)}%</div>
+                      <div class="text-[10px] text-slate-500 dark:text-slate-400">${p.count}/${totalTeams} ทีม</div>
+                    </div>
+                  </div>
+
+                  <!-- Progress Bar -->
+                  <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden mt-2.5">
+                    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+                  </div>
+
+                  <!-- Collapsible Teams List Toggle -->
+                  <div class="mt-2.5 pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between">
+                    <button id="important-btn-${p.id}" onclick="app.toggleImportantTeamList(${p.id})" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
+                      ▼ ดูรายชื่อทีมที่เลือก (${p.teams.length} ทีม)
+                    </button>
+                    <span class="text-[10px] text-slate-400">มหาชนตัวจริง</span>
+                  </div>
+
+                  <!-- Team tags list (hidden by default) -->
+                  <div id="important-teams-${p.id}" class="hidden mt-2 pt-1 flex flex-wrap gap-1.5">
+                    ${p.teams.map(t => `
+                      <button onclick="app.openTeamModal(${t.entry_id})" class="text-[10px] px-2 py-0.5 rounded-md bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-500 transition-colors cursor-pointer truncate max-w-[150px]">
+                        ${this.escapeHtml(t.team_name)}
+                      </button>
+                    `).join('')}
+                  </div>
+
+                </div>
+              `;
+            });
+          }
+
+          impHtml += `
+              </div>
+            </div>
+          `;
+          importantSection.innerHTML = impHtml;
+        }
+
+        // 2. Differential Players (< 20%)
+        this.renderCompetitionDiffPlayersOnly();
+      }
+
+      renderCompetitionDiffPlayersOnly() {
+        const diffSection = document.getElementById('competition-differential-section');
+        if (!diffSection) return;
+
+        const pCounts = this.cachedPlayerCounts || {};
+        const teams = this.data.teams || [];
+        const totalTeams = teams.length;
+
+        const posFilter = this.compDiffPosFilter || 'ALL';
+        const search = this.compDiffSearch || '';
+
+        let diffList = Object.values(pCounts)
+          .filter(p => (p.count / totalTeams) < 0.20 && p.count > 0)
+          .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+
+        const countsByPos = {
+          'ALL': diffList.length,
+          'GKP': diffList.filter(p => p.pos === 'GKP').length,
+          'DEF': diffList.filter(p => p.pos === 'DEF').length,
+          'MID': diffList.filter(p => p.pos === 'MID').length,
+          'FWD': diffList.filter(p => p.pos === 'FWD').length
+        };
+
+        if (posFilter !== 'ALL') {
+          diffList = diffList.filter(p => p.pos === posFilter);
+        }
+
+        if (search) {
+          diffList = diffList.filter(p => 
+            p.name.toLowerCase().includes(search) || 
+            p.team.toLowerCase().includes(search)
+          );
+        }
+
+        const posBadgeColors = {
+          'GKP': 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
+          'DEF': 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300',
+          'MID': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300',
+          'FWD': 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
+        };
+
+        let diffHtml = `
+          <div>
+            <!-- Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
+              <div>
+                <span class="text-[10px] sm:text-xs uppercase tracking-wider text-amber-600 dark:text-amber-400 font-bold font-display flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                  RANK BOOSTERS
+                </span>
+                <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">
+                  Differential Players <span class="text-xs font-normal text-slate-500 dark:text-slate-400 font-sans">(ทีเด็ด < 20%)</span>
+                </h3>
+              </div>
+              <span class="px-2.5 py-1 rounded-xl text-xs font-bold font-display bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                ${countsByPos.ALL} คน
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">
+              นักเตะที่ถูกเลือกน้อยกว่า 20% ในลีก มีอย่างน้อย 1 ทีมเลือกใช้ แต้มมาเมื่อไหร่อันดับพุ่งฉีกคู่แข่ง!
+            </p>
+
+            <!-- Position Filter Pills & Search -->
+            <div class="space-y-2 mb-3.5">
+              <div class="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
+                ${['ALL', 'GKP', 'DEF', 'MID', 'FWD'].map(pos => `
+                  <button onclick="app.setCompDiffPosFilter('${pos}')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.compDiffPosFilter === pos ? 'bg-slate-900 text-white dark:bg-amber-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300'}">
+                    ${pos} (${countsByPos[pos]})
+                  </button>
+                `).join('')}
+              </div>
+              <div class="relative">
+                <input 
+                  type="text" 
+                  placeholder="ค้นหานักเตะทีเด็ด..." 
+                  value="${this.escapeHtml(this.compDiffSearch)}"
+                  oninput="app.setCompDiffSearch(this.value)"
+                  class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+            </div>
+
+            <!-- Scrollable List of Differentials -->
+            <div class="max-h-[520px] overflow-y-auto space-y-2.5 pr-1 touch-scroll">
+        `;
+
+        if (diffList.length === 0) {
+          diffHtml += `
+            <div class="p-6 text-center text-slate-400 dark:text-slate-500 text-xs bg-slate-50/50 dark:bg-slate-800/30 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
+              ไม่พบนักเตะทีเด็ดตามเงื่อนไขที่เลือก
+            </div>
+          `;
+        } else {
+          diffList.forEach(p => {
+            const pct = (p.count / totalTeams) * 100;
+            const shirtUrl = this.getPlayerShirtUrl(p);
+            const posColor = posBadgeColors[p.pos] || 'bg-slate-100 text-slate-800';
+
+            diffHtml += `
+              <div class="bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl p-2.5 sm:p-3 border border-slate-200/80 dark:border-slate-800 transition-all hover:border-amber-400/50">
+                <div class="flex items-center justify-between gap-2.5">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <img src="${shirtUrl}" alt="${p.team}" class="w-7 h-7 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_0-66.webp';" />
+                    <div class="min-w-0">
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <span class="font-bold text-slate-900 dark:text-white text-xs sm:text-sm truncate">${this.escapeHtml(p.name)}</span>
+                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${posColor}">${p.pos}</span>
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">${p.team}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-right flex-shrink-0">
+                    <div class="text-xs font-black text-amber-600 dark:text-amber-400 font-display">${pct.toFixed(1)}%</div>
+                    <div class="text-[10px] text-slate-500 dark:text-slate-400">${p.count}/${totalTeams} ทีม</div>
+                  </div>
+                </div>
+
+                <!-- Teams that picked this differential -->
+                <div class="mt-2 pt-1.5 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center gap-1.5 flex-wrap">
+                  <span class="text-[10px] text-slate-400 dark:text-slate-500">ทีมที่ถือครอง:</span>
+                  ${p.teams.map(t => `
+                    <button onclick="app.openTeamModal(${t.entry_id})" class="text-[10px] px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/80 hover:bg-amber-100 dark:hover:bg-amber-900/60 transition-colors cursor-pointer truncate max-w-[130px]" title="${this.escapeHtml(t.player_name)}">
+                      ${this.escapeHtml(t.team_name)}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        diffHtml += `
+            </div>
+          </div>
+        `;
+        diffSection.innerHTML = diffHtml;
+      }
+
+      // --- Part 3: Transfer Suggestions ---
+      renderCompetitionTransfers(teams, totalTeams, currentGw) {
+        const container = document.getElementById('competition-transfers-section');
+        if (!container) return;
+
+        const sugg = this.multiData.transfer_suggestions || {};
+        const suggGw = sugg.gw || (currentGw + 1);
+        const sortedTeams = this.getLeaderboardTeams();
+
+        container.innerHTML = `
+          <!-- Section Container styled in Dark Slate matching FPL Gameweek -->
+          <div class="rounded-2xl p-3.5 sm:p-6 bg-slate-900 text-white border border-slate-800 shadow-xl space-y-3 sm:space-y-4">
+            
+            <!-- Header Row -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span class="text-[10px] sm:text-xs uppercase tracking-wider text-emerald-400 font-bold font-display">
+                    FPL GAMEWEEK INSIGHTS
+                  </span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                    GW ${suggGw}
+                  </span>
+                </div>
+                <h3 class="text-base sm:text-lg font-bold text-white font-display mt-0.5 flex items-center gap-2">
+                  Transfer Suggestions <span class="text-xs sm:text-sm font-normal text-slate-400 font-sans">(คำแนะนำการย้ายตัว)</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-0.5">
+                  วิเคราะห์ตัวเลือกที่ดีที่สุด (Best Players) และตัวเลือกสุดคุ้มค่า (Best Value) พร้อมคะแนนคาดการณ์ประจำสัปดาห์
+                </p>
+              </div>
+
+              <!-- Team Highlighter Selector (Ordered by Total Leaderboard) -->
+              <div class="flex items-center gap-2 flex-wrap w-full sm:w-auto">
+                <label for="comp-transfers-team-select" class="text-xs text-slate-300 font-medium">
+                  ไฮไลท์นักเตะในทีม:
+                </label>
+                <select 
+                  id="comp-transfers-team-select" 
+                  onchange="app.setCompTransferTeam(this.value)"
+                  class="w-full sm:w-auto bg-slate-800 text-white text-xs border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
+                >
+                  <option value="">-- ภาพรวมทั้งลีก (แสดง % ถือครองในลีก) --</option>
+                  ${sortedTeams.map(t => `
+                    <option value="${t.entry_id}" ${String(this.compTransferTeam) === String(t.entry_id) ? 'selected' : ''}>
+                      #${t.leaderboard_rank} ${this.escapeHtml(t.entry_name)} (${this.escapeHtml(t.player_name)})
+                    </option>
+                  `).join('')}
+                </select>
+              </div>
+            </div>
+
+            <!-- Mobile View Switcher (< sm screens) -->
+            <div class="sm:hidden flex items-center p-1 bg-slate-800/90 rounded-xl text-xs font-bold border border-slate-700/60">
+              <button onclick="app.setCompTransferMobileView('both')" class="flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${this.compTransferMobileView === 'both' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'}">
+                ตารางคู่ (เลื่อนข้าง)
+              </button>
+              <button onclick="app.setCompTransferMobileView('best')" class="flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${this.compTransferMobileView === 'best' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'}">
+                Best Players
+              </button>
+              <button onclick="app.setCompTransferMobileView('value')" class="flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${this.compTransferMobileView === 'value' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'}">
+                Best Value
+              </button>
+            </div>
+
+            <!-- Table Container -->
+            <div id="comp-transfers-table-container">
+              <!-- Rendered by renderCompetitionTransfersOnly -->
+            </div>
+
+          </div>
+        `;
+
+        this.renderCompetitionTransfersOnly();
+      }
+
+      renderCompetitionTransfersOnly() {
+        const tableContainer = document.getElementById('comp-transfers-table-container');
+        if (!tableContainer) return;
+
+        const sugg = this.multiData.transfer_suggestions || {};
+        const teams = this.getLeaderboardTeams();
+        const totalTeams = teams.length;
+        const currentGw = this.selectedGW;
+        const maxGw = Number(this.multiData.max_gw) || currentGw;
+        const pCounts = this.cachedPlayerCounts || {};
+        const mobileView = this.compTransferMobileView || 'both';
+
+        // If a team is selected, get its squad for highlighting
+        let selectedTeamPlayerIds = new Set();
+        let selectedTeamName = '';
+        if (this.compTransferTeam) {
+          const tEid = Number(this.compTransferTeam);
+          const tObj = teams.find(t => Number(t.entry_id) === tEid);
+          if (tObj) selectedTeamName = tObj.entry_name;
+          const sq = this.data.squads ? (this.data.squads[`${tEid}_${currentGw}`] || this.data.squads[`${tEid}_${maxGw}`]) : null;
+          if (sq) {
+            (sq.starting || []).concat(sq.bench || []).forEach(p => selectedTeamPlayerIds.add(Number(p.id)));
+          }
+        }
+
+        const formatCost = (c) => {
+          if (c == null) return '-';
+          const n = Number(c);
+          return (n % 1 === 0 ? n : n.toFixed(1)) + 'm';
+        };
+
+        const formatPts = (pts) => {
+          if (pts == null) return '-';
+          return Number(pts).toFixed(1);
+        };
+
+        const categories = [
+          { key: 'GoalKeepers', title: 'Goalkeepers', pos: 'GKP' },
+          { key: 'Defenders', title: 'Defenders', pos: 'DEF' },
+          { key: 'Midfielders', title: 'Midfielders', pos: 'MID' },
+          { key: 'Forwards', title: 'Forwards', pos: 'FWD' }
+        ];
+
+        // 1. Single-column Mobile View: Best Players Only
+        if (mobileView === 'best') {
+          let rowsHtml = '';
+          categories.forEach(cat => {
+            const items = sugg[cat.key] || [];
+            if (items.length === 0) return;
+
+            rowsHtml += `
+              <tr class="bg-slate-800/90 border-y border-slate-700/60">
+                <td colspan="3" class="py-2.5 px-3 text-xs font-bold text-slate-100 uppercase tracking-wider font-display">
+                  ${cat.title}
+                </td>
+              </tr>
+            `;
+
+            items.forEach(item => {
+              const best = item.ValuePlayer || {};
+              const isBestInTeam = best.Id ? selectedTeamPlayerIds.has(Number(best.Id)) : false;
+              const bestOwnerCount = best.Id && pCounts[best.Id] ? pCounts[best.Id].count : 0;
+              const bestOwnerPct = totalTeams > 0 ? ((bestOwnerCount / totalTeams) * 100).toFixed(0) : 0;
+              const bestShirtUrl = this.getPlayerShirtUrl({ pos: cat.pos, team: best.TeamName });
+
+              const bestNameClass = isBestInTeam 
+                ? 'font-bold text-white bg-emerald-950/70 border border-emerald-500/40 px-1.5 py-0.5 rounded text-xs' 
+                : 'text-slate-200 text-xs';
+
+              const bestLeagueTag = (this.compTransferTeam === '') 
+                ? `<span class="text-[10px] text-slate-400 font-normal ml-1.5 font-display" title="ถือครองในลีกนี้ ${bestOwnerCount}/${totalTeams} ทีม">${bestOwnerCount > 0 ? `${bestOwnerPct}%` : '0%'}</span>`
+                : (isBestInTeam ? `<span class="text-[9px] text-emerald-400 font-bold ml-1">● ในทีม</span>` : '');
+
+              rowsHtml += `
+                <tr class="hover:bg-slate-800/40 transition-colors border-b border-slate-800/60 text-xs">
+                  <td class="py-2.5 px-2.5 text-left">
+                    <div class="flex items-center gap-2 min-w-0">
+                      <img src="${bestShirtUrl}" alt="${best.TeamName || ''}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_0-66.webp';" />
+                      <span class="${bestNameClass} truncate" title="${best.PlayerWebName || ''}">
+                        ${best.PlayerWebName || '-'}
+                      </span>
+                      ${bestLeagueTag}
+                    </div>
+                  </td>
+                  <td class="py-2.5 px-2 text-right font-mono text-slate-300 whitespace-nowrap">
+                    ${formatCost(best.Cost)}
+                  </td>
+                  <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-100 whitespace-nowrap">
+                    ${formatPts(best.ExpectedPoints)}
+                  </td>
+                </tr>
+              `;
+            });
+          });
+
+          tableContainer.innerHTML = `
+            <div class="w-full">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="text-[11px] font-bold text-slate-400 font-display uppercase tracking-wider border-b border-slate-800 pb-2">
+                    <th style="width: 60%;" class="py-2 px-2.5 text-left">Best players</th>
+                    <th style="width: 20%;" class="py-2 px-2 text-right">Price</th>
+                    <th style="width: 20%;" class="py-2 px-2 text-right">
+                      <span class="inline-flex items-center justify-end gap-1">
+                        Pts
+                        <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
+                      </span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/40">
+                  ${rowsHtml}
+                </tbody>
+              </table>
+            </div>
+          `;
+          return;
+        }
+
+        // 2. Single-column Mobile View: Best Value Only
+        if (mobileView === 'value') {
+          let rowsHtml = '';
+          categories.forEach(cat => {
+            const items = sugg[cat.key] || [];
+            if (items.length === 0) return;
+
+            rowsHtml += `
+              <tr class="bg-slate-800/90 border-y border-slate-700/60">
+                <td colspan="3" class="py-2.5 px-3 text-xs font-bold text-slate-100 uppercase tracking-wider font-display">
+                  ${cat.title}
+                </td>
+              </tr>
+            `;
+
+            items.forEach(item => {
+              const val = item.GoodPlayer || {};
+              const isValInTeam = val.Id ? selectedTeamPlayerIds.has(Number(val.Id)) : false;
+              const valOwnerCount = val.Id && pCounts[val.Id] ? pCounts[val.Id].count : 0;
+              const valOwnerPct = totalTeams > 0 ? ((valOwnerCount / totalTeams) * 100).toFixed(0) : 0;
+              const valShirtUrl = this.getPlayerShirtUrl({ pos: cat.pos, team: val.TeamName });
+
+              const valNameClass = isValInTeam 
+                ? 'font-bold text-white bg-emerald-950/70 border border-emerald-500/40 px-1.5 py-0.5 rounded text-xs' 
+                : 'text-slate-200 text-xs';
+
+              const valLeagueTag = (this.compTransferTeam === '') 
+                ? `<span class="text-[10px] text-slate-400 font-normal ml-1.5 font-display" title="ถือครองในลีกนี้ ${valOwnerCount}/${totalTeams} ทีม">${valOwnerCount > 0 ? `${valOwnerPct}%` : '0%'}</span>`
+                : (isValInTeam ? `<span class="text-[9px] text-emerald-400 font-bold ml-1">● ในทีม</span>` : '');
+
+              rowsHtml += `
+                <tr class="hover:bg-slate-800/40 transition-colors border-b border-slate-800/60 text-xs">
+                  <td class="py-2.5 px-2.5 text-left">
+                    <div class="flex items-center gap-2 min-w-0">
+                      <img src="${valShirtUrl}" alt="${val.TeamName || ''}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_0-66.webp';" />
+                      <span class="${valNameClass} truncate" title="${val.PlayerWebName || ''}">
+                        ${val.PlayerWebName || '-'}
+                      </span>
+                      ${valLeagueTag}
+                    </div>
+                  </td>
+                  <td class="py-2.5 px-2 text-right font-mono text-slate-300 whitespace-nowrap">
+                    ${formatCost(val.Cost)}
+                  </td>
+                  <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-100 whitespace-nowrap">
+                    ${formatPts(val.ExpectedPoints)}
+                  </td>
+                </tr>
+              `;
+            });
+          });
+
+          tableContainer.innerHTML = `
+            <div class="w-full">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="text-[11px] font-bold text-slate-400 font-display uppercase tracking-wider border-b border-slate-800 pb-2">
+                    <th style="width: 60%;" class="py-2 px-2.5 text-left">Best Value</th>
+                    <th style="width: 20%;" class="py-2 px-2 text-right">Price</th>
+                    <th style="width: 20%;" class="py-2 px-2 text-right">
+                      <span class="inline-flex items-center justify-end gap-1">
+                        Pts
+                        <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
+                      </span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/40">
+                  ${rowsHtml}
+                </tbody>
+              </table>
+            </div>
+          `;
+          return;
+        }
+
+        // 3. Side-by-Side Dual Comparison Table (Default & Desktop)
+        let tableRowsHtml = '';
+
+        categories.forEach(cat => {
+          const items = sugg[cat.key] || [];
+          if (items.length === 0) return;
+
+          // Category Subheader Row
+          tableRowsHtml += `
+            <tr class="bg-slate-800/90 border-y border-slate-700/60">
+              <td colspan="7" class="py-2.5 px-3 text-xs sm:text-sm font-bold text-slate-100 uppercase tracking-wider font-display">
+                ${cat.title}
+              </td>
+            </tr>
+          `;
+
+          items.forEach(item => {
+            const best = item.ValuePlayer || {};
+            const val = item.GoodPlayer || {};
+
+            const isBestInTeam = best.Id ? selectedTeamPlayerIds.has(Number(best.Id)) : false;
+            const isValInTeam = val.Id ? selectedTeamPlayerIds.has(Number(val.Id)) : false;
+
+            const bestOwnerCount = best.Id && pCounts[best.Id] ? pCounts[best.Id].count : 0;
+            const bestOwnerPct = totalTeams > 0 ? ((bestOwnerCount / totalTeams) * 100).toFixed(0) : 0;
+
+            const valOwnerCount = val.Id && pCounts[val.Id] ? pCounts[val.Id].count : 0;
+            const valOwnerPct = totalTeams > 0 ? ((valOwnerCount / totalTeams) * 100).toFixed(0) : 0;
+
+            // Shirt URLs
+            const bestShirtUrl = this.getPlayerShirtUrl({ pos: cat.pos, team: best.TeamName });
+            const valShirtUrl = this.getPlayerShirtUrl({ pos: cat.pos, team: val.TeamName });
+
+            // Badges or text highlighting
+            const bestNameClass = isBestInTeam 
+              ? 'font-bold text-white bg-emerald-950/70 border border-emerald-500/40 px-1.5 py-0.5 rounded text-xs' 
+              : 'text-slate-200 text-xs';
+            
+            const valNameClass = isValInTeam 
+              ? 'font-bold text-white bg-emerald-950/70 border border-emerald-500/40 px-1.5 py-0.5 rounded text-xs' 
+              : 'text-slate-200 text-xs';
+
+            const bestLeagueTag = (this.compTransferTeam === '') 
+              ? `<span class="text-[10px] text-slate-400 font-normal ml-1.5 font-display" title="ถือครองในลีกนี้ ${bestOwnerCount}/${totalTeams} ทีม">${bestOwnerCount > 0 ? `${bestOwnerPct}%` : '0%'}</span>`
+              : (isBestInTeam ? `<span class="text-[9px] text-emerald-400 font-bold ml-1">● ในทีม</span>` : '');
+
+            const valLeagueTag = (this.compTransferTeam === '') 
+              ? `<span class="text-[10px] text-slate-400 font-normal ml-1.5 font-display" title="ถือครองในลีกนี้ ${valOwnerCount}/${totalTeams} ทีม">${valOwnerCount > 0 ? `${valOwnerPct}%` : '0%'}</span>`
+              : (isValInTeam ? `<span class="text-[9px] text-emerald-400 font-bold ml-1">● ในทีม</span>` : '');
+
+            tableRowsHtml += `
+              <tr class="hover:bg-slate-800/40 transition-colors border-b border-slate-800/60 text-xs">
+                
+                <!-- Best Player: Shirt + Name -->
+                <td class="py-2.5 px-2.5 sm:px-3 text-left">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <img src="${bestShirtUrl}" alt="${best.TeamName || ''}" class="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_0-66.webp';" />
+                    <span class="${bestNameClass} truncate" title="${best.PlayerWebName || ''}">
+                      ${best.PlayerWebName || '-'}
+                    </span>
+                    ${bestLeagueTag}
+                  </div>
+                </td>
+
+                <!-- Best Player: Price -->
+                <td class="py-2.5 px-2 text-right font-mono text-slate-300 whitespace-nowrap">
+                  ${formatCost(best.Cost)}
+                </td>
+
+                <!-- Best Player: Pts -->
+                <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-100 whitespace-nowrap">
+                  ${formatPts(best.ExpectedPoints)}
+                </td>
+
+                <!-- Divider Column -->
+                <td class="py-2.5 px-1 sm:px-2 border-r border-slate-800"></td>
+
+                <!-- Best Value: Shirt + Name -->
+                <td class="py-2.5 px-2.5 sm:px-3 text-left">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <img src="${valShirtUrl}" alt="${val.TeamName || ''}" class="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_0-66.webp';" />
+                    <span class="${valNameClass} truncate" title="${val.PlayerWebName || ''}">
+                      ${val.PlayerWebName || '-'}
+                    </span>
+                    ${valLeagueTag}
+                  </div>
+                </td>
+
+                <!-- Best Value: Price -->
+                <td class="py-2.5 px-2 text-right font-mono text-slate-300 whitespace-nowrap">
+                  ${formatCost(val.Cost)}
+                </td>
+
+                <!-- Best Value: Pts -->
+                <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-100 whitespace-nowrap">
+                  ${formatPts(val.ExpectedPoints)}
+                </td>
+
+              </tr>
+            `;
+          });
+        });
+
+        tableContainer.innerHTML = `
+          <!-- Mobile Scroll Hint -->
+          <div class="sm:hidden flex items-center justify-between text-[11px] text-slate-400 pb-1.5 border-b border-slate-800 px-1">
+            <span>เปรียบเทียบทั้งคู่</span>
+            <span class="text-[10px] text-emerald-400">👈 เลื่อนดู Best Value 👉</span>
+          </div>
+
+          <div class="overflow-x-auto touch-scroll no-scrollbar -mx-2 sm:mx-0">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="text-[11px] font-bold text-slate-400 font-display uppercase tracking-wider border-b border-slate-800 pb-2">
+                  <th style="width: 28%;" class="py-2 px-2.5 sm:px-3 text-left">Best players</th>
+                  <th style="width: 10%;" class="py-2 px-2 text-right">Price</th>
+                  <th style="width: 11%;" class="py-2 px-2 text-right">
+                    <span class="inline-flex items-center justify-end gap-1">
+                      Pts
+                      <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
+                    </span>
+                  </th>
+                  <th style="width: 2%;" class="py-2 px-1 border-r border-slate-800"></th>
+                  <th style="width: 28%;" class="py-2 px-2.5 sm:px-3 text-left">Best Value</th>
+                  <th style="width: 10%;" class="py-2 px-2 text-right">Price</th>
+                  <th style="width: 11%;" class="py-2 px-2 text-right">
+                    <span class="inline-flex items-center justify-end gap-1">
+                      Pts
+                      <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
+                    </span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/40">
+                ${tableRowsHtml}
+              </tbody>
+            </table>
+          </div>
+        `;
       }
 
       renderPrizesView() {
@@ -4227,10 +5626,24 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             formationEl.innerText = `แผน: ${defs.length}-${mids.length}-${fwds.length}`;
           }
 
+          const gwKey = String(this.selectedGW);
+          const gwData = this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
+          const isGwFinished = gwData ? Boolean(gwData.is_finished) : false;
+          const unstartedTeams = (gwData && gwData.unstarted_teams) ? gwData.unstarted_teams : [];
+
+          const isPlayerUnstarted = (p) => {
+            if (isGwFinished) return false;
+            if (p.not_played_yet !== undefined && p.not_played_yet !== null) {
+              return Boolean(p.not_played_yet);
+            }
+            return unstartedTeams.includes(p.team) || unstartedTeams.includes(p.team_code);
+          };
+
           const renderPlayerCard = (p, count) => {
             const isCap = Boolean(p.is_captain);
             const isVice = Boolean(p.is_vice);
             const shirtUrl = this.getPlayerShirtUrl(p);
+            const notPlayed = isPlayerUnstarted(p);
 
             return `
               <div class="flex flex-col items-center justify-center p-0.5 text-center flex-shrink-0 transition-transform active:scale-95 group" style="width: ${100 / Math.max(count, 3)}%; max-width: 76px;">
@@ -4253,9 +5666,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   ${this.escapeHtml(p.name)}
                 </div>
 
-                <div class="bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-[8.5px] sm:text-[9.5px] font-black font-display px-1.5 py-0.2 rounded mt-0.5 shadow-xs">
-                  ${p.points} pts
-                </div>
+                ${notPlayed ? '' : `
+                  <div class="bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-[8.5px] sm:text-[9.5px] font-black font-display px-1.5 py-0.2 rounded mt-0.5 shadow-xs">
+                    ${p.points} pts
+                  </div>
+                `}
               </div>
             `;
           };
@@ -4269,8 +5684,24 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         if (squad && squad.bench) {
           let bPoints = 0;
           let bHtml = '';
+          const gwKey = String(this.selectedGW);
+          const gwData = this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
+          const isGwFinished = gwData ? Boolean(gwData.is_finished) : false;
+          const unstartedTeams = (gwData && gwData.unstarted_teams) ? gwData.unstarted_teams : [];
+
+          const isPlayerUnstarted = (p) => {
+            if (isGwFinished) return false;
+            if (p.not_played_yet !== undefined && p.not_played_yet !== null) {
+              return Boolean(p.not_played_yet);
+            }
+            return unstartedTeams.includes(p.team) || unstartedTeams.includes(p.team_code);
+          };
+
           squad.bench.forEach(p => {
-            bPoints += (p.points || 0);
+            const notPlayed = isPlayerUnstarted(p);
+            if (!notPlayed) {
+              bPoints += (p.points || 0);
+            }
             const shirtUrl = this.getPlayerShirtUrl(p);
             bHtml += `
               <div class="bg-white border border-slate-200 rounded-xl p-2 sm:p-2.5 flex items-center justify-between shadow-xs hover:border-slate-300 transition-colors">
@@ -4288,7 +5719,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   <span class="text-[9px] sm:text-[10px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md font-display flex-shrink-0">${p.pos}</span>
                   <span class="text-xs sm:text-sm font-bold text-slate-900 truncate">${this.escapeHtml(p.name)}</span>
                 </div>
-                <span class="text-xs sm:text-xs font-bold text-slate-700 font-display flex-shrink-0 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-lg">${p.points} pts</span>
+                ${notPlayed
+                  ? `<span class="text-xs text-slate-400 font-bold font-display flex-shrink-0 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-lg">-</span>`
+                  : `<span class="text-xs sm:text-xs font-bold text-slate-700 font-display flex-shrink-0 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-lg">${p.points} pts</span>`
+                }
               </div>
             `;
           });

@@ -36,33 +36,38 @@ def get_gw_fixture_status(gw_id):
     """
     Smart Fixture-Aware Status Check:
     Check FPL fixtures API to verify if fixtures have started or finished.
-    Returns (is_started, is_finished, finished_teams).
+    Returns (is_started, is_finished, finished_teams, unstarted_teams).
     - is_started: True if at least one fixture has started.
     - is_finished: True if all fixtures have started and finished (or provisionally finished).
     - finished_teams: Set of team IDs whose active fixtures in this GW have all finished.
+    - unstarted_teams: Set of team IDs whose active fixtures in this GW have not started yet.
     """
     try:
         fixtures = fetch(f'https://fantasy.premierleague.com/api/fixtures/?event={gw_id}')
         if fixtures and len(fixtures) > 0:
             active_fixtures = [f for f in fixtures if not bool(f.get('postponed'))]
             if not active_fixtures:
-                return False, False, set()
+                return False, False, set(), set()
             is_started = any(bool(f.get('started')) for f in active_fixtures)
             is_finished = all(bool(f.get('started')) and (bool(f.get('finished')) or bool(f.get('finished_provisional'))) for f in active_fixtures)
-            team_fixtures = {}
+            team_fixtures_done = {}
+            team_fixtures_started = {}
             for f in active_fixtures:
                 f_done = bool(f.get('started')) and (bool(f.get('finished')) or bool(f.get('finished_provisional')))
+                f_start = bool(f.get('started'))
                 for tid in (f.get('team_h'), f.get('team_a')):
                     if tid is not None:
-                        team_fixtures.setdefault(tid, []).append(f_done)
-            finished_teams = {tid for tid, done_list in team_fixtures.items() if done_list and all(done_list)}
-            return is_started, is_finished, finished_teams
+                        team_fixtures_done.setdefault(tid, []).append(f_done)
+                        team_fixtures_started.setdefault(tid, []).append(f_start)
+            finished_teams = {tid for tid, done_list in team_fixtures_done.items() if done_list and all(done_list)}
+            unstarted_teams = {tid for tid, start_list in team_fixtures_started.items() if not any(start_list)}
+            return is_started, is_finished, finished_teams, unstarted_teams
     except Exception as e:
         print(f"Notice checking fixtures for GW {gw_id}: {e}")
-    return False, False, set()
+    return False, False, set(), set()
 
 def is_gw_fixtures_finished(gw_id):
-    _, finished, _ = get_gw_fixture_status(gw_id)
+    _, finished, _, _ = get_gw_fixture_status(gw_id)
     return finished
 
 def get_active_in_play_fixture_count(gw_id):
@@ -244,6 +249,7 @@ def sync_once(args):
     gw_started_map = {}
     gw_checked_map = {}
     gw_finished_teams_map = {}
+    gw_unstarted_teams_map = {}
     for gw_info in events:
         gw_id = gw_info['id']
         if gw_id <= max_gw:
@@ -254,15 +260,17 @@ def sync_once(args):
                 gw_status_map[gw_id] = True
                 gw_started_map[gw_id] = True
                 gw_finished_teams_map[gw_id] = set(teams_by_id.keys())
+                gw_unstarted_teams_map[gw_id] = set()
             else:
-                is_started, fixtures_fin, fin_teams = get_gw_fixture_status(gw_id)
+                is_started, fixtures_fin, fin_teams, unstarted_teams = get_gw_fixture_status(gw_id)
                 gw_status_map[gw_id] = fixtures_fin
                 gw_started_map[gw_id] = is_started or fixtures_fin
                 gw_finished_teams_map[gw_id] = fin_teams
+                gw_unstarted_teams_map[gw_id] = unstarted_teams
                 if fixtures_fin:
                     print(f" -> Smart Fixture Check: GW {gw_id} matches all finished! Marked as finished (provisional).")
                 elif is_started:
-                    print(f" -> GW {gw_id}: Currently LIVE in progress.")
+                    print(f" -> GW {gw_id}: Currently LIVE in progress. (Unstarted teams: {len(unstarted_teams)})")
                 else:
                     print(f" -> GW {gw_id}: Pre-Match / Squads locked (0 matches kicked off).")
 
@@ -587,15 +595,20 @@ def sync_once(args):
                                 if active_cap.get('multiplier', 1) > 1:
                                     active_cap['multiplier'] = 1
 
+                        gw_is_fin = gw_status_map.get(gw, False)
+                        unstarted_tids = gw_unstarted_teams_map.get(gw, set())
+
                         for p in actual_starters_picks:
                             pid = p['element']
                             mult = p.get('multiplier', 1)
                             is_cap = p.get('is_captain', False)
                             is_vice = p.get('is_vice_captain', False)
                             el_info = elements.get(pid, {})
-                            team_code = teams_by_id.get(el_info.get('team'), 'PL')
+                            el_tid = el_info.get('team')
+                            team_code = teams_by_id.get(el_tid, 'PL')
                             pos_code = element_types.get(el_info.get('element_type'), 'MID')
                             p_pts = live_pts_gw.get(pid, 0)
+                            not_played = (not gw_is_fin) and (el_tid in unstarted_tids)
                             p_obj = {
                                 "id": pid,
                                 "name": el_info.get('web_name', 'Player'),
@@ -604,7 +617,8 @@ def sync_once(args):
                                 "team_code": el_info.get('team_code', 0),
                                 "points": p_pts * mult,
                                 "is_captain": is_cap,
-                                "is_vice": is_vice
+                                "is_vice": is_vice,
+                                "not_played_yet": not_played
                             }
                             if is_cap:
                                 capt_name = el_info.get('web_name', 'Captain')
@@ -616,9 +630,11 @@ def sync_once(args):
                             is_cap = p.get('is_captain', False)
                             is_vice = p.get('is_vice_captain', False)
                             el_info = elements.get(pid, {})
-                            team_code = teams_by_id.get(el_info.get('team'), 'PL')
+                            el_tid = el_info.get('team')
+                            team_code = teams_by_id.get(el_tid, 'PL')
                             pos_code = element_types.get(el_info.get('element_type'), 'MID')
                             p_pts = live_pts_gw.get(pid, 0)
+                            not_played = (not gw_is_fin) and (el_tid in unstarted_tids)
                             p_obj = {
                                 "id": pid,
                                 "name": el_info.get('web_name', 'Player'),
@@ -627,7 +643,8 @@ def sync_once(args):
                                 "team_code": el_info.get('team_code', 0),
                                 "points": p_pts * (mult if mult > 0 else 1),
                                 "is_captain": is_cap,
-                                "is_vice": is_vice
+                                "is_vice": is_vice,
+                                "not_played_yet": not_played
                             }
                             if is_cap:
                                 capt_name = el_info.get('web_name', 'Captain')
@@ -812,6 +829,7 @@ def sync_once(args):
                 gameweeks_dict[gw_str]["results"].sort(key=lambda x: x.get("net_points", 0), reverse=True)
                 gameweeks_dict[gw_str]["is_finished"] = gw_status_map.get(gw, False)
                 gameweeks_dict[gw_str]["is_started"] = gw_started_map.get(gw, False)
+                gameweeks_dict[gw_str]["unstarted_teams"] = [teams_by_id.get(tid, str(tid)) for tid in gw_unstarted_teams_map.get(gw, set())]
 
             multi_league_output["leagues"][str(lid)] = {
                 "id": lid,
@@ -840,6 +858,37 @@ def sync_once(args):
                     "teams_count": len(cached_data["leagues"][str(lid)].get("teams", [])),
                     "gws_count": max_gw
                 })
+
+    # 4.4 Fetch Transfer Suggestions from FPL Gameweek
+    next_event = next((e for e in events if e.get('is_next')), None)
+    upcoming_gw = next_event['id'] if next_event else (max_gw + 1 if gw_status_map.get(max_gw) else max_gw)
+    print(f"Fetching Transfer Suggestions for upcoming GW {upcoming_gw}...")
+    try:
+        ts_url = f'https://fontendfunctionsnortheuropenew.azurewebsites.net/api/TransferSuggestionsFunction?gameweeks={upcoming_gw}&generalSuggestions=1'
+        ts_req = urllib.request.Request(ts_url, headers={
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+            'FunctionKey': 'db059d47-8b44-476a-9dfc-509bceb87bee'
+        })
+        with urllib.request.urlopen(ts_req, timeout=12) as resp:
+            ts_data = json.loads(resp.read().decode('utf-8'))
+            if ts_data and ts_data.get("Succeeded"):
+                multi_league_output["transfer_suggestions"] = {
+                    "gw": upcoming_gw,
+                    "updated_at": datetime.now(timezone.utc).isoformat(),
+                    "GoalKeepers": ts_data.get("GoalKeepers", []),
+                    "Defenders": ts_data.get("Defenders", []),
+                    "Midfielders": ts_data.get("Midfielders", []),
+                    "Forwards": ts_data.get("Forwards", [])
+                }
+                print(f" -> Successfully updated Transfer Suggestions for GW {upcoming_gw}!")
+            else:
+                if cached_data and "transfer_suggestions" in cached_data:
+                    multi_league_output["transfer_suggestions"] = cached_data["transfer_suggestions"]
+    except Exception as ts_err:
+        print(f"Notice: Could not fetch transfer suggestions: {ts_err}")
+        if cached_data and "transfer_suggestions" in cached_data:
+            print(" -> [Resilience] Preserving existing cached transfer suggestions.")
+            multi_league_output["transfer_suggestions"] = cached_data["transfer_suggestions"]
 
     # 4.5 Smart Commit: Detect if any scores, standings, or GW status changed
     has_changed = check_data_has_changed(cached_data, multi_league_output)
