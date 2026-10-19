@@ -1322,7 +1322,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
     class LiveCommentaryEngine {
       static _refreshStep = 0;
 
-      static generateFreshNote(gwNumber, gwData, leagueName, forceRandom = false, nonPrizeTeams = [], leagueData = null, isWeeklyPrize = true) {
+      static generateFreshNote(gwNumber, gwData, leagueName, forceRandom = false, nonPrizeTeams = [], leagueData = null, isWeeklyPrize = true, useTieBreaker = false) {
         if (!gwData || !gwData.results || gwData.results.length === 0) {
           return `Gameweek นี้กำลังรอผลการแข่งขันจากสนามจริง`;
         }
@@ -1336,12 +1336,36 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const isFinished = Boolean(gwData.is_finished);
         const isStarted = gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || (gwData.results && gwData.results.some(r => r.points > 0)));
         const scoreKey = (isFinished || isWeeklyPrize) ? 'net_points' : 'points';
+
+        const getPlayerScores = (eid) => {
+          if (!leagueData || !leagueData.squads) return [];
+          const sq = leagueData.squads[`${eid}_${gwNumber}`];
+          if (!sq || !sq.starting) return [];
+          const pts = sq.starting.map(p => Number(p.points) || 0);
+          if (sq.chip === 'bboost' && sq.bench) pts.push(...sq.bench.map(p => Number(p.points) || 0));
+          return pts.sort((a, b) => b - a);
+        };
+        const cmpPlayerScores = (eidA, eidB) => {
+          const sA = getPlayerScores(eidA), sB = getPlayerScores(eidB);
+          for (let i = 0; i < Math.max(sA.length, sB.length); i++) {
+            const vA = sA[i] !== undefined ? sA[i] : -Infinity;
+            const vB = sB[i] !== undefined ? sB[i] : -Infinity;
+            if (vA !== vB) return vB - vA;
+          }
+          return 0;
+        };
+
         const sorted = [...gwData.results].map(r => ({
           ...r,
           team_name: clean(r.team_name),
           player_name: clean(r.player_name),
           captain: clean(r.captain)
-        })).sort((a, b) => (b[scoreKey] - a[scoreKey]) || (b.net_points - a.net_points) || (b.points - a.points));
+        })).sort((a, b) => {
+          const diff = (b[scoreKey] - a[scoreKey]) || (b.net_points - a.net_points) || (b.points - a.points);
+          if (diff !== 0) return diff;
+          if (useTieBreaker) return cmpPlayerScores(a.entry_id, b.entry_id);
+          return 0;
+        });
 
         const leagueSeed = String(leagueData?.id || leagueName || '40700').split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
         const baseHash = Math.abs(Number(gwNumber) * 37 + leagueSeed * 13);
@@ -1387,7 +1411,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const topPts = top[scoreKey];
         const secondPts = second ? second[scoreKey] : 0;
         const diff = topPts - secondPts;
-        const winners = (eligibleSorted.length > 0 ? eligibleSorted : sorted).filter(r => r[scoreKey] === topPts);
+        let winners = (eligibleSorted.length > 0 ? eligibleSorted : sorted).filter(r => r[scoreKey] === topPts);
+        if (useTieBreaker && winners.length > 1) {
+          const topLeader = winners[0];
+          winners = winners.filter(w => cmpPlayerScores(w.entry_id, topLeader.entry_id) === 0);
+        }
         const isJoint = winners.length > 1;
         const captName = (top.captain || '-').replace(/\s*\(C\)/gi, '').trim();
         const isCentury = topPts >= 100;
@@ -2284,10 +2312,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         }
 
         const isWeeklyPrize = (this.config.features && this.config.features.prize_model === 'weekly');
+        const useHighestPlayerTieBreaker = Boolean(this.config.features && this.config.features.tie_breaker === 'highest_player');
         const scoreProp = (isFinished || isWeeklyPrize) ? 'net_points' : 'points';
-        const sorted = [...gwData.results].sort((a, b) => (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points));
+        const sorted = [...gwData.results].sort((a, b) => {
+          const scoreDiff = (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points);
+          if (scoreDiff !== 0) return scoreDiff;
+          if (useHighestPlayerTieBreaker) {
+            return this.compareTeamPlayerScores(a.entry_id, b.entry_id, this.selectedGW);
+          }
+          return 0;
+        });
         let curRank = 1;
         let prevEligiblePoints = null;
+        let prevEligibleTeam = null;
         let eligiblePreCount = 0;
         sorted.forEach((team) => {
           if (!this.isPrizeEligible(team.entry_id)) {
@@ -2297,17 +2334,44 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
           eligiblePreCount++;
           team.preRank = eligiblePreCount;
-          if (prevEligiblePoints !== null && team[scoreProp] < prevEligiblePoints) {
+          let isTiedWithPrev = false;
+          if (prevEligiblePoints !== null && team[scoreProp] === prevEligiblePoints) {
+            if (useHighestPlayerTieBreaker && prevEligibleTeam) {
+              isTiedWithPrev = (this.compareTeamPlayerScores(team.entry_id, prevEligibleTeam.entry_id, this.selectedGW) === 0);
+            } else {
+              isTiedWithPrev = true;
+            }
+          }
+          if (!isTiedWithPrev && prevEligiblePoints !== null) {
             curRank = eligiblePreCount;
           }
           prevEligiblePoints = team[scoreProp];
+          prevEligibleTeam = team;
           team.rank = curRank;
         });
 
         const eligibleResults = sorted.filter(r => this.isPrizeEligible(r.entry_id));
-        const eligibleSortedByPrize = [...eligibleResults].sort((a, b) => (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points));
+        const eligibleSortedByPrize = [...eligibleResults].sort((a, b) => {
+          const scoreDiff = (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points);
+          if (scoreDiff !== 0) return scoreDiff;
+          if (useHighestPlayerTieBreaker) {
+            return this.compareTeamPlayerScores(a.entry_id, b.entry_id, this.selectedGW);
+          }
+          return 0;
+        });
         const eligibleHighestScore = eligibleSortedByPrize.length > 0 ? eligibleSortedByPrize[0][scoreProp] : 0;
-        const eligibleTopWinners = eligibleSortedByPrize.filter(r => r[scoreProp] === eligibleHighestScore);
+        let eligibleTopWinners = [];
+        if (eligibleSortedByPrize.length > 0) {
+          const topLeader = eligibleSortedByPrize[0];
+          if (useHighestPlayerTieBreaker) {
+            eligibleTopWinners = eligibleSortedByPrize.filter(r => 
+              r[scoreProp] === topLeader[scoreProp] && 
+              this.compareTeamPlayerScores(r.entry_id, topLeader.entry_id, this.selectedGW) === 0
+            );
+          } else {
+            eligibleTopWinners = eligibleSortedByPrize.filter(r => r[scoreProp] === eligibleHighestScore);
+          }
+        }
         const prizeLeader = eligibleTopWinners[0] || sorted[0];
         const isJointPrizeWinner = eligibleTopWinners.length > 1;
 
@@ -2319,7 +2383,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         if (championCard && leader) {
           const cacheKey = `${this.activeLeagueId}_${this.selectedGW}`;
           const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
-          const currentLiveNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeeklyPrize);
+          const currentLiveNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeeklyPrize, useHighestPlayerTieBreaker);
           this.liveNotesCache[cacheKey] = currentLiveNote;
 
           if (!isStarted) {
@@ -2438,7 +2502,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             let multiTierPayoutsHtml = '';
             if (isFinished && isWeeklyPrize && this.config.features && this.config.features.weekly_prizes) {
               const tierPrizes = Object.values(this.config.features.weekly_prizes).map(Number);
-              const weeklyPayouts = this.calculateWeeklyTierPrizes(eligibleSortedByPrize, tierPrizes);
+              const weeklyPayouts = this.calculateWeeklyTierPrizes(eligibleSortedByPrize, tierPrizes, this.selectedGW);
               if (weeklyPayouts.length > 0) {
                 multiTierPayoutsHtml = `
                   <div class="mt-3 pt-3 border-t ${isFinished ? 'border-amber-200/80 dark:border-amber-900/60' : 'border-emerald-200/80 dark:border-emerald-900/60'}">
@@ -2454,12 +2518,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                           : (p.rank === 2 
                             ? 'bg-slate-100/70 dark:bg-slate-800/60 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-200' 
                             : 'bg-amber-50/60 dark:bg-amber-950/20 border-amber-200/70 dark:border-amber-800/40 text-amber-900 dark:text-amber-300');
+                        const tieNoteHtml = p.tieBreakNote ? `<span class="text-[9px] text-amber-700 dark:text-amber-400 font-semibold block truncate mt-0.5">⚡ ${this.escapeHtml(p.tieBreakNote)}</span>` : '';
                         return `
                           <div class="p-2.5 rounded-xl border ${cardStyle} flex items-center justify-between text-xs shadow-2xs">
                             <div class="truncate pr-2">
                               <span class="font-bold text-[11px] block">${medal}${p.isJoint ? ` (เสมอ ${p.jointCount})` : ''}</span>
                               <span class="font-bold truncate block">${this.escapeHtml(p.team_name)}</span>
                               <span class="text-[10px] text-slate-500 dark:text-slate-400 block truncate">${this.escapeHtml(p.player_name)} (${p.net_points} pts)</span>
+                              ${tieNoteHtml}
                             </div>
                             <div class="text-right flex-shrink-0">
                               <span class="font-black font-display text-emerald-700 dark:text-emerald-400 text-sm block">${p.prize.toLocaleString()}</span>
@@ -2721,6 +2787,47 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         return chip.toUpperCase();
       }
 
+      getTeamPlayerScores(entryId, gw) {
+        if (!this.data || !this.data.squads) return [];
+        const key = `${entryId}_${gw}`;
+        const sq = this.data.squads[key];
+        if (!sq || !sq.starting) return [];
+        const pts = sq.starting.map(p => Number(p.points) || 0);
+        if (sq.chip === 'bboost' && sq.bench) {
+          pts.push(...sq.bench.map(p => Number(p.points) || 0));
+        }
+        return pts.sort((a, b) => b - a);
+      }
+
+      compareTeamPlayerScores(entryIdA, entryIdB, gw) {
+        const scoresA = this.getTeamPlayerScores(entryIdA, gw);
+        const scoresB = this.getTeamPlayerScores(entryIdB, gw);
+        const maxLen = Math.max(scoresA.length, scoresB.length);
+        for (let i = 0; i < maxLen; i++) {
+          const valA = scoresA[i] !== undefined ? scoresA[i] : -Infinity;
+          const valB = scoresB[i] !== undefined ? scoresB[i] : -Infinity;
+          if (valA !== valB) {
+            return valB - valA;
+          }
+        }
+        return 0;
+      }
+
+      getTieBreakerExplanation(entryIdWinner, entryIdLoser, gw) {
+        const scoresW = this.getTeamPlayerScores(entryIdWinner, gw);
+        const scoresL = this.getTeamPlayerScores(entryIdLoser, gw);
+        const maxLen = Math.max(scoresW.length, scoresL.length);
+        for (let i = 0; i < maxLen; i++) {
+          const valW = scoresW[i] !== undefined ? scoresW[i] : -Infinity;
+          const valL = scoresL[i] !== undefined ? scoresL[i] : -Infinity;
+          if (valW !== valL) {
+            const rankLabel = i === 0 ? 'ตัวทำแต้มสูงสุด' : `ตัวทำแต้มอันดับ ${i + 1}`;
+            return `ชนะ Tie-breaker ${rankLabel} (${valW} vs ${valL} pts)`;
+          }
+        }
+        return null;
+      }
+
       getWeeklyTierPrizes() {
         if (this.config && this.config.features && this.config.features.weekly_prizes) {
           return Object.values(this.config.features.weekly_prizes).map(Number);
@@ -2731,18 +2838,42 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         return [300];
       }
 
-      calculateWeeklyTierPrizes(eligibleSorted, tierPrizes) {
+      calculateWeeklyTierPrizes(eligibleSorted, tierPrizes, gw = null) {
         if (!tierPrizes || tierPrizes.length === 0) {
           tierPrizes = this.getWeeklyTierPrizes();
         }
+        const effectiveGW = gw || this.selectedGW;
+        const useTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
+
+        const sortedTeams = [...eligibleSorted].sort((a, b) => {
+          const scoreA = a.net_points !== undefined ? a.net_points : a.points;
+          const scoreB = b.net_points !== undefined ? b.net_points : b.points;
+          if (scoreB !== scoreA) return scoreB - scoreA;
+          if (useTieBreaker) {
+            return this.compareTeamPlayerScores(a.entry_id, b.entry_id, effectiveGW);
+          }
+          return 0;
+        });
+
         const payouts = [];
         let currentTierIndex = 0;
         
         const groups = [];
-        eligibleSorted.forEach(team => {
+        sortedTeams.forEach(team => {
           const score = team.net_points !== undefined ? team.net_points : team.points;
           const lastGroup = groups[groups.length - 1];
+          let isSameGroup = false;
           if (lastGroup && lastGroup.score === score) {
+            if (useTieBreaker) {
+              const prevTeam = lastGroup.teams[0];
+              if (this.compareTeamPlayerScores(team.entry_id, prevTeam.entry_id, effectiveGW) === 0) {
+                isSameGroup = true;
+              }
+            } else {
+              isSameGroup = true;
+            }
+          }
+          if (isSameGroup) {
             lastGroup.teams.push(team);
           } else {
             groups.push({ score: score, teams: [team] });
@@ -2767,6 +2898,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
           group.teams.forEach(team => {
             if (prizePerTeam > 0) {
+              let tieBreakNote = null;
+              if (useTieBreaker) {
+                const teamScore = (team.net_points !== undefined ? team.net_points : team.points);
+                const tiedScoreTeams = sortedTeams.filter(t => (t.net_points !== undefined ? t.net_points : t.points) === teamScore);
+                if (tiedScoreTeams.length > 1) {
+                  const lowerTeam = tiedScoreTeams.find(t => t.entry_id !== team.entry_id && this.compareTeamPlayerScores(team.entry_id, t.entry_id, effectiveGW) < 0);
+                  if (lowerTeam) {
+                    tieBreakNote = this.getTieBreakerExplanation(team.entry_id, lowerTeam.entry_id, effectiveGW);
+                  }
+                }
+              }
+
               payouts.push({
                 entry_id: team.entry_id,
                 team_name: team.team_name,
@@ -2777,7 +2920,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 jointCount: count,
                 net_points: team.net_points,
                 hits: team.hits || 0,
-                points: team.points
+                points: team.points,
+                tieBreakNote: tieBreakNote
               });
             }
           });
@@ -4602,9 +4746,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
             if (gData && gData.results && gData.is_finished) {
               const eligibleResults = gData.results.filter(r => this.isPrizeEligible(r.entry_id));
-              const sorted = [...eligibleResults].sort((a, b) => b.net_points - a.net_points);
+              const useTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
+              const sorted = [...eligibleResults].sort((a, b) => {
+                const diff = b.net_points - a.net_points;
+                if (diff !== 0) return diff;
+                if (useTieBreaker) {
+                  return this.compareTeamPlayerScores(a.entry_id, b.entry_id, g);
+                }
+                return 0;
+              });
               if (sorted.length > 0) {
-                const payouts = this.calculateWeeklyTierPrizes(sorted, tierPrizes);
+                const payouts = this.calculateWeeklyTierPrizes(sorted, tierPrizes, g);
                 payouts.forEach(p => {
                   if (winsCount[p.entry_id] === undefined) {
                     winsCount[p.entry_id] = 0;
@@ -5365,12 +5517,38 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             // Gameweek performance records, averages, highs/lows, and wins are evaluated only for finished gameweeks
             if (gData.is_finished) {
               const eligibleResults = gData.results.filter(r => this.isPrizeEligible(r.entry_id));
-              const eligibleSorted = [...eligibleResults].sort((a, b) => b.net_points - a.net_points);
+              const useTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
+              const eligibleSorted = [...eligibleResults].sort((a, b) => {
+                const diff = b.net_points - a.net_points;
+                if (diff !== 0) return diff;
+                if (useTieBreaker) {
+                  return this.compareTeamPlayerScores(a.entry_id, b.entry_id, g);
+                }
+                return 0;
+              });
               const highEligiblePts = eligibleSorted.length > 0 ? eligibleSorted[0].net_points : 0;
-              const topEligibleWinners = eligibleSorted.filter(x => x.net_points === highEligiblePts);
+              let topEligibleWinners = [];
+              if (eligibleSorted.length > 0) {
+                const topLeader = eligibleSorted[0];
+                if (useTieBreaker) {
+                  topEligibleWinners = eligibleSorted.filter(x => 
+                    x.net_points === highEligiblePts && 
+                    this.compareTeamPlayerScores(x.entry_id, topLeader.entry_id, g) === 0
+                  );
+                } else {
+                  topEligibleWinners = eligibleSorted.filter(x => x.net_points === highEligiblePts);
+                }
+              }
               const winCredit = topEligibleWinners.length > 0 ? 1 / topEligibleWinners.length : 0;
 
-              const sorted = [...gData.results].sort((a, b) => b.net_points - a.net_points);
+              const sorted = [...gData.results].sort((a, b) => {
+                const diff = b.net_points - a.net_points;
+                if (diff !== 0) return diff;
+                if (useTieBreaker) {
+                  return this.compareTeamPlayerScores(a.entry_id, b.entry_id, g);
+                }
+                return 0;
+              });
               sorted.forEach((r, idx) => {
                 if (!teamStats[r.entry_id]) {
                   teamStats[r.entry_id] = {
@@ -5387,7 +5565,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                 const ts = teamStats[r.entry_id];
                 ts.total_net += r.net_points;
                 ts.scores.push(r.net_points);
-                if (this.isPrizeEligible(r.entry_id) && r.net_points === highEligiblePts) {
+                if (this.isPrizeEligible(r.entry_id) && topEligibleWinners.some(w => w.entry_id === r.entry_id)) {
                   ts.wins += winCredit;
                 }
                 if (idx < 3) ts.top3 += 1;
@@ -5928,7 +6106,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         const gwData = this.data.gameweeks ? this.data.gameweeks[String(gw)] : null;
         const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
         const isWeeklyPrize = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
-        const newNote = LiveCommentaryEngine.generateFreshNote(gw, gwData, this.data.name, true, nonPrizeList, this.data, isWeeklyPrize);
+        const useTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
+        const newNote = LiveCommentaryEngine.generateFreshNote(gw, gwData, this.data.name, true, nonPrizeList, this.data, isWeeklyPrize, useTieBreaker);
         const cacheKey = `${this.activeLeagueId}_${gw}`;
         this.liveNotesCache[cacheKey] = newNote;
         
@@ -6005,10 +6184,29 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           const isWeekly = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
           const isFinished = Boolean(gwData.is_finished);
           const scoreProp = (isFinished || isWeekly) ? 'net_points' : 'points';
-          const sorted = [...gwData.results].sort((a, b) => (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points));
+          const useHighestPlayerTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
+          const sorted = [...gwData.results].sort((a, b) => {
+            const diff = (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points);
+            if (diff !== 0) return diff;
+            if (useHighestPlayerTieBreaker) {
+              return this.compareTeamPlayerScores(a.entry_id, b.entry_id, Number(gwKey));
+            }
+            return 0;
+          });
           const eligibleResults = sorted.filter(r => this.isPrizeEligible(r.entry_id));
           const eligibleHighestScore = eligibleResults.length > 0 ? eligibleResults[0][scoreProp] : 0;
-          const eligibleWinners = eligibleResults.filter(r => r[scoreProp] === eligibleHighestScore);
+          let eligibleWinners = [];
+          if (eligibleResults.length > 0) {
+            const topLeader = eligibleResults[0];
+            if (useHighestPlayerTieBreaker) {
+              eligibleWinners = eligibleResults.filter(r => 
+                r[scoreProp] === topLeader[scoreProp] && 
+                this.compareTeamPlayerScores(r.entry_id, topLeader.entry_id, Number(gwKey)) === 0
+              );
+            } else {
+              eligibleWinners = eligibleResults.filter(r => r[scoreProp] === eligibleHighestScore);
+            }
+          }
           const isJointPrize = eligibleWinners.length > 1;
           const overallTop = sorted[0];
           const prizeLeader = eligibleWinners[0] || overallTop;
@@ -6019,7 +6217,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           if (!currentLiveNote) {
             const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
             const cacheKey = `${this.activeLeagueId}_${this.selectedGW}`;
-            const rawHtmlNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeekly);
+            const rawHtmlNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeekly, useHighestPlayerTieBreaker);
             currentLiveNote = String(rawHtmlNote).replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
           }
 
@@ -6033,12 +6231,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               if (weeklyPrizesConfig) {
                 const tierPrizes = Object.values(weeklyPrizesConfig).map(Number);
                 const eligibleSorted = sorted.filter(r => this.isPrizeEligible(r.entry_id));
-                const payouts = this.calculateWeeklyTierPrizes(eligibleSorted, tierPrizes);
+                const payouts = this.calculateWeeklyTierPrizes(eligibleSorted, tierPrizes, Number(gwKey));
                 text += `🏆 สรุปเงินรางวัลประจำสัปดาห์ 3 อันดับ (GW ${gwKey}):\n`;
                 payouts.forEach(p => {
                   const medal = p.rank === 1 ? '🥇 อันดับ 1' : (p.rank === 2 ? '🥈 อันดับ 2' : '🥉 อันดับ 3');
                   const jointText = p.isJoint ? ` (เสมอ ${p.jointCount} ทีม หารเท่า)` : '';
-                  text += `• ${medal}: ${p.team_name} (${p.player_name}) • ${p.net_points} pts • ${p.prize.toLocaleString()} THB${jointText}\n`;
+                  const tieText = p.tieBreakNote ? ` [${p.tieBreakNote}]` : '';
+                  text += `• ${medal}: ${p.team_name} (${p.player_name}) • ${p.net_points} pts • ${p.prize.toLocaleString()} THB${jointText}${tieText}\n`;
                 });
               } else {
                 if (hasPassedPrize) {
@@ -6368,11 +6567,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
             const isWeeklyPrize = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
             const scoreProp = (isFinished && isWeeklyPrize) ? 'net_points' : 'points';
-            const sortedGWResults = [...gwData.results].sort((a, b) => (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points));
+            const useHighestPlayerTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
+            const sortedGWResults = [...gwData.results].sort((a, b) => {
+              const diff = (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points);
+              if (diff !== 0) return diff;
+              if (useHighestPlayerTieBreaker) {
+                return this.compareTeamPlayerScores(a.entry_id, b.entry_id, g);
+              }
+              return 0;
+            });
 
             let prizeRank = 1;
             let eCount = 0;
             let prevScore = null;
+            let prevTeam = null;
             const rankMap = {};
 
             sortedGWResults.forEach(r => {
@@ -6383,10 +6591,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               }
               eCount++;
               const score = r[scoreProp];
-              if (prevScore !== null && score < prevScore) {
+              let isTiedWithPrev = false;
+              if (prevScore !== null && score === prevScore) {
+                if (useHighestPlayerTieBreaker && prevTeam) {
+                  isTiedWithPrev = (this.compareTeamPlayerScores(r.entry_id, prevTeam.entry_id, g) === 0);
+                } else {
+                  isTiedWithPrev = true;
+                }
+              }
+              if (!isTiedWithPrev && prevScore !== null) {
                 prizeRank = eCount;
               }
               prevScore = score;
+              prevTeam = r;
               rankMap[r.entry_id] = prizeRank;
             });
 
@@ -6459,8 +6676,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               const eligible = gwData.results.filter(r => this.isPrizeEligible(r.entry_id));
 
               if (eligible.length > 0) {
-                const sortedEligible = [...eligible].sort((a, b) => b.net_points - a.net_points);
-                const payouts = this.calculateWeeklyTierPrizes(sortedEligible, tierPrizes);
+                const useTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
+                const sortedEligible = [...eligible].sort((a, b) => {
+                  const diff = b.net_points - a.net_points;
+                  if (diff !== 0) return diff;
+                  if (useTieBreaker) {
+                    return this.compareTeamPlayerScores(a.entry_id, b.entry_id, g);
+                  }
+                  return 0;
+                });
+                const payouts = this.calculateWeeklyTierPrizes(sortedEligible, tierPrizes, g);
 
                 payouts.forEach(p => {
                   if (isFin) {
@@ -6470,7 +6695,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                       teamWinnings[p.entry_id].total_prize += p.prize;
                     }
                   }
-                  const note = p.isJoint ? `ครองอันดับร่วม ${p.jointCount} ทีม (หารเท่า)` : (tierPrizes.length > 1 ? `อันดับ ${p.rank}` : 'แชมป์เดี่ยว');
+                  const tieText = p.tieBreakNote ? ` (${p.tieBreakNote})` : '';
+                  const note = p.isJoint ? `ครองอันดับร่วม ${p.jointCount} ทีม (หารเท่า)` : (tierPrizes.length > 1 ? `อันดับ ${p.rank}${tieText}` : 'แชมป์เดี่ยว');
 
                   prizeRows.push([
                     `GW ${g}`,
