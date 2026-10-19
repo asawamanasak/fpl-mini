@@ -13,6 +13,7 @@
   * ลีก 40700 (เซียนอยู่รู หมูอยู่ตึก): `https://asawamanasak.github.io/fpl-mini/40700`
   * ลีก 675290 (NudNee): `https://asawamanasak.github.io/fpl-mini/675290`
   * ลีก 38491 (รอ แมน โอน): `https://asawamanasak.github.io/fpl-mini/38491`
+  * ลีก 1101958 (Barley's Official League): `https://asawamanasak.github.io/fpl-mini/1101958`
 * **Repository:** `https://github.com/asawamanasak/fpl-mini`
 
 ---
@@ -132,6 +133,23 @@ flowchart TD
      * อันดับ 3: 1,000 บาท
      * อันดับ 4 - 5: อันดับละ 500 บาท
   3. **แชมป์ลีคคัพ (Mini-League Cup):** 1,000 บาท (เริ่มแข่งขันรอบ Knockout ใน Gameweek 35 เฉพาะทีมที่ชำระค่าสมัคร)
+
+### ลีก 4: 1101958 - "Barley's Official League"
+* **สมาชิก:** 17 ทีม (12 ทีมชิงเงินรางวัล + 5 ทีมร่วมสนุก)
+  * **ทีมชิงเงินรางวัล (12 ทีม):** BMFC™, Oöraora Grandé, Jazzzmith, Ekamai United, Natthapol's Team (Golffu), NuttChan, Univerpool, RJarnOat, เถลิงบัลลังก์แชมป์, BoomBaraka, The AI era, ทีมระบบครับ
+  * **ทีมร่วมสนุก (5 ทีม):** GEMINI UNITED, worawolf, pae takam, TUNBO CHICKEN RICE, AI Boys
+* **ค่าสมัคร:** รายวีค 200 THB x 38 วีค (7,600 THB) + รายปี 1,000 THB = รวม 8,600 THB / ทีม
+* **งบประมาณรางวัลรวม:** **103,200 บาท** (คำนวณจาก 12 ทีมชิงรางวัล: รายวีค 91,200 THB + รายปี 12,000 THB)
+* **โครงสร้างรางวัล:**
+  1. **รางวัลประจำสัปดาห์ (Top 3 Weekly Prizes):** รวม 2,400 บาท / สัปดาห์ (38 สัปดาห์ รวม 91,200 บาท)
+     * อันดับ 1: 1,200 บาท / วีค
+     * อันดับ 2: 720 บาท / วีค
+     * อันดับ 3: 480 บาท / วีค
+     * *กรณีคะแนนสุทธิเท่ากัน:* รวมเงินรางวัลของอันดับที่เสมอแล้วหารเท่ากันทุกทีม
+  2. **รางวัลประจำฤดูกาล (Season Overall Top 3):** รวม 12,000 บาท
+     * อันดับ 1: 6,000 บาท
+     * อันดับ 2: 3,600 บาท
+     * อันดับ 3: 2,400 บาท
 
 ---
 
