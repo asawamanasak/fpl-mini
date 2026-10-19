@@ -3214,15 +3214,25 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
           }
         }
 
-        const sorted = Object.values(overallMap).sort((a, b) => 
-          (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999))
-        );
+        const sorted = Object.values(overallMap).sort((a, b) => {
+          const aEligible = this.isPrizeEligible(a.entry_id) ? 1 : 0;
+          const bEligible = this.isPrizeEligible(b.entry_id) ? 1 : 0;
+          if (aEligible !== bEligible) return bEligible - aEligible;
+          return (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999));
+        });
 
         let curRank = 1;
+        let eligibleCount = 0;
         let prevPoints = null;
-        sorted.forEach((team, idx) => {
+        sorted.forEach((team) => {
+          const isPrize = this.isPrizeEligible(team.entry_id);
+          if (!isPrize) {
+            team.leaderboard_rank = null;
+            return;
+          }
+          eligibleCount++;
           if (prevPoints !== null && team.total_points < prevPoints) {
-            curRank = idx + 1;
+            curRank = eligibleCount;
           }
           prevPoints = team.total_points;
           team.leaderboard_rank = curRank;
@@ -3607,7 +3617,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
         `;
 
         let rowsHtml = '';
+        let hasRenderedNonPrizeHeader = false;
         filteredTeams.forEach((t) => {
+          const isEligible = this.isPrizeEligible(t.entry_id);
+          if (!isEligible && !hasRenderedNonPrizeHeader) {
+            hasRenderedNonPrizeHeader = true;
+            rowsHtml += `
+              <tr class="bg-slate-100/75 dark:bg-slate-800/60 border-y border-slate-200/80 dark:border-slate-700/80">
+                <td colspan="${showWc2 ? 8 : 7}" class="py-2 px-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display sticky left-0 bg-slate-100 dark:bg-slate-800 z-10">
+                  ทีมร่วมสนุก (ไม่นำมาคิดคำนวณเงินรางวัล)
+                </td>
+              </tr>
+            `;
+          }
+
           const usage = chipsByTeam[t.entry_id] || { wc1: null, wc2: null, fh: null, tc: null, bb: null };
 
           // Remaining cards count (Season total in-play)
@@ -3640,7 +3663,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
 
           // Medal / Rank styling from Total Leaderboard
           let rankBadge = '';
-          if (t.leaderboard_rank === 1) {
+          if (!isEligible) {
+            rankBadge = this.getNonPrizeRankBadge();
+          } else if (t.leaderboard_rank === 1) {
             rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
           } else if (t.leaderboard_rank === 2) {
             rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
@@ -3650,6 +3675,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
             rankBadge = `<span class="text-slate-500 dark:text-slate-400 font-bold">${t.leaderboard_rank}</span>`;
           }
 
+          const prizeBadge = this.getPrizeBadge(t.entry_id);
+
           rowsHtml += `
             <tr class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/80">
               <td class="py-2.5 px-2 text-center text-xs font-bold w-8 sm:w-10 sticky left-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/60 z-10">
@@ -3657,8 +3684,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
               </td>
               <td class="py-2.5 px-2.5 sm:px-3 min-w-[130px] sm:min-w-[180px] max-w-[160px] sm:max-w-[220px] sticky left-8 sm:left-10 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/60 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
                 <button onclick="app.openTeamModal(${t.entry_id})" class="text-left group cursor-pointer block truncate w-full">
-                  <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
-                    ${this.escapeHtml(t.entry_name)}
+                  <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate flex items-center gap-1.5 flex-wrap">
+                    <span class="truncate">${this.escapeHtml(t.entry_name)}</span>
+                    ${prizeBadge}
                   </div>
                   <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 truncate flex items-center gap-1.5">
                     <span>${this.escapeHtml(t.player_name)}</span>
@@ -4054,11 +4082,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None):
                   class="w-full sm:w-auto bg-slate-800 text-white text-xs border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
                 >
                   <option value="">-- ภาพรวมทั้งลีก (แสดง % ถือครองในลีก) --</option>
-                  ${sortedTeams.map(t => `
-                    <option value="${t.entry_id}" ${String(this.compTransferTeam) === String(t.entry_id) ? 'selected' : ''}>
-                      #${t.leaderboard_rank} ${this.escapeHtml(t.entry_name)} (${this.escapeHtml(t.player_name)})
-                    </option>
-                  `).join('')}
+                  ${sortedTeams.map(t => {
+                    const isPrize = this.isPrizeEligible(t.entry_id);
+                    const rankLabel = isPrize ? `#${t.leaderboard_rank}` : `[ร่วมสนุก]`;
+                    return `
+                      <option value="${t.entry_id}" ${String(this.compTransferTeam) === String(t.entry_id) ? 'selected' : ''}>
+                        ${rankLabel} ${this.escapeHtml(t.entry_name)} (${this.escapeHtml(t.player_name)})
+                      </option>
+                    `;
+                  }).join('')}
                 </select>
               </div>
             </div>
