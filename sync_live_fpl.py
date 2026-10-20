@@ -142,6 +142,12 @@ def get_gw_fixture_status(gw_id):
                         team_fixtures_started.setdefault(tid, []).append(f_start)
             finished_teams = {tid for tid, done_list in team_fixtures_done.items() if done_list and all(done_list)}
             unstarted_teams = {tid for tid, start_list in team_fixtures_started.items() if not any(start_list)}
+            # Any of the 20 Premier League clubs with 0 active fixtures in this GW (e.g. Blank GW or postponed)
+            # are considered finished (have 0 matches remaining) and are not unstarted.
+            all_pl_team_ids = set(range(1, 21))
+            active_team_ids = set(team_fixtures_done.keys())
+            blank_or_postponed_teams = all_pl_team_ids - active_team_ids
+            finished_teams.update(blank_or_postponed_teams)
             return is_started, is_finished, finished_teams, unstarted_teams
     except Exception as e:
         print(f"Notice checking fixtures for GW {gw_id}: {e}")
@@ -172,8 +178,22 @@ def get_active_in_play_fixture_count(gw_id):
         print(f"Notice checking in-play fixtures for GW {gw_id}: {e}")
         return None
 
+_last_publish_time = 0
+
 def trigger_publish():
     """Regenerate dashboard HTML presentations and commit/push updates to GitHub."""
+    global _last_publish_time
+    if os.environ.get("GITHUB_ACTIONS") != "true":
+        print(" -> [Live Matchday Publisher] Skipping git commit/push on local workstation.")
+        return
+
+    # Enforce minimum 5-minute cooldown between in-play pushes to stay within GitHub Pages 10 builds/hour limit
+    now_ts = time.time()
+    if now_ts - _last_publish_time < 300:
+        remaining = int(300 - (now_ts - _last_publish_time))
+        print(f" -> [Live Matchday Publisher] Cooldown active ({remaining}s remaining). Skipping micro-push.")
+        return
+
     base_dir = os.path.dirname(os.path.abspath(__file__))
     update_script = os.path.join(base_dir, "update_preview.py")
     multi_json_path = os.path.join(base_dir, "multi_fpl_data.json")
@@ -188,7 +208,9 @@ def trigger_publish():
         if diff_chk.returncode != 0:
             commit_msg = "Auto-sync live FPL data (in-play update) [skip ci]"
             subprocess.run(["git", "commit", "-m", commit_msg], check=True, cwd=base_dir)
-            push_res = subprocess.run(["git", "push"], cwd=base_dir)
+            push_res = subprocess.run(["git", "pull", "--rebase", "origin", "main"], cwd=base_dir)
+            if push_res.returncode == 0:
+                push_res = subprocess.run(["git", "push", "origin", "main"], cwd=base_dir)
             if push_res.returncode != 0:
                 print("Notice: Git push conflict, preserving fresh sync data and resetting to origin/main...")
                 saved_multi_obj = None
@@ -217,6 +239,7 @@ def trigger_publish():
                 if retry_diff.returncode != 0:
                     subprocess.run(["git", "commit", "-m", commit_msg], check=True, cwd=base_dir)
                     subprocess.run(["git", "push", "origin", "main"], check=True, cwd=base_dir)
+            _last_publish_time = time.time()
             print("🚀 [Live Matchday Publisher] Successfully pushed live in-play update to GitHub!")
         else:
             print("   No staged changes to commit.")
@@ -231,10 +254,16 @@ def atomic_json_dump(data, file_path, create_backup=True):
             json.dump(data, f, ensure_ascii=False, indent=2)
         if create_backup and os.path.exists(file_path):
             bak_path = f"{file_path}.bak"
+            bak_tmp = f"{bak_path}.tmp.{os.getpid()}_{time.time_ns()}"
             try:
-                shutil.copyfile(file_path, bak_path)
+                shutil.copyfile(file_path, bak_tmp)
+                os.replace(bak_tmp, bak_path)
             except Exception:
-                pass
+                if os.path.exists(bak_tmp):
+                    try:
+                        os.remove(bak_tmp)
+                    except Exception:
+                        pass
         os.replace(temp_path, file_path)
     except Exception as e:
         if os.path.exists(temp_path):
@@ -648,7 +677,7 @@ def sync_once(args):
                         is_bboost = chip in ('bboost', 'bench_boost')
                         default_cap_mult = 3 if chip in ('3xc', 'triple_captain') else 2
 
-                        # Apply official FPL automatic substitutions (when confirmed by FPL)
+                        # 1. Apply official FPL automatic substitutions (when confirmed by FPL)
                         if auto_subs:
                             for sub in auto_subs:
                                 el_in = sub.get('element_in')
@@ -674,12 +703,84 @@ def sync_once(args):
                                             vc_match['multiplier'] = cap_mult
                                             vc_match['is_captain'] = True
                                         s_match_copy['is_captain'] = False
+                        elif not is_bboost:
+                            # 2. Provisional Real-Time Auto-Substitutions during live matches:
+                            # If a starter's fixture is finished and they played 0 minutes,
+                            # find eligible bench player in priority order (pos 12, 13, 14, 15) that maintains valid formation:
+                            # exactly 1 GKP, at least 3 DEF, 2 MID, 1 FWD.
+                            bench_sorted = sorted(actual_bench_picks, key=lambda x: x.get('position', 99))
+                            used_bench_elements = set()
+
+                            for s_pick in list(actual_starters_picks):
+                                s_eid = s_pick['element']
+                                s_info = elements.get(s_eid, {})
+                                s_tid = s_info.get('team')
+                                s_finished = this_gw_finished or (s_tid in gw_finished_teams_map.get(gw, set()))
+                                s_mins = live_mins_gw.get(s_eid, 0)
+
+                                if s_finished and s_mins == 0:
+                                    s_pos_type = element_types.get(s_info.get('element_type'), 'MID')
+                                    for b_pick in bench_sorted:
+                                        b_eid = b_pick['element']
+                                        if b_eid in used_bench_elements:
+                                            continue
+                                        b_info = elements.get(b_eid, {})
+                                        b_pos_type = element_types.get(b_info.get('element_type'), 'MID')
+
+                                        # GK can only replace GK
+                                        if s_pos_type == 'GKP':
+                                            if b_pos_type != 'GKP':
+                                                continue
+                                        else:
+                                            if b_pos_type == 'GKP':
+                                                continue
+
+                                        # Test hypothetical formation if swapped
+                                        hypo_starters = [p for p in actual_starters_picks if p['element'] != s_eid] + [b_pick]
+                                        hypo_types = [element_types.get(elements.get(p['element'], {}).get('element_type'), 'MID') for p in hypo_starters]
+                                        def_cnt = hypo_types.count('DEF')
+                                        mid_cnt = hypo_types.count('MID')
+                                        fwd_cnt = hypo_types.count('FWD')
+                                        gkp_cnt = hypo_types.count('GKP')
+
+                                        if gkp_cnt == 1 and def_cnt >= 3 and mid_cnt >= 2 and fwd_cnt >= 1:
+                                            s_idx = actual_starters_picks.index(s_pick)
+                                            b_idx = actual_bench_picks.index(b_pick)
+
+                                            b_copy = dict(b_pick)
+                                            b_copy['multiplier'] = 1
+                                            s_copy = dict(s_pick)
+                                            s_copy['multiplier'] = 0
+
+                                            actual_starters_picks[s_idx] = b_copy
+                                            actual_bench_picks[b_idx] = s_copy
+                                            used_bench_elements.add(b_eid)
+                                            final_auto_subs.append({
+                                                "element_in": b_eid,
+                                                "element_out": s_eid,
+                                                "is_provisional": True
+                                            })
+
+                                            if s_pick.get('is_captain'):
+                                                cap_mult = s_pick.get('multiplier') if s_pick.get('multiplier', 0) >= 2 else default_cap_mult
+                                                vc_pool = actual_starters_picks + (actual_bench_picks if is_bboost else [])
+                                                vc_match = next((p for p in vc_pool if p.get('is_vice_captain')), None)
+                                                if vc_match:
+                                                    vc_match['multiplier'] = cap_mult
+                                                    vc_match['is_captain'] = True
+                                                s_copy['is_captain'] = False
+                                            break
 
                         # Also handle case where starting captain played 0 mins and their club's fixture(s) finished
                         # (or FPL already promoted vice-captain multiplier >= 2), including Bench Boost VC
                         vc_search_pool = actual_starters_picks + (actual_bench_picks if is_bboost else [])
                         active_cap = next((p for p in vc_search_pool if p.get('is_captain')), None)
                         active_vc = next((p for p in vc_search_pool if p.get('is_vice_captain')), None)
+                        if not active_vc and actual_bench_picks:
+                            bench_vc = next((p for p in actual_bench_picks if p.get('is_vice_captain')), None)
+                            if bench_vc and is_bboost:
+                                active_vc = bench_vc
+
                         cap_team_id = elements.get(active_cap['element'], {}).get('team') if active_cap else None
                         cap_fixture_finished = this_gw_finished or (cap_team_id in gw_finished_teams_map.get(gw, set()))
                         if active_vc and (
@@ -715,6 +816,8 @@ def sync_once(args):
                                 "team": team_code,
                                 "team_code": el_info.get('team_code', 0),
                                 "points": p_pts * mult,
+                                "raw_points": p_pts,
+                                "multiplier": mult,
                                 "is_captain": is_cap,
                                 "is_vice": is_vice,
                                 "not_played_yet": not_played
@@ -741,6 +844,8 @@ def sync_once(args):
                                 "team": team_code,
                                 "team_code": el_info.get('team_code', 0),
                                 "points": p_pts * (mult if mult > 0 else 1),
+                                "raw_points": p_pts,
+                                "multiplier": mult,
                                 "is_captain": is_cap,
                                 "is_vice": is_vice,
                                 "not_played_yet": not_played
@@ -992,22 +1097,42 @@ def sync_once(args):
     print(f"Fetching Transfer Suggestions for upcoming GW {upcoming_gw}...")
     try:
         ts_url = f'https://fontendfunctionsnortheuropenew.azurewebsites.net/api/TransferSuggestionsFunction?gameweeks={upcoming_gw}&generalSuggestions=1'
-        azure_key = os.environ.get('AZURE_TRANSFER_FUNCTION_KEY', 'db059d47-8b44-476a-9dfc-509bceb87bee')
+        azure_key = os.environ.get('AZURE_TRANSFER_FUNCTION_KEY', '')
         ts_headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
-            'FunctionKey': azure_key
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)'
         }
+        if azure_key:
+            ts_headers['FunctionKey'] = azure_key
         ts_data = fetch(ts_url, headers_override=ts_headers, retries=3, delay=1.5, timeout=12)
         if ts_data and ts_data.get("Succeeded"):
+            new_gk = ts_data.get("GoalKeepers", [])
+            new_def = ts_data.get("Defenders", [])
+            new_mid = ts_data.get("Midfielders", [])
+            new_fwd = ts_data.get("Forwards", [])
+
+            cached_ts = cached_data.get("transfer_suggestions", {}) if cached_data else {}
+            content_changed = (
+                new_gk != cached_ts.get("GoalKeepers") or
+                new_def != cached_ts.get("Defenders") or
+                new_mid != cached_ts.get("Midfielders") or
+                new_fwd != cached_ts.get("Forwards") or
+                upcoming_gw != cached_ts.get("gw")
+            )
+            updated_ts_time = datetime.now(timezone.utc).isoformat() if content_changed else cached_ts.get("updated_at", datetime.now(timezone.utc).isoformat())
+
             multi_league_output["transfer_suggestions"] = {
                 "gw": upcoming_gw,
-                "updated_at": datetime.now(timezone.utc).isoformat(),
-                "GoalKeepers": ts_data.get("GoalKeepers", []),
-                "Defenders": ts_data.get("Defenders", []),
-                "Midfielders": ts_data.get("Midfielders", []),
-                "Forwards": ts_data.get("Forwards", [])
+                "updated_at": updated_ts_time,
+                "GoalKeepers": new_gk,
+                "Defenders": new_def,
+                "Midfielders": new_mid,
+                "Forwards": new_fwd
             }
-            print(f" -> Successfully updated Transfer Suggestions for GW {upcoming_gw}!")
+            if content_changed:
+                print(f" -> Successfully updated Transfer Suggestions for GW {upcoming_gw} (New data)!")
+                has_changed = True
+            else:
+                print(f" -> Transfer Suggestions for GW {upcoming_gw} unchanged. Preserving timestamp.")
         else:
             if cached_data and "transfer_suggestions" in cached_data:
                 multi_league_output["transfer_suggestions"] = cached_data["transfer_suggestions"]
@@ -1018,7 +1143,7 @@ def sync_once(args):
             multi_league_output["transfer_suggestions"] = cached_data["transfer_suggestions"]
 
     # 4.5 Smart Commit: Detect if any scores, standings, or GW status changed
-    has_changed = check_data_has_changed(cached_data, multi_league_output)
+    has_changed = check_data_has_changed(cached_data, multi_league_output) or has_changed
 
     # Heartbeat: Allow sync if it's been more than 6 hours since last sync
     HEARTBEAT_INTERVAL_SECONDS = 6 * 3600  # 6 hours
@@ -1041,6 +1166,18 @@ def sync_once(args):
         sync_iso_str = cached_data.get("last_sync_iso", sync_iso_str)
         multi_league_output["last_sync"] = sync_time_str
         multi_league_output["last_sync_iso"] = sync_iso_str
+
+        # If data is completely identical to cached data on disk, do not touch files to avoid git churn
+        try:
+            if json.dumps(multi_league_output, sort_keys=True) == json.dumps(cached_data, sort_keys=True):
+                print("   Cached JSON file is already up to date. Preserving file on disk.")
+                elapsed = time.time() - start_time
+                print(f"\n=======================================================")
+                print(f"✅ Fast sync completed in {elapsed:.2f} seconds (0 disk mutations)!")
+                print(f"   Last Sync: {sync_time_str}")
+                return
+        except Exception:
+            pass
     else:
         change_reason = "Points/Rank change" if has_changed else ("Heartbeat" if is_heartbeat else "Initial/Force sync")
         print(f"\n🚀 [Smart Commit] Live data update triggered: {change_reason} -> Updating sync timestamp to {sync_time_str}")

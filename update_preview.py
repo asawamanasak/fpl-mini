@@ -1028,6 +1028,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         >
           กติกาของลีก
         </button>
+        <button 
+          id="tab-btn-about"
+          data-tab-target="about-view" 
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+        >
+          About
+        </button>
       </nav>
     </div>
   </header>
@@ -1311,6 +1318,217 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <!-- 3-Column Dynamic Grid for Rules -->
       <div id="rules-cards-container" class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Rendered dynamically -->
+      </div>
+
+    </div>
+
+    <!-- ==================== TAB 6: เกี่ยวกับแพลตฟอร์ม (ABOUT VIEW) ==================== -->
+    <div id="about-view" class="tab-content hidden space-y-4">
+      
+      <!-- Top About Overview Banner -->
+      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <span class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-bold font-display">PLATFORM ARCHITECTURE & CAPABILITIES</span>
+          <h2 class="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white font-display mt-0.5">เกี่ยวกับแพลตฟอร์ม (About Platform)</h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">ระบบรายงานผลสดและบริหารจัดการลีก Fantasy Premier League กึ่งอัตโนมัติเต็มรูปแบบ</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display">SERVERLESS JAMSTACK</span>
+          <span class="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60 text-xs px-3 py-1 rounded-xl font-bold font-display">ZERO RUNTIME COST</span>
+        </div>
+      </div>
+
+      <!-- 6 Feature Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        
+        <!-- Card 1: Platform Overview -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3.5 shadow-2xs">
+          <div>
+            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800/80 mb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center justify-center font-display border border-blue-200/50 dark:border-blue-800/50">01</span>
+                <div>
+                  <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight">ภาพรวมและวิสัยทัศน์ของแพลตฟอร์ม</h3>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Platform Overview</p>
+                </div>
+              </div>
+            </div>
+            <ul class="space-y-2.5">
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-blue-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบรายงานผลการแข่งขันและบริหารจัดการลีก Fantasy Premier League กึ่งอัตโนมัติเต็มรูปแบบ ระบบเชื่อมต่อข้อมูลทางการเพื่อให้บริการสมาชิกในลีกตลอด 24 ชั่วโมง</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-blue-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบขจัดความล่าช้าในการคำนวณคะแนนของแอปทางการ และลดภาระของผู้จัดลีก ไม่ต้องบันทึกคะแนนลงตาราง Excel ด้วยมืออีกต่อไป</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-blue-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบทำงานบนสถาปัตยกรรม Serverless Jamstack โฮสต์บนเครือข่าย CDN จึงไม่มีต้นทุนค่าดูแลเซิร์ฟเวอร์รายเดือน และรองรับจำนวนผู้เข้าชมพร้อมกันได้ไม่จำกัด</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Card 2: Real-Time Matchday Engine -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3.5 shadow-2xs">
+          <div>
+            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800/80 mb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 font-bold text-xs flex items-center justify-center font-display border border-emerald-200/50 dark:border-emerald-800/50">02</span>
+                <div>
+                  <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight">ฟังก์ชันรายงานผลสดระหว่างแข่งขัน</h3>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Real-Time Matchday Engine</p>
+                </div>
+              </div>
+            </div>
+            <ul class="space-y-2.5">
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบดึงคะแนนดิบและคะแนนโบนัสของนักเตะทุกคนระหว่างการแข่งขันแบบสดทุกนาที</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบตรวจสอบนักเตะตัวจริงที่ไม่ถูกส่งลงสนาม และดึงตัวสำรองขึ้นมาคำนวณแต้มให้ทันทีระหว่างเกม ผู้เล่นไม่ต้องรอผลการประมวลผลข้ามคืนของระบบทางการ</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบปรับคะแนนคูณสองให้รองกัปตันทันทีเมื่อสโมสรของกัปตันตัวจริงลงแข่งขันจบแล้วและกัปตันไม่ได้ลงเล่น</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบสร้างบทวิเคราะห์เหตุการณ์สดที่ตอบสนองต่อทุกประตู ใบแดง และการสลับอันดับตารางคะแนน ช่วยสร้างบรรยากาศการรับชมในกลุ่มเพื่อน</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Card 3: Treasury and Prize System -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3.5 shadow-2xs">
+          <div>
+            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800/80 mb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="w-7 h-7 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 font-bold text-xs flex items-center justify-center font-display border border-amber-200/50 dark:border-amber-800/50">03</span>
+                <div>
+                  <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight">ฟังก์ชันระบบบัญชีกองกลางและเงินรางวัล</h3>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Treasury and Prize System</p>
+                </div>
+              </div>
+            </div>
+            <ul class="space-y-2.5">
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบรองรับการตั้งค่าแยกอิสระของแต่ละมินิลีก พร้อมระบบเส้นทาง URL เฉพาะตัวสำหรับแต่ละกลุ่มผู้เล่น</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบคำนวณแชมป์ประจำสัปดาห์จากคะแนนสุทธิหลังหักแต้มย้ายทีม และรองรับการแบ่งงวดเคลียร์เงินรางวัลเป็นรอบๆ ตลอด 38 สัปดาห์</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 flex-shrink-0"></span>
+                <div class="flex-1">
+                  <span class="font-bold text-slate-800 dark:text-slate-200">โมเดลเงินรางวัลประจำเดือน:</span> ระบบสรุปคะแนนผู้จัดการทีมยอดเยี่ยมประจำเดือน พร้อมกลไก Tie-breaker ตัดสินผลเสมอด้วยจำนวนการย้ายตัวอย่างโปร่งใส
+                </div>
+              </li>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบคำนวณค่าปรับแบบลดหลั่นตามลำดับ พร้อมระบบเฉลี่ยค่าปรับกรณีมีทีมแต้มเท่ากัน และสรุปยอดเงินสะสมสุทธิเข้ากองกลางอัตโนมัติ</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบคัดกรองทีมแอดมินหรือทีมที่ไม่ลงขันออกจากระบบเงินรางวัล โดยไม่ส่งผลกระทบต่ออันดับบนตารางคะแนนทางการ</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Card 4: Tactical UX and Interface -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3.5 shadow-2xs">
+          <div>
+            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800/80 mb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center justify-center font-display border border-indigo-200/50 dark:border-indigo-800/50">04</span>
+                <div>
+                  <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight">ฟังก์ชันการแสดงผลและประสบการณ์ผู้ใช้</h3>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Tactical UX and Interface</p>
+                </div>
+              </div>
+            </div>
+            <ul class="space-y-2.5">
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบจัดวาง 11 ตัวจริงและตัวสำรองลงบนแผนผังสนามตามตำแหน่งการเล่นจริง พร้อมแสดงคะแนนและสถานะลงสนามของนักเตะแต่ละคน</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบแสดงป้ายสัญลักษณ์เมื่อผู้จัดการทีมเปิดใช้งานชิป Triple Captain, Bench Boost, Free Hit หรือ Wildcard ไว้อย่างชัดเจน</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบได้รับการออกแบบโครงสร้างแบบ Responsive หน้าเว็บแสดงผลได้สมบูรณ์บนจอมือถือ โดยไม่มีอาการเลื่อนล้นจอแนวนอน</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Card 5: Analytics and Export -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3.5 shadow-2xs">
+          <div>
+            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800/80 mb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="w-7 h-7 rounded-lg bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 font-bold text-xs flex items-center justify-center font-display border border-purple-200/50 dark:border-purple-800/50">05</span>
+                <div>
+                  <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight">ฟังก์ชันวิเคราะห์ข้อมูลและการส่งออกบัญชี</h3>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Analytics and Export</p>
+                </div>
+              </div>
+            </div>
+            <ul class="space-y-2.5">
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-purple-500 dark:bg-purple-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบบันทึกรายการย้ายเข้าและย้ายออกในแต่ละสัปดาห์ พร้อมคำนวณผลต่างคะแนนที่ได้หรือเสียจากการหักลบแต้มย้ายทีม</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-purple-500 dark:bg-purple-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบเชื่อมต่อแบบจำลองการเรียนรู้ของเครื่องเพื่อแนะนำรายชื่อนักเตะที่มีโอกาสทำคะแนนสูงในสัปดาห์ถัดไป</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-purple-500 dark:bg-purple-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ผู้จัดลีกสามารถดาวน์โหลดตารางคะแนนสรุปยอดเงินรางวัลและค่าปรับเป็นไฟล์ Excel ได้ทันทีด้วยการกดปุ่มเพียงครั้งเดียว</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Card 6: System Reliability -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3.5 shadow-2xs">
+          <div>
+            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800/80 mb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="w-7 h-7 rounded-lg bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 font-bold text-xs flex items-center justify-center font-display border border-cyan-200/50 dark:border-cyan-800/50">06</span>
+                <div>
+                  <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight">ความมั่นคงของระบบและความปลอดภัยของข้อมูล</h3>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">System Reliability</p>
+                </div>
+              </div>
+            </div>
+            <ul class="space-y-2.5">
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบใช้กลไกหน่วงเวลาแบบ Exponential Backoff และ Random Jitter เพื่อป้องกันการถูกปฏิเสธคำขอจากเซิร์ฟเวอร์ข้อมูล</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบเขียนไฟล์แคชด้วยเทคนิค Atomic Replacement และสร้างสำเนาไฟล์สำรองคู่ขนาน ป้องกันปัญหาไฟล์ข้อมูลสูญหาย</span>
+              </li>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 mt-1.5 flex-shrink-0"></span>
+                <span class="flex-1">ระบบทำงานผ่านกระบวนการอัตโนมัติของ GitHub Actions อัปเดตข้อมูลขึ้นหน้าเว็บแบบอัตโนมัติโดยไม่ต้องมีผู้ควบคุม</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -1883,16 +2101,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.configs = configs;
 
         // Path detection (e.g. /fpl-mini/40700 or /fpl-mini/675290)
-        let pathLeague = '';
-        if (window.location && window.location.pathname) {
-          const parts = window.location.pathname.split('/').filter(Boolean);
-          for (let p of parts) {
-            if (this.multiData.leagues[p]) {
-              pathLeague = p;
-              break;
-            }
-          }
-        }
+        let pathLeague = this.detectPathLeague();
 
         let queryLeague = '';
         let queryTab = '';
@@ -1902,6 +2111,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             const urlParams = new URLSearchParams(window.location.search);
             queryLeague = urlParams.get('league') || '';
             queryTab = urlParams.get('tab') || '';
+            if (queryTab === 'about') queryTab = 'about-view';
+            if (queryTab === 'rules') queryTab = 'rules-view';
             queryGW = urlParams.get('gw') || '';
           }
         } catch (e) {}
@@ -1951,6 +2162,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.liveNotesCache = {};
       }
 
+      detectPathLeague() {
+        if (typeof window !== 'undefined' && window.location && window.location.pathname) {
+          const parts = window.location.pathname.split('/').filter(Boolean);
+          for (let p of parts) {
+            if (this.multiData && this.multiData.leagues && this.multiData.leagues[p]) {
+              return p;
+            }
+          }
+        }
+        return '';
+      }
+
       init() {
         this.initTheme();
         this.renderLeagueDropdown();
@@ -1966,20 +2189,21 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (typeof window !== 'undefined' && window.addEventListener) {
           window.addEventListener('popstate', () => {
             try {
-              if (window.location && window.location.search) {
-                const urlParams = new URLSearchParams(window.location.search);
-                const qLeague = urlParams.get('league');
-                const qTab = urlParams.get('tab');
-                const qGW = urlParams.get('gw');
-                if (qLeague && this.multiData.leagues[qLeague] && qLeague !== this.activeLeagueId) {
-                  this.switchLeague(qLeague);
-                }
-                if (qTab && qTab !== this.activeTab) {
-                  this.switchTab(qTab);
-                }
-                if (qGW && Number(qGW) !== this.selectedGW) {
-                  this.selectGW(Number(qGW));
-                }
+              const urlParams = new URLSearchParams((window.location && window.location.search) ? window.location.search : '');
+              const qLeague = urlParams.get('league') || this.detectPathLeague();
+              let qTab = urlParams.get('tab') || 'gameweek-view';
+              if (qTab === 'about') qTab = 'about-view';
+              if (qTab === 'rules') qTab = 'rules-view';
+              if (qTab && !qTab.endsWith('-view')) qTab = qTab + '-view';
+              const qGW = urlParams.get('gw');
+              if (qLeague && this.multiData.leagues[qLeague] && qLeague !== this.activeLeagueId) {
+                this.switchLeague(qLeague, true);
+              }
+              if (qTab && qTab !== this.activeTab) {
+                this.switchTab(qTab, true);
+              }
+              if (qGW && Number(qGW) !== this.selectedGW) {
+                this.selectGW(Number(qGW), true);
               }
             } catch (e) {}
           });
@@ -2054,7 +2278,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
       }
 
-      switchLeague(leagueId) {
+      switchLeague(leagueId, fromPopstate = false) {
         if (!this.multiData.leagues[leagueId]) return;
         this.activeLeagueId = String(leagueId);
         this.data = this.multiData.leagues[this.activeLeagueId];
@@ -2069,34 +2293,36 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         } catch (e) {}
 
         // Safely update clean URL without ever breaking script execution
-        try {
-          if (window.history && window.history.replaceState) {
-            if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
-              const isGitHubPages = window.location.pathname.includes('/fpl-mini');
-              const basePath = isGitHubPages ? '/fpl-mini/' : '/';
-              const configuredIds = Object.keys(this.configs || {});
-              const currentInSubdir = configuredIds.some(lid => window.location.pathname.includes('/' + lid));
-
-              if (currentInSubdir) {
-                let newPath = window.location.pathname;
-                configuredIds.forEach(lid => {
-                  newPath = newPath.replace(new RegExp('/' + lid + '(/index\\.html|/)?$'), '/' + this.activeLeagueId + '/');
-                });
-                window.history.replaceState(null, '', newPath);
-              } else {
-                window.history.replaceState(null, '', basePath + '?league=' + this.activeLeagueId);
-              }
-            } else {
-              // Local file:// protocol: never strip directories or trigger SecurityError
-              const currentPath = window.location.pathname;
-              window.history.replaceState(null, '', currentPath + '?league=' + this.activeLeagueId);
-            }
-          }
-        } catch (e) {
-          console.warn('replaceState skipped:', e);
+        if (!fromPopstate) {
           try {
-            window.location.hash = this.activeLeagueId;
-          } catch (err) {}
+            if (window.history && (window.history.pushState || window.history.replaceState)) {
+              if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+                const isGitHubPages = window.location.pathname.includes('/fpl-mini');
+                const basePath = isGitHubPages ? '/fpl-mini/' : '/';
+                const configuredIds = Object.keys(this.configs || {});
+                const currentInSubdir = configuredIds.some(lid => window.location.pathname.includes('/' + lid));
+
+                if (currentInSubdir) {
+                  let newPath = window.location.pathname;
+                  configuredIds.forEach(lid => {
+                    newPath = newPath.replace(new RegExp('/' + lid + '(/index\\.html|/)?$'), '/' + this.activeLeagueId + '/');
+                  });
+                  window.history.pushState(null, '', newPath);
+                } else {
+                  window.history.pushState(null, '', basePath + '?league=' + this.activeLeagueId);
+                }
+              } else {
+                // Local file:// protocol: never strip directories or trigger SecurityError
+                const currentPath = window.location.pathname;
+                window.history.replaceState(null, '', currentPath + '?league=' + this.activeLeagueId);
+              }
+            }
+          } catch (e) {
+            console.warn('history state update skipped:', e);
+            try {
+              window.location.hash = this.activeLeagueId;
+            } catch (err) {}
+          }
         }
 
         const menu = document.getElementById('league-dropdown-menu');
@@ -2241,7 +2467,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.updateHighlightsTabBlink();
       }
 
-      switchTab(target) {
+      switchTab(target, fromPopstate = false) {
         this.activeTab = target;
         document.querySelectorAll('.tab-content').forEach(view => view.classList.add('hidden'));
         const targetView = document.getElementById(target);
@@ -2253,6 +2479,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             ? 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white'
             : 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800';
         });
+
+        if (!fromPopstate) {
+          try {
+            if (typeof window !== 'undefined' && window.history && window.history.replaceState) {
+              const urlParams = new URLSearchParams(window.location.search || '');
+              const cleanTab = target.replace('-view', '');
+              if (cleanTab === 'gameweek') urlParams.delete('tab');
+              else urlParams.set('tab', cleanTab);
+              const newSearch = urlParams.toString();
+              const newUrl = window.location.pathname + (newSearch ? '?' + newSearch : '') + window.location.hash;
+              window.history.replaceState(null, '', newUrl);
+            }
+          } catch (e) {}
+        }
 
         this.updateHighlightsTabBlink();
         this.renderCurrentTab();
@@ -2351,6 +2591,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         else if (this.activeTab === 'hall-of-fame-view') this.renderHallOfFameView();
         else if (this.activeTab === 'cup-view') this.renderCupView();
         else if (this.activeTab === 'rules-view') this.renderRulesView();
+        else if (this.activeTab === 'about-view') {
+          // Static content
+        }
       }
 
       renderGWSelector() {
@@ -2411,13 +2654,26 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         container.innerHTML = html;
       }
 
-      selectGW(gw) {
+      selectGW(gw, fromPopstate = false) {
         const maxGW = Number(this.multiData.max_gw) || 2;
         this.selectedGW = Math.min(Math.max(Number(gw) || 1, 1), maxGW);
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         if (activeMonth) {
           this.selectedMonthId = activeMonth.id;
         }
+
+        if (!fromPopstate) {
+          try {
+            if (typeof window !== 'undefined' && window.history && window.history.replaceState) {
+              const urlParams = new URLSearchParams(window.location.search || '');
+              urlParams.set('gw', this.selectedGW);
+              const newSearch = urlParams.toString();
+              const newUrl = window.location.pathname + (newSearch ? '?' + newSearch : '') + window.location.hash;
+              window.history.replaceState(null, '', newUrl);
+            }
+          } catch (e) {}
+        }
+
         this.renderGWSelector();
         this.updateHighlightsTabBlink();
         this.renderCurrentTab();
@@ -3022,9 +3278,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const key = `${entryId}_${gw}`;
         const sq = this.data.squads[key];
         if (!sq || !sq.starting) return [];
-        const pts = sq.starting.map(p => Number(p.points) || 0);
-        if (sq.chip === 'bboost' && sq.bench) {
-          pts.push(...sq.bench.map(p => Number(p.points) || 0));
+        const getPlayerScore = (p) => {
+          if (p.raw_points !== undefined && p.raw_points !== null) return Number(p.raw_points) || 0;
+          const mult = Number(p.multiplier) || (p.is_captain ? 2 : 1);
+          const pts = Number(p.points) || 0;
+          return mult > 1 ? Math.round(pts / mult) : pts;
+        };
+        const pts = sq.starting.map(getPlayerScore);
+        const isBBoost = ['bboost', 'bench_boost'].includes(String(sq.chip || '').toLowerCase());
+        if (isBBoost && sq.bench) {
+          pts.push(...sq.bench.map(getPlayerScore));
         }
         return pts.sort((a, b) => b - a);
       }
@@ -3592,7 +3855,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         });
 
         // 9. Bench Disaster (Left 20+ points on the bench without Bench Boost)
-        const benchTeams = results.filter(r => r.chip !== 'bboost' && (r.bench_points || 0) >= 20).sort((a, b) => (b.bench_points || 0) - (a.bench_points || 0));
+        const isBBoostChip = (c) => ['bboost', 'bench_boost'].includes(String(c || '').toLowerCase());
+        const benchTeams = results.filter(r => !isBBoostChip(r.chip) && (r.bench_points || 0) >= 20).sort((a, b) => (b.bench_points || 0) - (a.bench_points || 0));
         const benchWinner = benchTeams[0] || null;
         const card9 = renderCard({
           icon: ICONS.layers,
@@ -6736,12 +7000,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             return unstartedTeams.includes(p.team) || unstartedTeams.includes(p.team_code);
           };
 
-          squad.bench.forEach(p => {
+          squad.bench.forEach((p, idx) => {
             const notPlayed = isPlayerUnstarted(p);
             if (!notPlayed) {
               bPoints += (p.points || 0);
             }
             const shirtUrl = this.getPlayerShirtUrl(p);
+            const subLabel = p.pos === 'GKP' ? 'GK' : `Sub ${idx}`;
             bHtml += `
               <div class="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl p-2 sm:p-2.5 flex items-center justify-between shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
                 <div class="flex items-center gap-1.5 sm:gap-2 min-w-0 pr-1.5 sm:pr-2">
@@ -6756,7 +7021,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                     onerror="this.onerror=null; this.src='https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_0-66.webp';"
                   />
                   <span class="text-[9px] sm:text-[10px] font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 rounded-md font-display flex-shrink-0">${p.pos}</span>
+                  <span class="text-[9px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-100/80 dark:bg-slate-800/80 px-1.5 py-0.5 rounded border border-slate-200/50 dark:border-slate-700/50 font-display flex-shrink-0">${subLabel}</span>
                   <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">${this.escapeHtml(p.name)}</span>
+                  ${p.is_captain ? `<span class="text-[9px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 border border-amber-200/60 dark:border-amber-800/60 px-1 py-0.5 rounded font-display flex-shrink-0">C</span>` : ''}
+                  ${p.is_vice ? `<span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200/60 dark:border-blue-800/60 px-1 py-0.5 rounded font-display flex-shrink-0">V</span>` : ''}
                 </div>
                 ${notPlayed
                   ? `<span class="text-xs text-slate-400 font-bold font-display flex-shrink-0 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded-lg">-</span>`
@@ -7266,7 +7534,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             const statusText = isFinished ? 'จบการแข่งขัน' : (isStarted ? 'กำลังแข่งขัน (Live)' : 'รอคิกออฟ');
 
             const isWeeklyPrize = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
-            const scoreProp = (isFinished && isWeeklyPrize) ? 'net_points' : 'points';
+            const scoreProp = (isFinished || isWeeklyPrize) ? 'net_points' : 'points';
             const useHighestPlayerTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
             const sortedGWResults = [...gwData.results].sort((a, b) => {
               const diff = (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points);
@@ -7335,6 +7603,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           const prizeRows = [];
           const feat = (this.config && this.config.features) || {};
           const isWeekly = (feat.prize_model === 'weekly');
+          const hasWeeklyPenalties = Boolean(feat.has_weekly_penalties);
 
           if (isWeekly) {
             prizeRows.push(['=== สรุปแชมป์เงินรางวัลประจำสัปดาห์ (WEEKLY PRIZE WINNERS) ===']);
@@ -7360,7 +7629,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 is_prize: this.isPrizeEligible(t.entry_id),
                 win_count: 0,
                 won_gws: [],
-                total_prize: 0
+                total_prize: 0,
+                fines_paid: 0,
+                danger_count: 0
               };
             });
 
@@ -7411,39 +7682,133 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                     note
                   ]);
                 });
+
+                if (hasWeeklyPenalties) {
+                  const weeklyPenalties = this.calculateWeeklyPenalties(sortedEligible, g);
+                  weeklyPenalties.forEach(pen => {
+                    if (isFin && teamWinnings[pen.entry_id]) {
+                      teamWinnings[pen.entry_id].fines_paid += pen.fine;
+                      teamWinnings[pen.entry_id].danger_count += 1;
+                    }
+                  });
+                }
+              }
+            }
+
+            // Weekly Penalties Table (if enabled for this league, e.g. 438691)
+            if (hasWeeklyPenalties) {
+              prizeRows.push([]);
+              prizeRows.push(['=== สรุปค่าปรับ 5 อันดับท้ายประจำสัปดาห์ (WEEKLY PENALTY FINES) ===']);
+              prizeRows.push([
+                'Gameweek',
+                'สถานะ',
+                'อันดับจากท้าย',
+                'ทีมที่เสียค่าปรับ',
+                'ผู้จัดการ',
+                'FPL ID',
+                'คะแนนดิบ',
+                'แต้มลบ (Hits)',
+                'คะแนนสุทธิ',
+                'ค่าปรับ (THB)',
+                'หมายเหตุ'
+              ]);
+
+              for (let g = 1; g <= maxGW; g++) {
+                const gwData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+                if (!gwData || !gwData.results) continue;
+                const isFin = Boolean(gwData.is_finished);
+                const eligible = gwData.results.filter(r => this.isPrizeEligible(r.entry_id));
+                if (eligible.length > 0) {
+                  const sortedEligible = [...eligible].sort((a, b) => b.net_points - a.net_points);
+                  const weeklyPenalties = this.calculateWeeklyPenalties(sortedEligible, g);
+                  weeklyPenalties.forEach(pen => {
+                    const statusDesc = isFin ? 'จบการแข่งขัน (ชำระเข้ากองกลาง)' : 'กำลังแข่งขัน (อยู่ในโซนอันตราย)';
+                    const note = pen.isJoint ? `แต้มเท่ากัน ${pen.jointCount} ทีม (เฉลี่ยค่าปรับ)` : (pen.tieBreakNote ? `ตัดสินด้วย ${pen.tieBreakNote}` : 'อันดับเดี่ยว');
+                    prizeRows.push([
+                      `GW ${g}`,
+                      statusDesc,
+                      pen.rankLabel || 'อันดับท้าย',
+                      pen.team_name,
+                      pen.player_name,
+                      pen.entry_id,
+                      pen.points !== undefined ? pen.points : '-',
+                      pen.hits || 0,
+                      pen.net_points,
+                      isFin ? pen.fine : 0,
+                      note
+                    ]);
+                  });
+                }
               }
             }
 
             // Summary Table: Total Winnings by Team
             prizeRows.push([]);
-            prizeRows.push(['=== สรุปยอดเงินรางวัลสะสมรายทีม (TOTAL PRIZE WINNINGS PER TEAM) ===']);
-            prizeRows.push([
-              'อันดับเงินรางวัล',
-              'ชื่อทีม',
-              'ผู้จัดการ',
-              'FPL ID',
-              'สถานะ',
-              'จำนวนแชมป์วีค (ครั้ง)',
-              'สัปดาห์ที่ชนะ',
-              'เงินรางวัลรวมสะสม (THB)'
-            ]);
+            prizeRows.push([hasWeeklyPenalties ? '=== สรุปยอดเงินรางวัลและค่าปรับสุทธิรายทีม (NET BALANCE PER TEAM) ===' : '=== สรุปยอดเงินรางวัลสะสมรายทีม (TOTAL PRIZE WINNINGS PER TEAM) ===']);
+            if (hasWeeklyPenalties) {
+              prizeRows.push([
+                'อันดับยอดสุทธิ',
+                'ชื่อทีม',
+                'ผู้จัดการ',
+                'FPL ID',
+                'สถานะ',
+                'จำนวนแชมป์วีค (ครั้ง)',
+                'เงินรางวัลรวม (THB)',
+                'ค่าปรับรวม (THB)',
+                'ติดโซนอันตราย (ครั้ง)',
+                'ยอดสุทธิ (Net Balance THB)'
+              ]);
+            } else {
+              prizeRows.push([
+                'อันดับเงินรางวัล',
+                'ชื่อทีม',
+                'ผู้จัดการ',
+                'FPL ID',
+                'สถานะ',
+                'จำนวนแชมป์วีค (ครั้ง)',
+                'สัปดาห์ที่ชนะ',
+                'เงินรางวัลรวมสะสม (THB)'
+              ]);
+            }
 
             const sortedWinnings = Object.values(teamWinnings)
               .filter(t => t.is_prize)
-              .sort((a, b) => b.total_prize - a.total_prize);
+              .sort((a, b) => {
+                if (hasWeeklyPenalties) {
+                  const netA = a.total_prize - a.fines_paid;
+                  const netB = b.total_prize - b.fines_paid;
+                  if (netB !== netA) return netB - netA;
+                }
+                return b.total_prize - a.total_prize;
+              });
 
             sortedWinnings.forEach((t, idx) => {
               const winCountDisp = (t.win_count % 1 === 0) ? t.win_count : t.win_count.toFixed(1);
-              prizeRows.push([
-                idx + 1,
-                t.team_name,
-                t.player_name,
-                t.entry_id,
-                'แข่งขันชิงรางวัล',
-                winCountDisp,
-                t.won_gws.join(', ') || '-',
-                t.total_prize
-              ]);
+              if (hasWeeklyPenalties) {
+                prizeRows.push([
+                  idx + 1,
+                  t.team_name,
+                  t.player_name,
+                  t.entry_id,
+                  'แข่งขันชิงรางวัล',
+                  winCountDisp,
+                  t.total_prize,
+                  t.fines_paid,
+                  t.danger_count,
+                  t.total_prize - t.fines_paid
+                ]);
+              } else {
+                prizeRows.push([
+                  idx + 1,
+                  t.team_name,
+                  t.player_name,
+                  t.entry_id,
+                  'แข่งขันชิงรางวัล',
+                  winCountDisp,
+                  t.won_gws.join(', ') || '-',
+                  t.total_prize
+                ]);
+              }
             });
 
             // Settlement Phases if configured
@@ -7605,12 +7970,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           // ====================================================
           // 4. WRITE EXCEL VIA SHEETJS OR FALLBACK
           // ====================================================
+          const sanitizeCell = (v) => {
+            if (typeof v === 'string' && /^[=+\-@]/.test(v)) return "'" + v;
+            return v;
+          };
+          const sanitizeSheetRows = (rows) => rows.map(r => r.map(sanitizeCell));
+
           if (typeof XLSX !== 'undefined' && XLSX.utils && XLSX.writeFile) {
             const wb = XLSX.utils.book_new();
 
-            const wsLeader = XLSX.utils.aoa_to_sheet(leaderRows);
-            const wsGW = XLSX.utils.aoa_to_sheet(gwRows);
-            const wsPrize = XLSX.utils.aoa_to_sheet(prizeRows);
+            const wsLeader = XLSX.utils.aoa_to_sheet(sanitizeSheetRows(leaderRows));
+            const wsGW = XLSX.utils.aoa_to_sheet(sanitizeSheetRows(gwRows));
+            const wsPrize = XLSX.utils.aoa_to_sheet(sanitizeSheetRows(prizeRows));
 
             const calcWidths = (rows) => {
               const widths = [];

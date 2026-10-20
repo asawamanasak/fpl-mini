@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "20 ต.ค. 2026, 11:38 น.",
-    "last_sync_iso": "2026-10-20 11:38:39"
+    "last_sync": "20 ต.ค. 2026, 12:33 น.",
+    "last_sync_iso": "2026-10-20 12:33:50"
   },
   "teams": [
     {
@@ -2260,6 +2260,31 @@
           ]
         },
         {
+          "entry_id": 2999763,
+          "team_name": "Cody Travers",
+          "player_name": "Alesandro Nuyie",
+          "points": 73,
+          "hits": 0,
+          "net_points": 73,
+          "captain": "Haaland",
+          "chip": null,
+          "bench_points": 5,
+          "team_value": 102.4,
+          "bank": 0.2,
+          "transfers_count": 1,
+          "transfers_pts_gain": 1,
+          "transfers_net_impact": 1,
+          "transfer_moves": [
+            {
+              "in": "Rúben",
+              "in_pts": 1,
+              "out": "Shaw",
+              "out_pts": 0,
+              "net": 1
+            }
+          ]
+        },
+        {
           "entry_id": 2191555,
           "team_name": "1234 Barbyu Barbyu",
           "player_name": "Maew Mohawk",
@@ -2426,31 +2451,6 @@
               "out": "Hughes",
               "out_pts": 1,
               "net": -1
-            }
-          ]
-        },
-        {
-          "entry_id": 2999763,
-          "team_name": "Cody Travers",
-          "player_name": "Alesandro Nuyie",
-          "points": 61,
-          "hits": 0,
-          "net_points": 61,
-          "captain": "Haaland",
-          "chip": null,
-          "bench_points": 17,
-          "team_value": 102.4,
-          "bank": 0.2,
-          "transfers_count": 1,
-          "transfers_pts_gain": 1,
-          "transfers_net_impact": 1,
-          "transfer_moves": [
-            {
-              "in": "Rúben",
-              "in_pts": 1,
-              "out": "Shaw",
-              "out_pts": 0,
-              "net": 1
             }
           ]
         },
@@ -25052,6 +25052,8 @@
           "team": "TOT",
           "team_code": 6,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25063,6 +25065,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": true,
           "not_played_yet": false
@@ -25074,6 +25078,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25085,6 +25091,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25096,6 +25104,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25107,6 +25117,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25118,6 +25130,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 5,
+          "raw_points": 5,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25129,6 +25143,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25140,6 +25156,8 @@
           "team": "FUL",
           "team_code": 54,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25151,6 +25169,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 26,
+          "raw_points": 13,
+          "multiplier": 2,
           "is_captain": true,
           "is_vice": false,
           "not_played_yet": false
@@ -25162,6 +25182,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25175,6 +25197,8 @@
           "team": "TOT",
           "team_code": 6,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25186,6 +25210,8 @@
           "team": "LEE",
           "team_code": 2,
           "points": 5,
+          "raw_points": 5,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25197,6 +25223,8 @@
           "team": "HUL",
           "team_code": 88,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25208,6 +25236,8 @@
           "team": "HUL",
           "team_code": 88,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25364,6 +25394,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25375,6 +25407,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25386,6 +25420,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25397,6 +25433,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": true,
           "not_played_yet": false
@@ -25408,6 +25446,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 5,
+          "raw_points": 5,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25419,6 +25459,8 @@
           "team": "MUN",
           "team_code": 1,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25430,6 +25472,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25441,6 +25485,8 @@
           "team": "BOU",
           "team_code": 91,
           "points": 10,
+          "raw_points": 10,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25452,6 +25498,8 @@
           "team": "FUL",
           "team_code": 54,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25463,6 +25511,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 26,
+          "raw_points": 13,
+          "multiplier": 2,
           "is_captain": true,
           "is_vice": false,
           "not_played_yet": false
@@ -25474,6 +25524,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25487,6 +25539,8 @@
           "team": "IPS",
           "team_code": 40,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25498,6 +25552,8 @@
           "team": "COV",
           "team_code": 9,
           "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25509,6 +25565,8 @@
           "team": "COV",
           "team_code": 9,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25520,6 +25578,8 @@
           "team": "BRE",
           "team_code": 94,
           "points": -2,
+          "raw_points": -2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25676,6 +25736,8 @@
           "team": "TOT",
           "team_code": 6,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25687,6 +25749,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25698,6 +25762,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25709,6 +25775,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 8,
+          "raw_points": 8,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25720,6 +25788,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25731,6 +25801,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 5,
+          "raw_points": 5,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25742,6 +25814,8 @@
           "team": "BOU",
           "team_code": 91,
           "points": 10,
+          "raw_points": 10,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25753,6 +25827,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": true,
           "not_played_yet": false
@@ -25764,6 +25840,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25775,6 +25853,8 @@
           "team": "NEW",
           "team_code": 4,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25786,6 +25866,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 39,
+          "raw_points": 13,
+          "multiplier": 3,
           "is_captain": true,
           "is_vice": false,
           "not_played_yet": false
@@ -25799,6 +25881,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25810,6 +25894,8 @@
           "team": "AVL",
           "team_code": 7,
           "points": 11,
+          "raw_points": 11,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25821,6 +25907,8 @@
           "team": "IPS",
           "team_code": 40,
           "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25832,6 +25920,8 @@
           "team": "LIV",
           "team_code": 14,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25988,6 +26078,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -25999,6 +26091,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26010,6 +26104,8 @@
           "team": "HUL",
           "team_code": 88,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26021,17 +26117,21 @@
           "team": "BHA",
           "team_code": 36,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
         },
         {
-          "id": 399,
-          "name": "Cherki",
+          "id": 94,
+          "name": "Schade",
           "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
+          "team": "BRE",
+          "team_code": 94,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26043,6 +26143,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26054,6 +26156,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 5,
+          "raw_points": 5,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26065,6 +26169,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26076,6 +26182,8 @@
           "team": "LEE",
           "team_code": 2,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26087,6 +26195,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 26,
+          "raw_points": 13,
+          "multiplier": 2,
           "is_captain": true,
           "is_vice": false,
           "not_played_yet": false
@@ -26098,6 +26208,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": true,
           "not_played_yet": false
@@ -26111,17 +26223,21 @@
           "team": "BHA",
           "team_code": 36,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
         },
         {
-          "id": 94,
-          "name": "Schade",
+          "id": 399,
+          "name": "Cherki",
           "pos": "MID",
-          "team": "BRE",
-          "team_code": 94,
+          "team": "MCI",
+          "team_code": 43,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26133,6 +26249,8 @@
           "team": "SUN",
           "team_code": 56,
           "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26144,12 +26262,20 @@
           "team": "IPS",
           "team_code": 40,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
         }
       ],
-      "auto_subs": [],
+      "auto_subs": [
+        {
+          "element_in": 94,
+          "element_out": 399,
+          "is_provisional": true
+        }
+      ],
       "raw_picks": [
         {
           "element": 1,
@@ -26300,6 +26426,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26311,6 +26439,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26322,6 +26452,8 @@
           "team": "HUL",
           "team_code": 88,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26333,6 +26465,8 @@
           "team": "LIV",
           "team_code": 14,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26344,6 +26478,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26355,6 +26491,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 5,
+          "raw_points": 5,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26366,6 +26504,8 @@
           "team": "LIV",
           "team_code": 14,
           "points": 4,
+          "raw_points": 4,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": true,
           "not_played_yet": false
@@ -26377,6 +26517,8 @@
           "team": "MUN",
           "team_code": 1,
           "points": 8,
+          "raw_points": 8,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26388,6 +26530,8 @@
           "team": "SUN",
           "team_code": 56,
           "points": 4,
+          "raw_points": 4,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26399,6 +26543,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 26,
+          "raw_points": 13,
+          "multiplier": 2,
           "is_captain": true,
           "is_vice": false,
           "not_played_yet": false
@@ -26410,6 +26556,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26423,6 +26571,8 @@
           "team": "TOT",
           "team_code": 6,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26434,6 +26584,8 @@
           "team": "EVE",
           "team_code": 11,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26445,6 +26597,8 @@
           "team": "HUL",
           "team_code": 88,
           "points": 4,
+          "raw_points": 4,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26456,6 +26610,8 @@
           "team": "TOT",
           "team_code": 6,
           "points": 4,
+          "raw_points": 4,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26612,6 +26768,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26623,6 +26781,8 @@
           "team": "LEE",
           "team_code": 2,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26634,6 +26794,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26645,6 +26807,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": true,
           "not_played_yet": false
@@ -26656,6 +26820,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26667,6 +26833,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26678,6 +26846,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 5,
+          "raw_points": 5,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26689,6 +26859,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26700,6 +26872,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 12,
+          "raw_points": 12,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26711,6 +26885,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 26,
+          "raw_points": 13,
+          "multiplier": 2,
           "is_captain": true,
           "is_vice": false,
           "not_played_yet": false
@@ -26722,6 +26898,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26735,6 +26913,8 @@
           "team": "HUL",
           "team_code": 88,
           "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26746,6 +26926,8 @@
           "team": "BRE",
           "team_code": 94,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26757,6 +26939,8 @@
           "team": "HUL",
           "team_code": 88,
           "points": 4,
+          "raw_points": 4,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26768,6 +26952,8 @@
           "team": "NFO",
           "team_code": 17,
           "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26924,6 +27110,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26935,6 +27123,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26946,6 +27136,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26957,17 +27149,21 @@
           "team": "MCI",
           "team_code": 43,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
         },
         {
-          "id": 399,
-          "name": "Cherki",
-          "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 0,
+          "id": 138,
+          "name": "Kostoulas",
+          "pos": "FWD",
+          "team": "BHA",
+          "team_code": 36,
+          "points": 12,
+          "raw_points": 12,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26979,6 +27175,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -26990,6 +27188,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27001,6 +27201,8 @@
           "team": "MUN",
           "team_code": 1,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27012,6 +27214,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 5,
+          "raw_points": 5,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27023,6 +27227,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": true,
           "not_played_yet": false
@@ -27034,6 +27240,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 26,
+          "raw_points": 13,
+          "multiplier": 2,
           "is_captain": true,
           "is_vice": false,
           "not_played_yet": false
@@ -27047,17 +27255,21 @@
           "team": "TOT",
           "team_code": 6,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
         },
         {
-          "id": 138,
-          "name": "Kostoulas",
-          "pos": "FWD",
-          "team": "BHA",
-          "team_code": 36,
-          "points": 12,
+          "id": 399,
+          "name": "Cherki",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27069,6 +27281,8 @@
           "team": "LEE",
           "team_code": 2,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27080,12 +27294,20 @@
           "team": "NFO",
           "team_code": 17,
           "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
         }
       ],
-      "auto_subs": [],
+      "auto_subs": [
+        {
+          "element_in": 138,
+          "element_out": 399,
+          "is_provisional": true
+        }
+      ],
       "raw_picks": [
         {
           "element": 1,
@@ -27236,6 +27458,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27247,6 +27471,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27258,6 +27484,8 @@
           "team": "LEE",
           "team_code": 2,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27269,6 +27497,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27280,6 +27510,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27291,6 +27523,8 @@
           "team": "MUN",
           "team_code": 1,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27302,6 +27536,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27313,6 +27549,8 @@
           "team": "BRE",
           "team_code": 94,
           "points": -1,
+          "raw_points": -1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27324,6 +27562,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 5,
+          "raw_points": 5,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": true,
           "not_played_yet": false
@@ -27335,6 +27575,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27346,6 +27588,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 26,
+          "raw_points": 13,
+          "multiplier": 2,
           "is_captain": true,
           "is_vice": false,
           "not_played_yet": false
@@ -27359,6 +27603,8 @@
           "team": "TOT",
           "team_code": 6,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27370,6 +27616,8 @@
           "team": "EVE",
           "team_code": 11,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27381,6 +27629,8 @@
           "team": "HUL",
           "team_code": 88,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27392,6 +27642,8 @@
           "team": "LEE",
           "team_code": 2,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27548,6 +27800,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27559,6 +27813,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27570,6 +27826,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27581,6 +27839,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 8,
+          "raw_points": 8,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27592,6 +27852,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27603,6 +27865,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27614,6 +27878,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 5,
+          "raw_points": 5,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": true,
           "not_played_yet": false
@@ -27625,6 +27891,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27636,6 +27904,8 @@
           "team": "LEE",
           "team_code": 2,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27647,6 +27917,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27658,6 +27930,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 26,
+          "raw_points": 13,
+          "multiplier": 2,
           "is_captain": true,
           "is_vice": false,
           "not_played_yet": false
@@ -27671,6 +27945,8 @@
           "team": "IPS",
           "team_code": 40,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27682,6 +27958,8 @@
           "team": "LEE",
           "team_code": 2,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27693,6 +27971,8 @@
           "team": "AVL",
           "team_code": 7,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27704,6 +27984,8 @@
           "team": "IPS",
           "team_code": 40,
           "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27860,6 +28142,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27871,6 +28155,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": true,
           "not_played_yet": false
@@ -27882,6 +28168,8 @@
           "team": "NEW",
           "team_code": 4,
           "points": 4,
+          "raw_points": 4,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27893,6 +28181,8 @@
           "team": "LEE",
           "team_code": 2,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27904,6 +28194,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27915,6 +28207,8 @@
           "team": "BHA",
           "team_code": 36,
           "points": 5,
+          "raw_points": 5,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27926,6 +28220,8 @@
           "team": "MUN",
           "team_code": 1,
           "points": 8,
+          "raw_points": 8,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27937,6 +28233,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27948,6 +28246,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27959,6 +28259,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27970,6 +28272,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 26,
+          "raw_points": 13,
+          "multiplier": 2,
           "is_captain": true,
           "is_vice": false,
           "not_played_yet": false
@@ -27983,6 +28287,8 @@
           "team": "HUL",
           "team_code": 88,
           "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -27994,6 +28300,8 @@
           "team": "BRE",
           "team_code": 94,
           "points": -1,
+          "raw_points": -1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28005,6 +28313,8 @@
           "team": "SUN",
           "team_code": 56,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28016,6 +28326,8 @@
           "team": "HUL",
           "team_code": 88,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28172,6 +28484,8 @@
           "team": "BRE",
           "team_code": 94,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28183,6 +28497,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28194,6 +28510,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28205,17 +28523,21 @@
           "team": "TOT",
           "team_code": 6,
           "points": 4,
+          "raw_points": 4,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
         },
         {
-          "id": 367,
-          "name": "Gakpo",
+          "id": 19,
+          "name": "Zubimendi",
           "pos": "MID",
-          "team": "LIV",
-          "team_code": 14,
+          "team": "ARS",
+          "team_code": 3,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28227,6 +28549,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28238,6 +28562,8 @@
           "team": "LIV",
           "team_code": 14,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28249,6 +28575,8 @@
           "team": "LEE",
           "team_code": 2,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28260,6 +28588,8 @@
           "team": "BOU",
           "team_code": 91,
           "points": 12,
+          "raw_points": 12,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28271,6 +28601,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 26,
+          "raw_points": 13,
+          "multiplier": 2,
           "is_captain": true,
           "is_vice": false,
           "not_played_yet": false
@@ -28282,6 +28614,8 @@
           "team": "LIV",
           "team_code": 14,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": true,
           "not_played_yet": false
@@ -28295,17 +28629,21 @@
           "team": "BHA",
           "team_code": 36,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
         },
         {
-          "id": 19,
-          "name": "Zubimendi",
+          "id": 367,
+          "name": "Gakpo",
           "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
+          "team": "LIV",
+          "team_code": 14,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28317,6 +28655,8 @@
           "team": "BOU",
           "team_code": 91,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28328,12 +28668,20 @@
           "team": "AVL",
           "team_code": 7,
           "points": 8,
+          "raw_points": 8,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
         }
       ],
-      "auto_subs": [],
+      "auto_subs": [
+        {
+          "element_in": 19,
+          "element_out": 367,
+          "is_provisional": true
+        }
+      ],
       "raw_picks": [
         {
           "element": 82,
@@ -28484,6 +28832,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28495,6 +28845,8 @@
           "team": "LEE",
           "team_code": 2,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28506,6 +28858,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28517,6 +28871,8 @@
           "team": "HUL",
           "team_code": 88,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28528,6 +28884,8 @@
           "team": "HUL",
           "team_code": 88,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28539,6 +28897,8 @@
           "team": "CHE",
           "team_code": 8,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28550,6 +28910,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28561,6 +28923,8 @@
           "team": "MUN",
           "team_code": 1,
           "points": 8,
+          "raw_points": 8,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28572,6 +28936,8 @@
           "team": "ARS",
           "team_code": 3,
           "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": true,
           "not_played_yet": false
@@ -28583,6 +28949,8 @@
           "team": "LEE",
           "team_code": 2,
           "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28594,6 +28962,8 @@
           "team": "MCI",
           "team_code": 43,
           "points": 26,
+          "raw_points": 13,
+          "multiplier": 2,
           "is_captain": true,
           "is_vice": false,
           "not_played_yet": false
@@ -28607,6 +28977,8 @@
           "team": "TOT",
           "team_code": 6,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28618,6 +28990,8 @@
           "team": "IPS",
           "team_code": 40,
           "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28629,6 +29003,8 @@
           "team": "NFO",
           "team_code": 17,
           "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
@@ -28640,6 +29016,8 @@
           "team": "FUL",
           "team_code": 54,
           "points": 7,
+          "raw_points": 7,
+          "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
