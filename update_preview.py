@@ -287,11 +287,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
     /* Spotlight Cards (Weekly Winner, Live Leader, Pre-Match) */
     .winner-spotlight-card {
-      background-color: #fffdf7;
-      background-image: radial-gradient(circle at 0% 0%, rgba(254, 243, 199, 0.85) 0%, rgba(255, 251, 235, 0.45) 55%, #ffffff 100%);
-      border: 1.5px solid #fcd34d;
-      border-left: 5px solid #f59e0b;
-      box-shadow: 0 4px 20px -2px rgba(245, 158, 11, 0.12), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
       position: relative;
     }
 
@@ -476,10 +474,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
     .dark .winner-spotlight-card {
       background-color: #0d0d0f !important;
-      background-image: radial-gradient(circle at 0% 0%, rgba(245, 158, 11, 0.14) 0%, rgba(13, 13, 15, 0.85) 60%, #0d0d0f 100%) !important;
-      border: 1.5px solid rgba(245, 158, 11, 0.3) !important;
-      border-left: 5px solid #f59e0b !important;
-      box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.8) !important;
+      background-image: none !important;
+      border: 1px solid #222225 !important;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.7) !important;
     }
 
     .dark .live-leader-spotlight-card {
@@ -2959,7 +2956,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               const weeklyPayouts = this.calculateWeeklyTierPrizes(eligibleSortedByPrize, tierPrizes, this.selectedGW);
               if (weeklyPayouts.length > 0) {
                 multiTierPayoutsHtml = `
-                  <div class="mt-3 pt-3 border-t ${isFinished ? 'border-amber-200/80 dark:border-amber-900/60' : 'border-emerald-200/80 dark:border-emerald-900/60'}">
+                  <div class="mt-3 pt-3 border-t ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/80 dark:border-emerald-900/60'}">
                     <div class="text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2 font-display flex items-center justify-between">
                       <span>🏆 สรุปเงินรางวัลประจำสัปดาห์ 3 อันดับ</span>
                       <span class="text-[10px] text-slate-500 font-normal">รวมสัปดาห์ละ ${tierPrizes.reduce((a,b)=>a+b,0).toLocaleString()} THB</span>
@@ -3005,7 +3002,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               const netWeeklyAccumulated = totalWeeklyFines - weeklyChampPrize;
 
               penaltyPayoutsHtml = `
-                <div class="mt-3 pt-3 border-t ${isFinished ? 'border-amber-200/80 dark:border-amber-900/60' : 'border-emerald-200/80 dark:border-emerald-900/60'}">
+                <div class="mt-3 pt-3 border-t ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/80 dark:border-emerald-900/60'}">
                   <div class="text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2 font-display flex items-center justify-between flex-wrap gap-1">
                     <span class="flex items-center gap-1.5"><span class="text-rose-600">⚠️</span> ผู้เสียค่าปรับ 5 อันดับท้าย (รวม ${totalWeeklyFines.toLocaleString()} THB - หักจ่ายแชมป์ ${weeklyChampPrize.toLocaleString()} THB)</span>
                     <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">+${netWeeklyAccumulated.toLocaleString()} THB สะสมเข้ากองกลาง</span>
@@ -3048,13 +3045,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                     <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-0.5">${managerNames}</p>
                   </div>
 
-                  <div class="flex items-center justify-end gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 ${isFinished ? 'border-amber-200/70' : 'border-emerald-200/70'} dark:border-slate-700">
-                    <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xs px-3.5 py-2 rounded-xl border ${isFinished ? 'border-amber-200/90' : 'border-emerald-200/90'} dark:border-slate-700 shadow-2xs flex items-center gap-3 ml-auto sm:ml-0">
+                  <div class="flex items-center justify-end gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/70 dark:border-slate-700'}">
+                    <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xs px-3.5 py-2 rounded-xl border ${isFinished ? 'border-slate-200 dark:border-slate-700' : 'border-emerald-200/90 dark:border-slate-700'} shadow-2xs flex items-center gap-3 ml-auto sm:ml-0">
                       <div class="text-right">
-                        <span class="text-[10px] sm:text-[11px] ${isFinished ? 'text-amber-900/80' : 'text-emerald-900/80'} dark:text-slate-400 uppercase font-bold font-display block leading-tight">${isFinished ? (isWeeklyPrize ? 'แต้มสุทธิ (Net Pts)' : 'คะแนนทางการ') : (isWeeklyPrize ? 'แต้มสุทธิสด (Live Net)' : 'คะแนนสด (Live Pts)')}</span>
+                        <span class="text-[10px] sm:text-[11px] ${isFinished ? 'text-slate-700 dark:text-slate-300' : 'text-emerald-900/80 dark:text-slate-400'} uppercase font-bold font-display block leading-tight">${isFinished ? (isWeeklyPrize ? 'แต้มสุทธิ (Net Pts)' : 'คะแนนทางการ') : (isWeeklyPrize ? 'แต้มสุทธิสด (Live Net)' : 'คะแนนสด (Live Pts)')}</span>
                         <span class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-display leading-none">${prizeLeader[scoreProp]} <span class="text-xs font-bold text-slate-500 dark:text-slate-400">pts</span></span>
                       </div>
-                      <div class="text-right pl-3 border-l ${isFinished ? 'border-amber-200/90' : 'border-emerald-200/90'} dark:border-slate-700">
+                      <div class="text-right pl-3 border-l ${isFinished ? 'border-slate-200 dark:border-slate-700' : 'border-emerald-200/90 dark:border-slate-700'}">
                         <span class="text-[10px] ${prizeLeader.hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'} block font-display">แต้มลบ: ${prizeLeader.hits > 0 ? `-${prizeLeader.hits}` : '-'}</span>
                         <span class="text-[9px] text-slate-400 block font-display">${prizeLeader.hits > 0 ? ((isFinished || isWeeklyPrize) ? 'หักในแต้มสุทธิแล้ว' : 'หักในแต้มรวม') : 'ไม่มีแต้มลบ'}</span>
                       </div>
@@ -3067,7 +3064,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 ${penaltyPayoutsHtml}
 
                 <!-- Highlight Note (Borbou Style with Copy & Refresh Buttons) -->
-                <div class="mt-3.5 pt-3 border-t ${isFinished ? 'border-amber-200/70' : 'border-emerald-200/70'} dark:border-slate-700/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600 dark:text-slate-400">
+                <div class="mt-3.5 pt-3 border-t ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/70 dark:border-slate-700/60'} flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600 dark:text-slate-400">
                   <div class="min-w-0 pr-1">
                     <span id="current-gw-note-text" class="italic font-medium text-slate-700 dark:text-slate-300 leading-relaxed break-words">${currentLiveNote}</span>
                   </div>

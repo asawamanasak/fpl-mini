@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "20 ต.ค. 2026, 12:33 น.",
-    "last_sync_iso": "2026-10-20 12:33:50"
+    "last_sync": "20 ต.ค. 2026, 19:40 น.",
+    "last_sync_iso": "2026-10-20 19:40:37"
   },
   "teams": [
     {
@@ -44,10 +44,19 @@
       "event_total": 68
     },
     {
+      "entry_id": 2999763,
+      "entry_name": "Cody Travers",
+      "player_name": "Alesandro Nuyie",
+      "rank": 5,
+      "last_rank": 5,
+      "total_points": 476,
+      "event_total": 73
+    },
+    {
       "entry_id": 5470959,
       "entry_name": "Anjoni Iraola",
       "player_name": "pilan liu",
-      "rank": 5,
+      "rank": 6,
       "last_rank": 7,
       "total_points": 475,
       "event_total": 82
@@ -56,19 +65,10 @@
       "entry_id": 197082,
       "entry_name": "Mary Jojibana",
       "player_name": "Kavinjet Tantitanasap",
-      "rank": 6,
+      "rank": 7,
       "last_rank": 6,
       "total_points": 474,
       "event_total": 74
-    },
-    {
-      "entry_id": 2999763,
-      "entry_name": "Cody Travers",
-      "player_name": "Alesandro Nuyie",
-      "rank": 7,
-      "last_rank": 5,
-      "total_points": 464,
-      "event_total": 61
     },
     {
       "entry_id": 2189419,
@@ -103,8 +103,8 @@
       "player_name": "Ataro Munson",
       "rank": 11,
       "last_rank": 11,
-      "total_points": 410,
-      "event_total": 65
+      "total_points": 416,
+      "event_total": 71
     },
     {
       "entry_id": 2191555,
@@ -1850,31 +1850,6 @@
       "data_checked": true,
       "results": [
         {
-          "entry_id": 197082,
-          "team_name": "Mary Jojibana",
-          "player_name": "Kavinjet Tantitanasap",
-          "points": 80,
-          "hits": 0,
-          "net_points": 80,
-          "captain": "João Pedro",
-          "chip": null,
-          "bench_points": 11,
-          "team_value": 102.0,
-          "bank": 1.5,
-          "transfers_count": 1,
-          "transfers_pts_gain": 6,
-          "transfers_net_impact": 6,
-          "transfer_moves": [
-            {
-              "in": "Groß",
-              "in_pts": 6,
-              "out": "Gakpo",
-              "out_pts": 0,
-              "net": 6
-            }
-          ]
-        },
-        {
           "entry_id": 2999763,
           "team_name": "Cody Travers",
           "player_name": "Alesandro Nuyie",
@@ -1910,6 +1885,31 @@
               "out": "Delap",
               "out_pts": 2,
               "net": -1
+            }
+          ]
+        },
+        {
+          "entry_id": 197082,
+          "team_name": "Mary Jojibana",
+          "player_name": "Kavinjet Tantitanasap",
+          "points": 80,
+          "hits": 0,
+          "net_points": 80,
+          "captain": "João Pedro",
+          "chip": null,
+          "bench_points": 11,
+          "team_value": 102.0,
+          "bank": 1.5,
+          "transfers_count": 1,
+          "transfers_pts_gain": 6,
+          "transfers_net_impact": 6,
+          "transfer_moves": [
+            {
+              "in": "Groß",
+              "in_pts": 6,
+              "out": "Gakpo",
+              "out_pts": 0,
+              "net": 6
             }
           ]
         },
@@ -2285,6 +2285,23 @@
           ]
         },
         {
+          "entry_id": 2604490,
+          "team_name": "Leibniz FC",
+          "player_name": "Ataro Munson",
+          "points": 71,
+          "hits": 0,
+          "net_points": 71,
+          "captain": "Haaland",
+          "chip": null,
+          "bench_points": 14,
+          "team_value": 100.1,
+          "bank": 0.0,
+          "transfers_count": 0,
+          "transfers_pts_gain": 0,
+          "transfers_net_impact": 0,
+          "transfer_moves": []
+        },
+        {
           "entry_id": 2191555,
           "team_name": "1234 Barbyu Barbyu",
           "player_name": "Maew Mohawk",
@@ -2404,23 +2421,6 @@
               "net": 2
             }
           ]
-        },
-        {
-          "entry_id": 2604490,
-          "team_name": "Leibniz FC",
-          "player_name": "Ataro Munson",
-          "points": 65,
-          "hits": 0,
-          "net_points": 65,
-          "captain": "Haaland",
-          "chip": null,
-          "bench_points": 20,
-          "team_value": 100.1,
-          "bank": 0.0,
-          "transfers_count": 0,
-          "transfers_pts_gain": 0,
-          "transfers_net_impact": 0,
-          "transfer_moves": []
         },
         {
           "entry_id": 1206581,
@@ -3735,6 +3735,317 @@
       "chip": null,
       "hits": 0
     },
+    "2999763_1": {
+      "starting": [
+        {
+          "id": 1,
+          "name": "Raya",
+          "pos": "GKP",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 6,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 8,
+          "name": "Calafiori",
+          "pos": "DEF",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 9,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 142,
+          "name": "James",
+          "pos": "DEF",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 423,
+          "name": "Shaw",
+          "pos": "DEF",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 387,
+          "name": "O'Reilly",
+          "pos": "DEF",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 399,
+          "name": "Cherki",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 15,
+          "name": "Ødegaard",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 11,
+          "is_captain": false,
+          "is_vice": true,
+          "not_played_yet": false
+        },
+        {
+          "id": 40,
+          "name": "Rogers",
+          "pos": "MID",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 428,
+          "name": "Cunha",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 411,
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 4,
+          "is_captain": true,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 165,
+          "name": "João Pedro",
+          "pos": "FWD",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 11,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        }
+      ],
+      "bench": [
+        {
+          "id": 497,
+          "name": "Dubravka",
+          "pos": "GKP",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 499,
+          "name": "Pedro Porro",
+          "pos": "DEF",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 248,
+          "name": "Beto",
+          "pos": "FWD",
+          "team": "EVE",
+          "team_code": 11,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 212,
+          "name": "Hughes",
+          "pos": "MID",
+          "team": "CRY",
+          "team_code": 31,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        }
+      ],
+      "auto_subs": [],
+      "raw_picks": [
+        {
+          "element": 1,
+          "position": 1,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 1
+        },
+        {
+          "element": 8,
+          "position": 2,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 142,
+          "position": 3,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 423,
+          "position": 4,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 387,
+          "position": 5,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 399,
+          "position": 6,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 15,
+          "position": 7,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": true,
+          "element_type": 3
+        },
+        {
+          "element": 40,
+          "position": 8,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 428,
+          "position": 9,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 411,
+          "position": 10,
+          "multiplier": 2,
+          "is_captain": true,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 165,
+          "position": 11,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 497,
+          "position": 12,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 1
+        },
+        {
+          "element": 499,
+          "position": 13,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 248,
+          "position": 14,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 212,
+          "position": 15,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        }
+      ],
+      "raw_hist": {
+        "event": 1,
+        "points": 62,
+        "total_points": 62,
+        "rank": 1436685,
+        "rank_sort": 1496649,
+        "overall_rank": 1436683,
+        "percentile_rank": 20,
+        "overall_rank_percentage": "16",
+        "bank": 0,
+        "value": 1000,
+        "event_transfers": 0,
+        "event_transfers_cost": 0,
+        "points_on_bench": 1
+      },
+      "chip": null,
+      "hits": 0
+    },
     "5470959_1": {
       "starting": [
         {
@@ -4360,317 +4671,6 @@
         "event_transfers": 0,
         "event_transfers_cost": 0,
         "points_on_bench": 13
-      },
-      "chip": null,
-      "hits": 0
-    },
-    "2999763_1": {
-      "starting": [
-        {
-          "id": 1,
-          "name": "Raya",
-          "pos": "GKP",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 6,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 8,
-          "name": "Calafiori",
-          "pos": "DEF",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 9,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 142,
-          "name": "James",
-          "pos": "DEF",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 423,
-          "name": "Shaw",
-          "pos": "DEF",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 387,
-          "name": "O'Reilly",
-          "pos": "DEF",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 399,
-          "name": "Cherki",
-          "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 8,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 15,
-          "name": "Ødegaard",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 11,
-          "is_captain": false,
-          "is_vice": true,
-          "not_played_yet": false
-        },
-        {
-          "id": 40,
-          "name": "Rogers",
-          "pos": "MID",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 8,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 428,
-          "name": "Cunha",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 411,
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 4,
-          "is_captain": true,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 165,
-          "name": "João Pedro",
-          "pos": "FWD",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 11,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        }
-      ],
-      "bench": [
-        {
-          "id": 497,
-          "name": "Dubravka",
-          "pos": "GKP",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 499,
-          "name": "Pedro Porro",
-          "pos": "DEF",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 248,
-          "name": "Beto",
-          "pos": "FWD",
-          "team": "EVE",
-          "team_code": 11,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 212,
-          "name": "Hughes",
-          "pos": "MID",
-          "team": "CRY",
-          "team_code": 31,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        }
-      ],
-      "auto_subs": [],
-      "raw_picks": [
-        {
-          "element": 1,
-          "position": 1,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 1
-        },
-        {
-          "element": 8,
-          "position": 2,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 142,
-          "position": 3,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 423,
-          "position": 4,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 387,
-          "position": 5,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 399,
-          "position": 6,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 15,
-          "position": 7,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": true,
-          "element_type": 3
-        },
-        {
-          "element": 40,
-          "position": 8,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 428,
-          "position": 9,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 411,
-          "position": 10,
-          "multiplier": 2,
-          "is_captain": true,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 165,
-          "position": 11,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 497,
-          "position": 12,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 1
-        },
-        {
-          "element": 499,
-          "position": 13,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 248,
-          "position": 14,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 212,
-          "position": 15,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        }
-      ],
-      "raw_hist": {
-        "event": 1,
-        "points": 62,
-        "total_points": 62,
-        "rank": 1436685,
-        "rank_sort": 1496649,
-        "overall_rank": 1436683,
-        "percentile_rank": 20,
-        "overall_rank_percentage": "16",
-        "bank": 0,
-        "value": 1000,
-        "event_transfers": 0,
-        "event_transfers_cost": 0,
-        "points_on_bench": 1
       },
       "chip": null,
       "hits": 0
@@ -7495,6 +7495,317 @@
       "chip": null,
       "hits": 4
     },
+    "2999763_2": {
+      "starting": [
+        {
+          "id": 1,
+          "name": "Raya",
+          "pos": "GKP",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 6,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 8,
+          "name": "Calafiori",
+          "pos": "DEF",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 11,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 586,
+          "name": "Mendy",
+          "pos": "DEF",
+          "team": "HUL",
+          "team_code": 88,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 387,
+          "name": "O'Reilly",
+          "pos": "DEF",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 399,
+          "name": "Cherki",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 14,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 15,
+          "name": "Ødegaard",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 3,
+          "is_captain": false,
+          "is_vice": true,
+          "not_played_yet": false
+        },
+        {
+          "id": 40,
+          "name": "Rogers",
+          "pos": "MID",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 5,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 428,
+          "name": "Cunha",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 9,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 249,
+          "name": "Barry",
+          "pos": "FWD",
+          "team": "EVE",
+          "team_code": 11,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 411,
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 26,
+          "is_captain": true,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 165,
+          "name": "João Pedro",
+          "pos": "FWD",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 9,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        }
+      ],
+      "bench": [
+        {
+          "id": 497,
+          "name": "Dubravka",
+          "pos": "GKP",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 423,
+          "name": "Shaw",
+          "pos": "DEF",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 499,
+          "name": "Pedro Porro",
+          "pos": "DEF",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 212,
+          "name": "Hughes",
+          "pos": "MID",
+          "team": "CRY",
+          "team_code": 31,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        }
+      ],
+      "auto_subs": [],
+      "raw_picks": [
+        {
+          "element": 1,
+          "position": 1,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 1
+        },
+        {
+          "element": 8,
+          "position": 2,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 586,
+          "position": 3,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 387,
+          "position": 4,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 399,
+          "position": 5,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 15,
+          "position": 6,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": true,
+          "element_type": 3
+        },
+        {
+          "element": 40,
+          "position": 7,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 428,
+          "position": 8,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 249,
+          "position": 9,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 411,
+          "position": 10,
+          "multiplier": 2,
+          "is_captain": true,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 165,
+          "position": 11,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 497,
+          "position": 12,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 1
+        },
+        {
+          "element": 423,
+          "position": 13,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 499,
+          "position": 14,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 212,
+          "position": 15,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        }
+      ],
+      "raw_hist": {
+        "event": 2,
+        "points": 88,
+        "total_points": 146,
+        "rank": 3539302,
+        "rank_sort": 3542727,
+        "overall_rank": 2553468,
+        "percentile_rank": 40,
+        "overall_rank_percentage": "26",
+        "bank": 15,
+        "value": 1003,
+        "event_transfers": 2,
+        "event_transfers_cost": 4,
+        "points_on_bench": 3
+      },
+      "chip": null,
+      "hits": 4
+    },
     "5470959_2": {
       "starting": [
         {
@@ -8116,317 +8427,6 @@
       },
       "chip": null,
       "hits": 0
-    },
-    "2999763_2": {
-      "starting": [
-        {
-          "id": 1,
-          "name": "Raya",
-          "pos": "GKP",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 6,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 8,
-          "name": "Calafiori",
-          "pos": "DEF",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 11,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 586,
-          "name": "Mendy",
-          "pos": "DEF",
-          "team": "HUL",
-          "team_code": 88,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 387,
-          "name": "O'Reilly",
-          "pos": "DEF",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 399,
-          "name": "Cherki",
-          "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 14,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 15,
-          "name": "Ødegaard",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": true,
-          "not_played_yet": false
-        },
-        {
-          "id": 40,
-          "name": "Rogers",
-          "pos": "MID",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 5,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 428,
-          "name": "Cunha",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 9,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 249,
-          "name": "Barry",
-          "pos": "FWD",
-          "team": "EVE",
-          "team_code": 11,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 411,
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 26,
-          "is_captain": true,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 165,
-          "name": "João Pedro",
-          "pos": "FWD",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 9,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        }
-      ],
-      "bench": [
-        {
-          "id": 497,
-          "name": "Dubravka",
-          "pos": "GKP",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 423,
-          "name": "Shaw",
-          "pos": "DEF",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 499,
-          "name": "Pedro Porro",
-          "pos": "DEF",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 212,
-          "name": "Hughes",
-          "pos": "MID",
-          "team": "CRY",
-          "team_code": 31,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        }
-      ],
-      "auto_subs": [],
-      "raw_picks": [
-        {
-          "element": 1,
-          "position": 1,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 1
-        },
-        {
-          "element": 8,
-          "position": 2,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 586,
-          "position": 3,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 387,
-          "position": 4,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 399,
-          "position": 5,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 15,
-          "position": 6,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": true,
-          "element_type": 3
-        },
-        {
-          "element": 40,
-          "position": 7,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 428,
-          "position": 8,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 249,
-          "position": 9,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 411,
-          "position": 10,
-          "multiplier": 2,
-          "is_captain": true,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 165,
-          "position": 11,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 497,
-          "position": 12,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 1
-        },
-        {
-          "element": 423,
-          "position": 13,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 499,
-          "position": 14,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 212,
-          "position": 15,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        }
-      ],
-      "raw_hist": {
-        "event": 2,
-        "points": 88,
-        "total_points": 146,
-        "rank": 3539302,
-        "rank_sort": 3542727,
-        "overall_rank": 2553468,
-        "percentile_rank": 40,
-        "overall_rank_percentage": "26",
-        "bank": 15,
-        "value": 1003,
-        "event_transfers": 2,
-        "event_transfers_cost": 4,
-        "points_on_bench": 3
-      },
-      "chip": null,
-      "hits": 4
     },
     "2189419_2": {
       "starting": [
@@ -11234,6 +11234,324 @@
       "chip": "3xc",
       "hits": 4
     },
+    "2999763_3": {
+      "starting": [
+        {
+          "id": 1,
+          "name": "Raya",
+          "pos": "GKP",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 3,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 8,
+          "name": "Calafiori",
+          "pos": "DEF",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 586,
+          "name": "Mendy",
+          "pos": "DEF",
+          "team": "HUL",
+          "team_code": 88,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 423,
+          "name": "Shaw",
+          "pos": "DEF",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 4,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 399,
+          "name": "Cherki",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 3,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 15,
+          "name": "Ødegaard",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 10,
+          "is_captain": false,
+          "is_vice": true,
+          "not_played_yet": false
+        },
+        {
+          "id": 40,
+          "name": "Rogers",
+          "pos": "MID",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 6,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 428,
+          "name": "Cunha",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 3,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 411,
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 18,
+          "is_captain": true,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 165,
+          "name": "João Pedro",
+          "pos": "FWD",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 249,
+          "name": "Barry",
+          "pos": "FWD",
+          "team": "EVE",
+          "team_code": 11,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        }
+      ],
+      "bench": [
+        {
+          "id": 497,
+          "name": "Dubravka",
+          "pos": "GKP",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 387,
+          "name": "O'Reilly",
+          "pos": "DEF",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 499,
+          "name": "Pedro Porro",
+          "pos": "DEF",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 7,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 212,
+          "name": "Hughes",
+          "pos": "MID",
+          "team": "CRY",
+          "team_code": 31,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        }
+      ],
+      "auto_subs": [
+        {
+          "entry": 2999763,
+          "element_in": 423,
+          "element_out": 387,
+          "event": 3
+        }
+      ],
+      "raw_picks": [
+        {
+          "element": 1,
+          "position": 1,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 1
+        },
+        {
+          "element": 8,
+          "position": 2,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 586,
+          "position": 3,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 423,
+          "position": 4,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 399,
+          "position": 5,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 15,
+          "position": 6,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": true,
+          "element_type": 3
+        },
+        {
+          "element": 40,
+          "position": 7,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 428,
+          "position": 8,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 411,
+          "position": 9,
+          "multiplier": 2,
+          "is_captain": true,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 165,
+          "position": 10,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 249,
+          "position": 11,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 497,
+          "position": 12,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 1
+        },
+        {
+          "element": 387,
+          "position": 13,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 499,
+          "position": 14,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 212,
+          "position": 15,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        }
+      ],
+      "raw_hist": {
+        "event": 3,
+        "points": 60,
+        "total_points": 206,
+        "rank": 2160192,
+        "rank_sort": 2194120,
+        "overall_rank": 1706389,
+        "percentile_rank": 25,
+        "overall_rank_percentage": "16",
+        "bank": 15,
+        "value": 1007,
+        "event_transfers": 0,
+        "event_transfers_cost": 0,
+        "points_on_bench": 8
+      },
+      "chip": null,
+      "hits": 0
+    },
     "5470959_3": {
       "starting": [
         {
@@ -11854,324 +12172,6 @@
         "points_on_bench": 17
       },
       "chip": "wildcard",
-      "hits": 0
-    },
-    "2999763_3": {
-      "starting": [
-        {
-          "id": 1,
-          "name": "Raya",
-          "pos": "GKP",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 8,
-          "name": "Calafiori",
-          "pos": "DEF",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 586,
-          "name": "Mendy",
-          "pos": "DEF",
-          "team": "HUL",
-          "team_code": 88,
-          "points": 8,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 423,
-          "name": "Shaw",
-          "pos": "DEF",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 4,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 399,
-          "name": "Cherki",
-          "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 15,
-          "name": "Ødegaard",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 10,
-          "is_captain": false,
-          "is_vice": true,
-          "not_played_yet": false
-        },
-        {
-          "id": 40,
-          "name": "Rogers",
-          "pos": "MID",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 6,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 428,
-          "name": "Cunha",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 411,
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 18,
-          "is_captain": true,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 165,
-          "name": "João Pedro",
-          "pos": "FWD",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 249,
-          "name": "Barry",
-          "pos": "FWD",
-          "team": "EVE",
-          "team_code": 11,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        }
-      ],
-      "bench": [
-        {
-          "id": 497,
-          "name": "Dubravka",
-          "pos": "GKP",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 387,
-          "name": "O'Reilly",
-          "pos": "DEF",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 499,
-          "name": "Pedro Porro",
-          "pos": "DEF",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 7,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 212,
-          "name": "Hughes",
-          "pos": "MID",
-          "team": "CRY",
-          "team_code": 31,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        }
-      ],
-      "auto_subs": [
-        {
-          "entry": 2999763,
-          "element_in": 423,
-          "element_out": 387,
-          "event": 3
-        }
-      ],
-      "raw_picks": [
-        {
-          "element": 1,
-          "position": 1,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 1
-        },
-        {
-          "element": 8,
-          "position": 2,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 586,
-          "position": 3,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 423,
-          "position": 4,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 399,
-          "position": 5,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 15,
-          "position": 6,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": true,
-          "element_type": 3
-        },
-        {
-          "element": 40,
-          "position": 7,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 428,
-          "position": 8,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 411,
-          "position": 9,
-          "multiplier": 2,
-          "is_captain": true,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 165,
-          "position": 10,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 249,
-          "position": 11,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 497,
-          "position": 12,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 1
-        },
-        {
-          "element": 387,
-          "position": 13,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 499,
-          "position": 14,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 212,
-          "position": 15,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        }
-      ],
-      "raw_hist": {
-        "event": 3,
-        "points": 60,
-        "total_points": 206,
-        "rank": 2160192,
-        "rank_sort": 2194120,
-        "overall_rank": 1706389,
-        "percentile_rank": 25,
-        "overall_rank_percentage": "16",
-        "bank": 15,
-        "value": 1007,
-        "event_transfers": 0,
-        "event_transfers_cost": 0,
-        "points_on_bench": 8
-      },
-      "chip": null,
       "hits": 0
     },
     "2189419_3": {
@@ -14980,6 +14980,317 @@
       "chip": null,
       "hits": 4
     },
+    "2999763_4": {
+      "starting": [
+        {
+          "id": 1,
+          "name": "Raya",
+          "pos": "GKP",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 14,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 8,
+          "name": "Calafiori",
+          "pos": "DEF",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 6,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 586,
+          "name": "Mendy",
+          "pos": "DEF",
+          "team": "HUL",
+          "team_code": 88,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 469,
+          "name": "N.Williams",
+          "pos": "DEF",
+          "team": "NFO",
+          "team_code": 17,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 399,
+          "name": "Cherki",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 15,
+          "name": "Ødegaard",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 3,
+          "is_captain": false,
+          "is_vice": true,
+          "not_played_yet": false
+        },
+        {
+          "id": 40,
+          "name": "Rogers",
+          "pos": "MID",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 428,
+          "name": "Cunha",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 249,
+          "name": "Barry",
+          "pos": "FWD",
+          "team": "EVE",
+          "team_code": 11,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 411,
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 9,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 165,
+          "name": "João Pedro",
+          "pos": "FWD",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 24,
+          "is_captain": true,
+          "is_vice": false,
+          "not_played_yet": false
+        }
+      ],
+      "bench": [
+        {
+          "id": 497,
+          "name": "Dubravka",
+          "pos": "GKP",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 499,
+          "name": "Pedro Porro",
+          "pos": "DEF",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 423,
+          "name": "Shaw",
+          "pos": "DEF",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 212,
+          "name": "Hughes",
+          "pos": "MID",
+          "team": "CRY",
+          "team_code": 31,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        }
+      ],
+      "auto_subs": [],
+      "raw_picks": [
+        {
+          "element": 1,
+          "position": 1,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 1
+        },
+        {
+          "element": 8,
+          "position": 2,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 586,
+          "position": 3,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 469,
+          "position": 4,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 399,
+          "position": 5,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 15,
+          "position": 6,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": true,
+          "element_type": 3
+        },
+        {
+          "element": 40,
+          "position": 7,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 428,
+          "position": 8,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 249,
+          "position": 9,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 411,
+          "position": 10,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 165,
+          "position": 11,
+          "multiplier": 2,
+          "is_captain": true,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 497,
+          "position": 12,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 1
+        },
+        {
+          "element": 499,
+          "position": 13,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 423,
+          "position": 14,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 212,
+          "position": 15,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        }
+      ],
+      "raw_hist": {
+        "event": 4,
+        "points": 72,
+        "total_points": 278,
+        "rank": 4590434,
+        "rank_sort": 4613497,
+        "overall_rank": 2118566,
+        "percentile_rank": 45,
+        "overall_rank_percentage": "20",
+        "bank": 29,
+        "value": 1010,
+        "event_transfers": 1,
+        "event_transfers_cost": 0,
+        "points_on_bench": 1
+      },
+      "chip": null,
+      "hits": 0
+    },
     "5470959_4": {
       "starting": [
         {
@@ -15598,317 +15909,6 @@
         "event_transfers": 1,
         "event_transfers_cost": 0,
         "points_on_bench": 6
-      },
-      "chip": null,
-      "hits": 0
-    },
-    "2999763_4": {
-      "starting": [
-        {
-          "id": 1,
-          "name": "Raya",
-          "pos": "GKP",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 14,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 8,
-          "name": "Calafiori",
-          "pos": "DEF",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 6,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 586,
-          "name": "Mendy",
-          "pos": "DEF",
-          "team": "HUL",
-          "team_code": 88,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 469,
-          "name": "N.Williams",
-          "pos": "DEF",
-          "team": "NFO",
-          "team_code": 17,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 399,
-          "name": "Cherki",
-          "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 15,
-          "name": "Ødegaard",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": true,
-          "not_played_yet": false
-        },
-        {
-          "id": 40,
-          "name": "Rogers",
-          "pos": "MID",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 8,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 428,
-          "name": "Cunha",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 249,
-          "name": "Barry",
-          "pos": "FWD",
-          "team": "EVE",
-          "team_code": 11,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 411,
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 9,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 165,
-          "name": "João Pedro",
-          "pos": "FWD",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 24,
-          "is_captain": true,
-          "is_vice": false,
-          "not_played_yet": false
-        }
-      ],
-      "bench": [
-        {
-          "id": 497,
-          "name": "Dubravka",
-          "pos": "GKP",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 499,
-          "name": "Pedro Porro",
-          "pos": "DEF",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 423,
-          "name": "Shaw",
-          "pos": "DEF",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 212,
-          "name": "Hughes",
-          "pos": "MID",
-          "team": "CRY",
-          "team_code": 31,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        }
-      ],
-      "auto_subs": [],
-      "raw_picks": [
-        {
-          "element": 1,
-          "position": 1,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 1
-        },
-        {
-          "element": 8,
-          "position": 2,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 586,
-          "position": 3,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 469,
-          "position": 4,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 399,
-          "position": 5,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 15,
-          "position": 6,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": true,
-          "element_type": 3
-        },
-        {
-          "element": 40,
-          "position": 7,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 428,
-          "position": 8,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 249,
-          "position": 9,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 411,
-          "position": 10,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 165,
-          "position": 11,
-          "multiplier": 2,
-          "is_captain": true,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 497,
-          "position": 12,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 1
-        },
-        {
-          "element": 499,
-          "position": 13,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 423,
-          "position": 14,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 212,
-          "position": 15,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        }
-      ],
-      "raw_hist": {
-        "event": 4,
-        "points": 72,
-        "total_points": 278,
-        "rank": 4590434,
-        "rank_sort": 4613497,
-        "overall_rank": 2118566,
-        "percentile_rank": 45,
-        "overall_rank_percentage": "20",
-        "bank": 29,
-        "value": 1010,
-        "event_transfers": 1,
-        "event_transfers_cost": 0,
-        "points_on_bench": 1
       },
       "chip": null,
       "hits": 0
@@ -18740,6 +18740,324 @@
       "chip": null,
       "hits": 0
     },
+    "2999763_5": {
+      "starting": [
+        {
+          "id": 1,
+          "name": "Raya",
+          "pos": "GKP",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 8,
+          "name": "Calafiori",
+          "pos": "DEF",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 330,
+          "name": "Bogle",
+          "pos": "DEF",
+          "team": "LEE",
+          "team_code": 2,
+          "points": 5,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 469,
+          "name": "N.Williams",
+          "pos": "DEF",
+          "team": "NFO",
+          "team_code": 17,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 499,
+          "name": "Pedro Porro",
+          "pos": "DEF",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 399,
+          "name": "Cherki",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 8,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 15,
+          "name": "Ødegaard",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": true,
+          "not_played_yet": false
+        },
+        {
+          "id": 40,
+          "name": "Rogers",
+          "pos": "MID",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 428,
+          "name": "Cunha",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 10,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 411,
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 12,
+          "is_captain": true,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 167,
+          "name": "Delap",
+          "pos": "FWD",
+          "team": "NFO",
+          "team_code": 17,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        }
+      ],
+      "bench": [
+        {
+          "id": 497,
+          "name": "Dubravka",
+          "pos": "GKP",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 165,
+          "name": "João Pedro",
+          "pos": "FWD",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 423,
+          "name": "Shaw",
+          "pos": "DEF",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 2,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 212,
+          "name": "Hughes",
+          "pos": "MID",
+          "team": "CRY",
+          "team_code": 31,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        }
+      ],
+      "auto_subs": [
+        {
+          "entry": 2999763,
+          "element_in": 499,
+          "element_out": 165,
+          "event": 5
+        }
+      ],
+      "raw_picks": [
+        {
+          "element": 1,
+          "position": 1,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 1
+        },
+        {
+          "element": 8,
+          "position": 2,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 330,
+          "position": 3,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 469,
+          "position": 4,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 499,
+          "position": 5,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 399,
+          "position": 6,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 15,
+          "position": 7,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": true,
+          "element_type": 3
+        },
+        {
+          "element": 40,
+          "position": 8,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 428,
+          "position": 9,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 411,
+          "position": 10,
+          "multiplier": 2,
+          "is_captain": true,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 167,
+          "position": 11,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 497,
+          "position": 12,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 1
+        },
+        {
+          "element": 165,
+          "position": 13,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 423,
+          "position": 14,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 212,
+          "position": 15,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        }
+      ],
+      "raw_hist": {
+        "event": 5,
+        "points": 45,
+        "total_points": 323,
+        "rank": 6517462,
+        "rank_sort": 6534368,
+        "overall_rank": 2457777,
+        "percentile_rank": 65,
+        "overall_rank_percentage": "23",
+        "bank": 23,
+        "value": 1010,
+        "event_transfers": 2,
+        "event_transfers_cost": 0,
+        "points_on_bench": 2
+      },
+      "chip": null,
+      "hits": 0
+    },
     "5470959_5": {
       "starting": [
         {
@@ -19365,324 +19683,6 @@
         "event_transfers": 1,
         "event_transfers_cost": 0,
         "points_on_bench": 12
-      },
-      "chip": null,
-      "hits": 0
-    },
-    "2999763_5": {
-      "starting": [
-        {
-          "id": 1,
-          "name": "Raya",
-          "pos": "GKP",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 8,
-          "name": "Calafiori",
-          "pos": "DEF",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 330,
-          "name": "Bogle",
-          "pos": "DEF",
-          "team": "LEE",
-          "team_code": 2,
-          "points": 5,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 469,
-          "name": "N.Williams",
-          "pos": "DEF",
-          "team": "NFO",
-          "team_code": 17,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 499,
-          "name": "Pedro Porro",
-          "pos": "DEF",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 399,
-          "name": "Cherki",
-          "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 8,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 15,
-          "name": "Ødegaard",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": true,
-          "not_played_yet": false
-        },
-        {
-          "id": 40,
-          "name": "Rogers",
-          "pos": "MID",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 428,
-          "name": "Cunha",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 10,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 411,
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 12,
-          "is_captain": true,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 167,
-          "name": "Delap",
-          "pos": "FWD",
-          "team": "NFO",
-          "team_code": 17,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        }
-      ],
-      "bench": [
-        {
-          "id": 497,
-          "name": "Dubravka",
-          "pos": "GKP",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 165,
-          "name": "João Pedro",
-          "pos": "FWD",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 423,
-          "name": "Shaw",
-          "pos": "DEF",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 2,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 212,
-          "name": "Hughes",
-          "pos": "MID",
-          "team": "CRY",
-          "team_code": 31,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        }
-      ],
-      "auto_subs": [
-        {
-          "entry": 2999763,
-          "element_in": 499,
-          "element_out": 165,
-          "event": 5
-        }
-      ],
-      "raw_picks": [
-        {
-          "element": 1,
-          "position": 1,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 1
-        },
-        {
-          "element": 8,
-          "position": 2,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 330,
-          "position": 3,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 469,
-          "position": 4,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 499,
-          "position": 5,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 399,
-          "position": 6,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 15,
-          "position": 7,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": true,
-          "element_type": 3
-        },
-        {
-          "element": 40,
-          "position": 8,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 428,
-          "position": 9,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 411,
-          "position": 10,
-          "multiplier": 2,
-          "is_captain": true,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 167,
-          "position": 11,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 497,
-          "position": 12,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 1
-        },
-        {
-          "element": 165,
-          "position": 13,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 423,
-          "position": 14,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 212,
-          "position": 15,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        }
-      ],
-      "raw_hist": {
-        "event": 5,
-        "points": 45,
-        "total_points": 323,
-        "rank": 6517462,
-        "rank_sort": 6534368,
-        "overall_rank": 2457777,
-        "percentile_rank": 65,
-        "overall_rank_percentage": "23",
-        "bank": 23,
-        "value": 1010,
-        "event_transfers": 2,
-        "event_transfers_cost": 0,
-        "points_on_bench": 2
       },
       "chip": null,
       "hits": 0
@@ -22507,6 +22507,317 @@
       "chip": null,
       "hits": 0
     },
+    "2999763_6": {
+      "starting": [
+        {
+          "id": 1,
+          "name": "Raya",
+          "pos": "GKP",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 3,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 8,
+          "name": "Calafiori",
+          "pos": "DEF",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 9,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 115,
+          "name": "De Cuyper",
+          "pos": "DEF",
+          "team": "BHA",
+          "team_code": 36,
+          "points": 15,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 469,
+          "name": "N.Williams",
+          "pos": "DEF",
+          "team": "NFO",
+          "team_code": 17,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 399,
+          "name": "Cherki",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 10,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 15,
+          "name": "Ødegaard",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 40,
+          "name": "Rogers",
+          "pos": "MID",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 9,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 428,
+          "name": "Cunha",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 10,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 124,
+          "name": "Groß",
+          "pos": "MID",
+          "team": "BHA",
+          "team_code": 36,
+          "points": 12,
+          "is_captain": true,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 165,
+          "name": "João Pedro",
+          "pos": "FWD",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 12,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 411,
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 6,
+          "is_captain": false,
+          "is_vice": true,
+          "not_played_yet": false
+        }
+      ],
+      "bench": [
+        {
+          "id": 497,
+          "name": "Dubravka",
+          "pos": "GKP",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 0,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 138,
+          "name": "Kostoulas",
+          "pos": "FWD",
+          "team": "BHA",
+          "team_code": 36,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 423,
+          "name": "Shaw",
+          "pos": "DEF",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 3,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 330,
+          "name": "Bogle",
+          "pos": "DEF",
+          "team": "LEE",
+          "team_code": 2,
+          "points": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        }
+      ],
+      "auto_subs": [],
+      "raw_picks": [
+        {
+          "element": 1,
+          "position": 1,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 1
+        },
+        {
+          "element": 8,
+          "position": 2,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 115,
+          "position": 3,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 469,
+          "position": 4,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 399,
+          "position": 5,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 15,
+          "position": 6,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 40,
+          "position": 7,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 428,
+          "position": 8,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 124,
+          "position": 9,
+          "multiplier": 2,
+          "is_captain": true,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 165,
+          "position": 10,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 411,
+          "position": 11,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": true,
+          "element_type": 4
+        },
+        {
+          "element": 497,
+          "position": 12,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 1
+        },
+        {
+          "element": 138,
+          "position": 13,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 423,
+          "position": 14,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 330,
+          "position": 15,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        }
+      ],
+      "raw_hist": {
+        "event": 6,
+        "points": 88,
+        "total_points": 403,
+        "rank": 165320,
+        "rank_sort": 166006,
+        "overall_rank": 1454839,
+        "percentile_rank": 5,
+        "overall_rank_percentage": "13",
+        "bank": 14,
+        "value": 1014,
+        "event_transfers": 3,
+        "event_transfers_cost": 8,
+        "points_on_bench": 5
+      },
+      "chip": null,
+      "hits": 8
+    },
     "5470959_6": {
       "starting": [
         {
@@ -23135,317 +23446,6 @@
       },
       "chip": null,
       "hits": 0
-    },
-    "2999763_6": {
-      "starting": [
-        {
-          "id": 1,
-          "name": "Raya",
-          "pos": "GKP",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 8,
-          "name": "Calafiori",
-          "pos": "DEF",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 9,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 115,
-          "name": "De Cuyper",
-          "pos": "DEF",
-          "team": "BHA",
-          "team_code": 36,
-          "points": 15,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 469,
-          "name": "N.Williams",
-          "pos": "DEF",
-          "team": "NFO",
-          "team_code": 17,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 399,
-          "name": "Cherki",
-          "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 10,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 15,
-          "name": "Ødegaard",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 40,
-          "name": "Rogers",
-          "pos": "MID",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 9,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 428,
-          "name": "Cunha",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 10,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 124,
-          "name": "Groß",
-          "pos": "MID",
-          "team": "BHA",
-          "team_code": 36,
-          "points": 12,
-          "is_captain": true,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 165,
-          "name": "João Pedro",
-          "pos": "FWD",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 12,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 411,
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 6,
-          "is_captain": false,
-          "is_vice": true,
-          "not_played_yet": false
-        }
-      ],
-      "bench": [
-        {
-          "id": 497,
-          "name": "Dubravka",
-          "pos": "GKP",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 138,
-          "name": "Kostoulas",
-          "pos": "FWD",
-          "team": "BHA",
-          "team_code": 36,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 423,
-          "name": "Shaw",
-          "pos": "DEF",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 3,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 330,
-          "name": "Bogle",
-          "pos": "DEF",
-          "team": "LEE",
-          "team_code": 2,
-          "points": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        }
-      ],
-      "auto_subs": [],
-      "raw_picks": [
-        {
-          "element": 1,
-          "position": 1,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 1
-        },
-        {
-          "element": 8,
-          "position": 2,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 115,
-          "position": 3,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 469,
-          "position": 4,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 399,
-          "position": 5,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 15,
-          "position": 6,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 40,
-          "position": 7,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 428,
-          "position": 8,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 124,
-          "position": 9,
-          "multiplier": 2,
-          "is_captain": true,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 165,
-          "position": 10,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 411,
-          "position": 11,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": true,
-          "element_type": 4
-        },
-        {
-          "element": 497,
-          "position": 12,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 1
-        },
-        {
-          "element": 138,
-          "position": 13,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 423,
-          "position": 14,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 330,
-          "position": 15,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        }
-      ],
-      "raw_hist": {
-        "event": 6,
-        "points": 88,
-        "total_points": 403,
-        "rank": 165320,
-        "rank_sort": 166006,
-        "overall_rank": 1454839,
-        "percentile_rank": 5,
-        "overall_rank_percentage": "13",
-        "bank": 14,
-        "value": 1014,
-        "event_transfers": 3,
-        "event_transfers_cost": 8,
-        "points_on_bench": 5
-      },
-      "chip": null,
-      "hits": 8
     },
     "2189419_6": {
       "starting": [
@@ -25370,11 +25370,11 @@
         "event": 7,
         "points": 65,
         "total_points": 524,
-        "rank": 3245704,
-        "rank_sort": 3246638,
-        "overall_rank": 76243,
-        "percentile_rank": 30,
-        "overall_rank_percentage": "0.7",
+        "rank": 3979589,
+        "rank_sort": 3980517,
+        "overall_rank": 84743,
+        "percentile_rank": 40,
+        "overall_rank_percentage": "0.8",
         "bank": 18,
         "value": 1025,
         "event_transfers": 1,
@@ -25712,9 +25712,9 @@
         "event": 7,
         "points": 78,
         "total_points": 518,
-        "rank": 594093,
-        "rank_sort": 615789,
-        "overall_rank": 123759,
+        "rank": 773639,
+        "rank_sort": 802973,
+        "overall_rank": 136334,
         "percentile_rank": 10,
         "overall_rank_percentage": "1",
         "bank": 0,
@@ -26054,9 +26054,9 @@
         "event": 7,
         "points": 84,
         "total_points": 509,
-        "rank": 239352,
-        "rank_sort": 240234,
-        "overall_rank": 220449,
+        "rank": 315579,
+        "rank_sort": 316573,
+        "overall_rank": 240791,
         "percentile_rank": 5,
         "overall_rank_percentage": "2",
         "bank": 3,
@@ -26124,19 +26124,6 @@
           "not_played_yet": false
         },
         {
-          "id": 94,
-          "name": "Schade",
-          "pos": "MID",
-          "team": "BRE",
-          "team_code": 94,
-          "points": 0,
-          "raw_points": 0,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
           "id": 397,
           "name": "Semenyo",
           "pos": "MID",
@@ -26163,6 +26150,19 @@
           "not_played_yet": false
         },
         {
+          "id": 94,
+          "name": "Schade",
+          "pos": "MID",
+          "team": "BRE",
+          "team_code": 94,
+          "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
           "id": 40,
           "name": "Rogers",
           "pos": "MID",
@@ -26170,19 +26170,6 @@
           "team_code": 8,
           "points": 2,
           "raw_points": 2,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 346,
-          "name": "Calvert-Lewin",
-          "pos": "FWD",
-          "team": "LEE",
-          "team_code": 2,
-          "points": 9,
-          "raw_points": 9,
           "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
@@ -26212,6 +26199,19 @@
           "multiplier": 1,
           "is_captain": false,
           "is_vice": true,
+          "not_played_yet": false
+        },
+        {
+          "id": 346,
+          "name": "Calvert-Lewin",
+          "pos": "FWD",
+          "team": "LEE",
+          "team_code": 2,
+          "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": false,
           "not_played_yet": false
         }
       ],
@@ -26271,9 +26271,10 @@
       ],
       "auto_subs": [
         {
+          "entry": 1206581,
           "element_in": 94,
           "element_out": 399,
-          "is_provisional": true
+          "event": 7
         }
       ],
       "raw_picks": [
@@ -26310,7 +26311,7 @@
           "element_type": 2
         },
         {
-          "element": 399,
+          "element": 397,
           "position": 5,
           "multiplier": 1,
           "is_captain": false,
@@ -26318,7 +26319,7 @@
           "element_type": 3
         },
         {
-          "element": 397,
+          "element": 124,
           "position": 6,
           "multiplier": 1,
           "is_captain": false,
@@ -26326,7 +26327,7 @@
           "element_type": 3
         },
         {
-          "element": 124,
+          "element": 94,
           "position": 7,
           "multiplier": 1,
           "is_captain": false,
@@ -26342,16 +26343,8 @@
           "element_type": 3
         },
         {
-          "element": 346,
-          "position": 9,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
           "element": 411,
-          "position": 10,
+          "position": 9,
           "multiplier": 2,
           "is_captain": true,
           "is_vice_captain": false,
@@ -26359,10 +26352,18 @@
         },
         {
           "element": 165,
-          "position": 11,
+          "position": 10,
           "multiplier": 1,
           "is_captain": false,
           "is_vice_captain": true,
+          "element_type": 4
+        },
+        {
+          "element": 346,
+          "position": 11,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
           "element_type": 4
         },
         {
@@ -26374,7 +26375,7 @@
           "element_type": 1
         },
         {
-          "element": 94,
+          "element": 399,
           "position": 13,
           "multiplier": 0,
           "is_captain": false,
@@ -26402,11 +26403,11 @@
         "event": 7,
         "points": 68,
         "total_points": 485,
-        "rank": 2455612,
-        "rank_sort": 2462739,
-        "overall_rank": 786689,
-        "percentile_rank": 25,
-        "overall_rank_percentage": "7",
+        "rank": 3073643,
+        "rank_sort": 3081191,
+        "overall_rank": 842069,
+        "percentile_rank": 30,
+        "overall_rank_percentage": "8",
         "bank": 16,
         "value": 1012,
         "event_transfers": 2,
@@ -26415,6 +26416,355 @@
       },
       "chip": null,
       "hits": 4,
+      "final_checked": false
+    },
+    "2999763_7": {
+      "starting": [
+        {
+          "id": 1,
+          "name": "Raya",
+          "pos": "GKP",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 9,
+          "raw_points": 9,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 8,
+          "name": "Calafiori",
+          "pos": "DEF",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 115,
+          "name": "De Cuyper",
+          "pos": "DEF",
+          "team": "BHA",
+          "team_code": 36,
+          "points": 6,
+          "raw_points": 6,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 390,
+          "name": "Rúben",
+          "pos": "DEF",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 15,
+          "name": "Ødegaard",
+          "pos": "MID",
+          "team": "ARS",
+          "team_code": 3,
+          "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 40,
+          "name": "Rogers",
+          "pos": "MID",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 428,
+          "name": "Cunha",
+          "pos": "MID",
+          "team": "MUN",
+          "team_code": 1,
+          "points": 1,
+          "raw_points": 1,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 124,
+          "name": "Groß",
+          "pos": "MID",
+          "team": "BHA",
+          "team_code": 36,
+          "points": 5,
+          "raw_points": 5,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 138,
+          "name": "Kostoulas",
+          "pos": "FWD",
+          "team": "BHA",
+          "team_code": 36,
+          "points": 12,
+          "raw_points": 12,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 411,
+          "name": "Haaland",
+          "pos": "FWD",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 26,
+          "raw_points": 13,
+          "multiplier": 2,
+          "is_captain": true,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 165,
+          "name": "João Pedro",
+          "pos": "FWD",
+          "team": "CHE",
+          "team_code": 8,
+          "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": true,
+          "not_played_yet": false
+        }
+      ],
+      "bench": [
+        {
+          "id": 497,
+          "name": "Dubravka",
+          "pos": "GKP",
+          "team": "TOT",
+          "team_code": 6,
+          "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 399,
+          "name": "Cherki",
+          "pos": "MID",
+          "team": "MCI",
+          "team_code": 43,
+          "points": 0,
+          "raw_points": 0,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 330,
+          "name": "Bogle",
+          "pos": "DEF",
+          "team": "LEE",
+          "team_code": 2,
+          "points": 2,
+          "raw_points": 2,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 469,
+          "name": "N.Williams",
+          "pos": "DEF",
+          "team": "NFO",
+          "team_code": 17,
+          "points": 3,
+          "raw_points": 3,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice": false,
+          "not_played_yet": false
+        }
+      ],
+      "auto_subs": [
+        {
+          "entry": 2999763,
+          "element_in": 138,
+          "element_out": 399,
+          "event": 7
+        }
+      ],
+      "raw_picks": [
+        {
+          "element": 1,
+          "position": 1,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 1
+        },
+        {
+          "element": 8,
+          "position": 2,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 115,
+          "position": 3,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 390,
+          "position": 4,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 15,
+          "position": 5,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 40,
+          "position": 6,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 428,
+          "position": 7,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 124,
+          "position": 8,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 138,
+          "position": 9,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 411,
+          "position": 10,
+          "multiplier": 2,
+          "is_captain": true,
+          "is_vice_captain": false,
+          "element_type": 4
+        },
+        {
+          "element": 165,
+          "position": 11,
+          "multiplier": 1,
+          "is_captain": false,
+          "is_vice_captain": true,
+          "element_type": 4
+        },
+        {
+          "element": 497,
+          "position": 12,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 1
+        },
+        {
+          "element": 399,
+          "position": 13,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 3
+        },
+        {
+          "element": 330,
+          "position": 14,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        },
+        {
+          "element": 469,
+          "position": 15,
+          "multiplier": 0,
+          "is_captain": false,
+          "is_vice_captain": false,
+          "element_type": 2
+        }
+      ],
+      "raw_hist": {
+        "event": 7,
+        "points": 73,
+        "total_points": 476,
+        "rank": 1676084,
+        "rank_sort": 1699296,
+        "overall_rank": 1190419,
+        "percentile_rank": 20,
+        "overall_rank_percentage": "11",
+        "bank": 2,
+        "value": 1024,
+        "event_transfers": 1,
+        "event_transfers_cost": 0,
+        "points_on_bench": 5
+      },
+      "chip": null,
+      "hits": 0,
       "final_checked": false
     },
     "5470959_7": {
@@ -26744,11 +27094,11 @@
         "event": 7,
         "points": 82,
         "total_points": 475,
-        "rank": 323492,
-        "rank_sort": 337255,
-        "overall_rank": 1136147,
+        "rank": 426859,
+        "rank_sort": 443439,
+        "overall_rank": 1208815,
         "percentile_rank": 5,
-        "overall_rank_percentage": "10",
+        "overall_rank_percentage": "11",
         "bank": 6,
         "value": 1003,
         "event_transfers": 1,
@@ -27086,9 +27436,9 @@
         "event": 7,
         "points": 74,
         "total_points": 474,
-        "rank": 1134210,
-        "rank_sort": 1136005,
-        "overall_rank": 1177638,
+        "rank": 1468900,
+        "rank_sort": 1470857,
+        "overall_rank": 1251909,
         "percentile_rank": 15,
         "overall_rank_percentage": "11",
         "bank": 20,
@@ -27096,354 +27446,6 @@
         "event_transfers": 1,
         "event_transfers_cost": 0,
         "points_on_bench": 19
-      },
-      "chip": null,
-      "hits": 0,
-      "final_checked": false
-    },
-    "2999763_7": {
-      "starting": [
-        {
-          "id": 1,
-          "name": "Raya",
-          "pos": "GKP",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 9,
-          "raw_points": 9,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 8,
-          "name": "Calafiori",
-          "pos": "DEF",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 6,
-          "raw_points": 6,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 115,
-          "name": "De Cuyper",
-          "pos": "DEF",
-          "team": "BHA",
-          "team_code": 36,
-          "points": 6,
-          "raw_points": 6,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 390,
-          "name": "Rúben",
-          "pos": "DEF",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 1,
-          "raw_points": 1,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 138,
-          "name": "Kostoulas",
-          "pos": "FWD",
-          "team": "BHA",
-          "team_code": 36,
-          "points": 12,
-          "raw_points": 12,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 15,
-          "name": "Ødegaard",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 3,
-          "raw_points": 3,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 40,
-          "name": "Rogers",
-          "pos": "MID",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 2,
-          "raw_points": 2,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 428,
-          "name": "Cunha",
-          "pos": "MID",
-          "team": "MUN",
-          "team_code": 1,
-          "points": 1,
-          "raw_points": 1,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 124,
-          "name": "Groß",
-          "pos": "MID",
-          "team": "BHA",
-          "team_code": 36,
-          "points": 5,
-          "raw_points": 5,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 165,
-          "name": "João Pedro",
-          "pos": "FWD",
-          "team": "CHE",
-          "team_code": 8,
-          "points": 2,
-          "raw_points": 2,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": true,
-          "not_played_yet": false
-        },
-        {
-          "id": 411,
-          "name": "Haaland",
-          "pos": "FWD",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 26,
-          "raw_points": 13,
-          "multiplier": 2,
-          "is_captain": true,
-          "is_vice": false,
-          "not_played_yet": false
-        }
-      ],
-      "bench": [
-        {
-          "id": 497,
-          "name": "Dubravka",
-          "pos": "GKP",
-          "team": "TOT",
-          "team_code": 6,
-          "points": 0,
-          "raw_points": 0,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 399,
-          "name": "Cherki",
-          "pos": "MID",
-          "team": "MCI",
-          "team_code": 43,
-          "points": 0,
-          "raw_points": 0,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 330,
-          "name": "Bogle",
-          "pos": "DEF",
-          "team": "LEE",
-          "team_code": 2,
-          "points": 2,
-          "raw_points": 2,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
-          "id": 469,
-          "name": "N.Williams",
-          "pos": "DEF",
-          "team": "NFO",
-          "team_code": 17,
-          "points": 3,
-          "raw_points": 3,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        }
-      ],
-      "auto_subs": [
-        {
-          "element_in": 138,
-          "element_out": 399,
-          "is_provisional": true
-        }
-      ],
-      "raw_picks": [
-        {
-          "element": 1,
-          "position": 1,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 1
-        },
-        {
-          "element": 8,
-          "position": 2,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 115,
-          "position": 3,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 390,
-          "position": 4,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 399,
-          "position": 5,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 15,
-          "position": 6,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 40,
-          "position": 7,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 428,
-          "position": 8,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 124,
-          "position": 9,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 3
-        },
-        {
-          "element": 165,
-          "position": 10,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice_captain": true,
-          "element_type": 4
-        },
-        {
-          "element": 411,
-          "position": 11,
-          "multiplier": 2,
-          "is_captain": true,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 497,
-          "position": 12,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 1
-        },
-        {
-          "element": 138,
-          "position": 13,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 4
-        },
-        {
-          "element": 330,
-          "position": 14,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        },
-        {
-          "element": 469,
-          "position": 15,
-          "multiplier": 0,
-          "is_captain": false,
-          "is_vice_captain": false,
-          "element_type": 2
-        }
-      ],
-      "raw_hist": {
-        "event": 7,
-        "points": 61,
-        "total_points": 464,
-        "rank": 4507054,
-        "rank_sort": 4533134,
-        "overall_rank": 1659916,
-        "percentile_rank": 45,
-        "overall_rank_percentage": "15",
-        "bank": 2,
-        "value": 1024,
-        "event_transfers": 1,
-        "event_transfers_cost": 0,
-        "points_on_bench": 17
       },
       "chip": null,
       "hits": 0,
@@ -27776,11 +27778,11 @@
         "event": 7,
         "points": 61,
         "total_points": 454,
-        "rank": 4507054,
-        "rank_sort": 4526677,
-        "overall_rank": 2169639,
-        "percentile_rank": 45,
-        "overall_rank_percentage": "20",
+        "rank": 5346273,
+        "rank_sort": 5364462,
+        "overall_rank": 2281290,
+        "percentile_rank": 50,
+        "overall_rank_percentage": "21",
         "bank": 3,
         "value": 1023,
         "event_transfers": 1,
@@ -28118,11 +28120,11 @@
         "event": 7,
         "points": 70,
         "total_points": 446,
-        "rank": 1956232,
-        "rank_sort": 1967438,
-        "overall_rank": 2649900,
-        "percentile_rank": 20,
-        "overall_rank_percentage": "24",
+        "rank": 2480601,
+        "rank_sort": 2493186,
+        "overall_rank": 2774469,
+        "percentile_rank": 25,
+        "overall_rank_percentage": "25",
         "bank": 20,
         "value": 1007,
         "event_transfers": 2,
@@ -28460,11 +28462,11 @@
         "event": 7,
         "points": 73,
         "total_points": 436,
-        "rank": 1379093,
-        "rank_sort": 1386210,
-        "overall_rank": 3244083,
-        "percentile_rank": 15,
-        "overall_rank_percentage": "29",
+        "rank": 1767386,
+        "rank_sort": 1775577,
+        "overall_rank": 3384018,
+        "percentile_rank": 20,
+        "overall_rank_percentage": "31",
         "bank": 3,
         "value": 1008,
         "event_transfers": 3,
@@ -28530,13 +28532,13 @@
           "not_played_yet": false
         },
         {
-          "id": 19,
-          "name": "Zubimendi",
-          "pos": "MID",
-          "team": "ARS",
-          "team_code": 3,
-          "points": 0,
-          "raw_points": 0,
+          "id": 61,
+          "name": "Truffert",
+          "pos": "DEF",
+          "team": "BOU",
+          "team_code": 91,
+          "points": 6,
+          "raw_points": 6,
           "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
@@ -28582,19 +28584,6 @@
           "not_played_yet": false
         },
         {
-          "id": 79,
-          "name": "Evanilson",
-          "pos": "FWD",
-          "team": "BOU",
-          "team_code": 91,
-          "points": 12,
-          "raw_points": 12,
-          "multiplier": 1,
-          "is_captain": false,
-          "is_vice": false,
-          "not_played_yet": false
-        },
-        {
           "id": 411,
           "name": "Haaland",
           "pos": "FWD",
@@ -28604,6 +28593,19 @@
           "raw_points": 13,
           "multiplier": 2,
           "is_captain": true,
+          "is_vice": false,
+          "not_played_yet": false
+        },
+        {
+          "id": 79,
+          "name": "Evanilson",
+          "pos": "FWD",
+          "team": "BOU",
+          "team_code": 91,
+          "points": 12,
+          "raw_points": 12,
+          "multiplier": 1,
+          "is_captain": false,
           "is_vice": false,
           "not_played_yet": false
         },
@@ -28636,11 +28638,11 @@
           "not_played_yet": false
         },
         {
-          "id": 367,
-          "name": "Gakpo",
+          "id": 19,
+          "name": "Zubimendi",
           "pos": "MID",
-          "team": "LIV",
-          "team_code": 14,
+          "team": "ARS",
+          "team_code": 3,
           "points": 0,
           "raw_points": 0,
           "multiplier": 1,
@@ -28649,13 +28651,13 @@
           "not_played_yet": false
         },
         {
-          "id": 61,
-          "name": "Truffert",
-          "pos": "DEF",
-          "team": "BOU",
-          "team_code": 91,
-          "points": 6,
-          "raw_points": 6,
+          "id": 367,
+          "name": "Gakpo",
+          "pos": "MID",
+          "team": "LIV",
+          "team_code": 14,
+          "points": 0,
+          "raw_points": 0,
           "multiplier": 1,
           "is_captain": false,
           "is_vice": false,
@@ -28677,9 +28679,10 @@
       ],
       "auto_subs": [
         {
-          "element_in": 19,
+          "entry": 2604490,
+          "element_in": 61,
           "element_out": 367,
-          "is_provisional": true
+          "event": 7
         }
       ],
       "raw_picks": [
@@ -28716,12 +28719,12 @@
           "element_type": 2
         },
         {
-          "element": 367,
+          "element": 61,
           "position": 5,
           "multiplier": 1,
           "is_captain": false,
           "is_vice_captain": false,
-          "element_type": 3
+          "element_type": 2
         },
         {
           "element": 40,
@@ -28748,18 +28751,18 @@
           "element_type": 3
         },
         {
-          "element": 79,
+          "element": 411,
           "position": 9,
-          "multiplier": 1,
-          "is_captain": false,
+          "multiplier": 2,
+          "is_captain": true,
           "is_vice_captain": false,
           "element_type": 4
         },
         {
-          "element": 411,
+          "element": 79,
           "position": 10,
-          "multiplier": 2,
-          "is_captain": true,
+          "multiplier": 1,
+          "is_captain": false,
           "is_vice_captain": false,
           "element_type": 4
         },
@@ -28788,12 +28791,12 @@
           "element_type": 3
         },
         {
-          "element": 61,
+          "element": 367,
           "position": 14,
           "multiplier": 0,
           "is_captain": false,
           "is_vice_captain": false,
-          "element_type": 2
+          "element_type": 3
         },
         {
           "element": 32,
@@ -28806,18 +28809,18 @@
       ],
       "raw_hist": {
         "event": 7,
-        "points": 65,
-        "total_points": 410,
-        "rank": 3088062,
-        "rank_sort": 3124993,
-        "overall_rank": 4899054,
-        "percentile_rank": 30,
-        "overall_rank_percentage": "44",
+        "points": 71,
+        "total_points": 416,
+        "rank": 2022773,
+        "rank_sort": 2052744,
+        "overall_rank": 4673439,
+        "percentile_rank": 20,
+        "overall_rank_percentage": "42",
         "bank": 0,
         "value": 1001,
         "event_transfers": 0,
         "event_transfers_cost": 0,
-        "points_on_bench": 20
+        "points_on_bench": 14
       },
       "chip": null,
       "hits": 0,
@@ -29150,11 +29153,11 @@
         "event": 7,
         "points": 70,
         "total_points": 405,
-        "rank": 1897132,
-        "rank_sort": 1916093,
-        "overall_rank": 5238966,
-        "percentile_rank": 20,
-        "overall_rank_percentage": "47",
+        "rank": 2414856,
+        "rank_sort": 2435561,
+        "overall_rank": 5412538,
+        "percentile_rank": 25,
+        "overall_rank_percentage": "49",
         "bank": 8,
         "value": 1007,
         "event_transfers": 1,
