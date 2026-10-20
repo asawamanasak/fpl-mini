@@ -5593,14 +5593,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                     <div class="text-xs text-slate-600 mt-0.5 font-medium">บ๊วย 600 / รองบ๊วย 500 / อันดับ 3 400 / อันดับ 4 300 / อันดับ 5 200 THB</div>
                   </div>
                 </div>
-              </div>
-              ${penaltyHistoryHtml ? `
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
-                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">ประวัติผู้เสียค่าปรับและแชมป์แต่ละสัปดาห์</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  ${penaltyHistoryHtml}
-                </div>
-              </div>` : ''}` : (phasesHtml ? `
+              </div>` : (phasesHtml ? `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
                 <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">รอบเคลียร์เงินรางวัล 6 งวด</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
