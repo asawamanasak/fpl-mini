@@ -11,7 +11,7 @@ permissions:
 
 concurrency:
   group: fpl-sync
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   sync-fpl-data:
@@ -45,5 +45,6 @@ jobs:
             echo "No changes detected. Skipping commit."
           else
             git commit -m "Auto-sync live FPL data [skip ci]"
+            git pull --rebase origin main
             git push
           fi
