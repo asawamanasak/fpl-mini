@@ -20,7 +20,9 @@ venv/
 # Temporary files and scratch
 *.tmp
 *.temp
+*.bak
 /tmp/
+scratch/
 
 # IDE and Editor configurations
 .vscode/

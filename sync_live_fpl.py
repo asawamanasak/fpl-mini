@@ -1,41 +1,117 @@
 import urllib.request
 import urllib.error
+import http.client
+import socket
 import json
 import time
 import os
 import sys
+import shutil
 import argparse
 import subprocess
+import random
 from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor
 
+# Guard against hung low-level sockets across all worker threads
+socket.setdefaulttimeout(20)
+
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)'}
 
-def fetch(url, retries=3, delay=1.5):
-    """Fetch JSON from URL with retry mechanism."""
+def fetch(url, headers_override=None, retries=5, delay=2.0, timeout=15):
+    """Fetch JSON from URL with exponential backoff, jitter, and network timeout recovery."""
+    req_headers = headers_override if headers_override is not None else headers
     for attempt in range(retries):
         try:
-            req = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(req, timeout=15) as resp:
-                return json.loads(resp.read().decode('utf-8'))
+            req = urllib.request.Request(url, headers=req_headers)
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                data = resp.read().decode('utf-8')
+                return json.loads(data)
         except urllib.error.HTTPError as e:
             if e.code == 404:
                 # 404 Not Found is deterministic; do not retry
                 raise e
-            if e.code == 429:
-                wait_time = delay * (attempt + 2) * 2
-                print(f"Rate limited (429) fetching {url}. Waiting {wait_time:.1f}s before retry...")
+            if e.code in (429, 500, 502, 503, 504):
+                # Exponential backoff with jitter to protect against rate limits and temporary outages
+                base_wait = delay * (2 ** attempt)
+                jitter = random.uniform(0.5, 1.5)
+                wait_time = base_wait + jitter
+                status_desc = "Rate limited (429)" if e.code == 429 else f"Server error ({e.code})"
+                print(f"{status_desc} fetching {url}. Waiting {wait_time:.1f}s before retry (attempt {attempt + 1}/{retries})...")
                 time.sleep(wait_time)
                 continue
             if attempt == retries - 1:
                 print(f"Failed to fetch {url} after {retries} attempts: {e}")
                 raise e
-            time.sleep(delay * (attempt + 1))
+            wait_time = delay * (2 ** attempt) + random.uniform(0.5, 1.5)
+            time.sleep(wait_time)
+        except (urllib.error.URLError, socket.timeout, TimeoutError, http.client.RemoteDisconnected,
+                ConnectionResetError, ConnectionRefusedError, http.client.IncompleteRead, json.JSONDecodeError) as e:
+            if attempt == retries - 1:
+                print(f"Failed to fetch {url} after {retries} attempts: {e}")
+                raise e
+            base_wait = delay * (2 ** attempt)
+            jitter = random.uniform(0.5, 1.5)
+            wait_time = base_wait + jitter
+            err_type = type(e).__name__
+            print(f"Transient network/payload issue ({err_type}: {e}) fetching {url}. Retrying in {wait_time:.1f}s (attempt {attempt + 1}/{retries})...")
+            time.sleep(wait_time)
         except Exception as e:
             if attempt == retries - 1:
                 print(f"Failed to fetch {url} after {retries} attempts: {e}")
                 raise e
-            time.sleep(delay * (attempt + 1))
+            wait_time = delay * (2 ** attempt) + random.uniform(0.5, 1.5)
+            time.sleep(wait_time)
+
+def recover_missing_teams_from_cache(current_results, cached_results):
+    """
+    Ensure no teams are dropped from gameweek results due to transient fetch timeouts.
+    If a team was in cached_results but is missing from current_results, recover it.
+    """
+    if not cached_results:
+        return list(current_results)
+    
+    current_eids = {r.get("entry_id") for r in current_results if r.get("entry_id") is not None}
+    merged_results = list(current_results)
+    
+    for c_r in cached_results:
+        c_eid = c_r.get("entry_id")
+        if c_eid is not None and c_eid not in current_eids:
+            merged_results.append(c_r)
+            current_eids.add(c_eid)
+            
+    return merged_results
+
+def load_cached_data(json_path):
+    """Load JSON cache, automatically falling back to .bak if corrupted or missing."""
+    if not os.path.exists(json_path):
+        bak_path = f"{json_path}.bak"
+        if os.path.exists(bak_path):
+            try:
+                with open(bak_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                print(f"Recovered cache from backup file: {bak_path}")
+                return data
+            except Exception:
+                return None
+        return None
+
+    try:
+        with open(json_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return data
+    except Exception as e:
+        print(f"Warning: Could not read {json_path} (possible corruption): {e}")
+        bak_path = f"{json_path}.bak"
+        if os.path.exists(bak_path):
+            try:
+                with open(bak_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                print(f"✅ Successfully recovered cache from {bak_path}!")
+                return data
+            except Exception as bak_err:
+                print(f"Warning: Backup file {bak_path} also unusable: {bak_err}")
+        return None
 
 def get_gw_fixture_status(gw_id):
     """
@@ -115,22 +191,26 @@ def trigger_publish():
             push_res = subprocess.run(["git", "push"], cwd=base_dir)
             if push_res.returncode != 0:
                 print("Notice: Git push conflict, preserving fresh sync data and resetting to origin/main...")
-                saved_multi = None
-                saved_real = None
+                saved_multi_obj = None
+                saved_real_obj = None
                 if os.path.exists(multi_json_path):
-                    with open(multi_json_path, "r", encoding="utf-8") as f:
-                        saved_multi = f.read()
+                    try:
+                        with open(multi_json_path, "r", encoding="utf-8") as f:
+                            saved_multi_obj = json.load(f)
+                    except Exception:
+                        pass
                 if os.path.exists(real_json_path):
-                    with open(real_json_path, "r", encoding="utf-8") as f:
-                        saved_real = f.read()
+                    try:
+                        with open(real_json_path, "r", encoding="utf-8") as f:
+                            saved_real_obj = json.load(f)
+                    except Exception:
+                        pass
                 subprocess.run(["git", "fetch", "origin", "main"], check=True, cwd=base_dir)
                 subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, cwd=base_dir)
-                if saved_multi is not None:
-                    with open(multi_json_path, "w", encoding="utf-8") as f:
-                        f.write(saved_multi)
-                if saved_real is not None:
-                    with open(real_json_path, "w", encoding="utf-8") as f:
-                        f.write(saved_real)
+                if saved_multi_obj is not None:
+                    atomic_json_dump(saved_multi_obj, multi_json_path)
+                if saved_real_obj is not None:
+                    atomic_json_dump(saved_real_obj, real_json_path)
                 subprocess.run([sys.executable, update_script], check=True, cwd=base_dir)
                 subprocess.run(["git", "add", "-A"], check=True, cwd=base_dir)
                 retry_diff = subprocess.run(["git", "diff", "--staged", "--quiet"], cwd=base_dir)
@@ -143,12 +223,26 @@ def trigger_publish():
     except Exception as e:
         print(f"Notice during live matchday publish: {e}")
 
-def atomic_json_dump(data, file_path):
-    """Safely write JSON to a temp file first, then atomically replace the target file."""
-    temp_path = f"{file_path}.tmp"
-    with open(temp_path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    os.replace(temp_path, file_path)
+def atomic_json_dump(data, file_path, create_backup=True):
+    """Safely write JSON to an isolated temp file first, then atomically replace the target file."""
+    temp_path = f"{file_path}.tmp.{os.getpid()}_{time.time_ns()}"
+    try:
+        with open(temp_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        if create_backup and os.path.exists(file_path):
+            bak_path = f"{file_path}.bak"
+            try:
+                shutil.copyfile(file_path, bak_path)
+            except Exception:
+                pass
+        os.replace(temp_path, file_path)
+    except Exception as e:
+        if os.path.exists(temp_path):
+            try:
+                os.remove(temp_path)
+            except Exception:
+                pass
+        raise e
 
 def check_data_has_changed(cached_data, new_output):
     """
@@ -226,11 +320,10 @@ def sync_once(args):
         print(f"\n⚠️  [Resilience Notice] FPL API unavailable (possible maintenance / 503 / network issue): {e}")
         base_dir = os.path.dirname(os.path.abspath(__file__))
         multi_json_path = os.path.join(base_dir, 'multi_fpl_data.json')
-        if os.path.exists(multi_json_path):
+        c_data = load_cached_data(multi_json_path)
+        if c_data:
             print("   Safely preserving existing cached data without crash.")
             try:
-                with open(multi_json_path, 'r', encoding='utf-8') as f:
-                    c_data = json.load(f)
                 c_data["sync_status"] = "offline"
                 atomic_json_dump(c_data, multi_json_path)
             except Exception:
@@ -297,14 +390,10 @@ def sync_once(args):
     # 4. Load existing multi_fpl_data.json for Incremental Sync caching
     multi_json_path = os.path.join(base_dir, 'multi_fpl_data.json')
     cached_data = None
-    if not args.force and os.path.exists(multi_json_path):
-        try:
-            with open(multi_json_path, 'r', encoding='utf-8') as f:
-                cached_data = json.load(f)
+    if not args.force:
+        cached_data = load_cached_data(multi_json_path)
+        if cached_data:
             print("Loaded existing multi_fpl_data.json cache for incremental sync.")
-        except Exception as e:
-            print(f"Warning: Could not read existing multi_fpl_data.json: {e}")
-            cached_data = None
 
     # Determine which GWs need live points fetched
     gws_to_fetch_live = set()
@@ -521,7 +610,10 @@ def sync_once(args):
                     try:
                         s_key = f"{eid}_{gw}"
                         cached_sq = cached_squads.get(s_key)
-                        if not args.force and can_reuse_raw_picks and cached_sq and cached_sq.get("raw_picks"):
+                        is_safe_cached_sq = cached_sq and cached_sq.get("raw_picks") and (
+                            (not this_gw_finished and this_gw_started) or cached_sq.get("final_checked") or not this_gw_checked
+                        )
+                        if not args.force and can_reuse_raw_picks and is_safe_cached_sq:
                             picks = cached_sq.get("raw_picks", [])
                             hist = cached_sq.get("raw_hist", {})
                             chip = cached_sq.get("chip")
@@ -700,7 +792,8 @@ def sync_once(args):
                             "raw_picks": raw_picks,
                             "raw_hist": hist,
                             "chip": chip,
-                            "hits": hits
+                            "hits": hits,
+                            "final_checked": bool(this_gw_finished and this_gw_checked)
                         }
                         return (gw, eid, result_item, squad_item)
                     except Exception as err:
@@ -711,9 +804,9 @@ def sync_once(args):
                             c_sq = cached_squads.get(f"{eid}_{gw}")
                             if (gw < max_gw or this_gw_started) and c_sq and c_sq.get("dnp"):
                                 return (gw, eid, None, c_sq)
-                            if c_res and c_sq:
+                            if c_res:
                                 print(f" -> Recovered cached data for team {eid} GW {gw} following fetch error.")
-                                return (gw, eid, c_res, c_sq)
+                                return (gw, eid, c_res, c_sq or {})
                         
                         # Resilient fallback for 404 / late joiner / missing event picks (only mark DNP after GW starts)
                         if ("404" in str(err) or "Not Found" in str(err)) and (gw < max_gw or this_gw_started):
@@ -738,6 +831,21 @@ def sync_once(args):
                             gameweeks_dict[str(gw)]["results"].append(result_item)
                         if squad_item:
                             squads_dict[f"{eid}_{gw}"] = squad_item
+
+                # Cache Corruption Prevention: Recover any missing teams from previous cache
+                for gw_idx in range(1, max_gw + 1):
+                    gw_k = str(gw_idx)
+                    cached_gw_res = cached_gw_data.get(gw_k, {}).get("results", []) if cached_gw_data else []
+                    gameweeks_dict[gw_k]["results"] = recover_missing_teams_from_cache(
+                        gameweeks_dict[gw_k]["results"],
+                        cached_gw_res
+                    )
+
+                # Preserve any existing cached squads that were not refreshed
+                if cached_squads:
+                    for s_k, s_v in cached_squads.items():
+                        if s_k not in squads_dict:
+                            squads_dict[s_k] = s_v
 
                 # Resiliency: Strictly deduplicate results by entry_id for all gameweeks
                 for gw_key in gameweeks_dict:
@@ -839,14 +947,18 @@ def sync_once(args):
                 gameweeks_dict[gw_str]["is_started"] = gw_started_map.get(gw, False)
                 gameweeks_dict[gw_str]["unstarted_teams"] = [teams_by_id.get(tid, str(tid)) for tid in gw_unstarted_teams_map.get(gw, set())]
 
-            multi_league_output["leagues"][str(lid)] = {
-                "id": lid,
-                "name": league_name,
-                "season": "2026/27",
-                "teams": teams_list,
-                "gameweeks": gameweeks_dict,
-                "squads": squads_dict
-            }
+            if cached_league and cached_league.get("teams") and len(teams_list) == 0:
+                print(f" -> [Resilience] Fetched teams empty for League {lid}. Safely falling back to cached league data.")
+                multi_league_output["leagues"][str(lid)] = cached_league
+            else:
+                multi_league_output["leagues"][str(lid)] = {
+                    "id": lid,
+                    "name": league_name,
+                    "season": "2026/27",
+                    "teams": teams_list,
+                    "gameweeks": gameweeks_dict,
+                    "squads": squads_dict
+                }
 
             summary_stats.append({
                 "id": lid,
@@ -867,6 +979,13 @@ def sync_once(args):
                     "gws_count": max_gw
                 })
 
+    # Ensure every configured league is preserved in output, falling back to cache if missed
+    if cached_data and "leagues" in cached_data:
+        for lid_str in leagues_config.keys():
+            if lid_str not in multi_league_output["leagues"] and lid_str in cached_data["leagues"]:
+                print(f" -> [Resilience] Restoring missing League {lid_str} from cache.")
+                multi_league_output["leagues"][lid_str] = cached_data["leagues"][lid_str]
+
     # 4.4 Fetch Transfer Suggestions from FPL Gameweek
     next_event = next((e for e in events if e.get('is_next')), None)
     upcoming_gw = next_event['id'] if next_event else (max_gw + 1 if gw_status_map.get(max_gw) else max_gw)
@@ -874,25 +993,24 @@ def sync_once(args):
     try:
         ts_url = f'https://fontendfunctionsnortheuropenew.azurewebsites.net/api/TransferSuggestionsFunction?gameweeks={upcoming_gw}&generalSuggestions=1'
         azure_key = os.environ.get('AZURE_TRANSFER_FUNCTION_KEY', 'db059d47-8b44-476a-9dfc-509bceb87bee')
-        ts_req = urllib.request.Request(ts_url, headers={
+        ts_headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
             'FunctionKey': azure_key
-        })
-        with urllib.request.urlopen(ts_req, timeout=12) as resp:
-            ts_data = json.loads(resp.read().decode('utf-8'))
-            if ts_data and ts_data.get("Succeeded"):
-                multi_league_output["transfer_suggestions"] = {
-                    "gw": upcoming_gw,
-                    "updated_at": datetime.now(timezone.utc).isoformat(),
-                    "GoalKeepers": ts_data.get("GoalKeepers", []),
-                    "Defenders": ts_data.get("Defenders", []),
-                    "Midfielders": ts_data.get("Midfielders", []),
-                    "Forwards": ts_data.get("Forwards", [])
-                }
-                print(f" -> Successfully updated Transfer Suggestions for GW {upcoming_gw}!")
-            else:
-                if cached_data and "transfer_suggestions" in cached_data:
-                    multi_league_output["transfer_suggestions"] = cached_data["transfer_suggestions"]
+        }
+        ts_data = fetch(ts_url, headers_override=ts_headers, retries=3, delay=1.5, timeout=12)
+        if ts_data and ts_data.get("Succeeded"):
+            multi_league_output["transfer_suggestions"] = {
+                "gw": upcoming_gw,
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+                "GoalKeepers": ts_data.get("GoalKeepers", []),
+                "Defenders": ts_data.get("Defenders", []),
+                "Midfielders": ts_data.get("Midfielders", []),
+                "Forwards": ts_data.get("Forwards", [])
+            }
+            print(f" -> Successfully updated Transfer Suggestions for GW {upcoming_gw}!")
+        else:
+            if cached_data and "transfer_suggestions" in cached_data:
+                multi_league_output["transfer_suggestions"] = cached_data["transfer_suggestions"]
     except Exception as ts_err:
         print(f"Notice: Could not fetch transfer suggestions: {ts_err}")
         if cached_data and "transfer_suggestions" in cached_data:
@@ -974,7 +1092,7 @@ def sync_once(args):
             for s in summary_stats:
                 summary_md += f"| `{s['id']}` | **{s['name']}** | {s['teams_count']} | GW 1 - {s['gws_count']} |\n"
 
-            with open(step_summary_path, 'a', encoding='utf-8') as f:
+            with open(step_summary_path, 'w', encoding='utf-8') as f:
                 f.write(summary_md)
         except Exception as e:
             print(f"Notice: Could not write GITHUB_STEP_SUMMARY: {e}")

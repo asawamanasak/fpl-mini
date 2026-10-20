@@ -3,8 +3,8 @@
     "id": 40700,
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "season": "2026/27",
-    "last_sync": "20 ต.ค. 2026, 07:05 น.",
-    "last_sync_iso": "2026-10-20 07:05:58"
+    "last_sync": "20 ต.ค. 2026, 04:17 น.",
+    "last_sync_iso": "2026-10-20 04:17:27"
   },
   "teams": [
     {
@@ -25352,7 +25352,8 @@
         "points_on_bench": 6
       },
       "chip": null,
-      "hits": 0
+      "hits": 0,
+      "final_checked": false
     },
     "5950381_7": {
       "starting": [
@@ -25663,7 +25664,8 @@
         "points_on_bench": 2
       },
       "chip": null,
-      "hits": 0
+      "hits": 0,
+      "final_checked": false
     },
     "306983_7": {
       "starting": [
@@ -25974,7 +25976,8 @@
         "points_on_bench": 21
       },
       "chip": "3xc",
-      "hits": 0
+      "hits": 0,
+      "final_checked": false
     },
     "1206581_7": {
       "starting": [
@@ -26285,7 +26288,8 @@
         "points_on_bench": 3
       },
       "chip": null,
-      "hits": 4
+      "hits": 4,
+      "final_checked": false
     },
     "5470959_7": {
       "starting": [
@@ -26596,7 +26600,8 @@
         "points_on_bench": 0
       },
       "chip": "bboost",
-      "hits": 0
+      "hits": 0,
+      "final_checked": false
     },
     "197082_7": {
       "starting": [
@@ -26907,7 +26912,8 @@
         "points_on_bench": 19
       },
       "chip": null,
-      "hits": 0
+      "hits": 0,
+      "final_checked": false
     },
     "2999763_7": {
       "starting": [
@@ -27218,7 +27224,8 @@
         "points_on_bench": 17
       },
       "chip": null,
-      "hits": 0
+      "hits": 0,
+      "final_checked": false
     },
     "2189419_7": {
       "starting": [
@@ -27529,7 +27536,8 @@
         "points_on_bench": 1
       },
       "chip": null,
-      "hits": 0
+      "hits": 0,
+      "final_checked": false
     },
     "2206758_7": {
       "starting": [
@@ -27840,7 +27848,8 @@
         "points_on_bench": 5
       },
       "chip": null,
-      "hits": 4
+      "hits": 4,
+      "final_checked": false
     },
     "5660962_7": {
       "starting": [
@@ -28151,7 +28160,8 @@
         "points_on_bench": 4
       },
       "chip": null,
-      "hits": 4
+      "hits": 4,
+      "final_checked": false
     },
     "2604490_7": {
       "starting": [
@@ -28462,7 +28472,8 @@
         "points_on_bench": 20
       },
       "chip": null,
-      "hits": 0
+      "hits": 0,
+      "final_checked": false
     },
     "2191555_7": {
       "starting": [
@@ -28773,7 +28784,8 @@
         "points_on_bench": 9
       },
       "chip": null,
-      "hits": 0
+      "hits": 0,
+      "final_checked": false
     }
   }
 }

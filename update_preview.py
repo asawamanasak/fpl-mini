@@ -55,10 +55,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     last_sync_str = str(multi_data.get("last_sync") or "31 ส.ค. 2026, 22:30 น.")
 
     html_template = """<!DOCTYPE html>
-<html lang="th" class="h-full bg-slate-50 dark:bg-slate-950 transition-colors duration-150">
+<html lang="th" class="h-full bg-slate-50 dark:bg-slate-950 transition-colors duration-150 overflow-x-hidden">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>FPL Dashboard - มินิลีกแฟนตาซี</title>
   <meta name="description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPL มินิลีก">
   <meta name="theme-color" content="#0f172a">
@@ -231,17 +231,48 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       --font-family: 'Sarabun', 'Sukhumvit Set', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
-    * {
+    html {
+      overflow-x: hidden;
+      max-width: 100vw;
+      width: 100%;
+      box-sizing: border-box;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
       font-family: var(--font-family) !important;
     }
 
     body {
+      overflow-x: hidden;
+      max-width: 100vw;
+      width: 100%;
+      min-height: 100dvh;
       font-family: var(--font-family) !important;
       background-color: #f8fafc;
       color: #0f172a;
       letter-spacing: -0.01em;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      touch-action: manipulation;
+    }
+
+    /* Fluid responsive containers & media */
+    main, header, footer {
+      max-width: 100%;
+      width: 100%;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Mobile touch target minimum size & feedback */
+    button, [role="button"], a {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .font-display {
@@ -310,7 +341,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     .touch-scroll {
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-x: contain;
-      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
     }
 
     /* Authentic Football Pitch System (4-Tier Vertical Formation) */
@@ -323,9 +354,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 420px;
-      padding: 0.75rem 0.25rem;
+      min-height: 400px;
+      width: 100%;
+      max-width: 100%;
+      padding: 0.625rem 0.25rem;
       box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.4);
+      box-sizing: border-box;
     }
 
     @media (min-width: 640px) {
@@ -394,9 +428,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       justify-content: space-evenly;
       align-items: center;
       width: 100%;
+      max-width: 100%;
       position: relative;
       z-index: 10;
       padding: 0.15rem 0;
+      box-sizing: border-box;
     }
 
     /* Chip Badges */
@@ -414,96 +450,100 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     .badge-freehit { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
     .badge-wildcard { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
 
-    /* ==================== DARK MODE THEME ==================== */
+    /* ==================== DARK MODE THEME (AMOLED / PURE TRUE BLACK) ==================== */
     html.dark {
       color-scheme: dark;
+      background-color: #000000 !important;
     }
 
     .dark body {
-      background-color: #0b1120 !important;
-      color: #f1f5f9 !important;
+      background-color: #000000 !important;
+      color: #f3f4f6 !important;
     }
 
     .dark header {
-      background-color: rgba(15, 23, 42, 0.95) !important;
-      border-color: #1e293b !important;
+      background-color: rgba(0, 0, 0, 0.85) !important;
+      border-color: #1a1a1c !important;
+      backdrop-filter: blur(16px) !important;
+      -webkit-backdrop-filter: blur(16px) !important;
     }
 
     .dark .glass-card {
-      background: #1e293b !important;
-      border-color: #334155 !important;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
+      background: #0d0d0f !important;
+      border-color: #222225 !important;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.7) !important;
     }
 
     .dark .winner-spotlight-card {
-      background-color: #1e293b !important;
-      background-image: radial-gradient(circle at 0% 0%, rgba(245, 158, 11, 0.15) 0%, rgba(30, 41, 59, 0.6) 60%, #1e293b 100%) !important;
-      border: 1.5px solid rgba(245, 158, 11, 0.35) !important;
+      background-color: #0d0d0f !important;
+      background-image: radial-gradient(circle at 0% 0%, rgba(245, 158, 11, 0.14) 0%, rgba(13, 13, 15, 0.85) 60%, #0d0d0f 100%) !important;
+      border: 1.5px solid rgba(245, 158, 11, 0.3) !important;
       border-left: 5px solid #f59e0b !important;
-      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
+      box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.8) !important;
     }
 
     .dark .live-leader-spotlight-card {
-      background-color: #1e293b !important;
-      background-image: radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.15) 0%, rgba(30, 41, 59, 0.6) 60%, #1e293b 100%) !important;
-      border: 1.5px solid rgba(16, 185, 129, 0.35) !important;
+      background-color: #0d0d0f !important;
+      background-image: radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.14) 0%, rgba(13, 13, 15, 0.85) 60%, #0d0d0f 100%) !important;
+      border: 1.5px solid rgba(16, 185, 129, 0.3) !important;
       border-left: 5px solid #10b981 !important;
-      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
+      box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.8) !important;
     }
 
     .dark .prematch-spotlight-card {
-      background-color: #1e293b !important;
-      background-image: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, rgba(30, 41, 59, 0.6) 60%, #1e293b 100%) !important;
-      border: 1.5px solid rgba(99, 102, 241, 0.35) !important;
+      background-color: #0d0d0f !important;
+      background-image: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.14) 0%, rgba(13, 13, 15, 0.85) 60%, #0d0d0f 100%) !important;
+      border: 1.5px solid rgba(99, 102, 241, 0.3) !important;
       border-left: 5px solid #6366f1 !important;
-      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
+      box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.8) !important;
     }
 
     .dark .border-slate-200,
     .dark .border-slate-100,
-    .dark .border-slate-200\/80 {
-      border-color: #334155 !important;
+    .dark .border-slate-200\/80,
+    .dark .border-slate-300 {
+      border-color: #222225 !important;
     }
 
     .dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
     .dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
-      border-color: #334155 !important;
+      border-color: #1a1a1c !important;
     }
 
     .dark .bg-slate-50,
     .dark .bg-slate-50\/50,
     .dark .bg-slate-100,
     .dark .bg-slate-100\/90 {
-      background-color: #0f172a !important;
+      background-color: #141416 !important;
     }
 
     .dark .bg-white {
-      background-color: #1e293b !important;
+      background-color: #0d0d0f !important;
     }
 
     .dark .text-slate-900 {
-      color: #f8fafc !important;
+      color: #ffffff !important;
     }
 
     .dark .text-slate-800 {
-      color: #e2e8f0 !important;
+      color: #f3f4f6 !important;
     }
 
     .dark .text-slate-700 {
-      color: #cbd5e1 !important;
+      color: #e5e7eb !important;
     }
 
     .dark .text-slate-600 {
-      color: #94a3b8 !important;
+      color: #d1d5db !important;
     }
 
     .dark .text-slate-500 {
-      color: #94a3b8 !important;
+      color: #9ca3af !important;
     }
 
     .dark .hover\:bg-slate-50:hover,
     .dark .hover\:bg-slate-100:hover {
-      background-color: #334155 !important;
+      background-color: #1e1e24 !important;
     }
 
     .dark .hover\:text-slate-900:hover {
@@ -527,46 +567,47 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     }
 
     .dark .scrollbar-thin::-webkit-scrollbar-track {
-      background: #0f172a !important;
+      background: #000000 !important;
     }
 
     .dark .scrollbar-thin::-webkit-scrollbar-thumb {
-      background: #334155 !important;
+      background: #222225 !important;
     }
 
     .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-      background: #475569 !important;
+      background: #333336 !important;
     }
 
     /* Modals & Dropdowns in Dark Mode */
     .dark #team-modal-content,
     .dark #summary-modal-content,
     .dark #text-summary-modal > div:last-child,
-    .dark #team-modal > div:last-child {
-      background-color: #1e293b !important;
-      border-color: #334155 !important;
+    .dark #team-modal > div:last-child,
+    .dark #projected-points-modal > div:last-child {
+      background-color: #0d0d0f !important;
+      border-color: #262629 !important;
       color: #f8fafc !important;
     }
 
     .dark #team-modal .sticky.top-0 {
-      background-color: rgba(30, 41, 59, 0.95) !important;
-      border-color: #334155 !important;
+      background-color: rgba(13, 13, 15, 0.95) !important;
+      border-color: #262629 !important;
     }
 
     .dark #league-dropdown-menu {
-      background-color: #1e293b !important;
-      border-color: #334155 !important;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+      background-color: #0d0d0f !important;
+      border-color: #262629 !important;
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.9) !important;
     }
 
     .dark #league-dropdown-menu button:hover {
-      background-color: #334155 !important;
+      background-color: #1a1a1c !important;
     }
 
     .dark textarea#text-summary-content {
-      background-color: #0f172a !important;
+      background-color: #050505 !important;
       color: #e2e8f0 !important;
-      border-color: #334155 !important;
+      border-color: #262629 !important;
     }
 
     /* Live note / Spotlight preview in Dark Mode */
@@ -622,9 +663,102 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
     /* Header League ID Badge (กล่องสีเข้มขึ้น ตัวหนังสือคมชัด) */
     .dark #header-league-id-badge {
-      background-color: #0f172a !important;
+      background-color: #141416 !important;
       color: #93c5fd !important;
       border-color: #1e3a8a !important;
+    }
+
+    /* Pure Black / AMOLED Theme Overrides for Tailwind classes */
+    .dark .dark\:bg-slate-950,
+    .dark .dark\:bg-slate-900 {
+      background-color: #0d0d0f !important;
+    }
+    .dark .dark\:bg-slate-800 {
+      background-color: #141416 !important;
+    }
+    .dark .dark\:bg-slate-800\/90 {
+      background-color: rgba(20, 20, 22, 0.92) !important;
+    }
+    .dark .dark\:bg-slate-800\/80 {
+      background-color: rgba(20, 20, 22, 0.8) !important;
+    }
+    .dark .dark\:bg-slate-800\/60 {
+      background-color: rgba(20, 20, 22, 0.6) !important;
+    }
+    .dark .dark\:bg-slate-800\/50 {
+      background-color: rgba(20, 20, 22, 0.5) !important;
+    }
+    .dark .dark\:bg-slate-800\/40 {
+      background-color: rgba(20, 20, 22, 0.4) !important;
+    }
+    .dark .dark\:bg-slate-800\/30 {
+      background-color: rgba(20, 20, 22, 0.3) !important;
+    }
+    .dark .dark\:bg-slate-700 {
+      background-color: #1c1c20 !important;
+    }
+    .dark .dark\:border-slate-800,
+    .dark .dark\:border-slate-700,
+    .dark .dark\:border-slate-800\/80,
+    .dark .dark\:border-slate-700\/80,
+    .dark .dark\:border-slate-800\/60,
+    .dark .dark\:border-slate-700\/60 {
+      border-color: #222225 !important;
+    }
+    .dark .dark\:divide-slate-800 > :not([hidden]) ~ :not([hidden]),
+    .dark .dark\:divide-slate-800\/80 > :not([hidden]) ~ :not([hidden]),
+    .dark .dark\:divide-slate-800\/60 > :not([hidden]) ~ :not([hidden]),
+    .dark .dark\:divide-slate-800\/40 > :not([hidden]) ~ :not([hidden]) {
+      border-color: #1a1a1c !important;
+    }
+    .dark .dark\:hover\:bg-slate-800:hover,
+    .dark .dark\:hover\:bg-slate-800\/60:hover,
+    .dark .dark\:hover\:bg-slate-800\/40:hover,
+    .dark .dark\:hover\:bg-slate-700:hover {
+      background-color: #1e1e24 !important;
+    }
+    .dark .dark\:text-slate-500,
+    .dark .dark\:text-slate-400 {
+      color: #9ca3af !important;
+    }
+    .dark .dark\:text-slate-300 {
+      color: #d1d5db !important;
+    }
+    .dark .dark\:text-slate-200 {
+      color: #e5e7eb !important;
+    }
+    .dark .dark\:text-slate-100 {
+      color: #f3f4f6 !important;
+    }
+    .dark .dark\:text-white {
+      color: #ffffff !important;
+    }
+    .dark .dark\:bg-blue-950\/60,
+    .dark .dark\:bg-blue-950\/50,
+    .dark .dark\:bg-blue-950\/40 {
+      background-color: rgba(37, 99, 235, 0.16) !important;
+      border-color: rgba(59, 130, 246, 0.3) !important;
+    }
+    .dark .dark\:bg-emerald-950\/60,
+    .dark .dark\:bg-emerald-950\/70,
+    .dark .dark\:bg-emerald-950\/50 {
+      background-color: rgba(16, 185, 129, 0.16) !important;
+      border-color: rgba(16, 185, 129, 0.3) !important;
+    }
+    .dark .dark\:bg-amber-950\/60,
+    .dark .dark\:bg-amber-950\/40 {
+      background-color: rgba(245, 158, 11, 0.16) !important;
+      border-color: rgba(245, 158, 11, 0.3) !important;
+    }
+    .dark .dark\:bg-rose-950,
+    .dark .dark\:bg-rose-950\/60 {
+      background-color: rgba(244, 63, 94, 0.16) !important;
+      border-color: rgba(244, 63, 94, 0.3) !important;
+    }
+
+    /* Modal Backdrop in Pure Black */
+    .dark .bg-slate-950\/75 {
+      background-color: rgba(0, 0, 0, 0.85) !important;
     }
 
     /* Live Gameweek Selector Button Pulse */
@@ -732,14 +866,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
     /* Football Pitch Player Cards in Dark Mode */
     .dark .fpl-pitch .bg-white\/90 {
-      background-color: rgba(15, 23, 42, 0.92) !important;
-      color: #f8fafc !important;
+      background-color: rgba(10, 10, 12, 0.92) !important;
+      border: 1px solid #222225 !important;
+      color: #ffffff !important;
     }
     .dark .fpl-pitch .text-slate-900 {
-      color: #f8fafc !important;
+      color: #ffffff !important;
     }
     .dark .fpl-pitch .text-slate-500 {
-      color: #94a3b8 !important;
+      color: #9ca3af !important;
     }
   </style>
 </head>
@@ -747,69 +882,47 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
   <!-- 1. Header (League Identity, Switcher Dropdown, Status & Tabs) -->
   <header class="border-b border-slate-200 bg-white/95 backdrop-blur-xl sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-2">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-3">
       
-      <!-- 1.1 ข้อมูลประจำลีก (Redesigned Clean, Beautiful & Balanced Header) -->
-      <div class="flex items-center gap-3 min-w-0">
-        <!-- Logo Image -->
-        <img 
+      <!-- 1.1 ข้อมูลประจำลีก & Action Header -->
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          <!-- Logo Image -->
+          <img 
           src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAQABAADASIAAhEBAxEB/8QAHQABAAICAwEBAAAAAAAAAAAAAAgJBgcBBAUDAv/EAFYQAQABAwMBBQQECwMIBggGAwABAgMEBQYRBwgSITFBE1FhcRQiMoEVI0JSYnKCkZKhsRYzwRckQ1NjorLCGDQ3dbPRJTVEVHOTldInNlaUo8O04fD/xAAdAQEAAQQDAQAAAAAAAAAAAAAABgQFBwgCAwkB/8QAShEAAgECAwMHCAcGBAQHAQAAAAECAwQFBhEhMUEHEiJRYXGBCBMUMpGhscFCUmJygtHhFSMzkrLwFiSiwkNTc9IYJTQ1NmPxg//aAAwDAQACEQMRAD8A3GAiR5jgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPm1z0q61bf6o6puXRtPqpt5WgahcsU0d7mcjGiru0XqfhMxVE+7w97shRnOEqkVqo7+zUuNrhN7e2te9t6blTo81za+ipPRa97NjAOstwAAAAAAAAAB8M7Ow9Mw7+o6hlWsbFxrdV29eu1xTRbopjmaqpnwiIhgfSHq/pnV+NxZ+iY9VGm6TqUYWLcrpmK79v2VNXtJj05qmriPPiI5dsaM505VUti3vvLlb4Re3VlWxGlTbo0uapS4JyekV3vq6tpsMB1FtAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwTrjvaOn3SzX9yUVxTkW8acfEiZ45v3fqUTHxiZ73yplXf0q6j6t0u3vgbw0yqbn0eruZViauIyLFX26KvnHlPpMRPokd28N71cbf6e4t2OJ72q5kR99FqJ//kn9yIXzhP8AL9jFWLdRfxPhuN6uQbJdvDJdWpf01JXrlzk+NNdGK/qa7y2rb2vaXujQ8HcWi5NORg6hYoyLFyn8qmqOfumPKY9JiXoIadirrJODnV9JNeyo+jZlVV/R6q/yLvHNyxE+6qImqI98VfnJlodiVjLD7h0ZbuHajUvlBybcZFx2rhVbVw9anL60Hufetz7UwAoSEgAAAAH4u3bdm3VevXKaLdETVVVVVERTEeczM+UP2hn2ru0jGq1ZXTDYWoROFRVNnV86zV/fVRPjYomPOmJj60x5z4eUTzXWFhVxCsqVPxfUiZ5FyRiOfMVjhtitFvnPTZCPFvt6lxfiY92pO0dXv7NvbD2XmTG28Svu5WTbmY/CFyJ9/wDqomPCPyp8fczrsCZPe0veWJz9nIw7vHzpuxP/AAwhx5pX9gbJ41rd2F4fWxcW78fCu5H/ADJpillTtMKlRpLYtPHatpuDyl5Pw/KvJhc4VhkNIU+ZJvjKSqQ1lJ8W/duWxEywGPTQsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjv2jes+8Oie/NtaxplFOfomp4dyzm6fe8KK67VyJ71FX5Ffducc+MTxHMeXEiEX+3lo30jYu3deinn6DqleNMx6RetTP8AW1H71zweFOreQp1Vqpar3GSOSW1sMQzba4fidNVKNbnQkn9qL07nrpo1tTN09L+sOyOrel/T9ralH0i1TE5ODemKcjHn9Knnxj9KPCWbKl9A3Frm1dVsa5t3VMjT8/Gq71q/Yrmmqmf8Y98T4T6pn9D+2Lou54sbb6n12NJ1WqYt2dRiO7i5M+Ud/wBLVUz6/Ynn8nyXPFMvVLbWrb9KPVxX5mROUrkCxDLvPxHL2te2W1w31ILu+nFda2riuJJofmiui5TTXRVFVNcRVTMTzExPrD9Izpoa6NNbGAA+AAAcTMREzPlHm5a67Qe9/wCwPSPcOt2cj2OZdxpwsKqJ4q9ve+pTNPxpiZq/ZdtCk69SNKO9vT2lxwfDK2NYhQw63XTqzjBd8mkQH6773r6g9Vtwbhpve0xvpVWLie6Me19Sjj5xT3vnVLAXM+URHPEeEcuGW6NKNGnGnHckkeqmE4bRwewo4fbrSFKMYruitDsafn5ml5uPqWn5FdjKxb1F+zdoniqiumYqpqiffExErMOhXVXD6t7Aw9wU1W6NSx6YxtSsUz428imI5nj82qOKo+E8eisfn0bZ7N3V+50m3/ZyM6/VGhatNOLqdHpTTz9S9x76Jnn5TVHuWjHcO9Ot+dFdOO1fNGKuWrk+Wd8Cda0jrdW+sodcl9KHitq+0l1ssiH4s3rWRZt5Fi5Tct3KYrorpnmKqZjmJifk/bGz2Hng009GAA+A83EzEeMo9dqDtGWOnOn3dlbPy6bm5syji/donmNPtVR9rn/Wz4d2PSJ73uiam0tKt7VVKktW/d2khyvljEc34nTwrDIc6pPjwiuMpPgl+i2tIxztW9pKNDtZPTLYeof+krlM2tWzbNUf5tRMeNmiqPy5ifrTH2YnjznwhdVVNUzM+sv1dvXb9yu9euVXLlyqa666p5mqqZ5mZn38vwybh9hTw+iqcN/F9bPR/IeRsOyFhUcOsVrLfObW2cuLfZwS4LxbJM9g/M9n1G17C8fx+jTc/gvW/wD70Zm/uxLlxjdapsz/AO1aPlWf3VW6/wDldeMx51jVXYW/laoekZJxKHVSb9mj+RP0Bi08zwDEOp3VLafSjbtzcG6Mzu8804uLbnm9lXOPsUR/WZ8I9XOnTnWmoQWrZWYfh91it1CysqbnVm9IxS1bZ7G6927d2RoeRuLdOq2cDAxo5ru3J+1PHhTTHnVVPlFMeMvN6b7vzN+7ao3bd0qrT8LUblVzTbNyebtWL5UXLnpE18TVER5RMeMoKZu8N89qXq3oug6vers4GVmRRYwbE/icPGjmq7VH51fcpmZqq8ZnwjiOIiw3Cw8XTsOxgYVqm1j41umzaop8qaKYiIiPuiF0xCwjhtOFOo9aktr7EZJz3kahyfYfbWV7JTv6/Tmk+jSgtiiuuUnrrLd0dFv1f3AWgxUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAab7W+jfhjoVr1cUd6vT68fNp+Hdu0xVP8NVX75bkYp1X0b+0HTPdOjxR36snScqminjnmuLczTH74hU2VTzNzTqdTXxJHk/EP2VmCyvdfUq02+7nLX3FV8+bmJ495VHFUx7pcMuI9Ult2o3d0S7UW7+llVjQ9Wm5re24mI+iXK/x2NT77Nc+UfoT4e7jzTn2F1F2h1L0WjXdoavazLExEXbfldsVfm3KJ8aZ+fn6TKquJe7s3fO6en+tWtwbS1e/gZlqYiZonmm5T60V0z4VUz7phH8UwCje61KXRn7n3/mYI5SeQ3Cs4qd/helvdvbql0Jv7aW5v6y29akWujQXRDtY7W6jxj7f3bNjQdxVRFNPfr7uLmVeX4uqZ+rVM/kVTz4+Ey36gV1aVbOfm6y0fx7jSDMeWMVyneyw/FqLp1Fu13SXXF7mu1fEAKcsAQ67eG9fa523+n+Nd+rj0VaplUxP5dXNu1z93tZ+9MSqqmima6piKaY5mZ9IVddZt6Vb/6n7g3RFzv2MnMqoxp58PYW/qW+P2aYn70jyza+eu/OvdBe97vmbAeTnlv9r5peJVFrC1i5fjnrGPu5z8DCg5GQjfUOY9XAAnL2Nesn9qdu19N9dy5q1TQ7Xewaq5+tfxI8O78ZtzMR+rMe5JZVBsvdur7E3Rp27NBvzbzNNv03qPdXTH2qKo9aao5pmPdMrPen+99I6jbQ03eOh1842o2YrmiauarNyPCu3V8aauY+7n1Y9zFhvotb0imujL3P9d5ody/cnv8AhrF/25Yx0t7lttLdCpva7FL1l285bkjIgaw679cNF6M7anJq9nl67m0zTpuDNXjVV5e1rjzi3TPHPvnwj14sNChUuKipU1q2YPwbBr3MF9Tw3DqbnVqPRJfF9SW9vckeN2ju0Bp/SLQ50jRr1rI3TqNqfotj7UYtE+Htrkf8NPrMe6JV7anqedrGfkapqeXdysvLuVXr967VNVdyuZ5mZmfOXZ3JuPWt3a3mbj3Dn15mfnXJu3rtfrM+kekRHlER4RERDzGS8KwunhtLRbZPe/l3HovyZcnFjye4YqMNJ3E9HUqdb+quqMeC473t3AF1MlBuHsk5M43XvbkRPhfpy7U/Kce5P9aYaebK7N2X9D647Pu8zHe1CLX8dFVP/Mo8Qjz7SrH7L+BFM90PScr4jS66FX+hlmI4ieY5Yd1W6pbd6SbTv7n1+536ufZYmJRVEXcq9MeFFMT++Z9I5limnTnWmoU1q2eYOHYfdYrdU7Kyg51ZtKMVvbf9+G863V/q/tro9tqvW9buRezL3NGBgUVRFzJucenupjw71XpHvniJrp6j9SNz9UdyX9y7ozJu3a+abNmnwtY9vnwt249Ij98zzM+L89Ruom5ep+6MndO58v2l+99S1ZpmfZY1qJ+rbtx6Ux++ZmZnxli7I+EYPDD4c+W2o976uxHoNyUck9nkGzVzdJTvZrpT3qKf0IdnW98n2aIlj2Edjxk6rr3UDMsc0YVunTcOqY/0lf17sx8qaaI/blMpq3szbPp2Z0Z2/iV2u5k6jZnU8nmOJmu99aIn4xR3Kf2W0kHxi59KvJz4J6LuRpnysZieZs33l2nrCMvNx+7Do7O9pvxAC2mOQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADWfULrRj9KNfxbO+dGv29vanMUYms4lM3KLNz8q1ft+cT6xVTM8x6Rx45xt3c+3t26Zb1jbOs4mpYd37N3HuRXHPun1ifhPEupvvZWidQ9q5+0twWPaYmdbmnvREd61XH2blPuqpnxhXRqdXUjs7dRM7R9M1rK03PwLvEXLUz7LLsz9iuaJ5pqpqj0nnjxjzhfLDDqOKUnGm+bVXsa6+wzXkbIWEcpeHTtrGr6PiNFauL206sdyl1xa3S01W583aWbCMHSLtqaDr/sNE6nY1vR86riiNStf9Vuz76487Uz4e+n4wkziZWLnY1rMwsm1kWL1MV27tquK6K6Z8piY8Jhbruxr2U+ZWjp8H4mPc05MxvJt16LjFBwfCW+Mu2MlsfxXFI+z83KKbtuq3VETTVTNM8+6fN+hSJ6PUi8ZOMlJb0VMbp0qrQ9zatotUTE4OdfxvH9C5NP+Dy2z+0rok6D1u3ViccRey4zKfSOL1FNz/mlrDzZetannqMKnWk/cereXMQWK4Pa3y/4lOEvbFMAO8vJzE8esx8pSK6Idrvcexvo+3N+zf1zQqeKLeRM97LxafhM/3lMe6fGPSfRHRzzwpbuzo3kOZWWq+HcRzM+VMJzfZOwxeipw4P6UX1xe9Pu8dUWx7V3btze2jWdf2tq+PqODfiJpu2aue7P5tUedNUetM8TD11WPTrqlvPpbrEaztHVq8eqqY9vj1/WsZFMfk10T4T8/OPSYTr6K9pjZnVq3a0vJqo0bcPHFWBfufVvTEeM2a5+3Hr3Z+tHx80CxPAa1j+8p9KHvXeaO8pHIji2S3K+sNa9pv5yXSgvtpcF9ZbOvQ9ftHb3/ALB9Idd1S1d7mXmWfwdi8TxPtL31eY+MU96r7laHuSx7d+9YyNX0HYONe5pw7VWo5VMT+XX9W3E/KmKp/aRO9yT5btfMWfPe+b18NyNj/J6y3+xMpRvai0qXUnN9fNXRgvYnJfeACQGdgAAJD9j/AKy/2H3Z/YXW8nu6LuG7TRarrq4pxszyoq90RX4UT8e5Pojw/VuubdUV01TTVTMTEx5xKlvLWF5RlRnufu7SO5ry1aZuwivhF6uhUW/jGX0ZLtT2+4s/6wdXNu9H9rXde1mum9l3ebeDg01xFzJu+6PdTHnVV6R8eIVvb63vr/UTcuZuvc+ZN/Ny6+eI57lmj8m3RH5NMekf+ZvHfe6t+59jUt16zez7+Nj28W1VXPhRboiIiIjyiZ45mfWeZY+t+EYRDDYc6W2b3v5IgXJVyU2nJ5ayq1mql3P1p8EuEY68OLe9vsSHoAvRl8AADMOjuZGn9Vto5cz4UaziR++7TH+LD3q7TzqNL3Vo2p3KoppxNQx78zPlEUXKauf5OqvHn0pR60y3Yxb+l4dXt0tedCS9sWi0zeO7tC2JtvN3RuPMjGwcG3366pn61c+lFMetVU+ER71bPWLqzr3V/d1/cGrV1WcO3zawMKKuaMazz4R8ap8Jqq9Z+ERDMu0312vdV9y/gfRMiqnbWk3JpxYieIyrnlVfqj3elMekfGWk+VhwLCFZw8/WXTfuX97zB3IjyVRyjZrGcUh/nKq2J/8ADg+HZJ/S6vV69Xh6+b2dmbfvbp3bo227P2tTz7GLE+6K64iZ+6JmfueK3X2QNu/h7rbpeTXb71vSLF/Pq8OYiYo7lM/xVwvV5W9Ht51epNmYc24ssCwK8xL/AJVOcl3qL09+hYViYtnCxLGFjURRZx7dNq3T7qaY4iP3Q+wMSN6vU8rZyc5OUnq2AHw4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABH/ALXnR+nfWy53lo2J39b27bquTFNP1sjE87lHh5zT9uP2o9UgHFVNNdM0V0xVTVHExMcxMKi0uZ2daNaG9f3oSDK2Y7vKeL0MXsnpOm9dOEl9KL7GtUVDePnHPi2b0k7QO/OkWVRa0nN+n6NVVE3tLyqpmzMes2587dXxp8OfOJd3tMdK6ul/UvKsYFiqnRtY5ztOmI+rRTM/XtfsVeH6s0+9qRlGPmMSt1KS1jJf34npVQ/Y3KDgVOtWpxrW1eKlpJa6a/CUXqtVtTWxlnPSbrlsbrBp0XtvZk2NStUd7K0zImIv2fHjmIjwrp/Sj4c8T4NhKkdI1nVNB1HH1fRtQyMLNxa4uWb9iuaK6Ko9YmE0ugva807dNWPtTqdesafqtXFvH1KOKLGVPpFyPK3X8fsz8PJDsVy9O2Tq23Sj1cV+ZqNym8gd5l5TxTLmta2W2UN9SC7PrxX8y4p7Was7cmifQequDrFNExTqmlW5qn3126qqJ/3e4jmmX29dFi9ou1NzWaO9TZyL+HXXHjHFdNNdH/BUhok2BVfO2FN9Wz2GyHIpiP7SyPYzb2wi4P8ABJpe7QALuZUAAA/dm9csXaL1m7VbuUVRVTXRVMTTMeUxMeT8BvPkoqS0e49PcW5Nb3XqVWs7i1O9qGdXbt2q796ea6qaKYpp5n1mKYiOZ8XmT8AfIxUVotxwo0advTjSoxUYxWiSWiSXBJbEAH07AAAAAAAAAABxIAEAASAAR5pbdgfQor1Ddm5q7X93Zx8G3X+tM11x/u0Ikx5+KevYh0anA6SZGqTRxVqeq3q4njzpoopoj+cVLFmKr5qwkuvRe8wty/4k8PyRXgntqyhD2y5z90WSGAY3PPMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADUPai6Zz1I6W50YOP7TVtEidRweI+tV3Y/GW4/Wo54j86KVccxPM+C3r7lbHaU6b/wCTXqnqWn4ePFnS9Sq/COnxTHFNNq5M80R+pVFVPyiEzyvfbJWkn2r5r5m3vk0Zyco18r3Mt2tSl/vivdJL7zNVuefDj3uJEyNuN5n2b1j3PrXTWeme5Ls6nh42RaydNyL1czdxJo5iaOfyqJpqqiInxj0njwYFPHPg4HXTowo6qC012+JQYfhdnhSnGypqCnJzaWxc56avTctdNXpve3e2AHYV4AADhzxMebI9r9Od970uxZ2ttHVNS5nia7GNVNumfjcmO7H3y4TqQprWb0RTXd7bWFN1rqpGEVxk1Fe16IxvieOSImZ4hIDbPYp6v61NFzWZ0rQrMzHM5OT7W7Ee+KLcTEz8JqpbU0DsFbVsRTVujfOqZlUfaowbFvHp+6a/aStdbHbGhsdRPu2mNMY5ask4NrGpeqpJcKac/elzfeQr4ny4c92rniKZn5LHdC7KPQrQ6aJjZlOfdo/0uflXb01fOnvRR/us70jp1sHQO7OibK0PCqojimuzp9qmqP2op5/mtlXNdvH+HBvv0X5mN8R8p/A6LasLOrU7ZOMF7nN+4q70zam6NamI0fbmqZ3Pl9GxLl3n+GJZRp/QfrHqUROL0216Yq8vaYlVv/i4WeRRTFMUxTERHlHucqGebKr9Sml3t/oQ288qPE5/+kw+nH705S+CiVw4fZS68Z0c29jXLfv9tmWLfH763qY/Y3663uPa6Bp+P3vP2mpWZ4/hqlYX4e4U8s03j3RivB/mWCr5TGbZv93RoR/DN/GZX7/0LOtv/umj/wD1CP8AyP8AoWdbP/dNH/8AqEf+SwIcP8T3vVH2fqUv/iSzl9Wj/I/+4r1yOxt11s972Whadf48u5qVqO9/FMPLzOyl14w471zY1dyP9jm2K/6VrHhzjmm9W9Rfg/zKml5TGbYevRoS/BNfCZWFn9BOsumxVOV0213iPW3jTc/4eWMans/dui+OsbY1bAiPXJw7lr/iiFsjjuxxMceE+EqiGbKy9emvB/8A6X608qPFIP8AzeH05fdlKPx5xUNMTHhMTE+6XHE8crXNW2DsbXu9+GtnaJnTX51X8C1XV/FNPLBdc7LHQzXKa5q2RawbtUcRdwci7YmmffFNNXcn76ZVtLNdCX8SDXdt/ImeHeU/glZpX9lVp9sXGa9/MZW7xPkcJsbg7BmzsmLlzbO9tWwa5+xRmWbeTTE/On2c8NWbn7EnVnRpquaFk6Tr1mJnuxZvzZuzHvmi5EUx91crpRx2wr7FPR9uz9DI+D8tmScYajC9VOT4VE4e9rm+8j3Ecysr7M+lRo/Q3aVjjib+HOXPx9rXVc/pVCvzdHTDqFsyuujc+zNW0+mieJu3MaqbUz8Lkc0T90rMOnWnRpOwduabTER9G0rFt8R6cWqVozRcRqW9NQeqb4d36mK/KUxu2vMBsaVnVjOM6jlrFqS6MdN6b+sZEAhBpoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR57aXT2N0dOLW78Ox3s7bN32lcxHjOLcmKbkfKJ7tXyiUhnT1jSsLXdKzNF1G1F3FzrFzHvUT+VRXTMTH7pVNlcu0uIVo8H7uPuJJlDMNXKuOW2L0d9KabXXHdJeMW0VIz5+Dh7u+NrZeyd3axtTOpn2ul5dzHmZ/Kpifq1fKaeJ+94TLUJqcVJbmepNrdUr2hC5oS1hNKSa4prVP2AOJl2dP03UtXzLWm6VgZObl35im1Yx7NVy5XM+ERFNMTM/c+tpLVnbUqQpRc5tJLe3sSOtwcTxykV057FfUPc8Ws7eeTZ2zhV8T7KuIvZdVP6kTxR+1VzH5qTXT/sx9JOn8W8nH2/Rq2oW55jN1Pi9XE++miY7lP3U8/GVju8w2drrGL50upfnuMMZr5ecqZacqNvUdzVX0ae2KfbN9H2c59hBbY3RDqj1DmivbW0My7jV+MZd+n2GPx+vXxE/dykBsrsH3Ku5k7/3hFPPEziaZb5+6blcf0pS/pppoppoopimmmOIiPCIhyjN1mW7rbKekF2b/aa5Zk8orNOMN08NUbWH2Vzp/wA0vlFGtdn9nTo7sqKLml7MxMnJt/8AtOf/AJzd59/1+Yj7ohse1ZtWLdNmxaot26I4ppojiIj3REeT98TLiqqmmma6piKY85nyhY6tercPWpJyfa9TCuJYziWN1fO4hXnVk+MpOXxORhe6OtHSrZk1W9xb80jGv0fax6L8Xr0fO3b5qj9zU+4+3H0s0uK6NA0vWdauU892qm1TYt1T+tXPej+GXfRw67uP4dNvwL3g+QMz48k8Psak0+PNaj/M9F7yRghTrnb03fkzXTt3Y+lYNE/Zqy8i5kVR/D3IYBrfa666axVM291WdOoq/IwsO1RxH61UVVfzXOllm+qeslHvf5amSsN8nTOd6lK4jTor7U9X7IKRYq+V3KxrEc38i1bj9OuI/qq51XrD1T1uJjU+oWv3oq/J+n3KafuiJiIY3l6vquoczn6nlZPPn7a9VXz++ZV0Mp1H69ReCJnZ+S5ey23eIxX3YN+9yj8C1XM3ts3T/wDr+7NHx+PD8bnWqf61PJvdYOlNjj2nUfbUc+7VLM/0qVa8zMcTJ3pVEcp0vpVH7CQUfJbw5L99iM33Qivi2WgXuunR2xX3LvUnQOfP6ubRV/RxZ669HL9cW7fUnQeZ/OzKaf5yrA5+Bz8I+9z/AMKUP+Y/cVX/AIXsE009Oq690PyLSrPWHpRf59l1I23PE8eOp2Y/rU9TD3zsrUJ7uDu7RsifdazrVX9KlUPPviDmfH4uLynS4VH7Clq+S5hrX7nEJrvhF/Bot2sZFjJo7+Pet3afzqKoqj+T6KrtjdT989OdQp1DaG4snBmKomuz3u/Yu8eldur6tX9fdMJm9FO11tjf9yxt7eduxoOuVzFFu5Nf+a5VXpFNUz9Sqfzap490+iz3+Xrizj5yHSj2b/YYozzyC4/lOlK9sX6VQW1uK0nFdbht1XbFvt0JCALAYK7wOhr2tYe3NFzde1GL04un2Ksi/wCxtzXXFumOapimPGeI5niGNbU6zdLd7TTRtvfGl5F6ryx670Wb3/y7nFU/dDthRqTi5xi2l2Fwt8Iv7y3ld29Gc6cXpKUYtpPftaWi8TMq6KLlM0XKIqpmOJiqOYmHMRFMRTTEREeERHocxxzzHDl1a8CgbenNYAD4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQh7c2xvwVvPS99YlmIs63j/RsmYjyv2eOJn50TT/AAI4aToura9qFrS9E0zJzsy9Pdt2Me3NddU88eEQs26u9KdE6wbYt7Y1vJu41FrLtZVu/ZpiblE0z9aI58PrUzVT98TxPDtdP+lexemOnRp+z9BsYc1UxF3JmO9fvTHrXcn60/Lyj0hLbPMMLSyjSacprZ2acNptRlLl/tcr5Ot8OqUpVrylrBLdHmp9Bylv2J83RJvo7dNhFbpf2INf1b2WqdTdT/BONzFX4Pxaorya491dfjTR93en5JW7F6YbE6bYMYOztuYuBzTxcvxT3r93413J5qq+XPHuhlIsd7it1fv97LZ1LYjC2b+UzMmdZv8AaVdqlwpw6MF4ce+TbHwGJb76r9P+m2NN/eG5cTCud3vUY3e7+Rcj9G3TzVPz44+KM3UHt1Z1+bmF0123RjUc8U5+pfXrn402qZ4j9qZ+T5aYVdXu2lHZ1vYvacMq8mmZ85NSwy1bpv6cujD+Z7+6Or7CYGXmYmBj15edlWsexbjmu5drimmn5zPg1BvftZ9G9nTdx8fXq9dzLczHsdMt+1pifjcmYo/dMoIbw6lb73/kzkbu3Rn6l4802rlzi1R+rbjiin7oYxKT2mVacdtzPXsWz3//AIbH5Z8mOxoJVcw3TqS+pT6Me7nPWT8FEk7vHt0741Pv4+y9u6dotmeYi9kzOVe+fj3aI/hlpHdXVzqZvaqqdz721XNt1edicibdn7rdHFEfuYgJBb4baWv8Kmk+vj7WZ4wHk9yxlpL9m2UIyX0mudL+aWsvecxPFPcifBwCuJiloAA+gAAAAAAAAAI458QBvJJ9n7tZapsurG2j1Ev39R0HmLdjNqma8jCjyiJ9bluPd5x6cx4Jv6bqWn6xgWNU0rNsZmHlURds37NcVUXKJ8piYVGw3N2fu0TrnSDU6NK1Gq5nbWyrnOTic8140z53bPPlPrNPlV8/FFcYwCNwnXtVpLiuv9TWbla5DKGOQnjOW4KFytsqa2RqdbjwU/dLse12JXbVu/ars3qKa7dymaK6avKqmfCYlV11h2XPT3qTr+0qaJpsYeZVVi8xMfiK+K7f+7VEfcs40DX9H3Ro+Lr2gahZzcDNtxds37VXNNVM/wBJ9JifKUOO3htanC3Zt/eFq1EU6nhV4d2qI87lmrvU/f3bn8oWnLVZ0Lx0J/SW7tX9sxb5OuNVsGzXUwW41iriLi4vY1OnrJarg0uen3mk9odbOqexqqKdub11KzYo44xbt32+Px/8K5zTH3REt77K7d2tY1VGNv7aePm2/CJytOr9lcj4zbq5pq+6aUUCPNMLnC7S7/iwWvXuftRtlmHk1ytmhP8AaNlByf0ormT/AJo6N+OpZpsTtB9J+ofcs6JurHsZlcR/mWd/m97n3RFX1ap/VmWx1Q1MzE96J4mPHn3NodO+0l1W6cVW8fTtwV6jp1uYj6DqHN+1x7qZme9R+zMI3eZV01laz8H+f6GvWa/JklFSr5audf8A66vynFexOPfIspEf+mXbH6dbyqs6ZuqKts6lXxTzkV9/Frq+F3w7v7UR82/MfIx8uzRk4t6i7ZuR3qLlFUVU1R74mPCYRa5s69nLmV4tM1ozFlXGcqXHo2MW8qUuGq2P7slrGS7mz6AKcj4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHlbm3Db2zpN3Vbml6nqPs48MbTsSvIv3J90U0+XzmYj4obdaO1N1ku37ulaTtrUNj6fc5opuZGNXTmXPj36qYijw9KPGPzk3nX1DTsDVsWvB1TCsZmPcju12r9qm5RVHummqOJhccPu6FpPnVaXP8fluJ9kbNWC5Xulc4nhsbtp7HKT6PdHRxb+8n2aFSmbnZupZNzN1HLvZWRdq71d69cmuuuffNUzzL4T4z4Qnz1R7HPT3eFm9n7NojbOrVRNVNNmmasS5PuqtfkfOjj5Shd1C6abw6X63VoW79KrxrvjNm9T9azkUfnW6/KqP5x6xCf4fi1tfR5tJ6S6nv8De3InKjl3PMFRw2fm6qW2lLSMkl9XTZJL7O7ikYsOZ585cLqZKAAAAAAAAAAAAAAAAAAAEAA3H2eu0Fq/R7WqNO1K5dytrZt2PpmLHjVYqnw9taj0qj1p8qoj38SkB20KdM3X0W0Td+i5NrMxbOp2b9nItTzTVZu27lPhPxq7n3wg5HmzbT+qWuYvTHV+l2bXXlaVn3bOVh01Vf9UvUXaaqu7+jVTE80+/iffzZbrC4yuqd5R2STWvavzMQ5n5NKNzmayzbhKULinUj51blUg+i5ffim/vLY9qRhIC9GXgAAfNsTph146j9Kb1FG3dZm9p3e5uaZl83Mav38R50T8aZj48tdjqrUKdxHmVYprtLdiuEWGN20rPEaUatOW+Mkmvfx7VtRYz0f7T2weqsWdKvXfwJr9URE4GXcju3av9jc8Ir+XEVfBuLy81Q1NVdFcV0VTTNM8xMeExPvhJbob2wdb2pVjba6mXL+q6PT3bdrUIjv5WLHp3v9bTH8Ue+fJDcTy24a1bTavq/kaj8ovk71LOM8RynrOC2ui3rJfcl9L7r29Te4nGOhoeu6RuTSsfW9C1GxnYOXRFyzfs1xVRVE/4/Dzh30ScXF6NbTVerSqUKkqVWLjKL0aexpremgA+HWAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeRuLdeh7WtY1esZtNu7m36cbEx6Y717JvVTxTRbojxqn+UR4zxD7GLm9IndQt6t1UVKhFyk9yW1nrjjx9Y4n3OXw6QDEOoPVjYPTDEpyd47gsYly5TNVnFp5uZF6I/Nt081cfGeI+LnTpzqyUILVvqKyww+7xS4ja2VOVSpLdGKbb7ktpl4iXuXt7afavV2to7BvZFuPCm/qOXFuZ+Ps6Iq4/iYp/08eoUzzTs3b8RPl/feX8a7wy9fzWvM08UZYs+QTPV5SVX0VQ14SnBP2atrxJvsZ6h9O9r9TduX9t7q0+m/YrjvWrsREXce5x4XKKvSY/dPlPgjLo3b5yPaU0bi6dWe54c14OdVE/H6tdMx/vNx7H7VHRvfFdGLa3DVo+ZXMRFjVaIscz7ouczbn+J11MLv7F+c5j2cVt+Ba7/kxz1k2rHEHaVIum9VOm1Pm6cdYNteJBrq90o3B0h3be25rVNV3Hr5u4ObTTxbyrPPEVR7qo8pp9J+HEsGWa9celGl9ZNhX9Gj2EalYj6VpOZ4TFu/EeEd78yuPCfun0hWlqOBmaVqGTpmo49djKxL1di/arjiq3cpmYqpmPfExMJtguJ/tCjpP147/wAzcnkg5R1n7CWrrRXdHRVFu16ppdT4rhJPhodcBeTLgAAAAAIZNs3pvvjqDmfQ9nbazdSqiru13Ldvi1b/AFrk8U0/fLjOcacedN6LtKW8vrbD6Mri7qRhCO+Umkl3t7DGeJcpXbE7CesZVNrM6ibqt4NMzFVWHpkRcuxHum7XHdiflTVHzSA2b2cOjmx4t3NM2biZeVRxP0rUY+lXJqj1+vzTT+zEQsNzmSzobKes32bvaYTzJ5QuUsEbpWcpXM1/y1pH+eWiffFSK9Ns9Od+bzqina+0dW1GmZ49pYxa5tx86+O7H722dudirrHrHcuatRpmiWqvP6Tk+0uRH6tvvR90zCflu3btUU27VFNFFMcRTTHERHwh+lir5puZ7KUVH3mE8Z8pnMN23HC7enRj1vWcva9F/pIm6F2CdLt9yvc2/wDJveP17eDiU0RPyqrqn/hZNqnYb6WX9Iqw9I1bXMPO86Mu7fovRzx5VUd2mJj5cT8UjBbJY3fzlzvOP3GOrnllzxdVlXliE009dIqMV4pJJrsepXF1Q7MHU3pnF3Puad+GdIt81fTtOpmuKKY9blH2qPD14mPi1FPMeErevm0n1a7KfT3qRF3UtJsU7d1urmr6Vh24i1dn/a2vsz4+dUcVfGfJfrDM+ukLteK+a/Izfkfyk4ycbTNdLTh52C2d84fFx/lK8Bn/AFQ6H9QOk2ZNvculVV4Ndfds6jjc3Ma57o735NX6NURPu5YAl1KtTrwU6b1TNqMLxWyxq1je4fVjUpy3Si017uPZvQAdhcAD1Nq6RXr+5tJ0OiJmdQzbGLER69+uKf8AF8lJRTk+B1XFeFtSlWqerFNvuS1Z5Yml1J7DWh58XNR6Y65c0y9xMxp+fVN2xM+6i5H16Pv73n6Iqb56bb16b6j+DN5aBk6fdqmfZ3Kqe9ZvRHrRcjmmr7p5W+zxW2vtlKW3q4kHyjyl5bztHm4ZcLznGnLozX4Xv746rtMYAXEnoAAbN6Ldd91dG9Yi5gXa8zRMiuJzdMuV/UuR+fRz9i5x6x5+U8rCtgdQdsdS9uWNzbVz6cjGux3blE+Fyxc48bddPpVH8/OPCVVCTXYR1e5j9Qtc0aq/VFvM0r2sUcz3aq7dyjx48ueKqvFGcwYXSq0ZXUVpKO/tXaa48vHJrhmJ4RXzNbx5lzRjzpNLZUjqk+cutLapb9mj12aThAQA0YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjR2i+1bh7LnJ2V06ybOZrsRNrLz44rtYM8eNNPpXd/lT68z4Kq0s6t9UVKitX7l3klyrlPFM5YhHDcKp86b3v6MV9aT4L3vck3sM565doza3R/Dq06zNGp7kvUc2NPor8LXMeFd6Y+zHrx5z6e9qDss17o6xdTtW6tb71C5n1aJZixh0VeFmzeuxPhbo8qYpoiry8eaonnlErP1DO1XMvahqWXeysrJrm5evXq5rruVT5zMz4zKwDsb7co0Torh582+7d1nMyM2uePtRFXs6f5W0pvrGjg+Hvm7Zy2a/HTq2Gy+c8lYZyRZEqq16d7cuNKVV79JbZqC+jHmprZteu19W8vPxBjnUPemn9PNl6tvDUuKrenY9Vyi3M8TduT4UUR+tVMR96HQhKpJQjvZqZZ2la/uKdrbR51SbUYpb229EvFmru0l2jMbpLgf2d23NrJ3Tm2+9RE8VUYVufK7XHrVPj3afvnw84D61rmr7i1O/rOu6jkZ2dlVd+7fv3Jrrrn5z/AE8n23RuTVt37gz9y65lVZGdqN6q/erqn1nyiPdERxER6RDymTsLwynh1LmpdJ738u49IuTXk4w/k/wyNGnFSuZJecqcW+pPhBbkuO97RIC6mSg59HAA2b0t7QnUfpTft2dI1Wc7Son6+mZtU3LEx+j625+NPHyl+eum7NndQ9z2d/7TsV4V7WLMTqun3Y+vj5dPhNUTHhVTXTxPMesVcxDWgpVZUY1vSILSXHTj3/mRmGUcKt8XWOWtNU7hpxk47FOL4TW6WjSafrJrfpsE+YCqJMAdvS9L1HWs+xpek4N/MzMmuLdmxYtzXXXVPlEUx4y+NqK1ZxqVI0oOc3oltbexJdbOrHvZn066Qb96pZ0Yu0tDu3rNNXF3MufUx7X61yfDn4RzPwSO6Mdi21bpx9xdXKpquz9ejRbFcd2n3e3uRPj680U/fM+USu0vStM0TAs6Xo2n4+Dh49MUWrGPbiiiiPhEeCL4jmWlQ1p2y5z6+H6mtWf/ACiMPwaU7HLcVcVlsdR/w4vs00c/DSPayPnTLsWbF2zFnUd+ZNW5NQp4q9hPNvEon3d2PG5+1PE+5IXTtM07SMO3p+lYGPh4tmnu27OPai3RTHwiPB2RDbq9uLyXOrSb+HsNRsx5wxvNtf0jGLmVR8E3pFfditIrwQAUpGgAAAAAADr6hp+Bq2Fe07U8Ozl4uRRNF2zeoiuiumfOJifCUVus3YsxM72+4OktyjFv8TXXo9+vi1XP+xrn7P6tXh7phLEVlnf17CfPovw4PwJblLPGOZJuvScIrOKfrRe2EvvR3eK0a4NFSet6HrG3NSv6Nr2m5OBnY1Xdu4+RbmiumflP9fKXQWh9UOjexurWmTg7p0yIybdMxj59iIpyLE/Cr1j9GrmEE+svZ13v0fyK8zJsTqegVV92zqmPRM0U8+UXaf8AR1fP6s+kp5hmOUL/AEpz6M+rr7jeDk55asGzwo2dzpb3b+g30ZP7EuP3X0urXeaobV7MO3a9x9bttWO537eDfq1C78ItUTVTP8XdarjmPBLjsH7Krqytw7/ybP1LdFOl4tUx51TMV3Zj5RFuPvlV4vXVvZVJ9mnt2Em5Vccjl/KF9dt6ScHCP3p9FfHXwJhPO17buhbp0y9o249JxdRwb8cV2Mi1FdM/Hx8p+MeL0Ri1ScXzk9p5oUa1S3qRq0ZOMovVNPRp9aa2oh11i7FN/Gi/r3SS/VftxzXXo+Tc5rj4Wbk/a/Vq8fjKKepaZqGjZ17TNWwcjDy8eqaLtm/bm3coqj0mmeJhbi171W6G7D6u4E29w6fFjUaKe7Y1PGpinIte6Jn8un9Gr7uPNKMNzJUo6U7rpLr4r8zZfk88oe+wlwsM0a1qO5VF/Ej97667fW7ZbisYbN6wdAd8dH86qvVMac/Rq65px9VxqJm1VHpFceduv4T5+ky1km9GvTuIKpSeqZuPg+M2GP2kL7DasalKW5xevg+p9ae1cQ272VNep0Hrjt6qurijPm7g1ePEfjLdUR/vd1qJ6W29aydubh03cGJVNN/Tsu1l25/SoriqP6OF1S8/QnS600U2ZsL/AG3g11hv/Npzh4yi0veW0jq6VqONrGl4er4VcV4+bYt5FqefOiumKo/lLtMRtOL0Z5U1KcqU3TmtGno+9AB8OAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcTMRHMzER75JmIjmZQ87UPafjK+l9NunGoT7CJqsapqdmf7z0qs2qvzfSqr18Yjw862xsKuIVVSpLvfUTHJGScTz3iccOw6OzfOb9WEet/Jb2zs9pftV1Wqsrp90w1CmapiqzqGr2Kp5pnmYqtWZ/lVX84j3ogVTNU8z5uOZ94yXY2FHD6Xm6S73xZ6KZKyRheRcNWH4bHbvnN+tOXXJ/BbktwWfdBsO3g9GdmWLX2atHxrv310RXP86pVhRPC0Xopci70g2ZXTVExOh4UeEceMWqYn+iw5rf7imu35GEPKilJYJYxW7zr/AKGZqin28N4XMXQ9vbHx7vEZ1+5n5NMT4zTbiKbfPw71VU/spWIB9tjVq8/rL9Aqn6mm6Zj2af2u9cn/AI1hy7RVa/i39FNmEeQLCYYpnahOotVRjOp4paR9kpJ+BoCfMBkk9DQAAAAAAAAA9vZm1s/eu5tP2tpuTiY+TqF6LVF3KvRat0TPrNU/0jxmeIjzWI9GOgOz+jenRVg2ac7XL1E05eqXqI9pVz50W4/0dHwjxn1mVatFVVExXTMxNM8xMT5Slp2de1rVifRdj9VM2arETFrD1m5PNVuPKKL8+tMeUV+cevviO5ht7uvR1oPorelvf59xgLl5y9mrHMJUsDqN0IJurSjslP7Wu+SS3w8dvCYo/Fq7bvW6L1m5Tct3KYqorpqiYqifGJiY84ftjzcaENOL0e8AB8AAAAAAAAAAAAPllYuNnY13Dzca1kY9+ibd21doiuiumfCYmmfCYn3S+oJtPVHKMpQkpRejREnrZ2MKMu7c3D0i9lZru3O9e0a7c7tunmfGbNU/ZiPzJ+6fRIjpTsDB6Y7D0vZ+FV7SrEtd7Jvet6/VPeuV/LvT4e6Ihlwr7jErm6oxoVZapf3t7ibY9yi5gzLhFDBcTr+cpUnqm/WezRc5/S5q10127drYAUBBwAA62o6dgatg39M1TCsZeJk0TbvWL9uK6LlE+cTTPhMIe9dexzkaZGRurpJj3cnGiZuX9F571y3HvsTPjXH6E/Wj0mfJMsV1jiNfD586k9nFcGTTJWfcZyJeelYXU6L9aD2wmu1dfU1o0VEXbN2xdrs37dVFyiqaa6a6ZiaaoniYmJ8p+D5rCevXZh251Ts39f29RZ0ndEU8+2iO7azJj8m7EeU+6uPH38oH7q2luLZOuZO3dz6XewM/Fq4rt3KfOPSqmfKqmfSY8JZDw3FaOIw6GyS3rj+qN+eT3lOwflBtedavmXEV06TfSXavrR7V4pMnx2Rt7Ru7o7p+Deuc5m37lWmXomeZ7lP1rU/wVRH7LdSBvYq6hf2a6j3tnZmRFGFuax7O3E+UZVrmq3x7uaZuU/OaU8kExy09EvJJLZLavH9dTSfloyw8sZvuYRWlOs/Ow6tJ7WvCXOXgAFpMVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR27VHaHjp5ptextoZnG5M+3+PyLdXjp9mqPPn0uVR9n3R9b3Km0tKl7VVGktr93aSLKuV8QzhilPCcNjrOb2vhGPGUupL9FtaMW7VnaUqwPpXTHp/qM05XM2tXz7NXE2o9bFur870qmPLyjx54hvzM+cy5ruVXK6rldVVVVUzVVMz4zMz5y/LJ2H2FLD6KpU/F9bPSHI2ScOyHhUcNsFq9856dKcuLfyW5IAK4mQWSdlvWaNa6GbZri5FdeHZuYVz9GbdyqIj+Huq200uwfu6nJ27uDZN+9+MwcmnULFEz/o7lPdr4+VVEfxo9mai6tlzl9Fp/IwJ5RmETxHJ/pVNauhUjN9z1g/6kSpV29sDn/LxrcVRMfiMTjn3ewoWJIB9trTLmF1m+nVRPd1HSsa9TPPn3e9b/wCRHcsSSvWuuL+RgXyba8aWcZwlvlRml/NB/BM0AE+EjIZvqAAAAAAABzHz4b66HdlHdHUmLG4N01X9C27VxXRVVRxk5dP+zpq+zTP58x8onzU1zd0bOn5ytLRf3uLBmPNGFZTspYhi1ZU6a698n1RW+T7EaZ25tjcO7dUt6LtnR8vU8279mxjW5rq4988fZj4zxCS3TrsM63n028/qXr9GmWp4qnA0+abt6fhVdnmin9mKvnCVmxunWzem+k06Ps7Q7GBZ8Pa10xzdv1R+Vcrn61U/P7mSIVfZmr1m42y5q6+P6GnudPKOxjFJyt8uw9HpfXekqj7eMY9y1f2jwdk7M0fYG3Mba+g15c4OJExajKyKr1cRM+XNU+EfCOIj0h7wI1Ocpycpb2a5XNzWva07i4k5Tk223vbe9sAxTfPVLYfTfEnK3huPFwKpp71vHmrv37n6tunmqfnxw+06c6subBavsOdlY3WJV421nTlUqS3RinJvuS2mVnj6RyiDvnt31RVcxenW0ommOaaczVKvGfjFqif61fc0fuTtI9ad0TVOdvzPxqK4/usCYxaY+H4uIn+a/W2W7yttqaR79/sRm/L/AJO+bsYiqt4oW0X9d6y0+7HXTubTLLuJFYm1OvHVzZt+Luj751OqjvTVNjKvTkWqpn303OYj7uG/9g9uymZtYfUfa3EeFNWbpkz++bVc/wBKvlBc5bu6K51PSS7N/sZzzH5O2a8Gi6thzbqC+o+bP+WWmvg2+wl4MW2P1P2F1FxIytn7mw8+eOarEV92/b/Wt1cVx+5lKwzpzpS5s1o+0wbe2N1hteVteU5U6kd8ZJxa709oAcClAAAAAAAAAAAAAADAervRjaXWHQ503X7Hsc6zTP0LUbVMe2xqp9P0qJnzpnz+E+LPh2Ua06E1UpvRor8LxS8wW7hfYfUdOrB6qSejX6daexrYysLeuw98dBt94lvV7M2crBv0ZunZtmZ9lkRbriqmuiqfdMRzE+MevhxKx/Yu7dP31tDSN26ZXzY1PEov8etFcxxXRPxpqiafudXqJ052t1Q25e21urAi/Yr5rs3afC7j3eOKblur0mOZ+ExMxPMS1l2d9E3J0n1TWOjG6rs38e1XVqmgZ0RxbysaZim7THuqpq7szT6TXPpxM32+voYtaqctlWG/tXHTu6jNec85WvKnlmndXKUMSs/WS3VKUtFKUe2L0k48Fzmtm7eoCPGBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8beO7dF2LtrP3VuDJizhafam7cnnxqn8min31VTxER75fYwlNqMVtZ321tWvK0Le3i5Tk0kltbbeiS7WzCOv/WnT+jez6s237O/rmoxVZ0zFq9a4j612qPPuUevvniPVXDq+r6lr+qZWtaxm3crNzbtV6/euTzVXXVPMzLI+qvUrW+q28szduszNHtp9ni40TzTjY8T9S3T/AFmfWZmWH8yyXg2GRw6j0vXe/wDLwPRXkl5NqOQcJXnknd1UnUl1dUE+qPHrer6tAC8mWQAANk9nvqLHTLqlpWvZN3uafk1Tg6hzPhFi5xE1fszFNX7LWw6q9GNxTlSnua0LbjOFW+O4fWw27WtOrFxfc1p7VvXaW80V03KKblFUVU1RFVNUTzExPlMIjdvbblU07U3bbo8KZv6feq4+Vyj7v7z+bL+yB1rs7z2vR0817Lidc0OzEY1Vc+OViR4Rx76qPCmfh3Z97N+05sure/RvXMTHtTcy9NojU8aIjmZqtczVEfOia4+9jq0jPCcTjGrwemvY+JoFlW2uuS7lHt7XEuioVOY3wcKmsFPu0al2aab0VsgMlHoeAAAAAfq3bru1U27VFVddcxTTTTHMzM+UR75cRHMxHHPPomr2VuzZa0HFxepe/sGKtTv0xe0zAvUeGLRMeF2umf8ASTHjET9mJifPyoMQv6eH0vOVPBdZCc+Z5w7IWFSxG+esnshBb5y6l1LrfBduifV7OnZMx9Ppxd9dUsKm9lVRF7C0e5HNNn1prvx61esUeUeHPM+ESuppiimKaYimIjiIiOIiHIxre31a/qecqvuXBdx52Zwzni2d8QliGKVNX9GK9WC6orh2ve+IAUZEw6Gua9o22tLv61r+pY+Bg41Pfu379cUUUx859fh5y8Hqd1N210o2ve3RuW7X7OJ9lj49ribmTdmJmKKIn18JmZ8ojmZV6dX+tu8OsOszl65kzj6bZr5w9MtVT7GxHjxM/n18T41T93EeC8YVg1XEnzt0OL/Iy3yZckuJcoVb0hvzVpF6SqNbW+MYLi+t7lx13G6+sXbW1LPrv6D0ox5wsaJm3Xq+RRzeuenNqifCiPjVzPwj0i5qmq6nrWde1PWM/IzcvIqmu7fv3JrrrmfWZnxdTk5ZAs7ChYx5tGOnbxfezezKWRsDyVbejYRQUX9KT2zl96W992xLgkAFaS4HMgA7OnajqGlZlvP0vNyMTKszFVu9YuTbromPdVExMJGdLu2rvDbfsdL6hYc7h0+nin6Vb4ozLce+Z+zc+/ifijURMx5SpLqxoXsebWjr8faRjM2TcDzfb+j4xbxqLg9NJR+7JaSXt060y1LYPU7ZHUzTPwrs7XbGbTTETdsc92/YmfSu3P1qf6T6TLKVTG3Nz7g2lqtrXNtazl6bnWJ5ov49fdq84nifSY8PGJiYn3JOaV27NVs7IyMbV9r27+6aKYt42VbmKcS5z/pLlHPepmPzafCZ9aY8ENvss1qUv8t0ov2o1Fzr5OeL4bcxnluXn6M2lpJpThrxb2KUVxktGuriSk351J2X000qdX3jrdnBtVRPsrf2r1+Yjyt245qqn5R80Wd9duzWsm5cxOne17GFZ8qczUp9rdn4xbpnu0+k+M1fJGrdm7dx741q/uHdOq39QzsiqZqu3aue7HPMU0x5U0x6RHEQ++wNoZe/N5aPs/Bq7lzVcujHmvjn2dE+NdfH6NMTP3LvaZetbSHnLrpNLb1Lw4+JlPKvIJlrKtk8RzI/SKkIuUtdVTiktXpH6WnXLXXqRMbsz5/WjqjkVdRN+70zqNBs11UYWBZt0WbebcjwmqqKaYn2dM+Hh5z8InmSroaDomm7a0XB2/o+NTYwtPsUY9i3THEU0UxxH3+/4u+hV7cRuaznCKjHgktNhqBnHH6OY8WqXlrQjRo66U4QjGKjBbtVFLWT3yfW+rQAKUi4AAeDvTdljZGh3NyZ+m5uXgYsxVmVYlEXLli163e551U0+vHjEePE8Pxs7qDsvqBgfhLZ+48LU7Mfbizc/GW/hXRP1qZ+cQ9+uii7RVauURVRXE01UzHMTE+cSgT2jelGt9Dd9Wt97CysvTtI1S9VcxL2Hcm3Vg5E/Wrs8x5Uz4zTHlxzH5K6YdZ0MQboylzZ8HwfYzJnJ9lTB88VJ4NWru3vHq6UnthPTfCS3qXFNPatdmq2z4EPujnbWvU14+gdW7EV0Txbo1nGt8VR6RN63T5/GqiP2Ut9M1XTda0+xquj51jNw8miLlnIsXIrouUz5TEx4S6L3D69hPm1o9z4MsucchY5ka59HxajpF+rNbYS7pfJ6PsO04mYjzmIat61doTaHRvDjHzP/SWuX7c14+mWbkU1celd2rx9nR8eOZ9IlCTqN2ieqXUq/djU9w39P065E0xpun1TZsRTM+VXE96v51TP7vBWYfgdzfrn+rHrfyXEluQ+RfMGeaavI6ULZ7pzT6X3I75d+qXaWU4+Vi5lFVzEybV6mmuaKqrdcVRFUecTMese5xew8XIvWMi9j267uNVNdmuqnmq3MxxPE+nMeE+9XN2euumqdIN0W7eXfuX9tajcijUcWZ8KOfCL9Hurp9fzo5j3TFjWJl42fi2c3Cv0XsfIopu2rlE8010VRzFUT6xMTEurFMLqYZUUW9Yvcy1cpPJxiHJviEaFSfnKNRdColpr9aLWr0a12rV6pp931AWsxqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAntcdbZ39uidk7fzO9oOhXZprrt1c05eVHhVV8aafGmPjzPuSB7V/Waem2zP7PaHlU06/uCiu1bmmfrY2NxxXd+Ezz3aZ98zPor6qmZmZmZmZ85n1THLWGa/wCcqr7v5/JG2/k7cnCqP/F2JQ2LVUU/ZKp4erHt5z6jjmeeQE0NvgAAAAAAD0dv6/q219axNwaDnV4moYNyL1i/RPjRVH9Y9Jj1jwWEdCe0JtrrLpEaVqM2MHcdu1NOXp9c/VyI4+tcs8/ap98ecevh4q5nZwc/O0vNs6jp2XexcnHri5avWa5oroqjymmqPGJWrE8KpYjDbsktz/vgYz5SOTLDuUKzSrPzdxD1KiW1dkuuOvDet67c064dPrvTPqXrG2ZtVU4ntZycGqY+1j3JmaOPfx40/OmWBNgdQesGs9UdD0rF3hh2cnWtImq3a1Wj6ly9j1R427tMeFUxMRMVRx51cx48tfqy0VVUYqv6y2Pw4+JLcsLE6eFUaOMJekQXNm09VJx2c9PqktJaPRptrQAKkv4AAcxMx4xPHDLNG6tdTtAiI0nf2u49NPhFMZ1yqmPumZhiQ4VKUKq0mk+8pLzD7TEIebu6UakeqUVJe9M3Vo3bA65aT3aLu48TUaKeIinMwbdX76qYpqn97aHTvtsbu3BufRts69tDSrkannWMKrIxrty1NPtK4o73dqmqJ45545RFejt3Vq9B3BpmuW45q07Ms5VMe+aK4q/wW25wezqwf7ta6cNm0x7j3JPlHFLarph9NVHF6OK5j102erpxLah18DMsajg42oY1ym5ZyrVF63XT5VU1RExMfOJdhi9pp6M82ZwlTk4SWjWxnn67oGi7m0y9o24NMxs/CyI4uWL9uK6avunyn4x4wiZ1d7E2Raqv630mypvW/GqrSMq5Hej4Wrk+fyqnn4phiussSuLCWtGWziuDJlk/lAx7I9x57CazUX60HthLvj19q0faVKa3oGtba1K7o+4NKydPzbFXduWMm1NFdM/KfP5+Tz5Wr726c7J6iYH4O3jtzD1K3T/d13KeLtr40V08VU/dKNe+uwhYu1XMvp1u32PPjTh6rTM0x8Iu0Rz++n70ys8zW1ZaV1zH7Ubc5R8ovL2MQjRxpO1q9e2VN9zW1fiWzrIeDbO4Oyz1x2/VV39kXs6inn8Zp96jIiY+FNM97+TCdQ6cdQdImadV2JuHDmPOL+mXqP60r7Tu6FXbCafijNVhmrA8Uip2V5SqJ/VnF/Mxwej/AGd3Bz/6h1H/APa1/wDk7dnYu9cjufR9oa1d7/2e5gXZ73y+q7PO0+tFyliNnDbKrFfiX5nhj2M7Z27tMiqdS2tq+LFM8VTfwbtHE/fS8q5brtVdy5TNNXumPF9jUjL1XqdlG8t7ha0ZqXc0/gfgczHHh4T8nDmVA+9IHsR6Vi6h1ku5mRTE16dpGRfs+HlXVVbt8/w11R96P0Ns9mXqXpHS3qfZ1ncNc29Mz8W5p+Tdinvexprqoqi5xHpFVEc/CZUGKQnUs6kKe1tMhPKRZXeIZTxC1sIuVWVKSSW97NqXa1qtOJZEPhhZuJqWHY1DT8m1k42Tbpu2b1quKqK6JjmKomPCYmPV92KWtHozzCnCUJOM1o1vQADiAAB4O+tl6L1C2pqG0dfs9/Ez7U0d6IjvWq/yblPPlVTPEx8nvDlTnKnJTjsaKi0uq1jXhdW0nGcGpRa3pp6poqm39snWenW7NR2hr1ru5OBdmjv93im7bnxouU/o1RxMfNlPSTr5vnpBcybOh5FvL0/Kt1xVgZczVZpuTH1btMRPNNUTxM8eceE+kxJ/tndJ7e59nUdQ9Kx+dT2/Txld2PG7hzPj/BM975TUgtMcebJdhcUsYtE6qT4Ndp6MZHx7DOVnKkJ4nSjUfqVYNapTjptXVrsknw17Dv65rmrbl1jL17Xc67mZ+dcm9fv3Kuaq6p/w90ekcQ8/k5F2jFRWi3GUaNGnb040qSSjFaJLYkluSXUOZjylPrsX79vbp6YV7bzr3tMrbN/6NRz9r6NXE1WvujiumPhSgLxyln2DNJ3Bb1fcet1YdynRb2Jbxvbz4U15NFcTFMe+Ypqq548ueJ8VkzFShUsZOW9aNGGeX7DLS/yVXrXDSlScZQb+tqk0u+Lez8iZADG556AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5+4Nd0vbGh5+4tayKbGBp2PXk5FyryiimOZ+cz5RHrMw9BEPtv9V5iMTpNo2R9ru5urzRV99q1PH8c/sK7DrKV/cRorc9/cTPIGUa+d8foYTS2Rk9Zv6sFtk/ku1ojd1T6h6t1R3vqW8NVqqp+l3O7jWJnmMfHp8LdqPdxHnx5zMz6sRORlSnTjSgoQWiWxHpvh9jb4Xa07K1io06aUYpcElokAHMqwAAAAAAAcgAcgAAAAAAAADmI/m4AMsP7JHUS3vfpRiaZk34q1Lbkxp2RTM/Wm1H9zX8po8PnTLdis/oF1byekO+8fW7k13NKy4jF1OzT+VZmftxHrVRP1o++PVZPpupYGsafjarpeXbysPLtU3rF63PNNyiqOYqifjyxtj2HuzuXOK6Etq+aPPLlvyNVylmOpd0Y/5a5bnB8FJ7Zw8HtX2WupnZAWMwuAAD4ETMeETMfeABzPvk5njiZmYA1Z91Y58Jj3vJ1Xae1tdpqo1vbel58VRxP0nEt3Of4ol6w5RnKD1i9DuoXNa2lz6M3F9abT9xFzrz2P8AS9axbu5uk2nY+n6jaiar2kWo7ljJiP8AVR5W6/h4Uz8JQuzcHL03LvYOfjXcfIx65t3bV2maa6KoniYmJ8Ylbm0h2hOzZo/VnDua/oNuzgbpsUfUvfZt5kR5W7vx91XnHrzHlKcGx+VFqhdvWPB8V39hsxyS8utfCZwwbM9RzoPZGq9XKHZN75R7d8e1bq9HMcu/r2g6vtnVsrQtd0+9hZ+Fcm1fsXaeKqKo/wAPdPlMTE+rz4nhOYyUlrF6o3So1adxTjVpNSjJapramnuafFG+ezl2ldR6V5VvbG6Lt7M2rfr+zH1rmBVM+Ndvn8j1qo++PHznvpWq6brem42r6Rm2svCzLdN6xftVd6m5RPlMSqQiZieW8+zf2is/pTqtvbu48m7k7UzLnN2jxrqwa587tuPzfzqY8+OY8fOL43gauU7i3XT4rr/X4mt3LLyL08wQnj2AQ0ultnBbqq60uFT+rv32DjradqODq2Bj6npuXaysTKtxds3rVUVUXKJ8qqZjzh2UDaa2M0hnCVOThNaNbGnwYADiAAHxy8TFz8W9g5uPbv4+RbqtXbVymKqa6Ko4mmYnwmJiUK+0H2SMzbP0nePTDFv5mk+N3K0ynmu9iR5zVa9a6I93nT8Y8ptEeE8x5q+wxGth0+fSeziuDJvkbP8Ai+Qb70vDZawenPpv1Zrt6n1SW1d2qKhZpmme7VExMejhOXtCdk3T94/Sd4dN8azg67VzdycCOKLObPnM0+lFyf3VevE+Mwj1DTs7Sc6/pup4d3Fy8aubV6zeomiu3XE8TExPjEsjYfiVHEafOpvbxXFHoHkPlCwjP9j6Vh0tKkdOfTfrQfb1rqktj7HqlmnRPbWxN29QdP0HqFrV/TdNyaopoqtRERfvcx3LVVyZ/FxV4x3uJ8eI8OeVl+haHo+2tIxdB0DTrGDp+Fbi1Yx7NPdpopj+s+szPjM8zKpTmYnmPRM7sq9pWnV7eL0y3/qHGdbiLWlaheq/v6Yj6tm5VP5cR4Uz+V5T4+dlzJYV68FXptuMd8fmvmYf8ofJGNY1aQxmwqyqUaK6dHglxqRS3vT1tdWltWzVErAYB1Q6t6T0s1LbFGvU0xga/nV4V6/z/wBWjucxcn9GKppir3RPPohFKjOvPmU1q/7ZppheF3eM3UbKxg51Gm1Fb3zU5PTt0T2cTPx+aa6a6YroqiqmqOYmJ5iYfp1lA1o9GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4O+94absHaOp7u1af8306xVd7sTxNdflRRHxqqmI+9VvufcOp7u3FqO59Yu+0zNTyK8i7Vz+VVPPEfCI4iPhC2DKxMXOsVYubjWsizX4VW7tEV01fOJ8JYRrPQbo3r3M6j040PvT4zXYxYsVTPvmbfdmfvX7BsVoYbznUg23xXUZv5IOUzBuTrz8721nUq1Wlz4uOyK+ik9OO17duzqKwpjjz/m4WCa52L+i2rUz9BxNV0muefrYmbNX8rkVQwHWuwNp9Xeq271DyKPzaM7Cpr/fVRVH9EppZksKnrNrvX5amyuHeULkm90VWrOk/twfxjziHIz3q/wBJsnpBuG3tvP3Lpuq5ldr21dvEiuKrFMz9X2nejiJmOZiImZ4jx48OcCXqlVhXgqlN6pmY8MxO1xm0hfWM+fSmtYy0a1XXtSfuADsK4AAAAAAAAAAAAAAAAAABykN2Zu0tc6a3qNmb0v3r22civ8Re8aqtOrnzmI85tzPnEeMT4xz4wjyKa7tKV7SdGqtU/wC9SPZpyvhucMNnheKQ51OW58YvhKL4Nfo9jZbphZ2FqeHZ1DTsq1k4uTRFyzes1xXRcomOYqpqjwmJ977q3eivaM3l0fyKcG1XOqaBcr713Tb9yYijmfGq1V+RV++J9Y9U5emPW7p/1Xw6Lm29Yoozop5vadkcW8i1Pr9Xn60fGmZhjvEsFr4e29OdDrXz6jQPlC5IccyLWlW5rrWvCpFbl1TX0X7nwZnoCzmJwAAAAAAAAA1F2gOz9onWPRaszDps4O58O3P0PNmniLsR/orvHnTPpPnTPvjmJr03HtzWtp61mbe3Dp13B1DBuTav2LscTTV7498T5xMeExMTHhK2hqDtCdANI6xaHVm4FFnE3Pg2+MLLmOIu0xzPsbs+tM+k/kz8JmJkuCY27SSoV30OD6v0NiORrlkq5UqwwTG5uVnJ6Rk9rpN/7OtfR3riiuPycxLu63ouqbd1bL0PWsG5h52Fcqs37NyOKqKoniYdFP4yUlzluN6aVWnXgqtJpxa1TW1NPc0yQHZm7R+R0xzre0N25Vy9tXLr5prmJqq0+5P5VMfmT+VT6ecesTPbHycfLx7eXi37d6zeoi5buW6oqprpmOYmJjzjj1VFc8pNdlbtH1bQyrHTnfGdM6Hk1xRp+Xcnwwbkz9iqf9XVM+f5M/CZ4imPYKqqd1brpcV19q7TWHlv5HlisJ5lwGn+/W2rBL11xnFfXXFfSW3fvnAOKaoqpiqmYmJjmJjymHKDGlj2bGBxNVNMd6qYiI85nweBqnUHYmi8xq28tFxJp84u51qmY+7nlyjTlP1VqVNtZ3N5Lm29OU39lN/AyAa9yO0H0UxpmLnUvQ5mOfCjI7//AA8ulHaX6G1Tx/lF02OfWabkcf7rvVlcvdTl7GXqGT8xVFrCwrNf9Of5Gz/Pwlpvr52c9v8AV/Aq1XTqbOm7nx6PxGbFPFOREeVu9xHjHuq84+MeDJ8Tr10Zza4ox+pWgzVPlFWXTRz/ABcMm0vd+1db7v4G3LpedNXlTj5du5M/dE8udH0qxqKrBOLXYyrwqeZcl38MTtaVWhUg97hJJrimmtGnxT2FWW6Nq69szXcvbe5dNu4OoYVc0XbVz+VVM+VVMx4xMcxMS8u3duWblN2zXNFdFUVU1UzxMTHlMSso659Ctt9ZdCm3fot4evYluZ0/UaaPrUz5+zr4+1bmfTzjzj412bs2nr2ydwZm2dy6fXiahhV9y5bnxiY84qpn8qmY8YmPCYZBwrFaeJU9Hsmt6+a7DfHkx5ULDlEsnCSULqC/eU/90dd8X7VufBuaXZc7SVvfWNY6fb3zIp3Hj0dzDyrlXhqNuI54n/a0xHj+dEc+fMME7fOqRc13aWhxM/iMTJzKqZnzi7XRTH/hVfvRXw8zKwMq1m4OTcx8ixXFy1dt1TTVRVE8xMTHlMTHLLep/VHX+q+o6VrO5KLf07TtMt6dXdo/0/crrq9pMeUVT3/GI8OVPDBY2+IRuqOyO3VdT04dhYrLket8Cz5RzNhSUbdqo5Q+pOUWk4/Zer2fRe7Zulp2O+tc7u2//k43FlzVrGi2ucK5cq8cnEjw48fOq34R+rx7pSTVO7P3Vq+ydy6funQsmbObpt6L1uYmeKuPOmrjziqOYn4Ss86b780jqVs3Td4aLVHsc21+Mtc81WL0eFdur4xP744n1R7MOGei1fP0l0Je5/qYB5fOTv8Awziv7csIaW1w3qluhU3tdil6y7ectyRkwCNGvYAfQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABrPr31k0/o9sy5qdM27+sZ3NnTMWqft3OPG5V+hT5z90erO9xa/pW1tDztx65lU42Bp9iu/fuVelNMenvmfCIj1mYhWZ1g6oat1Z3tl7q1HvW7E/icHGmrmMfHifq0/OfOqfWZn4L3geGen1udUXQjv7ez8zM/IzyavPeLekXsf8nQac/tveqa798uqPa0YvrWs6puHVsvXNZzbmXnZ12q/kX7k81V11TzM//wCvTydA5GSYxUVotx6FUaUKFNUqaSikkktiSXBAB9OwAAAAAAAAAAAAAAAAAAAAARPD7Ymbl6fk2s3AybuNkWaoqt3rNc0V0VR5TFUeMS+I+NJ7GcZwjUi4zWqfBm+NidsbqvtGi1h6zfxtyYduOO7nRxfiPhep8fvqipunb3bt2BmU00bk2trOmXPyqsebeRb/AK01fyQeFpuMCsbl6uGj7Nn6GLMe5FcmZgm6tW0VOb4024e5dH/SWNaf2tOg+o8RG86saqfOnIwcijj7+5x/N7lntEdEr9Xdp6k6PTPHP17s0x++YVlczHk45lb5ZVtX6spL2fkQOv5MeWZvWlc1o+MH/tRZxd7QnROzETX1L0SefLu3+9/SJdW92luhtiqKauomnVcxzzRTcr/pSrR5n3y55+EOKypbcZy935HTDyYcur1rus/5P+0scvdrPoJY57++O9xPH1MDJq/pbdO52wugtFXdo3VlXI99OmZPH86IV3DmsrWfGUvavyK2Hkz5Tj61au/xQ/7Cw/8A6YnQf/8AUuZ/9Mv/AP2u1j9rfoJkTFMb0rt1THlc07Jp4+c+z4/mrmImYfXlaz65e1fkcpeTRlKS0jWrr8Uf+ws403tB9FtV4+i9R9GpmfDi9f8AYz/vxDMNJ3NtzXqJuaJr2nahTHnOLlUXYj+GZVMd6fe/dnIv41yLuPdrtV0zFVNVE92qmffEx4wpqmU6T/h1Gu9a/kWC/wDJdwyabsb+cX9qMZL3OJYJ2lOzxh9V9Iq3Ht2zasbpwLf4qriKac23Hj7KufzvzZ9PKfCfCv7NwsvTsy/gZ2Ndx8jHrqt3bVymaa6KoniYmJ8piWwdqdonrLs+uj8F771C/apnmbOfV9Lt1R7uLvemI+XDqdU+peJ1Uzbe5NQ2rh6VuCeKM3JwLkxYzYiPCuq3VzNNyPLvRVPMeceELlhdreYevMVWpQ4PivB8PgZE5Nst5ryKlgmJ1I3Nn/w5xekqf2XGWjcHw0cua+x7MCOQXwzGSn6DdrzF2btO/tjqRTn59Om2o/BeRYpi5duUx4ewr5mI8PCYqmfKJj0jnxt9dtzqNrtdePs3Awtu4kxMRXNMZGTMe/vVR3aZ+VP3o488nMrUsFs/POu4at+z2GM48kGT/wBq1cYqWcZ1Kj10ltgnxah6u17Xqnt3aGSbh6k7+3Zcqubj3jq+od6eZovZdc2+fhRE92Puhjk1VTVNUzM1T5z73AuUKcKa0gkjIVrY2tjBUrWnGEVwikl7Ec96fLk5mXA5lUOX0t371mrv2btdur301TEvmGmp8lGMlpJaoznavW7qts6umdB31qlq3TMT7C9em9amI9O5c5jj5Mq3x1t0/rLodGD1H0LGxNw4NP8AmGu6fRMRVH+qv2ufGiZ58aZnuz4xT5xOnHPPCknZUJTVRRSkuK2MjVzk7Bbi7hiMLeMLiD1VSCUZ+LWnOT3NS1TXA5qiImY5ieJ48JfnkFWSYcpC9j7rB/YjeU7L1rJmnRtxXKbduaqoimxmeVFXj5RX9ifj3Z9Een6orqoqiqmZiqmYmJieJiffCmvLWF5RlRnuZHs1ZbtM24RXwi8XQqLTXjF74yXbF6P3FvI1L2aurdHVfp5j3s69E61o8U4WoxNXNVyqI+pe8fz6Y5n9KKvg20xTcUJ21WVKe9M8wsewW6y5iVbCr1aVKUnF9um5rsa2rsYAdJaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfMa36+dVbHSTp7m67bronVcr/M9LtTPjVkVRP1+PdRETVPyiPV20KM7ipGlDe3oXLB8Jusdv6OG2UedUqyUYrtfyW9vgiOHbP6zTrmsU9K9v5czgaXXF3Va6KvC9kx9m18Yo58Y/On9FFzl9MrJv5mTdy8q9Xev366rly5VPNVdVU8zMz6zM+L5MqWNnCxoRow4e98T05yXlS0yZgtHCLRbILpPjKb9aT73u6louAAVhKgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABM8gADmKZmruxTMz7mc7V6HdWd50W7+g7E1W7jXYiqjJu2fY2ao98V3O7TV90y66lanSXOqSSXaUF/itjhVPz19WjSj1zkor2towUbj3R2Tusm09t17kzdExsu3Y5qv4+Dke3v2qIjma5ppjiYj17szx5+Xi07McTMcTHHvcKFzRuU3RkpadRTYNmHCsw0pVsKuIVoxejcGno+p6f2+BwA7y8AAAAAAAAdrT9M1DVsyzp2l4V/Ly8iruWrFm3Nddyr3U0x4zPhLrd3jnmJ5ieHzVa6HHzkec4a7Vt046PccAPpyNp9nLqrc6VdSMPUsu9MaRqPGFqdMzPEWqp8LnHvoq4n5d6PVZNbuUXbdN23VFVFcRVTVE8xMT5TCoaZ5WEdkbqlO/unFGh6lkxc1bbXdxLvM/Wrx+PxNc+/wiaZ+NHPqh2aLDVK7gt2x/J/I1N8pPJHnaVLNVrHbHSFXTivoSfc+i++PUbzAQs08AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOJ4iJmfKPGVdfak6r/AOUzqNex9OyfaaLoPfwsHu1c03Kufxt2P1qoiI+FNKWvai6of5NemWVGDk+z1fXO9gYPdniqjmPxlyP1aefH31Uq5ZnmZmUyyvYa63c+5fN/I258mvJCfnc13cd2sKWv+uX+1P7xxzwAmZt4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjj1c8O9ouhaxuPUrGj6DpmTqGdk1RRax8e1Nddc/CISn6T9iLKyIs6z1Xz5x6JmK40nDuRNcx7rt2PCPlTzPxhQ3mI29jHnVpadnF+BDs258wHJNDz2L11GT3QW2cu6K2+L0XWyMW2dn7m3lqNOk7W0PM1PKqmPxePamruxM+dU+VMfGZiPikp057DOsZsWs/qVr9Gn2pp704GnzFy98qrsx3aflEVfNLXa2ztr7J0yjR9qaFiaZiUcfUsW4p70++qfOqfjMzL2UPvczV62sbdc1e1/oal5x8o7G8WcrfAIK2pfWekqj8fVj4JtfWMD2P0M6V9PaLdW29oYdOTREc5mTT7fIqn39+vmY+VPEfBnnj6zyCOVa1StLnVJNvtNfsRxW+xes7nEK0qs3xlJyfvDQPWrslbS6hzf17aHsNv6/XzXX3KOMXKq9e/RH2Kp/Opj5xLfw7LW7rWdTzlGWj/veXDLmaMWyleq/wis6c1v03SXVJbmuxlVW+um+8+m+qVaRvDQ7+Dd5mLdyY71q9H51FcfVqj5Tz7+GNcfBbPuLbO3926Xd0Xc2j4upYN6OK7ORbiqn5x6xPxjiYRc6ndhzHv1XdT6WaxGPM/W/BmfVM0fK3d8Zj4RVE/rJpYZmo1koXPRl18P0Nw8j+UXhOLxja5ij6PW3c9aum/nDx1XaQ6GT7z6ab66fZdWHu/bOdp1UTMU3K7fNm58abkc01R8pYwk0KkKq50Hquw2Js762xGiri0qRnB7nFpp+K2AH6ooqrriimJmap4iIjzcyqbSWrOOPcyzpz0t3l1S1qjRtpaVXkTEx7fIr+rZx6Z/KuV+UfLzn0iW3OjHZB3Vvaqxr2+/baBos8V02KqeMvJp8/CmY/F0z+dV4+6PVNfaGy9sbD0W1t/aekWNPwrP5FuPrV1etVdU+NVU++fFG8UzBStNadDpT9y/M175SOXnDMrxnh+BtXF1ubW2nB9rXrNfVT063wMH6Jdn7aPRzT4yMa3TqGv37fdytTu0/WjnzotRP2KOfvnjxlCXtH7Djp71c1rScez7LBzbkajhRHlFm9492PhTX36f2VlqKfbw2bTk6Dt/fdi3HtMK/XpuTVHnNu5E10c/Kqmv+JYsDxGrLENaz15+zx4fkYX5FuUDEa2eufi1Zzd4nCTb+kulDRbkk1zUlsWpDAJ8xkE3sDaHZy6lVdMuqGm6nk5M29M1CqMDUeZ+rFmuY4rmP0au7V90+9q9zTPExMeEw6bijG4pSpT3NaFrxvCLfHsOr4ZdrWnVi4vxW/vW9dpbzFVNURVTxxMeHE8uWo+y91Gq6h9KNPuZuR7TU9Gn8GZnPnVNER7OufnRNPj74qbcYmuaErarKlLenoeWuP4NcZexSvhd0tJ0pOL7dHsfc1o12MAOktAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa76/dRI6ZdLtX3BZu00Z1639CwOZ8fpF2JimY/VjvVfsuyjRlXqRpw3t6FxwjC7jG7+jh1qtalWSiu9vT2Le+whf2q+pdXULqjmY2Hk+00rb/AHtOxIifq1V01T7W5Hzr8OfdTDTD9V1VXK6q7lU1VVTMzM+cz8X5ZatqEbWjGjDckepWXMDt8t4VQwq1WkKUVHv03vvb1b7WAHeXoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEcvU25tnXd26vj6DtvS8jUM/Kni3YsUd6qfjPpER6zPEQ4ykoLWT0OqvXpW1OVatJRjFatt6JJb229iSPM4jz549W7OjPZY3t1Q9lrGqxXoG3qpifpWRan22RTz/obc8TMfpzxT7ufJv3of2QNA2bFjcfUejH1rWY7ty1hcd7ExKvPxif72rn1mO74eEeqSFNNNFMUUUxTTEcRERxEQiOJ5lUdaVnt+1+Rqnyj+URCg54blLSUtzrNbF/009/3ns6k95h3TrpJsXpbpv0DaOi27FyuI9tl3YivJvz767nn90cRHuZkCG1as60nOb1b6zUfEMRu8VuJXd9UlUqS2uUm234sAOBRgAAAAAAGKdV7FjI6Z7ppv2bd2mnR8uqIrpiqImLVXE+PrCq9an1S/7NN1/wDc2Z/4NSqxOMpv91U70bn+S3JvC8QTexVIf0sN9di/TtP1HrHT+EMHHyfo+nX71mL1qK/Z3ImniunnyqjmeJ+LQqQXYi/7Y7n/AHTkf8VC+Yu2rKq11MzRypTlTyZiUoPR+altRPkBis8yA152gdsU7u6O7o0mLcV3aMGrLs+HjFyzMXI4/g4+Uy2G+eRj2svHu4uRRFVq9RVbrpnyqpmOJj90uyhUdGrGouDT95ccHxGphGI0L+l61KcZr8LT+RUQPV3Vo1e3tz6toN37enZ1/Fn9iuaf8HlMvwkpRTR6v29eFzSjWpvWMkmu5rVAByO0kF2L+oFW1up1W1cu9NOBuezNiImfq05VETVaq++O/R86o9yfP3THzVIaRqeZouqYes6bdqt5eBft5NiuJ4mm5RVFVM/viFqmyd0Ye9do6RuzAmPY6ph2smIj8maqYmafnE8xPyQTNNp5utG5julsfev0NKfKYysrLFbfMFGPRrrmT+/Dc32uOz8J7YCKmsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcT8EIO3F1Dp1reen9P8G/3sbb9mL+VTHl9KvRzET+rb7v/wAyfimlresYW3tGztd1K77LF0/HuZN6r3UUUzVP8o8lVO7tx5279z6runUpn6TquXcyrkc893v1TMUx8IiYiPhCT5XtPO3DrvdH4s2S8mzK6xLHquN1o6wto6R+/PZ7o872o8gBPjeMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM96P9HN0dY9w1aPoPs7GNixTXn5t3xt41uqZ4mY86qp4nimPOY8eI8VgnSro3svpFo/4O23hd/KvUx9K1C9ETfyJj3z+TT7qY8I+figP2f+p93pX1JwNdvXJjTMqfoWpUek49cxzVx76J4qj5THqsvtXrWRaov2LlNy3cpiuiumeYqpmOYmJ9yEZorXMaipN/u3u0495pl5SmLZit8QpYdUqc2wqR50VHZzpL1lN8XF6NLck09Ndp+wERNVwAAAAAAAAAACBi/VL/s03X/3Nmf+DUqsWp9Uv+zTdX/c2Z/4NSqxOMp/wqnevgbneS1/7ZiP/Uh/SwkF2Iv+2O5/3Tkf8VCPqQXYi/7Y7n/dOR/xUL3jH/oavczM/Kr/APCsS/6UifIDFh5lAABWl2ldLjSuuG7LFNPdpu5sZER8LlFNf9ZlrFvLtlYtOP1y1K7TE/5xhYl2fD19lFP/ACtGsr4bPn2lOT+qvgeo3J/dO9yrhteW90KWv8iXyACuJec8ynL2HN7U6xsHUdl5F6JyNByvaWaOfH6Pemao/dXFf70GW7ux/vCdr9ZMDAvXooxdfs3NOuRPhHfmO/b+/vUxH7S0Y5bek2M0t62rw/QxXy0ZdWYsm3dKK1nSXnY98Nr9secvEsNAYx3nm8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGgu2fvb+zPSerQMe93crcmTTiRHPj7Cniu7Pynimn9pAHw/wDJITtr7ynX+qdvbli7FWLt7DosTEeXt7n17n8u5H3Sj2yXgFr6PZR13y2vx3e49FeQzLiy/ky2lNaVK+tWX4vV/wBCiAF6MwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABzHn4p79jnqrG89hf2N1TJirVds002qe9P1ruJP8Ad1fHu8TTPwin3oDs56NdScvpZ1B0zddiq5OLRX7DPtUz/e41cxFccesx4VR8aYWrGLH0+1lBestq7/13GNOVjJUc8Zbq2dNfv6fTpP7UV6v4lrHvafAtCHwwc3E1LCx9Rwb9N7GyrVN6zcpnmK6Ko5iqPnEw+7F7TT0Z5rzhKnJwmtGt6AAcQAAAAAAADDOqHVnZ/SXQata3TnRTcuRMYmFbqib+VX+bRT7vfVPhHrPlE86VOdaahTWrZW4dht3i91CysabqVJvRRitW3/fsPp1c1HS9L6ZbnyNX1Czh2K9KyrMXLtcUxNyu1VFFMc+czPEREeMqs2w+sHW3d3WHWpzNbyPo+m2KpnD02zVPsbEe+fz6/fVP3cQ14yPgeGzw2i1Ue2W3uPQbkZ5O7vk+wipTv5p1q7UpRW6Gi0S14vbte7q62SA7ElyijrLVTXXTTNWlZMUxM8TVPNE8R7/Dn9yP7vaJreqbc1bF1zRM27h52FdpvWL9ueKqKonwn/8A7z8vVcb23d1bzop6arQn+b8DnmXArvCKc+bKtCUU3tSbWxvs13lto1J2e+vGl9ZNvexyq7WNuTTrdMZ+JE8Rcjwj29uPWiZ45/NmePdM7bYquLepa1HSqrRo8w8dwO+y3iFTDMSg4Vab0a+DXWnvT4oAOktJAPts8f5ZvT/1Vjc/vraAnzbv7Y+XRlddNVt01RMY2Jh2uY9/sqapj99TSDKuFJqypa/VR6dcmNN0sm4ZGX/Jg/atQAuBOw7+gavkbf1zT9dw65pv6dlWsq3MelVFUVR/R0HMeMvkoqS0Z11qUK9OVKotYtaNdae8tu0bVMfXNIwtZxK6arGfj28m3NM8xNNdMVR/V3GpOytuWdzdEdAruV969ptNzTrsz/s6piiP4JobbYiuqLt606T4No8qMx4TLAcYusMnvo1Jw/lk0n4raAHQWUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+OZlWMHDv5uTXTRZx7VV25VVPEU00xMzM/dD7NY9pXc87U6K7mz7dyabuVjfQLUxPj3r0xRP8AuzVPyh229J16saS3tpe0uuB4ZPG8Tt8NpetVnGC/FJL5ld299x5G7936zujJqmq5qmdeyfH0iqqZpj7o4j7nhuZjnycMvQioRUY7kerNrb07ShC3orSMUkl1JLRAByO8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADmJ4lwR5+ICcfYq6rf2j2rf6catk1VZ+gx7XBmufG5hzP2Y/wDh1Tx+rVT7kmFVnTPfmp9Nd7aVvHS6qpqwL8VXrUTxF6zP1bluf1qZmPhPE+i0XQta07cei4Ov6Rfi9hajj0ZNi5H5VFUcx97HeYrD0W489H1Z/Hj+ZoN5QGR/8N4/+1rWOlC61ls3RqfTX4vWXe+o7wCPGAwAAAAA6Gua9ou2dLv61uDU8fT8HGp712/friiimPnPr7o85Q3639sjU9epv7a6WTe07T6om3d1Wunu5F+P9lH+jpn3/a+S4WGGV8QnzaS2cW9y/vqJzknk8xzPl15jDKelNPpVJbIR73xf2Vq+zTabm669qHbHSy1f0LQKrOs7niJp+j01c2cSfzr1Uev6EePv4hBDd+89y7713I3JurVb2fn5H2rlc8RTT6U00x4U0x6REcPHuXa71dVy7cqrrqmaqqqp5mZnzmZfhkHDcJoYbHobZPe/73I3z5PuTDBuT+20tY+cuJLp1ZLpPsj9WPYt/FtgBdDJIAAe1tDd2u7G3Fh7o23n3MTPwbnft10+VUflU1R601R4THrErIui/V/Q+sW0rWuad3MfPsRFrUcLvc1Y97jx49Zonzpn1j4xKsNnPR/qnrPSTeWNuXTK67mNzFrPxIq4pyceZjvU/rR50z6THu5WTGcKjiFLnQXTW7t7GYd5XuTGhn3DHXtYpXlJPmS3c5b+ZLsf0XwfY2WhDzNtbi0nd2g4O5dCy6cnB1GzTes3KfWJ9J90xPMTHpMS53LrePtnbup7iy5iLOm4l3Kr591FM1cffxwxvzJc/mNbddDz29Drq69DlBqpzubzWtvO100069dhW12hdYp13rRu7Oor71FGpXMamfha4t/8jXc+Mu1qWff1PPydRyq6q7+VervXKp85qqmZmf3y6rLtvT8zSjT6kl7D1YwTD1hOG29hHdSpwh/LFL5AB3FzAACZ3YK3BF7Qt0bXu3frY2TZzrVMz5xcpmirj5Tbp/elagX2H9bnT+reTpVVURTqmlXrfH6VFVFcfyipPRjbMVLzV/J9aT/v2Hnjy+4X+zs83M4rRVYwmvGKi/8AVFgBYzDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABFzt5bi+jbP27te3XHOfn3Mu5Tz4921R3Y+7m5/JKNBft1a1Ob1K0jRqK+aNO0mmqY58q7tyqZ/3aaF7y9S87fw7NX7EZh5B8MWJZ5tHJaqkpzf4YtL/U0RsAZKPRQA54mTUanA7+kaBre4MunB0LSczUMiqYiLWNYquVePwpiX23LtbX9napVom5tNuYGfRbou1492Y79FNcc096ImeJ4mJ4nxcPOQ53M129RTem23n/AEXzkfOaa83Vc7RcdN+m1bTygHMqQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABCZXYg6qzmYOZ0p1fImbmJFWbpU1VeM25n8baj5T9ePhVV7oQ1h7ey916psfdWl7r0a53MvTMim/R48RVET40z8JjmJ+Erfidkr+3lSe/h3kG5Rcn0s75fr4XJdPTnU31Tj6vt3PsbLYB4uy916Xvna2mbr0a7FeJqWPTfojnmaJn7VE/GmeYn4w9nmPexXKEoScZb0eZVzbVbOvO3rx5s4Npp7009Gvacjpatrej6Di1Z2t6riYGPRHM3cm9Tbp/fVMNIb/7ZXS3alNzG23Xf3NnU8xTGJ+Lx4n43ao8Y/VipUW9nXupc2jBsveA5SxzM9VUcJtZ1X1pdFd8n0V4s33MxETM+URzLR/VztY9P+nMXtL0S5TuPW6OafYYlz8RYq/2t3y/Zp5n38eaJ3U3tM9UOplN7AytW/BOkXZnnT9P5t0VU+kV1/ar++ePg1PM8+vKVWGV0tJ3j8F83+Rs9kfybI0pRvM11Odx81B7PxT490f5jNOpfV7fPVfU4z92avXcs26pnHwrUdzHx/1aPWf0quaviwvnzcCXU6UKMVCmtEuo2ow7DbPCLaNnY0406cdijFJJeC/tgOHo6Dt7Wd0avjaDt/T72dn5lfcs2LVPNVU/4R6zM+EernKSiudJ7CprVqdvTlVrSUYxWrbeiSXFs877xvOx2MuuF6nvV6VplqY8OLmoUf4cu1a7E/Wq5TM106Da8eOK8+ef5USoHitkt9WPtIPPlPydTeksSo/zo0EJDW+w/wBYqqebudt2ifd9MuT/AP1sf6i9lbqX022rc3ZqlWnZ+JjVUxk04NyuuuxTP5dUTTH1YniJmPLnx8CGK2dSShGom32n205TcoX9xC0tsQpSqTajFKW9vcuraaZc+BMcOFwJ3vJUdinq7XpWtXelWtZP+aanNWRpdVdU8WsiI5rtR8K4jmI/Oifzm1e2bvyNsdK/7NY16Kczc2RGLxE/WjHtzFd2Y+/uU/KqUDNL1PN0XUsXWNNyKrOXhXqMixcpniaLlE80z++GddcOsGodZN22dw5ONVi4+LhWsbHxu9zFue7E3Z++5NXj7op9yO18GU8ShcpdHe+9bvaYExrkhpX/AChWuZKMUqH8Sqv/ALIac3Z9t6N/dfWa7ASIz2AAAABs/s0avGi9cdpZMzxF/N+hz48c+2oqtxH764WWc8+KqPp/qM6TvrbupxP/AFTVMW9/Ddpla5PHPggubIaV6c+taex/qaU+VDZKnjVjeJevScf5ZN/7wAihrAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABxKuDtU6rXq3XHcdyZjjGrtYscT5Rbt00/4Ssfny8uUWdydjXVN+dR9wbv3LvKxg6fqeoXcmzYw7E3L82qqvqxVVVxTTPHHlFX3r7gF1Qsq8qteWi02e1GbuQrM+C5Rxq5xPGqypxVJqOxttuUdiSTeuiIV8cve2xsLem87/wBG2rtfUtTr54mcfHqqpp+dXHdj75WAbO7KvRbZ/s7sbXo1jKt8fj9Vq+kcz7+5MRb/AN1tfFxMXCsUYuFjWsezbju0W7VEUU0x7oiPCF6uc1Qjst4a9r2GXcw+U9Y0daeBWcqj+tUfNX8q1b8XEgzs3sP9SNa7l/dmp6dt+xPE1W+/9Jvx+zR9SP4m9dndjXpDtqKL2s42ZuHKp4masy73LXPwt0cR++Zb3EfucdvbnY56LqWz9TBeYeWvOWYtYzunRg/o0uh710v9R5+ibd0HbmLTg7f0XB03HjytYuPRap/dTEKyutO453X1V3TrsXe/bv6leotTzz+Koq7lH+7TCzLc2pU6NtzVdXqq7sYWFeyOfd3KJn/BU5kXq8i9cyLsfXu1TXV85nmV6yrBznVry2vYvaZe8mKyndXmI4vXblNKEE29X0m5S2v7sT5AJobgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAGebK65dUenumU6LtTdd/EwKblV2nHm1buURVV5z9amZjn4S9HU+0p1v1Wiq1kdQ9Rt0V88xj00Wf50REx+9rIU0rO3lJzlBNvjoiO1soZfuLiV3WsqUqknq5OnBtvrba39p6Grbg1zXr05OuaznahenzuZWRXdq/fVMuhM/FwO9QUVokX6lRp0IKnSiopcEkl7EAOJ9zkdgPi5imqqqKaYmapniIj1lI3ol2QNxb0qsbi6hU5Oh6JM010Ykx3cvLp8/CJ/uqZ99Ud73R5Spbu8o2VPzlaWi+PcRvM+bcIyfZO+xesoR4LfKT6ox3t/29Eao6XdId59Wtap0nbGBM2bdUfSs27Exj41Pvrq9/upjmZ9yfvRzoZs/o5pPsNIs/TNVv0RGXqd6iPa3Z/Np/Mo/RifnMz4sy2xtbb+zNFx9v7Z0qxp+BjU8UWbVPEfGZnzqmfWZ8ZeqgGK43VxB+bh0YdXX3mivKZyyYpnucrO21o2aeyCfSn1ObW/7q2Lte0Hl5AsZhgPjmYeLqGJewc2xbv4+RbqtXbVymKqa6Ko4mJifOOJl9gT02n2EnCSlF6NFa/aJ6QXekO/bun4dFdWialFWXpl2rmeLfP1rUz6zRM8fKaZ9WrFk3aS6YWep3TLPxMbH7+r6TE6jptVMR3puURPet8+6unmnj392fRW1MTTPFUcT7mS8Dv/AE626frR2P5M9FuRfPbztl2Lupa3NDSFTrezoz/Et/2kzgBejLwAAAAAAB98K9Vj5djIp87VymuPumJW24N2b+Fj3587lqmv98cqjI84iVsm0b/0rami5Xf73ttPxrkVccc826Z5/mh2bY9GlLv+RqZ5U1DWhhlfqdVe1QfyPWAQs09AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1/1/1SNI6L7wzOeJnS7tiJ+Nzi3H861YvKxPte50YfQnXLc1cfSr2LYj4/jqav+VXWnuVYaWspdcvkjePyY7RU8s3NzptnWa8Iwh82wAlBskAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOHvbe2Fvfdlub22No6xqtqK/Z1XcPCuXaKavdNVMTET4x5z6tqbP7HXWTctyivU9Pxdv4tXndz70TXx8LdHeq5+E8fNS1723tl+9ml4/LeRzGM34Dl9OWJ3lOnpvTkud/Lrzn3JGjoifDw82f9M+h/UPqrk007a0SujBiqIu6hkxNvGtx6/Wn7U/CnmUvenXY16Z7Prt5+5Zvbnz6eJ4yqYoxaavfFqJnn9qZ+TfONjY2HYoxcPHtWLNqmKaLdqiKaKKY8oiI8IhG73NEI6xtI6vre72bzXjOnlK2dvGVtlel5yf8AzJrSK7Yw9aX4ub3M030e7LWw+l/stWz7VGva9RxV9MybcezsVf7G3PMU/rTzV8Y8m6QQ+4uat1PzlaWrNTsezFimZryV9i1aVWo+Le7sS3RXYkkAHQWUAAAAB5+Eq0+0hsWjp91d1vScW1FvCzLkahiRHlFq99bux+rV3qfuWWIR9vLI06vfe3cWzRH021pVVV+uJ/Iqu1dymY98TFc/ekWWKsoXnm1ukn7jYDycMVuLPNzsqerhWpyUl1c3pJ+G1fiIwT5gMhm+oAAAAAABz7lrfT//APIe2/8AujD/APBoVSe5a5sGmqjYu3KK4mKqdJw4mJ9JizSiGbP4dLvZqt5Uj/8ALsO+/P8Apie8AhJpmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABH/tt5EWujNNiauJv6tjREe/im5P+CAidXbqu10dLtJtUzHdua1bir7rN2UFWRcsx0sV3s3+8nOl5vJMZfWq1H8F8gAkBncAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAJCdjvqvGyt9/2O1bKmnSdyTFqjvVcU2syPC3V8O940z8ZpT3VD2bt2xet37Fyqi5bqiuiqmeJpqieYmJWXdn3qha6q9N8HWb16mrVMOIw9Sojzi/TH2+PdXHFUfOY9EJzPh/NkruC37H38H47jTbyksjejXNPNVnHo1NIVdOEkuhL8SXNfalxZsoBEDVMAAAOvn5+FpeHe1HUsu1jYuNRNy9eu1RTRRTHnMzPlAk29EcoQlVkoQWrexJcTsDCOlvVrbfVrD1bUdsxc+i6Zn1YVNdziJvUxRTVTdinzimrmeOfHwZu51aU6M3CotGuBV4jht3hF1OyvqbhUjvi961Wu3wYAcCiOFa3aX3dG8es+4s61d7+NhXo06xMeXdsR3J4+E1RVP3p/dVt6WenvTzXd3XKqYuYGJXOPTM8d+/V9W1T99dVPPw5lVpfvXcm/cyL9c13Ltc111TPjNUzzMpflW2blO4e7cvizbDyYcuyncXmP1FsilSi+16Sl7Eo+0+YCbG4oAAAAAABzTHMx5z4ratv2IxtB03Giqaos4dm3Ez5zxREf4KodFxvpmr4OHEczfybdv+KqIW12rcWbVFmOPxdMUeHwjhDM2y/hR7/kajeVNcLm4Zb/APVf9CP2AhpqGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQIy9vGZ/ydaBHM8fhmPD3/iLiDycPby/7O9v/APfP/wDRcQeZHy1/7fHvZ6D+T1/8Goffqf1ABfjNwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABuvspdVY6cdSLGn6lk9zRtxTRg5feq4ptXZn8Vd+6qZpmfzapn0hpRzHn58fFT3VvC6oyoz3NFkzHgNrmbCq+E3i1hVi4vsfBrti9Gu1FvUePiNQdmHqrHU/ptjfT8j2mtaJ3cHUOZ+tXxH4u78e9THjP51NTb7FFxQnbVZUam9Hl5j+CXWXMTr4VerSpSk4vt03NdjWjXYwML331i6cdN7FVzde6MTHvxEzTiW6va5FfHpFunmfvniPHzRc6n9t7cOsU3tL6Z6Z+Bsarmn8IZUU3MmqPfRT400ff3p+SsssJur5p046Lrexf33EryjyXZmznKMsPt3Gk/8AiT1jDwb2y/CmyUfUrq9sTpVpdWobr1m3bvVU82MKzMV5N+fTuW+eeP0p4p98oLdbe0fu7rBk14FM16Tt23c71nTbVzmbnHlXeqj7dXw+zHPhHMctXavrGq69n3tV1rUcjOzMirvXb+Rdm5crn3zM+LpJthuA0LHSpPpT6+ru/M3I5OuRLBckSje3P+Yu19OS6MX9iPB/aer6tNxKbsG7inG3XuPatdX1c7Ct5lFPp3rVfdn+VyE1Vc3ZL1n8D9c9Biqvu0Z0X8OqOeO937VXdj+KKf5LGUXzLR83e85fSSfy+Rrd5ReGKxzk7mK0VanCXitYP+lAGNdRt9aT032bqW8NZriLWDambduZ4m/dnwot0/GqriP3z6LFThKrJQitWzB9lZ18QuIWltFyqTajFLe23ol4si925+pXt83SulunZMTRj8anqVNM/wCkmJps25+UTVXMfpUolT5vV3TuPU937i1Hc+tX5u5up5FeReq/SmfCI+ERxEe6IiHlMqYdaKxt40VvW/v4np1kDKlPJeX7fCIbZRWs2uM3tk/bsXYkAFcTIAAAAAAAyzpLpv4X6n7T02Y5jI1rDonw5+r7Wnmf3crT1cfZO0n8Lddtu96jvW8Ob+XX4eXctVcT/FNKxxA811Odcwh1R+L/AENIvKevlVzBaWafqUtfGU38ooAIsazgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARp7d1umrppolcxzNGtU8T7ubN1BpPXtw4/tOj+Nf5j8TrOPM+Hj40XIQKZFyy9bBLtZ6AeTrU85kiC+rUqL3p/MAJAZ1AAAAAAAAAAAAB5eEgAAAAAAAAAAAAAAAAAAAAAAAAAAAADPOkHWHcnRvXsnXdv2cfJjLx6se/jZPPsrnjE01T3ZieaZ8Y+cx6vd3l2oesu86a7F/dVemYtyJicfTKPo8ce7vR9f/eamFLKyt51fPSgnLraI1c5NwC9xH9r3VpTncaJc+UVJ7N2/ZquvTXtPpev3si7VfyLtd27XPNVddU1VVT75mfN8wVKWmwkkYqK0W4APp9Mz6N6hOldV9pZ0VRHs9YxY5n9K5FP+K0hVBsauq1vXb1yj7VGq4lUfOL1K1705mfjKD5sivO0mup/E0x8qOglieH1ktsoTXskmviziuui3RVcuVxRRRE1VVVTxERHnMz7lffam65R1R3RTt/b2VNW2tFuVU2aqZ8Mu/5VXv1fSn4cz6s+7VPaXt6lRldMenmpRXizza1bUbM/Vu++xaqjzp8+9VHn9mOY55iZMzPmq8vYO6P+brrbwXV295KOQbknqYSo5oxqGlWS/cwe+Ke+bXCTWyK4Jt72tACWm0wAAAAAAAAASX7CeifTOoms67XRzRp2l+zpq91d25THH7qKk5EYuwht+cPYmvbkrommrU9Rpx6KuPtUWaP/ALrlSTrGeYKvncQnpw0XsR508uuJrE883fNesafNpr8MVr/qbACzGIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANG9svEnJ6G59cR/1fOxL33d+af+ZXsso7UODOodCd12qaearWPavx8IovW6pn90SrXZAytLW0lHqk/gjevyZrjzmU69H6teXvhB/mAElNigAAAAAAAAANt9nvoZmdZdaz/pNVzH0bTcev6RkU+E1X6qJ9lbpn397iqf0Y+MNdbW2zrG8twYO19AxKsjP1K9TYs0R4RzPnNU+lMRzMz6REys46W9OdI6W7KwNoaRFNf0ejv5OREcVZORVx37k/OY4iPSIiFhx3Ff2fS5lP15buzt/Iwly1cpbyNhatLCS9Mrer9iPGb+Ee3V8CrjPwsjTs7I0/Kt1UXsa7XZuU1R401UzMTE/fD4NsdqLan9kutWv2LduKbGo3KdSsceETTejvVcfKuK4+5qeV3tqyuKMaq4pMypl3FoY7hNtiVPdVhGXtSbXgwA7y8gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeptfLx9P3LpGoZdz2djFz8e9dq4meKKblMzPh8Ib9689rfVd82cjanT/AOkaVodzm3kZdU9zIzKfKYjjxt0T7ueZjz48kbhSVrGjcVY1qq1cdxFsXybhGPYnbYriNLzlS3T5ifqptp66bm1otNd3ecz4y4BVkpS0AAAAAA5iJ9J8/ABwNl9V+iOv9NdM0LclffytG17Bx8i3kxT/AHN+u1FddivjymOZ4n1j4xMRrSYdVGvTuIc+m9UWzCMZscetY3uH1FOm9VqutPRp9TT2NBy4ertbQ8jc25dJ27i0967qWZZxaY59a64p/wAXZJqKcnwK64r07ajKvVekYptvqS2ssZ7Nm2/7L9FdsYVdruXsrF+n3Y44mar1U1xz+zNMfc2a6+BhWNNwcbTsamKbOLaos24iPKmmIiP5Q7DEFxVderKq+Lb9p5SY7ic8axS4xKpvqznP+aTfzADqLUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABifVrTp1fpfuvTaaear+j5dNMfpeyqmP58KsZ554n181uWfiU5+Dk4Nf2cizXan5VRMf4qltUw69P1LKwblM0zjXq7Mx7ppqmP8ABNcpz1hUh1NP4m4nktXqdriNk36sqcvapJ/0o6oCYG2IAAAAAAAcuEh+yd0JnqDuCne+5cOatu6PdibVu5H1c3Jjxinx86KfCavfPEe9TXl1TsqLrVHsX96EezVmWxyjhNXF8QlpCmt3GUuEV2t7F7XsTNz9kTobOx9B/wAoG5sKKdc1m1H0W3cp+tiYs+XhPlXX4TPrEcR70jIjiOIOIjwiI4j3OWLby7ne1pVqm9/3oeZ2bMz32cMWrYviD6c3sXCMV6sV2JbO3e9rIc9vXbXs9Q2vu+1b/vrV/T71UR60TFdHM/Kqvj5SiVPjKwXtnaBGsdFsnPpt96vR87HzI490zNur7uLn8lfc+fgnuXK3nbGMfqtr+/aby+T9izxPJVGlJ6ujKdPw15y90kcAL8ZtAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADs6dh3dRzsbT7Ec3Mu9RYoj31VzFMfzmHWZ30K0b8PdYNo6dNHep/Cti/VHupt1e0mf3UuqvNU6Upvgmy24zexw3Dri8lupwlL+WLfyLJdc2ft/cu1ruz9c063laZexoxq7NceVMRxE0z+TVHETEx4xMK6uuXRTW+jW6KsHJi7laNmVVV6bn93wuUfmVT5Rcp8OY9fOPDyswY5v/YW3OpO2Mvau5sSL2Lk0801x4XLNyPs3KJ9Ko/84nwljfCcWnh9XpbYPevn3nnvyW8qN3kHE26zc7Sq/wB5Dq1+nH7S4r6S2Pg1VPLefY52j/aXrHianet97H0DGu59XuivjuUfzr5+5gXVnpVuLpHuu9trXbfftTzdw8ummYt5VnniK6fdPpNPnE/dMyt7DGzvwXsPVd5ZFri9reZ7C1Vx4zZsRMf8dVf7kyxe9hHDpVab15y0Xj+htxyr5xtLXINxiVhVUo3EVCnJPf5zY9O6POfWmiTADGp52AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHE+SsHrtov9n+sO7tMiju006peu0R7qLk+0p/lXCz/AOaAfbW0CdI6xfhOKOLesadZyIn31U826v8AhhJsrVeZdyg/pL4M2M8mfE1a5or2UnsrUnp3wlF/0840AAn5vSAAAAAB6+1Nr65vTcGFtrbuDVl5+fdi1at0x5c+dUz6UxHjM+kQ4zkoRcpbkdNxcUrSlKvXkowim23sSS2tt9hk3RnpRrHV/emPtrA9pZw6Ii9qOZTTzGNjxPjPumqfKmPWZ90Ssq2xtrR9n6Bg7Z0DDpxsDT7MWbNun0iPOZn1qmeZmfWZmWLdGOkujdH9m2Nu6fFN7Nu8XtRzOPrZF/j+VNPlTHu8fOZZ6xvjWKvEK2kPUju7e088+WHlMqZ9xTzNo2rOi2oL6z3ObXW/o9S7WwAshhwwvrRo1O4Ok+7NKmiapu6TkV0RHnNdFM10/wA6YVcSt0zsenMwr+Jcp71N+1Vbqj3xMTHCpTVMKrTdSy9Orie9i367E8+fNNUx/gmuU6nQq0+1P+/YbjeS3fudniFg36soTX4k0/6UdYBMDa8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJBdibbsav1gq1m5bmaND02/k01ekXK+LVMT91yufuR9TT7Bu2asXbO493XaOPp+XbwrM++m1T3qv53I/ctGO1vMWFR8Xs9v6GLOWnF1g+SL2eukqkVTX42k/wDTqSonxkBjE83TCurfSvb3VzaV7bet26bd6nm5hZkU83MW9xxFUfCfKqPKY+6Y9Tp9tDE2FsrRtn4VVNVvSsS3YmumOIuVxH16/wBqrmr72Qjtdeo6Sot9FPXTtLrPG8Qq4bHB51W7eM3NQe5Sa0bXVs8OIAdRagAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAil29Ntze0LbO7bVvmcTJvYN2Yj8m5TFVPPymif3pWtXdpjac7v6L7iwrVn2mThWI1HHiI5nv2Z708fGaYqj71xwmv6Pe05vr09uwn3JdjSwDOFheyekfOKMn9mfQevcpalao5593o4ZUPTcAAAP1TRVXVFFMTVVM8RERzMzz6Gugb02s+uJh5WoZdnBwse5fyMium1atW6ZqqrrqniKYiPOZmYhYN2aOgWP0m0D8N69j27m6NTtx9Iqnir6JanxizRMfdNU+s+HlDFOyt2cP7HYtjqLvrTuNev09/T8S7Hjg2pj7dUf62qJ8vyY+MzxJlBMfxnz7drQfR4vr7O40m5cuVxY3UnlrBJ/5eL0qTT9dr6Kf1E97+k+xbQCKmsYAAPWPmqw6s6fGl9T914EU92LOsZcRHzu1T/itP+Ss3tHY30XrfvG1Efa1Gq7/HTTV/ilWVJNV6i7PmbO+S9cuGN31DhKkn/LNL/ca2CfMTs3YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOYiZ9FmXZ12pOzuje2tLu2u5fv4sZ1+J8+/en2nj91UR9yvfpbtG7vvqFoG1bdE1UZ2bbpvfCzTPeuT/BTUtNtWrdi1RYs0RRbt0xTTTHlER5Qh2a7nSMLdd7+XzNTPKgx9QoWWBU3tk3VkuxdGHtbn7D9gIWaegAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHyycezmY93EyKIrtX6KrdymfKqmqOJj90vq4E9HqfYycGpRejRVR1F2pkbH3zrm08iJ72m5tyzRM/lW+eaKvvommfvY4k/259iV6ZvDSd/Y1uIxtax/omTMU+WRaj6szP6VEx/8uUYGWMOufS7WFXrW3v4nqHkDMUc1ZbtMVT1lOC53349Gf8AqTAOVY3oTFvTeIiZn5+SY3ZX7M04E4vUzqHpsxkfVv6Tp16PG36037tM/leU00z5ec+nHz7L3Zf9jGJ1K6kaf+M8L2l6Xeo+z603r1M+vrTTPwmfclwhmO45rra2z738l8zUHlr5aFUVTLWXamz1atVP2wg/dKX4VxYAQ41IAAAAAK3O1Tb7nXrdcd2KfxuPXx+tj25WRq4u1jP/AOPu6Z558cP/APxbSTZV/wDVy+780bGeTK2s1XC/+iX9cDUMhIn6N6QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP1TTNU8UxzPuj1A3otSUnYV2POfubWN/5VnmzpdiMHFqmP9NdjmqY+MURx+38U1WuOz5sH/Jz0q0XQr9n2efftfTs6OPH29360xP6scU/stjsWYvd+mXk6i3LYu5Hmhyr5nWbc2XV9TlrTi+ZD7kNia+89ZeIAW0xyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa57QHTz/KX0t1jQMez7TPs24zdPiI8fpFrxpiP1o71H7as25RNuqaK6ZpqpmYmJjiYmPRbxKB/aR6A7jxer1FWyNAyM3F3dXVlY1uxbmabV/wA71Mz5UxzPf5niIir4JdlnEI0udbVHot6195tR5OWe6OGyuMvYjUUKctakHJ6JNLprV7FqlzvBkeLFi7k3qMexaruXblUU0UUU81VVT5RER4zPwTR7NnZUp27Xi7+6l4dFzU+IvYGl1xzTizPjFd30mv1inyp9eZ8su6Adl/Q+l1uxuXc3sdU3PVRFUVzHes4XPpb586vfX+7j13w44xj7q60LV9Hi+vu7Dp5W+XSWLRqYHlmbjR2qdVbHPrUOKj1vfLhot4BEzV0AAAAAAAK2u1Jcpu9ed2TbnmKcixTPzjHtxx/JZKrJ7Q2TGX1s3ld557up3LUT+pxT/glGVY63U39n5o2T8mGk5ZkuqnVRfvnH8jXQCem8QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABtvsxdN56i9V9Ps5Nj2mmaLxqed4cxMUTHs6J/Wr7v3RLUvh9yw3smdL/wDJ90zs6pqGP7PVtydzOyIqjiq3a4/E2/hxTPen41z7lnxy+9CtG4+tLYvz8DE3LPnJZPyvVnSlpXr606fXq10pfhjq9evQ3ZERHhEcQ5BjI8494AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHEc8uQGugAAAAAAAAAAABVd1Vz51PqZurO/12sZc/wD8tUf4LTMu9GPi3siqqIi1bqrmZ9IiOVSmr5tWparm6jV9rKyLl+fnVVM/4pflKHTqy7EbX+S1aa3eI3XVGnH2uT+R1AE2NxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+2Ji5GdlWcLEsV3b9+um3bt0RzVVVVPEREe+Zl8bS3nGUlBOUnokbT7NPSivqn1HxbGdjVV6LpM05uo1cfVqppn6lrn311REfKKvcsgpppopimimIiI4iIjjiGtez50msdJOn2NpF+3R+F87jL1S5HremPC38qI+rHx70+rZjGeN4h6fctx9WOxfn4nnNyyZ7/xxmGUreWttQ1hT7frT/E932UgAs5iUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMX6o6p+BOm26NVivu1Y2kZVdM+6r2VUU/zmFVix/tWav+COhe45iqYqy6bOJTx+ndpif5cq4E7ypT0t5z638F+pu15MFh5nAby8a9eql4Riv+5gBKjZsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAERylZ2M+iU6pqEdWdxYn+Z4VdVvR7VyP729HhVe491HjEfpcz+S030K6P6p1h3na0e1Tcs6ThzTf1TKinwtWYn7Efp18cU/fPlErJ9I0jTdA0vF0XR8O1iYOFapsY9i3TxTbopjiIhFsxYr5iHotJ9KW/sX6/A1p5f+UuOCWTyzhs/8xWX7xr6FN8PvT90e9HcAQM0gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjR27Na+h9OdF0SmvirUdV9pMe+i1bqmf510/uQbSl7eeufSN3bb27TVPGFgXMquOfW7c7sfytotSyXl+l5uwh26v3nopyD4b+zsjWja0dRzn7ZPT3JABejMIAAAAAAAAAAAAAAAAAAAAAAAAAAIcxx5z5AbS3nA59HAFtAAAAAPb2bs/Xd97jwtrbcw6sjOzrkUUR+TRHrXVPpTEeMy6GlaRqWualjaPpGFdy83MuRas2bVPerrrnyiIWIdnboNgdHdvfStQptZG5dSt0znZFPFUWY8/Y25/NifOfWflC04tikMNpa75vcvn3GL+VHlJs+T3DHU1UrqomqcO360vsx49b2LrWU9I+lmh9JNnY22NJoouX/C7nZfciK8q/MfWqn4R5Ux6R97NgY0q1Z1pupN6tnnPiWJXWL3dS+vZudWo3KTe9t/3u4LYAHWUQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfmuum1RVcrnimiJqn5Gmp9jFyait7K5u1jr8a/1x16aKubenRZ0+iPzfZ2470fxzW0+9ve2uVbk3hrevVTz+ENQyMmOfdVcmY/lw8RlyzpeYoQp9SXwPVXKmGLBsDs8PX/AA6cI+KitfeAFSX8AAAAAAAAAAAAAAAAAAAAAAQAERPudzStH1XXc+zpejafk5uZkVd21YsWprrrn4RHjKUPSPsTapqFVnWuq2VVgYvhXGlYtzm/X8LlyPCiPhTzPxhR3d/b2MedWlp2cX4ESzXnnAsl2/pGMV1BtbIrbOX3Yra+/YlxaI99P+mm8upusU6NtDRruZciY9ten6tnHpn8q5XPhTH859IlNvo/2TdldPcSc3clNrX9cv2pt1Xr1vmxjd6OKotW59fH7c+Pu7vk3Dtnau3dm6TZ0PbGj42m4ViIimzYoiI598z51T75nxesg2JZgr3nQpdGPvfe/kaW8oXLtjObZO0wzW2tepPpz+/Jbl9mOzrbKmd1aHe2zuXVdu5FMxc0zMvYlXPn9Suaf8HlN4dsPalG3OtGfn2bfcsa5j2dQp4jiO/NPcr4/atzM/Gpo9PLOsri3hVXFI3eyljEcfwK0xOL/i04yfe10vY9UAFSSEO1pumZ+sZ+PpWlYV7LzMq5FqzZs0TXXcrmeIppiPOX20HQNX3NquLoegadfzs/Mri3ZsWqe9VXVP8ASPj5Qn32eOzdpHSXBo17XqbOfunJo+ve45ow6Z/0drn1/Or9fKPDzteJ4pSw2nrLbJ7l/fAxtyj8pWGcnth52u+fcTX7umntk+t9UVxfgtWfLs29nHC6T4FG5tx028rdWZZimuY4mjBonxm3bn1qnw71X3R4ee9QY2ubqrd1HVqvVs88Mx5jxHNeI1MUxSpz6k/YlwjFcEuC+YAU5YgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADp6xp0avpGdpM5F3H+m41zH9ta479vv0zT3qefWOeY+MO4PsXo9Uc6dSVGaqQ3p6rvRXl1W7J3Ufp5N/U9Jx6tx6NRzV9Jw7czet0+fNy14zHxmnvR8YaTqoqpqmmaZiY84mPJbz4+cTw1h1J7OXS3qbFzJ1XQ6cDUq4njUNPimze599Ucd25+1Ez8Uvsc0OKULuOvavmja/JXlK1aMY2maaPOW7ztNaPvlDc++LXcVpiRHULsVdR9tTczdn5Fjc2FTzV7O3xZyoj3ezqnu1T+rV4+70aG1jQtZ29m16drmlZen5VE8VWcmzVbrj7qohK7a9t7uOtGafx9hs7l7OOBZqpKrhF1Cp2J6SXfF6SXijoDmY+EuJVRJgAAAAAAAAAAAAAAOeH6t2q7tym1boqrrrnimmmOZmfdEer5qj45KK1Z+HPDZ+yOzb1f33Nu7pu08jCxLnE/S9R/za1xPrHejvVeHuplIjYPYY2xpk28vqDuC/rF2OJnEw4mxY5901z9eqPl3VsusYs7TZOer6ltZjfM3K1lLKqlG7u1OovoU+nLu2bF4tEN9D2/re5c+3pW39JzNRzL08UWMWzVcrn7oj+aSHTLsQbo1iu1qXUnVKdDxJ8ZwcWqm9lVR7qqvsUf70/CEwdrbL2psnA/Bm0tAwtKx+PGnGtRTNfxqq86p+MzMvaRa9zPWq6xtlzV18fyRrTm/ykcYxRSt8v0lbwf03pKo+76MfY31MxHp90q2J0wwPoOztAs4dVVMRdyavxmRen313KvGflHEe6IZcCNVKk6snOb1b6zXS+v7rFLiV1e1JVKktrlJtt97YAcCkIpdvTas5Gg7b3nYs81YeTd0/IriPyLlMV0cz7oqt1R860MVl/aR2r/a7orufT7duK7+Li/hCxz5xXYmLk8fGaaao+9Wjx4siZZr+ds/N/VenhvN9/Jyxv8AaWUfQpvpW9SUfwy6a97kvA4iJmeI9WT9PenO6upu4LW3dp6ZXlX6+KrtyfC1j2/W5cq8qaf5z5REzLOeiXZt3f1cy7eo36K9K25RX+N1C7RMTeiJ8abNM/an4+UfyT12B062j0z0G3t7aGl0YmPTxN25P1ruRX+fcr86p/lHlHEPuLY7TsU6dLpT9y7/AMip5T+WzDclwnh+GNVrzdpvjTfXNre19VbevTjivRLoJtXo3pUVY1NOfr2TbiM3U7lHFVXPjNFuJ8aKOfTzn190bQBj+vXqXM3UqvVs0TxnGr/MF7UxHEqrqVZvVt/BdSXBLYuAAdRawAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADyNw7S2vu3DnA3Nt/T9UsTHHcysem5x8pmOYn4x4vXH2MnB86L0Z3W9xWtaiq0JuMluabTXc0R63h2JuleuzXf27laht29VPMU2a/b2Y/Yr8f3VQ0vunsOdTdKmq5trVtJ1uzHM00+0nGuzHp9Wv6vP7SdovFvj19b7Ofqu3b+plXAuW/OuBJQjdeeguFVKf8Aq2S/1FXe4+iXVjafeq13YGtWbdHndt403rX8dvmn+bDL2Pfxq5tZFm5arjzprpmmY+6Vu/yebqm2tua5bmzrWgadqFufHuZWLRdp/dVErvSzZJfxafsZlXDPKjuopRxPD4y7YTa90k/iVLcOeJ9yzbU+z10U1aqa8vpvo1E1ef0a1ON/4U0sbzOyB0Hy65qp2tk4/M88WdRvx/WqVbDNVq/WjJez8yaWnlN5Yqr/ADFtWg+6El/Un7iuz7z70/r/AGJ+i13j2dOuWeOfsZ3PP8VMvl/0Iujn/vO4f/3tP/2O/wDxNY9b9hd4+UbktrVuqv8A+f6kBnPCwCx2KuidqKYu4+tX5ieZmvPmO98Pq0x/5vWwOyN0IwaomdpXsnj/AF+ffq5/dVDhLNFktyk/D9Smr+UnlCkv3cK0+6CXxkiuh9cfGyMq5FnGsXL1dXlTbpmqqflELNtM6A9F9InvYXTbQ5mPKcjGjI/8XvMw07b+haRbi1pWi4GFRT5U42NRaiPupiIUtTNlNepTfi1+pGb/AMqPDor/ACNhOX35xj8FIrK0Dop1Y3PNH4F6f63et3J4pvXMSq1a++uvimP3toba7EXVrV5or1zK0jRLdXjVF3Im9ciPlbiY/wB5PUW6tmm7nspxUfeY/wAX8pbM94nGwo0qK69HOXtb0/0kZtqdhXYOmzRf3ZuPU9arpnmbVqmnFtfLiO9VP8UN17S6SdNdjRH9ltmaZhXI/wBNFnv3p+dyvmr+bLhZrjEbq6/izbXu9iMSY7ygZmzJqsSvak4v6OvNj/LHRe4AKIhwAAAAAAB8srGsZuLewsmiK7N+3VauUz+VTVHEx+6UX+lXYr0nSNWu651KyLWo0WsiqcPTLNUzZm3FX1Kr1X5UzERPcjw98z5JSirt76vawlClLRS018CVYBnTGssWdzZYVWdONfm89r1ujrpo/o66vVrb2o+WLi42Fj28TDx7VixZpii3at0RTRRTEcRERHhEfB9QUj27WRaTc25SerYAD4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf//Z" 
           alt="Premier League" 
-          class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl object-cover shadow-xs flex-shrink-0 border border-slate-200/80"
+          class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl object-cover shadow-xs flex-shrink-0 border border-slate-200/80"
         >
         
-        <!-- Text Container: Title & Clean Metadata -->
-        <div class="min-w-0 flex flex-col justify-center">
-          
-          <!-- Row 1: Primary League Title with Switcher Trigger -->
-          <div class="relative inline-block text-left">
-            <button 
-              id="league-switcher-btn" 
-              onclick="app.toggleLeagueDropdown(event)" 
-              class="group flex items-center gap-1.5 text-left cursor-pointer transition-colors leading-tight"
-              title="คลิกเพื่อสลับดูมินิลีกอื่น (Switch League)"
-            >
-              <span id="header-league-name" class="text-base sm:text-lg font-black text-slate-900 group-hover:text-blue-600 transition-colors tracking-tight truncate max-w-[170px] sm:max-w-[320px]">กำลังโหลดลีก...</span>
-              <span class="inline-flex items-center justify-center w-5 h-5 rounded-lg bg-blue-50 group-hover:bg-blue-100 text-blue-600 transition-colors flex-shrink-0 shadow-2xs">
-                <svg class="w-3 h-3 group-hover:translate-y-0.5 transition-transform" id="league-switcher-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
-              </span>
-            </button>
+        <!-- League Switcher Container -->
+        <div class="relative inline-block text-left min-w-0">
+          <button 
+            id="league-switcher-btn" 
+            onclick="app.toggleLeagueDropdown(event)" 
+            class="group flex items-center gap-1.5 text-left cursor-pointer transition-colors leading-tight"
+            title="คลิกเพื่อสลับดูมินิลีกอื่น (Switch League)"
+          >
+            <span id="header-league-name" class="text-sm sm:text-lg font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight truncate max-w-[95px] min-[360px]:max-w-[140px] sm:max-w-[320px] md:max-w-[420px]">กำลังโหลดลีก...</span>
+            <span class="inline-flex items-center justify-center w-5 h-5 rounded-lg bg-blue-50 dark:bg-slate-800 group-hover:bg-blue-100 dark:group-hover:bg-slate-700 text-blue-600 dark:text-blue-400 transition-colors flex-shrink-0 shadow-2xs">
+              <svg class="w-3 h-3 group-hover:translate-y-0.5 transition-transform" id="league-switcher-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+            </span>
+          </button>
 
-            <!-- Dropdown Menu Box -->
-            <div id="league-dropdown-menu" class="hidden absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-slate-200 py-1.5 z-50 animate-in fade-in zoom-in duration-100" onclick="event.stopPropagation()">
-              <div class="px-3.5 py-1.5 text-[10px] uppercase font-bold text-blue-600 font-display border-b border-slate-100 flex items-center justify-between">
-                <span>เลือกลีก (Select League)</span>
-                <span class="text-[9px] text-slate-400 font-normal">คลิกเพื่อสลับ</span>
-              </div>
-              <div id="league-dropdown-options" class="p-1 space-y-0.5">
-                <!-- Dynamic options for 40700 and 675290 -->
-              </div>
+          <!-- Dropdown Menu Box -->
+          <div id="league-dropdown-menu" class="hidden absolute top-full left-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl border border-slate-200 py-1.5 z-50 animate-in fade-in zoom-in duration-100" onclick="event.stopPropagation()">
+            <div class="px-3.5 py-1.5 text-[10px] uppercase font-bold text-blue-600 font-display border-b border-slate-100 flex items-center justify-between">
+              <span>เลือกลีก (Select League)</span>
+              <span class="text-[9px] text-slate-400 font-normal">คลิกเพื่อสลับ</span>
+            </div>
+            <div id="league-dropdown-options" class="p-1 space-y-0.5">
+              <!-- Dynamic options for 40700 and 675290 -->
             </div>
           </div>
-
-          <!-- Row 2: Symmetrical, Balanced & Easy-to-Read Metadata Line -->
-          <div class="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-slate-500 font-medium mt-1 flex-wrap">
-            <span id="header-league-id-badge" class="font-bold text-blue-900 bg-blue-100/70 border border-blue-200/80 px-1.5 py-0.5 rounded-md font-display leading-none">LEAGUE 40700</span>
-            <span class="text-slate-300">•</span>
-            <span id="header-member-count" class="font-bold text-slate-700">12 ทีมสมาชิก</span>
-            <span class="text-slate-300">•</span>
-            <span id="header-season">ฤดูกาล 2026/27</span>
-            <span class="text-slate-300 hidden sm:inline">•</span>
-            
-            <!-- Last Sync Badge with Connection Indicator -->
-            <span id="header-last-sync-badge" class="inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-slate-700 bg-slate-100/90 border border-slate-200/80 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs" title="ระบบเชื่อมต่อ Auto-Sync ปกติ (Online)">
-              <span>Last Sync: <strong id="header-last-sync" class="text-slate-900 font-bold">__LAST_SYNC__</strong></span>
-              <span id="header-last-sync-icon" class="inline-flex items-center" title="ระบบเชื่อมต่อ Auto-Sync ปกติ (Online)">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
-              </span>
-            </span>
-          </div>
-
         </div>
       </div>
 
-      <!-- 1.2 แถบสถานะระบบ & 1.3 ปุ่ม Action หลัก (Entire box pulses in green when live) -->
-      <div class="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+      <!-- Actions (Theme Toggle & Excel Export) -->
+      <div class="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
         <div id="api-status-text" class="text-xs font-semibold text-emerald-900 hidden md:flex items-center bg-emerald-50 px-3.5 py-1.5 rounded-xl border border-emerald-300 shadow-xs animate-pulse font-display">
           <span id="header-gw-status-dot" class="inline-block w-2 h-2 rounded-full bg-emerald-600 mr-2"></span>
           <span id="header-gw-status">Gameweek 2 กำลังแข่งขัน (Live)</span>
@@ -819,7 +932,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <button 
           id="btn-theme-toggle"
           onclick="window.app ? window.app.toggleTheme() : (window.toggleThemeFallback && window.toggleThemeFallback())"
-          class="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all shadow-2xs active:scale-95 flex-shrink-0 cursor-pointer"
+          class="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 min-w-[36px] min-h-[36px] rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all shadow-2xs active:scale-95 flex-shrink-0 cursor-pointer"
           title="สลับโหมดสว่าง / โหมดมืด (Dark Mode)"
           aria-label="Toggle Dark Mode"
         >
@@ -836,15 +949,34 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <button 
           id="btn-export-excel"
           onclick="window.app ? window.app.exportToExcel() : (window.exportToExcelFallback ? window.exportToExcelFallback() : null)"
-          class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 border border-emerald-600 text-xs font-semibold text-white transition-all shadow-sm active:scale-95 flex-shrink-0 cursor-pointer"
+          class="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 min-h-[36px] sm:min-h-[40px] rounded-xl bg-emerald-700 hover:bg-emerald-600 border border-emerald-600 text-xs font-semibold text-white transition-all shadow-sm active:scale-95 flex-shrink-0 cursor-pointer"
           title="Export ข้อมูลทั้งหมดทุก Gameweek, Leaderboard และสรุปเงินรางวัลเป็นไฟล์ Excel (.xlsx)"
         >
-          <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-          <span class="font-bold">Export Excel</span>
+          <svg class="w-3.5 h-3.5 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          <span class="font-bold hidden sm:inline">Export Excel</span>
+          <span class="font-bold sm:hidden">Excel</span>
         </button>
       </div>
-
     </div>
+
+    <!-- Sub-Row: Symmetrical, Balanced & Easy-to-Read Metadata Line -->
+    <div class="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium mt-1.5 sm:mt-1 flex-wrap pl-0 sm:pl-[52px]">
+      <span id="header-league-id-badge" class="font-bold text-blue-900 bg-blue-100/70 border border-blue-200/80 px-1.5 py-0.5 rounded-md font-display leading-none">LEAGUE 40700</span>
+      <span class="text-slate-300 dark:text-slate-600">•</span>
+      <span id="header-member-count" class="font-bold text-slate-700 dark:text-slate-300">12 ทีมสมาชิก</span>
+      <span class="text-slate-300 dark:text-slate-600">•</span>
+      <span id="header-season">ฤดูกาล 2026/27</span>
+      <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
+      
+      <!-- Last Sync Badge with Connection Indicator -->
+      <span id="header-last-sync-badge" class="inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs" title="ระบบเชื่อมต่อ Auto-Sync ปกติ (Online)">
+        <span>Last Sync: <strong id="header-last-sync" class="text-slate-900 dark:text-white font-bold">__LAST_SYNC__</strong></span>
+        <span id="header-last-sync-icon" class="inline-flex items-center" title="ระบบเชื่อมต่อ Auto-Sync ปกติ (Online)">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
+        </span>
+      </span>
+    </div>
+  </div>
 
     <!-- 1.4 แถบเมนู 5 แท็บหลัก (เปลี่ยน "บอลถ้วย" เป็น "CUP") -->
     <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 border-t border-slate-200/80">
@@ -852,47 +984,47 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <button 
           id="tab-btn-live"
           data-tab-target="gameweek-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white active:scale-95 cursor-pointer"
         >
           LIVE
         </button>
         <button 
           id="tab-btn-highlights"
           data-tab-target="highlights-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           Weekly Highlight
         </button>
         <button 
           id="tab-btn-competition"
           data-tab-target="competition-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           Competition
         </button>
         <button 
           id="tab-btn-prizes"
           data-tab-target="prizes-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           สรุปรางวัล
         </button>
         <button 
           data-tab-target="hall-of-fame-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           Hall of Fame
         </button>
         <button 
           id="tab-btn-cup"
           data-tab-target="cup-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           CUP
         </button>
         <button 
           data-tab-target="rules-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           กติกาของลีก
         </button>
@@ -926,16 +1058,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         
         <!-- ซ้าย: ตารางคะแนนสัปดาห์ปัจจุบัน (Matchday Standings - Emerald Live Theme) -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 border-t-4 border-t-emerald-500 shadow-xs relative">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 border-t-4 border-t-emerald-500 shadow-xs relative">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3">
             <div>
-              <span class="text-[10px] sm:text-xs uppercase tracking-wider text-emerald-600 font-bold font-display flex items-center gap-1.5">
+              <span class="text-[10px] sm:text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold font-display flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                 GAMEWEEK STANDING
               </span>
-              <h3 id="matchday-table-title" class="text-sm sm:text-base font-bold text-slate-900 font-display mt-0.5">ตารางคะแนน Gameweek 2</h3>
+              <h3 id="matchday-table-title" class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">ตารางคะแนน Gameweek 2</h3>
             </div>
-            <span id="matchday-table-badge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span id="matchday-table-badge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
               ผลการแข่งขัน
             </span>
           </div>
@@ -943,16 +1075,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
+                <tr class="border-b border-slate-100 dark:border-slate-800/80 text-[11px] font-bold text-slate-400 dark:text-slate-500 font-display bg-slate-50/50 dark:bg-slate-900/50">
                   <th class="py-2.5 px-1 sm:px-2 text-center w-7 sm:w-8">#</th>
                   <th class="py-2.5 px-1.5 sm:px-3 min-w-0">ทีม & ผู้จัดการ</th>
                   <th class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">กัปตัน</th>
-                  <th class="py-2.5 px-1 sm:px-2 text-center text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-400 font-bold whitespace-nowrap">คะแนนสด (GW)</th>
-                  <th class="py-2.5 px-1 sm:px-2 text-center w-8 sm:w-10 text-[10px] sm:text-[11px]">แต้มลบ</th>
-                  <th class="py-2.5 px-1.5 sm:px-3 text-right w-14 sm:w-16 text-[10px] sm:text-[11px] text-slate-500 font-bold">แต้มสุทธิ</th>
+                  <th class="py-2.5 px-1 sm:px-2 text-center text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-400 font-bold whitespace-nowrap"><span class="hidden sm:inline">คะแนนสด (GW)</span><span class="sm:hidden">แต้มสด</span></th>
+                  <th class="py-2.5 px-1 sm:px-2 text-center w-8 sm:w-10 text-[10px] sm:text-[11px]"><span class="hidden sm:inline">แต้มลบ</span><span class="sm:hidden">ลบ</span></th>
+                  <th class="py-2.5 px-1.5 sm:px-3 text-right w-14 sm:w-16 text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-bold"><span class="hidden sm:inline">แต้มสุทธิ</span><span class="sm:hidden">สุทธิ</span></th>
                 </tr>
               </thead>
-              <tbody id="matchday-table-body" class="divide-y divide-slate-100 text-xs sm:text-sm">
+              <tbody id="matchday-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
                 <!-- Rendered dynamically -->
               </tbody>
             </table>
@@ -960,16 +1092,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         </div>
 
         <!-- ขวา: ตารางคะแนนรวมสะสม (Overall Standings - Royal Blue Championship Theme) -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 border-t-4 border-t-blue-600 shadow-xs relative">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 border-t-4 border-t-blue-600 shadow-xs relative">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3">
             <div>
-              <span class="text-[10px] sm:text-xs uppercase tracking-wider text-blue-600 font-bold font-display flex items-center gap-1.5">
+              <span class="text-[10px] sm:text-xs uppercase tracking-wider text-blue-600 dark:text-blue-400 font-bold font-display flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-blue-600"></span>
                 TOTAL LEADERBOARD
               </span>
-              <h3 class="text-sm sm:text-base font-bold text-slate-900 font-display mt-0.5">ตารางคะแนนรวมสะสม</h3>
+              <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">ตารางคะแนนรวมสะสม</h3>
             </div>
-            <span id="overall-gw-pill" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 font-display">
+            <span id="overall-gw-pill" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 font-display">
               หลังจบ GW <span id="overall-gw-num">2</span>
             </span>
           </div>
@@ -977,14 +1109,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
+                <tr class="border-b border-slate-100 dark:border-slate-800/80 text-[11px] font-bold text-slate-400 dark:text-slate-500 font-display bg-slate-50/50 dark:bg-slate-900/50">
                   <th class="py-2.5 px-1 sm:px-2 text-center w-7 sm:w-8">#</th>
                   <th class="py-2.5 px-1.5 sm:px-3 min-w-0">ทีม & ผู้จัดการ</th>
                   <th class="py-2.5 px-1 sm:px-3 text-center w-12 sm:w-16 text-[10px] sm:text-[11px]">GW ล่าสุด</th>
-                  <th class="py-2.5 px-1.5 sm:px-3 text-right w-14 sm:w-16 text-blue-800 font-bold">แต้มรวม</th>
+                  <th class="py-2.5 px-1.5 sm:px-3 text-right w-14 sm:w-16 text-blue-800 dark:text-blue-400 font-bold">แต้มรวม</th>
                 </tr>
               </thead>
-              <tbody id="overall-standings-body" class="divide-y divide-slate-100 text-xs sm:text-sm">
+              <tbody id="overall-standings-body" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
                 <!-- Rendered dynamically -->
               </tbody>
             </table>
@@ -1088,7 +1220,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     <div id="hall-of-fame-view" class="tab-content hidden space-y-4">
       
       <!-- 4 Highlight Cards -->
-      <div id="hall-of-fame-records" class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div id="hall-of-fame-records" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <!-- Dynamic Records -->
       </div>
 
@@ -1201,30 +1333,30 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <!-- 6. Interactive Modal Systems -->
 
   <!-- 6.1 หน้าต่างดูแผนจัดตัวนักเตะ (Team Squad Modal) -->
-  <div id="team-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-xs hidden transition-all duration-200" onclick="if (event.target === this) app.closeTeamModal()">
-    <div class="bg-white rounded-3xl p-4 sm:p-6 max-w-xl w-full shadow-2xl border border-slate-200 max-h-[94vh] overflow-y-auto" onclick="event.stopPropagation()">
+  <div id="team-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-xs hidden transition-all duration-200 overflow-y-auto" onclick="if (event.target === this) app.closeTeamModal()">
+    <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl p-3 sm:p-6 max-w-xl w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[94vh] overflow-y-auto overflow-x-hidden my-auto" onclick="event.stopPropagation()">
       
       <!-- Header (Sticky at top when scrolling through pitch and bench) -->
-      <div class="sticky top-0 bg-white/95 backdrop-blur-md z-30 -mt-4 sm:-mt-6 -mx-4 sm:-mx-6 px-4 sm:px-6 pt-4 sm:pt-6 pb-3 border-b border-slate-100 mb-3 sm:mb-4 flex items-center justify-between shadow-2xs">
+      <div class="sticky top-0 bg-white/95 dark:bg-[#0d0d0f]/95 backdrop-blur-md z-30 -mt-3 sm:-mt-6 -mx-3 sm:-mx-6 px-3 sm:px-6 pt-3 sm:pt-6 pb-2.5 sm:pb-3 border-b border-slate-100 dark:border-slate-800 mb-3 sm:mb-4 flex items-center justify-between shadow-2xs">
         <div class="min-w-0 pr-2">
-          <div class="flex items-center gap-2">
-            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">ข้อมูลขุมกำลัง & การจัดทัพ</span>
+          <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">ข้อมูลขุมกำลัง & การจัดทัพ</span>
             <span id="team-modal-chip-badge" class="hidden"></span>
           </div>
-          <h3 id="team-modal-title" class="text-base sm:text-xl font-bold text-slate-900 truncate mt-0.5">ชื่อทีม</h3>
-          <p id="team-modal-subtitle" class="text-[11px] sm:text-xs text-slate-500 mt-0.5 flex items-center gap-1.5 flex-wrap">
-            <span id="team-modal-manager">ผู้จัดการ: -</span>
+          <h3 id="team-modal-title" class="text-sm xs:text-base sm:text-xl font-bold text-slate-900 dark:text-white truncate mt-0.5">ชื่อทีม</h3>
+          <p id="team-modal-subtitle" class="text-[10.5px] xs:text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1 sm:gap-1.5 flex-wrap">
+            <span id="team-modal-manager" class="truncate max-w-[140px] xs:max-w-[180px] sm:max-w-none">ผู้จัดการ: -</span>
             <span>•</span>
-            <span id="team-modal-formation" class="font-bold text-slate-700">แผน: -</span>
+            <span id="team-modal-formation" class="font-bold text-slate-700 dark:text-slate-300">แผน: -</span>
             <span>•</span>
-            <span id="team-modal-pts" class="font-bold text-emerald-600">แต้มสด: - pts</span>
+            <span id="team-modal-pts" class="font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">แต้มสด: - pts</span>
           </p>
         </div>
-        <button onclick="app.closeTeamModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 font-bold transition-colors cursor-pointer text-base flex-shrink-0">✕</button>
+        <button onclick="app.closeTeamModal()" class="w-8 h-8 sm:w-8 sm:h-8 min-w-[32px] min-h-[32px] rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold transition-colors cursor-pointer text-base flex-shrink-0 active:scale-95" aria-label="Close modal">✕</button>
       </div>
 
       <!-- Authentic FPL Pitch (Vertical 4-Tier: GKP -> DEF -> MID -> FWD) -->
-      <div class="fpl-pitch rounded-2xl mb-3.5 relative overflow-hidden shadow-inner flex flex-col justify-between py-2 sm:py-3 px-1">
+      <div class="fpl-pitch rounded-2xl mb-3 sm:mb-3.5 relative overflow-hidden shadow-inner flex flex-col justify-between py-2 sm:py-3 px-1 w-full max-w-full">
         <div class="pitch-penalty-top"></div>
         <div class="pitch-center-circle"></div>
         <div class="pitch-center-line"></div>
@@ -1238,12 +1370,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       </div>
 
       <!-- Substitutes Box -->
-      <div class="bg-slate-50 rounded-2xl p-3 sm:p-4 border border-slate-200/80">
+      <div class="bg-slate-50 dark:bg-slate-900/40 rounded-2xl p-2.5 sm:p-4 border border-slate-200/80 dark:border-slate-800/80">
         <div class="flex items-center justify-between mb-2">
-          <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">ตัวสำรอง (Substitutes)</span>
-          <span id="team-modal-bench-total" class="text-[10px] sm:text-xs text-slate-500 font-bold font-display"></span>
+          <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">ตัวสำรอง (Substitutes)</span>
+          <span id="team-modal-bench-total" class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold font-display"></span>
         </div>
-        <div id="team-bench-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+        <div id="team-bench-container" class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2.5">
           <!-- 4 Bench Player Cards -->
         </div>
       </div>
@@ -1252,14 +1384,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   </div>
 
   <!-- 6.2 หน้าต่างข้อมูล Projected Points Modal (FPL Gameweek Explanation) -->
-  <div id="projected-points-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-xs hidden transition-all duration-200" onclick="if (event.target === this) app.closeProjectedPointsModal()">
-    <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800" onclick="event.stopPropagation()">
+  <div id="projected-points-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/75 backdrop-blur-xs hidden transition-all duration-200" onclick="if (event.target === this) app.closeProjectedPointsModal()">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-6 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[94vh] overflow-y-auto" onclick="event.stopPropagation()">
       <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
         <div class="flex items-center gap-2">
           <span class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold flex items-center justify-center text-sm font-display">Pts</span>
           <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">Projected Points (คะแนนคาดการณ์)</h3>
         </div>
-        <button onclick="app.closeProjectedPointsModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold transition-colors cursor-pointer text-base">✕</button>
+        <button onclick="app.closeProjectedPointsModal()" class="w-9 h-9 sm:w-8 sm:h-8 min-w-[36px] min-h-[36px] rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold transition-colors cursor-pointer text-base active:scale-95" aria-label="Close modal">✕</button>
       </div>
       <div class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 space-y-2.5 leading-relaxed">
         <p>
@@ -1270,7 +1402,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         </div>
       </div>
       <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
-        <button onclick="app.closeProjectedPointsModal()" class="px-4 py-2 bg-slate-900 dark:bg-blue-600 text-white font-bold rounded-xl text-xs hover:bg-slate-800 dark:hover:bg-blue-700 transition-colors cursor-pointer">
+        <button onclick="app.closeProjectedPointsModal()" class="px-4 py-2 bg-slate-900 dark:bg-blue-600 text-white font-bold rounded-xl text-xs hover:bg-slate-800 dark:hover:bg-blue-700 transition-colors cursor-pointer active:scale-95">
           เข้าใจแล้ว
         </button>
       </div>
@@ -1278,34 +1410,34 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   </div>
 
   <!-- 6.3 หน้าต่าง Text Summary Modal สำหรับส่ง LINE -->
-  <div id="text-summary-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-xs hidden transition-all duration-200" onclick="if (event.target === this) app.closeTextSummaryModal()">
-    <div class="bg-white rounded-3xl p-5 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200 max-h-[92vh] flex flex-col justify-between" onclick="event.stopPropagation()">
+  <div id="text-summary-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/75 backdrop-blur-xs hidden transition-all duration-200" onclick="if (event.target === this) app.closeTextSummaryModal()">
+    <div class="bg-white rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200 max-h-[92dvh] sm:max-h-[94vh] flex flex-col justify-between overflow-y-auto" onclick="event.stopPropagation()">
       <div>
         <div class="flex items-center justify-between pb-3.5 border-b border-slate-100 mb-3">
           <div class="flex items-center gap-2">
             <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
             <h3 id="modal-summary-title" class="text-base sm:text-lg font-bold text-slate-900 font-display">สรุปผล Gameweek</h3>
           </div>
-          <button onclick="app.closeTextSummaryModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 font-bold transition-colors cursor-pointer text-base">✕</button>
+          <button onclick="app.closeTextSummaryModal()" class="w-9 h-9 sm:w-8 sm:h-8 min-w-[36px] min-h-[36px] rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 font-bold transition-colors cursor-pointer text-base active:scale-95" aria-label="Close modal">✕</button>
         </div>
         
         <p class="text-xs text-slate-500 mb-3">ข้อความถูกจัดรูปแบบสำหรับส่งเข้ากลุ่ม LINE เรียบร้อยแล้ว:</p>
         
         <div class="relative">
-          <textarea id="text-summary-content" readonly class="w-full h-64 sm:h-72 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-[13px] font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 resize-none selection:bg-slate-900 selection:text-white leading-relaxed"></textarea>
+          <textarea id="text-summary-content" readonly class="w-full h-60 sm:h-72 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-[13px] font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 resize-none selection:bg-slate-900 selection:text-white leading-relaxed"></textarea>
         </div>
       </div>
 
-      <div class="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between gap-3">
+      <div class="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
         <span id="modal-copy-indicator" class="text-xs text-emerald-600 font-bold flex items-center gap-1.5 opacity-0 transition-opacity duration-200">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
           คัดลอกลงคลิปบอร์ดแล้ว!
         </span>
-        <div class="flex items-center gap-2">
-          <button onclick="app.closeTextSummaryModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer">
+        <div class="flex items-center gap-2 ml-auto">
+          <button onclick="app.closeTextSummaryModal()" class="px-4 py-2 min-h-[38px] rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer active:scale-95">
             ปิด
           </button>
-          <button id="btn-modal-copy" onclick="app.copyFromModal()" class="px-5 py-2 rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 transition-all shadow-sm active:scale-95 cursor-pointer flex items-center gap-1.5">
+          <button id="btn-modal-copy" onclick="app.copyFromModal()" class="px-4 sm:px-5 py-2 min-h-[38px] rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 transition-all shadow-sm active:scale-95 cursor-pointer flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
             <span>คัดลอกข้อความ</span>
           </button>
@@ -1786,9 +1918,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           }
         } catch (e) {}
 
-        if (defaultLeagueId && this.multiData.leagues[defaultLeagueId]) {
-          this.activeLeagueId = defaultLeagueId;
-        } else if (pathLeague && this.multiData.leagues[pathLeague]) {
+        if (pathLeague && this.multiData.leagues[pathLeague]) {
           this.activeLeagueId = pathLeague;
         } else if (queryLeague && this.multiData.leagues[queryLeague]) {
           this.activeLeagueId = queryLeague;
@@ -1796,6 +1926,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           this.activeLeagueId = hashLeague;
         } else if (savedLeague && this.multiData.leagues[savedLeague]) {
           this.activeLeagueId = savedLeague;
+        } else if (defaultLeagueId && this.multiData.leagues[defaultLeagueId]) {
+          this.activeLeagueId = defaultLeagueId;
         } else {
           this.activeLeagueId = "40700";
         }
@@ -1829,6 +1961,29 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           this.switchTab(this.activeTab);
         }
         this.initVisitorCounter();
+
+        // Listen for browser Back/Forward navigation
+        if (typeof window !== 'undefined' && window.addEventListener) {
+          window.addEventListener('popstate', () => {
+            try {
+              if (window.location && window.location.search) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const qLeague = urlParams.get('league');
+                const qTab = urlParams.get('tab');
+                const qGW = urlParams.get('gw');
+                if (qLeague && this.multiData.leagues[qLeague] && qLeague !== this.activeLeagueId) {
+                  this.switchLeague(qLeague);
+                }
+                if (qTab && qTab !== this.activeTab) {
+                  this.switchTab(qTab);
+                }
+                if (qGW && Number(qGW) !== this.selectedGW) {
+                  this.selectGW(Number(qGW));
+                }
+              }
+            } catch (e) {}
+          });
+        }
       }
 
       initTheme() {
@@ -2058,7 +2213,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           if (!isSyncHealthy) {
             lastSyncBadge.className = 'inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-rose-800 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs';
           } else {
-            lastSyncBadge.className = 'inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-slate-700 bg-slate-100/90 border border-slate-200/80 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs';
+            lastSyncBadge.className = 'inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs';
           }
         }
 
@@ -2212,16 +2367,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           const isFinished = Boolean(gwData && gwData.is_finished);
           const isStarted = gwData ? (gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || (gwData.results && gwData.results.some(r => r.points > 0)))) : false;
 
-          let badgeClass = 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed opacity-60';
+          let badgeClass = 'bg-slate-100 text-slate-400 border border-slate-200 dark:bg-slate-900/40 dark:text-slate-600 dark:border-slate-800/40 cursor-not-allowed opacity-60';
           let statusText = 'LOCKED';
 
           if (isPlayed) {
             if (isFinished) {
               statusText = 'Finished';
               if (isSelected) {
-                badgeClass = 'bg-slate-900 text-white border border-slate-900 shadow-sm cursor-pointer scale-105';
+                badgeClass = 'bg-slate-900 text-white border border-slate-900 dark:bg-blue-600 dark:text-white dark:border-blue-500 shadow-sm cursor-pointer scale-105';
               } else {
-                badgeClass = 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 cursor-pointer';
+                badgeClass = 'bg-white text-slate-700 border border-slate-200 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer';
               }
             } else if (isStarted) {
               // Not finished, but matches started -> LIVE & Pulsing Green Button!
@@ -2235,9 +2390,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               // Pre-match / Squads locked -> Upcoming
               statusText = 'Upcoming';
               if (isSelected) {
-                badgeClass = 'bg-indigo-950 text-white border-2 border-indigo-400 shadow-md cursor-pointer scale-105';
+                badgeClass = 'bg-indigo-950 text-white border-2 border-indigo-400 dark:bg-indigo-600 dark:border-indigo-400 shadow-md cursor-pointer scale-105';
               } else {
-                badgeClass = 'bg-indigo-50/80 text-indigo-900 border border-indigo-200 hover:bg-indigo-100 cursor-pointer';
+                badgeClass = 'bg-indigo-50/80 text-indigo-900 border border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-800/60 hover:bg-indigo-100 cursor-pointer';
               }
             }
           }
@@ -2245,7 +2400,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           html += `
             <button 
               onclick="${isPlayed ? `app.selectGW(${gw})` : ''}"
-              class="flex-shrink-0 flex flex-col items-center justify-center w-14 sm:w-16 py-1.5 rounded-xl transition-all font-display ${badgeClass}"
+              class="flex-shrink-0 flex flex-col items-center justify-center w-14 sm:w-16 py-1.5 min-h-[44px] rounded-xl transition-all font-display active:scale-95 ${badgeClass}"
               ${!isPlayed ? 'disabled' : ''}
             >
               <span class="text-xs font-bold">GW ${gw}</span>
@@ -2264,9 +2419,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           this.selectedMonthId = activeMonth.id;
         }
         this.renderGWSelector();
-        this.renderGameweekView();
-        this.renderHighlightsView();
-        this.renderCompetitionView();
         this.updateHighlightsTabBlink();
         this.renderCurrentTab();
       }
@@ -2467,10 +2619,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                   </div>
                   <div class="flex items-center justify-end gap-1 flex-shrink-0 self-end sm:self-center pt-1 sm:pt-0">
                     <span id="quote-copy-indicator" class="text-[11px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 inline-block font-display">Copied!</span>
-                    <button onclick="app.copyHighlightQuote()" class="p-1.5 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer" title="คัดลอกบทวิเคราะห์ (Copy Quote)">
+                    <button onclick="app.copyHighlightQuote()" class="w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="คัดลอกบทวิเคราะห์ (Copy Quote)">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     </button>
-                    <button onclick="app.regenerateLiveNote()" class="p-1.5 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer" title="สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋ (Refresh Analysis)">
+                    <button onclick="app.regenerateLiveNote()" class="w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋ (Refresh Analysis)">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
                   </div>
@@ -2620,10 +2772,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                   </div>
                   <div class="flex items-center justify-end gap-1 flex-shrink-0 self-end sm:self-center pt-1 sm:pt-0">
                     <span id="quote-copy-indicator" class="text-[11px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 inline-block font-display">Copied!</span>
-                    <button onclick="app.copyHighlightQuote()" class="p-1.5 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer" title="คัดลอกพาดหัวบทวิเคราะห์ (Copy Quote)">
+                    <button onclick="app.copyHighlightQuote()" class="w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="คัดลอกพาดหัวบทวิเคราะห์ (Copy Quote)">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     </button>
-                    <button onclick="app.regenerateLiveNote()" class="p-1.5 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer" title="สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋ (Refresh Analysis)">
+                    <button onclick="app.regenerateLiveNote()" class="w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋ (Refresh Analysis)">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
                   </div>
@@ -2689,28 +2841,28 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             }
 
             mHtml += `
-              <tr class="hover:bg-blue-50/40 transition-colors ${penaltyRowBg} ${isWinner ? 'bg-blue-50/20 font-semibold' : ''}">
+              <tr class="hover:bg-blue-50/40 dark:hover:bg-slate-800/40 transition-colors ${penaltyRowBg} ${isWinner ? 'bg-blue-50/20 dark:bg-blue-950/20 font-semibold' : ''}">
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-1.5 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-slate-600 transition-colors cursor-pointer">
-                      <span class="break-words">${this.escapeHtml(team.team_name)}</span>
+                    <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer max-w-[140px] sm:max-w-none truncate block">
+                      <span class="truncate block">${this.escapeHtml(team.team_name)}</span>
                     </button>
                     ${chip}
                     ${prizeBadge}
                     ${penaltyBadgeHtml}
                   </div>
-                  <div class="text-[11px] text-slate-500 mt-0.5">
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                     <div class="truncate">${this.escapeHtml(team.player_name)}</div>
-                    <div class="sm:hidden text-[10px] text-slate-600 font-medium mt-0.5 truncate">
+                    <div class="sm:hidden text-[10px] text-slate-600 dark:text-slate-400 font-medium mt-0.5 truncate">
                       (C) ${this.escapeHtml((team.captain || '-').replace(/\s*\(C\)/gi, '').trim())}
                     </div>
                   </div>
                 </td>
                 <td class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">
-                  <span class="text-xs text-slate-600 font-medium">${team.captain && team.captain !== '-' ? this.escapeHtml(team.captain.replace(/\s*\(C\)/gi, '').trim()) + ' (C)' : '-'}</span>
+                  <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">${team.captain && team.captain !== '-' ? this.escapeHtml(team.captain.replace(/\s*\(C\)/gi, '').trim()) + ' (C)' : '-'}</span>
                 </td>
-                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-xs sm:text-sm ${isStarted ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700'}">${team.points}</td>
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-xs sm:text-sm ${isStarted ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300'}">${team.points}</td>
                 <td class="py-2.5 px-1 sm:px-2 text-center text-xs sm:text-sm">${hits}</td>
                 <td class="py-2.5 px-1.5 sm:px-3 text-right font-display font-medium text-xs sm:text-sm text-slate-600 dark:text-slate-400">${team.net_points}</td>
               </tr>
@@ -2818,19 +2970,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             const hitsBadge = team.last_gw_hits > 0 ? `<span class="text-[10px] sm:text-[11px] font-bold text-rose-500 dark:text-rose-400 font-display ml-0.5">(-${team.last_gw_hits})</span>` : '';
 
             oHtml += `
-              <tr class="hover:bg-blue-50/40 transition-colors ${team.overall_rank && team.overall_rank <= 3 && isPrize ? 'bg-blue-50/20' : ''}">
+              <tr class="hover:bg-blue-50/40 dark:hover:bg-slate-800/40 transition-colors ${team.overall_rank && team.overall_rank <= 3 && isPrize ? 'bg-blue-50/20 dark:bg-blue-950/20' : ''}">
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-1.5 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors block truncate cursor-pointer">
+                    <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-400 transition-colors block truncate cursor-pointer max-w-[140px] sm:max-w-none">
                       ${this.escapeHtml(team.team_name)}
                     </button>
                     ${prizeBadge}
                   </div>
-                  <span class="text-[11px] text-slate-500 block truncate">${this.escapeHtml(team.player_name)}</span>
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block truncate">${this.escapeHtml(team.player_name)}</span>
                 </td>
                 <td class="py-2.5 px-1 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-700 dark:text-slate-300 whitespace-nowrap"><span class="font-semibold">${rawScore}</span>${hitsBadge}</td>
-                <td class="py-2.5 px-1.5 sm:px-3 text-right font-display font-black text-xs sm:text-sm text-blue-900">${team.total_points}</td>
+                <td class="py-2.5 px-1.5 sm:px-3 text-right font-display font-black text-xs sm:text-sm text-blue-900 dark:text-blue-400">${team.total_points}</td>
               </tr>
             `;
           });
@@ -3192,7 +3344,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               <!-- Manager Line: Player Name — Team Name (Stats) -->
               <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-baseline gap-1.5 text-xs sm:text-sm">
                 <span class="text-slate-600 dark:text-slate-400 font-medium truncate">${this.escapeHtml(cfg.winner.player_name)} —</span>
-                <button onclick="app.openTeamModal(${cfg.winner.entry_id})" class="font-bold text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer truncate">
+                <button onclick="app.openTeamModal(${cfg.winner.entry_id})" class="font-bold text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer truncate max-w-[130px] xs:max-w-[180px] sm:max-w-none">
                   ${this.escapeHtml(cfg.winner.team_name)}
                 </button>
                 ${this.getPrizeBadge(cfg.winner.entry_id)}
@@ -3707,17 +3859,38 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
       setCompTransferMobileView(view) {
         this.compTransferMobileView = view;
+        const btnContainer = document.getElementById('comp-transfers-mobile-btns');
+        if (btnContainer) {
+          const btns = btnContainer.querySelectorAll('button');
+          if (btns.length === 3) {
+            const activeClasses = {
+              both: 'bg-blue-600 text-white shadow-xs',
+              best: 'bg-emerald-600 text-white shadow-xs',
+              value: 'bg-indigo-600 text-white shadow-xs'
+            };
+            const inactiveClass = 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+            ['both', 'best', 'value'].forEach((v, idx) => {
+              btns[idx].className = `flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${view === v ? activeClasses[v] : inactiveClass}`;
+            });
+          }
+        }
         this.renderCompetitionTransfersOnly();
       }
 
       showProjectedPointsModal() {
         const modal = document.getElementById('projected-points-modal');
-        if (modal) modal.classList.remove('hidden');
+        if (modal) {
+          modal.classList.remove('hidden');
+          document.body.classList.add('overflow-hidden');
+        }
       }
 
       closeProjectedPointsModal() {
         const modal = document.getElementById('projected-points-modal');
-        if (modal) modal.classList.add('hidden');
+        if (modal) {
+          modal.classList.add('hidden');
+          document.body.classList.remove('overflow-hidden');
+        }
       }
 
       toggleImportantTeamList(pid) {
@@ -3851,7 +4024,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           </div>
 
           <!-- 4 Chip Summary Stats (Clickable to Filter) -->
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
             
             <!-- WC 1 -->
             <div id="comp-summary-card-wc1" onclick="app.setCompCardFilter('wc1')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 border-l-4 border-l-emerald-500 shadow-2xs cursor-pointer hover:border-emerald-400 transition-all">
@@ -4456,38 +4629,38 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const sortedTeams = this.getLeaderboardTeams();
 
         container.innerHTML = `
-          <!-- Section Container styled in Dark Slate matching FPL Gameweek -->
-          <div class="rounded-2xl p-3.5 sm:p-6 bg-slate-900 text-white border border-slate-800 shadow-xl space-y-3 sm:space-y-4">
+          <!-- Section Container with Light/Dark Mode support -->
+          <div class="glass-card rounded-2xl p-3.5 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs dark:shadow-xl space-y-3 sm:space-y-4">
             
             <!-- Header Row -->
-            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
               <div>
                 <div class="flex items-center gap-2">
-                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span class="text-[10px] sm:text-xs uppercase tracking-wider text-emerald-400 font-bold font-display">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse"></span>
+                  <span class="text-[10px] sm:text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold font-display">
                     FPL GAMEWEEK INSIGHTS
                   </span>
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                     GW ${suggGw}
                   </span>
                 </div>
-                <h3 class="text-base sm:text-lg font-bold text-white font-display mt-0.5 flex items-center gap-2">
-                  Transfer Suggestions <span class="text-xs sm:text-sm font-normal text-slate-400 font-sans">(คำแนะนำการย้ายตัว)</span>
+                <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display mt-0.5 flex items-center gap-2">
+                  Transfer Suggestions <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(คำแนะนำการย้ายตัว)</span>
                 </h3>
-                <p class="text-xs text-slate-400 mt-0.5">
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   วิเคราะห์ตัวเลือกที่ดีที่สุด (Best Players) และตัวเลือกสุดคุ้มค่า (Best Value) พร้อมคะแนนคาดการณ์ประจำสัปดาห์
                 </p>
               </div>
 
               <!-- Team Highlighter Selector (Ordered by Total Leaderboard) -->
               <div class="flex items-center gap-2 flex-wrap w-full sm:w-auto">
-                <label for="comp-transfers-team-select" class="text-xs text-slate-300 font-medium">
+                <label for="comp-transfers-team-select" class="text-xs text-slate-600 dark:text-slate-300 font-medium">
                   ไฮไลท์นักเตะในทีม:
                 </label>
                 <select 
                   id="comp-transfers-team-select" 
                   onchange="app.setCompTransferTeam(this.value)"
-                  class="w-full sm:w-auto bg-slate-800 text-white text-xs border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
+                  class="w-full sm:w-auto bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer shadow-2xs"
                 >
                   <option value="">-- ภาพรวมทั้งลีก (แสดง % ถือครองในลีก) --</option>
                   ${sortedTeams.map(t => {
@@ -4504,14 +4677,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             </div>
 
             <!-- Mobile View Switcher (< sm screens) -->
-            <div class="sm:hidden flex items-center p-1 bg-slate-800/90 rounded-xl text-xs font-bold border border-slate-700/60">
-              <button onclick="app.setCompTransferMobileView('both')" class="flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${this.compTransferMobileView === 'both' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'}">
+            <div id="comp-transfers-mobile-btns" class="sm:hidden flex items-center p-1 bg-slate-100 dark:bg-slate-800/90 rounded-xl text-xs font-bold border border-slate-200/80 dark:border-slate-700/60">
+              <button onclick="app.setCompTransferMobileView('both')" class="flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${this.compTransferMobileView === 'both' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}">
                 ตารางคู่ (เลื่อนข้าง)
               </button>
-              <button onclick="app.setCompTransferMobileView('best')" class="flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${this.compTransferMobileView === 'best' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'}">
+              <button onclick="app.setCompTransferMobileView('best')" class="flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${this.compTransferMobileView === 'best' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}">
                 Best Players
               </button>
-              <button onclick="app.setCompTransferMobileView('value')" class="flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${this.compTransferMobileView === 'value' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'}">
+              <button onclick="app.setCompTransferMobileView('value')" class="flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${this.compTransferMobileView === 'value' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}">
                 Best Value
               </button>
             </div>
@@ -4578,8 +4751,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             if (items.length === 0) return;
 
             rowsHtml += `
-              <tr class="bg-slate-800/90 border-y border-slate-700/60">
-                <td colspan="3" class="py-2.5 px-3 text-xs font-bold text-slate-100 uppercase tracking-wider font-display">
+              <tr class="bg-slate-100/90 dark:bg-slate-800/90 border-y border-slate-200/80 dark:border-slate-700/60">
+                <td colspan="3" class="py-2.5 px-3 text-xs font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider font-display">
                   ${cat.title}
                 </td>
               </tr>
@@ -4593,15 +4766,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               const bestShirtUrl = this.getPlayerShirtUrl({ pos: cat.pos, team: best.TeamName });
 
               const bestNameClass = isBestInTeam 
-                ? 'font-bold text-white bg-emerald-950/70 border border-emerald-500/40 px-1.5 py-0.5 rounded text-xs' 
-                : 'text-slate-200 text-xs';
+                ? 'font-bold text-emerald-900 dark:text-white bg-emerald-100 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-500/40 px-1.5 py-0.5 rounded text-xs' 
+                : 'text-slate-800 dark:text-slate-200 text-xs';
 
               const bestLeagueTag = (this.compTransferTeam === '') 
-                ? `<span class="text-[10px] text-slate-400 font-normal ml-1.5 font-display" title="ถือครองในลีกนี้ ${bestOwnerCount}/${totalTeams} ทีม">${bestOwnerCount > 0 ? `${bestOwnerPct}%` : '0%'}</span>`
-                : (isBestInTeam ? `<span class="text-[9px] text-emerald-400 font-bold ml-1">● ในทีม</span>` : '');
+                ? `<span class="text-[10px] text-slate-500 dark:text-slate-400 font-normal ml-1.5 font-display" title="ถือครองในลีกนี้ ${bestOwnerCount}/${totalTeams} ทีม">${bestOwnerCount > 0 ? `${bestOwnerPct}%` : '0%'}</span>`
+                : (isBestInTeam ? `<span class="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold ml-1">● ในทีม</span>` : '');
 
               rowsHtml += `
-                <tr class="hover:bg-slate-800/40 transition-colors border-b border-slate-800/60 text-xs">
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60 text-xs">
                   <td class="py-2.5 px-2.5 text-left">
                     <div class="flex items-center gap-2 min-w-0">
                       <img src="${bestShirtUrl}" alt="${best.TeamName || ''}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_0-66.webp';" />
@@ -4611,10 +4784,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                       ${bestLeagueTag}
                     </div>
                   </td>
-                  <td class="py-2.5 px-2 text-right font-mono text-slate-300 whitespace-nowrap">
+                  <td class="py-2.5 px-2 text-right font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap">
                     ${formatCost(best.Cost)}
                   </td>
-                  <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-100 whitespace-nowrap">
+                  <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
                     ${formatPts(best.ExpectedPoints)}
                   </td>
                 </tr>
@@ -4626,18 +4799,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <div class="w-full">
               <table class="w-full text-left border-collapse">
                 <thead>
-                  <tr class="text-[11px] font-bold text-slate-400 font-display uppercase tracking-wider border-b border-slate-800 pb-2">
+                  <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
                     <th style="width: 60%;" class="py-2 px-2.5 text-left">Best players</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">Price</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">
                       <span class="inline-flex items-center justify-end gap-1">
                         Pts
-                        <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
+                        <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
                       </span>
                     </th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-800/40">
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/40">
                   ${rowsHtml}
                 </tbody>
               </table>
@@ -4654,8 +4827,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             if (items.length === 0) return;
 
             rowsHtml += `
-              <tr class="bg-slate-800/90 border-y border-slate-700/60">
-                <td colspan="3" class="py-2.5 px-3 text-xs font-bold text-slate-100 uppercase tracking-wider font-display">
+              <tr class="bg-slate-100/90 dark:bg-slate-800/90 border-y border-slate-200/80 dark:border-slate-700/60">
+                <td colspan="3" class="py-2.5 px-3 text-xs font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider font-display">
                   ${cat.title}
                 </td>
               </tr>
@@ -4669,15 +4842,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               const valShirtUrl = this.getPlayerShirtUrl({ pos: cat.pos, team: val.TeamName });
 
               const valNameClass = isValInTeam 
-                ? 'font-bold text-white bg-emerald-950/70 border border-emerald-500/40 px-1.5 py-0.5 rounded text-xs' 
-                : 'text-slate-200 text-xs';
+                ? 'font-bold text-emerald-900 dark:text-white bg-emerald-100 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-500/40 px-1.5 py-0.5 rounded text-xs' 
+                : 'text-slate-800 dark:text-slate-200 text-xs';
 
               const valLeagueTag = (this.compTransferTeam === '') 
-                ? `<span class="text-[10px] text-slate-400 font-normal ml-1.5 font-display" title="ถือครองในลีกนี้ ${valOwnerCount}/${totalTeams} ทีม">${valOwnerCount > 0 ? `${valOwnerPct}%` : '0%'}</span>`
-                : (isValInTeam ? `<span class="text-[9px] text-emerald-400 font-bold ml-1">● ในทีม</span>` : '');
+                ? `<span class="text-[10px] text-slate-500 dark:text-slate-400 font-normal ml-1.5 font-display" title="ถือครองในลีกนี้ ${valOwnerCount}/${totalTeams} ทีม">${valOwnerCount > 0 ? `${valOwnerPct}%` : '0%'}</span>`
+                : (isValInTeam ? `<span class="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold ml-1">● ในทีม</span>` : '');
 
               rowsHtml += `
-                <tr class="hover:bg-slate-800/40 transition-colors border-b border-slate-800/60 text-xs">
+                <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60 text-xs">
                   <td class="py-2.5 px-2.5 text-left">
                     <div class="flex items-center gap-2 min-w-0">
                       <img src="${valShirtUrl}" alt="${val.TeamName || ''}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_0-66.webp';" />
@@ -4687,10 +4860,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                       ${valLeagueTag}
                     </div>
                   </td>
-                  <td class="py-2.5 px-2 text-right font-mono text-slate-300 whitespace-nowrap">
+                  <td class="py-2.5 px-2 text-right font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap">
                     ${formatCost(val.Cost)}
                   </td>
-                  <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-100 whitespace-nowrap">
+                  <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
                     ${formatPts(val.ExpectedPoints)}
                   </td>
                 </tr>
@@ -4702,18 +4875,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <div class="w-full">
               <table class="w-full text-left border-collapse">
                 <thead>
-                  <tr class="text-[11px] font-bold text-slate-400 font-display uppercase tracking-wider border-b border-slate-800 pb-2">
+                  <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
                     <th style="width: 60%;" class="py-2 px-2.5 text-left">Best Value</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">Price</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">
                       <span class="inline-flex items-center justify-end gap-1">
                         Pts
-                        <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
+                        <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
                       </span>
                     </th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-800/40">
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/40">
                   ${rowsHtml}
                 </tbody>
               </table>
@@ -4731,8 +4904,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
           // Category Subheader Row
           tableRowsHtml += `
-            <tr class="bg-slate-800/90 border-y border-slate-700/60">
-              <td colspan="7" class="py-2.5 px-3 text-xs sm:text-sm font-bold text-slate-100 uppercase tracking-wider font-display">
+            <tr class="bg-slate-100/90 dark:bg-slate-800/90 border-y border-slate-200/80 dark:border-slate-700/60">
+              <td colspan="7" class="py-2.5 px-3 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider font-display">
                 ${cat.title}
               </td>
             </tr>
@@ -4757,23 +4930,23 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
             // Badges or text highlighting
             const bestNameClass = isBestInTeam 
-              ? 'font-bold text-white bg-emerald-950/70 border border-emerald-500/40 px-1.5 py-0.5 rounded text-xs' 
-              : 'text-slate-200 text-xs';
+              ? 'font-bold text-emerald-900 dark:text-white bg-emerald-100 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-500/40 px-1.5 py-0.5 rounded text-xs' 
+              : 'text-slate-800 dark:text-slate-200 text-xs';
             
             const valNameClass = isValInTeam 
-              ? 'font-bold text-white bg-emerald-950/70 border border-emerald-500/40 px-1.5 py-0.5 rounded text-xs' 
-              : 'text-slate-200 text-xs';
+              ? 'font-bold text-emerald-900 dark:text-white bg-emerald-100 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-500/40 px-1.5 py-0.5 rounded text-xs' 
+              : 'text-slate-800 dark:text-slate-200 text-xs';
 
             const bestLeagueTag = (this.compTransferTeam === '') 
-              ? `<span class="text-[10px] text-slate-400 font-normal ml-1.5 font-display" title="ถือครองในลีกนี้ ${bestOwnerCount}/${totalTeams} ทีม">${bestOwnerCount > 0 ? `${bestOwnerPct}%` : '0%'}</span>`
-              : (isBestInTeam ? `<span class="text-[9px] text-emerald-400 font-bold ml-1">● ในทีม</span>` : '');
+              ? `<span class="text-[10px] text-slate-500 dark:text-slate-400 font-normal ml-1.5 font-display" title="ถือครองในลีกนี้ ${bestOwnerCount}/${totalTeams} ทีม">${bestOwnerCount > 0 ? `${bestOwnerPct}%` : '0%'}</span>`
+              : (isBestInTeam ? `<span class="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold ml-1">● ในทีม</span>` : '');
 
             const valLeagueTag = (this.compTransferTeam === '') 
-              ? `<span class="text-[10px] text-slate-400 font-normal ml-1.5 font-display" title="ถือครองในลีกนี้ ${valOwnerCount}/${totalTeams} ทีม">${valOwnerCount > 0 ? `${valOwnerPct}%` : '0%'}</span>`
-              : (isValInTeam ? `<span class="text-[9px] text-emerald-400 font-bold ml-1">● ในทีม</span>` : '');
+              ? `<span class="text-[10px] text-slate-500 dark:text-slate-400 font-normal ml-1.5 font-display" title="ถือครองในลีกนี้ ${valOwnerCount}/${totalTeams} ทีม">${valOwnerCount > 0 ? `${valOwnerPct}%` : '0%'}</span>`
+              : (isValInTeam ? `<span class="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold ml-1">● ในทีม</span>` : '');
 
             tableRowsHtml += `
-              <tr class="hover:bg-slate-800/40 transition-colors border-b border-slate-800/60 text-xs">
+              <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60 text-xs">
                 
                 <!-- Best Player: Shirt + Name -->
                 <td class="py-2.5 px-2.5 sm:px-3 text-left">
@@ -4787,17 +4960,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 </td>
 
                 <!-- Best Player: Price -->
-                <td class="py-2.5 px-2 text-right font-mono text-slate-300 whitespace-nowrap">
+                <td class="py-2.5 px-2 text-right font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap">
                   ${formatCost(best.Cost)}
                 </td>
 
                 <!-- Best Player: Pts -->
-                <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-100 whitespace-nowrap">
+                <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
                   ${formatPts(best.ExpectedPoints)}
                 </td>
 
                 <!-- Divider Column -->
-                <td class="py-2.5 px-1 sm:px-2 border-r border-slate-800"></td>
+                <td class="py-2.5 px-1 sm:px-2 border-r border-slate-200 dark:border-slate-800"></td>
 
                 <!-- Best Value: Shirt + Name -->
                 <td class="py-2.5 px-2.5 sm:px-3 text-left">
@@ -4811,12 +4984,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 </td>
 
                 <!-- Best Value: Price -->
-                <td class="py-2.5 px-2 text-right font-mono text-slate-300 whitespace-nowrap">
+                <td class="py-2.5 px-2 text-right font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap">
                   ${formatCost(val.Cost)}
                 </td>
 
                 <!-- Best Value: Pts -->
-                <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-100 whitespace-nowrap">
+                <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
                   ${formatPts(val.ExpectedPoints)}
                 </td>
 
@@ -4827,35 +5000,35 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         tableContainer.innerHTML = `
           <!-- Mobile Scroll Hint -->
-          <div class="sm:hidden flex items-center justify-between text-[11px] text-slate-400 pb-1.5 border-b border-slate-800 px-1">
+          <div class="sm:hidden flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pb-1.5 border-b border-slate-200 dark:border-slate-800 px-1">
             <span>เปรียบเทียบทั้งคู่</span>
-            <span class="text-[10px] text-emerald-400">👈 เลื่อนดู Best Value 👉</span>
+            <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">👈 เลื่อนดู Best Value 👉</span>
           </div>
 
           <div class="overflow-x-auto touch-scroll no-scrollbar -mx-2 sm:mx-0">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="text-[11px] font-bold text-slate-400 font-display uppercase tracking-wider border-b border-slate-800 pb-2">
+                <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
                   <th style="width: 28%;" class="py-2 px-2.5 sm:px-3 text-left">Best players</th>
                   <th style="width: 10%;" class="py-2 px-2 text-right">Price</th>
                   <th style="width: 11%;" class="py-2 px-2 text-right">
                     <span class="inline-flex items-center justify-end gap-1">
                       Pts
-                      <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
+                      <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
                     </span>
                   </th>
-                  <th style="width: 2%;" class="py-2 px-1 border-r border-slate-800"></th>
+                  <th style="width: 2%;" class="py-2 px-1 border-r border-slate-200 dark:border-slate-800"></th>
                   <th style="width: 28%;" class="py-2 px-2.5 sm:px-3 text-left">Best Value</th>
                   <th style="width: 10%;" class="py-2 px-2 text-right">Price</th>
                   <th style="width: 11%;" class="py-2 px-2 text-right">
                     <span class="inline-flex items-center justify-end gap-1">
                       Pts
-                      <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
+                      <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
                     </span>
                   </th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-800/40">
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800/40">
                 ${tableRowsHtml}
               </tbody>
             </table>
@@ -5114,9 +5287,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             tableRows += `
               <tr class="hover:bg-slate-50 transition-colors ${idx < 3 && (wins > 0 || actualPrize > 0) && isEligible ? 'bg-amber-50/20' : ''}">
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500">${isEligible ? (idx + 1) : this.getNonPrizeRankBadge()}</td>
-                <td class="py-2.5 px-2 sm:px-3">
+                <td class="py-2.5 px-2 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${this.escapeHtml(t.entry_name)}</button>
+                    <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block truncate max-w-[130px] xs:max-w-[180px] sm:max-w-none">${this.escapeHtml(t.entry_name)}</button>
                     ${this.getPrizeBadge(t.entry_id)}
                   </div>
                   <div class="text-[11px] text-slate-500">${this.escapeHtml(t.player_name)}</div>
@@ -5497,7 +5670,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             const aEligible = this.isPrizeEligible(a.entry_id) ? 1 : 0;
             const bEligible = this.isPrizeEligible(b.entry_id) ? 1 : 0;
             if (aEligible !== bEligible) return bEligible - aEligible;
-            return b.month_total - a.month_total;
+            return (b.month_total - a.month_total) || (a.team_name || '').localeCompare(b.team_name || '') || (a.entry_id - b.entry_id);
           });
           let curMonthlyRank = 1;
           let eligibleMonthlyCount = 0;
@@ -5556,13 +5729,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
           let monthlyTableRows = '';
           let hasRenderedMonthlyNonPrizeHeader = false;
-          const eligibleMonthSorted = monthlySorted.filter(x => this.isPrizeEligible(x.entry_id) && x.month_total > 0);
-          const topChampsInMonth = eligibleMonthSorted.filter(x => x.eligible_monthly_rank === 1);
-          const topRunnersInMonth = eligibleMonthSorted.filter(x => x.eligible_monthly_rank === 2);
+          const eligibleMonthSorted = curMonthIsStarted ? monthlySorted.filter(x => this.isPrizeEligible(x.entry_id)) : [];
+          const hasPositiveScores = eligibleMonthSorted.length > 0 && eligibleMonthSorted[0].month_total > 0;
+          const topChampsInMonth = hasPositiveScores ? eligibleMonthSorted.filter(x => x.eligible_monthly_rank === 1) : [];
+          const topRunnersInMonth = hasPositiveScores ? eligibleMonthSorted.filter(x => x.eligible_monthly_rank === 2) : [];
           const leaderCount = topChampsInMonth.length;
           const runnerCount = topRunnersInMonth.length;
-          const splitChampAmt = leaderCount > 0 ? Math.floor((champPrize + (leaderCount > 1 ? runnerPrize : 0)) / leaderCount) : champPrize;
-          const splitRunnerAmt = runnerCount > 0 ? Math.floor(runnerPrize / runnerCount) : runnerPrize;
+          const rawSplitChampAmt = leaderCount > 0 ? ((champPrize + (leaderCount > 1 ? runnerPrize : 0)) / leaderCount) : champPrize;
+          const splitChampDisplay = (leaderCount > 1 && (champPrize + runnerPrize) % leaderCount !== 0)
+            ? `${rawSplitChampAmt.toFixed(2)} THB`
+            : `${rawSplitChampAmt.toLocaleString()} THB`;
+          const rawSplitRunnerAmt = runnerCount > 0 ? (runnerPrize / runnerCount) : runnerPrize;
+          const splitRunnerDisplay = (runnerCount > 1 && runnerPrize % runnerCount !== 0)
+            ? `${rawSplitRunnerAmt.toFixed(2)} THB`
+            : `${rawSplitRunnerAmt.toLocaleString()} THB`;
 
           monthlySorted.forEach((t) => {
             const isEligible = this.isPrizeEligible(t.entry_id);
@@ -5577,8 +5757,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 </tr>
               `;
             }
-            const isLeader = isEligible && (t.eligible_monthly_rank === 1 && t.month_total > 0);
-            const isRunnerUp = isEligible && (t.eligible_monthly_rank === 2 && t.month_total > 0);
+            const isLeader = isEligible && curMonthIsStarted && hasPositiveScores && (t.eligible_monthly_rank === 1);
+            const isRunnerUp = isEligible && curMonthIsStarted && hasPositiveScores && (t.eligible_monthly_rank === 2);
             let rankBadge = '';
             let prizePill = '';
 
@@ -5586,20 +5766,36 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               rankBadge = this.getNonPrizeRankBadge();
             } else if (isLeader) {
               rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
-              if (leaderCount > 1) {
-                prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600/50 font-display flex-shrink-0">แชมป์ร่วม (หาร ${leaderCount}) ${splitChampAmt.toLocaleString()} THB</span>`;
+              if (curMonthIsFinished) {
+                if (leaderCount > 1) {
+                  prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600/50 font-display flex-shrink-0">แชมป์ร่วม (หาร ${leaderCount}) ${splitChampDisplay}</span>`;
+                } else {
+                  prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600/50 font-display flex-shrink-0">แชมป์เดือน ${champPrize.toLocaleString()} THB</span>`;
+                }
               } else {
-                prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600/50 font-display flex-shrink-0">แชมป์เดือน ${champPrize} THB</span>`;
+                if (leaderCount > 1) {
+                  prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-600/50 font-display flex-shrink-0 animate-pulse">ผู้นำร่วมสด (หาร ${leaderCount}) ${splitChampDisplay}</span>`;
+                } else {
+                  prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-600/50 font-display flex-shrink-0 animate-pulse">ผู้นำสด ${champPrize.toLocaleString()} THB</span>`;
+                }
               }
             } else if (isRunnerUp) {
               rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
-              if (runnerCount > 1) {
-                prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-600/50 font-display flex-shrink-0">รองแชมป์ร่วม (หาร ${runnerCount}) ${splitRunnerAmt.toLocaleString()} THB</span>`;
+              if (curMonthIsFinished) {
+                if (runnerCount > 1) {
+                  prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-600/50 font-display flex-shrink-0">รองแชมป์ร่วม (หาร ${runnerCount}) ${splitRunnerDisplay}</span>`;
+                } else {
+                  prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-600/50 font-display flex-shrink-0">รองแชมป์ ${runnerPrize.toLocaleString()} THB</span>`;
+                }
               } else {
-                prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-600/50 font-display flex-shrink-0">รองแชมป์ ${runnerPrize} THB</span>`;
+                if (runnerCount > 1) {
+                  prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-sky-100 dark:bg-sky-950/60 text-sky-800 dark:text-sky-300 border border-sky-300 dark:border-sky-600/50 font-display flex-shrink-0">รองผู้นำร่วมสด (หาร ${runnerCount}) ${splitRunnerDisplay}</span>`;
+                } else {
+                  prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-sky-100 dark:bg-sky-950/60 text-sky-800 dark:text-sky-300 border border-sky-300 dark:border-sky-600/50 font-display flex-shrink-0">รองผู้นำสด ${runnerPrize.toLocaleString()} THB</span>`;
+                }
               }
             } else {
-              rankBadge = `<span class="text-slate-500 font-bold">${t.rank}</span>`;
+              rankBadge = `<span class="text-slate-500 font-bold">${t.rank || '-'}</span>`;
             }
 
             let scoreCols = '';
@@ -5613,9 +5809,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             monthlyTableRows += `
               <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${isLeader ? 'bg-amber-50/20 font-semibold' : (isRunnerUp ? 'bg-blue-50/20' : '')}">
                 <td class="py-2.5 px-2 text-center font-display font-bold">${rankBadge}</td>
-                <td class="py-2.5 px-2">
+                <td class="py-2.5 px-2 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block">${this.escapeHtml(t.team_name)}</button>
+                    <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block truncate max-w-[130px] xs:max-w-[180px] sm:max-w-none">${this.escapeHtml(t.team_name)}</button>
                     ${prizePill}
                     ${this.getPrizeBadge(t.entry_id)}
                   </div>
@@ -5682,7 +5878,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               });
             }
 
-            const sortedMonthTeams = Object.values(monthTeamMap).sort((a, b) => b.total - a.total);
+            const sortedMonthTeams = Object.values(monthTeamMap).sort((a, b) => {
+              return (b.total - a.total) || (a.team_name || '').localeCompare(b.team_name || '') || (a.entry_id - b.entry_id);
+            });
             const eligibleMonthTeams = sortedMonthTeams.filter(t => this.isPrizeEligible(t.entry_id));
 
             let winnersSummaryHtml = '';
@@ -5695,15 +5893,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               let totalPaidThisMonth = 0;
 
               if (topChamps.length > 1) {
-                const splitAmt = Math.floor((champPrize + runnerPrize) / topChamps.length);
-                totalPaidThisMonth = splitAmt * topChamps.length;
+                const rawSplitAmt = (champPrize + runnerPrize) / topChamps.length;
+                const splitDisplay = ((champPrize + runnerPrize) % topChamps.length !== 0)
+                  ? `${rawSplitAmt.toFixed(2)} THB`
+                  : `${rawSplitAmt.toLocaleString()} THB`;
+                totalPaidThisMonth = champPrize + runnerPrize;
                 champRows = topChamps.map(c => `
                   <div class="flex items-center justify-between text-xs py-0.5">
                     <div class="truncate pr-2">
-                      <span class="font-bold text-amber-700 dark:text-amber-400">🥇 แชมป์ร่วม: ${this.escapeHtml(c.team_name)}</span>
+                      <span class="font-bold text-amber-700 dark:text-amber-400">🥇 แชมป์ร่วม (หาร ${topChamps.length}): ${this.escapeHtml(c.team_name)}</span>
                       <span class="text-[10px] text-slate-500">(${c.total} pts)</span>
                     </div>
-                    <span class="font-bold font-display text-emerald-700 flex-shrink-0">${splitAmt.toLocaleString()} THB</span>
+                    <span class="font-bold font-display text-emerald-700 flex-shrink-0">${splitDisplay}</span>
                   </div>
                 `).join('');
               } else {
@@ -5723,10 +5924,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 if (secondPts !== undefined && secondPts > 0) {
                   const topRunners = eligibleMonthTeams.filter(t => t.total === secondPts);
                   const isJointRunner = topRunners.length > 1;
-                  const splitRunnerAmt = (runnerPrize / topRunners.length);
+                  const rawSplitRunnerAmt = (runnerPrize / topRunners.length);
                   const splitRunnerDisplay = (topRunners.length > 1 && runnerPrize % topRunners.length !== 0)
-                    ? `${splitRunnerAmt.toFixed(2)} THB`
-                    : `${splitRunnerAmt.toLocaleString()} THB`;
+                    ? `${rawSplitRunnerAmt.toFixed(2)} THB`
+                    : `${rawSplitRunnerAmt.toLocaleString()} THB`;
                   totalPaidThisMonth += runnerPrize;
                   runnerRows = topRunners.map(r => `
                     <div class="flex items-center justify-between text-xs py-0.5">
@@ -5752,17 +5953,23 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 </div>
               `;
             } else if (isMonthOngoing && eligibleMonthTeams.length > 0 && eligibleMonthTeams[0].total > 0) {
-              const curLead = eligibleMonthTeams[0];
+              const topPts = eligibleMonthTeams[0].total;
+              const liveLeaders = eligibleMonthTeams.filter(t => t.total === topPts);
+              const isJoint = liveLeaders.length > 1;
+              const leadersHtml = liveLeaders.map(l => `
+                <div class="flex items-center justify-between text-xs py-0.5">
+                  <span class="font-bold text-slate-900 truncate pr-2">${this.escapeHtml(l.team_name)}</span>
+                  <span class="font-bold text-emerald-700 font-display flex-shrink-0">${l.total} pts</span>
+                </div>
+              `).join('');
+
               winnersSummaryHtml = `
                 <div class="mt-2.5 pt-2.5 border-t border-slate-200/80 space-y-1">
                   <div class="text-[10px] font-bold text-emerald-700 uppercase font-display flex items-center gap-1">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    ผู้นำคะแนนสดชิงรางวัล:
+                    ${isJoint ? `ผู้นำร่วมคะแนนสดชิงรางวัล (${liveLeaders.length} ทีม):` : 'ผู้นำคะแนนสดชิงรางวัล:'}
                   </div>
-                  <div class="flex items-center justify-between text-xs py-0.5">
-                    <span class="font-bold text-slate-900 truncate pr-2">${this.escapeHtml(curLead.team_name)}</span>
-                    <span class="font-bold text-emerald-700 font-display flex-shrink-0">${curLead.total} pts</span>
-                  </div>
+                  ${leadersHtml}
                 </div>
               `;
             } else {
@@ -6117,7 +6324,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500 whitespace-nowrap">${rankBadge}</td>
                 <td class="py-2.5 px-1.5 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block truncate">${this.escapeHtml(t.team_name)}</button>
+                    <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block truncate max-w-[130px] xs:max-w-[180px] sm:max-w-none">${this.escapeHtml(t.team_name)}</button>
                     ${this.getPrizeBadge(t.entry_id)}
                   </div>
                   <div class="text-[10px] sm:text-[11px] text-slate-500 truncate">${this.escapeHtml(t.player_name || '')}</div>
@@ -6378,9 +6585,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           if (matchdayRes.chip) {
             chipBadge.className = `chip-badge badge-${matchdayRes.chip.toLowerCase()} font-display`;
             chipBadge.innerText = matchdayRes.chip.toUpperCase();
-            chipBadge.classList.remove('hidden');
           } else {
-            chipBadge.classList.add('hidden');
+            chipBadge.className = 'hidden';
+            chipBadge.innerText = '';
           }
         }
 
@@ -6415,7 +6622,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           if (benchContainer) benchContainer.innerHTML = '<div class="text-center text-slate-400 py-4 col-span-2 text-xs">ไม่มีข้อมูลตัวสำรอง</div>';
           if (benchTotal) benchTotal.innerHTML = '';
           const modal = document.getElementById('team-modal');
-          if (modal) modal.classList.remove('hidden');
+          if (modal) {
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+          }
           return;
         }
 
@@ -6449,7 +6659,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             const notPlayed = isPlayerUnstarted(p);
 
             return `
-              <div class="flex flex-col items-center justify-center p-0.5 text-center flex-shrink-0 transition-transform active:scale-95 group" style="width: ${100 / Math.max(count, 3)}%; max-width: 76px;">
+              <div class="flex flex-col items-center justify-center p-0.5 text-center min-w-0 transition-transform active:scale-95 group" style="width: ${100 / Math.max(count, 3)}%; max-width: 76px;">
                 <div class="relative flex items-center justify-center mb-0.5">
                   <img 
                     src="${shirtUrl}" 
@@ -6457,20 +6667,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                     width="44"
                     height="52"
                     decoding="async"
-                    class="w-9 h-10 sm:w-11 sm:h-12 md:w-12 md:h-14 object-contain drop-shadow-md transition-transform group-hover:scale-105"
+                    class="w-8 h-9 xs:w-9 xs:h-10 sm:w-11 sm:h-12 md:w-12 md:h-14 object-contain drop-shadow-md transition-transform group-hover:scale-105"
                     loading="lazy"
                     onerror="this.onerror=null; this.src='https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_0-66.webp';"
                   />
-                  ${isCap ? '<span class="absolute -top-1 -right-1 bg-amber-400 text-slate-950 font-black text-[8px] sm:text-[9px] w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full flex items-center justify-center font-display shadow-md border border-amber-300 animate-pulse z-10">C</span>' : ''}
-                  ${isVice ? '<span class="absolute -top-1 -right-1 bg-slate-200 text-slate-950 font-black text-[8px] sm:text-[9px] w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full flex items-center justify-center font-display shadow-md border border-slate-300 z-10">V</span>' : ''}
+                  ${isCap ? '<span class="absolute -top-1 -right-1 bg-amber-400 text-slate-950 font-black text-[7.5px] xs:text-[8px] sm:text-[9px] w-3.5 h-3.5 xs:w-4 xs:h-4 rounded-full flex items-center justify-center font-display shadow-md border border-amber-300 z-10">C</span>' : ''}
+                  ${isVice ? '<span class="absolute -top-1 -right-1 bg-slate-200 text-slate-950 font-black text-[7.5px] xs:text-[8px] sm:text-[9px] w-3.5 h-3.5 xs:w-4 xs:h-4 rounded-full flex items-center justify-center font-display shadow-md border border-slate-300 z-10">V</span>' : ''}
                 </div>
 
-                <div class="bg-slate-950/90 text-white font-bold text-[9px] sm:text-[10px] px-1 py-0.5 rounded shadow-sm w-full truncate text-center border border-white/10 leading-tight">
+                <div class="bg-slate-950/90 text-white font-bold text-[8.5px] xs:text-[9px] sm:text-[10px] px-1 py-0.5 rounded shadow-sm w-full truncate text-center border border-white/10 leading-tight">
                   ${this.escapeHtml(p.name)}
                 </div>
 
                 ${notPlayed ? '' : `
-                  <div class="bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-[8.5px] sm:text-[9.5px] font-black font-display px-1.5 py-0.2 rounded mt-0.5 shadow-xs">
+                  <div class="bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-[8px] xs:text-[8.5px] sm:text-[9.5px] font-black font-display px-1 sm:px-1.5 py-0.5 rounded mt-0.5 shadow-xs whitespace-nowrap">
                     ${p.points} pts
                   </div>
                 `}
@@ -6507,8 +6717,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             }
             const shirtUrl = this.getPlayerShirtUrl(p);
             bHtml += `
-              <div class="bg-white border border-slate-200 rounded-xl p-2 sm:p-2.5 flex items-center justify-between shadow-xs hover:border-slate-300 transition-colors">
-                <div class="flex items-center gap-2 min-w-0 pr-2">
+              <div class="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl p-2 sm:p-2.5 flex items-center justify-between shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
+                <div class="flex items-center gap-1.5 sm:gap-2 min-w-0 pr-1.5 sm:pr-2">
                   <img 
                     src="${shirtUrl}" 
                     alt="${this.escapeHtml(p.team || '')}" 
@@ -6519,12 +6729,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                     loading="lazy"
                     onerror="this.onerror=null; this.src='https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_0-66.webp';"
                   />
-                  <span class="text-[9px] sm:text-[10px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md font-display flex-shrink-0">${p.pos}</span>
-                  <span class="text-xs sm:text-sm font-bold text-slate-900 truncate">${this.escapeHtml(p.name)}</span>
+                  <span class="text-[9px] sm:text-[10px] font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 rounded-md font-display flex-shrink-0">${p.pos}</span>
+                  <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">${this.escapeHtml(p.name)}</span>
                 </div>
                 ${notPlayed
-                  ? `<span class="text-xs text-slate-400 font-bold font-display flex-shrink-0 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-lg">-</span>`
-                  : `<span class="text-xs sm:text-xs font-bold text-slate-700 font-display flex-shrink-0 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded-lg">${p.points} pts</span>`
+                  ? `<span class="text-xs text-slate-400 font-bold font-display flex-shrink-0 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded-lg">-</span>`
+                  : `<span class="text-xs sm:text-xs font-bold text-slate-700 dark:text-slate-300 font-display flex-shrink-0 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded-lg">${p.points} pts</span>`
                 }
               </div>
             `;
@@ -6533,18 +6743,24 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           if (benchTotal) {
             const isBBoost = ['bboost', 'bench_boost'].includes((matchdayRes.chip || '').toLowerCase());
             benchTotal.innerHTML = isBBoost 
-              ? `<span class="text-emerald-600 font-bold">รวม ${bPoints} pts (⚡ Bench Boost นับแต้ม)</span>`
+              ? `<span class="text-emerald-600 dark:text-emerald-400 font-bold">รวม ${bPoints} pts (⚡ Bench Boost นับแต้ม)</span>`
               : `รวม ${bPoints} pts`;
           }
         }
 
         const modal = document.getElementById('team-modal');
-        if (modal) modal.classList.remove('hidden');
+        if (modal) {
+          modal.classList.remove('hidden');
+          document.body.classList.add('overflow-hidden');
+        }
       }
 
       closeTeamModal() {
         const modal = document.getElementById('team-modal');
-        if (modal) modal.classList.add('hidden');
+        if (modal) {
+          modal.classList.add('hidden');
+          document.body.classList.remove('overflow-hidden');
+        }
       }
 
       regenerateLiveNote() {
@@ -6737,11 +6953,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               const eligibleMonthly = Object.entries(monthlyScores)
                 .filter(([eid]) => this.isPrizeEligible(eid))
                 .map(([, t]) => t)
-                .sort((a, b) => b.pts - a.pts);
-              const topM = eligibleMonthly[0];
-              if (topM) {
+                .sort((a, b) => (b.pts - a.pts) || (a.name || '').localeCompare(b.name || ''));
+              if (eligibleMonthly.length > 0 && eligibleMonthly[0].pts > 0) {
+                const topScore = eligibleMonthly[0].pts;
+                const topLeads = eligibleMonthly.filter(t => t.pts === topScore);
                 text += `\n📅 สถานการณ์รางวัลประจำเดือน (${curMonth.month} - ชิง ${curMonth.budget}):\n`;
-                text += `• จ่าฝูงเดือนนี้: ${topM.name} (${topM.pts} pts)\n`;
+                if (topLeads.length > 1) {
+                  const leadNames = topLeads.map(t => t.name).join(', ');
+                  text += `• จ่าฝูงร่วมเดือนนี้ (${topLeads.length} ทีม): ${leadNames} (${topScore} pts)\n`;
+                } else {
+                  text += `• จ่าฝูงเดือนนี้: ${topLeads[0].name} (${topScore} pts)\n`;
+                }
               }
             }
           }
@@ -6779,7 +7001,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
           if (title) title.innerText = `สรุปผล ${this.data.name} (GW ${gwKey})`;
           if (contentArea) contentArea.value = text;
-          if (modal) modal.classList.remove('hidden');
+          if (modal) {
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+          }
 
           if (contentArea) {
             contentArea.focus();
@@ -6838,7 +7063,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
       closeTextSummaryModal() {
         const modal = document.getElementById('text-summary-modal');
-        if (modal) modal.classList.add('hidden');
+        if (modal) {
+          modal.classList.add('hidden');
+          document.body.classList.remove('overflow-hidden');
+        }
       }
 
       showToast(msg, type = 'success') {
@@ -7267,7 +7495,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
               const sortedMonth = Object.values(monthTotals)
                 .filter(t => t.is_prize)
-                .sort((a, b) => b.pts - a.pts);
+                .sort((a, b) => (b.pts - a.pts) || (a.team_name || '').localeCompare(b.team_name || '') || (a.entry_id - b.entry_id));
 
               if (sortedMonth.length === 0 || sortedMonth[0].pts === 0) {
                 prizeRows.push([
@@ -7285,15 +7513,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 let runnerPayout = runnerAmount;
 
                 if (topChamps.length > 1) {
-                  champPayout = Math.floor((champAmount + runnerAmount) / topChamps.length);
+                  const rawSplit = (champAmount + runnerAmount) / topChamps.length;
+                  champPayout = ((champAmount + runnerAmount) % topChamps.length !== 0)
+                    ? Number(rawSplit.toFixed(2))
+                    : Math.round(rawSplit);
                   runnerPayout = 0;
                 } else {
                   const secondScore = sortedMonth.find(t => t.pts < topScore)?.pts;
                   if (secondScore !== undefined && secondScore > 0) {
                     topRunners = sortedMonth.filter(t => t.pts === secondScore);
+                    const rawSplit = runnerAmount / topRunners.length;
                     runnerPayout = (topRunners.length > 1 && runnerAmount % topRunners.length !== 0)
-                      ? Number((runnerAmount / topRunners.length).toFixed(2))
-                      : Math.round(runnerAmount / topRunners.length);
+                      ? Number(rawSplit.toFixed(2))
+                      : Math.round(rawSplit);
                   }
                 }
 
@@ -7392,7 +7624,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       exportExcelXmlFallback(leaderRows, gwRows, prizeRows, fileName) {
         const escapeXml = (unsafe) => {
           if (unsafe === null || unsafe === undefined) return '';
-          return String(unsafe)
+          let s = String(unsafe);
+          if (typeof unsafe === 'string' && /^[=+\-@]/.test(s)) {
+            s = "'" + s;
+          }
+          return s
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
@@ -7430,7 +7666,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         ];
         const xml = xmlParts.join('');
 
-        const blob = new Blob(['\\uFEFF', xml], { type: 'application/vnd.ms-excel;charset=utf-8' });
+        const blob = new Blob(['\uFEFF', xml], { type: 'application/vnd.ms-excel;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -7519,6 +7755,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && window.app) {
           window.app.closeTeamModal();
+          window.app.closeProjectedPointsModal();
           window.app.closeTextSummaryModal();
         }
       });

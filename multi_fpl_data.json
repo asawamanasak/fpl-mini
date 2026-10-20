@@ -1,6 +1,6 @@
 {
-  "last_sync": "20 ต.ค. 2026, 07:05 น.",
-  "last_sync_iso": "2026-10-20 07:05:58",
+  "last_sync": "20 ต.ค. 2026, 04:17 น.",
+  "last_sync_iso": "2026-10-20 04:17:27",
   "sync_status": "ok",
   "max_gw": 7,
   "leagues": {
@@ -25354,7 +25354,8 @@
             "points_on_bench": 6
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "5950381_7": {
           "starting": [
@@ -25665,7 +25666,8 @@
             "points_on_bench": 2
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "306983_7": {
           "starting": [
@@ -25976,7 +25978,8 @@
             "points_on_bench": 21
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "1206581_7": {
           "starting": [
@@ -26287,7 +26290,8 @@
             "points_on_bench": 3
           },
           "chip": null,
-          "hits": 4
+          "hits": 4,
+          "final_checked": false
         },
         "5470959_7": {
           "starting": [
@@ -26598,7 +26602,8 @@
             "points_on_bench": 0
           },
           "chip": "bboost",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "197082_7": {
           "starting": [
@@ -26909,7 +26914,8 @@
             "points_on_bench": 19
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2999763_7": {
           "starting": [
@@ -27220,7 +27226,8 @@
             "points_on_bench": 17
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2189419_7": {
           "starting": [
@@ -27531,7 +27538,8 @@
             "points_on_bench": 1
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2206758_7": {
           "starting": [
@@ -27842,7 +27850,8 @@
             "points_on_bench": 5
           },
           "chip": null,
-          "hits": 4
+          "hits": 4,
+          "final_checked": false
         },
         "5660962_7": {
           "starting": [
@@ -28153,7 +28162,8 @@
             "points_on_bench": 4
           },
           "chip": null,
-          "hits": 4
+          "hits": 4,
+          "final_checked": false
         },
         "2604490_7": {
           "starting": [
@@ -28464,7 +28474,8 @@
             "points_on_bench": 20
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2191555_7": {
           "starting": [
@@ -28775,7 +28786,8 @@
             "points_on_bench": 9
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         }
       }
     },
@@ -154491,7 +154503,8 @@
             "points_on_bench": 13
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "73489_7": {
           "starting": [
@@ -154802,7 +154815,8 @@
             "points_on_bench": 6
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "3806029_7": {
           "starting": [
@@ -155113,7 +155127,8 @@
             "points_on_bench": 0
           },
           "chip": "bboost",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2472694_7": {
           "starting": [
@@ -155424,7 +155439,8 @@
             "points_on_bench": 10
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "306983_7": {
           "starting": [
@@ -155735,7 +155751,8 @@
             "points_on_bench": 21
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "5741248_7": {
           "starting": [
@@ -156046,7 +156063,8 @@
             "points_on_bench": 5
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2741115_7": {
           "starting": [
@@ -156357,7 +156375,8 @@
             "points_on_bench": 0
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "315966_7": {
           "starting": [
@@ -156668,7 +156687,8 @@
             "points_on_bench": 3
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "53478_7": {
           "starting": [
@@ -156979,7 +156999,8 @@
             "points_on_bench": 10
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "282187_7": {
           "starting": [
@@ -157290,7 +157311,8 @@
             "points_on_bench": 4
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "3104306_7": {
           "starting": [
@@ -157601,7 +157623,8 @@
             "points_on_bench": 1
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "742519_7": {
           "starting": [
@@ -157912,7 +157935,8 @@
             "points_on_bench": 9
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "103641_7": {
           "starting": [
@@ -158223,7 +158247,8 @@
             "points_on_bench": 9
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "697377_7": {
           "starting": [
@@ -158534,7 +158559,8 @@
             "points_on_bench": 16
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "3948485_7": {
           "starting": [
@@ -158845,7 +158871,8 @@
             "points_on_bench": 14
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "6263927_7": {
           "starting": [
@@ -159156,7 +159183,8 @@
             "points_on_bench": 14
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "4552878_7": {
           "starting": [
@@ -159467,7 +159495,8 @@
             "points_on_bench": 14
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "6073813_7": {
           "starting": [
@@ -159778,7 +159807,8 @@
             "points_on_bench": 3
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "3184445_7": {
           "starting": [
@@ -160089,7 +160119,8 @@
             "points_on_bench": 6
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "3269963_7": {
           "starting": [
@@ -160400,7 +160431,8 @@
             "points_on_bench": 16
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "197082_7": {
           "starting": [
@@ -160711,7 +160743,8 @@
             "points_on_bench": 19
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "6799761_7": {
           "starting": [
@@ -161022,7 +161055,8 @@
             "points_on_bench": 7
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2235262_7": {
           "starting": [
@@ -161333,7 +161367,8 @@
             "points_on_bench": 10
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2176238_7": {
           "starting": [
@@ -161644,7 +161679,8 @@
             "points_on_bench": 9
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "6417622_7": {
           "starting": [
@@ -161955,7 +161991,8 @@
             "points_on_bench": 10
           },
           "chip": "wildcard",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2919864_7": {
           "starting": [
@@ -162266,7 +162303,8 @@
             "points_on_bench": 13
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "6579206_7": {
           "starting": [
@@ -162577,7 +162615,8 @@
             "points_on_bench": 12
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "7460858_7": {
           "starting": [
@@ -162888,7 +162927,8 @@
             "points_on_bench": 21
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "274493_7": {
           "starting": [
@@ -163199,7 +163239,8 @@
             "points_on_bench": 4
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "6524050_7": {
           "starting": [
@@ -163510,7 +163551,8 @@
             "points_on_bench": 0
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "1189463_7": {
           "starting": [
@@ -163821,7 +163863,8 @@
             "points_on_bench": 11
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2913117_7": {
           "starting": [
@@ -164132,7 +164175,8 @@
             "points_on_bench": 9
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "3564816_7": {
           "starting": [
@@ -164443,7 +164487,8 @@
             "points_on_bench": 15
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "7927547_7": {
           "starting": [
@@ -164754,7 +164799,8 @@
             "points_on_bench": 4
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "4097503_7": {
           "starting": [
@@ -165065,7 +165111,8 @@
             "points_on_bench": 5
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2690262_7": {
           "starting": [
@@ -165376,7 +165423,8 @@
             "points_on_bench": 5
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "8512605_7": {
           "starting": [
@@ -165687,7 +165735,8 @@
             "points_on_bench": 12
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "4763492_7": {
           "starting": [
@@ -165998,7 +166047,8 @@
             "points_on_bench": 4
           },
           "chip": null,
-          "hits": 8
+          "hits": 8,
+          "final_checked": false
         },
         "7058770_7": {
           "starting": [
@@ -166309,7 +166359,8 @@
             "points_on_bench": 2
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "3488930_7": {
           "starting": [
@@ -166620,7 +166671,8 @@
             "points_on_bench": 8
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "5956924_7": {
           "starting": [
@@ -166931,7 +166983,8 @@
             "points_on_bench": 17
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "1493046_7": {
           "starting": [
@@ -167242,7 +167295,8 @@
             "points_on_bench": 18
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "7669019_7": {
           "starting": [
@@ -167553,7 +167607,8 @@
             "points_on_bench": 0
           },
           "chip": "bboost",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "4042871_7": {
           "starting": [
@@ -167864,7 +167919,8 @@
             "points_on_bench": 19
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2208018_7": {
           "starting": [
@@ -168175,7 +168231,8 @@
             "points_on_bench": 12
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2920912_7": {
           "starting": [
@@ -168486,7 +168543,8 @@
             "points_on_bench": 7
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "5972003_7": {
           "starting": [
@@ -168797,7 +168855,8 @@
             "points_on_bench": 6
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "6651911_7": {
           "starting": [
@@ -169108,7 +169167,8 @@
             "points_on_bench": 4
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "3181562_7": {
           "starting": [
@@ -169419,7 +169479,8 @@
             "points_on_bench": 0
           },
           "chip": "bboost",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "7661163_7": {
           "starting": [
@@ -169730,7 +169791,8 @@
             "points_on_bench": 10
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "8336060_7": {
           "starting": [
@@ -170041,7 +170103,8 @@
             "points_on_bench": 6
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "5715428_7": {
           "starting": [
@@ -170352,7 +170415,8 @@
             "points_on_bench": 12
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "3540927_7": {
           "starting": [
@@ -170663,7 +170727,8 @@
             "points_on_bench": 13
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "8246332_7": {
           "starting": [
@@ -170974,7 +171039,8 @@
             "points_on_bench": 3
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2753018_7": {
           "starting": [
@@ -171285,7 +171351,8 @@
             "points_on_bench": 3
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "8845986_7": {
           "starting": [
@@ -171596,7 +171663,8 @@
             "points_on_bench": 9
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "4954101_7": {
           "starting": [
@@ -171907,7 +171975,8 @@
             "points_on_bench": 12
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2550771_7": {
           "starting": [
@@ -172218,7 +172287,8 @@
             "points_on_bench": 1
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "9851677_7": {
           "starting": [
@@ -172529,7 +172599,8 @@
             "points_on_bench": 16
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "1506698_7": {
           "starting": [
@@ -172840,7 +172911,8 @@
             "points_on_bench": 19
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         }
       }
     },
@@ -206765,7 +206837,8 @@
             "points_on_bench": 6
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "73489_7": {
           "starting": [
@@ -207076,7 +207149,8 @@
             "points_on_bench": 6
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "306983_7": {
           "starting": [
@@ -207387,7 +207461,8 @@
             "points_on_bench": 21
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "4194662_7": {
           "starting": [
@@ -207698,7 +207773,8 @@
             "points_on_bench": 5
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "8777321_7": {
           "starting": [
@@ -208009,7 +208085,8 @@
             "points_on_bench": 0
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "5523000_7": {
           "starting": [
@@ -208320,7 +208397,8 @@
             "points_on_bench": 15
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "7717588_7": {
           "starting": [
@@ -208631,7 +208709,8 @@
             "points_on_bench": 5
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "4127573_7": {
           "starting": [
@@ -208942,7 +209021,8 @@
             "points_on_bench": 8
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "7642817_7": {
           "starting": [
@@ -209253,7 +209333,8 @@
             "points_on_bench": 2
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "7669033_7": {
           "starting": [
@@ -209564,7 +209645,8 @@
             "points_on_bench": 20
           },
           "chip": null,
-          "hits": 4
+          "hits": 4,
+          "final_checked": false
         },
         "3628087_7": {
           "starting": [
@@ -209875,7 +209957,8 @@
             "points_on_bench": 16
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "8002027_7": {
           "starting": [
@@ -210186,7 +210269,8 @@
             "points_on_bench": 13
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "175767_7": {
           "starting": [
@@ -210497,7 +210581,8 @@
             "points_on_bench": 10
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "348997_7": {
           "starting": [
@@ -210808,7 +210893,8 @@
             "points_on_bench": 18
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2673517_7": {
           "starting": [
@@ -211119,7 +211205,8 @@
             "points_on_bench": 13
           },
           "chip": "freehit",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "122482_7": {
           "starting": [
@@ -211430,7 +211517,8 @@
             "points_on_bench": 19
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         }
       }
     },
@@ -247803,7 +247891,8 @@
             "points_on_bench": 9
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "7501_7": {
           "starting": [
@@ -248114,7 +248203,8 @@
             "points_on_bench": 9
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "670212_7": {
           "starting": [
@@ -248425,7 +248515,8 @@
             "points_on_bench": 6
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "308319_7": {
           "starting": [
@@ -248736,7 +248827,8 @@
             "points_on_bench": 5
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "306983_7": {
           "starting": [
@@ -249047,7 +249139,8 @@
             "points_on_bench": 21
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "5528308_7": {
           "starting": [
@@ -249358,7 +249451,8 @@
             "points_on_bench": 3
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "928369_7": {
           "starting": [
@@ -249669,7 +249763,8 @@
             "points_on_bench": 22
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "5132905_7": {
           "starting": [
@@ -249980,7 +250075,8 @@
             "points_on_bench": 13
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "1151793_7": {
           "starting": [
@@ -250291,7 +250387,8 @@
             "points_on_bench": 16
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "6040705_7": {
           "starting": [
@@ -250602,7 +250699,8 @@
             "points_on_bench": 21
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2576501_7": {
           "starting": [
@@ -250913,7 +251011,8 @@
             "points_on_bench": 2
           },
           "chip": null,
-          "hits": 4
+          "hits": 4,
+          "final_checked": false
         },
         "1548421_7": {
           "starting": [
@@ -251224,7 +251323,8 @@
             "points_on_bench": 13
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "4114214_7": {
           "starting": [
@@ -251535,7 +251635,8 @@
             "points_on_bench": 9
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "4526663_7": {
           "starting": [
@@ -251846,7 +251947,8 @@
             "points_on_bench": 2
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "5088060_7": {
           "starting": [
@@ -252157,7 +252259,8 @@
             "points_on_bench": 14
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "1231651_7": {
           "starting": [
@@ -252468,7 +252571,8 @@
             "points_on_bench": 21
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "1318415_7": {
           "starting": [
@@ -252779,7 +252883,8 @@
             "points_on_bench": 10
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         }
       }
     },
@@ -280446,7 +280551,8 @@
             "points_on_bench": 9
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "5003235_7": {
           "starting": [
@@ -280757,7 +280863,8 @@
             "points_on_bench": 11
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "306983_7": {
           "starting": [
@@ -281068,7 +281175,8 @@
             "points_on_bench": 21
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "5528308_7": {
           "starting": [
@@ -281379,7 +281487,8 @@
             "points_on_bench": 3
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "145471_7": {
           "starting": [
@@ -281690,7 +281799,8 @@
             "points_on_bench": 4
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "6657991_7": {
           "starting": [
@@ -282001,7 +282111,8 @@
             "points_on_bench": 7
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "6183614_7": {
           "starting": [
@@ -282312,7 +282423,8 @@
             "points_on_bench": 9
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2239943_7": {
           "starting": [
@@ -282623,7 +282735,8 @@
             "points_on_bench": 5
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "3578457_7": {
           "starting": [
@@ -282934,7 +283047,8 @@
             "points_on_bench": 9
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2378313_7": {
           "starting": [
@@ -283245,7 +283359,8 @@
             "points_on_bench": 6
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "2576501_7": {
           "starting": [
@@ -283556,7 +283671,8 @@
             "points_on_bench": 2
           },
           "chip": null,
-          "hits": 4
+          "hits": 4,
+          "final_checked": false
         },
         "957697_7": {
           "starting": [
@@ -283867,7 +283983,8 @@
             "points_on_bench": 5
           },
           "chip": "3xc",
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         },
         "5564358_7": {
           "starting": [
@@ -284178,14 +284295,15 @@
             "points_on_bench": 7
           },
           "chip": null,
-          "hits": 0
+          "hits": 0,
+          "final_checked": false
         }
       }
     }
   },
   "transfer_suggestions": {
     "gw": 8,
-    "updated_at": "2026-10-20T00:06:04.914953+00:00",
+    "updated_at": "2026-10-20T01:46:17.206532+00:00",
     "GoalKeepers": [
       {
         "GoodPlayer": {
