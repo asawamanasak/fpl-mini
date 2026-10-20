@@ -2703,11 +2703,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             let penaltyPayoutsHtml = '';
             if (isFinished && this.config.features && this.config.features.has_weekly_penalties) {
               const weeklyPenalties = this.calculateWeeklyPenalties(eligibleSortedByPrize, this.selectedGW);
+              const penaltyTiersList = (this.config.features && this.config.features.weekly_penalty_tiers)
+                ? Object.values(this.config.features.weekly_penalty_tiers).map(Number)
+                : [600, 500, 400, 300, 200];
+              const totalWeeklyFines = penaltyTiersList.reduce((a, b) => a + b, 0);
+              const weeklyChampPrize = this.config.features.weekly_prize_amount || 200;
+              const netWeeklyAccumulated = totalWeeklyFines - weeklyChampPrize;
+
               penaltyPayoutsHtml = `
                 <div class="mt-3 pt-3 border-t ${isFinished ? 'border-amber-200/80 dark:border-amber-900/60' : 'border-emerald-200/80 dark:border-emerald-900/60'}">
                   <div class="text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2 font-display flex items-center justify-between flex-wrap gap-1">
-                    <span class="flex items-center gap-1.5"><span class="text-rose-600">⚠️</span> ผู้เสียค่าปรับ 5 อันดับท้าย (รวม 3,000 THB - หักจ่ายแชมป์ 200 THB)</span>
-                    <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">+2,800 THB สะสมเข้ากองกลาง</span>
+                    <span class="flex items-center gap-1.5"><span class="text-rose-600">⚠️</span> ผู้เสียค่าปรับ 5 อันดับท้าย (รวม ${totalWeeklyFines.toLocaleString()} THB - หักจ่ายแชมป์ ${weeklyChampPrize.toLocaleString()} THB)</span>
+                    <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">+${netWeeklyAccumulated.toLocaleString()} THB สะสมเข้ากองกลาง</span>
                   </div>
                   <div class="grid grid-cols-1 sm:grid-cols-5 gap-2">
                     ${weeklyPenalties.map((p, i) => {
@@ -3172,7 +3179,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           return 0;
         });
 
-        const penaltyTiers = [1000, 800, 600, 400, 200];
+        let penaltyTiers = [600, 500, 400, 300, 200];
+        if (this.config && this.config.features && this.config.features.weekly_penalty_tiers) {
+          const tiersObj = this.config.features.weekly_penalty_tiers;
+          penaltyTiers = [
+            Number(tiersObj.last_1 !== undefined ? tiersObj.last_1 : 600),
+            Number(tiersObj.last_2 !== undefined ? tiersObj.last_2 : 500),
+            Number(tiersObj.last_3 !== undefined ? tiersObj.last_3 : 400),
+            Number(tiersObj.last_4 !== undefined ? tiersObj.last_4 : 300),
+            Number(tiersObj.last_5 !== undefined ? tiersObj.last_5 : 200)
+          ];
+        }
         const rankLabels = ['💀 บ๊วย', '⚠️ รองบ๊วย', '⚠️ ท้าย 3', '⚠️ ท้าย 4', '⚠️ ท้าย 5'];
 
         const groups = [];
@@ -5058,6 +5075,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           const weeklyAmount = tierPrizes.reduce((a, b) => a + b, 0);
           const weeklyTotal = weeklyAmount * 38;
 
+          const penaltyTiersList = (hasWeeklyPenalties && this.config.features.weekly_penalty_tiers)
+            ? Object.values(this.config.features.weekly_penalty_tiers).map(Number)
+            : [600, 500, 400, 300, 200];
+          const totalWeeklyFines = penaltyTiersList.reduce((a, b) => a + b, 0);
+          const weeklyChampPrize = this.config.features.weekly_prize_amount || 200;
+          const weeklyNetPot = totalWeeklyFines - weeklyChampPrize;
+          const seasonNetTotal = weeklyNetPot * 38;
+
           if (tagEl) {
             tagEl.innerText = hasWeeklyPenalties ? 'WEEKLY FINES & ACCUMULATED POT' : 'WEEKLY PRIZES';
           }
@@ -5067,7 +5092,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
           if (subEl) {
             if (hasWeeklyPenalties) {
-              subEl.innerText = `รางวัลแชมป์สัปดาห์ 200 THB • ค่าปรับ 5 อันดับท้ายรวม 3,000 THB/วีค (สะสมเข้ากองกลางสุทธิ 2,800 THB/วีค x 38 วีค = 106,400 THB)`;
+              subEl.innerText = `รางวัลแชมป์สัปดาห์ ${weeklyChampPrize.toLocaleString()} THB • ค่าปรับ 5 อันดับท้ายรวม ${totalWeeklyFines.toLocaleString()} THB/วีค (สะสมเข้ากองกลางสุทธิ ${weeklyNetPot.toLocaleString()} THB/วีค x 38 วีค = ${seasonNetTotal.toLocaleString()} THB)`;
             } else if (weeklyPrizesConfig) {
               subEl.innerText = `ชิงเงินรางวัลรวม ${this.config.total_pool || '103,200 THB'} (รางวัลประจำสัปดาห์ 3 อันดับ: ที่ 1: ${weeklyPrizesConfig['1st'].toLocaleString()} / ที่ 2: ${weeklyPrizesConfig['2nd'].toLocaleString()} / ที่ 3: ${weeklyPrizesConfig['3rd'].toLocaleString()} THB รวมวีคละ ${weeklyAmount.toLocaleString()} THB x 38 วีค = ${weeklyTotal.toLocaleString()} THB)`;
             } else {
@@ -5110,7 +5135,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
               if (sorted.length > 0) {
                 if (hasWeeklyPenalties) {
-                  const winnerPayouts = this.calculateWeeklyTierPrizes(sorted, [this.config.features.weekly_prize_amount || 200], g);
+                  const winnerPayouts = this.calculateWeeklyTierPrizes(sorted, [weeklyChampPrize], g);
                   winnerPayouts.forEach(p => {
                     winsCount[p.entry_id] = (winsCount[p.entry_id] || 0) + (1 / p.jointCount);
                     prizeEarnings[p.entry_id] = (prizeEarnings[p.entry_id] || 0) + p.prize;
@@ -5128,14 +5153,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                       team_name: p.team_name,
                       player_name: p.player_name,
                       net_points: p.net_points,
-                      entry_id: p.entry_id
+                      entry_id: p.entry_id,
+                      bottomTierIndex: p.bottomTierIndex
                     });
                   });
                   penaltyHistoryEntries.push({
                     gw: g,
                     winner: winner,
                     bottomList: bottomList,
-                    netPot: 2800
+                    netPot: weeklyNetPot
                   });
                 } else {
                   const payouts = this.calculateWeeklyTierPrizes(sorted, tierPrizes, g);
@@ -5434,7 +5460,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                   <div>
                     <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/80 dark:border-slate-700/80">
                       <span class="font-bold text-xs sm:text-sm font-display text-slate-900 dark:text-white">Gameweek ${entry.gw}</span>
-                      <span class="text-[11px] font-black text-emerald-600 dark:text-emerald-400 font-display bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">+2,800 THB กองกลาง</span>
+                      <span class="text-[11px] font-black text-emerald-600 dark:text-emerald-400 font-display bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">+${(entry.netPot || weeklyNetPot).toLocaleString()} THB กองกลาง</span>
                     </div>
                     
                     <div class="mb-2 p-2 rounded-xl bg-amber-100/70 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 flex items-center justify-between">
@@ -5443,13 +5469,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                         <span class="font-bold truncate block text-xs text-slate-900 dark:text-white">${this.escapeHtml(entry.winner.team_name)}</span>
                         <span class="text-[10px] text-slate-500 dark:text-slate-400 block truncate">${this.escapeHtml(entry.winner.player_name)} (${entry.winner.net_points} pts)</span>
                       </div>
-                      <span class="font-black font-display text-emerald-700 dark:text-emerald-400 text-xs flex-shrink-0">+200 THB</span>
+                      <span class="font-black font-display text-emerald-700 dark:text-emerald-400 text-xs flex-shrink-0">+${weeklyChampPrize.toLocaleString()} THB</span>
                     </div>
 
                     <div class="space-y-1">
                       <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">ผู้เสียค่าปรับ 5 อันดับท้าย:</div>
                       ${entry.bottomList.map(b => {
-                        const isLast = b.fine === 1000;
+                        const isLast = b.bottomTierIndex === 0;
                         return `
                           <div class="px-2 py-1.5 rounded-lg border ${isLast ? 'bg-rose-100/70 dark:bg-rose-950/40 border-rose-300 text-rose-950 dark:text-rose-200' : 'bg-slate-100/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/60 text-slate-800 dark:text-slate-300'} flex items-center justify-between text-xs">
                             <div class="truncate pr-2">
@@ -5531,7 +5557,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                         <td class="py-3 px-1 sm:px-2 text-center text-rose-600 dark:text-rose-400 font-black font-display">${totalDangerCount}</td>
                         <td class="py-3 px-2 sm:px-3 text-right font-black text-rose-600 dark:text-rose-400 font-display">-${totalFinesPaid.toLocaleString()} THB</td>
                         <td class="py-3 px-2 sm:px-3 text-right font-black text-emerald-600 dark:text-emerald-400 font-display">+${totalDistributedPrize.toLocaleString()} THB</td>
-                        <td class="py-3 px-2 sm:px-3 text-right font-black text-emerald-600 dark:text-emerald-400 font-display text-sm sm:text-base">+${(finishedGWCount * 2800).toLocaleString()} THB</td>
+                        <td class="py-3 px-2 sm:px-3 text-right font-black text-emerald-600 dark:text-emerald-400 font-display text-sm sm:text-base">+${(finishedGWCount * weeklyNetPot).toLocaleString()} THB</td>
                         ` : (hasMultiTier ? `
                         <td class="py-3 px-1 sm:px-2 text-center text-amber-600 dark:text-amber-400 font-black font-display">${total1st % 1 === 0 ? total1st : total1st.toFixed(1)}</td>
                         <td class="py-3 px-1 sm:px-2 text-center text-slate-700 dark:text-slate-300 font-black font-display">${total2nd % 1 === 0 ? total2nd : total2nd.toFixed(1)}</td>
@@ -5549,25 +5575,32 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
               ${hasWeeklyPenalties ? `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
-                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">โครงสร้างเงินกองกลางสะสม & ค่าปรับประจำสัปดาห์ (${this.config.total_pool || '106,400 THB'})</h3>
+                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">โครงสร้างเงินกองกลางสะสม & ค่าปรับประจำสัปดาห์ (${this.config.total_pool || `${seasonNetTotal.toLocaleString()} THB`})</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <span class="text-[10px] uppercase font-bold text-slate-400 font-display">ยอดเงินกองกลางสะสมสุทธิปัจจุบัน</span>
-                    <div class="text-xl font-black text-emerald-600 mt-1 font-display">${(finishedGWCount * 2800).toLocaleString()} <span class="text-xs">THB</span></div>
-                    <div class="text-xs text-slate-600 mt-0.5 font-medium">จบแล้ว ${finishedGWCount} วีค x 2,800 THB (เป้าหมาย 38 วีค = 106,400 THB)</div>
+                    <div class="text-xl font-black text-emerald-600 mt-1 font-display">${(finishedGWCount * weeklyNetPot).toLocaleString()} <span class="text-xs">THB</span></div>
+                    <div class="text-xs text-slate-600 mt-0.5 font-medium">จบแล้ว ${finishedGWCount} วีค x ${weeklyNetPot.toLocaleString()} THB (เป้าหมาย 38 วีค = ${seasonNetTotal.toLocaleString()} THB)</div>
                   </div>
                   <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <span class="text-[10px] uppercase font-bold text-slate-400 font-display">รางวัลแชมป์ประจำสัปดาห์ (38 สัปดาห์)</span>
-                    <div class="text-xl font-black text-slate-900 mt-1 font-display">7,600 <span class="text-xs">THB</span></div>
-                    <div class="text-xs text-slate-600 mt-0.5 font-medium">สัปดาห์ละ 200 THB (หักจากค่าปรับ 3,000 THB ในแต่ละวีค)</div>
+                    <div class="text-xl font-black text-slate-900 mt-1 font-display">${(weeklyChampPrize * 38).toLocaleString()} <span class="text-xs">THB</span></div>
+                    <div class="text-xs text-slate-600 mt-0.5 font-medium">สัปดาห์ละ ${weeklyChampPrize.toLocaleString()} THB (หักจากค่าปรับ ${totalWeeklyFines.toLocaleString()} THB ในแต่ละวีค)</div>
                   </div>
                   <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <span class="text-[10px] uppercase font-bold text-slate-400 font-display">ค่าปรับ 5 อันดับท้ายจากบ๊วย</span>
-                    <div class="text-xl font-black text-rose-600 mt-1 font-display">3,000 <span class="text-xs">THB / วีค</span></div>
-                    <div class="text-xs text-slate-600 mt-0.5 font-medium">บ๊วย 1,000 / รองบ๊วย 800 / อันดับ 3 600 / อันดับ 4 400 / อันดับ 5 200 THB</div>
+                    <div class="text-xl font-black text-rose-600 mt-1 font-display">${totalWeeklyFines.toLocaleString()} <span class="text-xs">THB / วีค</span></div>
+                    <div class="text-xs text-slate-600 mt-0.5 font-medium">บ๊วย 600 / รองบ๊วย 500 / อันดับ 3 400 / อันดับ 4 300 / อันดับ 5 200 THB</div>
                   </div>
                 </div>
-              </div>` : (phasesHtml ? `
+              </div>
+              ${penaltyHistoryHtml ? `
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
+                <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">ประวัติผู้เสียค่าปรับและแชมป์แต่ละสัปดาห์</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  ${penaltyHistoryHtml}
+                </div>
+              </div>` : ''}` : (phasesHtml ? `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
                 <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">รอบเคลียร์เงินรางวัล 6 งวด</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
