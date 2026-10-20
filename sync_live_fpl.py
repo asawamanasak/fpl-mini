@@ -1092,6 +1092,7 @@ def sync_once(args):
                 multi_league_output["leagues"][lid_str] = cached_data["leagues"][lid_str]
 
     # 4.4 Fetch Transfer Suggestions from FPL Gameweek
+    has_changed = False
     next_event = next((e for e in events if e.get('is_next')), None)
     upcoming_gw = next_event['id'] if next_event else (max_gw + 1 if gw_status_map.get(max_gw) else max_gw)
     print(f"Fetching Transfer Suggestions for upcoming GW {upcoming_gw}...")

@@ -1338,32 +1338,32 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         </div>
       </div>
 
-      <!-- 6 Feature Cards Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- 6 Feature Cards Grid (Monochrome Professional Emerald Theme) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         
         <!-- Card 1: Platform Overview -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3.5 shadow-2xs">
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 hover:border-emerald-500/40 dark:hover:border-emerald-500/40 transition-all duration-200 flex flex-col justify-between shadow-2xs">
           <div>
-            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800/80 mb-3">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3.5">
               <div class="flex items-center gap-2.5">
-                <span class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center justify-center font-display border border-blue-200/50 dark:border-blue-800/50">01</span>
+                <span class="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-bold text-xs flex items-center justify-center font-mono border border-emerald-200/60 dark:border-emerald-800/60">01</span>
                 <div>
                   <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight">ภาพรวมและวิสัยทัศน์ของแพลตฟอร์ม</h3>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Platform Overview</p>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">Platform Overview</p>
                 </div>
               </div>
             </div>
-            <ul class="space-y-2.5">
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-blue-400 mt-1.5 flex-shrink-0"></span>
+            <ul class="space-y-3">
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบรายงานผลการแข่งขันและบริหารจัดการลีก Fantasy Premier League กึ่งอัตโนมัติเต็มรูปแบบ ระบบเชื่อมต่อข้อมูลทางการเพื่อให้บริการสมาชิกในลีกตลอด 24 ชั่วโมง</span>
               </li>
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-blue-400 mt-1.5 flex-shrink-0"></span>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบขจัดความล่าช้าในการคำนวณคะแนนของแอปทางการ และลดภาระของผู้จัดลีก ไม่ต้องบันทึกคะแนนลงตาราง Excel ด้วยมืออีกต่อไป</span>
               </li>
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-blue-400 mt-1.5 flex-shrink-0"></span>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบทำงานบนสถาปัตยกรรม Serverless Jamstack โฮสต์บนเครือข่าย CDN จึงไม่มีต้นทุนค่าดูแลเซิร์ฟเวอร์รายเดือน และรองรับจำนวนผู้เข้าชมพร้อมกันได้ไม่จำกัด</span>
               </li>
             </ul>
@@ -1371,32 +1371,32 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         </div>
 
         <!-- Card 2: Real-Time Matchday Engine -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3.5 shadow-2xs">
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 hover:border-emerald-500/40 dark:hover:border-emerald-500/40 transition-all duration-200 flex flex-col justify-between shadow-2xs">
           <div>
-            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800/80 mb-3">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3.5">
               <div class="flex items-center gap-2.5">
-                <span class="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 font-bold text-xs flex items-center justify-center font-display border border-emerald-200/50 dark:border-emerald-800/50">02</span>
+                <span class="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-bold text-xs flex items-center justify-center font-mono border border-emerald-200/60 dark:border-emerald-800/60">02</span>
                 <div>
                   <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight">ฟังก์ชันรายงานผลสดระหว่างแข่งขัน</h3>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Real-Time Matchday Engine</p>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">Real-Time Matchday Engine</p>
                 </div>
               </div>
             </div>
-            <ul class="space-y-2.5">
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 mt-1.5 flex-shrink-0"></span>
+            <ul class="space-y-3">
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบดึงคะแนนดิบและคะแนนโบนัสของนักเตะทุกคนระหว่างการแข่งขันแบบสดทุกนาที</span>
               </li>
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 mt-1.5 flex-shrink-0"></span>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบตรวจสอบนักเตะตัวจริงที่ไม่ถูกส่งลงสนาม และดึงตัวสำรองขึ้นมาคำนวณแต้มให้ทันทีระหว่างเกม ผู้เล่นไม่ต้องรอผลการประมวลผลข้ามคืนของระบบทางการ</span>
               </li>
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 mt-1.5 flex-shrink-0"></span>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบปรับคะแนนคูณสองให้รองกัปตันทันทีเมื่อสโมสรของกัปตันตัวจริงลงแข่งขันจบแล้วและกัปตันไม่ได้ลงเล่น</span>
               </li>
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 mt-1.5 flex-shrink-0"></span>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบสร้างบทวิเคราะห์เหตุการณ์สดที่ตอบสนองต่อทุกประตู ใบแดง และการสลับอันดับตารางคะแนน ช่วยสร้างบรรยากาศการรับชมในกลุ่มเพื่อน</span>
               </li>
             </ul>
@@ -1404,38 +1404,38 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         </div>
 
         <!-- Card 3: Treasury and Prize System -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3.5 shadow-2xs">
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 hover:border-emerald-500/40 dark:hover:border-emerald-500/40 transition-all duration-200 flex flex-col justify-between shadow-2xs">
           <div>
-            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800/80 mb-3">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3.5">
               <div class="flex items-center gap-2.5">
-                <span class="w-7 h-7 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 font-bold text-xs flex items-center justify-center font-display border border-amber-200/50 dark:border-amber-800/50">03</span>
+                <span class="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-bold text-xs flex items-center justify-center font-mono border border-emerald-200/60 dark:border-emerald-800/60">03</span>
                 <div>
                   <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight">ฟังก์ชันระบบบัญชีกองกลางและเงินรางวัล</h3>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Treasury and Prize System</p>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">Treasury and Prize System</p>
                 </div>
               </div>
             </div>
-            <ul class="space-y-2.5">
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 flex-shrink-0"></span>
+            <ul class="space-y-3">
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบรองรับการตั้งค่าแยกอิสระของแต่ละมินิลีก พร้อมระบบเส้นทาง URL เฉพาะตัวสำหรับแต่ละกลุ่มผู้เล่น</span>
               </li>
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 flex-shrink-0"></span>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบคำนวณแชมป์ประจำสัปดาห์จากคะแนนสุทธิหลังหักแต้มย้ายทีม และรองรับการแบ่งงวดเคลียร์เงินรางวัลเป็นรอบๆ ตลอด 38 สัปดาห์</span>
               </li>
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 flex-shrink-0"></span>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <div class="flex-1">
                   <span class="font-bold text-slate-800 dark:text-slate-200">โมเดลเงินรางวัลประจำเดือน:</span> ระบบสรุปคะแนนผู้จัดการทีมยอดเยี่ยมประจำเดือน พร้อมกลไก Tie-breaker ตัดสินผลเสมอด้วยจำนวนการย้ายตัวอย่างโปร่งใส
                 </div>
               </li>
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 flex-shrink-0"></span>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบคำนวณค่าปรับแบบลดหลั่นตามลำดับ พร้อมระบบเฉลี่ยค่าปรับกรณีมีทีมแต้มเท่ากัน และสรุปยอดเงินสะสมสุทธิเข้ากองกลางอัตโนมัติ</span>
               </li>
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 mt-1.5 flex-shrink-0"></span>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบคัดกรองทีมแอดมินหรือทีมที่ไม่ลงขันออกจากระบบเงินรางวัล โดยไม่ส่งผลกระทบต่ออันดับบนตารางคะแนนทางการ</span>
               </li>
             </ul>
@@ -1443,28 +1443,28 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         </div>
 
         <!-- Card 4: Tactical UX and Interface -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3.5 shadow-2xs">
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 hover:border-emerald-500/40 dark:hover:border-emerald-500/40 transition-all duration-200 flex flex-col justify-between shadow-2xs">
           <div>
-            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800/80 mb-3">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3.5">
               <div class="flex items-center gap-2.5">
-                <span class="w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center justify-center font-display border border-indigo-200/50 dark:border-indigo-800/50">04</span>
+                <span class="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-bold text-xs flex items-center justify-center font-mono border border-emerald-200/60 dark:border-emerald-800/60">04</span>
                 <div>
                   <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight">ฟังก์ชันการแสดงผลและประสบการณ์ผู้ใช้</h3>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Tactical UX and Interface</p>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">Tactical UX and Interface</p>
                 </div>
               </div>
             </div>
-            <ul class="space-y-2.5">
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400 mt-1.5 flex-shrink-0"></span>
+            <ul class="space-y-3">
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบจัดวาง 11 ตัวจริงและตัวสำรองลงบนแผนผังสนามตามตำแหน่งการเล่นจริง พร้อมแสดงคะแนนและสถานะลงสนามของนักเตะแต่ละคน</span>
               </li>
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400 mt-1.5 flex-shrink-0"></span>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบแสดงป้ายสัญลักษณ์เมื่อผู้จัดการทีมเปิดใช้งานชิป Triple Captain, Bench Boost, Free Hit หรือ Wildcard ไว้อย่างชัดเจน</span>
               </li>
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400 mt-1.5 flex-shrink-0"></span>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบได้รับการออกแบบโครงสร้างแบบ Responsive หน้าเว็บแสดงผลได้สมบูรณ์บนจอมือถือ โดยไม่มีอาการเลื่อนล้นจอแนวนอน</span>
               </li>
             </ul>
@@ -1472,28 +1472,28 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         </div>
 
         <!-- Card 5: Analytics and Export -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3.5 shadow-2xs">
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 hover:border-emerald-500/40 dark:hover:border-emerald-500/40 transition-all duration-200 flex flex-col justify-between shadow-2xs">
           <div>
-            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800/80 mb-3">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3.5">
               <div class="flex items-center gap-2.5">
-                <span class="w-7 h-7 rounded-lg bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 font-bold text-xs flex items-center justify-center font-display border border-purple-200/50 dark:border-purple-800/50">05</span>
+                <span class="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-bold text-xs flex items-center justify-center font-mono border border-emerald-200/60 dark:border-emerald-800/60">05</span>
                 <div>
                   <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight">ฟังก์ชันวิเคราะห์ข้อมูลและการส่งออกบัญชี</h3>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Analytics and Export</p>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">Analytics and Export</p>
                 </div>
               </div>
             </div>
-            <ul class="space-y-2.5">
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-purple-500 dark:bg-purple-400 mt-1.5 flex-shrink-0"></span>
+            <ul class="space-y-3">
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบบันทึกรายการย้ายเข้าและย้ายออกในแต่ละสัปดาห์ พร้อมคำนวณผลต่างคะแนนที่ได้หรือเสียจากการหักลบแต้มย้ายทีม</span>
               </li>
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-purple-500 dark:bg-purple-400 mt-1.5 flex-shrink-0"></span>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบเชื่อมต่อแบบจำลองการเรียนรู้ของเครื่องเพื่อแนะนำรายชื่อนักเตะที่มีโอกาสทำคะแนนสูงในสัปดาห์ถัดไป</span>
               </li>
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-purple-500 dark:bg-purple-400 mt-1.5 flex-shrink-0"></span>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ผู้จัดลีกสามารถดาวน์โหลดตารางคะแนนสรุปยอดเงินรางวัลและค่าปรับเป็นไฟล์ Excel ได้ทันทีด้วยการกดปุ่มเพียงครั้งเดียว</span>
               </li>
             </ul>
@@ -1501,28 +1501,28 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         </div>
 
         <!-- Card 6: System Reliability -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3.5 shadow-2xs">
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 hover:border-emerald-500/40 dark:hover:border-emerald-500/40 transition-all duration-200 flex flex-col justify-between shadow-2xs">
           <div>
-            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800/80 mb-3">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3.5">
               <div class="flex items-center gap-2.5">
-                <span class="w-7 h-7 rounded-lg bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 font-bold text-xs flex items-center justify-center font-display border border-cyan-200/50 dark:border-cyan-800/50">06</span>
+                <span class="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-bold text-xs flex items-center justify-center font-mono border border-emerald-200/60 dark:border-emerald-800/60">06</span>
                 <div>
                   <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight">ความมั่นคงของระบบและความปลอดภัยของข้อมูล</h3>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">System Reliability</p>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">System Reliability</p>
                 </div>
               </div>
             </div>
-            <ul class="space-y-2.5">
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 mt-1.5 flex-shrink-0"></span>
+            <ul class="space-y-3">
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบใช้กลไกหน่วงเวลาแบบ Exponential Backoff และ Random Jitter เพื่อป้องกันการถูกปฏิเสธคำขอจากเซิร์ฟเวอร์ข้อมูล</span>
               </li>
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 mt-1.5 flex-shrink-0"></span>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบเขียนไฟล์แคชด้วยเทคนิค Atomic Replacement และสร้างสำเนาไฟล์สำรองคู่ขนาน ป้องกันปัญหาไฟล์ข้อมูลสูญหาย</span>
               </li>
-              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50/70 dark:bg-slate-900/50 p-2.5 sm:p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/60">
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 mt-1.5 flex-shrink-0"></span>
+              <li class="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span class="flex-1">ระบบทำงานผ่านกระบวนการอัตโนมัติของ GitHub Actions อัปเดตข้อมูลขึ้นหน้าเว็บแบบอัตโนมัติโดยไม่ต้องมีผู้ควบคุม</span>
               </li>
             </ul>
