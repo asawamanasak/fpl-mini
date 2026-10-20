@@ -2111,21 +2111,32 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             const urlParams = new URLSearchParams(window.location.search);
             queryLeague = urlParams.get('league') || '';
             queryTab = urlParams.get('tab') || '';
-            if (queryTab === 'about') queryTab = 'about-view';
-            if (queryTab === 'rules') queryTab = 'rules-view';
             queryGW = urlParams.get('gw') || '';
           }
         } catch (e) {}
 
         let hashLeague = '';
+        let hashTab = '';
         if (window.location && window.location.hash) {
-          hashLeague = window.location.hash.replace('#', '');
+          const rawHash = window.location.hash.replace('#', '');
+          if (this.multiData.leagues[rawHash]) {
+            hashLeague = rawHash;
+          } else if (rawHash.includes('tab=')) {
+            try {
+              const hashParams = new URLSearchParams(rawHash.split('?')[1] || rawHash);
+              hashTab = hashParams.get('tab') || '';
+            } catch (e) {}
+          } else if (rawHash) {
+            hashTab = rawHash;
+          }
         }
 
         let savedLeague = '';
+        let savedTab = '';
         try {
           if (typeof localStorage !== 'undefined') {
-            savedLeague = localStorage.getItem('fpl_mini_active_league');
+            savedLeague = localStorage.getItem('fpl_mini_active_league') || '';
+            savedTab = localStorage.getItem('fpl_mini_active_tab') || '';
           }
         } catch (e) {}
 
@@ -2158,8 +2169,23 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
-        this.activeTab = queryTab || 'gameweek-view';
+        this.activeTab = this.normalizeTab(queryTab || hashTab || savedTab || 'gameweek-view');
         this.liveNotesCache = {};
+      }
+
+      normalizeTab(tabName) {
+        if (!tabName) return 'gameweek-view';
+        let t = String(tabName).trim().toLowerCase();
+        if (t === 'live' || t === 'gw' || t === 'gameweek') return 'gameweek-view';
+        if (t === 'highlight' || t === 'highlights' || t === 'weekly-highlight') return 'highlights-view';
+        if (t === 'competition' || t === 'comp' || t === 'standings') return 'competition-view';
+        if (t === 'prize' || t === 'prizes' || t === 'reward' || t === 'rewards') return 'prizes-view';
+        if (t === 'hof' || t === 'hall-of-fame' || t === 'halloffame') return 'hall-of-fame-view';
+        if (t === 'cup') return 'cup-view';
+        if (t === 'rule' || t === 'rules') return 'rules-view';
+        if (t === 'about' || t === 'about-us' || t === 'about-me' || t === 'feature' || t === 'features' || t === 'function' || t === 'functions' || t === 'capabilities') return 'about-view';
+        if (!t.endsWith('-view')) return t + '-view';
+        return t;
       }
 
       detectPathLeague() {
@@ -2180,8 +2206,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.updateHeaderInfo();
         this.initTabNavigation();
         this.renderAll();
-        if (this.activeTab && this.activeTab !== 'gameweek-view') {
-          this.switchTab(this.activeTab);
+        if (this.activeTab) {
+          this.switchTab(this.activeTab, true);
         }
         this.initVisitorCounter();
 
@@ -2191,10 +2217,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             try {
               const urlParams = new URLSearchParams((window.location && window.location.search) ? window.location.search : '');
               const qLeague = urlParams.get('league') || this.detectPathLeague();
-              let qTab = urlParams.get('tab') || 'gameweek-view';
-              if (qTab === 'about') qTab = 'about-view';
-              if (qTab === 'rules') qTab = 'rules-view';
-              if (qTab && !qTab.endsWith('-view')) qTab = qTab + '-view';
+              const qTab = this.normalizeTab(urlParams.get('tab'));
               const qGW = urlParams.get('gw');
               if (qLeague && this.multiData.leagues[qLeague] && qLeague !== this.activeLeagueId) {
                 this.switchLeague(qLeague, true);
@@ -2333,6 +2356,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.renderLeagueDropdown();
         this.updateHeaderInfo();
         this.renderAll();
+        if (this.activeTab) {
+          this.switchTab(this.activeTab, true);
+        }
       }
 
       renderLeagueDropdown() {
@@ -2468,23 +2494,35 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       }
 
       switchTab(target, fromPopstate = false) {
-        this.activeTab = target;
+        let normalized = this.normalizeTab(target);
+        let targetView = document.getElementById(normalized);
+        if (!targetView) {
+          normalized = 'gameweek-view';
+          targetView = document.getElementById('gameweek-view');
+        }
+        this.activeTab = normalized;
+
         document.querySelectorAll('.tab-content').forEach(view => view.classList.add('hidden'));
-        const targetView = document.getElementById(target);
         if (targetView) targetView.classList.remove('hidden');
 
         document.querySelectorAll('.tab-nav-btn').forEach(btn => {
-          const isTarget = btn.getAttribute('data-tab-target') === target;
+          const isTarget = btn.getAttribute('data-tab-target') === this.activeTab;
           btn.className = isTarget 
-            ? 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white'
-            : 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800';
+            ? 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white'
+            : 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800';
         });
+
+        try {
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('fpl_mini_active_tab', this.activeTab);
+          }
+        } catch (e) {}
 
         if (!fromPopstate) {
           try {
             if (typeof window !== 'undefined' && window.history && window.history.replaceState) {
               const urlParams = new URLSearchParams(window.location.search || '');
-              const cleanTab = target.replace('-view', '');
+              const cleanTab = this.activeTab.replace('-view', '');
               if (cleanTab === 'gameweek') urlParams.delete('tab');
               else urlParams.set('tab', cleanTab);
               const newSearch = urlParams.toString();
