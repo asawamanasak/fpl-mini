@@ -413,7 +413,8 @@ def sync_once(args):
             "675290": {"id": 675290, "name": "NudNee"},
             "38491": {"id": 38491, "name": "รอ แมน โอน"},
             "1101958": {"id": 1101958, "name": "Barley's Official League"},
-            "438691": {"id": 438691, "name": "2 spade"}
+            "438691": {"id": 438691, "name": "2 spade"},
+            "187827": {"id": 187827, "name": "Shi62"}
         }
 
     # 4. Load existing multi_fpl_data.json for Incremental Sync caching
@@ -517,6 +518,27 @@ def sync_once(args):
                     seen_entries.add(t['entry'])
                     unique_standings_teams.append(t)
             standings_teams = unique_standings_teams
+
+            # If non-prize teams are configured but missing from standings (e.g. GEMINI UNITED unranked in 187827), append them
+            non_prize_cfg = lcfg.get('non_prize_teams', [])
+            for np_id in non_prize_cfg:
+                np_id_int = int(np_id)
+                if not any(t['entry'] == np_id_int for t in standings_teams):
+                    try:
+                        e_info = fetch(f'https://fantasy.premierleague.com/api/entry/{np_id_int}/')
+                        p_name = f"{e_info.get('player_first_name', '')} {e_info.get('player_last_name', '')}".strip()
+                        standings_teams.append({
+                            'entry': np_id_int,
+                            'entry_name': e_info.get('name', 'GEMINI UNITED'),
+                            'player_name': p_name or 'GEMINI UNITED',
+                            'rank': 999,
+                            'last_rank': 999,
+                            'total': e_info.get('summary_overall_points', 0),
+                            'event_total': e_info.get('summary_event_points', 0)
+                        })
+                        print(f" -> [Non-Prize] Appended {e_info.get('name')} ({np_id_int}) to standings for league {lid}.")
+                    except Exception as e:
+                        print(f"Notice fetching non_prize team {np_id_int}: {e}")
 
             cached_league = cached_data.get("leagues", {}).get(lid_str, {}) if cached_data else {}
             teams_list = []
@@ -1176,7 +1198,7 @@ def sync_once(args):
                 print(f"\n=======================================================")
                 print(f"✅ Fast sync completed in {elapsed:.2f} seconds (0 disk mutations)!")
                 print(f"   Last Sync: {sync_time_str}")
-                return
+                return False, 0, max_gw
         except Exception:
             pass
     else:

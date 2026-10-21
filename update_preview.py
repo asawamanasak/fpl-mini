@@ -1203,7 +1203,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     <div id="prizes-view" class="tab-content hidden space-y-4">
       
       <!-- Top Overview Banner -->
-      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+      <div id="prizes-top-banner" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 flex flex-wrap items-center justify-between gap-4">
         <div>
           <span id="prizes-overview-tag" class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">PRIZE LEADERBOARD</span>
           <h2 id="prizes-overview-title" class="text-lg sm:text-xl font-bold text-slate-900 font-display mt-0.5">สรุปเงินรางวัลสะสม</h2>
@@ -5359,6 +5359,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const poolBadge = document.getElementById('prizes-pool-badge');
         const mainContainer = document.getElementById('prizes-main-content');
         const tagEl = document.getElementById('prizes-overview-tag');
+        const topBanner = document.getElementById('prizes-top-banner');
+
+        const isAnnualZeroSum = Boolean(this.config && this.config.features && (this.config.features.prize_model === 'annual_zero_sum' || this.config.features.prize_model === 'annual'));
+
+        if (topBanner) {
+          if (isAnnualZeroSum) {
+            topBanner.classList.add('hidden');
+          } else {
+            topBanner.classList.remove('hidden');
+          }
+        }
 
         if (poolBadge) poolBadge.innerText = this.config.total_pool || 'เงินรางวัล';
 
@@ -6400,6 +6411,181 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">กำหนดการแข่งขันประจำเดือนทั้ง 10 เดือน (งบ ${totalMonthly})</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   ${scheduleCards}
+                </div>
+              </div>
+            `;
+          }
+        } else if (this.config && this.config.features && (this.config.features.prize_model === 'annual_zero_sum' || this.config.features.prize_model === 'annual')) {
+          const feat = (this.config && this.config.features) || {};
+          const tiers = feat.annual_payout_tiers || {
+            "1": 1000, "2": 800, "3": 600, "4": 400, "5": 200, "6": 100,
+            "7": -100, "8": -200, "9": -400, "10": -600, "11": -800, "12": -1000
+          };
+
+          const totalPositive = Object.values(tiers).filter(v => Number(v) > 0).reduce((a, b) => a + Number(b), 0);
+          const totalNegative = Math.abs(Object.values(tiers).filter(v => Number(v) < 0).reduce((a, b) => a + Number(b), 0));
+
+          if (tagEl) tagEl.innerText = 'ANNUAL ZERO-SUM SETTLEMENT (จ่ายตังทีเดียวสิ้นฤดูกาล)';
+          if (titleEl) titleEl.innerText = 'ตารางสรุปยอดจ่าย-รับเงินรางวัลสิ้นฤดูกาล';
+          if (subEl) subEl.innerText = `ตัดสินจากคะแนนรวมสะสมสุทธิ GW 1 - 38 • อันดับ 1-6 รับเงินรางวัลรวม ${totalPositive.toLocaleString()} THB • อันดับ 7-12 ร่วมจ่ายเงินค่าปรับรวม ${totalNegative.toLocaleString()} THB (Zero-Sum Balance)`;
+
+          // Calculate current overall standings
+          const overallMap = {};
+          const maxGW = Number(this.multiData.max_gw) || 2;
+          (this.data.teams || []).forEach(t => {
+            overallMap[t.entry_id] = {
+              entry_id: t.entry_id,
+              team_name: t.entry_name,
+              player_name: t.player_name,
+              fpl_rank: t.rank || 999,
+              total_points: 0
+            };
+          });
+
+          for (let g = 1; g <= maxGW; g++) {
+            const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+            if (gData && gData.results) {
+              const gIsStarted = gData.is_started !== undefined 
+                ? Boolean(gData.is_started) 
+                : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+              if (gIsStarted) {
+                const seenInGw = new Set();
+                gData.results.forEach(r => {
+                  if (seenInGw.has(r.entry_id)) return;
+                  seenInGw.add(r.entry_id);
+                  if (!overallMap[r.entry_id]) {
+                    overallMap[r.entry_id] = {
+                      entry_id: r.entry_id,
+                      team_name: r.team_name,
+                      player_name: r.player_name,
+                      fpl_rank: 999,
+                      total_points: 0
+                    };
+                  }
+                  overallMap[r.entry_id].total_points += r.net_points;
+                });
+              }
+            }
+          }
+
+          const overallSorted = Object.values(overallMap).sort((a, b) => {
+            const aEligible = this.isPrizeEligible(a.entry_id) ? 1 : 0;
+            const bEligible = this.isPrizeEligible(b.entry_id) ? 1 : 0;
+            if (aEligible !== bEligible) return bEligible - aEligible;
+            return (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999));
+          });
+
+          let curOverallRank = 1;
+          let eligibleCount = 0;
+          let prevEligibleTotal = null;
+          overallSorted.forEach((team) => {
+            if (!this.isPrizeEligible(team.entry_id)) {
+              team.overall_rank = null;
+              return;
+            }
+            eligibleCount++;
+            if (prevEligibleTotal !== null && team.total_points < prevEligibleTotal) {
+              curOverallRank = eligibleCount;
+            }
+            prevEligibleTotal = team.total_points;
+            team.overall_rank = curOverallRank;
+          });
+
+          let tableRowsHtml = '';
+          let sumNetBalance = 0;
+          let sumTotalPoints = 0;
+
+          overallSorted.forEach((team) => {
+            const isPrize = this.isPrizeEligible(team.entry_id);
+            const prizeBadge = this.getPrizeBadge(team.entry_id);
+            const r = team.overall_rank;
+            const payout = (isPrize && r && tiers[String(r)] !== undefined) ? Number(tiers[String(r)]) : 0;
+            if (isPrize) {
+              sumNetBalance += payout;
+              sumTotalPoints += team.total_points;
+            }
+
+            let rankBadge = '';
+            let payoutHtml = '';
+            let rowBg = '';
+
+            if (!isPrize) {
+              rankBadge = this.getNonPrizeRankBadge();
+              payoutHtml = `<span class="text-slate-400 font-normal text-xs">-</span>`;
+            } else if (r === 1) {
+              rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
+              payoutHtml = `<span class="font-black font-display text-emerald-600 dark:text-emerald-400 text-sm sm:text-base">+${payout.toLocaleString()} THB</span>`;
+              rowBg = 'bg-amber-50/30 dark:bg-amber-950/10 font-semibold';
+            } else if (r === 2) {
+              rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
+              payoutHtml = `<span class="font-black font-display text-emerald-600 dark:text-emerald-400 text-sm sm:text-base">+${payout.toLocaleString()} THB</span>`;
+              rowBg = 'bg-slate-50/40 dark:bg-slate-800/20';
+            } else if (r === 3) {
+              rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
+              payoutHtml = `<span class="font-black font-display text-emerald-600 dark:text-emerald-400 text-sm sm:text-base">+${payout.toLocaleString()} THB</span>`;
+            } else if (payout > 0) {
+              rankBadge = `<span class="text-slate-500 font-bold">${r}</span>`;
+              payoutHtml = `<span class="font-black font-display text-emerald-600 dark:text-emerald-400 text-sm sm:text-base">+${payout.toLocaleString()} THB</span>`;
+            } else if (r === eligibleCount) {
+              rankBadge = `<span class="text-slate-500 font-bold">${r}</span>`;
+              payoutHtml = `<span class="font-black font-display text-rose-600 dark:text-rose-400 text-sm sm:text-base">${payout.toLocaleString()} THB</span>`;
+              rowBg = 'bg-rose-50/30 dark:bg-rose-950/10 font-semibold';
+            } else {
+              rankBadge = `<span class="text-slate-500 font-bold">${r}</span>`;
+              payoutHtml = `<span class="font-black font-display text-rose-600 dark:text-rose-400 text-sm sm:text-base">${payout.toLocaleString()} THB</span>`;
+            }
+
+            tableRowsHtml += `
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors ${rowBg}">
+                <td class="py-3 px-1 sm:px-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
+                <td class="py-3 px-2 sm:px-3 min-w-0">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-400 transition-colors block truncate cursor-pointer">
+                      ${this.escapeHtml(team.team_name)}
+                    </button>
+                    ${prizeBadge}
+                  </div>
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block truncate">${this.escapeHtml(team.player_name)}</span>
+                </td>
+                <td class="py-3 px-2 sm:px-3 text-center font-display font-black text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
+                <td class="py-3 px-2 sm:px-3 text-right font-display">${payoutHtml}</td>
+              </tr>
+            `;
+          });
+
+          if (mainContainer) {
+            mainContainer.innerHTML = `
+              <!-- Main Table Card -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800">
+                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">ตารางคาดการณ์ยอดเงินรางวัล & ค่าปรับสิ้นฤดูกาล (GW 1 - ${maxGW})</h3>
+                  <span class="text-[11px] font-bold text-slate-500 font-display">อัปเดตตามอันดับคะแนนรวมปัจจุบัน (แข่งจบแล้ว ${maxGW} สัปดาห์)</span>
+                </div>
+                <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
+                  <table class="w-full text-left border-collapse">
+                    <thead>
+                      <tr class="border-b border-slate-100 dark:border-slate-800 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50 dark:bg-slate-800/30">
+                        <th class="py-2.5 px-1 sm:px-2 text-center w-8">#</th>
+                        <th class="py-2.5 px-2 sm:px-3">ทีม & ผู้จัดการ</th>
+                        <th class="py-2.5 px-2 sm:px-3 text-center">คะแนนรวม</th>
+                        <th class="py-2.5 px-2 sm:px-3 text-right">ยอดเงินสุทธิสิ้นฤดูกาล</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                      ${tableRowsHtml}
+                    </tbody>
+                    <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-display text-xs sm:text-sm font-bold">
+                      <tr>
+                        <td colspan="2" class="py-3 px-2 sm:px-3 text-slate-700 dark:text-slate-300">
+                          ยอดรวมสุทธิทั้งลีก (Net Zero-Sum Balance)
+                        </td>
+                        <td class="py-3 px-2 sm:px-3 text-center text-slate-900 dark:text-white font-black">${sumTotalPoints}</td>
+                        <td class="py-3 px-2 sm:px-3 text-right font-black text-slate-900 dark:text-white text-sm sm:text-base">
+                          0 THB
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
                 </div>
               </div>
             `;
@@ -7995,6 +8181,106 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             if (this.config.total_pool) {
               prizeRows.push(['กองกลางรวมทั้งหมด', this.config.total_pool]);
             }
+          } else if (feat.prize_model === 'annual_zero_sum' || feat.prize_model === 'annual') {
+            prizeRows.push(['=== สรุปยอดเงินรางวัล & ค่าปรับคะแนนรวมสิ้นฤดูกาล (ANNUAL ZERO-SUM SETTLEMENT) ===']);
+            prizeRows.push([
+              'อันดับ',
+              'ทีม',
+              'ผู้จัดการ',
+              'FPL ID',
+              'คะแนนรวมสะสม',
+              'ยอดเงินสุทธิสิ้นฤดูกาล (THB)'
+            ]);
+
+            const tiers = feat.annual_payout_tiers || {
+              "1": 1000, "2": 800, "3": 600, "4": 400, "5": 200, "6": 100,
+              "7": -100, "8": -200, "9": -400, "10": -600, "11": -800, "12": -1000
+            };
+
+            const overallMap = {};
+            (this.data.teams || []).forEach(t => {
+              overallMap[t.entry_id] = {
+                entry_id: t.entry_id,
+                team_name: t.entry_name,
+                player_name: t.player_name,
+                fpl_rank: t.rank || 999,
+                total_points: 0
+              };
+            });
+
+            for (let g = 1; g <= maxGW; g++) {
+              const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+              if (gData && gData.results) {
+                const gIsStarted = gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+                if (gIsStarted) {
+                  const seenInGw = new Set();
+                  gData.results.forEach(r => {
+                    if (seenInGw.has(r.entry_id)) return;
+                    seenInGw.add(r.entry_id);
+                    if (!overallMap[r.entry_id]) {
+                      overallMap[r.entry_id] = {
+                        entry_id: r.entry_id,
+                        team_name: r.team_name,
+                        player_name: r.player_name,
+                        fpl_rank: 999,
+                        total_points: 0
+                      };
+                    }
+                    overallMap[r.entry_id].total_points += r.net_points;
+                  });
+                }
+              }
+            }
+
+            const overallSorted = Object.values(overallMap).sort((a, b) => {
+              const aEligible = this.isPrizeEligible(a.entry_id) ? 1 : 0;
+              const bEligible = this.isPrizeEligible(b.entry_id) ? 1 : 0;
+              if (aEligible !== bEligible) return bEligible - aEligible;
+              return (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999));
+            });
+
+            let curOverallRank = 1;
+            let eligibleCount = 0;
+            let prevEligibleTotal = null;
+            overallSorted.forEach((team) => {
+              if (!this.isPrizeEligible(team.entry_id)) {
+                team.overall_rank = null;
+                return;
+              }
+              eligibleCount++;
+              if (prevEligibleTotal !== null && team.total_points < prevEligibleTotal) {
+                curOverallRank = eligibleCount;
+              }
+              prevEligibleTotal = team.total_points;
+              team.overall_rank = curOverallRank;
+            });
+
+            overallSorted.forEach(team => {
+              const isPrize = this.isPrizeEligible(team.entry_id);
+              const r = team.overall_rank;
+              const payout = (isPrize && r && tiers[String(r)] !== undefined) ? Number(tiers[String(r)]) : 0;
+              let statusText = 'ร่วมสนุก (ไม่คิดเงิน)';
+              let payoutText = '-';
+
+              if (isPrize && r) {
+                if (payout > 0) {
+                  statusText = `ได้รับเงินรางวัล (+${payout.toLocaleString()} THB)`;
+                  payoutText = `+${payout.toLocaleString()}`;
+                } else if (payout < 0) {
+                  statusText = `ร่วมจ่ายค่าปรับ (${payout.toLocaleString()} THB)`;
+                  payoutText = `${payout.toLocaleString()}`;
+                }
+              }
+
+              prizeRows.push([
+                isPrize ? `อันดับ ${r}` : 'ร่วมสนุก',
+                team.team_name,
+                team.player_name,
+                team.entry_id,
+                team.total_points,
+                payoutText
+              ]);
+            });
           } else {
             prizeRows.push(['=== ข้อมูลเงินรางวัลและกติกา (PRIZE & RULES MATRIX) ===']);
             prizeRows.push(['สถานะ', 'อยู่ระหว่างรอการประกาศกติกาและโครงสร้างเงินรางวัลอย่างเป็นทางการ (เว้นไว้ก่อน เดี๋ยวเข้ามาอธิบาย)']);
