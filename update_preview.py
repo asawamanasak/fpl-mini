@@ -2850,8 +2850,8 @@ selectShi62GW(gwName) {
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-4">
             <!-- Gameweek Controls Header -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
-              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 font-display">
-                <span>⚽</span> ผลการแข่งขัน & การคิดเงินรายสัปดาห์
+              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
+                ผลการแข่งขัน & การคิดเงินรายสัปดาห์
               </h2>
 
               <!-- GW Pills Selector & Copy LINE Button -->
