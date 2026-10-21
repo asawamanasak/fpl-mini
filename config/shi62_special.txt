@@ -1,0 +1,315 @@
+W7
+EVE v CHE -0.5
+E. Dow Totti
+C. Nod, Oo✅
+
+BRE v LIV
+B. Oo, Dow
+d. poang
+L. Boy Totti✅
+
+FUL -1 v HUL
+F. Oo
+d. Totti✅
+H. Dow
+
+MCI -2 v IPS
+M. Oo
+d. Totti
+I. Dow✅
+
+NEW -0.5 v AVL
+N. Boy 
+A. Oo Dow✅
+
+BOU -0.5 v SUN
+B. Dow✅
+S. Oo Totti
+
+BHA -1 v CRY
+B. Dow✅
+d. Totti
+C. Oo
+
+LEE v MUN
+L. Boy Totti
+d. poang✅
+M. Dow, Oo
+
+NFO v ARS -1
+N. Totti
+d. Dow✅
+A. Oo boy
+
+TOT -1 v COV
+T. Boy Oo✅
+d. Dow
+C.Totti
+
+GW6
+ARS -1 v LEE
+A. Oo boy
+d. Sia✅
+L. Totti
+
+AVL v BRE
+A. Sia
+d. Oo✅
+B. Totti
+
+CHE -1 v BOU
+C. Nod Oo✅
+d. Boy
+B. Sia
+
+SUN v BHA -0.5
+S. Oo Sia
+B. Dow Totti✅
+
+MUN -0.5 v TOT
+M. Dow Oo
+T. Boy Sia Totti✅
+
+CRY v NFO
+C. Oo✅
+d. Totti
+N. 
+
+HUL v EVE -0.5
+H. Boy dow Sia✅
+E. Oo Totti
+
+LIV v MCI
+L. Boy Sia
+d. Dow
+M. Oo Totti✅
+
+COV v NEW -0.5
+C. Dow Oo✅
+N. Boy Sia Totti
+
+W5
+BRE v CHE-0.5
+B. Totti Dow Sia✅
+C. Nod Oo boy
+
+TOT-0.5 v AVL
+T. Boy Totti
+A. Oo Dow Sia✅
+
+NEW-1 v HUL
+N. Oo poang
+d. Totti Sia✅
+H. Boy Dow
+
+EVE-1 v IPS
+E. Boy Dow
+d. Totti Sia✅
+I. Oo poang
+
+BHA v ARS-1
+B. Dow✅
+d. Totti Sia
+A. Oo boy
+
+NFO-1 v COV
+N. Totti Sia
+d. Dow
+C. Oo✅
+
+MCI-2 v SUN
+M. Oo
+d. Totti✅
+S. Dow Sia
+
+LEE-1 v CRY
+L. Totti
+d. Dow
+C. Oo ✅
+
+BOU v LIV-0.5
+B. Oo Dow
+L. Boy Totti Sia✅
+
+FUL v MUN-0.5
+F. Boy Totti Sia✅
+M. Dow Oo
+
+GW4
+AVL -0.5 v NFO
+A. Boy Oo Totti
+N. Dow Sia✅
+
+BOU v BRE
+BO. Totti
+d. ✅
+BR. Oo
+
+CHE -2 v HUL
+C. Nod Oo Sia
+d. Boy Totti
+H. Dow poang✅
+
+CRY -1 v IPS
+C. Dow
+d. Sia
+I. Oo Totti ✅
+
+LIV -1.5 v FUL
+L. Boy Sia
+F. Oo Dow Totti✅
+
+TOT -0.5 v EVE
+T. Boy Oo Totti
+E. Dow Sia✅
+
+SUN v ARS -1
+S. Totti
+d. Sia
+A. Oo boy✅
+
+COV v BHA -1
+C. Oo Totti
+d. Sia
+B. Dow✅
+
+MUN v MCI -0.5
+MU. Dow Totti
+MC. Boy Oo Sia✅
+
+LEE -0.5 v NEW
+L. Oo Totti✅
+N. Dow Sia
+
+GW3
+IPS V LIV -1
+I. Oo Dow
+d. Totti
+L. Boy✅
+
+NEW V BOU
+N. Boy
+d. Dow✅
+B. Oo
+
+BRE -1 V SUN
+B. Dow Oo
+d. Totti
+S. ✅
+
+BHA -0.5 V LEE
+B. Dow Totti
+L. Oo✅
+
+FUL -0.5 V CRY
+F. Dow Totti
+C. Oo ✅
+
+MCI -2 V COV
+M. Oo
+d. Totti
+C. Dow✅
+
+NFO V TOT
+N. Dow
+d. Oo✅
+T. Boy Totti
+
+HUL V AVL -0.5
+H. Dow✅
+A. Oo Totti
+
+EVE V MUN -0.5
+E. Boy Totti✅
+M. Dow Oo
+
+ARS -0.5 V CHE
+A. Oo boy✅
+C. Nod Dow
+
+GW2
+CRY V MCI -1.5
+C. Dow Sia 
+M. Oo✅
+
+LIV -1 V NFO
+L. Boy Totti
+d. Sia
+N. Oo Dow✅
+
+BOU V EVE -0.5
+B. Oo Totti✅
+E. Dow
+
+COV -0.5 V HUL
+C. Oo Totti
+H. Sia Dow ✅
+
+TOT -0.5 V NEW
+T. Boy Dow
+N. Oo Sia Totti✅
+
+CHE -0.5 V BHA
+C. Nod Oo boy Totti✅
+B. Sia Dow
+
+LEE V BRE
+L. Oo Totti
+d. Sia✅
+B. Dow
+
+SUN V FUL
+S. Dow✅
+d. Totti
+F. Oo
+
+MUN -1 V IPS
+M. Dow Oo✅✅
+d. Sia Totti
+I. Boy
+
+AVL V ARS -1
+AV. Totti
+d. Dow✅
+AR. Oo boy
+
+W1
+Commu
+ARS : MCI
+A: Dow✅
+d: boy
+M: Oo
+
+W1
+ARS -2.5 V COV
+A. Oo Dow✅
+C. Sia Totti
+
+HUL V MUN -1.5
+H. Boy Sia Totti✅
+M. Dow Oo
+
+NFO -0.5 V LEE
+N. Dow Totti
+L. Oo✅
+
+BRE V TOT
+B. Oo✅
+d. Sia
+T. Boy Dow
+
+BHA -0.5 V AVL
+B. Dow Totti✅
+A. Oo boy
+
+MCI -1.5 V BOU
+M. Oo Totti
+B. Dow Sia✅
+
+NEW V LIV -0.5
+N. Oo Dow✅
+L. Boy Sia Totti
+
+FUL V CHE -0.5
+F. Sia Totti
+C. Oo boy ✅

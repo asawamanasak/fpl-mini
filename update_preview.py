@@ -13,8 +13,9 @@ Build Version: 2026.08.31.01
 
 import json
 import os
+from parse_shi62_special import parse_shi62_file
 
-def generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=None, precomputed_cfg_str=None):
+def generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=None, precomputed_cfg_str=None, shi62_data_json_str=None):
     if precomputed_json_str is None:
         # Performance Optimization: Deep-strip raw_picks and raw_hist before serializing into HTML
         pruned_data = {
@@ -994,6 +995,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           Weekly Highlight
         </button>
         <button 
+          id="tab-btn-shi62-special"
+          data-tab-target="shi62-special-view" 
+          class="tab-nav-btn hidden flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+        >
+          BETA
+        </button>
+        <button 
           id="tab-btn-competition"
           data-tab-target="competition-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
@@ -1149,6 +1157,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <!-- Rendered dynamically -->
       </div>
 
+    </div>
+
+    <!-- ==================== TAB: SHI'62 SPECIAL ==================== -->
+    <div id="shi62-special-view" class="tab-content hidden space-y-6">
+      <!-- Rendered dynamically via app.renderShi62Special() -->
     </div>
 
     <!-- ==================== TAB: COMPETITION ==================== -->
@@ -1666,6 +1679,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <script>
     const MULTI_LEAGUE_DATA = __MULTI_DATA_JSON__;
     const LEAGUES_CONFIG = __LEAGUES_CONFIG_JSON__;
+    const SHI62_SPECIAL_DATA = __SHI62_SPECIAL_DATA_JSON__;
     const INITIAL_DEFAULT_LEAGUE = __DEFAULT_LID__;
 
     /**
@@ -2169,6 +2183,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
         this.activeTab = this.normalizeTab(queryTab || hashTab || savedTab || 'gameweek-view');
         this.liveNotesCache = {};
+        this.shi62Data = (typeof SHI62_SPECIAL_DATA !== 'undefined') ? SHI62_SPECIAL_DATA : null;
+        this.activeShi62GW = null;
       }
 
       normalizeTab(tabName) {
@@ -2180,6 +2196,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (t === 'prize' || t === 'prizes' || t === 'reward' || t === 'rewards') return 'prizes-view';
         if (t === 'hof' || t === 'hall-of-fame' || t === 'halloffame') return 'hall-of-fame-view';
         if (t === 'cup') return 'cup-view';
+        if (t === 'shi62' || t === 'shi62-special' || t === 'special' || t === 'beta') return 'shi62-special-view';
         if (t === 'rule' || t === 'rules') return 'rules-view';
         if (t === 'about' || t === 'about-us' || t === 'about-me' || t === 'feature' || t === 'features' || t === 'function' || t === 'functions' || t === 'capabilities') return 'about-view';
         if (!t.endsWith('-view')) return t + '-view';
@@ -2479,6 +2496,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             }
           }
         }
+
+        // Check Shi'62 Special Feature Flag
+        const shi62TabBtn = document.getElementById('tab-btn-shi62-special');
+        const isShi62 = String(this.activeLeagueId) === '187827';
+        if (shi62TabBtn) {
+          if (isShi62) {
+            shi62TabBtn.classList.remove('hidden');
+          } else {
+            shi62TabBtn.classList.add('hidden');
+            if (this.activeTab === 'shi62-special-view') {
+              this.switchTab('gameweek-view');
+            }
+          }
+        }
       }
 
       initTabNavigation() {
@@ -2505,9 +2536,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         document.querySelectorAll('.tab-nav-btn').forEach(btn => {
           const isTarget = btn.getAttribute('data-tab-target') === this.activeTab;
-          btn.className = isTarget 
+          let cls = isTarget 
             ? 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white'
             : 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800';
+          if (btn.id === 'tab-btn-cup' && !Boolean(this.config && this.config.features && this.config.features.has_cup)) {
+            cls += ' hidden';
+          }
+          if (btn.id === 'tab-btn-shi62-special' && String(this.activeLeagueId) !== '187827') {
+            cls += ' hidden';
+          }
+          btn.className = cls;
         });
 
         try {
@@ -2616,6 +2654,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.renderHallOfFameView();
         this.renderCupView();
         this.renderRulesView();
+        if (this.shi62Data && String(this.activeLeagueId) === '187827') {
+          this.renderShi62Special();
+        }
         this.updateHighlightsTabBlink();
       }
 
@@ -2627,9 +2668,353 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         else if (this.activeTab === 'hall-of-fame-view') this.renderHallOfFameView();
         else if (this.activeTab === 'cup-view') this.renderCupView();
         else if (this.activeTab === 'rules-view') this.renderRulesView();
+        else if (this.activeTab === 'shi62-special-view') this.renderShi62Special();
         else if (this.activeTab === 'about-view') {
           // Static content
         }
+      }
+
+selectShi62GW(gwName) {
+        this.activeShi62GW = gwName;
+        this.renderShi62Special();
+      }
+
+      copyShi62LINEResult(gwName) {
+        if (!this.shi62Data) return;
+        const gw = (this.shi62Data.gameweeks || []).find(g => g.name === gwName);
+        if (!gw) return;
+
+        let lines = [];
+        lines.push(`🎲 สรุปผลมินิเกม Shi'62 Special - ${gw.name} 🎲`);
+        lines.push(`---------------------------------`);
+        (gw.summary || []).forEach((s, i) => {
+          const sign = s.net > 0 ? '+' : '';
+          lines.push(`${i + 1}. ${s.player.display_name}: ${sign}${s.net} บ. (${s.won}W ${s.lost}L)`);
+        });
+        lines.push(`---------------------------------`);
+        lines.push(`💰 พูลสัปดาห์นี้: ${Number(gw.total_pool).toLocaleString()} บาท (${gw.matches.length} คู่)`);
+        const leader = (this.shi62Data.cumulative_standings || [])[0];
+        if (leader) {
+          const leaderSign = leader.net > 0 ? '+' : '';
+          lines.push(`🏆 ผู้นำรวมสะสม: ${leader.player.display_name} (${leaderSign}${leader.net} บ.)`);
+        }
+
+        const textToCopy = lines.join(String.fromCharCode(10));
+        if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(textToCopy).then(() => {
+            alert(`คัดลอกสรุปผล ${gw.name} สำหรับส่ง LINE สำเร็จเรียบร้อย!`);
+          }).catch(() => {
+            alert('ไม่สามารถคัดลอกได้อัตโนมัติ กรุณาลองใหม่อีกครั้ง');
+          });
+        } else {
+          const textarea = document.createElement('textarea');
+          textarea.value = textToCopy;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          alert(`คัดลอกสรุปผล ${gw.name} สำหรับส่ง LINE สำเร็จเรียบร้อย!`);
+        }
+      }
+
+      renderShi62Special() {
+        if (!this.shi62Data) return;
+        const container = document.getElementById('shi62-special-view');
+        if (!container) return;
+
+        if (!this.activeShi62GW && this.shi62Data.gameweeks && this.shi62Data.gameweeks.length > 0) {
+          this.activeShi62GW = this.shi62Data.gameweeks[0].name;
+        }
+
+        const data = this.shi62Data;
+        const activeGWObj = (data.gameweeks || []).find(g => g.name === this.activeShi62GW) || data.gameweeks[0];
+        if (!activeGWObj) return;
+
+        const fmtMoney = (val, showPlus = true) => {
+          if (val > 0) return (showPlus ? '+' : '') + Number(val).toLocaleString() + ' บาท';
+          if (val < 0) return Number(val).toLocaleString() + ' บาท';
+          return '0 บาท';
+        };
+
+        let html = `
+          <!-- Header Banner (Minimal & Professional) -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <div class="flex items-center gap-2 mb-1.5">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
+                    🎲 Special Mini-Game
+                  </span>
+                </div>
+                <h1 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
+                  Shi'62 Special
+                </h1>
+              </div>
+
+              <!-- Quick Stats Grid (Clean & Minimal) -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">ยอดเงินสะพัดรวม</div>
+                  <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">฿${Number(data.total_season_turnover).toLocaleString()}</div>
+                </div>
+                <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">คู่ที่เปิดทายผล</div>
+                  <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">${data.total_season_matches} คู่</div>
+                </div>
+                <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">ผู้นำทำกำไรสูงสุด</div>
+                  <div class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 font-display truncate mt-0.5">${data.cumulative_standings[0] ? data.cumulative_standings[0].player.display_name + ' (' + fmtMoney(data.cumulative_standings[0].net) + ')' : '-'}</div>
+                </div>
+                <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">แม่นยำสูงสุด (%ชนะ)</div>
+                  <div class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 font-display mt-0.5">${[...data.cumulative_standings].sort((a,b) => b.win_rate - a.win_rate)[0]?.player.display_name || '-'} (${[...data.cumulative_standings].sort((a,b) => b.win_rate - a.win_rate)[0]?.win_rate || 0}%)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 1: Cumulative Standings Table -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 font-display">
+                <span>🏆</span> ตารางอันดับ & บัญชีเงินสะสมตลอดฤดูกาล
+              </h2>
+            </div>
+
+            <!-- Standings Table -->
+            <div class="overflow-x-auto touch-scroll">
+              <table class="w-full text-left border-collapse min-w-[640px]">
+                <thead>
+                  <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                    <th class="py-2.5 px-3 text-center w-12">อันดับ</th>
+                    <th class="py-2.5 px-3">ผู้เล่น / ทีม FPL</th>
+                    <th class="py-2.5 px-3 text-center">แข่ง (คู่)</th>
+                    <th class="py-2.5 px-3 text-center">ชนะ</th>
+                    <th class="py-2.5 px-3 text-center">แพ้</th>
+                    <th class="py-2.5 px-3 text-center">เจ๊า</th>
+                    <th class="py-2.5 px-3 text-center">% ชนะ</th>
+                    <th class="py-2.5 px-3 text-right">เงินที่ได้</th>
+                    <th class="py-2.5 px-3 text-right">เงินที่เสีย</th>
+                    <th class="py-2.5 px-3 text-right font-bold">กำไร/ขาดทุนสุทธิ</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
+                  ${data.cumulative_standings.map(c => {
+                    const isPositive = c.net > 0;
+                    const isNegative = c.net < 0;
+                    const netColor = isPositive 
+                      ? 'text-emerald-600 dark:text-emerald-400 font-bold' 
+                      : (isNegative ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 font-medium');
+                    
+                    let rankBadge = '';
+                    if (c.rank === 1) rankBadge = '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 font-bold text-xs">🥇</span>';
+                    else if (c.rank === 2) rankBadge = '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-slate-200 text-slate-700 dark:bg-slate-700/60 dark:text-slate-300 font-bold text-xs">🥈</span>';
+                    else if (c.rank === 3) rankBadge = '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-700/15 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 font-bold text-xs">🥉</span>';
+                    else rankBadge = `<span class="text-xs font-semibold text-slate-400 dark:text-slate-500">${c.rank}</span>`;
+
+                    return `
+                      <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                        <td class="py-2.5 px-3 text-center font-display">${rankBadge}</td>
+                        <td class="py-2.5 px-3">
+                          <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
+                              ${c.player.display_name}
+                            </span>
+                            <div>
+                              ${c.player.is_guest 
+                                ? '<div class="text-xs text-slate-500 dark:text-slate-400 font-medium">เล่นเฉพาะมินิเกม</div>' 
+                                : `
+                                  <div class="font-bold text-slate-900 dark:text-white leading-tight">${c.player.team_name}</div>
+                                  <div class="text-[11px] text-slate-400 leading-tight">${c.player.manager}</div>
+                                `}
+                            </div>
+                          </div>
+                        </td>
+                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
+                        <td class="py-2.5 px-3 text-center font-display font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
+                        <td class="py-2.5 px-3 text-center font-display font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
+                        <td class="py-2.5 px-3 text-center font-display text-slate-400">${c.push}</td>
+                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-600 dark:text-slate-400">${c.win_rate}%</td>
+                        <td class="py-2.5 px-3 text-right font-display text-emerald-600 dark:text-emerald-400">฿${c.total_won_amount.toLocaleString()}</td>
+                        <td class="py-2.5 px-3 text-right font-display text-rose-500 dark:text-rose-400">฿${c.total_lost_amount.toLocaleString()}</td>
+                        <td class="py-2.5 px-3 text-right font-display ${netColor}">
+                          ${fmtMoney(c.net)}
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SECTION 2: Gameweek Breakdown & Match Details -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-4">
+            <!-- Gameweek Controls Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 font-display">
+                <span>⚽</span> ผลการแข่งขัน & การคิดเงินรายสัปดาห์
+              </h2>
+
+              <!-- GW Pills Selector & Copy LINE Button -->
+              <div class="flex flex-wrap items-center gap-2">
+                <div class="flex items-center gap-1 overflow-x-auto touch-scroll p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
+                  ${data.gameweeks.map(g => {
+                    const isActive = g.name === this.activeShi62GW;
+                    return `
+                      <button 
+                        onclick="app.selectShi62GW('${g.name}')"
+                        class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                          isActive 
+                            ? 'bg-slate-900 text-white dark:bg-blue-600 dark:text-white shadow-xs' 
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-700/60'
+                        }"
+                      >
+                        ${g.name}
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+
+                <button 
+                  onclick="app.copyShi62LINEResult('${activeGWObj.name}')"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#06C755] hover:bg-[#05b34c] text-white shadow-xs transition-transform active:scale-95 cursor-pointer whitespace-nowrap"
+                  title="คัดลอกสรุปผลสัปดาห์นี้เพื่อส่งลงกลุ่ม LINE"
+                >
+                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+                  <span>คัดลอกส่ง LINE</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Active GW Stats & Financial Balance Card -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <!-- Left: GW Info -->
+              <div class="bg-slate-50/80 dark:bg-slate-800/40 rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-bold text-slate-700 dark:text-slate-300 font-display">${activeGWObj.name}</span>
+                    <span class="text-[10.5px] font-medium px-2 py-0.5 rounded-md bg-slate-200/70 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300">${activeGWObj.matches.length} คู่</span>
+                  </div>
+                  <div class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white font-display mt-2">
+                    ฿${Number(activeGWObj.total_pool).toLocaleString()}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right 2 cols: GW Standings -->
+              <div class="md:col-span-2 bg-slate-50/50 dark:bg-slate-800/30 rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800">
+                <div class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center justify-between">
+                  <span>สรุปยอดเงินได้-เสียสุทธิในสัปดาห์นี้ (${activeGWObj.name})</span>
+                  <span class="text-[10.5px] text-slate-400 font-normal">เรียงตามกำไรสุทธิ</span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                  ${activeGWObj.summary.map(s => {
+                    const isPositive = s.net > 0;
+                    const isNegative = s.net < 0;
+                    const bgStyle = isPositive 
+                      ? 'bg-emerald-500/5 dark:bg-emerald-500/10 border-emerald-500/20' 
+                      : (isNegative ? 'bg-rose-500/5 dark:bg-rose-500/10 border-rose-500/20' : 'bg-slate-100/60 dark:bg-slate-800/40 border-slate-200/60 dark:border-slate-700/60');
+                    const textStyle = isPositive ? 'text-emerald-600 dark:text-emerald-400' : (isNegative ? 'text-rose-600 dark:text-rose-400' : 'text-slate-600 dark:text-slate-400');
+                    return `
+                      <div class="p-2 rounded-lg border ${bgStyle} flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                          <span class="font-bold text-xs text-slate-800 dark:text-slate-200">${s.player.display_name}</span>
+                          <span class="text-[10px] text-slate-400">${s.won}W - ${s.lost}L</span>
+                        </div>
+                        <div class="text-xs sm:text-sm font-bold font-display mt-1 ${textStyle}">
+                          ${fmtMoney(s.net)}
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Matches List Grid -->
+            <div>
+              <div class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2.5 flex items-center justify-between">
+                <span>รายละเอียดการทายผลทุกคู่ (${activeGWObj.matches.length} คู่)</span>
+                <span class="text-[10.5px] text-slate-400 font-normal">เครื่องหมาย ✅ คือผลชนะ</span>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3">
+                ${activeGWObj.matches.map((m, idx) => {
+                  const isVoid = m.status === 'void';
+                  return `
+                    <div class="rounded-xl border ${isVoid ? 'border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/40 dark:bg-slate-900/20' : 'border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-2xs'} p-3 flex flex-col justify-between space-y-2.5">
+                      <!-- Match Top Header -->
+                      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-2">
+                        <div class="flex items-center gap-2">
+                          <span class="w-4 h-4 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center text-[10px] font-bold font-display">
+                            ${idx + 1}
+                          </span>
+                          <span class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white font-display">
+                            ${m.title}
+                          </span>
+                        </div>
+                        <div>
+                          ${isVoid 
+                            ? '<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">โมฆะ / เจ๊า (ไม่มีผู้ชนะ)</span>'
+                            : `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60">฿${m.pool} (${m.winners.length} คนชนะ)</span>`
+                          }
+                        </div>
+                      </div>
+
+                      <!-- Options Rows -->
+                      <div class="space-y-1">
+                        ${m.options.map(opt => {
+                          const isWinOpt = opt.is_win;
+                          const hasNames = opt.names && opt.names.length > 0;
+                          return `
+                            <div class="flex items-center justify-between p-1.5 px-2 rounded-lg text-xs transition-colors ${
+                              isWinOpt 
+                                ? 'bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/20' 
+                                : 'bg-slate-50/60 dark:bg-slate-800/40 border border-transparent'
+                            }">
+                              <div class="flex items-center gap-2 min-w-0">
+                                <span class="font-bold text-xs ${isWinOpt ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400'}">
+                                  ${opt.label}
+                                </span>
+                                <div class="flex items-center gap-1 flex-wrap">
+                                  ${hasNames 
+                                    ? opt.names.map(name => {
+                                        const pRes = m.payouts[name] || {};
+                                        const netVal = pRes.net || 0;
+                                        const badgeColor = netVal > 0 
+                                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 font-bold' 
+                                          : (netVal < 0 ? 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400');
+                                        return `
+                                          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] ${badgeColor}">
+                                            ${name}
+                                            <span class="text-[9px] opacity-75">${fmtMoney(netVal, true)}</span>
+                                          </span>
+                                        `;
+                                      }).join('')
+                                    : '<span class="text-[10.5px] text-slate-400 italic">(ไม่มีคนแทง)</span>'
+                                  }
+                                </div>
+                              </div>
+                              <div class="flex items-center pl-2 flex-shrink-0">
+                                ${isWinOpt 
+                                  ? '<span class="text-xs">✅</span>' 
+                                  : (hasNames ? '<span class="text-[10.5px] text-rose-500/80 font-medium">-100</span>' : '')
+                                }
+                              </div>
+                            </div>
+                          `;
+                        }).join('')}
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+
+        container.innerHTML = html;
       }
 
       renderGWSelector() {
@@ -8494,6 +8879,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     html = html_template.replace('__LAST_SYNC__', last_sync_str)
     html = html.replace('__MULTI_DATA_JSON__', multi_data_json_str)
     html = html.replace('__LEAGUES_CONFIG_JSON__', leagues_config_json_str)
+    html = html.replace('__SHI62_SPECIAL_DATA_JSON__', shi62_data_json_str)
     html = html.replace('__DEFAULT_LID__', default_lid_code)
     html = html.replace('__ASSET_PREFIX__', asset_prefix)
     return html
@@ -8542,8 +8928,12 @@ def main():
     multi_data_json_str = json.dumps(pruned_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     leagues_config_json_str = json.dumps(leagues_config, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 
+    shi62_txt_path = os.path.join(base_dir, 'config', 'shi62_special.txt')
+    shi62_special_data = parse_shi62_file(shi62_txt_path)
+    shi62_special_json_str = json.dumps(shi62_special_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\/')
+
     # 1. Generate root files
-    root_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=multi_data_json_str, precomputed_cfg_str=leagues_config_json_str)
+    root_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=multi_data_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str)
     with open(os.path.join(base_dir, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(root_html)
 
@@ -8557,7 +8947,7 @@ def main():
     for lid in leagues_config.keys():
         dir_league = os.path.join(base_dir, str(lid))
         os.makedirs(dir_league, exist_ok=True)
-        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid), precomputed_json_str=multi_data_json_str, precomputed_cfg_str=leagues_config_json_str)
+        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid), precomputed_json_str=multi_data_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str)
         with open(os.path.join(dir_league, 'index.html'), 'w', encoding='utf-8') as f:
             f.write(html_league)
 

@@ -603,7 +603,8 @@
       },
       "has_settlement_phases": false,
       "has_monthly_prizes": false,
-      "has_cup": false
+      "has_cup": false,
+      "has_shi62_special": true
     },
     "rules_cards": [
       {
