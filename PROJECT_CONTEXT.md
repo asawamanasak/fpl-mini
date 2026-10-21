@@ -206,6 +206,20 @@ flowchart TD
     * หากคู่นั้นไม่มีใครทายถูกเลย ถือเป็นโมฆะ (Push / เจ๊า) ไม่มีใครได้และไม่มีใครเสียเงิน
   * **ช่องทางอัปเดตข้อมูล:** ผ่านไฟล์ข้อความ `config/shi62_special.txt` โดยวางบันทึกย่อคู่แข่งขันและผลชนะได้โดยตรง ระบบมี Parser คำนวณเงินและอัปเดตเว็บให้อัตโนมัติ
   * **การแสดงผล:** แท็บเฉพาะ 'Shi\'62 Special' ประกอบด้วยสถิติภาพรวม, ตารางเงินสะสมตลอดฤดูกาล, ตัวเลือกดูย้อนหลังรายสัปดาห์ (GW Selector), การ์ดแจกแจงผลรายคู่, และปุ่มคัดลอกสรุปผลส่ง LINE
+  * **รายชื่อทีมและตัวย่อในมินิเกม (12 ทีม FPL + 1 Guest):**
+    * `Tong`: amornTong (Amornthep Taveephanich)
+    * `Oo`: Oöraora Grandé (Patrick Oo)
+    * `Riin`: Riin FC (WARIN SINAROJ)
+    * `Totti`: Totti Toon Army (Totti NUFC)
+    * `Poang`: The Cannon (Kasidit Boonyawat)
+    * `Oan`: Benjamin Seskooan (Nattaporn Yaemsaard)
+    * `Sia`: SiaLeela (Prachya Leelamantep)
+    * `Mai`: Emery's Revenge (Rati Leetrakul)
+    * `Boy`: Carrickysseus (Thamrong Pattarajiarapan)
+    * `Bert`: Bluebert's Team (Bluebert Tingnongnoi)
+    * `Pong+`: Winwinwin (Ratapan W)
+    * `Dow`: Bruno Carrick (Bruno Zoro)
+    * `Nod`: ผู้ร่วมทายผล (เล่นเฉพาะมินิเกม ไม่ได้ลงเล่นแฟนตาซี FPL)
 
 ---
 

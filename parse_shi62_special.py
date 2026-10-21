@@ -10,42 +10,50 @@ import re
 import json
 
 PLAYER_MAPPING = {
-    "oo": {"entry_id": 837763, "display_name": "Oo", "team_name": "Oöraora Grandé", "manager": "Patrick Oo"},
-    "totti": {"entry_id": 720631, "display_name": "Totti", "team_name": "Totti Toon Army", "manager": "Totti NUFC"},
-    "sia": {"entry_id": 3508212, "display_name": "Sia", "team_name": "SiaLeela", "manager": "Prachya Leelamantep"},
-    "boy": {"entry_id": 1153245, "display_name": "Boy", "team_name": "The Cannon", "manager": "Kasidit Boonyawat"},
-    "nod": {"entry_id": None, "display_name": "Nod", "team_name": "เล่นเฉพาะมินิเกม", "manager": "ผู้ร่วมทายผล", "is_guest": True},
-    "rin": {"entry_id": 2342390, "display_name": "Rin", "team_name": "Riin FC", "manager": "WARIN SINAROJ"},
-    "poang": {"entry_id": 7601484, "display_name": "Poang", "team_name": "Benjamin Seskooan", "manager": "Nattaporn Yaemsaard"},
-    "dow": {"entry_id": 1312974, "display_name": "Dow", "team_name": "Emery's Revenge", "manager": "Rati Leetrakul"},
     "tong": {"entry_id": 1309919, "display_name": "Tong", "team_name": "amornTong", "manager": "Amornthep Taveephanich"},
-    "carrick": {"entry_id": 2804957, "display_name": "Carrick", "team_name": "Carrickysseus", "manager": "Thamrong Pattarajiarapan"},
-    "bruno": {"entry_id": 5463640, "display_name": "Bruno", "team_name": "Bruno carrick", "manager": "Bruno Zoro"},
-    "bluebert": {"entry_id": 4549514, "display_name": "Bluebert", "team_name": "Bluebert's Team", "manager": "Bluebert Tingnongnoi"},
-    "win": {"entry_id": 5340913, "display_name": "Win", "team_name": "Winwinwin", "manager": "Ratapan W"}
+    "oo": {"entry_id": 837763, "display_name": "Oo", "team_name": "Oöraora Grandé", "manager": "Patrick Oo"},
+    "riin": {"entry_id": 2342390, "display_name": "Riin", "team_name": "Riin FC", "manager": "WARIN SINAROJ"},
+    "totti": {"entry_id": 720631, "display_name": "Totti", "team_name": "Totti Toon Army", "manager": "Totti NUFC"},
+    "poang": {"entry_id": 1153245, "display_name": "Poang", "team_name": "The Cannon", "manager": "Kasidit Boonyawat"},
+    "oan": {"entry_id": 7601484, "display_name": "Oan", "team_name": "Benjamin Seskooan", "manager": "Nattaporn Yaemsaard"},
+    "sia": {"entry_id": 3508212, "display_name": "Sia", "team_name": "SiaLeela", "manager": "Prachya Leelamantep"},
+    "mai": {"entry_id": 1312974, "display_name": "Mai", "team_name": "Emery's Revenge", "manager": "Rati Leetrakul"},
+    "boy": {"entry_id": 2804957, "display_name": "Boy", "team_name": "Carrickysseus", "manager": "Thamrong Pattarajiarapan"},
+    "bert": {"entry_id": 4549514, "display_name": "Bert", "team_name": "Bluebert's Team", "manager": "Bluebert Tingnongnoi"},
+    "pong+": {"entry_id": 5340913, "display_name": "Pong+", "team_name": "Winwinwin", "manager": "Ratapan W"},
+    "dow": {"entry_id": 5463640, "display_name": "Dow", "team_name": "Bruno Carrick", "manager": "Bruno Zoro"},
+    "nod": {"entry_id": None, "display_name": "Nod", "team_name": "เล่นเฉพาะมินิเกม", "manager": "ผู้ร่วมทายผล", "is_guest": True}
 }
 
 def get_player_info(raw_name):
     clean = raw_name.lower().strip()
     # alias checks
-    if clean in ("ป๋อง", "poang", "pong"):
+    if clean in ("poang", "ป๋อง", "เป๋ง"):
         clean = "poang"
-    elif clean in ("ดี้", "boy"):
+    elif clean in ("pong+", "pong", "โป้ง", "win", "winwinwin"):
+        clean = "pong+"
+    elif clean in ("boy", "ดี้"):
         clean = "boy"
-    elif clean in ("เสี่ย", "sia"):
+    elif clean in ("sia", "เสี่ย"):
         clean = "sia"
-    elif clean in ("ดาว", "dow"):
+    elif clean in ("dow", "ดาว", "bruno"):
         clean = "dow"
-    elif clean in ("อู๋", "oo"):
+    elif clean in ("oo", "อู๋"):
         clean = "oo"
-    elif clean in ("น็อด", "nod"):
+    elif clean in ("nod", "น็อด"):
         clean = "nod"
-    elif clean in ("ริน", "rin", "warin"):
-        clean = "rin"
-    elif clean in ("ต็อต", "totti"):
+    elif clean in ("riin", "rin", "ริน", "warin"):
+        clean = "riin"
+    elif clean in ("totti", "ต็อต"):
         clean = "totti"
-    elif clean in ("ต๋อง", "tong", "amorn"):
+    elif clean in ("tong", "ต๋อง", "amorn"):
         clean = "tong"
+    elif clean in ("oan", "อ้วน", "seskooan"):
+        clean = "oan"
+    elif clean in ("mai", "ใหม่", "rati"):
+        clean = "mai"
+    elif clean in ("bert", "เบิร์ท", "bluebert"):
+        clean = "bert"
 
     if clean in PLAYER_MAPPING:
         return PLAYER_MAPPING[clean]
