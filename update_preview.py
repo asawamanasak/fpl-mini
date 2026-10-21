@@ -2743,11 +2743,6 @@ selectShi62GW(gwName) {
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <div class="flex items-center gap-2 mb-1.5">
-                  <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
-                    🎲 Special Mini-Game
-                  </span>
-                </div>
                 <h1 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
                   Shi'62 Special
                 </h1>
