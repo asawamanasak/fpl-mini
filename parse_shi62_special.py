@@ -129,10 +129,44 @@ def parse_shi62_file(file_path):
     current_gw_matches = []
     current_match = None
 
+    # Helper to resolve display label for match options (e.g. BRE, draw, LIV instead of B, d, L)
+    def resolve_option_labels(match):
+        if not match:
+            return
+        title = match.get("title", "")
+        parts = re.split(r'\s+[vV:]\s+|\s*:\s*', title)
+        home_team = ""
+        away_team = ""
+        if len(parts) >= 2:
+            t1_m = re.search(r'([A-Za-z]+)', parts[0])
+            t2_m = re.search(r'([A-Za-z]+)', parts[1])
+            home_team = t1_m.group(1).upper() if t1_m else parts[0].strip()
+            away_team = t2_m.group(1).upper() if t2_m else parts[1].strip()
+
+        total_opts = len(match["options"])
+        for idx, opt in enumerate(match["options"]):
+            raw_lbl = opt.get("label", "")
+            raw_clean = raw_lbl.lower().strip()
+            if raw_clean in ("d", "draw", "เสมอ"):
+                resolved = "draw"
+            elif home_team and home_team.startswith(raw_lbl.upper()):
+                resolved = home_team
+            elif away_team and away_team.startswith(raw_lbl.upper()):
+                resolved = away_team
+            elif total_opts == 2:
+                resolved = home_team if idx == 0 else away_team
+            elif total_opts == 3:
+                resolved = home_team if idx == 0 else ("draw" if idx == 1 else away_team)
+            else:
+                resolved = raw_lbl
+            opt["raw_label"] = raw_lbl
+            opt["label"] = resolved
+
     # Helper to finalize match
     def finalize_match(match):
         if not match:
             return None
+        resolve_option_labels(match)
         winners = []
         losers = []
         has_winning_box = False

@@ -2974,7 +2974,7 @@ selectShi62GW(gwName) {
                                 : 'bg-slate-50/60 dark:bg-slate-800/40 border border-transparent'
                             }">
                               <div class="flex items-center gap-2 min-w-0">
-                                <span class="font-bold text-xs ${isWinOpt ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400'}">
+                                <span class="font-bold text-xs font-display w-9 sm:w-10 shrink-0 ${isWinOpt ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400'}">
                                   ${opt.label}
                                 </span>
                                 <div class="flex items-center gap-1 flex-wrap">
