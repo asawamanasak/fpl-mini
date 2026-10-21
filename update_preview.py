@@ -2730,10 +2730,12 @@ selectShi62GW(gwName) {
         const activeGWObj = (data.gameweeks || []).find(g => g.name === this.activeShi62GW) || data.gameweeks[0];
         if (!activeGWObj) return;
 
-        const fmtMoney = (val, showPlus = true) => {
-          if (val > 0) return (showPlus ? '+' : '') + Number(val).toLocaleString() + ' บาท';
-          if (val < 0) return Number(val).toLocaleString() + ' บาท';
-          return '0 บาท';
+        const fmtMoney = (val, showPlus = true, unit = '') => {
+          const formatted = Math.abs(val).toLocaleString();
+          const u = unit ? ` ${unit}` : '';
+          if (val > 0) return `${showPlus ? '+' : ''}${formatted}${u}`;
+          if (val < 0) return `-${formatted}${u}`;
+          return `0${u}`;
         };
 
         let html = `
@@ -2791,7 +2793,7 @@ selectShi62GW(gwName) {
                     <th class="py-2.5 px-3 text-center">แข่ง (คู่)</th>
                     <th class="py-2.5 px-3 text-center">ชนะ</th>
                     <th class="py-2.5 px-3 text-center">แพ้</th>
-                    <th class="py-2.5 px-3 text-center">เจ๊า</th>
+                    <th class="py-2.5 px-3 text-center">เสมอ</th>
                     <th class="py-2.5 px-3 text-center">% ชนะ</th>
                     <th class="py-2.5 px-3 text-right">เงินที่ได้</th>
                     <th class="py-2.5 px-3 text-right">เงินที่เสีย</th>
@@ -2835,8 +2837,8 @@ selectShi62GW(gwName) {
                         <td class="py-2.5 px-3 text-center font-display font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
                         <td class="py-2.5 px-3 text-center font-display text-slate-400">${c.push}</td>
                         <td class="py-2.5 px-3 text-center font-display font-medium text-slate-600 dark:text-slate-400">${c.win_rate}%</td>
-                        <td class="py-2.5 px-3 text-right font-display text-emerald-600 dark:text-emerald-400">฿${c.total_won_amount.toLocaleString()}</td>
-                        <td class="py-2.5 px-3 text-right font-display text-rose-500 dark:text-rose-400">฿${c.total_lost_amount.toLocaleString()}</td>
+                        <td class="py-2.5 px-3 text-right font-display text-emerald-600 dark:text-emerald-400">${c.total_won_amount.toLocaleString()}</td>
+                        <td class="py-2.5 px-3 text-right font-display text-rose-500 dark:text-rose-400">${c.total_lost_amount > 0 ? `-${c.total_lost_amount.toLocaleString()}` : '0'}</td>
                         <td class="py-2.5 px-3 text-right font-display ${netColor}">
                           ${fmtMoney(c.net)}
                         </td>
