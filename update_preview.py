@@ -2778,8 +2778,8 @@ selectShi62GW(gwName) {
           <!-- SECTION 1: Cumulative Standings Table -->
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-3">
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 font-display">
-                <span>🏆</span> ตารางอันดับ & บัญชีเงินสะสมตลอดฤดูกาล
+              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
+                ตารางอันดับ & บัญชีเงินสะสมตลอดฤดูกาล
               </h2>
             </div>
 
@@ -2808,11 +2808,7 @@ selectShi62GW(gwName) {
                       ? 'text-emerald-600 dark:text-emerald-400 font-bold' 
                       : (isNegative ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 font-medium');
                     
-                    let rankBadge = '';
-                    if (c.rank === 1) rankBadge = '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 font-bold text-xs">🥇</span>';
-                    else if (c.rank === 2) rankBadge = '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-slate-200 text-slate-700 dark:bg-slate-700/60 dark:text-slate-300 font-bold text-xs">🥈</span>';
-                    else if (c.rank === 3) rankBadge = '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-700/15 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 font-bold text-xs">🥉</span>';
-                    else rankBadge = `<span class="text-xs font-semibold text-slate-400 dark:text-slate-500">${c.rank}</span>`;
+                    const rankBadge = `<span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${c.rank}</span>`;
 
                     return `
                       <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
