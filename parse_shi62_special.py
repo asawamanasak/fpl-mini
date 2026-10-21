@@ -117,6 +117,40 @@ def normalize_gw_name(raw_name):
         return f"GW{m2.group(1)}"
     return s
 
+def format_match_title(raw_title):
+    """
+    Format match header to display with 'vs' and odds/handicap in parentheses,
+    e.g. 'MCI -2 v IPS' -> 'MCI (-2) vs IPS', 'EVE v CHE -0.5' -> 'EVE vs CHE (-0.5)', 'BRE v LIV' -> 'BRE vs LIV'
+    """
+    if not raw_title:
+        return ""
+    parts = re.split(r'\s+[vV:]\s+|\s*:\s*|\s+[vV][sS]\s+', raw_title.strip())
+    if len(parts) != 2:
+        return raw_title
+
+    def parse_side(side_str):
+        s = side_str.strip()
+        m_paren = re.search(r'\(([+-]?\d+(?:\.\d+)?)\)\s*$', s)
+        if m_paren:
+            hcp = m_paren.group(1)
+            s = s[:m_paren.start()].strip()
+        else:
+            m_hcp = re.search(r'([+-]?\d+(?:\.\d+)?)\s*$', s)
+            hcp = None
+            if m_hcp:
+                hcp = m_hcp.group(1)
+                s = s[:m_hcp.start()].strip()
+        m_team = re.search(r'([A-Za-z]+)', s)
+        team = m_team.group(1).upper() if m_team else s
+        return team, hcp
+
+    t1, h1 = parse_side(parts[0])
+    t2, h2 = parse_side(parts[1])
+
+    s1 = f"{t1} ({h1})" if h1 else t1
+    s2 = f"{t2} ({h2})" if h2 else t2
+    return f"{s1} vs {s2}"
+
 def parse_shi62_file(file_path):
     if not os.path.exists(file_path):
         return None
@@ -134,7 +168,7 @@ def parse_shi62_file(file_path):
         if not match:
             return
         title = match.get("title", "")
-        parts = re.split(r'\s+[vV:]\s+|\s*:\s*', title)
+        parts = re.split(r'\s+[vV:]\s+|\s*:\s*|\s+[vV][sS]\s+', title)
         home_team = ""
         away_team = ""
         if len(parts) >= 2:
@@ -275,16 +309,17 @@ def parse_shi62_file(file_path):
             i += 1
             continue
 
-        # Check for match title: e.g. "EVE v CHE -0.5", "ARS : MCI", "BRE v LIV"
-        # Match headers contain ' v ' or ' : ' and do NOT start with an option prefix like 'A.' or 'd.'
-        is_match_header = (' v ' in line.lower() or ' : ' in line.lower()) and not re.match(r'^[A-Za-z]{1,3}[\.\:]\s*', line)
+        # Check for match title: e.g. "EVE v CHE -0.5", "ARS : MCI", "BRE v LIV", "MCI -2 v IPS"
+        # Match headers contain ' v ' or ' vs ' or ' : ' and do NOT start with an option prefix like 'A.' or 'd.'
+        is_match_header = (' v ' in line.lower() or ' vs ' in line.lower() or ' : ' in line.lower()) and not re.match(r'^[A-Za-z]{1,3}[\.\:]\s*', line)
         if is_match_header:
             if current_match:
                 current_gw_matches.append(finalize_match(current_match))
                 current_match = None
 
             current_match = {
-                "title": line,
+                "title": format_match_title(line),
+                "raw_title": line,
                 "options": []
             }
             i += 1
