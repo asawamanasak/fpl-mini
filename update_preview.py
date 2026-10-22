@@ -2691,13 +2691,14 @@ selectShi62GW(gwName) {
         lines.push(`⚽ ผลประจำสัปดาห์ (${gwDisplayName})`);
         (gw.summary || []).forEach((s, i) => {
           const sign = s.net > 0 ? '+' : '';
-          lines.push(`${i + 1}. ${s.player.display_name}: ${sign}${s.net} บ. (${s.won}W ${s.lost}L)`);
+          const pushStr = s.push > 0 ? ` ${s.push}D` : '';
+          lines.push(`${i + 1}. ${s.player.display_name}: ${sign}${Number(s.net).toLocaleString()} (${s.won}W ${s.lost}L${pushStr})`);
         });
         lines.push(`---------------------------------`);
         lines.push(`💰 พูลสัปดาห์นี้: ${Number(gw.total_pool).toLocaleString()} บาท (${gw.matches.length} คู่)`);
         lines.push(`---------------------------------`);
         lines.push(`🏆 สรุปรางวัล:`);
-        lines.push(`(อันดับ • จบฤดู • Extra • รวมทั้งหมด)`);
+        lines.push(`(อันดับ • FPL • Extra • Total)`);
 
         const tiers = (this.config && this.config.features && this.config.features.annual_payout_tiers) || {
           "1": 1000, "2": 800, "3": 600, "4": 400, "5": 200, "6": 100,
@@ -2748,13 +2749,13 @@ selectShi62GW(gwName) {
 
           const dispName = shi62ShortNames[t.entry_id] || t.player_name;
 
-          lines.push(`${rank}. ${dispName}: จบฤดู ${fmtVal(seasonPrize)} | Extra ${fmtVal(extraNet)} | รวมทั้งหมด ${fmtVal(grandTotal)} บ.`);
+          lines.push(`${rank}. ${dispName}: FPL ${fmtVal(seasonPrize)} | Extra ${fmtVal(extraNet)} | Total ${fmtVal(grandTotal)}`);
         });
 
         const nodCum = (this.shi62Data.cumulative_standings || []).find(c => c.player && c.player.is_guest);
         if (nodCum) {
           const nodNet = nodCum.net || 0;
-          lines.push(`• Nod (Guest): จบฤดู - | Extra ${fmtVal(nodNet)} | รวมทั้งหมด ${fmtVal(nodNet)} บ.`);
+          lines.push(`• Nod (Guest): FPL - | Extra ${fmtVal(nodNet)} | Total ${fmtVal(nodNet)}`);
         }
 
         lines.push(`---------------------------------`);
@@ -2790,7 +2791,7 @@ selectShi62GW(gwName) {
         lines.push(`สรุปผล Extra GW${maxGW}`);
         lines.push(`---------------------------------`);
         lines.push(`🏆 สรุปรางวัล (GW 1 - ${maxGW}):`);
-        lines.push(`(อันดับ • จบฤดู • Extra • รวมทั้งหมด)`);
+        lines.push(`(อันดับ • FPL • Extra • Total)`);
         lines.push(`---------------------------------`);
 
         const tiers = (this.config && this.config.features && this.config.features.annual_payout_tiers) || {
@@ -2842,13 +2843,13 @@ selectShi62GW(gwName) {
 
           const dispName = shi62ShortNames[t.entry_id] || t.player_name;
 
-          lines.push(`${rank}. ${dispName}: จบฤดู ${fmtVal(seasonPrize)} | Extra ${fmtVal(extraNet)} | รวมทั้งหมด ${fmtVal(grandTotal)} บ.`);
+          lines.push(`${rank}. ${dispName}: FPL ${fmtVal(seasonPrize)} | Extra ${fmtVal(extraNet)} | Total ${fmtVal(grandTotal)}`);
         });
 
         const nodCum = (this.shi62Data.cumulative_standings || []).find(c => c.player && c.player.is_guest);
         if (nodCum) {
           const nodNet = nodCum.net || 0;
-          lines.push(`• Nod (Guest): จบฤดู - | Extra ${fmtVal(nodNet)} | รวมทั้งหมด ${fmtVal(nodNet)} บ.`);
+          lines.push(`• Nod (Guest): FPL - | Extra ${fmtVal(nodNet)} | Total ${fmtVal(nodNet)}`);
         }
 
         lines.push(`---------------------------------`);
