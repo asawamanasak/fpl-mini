@@ -3115,58 +3115,6 @@ selectShi62GW(gwName) {
             </div>
           </div>
 
-          <!-- SECTION 1.5: Prize Summary (สรุปรางวัล FPL จบฤดู & Extra รวมทั้งหมด) -->
-          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-3">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div>
-                <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                  สรุปรางวัล (FPL & Extra)
-                </h2>
-                <span class="text-[11px] font-medium text-slate-400 font-display">
-                  คำนวณตามคะแนน FPL ปัจจุบัน (GW 1 - ${maxGW}) รวมกับยอดสะสม Extra
-                </span>
-              </div>
-              <button 
-                onclick="app.copyShi62PrizesLINEResult()"
-                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap self-end sm:self-auto"
-                title="คัดลอกสรุปผลสำหรับส่ง LINE"
-              >
-                <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-                <span>คัดลอก LINE</span>
-              </button>
-            </div>
-
-            <!-- Prize Summary Table -->
-            <div class="overflow-x-auto touch-scroll">
-              <table class="w-full text-left border-collapse min-w-[620px]">
-                <thead>
-                  <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    <th class="py-2.5 px-3 text-center w-12">#</th>
-                    <th class="py-2.5 px-3">ผู้เล่น / ทีม FPL</th>
-                    <th class="py-2.5 px-3 text-center w-20">คะแนน FPL</th>
-                    <th class="py-2.5 px-3 text-right min-w-[100px]">FPL</th>
-                    <th class="py-2.5 px-3 text-right min-w-[100px]">ยอดรวม Extra</th>
-                    <th class="py-2.5 px-3 text-right min-w-[110px]">ยอดรวมทั้งหมด</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
-                  ${prizeSummaryRowsHtml}
-                </tbody>
-                <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-display text-xs sm:text-sm font-bold">
-                  <tr>
-                    <td colspan="2" class="py-3 px-3 text-slate-700 dark:text-slate-300">
-                      ยอดรวมสุทธิทั้งลีก (Net Zero-Sum Balance)
-                    </td>
-                    <td class="py-3 px-3 text-center text-slate-900 dark:text-white font-black">${sumFplPoints}</td>
-                    <td class="py-3 px-3 text-right font-bold text-slate-900 dark:text-white">${sumSeason === 0 ? '0' : sumSeason.toLocaleString()} THB</td>
-                    <td class="py-3 px-3 text-right font-bold text-slate-900 dark:text-white">${sumExtra === 0 ? '0' : sumExtra.toLocaleString()} THB</td>
-                    <td class="py-3 px-3 text-right font-black text-slate-900 dark:text-white text-sm sm:text-base">${sumGrand === 0 ? '0' : sumGrand.toLocaleString()} THB</td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-          </div>
-
           <!-- SECTION 2: Gameweek Breakdown & Match Details -->
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-4">
             <!-- Gameweek Controls Header -->
@@ -3329,6 +3277,58 @@ selectShi62GW(gwName) {
                   `;
                 }).join('')}
               </div>
+            </div>
+          </div>
+
+          <!-- SECTION 1.5: Prize Summary (สรุปรางวัล FPL จบฤดู & Extra รวมทั้งหมด) -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div>
+                <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
+                  สรุปรางวัล (FPL & Extra)
+                </h2>
+                <span class="text-[11px] font-medium text-slate-400 font-display">
+                  คำนวณตามคะแนน FPL ปัจจุบัน (GW 1 - ${maxGW}) รวมกับยอดสะสม Extra
+                </span>
+              </div>
+              <button 
+                onclick="app.copyShi62PrizesLINEResult()"
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap self-end sm:self-auto"
+                title="คัดลอกสรุปผลสำหรับส่ง LINE"
+              >
+                <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+                <span>คัดลอก LINE</span>
+              </button>
+            </div>
+
+            <!-- Prize Summary Table -->
+            <div class="overflow-x-auto touch-scroll">
+              <table class="w-full text-left border-collapse min-w-[620px]">
+                <thead>
+                  <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                    <th class="py-2.5 px-3 text-center w-12">#</th>
+                    <th class="py-2.5 px-3">ผู้เล่น / ทีม FPL</th>
+                    <th class="py-2.5 px-3 text-center w-20">คะแนน FPL</th>
+                    <th class="py-2.5 px-3 text-right min-w-[100px]">FPL</th>
+                    <th class="py-2.5 px-3 text-right min-w-[100px]">ยอดรวม Extra</th>
+                    <th class="py-2.5 px-3 text-right min-w-[110px]">ยอดรวมทั้งหมด</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
+                  ${prizeSummaryRowsHtml}
+                </tbody>
+                <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-display text-xs sm:text-sm font-bold">
+                  <tr>
+                    <td colspan="2" class="py-3 px-3 text-slate-700 dark:text-slate-300">
+                      ยอดรวมสุทธิทั้งลีก (Net Zero-Sum Balance)
+                    </td>
+                    <td class="py-3 px-3 text-center text-slate-900 dark:text-white font-black">${sumFplPoints}</td>
+                    <td class="py-3 px-3 text-right font-bold text-slate-900 dark:text-white">${sumSeason === 0 ? '0' : sumSeason.toLocaleString()} THB</td>
+                    <td class="py-3 px-3 text-right font-bold text-slate-900 dark:text-white">${sumExtra === 0 ? '0' : sumExtra.toLocaleString()} THB</td>
+                    <td class="py-3 px-3 text-right font-black text-slate-900 dark:text-white text-sm sm:text-base">${sumGrand === 0 ? '0' : sumGrand.toLocaleString()} THB</td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
           </div>
         `;
