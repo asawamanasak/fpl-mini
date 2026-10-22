@@ -2754,41 +2754,8 @@ selectShi62GW(gwName) {
       copyShi62PrizesLINEResult() {
         if (!this.shi62Data) return;
         const maxGW = Number(this.multiData && this.multiData.max_gw) || 7;
-        let lines = [];
-        lines.push(`สรุปผล Extra GW${maxGW}`);
-        lines.push(`---------------------------------`);
-        lines.push(`🏆 สรุปยอดสะสม Extra (GW 1 - ${maxGW}):`);
-        lines.push(`---------------------------------`);
-
-        (this.shi62Data.cumulative_standings || []).forEach((c, idx) => {
-          const sign = c.net > 0 ? '+' : '';
-          lines.push(`${idx + 1}. ${c.player.display_name}: ${sign}${Number(c.net).toLocaleString()}`);
-        });
-
-        lines.push(`---------------------------------`);
-        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/187827`);
-
-        const textToCopy = lines.join(String.fromCharCode(10));
-        const onCopied = () => this.showCopiedToast('คัดลอกสรุปผล Extra สำหรับ LINE เรียบร้อย');
-        if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(textToCopy).then(onCopied).catch(() => {
-            const textarea = document.createElement('textarea');
-            textarea.value = textToCopy;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            onCopied();
-          });
-        } else {
-          const textarea = document.createElement('textarea');
-          textarea.value = textToCopy;
-          document.body.appendChild(textarea);
-          textarea.select();
-          document.execCommand('copy');
-          document.body.removeChild(textarea);
-          onCopied();
-        }
+        const targetGW = this.activeShi62GW || `GW${maxGW}`;
+        return this.copyShi62LINEResult(targetGW);
       }
 
       showCopiedToast(text = 'คัดลอกข้อความสำเร็จ!') {
