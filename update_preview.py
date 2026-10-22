@@ -2696,8 +2696,8 @@ selectShi62GW(gwName) {
         lines.push(`---------------------------------`);
         lines.push(`💰 พูลสัปดาห์นี้: ${Number(gw.total_pool).toLocaleString()} บาท (${gw.matches.length} คู่)`);
         lines.push(`---------------------------------`);
-        lines.push(`🏆 หน้าสรุปรางวัล:`);
-        lines.push(`(อันดับ • จบฤดู • Extra • รวมทั้งหมด)`);
+        lines.push(`🏆 สรุปยอดสะสม:`);
+        lines.push(`(อันดับ • จบฤดู • Extra)`);
 
         const tiers = (this.config && this.config.features && this.config.features.annual_payout_tiers) || {
           "1": 1000, "2": 800, "3": 600, "4": 400, "5": 200, "6": 100,
@@ -2744,17 +2744,16 @@ selectShi62GW(gwName) {
           const extraNet = (extraMapByEntryId[t.entry_id] !== undefined)
             ? extraMapByEntryId[t.entry_id]
             : (extraMapByName[(t.player_name || '').toLowerCase()] || 0);
-          const grandTotal = seasonPrize + extraNet;
 
           const dispName = shi62ShortNames[t.entry_id] || t.player_name;
 
-          lines.push(`${rank}. ${dispName}: จบฤดู ${fmtVal(seasonPrize)} | Extra ${fmtVal(extraNet)} | รวมทั้งหมด ${fmtVal(grandTotal)} บ.`);
+          lines.push(`${rank}. ${dispName}: จบฤดู ${fmtVal(seasonPrize)} | Extra ${fmtVal(extraNet)} บ.`);
         });
 
         const nodCum = (this.shi62Data.cumulative_standings || []).find(c => c.player && c.player.is_guest);
         if (nodCum) {
           const nodNet = nodCum.net || 0;
-          lines.push(`• Nod (Guest): จบฤดู - | Extra ${fmtVal(nodNet)} | รวมทั้งหมด ${fmtVal(nodNet)} บ.`);
+          lines.push(`• Nod (Guest): จบฤดู - | Extra ${fmtVal(nodNet)} บ.`);
         }
 
         lines.push(`---------------------------------`);
@@ -2789,8 +2788,8 @@ selectShi62GW(gwName) {
         let lines = [];
         lines.push(`สรุปผล Extra GW${maxGW}`);
         lines.push(`---------------------------------`);
-        lines.push(`🏆 หน้าสรุปรางวัล (GW 1 - ${maxGW}):`);
-        lines.push(`(อันดับ • จบฤดู • Extra • รวมทั้งหมด)`);
+        lines.push(`🏆 สรุปยอดสะสม (GW 1 - ${maxGW}):`);
+        lines.push(`(อันดับ • จบฤดู • Extra)`);
         lines.push(`---------------------------------`);
 
         const tiers = (this.config && this.config.features && this.config.features.annual_payout_tiers) || {
@@ -2838,17 +2837,16 @@ selectShi62GW(gwName) {
           const extraNet = (extraMapByEntryId[t.entry_id] !== undefined)
             ? extraMapByEntryId[t.entry_id]
             : (extraMapByName[(t.player_name || '').toLowerCase()] || 0);
-          const grandTotal = seasonPrize + extraNet;
 
           const dispName = shi62ShortNames[t.entry_id] || t.player_name;
 
-          lines.push(`${rank}. ${dispName}: จบฤดู ${fmtVal(seasonPrize)} | Extra ${fmtVal(extraNet)} | รวมทั้งหมด ${fmtVal(grandTotal)} บ.`);
+          lines.push(`${rank}. ${dispName}: จบฤดู ${fmtVal(seasonPrize)} | Extra ${fmtVal(extraNet)} บ.`);
         });
 
         const nodCum = (this.shi62Data.cumulative_standings || []).find(c => c.player && c.player.is_guest);
         if (nodCum) {
           const nodNet = nodCum.net || 0;
-          lines.push(`• Nod (Guest): จบฤดู - | Extra ${fmtVal(nodNet)} | รวมทั้งหมด ${fmtVal(nodNet)} บ.`);
+          lines.push(`• Nod (Guest): จบฤดู - | Extra ${fmtVal(nodNet)} บ.`);
         }
 
         lines.push(`---------------------------------`);
@@ -6967,7 +6965,7 @@ selectShi62GW(gwName) {
           if (tagEl) tagEl.innerText = isShi62 ? "SHI'62 ANNUAL ZERO-SUM & EXTRA" : 'ANNUAL ZERO-SUM SETTLEMENT (จ่ายตังทีเดียวสิ้นฤดูกาล)';
           if (titleEl) titleEl.innerText = 'ตารางสรุปยอดจ่าย-รับเงินรางวัลสิ้นฤดูกาล';
           if (subEl) subEl.innerText = isShi62
-            ? `สรุปยอดรางวัลจบฤดูกาล (อันดับ 1-6 รับ +3,100 บ. / อันดับ 7-12 จ่าย -3,100 บ.) รวมกับยอด Extra สะสมตลอดฤดูกาล • ตัดสิน GW 1 - 38`
+            ? `สรุปยอดรางวัลจบฤดูกาล (อันดับ 1-6 รับ +3,100 บ. / อันดับ 7-12 จ่าย -3,100 บ.) และยอดสะสมมินิเกม Extra • ตัดสิน GW 1 - 38`
             : `ตัดสินจากคะแนนรวมสะสมสุทธิ GW 1 - 38 • อันดับ 1-6 รับเงินรางวัลรวม ${totalPositive.toLocaleString()} THB • อันดับ 7-12 ร่วมจ่ายเงินค่าปรับรวม ${totalNegative.toLocaleString()} THB (Zero-Sum Balance)`;
 
           // Extra map and short names for League 187827
@@ -7117,12 +7115,6 @@ selectShi62GW(gwName) {
                 if (v < 0) return `<span class="text-rose-600 dark:text-rose-400 font-bold font-display">${Number(v).toLocaleString()}</span>`;
                 return `<span class="text-slate-400 dark:text-slate-500 font-display">0</span>`;
               };
-              const fmtTotal = (v) => {
-                if (v > 0) return `<span class="text-emerald-600 dark:text-emerald-400 font-black font-display text-xs sm:text-sm">+${Number(v).toLocaleString()} THB</span>`;
-                if (v < 0) return `<span class="text-rose-600 dark:text-rose-400 font-black font-display text-xs sm:text-sm">${Number(v).toLocaleString()} THB</span>`;
-                return `<span class="text-slate-400 dark:text-slate-500 font-black font-display text-xs sm:text-sm">0 THB</span>`;
-              };
-
               tableRowsHtml += `
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors ${rowBg}">
                   <td class="py-3 px-1 sm:px-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
@@ -7138,7 +7130,6 @@ selectShi62GW(gwName) {
                   <td class="py-3 px-2 sm:px-3 text-center font-display font-black text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
                   <td class="py-3 px-2 sm:px-3 text-right font-display text-xs sm:text-sm">${isPrize ? fmtCol(payout) : '<span class="text-slate-400">-</span>'}</td>
                   <td class="py-3 px-2 sm:px-3 text-right font-display text-xs sm:text-sm">${isPrize ? fmtCol(extraNet) : '<span class="text-slate-400">-</span>'}</td>
-                  <td class="py-3 px-2 sm:px-3 text-right font-display">${isPrize ? fmtTotal(grandTotal) : '<span class="text-slate-400">-</span>'}</td>
                 </tr>
               `;
             } else {
@@ -7178,13 +7169,9 @@ selectShi62GW(gwName) {
             if (nodCum) {
               const nodNet = Number(nodCum.net) || 0;
               sumExtraNet += nodNet;
-              sumGrandTotal += nodNet;
               const fmtNodNet = nodNet > 0 
                 ? `<span class="text-emerald-600 dark:text-emerald-400 font-bold font-display">+${Number(nodNet).toLocaleString()}</span>`
                 : (nodNet < 0 ? `<span class="text-rose-600 dark:text-rose-400 font-bold font-display">${Number(nodNet).toLocaleString()}</span>` : '<span class="text-slate-400 font-display">0</span>');
-              const fmtNodTotal = nodNet > 0 
-                ? `<span class="text-emerald-600 dark:text-emerald-400 font-black font-display text-xs sm:text-sm">+${Number(nodNet).toLocaleString()} THB</span>`
-                : (nodNet < 0 ? `<span class="text-rose-600 dark:text-rose-400 font-black font-display text-xs sm:text-sm">${Number(nodNet).toLocaleString()} THB</span>` : '<span class="text-slate-400 font-black font-display text-xs sm:text-sm">0 THB</span>');
 
               tableRowsHtml += `
                 <tr class="bg-slate-50/40 dark:bg-slate-800/20 text-slate-500 border-t border-dashed border-slate-200 dark:border-slate-800">
@@ -7199,7 +7186,6 @@ selectShi62GW(gwName) {
                   <td class="py-3 px-2 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-400">-</td>
                   <td class="py-3 px-2 sm:px-3 text-right font-display text-xs sm:text-sm text-slate-400">-</td>
                   <td class="py-3 px-2 sm:px-3 text-right font-display text-xs sm:text-sm">${fmtNodNet}</td>
-                  <td class="py-3 px-2 sm:px-3 text-right font-display">${fmtNodTotal}</td>
                 </tr>
               `;
             }
@@ -7214,9 +7200,8 @@ selectShi62GW(gwName) {
                 <th class="py-2.5 px-1 sm:px-2 text-center w-8">#</th>
                 <th class="py-2.5 px-2 sm:px-3 min-w-[140px]">ทีม & ผู้จัดการ</th>
                 <th class="py-2.5 px-2 sm:px-3 text-center w-16">คะแนนรวม</th>
-                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[95px]">ยอดรางวัลจบฤดู</th>
-                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[95px]">ยอดรวม Extra</th>
-                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[105px]">ยอดรวมทั้งหมด</th>
+                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[100px]">ยอดรางวัลจบฤดู</th>
+                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[100px]">ยอดรวม Extra</th>
               </tr>
             `;
 
@@ -7226,9 +7211,8 @@ selectShi62GW(gwName) {
                   ยอดรวมสุทธิทั้งลีก (Net Zero-Sum Balance)
                 </td>
                 <td class="py-3 px-2 sm:px-3 text-center text-slate-900 dark:text-white font-black">${sumTotalPoints}</td>
-                <td class="py-3 px-2 sm:px-3 text-right font-bold text-slate-900 dark:text-white">${sumSeasonPrize === 0 ? '0' : sumSeasonPrize.toLocaleString()} THB</td>
-                <td class="py-3 px-2 sm:px-3 text-right font-bold text-slate-900 dark:text-white">${sumExtraNet === 0 ? '0' : sumExtraNet.toLocaleString()} THB</td>
-                <td class="py-3 px-2 sm:px-3 text-right font-black text-slate-900 dark:text-white text-sm sm:text-base">${sumGrandTotal === 0 ? '0' : sumGrandTotal.toLocaleString()} THB</td>
+                <td class="py-3 px-2 sm:px-3 text-right font-black text-slate-900 dark:text-white text-xs sm:text-sm">${sumSeasonPrize === 0 ? '0' : sumSeasonPrize.toLocaleString()} THB</td>
+                <td class="py-3 px-2 sm:px-3 text-right font-black text-slate-900 dark:text-white text-xs sm:text-sm">${sumExtraNet === 0 ? '0' : sumExtraNet.toLocaleString()} THB</td>
               </tr>
             `;
           } else {
