@@ -2956,7 +2956,7 @@ selectShi62GW(gwName) {
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-3">
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                ตารางอันดับ & บัญชีเงินสะสมตลอดฤดูกาล
+                การแข่งขัน Extra
               </h2>
             </div>
 
