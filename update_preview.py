@@ -2708,7 +2708,7 @@ selectShi62GW(gwName) {
         lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/187827`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
-        const onCopied = () => alert(`คัดลอกสรุปผล ${gw.name} สำหรับส่ง LINE สำเร็จเรียบร้อย!`);
+        const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผล ${gw.name} สำหรับ LINE เรียบร้อย`);
         if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(textToCopy).then(onCopied).catch(() => {
             const textarea = document.createElement('textarea');
@@ -2748,7 +2748,7 @@ selectShi62GW(gwName) {
         lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/187827`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
-        const onCopied = () => alert('คัดลอกสรุปผลสำหรับส่ง LINE สำเร็จเรียบร้อย!');
+        const onCopied = () => this.showCopiedToast('คัดลอกสรุปผล Extra สำหรับ LINE เรียบร้อย');
         if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(textToCopy).then(onCopied).catch(() => {
             const textarea = document.createElement('textarea');
@@ -2768,6 +2768,24 @@ selectShi62GW(gwName) {
           document.body.removeChild(textarea);
           onCopied();
         }
+      }
+
+      showCopiedToast(text = 'คัดลอกข้อความสำเร็จ!') {
+        let toast = document.getElementById('global-copied-toast');
+        if (!toast) {
+          toast = document.createElement('div');
+          toast.id = 'global-copied-toast';
+          toast.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white font-bold text-xs px-4 py-2 rounded-full shadow-2xl border border-slate-700/80 z-50 flex items-center gap-1.5 transition-all duration-200 opacity-0 pointer-events-none translate-y-2 backdrop-blur-xs font-display';
+          document.body.appendChild(toast);
+        }
+        toast.innerHTML = `<svg class="w-3.5 h-3.5 text-[#06C755] flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg><span>${text}</span>`;
+        toast.classList.remove('opacity-0', 'translate-y-2');
+        toast.classList.add('opacity-100', 'translate-y-0');
+        if (this._toastTimer) clearTimeout(this._toastTimer);
+        this._toastTimer = setTimeout(() => {
+          toast.classList.remove('opacity-100', 'translate-y-0');
+          toast.classList.add('opacity-0', 'translate-y-2');
+        }, 1800);
       }
 
       renderShi62Special() {
@@ -3036,11 +3054,11 @@ selectShi62GW(gwName) {
               </div>
               <button 
                 onclick="app.copyShi62PrizesLINEResult()"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#06C755] hover:bg-[#05b34c] text-white shadow-xs transition-transform active:scale-95 cursor-pointer whitespace-nowrap self-end sm:self-auto"
-                title="คัดลอกสรุปรางวัลนี้เพื่อส่งลงกลุ่ม LINE"
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap self-end sm:self-auto"
+                title="คัดลอกสรุปผลสำหรับส่ง LINE"
               >
-                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-                <span>คัดลอกส่ง LINE</span>
+                <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+                <span>คัดลอก LINE</span>
               </button>
             </div>
 
@@ -3105,11 +3123,11 @@ selectShi62GW(gwName) {
 
                 <button 
                   onclick="app.copyShi62LINEResult('${activeGWObj.name}')"
-                  class="ml-auto sm:ml-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#06C755] hover:bg-[#05b34c] text-white shadow-xs transition-transform active:scale-95 cursor-pointer whitespace-nowrap"
-                  title="คัดลอกสรุปผลสัปดาห์นี้เพื่อส่งลงกลุ่ม LINE"
+                  class="ml-auto sm:ml-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
+                  title="คัดลอกสรุปผลสัปดาห์นี้สำหรับส่ง LINE"
                 >
-                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-                  <span>คัดลอกส่ง LINE</span>
+                  <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+                  <span>คัดลอก LINE</span>
                 </button>
               </div>
             </div>
@@ -7324,11 +7342,11 @@ selectShi62GW(gwName) {
                     <span class="text-[11px] font-bold text-slate-500 font-display">อัปเดตตามอันดับคะแนนรวมปัจจุบัน (แข่งจบแล้ว ${maxGW} สัปดาห์)</span>
                   </div>
                   ${isShi62 ? `
-                    <button onclick="app.copyShi62PrizesLINEResult()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold font-display shadow-xs transition-colors cursor-pointer active:scale-95" title="คัดลอกสรุปผลสำหรับส่ง LINE">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                    <button onclick="app.copyShi62PrizesLINEResult()" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all cursor-pointer active:scale-95 whitespace-nowrap" title="คัดลอกสรุปผลสำหรับส่ง LINE">
+                      <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24">
                         <path d="M12 2C6.48 2 2 5.82 2 10.5c0 2.93 1.76 5.51 4.44 7.04-.19.7-.68 2.53-.78 2.92-.12.47.17.46.36.33.25-.17 2.92-1.99 4.09-2.79.62.09 1.25.14 1.89.14 5.52 0 10-3.82 10-8.5S17.52 2 12 2z"/>
                       </svg>
-                      <span>คัดลอกส่ง LINE</span>
+                      <span>คัดลอก LINE</span>
                     </button>
                   ` : ''}
                 </div>
