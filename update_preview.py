@@ -3136,7 +3136,7 @@ selectShi62GW(gwName) {
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
               <div>
                 <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                  สรุปรางวัล (จบฤดู & Extra)
+                  สรุปรางวัล (FPL & Extra)
                 </h2>
                 <span class="text-[11px] font-medium text-slate-400 font-display">
                   คำนวณตามคะแนน FPL ปัจจุบัน (GW 1 - ${maxGW}) รวมกับยอดสะสม Extra
@@ -3160,7 +3160,7 @@ selectShi62GW(gwName) {
                     <th class="py-2.5 px-3 text-center w-12">#</th>
                     <th class="py-2.5 px-3">ผู้เล่น / ทีม FPL</th>
                     <th class="py-2.5 px-3 text-center w-20">คะแนน FPL</th>
-                    <th class="py-2.5 px-3 text-right min-w-[100px]">ยอดรางวัลจบฤดู</th>
+                    <th class="py-2.5 px-3 text-right min-w-[100px]">FPL</th>
                     <th class="py-2.5 px-3 text-right min-w-[100px]">ยอดรวม Extra</th>
                     <th class="py-2.5 px-3 text-right min-w-[110px]">ยอดรวมทั้งหมด</th>
                   </tr>
@@ -7384,7 +7384,7 @@ selectShi62GW(gwName) {
                 <th class="py-2.5 px-1 sm:px-2 text-center w-8">#</th>
                 <th class="py-2.5 px-2 sm:px-3 min-w-[140px]">ทีม & ผู้จัดการ</th>
                 <th class="py-2.5 px-2 sm:px-3 text-center w-16">คะแนนรวม</th>
-                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[100px]">ยอดรางวัลจบฤดู</th>
+                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[100px]">FPL</th>
                 <th class="py-2.5 px-2 sm:px-3 text-right min-w-[100px]">ยอดรวม Extra</th>
               </tr>
             `;
