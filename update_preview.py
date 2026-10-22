@@ -3143,7 +3143,7 @@ selectShi62GW(gwName) {
               </div>
               <button 
                 onclick="app.copyShi62PrizesLINEResult()"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#06C755] hover:bg-[#05b34c] text-white shadow-xs transition-transform active:scale-95 cursor-pointer whitespace-nowrap self-start sm:self-auto"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#06C755] hover:bg-[#05b34c] text-white shadow-xs transition-transform active:scale-95 cursor-pointer whitespace-nowrap self-end sm:self-auto"
                 title="คัดลอกสรุปรางวัลนี้เพื่อส่งลงกลุ่ม LINE"
               >
                 <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
@@ -3191,8 +3191,8 @@ selectShi62GW(gwName) {
               </h2>
 
               <!-- GW Pills Selector & Copy LINE Button -->
-              <div class="flex flex-wrap items-center gap-2">
-                <div class="flex items-center gap-1 overflow-x-auto touch-scroll p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
+              <div class="flex flex-wrap items-center justify-end gap-2 w-full sm:w-auto">
+                <div class="flex items-center gap-1 overflow-x-auto touch-scroll p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60 max-w-full w-full sm:w-auto">
                   ${data.gameweeks.map(g => {
                     const isActive = g.name === this.activeShi62GW;
                     return `
@@ -3212,7 +3212,7 @@ selectShi62GW(gwName) {
 
                 <button 
                   onclick="app.copyShi62LINEResult('${activeGWObj.name}')"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#06C755] hover:bg-[#05b34c] text-white shadow-xs transition-transform active:scale-95 cursor-pointer whitespace-nowrap"
+                  class="ml-auto sm:ml-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#06C755] hover:bg-[#05b34c] text-white shadow-xs transition-transform active:scale-95 cursor-pointer whitespace-nowrap"
                   title="คัดลอกสรุปผลสัปดาห์นี้เพื่อส่งลงกลุ่ม LINE"
                 >
                   <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
