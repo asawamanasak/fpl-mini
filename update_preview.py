@@ -2697,66 +2697,12 @@ selectShi62GW(gwName) {
         lines.push(`---------------------------------`);
         lines.push(`💰 พูลสัปดาห์นี้: ${Number(gw.total_pool).toLocaleString()} บาท (${gw.matches.length} คู่)`);
         lines.push(`---------------------------------`);
-        lines.push(`🏆 สรุปรางวัล:`);
-        lines.push(`(อันดับ • FPL • Extra • Total)`);
+        lines.push(`🏆 สรุปยอดสะสม Extra:`);
 
-        const tiers = (this.config && this.config.features && this.config.features.annual_payout_tiers) || {
-          "1": 1000, "2": 800, "3": 600, "4": 400, "5": 200, "6": 100,
-          "7": -100, "8": -200, "9": -400, "10": -600, "11": -800, "12": -1000
-        };
-
-        const extraMapByEntryId = {};
-        const extraMapByName = {};
-        (this.shi62Data.cumulative_standings || []).forEach(c => {
-          if (c.player) {
-            if (c.player.entry_id) extraMapByEntryId[c.player.entry_id] = Number(c.net) || 0;
-            if (c.player.display_name) extraMapByName[c.player.display_name.toLowerCase()] = Number(c.net) || 0;
-          }
+        (this.shi62Data.cumulative_standings || []).forEach((c, idx) => {
+          const sign = c.net > 0 ? '+' : '';
+          lines.push(`${idx + 1}. ${c.player.display_name}: ${sign}${Number(c.net).toLocaleString()}`);
         });
-
-        const shi62ShortNames = {
-          1309919: "Tong",
-          837763: "Oo",
-          2342390: "Riin",
-          720631: "Totti",
-          1153245: "Poang",
-          7601484: "Oan",
-          3508212: "Sia",
-          1312974: "Mai",
-          2804957: "Boy",
-          5463640: "Dow",
-          4549514: "Bert",
-          5340913: "Pong+"
-        };
-
-        const overallTeams = (this.data && this.data.teams ? [...this.data.teams] : [])
-          .filter(t => this.isPrizeEligible(t.entry_id))
-          .sort((a, b) => (b.total_points - a.total_points) || ((a.rank || 999) - (b.rank || 999)));
-
-        const fmtVal = (v) => {
-          if (v > 0) return `+${Number(v).toLocaleString()}`;
-          if (v < 0) return `${Number(v).toLocaleString()}`;
-          return '0';
-        };
-
-        overallTeams.forEach((t, idx) => {
-          const rank = idx + 1;
-          const seasonPrize = Number(tiers[String(rank)] || 0);
-          const extraNet = (extraMapByEntryId[t.entry_id] !== undefined)
-            ? extraMapByEntryId[t.entry_id]
-            : (extraMapByName[(t.player_name || '').toLowerCase()] || 0);
-          const grandTotal = seasonPrize + extraNet;
-
-          const dispName = shi62ShortNames[t.entry_id] || t.player_name;
-
-          lines.push(`${rank}. ${dispName}: FPL ${fmtVal(seasonPrize)} | Extra ${fmtVal(extraNet)} | Total ${fmtVal(grandTotal)}`);
-        });
-
-        const nodCum = (this.shi62Data.cumulative_standings || []).find(c => c.player && c.player.is_guest);
-        if (nodCum) {
-          const nodNet = nodCum.net || 0;
-          lines.push(`• Nod (Guest): FPL - | Extra ${fmtVal(nodNet)} | Total ${fmtVal(nodNet)}`);
-        }
 
         lines.push(`---------------------------------`);
         lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/187827`);
@@ -2790,67 +2736,13 @@ selectShi62GW(gwName) {
         let lines = [];
         lines.push(`สรุปผล Extra GW${maxGW}`);
         lines.push(`---------------------------------`);
-        lines.push(`🏆 สรุปรางวัล (GW 1 - ${maxGW}):`);
-        lines.push(`(อันดับ • FPL • Extra • Total)`);
+        lines.push(`🏆 สรุปยอดสะสม Extra (GW 1 - ${maxGW}):`);
         lines.push(`---------------------------------`);
 
-        const tiers = (this.config && this.config.features && this.config.features.annual_payout_tiers) || {
-          "1": 1000, "2": 800, "3": 600, "4": 400, "5": 200, "6": 100,
-          "7": -100, "8": -200, "9": -400, "10": -600, "11": -800, "12": -1000
-        };
-
-        const extraMapByEntryId = {};
-        const extraMapByName = {};
-        (this.shi62Data.cumulative_standings || []).forEach(c => {
-          if (c.player) {
-            if (c.player.entry_id) extraMapByEntryId[c.player.entry_id] = Number(c.net) || 0;
-            if (c.player.display_name) extraMapByName[c.player.display_name.toLowerCase()] = Number(c.net) || 0;
-          }
+        (this.shi62Data.cumulative_standings || []).forEach((c, idx) => {
+          const sign = c.net > 0 ? '+' : '';
+          lines.push(`${idx + 1}. ${c.player.display_name}: ${sign}${Number(c.net).toLocaleString()}`);
         });
-
-        const shi62ShortNames = {
-          1309919: "Tong",
-          837763: "Oo",
-          2342390: "Riin",
-          720631: "Totti",
-          1153245: "Poang",
-          7601484: "Oan",
-          3508212: "Sia",
-          1312974: "Mai",
-          2804957: "Boy",
-          5463640: "Dow",
-          4549514: "Bert",
-          5340913: "Pong+"
-        };
-
-        const overallTeams = (this.data && this.data.teams ? [...this.data.teams] : [])
-          .filter(t => this.isPrizeEligible(t.entry_id))
-          .sort((a, b) => (b.total_points - a.total_points) || ((a.rank || 999) - (b.rank || 999)));
-
-        const fmtVal = (v) => {
-          if (v > 0) return `+${Number(v).toLocaleString()}`;
-          if (v < 0) return `${Number(v).toLocaleString()}`;
-          return '0';
-        };
-
-        overallTeams.forEach((t, idx) => {
-          const rank = idx + 1;
-          const seasonPrize = Number(tiers[String(rank)] || 0);
-          const extraNet = (extraMapByEntryId[t.entry_id] !== undefined)
-            ? extraMapByEntryId[t.entry_id]
-            : (extraMapByName[(t.player_name || '').toLowerCase()] || 0);
-          const grandTotal = seasonPrize + extraNet;
-
-          const dispName = shi62ShortNames[t.entry_id] || t.player_name;
-
-          lines.push(`${rank}. ${dispName}: FPL ${fmtVal(seasonPrize)} | Extra ${fmtVal(extraNet)} | Total ${fmtVal(grandTotal)}`);
-        });
-
-        const nodCum = (this.shi62Data.cumulative_standings || []).find(c => c.player && c.player.is_guest);
-        if (nodCum) {
-          const nodNet = nodCum.net || 0;
-          lines.push(`• Nod (Guest): FPL - | Extra ${fmtVal(nodNet)} | Total ${fmtVal(nodNet)}`);
-        }
 
         lines.push(`---------------------------------`);
         lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/187827`);
