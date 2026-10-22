@@ -2697,6 +2697,28 @@ selectShi62GW(gwName) {
         lines.push(`---------------------------------`);
         lines.push(`💰 พูลสัปดาห์นี้: ${Number(gw.total_pool).toLocaleString()} บาท (${gw.matches.length} คู่)`);
         lines.push(`---------------------------------`);
+
+        if (gw.matches && gw.matches.length > 0) {
+          lines.push(`📋 ผลการแข่งขัน (${gwDisplayName}):`);
+          const formatPlayerName = (name) => {
+            if (!name) return '';
+            const clean = name.trim();
+            if (clean.toLowerCase() === 'pong+') return 'Pong+';
+            return clean.charAt(0).toUpperCase() + clean.slice(1);
+          };
+
+          gw.matches.forEach(m => {
+            if (m.winners && m.winners.length > 0) {
+              const winNames = m.winners.map(formatPlayerName).join(', ');
+              lines.push(`• ${m.title} ➔ ${m.winning_option} ✅ [${winNames}]`);
+            } else {
+              const winSide = m.winning_option || 'ยกเลิก';
+              lines.push(`• ${m.title} ➔ ${winSide} (ไม่มีคนถูก)`);
+            }
+          });
+          lines.push(`---------------------------------`);
+        }
+
         lines.push(`🏆 สรุปยอดสะสม Extra:`);
 
         (this.shi62Data.cumulative_standings || []).forEach((c, idx) => {
