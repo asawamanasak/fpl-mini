@@ -2379,9 +2379,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const container = document.getElementById('league-dropdown-options');
         if (!container) return;
 
+        // เรียงลำดับ: ลีก 40700 อยู่ด้านบนสุดเสมอ และลีกอื่นๆ เรียงตาม League ID จากน้อยไปมาก
+        const allLeagueIds = Object.keys(this.multiData.leagues || {});
+        allLeagueIds.sort((a, b) => {
+          const idA = String(a);
+          const idB = String(b);
+          if (idA === '40700') return -1;
+          if (idB === '40700') return 1;
+          return Number(idA) - Number(idB);
+        });
+
         let html = '';
-        Object.keys(this.multiData.leagues).forEach(lid => {
+        allLeagueIds.forEach(lid => {
           const lData = this.multiData.leagues[lid];
+          if (!lData) return;
           const isCurrent = (lid === this.activeLeagueId);
           const memberCount = (lData.teams || []).length;
 
@@ -9365,6 +9376,7 @@ def main():
         "last_sync_iso": multi_data.get("last_sync_iso"),
         "sync_status": multi_data.get("sync_status"),
         "max_gw": multi_data.get("max_gw"),
+        "league_order": list(leagues_config.keys()),
         "transfer_suggestions": multi_data.get("transfer_suggestions", {}),
         "leagues": {}
     }

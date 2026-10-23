@@ -487,6 +487,7 @@ def sync_once(args):
         "last_sync_iso": sync_iso_str,
         "sync_status": "ok",
         "max_gw": max_gw,
+        "league_order": list(leagues_config.keys()),
         "leagues": {}
     }
 
