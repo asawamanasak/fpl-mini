@@ -1019,10 +1019,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           สรุปรางวัล
         </button>
         <button 
+          id="tab-btn-hall-of-fame"
           data-tab-target="hall-of-fame-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           Hall of Fame
+        </button>
+        <button 
+          id="tab-btn-global-radar"
+          data-tab-target="global-radar-view" 
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+        >
+          Consistency Radar
         </button>
         <button 
           id="tab-btn-cup"
@@ -1279,6 +1287,143 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               </tr>
             </thead>
             <tbody id="hall-of-fame-table-body" class="divide-y divide-slate-100 text-xs sm:text-sm">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==================== TAB: CONSISTENCY RADAR (ทุกลีกในระบบ) ==================== -->
+    <div id="global-radar-view" class="tab-content hidden space-y-3 sm:space-y-4">
+      
+      <!-- Top Banner -->
+      <div class="glass-card rounded-2xl p-3.5 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+        <div>
+          <div class="flex items-center gap-2 flex-wrap mb-1">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+              7 ลีก • 151 ทีม
+            </span>
+          </div>
+          <h2 class="text-base sm:text-2xl font-black text-slate-900 dark:text-white font-display tracking-tight">
+            เรดาร์ความสม่ำเสมอของทีม (Consistency Radar)
+          </h2>
+          <p class="text-[11px] sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
+            เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง (Floor) และความแกว่ง (Spread) ของทุกทีมในระบบ ไม่จำกัดเฉพาะในลีก
+          </p>
+        </div>
+      </div>
+
+      <!-- 4 Superlative Highlight Cards (Mobile: 2x2 grid, Desktop: 4 columns) -->
+      <div id="global-radar-records" class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- League Benchmark Summary (ความแข็งแกร่งเฉลี่ยรายลีก) -->
+      <div class="glass-card rounded-2xl p-3.5 sm:p-5 border border-slate-200 dark:border-slate-800">
+        <div class="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
+          <div>
+            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">LEAGUE BENCHMARK</span>
+            <h3 class="text-xs sm:text-base font-bold text-slate-900 dark:text-white font-display">สถิติค่าเฉลี่ยความแข็งแกร่งของแต่ละลีก</h3>
+          </div>
+          <span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap">
+            <span class="hidden sm:inline">คะแนนเฉลี่ยต่อทีม / GW</span>
+            <span class="sm:hidden">เฉลี่ย/GW</span>
+          </span>
+        </div>
+        <div id="global-radar-league-benchmarks" class="flex sm:grid sm:grid-cols-3 lg:grid-cols-7 gap-2 overflow-x-auto touch-scroll no-scrollbar pb-1">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Consistency Radar Main Table Card -->
+      <div class="glass-card rounded-2xl p-3.5 sm:p-5 border border-slate-200 dark:border-slate-800">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
+          <div>
+            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">ALL-LEAGUE CONSISTENCY MATRIX</span>
+            <h3 class="text-xs sm:text-base font-bold text-slate-900 dark:text-white font-display">ตารางวัดระดับความสม่ำเสมอ & ฟอร์มการเล่น</h3>
+          </div>
+
+          <!-- Controls: Search & Quick Sort on Mobile -->
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <div class="relative flex-1 sm:w-56">
+              <input 
+                type="text" 
+                id="global-radar-search-input" 
+                oninput="app.handleRadarSearch(this.value)"
+                placeholder="ค้นหาชื่อทีม / ผู้จัดการ..." 
+                class="w-full text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-3 pr-8 py-1.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              />
+              <span class="absolute right-2.5 top-2 text-slate-400 text-xs pointer-events-none">🔍</span>
+            </div>
+            <!-- Mobile Sort Dropdown -->
+            <div class="sm:hidden flex-shrink-0">
+              <select 
+                id="global-radar-sort-select"
+                onchange="app.setRadarSortBy(this.value)"
+                class="text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-1.5 text-slate-700 dark:text-slate-300 font-bold focus:outline-hidden cursor-pointer"
+              >
+                <option value="total_net">เรียง: แต้มรวม ▼</option>
+                <option value="avg">เรียง: แต้มเฉลี่ย ▼</option>
+                <option value="high">เรียง: แต้มสูงสุด ▼</option>
+                <option value="low">เรียง: ต่ำสุด (Floor) ▼</option>
+                <option value="spread">เรียง: ความนิ่ง (แกว่งน้อย) ▲</option>
+                <option value="hits">เรียง: แต้มลบน้อยสุด ▲</option>
+                <option value="bench">เรียง: แต้มสำรองสูงสุด ▼</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- League Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto touch-scroll no-scrollbar pb-2 mb-2.5 border-b border-slate-100 dark:border-slate-800 text-xs" id="global-radar-league-pills">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Mobile Scroll Affordance Bar -->
+        <div class="sm:hidden flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 px-1 py-1 mb-1.5">
+          <span class="flex items-center gap-1 font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+            <span id="mobile-radar-sort-label">เรียงตามคะแนนรวม</span>
+          </span>
+          <span class="text-slate-400 font-medium">👉 เลื่อนขวาดูสถิติเพิ่มเติม</span>
+        </div>
+
+        <!-- Table Container with Sticky Columns -->
+        <div class="overflow-x-auto no-scrollbar -mx-3.5 sm:mx-0 touch-scroll">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-100 dark:border-slate-800 text-[10px] sm:text-[11px] font-bold text-slate-400 font-display bg-slate-50/50 dark:bg-slate-800/40">
+                <th class="py-2.5 px-1 sm:px-2 text-center w-[28px] min-w-[28px] max-w-[28px] sm:w-[36px] sm:min-w-[36px] whitespace-nowrap sticky left-0 bg-slate-50 dark:bg-slate-900 z-20">#</th>
+                <th class="py-2.5 px-2 sm:px-3 min-w-[125px] sm:min-w-0 max-w-[150px] sm:max-w-none whitespace-nowrap sticky left-[28px] sm:left-[36px] bg-slate-50 dark:bg-slate-900 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">ทีม & ผู้จัดการ</th>
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors" onclick="app.setRadarSortBy('total_net')" title="คลิกเพื่อเรียงตามคะแนนรวมสุทธิ">
+                  <span id="th-radar-total_net"><span class="hidden sm:inline">คะแนนรวม</span><span class="sm:hidden">แต้มรวม</span></span>
+                </th>
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors" onclick="app.setRadarSortBy('avg')" title="คลิกเพื่อเรียงตามแต้มเฉลี่ย">
+                  <span id="th-radar-avg"><span class="hidden sm:inline">แต้มเฉลี่ย</span><span class="sm:hidden">เฉลี่ย</span></span>
+                </th>
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors" onclick="app.setRadarSortBy('high')" title="คลิกเพื่อเรียงตามแต้มสูงสุด">
+                  <span id="th-radar-high"><span class="hidden sm:inline">สูงสุด</span><span class="sm:hidden">สูงสุด</span></span>
+                </th>
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors" onclick="app.setRadarSortBy('low')" title="คลิกเพื่อเรียงตามแต้มต่ำสุด">
+                  <span id="th-radar-low"><span class="hidden sm:inline">ต่ำสุด (Floor)</span><span class="sm:hidden">ต่ำสุด</span></span>
+                </th>
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors" onclick="app.setRadarSortBy('spread')" title="คลิกเพื่อเรียงตามความแกว่ง (น้อยไปมาก)">
+                  <span id="th-radar-spread"><span class="hidden sm:inline">ความแกว่ง (Spread)</span><span class="sm:hidden">แกว่ง</span></span>
+                </th>
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors" onclick="app.setRadarSortBy('hits')" title="คลิกเพื่อเรียงตามแต้มลบน้อยสุด">
+                  <span id="th-radar-hits"><span class="hidden sm:inline">แต้มลบ</span><span class="sm:hidden">ลบ</span></span>
+                </th>
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors" onclick="app.setRadarSortBy('bench')" title="คลิกเพื่อเรียงตามแต้มสำรองสูงสุด">
+                  <span id="th-radar-bench"><span class="hidden sm:inline">สำรอง</span><span class="sm:hidden">สำรอง</span></span>
+                </th>
+                <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">
+                  <span><span class="hidden sm:inline">ระดับความสม่ำเสมอ</span><span class="sm:hidden">ระดับ</span></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="global-radar-table-body" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
               <!-- Rendered dynamically -->
             </tbody>
           </table>
@@ -2184,6 +2329,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.liveNotesCache = {};
         this.shi62Data = (typeof SHI62_SPECIAL_DATA !== 'undefined') ? SHI62_SPECIAL_DATA : null;
         this.activeShi62GW = null;
+        this.radarSearchQuery = '';
+        this.radarLeagueFilter = 'all';
+        this.radarSortBy = 'total_net';
       }
 
       normalizeTab(tabName) {
@@ -2194,6 +2342,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (t === 'competition' || t === 'comp' || t === 'standings') return 'competition-view';
         if (t === 'prize' || t === 'prizes' || t === 'reward' || t === 'rewards') return 'prizes-view';
         if (t === 'hof' || t === 'hall-of-fame' || t === 'halloffame') return 'hall-of-fame-view';
+        if (t === 'global-radar' || t === 'radar' || t === 'global' || t === 'all-leagues' || t === 'consistency-radar' || t === 'consistency') return 'global-radar-view';
         if (t === 'cup') return 'cup-view';
         if (t === 'shi62' || t === 'shi62-special' || t === 'special' || t === 'beta') return 'shi62-special-view';
         if (t === 'rule' || t === 'rules') return 'rules-view';
@@ -2662,6 +2811,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.renderCompetitionView();
         this.renderPrizesView();
         this.renderHallOfFameView();
+        this.renderGlobalRadarView();
         this.renderCupView();
         this.renderRulesView();
         if (this.shi62Data && String(this.activeLeagueId) === '187827') {
@@ -2676,6 +2826,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         else if (this.activeTab === 'competition-view') this.renderCompetitionView();
         else if (this.activeTab === 'prizes-view') this.renderPrizesView();
         else if (this.activeTab === 'hall-of-fame-view') this.renderHallOfFameView();
+        else if (this.activeTab === 'global-radar-view') this.renderGlobalRadarView();
         else if (this.activeTab === 'cup-view') this.renderCupView();
         else if (this.activeTab === 'rules-view') this.renderRulesView();
         else if (this.activeTab === 'shi62-special-view') this.renderShi62Special();
@@ -7706,6 +7857,413 @@ selectShi62GW(gwName) {
           });
           tableBody.innerHTML = html;
         }
+      }
+
+      renderGlobalRadarView() {
+        const recordsContainer = document.getElementById('global-radar-records');
+        const benchmarksContainer = document.getElementById('global-radar-league-benchmarks');
+        const pillsContainer = document.getElementById('global-radar-league-pills');
+        const tableBody = document.getElementById('global-radar-table-body');
+        if (!tableBody) return;
+
+        const maxGW = Number(this.multiData.max_gw) || 2;
+        const leaguesObj = this.multiData.leagues || {};
+        const leaguesConfig = this.configs || {};
+
+        // 1. Compute League Benchmarks
+        const leagueOrder = (this.multiData && this.multiData.league_order) || Object.keys(leaguesObj);
+        const leagueBenchmarks = [];
+        leagueOrder.forEach(lid => {
+          const lData = leaguesObj[lid];
+          if (!lData) return;
+          const teams = lData.teams || [];
+          const gws = lData.gameweeks || {};
+          let totalNet = 0;
+          let finGWCount = 0;
+          for (let g = 1; g <= maxGW; g++) {
+            const gData = gws[String(g)];
+            if (gData && gData.is_finished) {
+              finGWCount++;
+              (gData.results || []).forEach(r => {
+                totalNet += (r.net_points || 0);
+              });
+            }
+          }
+          const totalEntries = teams.length * Math.max(finGWCount, 1);
+          const avgPts = totalEntries > 0 ? (totalNet / totalEntries).toFixed(1) : '0.0';
+          leagueBenchmarks.push({
+            id: lid,
+            name: lData.name,
+            short_name: (leaguesConfig[lid] && leaguesConfig[lid].short_name) || lData.name,
+            team_count: teams.length,
+            avg: Number(avgPts),
+            total_net: totalNet
+          });
+        });
+
+        // Render Benchmarks
+        if (benchmarksContainer) {
+          const sortedBenchmarks = [...leagueBenchmarks].sort((a, b) => b.avg - a.avg);
+          benchmarksContainer.innerHTML = sortedBenchmarks.map((lb, idx) => `
+            <div onclick="app.setRadarLeagueFilter('${lb.id}')" class="p-2 sm:p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-800/70 flex flex-col justify-between hover:border-blue-400 dark:hover:border-blue-500 transition-colors min-w-[125px] sm:min-w-0 flex-shrink-0 sm:flex-shrink cursor-pointer active:scale-95" title="คลิกเพื่อกรองเฉพาะลีกนี้">
+              <div>
+                <div class="flex items-center justify-between text-[10px] text-slate-400 font-display">
+                  <span>#${idx + 1}</span>
+                  <span>${lb.team_count} ทีม</span>
+                </div>
+                <div class="font-bold text-xs text-slate-900 dark:text-slate-100 truncate mt-0.5" title="${this.escapeHtml(lb.name)}">${this.escapeHtml(lb.short_name)}</div>
+              </div>
+              <div class="mt-1.5 pt-1.5 border-t border-slate-100 dark:border-slate-700/60 flex items-baseline justify-between">
+                <span class="text-[9px] uppercase text-slate-400 font-display">เฉลี่ย</span>
+                <span class="text-xs sm:text-sm font-black text-blue-600 dark:text-blue-400 font-display">${lb.avg.toFixed(1)} <span class="text-[9px]">pts</span></span>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        // 2. Aggregate all teams across all leagues (deduplicated by entry_id)
+        const teamsMap = {};
+        Object.keys(leaguesObj).forEach(lid => {
+          const lData = leaguesObj[lid];
+          const lName = (leaguesConfig[lid] && leaguesConfig[lid].short_name) || lData.name || `League ${lid}`;
+          (lData.teams || []).forEach(t => {
+            const eid = Number(t.entry_id);
+            if (!teamsMap[eid]) {
+              teamsMap[eid] = {
+                entry_id: eid,
+                team_name: t.entry_name,
+                player_name: t.player_name,
+                leagues: [],
+                scores_by_gw: {},
+                hits_by_gw: {},
+                bench_by_gw: {},
+                total_hits: 0,
+                total_bench: 0
+              };
+            }
+            if (!teamsMap[eid].leagues.some(item => String(item.id) === String(lid))) {
+              teamsMap[eid].leagues.push({ id: lid, name: lName });
+            }
+          });
+
+          // Gameweek results
+          const gws = lData.gameweeks || {};
+          for (let g = 1; g <= maxGW; g++) {
+            const gData = gws[String(g)];
+            if (!gData || !gData.results) continue;
+            const isStarted = gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+            
+            gData.results.forEach(r => {
+              const eid = Number(r.entry_id);
+              if (teamsMap[eid]) {
+                if (isStarted && teamsMap[eid].hits_by_gw[g] === undefined) {
+                  teamsMap[eid].hits_by_gw[g] = (r.hits || 0);
+                }
+                if (gData.is_finished && teamsMap[eid].scores_by_gw[g] === undefined) {
+                  teamsMap[eid].scores_by_gw[g] = r.net_points;
+                  teamsMap[eid].bench_by_gw[g] = (r.bench_points || 0);
+                }
+              }
+            });
+          }
+        });
+
+        // 3. Compute stats for each team
+        let globalTopScore = { score: 0, team: '-', player: '-', gw: 1, league: '-' };
+        let globalTopAvg = { avg: 0, team: '-', player: '-', total: 0, league: '-' };
+        let globalMostConsistent = { spread: 999, floor: 0, team: '-', player: '-', avg: 0, league: '-' };
+        let globalBestBench = { bench: 0, team: '-', player: '-', league: '-' };
+
+        const teamList = Object.values(teamsMap).map(t => {
+          const finishedScores = Object.entries(t.scores_by_gw).map(([gw, pts]) => ({ gw: Number(gw), pts }));
+          const ptsArray = finishedScores.map(x => x.pts);
+          const totalNet = ptsArray.reduce((acc, v) => acc + v, 0);
+          const count = ptsArray.length;
+          const avg = count > 0 ? totalNet / count : 0;
+          const highObj = finishedScores.reduce((m, x) => (x.pts > m.pts ? x : m), { gw: 1, pts: 0 });
+          const lowObj = finishedScores.reduce((m, x) => (x.pts < m.pts ? x : m), { gw: 1, pts: count > 0 ? ptsArray[0] : 0 });
+          const high = count > 0 ? highObj.pts : 0;
+          const low = count > 0 ? lowObj.pts : 0;
+          const spread = high - low;
+          const totalHits = Object.values(t.hits_by_gw).reduce((acc, v) => acc + v, 0);
+          const totalBench = Object.values(t.bench_by_gw).reduce((acc, v) => acc + v, 0);
+
+          const primaryLeague = t.leagues[0] ? t.leagues[0].name : '-';
+
+          // Update records
+          if (high > globalTopScore.score) {
+            globalTopScore = { score: high, team: t.team_name, player: t.player_name, gw: highObj.gw, league: primaryLeague };
+          }
+          if (avg > globalTopAvg.avg) {
+            globalTopAvg = { avg: avg, team: t.team_name, player: t.player_name, total: totalNet, league: primaryLeague };
+          }
+          if (count >= 4 && avg >= 60) {
+            if (spread < globalMostConsistent.spread || (spread === globalMostConsistent.spread && low > globalMostConsistent.floor)) {
+              globalMostConsistent = { spread: spread, floor: low, team: t.team_name, player: t.player_name, avg: avg, league: primaryLeague };
+            }
+          }
+          if (totalBench > globalBestBench.bench) {
+            globalBestBench = { bench: totalBench, team: t.team_name, player: t.player_name, league: primaryLeague };
+          }
+
+          // Consistency Tier Badge
+          let tierBadge = '';
+          if (count > 0) {
+            if (avg >= 70 || (avg >= 65 && spread <= 30)) {
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-purple-100 text-purple-900 border border-purple-300 dark:bg-purple-950/60 dark:text-purple-200 dark:border-purple-800">💎 S-Tier</span>';
+            } else if (spread >= 50) {
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950/60 dark:text-amber-200 dark:border-amber-800">⚡ Volatile</span>';
+            } else if (avg >= 64) {
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-200 dark:border-emerald-800">🟢 A-Tier</span>';
+            } else if (avg >= 58) {
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-100 text-blue-900 border border-blue-300 dark:bg-blue-950/60 dark:text-blue-200 dark:border-blue-800">🟡 B-Tier</span>';
+            } else {
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">⚪ C-Tier</span>';
+            }
+          }
+
+          return {
+            ...t,
+            total_net: totalNet,
+            total_hits: totalHits,
+            total_bench: totalBench,
+            avg: avg,
+            high: high,
+            high_gw: highObj.gw,
+            low: low,
+            low_gw: lowObj.gw,
+            spread: spread,
+            tier_badge: tierBadge
+          };
+        });
+
+        // Fallback for most consistent if condition was empty
+        if (globalMostConsistent.spread === 999 && teamList.length > 0) {
+          const sortedBySpread = [...teamList].sort((a, b) => a.spread - b.spread);
+          const topC = sortedBySpread[0];
+          globalMostConsistent = { spread: topC.spread, floor: topC.low, team: topC.team_name, player: topC.player_name, avg: topC.avg, league: topC.leagues[0] ? topC.leagues[0].name : '-' };
+        }
+
+        // Cache team list on instance for fast filtering and searching
+        this._radarTeamList = teamList;
+
+        // Render Record Cards (Mobile: 2x2 grid, Desktop: 4 columns)
+        if (recordsContainer) {
+          recordsContainer.innerHTML = `
+            <div class="glass-card rounded-xl sm:rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+              <div>
+                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">แต้มเฉลี่ยสูงสุดในระบบ</span>
+                <div class="text-base sm:text-xl font-black text-slate-900 dark:text-white mt-0.5 sm:mt-1 font-display leading-tight">${globalTopAvg.avg.toFixed(1)} <span class="text-[10px] sm:text-xs font-normal">PTS/GW</span></div>
+              </div>
+              <div class="mt-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
+                <div class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 truncate" title="${this.escapeHtml(globalTopAvg.team)}">${this.escapeHtml(globalTopAvg.team)}</div>
+                <div class="text-[9px] sm:text-[10px] text-slate-500 font-display">รวม ${globalTopAvg.total} pts</div>
+              </div>
+            </div>
+
+            <div class="glass-card rounded-xl sm:rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+              <div>
+                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">ความนิ่งสูงสุด (Spread)</span>
+                <div class="text-base sm:text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5 sm:mt-1 font-display leading-tight">±${globalMostConsistent.spread} <span class="text-[10px] sm:text-xs font-normal">PTS</span></div>
+              </div>
+              <div class="mt-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
+                <div class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 truncate" title="${this.escapeHtml(globalMostConsistent.team)}">${this.escapeHtml(globalMostConsistent.team)}</div>
+                <div class="text-[9px] sm:text-[10px] text-slate-500 font-display">Floor ${globalMostConsistent.floor} pts</div>
+              </div>
+            </div>
+
+            <div class="glass-card rounded-xl sm:rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+              <div>
+                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">ระเบิดฟอร์มสูงสุด</span>
+                <div class="text-base sm:text-xl font-black text-blue-600 dark:text-blue-400 mt-0.5 sm:mt-1 font-display leading-tight">${globalTopScore.score} <span class="text-[10px] sm:text-xs font-normal">PTS</span></div>
+              </div>
+              <div class="mt-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
+                <div class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 truncate" title="${this.escapeHtml(globalTopScore.team)}">${this.escapeHtml(globalTopScore.team)}</div>
+                <div class="text-[9px] sm:text-[10px] text-slate-500 font-display">GW ${globalTopScore.gw}</div>
+              </div>
+            </div>
+
+            <div class="glass-card rounded-xl sm:rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+              <div>
+                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">แต้มสำรองสูงสุด (Bench)</span>
+                <div class="text-base sm:text-xl font-black text-slate-900 dark:text-white mt-0.5 sm:mt-1 font-display leading-tight">${globalBestBench.bench} <span class="text-[10px] sm:text-xs font-normal">PTS</span></div>
+              </div>
+              <div class="mt-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
+                <div class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 truncate" title="${this.escapeHtml(globalBestBench.team)}">${this.escapeHtml(globalBestBench.team)}</div>
+                <div class="text-[9px] sm:text-[10px] text-slate-500 font-display">ตกน้ำสะสม</div>
+              </div>
+            </div>
+          `;
+        }
+
+        // Render Filter Pills
+        if (pillsContainer) {
+          const curFilter = this.radarLeagueFilter || 'all';
+          let phtml = `
+            <button onclick="app.setRadarLeagueFilter('all')" class="px-2.5 py-1 rounded-lg font-bold font-display text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 ${curFilter === 'all' ? 'bg-slate-900 text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              ทุกลีก (${teamList.length})
+            </button>
+          `;
+          leagueOrder.forEach(lid => {
+            const lData = leaguesObj[lid];
+            if (!lData) return;
+            const sName = (leaguesConfig[lid] && leaguesConfig[lid].short_name) || lData.name;
+            const count = (lData.teams || []).length;
+            const isAct = curFilter === String(lid);
+            phtml += `
+              <button onclick="app.setRadarLeagueFilter('${lid}')" class="px-2.5 py-1 rounded-lg font-bold font-display text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 ${isAct ? 'bg-slate-900 text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+                ${this.escapeHtml(sName)} (${count})
+              </button>
+            `;
+          });
+          pillsContainer.innerHTML = phtml;
+        }
+
+        this.renderGlobalRadarTable();
+      }
+
+      renderGlobalRadarTable() {
+        const tableBody = document.getElementById('global-radar-table-body');
+        if (!tableBody || !this._radarTeamList) return;
+
+        // Update active sort indicator on table headers (preserving mobile short titles)
+        const sortKeys = ['total_net', 'avg', 'high', 'low', 'spread', 'hits', 'bench'];
+        const activeSort = this.radarSortBy || 'total_net';
+        const sortLabels = {
+          'total_net': { full: 'คะแนนรวม', short: 'แต้มรวม' },
+          'avg': { full: 'แต้มเฉลี่ย', short: 'เฉลี่ย' },
+          'high': { full: 'สูงสุด', short: 'สูงสุด' },
+          'low': { full: 'ต่ำสุด (Floor)', short: 'ต่ำสุด' },
+          'spread': { full: 'ความแกว่ง (Spread)', short: 'แกว่ง' },
+          'hits': { full: 'แต้มลบ', short: 'ลบ' },
+          'bench': { full: 'สำรอง', short: 'สำรอง' }
+        };
+
+        sortKeys.forEach(k => {
+          const el = document.getElementById('th-radar-' + k);
+          if (el) {
+            const labelObj = sortLabels[k] || { full: k, short: k };
+            const arrow = (k === activeSort) ? ' ▼' : '';
+            el.innerHTML = `<span class="hidden sm:inline">${labelObj.full}${arrow}</span><span class="sm:hidden">${labelObj.short}${arrow}</span>`;
+            el.className = (k === activeSort) ? 'text-blue-600 dark:text-blue-400 font-black' : '';
+          }
+        });
+
+        // Sync mobile sort select dropdown & affordance bar
+        const sel = document.getElementById('global-radar-sort-select');
+        if (sel && sel.value !== activeSort) {
+          sel.value = activeSort;
+        }
+        const mobileSortLabel = document.getElementById('mobile-radar-sort-label');
+        if (mobileSortLabel) {
+          const textMap = {
+            'total_net': 'เรียงตามคะแนนรวม',
+            'avg': 'เรียงตามแต้มเฉลี่ย',
+            'high': 'เรียงตามแต้มสูงสุด',
+            'low': 'เรียงตามต่ำสุด (Floor)',
+            'spread': 'เรียงตามความนิ่ง (แกว่งน้อย)',
+            'hits': 'เรียงตามแต้มลบน้อยสุด',
+            'bench': 'เรียงตามแต้มสำรองสูงสุด'
+          };
+          mobileSortLabel.innerText = textMap[activeSort] || 'เรียงตามคะแนนรวม';
+        }
+
+        let filtered = [...this._radarTeamList];
+        if (this.radarLeagueFilter && this.radarLeagueFilter !== 'all') {
+          filtered = filtered.filter(t => t.leagues.some(l => String(l.id) === String(this.radarLeagueFilter)));
+        }
+        if (this.radarSearchQuery) {
+          const q = this.radarSearchQuery.toLowerCase().trim();
+          filtered = filtered.filter(t => t.team_name.toLowerCase().includes(q) || (t.player_name || '').toLowerCase().includes(q));
+        }
+
+        filtered.sort((a, b) => {
+          if (activeSort === 'avg') return b.avg - a.avg || b.total_net - a.total_net;
+          if (activeSort === 'spread') return a.spread - b.spread || b.total_net - a.total_net;
+          if (activeSort === 'high') return b.high - a.high || b.total_net - a.total_net;
+          if (activeSort === 'low') return b.low - a.low || b.total_net - a.total_net;
+          if (activeSort === 'hits') return a.total_hits - b.total_hits || b.total_net - a.total_net;
+          if (activeSort === 'bench') return b.total_bench - a.total_bench || b.total_net - a.total_net;
+          return b.total_net - a.total_net;
+        });
+
+        if (filtered.length === 0) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="10" class="py-8 text-center text-slate-400 dark:text-slate-500 font-display">
+                ไม่พบทีมที่ตรงกับเงื่อนไขค้นหา
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        let html = '';
+        filtered.forEach((t, idx) => {
+          const rank = idx + 1;
+          const spreadColor = t.spread <= 30 ? 'text-emerald-600 font-bold' : (t.spread <= 45 ? 'text-slate-700 dark:text-slate-300' : 'text-amber-600 font-bold');
+
+          html += `
+            <tr class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/80">
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500 whitespace-nowrap w-[28px] min-w-[28px] max-w-[28px] sm:w-[36px] sm:min-w-[36px] sticky left-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 z-10">${rank}</td>
+              <td class="py-2.5 px-2 sm:px-3 min-w-[125px] sm:min-w-0 max-w-[150px] sm:max-w-none sticky left-[28px] sm:left-[36px] bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
+                <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer block truncate w-full">
+                  ${this.escapeHtml(t.team_name)}
+                </button>
+                <div class="text-[10px] sm:text-[11px] text-slate-500 truncate mt-0.5">${this.escapeHtml(t.player_name || '')}</div>
+              </td>
+              <td class="py-2.5 px-1.5 sm:px-2 text-center font-display font-black text-slate-900 dark:text-white whitespace-nowrap">${t.total_net}</td>
+              <td class="py-2.5 px-1.5 sm:px-2 text-center font-display font-bold text-blue-600 dark:text-blue-400 whitespace-nowrap">${t.avg.toFixed(1)}</td>
+              <td class="py-2.5 px-1.5 sm:px-2 text-center font-display text-emerald-600 font-bold whitespace-nowrap" title="Gameweek ${t.high_gw}">${t.high}</td>
+              <td class="py-2.5 px-1.5 sm:px-2 text-center font-display text-slate-500 whitespace-nowrap" title="Gameweek ${t.low_gw}">${t.low}</td>
+              <td class="py-2.5 px-1.5 sm:px-2 text-center font-display whitespace-nowrap ${spreadColor}" title="ส่วนต่างแต้มสูงสุด - ต่ำสุด">±${t.spread}</td>
+              <td class="py-2.5 px-1.5 sm:px-2 text-center font-display whitespace-nowrap ${t.total_hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'}">${t.total_hits > 0 ? `-${t.total_hits}` : '-'}</td>
+              <td class="py-2.5 px-1.5 sm:px-2 text-center font-display text-slate-500 whitespace-nowrap">${t.total_bench > 0 ? t.total_bench : '-'}</td>
+              <td class="py-2.5 px-2 sm:px-3 text-center font-display whitespace-nowrap">${t.tier_badge}</td>
+            </tr>
+          `;
+        });
+
+        tableBody.innerHTML = html;
+      }
+
+      setRadarLeagueFilter(lid) {
+        this.radarLeagueFilter = String(lid);
+        const pillsContainer = document.getElementById('global-radar-league-pills');
+        if (pillsContainer && this._radarTeamList) {
+          const leaguesObj = this.multiData.leagues || {};
+          const leaguesConfig = this.configs || {};
+          const leagueOrder = (this.multiData && this.multiData.league_order) || Object.keys(leaguesObj);
+          let phtml = `
+            <button onclick="app.setRadarLeagueFilter('all')" class="px-2.5 py-1 rounded-lg font-bold font-display text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 ${this.radarLeagueFilter === 'all' ? 'bg-slate-900 text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              ทุกลีก (${this._radarTeamList.length})
+            </button>
+          `;
+          leagueOrder.forEach(id => {
+            const lData = leaguesObj[id];
+            if (!lData) return;
+            const sName = (leaguesConfig[id] && leaguesConfig[id].short_name) || lData.name;
+            const count = (lData.teams || []).length;
+            const isAct = this.radarLeagueFilter === String(id);
+            phtml += `
+              <button onclick="app.setRadarLeagueFilter('${id}')" class="px-2.5 py-1 rounded-lg font-bold font-display text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 ${isAct ? 'bg-slate-900 text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+                ${this.escapeHtml(sName)} (${count})
+              </button>
+            `;
+          });
+          pillsContainer.innerHTML = phtml;
+        }
+        this.renderGlobalRadarTable();
+      }
+
+      setRadarSortBy(sortKey) {
+        this.radarSortBy = sortKey;
+        this.renderGlobalRadarTable();
+      }
+
+      handleRadarSearch(val) {
+        this.radarSearchQuery = val || '';
+        this.renderGlobalRadarTable();
       }
 
       renderCupView() {
