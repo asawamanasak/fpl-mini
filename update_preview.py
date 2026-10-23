@@ -1345,9 +1345,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <h3 class="text-xs sm:text-base font-bold text-slate-900 dark:text-white font-display">ตารางวัดระดับความสม่ำเสมอ & ฟอร์มการเล่น</h3>
           </div>
 
-          <!-- Controls: Search & Quick Sort on Mobile -->
+          <!-- Controls: Search -->
           <div class="flex items-center gap-2 w-full sm:w-auto">
-            <div class="relative flex-1 sm:w-56">
+            <div class="relative w-full sm:w-64">
               <input 
                 type="text" 
                 id="global-radar-search-input" 
@@ -1356,22 +1356,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 class="w-full text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-3 pr-8 py-1.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
               />
               <span class="absolute right-2.5 top-2 text-slate-400 text-xs pointer-events-none">🔍</span>
-            </div>
-            <!-- Mobile Sort Dropdown -->
-            <div class="sm:hidden flex-shrink-0">
-              <select 
-                id="global-radar-sort-select"
-                onchange="app.setRadarSortBy(this.value)"
-                class="text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-1.5 text-slate-700 dark:text-slate-300 font-bold focus:outline-hidden cursor-pointer"
-              >
-                <option value="total_net">เรียง: แต้มรวม ▼</option>
-                <option value="avg">เรียง: แต้มเฉลี่ย ▼</option>
-                <option value="high">เรียง: แต้มสูงสุด ▼</option>
-                <option value="low">เรียง: ต่ำสุด (Floor) ▼</option>
-                <option value="spread">เรียง: ความนิ่ง (แกว่งน้อย) ▲</option>
-                <option value="hits">เรียง: แต้มลบน้อยสุด ▲</option>
-                <option value="bench">เรียง: แต้มสำรองสูงสุด ▼</option>
-              </select>
             </div>
           </div>
         </div>
@@ -1385,9 +1369,22 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <div class="sm:hidden flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 px-1 py-1 mb-1.5">
           <span class="flex items-center gap-1 font-medium">
             <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-            <span id="mobile-radar-sort-label">เรียงตามคะแนนรวม</span>
+            <span>เรียงตามคะแนนรวม (# อันดับรวม)</span>
           </span>
           <span class="text-slate-400 font-medium">👉 เลื่อนขวาดูสถิติเพิ่มเติม</span>
+        </div>
+
+        <!-- Tier Legend Badges -->
+        <div class="flex items-center gap-1.5 flex-wrap text-[10px] text-slate-500 dark:text-slate-400 py-1 mb-2 px-1">
+          <span class="font-bold text-slate-700 dark:text-slate-300">เกณฑ์ระดับ:</span>
+          <span class="inline-flex items-center px-1.5 py-0.5 rounded font-black bg-purple-100 text-purple-900 border border-purple-300 dark:bg-purple-950/60 dark:text-purple-200 dark:border-purple-800">💎 S-Tier</span>
+          <span class="text-slate-400 mr-1">แต้มเฉลี่ยสูงมาก & นิ่งจริง</span>
+          <span class="inline-flex items-center px-1.5 py-0.5 rounded font-bold bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950/60 dark:text-amber-200 dark:border-amber-800">⚡ Volatile</span>
+          <span class="text-slate-400 mr-1">แต้มสวิงสูง</span>
+          <span class="inline-flex items-center px-1.5 py-0.5 rounded font-bold bg-emerald-100 text-emerald-900 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-200 dark:border-emerald-800">🟢 A-Tier</span>
+          <span class="text-slate-400 mr-1">มาตรฐานสูง</span>
+          <span class="inline-flex items-center px-1.5 py-0.5 rounded font-semibold bg-blue-100 text-blue-900 border border-blue-300 dark:bg-blue-950/60 dark:text-blue-200 dark:border-blue-800">🟡 B-Tier</span>
+          <span class="text-slate-400">ระดับกลาง</span>
         </div>
 
         <!-- Table Container with Locked/Sticky Headers & Columns -->
@@ -1397,28 +1394,28 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               <tr class="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
                 <th class="py-2.5 px-1 sm:px-2 text-center w-[28px] min-w-[28px] max-w-[28px] sm:w-[36px] sm:min-w-[36px] whitespace-nowrap sticky top-0 left-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-40">#</th>
                 <th class="py-2.5 px-2 sm:px-3 min-w-[125px] sm:min-w-0 max-w-[150px] sm:max-w-none whitespace-nowrap sticky top-0 left-[28px] sm:left-[36px] bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">ทีม & ผู้จัดการ</th>
-                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30" onclick="app.setRadarSortBy('total_net')" title="คลิกเพื่อเรียงตามคะแนนรวมสุทธิ">
-                  <span id="th-radar-total_net"><span class="hidden sm:inline">คะแนนรวม</span><span class="sm:hidden">แต้มรวม</span></span>
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30 text-blue-600 dark:text-blue-400 font-black">
+                  <span id="th-radar-total_net"><span class="hidden sm:inline">คะแนนรวม ▼</span><span class="sm:hidden">แต้มรวม ▼</span></span>
                 </th>
-                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30" onclick="app.setRadarSortBy('avg')" title="คลิกเพื่อเรียงตามแต้มเฉลี่ย">
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30">
                   <span id="th-radar-avg"><span class="hidden sm:inline">แต้มเฉลี่ย</span><span class="sm:hidden">เฉลี่ย</span></span>
                 </th>
-                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30" onclick="app.setRadarSortBy('high')" title="คลิกเพื่อเรียงตามแต้มสูงสุด">
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30">
                   <span id="th-radar-high"><span class="hidden sm:inline">สูงสุด</span><span class="sm:hidden">สูงสุด</span></span>
                 </th>
-                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30" onclick="app.setRadarSortBy('low')" title="คลิกเพื่อเรียงตามแต้มต่ำสุด">
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30">
                   <span id="th-radar-low"><span class="hidden sm:inline">ต่ำสุด (Floor)</span><span class="sm:hidden">ต่ำสุด</span></span>
                 </th>
-                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30" onclick="app.setRadarSortBy('spread')" title="คลิกเพื่อเรียงตามความแกว่ง (น้อยไปมาก)">
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30">
                   <span id="th-radar-spread"><span class="hidden sm:inline">ความแกว่ง (Spread)</span><span class="sm:hidden">แกว่ง</span></span>
                 </th>
-                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30" onclick="app.setRadarSortBy('hits')" title="คลิกเพื่อเรียงตามแต้มลบน้อยสุด">
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30">
                   <span id="th-radar-hits"><span class="hidden sm:inline">แต้มลบ</span><span class="sm:hidden">ลบ</span></span>
                 </th>
-                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30" onclick="app.setRadarSortBy('bench')" title="คลิกเพื่อเรียงตามแต้มสำรองสูงสุด">
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30">
                   <span id="th-radar-bench"><span class="hidden sm:inline">สำรอง</span><span class="sm:hidden">สำรอง</span></span>
                 </th>
-                <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30">
+                <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30" title="Consistency Tier: 💎 S-Tier (หัวกะทิยอดเยี่ยมและนิ่งจริง) | ⚡ Volatile (แต้มสวิงสูง) | 🟢 A-Tier (มาตรฐานสูง) | 🟡 B-Tier (ระดับกลางคงที่) | ⚪ C-Tier (ระดับพัฒนาการ)">
                   <span><span class="hidden sm:inline">ระดับความสม่ำเสมอ</span><span class="sm:hidden">ระดับ</span></span>
                 </th>
               </tr>
@@ -8009,16 +8006,21 @@ selectShi62GW(gwName) {
           // Consistency Tier Badge
           let tierBadge = '';
           if (count > 0) {
-            if (avg >= 70 || (avg >= 65 && spread <= 30)) {
-              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-purple-100 text-purple-900 border border-purple-300 dark:bg-purple-950/60 dark:text-purple-200 dark:border-purple-800">💎 S-Tier</span>';
-            } else if (spread >= 50) {
-              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950/60 dark:text-amber-200 dark:border-amber-800">⚡ Volatile</span>';
-            } else if (avg >= 64) {
-              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-200 dark:border-emerald-800">🟢 A-Tier</span>';
-            } else if (avg >= 58) {
-              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-100 text-blue-900 border border-blue-300 dark:bg-blue-950/60 dark:text-blue-200 dark:border-blue-800">🟡 B-Tier</span>';
+            const isSTier = (avg >= 72 && low >= 48 && spread <= 60) || (avg >= 67 && spread <= 30 && low >= 50);
+            const isVolatile = (spread >= 65) || (high >= 100 && low < 45);
+            const isATier = avg >= 65 && low >= 40;
+            const isBTier = avg >= 58;
+
+            if (isSTier) {
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-purple-100 text-purple-900 border border-purple-300 dark:bg-purple-950/60 dark:text-purple-200 dark:border-purple-800" title="💎 S-Tier: แต้มเฉลี่ยสูงมากและนิ่งจริง (Avg ≥ 72, Floor ≥ 48, Spread ≤ 60 หรือ Avg ≥ 67, Spread ≤ 30)">💎 S-Tier</span>';
+            } else if (isVolatile) {
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950/60 dark:text-amber-200 dark:border-amber-800" title="⚡ Volatile: แต้มสวิงสูง มีสัปดาห์ระเบิดฟอร์มแต่วีคอื่นดรอป (Spread ≥ 65 หรือ High ≥ 100 และ Low < 45)">⚡ Volatile</span>';
+            } else if (isATier) {
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-200 dark:border-emerald-800" title="🟢 A-Tier: ฟอร์มดีมาตรฐานสูงสม่ำเสมอ (Avg ≥ 65, Floor ≥ 40)">🟢 A-Tier</span>';
+            } else if (isBTier) {
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-100 text-blue-900 border border-blue-300 dark:bg-blue-950/60 dark:text-blue-200 dark:border-blue-800" title="🟡 B-Tier: ฟอร์มคงที่ระดับกลาง (Avg ≥ 58)">🟡 B-Tier</span>';
             } else {
-              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">⚪ C-Tier</span>';
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700" title="⚪ C-Tier: ระดับพัฒนาการ (Avg < 58)">⚪ C-Tier</span>';
             }
           }
 
@@ -8043,6 +8045,22 @@ selectShi62GW(gwName) {
           const topC = sortedBySpread[0];
           globalMostConsistent = { spread: topC.spread, floor: topC.low, team: topC.team_name, player: topC.player_name, avg: topC.avg, league: topC.leagues[0] ? topC.leagues[0].name : '-' };
         }
+
+        // Sort teamList by total_net descending, avg descending, spread ascending, team name
+        teamList.sort((a, b) => {
+          const dNet = b.total_net - a.total_net;
+          if (dNet !== 0) return dNet;
+          const dAvg = b.avg - a.avg;
+          if (dAvg !== 0) return dAvg;
+          const dSpread = a.spread - b.spread;
+          if (dSpread !== 0) return dSpread;
+          return a.team_name.localeCompare(b.team_name);
+        });
+
+        // Assign permanent global_rank based on total_net across all teams
+        teamList.forEach((t, idx) => {
+          t.global_rank = idx + 1;
+        });
 
         // Cache team list on instance for fast filtering and searching
         this._radarTeamList = teamList;
@@ -8126,48 +8144,6 @@ selectShi62GW(gwName) {
         const tableBody = document.getElementById('global-radar-table-body');
         if (!tableBody || !this._radarTeamList) return;
 
-        // Update active sort indicator on table headers (preserving mobile short titles)
-        const sortKeys = ['total_net', 'avg', 'high', 'low', 'spread', 'hits', 'bench'];
-        const activeSort = this.radarSortBy || 'total_net';
-        const sortLabels = {
-          'total_net': { full: 'คะแนนรวม', short: 'แต้มรวม' },
-          'avg': { full: 'แต้มเฉลี่ย', short: 'เฉลี่ย' },
-          'high': { full: 'สูงสุด', short: 'สูงสุด' },
-          'low': { full: 'ต่ำสุด (Floor)', short: 'ต่ำสุด' },
-          'spread': { full: 'ความแกว่ง (Spread)', short: 'แกว่ง' },
-          'hits': { full: 'แต้มลบ', short: 'ลบ' },
-          'bench': { full: 'สำรอง', short: 'สำรอง' }
-        };
-
-        sortKeys.forEach(k => {
-          const el = document.getElementById('th-radar-' + k);
-          if (el) {
-            const labelObj = sortLabels[k] || { full: k, short: k };
-            const arrow = (k === activeSort) ? ' ▼' : '';
-            el.innerHTML = `<span class="hidden sm:inline">${labelObj.full}${arrow}</span><span class="sm:hidden">${labelObj.short}${arrow}</span>`;
-            el.className = (k === activeSort) ? 'text-blue-600 dark:text-blue-400 font-black' : '';
-          }
-        });
-
-        // Sync mobile sort select dropdown & affordance bar
-        const sel = document.getElementById('global-radar-sort-select');
-        if (sel && sel.value !== activeSort) {
-          sel.value = activeSort;
-        }
-        const mobileSortLabel = document.getElementById('mobile-radar-sort-label');
-        if (mobileSortLabel) {
-          const textMap = {
-            'total_net': 'เรียงตามคะแนนรวม',
-            'avg': 'เรียงตามแต้มเฉลี่ย',
-            'high': 'เรียงตามแต้มสูงสุด',
-            'low': 'เรียงตามต่ำสุด (Floor)',
-            'spread': 'เรียงตามความนิ่ง (แกว่งน้อย)',
-            'hits': 'เรียงตามแต้มลบน้อยสุด',
-            'bench': 'เรียงตามแต้มสำรองสูงสุด'
-          };
-          mobileSortLabel.innerText = textMap[activeSort] || 'เรียงตามคะแนนรวม';
-        }
-
         let filtered = [...this._radarTeamList];
         if (this.radarLeagueFilter && this.radarLeagueFilter !== 'all') {
           filtered = filtered.filter(t => t.leagues.some(l => String(l.id) === String(this.radarLeagueFilter)));
@@ -8177,15 +8153,8 @@ selectShi62GW(gwName) {
           filtered = filtered.filter(t => t.team_name.toLowerCase().includes(q) || (t.player_name || '').toLowerCase().includes(q));
         }
 
-        filtered.sort((a, b) => {
-          if (activeSort === 'avg') return b.avg - a.avg || b.total_net - a.total_net;
-          if (activeSort === 'spread') return a.spread - b.spread || b.total_net - a.total_net;
-          if (activeSort === 'high') return b.high - a.high || b.total_net - a.total_net;
-          if (activeSort === 'low') return b.low - a.low || b.total_net - a.total_net;
-          if (activeSort === 'hits') return a.total_hits - b.total_hits || b.total_net - a.total_net;
-          if (activeSort === 'bench') return b.total_bench - a.total_bench || b.total_net - a.total_net;
-          return b.total_net - a.total_net;
-        });
+        // Always keep sorted by global_rank (total points highest to lowest)
+        filtered.sort((a, b) => a.global_rank - b.global_rank);
 
         if (filtered.length === 0) {
           tableBody.innerHTML = `
@@ -8199,13 +8168,12 @@ selectShi62GW(gwName) {
         }
 
         let html = '';
-        filtered.forEach((t, idx) => {
-          const rank = idx + 1;
+        filtered.forEach((t) => {
           const spreadColor = t.spread <= 30 ? 'text-emerald-600 font-bold' : (t.spread <= 45 ? 'text-slate-700 dark:text-slate-300' : 'text-amber-600 font-bold');
 
           html += `
             <tr class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/80">
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500 whitespace-nowrap w-[28px] min-w-[28px] max-w-[28px] sm:w-[36px] sm:min-w-[36px] sticky left-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 z-10">${rank}</td>
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500 whitespace-nowrap w-[28px] min-w-[28px] max-w-[28px] sm:w-[36px] sm:min-w-[36px] sticky left-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 z-10">${t.global_rank}</td>
               <td class="py-2.5 px-2 sm:px-3 min-w-[125px] sm:min-w-0 max-w-[150px] sm:max-w-none sticky left-[28px] sm:left-[36px] bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
                 <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer block truncate w-full">
                   ${this.escapeHtml(t.team_name)}
