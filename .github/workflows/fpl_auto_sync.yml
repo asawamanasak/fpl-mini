@@ -2,8 +2,8 @@ name: FPL Mini-League Auto Sync
 
 on:
   schedule:
-    # รันอัตโนมัติทุกๆ 20 นาที
-    - cron: '*/20 * * * *'
+    # รันอัตโนมัติทุก 20 นาที (ใช้นาทีที่ไม่ชนหัวชั่วโมงเพื่อลดปัญหาคิว GitHub Actions ดีเลย์)
+    - cron: '7,27,47 * * * *'
   workflow_dispatch: # ปุ่มกดสั่งรันเองได้ตลอดเวลาในแท็บ Actions บน GitHub
 
 permissions:
