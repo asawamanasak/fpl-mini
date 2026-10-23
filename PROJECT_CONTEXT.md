@@ -16,6 +16,7 @@
   * ลีก 1101958 (Barley's Official League): `https://asawamanasak.github.io/fpl-mini/1101958`
   * ลีก 438691 (2 spade): `https://asawamanasak.github.io/fpl-mini/438691`
   * ลีก 187827 (Shi62): `https://asawamanasak.github.io/fpl-mini/187827`
+  * ลีก 5349 (Bramann League): `https://asawamanasak.github.io/fpl-mini/5349`
 * **Repository:** `https://github.com/asawamanasak/fpl-mini`
 
 ---
@@ -220,6 +221,13 @@ flowchart TD
     * `Pong+`: Winwinwin (Ratapan W)
     * `Dow`: Bruno Carrick (Bruno Zoro)
     * `Nod`: ผู้ร่วมทายผล (เล่นเฉพาะมินิเกม ไม่ได้ลงเล่นแฟนตาซี FPL)
+
+### ลีก 7: 5349 - "Bramann League"
+* **สมาชิก:** 20 ทีม (19 ทีมแข่งขัน + 1 ทีมร่วมสนุก GEMINI UNITED)
+  * **ทีมร่วมสนุก (1 ทีม):** GEMINI UNITED (ID: 306983)
+  * **สมาชิกแข่งขัน (19 ทีม):** -Nk_KOP, Oöraora Grandé, van Xke, BMFC™, Putun KNVB, Micchester United, 4OUR, NUKE-UTD®, CasanoVej, Univerpool, Falco.245, Talidtidty, KwangSettha, HereAu, golden club, Pongacku, Dotman 2026, 67, Supalerk's Team
+* **สถานะกติกา & เงินรางวัล:** อยู่ระหว่างรอประกาศกติกาและโครงสร้างเงินรางวัลอย่างเป็นทางการ (Pending Rules & Prizes)
+* **Direct League URL:** `https://asawamanasak.github.io/fpl-mini/5349`
 
 ---
 
