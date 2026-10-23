@@ -1333,35 +1333,35 @@
           <span class="text-slate-400 font-medium">👉 เลื่อนขวาดูสถิติเพิ่มเติม</span>
         </div>
 
-        <!-- Table Container with Sticky Columns -->
-        <div class="overflow-x-auto no-scrollbar -mx-3.5 sm:mx-0 touch-scroll">
+        <!-- Table Container with Locked/Sticky Headers & Columns -->
+        <div class="overflow-auto max-h-[65vh] sm:max-h-[75vh] no-scrollbar -mx-3.5 sm:mx-0 touch-scroll rounded-xl border border-slate-200/80 dark:border-slate-800/80">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="border-b border-slate-100 dark:border-slate-800 text-[10px] sm:text-[11px] font-bold text-slate-400 font-display bg-slate-50/50 dark:bg-slate-800/40">
-                <th class="py-2.5 px-1 sm:px-2 text-center w-[28px] min-w-[28px] max-w-[28px] sm:w-[36px] sm:min-w-[36px] whitespace-nowrap sticky left-0 bg-slate-50 dark:bg-slate-900 z-20">#</th>
-                <th class="py-2.5 px-2 sm:px-3 min-w-[125px] sm:min-w-0 max-w-[150px] sm:max-w-none whitespace-nowrap sticky left-[28px] sm:left-[36px] bg-slate-50 dark:bg-slate-900 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">ทีม & ผู้จัดการ</th>
-                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors" onclick="app.setRadarSortBy('total_net')" title="คลิกเพื่อเรียงตามคะแนนรวมสุทธิ">
+              <tr class="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
+                <th class="py-2.5 px-1 sm:px-2 text-center w-[28px] min-w-[28px] max-w-[28px] sm:w-[36px] sm:min-w-[36px] whitespace-nowrap sticky top-0 left-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-40">#</th>
+                <th class="py-2.5 px-2 sm:px-3 min-w-[125px] sm:min-w-0 max-w-[150px] sm:max-w-none whitespace-nowrap sticky top-0 left-[28px] sm:left-[36px] bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">ทีม & ผู้จัดการ</th>
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30" onclick="app.setRadarSortBy('total_net')" title="คลิกเพื่อเรียงตามคะแนนรวมสุทธิ">
                   <span id="th-radar-total_net"><span class="hidden sm:inline">คะแนนรวม</span><span class="sm:hidden">แต้มรวม</span></span>
                 </th>
-                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors" onclick="app.setRadarSortBy('avg')" title="คลิกเพื่อเรียงตามแต้มเฉลี่ย">
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30" onclick="app.setRadarSortBy('avg')" title="คลิกเพื่อเรียงตามแต้มเฉลี่ย">
                   <span id="th-radar-avg"><span class="hidden sm:inline">แต้มเฉลี่ย</span><span class="sm:hidden">เฉลี่ย</span></span>
                 </th>
-                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors" onclick="app.setRadarSortBy('high')" title="คลิกเพื่อเรียงตามแต้มสูงสุด">
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30" onclick="app.setRadarSortBy('high')" title="คลิกเพื่อเรียงตามแต้มสูงสุด">
                   <span id="th-radar-high"><span class="hidden sm:inline">สูงสุด</span><span class="sm:hidden">สูงสุด</span></span>
                 </th>
-                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors" onclick="app.setRadarSortBy('low')" title="คลิกเพื่อเรียงตามแต้มต่ำสุด">
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30" onclick="app.setRadarSortBy('low')" title="คลิกเพื่อเรียงตามแต้มต่ำสุด">
                   <span id="th-radar-low"><span class="hidden sm:inline">ต่ำสุด (Floor)</span><span class="sm:hidden">ต่ำสุด</span></span>
                 </th>
-                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors" onclick="app.setRadarSortBy('spread')" title="คลิกเพื่อเรียงตามความแกว่ง (น้อยไปมาก)">
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30" onclick="app.setRadarSortBy('spread')" title="คลิกเพื่อเรียงตามความแกว่ง (น้อยไปมาก)">
                   <span id="th-radar-spread"><span class="hidden sm:inline">ความแกว่ง (Spread)</span><span class="sm:hidden">แกว่ง</span></span>
                 </th>
-                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors" onclick="app.setRadarSortBy('hits')" title="คลิกเพื่อเรียงตามแต้มลบน้อยสุด">
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30" onclick="app.setRadarSortBy('hits')" title="คลิกเพื่อเรียงตามแต้มลบน้อยสุด">
                   <span id="th-radar-hits"><span class="hidden sm:inline">แต้มลบ</span><span class="sm:hidden">ลบ</span></span>
                 </th>
-                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors" onclick="app.setRadarSortBy('bench')" title="คลิกเพื่อเรียงตามแต้มสำรองสูงสุด">
+                <th class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-blue-600 transition-colors sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30" onclick="app.setRadarSortBy('bench')" title="คลิกเพื่อเรียงตามแต้มสำรองสูงสุด">
                   <span id="th-radar-bench"><span class="hidden sm:inline">สำรอง</span><span class="sm:hidden">สำรอง</span></span>
                 </th>
-                <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">
+                <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30">
                   <span><span class="hidden sm:inline">ระดับความสม่ำเสมอ</span><span class="sm:hidden">ระดับ</span></span>
                 </th>
               </tr>
