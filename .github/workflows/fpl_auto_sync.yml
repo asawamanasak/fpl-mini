@@ -2,8 +2,8 @@ name: FPL Mini-League Auto Sync
 
 on:
   schedule:
-    # รันอัตโนมัติทุก 20 นาที (ใช้นาทีที่ไม่ชนหัวชั่วโมงเพื่อลดปัญหาคิว GitHub Actions ดีเลย์)
-    - cron: '7,27,47 * * * *'
+    # รันอัตโนมัติทุก 7 นาที โดยใช้นาทีที่ไม่ชนรอบกลม 0, 5 ทั่วโลก (2, 9, 16, 23, 30, 37, 44, 51, 58)
+    - cron: '2,9,16,23,30,37,44,51,58 * * * *'
   workflow_dispatch: # ปุ่มกดสั่งรันเองได้ตลอดเวลาในแท็บ Actions บน GitHub
 
 permissions:
@@ -18,6 +18,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Stagger Schedule Offset (58s Delay)
+        if: github.event_name == 'schedule'
+        run: |
+          echo "Staggering run by 58 seconds to avoid global top-of-minute congestion..."
+          sleep 58
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
