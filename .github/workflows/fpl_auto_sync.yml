@@ -29,6 +29,8 @@ jobs:
           python-version: '3.11'
 
       - name: Fetch Real-Time FPL Data
+        env:
+          AZURE_TRANSFER_FUNCTION_KEY: ${{ secrets.AZURE_TRANSFER_FUNCTION_KEY || 'db059d47-8b44-476a-9dfc-509bceb87bee' }}
         run: |
           python3 sync_live_fpl.py
 

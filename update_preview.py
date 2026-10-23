@@ -5746,6 +5746,18 @@ selectShi62GW(gwName) {
           { key: 'Forwards', title: 'Forwards', pos: 'FWD' }
         ];
 
+        const hasAnyItems = categories.some(cat => (sugg[cat.key] || []).length > 0);
+        if (!hasAnyItems) {
+          tableContainer.innerHTML = `
+            <div class="py-8 px-4 text-center rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400">
+              <span class="text-3xl block mb-2">⏳</span>
+              <p class="font-bold text-sm text-slate-700 dark:text-slate-300">กำลังประมวลผลคำแนะนำการย้ายตัวสำหรับ Gameweek ถัดไป</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">ระบบจะแสดงรายชื่อ Best Players และ Best Value อัตโนมัติเมื่อข้อมูลโปรแกรมแข่งขันและสถิติอัปเดตเรียบร้อย</p>
+            </div>
+          `;
+          return;
+        }
+
         // 1. Single-column Mobile View: Best Players Only
         if (mobileView === 'best') {
           let rowsHtml = '';

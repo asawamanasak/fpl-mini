@@ -1121,12 +1121,11 @@ def sync_once(args):
     print(f"Fetching Transfer Suggestions for upcoming GW {upcoming_gw}...")
     try:
         ts_url = f'https://fontendfunctionsnortheuropenew.azurewebsites.net/api/TransferSuggestionsFunction?gameweeks={upcoming_gw}&generalSuggestions=1'
-        azure_key = os.environ.get('AZURE_TRANSFER_FUNCTION_KEY', '')
+        azure_key = os.environ.get('AZURE_TRANSFER_FUNCTION_KEY', 'db059d47-8b44-476a-9dfc-509bceb87bee')
         ts_headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)'
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+            'FunctionKey': azure_key
         }
-        if azure_key:
-            ts_headers['FunctionKey'] = azure_key
         ts_data = fetch(ts_url, headers_override=ts_headers, retries=3, delay=1.5, timeout=12)
         if ts_data and ts_data.get("Succeeded"):
             new_gk = ts_data.get("GoalKeepers", [])
