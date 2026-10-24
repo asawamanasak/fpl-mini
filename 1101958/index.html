@@ -2385,6 +2385,27 @@
 
           const changed = this.applyLiveElements(liveJson, maxGW);
 
+          // Update Last Sync timestamp in header to reflect live Cloudflare sync time (Thailand UTC+7)
+          const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+          const thDate = new Date(Date.now() + (7 * 60 * 60 * 1000));
+          const dDay = thDate.getUTCDate();
+          const dMonth = thaiMonths[thDate.getUTCMonth()];
+          const dYear = thDate.getUTCFullYear();
+          const dHour = String(thDate.getUTCHours()).padStart(2, '0');
+          const dMin = String(thDate.getUTCMinutes()).padStart(2, '0');
+          const dSec = String(thDate.getUTCSeconds()).padStart(2, '0');
+          const liveSyncStr = `${dDay} ${dMonth} ${dYear}, ${dHour}:${dMin} น.`;
+          const liveIsoStr = `${dYear}-${String(thDate.getUTCMonth() + 1).padStart(2, '0')}-${String(dDay).padStart(2, '0')} ${dHour}:${dMin}:${dSec}`;
+          if (this.multiData) {
+            this.multiData.last_sync = liveSyncStr;
+            this.multiData.last_sync_iso = liveIsoStr;
+            this.multiData.sync_status = 'ok';
+          }
+          const lastSyncEl = document.getElementById('header-last-sync');
+          if (lastSyncEl) {
+            lastSyncEl.innerText = liveSyncStr;
+          }
+
           if (changed) {
             this.liveNotesCache = {};
             this.updateHeaderInfo();
