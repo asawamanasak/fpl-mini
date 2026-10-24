@@ -10,6 +10,7 @@ import shutil
 import argparse
 import subprocess
 import random
+import threading
 from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor
 
@@ -326,13 +327,17 @@ def check_data_has_changed(cached_data, new_output):
                 cr = c_res.get(eid)
                 if not cr:
                     return True
-                # Check points, hits, net_points, captain, chip, bench_points
+                # Check points, hits, net_points, captain, chip, bench_points, team_value, bank, transfers
                 if (cr.get("points") != nr.get("points") or
                     cr.get("hits") != nr.get("hits") or
                     cr.get("net_points") != nr.get("net_points") or
                     cr.get("captain") != nr.get("captain") or
                     cr.get("chip") != nr.get("chip") or
-                    cr.get("bench_points") != nr.get("bench_points")):
+                    cr.get("bench_points") != nr.get("bench_points") or
+                    cr.get("team_value") != nr.get("team_value") or
+                    cr.get("bank") != nr.get("bank") or
+                    cr.get("transfers_count") != nr.get("transfers_count") or
+                    cr.get("transfers_net_impact") != nr.get("transfers_net_impact")):
                     return True
 
     return False
@@ -491,6 +496,8 @@ def sync_once(args):
         "leagues": {}
     }
 
+    global_picks_cache = {}
+    picks_lock = threading.Lock()
     summary_stats = []
 
     for lid_str, lcfg in leagues_config.items():
@@ -673,7 +680,13 @@ def sync_once(args):
                             hits = hist.get('event_transfers_cost', cached_sq.get("hits", 0))
                             auto_subs = cached_sq.get("auto_subs", [])
                         else:
-                            picks_resp = fetch(f'https://fantasy.premierleague.com/api/entry/{eid}/event/{gw}/picks/')
+                            cache_key = (eid, gw)
+                            with picks_lock:
+                                picks_resp = global_picks_cache.get(cache_key)
+                            if picks_resp is None:
+                                picks_resp = fetch(f'https://fantasy.premierleague.com/api/entry/{eid}/event/{gw}/picks/')
+                                with picks_lock:
+                                    global_picks_cache[cache_key] = picks_resp
                             hist = picks_resp.get('entry_history', {})
                             chip = picks_resp.get('active_chip')
                             hits = hist.get('event_transfers_cost', 0)
@@ -688,8 +701,12 @@ def sync_once(args):
                         # Clone picks so cached_sq['raw_picks'] is never mutated in-place
                         raw_picks = [dict(p) for p in picks]
 
-                        # Identify initial captain
+                        # Identify initial captain and vice-captain
                         cap_pick = next((p for p in raw_picks if p.get('is_captain')), None)
+                        vc_pick = next((p for p in raw_picks if p.get('is_vice_captain')), None)
+                        orig_cap_id = cap_pick['element'] if cap_pick else None
+                        orig_vc_id = vc_pick['element'] if vc_pick else None
+
                         if cap_pick:
                             el_info = elements.get(cap_pick['element'], {})
                             capt_name = el_info.get('web_name', 'Captain')
@@ -717,15 +734,7 @@ def sync_once(args):
                                     s_match_copy['multiplier'] = 0
                                     actual_starters_picks[s_idx] = b_match_copy
                                     actual_bench_picks[b_idx] = s_match_copy
-
-                                    # If the subbed-out player was captain, promote vice-captain
                                     if s_match.get('is_captain'):
-                                        cap_mult = s_match.get('multiplier') if s_match.get('multiplier', 0) >= 2 else default_cap_mult
-                                        vc_pool = actual_starters_picks + (actual_bench_picks if is_bboost else [])
-                                        vc_match = next((p for p in vc_pool if p.get('is_vice_captain')), None)
-                                        if vc_match:
-                                            vc_match['multiplier'] = cap_mult
-                                            vc_match['is_captain'] = True
                                         s_match_copy['is_captain'] = False
                         elif not is_bboost:
                             # 2. Provisional Real-Time Auto-Substitutions during live matches:
@@ -784,40 +793,41 @@ def sync_once(args):
                                                 "element_out": s_eid,
                                                 "is_provisional": True
                                             })
-
                                             if s_pick.get('is_captain'):
-                                                cap_mult = s_pick.get('multiplier') if s_pick.get('multiplier', 0) >= 2 else default_cap_mult
-                                                vc_pool = actual_starters_picks + (actual_bench_picks if is_bboost else [])
-                                                vc_match = next((p for p in vc_pool if p.get('is_vice_captain')), None)
-                                                if vc_match:
-                                                    vc_match['multiplier'] = cap_mult
-                                                    vc_match['is_captain'] = True
                                                 s_copy['is_captain'] = False
                                             break
 
-                        # Also handle case where starting captain played 0 mins and their club's fixture(s) finished
-                        # (or FPL already promoted vice-captain multiplier >= 2), including Bench Boost VC
-                        vc_search_pool = actual_starters_picks + (actual_bench_picks if is_bboost else [])
-                        active_cap = next((p for p in vc_search_pool if p.get('is_captain')), None)
-                        active_vc = next((p for p in vc_search_pool if p.get('is_vice_captain')), None)
-                        if not active_vc and actual_bench_picks:
-                            bench_vc = next((p for p in actual_bench_picks if p.get('is_vice_captain')), None)
-                            if bench_vc and is_bboost:
-                                active_vc = bench_vc
+                        # 3. Robust Captain and Vice-Captain Resolution:
+                        # Evaluated comprehensively across scoring pool after all substitutions run.
+                        scoring_pool = actual_starters_picks + (actual_bench_picks if is_bboost else [])
+                        orig_cap_in_pool = next((p for p in scoring_pool if p['element'] == orig_cap_id), None)
+                        orig_cap_tid = elements.get(orig_cap_id, {}).get('team') if orig_cap_id else None
+                        orig_cap_fixture_fin = this_gw_finished or (orig_cap_tid in gw_finished_teams_map.get(gw, set()))
+                        orig_cap_played_zero = orig_cap_fixture_fin and live_mins_gw.get(orig_cap_id, 0) == 0
 
-                        cap_team_id = elements.get(active_cap['element'], {}).get('team') if active_cap else None
-                        cap_fixture_finished = this_gw_finished or (cap_team_id in gw_finished_teams_map.get(gw, set()))
-                        if active_vc and (
-                            active_vc.get('multiplier', 1) >= 2
-                            or (active_cap and active_cap.get('multiplier') == 0)
-                            or (cap_fixture_finished and active_cap and live_mins_gw.get(active_cap['element'], 0) == 0)
-                        ):
-                            active_vc['multiplier'] = active_vc.get('multiplier') if active_vc.get('multiplier', 1) >= 2 else default_cap_mult
-                            active_vc['is_captain'] = True
-                            if active_cap and active_cap['element'] != active_vc['element']:
-                                active_cap['is_captain'] = False
-                                if active_cap.get('multiplier', 1) > 1:
-                                    active_cap['multiplier'] = 1
+                        active_vc_in_pool = next((p for p in scoring_pool if p['element'] == orig_vc_id), None)
+                        fpl_promoted_vc = active_vc_in_pool and active_vc_in_pool.get('multiplier', 1) >= 2
+                        cap_failed = (orig_cap_in_pool is None) or orig_cap_played_zero or (orig_cap_in_pool.get('multiplier') == 0)
+
+                        if orig_vc_id and active_vc_in_pool and (cap_failed or fpl_promoted_vc):
+                            # Promote Vice-Captain to Captain
+                            active_vc_in_pool['multiplier'] = default_cap_mult
+                            active_vc_in_pool['is_captain'] = True
+                            if orig_cap_in_pool and orig_cap_in_pool['element'] != active_vc_in_pool['element']:
+                                orig_cap_in_pool['is_captain'] = False
+                                if orig_cap_in_pool.get('multiplier', 1) > 1:
+                                    orig_cap_in_pool['multiplier'] = 1
+                            for bp in actual_bench_picks:
+                                if bp['element'] == orig_cap_id:
+                                    bp['is_captain'] = False
+                                    bp['multiplier'] = 0
+                            vc_info = elements.get(orig_vc_id, {})
+                            capt_name = vc_info.get('web_name', 'Captain')
+                        elif orig_cap_in_pool:
+                            orig_cap_in_pool['multiplier'] = default_cap_mult
+                            orig_cap_in_pool['is_captain'] = True
+                            cap_info = elements.get(orig_cap_id, {})
+                            capt_name = cap_info.get('web_name', 'Captain')
 
                         gw_is_fin = gw_status_map.get(gw, False)
                         unstarted_tids = gw_unstarted_teams_map.get(gw, set())
@@ -1193,7 +1203,7 @@ def sync_once(args):
 
         # If data is completely identical to cached data on disk, do not touch files to avoid git churn
         try:
-            if json.dumps(multi_league_output, sort_keys=True) == json.dumps(cached_data, sort_keys=True):
+            if multi_league_output == cached_data:
                 print("   Cached JSON file is already up to date. Preserving file on disk.")
                 elapsed = time.time() - start_time
                 print(f"\n=======================================================")
