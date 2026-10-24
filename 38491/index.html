@@ -3928,12 +3928,10 @@ selectShi62GW(gwName) {
             if (!isPrize) {
               rankBadge = this.getNonPrizeRankBadge();
             } else if (isStarted) {
-              if (team.rank === 1) rankBadge = `<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">${eligibleTopWinners.length > 1 ? 'T1' : '1'}</span>`;
-              else if (team.rank === 2) rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
-              else if (team.rank === 3) rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
-              else rankBadge = `<span class="text-slate-500 font-bold">${team.rank}</span>`;
+              const label = (team.rank === 1 && eligibleTopWinners.length > 1) ? 'T1' : team.rank;
+              rankBadge = this.getRankBadge(team.rank, label);
             } else {
-              rankBadge = `<span class="text-slate-500 font-bold">${rankDisplay}</span>`;
+              rankBadge = this.getRankBadge(rankDisplay, rankDisplay);
             }
 
             let penaltyBadgeHtml = '';
@@ -4070,14 +4068,8 @@ selectShi62GW(gwName) {
             let rankBadge = '';
             if (!isPrize) {
               rankBadge = this.getNonPrizeRankBadge();
-            } else if (team.overall_rank === 1) {
-              rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
-            } else if (team.overall_rank === 2) {
-              rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
-            } else if (team.overall_rank === 3) {
-              rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
             } else {
-              rankBadge = `<span class="text-slate-500 font-bold">${team.overall_rank}</span>`;
+              rankBadge = this.getRankBadge(team.overall_rank);
             }
 
             const rawScore = team.last_gw_raw !== undefined ? team.last_gw_raw : team.last_gw_pts;
@@ -4383,6 +4375,24 @@ selectShi62GW(gwName) {
 
       getNonPrizeRankBadge() {
         return '<span class="w-5 h-5 rounded-full border border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800/80 inline-flex items-center justify-center flex-shrink-0" title="ทีมร่วมสนุก (ไม่นับอันดับ)"></span>';
+      }
+
+      getRankBadge(rank, label = null) {
+        const num = Number(rank);
+        if (num === 1) {
+          const txt = label !== null ? label : '1';
+          return `<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] border border-amber-300 dark:border-amber-300/80 shadow-xs dark:shadow-[0_0_8px_rgba(251,191,36,0.6)] flex-shrink-0">${txt}</span>`;
+        }
+        if (num === 2) {
+          const txt = label !== null ? label : '2';
+          return `<span class="w-5 h-5 rounded-full bg-slate-200 text-slate-950 font-black inline-flex items-center justify-center text-[10px] border border-slate-300 dark:bg-slate-200 dark:text-slate-950 dark:border-slate-100 shadow-xs dark:shadow-[0_0_6px_rgba(226,232,240,0.5)] flex-shrink-0">${txt}</span>`;
+        }
+        if (num === 3) {
+          const txt = label !== null ? label : '3';
+          return `<span class="w-5 h-5 rounded-full bg-amber-700 text-white dark:bg-amber-600 dark:text-amber-50 font-black inline-flex items-center justify-center text-[10px] border border-amber-800 dark:border-amber-400 shadow-xs dark:shadow-[0_0_6px_rgba(217,119,6,0.5)] flex-shrink-0">${txt}</span>`;
+        }
+        const disp = label !== null ? label : (rank || '-');
+        return `<span class="text-slate-500 dark:text-slate-400 font-bold">${disp}</span>`;
       }
 
       renderHighlightsView() {
@@ -5374,14 +5384,8 @@ selectShi62GW(gwName) {
           let rankBadge = '';
           if (!isEligible) {
             rankBadge = this.getNonPrizeRankBadge();
-          } else if (t.leaderboard_rank === 1) {
-            rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
-          } else if (t.leaderboard_rank === 2) {
-            rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
-          } else if (t.leaderboard_rank === 3) {
-            rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 dark:text-amber-300 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
           } else {
-            rankBadge = `<span class="text-slate-500 dark:text-slate-400 font-bold">${t.leaderboard_rank}</span>`;
+            rankBadge = this.getRankBadge(t.leaderboard_rank);
           }
 
           const prizeBadge = this.getPrizeBadge(t.entry_id);
@@ -6413,9 +6417,9 @@ selectShi62GW(gwName) {
                 return `<span class="inline-flex items-center justify-center font-black font-display text-xs ${badgeStyle} px-2 py-0.5 rounded-lg min-w-[24px] shadow-2xs">${disp}</span>`;
               };
 
-              const r1Html = formatTierBadge(r1, 'bg-amber-400 text-slate-950');
-              const r2Html = formatTierBadge(r2, 'bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100');
-              const r3Html = formatTierBadge(r3, 'bg-amber-700/20 text-amber-900 dark:text-amber-200 border border-amber-300/40');
+              const r1Html = formatTierBadge(r1, 'bg-amber-400 text-slate-950 border border-amber-300 dark:border-amber-300/80');
+              const r2Html = formatTierBadge(r2, 'bg-slate-200 text-slate-950 dark:bg-slate-200 dark:text-slate-950 border border-slate-300 dark:border-slate-100');
+              const r3Html = formatTierBadge(r3, 'bg-amber-700 text-white dark:bg-amber-600 dark:text-amber-50 border border-amber-800 dark:border-amber-400');
 
               countCellsHtml = `
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display">${r1Html}</td>
@@ -6911,7 +6915,7 @@ selectShi62GW(gwName) {
             if (!isEligible) {
               rankBadge = this.getNonPrizeRankBadge();
             } else if (isLeader) {
-              rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
+              rankBadge = this.getRankBadge(1);
               if (curMonthIsFinished) {
                 if (leaderCount > 1) {
                   prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600/50 font-display flex-shrink-0">แชมป์ร่วม (หาร ${leaderCount}) ${splitChampDisplay}</span>`;
@@ -6926,7 +6930,7 @@ selectShi62GW(gwName) {
                 }
               }
             } else if (isRunnerUp) {
-              rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
+              rankBadge = this.getRankBadge(2);
               if (curMonthIsFinished) {
                 if (runnerCount > 1) {
                   prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-600/50 font-display flex-shrink-0">รองแชมป์ร่วม (หาร ${runnerCount}) ${splitRunnerDisplay}</span>`;
@@ -6941,7 +6945,7 @@ selectShi62GW(gwName) {
                 }
               }
             } else {
-              rankBadge = `<span class="text-slate-500 font-bold">${t.rank || '-'}</span>`;
+              rankBadge = this.getRankBadge(t.eligible_monthly_rank || t.rank || '-');
             }
 
             let scoreCols = '';
@@ -7363,13 +7367,13 @@ selectShi62GW(gwName) {
               if (r === 1) rowBg = 'bg-amber-50/20 dark:bg-amber-950/10 font-semibold';
               else if (r === eligibleCount) rowBg = 'bg-rose-50/20 dark:bg-rose-950/10 font-semibold';
             } else if (r === 1) {
-              rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">1</span>';
+              rankBadge = this.getRankBadge(1);
               rowBg = 'bg-amber-50/30 dark:bg-amber-950/10 font-semibold';
             } else if (r === 2) {
-              rankBadge = '<span class="w-5 h-5 rounded-full bg-slate-300 text-slate-900 font-black inline-flex items-center justify-center text-[10px] shadow-xs">2</span>';
+              rankBadge = this.getRankBadge(2);
               rowBg = 'bg-slate-50/40 dark:bg-slate-800/20';
             } else if (r === 3) {
-              rankBadge = '<span class="w-5 h-5 rounded-full bg-amber-700/25 text-amber-950 font-black inline-flex items-center justify-center text-[10px] shadow-xs">3</span>';
+              rankBadge = this.getRankBadge(3);
             } else if (r === eligibleCount) {
               rankBadge = `<span class="text-slate-500 font-bold">${r}</span>`;
               rowBg = 'bg-rose-50/30 dark:bg-rose-950/10 font-semibold';
