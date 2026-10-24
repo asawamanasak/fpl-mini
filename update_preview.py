@@ -1302,8 +1302,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <div class="glass-card rounded-2xl p-3.5 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div>
           <div class="flex items-center gap-2 flex-wrap mb-1">
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-              7 ลีก • 151 ทีม
+            <span id="global-radar-header-pill" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+              __RADAR_BANNER_TEXT__
             </span>
           </div>
           <h2 class="text-base sm:text-2xl font-black text-slate-900 dark:text-white font-display tracking-tight">
@@ -7896,6 +7896,7 @@ selectShi62GW(gwName) {
       }
 
       renderGlobalRadarView() {
+        const headerPill = document.getElementById('global-radar-header-pill');
         const recordsContainer = document.getElementById('global-radar-records');
         const benchmarksContainer = document.getElementById('global-radar-league-benchmarks');
         const pillsContainer = document.getElementById('global-radar-league-pills');
@@ -8171,6 +8172,10 @@ selectShi62GW(gwName) {
 
         // Cache team list on instance for fast filtering and searching
         this._radarTeamList = teamList;
+
+        if (headerPill) {
+          headerPill.innerText = `${leagueOrder.length} ลีก • ${teamList.length} ทีม`;
+        }
 
         // Render Record Cards (Mobile: 2x2 grid, Desktop: 4 columns)
         if (recordsContainer) {
@@ -10106,7 +10111,17 @@ selectShi62GW(gwName) {
 </body>
 </html>"""
 
+    unique_entry_ids = set()
+    for l_obj in multi_data.get("leagues", {}).values():
+        for t in l_obj.get("teams", []):
+            if t.get("entry_id"):
+                unique_entry_ids.add(t.get("entry_id"))
+    radar_unique_teams = len(unique_entry_ids) or 135
+    radar_total_leagues = len(multi_data.get("leagues", {})) or 7
+    radar_banner_text = f"{radar_total_leagues} ลีก • {radar_unique_teams} ทีม"
+
     html = html_template.replace('__LAST_SYNC__', last_sync_str)
+    html = html.replace('__RADAR_BANNER_TEXT__', radar_banner_text)
     html = html.replace('__MULTI_DATA_JSON__', multi_data_json_str)
     html = html.replace('__LEAGUES_CONFIG_JSON__', leagues_config_json_str)
     html = html.replace('__SHI62_SPECIAL_DATA_JSON__', shi62_data_json_str)

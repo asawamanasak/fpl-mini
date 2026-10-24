@@ -1245,8 +1245,8 @@
       <div class="glass-card rounded-2xl p-3.5 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div>
           <div class="flex items-center gap-2 flex-wrap mb-1">
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-              7 ลีก • 151 ทีม
+            <span id="global-radar-header-pill" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+              7 ลีก • 135 ทีม
             </span>
           </div>
           <h2 class="text-base sm:text-2xl font-black text-slate-900 dark:text-white font-display tracking-tight">
@@ -7839,6 +7839,7 @@ selectShi62GW(gwName) {
       }
 
       renderGlobalRadarView() {
+        const headerPill = document.getElementById('global-radar-header-pill');
         const recordsContainer = document.getElementById('global-radar-records');
         const benchmarksContainer = document.getElementById('global-radar-league-benchmarks');
         const pillsContainer = document.getElementById('global-radar-league-pills');
@@ -8114,6 +8115,10 @@ selectShi62GW(gwName) {
 
         // Cache team list on instance for fast filtering and searching
         this._radarTeamList = teamList;
+
+        if (headerPill) {
+          headerPill.innerText = `${leagueOrder.length} ลีก • ${teamList.length} ทีม`;
+        }
 
         // Render Record Cards (Mobile: 2x2 grid, Desktop: 4 columns)
         if (recordsContainer) {
