@@ -919,7 +919,7 @@
     </div>
   </div>
 
-    <!-- 1.4 แถบเมนู 5 แท็บหลัก (เปลี่ยน "บอลถ้วย" เป็น "CUP") -->
+    <!-- 1.4 แถบเมนูแท็บหลัก (จัดหมวดหมู่และเรียงลำดับภาษาไทย) -->
     <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 border-t border-slate-200/80">
       <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto touch-scroll no-scrollbar py-1.5 sm:py-2">
         <button 
@@ -927,69 +927,70 @@
           data-tab-target="gameweek-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white active:scale-95 cursor-pointer"
         >
-          LIVE
+          คะแนนสด
         </button>
         <button 
           id="tab-btn-highlights"
           data-tab-target="highlights-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
-          Weekly Highlight
-        </button>
-        <button 
-          id="tab-btn-shi62-special"
-          data-tab-target="shi62-special-view" 
-          class="tab-nav-btn hidden flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
-        >
-          BETA
-        </button>
-        <button 
-          id="tab-btn-competition"
-          data-tab-target="competition-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
-        >
-          Competition
-        </button>
-        <button 
-          id="tab-btn-prizes"
-          data-tab-target="prizes-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
-        >
-          สรุปรางวัล
-        </button>
-        <button 
-          id="tab-btn-hall-of-fame"
-          data-tab-target="hall-of-fame-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
-        >
-          Hall of Fame
+          ไฮไลท์
         </button>
         <button 
           id="tab-btn-global-radar"
           data-tab-target="global-radar-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
-          Consistency Radar
+          เรดาร์ฟอร์ม
+        </button>
+        <button 
+          id="tab-btn-competition"
+          data-tab-target="competition-view" 
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+        >
+          สถานะชิป
+        </button>
+        <button 
+          id="tab-btn-prizes"
+          data-tab-target="prizes-view" 
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+        >
+          เงินรางวัล
         </button>
         <button 
           id="tab-btn-cup"
           data-tab-target="cup-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
-          CUP
+          บอลถ้วย
         </button>
         <button 
+          id="tab-btn-hall-of-fame"
+          data-tab-target="hall-of-fame-view" 
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+        >
+          ทำเนียบแชมป์
+        </button>
+        <button 
+          id="tab-btn-rules"
           data-tab-target="rules-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
-          กติกาของลีก
+          กติกา
         </button>
         <button 
           id="tab-btn-about"
           data-tab-target="about-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
-          About
+          เกี่ยวกับ
+        </button>
+        <button 
+          id="tab-btn-shi62-special"
+          data-tab-target="shi62-special-view" 
+          class="tab-nav-btn hidden flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+        >
+          พิเศษ (BETA)
         </button>
       </nav>
     </div>
