@@ -1,6 +1,6 @@
 {
-  "last_sync": "24 ต.ค. 2026, 18:51 น.",
-  "last_sync_iso": "2026-10-24 18:51:49",
+  "last_sync": "24 ต.ค. 2026, 18:55 น.",
+  "last_sync_iso": "2026-10-24 18:55:03",
   "sync_status": "ok",
   "max_gw": 8,
   "league_order": [
@@ -48710,9 +48710,9 @@
               "entry_id": 4954101,
               "team_name": "Char&Rei Club",
               "player_name": "Jan Puchong",
-              "points": 13,
+              "points": 16,
               "hits": 0,
-              "net_points": 13,
+              "net_points": 16,
               "captain": "Rogers",
               "chip": null,
               "bench_points": 0,
@@ -48781,29 +48781,12 @@
               "transfer_moves": []
             },
             {
-              "entry_id": 197082,
-              "team_name": "Mary Jojibana",
-              "player_name": "Kavinjet Tantitanasap",
-              "points": 9,
-              "hits": 0,
-              "net_points": 9,
-              "captain": "João Pedro",
-              "chip": null,
-              "bench_points": 1,
-              "team_value": 103.2,
-              "bank": 2.0,
-              "transfers_count": 0,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": 0,
-              "transfer_moves": []
-            },
-            {
               "entry_id": 2753018,
               "team_name": "DekHuaLimp",
               "player_name": "เด็กหัวหลิม ดื้อมากกกกกกก",
-              "points": 9,
+              "points": 11,
               "hits": 0,
-              "net_points": 9,
+              "net_points": 11,
               "captain": "Cherki",
               "chip": null,
               "bench_points": 10,
@@ -48818,9 +48801,9 @@
               "entry_id": 4763492,
               "team_name": "ColeRogers",
               "player_name": "Thanwa Lujintanon",
-              "points": 7,
+              "points": 10,
               "hits": 0,
-              "net_points": 7,
+              "net_points": 10,
               "captain": "João Pedro",
               "chip": null,
               "bench_points": 0,
@@ -48840,6 +48823,23 @@
               ]
             },
             {
+              "entry_id": 197082,
+              "team_name": "Mary Jojibana",
+              "player_name": "Kavinjet Tantitanasap",
+              "points": 9,
+              "hits": 0,
+              "net_points": 9,
+              "captain": "João Pedro",
+              "chip": null,
+              "bench_points": 1,
+              "team_value": 103.2,
+              "bank": 2.0,
+              "transfers_count": 0,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": 0,
+              "transfer_moves": []
+            },
+            {
               "entry_id": 3181562,
               "team_name": "SLA",
               "player_name": "Boom Paka",
@@ -48848,7 +48848,7 @@
               "net_points": 6,
               "captain": "Gibbs-White",
               "chip": null,
-              "bench_points": 5,
+              "bench_points": 8,
               "team_value": 101.4,
               "bank": 3.0,
               "transfers_count": 2,
@@ -49080,7 +49080,7 @@
               "net_points": 4,
               "captain": "Haaland",
               "chip": null,
-              "bench_points": 5,
+              "bench_points": 8,
               "team_value": 102.1,
               "bank": 0.1,
               "transfers_count": 0,
@@ -203047,8 +203047,8 @@
               "pos": "FWD",
               "team": "AVL",
               "team_code": 7,
-              "points": 5,
-              "raw_points": 5,
+              "points": 8,
+              "raw_points": 8,
               "multiplier": 1,
               "is_captain": false,
               "is_vice": false,
@@ -207807,8 +207807,8 @@
               "pos": "FWD",
               "team": "AVL",
               "team_code": 7,
-              "points": 5,
-              "raw_points": 5,
+              "points": 8,
+              "raw_points": 8,
               "multiplier": 1,
               "is_captain": false,
               "is_vice": false,
@@ -210913,8 +210913,8 @@
               "pos": "FWD",
               "team": "AVL",
               "team_code": 7,
-              "points": 5,
-              "raw_points": 5,
+              "points": 8,
+              "raw_points": 8,
               "multiplier": 1,
               "is_captain": false,
               "is_vice": false,
@@ -212859,8 +212859,8 @@
               "pos": "MID",
               "team": "AVL",
               "team_code": 7,
-              "points": 4,
-              "raw_points": 4,
+              "points": 6,
+              "raw_points": 6,
               "multiplier": 1,
               "is_captain": false,
               "is_vice": false,
@@ -213595,8 +213595,8 @@
               "pos": "FWD",
               "team": "AVL",
               "team_code": 7,
-              "points": 5,
-              "raw_points": 5,
+              "points": 8,
+              "raw_points": 8,
               "multiplier": 1,
               "is_captain": false,
               "is_vice": false,
@@ -218716,9 +218716,9 @@
               "entry_id": 7669033,
               "team_name": "Panot's Team",
               "player_name": "Panot Udomsup",
-              "points": 17,
+              "points": 19,
               "hits": 0,
-              "net_points": 17,
+              "net_points": 19,
               "captain": "Haaland",
               "chip": null,
               "bench_points": 0,
@@ -259591,8 +259591,8 @@
               "pos": "MID",
               "team": "AVL",
               "team_code": 7,
-              "points": 4,
-              "raw_points": 4,
+              "points": 6,
+              "raw_points": 6,
               "multiplier": 1,
               "is_captain": false,
               "is_vice": false,
@@ -267739,7 +267739,7 @@
               "net_points": 2,
               "captain": "João Pedro",
               "chip": null,
-              "bench_points": 4,
+              "bench_points": 6,
               "team_value": 103.0,
               "bank": 2.0,
               "transfers_count": 1,
@@ -267789,7 +267789,7 @@
               "net_points": -1,
               "captain": "Haaland",
               "chip": null,
-              "bench_points": 1,
+              "bench_points": 2,
               "team_value": 102.5,
               "bank": 0.8,
               "transfers_count": 2,
@@ -310035,8 +310035,8 @@
               "pos": "MID",
               "team": "AVL",
               "team_code": 7,
-              "points": 4,
-              "raw_points": 4,
+              "points": 6,
+              "raw_points": 6,
               "multiplier": 1,
               "is_captain": false,
               "is_vice": false,
@@ -313429,8 +313429,8 @@
               "pos": "GKP",
               "team": "AVL",
               "team_code": 7,
-              "points": 1,
-              "raw_points": 1,
+              "points": 2,
+              "raw_points": 2,
               "multiplier": 1,
               "is_captain": false,
               "is_vice": false,
@@ -356472,6 +356472,63 @@
               ]
             },
             {
+              "entry_id": 1312974,
+              "team_name": "Emery's Revenge",
+              "player_name": "Rati Leetrakul",
+              "points": 10,
+              "hits": 4,
+              "net_points": 6,
+              "captain": "João Pedro",
+              "chip": null,
+              "bench_points": 3,
+              "team_value": 102.2,
+              "bank": 0.0,
+              "transfers_count": 2,
+              "transfers_pts_gain": 0,
+              "transfers_net_impact": -4,
+              "transfer_moves": [
+                {
+                  "in": "Bassey",
+                  "in_pts": 0,
+                  "out": "Ajayi",
+                  "out_pts": 0,
+                  "net": 0
+                },
+                {
+                  "in": "Foden",
+                  "in_pts": 0,
+                  "out": "Ødegaard",
+                  "out_pts": 0,
+                  "net": 0
+                }
+              ]
+            },
+            {
+              "entry_id": 1153245,
+              "team_name": "The Cannon",
+              "player_name": "Kasidit Boonyawat",
+              "points": 5,
+              "hits": 0,
+              "net_points": 5,
+              "captain": "João Pedro",
+              "chip": null,
+              "bench_points": 0,
+              "team_value": 103.5,
+              "bank": 4.5,
+              "transfers_count": 1,
+              "transfers_pts_gain": 1,
+              "transfers_net_impact": 1,
+              "transfer_moves": [
+                {
+                  "in": "Manzambi",
+                  "in_pts": 1,
+                  "out": "Szoboszlai",
+                  "out_pts": 0,
+                  "net": 1
+                }
+              ]
+            },
+            {
               "entry_id": 837763,
               "team_name": "Oöraora Grandé",
               "player_name": "Patrick Oo",
@@ -356518,31 +356575,6 @@
                   "out": "Wissa",
                   "out_pts": 0,
                   "net": 0
-                }
-              ]
-            },
-            {
-              "entry_id": 1153245,
-              "team_name": "The Cannon",
-              "player_name": "Kasidit Boonyawat",
-              "points": 4,
-              "hits": 0,
-              "net_points": 4,
-              "captain": "João Pedro",
-              "chip": null,
-              "bench_points": 0,
-              "team_value": 103.5,
-              "bank": 4.5,
-              "transfers_count": 1,
-              "transfers_pts_gain": 1,
-              "transfers_net_impact": 1,
-              "transfer_moves": [
-                {
-                  "in": "Manzambi",
-                  "in_pts": 1,
-                  "out": "Szoboszlai",
-                  "out_pts": 0,
-                  "net": 1
                 }
               ]
             },
@@ -356615,38 +356647,6 @@
                   "in": "Palmer",
                   "in_pts": 0,
                   "out": "Saka",
-                  "out_pts": 0,
-                  "net": 0
-                }
-              ]
-            },
-            {
-              "entry_id": 1312974,
-              "team_name": "Emery's Revenge",
-              "player_name": "Rati Leetrakul",
-              "points": 7,
-              "hits": 4,
-              "net_points": 3,
-              "captain": "João Pedro",
-              "chip": null,
-              "bench_points": 2,
-              "team_value": 102.2,
-              "bank": 0.0,
-              "transfers_count": 2,
-              "transfers_pts_gain": 0,
-              "transfers_net_impact": -4,
-              "transfer_moves": [
-                {
-                  "in": "Bassey",
-                  "in_pts": 0,
-                  "out": "Ajayi",
-                  "out_pts": 0,
-                  "net": 0
-                },
-                {
-                  "in": "Foden",
-                  "in_pts": 0,
-                  "out": "Ødegaard",
                   "out_pts": 0,
                   "net": 0
                 }
@@ -389918,8 +389918,8 @@
               "pos": "GKP",
               "team": "AVL",
               "team_code": 7,
-              "points": 1,
-              "raw_points": 1,
+              "points": 2,
+              "raw_points": 2,
               "multiplier": 1,
               "is_captain": false,
               "is_vice": false,
@@ -391074,8 +391074,8 @@
               "pos": "FWD",
               "team": "AVL",
               "team_code": 7,
-              "points": 5,
-              "raw_points": 5,
+              "points": 8,
+              "raw_points": 8,
               "multiplier": 1,
               "is_captain": false,
               "is_vice": true,
@@ -391089,8 +391089,8 @@
               "pos": "GKP",
               "team": "AVL",
               "team_code": 7,
-              "points": 1,
-              "raw_points": 1,
+              "points": 2,
+              "raw_points": 2,
               "multiplier": 1,
               "is_captain": false,
               "is_vice": false,
@@ -397623,7 +397623,7 @@
               "net_points": 8,
               "captain": "João Pedro",
               "chip": null,
-              "bench_points": 1,
+              "bench_points": 2,
               "team_value": 101.9,
               "bank": 0.3,
               "transfers_count": 1,
@@ -451611,8 +451611,8 @@
               "pos": "GKP",
               "team": "AVL",
               "team_code": 7,
-              "points": 1,
-              "raw_points": 1,
+              "points": 2,
+              "raw_points": 2,
               "multiplier": 1,
               "is_captain": false,
               "is_vice": false,
@@ -452831,7 +452831,7 @@
   },
   "transfer_suggestions": {
     "gw": 9,
-    "updated_at": "2026-10-24T11:51:51.426397+00:00",
+    "updated_at": "2026-10-24T11:52:59.011983+00:00",
     "GoalKeepers": [
       {
         "GoodPlayer": {
@@ -452845,7 +452845,7 @@
           "PercentMinutesRecentMatches": 100,
           "FplPlayerPosition": 1,
           "Cost": 5,
-          "ExpectedPoints": 3.8139954532537654
+          "ExpectedPoints": 3.87991452991453
         },
         "ValuePlayer": {
           "Id": 572,
@@ -452886,7 +452886,7 @@
           "PercentMinutesRecentMatches": 100,
           "FplPlayerPosition": 1,
           "Cost": 5,
-          "ExpectedPoints": 3.8139954532537654
+          "ExpectedPoints": 3.87991452991453
         }
       }
     ],
@@ -452934,17 +452934,17 @@
           "ExpectedPoints": 3.311388888888889
         },
         "ValuePlayer": {
-          "Id": 4,
-          "PlayerValue": 0.5,
-          "PlayerWebName": "Gabriel",
-          "TeamName": "ARS",
+          "Id": 388,
+          "PlayerValue": 0.7,
+          "PlayerWebName": "Guéhi",
+          "TeamName": "MCI",
           "Difficulty": 0,
           "ChanceOfPlaying": 100,
           "MinutesLastMatch": 90,
           "PercentMinutesRecentMatches": 100,
           "FplPlayerPosition": 2,
-          "Cost": 7.9,
-          "ExpectedPoints": 3.9041666666666663
+          "Cost": 6,
+          "ExpectedPoints": 3.916666666666666
         }
       },
       {
@@ -452962,17 +452962,17 @@
           "ExpectedPoints": 3.315277777777778
         },
         "ValuePlayer": {
-          "Id": 388,
-          "PlayerValue": 0.6,
-          "PlayerWebName": "Guéhi",
-          "TeamName": "MCI",
+          "Id": 4,
+          "PlayerValue": 0.5,
+          "PlayerWebName": "Gabriel",
+          "TeamName": "ARS",
           "Difficulty": 0,
           "ChanceOfPlaying": 100,
           "MinutesLastMatch": 90,
           "PercentMinutesRecentMatches": 100,
           "FplPlayerPosition": 2,
-          "Cost": 6,
-          "ExpectedPoints": 3.8249999999999997
+          "Cost": 7.9,
+          "ExpectedPoints": 3.9041666666666663
         }
       },
       {
@@ -453101,7 +453101,7 @@
           "PercentMinutesRecentMatches": 98,
           "FplPlayerPosition": 3,
           "Cost": 5,
-          "ExpectedPoints": 3.5583333333333327
+          "ExpectedPoints": 3.616666666666667
         },
         "ValuePlayer": {
           "Id": 480,
@@ -453187,7 +453187,7 @@
           "PercentMinutesRecentMatches": 88,
           "FplPlayerPosition": 4,
           "Cost": 6.6,
-          "ExpectedPoints": 4.417078189300412
+          "ExpectedPoints": 4.4828626066490145
         },
         "ValuePlayer": {
           "Id": 411,
@@ -453200,7 +453200,7 @@
           "PercentMinutesRecentMatches": 98,
           "FplPlayerPosition": 4,
           "Cost": 15.7,
-          "ExpectedPoints": 8.688333333333334
+          "ExpectedPoints": 8.88
         }
       },
       {
