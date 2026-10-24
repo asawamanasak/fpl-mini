@@ -2375,6 +2375,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           this.switchTab(this.activeTab, true);
         }
         this.initVisitorCounter();
+        this.initLivePolling();
 
         // Listen for browser Back/Forward navigation
         if (typeof window !== 'undefined' && window.addEventListener) {
@@ -2396,6 +2397,245 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             } catch (e) {}
           });
         }
+      }
+
+      initLivePolling() {
+        if (typeof window === 'undefined' || typeof fetch === 'undefined') return;
+
+        const checkAndPoll = () => {
+          if (!document.hidden && this.isLiveWindowActive()) {
+            this.fetchLivePoints();
+          }
+        };
+
+        // Visibility listener to save device battery and bandwidth
+        document.addEventListener('visibilitychange', checkAndPoll);
+
+        // Fetch immediately on load if matchday is active or awaiting official data_checked confirmation
+        if (this.isLiveWindowActive()) {
+          checkAndPoll();
+
+          if (this.livePollInterval) clearInterval(this.livePollInterval);
+          this.livePollInterval = setInterval(checkAndPoll, 30000);
+        }
+      }
+
+      isLiveWindowActive() {
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || 8;
+        const gwData = this.data && this.data.gameweeks ? this.data.gameweeks[String(maxGW)] : null;
+        return Boolean(gwData && (!gwData.is_finished || !gwData.data_checked));
+      }
+
+      async fetchLivePoints() {
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || 8;
+        const gwKey = String(maxGW);
+        const gwData = this.data && this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
+        if (!gwData || (gwData.is_finished && gwData.data_checked)) return;
+
+        const relayUrl = `https://fpl-live-relay.asawamanasak.workers.dev/?event=${maxGW}`;
+
+        try {
+          const resp = await fetch(relayUrl, { cache: 'no-store' });
+          if (!resp.ok) return;
+          const liveJson = await resp.json();
+          if (!liveJson || !Array.isArray(liveJson.elements)) return;
+
+          const changed = this.applyLiveElements(liveJson, maxGW);
+
+          if (changed) {
+            this.liveNotesCache = {};
+            this.updateHeaderInfo();
+            this.renderAll();
+
+            // If team modal is currently open, refresh it live
+            const modal = document.getElementById('team-modal');
+            if (modal && !modal.classList.contains('hidden') && this.currentModalEntryId) {
+              this.openTeamModal(this.currentModalEntryId);
+            }
+          }
+        } catch (err) {
+          console.warn('Live fetch notice:', err);
+        }
+      }
+
+      applyLiveElements(liveJson, gw) {
+        if (!liveJson || !Array.isArray(liveJson.elements)) return false;
+
+        // 1. Identify all fixture IDs that have kicked off in this Gameweek
+        const startedFixtures = new Set();
+        liveJson.elements.forEach(el => {
+          if (el && el.stats && (Number(el.stats.minutes) > 0 || Boolean(el.stats.played) || Number(el.stats.starts) > 0)) {
+            if (Array.isArray(el.explain)) {
+              el.explain.forEach(ex => {
+                if (ex && ex.fixture !== undefined && ex.fixture !== null) {
+                  startedFixtures.add(ex.fixture);
+                }
+              });
+            }
+          }
+        });
+
+        // 2. Build live stats lookup map by player element ID
+        const liveMap = {};
+        liveJson.elements.forEach(el => {
+          if (el && el.id && el.stats) {
+            const mins = Number(el.stats.minutes) || 0;
+            const played = Boolean(el.stats.played || mins > 0);
+            const explainArr = Array.isArray(el.explain) ? el.explain : [];
+            const hasFixtures = explainArr.length > 0;
+            const fixtureStarted = played || explainArr.some(ex => ex && startedFixtures.has(ex.fixture));
+            liveMap[el.id] = {
+              total_points: Number(el.stats.total_points) || 0,
+              minutes: mins,
+              played: played,
+              has_fixtures: hasFixtures,
+              fixture_started: fixtureStarted
+            };
+          }
+        });
+
+        const gwKey = String(gw);
+        const anyMatchStarted = startedFixtures.size > 0;
+        let anyChange = false;
+        const nameToPts = {};
+
+        const leaguesObj = (this.multiData && this.multiData.leagues) ? this.multiData.leagues : {};
+        Object.values(leaguesObj).forEach(league => {
+          const gwData = (league.gameweeks || {})[gwKey];
+          if (!gwData) return;
+
+          if (anyMatchStarted && !gwData.is_started) {
+            gwData.is_started = true;
+            anyChange = true;
+          }
+
+          const squads = league.squads || {};
+          const teams = league.teams || [];
+          const results = gwData.results || [];
+
+          teams.forEach(t => {
+            const eid = Number(t.entry_id);
+            const sKey = `${eid}_${gw}`;
+            const squad = squads[sKey];
+            if (!squad) return;
+
+            let teamLivePoints = 0;
+            if (Array.isArray(squad.starting)) {
+              squad.starting.forEach(p => {
+                const liveStat = liveMap[p.id];
+                if (liveStat) {
+                  const rawPts = liveStat.total_points;
+                  const mult = Number(p.multiplier) || 1;
+                  const pts = rawPts * mult;
+                  const notPlayed = Boolean(!gwData.is_finished && liveStat.has_fixtures && !liveStat.fixture_started);
+                  if (p.points !== pts || p.not_played_yet !== notPlayed) anyChange = true;
+                  p.points = pts;
+                  p.raw_points = rawPts;
+                  p.minutes = liveStat.minutes;
+                  p.not_played_yet = notPlayed;
+                  if (p.name) nameToPts[p.name] = rawPts;
+                  if (liveStat.fixture_started && p.team && Array.isArray(gwData.unstarted_teams)) {
+                    const utIdx = gwData.unstarted_teams.indexOf(p.team);
+                    if (utIdx !== -1) {
+                      gwData.unstarted_teams.splice(utIdx, 1);
+                      anyChange = true;
+                    }
+                  }
+                  teamLivePoints += pts;
+                }
+              });
+            }
+
+            let benchLivePoints = 0;
+            if (Array.isArray(squad.bench)) {
+              squad.bench.forEach(p => {
+                const liveStat = liveMap[p.id];
+                if (liveStat) {
+                  const rawPts = liveStat.total_points;
+                  const notPlayed = Boolean(!gwData.is_finished && liveStat.has_fixtures && !liveStat.fixture_started);
+                  if (p.points !== rawPts || p.not_played_yet !== notPlayed) anyChange = true;
+                  p.points = rawPts;
+                  p.raw_points = rawPts;
+                  p.minutes = liveStat.minutes;
+                  p.not_played_yet = notPlayed;
+                  if (p.name) nameToPts[p.name] = rawPts;
+                  if (liveStat.fixture_started && p.team && Array.isArray(gwData.unstarted_teams)) {
+                    const utIdx = gwData.unstarted_teams.indexOf(p.team);
+                    if (utIdx !== -1) {
+                      gwData.unstarted_teams.splice(utIdx, 1);
+                      anyChange = true;
+                    }
+                  }
+                  benchLivePoints += rawPts;
+                }
+              });
+            }
+
+            const chip = squad.chip;
+            const isBBoost = (chip === 'bboost' || chip === 'bench_boost');
+            if (isBBoost) {
+              teamLivePoints += benchLivePoints;
+            }
+            const benchDispPoints = isBBoost ? 0 : benchLivePoints;
+
+            const res = results.find(r => Number(r.entry_id) === eid);
+            if (res) {
+              const hits = Number(res.hits) || 0;
+              const netPts = teamLivePoints - hits;
+              if (res.points !== teamLivePoints || res.net_points !== netPts || res.bench_points !== benchDispPoints) {
+                anyChange = true;
+              }
+              res.points = teamLivePoints;
+              res.net_points = netPts;
+              res.bench_points = benchDispPoints;
+            }
+          });
+
+          // Collect player name->points across all squads in league for transfer_moves lookup fallback
+          Object.keys(squads).forEach(sk => {
+            const sqObj = squads[sk];
+            if (!sqObj) return;
+            (sqObj.starting || []).concat(sqObj.bench || []).forEach(p => {
+              if (p && p.id && p.name && liveMap[p.id] && nameToPts[p.name] === undefined) {
+                nameToPts[p.name] = liveMap[p.id].total_points;
+              }
+            });
+          });
+
+          // Recalculate live transfer moves and net impact for each team
+          results.forEach(res => {
+            if (Array.isArray(res.transfer_moves) && res.transfer_moves.length > 0) {
+              let ptsGain = 0;
+              res.transfer_moves.forEach(m => {
+                const inPts = (m.in_id && liveMap[m.in_id]) ? liveMap[m.in_id].total_points : (nameToPts[m.in] !== undefined ? nameToPts[m.in] : (Number(m.in_pts) || 0));
+                const outPts = (m.out_id && liveMap[m.out_id]) ? liveMap[m.out_id].total_points : (nameToPts[m.out] !== undefined ? nameToPts[m.out] : (Number(m.out_pts) || 0));
+                const moveNet = inPts - outPts;
+                if (m.in_pts !== inPts || m.out_pts !== outPts || m.net !== moveNet) {
+                  anyChange = true;
+                }
+                m.in_pts = inPts;
+                m.out_pts = outPts;
+                m.net = moveNet;
+                ptsGain += moveNet;
+              });
+              const hits = Number(res.hits) || 0;
+              const netImpact = ptsGain - hits;
+              if (res.transfers_pts_gain !== ptsGain || res.transfers_net_impact !== netImpact) {
+                anyChange = true;
+              }
+              res.transfers_pts_gain = ptsGain;
+              res.transfers_net_impact = netImpact;
+            }
+          });
+
+          // Re-sort results descending
+          results.sort((a, b) => (b.net_points - a.net_points) || (a.hits - b.hits));
+          results.forEach((r, idx) => {
+            r.rank = idx + 1;
+          });
+        });
+
+        return anyChange;
       }
 
       initTheme() {
@@ -4639,7 +4879,7 @@ selectShi62GW(gwName) {
 
           const currentMaxGW = Number(this.multiData && this.multiData.max_gw) || 1;
           let rankDiffs = [];
-          if (this.selectedGW === currentMaxGW && this.data.teams && this.data.teams.some(t => t.last_rank && t.rank)) {
+          if (Boolean(gwData.data_checked) && this.selectedGW === currentMaxGW && this.data.teams && this.data.teams.some(t => t.last_rank && t.rank)) {
             rankDiffs = results.map(r => {
               const tm = teamsMetaMap[r.entry_id] || {};
               const pR = (tm.last_rank !== undefined && tm.last_rank !== null) ? tm.last_rank : results.length;
@@ -8652,6 +8892,7 @@ selectShi62GW(gwName) {
 
       openTeamModal(entryId) {
         const entryIdNum = Number(entryId);
+        this.currentModalEntryId = entryIdNum;
         let teamObj = (this.data.teams || []).find(t => Number(t.entry_id) === entryIdNum);
         if (!teamObj && this.multiData && this.multiData.leagues) {
           for (const l of Object.values(this.multiData.leagues)) {
@@ -8867,6 +9108,7 @@ selectShi62GW(gwName) {
       }
 
       closeTeamModal() {
+        this.currentModalEntryId = null;
         const modal = document.getElementById('team-modal');
         if (modal) {
           modal.classList.add('hidden');

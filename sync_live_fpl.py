@@ -252,7 +252,7 @@ def atomic_json_dump(data, file_path, create_backup=True):
     temp_path = f"{file_path}.tmp.{os.getpid()}_{time.time_ns()}"
     try:
         with open(temp_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
+            json.dump(data, f, ensure_ascii=False, separators=(',', ':'))
         if create_backup and os.path.exists(file_path):
             bak_path = f"{file_path}.bak"
             bak_tmp = f"{bak_path}.tmp.{os.getpid()}_{time.time_ns()}"
@@ -624,7 +624,10 @@ def sync_once(args):
                             continue
                         if eid in cached_res_map and s_key in cached_squads:
                             gameweeks_dict[str(gw)]["results"].append(cached_res_map[eid])
-                            squads_dict[s_key] = cached_squads.get(s_key)
+                            c_sq_obj = cached_squads.get(s_key)
+                            if gw < max_gw and gw_fully_finalized and isinstance(c_sq_obj, dict):
+                                c_sq_obj = {k: v for k, v in c_sq_obj.items() if k not in ("raw_picks", "raw_hist")}
+                            squads_dict[s_key] = c_sq_obj
                         else:
                             teams_to_fetch_gw.append(t_obj)
                             
@@ -924,16 +927,18 @@ def sync_once(args):
                             "transfers_count": event_tx
                         }
 
+                        is_settled_past_gw = bool(gw < max_gw and this_gw_finished and this_gw_checked)
                         squad_item = {
                             "starting": starters,
                             "bench": bench,
                             "auto_subs": final_auto_subs,
-                            "raw_picks": raw_picks,
-                            "raw_hist": hist,
                             "chip": chip,
                             "hits": hits,
                             "final_checked": bool(this_gw_finished and this_gw_checked)
                         }
+                        if not is_settled_past_gw:
+                            squad_item["raw_picks"] = raw_picks
+                            squad_item["raw_hist"] = hist
                         return (gw, eid, result_item, squad_item)
                     except Exception as err:
                         print(f"Error {eid} GW {gw}: {err}")
@@ -1061,8 +1066,10 @@ def sync_once(args):
                                     m_out_pts = gw_live.get(m_out_id, 0) if (gw_live and m_out_id) else 0
                                     moves.append({
                                         "in": m_in_name,
+                                        "in_id": m_in_id,
                                         "in_pts": m_in_pts,
                                         "out": m_out_name,
+                                        "out_id": m_out_id,
                                         "out_pts": m_out_pts,
                                         "net": m_in_pts - m_out_pts
                                     })
@@ -1283,7 +1290,7 @@ def main():
     has_changed, in_play_count, max_gw = sync_once(args)
 
     is_ci = os.environ.get("GITHUB_ACTIONS") == "true"
-    should_loop = args.live_loop or is_ci
+    should_loop = args.live_loop
     should_push = args.push or is_ci
 
     if not should_loop:
