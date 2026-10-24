@@ -1,6 +1,6 @@
 {
-  "last_sync": "24 ต.ค. 2026, 21:54 น.",
-  "last_sync_iso": "2026-10-24 21:54:52",
+  "last_sync": "24 ต.ค. 2026, 22:01 น.",
+  "last_sync_iso": "2026-10-24 22:01:16",
   "sync_status": "ok",
   "max_gw": 8,
   "league_order": [
@@ -452839,7 +452839,7 @@
   },
   "transfer_suggestions": {
     "gw": 9,
-    "updated_at": "2026-10-24T14:54:55.059461+00:00",
+    "updated_at": "2026-10-24T15:01:19.071080+00:00",
     "GoalKeepers": [
       {
         "GoodPlayer": {
@@ -452853,20 +452853,20 @@
           "PercentMinutesRecentMatches": 100,
           "FplPlayerPosition": 1,
           "Cost": 5,
-          "ExpectedPoints": 4.044444444444445
+          "ExpectedPoints": 3.87991452991453
         },
         "ValuePlayer": {
-          "Id": 597,
+          "Id": 572,
           "PlayerValue": 0.8,
-          "PlayerWebName": "Suzuki",
-          "TeamName": "AVL",
+          "PlayerWebName": "Tzolakis",
+          "TeamName": "HUL",
           "Difficulty": 0,
           "ChanceOfPlaying": 100,
           "MinutesLastMatch": 90,
           "PercentMinutesRecentMatches": 100,
           "FplPlayerPosition": 1,
-          "Cost": 5,
-          "ExpectedPoints": 4.044444444444445
+          "Cost": 4.7,
+          "ExpectedPoints": 3.991944444444445
         }
       },
       {
@@ -452884,17 +452884,17 @@
           "ExpectedPoints": 3.991944444444445
         },
         "ValuePlayer": {
-          "Id": 572,
+          "Id": 597,
           "PlayerValue": 0.8,
-          "PlayerWebName": "Tzolakis",
-          "TeamName": "HUL",
+          "PlayerWebName": "Suzuki",
+          "TeamName": "AVL",
           "Difficulty": 0,
           "ChanceOfPlaying": 100,
           "MinutesLastMatch": 90,
           "PercentMinutesRecentMatches": 100,
           "FplPlayerPosition": 1,
-          "Cost": 4.7,
-          "ExpectedPoints": 3.991944444444445
+          "Cost": 5,
+          "ExpectedPoints": 3.87991452991453
         }
       }
     ],
@@ -452952,7 +452952,7 @@
           "PercentMinutesRecentMatches": 100,
           "FplPlayerPosition": 2,
           "Cost": 7.9,
-          "ExpectedPoints": 3.8277777777777784
+          "ExpectedPoints": 3.9041666666666663
         }
       },
       {
@@ -453043,17 +453043,17 @@
     "Midfielders": [
       {
         "GoodPlayer": {
-          "Id": 45,
+          "Id": 286,
           "PlayerValue": 0.8,
-          "PlayerWebName": "McGinn",
-          "TeamName": "AVL",
+          "PlayerWebName": "Belloumi",
+          "TeamName": "HUL",
           "Difficulty": 0,
           "ChanceOfPlaying": 100,
-          "MinutesLastMatch": 65,
-          "PercentMinutesRecentMatches": 83,
+          "MinutesLastMatch": 90,
+          "PercentMinutesRecentMatches": 75,
           "FplPlayerPosition": 3,
-          "Cost": 5.4,
-          "ExpectedPoints": 4.299166666666667
+          "Cost": 5.2,
+          "ExpectedPoints": 4.236363636363636
         },
         "ValuePlayer": {
           "Id": 426,
@@ -453071,17 +453071,17 @@
       },
       {
         "GoodPlayer": {
-          "Id": 47,
-          "PlayerValue": 0.8,
-          "PlayerWebName": "Kamara",
+          "Id": 45,
+          "PlayerValue": 0.7,
+          "PlayerWebName": "McGinn",
           "TeamName": "AVL",
           "Difficulty": 0,
           "ChanceOfPlaying": 100,
-          "MinutesLastMatch": 90,
-          "PercentMinutesRecentMatches": 98,
+          "MinutesLastMatch": 65,
+          "PercentMinutesRecentMatches": 83,
           "FplPlayerPosition": 3,
-          "Cost": 5,
-          "ExpectedPoints": 3.772222222222222
+          "Cost": 5.4,
+          "ExpectedPoints": 4.038272126072886
         },
         "ValuePlayer": {
           "Id": 154,
@@ -453099,17 +453099,17 @@
       },
       {
         "GoodPlayer": {
-          "Id": 286,
-          "PlayerValue": 0.8,
-          "PlayerWebName": "Belloumi",
-          "TeamName": "HUL",
+          "Id": 47,
+          "PlayerValue": 0.7,
+          "PlayerWebName": "Kamara",
+          "TeamName": "AVL",
           "Difficulty": 0,
           "ChanceOfPlaying": 100,
           "MinutesLastMatch": 90,
-          "PercentMinutesRecentMatches": 75,
+          "PercentMinutesRecentMatches": 98,
           "FplPlayerPosition": 3,
-          "Cost": 5.2,
-          "ExpectedPoints": 4.236363636363636
+          "Cost": 5,
+          "ExpectedPoints": 3.616666666666667
         },
         "ValuePlayer": {
           "Id": 480,
@@ -453186,7 +453186,7 @@
       {
         "GoodPlayer": {
           "Id": 166,
-          "PlayerValue": 0.8,
+          "PlayerValue": 0.7,
           "PlayerWebName": "N.Jackson",
           "TeamName": "AVL",
           "Difficulty": 0,
@@ -453195,7 +453195,7 @@
           "PercentMinutesRecentMatches": 87,
           "FplPlayerPosition": 4,
           "Cost": 6.6,
-          "ExpectedPoints": 5.277240448799887
+          "ExpectedPoints": 4.4828626066490145
         },
         "ValuePlayer": {
           "Id": 411,
@@ -453208,7 +453208,7 @@
           "PercentMinutesRecentMatches": 98,
           "FplPlayerPosition": 4,
           "Cost": 15.7,
-          "ExpectedPoints": 9.08
+          "ExpectedPoints": 8.88
         }
       },
       {
@@ -453226,17 +453226,17 @@
           "ExpectedPoints": 4.326755852842808
         },
         "ValuePlayer": {
-          "Id": 166,
-          "PlayerValue": 0.8,
-          "PlayerWebName": "N.Jackson",
-          "TeamName": "AVL",
+          "Id": 401,
+          "PlayerValue": 0.6,
+          "PlayerWebName": "Marmoush",
+          "TeamName": "TOT",
           "Difficulty": 0,
           "ChanceOfPlaying": 100,
-          "MinutesLastMatch": 81,
-          "PercentMinutesRecentMatches": 87,
+          "MinutesLastMatch": 86,
+          "PercentMinutesRecentMatches": 80,
           "FplPlayerPosition": 4,
-          "Cost": 6.6,
-          "ExpectedPoints": 5.277240448799887
+          "Cost": 7,
+          "ExpectedPoints": 4.5271231658514886
         }
       },
       {
@@ -453254,17 +453254,17 @@
           "ExpectedPoints": 3.846886210360167
         },
         "ValuePlayer": {
-          "Id": 401,
+          "Id": 165,
           "PlayerValue": 0.6,
-          "PlayerWebName": "Marmoush",
-          "TeamName": "TOT",
+          "PlayerWebName": "João Pedro",
+          "TeamName": "CHE",
           "Difficulty": 0,
           "ChanceOfPlaying": 100,
-          "MinutesLastMatch": 86,
-          "PercentMinutesRecentMatches": 80,
+          "MinutesLastMatch": 90,
+          "PercentMinutesRecentMatches": 76,
           "FplPlayerPosition": 4,
-          "Cost": 7,
-          "ExpectedPoints": 4.5271231658514886
+          "Cost": 7.9,
+          "ExpectedPoints": 4.5195318110010065
         }
       }
     ]
