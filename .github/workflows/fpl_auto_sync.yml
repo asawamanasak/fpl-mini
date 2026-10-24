@@ -53,6 +53,20 @@ jobs:
             echo "No changes detected. Skipping commit."
           else
             git commit -m "Auto-sync live FPL data [skip ci]"
-            git pull --rebase origin main
-            git push
+            if ! git pull --rebase origin main; then
+              echo "Notice: Rebase conflict detected. Preserving fresh sync JSON and re-generating on top of origin/main..."
+              git rebase --abort || true
+              cp multi_fpl_data.json /tmp/multi_fpl_data.json.fresh
+              cp real_fpl_40700_data.json /tmp/real_fpl_40700_data.json.fresh
+              git fetch origin main
+              git reset --hard origin/main
+              mv /tmp/multi_fpl_data.json.fresh multi_fpl_data.json
+              mv /tmp/real_fpl_40700_data.json.fresh real_fpl_40700_data.json
+              python3 update_preview.py
+              git add -A
+              if ! git diff --staged --quiet; then
+                git commit -m "Auto-sync live FPL data [skip ci]"
+              fi
+            fi
+            git push origin main
           fi
