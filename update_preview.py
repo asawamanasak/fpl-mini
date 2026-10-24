@@ -1320,19 +1320,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <!-- Rendered dynamically -->
       </div>
 
-      <!-- League Benchmark Summary (ความแข็งแกร่งเฉลี่ยรายลีก) -->
-      <div class="glass-card rounded-2xl p-3.5 sm:p-5 border border-slate-200 dark:border-slate-800">
-        <div class="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
+      <!-- League Benchmark Ranking (จัดอันดับความแข็งแกร่งของแต่ละลีก บนลงล่าง) -->
+      <div id="benchmark-ranking-card" class="glass-card rounded-2xl p-3.5 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs">
+        <div class="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-slate-100 dark:border-slate-800 mb-3 gap-2">
           <div>
-            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">LEAGUE BENCHMARK</span>
-            <h3 class="text-xs sm:text-base font-bold text-slate-900 dark:text-white font-display">สถิติค่าเฉลี่ยความแข็งแกร่งของแต่ละลีก</h3>
+            <h3 class="text-xs sm:text-base font-bold text-slate-900 dark:text-white font-display">จัดอันดับความแข็งแกร่งเฉลี่ยของแต่ละลีก</h3>
           </div>
-          <span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap">
-            <span class="hidden sm:inline">คะแนนเฉลี่ยต่อทีม / GW</span>
-            <span class="sm:hidden">เฉลี่ย/GW</span>
-          </span>
+          <div class="flex items-center gap-2 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-display whitespace-nowrap">
+            <span>คะแนนเฉลี่ยต่อทีม / GW</span>
+            <button id="benchmark-clear-filter" onclick="app.setRadarLeagueFilter('all')" class="hidden px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 font-bold border border-rose-200 dark:border-rose-800/60 hover:bg-rose-100 dark:hover:bg-rose-900/60 transition-colors cursor-pointer">ล้างตัวกรอง ✕</button>
+          </div>
         </div>
-        <div id="global-radar-league-benchmarks" class="flex sm:grid sm:grid-cols-3 lg:grid-cols-7 gap-2 overflow-x-auto touch-scroll no-scrollbar pb-1">
+        <div id="global-radar-league-benchmarks" class="space-y-1.5 sm:space-y-2">
           <!-- Rendered dynamically -->
         </div>
       </div>
@@ -7938,24 +7937,68 @@ selectShi62GW(gwName) {
           });
         });
 
-        // Render Benchmarks
+        // Render Benchmarks (Top-to-Bottom Ranking Leaderboard)
         if (benchmarksContainer) {
           const sortedBenchmarks = [...leagueBenchmarks].sort((a, b) => b.avg - a.avg);
-          benchmarksContainer.innerHTML = sortedBenchmarks.map((lb, idx) => `
-            <div onclick="app.setRadarLeagueFilter('${lb.id}')" class="p-2 sm:p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-800/70 flex flex-col justify-between hover:border-blue-400 dark:hover:border-blue-500 transition-colors min-w-[125px] sm:min-w-0 flex-shrink-0 sm:flex-shrink cursor-pointer active:scale-95" title="คลิกเพื่อกรองเฉพาะลีกนี้">
-              <div>
-                <div class="flex items-center justify-between text-[10px] text-slate-400 font-display">
-                  <span>#${idx + 1}</span>
-                  <span>${lb.team_count} ทีม</span>
+          const topAvg = sortedBenchmarks.length > 0 ? sortedBenchmarks[0].avg : 70;
+          const minScale = Math.max(0, topAvg - 12);
+          const activeFilter = this.radarLeagueFilter || 'all';
+          const activeLid = String(this.activeLeagueId);
+          
+          const clearBtn = document.getElementById('benchmark-clear-filter');
+          if (clearBtn) {
+            if (activeFilter !== 'all') {
+              clearBtn.classList.remove('hidden');
+            } else {
+              clearBtn.classList.add('hidden');
+            }
+          }
+
+          benchmarksContainer.innerHTML = sortedBenchmarks.map((lb, idx) => {
+            const rank = idx + 1;
+            const isSelected = (activeFilter === String(lb.id));
+            const isCurrentLeague = (String(lb.id) === activeLid);
+            const pct = Math.round(((lb.avg - minScale) / (topAvg - minScale)) * 100);
+
+            // Uniform clean rank badge (no medals)
+            const rankBadge = `<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold inline-flex items-center justify-center text-[10px] sm:text-xs border border-slate-200 dark:border-slate-700/80 flex-shrink-0 font-display">${rank}</span>`;
+
+            const currentBadge = isCurrentLeague
+              ? '<span class="text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400 font-bold border border-blue-500/30 font-display">ลีกที่คุณอยู่</span>'
+              : '';
+
+            const selectedBorder = isSelected
+              ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-50/40 dark:bg-blue-950/40 shadow-xs'
+              : isCurrentLeague
+                ? 'border-blue-400/50 dark:border-blue-500/40 bg-white/80 dark:bg-slate-900/50 hover:border-blue-400'
+                : 'border-slate-200/80 dark:border-slate-800/80 bg-white/60 dark:bg-slate-900/40 hover:border-blue-400 dark:hover:border-blue-500';
+
+            return `
+              <div onclick="app.setRadarLeagueFilter('${isSelected ? 'all' : lb.id}')" 
+                   class="group relative overflow-hidden rounded-xl border ${selectedBorder} p-2.5 sm:p-3 transition-all cursor-pointer flex items-center justify-between gap-3 active:scale-[0.99]"
+                   title="${isSelected ? 'คลิกเพื่อยกเลิกการกรอง' : 'คลิกเพื่อกรองเฉพาะลีกนี้'}">
+                
+                <!-- Power Bar Background -->
+                <div class="absolute left-0 top-0 bottom-0 bg-blue-500/10 dark:bg-blue-500/15 pointer-events-none transition-all group-hover:bg-blue-500/20" style="width: ${pct}%"></div>
+
+                <!-- Left info: Uniform Rank + League Name + Current League Badge -->
+                <div class="relative flex items-center gap-2.5 sm:gap-3 min-w-0">
+                  ${rankBadge}
+                  <div class="min-w-0 flex items-center gap-2 flex-wrap">
+                    <span class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white font-display truncate">${this.escapeHtml(lb.short_name)}</span>
+                    ${currentBadge}
+                    ${isSelected ? '<span class="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/30">กำลังกรอง</span>' : ''}
+                  </div>
                 </div>
-                <div class="font-bold text-xs text-slate-900 dark:text-slate-100 truncate mt-0.5" title="${this.escapeHtml(lb.name)}">${this.escapeHtml(lb.short_name)}</div>
+
+                <!-- Right Score: Only Average Score pts -->
+                <div class="relative text-right flex-shrink-0">
+                  <span class="text-sm sm:text-base font-black text-blue-600 dark:text-blue-400 font-display">${lb.avg.toFixed(1)}</span>
+                  <span class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 font-display"> pts</span>
+                </div>
               </div>
-              <div class="mt-1.5 pt-1.5 border-t border-slate-100 dark:border-slate-700/60 flex items-baseline justify-between">
-                <span class="text-[9px] uppercase text-slate-400 font-display">เฉลี่ย</span>
-                <span class="text-xs sm:text-sm font-black text-blue-600 dark:text-blue-400 font-display">${lb.avg.toFixed(1)} <span class="text-[9px]">pts</span></span>
-              </div>
-            </div>
-          `).join('');
+            `;
+          }).join('');
         }
 
         // 2. Aggregate all teams across all leagues (deduplicated by entry_id)
@@ -8350,6 +8393,10 @@ selectShi62GW(gwName) {
 
       setRadarLeagueFilter(lid) {
         this.radarLeagueFilter = String(lid);
+        if (typeof this.renderGlobalRadarView === 'function') {
+          this.renderGlobalRadarView();
+          return;
+        }
         const pillsContainer = document.getElementById('global-radar-league-pills');
         if (pillsContainer && this._radarTeamList) {
           const leaguesObj = this.multiData.leagues || {};
