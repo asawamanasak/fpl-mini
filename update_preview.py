@@ -302,7 +302,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       background-color: #f7fee7;
       background-image: radial-gradient(circle at 0% 0%, rgba(220, 252, 231, 0.85) 0%, rgba(240, 253, 244, 0.45) 55%, #ffffff 100%);
       border: 1.5px solid #86efac;
-      border-left: 5px solid #10b981;
       box-shadow: 0 4px 20px -2px rgba(16, 185, 129, 0.12), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
       position: relative;
     }
@@ -311,7 +310,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       background-color: #f8fafc;
       background-image: radial-gradient(circle at 0% 0%, rgba(238, 242, 255, 0.85) 0%, rgba(245, 243, 255, 0.45) 55%, #ffffff 100%);
       border: 1.5px solid #c7d2fe;
-      border-left: 5px solid #6366f1;
       box-shadow: 0 4px 20px -2px rgba(99, 102, 241, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
       position: relative;
     }
@@ -488,7 +486,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       background-color: #0d0d0f !important;
       background-image: radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.14) 0%, rgba(13, 13, 15, 0.85) 60%, #0d0d0f 100%) !important;
       border: 1.5px solid rgba(16, 185, 129, 0.3) !important;
-      border-left: 5px solid #10b981 !important;
       box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.8) !important;
     }
 
@@ -496,7 +493,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       background-color: #0d0d0f !important;
       background-image: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.14) 0%, rgba(13, 13, 15, 0.85) 60%, #0d0d0f 100%) !important;
       border: 1.5px solid rgba(99, 102, 241, 0.3) !important;
-      border-left: 5px solid #6366f1 !important;
       box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.8) !important;
     }
 
@@ -5221,7 +5217,7 @@ selectShi62GW(gwName) {
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
             
             <!-- WC 1 -->
-            <div id="comp-summary-card-wc1" onclick="app.setCompCardFilter('wc1')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 border-l-4 border-l-emerald-500 shadow-2xs cursor-pointer hover:border-emerald-400 transition-all">
+            <div id="comp-summary-card-wc1" onclick="app.setCompCardFilter('wc1')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
               <div class="flex items-center justify-between">
                 <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Wildcard 1 (GW 1-19)</span>
                 <span class="chip-badge badge-wildcard">WC</span>
@@ -5229,13 +5225,13 @@ selectShi62GW(gwName) {
               <div class="mt-2 flex items-baseline gap-1.5">
                 <span class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalWc1Avail}</span>
                 <span class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">/ ${totalTeams} ทีม</span>
-                <span class="ml-auto text-xs font-bold text-emerald-600 dark:text-emerald-400 font-display">${Math.round(totalWc1Avail / totalTeams * 100)}%</span>
+                <span class="ml-auto text-xs font-bold text-slate-700 dark:text-slate-300 font-display">${Math.round(totalWc1Avail / totalTeams * 100)}%</span>
               </div>
               <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate">เปลี่ยนตัวฟรีไม่จำกัด (ถึง GW 19)</p>
             </div>
 
             <!-- Free Hit -->
-            <div id="comp-summary-card-fh" onclick="app.setCompCardFilter('fh')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 border-l-4 border-l-amber-500 shadow-2xs cursor-pointer hover:border-amber-400 transition-all">
+            <div id="comp-summary-card-fh" onclick="app.setCompCardFilter('fh')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
               <div class="flex items-center justify-between">
                 <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Free Hit</span>
                 <span class="chip-badge badge-freehit">FH</span>
@@ -5243,13 +5239,13 @@ selectShi62GW(gwName) {
               <div class="mt-2 flex items-baseline gap-1.5">
                 <span class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalFhAvail}</span>
                 <span class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">/ ${totalTeams} ทีม</span>
-                <span class="ml-auto text-xs font-bold text-amber-600 dark:text-amber-400 font-display">${Math.round(totalFhAvail / totalTeams * 100)}%</span>
+                <span class="ml-auto text-xs font-bold text-slate-700 dark:text-slate-300 font-display">${Math.round(totalFhAvail / totalTeams * 100)}%</span>
               </div>
               <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate">จัดทีมใหม่ฟรี 1 วีค</p>
             </div>
 
             <!-- Triple Captain -->
-            <div id="comp-summary-card-tc" onclick="app.setCompCardFilter('tc')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 border-l-4 border-l-pink-500 shadow-2xs cursor-pointer hover:border-pink-400 transition-all">
+            <div id="comp-summary-card-tc" onclick="app.setCompCardFilter('tc')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
               <div class="flex items-center justify-between">
                 <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Triple Captain</span>
                 <span class="chip-badge badge-3xc">3xC</span>
@@ -5257,13 +5253,13 @@ selectShi62GW(gwName) {
               <div class="mt-2 flex items-baseline gap-1.5">
                 <span class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalTcAvail}</span>
                 <span class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">/ ${totalTeams} ทีม</span>
-                <span class="ml-auto text-xs font-bold text-pink-600 dark:text-pink-400 font-display">${Math.round(totalTcAvail / totalTeams * 100)}%</span>
+                <span class="ml-auto text-xs font-bold text-slate-700 dark:text-slate-300 font-display">${Math.round(totalTcAvail / totalTeams * 100)}%</span>
               </div>
               <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate">คะแนนกัปตันคูณ 3 แต้ม</p>
             </div>
 
             <!-- Bench Boost -->
-            <div id="comp-summary-card-bb" onclick="app.setCompCardFilter('bb')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 border-l-4 border-l-blue-500 shadow-2xs cursor-pointer hover:border-blue-400 transition-all">
+            <div id="comp-summary-card-bb" onclick="app.setCompCardFilter('bb')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
               <div class="flex items-center justify-between">
                 <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Bench Boost</span>
                 <span class="chip-badge badge-bboost">BB</span>
@@ -5271,7 +5267,7 @@ selectShi62GW(gwName) {
               <div class="mt-2 flex items-baseline gap-1.5">
                 <span class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalBbAvail}</span>
                 <span class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">/ ${totalTeams} ทีม</span>
-                <span class="ml-auto text-xs font-bold text-blue-600 dark:text-blue-400 font-display">${Math.round(totalBbAvail / totalTeams * 100)}%</span>
+                <span class="ml-auto text-xs font-bold text-slate-700 dark:text-slate-300 font-display">${Math.round(totalBbAvail / totalTeams * 100)}%</span>
               </div>
               <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate">นับแต้มผู้เล่นสำรองทั้ง 4 ตัว</p>
             </div>
@@ -7980,7 +7976,7 @@ selectShi62GW(gwName) {
                    title="${isSelected ? 'คลิกเพื่อยกเลิกการกรอง' : 'คลิกเพื่อกรองเฉพาะลีกนี้'}">
                 
                 <!-- Power Bar Background -->
-                <div class="absolute left-0 top-0 bottom-0 bg-blue-500/10 dark:bg-blue-500/15 pointer-events-none transition-all group-hover:bg-blue-500/20" style="width: ${pct}%"></div>
+                <div class="absolute left-0 top-0 bottom-0 bg-slate-100 dark:bg-slate-800/50 pointer-events-none transition-all group-hover:bg-slate-200/60 dark:group-hover:bg-slate-800/80" style="width: ${pct}%"></div>
 
                 <!-- Left info: Uniform Rank + League Name + Current League Badge -->
                 <div class="relative flex items-center gap-2.5 sm:gap-3 min-w-0">
@@ -7994,7 +7990,7 @@ selectShi62GW(gwName) {
 
                 <!-- Right Score: Only Average Score pts -->
                 <div class="relative text-right flex-shrink-0">
-                  <span class="text-sm sm:text-base font-black text-blue-600 dark:text-blue-400 font-display">${lb.avg.toFixed(1)}</span>
+                  <span class="text-sm sm:text-base font-black text-slate-900 dark:text-white font-display">${lb.avg.toFixed(1)}</span>
                   <span class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 font-display"> pts</span>
                 </div>
               </div>
@@ -8194,7 +8190,7 @@ selectShi62GW(gwName) {
             <div class="glass-card rounded-xl sm:rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
               <div>
                 <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">ความนิ่งสูงสุด (Spread)</span>
-                <div class="text-base sm:text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5 sm:mt-1 font-display leading-tight">±${globalMostConsistent.spread} <span class="text-[10px] sm:text-xs font-normal">PTS</span></div>
+                <div class="text-base sm:text-xl font-black text-slate-900 dark:text-white mt-0.5 sm:mt-1 font-display leading-tight">±${globalMostConsistent.spread} <span class="text-[10px] sm:text-xs font-normal">PTS</span></div>
               </div>
               <div class="mt-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
                 <div class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 truncate" title="${this.escapeHtml(globalMostConsistent.team)}">${this.escapeHtml(globalMostConsistent.team)}</div>
@@ -8205,7 +8201,7 @@ selectShi62GW(gwName) {
             <div class="glass-card rounded-xl sm:rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
               <div>
                 <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">ระเบิดฟอร์มสูงสุด</span>
-                <div class="text-base sm:text-xl font-black text-blue-600 dark:text-blue-400 mt-0.5 sm:mt-1 font-display leading-tight">${globalTopScore.score} <span class="text-[10px] sm:text-xs font-normal">PTS</span></div>
+                <div class="text-base sm:text-xl font-black text-slate-900 dark:text-white mt-0.5 sm:mt-1 font-display leading-tight">${globalTopScore.score} <span class="text-[10px] sm:text-xs font-normal">PTS</span></div>
               </div>
               <div class="mt-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
                 <div class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 truncate" title="${this.escapeHtml(globalTopScore.team)}">${this.escapeHtml(globalTopScore.team)}</div>
