@@ -2130,16 +2130,23 @@ class LiveCommentaryEngine {
             `ผ่าตัดใหญ่ได้ผลทันตาเห็น! "${top.team_name}" ล้างพอร์ตด้วยชิป Wildcard โกยแต้ม ${topPts} แต้ม ${marginPhrase} ทะยานสู่อันดับหนึ่งแบบสดชื่น!`
           ];
         } else if (isJoint && winners.length > 1) {
-          const names = winners.length === 2
-            ? `"${winners[0].team_name}" กับ "${winners[1].team_name}"`
-            : `"${winners[0].team_name}", "${winners[1].team_name}" และเพื่อนร่วมลีกอีก ${winners.length - 2} ทีม`;
+          let names = '';
+          if (winners.length === 2) {
+            names = `"${winners[0].team_name}" กับ "${winners[1].team_name}"`;
+          } else if (winners.length <= 5) {
+            const head = winners.slice(0, -1).map(w => `"${w.team_name}"`).join(', ');
+            names = `${head} และ "${winners[winners.length - 1].team_name}"`;
+          } else {
+            const head = winners.slice(0, 3).map(w => `"${w.team_name}"`).join(', ');
+            names = `${head} และเพื่อนร่วมลีกอีก ${winners.length - 3} ทีม`;
+          }
           leadOptions = [
-            `กินกันไม่ลงโว้ย! ${names} ซัดไปคนละ ${topPts} แต้มเท่ากันเป๊ะ กอดคอคว้าแชมป์ร่วม GW ${gwNumber} แบ่งปันผลกันไปคนละครึ่งสุดแฮปปี้!`,
+            `กินกันไม่ลงโว้ย! ${names} ซัดไปคนละ ${topPts} แต้มเท่ากันเป๊ะ กอดคอคว้าแชมป์ร่วม GW ${gwNumber} หารเงินรางวัลกันเท่าๆ กันสุดแฮปปี้!`,
             `ดวลกันเดือดจนตาข่ายแทบขาด! ${names} รัวคนละ ${topPts} pts ไม่มีใครยอมใคร จับมือครองบัลลังก์ร่วมกันในสัปดาห์นี้!`,
             `บทสรุปสุดดราม่า GW ${gwNumber}! ${names} เข้าป้ายที่ ${topPts} แต้มเท่ากันทุกเม็ด ต้องใช้ภาพถ่ายตัดสินแต่ก็ยังเสมอกัน!`,
             `มิตรภาพลูกผู้ชาย! ${names} นัดกันพอร์ตเขียวกดคนละ ${topPts} แต้ม ครองจ่าฝูงร่วมประจำวีคแบบสมานฉันท์!`,
-            `เสมอเดือดทะลุปรอท! ${names} แบ่งแต้มกันไปคนละ ${topPts} แต้ม ครองบัลลังก์คู่แบบไม่มีใครยอมหลีกทางให้ใคร!`,
-            `สู้กันจนหยดสุดท้าย! ${names} กดสกอร์เท่ากันเป๊ะที่ ${topPts} แต้ม จับมือขึ้นแท่นรับถ้วยคู่แบบสุดคลาสสิก!`
+            `เสมอเดือดทะลุปรอท! ${names} แบ่งแต้มกันไปคนละ ${topPts} แต้ม ครองบัลลังก์ร่วมแบบไม่มีใครยอมหลีกทางให้ใคร!`,
+            `สู้กันจนหยดสุดท้าย! ${names} กดสกอร์เท่ากันเป๊ะที่ ${topPts} แต้ม จับมือขึ้นแท่นรับถ้วยร่วมแบบสุดคลาสสิก!`
           ];
         } else if (isCentury) {
           leadOptions = [
@@ -4497,12 +4504,57 @@ selectShi62GW(gwName) {
               badgeIcon = isFinished ? '👑' : '🟢';
             }
 
-            const winnerNames = eligibleTopWinners.length > 2 
-              ? `${this.escapeHtml(eligibleTopWinners[0].team_name)}, ${this.escapeHtml(eligibleTopWinners[1].team_name)} และอีก ${eligibleTopWinners.length - 2} ทีม` 
-              : eligibleTopWinners.map(w => this.escapeHtml(w.team_name)).join(' & ');
-            const managerNames = eligibleTopWinners.length > 2
-              ? `${this.escapeHtml(eligibleTopWinners[0].player_name)}, ${this.escapeHtml(eligibleTopWinners[1].player_name)} และอีก ${eligibleTopWinners.length - 2} คน`
-              : eligibleTopWinners.map(w => `${this.escapeHtml(w.player_name)} • (C) <strong>${this.escapeHtml((w.captain || '-').replace(/\s*\(C\)/gi, '').trim())}</strong>`).join('<br/>');
+            const maxDisplayWinners = 5;
+            let winnerHeaderHtml = '';
+            let managerNamesHtml = '';
+
+            if (eligibleTopWinners.length <= 1) {
+              winnerHeaderHtml = `
+                <button onclick="app.openTeamModal(${prizeLeader.entry_id})" class="text-left group cursor-pointer block">
+                  <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white group-hover:text-amber-700 dark:group-hover:text-amber-400 tracking-tight transition-colors">${this.escapeHtml(prizeLeader.team_name)}</h2>
+                </button>
+              `;
+              managerNamesHtml = `
+                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-0.5">
+                  ${this.escapeHtml(prizeLeader.player_name)} • (C) <strong>${this.escapeHtml((prizeLeader.captain || '-').replace(/\s*\(C\)/gi, '').trim())}</strong>
+                </p>
+              `;
+            } else {
+              const displayList = eligibleTopWinners.slice(0, maxDisplayWinners);
+              const remainingCount = eligibleTopWinners.length - maxDisplayWinners;
+
+              winnerHeaderHtml = `
+                <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                  ${displayList.map((w, idx) => {
+                    const isLast = (idx === displayList.length - 1) && remainingCount <= 0;
+                    const isPenultimate = (idx === displayList.length - 2) && remainingCount <= 0;
+                    const separator = isLast ? '' : (isPenultimate ? '&' : ',');
+                    return `
+                      <button onclick="app.openTeamModal(${w.entry_id})" class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white hover:text-amber-700 dark:hover:text-amber-400 tracking-tight transition-colors cursor-pointer text-left">
+                        ${this.escapeHtml(w.team_name)}
+                      </button>
+                      ${separator ? `<span class="text-slate-400 dark:text-slate-500 font-bold text-lg sm:text-xl">${separator}</span>` : ''}
+                    `;
+                  }).join('')}
+                  ${remainingCount > 0 ? `<span class="text-sm sm:text-base font-bold text-slate-500 self-center">และอีก ${remainingCount} ทีม</span>` : ''}
+                </div>
+              `;
+
+              managerNamesHtml = `
+                <div class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1 space-y-0.5">
+                  ${displayList.map(w => `
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <button onclick="app.openTeamModal(${w.entry_id})" class="hover:text-amber-600 dark:hover:text-amber-400 cursor-pointer font-semibold text-slate-700 dark:text-slate-300 transition-colors">
+                        ${this.escapeHtml(w.player_name)}
+                      </button>
+                      <span class="text-slate-400">•</span>
+                      <span>(C) <strong>${this.escapeHtml((w.captain || '-').replace(/\s*\(C\)/gi, '').trim())}</strong></span>
+                    </div>
+                  `).join('')}
+                  ${remainingCount > 0 ? `<div class="text-xs text-slate-500">และอีก ${remainingCount} คน</div>` : ''}
+                </div>
+              `;
+            }
 
             const passNoteHtml = hasPassedPrize ? `
               <div class="mt-3 px-3.5 py-2.5 rounded-xl bg-amber-100/80 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60 text-xs text-amber-950 dark:text-amber-200 shadow-2xs">
@@ -4601,10 +4653,8 @@ selectShi62GW(gwName) {
                         <span>${badgeTitle}</span>
                       </span>
                     </div>
-                    <button onclick="app.openTeamModal(${prizeLeader.entry_id})" class="text-left group cursor-pointer block">
-                      <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white group-hover:text-amber-700 dark:group-hover:text-amber-400 tracking-tight transition-colors">${winnerNames}</h2>
-                    </button>
-                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-0.5">${managerNames}</p>
+                    ${winnerHeaderHtml}
+                    ${managerNamesHtml}
                   </div>
 
                   <div class="flex items-center justify-end gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/70 dark:border-slate-700'}">
