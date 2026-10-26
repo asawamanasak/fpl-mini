@@ -5844,16 +5844,12 @@ selectShi62GW(gwName) {
                 <!-- Highlight Note (Borbou Style with Copy & Refresh Buttons) -->
                 <div class="mt-3.5 pt-3 border-t ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/70 dark:border-slate-700/60'} flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600 dark:text-slate-400">
                   <div class="min-w-0 pr-1 flex items-start sm:items-center gap-2 flex-wrap sm:flex-nowrap">
-                    ${isFinished ? `
-                      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-400/40 shrink-0 font-display">
-                        <span>🏆 สรุปผลหลังแข่ง</span>
-                      </span>
-                    ` : `
+                    ${!isFinished ? `
                       <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-400/40 shrink-0 font-display">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span>พากษ์สด</span>
                       </span>
-                    `}
+                    ` : ''}
                     <span id="current-gw-note-text" class="italic font-medium text-slate-700 dark:text-slate-300 leading-relaxed break-words">${currentLiveNote}</span>
                   </div>
                   <div class="flex items-center justify-end gap-1 flex-shrink-0 self-end sm:self-center pt-1 sm:pt-0">
