@@ -4727,15 +4727,15 @@ selectShi62GW(gwName) {
             : `<span class="text-xs font-semibold text-slate-400">-</span>`;
 
           const p1Badge = p1Amt > 0
-            ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/60 font-display">${p1Amt.toLocaleString()} THB</span>`
+            ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/60 font-display">${p1Amt.toLocaleString()}</span>`
             : '<span class="text-slate-400">-</span>';
 
           const p2Badge = p2Amt > 0
-            ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200/60 font-display">${p2Amt.toLocaleString()} THB</span>`
+            ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200/60 font-display">${p2Amt.toLocaleString()}</span>`
             : '<span class="text-slate-400">-</span>';
 
           const fplTotalBadge = fplTotal > 0
-            ? `<span class="font-black text-slate-900 dark:text-white font-display">${fplTotal.toLocaleString()} THB</span>`
+            ? `<span class="font-black text-slate-900 dark:text-white font-display">${fplTotal.toLocaleString()}</span>`
             : '<span class="text-slate-400">-</span>';
 
           const predCol = predNet !== 0 
@@ -4885,11 +4885,11 @@ selectShi62GW(gwName) {
                         ยอดรวมจัดสรรเงินกองกลาง (Total Pool Balance)
                       </td>
                       <td class="py-3 px-2 text-center text-slate-900 dark:text-white font-black">${sumPoints}</td>
-                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumP1.toLocaleString()} THB</td>
-                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumP2.toLocaleString()} THB</td>
-                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumTotalFpl.toLocaleString()} THB</td>
-                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumPred === 0 ? '0' : sumPred.toLocaleString()} THB</td>
-                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumChal === 0 ? '0' : sumChal.toLocaleString()} THB</td>
+                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumP1.toLocaleString()}</td>
+                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumP2.toLocaleString()}</td>
+                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumTotalFpl.toLocaleString()}</td>
+                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumPred === 0 ? '0' : sumPred.toLocaleString()}</td>
+                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumChal === 0 ? '0' : sumChal.toLocaleString()}</td>
                       <td class="py-3 px-3 text-right text-slate-900 dark:text-white font-black text-sm sm:text-base">${sumGrand.toLocaleString()} THB</td>
                     </tr>
                   </tfoot>
