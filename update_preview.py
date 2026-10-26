@@ -4116,7 +4116,7 @@ selectShi62GW(gwName) {
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h1 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
-                  ทายผล
+                  ${(this.data && this.data.name) ? this.data.name : 'Bramann League'} ทายผล
                 </h1>
               </div>
 
@@ -4417,7 +4417,7 @@ selectShi62GW(gwName) {
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h1 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
-                  ท้าชน
+                  ${(this.data && this.data.name) ? this.data.name : 'Bramann League'} ท้าชน
                 </h1>
               </div>
 
@@ -4986,7 +4986,7 @@ selectShi62GW(gwName) {
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h1 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
-                  ทายผล
+                  ${(this.data && this.data.name) ? this.data.name : 'Shi62'} ทายผล
                 </h1>
               </div>
 
