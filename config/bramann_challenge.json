@@ -1,0 +1,140 @@
+{
+  "league_id": 5349,
+  "title": "Bramann Challenge (ท้าชน)",
+  "description": "ดวลกึ๋นแต้มแฟนตาซีตัวต่อตัวประจำสัปดาห์ พร้อมระบบวางเดิมพันร่วม",
+  "gameweeks": [
+    {
+      "name": "GW4",
+      "gw": 4,
+      "matches": [
+        {
+          "id": "gw4_m1",
+          "title": "Oo vs 4OUR",
+          "team1_id": 837763,
+          "team2_id": 171774,
+          "team1_name": "Oöraora Grandé",
+          "team2_name": "4OUR",
+          "count_hits": true,
+          "count_chips": true,
+          "stake_per_leg": 100,
+          "note": "Oo ชนะ (95 vs 85) • Oo ได้ 200, 4our กับ B เสียคนละร้อย",
+          "side1_bets": [
+            { "name": "Oo", "legs": 1 }
+          ],
+          "side2_bets": [
+            { "name": "4OUR", "legs": 1 },
+            { "name": "B", "legs": 1 }
+          ]
+        },
+        {
+          "id": "gw4_m2",
+          "title": "Oo vs B",
+          "team1_id": 837763,
+          "team2_id": 268461,
+          "team1_name": "Oöraora Grandé",
+          "team2_name": "Pongacku",
+          "count_hits": true,
+          "count_chips": true,
+          "stake_per_leg": 100,
+          "note": "Oo ชนะ (95 vs 56) • ไม่มีคนแทงเพิ่ม",
+          "side1_bets": [
+            { "name": "Oo", "legs": 1 }
+          ],
+          "side2_bets": [
+            { "name": "B", "legs": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GW5",
+      "gw": 5,
+      "matches": [
+        {
+          "id": "gw5_m1",
+          "title": "Oo vs 4OUR",
+          "team1_id": 837763,
+          "team2_id": 171774,
+          "team1_name": "Oöraora Grandé",
+          "team2_name": "4OUR",
+          "count_hits": true,
+          "count_chips": true,
+          "stake_per_leg": 100,
+          "note": "Oo ชนะ (41 vs 34) • ไม่มีคนแทงเพิ่ม",
+          "side1_bets": [
+            { "name": "Oo", "legs": 1 }
+          ],
+          "side2_bets": [
+            { "name": "4OUR", "legs": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GW6",
+      "gw": 6,
+      "matches": [
+        {
+          "id": "gw6_m1",
+          "title": "Oo vs 4OUR",
+          "team1_id": 837763,
+          "team2_id": 171774,
+          "team1_name": "Oöraora Grandé",
+          "team2_name": "4OUR",
+          "count_hits": true,
+          "count_chips": true,
+          "stake_per_leg": 100,
+          "note": "Oo ชนะ (73 vs 69) • ไม่มีคนแทงเพิ่ม",
+          "side1_bets": [
+            { "name": "Oo", "legs": 1 }
+          ],
+          "side2_bets": [
+            { "name": "4OUR", "legs": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GW7",
+      "gw": 7,
+      "matches": [
+        {
+          "id": "gw7_m1",
+          "title": "Oo vs 4OUR",
+          "team1_id": 837763,
+          "team2_id": 171774,
+          "team1_name": "Oöraora Grandé",
+          "team2_name": "4OUR",
+          "count_hits": true,
+          "count_chips": true,
+          "stake_per_leg": 100,
+          "note": "Oo ชนะ (77 vs 76) • ไม่มีคนแทงเพิ่ม",
+          "side1_bets": [
+            { "name": "Oo", "legs": 1 }
+          ],
+          "side2_bets": [
+            { "name": "4OUR", "legs": 1 }
+          ]
+        },
+        {
+          "id": "gw7_m2",
+          "title": "BMFC vs 4OUR",
+          "team1_id": 7501,
+          "team2_id": 171774,
+          "team1_name": "BMFC™",
+          "team2_name": "4OUR",
+          "count_hits": true,
+          "count_chips": true,
+          "stake_per_leg": 100,
+          "note": "Oak ชนะ (89 vs 76) • ไม่มีคนแทงเพิ่ม",
+          "side1_bets": [
+            { "name": "Oak", "legs": 1 }
+          ],
+          "side2_bets": [
+            { "name": "4OUR", "legs": 1 }
+          ]
+        }
+      ]
+    }
+  ]
+}

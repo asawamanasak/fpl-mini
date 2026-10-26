@@ -1,0 +1,282 @@
+GW1
+HUL V MUN -1.5
+HUL jrj Dotmanx5 ✅
+MUN OAKx5 4OURx5 Oo Bx5 kwang
+
+EVE V CRY
+EVE 4OURx5 Bx5 Hong ✅
+CRY OAK Dotmanx5
+
+IPS V SUN
+I. B Hong ✅
+S. OAK Dotmanx5 4OURx5
+
+NFO -0.5 V LEE
+NFO kwang
+LEE 4OURx5 Dotmanx5 Bx5 ✅
+
+BRE V SPU
+B. OAK jrj ✅
+S. Bx5 feex5 kwang Dotmanx5 Hong
+
+BRI V AVL
+BRI 4OURx5 kwang Dotmanx5 jrj Bx5 ✅
+AVL OAK Hong
+
+MCI -1.5 V BOU
+MCI Oo Bx5 4OURx5 kwang
+BOU Dotmanx5 OAK Hong jrj ✅
+
+NEW V LIV -0.5
+NEW Oo Dotmanx5 Hong ✅
+LIV OAKx5 Bx5 jrj 4OURx5 feex5 kwang Hereaux5
+
+FUL V CHE
+FUL
+CHE OAK Oo Bx5 4OURx5 Dotmanx5
+
+FUL v CHE -1.5
+FUL OAKx5 Bx5 jrjx5 4OURx5 Hongx5 ✅
+CHE Hereaux5 Dotmanx5
+
+GW2
+CPL V MCI -1.5
+CPL Bx5 jrj Dotmanx5 4OURx5
+MCI OAK Hereau ✅
+
+LIV -1 V NFO
+LIV OAKx5 Bx5 jrj Hereau feex5 kwang
+NFO Oo 4OURx5 Dotmanx5 Hong ✅
+
+BOU V EVE -0.5
+BOU 4OURx5 Bx5 jrj feex5 kwang Hong OAK ✅
+EVE Hereau Dotmanx5
+
+COV -0.5 V HUL
+COV OAKx5 fee kwang
+HUL 4OURx5 Bx5 Dotmanx5 Hong ✅
+
+SPU -0.5 V NEW
+SPU Hereau kwang B
+NEW OAK 4OURx5 jrj Dotmanx5 Hong ✅
+
+CHE -0.5 V BRI
+CHE Oo 4OURx5 Bx5 kwang feex5 ✅
+BRI Dotmanx5
+
+CHE -1 v BRI
+CHE Hereau B
+BRI OAK jrj Hong
+
+LEE V BRE
+LEE Dotmanx5 jrj
+BRE Bx5 Hong fee
+
+SUN V FUL
+SUN 4OURx5 Bx5 jrj Dotmanx5 Hong ✅
+FUL Hereau
+
+MUN -1 V IPS
+MUN Oo 4OURx5 Bx5 dotmanx5 kwang Hong ✅
+IPS Hereau fee
+
+AVL V ARS -1
+AVL kwang jrj
+ARS Oo Hereau Dotmanx5 Bx5 OAKx5 Hong FeeX5
+
+GW3
+IPS V LIV -1
+IPS Dotmanx5 Oo
+LIV OAK Bx5 feex5 ✅
+
+NEW V BOU
+NEW OAKx5 4OURx5 Bx5 jrj kwang
+BOU Dotmanx5
+
+BRE -1 V SUN
+BRE B kwang
+SUN OAK Dotmanx5 ✅
+
+BRI -0.5 V LEE
+BRI OAKx5 4OURx5 Bx5 jrj kwang feex5
+LEE Dotmanx5 ✅
+
+FUL -0.5 V CPL
+FUL Hereau
+CPL OAK 4OURx5 Bx5 Dotmanx5 ✅
+
+MCI -2 V COV
+MCI OAK Bx5 kwang 4OURx5
+COV Dotmanx5 ✅
+
+NFO V SPU
+NFO OAKx5 4OURx5 Bx5 feex5
+SPU Dotmanx5
+
+HUL V AVL -0.5
+HUL Bx5 Dotmanx5 feex5 ✅
+AVL Hereau
+
+EVE V MUN -0.5
+EVE jrj fee ✅
+MUN OAKx5 4OURx5 Bx5 Dotmanx5 Oo
+
+ARS -0.5 V CHE
+ARS OAKx5 Bx5 kwang Oo feex5 ✅
+CHE Dotmanx5 Hereaux5 4OURx5 jrj Hong
+
+GW4
+AVL -0.5 v NFO
+AVL 4OURx5 oakx5 Bx5
+NFO Dotmanx5 feex5 Hong ✅
+
+BOU v BRE
+BOU oakx5 Dotmanx5 Bx5 Hong
+BRE 4OURx5
+
+CHE -2 v HUL
+CHE Hereau
+HUL Bx5 4OURx5 Dotmanx5 feex5 Hong ✅
+
+CPL -1 v IPS
+CPL Bx5 feex5 Hong
+IPS 4OURx5 oakx5 Dotmanx5 ✅
+
+LIV -1.5 v FUL
+LIV Bx5 Hereau
+FUL Oo oakx5 Dotmanx5 Hong 4OURx5 ✅
+
+SPU -0.5 v EVE
+SPU 4OURx5 Bx5 Hong feex5
+EVE oak Dotmanx5 Hereau jrj ✅
+
+SUN v ARS -1
+SUN jrj feex5
+ARS Bx5 Oo 4OURx5 oakx5 Hereau Hong Dotmanx5 ✅
+
+COV v BRI -1
+COV Dotmanx5 jrj 4OURx5 Fx5 Hong
+BRI Bx5 Hereaux5 oak ✅
+
+MUN v MCI -0.5
+MUN Dotmanx5 4OURx5 oak Fx5 Hong jrj Bx5
+MCI Oo Hereaux5 ✅
+
+LEE -0.5 v NEW
+LEE Hereaux5 ✅
+NEW Bx5 oak Dotmanx5 4OURx5 jrj
+
+GW5
+BRE v CHE -0.5
+BRE 4OURx5 Hong ✅
+CHE Oo Dotmanx5 oakx5 Bx5
+
+TOT -0.5 v AVL
+TOT Dotmanx5 oakx5 BX5 kwang
+AVL 4OURx5 Hereaux5 Hong ✅
+
+BRI v ARS -1
+BRI 4OURx5 jrj Hong kwang Feex5 ✅
+ARS Oo Dotmanx5 oak Bx5
+
+EVE -1 v IPS
+EVE Bx5 Hereaux5 jrj Hong Feex5
+IPS 4OURx5 Dotmanx5 kwang
+
+NEW -1 v HUL
+NEW Hereaux5 kwang oak
+HUL 4OURx5 Dotmanx5 Bx5 Hong Feex5
+
+NFO -1 v COV
+NFO 4OURx5 oakx5 Bx5 kwang Feex5
+COV Dotmanx5 Hong ✅
+
+BOU v LIV -0.5
+BOU dotmanx5 Oo Hong
+LIV oak Hereaux5 4OURx5 jrj ✅
+
+BOU v LIV -1
+BOU Oo Dotmanx5
+LIV
+
+LEE -0.5 v CPL
+LEE Hereau 4OURx5 Feex5
+CPL Dotmanx5 oak ✅
+
+MCI -1.5 v SUN
+MCI Oo oak 4OURx5 ✅
+SUN Dotmanx5 jrj Feex5
+
+FUL v MUN -0.5
+FLU jrj feex2 ✅
+MUN Oo Dotmanx5 4OURx5 Bx5 Hong oakx5
+
+GW6
+AVL v BRE
+AVL 4OURx5 jrj
+BRE Bx5 FeeX5
+
+CHE -1 v BOU
+CHE Oo Hereaux5 ✅
+BOU oak Anuth 4OURx5 Bx5 jrj FeeX5
+
+IPS v FUL
+IPS 4OURx5 ✅
+FUL Fee
+
+CPL v NFO
+CPL 4OURx5 jrj ✅
+NFO oak Bx5 Dotmanx5
+
+HUL v EVE -0.5
+HUL oak 4OURx5 Bx5 jrj Feex5 ✅
+EVE Dotmanx5
+
+LIV v MCI
+LIV Dotmanx5 jrj
+MCI Oo 4OURx5 Bx5 ✅
+
+LIV v MCI -0.5
+LIV Dotmanx5 jrjX5
+MCI
+
+COV v NEW -0.5
+COV Dotmanx5 jrj ✅
+NEW oak Bx5 4OURx5 Oo Feex5
+
+GW7
+EVE v CHE -0.5
+EVE 4OURx5 jrj Anuth
+CHE oakx5 Oo Bx5 Hereaux5 ✅
+
+BRE v LIV
+BRE Oo 4OURx5
+LIV jrjX5 Bx5 oak dotmanx5 Hong ✅
+
+FUL -1 v HUL
+FUL Dotmanx5
+HUL 4OURx5 Bx5 oak Hong
+
+MCI -2 v IPS
+MCI oak Oo 4OURx5 oak Hong
+IPS Dotmanx5 ✅
+
+NEW -0.5 v AVL
+NEW Dotmanx5
+AVL 4OURx5 Hong Bx5 jrj ✅
+
+BOU -0.5 v SUN
+BOU Hereaux5 jrj ✅
+SUN 4OURx5 Bx5
+
+BRI -1 v CPL
+BRI jrj fee*5 oak Hereaux5 ✅
+CPL 4OURx5 Bx5
+
+LEE v MUN
+LEE oakx5 feex5 jrj
+MUN Oo 4OURx5 Bx5
+
+NFO v ARS -1
+NFO
+ARS Oo oak Bx5

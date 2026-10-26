@@ -14,8 +14,9 @@ Build Version: 2026.08.31.01
 import json
 import os
 from parse_shi62_special import parse_shi62_file
+from parse_bramann_games import parse_bramann_prediction_file, parse_bramann_challenge_file
 
-def generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=None, precomputed_cfg_str=None, shi62_data_json_str=None):
+def generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=None, precomputed_cfg_str=None, shi62_data_json_str=None, bramann_pred_json_str=None, bramann_chal_json_str=None):
     if precomputed_json_str is None:
         # Performance Optimization: Deep-strip raw_picks and raw_hist before serializing into HTML
         pruned_data = {
@@ -1015,6 +1016,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           ทายผล
         </button>
         <button 
+          id="tab-btn-bramann-prediction"
+          data-tab-target="bramann-prediction-view" 
+          class="tab-nav-btn hidden flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+        >
+          ทายผล
+        </button>
+        <button 
+          id="tab-btn-bramann-challenge"
+          data-tab-target="bramann-challenge-view" 
+          class="tab-nav-btn hidden flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+        >
+          ท้าชน
+        </button>
+        <button 
           id="tab-btn-prizes"
           data-tab-target="prizes-view" 
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
@@ -1170,6 +1185,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     <!-- ==================== TAB: SHI'62 SPECIAL ==================== -->
     <div id="shi62-special-view" class="tab-content hidden space-y-6">
       <!-- Rendered dynamically via app.renderShi62Special() -->
+    </div>
+
+    <!-- ==================== TAB: BRAMANN PREDICTION ==================== -->
+    <div id="bramann-prediction-view" class="tab-content hidden space-y-6">
+      <!-- Rendered dynamically via app.renderBramannPrediction() -->
+    </div>
+
+    <!-- ==================== TAB: BRAMANN CHALLENGE ==================== -->
+    <div id="bramann-challenge-view" class="tab-content hidden space-y-6">
+      <!-- Rendered dynamically via app.renderBramannChallenge() -->
     </div>
 
     <!-- ==================== TAB: COMPETITION ==================== -->
@@ -1828,6 +1853,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     const MULTI_LEAGUE_DATA = __MULTI_DATA_JSON__;
     const LEAGUES_CONFIG = __LEAGUES_CONFIG_JSON__;
     const SHI62_SPECIAL_DATA = __SHI62_SPECIAL_DATA_JSON__;
+    const BRAMANN_PREDICTION_DATA = __BRAMANN_PREDICTION_DATA_JSON__;
+    const BRAMANN_CHALLENGE_DATA = __BRAMANN_CHALLENGE_DATA_JSON__;
     const INITIAL_DEFAULT_LEAGUE = __DEFAULT_LID__;
 
     /**
@@ -2771,7 +2798,11 @@ class LiveCommentaryEngine {
         this.activeTab = this.normalizeTab(queryTab || hashTab || savedTab || 'gameweek-view');
         this.liveNotesCache = {};
         this.shi62Data = (typeof SHI62_SPECIAL_DATA !== 'undefined') ? SHI62_SPECIAL_DATA : null;
+        this.bramannPredData = (typeof BRAMANN_PREDICTION_DATA !== 'undefined') ? BRAMANN_PREDICTION_DATA : null;
+        this.bramannChalData = (typeof BRAMANN_CHALLENGE_DATA !== 'undefined') ? BRAMANN_CHALLENGE_DATA : null;
         this.activeShi62GW = null;
+        this.activeBramannPredGW = null;
+        this.activeBramannChalGW = null;
         this.radarSearchQuery = '';
         this.radarLeagueFilter = 'all';
         this.radarSortBy = 'total_net';
@@ -2789,6 +2820,8 @@ class LiveCommentaryEngine {
         if (t === 'global-radar' || t === 'radar' || t === 'global' || t === 'all-leagues' || t === 'consistency-radar' || t === 'consistency') return 'global-radar-view';
         if (t === 'cup') return 'cup-view';
         if (t === 'shi62' || t === 'shi62-special' || t === 'special' || t === 'beta') return 'shi62-special-view';
+        if (t === 'bramann-prediction' || t === 'bramann-pred' || t === 'pred' || t === 'prediction') return 'bramann-prediction-view';
+        if (t === 'bramann-challenge' || t === 'bramann-chal' || t === 'chal' || t === 'challenge') return 'bramann-challenge-view';
         if (t === 'rule' || t === 'rules') return 'rules-view';
         if (t === 'about' || t === 'about-us' || t === 'about-me' || t === 'feature' || t === 'features' || t === 'function' || t === 'functions' || t === 'capabilities') return 'about-view';
         if (!t.endsWith('-view')) return t + '-view';
@@ -3374,6 +3407,31 @@ class LiveCommentaryEngine {
             }
           }
         }
+
+        // Check Bramann Prediction & Challenge Feature Flags (League 5349)
+        const isBramann = String(this.activeLeagueId) === '5349';
+        const bramannPredTabBtn = document.getElementById('tab-btn-bramann-prediction');
+        const bramannChalTabBtn = document.getElementById('tab-btn-bramann-challenge');
+        if (bramannPredTabBtn) {
+          if (isBramann) {
+            bramannPredTabBtn.classList.remove('hidden');
+          } else {
+            bramannPredTabBtn.classList.add('hidden');
+            if (this.activeTab === 'bramann-prediction-view') {
+              this.switchTab('gameweek-view');
+            }
+          }
+        }
+        if (bramannChalTabBtn) {
+          if (isBramann) {
+            bramannChalTabBtn.classList.remove('hidden');
+          } else {
+            bramannChalTabBtn.classList.add('hidden');
+            if (this.activeTab === 'bramann-challenge-view') {
+              this.switchTab('gameweek-view');
+            }
+          }
+        }
       }
 
       initTabNavigation() {
@@ -3522,6 +3580,12 @@ class LiveCommentaryEngine {
         if (this.shi62Data && String(this.activeLeagueId) === '187827') {
           this.renderShi62Special();
         }
+        if (this.bramannPredData && String(this.activeLeagueId) === '5349') {
+          this.renderBramannPrediction();
+        }
+        if (this.bramannChalData && String(this.activeLeagueId) === '5349') {
+          this.renderBramannChallenge();
+        }
         this.updateHighlightsTabBlink();
       }
 
@@ -3535,6 +3599,8 @@ class LiveCommentaryEngine {
         else if (this.activeTab === 'cup-view') this.renderCupView();
         else if (this.activeTab === 'rules-view') this.renderRulesView();
         else if (this.activeTab === 'shi62-special-view') this.renderShi62Special();
+        else if (this.activeTab === 'bramann-prediction-view') this.renderBramannPrediction();
+        else if (this.activeTab === 'bramann-challenge-view') this.renderBramannChallenge();
         else if (this.activeTab === 'about-view') {
           // Static content
         }
@@ -3727,6 +3793,1145 @@ selectShi62GW(gwName) {
           toast.classList.remove('opacity-100', 'translate-y-0');
           toast.classList.add('opacity-0', 'translate-y-2');
         }, 1800);
+      }
+
+      copyToClipboard(textToCopy, onCopied) {
+        if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(textToCopy).then(onCopied).catch(() => {
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            onCopied();
+          });
+        } else {
+          const textarea = document.createElement('textarea');
+          textarea.value = textToCopy;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          onCopied();
+        }
+      }
+
+      selectBramannPredGW(gwName) {
+        this.activeBramannPredGW = gwName;
+        this.renderBramannPrediction();
+      }
+
+      copyBramannPredLINEResult(gwName) {
+        if (!this.bramannPredData) return;
+        const gw = (this.bramannPredData.gameweeks || []).find(g => g.name === gwName);
+        if (!gw) return;
+
+        const gwDisplayName = gw.name.startsWith('GW') ? gw.name : `GW${gw.name}`;
+        let lines = [];
+        lines.push(`สรุปผลการทายผล Bramann Prediction ${gwDisplayName}`);
+        lines.push(`---------------------------------`);
+        lines.push(`⚽ สรุปได้-เสียประจำสัปดาห์ (${gwDisplayName})`);
+
+        const gwPlayerNet = {};
+        (gw.matches || []).forEach(m => {
+          Object.entries(m.payouts || {}).forEach(([pname, pinfo]) => {
+            if (!gwPlayerNet[pname]) gwPlayerNet[pname] = { net: 0, won: 0, lost: 0, push: 0 };
+            gwPlayerNet[pname].net += (pinfo.net || 0);
+            if (pinfo.net > 0) gwPlayerNet[pname].won += 1;
+            else if (pinfo.net < 0) gwPlayerNet[pname].lost += 1;
+            else gwPlayerNet[pname].push += 1;
+          });
+        });
+
+        const sortedGwPlayers = Object.entries(gwPlayerNet)
+          .map(([name, s]) => ({ name, ...s }))
+          .sort((a, b) => b.net - a.net);
+
+        sortedGwPlayers.forEach((s, i) => {
+          const sign = s.net > 0 ? '+' : '';
+          const pushStr = s.push > 0 ? ` ${s.push}D` : '';
+          lines.push(`${i + 1}. ${s.name}: ${sign}${Number(s.net).toLocaleString()} (${s.won}W ${s.lost}L${pushStr})`);
+        });
+        lines.push(`---------------------------------`);
+        const totalGwPool = (gw.matches || []).reduce((sum, m) => sum + (m.pool || 0), 0);
+        lines.push(`💰 พูลสัปดาห์นี้: ${Number(totalGwPool).toLocaleString()} บาท (${gw.matches.length} คู่)`);
+        lines.push(`---------------------------------`);
+
+        if (gw.matches && gw.matches.length > 0) {
+          lines.push(`📋 ผลการแข่งขัน (${gwDisplayName}):`);
+          gw.matches.forEach(m => {
+            if (m.status === 'push' || m.winning_side === 'push') {
+              lines.push(`• ${m.title} ➔ เสมอ/ยก (แยกย้าย)`);
+            } else {
+              const winSideLabel = m.winning_side === 1 ? m.side1_label : m.side2_label;
+              const winBets = m.winning_side === 1 ? m.side1_bets : m.side2_bets;
+              const winNames = winBets.map(b => `${b.name}${b.legs > 1 ? `x${b.legs}` : ''}`).join(', ');
+              lines.push(`• ${m.title} ➔ ${winSideLabel} ✅ [${winNames}]`);
+            }
+          });
+          lines.push(`---------------------------------`);
+        }
+
+        lines.push(`🏆 ตารางอันดับสะสมทายผล:`);
+        (this.bramannPredData.cumulative_standings || []).forEach((c, idx) => {
+          const sign = c.net > 0 ? '+' : '';
+          lines.push(`${idx + 1}. ${c.player.display_name}: ${sign}${Number(c.net).toLocaleString()}`);
+        });
+
+        lines.push(`---------------------------------`);
+        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/5349`);
+
+        const textToCopy = lines.join(String.fromCharCode(10));
+        const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผลทายผล ${gw.name} สำหรับ LINE เรียบร้อย`);
+        this.copyToClipboard(textToCopy, onCopied);
+      }
+
+      selectBramannChalGW(gwName) {
+        this.activeBramannChalGW = gwName;
+        this.renderBramannChallenge();
+      }
+
+      copyBramannChalLINEResult(gwName) {
+        if (!this.bramannChalData) return;
+        const gw = (this.bramannChalData.gameweeks || []).find(g => g.name === gwName);
+        if (!gw) return;
+
+        const gwDisplayName = gw.name.startsWith('GW') ? gw.name : `GW${gw.name}`;
+        let lines = [];
+        lines.push(`สรุปผลท้าชน Bramann Challenge ${gwDisplayName}`);
+        lines.push(`---------------------------------`);
+        lines.push(`⚔️ การดวลแต้มแฟนตาซี (${gwDisplayName}):`);
+        (gw.matches || []).forEach(m => {
+          const t1Pts = m.team1_pts !== undefined ? `${m.team1_pts} pts` : '-';
+          const t2Pts = m.team2_pts !== undefined ? `${m.team2_pts} pts` : '-';
+          lines.push(`• ${m.team1_name} (${t1Pts}) vs ${m.team2_name} (${t2Pts})`);
+          if (m.winning_side === 1) {
+            lines.push(`  ผู้ชนะ: ${m.team1_name} ✅${m.tie_break_note ? ` (${m.tie_break_note})` : ''}`);
+          } else if (m.winning_side === 2) {
+            lines.push(`  ผู้ชนะ: ${m.team2_name} ✅${m.tie_break_note ? ` (${m.tie_break_note})` : ''}`);
+          } else {
+            lines.push(`  ผลการแข่งขัน: เสมอแยกย้าย (Push)`);
+          }
+          if (m.payouts && Object.keys(m.payouts).length > 0) {
+            lines.push(`  💰 ผลได้-เสีย:`);
+            Object.entries(m.payouts).forEach(([pname, pinfo]) => {
+              const sign = pinfo.net > 0 ? '+' : '';
+              lines.push(`    - ${pname}: ${sign}${Number(pinfo.net).toLocaleString()} บาท`);
+            });
+          }
+        });
+
+        lines.push(`---------------------------------`);
+        lines.push(`🏆 ตารางอันดับสะสมท้าชน:`);
+        (this.bramannChalData.cumulative_standings || []).forEach((c, idx) => {
+          const sign = c.net > 0 ? '+' : '';
+          lines.push(`${idx + 1}. ${c.player.display_name}: ${sign}${Number(c.net).toLocaleString()}`);
+        });
+
+        lines.push(`---------------------------------`);
+        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/5349`);
+
+        const textToCopy = lines.join(String.fromCharCode(10));
+        const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผลท้าชน ${gw.name} สำหรับ LINE เรียบร้อย`);
+        this.copyToClipboard(textToCopy, onCopied);
+      }
+
+      copyBramannPrizesLINEResult() {
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || 7;
+        let lines = [];
+        lines.push(`สรุปเงินรางวัล FPL & มินิเกม Bramann League (GW${maxGW})`);
+        lines.push(`---------------------------------`);
+        lines.push(`🏆 สรุปเงินรางวัล FPL (Prize 1 + Prize 2) รวม 9,500 บาท:`);
+        lines.push(`(อันดับ • ทีม • แต้ม • P1 • P2 • รวม FPL • ทายผล • ท้าชน • ยอดสุทธิ)`);
+
+        const p1Tiers = { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
+        const p2Tiers = { "1": 1000, "2": 800, "3": 700, "7": 700, "8": 500, "9": 400, "13": 400, "14": 300, "15": 200 };
+
+        const predMap = {};
+        if (this.bramannPredData && this.bramannPredData.cumulative_standings) {
+          this.bramannPredData.cumulative_standings.forEach(c => {
+            if (c.player) {
+              if (c.player.entry_id) predMap[c.player.entry_id] = Number(c.net) || 0;
+              if (c.player.display_name) predMap[c.player.display_name.toLowerCase()] = Number(c.net) || 0;
+            }
+          });
+        }
+
+        const chalMap = {};
+        if (this.bramannChalData && this.bramannChalData.cumulative_standings) {
+          this.bramannChalData.cumulative_standings.forEach(c => {
+            if (c.player) {
+              if (c.player.entry_id) chalMap[c.player.entry_id] = Number(c.net) || 0;
+              if (c.player.display_name) chalMap[c.player.display_name.toLowerCase()] = Number(c.net) || 0;
+            }
+          });
+        }
+
+        const overallTeams = (this.data && this.data.teams ? [...this.data.teams] : [])
+          .filter(t => this.isPrizeEligible(t.entry_id))
+          .sort((a, b) => (b.total_points - a.total_points) || ((a.rank || 999) - (b.rank || 999)));
+
+        const fmtVal = (v) => {
+          if (v > 0) return `+${Number(v).toLocaleString()}`;
+          if (v < 0) return `${Number(v).toLocaleString()}`;
+          return '0';
+        };
+
+        overallTeams.forEach((t, idx) => {
+          const rank = idx + 1;
+          const p1 = Number(p1Tiers[String(rank)] || 0);
+          const p2 = Number(p2Tiers[String(rank)] || 0);
+          const totalFpl = p1 + p2;
+          const predNet = (predMap[t.entry_id] !== undefined)
+            ? predMap[t.entry_id]
+            : (predMap[(t.player_name || '').toLowerCase()] || 0);
+          const chalNet = (chalMap[t.entry_id] !== undefined)
+            ? chalMap[t.entry_id]
+            : (chalMap[(t.player_name || '').toLowerCase()] || 0);
+          const grandNet = totalFpl + predNet + chalNet;
+
+          lines.push(`${rank}. ${t.entry_name}: ${t.total_points} pts | P1: ${p1 > 0 ? p1 : '-'} | P2: ${p2 > 0 ? p2 : '-'} | FPL: ${totalFpl > 0 ? totalFpl : '-'} | ทายผล: ${fmtVal(predNet)} | ท้าชน: ${fmtVal(chalNet)} | รวม: ${fmtVal(grandNet)}`);
+        });
+
+        const feeCum = (this.bramannPredData && this.bramannPredData.cumulative_standings)
+          ? this.bramannPredData.cumulative_standings.find(c => c.player && c.player.is_guest)
+          : null;
+        if (feeCum) {
+          const feeNet = feeCum.net || 0;
+          lines.push(`• Fee (Guest): FPL - | ทายผล ${fmtVal(feeNet)} | รวม ${fmtVal(feeNet)}`);
+        }
+
+        lines.push(`---------------------------------`);
+        lines.push(`• Prize 1 (หลังจบ GW 19): 9 อันดับ (1, 2, 3, 5, 7, 9, 11, 13, 15) คนละ 500 บ. (รวม 4,500 บ.)`);
+        lines.push(`• Prize 2 (หลังจบ GW 38): 9 อันดับขั้นบันได (รวม 5,000 บ.)`);
+        lines.push(`---------------------------------`);
+        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/5349`);
+
+        const textToCopy = lines.join(String.fromCharCode(10));
+        const onCopied = () => this.showCopiedToast('คัดลอกสรุปเงินรางวัลสำหรับ LINE เรียบร้อย');
+        this.copyToClipboard(textToCopy, onCopied);
+      }
+
+      renderBramannPrediction() {
+        if (!this.bramannPredData) return;
+        const container = document.getElementById('bramann-prediction-view');
+        if (!container) return;
+
+        const data = this.bramannPredData;
+        if (!this.activeBramannPredGW && data.gameweeks && data.gameweeks.length > 0) {
+          this.activeBramannPredGW = data.gameweeks[data.gameweeks.length - 1].name;
+        }
+
+        const activeGWObj = (data.gameweeks || []).find(g => g.name === this.activeBramannPredGW) || data.gameweeks[data.gameweeks.length - 1];
+        if (!activeGWObj) return;
+
+        const fmtMoney = (val, showPlus = true, unit = '') => {
+          const formatted = Math.abs(val).toLocaleString();
+          const u = unit ? ` ${unit}` : '';
+          if (val > 0) return `${showPlus ? '+' : ''}${formatted}${u}`;
+          if (val < 0) return `-${formatted}${u}`;
+          return `0${u}`;
+        };
+
+        const sortedByWinRate = [...data.cumulative_standings].sort((a, b) => b.win_rate - a.win_rate);
+
+        const gwPlayerNet = {};
+        (activeGWObj.matches || []).forEach(m => {
+          Object.entries(m.payouts || {}).forEach(([pname, pinfo]) => {
+            if (!gwPlayerNet[pname]) gwPlayerNet[pname] = { net: 0, won: 0, lost: 0, push: 0, legs: 0 };
+            gwPlayerNet[pname].net += (pinfo.net || 0);
+            gwPlayerNet[pname].legs += (pinfo.legs || 0);
+            if (pinfo.net > 0) gwPlayerNet[pname].won += 1;
+            else if (pinfo.net < 0) gwPlayerNet[pname].lost += 1;
+            else gwPlayerNet[pname].push += 1;
+          });
+        });
+        const gwSummaryList = Object.entries(gwPlayerNet)
+          .map(([name, s]) => ({ name, ...s }))
+          .sort((a, b) => b.net - a.net);
+
+        const gwTotalPool = (activeGWObj.matches || []).reduce((sum, m) => sum + (m.pool || 0), 0);
+
+        let html = `
+          <!-- Header Banner -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60 font-display mb-1.5">
+                  BRAMANN MINI-GAME #2
+                </div>
+                <h1 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
+                  Bramann Prediction (ทายผล)
+                </h1>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl">
+                  มินิเกมทายผลฟุตบอลแบบพูลหารเท่า ขาละ 100 บาท สูงสุด 5 ขาต่อคู่ เสมอแยกย้าย ปัดเศษบาทลงตัว
+                </p>
+              </div>
+
+              <!-- Quick Stats Grid -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">ยอดเงินสะพัดรวม</div>
+                  <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">฿${Number(data.total_season_turnover).toLocaleString()}</div>
+                </div>
+                <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">คู่ที่เปิดทายผล</div>
+                  <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">${data.total_season_matches} คู่</div>
+                </div>
+                <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">ผู้นำทำกำไรสูงสุด</div>
+                  <div class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 font-display truncate mt-0.5">${data.cumulative_standings[0] ? data.cumulative_standings[0].player.display_name + ' (' + fmtMoney(data.cumulative_standings[0].net) + ')' : '-'}</div>
+                </div>
+                <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">แม่นยำสูงสุด (%ชนะ)</div>
+                  <div class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 font-display mt-0.5">${sortedByWinRate[0]?.player.display_name || '-'} (${sortedByWinRate[0]?.win_rate || 0}%)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 1: Gameweek Breakdown & Match Details -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-4">
+            <!-- Gameweek Controls Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
+                ผลการแข่งขัน & การคิดเงินรายสัปดาห์
+              </h2>
+
+              <!-- GW Pills Selector & Copy LINE Button -->
+              <div class="flex flex-wrap items-center justify-end gap-2 w-full sm:w-auto">
+                <div class="flex items-center gap-1 overflow-x-auto touch-scroll p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60 max-w-full w-full sm:w-auto">
+                  ${data.gameweeks.map(g => {
+                    const isActive = g.name === this.activeBramannPredGW;
+                    return `
+                      <button 
+                        onclick="app.selectBramannPredGW('${g.name}')"
+                        class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                          isActive 
+                            ? 'bg-slate-900 text-white dark:bg-blue-600 dark:text-white shadow-xs' 
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-700/60'
+                        }"
+                      >
+                        ${g.name}
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+
+                <button 
+                  onclick="app.copyBramannPredLINEResult('${activeGWObj.name}')"
+                  class="ml-auto sm:ml-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
+                  title="คัดลอกสรุปผลสัปดาห์นี้สำหรับส่ง LINE"
+                >
+                  <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+                  <span>คัดลอก LINE</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Active GW Stats & Financial Balance Card -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <!-- Left: GW Info -->
+              <div class="bg-slate-50/80 dark:bg-slate-800/40 rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-bold text-slate-700 dark:text-slate-300 font-display">${activeGWObj.name}</span>
+                    <span class="text-[10.5px] font-medium px-2 py-0.5 rounded-md bg-slate-200/70 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300">${activeGWObj.matches.length} คู่</span>
+                  </div>
+                  <div class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white font-display mt-2">
+                    ฿${Number(gwTotalPool).toLocaleString()}
+                  </div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                    ยอดเงินพูลที่หมุนเวียนในสัปดาห์นี้
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right 2 cols: GW Standings -->
+              <div class="md:col-span-2 bg-slate-50/50 dark:bg-slate-800/30 rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800">
+                <div class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center justify-between">
+                  <span>สรุปยอดเงินได้-เสียสุทธิในสัปดาห์นี้ (${activeGWObj.name})</span>
+                  <span class="text-[10.5px] text-slate-400 font-normal">เรียงตามกำไรสุทธิ</span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                  ${gwSummaryList.map(s => {
+                    const isPositive = s.net > 0;
+                    const isNegative = s.net < 0;
+                    const bgStyle = isPositive 
+                      ? 'bg-emerald-500/5 dark:bg-emerald-500/10 border-emerald-500/20' 
+                      : (isNegative ? 'bg-rose-500/5 dark:bg-rose-500/10 border-rose-500/20' : 'bg-slate-100/60 dark:bg-slate-800/40 border-slate-200/60 dark:border-slate-700/60');
+                    const textStyle = isPositive ? 'text-emerald-600 dark:text-emerald-400' : (isNegative ? 'text-rose-600 dark:text-rose-400' : 'text-slate-600 dark:text-slate-400');
+                    return `
+                      <div class="p-2 rounded-lg border ${bgStyle} flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                          <span class="font-bold text-xs text-slate-800 dark:text-slate-200">${s.name}</span>
+                          <span class="text-[10px] text-slate-400">${s.won}W - ${s.lost}L</span>
+                        </div>
+                        <div class="text-xs sm:text-sm font-bold font-display mt-1 ${textStyle}">
+                          ${fmtMoney(s.net)}
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Matches List Grid -->
+            <div>
+              <div class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2.5 flex items-center justify-between">
+                <span>รายละเอียดการทายผลทุกคู่ (${activeGWObj.matches.length} คู่)</span>
+                <span class="text-[10.5px] text-slate-400 font-normal">เครื่องหมาย ✅ คือผลชนะ</span>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3">
+                ${activeGWObj.matches.map((m, idx) => {
+                  const isPush = m.status === 'push' || m.winning_side === 'push';
+                  const s1Won = m.winning_side === 1;
+                  const s2Won = m.winning_side === 2;
+
+                  return `
+                    <div class="rounded-xl border ${isPush ? 'border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/40 dark:bg-slate-900/20' : 'border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-2xs'} p-3 flex flex-col justify-between space-y-2.5">
+                      <div class="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800/80 pb-2">
+                        <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white font-display">
+                          ${m.title}
+                        </div>
+                        <div class="flex items-center gap-1.5 flex-shrink-0">
+                          ${isPush 
+                            ? '<span class="text-[10.5px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">เสมอ / ยก (Push)</span>'
+                            : `<span class="text-[10.5px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">ชนะ: ${m.winning_label} ✅</span>`
+                          }
+                          <span class="text-[10.5px] font-bold px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 font-display">฿${m.pool.toLocaleString()}</span>
+                        </div>
+                      </div>
+
+                      <div class="grid grid-cols-2 gap-2 text-xs">
+                        <!-- Side 1 -->
+                        <div class="rounded-lg p-2 border ${s1Won ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-slate-50/60 dark:bg-slate-800/30 border-slate-200/60 dark:border-slate-800'}">
+                          <div class="flex items-center justify-between mb-1.5">
+                            <span class="font-bold text-slate-900 dark:text-white">${m.side1_label}</span>
+                            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${s1Won ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${m.side1_legs} ขา</span>
+                          </div>
+                          <div class="flex flex-wrap gap-1">
+                            ${m.side1_bets.length > 0 
+                              ? m.side1_bets.map(b => `<span class="text-[10px] px-1.5 py-0.5 rounded bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium">${b.name}${b.legs > 1 ? ` <strong class="text-blue-600 dark:text-blue-400">x${b.legs}</strong>` : ''}</span>`).join('')
+                              : '<span class="text-[10px] text-slate-400 italic">ไม่มีคนแทง</span>'
+                            }
+                          </div>
+                        </div>
+
+                        <!-- Side 2 -->
+                        <div class="rounded-lg p-2 border ${s2Won ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-slate-50/60 dark:bg-slate-800/30 border-slate-200/60 dark:border-slate-800'}">
+                          <div class="flex items-center justify-between mb-1.5">
+                            <span class="font-bold text-slate-900 dark:text-white">${m.side2_label}</span>
+                            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${s2Won ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${m.side2_legs} ขา</span>
+                          </div>
+                          <div class="flex flex-wrap gap-1">
+                            ${m.side2_bets.length > 0 
+                              ? m.side2_bets.map(b => `<span class="text-[10px] px-1.5 py-0.5 rounded bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium">${b.name}${b.legs > 1 ? ` <strong class="text-blue-600 dark:text-blue-400">x${b.legs}</strong>` : ''}</span>`).join('')
+                              : '<span class="text-[10px] text-slate-400 italic">ไม่มีคนแทง</span>'
+                            }
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="pt-1 border-t border-slate-100 dark:border-slate-800/60 flex items-center gap-1.5 flex-wrap">
+                        <span class="text-[10px] text-slate-400 font-medium">ผลได้-เสีย:</span>
+                        ${Object.entries(m.payouts || {}).map(([pname, pinfo]) => {
+                          const netVal = pinfo.net || 0;
+                          const isPos = netVal > 0;
+                          const isNeg = netVal < 0;
+                          const chipClass = isPos ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200/60' : (isNeg ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200/60' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200');
+                          return `
+                            <span class="text-[10px] px-1.5 py-0.5 rounded border ${chipClass} font-display">
+                              ${pname}: <strong>${fmtMoney(netVal)}</strong>
+                            </span>
+                          `;
+                        }).join('')}
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 2: Cumulative Standings Table -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div>
+                <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
+                  ตารางการแข่งขันทายผลสะสมตลอดฤดูกาล
+                </h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  สรุปผลงานทายผล GW 1 ถึง ${activeGWObj.name} • คิดเงินแบบ Zero-Sum Balance (ยอดรวมได้-เสียสุทธิเท่ากับ 0 บาท)
+                </p>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto touch-scroll">
+              <table class="w-full text-left border-collapse min-w-[640px]">
+                <thead>
+                  <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                    <th class="py-2.5 px-3 text-center w-12">อันดับ</th>
+                    <th class="py-2.5 px-3">ผู้เล่น / ทีม FPL</th>
+                    <th class="py-2.5 px-3 text-center">แข่ง (คู่)</th>
+                    <th class="py-2.5 px-3 text-center">ขารวม</th>
+                    <th class="py-2.5 px-3 text-center">ชนะ</th>
+                    <th class="py-2.5 px-3 text-center">แพ้</th>
+                    <th class="py-2.5 px-3 text-center">เสมอ</th>
+                    <th class="py-2.5 px-3 text-center">% ชนะ</th>
+                    <th class="py-2.5 px-3 text-right">เงินที่ได้</th>
+                    <th class="py-2.5 px-3 text-right">เงินที่เสีย</th>
+                    <th class="py-2.5 px-3 text-right font-bold">กำไร/ขาดทุนสุทธิ</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
+                  ${data.cumulative_standings.map(c => {
+                    const isPositive = c.net > 0;
+                    const isNegative = c.net < 0;
+                    const netColor = isPositive 
+                      ? 'text-emerald-600 dark:text-emerald-400 font-bold' 
+                      : (isNegative ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 font-medium');
+                    
+                    const rankBadge = `<span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${c.rank}</span>`;
+
+                    return `
+                      <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                        <td class="py-2.5 px-3 text-center font-display">${rankBadge}</td>
+                        <td class="py-2.5 px-3">
+                          <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
+                              ${c.player.display_name}
+                            </span>
+                            <div>
+                              ${c.player.is_guest 
+                                ? '<div class="text-xs text-slate-500 dark:text-slate-400 font-medium">เล่นเฉพาะมินิเกม</div>' 
+                                : `
+                                  <div class="font-bold text-slate-900 dark:text-white leading-tight">${c.player.team_name}</div>
+                                  <div class="text-[11px] text-slate-400 leading-tight">${c.player.manager}</div>
+                                `}
+                            </div>
+                          </div>
+                        </td>
+                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
+                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.legs_total}</td>
+                        <td class="py-2.5 px-3 text-center font-display font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
+                        <td class="py-2.5 px-3 text-center font-display font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
+                        <td class="py-2.5 px-3 text-center font-display text-slate-400">${c.push}</td>
+                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-600 dark:text-slate-400">${c.win_rate}%</td>
+                        <td class="py-2.5 px-3 text-right font-display text-emerald-600 dark:text-emerald-400">${c.total_won_amount.toLocaleString()}</td>
+                        <td class="py-2.5 px-3 text-right font-display text-rose-500 dark:text-rose-400">${c.total_lost_amount > 0 ? `-${c.total_lost_amount.toLocaleString()}` : '0'}</td>
+                        <td class="py-2.5 px-3 text-right font-display ${netColor}">
+                          ${fmtMoney(c.net)}
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+
+        container.innerHTML = html;
+      }
+
+      renderBramannChallenge() {
+        if (!this.bramannChalData) return;
+        const container = document.getElementById('bramann-challenge-view');
+        if (!container) return;
+
+        const data = this.bramannChalData;
+        if (!this.activeBramannChalGW && data.gameweeks && data.gameweeks.length > 0) {
+          this.activeBramannChalGW = data.gameweeks[data.gameweeks.length - 1].name;
+        }
+
+        const activeGWObj = (data.gameweeks || []).find(g => g.name === this.activeBramannChalGW) || data.gameweeks[data.gameweeks.length - 1];
+        if (!activeGWObj) return;
+
+        const fmtMoney = (val, showPlus = true, unit = '') => {
+          const formatted = Math.abs(val).toLocaleString();
+          const u = unit ? ` ${unit}` : '';
+          if (val > 0) return `${showPlus ? '+' : ''}${formatted}${u}`;
+          if (val < 0) return `-${formatted}${u}`;
+          return `0${u}`;
+        };
+
+        let html = `
+          <!-- Header Banner -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/60 font-display mb-1.5">
+                  BRAMANN MINI-GAME #3
+                </div>
+                <h1 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
+                  Bramann Challenge (ท้าชน)
+                </h1>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl">
+                  ดวลแต้มแฟนตาซีตัวต่อตัวประจำสัปดาห์ พร้อมระบบวางเดิมพันร่วม • Tie-Breaker: กัปตัน -> รองกัปตัน -> ตัวท็อป -> เสมอ
+                </p>
+              </div>
+
+              <!-- Quick Stats Grid -->
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">ยอดเดิมพันสะพัด</div>
+                  <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">฿${Number(data.total_season_turnover).toLocaleString()}</div>
+                </div>
+                <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">แมตช์ท้าชน</div>
+                  <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">${data.total_season_matches} คู่</div>
+                </div>
+                <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center col-span-2 sm:col-span-1">
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">ผู้นำทำกำไรสูงสุด</div>
+                  <div class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 font-display truncate mt-0.5">${data.cumulative_standings[0] ? data.cumulative_standings[0].player.display_name + ' (' + fmtMoney(data.cumulative_standings[0].net) + ')' : '-'}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 1: Gameweek Challenge Matches -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-4">
+            <!-- GW Controls -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
+                คู่ท้าชนประจำสัปดาห์
+              </h2>
+
+              <div class="flex flex-wrap items-center justify-end gap-2 w-full sm:w-auto">
+                <div class="flex items-center gap-1 overflow-x-auto touch-scroll p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60 max-w-full w-full sm:w-auto">
+                  ${data.gameweeks.map(g => {
+                    const isActive = g.name === this.activeBramannChalGW;
+                    return `
+                      <button 
+                        onclick="app.selectBramannChalGW('${g.name}')"
+                        class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                          isActive 
+                            ? 'bg-slate-900 text-white dark:bg-blue-600 dark:text-white shadow-xs' 
+                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-700/60'
+                        }"
+                      >
+                        ${g.name}
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+
+                <button 
+                  onclick="app.copyBramannChalLINEResult('${activeGWObj.name}')"
+                  class="ml-auto sm:ml-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
+                  title="คัดลอกสรุปผลท้าชนสัปดาห์นี้สำหรับส่ง LINE"
+                >
+                  <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+                  <span>คัดลอก LINE</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Challenge Matches List -->
+            <div class="space-y-4">
+              ${activeGWObj.matches.map((m, idx) => {
+                const s1Won = m.winning_side === 1;
+                const s2Won = m.winning_side === 2;
+
+                return `
+                  <div class="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-4 sm:p-5 shadow-sm space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+                      <div>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider font-display">MATCH #${idx + 1}</span>
+                        <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display mt-0.5">
+                          ${m.title}
+                        </h3>
+                      </div>
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <span class="text-[10.5px] px-2 py-0.5 rounded-md font-semibold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/60">
+                          ${m.count_hits ? 'หักแต้มลบย้ายตัว' : 'ไม่หักแต้มลบ'}
+                        </span>
+                        <span class="text-[10.5px] px-2 py-0.5 rounded-md font-semibold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200/60">
+                          ${m.count_chips ? 'นับชิปพิเศษ' : 'ไม่นับชิป'}
+                        </span>
+                        <span class="text-[10.5px] px-2 py-0.5 rounded-md font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                          พูล: ฿${m.pool.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 relative">
+                      <!-- Team 1 -->
+                      <div class="rounded-xl p-3.5 sm:p-4 border ${s1Won ? 'bg-emerald-500/10 border-emerald-500/40' : 'bg-slate-50/60 dark:bg-slate-800/40 border-slate-200/80 dark:border-slate-700'} flex flex-col justify-between">
+                        <div>
+                          <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-400 font-display">ฝั่งที่ 1</span>
+                            ${s1Won ? '<span class="text-[10.5px] font-bold px-2 py-0.5 rounded bg-emerald-500 text-white shadow-2xs">ชนะ ✅</span>' : ''}
+                          </div>
+                          <div class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-1">
+                            ${m.team1_name}
+                          </div>
+                          <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                            ผู้จัดการ: ${m.team1_player || '-'}
+                          </div>
+                          <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                            กัปตัน: <strong class="text-slate-700 dark:text-slate-300">${m.team1_captain || '-'}</strong>
+                          </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-700/60 flex items-baseline justify-between">
+                          <span class="text-xs font-medium text-slate-500 dark:text-slate-400">คะแนนแฟนตาซี</span>
+                          <span class="text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white">${m.team1_pts} <span class="text-xs font-bold text-slate-400">pts</span></span>
+                        </div>
+                      </div>
+
+                      <!-- Team 2 -->
+                      <div class="rounded-xl p-3.5 sm:p-4 border ${s2Won ? 'bg-emerald-500/10 border-emerald-500/40' : 'bg-slate-50/60 dark:bg-slate-800/40 border-slate-200/80 dark:border-slate-700'} flex flex-col justify-between">
+                        <div>
+                          <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-400 font-display">ฝั่งที่ 2</span>
+                            ${s2Won ? '<span class="text-[10.5px] font-bold px-2 py-0.5 rounded bg-emerald-500 text-white shadow-2xs">ชนะ ✅</span>' : ''}
+                          </div>
+                          <div class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-1">
+                            ${m.team2_name}
+                          </div>
+                          <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                            ผู้จัดการ: ${m.team2_player || '-'}
+                          </div>
+                          <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                            กัปตัน: <strong class="text-slate-700 dark:text-slate-300">${m.team2_captain || '-'}</strong>
+                          </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-700/60 flex items-baseline justify-between">
+                          <span class="text-xs font-medium text-slate-500 dark:text-slate-400">คะแนนแฟนตาซี</span>
+                          <span class="text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white">${m.team2_pts} <span class="text-xs font-bold text-slate-400">pts</span></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    ${m.tie_break_note ? `
+                      <div class="p-2.5 rounded-xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/60 text-xs text-amber-800 dark:text-amber-300 font-medium flex items-center gap-2">
+                        <span>⚖️ การตัดสิน Tie-Breaker:</span>
+                        <span class="font-bold">${m.tie_break_note}</span>
+                      </div>
+                    ` : ''}
+
+                    <div class="bg-slate-50/60 dark:bg-slate-800/30 rounded-xl p-3 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
+                      <div class="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                        <span>สมาชิกที่ร่วมวางเดิมพัน & ขาเชียร์</span>
+                        <span class="text-[10.5px] text-slate-400 font-normal">เดิมพันขาละ ${m.stake_per_leg || 100} บาท</span>
+                      </div>
+
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div class="space-y-1">
+                          <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">เชียร์ ${m.team1_name}:</span>
+                          <div class="flex flex-wrap gap-1">
+                            ${(m.side1_bets || []).map(b => `<span class="text-[10px] px-2 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-medium">${b.name} (${b.legs} ขา)</span>`).join('')}
+                          </div>
+                        </div>
+
+                        <div class="space-y-1">
+                          <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">เชียร์ ${m.team2_name}:</span>
+                          <div class="flex flex-wrap gap-1">
+                            ${(m.side2_bets || []).map(b => `<span class="text-[10px] px-2 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-medium">${b.name} (${b.legs} ขา)</span>`).join('')}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center gap-1.5 flex-wrap">
+                        <span class="text-[10.5px] text-slate-400 font-medium">ผลการได้-เสีย:</span>
+                        ${Object.entries(m.payouts || {}).map(([pname, pinfo]) => {
+                          const netVal = pinfo.net || 0;
+                          const isPos = netVal > 0;
+                          const isNeg = netVal < 0;
+                          const chipClass = isPos ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200/60' : (isNeg ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200/60' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200');
+                          return `
+                            <span class="text-[10px] px-2 py-0.5 rounded border ${chipClass} font-display">
+                              ${pname}: <strong>${fmtMoney(netVal)}</strong>
+                            </span>
+                          `;
+                        }).join('')}
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- SECTION 2: Cumulative Standings Table -->
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div>
+                <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
+                  ตารางการแข่งขันท้าชนสะสม
+                </h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  สรุปผลงานท้าชนสะสมตลอดฤดูกาล
+                </p>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto touch-scroll">
+              <table class="w-full text-left border-collapse min-w-[580px]">
+                <thead>
+                  <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                    <th class="py-2.5 px-3 text-center w-12">อันดับ</th>
+                    <th class="py-2.5 px-3">ผู้เล่น / ทีม FPL</th>
+                    <th class="py-2.5 px-3 text-center">แข่ง (คู่)</th>
+                    <th class="py-2.5 px-3 text-center">ชนะ</th>
+                    <th class="py-2.5 px-3 text-center">แพ้</th>
+                    <th class="py-2.5 px-3 text-center">เสมอ</th>
+                    <th class="py-2.5 px-3 text-right font-bold">กำไร/ขาดทุนสุทธิ</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
+                  ${data.cumulative_standings.map(c => {
+                    const isPositive = c.net > 0;
+                    const isNegative = c.net < 0;
+                    const netColor = isPositive 
+                      ? 'text-emerald-600 dark:text-emerald-400 font-bold' 
+                      : (isNegative ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 font-medium');
+
+                    return `
+                      <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                        <td class="py-2.5 px-3 text-center font-display font-semibold text-slate-500">${c.rank}</td>
+                        <td class="py-2.5 px-3">
+                          <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
+                              ${c.player.display_name}
+                            </span>
+                            <div>
+                              <div class="font-bold text-slate-900 dark:text-white leading-tight">${c.player.team_name}</div>
+                              <div class="text-[11px] text-slate-400 leading-tight">${c.player.manager}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
+                        <td class="py-2.5 px-3 text-center font-display font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
+                        <td class="py-2.5 px-3 text-center font-display font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
+                        <td class="py-2.5 px-3 text-center font-display text-slate-400">${c.push}</td>
+                        <td class="py-2.5 px-3 text-right font-display ${netColor}">
+                          ${fmtMoney(c.net)}
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+
+        container.innerHTML = html;
+      }
+
+      renderBramannDualPrizeView(titleEl, subEl, poolBadge, tagEl, mainContainer) {
+        if (tagEl) tagEl.innerText = "BRAMANN DUAL PRIZE (GW 19 & GW 38)";
+        if (titleEl) titleEl.innerText = "สรุปเงินรางวัล FPL & การจัดสรรกองกลาง";
+        if (subEl) subEl.innerText = "เงินกองกลางรวม 9,500 THB (19 ทีม x 500 บาท) • Prize 1 (หลังจบ GW 19 รวม 4,500 THB) + Prize 2 (หลังจบ GW 38 รวม 5,000 THB)";
+        if (poolBadge) poolBadge.innerText = "9,500 THB";
+
+        const p1Tiers = { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
+        const p2Tiers = { "1": 1000, "2": 800, "3": 700, "7": 700, "8": 500, "9": 400, "13": 400, "14": 300, "15": 200 };
+
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || 7;
+
+        const overallMap = {};
+        (this.data.teams || []).forEach(t => {
+          overallMap[t.entry_id] = {
+            entry_id: t.entry_id,
+            team_name: t.entry_name,
+            player_name: t.player_name,
+            fpl_rank: t.rank || 999,
+            total_points: 0
+          };
+        });
+
+        for (let g = 1; g <= maxGW; g++) {
+          const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+          if (gData && gData.results) {
+            const gIsStarted = gData.is_started !== undefined 
+              ? Boolean(gData.is_started) 
+              : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+            if (gIsStarted) {
+              const seenInGw = new Set();
+              gData.results.forEach(r => {
+                if (seenInGw.has(r.entry_id)) return;
+                seenInGw.add(r.entry_id);
+                if (overallMap[r.entry_id]) {
+                  overallMap[r.entry_id].total_points += (r.net_points || 0);
+                }
+              });
+            }
+          }
+        }
+
+        const overallSorted = Object.values(overallMap).sort((a, b) => {
+          const aEligible = this.isPrizeEligible(a.entry_id) ? 1 : 0;
+          const bEligible = this.isPrizeEligible(b.entry_id) ? 1 : 0;
+          if (aEligible !== bEligible) return bEligible - aEligible;
+          return (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999));
+        });
+
+        const predMap = {};
+        if (this.bramannPredData && this.bramannPredData.cumulative_standings) {
+          this.bramannPredData.cumulative_standings.forEach(c => {
+            if (c.player) {
+              if (c.player.entry_id) predMap[c.player.entry_id] = Number(c.net) || 0;
+              if (c.player.display_name) predMap[c.player.display_name.toLowerCase()] = Number(c.net) || 0;
+            }
+          });
+        }
+
+        const chalMap = {};
+        if (this.bramannChalData && this.bramannChalData.cumulative_standings) {
+          this.bramannChalData.cumulative_standings.forEach(c => {
+            if (c.player) {
+              if (c.player.entry_id) chalMap[c.player.entry_id] = Number(c.net) || 0;
+              if (c.player.display_name) chalMap[c.player.display_name.toLowerCase()] = Number(c.net) || 0;
+            }
+          });
+        }
+
+        const fmtMoney = (val, showPlus = true, unit = '') => {
+          const formatted = Math.abs(val).toLocaleString();
+          const u = unit ? ` ${unit}` : '';
+          if (val > 0) return `${showPlus ? '+' : ''}${formatted}${u}`;
+          if (val < 0) return `-${formatted}${u}`;
+          return `0${u}`;
+        };
+
+        let sumPoints = 0;
+        let sumP1 = 0;
+        let sumP2 = 0;
+        let sumTotalFpl = 0;
+        let sumPred = 0;
+        let sumChal = 0;
+        let sumGrand = 0;
+
+        let tableRowsHtml = '';
+        let eligibleRank = 1;
+
+        overallSorted.forEach(team => {
+          const isEligible = this.isPrizeEligible(team.entry_id);
+          let rankDisplay = '-';
+          let p1Amt = 0;
+          let p2Amt = 0;
+
+          if (isEligible) {
+            rankDisplay = eligibleRank;
+            p1Amt = Number(p1Tiers[String(eligibleRank)] || 0);
+            p2Amt = Number(p2Tiers[String(eligibleRank)] || 0);
+            eligibleRank++;
+          }
+
+          const fplTotal = p1Amt + p2Amt;
+          const predNet = (predMap[team.entry_id] !== undefined)
+            ? predMap[team.entry_id]
+            : (predMap[(team.player_name || '').toLowerCase()] || 0);
+          const chalNet = (chalMap[team.entry_id] !== undefined)
+            ? chalMap[team.entry_id]
+            : (chalMap[(team.player_name || '').toLowerCase()] || 0);
+          const grandNet = fplTotal + predNet + chalNet;
+
+          if (isEligible) {
+            sumPoints += team.total_points;
+            sumP1 += p1Amt;
+            sumP2 += p2Amt;
+            sumTotalFpl += fplTotal;
+            sumPred += predNet;
+            sumChal += chalNet;
+            sumGrand += grandNet;
+          }
+
+          const rankBadge = isEligible
+            ? (rankDisplay <= 3 
+                ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${rankDisplay === 1 ? 'bg-amber-400 text-slate-900 shadow-2xs' : (rankDisplay === 2 ? 'bg-slate-300 text-slate-800' : 'bg-amber-600 text-white')}">${rankDisplay}</span>`
+                : `<span class="text-xs font-semibold text-slate-500">${rankDisplay}</span>`)
+            : `<span class="text-xs font-semibold text-slate-400">-</span>`;
+
+          const p1Badge = p1Amt > 0
+            ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/60 font-display">฿${p1Amt.toLocaleString()}</span>`
+            : '<span class="text-slate-400">-</span>';
+
+          const p2Badge = p2Amt > 0
+            ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200/60 font-display">฿${p2Amt.toLocaleString()}</span>`
+            : '<span class="text-slate-400">-</span>';
+
+          const fplTotalBadge = fplTotal > 0
+            ? `<span class="font-black text-slate-900 dark:text-white font-display">฿${fplTotal.toLocaleString()}</span>`
+            : '<span class="text-slate-400">-</span>';
+
+          const predCol = predNet !== 0 
+            ? `<span class="${predNet > 0 ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-rose-600 dark:text-rose-400 font-bold'} font-display">${fmtMoney(predNet)}</span>`
+            : '<span class="text-slate-400 font-display">0</span>';
+
+          const chalCol = chalNet !== 0
+            ? `<span class="${chalNet > 0 ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-rose-600 dark:text-rose-400 font-bold'} font-display">${fmtMoney(chalNet)}</span>`
+            : '<span class="text-slate-400 font-display">0</span>';
+
+          const grandCol = `<span class="${grandNet > 0 ? 'text-emerald-600 dark:text-emerald-400 font-black' : (grandNet < 0 ? 'text-rose-600 dark:text-rose-400 font-black' : 'text-slate-500 font-bold')} font-display text-xs sm:text-sm">${fmtMoney(grandNet)} THB</span>`;
+
+          tableRowsHtml += `
+            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors ${!isEligible ? 'opacity-65 bg-slate-50/30 dark:bg-slate-800/20' : ''}">
+              <td class="py-2.5 px-2 text-center font-display">${rankBadge}</td>
+              <td class="py-2.5 px-3 min-w-[160px]">
+                <div class="font-bold text-slate-900 dark:text-white">${team.team_name}</div>
+                <div class="text-[11px] text-slate-400 flex items-center gap-1.5 flex-wrap">
+                  <span>${team.player_name}</span>
+                  ${!isEligible ? '<span class="text-[9.5px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 font-bold">ทีมร่วมสนุก (ไม่คิดรางวัล)</span>' : ''}
+                </div>
+              </td>
+              <td class="py-2.5 px-2 text-center font-display font-black text-slate-900 dark:text-white">${team.total_points}</td>
+              <td class="py-2.5 px-2 text-right font-display">${p1Badge}</td>
+              <td class="py-2.5 px-2 text-right font-display">${p2Badge}</td>
+              <td class="py-2.5 px-2 text-right font-display">${fplTotalBadge}</td>
+              <td class="py-2.5 px-2 text-right font-display">${predCol}</td>
+              <td class="py-2.5 px-2 text-right font-display">${chalCol}</td>
+              <td class="py-2.5 px-3 text-right font-display">${grandCol}</td>
+            </tr>
+          `;
+        });
+
+        const feeCum = (this.bramannPredData && this.bramannPredData.cumulative_standings)
+          ? this.bramannPredData.cumulative_standings.find(c => c.player && c.player.is_guest)
+          : null;
+        if (feeCum) {
+          const feeNet = feeCum.net || 0;
+          sumPred += feeNet;
+          sumGrand += feeNet;
+          tableRowsHtml += `
+            <tr class="bg-slate-50/40 dark:bg-slate-800/20 text-slate-500 border-t border-dashed border-slate-200 dark:border-slate-800">
+              <td class="py-2.5 px-2 text-center font-display font-bold text-xs text-slate-400">•</td>
+              <td class="py-2.5 px-3 min-w-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200">Fee</span>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium">Guest</span>
+                </div>
+                <span class="text-[11px] text-slate-400 block truncate">เล่นเฉพาะทายผล</span>
+              </td>
+              <td class="py-2.5 px-2 text-center font-display text-slate-400">-</td>
+              <td class="py-2.5 px-2 text-right font-display text-slate-400">-</td>
+              <td class="py-2.5 px-2 text-right font-display text-slate-400">-</td>
+              <td class="py-2.5 px-2 text-right font-display text-slate-400">-</td>
+              <td class="py-2.5 px-2 text-right font-display ${feeNet < 0 ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-emerald-600 font-bold'}">${fmtMoney(feeNet)}</td>
+              <td class="py-2.5 px-2 text-right font-display text-slate-400">-</td>
+              <td class="py-2.5 px-3 text-right font-display ${feeNet < 0 ? 'text-rose-600 dark:text-rose-400 font-black' : 'text-emerald-600 font-black'} text-xs sm:text-sm">${fmtMoney(feeNet)} THB</td>
+            </tr>
+          `;
+        }
+
+        if (mainContainer) {
+          mainContainer.innerHTML = `
+            <!-- Top Prize Structure Cards (Side-by-Side) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+              <!-- Prize 1 Card -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/60 font-display">
+                    PRIZE 1: สิ้นปี 2026 (หลังจบ GW 19)
+                  </span>
+                  <span class="text-xs font-bold text-slate-500 dark:text-slate-400">แข่งไปแล้ว ${maxGW} / 19</span>
+                </div>
+                <div>
+                  <div class="text-xl sm:text-2xl font-black font-display text-slate-900 dark:text-white">
+                    ฿4,500 <span class="text-xs font-bold text-slate-400">THB</span>
+                  </div>
+                  <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    จัดสรรให้ 9 อันดับ (อันดับ 1, 2, 3, 5, 7, 9, 11, 13, 15) คนละ 500 บาทเท่ากัน
+                  </div>
+                </div>
+                <div class="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap gap-1">
+                  ${[1, 2, 3, 5, 7, 9, 11, 13, 15].map(r => `<span class="text-[10.5px] font-bold px-2 py-0.5 rounded bg-blue-50/80 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200/40 font-display">#${r}: ฿500</span>`).join('')}
+                </div>
+              </div>
+
+              <!-- Prize 2 Card -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200/60 font-display">
+                    PRIZE 2: สิ้นสุดฤดูกาล (หลังจบ GW 38)
+                  </span>
+                  <span class="text-xs font-bold text-slate-500 dark:text-slate-400">แข่งไปแล้ว ${maxGW} / 38</span>
+                </div>
+                <div>
+                  <div class="text-xl sm:text-2xl font-black font-display text-slate-900 dark:text-white">
+                    ฿5,000 <span class="text-xs font-bold text-slate-400">THB</span>
+                  </div>
+                  <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    จัดสรรตามอันดับแบบขั้นบันได 9 อันดับ
+                  </div>
+                </div>
+                <div class="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap gap-1">
+                  ${[
+                    {r: 1, a: 1000}, {r: 2, a: 800}, {r: 3, a: 700}, {r: 7, a: 700},
+                    {r: 8, a: 500}, {r: 9, a: 400}, {r: 13, a: 400}, {r: 14, a: 300}, {r: 15, a: 200}
+                  ].map(p => `<span class="text-[10.5px] font-bold px-2 py-0.5 rounded bg-purple-50/80 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200/40 font-display">#${p.r}: ฿${p.a}</span>`).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Action & Main Table Card -->
+            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-3">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div>
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
+                    ตารางจำลองเงินรางวัลและสรุปรวมทุกเกม (GW 1 - ${maxGW})
+                  </h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    อัปเดตตามอันดับคะแนนแฟนตาซีล่าสุด พร้อมรวมยอดสุทธิจากมินิเกมทายผลและท้าชน
+                  </p>
+                </div>
+
+                <button 
+                  onclick="app.copyBramannPrizesLINEResult()"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap self-start sm:self-auto"
+                  title="คัดลอกสรุปเงินรางวัลสำหรับส่ง LINE"
+                >
+                  <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+                  <span>คัดลอก LINE</span>
+                </button>
+              </div>
+
+              <!-- Standings Table -->
+              <div class="overflow-x-auto touch-scroll">
+                <table class="w-full text-left border-collapse min-w-[760px]">
+                  <thead>
+                    <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50/50 dark:bg-slate-800/30">
+                      <th class="py-2.5 px-2 text-center w-8">#</th>
+                      <th class="py-2.5 px-3 min-w-[160px]">ทีม & ผู้จัดการ</th>
+                      <th class="py-2.5 px-2 text-center w-16">แต้มรวม</th>
+                      <th class="py-2.5 px-2 text-right min-w-[90px]">Prize 1 (GW19)</th>
+                      <th class="py-2.5 px-2 text-right min-w-[90px]">Prize 2 (GW38)</th>
+                      <th class="py-2.5 px-2 text-right min-w-[100px]">รวม FPL</th>
+                      <th class="py-2.5 px-2 text-right min-w-[100px]">ทายผลสะสม</th>
+                      <th class="py-2.5 px-2 text-right min-w-[90px]">ท้าชนสะสม</th>
+                      <th class="py-2.5 px-3 text-right min-w-[120px] font-black">ยอดรวมสุทธิ</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                    ${tableRowsHtml}
+                  </tbody>
+                  <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-display text-xs sm:text-sm font-bold">
+                    <tr>
+                      <td colspan="2" class="py-3 px-3 text-slate-700 dark:text-slate-300">
+                        ยอดรวมจัดสรรเงินกองกลาง (Total Pool Balance)
+                      </td>
+                      <td class="py-3 px-2 text-center text-slate-900 dark:text-white font-black">${sumPoints}</td>
+                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">฿${sumP1.toLocaleString()}</td>
+                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">฿${sumP2.toLocaleString()}</td>
+                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">฿${sumTotalFpl.toLocaleString()}</td>
+                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumPred === 0 ? '0' : sumPred.toLocaleString()} THB</td>
+                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumChal === 0 ? '0' : sumChal.toLocaleString()} THB</td>
+                      <td class="py-3 px-3 text-right text-slate-900 dark:text-white font-black text-sm sm:text-base">฿${sumGrand.toLocaleString()} THB</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          `;
+        }
       }
 
       renderShi62Special() {
@@ -8197,6 +9402,8 @@ selectShi62GW(gwName) {
               </div>
             `;
           }
+        } else if (this.config && this.config.features && this.config.features.prize_model === 'bramann_dual_prize') {
+          this.renderBramannDualPrizeView(titleEl, subEl, poolBadge, tagEl, mainContainer);
         } else {
           if (tagEl) tagEl.innerText = 'OFFICIAL PRIZES & RULES PENDING';
           if (titleEl) titleEl.innerText = 'โครงสร้างเงินรางวัล & กติกาการแข่งขัน';
@@ -10727,6 +11934,8 @@ selectShi62GW(gwName) {
     html = html.replace('__MULTI_DATA_JSON__', multi_data_json_str)
     html = html.replace('__LEAGUES_CONFIG_JSON__', leagues_config_json_str)
     html = html.replace('__SHI62_SPECIAL_DATA_JSON__', shi62_data_json_str)
+    html = html.replace('__BRAMANN_PREDICTION_DATA_JSON__', bramann_pred_json_str or 'null')
+    html = html.replace('__BRAMANN_CHALLENGE_DATA_JSON__', bramann_chal_json_str or 'null')
     html = html.replace('__DEFAULT_LID__', default_lid_code)
     html = html.replace('__ASSET_PREFIX__', asset_prefix)
     return html
@@ -10778,10 +11987,17 @@ def main():
 
     shi62_txt_path = os.path.join(base_dir, 'config', 'shi62_special.txt')
     shi62_special_data = parse_shi62_file(shi62_txt_path)
-    shi62_special_json_str = json.dumps(shi62_special_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\/')
+    shi62_special_json_str = json.dumps(shi62_special_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+
+    bramann_pred_path = os.path.join(base_dir, 'config', 'bramann_prediction.txt')
+    bramann_chal_path = os.path.join(base_dir, 'config', 'bramann_challenge.json')
+    bramann_pred_data = parse_bramann_prediction_file(bramann_pred_path)
+    bramann_chal_data = parse_bramann_challenge_file(bramann_chal_path, multi_data=multi_data)
+    bramann_pred_json_str = json.dumps(bramann_pred_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+    bramann_chal_json_str = json.dumps(bramann_chal_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 
     # 1. Generate root files
-    root_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=multi_data_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str)
+    root_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=multi_data_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str)
     with open(os.path.join(base_dir, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(root_html)
 
@@ -10795,7 +12011,7 @@ def main():
     for lid in leagues_config.keys():
         dir_league = os.path.join(base_dir, str(lid))
         os.makedirs(dir_league, exist_ok=True)
-        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid), precomputed_json_str=multi_data_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str)
+        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid), precomputed_json_str=multi_data_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str)
         with open(os.path.join(dir_league, 'index.html'), 'w', encoding='utf-8') as f:
             f.write(html_league)
 
