@@ -1717,7 +1717,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">ข้อมูลขุมกำลัง & การจัดทัพ</span>
             <span id="team-modal-chip-badge" class="hidden"></span>
           </div>
-          <h3 id="team-modal-title" class="text-sm xs:text-base sm:text-xl font-bold text-slate-900 dark:text-white truncate mt-0.5">ชื่อทีม</h3>
+          <div class="flex items-center gap-2 flex-wrap mt-0.5 min-w-0">
+            <h3 id="team-modal-title" class="text-sm xs:text-base sm:text-xl font-bold text-slate-900 dark:text-white truncate max-w-[200px] xs:max-w-[260px] sm:max-w-none">ชื่อทีม</h3>
+            <span id="team-modal-overall-rank-badge" class="hidden"></span>
+          </div>
           <p id="team-modal-subtitle" class="text-[10.5px] xs:text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1 sm:gap-1.5 flex-wrap">
             <span id="team-modal-manager" class="truncate max-w-[140px] xs:max-w-[180px] sm:max-w-none">ผู้จัดการ: -</span>
             <span>•</span>
@@ -9422,8 +9425,54 @@ selectShi62GW(gwName) {
         }
         matchdayRes = matchdayRes || {};
 
+        const squadKey = `${entryIdNum}_${this.selectedGW}`;
+        let squad = (this.data.squads || {})[squadKey];
+        if (!squad && this.multiData && this.multiData.leagues) {
+          for (const l of Object.values(this.multiData.leagues)) {
+            if (l.squads && l.squads[squadKey]) {
+              squad = l.squads[squadKey];
+              break;
+            }
+          }
+        }
+
         const titleEl = document.getElementById('team-modal-title');
         if (titleEl) titleEl.innerText = teamObj.entry_name || matchdayRes.team_name || 'ชื่อทีม';
+
+        const rankBadge = document.getElementById('team-modal-overall-rank-badge');
+        if (rankBadge) {
+          let ovRank = matchdayRes.overall_rank;
+          if (!ovRank && squad && squad.raw_hist && squad.raw_hist.overall_rank) {
+            ovRank = squad.raw_hist.overall_rank;
+          }
+          if (!ovRank && teamObj.overall_rank) {
+            ovRank = teamObj.overall_rank;
+          }
+          if (!ovRank && this.multiData && this.multiData.leagues) {
+            const maxGw = this.multiData.max_gw || this.selectedGW;
+            for (const l of Object.values(this.multiData.leagues)) {
+              const s = (l.squads || {})[`${entryIdNum}_${maxGw}`];
+              if (s && s.raw_hist && s.raw_hist.overall_rank) {
+                ovRank = s.raw_hist.overall_rank;
+                break;
+              }
+              const gr = ((l.gameweeks || {})[String(maxGw)] || {}).results || [];
+              const foundRes = gr.find(r => Number(r.entry_id) === entryIdNum);
+              if (foundRes && foundRes.overall_rank) {
+                ovRank = foundRes.overall_rank;
+                break;
+              }
+            }
+          }
+
+          if (ovRank && Number(ovRank) > 0) {
+            rankBadge.className = 'inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/80 shadow-2xs font-display flex-shrink-0';
+            rankBadge.innerHTML = `<span>🌍</span><span>อันดับโลก #${Number(ovRank).toLocaleString()}</span>`;
+          } else {
+            rankBadge.className = 'hidden';
+            rankBadge.innerHTML = '';
+          }
+        }
 
         const managerEl = document.getElementById('team-modal-manager');
         if (managerEl) managerEl.innerText = `ผู้จัดการ: ${teamObj.player_name || matchdayRes.player_name || '-'}`;
@@ -9439,17 +9488,6 @@ selectShi62GW(gwName) {
           } else {
             chipBadge.className = 'hidden';
             chipBadge.innerText = '';
-          }
-        }
-
-        const squadKey = `${entryIdNum}_${this.selectedGW}`;
-        let squad = (this.data.squads || {})[squadKey];
-        if (!squad && this.multiData && this.multiData.leagues) {
-          for (const l of Object.values(this.multiData.leagues)) {
-            if (l.squads && l.squads[squadKey]) {
-              squad = l.squads[squadKey];
-              break;
-            }
           }
         }
 

@@ -924,7 +924,8 @@ def sync_once(args):
                             "bench_points": bench_pts_disp,
                             "team_value": team_val,
                             "bank": team_bank,
-                            "transfers_count": event_tx
+                            "transfers_count": event_tx,
+                            "overall_rank": hist.get('overall_rank')
                         }
 
                         is_settled_past_gw = bool(gw < max_gw and this_gw_finished and this_gw_checked)
@@ -1092,6 +1093,12 @@ def sync_once(args):
                 gameweeks_dict[gw_str]["is_finished"] = gw_status_map.get(gw, False)
                 gameweeks_dict[gw_str]["is_started"] = gw_started_map.get(gw, False)
                 gameweeks_dict[gw_str]["unstarted_teams"] = [teams_by_id.get(tid, str(tid)) for tid in gw_unstarted_teams_map.get(gw, set())]
+
+            # Enrich teams_list with latest overall_rank
+            latest_gw_res = {r["entry_id"]: r.get("overall_rank") for r in gameweeks_dict.get(str(max_gw), {}).get("results", []) if r.get("overall_rank")}
+            for t in teams_list:
+                if t["entry_id"] in latest_gw_res:
+                    t["overall_rank"] = latest_gw_res[t["entry_id"]]
 
             if cached_league and cached_league.get("teams") and len(teams_list) == 0:
                 print(f" -> [Resilience] Fetched teams empty for League {lid}. Safely falling back to cached league data.")
