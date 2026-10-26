@@ -8120,19 +8120,9 @@ selectShi62GW(gwName) {
             mainContainer.innerHTML = `
               <!-- Main Table Card -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800">
-                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-                  <div>
-                    <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">ตารางสรุปยอดเงินรางวัล & ค่าปรับสิ้นฤดูกาล (GW 1 - ${maxGW})</h3>
-                    <span class="text-[11px] font-bold text-slate-500 font-display">อัปเดตตามอันดับคะแนนรวมปัจจุบัน (แข่งจบแล้ว ${maxGW} สัปดาห์)</span>
-                  </div>
-                  ${isShi62 ? `
-                    <button onclick="app.copyShi62PrizesLINEResult()" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all cursor-pointer active:scale-95 whitespace-nowrap" title="คัดลอกสรุปผลสำหรับส่ง LINE">
-                      <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 5.82 2 10.5c0 2.93 1.76 5.51 4.44 7.04-.19.7-.68 2.53-.78 2.92-.12.47.17.46.36.33.25-.17 2.92-1.99 4.09-2.79.62.09 1.25.14 1.89.14 5.52 0 10-3.82 10-8.5S17.52 2 12 2z"/>
-                      </svg>
-                      <span>คัดลอก LINE</span>
-                    </button>
-                  ` : ''}
+                <div class="mb-3">
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">ตารางสรุปยอดเงินรางวัล & ค่าปรับสิ้นฤดูกาล (GW 1 - ${maxGW})</h3>
+                  <span class="text-[11px] font-bold text-slate-500 font-display">อัปเดตตามอันดับคะแนนรวมปัจจุบัน (แข่งจบแล้ว ${maxGW} สัปดาห์)</span>
                 </div>
                 <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
                   <table class="w-full text-left border-collapse ${isShi62 ? 'min-w-[620px]' : ''}">
