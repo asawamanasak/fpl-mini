@@ -236,6 +236,23 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       --font-family: 'Sarabun', 'Sukhumvit Set', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
+    /* Strict 1.25x Typography Hierarchy for Flawless Scannability */
+    body {
+      font-size: 14px !important;
+    }
+    h1 {
+      font-size: 28px !important;
+      line-height: 1.25 !important;
+    }
+    h2 {
+      font-size: 22px !important;
+      line-height: 1.3 !important;
+    }
+    h3 {
+      font-size: 17.5px !important;
+      line-height: 1.35 !important;
+    }
+
     html {
       overflow-x: hidden;
       max-width: 100vw;
@@ -280,6 +297,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       -webkit-tap-highlight-color: transparent;
     }
 
+    button:focus-visible, [role="button"]:focus-visible, a:focus-visible {
+      outline: 2px solid #2563eb !important;
+      outline-offset: 2px !important;
+    }
+
     .font-display {
       font-family: var(--font-family) !important;
     }
@@ -288,6 +310,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       background: #ffffff;
       border: 1px solid #e2e8f0;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+      padding: 1.25rem;
     }
 
     /* Spotlight Cards (Weekly Winner, Live Leader, Pre-Match) */
@@ -474,6 +497,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       background: #0d0d0f !important;
       border-color: #222225 !important;
       box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.7) !important;
+      padding: 1.25rem;
     }
 
     .dark .winner-spotlight-card {
@@ -764,11 +788,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     @keyframes liveGreenPulse {
       0%, 100% {
         opacity: 1;
-        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
       }
       50% {
-        opacity: 0.75;
-        box-shadow: 0 0 10px 3px rgba(16, 185, 129, 0.5);
+        opacity: 0.85;
       }
     }
     .btn-live-pulse {
@@ -777,23 +799,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
     @keyframes tabGreenPulse {
       0%, 100% {
-        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45);
         border-color: rgba(16, 185, 129, 0.85);
         background-color: rgba(16, 185, 129, 0.08);
       }
       50% {
-        box-shadow: 0 0 14px 3px rgba(16, 185, 129, 0.65);
         border-color: rgba(5, 150, 105, 1);
         background-color: rgba(16, 185, 129, 0.22);
       }
     }
     @keyframes tabGreenPulseActive {
       0%, 100% {
-        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55);
         filter: brightness(1);
       }
       50% {
-        box-shadow: 0 0 16px 4px rgba(16, 185, 129, 0.85);
         filter: brightness(1.15);
       }
     }
@@ -809,7 +827,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       animation: tabGreenPulseActive 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
       background-color: #059669 !important;
       color: #ffffff !important;
-      border: 1px solid #10b981 !important;
+      border: 1px solid #059669 !important;
     }
     .dark .tab-pulse-live-active {
       background-color: #059669 !important;
@@ -819,23 +837,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
     @keyframes tabBluePulse {
       0%, 100% {
-        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.45);
         border-color: rgba(59, 130, 246, 0.85);
         background-color: rgba(37, 99, 235, 0.08);
       }
       50% {
-        box-shadow: 0 0 14px 3px rgba(37, 99, 235, 0.7);
         border-color: rgba(29, 78, 216, 1);
         background-color: rgba(37, 99, 235, 0.22);
       }
     }
     @keyframes tabBluePulseActive {
       0%, 100% {
-        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.55);
         filter: brightness(1);
       }
       50% {
-        box-shadow: 0 0 16px 4px rgba(37, 99, 235, 0.85);
         filter: brightness(1.15);
       }
     }
@@ -901,9 +915,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             class="group flex items-center gap-1.5 text-left cursor-pointer transition-colors leading-tight"
             title="คลิกเพื่อสลับดูมินิลีกอื่น (Switch League)"
           >
-            <span id="header-league-name" class="text-sm sm:text-lg font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight truncate max-w-[95px] min-[360px]:max-w-[140px] sm:max-w-[320px] md:max-w-[420px]">กำลังโหลดลีก...</span>
-            <span class="inline-flex items-center justify-center w-5 h-5 rounded-lg bg-blue-50 dark:bg-slate-800 group-hover:bg-blue-100 dark:group-hover:bg-slate-700 text-blue-600 dark:text-blue-400 transition-colors flex-shrink-0 shadow-2xs">
-              <svg class="w-3 h-3 group-hover:translate-y-0.5 transition-transform" id="league-switcher-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+            <span id="header-league-name" class="text-sm sm:text-lg font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight truncate max-w-[120px] min-[360px]:max-w-[160px] min-[400px]:max-w-[200px] sm:max-w-[340px] md:max-w-[440px]">กำลังโหลดลีก...</span>
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-blue-50 dark:bg-slate-800 group-hover:bg-blue-100 dark:group-hover:bg-slate-700 text-blue-600 dark:text-blue-400 transition-colors flex-shrink-0 shadow-2xs">
+              <svg class="w-3.5 h-3.5 group-hover:translate-y-0.5 transition-transform" id="league-switcher-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
             </span>
           </button>
 
@@ -922,7 +936,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
       <!-- Actions (Theme Toggle & Excel Export) -->
       <div class="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
-        <div id="api-status-text" class="text-xs font-semibold text-emerald-900 hidden md:flex items-center bg-emerald-50 px-3.5 py-1.5 rounded-xl border border-emerald-300 shadow-xs animate-pulse font-display">
+        <div id="api-status-text" class="text-xs font-semibold text-emerald-900 hidden md:flex items-center bg-emerald-50 px-3.5 py-1.5 rounded-xl border border-emerald-300 shadow-xs font-display">
           <span id="header-gw-status-dot" class="inline-block w-2 h-2 rounded-full bg-emerald-600 mr-2"></span>
           <span id="header-gw-status">Gameweek 2 กำลังแข่งขัน (Live)</span>
         </div>
@@ -931,7 +945,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <button 
           id="btn-theme-toggle"
           onclick="window.app ? window.app.toggleTheme() : (window.toggleThemeFallback && window.toggleThemeFallback())"
-          class="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 min-w-[36px] min-h-[36px] rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all shadow-2xs active:scale-95 flex-shrink-0 cursor-pointer"
+          class="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all shadow-2xs active:scale-95 flex-shrink-0 cursor-pointer"
           title="สลับโหมดสว่าง / โหมดมืด (Dark Mode)"
           aria-label="Toggle Dark Mode"
         >
@@ -948,7 +962,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <button 
           id="btn-export-excel"
           onclick="window.app ? window.app.exportToExcel() : (window.exportToExcelFallback ? window.exportToExcelFallback() : null)"
-          class="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 min-h-[36px] sm:min-h-[40px] rounded-xl bg-emerald-700 hover:bg-emerald-600 border border-emerald-600 text-xs font-semibold text-white transition-all shadow-sm active:scale-95 flex-shrink-0 cursor-pointer"
+          class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-2 min-h-[44px] rounded-xl bg-emerald-700 hover:bg-emerald-600 border border-emerald-600 text-xs font-semibold text-white transition-all shadow-sm active:scale-95 flex-shrink-0 cursor-pointer"
           title="Export ข้อมูลทั้งหมดทุก Gameweek, Leaderboard และสรุปเงินรางวัลเป็นไฟล์ Excel (.xlsx)"
         >
           <svg class="w-3.5 h-3.5 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -971,7 +985,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <span id="header-last-sync-badge" class="inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs" title="ระบบเชื่อมต่อ Auto-Sync ปกติ (Online)">
         <span>Last Sync: <strong id="header-last-sync" class="text-slate-900 dark:text-white font-bold">__LAST_SYNC__</strong></span>
         <span id="header-last-sync-icon" class="inline-flex items-center" title="ระบบเชื่อมต่อ Auto-Sync ปกติ (Online)">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
+          <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
         </span>
       </span>
     </div>
@@ -983,84 +997,84 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <button 
           id="tab-btn-live"
           data-tab-target="gameweek-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white active:scale-95 cursor-pointer"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white active:scale-95 cursor-pointer"
         >
           คะแนนสด
         </button>
         <button 
           id="tab-btn-highlights"
           data-tab-target="highlights-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           ไฮไลท์
         </button>
         <button 
           id="tab-btn-global-radar"
           data-tab-target="global-radar-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           เรดาร์ฟอร์ม
         </button>
         <button 
           id="tab-btn-competition"
           data-tab-target="competition-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           สถานะชิป
         </button>
         <button 
           id="tab-btn-shi62-special"
           data-tab-target="shi62-special-view" 
-          class="tab-nav-btn hidden flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn hidden flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           ทายผล
         </button>
         <button 
           id="tab-btn-bramann-prediction"
           data-tab-target="bramann-prediction-view" 
-          class="tab-nav-btn hidden flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn hidden flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           ทายผล
         </button>
         <button 
           id="tab-btn-bramann-challenge"
           data-tab-target="bramann-challenge-view" 
-          class="tab-nav-btn hidden flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn hidden flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           ท้าชน
         </button>
         <button 
           id="tab-btn-prizes"
           data-tab-target="prizes-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           เงินรางวัล
         </button>
         <button 
           id="tab-btn-cup"
           data-tab-target="cup-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           บอลถ้วย
         </button>
         <button 
           id="tab-btn-hall-of-fame"
           data-tab-target="hall-of-fame-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           ทำเนียบแชมป์
         </button>
         <button 
           id="tab-btn-rules"
           data-tab-target="rules-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           กติกา
         </button>
         <button 
           id="tab-btn-about"
           data-tab-target="about-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           Dev Corner
         </button>
@@ -1415,7 +1429,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
 
         <!-- Table Container with Locked/Sticky Headers & Columns -->
-        <div class="overflow-auto max-h-[65vh] sm:max-h-[75vh] no-scrollbar -mx-3.5 sm:mx-0 touch-scroll rounded-xl border border-slate-200/80 dark:border-slate-800/80">
+        <div class="overflow-auto max-h-[65vh] sm:max-h-[75vh] no-scrollbar -mx-3.5 sm:mx-0 touch-scroll">
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
@@ -1508,10 +1522,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       
       <!-- Top About Overview Banner: Dev Corner (Cool & Casual) -->
       <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800">
-        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 text-xs font-bold font-mono mb-2">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 text-xs font-bold font-mono mb-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
           DEV CORNER • BEHIND THE SCENES
-        </div>
+        </span>
         <blockquote class="max-w-2xl">
           <p class="text-xs sm:text-sm italic text-slate-600 dark:text-slate-300 leading-relaxed">
             "Once you bid farewell to discipline you say goodbye to success."
@@ -1528,9 +1542,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <!-- Feature 1: Live Scores & Auto-Sub -->
         <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-emerald-500/40 transition-all">
           <div>
-            <div class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-3">
+            <span class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60 inline-flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-3">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-            </div>
+            </span>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
               1. คะแนนสด & เปลี่ยนตัวอัตโนมัติ
             </h3>
@@ -1557,9 +1571,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <!-- Feature 2: Squad Pitch Modal -->
         <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-teal-500/40 transition-all">
           <div>
-            <div class="w-9 h-9 rounded-xl bg-teal-50 dark:bg-teal-950/60 border border-teal-200/60 dark:border-teal-800/60 flex items-center justify-center text-teal-600 dark:text-teal-400 mb-3">
+            <span class="w-9 h-9 rounded-xl bg-teal-50 dark:bg-teal-950/60 border border-teal-200/60 dark:border-teal-800/60 inline-flex items-center justify-center text-teal-600 dark:text-teal-400 mb-3">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
-            </div>
+            </span>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
               2. ส่องแผนจัดทัพ 11 ตัวจริง
             </h3>
@@ -1586,9 +1600,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <!-- Feature 3: Prizes & Treasury -->
         <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-amber-500/40 transition-all">
           <div>
-            <div class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200/60 dark:border-amber-800/60 flex items-center justify-center text-amber-600 dark:text-amber-400 mb-3">
+            <span class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200/60 dark:border-amber-800/60 inline-flex items-center justify-center text-amber-600 dark:text-amber-400 mb-3">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            </div>
+            </span>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
               3. เงินรางวัล & บัญชีกองกลาง
             </h3>
@@ -1615,9 +1629,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <!-- Feature 4: Transfers & AI Projected -->
         <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-sky-500/40 transition-all">
           <div>
-            <div class="w-9 h-9 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200/60 dark:border-sky-800/60 flex items-center justify-center text-sky-600 dark:text-sky-400 mb-3">
+            <span class="w-9 h-9 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200/60 dark:border-sky-800/60 inline-flex items-center justify-center text-sky-600 dark:text-sky-400 mb-3">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
-            </div>
+            </span>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
               4. ตลาดนักเตะ & ผู้ช่วยวิเคราะห์ AI
             </h3>
@@ -1644,9 +1658,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <!-- Feature 5: Hall of Fame & History -->
         <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-purple-500/40 transition-all">
           <div>
-            <div class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200/60 dark:border-purple-800/60 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-3">
+            <span class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200/60 dark:border-purple-800/60 inline-flex items-center justify-center text-purple-600 dark:text-purple-400 mb-3">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004 0V5.625c0-.621-.504-1.125-1.125-1.125H9.625c-.621 0-1.125.504-1.125 1.125v8.625m5.004 0H9.625" /></svg>
-            </div>
+            </span>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
               5. ทำเนียบแชมป์ & เกียรติยศลีก
             </h3>
@@ -1673,9 +1687,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <!-- Feature 6: LINE Share & Excel Export -->
         <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-indigo-500/40 transition-all">
           <div>
-            <div class="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/60 dark:border-indigo-800/60 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-3">
+            <span class="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/60 dark:border-indigo-800/60 inline-flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-3">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>
-            </div>
+            </span>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
               6. แชร์สรุปผล LINE & ส่งออก Excel
             </h3>
@@ -1704,10 +1718,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <!-- Ultra Clean LINE Contact Box -->
       <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
         <div class="space-y-1.5 max-w-xl text-left">
-          <div class="inline-flex items-center gap-1.5 text-xs font-bold text-[#06C755] bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full border border-emerald-200/60 dark:border-emerald-800/60">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-[#06C755] bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full border border-emerald-200/60 dark:border-emerald-800/60">
             <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
             LINE CONTACT
-          </div>
+          </span>
           <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white font-display">
             ทักคุยกับเดฟโดยตรง
           </h3>
@@ -1740,15 +1754,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <span class="text-[10.5px] text-slate-400 font-mono font-normal">GitHub Actions • Serverless Jamstack</span>
         </summary>
         <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-3 text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
-          <div class="p-2.5 rounded-xl bg-slate-50/60 dark:bg-slate-800/30 border border-slate-200/50 dark:border-slate-700/50">
+          <div class="p-2.5 text-xs">
             <div class="font-bold text-slate-800 dark:text-slate-200 mb-1">⚡ Automated Pipeline</div>
             รันผ่าน GitHub Actions ซิงก์ข้อมูลตรงจาก Premier League API แบบกึ่งอัตโนมัติตลอดช่วงแข่ง
           </div>
-          <div class="p-2.5 rounded-xl bg-slate-50/60 dark:bg-slate-800/30 border border-slate-200/50 dark:border-slate-700/50">
+          <div class="p-2.5 text-xs">
             <div class="font-bold text-slate-800 dark:text-slate-200 mb-1">🛡️ Data Integrity</div>
             คำนวณและแคชข้อมูลแบบ Atomic Replacement ตรวจสอบความถูกต้องของแต้มก่อนบันทึกถาวร
           </div>
-          <div class="p-2.5 rounded-xl bg-slate-50/60 dark:bg-slate-800/30 border border-slate-200/50 dark:border-slate-700/50">
+          <div class="p-2.5 text-xs">
             <div class="font-bold text-slate-800 dark:text-slate-200 mb-1">🌐 Static Edge CDN</div>
             โฮสต์เป็น Jamstack แบบ Static บน GitHub Pages โหลดเร็วทันใจ ปลอดภัย และไร้ต้นทุนเซิร์ฟเวอร์
           </div>
@@ -1779,7 +1793,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl p-3 sm:p-6 max-w-xl w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[94vh] overflow-y-auto overflow-x-hidden my-auto" onclick="event.stopPropagation()">
       
       <!-- Header (Sticky at top when scrolling through pitch and bench) -->
-      <div class="sticky top-0 bg-white/95 dark:bg-[#0d0d0f]/95 backdrop-blur-md z-30 -mt-3 sm:-mt-6 -mx-3 sm:-mx-6 px-3 sm:px-6 pt-3 sm:pt-6 pb-2.5 sm:pb-3 border-b border-slate-100 dark:border-slate-800 mb-3 sm:mb-4 flex items-center justify-between shadow-2xs">
+      <header class="sticky top-0 bg-white/95 dark:bg-[#0d0d0f]/95 backdrop-blur-md z-30 -mt-3 sm:-mt-6 -mx-3 sm:-mx-6 px-3 sm:px-6 pt-3 sm:pt-6 pb-2.5 sm:pb-3 border-b border-slate-100 dark:border-slate-800 mb-3 sm:mb-4 flex items-center justify-between">
         <div class="min-w-0 pr-2">
           <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
             <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">ข้อมูลขุมกำลัง & การจัดทัพ</span>
@@ -1797,8 +1811,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <span id="team-modal-pts" class="font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">แต้มสด: - pts</span>
           </p>
         </div>
-        <button onclick="app.closeTeamModal()" class="w-8 h-8 sm:w-8 sm:h-8 min-w-[32px] min-h-[32px] rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold transition-colors cursor-pointer text-base flex-shrink-0 active:scale-95" aria-label="Close modal">✕</button>
-      </div>
+        <button onclick="app.closeTeamModal()" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold transition-colors cursor-pointer text-lg flex-shrink-0 active:scale-95" aria-label="Close modal">✕</button>
+      </header>
 
       <!-- Authentic FPL Pitch (Vertical 4-Tier: GKP -> DEF -> MID -> FWD) -->
       <div class="fpl-pitch rounded-2xl mb-3 sm:mb-3.5 relative overflow-hidden shadow-inner flex flex-col justify-between py-2 sm:py-3 px-1 w-full max-w-full">
@@ -1815,7 +1829,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       </div>
 
       <!-- Substitutes Box -->
-      <div class="bg-slate-50 dark:bg-slate-900/40 rounded-2xl p-2.5 sm:p-4 border border-slate-200/80 dark:border-slate-800/80">
+      <section class="bg-slate-50/80 dark:bg-slate-900/40 rounded-2xl p-2.5 sm:p-4">
         <div class="flex items-center justify-between mb-2">
           <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">ตัวสำรอง (Substitutes)</span>
           <span id="team-modal-bench-total" class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold font-display"></span>
@@ -1823,7 +1837,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <div id="team-bench-container" class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2.5">
           <!-- 4 Bench Player Cards -->
         </div>
-      </div>
+      </section>
 
     </div>
   </div>
@@ -1836,18 +1850,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <span class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold flex items-center justify-center text-sm font-display">Pts</span>
           <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">Projected Points (คะแนนคาดการณ์)</h3>
         </div>
-        <button onclick="app.closeProjectedPointsModal()" class="w-9 h-9 sm:w-8 sm:h-8 min-w-[36px] min-h-[36px] rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold transition-colors cursor-pointer text-base active:scale-95" aria-label="Close modal">✕</button>
+        <button onclick="app.closeProjectedPointsModal()" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold transition-colors cursor-pointer text-lg active:scale-95" aria-label="Close modal">✕</button>
       </div>
       <div class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 space-y-2.5 leading-relaxed">
         <p>
           คะแนนคาดการณ์ (Projected Points) คือการประเมินคะแนนโดยประมาณที่นักเตะน่าจะทำได้ในสัปดาห์ถัดไป จาก AI Algorithm
         </p>
-        <div class="bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-800/60 rounded-xl p-3 text-xs text-blue-900 dark:text-blue-200">
+        <aside class="bg-blue-50/80 dark:bg-blue-950/40 rounded-xl p-3 text-xs text-blue-900 dark:text-blue-200">
           <strong class="font-bold">เงื่อนไขสำคัญ:</strong> ข้อมูลนี้สมมติว่าผู้เล่นมีชื่อลงเล่นเป็นตัวจริงในสนาม ผู้จัดการทีมควรตรวจสอบอาการบาดเจ็บหรือโอกาสการโรเตชันของนักเตะก่อนตัดสินใจกดย้ายทีมจริง
-        </div>
+        </aside>
       </div>
       <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
-        <button onclick="app.closeProjectedPointsModal()" class="px-4 py-2 bg-slate-900 dark:bg-blue-600 text-white font-bold rounded-xl text-xs hover:bg-slate-800 dark:hover:bg-blue-700 transition-colors cursor-pointer active:scale-95">
+        <button onclick="app.closeProjectedPointsModal()" class="px-4 py-2.5 min-h-[44px] bg-slate-900 dark:bg-blue-600 text-white font-bold rounded-xl text-xs hover:bg-slate-800 dark:hover:bg-blue-700 transition-colors cursor-pointer active:scale-95">
           เข้าใจแล้ว
         </button>
       </div>
@@ -1860,10 +1874,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <div>
         <div class="flex items-center justify-between pb-3.5 border-b border-slate-100 mb-3">
           <div class="flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
             <h3 id="modal-summary-title" class="text-base sm:text-lg font-bold text-slate-900 font-display">สรุปผล Gameweek</h3>
           </div>
-          <button onclick="app.closeTextSummaryModal()" class="w-9 h-9 sm:w-8 sm:h-8 min-w-[36px] min-h-[36px] rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 font-bold transition-colors cursor-pointer text-base active:scale-95" aria-label="Close modal">✕</button>
+          <button onclick="app.closeTextSummaryModal()" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 font-bold transition-colors cursor-pointer text-lg active:scale-95" aria-label="Close modal">✕</button>
         </div>
         
         <p class="text-xs text-slate-500 mb-3">ข้อความถูกจัดรูปแบบสำหรับส่งเข้ากลุ่ม LINE เรียบร้อยแล้ว:</p>
@@ -1879,10 +1893,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           คัดลอกลงคลิปบอร์ดแล้ว!
         </span>
         <div class="flex items-center gap-2 ml-auto">
-          <button onclick="app.closeTextSummaryModal()" class="px-4 py-2 min-h-[38px] rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer active:scale-95">
+          <button onclick="app.closeTextSummaryModal()" class="px-4 py-2 min-h-[44px] rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer active:scale-95">
             ปิด
           </button>
-          <button id="btn-modal-copy" onclick="app.copyFromModal()" class="px-4 sm:px-5 py-2 min-h-[38px] rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 transition-all shadow-sm active:scale-95 cursor-pointer flex items-center gap-1.5">
+          <button id="btn-modal-copy" onclick="app.copyFromModal()" class="px-4 sm:px-5 py-2 min-h-[44px] rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 transition-all shadow-sm active:scale-95 cursor-pointer flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
             <span>คัดลอกข้อความ</span>
           </button>
@@ -3581,7 +3595,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           if (gwStatusBox) gwStatusBox.className = 'text-xs font-medium text-slate-700 hidden md:flex items-center bg-slate-100 px-3.5 py-1.5 rounded-xl border border-slate-200';
           if (gwStatusDot) gwStatusDot.className = 'inline-block w-2 h-2 rounded-full bg-slate-400 mr-2';
         } else if (isCurStarted) {
-          if (gwStatusBox) gwStatusBox.className = 'text-xs font-semibold text-emerald-900 hidden md:flex items-center bg-emerald-50 px-3.5 py-1.5 rounded-xl border border-emerald-300 shadow-xs animate-pulse';
+          if (gwStatusBox) gwStatusBox.className = 'text-xs font-semibold text-emerald-900 hidden md:flex items-center bg-emerald-50 px-3.5 py-1.5 rounded-xl border border-emerald-300 shadow-xs';
           if (gwStatusDot) gwStatusDot.className = 'inline-block w-2 h-2 rounded-full bg-emerald-600 mr-2';
         } else {
           if (gwStatusBox) gwStatusBox.className = 'text-xs font-semibold text-indigo-900 hidden md:flex items-center bg-indigo-50 px-3.5 py-1.5 rounded-xl border border-indigo-200 shadow-xs';
@@ -3609,9 +3623,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         if (lastSyncIcon) {
           if (isSyncHealthy) {
-            lastSyncIcon.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block" title="' + syncStatusTitle + '"></span>';
+            lastSyncIcon.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block" title="' + syncStatusTitle + '"></span>';
           } else {
-            lastSyncIcon.innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-500 inline-block animate-ping" title="' + syncStatusTitle + '"></span>';
+            lastSyncIcon.innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-500 inline-block" title="' + syncStatusTitle + '"></span>';
           }
           lastSyncIcon.setAttribute('title', syncStatusTitle);
         }
@@ -5753,7 +5767,7 @@ selectShi62GW(gwName) {
             tableBadge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200';
           } else if (isStarted) {
             tableBadge.innerText = 'กำลังแข่งขัน (Live)';
-            tableBadge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 animate-pulse';
+            tableBadge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200';
           } else {
             tableBadge.innerText = 'รอคิกออฟ (Upcoming)';
             tableBadge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200';
@@ -6112,7 +6126,7 @@ selectShi62GW(gwName) {
                   <div class="min-w-0 pr-1 flex items-start sm:items-center gap-2 flex-wrap sm:flex-nowrap">
                     ${!isFinished ? `
                       <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-400/40 shrink-0 font-display">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                         <span>พากษ์สด</span>
                       </span>
                     ` : ''}
@@ -9088,7 +9102,7 @@ selectShi62GW(gwName) {
           if (curMonthIsFinished) {
             curMonthBadge = `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-display flex-shrink-0">จบการแข่งขันแล้ว</span>`;
           } else if (curMonthIsStarted) {
-            curMonthBadge = `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-display flex-shrink-0 animate-pulse">กำลังแข่งขัน</span>`;
+            curMonthBadge = `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-display flex-shrink-0 ">กำลังแข่งขัน</span>`;
           } else {
             curMonthBadge = `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-600 font-display flex-shrink-0">รอการแข่งขัน</span>`;
           }
@@ -9158,9 +9172,9 @@ selectShi62GW(gwName) {
                 }
               } else {
                 if (leaderCount > 1) {
-                  prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-600/50 font-display flex-shrink-0 animate-pulse">ผู้นำร่วมสด (หาร ${leaderCount}) ${splitChampDisplay}</span>`;
+                  prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-600/50 font-display flex-shrink-0 ">ผู้นำร่วมสด (หาร ${leaderCount}) ${splitChampDisplay}</span>`;
                 } else {
-                  prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-600/50 font-display flex-shrink-0 animate-pulse">ผู้นำสด ${champPrize.toLocaleString()} THB</span>`;
+                  prizePill = `<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-600/50 font-display flex-shrink-0 ">ผู้นำสด ${champPrize.toLocaleString()} THB</span>`;
                 }
               }
             } else if (isRunnerUp) {
@@ -9229,7 +9243,7 @@ selectShi62GW(gwName) {
             if (isMonthFinished) {
               badgeHtml = `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-display flex-shrink-0">จบการแข่งขันแล้ว</span>`;
             } else if (isMonthOngoing) {
-              badgeHtml = `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-display flex-shrink-0 animate-pulse">กำลังแข่งขัน</span>`;
+              badgeHtml = `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-display flex-shrink-0 ">กำลังแข่งขัน</span>`;
             } else {
               badgeHtml = `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-600 font-display flex-shrink-0">รอการแข่งขัน</span>`;
             }
@@ -9350,7 +9364,7 @@ selectShi62GW(gwName) {
               winnersSummaryHtml = `
                 <div class="mt-2.5 pt-2.5 border-t border-slate-200/80 space-y-1">
                   <div class="text-[10px] font-bold text-emerald-700 uppercase font-display flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                     ${isJoint ? `ผู้นำร่วมคะแนนสดชิงรางวัล (${liveLeaders.length} ทีม):` : 'ผู้นำคะแนนสดชิงรางวัล:'}
                   </div>
                   ${leadersHtml}
@@ -9794,7 +9808,7 @@ selectShi62GW(gwName) {
               <!-- Main Table Card -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800">
                 <div class="mb-3">
-                  <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">ตารางสรุปยอดเงินรางวัล & ค่าปรับสิ้นฤดูกาล (GW 1 - ${maxGW})</h3>
+                  <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">ตารางสรุปยอดเงินรางวัล & ค่าปรับสิ้นฤดูกาล (GW 1 - ${maxGW})</h3>
                   <span class="text-[11px] font-bold text-slate-500 font-display">อัปเดตตามอันดับคะแนนรวมปัจจุบัน (แข่งจบแล้ว ${maxGW} สัปดาห์)</span>
                 </div>
                 <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
