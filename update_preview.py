@@ -3552,7 +3552,7 @@ selectShi62GW(gwName) {
 
         const gwDisplayName = gw.name.startsWith('GW') ? gw.name : `GW${gw.name}`;
         let lines = [];
-        lines.push(`สรุปผล Extra ${gwDisplayName}`);
+        lines.push(`สรุปผลการทายผล ${gwDisplayName}`);
         lines.push(`---------------------------------`);
         lines.push(`⚽ ผลประจำสัปดาห์ (${gwDisplayName})`);
         (gw.summary || []).forEach((s, i) => {
@@ -3585,7 +3585,7 @@ selectShi62GW(gwName) {
           lines.push(`---------------------------------`);
         }
 
-        lines.push(`🏆 สรุปยอดสะสม Extra:`);
+        lines.push(`🏆 ตารางอันดับสะสมทายผล:`);
 
         (this.shi62Data.cumulative_standings || []).forEach((c, idx) => {
           const sign = c.net > 0 ? '+' : '';
@@ -3622,10 +3622,10 @@ selectShi62GW(gwName) {
         if (!this.shi62Data) return;
         const maxGW = Number(this.multiData && this.multiData.max_gw) || 7;
         let lines = [];
-        lines.push(`สรุปรางวัล (FPL & Extra) GW${maxGW}`);
+        lines.push(`สรุปรางวัล (FPL & ทายผล) GW${maxGW}`);
         lines.push(`---------------------------------`);
         lines.push(`🏆 สรุปรางวัล:`);
-        lines.push(`(อันดับ • FPL • Extra • Total)`);
+        lines.push(`(อันดับ • FPL • ทายผล • ยอดรวมรางวัล)`);
 
         const tiers = (this.config && this.config.features && this.config.features.annual_payout_tiers) || {
           "1": 1000, "2": 800, "3": 600, "4": 400, "5": 200, "6": 100,
@@ -3676,13 +3676,13 @@ selectShi62GW(gwName) {
 
           const dispName = shi62ShortNames[t.entry_id] || t.player_name;
 
-          lines.push(`${rank}. ${dispName}: FPL ${fmtVal(seasonPrize)} | Extra ${fmtVal(extraNet)} | Total ${fmtVal(grandTotal)}`);
+          lines.push(`${rank}. ${dispName}: FPL ${fmtVal(seasonPrize)} | ทายผล ${fmtVal(extraNet)} | รวม ${fmtVal(grandTotal)}`);
         });
 
         const nodCum = (this.shi62Data.cumulative_standings || []).find(c => c.player && c.player.is_guest);
         if (nodCum) {
           const nodNet = nodCum.net || 0;
-          lines.push(`• Nod (Guest): FPL - | Extra ${fmtVal(nodNet)} | Total ${fmtVal(nodNet)}`);
+          lines.push(`• Nod (Guest): FPL - | ทายผล ${fmtVal(nodNet)} | รวม ${fmtVal(nodNet)}`);
         }
 
         lines.push(`---------------------------------`);
@@ -7860,7 +7860,7 @@ selectShi62GW(gwName) {
           if (tagEl) tagEl.innerText = isShi62 ? "SHI'62 ANNUAL ZERO-SUM & EXTRA" : 'ANNUAL ZERO-SUM SETTLEMENT (จ่ายตังทีเดียวสิ้นฤดูกาล)';
           if (titleEl) titleEl.innerText = 'ตารางสรุปยอดจ่าย-รับเงินรางวัลสิ้นฤดูกาล';
           if (subEl) subEl.innerText = isShi62
-            ? `สรุปยอดรางวัลจบฤดูกาล (อันดับ 1-6 รับ +3,100 บ. / อันดับ 7-12 จ่าย -3,100 บ.) และยอดสะสมมินิเกม Extra • ตัดสิน GW 1 - 38`
+            ? `สรุปยอดรางวัลจบฤดูกาล (อันดับ 1-6 รับ +3,100 บ. / อันดับ 7-12 จ่าย -3,100 บ.) และยอดสะสมมินิเกมทายผล • ตัดสิน GW 1 - 38`
             : `ตัดสินจากคะแนนรวมสะสมสุทธิ GW 1 - 38 • อันดับ 1-6 รับเงินรางวัลรวม ${totalPositive.toLocaleString()} THB • อันดับ 7-12 ร่วมจ่ายเงินค่าปรับรวม ${totalNegative.toLocaleString()} THB (Zero-Sum Balance)`;
 
           // Extra map and short names for League 187827
@@ -8037,6 +8037,11 @@ selectShi62GW(gwName) {
                 if (v < 0) return `<span class="text-rose-600 dark:text-rose-400 font-bold font-display">${Number(v).toLocaleString()}</span>`;
                 return `<span class="text-slate-400 dark:text-slate-500 font-display">0</span>`;
               };
+              const fmtGrandCol = (v) => {
+                if (v > 0) return `<span class="text-emerald-600 dark:text-emerald-400 font-black font-display text-xs sm:text-sm">+${Number(v).toLocaleString()} THB</span>`;
+                if (v < 0) return `<span class="text-rose-600 dark:text-rose-400 font-black font-display text-xs sm:text-sm">${Number(v).toLocaleString()} THB</span>`;
+                return `<span class="text-slate-400 dark:text-slate-500 font-black font-display text-xs sm:text-sm">0 THB</span>`;
+              };
               tableRowsHtml += `
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors ${rowBg}">
                   <td class="py-3 px-1 sm:px-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
@@ -8052,6 +8057,7 @@ selectShi62GW(gwName) {
                   <td class="py-3 px-2 sm:px-3 text-center font-display font-black text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
                   <td class="py-3 px-2 sm:px-3 text-right font-display text-xs sm:text-sm">${isPrize ? fmtCol(payout) : '<span class="text-slate-400">-</span>'}</td>
                   <td class="py-3 px-2 sm:px-3 text-right font-display text-xs sm:text-sm">${isPrize ? fmtCol(extraNet) : '<span class="text-slate-400">-</span>'}</td>
+                  <td class="py-3 px-2 sm:px-3 text-right font-display">${isPrize ? fmtGrandCol(grandTotal) : '<span class="text-slate-400">-</span>'}</td>
                 </tr>
               `;
             } else {
@@ -8091,9 +8097,13 @@ selectShi62GW(gwName) {
             if (nodCum) {
               const nodNet = Number(nodCum.net) || 0;
               sumExtraNet += nodNet;
+              sumGrandTotal += nodNet;
               const fmtNodNet = nodNet > 0 
                 ? `<span class="text-emerald-600 dark:text-emerald-400 font-bold font-display">+${Number(nodNet).toLocaleString()}</span>`
                 : (nodNet < 0 ? `<span class="text-rose-600 dark:text-rose-400 font-bold font-display">${Number(nodNet).toLocaleString()}</span>` : '<span class="text-slate-400 font-display">0</span>');
+              const fmtNodGrand = nodNet > 0 
+                ? `<span class="text-emerald-600 dark:text-emerald-400 font-black font-display text-xs sm:text-sm">+${Number(nodNet).toLocaleString()} THB</span>`
+                : (nodNet < 0 ? `<span class="text-rose-600 dark:text-rose-400 font-black font-display text-xs sm:text-sm">${Number(nodNet).toLocaleString()} THB</span>` : '<span class="text-slate-400 font-black font-display text-xs sm:text-sm">0 THB</span>');
 
               tableRowsHtml += `
                 <tr class="bg-slate-50/40 dark:bg-slate-800/20 text-slate-500 border-t border-dashed border-slate-200 dark:border-slate-800">
@@ -8103,11 +8113,12 @@ selectShi62GW(gwName) {
                       <span class="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200">Nod</span>
                       <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium">Guest</span>
                     </div>
-                    <span class="text-[11px] text-slate-400 block truncate">เล่นเฉพาะ Extra</span>
+                    <span class="text-[11px] text-slate-400 block truncate">เล่นเฉพาะทายผล</span>
                   </td>
                   <td class="py-3 px-2 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-400">-</td>
                   <td class="py-3 px-2 sm:px-3 text-right font-display text-xs sm:text-sm text-slate-400">-</td>
                   <td class="py-3 px-2 sm:px-3 text-right font-display text-xs sm:text-sm">${fmtNodNet}</td>
+                  <td class="py-3 px-2 sm:px-3 text-right font-display">${fmtNodGrand}</td>
                 </tr>
               `;
             }
@@ -8122,8 +8133,9 @@ selectShi62GW(gwName) {
                 <th class="py-2.5 px-1 sm:px-2 text-center w-8">#</th>
                 <th class="py-2.5 px-2 sm:px-3 min-w-[140px]">ทีม & ผู้จัดการ</th>
                 <th class="py-2.5 px-2 sm:px-3 text-center w-16">คะแนนรวม</th>
-                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[100px]">FPL</th>
-                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[100px]">ยอดรวม Extra</th>
+                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[90px]">FPL</th>
+                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[100px]">ยอดรวมทายผล</th>
+                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[110px]">ยอดรวมรางวัล</th>
               </tr>
             `;
 
@@ -8135,6 +8147,7 @@ selectShi62GW(gwName) {
                 <td class="py-3 px-2 sm:px-3 text-center text-slate-900 dark:text-white font-black">${sumTotalPoints}</td>
                 <td class="py-3 px-2 sm:px-3 text-right font-black text-slate-900 dark:text-white text-xs sm:text-sm">${sumSeasonPrize === 0 ? '0' : sumSeasonPrize.toLocaleString()} THB</td>
                 <td class="py-3 px-2 sm:px-3 text-right font-black text-slate-900 dark:text-white text-xs sm:text-sm">${sumExtraNet === 0 ? '0' : sumExtraNet.toLocaleString()} THB</td>
+                <td class="py-3 px-2 sm:px-3 text-right font-black text-slate-900 dark:text-white text-sm sm:text-base">${sumGrandTotal === 0 ? '0' : sumGrandTotal.toLocaleString()} THB</td>
               </tr>
             `;
           } else {
@@ -8179,7 +8192,7 @@ selectShi62GW(gwName) {
                   ` : ''}
                 </div>
                 <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
-                  <table class="w-full text-left border-collapse ${isShi62 ? 'min-w-[560px]' : ''}">
+                  <table class="w-full text-left border-collapse ${isShi62 ? 'min-w-[620px]' : ''}">
                     <thead>
                       ${tableHeadersHtml}
                     </thead>
