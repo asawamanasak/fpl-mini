@@ -117,16 +117,22 @@ def normalize_gw_name(raw_name):
         return f"GW{m2.group(1)}"
     return s
 
-def format_match_title(raw_title):
+def format_match_title(raw_title, tournament=None):
     """
     Format match header to display with 'vs' and odds/handicap in parentheses,
     e.g. 'MCI -2 v IPS' -> 'MCI (-2) vs IPS', 'EVE v CHE -0.5' -> 'EVE vs CHE (-0.5)', 'BRE v LIV' -> 'BRE vs LIV'
     """
     if not raw_title:
         return ""
-    parts = re.split(r'\s+[vV:]\s+|\s*:\s*|\s+[vV][sS]\s+', raw_title.strip())
+    clean_title = raw_title.strip()
+    m_tour = re.match(r'^\[(.*?)\]\s*', clean_title)
+    if m_tour:
+        tournament = m_tour.group(1)
+        clean_title = clean_title[m_tour.end():].strip()
+
+    parts = re.split(r'\s+[vV:]\s+|\s*:\s*|\s+[vV][sS]\s+', clean_title)
     if len(parts) != 2:
-        return raw_title
+        return f"[{tournament}] {clean_title}" if tournament else clean_title
 
     def parse_side(side_str):
         s = side_str.strip()
@@ -149,7 +155,10 @@ def format_match_title(raw_title):
 
     s1 = f"{t1} ({h1})" if h1 else t1
     s2 = f"{t2} ({h2})" if h2 else t2
-    return f"{s1} vs {s2}"
+    base = f"{s1} vs {s2}"
+    if tournament:
+        return f"[{tournament}] {base}"
+    return base
 
 def parse_shi62_file(file_path):
     if not os.path.exists(file_path):
@@ -168,7 +177,8 @@ def parse_shi62_file(file_path):
         if not match:
             return
         title = match.get("title", "")
-        parts = re.split(r'\s+[vV:]\s+|\s*:\s*|\s+[vV][sS]\s+', title)
+        clean_title = re.sub(r'^\[.*?\]\s*', '', title)
+        parts = re.split(r'\s+[vV:]\s+|\s*:\s*|\s+[vV][sS]\s+', clean_title)
         home_team = ""
         away_team = ""
         if len(parts) >= 2:
@@ -276,19 +286,36 @@ def parse_shi62_file(file_path):
         }
 
     i = 0
+    current_tournament = None
     while i < len(lines):
         line = lines[i]
         if not line:
             i += 1
             continue
 
-        # Check for GW header (e.g. W7, GW6, W5, GW4, GW3, GW2, W1, Commu)
-        is_gw_header = False
         upper_line = line.upper()
+
+        # Check for tournament category header (e.g. "UCL", "EPL", "FA CUP", "CARABAO")
+        if upper_line in ("UCL", "EPL", "FA CUP", "CARABAO"):
+            if upper_line == "UCL":
+                current_tournament = "UCL"
+            elif upper_line == "EPL":
+                current_tournament = None
+            i += 1
+            continue
+
+        # Check for GW header (e.g. W8, GW8, W7, GW6, W5, GW4, GW3, GW2, W1, Commu)
+        is_gw_header = False
         if (upper_line.startswith("GW") or upper_line.startswith("W") or upper_line == "COMMU") and len(line) <= 8 and not (':' in line or ' v ' in line.lower()):
             is_gw_header = True
 
         if is_gw_header:
+            norm_name = normalize_gw_name(line)
+            # If same GW header is repeated in the same section, continue
+            if current_gw_name and norm_name == normalize_gw_name(current_gw_name):
+                i += 1
+                continue
+
             # Check if this is "Commu" right under "W1" or similar
             if upper_line == "COMMU" and current_gw_name in ("W1", "GW1") and len(current_gw_matches) == 0:
                 current_gw_name = "GW1 (Commu)"
@@ -305,7 +332,8 @@ def parse_shi62_file(file_path):
                     gameweeks.append(gw_obj)
                 current_gw_matches = []
 
-            current_gw_name = normalize_gw_name(line)
+            current_gw_name = norm_name
+            current_tournament = None
             i += 1
             continue
 
@@ -318,7 +346,7 @@ def parse_shi62_file(file_path):
                 current_match = None
 
             current_match = {
-                "title": format_match_title(line),
+                "title": format_match_title(line, tournament=current_tournament),
                 "raw_title": line,
                 "options": []
             }
