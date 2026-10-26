@@ -2795,7 +2795,14 @@ class LiveCommentaryEngine {
         }
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
-        this.activeTab = this.normalizeTab(queryTab || hashTab || savedTab || 'gameweek-view');
+        let initialTab = this.normalizeTab(queryTab || hashTab || savedTab || 'gameweek-view');
+        if (String(this.activeLeagueId) !== '187827' && initialTab === 'shi62-special-view') {
+          initialTab = 'gameweek-view';
+        }
+        if (String(this.activeLeagueId) !== '5349' && (initialTab === 'bramann-prediction-view' || initialTab === 'bramann-challenge-view')) {
+          initialTab = 'gameweek-view';
+        }
+        this.activeTab = initialTab;
         this.liveNotesCache = {};
         this.shi62Data = (typeof SHI62_SPECIAL_DATA !== 'undefined') ? SHI62_SPECIAL_DATA : null;
         this.bramannPredData = (typeof BRAMANN_PREDICTION_DATA !== 'undefined') ? BRAMANN_PREDICTION_DATA : null;
@@ -2819,9 +2826,29 @@ class LiveCommentaryEngine {
         if (t === 'hof' || t === 'hall-of-fame' || t === 'halloffame') return 'hall-of-fame-view';
         if (t === 'global-radar' || t === 'radar' || t === 'global' || t === 'all-leagues' || t === 'consistency-radar' || t === 'consistency') return 'global-radar-view';
         if (t === 'cup') return 'cup-view';
-        if (t === 'shi62' || t === 'shi62-special' || t === 'special' || t === 'beta') return 'shi62-special-view';
-        if (t === 'bramann-prediction' || t === 'bramann-pred' || t === 'pred' || t === 'prediction') return 'bramann-prediction-view';
-        if (t === 'bramann-challenge' || t === 'bramann-chal' || t === 'chal' || t === 'challenge') return 'bramann-challenge-view';
+        if (t === 'shi62' || t === 'shi62-special' || t === 'special' || t === 'beta') {
+          return String(this.activeLeagueId) === '187827' ? 'shi62-special-view' : 'gameweek-view';
+        }
+        if (t === 'bramann-prediction' || t === 'bramann-pred') {
+          return String(this.activeLeagueId) === '5349' ? 'bramann-prediction-view' : 'gameweek-view';
+        }
+        if (t === 'bramann-challenge' || t === 'bramann-chal' || t === 'chal' || t === 'challenge') {
+          return String(this.activeLeagueId) === '5349' ? 'bramann-challenge-view' : 'gameweek-view';
+        }
+        if (t === 'pred' || t === 'prediction') {
+          if (String(this.activeLeagueId) === '187827') return 'shi62-special-view';
+          if (String(this.activeLeagueId) === '5349') return 'bramann-prediction-view';
+          return 'gameweek-view';
+        }
+        if (t === 'shi62-special-view') {
+          return String(this.activeLeagueId) === '187827' ? 'shi62-special-view' : 'gameweek-view';
+        }
+        if (t === 'bramann-prediction-view') {
+          return String(this.activeLeagueId) === '5349' ? 'bramann-prediction-view' : 'gameweek-view';
+        }
+        if (t === 'bramann-challenge-view') {
+          return String(this.activeLeagueId) === '5349' ? 'bramann-challenge-view' : 'gameweek-view';
+        }
         if (t === 'rule' || t === 'rules') return 'rules-view';
         if (t === 'about' || t === 'about-us' || t === 'about-me' || t === 'feature' || t === 'features' || t === 'function' || t === 'functions' || t === 'capabilities') return 'about-view';
         if (!t.endsWith('-view')) return t + '-view';
@@ -3432,6 +3459,14 @@ class LiveCommentaryEngine {
             }
           }
         }
+
+        if (!isShi62 && this.activeTab === 'shi62-special-view') {
+          this.switchTab('gameweek-view');
+        } else if (!isBramann && (this.activeTab === 'bramann-prediction-view' || this.activeTab === 'bramann-challenge-view')) {
+          this.switchTab('gameweek-view');
+        } else {
+          this.switchTab(this.activeTab);
+        }
       }
 
       initTabNavigation() {
@@ -3465,6 +3500,9 @@ class LiveCommentaryEngine {
             cls += ' hidden';
           }
           if (btn.id === 'tab-btn-shi62-special' && String(this.activeLeagueId) !== '187827') {
+            cls += ' hidden';
+          }
+          if ((btn.id === 'tab-btn-bramann-prediction' || btn.id === 'tab-btn-bramann-challenge') && String(this.activeLeagueId) !== '5349') {
             cls += ' hidden';
           }
           btn.className = cls;
@@ -3598,9 +3636,27 @@ class LiveCommentaryEngine {
         else if (this.activeTab === 'global-radar-view') this.renderGlobalRadarView();
         else if (this.activeTab === 'cup-view') this.renderCupView();
         else if (this.activeTab === 'rules-view') this.renderRulesView();
-        else if (this.activeTab === 'shi62-special-view') this.renderShi62Special();
-        else if (this.activeTab === 'bramann-prediction-view') this.renderBramannPrediction();
-        else if (this.activeTab === 'bramann-challenge-view') this.renderBramannChallenge();
+        else if (this.activeTab === 'shi62-special-view') {
+          if (String(this.activeLeagueId) === '187827') {
+            this.renderShi62Special();
+          } else {
+            this.switchTab('gameweek-view');
+          }
+        }
+        else if (this.activeTab === 'bramann-prediction-view') {
+          if (String(this.activeLeagueId) === '5349') {
+            this.renderBramannPrediction();
+          } else {
+            this.switchTab('gameweek-view');
+          }
+        }
+        else if (this.activeTab === 'bramann-challenge-view') {
+          if (String(this.activeLeagueId) === '5349') {
+            this.renderBramannChallenge();
+          } else {
+            this.switchTab('gameweek-view');
+          }
+        }
         else if (this.activeTab === 'about-view') {
           // Static content
         }
@@ -4014,6 +4070,7 @@ selectShi62GW(gwName) {
       }
 
       renderBramannPrediction() {
+        if (String(this.activeLeagueId) !== '5349') return;
         if (!this.bramannPredData) return;
         const container = document.getElementById('bramann-prediction-view');
         if (!container) return;
@@ -4058,15 +4115,9 @@ selectShi62GW(gwName) {
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60 font-display mb-1.5">
-                  BRAMANN MINI-GAME #2
-                </div>
                 <h1 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
-                  Bramann Prediction (ทายผล)
+                  ทายผล
                 </h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl">
-                  มินิเกมทายผลฟุตบอลแบบพูลหารเท่า ขาละ 100 บาท สูงสุด 5 ขาต่อคู่ เสมอแยกย้าย ปัดเศษบาทลงตัว
-                </p>
               </div>
 
               <!-- Quick Stats Grid -->
@@ -4339,6 +4390,7 @@ selectShi62GW(gwName) {
       }
 
       renderBramannChallenge() {
+        if (String(this.activeLeagueId) !== '5349') return;
         if (!this.bramannChalData) return;
         const container = document.getElementById('bramann-challenge-view');
         if (!container) return;
@@ -4364,15 +4416,9 @@ selectShi62GW(gwName) {
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/60 font-display mb-1.5">
-                  BRAMANN MINI-GAME #3
-                </div>
                 <h1 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
-                  Bramann Challenge (ท้าชน)
+                  ท้าชน
                 </h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl">
-                  ดวลแต้มแฟนตาซีตัวต่อตัวประจำสัปดาห์ พร้อมระบบวางเดิมพันร่วม • Tie-Breaker: กัปตัน -> รองกัปตัน -> ตัวท็อป -> เสมอ
-                </p>
               </div>
 
               <!-- Quick Stats Grid -->
@@ -4419,15 +4465,6 @@ selectShi62GW(gwName) {
                     `;
                   }).join('')}
                 </div>
-
-                <button 
-                  onclick="app.copyBramannChalLINEResult('${activeGWObj.name}')"
-                  class="ml-auto sm:ml-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
-                  title="คัดลอกสรุปผลท้าชนสัปดาห์นี้สำหรับส่ง LINE"
-                >
-                  <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-                  <span>คัดลอก LINE</span>
-                </button>
               </div>
             </div>
 
@@ -4443,7 +4480,7 @@ selectShi62GW(gwName) {
                       <div>
                         <span class="text-xs font-bold text-slate-400 uppercase tracking-wider font-display">MATCH #${idx + 1}</span>
                         <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display mt-0.5">
-                          ${m.title}
+                          ${(m.team1_name && m.team2_name) ? `${m.team1_name} vs ${m.team2_name}` : m.title}
                         </h3>
                       </div>
                       <div class="flex items-center gap-1.5 flex-wrap">
@@ -4597,14 +4634,9 @@ selectShi62GW(gwName) {
                       <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
                         <td class="py-2.5 px-3 text-center font-display font-semibold text-slate-500">${c.rank}</td>
                         <td class="py-2.5 px-3">
-                          <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
-                              ${c.player.display_name}
-                            </span>
-                            <div>
-                              <div class="font-bold text-slate-900 dark:text-white leading-tight">${c.player.team_name}</div>
-                              <div class="text-[11px] text-slate-400 leading-tight">${c.player.manager}</div>
-                            </div>
+                          <div>
+                            <div class="font-bold text-slate-900 dark:text-white leading-tight">${c.player.team_name || c.player.display_name}</div>
+                            <div class="text-[11px] text-slate-400 leading-tight">${c.player.manager || ''}</div>
                           </div>
                         </td>
                         <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
@@ -4627,6 +4659,7 @@ selectShi62GW(gwName) {
       }
 
       renderBramannDualPrizeView(titleEl, subEl, poolBadge, tagEl, mainContainer) {
+        if (String(this.activeLeagueId) !== '5349') return;
         if (tagEl) tagEl.innerText = "BRAMANN DUAL PRIZE (GW 19 & GW 38)";
         if (titleEl) titleEl.innerText = "สรุปเงินรางวัล FPL & การจัดสรรกองกลาง";
         if (subEl) subEl.innerText = "เงินกองกลางรวม 9,500 THB (19 ทีม x 500 บาท) • Prize 1 (หลังจบ GW 19 รวม 4,500 THB) + Prize 2 (หลังจบ GW 38 รวม 5,000 THB)";
@@ -4883,15 +4916,6 @@ selectShi62GW(gwName) {
                     อัปเดตตามอันดับคะแนนแฟนตาซีล่าสุด พร้อมรวมยอดสุทธิจากมินิเกมทายผลและท้าชน
                   </p>
                 </div>
-
-                <button 
-                  onclick="app.copyBramannPrizesLINEResult()"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap self-start sm:self-auto"
-                  title="คัดลอกสรุปเงินรางวัลสำหรับส่ง LINE"
-                >
-                  <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-                  <span>คัดลอก LINE</span>
-                </button>
               </div>
 
               <!-- Standings Table -->
@@ -4935,6 +4959,7 @@ selectShi62GW(gwName) {
       }
 
       renderShi62Special() {
+        if (String(this.activeLeagueId) !== '187827') return;
         if (!this.shi62Data) return;
         const container = document.getElementById('shi62-special-view');
         if (!container) return;
@@ -4961,7 +4986,7 @@ selectShi62GW(gwName) {
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h1 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
-                  Shi'62 Special
+                  ทายผล
                 </h1>
               </div>
 
