@@ -1444,7 +1444,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 <th onclick="app.setRadarSortBy('bench')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามแต้มตัวสำรองตกน้ำสะสม">
                   <span id="th-radar-bench"><span class="hidden sm:inline">สำรอง</span><span class="sm:hidden">สำรอง</span></span>
                 </th>
-                <th onclick="app.setRadarSortBy('tier')" class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="Consistency Tier: 💎 S-Tier (หัวกะทิยอดเยี่ยมและนิ่งจริง) | ⚡ Volatile (แต้มสวิงสูง) | 🟢 A-Tier (มาตรฐานสูง) | 🟡 B-Tier (ระดับกลางคงที่) | ⚪ C-Tier (ระดับพัฒนาการ)">
+                <th onclick="app.setRadarSortBy('tier')" class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-30 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="Consistency Tier: 💎 S-Tier (หัวกะทิ Avg ≥ 69.5, Floor ≥ 40) | ⚡ Volatile (สวิงรุนแรง Spread ≥ 75, Low < 40) | 🟢 A-Tier (มาตรฐานสูง Avg ≥ 64, Floor ≥ 35) | 🟡 B-Tier (ระดับกลาง Avg ≥ 58) | ⚪ C-Tier (ระดับพัฒนาการ Avg < 58)">
                   <span id="th-radar-tier"><span class="hidden sm:inline">ระดับความสม่ำเสมอ</span><span class="sm:hidden">ระดับ</span></span>
                 </th>
               </tr>
@@ -10287,30 +10287,30 @@ selectShi62GW(gwName) {
             globalBestBench = { bench: totalBench, team: t.team_name, player: t.player_name, league: primaryLeague };
           }
 
-          // Consistency Tier Badge
+          // Consistency Tier Badge (Model 1: Balanced Bell Curve)
           let tierBadge = '';
           let tierWeight = 0;
           if (count > 0) {
-            const isSTier = (avg >= 72 && low >= 48 && spread <= 60) || (avg >= 67 && spread <= 30 && low >= 50);
-            const isVolatile = (spread >= 65) || (high >= 100 && low < 45);
-            const isATier = avg >= 65 && low >= 40;
-            const isBTier = avg >= 58;
+            const isSTier = (avg >= 69.5 && low >= 40);
+            const isVolatile = !isSTier && ((spread >= 75 && low < 40) || (high >= 115 && low < 38));
+            const isATier = !isSTier && !isVolatile && (avg >= 64.0 && low >= 35);
+            const isBTier = !isSTier && !isVolatile && (avg >= 58.0);
 
             if (isSTier) {
               tierWeight = 5;
-              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-gradient-to-r from-amber-300/40 via-yellow-200/60 to-amber-300/40 text-amber-950 dark:text-amber-100 border border-amber-400 dark:border-amber-300 shadow-[0_0_8px_rgba(245,158,11,0.5)] dark:shadow-[0_0_12px_rgba(251,191,36,0.45)] ring-1 ring-amber-400/50" title="💎 S-Tier: แต้มเฉลี่ยสูงมากและนิ่งจริง (Avg ≥ 72, Floor ≥ 48, Spread ≤ 60 หรือ Avg ≥ 67, Spread ≤ 30)">💎 S-Tier</span>';
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-gradient-to-r from-amber-300/40 via-yellow-200/60 to-amber-300/40 text-amber-950 dark:text-amber-100 border border-amber-400 dark:border-amber-300 shadow-[0_0_8px_rgba(245,158,11,0.5)] dark:shadow-[0_0_12px_rgba(251,191,36,0.45)] ring-1 ring-amber-400/50" title="💎 S-Tier: หัวกะทิยอดเยี่ยมและนิ่งจริง (Avg ≥ 69.5, Floor ≥ 40)">💎 S-Tier</span>';
             } else if (isVolatile) {
               tierWeight = 2;
-              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950/60 dark:text-rose-200 dark:border-rose-800/80" title="⚡ Volatile: แต้มสวิงสูง มีสัปดาห์ระเบิดฟอร์มแต่วีคอื่นดรอป (Spread ≥ 65 หรือ High ≥ 100 และ Low < 45)">⚡ Volatile</span>';
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950/60 dark:text-rose-200 dark:border-rose-800/80" title="⚡ Volatile: แต้มสวิงสูง มีสัปดาห์ระเบิดฟอร์มแต่วีคอื่นดรอป (Spread ≥ 75, Floor < 40 หรือ High ≥ 115, Floor < 38)">⚡ Volatile</span>';
             } else if (isATier) {
               tierWeight = 4;
-              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-200 dark:border-emerald-800" title="🟢 A-Tier: ฟอร์มดีมาตรฐานสูงสม่ำเสมอ (Avg ≥ 65, Floor ≥ 40)">🟢 A-Tier</span>';
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-200 dark:border-emerald-800" title="🟢 A-Tier: ฟอร์มดีมาตรฐานสูงสม่ำเสมอ (Avg ≥ 64.0, Floor ≥ 35)">🟢 A-Tier</span>';
             } else if (isBTier) {
               tierWeight = 3;
-              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-yellow-100 text-yellow-800 border border-yellow-300 dark:bg-yellow-950/60 dark:text-yellow-200 dark:border-yellow-800" title="🟡 B-Tier: ฟอร์มคงที่ระดับกลาง (Avg ≥ 58)">🟡 B-Tier</span>';
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-yellow-100 text-yellow-800 border border-yellow-300 dark:bg-yellow-950/60 dark:text-yellow-200 dark:border-yellow-800" title="🟡 B-Tier: ฟอร์มคงที่ระดับกลาง (Avg ≥ 58.0)">🟡 B-Tier</span>';
             } else {
               tierWeight = 1;
-              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700" title="⚪ C-Tier: ระดับพัฒนาการ (Avg < 58)">⚪ C-Tier</span>';
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700" title="⚪ C-Tier: ระดับพัฒนาการ (Avg < 58.0)">⚪ C-Tier</span>';
             }
           }
 
