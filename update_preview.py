@@ -3747,7 +3747,7 @@ selectShi62GW(gwName) {
         lines.push(`สรุปรางวัล (FPL & ทายผล) GW${maxGW}`);
         lines.push(`---------------------------------`);
         lines.push(`🏆 สรุปรางวัล:`);
-        lines.push(`(อันดับ • FPL • ทายผล • ยอดรวมรางวัล)`);
+        lines.push(`(อันดับ • รางวัล FPL • ทายผลสะสม • ยอดรวมสุทธิ)`);
 
         const tiers = (this.config && this.config.features && this.config.features.annual_payout_tiers) || {
           "1": 1000, "2": 800, "3": 600, "4": 400, "5": 200, "6": 100,
@@ -3998,8 +3998,8 @@ selectShi62GW(gwName) {
         let lines = [];
         lines.push(`สรุปเงินรางวัล FPL & มินิเกม Bramann League (GW${maxGW})`);
         lines.push(`---------------------------------`);
-        lines.push(`🏆 สรุปเงินรางวัล FPL (Prize 1 + Prize 2) รวม 9,500 บาท:`);
-        lines.push(`(อันดับ • ทีม • แต้ม • P1 • P2 • รวม FPL • ทายผล • ท้าชน • ยอดสุทธิ)`);
+        lines.push(`🏆 สรุปเงินรางวัล FPL (Prize 1 + Prize 2) รวม 9,500 THB:`);
+        lines.push(`(อันดับ • ทีม • คะแนนรวม • P1 • P2 • รวม FPL • ทายผลสะสม • ท้าชนสะสม • ยอดรวมสุทธิ)`);
 
         const p1Tiers = { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
         const p2Tiers = { "1": 1000, "2": 800, "3": 700, "7": 700, "8": 500, "9": 400, "13": 400, "14": 300, "15": 200 };
@@ -4662,7 +4662,7 @@ selectShi62GW(gwName) {
         if (String(this.activeLeagueId) !== '5349') return;
         if (tagEl) tagEl.innerText = "BRAMANN DUAL PRIZE (GW 19 & GW 38)";
         if (titleEl) titleEl.innerText = "สรุปเงินรางวัล FPL & การจัดสรรกองกลาง";
-        if (subEl) subEl.innerText = "เงินกองกลางรวม 9,500 THB (19 ทีม x 500 บาท) • Prize 1 (หลังจบ GW 19 รวม 4,500 THB) + Prize 2 (หลังจบ GW 38 รวม 5,000 THB)";
+        if (subEl) subEl.innerText = "เงินกองกลางรวม 9,500 THB (19 ทีม x 500 THB) • Prize 1 (หลังจบ GW 19 รวม 4,500 THB) + Prize 2 (หลังจบ GW 38 รวม 5,000 THB)";
         if (poolBadge) poolBadge.innerText = "9,500 THB";
 
         const p1Tiers = { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
@@ -4785,15 +4785,15 @@ selectShi62GW(gwName) {
             : `<span class="text-xs font-semibold text-slate-400">-</span>`;
 
           const p1Badge = p1Amt > 0
-            ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/60 font-display">฿${p1Amt.toLocaleString()}</span>`
+            ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/60 font-display">${p1Amt.toLocaleString()} THB</span>`
             : '<span class="text-slate-400">-</span>';
 
           const p2Badge = p2Amt > 0
-            ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200/60 font-display">฿${p2Amt.toLocaleString()}</span>`
+            ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200/60 font-display">${p2Amt.toLocaleString()} THB</span>`
             : '<span class="text-slate-400">-</span>';
 
           const fplTotalBadge = fplTotal > 0
-            ? `<span class="font-black text-slate-900 dark:text-white font-display">฿${fplTotal.toLocaleString()}</span>`
+            ? `<span class="font-black text-slate-900 dark:text-white font-display">${fplTotal.toLocaleString()} THB</span>`
             : '<span class="text-slate-400">-</span>';
 
           const predCol = predNet !== 0 
@@ -4869,14 +4869,14 @@ selectShi62GW(gwName) {
                 </div>
                 <div>
                   <div class="text-xl sm:text-2xl font-black font-display text-slate-900 dark:text-white">
-                    ฿4,500 <span class="text-xs font-bold text-slate-400">THB</span>
+                    4,500 <span class="text-xs font-bold text-slate-400">THB</span>
                   </div>
                   <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    จัดสรรให้ 9 อันดับ (อันดับ 1, 2, 3, 5, 7, 9, 11, 13, 15) คนละ 500 บาทเท่ากัน
+                    จัดสรรให้ 9 อันดับ (อันดับ 1, 2, 3, 5, 7, 9, 11, 13, 15) คนละ 500 THB เท่ากัน
                   </div>
                 </div>
                 <div class="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap gap-1">
-                  ${[1, 2, 3, 5, 7, 9, 11, 13, 15].map(r => `<span class="text-[10.5px] font-bold px-2 py-0.5 rounded bg-blue-50/80 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200/40 font-display">#${r}: ฿500</span>`).join('')}
+                  ${[1, 2, 3, 5, 7, 9, 11, 13, 15].map(r => `<span class="text-[10.5px] font-bold px-2 py-0.5 rounded bg-blue-50/80 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200/40 font-display">#${r} 500 THB</span>`).join('')}
                 </div>
               </div>
 
@@ -4890,7 +4890,7 @@ selectShi62GW(gwName) {
                 </div>
                 <div>
                   <div class="text-xl sm:text-2xl font-black font-display text-slate-900 dark:text-white">
-                    ฿5,000 <span class="text-xs font-bold text-slate-400">THB</span>
+                    5,000 <span class="text-xs font-bold text-slate-400">THB</span>
                   </div>
                   <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">
                     จัดสรรตามอันดับแบบขั้นบันได 9 อันดับ
@@ -4900,7 +4900,7 @@ selectShi62GW(gwName) {
                   ${[
                     {r: 1, a: 1000}, {r: 2, a: 800}, {r: 3, a: 700}, {r: 7, a: 700},
                     {r: 8, a: 500}, {r: 9, a: 400}, {r: 13, a: 400}, {r: 14, a: 300}, {r: 15, a: 200}
-                  ].map(p => `<span class="text-[10.5px] font-bold px-2 py-0.5 rounded bg-purple-50/80 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200/40 font-display">#${p.r}: ฿${p.a}</span>`).join('')}
+                  ].map(p => `<span class="text-[10.5px] font-bold px-2 py-0.5 rounded bg-purple-50/80 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200/40 font-display">#${p.r} ${p.a.toLocaleString()} THB</span>`).join('')}
                 </div>
               </div>
             </div>
@@ -4925,7 +4925,7 @@ selectShi62GW(gwName) {
                     <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50/50 dark:bg-slate-800/30">
                       <th class="py-2.5 px-2 text-center w-8">#</th>
                       <th class="py-2.5 px-3 min-w-[160px]">ทีม & ผู้จัดการ</th>
-                      <th class="py-2.5 px-2 text-center w-16">แต้มรวม</th>
+                      <th class="py-2.5 px-2 text-center w-16">คะแนนรวม</th>
                       <th class="py-2.5 px-2 text-right min-w-[90px]">Prize 1 (GW19)</th>
                       <th class="py-2.5 px-2 text-right min-w-[90px]">Prize 2 (GW38)</th>
                       <th class="py-2.5 px-2 text-right min-w-[100px]">รวม FPL</th>
@@ -4943,12 +4943,12 @@ selectShi62GW(gwName) {
                         ยอดรวมจัดสรรเงินกองกลาง (Total Pool Balance)
                       </td>
                       <td class="py-3 px-2 text-center text-slate-900 dark:text-white font-black">${sumPoints}</td>
-                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">฿${sumP1.toLocaleString()}</td>
-                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">฿${sumP2.toLocaleString()}</td>
-                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">฿${sumTotalFpl.toLocaleString()}</td>
+                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumP1.toLocaleString()} THB</td>
+                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumP2.toLocaleString()} THB</td>
+                      <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumTotalFpl.toLocaleString()} THB</td>
                       <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumPred === 0 ? '0' : sumPred.toLocaleString()} THB</td>
                       <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumChal === 0 ? '0' : sumChal.toLocaleString()} THB</td>
-                      <td class="py-3 px-3 text-right text-slate-900 dark:text-white font-black text-sm sm:text-base">฿${sumGrand.toLocaleString()} THB</td>
+                      <td class="py-3 px-3 text-right text-slate-900 dark:text-white font-black text-sm sm:text-base">${sumGrand.toLocaleString()} THB</td>
                     </tr>
                   </tfoot>
                 </table>
@@ -8064,9 +8064,9 @@ selectShi62GW(gwName) {
 
           if (subEl) {
             if (hasWeeklyPenalties) {
-              subEl.innerText = `รางวัลแชมป์สัปดาห์ ${weeklyChampPrize.toLocaleString()} THB • ค่าปรับ 5 อันดับท้ายรวม ${totalWeeklyFines.toLocaleString()} THB/วีค (สะสมเข้ากองกลางสุทธิ ${weeklyNetPot.toLocaleString()} THB/วีค x 38 วีค = ${seasonNetTotal.toLocaleString()} THB)`;
+              subEl.innerText = `รางวัลแชมป์สัปดาห์ ${weeklyChampPrize.toLocaleString()} THB • ค่าปรับ 5 อันดับท้ายรวม ${totalWeeklyFines.toLocaleString()} THB/สัปดาห์ (สะสมเข้ากองกลางสุทธิ ${weeklyNetPot.toLocaleString()} THB/สัปดาห์ x 38 สัปดาห์ = ${seasonNetTotal.toLocaleString()} THB)`;
             } else if (weeklyPrizesConfig) {
-              subEl.innerText = `ชิงเงินรางวัลรวม ${this.config.total_pool || '103,200 THB'} (รางวัลประจำสัปดาห์ 3 อันดับ: ที่ 1: ${weeklyPrizesConfig['1st'].toLocaleString()} / ที่ 2: ${weeklyPrizesConfig['2nd'].toLocaleString()} / ที่ 3: ${weeklyPrizesConfig['3rd'].toLocaleString()} THB รวมวีคละ ${weeklyAmount.toLocaleString()} THB x 38 วีค = ${weeklyTotal.toLocaleString()} THB)`;
+              subEl.innerText = `ชิงเงินรางวัลรวม ${this.config.total_pool || '103,200 THB'} (รางวัลประจำสัปดาห์ 3 อันดับ ที่ 1 ${weeklyPrizesConfig['1st'].toLocaleString()} THB / ที่ 2 ${weeklyPrizesConfig['2nd'].toLocaleString()} THB / ที่ 3 ${weeklyPrizesConfig['3rd'].toLocaleString()} THB รวมสัปดาห์ละ ${weeklyAmount.toLocaleString()} THB x 38 สัปดาห์ = ${weeklyTotal.toLocaleString()} THB)`;
             } else {
               subEl.innerText = `ชิงเงินรางวัลรวม ${this.config.total_pool} (แชมป์สัปดาห์ละ ${weeklyAmount.toLocaleString()} THB x 38 สัปดาห์ = ${weeklyTotal.toLocaleString()} THB)`;
             }
@@ -8488,11 +8488,11 @@ selectShi62GW(gwName) {
                         <th class="py-2 px-1 sm:px-2 text-center w-8">#</th>
                         <th class="py-2 px-2 sm:px-3">ทีม & ผู้จัดการ</th>
                         ${hasWeeklyPenalties ? `
-                        <th class="py-2 px-1 sm:px-2 text-center w-14">แชมป์</th>
+                        <th class="py-2 px-1 sm:px-2 text-center w-14 sm:w-20">แชมป์สัปดาห์</th>
                         <th class="py-2 px-1 sm:px-2 text-center w-14">โดนปรับ</th>
                         <th class="py-2 px-2 sm:px-3 text-right">ค่าปรับสะสม</th>
                         <th class="py-2 px-2 sm:px-3 text-right">รางวัลสะสม</th>
-                        <th class="py-2 px-2 sm:px-3 text-right font-black">ยอดสุทธิ Net</th>
+                        <th class="py-2 px-2 sm:px-3 text-right font-black">ยอดรวมสุทธิ</th>
                         ` : (hasMultiTier ? `
                         <th class="py-2 px-1 sm:px-2 text-center w-12 sm:w-16">
                           <span class="hidden sm:inline">🥇 ที่ 1</span>
@@ -8508,7 +8508,7 @@ selectShi62GW(gwName) {
                         </th>
                         <th class="py-2 px-2 sm:px-3 text-right">เงินรางวัลสะสม</th>
                         ` : `
-                        <th class="py-2 px-2 sm:px-3 text-center">แชมป์วีค</th>
+                        <th class="py-2 px-2 sm:px-3 text-center">แชมป์สัปดาห์</th>
                         <th class="py-2 px-2 sm:px-3 text-right">เงินรางวัลสะสม</th>
                         `)}
                       </tr>
@@ -8521,7 +8521,7 @@ selectShi62GW(gwName) {
                         <td colspan="2" class="py-3 px-2 sm:px-3 text-slate-700 dark:text-slate-300">
                           <div class="flex items-center gap-1.5 flex-wrap">
                             <span>${hasWeeklyPenalties ? 'ยอดเงินกองกลางสะสมสุทธิ' : 'ยอดรวมเงินรางวัลสะสมที่มอบไปแล้ว'}</span>
-                            <span class="text-[11px] font-normal text-slate-500 font-display">(จบแล้ว ${finishedGWCount} วีค)</span>
+                            <span class="text-[11px] font-normal text-slate-500 font-display">(จบแล้ว ${finishedGWCount} สัปดาห์)</span>
                           </div>
                         </td>
                         ${hasWeeklyPenalties ? `
@@ -8552,16 +8552,16 @@ selectShi62GW(gwName) {
                   <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <span class="text-[10px] uppercase font-bold text-slate-400 font-display">ยอดเงินกองกลางสะสมสุทธิปัจจุบัน</span>
                     <div class="text-xl font-black text-emerald-600 mt-1 font-display">${(finishedGWCount * weeklyNetPot).toLocaleString()} <span class="text-xs">THB</span></div>
-                    <div class="text-xs text-slate-600 mt-0.5 font-medium">จบแล้ว ${finishedGWCount} วีค x ${weeklyNetPot.toLocaleString()} THB (เป้าหมาย 38 วีค = ${seasonNetTotal.toLocaleString()} THB)</div>
+                    <div class="text-xs text-slate-600 mt-0.5 font-medium">จบแล้ว ${finishedGWCount} สัปดาห์ x ${weeklyNetPot.toLocaleString()} THB (เป้าหมาย 38 สัปดาห์ = ${seasonNetTotal.toLocaleString()} THB)</div>
                   </div>
                   <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <span class="text-[10px] uppercase font-bold text-slate-400 font-display">รางวัลแชมป์ประจำสัปดาห์ (38 สัปดาห์)</span>
                     <div class="text-xl font-black text-slate-900 mt-1 font-display">${(weeklyChampPrize * 38).toLocaleString()} <span class="text-xs">THB</span></div>
-                    <div class="text-xs text-slate-600 mt-0.5 font-medium">สัปดาห์ละ ${weeklyChampPrize.toLocaleString()} THB (หักจากค่าปรับ ${totalWeeklyFines.toLocaleString()} THB ในแต่ละวีค)</div>
+                    <div class="text-xs text-slate-600 mt-0.5 font-medium">สัปดาห์ละ ${weeklyChampPrize.toLocaleString()} THB (หักจากค่าปรับ ${totalWeeklyFines.toLocaleString()} THB ในแต่ละสัปดาห์)</div>
                   </div>
                   <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <span class="text-[10px] uppercase font-bold text-slate-400 font-display">ค่าปรับ 5 อันดับท้ายจากบ๊วย</span>
-                    <div class="text-xl font-black text-rose-600 mt-1 font-display">${totalWeeklyFines.toLocaleString()} <span class="text-xs">THB / วีค</span></div>
+                    <div class="text-xl font-black text-rose-600 mt-1 font-display">${totalWeeklyFines.toLocaleString()} <span class="text-xs">THB / สัปดาห์</span></div>
                     <div class="text-xs text-slate-600 mt-0.5 font-medium">บ๊วย 600 / รองบ๊วย 500 / อันดับ 3 400 / อันดับ 4 300 / อันดับ 5 200 THB</div>
                   </div>
                 </div>
@@ -8576,9 +8576,9 @@ selectShi62GW(gwName) {
                 <h3 class="text-sm sm:text-base font-bold text-slate-900 mb-3 font-display">โครงสร้างเงินรางวัลรวมทั้งฤดูกาล (${this.config.total_pool || '20,000 THB'})</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">รางวัลแชมป์วีค (38 วีค)</span>
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">รางวัลแชมป์สัปดาห์ (38 สัปดาห์)</span>
                     <div class="text-xl font-black text-slate-900 mt-1 font-display">${weeklyTotal.toLocaleString()} <span class="text-xs">THB</span></div>
-                    <div class="text-xs text-slate-600 mt-0.5 font-medium">วีคละ ${weeklyAmount.toLocaleString()} THB x 38 รางวัล</div>
+                    <div class="text-xs text-slate-600 mt-0.5 font-medium">สัปดาห์ละ ${weeklyAmount.toLocaleString()} THB x 38 รางวัล</div>
                   </div>
                   <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <span class="text-[10px] uppercase font-bold text-slate-400 font-display">รางวัลแชมป์บอลถ้วย (Cup)</span>
@@ -9044,7 +9044,7 @@ selectShi62GW(gwName) {
                         <th class="py-2 px-2 text-center w-8">#</th>
                         <th class="py-2 px-2">ทีม & ผู้จัดการ</th>
                         ${curMonth.gw_list.map(g => `<th class="py-2 px-2 text-center">GW ${g}</th>`).join('')}
-                        <th class="py-2 px-2 text-right">แต้มรวมเดือน</th>
+                        <th class="py-2 px-2 text-right">คะแนนรวมเดือน</th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 text-xs sm:text-sm">
@@ -9090,7 +9090,7 @@ selectShi62GW(gwName) {
           if (tagEl) tagEl.innerText = isShi62 ? "SHI'62 ANNUAL ZERO-SUM & EXTRA" : 'ANNUAL ZERO-SUM SETTLEMENT (จ่ายตังทีเดียวสิ้นฤดูกาล)';
           if (titleEl) titleEl.innerText = 'ตารางสรุปยอดจ่าย-รับเงินรางวัลสิ้นฤดูกาล';
           if (subEl) subEl.innerText = isShi62
-            ? `สรุปยอดรางวัลจบฤดูกาล (อันดับ 1-6 รับ +3,100 บ. / อันดับ 7-12 จ่าย -3,100 บ.) และยอดสะสมมินิเกมทายผล • ตัดสิน GW 1 - 38`
+            ? `สรุปยอดรางวัลจบฤดูกาล (อันดับ 1-6 รับ +3,100 THB / อันดับ 7-12 จ่าย -3,100 THB) และยอดสะสมมินิเกมทายผล • ตัดสิน GW 1 - 38`
             : `ตัดสินจากคะแนนรวมสะสมสุทธิ GW 1 - 38 • อันดับ 1-6 รับเงินรางวัลรวม ${totalPositive.toLocaleString()} THB • อันดับ 7-12 ร่วมจ่ายเงินค่าปรับรวม ${totalNegative.toLocaleString()} THB (Zero-Sum Balance)`;
 
           // Extra map and short names for League 187827
@@ -9363,9 +9363,9 @@ selectShi62GW(gwName) {
                 <th class="py-2.5 px-1 sm:px-2 text-center w-8">#</th>
                 <th class="py-2.5 px-2 sm:px-3 min-w-[140px]">ทีม & ผู้จัดการ</th>
                 <th class="py-2.5 px-2 sm:px-3 text-center w-16">คะแนนรวม</th>
-                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[90px]">FPL</th>
-                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[100px]">ยอดรวมทายผล</th>
-                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[110px]">ยอดรวมรางวัล</th>
+                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[90px]">รางวัล FPL</th>
+                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[100px]">ทายผลสะสม</th>
+                <th class="py-2.5 px-2 sm:px-3 text-right min-w-[110px]">ยอดรวมสุทธิ</th>
               </tr>
             `;
 
@@ -11406,11 +11406,11 @@ selectShi62GW(gwName) {
                 'ผู้จัดการ',
                 'FPL ID',
                 'สถานะ',
-                'จำนวนแชมป์วีค (ครั้ง)',
+                'จำนวนแชมป์สัปดาห์ (ครั้ง)',
                 'เงินรางวัลรวม (THB)',
                 'ค่าปรับรวม (THB)',
                 'ติดโซนอันตราย (ครั้ง)',
-                'ยอดสุทธิ (Net Balance THB)'
+                'ยอดรวมสุทธิ (Net Balance THB)'
               ]);
             } else {
               prizeRows.push([
@@ -11419,7 +11419,7 @@ selectShi62GW(gwName) {
                 'ผู้จัดการ',
                 'FPL ID',
                 'สถานะ',
-                'จำนวนแชมป์วีค (ครั้ง)',
+                'จำนวนแชมป์สัปดาห์ (ครั้ง)',
                 'สัปดาห์ที่ชนะ',
                 'เงินรางวัลรวมสะสม (THB)'
               ]);
