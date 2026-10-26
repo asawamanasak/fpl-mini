@@ -313,7 +313,8 @@ def check_data_has_changed(cached_data, new_output):
             cached_gw = cached_gws.get(gw_str, {})
             if (cached_gw.get("is_finished") != new_gw.get("is_finished") or
                 cached_gw.get("is_started") != new_gw.get("is_started") or
-                cached_gw.get("data_checked") != new_gw.get("data_checked")):
+                cached_gw.get("data_checked") != new_gw.get("data_checked") or
+                cached_gw.get("unstarted_teams") != new_gw.get("unstarted_teams")):
                 return True
             
             # Compare results list
@@ -338,6 +339,22 @@ def check_data_has_changed(cached_data, new_output):
                     cr.get("bank") != nr.get("bank") or
                     cr.get("transfers_count") != nr.get("transfers_count") or
                     cr.get("transfers_net_impact") != nr.get("transfers_net_impact")):
+                    return True
+
+        # Check active GW squads for auto_subs or player status updates
+        max_gw_s = str(new_output.get("max_gw", ""))
+        if max_gw_s:
+            c_squads = cached_l.get("squads", {})
+            n_squads = new_l.get("squads", {})
+            for r in new_gws.get(max_gw_s, {}).get("results", []):
+                s_key = f"{r['entry_id']}_{max_gw_s}"
+                csq = c_squads.get(s_key, {})
+                nsq = n_squads.get(s_key, {})
+                if csq.get("auto_subs") != nsq.get("auto_subs"):
+                    return True
+                c_start = [(p.get("id"), p.get("points"), p.get("not_played_yet")) for p in csq.get("starting", [])]
+                n_start = [(p.get("id"), p.get("points"), p.get("not_played_yet")) for p in nsq.get("starting", [])]
+                if c_start != n_start:
                     return True
 
     return False
@@ -588,10 +605,10 @@ def sync_once(args):
                 has_corrupt_cache = (not cached_res) or all(r.get("points", 0) == 0 and r.get("net_points", 0) == 0 for r in cached_res)
                 needs_enrichment = any(r.get("team_value") is None or r.get("transfers_net_impact") is None for r in cached_res)
                 
-                # Resiliency: If GW is the latest one (max_gw) and data_checked just finalized, do not reuse old provisional cache!
+                # Resiliency: Only treat a GW as fully finalized once it was ALREADY cached with data_checked=True
                 is_checked = gw_checked_map.get(gw, False)
                 cached_checked = cached_gw.get("data_checked", False)
-                gw_fully_finalized = (cached_checked or (gw < max_gw and is_checked))
+                gw_fully_finalized = bool(cached_checked)
 
                 # Check for points mismatch against official event_total for max_gw
                 has_points_mismatch = False
@@ -761,6 +778,11 @@ def sync_once(args):
                                         if b_eid in used_bench_elements:
                                             continue
                                         b_info = elements.get(b_eid, {})
+                                        b_tid = b_info.get('team')
+                                        b_finished = this_gw_finished or (b_tid in gw_finished_teams_map.get(gw, set()))
+                                        b_mins = live_mins_gw.get(b_eid, 0)
+                                        if b_finished and b_mins == 0:
+                                            continue
                                         b_pos_type = element_types.get(b_info.get('element_type'), 'MID')
 
                                         # GK can only replace GK
@@ -780,6 +802,11 @@ def sync_once(args):
                                         gkp_cnt = hypo_types.count('GKP')
 
                                         if gkp_cnt == 1 and def_cnt >= 3 and mid_cnt >= 2 and fwd_cnt >= 1:
+                                            if b_mins == 0 and not b_finished:
+                                                # This bench slot is next in priority and its fixture hasn't finished yet;
+                                                # reserve priority for this bench slot without subbing in a 0-min player yet.
+                                                used_bench_elements.add(b_eid)
+                                                break
                                             s_idx = actual_starters_picks.index(s_pick)
                                             b_idx = actual_bench_picks.index(b_pick)
 
@@ -808,11 +835,15 @@ def sync_once(args):
                         orig_cap_fixture_fin = this_gw_finished or (orig_cap_tid in gw_finished_teams_map.get(gw, set()))
                         orig_cap_played_zero = orig_cap_fixture_fin and live_mins_gw.get(orig_cap_id, 0) == 0
 
+                        orig_vc_tid = elements.get(orig_vc_id, {}).get('team') if orig_vc_id else None
+                        orig_vc_fixture_fin = this_gw_finished or (orig_vc_tid in gw_finished_teams_map.get(gw, set()))
+                        orig_vc_played_zero = orig_vc_fixture_fin and live_mins_gw.get(orig_vc_id, 0) == 0
+
                         active_vc_in_pool = next((p for p in scoring_pool if p['element'] == orig_vc_id), None)
                         fpl_promoted_vc = active_vc_in_pool and active_vc_in_pool.get('multiplier', 1) >= 2
                         cap_failed = (orig_cap_in_pool is None) or orig_cap_played_zero or (orig_cap_in_pool.get('multiplier') == 0)
 
-                        if orig_vc_id and active_vc_in_pool and (cap_failed or fpl_promoted_vc):
+                        if orig_vc_id and active_vc_in_pool and ((cap_failed and not orig_vc_played_zero) or fpl_promoted_vc):
                             # Promote Vice-Captain to Captain
                             active_vc_in_pool['multiplier'] = default_cap_mult
                             active_vc_in_pool['is_captain'] = True
@@ -827,8 +858,15 @@ def sync_once(args):
                             vc_info = elements.get(orig_vc_id, {})
                             capt_name = vc_info.get('web_name', 'Captain')
                         elif orig_cap_in_pool:
-                            orig_cap_in_pool['multiplier'] = default_cap_mult
+                            orig_cap_in_pool['multiplier'] = 0 if orig_cap_played_zero else default_cap_mult
                             orig_cap_in_pool['is_captain'] = True
+                            cap_info = elements.get(orig_cap_id, {})
+                            capt_name = cap_info.get('web_name', 'Captain')
+                        elif orig_cap_id:
+                            for bp in actual_bench_picks:
+                                if bp['element'] == orig_cap_id:
+                                    bp['is_captain'] = True
+                                    bp['multiplier'] = 0
                             cap_info = elements.get(orig_cap_id, {})
                             capt_name = cap_info.get('web_name', 'Captain')
 

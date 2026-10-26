@@ -345,20 +345,40 @@ def parse_bramann_challenge_file(file_path, multi_data=None):
             t1_id = m.get("team1_id")
             t2_id = m.get("team2_id")
             count_hits = m.get("count_hits", True)
+            count_chips = m.get("count_chips", False)
             
-            # Fetch scores
+            # Fetch scores and squads
             res1 = next((r for r in gw_res if r.get("entry_id") == t1_id), None)
             res2 = next((r for r in gw_res if r.get("entry_id") == t2_id), None)
+            sq1 = sq_data.get(f"{t1_id}_{gw_num}", {})
+            sq2 = sq_data.get(f"{t2_id}_{gw_num}", {})
+
+            def adjust_score_for_chips(base_pts, res_obj, sq_obj):
+                if count_chips or not res_obj or not sq_obj:
+                    return base_pts
+                chip = res_obj.get("chip") or sq_obj.get("chip")
+                adj_pts = base_pts
+                if chip in ("bboost", "bench_boost"):
+                    bench_pts = sum(p.get("points", 0) for p in sq_obj.get("bench", []))
+                    adj_pts -= bench_pts
+                elif chip in ("3xc", "triple_captain"):
+                    cap_p = next((p for p in sq_obj.get("starting", []) if p.get("is_captain") or p.get("multiplier", 1) == 3), None)
+                    if cap_p:
+                        raw_p = cap_p.get("raw_points", cap_p.get("points", 0) // 3)
+                        adj_pts -= raw_p
+                return adj_pts
             
             pts1 = 0
             pts2 = 0
             if res1:
-                pts1 = res1.get("net_points" if count_hits else "points", 0)
+                raw_pts1 = res1.get("net_points" if count_hits else "points", 0)
+                pts1 = adjust_score_for_chips(raw_pts1, res1, sq1)
                 m["team1_name"] = res1.get("team_name", m.get("team1_name"))
                 m["team1_player"] = res1.get("player_name", "")
                 m["team1_captain"] = res1.get("captain", "-")
             if res2:
-                pts2 = res2.get("net_points" if count_hits else "points", 0)
+                raw_pts2 = res2.get("net_points" if count_hits else "points", 0)
+                pts2 = adjust_score_for_chips(raw_pts2, res2, sq2)
                 m["team2_name"] = res2.get("team_name", m.get("team2_name"))
                 m["team2_player"] = res2.get("player_name", "")
                 m["team2_captain"] = res2.get("captain", "-")
@@ -375,22 +395,25 @@ def parse_bramann_challenge_file(file_path, multi_data=None):
                 winning_side = 2
             else:
                 # Tie-Breaker: Check Captain points
-                sq1 = sq_data.get(f"{t1_id}_{gw_num}", {})
-                sq2 = sq_data.get(f"{t2_id}_{gw_num}", {})
-                
                 def get_capt_pts(sq):
                     if not sq or not sq.get("starting"): return 0
-                    c = next((p for p in sq["starting"] if p.get("is_captain")), None)
-                    return c.get("points", 0) if c else 0
+                    pool = list(sq["starting"]) + (list(sq.get("bench", [])) if (count_chips and sq.get("chip") in ("bboost", "bench_boost")) else [])
+                    c = next((p for p in pool if p.get("is_captain")), None)
+                    if not c: return 0
+                    if not count_chips and sq.get("chip") in ("3xc", "triple_captain"):
+                        return c.get("raw_points", 0) * 2
+                    return c.get("points", 0)
 
                 def get_vcapt_pts(sq):
                     if not sq or not sq.get("starting"): return 0
-                    vc = next((p for p in sq["starting"] if p.get("is_vice_captain")), None)
+                    pool = list(sq["starting"]) + (list(sq.get("bench", [])) if (count_chips and sq.get("chip") in ("bboost", "bench_boost")) else [])
+                    vc = next((p for p in pool if p.get("is_vice") or p.get("is_vice_captain")), None)
                     return vc.get("points", 0) if vc else 0
 
                 def get_sorted_player_scores(sq):
                     if not sq or not sq.get("starting"): return []
-                    return sorted([p.get("points", 0) for p in sq["starting"]], reverse=True)
+                    pool = list(sq["starting"]) + (list(sq.get("bench", [])) if (count_chips and sq.get("chip") in ("bboost", "bench_boost")) else [])
+                    return sorted([p.get("raw_points", p.get("points", 0)) for p in pool], reverse=True)
 
                 c1 = get_capt_pts(sq1)
                 c2 = get_capt_pts(sq2)

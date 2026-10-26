@@ -1894,8 +1894,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           if (!leagueData || !leagueData.squads) return [];
           const sq = leagueData.squads[`${eid}_${gwNumber}`];
           if (!sq || !sq.starting) return [];
-          const pts = sq.starting.map(p => Number(p.points) || 0);
-          if (sq.chip === 'bboost' && sq.bench) pts.push(...sq.bench.map(p => Number(p.points) || 0));
+          const pts = sq.starting.map(p => Number(p.raw_points !== undefined ? p.raw_points : p.points) || 0);
+          if ((sq.chip === 'bboost' || sq.chip === 'bench_boost') && sq.bench) {
+            pts.push(...sq.bench.map(p => Number(p.raw_points !== undefined ? p.raw_points : p.points) || 0));
+          }
           return pts.sort((a, b) => b - a);
         };
         const cmpPlayerScores = (eidA, eidB) => {
@@ -2709,7 +2711,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           sorted.forEach(t => {
             const sq = leagueData.squads[`${t.entry_id}_${gwNumber}`];
             if (sq && sq.starting) {
-              const defs = sq.starting.filter(p => ['GKP', 'DEF', '1', '2'].includes(String(p.position || p.element_type)));
+              const defs = sq.starting.filter(p => ['GKP', 'DEF', '1', '2'].includes(String(p.pos || p.position || p.element_type)));
               const defPts = defs.reduce((sum, p) => sum + (Number(p.points) || 0), 0);
               defPerformance.push({ team: t.team_name, defPts });
             }
@@ -3238,15 +3240,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               });
             }
 
+            const chip = squad.chip;
+            const isBBoost = (chip === 'bboost' || chip === 'bench_boost');
+
             let benchLivePoints = 0;
             if (Array.isArray(squad.bench)) {
               squad.bench.forEach(p => {
                 const liveStat = liveMap[p.id];
                 if (liveStat) {
                   const rawPts = liveStat.total_points;
+                  const mult = isBBoost ? (Number(p.multiplier) || 1) : 1;
+                  const pts = rawPts * mult;
                   const notPlayed = Boolean(!gwData.is_finished && liveStat.has_fixtures && !liveStat.fixture_started);
-                  if (p.points !== rawPts || p.not_played_yet !== notPlayed) anyChange = true;
-                  p.points = rawPts;
+                  if (p.points !== pts || p.not_played_yet !== notPlayed) anyChange = true;
+                  p.points = pts;
                   p.raw_points = rawPts;
                   p.minutes = liveStat.minutes;
                   p.not_played_yet = notPlayed;
@@ -3258,13 +3265,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                       anyChange = true;
                     }
                   }
-                  benchLivePoints += rawPts;
+                  benchLivePoints += pts;
                 }
               });
             }
 
-            const chip = squad.chip;
-            const isBBoost = (chip === 'bboost' || chip === 'bench_boost');
             if (isBBoost) {
               teamLivePoints += benchLivePoints;
             }
@@ -3947,27 +3952,82 @@ selectShi62GW(gwName) {
           5340913: "Pong+"
         };
 
-        const overallTeams = (this.data && this.data.teams ? [...this.data.teams] : [])
+        const overallMap = {};
+        (this.data && this.data.teams ? this.data.teams : []).forEach(t => {
+          overallMap[t.entry_id] = {
+            entry_id: t.entry_id,
+            entry_name: t.entry_name,
+            player_name: t.player_name,
+            rank: t.rank || 999,
+            total_points: 0
+          };
+        });
+
+        for (let g = 1; g <= maxGW; g++) {
+          const gData = (this.data && this.data.gameweeks) ? this.data.gameweeks[String(g)] : null;
+          if (gData && gData.results) {
+            const gIsStarted = gData.is_started !== undefined
+              ? Boolean(gData.is_started)
+              : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+            if (gIsStarted) {
+              const seenInGw = new Set();
+              gData.results.forEach(r => {
+                if (seenInGw.has(r.entry_id)) return;
+                seenInGw.add(r.entry_id);
+                if (overallMap[r.entry_id]) {
+                  overallMap[r.entry_id].total_points += (r.net_points || 0);
+                }
+              });
+            }
+          }
+        }
+
+        const overallTeams = Object.values(overallMap)
           .filter(t => this.isPrizeEligible(t.entry_id))
           .sort((a, b) => (b.total_points - a.total_points) || ((a.rank || 999) - (b.rank || 999)));
 
+        // Resolve tie-pooled payouts matching renderPrizesView
+        let curIdx = 0;
+        while (curIdx < overallTeams.length) {
+          let nxtIdx = curIdx + 1;
+          while (nxtIdx < overallTeams.length && overallTeams[nxtIdx].total_points === overallTeams[curIdx].total_points) {
+            nxtIdx++;
+          }
+          const cnt = nxtIdx - curIdx;
+          const rStart = curIdx + 1;
+          const rEnd = curIdx + cnt;
+          let tierSum = 0;
+          for (let rPos = rStart; rPos <= rEnd; rPos++) {
+            tierSum += Number(tiers[String(rPos)] || 0);
+          }
+          const avgPayout = cnt > 0 ? (tierSum / cnt) : 0;
+          for (let i = curIdx; i < nxtIdx; i++) {
+            overallTeams[i].overall_rank = rStart;
+            overallTeams[i].is_joint = cnt > 1;
+            overallTeams[i].payout = avgPayout;
+          }
+          curIdx = nxtIdx;
+        }
+
         const fmtVal = (v) => {
-          if (v > 0) return `+${Number(v).toLocaleString()}`;
-          if (v < 0) return `${Number(v).toLocaleString()}`;
+          const rounded = Number.isInteger(v) ? v : Number(v.toFixed(2));
+          if (rounded > 0) return `+${rounded.toLocaleString()}`;
+          if (rounded < 0) return `${rounded.toLocaleString()}`;
           return '0';
         };
 
-        overallTeams.forEach((t, idx) => {
-          const rank = idx + 1;
-          const seasonPrize = Number(tiers[String(rank)] || 0);
+        overallTeams.forEach((t) => {
+          const rank = t.overall_rank;
+          const seasonPrize = t.payout || 0;
           const extraNet = (extraMapByEntryId[t.entry_id] !== undefined)
             ? extraMapByEntryId[t.entry_id]
             : (extraMapByName[(t.player_name || '').toLowerCase()] || 0);
           const grandTotal = seasonPrize + extraNet;
 
           const dispName = shi62ShortNames[t.entry_id] || t.player_name;
+          const rankStr = t.is_joint ? `${rank}(ร่วม)` : `${rank}`;
 
-          lines.push(`${rank}. ${dispName}: FPL ${fmtVal(seasonPrize)} | ทายผล ${fmtVal(extraNet)} | รวม ${fmtVal(grandTotal)}`);
+          lines.push(`${rankStr}. ${dispName}: FPL ${fmtVal(seasonPrize)} | ทายผล ${fmtVal(extraNet)} | รวม ${fmtVal(grandTotal)}`);
         });
 
         const nodCum = (this.shi62Data.cumulative_standings || []).find(c => c.player && c.player.is_guest);
@@ -4170,8 +4230,11 @@ selectShi62GW(gwName) {
         lines.push(`🏆 สรุปเงินรางวัล FPL (Prize 1 + Prize 2) รวม 9,500 THB:`);
         lines.push(`(อันดับ • ทีม • คะแนนรวม • P1 • P2 • รวม FPL • ทายผลสะสม • ท้าชนสะสม • ยอดรวมสุทธิ)`);
 
-        const p1Tiers = { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
-        const p2Tiers = { "1": 1000, "2": 800, "3": 700, "7": 700, "8": 500, "9": 400, "13": 400, "14": 300, "15": 200 };
+        const feat = (this.config && this.config.features) || {};
+        const p1GW = Number(feat.prize1_target_gw) || 19;
+        const p2GW = Number(feat.prize2_target_gw) || 38;
+        const p1Tiers = feat.prize1_tiers || { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
+        const p2Tiers = feat.prize2_tiers || { "1": 1000, "2": 800, "3": 700, "7": 700, "8": 500, "9": 400, "13": 400, "14": 300, "15": 200 };
 
         const predMap = {};
         if (this.bramannPredData && this.bramannPredData.cumulative_standings) {
@@ -4193,20 +4256,85 @@ selectShi62GW(gwName) {
           });
         }
 
-        const overallTeams = (this.data && this.data.teams ? [...this.data.teams] : [])
-          .filter(t => this.isPrizeEligible(t.entry_id))
-          .sort((a, b) => (b.total_points - a.total_points) || ((a.rank || 999) - (b.rank || 999)));
+        const overallMap = {};
+        (this.data && this.data.teams ? this.data.teams : []).forEach(t => {
+          overallMap[t.entry_id] = {
+            entry_id: t.entry_id,
+            entry_name: t.entry_name,
+            player_name: t.player_name,
+            rank: t.rank || 999,
+            p1_points: 0,
+            p2_points: 0,
+            total_points: 0
+          };
+        });
+
+        for (let g = 1; g <= maxGW; g++) {
+          const gData = (this.data && this.data.gameweeks) ? this.data.gameweeks[String(g)] : null;
+          if (gData && gData.results) {
+            const gIsStarted = gData.is_started !== undefined
+              ? Boolean(gData.is_started)
+              : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+            if (gIsStarted) {
+              const seenInGw = new Set();
+              gData.results.forEach(r => {
+                if (seenInGw.has(r.entry_id)) return;
+                seenInGw.add(r.entry_id);
+                const tm = overallMap[r.entry_id];
+                if (tm) {
+                  const net = r.net_points || 0;
+                  tm.total_points += net;
+                  if (g <= p1GW) tm.p1_points += net;
+                  if (g <= p2GW) tm.p2_points += net;
+                }
+              });
+            }
+          }
+        }
+
+        const eligibleTeams = Object.values(overallMap).filter(t => this.isPrizeEligible(t.entry_id));
+
+        const assignTiePooledTiers = (teamsList, scoreProp, tiersObj, outAmtProp, outRankProp, outJointProp) => {
+          const sorted = [...teamsList].sort((a, b) => (b[scoreProp] - a[scoreProp]) || ((a.rank || 999) - (b.rank || 999)));
+          let idx = 0;
+          while (idx < sorted.length) {
+            let nxt = idx + 1;
+            while (nxt < sorted.length && sorted[nxt][scoreProp] === sorted[idx][scoreProp]) {
+              nxt++;
+            }
+            const cnt = nxt - idx;
+            const rStart = idx + 1;
+            const rEnd = idx + cnt;
+            let tSum = 0;
+            for (let rPos = rStart; rPos <= rEnd; rPos++) {
+              tSum += Number(tiersObj[String(rPos)] || 0);
+            }
+            const avgAmt = cnt > 0 ? (tSum / cnt) : 0;
+            for (let i = idx; i < nxt; i++) {
+              sorted[i][outAmtProp] = Number.isInteger(avgAmt) ? avgAmt : Number(avgAmt.toFixed(2));
+              if (outRankProp) sorted[i][outRankProp] = rStart;
+              if (outJointProp) sorted[i][outJointProp] = cnt > 1;
+            }
+            idx = nxt;
+          }
+          return sorted;
+        };
+
+        assignTiePooledTiers(eligibleTeams, 'p1_points', p1Tiers, 'p1_amt', 'p1_rank', 'p1_joint');
+        const overallTeams = assignTiePooledTiers(eligibleTeams, 'p2_points', p2Tiers, 'p2_amt', 'p2_rank', 'p2_joint');
 
         const fmtVal = (v) => {
-          if (v > 0) return `+${Number(v).toLocaleString()}`;
-          if (v < 0) return `${Number(v).toLocaleString()}`;
+          const rounded = Number.isInteger(v) ? v : Number(v.toFixed(2));
+          if (rounded > 0) return `+${rounded.toLocaleString()}`;
+          if (rounded < 0) return `${rounded.toLocaleString()}`;
           return '0';
         };
 
-        overallTeams.forEach((t, idx) => {
-          const rank = idx + 1;
-          const p1 = Number(p1Tiers[String(rank)] || 0);
-          const p2 = Number(p2Tiers[String(rank)] || 0);
+        overallTeams.forEach((t) => {
+          const rank = t.p2_rank;
+          const rankStr = t.p2_joint ? `${rank}(ร่วม)` : `${rank}`;
+          const p1 = t.p1_amt || 0;
+          const p2 = t.p2_amt || 0;
           const totalFpl = p1 + p2;
           const predNet = (predMap[t.entry_id] !== undefined)
             ? predMap[t.entry_id]
@@ -4216,7 +4344,7 @@ selectShi62GW(gwName) {
             : (chalMap[(t.player_name || '').toLowerCase()] || 0);
           const grandNet = totalFpl + predNet + chalNet;
 
-          lines.push(`${rank}. ${t.entry_name}: ${t.total_points} pts | P1: ${p1 > 0 ? p1 : '-'} | P2: ${p2 > 0 ? p2 : '-'} | FPL: ${totalFpl > 0 ? totalFpl : '-'} | ทายผล: ${fmtVal(predNet)} | ท้าชน: ${fmtVal(chalNet)} | รวม: ${fmtVal(grandNet)}`);
+          lines.push(`${rankStr}. ${t.entry_name}: ${t.total_points} pts | P1: ${p1 > 0 ? p1.toLocaleString() : '-'} | P2: ${p2 > 0 ? p2.toLocaleString() : '-'} | FPL: ${totalFpl > 0 ? totalFpl.toLocaleString() : '-'} | ทายผล: ${fmtVal(predNet)} | ท้าชน: ${fmtVal(chalNet)} | รวม: ${fmtVal(grandNet)}`);
         });
 
         const feeCum = (this.bramannPredData && this.bramannPredData.cumulative_standings)
@@ -4649,7 +4777,7 @@ selectShi62GW(gwName) {
                       <div>
                         <span class="text-xs font-bold text-slate-400 uppercase tracking-wider font-display">MATCH #${idx + 1}</span>
                         <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display mt-0.5">
-                          ${(m.team1_name && m.team2_name) ? `${m.team1_name} vs ${m.team2_name}` : m.title}
+                          ${(m.team1_name && m.team2_name) ? `${this.escapeHtml(m.team1_name)} vs ${this.escapeHtml(m.team2_name)}` : this.escapeHtml(m.title)}
                         </h3>
                       </div>
                       <div class="flex items-center gap-1.5 flex-wrap">
@@ -4674,13 +4802,13 @@ selectShi62GW(gwName) {
                             ${s1Won ? '<span class="text-[10.5px] font-bold px-2 py-0.5 rounded bg-emerald-500 text-white shadow-2xs">ชนะ ✅</span>' : ''}
                           </div>
                           <div class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-1">
-                            ${m.team1_name}
+                            ${this.escapeHtml(m.team1_name)}
                           </div>
                           <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            ผู้จัดการ: ${m.team1_player || '-'}
+                            ผู้จัดการ: ${this.escapeHtml(m.team1_player || '-')}
                           </div>
                           <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            กัปตัน: <strong class="text-slate-700 dark:text-slate-300">${m.team1_captain || '-'}</strong>
+                            กัปตัน: <strong class="text-slate-700 dark:text-slate-300">${this.escapeHtml(m.team1_captain || '-')}</strong>
                           </div>
                         </div>
 
@@ -4698,13 +4826,13 @@ selectShi62GW(gwName) {
                             ${s2Won ? '<span class="text-[10.5px] font-bold px-2 py-0.5 rounded bg-emerald-500 text-white shadow-2xs">ชนะ ✅</span>' : ''}
                           </div>
                           <div class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-1">
-                            ${m.team2_name}
+                            ${this.escapeHtml(m.team2_name)}
                           </div>
                           <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            ผู้จัดการ: ${m.team2_player || '-'}
+                            ผู้จัดการ: ${this.escapeHtml(m.team2_player || '-')}
                           </div>
                           <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            กัปตัน: <strong class="text-slate-700 dark:text-slate-300">${m.team2_captain || '-'}</strong>
+                            กัปตัน: <strong class="text-slate-700 dark:text-slate-300">${this.escapeHtml(m.team2_captain || '-')}</strong>
                           </div>
                         </div>
 
@@ -4730,16 +4858,16 @@ selectShi62GW(gwName) {
 
                       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                         <div class="space-y-1">
-                          <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">เชียร์ ${m.team1_name}:</span>
+                          <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">เชียร์ ${this.escapeHtml(m.team1_name)}:</span>
                           <div class="flex flex-wrap gap-1">
-                            ${(m.side1_bets || []).map(b => `<span class="text-[10px] px-2 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-medium">${b.name} (${b.legs} ขา)</span>`).join('')}
+                            ${(m.side1_bets || []).map(b => `<span class="text-[10px] px-2 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-medium">${this.escapeHtml(b.name)} (${b.legs} ขา)</span>`).join('')}
                           </div>
                         </div>
 
                         <div class="space-y-1">
-                          <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">เชียร์ ${m.team2_name}:</span>
+                          <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">เชียร์ ${this.escapeHtml(m.team2_name)}:</span>
                           <div class="flex flex-wrap gap-1">
-                            ${(m.side2_bets || []).map(b => `<span class="text-[10px] px-2 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-medium">${b.name} (${b.legs} ขา)</span>`).join('')}
+                            ${(m.side2_bets || []).map(b => `<span class="text-[10px] px-2 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-medium">${this.escapeHtml(b.name)} (${b.legs} ขา)</span>`).join('')}
                           </div>
                         </div>
                       </div>
@@ -4804,8 +4932,8 @@ selectShi62GW(gwName) {
                         <td class="py-2.5 px-3 text-center font-display font-semibold text-slate-500">${c.rank}</td>
                         <td class="py-2.5 px-3">
                           <div>
-                            <div class="font-bold text-slate-900 dark:text-white leading-tight">${c.player.team_name || c.player.display_name}</div>
-                            <div class="text-[11px] text-slate-400 leading-tight">${c.player.manager || ''}</div>
+                            <div class="font-bold text-slate-900 dark:text-white leading-tight">${this.escapeHtml(c.player.team_name || c.player.display_name)}</div>
+                            <div class="text-[11px] text-slate-400 leading-tight">${this.escapeHtml(c.player.manager || '')}</div>
                           </div>
                         </td>
                         <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
@@ -4834,8 +4962,11 @@ selectShi62GW(gwName) {
         if (subEl) subEl.innerText = "เงินกองกลางรวม 9,500 THB (19 ทีม x 500 THB) • Prize 1 (หลังจบ GW 19 รวม 4,500 THB) + Prize 2 (หลังจบ GW 38 รวม 5,000 THB)";
         if (poolBadge) poolBadge.innerText = "9,500 THB";
 
-        const p1Tiers = { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
-        const p2Tiers = { "1": 1000, "2": 800, "3": 700, "7": 700, "8": 500, "9": 400, "13": 400, "14": 300, "15": 200 };
+        const feat = (this.config && this.config.features) || {};
+        const p1GW = Number(feat.prize1_target_gw) || 19;
+        const p2GW = Number(feat.prize2_target_gw) || 38;
+        const p1Tiers = feat.prize1_tiers || { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
+        const p2Tiers = feat.prize2_tiers || { "1": 1000, "2": 800, "3": 700, "7": 700, "8": 500, "9": 400, "13": 400, "14": 300, "15": 200 };
 
         const maxGW = Number(this.multiData && this.multiData.max_gw) || 7;
 
@@ -4846,6 +4977,8 @@ selectShi62GW(gwName) {
             team_name: t.entry_name,
             player_name: t.player_name,
             fpl_rank: t.rank || 999,
+            p1_points: 0,
+            p2_points: 0,
             total_points: 0
           };
         });
@@ -4861,13 +4994,46 @@ selectShi62GW(gwName) {
               gData.results.forEach(r => {
                 if (seenInGw.has(r.entry_id)) return;
                 seenInGw.add(r.entry_id);
-                if (overallMap[r.entry_id]) {
-                  overallMap[r.entry_id].total_points += (r.net_points || 0);
+                const tm = overallMap[r.entry_id];
+                if (tm) {
+                  const net = r.net_points || 0;
+                  tm.total_points += net;
+                  if (g <= p1GW) tm.p1_points += net;
+                  if (g <= p2GW) tm.p2_points += net;
                 }
               });
             }
           }
         }
+
+        const eligibleList = Object.values(overallMap).filter(t => this.isPrizeEligible(t.entry_id));
+        const assignTiePooled = (list, scoreKey, tiersMap, outAmtKey, outRankKey, outJointKey) => {
+          const sorted = [...list].sort((a, b) => (b[scoreKey] - a[scoreKey]) || ((a.fpl_rank || 999) - (b.fpl_rank || 999)));
+          let idx = 0;
+          while (idx < sorted.length) {
+            let nxt = idx + 1;
+            while (nxt < sorted.length && sorted[nxt][scoreKey] === sorted[idx][scoreKey]) {
+              nxt++;
+            }
+            const cnt = nxt - idx;
+            const rStart = idx + 1;
+            const rEnd = idx + cnt;
+            let tSum = 0;
+            for (let rPos = rStart; rPos <= rEnd; rPos++) {
+              tSum += Number(tiersMap[String(rPos)] || 0);
+            }
+            const avgAmt = cnt > 0 ? (tSum / cnt) : 0;
+            for (let i = idx; i < nxt; i++) {
+              sorted[i][outAmtKey] = Number.isInteger(avgAmt) ? avgAmt : Number(avgAmt.toFixed(2));
+              if (outRankKey) sorted[i][outRankKey] = rStart;
+              if (outJointKey) sorted[i][outJointKey] = cnt > 1;
+            }
+            idx = nxt;
+          }
+        };
+
+        assignTiePooled(eligibleList, 'p1_points', p1Tiers, 'p1_amt', 'p1_rank', 'p1_joint');
+        assignTiePooled(eligibleList, 'p2_points', p2Tiers, 'p2_amt', 'p2_rank', 'p2_joint');
 
         const overallSorted = Object.values(overallMap).sort((a, b) => {
           const aEligible = this.isPrizeEligible(a.entry_id) ? 1 : 0;
@@ -4897,10 +5063,11 @@ selectShi62GW(gwName) {
         }
 
         const fmtMoney = (val, showPlus = true, unit = '') => {
-          const formatted = Math.abs(val).toLocaleString();
+          const rounded = Number.isInteger(val) ? val : Number(val.toFixed(2));
+          const formatted = Math.abs(rounded).toLocaleString();
           const u = unit ? ` ${unit}` : '';
-          if (val > 0) return `${showPlus ? '+' : ''}${formatted}${u}`;
-          if (val < 0) return `-${formatted}${u}`;
+          if (rounded > 0) return `${showPlus ? '+' : ''}${formatted}${u}`;
+          if (rounded < 0) return `-${formatted}${u}`;
           return `0${u}`;
         };
 
@@ -4913,7 +5080,6 @@ selectShi62GW(gwName) {
         let sumGrand = 0;
 
         let tableRowsHtml = '';
-        let eligibleRank = 1;
 
         overallSorted.forEach(team => {
           const isEligible = this.isPrizeEligible(team.entry_id);
@@ -4922,29 +5088,28 @@ selectShi62GW(gwName) {
           let p2Amt = 0;
 
           if (isEligible) {
-            rankDisplay = eligibleRank;
-            p1Amt = Number(p1Tiers[String(eligibleRank)] || 0);
-            p2Amt = Number(p2Tiers[String(eligibleRank)] || 0);
-            eligibleRank++;
+            rankDisplay = team.p2_rank;
+            p1Amt = team.p1_amt || 0;
+            p2Amt = team.p2_amt || 0;
           }
 
-          const fplTotal = p1Amt + p2Amt;
+          const fplTotal = Number((p1Amt + p2Amt).toFixed(2));
           const predNet = (predMap[team.entry_id] !== undefined)
             ? predMap[team.entry_id]
             : (predMap[(team.player_name || '').toLowerCase()] || 0);
           const chalNet = (chalMap[team.entry_id] !== undefined)
             ? chalMap[team.entry_id]
             : (chalMap[(team.player_name || '').toLowerCase()] || 0);
-          const grandNet = fplTotal + predNet + chalNet;
+          const grandNet = Number((fplTotal + predNet + chalNet).toFixed(2));
 
           if (isEligible) {
             sumPoints += team.total_points;
-            sumP1 += p1Amt;
-            sumP2 += p2Amt;
-            sumTotalFpl += fplTotal;
+            sumP1 = Number((sumP1 + p1Amt).toFixed(2));
+            sumP2 = Number((sumP2 + p2Amt).toFixed(2));
+            sumTotalFpl = Number((sumTotalFpl + fplTotal).toFixed(2));
             sumPred += predNet;
             sumChal += chalNet;
-            sumGrand += grandNet;
+            sumGrand = Number((sumGrand + grandNet).toFixed(2));
           }
 
           const rankBadge = isEligible
@@ -4979,9 +5144,9 @@ selectShi62GW(gwName) {
             <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors ${!isEligible ? 'opacity-65 bg-slate-50/30 dark:bg-slate-800/20' : ''}">
               <td class="py-2.5 px-2 text-center font-display">${rankBadge}</td>
               <td class="py-2.5 px-3 min-w-[160px]">
-                <div class="font-bold text-slate-900 dark:text-white">${team.team_name}</div>
+                <div class="font-bold text-slate-900 dark:text-white">${this.escapeHtml(team.team_name)}</div>
                 <div class="text-[11px] text-slate-400 flex items-center gap-1.5 flex-wrap">
-                  <span>${team.player_name}</span>
+                  <span>${this.escapeHtml(team.player_name)}</span>
                   ${!isEligible ? '<span class="text-[9.5px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 font-bold">ทีมร่วมสนุก (ไม่คิดรางวัล)</span>' : ''}
                 </div>
               </td>
@@ -11063,8 +11228,8 @@ selectShi62GW(gwName) {
             }
           }
 
-          if (!isWeekly) {
-            const curMonth = (this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(Number(gwKey))) || this.config.monthly_schedule[0];
+          if (!isWeekly && Array.isArray(this.config.monthly_schedule) && this.config.monthly_schedule.length > 0) {
+            const curMonth = this.config.monthly_schedule.find(m => m.gw_list && m.gw_list.includes(Number(gwKey))) || this.config.monthly_schedule[0];
             if (curMonth) {
               const monthlyScores = {};
               (this.data.teams || []).forEach(t => monthlyScores[t.entry_id] = { name: t.entry_name, pts: 0 });
@@ -11911,6 +12076,145 @@ selectShi62GW(gwName) {
                 team.entry_id,
                 team.total_points,
                 payoutText
+              ]);
+            });
+          } else if (feat.prize_model === 'bramann_dual_prize') {
+            prizeRows.push(['=== สรุปเงินรางวัล FPL & มินิเกม Bramann League (DUAL PRIZE + MINI-GAMES) ===']);
+            prizeRows.push([
+              'อันดับ',
+              'ทีม',
+              'ผู้จัดการ',
+              'FPL ID',
+              'คะแนนรวมสะสม',
+              'Prize 1 (GW 19)',
+              'Prize 2 (GW 38)',
+              'รวมรางวัล FPL (THB)',
+              'ทายผลสะสม (THB)',
+              'ท้าชนสะสม (THB)',
+              'ยอดรวมสุทธิ (Grand Total THB)'
+            ]);
+
+            const p1GW = Number(feat.prize1_target_gw) || 19;
+            const p2GW = Number(feat.prize2_target_gw) || 38;
+            const p1Tiers = feat.prize1_tiers || { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
+            const p2Tiers = feat.prize2_tiers || { "1": 1000, "2": 800, "3": 700, "7": 700, "8": 500, "9": 400, "13": 400, "14": 300, "15": 200 };
+
+            const overallMap = {};
+            (this.data.teams || []).forEach(t => {
+              overallMap[t.entry_id] = {
+                entry_id: t.entry_id,
+                team_name: t.entry_name,
+                player_name: t.player_name,
+                fpl_rank: t.rank || 999,
+                p1_points: 0,
+                p2_points: 0,
+                total_points: 0
+              };
+            });
+
+            for (let g = 1; g <= maxGW; g++) {
+              const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+              if (gData && gData.results) {
+                const gIsStarted = gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+                if (gIsStarted) {
+                  const seenInGw = new Set();
+                  gData.results.forEach(r => {
+                    if (seenInGw.has(r.entry_id)) return;
+                    seenInGw.add(r.entry_id);
+                    const tm = overallMap[r.entry_id];
+                    if (tm) {
+                      const net = r.net_points || 0;
+                      tm.total_points += net;
+                      if (g <= p1GW) tm.p1_points += net;
+                      if (g <= p2GW) tm.p2_points += net;
+                    }
+                  });
+                }
+              }
+            }
+
+            const eligibleList = Object.values(overallMap).filter(t => this.isPrizeEligible(t.entry_id));
+            const assignTiePooled = (list, scoreKey, tiersMap, outAmtKey, outRankKey, outJointKey) => {
+              const sorted = [...list].sort((a, b) => (b[scoreKey] - a[scoreKey]) || ((a.fpl_rank || 999) - (b.fpl_rank || 999)));
+              let idx = 0;
+              while (idx < sorted.length) {
+                let nxt = idx + 1;
+                while (nxt < sorted.length && sorted[nxt][scoreKey] === sorted[idx][scoreKey]) {
+                  nxt++;
+                }
+                const cnt = nxt - idx;
+                const rStart = idx + 1;
+                const rEnd = idx + cnt;
+                let tSum = 0;
+                for (let rPos = rStart; rPos <= rEnd; rPos++) {
+                  tSum += Number(tiersMap[String(rPos)] || 0);
+                }
+                const avgAmt = cnt > 0 ? (tSum / cnt) : 0;
+                for (let i = idx; i < nxt; i++) {
+                  sorted[i][outAmtKey] = Number.isInteger(avgAmt) ? avgAmt : Number(avgAmt.toFixed(2));
+                  if (outRankKey) sorted[i][outRankKey] = rStart;
+                  if (outJointKey) sorted[i][outJointKey] = cnt > 1;
+                }
+                idx = nxt;
+              }
+            };
+
+            assignTiePooled(eligibleList, 'p1_points', p1Tiers, 'p1_amt', 'p1_rank', 'p1_joint');
+            assignTiePooled(eligibleList, 'p2_points', p2Tiers, 'p2_amt', 'p2_rank', 'p2_joint');
+
+            const predMap = {};
+            if (this.bramannPredData && this.bramannPredData.cumulative_standings) {
+              this.bramannPredData.cumulative_standings.forEach(c => {
+                if (c.player) {
+                  if (c.player.entry_id) predMap[c.player.entry_id] = Number(c.net) || 0;
+                  if (c.player.display_name) predMap[c.player.display_name.toLowerCase()] = Number(c.net) || 0;
+                }
+              });
+            }
+
+            const chalMap = {};
+            if (this.bramannChalData && this.bramannChalData.cumulative_standings) {
+              this.bramannChalData.cumulative_standings.forEach(c => {
+                if (c.player) {
+                  if (c.player.entry_id) chalMap[c.player.entry_id] = Number(c.net) || 0;
+                  if (c.player.display_name) chalMap[c.player.display_name.toLowerCase()] = Number(c.net) || 0;
+                }
+              });
+            }
+
+            const overallSorted = Object.values(overallMap).sort((a, b) => {
+              const aEligible = this.isPrizeEligible(a.entry_id) ? 1 : 0;
+              const bEligible = this.isPrizeEligible(b.entry_id) ? 1 : 0;
+              if (aEligible !== bEligible) return bEligible - aEligible;
+              return (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999));
+            });
+
+            overallSorted.forEach(team => {
+              const isEligible = this.isPrizeEligible(team.entry_id);
+              const p1Amt = isEligible ? (team.p1_amt || 0) : 0;
+              const p2Amt = isEligible ? (team.p2_amt || 0) : 0;
+              const fplTotal = Number((p1Amt + p2Amt).toFixed(2));
+              const predNet = (predMap[team.entry_id] !== undefined)
+                ? predMap[team.entry_id]
+                : (predMap[(team.player_name || '').toLowerCase()] || 0);
+              const chalNet = (chalMap[team.entry_id] !== undefined)
+                ? chalMap[team.entry_id]
+                : (chalMap[(team.player_name || '').toLowerCase()] || 0);
+              const grandNet = Number((fplTotal + predNet + chalNet).toFixed(2));
+              const rankLabel = isEligible ? (team.p2_joint ? `อันดับ ${team.p2_rank} (ร่วม)` : `อันดับ ${team.p2_rank}`) : 'ร่วมสนุก';
+
+              prizeRows.push([
+                rankLabel,
+                team.team_name,
+                team.player_name,
+                team.entry_id,
+                team.total_points,
+                p1Amt,
+                p2Amt,
+                fplTotal,
+                predNet,
+                chalNet,
+                grandNet
               ]);
             });
           } else {
