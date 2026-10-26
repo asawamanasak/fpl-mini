@@ -3750,135 +3750,6 @@ selectShi62GW(gwName) {
           return `0${u}`;
         };
 
-        // Build Prize Summary Table (FPL จบฤดู & Extra รวมทั้งหมด)
-        const maxGW = Number(this.multiData && this.multiData.max_gw) || 7;
-        const extraMapByEntryId = {};
-        const extraMapByName = {};
-        (data.cumulative_standings || []).forEach(c => {
-          if (c.player) {
-            if (c.player.entry_id) extraMapByEntryId[c.player.entry_id] = Number(c.net) || 0;
-            if (c.player.display_name) extraMapByName[c.player.display_name.toLowerCase()] = Number(c.net) || 0;
-          }
-        });
-
-        const shi62ShortNames = {
-          1309919: "Tong",
-          837763: "Oo",
-          2342390: "Riin",
-          720631: "Totti",
-          1153245: "Poang",
-          7601484: "Oan",
-          3508212: "Sia",
-          1312974: "Mai",
-          2804957: "Boy",
-          5463640: "Dow",
-          4549514: "Bert",
-          5340913: "Pong+"
-        };
-
-        const overallTeams = (this.data && this.data.teams ? [...this.data.teams] : [])
-          .filter(t => this.isPrizeEligible(t.entry_id))
-          .sort((a, b) => (b.total_points - a.total_points) || ((a.rank || 999) - (b.rank || 999)));
-
-        const tiers = (this.config && this.config.features && this.config.features.annual_payout_tiers) || {
-          "1": 1000, "2": 800, "3": 600, "4": 400, "5": 200, "6": 100,
-          "7": -100, "8": -200, "9": -400, "10": -600, "11": -800, "12": -1000
-        };
-
-        let prizeSummaryRowsHtml = '';
-        let sumFplPoints = 0;
-        let sumSeason = 0;
-        let sumExtra = 0;
-        let sumGrand = 0;
-
-        const fmtValCell = (val) => {
-          if (val > 0) return `<span class="text-emerald-600 dark:text-emerald-400 font-bold font-display">+${Number(val).toLocaleString()}</span>`;
-          if (val < 0) return `<span class="text-rose-600 dark:text-rose-400 font-bold font-display">${Number(val).toLocaleString()}</span>`;
-          return `<span class="text-slate-400 dark:text-slate-500 font-display">0</span>`;
-        };
-
-        const fmtGrandCell = (val) => {
-          if (val > 0) return `<span class="text-emerald-600 dark:text-emerald-400 font-black font-display text-xs sm:text-sm">+${Number(val).toLocaleString()} THB</span>`;
-          if (val < 0) return `<span class="text-rose-600 dark:text-rose-400 font-black font-display text-xs sm:text-sm">${Number(val).toLocaleString()} THB</span>`;
-          return `<span class="text-slate-400 dark:text-slate-500 font-black font-display text-xs sm:text-sm">0 THB</span>`;
-        };
-
-        overallTeams.forEach((team, idx) => {
-          const rank = idx + 1;
-          const seasonPrize = Number(tiers[String(rank)] || 0);
-          const extraNet = (extraMapByEntryId[team.entry_id] !== undefined)
-            ? extraMapByEntryId[team.entry_id]
-            : (extraMapByName[(team.player_name || '').toLowerCase()] || 0);
-          const grandTotal = seasonPrize + extraNet;
-
-          sumFplPoints += team.total_points;
-          sumSeason += seasonPrize;
-          sumExtra += extraNet;
-          sumGrand += grandTotal;
-
-          const shortName = shi62ShortNames[team.entry_id] || team.player_name;
-
-          let rowBg = '';
-          if (rank === 1) rowBg = 'bg-amber-50/20 dark:bg-amber-950/10 font-semibold';
-          else if (rank === overallTeams.length) rowBg = 'bg-rose-50/20 dark:bg-rose-950/10 font-semibold';
-
-          prizeSummaryRowsHtml += `
-            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors ${rowBg}">
-              <td class="py-2.5 px-3 text-center font-display font-bold text-xs text-slate-500 dark:text-slate-400">${rank}</td>
-              <td class="py-2.5 px-3 min-w-[140px]">
-                <div class="flex items-center gap-2">
-                  <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
-                    ${shortName}
-                  </span>
-                  <div>
-                    <div class="font-bold text-slate-900 dark:text-white leading-tight">${this.escapeHtml(team.entry_name)}</div>
-                    <div class="text-[11px] text-slate-400 leading-tight">${this.escapeHtml(team.player_name)}</div>
-                  </div>
-                </div>
-              </td>
-              <td class="py-2.5 px-3 text-center font-display font-black text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
-              <td class="py-2.5 px-3 text-right font-display text-xs sm:text-sm font-semibold">${fmtValCell(seasonPrize)}</td>
-              <td class="py-2.5 px-3 text-right font-display text-xs sm:text-sm font-semibold">${fmtValCell(extraNet)}</td>
-              <td class="py-2.5 px-3 text-right font-display">${fmtGrandCell(grandTotal)}</td>
-            </tr>
-          `;
-        });
-
-        // Guest Nod row
-        const nodCum = (data.cumulative_standings || []).find(c => c.player && c.player.is_guest);
-        if (nodCum) {
-          const nodNet = Number(nodCum.net) || 0;
-          sumExtra += nodNet;
-          sumGrand += nodNet;
-          const fmtNodNet = nodNet > 0 
-            ? `<span class="text-emerald-600 dark:text-emerald-400 font-bold font-display">+${Number(nodNet).toLocaleString()}</span>`
-            : (nodNet < 0 ? `<span class="text-rose-600 dark:text-rose-400 font-bold font-display">${Number(nodNet).toLocaleString()}</span>` : '<span class="text-slate-400 font-display">0</span>');
-          const fmtNodGrand = nodNet > 0 
-            ? `<span class="text-emerald-600 dark:text-emerald-400 font-black font-display text-xs sm:text-sm">+${Number(nodNet).toLocaleString()} THB</span>`
-            : (nodNet < 0 ? `<span class="text-rose-600 dark:text-rose-400 font-black font-display text-xs sm:text-sm">${Number(nodNet).toLocaleString()} THB</span>` : '<span class="text-slate-400 font-black font-display text-xs sm:text-sm">0 THB</span>');
-
-          prizeSummaryRowsHtml += `
-            <tr class="bg-slate-50/40 dark:bg-slate-800/20 text-slate-500 border-t border-dashed border-slate-200 dark:border-slate-800">
-              <td class="py-2.5 px-3 text-center font-display font-bold text-xs text-slate-400">•</td>
-              <td class="py-2.5 px-3 min-w-[140px]">
-                <div class="flex items-center gap-2">
-                  <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
-                    Nod
-                  </span>
-                  <div>
-                    <div class="font-bold text-slate-800 dark:text-slate-200 leading-tight">Guest Player</div>
-                    <div class="text-[11px] text-slate-400 leading-tight">เล่นเฉพาะ Extra</div>
-                  </div>
-                </div>
-              </td>
-              <td class="py-2.5 px-3 text-center font-display text-xs text-slate-400">-</td>
-              <td class="py-2.5 px-3 text-right font-display text-xs text-slate-400">-</td>
-              <td class="py-2.5 px-3 text-right font-display text-xs sm:text-sm font-semibold">${fmtNodNet}</td>
-              <td class="py-2.5 px-3 text-right font-display">${fmtNodGrand}</td>
-            </tr>
-          `;
-        }
-
         let html = `
           <!-- Header Banner (Minimal & Professional) -->
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800">
@@ -3911,78 +3782,7 @@ selectShi62GW(gwName) {
             </div>
           </div>
 
-          <!-- SECTION 1: Cumulative Standings Table -->
-          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-3">
-            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                การแข่งขัน Extra
-              </h2>
-            </div>
-
-            <!-- Standings Table -->
-            <div class="overflow-x-auto touch-scroll">
-              <table class="w-full text-left border-collapse min-w-[640px]">
-                <thead>
-                  <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    <th class="py-2.5 px-3 text-center w-12">อันดับ</th>
-                    <th class="py-2.5 px-3">ผู้เล่น / ทีม FPL</th>
-                    <th class="py-2.5 px-3 text-center">แข่ง (คู่)</th>
-                    <th class="py-2.5 px-3 text-center">ชนะ</th>
-                    <th class="py-2.5 px-3 text-center">แพ้</th>
-                    <th class="py-2.5 px-3 text-center">เสมอ</th>
-                    <th class="py-2.5 px-3 text-center">% ชนะ</th>
-                    <th class="py-2.5 px-3 text-right">เงินที่ได้</th>
-                    <th class="py-2.5 px-3 text-right">เงินที่เสีย</th>
-                    <th class="py-2.5 px-3 text-right font-bold">กำไร/ขาดทุนสุทธิ</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
-                  ${data.cumulative_standings.map(c => {
-                    const isPositive = c.net > 0;
-                    const isNegative = c.net < 0;
-                    const netColor = isPositive 
-                      ? 'text-emerald-600 dark:text-emerald-400 font-bold' 
-                      : (isNegative ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 font-medium');
-                    
-                    const rankBadge = `<span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${c.rank}</span>`;
-
-                    return `
-                      <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                        <td class="py-2.5 px-3 text-center font-display">${rankBadge}</td>
-                        <td class="py-2.5 px-3">
-                          <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
-                              ${c.player.display_name}
-                            </span>
-                            <div>
-                              ${c.player.is_guest 
-                                ? '<div class="text-xs text-slate-500 dark:text-slate-400 font-medium">เล่นเฉพาะมินิเกม</div>' 
-                                : `
-                                  <div class="font-bold text-slate-900 dark:text-white leading-tight">${c.player.team_name}</div>
-                                  <div class="text-[11px] text-slate-400 leading-tight">${c.player.manager}</div>
-                                `}
-                            </div>
-                          </div>
-                        </td>
-                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
-                        <td class="py-2.5 px-3 text-center font-display text-slate-400">${c.push}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-600 dark:text-slate-400">${c.win_rate}%</td>
-                        <td class="py-2.5 px-3 text-right font-display text-emerald-600 dark:text-emerald-400">${c.total_won_amount.toLocaleString()}</td>
-                        <td class="py-2.5 px-3 text-right font-display text-rose-500 dark:text-rose-400">${c.total_lost_amount > 0 ? `-${c.total_lost_amount.toLocaleString()}` : '0'}</td>
-                        <td class="py-2.5 px-3 text-right font-display ${netColor}">
-                          ${fmtMoney(c.net)}
-                        </td>
-                      </tr>
-                    `;
-                  }).join('')}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- SECTION 2: Gameweek Breakdown & Match Details -->
+          <!-- SECTION 1: Gameweek Breakdown & Match Details -->
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-4">
             <!-- Gameweek Controls Header -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
@@ -4147,54 +3947,73 @@ selectShi62GW(gwName) {
             </div>
           </div>
 
-          <!-- SECTION 1.5: Prize Summary (สรุปรางวัล FPL จบฤดู & Extra รวมทั้งหมด) -->
+          <!-- SECTION 2: Cumulative Standings Table (ตารางการแข่งขันทายผล) -->
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-3">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div>
-                <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                  สรุปรางวัล (FPL & Extra)
-                </h2>
-                <span class="text-[11px] font-medium text-slate-400 font-display">
-                  คำนวณตามคะแนน FPL ปัจจุบัน (GW 1 - ${maxGW}) รวมกับยอดสะสม Extra
-                </span>
-              </div>
-              <button 
-                onclick="app.copyShi62PrizesLINEResult()"
-                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap self-end sm:self-auto"
-                title="คัดลอกสรุปผลสำหรับส่ง LINE"
-              >
-                <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-                <span>คัดลอก LINE</span>
-              </button>
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
+                ตารางการแข่งขันทายผล
+              </h2>
             </div>
 
-            <!-- Prize Summary Table -->
+            <!-- Standings Table -->
             <div class="overflow-x-auto touch-scroll">
-              <table class="w-full text-left border-collapse min-w-[620px]">
+              <table class="w-full text-left border-collapse min-w-[640px]">
                 <thead>
                   <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    <th class="py-2.5 px-3 text-center w-12">#</th>
+                    <th class="py-2.5 px-3 text-center w-12">อันดับ</th>
                     <th class="py-2.5 px-3">ผู้เล่น / ทีม FPL</th>
-                    <th class="py-2.5 px-3 text-center w-20">คะแนน FPL</th>
-                    <th class="py-2.5 px-3 text-right min-w-[100px]">FPL</th>
-                    <th class="py-2.5 px-3 text-right min-w-[100px]">ยอดรวม Extra</th>
-                    <th class="py-2.5 px-3 text-right min-w-[110px]">ยอดรวมทั้งหมด</th>
+                    <th class="py-2.5 px-3 text-center">แข่ง (คู่)</th>
+                    <th class="py-2.5 px-3 text-center">ชนะ</th>
+                    <th class="py-2.5 px-3 text-center">แพ้</th>
+                    <th class="py-2.5 px-3 text-center">เสมอ</th>
+                    <th class="py-2.5 px-3 text-center">% ชนะ</th>
+                    <th class="py-2.5 px-3 text-right">เงินที่ได้</th>
+                    <th class="py-2.5 px-3 text-right">เงินที่เสีย</th>
+                    <th class="py-2.5 px-3 text-right font-bold">กำไร/ขาดทุนสุทธิ</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
-                  ${prizeSummaryRowsHtml}
+                  ${data.cumulative_standings.map(c => {
+                    const isPositive = c.net > 0;
+                    const isNegative = c.net < 0;
+                    const netColor = isPositive 
+                      ? 'text-emerald-600 dark:text-emerald-400 font-bold' 
+                      : (isNegative ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 font-medium');
+                    
+                    const rankBadge = `<span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${c.rank}</span>`;
+
+                    return `
+                      <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                        <td class="py-2.5 px-3 text-center font-display">${rankBadge}</td>
+                        <td class="py-2.5 px-3">
+                          <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
+                              ${c.player.display_name}
+                            </span>
+                            <div>
+                              ${c.player.is_guest 
+                                ? '<div class="text-xs text-slate-500 dark:text-slate-400 font-medium">เล่นเฉพาะมินิเกม</div>' 
+                                : `
+                                  <div class="font-bold text-slate-900 dark:text-white leading-tight">${c.player.team_name}</div>
+                                  <div class="text-[11px] text-slate-400 leading-tight">${c.player.manager}</div>
+                                `}
+                            </div>
+                          </div>
+                        </td>
+                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
+                        <td class="py-2.5 px-3 text-center font-display font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
+                        <td class="py-2.5 px-3 text-center font-display font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
+                        <td class="py-2.5 px-3 text-center font-display text-slate-400">${c.push}</td>
+                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-600 dark:text-slate-400">${c.win_rate}%</td>
+                        <td class="py-2.5 px-3 text-right font-display text-emerald-600 dark:text-emerald-400">${c.total_won_amount.toLocaleString()}</td>
+                        <td class="py-2.5 px-3 text-right font-display text-rose-500 dark:text-rose-400">${c.total_lost_amount > 0 ? `-${c.total_lost_amount.toLocaleString()}` : '0'}</td>
+                        <td class="py-2.5 px-3 text-right font-display ${netColor}">
+                          ${fmtMoney(c.net)}
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
                 </tbody>
-                <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-display text-xs sm:text-sm font-bold">
-                  <tr>
-                    <td colspan="2" class="py-3 px-3 text-slate-700 dark:text-slate-300">
-                      ยอดรวมสุทธิทั้งลีก (Net Zero-Sum Balance)
-                    </td>
-                    <td class="py-3 px-3 text-center text-slate-900 dark:text-white font-black">${sumFplPoints}</td>
-                    <td class="py-3 px-3 text-right font-bold text-slate-900 dark:text-white">${sumSeason === 0 ? '0' : sumSeason.toLocaleString()} THB</td>
-                    <td class="py-3 px-3 text-right font-bold text-slate-900 dark:text-white">${sumExtra === 0 ? '0' : sumExtra.toLocaleString()} THB</td>
-                    <td class="py-3 px-3 text-right font-black text-slate-900 dark:text-white text-sm sm:text-base">${sumGrand === 0 ? '0' : sumGrand.toLocaleString()} THB</td>
-                  </tr>
-                </tfoot>
               </table>
             </div>
           </div>
