@@ -191,9 +191,10 @@ def parse_bramann_prediction_file(file_path):
             i += 1
             continue
 
-        # Match fixture line e.g. 'HUL V MUN -1.5' or 'EVE V CRY'
+        # Match fixture line e.g. 'HUL vs MUN -1.5' or legacy 'v' / 'V'
         if re.search(r'\s+[vV:]\s+|\s+[vV][sS]\s+', line):
-            fixture_title = line
+            # Normalize title to always use lowercase 'vs'
+            fixture_title = re.sub(r'\s+(?:[vV][sS]?|[vV])\s+', ' vs ', line)
             i += 1
             # Next line: Side 1
             side1_line = raw_lines[i] if i < len(raw_lines) else ""
@@ -349,6 +350,8 @@ def parse_bramann_challenge_file(file_path, multi_data=None):
         
         for m in gw_obj.get("matches", []):
             total_matches += 1
+            if "title" in m:
+                m["title"] = re.sub(r'\s+(?:[vV][sS]?|[vV])\s+', ' vs ', m["title"])
             t1_id = m.get("team1_id")
             t2_id = m.get("team2_id")
             count_hits = m.get("count_hits", True)
