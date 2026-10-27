@@ -125,6 +125,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <style type="text/tailwindcss">
+    @theme {
+      --breakpoint-xs: 380px;
+    }
     @variant dark (&:where(.dark, .dark *));
   </style>
 
@@ -238,19 +241,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
     /* Strict 1.25x Typography Hierarchy for Flawless Scannability */
     body {
-      font-size: 14px !important;
+      font-size: 14px;
     }
     h1 {
-      font-size: 28px !important;
-      line-height: 1.25 !important;
+      font-size: 28px;
+      line-height: 1.5;
     }
     h2 {
-      font-size: 22px !important;
-      line-height: 1.3 !important;
+      font-size: 22px;
+      line-height: 1.5;
     }
     h3 {
-      font-size: 17.5px !important;
-      line-height: 1.35 !important;
+      font-size: 17.5px;
+      line-height: 1.5;
     }
 
     html {
@@ -291,15 +294,62 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       height: auto;
     }
 
-    /* Mobile touch target minimum size & feedback */
+    /* Strict Monospace & Tabular Figures for All Numerical Data */
+    table, th, td, .tabular-nums, .font-mono, [data-tabular] {
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+
+    /* Selection Highlighting */
+    ::selection {
+      background-color: #0f172a;
+      color: #ffffff;
+    }
+    html.dark ::selection {
+      background-color: #2563eb;
+      color: #ffffff;
+    }
+
+    /* Mobile touch target minimum size & physical feedback */
     button, [role="button"], a {
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+    }
+
+    button:active, [role="button"]:active {
+      transform: scale(0.97);
     }
 
     button:focus-visible, [role="button"]:focus-visible, a:focus-visible {
       outline: 2px solid #2563eb !important;
       outline-offset: 2px !important;
+    }
+
+    /* Smooth row hover transition */
+    tbody tr {
+      transition: background-color 0.12s ease-in-out;
+    }
+    tbody tr:hover {
+      background-color: rgba(241, 245, 249, 0.65);
+    }
+    .dark tbody tr:hover {
+      background-color: rgba(255, 255, 255, 0.038) !important;
+    }
+
+    /* Modal Animation */
+    @keyframes modalScaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.96) translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    .modal-animate-in {
+      animation: modalScaleIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     .font-display {
@@ -367,6 +417,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-x: contain;
       scroll-behavior: smooth;
+    }
+
+    nav.touch-scroll {
+      scroll-padding: 0 1.25rem;
     }
 
     /* Authentic Football Pitch System (4-Tier Vertical Formation) */
@@ -474,6 +528,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     .badge-bboost, .badge-bench_boost { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
     .badge-freehit { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
     .badge-wildcard { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+
+    .dark .badge-3xc, .dark .badge-triple_captain { background: rgba(190, 24, 93, 0.18); color: #f472b6; border-color: rgba(244, 114, 182, 0.35); }
+    .dark .badge-bboost, .dark .badge-bench_boost { background: rgba(29, 78, 216, 0.18); color: #60a5fa; border-color: rgba(96, 165, 250, 0.35); }
+    .dark .badge-freehit { background: rgba(194, 65, 12, 0.18); color: #fb923c; border-color: rgba(251, 146, 60, 0.35); }
+    .dark .badge-wildcard { background: rgba(21, 128, 61, 0.18); color: #4ade80; border-color: rgba(74, 222, 128, 0.35); }
 
     /* ==================== DARK MODE THEME (AMOLED / PURE TRUE BLACK) ==================== */
     html.dark {
@@ -894,8 +953,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 <body class="h-full flex flex-col selection:bg-slate-900 selection:text-white" onclick="app && app.closeLeagueDropdownIfClickedOutside(event)">
 
   <!-- 1. Header (League Identity, Switcher Dropdown, Status & Tabs) -->
-  <header class="border-b border-slate-200 bg-white/95 backdrop-blur-xl sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-3">
+  <header class="border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-black/90 backdrop-blur-xl sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-1.5 sm:py-3">
       
       <!-- 1.1 ข้อมูลประจำลีก & Action Header -->
       <div class="flex items-center justify-between gap-2">
@@ -912,7 +971,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <button 
             id="league-switcher-btn" 
             onclick="app.toggleLeagueDropdown(event)" 
-            class="group flex items-center gap-1.5 text-left cursor-pointer transition-colors leading-tight"
+            class="group flex items-center gap-1.5 text-left cursor-pointer transition-colors leading-tight py-1 min-h-[40px]"
             title="คลิกเพื่อสลับดูมินิลีกอื่น (Switch League)"
           >
             <span id="header-league-name" class="text-sm sm:text-lg font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight truncate max-w-[120px] min-[360px]:max-w-[160px] min-[400px]:max-w-[200px] sm:max-w-[340px] md:max-w-[440px]">กำลังโหลดลีก...</span>
@@ -922,8 +981,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           </button>
 
           <!-- Dropdown Menu Box -->
-          <div id="league-dropdown-menu" class="hidden absolute top-full left-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl border border-slate-200 py-1.5 z-50 animate-in fade-in zoom-in duration-100" onclick="event.stopPropagation()">
-            <div class="px-3.5 py-1.5 text-[10px] uppercase font-bold text-blue-600 font-display border-b border-slate-100 flex items-center justify-between">
+          <div id="league-dropdown-menu" class="hidden absolute top-full left-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-white dark:bg-[#0d0d0f] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 animate-in fade-in zoom-in duration-100" onclick="event.stopPropagation()">
+            <div class="px-3.5 py-1.5 text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400 font-display border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <span>เลือกลีก (Select League)</span>
               <span class="text-[9px] text-slate-400 font-normal">คลิกเพื่อสลับ</span>
             </div>
@@ -973,8 +1032,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     </div>
 
     <!-- Sub-Row: Symmetrical, Balanced & Easy-to-Read Metadata Line -->
-    <div class="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium mt-1.5 sm:mt-1 flex-wrap pl-0 sm:pl-[52px]">
-      <span id="header-league-id-badge" class="font-bold text-blue-900 bg-blue-100/70 border border-blue-200/80 px-1.5 py-0.5 rounded-md font-display leading-none">LEAGUE 40700</span>
+    <div class="flex items-center gap-1.5 sm:gap-2 text-[10.5px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 sm:mt-1 flex-wrap pl-0 sm:pl-[52px]">
+      <span id="header-league-id-badge" class="font-bold text-blue-900 dark:text-blue-200 bg-blue-100/70 dark:bg-blue-950/70 border border-blue-200/80 dark:border-blue-800/80 px-1.5 py-0.5 rounded-md font-display leading-none">LEAGUE 40700</span>
       <span class="text-slate-300 dark:text-slate-600">•</span>
       <span id="header-member-count" class="font-bold text-slate-700 dark:text-slate-300">12 ทีมสมาชิก</span>
       <span class="text-slate-300 dark:text-slate-600">•</span>
@@ -992,8 +1051,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   </div>
 
     <!-- 1.4 แถบเมนูแท็บหลัก (จัดหมวดหมู่และเรียงลำดับภาษาไทย) -->
-    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 border-t border-slate-200/80">
-      <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto touch-scroll no-scrollbar py-1.5 sm:py-2">
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 border-t border-slate-200/80 dark:border-slate-800/80">
+      <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto touch-scroll no-scrollbar py-1.5 sm:py-2 pr-4 sm:pr-0">
         <button 
           id="tab-btn-live"
           data-tab-target="gameweek-view" 
@@ -1078,6 +1137,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         >
           Dev Corner
         </button>
+        <div class="w-2 sm:hidden flex-shrink-0"></div>
       </nav>
     </div>
   </header>
@@ -1379,12 +1439,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           onclick="app.toggleRadarGuide()" 
           class="w-full flex items-center justify-between text-left cursor-pointer group select-none"
         >
-          <div class="flex items-center gap-2 min-w-0">
-            <span class="w-6 h-6 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold flex-shrink-0">📊</span>
-            <div class="truncate">
-              <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display">ระดับความสม่ำเสมอ 5 ระดับ (Consistency Tier Guide)</span>
-              <span class="hidden md:inline-block text-[11px] text-slate-400 dark:text-slate-500 ml-1.5 font-normal">• แสดงลำดับขั้นจากบนลงล่าง (S-Tier ➔ C-Tier / Volatile)</span>
-            </div>
+          <div class="truncate">
+            <h3 class="text-xs sm:text-base font-bold text-slate-900 dark:text-white font-display">ระดับความสม่ำเสมอ</h3>
           </div>
           <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200/60 dark:border-blue-800/60 transition-all flex-shrink-0">
             <span id="radar-guide-btn-text">ซ่อนเกณฑ์</span>
@@ -1538,8 +1594,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <table class="w-full text-left border-separate border-spacing-0">
             <thead>
               <tr class="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
-                <th onclick="app.setRadarSortBy('total_net')" class="py-2.5 px-1 sm:px-2 text-center w-[28px] min-w-[28px] max-w-[28px] sm:w-[36px] sm:min-w-[36px] whitespace-nowrap sticky top-0 max-sm:left-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-20 cursor-pointer hover:text-blue-600 transition-colors select-none" title="คลิกเพื่อเรียงตามอันดับคะแนนรวม">#</th>
-                <th onclick="app.setRadarSortBy('team_name')" class="py-2.5 px-2 sm:px-3 min-w-[125px] sm:min-w-0 max-w-[150px] sm:max-w-none whitespace-nowrap sticky top-0 max-sm:left-[28px] bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-20 max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)] cursor-pointer hover:text-blue-600 transition-colors select-none" title="คลิกเพื่อเรียงตามชื่อทีม">
+                <th onclick="app.setRadarSortBy('total_net')" class="py-2.5 px-1 sm:px-2 text-center w-[36px] min-w-[36px] max-w-[36px] sm:w-[40px] sm:min-w-[40px] whitespace-nowrap sticky top-0 max-sm:left-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-20 cursor-pointer hover:text-blue-600 transition-colors select-none" title="คลิกเพื่อเรียงตามอันดับคะแนนรวม">#</th>
+                <th onclick="app.setRadarSortBy('team_name')" class="py-2.5 px-2 sm:px-3 min-w-[125px] sm:min-w-0 max-w-[150px] sm:max-w-none whitespace-nowrap sticky top-0 max-sm:left-[36px] bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-20 max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)] cursor-pointer hover:text-blue-600 transition-colors select-none" title="คลิกเพื่อเรียงตามชื่อทีม">
                   <span id="th-radar-team_name">ทีม & ผู้จัดการ</span>
                 </th>
                 <th onclick="app.setRadarSortBy('total_net')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none text-blue-600 dark:text-blue-400 font-black" title="คลิกเพื่อเรียงตามคะแนนรวมสุทธิ">
@@ -1581,14 +1637,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     <div id="cup-view" class="tab-content hidden space-y-4">
       
       <!-- Top Cup Banner -->
-      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">MINI-LEAGUE KNOCKOUT CUP</span>
-          <h2 id="cup-title" class="text-lg sm:text-xl font-bold text-slate-900 font-display mt-0.5">การแข่งขันฟุตบอลถ้วย (CUP)</h2>
-          <p id="cup-subtitle" class="text-xs text-slate-500 mt-0.5">ระบบจับคู่ Knockout อัตโนมัติจาก Official FPL</p>
+          <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">MINI-LEAGUE KNOCKOUT CUP</span>
+          <h2 id="cup-title" class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display mt-0.5">การแข่งขันฟุตบอลถ้วย (CUP)</h2>
+          <p id="cup-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">ระบบจับคู่ Knockout อัตโนมัติจาก Official FPL</p>
         </div>
         <div class="flex items-center gap-2">
-          <span id="cup-prize-badge" class="bg-slate-100 text-slate-700 border border-slate-200 text-xs px-3 py-1 rounded-xl font-bold font-display">CUP TOURNAMENT</span>
+          <span id="cup-prize-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display">CUP TOURNAMENT</span>
         </div>
       </div>
 
@@ -1603,15 +1659,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     <div id="rules-view" class="tab-content hidden space-y-4">
       
       <!-- Top Rules Overview Banner -->
-      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <span class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-500 font-bold font-display">OFFICIAL LEAGUE RULES & PRIZE MATRIX</span>
-          <h2 id="rules-header-title" class="text-lg sm:2xl font-bold text-slate-900 font-display mt-0.5">กติกาแฟนตาซี</h2>
-          <p id="rules-header-desc" class="text-xs text-slate-500 mt-0.5"></p>
+          <span class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-bold font-display">OFFICIAL LEAGUE RULES & PRIZE MATRIX</span>
+          <h2 id="rules-header-title" class="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white font-display mt-0.5">กติกาแฟนตาซี</h2>
+          <p id="rules-header-desc" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5"></p>
         </div>
         <div class="flex items-center gap-2">
-          <span class="bg-slate-100 text-slate-700 border border-slate-200 text-xs px-3 py-1 rounded-xl font-bold font-display">38 GAMEWEEKS</span>
-          <span id="rules-header-badge" class="bg-slate-100 text-slate-700 border border-slate-200 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
+          <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display">38 GAMEWEEKS</span>
+          <span id="rules-header-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
         </div>
       </div>
 
@@ -1669,7 +1725,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             </ul>
           </div>
           <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-            ✓ แท็บ: แข่งขัน (Gameweek Live)
+            ✓ แท็บ: คะแนนสด (Gameweek Live)
           </div>
         </div>
 
@@ -1756,7 +1812,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             </ul>
           </div>
           <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-sky-600 dark:text-sky-400 font-medium">
-            ✓ แท็บ: ย้ายตัว (Transfers)
+            ✓ แท็บ: สถานะชิป & ย้ายตัว (Chips & Transfers)
           </div>
         </div>
 
@@ -1785,7 +1841,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             </ul>
           </div>
           <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-purple-600 dark:text-purple-400 font-medium">
-            ✓ แท็บ: ทำเนียบแชมป์ & กติกา
+            ✓ แท็บ: ทำเนียบแชมป์ & กติกา (Hall of Fame & Rules)
           </div>
         </div>
 
@@ -1823,7 +1879,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <!-- Ultra Clean LINE Contact Box -->
       <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
         <div class="space-y-1.5 max-w-xl text-left">
-          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-[#06C755] bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full border border-emerald-200/60 dark:border-emerald-800/60">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-300/60 dark:border-emerald-700/60">
             <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
             LINE CONTACT
           </span>
@@ -1841,7 +1897,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             href="https://line.me/ti/p/lgWPeyIBR7" 
             target="_blank" 
             rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs sm:text-sm shadow-xs transition-all active:scale-95 cursor-pointer font-display"
+            class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 min-h-[44px] rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-slate-950 font-black text-xs sm:text-sm shadow-xs transition-all active:scale-95 cursor-pointer font-display"
           >
             <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
             <span>เปิด LINE ทักหาเดฟ</span>
@@ -1894,8 +1950,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <!-- 6. Interactive Modal Systems -->
 
   <!-- 6.1 หน้าต่างดูแผนจัดตัวนักเตะ (Team Squad Modal) -->
-  <div id="team-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-xs hidden transition-all duration-200 overflow-y-auto" onclick="if (event.target === this) app.closeTeamModal()">
-    <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl p-3 sm:p-6 max-w-xl w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[94vh] overflow-y-auto overflow-x-hidden my-auto" onclick="event.stopPropagation()">
+  <div id="team-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200" onclick="if (event.target === this) app.closeTeamModal()">
+    <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl p-3 sm:p-6 max-w-xl w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[94vh] overflow-y-auto overflow-x-hidden touch-scroll my-auto modal-animate-in" onclick="event.stopPropagation()">
       
       <!-- Header (Sticky at top when scrolling through pitch and bench) -->
       <header class="sticky top-0 bg-white/95 dark:bg-[#0d0d0f]/95 backdrop-blur-md z-30 -mt-3 sm:-mt-6 -mx-3 sm:-mx-6 px-3 sm:px-6 pt-3 sm:pt-6 pb-2.5 sm:pb-3 border-b border-slate-100 dark:border-slate-800 mb-3 sm:mb-4 flex items-center justify-between">
@@ -1948,8 +2004,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   </div>
 
   <!-- 6.2 หน้าต่างข้อมูล Projected Points Modal (FPL Gameweek Explanation) -->
-  <div id="projected-points-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/75 backdrop-blur-xs hidden transition-all duration-200" onclick="if (event.target === this) app.closeProjectedPointsModal()">
-    <div class="bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-6 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[94vh] overflow-y-auto" onclick="event.stopPropagation()">
+  <div id="projected-points-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200" onclick="if (event.target === this) app.closeProjectedPointsModal()">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-6 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[94vh] overflow-y-auto modal-animate-in" onclick="event.stopPropagation()">
       <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
         <div class="flex items-center gap-2">
           <span class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold flex items-center justify-center text-sm font-display">Pts</span>
@@ -1974,34 +2030,34 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   </div>
 
   <!-- 6.3 หน้าต่าง Text Summary Modal สำหรับส่ง LINE -->
-  <div id="text-summary-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/75 backdrop-blur-xs hidden transition-all duration-200" onclick="if (event.target === this) app.closeTextSummaryModal()">
-    <div class="bg-white rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200 max-h-[92dvh] sm:max-h-[94vh] flex flex-col justify-between overflow-y-auto" onclick="event.stopPropagation()">
+  <div id="text-summary-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200" onclick="if (event.target === this) app.closeTextSummaryModal()">
+    <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[94vh] flex flex-col justify-between overflow-y-auto modal-animate-in" onclick="event.stopPropagation()">
       <div>
-        <div class="flex items-center justify-between pb-3.5 border-b border-slate-100 mb-3">
+        <div class="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-slate-800 mb-3">
           <div class="flex items-center gap-2">
             <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-            <h3 id="modal-summary-title" class="text-base sm:text-lg font-bold text-slate-900 font-display">สรุปผล Gameweek</h3>
+            <h3 id="modal-summary-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">สรุปผล Gameweek</h3>
           </div>
-          <button onclick="app.closeTextSummaryModal()" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 font-bold transition-colors cursor-pointer text-lg active:scale-95" aria-label="Close modal">✕</button>
+          <button onclick="app.closeTextSummaryModal()" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold transition-colors cursor-pointer text-lg active:scale-95" aria-label="Close modal">✕</button>
         </div>
         
-        <p class="text-xs text-slate-500 mb-3">ข้อความถูกจัดรูปแบบสำหรับส่งเข้ากลุ่ม LINE เรียบร้อยแล้ว:</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">ข้อความถูกจัดรูปแบบสำหรับส่งเข้ากลุ่ม LINE เรียบร้อยแล้ว:</p>
         
         <div class="relative">
-          <textarea id="text-summary-content" readonly class="w-full h-60 sm:h-72 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-[13px] font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 resize-none selection:bg-slate-900 selection:text-white leading-relaxed"></textarea>
+          <textarea id="text-summary-content" readonly class="w-full h-60 sm:h-72 p-3.5 bg-slate-50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs sm:text-[13px] font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-blue-600 resize-none selection:bg-slate-900 selection:text-white dark:selection:bg-blue-600 leading-relaxed"></textarea>
         </div>
       </div>
 
-      <div class="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
-        <span id="modal-copy-indicator" class="text-xs text-emerald-600 font-bold flex items-center gap-1.5 opacity-0 transition-opacity duration-200">
+      <div class="mt-4 pt-3.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
+        <span id="modal-copy-indicator" class="text-xs text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1.5 opacity-0 transition-opacity duration-200">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
           คัดลอกลงคลิปบอร์ดแล้ว!
         </span>
         <div class="flex items-center gap-2 ml-auto">
-          <button onclick="app.closeTextSummaryModal()" class="px-4 py-2 min-h-[44px] rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer active:scale-95">
+          <button onclick="app.closeTextSummaryModal()" class="px-4 py-2 min-h-[44px] rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer active:scale-95">
             ปิด
           </button>
-          <button id="btn-modal-copy" onclick="app.copyFromModal()" class="px-4 sm:px-5 py-2 min-h-[44px] rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 transition-all shadow-sm active:scale-95 cursor-pointer flex items-center gap-1.5">
+          <button id="btn-modal-copy" onclick="app.copyFromModal()" class="px-4 sm:px-5 py-2 min-h-[44px] rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-500 transition-all shadow-sm active:scale-95 cursor-pointer flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
             <span>คัดลอกข้อความ</span>
           </button>
@@ -3647,12 +3703,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           const memberCount = (lData.teams || []).length;
 
           html += `
-            <button onclick="app.switchLeague('${lid}')" class="w-full text-left px-3 py-2 text-xs font-bold text-slate-800 hover:bg-blue-50/60 rounded-xl flex items-center justify-between transition-colors cursor-pointer ${isCurrent ? 'bg-blue-50 border border-blue-200/80 text-blue-950 font-black' : ''}">
+            <button onclick="app.switchLeague('${lid}')" class="w-full text-left px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-blue-50/60 dark:hover:bg-slate-800/80 rounded-xl flex items-center justify-between transition-colors cursor-pointer ${isCurrent ? 'bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/80 text-blue-950 dark:text-blue-300 font-black' : ''}">
               <div>
-                <div class="${isCurrent ? 'text-blue-950 font-black' : 'text-slate-900'}">${this.escapeHtml(lData.name)}</div>
-                <div class="text-[10px] text-slate-500 font-normal">League ${lid} • ${memberCount} ทีม</div>
+                <div class="${isCurrent ? 'text-blue-950 dark:text-blue-300 font-black' : 'text-slate-900 dark:text-white'}">${this.escapeHtml(lData.name)}</div>
+                <div class="text-[10px] text-slate-500 dark:text-slate-400 font-normal">League ${lid} • ${memberCount} ทีม</div>
               </div>
-              ${isCurrent ? '<span class="text-blue-600 font-black text-xs font-display">✓ กำลังดู</span>' : ''}
+              ${isCurrent ? '<span class="text-blue-600 dark:text-blue-400 font-black text-xs font-display">✓ กำลังดู</span>' : ''}
             </button>
           `;
         });
@@ -6030,10 +6086,10 @@ selectShi62GW(gwName) {
                   </div>
                   <div class="flex items-center justify-end gap-1 flex-shrink-0 self-end sm:self-center pt-1 sm:pt-0">
                     <span id="quote-copy-indicator" class="text-[11px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 inline-block font-display">Copied!</span>
-                    <button onclick="app.copyHighlightQuote()" class="w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="คัดลอกบทวิเคราะห์ (Copy Quote)">
+                    <button onclick="app.copyHighlightQuote()" class="w-10 h-10 min-w-[40px] min-h-[40px] sm:w-9 sm:h-9 flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="คัดลอกบทวิเคราะห์ (Copy Quote)">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     </button>
-                    <button onclick="app.regenerateLiveNote()" class="w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋ (Refresh Analysis)">
+                    <button onclick="app.regenerateLiveNote()" class="w-10 h-10 min-w-[40px] min-h-[40px] sm:w-9 sm:h-9 flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋ (Refresh Analysis)">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
                   </div>
@@ -6239,10 +6295,10 @@ selectShi62GW(gwName) {
                   </div>
                   <div class="flex items-center justify-end gap-1 flex-shrink-0 self-end sm:self-center pt-1 sm:pt-0">
                     <span id="quote-copy-indicator" class="text-[11px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 inline-block font-display">Copied!</span>
-                    <button onclick="app.copyHighlightQuote()" class="w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="คัดลอกพาดหัวบทวิเคราะห์ (Copy Quote)">
+                    <button onclick="app.copyHighlightQuote()" class="w-10 h-10 min-w-[40px] min-h-[40px] sm:w-9 sm:h-9 flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="คัดลอกพาดหัวบทวิเคราะห์ (Copy Quote)">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     </button>
-                    <button onclick="app.regenerateLiveNote()" class="w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋ (Refresh Analysis)">
+                    <button onclick="app.regenerateLiveNote()" class="w-10 h-10 min-w-[40px] min-h-[40px] sm:w-9 sm:h-9 flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋ (Refresh Analysis)">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
                   </div>
@@ -6831,13 +6887,13 @@ selectShi62GW(gwName) {
                 </span>
                 <div class="min-w-0">
                   <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 font-display truncate">${cfg.title}</h4>
-                  <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium leading-tight mt-0.5">${cfg.subtitle}</p>
+                  <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-tight mt-0.5">${cfg.subtitle}</p>
                 </div>
               </div>
 
               <!-- Manager Line: Player Name — Team Name (Stats) -->
               <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-baseline gap-1.5 text-xs sm:text-sm">
-                <span class="text-slate-600 dark:text-slate-400 font-medium truncate">${this.escapeHtml(cfg.winner.player_name)} —</span>
+                <span class="text-slate-600 dark:text-slate-400 font-medium truncate max-w-[120px] xs:max-w-[150px] sm:max-w-[180px]">${this.escapeHtml(cfg.winner.player_name)} —</span>
                 <button onclick="app.openTeamModal(${cfg.winner.entry_id})" class="font-bold text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer truncate max-w-[130px] xs:max-w-[180px] sm:max-w-none">
                   ${this.escapeHtml(cfg.winner.team_name)}
                 </button>
@@ -7417,7 +7473,7 @@ selectShi62GW(gwName) {
         this.compDiffPosFilter = this.compDiffPosFilter || 'ALL';
         this.compDiffSearch = this.compDiffSearch || '';
         this.compTransferTeam = this.compTransferTeam || '';
-        this.compTransferMobileView = this.compTransferMobileView || 'both';
+        this.compTransferMobileView = this.compTransferMobileView || (typeof window !== 'undefined' && window.innerWidth < 640 ? 'best' : 'both');
 
         // Update Header Badges
         const leagueBadge = document.getElementById('competition-league-badge');
@@ -7745,10 +7801,10 @@ selectShi62GW(gwName) {
 
           rowsHtml += `
             <tr class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/80">
-              <td class="py-2.5 px-2 text-center text-xs font-bold w-8 sm:w-10 sticky left-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/60 z-10">
+              <td class="py-2.5 px-1 sm:px-2 text-center text-xs font-bold w-[36px] min-w-[36px] max-w-[36px] sm:w-[44px] sm:min-w-[44px] sticky left-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/60 z-10">
                 ${rankBadge}
               </td>
-              <td class="py-2.5 px-2.5 sm:px-3 min-w-[130px] sm:min-w-[180px] max-w-[160px] sm:max-w-[220px] sticky left-8 sm:left-10 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/60 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
+              <td class="py-2.5 px-2.5 sm:px-3 min-w-[130px] sm:min-w-[180px] max-w-[160px] sm:max-w-[220px] sticky left-[36px] sm:left-[44px] bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/60 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
                 <button onclick="app.openTeamModal(${t.entry_id})" class="text-left group cursor-pointer block truncate w-full">
                   <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate flex items-center gap-1.5 flex-wrap">
                     <span class="truncate">${this.escapeHtml(t.entry_name)}</span>
@@ -7799,8 +7855,8 @@ selectShi62GW(gwName) {
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="bg-slate-50/70 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider">
-                  <th class="py-2.5 px-2 text-center w-8 sm:w-10 sticky left-0 bg-slate-50 dark:bg-slate-800 z-20">#</th>
-                  <th class="py-2.5 px-2.5 sm:px-3 sticky left-8 sm:left-10 bg-slate-50 dark:bg-slate-800 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">ทีม & ผู้จัดการ</th>
+                  <th class="py-2.5 px-1 sm:px-2 text-center w-[36px] min-w-[36px] max-w-[36px] sm:w-[44px] sm:min-w-[44px] sticky left-0 bg-slate-50 dark:bg-slate-800 z-20">#</th>
+                  <th class="py-2.5 px-2.5 sm:px-3 sticky left-[36px] sm:left-[44px] bg-slate-50 dark:bg-slate-800 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">ทีม & ผู้จัดการ</th>
                   <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">การ์ดคงเหลือ</th>
                   <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Wildcard 1</th>
                   ${showWc2 ? '<th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Wildcard 2</th>' : ''}
@@ -8181,7 +8237,7 @@ selectShi62GW(gwName) {
         const currentGw = this.selectedGW;
         const maxGw = Number(this.multiData.max_gw) || currentGw;
         const pCounts = this.cachedPlayerCounts || {};
-        const mobileView = this.compTransferMobileView || 'both';
+        const mobileView = this.compTransferMobileView || (typeof window !== 'undefined' && window.innerWidth < 640 ? 'best' : 'both');
 
         // If a team is selected, get its squad for highlighting
         let selectedTeamPlayerIds = new Set();
@@ -9112,7 +9168,7 @@ selectShi62GW(gwName) {
                   </div>
                   <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${this.config.coordinator ? 'ผู้ประสานงาน & ดูแลกองกลาง' : 'ค่าสมัคร & กองกลางรวม'}</span>
-                    <div class="${this.config.coordinator ? 'text-base font-bold' : 'text-xl font-black text-emerald-600'} text-slate-900 mt-1">${this.config.coordinator || (this.config.total_pool || '103,200 THB')}</div>
+                    <div class="${this.config.coordinator ? 'text-base font-bold text-slate-900 dark:text-white' : 'text-xl font-black text-emerald-600 dark:text-emerald-400 font-display'} mt-1">${this.config.coordinator || (this.config.total_pool || '103,200 THB')}</div>
                     <div class="text-xs text-slate-600 mt-0.5 font-medium">${this.config.payment_method || (this.config.entry_fee || '8,600 THB/ทีม')}</div>
                   </div>
                 </div>
@@ -9311,14 +9367,14 @@ selectShi62GW(gwName) {
 
             monthlyTableRows += `
               <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${isLeader ? 'bg-amber-50/20 font-semibold' : (isRunnerUp ? 'bg-blue-50/20' : '')}">
-                <td class="py-2.5 px-2 text-center font-display font-bold">${rankBadge}</td>
-                <td class="py-2.5 px-2 min-w-0">
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold w-[36px] min-w-[36px] max-w-[36px] sticky left-0 bg-white dark:bg-slate-900 z-10">${rankBadge}</td>
+                <td class="py-2.5 px-2 min-w-[130px] sm:min-w-0 max-w-[160px] sm:max-w-none sticky left-[36px] bg-white dark:bg-slate-900 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 hover:text-blue-700 transition-colors cursor-pointer block truncate max-w-[130px] xs:max-w-[180px] sm:max-w-none">${this.escapeHtml(t.team_name)}</button>
+                    <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-400 transition-colors cursor-pointer block truncate max-w-[130px] xs:max-w-[180px] sm:max-w-none">${this.escapeHtml(t.team_name)}</button>
                     ${prizePill}
                     ${this.getPrizeBadge(t.entry_id)}
                   </div>
-                  <div class="text-[11px] text-slate-500">${this.escapeHtml(t.player_name)}</div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(t.player_name)}</div>
                 </td>
                 ${scoreCols}
                 <td class="py-2.5 px-2 text-right font-display font-black text-xs sm:text-sm ${isLeader ? 'text-amber-700 dark:text-amber-400 font-bold' : (isRunnerUp ? 'text-blue-700 dark:text-blue-400 font-bold' : 'text-slate-900 dark:text-slate-100')}">${t.month_total}</td>
@@ -9545,9 +9601,9 @@ selectShi62GW(gwName) {
                 <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
                   <table class="w-full text-left border-collapse">
                     <thead>
-                      <tr class="border-b border-slate-100 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
-                        <th class="py-2 px-2 text-center w-8">#</th>
-                        <th class="py-2 px-2">ทีม & ผู้จัดการ</th>
+                      <tr class="border-b border-slate-100 dark:border-slate-800 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50 dark:bg-slate-800/50">
+                        <th class="py-2 px-1 sm:px-2 text-center w-[36px] min-w-[36px] max-w-[36px] sticky left-0 bg-slate-50 dark:bg-slate-800 z-20">#</th>
+                        <th class="py-2 px-2 sticky left-[36px] bg-slate-50 dark:bg-slate-800 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">ทีม & ผู้จัดการ</th>
                         ${curMonth.gw_list.map(g => `<th class="py-2 px-2 text-center">GW ${g}</th>`).join('')}
                         <th class="py-2 px-2 text-right">คะแนนรวมเดือน</th>
                       </tr>
@@ -10701,8 +10757,8 @@ selectShi62GW(gwName) {
 
           html += `
             <tr class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/80">
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500 whitespace-nowrap w-[28px] min-w-[28px] max-w-[28px] sm:w-[36px] sm:min-w-[36px] max-sm:sticky max-sm:left-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 max-sm:z-10">${t.global_rank}</td>
-              <td class="py-2.5 px-2 sm:px-3 min-w-[125px] sm:min-w-0 max-w-[150px] sm:max-w-none max-sm:sticky max-sm:left-[28px] bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 max-sm:z-10 max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500 whitespace-nowrap w-[36px] min-w-[36px] max-w-[36px] sm:w-[40px] sm:min-w-[40px] max-sm:sticky max-sm:left-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 max-sm:z-10">${t.global_rank}</td>
+              <td class="py-2.5 px-2 sm:px-3 min-w-[125px] sm:min-w-0 max-w-[150px] sm:max-w-none max-sm:sticky max-sm:left-[36px] bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 max-sm:z-10 max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
                 <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer block truncate w-full">
                   ${this.escapeHtml(t.team_name)}
                 </button>
@@ -10824,24 +10880,24 @@ selectShi62GW(gwName) {
           if (champPrize && runnerPrize) {
             prizeCardsHtml = `
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="glass-card rounded-2xl p-5 border border-slate-200">
+                <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
                   <div class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black font-display shadow-md">🏆</div>
                     <div>
-                      <span class="text-xs uppercase font-bold text-amber-700 font-display">CUP CHAMPION</span>
-                      <h3 class="text-lg font-bold text-slate-900">แชมป์ฟุตบอลถ้วย (CUP)</h3>
-                      <div class="text-sm font-black text-emerald-600 font-display mt-0.5">${champPrize}</div>
+                      <span class="text-xs uppercase font-bold text-amber-700 dark:text-amber-400 font-display">CUP CHAMPION</span>
+                      <h3 class="text-lg font-bold text-slate-900 dark:text-white">แชมป์ฟุตบอลถ้วย (CUP)</h3>
+                      <div class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-display mt-0.5">${champPrize}</div>
                     </div>
                   </div>
                 </div>
 
-                <div class="glass-card rounded-2xl p-5 border border-slate-200">
+                <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
                   <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-2xl bg-slate-200 text-slate-900 flex items-center justify-center text-2xl font-black font-display shadow-md">🥈</div>
+                    <div class="w-12 h-12 rounded-2xl bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 flex items-center justify-center text-2xl font-black font-display shadow-md">🥈</div>
                     <div>
-                      <span class="text-xs uppercase font-bold text-slate-600 font-display">RUNNER-UP</span>
-                      <h3 class="text-lg font-bold text-slate-900">รองแชมป์ฟุตบอลถ้วย (CUP)</h3>
-                      <div class="text-sm font-black text-emerald-600 font-display mt-0.5">${runnerPrize}</div>
+                      <span class="text-xs uppercase font-bold text-slate-600 dark:text-slate-400 font-display">RUNNER-UP</span>
+                      <h3 class="text-lg font-bold text-slate-900 dark:text-white">รองแชมป์ฟุตบอลถ้วย (CUP)</h3>
+                      <div class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-display mt-0.5">${runnerPrize}</div>
                     </div>
                   </div>
                 </div>
@@ -10850,28 +10906,28 @@ selectShi62GW(gwName) {
           } else if (champPrize) {
             const cupNote = feat.cup_rule_note || '';
             prizeCardsHtml = `
-              <div class="glass-card rounded-2xl p-5 border border-slate-200">
+              <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
                 <div class="flex items-center gap-3.5">
                   <div class="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black font-display shadow-md">🏆</div>
                   <div>
-                    <span class="text-xs uppercase font-bold text-amber-700 font-display">MINI-LEAGUE CUP CHAMPION</span>
-                    <h3 class="text-lg font-bold text-slate-900">แชมป์ลีคคัพ ${startGW ? `(เริ่ม Gameweek ${startGW})` : ''}</h3>
-                    <div class="text-sm font-black text-emerald-600 font-display mt-0.5">${champPrize}</div>
-                    ${cupNote ? `<p class="text-xs text-amber-600 font-semibold mt-1">* ${cupNote}</p>` : ''}
-                    ${startGW ? `<p class="text-xs text-slate-500 mt-1">* เริ่มแข่งขันใน Gameweek ${startGW} (สงวนสิทธิ์เฉพาะทีมที่ชำระค่าสมัครครบถ้วน)</p>` : ''}
+                    <span class="text-xs uppercase font-bold text-amber-700 dark:text-amber-400 font-display">MINI-LEAGUE CUP CHAMPION</span>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">แชมป์ลีคคัพ ${startGW ? `(เริ่ม Gameweek ${startGW})` : ''}</h3>
+                    <div class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-display mt-0.5">${champPrize}</div>
+                    ${cupNote ? `<p class="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-1">* ${cupNote}</p>` : ''}
+                    ${startGW ? `<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">* เริ่มแข่งขันใน Gameweek ${startGW} (สงวนสิทธิ์เฉพาะทีมที่ชำระค่าสมัครครบถ้วน)</p>` : ''}
                   </div>
                 </div>
               </div>
             `;
           } else {
             prizeCardsHtml = `
-              <div class="glass-card rounded-2xl p-5 border border-slate-200">
+              <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
                 <div class="flex items-center gap-3.5">
                   <div class="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black font-display shadow-md">🏆</div>
                   <div>
-                    <span class="text-xs uppercase font-bold text-amber-700 font-display">${this.escapeHtml(this.data.name || 'MINI-LEAGUE')} CUP</span>
-                    <h3 class="text-lg font-bold text-slate-900">รางวัลผู้ชนะ Cup (บอลถ้วย)</h3>
-                    <p class="text-xs text-slate-600 mt-0.5">รอสรุปสัปดาห์ที่เริ่มแข่งขัน และจัดสรรเงินรางวัลตามยอดสมัคร</p>
+                    <span class="text-xs uppercase font-bold text-amber-700 dark:text-amber-400 font-display">${this.escapeHtml(this.data.name || 'MINI-LEAGUE')} CUP</span>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">รางวัลผู้ชนะ Cup (บอลถ้วย)</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">รอสรุปสัปดาห์ที่เริ่มแข่งขัน และจัดสรรเงินรางวัลตามยอดสมัคร</p>
                   </div>
                 </div>
               </div>
@@ -10884,10 +10940,10 @@ selectShi62GW(gwName) {
 
           container.innerHTML = `
             ${prizeCardsHtml}
-            <div class="glass-card rounded-2xl p-5 border border-slate-200 text-center py-8">
+            <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800 text-center py-8">
               <div class="text-3xl mb-2">⚔️</div>
-              <h4 class="text-base font-bold text-slate-900">รอบการแข่งขัน Knockout Cup ${startGW ? `(เริ่ม GW ${startGW})` : ''}</h4>
-              <p class="text-xs text-slate-500 mt-1 max-w-md mx-auto">${gwInfoText}</p>
+              <h4 class="text-base font-bold text-slate-900 dark:text-white">รอบการแข่งขัน Knockout Cup ${startGW ? `(เริ่ม GW ${startGW})` : ''}</h4>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-md mx-auto">${gwInfoText}</p>
             </div>
           `;
         }
@@ -11149,7 +11205,7 @@ selectShi62GW(gwName) {
             const notPlayed = isPlayerUnstarted(p);
 
             return `
-              <div class="flex flex-col items-center justify-center p-0.5 text-center min-w-0 transition-transform active:scale-95 group" style="width: ${100 / Math.max(count, 3)}%; max-width: 76px;">
+              <div class="flex flex-col items-center justify-center p-0.5 text-center min-w-0 transition-transform active:scale-95 group" style="width: ${100 / Math.max(count, 3)}%; max-width: ${count >= 5 ? '80px' : '76px'};">
                 <div class="relative flex items-center justify-center mb-0.5">
                   <img 
                     src="${shirtUrl}" 
@@ -11165,7 +11221,7 @@ selectShi62GW(gwName) {
                   ${isVice ? '<span class="absolute -top-1 -right-1 bg-slate-200 text-slate-950 font-black text-[7.5px] xs:text-[8px] sm:text-[9px] w-3.5 h-3.5 xs:w-4 xs:h-4 rounded-full flex items-center justify-center font-display shadow-md border border-slate-300 z-10">V</span>' : ''}
                 </div>
 
-                <div class="bg-slate-950/90 text-white font-bold text-[8.5px] xs:text-[9px] sm:text-[10px] px-1 py-0.5 rounded shadow-sm w-full truncate text-center border border-white/10 leading-tight">
+                <div class="bg-slate-950/90 text-white font-bold text-[8px] xs:text-[9px] sm:text-[10px] px-0.5 xs:px-1 py-0.5 rounded shadow-sm w-full truncate text-center border border-white/10 leading-tight tracking-tight">
                   ${this.escapeHtml(p.name)}
                 </div>
 
