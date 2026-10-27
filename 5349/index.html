@@ -1314,6 +1314,111 @@
         </div>
       </div>
 
+      <!-- Consistency Radar Guide Card (Collapsible) -->
+      <div class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+        <button 
+          type="button" 
+          onclick="app.toggleRadarGuide()" 
+          class="w-full flex items-center justify-between text-left cursor-pointer group select-none"
+        >
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="w-6 h-6 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold flex-shrink-0">📊</span>
+            <div class="truncate">
+              <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display">ระดับความสม่ำเสมอ 5 ระดับ (Consistency Tier Guide)</span>
+              <span class="hidden md:inline-block text-[11px] text-slate-400 dark:text-slate-500 ml-1.5 font-normal">• แสดงลำดับขั้นจากบนลงล่าง (S-Tier ➔ C-Tier / Volatile)</span>
+            </div>
+          </div>
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200/60 dark:border-blue-800/60 transition-all flex-shrink-0">
+            <span id="radar-guide-btn-text">ซ่อนเกณฑ์</span>
+            <svg id="radar-guide-arrow" class="w-3 h-3 transform transition-transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </span>
+        </button>
+
+        <div id="radar-guide-content" class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-1.5 sm:space-y-2 text-xs">
+          <!-- S-Tier -->
+          <div class="p-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-amber-400/15 via-yellow-300/10 to-transparent border border-amber-400/40 dark:border-amber-400/30 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 transition-all">
+            <div class="flex items-center gap-2 sm:w-36 flex-shrink-0">
+              <span class="text-xs sm:text-sm font-black text-amber-700 dark:text-amber-300 flex items-center gap-1">💎 S-Tier</span>
+              <span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-800 dark:text-amber-200">หัวกะทิ</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 sm:flex-1 text-xs">
+              <span class="font-bold text-slate-800 dark:text-slate-200 font-display text-xs sm:text-sm">เฉลี่ย ≥ 71.0</span>
+              <span class="text-slate-400 dark:text-slate-600">•</span>
+              <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">ต่ำสุด (Floor) ≥ 41</span>
+              <span class="text-slate-400 dark:text-slate-600">•</span>
+              <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">สูงสุด ≥ 110</span>
+            </div>
+            <div class="text-[10px] sm:text-xs font-medium text-amber-700 dark:text-amber-300/90 sm:text-right flex-shrink-0">
+              แต้มสูงจัด นิ่งจริง ระเบิดฟอร์มได้
+            </div>
+          </div>
+
+          <!-- A-Tier -->
+          <div class="p-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-emerald-500/15 via-emerald-400/5 to-transparent border border-emerald-500/30 dark:border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 transition-all">
+            <div class="flex items-center gap-2 sm:w-36 flex-shrink-0">
+              <span class="text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1">🟢 A-Tier</span>
+              <span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-800 dark:text-emerald-200">มาตรฐานสูง</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 sm:flex-1 text-xs">
+              <span class="font-bold text-slate-800 dark:text-slate-200 font-display text-xs sm:text-sm">เฉลี่ย ≥ 64.0</span>
+              <span class="text-slate-400 dark:text-slate-600">•</span>
+              <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">ต่ำสุด (Floor) ≥ 32</span>
+            </div>
+            <div class="text-[10px] sm:text-xs font-medium text-emerald-700 dark:text-emerald-300/90 sm:text-right flex-shrink-0">
+              มาตรฐานสูงสม่ำเสมอคงเส้นคงวา
+            </div>
+          </div>
+
+          <!-- B-Tier -->
+          <div class="p-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-yellow-500/15 via-yellow-400/5 to-transparent border border-yellow-500/30 dark:border-yellow-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 transition-all">
+            <div class="flex items-center gap-2 sm:w-36 flex-shrink-0">
+              <span class="text-xs sm:text-sm font-bold text-yellow-700 dark:text-yellow-300 flex items-center gap-1">🟡 B-Tier</span>
+              <span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-800 dark:text-yellow-200">กลุ่มกลาง</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 sm:flex-1 text-xs">
+              <span class="font-bold text-slate-800 dark:text-slate-200 font-display text-xs sm:text-sm">เฉลี่ย ≥ 58.0</span>
+              <span class="text-slate-400 dark:text-slate-600">•</span>
+              <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">มาตรฐานทั่วไป</span>
+            </div>
+            <div class="text-[10px] sm:text-xs font-medium text-yellow-700 dark:text-yellow-300/90 sm:text-right flex-shrink-0">
+              เกาะกลุ่มกลางคงที่
+            </div>
+          </div>
+
+          <!-- C-Tier -->
+          <div class="p-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-slate-500/15 via-slate-400/5 to-transparent border border-slate-500/30 dark:border-slate-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 transition-all">
+            <div class="flex items-center gap-2 sm:w-36 flex-shrink-0">
+              <span class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1">⚪ C-Tier</span>
+              <span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-slate-500/20 text-slate-800 dark:text-slate-200">พัฒนาการ</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 sm:flex-1 text-xs">
+              <span class="font-bold text-slate-800 dark:text-slate-200 font-display text-xs sm:text-sm">เฉลี่ย &lt; 58.0</span>
+              <span class="text-slate-400 dark:text-slate-600">•</span>
+              <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">ต่ำกว่าค่าเฉลี่ย</span>
+            </div>
+            <div class="text-[10px] sm:text-xs font-medium text-slate-600 dark:text-slate-400 sm:text-right flex-shrink-0">
+              ระดับต้องปรับจูนทีม
+            </div>
+          </div>
+
+          <!-- Volatile -->
+          <div class="p-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-rose-500/15 via-rose-400/5 to-transparent border border-rose-500/30 dark:border-rose-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 transition-all">
+            <div class="flex items-center gap-2 sm:w-36 flex-shrink-0">
+              <span class="text-xs sm:text-sm font-bold text-rose-700 dark:text-rose-300 flex items-center gap-1">⚡ Volatile</span>
+              <span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-800 dark:text-rose-200">สวิงสูง</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 sm:flex-1 text-xs">
+              <span class="font-bold text-slate-800 dark:text-slate-200 font-display text-xs sm:text-sm">แกว่งจัด / จุดต่ำสุดหลุดลึก</span>
+              <span class="text-slate-400 dark:text-slate-600">•</span>
+              <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">ต่ำสุด &lt; 32 หรือ แกว่ง ≥ 75 (เฉลี่ย &lt; 64)</span>
+            </div>
+            <div class="text-[10px] sm:text-xs font-medium text-rose-700 dark:text-rose-300/90 sm:text-right flex-shrink-0">
+              วีคปังแต่วีคอื่นดิ่งลึก
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Consistency Radar Main Table Card -->
       <div class="glass-card rounded-2xl p-3.5 sm:p-5 border border-slate-200 dark:border-slate-800">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
@@ -1400,7 +1505,7 @@
                 <th onclick="app.setRadarSortBy('bench')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามแต้มตัวสำรองตกน้ำสะสม">
                   <span id="th-radar-bench"><span class="hidden sm:inline">สำรอง</span><span class="sm:hidden">สำรอง</span></span>
                 </th>
-                <th onclick="app.setRadarSortBy('tier')" class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="Consistency Tier: 💎 S-Tier (หัวกะทิ Avg ≥ 69.5, Floor ≥ 40) | ⚡ Volatile (สวิงรุนแรง Spread ≥ 75, Low < 40) | 🟢 A-Tier (มาตรฐานสูง Avg ≥ 64, Floor ≥ 35) | 🟡 B-Tier (ระดับกลาง Avg ≥ 58) | ⚪ C-Tier (ระดับพัฒนาการ Avg < 58)">
+                <th onclick="app.setRadarSortBy('tier')" class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="Consistency Tier: 💎 S-Tier (หัวกะทิ Avg ≥ 71.0, Floor ≥ 41, High ≥ 110) | 🟢 A-Tier (มาตรฐานสูง Avg ≥ 64.0, Floor ≥ 32) | ⚡ Volatile (สวิงสูง Floor < 32 หรือ Spread ≥ 75) | 🟡 B-Tier (ระดับกลาง Avg ≥ 58.0) | ⚪ C-Tier (ระดับพัฒนาการ Avg < 58.0)">
                   <span id="th-radar-tier"><span class="hidden sm:inline">ระดับความสม่ำเสมอ</span><span class="sm:hidden">ระดับ</span></span>
                 </th>
               </tr>
@@ -10243,24 +10348,28 @@ selectShi62GW(gwName) {
             globalBestBench = { bench: totalBench, team: t.team_name, player: t.player_name, league: primaryLeague };
           }
 
-          // Consistency Tier Badge (Model 1: Balanced Bell Curve)
+          // Consistency Tier Badge (Multi-Criteria: High, Low vs Avg)
           let tierBadge = '';
           let tierWeight = 0;
           if (count > 0) {
-            const isSTier = (avg >= 69.5 && low >= 40);
-            const isVolatile = !isSTier && ((spread >= 75 && low < 40) || (high >= 115 && low < 38));
-            const isATier = !isSTier && !isVolatile && (avg >= 64.0 && low >= 35);
-            const isBTier = !isSTier && !isVolatile && (avg >= 58.0);
+            // S-Tier: Elite top performers (Avg >= 71.0, Floor >= 41, High >= 110)
+            const isSTier = (avg >= 71.0 && low >= 41 && high >= 110);
+            // A-Tier: High standard performers (Avg >= 64.0, Floor >= 32) - absorbs former high-avg Volatiles
+            const isATier = !isSTier && (avg >= 64.0 && low >= 32);
+            // Volatile: Wild swings with deep floor drop or low-to-mid avg boom-and-bust
+            const isVolatile = !isSTier && !isATier && ((spread >= 75 && low < 35) || (high >= 110 && low < 32));
+            // B-Tier: Mid baseline (Avg >= 58.0)
+            const isBTier = !isSTier && !isATier && !isVolatile && (avg >= 58.0);
 
             if (isSTier) {
               tierWeight = 5;
-              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-gradient-to-r from-amber-300/40 via-yellow-200/60 to-amber-300/40 text-amber-950 dark:text-amber-100 border border-amber-400 dark:border-amber-300 shadow-[0_0_8px_rgba(245,158,11,0.5)] dark:shadow-[0_0_12px_rgba(251,191,36,0.45)] ring-1 ring-amber-400/50" title="💎 S-Tier: หัวกะทิยอดเยี่ยมและนิ่งจริง (Avg ≥ 69.5, Floor ≥ 40)">💎 S-Tier</span>';
-            } else if (isVolatile) {
-              tierWeight = 2;
-              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950/60 dark:text-rose-200 dark:border-rose-800/80" title="⚡ Volatile: แต้มสวิงสูง มีสัปดาห์ระเบิดฟอร์มแต่วีคอื่นดรอป (Spread ≥ 75, Floor < 40 หรือ High ≥ 115, Floor < 38)">⚡ Volatile</span>';
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-gradient-to-r from-amber-300/40 via-yellow-200/60 to-amber-300/40 text-amber-950 dark:text-amber-100 border border-amber-400 dark:border-amber-300 shadow-[0_0_8px_rgba(245,158,11,0.5)] dark:shadow-[0_0_12px_rgba(251,191,36,0.45)] ring-1 ring-amber-400/50" title="💎 S-Tier: หัวกะทิยอดเยี่ยมและนิ่งจริง (Avg ≥ 71.0, Floor ≥ 41, High ≥ 110)">💎 S-Tier</span>';
             } else if (isATier) {
               tierWeight = 4;
-              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-200 dark:border-emerald-800" title="🟢 A-Tier: ฟอร์มดีมาตรฐานสูงสม่ำเสมอ (Avg ≥ 64.0, Floor ≥ 35)">🟢 A-Tier</span>';
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-200 dark:border-emerald-800" title="🟢 A-Tier: ฟอร์มดีมาตรฐานสูงสม่ำเสมอ (Avg ≥ 64.0, Floor ≥ 32)">🟢 A-Tier</span>';
+            } else if (isVolatile) {
+              tierWeight = 2;
+              tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950/60 dark:text-rose-200 dark:border-rose-800/80" title="⚡ Volatile: แต้มสวิงสูง จุดต่ำสุดหลุดลึกหรือแต้มแกว่งรุนแรง">⚡ Volatile</span>';
             } else if (isBTier) {
               tierWeight = 3;
               tierBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-yellow-100 text-yellow-800 border border-yellow-300 dark:bg-yellow-950/60 dark:text-yellow-200 dark:border-yellow-800" title="🟡 B-Tier: ฟอร์มคงที่ระดับกลาง (Avg ≥ 58.0)">🟡 B-Tier</span>';
@@ -10293,18 +10402,29 @@ selectShi62GW(gwName) {
           globalMostConsistent = { spread: topC.spread, floor: topC.low, team: topC.team_name, player: topC.player_name, avg: topC.avg, league: topC.leagues[0] ? topC.leagues[0].name : '-' };
         }
 
-        // Sort teamList by total_net descending, avg descending, spread ascending, team name
+        // Sort teamList by total_net descending, avg descending,
+        // Floor vs Avg (lowest drop from avg: (avg - low) ascending),
+        // High vs Avg (highest upside above avg: (high - avg) descending),
+        // spread ascending, hits ascending, bench descending, team name
         teamList.sort((a, b) => {
           const dNet = b.total_net - a.total_net;
           if (dNet !== 0) return dNet;
           const dAvg = b.avg - a.avg;
           if (dAvg !== 0) return dAvg;
+          const dFloorDrop = (a.avg - a.low) - (b.avg - b.low);
+          if (Math.abs(dFloorDrop) > 0.001) return dFloorDrop;
+          const dUpside = (b.high - b.avg) - (a.high - a.avg);
+          if (Math.abs(dUpside) > 0.001) return dUpside;
           const dSpread = a.spread - b.spread;
           if (dSpread !== 0) return dSpread;
+          const dHits = a.total_hits - b.total_hits;
+          if (dHits !== 0) return dHits;
+          const dBench = b.total_bench - a.total_bench;
+          if (dBench !== 0) return dBench;
           return a.team_name.localeCompare(b.team_name);
         });
 
-        // Assign permanent global_rank based on total_net across all teams
+        // Assign permanent global_rank based on fine-grained performance across all teams
         teamList.forEach((t, idx) => {
           t.global_rank = idx + 1;
         });
@@ -10488,12 +10608,22 @@ selectShi62GW(gwName) {
           }
 
           if (diff !== 0) return diff;
-          // Tie-breakers
+          // Tie-breakers: total_net, avg, Floor drop vs avg, Ceiling upside vs avg, spread, hits, bench, name
           const dNet = b.total_net - a.total_net;
           if (dNet !== 0) return dNet;
           const dAvg = b.avg - a.avg;
           if (dAvg !== 0) return dAvg;
-          return a.spread - b.spread;
+          const dFloorDrop = (a.avg - a.low) - (b.avg - b.low);
+          if (Math.abs(dFloorDrop) > 0.001) return dFloorDrop;
+          const dUpside = (b.high - b.avg) - (a.high - a.avg);
+          if (Math.abs(dUpside) > 0.001) return dUpside;
+          const dSpread = a.spread - b.spread;
+          if (dSpread !== 0) return dSpread;
+          const dHits = a.total_hits - b.total_hits;
+          if (dHits !== 0) return dHits;
+          const dBench = b.total_bench - a.total_bench;
+          if (dBench !== 0) return dBench;
+          return a.team_name.localeCompare(b.team_name);
         });
 
         if (filtered.length === 0) {
@@ -10588,6 +10718,23 @@ selectShi62GW(gwName) {
       handleRadarSearch(val) {
         this.radarSearchQuery = val || '';
         this.renderGlobalRadarTable();
+      }
+
+      toggleRadarGuide() {
+        const content = document.getElementById('radar-guide-content');
+        const btnText = document.getElementById('radar-guide-btn-text');
+        const arrow = document.getElementById('radar-guide-arrow');
+        if (!content) return;
+        const isHidden = content.classList.contains('hidden');
+        if (isHidden) {
+          content.classList.remove('hidden');
+          if (btnText) btnText.innerText = 'ซ่อนเกณฑ์';
+          if (arrow) arrow.classList.add('rotate-180');
+        } else {
+          content.classList.add('hidden');
+          if (btnText) btnText.innerText = 'ดูเกณฑ์';
+          if (arrow) arrow.classList.remove('rotate-180');
+        }
       }
 
       renderCupView() {
