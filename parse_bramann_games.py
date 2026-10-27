@@ -75,12 +75,14 @@ def calculate_bramann_payouts(side1_bets, side2_bets, winning_side):
     """
     Bramann Prediction Payout Engine:
     - Minimum 100 THB per leg. Max 5 legs.
-    - If winning_side is None, 'draw', or 'push': All void / push (net 0).
-    - If one side has 0 bets: Void / push (net 0).
-    - Loser pool = total_losing_legs * 100 THB.
-    - Each winner leg gets (loser_pool / total_winning_legs).
-    - Round to integer THB: round(legs * per_leg_win).
-    - Adjust rounding discrepancy so sum(winners) == sum(losers).
+    - If winning_side is None, 'draw', or 'push': All void / push (net 0, pool 0).
+    - If one side has 0 bets: Void / push (net 0, pool 0).
+    - Match pool is determined by the side that placed more legs:
+      pool = max(total_side1_legs, total_side2_legs) * 100 THB.
+    - The winning side receives +pool THB, split proportionally to each player's legs.
+    - The losing side pays -pool THB, split proportionally to each player's legs.
+    - Uses Largest Remainder Method (Hamilton method) to ensure exact zero-sum balance:
+      sum(winners) == pool and sum(losers) == -pool, total net balance == 0.
     """
     payouts = {}
 
@@ -96,7 +98,7 @@ def calculate_bramann_payouts(side1_bets, side2_bets, winning_side):
     total_side1_legs = sum(b["legs"] for b in agg_side1)
     total_side2_legs = sum(b["legs"] for b in agg_side2)
 
-    # Initialize all to 0
+    # Initialize all to 0 push
     for b in agg_side1 + agg_side2:
         payouts[b["name"]] = {"net": 0, "legs": b["legs"], "status": "push"}
 
@@ -114,43 +116,48 @@ def calculate_bramann_payouts(side1_bets, side2_bets, winning_side):
         winner_legs = total_side2_legs
         loser_legs = total_side1_legs
 
-    loser_pool = loser_legs * 100
-    per_leg_payout = loser_pool / winner_legs
+    pool = max(total_side1_legs, total_side2_legs) * 100
 
-    # Losers pay 100 per leg
+    def allocate_shares(participants, total_legs, target_amount):
+        """Distribute target_amount among participants proportionally using Largest Remainder Method."""
+        if not participants or total_legs == 0 or target_amount == 0:
+            return {p["name"]: 0 for p in participants}
+
+        alloc = {}
+        remainders = []
+        cur_sum = 0
+        for idx, p in enumerate(participants):
+            exact = (p["legs"] / total_legs) * target_amount
+            floor_val = int(exact)
+            rem = exact - floor_val
+            alloc[p["name"]] = floor_val
+            cur_sum += floor_val
+            remainders.append((rem, p["legs"], -idx, p["name"]))
+
+        diff = target_amount - cur_sum
+        remainders.sort(reverse=True)
+        for i in range(diff):
+            alloc[remainders[i][3]] += 1
+        return alloc
+
+    winner_alloc = allocate_shares(winners, winner_legs, pool)
+    loser_alloc = allocate_shares(losers, loser_legs, pool)
+
+    for w in winners:
+        payouts[w["name"]] = {
+            "net": winner_alloc[w["name"]],
+            "legs": w["legs"],
+            "status": "won"
+        }
+
     for l in losers:
-        lost_amt = l["legs"] * 100
         payouts[l["name"]] = {
-            "net": -lost_amt,
+            "net": -loser_alloc[l["name"]],
             "legs": l["legs"],
             "status": "lost"
         }
 
-    # Winners receive share
-    allocated_sum = 0
-    winner_items = []
-    for w in winners:
-        raw_win = w["legs"] * per_leg_payout
-        win_amt = int(round(raw_win))
-        allocated_sum += win_amt
-        winner_items.append((w["name"], w["legs"], win_amt))
-
-    # Reconcile rounding diff
-    diff = loser_pool - allocated_sum
-    if diff != 0 and winner_items:
-        # Give or take diff from the winner with the most legs
-        winner_items.sort(key=lambda x: x[1], reverse=True)
-        top_name, top_legs, top_win = winner_items[0]
-        winner_items[0] = (top_name, top_legs, top_win + diff)
-
-    for name, legs, win_amt in winner_items:
-        payouts[name] = {
-            "net": win_amt,
-            "legs": legs,
-            "status": "won"
-        }
-
-    return payouts, loser_pool, "normal"
+    return payouts, pool, "normal"
 
 def parse_bramann_prediction_file(file_path):
     if not os.path.exists(file_path):
