@@ -246,7 +246,7 @@ def parse_bramann_prediction_file(file_path):
                 "side1_legs": sum(b["legs"] for b in s1_bets),
                 "side2_legs": sum(b["legs"] for b in s2_bets),
                 "winning_side": winning_side,
-                "winning_label": s1_label if winning_side == 1 else (s2_label if winning_side == 2 else "เสมอ/ยก"),
+                "winning_label": s1_label if winning_side == 1 else (s2_label if winning_side == 2 else "เสมอ"),
                 "status": status,
                 "pool": pool,
                 "payouts": payouts

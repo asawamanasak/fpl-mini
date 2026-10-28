@@ -36,7 +36,7 @@
           "count_hits": true,
           "count_chips": true,
           "stake_per_leg": 100,
-          "note": "Oo ชนะ (95 vs 56) • ไม่มีคนแทงเพิ่ม",
+          "note": "Oo ชนะ (95 vs 56) • ไม่มีผู้เลือกเพิ่ม",
           "side1_bets": [
             { "name": "Oo", "legs": 1 }
           ],
@@ -60,7 +60,7 @@
           "count_hits": true,
           "count_chips": true,
           "stake_per_leg": 100,
-          "note": "Oo ชนะ (41 vs 34) • ไม่มีคนแทงเพิ่ม",
+          "note": "Oo ชนะ (41 vs 34) • ไม่มีผู้เลือกเพิ่ม",
           "side1_bets": [
             { "name": "Oo", "legs": 1 }
           ],
@@ -84,7 +84,7 @@
           "count_hits": true,
           "count_chips": true,
           "stake_per_leg": 100,
-          "note": "Oo ชนะ (73 vs 69) • ไม่มีคนแทงเพิ่ม",
+          "note": "Oo ชนะ (73 vs 69) • ไม่มีผู้เลือกเพิ่ม",
           "side1_bets": [
             { "name": "Oo", "legs": 1 }
           ],
@@ -108,7 +108,7 @@
           "count_hits": true,
           "count_chips": true,
           "stake_per_leg": 100,
-          "note": "Oo ชนะ (77 vs 76) • ไม่มีคนแทงเพิ่ม",
+          "note": "Oo ชนะ (77 vs 76) • ไม่มีผู้เลือกเพิ่ม",
           "side1_bets": [
             { "name": "Oo", "legs": 1 }
           ],
@@ -126,7 +126,7 @@
           "count_hits": true,
           "count_chips": true,
           "stake_per_leg": 100,
-          "note": "Oak ชนะ (89 vs 76) • ไม่มีคนแทงเพิ่ม",
+          "note": "Oak ชนะ (89 vs 76) • ไม่มีผู้เลือกเพิ่ม",
           "side1_bets": [
             { "name": "Oak", "legs": 1 }
           ],

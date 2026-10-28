@@ -1197,9 +1197,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                   <th class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center w-8 sm:w-10">#</th>
                   <th class="py-2.5 px-2 sm:px-3 min-w-0">ทีม & ผู้จัดการ</th>
                   <th class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">กัปตัน</th>
-                  <th class="py-2.5 px-1 sm:px-2 text-center text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-400 font-bold whitespace-nowrap"><span class="hidden sm:inline">คะแนนสด (GW)</span><span class="sm:hidden">แต้มสด</span></th>
-                  <th class="py-2.5 px-1 sm:px-2 text-center w-8 sm:w-10 text-[10px] sm:text-[11px]"><span class="hidden sm:inline">แต้มลบ</span><span class="sm:hidden">ลบ</span></th>
-                  <th class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right w-14 sm:w-16 text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 font-bold whitespace-nowrap"><span class="hidden sm:inline">แต้มสุทธิ</span><span class="sm:hidden">สุทธิ</span></th>
+                  <th class="py-2.5 px-1 sm:px-2 text-center text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-400 font-bold whitespace-nowrap"><span class="hidden sm:inline">คะแนนสด (GW)</span><span class="sm:hidden">คะแนนสด</span></th>
+                  <th class="py-2.5 px-1 sm:px-2 text-center w-8 sm:w-10 text-[10px] sm:text-[11px]"><span class="hidden sm:inline">คะแนนลบ</span><span class="sm:hidden">ลบ</span></th>
+                  <th class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right w-14 sm:w-16 text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 font-bold whitespace-nowrap"><span class="hidden sm:inline">คะแนนสุทธิ</span><span class="sm:hidden">สุทธิ</span></th>
                 </tr>
               </thead>
               <tbody id="matchday-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
@@ -1231,7 +1231,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                   <th class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center w-8 sm:w-10">#</th>
                   <th class="py-2.5 px-2 sm:px-3 min-w-0">ทีม & ผู้จัดการ</th>
                   <th class="py-2.5 px-1 sm:px-3 text-center w-14 sm:w-18 text-[10px] sm:text-[11px] whitespace-nowrap">GW ล่าสุด</th>
-                  <th class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right w-14 sm:w-16 text-blue-700 dark:text-blue-400 font-bold whitespace-nowrap">แต้มรวม</th>
+                  <th class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right w-14 sm:w-16 text-blue-700 dark:text-blue-400 font-bold whitespace-nowrap">คะแนนรวม</th>
                 </tr>
               </thead>
               <tbody id="overall-standings-body" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
@@ -1374,19 +1374,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 </th>
                 <th class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap">
                   <span class="sm:hidden">เฉลี่ย</span>
-                  <span class="hidden sm:inline">แต้มเฉลี่ย</span>
+                  <span class="hidden sm:inline">คะแนนเฉลี่ย</span>
                 </th>
                 <th class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap">
                   <span class="sm:hidden">สูงสุด</span>
-                  <span class="hidden sm:inline">แต้มสูงสุด</span>
+                  <span class="hidden sm:inline">คะแนนสูงสุด</span>
                 </th>
                 <th class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap">
                   <span class="sm:hidden">ต่ำสุด</span>
-                  <span class="hidden sm:inline">แต้มต่ำสุด</span>
+                  <span class="hidden sm:inline">คะแนนต่ำสุด</span>
                 </th>
                 <th class="py-2.5 px-1.5 sm:px-3 text-right whitespace-nowrap">
-                  <span class="sm:hidden">แต้มลบ</span>
-                  <span class="hidden sm:inline">แต้มลบสะสม</span>
+                  <span class="sm:hidden">คะแนนลบ</span>
+                  <span class="hidden sm:inline">คะแนนลบสะสม</span>
                 </th>
               </tr>
             </thead>
@@ -1568,13 +1568,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 onchange="app.setRadarSortBy(this.value)"
                 class="text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-1.5 text-slate-700 dark:text-slate-300 font-bold focus:outline-hidden cursor-pointer"
               >
-                <option value="total_net">เรียง: แต้มรวม ▼</option>
-                <option value="avg">เรียง: แต้มเฉลี่ย ▼</option>
-                <option value="high">เรียง: แต้มสูงสุด ▼</option>
-                <option value="low">เรียง: ต่ำสุด (Floor) ▼</option>
+                <option value="total_net">เรียง: คะแนนรวม ▼</option>
+                <option value="avg">เรียง: คะแนนเฉลี่ย ▼</option>
+                <option value="high">เรียง: คะแนนสูงสุด ▼</option>
+                <option value="low">เรียง: คะแนนต่ำสุด (Floor) ▼</option>
                 <option value="spread">เรียง: ความนิ่ง (แกว่งน้อย) ▲</option>
-                <option value="hits">เรียง: แต้มลบน้อยสุด ▲</option>
-                <option value="bench">เรียง: แต้มสำรองสูงสุด ▼</option>
+                <option value="hits">เรียง: คะแนนลบน้อยสุด ▲</option>
+                <option value="bench">เรียง: คะแนนสำรองสูงสุด ▼</option>
                 <option value="tier">เรียง: ระดับความสม่ำเสมอ ▼</option>
                 <option value="team_name">เรียง: ชื่อทีม A-Z ▲</option>
               </select>
@@ -1607,25 +1607,25 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                   <span id="th-radar-team_name">ทีม & ผู้จัดการ</span>
                 </th>
                 <th onclick="app.setRadarSortBy('total_net')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none text-blue-600 dark:text-blue-400 font-black" title="คลิกเพื่อเรียงตามคะแนนรวมสุทธิ">
-                  <span id="th-radar-total_net"><span class="hidden sm:inline">คะแนนรวม ▼</span><span class="sm:hidden">แต้มรวม ▼</span></span>
+                  <span id="th-radar-total_net"><span class="hidden sm:inline">คะแนนรวม ▼</span><span class="sm:hidden">คะแนนรวม ▼</span></span>
                 </th>
-                <th onclick="app.setRadarSortBy('avg')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามแต้มเฉลี่ยต่อสัปดาห์">
-                  <span id="th-radar-avg"><span class="hidden sm:inline">แต้มเฉลี่ย</span><span class="sm:hidden">เฉลี่ย</span></span>
+                <th onclick="app.setRadarSortBy('avg')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามคะแนนเฉลี่ยต่อสัปดาห์">
+                  <span id="th-radar-avg"><span class="hidden sm:inline">คะแนนเฉลี่ย</span><span class="sm:hidden">เฉลี่ย</span></span>
                 </th>
-                <th onclick="app.setRadarSortBy('high')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามแต้มสัปดาห์สูงสุด">
+                <th onclick="app.setRadarSortBy('high')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามคะแนนสัปดาห์สูงสุด">
                   <span id="th-radar-high"><span class="hidden sm:inline">สูงสุด</span><span class="sm:hidden">สูงสุด</span></span>
                 </th>
-                <th onclick="app.setRadarSortBy('low')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามแต้มต่ำสุด">
+                <th onclick="app.setRadarSortBy('low')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามคะแนนต่ำสุด">
                   <span id="th-radar-low"><span class="hidden sm:inline">ต่ำสุด (Floor)</span><span class="sm:hidden">ต่ำสุด</span></span>
                 </th>
                 <th onclick="app.setRadarSortBy('spread')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามความแกว่ง (น้อยไปมาก = นิ่งกว่า)">
                   <span id="th-radar-spread"><span class="hidden sm:inline">ความแกว่ง (Spread)</span><span class="sm:hidden">แกว่ง</span></span>
                 </th>
-                <th onclick="app.setRadarSortBy('hits')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามแต้มลบสะสม">
-                  <span id="th-radar-hits"><span class="hidden sm:inline">แต้มลบ</span><span class="sm:hidden">ลบ</span></span>
+                <th onclick="app.setRadarSortBy('hits')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามคะแนนลบสะสม">
+                  <span id="th-radar-hits"><span class="hidden sm:inline">คะแนนลบ</span><span class="sm:hidden">ลบ</span></span>
                 </th>
-                <th onclick="app.setRadarSortBy('bench')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามแต้มตัวสำรองตกน้ำสะสม">
-                  <span id="th-radar-bench"><span class="hidden sm:inline">สำรอง</span><span class="sm:hidden">สำรอง</span></span>
+                <th onclick="app.setRadarSortBy('bench')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามคะแนนตัวสำรองตกน้ำสะสม">
+                  <span id="th-radar-bench"><span class="hidden sm:inline">คะแนนสำรอง</span><span class="sm:hidden">สำรอง</span></span>
                 </th>
                 <th onclick="app.setRadarSortBy('tier')" class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="Consistency Tier: 💎 S-Tier (หัวกะทิ Avg ≥ 71.0, Floor ≥ 41, High ≥ 110) | 🟢 A-Tier (มาตรฐานสูง Avg ≥ 64.0, Floor ≥ 32) | ⚡ Volatile (สวิงสูง Floor < 32 หรือ Spread ≥ 75) | 🟡 B-Tier (ระดับกลาง Avg ≥ 58.0) | ⚪ C-Tier (ระดับพัฒนาการ Avg < 58.0)">
                   <span id="th-radar-tier"><span class="hidden sm:inline">ระดับความสม่ำเสมอ</span><span class="sm:hidden">ระดับ</span></span>
@@ -1996,7 +1996,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <!-- GW Points Badge -->
           <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/80 shadow-2xs">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span id="team-modal-pts-label" class="text-[10px] sm:text-xs font-semibold text-emerald-700/80 dark:text-emerald-400/80">แต้มสด:</span>
+            <span id="team-modal-pts-label" class="text-[10px] sm:text-xs font-semibold text-emerald-700/80 dark:text-emerald-400/80">คะแนนสด:</span>
             <span id="team-modal-pts" class="text-xs sm:text-sm font-black font-display text-emerald-700 dark:text-emerald-300">- pts</span>
           </div>
 
@@ -4146,7 +4146,7 @@ selectShi62GW(gwName) {
         lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/187827`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
-        const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผล ${gw.name} สำหรับ LINE เรียบร้อย`);
+        const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผล (ทายผล) ${gw.name} สำหรับ LINE เรียบร้อย`);
         if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(textToCopy).then(onCopied).catch(() => {
             const textarea = document.createElement('textarea');
@@ -4401,7 +4401,7 @@ selectShi62GW(gwName) {
           lines.push(`📋 ผลการแข่งขัน (${gwDisplayName}):`);
           gw.matches.forEach(m => {
             if (m.status === 'push' || m.winning_side === 'push') {
-              lines.push(`• ${m.title} ➔ เสมอ/ยก (แยกย้าย)`);
+              lines.push(`• ${m.title} ➔ เสมอ (แยกย้าย)`);
             } else {
               const winSideLabel = m.winning_side === 1 ? m.side1_label : m.side2_label;
               const winBets = m.winning_side === 1 ? m.side1_bets : m.side2_bets;
@@ -4422,7 +4422,7 @@ selectShi62GW(gwName) {
         lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/5349`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
-        const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผลทายผล ${gw.name} สำหรับ LINE เรียบร้อย`);
+        const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผล (ทายผล) ${gw.name} สำหรับ LINE เรียบร้อย`);
         this.copyToClipboard(textToCopy, onCopied);
       }
 
@@ -4440,7 +4440,7 @@ selectShi62GW(gwName) {
         let lines = [];
         lines.push(`สรุปผลท้าชน Bramann Challenge ${gwDisplayName}`);
         lines.push(`---------------------------------`);
-        lines.push(`⚔️ การดวลแต้มแฟนตาซี (${gwDisplayName}):`);
+        lines.push(`⚔️ การดวลคะแนนแฟนตาซี (${gwDisplayName}):`);
         (gw.matches || []).forEach(m => {
           const t1Pts = m.team1_pts !== undefined ? `${m.team1_pts} pts` : '-';
           const t2Pts = m.team2_pts !== undefined ? `${m.team2_pts} pts` : '-';
@@ -4472,7 +4472,7 @@ selectShi62GW(gwName) {
         lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/5349`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
-        const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผลท้าชน ${gw.name} สำหรับ LINE เรียบร้อย`);
+        const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผล (ท้าชน) ${gw.name} สำหรับ LINE เรียบร้อย`);
         this.copyToClipboard(textToCopy, onCopied);
       }
 
@@ -4482,7 +4482,7 @@ selectShi62GW(gwName) {
         lines.push(`สรุปเงินรางวัล FPL & มินิเกม Bramann League (GW${maxGW})`);
         lines.push(`---------------------------------`);
         lines.push(`🏆 สรุปเงินรางวัล FPL (Prize 1 + Prize 2) รวม 9,500 THB:`);
-        lines.push(`(อันดับ • ทีม • คะแนนรวม • P1 • P2 • รวม FPL • ทายผลสะสม • ท้าชนสะสม • ยอดรวมสุทธิ)`);
+        lines.push(`(อันดับ • ทีม • คะแนนรวม • P1 • P2 • รางวัล FPL • ทายผลสะสม • ท้าชนสะสม • ยอดรวมสุทธิ)`);
 
         const feat = (this.config && this.config.features) || {};
         const p1GW = Number(feat.prize1_target_gw) || 19;
@@ -4698,7 +4698,7 @@ selectShi62GW(gwName) {
             <!-- Gameweek Controls Header -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
               <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                ผลการแข่งขัน & การคิดเงินรายสัปดาห์
+                ผลการแข่งขัน & การคิดเงินประจำสัปดาห์
               </h2>
 
               <!-- GW Pills Selector & Copy LINE Button -->
@@ -4818,7 +4818,7 @@ selectShi62GW(gwName) {
                           <div class="flex flex-wrap gap-1">
                             ${m.side1_bets.length > 0 
                               ? m.side1_bets.map(b => `<span class="text-[10px] px-1.5 py-0.5 rounded bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium">${b.name}${b.legs > 1 ? ` <strong class="text-blue-600 dark:text-blue-400">x${b.legs}</strong>` : ''}</span>`).join('')
-                              : '<span class="text-[10px] text-slate-400 italic">ไม่มีคนแทง</span>'
+                              : '<span class="text-[10px] text-slate-400 italic">ไม่มีผู้เลือก</span>'
                             }
                           </div>
                         </div>
@@ -4832,7 +4832,7 @@ selectShi62GW(gwName) {
                           <div class="flex flex-wrap gap-1">
                             ${m.side2_bets.length > 0 
                               ? m.side2_bets.map(b => `<span class="text-[10px] px-1.5 py-0.5 rounded bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium">${b.name}${b.legs > 1 ? ` <strong class="text-blue-600 dark:text-blue-400">x${b.legs}</strong>` : ''}</span>`).join('')
-                              : '<span class="text-[10px] text-slate-400 italic">ไม่มีคนแทง</span>'
+                              : '<span class="text-[10px] text-slate-400 italic">ไม่มีผู้เลือก</span>'
                             }
                           </div>
                         </div>
@@ -4864,7 +4864,7 @@ selectShi62GW(gwName) {
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <div>
                 <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                  ตารางการแข่งขันทายผลสะสมตลอดฤดูกาล
+                  ตารางการแข่งขันทายผลสะสม
                 </h2>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   สรุปผลงานทายผล GW 1 ถึง ${activeGWObj.name} • คิดเงินแบบ Zero-Sum Balance (ยอดรวมได้-เสียสุทธิเท่ากับ 0 บาท)
@@ -4909,7 +4909,7 @@ selectShi62GW(gwName) {
                             </span>
                             <div>
                               ${c.player.is_guest 
-                                ? '<div class="text-xs text-slate-500 dark:text-slate-400 font-medium">เล่นเฉพาะมินิเกม</div>' 
+                                ? '<div class="text-xs text-slate-500 dark:text-slate-400 font-medium">เล่นเฉพาะทายผล</div>' 
                                 : `
                                   <div class="font-bold text-slate-900 dark:text-white leading-tight">${c.player.team_name}</div>
                                   <div class="text-[11px] text-slate-400 leading-tight">${c.player.manager}</div>
@@ -5036,7 +5036,7 @@ selectShi62GW(gwName) {
                       </div>
                       <div class="flex items-center gap-1.5 flex-wrap">
                         <span class="text-[10.5px] px-2 py-0.5 rounded-md font-semibold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/60">
-                          ${m.count_hits ? 'หักแต้มลบย้ายตัว' : 'ไม่หักแต้มลบ'}
+                          ${m.count_hits ? 'หักคะแนนลบย้ายตัว' : 'ไม่หักคะแนนลบ'}
                         </span>
                         <span class="text-[10.5px] px-2 py-0.5 rounded-md font-semibold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200/60">
                           ${m.count_chips ? 'นับชิปพิเศษ' : 'ไม่นับชิป'}
@@ -5516,7 +5516,7 @@ selectShi62GW(gwName) {
                       <th class="py-2.5 px-2 text-center w-16">คะแนนรวม</th>
                       <th class="py-2.5 px-2 text-right min-w-[90px]">Prize 1 (GW19)</th>
                       <th class="py-2.5 px-2 text-right min-w-[90px]">Prize 2 (GW38)</th>
-                      <th class="py-2.5 px-2 text-right min-w-[100px]">รวม FPL</th>
+                      <th class="py-2.5 px-2 text-right min-w-[100px]">รางวัล FPL</th>
                       <th class="py-2.5 px-2 text-right min-w-[100px]">ทายผลสะสม</th>
                       <th class="py-2.5 px-2 text-right min-w-[90px]">ท้าชนสะสม</th>
                       <th class="py-2.5 px-3 text-right min-w-[120px] font-black">ยอดรวมสุทธิ</th>
@@ -5605,7 +5605,7 @@ selectShi62GW(gwName) {
             <!-- Gameweek Controls Header -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
               <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                ผลการแข่งขัน & การคิดเงินรายสัปดาห์
+                ผลการแข่งขัน & การคิดเงินประจำสัปดาห์
               </h2>
 
               <!-- GW Pills Selector & Copy LINE Button -->
@@ -5708,7 +5708,7 @@ selectShi62GW(gwName) {
                         </div>
                         <div>
                           ${isVoid 
-                            ? '<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">โมฆะ / เจ๊า (ไม่มีผู้ชนะ)</span>'
+                            ? '<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">เสมอ / ยก (ไม่มีผู้ชนะ)</span>'
                             : `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60">฿${m.pool} (${m.winners.length} คนชนะ)</span>`
                           }
                         </div>
@@ -5744,7 +5744,7 @@ selectShi62GW(gwName) {
                                           </span>
                                         `;
                                       }).join('')
-                                    : '<span class="text-[10.5px] text-slate-400 italic">(ไม่มีคนแทง)</span>'
+                                    : '<span class="text-[10.5px] text-slate-400 italic">(ไม่มีผู้เลือก)</span>'
                                   }
                                 </div>
                               </div>
@@ -5769,7 +5769,7 @@ selectShi62GW(gwName) {
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-3">
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                ตารางการแข่งขันทายผล
+                ตารางการแข่งขันทายผลสะสม
               </h2>
             </div>
 
@@ -5810,7 +5810,7 @@ selectShi62GW(gwName) {
                             </span>
                             <div>
                               ${c.player.is_guest 
-                                ? '<div class="text-xs text-slate-500 dark:text-slate-400 font-medium">เล่นเฉพาะมินิเกม</div>' 
+                                ? '<div class="text-xs text-slate-500 dark:text-slate-400 font-medium">เล่นเฉพาะทายผล</div>' 
                                 : `
                                   <div class="font-bold text-slate-900 dark:text-white leading-tight">${c.player.team_name}</div>
                                   <div class="text-[11px] text-slate-400 leading-tight">${c.player.manager}</div>
@@ -6107,7 +6107,7 @@ selectShi62GW(gwName) {
                     <span class="font-bold text-slate-900 dark:text-white text-xs mt-0.5 block truncate">${chipsList}</span>
                   </div>
                   <div class="bg-white/90 dark:bg-slate-800/90 rounded-xl p-2.5 border border-indigo-100/90 dark:border-slate-700 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display block">แต้มลบย้ายตัว (Hits Taken)</span>
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display block">คะแนนลบย้ายตัว (Hits Taken)</span>
                     <span class="font-bold text-slate-900 dark:text-white text-xs mt-0.5 block truncate">${hitsText}</span>
                   </div>
                 </div>
@@ -6602,7 +6602,7 @@ selectShi62GW(gwName) {
           const valW = scoresW[i] !== undefined ? scoresW[i] : -Infinity;
           const valL = scoresL[i] !== undefined ? scoresL[i] : -Infinity;
           if (valW !== valL) {
-            const rankLabel = i === 0 ? 'ตัวทำแต้มสูงสุด' : `ตัวทำแต้มอันดับ ${i + 1}`;
+            const rankLabel = i === 0 ? 'ตัวทำคะแนนสูงสุด' : `ตัวทำคะแนนอันดับ ${i + 1}`;
             return `ชนะ Tie-breaker ${rankLabel} (${valW} vs ${valL} pts)`;
           }
         }
@@ -6954,11 +6954,11 @@ selectShi62GW(gwName) {
         const card1 = renderCard({
           icon: ICONS.star,
           title: 'Top Gun',
-          subtitle: 'Highest Gameweek score <span class="text-slate-500 dark:text-slate-400 font-normal">(แต้มโหดสุดในวีค)</span>',
+          subtitle: 'Highest Gameweek score <span class="text-slate-500 dark:text-slate-400 font-normal">(คะแนนสูงสุดประจำสัปดาห์)</span>',
           theme: 'green',
           winner: topGunWinner,
           statText: topGunWinner ? `(${topGunWinner.points} pts)` : '',
-          detailHtml: topGunWinner ? `Captain: <strong>${this.escapeHtml(topGunWinner.captain || '-')}</strong>${topGunWinner.hits > 0 ? ` • แต้มลบ: -${topGunWinner.hits} (หักในแต้มรวม)` : ''}` : null
+          detailHtml: topGunWinner ? `Captain: <strong>${this.escapeHtml(topGunWinner.captain || '-')}</strong>${topGunWinner.hits > 0 ? ` • คะแนนลบ: -${topGunWinner.hits} (หักในคะแนนรวม)` : ''}` : null
         });
 
         // 2. Tough Week
@@ -6967,11 +6967,11 @@ selectShi62GW(gwName) {
         const card2 = renderCard({
           icon: ICONS.chartDown,
           title: 'Tough Week',
-          subtitle: 'Lowest Gameweek score <span class="text-slate-500 dark:text-slate-400 font-normal">(ยับเยินสุดในวีค)</span>',
+          subtitle: 'Lowest Gameweek score <span class="text-slate-500 dark:text-slate-400 font-normal">(คะแนนต่ำสุดประจำสัปดาห์)</span>',
           theme: 'red',
           winner: toughWinner,
           statText: toughWinner ? `(${toughWinner.points} pts)` : '',
-          detailHtml: toughWinner ? `${toughWinner.hits > 0 ? `แต้มลบ: -${toughWinner.hits} (หักในแต้มรวม)` : 'คะแนนตาม Official'}` : null
+          detailHtml: toughWinner ? `${toughWinner.hits > 0 ? `คะแนนลบ: -${toughWinner.hits} (หักในคะแนนรวม)` : 'คะแนนตาม Official'}` : null
         });
 
         // 3. Comeback Kid & 4. Rank Crasher
@@ -9684,10 +9684,10 @@ selectShi62GW(gwName) {
           const totalPositive = Object.values(tiers).filter(v => Number(v) > 0).reduce((a, b) => a + Number(b), 0);
           const totalNegative = Math.abs(Object.values(tiers).filter(v => Number(v) < 0).reduce((a, b) => a + Number(b), 0));
 
-          if (tagEl) tagEl.innerText = isShi62 ? "SHI'62 ANNUAL ZERO-SUM & EXTRA" : 'ANNUAL ZERO-SUM SETTLEMENT (จ่ายตังทีเดียวสิ้นฤดูกาล)';
+          if (tagEl) tagEl.innerText = isShi62 ? "SHI'62 ANNUAL ZERO-SUM & ทายผล" : 'ANNUAL ZERO-SUM SETTLEMENT (จ่ายตังทีเดียวสิ้นฤดูกาล)';
           if (titleEl) titleEl.innerText = 'ตารางสรุปยอดจ่าย-รับเงินรางวัลสิ้นฤดูกาล';
           if (subEl) subEl.innerText = isShi62
-            ? `สรุปยอดรางวัลจบฤดูกาล (อันดับ 1-6 รับ +3,100 THB / อันดับ 7-12 จ่าย -3,100 THB) และยอดสะสมมินิเกมทายผล • ตัดสิน GW 1 - 38`
+            ? `สรุปยอดเงินรางวัลจบฤดูกาล (อันดับ 1-6 รับ +3,100 THB / อันดับ 7-12 จ่าย -3,100 THB) และยอดสะสมมินิเกมทายผล • ตัดสิน GW 1 - 38`
             : `ตัดสินจากคะแนนรวมสะสมสุทธิ GW 1 - 38 • อันดับ 1-6 รับเงินรางวัลรวม ${totalPositive.toLocaleString()} THB • อันดับ 7-12 ร่วมจ่ายเงินค่าปรับรวม ${totalNegative.toLocaleString()} THB (Zero-Sum Balance)`;
 
           // Extra map and short names for League 187827
@@ -9831,7 +9831,7 @@ selectShi62GW(gwName) {
             if (!isPrize) {
               rankBadge = this.getNonPrizeRankBadge();
             } else if (team.is_joint) {
-              rankBadge = `<span class="text-slate-600 dark:text-slate-300 font-bold" title="แต้มเท่ากัน ${team.joint_count} ทีม (เฉลี่ยอันดับ ${team.pos_start}-${team.pos_end})">${team.overall_rank} <span class="text-[9px] text-slate-400 font-normal">ร่วม</span></span>`;
+              rankBadge = `<span class="text-slate-600 dark:text-slate-300 font-bold" title="คะแนนเท่ากัน ${team.joint_count} ทีม (เฉลี่ยอันดับ ${team.pos_start}-${team.pos_end})">${team.overall_rank} <span class="text-[9px] text-slate-400 font-normal">ร่วม</span></span>`;
               if (team.overall_rank === 1) rowBg = 'bg-amber-50/20 dark:bg-amber-950/10 font-semibold';
               else if (team.pos_end === eligibleCount) rowBg = 'bg-rose-50/20 dark:bg-rose-950/10 font-semibold';
             } else if (isShi62) {
@@ -9983,7 +9983,7 @@ selectShi62GW(gwName) {
                 <th class="py-2.5 px-1 sm:px-2 text-center w-8">#</th>
                 <th class="py-2.5 px-2 sm:px-3">ทีม & ผู้จัดการ</th>
                 <th class="py-2.5 px-2 sm:px-3 text-center">คะแนนรวม</th>
-                <th class="py-2.5 px-2 sm:px-3 text-right">ยอดเงินสุทธิสิ้นฤดูกาล</th>
+                <th class="py-2.5 px-2 sm:px-3 text-right">ยอดรวมสุทธิ</th>
               </tr>
             `;
 
@@ -10208,7 +10208,7 @@ selectShi62GW(gwName) {
         if (recordsContainer) {
           recordsContainer.innerHTML = `
             <div class="glass-card rounded-2xl p-4 border border-slate-200">
-              <span class="text-[10px] uppercase font-bold text-slate-400 block font-display">แต้มสูงสุดใน 1 วีค</span>
+              <span class="text-[10px] uppercase font-bold text-slate-400 block font-display">คะแนนสูงสุดใน 1 สัปดาห์</span>
               <div class="text-xl font-black text-slate-900 mt-1 font-display">${highGW.score} <span class="text-xs">PTS</span></div>
               <div class="text-xs font-bold text-slate-700 truncate mt-0.5">${this.escapeHtml(highGW.team)}</div>
               <div class="text-[10px] text-slate-500 font-display">Gameweek ${highGW.gw}</div>
@@ -10229,7 +10229,7 @@ selectShi62GW(gwName) {
             </div>
 
             <div class="glass-card rounded-2xl p-4 border border-slate-200">
-              <span class="text-[10px] uppercase font-bold text-slate-400 block font-display">แต้มสำรองสูงสุด 1 วีค</span>
+              <span class="text-[10px] uppercase font-bold text-slate-400 block font-display">คะแนนสำรองสูงสุด 1 สัปดาห์</span>
               <div class="text-xl font-black text-slate-900 mt-1 font-display">${bestBench.bench} <span class="text-xs">PTS</span></div>
               <div class="text-xs font-bold text-slate-700 truncate mt-0.5">${this.escapeHtml(bestBench.team)}</div>
               <div class="text-[10px] text-slate-500 font-display">Gameweek ${bestBench.gw}</div>
@@ -10591,7 +10591,7 @@ selectShi62GW(gwName) {
           recordsContainer.innerHTML = `
             <div class="glass-card rounded-xl sm:rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
               <div>
-                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">แต้มเฉลี่ยสูงสุดในระบบ</span>
+                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">คะแนนเฉลี่ยสูงสุดในระบบ</span>
                 <div class="text-base sm:text-xl font-black text-slate-900 dark:text-white mt-0.5 sm:mt-1 font-display leading-tight">${globalTopAvg.avg.toFixed(1)} <span class="text-[10px] sm:text-xs font-normal">PTS/GW</span></div>
               </div>
               <div class="mt-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
@@ -10624,7 +10624,7 @@ selectShi62GW(gwName) {
 
             <div class="glass-card rounded-xl sm:rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
               <div>
-                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">แต้มสำรองสูงสุด (Bench)</span>
+                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">คะแนนสำรองสูงสุด (Bench)</span>
                 <div class="text-base sm:text-xl font-black text-slate-900 dark:text-white mt-0.5 sm:mt-1 font-display leading-tight">${globalBestBench.bench} <span class="text-[10px] sm:text-xs font-normal">PTS</span></div>
               </div>
               <div class="mt-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
@@ -10670,13 +10670,13 @@ selectShi62GW(gwName) {
 
         const sortKeys = ['total_net', 'avg', 'high', 'low', 'spread', 'hits', 'bench', 'tier', 'team_name'];
         const sortLabels = {
-          'total_net': { full: 'คะแนนรวม', short: 'แต้มรวม' },
-          'avg': { full: 'แต้มเฉลี่ย', short: 'เฉลี่ย' },
-          'high': { full: 'สูงสุด', short: 'สูงสุด' },
-          'low': { full: 'ต่ำสุด (Floor)', short: 'ต่ำสุด' },
+          'total_net': { full: 'คะแนนรวม', short: 'คะแนนรวม' },
+          'avg': { full: 'คะแนนเฉลี่ย', short: 'เฉลี่ย' },
+          'high': { full: 'คะแนนสูงสุด', short: 'สูงสุด' },
+          'low': { full: 'คะแนนต่ำสุด (Floor)', short: 'ต่ำสุด' },
           'spread': { full: 'ความแกว่ง (Spread)', short: 'แกว่ง' },
-          'hits': { full: 'แต้มลบ', short: 'ลบ' },
-          'bench': { full: 'สำรอง', short: 'สำรอง' },
+          'hits': { full: 'คะแนนลบ', short: 'ลบ' },
+          'bench': { full: 'คะแนนสำรอง', short: 'สำรอง' },
           'tier': { full: 'ระดับความสม่ำเสมอ', short: 'ระดับ' },
           'team_name': { full: 'ทีม & ผู้จัดการ', short: 'ทีม & ผู้จัดการ' }
         };
@@ -10712,12 +10712,12 @@ selectShi62GW(gwName) {
         if (mobileSortLabel) {
           const textMap = {
             'total_net': 'เรียงตามคะแนนรวม',
-            'avg': 'เรียงตามแต้มเฉลี่ย',
-            'high': 'เรียงตามแต้มสูงสุด',
-            'low': 'เรียงตามต่ำสุด (Floor)',
+            'avg': 'เรียงตามคะแนนเฉลี่ย',
+            'high': 'เรียงตามคะแนนสูงสุด',
+            'low': 'เรียงตามคะแนนต่ำสุด (Floor)',
             'spread': 'เรียงตามความนิ่ง (แกว่ง)',
-            'hits': 'เรียงตามแต้มลบ',
-            'bench': 'เรียงตามแต้มสำรอง',
+            'hits': 'เรียงตามคะแนนลบ',
+            'bench': 'เรียงตามคะแนนสำรอง',
             'tier': 'เรียงตามระดับความสม่ำเสมอ',
             'team_name': 'เรียงตามชื่อทีม'
           };
@@ -10947,7 +10947,7 @@ selectShi62GW(gwName) {
                   <div class="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black font-display shadow-md">🏆</div>
                   <div>
                     <span class="text-xs uppercase font-bold text-amber-700 dark:text-amber-400 font-display">MINI-LEAGUE CUP CHAMPION</span>
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">แชมป์ลีคคัพ ${startGW ? `(เริ่ม Gameweek ${startGW})` : ''}</h3>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">แชมป์ลีกคัพ ${startGW ? `(เริ่ม Gameweek ${startGW})` : ''}</h3>
                     <div class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-display mt-0.5">${champPrize}</div>
                     ${cupNote ? `<p class="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-1">* ${cupNote}</p>` : ''}
                     ${startGW ? `<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">* เริ่มแข่งขันใน Gameweek ${startGW} (สงวนสิทธิ์เฉพาะทีมที่ชำระค่าสมัครครบถ้วน)</p>` : ''}
@@ -11171,7 +11171,7 @@ selectShi62GW(gwName) {
         if (managerEl) managerEl.innerText = `ผู้จัดการ: ${teamObj.player_name || matchdayRes.player_name || '-'}`;
 
         const ptsLabelEl = document.getElementById('team-modal-pts-label');
-        if (ptsLabelEl) ptsLabelEl.innerText = `แต้ม GW ${this.selectedGW}:`;
+        if (ptsLabelEl) ptsLabelEl.innerText = `คะแนน GW ${this.selectedGW}:`;
 
         const ptsEl = document.getElementById('team-modal-pts');
         if (ptsEl) ptsEl.innerText = `${matchdayRes.net_points !== undefined ? matchdayRes.net_points : 0} pts`;
@@ -11502,7 +11502,7 @@ selectShi62GW(gwName) {
                   text += `🏆 แชมป์ประจำสัปดาห์: ${prizeLeader.team_name} (${prizeLeader.player_name})\n`;
                 }
                 const w0 = prizeLeader;
-                const hitsStr = (w0.hits && w0.hits > 0) ? ` | แต้มลบ: -${w0.hits}` : '';
+                const hitsStr = (w0.hits && w0.hits > 0) ? ` | คะแนนลบ: -${w0.hits}` : '';
                 text += `คะแนน: ${w0.points} pts (สุทธิ ${w0.net_points}${hitsStr})\n`;
                 const weeklyPrize = this.config.features.weekly_prize_amount || 300;
                 const prizePerTeam = isJointPrize ? (weeklyPrize / eligibleWinners.length).toFixed(0) : weeklyPrize;
@@ -11511,7 +11511,7 @@ selectShi62GW(gwName) {
             } else {
               text += `👑 คะแนนสูงสุด Gameweek ${gwKey}: ${overallTop.team_name} (${overallTop.player_name})\n`;
               const w0 = overallTop;
-              const hitsStr = (w0.hits && w0.hits > 0) ? ` | แต้มลบ: -${w0.hits}` : '';
+              const hitsStr = (w0.hits && w0.hits > 0) ? ` | คะแนนลบ: -${w0.hits}` : '';
               text += `คะแนน: ${w0.points} pts (สุทธิ ${w0.net_points}${hitsStr})\n`;
             }
           } else {
@@ -11520,7 +11520,7 @@ selectShi62GW(gwName) {
             }
             text += `⚡ ผู้นำคะแนนสดชิงรางวัล: ${prizeLeader.team_name} (${prizeLeader.player_name})\n`;
             const w0 = prizeLeader;
-            const hitsStr = (w0.hits && w0.hits > 0) ? ` | แต้มลบ: -${w0.hits} (หักในคะแนนรวม)` : '';
+            const hitsStr = (w0.hits && w0.hits > 0) ? ` | คะแนนลบ: -${w0.hits} (หักในคะแนนรวม)` : '';
             text += `คะแนนสด: ${w0.points} pts (ตรงกับ Official)${hitsStr}\n`;
             if (w0.chip) {
               text += `ชิปที่ใช้: ${w0.chip.toUpperCase()}\n`;
@@ -11567,7 +11567,7 @@ selectShi62GW(gwName) {
             text += `\n🔥 ย้ายตัว & ชิป:\n`;
             if (transfers.length > 0) {
               const tfList = transfers.map(t => `${t.team_name} (-${t.hits})`).join(', ');
-              text += `• แต้มลบ (Hits): ${tfList}\n`;
+              text += `• คะแนนลบ (Hits): ${tfList}\n`;
             }
             if (chipsUsed.length > 0) {
               const cpList = chipsUsed.map(c => `${c.team_name} (${c.chip.toUpperCase()})`).join(', ');
@@ -11705,7 +11705,7 @@ selectShi62GW(gwName) {
             leaderHeaders.push(`GW ${g}`);
           }
           leaderHeaders.push(
-            'แต้มลบรวม (Total Hits)',
+            'คะแนนลบรวม (Total Hits)',
             'ชิปที่ใช้ไป (Chips Used)',
             'มูลค่าทีม (£M)',
             'เงินในธนาคาร (£M)'
@@ -11811,13 +11811,13 @@ selectShi62GW(gwName) {
             'FPL ID',
             'สถานะทีม (Team Status)',
             'คะแนนดิบ (Raw Points)',
-            'แต้มลบ (Hits)',
+            'คะแนนลบ (Hits)',
             'คะแนนสุทธิ (Net Points)',
             'กัปตัน (Captain)',
             'ชิปที่ใช้ (Chip Used)',
-            'แต้มตัวสำรอง (Bench)',
+            'คะแนนตัวสำรอง (Bench)',
             'จำนวนย้ายตัว (Transfers)',
-            'ผลต่างแต้มย้ายตัว (Transfer Net Impact)'
+            'ผลต่างคะแนนย้ายตัว (Transfer Net Impact)'
           ];
 
           const gwRows = [gwHeaders];
@@ -11910,7 +11910,7 @@ selectShi62GW(gwName) {
               'ผู้จัดการ',
               'FPL ID',
               'คะแนนดิบ',
-              'แต้มลบ (Hits)',
+              'คะแนนลบ (Hits)',
               'คะแนนสุทธิ',
               'เงินรางวัล (THB)',
               'หมายเหตุ'
@@ -12003,7 +12003,7 @@ selectShi62GW(gwName) {
                 'ผู้จัดการ',
                 'FPL ID',
                 'คะแนนดิบ',
-                'แต้มลบ (Hits)',
+                'คะแนนลบ (Hits)',
                 'คะแนนสุทธิ',
                 'ค่าปรับ (THB)',
                 'หมายเหตุ'
@@ -12019,7 +12019,7 @@ selectShi62GW(gwName) {
                   const weeklyPenalties = this.calculateWeeklyPenalties(sortedEligible, g);
                   weeklyPenalties.forEach(pen => {
                     const statusDesc = isFin ? 'จบการแข่งขัน (ชำระเข้ากองกลาง)' : 'กำลังแข่งขัน (อยู่ในโซนอันตราย)';
-                    const note = pen.isJoint ? `แต้มเท่ากัน ${pen.jointCount} ทีม (เฉลี่ยค่าปรับ)` : (pen.tieBreakNote ? `ตัดสินด้วย ${pen.tieBreakNote}` : 'อันดับเดี่ยว');
+                    const note = pen.isJoint ? `คะแนนเท่ากัน ${pen.jointCount} ทีม (เฉลี่ยค่าปรับ)` : (pen.tieBreakNote ? `ตัดสินด้วย ${pen.tieBreakNote}` : 'อันดับเดี่ยว');
                     prizeRows.push([
                       `GW ${g}`,
                       statusDesc,
@@ -12263,7 +12263,7 @@ selectShi62GW(gwName) {
               'ผู้จัดการ',
               'FPL ID',
               'คะแนนรวมสะสม',
-              'ยอดเงินสุทธิสิ้นฤดูกาล (THB)'
+              'ยอดรวมสุทธิ (THB)'
             ]);
 
             const tiers = feat.annual_payout_tiers || {
