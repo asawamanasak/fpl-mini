@@ -2006,9 +2006,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           </button>
         </div>
 
-        <!-- Row 2: Team Name & Manager Info -->
+        <!-- Row 2: Team Name, Consistency Tier Badge & Manager Info -->
         <div class="min-w-0 mb-2">
-          <h3 id="team-modal-title" class="text-base xs:text-lg sm:text-2xl font-black text-slate-900 dark:text-white font-display tracking-tight leading-tight truncate">ชื่อทีม</h3>
+          <div class="flex items-center gap-2 flex-wrap min-w-0">
+            <h3 id="team-modal-title" class="text-base xs:text-lg sm:text-2xl font-black text-slate-900 dark:text-white font-display tracking-tight leading-tight truncate">ชื่อทีม</h3>
+            <span id="team-modal-tier-badge" class="inline-flex items-center flex-shrink-0"></span>
+          </div>
           <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             <svg class="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             <span id="team-modal-manager" class="truncate font-medium">ผู้จัดการ: -</span>
@@ -11724,6 +11727,7 @@ selectShi62GW(gwName) {
           // Consistency Tier Badge (Multi-Criteria: High, Low vs Avg)
           let tierBadge = '';
           let tierWeight = 0;
+          let tierKey = 'pending';
           if (count >= 3) {
             const displayAvg = Math.round(avg * 10) / 10;
             // S-Tier: Elite top performers (Avg >= 71.0, Floor >= 41, High >= 110)
@@ -11737,30 +11741,35 @@ selectShi62GW(gwName) {
 
             const isEn = (this.currentLang === 'en');
             if (isSTier) {
+              tierKey = 's';
               tierWeight = 5;
               const sTitle = isEn 
                 ? '💎 S-Tier: Elite top performers (Avg ≥ 71.0, Floor ≥ 41, High ≥ 110)' 
                 : '💎 S-Tier: หัวกะทิยอดเยี่ยมและนิ่งจริง (Avg ≥ 71.0, Floor ≥ 41, High ≥ 110)';
               tierBadge = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-gradient-to-r from-cyan-400/25 via-sky-300/35 to-blue-400/25 text-cyan-950 dark:text-cyan-100 border border-cyan-400 dark:border-cyan-300 shadow-[0_0_8px_rgba(6,182,212,0.45)] dark:shadow-[0_0_12px_rgba(34,211,238,0.45)] ring-1 ring-cyan-400/40" title="${sTitle}">💎 S-Tier</span>`;
             } else if (isATier) {
+              tierKey = 'a';
               tierWeight = 4;
               const aTitle = isEn
                 ? '🟢 A-Tier: High standard performers (Avg ≥ 64.0, Floor ≥ 32)'
                 : '🟢 A-Tier: ฟอร์มดีมาตรฐานสูงสม่ำเสมอ (Avg ≥ 64.0, Floor ≥ 32)';
               tierBadge = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-200 dark:border-emerald-800" title="${aTitle}">🟢 A-Tier</span>`;
             } else if (isVolatile) {
+              tierKey = 'volatile';
               tierWeight = 2;
               const vTitle = isEn
                 ? '⚡ Volatile: Wild swings with deep floor drop or high score volatility'
                 : '⚡ Volatile: แต้มสวิงสูง จุดต่ำสุดหลุดลึกหรือแต้มแกว่งรุนแรง';
               tierBadge = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950/60 dark:text-rose-200 dark:border-rose-800/80" title="${vTitle}">⚡ Volatile</span>`;
             } else if (isBTier) {
+              tierKey = 'b';
               tierWeight = 3;
               const bTitle = isEn
                 ? '🟡 B-Tier: Steady mid baseline (Avg ≥ 58.0)'
                 : '🟡 B-Tier: ฟอร์มคงที่ระดับกลาง (Avg ≥ 58.0)';
               tierBadge = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-yellow-100 text-yellow-800 border border-yellow-300 dark:bg-yellow-950/60 dark:text-yellow-200 dark:border-yellow-800" title="${bTitle}">🟡 B-Tier</span>`;
             } else {
+              tierKey = 'c';
               tierWeight = 1;
               const cTitle = isEn
                 ? '⚪ C-Tier: Developing baseline (Avg < 58.0)'
@@ -11768,6 +11777,7 @@ selectShi62GW(gwName) {
               tierBadge = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700" title="${cTitle}">⚪ C-Tier</span>`;
             }
           } else {
+            tierKey = 'pending';
             tierWeight = 0;
             const isEn = (this.currentLang === 'en');
             const pendingTitle = isEn
@@ -11778,6 +11788,7 @@ selectShi62GW(gwName) {
 
           return {
             ...t,
+            count: count,
             total_net: totalNet,
             total_hits: totalHits,
             total_bench: totalBench,
@@ -11787,6 +11798,7 @@ selectShi62GW(gwName) {
             low: low,
             low_gw: lowObj.gw,
             spread: spread,
+            tier_key: tierKey,
             tier_badge: tierBadge,
             tier_weight: tierWeight
           };
@@ -12958,6 +12970,168 @@ selectShi62GW(gwName) {
         }
       }
 
+      getTeamTierInfo(entryIdNum) {
+        if (!this._teamTierCache) {
+          this._teamTierCache = {};
+        }
+        if (this._teamTierCache[entryIdNum]) {
+          return this._teamTierCache[entryIdNum];
+        }
+
+        // 1. If global radar team list already computed, look up directly
+        if (this._radarTeamList && this._radarTeamList.length > 0) {
+          const found = this._radarTeamList.find(t => Number(t.entry_id) === Number(entryIdNum));
+          if (found) {
+            const displayAvg = Math.round(found.avg * 10) / 10;
+            const count = (found.count !== undefined) ? found.count : Object.keys(found.scores_by_gw || {}).length;
+            let tierKey = found.tier_key;
+            if (!tierKey) {
+              if (count >= 3) {
+                const isSTier = (displayAvg >= 71.0 && found.low >= 41 && found.high >= 110);
+                const isATier = !isSTier && (displayAvg >= 64.0 && found.low >= 32);
+                const isVolatile = !isSTier && !isATier && ((found.spread >= 75 && found.low < 35) || (found.high >= 110 && found.low < 32));
+                const isBTier = !isSTier && !isATier && !isVolatile && (displayAvg >= 58.0);
+                if (isSTier) tierKey = 's';
+                else if (isATier) tierKey = 'a';
+                else if (isVolatile) tierKey = 'volatile';
+                else if (isBTier) tierKey = 'b';
+                else tierKey = 'c';
+              } else {
+                tierKey = 'pending';
+              }
+            }
+            const info = {
+              tierKey: tierKey,
+              count: count,
+              avg: found.avg,
+              displayAvg: displayAvg,
+              high: found.high,
+              low: found.low,
+              spread: found.spread
+            };
+            this._teamTierCache[entryIdNum] = info;
+            return info;
+          }
+        }
+
+        // 2. Compute directly from leagues gameweeks
+        const leaguesObj = (this.multiData && this.multiData.leagues) || { [this.currentLeagueId || 'current']: this.data };
+        const maxGW = Number((this.multiData && this.multiData.max_gw) || this.selectedGW || 1);
+        const scoresByGw = {};
+
+        Object.values(leaguesObj).forEach(lData => {
+          if (!lData) return;
+          const gws = lData.gameweeks || {};
+          for (let g = 1; g <= maxGW; g++) {
+            const gData = gws[String(g)];
+            if (!gData || !gData.is_finished || !gData.results) continue;
+            const res = gData.results.find(r => Number(r.entry_id) === Number(entryIdNum));
+            if (res && scoresByGw[g] === undefined && res.net_points !== undefined) {
+              scoresByGw[g] = res.net_points;
+            }
+          }
+        });
+
+        // Fallback to squad history if not found in finished gameweek results
+        if (Object.keys(scoresByGw).length === 0) {
+          Object.values(leaguesObj).forEach(lData => {
+            if (!lData || !lData.squads) return;
+            for (let g = 1; g <= maxGW; g++) {
+              const sq = lData.squads[`${entryIdNum}_${g}`];
+              if (sq && sq.raw_hist && sq.raw_hist.current) {
+                (sq.raw_hist.current || []).forEach(h => {
+                  const eventNum = Number(h.event);
+                  if (scoresByGw[eventNum] === undefined && h.points !== undefined) {
+                    const net = h.points - (h.event_transfers_cost || 0);
+                    scoresByGw[eventNum] = net;
+                  }
+                });
+              }
+            }
+          });
+        }
+
+        const ptsArray = Object.values(scoresByGw);
+        const count = ptsArray.length;
+        const totalNet = ptsArray.reduce((acc, v) => acc + v, 0);
+        const avg = count > 0 ? (totalNet / count) : 0;
+        const displayAvg = Math.round(avg * 10) / 10;
+        const high = count > 0 ? Math.max(...ptsArray) : 0;
+        const low = count > 0 ? Math.min(...ptsArray) : 0;
+        const spread = high - low;
+
+        let tierKey = 'pending';
+        if (count >= 3) {
+          const isSTier = (displayAvg >= 71.0 && low >= 41 && high >= 110);
+          const isATier = !isSTier && (displayAvg >= 64.0 && low >= 32);
+          const isVolatile = !isSTier && !isATier && ((spread >= 75 && low < 35) || (high >= 110 && low < 32));
+          const isBTier = !isSTier && !isATier && !isVolatile && (displayAvg >= 58.0);
+          if (isSTier) tierKey = 's';
+          else if (isATier) tierKey = 'a';
+          else if (isVolatile) tierKey = 'volatile';
+          else if (isBTier) tierKey = 'b';
+          else tierKey = 'c';
+        }
+
+        const info = {
+          tierKey: tierKey,
+          count: count,
+          avg: avg,
+          displayAvg: displayAvg,
+          high: high,
+          low: low,
+          spread: spread
+        };
+        this._teamTierCache[entryIdNum] = info;
+        return info;
+      }
+
+      getTeamTierBadge(entryIdNum, isEn) {
+        const info = this.getTeamTierInfo(entryIdNum);
+        if (!info) return '';
+
+        if (info.tierKey === 's') {
+          const title = isEn
+            ? `💎 S-Tier: Elite top performers (Avg ≥ 71.0, Floor ≥ 41, High ≥ 110) • Avg: ${info.displayAvg} | Min: ${info.low} | Max: ${info.high}`
+            : `💎 S-Tier: หัวกะทิยอดเยี่ยมและนิ่งจริง (Avg ≥ 71.0, Floor ≥ 41, High ≥ 110) • เฉลี่ย: ${info.displayAvg} | ต่ำสุด: ${info.low} | สูงสุด: ${info.high}`;
+          return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-0.5 rounded-full text-[11px] sm:text-xs font-black tracking-wide font-display bg-gradient-to-r from-cyan-400/25 via-sky-300/35 to-blue-400/25 dark:from-cyan-950/70 dark:via-sky-900/60 dark:to-blue-950/70 text-cyan-950 dark:text-cyan-100 border border-cyan-400/90 dark:border-cyan-300/80 shadow-[0_0_10px_rgba(6,182,212,0.35)] dark:shadow-[0_0_14px_rgba(34,211,238,0.35)] ring-1 ring-cyan-400/40 flex-shrink-0 cursor-help" title="${title}"><span>💎</span><span>S-Tier</span></span>`;
+        }
+
+        if (info.tierKey === 'a') {
+          const title = isEn
+            ? `🟢 A-Tier: High standard performers (Avg ≥ 64.0, Floor ≥ 32) • Avg: ${info.displayAvg} | Min: ${info.low} | Max: ${info.high}`
+            : `🟢 A-Tier: ฟอร์มดีมาตรฐานสูงสม่ำเสมอ (Avg ≥ 64.0, Floor ≥ 32) • เฉลี่ย: ${info.displayAvg} | ต่ำสุด: ${info.low} | สูงสุด: ${info.high}`;
+          return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-0.5 rounded-full text-[11px] sm:text-xs font-bold tracking-wide font-display bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950/70 dark:text-emerald-200 dark:border-emerald-700/80 shadow-2xs flex-shrink-0 cursor-help" title="${title}"><span>🟢</span><span>A-Tier</span></span>`;
+        }
+
+        if (info.tierKey === 'volatile') {
+          const title = isEn
+            ? `⚡ Volatile: Wild swings with deep floor drop or high score volatility • Avg: ${info.displayAvg} | Min: ${info.low} | Max: ${info.high} | Spread: ±${info.spread}`
+            : `⚡ Volatile: แต้มสวิงสูง จุดต่ำสุดหลุดลึกหรือแกว่งรุนแรง • เฉลี่ย: ${info.displayAvg} | ต่ำสุด: ${info.low} | สูงสุด: ${info.high} | ส่วนต่าง: ±${info.spread}`;
+          return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-0.5 rounded-full text-[11px] sm:text-xs font-bold tracking-wide font-display bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950/70 dark:text-rose-200 dark:border-rose-700/80 shadow-2xs flex-shrink-0 cursor-help" title="${title}"><span>⚡</span><span>Volatile</span></span>`;
+        }
+
+        if (info.tierKey === 'b') {
+          const title = isEn
+            ? `🟡 B-Tier: Steady mid baseline (Avg ≥ 58.0) • Avg: ${info.displayAvg} | Min: ${info.low} | Max: ${info.high}`
+            : `🟡 B-Tier: ฟอร์มคงที่ระดับกลาง (Avg ≥ 58.0) • เฉลี่ย: ${info.displayAvg} | ต่ำสุด: ${info.low} | สูงสุด: ${info.high}`;
+          return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-0.5 rounded-full text-[11px] sm:text-xs font-bold tracking-wide font-display bg-yellow-100 text-yellow-800 border border-yellow-300 dark:bg-yellow-950/70 dark:text-yellow-200 dark:border-yellow-700/80 shadow-2xs flex-shrink-0 cursor-help" title="${title}"><span>🟡</span><span>B-Tier</span></span>`;
+        }
+
+        if (info.tierKey === 'c') {
+          const title = isEn
+            ? `⚪ C-Tier: Developing baseline (Avg < 58.0) • Avg: ${info.displayAvg} | Min: ${info.low} | Max: ${info.high}`
+            : `⚪ C-Tier: ระดับพัฒนาการ (Avg < 58.0) • เฉลี่ย: ${info.displayAvg} | ต่ำสุด: ${info.low} | สูงสุด: ${info.high}`;
+          return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-0.5 rounded-full text-[11px] sm:text-xs font-semibold tracking-wide font-display bg-slate-100 text-slate-700 border border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 shadow-2xs flex-shrink-0 cursor-help" title="${title}"><span>⚪</span><span>C-Tier</span></span>`;
+        }
+
+        const title = isEn
+          ? '⏳ Pending: Minimum 3 Gameweeks required for consistency rating'
+          : '⏳ กำลังเก็บข้อมูล: ต้องแข่งอย่างน้อย 3 Gameweeks เพื่อประเมินระดับความสม่ำเสมอ';
+        const label = isEn ? 'Pending' : 'รอประเมิน';
+        return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-0.5 rounded-full text-[11px] sm:text-xs font-medium tracking-wide font-display bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 shadow-2xs flex-shrink-0 cursor-help" title="${title}"><span>⏳</span><span>${label}</span></span>`;
+      }
+
       openTeamModal(entryId) {
         const isEn = (this.currentLang === 'en');
         const defaultShirtUrl = this.getDefaultShirtUrl();
@@ -13002,6 +13176,11 @@ selectShi62GW(gwName) {
 
         const titleEl = document.getElementById('team-modal-title');
         if (titleEl) titleEl.innerText = teamObj.entry_name || matchdayRes.team_name || 'ชื่อทีม';
+
+        const tierBadgeEl = document.getElementById('team-modal-tier-badge');
+        if (tierBadgeEl) {
+          tierBadgeEl.innerHTML = this.getTeamTierBadge(entryIdNum, isEn);
+        }
 
         const rankBadge = document.getElementById('team-modal-overall-rank-badge');
         if (rankBadge) {
