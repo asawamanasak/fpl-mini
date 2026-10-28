@@ -2142,9 +2142,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     class LiveCommentaryEngine {
       static _refreshStep = 0;
 
-      static generateFreshNote(gwNumber, gwData, leagueName, forceRandom = false, nonPrizeTeams = [], leagueData = null, isWeeklyPrize = true, useTieBreaker = false) {
+      static generateFreshNote(gwNumber, gwData, leagueName, forceRandom = false, nonPrizeTeams = [], leagueData = null, isWeeklyPrize = true, useTieBreaker = false, isEn = false) {
         if (!gwData || !gwData.results || gwData.results.length === 0) {
-          return `Gameweek นี้กำลังรอผลการแข่งขันจากสนามจริง`;
+          return isEn 
+            ? `Gameweek ${gwNumber} is awaiting verified match results from the pitch.`
+            : `Gameweek นี้กำลังรอผลการแข่งขันจากสนามจริง`;
         }
 
         if (forceRandom) {
@@ -2213,6 +2215,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         // Pre-Match Preview (when GW has not kicked off yet)
         if (!isStarted) {
+          if (isEn) {
+            return LiveCommentaryEngine._generateEnglishPreMatchNote({
+              gwNumber, sorted, stepOffset, baseHash, pickRnd
+            });
+          }
           const capMap = {};
           let chipCnt = 0;
           let hitCnt = 0;
@@ -2455,6 +2462,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           }
         }
         const isStreak = winStreak >= 2;
+
+        if (isEn) {
+          return LiveCommentaryEngine._generateEnglishNote({
+            gwNumber, gwData, leagueName, leagueData, stepOffset, baseHash,
+            sorted, eligibleSorted, top, second, bottom, topPts, secondPts, diff,
+            scoreKey, isStarted, isLive, isFinished, isJoint, winners,
+            isCentury, chip, captName, avgScore, secName, topRem, secRem,
+            heroPlayer, secondHero, winStreak, isStreak, isTopNonPrize, overallTop,
+            clean, pickRnd, getSquad
+          });
+        }
 
         // =========================================================
         // 1. LEAD PHRASE (ประโยคเปิดหัวตามสถานการณ์จริง สไตล์ บอ.บู๋)
@@ -3155,6 +3173,440 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
         return `${leadSentence} ${endSentence}`;
       }
+
+      static _generateEnglishPreMatchNote({ gwNumber, sorted, stepOffset, baseHash, pickRnd }) {
+        const capMap = {};
+        let chipCnt = 0;
+        let hitCnt = 0;
+        sorted.forEach(r => {
+          const c = (r.captain || '-').replace(/\s*\(C\)/gi, '').trim();
+          if (c && c !== '-') capMap[c] = (capMap[c] || 0) + 1;
+          if (r.chip && r.chip !== '-') chipCnt++;
+          if (r.hits > 0) hitCnt++;
+        });
+        const topCapEntry = Object.entries(capMap).sort((a, b) => b[1] - a[1])[0];
+        const popCapText = topCapEntry 
+          ? `armband favorite is ${topCapEntry[0]} (${topCapEntry[1]} teams)`
+          : `captain picks are scattered all over the shop`;
+        const tacticalSub = chipCnt > 0
+          ? `with ${chipCnt} managers blowing their chips early`
+          : (hitCnt > 0 ? `while ${hitCnt} brave bastards took point hits to panic-buy new players` : `with not a single point hit taken across the whole league`);
+
+        const versionIdx = Math.abs(baseHash * 7 + stepOffset * 19) % 4;
+        const versionBadges = [
+          '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30 mr-1.5 select-none">🎙️ Pub Pundit</span>',
+          '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 mr-1.5 select-none">🔥 FPL Degen</span>',
+          '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-purple-500/15 text-purple-700 dark:text-purple-400 border border-purple-500/30 mr-1.5 select-none">💀 Savage Roast</span>',
+          '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-blue-500/15 text-blue-700 dark:text-blue-400 border border-blue-500/30 mr-1.5 select-none">⚡ Stadium Hype</span>'
+        ];
+        const badge = versionBadges[versionIdx];
+
+        let preNotes = [];
+        if (versionIdx === 0) {
+          preNotes = [
+            `Deadline locked for Gameweek ${gwNumber}! The ${popCapText}, ${tacticalSub}. Stop whining about rotation rumors and get on with it. Let's see who actually understands football and who's just an armchair amateur!`,
+            `Pencils down for GW ${gwNumber}! The ${popCapText}, ${tacticalSub}. If your captain blanks this weekend, do me a favor and don't come crying to the group chat. Kickoff approaches!`,
+            `Teams are in for Gameweek ${gwNumber}. The ${popCapText}, ${tacticalSub}. Lots of big talk down the pub all week — now let's see if anyone has the bollocks to back it up on the pitch!`
+          ];
+        } else if (versionIdx === 1) {
+          preNotes = [
+            `Gameweek ${gwNumber} deadline passed and the FPL servers survived! The ${popCapText}, ${tacticalSub}. Prepare your emotional support spreadsheets, lads. Someone is definitely getting mudded by Sunday evening!`,
+            `Locked and loaded for GW ${gwNumber}! The ${popCapText}, ${tacticalSub}. Half of you probably kneejerked at 10:59 AM. May the FPL gods have mercy on our delusional souls!`,
+            `Pencils down, degenerates! Gameweek ${gwNumber} is underway. The ${popCapText}, ${tacticalSub}. Time to turn off phone notifications and pray your differentials don't get benched by Pep roulette!`
+          ];
+        } else if (versionIdx === 2) {
+          preNotes = [
+            `The weekly parade of terrible decisions is officially locked in for GW ${gwNumber}! The ${popCapText}, ${tacticalSub}. Can't wait to watch second place choke and the wooden spoon candidates cry their eyes out!`,
+            `Lineups locked for Gameweek ${gwNumber}! The ${popCapText}, ${tacticalSub}. Some of you spent 10 hours staring at underlying xG stats just to pick the wrong captain anyway. Proper donkey behavior!`,
+            `Brace yourselves for GW ${gwNumber}! The ${popCapText}, ${tacticalSub}. Don't panic if your squad looks like hot garbage — there's always the luxury of blaming the referee later!`
+          ];
+        } else {
+          preNotes = [
+            `The stage is set! Gameweek ${gwNumber} arrives with breathtaking tension! The ${popCapText}, ${tacticalSub}. Reputations on the line, glory within touching distance. Let the beautiful madness begin!`,
+            `Silence descends across the league as Gameweek ${gwNumber} locks in! The ${popCapText}, ${tacticalSub}. Destinies will be forged, heroes will rise, and pretenders will be exposed. Kickoff awaits!`,
+            `The gladiators have entered the colosseum for Gameweek ${gwNumber}! The ${popCapText}, ${tacticalSub}. Thirty-eight chapters of unadulterated drama, and this battle begins right now!`
+          ];
+        }
+        return `${badge} ${pickRnd(101, preNotes)}`;
+      }
+
+      static _generateEnglishNote(params) {
+        const {
+          gwNumber, gwData, leagueName, leagueData, stepOffset, baseHash,
+          sorted, eligibleSorted, top, second, bottom, topPts, secondPts, diff,
+          scoreKey, isStarted, isLive, isFinished, isJoint, winners,
+          isCentury, chip, captName, avgScore, secName, topRem, secRem,
+          heroPlayer, secondHero, winStreak, isStreak, isTopNonPrize, overallTop,
+          clean, pickRnd, getSquad
+        } = params;
+
+        const versionIdx = Math.abs(baseHash * 7 + stepOffset * 19) % 4;
+        const versionBadges = [
+          '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-500/30 mr-1.5 select-none">🎙️ Pub Pundit</span>',
+          '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 mr-1.5 select-none">🔥 FPL Degen</span>',
+          '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-purple-500/15 text-purple-700 dark:text-purple-400 border border-purple-500/30 mr-1.5 select-none">💀 Savage Roast</span>',
+          '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-blue-500/15 text-blue-700 dark:text-blue-400 border border-blue-500/30 mr-1.5 select-none">⚡ Stadium Hype</span>'
+        ];
+        const badge = versionBadges[versionIdx];
+        const bottomPts = bottom ? (bottom[scoreKey] !== undefined ? bottom[scoreKey] : (bottom.net_points || bottom.points || 0)) : 0;
+
+        // 1. LEAD SENTENCE (Opening Punch)
+        let leadOptions = [];
+        if (isLive) {
+          if (isTopNonPrize) {
+            leadOptions = [
+              `Exhibition squad "${overallTop.team_name}" is running wild with ${overallTop[scoreKey]} pts live, while the official prize battle is currently commanded by "${top.team_name}" on ${topPts} pts!`,
+              `"${overallTop.team_name}" is playing with zero fear and leads the raw board on ${overallTop[scoreKey]} pts, clearing the runway for prize front-runner "${top.team_name}" (${topPts} pts)!`
+            ];
+          } else if (secRem > topRem && topRem !== null) {
+            if (versionIdx === 0) {
+              leadOptions = [
+                `"${top.team_name}" leads on ${topPts} pts, but only has ${topRem} players left while "${secName}" (${secondPts} pts) has ${secRem} to come! Bloody squeaky bum time — if "${secName}" bottles this with that many players in hand, they should be thoroughly ashamed!`,
+                `Hot seats at the summit! "${top.team_name}" is holding onto #1 with ${topPts} pts, but has nearly run out of players (${topRem} left). Meanwhile "${secName}" (${secondPts} pts) has ${secRem} bullets left in the chamber!`
+              ];
+            } else if (versionIdx === 1) {
+              leadOptions = [
+                `Danger zone for "${top.team_name}"! Leading live on ${topPts} pts, but "${secName}" (${secondPts} pts) still has ${secRem} players lurking in the late games vs "${top.team_name}"'s lonely ${topRem}. The sweating has officially begun!`,
+                `Peak live drama! "${top.team_name}" holds the high ground on ${topPts} pts, but "${secName}" has ${secRem} players left to play. Someone is about to get mudded in the late kickoff!`
+              ];
+            } else if (versionIdx === 2) {
+              leadOptions = [
+                `"${top.team_name}" is clinging to top spot with ${topPts} pts, but "${secName}" has ${secRem} players left to roll the dice. Don't start celebrating yet, mate, you might be crying yourself to sleep in a few hours!`,
+                `Second place is lurking! "${secName}" trails "${top.team_name}" (${topPts} pts) by ${diff} points, but has ${secRem} players waiting in the wings. Time to find out if "${secName}" has what it takes or is just a professional choker!`
+              ];
+            } else {
+              leadOptions = [
+                `A precarious summit! "${top.team_name}" holds the high ground on ${topPts} pts, but the storm gathers as "${secName}" unleashes ${secRem} remaining warriors into the night!`,
+                `The chase is on! "${top.team_name}" (${topPts} pts) braces for impact as "${secName}" brings ${secRem} reinforcements to the late kickoff battlefield!`
+              ];
+            }
+          } else if (topRem !== null && topRem >= secRem && topRem > 0) {
+            if (versionIdx === 0) {
+              leadOptions = [
+                `Lovely stuff! "${top.team_name}" is sitting pretty on ${topPts} pts live, leading "${secName}" by ${diff} points with ${topRem} players still to kick a ball. Men against boys right now!`,
+                `Dominant display! "${top.team_name}" has racked up ${topPts} pts live and still holds ${topRem} players in hand. Absolutely clinical authority!`
+              ];
+            } else if (versionIdx === 1) {
+              leadOptions = [
+                `We are so back! "${top.team_name}" is taking the absolute piss at the top with ${topPts} pts, ${diff} clear of "${secName}", and STILL has ${topRem} players in hand. Pure cheat code vibes!`,
+                `Certified cheat code! "${top.team_name}" is crushing the live leaderboard on ${topPts} pts with ${topRem} players yet to play. Chasers are in the mud!`
+              ];
+            } else if (versionIdx === 2) {
+              leadOptions = [
+                `Look at "${top.team_name}" cruising on ${topPts} pts (+${diff} pts over "${secName}") with ${topRem} players left. Second place might as well pack their bags and go home early!`,
+                `Men against boys! "${top.team_name}" is comfortably clear on ${topPts} pts with ${topRem} players in hand. "${secName}" is chasing ghosts!`
+              ];
+            } else {
+              leadOptions = [
+                `Commanding and relentless! "${top.team_name}" dictates terms on ${topPts} pts, outstripping "${secName}" by ${diff} points with ${topRem} players yet to grace the pitch!`,
+                `An unstoppable momentum! "${top.team_name}" surges to ${topPts} pts live with reinforcements still waiting to enter the fray!`
+              ];
+            }
+          } else if (diff <= 0) {
+            leadOptions = [
+              `Dead bloody heat! "${top.team_name}" and "${secName}" are locked level on ${topPts} pts apiece. You couldn't slip a cigarette paper between them!`,
+              `Absolute gridlock at the summit! "${top.team_name}" and "${secName}" are deadlocked at ${topPts} points. Pure chaos waiting to unfold in the late kickoff!`
+            ];
+          } else if (diff <= 2) {
+            leadOptions = [
+              `Sweating absolute buckets! "${top.team_name}" leads live with ${topPts} pts, barely ${diff} pt ahead of "${secName}". One deflected goal or rogue bonus point will turn this whole table upside down!`,
+              `On a razor's edge! "${top.team_name}" holds the live lead by literally ${diff} point over "${secName}" (${topPts} vs ${secondPts} pts). Don't you dare blink!`
+            ];
+          } else if (diff >= 15) {
+            leadOptions = [
+              `Bloody hell, stop the fight! "${top.team_name}" is running riot with ${topPts} pts live, leaving "${secName}" in the dust by a massive ${diff} points. An absolute demolition job!`,
+              `Total destruction! "${top.team_name}" is ${diff} points clear of "${secName}" on ${topPts} pts. The rest of the league is officially in the mud!`
+            ];
+          } else {
+            leadOptions = [
+              `"${top.team_name}" takes charge of Gameweek ${gwNumber} with ${topPts} pts live, sitting ${diff} points clear of "${secName}". Strong, disciplined, and in pole position!`,
+              `Cruising at the top! "${top.team_name}" posts ${topPts} pts live, keeping "${secName}" (${secondPts} pts) firmly at arm's length.`
+            ];
+          }
+        } else {
+          // FULL TIME (Finished GW)
+          if (isTopNonPrize) {
+            leadOptions = [
+              `Exhibition squad "${overallTop.team_name}" hit a sensational ${overallTop[scoreKey]} pts for fun, while the official weekly cash prize heads straight to "${top.team_name}" (${topPts} pts)!`,
+              `"${overallTop.team_name}" racked up ${overallTop[scoreKey]} pts with no pressure, handing the championship spotlight to "${top.team_name}" (${topPts} pts) who takes the weekly crown!`
+            ];
+          } else if (isStreak && !isJoint) {
+            const streakText = winStreak >= 3 ? `a sensational ${winStreak}-week winning streak` : `back-to-back weekly titles`;
+            leadOptions = [
+              `UNSTOPPABLE! "${top.team_name}" locks in ${streakText} with ${topPts} pts, leaving "${secName}" in the dust by ${diff} points. Someone check their squad for performance-enhancing spreadsheets!`,
+              `Dynasty in the making! "${top.team_name}" secures ${streakText} on ${topPts} pts. The rest of this league is playing for second place!`
+            ];
+          } else if (chip === 'bboost' || chip === 'bench_boost') {
+            leadOptions = [
+              `"${top.team_name}" played the Bench Boost like an absolute tactical mastermind, mobilizing all 15 men to plunder ${topPts} pts and conquer GW ${gwNumber}!`,
+              `Bench Boost perfection! "${top.team_name}" unleashed their entire 15-man army to amass a devastating ${topPts} pts. Pure tactical supremacy!`
+            ];
+          } else if (chip === '3xc' || chip === 'triple_captain') {
+            leadOptions = [
+              `"${top.team_name}" slammed the Triple Captain armband on ${captName} and hit the jackpot, cruising to victory on ${topPts} pts!`,
+              `Triple Captain masterclass! "${top.team_name}" trusted ${captName} with the 3XC chip and walked away with a monstrous ${topPts} pts!`
+            ];
+          } else if (chip === 'freehit') {
+            leadOptions = [
+              `Mercenary masterclass! "${top.team_name}" brought in a one-week hit squad via Free Hit to loot ${topPts} pts and seize the crown!`,
+              `"${top.team_name}" deployed the Free Hit chip to perfection, racking up ${topPts} pts to snatch Gameweek ${gwNumber} honours!`
+            ];
+          } else if (chip === 'wildcard') {
+            leadOptions = [
+              `Ripped up the blueprint and took over! "${top.team_name}" activated the Wildcard revolution, storming to #1 with ${topPts} pts!`,
+              `Wildcard dividend paid in full! "${top.team_name}" overhauled the entire squad and instantly took top spot with ${topPts} pts!`
+            ];
+          } else if (isJoint && winners.length > 1) {
+            const jointNames = winners.slice(0, 3).map(w => `"${w.team_name}"`).join(', ');
+            leadOptions = [
+              `Share the spoils, lads! ${jointNames} finished dead level on ${topPts} pts apiece. A brutal dogfight where nobody refused to blink!`,
+              `Dead heat at the summit! ${jointNames} tied on ${topPts} pts. Split the prize money, shake hands, and get ready for next week!`
+            ];
+          } else if (isCentury) {
+            if (versionIdx === 0) {
+              leadOptions = [
+                `One hundred bloody points! "${top.team_name}" delivered a proper football masterclass with ${topPts} pts. Take notes, lads, because that is how you run a football team!`,
+                `Triple-digit demolition! "${top.team_name}" smashed through the century barrier with ${topPts} pts. Men against boys!`
+              ];
+            } else if (versionIdx === 1) {
+              leadOptions = [
+                `TRIPLE DIGIT BANGER! "${top.team_name}" joins the century club with an unreal ${topPts} pts! Touch grass, mate, you're making the rest of us look like clowns!`,
+                `One hundred points on the board! "${top.team_name}" went nuclear with ${topPts} pts. The entire mini-league is officially in the mud!`
+              ];
+            } else if (versionIdx === 2) {
+              leadOptions = [
+                `Holy hell, 100+ points! "${top.team_name}" went full god-mode with ${topPts} pts. Smashed everyone into next week. The rest of you should just pay your fines and stay quiet!`,
+                `Century club robbery! "${top.team_name}" dropped ${topPts} pts and utterly embarrassed the entire league. Class dismissed!`
+              ];
+            } else {
+              leadOptions = [
+                `ONE HUNDRED POINTS OF FOOTBALLING MAJESTY! "${top.team_name}" delivers a legendary ${topPts} pts masterclass. Stand, applaud, and bow before perfection!`,
+                `A historic monument of points! "${top.team_name}" breaches the century ceiling with ${topPts} pts. Breathtaking greatness!`
+              ];
+            }
+          } else if (diff <= 2 && second) {
+            if (versionIdx === 0) {
+              leadOptions = [
+                `Bloody hell, that was tight! "${top.team_name}" nicked it with ${topPts} pts, beating "${second.team_name}" (${secondPts} pts) by a razor-thin ${diff} point margin. A win is a win, stop crying into your pints!`,
+                `Snatched it by a whisker! "${top.team_name}" pipped "${second.team_name}" by a single ${diff} pt (${topPts} vs ${secondPts} pts). Absolute heartbreak for second place!`
+              ];
+            } else if (versionIdx === 1) {
+              leadOptions = [
+                `You jammy bastard! "${top.team_name}" (${topPts} pts) snatches the gameweek from "${second.team_name}" by literally ${diff} point! Somewhere, a keyboard has just been launched through a window!`,
+                `Robbery in broad daylight! "${top.team_name}" edges "${second.team_name}" by ${diff} pt (${topPts} vs ${secondPts} pts). Pure cinema in the group chat!`
+              ];
+            } else if (versionIdx === 2) {
+              leadOptions = [
+                `The ultimate dagger to the heart! "${top.team_name}" (${topPts} pts) snatches the crown right under "${second.team_name}"'s nose by a pathetic ${diff} point! That's gotta hurt worse than stepping on a Lego!`,
+                `Choke of the century! "${second.team_name}" missed out on top spot by just ${diff} point as "${top.team_name}" took the loot on ${topPts} pts!`
+              ];
+            } else {
+              leadOptions = [
+                `DRAMA AT THE DEATH! "${top.team_name}" (${topPts} pts) pip "${second.team_name}" at the line by the thinnest sliver of ${diff} point! Heartbreak, ecstasy, and absolute pandemonium!`,
+                `Decided by a millimeter! "${top.team_name}" claims the gameweek on ${topPts} pts, leaving "${second.team_name}" heartbroken by ${diff} solitary point!`
+              ];
+            }
+          } else if (diff <= 5 && second) {
+            leadOptions = [
+              `Fierce battle at the summit! "${top.team_name}" edges "${second.team_name}" by ${diff} points (${topPts} vs ${secondPts} pts), proving cooler heads prevail when the pressure mounts.`,
+              `Nail-biter down to the wire! "${top.team_name}" holds off a spirited charge from "${second.team_name}" (${secondPts} pts) to lock up GW ${gwNumber} on ${topPts} pts.`
+            ];
+          } else if (diff >= 15) {
+            if (versionIdx === 0) {
+              leadOptions = [
+                `Absolute bloody battering! "${top.team_name}" racked up ${topPts} pts and wiped the floor with "${secName}" by a staggering ${diff} points. The rest of this league looked like a bunch of Sunday league amateurs!`,
+                `Utter humiliation! "${top.team_name}" destroyed the competition on ${topPts} pts (+${diff} pts over "${secName}"). Men against boys!`
+              ];
+            } else if (versionIdx === 1) {
+              leadOptions = [
+                `Total nuclear explosion! "${top.team_name}" smashed ${topPts} pts and left "${secName}" choking in the mud by ${diff} points. Absolute cinema, tears flowing in the group chat!`,
+                `Certified demolition! "${top.team_name}" destroyed everyone on ${topPts} pts, ${diff} clear of "${secName}". Pack it up, lads, it's over!`
+              ];
+            } else if (versionIdx === 2) {
+              leadOptions = [
+                `Good lord, that wasn't a contest, that was a crime scene! "${top.team_name}" dropped ${topPts} pts and utterly humiliated "${secName}" by ${diff} points. Someone call an ambulance for second place!`,
+                `Stop, stop, they're already dead! "${top.team_name}" crushed "${secName}" by ${diff} points on ${topPts} pts. A savage public spanking!`
+              ];
+            } else {
+              leadOptions = [
+                `Pure, majestic, unadulterated carnage! "${top.team_name}" paints a masterpiece with ${topPts} pts, utterly crushing "${secName}" underfoot by ${diff} points! A victory carved in stone and bathed in glory!`,
+                `Annihilation on grand display! "${top.team_name}" storms to ${topPts} pts, opening an unbridgeable ${diff}-point chasm over "${secName}"!`
+              ];
+            }
+          } else if (topPts < 50) {
+            if (versionIdx === 0) {
+              leadOptions = [
+                `What an absolute pile of shite this gameweek was. But "${top.team_name}" scraped through on ${topPts} pts while everyone else was tripping over their own laces. Disgraceful scoring, but points are points!`,
+                `Tough, ugly, but effective! In a gameweek full of blanks, "${top.team_name}" survived the mud on ${topPts} pts to take the cash.`
+              ];
+            } else if (versionIdx === 1) {
+              leadOptions = [
+                `Pure trench warfare! League average was an abysmal ${avgScore} pts, but "${top.team_name}" somehow crawled out alive with ${topPts} pts. Ugly as hell, but we take those!`,
+                `Slop fest of the highest order! "${top.team_name}" dragged themselves to #1 on ${topPts} pts amidst widespread carnage.`
+              ];
+            } else if (versionIdx === 2) {
+              leadOptions = [
+                `What a painful slog of a gameweek! "${top.team_name}" sneaks away with the win on ${topPts} pts while everyone else looked like they were playing blindfolded. Truly tragic stuff!`,
+                `A win is a win, even if it was ugly as sin! "${top.team_name}" takes the honors on ${topPts} pts.`
+              ];
+            } else {
+              leadOptions = [
+                `From the barren wasteland of a brutal gameweek, one soul emerges triumphant! "${top.team_name}" claims victory with ${topPts} pts through sheer grit, iron will, and stubborn defiance!`,
+                `A gritty triumph in the desert! "${top.team_name}" weathers the storm to claim the summit on ${topPts} pts.`
+              ];
+            }
+          } else {
+            if (versionIdx === 0) {
+              leadOptions = [
+                `Clinical job from "${top.team_name}". Dropped ${topPts} pts, dealt with "${secName}" by ${diff} points, and took the spoils. No excuses, no nonsense, just pure professionalism.`,
+                `Top-drawer execution! "${top.team_name}" delivered the goods with ${topPts} pts (${diff} ahead of "${secName}"). Solid, ruthless, and job done!`
+              ];
+            } else if (versionIdx === 1) {
+              leadOptions = [
+                `Easy money! "${top.team_name}" locked in the win with ${topPts} pts (${diff} ahead of "${secName}"). You love to see it when a plan actually works out!`,
+                `Pure swagger! "${top.team_name}" bags ${topPts} pts to claim Gameweek ${gwNumber} glory. High vibes in the camp!`
+              ];
+            } else if (versionIdx === 2) {
+              leadOptions = [
+                `Top of the pile and loving it! "${top.team_name}" bags ${topPts} pts and leaves "${secName}" staring into the abyss. Second place is just the first loser, after all!`,
+                `Locked down and dusted! "${top.team_name}" takes the spoils on ${topPts} pts while "${secName}" goes home with nothing!`
+              ];
+            } else {
+              leadOptions = [
+                `A performance of supreme authority! "${top.team_name}" claims the throne on ${topPts} pts, standing ${diff} points clear of the chasing pack!`,
+                `Victory with style! "${top.team_name}" rises above the rest with ${topPts} pts to etch their name on Gameweek ${gwNumber}!`
+              ];
+            }
+          }
+        }
+        const leadSentence = pickRnd(111, leadOptions);
+
+        // 2. MID SENTENCE (Tactical Drama, MVP, Transfer Gossip, Roasts)
+        let midOptions = [];
+
+        // Story 1: Hero Player
+        if (heroPlayer) {
+          if (secondHero) {
+            midOptions.push(
+              `The deadly dynamic duo of ${heroPlayer.name} (${heroPlayer.pts} pts) and ${secondHero.name} (${secondHero.pts} pts) wreaked absolute havoc across the pitch.`,
+              `Powered by ${heroPlayer.name} (${heroPlayer.pts} pts) and ${secondHero.name} (${secondHero.pts} pts), operating in terrifying harmony.`
+            );
+          } else if (heroPlayer.pts >= 14) {
+            if (versionIdx === 0) {
+              midOptions.push(`Carried by ${heroPlayer.name} with ${heroPlayer.pts} bloody points. Did the job of three men while everyone else stood around picking their noses!`);
+            } else if (versionIdx === 1) {
+              midOptions.push(`${heroPlayer.name} went absolutely ballistic for ${heroPlayer.pts} pts. Give that man the Ballon d'Or and build him a statue right now!`);
+            } else if (versionIdx === 2) {
+              midOptions.push(`All praise goes to ${heroPlayer.name} (${heroPlayer.pts} pts) for dragging this entire squad on his back like a bloody tractor!`);
+            } else {
+              midOptions.push(`Blessed by the football gods, ${heroPlayer.name} exploded for ${heroPlayer.pts} breathtaking points of pure magic!`);
+            }
+          } else {
+            midOptions.push(`Anchored by a rock-solid ${heroPlayer.pts} points from ${heroPlayer.name} to keep the ship sailing smoothly.`);
+          }
+        }
+
+        // Story 2: Captain Blank
+        const winnerSq = leagueData && leagueData.squads ? leagueData.squads[`${top.entry_id}_${gwNumber}`] : null;
+        const winnerCap = winnerSq && winnerSq.starting ? winnerSq.starting.find(p => p.is_captain) : null;
+        const winnerCapPts = winnerCap ? (Number(winnerCap.points) || 0) : 0;
+        if (winnerCap && !winnerCap.not_played_yet && winnerCapPts <= 4 && winnerCap.minutes > 0) {
+          midOptions.push(`Meanwhile, captain ${captName} blanked like a complete fraud on just ${winnerCapPts} pts — lucky his teammates bailed him out!`);
+        }
+
+        // Story 3: Transfer Masterclass
+        const txMaster = [...sorted].filter(t => (t.transfers_net_impact || 0) >= 6).sort((a, b) => (b.transfers_net_impact || 0) - (a.transfers_net_impact || 0))[0];
+        if (txMaster) {
+          const bestMoveIn = (txMaster.transfer_moves || []).filter(m => m && m.in && m.in !== '-').sort((a, b) => (b.in_pts || 0) - (a.in_pts || 0))[0];
+          const inTxt = bestMoveIn && bestMoveIn.in_pts >= 4 ? ` (bringing in ${clean(bestMoveIn.in)} for ${bestMoveIn.in_pts} pts)` : '';
+          midOptions.push(`Transfer masterclass goes to "${txMaster.team_name}" with a juicy +${txMaster.transfers_net_impact} net profit from market moves${inTxt}.`);
+        }
+
+        // Story 4: Transfer Curse
+        const txBust = [...sorted].filter(t => (t.transfers_net_impact || 0) <= -6).sort((a, b) => (a.transfers_net_impact || 0) - (b.transfers_net_impact || 0))[0];
+        if (txBust) {
+          const worstOut = (txBust.transfer_moves || []).filter(m => m && m.out && m.out !== '-').sort((a, b) => (b.out_pts || 0) - (a.out_pts || 0))[0];
+          const outTxt = worstOut && worstOut.out_pts >= 6 ? `selling ${clean(worstOut.out)} who immediately scored ${worstOut.out_pts} pts` : `unlucky squad moves`;
+          midOptions.push(`Spare a thought for "${txBust.team_name}" who suffered a savage transfer curse (${outTxt}), suffering a painful -${Math.abs(txBust.transfers_net_impact)} net hit!`);
+        }
+
+        // Story 5: Bench Agony
+        const benchKing = [...sorted].filter(t => (t.bench_points || 0) >= 10 && !['bboost', 'bench_boost'].includes((t.chip || '').toLowerCase())).sort((a, b) => (b.bench_points || 0) - (a.bench_points || 0))[0];
+        if (benchKing) {
+          if (versionIdx === 0) {
+            midOptions.push(`"${benchKing.team_name}" left ${benchKing.bench_points} pts rotting on the bench. Unbelievable clown behavior — what's the point of owning good players if you bench them?!`);
+          } else if (versionIdx === 1) {
+            midOptions.push(`"${benchKing.team_name}" is crying into their pillow after benching a whopping ${benchKing.bench_points} pts. Truly sick in the head!`);
+          } else {
+            midOptions.push(`Tactical comedy of the week: "${benchKing.team_name}" left ${benchKing.bench_points} valuable points freezing on the substitute pine.`);
+          }
+        }
+
+        // Story 6: Bottom Table Wooden Spoon
+        if (bottom && bottom.entry_id !== top.entry_id && sorted.length > 3) {
+          if (versionIdx === 0) {
+            midOptions.push(`Meanwhile down in the gutter, "${bottom.team_name}" managed a miserable ${bottomPts} pts. That's not bad luck, that's just downright embarrassing!`);
+          } else if (versionIdx === 1) {
+            midOptions.push(`Down in the basement, "${bottom.team_name}" registered a tragic ${bottomPts} pts. Someone check for a pulse, because that squad is clinically dead!`);
+          } else if (versionIdx === 2) {
+            midOptions.push(`Wooden spoon donkey of the week goes to "${bottom.team_name}" with ${bottomPts} pts. Even my dead nan could score more than that from a wheelchair!`);
+          } else {
+            midOptions.push(`And in the darkest depths of the table lies "${bottom.team_name}" with a hollow ${bottomPts} pts — a tragedy written in red ink!`);
+          }
+        }
+
+        let midSentence = '';
+        if (midOptions.length > 0) {
+          midSentence = pickRnd(121, midOptions);
+        }
+
+        // 3. ENDING PUNCHLINE (Section 3)
+        let endOptions = [];
+        if (isFinished) {
+          if (versionIdx === 0) {
+            endOptions = [
+              `Table doesn't lie, lads. Stop whining and sort yourselves out for next week!`,
+              `Take the beating like a man and try not to embarrass yourselves next round!`,
+              `Bragging rights earned. Everyone else can sod off and think about what they've done!`,
+              `Drink up your pints, swallow the pain, and pray you don't cock it up next weekend!`
+            ];
+          } else if (versionIdx === 1) {
+            endOptions = [
+              `You love to bloody see it! Group chat banter is going to be completely unhinged tonight!`,
+              `FPL is a mental illness and we are all suffering together. See you next deadline, degenerates!`,
+              `Points in the bag, rivals in the mud. Life doesn't get much sweeter than this!`,
+              `Time to talk endless shit in the group chat until the next deadline ruins our lives again!`
+            ];
+          } else if (versionIdx === 2) {
+            endOptions = [
+              `Winner takes the cash, losers take the trash talk. Standard procedure around here!`,
+              `Dry your eyes, lads. There's always next week to embarrass yourselves all over again!`,
+              `Bragging rights locked in. Don't even think about making eye contact with the champ!`,
+              `Someone get second place a box of tissues and a warm blanket. You're gonna need it!`
+            ];
+          } else {
+            endOptions = [
+              `History remembers the victors! The rest are merely dust in the wind until next weekend!`,
+              `That wasn't just a gameweek — that was bloody football opera! Take a bow, champion!`,
+              `Rejoice in your triumph, for Monday morning banter will be utterly devastating!`,
+              `The curtain falls on a sensational chapter. Stand tall and savor the glory!`
+            ];
+          }
+        } else {
+          endOptions = [
+            `Matches aren't over yet, don't celebrate too early or karma will smack you right in the teeth!`,
+            `Still players to play in the late kickoff — prepare for squeaky bum time!`,
+            `One dodgy VAR penalty in the 90th minute could turn this whole table upside down!`,
+            `Hold onto your pints, this live shit is getting ridiculous!`
+          ];
+        }
+        const endSentence = pickRnd(131, endOptions);
+
+        if (midSentence) {
+          return `${badge} ${leadSentence} ${midSentence} ${endSentence}`;
+        }
+        return `${badge} ${leadSentence} ${endSentence}`;
+      }
     }
 
     /**
@@ -3815,7 +4267,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           if (isEn) {
             radarGuideBtnText.innerText = isHidden ? 'Show Criteria' : 'Hide Criteria';
           } else {
-            radarGuideBtnText.innerText = isHidden ? 'แสดงเกณฑ์' : 'ซ่อนเกณฑ์';
+            radarGuideBtnText.innerText = isHidden ? 'ดูเกณฑ์' : 'ซ่อนเกณฑ์';
           }
         }
         const radarGuideContent = document.getElementById('radar-guide-content');
@@ -6659,9 +7111,9 @@ selectShi62GW(gwName) {
 
         // 1. Render Spotlight Card (Pre-Match Lineup Preview OR Live Leader / Weekly Winner)
         if (championCard && leader) {
-          const cacheKey = `${this.activeLeagueId}_${this.selectedGW}`;
+          const cacheKey = `${this.activeLeagueId}_${this.selectedGW}_${this.currentLang}`;
           const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
-          const currentLiveNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeeklyPrize, useHighestPlayerTieBreaker);
+          const currentLiveNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeeklyPrize, useHighestPlayerTieBreaker, isEn);
           this.liveNotesCache[cacheKey] = currentLiveNote;
 
           if (!isStarted) {
@@ -8149,12 +8601,13 @@ selectShi62GW(gwName) {
         const el = document.getElementById(`important-teams-${pid}`);
         const btn = document.getElementById(`important-btn-${pid}`);
         if (!el) return;
+        const isEn = (this.currentLang === 'en');
         if (el.classList.contains('hidden')) {
           el.classList.remove('hidden');
-          if (btn) btn.innerText = '▲ ซ่อนรายชื่อทีม';
+          if (btn) btn.innerText = isEn ? '▲ Hide team list' : '▲ ซ่อนรายชื่อทีม';
         } else {
           el.classList.add('hidden');
-          if (btn) btn.innerText = '▼ ดูรายชื่อทีมที่เลือก';
+          if (btn) btn.innerText = isEn ? '▼ View team list' : '▼ ดูรายชื่อทีมที่เลือก';
         }
       }
 
@@ -10993,6 +11446,15 @@ selectShi62GW(gwName) {
         if (radarBenchmarkTitle) {
           radarBenchmarkTitle.innerText = isEn ? 'Average League Strength Benchmarks' : 'จัดอันดับความแข็งแกร่งเฉลี่ยของแต่ละลีก';
         }
+        const radarGuideBtnText = document.getElementById('radar-guide-btn-text');
+        if (radarGuideBtnText) {
+          const isGuideHidden = document.getElementById('radar-guide-content')?.classList.contains('hidden');
+          if (isEn) {
+            radarGuideBtnText.innerText = isGuideHidden ? 'Show Criteria' : 'Hide Criteria';
+          } else {
+            radarGuideBtnText.innerText = isGuideHidden ? 'ดูเกณฑ์' : 'ซ่อนเกณฑ์';
+          }
+        }
         const recordsContainer = document.getElementById('global-radar-records');
         const benchmarksContainer = document.getElementById('global-radar-league-benchmarks');
         const pillsContainer = document.getElementById('global-radar-league-pills');
@@ -11609,14 +12071,15 @@ selectShi62GW(gwName) {
         const btnText = document.getElementById('radar-guide-btn-text');
         const arrow = document.getElementById('radar-guide-arrow');
         if (!content) return;
+        const isEn = (this.currentLang === 'en');
         const isHidden = content.classList.contains('hidden');
         if (isHidden) {
           content.classList.remove('hidden');
-          if (btnText) btnText.innerText = 'ซ่อนเกณฑ์';
+          if (btnText) btnText.innerText = isEn ? 'Hide Criteria' : 'ซ่อนเกณฑ์';
           if (arrow) arrow.classList.add('rotate-180');
         } else {
           content.classList.add('hidden');
-          if (btnText) btnText.innerText = 'ดูเกณฑ์';
+          if (btnText) btnText.innerText = isEn ? 'Show Criteria' : 'ดูเกณฑ์';
           if (arrow) arrow.classList.remove('rotate-180');
         }
       }
@@ -12630,38 +13093,8 @@ openTeamModal(entryId) {
         const useTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
         const isEn = (this.currentLang === 'en');
         
-        let newNote = '';
-        if (isEn) {
-          const results = (gwData && gwData.results) ? [...gwData.results] : [];
-          const eligible = results.filter(r => !nonPrizeList.includes(r.entry_id));
-          const topScorer = eligible.length > 0 ? eligible.sort((a,b) => (b.net_points || b.points) - (a.net_points || a.points))[0] : null;
-          const isFinished = Boolean(gwData && gwData.is_finished);
-          const isStarted = gwData ? (gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || (gwData.results && gwData.results.some(r => r.points > 0)))) : false;
-          
-          if (topScorer) {
-            const capName = this.escapeHtml((topScorer.captain || '-').replace(/\s*\(C\)/gi, '').trim());
-            const score = isWeeklyPrize ? topScorer.net_points : topScorer.points;
-            const templates = isFinished ? [
-              `In-form! "${this.escapeHtml(topScorer.team_name)}" secured the Gameweek ${gw} victory with ${score} pts (Captain: ${capName}).`,
-              `Masterclass performance! "${this.escapeHtml(topScorer.team_name)}" clinches #1 in Gameweek ${gw} with a stellar ${score} pts.`,
-              `Clinical victory! "${this.escapeHtml(topScorer.team_name)}" tops the leaderboard with ${score} pts led by captain ${capName}.`
-            ] : (isStarted ? [
-              `Leading the pack! "${this.escapeHtml(topScorer.team_name)}" sits in #1 for Gameweek ${gw} with ${score} pts!`,
-              `Front-runner! "${this.escapeHtml(topScorer.team_name)}" takes charge in Gameweek ${gw} live standings with ${score} pts.`,
-              `Matchday battle! "${this.escapeHtml(topScorer.team_name)}" leads Gameweek ${gw} with ${score} pts (Captain: ${capName}).`
-            ] : [
-              `Gameweek ${gw} tactical preview. Lineups are locked in and awaiting kickoff.`,
-              `All eyes on Gameweek ${gw}. Squad selections confirmed as managers await the opening match.`
-            ]);
-            newNote = templates[Math.floor(Math.random() * templates.length)];
-          } else {
-            newNote = `Gameweek ${gw} tactical breakdown. Ready for matchday action.`;
-          }
-        } else {
-          newNote = LiveCommentaryEngine.generateFreshNote(gw, gwData, this.data.name, true, nonPrizeList, this.data, isWeeklyPrize, useTieBreaker);
-        }
-        
-        const cacheKey = `${this.activeLeagueId}_${gw}`;
+        const newNote = LiveCommentaryEngine.generateFreshNote(gw, gwData, this.data.name, true, nonPrizeList, this.data, isWeeklyPrize, useTieBreaker, isEn);
+        const cacheKey = `${this.activeLeagueId}_${gw}_${this.currentLang}`;
         this.liveNotesCache[cacheKey] = newNote;
         
         const noteEl = document.getElementById('current-gw-note-text');
@@ -12769,8 +13202,9 @@ openTeamModal(entryId) {
           let currentLiveNote = noteEl ? noteEl.innerText.replace(/^"|"$/g, '').trim() : '';
           if (!currentLiveNote) {
             const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
-            const cacheKey = `${this.activeLeagueId}_${this.selectedGW}`;
-            const rawHtmlNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeekly, useHighestPlayerTieBreaker);
+            const isEn = (this.currentLang === 'en');
+            const cacheKey = `${this.activeLeagueId}_${this.selectedGW}_${this.currentLang}`;
+            const rawHtmlNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeekly, useHighestPlayerTieBreaker, isEn);
             currentLiveNote = String(rawHtmlNote).replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
           }
 
