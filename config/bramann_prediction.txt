@@ -280,3 +280,44 @@ MUN Oo 4OURx5 Bx5
 NFO vs ARS -1
 NFO
 ARS Oo oak Bx5
+
+GW8
+IPS vs NFO -0.5
+IPS oak 4OURx5 jrj ✅
+NFO Dotmanx5
+
+AVL vs MCI -1
+AVL 4OURx5 jrj feex5 ✅
+MCI Oo Dotmanx5 Bx5 oak
+
+ARS -1 vs EVE
+ARS oak Oo 4OURx5 Bx5 Hong ✅
+EVE Dotmanx5 jrj
+
+COV vs FUL -0.5
+COV oak 4OURx5 Bx5 Dotmanx5
+FUL fee ✅
+
+CHE -1 vs TOT
+CHE oak Oo 4OURx5 Bx5 feex5
+TOT Dotmanx5 Hong ✅
+
+CRY vs NEW
+CRY 4OURx5
+NEW oakx5 Bx5 ✅
+
+HUL vs BRE -0.5
+HUL jrj 4OURx5 feex5 ✅
+BRE oakx5 Bx5
+
+LIV -0.5 vs BHA
+LIV 4OURx5 jrj ✅
+BHA oakx5 Oo Bx5
+
+MUN -0.5 vs BOU
+MUN Oo 4OURx5 Bx5
+BOU jrj fee ✅
+
+SUN vs LEE
+SUN jrj
+LEE oakx5 Bx5
