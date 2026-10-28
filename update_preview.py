@@ -445,13 +445,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     /* Authentic Football Pitch System (4-Tier Vertical Formation) */
     .fpl-pitch {
       background: 
-        repeating-linear-gradient(
-          to bottom,
-          rgba(0, 0, 0, 0.04) 0px,
-          rgba(0, 0, 0, 0.04) 28px,
-          transparent 28px,
-          transparent 56px
-        ),
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 75%),
         linear-gradient(180deg, #15803d 0%, #166534 50%, #14532d 100%);
       position: relative;
       border-radius: 1.25rem;
@@ -1488,7 +1482,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         <div id="radar-guide-content" class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-1.5 sm:space-y-2 text-xs">
           <!-- S-Tier -->
-          <div class="p-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-cyan-500/15 via-sky-400/10 to-transparent border border-cyan-400/50 dark:border-cyan-400/35 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 transition-all">
+          <div class="p-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-cyan-500/15 via-sky-400/10 to-transparent flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 transition-all">
             <div class="flex items-center gap-2 sm:w-36 flex-shrink-0">
               <span class="text-xs sm:text-sm font-black text-cyan-800 dark:text-cyan-300 flex items-center gap-1">💎 S-Tier</span>
               <span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-900 dark:text-cyan-200">หัวกะทิ</span>
@@ -1506,7 +1500,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           </div>
 
           <!-- A-Tier -->
-          <div class="p-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-emerald-500/15 via-emerald-400/5 to-transparent border border-emerald-500/30 dark:border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 transition-all">
+          <div class="p-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-emerald-500/15 via-emerald-400/5 to-transparent flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 transition-all">
             <div class="flex items-center gap-2 sm:w-36 flex-shrink-0">
               <span class="text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1">🟢 A-Tier</span>
               <span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-800 dark:text-emerald-200">มาตรฐานสูง</span>
@@ -1522,7 +1516,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           </div>
 
           <!-- B-Tier -->
-          <div class="p-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-yellow-500/15 via-yellow-400/5 to-transparent border border-yellow-500/30 dark:border-yellow-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 transition-all">
+          <div class="p-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-yellow-500/15 via-yellow-400/5 to-transparent flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 transition-all">
             <div class="flex items-center gap-2 sm:w-36 flex-shrink-0">
               <span class="text-xs sm:text-sm font-bold text-yellow-700 dark:text-yellow-300 flex items-center gap-1">🟡 B-Tier</span>
               <span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-800 dark:text-yellow-200">กลุ่มกลาง</span>
@@ -1538,7 +1532,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           </div>
 
           <!-- C-Tier -->
-          <div class="p-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-slate-500/15 via-slate-400/5 to-transparent border border-slate-500/30 dark:border-slate-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 transition-all">
+          <div class="p-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-slate-500/15 via-slate-400/5 to-transparent flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 transition-all">
             <div class="flex items-center gap-2 sm:w-36 flex-shrink-0">
               <span class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1">⚪ C-Tier</span>
               <span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-slate-500/20 text-slate-800 dark:text-slate-200">พัฒนาการ</span>
@@ -1554,7 +1548,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           </div>
 
           <!-- Volatile -->
-          <div class="p-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-rose-500/15 via-rose-400/5 to-transparent border border-rose-500/30 dark:border-rose-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 transition-all">
+          <div class="p-2 sm:px-3.5 sm:py-2.5 rounded-xl bg-gradient-to-r from-rose-500/15 via-rose-400/5 to-transparent flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-4 transition-all">
             <div class="flex items-center gap-2 sm:w-36 flex-shrink-0">
               <span class="text-xs sm:text-sm font-bold text-rose-700 dark:text-rose-300 flex items-center gap-1">⚡ Volatile</span>
               <span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-800 dark:text-rose-200">สวิงสูง</span>
@@ -1997,7 +1991,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <div class="flex items-center justify-between gap-2 mb-1.5">
           <div class="flex items-center gap-2 flex-wrap min-w-0">
             <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold font-mono tracking-wider bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
               <span>ขุมกำลัง & การจัดทัพ</span>
             </span>
             <span id="team-modal-chip-badge" class="hidden"></span>
@@ -2005,7 +1999,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <button 
             type="button"
             onclick="app.closeTeamModal()" 
-            class="w-8 h-8 sm:w-9 sm:h-9 min-w-[32px] min-h-[32px] rounded-full bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center transition-all cursor-pointer text-xs flex-shrink-0 active:scale-95 shadow-2xs" 
+            class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-center transition-all cursor-pointer text-xs flex-shrink-0 active:scale-95 shadow-2xs" 
             aria-label="Close modal"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -2024,17 +2018,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <!-- Row 3: Stat Badges Row (GW Points, Formation, Overall Rank) -->
         <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
           <!-- GW Points Badge -->
-          <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/80 shadow-2xs">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/80 shadow-2xs">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             <span id="team-modal-pts-label" class="text-[10px] sm:text-xs font-semibold text-emerald-700/80 dark:text-emerald-400/80">คะแนนสด:</span>
             <span id="team-modal-pts" class="text-xs sm:text-sm font-black font-display text-emerald-700 dark:text-emerald-300">- pts</span>
-          </div>
+          </span>
 
           <!-- Formation Badge -->
-          <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
             <span id="team-modal-formation-label" class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">แผน:</span>
             <span id="team-modal-formation" class="text-xs sm:text-sm font-bold font-display text-slate-800 dark:text-slate-200">-</span>
-          </div>
+          </span>
 
           <!-- Overall Rank Badge (Dynamically populated) -->
           <span id="team-modal-overall-rank-badge" class="hidden"></span>
@@ -2056,7 +2050,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       </div>
 
       <!-- Substitutes Box -->
-      <section class="bg-slate-50/80 dark:bg-slate-900/40 rounded-2xl p-2.5 sm:p-4 border border-slate-100 dark:border-slate-800/80">
+      <section class="bg-slate-50/80 dark:bg-slate-900/40 rounded-2xl p-2.5 sm:p-4">
         <div class="flex items-center justify-between mb-2">
           <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">ตัวสำรอง (Substitutes)</span>
           <span id="team-modal-bench-total" class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold font-display"></span>
@@ -5246,6 +5240,7 @@ selectShi62GW(gwName) {
         const container = document.getElementById('bramann-prediction-view');
         if (!container) return;
 
+        const isEn = (this.currentLang === 'en');
         const data = this.bramannPredData;
         if (!this.activeBramannPredGW && data.gameweeks && data.gameweeks.length > 0) {
           this.activeBramannPredGW = data.gameweeks[data.gameweeks.length - 1].name;
@@ -6596,7 +6591,7 @@ selectShi62GW(gwName) {
 
         const isWeeklyPrize = (this.config.features && this.config.features.prize_model === 'weekly');
         const useHighestPlayerTieBreaker = Boolean(this.config.features && this.config.features.tie_breaker === 'highest_player');
-        const scoreProp = (isFinished || isWeeklyPrize) ? 'net_points' : 'points';
+        const scoreProp = 'net_points';
         const sorted = [...gwData.results].sort((a, b) => {
           const scoreDiff = (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points);
           if (scoreDiff !== 0) return scoreDiff;
@@ -6659,7 +6654,7 @@ selectShi62GW(gwName) {
         const isJointPrizeWinner = eligibleTopWinners.length > 1;
 
         const overallTop = sorted[0];
-        const hasPassedPrize = !this.isPrizeEligible(overallTop.entry_id) && eligibleTopWinners.length > 0 && overallTop[scoreProp] > prizeLeader[scoreProp];
+        const hasPassedPrize = !this.isPrizeEligible(overallTop.entry_id) && eligibleTopWinners.length > 0 && overallTop[scoreProp] >= prizeLeader[scoreProp];
         const leader = prizeLeader;
 
         // 1. Render Spotlight Card (Pre-Match Lineup Preview OR Live Leader / Weekly Winner)
@@ -7106,16 +7101,16 @@ selectShi62GW(gwName) {
                       last_gw_hits: 0
                     };
                   }
-                  overallMap[r.entry_id].total_points += r.net_points;
+                  overallMap[r.entry_id].total_points += (Number(r.net_points) || 0);
                 });
               }
 
               if (g === this.selectedGW) {
                 gData.results.forEach(r => {
                   if (overallMap[r.entry_id]) {
-                    overallMap[r.entry_id].last_gw_pts = r.net_points;
-                    overallMap[r.entry_id].last_gw_raw = r.points;
-                    overallMap[r.entry_id].last_gw_hits = r.hits || 0;
+                    overallMap[r.entry_id].last_gw_pts = (Number(r.net_points) || 0);
+                    overallMap[r.entry_id].last_gw_raw = (Number(r.points) || 0);
+                    overallMap[r.entry_id].last_gw_hits = Number(r.hits) || 0;
                   }
                 });
               }
@@ -7217,7 +7212,9 @@ selectShi62GW(gwName) {
       compareTeamPlayerScores(entryIdA, entryIdB, gw) {
         const scoresA = this.getTeamPlayerScores(entryIdA, gw);
         const scoresB = this.getTeamPlayerScores(entryIdB, gw);
-        const maxLen = Math.max(scoresA.length, scoresB.length);
+        if (scoresA.length === 0 || scoresB.length === 0) return 0;
+        // Cap comparison to top 11 scoring players to ensure fair comparison between standard 11-player squad and 15-player Bench Boost squad
+        const maxLen = Math.min(11, Math.max(scoresA.length, scoresB.length));
         for (let i = 0; i < maxLen; i++) {
           const valA = scoresA[i] !== undefined ? scoresA[i] : -Infinity;
           const valB = scoresB[i] !== undefined ? scoresB[i] : -Infinity;
@@ -7232,7 +7229,8 @@ selectShi62GW(gwName) {
         const isEn = (this.currentLang === 'en');
         const scoresW = this.getTeamPlayerScores(entryIdWinner, gw);
         const scoresL = this.getTeamPlayerScores(entryIdLoser, gw);
-        const maxLen = Math.max(scoresW.length, scoresL.length);
+        if (scoresW.length === 0 || scoresL.length === 0) return null;
+        const maxLen = Math.min(11, Math.max(scoresW.length, scoresL.length));
         for (let i = 0; i < maxLen; i++) {
           const valW = scoresW[i] !== undefined ? scoresW[i] : -Infinity;
           const valL = scoresL[i] !== undefined ? scoresL[i] : -Infinity;
@@ -7313,7 +7311,7 @@ selectShi62GW(gwName) {
             poolForGroup += tierPrizes[i];
           }
           
-          const prizePerTeam = poolForGroup > 0 ? Math.round(poolForGroup / count) : 0;
+          const prizePerTeam = poolForGroup > 0 ? Math.floor(poolForGroup / count) : 0;
           const displayRank = startIndex + 1;
           const isJoint = count > 1;
 
@@ -7423,13 +7421,25 @@ selectShi62GW(gwName) {
             poolForGroup += penaltyTiers[i];
           }
 
-          const finePerTeam = poolForGroup > 0 ? Math.round(poolForGroup / count) : 0;
+          const finePerTeam = poolForGroup > 0 ? Math.floor(poolForGroup / count) : 0;
           const isJoint = count > 1;
           const baseLabel = rankLabels[startIndex] || (isEn ? `⚠️ Bottom ${startIndex + 1}` : `⚠️ ท้าย ${startIndex + 1}`);
           const label = isJoint ? (isEn ? `${baseLabel} (Tie)` : `${baseLabel}ร่วม`) : baseLabel;
 
           group.teams.forEach(team => {
             if (finePerTeam > 0) {
+              let tieBreakNote = null;
+              if (useTieBreaker) {
+                const teamScore = (team.net_points !== undefined ? team.net_points : team.points);
+                const tiedScoreTeams = sortedBottom.filter(t => (t.net_points !== undefined ? t.net_points : t.points) === teamScore);
+                if (tiedScoreTeams.length > 1) {
+                  const betterTeam = tiedScoreTeams.find(t => t.entry_id !== team.entry_id && this.compareTeamPlayerScores(t.entry_id, team.entry_id, effectiveGW) < 0);
+                  if (betterTeam) {
+                    tieBreakNote = this.getTieBreakerExplanation(betterTeam.entry_id, team.entry_id, effectiveGW);
+                  }
+                }
+              }
+
               penalties.push({
                 entry_id: team.entry_id,
                 team_name: team.team_name,
@@ -7439,7 +7449,8 @@ selectShi62GW(gwName) {
                 rankLabel: label,
                 bottomTierIndex: startIndex,
                 isJoint: isJoint,
-                jointCount: count
+                jointCount: count,
+                tieBreakNote: tieBreakNote
               });
             }
           });
@@ -7827,7 +7838,10 @@ selectShi62GW(gwName) {
         });
 
         // Non-Wildcard/FreeHit teams for regular transfer awards
-        const nonWcTeams = results.filter(r => r.chip !== 'wildcard' && r.chip !== 'freehit');
+        const nonWcTeams = results.filter(r => {
+          const c = String(r.chip || '').toLowerCase().replace('_', '');
+          return c !== 'wildcard' && c !== 'freehit';
+        });
 
         // 10. YOLO Manager (Most transfer hits taken, excluding Wildcard/Free Hit)
         const hitTeams = nonWcTeams.filter(r => r.hits > 0).sort((a, b) => b.hits - a.hits);
@@ -9793,7 +9807,7 @@ selectShi62GW(gwName) {
                         <td class="py-3 px-1 sm:px-2 text-center text-rose-600 dark:text-rose-400 font-black font-display">${totalDangerCount}</td>
                         <td class="py-3 px-2 sm:px-3 text-right font-black text-rose-600 dark:text-rose-400 font-display">-${totalFinesPaid.toLocaleString()} THB</td>
                         <td class="py-3 px-2 sm:px-3 text-right font-black text-emerald-600 dark:text-emerald-400 font-display">+${totalDistributedPrize.toLocaleString()} THB</td>
-                        <td class="py-3 px-2 sm:px-3 text-right font-black text-emerald-600 dark:text-emerald-400 font-display text-sm sm:text-base">+${(finishedGWCount * weeklyNetPot).toLocaleString()} THB</td>
+                        <td class="py-3 px-2 sm:px-3 text-right font-black text-emerald-600 dark:text-emerald-400 font-display text-sm sm:text-base">+${(totalFinesPaid - totalDistributedPrize).toLocaleString()} THB</td>
                         ` : (hasMultiTier ? `
                         <td class="py-3 px-1 sm:px-2 text-center text-amber-600 dark:text-amber-400 font-black font-display">${total1st % 1 === 0 ? total1st : total1st.toFixed(1)}</td>
                         <td class="py-3 px-1 sm:px-2 text-center text-slate-700 dark:text-slate-300 font-black font-display">${total2nd % 1 === 0 ? total2nd : total2nd.toFixed(1)}</td>
@@ -9815,7 +9829,7 @@ selectShi62GW(gwName) {
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Current Net Accumulated Pot' : 'ยอดเงินกองกลางสะสมสุทธิปัจจุบัน'}</span>
-                    <div class="text-xl font-black text-emerald-600 mt-1 font-display">${(finishedGWCount * weeklyNetPot).toLocaleString()} <span class="text-xs">THB</span></div>
+                    <div class="text-xl font-black text-emerald-600 mt-1 font-display">${(totalFinesPaid - totalDistributedPrize).toLocaleString()} <span class="text-xs">THB</span></div>
                     <div class="text-xs text-slate-600 mt-0.5 font-medium">${isEn ? `Completed ${finishedGWCount} GWs x ${weeklyNetPot.toLocaleString()} THB (Target 38 GWs = ${seasonNetTotal.toLocaleString()} THB)` : `จบแล้ว ${finishedGWCount} สัปดาห์ x ${weeklyNetPot.toLocaleString()} THB (เป้าหมาย 38 สัปดาห์ = ${seasonNetTotal.toLocaleString()} THB)`}</div>
                   </div>
                   <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
@@ -9912,7 +9926,10 @@ selectShi62GW(gwName) {
                   : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
 
                 if (gIsStarted) {
+                  const seenInGw = new Set();
                   gData.results.forEach(r => {
+                    if (seenInGw.has(r.entry_id)) return;
+                    seenInGw.add(r.entry_id);
                     if (!monthlyMap[r.entry_id]) {
                       monthlyMap[r.entry_id] = {
                         entry_id: r.entry_id,
@@ -9922,8 +9939,9 @@ selectShi62GW(gwName) {
                         month_total: 0
                       };
                     }
-                    monthlyMap[r.entry_id].gw_scores[gwNum] = r.net_points;
-                    monthlyMap[r.entry_id].month_total += r.net_points;
+                    const netPts = Number(r.net_points) || 0;
+                    monthlyMap[r.entry_id].gw_scores[gwNum] = netPts;
+                    monthlyMap[r.entry_id].month_total += netPts;
                   });
                 }
               }

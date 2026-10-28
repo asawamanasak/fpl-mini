@@ -668,7 +668,7 @@
         "items": [
           {
             "label": "Weekly Podium Breakdown (2,400 THB / Gameweek x 38 GWs)",
-            "desc": "• 1st Place: 1,200 THB / Gameweek\n• 2nd Place: 700 THB / Gameweek\n• 3rd Place: 500 THB / Gameweek\n• Criteria: Highest Net Gameweek Points (Score - Transfer Hits)\n• Ties: Split prizes equally among tied podium finishers"
+            "desc": "• 1st Place: 1,200 THB / Gameweek\n• 2nd Place: 720 THB / Gameweek\n• 3rd Place: 480 THB / Gameweek\n• Criteria: Highest Net Gameweek Points (Score - Transfer Hits)\n• Ties: Split prizes equally among tied podium finishers"
           }
         ],
         "footer": "* Podium rewards top 3 performers every single Gameweek."
@@ -678,7 +678,7 @@
         "items": [
           {
             "label": "Overall Season Podium",
-            "desc": "• 1st Place (Champion): 6,000 THB\n• 2nd Place: 4,000 THB\n• 3rd Place: 2,000 THB"
+            "desc": "• 1st Place (Champion): 6,000 THB\n• 2nd Place: 3,600 THB\n• 3rd Place: 2,400 THB"
           },
           {
             "label": "Season Tie-Breaker",
@@ -757,8 +757,8 @@
         "title": "Weekly Penalty Ladder into Prize Pool",
         "items": [
           {
-            "label": "Bottom 5 Penalty Ladder (1,800 THB / Gameweek)",
-            "desc": "• Last Place (Wooden Spoon): 600 THB\n• 2nd from Bottom: 450 THB\n• 3rd from Bottom: 350 THB\n• 4th from Bottom: 250 THB\n• 5th from Bottom: 150 THB\n• Top teams pay nothing and compete for the end-of-season accumulated pool!"
+            "label": "Bottom 5 Penalty Ladder (2,000 THB / Gameweek)",
+            "desc": "• Last Place (Wooden Spoon): 600 THB\n• 2nd from Bottom: 500 THB\n• 3rd from Bottom: 400 THB\n• 4th from Bottom: 300 THB\n• 5th from Bottom: 200 THB\n• Top teams pay nothing and compete for the end-of-season accumulated pool!"
           },
           {
             "label": "Criteria & Hits",

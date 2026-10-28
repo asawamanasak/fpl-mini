@@ -697,7 +697,10 @@ def sync_once(args):
                             picks = cached_sq.get("raw_picks", [])
                             hist = cached_sq.get("raw_hist", {})
                             chip = cached_sq.get("chip")
-                            hits = hist.get('event_transfers_cost', cached_sq.get("hits", 0))
+                            hits = int(hist.get('event_transfers_cost') if hist.get('event_transfers_cost') is not None else (cached_sq.get("hits") or 0))
+                            chip_norm = str(chip or '').strip().lower().replace('_', '')
+                            if chip_norm in ('wildcard', 'freehit'):
+                                hits = 0
                             auto_subs = cached_sq.get("auto_subs", [])
                         else:
                             cache_key = (eid, gw)
@@ -709,7 +712,10 @@ def sync_once(args):
                                     global_picks_cache[cache_key] = picks_resp
                             hist = picks_resp.get('entry_history', {})
                             chip = picks_resp.get('active_chip')
-                            hits = hist.get('event_transfers_cost', 0)
+                            hits = int(hist.get('event_transfers_cost') or 0)
+                            chip_norm = str(chip or '').strip().lower().replace('_', '')
+                            if chip_norm in ('wildcard', 'freehit'):
+                                hits = 0
                             auto_subs = picks_resp.get('automatic_subs', [])
                             picks = picks_resp.get('picks', [])
                         starters = []
@@ -945,6 +951,7 @@ def sync_once(args):
                         if official_pts is not None and official_pts > 0 and (raw_points == 0 or (this_gw_finished and this_gw_checked)):
                             raw_points = official_pts
 
+                        hits = int(hits or 0)
                         net_points = raw_points - hits
                         team_val = round((hist.get('value') or 1000) / 10.0, 1)
                         team_bank = round((hist.get('bank') or 0) / 10.0, 1)
@@ -1077,7 +1084,8 @@ def sync_once(args):
                             while prev_gw >= 1:
                                 prev_res = gameweeks_dict.get(str(prev_gw), {}).get("results", [])
                                 prev_r = next((x for x in prev_res if x.get("entry_id") == eid), None)
-                                if prev_r and prev_r.get("chip") == "freehit":
+                                prev_chip = str(prev_r.get("chip") or '').strip().lower().replace('_', '') if prev_r else ''
+                                if prev_r and prev_chip == "freehit":
                                     prev_gw -= 1
                                 else:
                                     break
@@ -1090,7 +1098,8 @@ def sync_once(args):
                                 pts_in = sum(gw_live.get(pid, 0) for pid in tin) if gw_live else 0
                                 pts_out = sum(gw_live.get(pid, 0) for pid in tout) if gw_live else 0
                                 moves_gain = pts_in - pts_out
-                                net_impact = moves_gain - r.get("hits", 0)
+                                team_hits = int(r.get("hits") or 0)
+                                net_impact = moves_gain - team_hits
 
                                 moves = []
                                 in_list = sorted(list(tin), key=lambda x: elements.get(x, {}).get('element_type', 99))
@@ -1121,7 +1130,7 @@ def sync_once(args):
                                 if "transfers_count" not in r:
                                     r["transfers_count"] = 0
                                 r["transfers_pts_gain"] = 0
-                                r["transfers_net_impact"] = -r.get("hits", 0)
+                                r["transfers_net_impact"] = -int(r.get("hits") or 0)
                                 r["transfer_moves"] = []
 
             # Sort and finalize all gameweeks results
