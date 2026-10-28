@@ -692,8 +692,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       color: #f8fafc !important;
     }
 
-    .dark #team-modal .sticky.top-0 {
-      background-color: rgba(13, 13, 15, 0.95) !important;
+    .dark #team-modal header {
+      background-color: #0d0d0f !important;
       border-color: #262629 !important;
     }
 
@@ -1983,10 +1983,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
   <!-- 6.1 หน้าต่างดูแผนจัดตัวนักเตะ (Team Squad Modal) -->
   <div id="team-modal" role="dialog" aria-modal="true" aria-labelledby="team-modal-title" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200" onclick="if (event.target === this) app.closeTeamModal()">
-    <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl p-3.5 sm:p-6 max-w-xl w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[94vh] overflow-y-auto overflow-x-hidden touch-scroll my-auto modal-animate-in" onclick="event.stopPropagation()">
+    <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl max-w-xl w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[94vh] flex flex-col overflow-hidden my-auto modal-animate-in" onclick="event.stopPropagation()">
       
-      <!-- Header (Sticky at top when scrolling through pitch and bench) -->
-      <header class="sticky top-0 bg-white/95 dark:bg-[#0d0d0f]/95 backdrop-blur-md z-30 -mt-3.5 sm:-mt-6 -mx-3.5 sm:-mx-6 px-3.5 sm:px-6 pt-3.5 sm:pt-5 pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-2.5 sm:mb-3">
+      <!-- Fixed Header: 100% width, permanently clean top, zero negative margin hacks -->
+      <header class="p-3.5 sm:p-5 border-b border-slate-100 dark:border-slate-800/80 bg-white dark:bg-[#0d0d0f] flex-shrink-0 z-20">
         <!-- Row 1: Eyebrow + Chip Badge + Circular Close Button -->
         <div class="flex items-center justify-between gap-2 mb-1.5">
           <div class="flex items-center gap-2 flex-wrap min-w-0">
@@ -2038,30 +2038,33 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         </div>
       </header>
 
-      <!-- Authentic FPL Pitch (Vertical 4-Tier: GKP -> DEF -> MID -> FWD) -->
-      <div class="fpl-pitch rounded-2xl mb-3 sm:mb-3.5 relative overflow-hidden shadow-inner flex flex-col justify-between py-2 sm:py-3 px-1 w-full max-w-full">
-        <div class="pitch-penalty-top"></div>
-        <div class="pitch-center-circle"></div>
-        <div class="pitch-center-line"></div>
-        <div class="pitch-penalty-bottom"></div>
+      <!-- Scrollable Body: Contains the Framed Pitch & Substitutes with clean padding -->
+      <div id="team-modal-body" class="flex-1 overflow-y-auto overflow-x-hidden touch-scroll p-3.5 sm:p-5 space-y-3 sm:space-y-4">
+        <!-- Authentic FPL Pitch (Framed Stadium Board) -->
+        <div class="fpl-pitch rounded-2xl relative overflow-hidden shadow-inner flex flex-col justify-between py-2 sm:py-3 px-1 w-full max-w-full">
+          <div class="pitch-penalty-top"></div>
+          <div class="pitch-center-circle"></div>
+          <div class="pitch-center-line"></div>
+          <div class="pitch-penalty-bottom"></div>
 
-        <!-- 4 Separate Formation Rows -->
-        <div id="pitch-line-gkp" class="fpl-pitch-row"></div>
-        <div id="pitch-line-def" class="fpl-pitch-row"></div>
-        <div id="pitch-line-mid" class="fpl-pitch-row"></div>
-        <div id="pitch-line-fwd" class="fpl-pitch-row"></div>
+          <!-- 4 Separate Formation Rows -->
+          <div id="pitch-line-gkp" class="fpl-pitch-row"></div>
+          <div id="pitch-line-def" class="fpl-pitch-row"></div>
+          <div id="pitch-line-mid" class="fpl-pitch-row"></div>
+          <div id="pitch-line-fwd" class="fpl-pitch-row"></div>
+        </div>
+
+        <!-- Substitutes Box -->
+        <section class="bg-slate-50/80 dark:bg-slate-900/40 rounded-2xl p-2.5 sm:p-4 border border-slate-100/80 dark:border-slate-800/60">
+          <div class="flex items-center justify-between mb-2">
+            <span id="team-modal-bench-label" class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">ตัวสำรอง (Substitutes)</span>
+            <span id="team-modal-bench-total" class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold font-display"></span>
+          </div>
+          <div id="team-bench-container" class="grid grid-cols-1 gap-1.5 sm:gap-2">
+            <!-- 4 Bench Player Cards -->
+          </div>
+        </section>
       </div>
-
-      <!-- Substitutes Box -->
-      <section class="bg-slate-50/80 dark:bg-slate-900/40 rounded-2xl p-2.5 sm:p-4">
-        <div class="flex items-center justify-between mb-2">
-          <span id="team-modal-bench-label" class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">ตัวสำรอง (Substitutes)</span>
-          <span id="team-modal-bench-total" class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold font-display"></span>
-        </div>
-        <div id="team-bench-container" class="grid grid-cols-1 gap-1.5 sm:gap-2">
-          <!-- 4 Bench Player Cards -->
-        </div>
-      </section>
 
     </div>
   </div>
@@ -13401,6 +13404,8 @@ selectShi62GW(gwName) {
         if (modal) {
           modal.classList.remove('hidden');
           document.body.classList.add('overflow-hidden');
+          const modalBody = document.getElementById('team-modal-body');
+          if (modalBody) modalBody.scrollTop = 0;
         }
       }
 
