@@ -12958,8 +12958,9 @@ selectShi62GW(gwName) {
         }
       }
 
-openTeamModal(entryId) {
+      openTeamModal(entryId) {
         const isEn = (this.currentLang === 'en');
+        const defaultShirtUrl = this.getDefaultShirtUrl();
         const entryIdNum = Number(entryId);
         this.currentModalEntryId = entryIdNum;
         let teamObj = (this.data.teams || []).find(t => Number(t.entry_id) === entryIdNum);
@@ -13107,7 +13108,6 @@ openTeamModal(entryId) {
           const gwData = this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
           const isGwFinished = gwData ? Boolean(gwData.is_finished) : false;
           const unstartedTeams = (gwData && gwData.unstarted_teams) ? gwData.unstarted_teams : [];
-          const defaultShirtUrl = this.getDefaultShirtUrl();
 
           const isPlayerUnstarted = (p) => {
             if (isGwFinished) return false;
