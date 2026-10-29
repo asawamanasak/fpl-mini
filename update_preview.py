@@ -1187,7 +1187,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <div class="flex flex-wrap items-center justify-between gap-y-1 mb-2 px-1">
           <span id="gw-selector-title" class="text-xs font-bold text-slate-500 uppercase tracking-wider font-display flex flex-wrap items-center gap-1">
             <span id="gw-selector-main-label">เลือกสัปดาห์การแข่งขัน</span>
-            <span id="gw-deadline-countdown-wrap" class="font-normal font-mono tabular-nums text-slate-500 dark:text-slate-400"></span>
+            <span id="gw-deadline-countdown-wrap" class="font-bold font-mono tabular-nums text-emerald-600 dark:text-emerald-400"></span>
           </span>
           <span id="gw-range-status" class="text-xs font-bold text-emerald-600">สัปดาห์ที่ 1 - 38</span>
         </div>
@@ -3858,7 +3858,25 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const isEn = (this.currentLang === 'en');
         const nowSec = Math.floor(Date.now() / 1000);
 
+        // 1. Check if the current matchday is currently in progress (LIVE)
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || 1;
+        const gwData = this.data && this.data.gameweeks ? this.data.gameweeks[String(maxGW)] : null;
+        const isStarted = gwData ? (gwData.is_started !== undefined ? Boolean(gwData.is_started) : (Boolean(gwData.is_finished) || (gwData.results && gwData.results.some(r => r.points > 0)))) : false;
+        const isFinished = Boolean(gwData && gwData.is_finished);
+
         const events = (this.multiData && Array.isArray(this.multiData.events_deadlines)) ? this.multiData.events_deadlines : [];
+        const currentEv = events.find(e => e.is_current);
+        const isCurrentEvLive = Boolean(currentEv && !currentEv.finished && currentEv.deadline_epoch && nowSec >= currentEv.deadline_epoch);
+
+        const isMatchdayLive = (isStarted && !isFinished) || isCurrentEvLive;
+
+        // If the deadline has passed and live matches are underway, hide the deadline countdown
+        if (isMatchdayLive) {
+          wrapEl.innerText = '';
+          return;
+        }
+
+        // 2. Otherwise find the upcoming gameweek deadline
         let target = null;
         if (events.length > 0) {
           target = events.find(e => e.deadline_epoch && e.deadline_epoch > nowSec);
@@ -3868,7 +3886,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
 
         if (!target) {
-          wrapEl.innerText = isEn ? '(SEASON COMPLETED)' : '(จบฤดูกาล)';
+          wrapEl.innerText = '';
           return;
         }
 
@@ -3876,7 +3894,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const diff = (target.deadline_epoch || 0) - nowSec;
 
         if (diff <= 0) {
-          wrapEl.innerText = isEn ? `(GW ${gwNum} DEADLINE: SQUADS LOCKED)` : `(เดดไลน์ GW ${gwNum}: ปิดรับรายชื่อแล้ว)`;
+          wrapEl.innerText = '';
           return;
         }
 
@@ -3887,17 +3905,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const pad = (n) => String(n).padStart(2, '0');
         const timeStr = `${pad(hours)}:${pad(mins)}:${pad(secs)}`;
 
-        const isUrgent = (days === 0 && hours === 0);
-        const alertPrefix = isUrgent ? '⚠️ ' : '';
-
         if (isEn) {
           wrapEl.innerText = days > 0
             ? `(GW ${gwNum} DEADLINE: ${days}D ${timeStr})`
-            : `(${alertPrefix}GW ${gwNum} DEADLINE: ${timeStr})`;
+            : `(GW ${gwNum} DEADLINE: ${timeStr})`;
         } else {
           wrapEl.innerText = days > 0
             ? `(เดดไลน์ GW ${gwNum}: ${days} วัน ${timeStr})`
-            : `(${alertPrefix}เดดไลน์ GW ${gwNum}: ${timeStr})`;
+            : `(เดดไลน์ GW ${gwNum}: ${timeStr})`;
         }
       }
 
