@@ -7209,12 +7209,12 @@ selectShi62GW(gwName) {
             let badgeTitle = '';
             if (isFinished) {
               badgeTitle = isWeekly
-                ? (isJointPrizeWinner ? (isEn ? 'Joint Weekly Winners' : 'แชมป์ร่วมประจำสัปดาห์ (Joint Weekly Winners)') : (isEn ? 'Weekly Winner' : 'แชมป์ประจำสัปดาห์ (Weekly Winner)'))
-                : (isEn ? 'Top Scorer' : 'คะแนนสูงสุดประจำสัปดาห์ (Top Scorer)');
+                ? (isJointPrizeWinner ? (isEn ? 'Joint Weekly Winners' : 'แชมป์ร่วมประจำสัปดาห์') : (isEn ? 'Weekly Winner' : 'แชมป์ประจำสัปดาห์'))
+                : (isEn ? 'Top Scorer' : 'คะแนนสูงสุดประจำสัปดาห์');
             } else {
               badgeTitle = isWeekly
-                ? (isJointPrizeWinner ? (isEn ? 'Joint Live Leaders' : 'ผู้นำคะแนนสดร่วม (Joint Live Leaders)') : (isEn ? 'Live Leader' : 'ผู้นำคะแนนสด (Live Leader)'))
-                : (isEn ? 'Live Leader' : 'ผู้นำคะแนนสดประจำสัปดาห์ (Live Leader)');
+                ? (isJointPrizeWinner ? (isEn ? 'Joint Live Leaders' : 'ผู้นำคะแนนสดร่วม') : (isEn ? 'Live Leader' : 'ผู้นำคะแนนสด'))
+                : (isEn ? 'Live Leader' : 'ผู้นำคะแนนสดประจำสัปดาห์');
             }
 
             let badgeIcon = isFinished ? '🏆' : '🟢';
