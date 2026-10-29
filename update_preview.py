@@ -5733,26 +5733,26 @@ selectShi62GW(gwName) {
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h1 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
-                  ${(this.data && this.data.name) ? this.data.name : 'Bramann League'} ทายผล
+                  ${(this.data && this.data.name) ? this.data.name : 'Bramann League'} ${isEn ? 'Prediction' : 'ทายผล'}
                 </h1>
               </div>
 
               <!-- Quick Stats Grid -->
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
-                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">ยอดเงินสะพัดรวม</div>
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Total Turnover' : 'ยอดเงินสะพัดรวม'}</div>
                   <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">฿${Number(data.total_season_turnover).toLocaleString()}</div>
                 </div>
                 <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
-                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">คู่ที่เปิดทายผล</div>
-                  <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">${data.total_season_matches} คู่</div>
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Matches Tracked' : 'คู่ที่เปิดทายผล'}</div>
+                  <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">${data.total_season_matches} ${isEn ? 'Matches' : 'คู่'}</div>
                 </div>
                 <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
-                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">ผู้นำทำกำไรสูงสุด</div>
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Top Profit Leader' : 'ผู้นำทำกำไรสูงสุด'}</div>
                   <div class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 font-display truncate mt-0.5">${data.cumulative_standings[0] ? data.cumulative_standings[0].player.display_name + ' (' + fmtMoney(data.cumulative_standings[0].net) + ')' : '-'}</div>
                 </div>
                 <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
-                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">แม่นยำสูงสุด (%ชนะ)</div>
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Highest Win Rate' : 'แม่นยำสูงสุด (%ชนะ)'}</div>
                   <div class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 font-display mt-0.5">${sortedByWinRate[0]?.player.display_name || '-'} (${sortedByWinRate[0]?.win_rate || 0}%)</div>
                 </div>
               </div>
@@ -5764,7 +5764,7 @@ selectShi62GW(gwName) {
             <!-- Gameweek Controls Header -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
               <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                ผลการแข่งขัน & การคิดเงินประจำสัปดาห์
+                ${isEn ? 'Gameweek Results & Financial Settlement' : 'ผลการแข่งขัน & การคิดเงินประจำสัปดาห์'}
               </h2>
 
               <!-- GW Pills Selector & Copy LINE Button -->
@@ -5811,7 +5811,7 @@ selectShi62GW(gwName) {
                     ฿${Number(gwTotalPool).toLocaleString()}
                   </div>
                   <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                    ยอดเงินพูลที่หมุนเวียนในสัปดาห์นี้
+                    ${isEn ? 'Total pool turnover this Gameweek' : 'ยอดเงินพูลที่หมุนเวียนในสัปดาห์นี้'}
                   </div>
                 </div>
               </div>
@@ -5867,8 +5867,8 @@ selectShi62GW(gwName) {
                         </div>
                         <div class="flex items-center gap-1.5 flex-shrink-0">
                           ${isPush 
-                            ? '<span class="text-[10.5px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">เสมอ / ยก (Push)</span>'
-                            : `<span class="text-[10.5px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">ชนะ: ${m.winning_label} ✅</span>`
+                            ? `<span class="text-[10.5px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${isEn ? 'Push / Void' : 'เสมอ / ยก (Push)'}</span>`
+                            : `<span class="text-[10.5px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">${isEn ? 'Won' : 'ชนะ'}: ${m.winning_label} ✅</span>`
                           }
                           <span class="text-[10.5px] font-bold px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 font-display">฿${m.pool.toLocaleString()}</span>
                         </div>
@@ -5879,12 +5879,12 @@ selectShi62GW(gwName) {
                         <div class="rounded-lg p-2 border ${s1Won ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-slate-50/60 dark:bg-slate-800/30 border-slate-200/60 dark:border-slate-800'}">
                           <div class="flex items-center justify-between mb-1.5">
                             <span class="font-bold text-slate-900 dark:text-white">${m.side1_label}</span>
-                            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${s1Won ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${m.side1_legs} ขา</span>
+                            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${s1Won ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${m.side1_legs} ${isEn ? (m.side1_legs > 1 ? 'legs' : 'leg') : 'ขา'}</span>
                           </div>
                           <div class="flex flex-wrap gap-1">
                             ${m.side1_bets.length > 0 
                               ? m.side1_bets.map(b => `<span class="text-[10px] px-1.5 py-0.5 rounded bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium">${b.name}${b.legs > 1 ? ` <strong class="text-blue-600 dark:text-blue-400">x${b.legs}</strong>` : ''}</span>`).join('')
-                              : '<span class="text-[10px] text-slate-400 italic">ไม่มีผู้เลือก</span>'
+                              : `<span class="text-[10px] text-slate-400 italic">${isEn ? 'No selections' : 'ไม่มีผู้เลือก'}</span>`
                             }
                           </div>
                         </div>
@@ -5893,19 +5893,19 @@ selectShi62GW(gwName) {
                         <div class="rounded-lg p-2 border ${s2Won ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-slate-50/60 dark:bg-slate-800/30 border-slate-200/60 dark:border-slate-800'}">
                           <div class="flex items-center justify-between mb-1.5">
                             <span class="font-bold text-slate-900 dark:text-white">${m.side2_label}</span>
-                            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${s2Won ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${m.side2_legs} ขา</span>
+                            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${s2Won ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${m.side2_legs} ${isEn ? (m.side2_legs > 1 ? 'legs' : 'leg') : 'ขา'}</span>
                           </div>
                           <div class="flex flex-wrap gap-1">
                             ${m.side2_bets.length > 0 
                               ? m.side2_bets.map(b => `<span class="text-[10px] px-1.5 py-0.5 rounded bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium">${b.name}${b.legs > 1 ? ` <strong class="text-blue-600 dark:text-blue-400">x${b.legs}</strong>` : ''}</span>`).join('')
-                              : '<span class="text-[10px] text-slate-400 italic">ไม่มีผู้เลือก</span>'
+                              : `<span class="text-[10px] text-slate-400 italic">${isEn ? 'No selections' : 'ไม่มีผู้เลือก'}</span>`
                             }
                           </div>
                         </div>
                       </div>
 
                       <div class="pt-1 border-t border-slate-100 dark:border-slate-800/60 flex items-center gap-1.5 flex-wrap">
-                        <span class="text-[10px] text-slate-400 font-medium">ผลได้-เสีย:</span>
+                        <span class="text-[10px] text-slate-400 font-medium">${isEn ? 'Net Payout:' : 'ผลได้-เสีย:'}</span>
                         ${Object.entries(m.payouts || {}).map(([pname, pinfo]) => {
                           const netVal = pinfo.net || 0;
                           const isPos = netVal > 0;
@@ -5930,10 +5930,10 @@ selectShi62GW(gwName) {
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <div>
                 <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                  ตารางการแข่งขันทายผลสะสม
+                  ${isEn ? 'Cumulative Prediction Standings' : 'ตารางการแข่งขันทายผลสะสม'}
                 </h2>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  สรุปผลงานทายผล GW 1 ถึง ${activeGWObj.name} • คิดเงินแบบ Zero-Sum Balance (ยอดรวมได้-เสียสุทธิเท่ากับ 0 บาท)
+                  ${isEn ? `Prediction performance from GW 1 to ${activeGWObj.name} • Zero-Sum Balance calculation (Total net equals 0 THB)` : `สรุปผลงานทายผล GW 1 ถึง ${activeGWObj.name} • คิดเงินแบบ Zero-Sum Balance (ยอดรวมได้-เสียสุทธิเท่ากับ 0 บาท)`}
                 </p>
               </div>
             </div>
@@ -5942,17 +5942,17 @@ selectShi62GW(gwName) {
               <table class="w-full text-left border-collapse min-w-[640px]">
                 <thead>
                   <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    <th class="py-2.5 px-3 text-center w-12">อันดับ</th>
-                    <th class="py-2.5 px-3">ผู้เล่น / ทีม FPL</th>
-                    <th class="py-2.5 px-3 text-center">แข่ง (คู่)</th>
-                    <th class="py-2.5 px-3 text-center">ขารวม</th>
-                    <th class="py-2.5 px-3 text-center">ชนะ</th>
-                    <th class="py-2.5 px-3 text-center">แพ้</th>
-                    <th class="py-2.5 px-3 text-center">เสมอ</th>
-                    <th class="py-2.5 px-3 text-center">% ชนะ</th>
-                    <th class="py-2.5 px-3 text-right">เงินที่ได้</th>
-                    <th class="py-2.5 px-3 text-right">เงินที่เสีย</th>
-                    <th class="py-2.5 px-3 text-right font-bold">กำไร/ขาดทุนสุทธิ</th>
+                    <th class="py-2.5 px-3 text-center w-12">${isEn ? '#' : 'อันดับ'}</th>
+                    <th class="py-2.5 px-3">${isEn ? 'Player / FPL Team' : 'ผู้เล่น / ทีม FPL'}</th>
+                    <th class="py-2.5 px-3 text-center">${isEn ? 'Played' : 'แข่ง (คู่)'}</th>
+                    <th class="py-2.5 px-3 text-center">${isEn ? 'Total Legs' : 'ขารวม'}</th>
+                    <th class="py-2.5 px-3 text-center">${isEn ? 'Won' : 'ชนะ'}</th>
+                    <th class="py-2.5 px-3 text-center">${isEn ? 'Lost' : 'แพ้'}</th>
+                    <th class="py-2.5 px-3 text-center">${isEn ? 'Push' : 'เสมอ'}</th>
+                    <th class="py-2.5 px-3 text-center">${isEn ? 'Win %' : '% ชนะ'}</th>
+                    <th class="py-2.5 px-3 text-right">${isEn ? 'Won Amt' : 'เงินที่ได้'}</th>
+                    <th class="py-2.5 px-3 text-right">${isEn ? 'Lost Amt' : 'เงินที่เสีย'}</th>
+                    <th class="py-2.5 px-3 text-right font-bold">${isEn ? 'Net Profit/Loss' : 'กำไร/ขาดทุนสุทธิ'}</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
@@ -6012,6 +6012,7 @@ selectShi62GW(gwName) {
         const container = document.getElementById('bramann-challenge-view');
         if (!container) return;
 
+        const isEn = (this.currentLang === 'en');
         const data = this.bramannChalData;
         if (!this.activeBramannChalGW && data.gameweeks && data.gameweeks.length > 0) {
           this.activeBramannChalGW = data.gameweeks[data.gameweeks.length - 1].name;
@@ -6028,28 +6029,37 @@ selectShi62GW(gwName) {
           return `0${u}`;
         };
 
+        const formatTieBreak = (note) => {
+          if (!note || !isEn) return note;
+          return note
+            .replace(/เสมอแต้มรวม ชนะกัปตัน/g, 'Tied on total points, won on Captain')
+            .replace(/เสมอแต้มรวมและกัปตัน ชนะรองกัปตัน/g, 'Tied on total & Captain, won on Vice-Captain')
+            .replace(/ชนะตัวท็อปอันดับ (\d+)/g, 'Won on top scorer rank $1')
+            .replace(/แต้มเท่ากันทุกตำแหน่ง เสมอแยกย้าย/g, 'Tied on all squad positions (Push)');
+        };
+
         let html = `
           <!-- Header Banner -->
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h1 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
-                  ${(this.data && this.data.name) ? this.data.name : 'Bramann League'} ท้าชน
+                  ${(this.data && this.data.name) ? this.data.name : 'Bramann League'} ${isEn ? 'Challenge' : 'ท้าชน'}
                 </h1>
               </div>
 
               <!-- Quick Stats Grid -->
               <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
-                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">ยอดเดิมพันสะพัด</div>
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Total Stakes Turnover' : 'ยอดเดิมพันสะพัด'}</div>
                   <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">฿${Number(data.total_season_turnover).toLocaleString()}</div>
                 </div>
                 <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
-                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">แมตช์ท้าชน</div>
-                  <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">${data.total_season_matches} คู่</div>
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Challenge Matches' : 'แมตช์ท้าชน'}</div>
+                  <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">${data.total_season_matches} ${isEn ? 'Matches' : 'คู่'}</div>
                 </div>
                 <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center col-span-2 sm:col-span-1">
-                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">ผู้นำทำกำไรสูงสุด</div>
+                  <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Top Profit Leader' : 'ผู้นำทำกำไรสูงสุด'}</div>
                   <div class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 font-display truncate mt-0.5">${data.cumulative_standings[0] ? data.cumulative_standings[0].player.display_name + ' (' + fmtMoney(data.cumulative_standings[0].net) + ')' : '-'}</div>
                 </div>
               </div>
@@ -6061,7 +6071,7 @@ selectShi62GW(gwName) {
             <!-- GW Controls -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
               <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                คู่ท้าชนประจำสัปดาห์
+                ${isEn ? 'Weekly Challenge Matches' : 'คู่ท้าชนประจำสัปดาห์'}
               </h2>
 
               <div class="flex flex-wrap items-center justify-end gap-2 w-full sm:w-auto">
@@ -6102,13 +6112,13 @@ selectShi62GW(gwName) {
                       </div>
                       <div class="flex items-center gap-1.5 flex-wrap">
                         <span class="text-[10.5px] px-2 py-0.5 rounded-md font-semibold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/60">
-                          ${m.count_hits ? 'หักคะแนนลบย้ายตัว' : 'ไม่หักคะแนนลบ'}
+                          ${m.count_hits ? (isEn ? 'Transfer Hits Deducted' : 'หักคะแนนลบย้ายตัว') : (isEn ? 'No Hits Deducted' : 'ไม่หักคะแนนลบ')}
                         </span>
                         <span class="text-[10.5px] px-2 py-0.5 rounded-md font-semibold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200/60">
-                          ${m.count_chips ? 'นับชิปพิเศษ' : 'ไม่นับชิป'}
+                          ${m.count_chips ? (isEn ? 'Active Chips Counted' : 'นับชิปพิเศษ') : (isEn ? 'Chips Excluded' : 'ไม่นับชิป')}
                         </span>
                         <span class="text-[10.5px] px-2 py-0.5 rounded-md font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                          พูล: ฿${m.pool.toLocaleString()}
+                          ${isEn ? 'Pool' : 'พูล'}: ฿${m.pool.toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -6118,22 +6128,22 @@ selectShi62GW(gwName) {
                       <div class="rounded-xl p-3.5 sm:p-4 border ${s1Won ? 'bg-emerald-500/10 border-emerald-500/40' : 'bg-slate-50/60 dark:bg-slate-800/40 border-slate-200/80 dark:border-slate-700'} flex flex-col justify-between">
                         <div>
                           <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-400 font-display">ฝั่งที่ 1</span>
-                            ${s1Won ? '<span class="text-[10.5px] font-bold px-2 py-0.5 rounded bg-emerald-500 text-white shadow-2xs">ชนะ ✅</span>' : ''}
+                            <span class="text-xs font-bold text-slate-400 font-display">${isEn ? 'Side 1' : 'ฝั่งที่ 1'}</span>
+                            ${s1Won ? `<span class="text-[10.5px] font-bold px-2 py-0.5 rounded bg-emerald-500 text-white shadow-2xs">${isEn ? 'Winner ✅' : 'ชนะ ✅'}</span>` : ''}
                           </div>
                           <div class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-1">
                             ${this.escapeHtml(m.team1_name)}
                           </div>
                           <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            ผู้จัดการ: ${this.escapeHtml(m.team1_player || '-')}
+                            ${isEn ? 'Manager' : 'ผู้จัดการ'}: ${this.escapeHtml(m.team1_player || '-')}
                           </div>
                           <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            กัปตัน: <strong class="text-slate-700 dark:text-slate-300">${this.escapeHtml(m.team1_captain || '-')}</strong>
+                            ${isEn ? 'Captain' : 'กัปตัน'}: <strong class="text-slate-700 dark:text-slate-300">${this.escapeHtml(m.team1_captain || '-')}</strong>
                           </div>
                         </div>
 
                         <div class="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-700/60 flex items-baseline justify-between">
-                          <span class="text-xs font-medium text-slate-500 dark:text-slate-400">คะแนนแฟนตาซี</span>
+                          <span class="text-xs font-medium text-slate-500 dark:text-slate-400">${isEn ? 'Fantasy Points' : 'คะแนนแฟนตาซี'}</span>
                           <span class="text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white">${m.team1_pts} <span class="text-xs font-bold text-slate-400">pts</span></span>
                         </div>
                       </div>
@@ -6142,22 +6152,22 @@ selectShi62GW(gwName) {
                       <div class="rounded-xl p-3.5 sm:p-4 border ${s2Won ? 'bg-emerald-500/10 border-emerald-500/40' : 'bg-slate-50/60 dark:bg-slate-800/40 border-slate-200/80 dark:border-slate-700'} flex flex-col justify-between">
                         <div>
                           <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-400 font-display">ฝั่งที่ 2</span>
-                            ${s2Won ? '<span class="text-[10.5px] font-bold px-2 py-0.5 rounded bg-emerald-500 text-white shadow-2xs">ชนะ ✅</span>' : ''}
+                            <span class="text-xs font-bold text-slate-400 font-display">${isEn ? 'Side 2' : 'ฝั่งที่ 2'}</span>
+                            ${s2Won ? `<span class="text-[10.5px] font-bold px-2 py-0.5 rounded bg-emerald-500 text-white shadow-2xs">${isEn ? 'Winner ✅' : 'ชนะ ✅'}</span>` : ''}
                           </div>
                           <div class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-1">
                             ${this.escapeHtml(m.team2_name)}
                           </div>
                           <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            ผู้จัดการ: ${this.escapeHtml(m.team2_player || '-')}
+                            ${isEn ? 'Manager' : 'ผู้จัดการ'}: ${this.escapeHtml(m.team2_player || '-')}
                           </div>
                           <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            กัปตัน: <strong class="text-slate-700 dark:text-slate-300">${this.escapeHtml(m.team2_captain || '-')}</strong>
+                            ${isEn ? 'Captain' : 'กัปตัน'}: <strong class="text-slate-700 dark:text-slate-300">${this.escapeHtml(m.team2_captain || '-')}</strong>
                           </div>
                         </div>
 
                         <div class="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-700/60 flex items-baseline justify-between">
-                          <span class="text-xs font-medium text-slate-500 dark:text-slate-400">คะแนนแฟนตาซี</span>
+                          <span class="text-xs font-medium text-slate-500 dark:text-slate-400">${isEn ? 'Fantasy Points' : 'คะแนนแฟนตาซี'}</span>
                           <span class="text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white">${m.team2_pts} <span class="text-xs font-bold text-slate-400">pts</span></span>
                         </div>
                       </div>
@@ -6165,35 +6175,35 @@ selectShi62GW(gwName) {
 
                     ${m.tie_break_note ? `
                       <div class="p-2.5 rounded-xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/60 text-xs text-amber-800 dark:text-amber-300 font-medium flex items-center gap-2">
-                        <span>⚖️ การตัดสิน Tie-Breaker:</span>
-                        <span class="font-bold">${m.tie_break_note}</span>
+                        <span>${isEn ? '⚖️ Tie-Breaker Decision:' : '⚖️ การตัดสิน Tie-Breaker:'}</span>
+                        <span class="font-bold">${formatTieBreak(m.tie_break_note)}</span>
                       </div>
                     ` : ''}
 
                     <div class="bg-slate-50/60 dark:bg-slate-800/30 rounded-xl p-3 border border-slate-200/60 dark:border-slate-700/60 space-y-2">
                       <div class="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
-                        <span>สมาชิกที่ร่วมวางเดิมพัน & ขาเชียร์</span>
-                        <span class="text-[10.5px] text-slate-400 font-normal">เดิมพันขาละ ${m.stake_per_leg || 100} บาท</span>
+                        <span>${isEn ? 'Stakes & Supporter Picks' : 'สมาชิกที่ร่วมวางเดิมพัน & ขาเชียร์'}</span>
+                        <span class="text-[10.5px] text-slate-400 font-normal">${isEn ? `Stake: ${m.stake_per_leg || 100} THB / leg` : `เดิมพันขาละ ${m.stake_per_leg || 100} บาท`}</span>
                       </div>
 
                       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                         <div class="space-y-1">
-                          <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">เชียร์ ${this.escapeHtml(m.team1_name)}:</span>
+                          <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">${isEn ? 'Backing' : 'เชียร์'} ${this.escapeHtml(m.team1_name)}:</span>
                           <div class="flex flex-wrap gap-1">
-                            ${(m.side1_bets || []).map(b => `<span class="text-[10px] px-2 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-medium">${this.escapeHtml(b.name)} (${b.legs} ขา)</span>`).join('')}
+                            ${(m.side1_bets || []).map(b => `<span class="text-[10px] px-2 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-medium">${this.escapeHtml(b.name)} (${b.legs} ${isEn ? (b.legs > 1 ? 'legs' : 'leg') : 'ขา'})</span>`).join('')}
                           </div>
                         </div>
 
                         <div class="space-y-1">
-                          <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">เชียร์ ${this.escapeHtml(m.team2_name)}:</span>
+                          <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">${isEn ? 'Backing' : 'เชียร์'} ${this.escapeHtml(m.team2_name)}:</span>
                           <div class="flex flex-wrap gap-1">
-                            ${(m.side2_bets || []).map(b => `<span class="text-[10px] px-2 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-medium">${this.escapeHtml(b.name)} (${b.legs} ขา)</span>`).join('')}
+                            ${(m.side2_bets || []).map(b => `<span class="text-[10px] px-2 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-medium">${this.escapeHtml(b.name)} (${b.legs} ${isEn ? (b.legs > 1 ? 'legs' : 'leg') : 'ขา'})</span>`).join('')}
                           </div>
                         </div>
                       </div>
 
                       <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center gap-1.5 flex-wrap">
-                        <span class="text-[10.5px] text-slate-400 font-medium">ผลการได้-เสีย:</span>
+                        <span class="text-[10.5px] text-slate-400 font-medium">${isEn ? 'Net Result:' : 'ผลการได้-เสีย:'}</span>
                         ${Object.entries(m.payouts || {}).map(([pname, pinfo]) => {
                           const netVal = pinfo.net || 0;
                           const isPos = netVal > 0;
@@ -6218,10 +6228,10 @@ selectShi62GW(gwName) {
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <div>
                 <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                  ตารางการแข่งขันท้าชนสะสม
+                  ${isEn ? 'Cumulative Challenge Standings' : 'ตารางการแข่งขันท้าชนสะสม'}
                 </h2>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  สรุปผลงานท้าชนสะสมตลอดฤดูกาล
+                  ${isEn ? 'Season-long cumulative challenge performance' : 'สรุปผลงานท้าชนสะสมตลอดฤดูกาล'}
                 </p>
               </div>
             </div>
@@ -6230,13 +6240,13 @@ selectShi62GW(gwName) {
               <table class="w-full text-left border-collapse min-w-[580px]">
                 <thead>
                   <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    <th class="py-2.5 px-3 text-center w-12">อันดับ</th>
-                    <th class="py-2.5 px-3">ผู้เล่น / ทีม FPL</th>
-                    <th class="py-2.5 px-3 text-center">แข่ง (คู่)</th>
-                    <th class="py-2.5 px-3 text-center">ชนะ</th>
-                    <th class="py-2.5 px-3 text-center">แพ้</th>
-                    <th class="py-2.5 px-3 text-center">เสมอ</th>
-                    <th class="py-2.5 px-3 text-right font-bold">กำไร/ขาดทุนสุทธิ</th>
+                    <th class="py-2.5 px-3 text-center w-12">${isEn ? '#' : 'อันดับ'}</th>
+                    <th class="py-2.5 px-3">${isEn ? 'Player / FPL Team' : 'ผู้เล่น / ทีม FPL'}</th>
+                    <th class="py-2.5 px-3 text-center">${isEn ? 'Played' : 'แข่ง (คู่)'}</th>
+                    <th class="py-2.5 px-3 text-center">${isEn ? 'Won' : 'ชนะ'}</th>
+                    <th class="py-2.5 px-3 text-center">${isEn ? 'Lost' : 'แพ้'}</th>
+                    <th class="py-2.5 px-3 text-center">${isEn ? 'Push' : 'เสมอ'}</th>
+                    <th class="py-2.5 px-3 text-right font-bold">${isEn ? 'Net Profit/Loss' : 'กำไร/ขาดทุนสุทธิ'}</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
