@@ -436,8 +436,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
     .touch-scroll {
       -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
+      overscroll-behavior-x: contain;
+      overscroll-behavior-y: auto;
       scroll-behavior: smooth;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .touch-scroll {
+        overscroll-behavior-y: auto !important;
+      }
     }
 
     nav.touch-scroll {
