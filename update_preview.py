@@ -434,7 +434,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
     .touch-scroll {
       -webkit-overflow-scrolling: touch;
-      overscroll-behavior-x: contain;
+      overscroll-behavior: contain;
       scroll-behavior: smooth;
     }
 
@@ -1982,8 +1982,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <!-- 6. Interactive Modal Systems -->
 
   <!-- 6.1 หน้าต่างดูแผนจัดตัวนักเตะ (Team Squad Modal) -->
-  <div id="team-modal" role="dialog" aria-modal="true" aria-labelledby="team-modal-title" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200" onclick="if (event.target === this) app.closeTeamModal()">
-    <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl max-w-xl w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[94vh] flex flex-col overflow-hidden my-auto modal-animate-in" onclick="event.stopPropagation()">
+  <div id="team-modal" role="dialog" aria-modal="true" aria-labelledby="team-modal-title" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200 overscroll-contain" onclick="if (event.target === this) app.closeTeamModal()" ontouchmove="if (event.target === this) event.preventDefault()">
+    <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl max-w-xl w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[90dvh] flex flex-col overflow-hidden my-auto modal-animate-in" onclick="event.stopPropagation()">
       
       <!-- Fixed Header: 100% width, permanently clean top, zero negative margin hacks -->
       <header class="p-3.5 sm:p-5 border-b border-slate-100 dark:border-slate-800/80 bg-white dark:bg-[#0d0d0f] flex-shrink-0 z-20">
@@ -2039,7 +2039,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       </header>
 
       <!-- Scrollable Body: Contains the Framed Pitch & Substitutes with clean padding -->
-      <div id="team-modal-body" class="flex-1 overflow-y-auto overflow-x-hidden touch-scroll p-3.5 sm:p-5 space-y-3 sm:space-y-4">
+      <div id="team-modal-body" class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden touch-scroll overscroll-contain p-3.5 sm:p-5 space-y-3 sm:space-y-4">
         <!-- Authentic FPL Pitch (Framed Stadium Board) -->
         <div class="fpl-pitch rounded-2xl relative overflow-hidden shadow-inner flex flex-col justify-between py-2 sm:py-3 px-1 w-full max-w-full">
           <div class="pitch-penalty-top"></div>
@@ -2070,8 +2070,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   </div>
 
   <!-- 6.2 หน้าต่างข้อมูล Projected Points Modal (FPL Gameweek Explanation) -->
-  <div id="projected-points-modal" role="dialog" aria-modal="true" aria-labelledby="projected-points-title" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200" onclick="if (event.target === this) app.closeProjectedPointsModal()">
-    <div class="bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-6 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[94vh] overflow-y-auto modal-animate-in" onclick="event.stopPropagation()">
+  <div id="projected-points-modal" role="dialog" aria-modal="true" aria-labelledby="projected-points-title" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200 overscroll-contain" onclick="if (event.target === this) app.closeProjectedPointsModal()" ontouchmove="if (event.target === this) event.preventDefault()">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-6 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[90dvh] overflow-y-auto overscroll-contain modal-animate-in" onclick="event.stopPropagation()">
       <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
         <div class="flex items-center gap-2">
           <span class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold flex items-center justify-center text-sm font-display">Pts</span>
@@ -2096,8 +2096,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   </div>
 
   <!-- 6.3 หน้าต่าง Text Summary Modal สำหรับส่ง LINE -->
-  <div id="text-summary-modal" role="dialog" aria-modal="true" aria-labelledby="modal-summary-title" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200" onclick="if (event.target === this) app.closeTextSummaryModal()">
-    <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[94vh] flex flex-col justify-between overflow-y-auto modal-animate-in" onclick="event.stopPropagation()">
+  <div id="text-summary-modal" role="dialog" aria-modal="true" aria-labelledby="modal-summary-title" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200 overscroll-contain" onclick="if (event.target === this) app.closeTextSummaryModal()" ontouchmove="if (event.target === this) event.preventDefault()">
+    <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[90dvh] flex flex-col justify-between overflow-y-auto overscroll-contain modal-animate-in" onclick="event.stopPropagation()">
       <div>
         <div class="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-slate-800 mb-3">
           <div class="flex items-center gap-2">
