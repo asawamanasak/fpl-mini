@@ -393,6 +393,47 @@ def sync_once(args):
     current_event = next((e for e in events if e['is_current']), events[0])
     max_gw = current_event['id']
 
+    # Extract gameweek deadlines and next upcoming deadline
+    events_deadlines = []
+    next_deadline_event = None
+    now_epoch = int(time.time())
+    for ev in events:
+        ev_id = ev.get('id')
+        ev_name = ev.get('name', f"Gameweek {ev_id}")
+        ev_deadline_epoch = ev.get('deadline_time_epoch', 0)
+        ev_deadline_iso = ev.get('deadline_time', '')
+        ev_is_current = bool(ev.get('is_current'))
+        ev_is_next = bool(ev.get('is_next'))
+        ev_finished = bool(ev.get('finished'))
+        item = {
+            "id": ev_id,
+            "name": ev_name,
+            "deadline_epoch": ev_deadline_epoch,
+            "deadline_iso": ev_deadline_iso,
+            "is_current": ev_is_current,
+            "is_next": ev_is_next,
+            "finished": ev_finished
+        }
+        events_deadlines.append(item)
+        if ev_is_next and not next_deadline_event:
+            next_deadline_event = {
+                "id": ev_id,
+                "name": ev_name,
+                "deadline_epoch": ev_deadline_epoch,
+                "deadline_iso": ev_deadline_iso
+            }
+
+    if not next_deadline_event:
+        for ev in events_deadlines:
+            if ev["deadline_epoch"] > now_epoch:
+                next_deadline_event = {
+                    "id": ev["id"],
+                    "name": ev["name"],
+                    "deadline_epoch": ev["deadline_epoch"],
+                    "deadline_iso": ev["deadline_iso"]
+                }
+                break
+
     # 2. Determine Smart Finished and Started status for all GWs up to max_gw
     gw_status_map = {}
     gw_started_map = {}
@@ -510,6 +551,8 @@ def sync_once(args):
         "sync_status": "ok",
         "max_gw": max_gw,
         "league_order": list(leagues_config.keys()),
+        "next_deadline": next_deadline_event,
+        "events_deadlines": events_deadlines,
         "leagues": {}
     }
 

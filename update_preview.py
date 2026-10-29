@@ -25,6 +25,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             "sync_status": multi_data.get("sync_status"),
             "max_gw": multi_data.get("max_gw"),
             "transfer_suggestions": multi_data.get("transfer_suggestions", {}),
+            "next_deadline": multi_data.get("next_deadline"),
+            "events_deadlines": multi_data.get("events_deadlines", []),
             "leagues": {}
         }
         for lid, l_obj in multi_data.get("leagues", {}).items():
@@ -1182,8 +1184,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       
       <!-- 2.1 แถบเลือกสัปดาห์ GW 1 - 38 -->
       <div class="glass-card rounded-2xl p-2.5 sm:p-3 border border-slate-200">
-        <div class="flex items-center justify-between mb-2 px-1">
-          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider font-display">เลือกสัปดาห์การแข่งขัน (GAMEWEEK SELECTOR)</span>
+        <div class="flex flex-wrap items-center justify-between gap-y-1 mb-2 px-1">
+          <span id="gw-selector-title" class="text-xs font-bold text-slate-500 uppercase tracking-wider font-display flex flex-wrap items-center gap-1">
+            <span id="gw-selector-main-label">เลือกสัปดาห์การแข่งขัน</span>
+            <span id="gw-deadline-countdown-wrap" class="font-normal font-mono tabular-nums text-slate-500 dark:text-slate-400"></span>
+          </span>
           <span id="gw-range-status" class="text-xs font-bold text-emerald-600">สัปดาห์ที่ 1 - 38</span>
         </div>
         <div id="gw-selector-container" class="flex space-x-1.5 overflow-x-auto touch-scroll no-scrollbar py-1">
@@ -3772,6 +3777,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
         this.initVisitorCounter();
         this.initLivePolling();
+        this.initDeadlineCountdown();
 
         // Listen for browser Back/Forward navigation
         if (typeof window !== 'undefined' && window.addEventListener) {
@@ -3799,6 +3805,66 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               }
             } catch (e) {}
           });
+        }
+      }
+
+      initDeadlineCountdown() {
+        if (typeof window === 'undefined') return;
+        if (this._deadlineInterval) {
+          clearInterval(this._deadlineInterval);
+        }
+        this.updateDeadlineCountdown();
+        this._deadlineInterval = setInterval(() => {
+          this.updateDeadlineCountdown();
+        }, 1000);
+      }
+
+      updateDeadlineCountdown() {
+        const wrapEl = document.getElementById('gw-deadline-countdown-wrap');
+        if (!wrapEl) return;
+        const isEn = (this.currentLang === 'en');
+        const nowSec = Math.floor(Date.now() / 1000);
+
+        const events = (this.multiData && Array.isArray(this.multiData.events_deadlines)) ? this.multiData.events_deadlines : [];
+        let target = null;
+        if (events.length > 0) {
+          target = events.find(e => e.deadline_epoch && e.deadline_epoch > nowSec);
+        }
+        if (!target && this.multiData && this.multiData.next_deadline) {
+          target = this.multiData.next_deadline;
+        }
+
+        if (!target) {
+          wrapEl.innerText = isEn ? '(SEASON COMPLETED)' : '(จบฤดูกาล)';
+          return;
+        }
+
+        const gwNum = target.id;
+        const diff = (target.deadline_epoch || 0) - nowSec;
+
+        if (diff <= 0) {
+          wrapEl.innerText = isEn ? `(GW ${gwNum} DEADLINE: SQUADS LOCKED)` : `(เดดไลน์ GW ${gwNum}: ปิดรับรายชื่อแล้ว)`;
+          return;
+        }
+
+        const days = Math.floor(diff / 86400);
+        const hours = Math.floor((diff % 86400) / 3600);
+        const mins = Math.floor((diff % 3600) / 60);
+        const secs = diff % 60;
+        const pad = (n) => String(n).padStart(2, '0');
+        const timeStr = `${pad(hours)}:${pad(mins)}:${pad(secs)}`;
+
+        const isUrgent = (days === 0 && hours === 0);
+        const alertPrefix = isUrgent ? '⚠️ ' : '';
+
+        if (isEn) {
+          wrapEl.innerText = days > 0
+            ? `(GW ${gwNum} DEADLINE: ${days}D ${timeStr})`
+            : `(${alertPrefix}GW ${gwNum} DEADLINE: ${timeStr})`;
+        } else {
+          wrapEl.innerText = days > 0
+            ? `(เดดไลน์ GW ${gwNum}: ${days} วัน ${timeStr})`
+            : `(${alertPrefix}เดดไลน์ GW ${gwNum}: ${timeStr})`;
         }
       }
 
@@ -4206,10 +4272,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
 
         // 4. Live View Gameweek selector & headers
-        const gwSelectorLabel = document.querySelector('#gameweek-view span.uppercase');
-        if (gwSelectorLabel) {
-          gwSelectorLabel.innerText = isEn ? 'GAMEWEEK SELECTOR (1 - 38)' : 'เลือกสัปดาห์การแข่งขัน (GAMEWEEK SELECTOR)';
+        const gwMainLabel = document.getElementById('gw-selector-main-label');
+        if (gwMainLabel) {
+          gwMainLabel.innerText = isEn ? 'GAMEWEEK SELECTOR' : 'เลือกสัปดาห์การแข่งขัน';
         }
+        this.updateDeadlineCountdown();
         const gwRangeStatus = document.getElementById('gw-range-status');
         if (gwRangeStatus) {
           gwRangeStatus.innerText = isEn ? 'Gameweeks 1 - 38' : 'สัปดาห์ที่ 1 - 38';
@@ -14978,6 +15045,8 @@ def main():
         "max_gw": multi_data.get("max_gw"),
         "league_order": list(leagues_config.keys()),
         "transfer_suggestions": multi_data.get("transfer_suggestions", {}),
+        "next_deadline": multi_data.get("next_deadline"),
+        "events_deadlines": multi_data.get("events_deadlines", []),
         "leagues": {}
     }
     for lid, l_obj in multi_data.get("leagues", {}).items():
