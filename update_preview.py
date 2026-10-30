@@ -1097,9 +1097,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             onclick="app.toggleSeasonDropdown(event)" 
             class="group flex items-center gap-1.5 text-left cursor-pointer transition-colors leading-tight py-1 px-2 sm:px-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 min-h-[40px]"
             title="คลิกเพื่อสลับฤดูกาล (Switch Season)"
+            aria-label="Switch Season"
           >
             <div class="flex flex-col">
-              <span class="text-[9px] uppercase tracking-wider font-semibold text-slate-400 dark:text-slate-500 font-display leading-tight">ฤดูกาล</span>
+              <span id="season-switcher-sublabel" class="text-[9px] uppercase tracking-wider font-semibold text-slate-400 dark:text-slate-500 font-display leading-tight">ฤดูกาล</span>
               <span id="header-season-label" class="text-xs sm:text-sm font-black text-slate-800 dark:text-slate-100 font-display leading-tight">2026/27</span>
             </div>
             <span id="header-season-badge" class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
@@ -1113,8 +1114,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <!-- Dropdown Menu Box -->
           <div id="season-dropdown-menu" class="hidden absolute top-full left-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-white dark:bg-[#0d0d0f] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 animate-in fade-in zoom-in duration-100" onclick="event.stopPropagation()">
             <div class="px-3.5 py-1.5 text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400 font-display border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-              <span>เลือกฤดูกาล (Select Season)</span>
-              <span class="text-[9px] text-slate-400 font-normal">คลิกเพื่อสลับ</span>
+              <span id="season-dropdown-header-title">เลือกฤดูกาล (Select Season)</span>
+              <span id="season-dropdown-header-sub" class="text-[9px] text-slate-400 font-normal">คลิกเพื่อสลับ</span>
             </div>
             <div id="season-dropdown-options" class="p-1 space-y-0.5">
               <!-- Dynamic options for seasons -->
@@ -1195,11 +1196,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <div class="bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-transparent border border-amber-500/30 rounded-xl px-3.5 py-2 flex items-center justify-between text-xs text-amber-900 dark:text-amber-200">
         <div class="flex items-center gap-2">
           <span class="text-base flex-shrink-0">📦</span>
-          <span>
+          <span id="archived-banner-text">
             <strong class="font-bold">ฤดูกาลสิ้นสุดแล้ว (ARCHIVED)</strong> — บันทึกสถิติและคะแนนอย่างเป็นทางการ
           </span>
         </div>
-        <button onclick="app.switchSeason('2026-27')" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline flex-shrink-0 cursor-pointer ml-2">
+        <button id="archived-banner-return-btn" onclick="app.switchSeason('2026-27')" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline flex-shrink-0 cursor-pointer ml-2">
           สลับกลับสู่ฤดูกาลปัจจุบัน ➔
         </button>
       </div>
@@ -4474,6 +4475,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
         this.updateLanguageUI();
         this.updateHeaderInfo();
+        this.renderSeasonDropdown();
         this.renderLeagueDropdown();
         this.renderAll();
         if (this.currentModalEntryId) {
@@ -4565,6 +4567,35 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             viewingBadge.innerText = isEn ? '✓ Viewing' : '✓ กำลังดู';
           }
         });
+
+        // 2.1 Season Switcher button & Dropdown labels
+        const seasonSublabel = document.getElementById('season-switcher-sublabel');
+        if (seasonSublabel) seasonSublabel.innerText = isEn ? 'SEASON' : 'ฤดูกาล';
+
+        const seasonBtn = document.getElementById('season-switcher-btn');
+        if (seasonBtn) {
+          seasonBtn.title = isEn ? 'Click to switch season (สลับฤดูกาล)' : 'คลิกเพื่อสลับฤดูกาล (Switch Season)';
+          seasonBtn.setAttribute('aria-label', isEn ? 'Switch Season' : 'สลับฤดูกาล');
+        }
+
+        const seasonDdTitle = document.getElementById('season-dropdown-header-title');
+        if (seasonDdTitle) seasonDdTitle.innerText = isEn ? 'Select Season' : 'เลือกฤดูกาล (Select Season)';
+
+        const seasonDdSub = document.getElementById('season-dropdown-header-sub');
+        if (seasonDdSub) seasonDdSub.innerText = isEn ? 'Click to switch' : 'คลิกเพื่อสลับ';
+
+        // 2.2 Archived Season Notice Banner
+        const archivedBannerText = document.getElementById('archived-banner-text');
+        if (archivedBannerText) {
+          archivedBannerText.innerHTML = isEn
+            ? '<strong class="font-bold">Season Concluded (ARCHIVED)</strong> — Official final standings and historical record'
+            : '<strong class="font-bold">ฤดูกาลสิ้นสุดแล้ว (ARCHIVED)</strong> — บันทึกสถิติและคะแนนอย่างเป็นทางการ';
+        }
+
+        const archivedBannerBtn = document.getElementById('archived-banner-return-btn');
+        if (archivedBannerBtn) {
+          archivedBannerBtn.innerText = isEn ? 'Return to Current Season ➔' : 'สลับกลับสู่ฤดูกาลปัจจุบัน ➔';
+        }
 
         // 3. Header Sub-row
         const memberCountEl = document.getElementById('header-member-count');
@@ -5465,7 +5496,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           if (this.isArchived) {
             lastSyncEl.innerText = (this.multiData && this.multiData.last_sync_iso)
               ? this.formatSyncDate(this.multiData.last_sync_iso)
-              : 'Official Archive';
+              : (isEn ? 'Official Archive' : 'บันทึกสถิติทางการ');
           } else {
             lastSyncEl.innerText = (this.multiData && this.multiData.last_sync_iso)
               ? this.formatSyncDate(this.multiData.last_sync_iso)
@@ -5483,9 +5514,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           if (gwStatusEl) gwStatusEl.innerText = isEn ? 'Archived Season (Historical)' : 'ฤดูกาลสิ้นสุดแล้ว (ARCHIVED)';
           if (gwStatusBox) gwStatusBox.className = 'text-xs font-semibold text-amber-900 hidden md:flex items-center bg-amber-50 px-3.5 py-1.5 rounded-xl border border-amber-300 shadow-xs';
           if (gwStatusDot) gwStatusDot.className = 'inline-block w-2 h-2 rounded-full bg-amber-500 mr-2';
-          if (lastSyncIcon) lastSyncIcon.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500 inline-block" title="Official Archive"></span>';
+          if (lastSyncIcon) lastSyncIcon.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500 inline-block" title="${isEn ? 'Official Archive' : 'บันทึกทางการ'}"></span>`;
           if (lastSyncBadge) {
-            lastSyncBadge.setAttribute('title', 'บันทึกสถิติอย่างเป็นทางการ (Official Archive)');
+            lastSyncBadge.setAttribute('title', isEn ? 'Official Historical Season Record' : 'บันทึกสถิติอย่างเป็นทางการ (Official Archive)');
             lastSyncBadge.className = 'inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs';
           }
           if (cupTabBtn) cupTabBtn.classList.add('hidden');
