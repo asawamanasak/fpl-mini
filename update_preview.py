@@ -1069,6 +1069,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         >
           <svg class="w-4 h-4 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
         </button>
+
+        <!-- Social Share Card Button (Icon-Only Compact) -->
+        <button 
+          id="btn-share-social-card"
+          onclick="window.app && window.app.openSocialShareModal()"
+          class="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-500 border border-slate-800 dark:border-blue-500 text-white transition-all shadow-sm active:scale-95 flex-shrink-0 cursor-pointer"
+          title="Social Share Card (PNG Image) / สร้างการ์ดรูปภาพแชร์ผล"
+          aria-label="Social Share Card"
+        >
+          <svg class="w-4 h-4 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+        </button>
       </div>
     </div>
 
@@ -2165,12 +2176,60 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <span id="modal-copy-indicator-text">คัดลอกลงคลิปบอร์ดแล้ว!</span>
         </span>
         <div class="flex items-center gap-2 ml-auto">
+          <button id="btn-modal-share-card" onclick="app.closeTextSummaryModal(); app.openSocialShareModal();" class="px-3.5 sm:px-4 py-2 min-h-[44px] rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            <span id="btn-modal-share-card-label">แชร์รูปภาพ</span>
+          </button>
           <button id="modal-summary-close-btn" onclick="app.closeTextSummaryModal()" class="px-4 py-2 min-h-[44px] rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer active:scale-95">
             ปิด
           </button>
           <button id="btn-modal-copy" onclick="app.copyFromModal()" class="px-4 sm:px-5 py-2 min-h-[44px] rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-500 transition-all shadow-sm active:scale-95 cursor-pointer flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
             <span id="btn-modal-copy-label">คัดลอกข้อความ</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.4 หน้าต่าง Social Share Card Modal สำหรับแชร์ภาพความละเอียดสูง -->
+  <div id="social-share-modal" role="dialog" aria-modal="true" aria-labelledby="modal-share-card-title" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200 overscroll-contain" onclick="if (event.target === this) app.closeSocialShareModal()" ontouchmove="if (event.target === this) event.preventDefault()">
+    <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[90dvh] flex flex-col justify-between overflow-y-auto overscroll-contain modal-animate-in" onclick="event.stopPropagation()">
+      <div>
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+            <h3 id="modal-share-card-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">สร้างการ์ดรูปภาพแชร์ผล</h3>
+          </div>
+          <button onclick="app.closeSocialShareModal()" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold transition-colors cursor-pointer text-lg active:scale-95" aria-label="Close modal">✕</button>
+        </div>
+
+        <div class="flex items-center justify-between mb-3 text-xs gap-2">
+          <p id="modal-share-card-subtitle" class="text-slate-500 dark:text-slate-400 truncate">ภาพการ์ดความละเอียดสูง (1080x1080) สำหรับแชร์:</p>
+          <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg flex-shrink-0">
+            <button id="theme-btn-emerald" onclick="app.setSocialCardTheme('emerald')" class="px-2 py-1 rounded-md text-[11px] font-bold transition-all bg-emerald-600 text-white shadow-2xs cursor-pointer">Emerald</button>
+            <button id="theme-btn-dark" onclick="app.setSocialCardTheme('dark')" class="px-2 py-1 rounded-md text-[11px] font-bold text-slate-600 dark:text-slate-400 transition-all hover:text-slate-900 dark:hover:text-white cursor-pointer">Dark</button>
+          </div>
+        </div>
+
+        <!-- Canvas Preview Container -->
+        <div class="relative bg-slate-950 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-inner flex items-center justify-center p-1">
+          <canvas id="social-card-canvas" width="1080" height="1080" class="w-full max-h-[50dvh] sm:max-h-[55dvh] object-contain rounded-xl shadow-lg"></canvas>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-3.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
+        <button id="modal-share-card-close-btn" onclick="app.closeSocialShareModal()" class="px-4 py-2 min-h-[44px] rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer active:scale-95">
+          ปิด
+        </button>
+        <div class="flex items-center gap-2 ml-auto">
+          <button id="btn-card-native-share" onclick="app.shareSocialCardNative()" class="hidden px-4 py-2 min-h-[44px] rounded-xl text-xs font-bold text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700 active:scale-95 cursor-pointer flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+            <span id="btn-card-native-share-label">แชร์รูป</span>
+          </button>
+          <button id="btn-card-download" onclick="app.downloadSocialCardPNG()" class="px-4 sm:px-5 py-2 min-h-[44px] rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-500 transition-all shadow-sm active:scale-95 cursor-pointer flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            <span id="btn-card-download-label">บันทึกรูปภาพ (PNG)</span>
           </button>
         </div>
       </div>
@@ -4548,6 +4607,24 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (summaryModalCopySpan) {
           summaryModalCopySpan.innerText = isEn ? 'Copy Text' : 'คัดลอกข้อความ';
         }
+        const modalShareBtnLabel = document.getElementById('btn-modal-share-card-label');
+        if (modalShareBtnLabel) {
+          modalShareBtnLabel.innerText = isEn ? 'Share Card' : 'แชร์รูปภาพ';
+        }
+
+        // 8.1 Social Share Card Modal (Image Export)
+        const shareCardTitle = document.getElementById('modal-share-card-title');
+        if (shareCardTitle) shareCardTitle.innerText = isEn ? 'Social Share Card' : 'สร้างการ์ดรูปภาพแชร์ผล';
+        const shareCardSubtitle = document.getElementById('modal-share-card-subtitle');
+        if (shareCardSubtitle) shareCardSubtitle.innerText = isEn ? 'High-resolution card (1080x1080) ready to share:' : 'ภาพการ์ดความละเอียดสูง (1080x1080) สำหรับแชร์:';
+        const shareCardCloseBtn = document.getElementById('modal-share-card-close-btn');
+        if (shareCardCloseBtn) shareCardCloseBtn.innerText = isEn ? 'Close' : 'ปิด';
+        const cardDlLabel = document.getElementById('btn-card-download-label');
+        if (cardDlLabel) cardDlLabel.innerText = isEn ? 'Download Image (PNG)' : 'บันทึกรูปภาพ (PNG)';
+        const cardShareLabel = document.getElementById('btn-card-native-share-label');
+        if (cardShareLabel) cardShareLabel.innerText = isEn ? 'Share Image' : 'แชร์รูปภาพ';
+        const headerShareCardBtn = document.getElementById('btn-share-social-card');
+        if (headerShareCardBtn) headerShareCardBtn.title = isEn ? 'Social Share Card (PNG Image)' : 'Social Share Card / สร้างการ์ดรูปภาพแชร์ผล';
 
         // 9. Competition View Header Banner
         const compTitle = document.getElementById('competition-overview-title');
@@ -14113,6 +14190,396 @@ selectShi62GW(gwName) {
         }
       }
 
+      openSocialShareModal() {
+        this.socialCardTheme = this.socialCardTheme || 'emerald';
+        const modal = document.getElementById('social-share-modal');
+        if (modal) {
+          modal.classList.remove('hidden');
+          document.body.classList.add('overflow-hidden');
+        }
+        this.renderSocialCard();
+
+        const nativeShareBtn = document.getElementById('btn-card-native-share');
+        if (nativeShareBtn && typeof navigator !== 'undefined' && navigator.share && navigator.canShare) {
+          nativeShareBtn.classList.remove('hidden');
+        }
+      }
+
+      closeSocialShareModal() {
+        const modal = document.getElementById('social-share-modal');
+        if (modal) {
+          modal.classList.add('hidden');
+          document.body.classList.remove('overflow-hidden');
+        }
+      }
+
+      setSocialCardTheme(theme) {
+        this.socialCardTheme = theme;
+        const emeraldBtn = document.getElementById('theme-btn-emerald');
+        const darkBtn = document.getElementById('theme-btn-dark');
+        if (emeraldBtn && darkBtn) {
+          if (theme === 'emerald') {
+            emeraldBtn.className = 'px-2 py-1 rounded-md text-[11px] font-bold transition-all bg-emerald-600 text-white shadow-2xs cursor-pointer';
+            darkBtn.className = 'px-2 py-1 rounded-md text-[11px] font-bold text-slate-600 dark:text-slate-400 transition-all hover:text-slate-900 dark:hover:text-white cursor-pointer';
+          } else {
+            darkBtn.className = 'px-2 py-1 rounded-md text-[11px] font-bold transition-all bg-slate-900 dark:bg-blue-600 text-white shadow-2xs cursor-pointer';
+            emeraldBtn.className = 'px-2 py-1 rounded-md text-[11px] font-bold text-slate-600 dark:text-slate-400 transition-all hover:text-slate-900 dark:hover:text-white cursor-pointer';
+          }
+        }
+        this.renderSocialCard();
+      }
+
+      renderSocialCard() {
+        const canvas = document.getElementById('social-card-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const theme = this.socialCardTheme || 'emerald';
+        const isEn = (this.currentLang === 'en');
+        const gwKey = String(this.selectedGW || 1);
+        const gwData = (this.data && this.data.gameweeks) ? (this.data.gameweeks[gwKey] || {}) : {};
+        const isFinished = Boolean(gwData.is_finished);
+
+        const w = 1080;
+        const h = 1080;
+        canvas.width = w;
+        canvas.height = h;
+
+        // 1. Background Gradient & Outer Border
+        const bg = ctx.createLinearGradient(0, 0, w, h);
+        if (theme === 'emerald') {
+          bg.addColorStop(0, '#064e3b');
+          bg.addColorStop(0.35, '#022c22');
+          bg.addColorStop(1, '#090d16');
+        } else {
+          bg.addColorStop(0, '#0f172a');
+          bg.addColorStop(0.5, '#020617');
+          bg.addColorStop(1, '#000000');
+        }
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, w, h);
+
+        const glow = ctx.createRadialGradient(900, 120, 20, 900, 120, 520);
+        glow.addColorStop(0, theme === 'emerald' ? 'rgba(52, 211, 153, 0.18)' : 'rgba(59, 130, 246, 0.18)');
+        glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.strokeStyle = theme === 'emerald' ? 'rgba(52, 211, 153, 0.25)' : 'rgba(59, 130, 246, 0.25)';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(2, 2, w - 4, h - 4);
+
+        // 2. Header Row
+        ctx.fillStyle = theme === 'emerald' ? '#10b981' : '#3b82f6';
+        ctx.beginPath();
+        ctx.arc(65, 75, 6, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = theme === 'emerald' ? '#6ee7b7' : '#93c5fd';
+        ctx.font = 'bold 16px Sarabun, -apple-system, sans-serif';
+        ctx.fillText('FPL MINI-LEAGUE PRESENTATION', 80, 81);
+
+        const gwStr = `GW ${gwKey} • ${isFinished ? (isEn ? 'OFFICIAL RESULT' : 'ผลทางการ') : (isEn ? 'LIVE MATCHDAY' : 'กำลังแข่งขัน')}`;
+        ctx.font = 'bold 16px Sarabun, sans-serif';
+        const gwMetrics = ctx.measureText(gwStr);
+        const pillW = gwMetrics.width + 30;
+        const pillX = w - 50 - pillW;
+        ctx.fillStyle = isFinished ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)';
+        ctx.strokeStyle = isFinished ? '#10b981' : '#ef4444';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.roundRect(pillX, 60, pillW, 30, 15);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = isFinished ? '#34d399' : '#f87171';
+        ctx.fillText(gwStr, pillX + 15, 81);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 36px Sarabun, sans-serif';
+        const leagueTitle = (this.data && this.data.name) ? this.data.name : `League ${this.activeLeagueId}`;
+        ctx.fillText(leagueTitle, 50, 130);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '500 18px Sarabun, sans-serif';
+        const teamCount = (this.data && this.data.teams) ? this.data.teams.length : 0;
+        ctx.fillText(`Season 2026/27 • ${teamCount} ${isEn ? 'Teams' : 'ทีมสมาชิก'}`, 50, 160);
+
+        // 3. Weekly Winner Spotlight
+        const results = (gwData && gwData.results) ? [...gwData.results] : [];
+        const sorted = results.sort((a, b) => (b.net_points || b.points || 0) - (a.net_points || a.points || 0));
+        const winner = sorted[0] || {};
+        const isWeeklyPrize = this.config && this.config.features && this.config.features.prize_model === 'weekly';
+        const weeklyPrizeAmount = isWeeklyPrize ? (this.config.features.weekly_prize_amount || 0) : 0;
+
+        const heroY = 185;
+        const heroH = 185;
+        const heroGrad = ctx.createLinearGradient(50, heroY, w - 50, heroY + heroH);
+        heroGrad.addColorStop(0, 'rgba(255, 255, 255, 0.08)');
+        heroGrad.addColorStop(1, 'rgba(255, 255, 255, 0.03)');
+        ctx.fillStyle = heroGrad;
+        ctx.beginPath();
+        ctx.roundRect(50, heroY, w - 100, heroH, 20);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.fillStyle = '#fbbf24';
+        ctx.font = 'bold 16px Sarabun, sans-serif';
+        const heroLabel = isEn ? '👑 WEEKLY TOP SCORER' : '👑 ผู้ทำคะแนนสูงสุดประจำสัปดาห์';
+        ctx.fillText(heroLabel, 75, heroY + 38);
+
+        if (isWeeklyPrize && weeklyPrizeAmount > 0) {
+          const prizeText = `🏆 ฿${Number(weeklyPrizeAmount).toLocaleString()}`;
+          ctx.fillStyle = '#fef08a';
+          ctx.font = 'bold 18px Sarabun, sans-serif';
+          const pMet = ctx.measureText(prizeText);
+          ctx.fillText(prizeText, w - 75 - pMet.width, heroY + 38);
+        }
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 34px Sarabun, sans-serif';
+        const winnerTeam = winner.team_name || winner.entry_name || '-';
+        ctx.fillText(winnerTeam.length > 24 ? winnerTeam.substring(0, 22) + '..' : winnerTeam, 75, heroY + 85);
+
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '500 20px Sarabun, sans-serif';
+        const winnerPlayer = winner.player_name || '-';
+        ctx.fillText(winnerPlayer.length > 28 ? winnerPlayer.substring(0, 26) + '..' : winnerPlayer, 75, heroY + 118);
+
+        ctx.fillStyle = '#34d399';
+        ctx.font = 'black 54px Sarabun, sans-serif';
+        const netPts = (winner.net_points !== undefined) ? winner.net_points : (winner.points || 0);
+        const ptsText = `${netPts} pts`;
+        const ptsMet = ctx.measureText(ptsText);
+        ctx.fillText(ptsText, w - 75 - ptsMet.width, heroY + 105);
+
+        let detailStr = '';
+        if (winner.captain && winner.captain !== '-') detailStr += `(C) ${winner.captain}`;
+        if (winner.hits && winner.hits > 0) detailStr += (detailStr ? ' • ' : '') + `Hits: -${winner.hits}`;
+        if (winner.chip) detailStr += (detailStr ? ' • ' : '') + `[${winner.chip.toUpperCase()}]`;
+        if (!detailStr) detailStr = isEn ? 'Net Gameweek Points' : 'คะแนนสุทธิหลังหักคะแนนลบ';
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '500 17px Sarabun, sans-serif';
+        ctx.fillText(detailStr, 75, heroY + 155);
+
+        // 4. Tactical Commentary Quote Box
+        const quoteY = 390;
+        const quoteH = 130;
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+        ctx.beginPath();
+        ctx.roundRect(50, quoteY, w - 100, quoteH, 16);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.stroke();
+
+        ctx.fillStyle = '#f59e0b';
+        ctx.beginPath();
+        ctx.roundRect(50, quoteY, 6, quoteH, [16, 0, 0, 16]);
+        ctx.fill();
+
+        ctx.fillStyle = '#f59e0b';
+        ctx.font = 'bold 15px Sarabun, sans-serif';
+        ctx.fillText(isEn ? '💬 BORBOU TACTICAL ANALYSIS' : '💬 บทวิเคราะห์พาดหัวประจำสัปดาห์ (สไตล์ บอ.บู๋)', 75, quoteY + 30);
+
+        const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
+        const useHighestPlayerTieBreaker = (this.config && (String(this.config.id) === '1101958' || String(this.config.id) === '438691'));
+        const cacheKey = `${this.activeLeagueId}_${this.selectedGW}_${isEn ? 'en' : 'th'}`;
+        const currentLiveNote = this.liveNotesCache[cacheKey] || (typeof LiveCommentaryEngine !== 'undefined' ? LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeeklyPrize, useHighestPlayerTieBreaker, isEn) : (isEn ? 'Awaiting matchday verified results.' : 'รอผลการแข่งขันเสร็จสิ้นสมบูรณ์จากสนามจริง'));
+
+        ctx.fillStyle = '#f1f5f9';
+        ctx.font = '18px Sarabun, sans-serif';
+
+        const wrapText = (textStr, x, yPos, maxW, lineH, maxL = 2) => {
+          let tokens = [];
+          if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+            const seg = new Intl.Segmenter(isEn ? 'en' : 'th', { granularity: 'word' });
+            tokens = Array.from(seg.segment(textStr)).map(s => s.segment);
+          } else {
+            tokens = textStr.split(/(\s+)/);
+          }
+
+          let lines = [];
+          let curLine = '';
+          for (let i = 0; i < tokens.length; i++) {
+            const t = tokens[i];
+            const testL = curLine + t;
+            if (ctx.measureText(testL).width > maxW && curLine.length > 0) {
+              lines.push(curLine.trimEnd());
+              curLine = t.trimStart();
+              if (lines.length === maxL - 1) {
+                let remaining = tokens.slice(i).join('');
+                if (remaining.startsWith(' ')) remaining = remaining.trimStart();
+                let truncated = false;
+                if (ctx.measureText(curLine + remaining).width > maxW) {
+                  truncated = true;
+                  while (remaining.length > 0 && ctx.measureText(curLine + remaining + '...').width > maxW) {
+                    remaining = remaining.slice(0, -1);
+                  }
+                }
+                lines.push(truncated ? ((curLine + remaining).trimEnd() + '...') : (curLine + remaining).trimEnd());
+                curLine = '';
+                break;
+              }
+            } else {
+              curLine = testL;
+            }
+          }
+          if (curLine.trim().length > 0 && lines.length < maxL) {
+            lines.push(curLine.trimEnd());
+          }
+
+          lines.forEach((l, idx) => {
+            ctx.fillText(l, x, yPos + (idx * lineH));
+          });
+        };
+        wrapText(`"${currentLiveNote}"`, 75, quoteY + 65, w - 150, 28, 2);
+
+        // 5. Top 5 Standings Table
+        const tableY = 540;
+        const rowH = 75;
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = 'bold 15px Sarabun, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('#', 88, tableY + 25);
+        ctx.textAlign = 'left';
+        ctx.fillText(isEn ? 'TEAM & MANAGER' : 'ทีม & ผู้จัดการ', 140, tableY + 25);
+        ctx.textAlign = 'center';
+        ctx.fillText(isEn ? 'GW PTS' : 'คะแนนสด', 680, tableY + 25);
+        ctx.fillText(isEn ? 'HITS' : 'ลบ', 810, tableY + 25);
+        ctx.textAlign = 'right';
+        const totHeader = isEn ? 'TOTAL' : 'คะแนนรวม';
+        ctx.fillText(totHeader, w - 75, tableY + 25);
+        ctx.textAlign = 'left';
+
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(50, tableY + 38);
+        ctx.lineTo(w - 50, tableY + 38);
+        ctx.stroke();
+
+        const lbTeams = (typeof this.getLeaderboardTeams === 'function') ? this.getLeaderboardTeams() : (this.data.teams || []);
+        const totalPtsMap = {};
+        lbTeams.forEach(t => {
+          totalPtsMap[t.entry_id] = t.total_points || t.total || 0;
+        });
+
+        const top5 = sorted.slice(0, 5);
+        top5.forEach((t, i) => {
+          const ry = tableY + 45 + (i * rowH);
+          if (i === 0) {
+            ctx.fillStyle = 'rgba(245, 158, 11, 0.1)';
+          } else if (i % 2 === 1) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+          } else {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.015)';
+          }
+          ctx.beginPath();
+          ctx.roundRect(50, ry, w - 100, rowH - 6, 12);
+          ctx.fill();
+
+          const rankColors = ['#fbbf24', '#cbd5e1', '#d97706', '#64748b', '#64748b'];
+          ctx.fillStyle = rankColors[i] || '#64748b';
+          ctx.beginPath();
+          ctx.arc(88, ry + 34, 16, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = i === 0 ? '#78350f' : (i < 3 ? '#0f172a' : '#ffffff');
+          ctx.font = 'bold 16px Sarabun, sans-serif';
+          ctx.textAlign = 'center';
+          const rNum = String(i + 1);
+          ctx.fillText(rNum, 88, ry + 40);
+
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 22px Sarabun, sans-serif';
+          let teamNameDisplay = t.team_name || t.entry_name || '-';
+          if (teamNameDisplay.length > 28) teamNameDisplay = teamNameDisplay.substring(0, 26) + '..';
+          ctx.fillText(teamNameDisplay, 140, ry + 31);
+
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = '500 15px Sarabun, sans-serif';
+          let playerNameDisplay = t.player_name || '-';
+          if (playerNameDisplay.length > 30) playerNameDisplay = playerNameDisplay.substring(0, 28) + '..';
+          ctx.fillText(playerNameDisplay, 140, ry + 54);
+
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#34d399';
+          ctx.font = 'bold 22px Sarabun, sans-serif';
+          ctx.fillText(`${t.net_points || t.points || 0}`, 680, ry + 42);
+
+          ctx.fillStyle = (t.hits && t.hits > 0) ? '#f87171' : '#64748b';
+          ctx.font = '500 17px Sarabun, sans-serif';
+          ctx.fillText((t.hits && t.hits > 0) ? `-${t.hits}` : '-', 810, ry + 42);
+
+          ctx.textAlign = 'right';
+          ctx.fillStyle = '#f8fafc';
+          ctx.font = 'bold 24px Sarabun, sans-serif';
+          const totPtsStr = String(totalPtsMap[t.entry_id] || t.total_points || t.total || 0);
+          ctx.fillText(totPtsStr, w - 75, ry + 42);
+          ctx.textAlign = 'left';
+        });
+
+        // 6. Footer Row
+        const footY = 1030;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.beginPath();
+        ctx.moveTo(50, footY - 15);
+        ctx.lineTo(w - 50, footY - 15);
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '500 16px Sarabun, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(`https://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`, 50, footY + 15);
+
+        ctx.textAlign = 'right';
+        const timeStr = `Synced: ${this.multiData.last_sync || 'LIVE'}`;
+        ctx.fillText(timeStr, w - 50, footY + 15);
+        ctx.textAlign = 'left';
+      }
+
+      downloadSocialCardPNG() {
+        const canvas = document.getElementById('social-card-canvas');
+        if (!canvas) return;
+        const link = document.createElement('a');
+        const gw = this.selectedGW || 1;
+        const lid = this.activeLeagueId || 'fpl';
+        link.download = `fpl_gw${gw}_league_${lid}_card.png`;
+        link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        this.showToast(this.currentLang === 'en' ? 'Downloaded Social Share Card!' : 'บันทึกรูปภาพ Social Share Card เรียบร้อย!');
+      }
+
+      async shareSocialCardNative() {
+        const canvas = document.getElementById('social-card-canvas');
+        if (!canvas || typeof navigator === 'undefined' || !navigator.share) return;
+        try {
+          canvas.toBlob(async (blob) => {
+            if (!blob) return;
+            const gw = this.selectedGW || 1;
+            const lid = this.activeLeagueId || 'fpl';
+            const file = new File([blob], `fpl_gw${gw}_${lid}.png`, { type: 'image/png' });
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                files: [file],
+                title: `FPL Mini-League GW ${gw}`,
+                text: `สรุปผลคะแนน FPL Gameweek ${gw} • ${(this.data && this.data.name) ? this.data.name : ''}`
+              });
+            } else {
+              this.downloadSocialCardPNG();
+            }
+          }, 'image/png');
+        } catch (e) {
+          console.debug('Native share aborted or unsupported:', e);
+        }
+      }
+
       showToast(msg, type = 'success') {
         if (typeof document === 'undefined') return;
         let toast = document.getElementById('global-copied-toast');
@@ -15166,6 +15633,7 @@ selectShi62GW(gwName) {
           window.app.closeTeamModal();
           window.app.closeProjectedPointsModal();
           window.app.closeTextSummaryModal();
+          window.app.closeSocialShareModal();
         }
       });
 
