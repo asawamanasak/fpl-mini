@@ -179,6 +179,21 @@ def get_active_in_play_fixture_count(gw_id):
         print(f"Notice checking in-play fixtures for GW {gw_id}: {e}")
         return None
 
+def derive_season_info(events):
+    """
+    Derive machine season_id (e.g. '2026-27') and display string (e.g. '2026/27')
+    from FPL bootstrap events deadline timestamps.
+    """
+    if not events:
+        return "2026-27", "2026/27"
+    ev1 = events[0]
+    deadline_iso = ev1.get('deadline_time', '')
+    if len(deadline_iso) >= 4 and deadline_iso[:4].isdigit():
+        start_year = int(deadline_iso[:4])
+        end_year_short = (start_year + 1) % 100
+        return f"{start_year}-{end_year_short:02d}", f"{start_year}/{end_year_short:02d}"
+    return "2026-27", "2026/27"
+
 _last_publish_time = 0
 
 def trigger_publish():
@@ -464,8 +479,38 @@ def sync_once(args):
                 else:
                     print(f" -> GW {gw_id}: Pre-Match / Squads locked (0 matches kicked off).")
 
+    # 2.5 Season Derivation & Rollover Guard
+    season_id, season_display = derive_season_info(events)
+    print(f"Detected FPL Season: {season_display} (Machine ID: {season_id})")
+
     # 3. Load leagues config
     base_dir = os.path.dirname(os.path.abspath(__file__))
+    season_cfg_path = os.path.join(base_dir, 'config', 'season_config.json')
+    configured_season = None
+    if os.path.exists(season_cfg_path):
+        try:
+            with open(season_cfg_path, 'r', encoding='utf-8') as f:
+                s_cfg = json.load(f)
+                configured_season = s_cfg.get("current_season")
+        except Exception as e:
+            print(f"Warning reading season_config.json: {e}")
+
+    if configured_season and season_id != configured_season:
+        print("\n" + "=" * 70)
+        print("🚨 [SEASON ROLLOVER GUARD TRIGGERED] 🚨")
+        print(f"   FPL API reports new season: '{season_id}' (GW 1: {events[0].get('deadline_time')})")
+        print(f"   Configured active season:   '{configured_season}'")
+        print("   CRITICAL: Sync halted to prevent overwriting previous season data!")
+        print("   Action required: Run 'python3 archive_season.py' to preserve the past season,")
+        print("   then update 'config/season_config.json' and 'config/leagues_config.json'.")
+        print("=" * 70 + "\n")
+        multi_json_path = os.path.join(base_dir, 'multi_fpl_data.json')
+        c_data = load_cached_data(multi_json_path)
+        if c_data:
+            c_data["sync_status"] = "season_rollover_blocked"
+            atomic_json_dump(c_data, multi_json_path)
+        sys.exit(2)
+
     config_path = os.path.join(base_dir, 'config', 'leagues_config.json')
     if os.path.exists(config_path):
         with open(config_path, 'r', encoding='utf-8') as f:
@@ -549,6 +594,8 @@ def sync_once(args):
         "last_sync": sync_time_str,
         "last_sync_iso": sync_iso_str,
         "sync_status": "ok",
+        "season_id": season_id,
+        "season": season_display,
         "max_gw": max_gw,
         "league_order": list(leagues_config.keys()),
         "next_deadline": next_deadline_event,
@@ -1197,7 +1244,7 @@ def sync_once(args):
                 multi_league_output["leagues"][str(lid)] = {
                     "id": lid,
                     "name": league_name,
-                    "season": "2026/27",
+                    "season": season_display,
                     "teams": teams_list,
                     "gameweeks": gameweeks_dict,
                     "squads": squads_dict
@@ -1330,7 +1377,7 @@ def sync_once(args):
             "league": {
                 "id": 40700,
                 "name": multi_league_output["leagues"]["40700"]["name"],
-                "season": "2026/27",
+                "season": season_display,
                 "last_sync": sync_time_str,
                 "last_sync_iso": sync_iso_str
             },

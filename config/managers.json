@@ -1,0 +1,2347 @@
+{
+  "_version": 1,
+  "managers": [
+    {
+      "id": "mgr_aim_sirampuj",
+      "display_name": "Aim Sirampuj",
+      "aliases": [
+        "Aim Sirampuj"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 5972003,
+              "team_name": "YoullneverAIMalone"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_alesandro_nuyie",
+      "display_name": "Alesandro Nuyie",
+      "aliases": [
+        "Alesandro Nuyie"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "40700": {
+              "entry_id": 2999763,
+              "team_name": "Cody Travers"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_amornthep_taveephanich",
+      "display_name": "Amornthep Taveephanich",
+      "aliases": [
+        "Amornthep Taveephanich"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "187827": {
+              "entry_id": 1309919,
+              "team_name": "amornTong"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_anuth_duangmarn",
+      "display_name": "Anuth Duangmarn",
+      "aliases": [
+        "Anuth Duangmarn"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 226,
+              "team_name": "van Xke"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_apirak_typhoon",
+      "display_name": "Apirak Typhoon",
+      "aliases": [
+        "Apirak Typhoon"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 6073813,
+              "team_name": "TP-Dangerous UTD"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_arporn_meebangyang",
+      "display_name": "Arporn Meebangyang",
+      "aliases": [
+        "Arporn Meebangyang"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 5956924,
+              "team_name": "nachai 5 fc"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_artist_cheamcharoen",
+      "display_name": "Artist Cheamcharoen",
+      "aliases": [
+        "Artist Cheamcharoen"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 7661163,
+              "team_name": "MorganLoma888"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_ataro_munson",
+      "display_name": "Ataro Munson",
+      "aliases": [
+        "Ataro Munson"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "40700": {
+              "entry_id": 2604490,
+              "team_name": "Leibniz FC"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_athit_rattanawipapong",
+      "display_name": "Athit Rattanawipapong",
+      "aliases": [
+        "Athit Rattanawipapong"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "40700": {
+              "entry_id": 5950381,
+              "team_name": "SUN-KUNG-JI"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_atthasit_wongjohn",
+      "display_name": "Atthasit Wongjohn",
+      "aliases": [
+        "Atthasit Wongjohn"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "38491": {
+              "entry_id": 122482,
+              "team_name": "ทีมของ Atthasit"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_auau_auau",
+      "display_name": "Auau Auau",
+      "aliases": [
+        "Auau Auau"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 2160906,
+              "team_name": "HereAu"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_benz_piyawat",
+      "display_name": "Benz Piyawat",
+      "aliases": [
+        "Benz Piyawat"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 2690262,
+              "team_name": "BZ dé CHIPOTLÉ"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_bewz_benjaphonkul",
+      "display_name": "Bewz Benjaphonkul",
+      "aliases": [
+        "Bewz Benjaphonkul"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "38491": {
+              "entry_id": 4127573,
+              "team_name": "Sia Nu"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_bluebert_tingnongnoi",
+      "display_name": "Bluebert Tingnongnoi",
+      "aliases": [
+        "Bluebert Tingnongnoi"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "187827": {
+              "entry_id": 4549514,
+              "team_name": "Bluebert's Team"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_boatieee_sangtong",
+      "display_name": "boatieee sangtong",
+      "aliases": [
+        "boatieee sangtong"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 3488930,
+              "team_name": "boatieee"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_boom_paka",
+      "display_name": "Boom Paka",
+      "aliases": [
+        "Boom Paka"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 3181562,
+              "team_name": "SLA"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_bruno_zoro",
+      "display_name": "Bruno Zoro",
+      "aliases": [
+        "Bruno Zoro"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "187827": {
+              "entry_id": 5463640,
+              "team_name": "Bruno carrick"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_chaleam_nati",
+      "display_name": "Chaleam Nati",
+      "aliases": [
+        "Chaleam Nati"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 8336060,
+              "team_name": "chaleamnatiii"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_chatiwat_piyarom",
+      "display_name": "Chatiwat Piyarom",
+      "aliases": [
+        "Chatiwat Piyarom"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "38491": {
+              "entry_id": 4194662,
+              "team_name": "Chatiwat's Team"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_chong_thirtyone",
+      "display_name": "Chong ThirtyOne",
+      "aliases": [
+        "Chong ThirtyOne"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 8845986,
+              "team_name": "Chong United"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_dow_k",
+      "display_name": "Dow K",
+      "aliases": [
+        "Dow K"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 2208018,
+              "team_name": "Bangkorn 11"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_falco_siwachat",
+      "display_name": "Falco Siwachat",
+      "aliases": [
+        "Falco Siwachat"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 1243502,
+              "team_name": "Falco.245"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_fame_pakviwat",
+      "display_name": "FAme Pakviwat",
+      "aliases": [
+        "FAme Pakviwat"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "40700": {
+              "entry_id": 73489,
+              "team_name": "Some might say"
+            },
+            "675290": {
+              "entry_id": 73489,
+              "team_name": "Some might say"
+            },
+            "38491": {
+              "entry_id": 73489,
+              "team_name": "Some might say"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_fcเฮ_ยหล_เล_ยเมน_แพร_บๆๆ",
+      "display_name": "FCเฮียหลีเลียเมน แพร่บๆๆ",
+      "aliases": [
+        "FCเฮียหลีเลียเมน แพร่บๆๆ"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 1231651,
+              "team_name": "TUNBO CHICKEN RICE"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_goprex_nakhun",
+      "display_name": "Goprex Nakhun",
+      "aliases": [
+        "Goprex Nakhun"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 7927547,
+              "team_name": "NK"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_hong_jakrapan",
+      "display_name": "Hong Jakrapan",
+      "aliases": [
+        "Hong Jakrapan"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 1151793,
+              "team_name": "Univerpool"
+            },
+            "5349": {
+              "entry_id": 1151793,
+              "team_name": "Univerpool"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_isriya_paireepairit",
+      "display_name": "Isriya Paireepairit",
+      "aliases": [
+        "Isriya Paireepairit"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "40700": {
+              "entry_id": 2206758,
+              "team_name": "ใครไม่พีค"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_jakjaan_chompoopanthip",
+      "display_name": "Jakjaan Chompoopanthip",
+      "aliases": [
+        "Jakjaan Chompoopanthip"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 7058770,
+              "team_name": "shampoopanteen"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_jakkapong_takianngam",
+      "display_name": "Jakkapong Takianngam",
+      "aliases": [
+        "Jakkapong Takianngam"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 4042871,
+              "team_name": "SaofaifaR"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_jan_puchong",
+      "display_name": "Jan Puchong",
+      "aliases": [
+        "Jan Puchong"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 4954101,
+              "team_name": "Char&Rei Club"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_jatsada_wisawawithayanukun",
+      "display_name": "jatsada wisawawithayanukun",
+      "aliases": [
+        "jatsada wisawawithayanukun"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 2316037,
+              "team_name": "Talidtidty"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_jaturont_usahacharoenporn",
+      "display_name": "jaturont usahacharoenporn",
+      "aliases": [
+        "jaturont usahacharoenporn"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 171774,
+              "team_name": "4OUR"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_kanawat_yapong",
+      "display_name": "kanawat yapong",
+      "aliases": [
+        "kanawat yapong"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 5715428,
+              "team_name": "Art _smooth"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_kasidit_boonyawat",
+      "display_name": "Kasidit Boonyawat",
+      "aliases": [
+        "Kasidit Boonyawat"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "187827": {
+              "entry_id": 1153245,
+              "team_name": "The Cannon"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_kavinjet_tantitanasap",
+      "display_name": "Kavinjet Tantitanasap",
+      "aliases": [
+        "Kavinjet Tantitanasap"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "40700": {
+              "entry_id": 197082,
+              "team_name": "Mary Jojibana"
+            },
+            "675290": {
+              "entry_id": 197082,
+              "team_name": "Mary Jojibana"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_kawin_satirapatanakiat",
+      "display_name": "Kawin Satirapatanakiat",
+      "aliases": [
+        "Kawin Satirapatanakiat"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 3104306,
+              "team_name": "kawinsat"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_kittipong_suwanjinda",
+      "display_name": "Kittipong Suwanjinda",
+      "aliases": [
+        "Kittipong Suwanjinda"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 5741248,
+              "team_name": "Brankal x 4EVE"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_kongkarn__clublike",
+      "display_name": "Kongkarn- Clublike",
+      "aliases": [
+        "Kongkarn- Clublike"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "38491": {
+              "entry_id": 175767,
+              "team_name": "clublike"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_korkiat_chartprasert",
+      "display_name": "Korkiat Chartprasert",
+      "aliases": [
+        "Korkiat Chartprasert"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 7460858,
+              "team_name": "(busy)"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_kraiwut_sewatanon",
+      "display_name": "Kraiwut Sewatanon",
+      "aliases": [
+        "Kraiwut Sewatanon"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 103641,
+              "team_name": "SkyMaxHero"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_krisada_kanivichaporn",
+      "display_name": "Krisada Kanivichaporn",
+      "aliases": [
+        "Krisada Kanivichaporn"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 2920912,
+              "team_name": "Keithkani"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_krisana_witthayaanumas",
+      "display_name": "Krisana Witthayaanumas",
+      "aliases": [
+        "Krisana Witthayaanumas"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "38491": {
+              "entry_id": 5523000,
+              "team_name": "K.Wit"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_kullavat_charoenthamavat",
+      "display_name": "Kullavat Charoenthamavat",
+      "aliases": [
+        "Kullavat Charoenthamavat"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "438691": {
+              "entry_id": 3578457,
+              "team_name": "Shoot FC"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_maew_mohawk",
+      "display_name": "Maew Mohawk",
+      "aliases": [
+        "Maew Mohawk"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "40700": {
+              "entry_id": 2191555,
+              "team_name": "1234 Barbyu Barbyu"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_man_laosathirawong",
+      "display_name": "Man Laosathirawong",
+      "aliases": [
+        "Man Laosathirawong"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 3806029,
+              "team_name": "huGo with the Flo"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_man_sairada",
+      "display_name": "Man Sairada",
+      "aliases": [
+        "Man Sairada"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "38491": {
+              "entry_id": 7717588,
+              "team_name": "Sek_Loso FC"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_mart_wonlopsiri",
+      "display_name": "Mart Wonlopsiri",
+      "aliases": [
+        "Mart Wonlopsiri"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 6799761,
+              "team_name": "Marty FC"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_meedej_usanachitt",
+      "display_name": "Meedej Usanachitt",
+      "aliases": [
+        "Meedej Usanachitt"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "438691": {
+              "entry_id": 5003235,
+              "team_name": "MFV F.C."
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_micky_asawamanasak",
+      "display_name": "Micky Asawamanasak",
+      "aliases": [
+        "Micky Asawamanasak"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "40700": {
+              "entry_id": 306983,
+              "team_name": "GEMINI UNITED"
+            },
+            "675290": {
+              "entry_id": 306983,
+              "team_name": "GEMINI UNITED"
+            },
+            "38491": {
+              "entry_id": 306983,
+              "team_name": "GEMINI UNITED"
+            },
+            "1101958": {
+              "entry_id": 306983,
+              "team_name": "GEMINI UNITED"
+            },
+            "438691": {
+              "entry_id": 306983,
+              "team_name": "GEMINI UNITED"
+            },
+            "187827": {
+              "entry_id": 306983,
+              "team_name": "GEMINI UNITED"
+            },
+            "5349": {
+              "entry_id": 306983,
+              "team_name": "GEMINI UNITED"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_ming_jrj_x",
+      "display_name": "ming JRJ X",
+      "aliases": [
+        "ming JRJ X"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 1154605,
+              "team_name": "67"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_natee_kakeaw",
+      "display_name": "Natee Kakeaw",
+      "aliases": [
+        "Natee Kakeaw"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 2477350,
+              "team_name": "-Nk_KOP"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_nath_owarang",
+      "display_name": "Nath Owarang",
+      "aliases": [
+        "Nath Owarang"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 742519,
+              "team_name": "AFC Richmond"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_nattaporn_yaemsaard",
+      "display_name": "Nattaporn Yaemsaard",
+      "aliases": [
+        "Nattaporn Yaemsaard"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "187827": {
+              "entry_id": 7601484,
+              "team_name": "Benjamin Seskooan"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_nattavut_leekulpitak",
+      "display_name": "Nattavut Leekulpitak",
+      "aliases": [
+        "Nattavut Leekulpitak"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 670212,
+              "team_name": "Jazzzmith"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_natthaphon_timmuang",
+      "display_name": "natthaphon timmuang",
+      "aliases": [
+        "natthaphon timmuang"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 1506698,
+              "team_name": "An-Ahn-trasmooth"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_natthapol_mahittharitthikorn",
+      "display_name": "Natthapol Mahittharitthikorn",
+      "aliases": [
+        "Natthapol Mahittharitthikorn"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 5528308,
+              "team_name": "Natthapol's Team"
+            },
+            "438691": {
+              "entry_id": 5528308,
+              "team_name": "Natthapol's Team"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_nirut_visavachaipan",
+      "display_name": "Nirut Visavachaipan",
+      "aliases": [
+        "Nirut Visavachaipan"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 308319,
+              "team_name": "Ekamai United"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_noom_poom",
+      "display_name": "Noom Poom",
+      "aliases": [
+        "Noom Poom"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 6579206,
+              "team_name": "ทีมของ Noom"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_nuttapon_chanpradubfa",
+      "display_name": "Nuttapon Chanpradubfa",
+      "aliases": [
+        "Nuttapon Chanpradubfa"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 928369,
+              "team_name": "NuttChan"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_pacha_pittayavivit",
+      "display_name": "Pacha Pittayavivit",
+      "aliases": [
+        "Pacha Pittayavivit"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "438691": {
+              "entry_id": 2239943,
+              "team_name": "TopPP FC"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_pae_takam",
+      "display_name": "pae takam",
+      "aliases": [
+        "pae takam"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 6040705,
+              "team_name": "pae takam"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_pakanan_nark_in",
+      "display_name": "Pakanan Nark-in",
+      "aliases": [
+        "Pakanan Nark-in"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 2919864,
+              "team_name": "johnnn"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_palad_suraponongart",
+      "display_name": "Palad Suraponongart",
+      "aliases": [
+        "Palad Suraponongart"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "38491": {
+              "entry_id": 8002027,
+              "team_name": "Nguyen Jing Jing FC"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_panot_udomsup",
+      "display_name": "Panot Udomsup",
+      "aliases": [
+        "Panot Udomsup"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "38491": {
+              "entry_id": 7669033,
+              "team_name": "Panot's Team"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_panus_bumpenboon",
+      "display_name": "Panus Bumpenboon",
+      "aliases": [
+        "Panus Bumpenboon"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "38491": {
+              "entry_id": 8777321,
+              "team_name": "RuudVan"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_panuvat_mahittharitthikorn",
+      "display_name": "Panuvat Mahittharitthikorn",
+      "aliases": [
+        "Panuvat Mahittharitthikorn"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "438691": {
+              "entry_id": 5564358,
+              "team_name": "KFC"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_papungkorn_ingkanont",
+      "display_name": "Papungkorn Ingkanont",
+      "aliases": [
+        "Papungkorn Ingkanont"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 2913117,
+              "team_name": "IRONKEN"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_parinya_leekulpitak",
+      "display_name": "Parinya Leekulpitak",
+      "aliases": [
+        "Parinya Leekulpitak"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 2576501,
+              "team_name": "RJarnOat"
+            },
+            "438691": {
+              "entry_id": 2576501,
+              "team_name": "RJarnOat"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_park_howdy",
+      "display_name": "Park Howdy",
+      "aliases": [
+        "Park Howdy"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "38491": {
+              "entry_id": 5119430,
+              "team_name": "Geordie's Club"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_passapongpol_akenirundorn",
+      "display_name": "Passapongpol Akenirundorn",
+      "aliases": [
+        "Passapongpol Akenirundorn"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 315966,
+              "team_name": "iq."
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_patchara_eaimtrakul",
+      "display_name": "patchara eaimtrakul",
+      "aliases": [
+        "patchara eaimtrakul"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 1493046,
+              "team_name": "See you next season!"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_pativej_mahateerasombat",
+      "display_name": "Pativej Mahateerasombat",
+      "aliases": [
+        "Pativej Mahateerasombat"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 1742533,
+              "team_name": "CasanoVej"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_patrick_oo",
+      "display_name": "Patrick Oo",
+      "aliases": [
+        "Patrick Oo"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 837763,
+              "team_name": "Oöraora Grandé"
+            },
+            "187827": {
+              "entry_id": 837763,
+              "team_name": "Oöraora Grandé"
+            },
+            "5349": {
+              "entry_id": 837763,
+              "team_name": "Oöraora Grandé"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_pavarisa_chiamchan",
+      "display_name": "PAVARISA CHIAMCHAN",
+      "aliases": [
+        "PAVARISA CHIAMCHAN"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 8512605,
+              "team_name": "Greatvarisa"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_peeranat_hunthanee",
+      "display_name": "Peeranat Hunthanee",
+      "aliases": [
+        "Peeranat Hunthanee"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "40700": {
+              "entry_id": 5660962,
+              "team_name": "Siampathy"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_petepong_phasukyud",
+      "display_name": "Petepong Phasukyud",
+      "aliases": [
+        "Petepong Phasukyud"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 2550771,
+              "team_name": "petepong"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_phonlawat_waewraviwong",
+      "display_name": "Phonlawat Waewraviwong",
+      "aliases": [
+        "Phonlawat Waewraviwong"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "438691": {
+              "entry_id": 6657991,
+              "team_name": "Kafare"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_phonpat_jaratsatien",
+      "display_name": "phonpat jaratsatien",
+      "aliases": [
+        "phonpat jaratsatien"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 5088060,
+              "team_name": "ทีมระบบครับ"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_pilan_liu",
+      "display_name": "pilan liu",
+      "aliases": [
+        "pilan liu"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "40700": {
+              "entry_id": 5470959,
+              "team_name": "Anjoni Iraola"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_pirapat_nitichaiyanan",
+      "display_name": "Pirapat Nitichaiyanan",
+      "aliases": [
+        "Pirapat Nitichaiyanan"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 1163206,
+              "team_name": "Dotman 2026"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_piyabutr_atisook",
+      "display_name": "PIYABUTR ATISOOK",
+      "aliases": [
+        "PIYABUTR ATISOOK"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 4552878,
+              "team_name": "FLOMØØWIRTZ"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_pongchlit_kittipansopone",
+      "display_name": "pongchlit kittipansopone",
+      "aliases": [
+        "pongchlit kittipansopone"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 268461,
+              "team_name": "Pongacku"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_pongpon_bangvijit",
+      "display_name": "Pongpon Bangvijit",
+      "aliases": [
+        "Pongpon Bangvijit"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 5485365,
+              "team_name": "AlonsoOut"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_poom_intharit",
+      "display_name": "Poom Intharit",
+      "aliases": [
+        "Poom Intharit"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 6263927,
+              "team_name": "Odysseus Junior"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_prachya_leelamantep",
+      "display_name": "Prachya Leelamantep",
+      "aliases": [
+        "Prachya Leelamantep"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "187827": {
+              "entry_id": 3508212,
+              "team_name": "SiaLeela"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_pradanai_nateprasertkul",
+      "display_name": "Pradanai Nateprasertkul",
+      "aliases": [
+        "Pradanai Nateprasertkul"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 7669019,
+              "team_name": "G7GOT FC"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_prakit_suppakitbuncho",
+      "display_name": "Prakit Suppakitbuncho",
+      "aliases": [
+        "Prakit Suppakitbuncho"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "438691": {
+              "entry_id": 2378313,
+              "team_name": "JOEYMON #10"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_puu_zapor",
+      "display_name": "Puu Zapor",
+      "aliases": [
+        "Puu Zapor"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 5132905,
+              "team_name": "worawolf"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_rachata_suksuratchai",
+      "display_name": "Rachata Suksuratchai",
+      "aliases": [
+        "Rachata Suksuratchai"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 2741115,
+              "team_name": "Xabibi"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_ratapan_w",
+      "display_name": "Ratapan W",
+      "aliases": [
+        "Ratapan W"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "187827": {
+              "entry_id": 5340913,
+              "team_name": "Winwinwin"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_rati_leetrakul",
+      "display_name": "Rati Leetrakul",
+      "aliases": [
+        "Rati Leetrakul"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "187827": {
+              "entry_id": 1312974,
+              "team_name": "Emery's Revenge"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_ratthaphum_taveechaipark",
+      "display_name": "Ratthaphum Taveechaipark",
+      "aliases": [
+        "Ratthaphum Taveechaipark"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 282187,
+              "team_name": "The Team"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_ravi_upadhaya",
+      "display_name": "Ravi Upadhaya",
+      "aliases": [
+        "Ravi Upadhaya"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 1645622,
+              "team_name": "Micchester United"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_robert_emmanuel_boonyuen_pires",
+      "display_name": "Robert Emmanuel Boonyuen Pires",
+      "aliases": [
+        "Robert Emmanuel Boonyuen Pires"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 6524050,
+              "team_name": "Wirunchambang"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_rukpoom_kaewpichai",
+      "display_name": "Rukpoom Kaewpichai",
+      "aliases": [
+        "Rukpoom Kaewpichai"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 6651911,
+              "team_name": "VERPERSAI33"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_ryan_joseph_golf",
+      "display_name": "Ryan Joseph Golf",
+      "aliases": [
+        "Ryan Joseph Golf"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 274493,
+              "team_name": "Plan.Gryan"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_san_t",
+      "display_name": "San T",
+      "aliases": [
+        "San T"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 53478,
+              "team_name": "San"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_sasidis_sasisakulporn",
+      "display_name": "Sasidis Sasisakulporn",
+      "aliases": [
+        "Sasidis Sasisakulporn"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 8246332,
+              "team_name": "OJ Eleven"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_scouse_bob",
+      "display_name": "Scouse Bob",
+      "aliases": [
+        "Scouse Bob"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 2235262,
+              "team_name": "RioNgumoha1st"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_settha_eamchunam",
+      "display_name": "Settha Eamchunam",
+      "aliases": [
+        "Settha Eamchunam"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 8169868,
+              "team_name": "KwangSettha"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_siwawut_sewatanon",
+      "display_name": "Siwawut Sewatanon",
+      "aliases": [
+        "Siwawut Sewatanon"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 3269963,
+              "team_name": "Whitecat United"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_supalerk_wiwattarangkul",
+      "display_name": "Supalerk Wiwattarangkul",
+      "aliases": [
+        "Supalerk Wiwattarangkul"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 9151303,
+              "team_name": "Supalerk's Team"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_suriya_sutheeariyanithi",
+      "display_name": "suriya sutheeariyanithi",
+      "aliases": [
+        "suriya sutheeariyanithi"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "438691": {
+              "entry_id": 957697,
+              "team_name": "suriya's Team"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_tanapan_jongsaksawat",
+      "display_name": "Tanapan Jongsaksawat",
+      "aliases": [
+        "Tanapan Jongsaksawat"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 2472694,
+              "team_name": "Godzilbu United"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_tanapat_namyai",
+      "display_name": "Tanapat Namyai",
+      "aliases": [
+        "Tanapat Namyai"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "38491": {
+              "entry_id": 3628087,
+              "team_name": "21"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_tanong_mapanya",
+      "display_name": "Tanong Mapanya",
+      "aliases": [
+        "Tanong Mapanya"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 132673,
+              "team_name": "NUKE-UTD®"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_te_shimo",
+      "display_name": "Te Shimo",
+      "aliases": [
+        "Te Shimo"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 4097503,
+              "team_name": "Teshimo Hokum"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_teerasade_khemprasit",
+      "display_name": "Teerasade Khemprasit",
+      "aliases": [
+        "Teerasade Khemprasit"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "40700": {
+              "entry_id": 1206581,
+              "team_name": "TK.FPL"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_thakphong_t",
+      "display_name": "Thakphong T.",
+      "aliases": [
+        "Thakphong T."
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "38491": {
+              "entry_id": 7642817,
+              "team_name": "พี่ก็อยู่ของพี่เฉยๆ"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_thamrong_pattarajiarapan",
+      "display_name": "Thamrong Pattarajiarapan",
+      "aliases": [
+        "Thamrong Pattarajiarapan"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "187827": {
+              "entry_id": 2804957,
+              "team_name": "Carrickysseus"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_thanakorn_jaturajaroenkhun",
+      "display_name": "Thanakorn Jaturajaroenkhun",
+      "aliases": [
+        "Thanakorn Jaturajaroenkhun"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "438691": {
+              "entry_id": 145471,
+              "team_name": "ทีมของ Thanakorn"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_thanakrit_sathirapinitkul",
+      "display_name": "Thanakrit Sathirapinitkul",
+      "aliases": [
+        "Thanakrit Sathirapinitkul"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 3184445,
+              "team_name": "Hydden"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_thanwa_lujintanon",
+      "display_name": "Thanwa Lujintanon",
+      "aliases": [
+        "Thanwa Lujintanon"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 4763492,
+              "team_name": "ColeRogers"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_thiti_oak",
+      "display_name": "Thiti Oak",
+      "aliases": [
+        "Thiti Oak"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 7501,
+              "team_name": "BMFC™"
+            },
+            "438691": {
+              "entry_id": 7501,
+              "team_name": "BMFC™"
+            },
+            "5349": {
+              "entry_id": 7501,
+              "team_name": "BMFC™"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_thuram_tu",
+      "display_name": "Thuram Tu",
+      "aliases": [
+        "Thuram Tu"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 4114214,
+              "team_name": "BoomBaraka"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_torphong_kul_on",
+      "display_name": "Torphong Kul-on",
+      "aliases": [
+        "Torphong Kul-on"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 3540927,
+              "team_name": "TORTERM 1144"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_totti_nufc",
+      "display_name": "Totti NUFC",
+      "aliases": [
+        "Totti NUFC"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "187827": {
+              "entry_id": 720631,
+              "team_name": "Totti Toon Army"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_vares_p",
+      "display_name": "vares P",
+      "aliases": [
+        "vares P"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 693142,
+              "team_name": "Putun KNVB"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_virunan_chiddaycha",
+      "display_name": "Virunan Chiddaycha",
+      "aliases": [
+        "Virunan Chiddaycha"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 9851677,
+              "team_name": "VNWA"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_vithaya_thongyuyong",
+      "display_name": "Vithaya Thongyuyong",
+      "aliases": [
+        "Vithaya Thongyuyong"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 3564816,
+              "team_name": "taloombon"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_vutthipong_patirop",
+      "display_name": "Vutthipong Patirop",
+      "aliases": [
+        "Vutthipong Patirop"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 697377,
+              "team_name": "GOBBIEZ UNITED"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_wannawit_kengvibul",
+      "display_name": "Wannawit Kengvibul",
+      "aliases": [
+        "Wannawit Kengvibul"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 1318415,
+              "team_name": "AI Boys"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_warin_sinaroj",
+      "display_name": "WARIN SINAROJ",
+      "aliases": [
+        "WARIN SINAROJ"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "187827": {
+              "entry_id": 2342390,
+              "team_name": "Riin FC"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_warit_ratchaneekorn",
+      "display_name": "warit ratchaneekorn",
+      "aliases": [
+        "warit ratchaneekorn"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 1189463,
+              "team_name": "ReVoltz"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_worasorn_rabiltossaporn",
+      "display_name": "Worasorn Rabiltossaporn",
+      "aliases": [
+        "Worasorn Rabiltossaporn"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "438691": {
+              "entry_id": 6183614,
+              "team_name": "H"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_x_gamer",
+      "display_name": "X Gamer",
+      "aliases": [
+        "X Gamer"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 6417622,
+              "team_name": "Xforplaygame"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_yod_chinsupakul",
+      "display_name": "Yod Chinsupakul",
+      "aliases": [
+        "Yod Chinsupakul"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 4526663,
+              "team_name": "The AI era"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_yoohyeeh_thana",
+      "display_name": "YooHYeeH Thana",
+      "aliases": [
+        "YooHYeeH Thana"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "1101958": {
+              "entry_id": 1548421,
+              "team_name": "เถลิงบัลลังก์แชมป์"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_ziang_dui",
+      "display_name": "Ziang Dui",
+      "aliases": [
+        "Ziang Dui"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 2176238,
+              "team_name": "Ziang's Team"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_ฐาน_พงศ__อ_ครพ_ร_ยวณ_ช",
+      "display_name": "ฐานุพงศ์ อัครพิริยวณิช",
+      "aliases": [
+        "ฐานุพงศ์ อัครพิริยวณิช"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 3948485,
+              "team_name": "ClubHellness"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_ฐ_ต_พงศ__วงศ_อ_ครว_ต",
+      "display_name": "ฐิติพงศ์ วงศ์อัครวัต",
+      "aliases": [
+        "ฐิติพงศ์ วงศ์อัครวัต"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "38491": {
+              "entry_id": 348997,
+              "team_name": "นายโบ๊ท"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_ภ_ช_ต_เสร_ฐนวลแสง",
+      "display_name": "ภูชิต เสริฐนวลแสง",
+      "aliases": [
+        "ภูชิต เสริฐนวลแสง"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "38491": {
+              "entry_id": 2673517,
+              "team_name": "dontecrybby"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_เด_กห_วหล_ม_ด__อมากกกกกกก",
+      "display_name": "เด็กหัวหลิม ดื้อมากกกกกกก",
+      "aliases": [
+        "เด็กหัวหลิม ดื้อมากกกกกกก"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "675290": {
+              "entry_id": 2753018,
+              "team_name": "DekHuaLimp"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "mgr_เสมา_ข_นศ_ก",
+      "display_name": "เสมา ขุนศึก",
+      "aliases": [
+        "เสมา ขุนศึก"
+      ],
+      "seasons": {
+        "2026-27": {
+          "entries": {
+            "5349": {
+              "entry_id": 3781407,
+              "team_name": "golden club"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

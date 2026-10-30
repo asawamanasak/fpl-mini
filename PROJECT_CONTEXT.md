@@ -320,7 +320,36 @@ flowchart TD
 
 ---
 
-## ⏪ 9. ระบบ Rollback & Milestone Management
+## 🏆 10. ระบบรองรับหลายฤดูกาล & การเก็บข้อมูลถาวร (Multi-Season Architecture & Rollover Runbook)
+
+### สถาปัตยกรรม (Architecture)
+1. **Season Rollover Guard:** ใน `sync_live_fpl.py` ตรวจสอบปีของ Gameweek 1 จาก `/api/bootstrap-static/` เทียบกับ `config/season_config.json` หากไม่ตรงกัน ระบบจะหยุดการทำงานทันที (Exit code 2) และไม่เขียนทับข้อมูล เพื่อป้องกันการสูญหายของข้อมูลฤดูกาลที่จบไปแล้ว
+2. **เครื่องมือเก็บถาวร (`archive_season.py`):**
+   - บันทึกข้อมูลฤดูกาลอย่างถาวรลงในโฟลเดอร์ `seasons/<season_id>/`
+   - แยกไฟล์เป็น `core.json` (คะแนนและอันดับ), `squads/<lid>.json` (แผนตัวผู้เล่นแยกรายลีก), `summary.json` (สรุปแชมป์และสถิติ), และ `meta.json` (พร้อม SHA-256 Checksum)
+   - มีระบบ **Frozen Protection** ป้องกันการเขียนทับฤดูกาลที่ปิดสมบูรณ์แล้ว
+3. **ทะเบียนผู้จัดการทีมข้ามฤดูกาล (`config/managers.json`):**
+   - บันทึกการเชื่อมโยงผู้จัดการทีมข้ามฤดูกาล แม้ FPL จะเปลี่ยน `entry_id` ในปีถัดไป เพื่อรองรับ Hall of Fame ตลอดกาล
+
+### ขั้นตอนการเปลี่ยนผ่านฤดูกาล (Season Rollover Runbook)
+1. **เมื่อจบ GW 38 และ FPL ยืนยันคะแนน (`data_checked = true`):**
+   - รันคำสั่งเก็บข้อมูลถาวร:
+     ```bash
+     python3 archive_season.py --season 2026-27
+     ```
+   - ตรวจสอบไฟล์ใน `seasons/2026-27/` และ `seasons/index.json`
+2. **ก่อนเริ่มฤดูกาลใหม่ (ช่วง ก.ค. - ส.ค.):**
+   - อัปเดต `config/season_config.json` เป็นฤดูกาลใหม่ (เช่น `2027-28`)
+   - อัปเดต `config/leagues_config.json` ด้วยรหัสลีกใหม่ (หากแอดมินสร้างลีกใหม่) และกติการางวัล
+   - รัน sync ครั้งแรก:
+     ```bash
+     python3 sync_live_fpl.py --force
+     python3 update_preview.py
+     ```
+   - อัปเดตทะเบียนผู้จัดการทีม:
+     ```bash
+     python3 archive_season.py --init-managers
+     ```
 
 โปรเจกต์นี้มีระบบจัดการเวอร์ชันย้อนหลังและจุดบันทึกการพัฒนา (Milestone) สำหรับเวลาเพิ่มทีม/ลีกใหม่:
 * **ข้อตกลงการตั้งชื่อ (Naming Convention):** ใช้ชื่อ `rollback_(จำนวนทีมหรือลีก)` เช่น:

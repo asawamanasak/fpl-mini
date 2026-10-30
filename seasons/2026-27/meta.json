@@ -1,0 +1,21 @@
+{
+  "season_id": "2026-27",
+  "season": "2026/27",
+  "archived_at": "2026-10-30T15:29:40.452857",
+  "is_frozen": false,
+  "status": "checkpoint",
+  "max_gw": 8,
+  "leagues_count": 7,
+  "checksums": {
+    "config.json": "5ede45a4a3e5ef791246b482f7a874d9dde47f71aeaf7259a120b206ce95780e",
+    "core.json": "db70fa09ffc26b0c846d71103e20ace9c02ca6d75f3fe884d55bf9866eb2d305",
+    "squads/40700.json": "d6ea8e9199acbf7e0569f4cf0fa234cdc8560aba24c088a310137a49f8b3608a",
+    "squads/675290.json": "aab4c7b95346d6341a9997ad295fbf9f84d30dbf741e1ece585374611e890ef4",
+    "squads/38491.json": "7e3bd2e42405b67154bc8a0cc34afcf28a7ad66f71a53b6e4a177ea12777ef79",
+    "squads/1101958.json": "1c1077f81768c2e8c6c974c677f4d0e301270507dac3fdee3ca1c1a0239166cc",
+    "squads/438691.json": "74df85181f1a60debe893807e11b8cc0f000274cbd460dc2d3e107d6b659d3c5",
+    "squads/187827.json": "4fe1c357f6bc8d5e8a4ae41d2b06fdaa5f6ee05f0cdc1262f3f27e974ced1ec7",
+    "squads/5349.json": "f4c1b89ea6b8b109093cd4645befdb2fc2e957fdf43ad4ec80e514ffaa9ff2d7",
+    "summary.json": "af69e9f73533d927d970d4430409cb6d4e2311b31769793efd6f4fe101a0da65"
+  }
+}
