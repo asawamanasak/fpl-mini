@@ -1,20 +1,26 @@
-name: FPL Mini-League Auto Sync
+name: FPL Mini-League Auto Sync & Deploy
 
 on:
   schedule:
     # รันอัตโนมัติทุก 15 นาที ในนาทีที่ไม่ชนรอบกลมทั่วโลก (3, 18, 33, 48) ควบคู่กับ Cloudflare Edge Live Relay
     - cron: '3,18,33,48 * * * *'
   workflow_dispatch: # ปุ่มกดสั่งรันเองได้ตลอดเวลาในแท็บ Actions บน GitHub
+  push:
+    branches:
+      - main
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
-  group: fpl-sync
-  cancel-in-progress: true
+  group: fpl-sync-deploy
+  cancel-in-progress: false
 
 jobs:
-  sync-fpl-data:
+  sync-and-build:
+    name: Sync Live Data & Build Distribution
     runs-on: ubuntu-latest
 
     steps:
@@ -36,21 +42,23 @@ jobs:
 
       - name: Fetch Real-Time FPL Data
         env:
-          AZURE_TRANSFER_FUNCTION_KEY: ${{ secrets.AZURE_TRANSFER_FUNCTION_KEY || 'db059d47-8b44-476a-9dfc-509bceb87bee' }}
+          AZURE_TRANSFER_FUNCTION_KEY: ${{ secrets.AZURE_TRANSFER_FUNCTION_KEY }}
         run: |
           python3 sync_live_fpl.py
 
-      - name: Regenerate Dashboard Presentation
+      - name: Build Dashboard & Static Site Bundle
         run: |
           python3 update_preview.py
 
-      - name: Commit and Push Updates
+      - name: Commit and Push Data Updates
+        if: github.ref == 'refs/heads/main'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
+          # Stage only data cache and season archives (HTML is deployed via artifact)
+          git add multi_fpl_data.json real_fpl_40700_data.json seasons/ config/managers.json
           if git diff --staged --quiet; then
-            echo "No changes detected. Skipping commit."
+            echo "No data changes detected. Skipping commit."
           else
             git commit -m "Auto-sync live FPL data [skip ci]"
             if ! git pull --rebase origin main; then
@@ -63,10 +71,31 @@ jobs:
               mv /tmp/multi_fpl_data.json.fresh multi_fpl_data.json
               mv /tmp/real_fpl_40700_data.json.fresh real_fpl_40700_data.json
               python3 update_preview.py
-              git add -A
+              git add multi_fpl_data.json real_fpl_40700_data.json seasons/ config/managers.json
               if ! git diff --staged --quiet; then
                 git commit -m "Auto-sync live FPL data [skip ci]"
               fi
             fi
             git push origin main
           fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: sync-and-build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

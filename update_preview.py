@@ -13,9 +13,49 @@ Build Version: 2026.08.31.01
 
 import json
 import os
+import shutil
 import tempfile
 from parse_shi62_special import parse_shi62_file
 from parse_bramann_games import parse_bramann_prediction_file, parse_bramann_challenge_file
+
+def build_site_dir(base_dir, site_dir='_site'):
+    """
+    Assemble the complete static distribution bundle into site_dir
+    ready for actions/upload-pages-artifact deployment.
+    """
+    target = os.path.join(base_dir, site_dir)
+    os.makedirs(target, exist_ok=True)
+
+    # 1. Root HTML and static asset files
+    for f in ['index.html', 'preview.html', '404.html', 'favicon.ico', 'site.webmanifest', '.nojekyll', 'robots.txt']:
+        src = os.path.join(base_dir, f)
+        if os.path.exists(src):
+            dst = os.path.join(target, f)
+            shutil.copy2(src, dst)
+        elif f == '.nojekyll':
+            with open(os.path.join(target, '.nojekyll'), 'w') as nf:
+                pass
+
+    # 2. League directories (e.g. 40700/index.html)
+    for item in os.listdir(base_dir):
+        item_path = os.path.join(base_dir, item)
+        if os.path.isdir(item_path) and item.isdigit():
+            league_idx = os.path.join(item_path, 'index.html')
+            if os.path.exists(league_idx):
+                target_league_dir = os.path.join(target, item)
+                os.makedirs(target_league_dir, exist_ok=True)
+                shutil.copy2(league_idx, os.path.join(target_league_dir, 'index.html'))
+
+    # 3. Static asset directories: seasons/, images/, fonts/, etc.
+    for folder in ['seasons', 'images', 'fonts', 'css', 'js']:
+        src_folder = os.path.join(base_dir, folder)
+        if os.path.exists(src_folder) and os.path.isdir(src_folder):
+            dst_folder = os.path.join(target, folder)
+            if os.path.exists(dst_folder):
+                shutil.rmtree(dst_folder)
+            shutil.copytree(src_folder, dst_folder)
+
+    print(f"Successfully assembled static distribution bundle in {site_dir}/")
 
 def atomic_dump(data, filepath):
     """Safely write JSON file via temporary file and atomic rename."""
@@ -15442,7 +15482,10 @@ def main():
         with open(os.path.join(dir_league, 'index.html'), 'w', encoding='utf-8') as f:
             f.write(html_league)
 
-    print("Successfully generated decoupled multi-season core, squads, and lightweight HTML dashboard files!")
+    # 5. Assemble distribution bundle into _site/ for GitHub Actions Pages deployment
+    build_site_dir(base_dir, '_site')
+
+    print("Successfully generated decoupled multi-season core, squads, lightweight HTML files, and _site bundle!")
 
 if __name__ == '__main__':
     main()

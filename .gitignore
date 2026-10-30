@@ -29,3 +29,12 @@ scratch/
 .idea/
 *.sublime-project
 *.sublime-workspace
+
+# Generated Static Distribution Bundle
+/_site/
+
+# Generated HTML Dashboard Entry Points (Built in CI/CD and locally for dev)
+/index.html
+/preview.html
+/404.html
+/[0-9]*/index.html
