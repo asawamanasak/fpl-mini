@@ -15,6 +15,7 @@ import json
 import os
 import shutil
 import tempfile
+from datetime import datetime
 from parse_shi62_special import parse_shi62_file
 from parse_bramann_games import parse_bramann_prediction_file, parse_bramann_challenge_file
 
@@ -1047,7 +1048,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     }
   </style>
 </head>
-<body class="h-full flex flex-col selection:bg-slate-900 selection:text-white" onclick="app && app.closeLeagueDropdownIfClickedOutside(event)">
+<body class="h-full flex flex-col selection:bg-slate-900 selection:text-white" onclick="app && app.closeDropdownsIfClickedOutside(event)">
 
   <!-- 1. Header (League Identity, Switcher Dropdown, Status & Tabs) -->
   <header class="border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-black/90 backdrop-blur-xl sticky top-0 z-40">
@@ -1085,6 +1086,38 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             </div>
             <div id="league-dropdown-options" class="p-1 space-y-0.5">
               <!-- Dynamic options for 40700 and 675290 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Season Switcher Container -->
+        <div class="relative inline-block text-left flex-shrink-0">
+          <button 
+            id="season-switcher-btn" 
+            onclick="app.toggleSeasonDropdown(event)" 
+            class="group flex items-center gap-1.5 text-left cursor-pointer transition-colors leading-tight py-1 px-2 sm:px-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 min-h-[40px]"
+            title="คลิกเพื่อสลับฤดูกาล (Switch Season)"
+          >
+            <div class="flex flex-col">
+              <span class="text-[9px] uppercase tracking-wider font-semibold text-slate-400 dark:text-slate-500 font-display leading-tight">ฤดูกาล</span>
+              <span id="header-season-label" class="text-xs sm:text-sm font-black text-slate-800 dark:text-slate-100 font-display leading-tight">2026/27</span>
+            </div>
+            <span id="header-season-badge" class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
+              LIVE
+            </span>
+            <span class="inline-flex items-center justify-center w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200 transition-colors">
+              <svg class="w-3 h-3 group-hover:translate-y-0.5 transition-transform" id="season-switcher-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+            </span>
+          </button>
+
+          <!-- Dropdown Menu Box -->
+          <div id="season-dropdown-menu" class="hidden absolute top-full left-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-white dark:bg-[#0d0d0f] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 animate-in fade-in zoom-in duration-100" onclick="event.stopPropagation()">
+            <div class="px-3.5 py-1.5 text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400 font-display border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <span>เลือกฤดูกาล (Select Season)</span>
+              <span class="text-[9px] text-slate-400 font-normal">คลิกเพื่อสลับ</span>
+            </div>
+            <div id="season-dropdown-options" class="p-1 space-y-0.5">
+              <!-- Dynamic options for seasons -->
             </div>
           </div>
         </div>
@@ -1155,6 +1188,21 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
         </span>
       </span>
+    </div>
+
+    <!-- Archived Season Notice Banner (Shows only when viewing historical season) -->
+    <div id="archived-season-banner" class="hidden max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-2">
+      <div class="bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-transparent border border-amber-500/30 rounded-xl px-3.5 py-2 flex items-center justify-between text-xs text-amber-900 dark:text-amber-200">
+        <div class="flex items-center gap-2">
+          <span class="text-base flex-shrink-0">📦</span>
+          <span>
+            <strong class="font-bold">ฤดูกาลสิ้นสุดแล้ว (ARCHIVED)</strong> — บันทึกสถิติและคะแนนอย่างเป็นทางการ (Official Historical Season Record)
+          </span>
+        </div>
+        <button onclick="app.switchSeason('2026-27')" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline flex-shrink-0 cursor-pointer ml-2">
+          สลับกลับสู่ฤดูกาลปัจจุบัน ➔
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1451,6 +1499,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     <!-- ==================== TAB 3: HALL OF FAME (หอเกียรติยศ) ==================== -->
     <div id="hall-of-fame-view" class="tab-content hidden space-y-4">
       
+      <!-- All-Time Hall of Fame (Roll of Honor, Decorated Managers, All-Time Records) -->
+      <div id="all-time-hof-container" class="space-y-4">
+        <!-- Rendered dynamically via app.renderAllTimeHallOfFame() -->
+      </div>
+
       <!-- 4 Highlight Cards -->
       <div id="hall-of-fame-records" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <!-- Dynamic Records -->
@@ -3790,6 +3843,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.configs = configs || {};
         this.assetPrefix = assetPrefix;
         this.cacheBust = Date.now();
+        this.currentLiveSeasonId = (typeof INITIAL_SEASON_ID !== 'undefined' && INITIAL_SEASON_ID) ? INITIAL_SEASON_ID : '2026-27';
 
         // Path detection (e.g. /fpl-mini/40700 or /fpl-mini/675290)
         let pathLeague = this.detectPathLeague();
@@ -3797,12 +3851,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         let queryLeague = '';
         let queryTab = '';
         let queryGW = '';
+        let querySeason = '';
         try {
           if (typeof URLSearchParams !== 'undefined' && window.location && window.location.search) {
             const urlParams = new URLSearchParams(window.location.search);
             queryLeague = urlParams.get('league') || '';
             queryTab = urlParams.get('tab') || '';
             queryGW = urlParams.get('gw') || '';
+            querySeason = urlParams.get('season') || '';
           }
         } catch (e) {}
 
@@ -3824,12 +3880,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         let savedLeague = '';
         let savedTab = '';
+        let savedSeason = '';
         try {
           if (typeof localStorage !== 'undefined') {
             savedLeague = localStorage.getItem('fpl_mini_active_league') || '';
             savedTab = localStorage.getItem('fpl_mini_active_tab') || '';
+            savedSeason = localStorage.getItem('fpl_mini_active_season') || '';
           }
         } catch (e) {}
+
+        this.activeSeasonId = querySeason || savedSeason || (this.multiData && this.multiData.season_id) || this.currentLiveSeasonId;
+        this.isArchived = (this.activeSeasonId !== this.currentLiveSeasonId);
+        this.seasonsIndex = [];
+        this.seasonSummaries = {};
 
         if (pathLeague && this.multiData.leagues[pathLeague]) {
           this.activeLeagueId = pathLeague;
@@ -3850,14 +3913,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.config = this.configs[this.activeLeagueId] || Object.values(this.configs)[0];
         
         const maxGW = Number(this.multiData.max_gw) || 2;
-        const latestGWData = this.data && this.data.gameweeks ? this.data.gameweeks[String(maxGW)] : null;
-        const isLatestStarted = latestGWData ? (latestGWData.is_started !== undefined ? Boolean(latestGWData.is_started) : (Boolean(latestGWData.is_finished) || (latestGWData.results && latestGWData.results.some(r => r.points > 0)))) : false;
-        
-        const queryGWNum = Number(queryGW);
-        if (queryGWNum >= 1 && queryGWNum <= maxGW) {
-          this.selectedGW = queryGWNum;
+        if (this.isArchived) {
+          this.selectedGW = maxGW;
         } else {
-          this.selectedGW = (!isLatestStarted && maxGW > 1) ? (maxGW - 1) : maxGW;
+          const latestGWData = this.data && this.data.gameweeks ? this.data.gameweeks[String(maxGW)] : null;
+          const isLatestStarted = latestGWData ? (latestGWData.is_started !== undefined ? Boolean(latestGWData.is_started) : (Boolean(latestGWData.is_finished) || (latestGWData.results && latestGWData.results.some(r => r.points > 0)))) : false;
+          
+          const queryGWNum = Number(queryGW);
+          if (queryGWNum >= 1 && queryGWNum <= maxGW) {
+            this.selectedGW = queryGWNum;
+          } else {
+            this.selectedGW = (!isLatestStarted && maxGW > 1) ? (maxGW - 1) : maxGW;
+          }
         }
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
@@ -3941,7 +4008,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (lObj._squadsLoaded) return lObj.squads || {};
         if (lObj._squadsPromise) return lObj._squadsPromise;
 
-        const seasonId = this.multiData.season_id || (typeof INITIAL_SEASON_ID !== 'undefined' ? INITIAL_SEASON_ID : '2026-27');
+        const seasonId = this.multiData.season_id || this.activeSeasonId || (typeof INITIAL_SEASON_ID !== 'undefined' ? INITIAL_SEASON_ID : '2026-27');
         const url = `${this.assetPrefix}seasons/${seasonId}/squads/${lidStr}.json?v=${this.cacheBust}`;
 
         lObj._squadsPromise = (async () => {
@@ -3988,6 +4055,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       init() {
         this.initLanguage();
         this.initTheme();
+        this.ensureSeasonsIndex();
+        this.renderSeasonDropdown();
         this.renderLeagueDropdown();
         this.updateHeaderInfo();
         this.initTabNavigation();
@@ -4011,9 +4080,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 this.closeTextSummaryModal();
               }
               const urlParams = new URLSearchParams((window.location && window.location.search) ? window.location.search : '');
+              const qSeason = urlParams.get('season') || this.currentLiveSeasonId;
               const qLeague = urlParams.get('league') || this.detectPathLeague();
               const qTab = this.normalizeTab(urlParams.get('tab'));
               const qGW = urlParams.get('gw');
+              if (qSeason && qSeason !== this.activeSeasonId) {
+                this.switchSeason(qSeason, true);
+                return;
+              }
               if (qLeague && this.multiData.leagues[qLeague] && qLeague !== this.activeLeagueId) {
                 this.switchLeague(qLeague, true);
               }
@@ -4043,6 +4117,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const wrapEl = document.getElementById('gw-deadline-countdown-wrap');
         if (!wrapEl) return;
         const isEn = (this.currentLang === 'en');
+        if (this.isArchived) {
+          wrapEl.innerText = isEn ? '(SEASON CONCLUDED)' : '(จบฤดูกาลแล้ว)';
+          return;
+        }
         const nowSec = Math.floor(Date.now() / 1000);
 
         // 1. Check if the current matchday is currently in progress (LIVE)
@@ -4105,8 +4183,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
       initLivePolling() {
         if (typeof window === 'undefined' || typeof fetch === 'undefined') return;
+        if (this.isArchived) return;
 
         const checkAndPoll = () => {
+          if (this.isArchived) return;
           if (!document.hidden && this.isLiveWindowActive()) {
             this.fetchLivePoints();
           }
@@ -5006,15 +5086,243 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
       }
 
-      closeLeagueDropdownIfClickedOutside(event) {
-        const menu = document.getElementById('league-dropdown-menu');
-        const btn = document.getElementById('league-switcher-btn');
-        const chevron = document.getElementById('league-switcher-chevron');
-        if (menu && !menu.classList.contains('hidden')) {
-          if (btn && btn.contains(event.target)) return;
-          menu.classList.add('hidden');
-          if (chevron) chevron.style.transform = 'rotate(0deg)';
+      async ensureSeasonsIndex() {
+        if (this.seasonsIndex && this.seasonsIndex.length > 0) return this.seasonsIndex;
+        if (this._seasonsIndexPromise) return this._seasonsIndexPromise;
+
+        this._seasonsIndexPromise = (async () => {
+          try {
+            const res = await fetch(`${this.assetPrefix}seasons/index.json?v=${this.cacheBust}`);
+            if (res.ok) {
+              this.seasonsIndex = await res.json();
+            } else {
+              this.seasonsIndex = [
+                { id: '2026-27', name: '2026/27', status: 'live', max_gw: 8 },
+                { id: '2025-26', name: '2025/26', status: 'archived', max_gw: 38 }
+              ];
+            }
+          } catch (e) {
+            console.warn('Notice loading seasons index:', e);
+            this.seasonsIndex = [
+              { id: '2026-27', name: '2026/27', status: 'live', max_gw: 8 },
+              { id: '2025-26', name: '2025/26', status: 'archived', max_gw: 38 }
+            ];
+          } finally {
+            delete this._seasonsIndexPromise;
+          }
+          this.renderSeasonDropdown();
+          return this.seasonsIndex;
+        })();
+        return this._seasonsIndexPromise;
+      }
+
+      async ensureSeasonSummaries() {
+        await this.ensureSeasonsIndex();
+        const promises = (this.seasonsIndex || []).map(async (s) => {
+          if (this.seasonSummaries[s.id]) return this.seasonSummaries[s.id];
+          try {
+            const res = await fetch(`${this.assetPrefix}seasons/${s.id}/summary.json?v=${this.cacheBust}`);
+            if (res.ok) {
+              this.seasonSummaries[s.id] = await res.json();
+            }
+          } catch (e) {
+            console.warn(`Notice loading summary for ${s.id}:`, e);
+          }
+          return this.seasonSummaries[s.id];
+        });
+        await Promise.all(promises);
+        if (this.activeTab === 'hall-of-fame-view') {
+          this.renderHallOfFameView();
         }
+      }
+
+      toggleSeasonDropdown(event) {
+        if (event) {
+          event.stopPropagation();
+          if (event.preventDefault) event.preventDefault();
+        }
+        const menu = document.getElementById('season-dropdown-menu');
+        const chevron = document.getElementById('season-switcher-chevron');
+        if (menu) {
+          const isHidden = menu.classList.contains('hidden');
+          if (isHidden) {
+            this.ensureSeasonsIndex();
+            this.renderSeasonDropdown();
+            // Close league dropdown if open
+            const lMenu = document.getElementById('league-dropdown-menu');
+            const lChevron = document.getElementById('league-switcher-chevron');
+            if (lMenu) lMenu.classList.add('hidden');
+            if (lChevron) lChevron.style.transform = 'rotate(0deg)';
+
+            menu.classList.remove('hidden');
+            if (chevron) chevron.style.transform = 'rotate(180deg)';
+          } else {
+            menu.classList.add('hidden');
+            if (chevron) chevron.style.transform = 'rotate(0deg)';
+          }
+        }
+      }
+
+      closeDropdownsIfClickedOutside(event) {
+        // League dropdown
+        const lMenu = document.getElementById('league-dropdown-menu');
+        const lBtn = document.getElementById('league-switcher-btn');
+        const lChevron = document.getElementById('league-switcher-chevron');
+        if (lMenu && !lMenu.classList.contains('hidden')) {
+          if (!lBtn || !lBtn.contains(event.target)) {
+            lMenu.classList.add('hidden');
+            if (lChevron) lChevron.style.transform = 'rotate(0deg)';
+          }
+        }
+
+        // Season dropdown
+        const sMenu = document.getElementById('season-dropdown-menu');
+        const sBtn = document.getElementById('season-switcher-btn');
+        const sChevron = document.getElementById('season-switcher-chevron');
+        if (sMenu && !sMenu.classList.contains('hidden')) {
+          if (!sBtn || !sBtn.contains(event.target)) {
+            sMenu.classList.add('hidden');
+            if (sChevron) sChevron.style.transform = 'rotate(0deg)';
+          }
+        }
+      }
+
+      closeLeagueDropdownIfClickedOutside(event) {
+        this.closeDropdownsIfClickedOutside(event);
+      }
+
+      renderSeasonDropdown() {
+        const container = document.getElementById('season-dropdown-options');
+        if (!container) return;
+        const isEn = (this.currentLang === 'en');
+        const seasons = (this.seasonsIndex && this.seasonsIndex.length > 0)
+          ? this.seasonsIndex
+          : [
+              { id: '2026-27', name: '2026/27', status: 'live', max_gw: 8 },
+              { id: '2025-26', name: '2025/26', status: 'archived', max_gw: 38 }
+            ];
+
+        let html = '';
+        seasons.forEach((s) => {
+          const isCurrent = (s.id === this.activeSeasonId);
+          const isLive = (s.status === 'live');
+          const badgeHtml = isLive
+            ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">LIVE</span>`
+            : `<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-amber-100 text-amber-700 dark:bg-amber-950/80 dark:text-amber-400 border border-amber-300 dark:border-amber-800">ARCHIVED</span>`;
+
+          const activeBorder = isCurrent
+            ? 'bg-blue-50/80 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800/80'
+            : 'hover:bg-slate-50 dark:hover:bg-slate-800/60 border border-transparent';
+
+          html += `
+            <button 
+              onclick="app.switchSeason('${s.id}')"
+              class="w-full flex items-center justify-between p-2 rounded-xl text-left transition-all cursor-pointer ${activeBorder}"
+            >
+              <div class="flex items-center gap-2">
+                <span class="text-base">${isLive ? '🟢' : '📦'}</span>
+                <div>
+                  <div class="text-xs font-bold text-slate-800 dark:text-slate-100 font-display flex items-center gap-1.5">
+                    ${isEn ? `Season ${s.name || s.id}` : `ฤดูกาล ${s.name || s.id}`}
+                    ${badgeHtml}
+                  </div>
+                  <div class="text-[10px] text-slate-500 dark:text-slate-400 font-normal">
+                    ${isLive ? (isEn ? `Current Season (GW 1-${s.max_gw || 8})` : `ฤดูกาลปัจจุบัน (GW 1-${s.max_gw || 8})`) : (isEn ? `Official Archive (38 GWs)` : `บันทึกสถิติ 38 สัปดาห์`)}
+                  </div>
+                </div>
+              </div>
+              ${isCurrent ? `<span class="text-blue-600 dark:text-blue-400 font-black text-xs font-display">✓</span>` : ''}
+            </button>
+          `;
+        });
+        container.innerHTML = html;
+      }
+
+      async switchSeason(seasonId, fromPopstate = false) {
+        if (!seasonId || (seasonId === this.activeSeasonId && !fromPopstate)) return;
+
+        // Close dropdown
+        const menu = document.getElementById('season-dropdown-menu');
+        const chevron = document.getElementById('season-switcher-chevron');
+        if (menu) menu.classList.add('hidden');
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
+
+        this.activeSeasonId = seasonId;
+        this.isArchived = (seasonId !== this.currentLiveSeasonId);
+
+        try {
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('fpl_mini_active_season', seasonId);
+          }
+        } catch (e) {}
+
+        if (!fromPopstate && typeof window !== 'undefined' && window.history && window.history.replaceState) {
+          try {
+            const urlParams = new URLSearchParams(window.location.search || '');
+            if (this.isArchived) {
+              urlParams.set('season', seasonId);
+            } else {
+              urlParams.delete('season');
+            }
+            const newSearch = urlParams.toString();
+            const newUrl = window.location.pathname + (newSearch ? '?' + newSearch : '') + window.location.hash;
+            window.history.replaceState(null, '', newUrl);
+          } catch (e) {}
+        }
+
+        // Fetch core data for target season
+        try {
+          const res = await fetch(`${this.assetPrefix}seasons/${seasonId}/core.json?v=${this.cacheBust}`);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const newCore = await res.json();
+          this.multiData = newCore;
+        } catch (err) {
+          console.error(`Failed to load core data for season ${seasonId}:`, err);
+          alert(`ไม่สามารถโหลดข้อมูลฤดูกาล ${seasonId} ได้ กรุณาลองใหม่อีกครั้ง`);
+          return;
+        }
+
+        // Check if snapshot config exists for historical season
+        if (this.isArchived) {
+          try {
+            const cfgRes = await fetch(`${this.assetPrefix}seasons/${seasonId}/config.json?v=${this.cacheBust}`);
+            if (cfgRes.ok) {
+              this.configs = await cfgRes.json();
+            }
+          } catch (e) {}
+        }
+
+        this.data = this.multiData.leagues[this.activeLeagueId] || Object.values(this.multiData.leagues)[0] || {};
+        if (this.data && !this.data.squads) this.data.squads = {};
+        this.config = this.configs[this.activeLeagueId] || Object.values(this.configs)[0] || {};
+
+        const maxGW = Number(this.multiData.max_gw) || 38;
+        if (this.isArchived) {
+          this.selectedGW = maxGW;
+          if (this._deadlineInterval) clearInterval(this._deadlineInterval);
+          if (this.livePollInterval) clearInterval(this.livePollInterval);
+        } else {
+          const latestGWData = this.data && this.data.gameweeks ? this.data.gameweeks[String(maxGW)] : null;
+          const isLatestStarted = latestGWData ? (latestGWData.is_started !== undefined ? Boolean(latestGWData.is_started) : (Boolean(latestGWData.is_finished) || (latestGWData.results && latestGWData.results.some(r => r.points > 0)))) : false;
+          this.selectedGW = (!isLatestStarted && maxGW > 1) ? (maxGW - 1) : maxGW;
+          this.initDeadlineCountdown();
+          this.initLivePolling();
+        }
+
+        // Render everything
+        this.renderSeasonDropdown();
+        this.renderLeagueDropdown();
+        this.updateHeaderInfo();
+        this.renderAll();
+
+        // Ensure squads if needed
+        if (this.activeLeagueId) {
+          this.ensureSquads(this.activeLeagueId);
+        }
+      }
+
+      closeLeagueDropdownIfClickedOutside(event) {
+        this.closeDropdownsIfClickedOutside(event);
       }
 
       switchLeague(leagueId, fromPopstate = false) {
@@ -5124,14 +5432,64 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const lastSyncEl = document.getElementById('header-last-sync');
         const cupTabBtn = document.getElementById('tab-btn-cup');
 
+        const seasonLabelEl = document.getElementById('header-season-label');
+        const seasonBadgeEl = document.getElementById('header-season-badge');
+        const archivedBannerEl = document.getElementById('archived-season-banner');
+
+        const activeSeasonObj = (this.seasonsIndex || []).find(s => s.id === this.activeSeasonId);
+        const activeSeasonName = activeSeasonObj ? (activeSeasonObj.name || activeSeasonObj.id) : this.activeSeasonId.replace('-', '/');
+        if (seasonLabelEl) seasonLabelEl.innerText = activeSeasonName;
+        if (seasonBadgeEl) {
+          if (this.isArchived) {
+            seasonBadgeEl.innerText = 'ARCHIVED';
+            seasonBadgeEl.className = 'inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-amber-100 text-amber-700 dark:bg-amber-950/80 dark:text-amber-400 border border-amber-300 dark:border-amber-800';
+          } else {
+            seasonBadgeEl.innerText = 'LIVE';
+            seasonBadgeEl.className = 'inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800';
+          }
+        }
+
+        if (archivedBannerEl) {
+          if (this.isArchived) {
+            archivedBannerEl.classList.remove('hidden');
+          } else {
+            archivedBannerEl.classList.add('hidden');
+          }
+        }
+
         if (nameEl) nameEl.innerText = this.data.name;
         if (idBadge) idBadge.innerText = `LEAGUE ${this.activeLeagueId}`;
-        if (seasonEl) seasonEl.innerText = isEn ? `Season ${this.data.season || '2026/27'}` : `ฤดูกาล ${this.data.season || '2026/27'}`;
+        if (seasonEl) seasonEl.innerText = isEn ? `Season ${this.data.season || activeSeasonName}` : `ฤดูกาล ${this.data.season || activeSeasonName}`;
         if (memberEl) memberEl.innerText = isEn ? `${(this.data.teams || []).length} Members` : `${(this.data.teams || []).length} ทีมสมาชิก`;
         if (lastSyncEl) {
-          lastSyncEl.innerText = (this.multiData && this.multiData.last_sync_iso)
-            ? this.formatSyncDate(this.multiData.last_sync_iso)
-            : (this.multiData.last_sync || '');
+          if (this.isArchived) {
+            lastSyncEl.innerText = (this.multiData && this.multiData.last_sync_iso)
+              ? this.formatSyncDate(this.multiData.last_sync_iso)
+              : 'Official Archive';
+          } else {
+            lastSyncEl.innerText = (this.multiData && this.multiData.last_sync_iso)
+              ? this.formatSyncDate(this.multiData.last_sync_iso)
+              : (this.multiData.last_sync || '');
+          }
+        }
+
+        const gwStatusEl = document.getElementById('header-gw-status');
+        const gwStatusBox = document.getElementById('api-status-text');
+        const gwStatusDot = document.getElementById('header-gw-status-dot');
+        const lastSyncIcon = document.getElementById('header-last-sync-icon');
+        const lastSyncBadge = document.getElementById('header-last-sync-badge');
+
+        if (this.isArchived) {
+          if (gwStatusEl) gwStatusEl.innerText = isEn ? 'Archived Season (Historical)' : 'ฤดูกาลสิ้นสุดแล้ว (ARCHIVED)';
+          if (gwStatusBox) gwStatusBox.className = 'text-xs font-semibold text-amber-900 hidden md:flex items-center bg-amber-50 px-3.5 py-1.5 rounded-xl border border-amber-300 shadow-xs';
+          if (gwStatusDot) gwStatusDot.className = 'inline-block w-2 h-2 rounded-full bg-amber-500 mr-2';
+          if (lastSyncIcon) lastSyncIcon.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500 inline-block" title="Official Archive"></span>';
+          if (lastSyncBadge) {
+            lastSyncBadge.setAttribute('title', 'บันทึกสถิติอย่างเป็นทางการ (Official Archive)');
+            lastSyncBadge.className = 'inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs';
+          }
+          if (cupTabBtn) cupTabBtn.classList.add('hidden');
+          return;
         }
 
         // Check if latest gameweek is currently live, finished, or upcoming (pre-match)
@@ -5139,12 +5497,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const curGWData = this.data.gameweeks ? this.data.gameweeks[String(maxGW)] : null;
         const isCurFinished = Boolean(curGWData && curGWData.is_finished);
         const isCurStarted = curGWData ? (curGWData.is_started !== undefined ? Boolean(curGWData.is_started) : (isCurFinished || (curGWData.results && curGWData.results.some(r => r.points > 0)))) : false;
-
-        const gwStatusEl = document.getElementById('header-gw-status');
-        const gwStatusBox = document.getElementById('api-status-text');
-        const gwStatusDot = document.getElementById('header-gw-status-dot');
-        const lastSyncIcon = document.getElementById('header-last-sync-icon');
-        const lastSyncBadge = document.getElementById('header-last-sync-badge');
 
         if (gwStatusEl) {
           if (isCurFinished) {
@@ -7325,7 +7677,62 @@ selectShi62GW(gwName) {
         if (overallNum) overallNum.innerText = this.selectedGW;
 
         if (!gwData || !gwData.results || gwData.results.length === 0) {
-          if (matchdayBody) matchdayBody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-slate-400">ยังไม่มีข้อมูลในสัปดาห์นี้</td></tr>';
+          const isEn = (this.currentLang === 'en');
+          if (tableTitle) tableTitle.innerText = isEn ? 'Final Season Standings' : 'ตารางคะแนนสิ้นสุดฤดูกาล (Final Standings)';
+          if (tableBadge) {
+            tableBadge.innerText = isEn ? 'Official Results' : 'ผลการแข่งขันทางการ';
+            tableBadge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200';
+          }
+          if (overallNum) overallNum.innerText = this.selectedGW;
+
+          // Render final season standings into matchdayBody
+          const sortedTeams = [...(this.data.teams || [])].sort((a, b) => (Number(b.total_points) || 0) - (Number(a.total_points) || 0));
+          if (matchdayBody) {
+            let html = '';
+            sortedTeams.forEach((team, idx) => {
+              const rank = idx + 1;
+              const medal = rank === 1 ? '🥇' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : rank));
+              html += `
+                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors">
+                  <td class="py-2.5 px-1 text-center font-display font-bold text-slate-500 text-xs">${medal}</td>
+                  <td class="py-2.5 px-2">
+                    <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer block truncate">
+                      ${this.escapeHtml(team.entry_name || '-')}
+                    </button>
+                    <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(team.player_name || '-')}</div>
+                  </td>
+                  <td class="py-2.5 px-1 text-center font-display font-black text-slate-900 dark:text-white text-xs">${(Number(team.total_points) || 0).toLocaleString()}</td>
+                  <td class="py-2.5 px-1 text-center font-display text-[11px] text-slate-500">${team.overall_rank ? `#${team.overall_rank.toLocaleString()}` : '-'}</td>
+                  <td class="py-2.5 px-1 text-center font-display text-xs text-slate-400">-</td>
+                  <td class="py-2.5 px-1 text-center font-display text-xs text-slate-400">-</td>
+                </tr>
+              `;
+            });
+            matchdayBody.innerHTML = html;
+          }
+
+          // Also render champion card for rank 1
+          if (championCard && sortedTeams.length > 0) {
+            const champ = sortedTeams[0];
+            championCard.innerHTML = `
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border-2 border-amber-300 dark:border-amber-700 bg-gradient-to-r from-amber-50/80 via-white to-amber-50/40 dark:from-amber-950/40 dark:via-slate-900 dark:to-amber-950/20 shadow-md">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="text-2xl">👑</span>
+                    <div>
+                      <span class="text-[10px] uppercase font-bold text-amber-700 dark:text-amber-400 font-display">${isEn ? 'Season Champion' : 'แชมเปี้ยนประจำฤดูกาล'}</span>
+                      <h3 class="text-base sm:text-xl font-black text-slate-900 dark:text-white font-display">${this.escapeHtml(champ.entry_name)}</h3>
+                      <p class="text-xs text-slate-600 dark:text-slate-400">${this.escapeHtml(champ.player_name)}</p>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 font-display">${(Number(champ.total_points) || 0).toLocaleString()} <span class="text-xs">PTS</span></div>
+                    ${champ.overall_rank ? `<div class="text-[10px] text-slate-500 font-display">Overall Rank #${champ.overall_rank.toLocaleString()}</div>` : ''}
+                  </div>
+                </div>
+              </div>
+            `;
+          }
           return;
         }
 
@@ -8795,6 +9202,7 @@ selectShi62GW(gwName) {
         const teams = leagueData.teams || [];
         const maxGW = Number(this.multiData.max_gw) || 1;
 
+        const hasGameweekData = Boolean(leagueData.gameweeks && Object.keys(leagueData.gameweeks).length > 0);
         const overallMap = {};
         teams.forEach(t => {
           overallMap[t.entry_id] = {
@@ -8803,7 +9211,7 @@ selectShi62GW(gwName) {
             entry_name: t.entry_name,
             player_name: t.player_name,
             fpl_rank: Number(t.rank) || 999,
-            total_points: 0
+            total_points: hasGameweekData ? 0 : (Number(t.total_points) || 0)
           };
         });
 
@@ -11589,7 +11997,243 @@ selectShi62GW(gwName) {
         this.renderPrizesView();
       }
 
+      renderAllTimeHallOfFame() {
+        const container = document.getElementById('all-time-hof-container');
+        if (!container) return;
+        const isEn = (this.currentLang === 'en');
+        const currentLid = String(this.activeLeagueId);
+
+        // If summaries not loaded yet, initiate fetch
+        const seasonIds = (this.seasonsIndex && this.seasonsIndex.length > 0)
+          ? this.seasonsIndex.map(s => s.id)
+          : ['2026-27', '2025-26'];
+
+        const loadedSummaries = Object.keys(this.seasonSummaries || {});
+        const hasAll = seasonIds.every(id => loadedSummaries.includes(id));
+        if (!hasAll) {
+          this.ensureSeasonSummaries();
+        }
+
+        // Aggregate records & medals across all loaded season summaries for currentLid
+        const medalLeaders = {};
+        let allTimeHighGW = { score: 0, team: '-', player: '-', gw: 1, season: '-' };
+        let allTimeBestBench = { bench: 0, team: '-', player: '-', gw: 1, season: '-' };
+        let allTimeHighestSeasonTotal = { score: 0, team: '-', player: '-', season: '-' };
+
+        const seasonCardsHtml = [];
+
+        seasonIds.forEach(sId => {
+          const sObj = (this.seasonsIndex || []).find(s => s.id === sId) || { id: sId, name: sId, status: sId === '2026-27' ? 'live' : 'archived' };
+          const sSummary = this.seasonSummaries ? this.seasonSummaries[sId] : null;
+          const isLive = (sObj.status === 'live');
+          const seasonName = sObj.name || sId;
+
+          let lData = sSummary && sSummary.leagues ? sSummary.leagues[currentLid] : null;
+
+          // If summary not available yet, but sId is currently active season, generate live from this.multiData!
+          if (!lData && sId === this.multiData.season_id && this.multiData.leagues && this.multiData.leagues[currentLid]) {
+            const liveLeague = this.multiData.leagues[currentLid];
+            const liveTeams = [...(liveLeague.teams || [])].sort((a, b) => (Number(b.total_points) || 0) - (Number(a.total_points) || 0));
+            lData = {
+              id: currentLid,
+              name: liveLeague.name,
+              podium: liveTeams.slice(0, 3).map((t, idx) => ({
+                rank: idx + 1,
+                entry_id: t.entry_id,
+                player_name: t.player_name,
+                team_name: t.entry_name,
+                total_points: t.total_points,
+                overall_rank: t.overall_rank
+              }))
+            };
+          }
+
+          if (lData) {
+            // Check record GW & bench
+            if (lData.record_gw && lData.record_gw.score > allTimeHighGW.score) {
+              allTimeHighGW = { ...lData.record_gw, season: seasonName };
+            }
+            if (lData.record_bench && lData.record_bench.bench > allTimeBestBench.bench) {
+              allTimeBestBench = { ...lData.record_bench, season: seasonName };
+            }
+
+            // Podium
+            const podium = lData.podium || [];
+            if (podium[0] && podium[0].total_points > allTimeHighestSeasonTotal.score) {
+              allTimeHighestSeasonTotal = {
+                score: podium[0].total_points,
+                team: podium[0].team_name,
+                player: podium[0].player_name,
+                season: seasonName
+              };
+            }
+
+            // Aggregate medals
+            podium.forEach((p, idx) => {
+              if (idx > 2) return;
+              if (!medalLeaders[p.entry_id]) {
+                medalLeaders[p.entry_id] = {
+                  entry_id: p.entry_id,
+                  player_name: p.player_name,
+                  team_name: p.team_name,
+                  gold: 0,
+                  silver: 0,
+                  bronze: 0,
+                  seasons: []
+                };
+              }
+              if (idx === 0) medalLeaders[p.entry_id].gold++;
+              if (idx === 1) medalLeaders[p.entry_id].silver++;
+              if (idx === 2) medalLeaders[p.entry_id].bronze++;
+              const medalChar = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : '🥉');
+              medalLeaders[p.entry_id].seasons.push(`${medalChar} ${seasonName}${isLive ? '*' : ''}`);
+            });
+
+            // Build Card
+            const statusBadge = isLive
+              ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">🟢 ${isEn ? 'Current Season (In Progress)' : 'ฤดูกาลปัจจุบัน (กำลังแข่งขัน)'}</span>`
+              : `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">📦 ${isEn ? 'Official Historical Finish' : 'บันทึกสถิติทางการ'}</span>`;
+
+            const rank1 = podium[0];
+            const rank2 = podium[1];
+            const rank3 = podium[2];
+
+            seasonCardsHtml.push(`
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 relative overflow-hidden">
+                <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xl">🏆</span>
+                    <div>
+                      <h4 class="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white font-display">
+                        ${isEn ? `Season ${seasonName}` : `ทำเนียบแชมป์ ฤดูกาล ${seasonName}`}
+                      </h4>
+                      <span class="text-[10px] text-slate-500 dark:text-slate-400 font-display">League ${currentLid}</span>
+                    </div>
+                  </div>
+                  <div>${statusBadge}</div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
+                  <!-- 1st Place (Champion) -->
+                  <div class="p-3 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 relative">
+                    <div class="flex items-center justify-between">
+                      <span class="text-lg">🥇</span>
+                      <span class="text-[10px] uppercase font-bold text-amber-700 dark:text-amber-400 font-display">${isEn ? 'Champion' : 'แชมเปี้ยน'}</span>
+                    </div>
+                    <div class="mt-1">
+                      <div class="text-sm font-black text-slate-900 dark:text-white truncate">${rank1 ? this.escapeHtml(rank1.team_name) : '-'}</div>
+                      <div class="text-xs text-slate-600 dark:text-slate-400 truncate">${rank1 ? this.escapeHtml(rank1.player_name) : '-'}</div>
+                      <div class="mt-2 flex items-baseline justify-between">
+                        <span class="text-base font-black text-amber-600 dark:text-amber-400 font-display">${rank1 ? (Number(rank1.total_points) || 0).toLocaleString() : 0} <span class="text-[10px]">PTS</span></span>
+                        ${rank1 && rank1.overall_rank ? `<span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400">OR #${rank1.overall_rank.toLocaleString()}</span>` : ''}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 2nd Place (Runner-up) -->
+                  <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 relative">
+                    <div class="flex items-center justify-between">
+                      <span class="text-lg">🥈</span>
+                      <span class="text-[10px] uppercase font-bold text-slate-600 dark:text-slate-400 font-display">${isEn ? 'Runner-up' : 'รองแชมป์'}</span>
+                    </div>
+                    <div class="mt-1">
+                      <div class="text-sm font-black text-slate-900 dark:text-white truncate">${rank2 ? this.escapeHtml(rank2.team_name) : '-'}</div>
+                      <div class="text-xs text-slate-600 dark:text-slate-400 truncate">${rank2 ? this.escapeHtml(rank2.player_name) : '-'}</div>
+                      <div class="mt-2 flex items-baseline justify-between">
+                        <span class="text-base font-black text-slate-700 dark:text-slate-300 font-display">${rank2 ? (Number(rank2.total_points) || 0).toLocaleString() : 0} <span class="text-[10px]">PTS</span></span>
+                        ${rank2 && rank2.overall_rank ? `<span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400">OR #${rank2.overall_rank.toLocaleString()}</span>` : ''}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 3rd Place -->
+                  <div class="p-3 rounded-xl bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200/60 dark:border-orange-800/40 relative">
+                    <div class="flex items-center justify-between">
+                      <span class="text-lg">🥉</span>
+                      <span class="text-[10px] uppercase font-bold text-orange-700 dark:text-orange-400 font-display">${isEn ? '3rd Place' : 'อันดับ 3'}</span>
+                    </div>
+                    <div class="mt-1">
+                      <div class="text-sm font-black text-slate-900 dark:text-white truncate">${rank3 ? this.escapeHtml(rank3.team_name) : '-'}</div>
+                      <div class="text-xs text-slate-600 dark:text-slate-400 truncate">${rank3 ? this.escapeHtml(rank3.player_name) : '-'}</div>
+                      <div class="mt-2 flex items-baseline justify-between">
+                        <span class="text-base font-black text-orange-600 dark:text-orange-400 font-display">${rank3 ? (Number(rank3.total_points) || 0).toLocaleString() : 0} <span class="text-[10px]">PTS</span></span>
+                        ${rank3 && rank3.overall_rank ? `<span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400">OR #${rank3.overall_rank.toLocaleString()}</span>` : ''}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `);
+          }
+        });
+
+        // Sorted Medal Table
+        const sortedMedals = Object.values(medalLeaders).sort((a, b) => {
+          if (b.gold !== a.gold) return b.gold - a.gold;
+          if (b.silver !== a.silver) return b.silver - a.silver;
+          return b.bronze - a.bronze;
+        });
+
+        let medalsTableHtml = '';
+        if (sortedMedals.length > 0) {
+          medalsTableHtml = `
+            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 mt-4">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
+                <div>
+                  <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">ALL-TIME DECORATED MANAGERS</span>
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
+                    ${isEn ? 'Most Decorated Managers (Roll of Honor)' : 'ผู้จัดการทีมที่มีเกียรติประวัติสูงสุด'}
+                  </h3>
+                </div>
+                <span class="text-[10px] text-slate-400 dark:text-slate-500 font-display">${isEn ? 'All Seasons' : 'รวมทุกฤดูกาล'}</span>
+              </div>
+              
+              <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="border-b border-slate-100 dark:border-slate-800 text-[10px] sm:text-[11px] font-bold text-slate-400 font-display bg-slate-50/50 dark:bg-slate-900/40">
+                      <th class="py-2.5 px-2 text-center w-8">#</th>
+                      <th class="py-2.5 px-3 min-w-[140px]">${isEn ? 'Manager / Team' : 'ผู้จัดการทีม / ทีม'}</th>
+                      <th class="py-2.5 px-2 text-center whitespace-nowrap">🥇 ${isEn ? 'Gold' : 'แชมป์'}</th>
+                      <th class="py-2.5 px-2 text-center whitespace-nowrap">🥈 ${isEn ? 'Silver' : 'รองแชมป์'}</th>
+                      <th class="py-2.5 px-2 text-center whitespace-nowrap">🥉 ${isEn ? 'Bronze' : 'อันดับ 3'}</th>
+                      <th class="py-2.5 px-3 text-left whitespace-nowrap">${isEn ? 'Podium Seasons' : 'ฤดูกาลที่ติดโพเดียม'}</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-xs font-medium">
+                    ${sortedMedals.map((m, idx) => `
+                      <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors">
+                        <td class="py-2.5 px-2 text-center font-bold font-display text-slate-500">${idx + 1}</td>
+                        <td class="py-2.5 px-3 min-w-0">
+                          <div class="font-bold text-slate-900 dark:text-white truncate">${this.escapeHtml(m.player_name)}</div>
+                          <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(m.team_name)}</div>
+                        </td>
+                        <td class="py-2.5 px-2 text-center font-black font-display text-amber-500">${m.gold || '-'}</td>
+                        <td class="py-2.5 px-2 text-center font-black font-display text-slate-400">${m.silver || '-'}</td>
+                        <td class="py-2.5 px-2 text-center font-black font-display text-orange-500">${m.bronze || '-'}</td>
+                        <td class="py-2.5 px-3 text-left text-[11px] text-slate-600 dark:text-slate-300">
+                          ${m.seasons.join(' • ')}
+                        </td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        }
+
+        container.innerHTML = `
+          <!-- Roll of Honor Cards -->
+          <div class="space-y-3">
+            ${seasonCardsHtml.join('')}
+          </div>
+          ${medalsTableHtml}
+        `;
+      }
+
       renderHallOfFameView() {
+        this.renderAllTimeHallOfFame();
         const recordsContainer = document.getElementById('hall-of-fame-records');
         const tableBody = document.getElementById('hall-of-fame-table-body');
         const hofColWins = document.getElementById('hof-col-wins');
@@ -11600,13 +12244,14 @@ selectShi62GW(gwName) {
         let highGW = { score: 0, team: '-', gw: 1 };
         let bestBench = { bench: 0, team: '-', gw: 1 };
 
+        const hasGameweekData = Boolean(this.data.gameweeks && Object.keys(this.data.gameweeks).length > 0);
         const teamStats = {};
         (this.data.teams || []).forEach(t => {
           teamStats[t.entry_id] = {
             entry_id: t.entry_id,
             team_name: t.entry_name,
             player_name: t.player_name,
-            total_net: 0,
+            total_net: hasGameweekData ? 0 : (Number(t.total_points) || 0),
             scores: [],
             total_hits: 0,
             wins: 0,
@@ -15314,15 +15959,23 @@ selectShi62GW(gwName) {
     if (typeof document !== 'undefined') {
       document.addEventListener('DOMContentLoaded', async () => {
         let multiData = MULTI_LEAGUE_DATA;
-        if (!multiData || !multiData.leagues || Object.keys(multiData.leagues).length === 0) {
+        let targetSeasonId = (typeof INITIAL_SEASON_ID !== 'undefined' && INITIAL_SEASON_ID) ? INITIAL_SEASON_ID : '2026-27';
+        try {
+          const urlParams = new URLSearchParams(window.location.search || '');
+          const qSeason = urlParams.get('season');
+          const sSeason = typeof localStorage !== 'undefined' ? localStorage.getItem('fpl_mini_active_season') : null;
+          if (qSeason) targetSeasonId = qSeason;
+          else if (sSeason) targetSeasonId = sSeason;
+        } catch (e) {}
+
+        if (!multiData || !multiData.leagues || Object.keys(multiData.leagues).length === 0 || multiData.season_id !== targetSeasonId) {
           try {
-            const seasonId = (typeof INITIAL_SEASON_ID !== 'undefined' && INITIAL_SEASON_ID) ? INITIAL_SEASON_ID : '2026-27';
             const prefix = (typeof ASSET_PREFIX !== 'undefined' && ASSET_PREFIX) ? ASSET_PREFIX : './';
-            const res = await fetch(`${prefix}seasons/${seasonId}/core.json?v=${Date.now()}`);
+            const res = await fetch(`${prefix}seasons/${targetSeasonId}/core.json?v=${Date.now()}`);
             if (res.ok) {
               multiData = await res.json();
             } else {
-              console.warn(`Notice: Could not load core.json: HTTP ${res.status}`);
+              console.warn(`Notice: Could not load core.json for ${targetSeasonId}: HTTP ${res.status}`);
             }
           } catch (e) {
             console.error('Failed to load season core data:', e);
@@ -15449,6 +16102,31 @@ def main():
         compact_payload = compact_squads_dict(l_obj.get("squads", {}))
         squad_path = os.path.join(squads_dir, f"{lid}.json")
         atomic_dump(compact_payload, squad_path)
+
+    # 2.1 Maintain seasons/index.json
+    index_path = os.path.join(base_dir, 'seasons', 'index.json')
+    seasons_index = []
+    if os.path.exists(index_path):
+        try:
+            with open(index_path, 'r', encoding='utf-8') as f:
+                seasons_index = json.load(f)
+        except Exception:
+            pass
+    cur_entry = next((s for s in seasons_index if s.get("id") == current_season_id), None)
+    if cur_entry:
+        cur_entry["status"] = "live"
+        cur_entry["max_gw"] = core_data.get("max_gw", 8)
+        cur_entry["updated_at"] = datetime.now().isoformat()
+    else:
+        seasons_index.insert(0, {
+            "id": current_season_id,
+            "name": current_season_id.replace('-', '/'),
+            "status": "live",
+            "max_gw": core_data.get("max_gw", 8),
+            "is_frozen": False,
+            "updated_at": datetime.now().isoformat()
+        })
+    atomic_dump(seasons_index, index_path)
 
     leagues_config_json_str = json.dumps(leagues_config, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 

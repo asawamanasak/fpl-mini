@@ -1,0 +1,283 @@
+{
+  "season_id": "2025-26",
+  "season": "2025/26",
+  "max_gw": 38,
+  "archived_at": "2026-06-01T00:00:00Z",
+  "is_frozen": true,
+  "note": "Imported official historical season finish from FPL API",
+  "leagues": {
+    "40700": {
+      "id": "40700",
+      "name": "เซียนอยู่รู หมูอยู่ตึก",
+      "teams_count": 12,
+      "podium": [
+        {
+          "rank": 1,
+          "entry_id": 5950381,
+          "player_name": "Athit Rattanawipapong",
+          "team_name": "SUN-KUNG-JI",
+          "total_points": 2386,
+          "overall_rank": 16431
+        },
+        {
+          "rank": 2,
+          "entry_id": 306983,
+          "player_name": "Micky Asawamanasak",
+          "team_name": "GEMINI UNITED",
+          "total_points": 2365,
+          "overall_rank": 33524
+        },
+        {
+          "rank": 3,
+          "entry_id": 73489,
+          "player_name": "FAme Pakviwat",
+          "team_name": "Some might say",
+          "total_points": 2241,
+          "overall_rank": 521812
+        },
+        {
+          "rank": 4,
+          "entry_id": 2189419,
+          "player_name": "Maew Mohawk",
+          "team_name": "1234-Ultrasmooth-",
+          "total_points": 2230,
+          "overall_rank": 614190
+        }
+      ]
+    },
+    "675290": {
+      "id": "675290",
+      "name": "NudNee",
+      "teams_count": 60,
+      "podium": [
+        {
+          "rank": 1,
+          "entry_id": 742519,
+          "player_name": "Nath Owarang",
+          "team_name": "AFC Richmond",
+          "total_points": 2369,
+          "overall_rank": 29282
+        },
+        {
+          "rank": 2,
+          "entry_id": 306983,
+          "player_name": "Micky Asawamanasak",
+          "team_name": "GEMINI UNITED",
+          "total_points": 2365,
+          "overall_rank": 33524
+        },
+        {
+          "rank": 3,
+          "entry_id": 697377,
+          "player_name": "Vutthipong Patirop",
+          "team_name": "GOBBIEZ UNITED",
+          "total_points": 2359,
+          "overall_rank": 39837
+        },
+        {
+          "rank": 4,
+          "entry_id": 2920912,
+          "player_name": "Krisada Kanivichaporn",
+          "team_name": "Keithkani",
+          "total_points": 2350,
+          "overall_rank": 52759
+        }
+      ]
+    },
+    "38491": {
+      "id": "38491",
+      "name": "รอ แมน โอน",
+      "teams_count": 16,
+      "podium": [
+        {
+          "rank": 1,
+          "entry_id": 348997,
+          "player_name": "ฐิติพงศ์ วงศ์อัครวัต",
+          "team_name": "นายโบ๊ท",
+          "total_points": 2399,
+          "overall_rank": 9548
+        },
+        {
+          "rank": 2,
+          "entry_id": 306983,
+          "player_name": "Micky Asawamanasak",
+          "team_name": "GEMINI UNITED",
+          "total_points": 2365,
+          "overall_rank": 33524
+        },
+        {
+          "rank": 3,
+          "entry_id": 5119430,
+          "player_name": "Park Howdy",
+          "team_name": "Geordie's Club",
+          "total_points": 2361,
+          "overall_rank": 37897
+        },
+        {
+          "rank": 4,
+          "entry_id": 4194662,
+          "player_name": "Chatiwat Piyarom",
+          "team_name": "Chatiwat's Team",
+          "total_points": 2270,
+          "overall_rank": 326389
+        }
+      ]
+    },
+    "1101958": {
+      "id": "1101958",
+      "name": "Barley's Official League",
+      "teams_count": 17,
+      "podium": [
+        {
+          "rank": 1,
+          "entry_id": 306983,
+          "player_name": "Micky Asawamanasak",
+          "team_name": "GEMINI UNITED",
+          "total_points": 2365,
+          "overall_rank": 33524
+        },
+        {
+          "rank": 2,
+          "entry_id": 308319,
+          "player_name": "Nirut Visavachaipan",
+          "team_name": "Ekamai United",
+          "total_points": 2347,
+          "overall_rank": 58227
+        },
+        {
+          "rank": 3,
+          "entry_id": 7501,
+          "player_name": "Thiti Oak",
+          "team_name": "BMFC™",
+          "total_points": 2344,
+          "overall_rank": 63343
+        },
+        {
+          "rank": 4,
+          "entry_id": 4526663,
+          "player_name": "Yod Chinsupakul",
+          "team_name": "The AI era",
+          "total_points": 2320,
+          "overall_rank": 117777
+        }
+      ]
+    },
+    "438691": {
+      "id": "438691",
+      "name": "2 spade",
+      "teams_count": 13,
+      "podium": [
+        {
+          "rank": 1,
+          "entry_id": 306983,
+          "player_name": "Micky Asawamanasak",
+          "team_name": "GEMINI UNITED",
+          "total_points": 2365,
+          "overall_rank": 33524
+        },
+        {
+          "rank": 2,
+          "entry_id": 7501,
+          "player_name": "Thiti Oak",
+          "team_name": "BMFC™",
+          "total_points": 2344,
+          "overall_rank": 63343
+        },
+        {
+          "rank": 3,
+          "entry_id": 5003235,
+          "player_name": "Meedej Usanachitt",
+          "team_name": "MFV F.C.",
+          "total_points": 2317,
+          "overall_rank": 126815
+        },
+        {
+          "rank": 4,
+          "entry_id": 2239943,
+          "player_name": "Pacha Pittayavivit",
+          "team_name": "TopPP FC",
+          "total_points": 2301,
+          "overall_rank": 179632
+        }
+      ]
+    },
+    "187827": {
+      "id": "187827",
+      "name": "Shi62",
+      "teams_count": 13,
+      "podium": [
+        {
+          "rank": 1,
+          "entry_id": 306983,
+          "player_name": "Micky Asawamanasak",
+          "team_name": "GEMINI UNITED",
+          "total_points": 2365,
+          "overall_rank": 33524
+        },
+        {
+          "rank": 2,
+          "entry_id": 837763,
+          "player_name": "Patrick Oo",
+          "team_name": "Oöraora Grandé",
+          "total_points": 2184,
+          "overall_rank": 1073743
+        },
+        {
+          "rank": 3,
+          "entry_id": 2342390,
+          "player_name": "WARIN SINAROJ",
+          "team_name": "Riin FC",
+          "total_points": 2169,
+          "overall_rank": 1261309
+        },
+        {
+          "rank": 4,
+          "entry_id": 720631,
+          "player_name": "Totti NUFC",
+          "team_name": "Totti Toon Army",
+          "total_points": 2146,
+          "overall_rank": 1571630
+        }
+      ]
+    },
+    "5349": {
+      "id": "5349",
+      "name": "Bramann League",
+      "teams_count": 19,
+      "podium": [
+        {
+          "rank": 1,
+          "entry_id": 132673,
+          "player_name": "Tanong Mapanya",
+          "team_name": "NUKE-UTD®",
+          "total_points": 2415,
+          "overall_rank": 4869
+        },
+        {
+          "rank": 2,
+          "entry_id": 226,
+          "player_name": "Anuth Duangmarn",
+          "team_name": "van Xke",
+          "total_points": 2405,
+          "overall_rank": 7482
+        },
+        {
+          "rank": 3,
+          "entry_id": 306983,
+          "player_name": "Micky Asawamanasak",
+          "team_name": "GEMINI UNITED",
+          "total_points": 2365,
+          "overall_rank": 33524
+        },
+        {
+          "rank": 4,
+          "entry_id": 7501,
+          "player_name": "Thiti Oak",
+          "team_name": "BMFC™",
+          "total_points": 2344,
+          "overall_rank": 63343
+        }
+      ]
+    }
+  }
+}

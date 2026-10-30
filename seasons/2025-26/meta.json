@@ -1,0 +1,11 @@
+{
+  "season_id": "2025-26",
+  "season": "2025/26",
+  "max_gw": 38,
+  "is_frozen": true,
+  "archived_at": "2026-06-01T00:00:00Z",
+  "files": {
+    "core.json": "6dcdf70976450169fa70ff3d3466d05d1468abc4d12fb0c168b8c6bd45468d5a",
+    "summary.json": "7559463ec83db74097a00ed41474947f0781c939e1dfc2f03e9cb4c4c0dd65a0"
+  }
+}
