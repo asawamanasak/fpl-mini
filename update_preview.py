@@ -1192,14 +1192,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
     <!-- Archived Season Notice Banner (Shows only when viewing historical season) -->
     <div id="archived-season-banner" class="hidden max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-2">
-      <div class="bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-transparent border border-amber-500/30 rounded-xl px-3.5 py-2 flex items-center justify-between text-xs text-amber-900 dark:text-amber-200">
-        <div class="flex items-center gap-2">
+      <div class="bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-transparent border border-amber-500/30 rounded-xl px-3.5 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-amber-900 dark:text-amber-200">
+        <div class="flex flex-wrap items-center gap-2">
           <span class="text-base flex-shrink-0">📦</span>
           <span>
-            <strong class="font-bold">ฤดูกาลสิ้นสุดแล้ว (ARCHIVED)</strong> — บันทึกสถิติและคะแนนอย่างเป็นทางการ (Official Historical Season Record)
+            <strong class="font-bold">ฤดูกาลสิ้นสุดแล้ว (ARCHIVED)</strong> — บันทึกสถิติและคะแนนอย่างเป็นทางการ (ระบบเก็บย้อนหลัง 1 ฤดูกาล)
           </span>
+          <button onclick="window.app ? window.app.exportToExcel() : (window.exportToExcelFallback ? window.exportToExcelFallback() : null)" class="inline-flex items-center gap-1 font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-500/20 hover:bg-emerald-500/30 px-2.5 py-1 rounded-lg text-[11px] transition-all cursor-pointer shadow-xs">
+            📊 ส่งออก Excel (.xlsx) เก็บไว้
+          </button>
         </div>
-        <button onclick="app.switchSeason('2026-27')" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline flex-shrink-0 cursor-pointer ml-2">
+        <button onclick="app.switchSeason('2026-27')" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline flex-shrink-0 cursor-pointer text-left sm:text-right">
           สลับกลับสู่ฤดูกาลปัจจุบัน ➔
         </button>
       </div>

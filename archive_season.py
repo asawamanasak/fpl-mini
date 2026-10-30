@@ -48,6 +48,38 @@ def atomic_dump(data, filepath, indent=None):
         temp_name = tf.name
     os.replace(temp_name, filepath)
 
+def enforce_retention_policy(base_dir, seasons_index, max_archived=1):
+    """
+    Enforce N-1 Sliding Window Retention Policy:
+    Keeps live seasons, plus at most `max_archived` (default 1) archived season.
+    Older seasons are safely pruned from the seasons/ directory to bound storage growth to O(1).
+    """
+    import shutil
+    live_seasons = [s for s in seasons_index if s.get('status') == 'live']
+    archived_seasons = [s for s in seasons_index if s.get('status') != 'live']
+
+    def sort_key(s):
+        raw = s.get("id", "0000").split("-")[0]
+        return int(raw) if raw.isdigit() else 0
+    archived_seasons.sort(key=sort_key, reverse=True)
+
+    retained_archived = archived_seasons[:max_archived]
+    pruned_archived = archived_seasons[max_archived:]
+
+    for p in pruned_archived:
+        p_id = p.get('id')
+        p_dir = os.path.join(base_dir, 'seasons', p_id)
+        if os.path.exists(p_dir):
+            try:
+                shutil.rmtree(p_dir)
+                print(f"  🗑️ Retention Policy: Pruned older archived season folder '{p_id}' (kept max {max_archived} past season).")
+            except Exception as e:
+                print(f"  ⚠️ Warning pruning season '{p_id}': {e}")
+
+    new_index = live_seasons + retained_archived
+    new_index.sort(key=sort_key, reverse=True)
+    return new_index
+
 def build_season_summary(multi_data, leagues_config):
     """
     Build high-level executive summary for all leagues in the season.
@@ -338,14 +370,11 @@ def archive_season(season_id=None, is_checkpoint=False, force=False, update_mana
             "updated_at": now_iso
         })
 
-    # Sort descending by start year
-    def sort_key(s):
-        raw = s.get("id", "0000").split("-")[0]
-        return int(raw) if raw.isdigit() else 0
-    seasons_index.sort(key=sort_key, reverse=True)
+    # Enforce N-1 retention policy (Keep Live + at most 1 past archived season)
+    seasons_index = enforce_retention_policy(base_dir, seasons_index, max_archived=1)
 
     atomic_dump(seasons_index, index_path, indent=2)
-    print(f"  ✅ Updated global season registry: {index_path}")
+    print(f"  ✅ Updated global season registry: {index_path} ({len(seasons_index)} seasons retained)")
 
     # 8. Managers Registry Update
     if update_managers:
