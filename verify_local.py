@@ -98,9 +98,22 @@ def main():
     print("\nStep 5: Testing Front-End JavaScript Runtime (Headless Chrome)...")
     chrome_bin = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
     if os.path.exists(chrome_bin):
+        import http.server
+        import socketserver
+        import threading
+
+        class QuietHandler(http.server.SimpleHTTPRequestHandler):
+            def log_message(self, format, *args):
+                pass # suppress request access logs in verify output
+
+        httpd = socketserver.TCPServer(('127.0.0.1', 0), QuietHandler)
+        test_port = httpd.server_address[1]
+        srv_thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+        srv_thread.start()
+
         pages_to_test = ['preview.html', '40700/index.html', '675290/index.html', '38491/index.html', '1101958/index.html', '438691/index.html', '187827/index.html', '5349/index.html']
         for p in pages_to_test:
-            target_url = f"file://{os.path.join(base_dir, p)}"
+            target_url = f"http://127.0.0.1:{test_port}/{p}"
             out = subprocess.run([
                 chrome_bin, '--headless=new', '--disable-gpu',
                 '--virtual-time-budget=2000', '--enable-logging=stderr', '--v=1',
@@ -112,6 +125,7 @@ def main():
             else:
                 print(f"  ❌ {p}: {len(errs)} JS errors found: {errs}")
                 all_passed = False
+        httpd.shutdown()
     else:
         print("  ℹ️ Chrome binary not found, skipping headless browser test.")
 

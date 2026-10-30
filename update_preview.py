@@ -13,41 +13,68 @@ Build Version: 2026.08.31.01
 
 import json
 import os
+import tempfile
 from parse_shi62_special import parse_shi62_file
 from parse_bramann_games import parse_bramann_prediction_file, parse_bramann_challenge_file
 
-def generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=None, precomputed_cfg_str=None, shi62_data_json_str=None, bramann_pred_json_str=None, bramann_chal_json_str=None):
-    if precomputed_json_str is None:
-        # Performance Optimization: Deep-strip raw_picks and raw_hist before serializing into HTML
-        pruned_data = {
-            "last_sync": multi_data.get("last_sync"),
-            "last_sync_iso": multi_data.get("last_sync_iso"),
-            "sync_status": multi_data.get("sync_status"),
-            "max_gw": multi_data.get("max_gw"),
-            "transfer_suggestions": multi_data.get("transfer_suggestions", {}),
-            "next_deadline": multi_data.get("next_deadline"),
-            "events_deadlines": multi_data.get("events_deadlines", []),
-            "leagues": {}
+def atomic_dump(data, filepath):
+    """Safely write JSON file via temporary file and atomic rename."""
+    dirname = os.path.dirname(filepath)
+    os.makedirs(dirname, exist_ok=True)
+    with tempfile.NamedTemporaryFile('w', dir=dirname, delete=False, encoding='utf-8') as tf:
+        json.dump(data, tf, ensure_ascii=False, separators=(',', ':'))
+        temp_name = tf.name
+    os.replace(temp_name, filepath)
+
+def compact_squads_dict(squads_dict):
+    """
+    Compress a league's squads dictionary by ~10x into a lossless payload
+    with shared player dictionary and bitmask flags.
+    """
+    player_dict = {}
+    compact_s = {}
+    for s_key, s_data in (squads_dict or {}).items():
+        if not isinstance(s_data, dict):
+            compact_s[s_key] = s_data
+            continue
+
+        def pack_picks(pick_list):
+            packed = []
+            for p in (pick_list or []):
+                pid = p.get('id')
+                if pid is None:
+                    continue
+                if pid not in player_dict:
+                    player_dict[pid] = [
+                        p.get('name', ''),
+                        p.get('pos', 'MID'),
+                        p.get('team', ''),
+                        p.get('team_code', 0)
+                    ]
+                flags = (1 if p.get('is_captain') else 0) | \
+                        (2 if p.get('is_vice') else 0) | \
+                        (4 if p.get('not_played_yet') else 0)
+                packed.append([
+                    pid,
+                    p.get('points', 0),
+                    p.get('raw_points', p.get('points', 0)),
+                    p.get('multiplier', 1),
+                    flags
+                ])
+            return packed
+
+        compact_s[s_key] = {
+            's': pack_picks(s_data.get('starting', [])),
+            'b': pack_picks(s_data.get('bench', [])),
+            'a': s_data.get('auto_subs', []),
+            'c': s_data.get('chip'),
+            'h': s_data.get('hits', 0),
+            'f': 1 if s_data.get('final_checked') else 0
         }
-        for lid, l_obj in multi_data.get("leagues", {}).items():
-            pruned_squads = {}
-            for s_key, s_data in l_obj.get("squads", {}).items():
-                if isinstance(s_data, dict):
-                    pruned_sq = {k: v for k, v in s_data.items() if k not in ("raw_picks", "raw_hist")}
-                    pruned_squads[s_key] = pruned_sq
-                else:
-                    pruned_squads[s_key] = s_data
-            pruned_data["leagues"][lid] = {
-                "id": l_obj.get("id"),
-                "name": l_obj.get("name"),
-                "season": l_obj.get("season"),
-                "teams": l_obj.get("teams", []),
-                "gameweeks": l_obj.get("gameweeks", {}),
-                "squads": pruned_squads
-            }
-        multi_data_json_str = json.dumps(pruned_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
-    else:
-        multi_data_json_str = precomputed_json_str
+    return {'players': player_dict, 'squads': compact_s}
+
+def generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=None, precomputed_cfg_str=None, shi62_data_json_str=None, bramann_pred_json_str=None, bramann_chal_json_str=None, current_season_id="2026-27"):
+    multi_data_json_str = precomputed_json_str if precomputed_json_str is not None else 'null'
 
     if precomputed_cfg_str is None:
         leagues_config_json_str = json.dumps(leagues_config, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
@@ -2179,12 +2206,70 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
   <!-- Embedded Multi-League Data & Config -->
   <script>
+    const INITIAL_DEFAULT_LEAGUE = __DEFAULT_LID__;
+    const INITIAL_SEASON_ID = "__CURRENT_SEASON_ID__";
+    const ASSET_PREFIX = "__ASSET_PREFIX__";
     const MULTI_LEAGUE_DATA = __MULTI_DATA_JSON__;
     const LEAGUES_CONFIG = __LEAGUES_CONFIG_JSON__;
     const SHI62_SPECIAL_DATA = __SHI62_SPECIAL_DATA_JSON__;
     const BRAMANN_PREDICTION_DATA = __BRAMANN_PREDICTION_DATA_JSON__;
     const BRAMANN_CHALLENGE_DATA = __BRAMANN_CHALLENGE_DATA_JSON__;
-    const INITIAL_DEFAULT_LEAGUE = __DEFAULT_LID__;
+
+    /**
+     * Lossless Squad Hydration Engine
+     * Unpacks compact ~10x compressed squads payload into the exact full JavaScript objects
+     */
+    function hydrateSquads(payload) {
+      if (!payload) return {};
+      if (!payload.players && !payload.squads) {
+        return payload; // Already full format
+      }
+      const playerDict = payload.players || {};
+      const compactSquads = payload.squads || {};
+      const hydrated = {};
+
+      const unpackPicks = (packedList) => {
+        if (!Array.isArray(packedList)) return [];
+        return packedList.map(p => {
+          const pid = p[0];
+          const pInfo = playerDict[pid] || ['', 'MID', '', 0];
+          const flags = Number(p[4]) || 0;
+          return {
+            id: pid,
+            name: pInfo[0],
+            pos: pInfo[1],
+            team: pInfo[2],
+            team_code: pInfo[3],
+            points: p[1],
+            raw_points: p[2],
+            multiplier: p[3],
+            is_captain: Boolean(flags & 1),
+            is_vice: Boolean(flags & 2),
+            not_played_yet: Boolean(flags & 4)
+          };
+        });
+      };
+
+      for (const [key, cs] of Object.entries(compactSquads)) {
+        if (!cs || typeof cs !== 'object') {
+          hydrated[key] = cs;
+          continue;
+        }
+        if (cs.starting) {
+          hydrated[key] = cs;
+          continue;
+        }
+        hydrated[key] = {
+          starting: unpackPicks(cs.s),
+          bench: unpackPicks(cs.b),
+          auto_subs: cs.a || [],
+          chip: cs.c || null,
+          hits: Number(cs.h) || 0,
+          final_checked: Boolean(cs.f)
+        };
+      }
+      return hydrated;
+    }
 
     /**
      * Dynamic Live Commentary Engine (Bor.Bou Style - 100% Football Fanatic)
@@ -3660,9 +3745,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
      * Standalone Multi-League Application
      */
     class StandaloneApp {
-      constructor(multiData, configs, defaultLeagueId) {
-        this.multiData = multiData;
-        this.configs = configs;
+      constructor(multiData, configs, defaultLeagueId, assetPrefix = './') {
+        this.multiData = multiData || { leagues: {} };
+        this.configs = configs || {};
+        this.assetPrefix = assetPrefix;
+        this.cacheBust = Date.now();
 
         // Path detection (e.g. /fpl-mini/40700 or /fpl-mini/675290)
         let pathLeague = this.detectPathLeague();
@@ -3718,7 +3805,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           this.activeLeagueId = "40700";
         }
 
-        this.data = this.multiData.leagues[this.activeLeagueId] || Object.values(this.multiData.leagues)[0];
+        this.data = this.multiData.leagues[this.activeLeagueId] || Object.values(this.multiData.leagues)[0] || {};
+        if (this.data && !this.data.squads) this.data.squads = {};
         this.config = this.configs[this.activeLeagueId] || Object.values(this.configs)[0];
         
         const maxGW = Number(this.multiData.max_gw) || 2;
@@ -3803,6 +3891,58 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           }
         }
         return '';
+      }
+
+      async ensureSquads(lid) {
+        if (!lid) lid = this.activeLeagueId;
+        const lidStr = String(lid);
+        if (!this.multiData || !this.multiData.leagues || !this.multiData.leagues[lidStr]) return {};
+        const lObj = this.multiData.leagues[lidStr];
+        if (lObj._squadsLoaded) return lObj.squads || {};
+        if (lObj._squadsPromise) return lObj._squadsPromise;
+
+        const seasonId = this.multiData.season_id || (typeof INITIAL_SEASON_ID !== 'undefined' ? INITIAL_SEASON_ID : '2026-27');
+        const url = `${this.assetPrefix}seasons/${seasonId}/squads/${lidStr}.json?v=${this.cacheBust}`;
+
+        lObj._squadsPromise = (async () => {
+          try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const payload = await res.json();
+            const hydrated = hydrateSquads(payload);
+            lObj.squads = hydrated;
+            lObj._squadsLoaded = true;
+
+            // If the team modal is currently open and waiting for squad data, refresh it
+            if (this.currentModalEntryId) {
+              const modal = document.getElementById('team-modal');
+              if (modal && !modal.classList.contains('hidden')) {
+                this.openTeamModal(this.currentModalEntryId);
+              }
+            }
+
+            // If active on competition tab, re-render to incorporate popular players
+            if (this.activeTab === 'competition-view') {
+              this.renderCompetitionView();
+            }
+
+            return hydrated;
+          } catch (e) {
+            console.warn(`Notice loading squads for league ${lidStr}:`, e);
+            lObj.squads = lObj.squads || {};
+            return lObj.squads;
+          } finally {
+            delete lObj._squadsPromise;
+          }
+        })();
+
+        return lObj._squadsPromise;
+      }
+
+      async ensureAllSquads() {
+        if (!this.multiData || !this.multiData.leagues) return;
+        const promises = Object.keys(this.multiData.leagues).map(lid => this.ensureSquads(lid));
+        await Promise.all(promises);
       }
 
       init() {
@@ -4841,6 +4981,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (!this.multiData.leagues[leagueId]) return;
         this.activeLeagueId = String(leagueId);
         this.data = this.multiData.leagues[this.activeLeagueId];
+        if (this.data && !this.data.squads) this.data.squads = {};
+        this.ensureSquads(this.activeLeagueId);
         this.config = this.configs[this.activeLeagueId];
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
@@ -5101,6 +5243,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           targetView = document.getElementById('gameweek-view');
         }
         this.activeTab = normalized;
+
+        if (this.activeTab === 'competition-view') {
+          this.ensureSquads(this.activeLeagueId);
+        } else if (this.activeTab === 'global-radar-view') {
+          this.ensureAllSquads();
+        }
 
         document.querySelectorAll('.tab-content').forEach(view => view.classList.add('hidden'));
         if (targetView) targetView.classList.remove('hidden');
@@ -13338,12 +13486,14 @@ selectShi62GW(gwName) {
         const defaultShirtUrl = this.getDefaultShirtUrl();
         const entryIdNum = Number(entryId);
         this.currentModalEntryId = entryIdNum;
+        let targetLeagueId = this.activeLeagueId;
         let teamObj = (this.data.teams || []).find(t => Number(t.entry_id) === entryIdNum);
         if (!teamObj && this.multiData && this.multiData.leagues) {
-          for (const l of Object.values(this.multiData.leagues)) {
+          for (const [lid, l] of Object.entries(this.multiData.leagues)) {
             const found = (l.teams || []).find(t => Number(t.entry_id) === entryIdNum);
             if (found) {
               teamObj = found;
+              targetLeagueId = lid;
               break;
             }
           }
@@ -13456,6 +13606,32 @@ selectShi62GW(gwName) {
         const formationEl = document.getElementById('team-modal-formation');
 
         if (!squad || !squad.starting || squad.starting.length === 0) {
+          const targetLObj = (this.multiData && this.multiData.leagues) ? this.multiData.leagues[String(targetLeagueId)] : null;
+          if (targetLObj && !targetLObj._squadsLoaded) {
+            if (formationEl) formationEl.innerText = '...';
+            if (gkpLine) gkpLine.innerHTML = '';
+            if (defLine) defLine.innerHTML = `
+              <div class="flex flex-col items-center justify-center text-white/90 py-12 w-full gap-3 font-display">
+                <div class="w-8 h-8 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <div class="text-xs font-semibold tracking-wide">${isEn ? 'Loading squad lineup...' : 'กำลังโหลดข้อมูลขุมกำลัง...'}</div>
+              </div>`;
+            if (midLine) midLine.innerHTML = '';
+            if (fwdLine) fwdLine.innerHTML = '';
+            if (benchContainer) benchContainer.innerHTML = `
+              <div class="text-center text-slate-400 py-4 col-span-2 text-xs flex items-center justify-center gap-2">
+                <div class="w-4 h-4 border-2 border-slate-400/30 border-t-slate-400 rounded-full animate-spin"></div>
+                <span>${isEn ? 'Loading substitutes...' : 'กำลังโหลดข้อมูลตัวสำรอง...'}</span>
+              </div>`;
+            if (benchTotal) benchTotal.innerHTML = '';
+            const modal = document.getElementById('team-modal');
+            if (modal) {
+              modal.classList.remove('hidden');
+              document.body.classList.add('overflow-hidden');
+            }
+            this.ensureSquads(targetLeagueId);
+            return;
+          }
+
           if (formationEl) formationEl.innerText = '-';
           if (gkpLine) gkpLine.innerHTML = '';
           const emptyMsg = (squad && squad.dnp) 
@@ -15096,9 +15272,35 @@ selectShi62GW(gwName) {
     }
 
     if (typeof document !== 'undefined') {
-      document.addEventListener('DOMContentLoaded', () => {
-        window.app = new StandaloneApp(MULTI_LEAGUE_DATA, LEAGUES_CONFIG, INITIAL_DEFAULT_LEAGUE);
+      document.addEventListener('DOMContentLoaded', async () => {
+        let multiData = MULTI_LEAGUE_DATA;
+        if (!multiData || !multiData.leagues || Object.keys(multiData.leagues).length === 0) {
+          try {
+            const seasonId = (typeof INITIAL_SEASON_ID !== 'undefined' && INITIAL_SEASON_ID) ? INITIAL_SEASON_ID : '2026-27';
+            const prefix = (typeof ASSET_PREFIX !== 'undefined' && ASSET_PREFIX) ? ASSET_PREFIX : './';
+            const res = await fetch(`${prefix}seasons/${seasonId}/core.json?v=${Date.now()}`);
+            if (res.ok) {
+              multiData = await res.json();
+            } else {
+              console.warn(`Notice: Could not load core.json: HTTP ${res.status}`);
+            }
+          } catch (e) {
+            console.error('Failed to load season core data:', e);
+          }
+        }
+
+        if ((!multiData || !multiData.leagues || Object.keys(multiData.leagues).length === 0) && window.location.protocol === 'file:') {
+          const banner = document.createElement('div');
+          banner.className = 'fixed top-0 left-0 right-0 z-[9999] bg-amber-500 text-slate-950 font-bold px-4 py-3 text-center text-xs sm:text-sm shadow-lg flex items-center justify-center gap-2';
+          banner.innerHTML = '<span>⚠️</span><span>เบราว์เซอร์บล็อกการโหลดข้อมูลแบบ Local file (CORS) — กรุณารันด้วย <code>python3 serve_local.py</code> หรือเปิดผ่านเว็บเซิร์ฟเวอร์</span>';
+          document.body.prepend(banner);
+        }
+
+        window.app = new StandaloneApp(multiData, LEAGUES_CONFIG, INITIAL_DEFAULT_LEAGUE, (typeof ASSET_PREFIX !== 'undefined' ? ASSET_PREFIX : './'));
         window.app.init();
+        if (window.app && window.app.activeLeagueId) {
+          window.app.ensureSquads(window.app.activeLeagueId);
+        }
       });
 
       // Keyboard Accessibility: Escape key closes any active modal
@@ -15140,6 +15342,7 @@ selectShi62GW(gwName) {
     html = html.replace('__BRAMANN_CHALLENGE_DATA_JSON__', bramann_chal_json_str or 'null')
     html = html.replace('__DEFAULT_LID__', default_lid_code)
     html = html.replace('__ASSET_PREFIX__', asset_prefix)
+    html = html.replace('__CURRENT_SEASON_ID__', current_season_id)
     return html
 
 def main():
@@ -15147,6 +15350,7 @@ def main():
     
     multi_data_path = os.path.join(base_dir, 'multi_fpl_data.json')
     config_path = os.path.join(base_dir, 'config', 'leagues_config.json')
+    season_config_path = os.path.join(base_dir, 'config', 'season_config.json')
 
     if not os.path.exists(multi_data_path) or not os.path.exists(config_path):
         import subprocess
@@ -15158,8 +15362,20 @@ def main():
     with open(config_path, 'r', encoding='utf-8') as f:
         leagues_config = json.load(f)
 
-    # Performance Optimization: Deep-strip raw_picks and serialize JSON strings once
-    pruned_data = {
+    current_season_id = "2026-27"
+    if os.path.exists(season_config_path):
+        try:
+            with open(season_config_path, 'r', encoding='utf-8') as f:
+                sc = json.load(f)
+                current_season_id = sc.get("current_season", "2026-27")
+        except Exception:
+            pass
+    elif "season_id" in multi_data:
+        current_season_id = multi_data["season_id"]
+
+    # 1. Generate & Save Core Data (Leagues metadata, teams, gameweeks — no heavy squads)
+    core_data = {
+        "season_id": current_season_id,
         "last_sync": multi_data.get("last_sync"),
         "last_sync_iso": multi_data.get("last_sync_iso"),
         "sync_status": multi_data.get("sync_status"),
@@ -15171,22 +15387,29 @@ def main():
         "leagues": {}
     }
     for lid, l_obj in multi_data.get("leagues", {}).items():
-        pruned_squads = {}
-        for s_key, s_data in l_obj.get("squads", {}).items():
-            if isinstance(s_data, dict):
-                pruned_sq = {k: v for k, v in s_data.items() if k not in ("raw_picks", "raw_hist")}
-                pruned_squads[s_key] = pruned_sq
-            else:
-                pruned_squads[s_key] = s_data
-        pruned_data["leagues"][lid] = {
+        core_data["leagues"][lid] = {
             "id": l_obj.get("id"),
             "name": l_obj.get("name"),
             "season": l_obj.get("season"),
             "teams": l_obj.get("teams", []),
             "gameweeks": l_obj.get("gameweeks", {}),
-            "squads": pruned_squads
+            "squads": {}
         }
-    multi_data_json_str = json.dumps(pruned_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+
+    season_dir = os.path.join(base_dir, 'seasons', current_season_id)
+    squads_dir = os.path.join(season_dir, 'squads')
+    os.makedirs(squads_dir, exist_ok=True)
+
+    # Save core.json via atomic write
+    core_path = os.path.join(season_dir, 'core.json')
+    atomic_dump(core_data, core_path)
+
+    # 2. Compress and save squads per league (~10x smaller via shared player dictionary)
+    for lid, l_obj in multi_data.get("leagues", {}).items():
+        compact_payload = compact_squads_dict(l_obj.get("squads", {}))
+        squad_path = os.path.join(squads_dir, f"{lid}.json")
+        atomic_dump(compact_payload, squad_path)
+
     leagues_config_json_str = json.dumps(leagues_config, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 
     shi62_txt_path = os.path.join(base_dir, 'config', 'shi62_special.txt')
@@ -15200,8 +15423,8 @@ def main():
     bramann_pred_json_str = json.dumps(bramann_pred_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     bramann_chal_json_str = json.dumps(bramann_chal_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 
-    # 1. Generate root files
-    root_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=multi_data_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str)
+    # 3. Generate HTML shells (lightweight ~1 MB shells, decoupled from massive JSON blobs)
+    root_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str='null', precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str, current_season_id=current_season_id)
     with open(os.path.join(base_dir, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(root_html)
 
@@ -15211,15 +15434,15 @@ def main():
     with open(os.path.join(base_dir, '404.html'), 'w', encoding='utf-8') as f:
         f.write(root_html)
 
-    # 2. Generate dedicated folder entry points for all configured leagues dynamically
+    # 4. Generate dedicated folder entry points for all configured leagues dynamically
     for lid in leagues_config.keys():
         dir_league = os.path.join(base_dir, str(lid))
         os.makedirs(dir_league, exist_ok=True)
-        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid), precomputed_json_str=multi_data_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str)
+        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid), precomputed_json_str='null', precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str, current_season_id=current_season_id)
         with open(os.path.join(dir_league, 'index.html'), 'w', encoding='utf-8') as f:
             f.write(html_league)
 
-    print("Successfully generated all HTML dashboard files on local!")
+    print("Successfully generated decoupled multi-season core, squads, and lightweight HTML dashboard files!")
 
 if __name__ == '__main__':
     main()
