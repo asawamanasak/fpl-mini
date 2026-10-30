@@ -4,6 +4,7 @@
     "name": "เซียนอยู่รู หมูอยู่ตึก",
     "short_name": "เซียนอยู่รู",
     "season": "2026/27",
+    "tier": 1,
     "entry_fee": "2,000 THB/ทีม",
     "total_pool": "20,000 THB",
     "non_prize_teams": [
@@ -179,6 +180,7 @@
     "name": "NudNee",
     "short_name": "NudNee",
     "season": "2026/27",
+    "tier": 1,
     "entry_fee": "1,000 THB (ฤดูกาล) / 500 THB (ครึ่งแรก) / 150 THB (รายเดือน)",
     "total_pool": "36,000 THB (พร้อมสมทบเพิ่มหากมีผู้เล่นรายเดือน)",
     "non_prize_teams": [
@@ -455,6 +457,7 @@
     "name": "รอ แมน โอน",
     "short_name": "รอแมนโอน",
     "season": "2026/27",
+    "tier": 1,
     "entry_fee": "1,900 THB/ทีม (50 THB x 38 สัปดาห์)",
     "total_pool": "28,500 THB",
     "non_prize_teams": [
@@ -579,6 +582,7 @@
     "name": "Barley's Official League",
     "short_name": "Barley's",
     "season": "2026/27",
+    "tier": 1,
     "entry_fee": "8,600 THB/ทีม (รายวีค 200 THB x 38 สัปดาห์ + รายปี 1,000 THB)",
     "total_pool": "103,200 THB",
     "non_prize_teams": [
@@ -694,6 +698,7 @@
     "name": "2 spade",
     "short_name": "2 spade",
     "season": "2026/27",
+    "tier": 1,
     "entry_fee": "ไม่มีค่าสมัครแรกเข้า (ใช้ระบบค่าปรับ 5 อันดับท้ายจากบ๊วย)",
     "total_pool": "68,400 THB (สะสมสุทธิ 1,800 THB/สัปดาห์ x 38 สัปดาห์)",
     "non_prize_teams": [
@@ -788,6 +793,7 @@
     "name": "Shi62",
     "short_name": "Shi62",
     "season": "2026/27",
+    "tier": 1,
     "entry_fee": "จ่ายตามผลอันดับสิ้นฤดูกาล (อันดับ 7-12 จ่ายให้อันดับ 1-6)",
     "total_pool": "3,100 THB (Zero-Sum เคลียร์จ่ายทีเดียวสิ้นฤดูกาล)",
     "non_prize_teams": [
@@ -902,6 +908,7 @@
     "name": "Bramann League",
     "short_name": "Bramann",
     "season": "2026/27",
+    "tier": 1,
     "entry_fee": "500 THB/ทีม",
     "total_pool": "9,500 THB",
     "non_prize_teams": [

@@ -4837,9 +4837,38 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
       }
 
-      switchLeague(leagueId, fromPopstate = false) {
-        if (!this.multiData.leagues[leagueId]) return;
-        this.activeLeagueId = String(leagueId);
+      async switchLeague(leagueId, fromPopstate = false) {
+        const lidStr = String(leagueId);
+        if (!this.multiData || !this.multiData.leagues || !this.multiData.leagues[lidStr]) return;
+
+        // Decoupled loading: Check if target league needs squads/data fetched
+        const targetLeague = this.multiData.leagues[lidStr];
+        const isTier2 = (targetLeague.tier === 2) || (this.configs[lidStr] && this.configs[lidStr].tier === 2);
+        const hasSquads = targetLeague.squads && Object.keys(targetLeague.squads).length > 0;
+
+        if (!hasSquads && !isTier2) {
+          const configuredIds = Object.keys(this.configs || {});
+          const currentInSubdir = configuredIds.some(cid => window.location.pathname.includes('/' + cid));
+          const prefix = currentInSubdir ? '../' : './';
+          try {
+            const resp = await fetch(`${prefix}data/leagues/${lidStr}.json`);
+            if (resp.ok) {
+              const fullLeagueData = await resp.json();
+              this.multiData.leagues[lidStr] = fullLeagueData;
+            } else if (window.location.protocol === 'file:') {
+              window.location.href = `${prefix}${lidStr}/index.html`;
+              return;
+            }
+          } catch (e) {
+            if (window.location.protocol === 'file:') {
+              window.location.href = `${prefix}${lidStr}/index.html`;
+              return;
+            }
+            console.debug('Dynamic fetch error:', e);
+          }
+        }
+
+        this.activeLeagueId = lidStr;
         this.data = this.multiData.leagues[this.activeLeagueId];
         this.config = this.configs[this.activeLeagueId];
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
@@ -8792,6 +8821,33 @@ selectShi62GW(gwName) {
       renderCompetitionView() {
         const leagueData = this.data;
         if (!leagueData) return;
+
+        if (leagueData.tier === 2 || (this.config && this.config.tier === 2)) {
+          const container = document.getElementById('competition-view');
+          if (container) {
+            const isEn = (this.currentLang === 'en');
+            container.innerHTML = `
+              <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 text-center shadow-xs max-w-xl mx-auto my-8">
+                <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400 text-xl font-bold font-display">
+                  📊
+                </div>
+                <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-2 font-display">
+                  ${isEn ? 'Tier 2 League: Standings & Leaderboard Only' : 'มินิลีกระดับ Tier 2: โหมดแสดงตารางคะแนน'}
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                  ${isEn 
+                    ? 'This league is optimized for large mini-leagues (up to 1,000+ teams). Detailed squad pitch formations, card tracker, and transfer suggestions are active for Tier 1 leagues (up to 30 teams).' 
+                    : 'มินิลีกนี้ทำงานในโหมด Standings Only สำหรับลีกขนาดใหญ่ (รองรับได้ถึง 1,000+ ทีม) ระบบผังจัดทัพ การวิเคราะห์ชิปคงเหลือ และคำแนะนำย้ายตัวจะเปิดใช้งานสำหรับลีกระดับ Tier 1 (ไม่เกิน 30 ทีม)'}
+                </p>
+                <button onclick="app.switchTab('gameweek-view')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold font-display shadow-2xs transition-colors cursor-pointer">
+                  ${isEn ? 'View Standings & Live Points' : 'กลับไปดูตารางคะแนน & แต้มสด'}
+                </button>
+              </div>
+            `;
+          }
+          return;
+        }
+
         const teams = this.getLeaderboardTeams();
         const totalTeams = teams.length;
         if (totalTeams === 0) return;
@@ -13458,9 +13514,12 @@ selectShi62GW(gwName) {
         if (!squad || !squad.starting || squad.starting.length === 0) {
           if (formationEl) formationEl.innerText = '-';
           if (gkpLine) gkpLine.innerHTML = '';
-          const emptyMsg = (squad && squad.dnp) 
-            ? (isEn ? `This team joined after this gameweek (Did not enter in GW ${this.selectedGW})` : `ทีมนี้เข้าร่วมการแข่งขันหลังจากสัปดาห์นี้ (ไม่ได้ส่งทีมใน GW ${this.selectedGW})`)
-            : (isEn ? 'No lineup data available for this gameweek' : 'ยังไม่มีข้อมูลแผนการจัดทัพในสัปดาห์นี้');
+          const isTier2 = (this.data && this.data.tier === 2) || (this.config && this.config.tier === 2);
+          const emptyMsg = isTier2
+            ? (isEn ? 'Squad & pitch lineup is disabled for Tier 2 leagues (Standings & Leaderboard Only mode).' : 'ระบบปิดการแสดงผังจัดทัพสำหรับลีกระดับ Tier 2 (โหมดแสดงตารางคะแนนอย่างเดียว)')
+            : ((squad && squad.dnp) 
+                ? (isEn ? `This team joined after this gameweek (Did not enter in GW ${this.selectedGW})` : `ทีมนี้เข้าร่วมการแข่งขันหลังจากสัปดาห์นี้ (ไม่ได้ส่งทีมใน GW ${this.selectedGW})`)
+                : (isEn ? 'No lineup data available for this gameweek' : 'ยังไม่มีข้อมูลแผนการจัดทัพในสัปดาห์นี้'));
           if (defLine) defLine.innerHTML = `<div class="text-center text-white/80 py-8 font-bold text-xs w-full">${emptyMsg}</div>`;
           if (midLine) midLine.innerHTML = '';
           if (fwdLine) fwdLine.innerHTML = '';
@@ -15186,7 +15245,41 @@ def main():
             "gameweeks": l_obj.get("gameweeks", {}),
             "squads": pruned_squads
         }
-    multi_data_json_str = json.dumps(pruned_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+    # Decoupled Data Architecture: Export pure JSON per league to data/leagues/{lid}.json
+    data_dir = os.path.join(base_dir, 'data', 'leagues')
+    os.makedirs(data_dir, exist_ok=True)
+    for lid, l_dict in pruned_data["leagues"].items():
+        league_file = os.path.join(data_dir, f"{lid}.json")
+        with open(league_file, 'w', encoding='utf-8') as f:
+            json.dump(l_dict, f, ensure_ascii=False, separators=(',', ':'))
+
+    def get_pruned_data_for_target(target_lid):
+        page_pruned = {
+            "last_sync": pruned_data["last_sync"],
+            "last_sync_iso": pruned_data["last_sync_iso"],
+            "sync_status": pruned_data["sync_status"],
+            "max_gw": pruned_data["max_gw"],
+            "league_order": pruned_data["league_order"],
+            "transfer_suggestions": pruned_data["transfer_suggestions"],
+            "next_deadline": pruned_data["next_deadline"],
+            "events_deadlines": pruned_data["events_deadlines"],
+            "leagues": {}
+        }
+        for lid, l_dict in pruned_data["leagues"].items():
+            if str(lid) == str(target_lid):
+                page_pruned["leagues"][lid] = l_dict
+            else:
+                page_pruned["leagues"][lid] = {
+                    "id": l_dict["id"],
+                    "name": l_dict["name"],
+                    "season": l_dict["season"],
+                    "tier": l_dict.get("tier", 1),
+                    "teams": l_dict.get("teams", []),
+                    "gameweeks": l_dict.get("gameweeks", {}),
+                    "squads": {}
+                }
+        return json.dumps(page_pruned, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+
     leagues_config_json_str = json.dumps(leagues_config, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 
     shi62_txt_path = os.path.join(base_dir, 'config', 'shi62_special.txt')
@@ -15200,8 +15293,9 @@ def main():
     bramann_pred_json_str = json.dumps(bramann_pred_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     bramann_chal_json_str = json.dumps(bramann_chal_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 
-    # 1. Generate root files
-    root_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=multi_data_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str)
+    # 1. Generate root files (defaults to league 40700)
+    root_json_str = get_pruned_data_for_target("40700")
+    root_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=root_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str)
     with open(os.path.join(base_dir, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(root_html)
 
@@ -15215,7 +15309,7 @@ def main():
     for lid in leagues_config.keys():
         dir_league = os.path.join(base_dir, str(lid))
         os.makedirs(dir_league, exist_ok=True)
-        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid), precomputed_json_str=multi_data_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str)
+        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid), precomputed_json_str=get_pruned_data_for_target(str(lid)), precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str)
         with open(os.path.join(dir_league, 'index.html'), 'w', encoding='utf-8') as f:
             f.write(html_league)
 

@@ -610,6 +610,9 @@ def sync_once(args):
                         print(f"Notice fetching non_prize team {np_id_int}: {e}")
 
             cached_league = cached_data.get("leagues", {}).get(lid_str, {}) if cached_data else {}
+            league_tier = int(lcfg.get('tier', 1 if len(standings_teams) <= 30 else 2))
+            tier_label = "Tier 1 (Full Analytics & Pitch View)" if league_tier == 1 else "Tier 2 (Standings & Leaderboard Only)"
+            print(f" -> League Tier: {tier_label}")
             teams_list = []
             for t in standings_teams:
                 teams_list.append({
@@ -636,545 +639,580 @@ def sync_once(args):
             cached_gw_data = cached_league.get("gameweeks", {})
             cached_squads = cached_league.get("squads", {})
 
-            work_items = []
-            gw_can_reuse_raw_picks_map = {}
-            for gw in range(1, max_gw + 1):
-                gw_is_finished = gw_status_map.get(gw, False)
-                gw_is_started = gw_started_map.get(gw, False)
-                cached_gw = cached_gw_data.get(str(gw), {})
-                cached_res = cached_gw.get("results", [])
-                
-                # Check if cached results exist and are non-corrupted (> 0 pts) and contain enriched transfer data
-                has_corrupt_cache = (not cached_res) or all(r.get("points", 0) == 0 and r.get("net_points", 0) == 0 for r in cached_res)
-                needs_enrichment = any(r.get("team_value") is None or r.get("transfers_net_impact") is None for r in cached_res)
-                
-                # Resiliency: Only treat a GW as fully finalized once it was ALREADY cached with data_checked=True
-                is_checked = gw_checked_map.get(gw, False)
-                cached_checked = cached_gw.get("data_checked", False)
-                gw_fully_finalized = bool(cached_checked)
-
-                # Check for points mismatch against official event_total for max_gw
-                has_points_mismatch = False
-                if gw == max_gw and gw_is_finished and cached_res:
-                    c_pts_map = {r.get("entry_id"): r.get("points") for r in cached_res}
-                    for t_obj in standings_teams:
-                        ev_tot = t_obj.get('event_total')
-                        if ev_tot is not None and t_obj['entry'] in c_pts_map:
-                            if c_pts_map[t_obj['entry']] != ev_tot:
-                                has_points_mismatch = True
-                                break
-
-                # Only reuse raw_picks when:
-                # 1. GW is live in progress (started but not finished -> picks are locked and automatic_subs haven't run yet), OR
-                # 2. GW is finished, fully finalized (data_checked settled), and has no points mismatch.
-                gw_can_reuse_raw_picks_map[gw] = (
-                    (not gw_is_finished and gw_is_started)
-                    or (gw_is_finished and gw_fully_finalized and not has_points_mismatch and not has_corrupt_cache)
-                )
-
-                if not args.force and gw_is_finished and cached_gw.get("is_finished") and gw_fully_finalized and not has_corrupt_cache and not needs_enrichment and not has_points_mismatch:
-                    cached_res_map = {r["entry_id"]: r for r in cached_res if (r.get("points", 0) > 0 or r.get("net_points", 0) > 0 or f"{r['entry_id']}_{gw}" in cached_squads)}
-                    
-                    teams_to_fetch_gw = []
-                    for t_obj in standings_teams:
-                        eid = t_obj['entry']
-                        s_key = f"{eid}_{gw}"
-                        if (gw < max_gw or gw_is_started) and s_key in cached_squads and cached_squads[s_key] and cached_squads[s_key].get("dnp"):
-                            squads_dict[s_key] = cached_squads[s_key]
-                            continue
-                        if eid in cached_res_map and s_key in cached_squads:
-                            gameweeks_dict[str(gw)]["results"].append(cached_res_map[eid])
-                            c_sq_obj = cached_squads.get(s_key)
-                            if gw < max_gw and gw_fully_finalized and isinstance(c_sq_obj, dict):
-                                c_sq_obj = {k: v for k, v in c_sq_obj.items() if k not in ("raw_picks", "raw_hist")}
-                            squads_dict[s_key] = c_sq_obj
-                        else:
-                            teams_to_fetch_gw.append(t_obj)
-                            
-                    if len(teams_to_fetch_gw) == 0:
-                        print(f" -> Reusing cached data for League {lid} GW {gw} (Finished, {len(standings_teams)} teams)")
-                        gameweeks_dict[str(gw)]["is_finished"] = True
-                        gameweeks_dict[str(gw)]["is_started"] = True
-                        continue
-                    else:
-                        print(f" -> Reused {len(gameweeks_dict[str(gw)]['results'])} cached teams, fetching {len(teams_to_fetch_gw)} new/missing teams for League {lid} GW {gw}...")
-                        for t_obj in teams_to_fetch_gw:
-                            work_items.append((t_obj, gw))
-                else:
-                    for t_obj in standings_teams:
-                        work_items.append((t_obj, gw))
-
-            if work_items:
-                # Ensure live elements are available for any GW present in work_items
-                work_gws = set(gw for (_, gw) in work_items)
-                for wgw in work_gws:
-                    if wgw not in live_by_gw or not live_by_gw[wgw]:
-                        try:
-                            print(f" -> Fetching live elements for GW {wgw} (required for team picks)...")
-                            live_data = fetch(f'https://fantasy.premierleague.com/api/event/{wgw}/live/')
-                            live_by_gw[wgw] = {el['id']: el['stats']['total_points'] for el in live_data['elements']}
-                            live_mins_by_gw[wgw] = {el['id']: el['stats']['minutes'] for el in live_data['elements']}
-                        except Exception as e:
-                            print(f"Error fetching live GW {wgw}: {e}")
-                            if wgw not in live_by_gw:
-                                live_by_gw[wgw] = {}
-                            if wgw not in live_mins_by_gw:
-                                live_mins_by_gw[wgw] = {}
-
-                print(f" -> Fetching {len(work_items)} team-gameweek picks for League {lid}...")
-
-                def process_team_picks(entry_tuple):
-                    t_obj, gw = entry_tuple
-                    eid = t_obj['entry']
-                    this_gw_finished = gw_status_map.get(gw, False)
-                    this_gw_started = gw_started_map.get(gw, False)
-                    this_gw_checked = gw_checked_map.get(gw, False)
-                    can_reuse_raw_picks = gw_can_reuse_raw_picks_map.get(gw, False)
-                    try:
-                        s_key = f"{eid}_{gw}"
-                        cached_sq = cached_squads.get(s_key)
-                        is_safe_cached_sq = cached_sq and cached_sq.get("raw_picks") and (
-                            (not this_gw_finished and this_gw_started) or cached_sq.get("final_checked") or not this_gw_checked
-                        )
-                        if not args.force and can_reuse_raw_picks and is_safe_cached_sq:
-                            picks = cached_sq.get("raw_picks", [])
-                            hist = cached_sq.get("raw_hist", {})
-                            chip = cached_sq.get("chip")
-                            hits = int(hist.get('event_transfers_cost') if hist.get('event_transfers_cost') is not None else (cached_sq.get("hits") or 0))
-                            chip_norm = str(chip or '').strip().lower().replace('_', '')
-                            if chip_norm in ('wildcard', 'freehit'):
-                                hits = 0
-                            auto_subs = cached_sq.get("auto_subs", [])
-                        else:
-                            cache_key = (eid, gw)
-                            with picks_lock:
-                                picks_resp = global_picks_cache.get(cache_key)
-                            if picks_resp is None:
-                                picks_resp = fetch(f'https://fantasy.premierleague.com/api/entry/{eid}/event/{gw}/picks/')
-                                with picks_lock:
-                                    global_picks_cache[cache_key] = picks_resp
-                            hist = picks_resp.get('entry_history', {})
-                            chip = picks_resp.get('active_chip')
-                            hits = int(hist.get('event_transfers_cost') or 0)
-                            chip_norm = str(chip or '').strip().lower().replace('_', '')
-                            if chip_norm in ('wildcard', 'freehit'):
-                                hits = 0
-                            auto_subs = picks_resp.get('automatic_subs', [])
-                            picks = picks_resp.get('picks', [])
-                        starters = []
-                        bench = []
-                        capt_name = '-'
-                        live_pts_gw = live_by_gw.get(gw, {})
-                        live_mins_gw = live_mins_by_gw.get(gw, {})
-
-                        # Clone picks so cached_sq['raw_picks'] is never mutated in-place
-                        raw_picks = [dict(p) for p in picks]
-
-                        # Identify initial captain and vice-captain
-                        cap_pick = next((p for p in raw_picks if p.get('is_captain')), None)
-                        vc_pick = next((p for p in raw_picks if p.get('is_vice_captain')), None)
-                        orig_cap_id = cap_pick['element'] if cap_pick else None
-                        orig_vc_id = vc_pick['element'] if vc_pick else None
-
-                        if cap_pick:
-                            el_info = elements.get(cap_pick['element'], {})
-                            capt_name = el_info.get('web_name', 'Captain')
-
-                        # Starters and bench cloned independently for safe substitution/promotion
-                        actual_starters_picks = [dict(p) for p in raw_picks if p.get('position', 1) <= 11]
-                        actual_bench_picks = [dict(p) for p in raw_picks if p.get('position', 1) > 11]
-                        final_auto_subs = list(auto_subs)
-                        is_bboost = chip in ('bboost', 'bench_boost')
-                        default_cap_mult = 3 if chip in ('3xc', 'triple_captain') else 2
-
-                        # 1. Apply official FPL automatic substitutions (when confirmed by FPL)
-                        if auto_subs:
-                            for sub in auto_subs:
-                                el_in = sub.get('element_in')
-                                el_out = sub.get('element_out')
-                                s_match = next((p for p in actual_starters_picks if p['element'] == el_out), None)
-                                b_match = next((p for p in actual_bench_picks if p['element'] == el_in), None)
-                                if s_match and b_match:
-                                    s_idx = actual_starters_picks.index(s_match)
-                                    b_idx = actual_bench_picks.index(b_match)
-                                    b_match_copy = dict(b_match)
-                                    b_match_copy['multiplier'] = b_match.get('multiplier') if b_match.get('multiplier', 0) > 0 else 1
-                                    s_match_copy = dict(s_match)
-                                    s_match_copy['multiplier'] = 0
-                                    actual_starters_picks[s_idx] = b_match_copy
-                                    actual_bench_picks[b_idx] = s_match_copy
-                                    if s_match.get('is_captain'):
-                                        s_match_copy['is_captain'] = False
-                        elif not is_bboost:
-                            # 2. Provisional Real-Time Auto-Substitutions during live matches:
-                            # If a starter's fixture is finished and they played 0 minutes,
-                            # find eligible bench player in priority order (pos 12, 13, 14, 15) that maintains valid formation:
-                            # exactly 1 GKP, at least 3 DEF, 2 MID, 1 FWD.
-                            bench_sorted = sorted(actual_bench_picks, key=lambda x: x.get('position', 99))
-                            used_bench_elements = set()
-
-                            for s_pick in list(actual_starters_picks):
-                                s_eid = s_pick['element']
-                                s_info = elements.get(s_eid, {})
-                                s_tid = s_info.get('team')
-                                s_finished = this_gw_finished or (s_tid in gw_finished_teams_map.get(gw, set()))
-                                s_mins = live_mins_gw.get(s_eid, 0)
-
-                                if s_finished and s_mins == 0:
-                                    s_pos_type = element_types.get(s_info.get('element_type'), 'MID')
-                                    for b_pick in bench_sorted:
-                                        b_eid = b_pick['element']
-                                        if b_eid in used_bench_elements:
-                                            continue
-                                        b_info = elements.get(b_eid, {})
-                                        b_tid = b_info.get('team')
-                                        b_finished = this_gw_finished or (b_tid in gw_finished_teams_map.get(gw, set()))
-                                        b_mins = live_mins_gw.get(b_eid, 0)
-                                        if b_finished and b_mins == 0:
-                                            continue
-                                        b_pos_type = element_types.get(b_info.get('element_type'), 'MID')
-
-                                        # GK can only replace GK
-                                        if s_pos_type == 'GKP':
-                                            if b_pos_type != 'GKP':
-                                                continue
-                                        else:
-                                            if b_pos_type == 'GKP':
-                                                continue
-
-                                        # Test hypothetical formation if swapped
-                                        hypo_starters = [p for p in actual_starters_picks if p['element'] != s_eid] + [b_pick]
-                                        hypo_types = [element_types.get(elements.get(p['element'], {}).get('element_type'), 'MID') for p in hypo_starters]
-                                        def_cnt = hypo_types.count('DEF')
-                                        mid_cnt = hypo_types.count('MID')
-                                        fwd_cnt = hypo_types.count('FWD')
-                                        gkp_cnt = hypo_types.count('GKP')
-
-                                        if gkp_cnt == 1 and def_cnt >= 3 and mid_cnt >= 2 and fwd_cnt >= 1:
-                                            if b_mins == 0 and not b_finished:
-                                                # This bench slot is next in priority and its fixture hasn't finished yet;
-                                                # reserve priority for this bench slot without subbing in a 0-min player yet.
-                                                used_bench_elements.add(b_eid)
-                                                break
-                                            s_idx = actual_starters_picks.index(s_pick)
-                                            b_idx = actual_bench_picks.index(b_pick)
-
-                                            b_copy = dict(b_pick)
-                                            b_copy['multiplier'] = 1
-                                            s_copy = dict(s_pick)
-                                            s_copy['multiplier'] = 0
-
-                                            actual_starters_picks[s_idx] = b_copy
-                                            actual_bench_picks[b_idx] = s_copy
-                                            used_bench_elements.add(b_eid)
-                                            final_auto_subs.append({
-                                                "element_in": b_eid,
-                                                "element_out": s_eid,
-                                                "is_provisional": True
-                                            })
-                                            if s_pick.get('is_captain'):
-                                                s_copy['is_captain'] = False
-                                            break
-
-                        # 3. Robust Captain and Vice-Captain Resolution:
-                        # Evaluated comprehensively across scoring pool after all substitutions run.
-                        scoring_pool = actual_starters_picks + (actual_bench_picks if is_bboost else [])
-                        orig_cap_in_pool = next((p for p in scoring_pool if p['element'] == orig_cap_id), None)
-                        orig_cap_tid = elements.get(orig_cap_id, {}).get('team') if orig_cap_id else None
-                        orig_cap_fixture_fin = this_gw_finished or (orig_cap_tid in gw_finished_teams_map.get(gw, set()))
-                        orig_cap_played_zero = orig_cap_fixture_fin and live_mins_gw.get(orig_cap_id, 0) == 0
-
-                        orig_vc_tid = elements.get(orig_vc_id, {}).get('team') if orig_vc_id else None
-                        orig_vc_fixture_fin = this_gw_finished or (orig_vc_tid in gw_finished_teams_map.get(gw, set()))
-                        orig_vc_played_zero = orig_vc_fixture_fin and live_mins_gw.get(orig_vc_id, 0) == 0
-
-                        active_vc_in_pool = next((p for p in scoring_pool if p['element'] == orig_vc_id), None)
-                        fpl_promoted_vc = active_vc_in_pool and active_vc_in_pool.get('multiplier', 1) >= 2
-                        cap_failed = (orig_cap_in_pool is None) or orig_cap_played_zero or (orig_cap_in_pool.get('multiplier') == 0)
-
-                        if orig_vc_id and active_vc_in_pool and ((cap_failed and not orig_vc_played_zero) or fpl_promoted_vc):
-                            # Promote Vice-Captain to Captain
-                            active_vc_in_pool['multiplier'] = default_cap_mult
-                            active_vc_in_pool['is_captain'] = True
-                            if orig_cap_in_pool and orig_cap_in_pool['element'] != active_vc_in_pool['element']:
-                                orig_cap_in_pool['is_captain'] = False
-                                if orig_cap_in_pool.get('multiplier', 1) > 1:
-                                    orig_cap_in_pool['multiplier'] = 1
-                            for bp in actual_bench_picks:
-                                if bp['element'] == orig_cap_id:
-                                    bp['is_captain'] = False
-                                    bp['multiplier'] = 0
-                            vc_info = elements.get(orig_vc_id, {})
-                            capt_name = vc_info.get('web_name', 'Captain')
-                        elif orig_cap_in_pool:
-                            orig_cap_in_pool['multiplier'] = 0 if orig_cap_played_zero else default_cap_mult
-                            orig_cap_in_pool['is_captain'] = True
-                            cap_info = elements.get(orig_cap_id, {})
-                            capt_name = cap_info.get('web_name', 'Captain')
-                        elif orig_cap_id:
-                            for bp in actual_bench_picks:
-                                if bp['element'] == orig_cap_id:
-                                    bp['is_captain'] = True
-                                    bp['multiplier'] = 0
-                            cap_info = elements.get(orig_cap_id, {})
-                            capt_name = cap_info.get('web_name', 'Captain')
-
-                        gw_is_fin = gw_status_map.get(gw, False)
-                        unstarted_tids = gw_unstarted_teams_map.get(gw, set())
-
-                        for p in actual_starters_picks:
-                            pid = p['element']
-                            mult = p.get('multiplier', 1)
-                            is_cap = p.get('is_captain', False)
-                            is_vice = p.get('is_vice_captain', False)
-                            el_info = elements.get(pid, {})
-                            el_tid = el_info.get('team')
-                            team_code = teams_by_id.get(el_tid, 'PL')
-                            pos_code = element_types.get(el_info.get('element_type'), 'MID')
-                            p_pts = live_pts_gw.get(pid, 0)
-                            not_played = (not gw_is_fin) and (el_tid in unstarted_tids)
-                            p_obj = {
-                                "id": pid,
-                                "name": el_info.get('web_name', 'Player'),
-                                "pos": pos_code,
-                                "team": team_code,
-                                "team_code": el_info.get('team_code', 0),
-                                "points": p_pts * mult,
-                                "raw_points": p_pts,
-                                "multiplier": mult,
-                                "is_captain": is_cap,
-                                "is_vice": is_vice,
-                                "not_played_yet": not_played
-                            }
-                            if is_cap:
-                                capt_name = el_info.get('web_name', 'Captain')
-                            starters.append(p_obj)
-
-                        for p in actual_bench_picks:
-                            pid = p['element']
-                            mult = p.get('multiplier', 1) if is_bboost else 1
-                            is_cap = p.get('is_captain', False)
-                            is_vice = p.get('is_vice_captain', False)
-                            el_info = elements.get(pid, {})
-                            el_tid = el_info.get('team')
-                            team_code = teams_by_id.get(el_tid, 'PL')
-                            pos_code = element_types.get(el_info.get('element_type'), 'MID')
-                            p_pts = live_pts_gw.get(pid, 0)
-                            not_played = (not gw_is_fin) and (el_tid in unstarted_tids)
-                            p_obj = {
-                                "id": pid,
-                                "name": el_info.get('web_name', 'Player'),
-                                "pos": pos_code,
-                                "team": team_code,
-                                "team_code": el_info.get('team_code', 0),
-                                "points": p_pts * (mult if mult > 0 else 1),
-                                "raw_points": p_pts,
-                                "multiplier": mult,
-                                "is_captain": is_cap,
-                                "is_vice": is_vice,
-                                "not_played_yet": not_played
-                            }
-                            if is_cap:
-                                capt_name = el_info.get('web_name', 'Captain')
-                            bench.append(p_obj)
-
-                        start_raw = sum(p['points'] for p in starters)
-                        bench_raw = sum(p['points'] for p in bench)
-
-                        if is_bboost:
-                            raw_points = start_raw + bench_raw
-                            bench_pts_disp = 0
-                        else:
-                            raw_points = start_raw
-                            bench_pts_disp = bench_raw
-
-                        # Resiliency: Only override with official entry_history points once data_checked is True (settled)
-                        # or if live raw_points is 0 while official_pts > 0.
-                        official_pts = hist.get('points')
-                        if official_pts is not None and official_pts > 0 and (raw_points == 0 or (this_gw_finished and this_gw_checked)):
-                            raw_points = official_pts
-
-                        hits = int(hits or 0)
-                        net_points = raw_points - hits
-                        team_val = round((hist.get('value') or 1000) / 10.0, 1)
-                        team_bank = round((hist.get('bank') or 0) / 10.0, 1)
-                        event_tx = hist.get('event_transfers', 0)
-
-                        result_item = {
-                            "entry_id": eid,
-                            "team_name": t_obj['entry_name'],
-                            "player_name": t_obj['player_name'],
-                            "points": raw_points,
-                            "hits": hits,
-                            "net_points": net_points,
-                            "captain": capt_name,
-                            "chip": chip,
-                            "bench_points": bench_pts_disp,
-                            "team_value": team_val,
-                            "bank": team_bank,
-                            "transfers_count": event_tx,
-                            "overall_rank": hist.get('overall_rank')
-                        }
-
-                        is_settled_past_gw = bool(gw < max_gw and this_gw_finished and this_gw_checked)
-                        squad_item = {
-                            "starting": starters,
-                            "bench": bench,
-                            "auto_subs": final_auto_subs,
-                            "chip": chip,
-                            "hits": hits,
-                            "final_checked": bool(this_gw_finished and this_gw_checked)
-                        }
-                        if not is_settled_past_gw:
-                            squad_item["raw_picks"] = raw_picks
-                            squad_item["raw_hist"] = hist
-                        return (gw, eid, result_item, squad_item)
-                    except Exception as err:
-                        print(f"Error {eid} GW {gw}: {err}")
-                        if cached_gw_data and cached_squads:
-                            c_gw = cached_gw_data.get(str(gw), {})
-                            c_res = next((r for r in c_gw.get("results", []) if r.get("entry_id") == eid), None)
-                            c_sq = cached_squads.get(f"{eid}_{gw}")
-                            if (gw < max_gw or this_gw_started) and c_sq and c_sq.get("dnp"):
-                                return (gw, eid, None, c_sq)
-                            if c_res:
-                                print(f" -> Recovered cached data for team {eid} GW {gw} following fetch error.")
-                                return (gw, eid, c_res, c_sq or {})
-                        
-                        # Resilient fallback for 404 / late joiner / missing event picks (only mark DNP after GW starts)
-                        if ("404" in str(err) or "Not Found" in str(err)) and (gw < max_gw or this_gw_started):
-                            print(f" -> Team {eid} was not active in GW {gw} (404/joined late). Marking as DNP.")
-                            dnp_squad = {
-                                "dnp": True,
-                                "starting": [],
-                                "bench": [],
-                                "auto_subs": []
-                            }
-                            return (gw, eid, None, dnp_squad)
-                        print(f"⚠️ [WARNING] Failed to fetch team {eid} for GW {gw} and no valid cache exists! Team may be missing from this run.")
-                        return None
-
-                with ThreadPoolExecutor(max_workers=5) as executor:
-                    fetched_results = list(executor.map(process_team_picks, work_items))
-
-                for res in fetched_results:
-                    if res:
-                        gw, eid, result_item, squad_item = res
-                        if result_item:
-                            gameweeks_dict[str(gw)]["results"].append(result_item)
-                        if squad_item:
-                            squads_dict[f"{eid}_{gw}"] = squad_item
-
-                # Cache Corruption Prevention: Recover any missing teams from previous cache
-                for gw_idx in range(1, max_gw + 1):
-                    gw_k = str(gw_idx)
-                    cached_gw_res = cached_gw_data.get(gw_k, {}).get("results", []) if cached_gw_data else []
-                    gameweeks_dict[gw_k]["results"] = recover_missing_teams_from_cache(
-                        gameweeks_dict[gw_k]["results"],
-                        cached_gw_res
-                    )
-
-                # Preserve any existing cached squads that were not refreshed
-                if cached_squads:
-                    for s_k, s_v in cached_squads.items():
-                        if s_k not in squads_dict:
-                            squads_dict[s_k] = s_v
-
-                # Resiliency: Strictly deduplicate results by entry_id for all gameweeks
-                for gw_key in gameweeks_dict:
-                    seen_eids = set()
-                    unique_res = []
-                    for r in gameweeks_dict[gw_key]["results"]:
-                        reid = r.get("entry_id")
-                        if reid not in seen_eids:
-                            seen_eids.add(reid)
-                            unique_res.append(r)
-                    gameweeks_dict[gw_key]["results"] = unique_res
-
-                # Precompute O(1) web_name lookup map and helper to extract player element ID safely
-                web_name_to_id = {el.get("web_name"): el_id for el_id, el in elements.items() if el.get("web_name")}
-                def extract_pid(p):
-                    if isinstance(p, dict):
-                        if "id" in p and p["id"]:
-                            return p["id"]
-                        return web_name_to_id.get(p.get("name"))
-                    return None
-
-                # Calculate transfer impact between consecutive GWs for each team
+            if league_tier == 2:
+                print(f" -> [Tier 2] Standings & Leaderboard Only mode for League {lid} ({len(standings_teams)} teams). Skipping squads/picks fetch.")
                 for gw in range(1, max_gw + 1):
                     gw_str = str(gw)
-                    gw_res_list = gameweeks_dict[gw_str]["results"]
-                    if (
-                        not args.force
-                        and gw < max_gw
-                        and gw_status_map.get(gw, False)
-                        and gw_res_list
-                        and all(r.get("transfers_net_impact") is not None and r.get("transfer_moves") is not None for r in gw_res_list)
-                    ):
-                        continue
-                    gw_live = ensure_live_gw(gw) if gw > 1 else None
-                    for r in gw_res_list:
-                        eid = r["entry_id"]
-                        if gw == 1:
-                            r["transfers_count"] = 0
-                            r["transfers_pts_gain"] = 0
-                            r["transfers_net_impact"] = 0
-                            r["transfer_moves"] = []
-                        else:
-                            sq_curr = squads_dict.get(f"{eid}_{gw}")
-                            # If previous gameweek was Free Hit, the baseline squad reverts back to before Free Hit
-                            prev_gw = gw - 1
-                            while prev_gw >= 1:
-                                prev_res = gameweeks_dict.get(str(prev_gw), {}).get("results", [])
-                                prev_r = next((x for x in prev_res if x.get("entry_id") == eid), None)
-                                prev_chip = str(prev_r.get("chip") or '').strip().lower().replace('_', '') if prev_r else ''
-                                if prev_r and prev_chip == "freehit":
-                                    prev_gw -= 1
-                                else:
+                    cached_gw = cached_gw_data.get(gw_str, {})
+                    cached_res = cached_gw.get("results", [])
+                    if gw == max_gw:
+                        current_results = []
+                        for t in standings_teams:
+                            ev_pts = t.get('event_total') if t.get('event_total') is not None else 0
+                            current_results.append({
+                                "entry_id": t['entry'],
+                                "entry_name": t['entry_name'],
+                                "player_name": t['player_name'],
+                                "rank": t.get('rank'),
+                                "last_rank": t.get('last_rank'),
+                                "points": ev_pts,
+                                "net_points": ev_pts,
+                                "hits": 0,
+                                "chip": None,
+                                "captain": "-",
+                                "team_value": None,
+                                "transfers_count": 0,
+                                "transfers_pts_gain": 0,
+                                "transfers_net_impact": 0,
+                                "transfer_moves": [],
+                                "overall_rank": t.get('rank')
+                            })
+                        gameweeks_dict[gw_str]["results"] = current_results
+                    elif cached_res:
+                        gameweeks_dict[gw_str]["results"] = cached_res
+                    else:
+                        gameweeks_dict[gw_str]["results"] = []
+                squads_dict = {}
+            else:
+                work_items = []
+                gw_can_reuse_raw_picks_map = {}
+                for gw in range(1, max_gw + 1):
+                    gw_is_finished = gw_status_map.get(gw, False)
+                    gw_is_started = gw_started_map.get(gw, False)
+                    cached_gw = cached_gw_data.get(str(gw), {})
+                    cached_res = cached_gw.get("results", [])
+                
+                    # Check if cached results exist and are non-corrupted (> 0 pts) and contain enriched transfer data
+                    has_corrupt_cache = (not cached_res) or all(r.get("points", 0) == 0 and r.get("net_points", 0) == 0 for r in cached_res)
+                    needs_enrichment = any(r.get("team_value") is None or r.get("transfers_net_impact") is None for r in cached_res)
+                
+                    # Resiliency: Only treat a GW as fully finalized once it was ALREADY cached with data_checked=True
+                    is_checked = gw_checked_map.get(gw, False)
+                    cached_checked = cached_gw.get("data_checked", False)
+                    gw_fully_finalized = bool(cached_checked)
+
+                    # Check for points mismatch against official event_total for max_gw
+                    has_points_mismatch = False
+                    if gw == max_gw and gw_is_finished and cached_res:
+                        c_pts_map = {r.get("entry_id"): r.get("points") for r in cached_res}
+                        for t_obj in standings_teams:
+                            ev_tot = t_obj.get('event_total')
+                            if ev_tot is not None and t_obj['entry'] in c_pts_map:
+                                if c_pts_map[t_obj['entry']] != ev_tot:
+                                    has_points_mismatch = True
                                     break
-                            sq_prev = squads_dict.get(f"{eid}_{prev_gw}")
-                            if sq_curr and sq_prev:
-                                curr_ids = set(extract_pid(p) for p in sq_curr.get("starting", []) + sq_curr.get("bench", []) if extract_pid(p) is not None)
-                                prev_ids = set(extract_pid(p) for p in sq_prev.get("starting", []) + sq_prev.get("bench", []) if extract_pid(p) is not None)
-                                tin = curr_ids - prev_ids
-                                tout = prev_ids - curr_ids
-                                pts_in = sum(gw_live.get(pid, 0) for pid in tin) if gw_live else 0
-                                pts_out = sum(gw_live.get(pid, 0) for pid in tout) if gw_live else 0
-                                moves_gain = pts_in - pts_out
-                                team_hits = int(r.get("hits") or 0)
-                                net_impact = moves_gain - team_hits
 
-                                moves = []
-                                in_list = sorted(list(tin), key=lambda x: elements.get(x, {}).get('element_type', 99))
-                                out_list = sorted(list(tout), key=lambda x: elements.get(x, {}).get('element_type', 99))
-                                max_len = max(len(in_list), len(out_list))
-                                for i in range(max_len):
-                                    m_in_id = in_list[i] if i < len(in_list) else None
-                                    m_out_id = out_list[i] if i < len(out_list) else None
-                                    m_in_name = elements.get(m_in_id, {}).get("web_name", "-") if m_in_id else "-"
-                                    m_out_name = elements.get(m_out_id, {}).get("web_name", "-") if m_out_id else "-"
-                                    m_in_pts = gw_live.get(m_in_id, 0) if (gw_live and m_in_id) else 0
-                                    m_out_pts = gw_live.get(m_out_id, 0) if (gw_live and m_out_id) else 0
-                                    moves.append({
-                                        "in": m_in_name,
-                                        "in_id": m_in_id,
-                                        "in_pts": m_in_pts,
-                                        "out": m_out_name,
-                                        "out_id": m_out_id,
-                                        "out_pts": m_out_pts,
-                                        "net": m_in_pts - m_out_pts
-                                    })
+                    # Only reuse raw_picks when:
+                    # 1. GW is live in progress (started but not finished -> picks are locked and automatic_subs haven't run yet), OR
+                    # 2. GW is finished, fully finalized (data_checked settled), and has no points mismatch.
+                    gw_can_reuse_raw_picks_map[gw] = (
+                        (not gw_is_finished and gw_is_started)
+                        or (gw_is_finished and gw_fully_finalized and not has_points_mismatch and not has_corrupt_cache)
+                    )
 
-                                r["transfers_count"] = len(tin)
-                                r["transfers_pts_gain"] = moves_gain
-                                r["transfers_net_impact"] = net_impact
-                                r["transfer_moves"] = moves
+                    if not args.force and gw_is_finished and cached_gw.get("is_finished") and gw_fully_finalized and not has_corrupt_cache and not needs_enrichment and not has_points_mismatch:
+                        cached_res_map = {r["entry_id"]: r for r in cached_res if (r.get("points", 0) > 0 or r.get("net_points", 0) > 0 or f"{r['entry_id']}_{gw}" in cached_squads)}
+                    
+                        teams_to_fetch_gw = []
+                        for t_obj in standings_teams:
+                            eid = t_obj['entry']
+                            s_key = f"{eid}_{gw}"
+                            if (gw < max_gw or gw_is_started) and s_key in cached_squads and cached_squads[s_key] and cached_squads[s_key].get("dnp"):
+                                squads_dict[s_key] = cached_squads[s_key]
+                                continue
+                            if eid in cached_res_map and s_key in cached_squads:
+                                gameweeks_dict[str(gw)]["results"].append(cached_res_map[eid])
+                                c_sq_obj = cached_squads.get(s_key)
+                                if gw < max_gw and gw_fully_finalized and isinstance(c_sq_obj, dict):
+                                    c_sq_obj = {k: v for k, v in c_sq_obj.items() if k not in ("raw_picks", "raw_hist")}
+                                squads_dict[s_key] = c_sq_obj
                             else:
-                                if "transfers_count" not in r:
-                                    r["transfers_count"] = 0
+                                teams_to_fetch_gw.append(t_obj)
+                            
+                        if len(teams_to_fetch_gw) == 0:
+                            print(f" -> Reusing cached data for League {lid} GW {gw} (Finished, {len(standings_teams)} teams)")
+                            gameweeks_dict[str(gw)]["is_finished"] = True
+                            gameweeks_dict[str(gw)]["is_started"] = True
+                            continue
+                        else:
+                            print(f" -> Reused {len(gameweeks_dict[str(gw)]['results'])} cached teams, fetching {len(teams_to_fetch_gw)} new/missing teams for League {lid} GW {gw}...")
+                            for t_obj in teams_to_fetch_gw:
+                                work_items.append((t_obj, gw))
+                    else:
+                        for t_obj in standings_teams:
+                            work_items.append((t_obj, gw))
+
+                if work_items:
+                    # Ensure live elements are available for any GW present in work_items
+                    work_gws = set(gw for (_, gw) in work_items)
+                    for wgw in work_gws:
+                        if wgw not in live_by_gw or not live_by_gw[wgw]:
+                            try:
+                                print(f" -> Fetching live elements for GW {wgw} (required for team picks)...")
+                                live_data = fetch(f'https://fantasy.premierleague.com/api/event/{wgw}/live/')
+                                live_by_gw[wgw] = {el['id']: el['stats']['total_points'] for el in live_data['elements']}
+                                live_mins_by_gw[wgw] = {el['id']: el['stats']['minutes'] for el in live_data['elements']}
+                            except Exception as e:
+                                print(f"Error fetching live GW {wgw}: {e}")
+                                if wgw not in live_by_gw:
+                                    live_by_gw[wgw] = {}
+                                if wgw not in live_mins_by_gw:
+                                    live_mins_by_gw[wgw] = {}
+
+                    print(f" -> Fetching {len(work_items)} team-gameweek picks for League {lid}...")
+
+                    def process_team_picks(entry_tuple):
+                        t_obj, gw = entry_tuple
+                        eid = t_obj['entry']
+                        this_gw_finished = gw_status_map.get(gw, False)
+                        this_gw_started = gw_started_map.get(gw, False)
+                        this_gw_checked = gw_checked_map.get(gw, False)
+                        can_reuse_raw_picks = gw_can_reuse_raw_picks_map.get(gw, False)
+                        try:
+                            s_key = f"{eid}_{gw}"
+                            cached_sq = cached_squads.get(s_key)
+                            is_safe_cached_sq = cached_sq and cached_sq.get("raw_picks") and (
+                                (not this_gw_finished and this_gw_started) or cached_sq.get("final_checked") or not this_gw_checked
+                            )
+                            if not args.force and can_reuse_raw_picks and is_safe_cached_sq:
+                                picks = cached_sq.get("raw_picks", [])
+                                hist = cached_sq.get("raw_hist", {})
+                                chip = cached_sq.get("chip")
+                                hits = int(hist.get('event_transfers_cost') if hist.get('event_transfers_cost') is not None else (cached_sq.get("hits") or 0))
+                                chip_norm = str(chip or '').strip().lower().replace('_', '')
+                                if chip_norm in ('wildcard', 'freehit'):
+                                    hits = 0
+                                auto_subs = cached_sq.get("auto_subs", [])
+                            else:
+                                cache_key = (eid, gw)
+                                with picks_lock:
+                                    picks_resp = global_picks_cache.get(cache_key)
+                                if picks_resp is None:
+                                    picks_resp = fetch(f'https://fantasy.premierleague.com/api/entry/{eid}/event/{gw}/picks/')
+                                    with picks_lock:
+                                        global_picks_cache[cache_key] = picks_resp
+                                hist = picks_resp.get('entry_history', {})
+                                chip = picks_resp.get('active_chip')
+                                hits = int(hist.get('event_transfers_cost') or 0)
+                                chip_norm = str(chip or '').strip().lower().replace('_', '')
+                                if chip_norm in ('wildcard', 'freehit'):
+                                    hits = 0
+                                auto_subs = picks_resp.get('automatic_subs', [])
+                                picks = picks_resp.get('picks', [])
+                            starters = []
+                            bench = []
+                            capt_name = '-'
+                            live_pts_gw = live_by_gw.get(gw, {})
+                            live_mins_gw = live_mins_by_gw.get(gw, {})
+
+                            # Clone picks so cached_sq['raw_picks'] is never mutated in-place
+                            raw_picks = [dict(p) for p in picks]
+
+                            # Identify initial captain and vice-captain
+                            cap_pick = next((p for p in raw_picks if p.get('is_captain')), None)
+                            vc_pick = next((p for p in raw_picks if p.get('is_vice_captain')), None)
+                            orig_cap_id = cap_pick['element'] if cap_pick else None
+                            orig_vc_id = vc_pick['element'] if vc_pick else None
+
+                            if cap_pick:
+                                el_info = elements.get(cap_pick['element'], {})
+                                capt_name = el_info.get('web_name', 'Captain')
+
+                            # Starters and bench cloned independently for safe substitution/promotion
+                            actual_starters_picks = [dict(p) for p in raw_picks if p.get('position', 1) <= 11]
+                            actual_bench_picks = [dict(p) for p in raw_picks if p.get('position', 1) > 11]
+                            final_auto_subs = list(auto_subs)
+                            is_bboost = chip in ('bboost', 'bench_boost')
+                            default_cap_mult = 3 if chip in ('3xc', 'triple_captain') else 2
+
+                            # 1. Apply official FPL automatic substitutions (when confirmed by FPL)
+                            if auto_subs:
+                                for sub in auto_subs:
+                                    el_in = sub.get('element_in')
+                                    el_out = sub.get('element_out')
+                                    s_match = next((p for p in actual_starters_picks if p['element'] == el_out), None)
+                                    b_match = next((p for p in actual_bench_picks if p['element'] == el_in), None)
+                                    if s_match and b_match:
+                                        s_idx = actual_starters_picks.index(s_match)
+                                        b_idx = actual_bench_picks.index(b_match)
+                                        b_match_copy = dict(b_match)
+                                        b_match_copy['multiplier'] = b_match.get('multiplier') if b_match.get('multiplier', 0) > 0 else 1
+                                        s_match_copy = dict(s_match)
+                                        s_match_copy['multiplier'] = 0
+                                        actual_starters_picks[s_idx] = b_match_copy
+                                        actual_bench_picks[b_idx] = s_match_copy
+                                        if s_match.get('is_captain'):
+                                            s_match_copy['is_captain'] = False
+                            elif not is_bboost:
+                                # 2. Provisional Real-Time Auto-Substitutions during live matches:
+                                # If a starter's fixture is finished and they played 0 minutes,
+                                # find eligible bench player in priority order (pos 12, 13, 14, 15) that maintains valid formation:
+                                # exactly 1 GKP, at least 3 DEF, 2 MID, 1 FWD.
+                                bench_sorted = sorted(actual_bench_picks, key=lambda x: x.get('position', 99))
+                                used_bench_elements = set()
+
+                                for s_pick in list(actual_starters_picks):
+                                    s_eid = s_pick['element']
+                                    s_info = elements.get(s_eid, {})
+                                    s_tid = s_info.get('team')
+                                    s_finished = this_gw_finished or (s_tid in gw_finished_teams_map.get(gw, set()))
+                                    s_mins = live_mins_gw.get(s_eid, 0)
+
+                                    if s_finished and s_mins == 0:
+                                        s_pos_type = element_types.get(s_info.get('element_type'), 'MID')
+                                        for b_pick in bench_sorted:
+                                            b_eid = b_pick['element']
+                                            if b_eid in used_bench_elements:
+                                                continue
+                                            b_info = elements.get(b_eid, {})
+                                            b_tid = b_info.get('team')
+                                            b_finished = this_gw_finished or (b_tid in gw_finished_teams_map.get(gw, set()))
+                                            b_mins = live_mins_gw.get(b_eid, 0)
+                                            if b_finished and b_mins == 0:
+                                                continue
+                                            b_pos_type = element_types.get(b_info.get('element_type'), 'MID')
+
+                                            # GK can only replace GK
+                                            if s_pos_type == 'GKP':
+                                                if b_pos_type != 'GKP':
+                                                    continue
+                                            else:
+                                                if b_pos_type == 'GKP':
+                                                    continue
+
+                                            # Test hypothetical formation if swapped
+                                            hypo_starters = [p for p in actual_starters_picks if p['element'] != s_eid] + [b_pick]
+                                            hypo_types = [element_types.get(elements.get(p['element'], {}).get('element_type'), 'MID') for p in hypo_starters]
+                                            def_cnt = hypo_types.count('DEF')
+                                            mid_cnt = hypo_types.count('MID')
+                                            fwd_cnt = hypo_types.count('FWD')
+                                            gkp_cnt = hypo_types.count('GKP')
+
+                                            if gkp_cnt == 1 and def_cnt >= 3 and mid_cnt >= 2 and fwd_cnt >= 1:
+                                                if b_mins == 0 and not b_finished:
+                                                    # This bench slot is next in priority and its fixture hasn't finished yet;
+                                                    # reserve priority for this bench slot without subbing in a 0-min player yet.
+                                                    used_bench_elements.add(b_eid)
+                                                    break
+                                                s_idx = actual_starters_picks.index(s_pick)
+                                                b_idx = actual_bench_picks.index(b_pick)
+
+                                                b_copy = dict(b_pick)
+                                                b_copy['multiplier'] = 1
+                                                s_copy = dict(s_pick)
+                                                s_copy['multiplier'] = 0
+
+                                                actual_starters_picks[s_idx] = b_copy
+                                                actual_bench_picks[b_idx] = s_copy
+                                                used_bench_elements.add(b_eid)
+                                                final_auto_subs.append({
+                                                    "element_in": b_eid,
+                                                    "element_out": s_eid,
+                                                    "is_provisional": True
+                                                })
+                                                if s_pick.get('is_captain'):
+                                                    s_copy['is_captain'] = False
+                                                break
+
+                            # 3. Robust Captain and Vice-Captain Resolution:
+                            # Evaluated comprehensively across scoring pool after all substitutions run.
+                            scoring_pool = actual_starters_picks + (actual_bench_picks if is_bboost else [])
+                            orig_cap_in_pool = next((p for p in scoring_pool if p['element'] == orig_cap_id), None)
+                            orig_cap_tid = elements.get(orig_cap_id, {}).get('team') if orig_cap_id else None
+                            orig_cap_fixture_fin = this_gw_finished or (orig_cap_tid in gw_finished_teams_map.get(gw, set()))
+                            orig_cap_played_zero = orig_cap_fixture_fin and live_mins_gw.get(orig_cap_id, 0) == 0
+
+                            orig_vc_tid = elements.get(orig_vc_id, {}).get('team') if orig_vc_id else None
+                            orig_vc_fixture_fin = this_gw_finished or (orig_vc_tid in gw_finished_teams_map.get(gw, set()))
+                            orig_vc_played_zero = orig_vc_fixture_fin and live_mins_gw.get(orig_vc_id, 0) == 0
+
+                            active_vc_in_pool = next((p for p in scoring_pool if p['element'] == orig_vc_id), None)
+                            fpl_promoted_vc = active_vc_in_pool and active_vc_in_pool.get('multiplier', 1) >= 2
+                            cap_failed = (orig_cap_in_pool is None) or orig_cap_played_zero or (orig_cap_in_pool.get('multiplier') == 0)
+
+                            if orig_vc_id and active_vc_in_pool and ((cap_failed and not orig_vc_played_zero) or fpl_promoted_vc):
+                                # Promote Vice-Captain to Captain
+                                active_vc_in_pool['multiplier'] = default_cap_mult
+                                active_vc_in_pool['is_captain'] = True
+                                if orig_cap_in_pool and orig_cap_in_pool['element'] != active_vc_in_pool['element']:
+                                    orig_cap_in_pool['is_captain'] = False
+                                    if orig_cap_in_pool.get('multiplier', 1) > 1:
+                                        orig_cap_in_pool['multiplier'] = 1
+                                for bp in actual_bench_picks:
+                                    if bp['element'] == orig_cap_id:
+                                        bp['is_captain'] = False
+                                        bp['multiplier'] = 0
+                                vc_info = elements.get(orig_vc_id, {})
+                                capt_name = vc_info.get('web_name', 'Captain')
+                            elif orig_cap_in_pool:
+                                orig_cap_in_pool['multiplier'] = 0 if orig_cap_played_zero else default_cap_mult
+                                orig_cap_in_pool['is_captain'] = True
+                                cap_info = elements.get(orig_cap_id, {})
+                                capt_name = cap_info.get('web_name', 'Captain')
+                            elif orig_cap_id:
+                                for bp in actual_bench_picks:
+                                    if bp['element'] == orig_cap_id:
+                                        bp['is_captain'] = True
+                                        bp['multiplier'] = 0
+                                cap_info = elements.get(orig_cap_id, {})
+                                capt_name = cap_info.get('web_name', 'Captain')
+
+                            gw_is_fin = gw_status_map.get(gw, False)
+                            unstarted_tids = gw_unstarted_teams_map.get(gw, set())
+
+                            for p in actual_starters_picks:
+                                pid = p['element']
+                                mult = p.get('multiplier', 1)
+                                is_cap = p.get('is_captain', False)
+                                is_vice = p.get('is_vice_captain', False)
+                                el_info = elements.get(pid, {})
+                                el_tid = el_info.get('team')
+                                team_code = teams_by_id.get(el_tid, 'PL')
+                                pos_code = element_types.get(el_info.get('element_type'), 'MID')
+                                p_pts = live_pts_gw.get(pid, 0)
+                                not_played = (not gw_is_fin) and (el_tid in unstarted_tids)
+                                p_obj = {
+                                    "id": pid,
+                                    "name": el_info.get('web_name', 'Player'),
+                                    "pos": pos_code,
+                                    "team": team_code,
+                                    "team_code": el_info.get('team_code', 0),
+                                    "points": p_pts * mult,
+                                    "raw_points": p_pts,
+                                    "multiplier": mult,
+                                    "is_captain": is_cap,
+                                    "is_vice": is_vice,
+                                    "not_played_yet": not_played
+                                }
+                                if is_cap:
+                                    capt_name = el_info.get('web_name', 'Captain')
+                                starters.append(p_obj)
+
+                            for p in actual_bench_picks:
+                                pid = p['element']
+                                mult = p.get('multiplier', 1) if is_bboost else 1
+                                is_cap = p.get('is_captain', False)
+                                is_vice = p.get('is_vice_captain', False)
+                                el_info = elements.get(pid, {})
+                                el_tid = el_info.get('team')
+                                team_code = teams_by_id.get(el_tid, 'PL')
+                                pos_code = element_types.get(el_info.get('element_type'), 'MID')
+                                p_pts = live_pts_gw.get(pid, 0)
+                                not_played = (not gw_is_fin) and (el_tid in unstarted_tids)
+                                p_obj = {
+                                    "id": pid,
+                                    "name": el_info.get('web_name', 'Player'),
+                                    "pos": pos_code,
+                                    "team": team_code,
+                                    "team_code": el_info.get('team_code', 0),
+                                    "points": p_pts * (mult if mult > 0 else 1),
+                                    "raw_points": p_pts,
+                                    "multiplier": mult,
+                                    "is_captain": is_cap,
+                                    "is_vice": is_vice,
+                                    "not_played_yet": not_played
+                                }
+                                if is_cap:
+                                    capt_name = el_info.get('web_name', 'Captain')
+                                bench.append(p_obj)
+
+                            start_raw = sum(p['points'] for p in starters)
+                            bench_raw = sum(p['points'] for p in bench)
+
+                            if is_bboost:
+                                raw_points = start_raw + bench_raw
+                                bench_pts_disp = 0
+                            else:
+                                raw_points = start_raw
+                                bench_pts_disp = bench_raw
+
+                            # Resiliency: Only override with official entry_history points once data_checked is True (settled)
+                            # or if live raw_points is 0 while official_pts > 0.
+                            official_pts = hist.get('points')
+                            if official_pts is not None and official_pts > 0 and (raw_points == 0 or (this_gw_finished and this_gw_checked)):
+                                raw_points = official_pts
+
+                            hits = int(hits or 0)
+                            net_points = raw_points - hits
+                            team_val = round((hist.get('value') or 1000) / 10.0, 1)
+                            team_bank = round((hist.get('bank') or 0) / 10.0, 1)
+                            event_tx = hist.get('event_transfers', 0)
+
+                            result_item = {
+                                "entry_id": eid,
+                                "team_name": t_obj['entry_name'],
+                                "player_name": t_obj['player_name'],
+                                "points": raw_points,
+                                "hits": hits,
+                                "net_points": net_points,
+                                "captain": capt_name,
+                                "chip": chip,
+                                "bench_points": bench_pts_disp,
+                                "team_value": team_val,
+                                "bank": team_bank,
+                                "transfers_count": event_tx,
+                                "overall_rank": hist.get('overall_rank')
+                            }
+
+                            is_settled_past_gw = bool(gw < max_gw and this_gw_finished and this_gw_checked)
+                            squad_item = {
+                                "starting": starters,
+                                "bench": bench,
+                                "auto_subs": final_auto_subs,
+                                "chip": chip,
+                                "hits": hits,
+                                "final_checked": bool(this_gw_finished and this_gw_checked)
+                            }
+                            if not is_settled_past_gw:
+                                squad_item["raw_picks"] = raw_picks
+                                squad_item["raw_hist"] = hist
+                            return (gw, eid, result_item, squad_item)
+                        except Exception as err:
+                            print(f"Error {eid} GW {gw}: {err}")
+                            if cached_gw_data and cached_squads:
+                                c_gw = cached_gw_data.get(str(gw), {})
+                                c_res = next((r for r in c_gw.get("results", []) if r.get("entry_id") == eid), None)
+                                c_sq = cached_squads.get(f"{eid}_{gw}")
+                                if (gw < max_gw or this_gw_started) and c_sq and c_sq.get("dnp"):
+                                    return (gw, eid, None, c_sq)
+                                if c_res:
+                                    print(f" -> Recovered cached data for team {eid} GW {gw} following fetch error.")
+                                    return (gw, eid, c_res, c_sq or {})
+                        
+                            # Resilient fallback for 404 / late joiner / missing event picks (only mark DNP after GW starts)
+                            if ("404" in str(err) or "Not Found" in str(err)) and (gw < max_gw or this_gw_started):
+                                print(f" -> Team {eid} was not active in GW {gw} (404/joined late). Marking as DNP.")
+                                dnp_squad = {
+                                    "dnp": True,
+                                    "starting": [],
+                                    "bench": [],
+                                    "auto_subs": []
+                                }
+                                return (gw, eid, None, dnp_squad)
+                            print(f"⚠️ [WARNING] Failed to fetch team {eid} for GW {gw} and no valid cache exists! Team may be missing from this run.")
+                            return None
+
+                    with ThreadPoolExecutor(max_workers=5) as executor:
+                        fetched_results = list(executor.map(process_team_picks, work_items))
+
+                    for res in fetched_results:
+                        if res:
+                            gw, eid, result_item, squad_item = res
+                            if result_item:
+                                gameweeks_dict[str(gw)]["results"].append(result_item)
+                            if squad_item:
+                                squads_dict[f"{eid}_{gw}"] = squad_item
+
+                    # Cache Corruption Prevention: Recover any missing teams from previous cache
+                    for gw_idx in range(1, max_gw + 1):
+                        gw_k = str(gw_idx)
+                        cached_gw_res = cached_gw_data.get(gw_k, {}).get("results", []) if cached_gw_data else []
+                        gameweeks_dict[gw_k]["results"] = recover_missing_teams_from_cache(
+                            gameweeks_dict[gw_k]["results"],
+                            cached_gw_res
+                        )
+
+                    # Preserve any existing cached squads that were not refreshed
+                    if cached_squads:
+                        for s_k, s_v in cached_squads.items():
+                            if s_k not in squads_dict:
+                                squads_dict[s_k] = s_v
+
+                    # Resiliency: Strictly deduplicate results by entry_id for all gameweeks
+                    for gw_key in gameweeks_dict:
+                        seen_eids = set()
+                        unique_res = []
+                        for r in gameweeks_dict[gw_key]["results"]:
+                            reid = r.get("entry_id")
+                            if reid not in seen_eids:
+                                seen_eids.add(reid)
+                                unique_res.append(r)
+                        gameweeks_dict[gw_key]["results"] = unique_res
+
+                    # Precompute O(1) web_name lookup map and helper to extract player element ID safely
+                    web_name_to_id = {el.get("web_name"): el_id for el_id, el in elements.items() if el.get("web_name")}
+                    def extract_pid(p):
+                        if isinstance(p, dict):
+                            if "id" in p and p["id"]:
+                                return p["id"]
+                            return web_name_to_id.get(p.get("name"))
+                        return None
+
+                    # Calculate transfer impact between consecutive GWs for each team
+                    for gw in range(1, max_gw + 1):
+                        gw_str = str(gw)
+                        gw_res_list = gameweeks_dict[gw_str]["results"]
+                        if (
+                            not args.force
+                            and gw < max_gw
+                            and gw_status_map.get(gw, False)
+                            and gw_res_list
+                            and all(r.get("transfers_net_impact") is not None and r.get("transfer_moves") is not None for r in gw_res_list)
+                        ):
+                            continue
+                        gw_live = ensure_live_gw(gw) if gw > 1 else None
+                        for r in gw_res_list:
+                            eid = r["entry_id"]
+                            if gw == 1:
+                                r["transfers_count"] = 0
                                 r["transfers_pts_gain"] = 0
-                                r["transfers_net_impact"] = -int(r.get("hits") or 0)
+                                r["transfers_net_impact"] = 0
                                 r["transfer_moves"] = []
+                            else:
+                                sq_curr = squads_dict.get(f"{eid}_{gw}")
+                                # If previous gameweek was Free Hit, the baseline squad reverts back to before Free Hit
+                                prev_gw = gw - 1
+                                while prev_gw >= 1:
+                                    prev_res = gameweeks_dict.get(str(prev_gw), {}).get("results", [])
+                                    prev_r = next((x for x in prev_res if x.get("entry_id") == eid), None)
+                                    prev_chip = str(prev_r.get("chip") or '').strip().lower().replace('_', '') if prev_r else ''
+                                    if prev_r and prev_chip == "freehit":
+                                        prev_gw -= 1
+                                    else:
+                                        break
+                                sq_prev = squads_dict.get(f"{eid}_{prev_gw}")
+                                if sq_curr and sq_prev:
+                                    curr_ids = set(extract_pid(p) for p in sq_curr.get("starting", []) + sq_curr.get("bench", []) if extract_pid(p) is not None)
+                                    prev_ids = set(extract_pid(p) for p in sq_prev.get("starting", []) + sq_prev.get("bench", []) if extract_pid(p) is not None)
+                                    tin = curr_ids - prev_ids
+                                    tout = prev_ids - curr_ids
+                                    pts_in = sum(gw_live.get(pid, 0) for pid in tin) if gw_live else 0
+                                    pts_out = sum(gw_live.get(pid, 0) for pid in tout) if gw_live else 0
+                                    moves_gain = pts_in - pts_out
+                                    team_hits = int(r.get("hits") or 0)
+                                    net_impact = moves_gain - team_hits
+
+                                    moves = []
+                                    in_list = sorted(list(tin), key=lambda x: elements.get(x, {}).get('element_type', 99))
+                                    out_list = sorted(list(tout), key=lambda x: elements.get(x, {}).get('element_type', 99))
+                                    max_len = max(len(in_list), len(out_list))
+                                    for i in range(max_len):
+                                        m_in_id = in_list[i] if i < len(in_list) else None
+                                        m_out_id = out_list[i] if i < len(out_list) else None
+                                        m_in_name = elements.get(m_in_id, {}).get("web_name", "-") if m_in_id else "-"
+                                        m_out_name = elements.get(m_out_id, {}).get("web_name", "-") if m_out_id else "-"
+                                        m_in_pts = gw_live.get(m_in_id, 0) if (gw_live and m_in_id) else 0
+                                        m_out_pts = gw_live.get(m_out_id, 0) if (gw_live and m_out_id) else 0
+                                        moves.append({
+                                            "in": m_in_name,
+                                            "in_id": m_in_id,
+                                            "in_pts": m_in_pts,
+                                            "out": m_out_name,
+                                            "out_id": m_out_id,
+                                            "out_pts": m_out_pts,
+                                            "net": m_in_pts - m_out_pts
+                                        })
+
+                                    r["transfers_count"] = len(tin)
+                                    r["transfers_pts_gain"] = moves_gain
+                                    r["transfers_net_impact"] = net_impact
+                                    r["transfer_moves"] = moves
+                                else:
+                                    if "transfers_count" not in r:
+                                        r["transfers_count"] = 0
+                                    r["transfers_pts_gain"] = 0
+                                    r["transfers_net_impact"] = -int(r.get("hits") or 0)
+                                    r["transfer_moves"] = []
 
             # Sort and finalize all gameweeks results
             for gw in range(1, max_gw + 1):
@@ -1198,6 +1236,7 @@ def sync_once(args):
                     "id": lid,
                     "name": league_name,
                     "season": "2026/27",
+                    "tier": league_tier,
                     "teams": teams_list,
                     "gameweeks": gameweeks_dict,
                     "squads": squads_dict
@@ -1206,6 +1245,7 @@ def sync_once(args):
             summary_stats.append({
                 "id": lid,
                 "name": league_name,
+                "tier": league_tier,
                 "teams_count": len(teams_list),
                 "gws_count": max_gw
             })
@@ -1218,6 +1258,7 @@ def sync_once(args):
                 summary_stats.append({
                     "id": lid,
                     "name": cached_data["leagues"][str(lid)].get("name", f"League {lid}"),
+                    "tier": cached_data["leagues"][str(lid)].get("tier", 1),
                     "teams_count": len(cached_data["leagues"][str(lid)].get("teams", [])),
                     "gws_count": max_gw
                 })
@@ -1361,11 +1402,11 @@ def sync_once(args):
 - **⏱️ Execution Duration:** `{elapsed:.2f}s`
 
 ### 📊 Leagues Processed
-| League ID | League Name | Teams | Gameweeks |
-|:---|:---|:---:|:---:|
+| League ID | League Name | Tier | Teams | Gameweeks |
+|:---|:---|:---:|:---:|:---:|
 """
             for s in summary_stats:
-                summary_md += f"| `{s['id']}` | **{s['name']}** | {s['teams_count']} | GW 1 - {s['gws_count']} |\n"
+                summary_md += f"| `{s['id']}` | **{s['name']}** | Tier {s.get('tier', 1)} | {s['teams_count']} | GW 1 - {s['gws_count']} |\n"
 
             with open(step_summary_path, 'w', encoding='utf-8') as f:
                 f.write(summary_md)

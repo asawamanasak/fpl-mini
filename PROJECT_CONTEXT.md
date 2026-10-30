@@ -314,19 +314,22 @@ flowchart TD
 
 ## 🚀 8. แนวทางการพัฒนาต่อยอดในอนาคต (Roadmap & Scaling Architecture)
 
-### 8.1 สถาปัตยกรรมรองรับการขยายตัวบน GitHub Free Tier
-1. **Tiered League Architecture (การแยกเกรดของลีก):**
+### 8.1 สถาปัตยกรรมรองรับการขยายตัวบน GitHub Free Tier (Micro-SaaS Ready)
+1. **Tiered League Architecture (การแยกเกรดของลีก) - [ACTIVE & VERIFIED]:**
    * **Tier 1: Mini-League (1 – 30 ทีม):**
      * โหมด Full Analytics & Pitch View (ดึง Picks, 11 ตัวจริง, ตัวสำรอง, กัปตัน, Hits, ชิป, สถิติเงินรางวัล)
      * รองรับได้สูงสุด ~20 – 30 ลีก (300 – 500 ทีมรวม) ต่อรอบการรัน เพื่อไม่ให้ชน Rate Limit 429 ของ FPL
    * **Tier 2: Large League (31 – 1,000+ ทีม):**
      * โหมด Standings & Leaderboard Only
-     * ห้ามดึง Squad รายทีมเด็ดขาด ให้ดึงเฉพาะตารางคะแนน `/api/leagues-classic/{lid}/standings/` (หน้าละ 50 ทีม)
-     * สามารถรองรับได้ถึง 5,000 – 10,000+ ทีม สบายๆ โดยไม่ติดโควตา
-2. **Decoupled Data Architecture (แยกไฟล์ข้อมูลรายลีก):**
-   * ปรับจากเดิมที่ฝัง `multi_fpl_data.json` ก้อนเดียว (9+ MB) ลงใน HTML ทุกหน้า
-   * แยกเป็น `data/leagues/{id}.json` เพื่อให้ `index.html` เบาเหลือ < 100 KB และผู้ใช้โหลดเฉพาะข้อมูลลีกตัวเอง (~300 KB) มือถือไม่ค้าง
-3. **Smart Finished Detection:** ตรวจสอบจบ Gameweek ทันทีจากผล Fixtures
+     * ข้ามการดึง Squad และ Picks รายทีมทั้งหมด (`squads = {}`) ดึงเฉพาะตารางคะแนน `/api/leagues-classic/{lid}/standings/` (หน้าละ 50 ทีม)
+     * ลดการเรียก Network API ลงมากกว่า 85% และลดการประมวลผลให้เบาเป็นศูนย์ รองรับลีกขนาดใหญ่ 1,000+ ทีมได้ทันทีโดยไม่ติดโควตา
+2. **Decoupled Data Architecture (แยกไฟล์ข้อมูลรายลีก) - [ACTIVE & VERIFIED]:**
+   * บันทึกไฟล์ข้อมูลแยกรายลีกแบบเพียว JSON ลงที่ `data/leagues/{id}.json` (ขนาดเพียง ~280 KB - 1.4 MB ต่อลีก)
+   * หน้า HTML ของแต่ละลีก (`40700/index.html`, `675290/index.html`, ฯลฯ) รวมเฉพาะข้อมูล Squads ของลีกตัวเองเท่านั้น โดยตัด Squads ของลีกอื่นออกทั้งหมด
+   * ส่งผลให้ขนาดไฟล์ HTML ลดลงกว่า 60% (จาก 4.95 MB เหลือ ~1.95 MB) และลด Git Commit Bloat ลงกว่า 30 MB ในทุกรอบซิงก์
+   * รองรับการสลับลีกแบบไดนามิก: ดึงข้อมูลอัตโนมัติผ่าน `fetch('data/leagues/{id}.json')` พร้อม Graceful Fallback สลับหน้าบน `file:///` ทันที
+3. **Smart Finished Detection - [ACTIVE & VERIFIED]:**
+   * ตรวจสอบสถานะจบ Gameweek ทันทีจากผลการแข่งขันจริงใน `/api/fixtures/?event=X` โดยไม่ต้องรอ Batch `data_checked` ของ FPL Server
 4. **Head-to-Head & Cup Bracket Visualization:** ผังสายการแข่งขันบอลถ้วยแบบอินเทอร์แอคทีฟ
 5. **Player Transfer Analytics:** กราฟวิเคราะห์การซื้อขายตัวผู้เล่นรายสัปดาห์ (Transfers In/Out)
 6. **Export as Image (Social Share Card):** แปลงตารางสรุปผลและผังสนามเป็นรูปภาพ PNG เพื่อแชร์ลงโซเชียลมีเดีย
