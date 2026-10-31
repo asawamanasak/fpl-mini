@@ -180,19 +180,21 @@ def get_active_in_play_fixture_count(gw_id):
         return None
 
 _last_publish_time = 0
+_publish_pending = False
 
-def trigger_publish():
+def trigger_publish(force=False):
     """Regenerate dashboard HTML presentations and commit/push updates to GitHub."""
-    global _last_publish_time
+    global _last_publish_time, _publish_pending
     if os.environ.get("GITHUB_ACTIONS") != "true":
         print(" -> [Live Matchday Publisher] Skipping git commit/push on local workstation.")
         return
 
     # Enforce minimum 5-minute cooldown between in-play pushes to stay within GitHub Pages 10 builds/hour limit
     now_ts = time.time()
-    if now_ts - _last_publish_time < 300:
+    if not force and now_ts - _last_publish_time < 300:
         remaining = int(300 - (now_ts - _last_publish_time))
-        print(f" -> [Live Matchday Publisher] Cooldown active ({remaining}s remaining). Skipping micro-push.")
+        print(f" -> [Live Matchday Publisher] Cooldown active ({remaining}s remaining). Setting pending push flag.")
+        _publish_pending = True
         return
 
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -214,6 +216,7 @@ def trigger_publish():
                 push_res = subprocess.run(["git", "push", "origin", "main"], cwd=base_dir)
             if push_res.returncode != 0:
                 print("Notice: Git push conflict, preserving fresh sync data and resetting to origin/main...")
+                subprocess.run(["git", "rebase", "--abort"], cwd=base_dir, check=False)
                 saved_multi_obj = None
                 saved_real_obj = None
                 if os.path.exists(multi_json_path):
@@ -241,9 +244,11 @@ def trigger_publish():
                     subprocess.run(["git", "commit", "-m", commit_msg], check=True, cwd=base_dir)
                     subprocess.run(["git", "push", "origin", "main"], check=True, cwd=base_dir)
             _last_publish_time = time.time()
+            _publish_pending = False
             print("🚀 [Live Matchday Publisher] Successfully pushed live in-play update to GitHub!")
         else:
             print("   No staged changes to commit.")
+            _publish_pending = False
     except Exception as e:
         print(f"Notice during live matchday publish: {e}")
 
@@ -483,11 +488,11 @@ def sync_once(args):
 
     # 4. Load existing multi_fpl_data.json for Incremental Sync caching
     multi_json_path = os.path.join(base_dir, 'multi_fpl_data.json')
-    cached_data = None
-    if not args.force:
-        cached_data = load_cached_data(multi_json_path)
-        if cached_data:
-            print("Loaded existing multi_fpl_data.json cache for incremental sync.")
+    cached_data = load_cached_data(multi_json_path)
+    if cached_data and not args.force:
+        print("Loaded existing multi_fpl_data.json cache for incremental sync.")
+    elif cached_data and args.force:
+        print("Loaded existing multi_fpl_data.json cache as fallback buffer for --force sync.")
 
     # Determine which GWs need live points fetched
     gws_to_fetch_live = set()
@@ -509,6 +514,7 @@ def sync_once(args):
 
     live_by_gw = {}
     live_mins_by_gw = {}
+    live_fetch_failed_gws = set()
     for gw in range(1, max_gw + 1):
         if gw in gws_to_fetch_live:
             try:
@@ -518,6 +524,7 @@ def sync_once(args):
                 live_mins_by_gw[gw] = {el['id']: el['stats']['minutes'] for el in live_data['elements']}
             except Exception as e:
                 print(f"Error fetching live GW {gw}: {e}")
+                live_fetch_failed_gws.add(gw)
                 live_by_gw[gw] = {}
                 live_mins_by_gw[gw] = {}
         else:
@@ -530,8 +537,11 @@ def sync_once(args):
                 ld = fetch(f'https://fantasy.premierleague.com/api/event/{gw_num}/live/')
                 live_by_gw[gw_num] = {el['id']: el['stats']['total_points'] for el in ld['elements']}
                 live_mins_by_gw[gw_num] = {el['id']: el['stats']['minutes'] for el in ld['elements']}
+                if gw_num in live_fetch_failed_gws:
+                    live_fetch_failed_gws.remove(gw_num)
             except Exception as err:
                 print(f"Error fetching live GW {gw_num}: {err}")
+                live_fetch_failed_gws.add(gw_num)
                 if gw_num not in live_by_gw:
                     live_by_gw[gw_num] = {}
                 if gw_num not in live_mins_by_gw:
@@ -652,6 +662,7 @@ def sync_once(args):
                             current_results.append({
                                 "entry_id": t['entry'],
                                 "entry_name": t['entry_name'],
+                                "team_name": t['entry_name'],
                                 "player_name": t['player_name'],
                                 "rank": t.get('rank'),
                                 "last_rank": t.get('last_rank'),
@@ -694,7 +705,7 @@ def sync_once(args):
                     # Check for points mismatch against official event_total for max_gw
                     has_points_mismatch = False
                     if gw == max_gw and gw_is_finished and cached_res:
-                        c_pts_map = {r.get("entry_id"): r.get("points") for r in cached_res}
+                        c_pts_map = {r.get("entry_id"): r.get("net_points", r.get("points")) for r in cached_res}
                         for t_obj in standings_teams:
                             ev_tot = t_obj.get('event_total')
                             if ev_tot is not None and t_obj['entry'] in c_pts_map:
@@ -1031,6 +1042,11 @@ def sync_once(args):
                             official_pts = hist.get('points')
                             if official_pts is not None and official_pts > 0 and (raw_points == 0 or (this_gw_finished and this_gw_checked)):
                                 raw_points = official_pts
+
+                            # Resiliency: If live elements fetch failed during active GW, preserve cached non-zero points
+                            if raw_points == 0 and c_res and (c_res.get('points', 0) > 0 or c_res.get('net_points', 0) > 0) and (gw in live_fetch_failed_gws or not live_pts_gw) and not this_gw_checked:
+                                print(f" -> Preserving cached live points for team {eid} GW {gw} (live elements fetch was unavailable).")
+                                return (gw, eid, c_res, c_sq or {})
 
                             hits = int(hits or 0)
                             net_points = raw_points - hits
@@ -1467,8 +1483,8 @@ def main():
         if in_play_count == 0:
             print(f"\n🏁 All matches in this slot have concluded. Performing final sync and closing daemon.")
             has_changed, _, _ = sync_once(args)
-            if has_changed and should_push:
-                trigger_publish()
+            if (has_changed or _publish_pending) and should_push:
+                trigger_publish(force=True)
             break
 
         print(f"\n--- [Daemon Iteration {iteration} | Elapsed: {int(elapsed)}s] Polling live points ({in_play_count} match in-play)... ---")
@@ -1477,6 +1493,9 @@ def main():
             print(f"⚽ [Score Change Detected] Live scores updated at {datetime.now().strftime('%H:%M:%S')}!")
             if should_push:
                 trigger_publish()
+        elif _publish_pending and should_push and (time.time() - _last_publish_time >= 300):
+            print(f"🚀 [Pending Push] Cooldown expired with pending updates. Triggering push...")
+            trigger_publish()
         else:
             print(f"   No score changes at {datetime.now().strftime('%H:%M:%S')}. Waiting next poll ({args.interval}s)...")
 

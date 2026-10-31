@@ -194,6 +194,24 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     asset_prefix = "../" if default_league_id else "./"
     last_sync_str = str(multi_data.get("last_sync") or "31 ส.ค. 2026, 22:30 น.")
 
+    next_dl = multi_data.get("next_deadline") or {}
+    gw_num = next_dl.get("id") or 10
+    dl_epoch = next_dl.get("deadline_epoch")
+    if dl_epoch:
+        import time
+        diff_sec = dl_epoch - int(time.time())
+        if diff_sec > 0:
+            d_days = diff_sec // 86400
+            d_hours = (diff_sec % 86400) // 3600
+            if d_days > 0:
+                next_deadline_text = f"เส้นตาย GW {gw_num}: อีก {d_days} วัน {d_hours} ชม."
+            else:
+                next_deadline_text = f"เส้นตาย GW {gw_num}: อีก {d_hours} ชม."
+        else:
+            next_deadline_text = f"เส้นตาย GW {gw_num}: ปิดรับแล้ว"
+    else:
+        next_deadline_text = f"เส้นตาย GW {gw_num}"
+
     html_template = """<!DOCTYPE html>
 <html lang="th" class="h-full bg-slate-50 dark:bg-slate-950 transition-colors duration-150 overflow-x-hidden">
 <head>
@@ -1244,12 +1262,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <span id="header-season">ฤดูกาล 2026/27</span>
       <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
       
-      <!-- Last Sync Badge with Connection Indicator -->
-      <span id="header-last-sync-badge" class="inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs" title="ระบบเชื่อมต่อ Auto-Sync ปกติ">
-        <span>Last Sync: <strong id="header-last-sync" class="text-slate-900 dark:text-white font-bold">__LAST_SYNC__</strong></span>
-        <span id="header-last-sync-icon" class="inline-flex items-center" title="ระบบเชื่อมต่อ Auto-Sync ปกติ">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
-        </span>
+      <!-- Auto-Sync Connection Status Indicator (Green/Red) -->
+      <span id="header-last-sync-icon" class="inline-flex items-center cursor-help py-0.5" title="ระบบเชื่อมต่อ Auto-Sync ปกติ (__LAST_SYNC__)">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-xs"></span>
+      </span>
+
+      <!-- Next Gameweek Deadline Badge -->
+      <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
+      <span id="header-deadline-badge" class="inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs" title="เส้นตายการจัดทีม Gameweek ถัดไป">
+        <svg class="w-3 h-3 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span id="header-deadline-val">__NEXT_DEADLINE_TEXT__</span>
       </span>
     </div>
   </div>
@@ -3968,8 +3990,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           this.activeLeagueId = "40700";
         }
 
-        this.data = this.multiData.leagues[this.activeLeagueId] || Object.values(this.multiData.leagues)[0];
-        this.config = this.configs[this.activeLeagueId] || Object.values(this.configs)[0];
+        this.data = this.multiData.leagues[this.activeLeagueId] || Object.values(this.multiData.leagues)[0] || {};
+        this.config = this.configs[this.activeLeagueId] || Object.values(this.configs)[0] || {};
+        if (!this.config.features) this.config.features = {};
         
         const maxGW = Number(this.multiData.max_gw) || 2;
         const latestGWData = this.data && this.data.gameweeks ? this.data.gameweeks[String(maxGW)] : null;
@@ -4064,7 +4087,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.initTabNavigation();
         this.renderAll();
         if (this.activeTab) {
-          this.switchTab(this.activeTab, true);
+          this.switchTab(this.activeTab, true, true);
         }
         this.initVisitorCounter();
         this.initLivePolling();
@@ -4110,7 +4133,60 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }, 1000);
       }
 
+      updateHeaderDeadline() {
+        const badgeEl = document.getElementById('header-deadline-badge');
+        const valEl = document.getElementById('header-deadline-val');
+        if (!valEl) return;
+
+        const nextDl = (this.multiData && this.multiData.next_deadline) ? this.multiData.next_deadline : null;
+        if (!nextDl || !nextDl.deadline_epoch) {
+          if (badgeEl) badgeEl.classList.add('hidden');
+          return;
+        }
+
+        const isEn = (this.currentLang === 'en');
+        const gwNum = nextDl.id || 10;
+        const nowSec = Math.floor(Date.now() / 1000);
+        const diff = nextDl.deadline_epoch - nowSec;
+
+        if (badgeEl) {
+          badgeEl.title = isEn ? `Gameweek ${gwNum} Team Selection Deadline` : `เส้นตายการจัดทีม Gameweek ${gwNum}`;
+        }
+
+        if (diff <= 0) {
+          valEl.innerText = isEn ? `GW ${gwNum} Deadline: Passed` : `เส้นตาย GW ${gwNum}: ปิดรับแล้ว`;
+          if (badgeEl) {
+            badgeEl.className = 'inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs';
+          }
+          return;
+        }
+
+        const days = Math.floor(diff / 86400);
+        const hours = Math.floor((diff % 86400) / 3600);
+        const mins = Math.floor((diff % 3600) / 60);
+
+        let timeText = '';
+        if (days > 0) {
+          timeText = isEn ? `GW ${gwNum} Deadline: in ${days}d ${hours}h` : `เส้นตาย GW ${gwNum}: อีก ${days} วัน ${hours} ชม.`;
+        } else if (hours > 0) {
+          timeText = isEn ? `GW ${gwNum} Deadline: in ${hours}h ${mins}m` : `เส้นตาย GW ${gwNum}: อีก ${hours} ชม. ${mins} นาที`;
+        } else {
+          timeText = isEn ? `GW ${gwNum} Deadline: in ${mins}m` : `เส้นตาย GW ${gwNum}: อีก ${mins} นาที`;
+        }
+        valEl.innerText = timeText;
+
+        if (badgeEl) {
+          if (diff < 7200) {
+            badgeEl.className = 'inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-semibold text-rose-800 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-800/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs animate-pulse';
+          } else {
+            badgeEl.className = 'inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs';
+          }
+        }
+      }
+
       updateDeadlineCountdown() {
+        if (typeof document !== 'undefined' && document.hidden) return;
+        this.updateHeaderDeadline();
         const wrapEl = document.getElementById('gw-deadline-countdown-wrap');
         if (!wrapEl) return;
         const isEn = (this.currentLang === 'en');
@@ -4153,6 +4229,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         if (diff <= 0) {
           wrapEl.innerText = '';
+          if (this._deadlineInterval) {
+            clearInterval(this._deadlineInterval);
+            this._deadlineInterval = null;
+          }
           return;
         }
 
@@ -4236,6 +4316,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           const lastSyncEl = document.getElementById('header-last-sync');
           if (lastSyncEl) {
             lastSyncEl.innerText = liveSyncStr;
+          }
+          const lastSyncIcon = document.getElementById('header-last-sync-icon');
+          if (lastSyncIcon) {
+            const isEn = (this.currentLang === 'en');
+            const statusText = isEn ? 'Auto-Sync Online' : 'ระบบเชื่อมต่อ Auto-Sync ปกติ';
+            lastSyncIcon.setAttribute('title', `${statusText} (${liveSyncStr})`);
           }
 
           if (changed) {
@@ -4440,7 +4526,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       initLanguage() {
         var urlParams = new URLSearchParams((typeof window !== 'undefined' && window.location && window.location.search) ? window.location.search : '');
         var qLang = urlParams.get('lang');
-        var savedLang = (typeof localStorage !== 'undefined') ? localStorage.getItem('fpl_lang') : null;
+        var savedLang = null;
+        try {
+          if (typeof localStorage !== 'undefined') {
+            savedLang = localStorage.getItem('fpl_lang');
+          }
+        } catch (e) {}
         this.currentLang = (qLang === 'en' || (!qLang && savedLang === 'en')) ? 'en' : 'th';
         if (typeof document !== 'undefined') {
           document.documentElement.lang = this.currentLang;
@@ -4569,13 +4660,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           const s = (this.data && this.data.season) ? this.data.season : '2026/27';
           seasonEl.innerText = isEn ? `Season ${s}` : `ฤดูกาล ${s}`;
         }
-        const lastSyncBadge = document.getElementById('header-last-sync-badge');
-        if (lastSyncBadge) {
-          lastSyncBadge.setAttribute('title', isEn ? 'Auto-Sync System Online' : 'ระบบเชื่อมต่อ Auto-Sync ปกติ');
-        }
-        const lastSyncEl = document.getElementById('header-last-sync');
-        if (lastSyncEl && this.multiData && this.multiData.last_sync_iso) {
-          lastSyncEl.innerText = this.formatSyncDate(this.multiData.last_sync_iso);
+        const lastSyncIcon = document.getElementById('header-last-sync-icon');
+        if (lastSyncIcon) {
+          const syncTimeStr = (this.multiData && this.multiData.last_sync_iso)
+            ? this.formatSyncDate(this.multiData.last_sync_iso)
+            : (this.multiData.last_sync || '');
+          const isHealthy = (this.multiData && this.multiData.sync_status !== 'offline');
+          const statusText = isHealthy 
+            ? (isEn ? 'Auto-Sync System Online' : 'ระบบเชื่อมต่อ Auto-Sync ปกติ')
+            : (isEn ? 'Auto-Sync Offline' : 'ระบบเชื่อมต่อ Auto-Sync ขัดข้อง');
+          lastSyncIcon.setAttribute('title', syncTimeStr ? `${statusText} (${syncTimeStr})` : statusText);
         }
 
         // 4. Live View Gameweek selector & headers
@@ -5157,8 +5251,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
 
         this.activeLeagueId = lidStr;
-        this.data = this.multiData.leagues[this.activeLeagueId];
-        this.config = this.configs[this.activeLeagueId];
+        this.data = this.multiData.leagues[this.activeLeagueId] || {};
+        this.config = this.configs[this.activeLeagueId] || {};
+        if (!this.config.features) this.config.features = {};
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
         
@@ -5183,14 +5278,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                   configuredIds.forEach(lid => {
                     newPath = newPath.replace(new RegExp('/' + lid + '(/index\\.html|/)?$'), '/' + this.activeLeagueId + '/');
                   });
-                  window.history.pushState(null, '', newPath);
+                  window.history.pushState(null, '', newPath + (window.location.search || ''));
                 } else {
-                  window.history.pushState(null, '', basePath + '?league=' + this.activeLeagueId);
+                  const urlParams = new URLSearchParams(window.location.search || '');
+                  urlParams.set('league', this.activeLeagueId);
+                  window.history.pushState(null, '', basePath + '?' + urlParams.toString());
                 }
               } else {
                 // Local file:// protocol: never strip directories or trigger SecurityError
                 const currentPath = window.location.pathname;
-                window.history.replaceState(null, '', currentPath + '?league=' + this.activeLeagueId);
+                const urlParams = new URLSearchParams(window.location.search || '');
+                urlParams.set('league', this.activeLeagueId);
+                window.history.replaceState(null, '', currentPath + '?' + urlParams.toString());
               }
             }
           } catch (e) {
@@ -5322,22 +5421,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
 
         if (lastSyncIcon) {
+          const syncTimeStr = (this.multiData && this.multiData.last_sync_iso)
+            ? this.formatSyncDate(this.multiData.last_sync_iso)
+            : (this.multiData.last_sync || '');
+          const fullTitle = syncTimeStr ? `${syncStatusTitle} (${syncTimeStr})` : syncStatusTitle;
           if (isSyncHealthy) {
-            lastSyncIcon.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block" title="' + syncStatusTitle + '"></span>';
+            lastSyncIcon.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-xs"></span>';
           } else {
-            lastSyncIcon.innerHTML = '<span class="w-2 h-2 rounded-full bg-rose-500 inline-block" title="' + syncStatusTitle + '"></span>';
+            lastSyncIcon.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block animate-pulse shadow-xs"></span>';
           }
-          lastSyncIcon.setAttribute('title', syncStatusTitle);
+          lastSyncIcon.setAttribute('title', fullTitle);
         }
 
-        if (lastSyncBadge) {
-          lastSyncBadge.setAttribute('title', syncStatusTitle);
-          if (!isSyncHealthy) {
-            lastSyncBadge.className = 'inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-rose-800 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs';
-          } else {
-            lastSyncBadge.className = 'inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs';
-          }
-        }
+        this.updateHeaderDeadline();
 
         // Check Cup Feature Flag
         const hasCup = Boolean(this.config.features && this.config.features.has_cup);
@@ -5410,7 +5506,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.updateHighlightsTabBlink();
       }
 
-      switchTab(target, fromPopstate = false) {
+      switchTab(target, fromPopstate = false, skipRender = false) {
         let normalized = this.normalizeTab(target);
         let targetView = document.getElementById(normalized);
         if (!targetView) {
@@ -5460,7 +5556,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
 
         this.updateHighlightsTabBlink();
-        this.renderCurrentTab();
+        if (!skipRender) {
+          this.renderCurrentTab();
+        }
       }
 
       updateHighlightsTabBlink() {
@@ -6150,7 +6248,8 @@ selectShi62GW(gwName) {
           return `0${u}`;
         };
 
-        const sortedByWinRate = [...data.cumulative_standings].sort((a, b) => b.win_rate - a.win_rate);
+        const cumStandings = Array.isArray(data.cumulative_standings) ? data.cumulative_standings : [];
+        const sortedByWinRate = [...cumStandings].sort((a, b) => b.win_rate - a.win_rate);
 
         const gwPlayerNet = {};
         (activeGWObj.matches || []).forEach(m => {
@@ -7123,7 +7222,7 @@ selectShi62GW(gwName) {
                 </div>
                 <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
                   <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Highest Win Rate' : 'แม่นยำสูงสุด (%ชนะ)'}</div>
-                  <div class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 font-display mt-0.5">${[...data.cumulative_standings].sort((a,b) => b.win_rate - a.win_rate)[0]?.player.display_name || '-'} (${[...data.cumulative_standings].sort((a,b) => b.win_rate - a.win_rate)[0]?.win_rate || 0}%)</div>
+                  <div class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 font-display mt-0.5">${[...(Array.isArray(data.cumulative_standings) ? data.cumulative_standings : [])].sort((a,b) => b.win_rate - a.win_rate)[0]?.player.display_name || '-'} (${[...(Array.isArray(data.cumulative_standings) ? data.cumulative_standings : [])].sort((a,b) => b.win_rate - a.win_rate)[0]?.win_rate || 0}%)</div>
                 </div>
               </div>
             </div>
@@ -7449,7 +7548,9 @@ selectShi62GW(gwName) {
 
         this.renderGWSelector();
         this.updateHighlightsTabBlink();
-        this.renderCurrentTab();
+        if (!skipRender) {
+          this.renderCurrentTab();
+        }
       }
 
       renderGameweekView() {
@@ -8470,8 +8571,8 @@ selectShi62GW(gwName) {
           grid.innerHTML = `
             <div class="col-span-full py-12 text-center text-slate-400 font-medium font-display glass-card rounded-2xl p-6 border border-slate-200">
               <div class="text-2xl mb-2">⏳</div>
-              <div class="text-slate-700 dark:text-slate-200 font-bold text-base">Gameweek ${this.selectedGW} has not started yet</div>
-              <p class="text-xs text-slate-400 mt-1">Weekly awards will update live as matches kick off</p>
+              <div class="text-slate-700 dark:text-slate-200 font-bold text-base">${isEn ? `Gameweek ${this.selectedGW} has not started yet` : `สัปดาห์ที่ ${this.selectedGW} ยังไม่เริ่มแข่งขัน`}</div>
+              <p class="text-xs text-slate-400 mt-1">${isEn ? 'Weekly awards will update live as matches kick off' : 'การประกาศรางวัลประจำสัปดาห์จะอัปเดตสดเมื่อเริ่มการแข่งขัน'}</p>
             </div>
           `;
           return;
@@ -8560,7 +8661,7 @@ selectShi62GW(gwName) {
           theme: 'green',
           winner: topGunWinner,
           statText: topGunWinner ? `(${topGunWinner.points} pts)` : '',
-          detailHtml: topGunWinner ? `Captain: <strong>${this.escapeHtml(topGunWinner.captain || '-')}</strong>${topGunWinner.hits > 0 ? (isEn ? ` • Hits: -${topGunWinner.hits} pts` : ` • คะแนนลบ: -${topGunWinner.hits} (หักในคะแนนรวม)`) : ''}` : null
+          detailHtml: topGunWinner ? `${isEn ? 'Captain: ' : 'กัปตัน: '}<strong>${this.escapeHtml(topGunWinner.captain || '-')}</strong>${topGunWinner.hits > 0 ? (isEn ? ` • Hits: -${topGunWinner.hits} pts` : ` • คะแนนลบ: -${topGunWinner.hits} (หักในคะแนนรวม)`) : ''}` : null
         });
 
         // 2. Tough Week
@@ -8668,18 +8769,18 @@ selectShi62GW(gwName) {
             if (maxRise) {
               comebackWinner = maxRise.result;
               comebackStat = `(+${maxRise.diff})`;
-              comebackDetail = `Rose from rank ${maxRise.prevRank} to rank ${maxRise.currRank}`;
+              comebackDetail = isEn ? `Rose from rank ${maxRise.prevRank} to rank ${maxRise.currRank}` : `ไต่จากอันดับ ${maxRise.prevRank} ขึ้นมาอันดับ ${maxRise.currRank}`;
             } else {
-              comebackEmpty = 'No rank rise this week';
+              comebackEmpty = isEn ? 'No rank rise this week' : 'ไม่มีทีมที่อันดับดีขึ้นในสัปดาห์นี้';
             }
 
             const maxFall = [...rankDiffs].filter(r => r.diff < 0).sort((a, b) => (a.diff - b.diff) || (b.prevRank - a.prevRank))[0];
             if (maxFall) {
               crasherWinner = maxFall.result;
               crasherStat = `(${maxFall.diff})`;
-              crasherDetail = `Fell from rank ${maxFall.prevRank} to rank ${maxFall.currRank}`;
+              crasherDetail = isEn ? `Fell from rank ${maxFall.prevRank} to rank ${maxFall.currRank}` : `หล่นจากอันดับ ${maxFall.prevRank} ลงไปอันดับ ${maxFall.currRank}`;
             } else {
-              crasherEmpty = 'No rank fall this week';
+              crasherEmpty = isEn ? 'No rank fall this week' : 'ไม่มีทีมที่อันดับตกในสัปดาห์นี้';
             }
           }
         }
@@ -8746,8 +8847,8 @@ selectShi62GW(gwName) {
           theme: 'green',
           winner: valueWinner,
           statText: valueWinner ? `(£${valueWinner.team_value || 100.0})` : '',
-          detailHtml: valueWinner ? `Team Value: £${valueWinner.team_value || 100.0}m${valueWinner.bank ? ` • In the bank: £${valueWinner.bank}m` : ''}` : null,
-          emptyMsg: 'No team value data available'
+          detailHtml: valueWinner ? `${isEn ? `Team Value: £${valueWinner.team_value || 100.0}m` : `มูลค่าทีม: £${valueWinner.team_value || 100.0}m`}${valueWinner.bank ? (isEn ? ` • In the bank: £${valueWinner.bank}m` : ` • เงินในธนาคาร: £${valueWinner.bank}m`) : ''}` : null,
+          emptyMsg: isEn ? 'No team value data available' : 'ไม่มีข้อมูลมูลค่าทีม'
         });
 
         // 8. Wildcard Wasteland (Players who played Wildcard below league raw average)
@@ -8795,8 +8896,8 @@ selectShi62GW(gwName) {
           theme: 'purple',
           winner: hitWinner,
           statText: hitWinner ? `(${hitWinner.hits} pts)` : '',
-          detailHtml: hitWinner ? `Took -${hitWinner.hits} pts in transfer penalties (${hitWinner.hits / 4} extra transfer${hitWinner.hits / 4 > 1 ? 's' : ''})` : null,
-          emptyMsg: 'No transfer hits taken this week'
+          detailHtml: hitWinner ? (isEn ? `Took -${hitWinner.hits} pts in transfer penalties (${hitWinner.hits / 4} extra transfer${hitWinner.hits / 4 > 1 ? 's' : ''})` : `เสียแต้มลบย้ายตัว -${hitWinner.hits} แต้ม (ย้ายตัวเพิ่ม ${hitWinner.hits / 4} ตัว)`) : null,
+          emptyMsg: isEn ? 'No transfer hits taken this week' : 'ไม่มีทีมที่เสียแต้มลบในสัปดาห์นี้'
         });
 
         // 11. Sharpest Trader (Best net transfer impact, excluding Wildcard/Free Hit)
@@ -12999,7 +13100,7 @@ selectShi62GW(gwName) {
           const leagueOrder = (this.multiData && this.multiData.league_order) || Object.keys(leaguesObj);
           let phtml = `
             <button onclick="app.setRadarLeagueFilter('all')" class="px-2.5 py-1 rounded-lg font-bold font-display text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 ${this.radarLeagueFilter === 'all' ? 'bg-slate-900 text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}">
-              ทุกลีก (${this._radarTeamList.length})
+              ${(this.currentLang === 'en') ? `All Leagues (${this._radarTeamList.length})` : `ทุกลีก (${this._radarTeamList.length})`}
             </button>
           `;
           leagueOrder.forEach(id => {
@@ -13126,7 +13227,7 @@ selectShi62GW(gwName) {
                     <h3 class="text-lg font-bold text-slate-900 dark:text-white">${isEn ? `League Cup Champion ${startGW ? `(Starts GW ${startGW})` : ''}` : `แชมป์ลีกคัพ ${startGW ? `(เริ่ม Gameweek ${startGW})` : ''}`}</h3>
                     <div class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-display mt-0.5">${champPrize}</div>
                     ${cupNote ? `<p class="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-1">* ${cupNote}</p>` : ''}
-                    ${startGW ? `<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">* เริ่มแข่งขันใน Gameweek ${startGW} (สงวนสิทธิ์เฉพาะทีมที่ชำระค่าสมัครครบถ้วน)</p>` : ''}
+                    ${startGW ? `<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">* ${isEn ? `Starts in Gameweek ${startGW} (Eligible for fully paid entries only)` : `เริ่มแข่งขันใน Gameweek ${startGW} (สงวนสิทธิ์เฉพาะทีมที่ชำระค่าสมัครครบถ้วน)`}</p>` : ''}
                   </div>
                 </div>
               </div>
@@ -15900,15 +16001,16 @@ selectShi62GW(gwName) {
         for t in l_obj.get("teams", []):
             if t.get("entry_id"):
                 unique_entry_ids.add(t.get("entry_id"))
-    radar_unique_teams = len(unique_entry_ids) or 135
-    radar_total_leagues = len(multi_data.get("leagues", {})) or 7
+    radar_unique_teams = len(unique_entry_ids)
+    radar_total_leagues = len(multi_data.get("leagues", {}))
     radar_banner_text = f"{radar_total_leagues} ลีก • {radar_unique_teams} ทีม"
 
     html = html_template.replace('__LAST_SYNC__', last_sync_str)
+    html = html.replace('__NEXT_DEADLINE_TEXT__', next_deadline_text)
     html = html.replace('__RADAR_BANNER_TEXT__', radar_banner_text)
     html = html.replace('__MULTI_DATA_JSON__', multi_data_json_str)
     html = html.replace('__LEAGUES_CONFIG_JSON__', leagues_config_json_str)
-    html = html.replace('__SHI62_SPECIAL_DATA_JSON__', shi62_data_json_str)
+    html = html.replace('__SHI62_SPECIAL_DATA_JSON__', shi62_data_json_str or 'null')
     html = html.replace('__BRAMANN_PREDICTION_DATA_JSON__', bramann_pred_json_str or 'null')
     html = html.replace('__BRAMANN_CHALLENGE_DATA_JSON__', bramann_chal_json_str or 'null')
     html = html.replace('__DEFAULT_LID__', default_lid_code)
