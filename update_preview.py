@@ -5285,14 +5285,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             hlTabBtn.classList.remove('tab-pulse-live', 'tab-pulse-live-active');
           }
 
-          // Competition ขึ้นกระพริบแทน!
+          // Tab สถานะชิป (Competition) ไม่ต้องมี highlight box หรือกระพริบอีกต่อไป
           if (compTabBtn) {
             const isCompActive = this.activeTab === 'competition-view';
             if (isCompActive) {
-              compTabBtn.className = 'tab-nav-btn tab-pulse-comp-active flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-blue-600 text-white border border-blue-500 shadow-xs dark:bg-blue-600 dark:text-white dark:border-blue-400';
+              compTabBtn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white border border-transparent';
             } else {
-              compTabBtn.className = 'tab-nav-btn tab-pulse-comp flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 text-blue-600 dark:text-blue-400 border border-blue-500/80 bg-blue-500/10 hover:bg-blue-500/20';
+              compTabBtn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800';
             }
+            compTabBtn.classList.remove('tab-pulse-comp', 'tab-pulse-comp-active');
           }
         }
       }
