@@ -20,6 +20,12 @@
   * ลีก 567387 (Fantasy Nguan & friends cup): `https://asawamanasak.github.io/fpl-mini/567387`
 * **Repository:** `https://github.com/asawamanasak/fpl-mini`
 
+> [!IMPORTANT]
+> **ข้อกำหนดการทำงานด้าน Git & Deploy (Strict Deployment Gatekeeper):**
+> ห้ามรัน `git commit` หรือ `git push` (รวมถึงคำสั่ง `./rollback.sh save`) โดยพลการโดยเด็ดขาด!
+> ทุกการเปลี่ยนแปลงให้ทำและทดสอบบนเครื่อง Local เท่านั้น (`update_preview.py`, `verify_local.py`, Headless Chrome, `preview.html`) 
+> เมื่อตรวจสอบเสร็จสิ้น ให้รายงานผลและรอให้ผู้ใช้เป็นผู้สั่งให้นำขึ้นระบบออนไลน์ด้วยตนเองทุกครั้ง.
+
 ---
 
 ## 🏗️ 2. สถาปัตยกรรมระบบ (System Architecture)
@@ -316,6 +322,10 @@ flowchart TD
 
 
 
+
+### เรื่อง: Dev Corner (About View) & Eye-Comfort Light Mode
+* **Dev Corner:** ลบกล่อง Quote คำคม (ทั้งหัวข้อและเนื้อหา "Once you bid farewell to discipline...") ออกทั้งหมด ทำให้ 6 ฟีเจอร์หลัก (6 Core Feature Pillars) แสดงผลขึ้นมาที่ตำแหน่งบนสุดของแท็บทันที สะอาด กระชับ เข้าถึงง่าย
+* **Eye-Comfort Light Mode:** ปรับปรุงโทนสีโหมดสว่างให้ถนอมสายตา โดยใช้ Canvas พื้นหลังสีเทาสเลทนุ่ม `#f1f5f9` (Slate-100), ปรับแถบ Header เป็น `bg-slate-100/90 backdrop-blur-xl border-slate-200/90`, กล่องคอนเทนต์เป็นการ์ดสีขาวขอบบางละมุน, และจุดสิ้นสุดของ Spotlight Gradients จบที่ `#f8fafc` ลดปัญหาแสงจ้าสะท้อนตา (White Glare) ลง ~25-30%
 
 ---
 

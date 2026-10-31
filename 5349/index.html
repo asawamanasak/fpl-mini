@@ -223,6 +223,7 @@
       width: 100%;
       box-sizing: border-box;
       -webkit-text-size-adjust: 100%;
+      background-color: #f1f5f9 !important;
     }
 
     *, *::before, *::after {
@@ -236,7 +237,7 @@
       width: 100%;
       min-height: 100dvh;
       font-family: var(--font-family) !important;
-      background-color: #f8fafc;
+      background-color: #f1f5f9 !important;
       color: #0f172a;
       letter-spacing: -0.01em;
       -webkit-font-smoothing: antialiased;
@@ -327,7 +328,7 @@
     /* Spotlight Cards (Weekly Winner, Live Leader, Pre-Match) */
     .winner-spotlight-card {
       background-color: #fffdf7;
-      background-image: linear-gradient(135deg, rgba(254, 243, 199, 0.75) 0%, rgba(255, 251, 235, 0.4) 45%, #ffffff 100%);
+      background-image: linear-gradient(135deg, rgba(254, 243, 199, 0.75) 0%, rgba(255, 251, 235, 0.4) 45%, #fafaf9 100%);
       border: 1px solid rgba(245, 158, 11, 0.35);
       box-shadow: 0 4px 20px -2px rgba(245, 158, 11, 0.08), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
       position: relative;
@@ -335,7 +336,7 @@
 
     .live-leader-spotlight-card {
       background-color: #f7fee7;
-      background-image: radial-gradient(circle at 0% 0%, rgba(220, 252, 231, 0.85) 0%, rgba(240, 253, 244, 0.45) 55%, #ffffff 100%);
+      background-image: radial-gradient(circle at 0% 0%, rgba(220, 252, 231, 0.85) 0%, rgba(240, 253, 244, 0.45) 55%, #f8fafc 100%);
       border: 1.5px solid #86efac;
       box-shadow: 0 4px 20px -2px rgba(16, 185, 129, 0.12), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
       position: relative;
@@ -343,7 +344,7 @@
 
     .prematch-spotlight-card {
       background-color: #f8fafc;
-      background-image: radial-gradient(circle at 0% 0%, rgba(238, 242, 255, 0.85) 0%, rgba(245, 243, 255, 0.45) 55%, #ffffff 100%);
+      background-image: radial-gradient(circle at 0% 0%, rgba(238, 242, 255, 0.85) 0%, rgba(245, 243, 255, 0.45) 55%, #f8fafc 100%);
       border: 1.5px solid #c7d2fe;
       box-shadow: 0 4px 20px -2px rgba(99, 102, 241, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
       position: relative;
@@ -920,10 +921,10 @@
     }
   </style>
 </head>
-<body class="h-full flex flex-col selection:bg-slate-900 selection:text-white" onclick="app && app.closeLeagueDropdownIfClickedOutside(event)">
+<body class="h-full flex flex-col bg-slate-100 dark:bg-black selection:bg-slate-900 selection:text-white" onclick="app && app.closeLeagueDropdownIfClickedOutside(event)">
 
   <!-- 1. Header (League Identity, Switcher Dropdown, Status & Tabs) -->
-  <header class="border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-black/90 backdrop-blur-xl sticky top-0 z-40">
+  <header class="border-b border-slate-200/90 dark:border-slate-800 bg-slate-100/90 dark:bg-black/90 backdrop-blur-xl sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-1.5 sm:py-3">
       
       <!-- 1.1 ข้อมูลประจำลีก & Action Header -->
@@ -1698,22 +1699,6 @@
     <!-- ==================== TAB 6: DEV CORNER (ABOUT VIEW) ==================== -->
     <div id="about-view" class="tab-content hidden space-y-4">
       
-      <!-- Top About Overview Banner: Dev Corner (Cool & Casual) -->
-      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800">
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 text-xs font-bold font-mono mb-2">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-          DEV CORNER • BEHIND THE SCENES
-        </span>
-        <blockquote class="max-w-2xl">
-          <p class="text-xs sm:text-sm italic text-slate-600 dark:text-slate-300 leading-relaxed">
-            "Once you bid farewell to discipline you say goodbye to success."
-          </p>
-          <cite class="block text-[11px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 not-italic mt-1">
-            Sir Alex Ferguson
-          </cite>
-        </blockquote>
-      </div>
-
       <!-- 6 Core Feature Pillars (สรุปฟังก์ชันการใช้งานทั้งหมดของแดชบอร์ดให้ครบถ้วนและเข้าใจง่าย) -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         
@@ -13057,22 +13042,6 @@ selectShi62GW(gwName) {
 
         if (isEn) {
           container.innerHTML = `
-            <!-- Top About Overview Banner: Dev Corner -->
-            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800">
-              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 text-xs font-bold font-mono mb-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                DEV CORNER • BEHIND THE SCENES
-              </span>
-              <blockquote class="max-w-2xl">
-                <p class="text-xs sm:text-sm italic text-slate-600 dark:text-slate-300 leading-relaxed">
-                  "Once you bid farewell to discipline you say goodbye to success."
-                </p>
-                <cite class="block text-[11px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 not-italic mt-1">
-                  Sir Alex Ferguson
-                </cite>
-              </blockquote>
-            </div>
-
             <!-- 6 Core Feature Pillars -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
               
@@ -13101,7 +13070,7 @@ selectShi62GW(gwName) {
                   </ul>
                 </div>
                 <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-                  ✓ Tab: Live Points (Gameweek Live)
+                  ✓ Tab: Live Points
                 </div>
               </div>
 
@@ -13134,14 +13103,72 @@ selectShi62GW(gwName) {
                 </div>
               </div>
 
-              <!-- Feature 3: Prizes & Treasury -->
+              <!-- Feature 3: Transfer Analytics & ROI -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-sky-500/40 transition-all">
+                <div>
+                  <span class="w-9 h-9 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200/60 dark:border-sky-800/60 inline-flex items-center justify-center text-sky-600 dark:text-sky-400 mb-3">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+                  </span>
+                  <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
+                    3. Transfer Analytics & ROI
+                  </h3>
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                    <li class="flex items-start gap-1.5">
+                      <span class="text-sky-500 font-bold">•</span>
+                      <span>Full breakdown of every rival transfer move, in/out players, and transfer hits.</span>
+                    </li>
+                    <li class="flex items-start gap-1.5">
+                      <span class="text-sky-500 font-bold">•</span>
+                      <span>Calculates weekly Net Transfer Impact (points gained vs sold players minus hits).</span>
+                    </li>
+                    <li class="flex items-start gap-1.5">
+                      <span class="text-sky-500 font-bold">•</span>
+                      <span>Analyzes Template Essentials (> 70%), Differentials (< 20%), and transfer suggestions.</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-sky-600 dark:text-sky-400 font-medium">
+                  ✓ Tab: Transfer Analytics
+                </div>
+              </div>
+
+              <!-- Feature 4: Rival Chips Availability Matrix -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-purple-500/40 transition-all">
+                <div>
+                  <span class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200/60 dark:border-purple-800/60 inline-flex items-center justify-center text-purple-600 dark:text-purple-400 mb-3">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+                  </span>
+                  <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
+                    4. Rival Chips Availability Matrix
+                  </h3>
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                    <li class="flex items-start gap-1.5">
+                      <span class="text-purple-500 font-bold">•</span>
+                      <span>Strategy matrix tracking special chips (WC, FH, BB, TC) across all league rivals.</span>
+                    </li>
+                    <li class="flex items-start gap-1.5">
+                      <span class="text-purple-500 font-bold">•</span>
+                      <span>Monitor gameweek chip usage history and remaining available inventory.</span>
+                    </li>
+                    <li class="flex items-start gap-1.5">
+                      <span class="text-purple-500 font-bold">•</span>
+                      <span>Real-time visual callouts for active chips during ongoing matchdays.</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-purple-600 dark:text-purple-400 font-medium">
+                  ✓ Tab: Chips Strategy
+                </div>
+              </div>
+
+              <!-- Feature 5: Prize Pool & Treasury Tracker -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-amber-500/40 transition-all">
                 <div>
                   <span class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200/60 dark:border-amber-800/60 inline-flex items-center justify-center text-amber-600 dark:text-amber-400 mb-3">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   </span>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    3. Prize Pool & Settlement Tracker
+                    5. Prize Pool & Treasury Tracker
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
@@ -13159,94 +13186,36 @@ selectShi62GW(gwName) {
                   </ul>
                 </div>
                 <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-amber-600 dark:text-amber-400 font-medium">
-                  ✓ Tab: Prizes (Prize Pool)
+                  ✓ Tab: Prize Pool
                 </div>
               </div>
 
-              <!-- Feature 4: Transfers & AI Projected -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-sky-500/40 transition-all">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200/60 dark:border-sky-800/60 inline-flex items-center justify-center text-sky-600 dark:text-sky-400 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
-                  </span>
-                  <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    4. Transfer Market & AI Assistant
-                  </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
-                    <li class="flex items-start gap-1.5">
-                      <span class="text-sky-500 font-bold">•</span>
-                      <span>Full summary of every rival transfer move, including hits taken at the deadline.</span>
-                    </li>
-                    <li class="flex items-start gap-1.5">
-                      <span class="text-sky-500 font-bold">•</span>
-                      <span>Calculates weekly Net Transfer Impact (points gained vs sold players minus hits).</span>
-                    </li>
-                    <li class="flex items-start gap-1.5">
-                      <span class="text-sky-500 font-bold">•</span>
-                      <span>Displays AI Projected Points for the upcoming gameweek to aid squad planning.</span>
-                    </li>
-                  </ul>
-                </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-sky-600 dark:text-sky-400 font-medium">
-                  ✓ Tab: Chips & Transfers
-                </div>
-              </div>
-
-              <!-- Feature 5: Hall of Fame & History -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-purple-500/40 transition-all">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200/60 dark:border-purple-800/60 inline-flex items-center justify-center text-purple-600 dark:text-purple-400 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004 0V5.625c0-.621-.504-1.125-1.125-1.125H9.625c-.621 0-1.125.504-1.125 1.125v8.625m5.004 0H9.625" /></svg>
-                  </span>
-                  <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    5. Hall of Fame & Consistency
-                  </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
-                    <li class="flex items-start gap-1.5">
-                      <span class="text-purple-500 font-bold">•</span>
-                      <span>Records weekly winners, monthly champions, and season-long milestones.</span>
-                    </li>
-                    <li class="flex items-start gap-1.5">
-                      <span class="text-purple-500 font-bold">•</span>
-                      <span>Historical performance metrics, floor resilience, and ceiling records.</span>
-                    </li>
-                    <li class="flex items-start gap-1.5">
-                      <span class="text-purple-500 font-bold">•</span>
-                      <span>Instant access to official league rules and prize payout structures.</span>
-                    </li>
-                  </ul>
-                </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-purple-600 dark:text-purple-400 font-medium">
-                  ✓ Tab: Hall of Fame & Rules
-                </div>
-              </div>
-
-              <!-- Feature 6: LINE Share & Excel Export -->
+              <!-- Feature 6: Form Radar & Hall of Fame -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-indigo-500/40 transition-all">
                 <div>
                   <span class="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/60 dark:border-indigo-800/60 inline-flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004 0V5.625c0-.621-.504-1.125-1.125-1.125H9.625c-.621 0-1.125.504-1.125 1.125v8.625m5.004 0H9.625" /></svg>
                   </span>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    6. Chat Summary & Excel Export
+                    6. Form Radar & Hall of Fame
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
                       <span class="text-indigo-500 font-bold">•</span>
-                      <span>One-click copy of gameweek results and prize summaries formatted for group chats.</span>
+                      <span>Multi-league consistency analysis measuring floor resilience and ceiling potential across 8 leagues.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-indigo-500 font-bold">•</span>
-                      <span>Instant export of season standings and treasury books to formatted Excel (.xlsx).</span>
+                      <span>Historical Hall of Fame archive for weekly winners, champions, and milestones.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-indigo-500 font-bold">•</span>
-                      <span>Seamless top league switcher supporting multiple mini-leagues independently.</span>
+                      <span>Instant one-click LINE chat summary copy and season-long Excel (.xlsx) data export.</span>
                     </li>
                   </ul>
                 </div>
                 <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-indigo-600 dark:text-indigo-400 font-medium">
-                  ✓ Feature: Share to Chat & Export Excel
+                  ✓ Tab: Form Radar & Hall of Fame
                 </div>
               </div>
 
@@ -13304,7 +13273,7 @@ selectShi62GW(gwName) {
                     <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">1. Pipeline & Multi-Threading Engine</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
                       <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Serverless Orchestration:</strong> Automated execution via GitHub Actions Runners (Ubuntu Latest / Python 3.11) managed via cron schedules and event dispatch triggers.</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Parallel Concurrency:</strong> Employs bounded <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> and thread-safe locks to sync live scores across 150+ teams and 7 leagues, shrinking latency from 180s to 2-4s.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Parallel Concurrency:</strong> Employs bounded <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> and thread-safe locks to sync live scores across 150+ teams and 8 leagues, shrinking latency from 180s to 2-4s.</span></li>
                       <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Adaptive Throttling:</strong> Matchday state detector enforcing a 300s (5-min) cooldown to respect GitHub Pages build quotas (10 builds/hr) and prevent HTTP 429 rate limits.</span></li>
                     </ul>
                   </div>
@@ -13322,7 +13291,7 @@ selectShi62GW(gwName) {
                     <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">3. Headless Jamstack & Global Edge CDN</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
                       <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Zero-Cost Architecture:</strong> Pure Jamstack design without SQL databases or PHP/Node.js servers, providing a zero attack surface and zero hosting overhead.</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Static Pre-compilation:</strong> Static builder <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> pre-renders directory routes (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/40700/</code>, <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/675290/</code>) with pre-hydrated inline JSON state.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Static Pre-compilation:</strong> Static builder <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> pre-renders directory routes (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/40700/</code>, <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/675290/</code>, <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/567387/</code>) with pre-hydrated inline JSON state.</span></li>
                       <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Edge CDN Distribution:</strong> Deployed to GitHub Pages Fastly Edge CDN with HTTP/2 Multiplexing, Brotli compression, and sub-50ms Time to First Byte (TTFB) worldwide.</span></li>
                     </ul>
                   </div>
@@ -13341,22 +13310,6 @@ selectShi62GW(gwName) {
           `;
         } else {
           container.innerHTML = `
-            <!-- Top About Overview Banner: Dev Corner (Cool & Casual) -->
-            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800">
-              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 text-xs font-bold font-mono mb-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                DEV CORNER • BEHIND THE SCENES
-              </span>
-              <blockquote class="max-w-2xl">
-                <p class="text-xs sm:text-sm italic text-slate-600 dark:text-slate-300 leading-relaxed">
-                  "Once you bid farewell to discipline you say goodbye to success."
-                </p>
-                <cite class="block text-[11px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 not-italic mt-1">
-                  Sir Alex Ferguson
-                </cite>
-              </blockquote>
-            </div>
-
             <!-- 6 Core Feature Pillars -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
               
@@ -13385,7 +13338,7 @@ selectShi62GW(gwName) {
                   </ul>
                 </div>
                 <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-                  ✓ แท็บ: คะแนนสด (Gameweek Live)
+                  ✓ แท็บ: คะแนนสด
                 </div>
               </div>
 
@@ -13418,14 +13371,72 @@ selectShi62GW(gwName) {
                 </div>
               </div>
 
-              <!-- Feature 3: Prizes & Treasury -->
+              <!-- Feature 3: Transfers & Analysis -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-sky-500/40 transition-all">
+                <div>
+                  <span class="w-9 h-9 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200/60 dark:border-sky-800/60 inline-flex items-center justify-center text-sky-600 dark:text-sky-400 mb-3">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+                  </span>
+                  <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
+                    3. วิเคราะห์การย้ายตัว & ขุมกำลัง
+                  </h3>
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                    <li class="flex items-start gap-1.5">
+                      <span class="text-sky-500 font-bold">•</span>
+                      <span>สรุปทุกดีลซื้อขายนักเตะเข้า-ออกของคู่แข่งในลีก พร้อมแต้มลบฮิตส์ (Hits)</span>
+                    </li>
+                    <li class="flex items-start gap-1.5">
+                      <span class="text-sky-500 font-bold">•</span>
+                      <span>คำนวณแต้มได้-เสียสุทธิ (Net Impact ROI) จากการย้ายตัวในแต่ละสัปดาห์</span>
+                    </li>
+                    <li class="flex items-start gap-1.5">
+                      <span class="text-sky-500 font-bold">•</span>
+                      <span>วิเคราะห์นักเตะมหาชน (> 70%), นักเตะทีเด็ด (< 20%) และคำแนะนำการย้ายตัว</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-sky-600 dark:text-sky-400 font-medium">
+                  ✓ แท็บ: วิเคราะห์การย้ายตัว
+                </div>
+              </div>
+
+              <!-- Feature 4: Rival Chips Matrix -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-purple-500/40 transition-all">
+                <div>
+                  <span class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200/60 dark:border-purple-800/60 inline-flex items-center justify-center text-purple-600 dark:text-purple-400 mb-3">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+                  </span>
+                  <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
+                    4. ติดตามสถานะชิปของคู่แข่ง
+                  </h3>
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                    <li class="flex items-start gap-1.5">
+                      <span class="text-purple-500 font-bold">•</span>
+                      <span>ตารางแมทริกซ์เช็กสถานะชิปพิเศษ (WC, FH, BB, TC) ของผู้จัดการทีมทุกคน</span>
+                    </li>
+                    <li class="flex items-start gap-1.5">
+                      <span class="text-purple-500 font-bold">•</span>
+                      <span>ตรวจสอบชิปที่ใช้ไปแล้วในแต่ละสัปดาห์ และชิปที่ยังเหลืออยู่แบบแยกเดี่ยว</span>
+                    </li>
+                    <li class="flex items-start gap-1.5">
+                      <span class="text-purple-500 font-bold">•</span>
+                      <span>ไฮไลท์พิเศษแจ้งเตือนชิปที่กำลังเปิดใช้งานระหว่างสัปดาห์แข่งขันสด</span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-purple-600 dark:text-purple-400 font-medium">
+                  ✓ แท็บ: สถานะชิป
+                </div>
+              </div>
+
+              <!-- Feature 5: Prizes & Treasury -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-amber-500/40 transition-all">
                 <div>
                   <span class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200/60 dark:border-amber-800/60 inline-flex items-center justify-center text-amber-600 dark:text-amber-400 mb-3">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   </span>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    3. เงินรางวัล & บัญชีกองกลาง
+                    5. เงินรางวัล & บัญชีกองกลาง
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
@@ -13443,94 +13454,36 @@ selectShi62GW(gwName) {
                   </ul>
                 </div>
                 <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-amber-600 dark:text-amber-400 font-medium">
-                  ✓ แท็บ: เงินรางวัล (Prize Pool)
+                  ✓ แท็บ: เงินรางวัล
                 </div>
               </div>
 
-              <!-- Feature 4: Transfers & AI Projected -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-sky-500/40 transition-all">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200/60 dark:border-sky-800/60 inline-flex items-center justify-center text-sky-600 dark:text-sky-400 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
-                  </span>
-                  <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    4. ตลาดนักเตะ & ผู้ช่วยวิเคราะห์ AI
-                  </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
-                    <li class="flex items-start gap-1.5">
-                      <span class="text-sky-500 font-bold">•</span>
-                      <span>สรุปทุกดีลย้ายเข้า-ออกของเพื่อนในลีก พร้อมแต้มลบที่ยอมจ่าย</span>
-                    </li>
-                    <li class="flex items-start gap-1.5">
-                      <span class="text-sky-500 font-bold">•</span>
-                      <span>คำนวณแต้มได้-เสียสุทธิ (Net Impact) จากการย้ายตัวในแต่ละสัปดาห์</span>
-                    </li>
-                    <li class="flex items-start gap-1.5">
-                      <span class="text-sky-500 font-bold">•</span>
-                      <span>แสดงคะแนนคาดการณ์ (Projected Points) โดย AI ช่วยตัดสินใจนัดถัดไป</span>
-                    </li>
-                  </ul>
-                </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-sky-600 dark:text-sky-400 font-medium">
-                  ✓ แท็บ: สถานะชิป & ย้ายตัว (Chips & Transfers)
-                </div>
-              </div>
-
-              <!-- Feature 5: Hall of Fame & History -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-purple-500/40 transition-all">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200/60 dark:border-purple-800/60 inline-flex items-center justify-center text-purple-600 dark:text-purple-400 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004 0V5.625c0-.621-.504-1.125-1.125-1.125H9.625c-.621 0-1.125.504-1.125 1.125v8.625m5.004 0H9.625" /></svg>
-                  </span>
-                  <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    5. ทำเนียบแชมป์ & เกียรติยศลีก
-                  </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
-                    <li class="flex items-start gap-1.5">
-                      <span class="text-purple-500 font-bold">•</span>
-                      <span>บันทึกประวัติศาสตร์ผู้ชนะประจำสัปดาห์และแชมป์รายเดือนตลอดซีซั่น</span>
-                    </li>
-                    <li class="flex items-start gap-1.5">
-                      <span class="text-purple-500 font-bold">•</span>
-                      <span>เช็กคะแนนสะสม เกียรติยศ และฟอร์มย้อนหลังได้ตลอดเวลา</span>
-                    </li>
-                    <li class="flex items-start gap-1.5">
-                      <span class="text-purple-500 font-bold">•</span>
-                      <span>สลับดูกติกาลีกและโครงสร้างเงินรางวัลในแท็บ "กติกา" ได้ทันที</span>
-                    </li>
-                  </ul>
-                </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-purple-600 dark:text-purple-400 font-medium">
-                  ✓ แท็บ: ทำเนียบแชมป์ & กติกา (Hall of Fame & Rules)
-                </div>
-              </div>
-
-              <!-- Feature 6: LINE Share & Excel Export -->
+              <!-- Feature 6: Radar & Hall of Fame -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-indigo-500/40 transition-all">
                 <div>
                   <span class="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/60 dark:border-indigo-800/60 inline-flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004 0V5.625c0-.621-.504-1.125-1.125-1.125H9.625c-.621 0-1.125.504-1.125 1.125v8.625m5.004 0H9.625" /></svg>
                   </span>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    6. แชร์สรุปผล LINE & ส่งออก Excel
+                    6. เรดาร์ฟอร์ม & ทำเนียบแชมป์
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
                       <span class="text-indigo-500 font-bold">•</span>
-                      <span>กดปุ่มเดียว คัดลอกสรุปผลคะแนนและเงินรางวัลพร้อมส่งลงกลุ่ม LINE</span>
+                      <span>วิเคราะห์ความสม่ำเสมอ ประเมินแต้มต่ำสุด-สูงสุด (Floor/Ceiling) ทั้ง 8 ลีก</span>
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-indigo-500 font-bold">•</span>
-                      <span>ส่งออกตารางคะแนนและบัญชีกองกลางทั้ง 38 สัปดาห์เป็นไฟล์ Excel ได้ทันที</span>
+                      <span>บันทึกประวัติศาสตร์ทำเนียบแชมป์และหอเกียรติยศตลอดทุกฤดูกาล</span>
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-indigo-500 font-bold">•</span>
-                      <span>แถบสลับลีกด้านบน รองรับการจัดการหลายลีกแยกจากกันอย่างอิสระ</span>
+                      <span>ปุ่มคัดลอกสรุปผลคะแนนส่งเข้ากลุ่ม LINE และส่งออกเป็นตาราง Excel ทันที</span>
                     </li>
                   </ul>
                 </div>
                 <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-indigo-600 dark:text-indigo-400 font-medium">
-                  ✓ ฟังก์ชัน: ปุ่มแชร์ LINE & Export Excel
+                  ✓ แท็บ: เรดาร์ฟอร์ม & ทำเนียบแชมป์
                 </div>
               </div>
 
@@ -13588,7 +13541,7 @@ selectShi62GW(gwName) {
                     <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">1. Pipeline & Multi-Threading Engine</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
                       <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Serverless Orchestration:</strong> ประมวลผลผ่าน GitHub Actions Runner (Ubuntu Latest / Python 3.11) ตามตาราง Cron และ Event Triggers</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Parallel Concurrency:</strong> ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> ร่วมกับ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">threading.Lock</code> ดึงคะแนนสดและขุมกำลัง 150+ ทีม 7 ลีกพร้อมกัน ลดเวลาประมวลผลจาก 180s เหลือเพียง 2-4s</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Parallel Concurrency:</strong> ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> ร่วมกับ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">threading.Lock</code> ดึงคะแนนสดและขุมกำลัง 150+ ทีม 8 ลีกพร้อมกัน ลดเวลาประมวลผลจาก 180s เหลือเพียง 2-4s</span></li>
                       <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Adaptive Throttling:</strong> ตรวจจับสถานะแมตช์สดอัตโนมัติ พร้อมตั้งคูลดาวน์ขั้นต่ำ 300 วินาที เพื่อรักษาระดับการบิลด์ให้อยู่ในโควตา GitHub Pages (10 builds/hr) และป้องกัน HTTP 429</span></li>
                     </ul>
                   </div>
@@ -13606,7 +13559,7 @@ selectShi62GW(gwName) {
                     <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">3. Headless Jamstack & Global Edge CDN</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
                       <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Zero-Cost Architecture:</strong> โฮสต์แบบ Jamstack ไร้ฐานข้อมูล SQL ไร้เซิร์ฟเวอร์ PHP/Node.js ทำให้มี Zero Attack Surface และไม่มีค่าใช้จ่ายด้านโครงสร้างพื้นฐาน</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Static Pre-compilation:</strong> ตัวคอมไพล์เลอร์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> แปลงเทมเพลตและจัดเตรียม Entry Point แยกตามโฟลเดอร์ลีก (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/40700/</code>, <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/675290/</code>) พร้อมฝัง JSON Data แบบ Inline</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Static Pre-compilation:</strong> ตัวคอมไพล์เลอร์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> แปลงเทมเพลตและจัดเตรียม Entry Point แยกตามโฟลเดอร์ลีก (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/40700/</code>, <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/675290/</code>, <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/567387/</code>) พร้อมฝัง JSON Data แบบ Inline</span></li>
                       <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Edge CDN Distribution:</strong> กระจายไฟล์ผ่าน Fastly Edge CDN ของ GitHub Pages รองรับ HTTP/2 Multiplexing, การบีบอัด Brotli และส่งมอบข้อมูลด้วย Time to First Byte (TTFB) ต่ำกว่า 50ms</span></li>
                     </ul>
                   </div>
