@@ -332,13 +332,7 @@ flowchart TD
    * ตรวจสอบสถานะจบ Gameweek ทันทีจากผลการแข่งขันจริงใน `/api/fixtures/?event=X` โดยไม่ต้องรอ Batch `data_checked` ของ FPL Server
 4. **Head-to-Head & Cup Bracket Visualization:** ผังสายการแข่งขันบอลถ้วยแบบอินเทอร์แอคทีฟ
 5. **Player Transfer Analytics:** กราฟวิเคราะห์การซื้อขายตัวผู้เล่นรายสัปดาห์ (Transfers In/Out)
-6. **Export as Image (Social Share Card) - [ACTIVE & VERIFIED]:**
-   * แปลงผลคะแนน Gameweek สรุปยอด, แชมป์ประจำสัปดาห์, บทวิเคราะห์ บอ.บู๋, และ Top 5 Standings เป็นการ์ดรูปภาพสี่เหลี่ยมจัตุรัสความละเอียดสูงระดับ 1080x1080 PNG สำหรับแชร์ลง LINE / Social Media ทันที
-   * พัฒนาด้วย Native HTML5 Canvas 2D API ล้วน ไร้ Library ภายนอก (Zero Dependency) ทำงานได้ 100% ทั้งบน Online Host และ Local `file:///`
-   * รองรับ 2 ธีมสีระดับพรีเมียม: Emerald Stadium (สนามหญ้าเขียวมรกต) และ Midnight Dark (ดำหรูโมเดิร์น)
-   * ระบบตัดคำอัจฉริยะ (Intl.Segmenter): ตัดคำไทยและอังกฤษได้อย่างถูกต้องตามไวยากรณ์ ไม่ตัดคำหรือตัวเลขขาดกลางบรรทัด
-   * รองรับ 2 ภาษาแบบสมบูรณ์ (Bilingual Thai & English): สลับภาษาการ์ดตามภาษาของหน้าเว็บแบบเรียลไทม์
-   * รองรับทั้งการดาวน์โหลดไฟล์ PNG ตรงสู่เครื่อง และแชร์ผ่าน Mobile Native Web Share API (`navigator.share`) เพื่อส่งเข้า LINE / IG ในแตะเดียว
+6. **Export as Image (Social Share Card) - [CANCELLED / REMOVED]:** ยกเลิกการพัฒนาตาม Product Strategy เพื่อส่งเสริมให้สมาชิกเข้ามาดูอันดับและคะแนนสดผ่านหน้าเว็บไซต์โดยตรง (Retain Direct Web Traffic)
 
 ---
 
