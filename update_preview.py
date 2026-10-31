@@ -1329,7 +1329,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <div class="glass-card rounded-2xl px-4 py-3.5 sm:px-6 sm:py-4.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 id="competition-overview-title" class="text-base sm:text-xl font-bold text-slate-900 dark:text-white font-display">
-            สถานะชิป <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(Chips Strategy Matrix)</span>
+            สถานะชิป
           </h2>
           <p id="competition-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             ตรวจสอบสถานะการใช้ชิปคงเหลือของคู่แข่งในลีก (Wildcard, Free Hit, Bench Boost, Triple Captain)
@@ -1355,7 +1355,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <div class="glass-card rounded-2xl px-4 py-3.5 sm:px-6 sm:py-4.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 id="transfers-overview-title" class="text-base sm:text-xl font-bold text-slate-900 dark:text-white font-display">
-            วิเคราะห์การย้ายตัว <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(Transfer Analytics)</span>
+            วิเคราะห์การย้ายตัว
           </h2>
           <p id="transfers-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             สถิติการย้ายตัวประจำสัปดาห์, การถือครองนักเตะมหาชน, ตัวทีเด็ด และคำแนะนำการย้ายตัว
@@ -4589,7 +4589,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (compTitle) {
           compTitle.innerHTML = isEn
             ? 'Chips Strategy <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(Availability Matrix)</span>'
-            : 'สถานะชิป <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(Chips Strategy Matrix)</span>';
+            : 'สถานะชิป';
         }
         const compSub = document.getElementById('competition-overview-subtitle');
         if (compSub) {
@@ -4603,7 +4603,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (transfersTitle) {
           transfersTitle.innerHTML = isEn
             ? 'Transfer Analytics <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(Squad Movement & Trends)</span>'
-            : 'วิเคราะห์การย้ายตัว <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(Transfer Analytics)</span>';
+            : 'วิเคราะห์การย้ายตัว';
         }
         const transfersSub = document.getElementById('transfers-overview-subtitle');
         if (transfersSub) {

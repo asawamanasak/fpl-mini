@@ -354,7 +354,7 @@ flowchart TD
   * `rollback_6` : ยกเลิก Inner Scroll + Sticky Header Table ทั้งหมด, เปลี่ยนหัวตาราง GAMEWEEK STANDING เป็น 'คะแนนดิบ' และ '(C)'
   * `rollback_14` : ปรับเปลี่ยนฟอนต์ของทั้งระบบเป็น Sarabun (Google Fonts + Local Fallback TTF)
   * `rollback_16` : รองรับ 8 ลีกสมบูรณ์แบบ (เพิ่มลีก 567387: Fantasy Nguan & friends cup ครบทั้งการวิเคราะห์สดและผังสนาม)
-  * `rollback_17` : สร้างแท็บใหม่ "วิเคราะห์การย้ายตัว" (Transfer Analytics) แยกจาก "สถานะชิป" (Chips Strategy), รองรับสถิติย้ายตัวประจำสัปดาห์ (Transfers In/Out & ROI), และทำความสะอาดภาษา ไทย/อังกฤษ 100% ไม่ปนกัน
+  * `rollback_17` : สร้างแท็บใหม่ "วิเคราะห์การย้ายตัว" แยกจาก "สถานะชิป", รองรับสถิติย้ายตัวประจำสัปดาห์ (Transfers In/Out & ROI), และทำความสะอาดภาษา ไทย/อังกฤษ 100% ไม่ปนกัน
 * **เครื่องมือนำทาง (`./rollback.sh`):**
   * ดูรายชื่อ rollback ทั้งหมด: `./rollback.sh list`
   * ย้ายไปยังเวอร์ชันที่ต้องการ: `./rollback.sh go <number>`
