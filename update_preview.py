@@ -2558,6 +2558,26 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               `หัวตารางคะแนนดิบสดๆ เป็นของทีมร่วมสนุก "${overallTop.team_name}" (${funPts} pts) ส่วนศึกชิงรางวัลสัปดาห์นี้ "${top.team_name}" (${topPts} pts) ${heroPhrase} กำลังเกาะเบอร์หนึ่งสดๆ ร้อนๆ!`,
               `ของแทร่สายเอ็นเตอร์เทน! "${overallTop.team_name}" นำโด่ง ${funPts} แต้มสดในโหมดร่วมสนุก ขณะที่ "${top.team_name}" (${topPts} pts) ${heroPhrase} กำลังรั้งจ่าฝูงสายเงินรางวัล!`
             ];
+          } else if (diff <= 0 || isJoint || topPts === secondPts) {
+            if (secRem > topRem && topRem !== null) {
+              leadOptions = [
+                `แต้มสดเสมอเดือดบนบัลลังก์จ่าฝูง! "${top.team_name}" กับ "${secName}" กอดคอแต้มเท่ากันเป๊ะที่ ${topPts} แต้ม แต่ "${secName}" แอบกุมความได้เปรียบเรื่องตัวผู้เล่น เพราะยังมีทีเด็ดรอลงเตะอีก ${secRem} คน (ขณะที่ "${top.team_name}" เหลือ ${topRem} คน) คืนนี้ใครจะฉีกหนีต้องวัดกันที่คู่ดึก!`,
+                `ดวลเดือดแต้มชนกันที่ ${topPts} คะแนน! "${top.team_name}" และ "${secName}" ยึดจ่าฝูงสดร่วมกัน แต่ฝ่าย "${secName}" กุมไพ่ตายตัวเตะในมือเหลือถึง ${secRem} คน ลุ้นแซงนำเดี่ยวในคู่ต่อไป!`,
+                `เสมอกันสุดมันส์หัวตาราง! "${top.team_name}" กับ "${secName}" ฟาดแต้มเท่ากันที่ ${topPts} แต้ม แต่ขุมกำลัง "${secName}" ยังสดชื่นกว่า มีตัวรอลงสนามอีก ${secRem} ตัว งานนี้จ่าฝูงร่วมต้องนั่งลุ้นตัวเกร็ง!`
+              ];
+            } else if (topRem > secRem && secRem !== null) {
+              leadOptions = [
+                `กอดคอยึดจ่าฝูงสดร่วมกันที่ ${topPts} แต้ม! แต่สถานการณ์ของ "${top.team_name}" ดูได้เปรียบกว่าเห็นๆ เพราะยังมีตัวเตะตกค้างรอลงสนามอีกถึง ${topRem} คน ขณะที่ "${secName}" ตัวเตะร่อยหรอเหลือแค่ ${secRem} คน!`,
+                `แต้มสดเท่ากันเป๊ะที่ ${topPts} แต้ม! "${top.team_name}" กับ "${secName}" ดวลเดือดเบียดชิงบัลลังก์ โดยฝั่ง "${top.team_name}" กุมความได้เปรียบเรื่องตัวผู้เล่นเหลือมากกว่า (${topRem} vs ${secRem} ตัว)!`,
+                `จ่าฝูงร่วมคะแนนชนกันที่ ${topPts} แต้ม! แต่ "${top.team_name}" ยิ้มกว้างกว่าเพราะยังมีกำลังพลในมือเหลือถึง ${topRem} ตำแหน่ง ขณะที่ "${secName}" เหลือรอเตะแค่ ${secRem} คน!`
+              ];
+            } else {
+              leadOptions = [
+                `กินกันไม่ลงโว้ย! "${top.team_name}" กับ "${secName}" แต้มสดเท่ากันเป๊ะที่ ${topPts} แต้ม กอดคอยึดจ่าฝูงสดร่วมกัน รอดูกันต่อว่าคู่ดึกใครจะมีทีเด็ดฉีกหนีไปก่อน!`,
+                `เสมอเดือดกลางตารางคะแนนสด! "${top.team_name}" กับ "${secName}" ทำแต้มเท่ากันที่ ${topPts} คะแนน บี้กันสุดมันส์ ใครจะคว้าชัยชั่วคราวต้องวัดกันที่ตัวที่เหลือ!`,
+                `สูสีระดับมิลลิเมตร! "${top.team_name}" กับ "${secName}" แต้มสดชนกันที่ ${topPts} แต้ม ไม่มีใครยอมใคร สู้กันยันหยดสุดท้าย!`
+              ];
+            }
           } else if (secRem > topRem && topRem !== null) {
             leadOptions = [
               `เก้าอี้ร้อนฉ่าพี่น้อง! "${top.team_name}" (${topPts} pts) ยึดจ่าฝูงสดนำ "${secName}" อยู่ ${diff} แต้ม แต่ขุมกำลังเหลือในมือแค่ ${topRem} ตัว! งานนี้นั่งสวดมนต์รอปาฏิหาริย์ได้เลย เพราะ "${secName}" (${secondPts} pts) ตามหลังอยู่ไม่ไกล แถมยังมีตัวทีเด็ดรอลงสนามอีกถึง ${secRem} คนในคู่ดึก ระวังโดนยิงแสกหน้าปาดหน้าเค้กนาทีบาป!`,
@@ -2581,12 +2601,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               `ตัวเตะของคู่หัวตารางลงครบ 11 คนหมดแล้ว! "${top.team_name}" ทำแต้มสดตุนไว้ ${topPts} แต้ม ${marginPhrase} ตอนนี้เหลือแค่รอกรรมการเป่านกหวีดกับเคาะคะแนนโบนัส 3-2-1 อย่างเป็นทางการ ถ้าแต้มโบนัสไม่หักมุม มีสิทธิ์เดินแอ็คหล่อได้รอบหมู่บ้าน!`,
               `ปิดจ็อบลงสนามครบทั้งคู่! "${top.team_name}" (${topPts} pts) เบียดนำ "${secName}" (${secondPts} pts) อยู่ ${diff} แต้ม นั่งเกาะขอบจอรอดูแต้มโบนัสกับออโต้ซับ ใครจะเฮหรือใครจะน้ำตาตก เดี๋ยวได้รู้กัน!`,
               `หมดโควตาตัวเล่นทั้งสองฝั่ง! "${top.team_name}" ปิดสกอร์สดที่ ${topPts} แต้ม นำ "${secName}" (${secondPts} pts) อยู่ ${diff} แต้ม ทำได้แค่นั่งสวดมนต์รอผลคะแนนโบนัสทางการ!`
-            ];
-          } else if (diff <= 0) {
-            leadOptions = [
-              `กินกันไม่ลงโว้ย! "${top.team_name}" กับ "${secName}" แต้มสดเท่ากันเป๊ะที่ ${topPts} แต้ม กอดคอยึดจ่าฝูงสดร่วมกัน รอดูกันต่อว่าคู่ดึกใครจะมีทีเด็ดฉีกหนีไปก่อน!`,
-              `เสมอเดือดกลางตารางคะแนนสด! "${top.team_name}" กับ "${secName}" ทำแต้มเท่ากันที่ ${topPts} คะแนน บี้กันสุดมันส์ ใครจะคว้าชัยชั่วคราวต้องวัดกันที่ตัวที่เหลือ!`,
-              `สูสีระดับมิลลิเมตร! "${top.team_name}" กับ "${secName}" แต้มสดชนกันที่ ${topPts} แต้ม ไม่มีใครยอมใคร สู้กันยันหยดสุดท้าย!`
             ];
           } else if (diff <= 2) {
             leadOptions = [
@@ -2879,6 +2893,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           const dcName = (dc.captain || '-').replace(/\s*\(C\)/gi, '').trim();
           let dcCapPts = 0;
           let dcRawPts = 0;
+          let isDcUnplayed = false;
           if (leagueData && leagueData.squads) {
             const dSq = leagueData.squads[`${dc.entry_id}_${gwNumber}`];
             if (dSq && dSq.starting) {
@@ -2886,11 +2901,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               if (cPlayer) {
                 dcCapPts = Number(cPlayer.points) || 0;
                 dcRawPts = Number(cPlayer.raw_points) || (Number(cPlayer.points) < 0 ? Number(cPlayer.points) : Math.floor(dcCapPts / 2));
+                isDcUnplayed = isLive && (Boolean(cPlayer.not_played_yet) || Number(cPlayer.minutes || 0) === 0);
               }
             }
           }
 
-          if (dcCapPts >= 14) {
+          if (isDcUnplayed) {
+            midOptions.push(
+              `ส่วน "${dc.team_name}" เลือกแหวกม่านประเพณี มอบปลอกแขนให้ ${dcName} กัปตันตัวแรร์ที่มีแค่ไม่กี่ทีมในลีกกล้าจิ้ม เจ้าตัวยังไม่ได้ลงสนาม เตรียมนั่งลุ้นใจสั่นในคู่ดึก!`,
+              `ด้าน "${dc.team_name}" จิ้ม ${dcName} เป็นกัปตันตัวแรร์สวนกระแสลีก กำลังรอคอยลงสนามล่าแต้มในคู่ที่เหลือ หากระเบิดฟอร์มขึ้นมามีสิทธิ์แซงโค้งหัวตารางทันที!`
+            );
+          } else if (dcCapPts >= 14) {
             midOptions.push(
               `ส่วน "${dc.team_name}" โชว์กึ๋นไม่ซ้ำรอยใคร มอบปลอกแขนให้ ${dcName} กัปตันตัวแรร์ที่มีแค่ไม่กี่ทีมในลีกกล้าจิ้ม แล้วเจ้าตัวก็ระเบิดฟอร์มกดไป ${dcCapPts} แต้ม สะเด่าไปเลยอีน้องงง!`,
               `ความใจถึงต้องยกให้ "${dc.team_name}" ที่ไม่แห่ตามกระแสมหาชน จิ้ม ${dcName} สวมปลอกแขนแล้วซัดไปเน้นๆ ${dcCapPts} แต้ม กลายเป็นหมากเด็ดสยบปากหมาทั้งลีก!`,
@@ -2927,7 +2948,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           const capPlayerObj = sampleSq && sampleSq.starting ? sampleSq.starting.find(p => p.is_captain) : null;
           if (capPlayerObj) {
             const popPts = Number(capPlayerObj.points) || 0;
-            if (popPts < 0) {
+            const isPopUnplayed = isLive && (Boolean(capPlayerObj.not_played_yet) || Number(capPlayerObj.minutes || 0) === 0);
+            if (isPopUnplayed) {
+              midOptions.push(
+                `ที่น่าจับตาคือ กัปตันมหาชน ${popCapName} (${mostPopCap[1]} ทีมในลีก) ยังไม่ได้ลงเตะ แฟนคลับเตรียมนั่งสวดมนต์รอระเบิดฟอร์มในคู่ดึก!`,
+                `จุดชี้ชะตาสัปดาห์นี้อยู่ที่กัปตันขวัญใจมหาชน ${popCapName} (${mostPopCap[1]} ทีม) ขุมกำลังยังไม่ลงสนาม หากแผลงฤทธิ์ยิงระเบิดเมื่อไหร่ อันดับมีสิทธิ์พลิกคว่ำทั้งตาราง!`,
+                `คอลูกหนังทั้งลีกกำลังจับตา ${popCapName} กัปตันมหาชนที่คนไว้ใจถึง ${mostPopCap[1]} ทีม ซึ่งยังรอคอยลงสนามในคู่ต่อไป รอดูว่าจะพากองทัพแฟนๆ บินสูงหรือพากันดิ่งเหว!`
+              );
+            } else if (popPts < 0) {
               midOptions.push(
                 `มหันตภัยกัปตันมหาชน! ${popCapName} ที่มีคนในลีกตั้งถึง ${mostPopCap[1]} ทีม ดันโดนใบแดงแต้มติดลบ ${popPts} แต้ม ทำเอากุนซือครึ่งลีกกอดคอกันร้องไห้ระงม!`,
                 `หายนะแห่งสัปดาห์! กัปตันมหาชน ${popCapName} (${mostPopCap[1]} ทีม) ทำแต้มติดลบ ${popPts} แต้ม พากองทัพแฟนคลับดิ่งลงเหวพร้อมกันทั้งตาราง!`
@@ -3078,12 +3106,23 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             if (sq && sq.starting) {
               const defs = sq.starting.filter(p => ['GKP', 'DEF', '1', '2'].includes(String(p.pos || p.position || p.element_type)));
               const defPts = defs.reduce((sum, p) => sum + (Number(p.points) || 0), 0);
-              defPerformance.push({ team: t.team_name, defPts });
+              const playedDefs = defs.filter(p => !p.not_played_yet && Number(p.minutes || 0) > 0);
+              const totalDefMins = defs.reduce((sum, p) => sum + (Number(p.minutes) || 0), 0);
+              defPerformance.push({
+                team: t.team_name,
+                defPts,
+                playedCount: playedDefs.length,
+                totalDefs: defs.length,
+                totalMins: totalDefMins
+              });
             }
           });
           defPerformance.sort((a, b) => b.defPts - a.defPts);
           const bestDef = defPerformance[0];
-          const worstDef = defPerformance[defPerformance.length - 1];
+          // Filter worstDef to only teams where defense has actually played (at least 3 played or 180+ minutes, or GW finished)
+          const validWorstDefs = defPerformance.filter(d => isFinished || (d.playedCount >= 3 && d.totalMins >= 180));
+          const worstDef = validWorstDefs.length > 0 ? validWorstDefs[validWorstDefs.length - 1] : null;
+
           if (bestDef && bestDef.defPts >= 24) {
             midOptions.push(
               `เกมรับคือหัวใจของความสำเร็จ! "${bestDef.team}" วางแผงหลังเหนียวแน่นระดับกำแพงเมืองจีน โกยแต้มเกมรับรวมถึง ${bestDef.defPts} แต้ม สยบเกมรุกคู่แข่งกระจุย!`,
@@ -3148,12 +3187,21 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         // Storyline L: Tough Week / Bottom of the Table (ท้ายตาราง)
         if (bottom && bottom.entry_id !== top.entry_id && sorted.length > 3) {
-          midOptions.push(
-            `ด้านท้ายตารางสัปดาห์นี้ "${bottom.team_name}" ตีนบอดสนิท เก็บไปได้แค่ ${bottom[scoreKey]} แต้ม รั้งตำแหน่งบ๊วยประจำสัปดาห์ ต้องรีบจุดธูปขอพรแก้เคล็ดด่วน!`,
-            `ส่วนตำแหน่งสู้ชีวิตประจำสัปดาห์ตกเป็นของ "${bottom.team_name}" ที่แต้มสะดุดอยู่ที่ ${bottom[scoreKey]} คะแนน นั่งเหงาอยู่ก้นตาราง สัปดาห์หน้าค่อยว่ากันใหม่!`,
-            `เคราะห์ซ้ำกรรมซัด! "${bottom.team_name}" แต้มฝืดเคืองอยู่ที่ ${bottom[scoreKey]} แต้ม นั่งหนาวเหน็บอยู่ก้นตาราง รอวันฟื้นตัวในสัปดาห์หน้า!`,
-            `ยับเยินสุดขีด! "${bottom.team_name}" เก็บไปได้แค่ ${bottom[scoreKey]} แต้ม จมบ๊วยสนิทแบบเดียวดาย รีบหาทางแก้หน้าสัปดาห์หน้าด่วน!`
-          );
+          const bottomRem = Number(bottom.players_remaining !== undefined ? bottom.players_remaining : (bottom.live_rem !== undefined ? bottom.live_rem : 0));
+          const bottomPts = Number(bottom[scoreKey] || 0);
+          if (isLive && bottomPts <= 4 && bottomRem >= 7) {
+            midOptions.push(
+              `ส่วน "${bottom.team_name}" ที่แต้มยังนิ่งอยู่ที่ ${bottomPts} แต้ม เป็นเพราะขุมกำลังส่วนใหญ่ (${bottomRem} ตัว) ยังไม่ได้ลงเตะ รอดูคู่ดึกว่าจะเร่งเครื่องหนีโซนล่างได้หรือไม่!`,
+              `ด้าน "${bottom.team_name}" แต้มสดเปิดหัวที่ ${bottomPts} แต้ม แต่ยังมีผู้เล่นรอปล่อยของอีกถึง ${bottomRem} คน คอยจับตาดูการขยับอันดับคืนนี้!`
+            );
+          } else {
+            midOptions.push(
+              `ด้านท้ายตารางสัปดาห์นี้ "${bottom.team_name}" ตีนบอดสนิท เก็บไปได้แค่ ${bottom[scoreKey]} แต้ม รั้งตำแหน่งบ๊วยประจำสัปดาห์ ต้องรีบจุดธูปขอพรแก้เคล็ดด่วน!`,
+              `ส่วนตำแหน่งสู้ชีวิตประจำสัปดาห์ตกเป็นของ "${bottom.team_name}" ที่แต้มสะดุดอยู่ที่ ${bottom[scoreKey]} คะแนน นั่งเหงาอยู่ก้นตาราง สัปดาห์หน้าค่อยว่ากันใหม่!`,
+              `เคราะห์ซ้ำกรรมซัด! "${bottom.team_name}" แต้มฝืดเคืองอยู่ที่ ${bottom[scoreKey]} แต้ม นั่งหนาวเหน็บอยู่ก้นตาราง รอวันฟื้นตัวในสัปดาห์หน้า!`,
+              `ยับเยินสุดขีด! "${bottom.team_name}" เก็บไปได้แค่ ${bottom[scoreKey]} แต้ม จมบ๊วยสนิทแบบเดียวดาย รีบหาทางแก้หน้าสัปดาห์หน้าด่วน!`
+            );
+          }
         }
 
         // Multi-Storyline Dynamic Permutation & Composition
@@ -3312,6 +3360,26 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               `Exhibition squad "${overallTop.team_name}" is running wild with ${overallTop[scoreKey]} pts live, while the official prize battle is currently commanded by "${top.team_name}" on ${topPts} pts!`,
               `"${overallTop.team_name}" is playing with zero fear and leads the raw board on ${overallTop[scoreKey]} pts, clearing the runway for prize front-runner "${top.team_name}" (${topPts} pts)!`
             ];
+          } else if (diff <= 0 || isJoint || topPts === secondPts) {
+            if (secRem > topRem && topRem !== null) {
+              leadOptions = [
+                `Deadlock at the summit! "${top.team_name}" and "${secName}" are level on ${topPts} pts, but "${secName}" holds the tactical upper hand with ${secRem} players left to play vs ${topRem}! A massive showdown looms in the late kickoff!`,
+                `Tied at the top! "${top.team_name}" and "${secName}" both stand on ${topPts} pts, but "${secName}" has ${secRem} bullets left in the chamber compared to ${topRem}. High tension as the night unfolds!`,
+                `Locked together on ${topPts} pts! "${secName}" has more artillery left with ${secRem} players remaining vs ${topRem} for "${top.team_name}". The chaser has the golden opportunity to snatch the lead!`
+              ];
+            } else if (topRem > secRem && secRem !== null) {
+              leadOptions = [
+                `Joint leaders on ${topPts} pts! However, "${top.team_name}" enjoys the upper hand with ${topRem} players waiting in reserve while "${secName}" only has ${secRem} left to roll!`,
+                `Level on ${topPts} pts at the summit, but "${top.team_name}" commands more artillery with ${topRem} players remaining against ${secRem} for "${secName}"!`,
+                `All square at ${topPts} pts, but "${top.team_name}" looks primed to break away with ${topRem} players in hand against ${secRem} for "${secName}"!`
+              ];
+            } else {
+              leadOptions = [
+                `Dead bloody heat! "${top.team_name}" and "${secName}" are locked level on ${topPts} pts apiece. You couldn't slip a cigarette paper between them!`,
+                `Deadlock at the top! "${top.team_name}" and "${secName}" are dead level on ${topPts} pts. Pure drama as we await the remaining matches!`,
+                `Nothing to separate the top two! "${top.team_name}" and "${secName}" are locked together on ${topPts} pts. Anyone's game!`
+              ];
+            }
           } else if (secRem > topRem && topRem !== null) {
             if (versionIdx === 0) {
               leadOptions = [
@@ -3356,11 +3424,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 `An unstoppable momentum! "${top.team_name}" surges to ${topPts} pts live with reinforcements still waiting to enter the fray!`
               ];
             }
-          } else if (diff <= 0) {
-            leadOptions = [
-              `Dead bloody heat! "${top.team_name}" and "${secName}" are locked level on ${topPts} pts apiece. You couldn't slip a cigarette paper between them!`,
-              `Absolute gridlock at the summit! "${top.team_name}" and "${secName}" are deadlocked at ${topPts} points. Pure chaos waiting to unfold in the late kickoff!`
-            ];
           } else if (diff <= 2) {
             leadOptions = [
               `Sweating absolute buckets! "${top.team_name}" leads live with ${topPts} pts, barely ${diff} pt ahead of "${secName}". One deflected goal or rogue bonus point will turn this whole table upside down!`,
@@ -3598,14 +3661,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         // Story 6: Bottom Table Wooden Spoon
         if (bottom && bottom.entry_id !== top.entry_id && sorted.length > 3) {
-          if (versionIdx === 0) {
-            midOptions.push(`Meanwhile down in the gutter, "${bottom.team_name}" managed a miserable ${bottomPts} pts. That's not bad luck, that's just downright embarrassing!`);
-          } else if (versionIdx === 1) {
-            midOptions.push(`Down in the basement, "${bottom.team_name}" registered a tragic ${bottomPts} pts. Someone check for a pulse, because that squad is clinically dead!`);
-          } else if (versionIdx === 2) {
-            midOptions.push(`Wooden spoon donkey of the week goes to "${bottom.team_name}" with ${bottomPts} pts. Even my dead nan could score more than that from a wheelchair!`);
+          const bottomRem = Number(bottom.players_remaining !== undefined ? bottom.players_remaining : (bottom.live_rem !== undefined ? bottom.live_rem : 0));
+          const bottomScore = Number(bottom[scoreKey] || 0);
+          if (isLive && bottomScore <= 4 && bottomRem >= 7) {
+            midOptions.push(`Down at the foot of the live table, "${bottom.team_name}" currently sits on ${bottomScore} pts, but with ${bottomRem} players still to feature, their real gameweek has barely started!`);
           } else {
-            midOptions.push(`And in the darkest depths of the table lies "${bottom.team_name}" with a hollow ${bottomPts} pts — a tragedy written in red ink!`);
+            if (versionIdx === 0) {
+              midOptions.push(`Meanwhile down in the gutter, "${bottom.team_name}" managed a miserable ${bottomPts} pts. That's not bad luck, that's just downright embarrassing!`);
+            } else if (versionIdx === 1) {
+              midOptions.push(`Down in the basement, "${bottom.team_name}" registered a tragic ${bottomPts} pts. Someone check for a pulse, because that squad is clinically dead!`);
+            } else if (versionIdx === 2) {
+              midOptions.push(`Wooden spoon donkey of the week goes to "${bottom.team_name}" with ${bottomPts} pts. Even my dead nan could score more than that from a wheelchair!`);
+            } else {
+              midOptions.push(`And in the darkest depths of the table lies "${bottom.team_name}" with a hollow ${bottomPts} pts — a tragedy written in red ink!`);
+            }
           }
         }
 
