@@ -7180,12 +7180,19 @@ selectShi62GW(gwName) {
         if (!container) return;
         const isEn = (this.currentLang === 'en');
 
-        if (!this.activeShi62GW && this.shi62Data.gameweeks && this.shi62Data.gameweeks.length > 0) {
-          this.activeShi62GW = this.shi62Data.gameweeks[this.shi62Data.gameweeks.length - 1].name;
+        const sortedGWs = [...(this.shi62Data.gameweeks || [])].sort((a, b) => {
+          const numA = parseInt((a.name || '').replace(/[^0-9]/g, '') || '0', 10);
+          const numB = parseInt((b.name || '').replace(/[^0-9]/g, '') || '0', 10);
+          if (numB !== numA) return numB - numA;
+          return (a.name || '').includes('Commu') ? 1 : -1;
+        });
+
+        if (!this.activeShi62GW && sortedGWs.length > 0) {
+          this.activeShi62GW = sortedGWs[0].name;
         }
 
         const data = this.shi62Data;
-        const activeGWObj = (data.gameweeks || []).find(g => g.name === this.activeShi62GW) || data.gameweeks[data.gameweeks.length - 1];
+        const activeGWObj = sortedGWs.find(g => g.name === this.activeShi62GW) || sortedGWs[0];
         if (!activeGWObj) return;
 
         const fmtMoney = (val, showPlus = true, unit = '') => {
@@ -7239,7 +7246,7 @@ selectShi62GW(gwName) {
               <!-- GW Pills Selector & Copy LINE Button -->
               <div class="flex flex-wrap items-center justify-end gap-2 w-full sm:w-auto">
                 <div class="flex items-center gap-1 overflow-x-auto touch-scroll p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60 max-w-full w-full sm:w-auto">
-                  ${[...data.gameweeks].reverse().map(g => {
+                  ${sortedGWs.map(g => {
                     const isActive = g.name === this.activeShi62GW;
                     return `
                       <button 
@@ -14169,20 +14176,30 @@ selectShi62GW(gwName) {
         const defaultShirtUrl = this.getDefaultShirtUrl();
         const entryIdNum = Number(entryId);
         this.currentModalEntryId = entryIdNum;
+        let targetLeagueId = null;
         let teamObj = (this.data.teams || []).find(t => Number(t.entry_id) === entryIdNum);
-        if (!teamObj && this.multiData && this.multiData.leagues) {
-          for (const l of Object.values(this.multiData.leagues)) {
+        if (teamObj) {
+          targetLeagueId = String(this.activeLeagueId);
+        } else if (this.multiData && this.multiData.leagues) {
+          for (const [lid, l] of Object.entries(this.multiData.leagues)) {
             const found = (l.teams || []).find(t => Number(t.entry_id) === entryIdNum);
             if (found) {
               teamObj = found;
+              targetLeagueId = String(lid);
               break;
             }
           }
         }
         teamObj = teamObj || {};
 
+        const targetLeague = (targetLeagueId && this.multiData && this.multiData.leagues) ? this.multiData.leagues[targetLeagueId] : this.data;
+
         let gwResults = ((this.data.gameweeks || {})[String(this.selectedGW)] || {}).results || [];
         let matchdayRes = gwResults.find(r => Number(r.entry_id) === entryIdNum);
+        if (!matchdayRes && targetLeague && targetLeague.gameweeks) {
+          const gr = (targetLeague.gameweeks[String(this.selectedGW)] || {}).results || [];
+          matchdayRes = gr.find(r => Number(r.entry_id) === entryIdNum);
+        }
         if (!matchdayRes && this.multiData && this.multiData.leagues) {
           for (const l of Object.values(this.multiData.leagues)) {
             const gr = ((l.gameweeks || {})[String(this.selectedGW)] || {}).results || [];
@@ -14197,6 +14214,9 @@ selectShi62GW(gwName) {
 
         const squadKey = `${entryIdNum}_${this.selectedGW}`;
         let squad = (this.data.squads || {})[squadKey];
+        if (!squad && targetLeague && targetLeague.squads) {
+          squad = targetLeague.squads[squadKey];
+        }
         if (!squad && this.multiData && this.multiData.leagues) {
           for (const l of Object.values(this.multiData.leagues)) {
             if (l.squads && l.squads[squadKey]) {
@@ -14287,6 +14307,41 @@ selectShi62GW(gwName) {
         const formationEl = document.getElementById('team-modal-formation');
 
         if (!squad || !squad.starting || squad.starting.length === 0) {
+          // If the team belongs to another league whose squads have not been fetched yet, trigger on-demand fetch
+          if (targetLeagueId && targetLeagueId !== String(this.activeLeagueId)) {
+            const hasSquads = Boolean(targetLeague && targetLeague.squads && Object.keys(targetLeague.squads).length > 0);
+            const isTier2League = Boolean((targetLeague && targetLeague.tier === 2) || (this.configs && this.configs[targetLeagueId] && this.configs[targetLeagueId].tier === 2));
+            if (!hasSquads && !isTier2League) {
+              if (formationEl) formationEl.innerText = '...';
+              if (gkpLine) gkpLine.innerHTML = '';
+              if (midLine) midLine.innerHTML = '';
+              if (fwdLine) fwdLine.innerHTML = '';
+              if (defLine) defLine.innerHTML = `<div class="text-center text-white/90 py-8 font-bold text-xs w-full animate-pulse"><div class="text-xl mb-1.5">⏳</div>${isEn ? 'Loading team lineup...' : 'กำลังโหลดข้อมูลผังผู้เล่น...'}</div>`;
+              if (benchContainer) benchContainer.innerHTML = `<div class="text-center text-slate-400 py-4 col-span-2 text-xs animate-pulse">${isEn ? 'Loading bench...' : 'กำลังโหลดตัวสำรอง...'}</div>`;
+              if (benchTotal) benchTotal.innerHTML = '';
+              const modal = document.getElementById('team-modal');
+              if (modal) {
+                modal.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+              }
+              const configuredIds = Object.keys(this.configs || {});
+              const currentInSubdir = configuredIds.some(cid => window.location.pathname.includes('/' + cid));
+              const prefix = currentInSubdir ? '../' : './';
+              fetch(`${prefix}data/leagues/${targetLeagueId}.json`)
+                .then(resp => resp.ok ? resp.json() : null)
+                .then(fullLeagueData => {
+                  if (fullLeagueData && fullLeagueData.squads) {
+                    this.multiData.leagues[targetLeagueId] = fullLeagueData;
+                    if (this.currentModalEntryId === entryIdNum) {
+                      this.openTeamModal(entryIdNum);
+                    }
+                  }
+                })
+                .catch(err => console.debug('Dynamic squad fetch error:', err));
+              return;
+            }
+          }
+
           if (formationEl) formationEl.innerText = '-';
           if (gkpLine) gkpLine.innerHTML = '';
           const isTier2 = (this.data && this.data.tier === 2) || (this.config && this.config.tier === 2);
