@@ -7617,7 +7617,7 @@ selectShi62GW(gwName) {
                       <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">${isEn ? 'Upcoming' : 'รอคิกออฟ'}</span>
                     </div>
                     <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight mt-0.5">${isEn ? `Gameweek ${this.selectedGW} Lineups Locked` : `Gameweek ${this.selectedGW} ส่งรายชื่อเรียบร้อยแล้ว`}</h2>
-                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-0.5">${isEn ? 'Awaiting opening match kickoff • Tactical overview & league stats' : 'รอการแข่งขันคู่แรกเริ่มเตะ • สถิติการจัดทีมและวางหมากในลีก'}</p>
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-0.5">${isEn ? 'Awaiting opening match kickoff • Tactical overview & league stats' : 'รอคู่เปิดสนามคิกออฟ • สถิติการจัดทีมและวางหมากในลีก'}</p>
                   </div>
 
                   <div class="w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 border-indigo-100 dark:border-slate-700 flex items-center justify-end gap-3 text-right">
@@ -9663,7 +9663,7 @@ selectShi62GW(gwName) {
             <!-- WC 1 -->
             <div id="comp-summary-card-wc1" onclick="app.setCompCardFilter('wc1')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
               <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">${isEn ? 'Wildcard 1 (GW 1-19)' : 'ไวลด์การ์ด 1 (สัปดาห์ 1-19)'}</span>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Wildcard 1 (GW 1-19)</span>
                 <span class="chip-badge badge-wildcard">WC</span>
               </div>
               <div class="mt-2 flex items-baseline gap-1.5">
@@ -9677,7 +9677,7 @@ selectShi62GW(gwName) {
             <!-- Free Hit -->
             <div id="comp-summary-card-fh" onclick="app.setCompCardFilter('fh')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
               <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">${isEn ? 'Free Hit' : 'ฟรีฮิต'}</span>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Free Hit</span>
                 <span class="chip-badge badge-freehit">FH</span>
               </div>
               <div class="mt-2 flex items-baseline gap-1.5">
@@ -9691,7 +9691,7 @@ selectShi62GW(gwName) {
             <!-- Triple Captain -->
             <div id="comp-summary-card-tc" onclick="app.setCompCardFilter('tc')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
               <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">${isEn ? 'Triple Captain' : 'ทริปเปิ้ลกัปตัน'}</span>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Triple Captain</span>
                 <span class="chip-badge badge-3xc">3xC</span>
               </div>
               <div class="mt-2 flex items-baseline gap-1.5">
@@ -9705,7 +9705,7 @@ selectShi62GW(gwName) {
             <!-- Bench Boost -->
             <div id="comp-summary-card-bb" onclick="app.setCompCardFilter('bb')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
               <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">${isEn ? 'Bench Boost' : 'เบนช์บูสต์'}</span>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Bench Boost</span>
                 <span class="chip-badge badge-bboost">BB</span>
               </div>
               <div class="mt-2 flex items-baseline gap-1.5">
@@ -9732,10 +9732,10 @@ selectShi62GW(gwName) {
                 BB (${totalBbAvail})
               </button>
               <button onclick="app.setCompCardFilter('fh')" data-filter="fh" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'fh' ? 'bg-amber-600 text-white shadow-xs ring-2 ring-amber-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60'} cursor-pointer">
-                ${isEn ? 'Free Hit' : 'ฟรีฮิต'} (${totalFhAvail})
+                Free Hit (${totalFhAvail})
               </button>
               <button onclick="app.setCompCardFilter('wc1')" data-filter="wc1" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'wc1' ? 'bg-emerald-600 text-white shadow-xs ring-2 ring-emerald-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60'} cursor-pointer">
-                ${isEn ? 'Wildcard 1' : 'ไวลด์การ์ด 1'} (${totalWc1Avail})
+                Wildcard 1 (${totalWc1Avail})
               </button>
             </div>
 
@@ -9946,11 +9946,11 @@ selectShi62GW(gwName) {
                   <th class="py-2.5 px-1 sm:px-2 text-center w-[36px] min-w-[36px] max-w-[36px] sm:w-[44px] sm:min-w-[44px] sticky left-0 bg-slate-50 dark:bg-slate-800 z-20">#</th>
                   <th class="py-2.5 px-2.5 sm:px-3 sticky left-[36px] sm:left-[44px] bg-slate-50 dark:bg-slate-800 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                   <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">${isEn ? 'Chips Remaining' : 'การ์ดคงเหลือ'}</th>
-                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">${isEn ? 'Wildcard 1' : 'ไวลด์การ์ด 1'}</th>
-                  ${showWc2 ? `<th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">${isEn ? 'Wildcard 2' : 'ไวลด์การ์ด 2'}</th>` : ''}
-                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">${isEn ? 'Free Hit' : 'ฟรีฮิต'}</th>
-                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">${isEn ? 'Triple Capt' : 'ทริปเปิ้ลกัปตัน'}</th>
-                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">${isEn ? 'Bench Boost' : 'เบนช์บูสต์'}</th>
+                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Wildcard 1</th>
+                  ${showWc2 ? '<th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Wildcard 2</th>' : ''}
+                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Free Hit</th>
+                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Triple Capt</th>
+                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Bench Boost</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80">
@@ -10172,7 +10172,7 @@ selectShi62GW(gwName) {
             <div class="space-y-2 mb-3.5">
               <div class="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
                 ${['ALL', 'GKP', 'DEF', 'MID', 'FWD'].map(pos => {
-                  const posName = isEn ? pos : (pos === 'ALL' ? 'ทั้งหมด' : (pos === 'GKP' ? 'โกล' : (pos === 'DEF' ? 'กองหลัง' : (pos === 'MID' ? 'กองกลาง' : 'กองหน้า'))));
+                  const posName = (pos === 'ALL') ? (isEn ? 'ALL' : 'ทั้งหมด') : pos;
                   return `
                   <button onclick="app.setCompDiffPosFilter('${pos}')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.compDiffPosFilter === pos ? 'bg-slate-900 text-white dark:bg-amber-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300'}">
                     ${posName} (${countsByPos[pos]})
@@ -10362,10 +10362,10 @@ selectShi62GW(gwName) {
         };
 
         const categories = [
-          { key: 'GoalKeepers', title: isEn ? 'Goalkeepers' : 'ผู้รักษาประตู', pos: 'GKP' },
-          { key: 'Defenders', title: isEn ? 'Defenders' : 'กองหลัง', pos: 'DEF' },
-          { key: 'Midfielders', title: isEn ? 'Midfielders' : 'กองกลาง', pos: 'MID' },
-          { key: 'Forwards', title: isEn ? 'Forwards' : 'กองหน้า', pos: 'FWD' }
+          { key: 'GoalKeepers', title: 'Goalkeepers', pos: 'GKP' },
+          { key: 'Defenders', title: 'Defenders', pos: 'DEF' },
+          { key: 'Midfielders', title: 'Midfielders', pos: 'MID' },
+          { key: 'Forwards', title: 'Forwards', pos: 'FWD' }
         ];
 
         const hasAnyItems = categories.some(cat => (sugg[cat.key] || []).length > 0);
