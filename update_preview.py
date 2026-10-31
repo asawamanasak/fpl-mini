@@ -1123,6 +1123,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           สถานะชิป
         </button>
         <button 
+          id="tab-btn-transfers"
+          data-tab-target="transfers-view" 
+          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+        >
+          วิเคราะห์การย้ายตัว
+        </button>
+        <button 
           id="tab-btn-shi62-special"
           data-tab-target="shi62-special-view" 
           class="tab-nav-btn hidden flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
@@ -1315,17 +1322,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <!-- Rendered dynamically via app.renderBramannChallenge() -->
     </div>
 
-    <!-- ==================== TAB: COMPETITION ==================== -->
+    <!-- ==================== TAB: COMPETITION (CHIPS MATRIX) ==================== -->
     <div id="competition-view" class="tab-content hidden space-y-6">
       
       <!-- Top Overview Banner -->
       <div class="glass-card rounded-2xl px-4 py-3.5 sm:px-6 sm:py-4.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 id="competition-overview-title" class="text-base sm:text-xl font-bold text-slate-900 dark:text-white font-display">
-            Competition <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(ข้อมูลเจาะลึกคู่แข่ง & การวิเคราะห์ขุมกำลัง)</span>
+            สถานะชิป <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(Chips Strategy Matrix)</span>
           </h2>
           <p id="competition-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            ส่องการ์ดคงเหลือของคู่แข่ง, นักเตะยอดนิยมมหาชน, ตัวทีเด็ดดิฟเฟอเรนเชียล และคำแนะนำการย้ายตัวประจำสัปดาห์
+            ตรวจสอบสถานะการใช้ชิปคงเหลือของคู่แข่งในลีก (Wildcard, Free Hit, Bench Boost, Triple Captain)
           </p>
         </div>
         <div class="flex items-center gap-2 flex-wrap">
@@ -1339,21 +1346,47 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <!-- Rendered dynamically -->
       </div>
 
+    </div>
+
+    <!-- ==================== TAB: TRANSFERS VIEW (TRANSFER ANALYTICS) ==================== -->
+    <div id="transfers-view" class="tab-content hidden space-y-6">
+      
+      <!-- Top Overview Banner -->
+      <div class="glass-card rounded-2xl px-4 py-3.5 sm:px-6 sm:py-4.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h2 id="transfers-overview-title" class="text-base sm:text-xl font-bold text-slate-900 dark:text-white font-display">
+            วิเคราะห์การย้ายตัว <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(Transfer Analytics)</span>
+          </h2>
+          <p id="transfers-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            สถิติการย้ายตัวประจำสัปดาห์, การถือครองนักเตะมหาชน, ตัวทีเด็ด และคำแนะนำการย้ายตัว
+          </p>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <span id="transfers-league-badge" class="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
+          <span id="transfers-gw-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
+        </div>
+      </div>
+
+      <!-- Section 1: Weekly Transfer Activity & ROI (Roadmap 8.1.5) -->
+      <div id="transfers-analytics-section" class="space-y-4">
+        <!-- Rendered dynamically -->
+      </div>
+
       <!-- Section 2: Important Players & Differential Players (Side-by-side Grid) -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <!-- Left: Important Players (> 70%) -->
-        <div id="competition-important-section" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+        <div id="transfers-important-section" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
           <!-- Rendered dynamically -->
         </div>
 
         <!-- Right: Differential Players (< 20%) -->
-        <div id="competition-differential-section" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+        <div id="transfers-differential-section" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
           <!-- Rendered dynamically -->
         </div>
       </div>
 
       <!-- Section 3: Transfer Suggestions -->
-      <div id="competition-transfers-section" class="space-y-4">
+      <div id="transfers-suggestions-section" class="space-y-4">
         <!-- Rendered dynamically -->
       </div>
 
@@ -3759,7 +3792,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         let t = String(tabName).trim().toLowerCase();
         if (t === 'live' || t === 'gw' || t === 'gameweek') return 'gameweek-view';
         if (t === 'highlight' || t === 'highlights' || t === 'weekly-highlight') return 'highlights-view';
-        if (t === 'competition' || t === 'comp' || t === 'standings') return 'competition-view';
+        if (t === 'competition' || t === 'comp' || t === 'standings' || t === 'chips' || t === 'chip') return 'competition-view';
+        if (t === 'transfers' || t === 'transfer' || t === 'transfer-analytics') return 'transfers-view';
         if (t === 'prize' || t === 'prizes' || t === 'reward' || t === 'rewards') return 'prizes-view';
         if (t === 'hof' || t === 'hall-of-fame' || t === 'halloffame') return 'hall-of-fame-view';
         if (t === 'global-radar' || t === 'radar' || t === 'global' || t === 'all-leagues' || t === 'consistency-radar' || t === 'consistency') return 'global-radar-view';
@@ -4275,6 +4309,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           'tab-btn-highlights': isEn ? 'Highlights' : 'ไฮไลท์',
           'tab-btn-global-radar': isEn ? 'Radar' : 'เรดาร์ฟอร์ม',
           'tab-btn-competition': isEn ? 'Chips' : 'สถานะชิป',
+          'tab-btn-transfers': isEn ? 'Transfers' : 'วิเคราะห์การย้ายตัว',
           'tab-btn-shi62-special': isEn ? 'Prediction' : 'ทายผล',
           'tab-btn-bramann-prediction': isEn ? 'Prediction' : 'ทายผล',
           'tab-btn-bramann-challenge': isEn ? 'Challenge' : 'ท้าชน',
@@ -4553,14 +4588,28 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const compTitle = document.getElementById('competition-overview-title');
         if (compTitle) {
           compTitle.innerHTML = isEn
-            ? 'Competition <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(Rival Intelligence & Squad Analysis)</span>'
-            : 'Competition <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(ข้อมูลเจาะลึกคู่แข่ง & การวิเคราะห์ขุมกำลัง)</span>';
+            ? 'Chips Strategy <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(Availability Matrix)</span>'
+            : 'สถานะชิป <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(Chips Strategy Matrix)</span>';
         }
         const compSub = document.getElementById('competition-overview-subtitle');
         if (compSub) {
           compSub.innerText = isEn
-            ? 'Monitor rival chips remaining, template essentials, key differentials, and weekly transfer suggestions'
-            : 'ส่องการ์ดคงเหลือของคู่แข่ง, นักเตะยอดนิยมมหาชน, ตัวทีเด็ดดิฟเฟอเรนเชียล และคำแนะนำการย้ายตัวประจำสัปดาห์';
+            ? 'Monitor chip availability, active chips, and remaining tokens across all league managers'
+            : 'ตรวจสอบสถานะการใช้ชิปคงเหลือของคู่แข่งในลีก (Wildcard, Free Hit, Bench Boost, Triple Captain)';
+        }
+
+        // 9.1 Transfers View Header Banner
+        const transfersTitle = document.getElementById('transfers-overview-title');
+        if (transfersTitle) {
+          transfersTitle.innerHTML = isEn
+            ? 'Transfer Analytics <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(Squad Movement & Trends)</span>'
+            : 'วิเคราะห์การย้ายตัว <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(Transfer Analytics)</span>';
+        }
+        const transfersSub = document.getElementById('transfers-overview-subtitle');
+        if (transfersSub) {
+          transfersSub.innerText = isEn
+            ? 'Gameweek transfer activity, template ownership, differential picks, and recommended transfers'
+            : 'สถิติการย้ายตัวประจำสัปดาห์, การถือครองนักเตะมหาชน, ตัวทีเด็ด และคำแนะนำการย้ายตัว';
         }
 
         // 10. Prizes View Header Banner
@@ -5253,6 +5302,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.renderGameweekView();
         this.renderHighlightsView();
         this.renderCompetitionView();
+        this.renderTransfersView();
         this.renderPrizesView();
         this.renderHallOfFameView();
         this.renderGlobalRadarView();
@@ -5275,6 +5325,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (this.activeTab === 'gameweek-view') this.renderGameweekView();
         else if (this.activeTab === 'highlights-view') this.renderHighlightsView();
         else if (this.activeTab === 'competition-view') this.renderCompetitionView();
+        else if (this.activeTab === 'transfers-view') this.renderTransfersView();
         else if (this.activeTab === 'prizes-view') this.renderPrizesView();
         else if (this.activeTab === 'hall-of-fame-view') this.renderHallOfFameView();
         else if (this.activeTab === 'global-radar-view') this.renderGlobalRadarView();
@@ -8867,10 +8918,6 @@ selectShi62GW(gwName) {
         // Set state defaults
         this.compCardFilter = this.compCardFilter || 'all';
         this.compCardSearch = this.compCardSearch || '';
-        this.compDiffPosFilter = this.compDiffPosFilter || 'ALL';
-        this.compDiffSearch = this.compDiffSearch || '';
-        this.compTransferTeam = this.compTransferTeam || '';
-        this.compTransferMobileView = this.compTransferMobileView || (typeof window !== 'undefined' && window.innerWidth < 640 ? 'best' : 'both');
 
         // Update Header Badges
         const leagueBadge = document.getElementById('competition-league-badge');
@@ -8878,14 +8925,416 @@ selectShi62GW(gwName) {
         if (leagueBadge) leagueBadge.innerText = leagueData.name || `League ${this.activeLeagueId}`;
         if (gwBadge) gwBadge.innerText = `Gameweek ${currentGw}`;
 
-        // 1. Render Card Available
+        // Render Card Available Matrix only
         this.renderCompetitionCards(teams, totalTeams, maxGw);
+      }
 
-        // 2. Render Important & Differential Players
+      setTransfersFilter(filter) {
+        this.transfersFilter = filter;
+        const teams = this.getLeaderboardTeams();
+        this.renderTransfersWeeklyAnalytics(teams, teams.length, this.selectedGW);
+      }
+
+      setTransfersSearch(val) {
+        this.transfersSearch = (val || '').toLowerCase().trim();
+        const teams = this.getLeaderboardTeams();
+        this.renderTransfersWeeklyAnalytics(teams, teams.length, this.selectedGW);
+      }
+
+      renderTransfersView() {
+        const leagueData = this.data;
+        if (!leagueData) return;
+
+        if (leagueData.tier === 2 || (this.config && this.config.tier === 2)) {
+          const container = document.getElementById('transfers-view');
+          if (container) {
+            const isEn = (this.currentLang === 'en');
+            container.innerHTML = `
+              <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 text-center shadow-xs max-w-xl mx-auto my-8">
+                <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xl font-bold font-display">
+                  🔄
+                </div>
+                <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-2 font-display">
+                  ${isEn ? 'Tier 2 League: Standings & Leaderboard Only' : 'มินิลีกระดับ Tier 2: โหมดแสดงตารางคะแนน'}
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                  ${isEn 
+                    ? 'This league is optimized for large mini-leagues (up to 1,000+ teams). Detailed transfer moves and squad analytics are active for Tier 1 leagues.' 
+                    : 'มินิลีกนี้ทำงานในโหมด Standings Only สำหรับลีกขนาดใหญ่ (รองรับได้ถึง 1,000+ ทีม) ระบบวิเคราะห์การย้ายตัวและขุมกำลังจะเปิดใช้งานสำหรับลีกระดับ Tier 1 (ไม่เกิน 30 ทีม)'}
+                </p>
+                <button onclick="app.switchTab('gameweek-view')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold font-display shadow-2xs transition-colors cursor-pointer">
+                  ${isEn ? 'View Standings & Live Points' : 'กลับไปดูตารางคะแนน & แต้มสด'}
+                </button>
+              </div>
+            `;
+          }
+          return;
+        }
+
+        const teams = this.getLeaderboardTeams();
+        const totalTeams = teams.length;
+        if (totalTeams === 0) return;
+
+        const currentGw = this.selectedGW;
+
+        // Set state defaults
+        this.transfersFilter = this.transfersFilter || 'all';
+        this.transfersSearch = this.transfersSearch || '';
+        this.compDiffPosFilter = this.compDiffPosFilter || 'ALL';
+        this.compDiffSearch = this.compDiffSearch || '';
+        this.compTransferTeam = this.compTransferTeam || '';
+        this.compTransferMobileView = this.compTransferMobileView || (typeof window !== 'undefined' && window.innerWidth < 640 ? 'best' : 'both');
+
+        // Update Header Badges
+        const leagueBadge = document.getElementById('transfers-league-badge');
+        const gwBadge = document.getElementById('transfers-gw-badge');
+        if (leagueBadge) leagueBadge.innerText = leagueData.name || `League ${this.activeLeagueId}`;
+        if (gwBadge) gwBadge.innerText = `Gameweek ${currentGw}`;
+
+        // 1. Render Weekly Transfers Activity & ROI Analytics (Roadmap 8.1.5)
+        this.renderTransfersWeeklyAnalytics(teams, totalTeams, currentGw);
+
+        // 2. Render Important & Differential Players (Side-by-side Grid)
         this.renderCompetitionPlayers(teams, totalTeams, currentGw);
 
         // 3. Render Transfer Suggestions
         this.renderCompetitionTransfers(teams, totalTeams, currentGw);
+      }
+
+      // --- Weekly Transfers Activity & ROI Analytics (Roadmap 8.1.5) ---
+      renderTransfersWeeklyAnalytics(teams, totalTeams, currentGw) {
+        const isEn = (this.currentLang === 'en');
+        const container = document.getElementById('transfers-analytics-section');
+        if (!container) return;
+
+        const gwKey = String(currentGw);
+        const gwData = this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
+        const results = (gwData && gwData.results) ? gwData.results : [];
+
+        // Build map by entry_id for quick result lookup
+        const resMap = {};
+        results.forEach(r => {
+          resMap[Number(r.entry_id)] = r;
+        });
+
+        // Compute summary metrics across league
+        let totalTransfersCount = 0;
+        let totalHitsCost = 0;
+        let totalNetImpact = 0;
+        let bestMove = null;
+        let bestMoveManager = '';
+        let hitTeamsCount = 0;
+        let transferTeamsCount = 0;
+
+        const rowsData = teams.map(t => {
+          const eid = Number(t.entry_id);
+          const r = resMap[eid] || {};
+          const tCount = Number(r.transfers_count) || 0;
+          const hits = Number(r.hits) || 0;
+          const net = Number(r.transfers_net_impact) || 0;
+          const ptsGain = Number(r.transfers_pts_gain) || 0;
+          const moves = Array.isArray(r.transfer_moves) ? r.transfer_moves : [];
+          const chip = r.chip || null;
+
+          if (tCount > 0) transferTeamsCount++;
+          if (hits > 0) hitTeamsCount++;
+          totalTransfersCount += tCount;
+          totalHitsCost += hits;
+          totalNetImpact += net;
+
+          moves.forEach(m => {
+            const mNet = Number(m.net) || 0;
+            if (!bestMove || mNet > (bestMove.net || 0)) {
+              bestMove = m;
+              bestMoveManager = t.player_name || t.entry_name;
+            }
+          });
+
+          return {
+            team: t,
+            transfers_count: tCount,
+            hits: hits,
+            net: net,
+            pts_gain: ptsGain,
+            moves: moves,
+            chip: chip
+          };
+        });
+
+        // Apply filters
+        const activeFilter = this.transfersFilter || 'all';
+        const search = (this.transfersSearch || '').toLowerCase().trim();
+
+        let filteredRows = rowsData;
+        if (activeFilter === 'transferred') {
+          filteredRows = filteredRows.filter(row => row.transfers_count > 0);
+        } else if (activeFilter === 'hits') {
+          filteredRows = filteredRows.filter(row => row.hits > 0);
+        } else if (activeFilter === 'profit') {
+          filteredRows = filteredRows.filter(row => row.net > 0);
+        } else if (activeFilter === 'loss') {
+          filteredRows = filteredRows.filter(row => row.net < 0);
+        }
+
+        if (search) {
+          filteredRows = filteredRows.filter(row => {
+            const tName = (row.team.entry_name || '').toLowerCase();
+            const pName = (row.team.player_name || '').toLowerCase();
+            const movesStr = row.moves.map(m => `${m.in || ''} ${m.out || ''}`).join(' ').toLowerCase();
+            return tName.includes(search) || pName.includes(search) || movesStr.includes(search);
+          });
+        }
+
+        // Sort: Teams with transfers first, then by net impact descending, then by leaderboard rank
+        filteredRows.sort((a, b) => {
+          if ((b.transfers_count > 0) !== (a.transfers_count > 0)) {
+            return (b.transfers_count > 0) ? 1 : -1;
+          }
+          if (b.net !== a.net) return b.net - a.net;
+          return (a.team.leaderboard_rank || 99) - (b.team.leaderboard_rank || 99);
+        });
+
+        const netColor = totalNetImpact > 0 
+          ? 'text-emerald-600 dark:text-emerald-400' 
+          : (totalNetImpact < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-700 dark:text-slate-300');
+
+        container.innerHTML = `
+          <div class="glass-card rounded-2xl p-4 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
+            
+            <!-- Section Title & GW -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display flex items-center gap-2">
+                  ${isEn ? 'Gameweek Transfer Activity & ROI' : 'สถิติการย้ายตัวประจำสัปดาห์'}
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-sans">
+                    GW ${currentGw}
+                  </span>
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  ${isEn 
+                    ? 'Track actual transfers in/out, hits taken, and net point impact across the league' 
+                    : 'สรุปการซื้อขายนักเตะเข้า-ออก, แต้มลบจากการย้ายตัว (Hits) และผลกำไร-ขาดทุนคะแนนสุทธิ'}
+                </p>
+              </div>
+            </div>
+
+            <!-- 4 KPI Summary Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              <!-- KPI 1: Total Transfers -->
+              <div class="bg-slate-50/80 dark:bg-slate-800/40 rounded-xl p-3 sm:p-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+                <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 font-display">
+                  ${isEn ? 'Total Transfers' : 'จำนวนย้ายตัวทั้งลีก'}
+                </span>
+                <div class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white font-display mt-1">
+                  ${totalTransfersCount} <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${isEn ? 'moves' : 'ครั้ง'}</span>
+                </div>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">
+                  ${isEn ? `${transferTeamsCount} of ${totalTeams} teams active` : `${transferTeamsCount} จาก ${totalTeams} ทีมมีการย้ายตัว`}
+                </span>
+              </div>
+
+              <!-- KPI 2: Hits Cost -->
+              <div class="bg-slate-50/80 dark:bg-slate-800/40 rounded-xl p-3 sm:p-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+                <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 font-display">
+                  ${isEn ? 'Total Hits Deducted' : 'แต้มลบทั้งลีก (Hits)'}
+                </span>
+                <div class="text-xl sm:text-2xl font-extrabold text-rose-600 dark:text-rose-400 font-display mt-1">
+                  -${totalHitsCost} <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">pts</span>
+                </div>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">
+                  ${isEn ? `${hitTeamsCount} teams took hits` : `${hitTeamsCount} ทีมยอมเสียแต้มย้ายตัว`}
+                </span>
+              </div>
+
+              <!-- KPI 3: Net Impact -->
+              <div class="bg-slate-50/80 dark:bg-slate-800/40 rounded-xl p-3 sm:p-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+                <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 font-display">
+                  ${isEn ? 'League Net Impact' : 'กำไรแต้มสุทธิทั้งลีก'}
+                </span>
+                <div class="text-xl sm:text-2xl font-extrabold ${netColor} font-display mt-1">
+                  ${totalNetImpact > 0 ? `+${totalNetImpact}` : totalNetImpact} <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">pts</span>
+                </div>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">
+                  ${isEn ? 'Gain minus hits cost' : 'แต้มตัวเข้าลบตัวออกและฮิตส์'}
+                </span>
+              </div>
+
+              <!-- KPI 4: Best Transfer of the Week -->
+              <div class="bg-slate-50/80 dark:bg-slate-800/40 rounded-xl p-3 sm:p-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+                <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 font-display">
+                  ${isEn ? 'Best Transfer of GW' : 'ดีลยอดเยี่ยมประจำสัปดาห์'}
+                </span>
+                ${bestMove ? `
+                  <div class="text-xs font-bold text-slate-900 dark:text-white font-display mt-1 truncate">
+                    <span class="text-emerald-600 dark:text-emerald-400 font-extrabold">+${bestMove.net} pts</span> ➔ ${bestMove.in}
+                  </div>
+                  <span class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 truncate">
+                    ${isEn ? 'by' : 'โดย'} ${bestMoveManager}
+                  </span>
+                ` : `
+                  <div class="text-xs font-medium text-slate-500 dark:text-slate-400 font-display mt-1">
+                    -
+                  </div>
+                  <span class="text-[10px] text-slate-400 mt-1">
+                    ${isEn ? 'No transfers yet' : 'ยังไม่มีการย้ายตัว'}
+                  </span>
+                `}
+              </div>
+            </div>
+
+            <!-- Filter Controls & Search -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-1">
+              <!-- Filter Pills -->
+              <div class="flex items-center gap-1.5 overflow-x-auto touch-scroll no-scrollbar p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
+                <button 
+                  onclick="app.setTransfersFilter('all')" 
+                  class="px-2.5 sm:px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeFilter === 'all' ? 'bg-slate-900 text-white dark:bg-blue-600 shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
+                >
+                  ${isEn ? 'All Teams' : 'ทั้งหมด'} (${rowsData.length})
+                </button>
+                <button 
+                  onclick="app.setTransfersFilter('transferred')" 
+                  class="px-2.5 sm:px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeFilter === 'transferred' ? 'bg-slate-900 text-white dark:bg-blue-600 shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
+                >
+                  ${isEn ? 'Transfers' : 'มีการย้ายตัว'} (${transferTeamsCount})
+                </button>
+                <button 
+                  onclick="app.setTransfersFilter('profit')" 
+                  class="px-2.5 sm:px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeFilter === 'profit' ? 'bg-emerald-600 text-white shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
+                >
+                  ${isEn ? 'Profitable' : 'คุ้มค่า (> 0)'}
+                </button>
+                <button 
+                  onclick="app.setTransfersFilter('hits')" 
+                  class="px-2.5 sm:px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeFilter === 'hits' ? 'bg-rose-600 text-white shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
+                >
+                  ${isEn ? 'Took Hits' : 'ติดลบ'} (${hitTeamsCount})
+                </button>
+              </div>
+
+              <!-- Search -->
+              <div class="relative w-full sm:w-64">
+                <input 
+                  type="text" 
+                  value="${this.transfersSearch || ''}"
+                  placeholder="${isEn ? 'Search team, manager, or player...' : 'ค้นหาทีม, ผู้จัดการ, หรือชื่อนักเตะ...'}"
+                  oninput="app.setTransfersSearch(this.value)"
+                  class="w-full bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white text-xs border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 pr-7 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-2xs"
+                />
+                ${this.transfersSearch ? `
+                  <button onclick="app.setTransfersSearch('')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer">✕</button>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- List of Manager Transfer Cards -->
+            <div class="space-y-2.5">
+              ${filteredRows.length === 0 ? `
+                <div class="py-8 text-center text-slate-400 text-xs">
+                  ${isEn ? 'No teams match the selected filter.' : 'ไม่พบข้อมูลที่ตรงกับตัวกรองที่เลือก'}
+                </div>
+              ` : filteredRows.map(row => {
+                const isPrize = this.isPrizeEligible(row.team.entry_id);
+                const rankBadge = isPrize 
+                  ? `<span class="px-2 py-0.5 rounded-md text-[10.5px] font-extrabold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-display">#${row.team.leaderboard_rank || '-'}</span>`
+                  : `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">${isEn ? '[Guest]' : '[ร่วมสนุก]'}</span>`;
+
+                const chipBadge = row.chip ? `
+                  <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 font-display">
+                    ${row.chip}
+                  </span>
+                ` : '';
+
+                const hitBadge = row.hits > 0 ? `
+                  <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 font-display">
+                    -${row.hits} pts hit
+                  </span>
+                ` : '';
+
+                const transferCountText = row.transfers_count === 0 
+                  ? (isEn ? '0 Transfer (Rolled FT)' : '0 ย้ายตัว (เก็บสิทธิ์ FT)')
+                  : (isEn ? `${row.transfers_count} ${row.transfers_count === 1 ? 'Transfer' : 'Transfers'}` : `ย้าย ${row.transfers_count} คน`);
+
+                // Net impact badge styling
+                let netBadgeClass = 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700';
+                let netSign = '';
+                if (row.net > 0) {
+                  netBadgeClass = 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
+                  netSign = '+';
+                } else if (row.net < 0) {
+                  netBadgeClass = 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800';
+                }
+
+                return `
+                  <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-3 sm:p-4 hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-2xs">
+                    
+                    <!-- Left: Manager & Status -->
+                    <div class="flex items-center gap-2.5 min-w-[220px]">
+                      ${rankBadge}
+                      <div class="truncate">
+                        <div class="flex items-center gap-1.5">
+                          <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display truncate">${row.team.entry_name || '-'}</span>
+                          ${chipBadge}
+                        </div>
+                        <div class="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                          <span>${row.team.player_name || '-'}</span>
+                          <span>•</span>
+                          <span class="font-medium ${row.transfers_count > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}">${transferCountText}</span>
+                          ${hitBadge}
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Center: Transfer Moves -->
+                    <div class="flex-1">
+                      ${row.moves.length > 0 ? `
+                        <div class="flex flex-wrap items-center gap-2">
+                          ${row.moves.map(m => {
+                            const mNet = Number(m.net) || 0;
+                            const mNetClass = mNet > 0 ? 'text-emerald-600 dark:text-emerald-400' : (mNet < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-500');
+                            const mNetStr = mNet > 0 ? `+${mNet}` : `${mNet}`;
+                            return `
+                              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 text-xs">
+                                <span class="text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1">
+                                  <span class="text-[9px] uppercase font-mono px-1 py-0.2 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">IN</span>
+                                  ${m.in} <span class="text-[10.5px] font-medium text-emerald-600/80">(${m.in_pts || 0}p)</span>
+                                </span>
+                                <span class="text-slate-400 text-[10px]">➔</span>
+                                <span class="text-rose-600 dark:text-rose-400 font-medium flex items-center gap-1">
+                                  <span class="text-[9px] uppercase font-mono px-1 py-0.2 rounded bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300">OUT</span>
+                                  ${m.out} <span class="text-[10.5px] font-normal text-rose-500/80">(${m.out_pts || 0}p)</span>
+                                </span>
+                                <span class="ml-1 text-[11px] font-extrabold font-display ${mNetClass}">[${mNetStr}]</span>
+                              </div>
+                            `;
+                          }).join('')}
+                        </div>
+                      ` : `
+                        <span class="text-xs text-slate-400 dark:text-slate-500 italic">
+                          ${isEn ? 'No transfers made this Gameweek' : 'ไม่มีการย้ายตัวในสัปดาห์นี้'}
+                        </span>
+                      `}
+                    </div>
+
+                    <!-- Right: Net Points Impact Badge -->
+                    <div class="flex items-center justify-end md:justify-start gap-2 flex-shrink-0">
+                      <div class="text-right">
+                        <div class="text-[10px] uppercase font-bold text-slate-400 font-display">
+                          ${isEn ? 'Net Impact' : 'แต้มสุทธิ'}
+                        </div>
+                        <div class="text-xs sm:text-sm font-extrabold px-2.5 py-0.5 rounded-lg border font-display ${netBadgeClass}">
+                          ${row.transfers_count > 0 ? `${netSign}${row.net} pts` : '0 pts'}
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+          </div>
+        `;
       }
 
       // --- Part 1: Cards Available ---
@@ -9316,7 +9765,7 @@ selectShi62GW(gwName) {
         this.cachedPlayerCounts = pCounts;
 
         // 1. Important Players (> 70%)
-        const importantSection = document.getElementById('competition-important-section');
+        const importantSection = document.getElementById('transfers-important-section') || document.getElementById('competition-important-section');
         if (importantSection) {
           const importantList = Object.values(pCounts)
             .filter(p => (p.count / totalTeams) > 0.70)
@@ -9328,7 +9777,7 @@ selectShi62GW(gwName) {
               <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
                 <div>
                   <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                    Important Players <span class="text-xs font-normal text-slate-500 dark:text-slate-400 font-sans">${isEn ? '(Ownership > 70%)' : '(มหาชน > 70%)'}</span>
+                    ${isEn ? 'Important Players (> 70%)' : 'นักเตะมหาชน > 70%'}
                   </h3>
                 </div>
                 <span class="px-2.5 py-1 rounded-xl text-xs font-bold font-display bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
@@ -9422,7 +9871,7 @@ selectShi62GW(gwName) {
       renderCompetitionDiffPlayersOnly() {
         const isEn = (this.currentLang === 'en');
         const defaultShirtUrl = this.getDefaultShirtUrl();
-        const diffSection = document.getElementById('competition-differential-section');
+        const diffSection = document.getElementById('transfers-differential-section') || document.getElementById('competition-differential-section');
         if (!diffSection) return;
 
         const pCounts = this.cachedPlayerCounts || {};
@@ -9468,7 +9917,7 @@ selectShi62GW(gwName) {
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
               <div>
                 <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                  Differential Players <span class="text-xs font-normal text-slate-500 dark:text-slate-400 font-sans">${isEn ? '(Ownership < 20%)' : '(ทีเด็ด < 20%)'}</span>
+                  ${isEn ? 'Differential Players (< 20%)' : 'นักเตะทีเด็ด < 20%'}
                 </h3>
               </div>
               <span class="px-2.5 py-1 rounded-xl text-xs font-bold font-display bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
@@ -9559,7 +10008,7 @@ selectShi62GW(gwName) {
       renderCompetitionTransfers(teams, totalTeams, currentGw) {
         const isEn = (this.currentLang === 'en');
         const defaultShirtUrl = this.getDefaultShirtUrl();
-        const container = document.getElementById('competition-transfers-section');
+        const container = document.getElementById('transfers-suggestions-section') || document.getElementById('competition-transfers-section');
         if (!container) return;
 
         const sugg = this.multiData.transfer_suggestions || {};
@@ -9574,7 +10023,7 @@ selectShi62GW(gwName) {
             <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
               <div>
                 <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display flex items-center gap-2">
-                  Transfer Suggestions <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">${isEn ? '' : '(คำแนะนำการย้ายตัว)'}</span>
+                  ${isEn ? 'Transfer Suggestions' : 'คำแนะนำการย้ายตัว'}
                   <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-sans">
                     GW ${suggGw}
                   </span>

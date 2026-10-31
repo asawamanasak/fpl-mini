@@ -338,7 +338,7 @@ flowchart TD
 3. **Smart Finished Detection - [ACTIVE & VERIFIED]:**
    * ตรวจสอบสถานะจบ Gameweek ทันทีจากผลการแข่งขันจริงใน `/api/fixtures/?event=X` โดยไม่ต้องรอ Batch `data_checked` ของ FPL Server
 4. **Head-to-Head & Cup Bracket Visualization:** ผังสายการแข่งขันบอลถ้วยแบบอินเทอร์แอคทีฟ
-5. **Player Transfer Analytics:** กราฟวิเคราะห์การซื้อขายตัวผู้เล่นรายสัปดาห์ (Transfers In/Out)
+5. **Player Transfer Analytics & Dedicated Transfers Tab - [ACTIVE & VERIFIED]:** แยกแท็บใหม่ “วิเคราะห์การย้ายตัว” (Transfers) รวมสถิติการย้ายตัวประจำสัปดาห์ (Transfers In/Out, Hits Deduction, Net Points Impact, Best Transfer of the Week), นักเตะมหาชน > 70%, นักเตะทีเด็ด < 20%, และคำแนะนำการย้ายตัว (Transfer Suggestions) พร้อมระบบสองภาษา (ไทย/อังกฤษ) 100% ไม่ปนกัน
 6. **Export as Image (Social Share Card) - [CANCELLED / REMOVED]:** ยกเลิกการพัฒนาตาม Product Strategy เพื่อส่งเสริมให้สมาชิกเข้ามาดูอันดับและคะแนนสดผ่านหน้าเว็บไซต์โดยตรง (Retain Direct Web Traffic)
 
 ---
@@ -354,6 +354,7 @@ flowchart TD
   * `rollback_6` : ยกเลิก Inner Scroll + Sticky Header Table ทั้งหมด, เปลี่ยนหัวตาราง GAMEWEEK STANDING เป็น 'คะแนนดิบ' และ '(C)'
   * `rollback_14` : ปรับเปลี่ยนฟอนต์ของทั้งระบบเป็น Sarabun (Google Fonts + Local Fallback TTF)
   * `rollback_16` : รองรับ 8 ลีกสมบูรณ์แบบ (เพิ่มลีก 567387: Fantasy Nguan & friends cup ครบทั้งการวิเคราะห์สดและผังสนาม)
+  * `rollback_17` : สร้างแท็บใหม่ "วิเคราะห์การย้ายตัว" (Transfer Analytics) แยกจาก "สถานะชิป" (Chips Strategy), รองรับสถิติย้ายตัวประจำสัปดาห์ (Transfers In/Out & ROI), และทำความสะอาดภาษา ไทย/อังกฤษ 100% ไม่ปนกัน
 * **เครื่องมือนำทาง (`./rollback.sh`):**
   * ดูรายชื่อ rollback ทั้งหมด: `./rollback.sh list`
   * ย้ายไปยังเวอร์ชันที่ต้องการ: `./rollback.sh go <number>`
