@@ -1046,5 +1046,47 @@
         "footer": "* High-excitement fantasy duel action alongside real matches."
       }
     ]
+  },
+  "567387": {
+    "id": 567387,
+    "name": "Fantasy Nguan & friends cup",
+    "short_name": "Fantasy Nguan",
+    "season": "2026/27",
+    "tier": 1,
+    "entry_fee": "-",
+    "total_pool": "-",
+    "non_prize_teams": [],
+    "features": {
+      "prize_model": "standard",
+      "has_settlement_phases": false,
+      "has_monthly_prizes": false,
+      "has_cup": false
+    },
+    "rules_cards": [
+      {
+        "title": "กติกาการแข่งขัน & เงินรางวัล",
+        "items": [
+          {
+            "label": "โครงสร้างลีก",
+            "desc": "• จำนวนทีมแข่งขัน: 11 ทีม (แข่งขันครบ 38 สัปดาห์)\n• กติกาและรางวัลของลีกอยู่ระหว่างการจัดเตรียมและจะอัปเดตเพิ่มเติมในภายหลัง"
+          }
+        ],
+        "footer": "* ติดตามการประกาศกติกาและรายละเอียดเพิ่มเติมจากผู้ดูแลลีก"
+      }
+    ],
+    "entry_fee_en": "-",
+    "total_pool_en": "-",
+    "rules_cards_en": [
+      {
+        "title": "Competition Rules & Prize Structure",
+        "items": [
+          {
+            "label": "League Structure",
+            "desc": "• 11 participating teams (competing across 38 Gameweeks)\n• League rules and prize allocations will be announced and updated soon"
+          }
+        ],
+        "footer": "* Stay tuned for official announcements from the league commissioner."
+      }
+    ]
   }
 }

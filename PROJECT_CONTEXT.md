@@ -17,6 +17,7 @@
   * ลีก 438691 (2 spade): `https://asawamanasak.github.io/fpl-mini/438691`
   * ลีก 187827 (Shi62): `https://asawamanasak.github.io/fpl-mini/187827`
   * ลีก 5349 (Bramann League): `https://asawamanasak.github.io/fpl-mini/5349`
+  * ลีก 567387 (Fantasy Nguan & friends cup): `https://asawamanasak.github.io/fpl-mini/567387`
 * **Repository:** `https://github.com/asawamanasak/fpl-mini`
 
 ---
@@ -229,6 +230,12 @@ flowchart TD
 * **สถานะกติกา & เงินรางวัล:** อยู่ระหว่างรอประกาศกติกาและโครงสร้างเงินรางวัลอย่างเป็นทางการ (Pending Rules & Prizes)
 * **Direct League URL:** `https://asawamanasak.github.io/fpl-mini/5349`
 
+### ลีก 8: 567387 - "Fantasy Nguan & friends cup"
+* **สมาชิก:** 12 ทีม
+  * **สมาชิก:** GEMINI UNITED, Punizio, ATikom, LARPWAHAHA FC, bomb29599, Attack The Champion, Pokko Utd, The Red Company, FAKETHIS, Inwza007, and others
+* **สถานะกติกา & เงินรางวัล:** อยู่ระหว่างรอผู้ดูแลลีกประกาศกติกาและโครงสร้างเงินรางวัล (Pending Rules & Prizes)
+* **Direct League URL:** `https://asawamanasak.github.io/fpl-mini/567387`
+
 ---
 
 ## 🎨 5. ไฮไลต์ฟีเจอร์สำคัญด้าน UI/UX & Frontend
@@ -346,6 +353,7 @@ flowchart TD
   * `rollback_5` : รองรับ 3 ลีกสมบูรณ์แบบ, คำนวณอันดับ Tied Rank, แบ่งเงินรางวัลแชมป์ร่วม, ปรับ UX ตารางมือถือไม่ล้นขอบ, และตัดปุ่มดินสอแก้ไขออก
   * `rollback_6` : ยกเลิก Inner Scroll + Sticky Header Table ทั้งหมด, เปลี่ยนหัวตาราง GAMEWEEK STANDING เป็น 'คะแนนดิบ' และ '(C)'
   * `rollback_14` : ปรับเปลี่ยนฟอนต์ของทั้งระบบเป็น Sarabun (Google Fonts + Local Fallback TTF)
+  * `rollback_16` : รองรับ 8 ลีกสมบูรณ์แบบ (เพิ่มลีก 567387: Fantasy Nguan & friends cup ครบทั้งการวิเคราะห์สดและผังสนาม)
 * **เครื่องมือนำทาง (`./rollback.sh`):**
   * ดูรายชื่อ rollback ทั้งหมด: `./rollback.sh list`
   * ย้ายไปยังเวอร์ชันที่ต้องการ: `./rollback.sh go <number>`
