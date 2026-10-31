@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>สถาปัตยกรรมระบบเบื้องหลัง · Architecture Workflow</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --color-paper:        #090d16;
+      --color-paper-2:      #0f172a;
+      --color-ink:          #f8fafc;
+      --color-ink-strong:   #ffffff;
+      --color-muted:        #94a3b8;
+      --color-soft:         #64748b;
+      --color-rule:         rgba(248, 250, 252, 0.08);
+      --color-rule-solid:   rgba(148, 163, 184, 0.22);
+      --color-accent:       #10b981;
+      --color-accent-tint:  rgba(16, 185, 129, 0.12);
+      --color-link:         #60a5fa;
+      --font-sans:          'Geist', 'Noto Sans Thai', system-ui, sans-serif;
+      --font-serif:         'Instrument Serif', Georgia, serif;
+      --font-mono:          'Geist Mono', ui-monospace, monospace;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --color-paper:        #f8fafc;
+        --color-paper-2:      #f1f5f9;
+        --color-ink:          #0f172a;
+        --color-ink-strong:   #020617;
+        --color-muted:        #475569;
+        --color-soft:         #64748b;
+        --color-rule:         rgba(15, 23, 42, 0.08);
+        --color-rule-solid:   #cbd5e1;
+        --color-accent:       #059669;
+        --color-accent-tint:  rgba(16, 185, 129, 0.08);
+        --color-link:         #2563eb;
+      }
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .frame {
+      max-width: 1120px;
+      width: 100%;
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.6rem, 2.4vw + 0.75rem, 2.2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--color-ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .diagram-container {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 12px;
+      background: var(--color-paper-2);
+      border: 1px solid var(--color-rule);
+      padding: 1rem 0.5rem;
+    }
+
+    svg {
+      width: 100%;
+      min-width: 980px;
+      height: auto;
+      display: block;
+    }
+
+    .legend-strip {
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--color-rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.72rem;
+      color: var(--color-muted);
+      font-family: var(--font-mono);
+    }
+
+    .legend-items {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .legend-box {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Architecture Workflow · FPL เซียนอยู่รู หมูอยู่ตึก</p>
+    <h1>สถาปัตยกรรมระบบเบื้องหลังและการประมวลผลข้อมูล (System Architecture)</h1>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 1020 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fpl-arch-title fpl-arch-desc">
+        <title id="fpl-arch-title">สถาปัตยกรรมระบบเบื้องหลังและการประมวลผลข้อมูล FPL</title>
+        <desc id="fpl-arch-desc">ไดอะแกรมแสดงโฟลว์การทำงานแบบ Serverless Jamstack เริ่มจากดึง Official FPL API แบบคู่ขนาน จัดเก็บแบบ POSIX Atomic คอมไพล์ Static HTML และส่งมอบผ่าน Fastly Edge CDN สู่เบราว์เซอร์ผู้ใช้</desc>
+
+        <defs>
+          <pattern id="bg-dots" width="20" height="20" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="0.8" fill="var(--color-ink)" opacity="0.08"/>
+          </pattern>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="var(--color-muted)"/>
+          </marker>
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="var(--color-accent)"/>
+          </marker>
+          <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="var(--color-link)"/>
+          </marker>
+        </defs>
+
+        <!-- Canvas Background -->
+        <rect width="100%" height="100%" fill="var(--color-paper)" rx="10"/>
+        <rect width="100%" height="100%" fill="url(#bg-dots)" rx="10"/>
+
+        <!-- ========================================== -->
+        <!-- ZONES (Drawn before connectors and nodes)  -->
+        <!-- ========================================== -->
+
+        <!-- Zone 1: Serverless Ingestion & Atomic State -->
+        <rect x="220" y="56" width="288" height="352" rx="8"
+              fill="var(--color-paper-2)" stroke="var(--color-rule-solid)" stroke-width="1"/>
+        <rect x="232" y="48" width="216" height="16" rx="2" fill="var(--color-paper)"/>
+        <text x="240" y="60" fill="var(--color-accent)" font-size="8.5" font-weight="600"
+              font-family="var(--font-mono)" letter-spacing="0.12em">1. INGESTION &amp; ATOMIC STATE</text>
+
+        <!-- Zone 2: Jamstack Compilation & Edge CDN -->
+        <rect x="528" y="56" width="248" height="352" rx="8"
+              fill="var(--color-paper-2)" stroke="var(--color-rule-solid)" stroke-width="1"/>
+        <rect x="540" y="48" width="204" height="16" rx="2" fill="var(--color-paper)"/>
+        <text x="548" y="60" fill="var(--color-muted)" font-size="8.5" font-weight="600"
+              font-family="var(--font-mono)" letter-spacing="0.12em">2. JAMSTACK &amp; EDGE CDN</text>
+
+        <!-- Zone 3: Client Edge Runtime -->
+        <rect x="796" y="56" width="204" height="352" rx="8"
+              fill="var(--color-paper-2)" stroke="var(--color-rule-solid)" stroke-width="1"/>
+        <rect x="808" y="48" width="168" height="16" rx="2" fill="var(--color-paper)"/>
+        <text x="816" y="60" fill="var(--color-accent)" font-size="8.5" font-weight="600"
+              font-family="var(--font-mono)" letter-spacing="0.12em">3. CLIENT RUNTIME</text>
+
+        <!-- ========================================== -->
+        <!-- CONNECTORS (Drawn behind nodes)           -->
+        <!-- ========================================== -->
+
+        <!-- C1: Official FPL API -> sync_live_fpl.py (Orthogonal right+up) -->
+        <path d="M 180,194 H 202 Q 210,194 210,186 V 142 Q 210,134 218,134 H 240"
+              fill="none" stroke="var(--color-link)" stroke-width="1.3" marker-end="url(#arrow-link)"/>
+
+        <!-- C2: sync_live_fpl.py -> POSIX Atomic Write (Vertical straight) -->
+        <line x1="364" y1="172" x2="364" y2="204"
+              stroke="var(--color-accent)" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+
+        <!-- C3: POSIX Atomic Write -> Smart Commit & Cache (Vertical straight) -->
+        <line x1="364" y1="276" x2="364" y2="308"
+              stroke="var(--color-muted)" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <!-- C4: Smart Commit & Cache -> update_preview.py (Orthogonal right+up) -->
+        <path d="M 488,344 H 510 Q 518,344 518,336 V 180 Q 518,172 526,172 H 548"
+              fill="none" stroke="var(--color-accent)" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+
+        <!-- C5: update_preview.py -> Fastly Edge CDN (Vertical straight) -->
+        <line x1="652" y1="212" x2="652" y2="260"
+              stroke="var(--color-muted)" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <!-- C6: Fastly Edge CDN -> Vanilla ES6+ Client (Orthogonal right+up) -->
+        <path d="M 756,300 H 778 Q 786,300 786,292 V 244 Q 786,236 794,236 H 816"
+              fill="none" stroke="var(--color-link)" stroke-width="1.3" marker-end="url(#arrow-link)"/>
+
+        <!-- C7: Client Return / Background Check (Dashed orthogonal return) -->
+        <path d="M 816,260 H 794 Q 786,260 786,268 V 316 Q 786,324 778,324 H 756"
+              fill="none" stroke="var(--color-muted)" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+
+        <!-- ========================================== -->
+        <!-- CONNECTOR LABELS (With opaque mask rects)  -->
+        <!-- ========================================== -->
+
+        <!-- Label C1: REST JSON -->
+        <rect x="188" y="156" width="46" height="14" rx="2" fill="var(--color-paper)"/>
+        <text x="211" y="166" fill="var(--color-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">REST JSON</text>
+
+        <!-- Label C2: IN-MEMORY -->
+        <rect x="330" y="182" width="68" height="14" rx="2" fill="var(--color-paper)"/>
+        <text x="364" y="192" fill="var(--color-accent)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">THREAD-SAFE</text>
+
+        <!-- Label C3: ATOMIC FLUSH -->
+        <rect x="330" y="286" width="68" height="14" rx="2" fill="var(--color-paper)"/>
+        <text x="364" y="296" fill="var(--color-muted)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">OS.REPLACE</text>
+
+        <!-- Label C4: BUILD TRIGGER -->
+        <rect x="496" y="248" width="62" height="14" rx="2" fill="var(--color-paper)"/>
+        <text x="527" y="258" fill="var(--color-accent)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DIFF DETECT</text>
+
+        <!-- Label C5: PRE-COMPILED -->
+        <rect x="618" y="230" width="68" height="14" rx="2" fill="var(--color-paper)"/>
+        <text x="652" y="240" fill="var(--color-muted)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">STATIC HTML</text>
+
+        <!-- Label C6: HTTP/2 BROTLI -->
+        <rect x="764" y="268" width="64" height="14" rx="2" fill="var(--color-paper)"/>
+        <text x="796" y="278" fill="var(--color-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">TTFB &lt; 50ms</text>
+
+        <!-- ========================================== -->
+        <!-- NODES                                      -->
+        <!-- ========================================== -->
+
+        <!-- Node 1: Official FPL API (External Cloud) -->
+        <g id="node-fpl-api">
+          <rect x="24" y="160" width="156" height="68" rx="6" fill="var(--color-paper)"/>
+          <rect x="24" y="160" width="156" height="68" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--color-link)" stroke-width="1.2"/>
+          <rect x="32" y="168" width="48" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
+          <text x="56" y="177" fill="var(--color-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EXTERNAL</text>
+          <text x="102" y="196" fill="var(--color-ink)" font-size="12" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Official FPL API</text>
+          <text x="102" y="213" fill="var(--color-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">Live / Picks / Static</text>
+        </g>
+
+        <!-- Node 2: sync_live_fpl.py (Focal Accent 1) -->
+        <g id="node-sync-engine">
+          <rect x="240" y="100" width="248" height="72" rx="6" fill="var(--color-paper)"/>
+          <rect x="240" y="100" width="248" height="72" rx="6" fill="var(--color-accent-tint)" stroke="var(--color-accent)" stroke-width="1.5"/>
+          <rect x="248" y="108" width="76" height="12" rx="2" fill="var(--color-accent)" opacity="0.18"/>
+          <text x="286" y="117" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">PARALLEL CORE</text>
+          <text x="364" y="138" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">sync_live_fpl.py</text>
+          <text x="364" y="156" fill="var(--color-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">ThreadPoolExecutor • 150+ ทีม 8 ลีก</text>
+        </g>
+
+        <!-- Node 3: POSIX Atomic Write -->
+        <g id="node-atomic-store">
+          <rect x="240" y="204" width="248" height="72" rx="6" fill="var(--color-paper)"/>
+          <rect x="240" y="204" width="248" height="72" rx="6" fill="rgba(148, 163, 184, 0.06)" stroke="var(--color-rule-solid)" stroke-width="1.2"/>
+          <rect x="248" y="212" width="74" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
+          <text x="285" y="221" fill="var(--color-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DATA INTEGRITY</text>
+          <text x="364" y="242" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">POSIX Atomic Store</text>
+          <text x="364" y="260" fill="var(--color-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">tempfile + os.replace • Zero Race Condition</text>
+        </g>
+
+        <!-- Node 4: Smart Commit & Cache -->
+        <g id="node-smart-commit">
+          <rect x="240" y="308" width="248" height="72" rx="6" fill="var(--color-paper)"/>
+          <rect x="240" y="308" width="248" height="72" rx="6" fill="rgba(148, 163, 184, 0.06)" stroke="var(--color-rule-solid)" stroke-width="1.2"/>
+          <rect x="248" y="316" width="74" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
+          <text x="285" y="325" fill="var(--color-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">GIT ZERO-CHURN</text>
+          <text x="364" y="346" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Smart Commit Engine</text>
+          <text x="364" y="364" fill="var(--color-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">Semantic Diff Check • ข้าม Commit ถ้าไร้แต้มเปลี่ยน</text>
+        </g>
+
+        <!-- Node 5: update_preview.py -->
+        <g id="node-preview-compiler">
+          <rect x="548" y="140" width="208" height="72" rx="6" fill="var(--color-paper)"/>
+          <rect x="548" y="140" width="208" height="72" rx="6" fill="rgba(148, 163, 184, 0.06)" stroke="var(--color-rule-solid)" stroke-width="1.2"/>
+          <rect x="556" y="148" width="80" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
+          <text x="596" y="157" fill="var(--color-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">JAMSTACK BUILD</text>
+          <text x="652" y="178" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">update_preview.py</text>
+          <text x="652" y="196" fill="var(--color-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">Multi-League • Inlined JSON Data</text>
+        </g>
+
+        <!-- Node 6: Fastly Global Edge CDN -->
+        <g id="node-edge-cdn">
+          <rect x="548" y="260" width="208" height="72" rx="6" fill="var(--color-paper)"/>
+          <rect x="548" y="260" width="208" height="72" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--color-link)" stroke-width="1.2"/>
+          <rect x="556" y="268" width="60" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
+          <text x="586" y="277" fill="var(--color-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EDGE CDN</text>
+          <text x="652" y="298" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Fastly Edge Network</text>
+          <text x="652" y="316" fill="var(--color-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">GitHub Pages • HTTP/2 • Brotli</text>
+        </g>
+
+        <!-- Node 7: Vanilla ES6+ Client (Focal Accent 2) -->
+        <g id="node-client-app">
+          <rect x="816" y="200" width="168" height="72" rx="6" fill="var(--color-paper)"/>
+          <rect x="816" y="200" width="168" height="72" rx="6" fill="var(--color-accent-tint)" stroke="var(--color-accent)" stroke-width="1.5"/>
+          <rect x="824" y="208" width="64" height="12" rx="2" fill="var(--color-accent)" opacity="0.18"/>
+          <text x="856" y="217" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">BROWSER SPA</text>
+          <text x="900" y="238" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Vanilla Client App</text>
+          <text x="900" y="256" fill="var(--color-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">0kb React • 60 FPS • State Sync</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Legend & Specs Strip -->
+    <div class="legend-strip">
+      <div class="legend-items">
+        <div class="legend-item">
+          <div class="legend-box" style="background: var(--color-accent);"></div>
+          <span>Core Engine (Focal Accent)</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-box" style="background: var(--color-link);"></div>
+          <span>Network / External Boundary</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-box" style="background: var(--color-rule-solid);"></div>
+          <span>Storage &amp; Compiler Stage</span>
+        </div>
+      </div>
+      <div>
+        <span>Design System: <strong>Emerald &amp; Slate</strong> (editorial standard)</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

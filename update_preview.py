@@ -16,6 +16,142 @@ import os
 from parse_shi62_special import parse_shi62_file
 from parse_bramann_games import parse_bramann_prediction_file, parse_bramann_challenge_file
 
+def get_architecture_diagram_html(lang='th'):
+    is_th = lang == 'th'
+    arch_title = "สถาปัตยกรรมระบบเบื้องหลังและเวิร์กโฟลว์การประมวลผลข้อมูล FPL" if is_th else "FPL System Architecture & Pipeline Workflow"
+    arch_desc = "ไดอะแกรมแสดงโฟลว์การทำงานแบบ Serverless Jamstack" if is_th else "Architecture diagram showing Jamstack serverless pipeline"
+    fullscreen_label = "เปิดดูเต็มจอ ↗" if is_th else "Open Fullscreen ↗"
+    zone1_title = "1. INGESTION &amp; ATOMIC STATE"
+    zone2_title = "2. JAMSTACK &amp; EDGE CDN"
+    zone3_title = "3. CLIENT RUNTIME"
+    sync_sub = "ThreadPoolExecutor • 150+ ทีม 8 ลีก" if is_th else "ThreadPoolExecutor • 150+ Teams 8 Leagues"
+    atomic_sub = "tempfile + os.replace • Zero Race Condition"
+    smart_commit_sub = "Semantic Diff Check • ข้าม Commit ถ้าไร้แต้มเปลี่ยน" if is_th else "Semantic Diff Check • Zero-Churn Commit History"
+    preview_compiler_sub = "Multi-League • Inlined JSON Data"
+    edge_cdn_sub = "GitHub Pages • HTTP/2 • Brotli"
+    client_sub = "0kb React • 60 FPS • State Sync"
+
+    return f"""
+          <!-- Architecture Workflow Diagram (Visual Guide) -->
+          <div class="mt-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-3 sm:p-4 overflow-hidden arch-diagram">
+            <div class="flex items-center justify-between mb-2.5">
+              <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                SYSTEM WORKFLOW ARCHITECTURE (DIAGRAM)
+              </span>
+              <a href="docs/architecture-workflow.html" target="_blank" rel="noopener noreferrer" class="text-[10px] font-mono text-slate-500 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors inline-flex items-center gap-1">
+                <span>{fullscreen_label}</span>
+              </a>
+            </div>
+            <div class="w-full overflow-x-auto rounded-lg border border-slate-200/60 dark:border-slate-800/80 p-2 sm:p-3 bg-slate-100/50 dark:bg-slate-950/60">
+              <svg viewBox="0 0 1020 440" class="w-full min-w-[760px] h-auto block" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fpl-embed-arch-title fpl-embed-arch-desc">
+                <title id="fpl-embed-arch-title">{arch_title}</title>
+                <desc id="fpl-embed-arch-desc">{arch_desc}</desc>
+                <defs>
+                  <pattern id="embed-bg-dots" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <circle cx="2" cy="2" r="0.8" fill="var(--diag-ink)" opacity="0.08"/>
+                  </pattern>
+                  <marker id="embed-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="var(--diag-muted)"/>
+                  </marker>
+                  <marker id="embed-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="var(--diag-accent)"/>
+                  </marker>
+                  <marker id="embed-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="var(--diag-link)"/>
+                  </marker>
+                </defs>
+                <rect width="100%" height="100%" fill="var(--diag-paper)" rx="10"/>
+                <rect width="100%" height="100%" fill="url(#embed-bg-dots)" rx="10"/>
+                <rect x="220" y="56" width="288" height="352" rx="8" fill="var(--diag-paper-2)" stroke="var(--diag-rule-solid)" stroke-width="1"/>
+                <rect x="232" y="48" width="216" height="16" rx="2" fill="var(--diag-paper)"/>
+                <text x="240" y="60" fill="var(--diag-accent)" font-size="8.5" font-weight="600" font-family="'Geist Mono', monospace" letter-spacing="0.12em">{zone1_title}</text>
+                <rect x="528" y="56" width="248" height="352" rx="8" fill="var(--diag-paper-2)" stroke="var(--diag-rule-solid)" stroke-width="1"/>
+                <rect x="540" y="48" width="204" height="16" rx="2" fill="var(--diag-paper)"/>
+                <text x="548" y="60" fill="var(--diag-muted)" font-size="8.5" font-weight="600" font-family="'Geist Mono', monospace" letter-spacing="0.12em">{zone2_title}</text>
+                <rect x="796" y="56" width="204" height="352" rx="8" fill="var(--diag-paper-2)" stroke="var(--diag-rule-solid)" stroke-width="1"/>
+                <rect x="808" y="48" width="168" height="16" rx="2" fill="var(--diag-paper)"/>
+                <text x="816" y="60" fill="var(--diag-accent)" font-size="8.5" font-weight="600" font-family="'Geist Mono', monospace" letter-spacing="0.12em">{zone3_title}</text>
+                <path d="M 180,194 H 202 Q 210,194 210,186 V 142 Q 210,134 218,134 H 240" fill="none" stroke="var(--diag-link)" stroke-width="1.3" marker-end="url(#embed-arrow-link)"/>
+                <line x1="364" y1="172" x2="364" y2="204" stroke="var(--diag-accent)" stroke-width="1.4" marker-end="url(#embed-arrow-accent)"/>
+                <line x1="364" y1="276" x2="364" y2="308" stroke="var(--diag-muted)" stroke-width="1.2" marker-end="url(#embed-arrow)"/>
+                <path d="M 488,344 H 510 Q 518,344 518,336 V 180 Q 518,172 526,172 H 548" fill="none" stroke="var(--diag-accent)" stroke-width="1.4" marker-end="url(#embed-arrow-accent)"/>
+                <line x1="652" y1="212" x2="652" y2="260" stroke="var(--diag-muted)" stroke-width="1.2" marker-end="url(#embed-arrow)"/>
+                <path d="M 756,300 H 778 Q 786,300 786,292 V 244 Q 786,236 794,236 H 816" fill="none" stroke="var(--diag-link)" stroke-width="1.3" marker-end="url(#embed-arrow-link)"/>
+                <path d="M 816,260 H 794 Q 786,260 786,268 V 316 Q 786,324 778,324 H 756" fill="none" stroke="var(--diag-muted)" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#embed-arrow)"/>
+                <rect x="188" y="156" width="46" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="211" y="166" fill="var(--diag-link)" font-size="7.5" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle" letter-spacing="0.08em">REST JSON</text>
+                <rect x="330" y="182" width="68" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="364" y="192" fill="var(--diag-accent)" font-size="7.5" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">THREAD-SAFE</text>
+                <rect x="330" y="286" width="68" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="364" y="296" fill="var(--diag-muted)" font-size="7.5" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle" letter-spacing="0.08em">OS.REPLACE</text>
+                <rect x="496" y="248" width="62" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="527" y="258" fill="var(--diag-accent)" font-size="7.5" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DIFF DETECT</text>
+                <rect x="618" y="230" width="68" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="652" y="240" fill="var(--diag-muted)" font-size="7.5" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle" letter-spacing="0.08em">STATIC HTML</text>
+                <rect x="764" y="268" width="64" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="796" y="278" fill="var(--diag-link)" font-size="7.5" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle" letter-spacing="0.08em">TTFB &lt; 50ms</text>
+                <g id="embed-node-fpl-api">
+                  <rect x="24" y="160" width="156" height="68" rx="6" fill="var(--diag-paper)"/>
+                  <rect x="24" y="160" width="156" height="68" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--diag-link)" stroke-width="1.2"/>
+                  <rect x="32" y="168" width="48" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
+                  <text x="56" y="177" fill="var(--diag-link)" font-size="7" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EXTERNAL</text>
+                  <text x="102" y="196" fill="var(--diag-ink)" font-size="12" font-weight="600" font-family="system-ui, sans-serif" text-anchor="middle">Official FPL API</text>
+                  <text x="102" y="213" fill="var(--diag-muted)" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">Live / Picks / Static</text>
+                </g>
+                <g id="embed-node-sync-engine">
+                  <rect x="240" y="100" width="248" height="72" rx="6" fill="var(--diag-paper)"/>
+                  <rect x="240" y="100" width="248" height="72" rx="6" fill="var(--diag-accent-tint)" stroke="var(--diag-accent)" stroke-width="1.5"/>
+                  <rect x="248" y="108" width="76" height="12" rx="2" fill="var(--diag-accent)" opacity="0.18"/>
+                  <text x="286" y="117" fill="var(--diag-accent)" font-size="7" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">PARALLEL CORE</text>
+                  <text x="364" y="138" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="system-ui, sans-serif" text-anchor="middle">sync_live_fpl.py</text>
+                  <text x="364" y="156" fill="var(--diag-muted)" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">{sync_sub}</text>
+                </g>
+                <g id="embed-node-atomic-store">
+                  <rect x="240" y="204" width="248" height="72" rx="6" fill="var(--diag-paper)"/>
+                  <rect x="240" y="204" width="248" height="72" rx="6" fill="rgba(148, 163, 184, 0.06)" stroke="var(--diag-rule-solid)" stroke-width="1.2"/>
+                  <rect x="248" y="212" width="74" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
+                  <text x="285" y="221" fill="var(--diag-soft)" font-size="7" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DATA INTEGRITY</text>
+                  <text x="364" y="242" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="system-ui, sans-serif" text-anchor="middle">POSIX Atomic Store</text>
+                  <text x="364" y="260" fill="var(--diag-muted)" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">{atomic_sub}</text>
+                </g>
+                <g id="embed-node-smart-commit">
+                  <rect x="240" y="308" width="248" height="72" rx="6" fill="var(--diag-paper)"/>
+                  <rect x="240" y="308" width="248" height="72" rx="6" fill="rgba(148, 163, 184, 0.06)" stroke="var(--diag-rule-solid)" stroke-width="1.2"/>
+                  <rect x="248" y="316" width="74" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
+                  <text x="285" y="325" fill="var(--diag-soft)" font-size="7" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">GIT ZERO-CHURN</text>
+                  <text x="364" y="346" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="system-ui, sans-serif" text-anchor="middle">Smart Commit Engine</text>
+                  <text x="364" y="364" fill="var(--diag-muted)" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">{smart_commit_sub}</text>
+                </g>
+                <g id="embed-node-preview-compiler">
+                  <rect x="548" y="140" width="208" height="72" rx="6" fill="var(--diag-paper)"/>
+                  <rect x="548" y="140" width="208" height="72" rx="6" fill="rgba(148, 163, 184, 0.06)" stroke="var(--diag-rule-solid)" stroke-width="1.2"/>
+                  <rect x="556" y="148" width="80" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
+                  <text x="596" y="157" fill="var(--diag-soft)" font-size="7" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">JAMSTACK BUILD</text>
+                  <text x="652" y="178" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="system-ui, sans-serif" text-anchor="middle">update_preview.py</text>
+                  <text x="652" y="196" fill="var(--diag-muted)" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">{preview_compiler_sub}</text>
+                </g>
+                <g id="embed-node-edge-cdn">
+                  <rect x="548" y="260" width="208" height="72" rx="6" fill="var(--diag-paper)"/>
+                  <rect x="548" y="260" width="208" height="72" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--diag-link)" stroke-width="1.2"/>
+                  <rect x="556" y="268" width="60" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
+                  <text x="586" y="277" fill="var(--diag-link)" font-size="7" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EDGE CDN</text>
+                  <text x="652" y="298" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="system-ui, sans-serif" text-anchor="middle">Fastly Edge Network</text>
+                  <text x="652" y="316" fill="var(--diag-muted)" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">{edge_cdn_sub}</text>
+                </g>
+                <g id="embed-node-client-app">
+                  <rect x="816" y="200" width="168" height="72" rx="6" fill="var(--diag-paper)"/>
+                  <rect x="816" y="200" width="168" height="72" rx="6" fill="var(--diag-accent-tint)" stroke="var(--diag-accent)" stroke-width="1.5"/>
+                  <rect x="824" y="208" width="64" height="12" rx="2" fill="var(--diag-accent)" opacity="0.18"/>
+                  <text x="856" y="217" fill="var(--diag-accent)" font-size="7" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">BROWSER SPA</text>
+                  <text x="900" y="238" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="system-ui, sans-serif" text-anchor="middle">Vanilla Client App</text>
+                  <text x="900" y="256" fill="var(--diag-muted)" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">{client_sub}</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+    """
+
 def generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=None, precomputed_cfg_str=None, shi62_data_json_str=None, bramann_pred_json_str=None, bramann_chal_json_str=None):
     if precomputed_json_str is None:
         # Performance Optimization: Deep-strip raw_picks and raw_hist before serializing into HTML
@@ -376,6 +512,32 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
     .font-display {
       font-family: var(--font-family) !important;
+    }
+
+    /* Architecture Workflow Diagram Theme Tokens */
+    .arch-diagram {
+      --diag-paper: #ffffff;
+      --diag-paper-2: #f8fafc;
+      --diag-ink: #0f172a;
+      --diag-muted: #64748b;
+      --diag-soft: #94a3b8;
+      --diag-rule: rgba(15, 23, 42, 0.08);
+      --diag-rule-solid: #cbd5e1;
+      --diag-accent: #059669;
+      --diag-accent-tint: rgba(16, 185, 129, 0.08);
+      --diag-link: #2563eb;
+    }
+    .dark .arch-diagram {
+      --diag-paper: #090d16;
+      --diag-paper-2: #0f172a;
+      --diag-ink: #f8fafc;
+      --diag-muted: #94a3b8;
+      --diag-soft: #64748b;
+      --diag-rule: rgba(248, 250, 252, 0.08);
+      --diag-rule-solid: rgba(148, 163, 184, 0.22);
+      --diag-accent: #10b981;
+      --diag-accent-tint: rgba(16, 185, 129, 0.12);
+      --diag-link: #60a5fa;
     }
 
     .glass-card {
@@ -1984,6 +2146,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <div><span class="text-slate-400 block text-[9.5px]">PERSISTENCE</span><span class="font-bold text-slate-700 dark:text-slate-300">POSIX Atomic Write</span></div>
             <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">Fastly Edge CDN</span></div>
           </div>
+          __ARCHITECTURE_DIAGRAM_TH__
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
             <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
               <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block mb-1">[INGESTION & CONCURRENCY]</span>
@@ -13396,6 +13559,7 @@ selectShi62GW(gwName) {
                   <div><span class="text-slate-400 block text-[9.5px]">PERSISTENCE</span><span class="font-bold text-slate-700 dark:text-slate-300">POSIX Atomic Write</span></div>
                   <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">Fastly Edge CDN</span></div>
                 </div>
+                __ARCHITECTURE_DIAGRAM_EN__
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
                   <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
                     <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block mb-1">[INGESTION & CONCURRENCY]</span>
@@ -13664,6 +13828,7 @@ selectShi62GW(gwName) {
                   <div><span class="text-slate-400 block text-[9.5px]">PERSISTENCE</span><span class="font-bold text-slate-700 dark:text-slate-300">POSIX Atomic Write</span></div>
                   <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">Fastly Edge CDN</span></div>
                 </div>
+                __ARCHITECTURE_DIAGRAM_TH__
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
                   <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
                     <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block mb-1">[INGESTION & CONCURRENCY]</span>
@@ -15680,6 +15845,8 @@ selectShi62GW(gwName) {
     html = html.replace('__BRAMANN_CHALLENGE_DATA_JSON__', bramann_chal_json_str or 'null')
     html = html.replace('__DEFAULT_LID__', default_lid_code)
     html = html.replace('__ASSET_PREFIX__', asset_prefix)
+    html = html.replace('__ARCHITECTURE_DIAGRAM_TH__', get_architecture_diagram_html('th'))
+    html = html.replace('__ARCHITECTURE_DIAGRAM_EN__', get_architecture_diagram_html('en'))
     return html
 
 def main():
