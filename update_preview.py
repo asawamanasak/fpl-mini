@@ -1165,7 +1165,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             id="league-switcher-btn" 
             onclick="app.toggleLeagueDropdown(event)" 
             class="group flex items-center gap-1.5 text-left cursor-pointer transition-colors leading-tight py-1 min-h-[40px]"
-            title="คลิกเพื่อสลับดูมินิลีกอื่น (Switch League)"
+            title="คลิกเพื่อสลับดูมินิลีกอื่น"
           >
             <span id="header-league-name" class="text-sm sm:text-lg font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight truncate max-w-[120px] min-[360px]:max-w-[160px] min-[400px]:max-w-[200px] sm:max-w-[340px] md:max-w-[440px]">กำลังโหลดลีก...</span>
             <span class="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-blue-50 dark:bg-slate-800 group-hover:bg-blue-100 dark:group-hover:bg-slate-700 text-blue-600 dark:text-blue-400 transition-colors flex-shrink-0 shadow-2xs">
@@ -1176,7 +1176,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <!-- Dropdown Menu Box -->
           <div id="league-dropdown-menu" class="hidden absolute top-full left-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-white dark:bg-[#0d0d0f] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 animate-in fade-in zoom-in duration-100" onclick="event.stopPropagation()">
             <div class="px-3.5 py-1.5 text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400 font-display border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-              <span>เลือกลีก (Select League)</span>
+              <span>เลือกลีก</span>
               <span class="text-[9px] text-slate-400 font-normal">คลิกเพื่อสลับ</span>
             </div>
             <div id="league-dropdown-options" class="p-1 space-y-0.5">
@@ -1190,7 +1190,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
         <div id="api-status-text" class="text-xs font-semibold text-emerald-900 hidden md:flex items-center bg-emerald-50 px-3.5 py-1.5 rounded-xl border border-emerald-300 shadow-xs font-display">
           <span id="header-gw-status-dot" class="inline-block w-2 h-2 rounded-full bg-emerald-600 mr-2"></span>
-          <span id="header-gw-status">Gameweek 2 กำลังแข่งขัน (Live)</span>
+          <span id="header-gw-status">Gameweek 2 กำลังแข่งขัน</span>
         </div>
 
         <!-- Language Switcher Button (Compact Square Toggle: TH / EN) -->
@@ -1198,7 +1198,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           id="btn-lang-toggle"
           onclick="window.app ? window.app.toggleLanguage() : (window.toggleLanguageFallback && window.toggleLanguageFallback())"
           class="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all shadow-2xs active:scale-95 flex-shrink-0 cursor-pointer"
-          title="Switch Language / สลับภาษา (TH / EN)"
+          title="สลับภาษา (TH / EN)"
           aria-label="Switch Language"
         >
           <span id="lang-btn-text" class="text-xs font-black font-display tracking-tight text-blue-600 dark:text-blue-400">EN</span>
@@ -1209,7 +1209,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           id="btn-theme-toggle"
           onclick="window.app ? window.app.toggleTheme() : (window.toggleThemeFallback && window.toggleThemeFallback())"
           class="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all shadow-2xs active:scale-95 flex-shrink-0 cursor-pointer"
-          title="สลับโหมดสว่าง / โหมดมืด (Dark Mode)"
+          title="สลับโหมดสว่าง / โหมดมืด"
           aria-label="Toggle Dark Mode"
         >
           <!-- Moon icon (shows in light mode) -->
@@ -1245,9 +1245,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
       
       <!-- Last Sync Badge with Connection Indicator -->
-      <span id="header-last-sync-badge" class="inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs" title="ระบบเชื่อมต่อ Auto-Sync ปกติ (Online)">
+      <span id="header-last-sync-badge" class="inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs" title="ระบบเชื่อมต่อ Auto-Sync ปกติ">
         <span>Last Sync: <strong id="header-last-sync" class="text-slate-900 dark:text-white font-bold">__LAST_SYNC__</strong></span>
-        <span id="header-last-sync-icon" class="inline-flex items-center" title="ระบบเชื่อมต่อ Auto-Sync ปกติ (Online)">
+        <span id="header-last-sync-icon" class="inline-flex items-center" title="ระบบเชื่อมต่อ Auto-Sync ปกติ">
           <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
         </span>
       </span>
@@ -1387,7 +1387,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <div>
               <span class="text-[10px] sm:text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold font-display flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                GAMEWEEK STANDING
+                คะแนนประจำสัปดาห์
               </span>
               <h3 id="matchday-table-title" class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">ตารางคะแนน Gameweek 2</h3>
             </div>
@@ -1403,7 +1403,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                   <th class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center w-8 sm:w-10">#</th>
                   <th class="py-2.5 px-2 sm:px-3 min-w-0">ทีม & ผู้จัดการ</th>
                   <th class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">กัปตัน</th>
-                  <th class="py-2.5 px-1 sm:px-2 text-center text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-400 font-bold whitespace-nowrap"><span class="hidden sm:inline">คะแนนสด (GW)</span><span class="sm:hidden">คะแนนสด</span></th>
+                  <th class="py-2.5 px-1 sm:px-2 text-center text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-400 font-bold whitespace-nowrap"><span class="hidden sm:inline">คะแนนสด</span><span class="sm:hidden">คะแนนสด</span></th>
                   <th class="py-2.5 px-1 sm:px-2 text-center w-8 sm:w-10 text-[10px] sm:text-[11px]"><span class="hidden sm:inline">คะแนนลบ</span><span class="sm:hidden">ลบ</span></th>
                   <th class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right w-14 sm:w-16 text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 font-bold whitespace-nowrap"><span class="hidden sm:inline">คะแนนสุทธิ</span><span class="sm:hidden">สุทธิ</span></th>
                 </tr>
@@ -1421,7 +1421,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <div>
               <span class="text-[10px] sm:text-xs uppercase tracking-wider text-blue-600 dark:text-blue-400 font-bold font-display flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-                TOTAL LEADERBOARD
+                คะแนนรวมสะสม
               </span>
               <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">ตารางคะแนนรวมสะสม</h3>
             </div>
@@ -1456,7 +1456,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <!-- Top Overview Banner (Minimal) -->
       <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-4">
         <div class="flex items-center gap-2.5">
-          <h2 id="highlights-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">Weekly Highlights <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(ไฮไลท์ประจำสัปดาห์)</span></h2>
+          <h2 id="highlights-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">ไฮไลท์ประจำสัปดาห์</h2>
         </div>
         <div class="flex items-center gap-2">
           <span id="highlights-gw-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
@@ -1561,7 +1561,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <!-- Top Overview Banner -->
       <div id="prizes-top-banner" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <span id="prizes-overview-tag" class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">PRIZE LEADERBOARD</span>
+          <span id="prizes-overview-tag" class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display"></span>
           <h2 id="prizes-overview-title" class="text-lg sm:text-xl font-bold text-slate-900 font-display mt-0.5">สรุปเงินรางวัลสะสม</h2>
           <p id="prizes-overview-subtitle" class="text-xs text-slate-500 mt-0.5">คำนวณเงินรางวัลตามกติกาของลีกอย่างโปร่งใส</p>
         </div>
@@ -1589,7 +1589,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
           <div>
-            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">CONSISTENCY RADAR</span>
+            <span id="hof-consistency-kicker" class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display"></span>
             <h3 class="text-sm sm:text-base font-bold text-slate-900 font-display">ความสม่ำเสมอของทีม</h3>
           </div>
         </div>
@@ -1601,8 +1601,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 <th class="py-2.5 px-1 sm:px-2 text-center w-7 sm:w-8 whitespace-nowrap">#</th>
                 <th class="py-2.5 px-1.5 sm:px-3 min-w-0 whitespace-nowrap">ทีม</th>
                 <th class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap" id="hof-col-wins">
-                  <span class="sm:hidden">#1 GW</span>
-                  <span class="hidden sm:inline">#1 GAMEWEEK</span>
+                  <span class="sm:hidden">#1 แชมป์</span>
+                  <span class="hidden sm:inline">#1 แชมป์สัปดาห์</span>
                 </th>
                 <th class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap">
                   <span class="sm:hidden">เฉลี่ย</span>
@@ -1643,10 +1643,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             </span>
           </div>
           <h2 id="radar-main-title" class="text-base sm:text-2xl font-black text-slate-900 dark:text-white font-display tracking-tight">
-            เรดาร์ความสม่ำเสมอของทีม (Consistency Radar)
+            เรดาร์ความสม่ำเสมอของทีม
           </h2>
           <p id="radar-main-subtitle" class="text-[11px] sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
-            เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง (Floor) และความแกว่ง (Spread) ของทุกทีมในระบบ ไม่จำกัดเฉพาะในลีก
+            เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมในระบบ ไม่จำกัดเฉพาะในลีก
           </p>
         </div>
       </div>
@@ -1698,7 +1698,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <div class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 sm:flex-1 text-xs">
               <span class="font-bold text-slate-800 dark:text-slate-200 font-display text-xs sm:text-sm">เฉลี่ย ≥ 71.0</span>
               <span class="text-slate-400 dark:text-slate-600">•</span>
-              <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">ต่ำสุด (Floor) ≥ 41</span>
+              <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">ต่ำสุด ≥ 41</span>
               <span class="text-slate-400 dark:text-slate-600">•</span>
               <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">สูงสุด ≥ 110</span>
             </div>
@@ -1716,7 +1716,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <div class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 sm:flex-1 text-xs">
               <span class="font-bold text-slate-800 dark:text-slate-200 font-display text-xs sm:text-sm">เฉลี่ย ≥ 64.0</span>
               <span class="text-slate-400 dark:text-slate-600">•</span>
-              <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">ต่ำสุด (Floor) ≥ 32</span>
+              <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">ต่ำสุด ≥ 32</span>
             </div>
             <div class="text-[10px] sm:text-xs font-medium text-emerald-700 dark:text-emerald-300/90 sm:text-right flex-shrink-0">
               มาตรฐานสูงสม่ำเสมอคงเส้นคงวา
@@ -1777,7 +1777,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <div class="glass-card rounded-2xl p-3.5 sm:p-5 border border-slate-200 dark:border-slate-800">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
           <div>
-            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display">ALL-LEAGUE CONSISTENCY MATRIX</span>
+            <span id="radar-matrix-kicker" class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display"></span>
             <h3 id="radar-matrix-title" class="text-xs sm:text-base font-bold text-slate-900 dark:text-white font-display">ตารางวัดระดับความสม่ำเสมอ & ฟอร์มการเล่น <span id="radar-gw-status-badge" class="text-[10px] text-slate-500 dark:text-slate-400 font-normal"></span></h3>
           </div>
 
@@ -1803,7 +1803,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 <option value="total_net">เรียง: คะแนนรวม ▼</option>
                 <option value="avg">เรียง: คะแนนเฉลี่ย ▼</option>
                 <option value="high">เรียง: คะแนนสูงสุด ▼</option>
-                <option value="low">เรียง: คะแนนต่ำสุด (Floor) ▼</option>
+                <option value="low">เรียง: คะแนนต่ำสุด ▼</option>
                 <option value="spread">เรียง: ความนิ่ง (แกว่งน้อย) ▲</option>
                 <option value="hits">เรียง: คะแนนลบน้อยสุด ▲</option>
                 <option value="bench">เรียง: คะแนนสำรองสูงสุด ▼</option>
@@ -1848,10 +1848,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                   <span id="th-radar-high"><span class="hidden sm:inline">สูงสุด</span><span class="sm:hidden">สูงสุด</span></span>
                 </th>
                 <th onclick="app.setRadarSortBy('low')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามคะแนนต่ำสุด">
-                  <span id="th-radar-low"><span class="hidden sm:inline">ต่ำสุด (Floor)</span><span class="sm:hidden">ต่ำสุด</span></span>
+                  <span id="th-radar-low"><span class="hidden sm:inline">คะแนนต่ำสุด</span><span class="sm:hidden">ต่ำสุด</span></span>
                 </th>
                 <th onclick="app.setRadarSortBy('spread')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามความแกว่ง (น้อยไปมาก = นิ่งกว่า)">
-                  <span id="th-radar-spread"><span class="hidden sm:inline">ความแกว่ง (Spread)</span><span class="sm:hidden">แกว่ง</span></span>
+                  <span id="th-radar-spread"><span class="hidden sm:inline">ความแกว่ง</span><span class="sm:hidden">แกว่ง</span></span>
                 </th>
                 <th onclick="app.setRadarSortBy('hits')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none" title="คลิกเพื่อเรียงตามคะแนนลบสะสม">
                   <span id="th-radar-hits"><span class="hidden sm:inline">คะแนนลบ</span><span class="sm:hidden">ลบ</span></span>
@@ -1879,12 +1879,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <!-- Top Cup Banner -->
       <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">MINI-LEAGUE KNOCKOUT CUP</span>
-          <h2 id="cup-title" class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display mt-0.5">การแข่งขันฟุตบอลถ้วย (CUP)</h2>
+          <span id="cup-kicker" class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display"></span>
+          <h2 id="cup-title" class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display mt-0.5">การแข่งขันฟุตบอลถ้วย</h2>
           <p id="cup-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">ระบบจับคู่ Knockout อัตโนมัติจาก Official FPL</p>
         </div>
         <div class="flex items-center gap-2">
-          <span id="cup-prize-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display">CUP TOURNAMENT</span>
+          <span id="cup-prize-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display">ทัวร์นาเมนต์บอลถ้วย</span>
         </div>
       </div>
 
@@ -1901,12 +1901,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <!-- Top Rules Overview Banner -->
       <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <span class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-bold font-display">OFFICIAL LEAGUE RULES & PRIZE MATRIX</span>
+          <span id="rules-kicker" class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-bold font-display"></span>
           <h2 id="rules-header-title" class="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white font-display mt-0.5">กติกาแฟนตาซี</h2>
           <p id="rules-header-desc" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5"></p>
         </div>
         <div class="flex items-center gap-2">
-          <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display">38 GAMEWEEKS</span>
+          <span id="rules-gw-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display">38 สัปดาห์</span>
           <span id="rules-header-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
         </div>
       </div>
@@ -1949,7 +1949,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             </ul>
           </div>
           <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-            ✓ แท็บ: คะแนนสด (Gameweek Live)
+            ✓ แท็บ: คะแนนสด
           </div>
         </div>
 
@@ -1998,7 +1998,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               </li>
               <li class="flex items-start gap-1.5">
                 <span class="text-amber-500 font-bold">•</span>
-                <span>หักแต้มย้ายทีม (Hits) ในตัว พร้อมเฉลี่ยเงินรางวัล (Tie-Pooling) ยุติธรรม</span>
+                <span>หักแต้มย้ายทีมในตัว พร้อมเฉลี่ยเงินรางวัลอย่างยุติธรรม</span>
               </li>
               <li class="flex items-start gap-1.5">
                 <span class="text-amber-500 font-bold">•</span>
@@ -2007,7 +2007,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             </ul>
           </div>
           <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-amber-600 dark:text-amber-400 font-medium">
-            ✓ แท็บ: เงินรางวัล (Prize Pool)
+            ✓ แท็บ: เงินรางวัล
           </div>
         </div>
 
@@ -2027,16 +2027,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               </li>
               <li class="flex items-start gap-1.5">
                 <span class="text-sky-500 font-bold">•</span>
-                <span>คำนวณแต้มได้-เสียสุทธิ (Net Impact) จากการย้ายตัวในแต่ละสัปดาห์</span>
+                <span>คำนวณแต้มได้-เสียสุทธิจากการย้ายตัวในแต่ละสัปดาห์</span>
               </li>
               <li class="flex items-start gap-1.5">
                 <span class="text-sky-500 font-bold">•</span>
-                <span>แสดงคะแนนคาดการณ์ (Projected Points) โดย AI ช่วยตัดสินใจนัดถัดไป</span>
+                <span>แสดงคะแนนคาดการณ์โดย AI ช่วยตัดสินใจนัดถัดไป</span>
               </li>
             </ul>
           </div>
           <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-sky-600 dark:text-sky-400 font-medium">
-            ✓ แท็บ: สถานะชิป & ย้ายตัว (Chips & Transfers)
+            ✓ แท็บ: วิเคราะห์การย้ายตัว
           </div>
         </div>
 
@@ -2065,7 +2065,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             </ul>
           </div>
           <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-purple-600 dark:text-purple-400 font-medium">
-            ✓ แท็บ: ทำเนียบแชมป์ & กติกา (Hall of Fame & Rules)
+            ✓ แท็บ: ทำเนียบแชมป์ & กติกา
           </div>
         </div>
 
@@ -2135,7 +2135,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <span class="flex items-center gap-2">
             <svg class="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            <span class="font-display tracking-tight text-xs sm:text-sm">สถาปัตยกรรมระบบเบื้องหลัง (System Specs for Geeks)</span>
+            <span class="font-display tracking-tight text-xs sm:text-sm">สถาปัตยกรรมระบบเบื้องหลัง</span>
           </span>
           <span class="text-[10.5px] text-slate-400 font-mono font-normal">GitHub Actions • Serverless Jamstack</span>
         </summary>
@@ -2283,7 +2283,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <!-- Substitutes Box -->
         <section class="bg-slate-50/80 dark:bg-slate-900/40 rounded-2xl p-2.5 sm:p-4 border border-slate-100/80 dark:border-slate-800/60">
           <div class="flex items-center justify-between mb-2">
-            <span id="team-modal-bench-label" class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">ตัวสำรอง (Substitutes)</span>
+            <span id="team-modal-bench-label" class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">ตัวสำรอง</span>
             <span id="team-modal-bench-total" class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold font-display"></span>
           </div>
           <div id="team-bench-container" class="grid grid-cols-1 gap-1.5 sm:gap-2">
@@ -2301,13 +2301,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
         <div class="flex items-center gap-2">
           <span class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold flex items-center justify-center text-sm font-display">Pts</span>
-          <h3 id="projected-points-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">Projected Points (คะแนนคาดการณ์)</h3>
+          <h3 id="projected-points-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">คะแนนคาดการณ์</h3>
         </div>
         <button onclick="app.closeProjectedPointsModal()" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold transition-colors cursor-pointer text-lg active:scale-95" aria-label="Close modal">✕</button>
       </div>
       <div class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 space-y-2.5 leading-relaxed">
         <p id="projected-points-desc">
-          คะแนนคาดการณ์ (Projected Points) คือการประเมินคะแนนโดยประมาณที่นักเตะน่าจะทำได้ในสัปดาห์ถัดไป จาก AI Algorithm
+          คะแนนคาดการณ์ คือการประเมินคะแนนโดยประมาณที่นักเตะน่าจะทำได้ในสัปดาห์ถัดไป จาก AI Algorithm
         </p>
         <aside id="projected-points-notice" class="bg-blue-50/80 dark:bg-blue-950/40 rounded-xl p-3 text-xs text-blue-900 dark:text-blue-200">
           <strong class="font-bold">เงื่อนไขสำคัญ:</strong> ข้อมูลนี้สมมติว่าผู้เล่นมีชื่อลงเล่นเป็นตัวจริงในสนาม ผู้จัดการทีมควรตรวจสอบอาการบาดเจ็บหรือโอกาสการโรเตชันของนักเตะก่อนตัดสินใจกดย้ายทีมจริง
@@ -4484,8 +4484,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const btnToggle = document.getElementById('btn-lang-toggle');
         if (btnToggle) {
           btnToggle.title = isEn 
-            ? 'สลับเป็นภาษาไทย (Switch to Thai)' 
-            : 'Switch to English (สลับเป็นภาษาอังกฤษ)';
+            ? 'สลับเป็นภาษาไทย' 
+            : 'Switch to English';
           btnToggle.setAttribute('aria-label', btnToggle.title);
         }
         const btnExcel = document.getElementById('btn-export-excel');
@@ -4543,7 +4543,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         // 2. Header Dropdown labels & items
         const ddHeader = document.querySelector('#league-dropdown-menu span:first-child');
-        if (ddHeader) ddHeader.innerText = isEn ? 'Select League' : 'เลือกลีก (Select League)';
+        if (ddHeader) ddHeader.innerText = isEn ? 'Select League' : 'เลือกลีก';
         const ddSub = document.querySelector('#league-dropdown-menu span:last-child');
         if (ddSub) ddSub.innerText = isEn ? 'Click to switch' : 'คลิกเพื่อสลับ';
 
@@ -4571,7 +4571,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
         const lastSyncBadge = document.getElementById('header-last-sync-badge');
         if (lastSyncBadge) {
-          lastSyncBadge.setAttribute('title', isEn ? 'Auto-Sync System Online' : 'ระบบเชื่อมต่อ Auto-Sync ปกติ (Online)');
+          lastSyncBadge.setAttribute('title', isEn ? 'Auto-Sync System Online' : 'ระบบเชื่อมต่อ Auto-Sync ปกติ');
         }
         const lastSyncEl = document.getElementById('header-last-sync');
         if (lastSyncEl && this.multiData && this.multiData.last_sync_iso) {
@@ -4594,11 +4594,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
         const totalLdBadge = document.querySelector('#gameweek-view .border-t-blue-600 span.uppercase');
         if (totalLdBadge) {
-          totalLdBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-blue-600"></span>${isEn ? 'OVERALL STANDINGS' : 'TOTAL LEADERBOARD'}`;
+          totalLdBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-blue-600"></span>${isEn ? 'OVERALL STANDINGS' : 'คะแนนรวมสะสม'}`;
         }
         const matchdayLdBadge = document.querySelector('#gameweek-view .border-t-emerald-500 span.uppercase');
         if (matchdayLdBadge) {
-          matchdayLdBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span>${isEn ? 'GAMEWEEK STANDING' : 'GAMEWEEK STANDING'}`;
+          matchdayLdBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span>${isEn ? 'GAMEWEEK STANDING' : 'คะแนนประจำสัปดาห์'}`;
         }
 
         // Live table headers (both desktop and mobile spans)
@@ -4608,7 +4608,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           thLiveHeaders[2].innerText = isEn ? 'Captain' : 'กัปตัน';
           thLiveHeaders[3].innerHTML = isEn 
             ? '<span class="hidden sm:inline">Live Pts (GW)</span><span class="sm:hidden">Live</span>'
-            : '<span class="hidden sm:inline">คะแนนสด (GW)</span><span class="sm:hidden">คะแนนสด</span>';
+            : '<span class="hidden sm:inline">คะแนนสด</span><span class="sm:hidden">คะแนนสด</span>';
           thLiveHeaders[4].innerHTML = isEn
             ? '<span class="hidden sm:inline">Hits</span><span class="sm:hidden">Hits</span>'
             : '<span class="hidden sm:inline">คะแนนลบ</span><span class="sm:hidden">ลบ</span>';
@@ -4651,13 +4651,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         // Radar section title & subtitle
         const radarMainTitle = document.getElementById('radar-main-title');
         if (radarMainTitle) {
-          radarMainTitle.innerText = isEn ? 'Team Consistency Radar' : 'เรดาร์ความสม่ำเสมอของทีม (Consistency Radar)';
+          radarMainTitle.innerText = isEn ? 'Team Consistency Radar' : 'เรดาร์ความสม่ำเสมอของทีม';
         }
         const radarMainSub = document.getElementById('radar-main-subtitle');
         if (radarMainSub) {
           radarMainSub.innerText = isEn 
             ? 'Comparing baseline scoring, floor resilience, and spread across all fantasy managers in the system.'
-            : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง (Floor) และความแกว่ง (Spread) ของทุกทีมในระบบ ไม่จำกัดเฉพาะในลีก';
+            : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมในระบบ ไม่จำกัดเฉพาะในลีก';
         }
         const benchmarkTitle = document.getElementById('radar-benchmark-title');
         if (benchmarkTitle) {
@@ -4673,7 +4673,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
         const radarGuideTitle = document.getElementById('radar-guide-title');
         if (radarGuideTitle) {
-          radarGuideTitle.innerText = isEn ? 'Consistency Tiers Criteria' : 'เกณฑ์การจัดอันดับความสม่ำเสมอ (Consistency Tiers)';
+          radarGuideTitle.innerText = isEn ? 'Consistency Tiers Criteria' : 'เกณฑ์การจัดอันดับความสม่ำเสมอ';
+        }
+        const radarMatrixKicker = document.getElementById('radar-matrix-kicker');
+        if (radarMatrixKicker) {
+          radarMatrixKicker.innerText = isEn ? 'ALL-LEAGUE CONSISTENCY MATRIX' : '';
         }
         const radarMatrixTitle = document.getElementById('radar-matrix-title');
         if (radarMatrixTitle) {
@@ -4706,7 +4710,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <option value="total_net">เรียง: คะแนนรวม ▼</option>
             <option value="avg">เรียง: คะแนนเฉลี่ย ▼</option>
             <option value="high">เรียง: คะแนนสูงสุด ▼</option>
-            <option value="low">เรียง: คะแนนต่ำสุด (Floor) ▼</option>
+            <option value="low">เรียง: คะแนนต่ำสุด ▼</option>
             <option value="spread">เรียง: ความนิ่ง (แกว่งน้อย) ▲</option>
             <option value="hits">เรียง: คะแนนลบน้อยสุด ▲</option>
             <option value="bench">เรียง: คะแนนสำรองสูงสุด ▼</option>
@@ -4726,9 +4730,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const thHigh = document.getElementById('th-radar-high');
         if (thHigh) thHigh.innerHTML = isEn ? '<span>High</span>' : '<span class="hidden sm:inline">สูงสุด</span><span class="sm:hidden">สูงสุด</span>';
         const thLow = document.getElementById('th-radar-low');
-        if (thLow) thLow.innerHTML = isEn ? '<span>Floor</span>' : '<span class="hidden sm:inline">ต่ำสุด (Floor)</span><span class="sm:hidden">ต่ำสุด</span>';
+        if (thLow) thLow.innerHTML = isEn ? '<span>Floor</span>' : '<span class="hidden sm:inline">คะแนนต่ำสุด</span><span class="sm:hidden">ต่ำสุด</span>';
         const thSpread = document.getElementById('th-radar-spread');
-        if (thSpread) thSpread.innerHTML = isEn ? '<span>Spread</span>' : '<span class="hidden sm:inline">ความแกว่ง (Spread)</span><span class="sm:hidden">แกว่ง</span>';
+        if (thSpread) thSpread.innerHTML = isEn ? '<span>Spread</span>' : '<span class="hidden sm:inline">ความแกว่ง</span><span class="sm:hidden">แกว่ง</span>';
         const thHits = document.getElementById('th-radar-hits');
         if (thHits) thHits.innerHTML = isEn ? '<span>Hits</span>' : '<span class="hidden sm:inline">คะแนนลบ</span><span class="sm:hidden">ลบ</span>';
         const thBench = document.getElementById('th-radar-bench');
@@ -4752,7 +4756,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
         const modalBenchLabel = document.querySelector('#team-modal section span.uppercase');
         if (modalBenchLabel) {
-          modalBenchLabel.innerText = isEn ? 'Substitutes (Bench)' : 'ตัวสำรอง (Substitutes)';
+          modalBenchLabel.innerText = isEn ? 'Substitutes (Bench)' : 'ตัวสำรอง';
         }
         const modalFormationLabel = document.getElementById('team-modal-formation-label');
         if (modalFormationLabel) {
@@ -4762,13 +4766,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         // 7. Projected Points Modal
         const projModalTitle = document.querySelector('#projected-points-modal h3');
         if (projModalTitle) {
-          projModalTitle.innerText = isEn ? 'Projected Points' : 'Projected Points (คะแนนคาดการณ์)';
+          projModalTitle.innerText = isEn ? 'Projected Points' : 'คะแนนคาดการณ์';
         }
         const projModalDesc = document.querySelector('#projected-points-modal p');
         if (projModalDesc) {
           projModalDesc.innerText = isEn
             ? 'Projected Points is an algorithmic estimate of expected fantasy points a player is likely to score in the upcoming gameweek, computed using predictive modeling.'
-            : 'คะแนนคาดการณ์ (Projected Points) คือการประเมินคะแนนโดยประมาณที่นักเตะน่าจะทำได้ในสัปดาห์ถัดไป จาก AI Algorithm';
+            : 'คะแนนคาดการณ์ คือการประเมินคะแนนโดยประมาณที่นักเตะน่าจะทำได้ในสัปดาห์ถัดไป จาก AI Algorithm';
         }
         const projModalAside = document.querySelector('#projected-points-modal aside');
         if (projModalAside) {
@@ -4830,6 +4834,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
 
         // 10. Prizes View Header Banner
+        const prizesTag = document.getElementById('prizes-overview-tag');
+        if (prizesTag) {
+          prizesTag.innerText = isEn ? 'PRIZE LEADERBOARD' : '';
+        }
         const prizesTitle = document.getElementById('prizes-overview-title');
         if (prizesTitle) {
           prizesTitle.innerText = isEn ? 'Prize Money Summary' : 'สรุปเงินรางวัลสะสม';
@@ -4840,12 +4848,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
 
         // 11. Hall of Fame Consistency Title & Headers
+        const hofKicker = document.getElementById('hof-consistency-kicker');
+        if (hofKicker) {
+          hofKicker.innerText = isEn ? 'CONSISTENCY RADAR' : '';
+        }
         const hofTitle = document.querySelector('#hall-of-fame-view h3.font-display');
         if (hofTitle) hofTitle.innerText = isEn ? 'Team Consistency Radar' : 'ความสม่ำเสมอของทีม';
         const thHof = document.querySelectorAll('#hall-of-fame-view table thead tr th');
         if (thHof && thHof.length >= 7) {
           thHof[1].innerText = isEn ? 'Team' : 'ทีม';
-          thHof[2].innerHTML = isEn ? '<span class="sm:hidden">#1 GW</span><span class="hidden sm:inline">#1 GAMEWEEK</span>' : '<span class="sm:hidden">#1 GW</span><span class="hidden sm:inline">#1 GAMEWEEK</span>';
+          thHof[2].innerHTML = isEn ? '<span class="sm:hidden">#1 GW</span><span class="hidden sm:inline">#1 GAMEWEEK</span>' : '<span class="sm:hidden">#1 แชมป์</span><span class="hidden sm:inline">#1 แชมป์สัปดาห์</span>';
           thHof[3].innerHTML = isEn ? '<span class="hidden sm:inline">Avg Pts</span><span class="sm:hidden">Avg</span>' : '<span class="hidden sm:inline">คะแนนเฉลี่ย</span><span class="sm:hidden">เฉลี่ย</span>';
           thHof[4].innerHTML = isEn ? '<span class="hidden sm:inline">High</span><span class="sm:hidden">High</span>' : '<span class="hidden sm:inline">คะแนนสูงสุด</span><span class="sm:hidden">สูงสุด</span>';
           thHof[5].innerHTML = isEn ? '<span class="hidden sm:inline">Floor</span><span class="sm:hidden">Floor</span>' : '<span class="hidden sm:inline">คะแนนต่ำสุด</span><span class="sm:hidden">ต่ำสุด</span>';
@@ -4853,10 +4865,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
 
         // 12. Cup View Title & Subtitle
+        const cupKicker = document.getElementById('cup-kicker');
+        if (cupKicker) {
+          cupKicker.innerText = isEn ? 'MINI-LEAGUE KNOCKOUT CUP' : '';
+        }
         const cupTitle = document.getElementById('cup-title');
-        if (cupTitle) cupTitle.innerText = isEn ? 'Knockout Cup Tournament' : 'การแข่งขันฟุตบอลถ้วย (CUP)';
+        if (cupTitle) cupTitle.innerText = isEn ? 'Knockout Cup Tournament' : 'การแข่งขันฟุตบอลถ้วย';
         const cupSub = document.getElementById('cup-subtitle');
         if (cupSub) cupSub.innerText = isEn ? 'Automatic knockout pairings powered by Official FPL' : 'ระบบจับคู่ Knockout อัตโนมัติจาก Official FPL';
+
+        // 12.1 Rules View Kicker & Badge
+        const rulesKicker = document.getElementById('rules-kicker');
+        if (rulesKicker) rulesKicker.innerText = isEn ? 'OFFICIAL LEAGUE RULES & PRIZE MATRIX' : '';
+        const rulesGwBadge = document.getElementById('rules-gw-badge');
+        if (rulesGwBadge) rulesGwBadge.innerText = isEn ? '38 GAMEWEEKS' : '38 สัปดาห์';
 
         // 13. About View
         this.renderAboutView();
@@ -4959,7 +4981,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               <div class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 sm:flex-1 text-xs">
                 <span class="font-bold text-slate-800 dark:text-slate-200 font-display text-xs sm:text-sm">เฉลี่ย ≥ 71.0</span>
                 <span class="text-slate-400 dark:text-slate-600">•</span>
-                <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">ต่ำสุด (Floor) ≥ 41</span>
+                <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">ต่ำสุด ≥ 41</span>
                 <span class="text-slate-400 dark:text-slate-600">•</span>
                 <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">สูงสุด ≥ 110</span>
               </div>
@@ -4977,7 +4999,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               <div class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 sm:flex-1 text-xs">
                 <span class="font-bold text-slate-800 dark:text-slate-200 font-display text-xs sm:text-sm">เฉลี่ย ≥ 64.0</span>
                 <span class="text-slate-400 dark:text-slate-600">•</span>
-                <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">ต่ำสุด (Floor) ≥ 32</span>
+                <span class="text-slate-600 dark:text-slate-300 text-[11px] sm:text-xs">ต่ำสุด ≥ 32</span>
               </div>
               <div class="text-[10px] sm:text-xs font-medium text-emerald-700 dark:text-emerald-300/90 sm:text-right flex-shrink-0">
                 มาตรฐานสูงสม่ำเสมอคงเส้นคงวา
@@ -5261,11 +5283,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         if (gwStatusEl) {
           if (isCurFinished) {
-            gwStatusEl.innerText = isEn ? `Gameweek ${maxGW} Finished` : `Gameweek ${maxGW} จบการแข่งขัน (Finished)`;
+            gwStatusEl.innerText = isEn ? `Gameweek ${maxGW} Finished` : `Gameweek ${maxGW} จบการแข่งขัน`;
           } else if (isCurStarted) {
-            gwStatusEl.innerText = isEn ? `Gameweek ${maxGW} Live in Progress` : `Gameweek ${maxGW} กำลังแข่งขัน (Live)`;
+            gwStatusEl.innerText = isEn ? `Gameweek ${maxGW} Live in Progress` : `Gameweek ${maxGW} กำลังแข่งขัน`;
           } else {
-            gwStatusEl.innerText = isEn ? `Gameweek ${maxGW} Upcoming` : `Gameweek ${maxGW} รอคิกออฟ (Upcoming)`;
+            gwStatusEl.innerText = isEn ? `Gameweek ${maxGW} Upcoming` : `Gameweek ${maxGW} รอคิกออฟ`;
           }
         }
 
@@ -5282,11 +5304,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         // Auto-Sync Connection Status (Green = Connected/Healthy, Red = Disconnected/Error)
         let isSyncHealthy = true;
-        let syncStatusTitle = isEn ? 'Auto-Sync System Online' : 'ระบบเชื่อมต่อ Auto-Sync ปกติ (Online)';
+        let syncStatusTitle = isEn ? 'Auto-Sync System Online' : 'ระบบเชื่อมต่อ Auto-Sync ปกติ';
 
         if (this.multiData && this.multiData.sync_status === 'offline') {
           isSyncHealthy = false;
-          syncStatusTitle = isEn ? 'Auto-Sync Offline / Error' : 'ไม่สามารถเชื่อมต่อระบบ Auto-Sync ได้ (Offline/Error)';
+          syncStatusTitle = isEn ? 'Auto-Sync Offline / Error' : 'ไม่สามารถเชื่อมต่อระบบ Auto-Sync ได้';
         } else if (this.multiData && this.multiData.last_sync_iso) {
           try {
             const syncTime = new Date(this.multiData.last_sync_iso.replace(' ', 'T') + '+07:00');
@@ -5294,7 +5316,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             const diffHours = (now - syncTime) / (1000 * 60 * 60);
             if (diffHours > 24) {
               isSyncHealthy = false;
-              syncStatusTitle = isEn ? 'No Auto-Sync signal for > 24h (Offline)' : 'ไม่พบสัญญาณ Auto-Sync นานกว่า 24 ชม. (Offline)';
+              syncStatusTitle = isEn ? 'No Auto-Sync signal for > 24h (Offline)' : 'ไม่พบสัญญาณ Auto-Sync นานกว่า 24 ชม.';
             }
           } catch (e) {}
         }
@@ -7034,7 +7056,7 @@ selectShi62GW(gwName) {
                   <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-display text-xs sm:text-sm font-bold">
                     <tr>
                       <td colspan="2" class="py-3 px-3 text-slate-700 dark:text-slate-300">
-                        ${isEn ? 'Total Pool Balance' : 'ยอดรวมจัดสรรเงินกองกลาง (Total Pool Balance)'}
+                        ${isEn ? 'Total Pool Balance' : 'ยอดรวมจัดสรรเงินกองกลาง'}
                       </td>
                       <td class="py-3 px-2 text-center text-slate-900 dark:text-white font-black">${sumPoints}</td>
                       <td class="py-3 px-2 text-right text-slate-900 dark:text-white font-black">${sumP1.toLocaleString()}</td>
@@ -7471,10 +7493,10 @@ selectShi62GW(gwName) {
             tableBadge.innerText = isEn ? 'Official Results' : 'ผลการแข่งขันทางการ';
             tableBadge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200';
           } else if (isStarted) {
-            tableBadge.innerText = isEn ? 'Live in Progress' : 'กำลังแข่งขัน (Live)';
+            tableBadge.innerText = isEn ? 'Live in Progress' : 'กำลังแข่งขัน';
             tableBadge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200';
           } else {
-            tableBadge.innerText = isEn ? 'Upcoming' : 'รอคิกออฟ (Upcoming)';
+            tableBadge.innerText = isEn ? 'Upcoming' : 'รอคิกออฟ';
             tableBadge.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200';
           }
         }
@@ -7590,7 +7612,7 @@ selectShi62GW(gwName) {
                     <div class="flex items-center gap-2 mb-1">
                       <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-indigo-500/15 text-indigo-900 dark:text-indigo-200 border border-indigo-300/60 dark:border-indigo-500/30 font-display shadow-2xs">
                         <span>📋</span>
-                        <span>พรีวิวสัปดาห์การแข่งขัน (GAMEWEEK PREVIEW)</span>
+                        <span>${isEn ? 'GAMEWEEK PREVIEW' : 'พรีวิวสัปดาห์การแข่งขัน'}</span>
                       </span>
                       <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">${isEn ? 'Upcoming' : 'รอคิกออฟ'}</span>
                     </div>
@@ -7609,15 +7631,15 @@ selectShi62GW(gwName) {
                 <!-- Tactical Grid for Pre-Match -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-3.5 pt-3 border-t border-indigo-100/80 dark:border-slate-700 text-xs">
                   <div class="bg-white/90 dark:bg-slate-800/90 rounded-xl p-2.5 border border-indigo-100/90 dark:border-slate-700 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display block">${isEn ? 'Top Captains' : 'กัปตันยอดฮิต (Top Captains)'}</span>
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display block">${isEn ? 'Top Captains' : 'กัปตันยอดฮิต'}</span>
                     <span class="font-bold text-slate-900 dark:text-white text-xs mt-0.5 block truncate">${topCaptainsText}</span>
                   </div>
                   <div class="bg-white/90 dark:bg-slate-800/90 rounded-xl p-2.5 border border-indigo-100/90 dark:border-slate-700 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display block">${isEn ? 'Active Chips' : 'ชิปที่ใช้งาน (Active Chips)'}</span>
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display block">${isEn ? 'Active Chips' : 'ชิปที่ใช้งาน'}</span>
                     <span class="font-bold text-slate-900 dark:text-white text-xs mt-0.5 block truncate">${chipsList}</span>
                   </div>
                   <div class="bg-white/90 dark:bg-slate-800/90 rounded-xl p-2.5 border border-indigo-100/90 dark:border-slate-700 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display block">${isEn ? 'Hits Taken' : 'คะแนนลบย้ายตัว (Hits Taken)'}</span>
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display block">${isEn ? 'Hits Taken' : 'คะแนนลบย้ายตัว'}</span>
                     <span class="font-bold text-slate-900 dark:text-white text-xs mt-0.5 block truncate">${hitsText}</span>
                   </div>
                 </div>
@@ -7632,10 +7654,10 @@ selectShi62GW(gwName) {
                   </div>
                   <div class="flex items-center justify-end gap-1 flex-shrink-0 self-end sm:self-center pt-1 sm:pt-0">
                     <span id="quote-copy-indicator" class="text-[11px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 inline-block font-display">Copied!</span>
-                    <button onclick="app.copyHighlightQuote()" class="w-10 h-10 min-w-[40px] min-h-[40px] sm:w-9 sm:h-9 flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Copy Quote' : 'คัดลอกบทวิเคราะห์ (Copy Quote)'}">
+                    <button onclick="app.copyHighlightQuote()" class="w-10 h-10 min-w-[40px] min-h-[40px] sm:w-9 sm:h-9 flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Copy Analysis Quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     </button>
-                    <button onclick="app.regenerateLiveNote()" class="w-10 h-10 min-w-[40px] min-h-[40px] sm:w-9 sm:h-9 flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋ (Refresh Analysis)'}">
+                    <button onclick="app.regenerateLiveNote()" class="w-10 h-10 min-w-[40px] min-h-[40px] sm:w-9 sm:h-9 flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
                   </div>
@@ -7836,7 +7858,7 @@ selectShi62GW(gwName) {
                         <span class="text-[10px] sm:text-[11px] ${isFinished ? 'text-slate-700 dark:text-slate-300' : 'text-emerald-900/80 dark:text-slate-400'} uppercase font-bold font-display block leading-tight">
                           ${isEn 
                             ? (isFinished ? (isWeeklyPrize ? 'Net Pts' : 'Official Score') : (isWeeklyPrize ? 'Live Net Pts' : 'Live Pts'))
-                            : (isFinished ? (isWeeklyPrize ? 'แต้มสุทธิ (Net Pts)' : 'คะแนนทางการ') : (isWeeklyPrize ? 'แต้มสุทธิสด (Live Net)' : 'คะแนนสด (Live Pts)'))
+                            : (isFinished ? (isWeeklyPrize ? 'แต้มสุทธิ' : 'คะแนนทางการ') : (isWeeklyPrize ? 'แต้มสุทธิสด' : 'คะแนนสด'))
                           }
                         </span>
                         <span class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-display leading-none">${prizeLeader[scoreProp]} <span class="text-xs font-bold text-slate-500 dark:text-slate-400">pts</span></span>
@@ -7866,10 +7888,10 @@ selectShi62GW(gwName) {
                   </div>
                   <div class="flex items-center justify-end gap-1 flex-shrink-0 self-end sm:self-center pt-1 sm:pt-0">
                     <span id="quote-copy-indicator" class="text-[11px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 inline-block font-display">Copied!</span>
-                    <button onclick="app.copyHighlightQuote()" class="w-10 h-10 min-w-[40px] min-h-[40px] sm:w-9 sm:h-9 flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Copy Analysis Quote' : 'คัดลอกพาดหัวบทวิเคราะห์ (Copy Quote)'}">
+                    <button onclick="app.copyHighlightQuote()" class="w-10 h-10 min-w-[40px] min-h-[40px] sm:w-9 sm:h-9 flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Copy Analysis Quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     </button>
-                    <button onclick="app.regenerateLiveNote()" class="w-10 h-10 min-w-[40px] min-h-[40px] sm:w-9 sm:h-9 flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋ (Refresh Analysis)'}">
+                    <button onclick="app.regenerateLiveNote()" class="w-10 h-10 min-w-[40px] min-h-[40px] sm:w-9 sm:h-9 flex items-center justify-center p-2 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
                   </div>
@@ -8428,7 +8450,7 @@ selectShi62GW(gwName) {
         const grid = document.getElementById('highlights-cards-grid');
 
         const isEn = (this.currentLang === 'en');
-        if (titleEl) titleEl.innerHTML = isEn ? 'Weekly Highlights' : 'Weekly Highlights <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(ไฮไลท์ประจำสัปดาห์)</span>';
+        if (titleEl) titleEl.innerHTML = isEn ? 'Weekly Highlights' : 'ไฮไลท์ประจำสัปดาห์';
         if (gwBadge) gwBadge.innerText = `Gameweek ${this.selectedGW}`;
         this.updateHighlightsTabBlink();
 
@@ -8534,7 +8556,7 @@ selectShi62GW(gwName) {
         const card1 = renderCard({
           icon: ICONS.star,
           title: 'Top Gun',
-          subtitle: isEn ? 'Highest Gameweek score' : 'Highest Gameweek score <span class="text-slate-500 dark:text-slate-400 font-normal">(คะแนนสูงสุดประจำสัปดาห์)</span>',
+          subtitle: isEn ? 'Highest Gameweek score' : 'คะแนนสูงสุดประจำสัปดาห์',
           theme: 'green',
           winner: topGunWinner,
           statText: topGunWinner ? `(${topGunWinner.points} pts)` : '',
@@ -8547,7 +8569,7 @@ selectShi62GW(gwName) {
         const card2 = renderCard({
           icon: ICONS.chartDown,
           title: 'Tough Week',
-          subtitle: isEn ? 'Lowest Gameweek score' : 'Lowest Gameweek score <span class="text-slate-500 dark:text-slate-400 font-normal">(คะแนนต่ำสุดประจำสัปดาห์)</span>',
+          subtitle: isEn ? 'Lowest Gameweek score' : 'คะแนนต่ำสุดประจำสัปดาห์',
           theme: 'red',
           winner: toughWinner,
           statText: toughWinner ? `(${toughWinner.points} pts)` : '',
@@ -8665,7 +8687,7 @@ selectShi62GW(gwName) {
         const card3 = renderCard({
           icon: ICONS.rotateCcw,
           title: 'Comeback Kid',
-          subtitle: isEn ? 'Biggest rank rise' : 'Biggest rank rise <span class="text-slate-500 dark:text-slate-400 font-normal">(ไต่แรงแซงโค้ง)</span>',
+          subtitle: isEn ? 'Biggest rank rise' : 'ไต่แรงแซงโค้ง (อันดับพุ่งขึ้นมากสุด)',
           theme: 'green',
           winner: comebackWinner,
           statText: comebackStat,
@@ -8676,7 +8698,7 @@ selectShi62GW(gwName) {
         const card4 = renderCard({
           icon: ICONS.chartDown,
           title: 'Rank Crasher',
-          subtitle: isEn ? 'Biggest rank fall' : 'Biggest rank fall <span class="text-slate-500 dark:text-slate-400 font-normal">(รูดยับลงเหว)</span>',
+          subtitle: isEn ? 'Biggest rank fall' : 'รูดยับลงเหว (อันดับร่วงลงมากสุด)',
           theme: 'red',
           winner: crasherWinner,
           statText: crasherStat,
@@ -8691,8 +8713,8 @@ selectShi62GW(gwName) {
           icon: ICONS.trophy,
           title: 'Chip Master',
           subtitle: chipMasterWinner 
-            ? (isEn ? `Best score with a chip (${this.getChipCode(chipMasterWinner.chip)})` : `Best score with a chip (${this.getChipCode(chipMasterWinner.chip)}) <span class="text-slate-500 dark:text-slate-400 font-normal">(กางการ์ดอย่างเซียน)</span>`)
-            : (isEn ? 'Best score with a chip' : 'Best score with a chip <span class="text-slate-500 dark:text-slate-400 font-normal">(กางการ์ดอย่างเซียน)</span>'),
+            ? (isEn ? `Best score with a chip (${this.getChipCode(chipMasterWinner.chip)})` : `กางการ์ดอย่างเซียน (${this.getChipCode(chipMasterWinner.chip)})`)
+            : (isEn ? 'Best score with a chip' : 'กางการ์ดอย่างเซียน'),
           theme: 'green',
           winner: chipMasterWinner,
           statText: chipMasterWinner ? `(${chipMasterWinner.net_points} pts)` : '',
@@ -8706,7 +8728,7 @@ selectShi62GW(gwName) {
         const card6 = renderCard({
           icon: ICONS.award,
           title: 'No-Chip Warrior',
-          subtitle: isEn ? 'Best score without playing a chip' : 'Best score without playing a chip <span class="text-slate-500 dark:text-slate-400 font-normal">(ตัวตึงไม่ง้อชิป)</span>',
+          subtitle: isEn ? 'Best score without playing a chip' : 'ตัวตึงไม่ง้อชิป (คะแนนสูงสุดโดยไม่ใช้ชิป)',
           theme: 'green',
           winner: noChipWinner,
           statText: noChipWinner ? `(${noChipWinner.net_points} pts)` : '',
@@ -8720,7 +8742,7 @@ selectShi62GW(gwName) {
         const card7 = renderCard({
           icon: ICONS.trophy,
           title: 'Value King',
-          subtitle: isEn ? 'Highest Team Value' : 'Highest Team Value <span class="text-slate-500 dark:text-slate-400 font-normal">(ใครอยากเป็นเศรษฐี... ฉันน่ะสิ ฉันน่ะสิ)</span>',
+          subtitle: isEn ? 'Highest Team Value' : 'มูลค่าทีมสูงสุด (ใครอยากเป็นเศรษฐี...)',
           theme: 'green',
           winner: valueWinner,
           statText: valueWinner ? `(£${valueWinner.team_value || 100.0})` : '',
@@ -8734,7 +8756,7 @@ selectShi62GW(gwName) {
         const card8 = renderCard({
           icon: ICONS.layers,
           title: 'Wildcard Wasteland',
-          subtitle: isEn ? 'Wildcard played but below league average' : 'Wildcard played but below league average <span class="text-slate-500 dark:text-slate-400 font-normal">(เปิดการ์ดแต่ยังกริบ)</span>',
+          subtitle: isEn ? 'Wildcard played but below league average' : 'เปิดการ์ดแต่ยังกริบ (ใช้ Wildcard แต่แต้มต่ำกว่าค่าเฉลี่ย)',
           theme: 'red',
           winner: lowWcWinner,
           statText: lowWcWinner ? `(${lowWcWinner.points} vs avg ${avgRawPoints.toFixed(1)})` : '',
@@ -8749,7 +8771,7 @@ selectShi62GW(gwName) {
         const card9 = renderCard({
           icon: ICONS.layers,
           title: 'Bench Disaster',
-          subtitle: isEn ? 'Left 20+ points on the bench (no Bench Boost)' : 'Left 20+ points on the bench (no Bench Boost) <span class="text-slate-500 dark:text-slate-400 font-normal">(สำรองแต้มทะลัก)</span>',
+          subtitle: isEn ? 'Left 20+ points on the bench (no Bench Boost)' : 'สำรองแต้มทะลัก (ดองแต้มสำรอง 20+ โดยไม่ใช้ Bench Boost)',
           theme: 'red',
           winner: benchWinner,
           statText: benchWinner ? `(${benchWinner.bench_points} pts)` : '',
@@ -8769,7 +8791,7 @@ selectShi62GW(gwName) {
         const card10 = renderCard({
           icon: ICONS.arrowUp,
           title: 'YOLO Manager',
-          subtitle: isEn ? 'Most transfer hits taken' : 'Most transfer hits taken <span class="text-slate-500 dark:text-slate-400 font-normal">(สายลบไม่ยั้ง)</span>',
+          subtitle: isEn ? 'Most transfer hits taken' : 'สายลบไม่ยั้ง (เสียแต้มลบย้ายตัวมากที่สุด)',
           theme: 'purple',
           winner: hitWinner,
           statText: hitWinner ? `(${hitWinner.hits} pts)` : '',
@@ -8793,7 +8815,7 @@ selectShi62GW(gwName) {
         const card11 = renderCard({
           icon: ICONS.award,
           title: 'Sharpest Trader',
-          subtitle: isEn ? 'Best net transfer impact' : 'Best net transfer impact <span class="text-slate-500 dark:text-slate-400 font-normal">(ดึงตัวเข้าเป้าสุดปัง)</span>',
+          subtitle: isEn ? 'Best net transfer impact' : 'ดึงตัวเข้าเป้าสุดปัง (ผลลัพธ์ย้ายตัวสุทธิดีที่สุด)',
           theme: 'green',
           winner: goodTxWinner,
           statText: goodTxStat,
@@ -8817,7 +8839,7 @@ selectShi62GW(gwName) {
         const card12 = renderCard({
           icon: ICONS.layers,
           title: 'Transfer Tangle',
-          subtitle: isEn ? 'Worst net transfer impact' : 'Worst net transfer impact <span class="text-slate-500 dark:text-slate-400 font-normal">(ดึงผิดชีวิตเปลี่ยน)</span>',
+          subtitle: isEn ? 'Worst net transfer impact' : 'ดึงผิดชีวิตเปลี่ยน (ผลลัพธ์ย้ายตัวสุทธิแย่ที่สุด)',
           theme: 'red',
           winner: badTxWinner,
           statText: badTxStat,
@@ -8841,7 +8863,7 @@ selectShi62GW(gwName) {
         const card13 = renderCard({
           icon: ICONS.award,
           title: 'Hit Hero',
-          subtitle: isEn ? 'Took a hit but still profited overall' : 'Took a hit but still profited overall <span class="text-slate-500 dark:text-slate-400 font-normal">(ยอมลบแต่จบกำไร)</span>',
+          subtitle: isEn ? 'Took a hit but still profited overall' : 'ยอมลบแต่จบกำไร (ยอมเสียแต้มลบแต่แต้มสุทธิยังบวก)',
           theme: 'green',
           winner: hitHeroWinner,
           statText: hitHeroStat,
@@ -8864,7 +8886,7 @@ selectShi62GW(gwName) {
         const card14 = renderCard({
           icon: ICONS.layers,
           title: 'Painful Hit',
-          subtitle: isEn ? "Took a hit and it didn't pay off" : 'Took a hit and it didn\\\'t pay off <span class="text-slate-500 dark:text-slate-400 font-normal">(ยอมลบแต่จบเจ็บ)</span>',
+          subtitle: isEn ? "Took a hit and it didn't pay off" : 'ยอมลบแต่จบเจ็บ (ยอมเสียแต้มลบแล้วแต้มสุทธิติดลบ)',
           theme: 'red',
           winner: painfulHitWinner,
           statText: painfulHitStat,
@@ -8887,7 +8909,7 @@ selectShi62GW(gwName) {
         const card15 = renderCard({
           icon: ICONS.award,
           title: 'One-Move Master',
-          subtitle: isEn ? 'Single transfer that made a positive difference' : 'Single transfer that made a positive difference <span class="text-slate-500 dark:text-slate-400 font-normal">(ย้ายตัวเดียวเสียวทั้งลีก)</span>',
+          subtitle: isEn ? 'Single transfer that made a positive difference' : 'ย้ายตัวเดียวเสียวทั้งลีก (ย้ายตัวเดียวแล้วแต้มบวก)',
           theme: 'green',
           winner: singleTxWinner,
           statText: singleTxStat,
@@ -9058,10 +9080,10 @@ selectShi62GW(gwName) {
           const notice = document.getElementById('projected-points-notice');
           const btn = document.getElementById('projected-points-btn');
 
-          if (title) title.innerText = isEn ? 'Projected Points (Next GW Preview)' : 'Projected Points (คะแนนคาดการณ์)';
+          if (title) title.innerText = isEn ? 'Projected Points' : 'คะแนนคาดการณ์';
           if (desc) desc.innerText = isEn 
             ? 'Projected Points represents an algorithm-driven estimate of the points each player is expected to score in the upcoming Gameweek.' 
-            : 'คะแนนคาดการณ์ (Projected Points) คือการประเมินคะแนนโดยประมาณที่นักเตะน่าจะทำได้ในสัปดาห์ถัดไป จาก AI Algorithm';
+            : 'คะแนนคาดการณ์ คือการประเมินคะแนนโดยประมาณที่นักเตะน่าจะทำได้ในสัปดาห์ถัดไป จาก AI Algorithm';
           if (notice) {
             notice.innerHTML = isEn
               ? '<strong class="font-bold">Important Notice:</strong> These estimates assume the player is in the starting eleven. Managers should check team news, injuries, and rotation risks before confirming any transfers.'
@@ -9331,7 +9353,7 @@ selectShi62GW(gwName) {
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   ${isEn 
                     ? 'Track actual transfers in/out, hits taken, and net point impact across the league' 
-                    : 'สรุปการซื้อขายนักเตะเข้า-ออก, แต้มลบจากการย้ายตัว (Hits) และผลกำไร-ขาดทุนคะแนนสุทธิ'}
+                    : 'สรุปการซื้อขายนักเตะเข้า-ออก, แต้มลบจากการย้ายตัว และผลกำไร-ขาดทุนคะแนนสุทธิ'}
                 </p>
               </div>
             </div>
@@ -9354,7 +9376,7 @@ selectShi62GW(gwName) {
               <!-- KPI 2: Hits Cost -->
               <div class="bg-slate-50/80 dark:bg-slate-800/40 rounded-xl p-3 sm:p-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
                 <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 font-display">
-                  ${isEn ? 'Total Hits Deducted' : 'แต้มลบทั้งลีก (Hits)'}
+                  ${isEn ? 'Total Hits Deducted' : 'แต้มลบทั้งลีก'}
                 </span>
                 <div class="text-xl sm:text-2xl font-extrabold text-rose-600 dark:text-rose-400 font-display mt-1">
                   -${totalHitsCost} <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">pts</span>
@@ -9465,12 +9487,12 @@ selectShi62GW(gwName) {
 
                 const hitBadge = row.hits > 0 ? `
                   <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 font-display">
-                    -${row.hits} pts hit
+                    ${isEn ? `-${row.hits} pts hit` : `-${row.hits} แต้มลบ`}
                   </span>
                 ` : '';
 
                 const transferCountText = row.transfers_count === 0 
-                  ? (isEn ? '0 Transfer (Rolled FT)' : '0 ย้ายตัว (เก็บสิทธิ์ FT)')
+                  ? (isEn ? '0 Transfer (Rolled FT)' : '0 ย้ายตัว (สะสมสิทธิ์)')
                   : (isEn ? `${row.transfers_count} ${row.transfers_count === 1 ? 'Transfer' : 'Transfers'}` : `ย้าย ${row.transfers_count} คน`);
 
                 // Net impact badge styling
@@ -9514,12 +9536,12 @@ selectShi62GW(gwName) {
                             return `
                               <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 text-xs">
                                 <span class="text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1">
-                                  <span class="text-[9px] uppercase font-mono px-1 py-0.2 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">IN</span>
+                                  <span class="text-[9px] uppercase font-mono px-1 py-0.2 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">${isEn ? 'IN' : 'เข้า'}</span>
                                   ${m.in} <span class="text-[10.5px] font-medium text-emerald-600/80">(${m.in_pts || 0}p)</span>
                                 </span>
                                 <span class="text-slate-400 text-[10px]">➔</span>
                                 <span class="text-rose-600 dark:text-rose-400 font-medium flex items-center gap-1">
-                                  <span class="text-[9px] uppercase font-mono px-1 py-0.2 rounded bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300">OUT</span>
+                                  <span class="text-[9px] uppercase font-mono px-1 py-0.2 rounded bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300">${isEn ? 'OUT' : 'ออก'}</span>
                                   ${m.out} <span class="text-[10.5px] font-normal text-rose-500/80">(${m.out_pts || 0}p)</span>
                                 </span>
                                 <span class="ml-1 text-[11px] font-extrabold font-display ${mNetClass}">[${mNetStr}]</span>
@@ -9627,7 +9649,7 @@ selectShi62GW(gwName) {
           <div class="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800">
             <div>
               <h3 class="text-sm sm:text-lg font-bold text-slate-900 dark:text-white font-display">
-                Card Available <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">${isEn ? '(Remaining Chip Status %)' : '(สถานะการ์ดคงเหลือของทุกทีมในลีก %)'}</span>
+                ${isEn ? 'Card Available <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(Remaining Chip Status %)</span>' : 'สถานะการ์ดคงเหลือของทุกทีมในลีก (%)'}
               </h3>
             </div>
             <div class="text-xs text-slate-500 dark:text-slate-400">
@@ -9641,7 +9663,7 @@ selectShi62GW(gwName) {
             <!-- WC 1 -->
             <div id="comp-summary-card-wc1" onclick="app.setCompCardFilter('wc1')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
               <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Wildcard 1 (GW 1-19)</span>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">${isEn ? 'Wildcard 1 (GW 1-19)' : 'ไวลด์การ์ด 1 (สัปดาห์ 1-19)'}</span>
                 <span class="chip-badge badge-wildcard">WC</span>
               </div>
               <div class="mt-2 flex items-baseline gap-1.5">
@@ -9655,7 +9677,7 @@ selectShi62GW(gwName) {
             <!-- Free Hit -->
             <div id="comp-summary-card-fh" onclick="app.setCompCardFilter('fh')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
               <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Free Hit</span>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">${isEn ? 'Free Hit' : 'ฟรีฮิต'}</span>
                 <span class="chip-badge badge-freehit">FH</span>
               </div>
               <div class="mt-2 flex items-baseline gap-1.5">
@@ -9669,7 +9691,7 @@ selectShi62GW(gwName) {
             <!-- Triple Captain -->
             <div id="comp-summary-card-tc" onclick="app.setCompCardFilter('tc')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
               <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Triple Captain</span>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">${isEn ? 'Triple Captain' : 'ทริปเปิ้ลกัปตัน'}</span>
                 <span class="chip-badge badge-3xc">3xC</span>
               </div>
               <div class="mt-2 flex items-baseline gap-1.5">
@@ -9683,7 +9705,7 @@ selectShi62GW(gwName) {
             <!-- Bench Boost -->
             <div id="comp-summary-card-bb" onclick="app.setCompCardFilter('bb')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
               <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Bench Boost</span>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">${isEn ? 'Bench Boost' : 'เบนช์บูสต์'}</span>
                 <span class="chip-badge badge-bboost">BB</span>
               </div>
               <div class="mt-2 flex items-baseline gap-1.5">
@@ -9710,10 +9732,10 @@ selectShi62GW(gwName) {
                 BB (${totalBbAvail})
               </button>
               <button onclick="app.setCompCardFilter('fh')" data-filter="fh" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'fh' ? 'bg-amber-600 text-white shadow-xs ring-2 ring-amber-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60'} cursor-pointer">
-                Free Hit (${totalFhAvail})
+                ${isEn ? 'Free Hit' : 'ฟรีฮิต'} (${totalFhAvail})
               </button>
               <button onclick="app.setCompCardFilter('wc1')" data-filter="wc1" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'wc1' ? 'bg-emerald-600 text-white shadow-xs ring-2 ring-emerald-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60'} cursor-pointer">
-                Wildcard 1 (${totalWc1Avail})
+                ${isEn ? 'Wildcard 1' : 'ไวลด์การ์ด 1'} (${totalWc1Avail})
               </button>
             </div>
 
@@ -9786,7 +9808,7 @@ selectShi62GW(gwName) {
         const badgeAvail = `
           <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800 whitespace-nowrap">
             <svg class="w-3 h-3 text-emerald-600 dark:text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-            Available
+            ${isEn ? 'Available' : 'ยังไม่ใช้'}
           </span>
         `;
 
@@ -9924,11 +9946,11 @@ selectShi62GW(gwName) {
                   <th class="py-2.5 px-1 sm:px-2 text-center w-[36px] min-w-[36px] max-w-[36px] sm:w-[44px] sm:min-w-[44px] sticky left-0 bg-slate-50 dark:bg-slate-800 z-20">#</th>
                   <th class="py-2.5 px-2.5 sm:px-3 sticky left-[36px] sm:left-[44px] bg-slate-50 dark:bg-slate-800 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                   <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">${isEn ? 'Chips Remaining' : 'การ์ดคงเหลือ'}</th>
-                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Wildcard 1</th>
-                  ${showWc2 ? '<th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Wildcard 2</th>' : ''}
-                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Free Hit</th>
-                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Triple Capt</th>
-                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Bench Boost</th>
+                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">${isEn ? 'Wildcard 1' : 'ไวลด์การ์ด 1'}</th>
+                  ${showWc2 ? `<th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">${isEn ? 'Wildcard 2' : 'ไวลด์การ์ด 2'}</th>` : ''}
+                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">${isEn ? 'Free Hit' : 'ฟรีฮิต'}</th>
+                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">${isEn ? 'Triple Capt' : 'ทริปเปิ้ลกัปตัน'}</th>
+                  <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">${isEn ? 'Bench Boost' : 'เบนช์บูสต์'}</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80">
@@ -10149,11 +10171,13 @@ selectShi62GW(gwName) {
             <!-- Position Filter Pills & Search -->
             <div class="space-y-2 mb-3.5">
               <div class="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
-                ${['ALL', 'GKP', 'DEF', 'MID', 'FWD'].map(pos => `
+                ${['ALL', 'GKP', 'DEF', 'MID', 'FWD'].map(pos => {
+                  const posName = isEn ? pos : (pos === 'ALL' ? 'ทั้งหมด' : (pos === 'GKP' ? 'โกล' : (pos === 'DEF' ? 'กองหลัง' : (pos === 'MID' ? 'กองกลาง' : 'กองหน้า'))));
+                  return `
                   <button onclick="app.setCompDiffPosFilter('${pos}')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.compDiffPosFilter === pos ? 'bg-slate-900 text-white dark:bg-amber-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300'}">
-                    ${pos} (${countsByPos[pos]})
+                    ${posName} (${countsByPos[pos]})
                   </button>
-                `).join('')}
+                `;}).join('')}
               </div>
               <div class="relative">
                 <input 
@@ -10247,7 +10271,7 @@ selectShi62GW(gwName) {
                   </span>
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  ${isEn ? 'Analyzing Best Players & Best Value selections with expected points for upcoming fixtures' : 'วิเคราะห์ตัวเลือกที่ดีที่สุด (Best Players) และตัวเลือกสุดคุ้มค่า (Best Value) พร้อมคะแนนคาดการณ์ประจำสัปดาห์'}
+                  ${isEn ? 'Analyzing Best Players & Best Value selections with expected points for upcoming fixtures' : 'วิเคราะห์ตัวเลือกที่ดีที่สุด และตัวเลือกสุดคุ้มค่า พร้อมคะแนนคาดการณ์ประจำสัปดาห์'}
                 </p>
               </div>
 
@@ -10281,10 +10305,10 @@ selectShi62GW(gwName) {
                 ${isEn ? 'Side-by-Side (Scroll)' : 'ตารางคู่ (เลื่อนข้าง)'}
               </button>
               <button onclick="app.setCompTransferMobileView('best')" class="flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${this.compTransferMobileView === 'best' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}">
-                Best Players
+                ${isEn ? 'Best Players' : 'ตัวเลือกยอดเยี่ยม'}
               </button>
               <button onclick="app.setCompTransferMobileView('value')" class="flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${this.compTransferMobileView === 'value' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}">
-                Best Value
+                ${isEn ? 'Best Value' : 'ตัวเลือกสุดคุ้ม'}
               </button>
             </div>
 
@@ -10338,10 +10362,10 @@ selectShi62GW(gwName) {
         };
 
         const categories = [
-          { key: 'GoalKeepers', title: 'Goalkeepers', pos: 'GKP' },
-          { key: 'Defenders', title: 'Defenders', pos: 'DEF' },
-          { key: 'Midfielders', title: 'Midfielders', pos: 'MID' },
-          { key: 'Forwards', title: 'Forwards', pos: 'FWD' }
+          { key: 'GoalKeepers', title: isEn ? 'Goalkeepers' : 'ผู้รักษาประตู', pos: 'GKP' },
+          { key: 'Defenders', title: isEn ? 'Defenders' : 'กองหลัง', pos: 'DEF' },
+          { key: 'Midfielders', title: isEn ? 'Midfielders' : 'กองกลาง', pos: 'MID' },
+          { key: 'Forwards', title: isEn ? 'Forwards' : 'กองหน้า', pos: 'FWD' }
         ];
 
         const hasAnyItems = categories.some(cat => (sugg[cat.key] || []).length > 0);
@@ -10350,7 +10374,7 @@ selectShi62GW(gwName) {
             <div class="py-8 px-4 text-center rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400">
               <span class="text-3xl block mb-2">⏳</span>
               <p class="font-bold text-sm text-slate-700 dark:text-slate-300">${isEn ? 'Processing transfer suggestions for upcoming Gameweek' : 'กำลังประมวลผลคำแนะนำการย้ายตัวสำหรับ Gameweek ถัดไป'}</p>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${isEn ? 'Best Players and Best Value lists will appear automatically once fixtures and player data are updated' : 'ระบบจะแสดงรายชื่อ Best Players และ Best Value อัตโนมัติเมื่อข้อมูลโปรแกรมแข่งขันและสถิติอัปเดตเรียบร้อย'}</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${isEn ? 'Best Players and Best Value lists will appear automatically once fixtures and player data are updated' : 'ระบบจะแสดงรายชื่อตัวเลือกยอดเยี่ยมและตัวเลือกสุดคุ้มค่าอัตโนมัติเมื่อข้อมูลโปรแกรมแข่งขันและสถิติอัปเดตเรียบร้อย'}</p>
             </div>
           `;
           return;
@@ -10413,12 +10437,12 @@ selectShi62GW(gwName) {
               <table class="w-full text-left border-collapse">
                 <thead>
                   <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
-                    <th style="width: 60%;" class="py-2 px-2.5 text-left">Best players</th>
-                    <th style="width: 20%;" class="py-2 px-2 text-right">Price</th>
+                    <th style="width: 60%;" class="py-2 px-2.5 text-left">${isEn ? 'Best players' : 'ตัวเลือกยอดเยี่ยม'}</th>
+                    <th style="width: 20%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">
                       <span class="inline-flex items-center justify-end gap-1">
-                        Pts
-                        <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
+                        ${isEn ? 'Pts' : 'แต้ม'}
+                        <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="${isEn ? 'Projected Points Info' : 'ข้อมูลคะแนนคาดการณ์'}">?</button>
                       </span>
                     </th>
                   </tr>
@@ -10489,12 +10513,12 @@ selectShi62GW(gwName) {
               <table class="w-full text-left border-collapse">
                 <thead>
                   <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
-                    <th style="width: 60%;" class="py-2 px-2.5 text-left">Best Value</th>
-                    <th style="width: 20%;" class="py-2 px-2 text-right">Price</th>
+                    <th style="width: 60%;" class="py-2 px-2.5 text-left">${isEn ? 'Best Value' : 'ตัวเลือกสุดคุ้ม'}</th>
+                    <th style="width: 20%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">
                       <span class="inline-flex items-center justify-end gap-1">
-                        Pts
-                        <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
+                        ${isEn ? 'Pts' : 'แต้ม'}
+                        <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="${isEn ? 'Projected Points Info' : 'ข้อมูลคะแนนคาดการณ์'}">?</button>
                       </span>
                     </th>
                   </tr>
@@ -10615,28 +10639,28 @@ selectShi62GW(gwName) {
           <!-- Mobile Scroll Hint -->
           <div class="sm:hidden flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pb-1.5 border-b border-slate-200 dark:border-slate-800 px-1">
             <span>${isEn ? 'Dual Comparison' : 'เปรียบเทียบทั้งคู่'}</span>
-            <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">${isEn ? '👈 Swipe to view Best Value 👉' : '👈 เลื่อนดู Best Value 👉'}</span>
+            <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">${isEn ? '👈 Swipe to view Best Value 👉' : '👈 เลื่อนดูตัวเลือกสุดคุ้ม 👉'}</span>
           </div>
 
           <div class="overflow-x-auto touch-scroll no-scrollbar -mx-2 sm:mx-0">
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
-                  <th style="width: 28%;" class="py-2 px-2.5 sm:px-3 text-left">Best players</th>
-                  <th style="width: 10%;" class="py-2 px-2 text-right">Price</th>
+                  <th style="width: 28%;" class="py-2 px-2.5 sm:px-3 text-left">${isEn ? 'Best players' : 'ตัวเลือกยอดเยี่ยม'}</th>
+                  <th style="width: 10%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
                   <th style="width: 11%;" class="py-2 px-2 text-right">
                     <span class="inline-flex items-center justify-end gap-1">
-                      Pts
-                      <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
+                      ${isEn ? 'Pts' : 'แต้ม'}
+                      <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="${isEn ? 'Projected Points Info' : 'ข้อมูลคะแนนคาดการณ์'}">?</button>
                     </span>
                   </th>
                   <th style="width: 2%;" class="py-2 px-1 border-r border-slate-200 dark:border-slate-800"></th>
-                  <th style="width: 28%;" class="py-2 px-2.5 sm:px-3 text-left">Best Value</th>
-                  <th style="width: 10%;" class="py-2 px-2 text-right">Price</th>
+                  <th style="width: 28%;" class="py-2 px-2.5 sm:px-3 text-left">${isEn ? 'Best Value' : 'ตัวเลือกสุดคุ้ม'}</th>
+                  <th style="width: 10%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
                   <th style="width: 11%;" class="py-2 px-2 text-right">
                     <span class="inline-flex items-center justify-end gap-1">
-                      Pts
-                      <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="Projected Points Info">?</button>
+                      ${isEn ? 'Pts' : 'แต้ม'}
+                      <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="${isEn ? 'Projected Points Info' : 'ข้อมูลคะแนนคาดการณ์'}">?</button>
                     </span>
                   </th>
                 </tr>
@@ -10692,7 +10716,7 @@ selectShi62GW(gwName) {
           const seasonNetTotal = weeklyNetPot * 38;
 
           if (tagEl) {
-            tagEl.innerText = hasWeeklyPenalties ? 'WEEKLY FINES & ACCUMULATED POT' : 'WEEKLY PRIZES';
+            tagEl.innerText = isEn ? (hasWeeklyPenalties ? 'WEEKLY FINES & ACCUMULATED POT' : 'WEEKLY PRIZES') : '';
           }
           if (titleEl && hasWeeklyPenalties) {
             titleEl.innerText = isEn ? 'Weekly Winners & Fines Pool' : 'สรุปแชมป์สัปดาห์ & กองกลางสะสมค่าปรับ';
@@ -11239,7 +11263,7 @@ selectShi62GW(gwName) {
                     <div class="text-xs text-slate-600 dark:text-slate-300 mt-0.5 font-medium">${isEn ? `${weeklyAmount.toLocaleString()} THB/week x 38 awards` : `สัปดาห์ละ ${weeklyAmount.toLocaleString()} THB x 38 รางวัล`}</div>
                   </div>
                   <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Cup Tournament Champion' : 'รางวัลแชมป์บอลถ้วย (Cup)'}</span>
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Cup Tournament Champion' : 'รางวัลแชมป์ฟุตบอลถ้วย'}</span>
                     <div class="text-xl font-black text-slate-900 dark:text-white mt-1 font-display">1,550 <span class="text-xs">THB</span></div>
                     <div class="text-xs text-slate-600 dark:text-slate-300 mt-0.5 font-medium">${isEn ? `Champion ${this.config.cup_champion_prize || '1,000 THB'} / Runner-Up ${this.config.cup_runner_up_prize || '550 THB'}` : `แชมป์ ${this.config.cup_champion_prize || '1,000 THB'} / รองแชมป์ ${this.config.cup_runner_up_prize || '550 THB'}`}</div>
                   </div>
@@ -11672,7 +11696,7 @@ selectShi62GW(gwName) {
                 </div>
 
                 <div class="glass-card rounded-2xl p-4 border border-slate-200 dark:border-slate-800">
-                  <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Cup Tournament Champion' : 'แชมป์ฟุตบอลถ้วย (CUP)'}</span>
+                  <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Cup Tournament Champion' : 'แชมป์ฟุตบอลถ้วย'}</span>
                   <div class="text-xl font-black text-amber-600 dark:text-amber-400 mt-1 font-display">3,000 <span class="text-xs">THB</span></div>
                   <div class="text-xs text-slate-600 dark:text-slate-300 mt-0.5 font-medium">${isEn ? 'Tie-broken by total points if eliminated same round' : 'วัดผลคะแนนหากตกรอบพร้อมกัน'}</div>
                 </div>
@@ -11691,7 +11715,7 @@ selectShi62GW(gwName) {
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800">
                 <div class="flex flex-wrap items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3 gap-2">
                   <div>
-                    <span class="text-[10px] uppercase font-bold text-slate-500 font-display">MONTHLY STANDINGS LEADERBOARD</span>
+                    <span class="text-[10px] uppercase font-bold text-slate-500 font-display">${isEn ? 'MONTHLY STANDINGS LEADERBOARD' : 'ตารางคะแนนประจำเดือน'}</span>
                     <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">${isEn ? `Monthly Standings: ${curMonth.month} (${curMonth.gws})` : `ตารางคะแนนประจำเดือน: ${curMonth.month} (${curMonth.gws})`}</h3>
                   </div>
                   ${curMonthBadge}
@@ -11752,12 +11776,12 @@ selectShi62GW(gwName) {
           const totalNegative = Math.abs(Object.values(tiers).filter(v => Number(v) < 0).reduce((a, b) => a + Number(b), 0));
 
           if (tagEl) tagEl.innerText = isShi62 
-            ? (isEn ? "SHI'62 ANNUAL ZERO-SUM & PREDICTION" : "SHI'62 ANNUAL ZERO-SUM & ทายผล") 
-            : (isEn ? 'ANNUAL ZERO-SUM SETTLEMENT (End of Season Payout)' : 'ANNUAL ZERO-SUM SETTLEMENT (จ่ายตังทีเดียวสิ้นฤดูกาล)');
+            ? (isEn ? "SHI'62 ANNUAL ZERO-SUM & PREDICTION" : "สรุปยอดสิ้นฤดูกาล & ทายผล SHI'62") 
+            : (isEn ? 'ANNUAL ZERO-SUM SETTLEMENT (End of Season Payout)' : 'สรุปยอดจ่าย-รับสิ้นฤดูกาล');
           if (titleEl) titleEl.innerText = isEn ? 'Season-End Payout & Settlement Leaderboard' : 'ตารางสรุปยอดจ่าย-รับเงินรางวัลสิ้นฤดูกาล';
           if (subEl) subEl.innerText = isShi62
             ? (isEn ? `Season-end payout (Rank 1-6 receive +3,100 THB / Rank 7-12 pay -3,100 THB) and prediction game total • Decided GW 1 - 38` : `สรุปยอดเงินรางวัลจบฤดูกาล (อันดับ 1-6 รับ +3,100 THB / อันดับ 7-12 จ่าย -3,100 THB) และยอดสะสมมินิเกมทายผล • ตัดสิน GW 1 - 38`)
-            : (isEn ? `Decided by total net points GW 1 - 38 • Rank 1-6 receive total ${totalPositive.toLocaleString()} THB • Rank 7-12 pay total ${totalNegative.toLocaleString()} THB (Zero-Sum Balance)` : `ตัดสินจากคะแนนรวมสะสมสุทธิ GW 1 - 38 • อันดับ 1-6 รับเงินรางวัลรวม ${totalPositive.toLocaleString()} THB • อันดับ 7-12 ร่วมจ่ายเงินค่าปรับรวม ${totalNegative.toLocaleString()} THB (Zero-Sum Balance)`);
+            : (isEn ? `Decided by total net points GW 1 - 38 • Rank 1-6 receive total ${totalPositive.toLocaleString()} THB • Rank 7-12 pay total ${totalNegative.toLocaleString()} THB (Zero-Sum Balance)` : `ตัดสินจากคะแนนรวมสะสมสุทธิ GW 1 - 38 • อันดับ 1-6 รับเงินรางวัลรวม ${totalPositive.toLocaleString()} THB • อันดับ 7-12 ร่วมจ่ายเงินค่าปรับรวม ${totalNegative.toLocaleString()} THB`);
 
           // Extra map and short names for League 187827
           const extraMapByEntryId = {};
@@ -12139,7 +12163,12 @@ selectShi62GW(gwName) {
         const hofColWins = document.getElementById('hof-col-wins');
         const maxGW = Number(this.multiData.max_gw) || 2;
 
-        if (hofColWins) hofColWins.innerHTML = '<span class="sm:hidden">#1 GW</span><span class="hidden sm:inline">#1 GAMEWEEK</span>';
+        const isEn = (this.currentLang === 'en');
+        if (hofColWins) {
+          hofColWins.innerHTML = isEn 
+            ? '<span class="sm:hidden">#1 GW</span><span class="hidden sm:inline">#1 GAMEWEEK</span>'
+            : '<span class="sm:hidden">#1 แชมป์</span><span class="hidden sm:inline">#1 แชมป์สัปดาห์</span>';
+        }
 
         let highGW = { score: 0, team: '-', gw: 1 };
         let bestBench = { bench: 0, team: '-', gw: 1 };
@@ -12274,7 +12303,6 @@ selectShi62GW(gwName) {
         const mostWinsDisplay = (mostWinsCount % 1 === 0) ? mostWinsCount : mostWinsCount.toFixed(1);
         const mostWinsName = mostWinsTeams.length > 0 ? mostWinsTeams.join(', ') : '-';
 
-        const isEn = (this.currentLang === 'en');
         if (recordsContainer) {
           recordsContainer.innerHTML = `
             <div class="glass-card rounded-2xl p-4 border border-slate-200 dark:border-slate-800">
@@ -12730,7 +12758,7 @@ selectShi62GW(gwName) {
 
             <div class="glass-card rounded-xl sm:rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
               <div>
-                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">${isEn ? 'Most Consistent (Spread)' : 'ความนิ่งสูงสุด (Spread)'}</span>
+                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">${isEn ? 'Most Consistent (Spread)' : 'ความนิ่งสูงสุด'}</span>
                 <div class="text-base sm:text-xl font-black text-slate-900 dark:text-white mt-0.5 sm:mt-1 font-display leading-tight">±${globalMostConsistent.spread} <span class="text-[10px] sm:text-xs font-normal">PTS</span></div>
               </div>
               <div class="mt-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
@@ -12752,7 +12780,7 @@ selectShi62GW(gwName) {
 
             <div class="glass-card rounded-xl sm:rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
               <div>
-                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">${isEn ? 'Highest Bench Points' : 'คะแนนสำรองสูงสุด (Bench)'}</span>
+                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">${isEn ? 'Highest Bench Points' : 'คะแนนสำรองสูงสุด'}</span>
                 <div class="text-base sm:text-xl font-black text-slate-900 dark:text-white mt-0.5 sm:mt-1 font-display leading-tight">${globalBestBench.bench} <span class="text-[10px] sm:text-xs font-normal">PTS</span></div>
               </div>
               <div class="mt-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
@@ -12802,8 +12830,8 @@ selectShi62GW(gwName) {
           'total_net': { full: isEn ? 'Total Net' : 'คะแนนรวม', short: isEn ? 'Total Net' : 'คะแนนรวม' },
           'avg': { full: isEn ? 'Average Points' : 'คะแนนเฉลี่ย', short: isEn ? 'Avg' : 'เฉลี่ย' },
           'high': { full: isEn ? 'Highest Score' : 'คะแนนสูงสุด', short: isEn ? 'High' : 'สูงสุด' },
-          'low': { full: isEn ? 'Lowest Floor' : 'คะแนนต่ำสุด (Floor)', short: isEn ? 'Floor' : 'ต่ำสุด' },
-          'spread': { full: isEn ? 'Variance (Spread)' : 'ความแกว่ง (Spread)', short: isEn ? 'Spread' : 'แกว่ง' },
+          'low': { full: isEn ? 'Lowest Floor' : 'คะแนนต่ำสุด', short: isEn ? 'Floor' : 'ต่ำสุด' },
+          'spread': { full: isEn ? 'Variance (Spread)' : 'ความแกว่ง', short: isEn ? 'Spread' : 'แกว่ง' },
           'hits': { full: isEn ? 'Transfer Hits' : 'คะแนนลบ', short: isEn ? 'Hits' : 'ลบ' },
           'bench': { full: isEn ? 'Bench Points' : 'คะแนนสำรอง', short: isEn ? 'Bench' : 'สำรอง' },
           'tier': { full: isEn ? 'Consistency Tier' : 'ระดับความสม่ำเสมอ', short: isEn ? 'Tier' : 'ระดับ' },
@@ -12854,7 +12882,7 @@ selectShi62GW(gwName) {
             'total_net': 'เรียงตามคะแนนรวม',
             'avg': 'เรียงตามคะแนนเฉลี่ย',
             'high': 'เรียงตามคะแนนสูงสุด',
-            'low': 'เรียงตามคะแนนต่ำสุด (Floor)',
+            'low': 'เรียงตามคะแนนต่ำสุด',
             'spread': 'เรียงตามความนิ่ง (แกว่ง)',
             'hits': 'เรียงตามคะแนนลบ',
             'bench': 'เรียงตามคะแนนสำรอง',
@@ -13038,7 +13066,7 @@ selectShi62GW(gwName) {
         const prizeBadge = document.getElementById('cup-prize-badge');
         const container = document.getElementById('cup-tournament-container');
 
-        if (titleEl) titleEl.innerText = isEn ? 'Knockout Cup Tournament' : 'การแข่งขันฟุตบอลถ้วย (CUP)';
+        if (titleEl) titleEl.innerText = isEn ? 'Knockout Cup Tournament' : 'การแข่งขันฟุตบอลถ้วย';
         if (subEl) subEl.innerText = isEn ? 'Automatic knockout pairings powered by Official FPL' : 'ระบบจับคู่ Knockout อัตโนมัติจาก Official FPL';
 
         const feat = (this.config && this.config.features) || {};
@@ -13051,11 +13079,11 @@ selectShi62GW(gwName) {
 
         if (prizeBadge) {
           if (champPrize && runnerPrize) {
-            prizeBadge.innerText = `${champPrize} + ${runnerPrize} PRIZE`;
+            prizeBadge.innerText = isEn ? `${champPrize} + ${runnerPrize} PRIZE` : `รางวัล ${champPrize} + ${runnerPrize}`;
           } else if (champPrize) {
-            prizeBadge.innerText = `${champPrize} PRIZE`;
+            prizeBadge.innerText = isEn ? `${champPrize} PRIZE` : `รางวัล ${champPrize}`;
           } else {
-            prizeBadge.innerText = 'CUP TOURNAMENT';
+            prizeBadge.innerText = isEn ? 'CUP TOURNAMENT' : 'ทัวร์นาเมนต์บอลถ้วย';
           }
         }
 
@@ -13068,8 +13096,8 @@ selectShi62GW(gwName) {
                   <div class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black font-display shadow-md">🏆</div>
                     <div>
-                      <span class="text-xs uppercase font-bold text-amber-700 dark:text-amber-400 font-display">CUP CHAMPION</span>
-                      <h3 class="text-lg font-bold text-slate-900 dark:text-white">${isEn ? 'Cup Champion' : 'แชมป์ฟุตบอลถ้วย (CUP)'}</h3>
+                      <span class="text-xs uppercase font-bold text-amber-700 dark:text-amber-400 font-display">${isEn ? 'CUP CHAMPION' : 'แชมป์ฟุตบอลถ้วย'}</span>
+                      <h3 class="text-lg font-bold text-slate-900 dark:text-white">${isEn ? 'Cup Champion' : 'แชมป์ฟุตบอลถ้วย'}</h3>
                       <div class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-display mt-0.5">${champPrize}</div>
                     </div>
                   </div>
@@ -13079,8 +13107,8 @@ selectShi62GW(gwName) {
                   <div class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-2xl bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 flex items-center justify-center text-2xl font-black font-display shadow-md">🥈</div>
                     <div>
-                      <span class="text-xs uppercase font-bold text-slate-600 dark:text-slate-400 font-display">RUNNER-UP</span>
-                      <h3 class="text-lg font-bold text-slate-900 dark:text-white">${isEn ? 'Cup Runner-Up' : 'รองแชมป์ฟุตบอลถ้วย (CUP)'}</h3>
+                      <span class="text-xs uppercase font-bold text-slate-600 dark:text-slate-400 font-display">${isEn ? 'RUNNER-UP' : 'รองแชมป์'}</span>
+                      <h3 class="text-lg font-bold text-slate-900 dark:text-white">${isEn ? 'Cup Runner-Up' : 'รองแชมป์ฟุตบอลถ้วย'}</h3>
                       <div class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-display mt-0.5">${runnerPrize}</div>
                     </div>
                   </div>
@@ -13094,7 +13122,7 @@ selectShi62GW(gwName) {
                 <div class="flex items-center gap-3.5">
                   <div class="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black font-display shadow-md">🏆</div>
                   <div>
-                    <span class="text-xs uppercase font-bold text-amber-700 dark:text-amber-400 font-display">MINI-LEAGUE CUP CHAMPION</span>
+                    <span class="text-xs uppercase font-bold text-amber-700 dark:text-amber-400 font-display">${isEn ? 'MINI-LEAGUE CUP CHAMPION' : 'แชมป์ฟุตบอลถ้วย'}</span>
                     <h3 class="text-lg font-bold text-slate-900 dark:text-white">${isEn ? `League Cup Champion ${startGW ? `(Starts GW ${startGW})` : ''}` : `แชมป์ลีกคัพ ${startGW ? `(เริ่ม Gameweek ${startGW})` : ''}`}</h3>
                     <div class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-display mt-0.5">${champPrize}</div>
                     ${cupNote ? `<p class="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-1">* ${cupNote}</p>` : ''}
@@ -13109,8 +13137,8 @@ selectShi62GW(gwName) {
                 <div class="flex items-center gap-3.5">
                   <div class="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-black font-display shadow-md">🏆</div>
                   <div>
-                    <span class="text-xs uppercase font-bold text-amber-700 dark:text-amber-400 font-display">${this.escapeHtml(this.data.name || 'MINI-LEAGUE')} CUP</span>
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">${isEn ? 'Cup Winner Prizes' : 'รางวัลผู้ชนะ Cup (บอลถ้วย)'}</h3>
+                    <span class="text-xs uppercase font-bold text-amber-700 dark:text-amber-400 font-display">${isEn ? `${this.escapeHtml(this.data.name || 'MINI-LEAGUE')} CUP` : `ฟุตบอลถ้วย ${this.escapeHtml(this.data.name || 'มินิลีก')}`}</span>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">${isEn ? 'Cup Winner Prizes' : 'รางวัลผู้ชนะฟุตบอลถ้วย'}</h3>
                     <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">${isEn ? 'Awaiting kickoff gameweek and prize allocation details based on entries.' : 'รอสรุปสัปดาห์ที่เริ่มแข่งขัน และจัดสรรเงินรางวัลตามยอดสมัคร'}</p>
                   </div>
                 </div>
@@ -13243,7 +13271,7 @@ selectShi62GW(gwName) {
                 'แชมป์ประจำสัปดาห์ & การหักค่าปรับ: กรณีเปิดใช้ระบบ Tie-breaker หากคะแนนสุทธิเท่ากัน จะตัดสินด้วยคะแนนของผู้เล่นตัวจริงและตัวสำรองที่ถูกเปลี่ยนลงสนาม (Autosubs) เรียงจากมากไปน้อย (กรณีใช้ Bench Boost จะเปรียบเทียบจาก 11 ผู้เล่นที่ทำแต้มสูงสุด)',
                 'ตารางคะแนนรวมตลอดฤดูกาล: หากคะแนนสะสมสุทธิเท่ากันหลังจบ 38 สัปดาห์ จะตัดสินตามลำดับ Official FPL Rank (อันดับทางการของพรีเมียร์ลีก)'
               ];
-          const cupRuleLabel = isEn ? 'Official FPL Cup Tournament' : 'การแข่งขันฟุตบอลถ้วย (Cup Tournament)';
+          const cupRuleLabel = isEn ? 'Official FPL Cup Tournament' : 'การแข่งขันฟุตบอลถ้วย';
           const cupRuleLines = isEn
             ? [
                 'Knockout Bracket: Pairings and progression are powered automatically by the Official FPL Cup engine starting on the designated kickoff gameweek.',
@@ -13676,11 +13704,11 @@ selectShi62GW(gwName) {
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
                       <span class="text-sky-500 font-bold">•</span>
-                      <span>สรุปทุกดีลซื้อขายนักเตะเข้า-ออกของคู่แข่งในลีก พร้อมแต้มลบฮิตส์ (Hits)</span>
+                      <span>สรุปทุกดีลซื้อขายนักเตะเข้า-ออกของคู่แข่งในลีก พร้อมแต้มลบย้ายตัว</span>
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-sky-500 font-bold">•</span>
-                      <span>คำนวณแต้มได้-เสียสุทธิ (Net Impact ROI) จากการย้ายตัวในแต่ละสัปดาห์</span>
+                      <span>คำนวณแต้มได้-เสียสุทธิจากการย้ายตัวในแต่ละสัปดาห์</span>
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-sky-500 font-bold">•</span>
@@ -13738,7 +13766,7 @@ selectShi62GW(gwName) {
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-amber-500 font-bold">•</span>
-                      <span>หักแต้มย้ายทีม (Hits) ในตัว พร้อมเฉลี่ยเงินรางวัล (Tie-Pooling) ยุติธรรม</span>
+                      <span>หักแต้มย้ายทีมในตัว พร้อมเฉลี่ยเงินรางวัลอย่างยุติธรรม</span>
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-amber-500 font-bold">•</span>
@@ -13763,7 +13791,7 @@ selectShi62GW(gwName) {
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
                       <span class="text-indigo-500 font-bold">•</span>
-                      <span>วิเคราะห์ความสม่ำเสมอ ประเมินแต้มต่ำสุด-สูงสุด (Floor/Ceiling) ทั้ง 8 ลีก</span>
+                      <span>${isEn ? 'Consistency analysis evaluating floor/ceiling points across all 8 leagues' : 'วิเคราะห์ความสม่ำเสมอ ประเมินแต้มต่ำสุด-สูงสุด ของทั้ง 8 ลีก'}</span>
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-indigo-500 font-bold">•</span>
@@ -13817,7 +13845,7 @@ selectShi62GW(gwName) {
                 <span class="flex items-center gap-2">
                   <svg class="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                   <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                  <span class="font-display tracking-tight text-xs sm:text-sm">สถาปัตยกรรมระบบเบื้องหลัง (System Specs for Geeks)</span>
+                  <span class="font-display tracking-tight text-xs sm:text-sm">${isEn ? 'System Architecture & Engineering Specs' : 'สถาปัตยกรรมระบบเบื้องหลัง'}</span>
                 </span>
                 <span class="text-[10.5px] text-slate-400 font-mono font-normal">GitHub Actions • Serverless Jamstack</span>
               </summary>
@@ -14124,7 +14152,7 @@ selectShi62GW(gwName) {
         if (badgeLabelEl) badgeLabelEl.innerText = isEn ? 'Squad & Lineup' : 'ขุมกำลัง & การจัดทัพ';
 
         const benchLabelEl = document.getElementById('team-modal-bench-label');
-        if (benchLabelEl) benchLabelEl.innerText = isEn ? 'Substitutes (Bench)' : 'ตัวสำรอง (Substitutes)';
+        if (benchLabelEl) benchLabelEl.innerText = isEn ? 'Substitutes (Bench)' : 'ตัวสำรอง';
 
         const formationLabelEl = document.getElementById('team-modal-formation-label');
         if (formationLabelEl) formationLabelEl.innerText = isEn ? 'Formation:' : 'แผน:';
@@ -14653,7 +14681,7 @@ selectShi62GW(gwName) {
               text += `\n🔥 ย้ายตัว & ชิป:\n`;
               if (transfers.length > 0) {
                 const tfList = transfers.map(t => `${t.team_name} (-${t.hits})`).join(', ');
-                text += `• คะแนนลบ (Hits): ${tfList}\n`;
+                text += `• คะแนนลบ: ${tfList}\n`;
               }
               if (chipsUsed.length > 0) {
                 const cpList = chipsUsed.map(c => `${c.team_name} (${c.chip.toUpperCase()})`).join(', ');
@@ -14794,23 +14822,39 @@ selectShi62GW(gwName) {
           // ====================================================
           // 1. DATA PREPARATION: TOTAL LEADERBOARD
           // ====================================================
-          const leaderHeaders = [
-            'อันดับ (Rank)',
-            'ชื่อทีม (Team Name)',
-            'ผู้จัดการ (Manager)',
+          const leaderHeaders = isEn ? [
+            'Rank',
+            'Team Name',
+            'Manager',
             'FPL ID',
-            'สถานะ (Status)',
-            'คะแนนรวมสุทธิ (Total Net Pts)'
+            'Status',
+            'Total Net Pts'
+          ] : [
+            'อันดับ',
+            'ชื่อทีม',
+            'ผู้จัดการ',
+            'FPL ID',
+            'สถานะ',
+            'คะแนนรวมสุทธิ'
           ];
           for (let g = 1; g <= maxGW; g++) {
             leaderHeaders.push(`GW ${g}`);
           }
-          leaderHeaders.push(
-            'คะแนนลบรวม (Total Hits)',
-            'ชิปที่ใช้ไป (Chips Used)',
-            'มูลค่าทีม (£M)',
-            'เงินในธนาคาร (£M)'
-          );
+          if (isEn) {
+            leaderHeaders.push(
+              'Total Hits',
+              'Chips Used',
+              'Team Value (£M)',
+              'Bank (£M)'
+            );
+          } else {
+            leaderHeaders.push(
+              'คะแนนลบรวม',
+              'ชิปที่ใช้ไป',
+              'มูลค่าทีม (£M)',
+              'เงินในธนาคาร (£M)'
+            );
+          }
 
           const teams = this.data.teams || [];
           const teamStats = teams.map(t => {
@@ -14903,22 +14947,38 @@ selectShi62GW(gwName) {
           // ====================================================
           // 2. DATA PREPARATION: GAMEWEEK STANDINGS
           // ====================================================
-          const gwHeaders = [
+          const gwHeaders = isEn ? [
             'Gameweek',
-            'สถานะสัปดาห์ (GW Status)',
-            'อันดับ GW (GW Rank)',
-            'ชื่อทีม (Team Name)',
-            'ผู้จัดการ (Manager)',
+            'GW Status',
+            'GW Rank',
+            'Team Name',
+            'Manager',
             'FPL ID',
-            'สถานะทีม (Team Status)',
-            'คะแนนดิบ (Raw Points)',
-            'คะแนนลบ (Hits)',
-            'คะแนนสุทธิ (Net Points)',
-            'กัปตัน (Captain)',
-            'ชิปที่ใช้ (Chip Used)',
-            'คะแนนตัวสำรอง (Bench)',
-            'จำนวนย้ายตัว (Transfers)',
-            'ผลต่างคะแนนย้ายตัว (Transfer Net Impact)'
+            'Team Status',
+            'Raw Points',
+            'Hits',
+            'Net Points',
+            'Captain',
+            'Chip Used',
+            'Bench Points',
+            'Transfers',
+            'Transfer Net Impact'
+          ] : [
+            'Gameweek',
+            'สถานะสัปดาห์',
+            'อันดับ GW',
+            'ชื่อทีม',
+            'ผู้จัดการ',
+            'FPL ID',
+            'สถานะทีม',
+            'คะแนนดิบ',
+            'คะแนนลบ',
+            'คะแนนสุทธิ',
+            'กัปตัน',
+            'ชิปที่ใช้',
+            'คะแนนตัวสำรอง',
+            'จำนวนย้ายตัว',
+            'ผลต่างคะแนนย้ายตัว'
           ];
 
           const gwRows = [gwHeaders];
@@ -14928,7 +14988,7 @@ selectShi62GW(gwName) {
 
             const isFinished = Boolean(gwData.is_finished);
             const isStarted = gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || gwData.results.some(r => r.points > 0));
-            const statusText = isFinished ? 'จบการแข่งขัน' : (isStarted ? 'กำลังแข่งขัน (Live)' : 'รอคิกออฟ');
+            const statusText = isFinished ? (isEn ? 'Finished' : 'จบการแข่งขัน') : (isStarted ? (isEn ? 'Live' : 'กำลังแข่งขัน') : (isEn ? 'Upcoming' : 'รอคิกออฟ'));
 
             const isWeeklyPrize = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
             const scoreProp = (isFinished || isWeeklyPrize) ? 'net_points' : 'points';
@@ -15003,17 +15063,17 @@ selectShi62GW(gwName) {
           const hasWeeklyPenalties = Boolean(feat.has_weekly_penalties);
 
           if (isWeekly) {
-            prizeRows.push(['=== สรุปแชมป์เงินรางวัลประจำสัปดาห์ (WEEKLY PRIZE WINNERS) ===']);
+            prizeRows.push([isEn ? '=== WEEKLY PRIZE WINNERS ===' : '=== สรุปแชมป์เงินรางวัลประจำสัปดาห์ ===']);
             prizeRows.push([
               'Gameweek',
               'สถานะ',
               'ทีมที่ได้รับรางวัล',
               'ผู้จัดการ',
               'FPL ID',
-              'คะแนนดิบ',
-              'คะแนนลบ (Hits)',
-              'คะแนนสุทธิ',
-              'เงินรางวัล (THB)',
+              isEn ? 'Raw Points' : 'คะแนนดิบ',
+              isEn ? 'Hits' : 'คะแนนลบ',
+              isEn ? 'Net Points' : 'คะแนนสุทธิ',
+              isEn ? 'Prize (THB)' : 'เงินรางวัล (THB)',
               'หมายเหตุ'
             ]);
 
@@ -15095,7 +15155,7 @@ selectShi62GW(gwName) {
             // Weekly Penalties Table (if enabled for this league, e.g. 438691)
             if (hasWeeklyPenalties) {
               prizeRows.push([]);
-              prizeRows.push(['=== สรุปค่าปรับ 5 อันดับท้ายประจำสัปดาห์ (WEEKLY PENALTY FINES) ===']);
+              prizeRows.push([isEn ? '=== WEEKLY PENALTY FINES ===' : '=== สรุปค่าปรับ 5 อันดับท้ายประจำสัปดาห์ ===']);
               prizeRows.push([
                 'Gameweek',
                 'สถานะ',
@@ -15103,10 +15163,10 @@ selectShi62GW(gwName) {
                 'ทีมที่เสียค่าปรับ',
                 'ผู้จัดการ',
                 'FPL ID',
-                'คะแนนดิบ',
-                'คะแนนลบ (Hits)',
-                'คะแนนสุทธิ',
-                'ค่าปรับ (THB)',
+                isEn ? 'Raw Points' : 'คะแนนดิบ',
+                isEn ? 'Hits' : 'คะแนนลบ',
+                isEn ? 'Net Points' : 'คะแนนสุทธิ',
+                isEn ? 'Fine (THB)' : 'ค่าปรับ (THB)',
                 'หมายเหตุ'
               ]);
 
@@ -15141,7 +15201,7 @@ selectShi62GW(gwName) {
 
             // Summary Table: Total Winnings by Team
             prizeRows.push([]);
-            prizeRows.push([hasWeeklyPenalties ? '=== สรุปยอดเงินรางวัลและค่าปรับสุทธิรายทีม (NET BALANCE PER TEAM) ===' : '=== สรุปยอดเงินรางวัลสะสมรายทีม (TOTAL PRIZE WINNINGS PER TEAM) ===']);
+            prizeRows.push([hasWeeklyPenalties ? (isEn ? '=== NET BALANCE PER TEAM ===' : '=== สรุปยอดเงินรางวัลและค่าปรับสุทธิรายทีม ===') : (isEn ? '=== TOTAL PRIZE WINNINGS PER TEAM ===' : '=== สรุปยอดเงินรางวัลสะสมรายทีม ===')]);
             if (hasWeeklyPenalties) {
               prizeRows.push([
                 'อันดับยอดสุทธิ',
@@ -15153,7 +15213,7 @@ selectShi62GW(gwName) {
                 'เงินรางวัลรวม (THB)',
                 'ค่าปรับรวม (THB)',
                 'ติดโซนอันตราย (ครั้ง)',
-                'ยอดรวมสุทธิ (Net Balance THB)'
+                isEn ? 'Net Balance (THB)' : 'ยอดรวมสุทธิ (THB)'
               ]);
             } else {
               prizeRows.push([
@@ -15211,8 +15271,8 @@ selectShi62GW(gwName) {
             // Settlement Phases if configured
             if (this.config.settlement_phases) {
               prizeRows.push([]);
-              prizeRows.push(['=== รอบเคลียร์เงินรางวัล 6 งวด (SETTLEMENT PHASES) ===']);
-              prizeRows.push(['งวดที่', 'สัปดาห์ (GWs)', 'งบประมาณ', 'สถานะ']);
+              prizeRows.push([isEn ? '=== SETTLEMENT PHASES ===' : '=== รอบเคลียร์เงินรางวัล 6 งวด ===']);
+              prizeRows.push(isEn ? ['Round', 'Gameweeks', 'Budget', 'Status'] : ['งวดที่', 'สัปดาห์', 'งบประมาณ', 'สถานะ']);
               this.config.settlement_phases.forEach(p => {
                 prizeRows.push([p.title, p.gws, p.budget, p.status || '-']);
               });
@@ -15221,19 +15281,19 @@ selectShi62GW(gwName) {
             // Season & Cup Prizes
             if (this.config.season_prizes) {
               prizeRows.push([]);
-              prizeRows.push(['=== รางวัลประจำฤดูกาล & บอลถ้วย (SEASON & CUP PRIZES) ===']);
+              prizeRows.push([isEn ? '=== SEASON & CUP PRIZES ===' : '=== รางวัลประจำฤดูกาล & บอลถ้วย ===']);
               prizeRows.push(['รางวัล', 'จำนวนเงิน']);
               Object.entries(this.config.season_prizes).forEach(([k, v]) => {
                 prizeRows.push([`อันดับ ${k}`, v]);
               });
               if (feat.cup_champion_prize) {
-                prizeRows.push(['แชมป์บอลถ้วย (CUP)', feat.cup_champion_prize]);
+                prizeRows.push(['แชมป์ฟุตบอลถ้วย', feat.cup_champion_prize]);
               }
             }
 
           } else if (feat.prize_model === 'monthly') {
             // Monthly League (e.g. 675290)
-            prizeRows.push(['=== สรุปรางวัลประจำเดือน 10 เดือน (MONTHLY AWARDS) ===']);
+            prizeRows.push([isEn ? '=== MONTHLY AWARDS (10 MONTHS) ===' : '=== สรุปรางวัลประจำเดือน 10 เดือน ===']);
             prizeRows.push([
               'เดือน',
               'สัปดาห์แข่งขัน (GWs)',
@@ -15348,7 +15408,7 @@ selectShi62GW(gwName) {
             prizeRows.push(['อันดับ 4 ประจำฤดูกาล', '1,500 THB']);
             prizeRows.push(['อันดับ 5 ประจำฤดูกาล', '1,000 THB']);
             if (feat.cup_champion_prize) {
-              prizeRows.push(['แชมป์บอลถ้วย (CUP)', feat.cup_champion_prize]);
+              prizeRows.push(['แชมป์ฟุตบอลถ้วย', feat.cup_champion_prize]);
             }
             if (feat.charity_donation) {
               prizeRows.push(['บริจาคการกุศลให้โรงพยาบาล', feat.charity_donation]);
@@ -15357,7 +15417,7 @@ selectShi62GW(gwName) {
               prizeRows.push(['กองกลางรวมทั้งหมด', this.config.total_pool]);
             }
           } else if (feat.prize_model === 'annual_zero_sum' || feat.prize_model === 'annual') {
-            prizeRows.push(['=== สรุปยอดเงินรางวัล & ค่าปรับคะแนนรวมสิ้นฤดูกาล (ANNUAL ZERO-SUM SETTLEMENT) ===']);
+            prizeRows.push([isEn ? '=== ANNUAL ZERO-SUM SETTLEMENT ===' : '=== สรุปยอดเงินรางวัล & ค่าปรับคะแนนรวมสิ้นฤดูกาล ===']);
             prizeRows.push([
               'อันดับ',
               'ทีม',
@@ -15479,7 +15539,7 @@ selectShi62GW(gwName) {
               ]);
             });
           } else if (feat.prize_model === 'bramann_dual_prize') {
-            prizeRows.push(['=== สรุปเงินรางวัล FPL & มินิเกม Bramann League (DUAL PRIZE + MINI-GAMES) ===']);
+            prizeRows.push([isEn ? '=== BRAMANN LEAGUE DUAL PRIZES & MINI-GAMES ===' : '=== สรุปเงินรางวัล FPL & มินิเกม Bramann League ===']);
             prizeRows.push([
               'อันดับ',
               'ทีม',
@@ -15491,7 +15551,7 @@ selectShi62GW(gwName) {
               'รวมรางวัล FPL (THB)',
               'ทายผลสะสม (THB)',
               'ท้าชนสะสม (THB)',
-              'ยอดรวมสุทธิ (Grand Total THB)'
+              isEn ? 'Grand Total (THB)' : 'ยอดรวมสุทธิ (THB)'
             ]);
 
             const p1GW = Number(feat.prize1_target_gw) || 19;
@@ -15618,7 +15678,7 @@ selectShi62GW(gwName) {
               ]);
             });
           } else {
-            prizeRows.push(['=== ข้อมูลเงินรางวัลและกติกา (PRIZE & RULES MATRIX) ===']);
+            prizeRows.push([isEn ? '=== PRIZE & RULES MATRIX ===' : '=== ข้อมูลเงินรางวัลและกติกา ===']);
             prizeRows.push(['สถานะ', 'อยู่ระหว่างรอการประกาศกติกาและโครงสร้างเงินรางวัลอย่างเป็นทางการ (เว้นไว้ก่อน เดี๋ยวเข้ามาอธิบาย)']);
             prizeRows.push(['ลีก', this.data.name]);
             prizeRows.push(['League ID', String(this.activeLeagueId)]);
@@ -15800,11 +15860,19 @@ selectShi62GW(gwName) {
       }
     }
 
-    if (typeof document !== 'undefined') {
-      document.addEventListener('DOMContentLoaded', () => {
+    function startApp() {
+      if (!window.app) {
         window.app = new StandaloneApp(MULTI_LEAGUE_DATA, LEAGUES_CONFIG, INITIAL_DEFAULT_LEAGUE);
         window.app.init();
-      });
+      }
+    }
+
+    if (typeof document !== 'undefined') {
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        startApp();
+      } else {
+        document.addEventListener('DOMContentLoaded', startApp);
+      }
 
       // Keyboard Accessibility: Escape key closes any active modal
       document.addEventListener('keydown', (e) => {
