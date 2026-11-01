@@ -5786,6 +5786,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
         else if (this.activeTab === 'about-view') {
           this.renderAboutView();
+        } else {
+          this.renderGameweekView();
         }
       }
 
