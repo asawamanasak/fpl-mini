@@ -7627,7 +7627,7 @@ selectShi62GW(gwName) {
         container.innerHTML = html;
       }
 
-      selectGW(gw, fromPopstate = false) {
+      selectGW(gw, fromPopstate = false, skipRender = false) {
         const maxGW = Number(this.multiData.max_gw) || 2;
         this.selectedGW = Math.min(Math.max(Number(gw) || 1, 1), maxGW);
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
