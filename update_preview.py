@@ -4093,6 +4093,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.initLivePolling();
         this.initDeadlineCountdown();
 
+        // Proactively fetch squads for active league if not yet embedded (e.g. index.html with savedLeague)
+        const hasSquads = Boolean(this.data && this.data.squads && Object.keys(this.data.squads).length > 0);
+        const isTier2 = Boolean(this.config && this.config.tier === 2);
+        if (!hasSquads && !isTier2) {
+          this.fetchLeagueData(this.activeLeagueId);
+        }
+
         // Listen for browser Back/Forward navigation
         if (typeof window !== 'undefined' && window.addEventListener) {
           window.addEventListener('popstate', () => {
@@ -5219,6 +5226,55 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
       }
 
+      getLeagueDataUrl(lid) {
+        const lidStr = String(lid);
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          const configuredIds = Object.keys(this.configs || {});
+          const currentInSubdir = configuredIds.some(cid => window.location.pathname.includes('/' + cid));
+          const prefix = currentInSubdir ? '../' : './';
+          return `${prefix}data/leagues/${lidStr}.json`;
+        }
+        const pathname = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '';
+        const isGitHubPages = pathname.includes('/fpl-mini');
+        const basePath = isGitHubPages ? '/fpl-mini/' : '/';
+        return `${basePath}data/leagues/${lidStr}.json`;
+      }
+
+      async fetchLeagueData(leagueId, retryCount = 1) {
+        const lidStr = String(leagueId);
+        if (!this.multiData || !this.multiData.leagues || !this.multiData.leagues[lidStr]) return null;
+        const targetLeague = this.multiData.leagues[lidStr];
+        if (targetLeague.squads && Object.keys(targetLeague.squads).length > 0) {
+          return targetLeague;
+        }
+        if (targetLeague.tier === 2 || (this.configs[lidStr] && this.configs[lidStr].tier === 2)) {
+          return targetLeague;
+        }
+
+        const url = this.getLeagueDataUrl(lidStr);
+        for (let attempt = 0; attempt <= retryCount; attempt++) {
+          try {
+            const resp = await fetch(url);
+            if (resp.ok) {
+              const fullLeagueData = await resp.json();
+              if (fullLeagueData && fullLeagueData.squads) {
+                this.multiData.leagues[lidStr] = fullLeagueData;
+                if (String(this.activeLeagueId) === lidStr) {
+                  this.data = fullLeagueData;
+                }
+                return fullLeagueData;
+              }
+            }
+          } catch (e) {
+            console.debug(`Dynamic fetch attempt ${attempt + 1} error:`, e);
+            if (attempt < retryCount) {
+              await new Promise(r => setTimeout(r, 400));
+            }
+          }
+        }
+        return null;
+      }
+
       async switchLeague(leagueId, fromPopstate = false) {
         const lidStr = String(leagueId);
         if (!this.multiData || !this.multiData.leagues || !this.multiData.leagues[lidStr]) return;
@@ -5229,24 +5285,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const hasSquads = targetLeague.squads && Object.keys(targetLeague.squads).length > 0;
 
         if (!hasSquads && !isTier2) {
-          const configuredIds = Object.keys(this.configs || {});
-          const currentInSubdir = configuredIds.some(cid => window.location.pathname.includes('/' + cid));
-          const prefix = currentInSubdir ? '../' : './';
-          try {
-            const resp = await fetch(`${prefix}data/leagues/${lidStr}.json`);
-            if (resp.ok) {
-              const fullLeagueData = await resp.json();
-              this.multiData.leagues[lidStr] = fullLeagueData;
-            } else if (window.location.protocol === 'file:') {
-              window.location.href = `${prefix}${lidStr}/index.html`;
-              return;
-            }
-          } catch (e) {
-            if (window.location.protocol === 'file:') {
-              window.location.href = `${prefix}${lidStr}/index.html`;
-              return;
-            }
-            console.debug('Dynamic fetch error:', e);
+          const fetched = await this.fetchLeagueData(lidStr, 1);
+          if (!fetched && typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+            const prefix = this.getLeagueDataUrl(lidStr).startsWith('../') ? '../' : './';
+            window.location.href = `${prefix}${lidStr}/index.html`;
+            return;
           }
         }
 
@@ -14307,39 +14350,51 @@ selectShi62GW(gwName) {
         const formationEl = document.getElementById('team-modal-formation');
 
         if (!squad || !squad.starting || squad.starting.length === 0) {
-          // If the team belongs to another league whose squads have not been fetched yet, trigger on-demand fetch
-          if (targetLeagueId && targetLeagueId !== String(this.activeLeagueId)) {
-            const hasSquads = Boolean(targetLeague && targetLeague.squads && Object.keys(targetLeague.squads).length > 0);
-            const isTier2League = Boolean((targetLeague && targetLeague.tier === 2) || (this.configs && this.configs[targetLeagueId] && this.configs[targetLeagueId].tier === 2));
-            if (!hasSquads && !isTier2League) {
-              if (formationEl) formationEl.innerText = '...';
-              if (gkpLine) gkpLine.innerHTML = '';
-              if (midLine) midLine.innerHTML = '';
-              if (fwdLine) fwdLine.innerHTML = '';
-              if (defLine) defLine.innerHTML = `<div class="text-center text-white/90 py-8 font-bold text-xs w-full animate-pulse"><div class="text-xl mb-1.5">⏳</div>${isEn ? 'Loading team lineup...' : 'กำลังโหลดข้อมูลผังผู้เล่น...'}</div>`;
-              if (benchContainer) benchContainer.innerHTML = `<div class="text-center text-slate-400 py-4 col-span-2 text-xs animate-pulse">${isEn ? 'Loading bench...' : 'กำลังโหลดตัวสำรอง...'}</div>`;
-              if (benchTotal) benchTotal.innerHTML = '';
-              const modal = document.getElementById('team-modal');
-              if (modal) {
-                modal.classList.remove('hidden');
-                document.body.classList.add('overflow-hidden');
+          // If the team belongs to a league whose squads have not been fetched yet, trigger on-demand fetch
+          let leagueToFetch = targetLeagueId || String(this.activeLeagueId);
+          let tgtLeagueObj = (this.multiData && this.multiData.leagues) ? this.multiData.leagues[leagueToFetch] : this.data;
+          let hasSquads = Boolean(tgtLeagueObj && tgtLeagueObj.squads && Object.keys(tgtLeagueObj.squads).length > 0);
+
+          if (!hasSquads && this.multiData && this.multiData.leagues) {
+            // Find any league that has this team and hasn't loaded squads yet
+            for (const [lid, l] of Object.entries(this.multiData.leagues)) {
+              const hasTeam = (l.teams || []).some(t => Number(t.entry_id) === entryIdNum);
+              const lHasSquads = Boolean(l.squads && Object.keys(l.squads).length > 0);
+              if (hasTeam && !lHasSquads) {
+                leagueToFetch = String(lid);
+                tgtLeagueObj = l;
+                hasSquads = false;
+                break;
               }
-              const configuredIds = Object.keys(this.configs || {});
-              const currentInSubdir = configuredIds.some(cid => window.location.pathname.includes('/' + cid));
-              const prefix = currentInSubdir ? '../' : './';
-              fetch(`${prefix}data/leagues/${targetLeagueId}.json`)
-                .then(resp => resp.ok ? resp.json() : null)
-                .then(fullLeagueData => {
-                  if (fullLeagueData && fullLeagueData.squads) {
-                    this.multiData.leagues[targetLeagueId] = fullLeagueData;
-                    if (this.currentModalEntryId === entryIdNum) {
-                      this.openTeamModal(entryIdNum);
-                    }
-                  }
-                })
-                .catch(err => console.debug('Dynamic squad fetch error:', err));
-              return;
             }
+          }
+
+          const isTier2League = Boolean((tgtLeagueObj && tgtLeagueObj.tier === 2) || (this.configs && this.configs[leagueToFetch] && this.configs[leagueToFetch].tier === 2));
+          if (!hasSquads && !isTier2League) {
+            if (formationEl) formationEl.innerText = '...';
+            if (gkpLine) gkpLine.innerHTML = '';
+            if (midLine) midLine.innerHTML = '';
+            if (fwdLine) fwdLine.innerHTML = '';
+            if (defLine) defLine.innerHTML = `<div class="text-center text-white/90 py-8 font-bold text-xs w-full animate-pulse"><div class="text-xl mb-1.5">⏳</div>${isEn ? 'Loading team lineup...' : 'กำลังโหลดข้อมูลผังผู้เล่น...'}</div>`;
+            if (benchContainer) benchContainer.innerHTML = `<div class="text-center text-slate-400 py-4 col-span-2 text-xs animate-pulse">${isEn ? 'Loading bench...' : 'กำลังโหลดตัวสำรอง...'}</div>`;
+            if (benchTotal) benchTotal.innerHTML = '';
+            const modal = document.getElementById('team-modal');
+            if (modal) {
+              modal.classList.remove('hidden');
+              document.body.classList.add('overflow-hidden');
+            }
+            this.fetchLeagueData(leagueToFetch, 2).then(fullLeagueData => {
+              if (this.currentModalEntryId === entryIdNum) {
+                if (fullLeagueData && fullLeagueData.squads) {
+                  this.openTeamModal(entryIdNum);
+                } else {
+                  if (formationEl) formationEl.innerText = '-';
+                  if (defLine) defLine.innerHTML = `<div class="text-center text-white/80 py-8 font-bold text-xs w-full">${isEn ? 'Unable to load lineup (Connection error)' : 'ไม่สามารถโหลดข้อมูลผังผู้เล่นได้ (ข้อผิดพลาดการเชื่อมต่อ)'}</div>`;
+                  if (benchContainer) benchContainer.innerHTML = `<div class="text-center text-slate-400 py-4 col-span-2 text-xs">${isEn ? 'No bench data available' : 'ไม่มีข้อมูลตัวสำรอง'}</div>`;
+                }
+              }
+            });
+            return;
           }
 
           if (formationEl) formationEl.innerText = '-';
