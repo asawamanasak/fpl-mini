@@ -11,8 +11,34 @@ import argparse
 import subprocess
 import random
 import threading
+import logging
 from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor
+
+logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
+
+def load_dotenv_if_present(base_dir=None):
+    """Load key=value pairs from .env into os.environ if not already set."""
+    if base_dir is None:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+    env_path = os.path.join(base_dir, '.env')
+    if not os.path.exists(env_path):
+        return
+    try:
+        with open(env_path, 'r', encoding='utf-8') as f:
+            for raw_line in f:
+                line = raw_line.strip()
+                if not line or line.startswith('#') or '=' not in line:
+                    continue
+                k, v = line.split('=', 1)
+                k = k.strip()
+                v = v.strip().strip('"').strip("'")
+                if k and k not in os.environ:
+                    os.environ[k] = v
+    except Exception as exc:
+        logging.debug("Could not parse .env file: %s", exc)
+
+load_dotenv_if_present()
 
 # Guard against hung low-level sockets across all worker threads
 socket.setdefaulttimeout(20)
@@ -200,7 +226,6 @@ def trigger_publish(force=False):
     base_dir = os.path.dirname(os.path.abspath(__file__))
     update_script = os.path.join(base_dir, "update_preview.py")
     multi_json_path = os.path.join(base_dir, "multi_fpl_data.json")
-    real_json_path = os.path.join(base_dir, "real_fpl_40700_data.json")
     try:
         print("\n -> [Live Matchday Publisher] Regenerating dashboard presentations...")
         subprocess.run([sys.executable, update_script], check=True, cwd=base_dir)
@@ -218,25 +243,16 @@ def trigger_publish(force=False):
                 print("Notice: Git push conflict, preserving fresh sync data and resetting to origin/main...")
                 subprocess.run(["git", "rebase", "--abort"], cwd=base_dir, check=False)
                 saved_multi_obj = None
-                saved_real_obj = None
                 if os.path.exists(multi_json_path):
                     try:
                         with open(multi_json_path, "r", encoding="utf-8") as f:
                             saved_multi_obj = json.load(f)
-                    except Exception:
-                        pass
-                if os.path.exists(real_json_path):
-                    try:
-                        with open(real_json_path, "r", encoding="utf-8") as f:
-                            saved_real_obj = json.load(f)
-                    except Exception:
-                        pass
+                    except Exception as exc:
+                        logging.debug("Could not preserve multi_json_path during rebase recovery: %s", exc)
                 subprocess.run(["git", "fetch", "origin", "main"], check=True, cwd=base_dir)
                 subprocess.run(["git", "reset", "--hard", "origin/main"], check=True, cwd=base_dir)
                 if saved_multi_obj is not None:
                     atomic_json_dump(saved_multi_obj, multi_json_path)
-                if saved_real_obj is not None:
-                    atomic_json_dump(saved_real_obj, real_json_path)
                 subprocess.run([sys.executable, update_script], check=True, cwd=base_dir)
                 subprocess.run(["git", "add", "-A"], check=True, cwd=base_dir)
                 retry_diff = subprocess.run(["git", "diff", "--staged", "--quiet"], cwd=base_dir)
@@ -264,19 +280,20 @@ def atomic_json_dump(data, file_path, create_backup=True):
             try:
                 shutil.copyfile(file_path, bak_tmp)
                 os.replace(bak_tmp, bak_path)
-            except Exception:
+            except Exception as bak_exc:
+                logging.debug("Could not rotate backup file %s: %s", bak_path, bak_exc)
                 if os.path.exists(bak_tmp):
                     try:
                         os.remove(bak_tmp)
-                    except Exception:
-                        pass
+                    except Exception as rm_exc:
+                        logging.debug("Could not remove temp backup %s: %s", bak_tmp, rm_exc)
         os.replace(temp_path, file_path)
     except Exception as e:
         if os.path.exists(temp_path):
             try:
                 os.remove(temp_path)
-            except Exception:
-                pass
+            except Exception as rm_exc:
+                logging.debug("Could not remove temp file %s: %s", temp_path, rm_exc)
         raise e
 
 def check_data_has_changed(cached_data, new_output):
@@ -1292,45 +1309,50 @@ def sync_once(args):
     upcoming_gw = next_event['id'] if next_event else (max_gw + 1 if gw_status_map.get(max_gw) else max_gw)
     print(f"Fetching Transfer Suggestions for upcoming GW {upcoming_gw}...")
     try:
-        ts_url = f'https://fontendfunctionsnortheuropenew.azurewebsites.net/api/TransferSuggestionsFunction?gameweeks={upcoming_gw}&generalSuggestions=1'
-        azure_key = os.environ.get('AZURE_TRANSFER_FUNCTION_KEY', 'db059d47-8b44-476a-9dfc-509bceb87bee')
-        ts_headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
-            'FunctionKey': azure_key
-        }
-        ts_data = fetch(ts_url, headers_override=ts_headers, retries=3, delay=1.5, timeout=12)
-        if ts_data and ts_data.get("Succeeded"):
-            new_gk = ts_data.get("GoalKeepers", [])
-            new_def = ts_data.get("Defenders", [])
-            new_mid = ts_data.get("Midfielders", [])
-            new_fwd = ts_data.get("Forwards", [])
-
-            cached_ts = cached_data.get("transfer_suggestions", {}) if cached_data else {}
-            content_changed = (
-                new_gk != cached_ts.get("GoalKeepers") or
-                new_def != cached_ts.get("Defenders") or
-                new_mid != cached_ts.get("Midfielders") or
-                new_fwd != cached_ts.get("Forwards") or
-                upcoming_gw != cached_ts.get("gw")
-            )
-            updated_ts_time = datetime.now(timezone.utc).isoformat() if content_changed else cached_ts.get("updated_at", datetime.now(timezone.utc).isoformat())
-
-            multi_league_output["transfer_suggestions"] = {
-                "gw": upcoming_gw,
-                "updated_at": updated_ts_time,
-                "GoalKeepers": new_gk,
-                "Defenders": new_def,
-                "Midfielders": new_mid,
-                "Forwards": new_fwd
-            }
-            if content_changed:
-                print(f" -> Successfully updated Transfer Suggestions for GW {upcoming_gw} (New data)!")
-                has_changed = True
-            else:
-                print(f" -> Transfer Suggestions for GW {upcoming_gw} unchanged. Preserving timestamp.")
-        else:
+        azure_key = os.environ.get('AZURE_TRANSFER_FUNCTION_KEY', '').strip()
+        if not azure_key:
+            print("Notice: AZURE_TRANSFER_FUNCTION_KEY is not configured. Preserving existing cached transfer suggestions.")
             if cached_data and "transfer_suggestions" in cached_data:
                 multi_league_output["transfer_suggestions"] = cached_data["transfer_suggestions"]
+        else:
+            ts_url = f'https://fontendfunctionsnortheuropenew.azurewebsites.net/api/TransferSuggestionsFunction?gameweeks={upcoming_gw}&generalSuggestions=1'
+            ts_headers = {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+                'FunctionKey': azure_key
+            }
+            ts_data = fetch(ts_url, headers_override=ts_headers, retries=3, delay=1.5, timeout=12)
+            if ts_data and ts_data.get("Succeeded"):
+                new_gk = ts_data.get("GoalKeepers", [])
+                new_def = ts_data.get("Defenders", [])
+                new_mid = ts_data.get("Midfielders", [])
+                new_fwd = ts_data.get("Forwards", [])
+
+                cached_ts = cached_data.get("transfer_suggestions", {}) if cached_data else {}
+                content_changed = (
+                    new_gk != cached_ts.get("GoalKeepers") or
+                    new_def != cached_ts.get("Defenders") or
+                    new_mid != cached_ts.get("Midfielders") or
+                    new_fwd != cached_ts.get("Forwards") or
+                    upcoming_gw != cached_ts.get("gw")
+                )
+                updated_ts_time = datetime.now(timezone.utc).isoformat() if content_changed else cached_ts.get("updated_at", datetime.now(timezone.utc).isoformat())
+
+                multi_league_output["transfer_suggestions"] = {
+                    "gw": upcoming_gw,
+                    "updated_at": updated_ts_time,
+                    "GoalKeepers": new_gk,
+                    "Defenders": new_def,
+                    "Midfielders": new_mid,
+                    "Forwards": new_fwd
+                }
+                if content_changed:
+                    print(f" -> Successfully updated Transfer Suggestions for GW {upcoming_gw} (New data)!")
+                    has_changed = True
+                else:
+                    print(f" -> Transfer Suggestions for GW {upcoming_gw} unchanged. Preserving timestamp.")
+            else:
+                if cached_data and "transfer_suggestions" in cached_data:
+                    multi_league_output["transfer_suggestions"] = cached_data["transfer_suggestions"]
     except Exception as ts_err:
         print(f"Notice: Could not fetch transfer suggestions: {ts_err}")
         if cached_data and "transfer_suggestions" in cached_data:
@@ -1350,7 +1372,8 @@ def sync_once(args):
             if (now_th - last_dt).total_seconds() >= HEARTBEAT_INTERVAL_SECONDS:
                 is_heartbeat = True
                 print(f" -> [Smart Commit] Periodic Heartbeat triggered (> {HEARTBEAT_INTERVAL_SECONDS // 3600}h since last sync).")
-        except Exception:
+        except Exception as hb_exc:
+            logging.debug("Heartbeat timestamp parse fallback: %s", hb_exc)
             is_heartbeat = True
 
     if not has_changed and not is_heartbeat and not args.force and cached_data:
@@ -1371,30 +1394,14 @@ def sync_once(args):
                 print(f"✅ Fast sync completed in {elapsed:.2f} seconds (0 disk mutations)!")
                 print(f"   Last Sync: {sync_time_str}")
                 return False, 0, max_gw
-        except Exception:
-            pass
+        except Exception as cmp_exc:
+            logging.debug("Cache equality check fallback: %s", cmp_exc)
     else:
         change_reason = "Points/Rank change" if has_changed else ("Heartbeat" if is_heartbeat else "Initial/Force sync")
         print(f"\n🚀 [Smart Commit] Live data update triggered: {change_reason} -> Updating sync timestamp to {sync_time_str}")
 
     # 5. Write multi_fpl_data.json atomically
     atomic_json_dump(multi_league_output, multi_json_path)
-
-    # 6. Write real_fpl_40700_data.json for backwards compatibility atomically
-    real_json_path = os.path.join(base_dir, 'real_fpl_40700_data.json')
-    if "40700" in multi_league_output["leagues"]:
-        atomic_json_dump({
-            "league": {
-                "id": 40700,
-                "name": multi_league_output["leagues"]["40700"]["name"],
-                "season": "2026/27",
-                "last_sync": sync_time_str,
-                "last_sync_iso": sync_iso_str
-            },
-            "teams": multi_league_output["leagues"]["40700"]["teams"],
-            "gameweeks": multi_league_output["leagues"]["40700"]["gameweeks"],
-            "squads": multi_league_output["leagues"]["40700"]["squads"]
-        }, real_json_path)
 
     elapsed = time.time() - start_time
     print(f"\n=======================================================")

@@ -16,11 +16,12 @@ import os
 from parse_shi62_special import parse_shi62_file
 from parse_bramann_games import parse_bramann_prediction_file, parse_bramann_challenge_file
 
-def get_architecture_diagram_html(lang='th'):
+def get_architecture_diagram_html(lang='th', asset_prefix='./'):
     is_th = lang == 'th'
     arch_title = "สถาปัตยกรรมระบบเบื้องหลังและเวิร์กโฟลว์การประมวลผลข้อมูล FPL" if is_th else "FPL System Architecture & Pipeline Workflow"
     arch_desc = "ไดอะแกรมแสดงโฟลว์การทำงานแบบ Serverless Jamstack" if is_th else "Architecture diagram showing Jamstack serverless pipeline"
     fullscreen_label = "เปิดดูเต็มจอ ↗" if is_th else "Open Fullscreen ↗"
+    stack_expand_label = "คลิกเพื่อเปิดดูรูปขนาดเต็ม ↗" if is_th else "Click to expand high-res diagram ↗"
     zone1_title = "1. INGESTION &amp; ATOMIC STATE"
     zone2_title = "2. JAMSTACK &amp; EDGE CDN"
     zone3_title = "3. CLIENT RUNTIME"
@@ -39,7 +40,7 @@ def get_architecture_diagram_html(lang='th'):
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                 SYSTEM WORKFLOW ARCHITECTURE (DIAGRAM)
               </span>
-              <a href="docs/architecture-workflow.html" target="_blank" rel="noopener noreferrer" class="text-[10px] font-mono text-slate-500 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors inline-flex items-center gap-1">
+              <a href="{asset_prefix}docs/architecture-workflow.html" target="_blank" rel="noopener noreferrer" class="text-[10px] font-mono text-slate-500 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors inline-flex items-center gap-1">
                 <span>{fullscreen_label}</span>
               </a>
             </div>
@@ -65,13 +66,13 @@ def get_architecture_diagram_html(lang='th'):
                 <rect width="100%" height="100%" fill="url(#embed-bg-dots)" rx="10"/>
                 <rect x="220" y="56" width="288" height="352" rx="8" fill="var(--diag-paper-2)" stroke="var(--diag-rule-solid)" stroke-width="1"/>
                 <rect x="232" y="48" width="216" height="16" rx="2" fill="var(--diag-paper)"/>
-                <text x="240" y="60" fill="var(--diag-accent)" font-size="8.5" font-weight="600" font-family="'Geist Mono', monospace" letter-spacing="0.12em">{zone1_title}</text>
+                <text x="240" y="60" fill="var(--diag-accent)" font-size="8.5" font-weight="600" font-family="var(--font-mono)" letter-spacing="0.12em">{zone1_title}</text>
                 <rect x="528" y="56" width="248" height="352" rx="8" fill="var(--diag-paper-2)" stroke="var(--diag-rule-solid)" stroke-width="1"/>
                 <rect x="540" y="48" width="204" height="16" rx="2" fill="var(--diag-paper)"/>
-                <text x="548" y="60" fill="var(--diag-muted)" font-size="8.5" font-weight="600" font-family="'Geist Mono', monospace" letter-spacing="0.12em">{zone2_title}</text>
+                <text x="548" y="60" fill="var(--diag-muted)" font-size="8.5" font-weight="600" font-family="var(--font-mono)" letter-spacing="0.12em">{zone2_title}</text>
                 <rect x="796" y="56" width="204" height="352" rx="8" fill="var(--diag-paper-2)" stroke="var(--diag-rule-solid)" stroke-width="1"/>
                 <rect x="808" y="48" width="168" height="16" rx="2" fill="var(--diag-paper)"/>
-                <text x="816" y="60" fill="var(--diag-accent)" font-size="8.5" font-weight="600" font-family="'Geist Mono', monospace" letter-spacing="0.12em">{zone3_title}</text>
+                <text x="816" y="60" fill="var(--diag-accent)" font-size="8.5" font-weight="600" font-family="var(--font-mono)" letter-spacing="0.12em">{zone3_title}</text>
                 <path d="M 180,194 H 202 Q 210,194 210,186 V 142 Q 210,134 218,134 H 240" fill="none" stroke="var(--diag-link)" stroke-width="1.3" marker-end="url(#embed-arrow-link)"/>
                 <line x1="364" y1="172" x2="364" y2="204" stroke="var(--diag-accent)" stroke-width="1.4" marker-end="url(#embed-arrow-accent)"/>
                 <line x1="364" y1="276" x2="364" y2="308" stroke="var(--diag-muted)" stroke-width="1.2" marker-end="url(#embed-arrow)"/>
@@ -80,74 +81,112 @@ def get_architecture_diagram_html(lang='th'):
                 <path d="M 756,300 H 778 Q 786,300 786,292 V 244 Q 786,236 794,236 H 816" fill="none" stroke="var(--diag-link)" stroke-width="1.3" marker-end="url(#embed-arrow-link)"/>
                 <path d="M 816,260 H 794 Q 786,260 786,268 V 316 Q 786,324 778,324 H 756" fill="none" stroke="var(--diag-muted)" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#embed-arrow)"/>
                 <rect x="188" y="156" width="46" height="14" rx="2" fill="var(--diag-paper)"/>
-                <text x="211" y="166" fill="var(--diag-link)" font-size="7.5" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle" letter-spacing="0.08em">REST JSON</text>
+                <text x="211" y="166" fill="var(--diag-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">REST JSON</text>
                 <rect x="330" y="182" width="68" height="14" rx="2" fill="var(--diag-paper)"/>
-                <text x="364" y="192" fill="var(--diag-accent)" font-size="7.5" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">THREAD-SAFE</text>
+                <text x="364" y="192" fill="var(--diag-accent)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">THREAD-SAFE</text>
                 <rect x="330" y="286" width="68" height="14" rx="2" fill="var(--diag-paper)"/>
-                <text x="364" y="296" fill="var(--diag-muted)" font-size="7.5" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle" letter-spacing="0.08em">OS.REPLACE</text>
+                <text x="364" y="296" fill="var(--diag-muted)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">OS.REPLACE</text>
                 <rect x="496" y="248" width="62" height="14" rx="2" fill="var(--diag-paper)"/>
-                <text x="527" y="258" fill="var(--diag-accent)" font-size="7.5" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DIFF DETECT</text>
+                <text x="527" y="258" fill="var(--diag-accent)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DIFF DETECT</text>
                 <rect x="618" y="230" width="68" height="14" rx="2" fill="var(--diag-paper)"/>
-                <text x="652" y="240" fill="var(--diag-muted)" font-size="7.5" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle" letter-spacing="0.08em">STATIC HTML</text>
+                <text x="652" y="240" fill="var(--diag-muted)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">STATIC HTML</text>
                 <rect x="764" y="268" width="64" height="14" rx="2" fill="var(--diag-paper)"/>
-                <text x="796" y="278" fill="var(--diag-link)" font-size="7.5" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle" letter-spacing="0.08em">TTFB &lt; 50ms</text>
+                <text x="796" y="278" fill="var(--diag-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">TTFB &lt; 50ms</text>
                 <g id="embed-node-fpl-api">
                   <rect x="24" y="160" width="156" height="68" rx="6" fill="var(--diag-paper)"/>
                   <rect x="24" y="160" width="156" height="68" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--diag-link)" stroke-width="1.2"/>
                   <rect x="32" y="168" width="48" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
-                  <text x="56" y="177" fill="var(--diag-link)" font-size="7" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EXTERNAL</text>
-                  <text x="102" y="196" fill="var(--diag-ink)" font-size="12" font-weight="600" font-family="system-ui, sans-serif" text-anchor="middle">Official FPL API</text>
-                  <text x="102" y="213" fill="var(--diag-muted)" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">Live / Picks / Static</text>
+                  <text x="56" y="177" fill="var(--diag-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EXTERNAL</text>
+                  <text x="102" y="196" fill="var(--diag-ink)" font-size="12" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Official FPL API</text>
+                  <text x="102" y="213" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">Live / Picks / Static</text>
                 </g>
                 <g id="embed-node-sync-engine">
                   <rect x="240" y="100" width="248" height="72" rx="6" fill="var(--diag-paper)"/>
                   <rect x="240" y="100" width="248" height="72" rx="6" fill="var(--diag-accent-tint)" stroke="var(--diag-accent)" stroke-width="1.5"/>
                   <rect x="248" y="108" width="76" height="12" rx="2" fill="var(--diag-accent)" opacity="0.18"/>
-                  <text x="286" y="117" fill="var(--diag-accent)" font-size="7" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">PARALLEL CORE</text>
-                  <text x="364" y="138" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="system-ui, sans-serif" text-anchor="middle">sync_live_fpl.py</text>
-                  <text x="364" y="156" fill="var(--diag-muted)" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">{sync_sub}</text>
+                  <text x="286" y="117" fill="var(--diag-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">PARALLEL CORE</text>
+                  <text x="364" y="138" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">sync_live_fpl.py</text>
+                  <text x="364" y="156" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{sync_sub}</text>
                 </g>
                 <g id="embed-node-atomic-store">
                   <rect x="240" y="204" width="248" height="72" rx="6" fill="var(--diag-paper)"/>
                   <rect x="240" y="204" width="248" height="72" rx="6" fill="rgba(148, 163, 184, 0.06)" stroke="var(--diag-rule-solid)" stroke-width="1.2"/>
                   <rect x="248" y="212" width="74" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
-                  <text x="285" y="221" fill="var(--diag-soft)" font-size="7" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DATA INTEGRITY</text>
-                  <text x="364" y="242" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="system-ui, sans-serif" text-anchor="middle">POSIX Atomic Store</text>
-                  <text x="364" y="260" fill="var(--diag-muted)" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">{atomic_sub}</text>
+                  <text x="285" y="221" fill="var(--diag-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DATA INTEGRITY</text>
+                  <text x="364" y="242" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">POSIX Atomic Store</text>
+                  <text x="364" y="260" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{atomic_sub}</text>
                 </g>
                 <g id="embed-node-smart-commit">
                   <rect x="240" y="308" width="248" height="72" rx="6" fill="var(--diag-paper)"/>
                   <rect x="240" y="308" width="248" height="72" rx="6" fill="rgba(148, 163, 184, 0.06)" stroke="var(--diag-rule-solid)" stroke-width="1.2"/>
                   <rect x="248" y="316" width="74" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
-                  <text x="285" y="325" fill="var(--diag-soft)" font-size="7" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">GIT ZERO-CHURN</text>
-                  <text x="364" y="346" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="system-ui, sans-serif" text-anchor="middle">Smart Commit Engine</text>
-                  <text x="364" y="364" fill="var(--diag-muted)" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">{smart_commit_sub}</text>
+                  <text x="285" y="325" fill="var(--diag-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">GIT ZERO-CHURN</text>
+                  <text x="364" y="346" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Smart Commit Engine</text>
+                  <text x="364" y="364" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{smart_commit_sub}</text>
                 </g>
                 <g id="embed-node-preview-compiler">
                   <rect x="548" y="140" width="208" height="72" rx="6" fill="var(--diag-paper)"/>
                   <rect x="548" y="140" width="208" height="72" rx="6" fill="rgba(148, 163, 184, 0.06)" stroke="var(--diag-rule-solid)" stroke-width="1.2"/>
                   <rect x="556" y="148" width="80" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
-                  <text x="596" y="157" fill="var(--diag-soft)" font-size="7" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">JAMSTACK BUILD</text>
-                  <text x="652" y="178" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="system-ui, sans-serif" text-anchor="middle">update_preview.py</text>
-                  <text x="652" y="196" fill="var(--diag-muted)" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">{preview_compiler_sub}</text>
+                  <text x="596" y="157" fill="var(--diag-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">JAMSTACK BUILD</text>
+                  <text x="652" y="178" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">update_preview.py</text>
+                  <text x="652" y="196" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{preview_compiler_sub}</text>
                 </g>
                 <g id="embed-node-edge-cdn">
                   <rect x="548" y="260" width="208" height="72" rx="6" fill="var(--diag-paper)"/>
                   <rect x="548" y="260" width="208" height="72" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--diag-link)" stroke-width="1.2"/>
                   <rect x="556" y="268" width="60" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
-                  <text x="586" y="277" fill="var(--diag-link)" font-size="7" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EDGE CDN</text>
-                  <text x="652" y="298" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="system-ui, sans-serif" text-anchor="middle">Fastly Edge Network</text>
-                  <text x="652" y="316" fill="var(--diag-muted)" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">{edge_cdn_sub}</text>
+                  <text x="586" y="277" fill="var(--diag-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EDGE CDN</text>
+                  <text x="652" y="298" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Fastly Edge Network</text>
+                  <text x="652" y="316" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{edge_cdn_sub}</text>
                 </g>
                 <g id="embed-node-client-app">
                   <rect x="816" y="200" width="168" height="72" rx="6" fill="var(--diag-paper)"/>
                   <rect x="816" y="200" width="168" height="72" rx="6" fill="var(--diag-accent-tint)" stroke="var(--diag-accent)" stroke-width="1.5"/>
                   <rect x="824" y="208" width="64" height="12" rx="2" fill="var(--diag-accent)" opacity="0.18"/>
-                  <text x="856" y="217" fill="var(--diag-accent)" font-size="7" font-family="'Geist Mono', monospace" font-weight="600" text-anchor="middle" letter-spacing="0.08em">BROWSER SPA</text>
-                  <text x="900" y="238" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="system-ui, sans-serif" text-anchor="middle">Vanilla Client App</text>
-                  <text x="900" y="256" fill="var(--diag-muted)" font-size="8.5" font-family="'Geist Mono', monospace" text-anchor="middle">{client_sub}</text>
+                  <text x="856" y="217" fill="var(--diag-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">BROWSER SPA</text>
+                  <text x="900" y="238" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Vanilla Client App</text>
+                  <text x="900" y="256" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{client_sub}</text>
                 </g>
               </svg>
+            </div>
+          </div>
+
+          <!-- Tech Stack Architecture Diagram (Brand & Topology Guide) -->
+          <div class="mt-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-3 sm:p-4 overflow-hidden tech-stack-diagram">
+            <div class="flex items-center justify-between mb-2.5">
+              <span class="text-[10px] font-mono font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse"></span>
+                TECH STACK ARCHITECTURE (DIAGRAM)
+              </span>
+              <a href="{asset_prefix}docs/tech-stack-diagram.html" target="_blank" rel="noopener noreferrer" class="text-[10px] font-mono text-slate-500 hover:text-sky-500 dark:hover:text-sky-400 transition-colors inline-flex items-center gap-1">
+                <span>{fullscreen_label}</span>
+              </a>
+            </div>
+            <div class="w-full overflow-hidden rounded-lg border border-slate-200/60 dark:border-slate-800/80 bg-slate-100/50 dark:bg-slate-950/60 p-1 sm:p-2">
+              <a href="{asset_prefix}docs/tech-stack-diagram.html" target="_blank" rel="noopener noreferrer" class="block group relative cursor-zoom-in" title="{stack_expand_label}">
+                <!-- Light theme image -->
+                <img src="{asset_prefix}images/tech-stack-diagram.png" alt="FPL เซียนอยู่รู Tech Stack Diagram" class="w-full h-auto rounded block dark:hidden shadow-sm transition-transform duration-200 group-hover:scale-[1.005]" loading="lazy">
+                <!-- Dark theme image -->
+                <img src="{asset_prefix}images/tech-stack-diagram-dark.png" alt="FPL เซียนอยู่รู Tech Stack Diagram" class="w-full h-auto rounded hidden dark:block shadow-sm transition-transform duration-200 group-hover:scale-[1.005]" loading="lazy">
+                <div class="absolute bottom-2.5 right-2.5 px-2 py-1 rounded bg-slate-900/80 text-white text-[9px] font-mono opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 pointer-events-none shadow">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                  <span>{stack_expand_label}</span>
+                </div>
+              </a>
+            </div>
+            <div class="mt-2.5 flex items-center justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400">
+              <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Python 3.11</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">GitHub Actions</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Cloudflare Workers</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Azure Functions</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Fastly Edge CDN</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Vanilla JS (0kb)</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Tailwind CSS</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">SheetJS</span>
+              </div>
+              <span class="hidden sm:inline text-[9.5px]">stack-diagram • High-DPI Retina</span>
             </div>
           </div>
     """
@@ -1897,7 +1936,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <thead>
               <tr class="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
                 <th onclick="app.setRadarSortBy('total_net')" class="py-2.5 px-1 sm:px-2 text-center w-[36px] min-w-[36px] max-w-[36px] sm:w-[40px] sm:min-w-[40px] whitespace-nowrap sticky top-0 max-sm:left-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-20 cursor-pointer hover:text-blue-600 transition-colors select-none" title="คลิกเพื่อเรียงตามอันดับคะแนนรวม">#</th>
-                <th onclick="app.setRadarSortBy('team_name')" class="py-2.5 px-2 sm:px-3 min-w-[125px] sm:min-w-0 max-w-[150px] sm:max-w-none whitespace-nowrap sticky top-0 max-sm:left-[36px] bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-20 max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)] cursor-pointer hover:text-blue-600 transition-colors select-none" title="คลิกเพื่อเรียงตามชื่อทีม">
+                <th onclick="app.setRadarSortBy('team_name')" class="py-2.5 px-1.5 sm:px-3 min-w-[110px] sm:min-w-0 max-w-[130px] sm:max-w-none whitespace-nowrap sticky top-0 max-sm:left-[36px] bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-20 max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)] cursor-pointer hover:text-blue-600 transition-colors select-none" title="คลิกเพื่อเรียงตามชื่อทีม">
                   <span id="th-radar-team_name">ทีม & ผู้จัดการ</span>
                 </th>
                 <th onclick="app.setRadarSortBy('total_net')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none text-blue-600 dark:text-blue-400 font-black" title="คลิกเพื่อเรียงตามคะแนนรวมสุทธิ">
@@ -2215,7 +2254,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">1. Pipeline & Multi-Threading Engine</div>
               <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
                 <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Serverless Orchestration:</strong> ประมวลผลผ่าน GitHub Actions Runner (Ubuntu Latest / Python 3.11) ตามตาราง Cron และ Event Triggers</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Parallel Concurrency:</strong> ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> ร่วมกับ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">threading.Lock</code> ดึงคะแนนสดและขุมกำลัง 150+ ทีม 7 ลีกพร้อมกัน ลดเวลาประมวลผลจาก 180s เหลือเพียง 2-4s</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Parallel Concurrency:</strong> ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> ร่วมกับ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">threading.Lock</code> ดึงคะแนนสดและขุมกำลัง 150+ ทีม 8 ลีกพร้อมกัน ลดเวลาประมวลผลจาก 180s เหลือเพียง 2-4s</span></li>
                 <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Adaptive Throttling:</strong> ตรวจจับสถานะแมตช์สดอัตโนมัติ พร้อมตั้งคูลดาวน์ขั้นต่ำ 300 วินาที เพื่อรักษาระดับการบิลด์ให้อยู่ในโควตา GitHub Pages (10 builds/hr) และป้องกัน HTTP 429</span></li>
               </ul>
             </div>
@@ -2270,7 +2309,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <!-- 6. Interactive Modal Systems -->
 
   <!-- 6.1 หน้าต่างดูแผนจัดตัวนักเตะ (Team Squad Modal) -->
-  <div id="team-modal" role="dialog" aria-modal="true" aria-labelledby="team-modal-title" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200 overscroll-contain" onclick="if (event.target === this) app.closeTeamModal()" ontouchmove="if (event.target === this) event.preventDefault()">
+  <div id="team-modal" role="dialog" aria-modal="true" aria-labelledby="team-modal-title" tabindex="-1" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200 overscroll-contain focus:outline-none" onclick="if (event.target === this) app.closeTeamModal()" ontouchmove="if (event.target === this) event.preventDefault()">
     <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl max-w-xl w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[90dvh] flex flex-col overflow-hidden my-auto modal-animate-in" onclick="event.stopPropagation()">
       
       <!-- Fixed Header: 100% width, permanently clean top, zero negative margin hacks -->
@@ -2358,7 +2397,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   </div>
 
   <!-- 6.2 หน้าต่างข้อมูล Projected Points Modal (FPL Gameweek Explanation) -->
-  <div id="projected-points-modal" role="dialog" aria-modal="true" aria-labelledby="projected-points-title" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200 overscroll-contain" onclick="if (event.target === this) app.closeProjectedPointsModal()" ontouchmove="if (event.target === this) event.preventDefault()">
+  <div id="projected-points-modal" role="dialog" aria-modal="true" aria-labelledby="projected-points-title" tabindex="-1" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200 overscroll-contain focus:outline-none" onclick="if (event.target === this) app.closeProjectedPointsModal()" ontouchmove="if (event.target === this) event.preventDefault()">
     <div class="bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-6 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[90dvh] overflow-y-auto overscroll-contain modal-animate-in" onclick="event.stopPropagation()">
       <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
         <div class="flex items-center gap-2">
@@ -2384,7 +2423,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   </div>
 
   <!-- 6.3 หน้าต่าง Text Summary Modal สำหรับส่ง LINE -->
-  <div id="text-summary-modal" role="dialog" aria-modal="true" aria-labelledby="modal-summary-title" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200 overscroll-contain" onclick="if (event.target === this) app.closeTextSummaryModal()" ontouchmove="if (event.target === this) event.preventDefault()">
+  <div id="text-summary-modal" role="dialog" aria-modal="true" aria-labelledby="modal-summary-title" tabindex="-1" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200 overscroll-contain focus:outline-none" onclick="if (event.target === this) app.closeTextSummaryModal()" ontouchmove="if (event.target === this) event.preventDefault()">
     <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[90dvh] flex flex-col justify-between overflow-y-auto overscroll-contain modal-animate-in" onclick="event.stopPropagation()">
       <div>
         <div class="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-slate-800 mb-3">
@@ -4306,13 +4345,24 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (typeof window === 'undefined' || typeof fetch === 'undefined') return;
 
         const checkAndPoll = () => {
-          if (!document.hidden && this.isLiveWindowActive()) {
+          if (!this.isLiveWindowActive()) {
+            if (this.livePollInterval) {
+              clearInterval(this.livePollInterval);
+              this.livePollInterval = null;
+            }
+            return;
+          }
+          if (!document.hidden) {
             this.fetchLivePoints();
           }
         };
 
-        // Visibility listener to save device battery and bandwidth
-        document.addEventListener('visibilitychange', checkAndPoll);
+        // Visibility listener to save device battery and bandwidth (deduplicated)
+        if (this._boundVisibilityHandler) {
+          document.removeEventListener('visibilitychange', this._boundVisibilityHandler);
+        }
+        this._boundVisibilityHandler = checkAndPoll;
+        document.addEventListener('visibilitychange', this._boundVisibilityHandler);
 
         // Fetch immediately on load if matchday is active or awaiting official data_checked confirmation
         if (this.isLiveWindowActive()) {
@@ -5320,17 +5370,42 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const lidStr = String(leagueId);
         if (!this.multiData || !this.multiData.leagues || !this.multiData.leagues[lidStr]) return;
 
+        this._switchingTargetId = lidStr;
+        const selectorContainer = (typeof document !== 'undefined') ? document.getElementById('league-selector-container') : null;
+
         // Decoupled loading: Check if target league needs squads/data fetched
         const targetLeague = this.multiData.leagues[lidStr];
         const isTier2 = (targetLeague.tier === 2) || (this.configs[lidStr] && this.configs[lidStr].tier === 2);
         const hasSquads = targetLeague.squads && Object.keys(targetLeague.squads).length > 0;
 
         if (!hasSquads && !isTier2) {
-          const fetched = await this.fetchLeagueData(lidStr, 1);
-          if (!fetched && typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
-            const prefix = this.getLeagueDataUrl(lidStr).startsWith('../') ? '../' : './';
-            window.location.href = `${prefix}${lidStr}/index.html`;
-            return;
+          if (selectorContainer) {
+            selectorContainer.classList.add('opacity-60', 'pointer-events-none');
+            selectorContainer.setAttribute('aria-busy', 'true');
+          }
+          try {
+            const fetched = await this.fetchLeagueData(lidStr, 1);
+            if (this._switchingTargetId !== lidStr) return;
+            if (!fetched) {
+              if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+                const prefix = this.getLeagueDataUrl(lidStr).startsWith('../') ? '../' : './';
+                window.location.href = `${prefix}${lidStr}/index.html`;
+                return;
+              } else {
+                const isEn = (this.currentLang === 'en');
+                this.showToast(
+                  isEn
+                    ? 'Could not load full squad data. Please check your connection.'
+                    : 'ไม่สามารถโหลดข้อมูลเชิงลึกของลีกได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต',
+                  'error'
+                );
+              }
+            }
+          } finally {
+            if (selectorContainer && this._switchingTargetId === lidStr) {
+              selectorContainer.classList.remove('opacity-60', 'pointer-events-none');
+              selectorContainer.removeAttribute('aria-busy');
+            }
           }
         }
 
@@ -9295,16 +9370,22 @@ selectShi62GW(gwName) {
           }
           if (btn) btn.innerText = isEn ? 'Got it' : 'เข้าใจแล้ว';
 
+          this._lastFocusedElement = document.activeElement;
           modal.classList.remove('hidden');
           document.body.classList.add('overflow-hidden');
+          if (btn) btn.focus({ preventScroll: true });
+          else modal.focus({ preventScroll: true });
         }
       }
 
       closeProjectedPointsModal() {
         const modal = document.getElementById('projected-points-modal');
-        if (modal) {
+        if (modal && !modal.classList.contains('hidden')) {
           modal.classList.add('hidden');
           document.body.classList.remove('overflow-hidden');
+          if (this._lastFocusedElement && typeof this._lastFocusedElement.focus === 'function') {
+            this._lastFocusedElement.focus({ preventScroll: true });
+          }
         }
       }
 
@@ -12595,7 +12676,17 @@ selectShi62GW(gwName) {
         const headerPill = document.getElementById('global-radar-header-pill');
         const isEn = (this.currentLang === 'en');
         if (headerPill) {
-          headerPill.innerText = isEn ? '7 Leagues • 135 Teams' : '7 ลีก • 135 ทีม';
+          const leaguesMapForCount = (this.multiData && this.multiData.leagues) || {};
+          const leagueIdsForCount = (this.multiData && this.multiData.league_order) || Object.keys(leaguesMapForCount);
+          const uniqueTeamIdsForCount = new Set();
+          leagueIdsForCount.forEach(lid => {
+            ((leaguesMapForCount[lid] && leaguesMapForCount[lid].teams) || []).forEach(tm => {
+              if (tm && tm.entry_id !== undefined) uniqueTeamIdsForCount.add(Number(tm.entry_id));
+            });
+          });
+          const numLeagues = leagueIdsForCount.length || 8;
+          const numTeams = uniqueTeamIdsForCount.size || 135;
+          headerPill.innerText = isEn ? `${numLeagues} Leagues • ${numTeams} Teams` : `${numLeagues} ลีก • ${numTeams} ทีม`;
         }
         const radarGuideHeading = document.getElementById('radar-guide-heading');
         if (radarGuideHeading) {
@@ -13169,7 +13260,7 @@ selectShi62GW(gwName) {
           html += `
             <tr class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/80">
               <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500 whitespace-nowrap w-[36px] min-w-[36px] max-w-[36px] sm:w-[40px] sm:min-w-[40px] max-sm:sticky max-sm:left-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 max-sm:z-10">${t.global_rank}</td>
-              <td class="py-2.5 px-2 sm:px-3 min-w-[125px] sm:min-w-0 max-w-[150px] sm:max-w-none max-sm:sticky max-sm:left-[36px] bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 max-sm:z-10 max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
+              <td class="py-2.5 px-1.5 sm:px-3 min-w-[110px] sm:min-w-0 max-w-[130px] sm:max-w-none max-sm:sticky max-sm:left-[36px] bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 max-sm:z-10 max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
                 <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer block truncate w-full">
                   ${this.escapeHtml(t.team_name)}
                 </button>
@@ -14597,19 +14688,26 @@ selectShi62GW(gwName) {
 
         const modal = document.getElementById('team-modal');
         if (modal) {
+          if (modal.classList.contains('hidden')) {
+            this._lastFocusedElement = document.activeElement;
+          }
           modal.classList.remove('hidden');
           document.body.classList.add('overflow-hidden');
           const modalBody = document.getElementById('team-modal-body');
           if (modalBody) modalBody.scrollTop = 0;
+          modal.focus({ preventScroll: true });
         }
       }
 
       closeTeamModal() {
         this.currentModalEntryId = null;
         const modal = document.getElementById('team-modal');
-        if (modal) {
+        if (modal && !modal.classList.contains('hidden')) {
           modal.classList.add('hidden');
           document.body.classList.remove('overflow-hidden');
+          if (this._lastFocusedElement && typeof this._lastFocusedElement.focus === 'function') {
+            this._lastFocusedElement.focus({ preventScroll: true });
+          }
         }
       }
 
@@ -14980,6 +15078,9 @@ selectShi62GW(gwName) {
 
           if (contentArea) contentArea.value = text;
           if (modal) {
+            if (modal.classList.contains('hidden')) {
+              this._lastFocusedElement = document.activeElement;
+            }
             modal.classList.remove('hidden');
             document.body.classList.add('overflow-hidden');
           }
@@ -14994,7 +15095,7 @@ selectShi62GW(gwName) {
         } catch (e) {
           console.error('shareCurrentGameweek error:', e);
           const isEn = (this.currentLang === 'en');
-          if (typeof alert !== 'undefined') alert(isEn ? 'Could not open summary. Please try again.' : 'ไม่สามารถเปิดสรุปผลได้ กรุณาลองใหม่อีกครั้ง');
+          this.showToast(isEn ? 'Could not open summary. Please try again.' : 'ไม่สามารถเปิดสรุปผลได้ กรุณาลองใหม่อีกครั้ง', 'error');
         }
       }
 
@@ -15045,9 +15146,13 @@ selectShi62GW(gwName) {
 
       closeTextSummaryModal() {
         const modal = document.getElementById('text-summary-modal');
-        if (modal) {
+        if (modal && !modal.classList.contains('hidden')) {
           modal.classList.add('hidden');
           document.body.classList.remove('overflow-hidden');
+          if (this._lastFocusedElement && typeof this._lastFocusedElement.focus === 'function') {
+            this._lastFocusedElement.focus();
+            this._lastFocusedElement = null;
+          }
         }
       }
 
@@ -15993,10 +16098,7 @@ selectShi62GW(gwName) {
 
         } catch (err) {
           console.error('Export Excel failed:', err);
-          this.showToast(isEn ? 'Error exporting Excel file' : 'เกิดข้อผิดพลาดในการส่งออก Excel', 'error');
-          if (typeof alert !== 'undefined') {
-            alert(isEn ? 'Failed to create Excel file: ' + (err.message || err) : 'ไม่สามารถสร้างไฟล์ Excel ได้: ' + (err.message || err));
-          }
+          this.showToast(isEn ? 'Error exporting Excel file: ' + (err.message || err) : 'เกิดข้อผิดพลาดในการส่งออก Excel: ' + (err.message || err), 'error');
         }
       }
 
@@ -16178,8 +16280,8 @@ selectShi62GW(gwName) {
     html = html.replace('__BRAMANN_CHALLENGE_DATA_JSON__', bramann_chal_json_str or 'null')
     html = html.replace('__DEFAULT_LID__', default_lid_code)
     html = html.replace('__ASSET_PREFIX__', asset_prefix)
-    html = html.replace('__ARCHITECTURE_DIAGRAM_TH__', get_architecture_diagram_html('th'))
-    html = html.replace('__ARCHITECTURE_DIAGRAM_EN__', get_architecture_diagram_html('en'))
+    html = html.replace('__ARCHITECTURE_DIAGRAM_TH__', get_architecture_diagram_html('th', asset_prefix))
+    html = html.replace('__ARCHITECTURE_DIAGRAM_EN__', get_architecture_diagram_html('en', asset_prefix))
     return html
 
 def main():

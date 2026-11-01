@@ -36,7 +36,7 @@ jobs:
 
       - name: Fetch Real-Time FPL Data
         env:
-          AZURE_TRANSFER_FUNCTION_KEY: ${{ secrets.AZURE_TRANSFER_FUNCTION_KEY || 'db059d47-8b44-476a-9dfc-509bceb87bee' }}
+          AZURE_TRANSFER_FUNCTION_KEY: ${{ secrets.AZURE_TRANSFER_FUNCTION_KEY }}
         run: |
           python3 sync_live_fpl.py
 
@@ -57,11 +57,9 @@ jobs:
               echo "Notice: Rebase conflict detected. Preserving fresh sync JSON and re-generating on top of origin/main..."
               git rebase --abort || true
               cp multi_fpl_data.json /tmp/multi_fpl_data.json.fresh
-              cp real_fpl_40700_data.json /tmp/real_fpl_40700_data.json.fresh
               git fetch origin main
               git reset --hard origin/main
               mv /tmp/multi_fpl_data.json.fresh multi_fpl_data.json
-              mv /tmp/real_fpl_40700_data.json.fresh real_fpl_40700_data.json
               python3 update_preview.py
               git add -A
               if ! git diff --staged --quiet; then
