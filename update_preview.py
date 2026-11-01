@@ -203,10 +203,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if diff_sec > 0:
             d_days = diff_sec // 86400
             d_hours = (diff_sec % 86400) // 3600
+            d_mins = (diff_sec % 3600) // 60
+            d_secs = diff_sec % 60
+            time_str = f"{d_hours:02d}:{d_mins:02d}:{d_secs:02d}"
             if d_days > 0:
-                next_deadline_text = f"เส้นตาย GW {gw_num}: อีก {d_days} วัน {d_hours} ชม."
+                next_deadline_text = f"เส้นตาย GW {gw_num}: {d_days} วัน {time_str}"
             else:
-                next_deadline_text = f"เส้นตาย GW {gw_num}: อีก {d_hours} ชม."
+                next_deadline_text = f"เส้นตาย GW {gw_num}: {time_str}"
         else:
             next_deadline_text = f"เส้นตาย GW {gw_num}: ปิดรับแล้ว"
     else:
@@ -1067,6 +1070,40 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       animation: liveGreenPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
 
+    /* Heartbeat Status Pulse Animation */
+    @keyframes heartbeat {
+      0% {
+        transform: scale(1);
+        opacity: 0.9;
+      }
+      14% {
+        transform: scale(1.3);
+        opacity: 1;
+      }
+      28% {
+        transform: scale(1);
+        opacity: 0.9;
+      }
+      42% {
+        transform: scale(1.15);
+        opacity: 1;
+      }
+      70% {
+        transform: scale(1);
+        opacity: 0.9;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0.9;
+      }
+    }
+    .heartbeat-green {
+      animation: heartbeat 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+    }
+    .heartbeat-rose {
+      animation: heartbeat 1.2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+    }
+
     @keyframes tabGreenPulse {
       0%, 100% {
         border-color: rgba(16, 185, 129, 0.85);
@@ -1262,16 +1299,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <span id="header-season">ฤดูกาล 2026/27</span>
       <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
       
-      <!-- Auto-Sync Connection Status Indicator (Green/Red) -->
+      <!-- Auto-Sync Connection Status Indicator (Green/Red Heartbeat) -->
       <span id="header-last-sync-icon" class="inline-flex items-center cursor-help py-0.5" title="ระบบเชื่อมต่อ Auto-Sync ปกติ (__LAST_SYNC__)">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-xs"></span>
+        <span class="relative flex items-center justify-center w-2.5 h-2.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60"></span>
+          <span class="relative inline-flex rounded-full w-2 h-2 bg-emerald-500 heartbeat-green shadow-xs"></span>
+        </span>
       </span>
 
       <!-- Next Gameweek Deadline Badge -->
       <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
       <span id="header-deadline-badge" class="inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs" title="เส้นตายการจัดทีม Gameweek ถัดไป">
         <svg class="w-3 h-3 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        <span id="header-deadline-val">__NEXT_DEADLINE_TEXT__</span>
+        <span id="header-deadline-val" class="font-mono tabular-nums">__NEXT_DEADLINE_TEXT__</span>
       </span>
     </div>
   </div>
@@ -4171,14 +4211,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const days = Math.floor(diff / 86400);
         const hours = Math.floor((diff % 86400) / 3600);
         const mins = Math.floor((diff % 3600) / 60);
+        const secs = diff % 60;
+        const pad = (n) => String(n).padStart(2, '0');
+        const timeStr = `${pad(hours)}:${pad(mins)}:${pad(secs)}`;
 
         let timeText = '';
         if (days > 0) {
-          timeText = isEn ? `GW ${gwNum} Deadline: in ${days}d ${hours}h` : `เส้นตาย GW ${gwNum}: อีก ${days} วัน ${hours} ชม.`;
-        } else if (hours > 0) {
-          timeText = isEn ? `GW ${gwNum} Deadline: in ${hours}h ${mins}m` : `เส้นตาย GW ${gwNum}: อีก ${hours} ชม. ${mins} นาที`;
+          timeText = isEn ? `GW ${gwNum} Deadline: ${days}d ${timeStr}` : `เส้นตาย GW ${gwNum}: ${days} วัน ${timeStr}`;
         } else {
-          timeText = isEn ? `GW ${gwNum} Deadline: in ${mins}m` : `เส้นตาย GW ${gwNum}: อีก ${mins} นาที`;
+          timeText = isEn ? `GW ${gwNum} Deadline: ${timeStr}` : `เส้นตาย GW ${gwNum}: ${timeStr}`;
         }
         valEl.innerText = timeText;
 
@@ -4256,8 +4297,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             : `(GW ${gwNum} DEADLINE: ${timeStr})`;
         } else {
           wrapEl.innerText = days > 0
-            ? `(เดดไลน์ GW ${gwNum}: ${days} วัน ${timeStr})`
-            : `(เดดไลน์ GW ${gwNum}: ${timeStr})`;
+            ? `(เส้นตาย GW ${gwNum}: ${days} วัน ${timeStr})`
+            : `(เส้นตาย GW ${gwNum}: ${timeStr})`;
         }
       }
 
@@ -5469,9 +5510,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             : (this.multiData.last_sync || '');
           const fullTitle = syncTimeStr ? `${syncStatusTitle} (${syncTimeStr})` : syncStatusTitle;
           if (isSyncHealthy) {
-            lastSyncIcon.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-xs"></span>';
+            lastSyncIcon.innerHTML = `
+              <span class="relative flex items-center justify-center w-2.5 h-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60"></span>
+                <span class="relative inline-flex rounded-full w-2 h-2 bg-emerald-500 heartbeat-green shadow-xs"></span>
+              </span>
+            `;
           } else {
-            lastSyncIcon.innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block animate-pulse shadow-xs"></span>';
+            lastSyncIcon.innerHTML = `
+              <span class="relative flex items-center justify-center w-2.5 h-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-60"></span>
+                <span class="relative inline-flex rounded-full w-2 h-2 bg-rose-500 heartbeat-rose shadow-xs"></span>
+              </span>
+            `;
           }
           lastSyncIcon.setAttribute('title', fullTitle);
         }
