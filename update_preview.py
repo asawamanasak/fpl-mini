@@ -4066,7 +4066,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         } else if (defaultLeagueId && this.multiData.leagues[defaultLeagueId]) {
           this.activeLeagueId = defaultLeagueId;
         } else {
-          this.activeLeagueId = "40700";
+          this.activeLeagueId = this.getDefaultLeagueId();
         }
 
         this.data = this.multiData.leagues[this.activeLeagueId] || Object.values(this.multiData.leagues)[0] || {};
@@ -4086,10 +4086,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
         let initialTab = this.normalizeTab(queryTab || hashTab || savedTab || 'gameweek-view');
-        if (String(this.activeLeagueId) !== '187827' && initialTab === 'shi62-special-view') {
+        if (!this.hasShi62Feature() && initialTab === 'shi62-special-view') {
           initialTab = 'gameweek-view';
         }
-        if (String(this.activeLeagueId) !== '5349' && (initialTab === 'bramann-prediction-view' || initialTab === 'bramann-challenge-view')) {
+        if (!this.hasBramannPredFeature() && initialTab === 'bramann-prediction-view') {
+          initialTab = 'gameweek-view';
+        }
+        if (!this.hasBramannChalFeature() && initialTab === 'bramann-challenge-view') {
           initialTab = 'gameweek-view';
         }
         this.activeTab = initialTab;
@@ -4106,6 +4109,30 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.radarSortOrder = 'desc';
       }
 
+      getDefaultLeagueId() {
+        const cfgObj = this.configs || {};
+        for (const [lid, c] of Object.entries(cfgObj)) {
+          if (c && c.is_default) return String(lid);
+        }
+        const order = (this.multiData && Array.isArray(this.multiData.league_order)) ? this.multiData.league_order : Object.keys(cfgObj);
+        return order.length > 0 ? String(order[0]) : "40700";
+      }
+
+      hasShi62Feature(lid = this.activeLeagueId) {
+        const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null);
+        return Boolean((c && c.features && c.features.has_shi62_special) || String(lid) === '187827');
+      }
+
+      hasBramannPredFeature(lid = this.activeLeagueId) {
+        const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null);
+        return Boolean((c && c.features && c.features.has_bramann_prediction) || String(lid) === '5349');
+      }
+
+      hasBramannChalFeature(lid = this.activeLeagueId) {
+        const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null);
+        return Boolean((c && c.features && c.features.has_bramann_challenge) || String(lid) === '5349');
+      }
+
       normalizeTab(tabName) {
         if (!tabName) return 'gameweek-view';
         let t = String(tabName).trim().toLowerCase();
@@ -4118,27 +4145,27 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (t === 'global-radar' || t === 'radar' || t === 'global' || t === 'all-leagues' || t === 'consistency-radar' || t === 'consistency') return 'global-radar-view';
         if (t === 'cup') return 'cup-view';
         if (t === 'shi62' || t === 'shi62-special' || t === 'special' || t === 'beta') {
-          return String(this.activeLeagueId) === '187827' ? 'shi62-special-view' : 'gameweek-view';
+          return this.hasShi62Feature() ? 'shi62-special-view' : 'gameweek-view';
         }
         if (t === 'bramann-prediction' || t === 'bramann-pred') {
-          return String(this.activeLeagueId) === '5349' ? 'bramann-prediction-view' : 'gameweek-view';
+          return this.hasBramannPredFeature() ? 'bramann-prediction-view' : 'gameweek-view';
         }
         if (t === 'bramann-challenge' || t === 'bramann-chal' || t === 'chal' || t === 'challenge') {
-          return String(this.activeLeagueId) === '5349' ? 'bramann-challenge-view' : 'gameweek-view';
+          return this.hasBramannChalFeature() ? 'bramann-challenge-view' : 'gameweek-view';
         }
         if (t === 'pred' || t === 'prediction') {
-          if (String(this.activeLeagueId) === '187827') return 'shi62-special-view';
-          if (String(this.activeLeagueId) === '5349') return 'bramann-prediction-view';
+          if (this.hasShi62Feature()) return 'shi62-special-view';
+          if (this.hasBramannPredFeature()) return 'bramann-prediction-view';
           return 'gameweek-view';
         }
         if (t === 'shi62-special-view') {
-          return String(this.activeLeagueId) === '187827' ? 'shi62-special-view' : 'gameweek-view';
+          return this.hasShi62Feature() ? 'shi62-special-view' : 'gameweek-view';
         }
         if (t === 'bramann-prediction-view') {
-          return String(this.activeLeagueId) === '5349' ? 'bramann-prediction-view' : 'gameweek-view';
+          return this.hasBramannPredFeature() ? 'bramann-prediction-view' : 'gameweek-view';
         }
         if (t === 'bramann-challenge-view') {
-          return String(this.activeLeagueId) === '5349' ? 'bramann-challenge-view' : 'gameweek-view';
+          return this.hasBramannChalFeature() ? 'bramann-challenge-view' : 'gameweek-view';
         }
         if (t === 'rule' || t === 'rules') return 'rules-view';
         if (t === 'about' || t === 'about-us' || t === 'about-me' || t === 'feature' || t === 'features' || t === 'function' || t === 'functions' || t === 'capabilities') return 'about-view';
@@ -5477,13 +5504,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (!container) return;
         const isEn = (this.currentLang === 'en');
 
-        // เรียงลำดับ: ลีก 40700 อยู่ด้านบนสุดเสมอ และลีกอื่นๆ เรียงตาม League ID จากน้อยไปมาก
+        // เรียงลำดับ: ลีกหลักเริ่มต้น (is_default) อยู่ด้านบนสุดเสมอ และลีกอื่นๆ เรียงตาม League ID จากน้อยไปมาก
+        const defaultLid = this.getDefaultLeagueId();
         const allLeagueIds = Object.keys(this.multiData.leagues || {});
         allLeagueIds.sort((a, b) => {
           const idA = String(a);
           const idB = String(b);
-          if (idA === '40700') return -1;
-          if (idB === '40700') return 1;
+          if (idA === defaultLid) return -1;
+          if (idB === defaultLid) return 1;
           return Number(idA) - Number(idB);
         });
 
@@ -5619,7 +5647,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         // Check Shi'62 Special Feature Flag
         const shi62TabBtn = document.getElementById('tab-btn-shi62-special');
-        const isShi62 = String(this.activeLeagueId) === '187827';
+        const isShi62 = this.hasShi62Feature();
         if (shi62TabBtn) {
           if (isShi62) {
             shi62TabBtn.classList.remove('hidden');
@@ -5631,12 +5659,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           }
         }
 
-        // Check Bramann Prediction & Challenge Feature Flags (League 5349)
-        const isBramann = String(this.activeLeagueId) === '5349';
+        // Check Bramann Prediction & Challenge Feature Flags
+        const hasBramannPred = this.hasBramannPredFeature();
+        const hasBramannChal = this.hasBramannChalFeature();
         const bramannPredTabBtn = document.getElementById('tab-btn-bramann-prediction');
         const bramannChalTabBtn = document.getElementById('tab-btn-bramann-challenge');
         if (bramannPredTabBtn) {
-          if (isBramann) {
+          if (hasBramannPred) {
             bramannPredTabBtn.classList.remove('hidden');
           } else {
             bramannPredTabBtn.classList.add('hidden');
@@ -5646,7 +5675,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           }
         }
         if (bramannChalTabBtn) {
-          if (isBramann) {
+          if (hasBramannChal) {
             bramannChalTabBtn.classList.remove('hidden');
           } else {
             bramannChalTabBtn.classList.add('hidden');
@@ -5658,7 +5687,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         if (!isShi62 && this.activeTab === 'shi62-special-view') {
           this.switchTab('gameweek-view');
-        } else if (!isBramann && (this.activeTab === 'bramann-prediction-view' || this.activeTab === 'bramann-challenge-view')) {
+        } else if (!hasBramannPred && this.activeTab === 'bramann-prediction-view') {
+          this.switchTab('gameweek-view');
+        } else if (!hasBramannChal && this.activeTab === 'bramann-challenge-view') {
           this.switchTab('gameweek-view');
         } else {
           this.switchTab(this.activeTab);
@@ -5695,10 +5726,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           if (btn.id === 'tab-btn-cup' && !Boolean(this.config && this.config.features && this.config.features.has_cup)) {
             cls += ' hidden';
           }
-          if (btn.id === 'tab-btn-shi62-special' && String(this.activeLeagueId) !== '187827') {
+          if (btn.id === 'tab-btn-shi62-special' && !this.hasShi62Feature()) {
             cls += ' hidden';
           }
-          if ((btn.id === 'tab-btn-bramann-prediction' || btn.id === 'tab-btn-bramann-challenge') && String(this.activeLeagueId) !== '5349') {
+          if (btn.id === 'tab-btn-bramann-prediction' && !this.hasBramannPredFeature()) {
+            cls += ' hidden';
+          }
+          if (btn.id === 'tab-btn-bramann-challenge' && !this.hasBramannChalFeature()) {
             cls += ' hidden';
           }
           btn.className = cls;
@@ -5816,13 +5850,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.renderCupView();
         this.renderRulesView();
         this.renderAboutView();
-        if (this.shi62Data && String(this.activeLeagueId) === '187827') {
+        if (this.shi62Data && this.hasShi62Feature()) {
           this.renderShi62Special();
         }
-        if (this.bramannPredData && String(this.activeLeagueId) === '5349') {
+        if (this.bramannPredData && this.hasBramannPredFeature()) {
           this.renderBramannPrediction();
         }
-        if (this.bramannChalData && String(this.activeLeagueId) === '5349') {
+        if (this.bramannChalData && this.hasBramannChalFeature()) {
           this.renderBramannChallenge();
         }
         this.updateHighlightsTabBlink();
@@ -5839,21 +5873,21 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         else if (this.activeTab === 'cup-view') this.renderCupView();
         else if (this.activeTab === 'rules-view') this.renderRulesView();
         else if (this.activeTab === 'shi62-special-view') {
-          if (String(this.activeLeagueId) === '187827') {
+          if (this.hasShi62Feature()) {
             this.renderShi62Special();
           } else {
             this.switchTab('gameweek-view');
           }
         }
         else if (this.activeTab === 'bramann-prediction-view') {
-          if (String(this.activeLeagueId) === '5349') {
+          if (this.hasBramannPredFeature()) {
             this.renderBramannPrediction();
           } else {
             this.switchTab('gameweek-view');
           }
         }
         else if (this.activeTab === 'bramann-challenge-view') {
-          if (String(this.activeLeagueId) === '5349') {
+          if (this.hasBramannChalFeature()) {
             this.renderBramannChallenge();
           } else {
             this.switchTab('gameweek-view');
@@ -5919,7 +5953,7 @@ selectShi62GW(gwName) {
         });
 
         lines.push(`---------------------------------`);
-        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/187827`);
+        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
         const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผล (ทายผล) ${gw.name} สำหรับ LINE เรียบร้อย`);
@@ -6067,7 +6101,7 @@ selectShi62GW(gwName) {
         }
 
         lines.push(`---------------------------------`);
-        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/187827`);
+        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
         const onCopied = () => this.showCopiedToast('คัดลอกสรุปรางวัลสำหรับ LINE เรียบร้อย');
@@ -6195,7 +6229,7 @@ selectShi62GW(gwName) {
         });
 
         lines.push(`---------------------------------`);
-        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/5349`);
+        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
         const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผล (ทายผล) ${gw.name} สำหรับ LINE เรียบร้อย`);
@@ -6245,7 +6279,7 @@ selectShi62GW(gwName) {
         });
 
         lines.push(`---------------------------------`);
-        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/5349`);
+        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
         const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผล (ท้าชน) ${gw.name} สำหรับ LINE เรียบร้อย`);
@@ -6389,7 +6423,7 @@ selectShi62GW(gwName) {
         lines.push(`• Prize 1 (หลังจบ GW 19): 9 อันดับ (1, 2, 3, 5, 7, 9, 11, 13, 15) คนละ 500 บ. (รวม 4,500 บ.)`);
         lines.push(`• Prize 2 (หลังจบ GW 38): 9 อันดับขั้นบันได (รวม 5,000 บ.)`);
         lines.push(`---------------------------------`);
-        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/5349`);
+        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
         const onCopied = () => this.showCopiedToast('คัดลอกสรุปเงินรางวัลสำหรับ LINE เรียบร้อย');
@@ -6397,7 +6431,7 @@ selectShi62GW(gwName) {
       }
 
       renderBramannPrediction() {
-        if (String(this.activeLeagueId) !== '5349') return;
+        if (!this.hasBramannPredFeature()) return;
         if (!this.bramannPredData) return;
         const container = document.getElementById('bramann-prediction-view');
         if (!container) return;
@@ -6719,7 +6753,7 @@ selectShi62GW(gwName) {
       }
 
       renderBramannChallenge() {
-        if (String(this.activeLeagueId) !== '5349') return;
+        if (!this.hasBramannChalFeature()) return;
         if (!this.bramannChalData) return;
         const container = document.getElementById('bramann-challenge-view');
         if (!container) return;
@@ -7007,7 +7041,7 @@ selectShi62GW(gwName) {
       }
 
       renderBramannDualPrizeView(titleEl, subEl, poolBadge, tagEl, mainContainer) {
-        if (String(this.activeLeagueId) !== '5349') return;
+        if (!(this.config && this.config.features && this.config.features.prize_model === 'bramann_dual_prize') && String(this.activeLeagueId) !== '5349') return;
         const isEn = (this.currentLang === 'en');
         if (tagEl) tagEl.innerText = "BRAMANN DUAL PRIZE (GW 19 & GW 38)";
         if (titleEl) titleEl.innerText = isEn ? "FPL Prize & Treasury Summary" : "สรุปเงินรางวัล FPL & การจัดสรรกองกลาง";
@@ -7345,7 +7379,7 @@ selectShi62GW(gwName) {
       }
 
       renderShi62Special() {
-        if (String(this.activeLeagueId) !== '187827') return;
+        if (!this.hasShi62Feature()) return;
         if (!this.shi62Data) return;
         const container = document.getElementById('shi62-special-view');
         if (!container) return;
@@ -16331,10 +16365,21 @@ def main():
     # Decoupled Data Architecture: Export pure JSON per league to data/leagues/{lid}.json
     data_dir = os.path.join(base_dir, 'data', 'leagues')
     os.makedirs(data_dir, exist_ok=True)
+    active_lids = set(str(k) for k in leagues_config.keys())
     for lid, l_dict in pruned_data["leagues"].items():
         league_file = os.path.join(data_dir, f"{lid}.json")
         with open(league_file, 'w', encoding='utf-8') as f:
             json.dump(l_dict, f, ensure_ascii=False, separators=(',', ':'))
+
+    # Auto-cleanup retired league JSON files from previous seasons
+    for fname in os.listdir(data_dir):
+        if fname.endswith('.json'):
+            lid_stem = fname[:-5]
+            if lid_stem not in active_lids:
+                try:
+                    os.remove(os.path.join(data_dir, fname))
+                except OSError:
+                    pass
 
     def get_pruned_data_for_target(target_lid):
         page_pruned = {
@@ -16369,15 +16414,23 @@ def main():
     shi62_special_data = parse_shi62_file(shi62_txt_path)
     shi62_special_json_str = json.dumps(shi62_special_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 
+    bramann_chal_lid = next(
+        (str(k) for k, v in leagues_config.items() if isinstance(v, dict) and v.get("features", {}).get("has_bramann_challenge")),
+        "5349"
+    )
     bramann_pred_path = os.path.join(base_dir, 'config', 'bramann_prediction.txt')
     bramann_chal_path = os.path.join(base_dir, 'config', 'bramann_challenge.json')
     bramann_pred_data = parse_bramann_prediction_file(bramann_pred_path)
-    bramann_chal_data = parse_bramann_challenge_file(bramann_chal_path, multi_data=multi_data)
+    bramann_chal_data = parse_bramann_challenge_file(bramann_chal_path, multi_data=multi_data, league_id=bramann_chal_lid)
     bramann_pred_json_str = json.dumps(bramann_pred_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     bramann_chal_json_str = json.dumps(bramann_chal_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 
-    # 1. Generate root files (defaults to league 40700)
-    root_json_str = get_pruned_data_for_target("40700")
+    # 1. Resolve default league ID dynamically from leagues_config (is_default: true or first entry)
+    default_root_lid = next(
+        (str(k) for k, v in leagues_config.items() if isinstance(v, dict) and v.get("is_default")),
+        next(iter(leagues_config.keys()), "40700")
+    )
+    root_json_str = get_pruned_data_for_target(default_root_lid)
     root_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=root_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str)
     with open(os.path.join(base_dir, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(root_html)
@@ -16395,6 +16448,16 @@ def main():
         html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid), precomputed_json_str=get_pruned_data_for_target(str(lid)), precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str)
         with open(os.path.join(dir_league, 'index.html'), 'w', encoding='utf-8') as f:
             f.write(html_league)
+
+    # 3. Auto-cleanup retired numeric league directories from previous seasons
+    import shutil
+    for entry_name in os.listdir(base_dir):
+        entry_path = os.path.join(base_dir, entry_name)
+        if entry_name.isdigit() and os.path.isdir(entry_path) and entry_name not in active_lids:
+            try:
+                shutil.rmtree(entry_path)
+            except OSError:
+                pass
 
     print("Successfully generated all HTML dashboard files on local!")
 

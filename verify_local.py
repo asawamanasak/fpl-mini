@@ -74,18 +74,12 @@ def main():
 
     # 4. Check All HTML Files Exist
     print("\nStep 4: Checking Generated HTML Entry Points...")
+    configured_league_pages = [f"{lid}/index.html" for lid in cfg.keys()]
     required_files = [
         'index.html',
         'preview.html',
         '404.html',
-        '40700/index.html',
-        '675290/index.html',
-        '38491/index.html',
-        '1101958/index.html',
-        '438691/index.html',
-        '187827/index.html',
-        '5349/index.html',
-        '567387/index.html'
+        *configured_league_pages
     ]
     for rf in required_files:
         fpath = os.path.join(base_dir, rf)
@@ -99,7 +93,7 @@ def main():
     print("\nStep 5: Testing Front-End JavaScript Runtime (Headless Chrome)...")
     chrome_bin = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
     if os.path.exists(chrome_bin):
-        pages_to_test = ['preview.html', '40700/index.html', '675290/index.html', '38491/index.html', '1101958/index.html', '438691/index.html', '187827/index.html', '5349/index.html', '567387/index.html']
+        pages_to_test = ['preview.html', *configured_league_pages]
         for p in pages_to_test:
             target_url = f"file://{os.path.join(base_dir, p)}"
             out = subprocess.run([

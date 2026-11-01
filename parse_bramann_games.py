@@ -323,7 +323,7 @@ def parse_bramann_prediction_file(file_path):
         "cumulative_standings": cum_list
     }
 
-def parse_bramann_challenge_file(file_path, multi_data=None):
+def parse_bramann_challenge_file(file_path, multi_data=None, league_id=None):
     if not os.path.exists(file_path):
         return None
     try:
@@ -339,7 +339,8 @@ def parse_bramann_challenge_file(file_path, multi_data=None):
     total_turnover = 0
     total_matches = 0
 
-    l_data = multi_data.get("leagues", {}).get("5349", {}) if multi_data else {}
+    target_lid = str(league_id or data.get("league_id") or "5349")
+    l_data = multi_data.get("leagues", {}).get(target_lid, {}) if multi_data else {}
     gw_data = l_data.get("gameweeks", {})
     sq_data = l_data.get("squads", {})
 
