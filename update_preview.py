@@ -29,7 +29,7 @@ def get_architecture_diagram_html(lang='th', asset_prefix='./'):
     atomic_sub = "multi_fpl_data.json • Incremental GW Cache"
     smart_commit_sub = "15m Cron • ข้าม Commit ถ้าไร้แต้มเปลี่ยน" if is_th else "15m Cron • Semantic Diff Zero-Churn"
     preview_compiler_sub = "Config-Driven • data/leagues/{id}.json"
-    edge_cdn_sub = "GitHub Pages • /{id}/ Routes • Brotli"
+    edge_cdn_sub = "fplsawadika.com • /{id}/ Routes • Brotli"
     client_sub = "0kb SPA • 30s Poll • Lazy JSON"
 
     return f"""
@@ -150,7 +150,7 @@ def get_architecture_diagram_html(lang='th', asset_prefix='./'):
                   <rect x="548" y="252" width="208" height="72" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--diag-link)" stroke-width="1.2"/>
                   <rect x="556" y="260" width="60" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
                   <text x="586" y="269" fill="var(--diag-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EDGE CDN</text>
-                  <text x="652" y="290" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Fastly Edge Network</text>
+                  <text x="652" y="290" fill="var(--diag-ink)" font-size="11.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Cloudflare DNS &amp; Edge CDN</text>
                   <text x="652" y="308" fill="var(--diag-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">{edge_cdn_sub}</text>
                 </g>
                 <g id="embed-node-client-app">
@@ -192,9 +192,9 @@ def get_architecture_diagram_html(lang='th', asset_prefix='./'):
               <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                 <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Python 3.11</span>
                 <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">GitHub Actions (15m)</span>
-                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Cloudflare Workers (30s)</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Cloudflare DNS &amp; Workers</span>
                 <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Azure Functions</span>
-                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Fastly Edge CDN</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">fplsawadika.com (Edge CDN)</span>
                 <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Vanilla JS (0kb)</span>
                 <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Tailwind CSS</span>
                 <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">SheetJS</span>
@@ -13927,7 +13927,7 @@ selectShi62GW(gwName) {
                   <div><span class="text-slate-400 block text-[9.5px]">RUNTIME</span><span class="font-bold text-slate-700 dark:text-slate-300">Python 3.11 / Ubuntu</span></div>
                   <div><span class="text-slate-400 block text-[9.5px]">CONCURRENCY</span><span class="font-bold text-slate-700 dark:text-slate-300">8 Leagues • 135 Teams</span></div>
                   <div><span class="text-slate-400 block text-[9.5px]">LIVE RELAY</span><span class="font-bold text-slate-700 dark:text-slate-300">Cloudflare Edge (30s)</span></div>
-                  <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">Fastly CDN + Split JSON</span></div>
+                  <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">fplsawadika.com • Edge CDN</span></div>
                 </div>
                 __ARCHITECTURE_DIAGRAM_EN__
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
@@ -13955,7 +13955,7 @@ selectShi62GW(gwName) {
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
                       <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Zero-Code Season Rollover:</strong> 100% driven by <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">config/leagues_config.json</code> with automatic cleanup of retired league routes and stale JSON payloads across seasons.</span></li>
                       <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Per-League JSON Split:</strong> Static compiler <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> builds dedicated routes (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/{id}/index.html</code>) and decoupled <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> files (~85% smaller initial HTML).</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Edge CDN Distribution:</strong> Deployed to GitHub Pages Fastly Edge CDN with HTTP/2 Multiplexing, Brotli compression, and sub-50ms Time to First Byte (TTFB) worldwide.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Custom Domain &amp; Edge CDN:</strong> Served via <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">www.fplsawadika.com</code> powered by Cloudflare DNS (CNAME Flattening) and GitHub Pages Fastly Edge CDN with HTTP/2, Brotli compression, and sub-50ms TTFB.</span></li>
                     </ul>
                   </div>
                   <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
@@ -14196,7 +14196,7 @@ selectShi62GW(gwName) {
                   <div><span class="text-slate-400 block text-[9.5px]">RUNTIME</span><span class="font-bold text-slate-700 dark:text-slate-300">Python 3.11 / Ubuntu</span></div>
                   <div><span class="text-slate-400 block text-[9.5px]">CONCURRENCY</span><span class="font-bold text-slate-700 dark:text-slate-300">8 Leagues • 135 Teams</span></div>
                   <div><span class="text-slate-400 block text-[9.5px]">LIVE RELAY</span><span class="font-bold text-slate-700 dark:text-slate-300">Cloudflare Edge (30s)</span></div>
-                  <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">Fastly CDN + Split JSON</span></div>
+                  <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">fplsawadika.com • Edge CDN</span></div>
                 </div>
                 __ARCHITECTURE_DIAGRAM_TH__
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
@@ -14224,7 +14224,7 @@ selectShi62GW(gwName) {
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
                       <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Zero-Code Season Rollover:</strong> ขับเคลื่อนด้วย <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">config/leagues_config.json</code> 100% รองรับการเปลี่ยนลีกและทีมข้ามฤดูกาลพร้อม Auto-Cleanup ลบโฟลเดอร์ลีกเก่าอัตโนมัติ</span></li>
                       <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Per-League JSON Split:</strong> คอมไพล์เลอร์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> แยกไฟล์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> และสร้าง Route ประจำลีก (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/{id}/index.html</code>) ลดขนาด HTML เริ่มต้นลงกว่า 85%</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Edge CDN Distribution:</strong> กระจายไฟล์ผ่าน Fastly Edge CDN ของ GitHub Pages รองรับ HTTP/2 Multiplexing, การบีบอัด Brotli และส่งมอบข้อมูลด้วย TTFB ต่ำกว่า 50ms</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Custom Domain &amp; Edge CDN:</strong> ให้บริการผ่านโดเมนหลัก <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">www.fplsawadika.com</code> บนระบบ Cloudflare DNS (CNAME Flattening) ควบคู่กับ Fastly Edge CDN รองรับ HTTP/2, Brotli และส่งมอบข้อมูลด้วย TTFB ต่ำกว่า 50ms</span></li>
                     </ul>
                   </div>
                   <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
