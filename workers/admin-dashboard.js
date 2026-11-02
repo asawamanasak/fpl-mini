@@ -100,9 +100,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Acc
 
       <div id="biometricError" class="hidden p-2.5 rounded border border-rose-900/60 bg-rose-950/40 text-xs text-rose-300 font-mono"></div>
 
-      <div class="pt-2">
+      <div class="pt-2 space-y-2">
         <button id="biometricActionBtn" onclick="triggerBiometricAction()" class="w-full py-2.5 px-4 text-xs font-semibold rounded bg-slate-100 hover:bg-white text-slate-900 transition flex items-center justify-center gap-2">
           <span>สแกน Touch ID / Face ID</span>
+        </button>
+        <button type="button" onclick="unlockDashboard()" class="w-full py-1.5 text-[11px] text-slate-400 hover:text-slate-200 transition">
+          เข้าสู่แดชบอร์ดโดยตรง (ยืนยันผ่าน OTP แล้ว)
         </button>
       </div>
 
@@ -494,11 +497,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Acc
     }
 
     function unlockDashboard() {
-      sessionStorage.setItem('fpl_touch_id_verified', '1');
+      try {
+        sessionStorage.setItem('fpl_touch_id_verified', '1');
+      } catch (_) {}
       const modal = document.getElementById('biometricModal');
       if (modal) {
-        modal.classList.add('opacity-0', 'pointer-events-none');
-        setTimeout(() => modal.remove(), 350);
+        modal.style.display = 'none';
+        try { modal.remove(); } catch (_) {}
       }
       const badge = document.getElementById('hardwareBadge');
       if (badge) badge.classList.remove('hidden');
@@ -598,7 +603,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Acc
     }
 
     // Auto-verify on page load
-    window.addEventListener('DOMContentLoaded', async () => {
+    function initBiometric() {
       if (sessionStorage.getItem('fpl_touch_id_verified') === '1') {
         unlockDashboard();
         return;
@@ -607,7 +612,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Acc
       if (isEnrolled) {
         setTimeout(triggerBiometricAction, 300);
       }
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', initBiometric);
+    } else {
+      initBiometric();
+    }
   </script>
 </body>
 </html>`;
