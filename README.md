@@ -1,7 +1,7 @@
-# เซียนอยู่รู หมูอยู่ตึก (ฤดูกาล 2026/27)
-### Fantasy Premier League Mini-League Presentation Dashboard (League ID: 40700)
+# FPL miniRig — Multi-League Fantasy Dashboard
+### Fantasy Premier League Mini-League Presentation & Real-Time Analytics Hub
 
-เว็บแอปพลิเคชัน Presentation และ Dashboard แสดงผลคะแนน Real-time สรุปเงินรางวัล 22,000 บาท สถิติรวม Hall of Fame และรอบเคลียร์เงินรางวัล สำหรับสมาชิกลีก "เซียนอยู่รู หมูอยู่ตึก"
+เว็บแอปพลิเคชัน **FPL miniRig** สำหรับแสดงผลคะแนนสด Real-time (อัปเดตทุก 30 วินาทีผ่าน Cloudflare Edge Relay และซิงก์ข้อมูลทุก 15 นาทีผ่าน GitHub Actions), ตารางคะแนน, บทวิเคราะห์การย้ายตัว, สถานะชิปคู่แข่ง, เรดาร์ฟอร์ม, ทำเนียบแชมป์ (Hall of Fame) และระบบคำนวณเงินรางวัลกองกลาง รองรับการจัดการหลายมินิลีกอย่างอิสระ (ปัจจุบันดูแล 8 ลีก รวม 135 ทีม)
 
 ---
 

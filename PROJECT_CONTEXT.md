@@ -1,4 +1,4 @@
-# FPL Mini-League Presentation Dashboard: Project Context & Architecture
+# FPL miniRig: Project Context & Architecture
 
 > **เอกสารสรุปบริบทโปรเจกต์ (Project Blueprint & Single Source of Context)**
 > บันทึกสถานะปัจจุบัน โครงสร้างระบบ สถาปัตยกรรม และประวัติการพัฒนาจากทุกแชท เพื่อให้ AI และผู้พัฒนาในทุก Session เข้าใจภาพรวมได้ทันที 100%
@@ -6,7 +6,7 @@
 ---
 
 ## 📌 1. ภาพรวมโปรเจกต์ (Project Overview)
-โปรเจกต์นี้เป็น **Fantasy Premier League (FPL) Mini-League Presentation & Analytics Dashboard** ที่ออกแบบมาเพื่อแฟนตาซีมินิลีก (ฤดูกาล 2026/27) นำเสนอข้อมูลแบบ Real-time Live & Historical พร้อมระบบคำนวณเงินรางวัล, Hall of Fame, ผังผู้เล่น 11 ตัวจริง (Authentic Pitch), และระบบบทวิเคราะห์แชมป์ประจำสัปดาห์สไตล์ **"บอ.บู๋" (Borbou Commentary Engine)**
+โปรเจกต์ **FPL miniRig** เป็นแพลตฟอร์ม **Fantasy Premier League (FPL) Mini-League Presentation & Analytics Dashboard** ที่ออกแบบมาเพื่อรองรับแฟนตาซีมินิลีกหลายลีกพร้อมกัน นำเสนอข้อมูลแบบ Real-time Live & Historical พร้อมระบบคำนวณเงินรางวัล, Hall of Fame, ผังผู้เล่น 11 ตัวจริง (Authentic Pitch), และระบบบทวิเคราะห์แชมป์ประจำสัปดาห์สไตล์ **"บอ.บู๋" (Borbou Commentary Engine)**
 
 * **Production URL:** `https://asawamanasak.github.io/fpl-mini/`
 * **Direct League URLs:**

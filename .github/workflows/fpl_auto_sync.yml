@@ -1,4 +1,4 @@
-name: FPL Mini-League Auto Sync
+name: FPL miniRig Auto Sync
 
 on:
   schedule:

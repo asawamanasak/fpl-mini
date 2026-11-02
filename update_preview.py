@@ -18,19 +18,19 @@ from parse_bramann_games import parse_bramann_prediction_file, parse_bramann_cha
 
 def get_architecture_diagram_html(lang='th', asset_prefix='./'):
     is_th = lang == 'th'
-    arch_title = "สถาปัตยกรรมระบบเบื้องหลังและเวิร์กโฟลว์การประมวลผลข้อมูล FPL" if is_th else "FPL System Architecture & Pipeline Workflow"
-    arch_desc = "ไดอะแกรมแสดงโฟลว์การทำงานแบบ Serverless Jamstack" if is_th else "Architecture diagram showing Jamstack serverless pipeline"
+    arch_title = "สถาปัตยกรรมระบบเบื้องหลังและเวิร์กโฟลว์การประมวลผลข้อมูล FPL miniRig" if is_th else "FPL miniRig System Architecture & Pipeline Workflow"
+    arch_desc = "ไดอะแกรมแสดงโฟลว์การทำงานแบบ Dual-Layer Serverless Jamstack" if is_th else "Architecture diagram showing Dual-Layer Jamstack serverless pipeline"
     fullscreen_label = "เปิดดูเต็มจอ ↗" if is_th else "Open Fullscreen ↗"
     stack_expand_label = "คลิกเพื่อเปิดดูรูปขนาดเต็ม ↗" if is_th else "Click to expand high-res diagram ↗"
     zone1_title = "1. INGESTION &amp; ATOMIC STATE"
     zone2_title = "2. JAMSTACK &amp; EDGE CDN"
     zone3_title = "3. CLIENT RUNTIME"
-    sync_sub = "ThreadPoolExecutor • 150+ ทีม 8 ลีก" if is_th else "ThreadPoolExecutor • 150+ Teams 8 Leagues"
-    atomic_sub = "tempfile + os.replace • Zero Race Condition"
-    smart_commit_sub = "Semantic Diff Check • ข้าม Commit ถ้าไร้แต้มเปลี่ยน" if is_th else "Semantic Diff Check • Zero-Churn Commit History"
-    preview_compiler_sub = "Multi-League • Inlined JSON Data"
-    edge_cdn_sub = "GitHub Pages • HTTP/2 • Brotli"
-    client_sub = "0kb React • 60 FPS • State Sync"
+    sync_sub = "ThreadPoolExecutor • 8 ลีก 135 ทีม (165 รายการ)" if is_th else "ThreadPoolExecutor • 8 Leagues • 135 Teams"
+    atomic_sub = "multi_fpl_data.json • Incremental GW Cache"
+    smart_commit_sub = "15m Cron • ข้าม Commit ถ้าไร้แต้มเปลี่ยน" if is_th else "15m Cron • Semantic Diff Zero-Churn"
+    preview_compiler_sub = "Config-Driven • data/leagues/{id}.json"
+    edge_cdn_sub = "GitHub Pages • /{id}/ Routes • Brotli"
+    client_sub = "0kb SPA • 30s Poll • Lazy JSON"
 
     return f"""
           <!-- Architecture Workflow Diagram (Visual Guide) -->
@@ -45,7 +45,7 @@ def get_architecture_diagram_html(lang='th', asset_prefix='./'):
               </a>
             </div>
             <div class="w-full overflow-x-auto rounded-lg border border-slate-200/60 dark:border-slate-800/80 p-2 sm:p-3 bg-slate-100/50 dark:bg-slate-950/60">
-              <svg viewBox="0 0 1020 440" class="w-full min-w-[760px] h-auto block" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fpl-embed-arch-title fpl-embed-arch-desc">
+              <svg viewBox="0 0 1020 450" class="w-full min-w-[760px] h-auto block" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fpl-embed-arch-title fpl-embed-arch-desc">
                 <title id="fpl-embed-arch-title">{arch_title}</title>
                 <desc id="fpl-embed-arch-desc">{arch_desc}</desc>
                 <defs>
@@ -64,89 +64,102 @@ def get_architecture_diagram_html(lang='th', asset_prefix='./'):
                 </defs>
                 <rect width="100%" height="100%" fill="var(--diag-paper)" rx="10"/>
                 <rect width="100%" height="100%" fill="url(#embed-bg-dots)" rx="10"/>
-                <rect x="220" y="56" width="288" height="352" rx="8" fill="var(--diag-paper-2)" stroke="var(--diag-rule-solid)" stroke-width="1"/>
-                <rect x="232" y="48" width="216" height="16" rx="2" fill="var(--diag-paper)"/>
-                <text x="240" y="60" fill="var(--diag-accent)" font-size="8.5" font-weight="600" font-family="var(--font-mono)" letter-spacing="0.12em">{zone1_title}</text>
-                <rect x="528" y="56" width="248" height="352" rx="8" fill="var(--diag-paper-2)" stroke="var(--diag-rule-solid)" stroke-width="1"/>
-                <rect x="540" y="48" width="204" height="16" rx="2" fill="var(--diag-paper)"/>
-                <text x="548" y="60" fill="var(--diag-muted)" font-size="8.5" font-weight="600" font-family="var(--font-mono)" letter-spacing="0.12em">{zone2_title}</text>
-                <rect x="796" y="56" width="204" height="352" rx="8" fill="var(--diag-paper-2)" stroke="var(--diag-rule-solid)" stroke-width="1"/>
-                <rect x="808" y="48" width="168" height="16" rx="2" fill="var(--diag-paper)"/>
-                <text x="816" y="60" fill="var(--diag-accent)" font-size="8.5" font-weight="600" font-family="var(--font-mono)" letter-spacing="0.12em">{zone3_title}</text>
-                <path d="M 180,194 H 202 Q 210,194 210,186 V 142 Q 210,134 218,134 H 240" fill="none" stroke="var(--diag-link)" stroke-width="1.3" marker-end="url(#embed-arrow-link)"/>
-                <line x1="364" y1="172" x2="364" y2="204" stroke="var(--diag-accent)" stroke-width="1.4" marker-end="url(#embed-arrow-accent)"/>
-                <line x1="364" y1="276" x2="364" y2="308" stroke="var(--diag-muted)" stroke-width="1.2" marker-end="url(#embed-arrow)"/>
-                <path d="M 488,344 H 510 Q 518,344 518,336 V 180 Q 518,172 526,172 H 548" fill="none" stroke="var(--diag-accent)" stroke-width="1.4" marker-end="url(#embed-arrow-accent)"/>
-                <line x1="652" y1="212" x2="652" y2="260" stroke="var(--diag-muted)" stroke-width="1.2" marker-end="url(#embed-arrow)"/>
-                <path d="M 756,300 H 778 Q 786,300 786,292 V 244 Q 786,236 794,236 H 816" fill="none" stroke="var(--diag-link)" stroke-width="1.3" marker-end="url(#embed-arrow-link)"/>
-                <path d="M 816,260 H 794 Q 786,260 786,268 V 316 Q 786,324 778,324 H 756" fill="none" stroke="var(--diag-muted)" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#embed-arrow)"/>
-                <rect x="188" y="156" width="46" height="14" rx="2" fill="var(--diag-paper)"/>
-                <text x="211" y="166" fill="var(--diag-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">REST JSON</text>
-                <rect x="330" y="182" width="68" height="14" rx="2" fill="var(--diag-paper)"/>
-                <text x="364" y="192" fill="var(--diag-accent)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">THREAD-SAFE</text>
-                <rect x="330" y="286" width="68" height="14" rx="2" fill="var(--diag-paper)"/>
-                <text x="364" y="296" fill="var(--diag-muted)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">OS.REPLACE</text>
-                <rect x="496" y="248" width="62" height="14" rx="2" fill="var(--diag-paper)"/>
-                <text x="527" y="258" fill="var(--diag-accent)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DIFF DETECT</text>
-                <rect x="618" y="230" width="68" height="14" rx="2" fill="var(--diag-paper)"/>
-                <text x="652" y="240" fill="var(--diag-muted)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">STATIC HTML</text>
-                <rect x="764" y="268" width="64" height="14" rx="2" fill="var(--diag-paper)"/>
-                <text x="796" y="278" fill="var(--diag-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">TTFB &lt; 50ms</text>
+                <rect x="220" y="52" width="288" height="344" rx="8" fill="var(--diag-paper-2)" stroke="var(--diag-rule-solid)" stroke-width="1"/>
+                <rect x="232" y="44" width="216" height="16" rx="2" fill="var(--diag-paper)"/>
+                <text x="240" y="56" fill="var(--diag-accent)" font-size="8.5" font-weight="600" font-family="var(--font-mono)" letter-spacing="0.12em">{zone1_title}</text>
+                <rect x="528" y="52" width="248" height="344" rx="8" fill="var(--diag-paper-2)" stroke="var(--diag-rule-solid)" stroke-width="1"/>
+                <rect x="540" y="44" width="204" height="16" rx="2" fill="var(--diag-paper)"/>
+                <text x="548" y="56" fill="var(--diag-muted)" font-size="8.5" font-weight="600" font-family="var(--font-mono)" letter-spacing="0.12em">{zone2_title}</text>
+                <rect x="796" y="52" width="204" height="344" rx="8" fill="var(--diag-paper-2)" stroke="var(--diag-rule-solid)" stroke-width="1"/>
+                <rect x="808" y="44" width="168" height="16" rx="2" fill="var(--diag-paper)"/>
+                <text x="816" y="56" fill="var(--diag-accent)" font-size="8.5" font-weight="600" font-family="var(--font-mono)" letter-spacing="0.12em">{zone3_title}</text>
+                <line x1="180" y1="128" x2="240" y2="128" stroke="var(--diag-link)" stroke-width="1.3" marker-end="url(#embed-arrow-link)"/>
+                <line x1="364" y1="164" x2="364" y2="196" stroke="var(--diag-accent)" stroke-width="1.4" marker-end="url(#embed-arrow-accent)"/>
+                <line x1="364" y1="268" x2="364" y2="300" stroke="var(--diag-muted)" stroke-width="1.2" marker-end="url(#embed-arrow)"/>
+                <path d="M 488,336 H 510 Q 518,336 518,328 V 176 Q 518,168 526,168 H 548" fill="none" stroke="var(--diag-accent)" stroke-width="1.4" marker-end="url(#embed-arrow-accent)"/>
+                <line x1="652" y1="204" x2="652" y2="252" stroke="var(--diag-muted)" stroke-width="1.2" marker-end="url(#embed-arrow)"/>
+                <path d="M 756,280 H 778 Q 786,280 786,272 V 224 Q 786,216 794,216 H 816" fill="none" stroke="var(--diag-link)" stroke-width="1.3" marker-end="url(#embed-arrow-link)"/>
+                <path d="M 816,244 H 794 Q 786,244 786,252 V 300 Q 786,308 778,308 H 756" fill="none" stroke="var(--diag-muted)" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#embed-arrow)"/>
+                <path d="M 102,324 V 412 Q 102,420 110,420 H 892 Q 900,420 900,412 V 264" fill="none" stroke="var(--diag-link)" stroke-width="1.3" stroke-dasharray="5,3" marker-end="url(#embed-arrow-link)"/>
+                <rect x="186" y="106" width="48" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="210" y="116" fill="var(--diag-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">REST JSON</text>
+                <rect x="330" y="173" width="68" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="364" y="183" fill="var(--diag-accent)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">THREAD-SAFE</text>
+                <rect x="330" y="277" width="68" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="364" y="287" fill="var(--diag-muted)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">OS.REPLACE</text>
+                <rect x="487" y="242" width="62" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="518" y="252" fill="var(--diag-accent)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DIFF DETECT</text>
+                <rect x="618" y="221" width="68" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="652" y="231" fill="var(--diag-muted)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">SPLIT JSON</text>
+                <rect x="752" y="168" width="68" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="786" y="178" fill="var(--diag-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">TTFB &lt; 50ms</text>
+                <rect x="748" y="330" width="76" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="786" y="340" fill="var(--diag-muted)" font-size="7" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.06em">LAZY /{{ID}}.JSON</text>
+                <rect x="366" y="413" width="268" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="500" y="423" fill="var(--diag-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">30s LIVE POLL • REAL-TIME SCORE &amp; BONUS OVERLAY</text>
                 <g id="embed-node-fpl-api">
-                  <rect x="24" y="160" width="156" height="68" rx="6" fill="var(--diag-paper)"/>
-                  <rect x="24" y="160" width="156" height="68" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--diag-link)" stroke-width="1.2"/>
-                  <rect x="32" y="168" width="48" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
-                  <text x="56" y="177" fill="var(--diag-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EXTERNAL</text>
-                  <text x="102" y="196" fill="var(--diag-ink)" font-size="12" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Official FPL API</text>
-                  <text x="102" y="213" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">Live / Picks / Static</text>
+                  <rect x="24" y="92" width="156" height="72" rx="6" fill="var(--diag-paper)"/>
+                  <rect x="24" y="92" width="156" height="72" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--diag-link)" stroke-width="1.2"/>
+                  <rect x="32" y="100" width="64" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
+                  <text x="64" y="109" fill="var(--diag-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EXTERNAL API</text>
+                  <text x="102" y="130" fill="var(--diag-ink)" font-size="11.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Official FPL &amp; Azure</text>
+                  <text x="102" y="148" fill="var(--diag-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">Live / Picks / Transfer AI</text>
+                </g>
+                <g id="embed-node-cf-worker">
+                  <rect x="24" y="252" width="156" height="72" rx="6" fill="var(--diag-paper)"/>
+                  <rect x="24" y="252" width="156" height="72" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--diag-link)" stroke-width="1.2"/>
+                  <rect x="32" y="260" width="66" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
+                  <text x="65" y="269" fill="var(--diag-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EDGE WORKER</text>
+                  <text x="102" y="290" fill="var(--diag-ink)" font-size="11.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Cloudflare Live Relay</text>
+                  <text x="102" y="308" fill="var(--diag-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">30s Matchday Poll • CORS</text>
                 </g>
                 <g id="embed-node-sync-engine">
-                  <rect x="240" y="100" width="248" height="72" rx="6" fill="var(--diag-paper)"/>
-                  <rect x="240" y="100" width="248" height="72" rx="6" fill="var(--diag-accent-tint)" stroke="var(--diag-accent)" stroke-width="1.5"/>
-                  <rect x="248" y="108" width="76" height="12" rx="2" fill="var(--diag-accent)" opacity="0.18"/>
-                  <text x="286" y="117" fill="var(--diag-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">PARALLEL CORE</text>
-                  <text x="364" y="138" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">sync_live_fpl.py</text>
-                  <text x="364" y="156" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{sync_sub}</text>
+                  <rect x="240" y="92" width="248" height="72" rx="6" fill="var(--diag-paper)"/>
+                  <rect x="240" y="92" width="248" height="72" rx="6" fill="var(--diag-accent-tint)" stroke="var(--diag-accent)" stroke-width="1.5"/>
+                  <rect x="248" y="100" width="76" height="12" rx="2" fill="var(--diag-accent)" opacity="0.18"/>
+                  <text x="286" y="109" fill="var(--diag-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">PARALLEL CORE</text>
+                  <text x="364" y="130" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">sync_live_fpl.py</text>
+                  <text x="364" y="148" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{sync_sub}</text>
                 </g>
                 <g id="embed-node-atomic-store">
-                  <rect x="240" y="204" width="248" height="72" rx="6" fill="var(--diag-paper)"/>
-                  <rect x="240" y="204" width="248" height="72" rx="6" fill="rgba(148, 163, 184, 0.06)" stroke="var(--diag-rule-solid)" stroke-width="1.2"/>
-                  <rect x="248" y="212" width="74" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
-                  <text x="285" y="221" fill="var(--diag-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DATA INTEGRITY</text>
-                  <text x="364" y="242" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">POSIX Atomic Store</text>
-                  <text x="364" y="260" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{atomic_sub}</text>
+                  <rect x="240" y="196" width="248" height="72" rx="6" fill="var(--diag-paper)"/>
+                  <rect x="240" y="196" width="248" height="72" rx="6" fill="rgba(148, 163, 184, 0.06)" stroke="var(--diag-rule-solid)" stroke-width="1.2"/>
+                  <rect x="248" y="204" width="74" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
+                  <text x="285" y="213" fill="var(--diag-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DATA INTEGRITY</text>
+                  <text x="364" y="234" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">POSIX Atomic Store</text>
+                  <text x="364" y="252" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{atomic_sub}</text>
                 </g>
                 <g id="embed-node-smart-commit">
-                  <rect x="240" y="308" width="248" height="72" rx="6" fill="var(--diag-paper)"/>
-                  <rect x="240" y="308" width="248" height="72" rx="6" fill="rgba(148, 163, 184, 0.06)" stroke="var(--diag-rule-solid)" stroke-width="1.2"/>
-                  <rect x="248" y="316" width="74" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
-                  <text x="285" y="325" fill="var(--diag-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">GIT ZERO-CHURN</text>
-                  <text x="364" y="346" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Smart Commit Engine</text>
-                  <text x="364" y="364" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{smart_commit_sub}</text>
+                  <rect x="240" y="300" width="248" height="72" rx="6" fill="var(--diag-paper)"/>
+                  <rect x="240" y="300" width="248" height="72" rx="6" fill="rgba(148, 163, 184, 0.06)" stroke="var(--diag-rule-solid)" stroke-width="1.2"/>
+                  <rect x="248" y="308" width="74" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
+                  <text x="285" y="317" fill="var(--diag-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">GIT ZERO-CHURN</text>
+                  <text x="364" y="338" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Smart Commit Engine</text>
+                  <text x="364" y="356" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{smart_commit_sub}</text>
                 </g>
                 <g id="embed-node-preview-compiler">
-                  <rect x="548" y="140" width="208" height="72" rx="6" fill="var(--diag-paper)"/>
-                  <rect x="548" y="140" width="208" height="72" rx="6" fill="rgba(148, 163, 184, 0.06)" stroke="var(--diag-rule-solid)" stroke-width="1.2"/>
-                  <rect x="556" y="148" width="80" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
-                  <text x="596" y="157" fill="var(--diag-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">JAMSTACK BUILD</text>
-                  <text x="652" y="178" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">update_preview.py</text>
-                  <text x="652" y="196" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{preview_compiler_sub}</text>
+                  <rect x="548" y="132" width="208" height="72" rx="6" fill="var(--diag-paper)"/>
+                  <rect x="548" y="132" width="208" height="72" rx="6" fill="rgba(148, 163, 184, 0.06)" stroke="var(--diag-rule-solid)" stroke-width="1.2"/>
+                  <rect x="556" y="140" width="80" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
+                  <text x="596" y="149" fill="var(--diag-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">JAMSTACK BUILD</text>
+                  <text x="652" y="170" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">update_preview.py</text>
+                  <text x="652" y="188" fill="var(--diag-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">{preview_compiler_sub}</text>
                 </g>
                 <g id="embed-node-edge-cdn">
-                  <rect x="548" y="260" width="208" height="72" rx="6" fill="var(--diag-paper)"/>
-                  <rect x="548" y="260" width="208" height="72" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--diag-link)" stroke-width="1.2"/>
-                  <rect x="556" y="268" width="60" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
-                  <text x="586" y="277" fill="var(--diag-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EDGE CDN</text>
-                  <text x="652" y="298" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Fastly Edge Network</text>
-                  <text x="652" y="316" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{edge_cdn_sub}</text>
+                  <rect x="548" y="252" width="208" height="72" rx="6" fill="var(--diag-paper)"/>
+                  <rect x="548" y="252" width="208" height="72" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--diag-link)" stroke-width="1.2"/>
+                  <rect x="556" y="260" width="60" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
+                  <text x="586" y="269" fill="var(--diag-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EDGE CDN</text>
+                  <text x="652" y="290" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Fastly Edge Network</text>
+                  <text x="652" y="308" fill="var(--diag-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">{edge_cdn_sub}</text>
                 </g>
                 <g id="embed-node-client-app">
-                  <rect x="816" y="200" width="168" height="72" rx="6" fill="var(--diag-paper)"/>
-                  <rect x="816" y="200" width="168" height="72" rx="6" fill="var(--diag-accent-tint)" stroke="var(--diag-accent)" stroke-width="1.5"/>
-                  <rect x="824" y="208" width="64" height="12" rx="2" fill="var(--diag-accent)" opacity="0.18"/>
-                  <text x="856" y="217" fill="var(--diag-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">BROWSER SPA</text>
-                  <text x="900" y="238" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Vanilla Client App</text>
-                  <text x="900" y="256" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{client_sub}</text>
+                  <rect x="816" y="192" width="168" height="72" rx="6" fill="var(--diag-paper)"/>
+                  <rect x="816" y="192" width="168" height="72" rx="6" fill="var(--diag-accent-tint)" stroke="var(--diag-accent)" stroke-width="1.5"/>
+                  <rect x="824" y="200" width="64" height="12" rx="2" fill="var(--diag-accent)" opacity="0.18"/>
+                  <text x="856" y="209" fill="var(--diag-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">BROWSER SPA</text>
+                  <text x="900" y="230" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Vanilla Client App</text>
+                  <text x="900" y="248" fill="var(--diag-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">{client_sub}</text>
                 </g>
               </svg>
             </div>
@@ -166,9 +179,9 @@ def get_architecture_diagram_html(lang='th', asset_prefix='./'):
             <div class="w-full overflow-hidden rounded-lg border border-slate-200/60 dark:border-slate-800/80 bg-slate-100/50 dark:bg-slate-950/60 p-1 sm:p-2">
               <a href="{asset_prefix}docs/tech-stack-diagram.html" target="_blank" rel="noopener noreferrer" class="block group relative cursor-zoom-in" title="{stack_expand_label}">
                 <!-- Light theme image -->
-                <img src="{asset_prefix}images/tech-stack-diagram.png" alt="FPL เซียนอยู่รู Tech Stack Diagram" class="w-full h-auto rounded block dark:hidden shadow-sm transition-transform duration-200 group-hover:scale-[1.005]" loading="lazy">
+                <img src="{asset_prefix}images/tech-stack-diagram.png" alt="FPL miniRig Tech Stack Diagram" class="w-full h-auto rounded block dark:hidden shadow-sm transition-transform duration-200 group-hover:scale-[1.005]" loading="lazy">
                 <!-- Dark theme image -->
-                <img src="{asset_prefix}images/tech-stack-diagram-dark.png" alt="FPL เซียนอยู่รู Tech Stack Diagram" class="w-full h-auto rounded hidden dark:block shadow-sm transition-transform duration-200 group-hover:scale-[1.005]" loading="lazy">
+                <img src="{asset_prefix}images/tech-stack-diagram-dark.png" alt="FPL miniRig Tech Stack Diagram" class="w-full h-auto rounded hidden dark:block shadow-sm transition-transform duration-200 group-hover:scale-[1.005]" loading="lazy">
                 <div class="absolute bottom-2.5 right-2.5 px-2 py-1 rounded bg-slate-900/80 text-white text-[9px] font-mono opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 pointer-events-none shadow">
                   <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
                   <span>{stack_expand_label}</span>
@@ -178,8 +191,8 @@ def get_architecture_diagram_html(lang='th', asset_prefix='./'):
             <div class="mt-2.5 flex items-center justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400">
               <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                 <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Python 3.11</span>
-                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">GitHub Actions</span>
-                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Cloudflare Workers</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">GitHub Actions (15m)</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Cloudflare Workers (30s)</span>
                 <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Azure Functions</span>
                 <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Fastly Edge CDN</span>
                 <span class="px-1.5 py-0.5 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Vanilla JS (0kb)</span>
@@ -262,12 +275,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>FPL Dashboard - มินิลีกแฟนตาซี</title>
-  <meta name="description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPL มินิลีก">
+  <title>FPL miniRig - มินิลีกแฟนตาซี</title>
+  <meta name="description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPL miniRig มินิลีกแฟนตาซี">
   <meta name="theme-color" content="#0f172a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="FPL Dashboard">
+  <meta name="apple-mobile-web-app-title" content="FPL miniRig">
 
   <!-- Favicons & App Shortcut Icons (Chrome / Safari / iOS / Android) -->
   <link rel="shortcut icon" href="__ASSET_PREFIX__favicon.ico?v=2">
@@ -281,14 +294,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
   <!-- Open Graph / Social Media Share Thumbnail -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="FPL Dashboard - มินิลีกแฟนตาซี">
-  <meta property="og:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPL มินิลีก">
+  <meta property="og:title" content="FPL miniRig - มินิลีกแฟนตาซี">
+  <meta property="og:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPL miniRig มินิลีกแฟนตาซี">
   <meta property="og:image" content="https://asawamanasak.github.io/fpl-mini/images/icons/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="FPL Dashboard - มินิลีกแฟนตาซี">
-  <meta name="twitter:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPL มินิลีก">
+  <meta name="twitter:title" content="FPL miniRig - มินิลีกแฟนตาซี">
+  <meta name="twitter:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPL miniRig มินิลีกแฟนตาซี">
   <meta name="twitter:image" content="https://asawamanasak.github.io/fpl-mini/images/icons/og-image.png">
   
   <script>
@@ -2037,7 +2050,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
               <li class="flex items-start gap-1.5">
                 <span class="text-emerald-500 font-bold">•</span>
-                <span>อัปเดตคะแนนสดพร้อมแต้มโบนัสตลอด 90 นาที ไม่ต้องรอข้ามคืน</span>
+                <span>อัปเดตคะแนนสดทุก 30 วินาทีพร้อมแต้มโบนัสตลอด 90 นาที ไม่ต้องรอข้ามคืน</span>
               </li>
               <li class="flex items-start gap-1.5">
                 <span class="text-emerald-500 font-bold">•</span>
@@ -2083,14 +2096,72 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           </div>
         </div>
 
-        <!-- Feature 3: Prizes & Treasury -->
+        <!-- Feature 3: Transfers & Analysis -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-sky-500/40 transition-all">
+          <div>
+            <span class="w-9 h-9 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200/60 dark:border-sky-800/60 inline-flex items-center justify-center text-sky-600 dark:text-sky-400 mb-3">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+            </span>
+            <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
+              3. วิเคราะห์การย้ายตัว & ขุมกำลัง
+            </h3>
+            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+              <li class="flex items-start gap-1.5">
+                <span class="text-sky-500 font-bold">•</span>
+                <span>สรุปทุกดีลซื้อขายนักเตะเข้า-ออกของคู่แข่งในลีก พร้อมแต้มลบย้ายตัว</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-sky-500 font-bold">•</span>
+                <span>คำนวณแต้มได้-เสียสุทธิจากการย้ายตัวในแต่ละสัปดาห์</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-sky-500 font-bold">•</span>
+                <span>วิเคราะห์นักเตะมหาชน (> 70%), นักเตะทีเด็ด (< 20%) และคำแนะนำการย้ายตัว</span>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-sky-600 dark:text-sky-400 font-medium">
+            ✓ แท็บ: วิเคราะห์การย้ายตัว
+          </div>
+        </div>
+
+        <!-- Feature 4: Rival Chips Matrix -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-purple-500/40 transition-all">
+          <div>
+            <span class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200/60 dark:border-purple-800/60 inline-flex items-center justify-center text-purple-600 dark:text-purple-400 mb-3">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+            </span>
+            <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
+              4. ติดตามสถานะชิปของคู่แข่ง
+            </h3>
+            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+              <li class="flex items-start gap-1.5">
+                <span class="text-purple-500 font-bold">•</span>
+                <span>ตารางแมทริกซ์เช็กสถานะชิปพิเศษ (WC, FH, BB, TC) ของผู้จัดการทีมทุกคน</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-purple-500 font-bold">•</span>
+                <span>ตรวจสอบชิปที่ใช้ไปแล้วในแต่ละสัปดาห์ และชิปที่ยังเหลืออยู่แบบแยกเดี่ยว</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-purple-500 font-bold">•</span>
+                <span>ไฮไลท์พิเศษแจ้งเตือนชิปที่กำลังเปิดใช้งานระหว่างสัปดาห์แข่งขันสด</span>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-purple-600 dark:text-purple-400 font-medium">
+            ✓ แท็บ: สถานะชิป
+          </div>
+        </div>
+
+        <!-- Feature 5: Prizes & Treasury -->
         <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-amber-500/40 transition-all">
           <div>
             <span class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200/60 dark:border-amber-800/60 inline-flex items-center justify-center text-amber-600 dark:text-amber-400 mb-3">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </span>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-              3. เงินรางวัล & บัญชีกองกลาง
+              5. เงินรางวัล & บัญชีกองกลาง
             </h3>
             <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
               <li class="flex items-start gap-1.5">
@@ -2112,90 +2183,32 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           </div>
         </div>
 
-        <!-- Feature 4: Transfers & AI Projected -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-sky-500/40 transition-all">
-          <div>
-            <span class="w-9 h-9 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200/60 dark:border-sky-800/60 inline-flex items-center justify-center text-sky-600 dark:text-sky-400 mb-3">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
-            </span>
-            <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-              4. ตลาดนักเตะ & ผู้ช่วยวิเคราะห์ AI
-            </h3>
-            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
-              <li class="flex items-start gap-1.5">
-                <span class="text-sky-500 font-bold">•</span>
-                <span>สรุปทุกดีลย้ายเข้า-ออกของเพื่อนในลีก พร้อมแต้มลบที่ยอมจ่าย</span>
-              </li>
-              <li class="flex items-start gap-1.5">
-                <span class="text-sky-500 font-bold">•</span>
-                <span>คำนวณแต้มได้-เสียสุทธิจากการย้ายตัวในแต่ละสัปดาห์</span>
-              </li>
-              <li class="flex items-start gap-1.5">
-                <span class="text-sky-500 font-bold">•</span>
-                <span>แสดงคะแนนคาดการณ์โดย AI ช่วยตัดสินใจนัดถัดไป</span>
-              </li>
-            </ul>
-          </div>
-          <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-sky-600 dark:text-sky-400 font-medium">
-            ✓ แท็บ: วิเคราะห์การย้ายตัว
-          </div>
-        </div>
-
-        <!-- Feature 5: Hall of Fame & History -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-purple-500/40 transition-all">
-          <div>
-            <span class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200/60 dark:border-purple-800/60 inline-flex items-center justify-center text-purple-600 dark:text-purple-400 mb-3">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004 0V5.625c0-.621-.504-1.125-1.125-1.125H9.625c-.621 0-1.125.504-1.125 1.125v8.625m5.004 0H9.625" /></svg>
-            </span>
-            <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-              5. ทำเนียบแชมป์ & เกียรติยศลีก
-            </h3>
-            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
-              <li class="flex items-start gap-1.5">
-                <span class="text-purple-500 font-bold">•</span>
-                <span>บันทึกประวัติศาสตร์ผู้ชนะประจำสัปดาห์และแชมป์รายเดือนตลอดซีซั่น</span>
-              </li>
-              <li class="flex items-start gap-1.5">
-                <span class="text-purple-500 font-bold">•</span>
-                <span>เช็กคะแนนสะสม เกียรติยศ และฟอร์มย้อนหลังได้ตลอดเวลา</span>
-              </li>
-              <li class="flex items-start gap-1.5">
-                <span class="text-purple-500 font-bold">•</span>
-                <span>สลับดูกติกาลีกและโครงสร้างเงินรางวัลในแท็บ "กติกา" ได้ทันที</span>
-              </li>
-            </ul>
-          </div>
-          <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-purple-600 dark:text-purple-400 font-medium">
-            ✓ แท็บ: ทำเนียบแชมป์ & กติกา
-          </div>
-        </div>
-
-        <!-- Feature 6: LINE Share & Excel Export -->
+        <!-- Feature 6: Radar & Hall of Fame -->
         <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-indigo-500/40 transition-all">
           <div>
             <span class="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/60 dark:border-indigo-800/60 inline-flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-3">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004 0V5.625c0-.621-.504-1.125-1.125-1.125H9.625c-.621 0-1.125.504-1.125 1.125v8.625m5.004 0H9.625" /></svg>
             </span>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-              6. แชร์สรุปผล LINE & ส่งออก Excel
+              6. เรดาร์ฟอร์ม & ทำเนียบแชมป์
             </h3>
             <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
               <li class="flex items-start gap-1.5">
                 <span class="text-indigo-500 font-bold">•</span>
-                <span>กดปุ่มเดียว คัดลอกสรุปผลคะแนนและเงินรางวัลพร้อมส่งลงกลุ่ม LINE</span>
+                <span>วิเคราะห์ความสม่ำเสมอ ประเมินแต้มต่ำสุด-สูงสุด ของทั้ง 8 ลีก</span>
               </li>
               <li class="flex items-start gap-1.5">
                 <span class="text-indigo-500 font-bold">•</span>
-                <span>ส่งออกตารางคะแนนและบัญชีกองกลางทั้ง 38 สัปดาห์เป็นไฟล์ Excel ได้ทันที</span>
+                <span>บันทึกประวัติศาสตร์ทำเนียบแชมป์และหอเกียรติยศตลอดทุกฤดูกาล</span>
               </li>
               <li class="flex items-start gap-1.5">
                 <span class="text-indigo-500 font-bold">•</span>
-                <span>แถบสลับลีกด้านบน รองรับการจัดการหลายลีกแยกจากกันอย่างอิสระ</span>
+                <span>ปุ่มคัดลอกสรุปผลคะแนนส่งเข้ากลุ่ม LINE และส่งออกเป็นตาราง Excel ทันที</span>
               </li>
             </ul>
           </div>
           <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-indigo-600 dark:text-indigo-400 font-medium">
-            ✓ ฟังก์ชัน: ปุ่มแชร์ LINE & Export Excel
+            ✓ แท็บ: เรดาร์ฟอร์ม & ทำเนียบแชมป์
           </div>
         </div>
 
@@ -2238,14 +2251,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             <span class="font-display tracking-tight text-xs sm:text-sm">สถาปัตยกรรมระบบเบื้องหลัง</span>
           </span>
-          <span class="text-[10.5px] text-slate-400 font-mono font-normal">GitHub Actions • Serverless Jamstack</span>
+          <span class="text-[10.5px] text-slate-400 font-mono font-normal">Dual-Layer Sync • 15m Cron + 30s Edge Live</span>
         </summary>
         <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3.5">
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2.5 rounded-xl bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/60 text-[10.5px] font-mono">
             <div><span class="text-slate-400 block text-[9.5px]">RUNTIME</span><span class="font-bold text-slate-700 dark:text-slate-300">Python 3.11 / Ubuntu</span></div>
-            <div><span class="text-slate-400 block text-[9.5px]">CONCURRENCY</span><span class="font-bold text-slate-700 dark:text-slate-300">ThreadPoolExecutor</span></div>
-            <div><span class="text-slate-400 block text-[9.5px]">PERSISTENCE</span><span class="font-bold text-slate-700 dark:text-slate-300">POSIX Atomic Write</span></div>
-            <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">Fastly Edge CDN</span></div>
+            <div><span class="text-slate-400 block text-[9.5px]">CONCURRENCY</span><span class="font-bold text-slate-700 dark:text-slate-300">8 Leagues • 135 Teams</span></div>
+            <div><span class="text-slate-400 block text-[9.5px]">LIVE RELAY</span><span class="font-bold text-slate-700 dark:text-slate-300">Cloudflare Edge (30s)</span></div>
+            <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">Fastly CDN + Split JSON</span></div>
           </div>
           __ARCHITECTURE_DIAGRAM_TH__
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
@@ -2253,36 +2266,36 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block mb-1">[INGESTION & CONCURRENCY]</span>
               <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">1. Pipeline & Multi-Threading Engine</div>
               <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Serverless Orchestration:</strong> ประมวลผลผ่าน GitHub Actions Runner (Ubuntu Latest / Python 3.11) ตามตาราง Cron และ Event Triggers</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Parallel Concurrency:</strong> ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> ร่วมกับ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">threading.Lock</code> ดึงคะแนนสดและขุมกำลัง 150+ ทีม 8 ลีกพร้อมกัน ลดเวลาประมวลผลจาก 180s เหลือเพียง 2-4s</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Adaptive Throttling:</strong> ตรวจจับสถานะแมตช์สดอัตโนมัติ พร้อมตั้งคูลดาวน์ขั้นต่ำ 300 วินาที เพื่อรักษาระดับการบิลด์ให้อยู่ในโควตา GitHub Pages (10 builds/hr) และป้องกัน HTTP 429</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Serverless Orchestration:</strong> ประมวลผลผ่าน GitHub Actions Runner (Ubuntu Latest / Python 3.11) ตามตาราง Cron ทุก 15 นาที และ Manual Dispatch</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Parallel Concurrency & Incremental Cache:</strong> ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> ดึงข้อมูล 8 ลีก 135 ทีม (165 รายการ) พร้อมกันใน 2-4 วินาที พร้อมแคช GW ที่จบแล้วเพื่อลดการยิง API ซ้ำกว่า 95%</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Azure Transfer AI & Security:</strong> เชื่อมต่อ Azure Functions วิเคราะห์แผนย้ายตัวด้วย Environment Secret (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">AZURE_TRANSFER_FUNCTION_KEY</code>) พร้อมระบบ Fallback อัตโนมัติ</span></li>
               </ul>
             </div>
             <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
               <span class="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider block mb-1">[DATA_INTEGRITY]</span>
               <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">2. Data Integrity & Atomic State Machine</div>
               <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>POSIX Atomic Replacement:</strong> บันทึก <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">multi_fpl_data.json</code> ด้วยเทคนิค <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tempfile</code> + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">os.replace</code> ขจัดปัญหา Race Conditions หรือไฟล์เสียหายจากการถูกปิดกะทันหัน</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Pre-Commit Validation:</strong> ตรวจสอบความถูกต้องของแต้มสด, การดันรองกัปตัน (VC x2), ชิปพิเศษ, แต้มลบย้ายตัว (Hits) และสูตรเฉลี่ยเงินรางวัล (Tie-Pooling) ก่อนบันทึกลงดิสก์</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Zero-Churn Smart Commit:</strong> ตรวจสอบ Semantic Diff ของคะแนนและอันดับ หากข้อมูลไม่มีการเปลี่ยนแปลงจะข้ามขั้นตอน Git Commit เพื่อลดขยะใน Git History (Zero Git Bloat) โดยมี Heartbeat Sync ทุก 6 ชั่วโมง</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>POSIX Atomic Replacement:</strong> บันทึก <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">multi_fpl_data.json</code> และไฟล์รายลีกด้วย <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tempfile</code> + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">os.replace</code> ขจัดปัญหา Race Conditions หรือไฟล์ JSON เสียหาย</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Pre-Commit Validation:</strong> ตรวจสอบความถูกต้องของแต้มสด, Auto-Sub, รองกัปตัน (VC x2), ชิปพิเศษ, แต้มลบย้ายตัว (Hits) และสูตรเฉลี่ยเงินรางวัล (Tie-Pooling) ก่อนบันทึกลงดิสก์</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Zero-Churn Smart Commit:</strong> ตรวจสอบ Semantic Diff ของคะแนนและอันดับ หากข้อมูลไม่เปลี่ยนแปลงจะข้าม Git Commit เพื่อลดขยะใน Git History (Zero Git Bloat) พร้อม Heartbeat Sync ทุก 6 ชั่วโมง</span></li>
               </ul>
             </div>
             <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
               <span class="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block mb-1">[EDGE_JAMSTACK]</span>
-              <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">3. Headless Jamstack & Global Edge CDN</div>
+              <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">3. Config-Driven Jamstack & Edge CDN</div>
               <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Zero-Cost Architecture:</strong> โฮสต์แบบ Jamstack ไร้ฐานข้อมูล SQL ไร้เซิร์ฟเวอร์ PHP/Node.js ทำให้มี Zero Attack Surface และไม่มีค่าใช้จ่ายด้านโครงสร้างพื้นฐาน</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Static Pre-compilation:</strong> ตัวคอมไพล์เลอร์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> แปลงเทมเพลตและจัดเตรียม Entry Point แยกตามโฟลเดอร์ลีก (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/40700/</code>, <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/675290/</code>) พร้อมฝัง JSON Data แบบ Inline</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Edge CDN Distribution:</strong> กระจายไฟล์ผ่าน Fastly Edge CDN ของ GitHub Pages รองรับ HTTP/2 Multiplexing, การบีบอัด Brotli และส่งมอบข้อมูลด้วย Time to First Byte (TTFB) ต่ำกว่า 50ms</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Zero-Code Season Rollover:</strong> ขับเคลื่อนด้วย <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">config/leagues_config.json</code> 100% รองรับการเปลี่ยนลีกและทีมข้ามฤดูกาลพร้อม Auto-Cleanup ลบโฟลเดอร์ลีกเก่าอัตโนมัติ</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Per-League JSON Split:</strong> คอมไพล์เลอร์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> แยกไฟล์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> และสร้าง Route ประจำลีก (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/{id}/index.html</code>) ลดขนาด HTML เริ่มต้นลงกว่า 85%</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Edge CDN Distribution:</strong> กระจายไฟล์ผ่าน Fastly Edge CDN ของ GitHub Pages รองรับ HTTP/2 Multiplexing, การบีบอัด Brotli และส่งมอบข้อมูลด้วย TTFB ต่ำกว่า 50ms</span></li>
               </ul>
             </div>
             <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
               <span class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider block mb-1">[CLIENT_RUNTIME]</span>
-              <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime & Layout Optimization</div>
+              <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime & 30s Real-Time Relay</div>
               <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Zero-Framework Overhead:</strong> พัฒนาด้วย Pure Vanilla ES6+ ไร้ Framework Overhead ขนาดใหญ่ (0kb React/Vue Runtime) เร่งค่า First Contentful Paint (FCP) และรักษาความลื่นไหล 60 FPS</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>State Preservation:</strong> ซิงก์สถานะเลือกลีก แท็บ และ Gameweek ผ่าน HTML5 History API (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">pushState</code> / <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">popstate</code>), URL Parameters และ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">localStorage</code> สมบูรณ์แบบ</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Tabular Numbers & Visibility API:</strong> ระบบนับถอยหลังระดับวินาทีใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">font-mono tabular-nums</code> ป้องกัน Layout Shift (CLS: 0.00) พร้อมหยุด Polling ผ่าน Page Visibility API เมื่อพักหน้าจอเพื่อประหยัดแบตเตอรี่</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>30s Cloudflare Edge Live Poll:</strong> ระหว่างมีแมตช์เตะ เบราว์เซอร์ดึงแต้มสดและโบนัสเรียลไทม์ผ่าน Cloudflare Worker (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">fpl-live-relay</code>) ทุก 30 วินาทีโดยไม่ต้องรอบิลด์ HTML ใหม่</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Lazy League Switch & Race Guard:</strong> โหลด JSON รายลีกแบบ On-Demand เมื่อสลับลีก พร้อมระบบป้องกัน Race Condition และซิงก์สถานะผ่าน HTML5 History API + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">localStorage</code></span></li>
+                <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Zero-Framework 60 FPS & A11y:</strong> พัฒนาด้วย Vanilla ES6+ (0kb Framework) ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tabular-nums</code> (CLS: 0.00), Page Visibility API ประหยัดแบตเตอรี่ และรองรับ Keyboard Focus Accessibility</span></li>
               </ul>
             </div>
           </div>
@@ -5504,16 +5517,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (!container) return;
         const isEn = (this.currentLang === 'en');
 
-        // เรียงลำดับ: ลีกหลักเริ่มต้น (is_default) อยู่ด้านบนสุดเสมอ และลีกอื่นๆ เรียงตาม League ID จากน้อยไปมาก
-        const defaultLid = this.getDefaultLeagueId();
+        // เรียงลำดับตาม League ID จากน้อยที่สุดอยู่ด้านบน เรียงลำดับไล่ลงมาเรื่อยๆ (น้อยไปมาก)
         const allLeagueIds = Object.keys(this.multiData.leagues || {});
-        allLeagueIds.sort((a, b) => {
-          const idA = String(a);
-          const idB = String(b);
-          if (idA === defaultLid) return -1;
-          if (idB === defaultLid) return 1;
-          return Number(idA) - Number(idB);
-        });
+        allLeagueIds.sort((a, b) => Number(a) - Number(b));
 
         let html = '';
         allLeagueIds.forEach(lid => {
@@ -5546,6 +5552,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const cupTabBtn = document.getElementById('tab-btn-cup');
 
         if (nameEl) nameEl.innerText = this.data.name;
+        if (typeof document !== 'undefined' && this.data && this.data.name) {
+          document.title = `FPL miniRig — ${this.data.name}`;
+        }
         if (idBadge) idBadge.innerText = `LEAGUE ${this.activeLeagueId}`;
         if (seasonEl) seasonEl.innerText = isEn ? `Season ${this.data.season || '2026/27'}` : `ฤดูกาล ${this.data.season || '2026/27'}`;
         if (memberEl) memberEl.innerText = isEn ? `${(this.data.teams || []).length} Members` : `${(this.data.teams || []).length} ทีมสมาชิก`;
@@ -13706,7 +13715,7 @@ selectShi62GW(gwName) {
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
                       <span class="text-emerald-500 font-bold">•</span>
-                      <span>Real-time score updates with provisional bonus points throughout the 90 minutes.</span>
+                      <span>Real-time 30s score updates with provisional bonus points throughout the 90 minutes.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-emerald-500 font-bold">•</span>
@@ -13907,14 +13916,14 @@ selectShi62GW(gwName) {
                   <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                   <span class="font-display tracking-tight text-xs sm:text-sm">System Architecture (Technical Specs for Geeks)</span>
                 </span>
-                <span class="text-[10.5px] text-slate-400 font-mono font-normal">GitHub Actions • Serverless Jamstack</span>
+                <span class="text-[10.5px] text-slate-400 font-mono font-normal">Dual-Layer Sync • 15m Cron + 30s Edge Live</span>
               </summary>
               <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3.5">
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2.5 rounded-xl bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/60 text-[10.5px] font-mono">
                   <div><span class="text-slate-400 block text-[9.5px]">RUNTIME</span><span class="font-bold text-slate-700 dark:text-slate-300">Python 3.11 / Ubuntu</span></div>
-                  <div><span class="text-slate-400 block text-[9.5px]">CONCURRENCY</span><span class="font-bold text-slate-700 dark:text-slate-300">ThreadPoolExecutor</span></div>
-                  <div><span class="text-slate-400 block text-[9.5px]">PERSISTENCE</span><span class="font-bold text-slate-700 dark:text-slate-300">POSIX Atomic Write</span></div>
-                  <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">Fastly Edge CDN</span></div>
+                  <div><span class="text-slate-400 block text-[9.5px]">CONCURRENCY</span><span class="font-bold text-slate-700 dark:text-slate-300">8 Leagues • 135 Teams</span></div>
+                  <div><span class="text-slate-400 block text-[9.5px]">LIVE RELAY</span><span class="font-bold text-slate-700 dark:text-slate-300">Cloudflare Edge (30s)</span></div>
+                  <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">Fastly CDN + Split JSON</span></div>
                 </div>
                 __ARCHITECTURE_DIAGRAM_EN__
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
@@ -13922,36 +13931,36 @@ selectShi62GW(gwName) {
                     <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block mb-1">[INGESTION & CONCURRENCY]</span>
                     <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">1. Pipeline & Multi-Threading Engine</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Serverless Orchestration:</strong> Automated execution via GitHub Actions Runners (Ubuntu Latest / Python 3.11) managed via cron schedules and event dispatch triggers.</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Parallel Concurrency:</strong> Employs bounded <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> and thread-safe locks to sync live scores across 150+ teams and 8 leagues, shrinking latency from 180s to 2-4s.</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Adaptive Throttling:</strong> Matchday state detector enforcing a 300s (5-min) cooldown to respect GitHub Pages build quotas (10 builds/hr) and prevent HTTP 429 rate limits.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Serverless Orchestration:</strong> Automated execution via GitHub Actions Runners (Ubuntu Latest / Python 3.11) on a 15-minute cron schedule and manual dispatch triggers.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Parallel Concurrency & Incremental Cache:</strong> Employs <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> to sync 8 leagues and 135 unique teams (165 entries) in 2-4s, caching settled GWs to cut redundant API calls by 95%.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Azure Transfer AI & Security:</strong> Integrates Azure Functions transfer analytics via environment secrets (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">AZURE_TRANSFER_FUNCTION_KEY</code>) with graceful fallback.</span></li>
                     </ul>
                   </div>
                   <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
                     <span class="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider block mb-1">[DATA_INTEGRITY]</span>
                     <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">2. Data Integrity & Atomic State Machine</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>POSIX Atomic Replacement:</strong> Serializes <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">multi_fpl_data.json</code> via <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tempfile</code> + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">os.replace</code>, preventing truncated writes or race condition corruptions upon runner termination.</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Pre-Commit Validation:</strong> Validates live points, Vice-Captain promotions (VC x2), chip activations, transfer penalties (Hits), and prize tie-pooling formulas before persistence.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>POSIX Atomic Replacement:</strong> Serializes <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">multi_fpl_data.json</code> and per-league JSONs via <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tempfile</code> + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">os.replace</code>, preventing truncated writes or race condition corruptions.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Pre-Commit Validation:</strong> Validates live points, auto-subs, Vice-Captain promotions (VC x2), chip activations, transfer hits, and prize tie-pooling formulas before persistence.</span></li>
                       <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Zero-Churn Smart Commit:</strong> Computes semantic diffs against cached states. If leaderboard ranks and scores are unchanged, Git commits are skipped to eliminate repository bloat (Zero Git Bloat).</span></li>
                     </ul>
                   </div>
                   <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
                     <span class="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block mb-1">[EDGE_JAMSTACK]</span>
-                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">3. Headless Jamstack & Global Edge CDN</div>
+                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">3. Config-Driven Jamstack & Edge CDN</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Zero-Cost Architecture:</strong> Pure Jamstack design without SQL databases or PHP/Node.js servers, providing a zero attack surface and zero hosting overhead.</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Static Pre-compilation:</strong> Static builder <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> pre-renders directory routes (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/40700/</code>, <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/675290/</code>, <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/567387/</code>) with pre-hydrated inline JSON state.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Zero-Code Season Rollover:</strong> 100% driven by <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">config/leagues_config.json</code> with automatic cleanup of retired league routes and stale JSON payloads across seasons.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Per-League JSON Split:</strong> Static compiler <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> builds dedicated routes (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/{id}/index.html</code>) and decoupled <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> files (~85% smaller initial HTML).</span></li>
                       <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Edge CDN Distribution:</strong> Deployed to GitHub Pages Fastly Edge CDN with HTTP/2 Multiplexing, Brotli compression, and sub-50ms Time to First Byte (TTFB) worldwide.</span></li>
                     </ul>
                   </div>
                   <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
                     <span class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider block mb-1">[CLIENT_RUNTIME]</span>
-                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime & Layout Optimization</div>
+                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime & 30s Real-Time Relay</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Zero-Framework Overhead:</strong> Engineered in 100% native Vanilla ES6+ (0kb React/Vue runtime dependency), achieving sub-second First Contentful Paint (FCP) and smooth 60 FPS rendering.</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>State Preservation:</strong> Full state synchronization across league IDs, tabs, and gameweeks via HTML5 History API (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">pushState</code> / <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">popstate</code>), URL query params, and <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">localStorage</code>.</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Tabular Numbers & Visibility API:</strong> Countdown timer utilizes <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">font-mono tabular-nums</code> to eliminate layout thrashing (CLS: 0.00). Integrates Page Visibility API to pause polling when tabs blur to save battery.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>30s Cloudflare Edge Live Poll:</strong> During active matches, the client polls Cloudflare Worker (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">fpl-live-relay</code>) every 30s to overlay real-time points and provisional bonus without waiting for static rebuilds.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Lazy League Switch & Race Guard:</strong> On-demand <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> fetching guarded by monotonic request tokens, synchronized via HTML5 History API and <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">localStorage</code>.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Zero-Framework 60 FPS & A11y:</strong> Pure Vanilla ES6+ (0kb framework runtime), <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tabular-nums</code> (CLS: 0.00), Page Visibility API battery saver, and WCAG AA modal focus restoration.</span></li>
                     </ul>
                   </div>
                 </div>
@@ -13975,7 +13984,7 @@ selectShi62GW(gwName) {
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
                       <span class="text-emerald-500 font-bold">•</span>
-                      <span>อัปเดตคะแนนสดพร้อมแต้มโบนัสตลอด 90 นาที ไม่ต้องรอข้ามคืน</span>
+                      <span>อัปเดตคะแนนสดทุก 30 วินาทีพร้อมแต้มโบนัสตลอด 90 นาที ไม่ต้องรอข้ามคืน</span>
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-emerald-500 font-bold">•</span>
@@ -14176,14 +14185,14 @@ selectShi62GW(gwName) {
                   <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                   <span class="font-display tracking-tight text-xs sm:text-sm">${isEn ? 'System Architecture & Engineering Specs' : 'สถาปัตยกรรมระบบเบื้องหลัง'}</span>
                 </span>
-                <span class="text-[10.5px] text-slate-400 font-mono font-normal">GitHub Actions • Serverless Jamstack</span>
+                <span class="text-[10.5px] text-slate-400 font-mono font-normal">Dual-Layer Sync • 15m Cron + 30s Edge Live</span>
               </summary>
               <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3.5">
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2.5 rounded-xl bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/60 text-[10.5px] font-mono">
                   <div><span class="text-slate-400 block text-[9.5px]">RUNTIME</span><span class="font-bold text-slate-700 dark:text-slate-300">Python 3.11 / Ubuntu</span></div>
-                  <div><span class="text-slate-400 block text-[9.5px]">CONCURRENCY</span><span class="font-bold text-slate-700 dark:text-slate-300">ThreadPoolExecutor</span></div>
-                  <div><span class="text-slate-400 block text-[9.5px]">PERSISTENCE</span><span class="font-bold text-slate-700 dark:text-slate-300">POSIX Atomic Write</span></div>
-                  <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">Fastly Edge CDN</span></div>
+                  <div><span class="text-slate-400 block text-[9.5px]">CONCURRENCY</span><span class="font-bold text-slate-700 dark:text-slate-300">8 Leagues • 135 Teams</span></div>
+                  <div><span class="text-slate-400 block text-[9.5px]">LIVE RELAY</span><span class="font-bold text-slate-700 dark:text-slate-300">Cloudflare Edge (30s)</span></div>
+                  <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">Fastly CDN + Split JSON</span></div>
                 </div>
                 __ARCHITECTURE_DIAGRAM_TH__
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
@@ -14191,36 +14200,36 @@ selectShi62GW(gwName) {
                     <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block mb-1">[INGESTION & CONCURRENCY]</span>
                     <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">1. Pipeline & Multi-Threading Engine</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Serverless Orchestration:</strong> ประมวลผลผ่าน GitHub Actions Runner (Ubuntu Latest / Python 3.11) ตามตาราง Cron และ Event Triggers</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Parallel Concurrency:</strong> ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> ร่วมกับ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">threading.Lock</code> ดึงคะแนนสดและขุมกำลัง 150+ ทีม 8 ลีกพร้อมกัน ลดเวลาประมวลผลจาก 180s เหลือเพียง 2-4s</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Adaptive Throttling:</strong> ตรวจจับสถานะแมตช์สดอัตโนมัติ พร้อมตั้งคูลดาวน์ขั้นต่ำ 300 วินาที เพื่อรักษาระดับการบิลด์ให้อยู่ในโควตา GitHub Pages (10 builds/hr) และป้องกัน HTTP 429</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Serverless Orchestration:</strong> ประมวลผลผ่าน GitHub Actions Runner (Ubuntu Latest / Python 3.11) ตามตาราง Cron ทุก 15 นาที และ Manual Dispatch</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Parallel Concurrency & Incremental Cache:</strong> ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> ดึงข้อมูล 8 ลีก 135 ทีม (165 รายการ) พร้อมกันใน 2-4 วินาที พร้อมแคช GW ที่จบแล้วเพื่อลดการยิง API ซ้ำกว่า 95%</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Azure Transfer AI & Security:</strong> เชื่อมต่อ Azure Functions วิเคราะห์แผนย้ายตัวด้วย Environment Secret (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">AZURE_TRANSFER_FUNCTION_KEY</code>) พร้อมระบบ Fallback อัตโนมัติ</span></li>
                     </ul>
                   </div>
                   <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
                     <span class="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider block mb-1">[DATA_INTEGRITY]</span>
                     <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">2. Data Integrity & Atomic State Machine</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>POSIX Atomic Replacement:</strong> บันทึก <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">multi_fpl_data.json</code> ด้วยเทคนิค <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tempfile</code> + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">os.replace</code> ขจัดปัญหา Race Conditions หรือไฟล์เสียหายจากการถูกปิดกะทันหัน</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Pre-Commit Validation:</strong> ตรวจสอบความถูกต้องของแต้มสด, การดันรองกัปตัน (VC x2), ชิปพิเศษ, แต้มลบย้ายตัว (Hits) และสูตรเฉลี่ยเงินรางวัล (Tie-Pooling) ก่อนบันทึกลงดิสก์</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Zero-Churn Smart Commit:</strong> ตรวจสอบ Semantic Diff ของคะแนนและอันดับ หากข้อมูลไม่มีการเปลี่ยนแปลงจะข้ามขั้นตอน Git Commit เพื่อลดขยะใน Git History (Zero Git Bloat) โดยมี Heartbeat Sync ทุก 6 ชั่วโมง</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>POSIX Atomic Replacement:</strong> บันทึก <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">multi_fpl_data.json</code> และไฟล์รายลีกด้วย <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tempfile</code> + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">os.replace</code> ขจัดปัญหา Race Conditions หรือไฟล์ JSON เสียหาย</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Pre-Commit Validation:</strong> ตรวจสอบความถูกต้องของแต้มสด, Auto-Sub, รองกัปตัน (VC x2), ชิปพิเศษ, แต้มลบย้ายตัว (Hits) และสูตรเฉลี่ยเงินรางวัล (Tie-Pooling) ก่อนบันทึกลงดิสก์</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Zero-Churn Smart Commit:</strong> ตรวจสอบ Semantic Diff ของคะแนนและอันดับ หากข้อมูลไม่เปลี่ยนแปลงจะข้าม Git Commit เพื่อลดขยะใน Git History (Zero Git Bloat) พร้อม Heartbeat Sync ทุก 6 ชั่วโมง</span></li>
                     </ul>
                   </div>
                   <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
                     <span class="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block mb-1">[EDGE_JAMSTACK]</span>
-                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">3. Headless Jamstack & Global Edge CDN</div>
+                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">3. Config-Driven Jamstack & Edge CDN</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Zero-Cost Architecture:</strong> โฮสต์แบบ Jamstack ไร้ฐานข้อมูล SQL ไร้เซิร์ฟเวอร์ PHP/Node.js ทำให้มี Zero Attack Surface และไม่มีค่าใช้จ่ายด้านโครงสร้างพื้นฐาน</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Static Pre-compilation:</strong> ตัวคอมไพล์เลอร์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> แปลงเทมเพลตและจัดเตรียม Entry Point แยกตามโฟลเดอร์ลีก (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/40700/</code>, <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/675290/</code>, <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/567387/</code>) พร้อมฝัง JSON Data แบบ Inline</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Edge CDN Distribution:</strong> กระจายไฟล์ผ่าน Fastly Edge CDN ของ GitHub Pages รองรับ HTTP/2 Multiplexing, การบีบอัด Brotli และส่งมอบข้อมูลด้วย Time to First Byte (TTFB) ต่ำกว่า 50ms</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Zero-Code Season Rollover:</strong> ขับเคลื่อนด้วย <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">config/leagues_config.json</code> 100% รองรับการเปลี่ยนลีกและทีมข้ามฤดูกาลพร้อม Auto-Cleanup ลบโฟลเดอร์ลีกเก่าอัตโนมัติ</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Per-League JSON Split:</strong> คอมไพล์เลอร์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> แยกไฟล์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> และสร้าง Route ประจำลีก (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/{id}/index.html</code>) ลดขนาด HTML เริ่มต้นลงกว่า 85%</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Edge CDN Distribution:</strong> กระจายไฟล์ผ่าน Fastly Edge CDN ของ GitHub Pages รองรับ HTTP/2 Multiplexing, การบีบอัด Brotli และส่งมอบข้อมูลด้วย TTFB ต่ำกว่า 50ms</span></li>
                     </ul>
                   </div>
                   <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
                     <span class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider block mb-1">[CLIENT_RUNTIME]</span>
-                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime & Layout Optimization</div>
+                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime & 30s Real-Time Relay</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Zero-Framework Overhead:</strong> พัฒนาด้วย Pure Vanilla ES6+ ไร้ Framework Overhead ขนาดใหญ่ (0kb React/Vue Runtime) เร่งค่า First Contentful Paint (FCP) และรักษาความลื่นไหล 60 FPS</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>State Preservation:</strong> ซิงก์สถานะเลือกลีก แท็บ และ Gameweek ผ่าน HTML5 History API (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">pushState</code> / <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">popstate</code>), URL Parameters และ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">localStorage</code> สมบูรณ์แบบ</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Tabular Numbers & Visibility API:</strong> ระบบนับถอยหลังระดับวินาทีใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">font-mono tabular-nums</code> ป้องกัน Layout Shift (CLS: 0.00) พร้อมหยุด Polling ผ่าน Page Visibility API เมื่อพักหน้าจอเพื่อประหยัดแบตเตอรี่</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>30s Cloudflare Edge Live Poll:</strong> ระหว่างมีแมตช์เตะ เบราว์เซอร์ดึงแต้มสดและโบนัสเรียลไทม์ผ่าน Cloudflare Worker (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">fpl-live-relay</code>) ทุก 30 วินาทีโดยไม่ต้องรอบิลด์ HTML ใหม่</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Lazy League Switch & Race Guard:</strong> โหลด JSON รายลีกแบบ On-Demand เมื่อสลับลีก พร้อมระบบป้องกัน Race Condition และซิงก์สถานะผ่าน HTML5 History API + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">localStorage</code></span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Zero-Framework 60 FPS & A11y:</strong> พัฒนาด้วย Vanilla ES6+ (0kb Framework) ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tabular-nums</code> (CLS: 0.00), Page Visibility API ประหยัดแบตเตอรี่ และรองรับ Keyboard Focus Accessibility</span></li>
                     </ul>
                   </div>
                 </div>
@@ -16340,7 +16349,7 @@ def main():
         "last_sync_iso": multi_data.get("last_sync_iso"),
         "sync_status": multi_data.get("sync_status"),
         "max_gw": multi_data.get("max_gw"),
-        "league_order": list(leagues_config.keys()),
+        "league_order": sorted(leagues_config.keys(), key=lambda k: int(k) if str(k).isdigit() else 999999999),
         "transfer_suggestions": multi_data.get("transfer_suggestions", {}),
         "next_deadline": multi_data.get("next_deadline"),
         "events_deadlines": multi_data.get("events_deadlines", []),
