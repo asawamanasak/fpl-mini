@@ -296,13 +296,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <meta property="og:type" content="website">
   <meta property="og:title" content="FPLSaWaDiKa - มินิลีกแฟนตาซี">
   <meta property="og:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPLSaWaDiKa มินิลีกแฟนตาซี">
-  <meta property="og:image" content="https://asawamanasak.github.io/fpl-mini/images/icons/og-image.png">
+  <meta property="og:image" content="https://www.fplsawadika.com/images/icons/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="FPLSaWaDiKa - มินิลีกแฟนตาซี">
   <meta name="twitter:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPLSaWaDiKa มินิลีกแฟนตาซี">
-  <meta name="twitter:image" content="https://asawamanasak.github.io/fpl-mini/images/icons/og-image.png">
+  <meta name="twitter:image" content="https://www.fplsawadika.com/images/icons/og-image.png">
   
   <script>
     (function() {
@@ -5358,11 +5358,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       }
 
       getPublicLeagueUrl() {
-        const host = (typeof window !== 'undefined' && window.location && window.location.hostname) ? window.location.hostname : '';
-        if (host && host.includes('fplsawadika.com')) {
-          return `https://www.fplsawadika.com/${this.activeLeagueId}`;
-        }
-        return `https://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`;
+        return `https://www.fplsawadika.com/${this.activeLeagueId}`;
       }
 
       getLeagueDataUrl(lid) {
