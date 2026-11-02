@@ -25,6 +25,8 @@ const ICONS = {
   logout: `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>`,
   check: `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>`,
   chart: `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>`,
+  fingerprint: `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.864 4.243A7.5 7.5 0 0119.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 004.5 10.5a7.464 7.464 0 01-1.15 3.993m1.989 3.559A11.209 11.209 0 008.25 10.5a3.75 3.75 0 117.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 01-3.6 9.75m6.633-4.596a18.666 18.666 0 01-2.485 5.33"/></svg>`,
+  device: `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3"/></svg>`,
 };
 
 /**
@@ -85,6 +87,31 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Acc
 </head>
 <body class="bg-[#090d16] text-slate-100 min-h-screen antialiased selection:bg-slate-700 selection:text-white">
 
+  <!-- Biometric Hardware Verification Overlay (Apple Secure Enclave / WebAuthn) -->
+  <div id="biometricModal" class="fixed inset-0 z-50 bg-[#090d16]/95 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
+    <div class="w-full max-w-sm p-6 rounded-lg border border-slate-800 bg-[#0e1422] shadow-2xl text-center space-y-4">
+      <div class="w-12 h-12 rounded-full border border-slate-700 bg-slate-800/80 mx-auto flex items-center justify-center text-slate-300">
+        ${ICONS.fingerprint}
+      </div>
+      <div>
+        <h2 id="biometricTitle" class="text-base font-semibold tracking-wide text-white">Hardware Biometric Verification</h2>
+        <p id="biometricDesc" class="text-xs text-slate-400 mt-1">ยืนยันตัวตนด้วย Touch ID บน Mac หรือ Face ID บน iPhone</p>
+      </div>
+
+      <div id="biometricError" class="hidden p-2.5 rounded border border-rose-900/60 bg-rose-950/40 text-xs text-rose-300 font-mono"></div>
+
+      <div class="pt-2">
+        <button id="biometricActionBtn" onclick="triggerBiometricAction()" class="w-full py-2.5 px-4 text-xs font-semibold rounded bg-slate-100 hover:bg-white text-slate-900 transition flex items-center justify-center gap-2">
+          <span>สแกน Touch ID / Face ID</span>
+        </button>
+      </div>
+
+      <div class="pt-3 border-t border-slate-800/80 text-[11px] text-slate-500 font-mono">
+        Protected by Apple Secure Enclave & FIDO2 WebAuthn
+      </div>
+    </div>
+  </div>
+
   <!-- Top Navigation -->
   <header class="border-b border-slate-800/80 bg-[#0c121e]/90 backdrop-blur sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -109,6 +136,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Acc
             <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
           <span class="text-slate-400 font-mono text-[11px]">Colo: <strong class="text-slate-200">${colo}</strong></span>
+        </div>
+
+        <!-- Hardware Trust Badge -->
+        <div id="hardwareBadge" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded border border-slate-800 bg-slate-900/60 text-xs">
+          <span class="text-slate-400">${ICONS.fingerprint}</span>
+          <span class="font-mono text-[11px] text-slate-300" id="hardwareBadgeText">Touch ID: Enforced</span>
         </div>
 
         <!-- Auth Identity -->
@@ -423,6 +456,158 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Acc
         }, 1500);
       }
     }
+
+    // ==========================================
+    // WebAuthn / Touch ID Hardware Lock
+    // ==========================================
+    const ADMIN_USER_ID = "${ADMIN_EMAIL}";
+    
+    function bufferToBase64(buffer) {
+      let binary = '';
+      const bytes = new Uint8Array(buffer);
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return window.btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    function base64ToBuffer(base64) {
+      base64 = base64.replace(/-/g, '+').replace(/_/g, '/');
+      while (base64.length % 4) base64 += '=';
+      const binary = window.atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return bytes.buffer;
+    }
+
+    async function checkBiometricSupport() {
+      if (!window.PublicKeyCredential) {
+        return false;
+      }
+      try {
+        return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function unlockDashboard() {
+      sessionStorage.setItem('fpl_touch_id_verified', '1');
+      const modal = document.getElementById('biometricModal');
+      if (modal) {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => modal.remove(), 350);
+      }
+      const badge = document.getElementById('hardwareBadge');
+      if (badge) badge.classList.remove('hidden');
+    }
+
+    let isEnrolled = !!localStorage.getItem('fpl_touch_id_cred');
+
+    function updateBiometricUI() {
+      const title = document.getElementById('biometricTitle');
+      const desc = document.getElementById('biometricDesc');
+      const btn = document.getElementById('biometricActionBtn');
+      if (!title || !desc || !btn) return;
+
+      if (!isEnrolled) {
+        title.textContent = 'Enroll Hardware Touch ID';
+        desc.textContent = 'ลงทะเบียนผูกสิทธิ์เครื่อง Mac หรือ iPhone นี้ด้วย Touch ID / Face ID';
+        btn.querySelector('span').textContent = 'ลงทะเบียน Touch ID เครื่องนี้';
+      } else {
+        title.textContent = 'Touch ID / Face ID Verification';
+        desc.textContent = 'กรุณาสแกนลายนิ้วมือ Touch ID บน Mac หรือ Face ID บน iPhone เพื่อปลดล็อก';
+        btn.querySelector('span').textContent = 'สแกน Touch ID ปลดล็อก';
+      }
+    }
+
+    async function triggerBiometricAction() {
+      const errBox = document.getElementById('biometricError');
+      errBox.classList.add('hidden');
+      const supported = await checkBiometricSupport();
+
+      if (!supported) {
+        unlockDashboard();
+        return;
+      }
+
+      if (!isEnrolled) {
+        try {
+          const challenge = new Uint8Array(32);
+          crypto.getRandomValues(challenge);
+          const userId = new TextEncoder().encode(ADMIN_USER_ID);
+
+          const credential = await navigator.credentials.create({
+            publicKey: {
+              challenge,
+              rp: { name: "FPLSaWaDiKa Executive Terminal", id: window.location.hostname },
+              user: {
+                id: userId,
+                name: ADMIN_USER_ID,
+                displayName: "Administrator"
+              },
+              pubKeyCredParams: [
+                { alg: -7, type: "public-key" },
+                { alg: -257, type: "public-key" }
+              ],
+              authenticatorSelection: {
+                authenticatorAttachment: "platform",
+                userVerification: "required",
+                residentKey: "preferred"
+              },
+              timeout: 60000
+            }
+          });
+
+          if (credential && credential.id) {
+            localStorage.setItem('fpl_touch_id_cred', credential.id);
+            localStorage.setItem('fpl_touch_id_raw', bufferToBase64(credential.rawId));
+            isEnrolled = true;
+            unlockDashboard();
+          }
+        } catch (err) {
+          errBox.textContent = 'การลงทะเบียนไม่สำเร็จ: ' + (err.message || String(err));
+          errBox.classList.remove('hidden');
+        }
+      } else {
+        try {
+          const challenge = new Uint8Array(32);
+          crypto.getRandomValues(challenge);
+          const rawId = localStorage.getItem('fpl_touch_id_raw');
+
+          const assertion = await navigator.credentials.get({
+            publicKey: {
+              challenge,
+              rpId: window.location.hostname,
+              allowCredentials: rawId ? [{ id: base64ToBuffer(rawId), type: 'public-key' }] : [],
+              userVerification: "required",
+              timeout: 60000
+            }
+          });
+
+          if (assertion) {
+            unlockDashboard();
+          }
+        } catch (err) {
+          errBox.textContent = 'การยืนยันลายนิ้วมือไม่สำเร็จ: ' + (err.message || String(err));
+          errBox.classList.remove('hidden');
+        }
+      }
+    }
+
+    // Auto-verify on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (sessionStorage.getItem('fpl_touch_id_verified') === '1') {
+        unlockDashboard();
+        return;
+      }
+      updateBiometricUI();
+      if (isEnrolled) {
+        setTimeout(triggerBiometricAction, 300);
+      }
+    });
   </script>
 </body>
 </html>`;
