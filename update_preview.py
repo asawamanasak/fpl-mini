@@ -4331,17 +4331,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         const isMatchdayLive = (isStarted && !isFinished) || isCurrentEvLive;
 
-        // If live matches are underway, show real-time second-by-second Cloudflare Edge countdown
+        // If the deadline has passed and live matches are underway, hide the deadline countdown
         if (isMatchdayLive) {
-          if (this._isFetchingLive) {
-            wrapEl.innerText = isEn ? '(⚡ LIVE EDGE: SYNCING...)' : '(⚡ LIVE EDGE: กำลังซิงก์คะแนนสด...)';
-          } else {
-            const nextPoll = this._nextLivePollAt || (Date.now() + 15000);
-            const secLeft = Math.max(1, Math.ceil((nextPoll - Date.now()) / 1000));
-            wrapEl.innerText = isEn
-              ? `(⚡ LIVE EDGE • SYNC IN ${secLeft}S)`
-              : `(⚡ LIVE EDGE • อัปเดตใน ${secLeft} วิ)`;
-          }
+          wrapEl.innerText = '';
           return;
         }
 
@@ -4511,8 +4503,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           const lastSyncIcon = document.getElementById('header-last-sync-icon');
           if (lastSyncIcon) {
             const isEn = (this.currentLang === 'en');
-            const statusText = isEn ? 'Cloudflare Edge Live Sync Online' : 'เชื่อมต่อ Cloudflare Edge Live Sync ปกติ';
-            lastSyncIcon.setAttribute('title', `${statusText} (${liveSyncStr} : ${dSec}s)`);
+            const statusText = isEn ? 'Auto-Sync Online' : 'ระบบเชื่อมต่อ Auto-Sync ปกติ';
+            lastSyncIcon.setAttribute('title', `${statusText} (${liveSyncStr})`);
           }
 
           if (changed || force) {
@@ -4531,8 +4523,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             const isEn = (this.currentLang === 'en');
             this.showCopiedToast(
               isEn
-                ? `⚡ Live scores synced via Cloudflare Edge (GW ${maxGW} • ${dHour}:${dMin}:${dSec})`
-                : `⚡ อัปเดตคะแนนสดผ่าน Cloudflare Edge สำเร็จ (GW ${maxGW} • ${dHour}:${dMin}:${dSec} น.)`
+                ? `Live scores updated (${dHour}:${dMin}:${dSec})`
+                : `อัปเดตคะแนนสดเรียบร้อย (${dHour}:${dMin}:${dSec} น.)`
             );
           }
         } catch (err) {
