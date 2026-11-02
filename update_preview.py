@@ -3,10 +3,10 @@
 """
 Generate standalone preview.html, index.html, 404.html, 40700/index.html, 675290/index.html, 38491/index.html, and 1101958/index.html
 Supporting clean short user URLs:
-- https://asawamanasak.github.io/fpl-mini/40700
-- https://asawamanasak.github.io/fpl-mini/675290
-- https://asawamanasak.github.io/fpl-mini/38491
-- https://asawamanasak.github.io/fpl-mini/1101958
+- https://www.fplsawadika.com/40700
+- https://www.fplsawadika.com/675290
+- https://www.fplsawadika.com/38491
+- https://www.fplsawadika.com/1101958
 
 Build Version: 2026.08.31.01
 """
@@ -18,7 +18,7 @@ from parse_bramann_games import parse_bramann_prediction_file, parse_bramann_cha
 
 def get_architecture_diagram_html(lang='th', asset_prefix='./'):
     is_th = lang == 'th'
-    arch_title = "สถาปัตยกรรมระบบเบื้องหลังและเวิร์กโฟลว์การประมวลผลข้อมูล FPL miniRig" if is_th else "FPL miniRig System Architecture & Pipeline Workflow"
+    arch_title = "สถาปัตยกรรมระบบเบื้องหลังและเวิร์กโฟลว์การประมวลผลข้อมูล FPLSaWaDiKa" if is_th else "FPLSaWaDiKa System Architecture & Pipeline Workflow"
     arch_desc = "ไดอะแกรมแสดงโฟลว์การทำงานแบบ Dual-Layer Serverless Jamstack" if is_th else "Architecture diagram showing Dual-Layer Jamstack serverless pipeline"
     fullscreen_label = "เปิดดูเต็มจอ ↗" if is_th else "Open Fullscreen ↗"
     stack_expand_label = "คลิกเพื่อเปิดดูรูปขนาดเต็ม ↗" if is_th else "Click to expand high-res diagram ↗"
@@ -179,9 +179,9 @@ def get_architecture_diagram_html(lang='th', asset_prefix='./'):
             <div class="w-full overflow-hidden rounded-lg border border-slate-200/60 dark:border-slate-800/80 bg-slate-100/50 dark:bg-slate-950/60 p-1 sm:p-2">
               <a href="{asset_prefix}docs/tech-stack-diagram.html" target="_blank" rel="noopener noreferrer" class="block group relative cursor-zoom-in" title="{stack_expand_label}">
                 <!-- Light theme image -->
-                <img src="{asset_prefix}images/tech-stack-diagram.png" alt="FPL miniRig Tech Stack Diagram" class="w-full h-auto rounded block dark:hidden shadow-sm transition-transform duration-200 group-hover:scale-[1.005]" loading="lazy">
+                <img src="{asset_prefix}images/tech-stack-diagram.png" alt="FPLSaWaDiKa Tech Stack Diagram" class="w-full h-auto rounded block dark:hidden shadow-sm transition-transform duration-200 group-hover:scale-[1.005]" loading="lazy">
                 <!-- Dark theme image -->
-                <img src="{asset_prefix}images/tech-stack-diagram-dark.png" alt="FPL miniRig Tech Stack Diagram" class="w-full h-auto rounded hidden dark:block shadow-sm transition-transform duration-200 group-hover:scale-[1.005]" loading="lazy">
+                <img src="{asset_prefix}images/tech-stack-diagram-dark.png" alt="FPLSaWaDiKa Tech Stack Diagram" class="w-full h-auto rounded hidden dark:block shadow-sm transition-transform duration-200 group-hover:scale-[1.005]" loading="lazy">
                 <div class="absolute bottom-2.5 right-2.5 px-2 py-1 rounded bg-slate-900/80 text-white text-[9px] font-mono opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 pointer-events-none shadow">
                   <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
                   <span>{stack_expand_label}</span>
@@ -275,12 +275,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>FPL miniRig - มินิลีกแฟนตาซี</title>
-  <meta name="description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPL miniRig มินิลีกแฟนตาซี">
+  <title>FPLSaWaDiKa - มินิลีกแฟนตาซี</title>
+  <meta name="description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPLSaWaDiKa มินิลีกแฟนตาซี">
   <meta name="theme-color" content="#0f172a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="FPL miniRig">
+  <meta name="apple-mobile-web-app-title" content="FPLSaWaDiKa">
 
   <!-- Favicons & App Shortcut Icons (Chrome / Safari / iOS / Android) -->
   <link rel="shortcut icon" href="__ASSET_PREFIX__favicon.ico?v=2">
@@ -294,14 +294,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
   <!-- Open Graph / Social Media Share Thumbnail -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="FPL miniRig - มินิลีกแฟนตาซี">
-  <meta property="og:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPL miniRig มินิลีกแฟนตาซี">
+  <meta property="og:title" content="FPLSaWaDiKa - มินิลีกแฟนตาซี">
+  <meta property="og:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPLSaWaDiKa มินิลีกแฟนตาซี">
   <meta property="og:image" content="https://asawamanasak.github.io/fpl-mini/images/icons/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="FPL miniRig - มินิลีกแฟนตาซี">
-  <meta name="twitter:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPL miniRig มินิลีกแฟนตาซี">
+  <meta name="twitter:title" content="FPLSaWaDiKa - มินิลีกแฟนตาซี">
+  <meta name="twitter:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPLSaWaDiKa มินิลีกแฟนตาซี">
   <meta name="twitter:image" content="https://asawamanasak.github.io/fpl-mini/images/icons/og-image.png">
   
   <script>
@@ -5357,6 +5357,14 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         }
       }
 
+      getPublicLeagueUrl() {
+        const host = (typeof window !== 'undefined' && window.location && window.location.hostname) ? window.location.hostname : '';
+        if (host && host.includes('fplsawadika.com')) {
+          return `https://www.fplsawadika.com/${this.activeLeagueId}`;
+        }
+        return `https://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`;
+      }
+
       getLeagueDataUrl(lid) {
         const lidStr = String(lid);
         if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
@@ -5553,7 +5561,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         if (nameEl) nameEl.innerText = this.data.name;
         if (typeof document !== 'undefined' && this.data && this.data.name) {
-          document.title = `FPL miniRig — ${this.data.name}`;
+          document.title = `FPLSaWaDiKa — ${this.data.name}`;
         }
         if (idBadge) idBadge.innerText = `LEAGUE ${this.activeLeagueId}`;
         if (seasonEl) seasonEl.innerText = isEn ? `Season ${this.data.season || '2026/27'}` : `ฤดูกาล ${this.data.season || '2026/27'}`;
@@ -5962,7 +5970,7 @@ selectShi62GW(gwName) {
         });
 
         lines.push(`---------------------------------`);
-        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`);
+        lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
         const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผล (ทายผล) ${gw.name} สำหรับ LINE เรียบร้อย`);
@@ -6110,7 +6118,7 @@ selectShi62GW(gwName) {
         }
 
         lines.push(`---------------------------------`);
-        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`);
+        lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
         const onCopied = () => this.showCopiedToast('คัดลอกสรุปรางวัลสำหรับ LINE เรียบร้อย');
@@ -6238,7 +6246,7 @@ selectShi62GW(gwName) {
         });
 
         lines.push(`---------------------------------`);
-        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`);
+        lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
         const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผล (ทายผล) ${gw.name} สำหรับ LINE เรียบร้อย`);
@@ -6288,7 +6296,7 @@ selectShi62GW(gwName) {
         });
 
         lines.push(`---------------------------------`);
-        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`);
+        lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
         const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผล (ท้าชน) ${gw.name} สำหรับ LINE เรียบร้อย`);
@@ -6432,7 +6440,7 @@ selectShi62GW(gwName) {
         lines.push(`• Prize 1 (หลังจบ GW 19): 9 อันดับ (1, 2, 3, 5, 7, 9, 11, 13, 15) คนละ 500 บ. (รวม 4,500 บ.)`);
         lines.push(`• Prize 2 (หลังจบ GW 38): 9 อันดับขั้นบันได (รวม 5,000 บ.)`);
         lines.push(`---------------------------------`);
-        lines.push(`🌐 https://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`);
+        lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
         const onCopied = () => this.showCopiedToast('คัดลอกสรุปเงินรางวัลสำหรับ LINE เรียบร้อย');
@@ -14989,7 +14997,7 @@ selectShi62GW(gwName) {
               text += `${i + 1}. ${t.team_name}${funTag}: ${t.net_points} pts${hitsPart}${chipPart}\n`;
             });
 
-            text += `\n🌐 Check Live Results & Full Standings:\nhttps://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`;
+            text += `\n🌐 Check Live Results & Full Standings:\n${this.getPublicLeagueUrl()}`;
 
           } else {
             text += `${this.data.name} (League ${this.activeLeagueId})\n`;
@@ -15102,7 +15110,7 @@ selectShi62GW(gwName) {
               text += `${i + 1}. ${t.team_name}${funTag}: ${t.net_points} pts${hitsPart}${chipPart}\n`;
             });
 
-            text += `\n🌐 ตรวจสอบผลสด & อันดับตารางเต็มได้ที่:\nhttps://asawamanasak.github.io/fpl-mini/${this.activeLeagueId}`;
+            text += `\n🌐 ตรวจสอบผลสด & อันดับตารางเต็มได้ที่:\n${this.getPublicLeagueUrl()}`;
           }
 
           const modal = document.getElementById('text-summary-modal');

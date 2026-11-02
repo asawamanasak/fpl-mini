@@ -1,7 +1,7 @@
 {
-  "name": "FPL miniRig - มินิลีกแฟนตาซี",
-  "short_name": "FPL miniRig",
-  "description": "ระบบรายงานผลคะแนนสด ตารางคะแนน และเงินรางวัล FPL miniRig มินิลีกแฟนตาซี",
+  "name": "FPLSaWaDiKa - มินิลีกแฟนตาซี",
+  "short_name": "FPLSaWaDiKa",
+  "description": "ระบบรายงานผลคะแนนสด ตารางคะแนน และเงินรางวัล FPLSaWaDiKa มินิลีกแฟนตาซี",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#0f172a",

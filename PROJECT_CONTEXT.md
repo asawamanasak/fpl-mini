@@ -1,4 +1,4 @@
-# FPL miniRig: Project Context & Architecture
+# FPLSaWaDiKa: Project Context & Architecture
 
 > **เอกสารสรุปบริบทโปรเจกต์ (Project Blueprint & Single Source of Context)**
 > บันทึกสถานะปัจจุบัน โครงสร้างระบบ สถาปัตยกรรม และประวัติการพัฒนาจากทุกแชท เพื่อให้ AI และผู้พัฒนาในทุก Session เข้าใจภาพรวมได้ทันที 100%
@@ -6,18 +6,18 @@
 ---
 
 ## 📌 1. ภาพรวมโปรเจกต์ (Project Overview)
-โปรเจกต์ **FPL miniRig** เป็นแพลตฟอร์ม **Fantasy Premier League (FPL) Mini-League Presentation & Analytics Dashboard** ที่ออกแบบมาเพื่อรองรับแฟนตาซีมินิลีกหลายลีกพร้อมกัน นำเสนอข้อมูลแบบ Real-time Live & Historical พร้อมระบบคำนวณเงินรางวัล, Hall of Fame, ผังผู้เล่น 11 ตัวจริง (Authentic Pitch), และระบบบทวิเคราะห์แชมป์ประจำสัปดาห์สไตล์ **"บอ.บู๋" (Borbou Commentary Engine)**
+โปรเจกต์ **FPLSaWaDiKa** เป็นแพลตฟอร์ม **Fantasy Premier League (FPL) Mini-League Presentation & Analytics Dashboard** ที่ออกแบบมาเพื่อรองรับแฟนตาซีมินิลีกหลายลีกพร้อมกัน นำเสนอข้อมูลแบบ Real-time Live & Historical พร้อมระบบคำนวณเงินรางวัล, Hall of Fame, ผังผู้เล่น 11 ตัวจริง (Authentic Pitch), และระบบบทวิเคราะห์แชมป์ประจำสัปดาห์สไตล์ **"บอ.บู๋" (Borbou Commentary Engine)**
 
-* **Production URL:** `https://asawamanasak.github.io/fpl-mini/`
+* **Production URL:** `https://www.fplsawadika.com/`
 * **Direct League URLs:**
-  * ลีก 40700 (เซียนอยู่รู หมูอยู่ตึก): `https://asawamanasak.github.io/fpl-mini/40700`
-  * ลีก 675290 (NudNee): `https://asawamanasak.github.io/fpl-mini/675290`
-  * ลีก 38491 (รอ แมน โอน): `https://asawamanasak.github.io/fpl-mini/38491`
-  * ลีก 1101958 (Barley's Official League): `https://asawamanasak.github.io/fpl-mini/1101958`
-  * ลีก 438691 (2 spade): `https://asawamanasak.github.io/fpl-mini/438691`
-  * ลีก 187827 (Shi62): `https://asawamanasak.github.io/fpl-mini/187827`
-  * ลีก 5349 (Bramann League): `https://asawamanasak.github.io/fpl-mini/5349`
-  * ลีก 567387 (Fantasy Nguan & friends cup): `https://asawamanasak.github.io/fpl-mini/567387`
+  * ลีก 5349 (Bramann League): `https://www.fplsawadika.com/5349`
+  * ลีก 38491 (รอ แมน โอน): `https://www.fplsawadika.com/38491`
+  * ลีก 40700 (เซียนอยู่รู หมูอยู่ตึก): `https://www.fplsawadika.com/40700`
+  * ลีก 187827 (Shi62): `https://www.fplsawadika.com/187827`
+  * ลีก 438691 (2 spade): `https://www.fplsawadika.com/438691`
+  * ลีก 567387 (Fantasy Nguan & friends cup): `https://www.fplsawadika.com/567387`
+  * ลีก 675290 (NudNee): `https://www.fplsawadika.com/675290`
+  * ลีก 1101958 (Barley's Official League): `https://www.fplsawadika.com/1101958`
 * **Repository:** `https://github.com/asawamanasak/fpl-mini`
 
 > [!IMPORTANT]
@@ -234,13 +234,13 @@ flowchart TD
   * **ทีมร่วมสนุก (1 ทีม):** GEMINI UNITED (ID: 306983)
   * **สมาชิกแข่งขัน (19 ทีม):** -Nk_KOP, Oöraora Grandé, van Xke, BMFC™, Putun KNVB, Micchester United, 4OUR, NUKE-UTD®, CasanoVej, Univerpool, Falco.245, Talidtidty, KwangSettha, HereAu, golden club, Pongacku, Dotman 2026, 67, Supalerk's Team
 * **สถานะกติกา & เงินรางวัล:** อยู่ระหว่างรอประกาศกติกาและโครงสร้างเงินรางวัลอย่างเป็นทางการ (Pending Rules & Prizes)
-* **Direct League URL:** `https://asawamanasak.github.io/fpl-mini/5349`
+* **Direct League URL:** `https://www.fplsawadika.com/5349`
 
 ### ลีก 8: 567387 - "Fantasy Nguan & friends cup"
 * **สมาชิก:** 12 ทีม
   * **สมาชิก:** GEMINI UNITED, Punizio, ATikom, LARPWAHAHA FC, bomb29599, Attack The Champion, Pokko Utd, The Red Company, FAKETHIS, Inwza007, and others
 * **สถานะกติกา & เงินรางวัล:** อยู่ระหว่างรอผู้ดูแลลีกประกาศกติกาและโครงสร้างเงินรางวัล (Pending Rules & Prizes)
-* **Direct League URL:** `https://asawamanasak.github.io/fpl-mini/567387`
+* **Direct League URL:** `https://www.fplsawadika.com/567387`
 
 ---
 

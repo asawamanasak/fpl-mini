@@ -1418,7 +1418,7 @@ def sync_once(args):
     if step_summary_path:
         try:
             status_badge = "✅ FINISHED" if gw_status_map.get(max_gw) else "🔴 LIVE"
-            summary_md = f"""## ⚽ FPL miniRig Auto Sync Summary
+            summary_md = f"""## ⚽ FPLSaWaDiKa Auto Sync Summary
 
 - **🕒 Last Sync:** {sync_time_str} (`{sync_iso_str}`)
 - **🏆 Active Gameweek:** **GW {max_gw}** ({status_badge})
@@ -1440,7 +1440,7 @@ def sync_once(args):
     return has_changed, active_in_play, max_gw
 
 def main():
-    parser = argparse.ArgumentParser(description="FPL miniRig Live Data Sync Engine")
+    parser = argparse.ArgumentParser(description="FPLSaWaDiKa Live Data Sync Engine")
     parser.add_argument('--force', action='store_true', help="Force full re-sync for all GWs (bypass cache)")
     parser.add_argument('--live-loop', action='store_true', help="Run continuous live polling daemon during matchday in-play window")
     parser.add_argument('--max-minutes', type=int, default=14, help="Max duration in minutes to keep daemon alive (default: 14)")

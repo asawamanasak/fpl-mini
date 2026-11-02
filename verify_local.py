@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FPL miniRig - Local System Health & Verification Suite
+FPLSaWaDiKa - Local System Health & Verification Suite
 Usage:
     python3 verify_local.py
 
@@ -28,7 +28,7 @@ def main():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     all_passed = True
 
-    print_header("FPL miniRig: Local System Verification Suite")
+    print_header("FPLSaWaDiKa: Local System Verification Suite")
 
     # 1. Config & Data JSON Validation
     print("Step 1: Validating JSON Data Integrity...")
