@@ -282,6 +282,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FPLSaWaDiKa">
 
+  <!-- Canonical URL & Search Engine Optimization -->
+  <link rel="canonical" href="__CANONICAL_URL__">
+  <meta name="robots" content="index, follow">
+
   <!-- Favicons & App Shortcut Icons (Chrome / Safari / iOS / Android) -->
   <link rel="shortcut icon" href="__ASSET_PREFIX__favicon.ico?v=2">
   <link rel="icon" type="image/x-icon" href="__ASSET_PREFIX__favicon.ico?v=2">
@@ -296,6 +300,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <meta property="og:type" content="website">
   <meta property="og:title" content="FPLSaWaDiKa - มินิลีกแฟนตาซี">
   <meta property="og:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPLSaWaDiKa มินิลีกแฟนตาซี">
+  <meta property="og:url" content="__CANONICAL_URL__">
   <meta property="og:image" content="https://www.fplsawadika.com/images/icons/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -303,6 +308,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <meta name="twitter:title" content="FPLSaWaDiKa - มินิลีกแฟนตาซี">
   <meta name="twitter:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPLSaWaDiKa มินิลีกแฟนตาซี">
   <meta name="twitter:image" content="https://www.fplsawadika.com/images/icons/og-image.png">
+
+  <!-- Structured Data (JSON-LD) for Google Search -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "FPLSaWaDiKa",
+    "alternateName": ["FPL SaWaDiKa", "มินิลีกแฟนตาซี FPLSaWaDiKa"],
+    "url": "https://www.fplsawadika.com/",
+    "description": "เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPLSaWaDiKa มินิลีกแฟนตาซี"
+  }
+  </script>
   
   <script>
     (function() {
@@ -16493,6 +16510,8 @@ selectShi62GW(gwName) {
     html = html.replace('__BRAMANN_CHALLENGE_DATA_JSON__', bramann_chal_json_str or 'null')
     html = html.replace('__DEFAULT_LID__', default_lid_code)
     html = html.replace('__ASSET_PREFIX__', asset_prefix)
+    canonical_url = f"https://www.fplsawadika.com/{default_league_id}/" if default_league_id else "https://www.fplsawadika.com/"
+    html = html.replace('__CANONICAL_URL__', canonical_url)
     html = html.replace('__ARCHITECTURE_DIAGRAM_TH__', get_architecture_diagram_html('th', asset_prefix))
     html = html.replace('__ARCHITECTURE_DIAGRAM_EN__', get_architecture_diagram_html('en', asset_prefix))
     return html
@@ -16638,7 +16657,38 @@ def main():
             except OSError:
                 pass
 
-    print("Successfully generated all HTML dashboard files on local!")
+    # 4. Generate SEO sitemap.xml and robots.txt
+    sitemap_lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        '  <url>',
+        '    <loc>https://www.fplsawadika.com/</loc>',
+        '    <changefreq>daily</changefreq>',
+        '    <priority>1.0</priority>',
+        '  </url>'
+    ]
+    for lid in sorted(active_lids, key=lambda k: int(k) if str(k).isdigit() else 999999999):
+        sitemap_lines.extend([
+            '  <url>',
+            f'    <loc>https://www.fplsawadika.com/{lid}/</loc>',
+            '    <changefreq>daily</changefreq>',
+            '    <priority>0.8</priority>',
+            '  </url>'
+        ])
+    sitemap_lines.append('</urlset>\n')
+
+    with open(os.path.join(base_dir, 'sitemap.xml'), 'w', encoding='utf-8') as f:
+        f.write('\n'.join(sitemap_lines))
+
+    robots_content = (
+        "User-agent: *\n"
+        "Allow: /\n\n"
+        "Sitemap: https://www.fplsawadika.com/sitemap.xml\n"
+    )
+    with open(os.path.join(base_dir, 'robots.txt'), 'w', encoding='utf-8') as f:
+        f.write(robots_content)
+
+    print("Successfully generated all HTML dashboard files, sitemap.xml, and robots.txt on local!")
 
 if __name__ == '__main__':
     main()

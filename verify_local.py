@@ -72,8 +72,8 @@ def main():
         print(res_gen.stderr)
         all_passed = False
 
-    # 4. Check All HTML Files Exist
-    print("\nStep 4: Checking Generated HTML Entry Points...")
+    # 4. Check All HTML Files & SEO Assets Exist
+    print("\nStep 4: Checking Generated HTML Entry Points & SEO Assets...")
     configured_league_pages = [f"{lid}/index.html" for lid in cfg.keys()]
     required_files = [
         'index.html',
@@ -87,6 +87,15 @@ def main():
             print(f"  ✅ {rf} exists ({os.path.getsize(fpath):,} bytes)")
         else:
             print(f"  ❌ {rf} missing or too small!")
+            all_passed = False
+
+    seo_files = ['robots.txt', 'sitemap.xml']
+    for sf in seo_files:
+        fpath = os.path.join(base_dir, sf)
+        if os.path.exists(fpath) and os.path.getsize(fpath) > 50:
+            print(f"  ✅ SEO Asset {sf} exists ({os.path.getsize(fpath):,} bytes)")
+        else:
+            print(f"  ❌ SEO Asset {sf} missing or invalid!")
             all_passed = False
 
     # 5. Front-End Headless Browser Check
