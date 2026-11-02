@@ -3,7 +3,13 @@ main = "fpl-live-worker.js"
 compatibility_date = "2026-10-01"
 workers_dev = true
 
-# เมื่อต้องการผูก Subdomain ภายใต้ fplsawadika.com ให้เปิดคอมเมนต์ด้านล่างนี้
-# routes = [
-#   { pattern = "api.fplsawadika.com", custom_domain = true }
-# ]
+# Cloudflare KV Storage Binding
+[[kv_namespaces]]
+binding = "ANALYTICS_KV"
+id = "a582535614b9489ebd626534ba6c0da1"
+
+# Cloudflare D1 Database Binding
+[[d1_databases]]
+binding = "DB"
+database_name = "fpl-database"
+database_id = "b37459ac-6632-4db5-8afa-822b76b26184"

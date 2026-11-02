@@ -6,13 +6,25 @@
  *   GET /fixtures?event={gw}      -> Live Premier League match scores, minutes & BPS leaders
  *   GET /health                   -> Edge health check & colocation status
  *
+ * Executive Dashboard:
+ *   admin.fplsawadika.com         -> Executive Summary Report & Command Terminal
+ *
  * Features:
  *   - Parallel Edge Fetch: Fetches FPL /event/{gw}/live/ and /fixtures/?event={gw} simultaneously
  *   - Smart Edge Cache (caches.default): 15s TTL during live matches (protects 100k/day free quota)
  *   - Force Refresh Support (?force=1): 5s burst protection for manual user refreshes
  *   - Real-Time Provisional Bonus (BPS): Computes exact +3 / +2 / +1 bonus per fixture once >= 60 mins
  *   - Slim Mode (?slim=1): Strips unused FPL strings/floats, reducing payload from ~475KB to ~55KB
+ *   - Executive Admin Terminal: Protected by Cloudflare Zero Trust & Session Key
  */
+
+import {
+  isRequestAuthenticated,
+  renderDashboardHtml,
+  renderLoginHtml,
+  DEFAULT_ADMIN_KEY,
+  ADMIN_EMAIL,
+} from './admin-dashboard.js';
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -201,6 +213,86 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, '') || '/';
     const colo = (request.cf && request.cf.colo) ? request.cf.colo : 'EDGE';
+    const isAdminDomain = url.hostname === 'admin.fplsawadika.com' || path.startsWith('/admin');
+
+    // ==========================================
+    // Executive Admin Terminal Routing
+    // ==========================================
+    if (isAdminDomain) {
+      // 1. Logout Handler
+      if (path === '/logout' || path === '/admin/logout') {
+        return new Response(null, {
+          status: 302,
+          headers: {
+            'Location': isAdminDomain && !path.startsWith('/admin') ? '/' : '/admin',
+            'Set-Cookie': 'fpl_admin_auth=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Strict',
+          },
+        });
+      }
+
+      // 2. Login Form Submission Handler
+      if (request.method === 'POST' && (path === '/login' || path === '/admin/login')) {
+        let passkey = '';
+        try {
+          const contentType = request.headers.get('content-type') || '';
+          if (contentType.includes('application/json')) {
+            const body = await request.json();
+            passkey = (body && body.passkey) ? body.passkey.trim() : '';
+          } else {
+            const formData = await request.formData();
+            passkey = (formData.get('passkey') || '').trim();
+          }
+        } catch (_) {}
+
+        const secretKey = (env && env.ADMIN_SECRET_KEY) ? env.ADMIN_SECRET_KEY : DEFAULT_ADMIN_KEY;
+        if (passkey && passkey === secretKey) {
+          const target = isAdminDomain && !path.startsWith('/admin') ? '/' : '/admin';
+          return new Response(null, {
+            status: 302,
+            headers: {
+              'Location': target,
+              'Set-Cookie': `fpl_admin_auth=${secretKey}; Path=/; Max-Age=2592000; HttpOnly; Secure; SameSite=Strict`,
+            },
+          });
+        }
+
+        return new Response(renderLoginHtml('รหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง'), {
+          status: 401,
+          headers: { 'Content-Type': 'text/html; charset=utf-8' },
+        });
+      }
+
+      // 3. Authenticate Session (Cloudflare Zero Trust or Cookie)
+      const auth = isRequestAuthenticated(request, env);
+      if (!auth.authenticated) {
+        return new Response(renderLoginHtml(), {
+          status: 401,
+          headers: { 'Content-Type': 'text/html; charset=utf-8' },
+        });
+      }
+
+      // 4. Authenticated API Actions
+      if (path === '/api/admin/flush-cache') {
+        try {
+          const cache = caches.default;
+          const testKey = new Request('https://api.fplsawadika.com/live?event=9&slim=1');
+          await cache.delete(testKey);
+        } catch (_) {}
+        return new Response(
+          JSON.stringify({ success: true, message: 'Edge cache flushed successfully' }),
+          { status: 200, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' } }
+        );
+      }
+
+      // 5. Render Executive Summary Dashboard
+      return new Response(renderDashboardHtml(colo, auth.provider), {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Cache-Control': 'no-store, private',
+        },
+      });
+    }
 
     // 1. Health Check Endpoint
     if (path === '/health') {

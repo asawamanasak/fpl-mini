@@ -4453,12 +4453,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const endpoints = this._preferredWorkerEndpoint
           ? [
               `${this._preferredWorkerEndpoint}?event=${maxGW}&slim=1${forceQuery}`,
-              `https://fpl-live-relay.asawamanasak.workers.dev/?event=${maxGW}&slim=1${forceQuery}`,
-              `https://api.fplsawadika.com/live?event=${maxGW}&slim=1${forceQuery}`
+              `https://api.fplsawadika.com/live?event=${maxGW}&slim=1${forceQuery}`,
+              `https://fpl-live-relay.asawamanasak.workers.dev/?event=${maxGW}&slim=1${forceQuery}`
             ]
           : [
-              `https://fpl-live-relay.asawamanasak.workers.dev/?event=${maxGW}&slim=1${forceQuery}`,
-              `https://api.fplsawadika.com/live?event=${maxGW}&slim=1${forceQuery}`
+              `https://api.fplsawadika.com/live?event=${maxGW}&slim=1${forceQuery}`,
+              `https://fpl-live-relay.asawamanasak.workers.dev/?event=${maxGW}&slim=1${forceQuery}`
             ];
 
         try {
