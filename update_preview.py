@@ -1351,8 +1351,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <span id="header-season">ฤดูกาล 2026/27</span>
       <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
       
-      <!-- Auto-Sync Connection Status Indicator (Green/Red Heartbeat) -->
-      <span id="header-last-sync-icon" class="inline-flex items-center cursor-help py-0.5" title="ระบบเชื่อมต่อ Auto-Sync ปกติ (__LAST_SYNC__)">
+      <!-- Auto-Sync Connection Status Indicator (Green/Red Heartbeat - Click to Force Live Sync) -->
+      <span id="header-last-sync-icon" onclick="window.app && window.app.fetchLivePoints(true)" class="inline-flex items-center cursor-pointer py-0.5 active:scale-90 transition-transform" title="ระบบเชื่อมต่อ Auto-Sync ปกติ (__LAST_SYNC__) • คลิกเพื่อดึงคะแนนสดทันที">
         <span class="relative flex items-center justify-center w-2.5 h-2.5">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60"></span>
           <span class="relative inline-flex rounded-full w-2 h-2 bg-emerald-500 heartbeat-green shadow-xs"></span>
@@ -2291,9 +2291,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             </div>
             <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
               <span class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider block mb-1">[CLIENT_RUNTIME]</span>
-              <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime & 30s Real-Time Relay</div>
+              <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime & 15s Real-Time Relay</div>
               <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>30s Cloudflare Edge Live Poll:</strong> ระหว่างมีแมตช์เตะ เบราว์เซอร์ดึงแต้มสดและโบนัสเรียลไทม์ผ่าน Cloudflare Worker (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">fpl-live-relay</code>) ทุก 30 วินาทีโดยไม่ต้องรอบิลด์ HTML ใหม่</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>15s Cloudflare Edge Live Poll:</strong> ระหว่างมีแมตช์เตะ เบราว์เซอร์ดึงแต้มสดและโบนัส BPS เรียลไทม์ผ่าน Cloudflare Worker (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">fpl-live-relay</code> / <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">api.fplsawadika.com</code>) ทุก 15 วินาทีโดยไม่ต้องรอบิลด์ HTML ใหม่</span></li>
                 <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Lazy League Switch & Race Guard:</strong> โหลด JSON รายลีกแบบ On-Demand เมื่อสลับลีก พร้อมระบบป้องกัน Race Condition และซิงก์สถานะผ่าน HTML5 History API + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">localStorage</code></span></li>
                 <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Zero-Framework 60 FPS & A11y:</strong> พัฒนาด้วย Vanilla ES6+ (0kb Framework) ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tabular-nums</code> (CLS: 0.00), Page Visibility API ประหยัดแบตเตอรี่ และรองรับ Keyboard Focus Accessibility</span></li>
               </ul>
@@ -4331,9 +4331,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         const isMatchdayLive = (isStarted && !isFinished) || isCurrentEvLive;
 
-        // If the deadline has passed and live matches are underway, hide the deadline countdown
+        // If live matches are underway, show real-time second-by-second Cloudflare Edge countdown
         if (isMatchdayLive) {
-          wrapEl.innerText = '';
+          if (this._isFetchingLive) {
+            wrapEl.innerText = isEn ? '(⚡ LIVE EDGE: SYNCING...)' : '(⚡ LIVE EDGE: กำลังซิงก์คะแนนสด...)';
+          } else {
+            const nextPoll = this._nextLivePollAt || (Date.now() + 15000);
+            const secLeft = Math.max(1, Math.ceil((nextPoll - Date.now()) / 1000));
+            wrapEl.innerText = isEn
+              ? `(⚡ LIVE EDGE • SYNC IN ${secLeft}S)`
+              : `(⚡ LIVE EDGE • อัปเดตใน ${secLeft} วิ)`;
+          }
           return;
         }
 
@@ -4384,6 +4392,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       initLivePolling() {
         if (typeof window === 'undefined' || typeof fetch === 'undefined') return;
 
+        const pollIntervalMs = 15000; // 15-second real-time Cloudflare Edge polling
         const checkAndPoll = () => {
           if (!this.isLiveWindowActive()) {
             if (this.livePollInterval) {
@@ -4392,8 +4401,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             }
             return;
           }
+          this._nextLivePollAt = Date.now() + pollIntervalMs;
           if (!document.hidden) {
-            this.fetchLivePoints();
+            this.fetchLivePoints(false);
           }
         };
 
@@ -4409,7 +4419,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           checkAndPoll();
 
           if (this.livePollInterval) clearInterval(this.livePollInterval);
-          this.livePollInterval = setInterval(checkAndPoll, 30000);
+          this.livePollInterval = setInterval(checkAndPoll, pollIntervalMs);
         }
       }
 
@@ -4419,19 +4429,62 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         return Boolean(gwData && (!gwData.is_finished || !gwData.data_checked));
       }
 
-      async fetchLivePoints() {
+      async fetchLivePoints(force = false) {
+        if (this._isFetchingLive) return;
         const maxGW = Number(this.multiData && this.multiData.max_gw) || 8;
         const gwKey = String(maxGW);
         const gwData = this.data && this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
-        if (!gwData || (gwData.is_finished && gwData.data_checked)) return;
+        if (!gwData) return;
+        if (!force && gwData.is_finished && gwData.data_checked) return;
 
-        const relayUrl = `https://fpl-live-relay.asawamanasak.workers.dev/?event=${maxGW}`;
+        this._isFetchingLive = true;
+        this._nextLivePollAt = Date.now() + 15000;
+
+        const forceQuery = force ? '&force=1' : '';
+        const endpoints = this._preferredWorkerEndpoint
+          ? [
+              `${this._preferredWorkerEndpoint}?event=${maxGW}&slim=1${forceQuery}`,
+              `https://fpl-live-relay.asawamanasak.workers.dev/?event=${maxGW}&slim=1${forceQuery}`,
+              `https://api.fplsawadika.com/live?event=${maxGW}&slim=1${forceQuery}`
+            ]
+          : [
+              `https://fpl-live-relay.asawamanasak.workers.dev/?event=${maxGW}&slim=1${forceQuery}`,
+              `https://api.fplsawadika.com/live?event=${maxGW}&slim=1${forceQuery}`
+            ];
 
         try {
-          const resp = await fetch(relayUrl, { cache: 'no-store' });
-          if (!resp.ok) return;
-          const liveJson = await resp.json();
-          if (!liveJson || !Array.isArray(liveJson.elements)) return;
+          let liveJson = null;
+          for (const url of endpoints) {
+            try {
+              const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+              const timer = controller ? setTimeout(() => controller.abort(), 6000) : null;
+              const resp = await fetch(url, {
+                cache: 'no-store',
+                signal: controller ? controller.signal : undefined
+              });
+              if (timer) clearTimeout(timer);
+              if (resp && resp.ok) {
+                const parsed = await resp.json();
+                if (parsed && Array.isArray(parsed.elements)) {
+                  liveJson = parsed;
+                  this._preferredWorkerEndpoint = url.split('?')[0];
+                  break;
+                }
+              }
+            } catch (_) {}
+          }
+
+          if (!liveJson || !Array.isArray(liveJson.elements)) {
+            if (force && typeof this.showCopiedToast === 'function') {
+              const isEn = (this.currentLang === 'en');
+              this.showCopiedToast(isEn ? 'Unable to reach Cloudflare Live Edge' : 'ไม่สามารถเชื่อมต่อ Cloudflare Live Edge ได้ในขณะนี้');
+            }
+            return;
+          }
+
+          // Cache latest live payload in memory so switching leagues applies live scores in 0ms
+          this.lastLiveJson = liveJson;
+          this.lastLiveGw = maxGW;
 
           const changed = this.applyLiveElements(liveJson, maxGW);
 
@@ -4458,11 +4511,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           const lastSyncIcon = document.getElementById('header-last-sync-icon');
           if (lastSyncIcon) {
             const isEn = (this.currentLang === 'en');
-            const statusText = isEn ? 'Auto-Sync Online' : 'ระบบเชื่อมต่อ Auto-Sync ปกติ';
-            lastSyncIcon.setAttribute('title', `${statusText} (${liveSyncStr})`);
+            const statusText = isEn ? 'Cloudflare Edge Live Sync Online' : 'เชื่อมต่อ Cloudflare Edge Live Sync ปกติ';
+            lastSyncIcon.setAttribute('title', `${statusText} (${liveSyncStr} : ${dSec}s)`);
           }
 
-          if (changed) {
+          if (changed || force) {
             this.liveNotesCache = {};
             this.updateHeaderInfo();
             this.renderAll();
@@ -4473,9 +4526,89 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               this.openTeamModal(this.currentModalEntryId);
             }
           }
+
+          if (force && typeof this.showCopiedToast === 'function') {
+            const isEn = (this.currentLang === 'en');
+            this.showCopiedToast(
+              isEn
+                ? `⚡ Live scores synced via Cloudflare Edge (GW ${maxGW} • ${dHour}:${dMin}:${dSec})`
+                : `⚡ อัปเดตคะแนนสดผ่าน Cloudflare Edge สำเร็จ (GW ${maxGW} • ${dHour}:${dMin}:${dSec} น.)`
+            );
+          }
         } catch (err) {
           console.warn('Live fetch notice:', err);
+        } finally {
+          this._isFetchingLive = false;
         }
+      }
+
+      computeClientProvisionalBonus(elements) {
+        const fixturePlayers = {};
+        const fixtureMaxMins = {};
+        const fixtureHasOfficialBonus = {};
+
+        elements.forEach(el => {
+          if (!el || !el.stats) return;
+          // If the upgraded Worker already computed provisional_bonus, skip client re-computation
+          if (el.stats.provisional_bonus !== undefined) return;
+          const mins = Number(el.stats.minutes) || 0;
+          const bps = Number(el.stats.bps) || 0;
+          const officialBonus = Number(el.stats.bonus) || 0;
+          const explainArr = Array.isArray(el.explain) ? el.explain : [];
+
+          explainArr.forEach(ex => {
+            if (!ex || ex.fixture === undefined || ex.fixture === null) return;
+            const fid = ex.fixture;
+            if (mins > (fixtureMaxMins[fid] || 0)) {
+              fixtureMaxMins[fid] = mins;
+            }
+            const exStats = Array.isArray(ex.stats) ? ex.stats : [];
+            const hasExBonus = officialBonus > 0 || exStats.some(s => s && s.identifier === 'bonus' && Number(s.points) > 0);
+            if (hasExBonus) {
+              fixtureHasOfficialBonus[fid] = true;
+            }
+            if (mins > 0 && bps > 0) {
+              if (!fixturePlayers[fid]) fixturePlayers[fid] = [];
+              fixturePlayers[fid].push({ id: el.id, bps: bps });
+            }
+          });
+        });
+
+        const provBonusMap = {};
+        Object.keys(fixturePlayers).forEach(fid => {
+          if (fixtureHasOfficialBonus[fid]) return;
+          if ((fixtureMaxMins[fid] || 0) < 60) return;
+          const players = fixturePlayers[fid];
+          players.sort((a, b) => b.bps - a.bps);
+          const bpsGroups = [];
+          players.forEach(p => {
+            if (bpsGroups.length === 0 || bpsGroups[bpsGroups.length - 1].bps !== p.bps) {
+              bpsGroups.push({ bps: p.bps, ids: [p.id] });
+            } else {
+              bpsGroups[bpsGroups.length - 1].ids.push(p.id);
+            }
+          });
+          if (bpsGroups.length === 0 || bpsGroups[0].ids.length > 4) return;
+          const r1 = bpsGroups[0];
+          r1.ids.forEach(id => { provBonusMap[id] = (provBonusMap[id] || 0) + 3; });
+          if (r1.ids.length === 1 && bpsGroups.length > 1) {
+            const r2 = bpsGroups[1];
+            r2.ids.forEach(id => { provBonusMap[id] = (provBonusMap[id] || 0) + 2; });
+            if (r2.ids.length === 1 && bpsGroups.length > 2) {
+              const r3 = bpsGroups[2];
+              if (r3.ids.length <= 4) {
+                r3.ids.forEach(id => { provBonusMap[id] = (provBonusMap[id] || 0) + 1; });
+              }
+            }
+          } else if (r1.ids.length === 2 && bpsGroups.length > 1) {
+            const r3 = bpsGroups[1];
+            if (r3.ids.length <= 4) {
+              r3.ids.forEach(id => { provBonusMap[id] = (provBonusMap[id] || 0) + 1; });
+            }
+          }
+        });
+
+        return provBonusMap;
       }
 
       applyLiveElements(liveJson, gw) {
@@ -4483,6 +4616,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         // 1. Identify all fixture IDs that have kicked off in this Gameweek
         const startedFixtures = new Set();
+        if (Array.isArray(liveJson.fixtures)) {
+          liveJson.fixtures.forEach(f => {
+            if (f && f.started && f.id !== undefined) {
+              startedFixtures.add(f.id);
+            }
+          });
+        }
         liveJson.elements.forEach(el => {
           if (el && el.stats && (Number(el.stats.minutes) > 0 || Boolean(el.stats.played) || Number(el.stats.starts) > 0)) {
             if (Array.isArray(el.explain)) {
@@ -4495,7 +4635,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           }
         });
 
-        // 2. Build live stats lookup map by player element ID
+        // 2. Compute Provisional Bonus (BPS -> +3, +2, +1) if not already enriched by Worker
+        const clientProvBonusMap = this.computeClientProvisionalBonus(liveJson.elements);
+
+        // 3. Build live stats lookup map by player element ID
         const liveMap = {};
         liveJson.elements.forEach(el => {
           if (el && el.id && el.stats) {
@@ -4504,8 +4647,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             const explainArr = Array.isArray(el.explain) ? el.explain : [];
             const hasFixtures = explainArr.length > 0;
             const fixtureStarted = played || explainArr.some(ex => ex && startedFixtures.has(ex.fixture));
+            const workerProvBonus = el.stats.provisional_bonus !== undefined ? (Number(el.stats.provisional_bonus) || 0) : null;
+            const provBonus = workerProvBonus !== null ? workerProvBonus : (clientProvBonusMap[el.id] || 0);
+            const rawTotalPoints = (workerProvBonus !== null)
+              ? (Number(el.stats.total_points) || 0)
+              : ((Number(el.stats.total_points) || 0) + provBonus);
+
             liveMap[el.id] = {
-              total_points: Number(el.stats.total_points) || 0,
+              total_points: rawTotalPoints,
+              provisional_bonus: provBonus,
+              bps: Number(el.stats.bps) || 0,
               minutes: mins,
               played: played,
               has_fixtures: hasFixtures,
@@ -4528,6 +4679,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             gwData.is_started = true;
             anyChange = true;
           }
+          if (liveJson.all_finished && !gwData.is_finished) {
+            gwData.is_finished = true;
+            anyChange = true;
+          }
 
           const squads = league.squads || {};
           const teams = league.teams || [];
@@ -4545,12 +4700,16 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 const liveStat = liveMap[p.id];
                 if (liveStat) {
                   const rawPts = liveStat.total_points;
-                  const mult = Number(p.multiplier) || 1;
+                  const mult = (p.multiplier !== undefined && p.multiplier !== null) ? Number(p.multiplier) : 1;
                   const pts = rawPts * mult;
                   const notPlayed = Boolean(!gwData.is_finished && liveStat.has_fixtures && !liveStat.fixture_started);
-                  if (p.points !== pts || p.not_played_yet !== notPlayed) anyChange = true;
+                  if (p.points !== pts || p.not_played_yet !== notPlayed || p.provisional_bonus !== liveStat.provisional_bonus) {
+                    anyChange = true;
+                  }
                   p.points = pts;
                   p.raw_points = rawPts;
+                  p.provisional_bonus = liveStat.provisional_bonus;
+                  p.bps = liveStat.bps;
                   p.minutes = liveStat.minutes;
                   p.not_played_yet = notPlayed;
                   if (p.name) nameToPts[p.name] = rawPts;
@@ -4578,9 +4737,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                   const mult = isBBoost ? (Number(p.multiplier) || 1) : 1;
                   const pts = rawPts * mult;
                   const notPlayed = Boolean(!gwData.is_finished && liveStat.has_fixtures && !liveStat.fixture_started);
-                  if (p.points !== pts || p.not_played_yet !== notPlayed) anyChange = true;
+                  if (p.points !== pts || p.not_played_yet !== notPlayed || p.provisional_bonus !== liveStat.provisional_bonus) {
+                    anyChange = true;
+                  }
                   p.points = pts;
                   p.raw_points = rawPts;
+                  p.provisional_bonus = liveStat.provisional_bonus;
+                  p.bps = liveStat.bps;
                   p.minutes = liveStat.minutes;
                   p.not_played_yet = notPlayed;
                   if (p.name) nameToPts[p.name] = rawPts;
@@ -4605,12 +4768,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             if (res) {
               const hits = Number(res.hits) || 0;
               const netPts = teamLivePoints - hits;
+              const prevNetPts = Number(res.net_points) || 0;
+              const netDelta = netPts - prevNetPts;
               if (res.points !== teamLivePoints || res.net_points !== netPts || res.bench_points !== benchDispPoints) {
                 anyChange = true;
               }
               res.points = teamLivePoints;
               res.net_points = netPts;
               res.bench_points = benchDispPoints;
+
+              // Keep league.teams overall total_points and event_total synced in real time
+              if (netDelta !== 0 && typeof t.total_points === 'number') {
+                t.total_points += netDelta;
+              }
+              t.event_total = netPts;
             }
           });
 
@@ -5394,10 +5565,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               const fullLeagueData = await resp.json();
               if (fullLeagueData && fullLeagueData.squads) {
                 this.multiData.leagues[lidStr] = fullLeagueData;
-                if (String(this.activeLeagueId) === lidStr) {
-                  this.data = fullLeagueData;
+                if (this.lastLiveJson && this.lastLiveGw) {
+                  this.applyLiveElements(this.lastLiveJson, this.lastLiveGw);
                 }
-                return fullLeagueData;
+                if (String(this.activeLeagueId) === lidStr) {
+                  this.data = this.multiData.leagues[lidStr];
+                }
+                return this.multiData.leagues[lidStr];
               }
             }
           } catch (e) {
@@ -13960,9 +14134,9 @@ selectShi62GW(gwName) {
                   </div>
                   <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
                     <span class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider block mb-1">[CLIENT_RUNTIME]</span>
-                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime & 30s Real-Time Relay</div>
+                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime & 15s Real-Time Relay</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>30s Cloudflare Edge Live Poll:</strong> During active matches, the client polls Cloudflare Worker (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">fpl-live-relay</code>) every 30s to overlay real-time points and provisional bonus without waiting for static rebuilds.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>15s Cloudflare Edge Live Poll:</strong> During active matches, the client polls Cloudflare Worker (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">fpl-live-relay</code> / <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">api.fplsawadika.com</code>) every 15s to overlay real-time points and provisional BPS bonus without waiting for static rebuilds.</span></li>
                       <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Lazy League Switch & Race Guard:</strong> On-demand <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> fetching guarded by monotonic request tokens, synchronized via HTML5 History API and <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">localStorage</code>.</span></li>
                       <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Zero-Framework 60 FPS & A11y:</strong> Pure Vanilla ES6+ (0kb framework runtime), <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tabular-nums</code> (CLS: 0.00), Page Visibility API battery saver, and WCAG AA modal focus restoration.</span></li>
                     </ul>
@@ -14229,9 +14403,9 @@ selectShi62GW(gwName) {
                   </div>
                   <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
                     <span class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider block mb-1">[CLIENT_RUNTIME]</span>
-                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime & 30s Real-Time Relay</div>
+                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime & 15s Real-Time Relay</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>30s Cloudflare Edge Live Poll:</strong> ระหว่างมีแมตช์เตะ เบราว์เซอร์ดึงแต้มสดและโบนัสเรียลไทม์ผ่าน Cloudflare Worker (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">fpl-live-relay</code>) ทุก 30 วินาทีโดยไม่ต้องรอบิลด์ HTML ใหม่</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>15s Cloudflare Edge Live Poll:</strong> ระหว่างมีแมตช์เตะ เบราว์เซอร์ดึงแต้มสดและโบนัส BPS เรียลไทม์ผ่าน Cloudflare Worker (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">fpl-live-relay</code> / <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">api.fplsawadika.com</code>) ทุก 15 วินาทีโดยไม่ต้องรอบิลด์ HTML ใหม่</span></li>
                       <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Lazy League Switch & Race Guard:</strong> โหลด JSON รายลีกแบบ On-Demand เมื่อสลับลีก พร้อมระบบป้องกัน Race Condition และซิงก์สถานะผ่าน HTML5 History API + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">localStorage</code></span></li>
                       <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Zero-Framework 60 FPS & A11y:</strong> พัฒนาด้วย Vanilla ES6+ (0kb Framework) ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tabular-nums</code> (CLS: 0.00), Page Visibility API ประหยัดแบตเตอรี่ และรองรับ Keyboard Focus Accessibility</span></li>
                     </ul>
@@ -14660,7 +14834,7 @@ selectShi62GW(gwName) {
                 </div>
 
                 ${notPlayed ? '' : `
-                  <div class="bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-[8px] xs:text-[8.5px] sm:text-[9.5px] font-black font-display px-1 sm:px-1.5 py-0.5 rounded mt-0.5 shadow-xs whitespace-nowrap">
+                  <div class="bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-[8px] xs:text-[8.5px] sm:text-[9.5px] font-black font-display px-1 sm:px-1.5 py-0.5 rounded mt-0.5 shadow-xs whitespace-nowrap" ${p.provisional_bonus ? `title="${isEn ? `Includes +${p.provisional_bonus} provisional BPS bonus` : `รวมโบนัสคาดการณ์ (BPS) +${p.provisional_bonus} แต้ม`}"` : ''}>
                     ${p.points} pts
                   </div>
                 `}

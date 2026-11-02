@@ -1,0 +1,9 @@
+name = "fpl-live-relay"
+main = "fpl-live-worker.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+# เมื่อต้องการผูก Subdomain ภายใต้ fplsawadika.com ให้เปิดคอมเมนต์ด้านล่างนี้
+# routes = [
+#   { pattern = "api.fplsawadika.com", custom_domain = true }
+# ]

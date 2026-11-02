@@ -529,6 +529,75 @@ def sync_once(args):
             if needs_gw:
                 gws_to_fetch_live.add(gw)
 
+    def extract_live_points_and_mins(live_payload):
+        """
+        Extract total_points and minutes per element, enriching live total_points
+        with Official FPL Provisional Bonus (+3, +2, +1 from BPS) for any fixture
+        that has reached >= 60 minutes where official bonus has not yet been applied.
+        """
+        els = live_payload.get('elements', []) if isinstance(live_payload, dict) else []
+        pts_map = {}
+        mins_map = {}
+        fix_players = {}
+        fix_max_mins = {}
+        fix_has_official_bonus = {}
+
+        for el in els:
+            eid = el.get('id')
+            st = el.get('stats', {})
+            mins = int(st.get('minutes') or 0)
+            bps = int(st.get('bps') or 0)
+            off_bonus = int(st.get('bonus') or 0)
+            tot_pts = int(st.get('total_points') or 0)
+            pts_map[eid] = tot_pts
+            mins_map[eid] = mins
+
+            for ex in el.get('explain', []):
+                fid = ex.get('fixture')
+                if fid is None:
+                    continue
+                if mins > fix_max_mins.get(fid, 0):
+                    fix_max_mins[fid] = mins
+                ex_stats = ex.get('stats', [])
+                if off_bonus > 0 or any(s.get('identifier') == 'bonus' and int(s.get('points') or 0) > 0 for s in ex_stats):
+                    fix_has_official_bonus[fid] = True
+                if mins > 0 and bps > 0:
+                    fix_players.setdefault(fid, []).append((eid, bps))
+
+        for fid, p_list in fix_players.items():
+            if fix_has_official_bonus.get(fid, False):
+                continue
+            if fix_max_mins.get(fid, 0) < 60:
+                continue
+            p_list.sort(key=lambda x: x[1], reverse=True)
+            bps_groups = []
+            for pid, pbps in p_list:
+                if not bps_groups or bps_groups[-1][0] != pbps:
+                    bps_groups.append((pbps, [pid]))
+                else:
+                    bps_groups[-1][1].append(pid)
+            if not bps_groups or len(bps_groups[0][1]) > 4:
+                continue
+            r1_ids = bps_groups[0][1]
+            for pid in r1_ids:
+                pts_map[pid] = pts_map.get(pid, 0) + 3
+            if len(r1_ids) == 1 and len(bps_groups) > 1:
+                r2_ids = bps_groups[1][1]
+                for pid in r2_ids:
+                    pts_map[pid] = pts_map.get(pid, 0) + 2
+                if len(r2_ids) == 1 and len(bps_groups) > 2:
+                    r3_ids = bps_groups[2][1]
+                    if len(r3_ids) <= 4:
+                        for pid in r3_ids:
+                            pts_map[pid] = pts_map.get(pid, 0) + 1
+            elif len(r1_ids) == 2 and len(bps_groups) > 1:
+                r3_ids = bps_groups[1][1]
+                if len(r3_ids) <= 4:
+                    for pid in r3_ids:
+                        pts_map[pid] = pts_map.get(pid, 0) + 1
+
+        return pts_map, mins_map
+
     live_by_gw = {}
     live_mins_by_gw = {}
     live_fetch_failed_gws = set()
@@ -537,8 +606,7 @@ def sync_once(args):
             try:
                 print(f"Fetching live elements for GW {gw}...")
                 live_data = fetch(f'https://fantasy.premierleague.com/api/event/{gw}/live/')
-                live_by_gw[gw] = {el['id']: el['stats']['total_points'] for el in live_data['elements']}
-                live_mins_by_gw[gw] = {el['id']: el['stats']['minutes'] for el in live_data['elements']}
+                live_by_gw[gw], live_mins_by_gw[gw] = extract_live_points_and_mins(live_data)
             except Exception as e:
                 print(f"Error fetching live GW {gw}: {e}")
                 live_fetch_failed_gws.add(gw)
@@ -552,8 +620,7 @@ def sync_once(args):
             try:
                 print(f" -> Fetching live elements for GW {gw_num}...")
                 ld = fetch(f'https://fantasy.premierleague.com/api/event/{gw_num}/live/')
-                live_by_gw[gw_num] = {el['id']: el['stats']['total_points'] for el in ld['elements']}
-                live_mins_by_gw[gw_num] = {el['id']: el['stats']['minutes'] for el in ld['elements']}
+                live_by_gw[gw_num], live_mins_by_gw[gw_num] = extract_live_points_and_mins(ld)
                 if gw_num in live_fetch_failed_gws:
                     live_fetch_failed_gws.remove(gw_num)
             except Exception as err:
@@ -778,8 +845,7 @@ def sync_once(args):
                             try:
                                 print(f" -> Fetching live elements for GW {wgw} (required for team picks)...")
                                 live_data = fetch(f'https://fantasy.premierleague.com/api/event/{wgw}/live/')
-                                live_by_gw[wgw] = {el['id']: el['stats']['total_points'] for el in live_data['elements']}
-                                live_mins_by_gw[wgw] = {el['id']: el['stats']['minutes'] for el in live_data['elements']}
+                                live_by_gw[wgw], live_mins_by_gw[wgw] = extract_live_points_and_mins(live_data)
                             except Exception as e:
                                 print(f"Error fetching live GW {wgw}: {e}")
                                 if wgw not in live_by_gw:
