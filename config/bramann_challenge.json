@@ -135,6 +135,30 @@
           ]
         }
       ]
+    },
+    {
+      "name": "GW9",
+      "gw": 9,
+      "matches": [
+        {
+          "id": "gw9_m1",
+          "title": "Oöraora Grandé vs 4OUR",
+          "team1_id": 837763,
+          "team2_id": 171774,
+          "team1_name": "Oöraora Grandé",
+          "team2_name": "4OUR",
+          "count_hits": true,
+          "count_chips": true,
+          "stake_per_leg": 100,
+          "note": "4OUR ชนะ (78 vs 60) • ไม่มีผู้เลือกเพิ่ม",
+          "side1_bets": [
+            { "name": "Oo", "legs": 1 }
+          ],
+          "side2_bets": [
+            { "name": "4OUR", "legs": 1 }
+          ]
+        }
+      ]
     }
   ]
 }

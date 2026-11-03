@@ -12,6 +12,7 @@ import json
 
 PLAYER_MAPPING = {
     "jrj": {"entry_id": 1154605, "display_name": "jrj", "team_name": "67", "manager": "ming JRJ X"},
+    "jrjl": {"entry_id": 1154605, "display_name": "jrj", "team_name": "67", "manager": "ming JRJ X"},
     "67": {"entry_id": 1154605, "display_name": "jrj", "team_name": "67", "manager": "ming JRJ X"},
     "anuth": {"entry_id": 226, "display_name": "Anuth", "team_name": "van Xke", "manager": "Anuth Duangmarn"},
     "van": {"entry_id": 226, "display_name": "Anuth", "team_name": "van Xke", "manager": "Anuth Duangmarn"},
@@ -207,8 +208,8 @@ def parse_bramann_prediction_file(file_path):
             s1_win = "✅" in side1_line
             s1_clean = side1_line.replace("✅", "").strip()
             s1_tokens = s1_clean.split()
-            s1_label = s1_tokens[0].rstrip('.') if s1_tokens else "Side 1"
-            s1_bettor_tokens = s1_tokens[1:] if len(s1_tokens) > 1 else []
+            s1_label = s1_tokens[0].rstrip('.').rstrip('/') if s1_tokens else "Side 1"
+            s1_bettor_tokens = [t for t in s1_tokens[1:] if t != "/"] if len(s1_tokens) > 1 else []
             s1_bets = []
             for bt in s1_bettor_tokens:
                 pname, legs = parse_bettor_token(bt)
@@ -219,8 +220,8 @@ def parse_bramann_prediction_file(file_path):
             s2_win = "✅" in side2_line
             s2_clean = side2_line.replace("✅", "").strip()
             s2_tokens = s2_clean.split()
-            s2_label = s2_tokens[0].rstrip('.') if s2_tokens else "Side 2"
-            s2_bettor_tokens = s2_tokens[1:] if len(s2_tokens) > 1 else []
+            s2_label = s2_tokens[0].rstrip('.').rstrip('/') if s2_tokens else "Side 2"
+            s2_bettor_tokens = [t for t in s2_tokens[1:] if t != "/"] if len(s2_tokens) > 1 else []
             s2_bets = []
             for bt in s2_bettor_tokens:
                 pname, legs = parse_bettor_token(bt)

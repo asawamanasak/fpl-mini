@@ -321,3 +321,48 @@ BOU jrj fee ✅
 SUN vs LEE
 SUN jrj
 LEE oakx5 Bx5
+
+GW9
+CHE -1 vs MUN
+CHE Bx5 jrj feex5 ✅
+MUN 4OURx5 Oo oak Dotmanx5
+
+BOU -0.5 vs LEE
+BOU 4OURx5 jrj Bx5 feex5 ✅
+LEE oak Dotmanx5
+
+BRE -0.5 vs NFO
+BRE Bx5 jrj Oo Hereaux5 ✅
+NFO 4OURx5 oak Dotmanx5 feex5
+
+COV vs SUN -0.5
+COV 4OURx5 Bx5 feex5 ✅
+SUN Dotmanx5
+
+HUL vs IPS
+HUL 4OURx5 Bx5 feex5
+IPS Dotmanx5 Oo
+
+MCI -1 vs BHA
+MCI Oo Bx5
+BHA 4OURx5 jrj Dotmanx5 feex5 ✅
+
+TOT -1 vs CRY
+TOT 4OURx5 Bx5 ✅
+CRY Dotmanx5 Hereaux5
+
+AVL -0.5 vs FUL
+AVL Bx5 4OURx5
+FUL
+
+LIV vs ARS -0.5
+LIV jrjx5 4OURx5 oakx5 Bx5 feex5
+ARS Oo Dotmanx5 ✅
+
+NEW vs EVE
+NEW oak Bx5
+EVE fee ✅
+
+NEW -0.5 vs EVE
+NEW Oo
+EVE fee ✅
