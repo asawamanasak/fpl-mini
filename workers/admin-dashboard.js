@@ -169,7 +169,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     <div class="space-y-4 pb-4 border-b border-borderLight dark:border-borderDark">
       <div class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-3">
         <div>
-          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-raisedLight dark:bg-cardDark border border-borderLight dark:border-borderDark text-[11px] font-mono text-slate-500 dark:text-neutral-400 mb-2">
+          <div id="telemetryModePill" class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-raisedLight dark:bg-cardDark border border-borderLight dark:border-borderDark text-[11px] font-mono text-slate-500 dark:text-neutral-400 mb-2">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             <span>LIVE INTELLIGENCE PLATFORM · GW 9 FINALIZED</span>
           </div>
@@ -324,13 +324,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               </span>
               <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-medium border border-emerald-500/20 tabular">+18.4% WoW</span>
             </div>
-            <div class="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900 dark:text-white font-mono tabular">
+            <div id="kpiWeeklyVisits" class="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900 dark:text-white font-mono tabular">
               4,280
             </div>
           </div>
           <div class="mt-4 pt-3 border-t border-borderLight dark:border-borderDark flex items-center justify-between text-xs text-slate-500 dark:text-neutral-400">
             <span>Daily Average Reach</span>
-            <span class="text-slate-800 dark:text-neutral-200 font-mono tabular font-medium inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>1,850 users/day</span>
+            <span class="text-slate-800 dark:text-neutral-200 font-mono tabular font-medium inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span><span id="kpiDailyReach">1,850 users/day</span></span>
           </div>
         </div>
 
@@ -865,24 +865,24 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="space-y-3">
           <!-- Neutral Segmented Bar -->
           <div class="w-full h-2 rounded-full overflow-hidden flex bg-borderLight dark:bg-borderDark">
-            <div class="bg-emerald-500 h-full" style="width: 68.4%"></div>
-            <div class="bg-slate-400 dark:bg-neutral-500 h-full" style="width: 22.5%"></div>
-            <div class="bg-slate-300 dark:bg-neutral-600 h-full" style="width: 9.1%"></div>
+            <div id="channelSegLine" class="bg-emerald-500 h-full transition-all duration-300" style="width: 68.4%"></div>
+            <div id="channelSegSafari" class="bg-slate-400 dark:bg-neutral-500 h-full transition-all duration-300" style="width: 22.5%"></div>
+            <div id="channelSegChrome" class="bg-slate-300 dark:bg-neutral-600 h-full transition-all duration-300" style="width: 9.1%"></div>
           </div>
 
           <div class="grid grid-cols-3 gap-2 text-center text-xs pt-1">
             <div class="p-2.5 rounded-md border border-emerald-500/30 bg-emerald-500/5">
-              <div class="font-medium font-mono tabular text-emerald-600 dark:text-emerald-400 text-sm">68.4%</div>
+              <div id="channelLinePct" class="font-medium font-mono tabular text-emerald-600 dark:text-emerald-400 text-sm">68.4%</div>
               <div class="text-[11px] text-slate-700 dark:text-neutral-300 mt-0.5 font-medium">LINE In-App</div>
             </div>
 
             <div class="p-2.5 rounded-md border border-sky-500/30 bg-sky-500/5">
-              <div class="font-medium font-mono tabular text-sky-600 dark:text-sky-400 text-sm">22.5%</div>
+              <div id="channelSafariPct" class="font-medium font-mono tabular text-sky-600 dark:text-sky-400 text-sm">22.5%</div>
               <div class="text-[11px] text-slate-700 dark:text-neutral-300 mt-0.5 font-medium">Mobile Safari</div>
             </div>
 
             <div class="p-2.5 rounded-md border border-amber-500/30 bg-amber-500/5">
-              <div class="font-medium font-mono tabular text-amber-600 dark:text-amber-400 text-sm">9.1%</div>
+              <div id="channelChromePct" class="font-medium font-mono tabular text-amber-600 dark:text-amber-400 text-sm">9.1%</div>
               <div class="text-[11px] text-slate-700 dark:text-neutral-300 mt-0.5 font-medium">Chrome / Web</div>
             </div>
           </div>
@@ -978,7 +978,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <span class="text-emerald-600 dark:text-emerald-400">${ICONS.deviceMobile}</span>
               <span>Mobile smartphone</span>
             </div>
-            <span class="text-sm font-medium font-mono tabular text-emerald-600 dark:text-emerald-400">76.2%</span>
+            <span id="deviceMobilePct" class="text-sm font-medium font-mono tabular text-emerald-600 dark:text-emerald-400">76.2%</span>
           </div>
           <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
             iOS Safari (54.0%) และ Android Chrome (22.2%) เข้าใช้งานระหว่างวันเพื่อตรวจเช็กคะแนนสดอย่างรวดเร็ว
@@ -991,7 +991,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <span class="text-sky-600 dark:text-sky-400">${ICONS.deviceDesktop}</span>
               <span>Desktop / Laptop</span>
             </div>
-            <span class="text-sm font-medium font-mono tabular text-sky-600 dark:text-sky-400">19.4%</span>
+            <span id="deviceDesktopPct" class="text-sm font-medium font-mono tabular text-sky-600 dark:text-sky-400">19.4%</span>
           </div>
           <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
             macOS (12.1%) และ Windows (7.3%) มีระยะเวลาเปิดดูนานที่สุด เหมาะกับการวางแผนย้ายตัวช่วงก่อนเดดไลน์
@@ -1004,7 +1004,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <span class="text-purple-600 dark:text-purple-400">${ICONS.deviceTablet}</span>
               <span>Tablet / iPad</span>
             </div>
-            <span class="text-sm font-medium font-mono tabular text-purple-600 dark:text-purple-400">4.4%</span>
+            <span id="deviceTabletPct" class="text-sm font-medium font-mono tabular text-purple-600 dark:text-purple-400">4.4%</span>
           </div>
           <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
             Apple iPad (4.1%) มักเปิดจอคู่ขนานระหว่างรับชมการถ่ายทอดสดฟุตบอลในวันเสาร์-อาทิตย์
@@ -1406,6 +1406,56 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         const tbody = document.getElementById('leaguesTableBody');
         if (tbody && rowsHtml.length > 0) {
           tbody.innerHTML = rowsHtml.join('');
+        }
+      }
+
+      // 5. Live Edge Telemetry (Visits, Devices, Channels)
+      if (data.edge_telemetry) {
+        const telem = data.edge_telemetry;
+        
+        // Weekly Visits & Daily Reach
+        const visitsEl = document.getElementById('kpiWeeklyVisits');
+        if (visitsEl && telem.weekly_visits) {
+          visitsEl.textContent = Number(telem.weekly_visits).toLocaleString();
+        }
+        const reachEl = document.getElementById('kpiDailyReach');
+        if (reachEl && telem.daily_reach) {
+          reachEl.textContent = Number(telem.daily_reach).toLocaleString() + ' users/day';
+        }
+
+        // Channels
+        if (telem.sources) {
+          const linePctEl = document.getElementById('channelLinePct');
+          const safariPctEl = document.getElementById('channelSafariPct');
+          const chromePctEl = document.getElementById('channelChromePct');
+          const segLine = document.getElementById('channelSegLine');
+          const segSafari = document.getElementById('channelSegSafari');
+          const segChrome = document.getElementById('channelSegChrome');
+
+          if (linePctEl && telem.sources.line) linePctEl.textContent = telem.sources.line.pct + '%';
+          if (safariPctEl && telem.sources.safari) safariPctEl.textContent = telem.sources.safari.pct + '%';
+          if (chromePctEl && telem.sources.chrome) chromePctEl.textContent = telem.sources.chrome.pct + '%';
+
+          if (segLine && telem.sources.line) segLine.style.width = telem.sources.line.pct + '%';
+          if (segSafari && telem.sources.safari) segSafari.style.width = telem.sources.safari.pct + '%';
+          if (segChrome && telem.sources.chrome) segChrome.style.width = telem.sources.chrome.pct + '%';
+        }
+
+        // Devices
+        if (telem.devices) {
+          const mobPctEl = document.getElementById('deviceMobilePct');
+          const deskPctEl = document.getElementById('deviceDesktopPct');
+          const tabPctEl = document.getElementById('deviceTabletPct');
+
+          if (mobPctEl && telem.devices.mobile) mobPctEl.textContent = telem.devices.mobile.pct + '%';
+          if (deskPctEl && telem.devices.desktop) deskPctEl.textContent = telem.devices.desktop.pct + '%';
+          if (tabPctEl && telem.devices.tablet) tabPctEl.textContent = telem.devices.tablet.pct + '%';
+        }
+
+        // Header status pill
+        const telemPill = document.getElementById('telemetryModePill');
+        if (telemPill) {
+          telemPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>LIVE INTELLIGENCE PLATFORM · 100% ONLINE SYNCED</span>';
         }
       }
     }
