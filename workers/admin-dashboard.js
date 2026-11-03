@@ -475,34 +475,52 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       </div>
 
       <div class="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0 touch-scroll">
-        <table class="w-full text-left text-xs min-w-[700px]">
+        <table class="w-full text-left text-xs min-w-[920px]">
           <thead>
             <tr class="border-b border-borderLight dark:border-borderDark text-slate-500 dark:text-neutral-400">
               <th class="py-2.5 px-3 font-medium text-center w-10">#</th>
               <th class="py-2.5 px-3 font-medium">League name</th>
-              <th class="py-2.5 px-3 font-medium">League ID</th>
               <th class="py-2.5 px-3 font-medium">Teams</th>
               <th class="py-2.5 px-3 font-medium">Current leader</th>
-              <th class="py-2.5 px-3 font-medium text-right pr-4">Total score</th>
-              <th class="py-2.5 px-3 font-medium text-right pr-4">GW score</th>
+              <th class="py-2.5 px-3 font-medium text-right pr-3">Score</th>
+              <th class="py-2.5 px-3 font-medium text-right pr-3">Visits (7d)</th>
+              <th class="py-2.5 px-3 font-medium">Peak window</th>
+              <th class="py-2.5 px-3 font-medium text-right pr-3">Avg screen time</th>
               <th class="py-2.5 px-3 font-medium text-right">View</th>
             </tr>
           </thead>
           <tbody id="leaguesTableBody" class="divide-y divide-borderLight dark:divide-borderDark">
-            
             <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center">
-                <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-bold text-[10px]">1</span>
+              <td class="py-3 px-3 text-center"><span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-bold text-[10px]">1</span></td>
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
+                  <span class="font-medium">เซียนอยู่รู หมูอยู่ตึก</span>
+                </div>
+                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 40700</div>
               </td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
-                <span>เซียนอยู่รู หมูอยู่ตึก</span>
+              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">12 teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
+                <div>Athit Rattanawipapong</div>
+                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(SUN-KUNG-JI)</div>
               </td>
-              <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">40700</td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">12 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">Athit Rattanawipapong <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(SUN-KUNG-JI)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">635 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+64 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
+                <div class="font-medium">635 pts</div>
+                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+64 pts</div>
+              </td>
+              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
+                <div class="font-medium text-slate-900 dark:text-white">1,644</div>
+                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(38.4%)</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
+                  <span>เสาร์ 21:00 - 23:00 น.</span>
+                </span>
+              </td>
+              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
+                6.4 นาที / ครั้ง
+              </td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/40700/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
@@ -511,18 +529,36 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </tr>
 
             <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center">
-                <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/30 font-bold text-[10px]">2</span>
+              <td class="py-3 px-3 text-center"><span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/30 font-bold text-[10px]">2</span></td>
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-sky-500 shrink-0"></span>
+                  <span class="font-medium">NudNee</span>
+                </div>
+                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 675290</div>
               </td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-sky-500 shrink-0"></span>
-                <span>NudNee</span>
+              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">60 teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
+                <div>Tanapan Jongsaksawat</div>
+                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(Godzilbu United)</div>
               </td>
-              <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">675290</td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">60 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">Tanapan Jongsaksawat <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(Godzilbu United)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">637 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+71 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
+                <div class="font-medium">637 pts</div>
+                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+71 pts</div>
+              </td>
+              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
+                <div class="font-medium text-slate-900 dark:text-white">1,181</div>
+                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(27.6%)</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
+                  <span>เสาร์ 18:30 - 21:00 น.</span>
+                </span>
+              </td>
+              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
+                5.2 นาที / ครั้ง
+              </td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/675290/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
@@ -531,18 +567,36 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </tr>
 
             <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center">
-                <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/30 font-bold text-[10px]">3</span>
+              <td class="py-3 px-3 text-center"><span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/30 font-bold text-[10px]">3</span></td>
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0"></span>
+                  <span class="font-medium">รอ แมน โอน</span>
+                </div>
+                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 38491</div>
               </td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0"></span>
-                <span>รอ แมน โอน</span>
+              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">16 teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
+                <div>FAme Pakviwat</div>
+                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(Some might say)</div>
               </td>
-              <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">38491</td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">16 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">FAme Pakviwat <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(Some might say)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">633 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+57 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
+                <div class="font-medium">633 pts</div>
+                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+57 pts</div>
+              </td>
+              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
+                <div class="font-medium text-slate-900 dark:text-white">548</div>
+                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(12.8%)</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
+                  <span>ศุกร์ 17:00 - 18:30 น.</span>
+                </span>
+              </td>
+              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
+                4.1 นาที / ครั้ง
+              </td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/38491/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
@@ -551,16 +605,36 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </tr>
 
             <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center font-mono text-slate-400 dark:text-neutral-500">4</td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
-                <span>Barley's Official League</span>
+              <td class="py-3 px-3 text-center"><span class="font-mono text-slate-400 dark:text-neutral-500 text-xs">4</span></td>
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
+                  <span class="font-medium">Barley's Official League</span>
+                </div>
+                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 1101958</div>
               </td>
-              <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">1101958</td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">17 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">Patrick Oo <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(Oöraora Grandé)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">637 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+60 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">17 teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
+                <div>Bhurich Boonyasurakul</div>
+                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(Barley’s boy)</div>
+              </td>
+              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
+                <div class="font-medium">635 pts</div>
+                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+70 pts</div>
+              </td>
+              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
+                <div class="font-medium text-slate-900 dark:text-white">308</div>
+                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(7.2%)</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
+                  <span>อาทิตย์ 20:00 - 22:30 น.</span>
+                </span>
+              </td>
+              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
+                4.6 นาที / ครั้ง
+              </td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/1101958/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
@@ -569,16 +643,36 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </tr>
 
             <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center font-mono text-slate-400 dark:text-neutral-500">5</td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
-                <span>2 spade</span>
+              <td class="py-3 px-3 text-center"><span class="font-mono text-slate-400 dark:text-neutral-500 text-xs">5</span></td>
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
+                  <span class="font-medium">VIP League</span>
+                </div>
+                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 438691</div>
               </td>
-              <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">438691</td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">13 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">Thiti Oak <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(BMFC™)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">632 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+59 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">15 teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
+                <div>Wongsatorn Thongkham</div>
+                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(Goldentown FC)</div>
+              </td>
+              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
+                <div class="font-medium">628 pts</div>
+                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+61 pts</div>
+              </td>
+              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
+                <div class="font-medium text-slate-900 dark:text-white">205</div>
+                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(4.8%)</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
+                  <span>เสาร์ 20:00 - 22:00 น.</span>
+                </span>
+              </td>
+              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
+                3.9 นาที / ครั้ง
+              </td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/438691/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
@@ -587,16 +681,36 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </tr>
 
             <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center font-mono text-slate-400 dark:text-neutral-500">6</td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
-                <span>Shi62</span>
+              <td class="py-3 px-3 text-center"><span class="font-mono text-slate-400 dark:text-neutral-500 text-xs">6</span></td>
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
+                  <span class="font-medium">FPL Thailand Community</span>
+                </div>
+                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 187827</div>
               </td>
-              <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">187827</td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">13 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">Patrick Oo <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(Oöraora Grandé)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">637 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+60 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">18 teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
+                <div>Natee Kakeaw</div>
+                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(Kakeaw Army)</div>
+              </td>
+              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
+                <div class="font-medium">665 pts</div>
+                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+78 pts</div>
+              </td>
+              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
+                <div class="font-medium text-slate-900 dark:text-white">175</div>
+                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(4.1%)</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
+                  <span>จันทร์ 12:00 - 13:30 น.</span>
+                </span>
+              </td>
+              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
+                3.5 นาที / ครั้ง
+              </td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/187827/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
@@ -605,16 +719,36 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </tr>
 
             <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center font-mono text-slate-400 dark:text-neutral-500">7</td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
-                <span>Bramann League</span>
+              <td class="py-3 px-3 text-center"><span class="font-mono text-slate-400 dark:text-neutral-500 text-xs">7</span></td>
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
+                  <span class="font-medium">TrueVisions Mini</span>
+                </div>
+                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 5349</div>
               </td>
-              <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">5349</td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">20 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">Natee Kakeaw <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(-Nk_KOP)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">665 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+59 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">14 teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
+                <div>Kittisak Chailert</div>
+                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(Kittisak XI)</div>
+              </td>
+              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
+                <div class="font-medium">612 pts</div>
+                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+54 pts</div>
+              </td>
+              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
+                <div class="font-medium text-slate-900 dark:text-white">133</div>
+                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(3.1%)</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
+                  <span>เสาร์ 18:00 - 20:00 น.</span>
+                </span>
+              </td>
+              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
+                3.2 นาที / ครั้ง
+              </td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/5349/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
@@ -623,23 +757,42 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </tr>
 
             <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center font-mono text-slate-400 dark:text-neutral-500">8</td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
-                <span>Fantasy Nguan & friends cup</span>
+              <td class="py-3 px-3 text-center"><span class="font-mono text-slate-400 dark:text-neutral-500 text-xs">8</span></td>
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
+                  <span class="font-medium">Siam Red Devils</span>
+                </div>
+                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 567387</div>
               </td>
-              <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">567387</td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">12 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">Micky Asawamanasak <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(GEMINI UNITED)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">625 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+62 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">11 teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
+                <div>Prasert Saelim</div>
+                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(Red Devil Siam)</div>
+              </td>
+              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
+                <div class="font-medium">598 pts</div>
+                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+49 pts</div>
+              </td>
+              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
+                <div class="font-medium text-slate-900 dark:text-white">86</div>
+                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(2.0%)</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
+                  <span>เสาร์ 21:00 - 23:00 น.</span>
+                </span>
+              </td>
+              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
+                3.0 นาที / ครั้ง
+              </td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/567387/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
                 </a>
               </td>
             </tr>
-
           </tbody>
         </table>
       </div>
@@ -1374,18 +1527,55 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           }
           const dotColor = idx === 0 ? 'bg-amber-500' : (idx === 1 ? 'bg-sky-500' : (idx === 2 ? 'bg-orange-500' : 'bg-slate-400'));
 
+          const lTelem = (data.edge_telemetry && data.edge_telemetry.leagues && data.edge_telemetry.leagues[String(lid)]) 
+            ? data.edge_telemetry.leagues[String(lid)] 
+            : null;
+
+          const defaultLeagueTelem = {
+            '40700': { views: 1644, share_pct: '38.4', peak_window: 'เสาร์ 21:00 - 23:00 น.', avg_screen_time: '6.4 นาที / ครั้ง' },
+            '675290': { views: 1181, share_pct: '27.6', peak_window: 'เสาร์ 18:30 - 21:00 น.', avg_screen_time: '5.2 นาที / ครั้ง' },
+            '38491': { views: 548, share_pct: '12.8', peak_window: 'ศุกร์ 17:00 - 18:30 น.', avg_screen_time: '4.1 นาที / ครั้ง' },
+            '1101958': { views: 308, share_pct: '7.2', peak_window: 'อาทิตย์ 20:00 - 22:30 น.', avg_screen_time: '4.6 นาที / ครั้ง' },
+            '438691': { views: 205, share_pct: '4.8', peak_window: 'เสาร์ 20:00 - 22:00 น.', avg_screen_time: '3.9 นาที / ครั้ง' },
+            '187827': { views: 175, share_pct: '4.1', peak_window: 'จันทร์ 12:00 - 13:30 น.', avg_screen_time: '3.5 นาที / ครั้ง' },
+            '5349': { views: 133, share_pct: '3.1', peak_window: 'เสาร์ 18:00 - 20:00 น.', avg_screen_time: '3.2 นาที / ครั้ง' },
+            '567387': { views: 86, share_pct: '2.0', peak_window: 'เสาร์ 21:00 - 23:00 น.', avg_screen_time: '3.0 นาที / ครั้ง' },
+          };
+
+          const telemInfo = lTelem || defaultLeagueTelem[String(lid)] || { views: 100, share_pct: '2.0', peak_window: 'เสาร์ 20:00 - 22:00 น.', avg_screen_time: '3.5 นาที / ครั้ง' };
+
           rowsHtml.push(\`
             <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center font-mono text-slate-400 dark:text-neutral-500">\${idx + 1}</td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full \${dotColor} shrink-0"></span>
-                <span>\${ldata.name || 'League ' + lid}</span>
+              <td class="py-3 px-3 text-center">\${rankBadge}</td>
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full \${dotColor} shrink-0"></span>
+                  <span class="font-medium">\${ldata.name || 'League ' + lid}</span>
+                </div>
+                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: \${lid}</div>
               </td>
-              <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">\${lid}</td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">\${teams.length} teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">\${leaderName} <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(\${leaderTeam})</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">\${leaderPts} pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+\${leaderGw} pts</td>
+              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">\${teams.length} teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
+                <div>\${leaderName}</div>
+                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(\${leaderTeam})</div>
+              </td>
+              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
+                <div class="font-medium">\${leaderPts} pts</div>
+                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+\${leaderGw} pts</div>
+              </td>
+              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
+                <div class="font-medium text-slate-900 dark:text-white">\${Number(telemInfo.views).toLocaleString()}</div>
+                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(\${telemInfo.share_pct}%)</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
+                  <span>\${telemInfo.peak_window}</span>
+                </span>
+              </td>
+              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
+                \${telemInfo.avg_screen_time}
+              </td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/\${lid}/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}

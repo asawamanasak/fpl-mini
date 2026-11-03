@@ -662,21 +662,25 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       position: relative;
     }
 
-    /* Scrollbars */
+    /* Refined Horizontal & Vertical Scrollbars */
     .scrollbar-thin::-webkit-scrollbar {
-      height: 5px;
-      width: 5px;
+      height: 4px;
+      width: 4px;
     }
     .scrollbar-thin::-webkit-scrollbar-track {
-      background: #f1f5f9;
+      background: transparent;
       border-radius: 9999px;
     }
     .scrollbar-thin::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
+      background: rgba(148, 163, 184, 0.45);
       border-radius: 9999px;
     }
     .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
+      background: rgba(100, 116, 139, 0.7);
+    }
+    .scrollbar-thin {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148, 163, 184, 0.45) transparent;
     }
 
     .no-scrollbar::-webkit-scrollbar {
@@ -932,15 +936,19 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     }
 
     .dark .scrollbar-thin::-webkit-scrollbar-track {
-      background: #000000 !important;
+      background: transparent !important;
     }
 
     .dark .scrollbar-thin::-webkit-scrollbar-thumb {
-      background: #222225 !important;
+      background: rgba(100, 116, 139, 0.55) !important;
     }
 
     .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-      background: #333336 !important;
+      background: rgba(148, 163, 184, 0.8) !important;
+    }
+
+    .dark .scrollbar-thin {
+      scrollbar-color: rgba(100, 116, 139, 0.55) transparent !important;
     }
 
     /* Modals & Dropdowns in Dark Mode */
@@ -1367,6 +1375,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         >
           <svg class="w-4 h-4 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
         </button>
+
+        <!-- Share to LINE Button (Compact Header Action) -->
+        <button 
+          id="btn-header-share"
+          onclick="window.app ? window.app.shareCurrentView() : (window.shareCurrentViewFallback ? window.shareCurrentViewFallback() : null)"
+          class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 min-w-[36px] sm:min-w-[40px] min-h-[36px] sm:min-h-[40px] rounded-lg sm:rounded-xl bg-[#06C755] hover:bg-[#05b34c] border border-[#05b34c] text-white transition-colors shadow-2xs active:scale-95 flex-shrink-0 cursor-pointer"
+          title="แชร์สรุปผลเข้า LINE / Share to LINE"
+          aria-label="Share to LINE"
+        >
+          <svg class="w-4 h-4 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+        </button>
       </div>
     </div>
 
@@ -1401,7 +1420,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
     <!-- 1.4 แถบเมนูแท็บหลัก (จัดหมวดหมู่และเรียงลำดับภาษาไทย) -->
     <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 border-t border-slate-200/80 dark:border-slate-800/80">
-      <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto touch-scroll no-scrollbar py-1.5 sm:py-2 pr-4 sm:pr-0">
+      <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto touch-scroll scrollbar-thin py-1.5 sm:py-2 pr-4 sm:pr-0">
         <button 
           id="tab-btn-live"
           data-tab-target="gameweek-view" 
@@ -1510,9 +1529,20 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <span id="gw-selector-title" class="text-xs font-bold text-slate-500 uppercase tracking-wider font-display">
             <span id="gw-selector-main-label">เลือกสัปดาห์การแข่งขัน</span>
           </span>
-          <span id="gw-range-status" class="text-xs font-bold text-emerald-600 dark:text-emerald-400"><span class="hidden min-[380px]:inline">สัปดาห์ที่ </span>1 - 38</span>
+          <div class="flex items-center gap-2">
+            <span id="gw-range-status" class="text-xs font-bold text-emerald-600 dark:text-emerald-400"><span class="hidden min-[380px]:inline">สัปดาห์ที่ </span>1 - 38</span>
+            <button 
+              id="btn-gw-selector-share"
+              onclick="window.app && window.app.shareCurrentGameweek()"
+              class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 transition-all active:scale-95 cursor-pointer"
+              title="แชร์สรุปผล Gameweek เข้า LINE"
+            >
+              <svg class="w-3 h-3 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+              <span>แชร์ LINE</span>
+            </button>
+          </div>
         </div>
-        <div id="gw-selector-container" class="flex space-x-1.5 overflow-x-auto touch-scroll no-scrollbar py-1">
+        <div id="gw-selector-container" class="flex space-x-1.5 overflow-x-auto touch-scroll scrollbar-thin py-1 pb-2">
           <!-- Rendered dynamically -->
         </div>
       </div>
@@ -1535,12 +1565,23 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               </span>
               <h3 id="matchday-table-title" class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">ตารางคะแนน Gameweek 2</h3>
             </div>
-            <span id="matchday-table-badge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-              ผลการแข่งขัน
-            </span>
+            <div class="flex items-center gap-2">
+              <button 
+                id="btn-matchday-share-line"
+                onclick="window.app && window.app.shareCurrentGameweek()" 
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap" 
+                title="แชร์สรุปผล Gameweek เข้า LINE"
+              >
+                <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+                <span>แชร์ LINE</span>
+              </button>
+              <span id="matchday-table-badge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                ผลการแข่งขัน
+              </span>
+            </div>
           </div>
 
-          <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
+          <div class="overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 touch-scroll">
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="border-b border-slate-100 dark:border-slate-800/80 text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display bg-slate-50/50 dark:bg-slate-900/50">
@@ -1574,7 +1615,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             </span>
           </div>
 
-          <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
+          <div class="overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 touch-scroll">
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="border-b border-slate-100 dark:border-slate-800/80 text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display bg-slate-50/50 dark:bg-slate-900/50">
@@ -1711,6 +1752,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         </div>
         <div class="flex items-center gap-2">
           <span id="prizes-pool-badge" class="bg-slate-100 text-slate-700 border border-slate-200 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
+          <button 
+            id="btn-prizes-share-line"
+            onclick="window.app && window.app.sharePrizes()"
+            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
+            title="แชร์สรุปเงินรางวัลเข้า LINE"
+          >
+            <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+            <span>แชร์ LINE</span>
+          </button>
         </div>
       </div>
 
@@ -1738,7 +1788,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           </div>
         </div>
 
-        <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
+        <div class="overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 touch-scroll">
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-100 dark:border-slate-800 text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display bg-slate-50/50 dark:bg-slate-900/50">
@@ -1961,7 +2011,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         </div>
 
         <!-- League Filter Pills -->
-        <div class="flex items-center gap-1.5 overflow-x-auto touch-scroll no-scrollbar pb-2 mb-2.5 border-b border-slate-100 dark:border-slate-800 text-xs" id="global-radar-league-pills">
+        <div class="flex items-center gap-1.5 overflow-x-auto touch-scroll scrollbar-thin pb-2 mb-2.5 border-b border-slate-100 dark:border-slate-800 text-xs" id="global-radar-league-pills">
           <!-- Rendered dynamically -->
         </div>
 
@@ -1976,7 +2026,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
 
         <!-- Table Container with Locked/Sticky Headers & Columns -->
-        <div class="overflow-auto max-h-[65vh] sm:max-h-[75vh] no-scrollbar -mx-3.5 sm:mx-0 touch-scroll isolate">
+        <div class="overflow-auto max-h-[65vh] sm:max-h-[75vh] scrollbar-thin -mx-3.5 sm:mx-0 touch-scroll isolate">
           <table class="w-full text-left border-separate border-spacing-0">
             <thead>
               <tr class="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
@@ -2491,13 +2541,17 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
           <span id="modal-copy-indicator-text">คัดลอกลงคลิปบอร์ดแล้ว!</span>
         </span>
-        <div class="flex items-center gap-2 ml-auto">
-          <button id="modal-summary-close-btn" onclick="app.closeTextSummaryModal()" class="px-4 py-2 min-h-[44px] rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer active:scale-95">
+        <div class="flex items-center gap-2 ml-auto flex-wrap">
+          <button id="modal-summary-close-btn" onclick="app.closeTextSummaryModal()" class="px-3.5 py-2 min-h-[44px] rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer active:scale-95">
             ปิด
           </button>
-          <button id="btn-modal-copy" onclick="app.copyFromModal()" class="px-4 sm:px-5 py-2 min-h-[44px] rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-500 transition-all shadow-sm active:scale-95 cursor-pointer flex items-center gap-1.5">
+          <button id="btn-modal-copy" onclick="app.copyFromModal()" class="px-3.5 sm:px-4 py-2 min-h-[44px] rounded-xl text-xs font-bold text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all shadow-2xs active:scale-95 cursor-pointer flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
             <span id="btn-modal-copy-label">คัดลอกข้อความ</span>
+          </button>
+          <button id="btn-modal-share-line" onclick="app.shareToLine()" class="px-4 sm:px-5 py-2 min-h-[44px] rounded-xl text-xs font-bold text-white bg-[#06C755] hover:bg-[#05b34c] transition-all shadow-sm active:scale-95 cursor-pointer flex items-center gap-1.5">
+            <svg class="w-4 h-4 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+            <span id="btn-modal-share-line-label">ส่งเข้า LINE</span>
           </button>
         </div>
       </div>
@@ -5170,6 +5224,28 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (summaryModalCopySpan) {
           summaryModalCopySpan.innerText = isEn ? 'Copy Text' : 'คัดลอกข้อความ';
         }
+        const summaryModalShareLineSpan = document.getElementById('btn-modal-share-line-label');
+        if (summaryModalShareLineSpan) {
+          summaryModalShareLineSpan.innerText = isEn ? 'Share to LINE' : 'ส่งเข้า LINE';
+        }
+        const gwSelectorShareBtn = document.getElementById('btn-gw-selector-share');
+        if (gwSelectorShareBtn) {
+          gwSelectorShareBtn.title = isEn ? 'Share Gameweek summary to LINE' : 'แชร์สรุปผล Gameweek เข้า LINE';
+          const sp = gwSelectorShareBtn.querySelector('span');
+          if (sp) sp.innerText = isEn ? 'Share LINE' : 'แชร์ LINE';
+        }
+        const matchdayShareBtn = document.getElementById('btn-matchday-share-line');
+        if (matchdayShareBtn) {
+          matchdayShareBtn.title = isEn ? 'Share Gameweek summary to LINE' : 'แชร์สรุปผล Gameweek เข้า LINE';
+          const sp = matchdayShareBtn.querySelector('span');
+          if (sp) sp.innerText = isEn ? 'Share LINE' : 'แชร์ LINE';
+        }
+        const prizesShareBtn = document.getElementById('btn-prizes-share-line');
+        if (prizesShareBtn) {
+          prizesShareBtn.title = isEn ? 'Share prize summary to LINE' : 'แชร์สรุปเงินรางวัลเข้า LINE';
+          const sp = prizesShareBtn.querySelector('span');
+          if (sp) sp.innerText = isEn ? 'Share LINE' : 'แชร์ LINE';
+        }
 
         // 9. Competition View Header Banner
         const compTitle = document.getElementById('competition-overview-title');
@@ -5550,6 +5626,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       async switchLeague(leagueId, fromPopstate = false) {
         const lidStr = String(leagueId);
         if (!this.multiData || !this.multiData.leagues || !this.multiData.leagues[lidStr]) return;
+        if (typeof window !== "undefined" && window._trackLeagueSwitch) {
+          window._trackLeagueSwitch(lidStr);
+        }
 
         this._switchingTargetId = lidStr;
         const selectorContainer = (typeof document !== 'undefined') ? document.getElementById('league-selector-container') : null;
@@ -6106,26 +6185,12 @@ selectShi62GW(gwName) {
         lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
-        const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผล (ทายผล) ${gw.name} สำหรับ LINE เรียบร้อย`);
-        if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(textToCopy).then(onCopied).catch(() => {
-            const textarea = document.createElement('textarea');
-            textarea.value = textToCopy;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            onCopied();
-          });
-        } else {
-          const textarea = document.createElement('textarea');
-          textarea.value = textToCopy;
-          document.body.appendChild(textarea);
-          textarea.select();
-          document.execCommand('copy');
-          document.body.removeChild(textarea);
-          onCopied();
-        }
+        const isEn = (this.currentLang === 'en');
+        this.openTextSummaryModal({
+          title: isEn ? `Shi62 Prediction (${gwDisplayName})` : `สรุปผลทายผล Shi62 (${gwDisplayName})`,
+          subtitle: isEn ? 'Weekly prediction results ready to share in LINE:' : 'สรุปผลทายผลประจำสัปดาห์สำหรับส่งเข้ากลุ่ม LINE:',
+          text: textToCopy
+        });
       }
 
       copyShi62PrizesLINEResult() {
@@ -6254,26 +6319,12 @@ selectShi62GW(gwName) {
         lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
-        const onCopied = () => this.showCopiedToast('คัดลอกสรุปรางวัลสำหรับ LINE เรียบร้อย');
-        if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(textToCopy).then(onCopied).catch(() => {
-            const textarea = document.createElement('textarea');
-            textarea.value = textToCopy;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            onCopied();
-          });
-        } else {
-          const textarea = document.createElement('textarea');
-          textarea.value = textToCopy;
-          document.body.appendChild(textarea);
-          textarea.select();
-          document.execCommand('copy');
-          document.body.removeChild(textarea);
-          onCopied();
-        }
+        const isEn = (this.currentLang === 'en');
+        this.openTextSummaryModal({
+          title: isEn ? 'Shi62 Season Prizes' : 'สรุปเงินรางวัล Shi62 League',
+          subtitle: isEn ? 'Prize breakdown ready to share in LINE:' : 'สรุปเงินรางวัลสำหรับส่งเข้ากลุ่ม LINE:',
+          text: textToCopy
+        });
       }
 
       showCopiedToast(text = 'คัดลอกข้อความสำเร็จ!') {
@@ -6295,24 +6346,180 @@ selectShi62GW(gwName) {
       }
 
       copyToClipboard(textToCopy, onCopied) {
-        if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(textToCopy).then(onCopied).catch(() => {
+        if (!textToCopy) return false;
+        let copied = false;
+
+        // 1. Modern Clipboard API
+        if (navigator && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+          navigator.clipboard.writeText(textToCopy).then(() => {
+            if (typeof onCopied === 'function') onCopied();
+          }).catch(() => {
+            // Handled synchronously below
+          });
+        }
+
+        // 2. Synchronous fallback via modal textarea if matching
+        const modalTextarea = document.getElementById('text-summary-content');
+        if (modalTextarea && modalTextarea.value === textToCopy) {
+          try {
+            modalTextarea.focus();
+            modalTextarea.select();
+            modalTextarea.setSelectionRange(0, modalTextarea.value.length);
+            copied = document.execCommand('copy');
+          } catch (e) {
+            copied = false;
+          }
+        }
+
+        // 3. Fallback via offscreen temporary textarea (iOS Safari compatible)
+        if (!copied) {
+          try {
             const textarea = document.createElement('textarea');
             textarea.value = textToCopy;
+            textarea.style.position = 'fixed';
+            textarea.style.top = '0';
+            textarea.style.left = '0';
+            textarea.style.width = '2em';
+            textarea.style.height = '2em';
+            textarea.style.padding = '0';
+            textarea.style.border = 'none';
+            textarea.style.outline = 'none';
+            textarea.style.boxShadow = 'none';
+            textarea.style.background = 'transparent';
+            textarea.style.opacity = '0.01';
+            textarea.style.zIndex = '-9999';
+            textarea.setAttribute('readonly', '');
             document.body.appendChild(textarea);
+            textarea.focus();
             textarea.select();
-            document.execCommand('copy');
+            textarea.setSelectionRange(0, textToCopy.length);
+            copied = document.execCommand('copy');
             document.body.removeChild(textarea);
-            onCopied();
-          });
-        } else {
-          const textarea = document.createElement('textarea');
-          textarea.value = textToCopy;
-          document.body.appendChild(textarea);
-          textarea.select();
-          document.execCommand('copy');
-          document.body.removeChild(textarea);
+          } catch (err) {
+            copied = false;
+          }
+        }
+
+        if (copied && typeof onCopied === 'function') {
           onCopied();
+        }
+        return copied;
+      }
+
+      openTextSummaryModal(options = {}) {
+        const { title: titleText, subtitle: subtitleText, text = '' } = options;
+        const isEn = (this.currentLang === 'en');
+        const modal = document.getElementById('text-summary-modal');
+        const contentArea = document.getElementById('text-summary-content');
+        const titleEl = document.getElementById('modal-summary-title');
+        const subtitleEl = document.getElementById('modal-summary-subtitle');
+        const copyIndText = document.getElementById('modal-copy-indicator-text');
+        const closeBtn = document.getElementById('modal-summary-close-btn');
+        const copyBtnLabel = document.getElementById('btn-modal-copy-label');
+        const shareLineLabel = document.getElementById('btn-modal-share-line-label');
+
+        if (titleEl) titleEl.innerText = titleText || (isEn ? 'Gameweek Summary' : 'สรุปผล Gameweek');
+        if (subtitleEl) subtitleEl.innerText = subtitleText || (isEn ? 'Formatted text ready to share with your league or friends:' : 'ข้อความถูกจัดรูปแบบสำหรับส่งเข้ากลุ่ม LINE เรียบร้อยแล้ว:');
+        if (copyIndText) copyIndText.innerText = isEn ? 'Copied to clipboard!' : 'คัดลอกลงคลิปบอร์ดแล้ว!';
+        if (closeBtn) closeBtn.innerText = isEn ? 'Close' : 'ปิด';
+        if (copyBtnLabel) copyBtnLabel.innerText = isEn ? 'Copy Text' : 'คัดลอกข้อความ';
+        if (shareLineLabel) shareLineLabel.innerText = isEn ? 'Share to LINE' : 'ส่งเข้า LINE';
+
+        if (contentArea) {
+          contentArea.value = text;
+        }
+
+        if (modal) {
+          if (modal.classList.contains('hidden')) {
+            this._lastFocusedElement = document.activeElement;
+          }
+          modal.classList.remove('hidden');
+          document.body.classList.add('overflow-hidden');
+        }
+
+        if (contentArea) {
+          contentArea.focus();
+          contentArea.select();
+          contentArea.setSelectionRange(0, text.length);
+        }
+
+        this.triggerCopyAction(text);
+      }
+
+      triggerCopyAction(text) {
+        this.copyToClipboard(text, () => {
+          this.showCopyIndicator();
+        });
+      }
+
+      showCopyIndicator() {
+        const ind = document.getElementById('modal-copy-indicator');
+        const isEn = (this.currentLang === 'en');
+        const copyIndText = document.getElementById('modal-copy-indicator-text');
+        if (copyIndText) copyIndText.innerText = isEn ? 'Copied to clipboard!' : 'คัดลอกลงคลิปบอร์ดแล้ว!';
+        if (ind) {
+          ind.style.opacity = '1';
+          if (this._modalIndTimer) clearTimeout(this._modalIndTimer);
+          this._modalIndTimer = setTimeout(() => {
+            ind.style.opacity = '0';
+          }, 3000);
+        }
+        this.showCopiedToast(isEn ? 'Copied to clipboard!' : 'คัดลอกข้อความสำเร็จ!');
+      }
+
+      shareToLine(customText) {
+        const contentArea = document.getElementById('text-summary-content');
+        const text = customText || (contentArea ? contentArea.value : '');
+        if (!text) return;
+
+        // Ensure text is also in clipboard
+        this.copyToClipboard(text);
+
+        // Try Web Share on mobile devices
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+        if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ text })) {
+          navigator.share({
+            title: document.getElementById('modal-summary-title')?.innerText || 'FPL Summary',
+            text: text
+          }).catch(err => {
+            if (err.name !== 'AbortError') {
+              this.openLineUrl(text);
+            }
+          });
+          return;
+        }
+
+        this.openLineUrl(text);
+      }
+
+      openLineUrl(text) {
+        const lineUrl = `https://line.me/R/msg/text/?${encodeURIComponent(text)}`;
+        window.open(lineUrl, '_blank');
+      }
+
+      shareCurrentView() {
+        const activeTab = this.activeTab || 'gameweek-view';
+        if (activeTab === 'bramann-prediction-view') {
+          this.copyBramannPredLINEResult(this.activeBramannPredGW);
+        } else if (activeTab === 'bramann-challenge-view') {
+          this.copyBramannChalLINEResult(this.activeBramannChalGW);
+        } else if (activeTab === 'shi62-special-view') {
+          this.copyShi62LINEResult(this.activeShi62GW);
+        } else if (activeTab === 'prizes-view') {
+          this.sharePrizes();
+        } else {
+          this.shareCurrentGameweek();
+        }
+      }
+
+      sharePrizes() {
+        const lid = String(this.activeLeagueId);
+        if (lid === '5349') {
+          this.copyBramannPrizesLINEResult();
+        } else if (lid === '675290') {
+          this.copyShi62PrizesLINEResult();
+        } else {
+          this.shareCurrentGameweek();
         }
       }
 
@@ -6382,8 +6589,12 @@ selectShi62GW(gwName) {
         lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
-        const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผล (ทายผล) ${gw.name} สำหรับ LINE เรียบร้อย`);
-        this.copyToClipboard(textToCopy, onCopied);
+        const isEn = (this.currentLang === 'en');
+        this.openTextSummaryModal({
+          title: isEn ? `Bramann Prediction (${gwDisplayName})` : `สรุปผลทายผล Bramann (${gwDisplayName})`,
+          subtitle: isEn ? 'Weekly prediction settlement ready to share in LINE:' : 'สรุปยอดเงินได้-เสียและผลทายผลสำหรับส่งเข้ากลุ่ม LINE:',
+          text: textToCopy
+        });
       }
 
       selectBramannChalGW(gwName) {
@@ -6432,8 +6643,12 @@ selectShi62GW(gwName) {
         lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
-        const onCopied = () => this.showCopiedToast(`คัดลอกสรุปผล (ท้าชน) ${gw.name} สำหรับ LINE เรียบร้อย`);
-        this.copyToClipboard(textToCopy, onCopied);
+        const isEn = (this.currentLang === 'en');
+        this.openTextSummaryModal({
+          title: isEn ? `Bramann Challenge (${gwDisplayName})` : `สรุปผลท้าชน Bramann (${gwDisplayName})`,
+          subtitle: isEn ? 'Fantasy challenge duel results ready to share in LINE:' : 'สรุปผลการดวลแฟนตาซีตัวต่อตัวสำหรับส่งเข้ากลุ่ม LINE:',
+          text: textToCopy
+        });
       }
 
       copyBramannPrizesLINEResult() {
@@ -6576,8 +6791,12 @@ selectShi62GW(gwName) {
         lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
 
         const textToCopy = lines.join(String.fromCharCode(10));
-        const onCopied = () => this.showCopiedToast('คัดลอกสรุปเงินรางวัลสำหรับ LINE เรียบร้อย');
-        this.copyToClipboard(textToCopy, onCopied);
+        const isEn = (this.currentLang === 'en');
+        this.openTextSummaryModal({
+          title: isEn ? 'Bramann Season & Mid-Season Prizes' : 'สรุปเงินรางวัล Bramann League',
+          subtitle: isEn ? 'Prize breakdown ready to share in LINE:' : 'สรุปตารางเงินรางวัล FPL และมินิเกมสำหรับส่งเข้ากลุ่ม LINE:',
+          text: textToCopy
+        });
       }
 
       renderBramannPrediction() {
@@ -6665,7 +6884,7 @@ selectShi62GW(gwName) {
 
               <!-- GW Pills Selector & Copy LINE Button -->
               <div class="flex flex-wrap items-center justify-end gap-2 w-full sm:w-auto">
-                <div class="flex items-center gap-1 overflow-x-auto touch-scroll p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60 max-w-full w-full sm:w-auto">
+                <div class="flex items-center gap-1 overflow-x-auto touch-scroll scrollbar-thin p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60 max-w-full w-full sm:w-auto">
                   ${[...data.gameweeks].reverse().map(g => {
                     const isActive = g.name === this.activeBramannPredGW;
                     return `
@@ -6686,10 +6905,10 @@ selectShi62GW(gwName) {
                 <button 
                   onclick="app.copyBramannPredLINEResult('${activeGWObj.name}')"
                   class="ml-auto sm:ml-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
-                  title="${isEn ? 'Copy weekly summary for LINE' : 'คัดลอกสรุปผลสัปดาห์นี้สำหรับส่ง LINE'}"
+                  title="${isEn ? 'Share weekly summary to LINE' : 'แชร์สรุปผลสัปดาห์นี้เข้า LINE'}"
                 >
                   <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-                  <span>${isEn ? 'Copy LINE' : 'คัดลอก LINE'}</span>
+                  <span>${isEn ? 'Share LINE' : 'แชร์ LINE'}</span>
                 </button>
               </div>
             </div>
@@ -6971,7 +7190,7 @@ selectShi62GW(gwName) {
               </h2>
 
               <div class="flex flex-wrap items-center justify-end gap-2 w-full sm:w-auto">
-                <div class="flex items-center gap-1 overflow-x-auto touch-scroll p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60 max-w-full w-full sm:w-auto">
+                <div class="flex items-center gap-1 overflow-x-auto touch-scroll scrollbar-thin p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60 max-w-full w-full sm:w-auto">
                   ${[...data.gameweeks].reverse().map(g => {
                     const isActive = g.name === this.activeBramannChalGW;
                     return `
@@ -6992,10 +7211,10 @@ selectShi62GW(gwName) {
                 <button 
                   onclick="app.copyBramannChalLINEResult('${activeGWObj.name}')"
                   class="ml-auto sm:ml-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
-                  title="${isEn ? 'Copy weekly summary for LINE' : 'คัดลอกสรุปผลสัปดาห์นี้สำหรับส่ง LINE'}"
+                  title="${isEn ? 'Share weekly summary to LINE' : 'แชร์สรุปผลสัปดาห์นี้เข้า LINE'}"
                 >
                   <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-                  <span>${isEn ? 'Copy LINE' : 'คัดลอก LINE'}</span>
+                  <span>${isEn ? 'Share LINE' : 'แชร์ LINE'}</span>
                 </button>
               </div>
             </div>
@@ -7600,7 +7819,7 @@ selectShi62GW(gwName) {
 
               <!-- GW Pills Selector & Copy LINE Button -->
               <div class="flex flex-wrap items-center justify-end gap-2 w-full sm:w-auto">
-                <div class="flex items-center gap-1 overflow-x-auto touch-scroll p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60 max-w-full w-full sm:w-auto">
+                <div class="flex items-center gap-1 overflow-x-auto touch-scroll scrollbar-thin p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60 max-w-full w-full sm:w-auto">
                   ${sortedGWs.map(g => {
                     const isActive = g.name === this.activeShi62GW;
                     return `
@@ -7621,10 +7840,10 @@ selectShi62GW(gwName) {
                 <button 
                   onclick="app.copyShi62LINEResult('${activeGWObj.name}')"
                   class="ml-auto sm:ml-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
-                  title="คัดลอกสรุปผลสัปดาห์นี้สำหรับส่ง LINE"
+                  title="${isEn ? 'Share weekly summary to LINE' : 'แชร์สรุปผลสัปดาห์นี้เข้า LINE'}"
                 >
                   <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-                  <span>คัดลอก LINE</span>
+                  <span>${isEn ? 'Share LINE' : 'แชร์ LINE'}</span>
                 </button>
               </div>
             </div>
@@ -9896,7 +10115,7 @@ selectShi62GW(gwName) {
             <!-- Filter Controls & Search -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-1">
               <!-- Filter Pills -->
-              <div class="flex items-center gap-1.5 overflow-x-auto touch-scroll no-scrollbar p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
+              <div class="flex items-center gap-1.5 overflow-x-auto touch-scroll scrollbar-thin p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
                 <button 
                   onclick="app.setTransfersFilter('all')" 
                   class="px-2.5 sm:px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeFilter === 'all' ? 'bg-slate-900 text-white dark:bg-blue-600 shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
@@ -10200,7 +10419,7 @@ selectShi62GW(gwName) {
           <!-- Controls: Filters & Search -->
           <div class="glass-card rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
             <!-- Filter Pills (Scrollable on Mobile) -->
-            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-scroll py-0.5 -mx-1 px-1">
+            <div class="flex items-center gap-1.5 overflow-x-auto scrollbar-thin touch-scroll py-0.5 -mx-1 px-1">
               <button onclick="app.setCompCardFilter('all')" data-filter="all" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'all' ? 'bg-blue-600 text-white shadow-xs ring-2 ring-blue-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60'} cursor-pointer">
                 ${isEn ? 'All' : 'ทั้งหมด'} (${totalTeams})
               </button>
@@ -10418,7 +10637,7 @@ selectShi62GW(gwName) {
             <span class="text-[10px] text-slate-400 font-medium">${isEn ? '👉 Scroll right to view chips' : '👉 เลื่อนขวาดูสถานะการ์ด'}</span>
           </div>
 
-          <div class="overflow-x-auto touch-scroll no-scrollbar">
+          <div class="overflow-x-auto touch-scroll scrollbar-thin">
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="bg-slate-50/70 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider">
@@ -10649,7 +10868,7 @@ selectShi62GW(gwName) {
 
             <!-- Position Filter Pills & Search -->
             <div class="space-y-2 mb-3.5">
-              <div class="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
+              <div class="flex items-center gap-1 overflow-x-auto scrollbar-thin touch-scroll py-0.5">
                 ${['ALL', 'GKP', 'DEF', 'MID', 'FWD'].map(pos => {
                   const posName = (pos === 'ALL') ? (isEn ? 'ALL' : 'ทั้งหมด') : pos;
                   return `
@@ -11121,7 +11340,7 @@ selectShi62GW(gwName) {
             <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">${isEn ? '👈 Swipe to view Best Value 👉' : '👈 เลื่อนดูตัวเลือกสุดคุ้ม 👉'}</span>
           </div>
 
-          <div class="overflow-x-auto touch-scroll no-scrollbar -mx-2 sm:mx-0">
+          <div class="overflow-x-auto touch-scroll scrollbar-thin -mx-2 sm:mx-0">
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
@@ -11642,7 +11861,7 @@ selectShi62GW(gwName) {
             mainContainer.innerHTML = `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800">
                 <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-3 font-display">${hasWeeklyPenalties ? (isEn ? 'Accumulated Prizes & Treasury Fines Leaderboard' : 'ตารางเงินรางวัลสะสม & ยอดค่าปรับเข้ากองกลาง') : (isEn ? 'Accumulated Prize Money Leaderboard' : 'ตารางเงินรางวัลสะสมของสมาชิก')}</h3>
-                <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
+                <div class="overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 touch-scroll">
                   <table class="w-full text-left border-collapse">
                     <thead>
                       <tr class="border-b border-slate-100 dark:border-slate-800 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50 dark:bg-slate-800/50">
@@ -12200,11 +12419,11 @@ selectShi62GW(gwName) {
                   ${curMonthBadge}
                 </div>
 
-                <div class="flex space-x-1.5 overflow-x-auto touch-scroll no-scrollbar pb-2.5 mb-2 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex space-x-1.5 overflow-x-auto touch-scroll scrollbar-thin pb-2.5 mb-2 border-b border-slate-100 dark:border-slate-800">
                   ${monthSelectorBtns}
                 </div>
 
-                <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
+                <div class="overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 touch-scroll">
                   <table class="w-full text-left border-collapse">
                     <thead>
                       <tr class="border-b border-slate-100 dark:border-slate-800 text-[11px] font-bold text-slate-400 font-display bg-slate-50/50 dark:bg-slate-800/50">
@@ -12580,7 +12799,7 @@ selectShi62GW(gwName) {
                   <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">${isEn ? `Season-End Prize & Penalty Summary (GW 1 - ${maxGW})` : `ตารางสรุปยอดเงินรางวัล & ค่าปรับสิ้นฤดูกาล (GW 1 - ${maxGW})`}</h3>
                   <span class="text-[11px] font-bold text-slate-500 font-display">${isEn ? `Updated by current overall standings (${maxGW} GWs completed)` : `อัปเดตตามอันดับคะแนนรวมปัจจุบัน (แข่งจบแล้ว ${maxGW} สัปดาห์)`}</span>
                 </div>
-                <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
+                <div class="overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 touch-scroll">
                   <table class="w-full text-left border-collapse ${isShi62 ? 'min-w-[620px]' : ''}">
                     <thead>
                       ${tableHeadersHtml}
@@ -15259,35 +15478,11 @@ selectShi62GW(gwName) {
             text += `\n🌐 ตรวจสอบผลสด & อันดับตารางเต็มได้ที่:\n${this.getPublicLeagueUrl()}`;
           }
 
-          const modal = document.getElementById('text-summary-modal');
-          const contentArea = document.getElementById('text-summary-content');
-          const title = document.getElementById('modal-summary-title');
-          const subtitle = document.getElementById('modal-summary-subtitle');
-          const copyIndText = document.getElementById('modal-copy-indicator-text');
-          const closeBtn = document.getElementById('modal-summary-close-btn');
-          const copyBtnLabel = document.getElementById('btn-modal-copy-label');
-
-          if (title) title.innerText = isEn ? `Gameweek Summary: ${this.data.name} (GW ${gwKey})` : `สรุปผล ${this.data.name} (GW ${gwKey})`;
-          if (subtitle) subtitle.innerText = isEn ? 'Formatted text ready to share with your league or friends:' : 'ข้อความถูกจัดรูปแบบสำหรับส่งเข้ากลุ่ม LINE เรียบร้อยแล้ว:';
-          if (copyIndText) copyIndText.innerText = isEn ? 'Copied to clipboard!' : 'คัดลอกลงคลิปบอร์ดแล้ว!';
-          if (closeBtn) closeBtn.innerText = isEn ? 'Close' : 'ปิด';
-          if (copyBtnLabel) copyBtnLabel.innerText = isEn ? 'Copy Text' : 'คัดลอกข้อความ';
-
-          if (contentArea) contentArea.value = text;
-          if (modal) {
-            if (modal.classList.contains('hidden')) {
-              this._lastFocusedElement = document.activeElement;
-            }
-            modal.classList.remove('hidden');
-            document.body.classList.add('overflow-hidden');
-          }
-
-          if (contentArea) {
-            contentArea.focus();
-            contentArea.select();
-          }
-
-          this.triggerCopyAction(text);
+          this.openTextSummaryModal({
+            title: isEn ? `Gameweek Summary: ${this.data.name} (GW ${gwKey})` : `สรุปผล ${this.data.name} (GW ${gwKey})`,
+            subtitle: isEn ? 'Formatted text ready to share with your league or friends:' : 'ข้อความถูกจัดรูปแบบสำหรับส่งเข้ากลุ่ม LINE เรียบร้อยแล้ว:',
+            text: text
+          });
 
         } catch (e) {
           console.error('shareCurrentGameweek error:', e);
@@ -15296,48 +15491,10 @@ selectShi62GW(gwName) {
         }
       }
 
-      triggerCopyAction(text) {
-        let copied = false;
-        if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(() => {
-            this.showCopyIndicator();
-          }).catch(() => {
-            this.fallbackExecCopy();
-          });
-        } else {
-          this.fallbackExecCopy();
-        }
-      }
-
-      fallbackExecCopy() {
-        const contentArea = document.getElementById('text-summary-content');
-        if (contentArea) {
-          contentArea.focus();
-          contentArea.select();
-          try {
-            document.execCommand('copy');
-            this.showCopyIndicator();
-          } catch (err) {}
-        }
-      }
-
       copyFromModal() {
         const contentArea = document.getElementById('text-summary-content');
         if (contentArea) {
           this.triggerCopyAction(contentArea.value);
-        }
-      }
-
-      showCopyIndicator() {
-        const ind = document.getElementById('modal-copy-indicator');
-        const isEn = (this.currentLang === 'en');
-        const copyIndText = document.getElementById('modal-copy-indicator-text');
-        if (copyIndText) copyIndText.innerText = isEn ? 'Copied to clipboard!' : 'คัดลอกลงคลิปบอร์ดแล้ว!';
-        if (ind) {
-          ind.style.opacity = '1';
-          setTimeout(() => {
-            ind.style.opacity = '0';
-          }, 3000);
         }
       }
 
@@ -16453,15 +16610,90 @@ selectShi62GW(gwName) {
           alert('ระบบกำลังโหลดข้อมูล กรุณารอสักครู่แล้วคลิกใหม่อีกครั้ง');
         }
       };
+
+      window.shareCurrentGameweekFallback = function() {
+        if (window.app && typeof window.app.shareCurrentGameweek === 'function') {
+          window.app.shareCurrentGameweek();
+        } else {
+          alert('ระบบกำลังโหลดข้อมูล กรุณารอสักครู่แล้วคลิกใหม่อีกครั้ง');
+        }
+      };
+
+      window.shareCurrentViewFallback = function() {
+        if (window.app && typeof window.app.shareCurrentView === 'function') {
+          window.app.shareCurrentView();
+        } else {
+          alert('ระบบกำลังโหลดข้อมูล กรุณารอสักครู่แล้วคลิกใหม่อีกครั้ง');
+        }
+      };
     }
 
-    // FPLSaWaDiKa Edge Telemetry Beacon (Zero Latency)
-    try {
-      if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
-        var telemPayload = JSON.stringify({ type: 'page_view', path: window.location.pathname });
-        navigator.sendBeacon('https://api.fplsawadika.com/api/telemetry/event', telemPayload);
-      }
-    } catch (_) {}
+    // FPLSaWaDiKa League Engagement & Screen Time Telemetry (Edge Analytics)
+    (function() {
+      try {
+        var telemEndpoint = "https://api.fplsawadika.com/api/telemetry/event";
+        var currentLeague = "";
+        var sessionStartTime = Date.now();
+        var match = window.location.pathname.match(/\/(\d{4,8})\/?/);
+        if (match && match[1]) {
+          currentLeague = match[1];
+        } else if (window.app && window.app.activeLeagueId) {
+          currentLeague = String(window.app.activeLeagueId);
+        } else {
+          currentLeague = "40700";
+        }
+
+        function sendBeaconEvent(payload) {
+          if (typeof navigator !== "undefined" && navigator.sendBeacon) {
+            navigator.sendBeacon(telemEndpoint, JSON.stringify(payload));
+          }
+        }
+
+        // 1. Initial Page & League View
+        sendBeaconEvent({
+          type: "league_view",
+          league_id: currentLeague,
+          path: window.location.pathname
+        });
+
+        // 2. Dwell Time Flush
+        function flushDwellTime() {
+          if (!currentLeague) return;
+          var elapsedSec = Math.round((Date.now() - sessionStartTime) / 1000);
+          if (elapsedSec >= 2 && elapsedSec <= 3600) {
+            sendBeaconEvent({
+              type: "dwell_time",
+              league_id: currentLeague,
+              duration: elapsedSec
+            });
+          }
+          sessionStartTime = Date.now();
+        }
+
+        document.addEventListener("visibilitychange", function() {
+          if (document.visibilityState === "hidden") {
+            flushDwellTime();
+          } else {
+            sessionStartTime = Date.now();
+          }
+        });
+        window.addEventListener("pagehide", flushDwellTime);
+        window.addEventListener("beforeunload", flushDwellTime);
+
+        // Hook into App League Switching
+        window._trackLeagueSwitch = function(newLeagueId) {
+          if (!newLeagueId || String(newLeagueId) === currentLeague) return;
+          flushDwellTime();
+          currentLeague = String(newLeagueId);
+          sessionStartTime = Date.now();
+          sendBeaconEvent({
+            type: "league_view",
+            league_id: currentLeague,
+            path: "/" + currentLeague + "/"
+          });
+        };
+      } catch (_) {}
+    })();
   </script>
 </body>
 </html>"""
