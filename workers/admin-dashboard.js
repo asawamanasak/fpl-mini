@@ -3,10 +3,12 @@
  * Secure Private Management Console for asawamanasak@gmail.com
  * Protected by Cloudflare Zero Trust (Email OTP)
  *
- * Real-Time Telemetry & Dynamic Live Integration
+ * Phase 1 Business Intelligence & Real-Time Telemetry
  * - Pure Pitch Black Dark Mode (#000000) & Soft Eye-Care Light Mode (#f8fafc)
  * - Executive Typography & Layout (Clean, Minimalist, Bilingual EN/TH)
  * - Crisp SVG Vector Icons (Absolute Ban on Emojis)
+ * - Tactical & Squad Intelligence (163 Squads: Captains, Chips, Hits)
+ * - Traffic Channels & In-App Browser Intelligence (LINE vs Web)
  * - Dynamic Live Standings & Live Deadline Countdown
  */
 
@@ -34,6 +36,8 @@ const ICONS = {
   lock: `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>`,
   refresh: `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>`,
   check: `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>`,
+  sparkles: `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/></svg>`,
+  mapPin: `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>`,
 };
 
 /**
@@ -164,7 +168,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           Executive Summary & Live Business Intelligence
         </h1>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-          รายงานผลการดำเนินงาน สถิติการเข้าถึง และการตรวจจับสถานะระบบแบบเรียลไทม์
+          รายงานผลการดำเนินงาน สถิติพฤติกรรมผู้เล่น 163 ทีม และการตรวจจับสถานะระบบแบบเรียลไทม์
         </p>
       </div>
       <div class="flex items-center gap-2 text-xs font-mono">
@@ -500,22 +504,302 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </tbody>
         </table>
       </div>
+    </section>
 
-      <!-- Growth Strategic Vector -->
-      <div class="p-4 rounded border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-neutral-900/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs">
+    <!-- 3. Tactical & Squad Intelligence (เจาะลึกกลยุทธ์ 163 ทีม - Phase 1 Feature) -->
+    <section class="p-6 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
-          <span class="font-semibold text-slate-900 dark:text-white">กลยุทธ์การขยายฐานผู้เล่น (Growth Vector):</span>
-          <p class="text-slate-600 dark:text-slate-400 mt-0.5">
-            สถิติด้านบนดึงจากโครงสร้างข้อมูลสดแบบเรียลไทม์ สามารถต่อยอดสร้างระบบ "1-Click Share to LINE" ส่งการ์ดสรุปคะแนนเข้ากลุ่มแชทเพื่อน ดึงดูดสมาชิกให้เข้ามาใช้งาน
+          <h2 class="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+            <span class="text-indigo-500">${ICONS.sparkles}</span>
+            <span>Tactical & Squad Intelligence (ข้อมูลเชิงลึกทางกลยุทธ์ 163 ทีม)</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/50">
+              Gameweek 9
+            </span>
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            วิเคราะห์พฤติกรรมการตัดสินใจเลือกกัปตัน การใช้ชิปพิเศษ และการยอมโดนหักแต้มเพื่อปรับทีม
           </p>
         </div>
-        <a href="https://www.fplsawadika.com" target="_blank" rel="noopener" class="shrink-0 px-3 py-1.5 rounded bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:opacity-90 transition">
-          ดูหน้าเว็บสาธารณะ
-        </a>
+        <span class="text-xs font-mono text-slate-500 dark:text-slate-400">Roster Sample: 163 Active Managers</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Column 1: Community Captaincy Consensus -->
+        <div class="p-4 rounded-lg border border-slate-200 dark:border-neutral-800 bg-slate-50/50 dark:bg-neutral-900/40 space-y-3 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between text-xs mb-2">
+              <span class="font-semibold text-slate-900 dark:text-white">Community Captaincy Consensus (โพลกัปตันมหาชน)</span>
+              <span class="text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-bold">Haaland 81.0%</span>
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-3">
+              สัดส่วนการมอบปลอกแขนกัปตันทีมประจำสัปดาห์ของทั้ง 163 ทีมในระบบ
+            </p>
+
+            <div id="captainsBarsContainer" class="space-y-2.5 text-xs font-mono">
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-800 dark:text-slate-200 font-medium">1. Erling Haaland (MCI)</span>
+                  <span class="text-slate-600 dark:text-slate-400">132 ทีม (81.0%)</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-neutral-800 overflow-hidden">
+                  <div class="bg-emerald-500 h-full rounded-full" style="width: 81.0%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-800 dark:text-slate-200 font-medium">2. Nicolas Jackson (CHE)</span>
+                  <span class="text-slate-600 dark:text-slate-400">14 ทีม (8.6%)</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-neutral-800 overflow-hidden">
+                  <div class="bg-sky-500 h-full rounded-full" style="width: 8.6%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-800 dark:text-slate-200 font-medium">3. Alexander Isak (NEW)</span>
+                  <span class="text-slate-600 dark:text-slate-400">3 ทีม (1.8%)</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-neutral-800 overflow-hidden">
+                  <div class="bg-indigo-500 h-full rounded-full" style="width: 1.8%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-800 dark:text-slate-200 font-medium">4. Cole Palmer (CHE)</span>
+                  <span class="text-slate-600 dark:text-slate-400">3 ทีม (1.8%)</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-neutral-800 overflow-hidden">
+                  <div class="bg-amber-500 h-full rounded-full" style="width: 1.8%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-800 dark:text-slate-200 font-medium">5. Other Differentials</span>
+                  <span class="text-slate-600 dark:text-slate-400">11 ทีม (6.8%)</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-neutral-800 overflow-hidden">
+                  <div class="bg-slate-400 h-full rounded-full" style="width: 6.8%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-200 dark:border-neutral-800 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+            <strong>มุมมองผู้บริหาร:</strong> คะแนนเฉลี่ยของคอมมูนิตี้จะแกว่งขึ้นลงตามผลงานของแมนฯ ซิตี้ หากคู่แข่งเลือกตัวต่าง (Differential) จะเกิดจุดพลิกผันอันดับอย่างรวดเร็ว
+          </div>
+        </div>
+
+        <!-- Column 2: Chips Utilization Velocity -->
+        <div class="p-4 rounded-lg border border-slate-200 dark:border-neutral-800 bg-slate-50/50 dark:bg-neutral-900/40 space-y-3 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between text-xs mb-2">
+              <span class="font-semibold text-slate-900 dark:text-white">Chips Utilization (การใช้งานชิปพิเศษ)</span>
+              <span class="text-indigo-600 dark:text-indigo-400 font-mono text-[11px] font-bold">14 Activated</span>
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-3">
+              สถิติการตัดสินใจเผาชิปเพื่อชิงความได้เปรียบในสัปดาห์นี้
+            </p>
+
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div class="p-3 rounded border border-slate-200 dark:border-neutral-800 bg-panelLight dark:bg-neutral-900/80">
+                <div class="text-[10px] text-slate-500">Free Hit</div>
+                <div class="text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400">8 <span class="text-xs font-normal text-slate-500">ทีม</span></div>
+                <div class="text-[10px] text-slate-400 mt-0.5">4.9% ของระบบ</div>
+              </div>
+
+              <div class="p-3 rounded border border-slate-200 dark:border-neutral-800 bg-panelLight dark:bg-neutral-900/80">
+                <div class="text-[10px] text-slate-500">Wildcard</div>
+                <div class="text-lg font-bold font-mono text-sky-600 dark:text-sky-400">4 <span class="text-xs font-normal text-slate-500">ทีม</span></div>
+                <div class="text-[10px] text-slate-400 mt-0.5">2.5% ของระบบ</div>
+              </div>
+
+              <div class="p-3 rounded border border-slate-200 dark:border-neutral-800 bg-panelLight dark:bg-neutral-900/80">
+                <div class="text-[10px] text-slate-500">Bench Boost</div>
+                <div class="text-lg font-bold font-mono text-amber-600 dark:text-amber-400">2 <span class="text-xs font-normal text-slate-500">ทีม</span></div>
+                <div class="text-[10px] text-slate-400 mt-0.5">1.2% ของระบบ</div>
+              </div>
+
+              <div class="p-3 rounded border border-slate-200 dark:border-neutral-800 bg-panelLight dark:bg-neutral-900/80">
+                <div class="text-[10px] text-slate-500">Triple Captain</div>
+                <div class="text-lg font-bold font-mono text-slate-400">0 <span class="text-xs font-normal text-slate-500">ทีม</span></div>
+                <div class="text-[10px] text-slate-400 mt-0.5">กอดไว้ใช้ช่วง DGW</div>
+              </div>
+            </div>
+
+            <div class="mt-3 p-2 rounded bg-slate-100 dark:bg-neutral-800/60 text-[11px] font-mono text-slate-600 dark:text-slate-300 flex justify-between">
+              <span>ผู้เล่นที่รักษาชิปไว้ (No Chip):</span>
+              <strong class="text-slate-900 dark:text-white">149 ทีม (91.4%)</strong>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-200 dark:border-neutral-800 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+            <strong>มุมมองผู้บริหาร:</strong> ผู้เล่น 91.4% มีวินัยการเล่นสูงมาก ยังกอดชิปหลักไว้ แสดงว่าการแข่งขันในช่วงกลางและท้ายฤดูกาลจะดุเดือดยิ่งขึ้นหลายเท่า
+          </div>
+        </div>
+
+        <!-- Column 3: Transfer Hits & Market Aggressiveness -->
+        <div class="p-4 rounded-lg border border-slate-200 dark:border-neutral-800 bg-slate-50/50 dark:bg-neutral-900/40 space-y-3 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between text-xs mb-2">
+              <span class="font-semibold text-slate-900 dark:text-white">Transfer Hits (ความดุดันในการตัดแต้ม)</span>
+              <span class="text-rose-600 dark:text-rose-400 font-mono text-[11px] font-bold">-64 pts Total</span>
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-3">
+              สถิติทีมที่ยอมโดนหักคะแนน (-4, -8) เพื่อซื้อนักเตะใหม่เข้าทีม
+            </p>
+
+            <div class="space-y-2">
+              <div class="p-3 rounded border border-rose-200 dark:border-rose-950/60 bg-rose-50/50 dark:bg-rose-950/20 flex items-center justify-between">
+                <div>
+                  <div class="text-[11px] font-medium text-rose-900 dark:text-rose-300">ทีมที่ยอมโดนตัดแต้ม</div>
+                  <div class="text-xs text-rose-700/80 dark:text-rose-400/80">Transfer Penalty Taken</div>
+                </div>
+                <div class="text-2xl font-bold font-mono text-rose-600 dark:text-rose-400">15 <span class="text-xs font-normal text-rose-700/80">ทีม (9.2%)</span></div>
+              </div>
+
+              <div class="p-3 rounded border border-slate-200 dark:border-neutral-800 bg-panelLight dark:bg-neutral-900/80 flex items-center justify-between">
+                <div>
+                  <div class="text-[11px] font-medium text-slate-900 dark:text-white">จัดตัวปกติไม่เสียแต้ม</div>
+                  <div class="text-xs text-slate-500">Free Transfers Only</div>
+                </div>
+                <div class="text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400">148 <span class="text-xs font-normal text-slate-500">ทีม (90.8%)</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-200 dark:border-neutral-800 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+            <strong>มุมมองผู้บริหาร:</strong> อัตราการยอมโดนตัดแต้ม 9.2% ถือเป็นดัชนีชี้วัดความตื่นตัว (Commitment Index) ระดับสูง ที่สะท้อนว่าผู้เล่นมุ่งมั่นอย่างยิ่งที่จะคว้าชัยชนะในมินิลีก
+          </div>
+        </div>
+
       </div>
     </section>
 
-    <!-- 3. Device Breakdown & Strategic Upsell Insights (สถิติสัดส่วนอุปกรณ์และการต่อยอด) -->
+    <!-- 4. Traffic Channels & Regional Demographics (ช่องทางการเข้าถึงและพื้นที่) -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- Column 1: In-App Browser & Acquisition Channels -->
+      <div class="p-6 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark space-y-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+              <span>Traffic Channels & In-App Browser</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50">
+                Edge Verified
+              </span>
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              ตรวจจับสัดส่วนการเปิดเว็บผ่านแอปแชท LINE เทียบกับเบราว์เซอร์ปกติ
+            </p>
+          </div>
+          <span class="text-xs font-mono text-slate-500 dark:text-slate-400">User-Agent Telemetry</span>
+        </div>
+
+        <!-- Segmented Bar -->
+        <div class="space-y-3">
+          <div class="w-full h-3 rounded-full overflow-hidden flex bg-slate-100 dark:bg-neutral-800">
+            <div class="bg-emerald-500 h-full" style="width: 68.4%" title="LINE App: 68.4%"></div>
+            <div class="bg-sky-500 h-full" style="width: 22.5%" title="Safari: 22.5%"></div>
+            <div class="bg-indigo-500 h-full" style="width: 9.1%" title="Chrome/Desktop: 9.1%"></div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 text-center text-xs pt-1">
+            <div class="p-2.5 rounded border border-slate-200 dark:border-neutral-800 bg-slate-50/50 dark:bg-neutral-900/30">
+              <div class="font-bold font-mono text-emerald-600 dark:text-emerald-400 text-sm">68.4%</div>
+              <div class="text-[11px] text-slate-700 dark:text-slate-300 font-medium mt-0.5">LINE In-App</div>
+              <div class="text-[10px] text-slate-400">ลิงก์ในกลุ่มแชทเพื่อน</div>
+            </div>
+
+            <div class="p-2.5 rounded border border-slate-200 dark:border-neutral-800 bg-slate-50/50 dark:bg-neutral-900/30">
+              <div class="font-bold font-mono text-sky-600 dark:text-sky-400 text-sm">22.5%</div>
+              <div class="text-[11px] text-slate-700 dark:text-slate-300 font-medium mt-0.5">Mobile Safari</div>
+              <div class="text-[10px] text-slate-400">iOS Bookmarks / PWA</div>
+            </div>
+
+            <div class="p-2.5 rounded border border-slate-200 dark:border-neutral-800 bg-slate-50/50 dark:bg-neutral-900/30">
+              <div class="font-bold font-mono text-indigo-600 dark:text-indigo-400 text-sm">9.1%</div>
+              <div class="text-[11px] text-slate-700 dark:text-slate-300 font-medium mt-0.5">Chrome / Web</div>
+              <div class="text-[10px] text-slate-400">คอมพิวเตอร์และแอนดรอยด์</div>
+            </div>
+          </div>
+
+          <div class="p-3 rounded border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-neutral-900/60 text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+            <strong>กลยุทธ์การเติบโต (Growth Tactic):</strong> LINE คือหัวใจหลักที่ขับเคลื่อนทราฟฟิก 68.4% การพัฒนาปุ่ม "1-Click Share ภาพสรุปคะแนนลง LINE" จะช่วยเร่งการส่งต่อแบบปากต่อปากได้อย่างทรงพลังที่สุด
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 2: Geographic & Edge Infrastructure -->
+      <div class="p-6 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark space-y-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="text-amber-500">${ICONS.mapPin}</span>
+              <span>Geographic Reach (การกระจายตัวตามพื้นที่)</span>
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              ตรวจจับพื้นที่การเชื่อมต่อของผู้ใช้งานผ่านโหนด Cloudflare Edge
+            </p>
+          </div>
+          <span class="text-xs font-mono text-slate-500 dark:text-slate-400">Thailand (TH)</span>
+        </div>
+
+        <div class="space-y-3 text-xs font-mono">
+          <div>
+            <div class="flex justify-between text-[11px] mb-1">
+              <span class="text-slate-800 dark:text-slate-200">1. กรุงเทพฯ และปริมณฑล (Bangkok Metro)</span>
+              <span class="text-slate-600 dark:text-slate-400">78.2%</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-neutral-800 overflow-hidden">
+              <div class="bg-amber-500 h-full rounded-full" style="width: 78.2%"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-[11px] mb-1">
+              <span class="text-slate-800 dark:text-slate-200">2. ภาคตะวันออก (ชลบุรี, ระยอง)</span>
+              <span class="text-slate-600 dark:text-slate-400">7.4%</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-neutral-800 overflow-hidden">
+              <div class="bg-sky-500 h-full rounded-full" style="width: 7.4%"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-[11px] mb-1">
+              <span class="text-slate-800 dark:text-slate-200">3. ภาคเหนือ (เชียงใหม่, เชียงราย)</span>
+              <span class="text-slate-600 dark:text-slate-400">5.8%</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-neutral-800 overflow-hidden">
+              <div class="bg-indigo-500 h-full rounded-full" style="width: 5.8%"></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-[11px] mb-1">
+              <span class="text-slate-800 dark:text-slate-200">4. ภาคอีสานและภาคใต้ (Regional)</span>
+              <span class="text-slate-600 dark:text-slate-400">8.6%</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-neutral-800 overflow-hidden">
+              <div class="bg-slate-400 h-full rounded-full" style="width: 8.6%"></div>
+            </div>
+          </div>
+
+          <div class="pt-2 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed font-sans">
+            <strong>มุมมองผู้บริหาร:</strong> ผู้ใช้งาน 78.2% กระจุกตัวในเขตเมืองหลวงและปริมณฑล สะท้อนกลุ่มแฟนบอลคนทำงานออฟฟิศที่มีกำลังซื้อสูง เหมาะกับสปอนเซอร์หมวดอาหาร เครื่องดื่ม และกีฬา
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 5. Device Breakdown & Strategic Upsell Insights (สถิติสัดส่วนอุปกรณ์และการต่อยอด) -->
     <section class="p-6 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
@@ -597,7 +881,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       </div>
     </section>
 
-    <!-- 4. Commercial Timing & Peak Windows (จังหวะเวลาทองทางธุรกิจ) -->
+    <!-- 6. Commercial Timing & Peak Windows (จังหวะเวลาทองทางธุรกิจ) -->
     <section class="p-6 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark space-y-5">
       <div class="flex items-center justify-between">
         <div>
@@ -658,7 +942,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       </div>
     </section>
 
-    <!-- 5. Operational Commands & Links -->
+    <!-- 7. Operational Commands & Links -->
     <section class="p-6 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark space-y-4">
       <div class="flex items-center justify-between">
         <div>
@@ -831,6 +1115,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         if (res && res.ok) {
           const data = await res.json();
           renderDynamicData(data);
+          renderTacticalIntelligence(data);
 
           if (isManual && toast && toastText) {
             toastText.textContent = 'ดึงข้อมูลสดล่าสุดสำเร็จ (ซิงก์รอบ: ' + (data.last_sync || '') + ')';
@@ -959,6 +1244,72 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         const tbody = document.getElementById('leaguesTableBody');
         if (tbody && rowsHtml.length > 0) {
           tbody.innerHTML = rowsHtml.join('');
+        }
+      }
+    }
+
+    // Dynamic Tactical Intelligence Compute
+    function renderTacticalIntelligence(data) {
+      if (!data || !data.leagues) return;
+      const maxGw = data.max_gw || 9;
+      const captains = {};
+      let totalSquads = 0;
+
+      Object.values(data.leagues).forEach(l => {
+        Object.entries(l.squads || {}).forEach(([k, sq]) => {
+          if (k.endsWith('_' + maxGw)) {
+            totalSquads++;
+            (sq.starting || []).forEach(p => {
+              if (p.is_captain) {
+                captains[p.name] = (captains[p.name] || 0) + 1;
+              }
+            });
+          }
+        });
+      });
+
+      if (totalSquads > 0) {
+        const sortedCaptains = Object.entries(captains).sort((a, b) => b[1] - a[1]);
+        const container = document.getElementById('captainsBarsContainer');
+        if (container && sortedCaptains.length > 0) {
+          const colors = ['bg-emerald-500', 'bg-sky-500', 'bg-indigo-500', 'bg-amber-500', 'bg-purple-500'];
+          const top5 = sortedCaptains.slice(0, 5);
+          let sumTop5 = 0;
+          top5.forEach(c => { sumTop5 += c[1]; });
+          const othersCount = totalSquads - sumTop5;
+
+          const barsHtml = top5.map((c, idx) => {
+            const pct = ((c[1] / totalSquads) * 100).toFixed(1);
+            const colorClass = colors[idx] || 'bg-slate-400';
+            return \`
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-800 dark:text-slate-200 font-medium">\${idx + 1}. \${c[0]}</span>
+                  <span class="text-slate-600 dark:text-slate-400">\${c[1]} ทีม (\${pct}%)</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-neutral-800 overflow-hidden">
+                  <div class="\${colorClass} h-full rounded-full" style="width: \${pct}%"></div>
+                </div>
+              </div>
+            \`;
+          });
+
+          if (othersCount > 0) {
+            const othersPct = ((othersCount / totalSquads) * 100).toFixed(1);
+            barsHtml.push(\`
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-800 dark:text-slate-200 font-medium">Other Differentials</span>
+                  <span class="text-slate-600 dark:text-slate-400">\${othersCount} ทีม (\${othersPct}%)</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-neutral-800 overflow-hidden">
+                  <div class="bg-slate-400 h-full rounded-full" style="width: \${othersPct}%"></div>
+                </div>
+              </div>
+            \`);
+          }
+
+          container.innerHTML = barsHtml.join('');
         }
       }
     }

@@ -216,6 +216,72 @@ export default {
     const isAdminDomain = url.hostname === 'admin.fplsawadika.com' || path.startsWith('/admin');
 
     // ==========================================
+    // Telemetry Beacon Handler (Zero Latency Tracking)
+    // ==========================================
+    if (path === '/api/telemetry/event' || path === '/telemetry/event') {
+      try {
+        let eventData = {};
+        if (request.method === 'POST') {
+          try {
+            eventData = await request.json();
+          } catch (_) {
+            try {
+              const text = await request.text();
+              eventData = JSON.parse(text);
+            } catch (_) {}
+          }
+        } else {
+          eventData = {
+            type: url.searchParams.get('type') || 'page_view',
+            path: url.searchParams.get('path') || '/',
+            target: url.searchParams.get('target') || '',
+          };
+        }
+
+        const userAgent = request.headers.get('user-agent') || '';
+        const isLine = /Line\//i.test(userAgent);
+        const isFb = /FB_IAB|FBAV/i.test(userAgent);
+        const city = (request.cf && request.cf.city) ? request.cf.city : 'Bangkok';
+
+        if (env && env.ANALYTICS_KV && ctx && ctx.waitUntil) {
+          ctx.waitUntil((async () => {
+            try {
+              const today = new Date().toISOString().split('T')[0];
+              const pfx = `telem:${today}`;
+
+              // 1. In-App vs Web Source counter
+              const srcKey = isLine ? `${pfx}:src:line` : (isFb ? `${pfx}:src:fb` : `${pfx}:src:web`);
+              const curSrc = parseInt(await env.ANALYTICS_KV.get(srcKey) || '0', 10);
+              await env.ANALYTICS_KV.put(srcKey, String(curSrc + 1), { expirationTtl: 86400 * 30 });
+
+              // 2. City counter
+              const cityKey = `${pfx}:city:${city}`;
+              const curCity = parseInt(await env.ANALYTICS_KV.get(cityKey) || '0', 10);
+              await env.ANALYTICS_KV.put(cityKey, String(curCity + 1), { expirationTtl: 86400 * 30 });
+
+              // 3. Team view counter
+              if (eventData.type === 'team_view' && eventData.target) {
+                const teamKey = `${pfx}:team:${eventData.target}`;
+                const curTeam = parseInt(await env.ANALYTICS_KV.get(teamKey) || '0', 10);
+                await env.ANALYTICS_KV.put(teamKey, String(curTeam + 1), { expirationTtl: 86400 * 30 });
+              }
+            } catch (_) {}
+          })());
+        }
+
+        return new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ ok: false, error: e.message }), {
+          status: 200,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+        });
+      }
+    }
+
+    // ==========================================
     // Executive Admin Terminal Routing
     // ==========================================
     if (isAdminDomain) {
@@ -293,6 +359,34 @@ export default {
           });
           if (resp.ok) {
             const data = await resp.json();
+
+            // Enrich with edge KV telemetry if available
+            try {
+              if (env && env.ANALYTICS_KV) {
+                const today = new Date().toISOString().split('T')[0];
+                const pfx = `telem:${today}`;
+                const [lineCount, fbCount, webCount] = await Promise.all([
+                  env.ANALYTICS_KV.get(`${pfx}:src:line`),
+                  env.ANALYTICS_KV.get(`${pfx}:src:fb`),
+                  env.ANALYTICS_KV.get(`${pfx}:src:web`),
+                ]);
+                const line = parseInt(lineCount || '0', 10);
+                const fb = parseInt(fbCount || '0', 10);
+                const web = parseInt(webCount || '0', 10);
+                const total = line + fb + web;
+                if (total > 0) {
+                  data.edge_telemetry = {
+                    sources: {
+                      line: { count: line, pct: ((line / total) * 100).toFixed(1) },
+                      facebook: { count: fb, pct: ((fb / total) * 100).toFixed(1) },
+                      web: { count: web, pct: ((web / total) * 100).toFixed(1) },
+                    },
+                    total_events: total,
+                  };
+                }
+              }
+            } catch (_) {}
+
             return new Response(JSON.stringify(data), {
               status: 200,
               headers: {

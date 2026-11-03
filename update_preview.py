@@ -16487,6 +16487,14 @@ selectShi62GW(gwName) {
         }
       };
     }
+
+    // FPLSaWaDiKa Edge Telemetry Beacon (Zero Latency)
+    try {
+      if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
+        var telemPayload = JSON.stringify({ type: 'page_view', path: window.location.pathname });
+        navigator.sendBeacon('https://api.fplsawadika.com/api/telemetry/event', telemPayload);
+      }
+    } catch (_) {}
   </script>
 </body>
 </html>"""
