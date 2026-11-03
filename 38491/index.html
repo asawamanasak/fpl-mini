@@ -1111,7 +1111,7 @@
       <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
       <span id="header-deadline-badge" class="inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs" title="เส้นตายการจัดทีม Gameweek ถัดไป">
         <svg class="w-3 h-3 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        <span id="header-deadline-val" class="font-mono tabular-nums">เส้นตาย GW 10: 2 วัน 21:42:11</span>
+        <span id="header-deadline-val" class="font-mono tabular-nums">เส้นตาย GW 10: 2 วัน 21:14:15</span>
       </span>
     </div>
   </div>
@@ -1224,9 +1224,8 @@
       <!-- 2.1 แถบเลือกสัปดาห์ GW 1 - 38 -->
       <div class="glass-card rounded-2xl p-2.5 sm:p-3 border border-slate-200">
         <div class="flex flex-wrap items-center justify-between gap-y-1 mb-2 px-1">
-          <span id="gw-selector-title" class="text-xs font-bold text-slate-500 uppercase tracking-wider font-display flex flex-wrap items-center gap-1">
+          <span id="gw-selector-title" class="text-xs font-bold text-slate-500 uppercase tracking-wider font-display">
             <span id="gw-selector-main-label">เลือกสัปดาห์การแข่งขัน</span>
-            <span id="gw-deadline-countdown-wrap" class="font-bold font-mono tabular-nums text-emerald-600 dark:text-emerald-400"></span>
           </span>
           <span id="gw-range-status" class="text-xs font-bold text-emerald-600">สัปดาห์ที่ 1 - 38</span>
         </div>
@@ -4202,6 +4201,10 @@
           if (badgeEl) {
             badgeEl.className = 'inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs';
           }
+          if (this._deadlineInterval) {
+            clearInterval(this._deadlineInterval);
+            this._deadlineInterval = null;
+          }
           return;
         }
 
@@ -4232,71 +4235,6 @@
       updateDeadlineCountdown() {
         if (typeof document !== 'undefined' && document.hidden) return;
         this.updateHeaderDeadline();
-        const wrapEl = document.getElementById('gw-deadline-countdown-wrap');
-        if (!wrapEl) return;
-        const isEn = (this.currentLang === 'en');
-        const nowSec = Math.floor(Date.now() / 1000);
-
-        // 1. Check if the current matchday is currently in progress (LIVE)
-        const maxGW = Number(this.multiData && this.multiData.max_gw) || 1;
-        const gwData = this.data && this.data.gameweeks ? this.data.gameweeks[String(maxGW)] : null;
-        const isStarted = gwData ? (gwData.is_started !== undefined ? Boolean(gwData.is_started) : (Boolean(gwData.is_finished) || (gwData.results && gwData.results.some(r => r.points > 0)))) : false;
-        const isFinished = Boolean(gwData && gwData.is_finished);
-
-        const events = (this.multiData && Array.isArray(this.multiData.events_deadlines)) ? this.multiData.events_deadlines : [];
-        const currentEv = events.find(e => e.is_current);
-        const isCurrentEvLive = Boolean(currentEv && !currentEv.finished && currentEv.deadline_epoch && nowSec >= currentEv.deadline_epoch);
-
-        const isMatchdayLive = (isStarted && !isFinished) || isCurrentEvLive;
-
-        // If the deadline has passed and live matches are underway, hide the deadline countdown
-        if (isMatchdayLive) {
-          wrapEl.innerText = '';
-          return;
-        }
-
-        // 2. Otherwise find the upcoming gameweek deadline
-        let target = null;
-        if (events.length > 0) {
-          target = events.find(e => e.deadline_epoch && e.deadline_epoch > nowSec);
-        }
-        if (!target && this.multiData && this.multiData.next_deadline) {
-          target = this.multiData.next_deadline;
-        }
-
-        if (!target) {
-          wrapEl.innerText = '';
-          return;
-        }
-
-        const gwNum = target.id;
-        const diff = (target.deadline_epoch || 0) - nowSec;
-
-        if (diff <= 0) {
-          wrapEl.innerText = '';
-          if (this._deadlineInterval) {
-            clearInterval(this._deadlineInterval);
-            this._deadlineInterval = null;
-          }
-          return;
-        }
-
-        const days = Math.floor(diff / 86400);
-        const hours = Math.floor((diff % 86400) / 3600);
-        const mins = Math.floor((diff % 3600) / 60);
-        const secs = diff % 60;
-        const pad = (n) => String(n).padStart(2, '0');
-        const timeStr = `${pad(hours)}:${pad(mins)}:${pad(secs)}`;
-
-        if (isEn) {
-          wrapEl.innerText = days > 0
-            ? `(GW ${gwNum} DEADLINE: ${days}D ${timeStr})`
-            : `(GW ${gwNum} DEADLINE: ${timeStr})`;
-        } else {
-          wrapEl.innerText = days > 0
-            ? `(เส้นตาย GW ${gwNum}: ${days} วัน ${timeStr})`
-            : `(เส้นตาย GW ${gwNum}: ${timeStr})`;
-        }
       }
 
       initLivePolling() {
