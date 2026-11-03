@@ -284,6 +284,33 @@ export default {
         );
       }
 
+      // Live Telemetry & FPL Sync Data Endpoint
+      if (path === '/api/admin/data' || path === '/api/admin/telemetry') {
+        try {
+          const resp = await fetch('https://www.fplsawadika.com/multi_fpl_data.json', {
+            headers: { 'User-Agent': 'FPLSaWaDiKa-Admin-Relay/2.0' },
+            cf: { cacheTtl: 15, cacheEverything: true },
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            return new Response(JSON.stringify(data), {
+              status: 200,
+              headers: {
+                ...CORS_HEADERS,
+                'Content-Type': 'application/json; charset=utf-8',
+                'Cache-Control': 'no-store, private',
+              },
+            });
+          }
+          throw new Error(`Upstream returned ${resp.status}`);
+        } catch (err) {
+          return new Response(
+            JSON.stringify({ error: err.message, status: 'fallback_needed' }),
+            { status: 500, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' } }
+          );
+        }
+      }
+
       // 5. Render Executive Summary Dashboard
       return new Response(renderDashboardHtml(colo, auth.provider), {
         status: 200,

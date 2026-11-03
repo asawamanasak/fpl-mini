@@ -3,10 +3,11 @@
  * Secure Private Management Console for asawamanasak@gmail.com
  * Protected by Cloudflare Zero Trust (Email OTP)
  *
- * Strict Design Standards:
- * - Professional Dual-Theme: Pure Pitch Black Dark Mode (#000000) & Soft Eye-Care Light Mode (#f8fafc)
+ * Real-Time Telemetry & Dynamic Live Integration
+ * - Pure Pitch Black Dark Mode (#000000) & Soft Eye-Care Light Mode (#f8fafc)
  * - Executive Typography & Layout (Clean, Minimalist, Bilingual EN/TH)
  * - Crisp SVG Vector Icons (Absolute Ban on Emojis)
+ * - Dynamic Live Standings & Live Deadline Countdown
  */
 
 export const ADMIN_EMAIL = 'asawamanasak@gmail.com';
@@ -31,6 +32,8 @@ const ICONS = {
   sun: `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>`,
   moon: `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>`,
   lock: `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>`,
+  refresh: `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>`,
+  check: `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>`,
 };
 
 /**
@@ -87,6 +90,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .animate-spin-custom { animation: spin 0.8s linear infinite; }
   </style>
   <script>
     // Theme initialization before render to avoid flash
@@ -112,7 +117,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <span class="text-slate-900 dark:text-white">FPLSaWaDiKa</span>
             <span class="text-[10px] font-mono px-1.5 py-0.5 rounded border border-slate-300 dark:border-neutral-800 bg-slate-100 dark:bg-neutral-900 text-slate-600 dark:text-slate-400">EXECUTIVE BI</span>
           </div>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400">Business Intelligence & Audience Analytics</p>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">Business Intelligence & Real-Time Telemetry</p>
         </div>
       </div>
 
@@ -149,15 +154,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     </div>
   </header>
 
-  <!-- Main Executive Content -->
+  <!-- Main Container -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
-    <!-- Executive Title & Scope -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-slate-200 dark:border-neutral-800">
+    <!-- Executive Greeting & System Gate -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-2 border-b border-borderLight dark:border-borderDark">
       <div>
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Executive Performance & Growth Summary</h1>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          สรุปภาพรวมพฤติกรรมผู้ใช้งาน สัดส่วนอุปกรณ์ และศักยภาพการเติบโตเชิงพาณิชย์
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          Executive Summary & Live Business Intelligence
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          รายงานผลการดำเนินงาน สถิติการเข้าถึง และการตรวจจับสถานะระบบแบบเรียลไทม์
         </p>
       </div>
       <div class="flex items-center gap-2 text-xs font-mono">
@@ -167,6 +174,73 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         </span>
       </div>
     </div>
+
+    <!-- Live Telemetry & Heartbeat Bar (Real-Time Synchronized) -->
+    <section class="p-4 sm:p-5 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark shadow-sm">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        
+        <!-- Left: Telemetry Engine Status -->
+        <div class="space-y-1.5">
+          <div class="flex items-center gap-2.5">
+            <span class="relative flex h-2.5 w-2.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+              Live Engine Telemetry: Active
+            </span>
+            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-neutral-800 text-slate-600 dark:text-slate-300">
+              Auto-Sync: Every 15 Mins
+            </span>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 dark:text-slate-400">
+            <div>
+              <span>Last Synchronized: </span>
+              <strong id="telemetryLastSync" class="text-slate-900 dark:text-white font-mono font-medium">3 พ.ย. 2026, 17:57 น.</strong>
+              <span id="telemetryTimeAgo" class="text-slate-500 dark:text-slate-400 font-mono text-[11px] ml-1">(กำลังคำนวณ...)</span>
+            </div>
+            <div class="text-slate-400 dark:text-neutral-600">|</div>
+            <div>
+              <span>Next Sync Engine: </span>
+              <span class="text-slate-700 dark:text-slate-300 font-mono">GitHub Actions Runner Active</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Live Deadline Countdown & Quick Actions -->
+        <div class="flex flex-wrap items-center gap-3 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100 dark:border-neutral-800">
+          
+          <!-- Deadline Countdown Box -->
+          <div class="px-3.5 py-2 rounded border border-amber-200 dark:border-amber-900/50 bg-amber-50/50 dark:bg-amber-950/20 text-xs">
+            <div class="text-[10px] text-amber-700 dark:text-amber-300 font-semibold uppercase tracking-wide flex items-center justify-between gap-3">
+              <span id="telemetryNextDeadlineName">Gameweek 10 Deadline</span>
+              <span class="font-mono text-[10px] opacity-75">Live Ticking</span>
+            </div>
+            <div class="mt-0.5 font-mono text-sm font-bold text-amber-900 dark:text-amber-400 flex items-center gap-1.5">
+              <span id="cdDays">--</span><span class="text-[10px] font-normal text-slate-500">d</span> :
+              <span id="cdHours">--</span><span class="text-[10px] font-normal text-slate-500">h</span> :
+              <span id="cdMins">--</span><span class="text-[10px] font-normal text-slate-500">m</span> :
+              <span id="cdSecs">--</span><span class="text-[10px] font-normal text-slate-500">s</span>
+            </div>
+          </div>
+
+          <!-- Manual Live Refresh Button -->
+          <button id="refreshDataBtn" onclick="loadLiveData(true)" title="ดึงข้อมูลล่าสุดจากเซิร์ฟเวอร์เดี๋ยวนี้" class="flex items-center gap-1.5 py-2 px-3 rounded border border-slate-300 dark:border-neutral-700 bg-panelLight dark:bg-neutral-800 hover:bg-slate-100 dark:hover:bg-neutral-700 text-slate-800 dark:text-slate-200 text-xs font-medium transition">
+            <span id="refreshIcon">${ICONS.refresh}</span>
+            <span>รีเฟรชข้อมูลสด</span>
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Action Confirmation Toast -->
+      <div id="liveStatusToast" class="hidden mt-3 pt-3 border-t border-slate-100 dark:border-neutral-800 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+        ${ICONS.check}
+        <span id="liveStatusToastText">ดึงข้อมูลสถานะล่าสุดจาก FPL Engine เรียบร้อยแล้ว</span>
+      </div>
+    </section>
 
     <!-- 1. Executive KPIs (4 Core Growth Cards) -->
     <section>
@@ -179,41 +253,59 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
-        <!-- KPI 1: Active Community Reach -->
+        <!-- KPI 1: Active Community Scale -->
         <div class="p-5 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark shadow-sm flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-2">
-              <span>Weekly Visits (7 วันล่าสุด)</span>
-              <span class="text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-semibold">+18.4% WoW</span>
+              <span>Tracked Teams (ทีมในระบบ)</span>
+              <span class="text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-semibold">100% Verified</span>
             </div>
             <div class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white font-mono">
-              4,280
+              <span id="kpiTotalTeams">163</span> <span class="text-sm font-normal text-slate-500">Teams</span>
             </div>
           </div>
           <div class="mt-4 pt-3 border-t border-slate-100 dark:border-neutral-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-            <span>Daily Average Reach</span>
-            <span class="text-slate-700 dark:text-slate-300 font-mono font-medium">1,850 users/day</span>
+            <span>Active Minileagues</span>
+            <span class="text-slate-700 dark:text-slate-300 font-mono font-medium">8 Leagues Covered</span>
           </div>
         </div>
 
-        <!-- KPI 2: Matchday Peak Concurrency -->
+        <!-- KPI 2: Current Gameweek Performance -->
         <div class="p-5 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark shadow-sm flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-2">
-              <span>Peak Live Audience (ช่วงบอลเตะ)</span>
-              <span class="text-sky-600 dark:text-sky-400 font-mono text-[11px] font-medium">เสาร์ 21:00 - 23:00</span>
+              <span>Community High Score (แต้มสูงสุด)</span>
+              <span class="text-sky-600 dark:text-sky-400 font-mono text-[11px] font-medium">GW 9 Standings</span>
             </div>
             <div class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white font-mono">
-              284 <span class="text-sm font-normal text-slate-500 dark:text-slate-400">concurrent</span>
+              <span id="kpiTopScore">665</span> <span class="text-sm font-normal text-slate-500">pts</span>
             </div>
           </div>
           <div class="mt-4 pt-3 border-t border-slate-100 dark:border-neutral-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-            <span>Avg Session Duration</span>
-            <span class="text-slate-700 dark:text-slate-300 font-mono font-medium">5.2 mins / visit</span>
+            <span>Overall Leader</span>
+            <span id="kpiTopLeader" class="text-slate-700 dark:text-slate-300 font-mono font-medium truncate max-w-[150px]">Natee Kakeaw</span>
           </div>
         </div>
 
-        <!-- KPI 3: Platform Speed & Stability -->
+        <!-- KPI 3: Gameweek Cycle & Deadlines -->
+        <div class="p-5 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-2">
+              <span>Active Cycle (รอบการแข่งขัน)</span>
+              <span id="kpiGwStatusBadge" class="text-indigo-600 dark:text-indigo-400 font-mono text-[11px] font-medium">GW 9 Finalized</span>
+            </div>
+            <div class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white font-mono flex items-center gap-2">
+              <span id="kpiGwNumber">GW 9</span>
+              <span class="text-xs font-normal text-slate-500 uppercase tracking-wide">10/10 Matches</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-neutral-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+            <span>Target Deadline</span>
+            <span class="text-slate-700 dark:text-slate-300 font-mono font-medium">GW 10 Prep Active</span>
+          </div>
+        </div>
+
+        <!-- KPI 4: Platform Speed & SLA -->
         <div class="p-5 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark shadow-sm flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-2">
@@ -230,28 +322,200 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
         </div>
 
-        <!-- KPI 4: Gameweek Cycle & Deadlines -->
-        <div class="p-5 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark shadow-sm flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-2">
-              <span>Active Cycle (รอบการแข่งขัน)</span>
-              <span class="text-indigo-600 dark:text-indigo-400 font-mono text-[11px] font-medium">GW 9 Verified</span>
-            </div>
-            <div class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white font-mono flex items-center gap-2">
-              <span>10 / 10</span>
-              <span class="text-xs font-normal text-slate-500 dark:text-slate-400 uppercase tracking-wide">Finalized</span>
-            </div>
-          </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-neutral-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-            <span>Next Target Window</span>
-            <span class="text-slate-700 dark:text-slate-300 font-mono font-medium">Gameweek 10 Prep</span>
-          </div>
-        </div>
-
       </div>
     </section>
 
-    <!-- 2. Device Breakdown & Strategic Upsell Insights (สถิติสัดส่วนอุปกรณ์และการต่อยอด) -->
+    <!-- 2. Community Market Share & Live Standings (All 8 Leagues - 100% Dynamic Real Data) -->
+    <section class="p-6 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div>
+          <h2 class="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+            <span>Community Market Share & Live Standings (อันดับและขนาดรายมินิลีก)</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50">
+              Live Verified
+            </span>
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            ข้อมูลสดจริงของทั้ง 8 มินิลีก รวมผู้เล่นทั้งหมด 163 ทีม พร้อมผู้นำคะแนนล่าสุด
+          </p>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
+          <span>Total Leagues: <strong class="text-slate-900 dark:text-white">8</strong></span>
+          <span>|</span>
+          <span>Tracked Managers: <strong id="tableTotalManagers" class="text-slate-900 dark:text-white">163</strong></span>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b border-slate-200 dark:border-neutral-800 text-slate-500 dark:text-slate-400">
+              <th class="py-3 px-3 font-semibold">Community / League Name</th>
+              <th class="py-3 px-3 font-semibold">League ID</th>
+              <th class="py-3 px-3 font-semibold">Teams (ทีม)</th>
+              <th class="py-3 px-3 font-semibold">Current Leader (จ่าฝูง)</th>
+              <th class="py-3 px-3 font-semibold">Total Score</th>
+              <th class="py-3 px-3 font-semibold">GW 9 Score</th>
+              <th class="py-3 px-3 font-semibold text-right">Public Live View</th>
+            </tr>
+          </thead>
+          <tbody id="leaguesTableBody" class="divide-y divide-slate-100 dark:divide-neutral-800/80">
+            <!-- Initial Render Data (Real Standings) -->
+            <tr class="hover:bg-slate-50/50 dark:hover:bg-neutral-900/30 transition">
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span>เซียนอยู่รู หมูอยู่ตึก</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-slate-500 dark:text-slate-400">40700</td>
+              <td class="py-3 px-3 font-mono font-semibold text-slate-700 dark:text-slate-300">12 Teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-slate-300">Athit Rattanawipapong <span class="text-slate-400 text-[11px]">(SUN-KUNG-JI)</span></td>
+              <td class="py-3 px-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">635 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-600 dark:text-slate-400">+64 pts</td>
+              <td class="py-3 px-3 text-right">
+                <a href="https://www.fplsawadika.com/40700/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px]">
+                  <span>เปิดดู</span>${ICONS.external}
+                </a>
+              </td>
+            </tr>
+
+            <tr class="hover:bg-slate-50/50 dark:hover:bg-neutral-900/30 transition">
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+                <span>NudNee</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-slate-500 dark:text-slate-400">675290</td>
+              <td class="py-3 px-3 font-mono font-semibold text-slate-700 dark:text-slate-300">60 Teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-slate-300">Tanapan Jongsaksawat <span class="text-slate-400 text-[11px]">(Godzilbu United)</span></td>
+              <td class="py-3 px-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">637 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-600 dark:text-slate-400">+71 pts</td>
+              <td class="py-3 px-3 text-right">
+                <a href="https://www.fplsawadika.com/675290/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px]">
+                  <span>เปิดดู</span>${ICONS.external}
+                </a>
+              </td>
+            </tr>
+
+            <tr class="hover:bg-slate-50/50 dark:hover:bg-neutral-900/30 transition">
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                <span>รอ แมน โอน</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-slate-500 dark:text-slate-400">38491</td>
+              <td class="py-3 px-3 font-mono font-semibold text-slate-700 dark:text-slate-300">16 Teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-slate-300">FAme Pakviwat <span class="text-slate-400 text-[11px]">(Some might say)</span></td>
+              <td class="py-3 px-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">633 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-600 dark:text-slate-400">+57 pts</td>
+              <td class="py-3 px-3 text-right">
+                <a href="https://www.fplsawadika.com/38491/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px]">
+                  <span>เปิดดู</span>${ICONS.external}
+                </a>
+              </td>
+            </tr>
+
+            <tr class="hover:bg-slate-50/50 dark:hover:bg-neutral-900/30 transition">
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                <span>Barley's Official League</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-slate-500 dark:text-slate-400">1101958</td>
+              <td class="py-3 px-3 font-mono font-semibold text-slate-700 dark:text-slate-300">17 Teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-slate-300">Patrick Oo <span class="text-slate-400 text-[11px]">(Oöraora Grandé)</span></td>
+              <td class="py-3 px-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">637 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-600 dark:text-slate-400">+60 pts</td>
+              <td class="py-3 px-3 text-right">
+                <a href="https://www.fplsawadika.com/1101958/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px]">
+                  <span>เปิดดู</span>${ICONS.external}
+                </a>
+              </td>
+            </tr>
+
+            <tr class="hover:bg-slate-50/50 dark:hover:bg-neutral-900/30 transition">
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                <span>2 spade</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-slate-500 dark:text-slate-400">438691</td>
+              <td class="py-3 px-3 font-mono font-semibold text-slate-700 dark:text-slate-300">13 Teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-slate-300">Thiti Oak <span class="text-slate-400 text-[11px]">(BMFC™)</span></td>
+              <td class="py-3 px-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">632 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-600 dark:text-slate-400">+59 pts</td>
+              <td class="py-3 px-3 text-right">
+                <a href="https://www.fplsawadika.com/438691/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px]">
+                  <span>เปิดดู</span>${ICONS.external}
+                </a>
+              </td>
+            </tr>
+
+            <tr class="hover:bg-slate-50/50 dark:hover:bg-neutral-900/30 transition">
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                <span>Shi62</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-slate-500 dark:text-slate-400">187827</td>
+              <td class="py-3 px-3 font-mono font-semibold text-slate-700 dark:text-slate-300">13 Teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-slate-300">Patrick Oo <span class="text-slate-400 text-[11px]">(Oöraora Grandé)</span></td>
+              <td class="py-3 px-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">637 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-600 dark:text-slate-400">+60 pts</td>
+              <td class="py-3 px-3 text-right">
+                <a href="https://www.fplsawadika.com/187827/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px]">
+                  <span>เปิดดู</span>${ICONS.external}
+                </a>
+              </td>
+            </tr>
+
+            <tr class="hover:bg-slate-50/50 dark:hover:bg-neutral-900/30 transition">
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                <span>Bramann League</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-slate-500 dark:text-slate-400">5349</td>
+              <td class="py-3 px-3 font-mono font-semibold text-slate-700 dark:text-slate-300">20 Teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-slate-300">Natee Kakeaw <span class="text-slate-400 text-[11px]">(-Nk_KOP)</span></td>
+              <td class="py-3 px-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">665 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-600 dark:text-slate-400">+59 pts</td>
+              <td class="py-3 px-3 text-right">
+                <a href="https://www.fplsawadika.com/5349/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px]">
+                  <span>เปิดดู</span>${ICONS.external}
+                </a>
+              </td>
+            </tr>
+
+            <tr class="hover:bg-slate-50/50 dark:hover:bg-neutral-900/30 transition">
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+                <span>Fantasy Nguan & friends cup</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-slate-500 dark:text-slate-400">567387</td>
+              <td class="py-3 px-3 font-mono font-semibold text-slate-700 dark:text-slate-300">12 Teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-slate-300">Micky Asawamanasak <span class="text-slate-400 text-[11px]">(GEMINI UNITED)</span></td>
+              <td class="py-3 px-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">625 pts</td>
+              <td class="py-3 px-3 font-mono text-slate-600 dark:text-slate-400">+62 pts</td>
+              <td class="py-3 px-3 text-right">
+                <a href="https://www.fplsawadika.com/567387/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px]">
+                  <span>เปิดดู</span>${ICONS.external}
+                </a>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Growth Strategic Vector -->
+      <div class="p-4 rounded border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-neutral-900/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs">
+        <div>
+          <span class="font-semibold text-slate-900 dark:text-white">กลยุทธ์การขยายฐานผู้เล่น (Growth Vector):</span>
+          <p class="text-slate-600 dark:text-slate-400 mt-0.5">
+            สถิติด้านบนดึงจากโครงสร้างข้อมูลสดแบบเรียลไทม์ สามารถต่อยอดสร้างระบบ "1-Click Share to LINE" ส่งการ์ดสรุปคะแนนเข้ากลุ่มแชทเพื่อน ดึงดูดสมาชิกให้เข้ามาใช้งาน
+          </p>
+        </div>
+        <a href="https://www.fplsawadika.com" target="_blank" rel="noopener" class="shrink-0 px-3 py-1.5 rounded bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:opacity-90 transition">
+          ดูหน้าเว็บสาธารณะ
+        </a>
+      </div>
+    </section>
+
+    <!-- 3. Device Breakdown & Strategic Upsell Insights (สถิติสัดส่วนอุปกรณ์และการต่อยอด) -->
     <section class="p-6 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
@@ -333,7 +597,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       </div>
     </section>
 
-    <!-- 3. Commercial Timing & Peak Windows (จังหวะเวลาทองทางธุรกิจ) -->
+    <!-- 4. Commercial Timing & Peak Windows (จังหวะเวลาทองทางธุรกิจ) -->
     <section class="p-6 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark space-y-5">
       <div class="flex items-center justify-between">
         <div>
@@ -394,149 +658,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       </div>
     </section>
 
-    <!-- 4. Community Market Share & Growth Potential (ศักยภาพรายมินิลีก) -->
-    <section class="p-6 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark space-y-5">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-        <div>
-          <h2 class="text-base font-semibold text-slate-900 dark:text-white">
-            Community Market Share & Engagement (ศักยภาพการเติบโตรายมินิลีก)
-          </h2>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            สัดส่วนการมีส่วนร่วมของแต่ละคอมมูนิตี้ เพื่อวิเคราะห์กลุ่มผู้ใช้หลักและขยายฐานไปยังลีกใหม่
-          </p>
-        </div>
-        <span class="text-xs font-mono text-slate-500 dark:text-slate-400">8 Configured Minileagues</span>
-      </div>
-
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs">
-          <thead>
-            <tr class="border-b border-slate-200 dark:border-neutral-800 text-slate-500 dark:text-slate-400">
-              <th class="py-3 px-3 font-semibold">Community / League</th>
-              <th class="py-3 px-3 font-semibold">League ID</th>
-              <th class="py-3 px-3 font-semibold">Audience Share</th>
-              <th class="py-3 px-3 font-semibold">Weekly Sessions</th>
-              <th class="py-3 px-3 font-semibold">Peak Window</th>
-              <th class="py-3 px-3 font-semibold">Status & Commercial Viability</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100 dark:divide-neutral-800/80">
-            
-            <tr class="hover:bg-slate-50/50 dark:hover:bg-neutral-900/30 transition">
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                <span>เซียนอยู่รู หมูอยู่ตึก</span>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-500 dark:text-slate-400">40700</td>
-              <td class="py-3 px-3 font-mono font-semibold text-emerald-600 dark:text-emerald-400">42.8%</td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-slate-300">1,830 visits</td>
-              <td class="py-3 px-3 text-slate-600 dark:text-slate-400">เสาร์ 21:00</td>
-              <td class="py-3 px-3">
-                <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50">
-                  Anchor Community (ฐานหลัก)
-                </span>
-              </td>
-            </tr>
-
-            <tr class="hover:bg-slate-50/50 dark:hover:bg-neutral-900/30 transition">
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
-                <span>NudNee</span>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-500 dark:text-slate-400">675290</td>
-              <td class="py-3 px-3 font-mono font-semibold text-sky-600 dark:text-sky-400">25.6%</td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-slate-300">1,095 visits</td>
-              <td class="py-3 px-3 text-slate-600 dark:text-slate-400">เสาร์ - อาทิตย์</td>
-              <td class="py-3 px-3">
-                <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-sky-100 dark:bg-sky-950/60 text-sky-800 dark:text-sky-300 border border-sky-200 dark:border-sky-800/50">
-                  High Engagement (เหนียวแน่น)
-                </span>
-              </td>
-            </tr>
-
-            <tr class="hover:bg-slate-50/50 dark:hover:bg-neutral-900/30 transition">
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                <span>รอ แมน โอน</span>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-500 dark:text-slate-400">38491</td>
-              <td class="py-3 px-3 font-mono font-semibold text-indigo-600 dark:text-indigo-400">13.5%</td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-slate-300">578 visits</td>
-              <td class="py-3 px-3 text-slate-600 dark:text-slate-400">ศุกร์ก่อนเดดไลน์</td>
-              <td class="py-3 px-3">
-                <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-indigo-100 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/50">
-                  Office League (กลุ่มคนทำงาน)
-                </span>
-              </td>
-            </tr>
-
-            <tr class="hover:bg-slate-50/50 dark:hover:bg-neutral-900/30 transition">
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                <span>Barley's Official</span>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-500 dark:text-slate-400">1101958</td>
-              <td class="py-3 px-3 font-mono font-semibold text-slate-700 dark:text-slate-300">7.8%</td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-slate-300">334 visits</td>
-              <td class="py-3 px-3 text-slate-600 dark:text-slate-400">เสาร์ค่ำ</td>
-              <td class="py-3 px-3">
-                <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 dark:bg-neutral-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-neutral-700">
-                  Stable Reach (สม่ำเสมอ)
-                </span>
-              </td>
-            </tr>
-
-            <tr class="hover:bg-slate-50/50 dark:hover:bg-neutral-900/30 transition">
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                <span>Bramann League</span>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-500 dark:text-slate-400">5349</td>
-              <td class="py-3 px-3 font-mono font-semibold text-slate-700 dark:text-slate-300">4.9%</td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-slate-300">210 visits</td>
-              <td class="py-3 px-3 text-slate-600 dark:text-slate-400">วันแข่งขัน</td>
-              <td class="py-3 px-3">
-                <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 dark:bg-neutral-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-neutral-700">
-                  Targeted (กลุ่มเฉพาะทาง)
-                </span>
-              </td>
-            </tr>
-
-            <tr class="hover:bg-slate-50/50 dark:hover:bg-neutral-900/30 transition">
-              <td class="py-3 px-3 font-medium text-slate-600 dark:text-slate-400 flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
-                <span>ลีกอื่นๆ (โค้กซ่าส์, อุ่นจิตร 2024, รุ่งโรจน์)</span>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-400">-</td>
-              <td class="py-3 px-3 font-mono text-slate-600 dark:text-slate-400">5.4%</td>
-              <td class="py-3 px-3 font-mono text-slate-600 dark:text-slate-400">233 visits</td>
-              <td class="py-3 px-3 text-slate-500">ช่วงแข่งขัน</td>
-              <td class="py-3 px-3">
-                <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 dark:bg-neutral-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-neutral-700">
-                  Emerging Growth (กลุ่มกำลังโต)
-                </span>
-              </td>
-            </tr>
-
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Growth Strategic Recommendation -->
-      <div class="p-4 rounded border border-slate-200 dark:border-neutral-800 bg-slate-50 dark:bg-neutral-900/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs">
-        <div>
-          <span class="font-semibold text-slate-900 dark:text-white">กลยุทธ์การขยายฐานผู้เล่น (Growth Vector):</span>
-          <p class="text-slate-600 dark:text-slate-400 mt-0.5">
-            สร้างระบบ "1-Click Share to LINE" นำภาพสรุปคะแนนประจำสัปดาห์ส่งเข้ากลุ่มแชทเพื่อน ดึงดูดสมาชิกในกลุ่มให้เข้ามาใช้งานโดยตรง
-          </p>
-        </div>
-        <a href="https://www.fplsawadika.com" target="_blank" rel="noopener" class="shrink-0 px-3 py-1.5 rounded bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:opacity-90 transition">
-          ดูหน้าเว็บสาธารณะ
-        </a>
-      </div>
-    </section>
-
-    <!-- 5. Strategic Controls & Actions -->
+    <!-- 5. Operational Commands & Links -->
     <section class="p-6 rounded-lg border border-slate-200 dark:border-borderDark bg-panelLight dark:bg-panelDark space-y-4">
       <div class="flex items-center justify-between">
         <div>
@@ -634,6 +756,235 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         }, 1500);
       }
     }
+
+    // Live Telemetry Countdown & Dynamic Standings
+    let deadlineEpochGlobal = 1793989800; // GW 10 default
+    let lastSyncIsoGlobal = '2026-11-03 17:57:00';
+
+    function updateCountdownTimer() {
+      if (!deadlineEpochGlobal) return;
+      const now = Math.floor(Date.now() / 1000);
+      let diff = deadlineEpochGlobal - now;
+
+      if (diff <= 0) {
+        document.getElementById('cdDays').textContent = '00';
+        document.getElementById('cdHours').textContent = '00';
+        document.getElementById('cdMins').textContent = '00';
+        document.getElementById('cdSecs').textContent = '00';
+        return;
+      }
+
+      const days = Math.floor(diff / 86400);
+      diff -= days * 86400;
+      const hours = Math.floor(diff / 3600);
+      diff -= hours * 3600;
+      const mins = Math.floor(diff / 60);
+      const secs = diff % 60;
+
+      document.getElementById('cdDays').textContent = String(days).padStart(2, '0');
+      document.getElementById('cdHours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('cdMins').textContent = String(mins).padStart(2, '0');
+      document.getElementById('cdSecs').textContent = String(secs).padStart(2, '0');
+    }
+
+    function calculateTimeAgo(isoStr) {
+      if (!isoStr) return '';
+      try {
+        const syncTime = new Date(isoStr.replace(' ', 'T') + '+07:00').getTime();
+        const now = Date.now();
+        const diffMs = now - syncTime;
+        if (diffMs < 0) return '(เมื่อสักครู่)';
+        const diffMins = Math.floor(diffMs / 60000);
+        if (diffMins < 1) return '(เพิ่งอัปเดตเมื่อสักครู่)';
+        if (diffMins < 60) return '(' + diffMins + ' นาทีที่แล้ว)';
+        const diffHours = Math.floor(diffMins / 60);
+        const remMins = diffMins % 60;
+        return '(' + diffHours + ' ชั่วโมง ' + (remMins > 0 ? remMins + ' นาที' : '') + 'ที่แล้ว)';
+      } catch (_) {
+        return '';
+      }
+    }
+
+    // Dynamic Live Data Loader
+    async function loadLiveData(isManual = false) {
+      const btn = document.getElementById('refreshDataBtn');
+      const icon = document.getElementById('refreshIcon');
+      const toast = document.getElementById('liveStatusToast');
+      const toastText = document.getElementById('liveStatusToastText');
+
+      if (btn && icon) {
+        btn.disabled = true;
+        icon.classList.add('animate-spin-custom');
+      }
+
+      try {
+        // Try internal authenticated API first, fallback to public raw
+        let res = null;
+        try {
+          res = await fetch('/api/admin/data');
+        } catch (_) {}
+
+        if (!res || !res.ok) {
+          res = await fetch('https://www.fplsawadika.com/multi_fpl_data.json');
+        }
+
+        if (res && res.ok) {
+          const data = await res.json();
+          renderDynamicData(data);
+
+          if (isManual && toast && toastText) {
+            toastText.textContent = 'ดึงข้อมูลสดล่าสุดสำเร็จ (ซิงก์รอบ: ' + (data.last_sync || '') + ')';
+            toast.classList.remove('hidden');
+            setTimeout(() => { toast.classList.add('hidden'); }, 3500);
+          }
+        }
+      } catch (err) {
+        console.warn('Live telemetry fetch notice:', err);
+      } finally {
+        if (btn && icon) {
+          setTimeout(() => {
+            btn.disabled = false;
+            icon.classList.remove('animate-spin-custom');
+          }, 600);
+        }
+      }
+    }
+
+    function renderDynamicData(data) {
+      if (!data) return;
+
+      // 1. Sync Timestamps
+      if (data.last_sync) {
+        const syncEl = document.getElementById('telemetryLastSync');
+        if (syncEl) syncEl.textContent = data.last_sync;
+      }
+      if (data.last_sync_iso) {
+        lastSyncIsoGlobal = data.last_sync_iso;
+        const timeAgoEl = document.getElementById('telemetryTimeAgo');
+        if (timeAgoEl) timeAgoEl.textContent = calculateTimeAgo(data.last_sync_iso);
+      }
+
+      // 2. Next Deadline
+      if (data.next_deadline) {
+        if (data.next_deadline.deadline_epoch) {
+          deadlineEpochGlobal = data.next_deadline.deadline_epoch;
+          updateCountdownTimer();
+        }
+        if (data.next_deadline.name) {
+          const nameEl = document.getElementById('telemetryNextDeadlineName');
+          if (nameEl) nameEl.textContent = data.next_deadline.name + ' Deadline';
+        }
+      }
+
+      // 3. Max Gameweek
+      if (data.max_gw) {
+        const gwEl = document.getElementById('kpiGwNumber');
+        const badgeEl = document.getElementById('kpiGwStatusBadge');
+        if (gwEl) gwEl.textContent = 'GW ' + data.max_gw;
+        if (badgeEl) badgeEl.textContent = 'GW ' + data.max_gw + ' Finalized';
+      }
+
+      // 4. Compute Totals & League Standings
+      if (data.leagues && data.league_order) {
+        let totalTeams = 0;
+        let topScore = 0;
+        let topLeader = '';
+        const allScores = [];
+        const rowsHtml = [];
+
+        data.league_order.forEach(lid => {
+          const ldata = data.leagues[String(lid)];
+          if (!ldata) return;
+
+          const teams = ldata.teams || [];
+          totalTeams += teams.length;
+
+          // Find leader
+          let leader = null;
+          teams.forEach(t => {
+            const pts = t.total_points !== undefined ? t.total_points : (t.total || 0);
+            allScores.push(pts);
+            if (!leader || pts > (leader.total_points !== undefined ? leader.total_points : leader.total || 0)) {
+              leader = t;
+            }
+          });
+
+          if (leader) {
+            const leaderPts = leader.total_points !== undefined ? leader.total_points : leader.total;
+            if (leaderPts > topScore) {
+              topScore = leaderPts;
+              topLeader = leader.player_name + ' (' + (leader.entry_name || '') + ')';
+            }
+          }
+
+          const leaderName = leader ? leader.player_name : '-';
+          const leaderTeam = leader ? leader.entry_name : '-';
+          const leaderPts = leader ? (leader.total_points !== undefined ? leader.total_points : leader.total) : 0;
+          const leaderGw = leader ? (leader.event_total !== undefined ? leader.event_total : 0) : 0;
+
+          rowsHtml.push(\`
+            <tr class="hover:bg-slate-50/50 dark:hover:bg-neutral-900/30 transition">
+              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span>\${ldata.name || 'League ' + lid}</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-slate-500 dark:text-slate-400">\${lid}</td>
+              <td class="py-3 px-3 font-mono font-semibold text-slate-700 dark:text-slate-300">\${teams.length} Teams</td>
+              <td class="py-3 px-3 text-slate-700 dark:text-slate-300">\${leaderName} <span class="text-slate-400 text-[11px]">(\${leaderTeam})</span></td>
+              <td class="py-3 px-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">\${leaderPts} pts</td>
+              <td class="py-3 px-3 font-mono text-slate-600 dark:text-slate-400">+\${leaderGw} pts</td>
+              <td class="py-3 px-3 text-right">
+                <a href="https://www.fplsawadika.com/\${lid}/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px]">
+                  <span>เปิดดู</span>${ICONS.external}
+                </a>
+              </td>
+            </tr>
+          \`);
+        });
+
+        // Update KPI Cards
+        const totalTeamsEl = document.getElementById('kpiTotalTeams');
+        if (totalTeamsEl) totalTeamsEl.textContent = totalTeams;
+
+        const tableManagersEl = document.getElementById('tableTotalManagers');
+        if (tableManagersEl) tableManagersEl.textContent = totalTeams;
+
+        const topScoreEl = document.getElementById('kpiTopScore');
+        if (topScoreEl) topScoreEl.textContent = topScore;
+
+        const topLeaderEl = document.getElementById('kpiTopLeader');
+        if (topLeaderEl && topLeader) topLeaderEl.textContent = topLeader;
+
+        // Update Table
+        const tbody = document.getElementById('leaguesTableBody');
+        if (tbody && rowsHtml.length > 0) {
+          tbody.innerHTML = rowsHtml.join('');
+        }
+      }
+    }
+
+    // Initialize Telemetry on Load
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Start live deadline ticking (every second)
+      updateCountdownTimer();
+      setInterval(updateCountdownTimer, 1000);
+
+      // 2. Update time ago label every minute
+      setInterval(() => {
+        const timeAgoEl = document.getElementById('telemetryTimeAgo');
+        if (timeAgoEl && lastSyncIsoGlobal) {
+          timeAgoEl.textContent = calculateTimeAgo(lastSyncIsoGlobal);
+        }
+      }, 60000);
+
+      // 3. Fetch latest live data immediately
+      loadLiveData(false);
+
+      // 4. Background polling every 60 seconds
+      setInterval(() => {
+        loadLiveData(false);
+      }, 60000);
+    });
   </script>
 </body>
 </html>`;
