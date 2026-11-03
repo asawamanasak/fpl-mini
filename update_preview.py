@@ -1733,7 +1733,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         <div class="overflow-x-auto no-scrollbar -mx-4 sm:mx-0 touch-scroll">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="border-b border-slate-100 text-[10px] sm:text-[11px] font-bold text-slate-400 font-display bg-slate-50/50">
+              <tr class="border-b border-slate-100 dark:border-slate-800 text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display bg-slate-50/50 dark:bg-slate-900/50">
                 <th class="py-2.5 px-1 sm:px-2 text-center w-7 sm:w-8 whitespace-nowrap">#</th>
                 <th class="py-2.5 px-1.5 sm:px-3 min-w-0 whitespace-nowrap">ทีม</th>
                 <th class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap" id="hof-col-wins">
@@ -1963,7 +1963,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
             <span id="mobile-radar-sort-label">เรียงตามคะแนนรวม (# อันดับรวม)</span>
           </span>
-          <span id="mobile-radar-scroll-hint" class="text-slate-400 font-medium">เลื่อนขวาดูสถิติเพิ่มเติม →</span>
+          <span id="mobile-radar-scroll-hint" class="text-slate-500 dark:text-slate-400 font-medium">เลื่อนขวาดูสถิติเพิ่มเติม →</span>
         </div>
 
 
@@ -2275,7 +2275,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             <span class="font-display tracking-tight text-xs sm:text-sm">สถาปัตยกรรมระบบเบื้องหลัง</span>
           </span>
-          <span class="text-[10.5px] text-slate-400 font-mono font-normal">Dual-Layer Sync • 15m Cron + 30s Edge Live</span>
+          <span class="text-[10.5px] text-slate-500 dark:text-slate-400 font-mono font-normal">Dual-Layer Sync • 15m Cron + 30s Edge Live</span>
         </summary>
         <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3.5">
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2.5 rounded-xl bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/60 text-[10.5px] font-mono">
@@ -2333,8 +2333,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <!-- 5.5 Footer & Site Visitor Counter -->
   <footer class="w-full py-6 text-center select-none">
     <div class="max-w-7xl mx-auto px-4 flex items-center justify-center">
-      <span id="site-visitor-counter" class="inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-400 font-normal tracking-wide">
-        <svg class="w-3.5 h-3.5 text-slate-400/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <span id="site-visitor-counter" class="inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-normal tracking-wide">
+        <svg class="w-3.5 h-3.5 text-slate-500/80 dark:text-slate-400/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
         </svg>
@@ -8310,8 +8310,8 @@ selectShi62GW(gwName) {
                     ${managerNamesHtml}
                   </div>
 
-                  <div class="flex items-center justify-end gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/70 dark:border-slate-700'}">
-                    <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xs px-3.5 py-2 rounded-xl border ${isFinished ? 'border-slate-200 dark:border-slate-700' : 'border-emerald-200/90 dark:border-slate-700'} shadow-2xs flex items-center gap-3 ml-auto sm:ml-0">
+                  <div class="flex items-center justify-end gap-2.5 sm:gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/70 dark:border-slate-700'}">
+                    <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xs px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl border ${isFinished ? 'border-slate-200 dark:border-slate-700' : 'border-emerald-200/90 dark:border-slate-700'} shadow-2xs flex items-center gap-2.5 sm:gap-3 ml-auto sm:ml-0">
                       <div class="text-right">
                         <span class="text-[10px] sm:text-[11px] ${isFinished ? 'text-slate-700 dark:text-slate-300' : 'text-emerald-900/80 dark:text-slate-400'} uppercase font-bold font-display block leading-tight">
                           ${isEn 
@@ -8321,9 +8321,9 @@ selectShi62GW(gwName) {
                         </span>
                         <span class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-display leading-none">${prizeLeader[scoreProp]} <span class="text-xs font-bold text-slate-500 dark:text-slate-400">pts</span></span>
                       </div>
-                      <div class="text-right pl-3 border-l ${isFinished ? 'border-slate-200 dark:border-slate-700' : 'border-emerald-200/90 dark:border-slate-700'}">
-                        <span class="text-[10px] ${prizeLeader.hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'} block font-display">${isEn ? 'Hits:' : 'แต้มลบ:'} ${prizeLeader.hits > 0 ? `-${prizeLeader.hits}` : '-'}</span>
-                        <span class="text-[9px] text-slate-400 block font-display">${prizeLeader.hits > 0 ? (isEn ? ((isFinished || isWeeklyPrize) ? 'Deducted in Net' : 'Deducted in Total') : ((isFinished || isWeeklyPrize) ? 'หักในแต้มสุทธิแล้ว' : 'หักในแต้มรวม')) : (isEn ? 'No Hits' : 'ไม่มีแต้มลบ')}</span>
+                      <div class="text-right pl-2.5 sm:pl-3 border-l ${isFinished ? 'border-slate-200 dark:border-slate-700' : 'border-emerald-200/90 dark:border-slate-700'}">
+                        <span class="text-[10px] ${prizeLeader.hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-500 dark:text-slate-400'} block font-display">${isEn ? 'Hits:' : 'แต้มลบ:'} ${prizeLeader.hits > 0 ? `-${prizeLeader.hits}` : '-'}</span>
+                        <span class="text-[9px] text-slate-500 dark:text-slate-400 block font-display">${prizeLeader.hits > 0 ? (isEn ? ((isFinished || isWeeklyPrize) ? 'Deducted in Net' : 'Deducted in Total') : ((isFinished || isWeeklyPrize) ? 'หักในแต้มสุทธิแล้ว' : 'หักในแต้มรวม')) : (isEn ? 'No Hits' : 'ไม่มีแต้มลบ')}</span>
                       </div>
                     </div>
                   </div>
@@ -9654,8 +9654,8 @@ selectShi62GW(gwName) {
             const isEn = (this.currentLang === 'en');
             container.innerHTML = `
               <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 text-center shadow-xs max-w-xl mx-auto my-8">
-                <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xl font-bold font-display">
-                  🔄
+                <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                 </div>
                 <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-2 font-display">
                   ${isEn ? 'Tier 2 League: Standings & Leaderboard Only' : 'มินิลีกระดับ Tier 2: โหมดแสดงตารางคะแนน'}
@@ -9933,8 +9933,16 @@ selectShi62GW(gwName) {
             <!-- List of Manager Transfer Cards -->
             <div class="space-y-2.5">
               ${filteredRows.length === 0 ? `
-                <div class="py-8 text-center text-slate-400 text-xs">
-                  ${isEn ? 'No teams match the selected filter.' : 'ไม่พบข้อมูลที่ตรงกับตัวกรองที่เลือก'}
+                <div class="py-10 px-4 text-center rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 my-3">
+                  <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 mb-2.5">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                  </div>
+                  <div class="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    ${isEn ? 'No teams match the selected filter.' : 'ไม่พบข้อมูลที่ตรงกับตัวกรองที่เลือก'}
+                  </div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                    ${isEn ? 'Try adjusting your search keyword or chip filter.' : 'ลองเปลี่ยนคำค้นหาหรือเลือกดูชิปประเภทอื่น'}
+                  </div>
                 </div>
               ` : filteredRows.map(row => {
                 const isPrize = this.isPrizeEligible(row.team.entry_id);
@@ -14054,7 +14062,7 @@ selectShi62GW(gwName) {
                   <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                   <span class="font-display tracking-tight text-xs sm:text-sm">System Architecture (Technical Specs for Geeks)</span>
                 </span>
-                <span class="text-[10.5px] text-slate-400 font-mono font-normal">Dual-Layer Sync • 15m Cron + 30s Edge Live</span>
+                <span class="text-[10.5px] text-slate-500 dark:text-slate-400 font-mono font-normal">Dual-Layer Sync • 15m Cron + 30s Edge Live</span>
               </summary>
               <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3.5">
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2.5 rounded-xl bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/60 text-[10.5px] font-mono">
@@ -14323,7 +14331,7 @@ selectShi62GW(gwName) {
                   <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                   <span class="font-display tracking-tight text-xs sm:text-sm">${isEn ? 'System Architecture & Engineering Specs' : 'สถาปัตยกรรมระบบเบื้องหลัง'}</span>
                 </span>
-                <span class="text-[10.5px] text-slate-400 font-mono font-normal">Dual-Layer Sync • 15m Cron + 30s Edge Live</span>
+                <span class="text-[10.5px] text-slate-500 dark:text-slate-400 font-mono font-normal">Dual-Layer Sync • 15m Cron + 30s Edge Live</span>
               </summary>
               <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3.5">
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2.5 rounded-xl bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/60 text-[10.5px] font-mono">
