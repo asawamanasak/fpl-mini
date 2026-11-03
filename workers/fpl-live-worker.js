@@ -213,7 +213,7 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, '') || '/';
     const colo = (request.cf && request.cf.colo) ? request.cf.colo : 'EDGE';
-    const isAdminDomain = url.hostname === 'admin.fplsawadika.com' || path.startsWith('/admin');
+    const isAdminDomain = url.hostname === 'admin.fplsawadika.com' || path.startsWith('/admin') || path.startsWith('/api/admin');
 
     // ==========================================
     // Telemetry Beacon Handler (Zero Latency Tracking)
@@ -320,7 +320,9 @@ export default {
                 const curTeam = parseInt(await env.ANALYTICS_KV.get(teamKey) || '0', 10);
                 await env.ANALYTICS_KV.put(teamKey, String(curTeam + 1), { expirationTtl: 86400 * 30 });
               }
-            } catch (_) {}
+            } catch (err) {
+              console.warn('Telemetry enrichment warning:', err);
+            }
           })());
         }
 
@@ -517,6 +519,7 @@ export default {
                 const leagueIds = Object.keys(LEAGUE_BASELINES);
                 const leagueFetchPromises = [];
                 dates.forEach(d => {
+                  const pfx = `telem:${d}`;
                   leagueIds.forEach(lid => {
                     leagueFetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:l:${lid}:views`));
                     leagueFetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:l:${lid}:dwell_sec`));
@@ -586,7 +589,9 @@ export default {
                   live_hits_recorded: totalKvVisits,
                 };
               }
-            } catch (_) {}
+            } catch (err) {
+              console.warn('Telemetry enrichment warning:', err);
+            }
 
             return new Response(JSON.stringify(data), {
               status: 200,
