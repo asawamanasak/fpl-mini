@@ -3,10 +3,10 @@
  * Secure Private Management Console for asawamanasak@gmail.com
  * Protected by Cloudflare Zero Trust (Email OTP)
  *
- * Unslop Design Redesign Pass:
+ * Impeccable Quality & Unslop Craft:
  * 1. Spacing: Strict 4px grid (4, 8, 12, 16, 20, 24, 32, 48), balanced rhythm
  * 2. Color: Neutral graphite/ink ramp (#0f0f11 dark, #f8fafc light), single emerald accent
- * 3. Icons: 16px, 1.5 stroke, text role colors, no decorative filler
+ * 3. Icons: 16px, 1.5 stroke, text role colors, zero decorative filler
  * 4. Copy: Factual, calm, zero hype words, sentence case, no boasting badges
  * 5. Type: 400-500 weights, tabular figures, no loud uppercase tracked labels
  * 6. Layout: Clean dashboard proportions, quiet chrome, content-led richness
@@ -130,7 +130,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       <div class="flex items-center gap-2 sm:gap-3">
         
-        <!-- Edge Region Status (Calm static dot, no looping ping) -->
+        <!-- Edge Region Status (Calm static dot) -->
         <div class="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-md border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-cardDark text-xs font-mono">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
           <span class="text-slate-600 dark:text-neutral-400 text-[11px]">${colo} (Bangkok Edge)</span>
@@ -175,13 +175,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       </div>
       <div class="flex items-center gap-2 text-xs font-mono shrink-0">
         <span class="text-slate-400 dark:text-neutral-500">Security Gate:</span>
-        <span class="text-slate-700 dark:text-neutral-300 font-medium">
-          ${authProvider}
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 font-medium">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+          <span>${authProvider}</span>
         </span>
       </div>
     </div>
 
-    <!-- Live Telemetry & Deadline Countdown Bar (Quiet Neutral Surface) -->
+    <!-- Live Telemetry & Deadline Countdown Bar (Quiet Neutral Surface, Zero CLS) -->
     <section class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark transition-colors duration-150">
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         
@@ -200,7 +201,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-neutral-400">
             <div>
               <span>Last synchronized: </span>
-              <strong id="telemetryLastSync" class="text-slate-800 dark:text-neutral-200 font-mono font-medium">3 พ.ย. 2026, 17:57 น.</strong>
+              <strong id="telemetryLastSync" class="text-slate-800 dark:text-neutral-200 font-mono font-medium">4 พ.ย. 2026, 01:14 น.</strong>
               <span id="telemetryTimeAgo" class="font-mono text-[11px] ml-1 text-slate-400 dark:text-neutral-500"></span>
             </div>
             <div class="hidden sm:inline-block text-slate-300 dark:text-neutral-700">|</div>
@@ -214,20 +215,32 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <!-- Right: Deadline Countdown & Refresh Action -->
         <div class="flex flex-wrap sm:flex-nowrap items-center gap-3 pt-2 lg:pt-0 border-t lg:border-t-0 border-borderLight dark:border-borderDark">
           
-          <!-- Deadline Countdown Box (Quiet Mono Digits, Zero CLS) -->
+          <!-- Deadline Countdown Box (Segmented Monospace Micro-Slots, Zero CLS) -->
           <div class="w-full sm:w-auto px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs">
-            <div class="text-[11px] text-slate-500 dark:text-neutral-400 flex items-center justify-between gap-4 mb-1">
+            <div class="text-[11px] text-slate-500 dark:text-neutral-400 flex items-center justify-between gap-4 mb-1.5">
               <span id="telemetryNextDeadlineName" class="font-medium text-slate-700 dark:text-neutral-200">Gameweek 10 deadline</span>
               <span class="font-mono text-[10px] text-slate-400 dark:text-neutral-500">Live</span>
             </div>
-            <div class="flex items-center gap-1 font-mono tabular text-slate-900 dark:text-white text-sm font-medium">
-              <span id="cdDays" class="w-7 text-center">--</span><span class="text-slate-400 dark:text-neutral-500 text-xs">d</span>
-              <span class="text-slate-300 dark:text-neutral-600">:</span>
-              <span id="cdHours" class="w-7 text-center">--</span><span class="text-slate-400 dark:text-neutral-500 text-xs">h</span>
-              <span class="text-slate-300 dark:text-neutral-600">:</span>
-              <span id="cdMins" class="w-7 text-center">--</span><span class="text-slate-400 dark:text-neutral-500 text-xs">m</span>
-              <span class="text-slate-300 dark:text-neutral-600">:</span>
-              <span id="cdSecs" class="w-7 text-center">--</span><span class="text-slate-400 dark:text-neutral-500 text-xs">s</span>
+            <div class="flex items-center gap-1.5 font-mono tabular text-slate-900 dark:text-white text-xs font-medium">
+              <span class="flex items-baseline gap-0.5">
+                <span id="cdDays" class="inline-flex items-center justify-center min-w-[28px] h-6 rounded bg-cardLight dark:bg-cardDark border border-borderLight dark:border-borderDark text-xs font-semibold tabular">--</span>
+                <span class="text-slate-400 dark:text-neutral-500 text-[10px]">d</span>
+              </span>
+              <span class="text-slate-300 dark:text-neutral-600 font-bold">:</span>
+              <span class="flex items-baseline gap-0.5">
+                <span id="cdHours" class="inline-flex items-center justify-center min-w-[28px] h-6 rounded bg-cardLight dark:bg-cardDark border border-borderLight dark:border-borderDark text-xs font-semibold tabular">--</span>
+                <span class="text-slate-400 dark:text-neutral-500 text-[10px]">h</span>
+              </span>
+              <span class="text-slate-300 dark:text-neutral-600 font-bold">:</span>
+              <span class="flex items-baseline gap-0.5">
+                <span id="cdMins" class="inline-flex items-center justify-center min-w-[28px] h-6 rounded bg-cardLight dark:bg-cardDark border border-borderLight dark:border-borderDark text-xs font-semibold tabular">--</span>
+                <span class="text-slate-400 dark:text-neutral-500 text-[10px]">m</span>
+              </span>
+              <span class="text-slate-300 dark:text-neutral-600 font-bold">:</span>
+              <span class="flex items-baseline gap-0.5">
+                <span id="cdSecs" class="inline-flex items-center justify-center min-w-[28px] h-6 rounded bg-cardLight dark:bg-cardDark border border-borderLight dark:border-borderDark text-xs font-semibold tabular">--</span>
+                <span class="text-slate-400 dark:text-neutral-500 text-[10px]">s</span>
+              </span>
             </div>
           </div>
 
@@ -344,7 +357,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       </div>
 
       <div class="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0 touch-scroll">
-        <table class="w-full text-left text-xs min-w-[680px]">
+        <table class="w-full text-left text-xs min-w-[700px]">
           <thead>
             <tr class="border-b border-borderLight dark:border-borderDark text-slate-500 dark:text-neutral-400">
               <th class="py-2.5 px-3 font-medium text-center w-8">#</th>
@@ -352,8 +365,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <th class="py-2.5 px-3 font-medium">League ID</th>
               <th class="py-2.5 px-3 font-medium">Teams</th>
               <th class="py-2.5 px-3 font-medium">Current leader</th>
-              <th class="py-2.5 px-3 font-medium">Total score</th>
-              <th class="py-2.5 px-3 font-medium">GW score</th>
+              <th class="py-2.5 px-3 font-medium text-right pr-4">Total score</th>
+              <th class="py-2.5 px-3 font-medium text-right pr-4">GW score</th>
               <th class="py-2.5 px-3 font-medium text-right">View</th>
             </tr>
           </thead>
@@ -368,8 +381,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">40700</td>
               <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">12 teams</td>
               <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">Athit Rattanawipapong <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(SUN-KUNG-JI)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular">635 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular">+64 pts</td>
+              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">635 pts</td>
+              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+64 pts</td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/40700/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
@@ -386,8 +399,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">675290</td>
               <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">60 teams</td>
               <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">Tanapan Jongsaksawat <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(Godzilbu United)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular">637 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular">+71 pts</td>
+              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">637 pts</td>
+              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+71 pts</td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/675290/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
@@ -404,8 +417,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">38491</td>
               <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">16 teams</td>
               <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">FAme Pakviwat <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(Some might say)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular">633 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular">+57 pts</td>
+              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">633 pts</td>
+              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+57 pts</td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/38491/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
@@ -422,8 +435,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">1101958</td>
               <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">17 teams</td>
               <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">Patrick Oo <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(Oöraora Grandé)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular">637 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular">+60 pts</td>
+              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">637 pts</td>
+              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+60 pts</td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/1101958/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
@@ -440,8 +453,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">438691</td>
               <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">13 teams</td>
               <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">Thiti Oak <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(BMFC™)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular">632 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular">+59 pts</td>
+              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">632 pts</td>
+              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+59 pts</td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/438691/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
@@ -458,8 +471,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">187827</td>
               <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">13 teams</td>
               <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">Patrick Oo <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(Oöraora Grandé)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular">637 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular">+60 pts</td>
+              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">637 pts</td>
+              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+60 pts</td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/187827/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
@@ -476,8 +489,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">5349</td>
               <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">20 teams</td>
               <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">Natee Kakeaw <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(-Nk_KOP)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular">665 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular">+59 pts</td>
+              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">665 pts</td>
+              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+59 pts</td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/5349/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
@@ -494,8 +507,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">567387</td>
               <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">12 teams</td>
               <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">Micky Asawamanasak <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(GEMINI UNITED)</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular">625 pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular">+62 pts</td>
+              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">625 pts</td>
+              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+62 pts</td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/567387/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
@@ -1012,7 +1025,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
     // Live Telemetry Countdown & Dynamic Standings
     let deadlineEpochGlobal = 1793989800; // GW 10 default
-    let lastSyncIsoGlobal = '2026-11-03 17:57:00';
+    let lastSyncIsoGlobal = '2026-11-04 01:14:00';
 
     function updateCountdownTimer() {
       if (!deadlineEpochGlobal) return;
@@ -1188,8 +1201,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">\${lid}</td>
               <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular">\${teams.length} teams</td>
               <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">\${leaderName} <span class="text-slate-400 dark:text-neutral-500 text-[11px]">(\${leaderTeam})</span></td>
-              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular">\${leaderPts} pts</td>
-              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular">+\${leaderGw} pts</td>
+              <td class="py-3 px-3 font-mono font-medium text-slate-900 dark:text-white tabular text-right pr-4">\${leaderPts} pts</td>
+              <td class="py-3 px-3 font-mono text-emerald-600 dark:text-emerald-400 tabular text-right pr-4">+\${leaderGw} pts</td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/\${lid}/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
                   <span>เปิดดู</span>${ICONS.external}
