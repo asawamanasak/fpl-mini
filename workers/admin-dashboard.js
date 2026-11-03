@@ -699,7 +699,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                   <span class="text-slate-500 dark:text-neutral-400">14 ทีม (8.6%)</span>
                 </div>
                 <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-                  <div class="bg-slate-400 dark:bg-neutral-500 h-full rounded-full" style="width: 8.6%"></div>
+                  <div class="bg-sky-500 h-full rounded-full" style="width: 8.6%"></div>
                 </div>
               </div>
 
@@ -709,7 +709,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                   <span class="text-slate-500 dark:text-neutral-400">3 ทีม (1.8%)</span>
                 </div>
                 <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-                  <div class="bg-slate-400 dark:bg-neutral-500 h-full rounded-full" style="width: 1.8%"></div>
+                  <div class="bg-violet-500 h-full rounded-full" style="width: 1.8%"></div>
                 </div>
               </div>
 
@@ -719,7 +719,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                   <span class="text-slate-500 dark:text-neutral-400">3 ทีม (1.8%)</span>
                 </div>
                 <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-                  <div class="bg-slate-400 dark:bg-neutral-500 h-full rounded-full" style="width: 1.8%"></div>
+                  <div class="bg-amber-500 h-full rounded-full" style="width: 1.8%"></div>
                 </div>
               </div>
 
@@ -866,8 +866,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <!-- Neutral Segmented Bar -->
           <div class="w-full h-2 rounded-full overflow-hidden flex bg-borderLight dark:bg-borderDark">
             <div id="channelSegLine" class="bg-emerald-500 h-full transition-all duration-300" style="width: 68.4%"></div>
-            <div id="channelSegSafari" class="bg-slate-400 dark:bg-neutral-500 h-full transition-all duration-300" style="width: 22.5%"></div>
-            <div id="channelSegChrome" class="bg-slate-300 dark:bg-neutral-600 h-full transition-all duration-300" style="width: 9.1%"></div>
+            <div id="channelSegSafari" class="bg-sky-500 h-full transition-all duration-300" style="width: 22.5%"></div>
+            <div id="channelSegChrome" class="bg-amber-500 h-full transition-all duration-300" style="width: 9.1%"></div>
           </div>
 
           <div class="grid grid-cols-3 gap-2 text-center text-xs pt-1">
@@ -888,7 +888,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
 
           <p class="text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed pt-1">
-            LINE คือช่องทางหลักคิดเป็น 68.4% การแชร์ในกลุ่มแชทส่งผลต่ออัตราการเปิดดูสูงสุด การทำปุ่มแชร์ภาพสรุปคะแนนลง LINE จึงมีผลต่อการใช้งานมากที่สุด
+            LINE คือช่องทางหลักคิดเป็น <span id="channelTextLinePct">68.4%</span> การแชร์ในกลุ่มแชทส่งผลต่ออัตราการเปิดดูสูงสุด การทำปุ่มแชร์ภาพสรุปคะแนนลง LINE จึงมีผลต่อการใช้งานมากที่สุด
           </p>
         </div>
       </div>
@@ -941,7 +941,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <span class="text-slate-500 dark:text-neutral-400">8.6%</span>
             </div>
             <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-              <div class="bg-slate-300 dark:bg-neutral-600 h-full" style="width: 8.6%"></div>
+              <div class="bg-amber-500/80 h-full" style="width: 8.6%"></div>
             </div>
           </div>
 
@@ -980,6 +980,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </div>
             <span id="deviceMobilePct" class="text-sm font-medium font-mono tabular text-emerald-600 dark:text-emerald-400">76.2%</span>
           </div>
+          <div class="w-full h-1 rounded-full bg-emerald-500/20 overflow-hidden my-1.5">
+            <div id="deviceMobileBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 76.2%"></div>
+          </div>
           <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
             iOS Safari (54.0%) และ Android Chrome (22.2%) เข้าใช้งานระหว่างวันเพื่อตรวจเช็กคะแนนสดอย่างรวดเร็ว
           </p>
@@ -993,6 +996,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </div>
             <span id="deviceDesktopPct" class="text-sm font-medium font-mono tabular text-sky-600 dark:text-sky-400">19.4%</span>
           </div>
+          <div class="w-full h-1 rounded-full bg-sky-500/20 overflow-hidden my-1.5">
+            <div id="deviceDesktopBar" class="bg-sky-500 h-full rounded-full transition-all duration-300" style="width: 19.4%"></div>
+          </div>
           <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
             macOS (12.1%) และ Windows (7.3%) มีระยะเวลาเปิดดูนานที่สุด เหมาะกับการวางแผนย้ายตัวช่วงก่อนเดดไลน์
           </p>
@@ -1005,6 +1011,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <span>Tablet / iPad</span>
             </div>
             <span id="deviceTabletPct" class="text-sm font-medium font-mono tabular text-purple-600 dark:text-purple-400">4.4%</span>
+          </div>
+          <div class="w-full h-1 rounded-full bg-purple-500/20 overflow-hidden my-1.5">
+            <div id="deviceTabletBar" class="bg-purple-500 h-full rounded-full transition-all duration-300" style="width: 4.4%"></div>
           </div>
           <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
             Apple iPad (4.1%) มักเปิดจอคู่ขนานระหว่างรับชมการถ่ายทอดสดฟุตบอลในวันเสาร์-อาทิตย์
@@ -1439,6 +1448,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           if (segLine && telem.sources.line) segLine.style.width = telem.sources.line.pct + '%';
           if (segSafari && telem.sources.safari) segSafari.style.width = telem.sources.safari.pct + '%';
           if (segChrome && telem.sources.chrome) segChrome.style.width = telem.sources.chrome.pct + '%';
+
+          const textLineEl = document.getElementById('channelTextLinePct');
+          if (textLineEl && telem.sources.line) textLineEl.textContent = telem.sources.line.pct + '%';
         }
 
         // Devices
@@ -1450,6 +1462,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           if (mobPctEl && telem.devices.mobile) mobPctEl.textContent = telem.devices.mobile.pct + '%';
           if (deskPctEl && telem.devices.desktop) deskPctEl.textContent = telem.devices.desktop.pct + '%';
           if (tabPctEl && telem.devices.tablet) tabPctEl.textContent = telem.devices.tablet.pct + '%';
+
+          const mobBar = document.getElementById('deviceMobileBar');
+          const deskBar = document.getElementById('deviceDesktopBar');
+          const tabBar = document.getElementById('deviceTabletBar');
+          if (mobBar && telem.devices.mobile) mobBar.style.width = telem.devices.mobile.pct + '%';
+          if (deskBar && telem.devices.desktop) deskBar.style.width = telem.devices.desktop.pct + '%';
+          if (tabBar && telem.devices.tablet) tabBar.style.width = telem.devices.tablet.pct + '%';
         }
 
         // Header status pill
