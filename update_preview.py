@@ -4944,7 +4944,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.updateDeadlineCountdown();
         const gwRangeStatus = document.getElementById('gw-range-status');
         if (gwRangeStatus) {
-          gwRangeStatus.innerText = isEn ? 'Gameweeks 1 - 38' : 'สัปดาห์ที่ 1 - 38';
+          gwRangeStatus.innerHTML = isEn ? '<span class="hidden min-[380px]:inline">Gameweeks </span>1 - 38' : '<span class="hidden min-[380px]:inline">สัปดาห์ที่ </span>1 - 38';
         }
         const totalLdTitle = document.querySelector('#gameweek-view .border-t-blue-600 h3');
         if (totalLdTitle) {
@@ -7836,7 +7836,7 @@ selectShi62GW(gwName) {
           const isFinished = Boolean(gwData && gwData.is_finished);
           const isStarted = gwData ? (gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || (gwData.results && gwData.results.some(r => r.points > 0)))) : false;
 
-          let badgeClass = 'bg-slate-100 text-slate-400 border border-slate-200 dark:bg-slate-900/40 dark:text-slate-600 dark:border-slate-800/40 cursor-not-allowed opacity-60';
+          let badgeClass = 'bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-900/40 dark:text-slate-500 dark:border-slate-800/40 cursor-not-allowed opacity-60';
           let statusText = 'LOCKED';
 
           if (isPlayed) {
@@ -7869,7 +7869,7 @@ selectShi62GW(gwName) {
           html += `
             <button 
               onclick="${isPlayed ? `app.selectGW(${gw})` : ''}"
-              class="flex-shrink-0 flex flex-col items-center justify-center w-14 sm:w-16 py-1.5 min-h-[44px] rounded-xl transition-all font-display active:scale-95 ${badgeClass}"
+              class="flex-shrink-0 flex flex-col items-center justify-center w-14 sm:w-16 py-1.5 min-h-[44px] rounded-xl transition-colors duration-150 font-display active:scale-95 focus-visible:ring-2 focus-visible:ring-blue-500 ${badgeClass}"
               ${!isPlayed ? 'disabled' : ''}
             >
               <span class="text-xs font-bold">GW ${gw}</span>
