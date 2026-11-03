@@ -39,6 +39,8 @@ const ICONS = {
   refresh: `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>`,
   check: `<svg class="w-4 h-4 shrink-0 text-emerald-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>`,
   mapPin: `<svg class="w-4 h-4 shrink-0 text-slate-500 dark:text-neutral-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>`,
+  trophy: `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004-7.5V4.875c0-.621-.504-1.125-1.125-1.125H9.625c-.621 0-1.125.504-1.125 1.125V6.75m6 0H18a2.25 2.25 0 012.25 2.25v.75a4.5 4.5 0 01-4.5 4.5h-.75m-6-7.5H6A2.25 2.25 0 003.75 9v.75a4.5 4.5 0 004.5 4.5h.75"/></svg>`,
+  trendUp: `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>`,
 };
 
 /**
@@ -164,26 +166,58 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
     <!-- Page Title & Security Status -->
-    <div class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-3 pb-4 border-b border-borderLight dark:border-borderDark">
-      <div>
-        <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
-          Executive summary & live business intelligence
-        </h1>
-        <p class="text-xs sm:text-sm text-slate-500 dark:text-neutral-400 mt-1">
-          รายงานผลการดำเนินงาน สถิติพฤติกรรมผู้เล่น 163 ทีม และสถานะระบบตามรอบการแข่งขันจริง
-        </p>
+    <div class="space-y-4 pb-4 border-b border-borderLight dark:border-borderDark">
+      <div class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-3">
+        <div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-raisedLight dark:bg-cardDark border border-borderLight dark:border-borderDark text-[11px] font-mono text-slate-500 dark:text-neutral-400 mb-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span>LIVE INTELLIGENCE PLATFORM · GW 9 FINALIZED</span>
+          </div>
+          <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
+            Executive summary & live business intelligence
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-neutral-400 mt-1">
+            รายงานผลการดำเนินงาน สถิติพฤติกรรมผู้เล่น 163 ทีม และสถานะระบบตามรอบการแข่งขันจริง
+          </p>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-mono shrink-0">
+          <span class="text-slate-400 dark:text-neutral-500">Security Gate:</span>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+            <span>${authProvider}</span>
+          </span>
+        </div>
       </div>
-      <div class="flex items-center gap-2 text-xs font-mono shrink-0">
-        <span class="text-slate-400 dark:text-neutral-500">Security Gate:</span>
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 font-medium">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
-          <span>${authProvider}</span>
-        </span>
+
+      <!-- Quick Module Navigation Strip (Intentional Category Accents) -->
+      <div class="flex items-center gap-2 overflow-x-auto touch-scroll pt-1 text-[11px] font-mono">
+        <span class="text-slate-400 dark:text-neutral-500 font-sans text-xs shrink-0 mr-1">Modules:</span>
+        <a href="#sec-audience" class="px-2.5 py-1 rounded-md border border-emerald-500/20 bg-emerald-500/5 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10 transition-colors shrink-0 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>01 Audience & Scale
+        </a>
+        <a href="#sec-standings" class="px-2.5 py-1 rounded-md border border-sky-500/20 bg-sky-500/5 text-sky-700 dark:text-sky-400 hover:bg-sky-500/10 transition-colors shrink-0 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>02 Standings
+        </a>
+        <a href="#sec-tactics" class="px-2.5 py-1 rounded-md border border-violet-500/20 bg-violet-500/5 text-violet-700 dark:text-violet-400 hover:bg-violet-500/10 transition-colors shrink-0 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-violet-500"></span>03 Tactics
+        </a>
+        <a href="#sec-distribution" class="px-2.5 py-1 rounded-md border border-teal-500/20 bg-teal-500/5 text-teal-700 dark:text-teal-400 hover:bg-teal-500/10 transition-colors shrink-0 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span>04 Channels & Geo
+        </a>
+        <a href="#sec-devices" class="px-2.5 py-1 rounded-md border border-indigo-500/20 bg-indigo-500/5 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-500/10 transition-colors shrink-0 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>05 Devices
+        </a>
+        <a href="#sec-timing" class="px-2.5 py-1 rounded-md border border-amber-500/20 bg-amber-500/5 text-amber-700 dark:text-amber-400 hover:bg-amber-500/10 transition-colors shrink-0 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>06 Windows
+        </a>
+        <a href="#sec-ops" class="px-2.5 py-1 rounded-md border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-cardDark text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>07 Operations
+        </a>
       </div>
     </div>
 
-    <!-- Live Telemetry & Deadline Countdown Bar (Quiet Neutral Surface, Zero CLS) -->
-    <section class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark transition-colors duration-150">
+    <!-- Live Telemetry & Deadline Countdown Bar (Section 0) -->
+    <section class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-emerald-500 shadow-sm transition-colors duration-150">
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         
         <!-- Left: Telemetry Status -->
@@ -263,21 +297,32 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     </section>
 
     <!-- 1. Executive KPIs (6 Core Business & Community Cards) -->
-    <section>
-      <div class="flex items-center justify-between gap-2 mb-3">
-        <span class="text-xs font-medium text-slate-500 dark:text-neutral-400">
-          Platform overview & audience reach (ภาพรวมการเข้าถึงผู้ใช้งานและสถานะระบบ)
-        </span>
+    <section id="sec-audience" class="space-y-3">
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">
+            01 · AUDIENCE & COMMUNITY SCALE
+          </span>
+          <span class="text-xs text-slate-500 dark:text-neutral-400 hidden sm:inline">
+            ภาพรวมการเข้าถึงผู้ใช้งานและสถานะระบบ
+          </span>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
-        <!-- KPI 1: Weekly Visits & Daily Reach -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-slate-300 dark:hover:border-neutral-700 transition-colors duration-150">
+        <!-- KPI 1: Weekly Visits & Daily Reach (Emerald Accent) -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-emerald-500/50 transition-colors duration-150 relative overflow-hidden group">
+          <div class="absolute top-0 left-0 right-0 h-0.5 bg-emerald-500"></div>
           <div>
-            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2">
-              <span>Weekly Visits (7 วันล่าสุด)</span>
-              <span class="text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-medium tabular">+18.4% WoW</span>
+            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2.5">
+              <span class="flex items-center gap-1.5 font-medium text-slate-700 dark:text-neutral-300">
+                <span class="w-5 h-5 rounded flex items-center justify-center bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                  ${ICONS.trendUp}
+                </span>
+                <span>Weekly Visits (7 วันล่าสุด)</span>
+              </span>
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-medium border border-emerald-500/20 tabular">+18.4% WoW</span>
             </div>
             <div class="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900 dark:text-white font-mono tabular">
               4,280
@@ -285,16 +330,22 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
           <div class="mt-4 pt-3 border-t border-borderLight dark:border-borderDark flex items-center justify-between text-xs text-slate-500 dark:text-neutral-400">
             <span>Daily Average Reach</span>
-            <span class="text-slate-700 dark:text-neutral-300 font-mono tabular">1,850 users/day</span>
+            <span class="text-slate-800 dark:text-neutral-200 font-mono tabular font-medium inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>1,850 users/day</span>
           </div>
         </div>
 
-        <!-- KPI 2: Matchday Peak Concurrency & Dwell Time -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-slate-300 dark:hover:border-neutral-700 transition-colors duration-150">
+        <!-- KPI 2: Matchday Peak Concurrency & Dwell Time (Sky Accent) -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-sky-500/50 transition-colors duration-150 relative overflow-hidden group">
+          <div class="absolute top-0 left-0 right-0 h-0.5 bg-sky-500"></div>
           <div>
-            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2">
-              <span>Peak Live Audience (ช่วงบอลเตะ)</span>
-              <span class="text-sky-600 dark:text-sky-400 font-mono text-[11px] font-medium tabular">เสาร์ 21:00 - 23:00</span>
+            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2.5">
+              <span class="flex items-center gap-1.5 font-medium text-slate-700 dark:text-neutral-300">
+                <span class="w-5 h-5 rounded flex items-center justify-center bg-sky-500/10 text-sky-600 dark:text-sky-400">
+                  ${ICONS.bolt}
+                </span>
+                <span>Peak Live Audience (ช่วงบอลเตะ)</span>
+              </span>
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 font-mono text-[11px] font-medium border border-sky-500/20 tabular">เสาร์ 21:00 - 23:00</span>
             </div>
             <div class="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900 dark:text-white font-mono tabular">
               284 <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">concurrent</span>
@@ -302,16 +353,22 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
           <div class="mt-4 pt-3 border-t border-borderLight dark:border-borderDark flex items-center justify-between text-xs text-slate-500 dark:text-neutral-400">
             <span>Avg Session Duration</span>
-            <span class="text-slate-700 dark:text-neutral-300 font-mono tabular">5.2 mins / visit</span>
+            <span class="text-slate-800 dark:text-neutral-200 font-mono tabular font-medium inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-sky-500 shrink-0"></span>5.2 mins / visit</span>
           </div>
         </div>
 
-        <!-- KPI 3: Edge Speed & Uptime -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-slate-300 dark:hover:border-neutral-700 transition-colors duration-150">
+        <!-- KPI 3: Edge Speed & Uptime (Emerald Accent) -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-emerald-500/50 transition-colors duration-150 relative overflow-hidden group">
+          <div class="absolute top-0 left-0 right-0 h-0.5 bg-emerald-500"></div>
           <div>
-            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2">
-              <span>Platform Speed & Uptime</span>
-              <span class="text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-medium tabular">99.98% SLA</span>
+            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2.5">
+              <span class="flex items-center gap-1.5 font-medium text-slate-700 dark:text-neutral-300">
+                <span class="w-5 h-5 rounded flex items-center justify-center bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                  ${ICONS.shield}
+                </span>
+                <span>Platform Speed & Uptime</span>
+              </span>
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono text-[11px] font-medium border border-emerald-500/20 tabular">99.98% SLA</span>
             </div>
             <div class="text-2xl sm:text-3xl font-medium tracking-tight text-emerald-600 dark:text-emerald-400 font-mono tabular">
               0.14 <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">sec</span>
@@ -319,16 +376,22 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
           <div class="mt-4 pt-3 border-t border-borderLight dark:border-borderDark flex items-center justify-between text-xs text-slate-500 dark:text-neutral-400">
             <span>Edge Cache Hit Ratio</span>
-            <span class="text-slate-700 dark:text-neutral-300 font-mono tabular">96.4% Cached</span>
+            <span class="text-slate-800 dark:text-neutral-200 font-mono tabular font-medium inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>96.4% Cached</span>
           </div>
         </div>
 
-        <!-- KPI 4: Active Community Scale -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-slate-300 dark:hover:border-neutral-700 transition-colors duration-150">
+        <!-- KPI 4: Active Community Scale (Indigo Accent) -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-indigo-500/50 transition-colors duration-150 relative overflow-hidden group">
+          <div class="absolute top-0 left-0 right-0 h-0.5 bg-indigo-500"></div>
           <div>
-            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2">
-              <span>Tracked Teams (ทีมในระบบ)</span>
-              <span class="text-slate-500 dark:text-neutral-400 font-mono text-[11px] tabular">Live Sync</span>
+            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2.5">
+              <span class="flex items-center gap-1.5 font-medium text-slate-700 dark:text-neutral-300">
+                <span class="w-5 h-5 rounded flex items-center justify-center bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                  ${ICONS.activity}
+                </span>
+                <span>Tracked Teams (ทีมในระบบ)</span>
+              </span>
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-mono text-[11px] font-medium border border-indigo-500/20 tabular">Live Sync</span>
             </div>
             <div class="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900 dark:text-white font-mono tabular">
               <span id="kpiTotalTeams">163</span> <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">teams</span>
@@ -336,16 +399,22 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
           <div class="mt-4 pt-3 border-t border-borderLight dark:border-borderDark flex items-center justify-between text-xs text-slate-500 dark:text-neutral-400">
             <span>Active Coverage</span>
-            <span class="text-slate-700 dark:text-neutral-300 font-mono tabular">8 minileagues</span>
+            <span class="text-slate-800 dark:text-neutral-200 font-mono tabular font-medium inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0"></span>8 minileagues</span>
           </div>
         </div>
 
-        <!-- KPI 5: High Score Leader -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-slate-300 dark:hover:border-neutral-700 transition-colors duration-150">
+        <!-- KPI 5: High Score Leader (Amber Accent) -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-amber-500/50 transition-colors duration-150 relative overflow-hidden group">
+          <div class="absolute top-0 left-0 right-0 h-0.5 bg-amber-500"></div>
           <div>
-            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2">
-              <span>High Score Leader (คะแนนสูงสุด)</span>
-              <span class="text-emerald-600 dark:text-emerald-400 font-mono text-[11px] tabular">Top Rank</span>
+            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2.5">
+              <span class="flex items-center gap-1.5 font-medium text-slate-700 dark:text-neutral-300">
+                <span class="w-5 h-5 rounded flex items-center justify-center bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                  ${ICONS.trophy}
+                </span>
+                <span>High Score Leader (คะแนนสูงสุด)</span>
+              </span>
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono text-[11px] font-medium border border-amber-500/20 tabular">Top Rank</span>
             </div>
             <div class="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900 dark:text-white font-mono tabular">
               <span id="kpiTopScore">665</span> <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">pts</span>
@@ -353,16 +422,22 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
           <div class="mt-4 pt-3 border-t border-borderLight dark:border-borderDark flex items-center justify-between text-xs text-slate-500 dark:text-neutral-400">
             <span>Overall Leader</span>
-            <span id="kpiTopLeader" class="text-slate-700 dark:text-neutral-300 font-mono truncate max-w-[160px]">Natee Kakeaw</span>
+            <span class="text-slate-800 dark:text-neutral-200 font-mono font-medium inline-flex items-center gap-1.5 truncate max-w-[170px]"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span><span id="kpiTopLeader" class="truncate">Natee Kakeaw</span></span>
           </div>
         </div>
 
-        <!-- KPI 6: Current Gameweek Cycle -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-slate-300 dark:hover:border-neutral-700 transition-colors duration-150">
+        <!-- KPI 6: Current Gameweek Cycle (Violet Accent) -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-violet-500/50 transition-colors duration-150 relative overflow-hidden group">
+          <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet-500"></div>
           <div>
-            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2">
-              <span>Active Cycle (รอบการแข่งขัน)</span>
-              <span id="kpiGwStatusBadge" class="text-slate-500 dark:text-neutral-400 font-mono text-[11px]">Finalized</span>
+            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2.5">
+              <span class="flex items-center gap-1.5 font-medium text-slate-700 dark:text-neutral-300">
+                <span class="w-5 h-5 rounded flex items-center justify-center bg-violet-500/10 text-violet-600 dark:text-violet-400">
+                  ${ICONS.clock}
+                </span>
+                <span>Active Cycle (รอบการแข่งขัน)</span>
+              </span>
+              <span id="kpiGwStatusBadge" class="inline-flex items-center px-1.5 py-0.5 rounded bg-violet-500/10 text-violet-600 dark:text-violet-400 font-mono text-[11px] font-medium border border-violet-500/20 tabular">Finalized</span>
             </div>
             <div class="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900 dark:text-white font-mono tabular flex items-baseline gap-2">
               <span id="kpiGwNumber">GW 9</span>
@@ -371,7 +446,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
           <div class="mt-4 pt-3 border-t border-borderLight dark:border-borderDark flex items-center justify-between text-xs text-slate-500 dark:text-neutral-400">
             <span>Next Target Window</span>
-            <span class="text-slate-700 dark:text-neutral-300 font-mono">Gameweek 10 Prep</span>
+            <span class="text-slate-800 dark:text-neutral-200 font-mono font-medium inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-violet-500 shrink-0"></span>Gameweek 10 Prep</span>
           </div>
         </div>
 
@@ -379,9 +454,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     </section>
 
     <!-- 2. Community Market Share & Live Standings Table (Moment 1: Data Richness) -->
-    <section class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4 transition-colors duration-150">
+    <section id="sec-standings" class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-sky-500 shadow-sm space-y-4 transition-colors duration-150">
       <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
         <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/20 uppercase tracking-wider">
+              02 · COMMUNITY & STANDINGS
+            </span>
+          </div>
           <h2 class="text-base font-medium text-slate-900 dark:text-white">
             Community market share & live standings
           </h2>
@@ -390,7 +470,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </p>
         </div>
         <div class="text-xs font-mono text-slate-500 dark:text-neutral-400">
-          8 leagues · <span id="tableTotalManagers" class="tabular">163</span> managers
+          8 leagues · <span id="tableTotalManagers" class="tabular text-slate-900 dark:text-white font-medium">163</span> managers
         </div>
       </div>
 
@@ -398,7 +478,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <table class="w-full text-left text-xs min-w-[700px]">
           <thead>
             <tr class="border-b border-borderLight dark:border-borderDark text-slate-500 dark:text-neutral-400">
-              <th class="py-2.5 px-3 font-medium text-center w-8">#</th>
+              <th class="py-2.5 px-3 font-medium text-center w-10">#</th>
               <th class="py-2.5 px-3 font-medium">League name</th>
               <th class="py-2.5 px-3 font-medium">League ID</th>
               <th class="py-2.5 px-3 font-medium">Teams</th>
@@ -411,9 +491,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <tbody id="leaguesTableBody" class="divide-y divide-borderLight dark:divide-borderDark">
             
             <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center font-mono text-slate-400 dark:text-neutral-500">1</td>
+              <td class="py-3 px-3 text-center">
+                <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-bold text-[10px]">1</span>
+              </td>
               <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
                 <span>เซียนอยู่รู หมูอยู่ตึก</span>
               </td>
               <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">40700</td>
@@ -429,9 +511,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </tr>
 
             <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center font-mono text-slate-400 dark:text-neutral-500">2</td>
+              <td class="py-3 px-3 text-center">
+                <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/30 font-bold text-[10px]">2</span>
+              </td>
               <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-sky-500 shrink-0"></span>
                 <span>NudNee</span>
               </td>
               <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">675290</td>
@@ -447,9 +531,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </tr>
 
             <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center font-mono text-slate-400 dark:text-neutral-500">3</td>
+              <td class="py-3 px-3 text-center">
+                <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/30 font-bold text-[10px]">3</span>
+              </td>
               <td class="py-3 px-3 font-medium text-slate-900 dark:text-white flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0"></span>
                 <span>รอ แมน โอน</span>
               </td>
               <td class="py-3 px-3 font-mono text-slate-500 dark:text-neutral-400">38491</td>
@@ -560,12 +646,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     </section>
 
     <!-- 3. Tactical & Squad Intelligence (Moment 2: Quiet Cards, Real Distribution) -->
-    <section class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-5 transition-colors duration-150">
+    <section id="sec-tactics" class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-violet-500 shadow-sm space-y-5 transition-colors duration-150">
       <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
         <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-violet-500/10 text-violet-700 dark:text-violet-400 border border-violet-500/20 uppercase tracking-wider">
+              03 · TACTICAL INTELLIGENCE
+            </span>
+          </div>
           <h2 class="text-base font-medium text-slate-900 dark:text-white flex items-center gap-2">
             <span>Tactical & squad intelligence</span>
-            <span id="tacticalGwBadge" class="text-[11px] font-mono text-slate-500 dark:text-neutral-400">
+            <span id="tacticalGwBadge" class="text-[11px] font-mono text-violet-600 dark:text-violet-400 px-2 py-0.5 rounded bg-violet-500/10 border border-violet-500/20">
               Gameweek 9
             </span>
           </h2>
@@ -574,7 +665,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </p>
         </div>
         <div class="text-xs font-mono text-slate-500 dark:text-neutral-400">
-          Sample: <span id="tacticalSampleCount" class="text-slate-800 dark:text-neutral-200 tabular">163</span> managers
+          Sample: <span id="tacticalSampleCount" class="text-slate-900 dark:text-white font-medium tabular">163</span> managers
         </div>
       </div>
 
@@ -661,36 +752,36 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </p>
 
             <div class="grid grid-cols-2 gap-2 text-xs">
-              <div class="p-2.5 rounded-md border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark">
-                <div class="text-[10px] text-slate-500 dark:text-neutral-400">Free Hit</div>
+              <div class="p-2.5 rounded-md border border-sky-500/30 bg-sky-500/5">
+                <div class="text-[10px] font-medium text-sky-600 dark:text-sky-400">Free Hit</div>
                 <div class="text-base font-medium font-mono tabular text-slate-900 dark:text-white">
                   <span id="chipFreeHitCount">8</span> <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">ทีม</span>
                 </div>
-                <div id="chipFreeHitPct" class="text-[10px] text-slate-400 dark:text-neutral-500 mt-0.5">4.9%</div>
+                <div id="chipFreeHitPct" class="text-[10px] text-sky-600/70 dark:text-sky-400/70 mt-0.5 font-mono">4.9%</div>
               </div>
 
-              <div class="p-2.5 rounded-md border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark">
-                <div class="text-[10px] text-slate-500 dark:text-neutral-400">Wildcard</div>
+              <div class="p-2.5 rounded-md border border-amber-500/30 bg-amber-500/5">
+                <div class="text-[10px] font-medium text-amber-600 dark:text-amber-400">Wildcard</div>
                 <div class="text-base font-medium font-mono tabular text-slate-900 dark:text-white">
                   <span id="chipWildcardCount">4</span> <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">ทีม</span>
                 </div>
-                <div id="chipWildcardPct" class="text-[10px] text-slate-400 dark:text-neutral-500 mt-0.5">2.5%</div>
+                <div id="chipWildcardPct" class="text-[10px] text-amber-600/70 dark:text-amber-400/70 mt-0.5 font-mono">2.5%</div>
               </div>
 
-              <div class="p-2.5 rounded-md border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark">
-                <div class="text-[10px] text-slate-500 dark:text-neutral-400">Bench Boost</div>
+              <div class="p-2.5 rounded-md border border-emerald-500/30 bg-emerald-500/5">
+                <div class="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">Bench Boost</div>
                 <div class="text-base font-medium font-mono tabular text-slate-900 dark:text-white">
                   <span id="chipBboostCount">2</span> <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">ทีม</span>
                 </div>
-                <div id="chipBboostPct" class="text-[10px] text-slate-400 dark:text-neutral-500 mt-0.5">1.2%</div>
+                <div id="chipBboostPct" class="text-[10px] text-emerald-600/70 dark:text-emerald-400/70 mt-0.5 font-mono">1.2%</div>
               </div>
 
-              <div class="p-2.5 rounded-md border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark">
-                <div class="text-[10px] text-slate-500 dark:text-neutral-400">Triple Captain</div>
+              <div class="p-2.5 rounded-md border border-purple-500/30 bg-purple-500/5">
+                <div class="text-[10px] font-medium text-purple-600 dark:text-purple-400">Triple Captain</div>
                 <div class="text-base font-medium font-mono tabular text-slate-400 dark:text-neutral-500">
                   <span id="chip3xcCount">0</span> <span class="text-xs font-normal">ทีม</span>
                 </div>
-                <div id="chip3xcPct" class="text-[10px] text-slate-400 dark:text-neutral-500 mt-0.5">ยังไม่เปิดใช้</div>
+                <div id="chip3xcPct" class="text-[10px] text-purple-600/70 dark:text-purple-400/70 mt-0.5 font-mono">ยังไม่เปิดใช้</div>
               </div>
             </div>
 
@@ -717,9 +808,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </p>
 
             <div class="space-y-2">
-              <div class="p-3 rounded-md border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex items-center justify-between">
+              <div class="p-3 rounded-md border border-rose-500/30 bg-rose-500/5 flex items-center justify-between">
                 <div>
-                  <div class="text-xs font-medium text-slate-800 dark:text-neutral-200">ทีมที่ยอมเสียแต้ม</div>
+                  <div class="text-xs font-medium text-rose-700 dark:text-rose-300">ทีมที่ยอมเสียแต้ม</div>
                   <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono">Transfer hits taken</div>
                 </div>
                 <div class="text-lg font-medium font-mono tabular text-rose-600 dark:text-rose-400">
@@ -727,9 +818,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 </div>
               </div>
 
-              <div class="p-3 rounded-md border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex items-center justify-between">
+              <div class="p-3 rounded-md border border-emerald-500/30 bg-emerald-500/5 flex items-center justify-between">
                 <div>
-                  <div class="text-xs font-medium text-slate-800 dark:text-neutral-200">จัดตัวปกติไม่เสียแต้ม</div>
+                  <div class="text-xs font-medium text-emerald-700 dark:text-emerald-300">จัดตัวปกติไม่เสียแต้ม</div>
                   <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono">Free transfers only</div>
                 </div>
                 <div class="text-lg font-medium font-mono tabular text-slate-800 dark:text-neutral-200">
@@ -748,10 +839,20 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     </section>
 
     <!-- 4. Traffic Channels & Regional Demographics -->
-    <section class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+    <section id="sec-distribution" class="space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20 uppercase tracking-wider">
+          04 · DISTRIBUTION & GEOGRAPHY
+        </span>
+        <span class="text-xs text-slate-500 dark:text-neutral-400 hidden sm:inline">
+          ช่องทางการเข้าชมและการกระจายตัวตามภูมิภาค
+        </span>
+      </div>
 
-      <!-- Column 1: Traffic Channels -->
-      <div class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4 transition-colors duration-150">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+        <!-- Column 1: Traffic Channels -->
+        <div class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-teal-500 shadow-sm space-y-4 transition-colors duration-150">
         <div>
           <h2 class="text-base font-medium text-slate-900 dark:text-white">
             Traffic channels & user agents
@@ -770,19 +871,19 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
 
           <div class="grid grid-cols-3 gap-2 text-center text-xs pt-1">
-            <div class="p-2.5 rounded-md border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30">
+            <div class="p-2.5 rounded-md border border-emerald-500/30 bg-emerald-500/5">
               <div class="font-medium font-mono tabular text-emerald-600 dark:text-emerald-400 text-sm">68.4%</div>
-              <div class="text-[11px] text-slate-700 dark:text-neutral-300 mt-0.5">LINE In-App</div>
+              <div class="text-[11px] text-slate-700 dark:text-neutral-300 mt-0.5 font-medium">LINE In-App</div>
             </div>
 
-            <div class="p-2.5 rounded-md border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30">
-              <div class="font-medium font-mono tabular text-slate-700 dark:text-neutral-300 text-sm">22.5%</div>
-              <div class="text-[11px] text-slate-700 dark:text-neutral-300 mt-0.5">Mobile Safari</div>
+            <div class="p-2.5 rounded-md border border-sky-500/30 bg-sky-500/5">
+              <div class="font-medium font-mono tabular text-sky-600 dark:text-sky-400 text-sm">22.5%</div>
+              <div class="text-[11px] text-slate-700 dark:text-neutral-300 mt-0.5 font-medium">Mobile Safari</div>
             </div>
 
-            <div class="p-2.5 rounded-md border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30">
-              <div class="font-medium font-mono tabular text-slate-700 dark:text-neutral-300 text-sm">9.1%</div>
-              <div class="text-[11px] text-slate-700 dark:text-neutral-300 mt-0.5">Chrome / Web</div>
+            <div class="p-2.5 rounded-md border border-amber-500/30 bg-amber-500/5">
+              <div class="font-medium font-mono tabular text-amber-600 dark:text-amber-400 text-sm">9.1%</div>
+              <div class="text-[11px] text-slate-700 dark:text-neutral-300 mt-0.5 font-medium">Chrome / Web</div>
             </div>
           </div>
 
@@ -793,7 +894,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       </div>
 
       <!-- Column 2: Regional Demographics -->
-      <div class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4 transition-colors duration-150">
+      <div class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-teal-500 shadow-sm space-y-4 transition-colors duration-150">
         <div>
           <h2 class="text-base font-medium text-slate-900 dark:text-white">
             Geographic distribution
@@ -820,7 +921,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <span class="text-slate-500 dark:text-neutral-400">7.4%</span>
             </div>
             <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-              <div class="bg-slate-400 dark:bg-neutral-500 h-full" style="width: 7.4%"></div>
+              <div class="bg-sky-500 h-full" style="width: 7.4%"></div>
             </div>
           </div>
 
@@ -830,7 +931,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <span class="text-slate-500 dark:text-neutral-400">5.8%</span>
             </div>
             <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-              <div class="bg-slate-400 dark:bg-neutral-500 h-full" style="width: 5.8%"></div>
+              <div class="bg-indigo-500 h-full" style="width: 5.8%"></div>
             </div>
           </div>
 
@@ -849,12 +950,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </p>
         </div>
       </div>
+      </div>
 
     </section>
 
     <!-- 5. Device Breakdown & Strategic Usage Patterns -->
-    <section class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4 transition-colors duration-150">
+    <section id="sec-devices" class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-indigo-500 shadow-sm space-y-4 transition-colors duration-150">
       <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">
+            05 · DEVICE DEMOGRAPHICS
+          </span>
+        </div>
         <h2 class="text-base font-medium text-slate-900 dark:text-white">
           Device breakdown & usage patterns
         </h2>
@@ -865,41 +972,41 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         
-        <div class="p-4 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 space-y-2">
+        <div class="p-4 rounded-lg border border-emerald-500/25 bg-emerald-500/5 space-y-2">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-1.5 text-xs font-medium text-slate-900 dark:text-white">
-              ${ICONS.deviceMobile}
+              <span class="text-emerald-600 dark:text-emerald-400">${ICONS.deviceMobile}</span>
               <span>Mobile smartphone</span>
             </div>
-            <span class="text-sm font-medium font-mono tabular text-slate-900 dark:text-white">76.2%</span>
+            <span class="text-sm font-medium font-mono tabular text-emerald-600 dark:text-emerald-400">76.2%</span>
           </div>
-          <p class="text-xs text-slate-500 dark:text-neutral-400 leading-relaxed">
+          <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
             iOS Safari (54.0%) และ Android Chrome (22.2%) เข้าใช้งานระหว่างวันเพื่อตรวจเช็กคะแนนสดอย่างรวดเร็ว
           </p>
         </div>
 
-        <div class="p-4 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 space-y-2">
+        <div class="p-4 rounded-lg border border-sky-500/25 bg-sky-500/5 space-y-2">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-1.5 text-xs font-medium text-slate-900 dark:text-white">
-              ${ICONS.deviceDesktop}
+              <span class="text-sky-600 dark:text-sky-400">${ICONS.deviceDesktop}</span>
               <span>Desktop / Laptop</span>
             </div>
-            <span class="text-sm font-medium font-mono tabular text-slate-900 dark:text-white">19.4%</span>
+            <span class="text-sm font-medium font-mono tabular text-sky-600 dark:text-sky-400">19.4%</span>
           </div>
-          <p class="text-xs text-slate-500 dark:text-neutral-400 leading-relaxed">
+          <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
             macOS (12.1%) และ Windows (7.3%) มีระยะเวลาเปิดดูนานที่สุด เหมาะกับการวางแผนย้ายตัวช่วงก่อนเดดไลน์
           </p>
         </div>
 
-        <div class="p-4 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 space-y-2">
+        <div class="p-4 rounded-lg border border-purple-500/25 bg-purple-500/5 space-y-2">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-1.5 text-xs font-medium text-slate-900 dark:text-white">
-              ${ICONS.deviceTablet}
+              <span class="text-purple-600 dark:text-purple-400">${ICONS.deviceTablet}</span>
               <span>Tablet / iPad</span>
             </div>
-            <span class="text-sm font-medium font-mono tabular text-slate-900 dark:text-white">4.4%</span>
+            <span class="text-sm font-medium font-mono tabular text-purple-600 dark:text-purple-400">4.4%</span>
           </div>
-          <p class="text-xs text-slate-500 dark:text-neutral-400 leading-relaxed">
+          <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
             Apple iPad (4.1%) มักเปิดจอคู่ขนานระหว่างรับชมการถ่ายทอดสดฟุตบอลในวันเสาร์-อาทิตย์
           </p>
         </div>
@@ -908,8 +1015,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     </section>
 
     <!-- 6. Peak Usage Windows -->
-    <section class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4 transition-colors duration-150">
+    <section id="sec-timing" class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-amber-500 shadow-sm space-y-4 transition-colors duration-150">
       <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 uppercase tracking-wider">
+            06 · ENGAGEMENT WINDOWS
+          </span>
+        </div>
         <h2 class="text-base font-medium text-slate-900 dark:text-white">
           Peak usage windows
         </h2>
@@ -920,41 +1032,50 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         
-        <div class="p-4 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 space-y-1.5">
+        <div class="p-4 rounded-lg border border-amber-500/30 bg-amber-500/5 space-y-1.5">
           <div class="flex items-center justify-between text-xs font-medium text-slate-900 dark:text-white">
-            <span class="flex items-center gap-1.5">${ICONS.clock} 1. Deadline rush</span>
-            <span class="font-mono text-[11px] text-slate-500 dark:text-neutral-400">Peak CTR</span>
+            <span class="flex items-center gap-1.5 text-amber-700 dark:text-amber-300">
+              <span class="text-amber-600 dark:text-amber-400">${ICONS.clock}</span>
+              <span>1. Deadline rush</span>
+            </span>
+            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20 font-medium">High Stakes</span>
           </div>
-          <div class="text-xs text-slate-700 dark:text-neutral-300">
+          <div class="text-xs font-medium text-slate-800 dark:text-neutral-200">
             60-90 นาทีก่อนเดดไลน์ (ศุกร์เย็น / เสาร์บ่าย)
           </div>
-          <p class="text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed">
+          <p class="text-[11px] text-slate-600 dark:text-neutral-400 leading-relaxed">
             ผู้ใช้เข้ามาตรวจเช็กความพร้อมและตัดสินใจย้ายตัว เป็นจังหวะที่มีการตัดสินใจสูงสุดของสัปดาห์
           </p>
         </div>
 
-        <div class="p-4 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 space-y-1.5">
+        <div class="p-4 rounded-lg border border-emerald-500/30 bg-emerald-500/5 space-y-1.5">
           <div class="flex items-center justify-between text-xs font-medium text-slate-900 dark:text-white">
-            <span class="flex items-center gap-1.5">${ICONS.bolt} 2. Matchday live prime</span>
-            <span class="font-mono text-[11px] text-slate-500 dark:text-neutral-400">High Dwell</span>
+            <span class="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-300">
+              <span class="text-emerald-600 dark:text-emerald-400">${ICONS.bolt}</span>
+              <span>2. Matchday live prime</span>
+            </span>
+            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 font-medium">Peak Dwell Time</span>
           </div>
-          <div class="text-xs text-slate-700 dark:text-neutral-300">
+          <div class="text-xs font-medium text-slate-800 dark:text-neutral-200">
             ระหว่างแมตช์เตะสด (เสาร์ 18:30 - 01:00 / อาทิตย์ 20:00 - 00:30)
           </div>
-          <p class="text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed">
+          <p class="text-[11px] text-slate-600 dark:text-neutral-400 leading-relaxed">
             ผู้ใช้เปิดหน้าจอค้างไว้นานที่สุดเพื่อลุ้นแต้มสดและโบนัส BPS อัตราการรีเฟรชหน้าจอถี่ที่สุด
           </p>
         </div>
 
-        <div class="p-4 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 space-y-1.5">
+        <div class="p-4 rounded-lg border border-sky-500/30 bg-sky-500/5 space-y-1.5">
           <div class="flex items-center justify-between text-xs font-medium text-slate-900 dark:text-white">
-            <span class="flex items-center gap-1.5">${ICONS.users} 3. Community review</span>
-            <span class="font-mono text-[11px] text-slate-500 dark:text-neutral-400">Sharing</span>
+            <span class="flex items-center gap-1.5 text-sky-700 dark:text-sky-300">
+              <span class="text-sky-600 dark:text-sky-400">${ICONS.users}</span>
+              <span>3. Community review</span>
+            </span>
+            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/20 font-medium">Social Sharing</span>
           </div>
-          <div class="text-xs text-slate-700 dark:text-neutral-300">
+          <div class="text-xs font-medium text-slate-800 dark:text-neutral-200">
             วันจันทร์ - อังคาร (หลังจบแมตช์คู่สุดท้าย)
           </div>
-          <p class="text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed">
+          <p class="text-[11px] text-slate-600 dark:text-neutral-400 leading-relaxed">
             ผู้ใช้ตรวจเช็กอันดับคะแนนมินิลีกและนำผลลัพธ์ไปพูดคุยแลกเปลี่ยนในกลุ่มเพื่อน
           </p>
         </div>
@@ -963,8 +1084,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     </section>
 
     <!-- 7. Operational Commands & Links -->
-    <section class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4 transition-colors duration-150">
+    <section id="sec-ops" class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-slate-400 dark:border-t-neutral-600 shadow-sm space-y-4 transition-colors duration-150">
       <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-slate-500/10 text-slate-700 dark:text-slate-400 border border-slate-500/20 uppercase tracking-wider">
+            07 · EDGE OPERATIONS
+          </span>
+        </div>
         <h2 class="text-base font-medium text-slate-900 dark:text-white">
           Operational commands
         </h2>
@@ -1227,7 +1353,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           const leaderTeam = leader ? leader.entry_name : '-';
           const leaderPts = leader ? (leader.total_points !== undefined ? leader.total_points : leader.total) : 0;
           const leaderGw = leader ? (leader.event_total !== undefined ? leader.event_total : 0) : 0;
-          const dotColor = idx === 0 ? 'bg-emerald-500' : 'bg-slate-400';
+          let rankBadge = '';
+          if (idx === 0) {
+            rankBadge = '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-bold text-[10px]">1</span>';
+          } else if (idx === 1) {
+            rankBadge = '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/30 font-bold text-[10px]">2</span>';
+          } else if (idx === 2) {
+            rankBadge = '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/30 font-bold text-[10px]">3</span>';
+          } else {
+            rankBadge = '<span class="font-mono text-slate-400 dark:text-neutral-500 text-xs">' + (idx + 1) + '</span>';
+          }
+          const dotColor = idx === 0 ? 'bg-amber-500' : (idx === 1 ? 'bg-sky-500' : (idx === 2 ? 'bg-orange-500' : 'bg-slate-400'));
 
           rowsHtml.push(\`
             <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
@@ -1333,9 +1469,16 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           top5.forEach(c => { sumTop5 += c[1]; });
           const othersCount = totalSquads - sumTop5;
 
+          const barPalette = [
+            'bg-emerald-500',
+            'bg-sky-500',
+            'bg-violet-500',
+            'bg-amber-500',
+            'bg-teal-500'
+          ];
           const barsHtml = top5.map((c, idx) => {
             const pct = ((c[1] / totalSquads) * 100).toFixed(1);
-            const colorClass = idx === 0 ? 'bg-emerald-500' : 'bg-slate-400 dark:bg-neutral-500';
+            const colorClass = barPalette[idx] || 'bg-slate-400 dark:bg-neutral-500';
             return \`
               <div>
                 <div class="flex justify-between text-[11px] mb-1 text-slate-600 dark:text-neutral-300">
