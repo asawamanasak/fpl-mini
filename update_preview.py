@@ -1609,18 +1609,52 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     <!-- ==================== TAB: WEEKLY HIGHLIGHT ==================== -->
     <div id="highlights-view" class="tab-content hidden space-y-4">
       
-      <!-- Top Overview Banner (Minimal) -->
-      <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-4">
+      <!-- Top Overview Banner & Quick Gameweek Stepper -->
+      <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs">
         <div class="flex items-center gap-2.5">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
           <h2 id="highlights-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">ไฮไลท์ประจำสัปดาห์</h2>
         </div>
-        <div class="flex items-center gap-2">
-          <span id="highlights-gw-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
+        
+        <!-- Gameweek Stepper Controls -->
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <button 
+            id="hl-prev-gw-btn" 
+            onclick="app.stepHighlightsGW(-1)" 
+            class="px-2.5 py-1.5 min-h-[36px] rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed flex items-center gap-1 shadow-2xs"
+            title="Previous Gameweek"
+          >
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <span class="hidden xs:inline" id="hl-prev-label">ก่อนหน้า</span>
+          </button>
+          
+          <div class="relative inline-flex items-center">
+            <select 
+              id="highlights-gw-select" 
+              onchange="app.selectGW(Number(this.value))"
+              class="appearance-none bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-bold font-display py-1.5 pl-3 pr-7 min-h-[36px] rounded-xl cursor-pointer hover:bg-slate-200/80 dark:hover:bg-slate-700/80 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-2xs"
+            >
+              <!-- Options populated dynamically -->
+            </select>
+            <span class="pointer-events-none absolute right-2 text-slate-400 dark:text-slate-500">
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
+          </div>
+
+          <button 
+            id="hl-next-gw-btn" 
+            onclick="app.stepHighlightsGW(1)" 
+            class="px-2.5 py-1.5 min-h-[36px] rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed flex items-center gap-1 shadow-2xs"
+            title="Next Gameweek"
+          >
+            <span class="hidden xs:inline" id="hl-next-label">ถัดไป</span>
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
         </div>
       </div>
 
-      <!-- 14 Awards Cards Grid -->
-      <div id="highlights-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+      <!-- Awards Cards Grid -->
+      <div id="highlights-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4.5">
         <!-- Rendered dynamically -->
       </div>
 
@@ -1645,12 +1679,15 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     <div id="competition-view" class="tab-content hidden space-y-6">
       
       <!-- Top Overview Banner -->
-      <div class="glass-card rounded-2xl px-4 py-3.5 sm:px-6 sm:py-4.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs">
         <div>
-          <h2 id="competition-overview-title" class="text-base sm:text-xl font-bold text-slate-900 dark:text-white font-display">
-            สถานะชิป
-          </h2>
-          <p id="competition-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></span>
+            <h2 id="competition-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">
+              สถานะชิป
+            </h2>
+          </div>
+          <p id="competition-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-1">
             ตรวจสอบสถานะการใช้ชิปคงเหลือของคู่แข่งในลีก (Wildcard, Free Hit, Bench Boost, Triple Captain)
           </p>
         </div>
@@ -1668,15 +1705,18 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     </div>
 
     <!-- ==================== TAB: TRANSFERS VIEW (TRANSFER ANALYTICS) ==================== -->
-    <div id="transfers-view" class="tab-content hidden space-y-6">
+    <div id="transfers-view" class="tab-content hidden space-y-6 w-full max-w-full overflow-hidden">
       
       <!-- Top Overview Banner -->
-      <div class="glass-card rounded-2xl px-4 py-3.5 sm:px-6 sm:py-4.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs w-full max-w-full">
         <div>
-          <h2 id="transfers-overview-title" class="text-base sm:text-xl font-bold text-slate-900 dark:text-white font-display">
-            วิเคราะห์การย้ายตัว
-          </h2>
-          <p id="transfers-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <h2 id="transfers-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">
+              วิเคราะห์การย้ายตัว
+            </h2>
+          </div>
+          <p id="transfers-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-1">
             สถิติการย้ายตัวประจำสัปดาห์, การถือครองนักเตะมหาชน, ตัวทีเด็ด และคำแนะนำการย้ายตัว
           </p>
         </div>
@@ -1794,7 +1834,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <div class="glass-card rounded-2xl p-3.5 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div>
           <div class="flex items-center gap-2 flex-wrap mb-1">
-            <span id="global-radar-header-pill" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+            <span id="global-radar-header-pill" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
               __RADAR_BANNER_TEXT__
             </span>
           </div>
@@ -1804,6 +1844,12 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <p id="radar-main-subtitle" class="text-[11px] sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
             เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมในระบบ ไม่จำกัดเฉพาะในลีก
           </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="radar-banner-stat-badge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/70 font-display shadow-2xs">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="radar-banner-stat-text">วิเคราะห์ข้าม 8 ลีกสมบูรณ์</span>
+          </span>
         </div>
       </div>
 
@@ -1933,7 +1979,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       <div class="glass-card rounded-2xl p-3.5 sm:p-5 border border-slate-200 dark:border-slate-800">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
           <div>
-            <span id="radar-matrix-kicker" class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold font-display"></span>
             <h3 id="radar-matrix-title" class="text-xs sm:text-base font-bold text-slate-900 dark:text-white font-display">ตารางวัดระดับความสม่ำเสมอ & ฟอร์มการเล่น <span id="radar-gw-status-badge" class="text-[10px] text-slate-500 dark:text-slate-400 font-normal"></span></h3>
           </div>
 
@@ -1945,7 +1990,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
                 id="global-radar-search-input" 
                 oninput="app.handleRadarSearch(this.value)"
                 placeholder="ค้นหาชื่อทีม / ผู้จัดการ..." 
-                class="w-full text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-3 pr-8 py-1.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                class="w-full text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-3 pr-8 py-1.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500 transition-all"
               />
               <span class="absolute right-2.5 top-2 text-slate-400 pointer-events-none">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
@@ -1956,7 +2001,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               <select 
                 id="global-radar-sort-select"
                 onchange="app.setRadarSortBy(this.value)"
-                class="text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-1.5 text-slate-700 dark:text-slate-300 font-bold focus:outline-hidden cursor-pointer"
+                class="text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-slate-800 dark:text-slate-200 font-bold focus:outline-hidden focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-2xs"
               >
                 <option value="total_net">เรียง: คะแนนรวม ▼</option>
                 <option value="avg">เรียง: คะแนนเฉลี่ย ▼</option>
@@ -5043,6 +5088,22 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (gwMainLabel) {
           gwMainLabel.innerText = isEn ? 'GAMEWEEK SELECTOR' : 'เลือกสัปดาห์การแข่งขัน';
         }
+
+        // Highlights View Stepper labels
+        const hlTitleEl = document.getElementById('highlights-overview-title');
+        if (hlTitleEl) hlTitleEl.innerText = isEn ? 'Weekly Highlights' : 'ไฮไลท์ประจำสัปดาห์';
+        const hlPrevLabel = document.getElementById('hl-prev-label');
+        if (hlPrevLabel) hlPrevLabel.innerText = isEn ? 'Prev' : 'ก่อนหน้า';
+        const hlNextLabel = document.getElementById('hl-next-label');
+        if (hlNextLabel) hlNextLabel.innerText = isEn ? 'Next' : 'ถัดไป';
+
+        // Chips (Competition) View labels
+        const compTitleEl = document.getElementById('competition-overview-title');
+        if (compTitleEl) compTitleEl.innerText = isEn ? 'Chips Status' : 'สถานะชิป';
+        const compSubEl = document.getElementById('competition-overview-subtitle');
+        if (compSubEl) compSubEl.innerText = isEn 
+          ? 'Track remaining chip inventory of league rivals (Wildcard, Free Hit, Bench Boost, Triple Captain)' 
+          : 'ตรวจสอบสถานะการใช้ชิปคงเหลือของคู่แข่งในลีก (Wildcard, Free Hit, Bench Boost, Triple Captain)';
         this.updateDeadlineCountdown();
         const gwRangeStatus = document.getElementById('gw-range-status');
         if (gwRangeStatus) {
@@ -5124,6 +5185,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             ? 'Comparing baseline scoring, floor resilience, and spread across all fantasy managers in the system.'
             : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมในระบบ ไม่จำกัดเฉพาะในลีก';
         }
+        const bannerStatText = document.getElementById('radar-banner-stat-text');
+        if (bannerStatText) {
+          bannerStatText.innerText = isEn ? 'Cross-League Analytics Active' : 'วิเคราะห์ข้าม 8 ลีกสมบูรณ์';
+        }
         const benchmarkTitle = document.getElementById('radar-benchmark-title');
         if (benchmarkTitle) {
           benchmarkTitle.innerText = isEn ? 'League Strength Power Rankings' : 'จัดอันดับความแข็งแกร่งเฉลี่ยของแต่ละลีก';
@@ -5139,10 +5204,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         const radarGuideTitle = document.getElementById('radar-guide-title');
         if (radarGuideTitle) {
           radarGuideTitle.innerText = isEn ? 'Consistency Tiers Criteria' : 'เกณฑ์การจัดอันดับความสม่ำเสมอ';
-        }
-        const radarMatrixKicker = document.getElementById('radar-matrix-kicker');
-        if (radarMatrixKicker) {
-          radarMatrixKicker.innerText = isEn ? 'ALL-LEAGUE CONSISTENCY MATRIX' : '';
         }
         const radarMatrixTitle = document.getElementById('radar-matrix-title');
         if (radarMatrixTitle) {
@@ -8348,6 +8409,14 @@ selectShi62GW(gwName) {
         } catch (e) {}
       }
 
+      stepHighlightsGW(delta) {
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || 2;
+        const targetGW = (Number(this.selectedGW) || 1) + delta;
+        if (targetGW >= 1 && targetGW <= maxGW) {
+          this.selectGW(targetGW);
+        }
+      }
+
       selectGW(gw, fromPopstate = false, skipRender = false) {
         const maxGW = Number(this.multiData.max_gw) || 2;
         this.selectedGW = Math.min(Math.max(Number(gw) || 1, 1), maxGW);
@@ -9378,18 +9447,35 @@ selectShi62GW(gwName) {
         const gwData = this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
         
         const titleEl = document.getElementById('highlights-overview-title');
-        const gwBadge = document.getElementById('highlights-gw-badge');
         const grid = document.getElementById('highlights-cards-grid');
 
         const isEn = (this.currentLang === 'en');
         if (titleEl) titleEl.innerHTML = isEn ? 'Weekly Highlights' : 'ไฮไลท์ประจำสัปดาห์';
-        if (gwBadge) gwBadge.innerText = `Gameweek ${this.selectedGW}`;
+
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || 2;
+        const selectEl = document.getElementById('highlights-gw-select');
+        const prevBtn = document.getElementById('hl-prev-gw-btn');
+        const nextBtn = document.getElementById('hl-next-gw-btn');
+        const prevLabel = document.getElementById('hl-prev-label');
+        const nextLabel = document.getElementById('hl-next-label');
+
+        if (selectEl) {
+          let optHtml = '';
+          for (let g = 1; g <= maxGW; g++) {
+            optHtml += `<option value="${g}" ${g === this.selectedGW ? 'selected' : ''}>${isEn ? `Gameweek ${g}` : `สัปดาห์ที่ ${g}`}</option>`;
+          }
+          selectEl.innerHTML = optHtml;
+        }
+        if (prevBtn) prevBtn.disabled = (this.selectedGW <= 1);
+        if (nextBtn) nextBtn.disabled = (this.selectedGW >= maxGW);
+        if (prevLabel) prevLabel.innerText = isEn ? 'Prev' : 'ก่อนหน้า';
+        if (nextLabel) nextLabel.innerText = isEn ? 'Next' : 'ถัดไป';
         this.updateHighlightsTabBlink();
 
         if (!grid) return;
 
         if (!gwData || !gwData.results || gwData.results.length === 0) {
-          grid.innerHTML = '<div class="col-span-full py-12 text-center text-slate-400 font-medium font-display">No data available for this Gameweek</div>';
+          grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-500 dark:text-slate-400 font-medium font-display glass-card rounded-2xl p-6 border border-slate-200/90 dark:border-slate-800">${isEn ? 'No data available for this Gameweek' : 'ยังไม่มีข้อมูลการแข่งขันในสัปดาห์นี้'}</div>`;
           return;
         }
 
@@ -9400,10 +9486,10 @@ selectShi62GW(gwName) {
 
         if (!isStarted) {
           grid.innerHTML = `
-            <div class="col-span-full py-12 text-center text-slate-400 font-medium font-display glass-card rounded-2xl p-6 border border-slate-200">
-              <div class="text-2xl mb-2">⏳</div>
-              <div class="text-slate-700 dark:text-slate-200 font-bold text-base">${isEn ? `Gameweek ${this.selectedGW} has not started yet` : `สัปดาห์ที่ ${this.selectedGW} ยังไม่เริ่มแข่งขัน`}</div>
-              <p class="text-xs text-slate-400 mt-1">${isEn ? 'Weekly awards will update live as matches kick off' : 'การประกาศรางวัลประจำสัปดาห์จะอัปเดตสดเมื่อเริ่มการแข่งขัน'}</p>
+            <div class="col-span-full py-12 text-center text-slate-500 dark:text-slate-400 font-medium font-display glass-card rounded-2xl p-6 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
+              <div class="text-3xl mb-2.5">⏳</div>
+              <div class="text-slate-800 dark:text-slate-100 font-bold text-base sm:text-lg font-display">${isEn ? `Gameweek ${this.selectedGW} has not started yet` : `สัปดาห์ที่ ${this.selectedGW} ยังไม่เริ่มแข่งขัน`}</div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${isEn ? 'Weekly awards will update live as matches kick off' : 'การประกาศรางวัลประจำสัปดาห์จะอัปเดตสดเมื่อเริ่มการแข่งขัน'}</p>
             </div>
           `;
           return;
@@ -9415,71 +9501,108 @@ selectShi62GW(gwName) {
         const avgRawPoints = results.reduce((sum, r) => sum + r.points, 0) / results.length;
 
         const ICONS = {
-          star: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`,
-          layers: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>`,
-          rotateCcw: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>`,
-          chartDown: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><polyline points="7 10 11 8 13 13 17 16"></polyline></svg>`,
-          trophy: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 4h16v6a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6V4z"></path><path d="M12 16v4"></path><path d="M8 20h8"></path></svg>`,
-          award: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>`,
-          arrowUp: `<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>`
+          star: `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`,
+          layers: `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>`,
+          rotateCcw: `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>`,
+          chartDown: `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><polyline points="7 10 11 8 13 13 17 16"></polyline></svg>`,
+          trophy: `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 4h16v6a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6V4z"></path><path d="M12 16v4"></path><path d="M8 20h8"></path></svg>`,
+          award: `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>`,
+          arrowUp: `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>`
         };
 
-        // LiveFPL-style Award Card builder
+        // Semantic Award Card builder
         const renderCard = (cfg) => {
-          let badgeColor = '';
+          if (!cfg.winner) return '';
+
+          let iconTheme = '';
+          let statColor = '';
           let cardHover = '';
 
           if (cfg.theme === 'green') {
-            badgeColor = 'text-emerald-700 dark:text-emerald-400';
-            cardHover = 'hover:border-emerald-300 dark:hover:border-emerald-700/60';
+            iconTheme = 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border-emerald-200/90 dark:border-emerald-800/70';
+            statColor = 'text-emerald-600 dark:text-emerald-400';
+            cardHover = 'hover:border-emerald-400/80 dark:hover:border-emerald-600/70';
           } else if (cfg.theme === 'red') {
-            badgeColor = 'text-rose-700 dark:text-rose-400';
-            cardHover = 'hover:border-rose-300 dark:hover:border-rose-700/60';
+            iconTheme = 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border-rose-200/90 dark:border-rose-800/70';
+            statColor = 'text-rose-600 dark:text-rose-400';
+            cardHover = 'hover:border-rose-400/80 dark:hover:border-rose-600/70';
           } else if (cfg.theme === 'purple') {
-            badgeColor = 'text-indigo-700 dark:text-indigo-400';
-            cardHover = 'hover:border-indigo-300 dark:hover:border-indigo-700/60';
+            iconTheme = 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border-purple-200/90 dark:border-purple-800/70';
+            statColor = 'text-purple-600 dark:text-purple-400';
+            cardHover = 'hover:border-purple-400/80 dark:hover:border-purple-600/70';
+          } else if (cfg.theme === 'amber') {
+            iconTheme = 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border-amber-200/90 dark:border-amber-800/70';
+            statColor = 'text-amber-600 dark:text-amber-400';
+            cardHover = 'hover:border-amber-400/80 dark:hover:border-amber-600/70';
           } else {
-            badgeColor = 'text-slate-700 dark:text-slate-300';
+            iconTheme = 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700';
+            statColor = 'text-slate-700 dark:text-slate-300';
             cardHover = 'hover:border-slate-300 dark:hover:border-slate-700';
           }
 
-          if (!cfg.winner) {
-            return '';
-          }
-
           return `
-            <div class="glass-card rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between transition-all ${cardHover}">
+            <div class="glass-card rounded-2xl p-4 sm:p-4.5 border border-slate-200/90 dark:border-slate-800/90 flex flex-col justify-between transition-all duration-200 ${cardHover} group shadow-2xs">
               
-              <!-- Header: Vector Icon, English Title & Subtitle with Thai Tag -->
-              <div class="flex items-center gap-2.5 min-w-0">
-                <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-slate-200 dark:border-slate-700/80 bg-white/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center flex-shrink-0 shadow-2xs">
-                  ${cfg.icon}
-                </span>
-                <div class="min-w-0">
-                  <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 font-display truncate">${cfg.title}</h4>
-                  <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-tight mt-0.5">${cfg.subtitle}</p>
+              <!-- Header: Semantic Icon Badge, Title & Subtitle + Hero Stat -->
+              <div class="flex items-start justify-between gap-3 min-w-0">
+                <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                  <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl border flex items-center justify-center flex-shrink-0 shadow-2xs transition-transform group-hover:scale-105 ${iconTheme}">
+                    ${cfg.icon}
+                  </span>
+                  <div class="min-w-0">
+                    <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display truncate">${cfg.title}</h4>
+                    <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-tight mt-0.5 truncate">${cfg.subtitle}</p>
+                  </div>
+                </div>
+                
+                <!-- Hero Stat Pill on Top Right -->
+                <div class="flex-shrink-0 text-right">
+                  <span class="inline-block px-2.5 py-1 rounded-lg text-xs sm:text-sm font-black font-display tabular-nums ${statColor} bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/60">
+                    ${cfg.statText}
+                  </span>
                 </div>
               </div>
 
-              <!-- Manager Line: Player Name — Team Name (Stats) -->
-              <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-baseline gap-1.5 text-xs sm:text-sm">
-                <span class="text-slate-600 dark:text-slate-400 font-medium truncate max-w-[120px] xs:max-w-[150px] sm:max-w-[180px]">${this.escapeHtml(cfg.winner.player_name)} —</span>
-                <button onclick="app.openTeamModal(${cfg.winner.entry_id})" class="font-bold text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer truncate max-w-[130px] xs:max-w-[180px] sm:max-w-none">
-                  ${this.escapeHtml(cfg.winner.team_name)}
-                </button>
-                ${this.getPrizeBadge(cfg.winner.entry_id)}
-                <span class="font-extrabold font-display ${badgeColor}">${cfg.statText}</span>
+              <!-- Manager Block: Team Name (clickable) + Player Name + Prize Badge -->
+              <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <button 
+                      onclick="app.openTeamModal(${cfg.winner.entry_id})" 
+                      class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer text-left truncate group-hover:underline"
+                    >
+                      ${this.escapeHtml(cfg.winner.team_name)}
+                    </button>
+                    ${this.getPrizeBadge(cfg.winner.entry_id)}
+                  </div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate mt-0.5">
+                    ${this.escapeHtml(cfg.winner.player_name)}
+                  </div>
+                </div>
               </div>
 
-              <!-- Minimal Detail Pill -->
+              <!-- Detail Container -->
               ${cfg.detailHtml ? `
-                <div class="mt-2 text-[10.5px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 px-2.5 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800/80 leading-relaxed">
+                <div class="mt-2.5 text-[11px] text-slate-600 dark:text-slate-300 bg-slate-50/90 dark:bg-slate-800/60 px-3 py-2 rounded-xl border border-slate-200/70 dark:border-slate-700/60 leading-relaxed font-sans">
                   ${cfg.detailHtml}
                 </div>
               ` : ''}
 
             </div>
           `;
+        };
+
+        // Helper for transfer moves with clean visual pills: [+] In (pts) ➔ [-] Out (pts)
+        const formatTransferMoves = (moves) => {
+          if (!moves || moves.length === 0) return '';
+          return moves.map(m => {
+            const inPts = Number(m.in_pts) || 0;
+            const outPts = Number(m.out_pts) || 0;
+            const inSign = inPts > 0 ? '+' : '';
+            const inBadge = `<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-semibold border border-emerald-200/60 dark:border-emerald-800/60"><span class="text-[10px] text-emerald-500 font-bold">+</span>${this.escapeHtml(m.in)} <span class="tabular-nums opacity-90">(${inSign}${inPts})</span></span>`;
+            const outBadge = `<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium border border-slate-200/60 dark:border-slate-700/60 line-through opacity-80">${this.escapeHtml(m.out)} <span class="tabular-nums">(${outPts})</span></span>`;
+            return `<span class="inline-flex items-center gap-1 flex-wrap">${inBadge} <span class="text-slate-400 font-bold text-xs">➔</span> ${outBadge}</span>`;
+          }).join('<span class="mx-1.5 text-slate-300 dark:text-slate-600">•</span>');
         };
 
         // 1. Top Gun
@@ -9491,8 +9614,8 @@ selectShi62GW(gwName) {
           subtitle: isEn ? 'Highest Gameweek score' : 'คะแนนสูงสุดประจำสัปดาห์',
           theme: 'green',
           winner: topGunWinner,
-          statText: topGunWinner ? `(${topGunWinner.points} pts)` : '',
-          detailHtml: topGunWinner ? `${isEn ? 'Captain: ' : 'กัปตัน: '}<strong>${this.escapeHtml(topGunWinner.captain || '-')}</strong>${topGunWinner.hits > 0 ? (isEn ? ` • Hits: -${topGunWinner.hits} pts` : ` • คะแนนลบ: -${topGunWinner.hits} (หักในคะแนนรวม)`) : ''}` : null
+          statText: topGunWinner ? `${topGunWinner.points} ${isEn ? 'pts' : 'แต้ม'}` : '',
+          detailHtml: topGunWinner ? `${isEn ? 'Captain: ' : 'กัปตัน: '}<strong>${this.escapeHtml(topGunWinner.captain || '-')}</strong>${topGunWinner.hits > 0 ? (isEn ? ` • Hits: -${topGunWinner.hits} pts` : ` • แต้มลบย้ายตัว: -${topGunWinner.hits} แต้ม`) : ''}` : null
         });
 
         // 2. Tough Week
@@ -9504,25 +9627,20 @@ selectShi62GW(gwName) {
           subtitle: isEn ? 'Lowest Gameweek score' : 'คะแนนต่ำสุดประจำสัปดาห์',
           theme: 'red',
           winner: toughWinner,
-          statText: toughWinner ? `(${toughWinner.points} pts)` : '',
-          detailHtml: toughWinner ? `${toughWinner.hits > 0 ? (isEn ? `Hits: -${toughWinner.hits} pts` : `คะแนนลบ: -${toughWinner.hits} (หักในคะแนนรวม)`) : (isEn ? 'Official Score' : 'คะแนนตาม Official')}` : null
+          statText: toughWinner ? `${toughWinner.points} ${isEn ? 'pts' : 'แต้ม'}` : '',
+          detailHtml: toughWinner ? `${toughWinner.hits > 0 ? (isEn ? `Hits: -${toughWinner.hits} pts` : `แต้มลบย้ายตัว: -${toughWinner.hits} แต้ม`) : (isEn ? 'Official Score' : 'คะแนนตาม Official')}` : null
         });
 
         // 3. Comeback Kid & 4. Rank Crasher
         let comebackWinner = null;
         let comebackStat = '';
         let comebackDetail = '';
-        let comebackEmpty = '';
 
         let crasherWinner = null;
         let crasherStat = '';
         let crasherDetail = '';
-        let crasherEmpty = '';
 
-        if (this.selectedGW === 1) {
-          comebackEmpty = 'First gameweek of the season';
-          crasherEmpty = 'First gameweek of the season';
-        } else {
+        if (this.selectedGW > 1) {
           const prevTotals = {};
           const currTotals = {};
 
@@ -9590,29 +9708,18 @@ selectShi62GW(gwName) {
             });
           }
 
-          if (this.selectedGW === 1) {
-            comebackWinner = null;
-            comebackEmpty = 'ยังไม่มีอันดับก่อนหน้าในสัปดาห์แรก (GW 1)';
-            crasherWinner = null;
-            crasherEmpty = 'ยังไม่มีอันดับก่อนหน้าในสัปดาห์แรก (GW 1)';
-          } else {
-            const maxRise = [...rankDiffs].filter(r => r.diff > 0).sort((a, b) => (b.diff - a.diff) || (b.prevRank - a.prevRank))[0];
-            if (maxRise) {
-              comebackWinner = maxRise.result;
-              comebackStat = `(+${maxRise.diff})`;
-              comebackDetail = isEn ? `Rose from rank ${maxRise.prevRank} to rank ${maxRise.currRank}` : `ไต่จากอันดับ ${maxRise.prevRank} ขึ้นมาอันดับ ${maxRise.currRank}`;
-            } else {
-              comebackEmpty = isEn ? 'No rank rise this week' : 'ไม่มีทีมที่อันดับดีขึ้นในสัปดาห์นี้';
-            }
+          const maxRise = [...rankDiffs].filter(r => r.diff > 0).sort((a, b) => (b.diff - a.diff) || (b.prevRank - a.prevRank))[0];
+          if (maxRise) {
+            comebackWinner = maxRise.result;
+            comebackStat = `+${maxRise.diff} ${isEn ? 'ranks' : 'อันดับ'}`;
+            comebackDetail = isEn ? `Rose from rank ${maxRise.prevRank} to rank ${maxRise.currRank}` : `ไต่จากอันดับ ${maxRise.prevRank} ขึ้นมาอันดับ ${maxRise.currRank} (+${maxRise.diff} ขั้น)`;
+          }
 
-            const maxFall = [...rankDiffs].filter(r => r.diff < 0).sort((a, b) => (a.diff - b.diff) || (b.prevRank - a.prevRank))[0];
-            if (maxFall) {
-              crasherWinner = maxFall.result;
-              crasherStat = `(${maxFall.diff})`;
-              crasherDetail = isEn ? `Fell from rank ${maxFall.prevRank} to rank ${maxFall.currRank}` : `หล่นจากอันดับ ${maxFall.prevRank} ลงไปอันดับ ${maxFall.currRank}`;
-            } else {
-              crasherEmpty = isEn ? 'No rank fall this week' : 'ไม่มีทีมที่อันดับตกในสัปดาห์นี้';
-            }
+          const maxFall = [...rankDiffs].filter(r => r.diff < 0).sort((a, b) => (a.diff - b.diff) || (b.prevRank - a.prevRank))[0];
+          if (maxFall) {
+            crasherWinner = maxFall.result;
+            crasherStat = `${maxFall.diff} ${isEn ? 'ranks' : 'อันดับ'}`;
+            crasherDetail = isEn ? `Fell from rank ${maxFall.prevRank} to rank ${maxFall.currRank}` : `หล่นจากอันดับ ${maxFall.prevRank} ลงไปอันดับ ${maxFall.currRank} (${maxFall.diff} ขั้น)`;
           }
         }
 
@@ -9623,8 +9730,7 @@ selectShi62GW(gwName) {
           theme: 'green',
           winner: comebackWinner,
           statText: comebackStat,
-          detailHtml: comebackDetail,
-          emptyMsg: comebackEmpty
+          detailHtml: comebackDetail
         });
 
         const card4 = renderCard({
@@ -9634,8 +9740,7 @@ selectShi62GW(gwName) {
           theme: 'red',
           winner: crasherWinner,
           statText: crasherStat,
-          detailHtml: crasherDetail,
-          emptyMsg: crasherEmpty
+          detailHtml: crasherDetail
         });
 
         // 5. Chip Master
@@ -9649,9 +9754,8 @@ selectShi62GW(gwName) {
             : (isEn ? 'Best score with a chip' : 'กางการ์ดอย่างเซียน'),
           theme: 'green',
           winner: chipMasterWinner,
-          statText: chipMasterWinner ? `(${chipMasterWinner.net_points} pts)` : '',
-          detailHtml: chipMasterWinner ? `Active Chip: <strong>${this.getChipName(chipMasterWinner.chip)}</strong>` : null,
-          emptyMsg: 'No chips played this week'
+          statText: chipMasterWinner ? `${chipMasterWinner.net_points} ${isEn ? 'pts' : 'แต้ม'}` : '',
+          detailHtml: chipMasterWinner ? `${isEn ? 'Active Chip: ' : 'เปิดใช้ชิป: '}<strong>${this.getChipName(chipMasterWinner.chip)}</strong>` : null
         });
 
         // 6. No-Chip Warrior
@@ -9663,9 +9767,8 @@ selectShi62GW(gwName) {
           subtitle: isEn ? 'Best score without playing a chip' : 'ตัวตึงไม่ง้อชิป (คะแนนสูงสุดโดยไม่ใช้ชิป)',
           theme: 'green',
           winner: noChipWinner,
-          statText: noChipWinner ? `(${noChipWinner.net_points} pts)` : '',
-          detailHtml: noChipWinner ? 'Played without an active chip' : null,
-          emptyMsg: 'All teams played a chip this week'
+          statText: noChipWinner ? `${noChipWinner.net_points} ${isEn ? 'pts' : 'แต้ม'}` : '',
+          detailHtml: noChipWinner ? (isEn ? 'Played without an active chip' : 'ลงสนามสัปดาห์นี้โดยไม่เปิดใช้ชิปเสริม') : null
         });
 
         // 7. Value King
@@ -9675,14 +9778,13 @@ selectShi62GW(gwName) {
           icon: ICONS.trophy,
           title: 'Value King',
           subtitle: isEn ? 'Highest Team Value' : 'มูลค่าทีมสูงสุด (ใครอยากเป็นเศรษฐี...)',
-          theme: 'green',
+          theme: 'amber',
           winner: valueWinner,
-          statText: valueWinner ? `(£${valueWinner.team_value || 100.0})` : '',
-          detailHtml: valueWinner ? `${isEn ? `Team Value: £${valueWinner.team_value || 100.0}m` : `มูลค่าทีม: £${valueWinner.team_value || 100.0}m`}${valueWinner.bank ? (isEn ? ` • In the bank: £${valueWinner.bank}m` : ` • เงินในธนาคาร: £${valueWinner.bank}m`) : ''}` : null,
-          emptyMsg: isEn ? 'No team value data available' : 'ไม่มีข้อมูลมูลค่าทีม'
+          statText: valueWinner ? `£${valueWinner.team_value || 100.0}m` : '',
+          detailHtml: valueWinner ? `${isEn ? `Team Value: £${valueWinner.team_value || 100.0}m` : `มูลค่าทีม: £${valueWinner.team_value || 100.0}m`}${valueWinner.bank ? (isEn ? ` • In the bank: £${valueWinner.bank}m` : ` • เงินในธนาคาร: £${valueWinner.bank}m`) : ''}` : null
         });
 
-        // 8. Wildcard Wasteland (Players who played Wildcard below league raw average)
+        // 8. Wildcard Wasteland
         const lowWcTeams = results.filter(r => r.chip === 'wildcard' && r.points < avgRawPoints).sort((a, b) => a.points - b.points);
         const lowWcWinner = lowWcTeams[0] || null;
         const card8 = renderCard({
@@ -9691,9 +9793,8 @@ selectShi62GW(gwName) {
           subtitle: isEn ? 'Wildcard played but below league average' : 'เปิดการ์ดแต่ยังกริบ (ใช้ Wildcard แต่แต้มต่ำกว่าค่าเฉลี่ย)',
           theme: 'red',
           winner: lowWcWinner,
-          statText: lowWcWinner ? `(${lowWcWinner.points} vs avg ${avgRawPoints.toFixed(1)})` : '',
-          detailHtml: lowWcWinner ? `Played Wildcard: ${lowWcWinner.points} pts (league avg ${avgRawPoints.toFixed(1)} pts)` : null,
-          emptyMsg: 'No Wildcard played below league average'
+          statText: lowWcWinner ? `${lowWcWinner.points} ${isEn ? 'pts' : 'แต้ม'}` : '',
+          detailHtml: lowWcWinner ? (isEn ? `Played Wildcard: ${lowWcWinner.points} pts (league avg ${avgRawPoints.toFixed(1)} pts)` : `เปิดใช้ Wildcard ได้ ${lowWcWinner.points} แต้ม (ต่ำกว่าเฉลี่ยลีก ${avgRawPoints.toFixed(1)} แต้ม)`) : null
         });
 
         // 9. Bench Disaster (Left 20+ points on the bench without Bench Boost)
@@ -9706,9 +9807,8 @@ selectShi62GW(gwName) {
           subtitle: isEn ? 'Left 20+ points on the bench (no Bench Boost)' : 'สำรองแต้มทะลัก (ดองแต้มสำรอง 20+ โดยไม่ใช้ Bench Boost)',
           theme: 'red',
           winner: benchWinner,
-          statText: benchWinner ? `(${benchWinner.bench_points} pts)` : '',
-          detailHtml: benchWinner ? `${benchWinner.bench_points} points on bench without Bench Boost` : null,
-          emptyMsg: 'No bench disaster (20+ pts) this week'
+          statText: benchWinner ? `${benchWinner.bench_points} ${isEn ? 'pts' : 'แต้ม'}` : '',
+          detailHtml: benchWinner ? (isEn ? `${benchWinner.bench_points} points left on bench without Bench Boost` : `ทิ้งแต้มบนม้านั่งสำรอง ${benchWinner.bench_points} แต้ม โดยไม่ได้เปิดใช้ Bench Boost`) : null
         });
 
         // Non-Wildcard/FreeHit teams for regular transfer awards
@@ -9726,9 +9826,8 @@ selectShi62GW(gwName) {
           subtitle: isEn ? 'Most transfer hits taken' : 'สายลบไม่ยั้ง (เสียแต้มลบย้ายตัวมากที่สุด)',
           theme: 'purple',
           winner: hitWinner,
-          statText: hitWinner ? `(${hitWinner.hits} pts)` : '',
-          detailHtml: hitWinner ? (isEn ? `Took -${hitWinner.hits} pts in transfer penalties (${hitWinner.hits / 4} extra transfer${hitWinner.hits / 4 > 1 ? 's' : ''})` : `เสียแต้มลบย้ายตัว -${hitWinner.hits} แต้ม (ย้ายตัวเพิ่ม ${hitWinner.hits / 4} ตัว)`) : null,
-          emptyMsg: isEn ? 'No transfer hits taken this week' : 'ไม่มีทีมที่เสียแต้มลบในสัปดาห์นี้'
+          statText: hitWinner ? `-${hitWinner.hits} ${isEn ? 'pts' : 'แต้ม'}` : '',
+          detailHtml: hitWinner ? (isEn ? `Took -${hitWinner.hits} pts in transfer penalties (${hitWinner.hits / 4} extra transfer${hitWinner.hits / 4 > 1 ? 's' : ''})` : `เสียแต้มลบย้ายตัว -${hitWinner.hits} แต้ม (ย้ายตัวเพิ่ม ${hitWinner.hits / 4} ตัว)`) : null
         });
 
         // 11. Sharpest Trader (Best net transfer impact, excluding Wildcard/Free Hit)
@@ -9737,12 +9836,17 @@ selectShi62GW(gwName) {
         let goodTxDetail = '';
         let goodTxStat = '';
         if (goodTxWinner) {
-          const hitsStr = goodTxWinner.hits > 0 ? `-${goodTxWinner.hits} hits` : '0 hits';
+          const hitsSign = goodTxWinner.hits > 0 ? `-${goodTxWinner.hits}` : '0';
+          const hitsLabel = isEn ? `${hitsSign} hits` : `${hitsSign} แต้มลบ`;
           const movesSign = goodTxWinner.transfers_pts_gain >= 0 ? '+' : '';
-          goodTxStat = `(+${goodTxWinner.transfers_net_impact} net; ${movesSign}${goodTxWinner.transfers_pts_gain} from moves, ${hitsStr})`;
-          if (goodTxWinner.transfer_moves && goodTxWinner.transfer_moves.length > 0) {
-            goodTxDetail = goodTxWinner.transfer_moves.map(m => `<strong>${this.escapeHtml(m.in)}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts}) in for <strong>${this.escapeHtml(m.out)}</strong> (${m.out_pts})`).join(', ');
-          }
+          const movesLabel = isEn ? `${movesSign}${goodTxWinner.transfers_pts_gain} from moves` : `${movesSign}${goodTxWinner.transfers_pts_gain} จากตัวย้ายเข้า`;
+          goodTxStat = `+${goodTxWinner.transfers_net_impact} ${isEn ? 'net' : 'สุทธิ'}`;
+          goodTxDetail = `
+            ${formatTransferMoves(goodTxWinner.transfer_moves)}
+            <div class="mt-1.5 text-[10.5px] text-slate-500 dark:text-slate-400 font-mono">
+              ${isEn ? 'Impact:' : 'ผลลัพธ์สุทธิ:'} +${goodTxWinner.transfers_net_impact} (${movesLabel}, ${hitsLabel})
+            </div>
+          `;
         }
         const card11 = renderCard({
           icon: ICONS.award,
@@ -9751,8 +9855,7 @@ selectShi62GW(gwName) {
           theme: 'green',
           winner: goodTxWinner,
           statText: goodTxStat,
-          detailHtml: goodTxDetail,
-          emptyMsg: 'No positive transfer impact this week'
+          detailHtml: goodTxDetail
         });
 
         // 12. Transfer Tangle (Worst net transfer impact, excluding Wildcard/Free Hit)
@@ -9761,12 +9864,17 @@ selectShi62GW(gwName) {
         let badTxDetail = '';
         let badTxStat = '';
         if (badTxWinner) {
-          const hitsStr = badTxWinner.hits > 0 ? `-${badTxWinner.hits} hits` : '0 hits';
+          const hitsSign = badTxWinner.hits > 0 ? `-${badTxWinner.hits}` : '0';
+          const hitsLabel = isEn ? `${hitsSign} hits` : `${hitsSign} แต้มลบ`;
           const movesSign = badTxWinner.transfers_pts_gain >= 0 ? '+' : '';
-          badTxStat = `(${badTxWinner.transfers_net_impact} net; ${movesSign}${badTxWinner.transfers_pts_gain} from moves, ${hitsStr})`;
-          if (badTxWinner.transfer_moves && badTxWinner.transfer_moves.length > 0) {
-            badTxDetail = badTxWinner.transfer_moves.map(m => `<strong>${this.escapeHtml(m.in)}</strong> (${m.in_pts}) in for <strong>${this.escapeHtml(m.out)}</strong> (${m.out_pts})`).join(', ');
-          }
+          const movesLabel = isEn ? `${movesSign}${badTxWinner.transfers_pts_gain} from moves` : `${movesSign}${badTxWinner.transfers_pts_gain} จากตัวย้ายเข้า`;
+          badTxStat = `${badTxWinner.transfers_net_impact} ${isEn ? 'net' : 'สุทธิ'}`;
+          badTxDetail = `
+            ${formatTransferMoves(badTxWinner.transfer_moves)}
+            <div class="mt-1.5 text-[10.5px] text-slate-500 dark:text-slate-400 font-mono">
+              ${isEn ? 'Impact:' : 'ผลลัพธ์สุทธิ:'} ${badTxWinner.transfers_net_impact} (${movesLabel}, ${hitsLabel})
+            </div>
+          `;
         }
         const card12 = renderCard({
           icon: ICONS.layers,
@@ -9775,8 +9883,7 @@ selectShi62GW(gwName) {
           theme: 'red',
           winner: badTxWinner,
           statText: badTxStat,
-          detailHtml: badTxDetail,
-          emptyMsg: 'No negative transfer impact this week'
+          detailHtml: badTxDetail
         });
 
         // 13. Hit Hero (Took a hit but still profited overall, excluding Wildcard/Free Hit)
@@ -9787,10 +9894,15 @@ selectShi62GW(gwName) {
         let hitHeroStat = '';
         if (hitHeroWinner) {
           const movesSign = hitHeroWinner.transfers_pts_gain >= 0 ? '+' : '';
-          hitHeroStat = `(+${hitHeroWinner.transfers_net_impact} net; ${movesSign}${hitHeroWinner.transfers_pts_gain} from moves, -${hitHeroWinner.hits} hits)`;
-          if (hitHeroWinner.transfer_moves && hitHeroWinner.transfer_moves.length > 0) {
-            hitHeroDetail = hitHeroWinner.transfer_moves.map(m => `<strong>${this.escapeHtml(m.in)}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts}) in for <strong>${this.escapeHtml(m.out)}</strong> (${m.out_pts})`).join(', ');
-          }
+          const movesLabel = isEn ? `${movesSign}${hitHeroWinner.transfers_pts_gain} from moves` : `${movesSign}${hitHeroWinner.transfers_pts_gain} จากตัวย้ายเข้า`;
+          const hitsLabel = isEn ? `-${hitHeroWinner.hits} hits` : `-${hitHeroWinner.hits} แต้มลบ`;
+          hitHeroStat = `+${hitHeroWinner.transfers_net_impact} ${isEn ? 'net' : 'สุทธิ'}`;
+          hitHeroDetail = `
+            ${formatTransferMoves(hitHeroWinner.transfer_moves)}
+            <div class="mt-1.5 text-[10.5px] text-slate-500 dark:text-slate-400 font-mono">
+              ${isEn ? 'Impact:' : 'ผลลัพธ์สุทธิ:'} +${hitHeroWinner.transfers_net_impact} (${movesLabel}, ${hitsLabel})
+            </div>
+          `;
         }
         const card13 = renderCard({
           icon: ICONS.award,
@@ -9799,8 +9911,7 @@ selectShi62GW(gwName) {
           theme: 'green',
           winner: hitHeroWinner,
           statText: hitHeroStat,
-          detailHtml: hitHeroDetail,
-          emptyMsg: 'No profitable hits this week'
+          detailHtml: hitHeroDetail
         });
 
         // 14. Painful Hit (Took a hit and it didn't pay off, excluding Wildcard/Free Hit)
@@ -9810,10 +9921,15 @@ selectShi62GW(gwName) {
         let painfulHitStat = '';
         if (painfulHitWinner) {
           const movesSign = painfulHitWinner.transfers_pts_gain >= 0 ? '+' : '';
-          painfulHitStat = `(${painfulHitWinner.transfers_net_impact} net; ${movesSign}${painfulHitWinner.transfers_pts_gain} from moves, -${painfulHitWinner.hits} hits)`;
-          if (painfulHitWinner.transfer_moves && painfulHitWinner.transfer_moves.length > 0) {
-            painfulHitDetail = painfulHitWinner.transfer_moves.map(m => `<strong>${this.escapeHtml(m.in)}</strong> (${m.in_pts}) in for <strong>${this.escapeHtml(m.out)}</strong> (${m.out_pts})`).join(', ');
-          }
+          const movesLabel = isEn ? `${movesSign}${painfulHitWinner.transfers_pts_gain} from moves` : `${movesSign}${painfulHitWinner.transfers_pts_gain} จากตัวย้ายเข้า`;
+          const hitsLabel = isEn ? `-${painfulHitWinner.hits} hits` : `-${painfulHitWinner.hits} แต้มลบ`;
+          painfulHitStat = `${painfulHitWinner.transfers_net_impact} ${isEn ? 'net' : 'สุทธิ'}`;
+          painfulHitDetail = `
+            ${formatTransferMoves(painfulHitWinner.transfer_moves)}
+            <div class="mt-1.5 text-[10.5px] text-slate-500 dark:text-slate-400 font-mono">
+              ${isEn ? 'Impact:' : 'ผลลัพธ์สุทธิ:'} ${painfulHitWinner.transfers_net_impact} (${movesLabel}, ${hitsLabel})
+            </div>
+          `;
         }
         const card14 = renderCard({
           icon: ICONS.layers,
@@ -9822,8 +9938,7 @@ selectShi62GW(gwName) {
           theme: 'red',
           winner: painfulHitWinner,
           statText: painfulHitStat,
-          detailHtml: painfulHitDetail,
-          emptyMsg: 'No painful hits this week'
+          detailHtml: painfulHitDetail
         });
 
         // 15. One-Move Master (Single transfer that made a positive difference, excluding Wildcard/Free Hit)
@@ -9832,11 +9947,13 @@ selectShi62GW(gwName) {
         let singleTxDetail = '';
         let singleTxStat = '';
         if (singleTxWinner) {
-          singleTxStat = `(+${singleTxWinner.transfers_net_impact} net from 1 move)`;
-          if (singleTxWinner.transfer_moves && singleTxWinner.transfer_moves[0]) {
-            const m = singleTxWinner.transfer_moves[0];
-            singleTxDetail = `<strong>${this.escapeHtml(m.in)}</strong> (${m.in_pts > 0 ? '+' : ''}${m.in_pts} pts) in for <strong>${this.escapeHtml(m.out)}</strong> (${m.out_pts})`;
-          }
+          singleTxStat = `+${singleTxWinner.transfers_net_impact} ${isEn ? 'net' : 'สุทธิ'}`;
+          singleTxDetail = `
+            ${formatTransferMoves(singleTxWinner.transfer_moves)}
+            <div class="mt-1.5 text-[10.5px] text-slate-500 dark:text-slate-400 font-mono">
+              ${isEn ? 'Single move net impact:' : 'ผลลัพธ์ย้าย 1 ตัวสุทธิ:'} +${singleTxWinner.transfers_net_impact} ${isEn ? 'pts' : 'แต้ม'}
+            </div>
+          `;
         }
         const card15 = renderCard({
           icon: ICONS.award,
@@ -9845,8 +9962,7 @@ selectShi62GW(gwName) {
           theme: 'green',
           winner: singleTxWinner,
           statText: singleTxStat,
-          detailHtml: singleTxDetail,
-          emptyMsg: 'No single transfers with positive difference'
+          detailHtml: singleTxDetail
         });
 
         // Assemble all cards with winners
@@ -9928,7 +10044,11 @@ selectShi62GW(gwName) {
       }
 
       setCompCardFilter(filter) {
-        this.compCardFilter = filter;
+        if (this.compCardFilter === filter && filter !== 'all') {
+          this.compCardFilter = 'all';
+        } else {
+          this.compCardFilter = filter;
+        }
         this.updateCompCardFilterButtons();
         this.renderCompetitionCardsTableOnly();
       }
@@ -9951,13 +10071,27 @@ selectShi62GW(gwName) {
         });
 
         // Top summary cards active state
+        const activeThemeClasses = {
+          wc1: ['ring-2', 'ring-emerald-500', 'border-emerald-500/50', 'bg-emerald-50/40', 'dark:bg-emerald-950/20', 'shadow-md', 'shadow-emerald-500/10'],
+          fh: ['ring-2', 'ring-amber-500', 'border-amber-500/50', 'bg-amber-50/40', 'dark:bg-amber-950/20', 'shadow-md', 'shadow-amber-500/10'],
+          tc: ['ring-2', 'ring-pink-500', 'border-pink-500/50', 'bg-pink-50/40', 'dark:bg-pink-950/20', 'shadow-md', 'shadow-pink-500/10'],
+          bb: ['ring-2', 'ring-blue-500', 'border-blue-500/50', 'bg-blue-50/40', 'dark:bg-blue-950/20', 'shadow-md', 'shadow-blue-500/10']
+        };
+
+        const allActiveClasses = [
+          'ring-2', 'ring-blue-500', 'dark:ring-blue-400',
+          'ring-emerald-500', 'border-emerald-500/50', 'bg-emerald-50/40', 'dark:bg-emerald-950/20', 'shadow-emerald-500/10',
+          'ring-amber-500', 'border-amber-500/50', 'bg-amber-50/40', 'dark:bg-amber-950/20', 'shadow-amber-500/10',
+          'ring-pink-500', 'border-pink-500/50', 'bg-pink-50/40', 'dark:bg-pink-950/20', 'shadow-pink-500/10',
+          'border-blue-500/50', 'bg-blue-50/40', 'dark:bg-blue-950/20', 'shadow-blue-500/10', 'shadow-md'
+        ];
+
         ['wc1', 'fh', 'tc', 'bb'].forEach(k => {
           const cardEl = document.getElementById(`comp-summary-card-${k}`);
           if (cardEl) {
-            if (k === filter) {
-              cardEl.classList.add('ring-2', 'ring-blue-500', 'dark:ring-blue-400');
-            } else {
-              cardEl.classList.remove('ring-2', 'ring-blue-500', 'dark:ring-blue-400');
+            allActiveClasses.forEach(cls => cardEl.classList.remove(cls));
+            if (k === filter && activeThemeClasses[k]) {
+              activeThemeClasses[k].forEach(cls => cardEl.classList.add(cls));
             }
           }
         });
@@ -10092,10 +10226,19 @@ selectShi62GW(gwName) {
 
         const currentGw = this.selectedGW;
         const maxGw = Number(this.multiData.max_gw) || currentGw;
+        const isEn = (this.currentLang === 'en');
 
         // Set state defaults
         this.compCardFilter = this.compCardFilter || 'all';
         this.compCardSearch = this.compCardSearch || '';
+
+        // Update Header Titles
+        const compTitleEl = document.getElementById('competition-overview-title');
+        if (compTitleEl) compTitleEl.innerText = isEn ? 'Chips Status' : 'สถานะชิป';
+        const compSubEl = document.getElementById('competition-overview-subtitle');
+        if (compSubEl) compSubEl.innerText = isEn 
+          ? 'Track remaining chip inventory of league rivals (Wildcard, Free Hit, Bench Boost, Triple Captain)' 
+          : 'ตรวจสอบสถานะการใช้ชิปคงเหลือของคู่แข่งในลีก (Wildcard, Free Hit, Bench Boost, Triple Captain)';
 
         // Update Header Badges
         const leagueBadge = document.getElementById('competition-league-badge');
@@ -10154,6 +10297,7 @@ selectShi62GW(gwName) {
         if (totalTeams === 0) return;
 
         const currentGw = this.selectedGW;
+        const isEn = (this.currentLang === 'en');
 
         // Set state defaults
         this.transfersFilter = this.transfersFilter || 'all';
@@ -10162,6 +10306,18 @@ selectShi62GW(gwName) {
         this.compDiffSearch = this.compDiffSearch || '';
         this.compTransferTeam = this.compTransferTeam || '';
         this.compTransferMobileView = this.compTransferMobileView || (typeof window !== 'undefined' && window.innerWidth < 640 ? 'best' : 'both');
+
+        // Update Header Titles
+        const transfersTitle = document.getElementById('transfers-overview-title');
+        if (transfersTitle) {
+          transfersTitle.innerText = isEn ? 'Transfer Analytics' : 'วิเคราะห์การย้ายตัว';
+        }
+        const transfersSub = document.getElementById('transfers-overview-subtitle');
+        if (transfersSub) {
+          transfersSub.innerText = isEn
+            ? 'Gameweek transfer activity, template ownership, differential picks, and recommended transfers'
+            : 'สถิติการย้ายตัวประจำสัปดาห์, การถือครองนักเตะมหาชน, ตัวทีเด็ด และคำแนะนำการย้ายตัว';
+        }
 
         // Update Header Badges
         const leagueBadge = document.getElementById('transfers-league-badge');
@@ -10277,12 +10433,13 @@ selectShi62GW(gwName) {
           : (totalNetImpact < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-700 dark:text-slate-300');
 
         container.innerHTML = `
-          <div class="glass-card rounded-2xl p-4 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
+          <div class="glass-card rounded-2xl p-4 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-2xs space-y-4">
             
             <!-- Section Title & GW -->
             <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
               <div>
                 <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                   ${isEn ? 'Gameweek Transfer Activity & ROI' : 'สถิติการย้ายตัวประจำสัปดาห์'}
                   <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-sans">
                     GW ${currentGw}
@@ -10296,111 +10453,156 @@ selectShi62GW(gwName) {
               </div>
             </div>
 
-            <!-- 4 KPI Summary Cards -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <!-- 4 Tactical Transfer Command KPIs -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
+              
               <!-- KPI 1: Total Transfers -->
-              <div class="bg-slate-50/80 dark:bg-slate-800/40 rounded-xl p-3 sm:p-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
-                <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 font-display">
-                  ${isEn ? 'Total Transfers' : 'จำนวนย้ายตัวทั้งลีก'}
-                </span>
-                <div class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white font-display mt-1">
-                  ${totalTransfersCount} <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${isEn ? 'moves' : 'ครั้ง'}</span>
+              <div class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200/90 dark:border-slate-800 shadow-2xs flex flex-col justify-between hover:border-blue-400 dark:hover:border-blue-600 transition-all">
+                <div class="flex items-center justify-between gap-1">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <span class="w-6 h-6 rounded-lg bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center flex-shrink-0">
+                      <svg class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                      </svg>
+                    </span>
+                    <span class="text-[10px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider truncate">
+                      ${isEn ? 'Total Transfers' : 'จำนวนย้ายตัวทั้งลีก'}
+                    </span>
+                  </div>
                 </div>
-                <span class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">
+                <div class="mt-2.5 flex items-baseline gap-1">
+                  <span class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalTransfersCount}</span>
+                  <span class="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 font-sans">${isEn ? 'moves' : 'ครั้ง'}</span>
+                </div>
+                <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-2 truncate">
                   ${isEn ? `${transferTeamsCount} of ${totalTeams} teams active` : `${transferTeamsCount} จาก ${totalTeams} ทีมมีการย้ายตัว`}
-                </span>
+                </p>
               </div>
 
               <!-- KPI 2: Hits Cost -->
-              <div class="bg-slate-50/80 dark:bg-slate-800/40 rounded-xl p-3 sm:p-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
-                <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 font-display">
-                  ${isEn ? 'Total Hits Deducted' : 'แต้มลบทั้งลีก'}
-                </span>
-                <div class="text-xl sm:text-2xl font-extrabold text-rose-600 dark:text-rose-400 font-display mt-1">
-                  -${totalHitsCost} <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">pts</span>
+              <div class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200/90 dark:border-slate-800 shadow-2xs flex flex-col justify-between hover:border-rose-400 dark:hover:border-rose-600 transition-all">
+                <div class="flex items-center justify-between gap-1">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <span class="w-6 h-6 rounded-lg bg-rose-50 dark:bg-rose-950/60 flex items-center justify-center flex-shrink-0">
+                      <svg class="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                      </svg>
+                    </span>
+                    <span class="text-[10px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider truncate">
+                      ${isEn ? 'Hits Deducted' : 'แต้มลบทั้งลีก'}
+                    </span>
+                  </div>
                 </div>
-                <span class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">
+                <div class="mt-2.5 flex items-baseline gap-1">
+                  <span class="text-xl sm:text-2xl font-black ${totalHitsCost > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white'} font-display">${totalHitsCost > 0 ? `-${totalHitsCost}` : '0'}</span>
+                  <span class="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 font-sans">pts</span>
+                </div>
+                <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-2 truncate">
                   ${isEn ? `${hitTeamsCount} teams took hits` : `${hitTeamsCount} ทีมยอมเสียแต้มย้ายตัว`}
-                </span>
+                </p>
               </div>
 
               <!-- KPI 3: Net Impact -->
-              <div class="bg-slate-50/80 dark:bg-slate-800/40 rounded-xl p-3 sm:p-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
-                <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 font-display">
-                  ${isEn ? 'League Net Impact' : 'กำไรแต้มสุทธิทั้งลีก'}
-                </span>
-                <div class="text-xl sm:text-2xl font-extrabold ${netColor} font-display mt-1">
-                  ${totalNetImpact > 0 ? `+${totalNetImpact}` : totalNetImpact} <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">pts</span>
+              <div class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200/90 dark:border-slate-800 shadow-2xs flex flex-col justify-between hover:border-emerald-400 dark:hover:border-emerald-600 transition-all">
+                <div class="flex items-center justify-between gap-1">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <span class="w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center flex-shrink-0">
+                      <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                      </svg>
+                    </span>
+                    <span class="text-[10px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider truncate">
+                      ${isEn ? 'Net ROI Impact' : 'กำไรแต้มสุทธิทั้งลีก'}
+                    </span>
+                  </div>
                 </div>
-                <span class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">
-                  ${isEn ? 'Gain minus hits cost' : 'แต้มตัวเข้าลบตัวออกและฮิตส์'}
-                </span>
+                <div class="mt-2.5 flex items-baseline gap-1">
+                  <span class="text-xl sm:text-2xl font-black ${netColor} font-display">${totalNetImpact > 0 ? `+${totalNetImpact}` : totalNetImpact}</span>
+                  <span class="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 font-sans">pts</span>
+                </div>
+                <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-2 truncate">
+                  ${isEn ? 'Points gained minus hits' : 'แต้มตัวเข้าลบตัวออกและฮิตส์'}
+                </p>
               </div>
 
               <!-- KPI 4: Best Transfer of the Week -->
-              <div class="bg-slate-50/80 dark:bg-slate-800/40 rounded-xl p-3 sm:p-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
-                <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 font-display">
-                  ${isEn ? 'Best Transfer of GW' : 'ดีลยอดเยี่ยมประจำสัปดาห์'}
-                </span>
-                ${bestMove ? `
-                  <div class="text-xs font-bold text-slate-900 dark:text-white font-display mt-1 truncate">
-                    <span class="text-emerald-600 dark:text-emerald-400 font-extrabold">+${bestMove.net} pts</span> ➔ ${bestMove.in}
+              <div class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200/90 dark:border-slate-800 shadow-2xs flex flex-col justify-between hover:border-amber-400 dark:hover:border-amber-600 transition-all">
+                <div class="flex items-center justify-between gap-1">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <span class="w-6 h-6 rounded-lg bg-amber-50 dark:bg-amber-950/60 flex items-center justify-center flex-shrink-0">
+                      <svg class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>
+                    </span>
+                    <span class="text-[10px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider truncate">
+                      ${isEn ? 'Best Transfer of GW' : 'ดีลยอดเยี่ยมประจำสัปดาห์'}
+                    </span>
                   </div>
-                  <span class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 truncate">
-                    ${isEn ? 'by' : 'โดย'} ${bestMoveManager}
-                  </span>
-                ` : `
-                  <div class="text-xs font-medium text-slate-500 dark:text-slate-400 font-display mt-1">
-                    -
-                  </div>
-                  <span class="text-[10px] text-slate-400 mt-1">
-                    ${isEn ? 'No transfers yet' : 'ยังไม่มีการย้ายตัว'}
-                  </span>
-                `}
+                </div>
+                <div class="mt-2.5 truncate">
+                  ${bestMove ? `
+                    <div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display truncate">
+                      <span class="text-emerald-600 dark:text-emerald-400 font-black">+${bestMove.net} pts</span> ➔ ${this.escapeHtml(bestMove.in)}
+                    </div>
+                  ` : `
+                    <div class="text-xs font-medium text-slate-400 dark:text-slate-500 font-display">
+                      -
+                    </div>
+                  `}
+                </div>
+                <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-2 truncate">
+                  ${bestMove ? (isEn ? `by ${this.escapeHtml(bestMoveManager)}` : `โดย ${this.escapeHtml(bestMoveManager)}`) : (isEn ? 'No transfers yet' : 'ยังไม่มีการย้ายตัว')}
+                </p>
               </div>
+
             </div>
 
             <!-- Filter Controls & Search -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-1">
+            <div class="glass-card rounded-2xl p-2.5 sm:p-4 border border-slate-200/90 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
               <!-- Filter Pills -->
-              <div class="flex items-center gap-1.5 overflow-x-auto touch-scroll scrollbar-thin p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
+              <div class="flex items-center gap-1.5 overflow-x-auto touch-scroll scrollbar-thin py-0.5 -mx-1 px-1">
                 <button 
                   onclick="app.setTransfersFilter('all')" 
-                  class="px-2.5 sm:px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeFilter === 'all' ? 'bg-slate-900 text-white dark:bg-blue-600 shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
+                  class="flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeFilter === 'all' ? 'bg-blue-600 text-white shadow-xs ring-2 ring-blue-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200/80 dark:border-slate-700/60'}"
                 >
                   ${isEn ? 'All Teams' : 'ทั้งหมด'} (${rowsData.length})
                 </button>
                 <button 
                   onclick="app.setTransfersFilter('transferred')" 
-                  class="px-2.5 sm:px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeFilter === 'transferred' ? 'bg-slate-900 text-white dark:bg-blue-600 shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
+                  class="flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeFilter === 'transferred' ? 'bg-blue-600 text-white shadow-xs ring-2 ring-blue-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200/80 dark:border-slate-700/60'}"
                 >
                   ${isEn ? 'Transfers' : 'มีการย้ายตัว'} (${transferTeamsCount})
                 </button>
                 <button 
                   onclick="app.setTransfersFilter('profit')" 
-                  class="px-2.5 sm:px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeFilter === 'profit' ? 'bg-emerald-600 text-white shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
+                  class="flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeFilter === 'profit' ? 'bg-emerald-600 text-white shadow-xs ring-2 ring-emerald-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200/80 dark:border-slate-700/60'}"
                 >
                   ${isEn ? 'Profitable' : 'คุ้มค่า (> 0)'}
                 </button>
                 <button 
                   onclick="app.setTransfersFilter('hits')" 
-                  class="px-2.5 sm:px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeFilter === 'hits' ? 'bg-rose-600 text-white shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
+                  class="flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${activeFilter === 'hits' ? 'bg-rose-600 text-white shadow-xs ring-2 ring-rose-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200/80 dark:border-slate-700/60'}"
                 >
                   ${isEn ? 'Took Hits' : 'ติดลบ'} (${hitTeamsCount})
                 </button>
               </div>
 
-              <!-- Search -->
-              <div class="relative w-full sm:w-64">
+              <!-- Search Box -->
+              <div class="relative w-full sm:w-72">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                  </svg>
+                </span>
                 <input 
                   type="text" 
-                  value="${this.transfersSearch || ''}"
+                  value="${this.escapeHtml(this.transfersSearch || '')}"
                   placeholder="${isEn ? 'Search team, manager, or player...' : 'ค้นหาทีม, ผู้จัดการ, หรือชื่อนักเตะ...'}"
                   oninput="app.setTransfersSearch(this.value)"
-                  class="w-full bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white text-xs border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 pr-7 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-2xs"
+                  class="w-full bg-slate-50/90 dark:bg-slate-800/80 text-slate-800 dark:text-white text-xs border border-slate-200 dark:border-slate-700/80 rounded-xl pl-9 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-2xs"
                 />
                 ${this.transfersSearch ? `
-                  <button onclick="app.setTransfersSearch('')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer">✕</button>
+                  <button onclick="app.setTransfersSearch('')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer p-0.5">✕</button>
                 ` : ''}
               </div>
             </div>
@@ -10416,23 +10618,43 @@ selectShi62GW(gwName) {
                     ${isEn ? 'No teams match the selected filter.' : 'ไม่พบข้อมูลที่ตรงกับตัวกรองที่เลือก'}
                   </div>
                   <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                    ${isEn ? 'Try adjusting your search keyword or chip filter.' : 'ลองเปลี่ยนคำค้นหาหรือเลือกดูชิปประเภทอื่น'}
+                    ${isEn ? 'Try adjusting your search keyword or chip filter.' : 'ลองเปลี่ยนคำค้นหาหรือเลือกดูประเภทอื่น'}
                   </div>
                 </div>
               ` : filteredRows.map(row => {
                 const isPrize = this.isPrizeEligible(row.team.entry_id);
                 const rankBadge = isPrize 
-                  ? `<span class="px-2 py-0.5 rounded-md text-[10.5px] font-extrabold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-display">#${row.team.leaderboard_rank || '-'}</span>`
-                  : `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">${isEn ? '[Guest]' : '[ร่วมสนุก]'}</span>`;
+                  ? this.getRankBadge(row.team.leaderboard_rank)
+                  : this.getNonPrizeRankBadge();
+                const prizeBadge = this.getPrizeBadge(row.team.entry_id);
 
-                const chipBadge = row.chip ? `
-                  <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 font-display">
-                    ${row.chip}
-                  </span>
-                ` : '';
+                let chipBadge = '';
+                if (row.chip) {
+                  const cLow = String(row.chip).toLowerCase().trim();
+                  let cClass = 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700';
+                  let cText = row.chip;
+                  if (cLow === 'wildcard') {
+                    cClass = 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
+                    cText = 'Wildcard';
+                  } else if (cLow === 'freehit') {
+                    cClass = 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800';
+                    cText = 'Free Hit';
+                  } else if (cLow === '3xc' || cLow === 'triple_captain') {
+                    cClass = 'bg-pink-50 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 border-pink-200 dark:border-pink-800';
+                    cText = '3xC';
+                  } else if (cLow === 'bboost' || cLow === 'bench_boost') {
+                    cClass = 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800';
+                    cText = 'Bench Boost';
+                  }
+                  chipBadge = `
+                    <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase border font-display ${cClass}">
+                      ${cText}
+                    </span>
+                  `;
+                }
 
                 const hitBadge = row.hits > 0 ? `
-                  <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 font-display">
+                  <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 font-display">
                     ${isEn ? `-${row.hits} pts hit` : `-${row.hits} แต้มลบ`}
                   </span>
                 ` : '';
@@ -10452,63 +10674,82 @@ selectShi62GW(gwName) {
                 }
 
                 return `
-                  <div class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-3 sm:p-4 hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-2xs">
+                  <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/70 p-3.5 sm:p-4 hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-2xs group max-w-full overflow-hidden">
                     
                     <!-- Left: Manager & Status -->
-                    <div class="flex items-center gap-2.5 min-w-[220px]">
-                      ${rankBadge}
+                    <div class="flex items-center gap-2.5 w-full md:w-auto md:min-w-[220px]">
+                      <div class="w-[32px] min-w-[32px] text-center flex-shrink-0">
+                        ${rankBadge}
+                      </div>
                       <div class="truncate">
-                        <div class="flex items-center gap-1.5">
-                          <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display truncate">${row.team.entry_name || '-'}</span>
-                          ${chipBadge}
-                        </div>
-                        <div class="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                          <span>${row.team.player_name || '-'}</span>
-                          <span>•</span>
-                          <span class="font-medium ${row.transfers_count > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}">${transferCountText}</span>
-                          ${hitBadge}
-                        </div>
+                        <button onclick="app.openTeamModal(${row.team.entry_id})" class="text-left group cursor-pointer block truncate">
+                          <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+                              ${this.escapeHtml(row.team.entry_name || '-')}
+                            </span>
+                            ${prizeBadge}
+                            ${chipBadge}
+                          </div>
+                          <div class="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                            <span>${this.escapeHtml(row.team.player_name || '-')}</span>
+                            <span>•</span>
+                            <span class="font-semibold ${row.transfers_count > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}">${transferCountText}</span>
+                            ${hitBadge}
+                          </div>
+                        </button>
                       </div>
                     </div>
 
                     <!-- Center: Transfer Moves -->
-                    <div class="flex-1">
+                    <div class="flex-1 min-w-0 max-w-full">
                       ${row.moves.length > 0 ? `
                         <div class="flex flex-wrap items-center gap-2">
                           ${row.moves.map(m => {
                             const mNet = Number(m.net) || 0;
-                            const mNetClass = mNet > 0 ? 'text-emerald-600 dark:text-emerald-400' : (mNet < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-500');
-                            const mNetStr = mNet > 0 ? `+${mNet}` : `${mNet}`;
+                            const mNetClass = mNet > 0 
+                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' 
+                              : (mNet < 0 
+                                ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30' 
+                                : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700');
+                            const mNetSign = mNet > 0 ? '+' : '';
                             return `
-                              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 text-xs">
-                                <span class="text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1">
-                                  <span class="text-[9px] uppercase font-mono px-1 py-0.2 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">${isEn ? 'IN' : 'เข้า'}</span>
-                                  ${m.in} <span class="text-[10.5px] font-medium text-emerald-600/80">(${m.in_pts || 0}p)</span>
+                              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-50/90 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/70 text-xs shadow-2xs flex-wrap max-w-full">
+                                <span class="text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1 min-w-0">
+                                  <span class="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-extrabold flex-shrink-0">${isEn ? 'IN' : 'เข้า'}</span>
+                                  <span class="truncate max-w-[95px] sm:max-w-none">${this.escapeHtml(m.in || '-')}</span>
+                                  <span class="text-[10px] font-normal text-emerald-600/80 dark:text-emerald-400/80 font-mono flex-shrink-0">(${m.in_pts || 0}p)</span>
                                 </span>
-                                <span class="text-slate-400 text-[10px]">➔</span>
-                                <span class="text-rose-600 dark:text-rose-400 font-medium flex items-center gap-1">
-                                  <span class="text-[9px] uppercase font-mono px-1 py-0.2 rounded bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300">${isEn ? 'OUT' : 'ออก'}</span>
-                                  ${m.out} <span class="text-[10.5px] font-normal text-rose-500/80">(${m.out_pts || 0}p)</span>
+                                <span class="text-slate-400 dark:text-slate-500 text-xs font-bold flex-shrink-0">➔</span>
+                                <span class="text-rose-600 dark:text-rose-400 font-medium flex items-center gap-1 min-w-0">
+                                  <span class="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 font-extrabold flex-shrink-0">${isEn ? 'OUT' : 'ออก'}</span>
+                                  <span class="truncate max-w-[95px] sm:max-w-none">${this.escapeHtml(m.out || '-')}</span>
+                                  <span class="text-[10px] font-normal text-rose-500/80 dark:text-rose-400/80 font-mono flex-shrink-0">(${m.out_pts || 0}p)</span>
                                 </span>
-                                <span class="ml-1 text-[11px] font-extrabold font-display ${mNetClass}">[${mNetStr}]</span>
+                                <span class="ml-1 px-1.5 py-0.5 rounded-md text-[10.5px] font-black font-display border flex-shrink-0 ${mNetClass}">
+                                  ${mNetSign}${mNet} pts
+                                </span>
                               </div>
                             `;
                           }).join('')}
                         </div>
                       ` : `
-                        <span class="text-xs text-slate-400 dark:text-slate-500 italic">
-                          ${isEn ? 'No transfers made this Gameweek' : 'ไม่มีการย้ายตัวในสัปดาห์นี้'}
-                        </span>
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-dashed border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 max-w-full">
+                          <span class="w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-500 text-[10px] flex-shrink-0">✓</span>
+                          <span class="font-medium truncate">${isEn ? 'No transfers made • Rolled Free Transfer for next GW' : 'ไม่มีการย้ายตัวในสัปดาห์นี้ • สะสมโควตาย้ายตัวฟรีไปสัปดาห์ถัดไป'}</span>
+                        </div>
                       `}
                     </div>
 
                     <!-- Right: Net Points Impact Badge -->
-                    <div class="flex items-center justify-end md:justify-start gap-2 flex-shrink-0">
-                      <div class="text-right">
-                        <div class="text-[10px] uppercase font-bold text-slate-400 font-display">
+                    <div class="flex items-center justify-between md:justify-end gap-3 flex-shrink-0 pt-2.5 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-slate-800/80 w-full md:w-auto">
+                      <div class="md:hidden text-[11px] text-slate-400 font-medium">
+                        ${isEn ? 'Net Gameweek Impact:' : 'ผลตอบแทนแต้มสุทธิ:'}
+                      </div>
+                      <div class="flex flex-col items-end">
+                        <span class="hidden md:block text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 font-display mb-0.5">
                           ${isEn ? 'Net Impact' : 'แต้มสุทธิ'}
-                        </div>
-                        <div class="text-xs sm:text-sm font-extrabold px-2.5 py-0.5 rounded-lg border font-display ${netBadgeClass}">
+                        </span>
+                        <div class="text-xs sm:text-sm font-black px-2.5 py-1 rounded-xl border font-display shadow-2xs ${netBadgeClass}">
                           ${row.transfers_count > 0 ? `${netSign}${row.net} pts` : '0 pts'}
                         </div>
                       </div>
@@ -10589,118 +10830,184 @@ selectShi62GW(gwName) {
 
         this.cachedChipsByTeam = chipsByTeam;
 
+        const wc1Pct = totalTeams > 0 ? Math.round(totalWc1Avail / totalTeams * 100) : 0;
+        const fhPct = totalTeams > 0 ? Math.round(totalFhAvail / totalTeams * 100) : 0;
+        const tcPct = totalTeams > 0 ? Math.round(totalTcAvail / totalTeams * 100) : 0;
+        const bbPct = totalTeams > 0 ? Math.round(totalBbAvail / totalTeams * 100) : 0;
+
         // Render Top 4 Summary Cards + Filter Tabs + Table Container
         container.innerHTML = `
           <!-- Section Title -->
           <div class="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800">
-            <div>
-              <h3 class="text-sm sm:text-lg font-bold text-slate-900 dark:text-white font-display">
-                ${isEn ? 'Card Available <span class="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 font-sans">(Remaining Chip Status %)</span>' : 'สถานะการ์ดคงเหลือของทุกทีมในลีก (%)'}
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
+                ${isEn ? 'Card Available' : 'สถานะการ์ดคงเหลือของทุกทีมในลีก'}
               </h3>
+              <span class="text-xs font-normal text-slate-400 dark:text-slate-500 font-sans">
+                (${isEn ? 'Remaining %' : '% คงเหลือ'})
+              </span>
             </div>
             <div class="text-xs text-slate-500 dark:text-slate-400">
-              ${isEn ? 'Total' : 'รวม'} <strong class="text-slate-900 dark:text-white">${totalTeams}</strong> ${isEn ? 'teams' : 'ทีม'}
+              ${isEn ? 'Total' : 'รวม'} <strong class="text-slate-900 dark:text-white font-bold font-display">${totalTeams}</strong> ${isEn ? 'teams' : 'ทีม'}
             </div>
           </div>
 
-          <!-- 4 Chip Summary Stats (Clickable to Filter) -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+          <!-- 4 Tactical Chip Cards (Clickable to Filter) -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
             
             <!-- WC 1 -->
-            <div id="comp-summary-card-wc1" onclick="app.setCompCardFilter('wc1')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
-              <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Wildcard 1 (GW 1-19)</span>
-                <span class="chip-badge badge-wildcard">WC</span>
+            <div id="comp-summary-card-wc1" onclick="app.setCompCardFilter('wc1')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200/90 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-emerald-400 dark:hover:border-emerald-600 transition-all group ${this.compCardFilter === 'wc1' ? 'ring-2 ring-emerald-500 border-emerald-500/50 bg-emerald-50/40 dark:bg-emerald-950/20 shadow-md shadow-emerald-500/10' : ''}">
+              <div class="flex items-center justify-between gap-1">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span class="w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                  </span>
+                  <span class="text-[10px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider truncate">Wildcard 1</span>
+                </div>
+                <span class="chip-badge badge-wildcard flex-shrink-0 text-[10px] px-1.5 py-0.5">WC</span>
               </div>
-              <div class="mt-2 flex items-baseline gap-1.5">
-                <span class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalWc1Avail}</span>
-                <span class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">/ ${totalTeams} ${isEn ? 'teams' : 'ทีม'}</span>
-                <span class="ml-auto text-xs font-bold text-slate-700 dark:text-slate-300 font-display">${Math.round(totalWc1Avail / totalTeams * 100)}%</span>
+              <div class="mt-2.5 flex items-baseline justify-between gap-1">
+                <div class="flex items-baseline gap-1">
+                  <span class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalWc1Avail}</span>
+                  <span class="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 font-sans">/ ${totalTeams} ${isEn ? 'teams' : 'ทีม'}</span>
+                </div>
+                <span class="text-xs sm:text-sm font-black text-emerald-600 dark:text-emerald-400 font-display">${wc1Pct}%</span>
               </div>
-              <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate">${isEn ? 'Unlimited free transfers (until GW 19)' : 'เปลี่ยนตัวฟรีไม่จำกัด (ถึง GW 19)'}</p>
+              <div class="w-full bg-slate-100 dark:bg-slate-800/80 h-1.5 rounded-full overflow-hidden mt-2">
+                <div class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width: ${wc1Pct}%"></div>
+              </div>
+              <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-2 truncate">${isEn ? 'Unlimited free transfers (until GW 19)' : 'เปลี่ยนตัวฟรีไม่จำกัด (ถึง GW 19)'}</p>
             </div>
 
             <!-- Free Hit -->
-            <div id="comp-summary-card-fh" onclick="app.setCompCardFilter('fh')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
-              <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Free Hit</span>
-                <span class="chip-badge badge-freehit">FH</span>
+            <div id="comp-summary-card-fh" onclick="app.setCompCardFilter('fh')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200/90 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-amber-400 dark:hover:border-amber-600 transition-all group ${this.compCardFilter === 'fh' ? 'ring-2 ring-amber-500 border-amber-500/50 bg-amber-50/40 dark:bg-amber-950/20 shadow-md shadow-amber-500/10' : ''}">
+              <div class="flex items-center justify-between gap-1">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span class="w-6 h-6 rounded-lg bg-amber-50 dark:bg-amber-950/60 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                  </span>
+                  <span class="text-[10px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider truncate">Free Hit</span>
+                </div>
+                <span class="chip-badge badge-freehit flex-shrink-0 text-[10px] px-1.5 py-0.5">FH</span>
               </div>
-              <div class="mt-2 flex items-baseline gap-1.5">
-                <span class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalFhAvail}</span>
-                <span class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">/ ${totalTeams} ${isEn ? 'teams' : 'ทีม'}</span>
-                <span class="ml-auto text-xs font-bold text-slate-700 dark:text-slate-300 font-display">${Math.round(totalFhAvail / totalTeams * 100)}%</span>
+              <div class="mt-2.5 flex items-baseline justify-between gap-1">
+                <div class="flex items-baseline gap-1">
+                  <span class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalFhAvail}</span>
+                  <span class="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 font-sans">/ ${totalTeams} ${isEn ? 'teams' : 'ทีม'}</span>
+                </div>
+                <span class="text-xs sm:text-sm font-black text-amber-600 dark:text-amber-400 font-display">${fhPct}%</span>
               </div>
-              <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate">${isEn ? 'Free squad overhaul for 1 gameweek' : 'จัดทีมใหม่ฟรี 1 วีค'}</p>
+              <div class="w-full bg-slate-100 dark:bg-slate-800/80 h-1.5 rounded-full overflow-hidden mt-2">
+                <div class="h-full bg-amber-500 rounded-full transition-all duration-500" style="width: ${fhPct}%"></div>
+              </div>
+              <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-2 truncate">${isEn ? 'Free squad overhaul for 1 gameweek' : 'จัดทีมใหม่ฟรี 1 วีค'}</p>
             </div>
 
             <!-- Triple Captain -->
-            <div id="comp-summary-card-tc" onclick="app.setCompCardFilter('tc')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
-              <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Triple Captain</span>
-                <span class="chip-badge badge-3xc">3xC</span>
+            <div id="comp-summary-card-tc" onclick="app.setCompCardFilter('tc')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200/90 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-pink-400 dark:hover:border-pink-600 transition-all group ${this.compCardFilter === 'tc' ? 'ring-2 ring-pink-500 border-pink-500/50 bg-pink-50/40 dark:bg-pink-950/20 shadow-md shadow-pink-500/10' : ''}">
+              <div class="flex items-center justify-between gap-1">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span class="w-6 h-6 rounded-lg bg-pink-50 dark:bg-pink-950/60 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-3.5 h-3.5 text-pink-600 dark:text-pink-400" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
+                    </svg>
+                  </span>
+                  <span class="text-[10px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider truncate">Triple Captain</span>
+                </div>
+                <span class="chip-badge badge-3xc flex-shrink-0 text-[10px] px-1.5 py-0.5">3xC</span>
               </div>
-              <div class="mt-2 flex items-baseline gap-1.5">
-                <span class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalTcAvail}</span>
-                <span class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">/ ${totalTeams} ${isEn ? 'teams' : 'ทีม'}</span>
-                <span class="ml-auto text-xs font-bold text-slate-700 dark:text-slate-300 font-display">${Math.round(totalTcAvail / totalTeams * 100)}%</span>
+              <div class="mt-2.5 flex items-baseline justify-between gap-1">
+                <div class="flex items-baseline gap-1">
+                  <span class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalTcAvail}</span>
+                  <span class="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 font-sans">/ ${totalTeams} ${isEn ? 'teams' : 'ทีม'}</span>
+                </div>
+                <span class="text-xs sm:text-sm font-black text-pink-600 dark:text-pink-400 font-display">${tcPct}%</span>
               </div>
-              <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate">${isEn ? 'Triple captain points' : 'คะแนนกัปตันคูณ 3 แต้ม'}</p>
+              <div class="w-full bg-slate-100 dark:bg-slate-800/80 h-1.5 rounded-full overflow-hidden mt-2">
+                <div class="h-full bg-pink-500 rounded-full transition-all duration-500" style="width: ${tcPct}%"></div>
+              </div>
+              <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-2 truncate">${isEn ? 'Captain points multiplied by 3' : 'คะแนนกัปตันคูณ 3 แต้ม'}</p>
             </div>
 
             <!-- Bench Boost -->
-            <div id="comp-summary-card-bb" onclick="app.setCompCardFilter('bb')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-slate-400 dark:hover:border-slate-600 transition-all">
-              <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Bench Boost</span>
-                <span class="chip-badge badge-bboost">BB</span>
+            <div id="comp-summary-card-bb" onclick="app.setCompCardFilter('bb')" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200/90 dark:border-slate-800 shadow-2xs cursor-pointer hover:border-blue-400 dark:hover:border-blue-600 transition-all group ${this.compCardFilter === 'bb' ? 'ring-2 ring-blue-500 border-blue-500/50 bg-blue-50/40 dark:bg-blue-950/20 shadow-md shadow-blue-500/10' : ''}">
+              <div class="flex items-center justify-between gap-1">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span class="w-6 h-6 rounded-lg bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                  </span>
+                  <span class="text-[10px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider truncate">Bench Boost</span>
+                </div>
+                <span class="chip-badge badge-bboost flex-shrink-0 text-[10px] px-1.5 py-0.5">BB</span>
               </div>
-              <div class="mt-2 flex items-baseline gap-1.5">
-                <span class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalBbAvail}</span>
-                <span class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">/ ${totalTeams} ${isEn ? 'teams' : 'ทีม'}</span>
-                <span class="ml-auto text-xs font-bold text-slate-700 dark:text-slate-300 font-display">${Math.round(totalBbAvail / totalTeams * 100)}%</span>
+              <div class="mt-2.5 flex items-baseline justify-between gap-1">
+                <div class="flex items-baseline gap-1">
+                  <span class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display">${totalBbAvail}</span>
+                  <span class="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 font-sans">/ ${totalTeams} ${isEn ? 'teams' : 'ทีม'}</span>
+                </div>
+                <span class="text-xs sm:text-sm font-black text-blue-600 dark:text-blue-400 font-display">${bbPct}%</span>
               </div>
-              <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate">${isEn ? 'Points from all 4 bench players counted' : 'นับแต้มผู้เล่นสำรองทั้ง 4 ตัว'}</p>
+              <div class="w-full bg-slate-100 dark:bg-slate-800/80 h-1.5 rounded-full overflow-hidden mt-2">
+                <div class="h-full bg-blue-500 rounded-full transition-all duration-500" style="width: ${bbPct}%"></div>
+              </div>
+              <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-2 truncate">${isEn ? 'Points from all 4 bench players' : 'นับแต้มผู้เล่นสำรองทั้ง 4 ตัว'}</p>
             </div>
 
           </div>
 
           <!-- Controls: Filters & Search -->
-          <div class="glass-card rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+          <div class="glass-card rounded-2xl p-2.5 sm:p-4 border border-slate-200/90 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
             <!-- Filter Pills (Scrollable on Mobile) -->
             <div class="flex items-center gap-1.5 overflow-x-auto scrollbar-thin touch-scroll py-0.5 -mx-1 px-1">
-              <button onclick="app.setCompCardFilter('all')" data-filter="all" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'all' ? 'bg-blue-600 text-white shadow-xs ring-2 ring-blue-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60'} cursor-pointer">
+              <button onclick="app.setCompCardFilter('all')" data-filter="all" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'all' ? 'bg-blue-600 text-white shadow-xs ring-2 ring-blue-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200/80 dark:border-slate-700/60'} cursor-pointer">
                 ${isEn ? 'All' : 'ทั้งหมด'} (${totalTeams})
               </button>
-              <button onclick="app.setCompCardFilter('tc')" data-filter="tc" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'tc' ? 'bg-pink-600 text-white shadow-xs ring-2 ring-pink-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60'} cursor-pointer">
+              <button onclick="app.setCompCardFilter('tc')" data-filter="tc" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'tc' ? 'bg-pink-600 text-white shadow-xs ring-2 ring-pink-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200/80 dark:border-slate-700/60'} cursor-pointer flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-pink-500"></span>
                 3xC (${totalTcAvail})
               </button>
-              <button onclick="app.setCompCardFilter('bb')" data-filter="bb" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'bb' ? 'bg-blue-600 text-white shadow-xs ring-2 ring-blue-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60'} cursor-pointer">
+              <button onclick="app.setCompCardFilter('bb')" data-filter="bb" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'bb' ? 'bg-blue-600 text-white shadow-xs ring-2 ring-blue-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200/80 dark:border-slate-700/60'} cursor-pointer flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
                 BB (${totalBbAvail})
               </button>
-              <button onclick="app.setCompCardFilter('fh')" data-filter="fh" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'fh' ? 'bg-amber-600 text-white shadow-xs ring-2 ring-amber-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60'} cursor-pointer">
+              <button onclick="app.setCompCardFilter('fh')" data-filter="fh" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'fh' ? 'bg-amber-600 text-white shadow-xs ring-2 ring-amber-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200/80 dark:border-slate-700/60'} cursor-pointer flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
                 Free Hit (${totalFhAvail})
               </button>
-              <button onclick="app.setCompCardFilter('wc1')" data-filter="wc1" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'wc1' ? 'bg-emerald-600 text-white shadow-xs ring-2 ring-emerald-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700/60'} cursor-pointer">
+              <button onclick="app.setCompCardFilter('wc1')" data-filter="wc1" class="comp-card-filter-btn flex-shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${this.compCardFilter === 'wc1' ? 'bg-emerald-600 text-white shadow-xs ring-2 ring-emerald-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:text-slate-200 border border-slate-200/80 dark:border-slate-700/60'} cursor-pointer flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                 Wildcard 1 (${totalWc1Avail})
               </button>
             </div>
 
             <!-- Search Box -->
-            <div class="relative w-full sm:w-64">
+            <div class="relative w-full sm:w-72">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+              </span>
               <input 
                 type="text" 
                 id="comp-card-search-input" 
                 placeholder="${isEn ? 'Search team or manager...' : 'ค้นหาชื่อทีม หรือ ผู้จัดการ...'}" 
                 value="${this.escapeHtml(this.compCardSearch)}"
                 oninput="app.setCompCardSearch(this.value)"
-                class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full bg-slate-50/90 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
-              ${this.compCardSearch ? `<button onclick="document.getElementById('comp-card-search-input').value=''; app.setCompCardSearch('')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs cursor-pointer">✕</button>` : ''}
+              ${this.compCardSearch ? `<button onclick="document.getElementById('comp-card-search-input').value=''; app.setCompCardSearch('')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer p-0.5">✕</button>` : ''}
             </div>
           </div>
 
           <!-- Cards Table Container -->
-          <div id="comp-cards-table-container" class="glass-card rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-2xs">
+          <div id="comp-cards-table-container" class="glass-card rounded-2xl border border-slate-200/80 dark:border-slate-800 overflow-hidden shadow-2xs">
             <!-- Table body populated by renderCompetitionCardsTableOnly -->
           </div>
         `;
@@ -10745,6 +11052,7 @@ selectShi62GW(gwName) {
         if (filteredTeams.length === 0) {
           tableContainer.innerHTML = `
             <div class="p-8 text-center text-slate-400 dark:text-slate-500 text-xs">
+              <div class="text-2xl mb-1">🔍</div>
               ${isEn ? 'No teams match the search criteria' : 'ไม่พบทีมที่ตรงกับเงื่อนไขการค้นหา'}
             </div>
           `;
@@ -10752,28 +11060,36 @@ selectShi62GW(gwName) {
         }
 
         const badgeAvail = `
-          <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800 whitespace-nowrap">
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/90 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/80 whitespace-nowrap shadow-2xs">
             <svg class="w-3 h-3 text-emerald-600 dark:text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
             ${isEn ? 'Available' : 'ยังไม่ใช้'}
           </span>
         `;
 
-        const badgeUsed = (gw) => `
-          <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-medium bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 whitespace-nowrap line-through decoration-slate-400">
-            <span class="w-1.5 h-1.5 rounded-full bg-slate-400 flex-shrink-0"></span>
-            GW ${gw}
-          </span>
-        `;
+        const badgeUsed = (gw, chipType) => {
+          let dotColor = 'bg-slate-400';
+          if (chipType === 'wc1' || chipType === 'wc2') dotColor = 'bg-emerald-500';
+          else if (chipType === 'fh') dotColor = 'bg-amber-500';
+          else if (chipType === 'tc') dotColor = 'bg-pink-500';
+          else if (chipType === 'bb') dotColor = 'bg-blue-500';
+
+          return `
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-semibold bg-slate-100/90 text-slate-600 border border-slate-200/80 dark:bg-slate-800/80 dark:text-slate-400 dark:border-slate-700/80 whitespace-nowrap shadow-2xs">
+              <span class="w-1.5 h-1.5 rounded-full ${dotColor} flex-shrink-0"></span>
+              GW ${gw}
+            </span>
+          `;
+        };
 
         const badgeWc2Upcoming = `
-          <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/50 dark:text-indigo-300 dark:border-indigo-800 whitespace-nowrap">
-            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0"></span>
-            ${isEn ? 'Starts GW 20' : 'เริ่มใช้ GW 20'}
+          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-200/90 dark:bg-indigo-950/50 dark:text-indigo-300 dark:border-indigo-800/80 whitespace-nowrap shadow-2xs">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0 animate-pulse"></span>
+            ${isEn ? 'Starts GW 20' : 'เริ่ม GW 20'}
           </span>
         `;
 
         const badgeExpired = `
-          <span class="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-medium bg-slate-100 text-slate-400 border border-slate-200 dark:bg-slate-800 dark:text-slate-500 whitespace-nowrap">
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-medium bg-slate-100 text-slate-400 border border-slate-200/70 dark:bg-slate-800/60 dark:text-slate-500 dark:border-slate-700/60 whitespace-nowrap">
             ${isEn ? 'Expired' : 'หมดอายุ'}
           </span>
         `;
@@ -10804,22 +11120,22 @@ selectShi62GW(gwName) {
 
           // Wildcard 1
           let wc1Badge = badgeAvail;
-          if (usage.wc1) wc1Badge = badgeUsed(usage.wc1);
+          if (usage.wc1) wc1Badge = badgeUsed(usage.wc1, 'wc1');
           else if (maxGw > 19) wc1Badge = badgeExpired;
 
           // Wildcard 2 (rendered only if showWc2 is true)
           let wc2Badge = badgeWc2Upcoming;
-          if (usage.wc2) wc2Badge = badgeUsed(usage.wc2);
+          if (usage.wc2) wc2Badge = badgeUsed(usage.wc2, 'wc2');
           else if (maxGw >= 20) wc2Badge = badgeAvail;
 
           // Free Hit
-          const fhBadge = usage.fh ? badgeUsed(usage.fh) : badgeAvail;
+          const fhBadge = usage.fh ? badgeUsed(usage.fh, 'fh') : badgeAvail;
 
           // Triple Captain
-          const tcBadge = usage.tc ? badgeUsed(usage.tc) : badgeAvail;
+          const tcBadge = usage.tc ? badgeUsed(usage.tc, 'tc') : badgeAvail;
 
           // Bench Boost
-          const bbBadge = usage.bb ? badgeUsed(usage.bb) : badgeAvail;
+          const bbBadge = usage.bb ? badgeUsed(usage.bb, 'bb') : badgeAvail;
 
           const meterColor = remainingCount >= (totalCardsPossible * 0.75) ? 'bg-emerald-500' : (remainingCount >= (totalCardsPossible * 0.5) ? 'bg-amber-500' : 'bg-rose-500');
 
@@ -10833,12 +11149,24 @@ selectShi62GW(gwName) {
 
           const prizeBadge = this.getPrizeBadge(t.entry_id);
 
+          const chipDots = [
+            { key: 'wc1', avail: usage.wc1 === null && maxGw <= 19, color: 'bg-emerald-500', name: 'WC1' },
+            ...(showWc2 ? [{ key: 'wc2', avail: usage.wc2 === null && maxGw >= 20, color: 'bg-emerald-400', name: 'WC2' }] : []),
+            { key: 'fh', avail: usage.fh === null, color: 'bg-amber-500', name: 'FH' },
+            { key: 'tc', avail: usage.tc === null, color: 'bg-pink-500', name: 'TC' },
+            { key: 'bb', avail: usage.bb === null, color: 'bg-blue-500', name: 'BB' },
+          ];
+          const dotsHtml = chipDots.map(d => d.avail 
+            ? `<span title="${d.name} ${isEn ? 'Available' : 'พร้อมใช้'}" class="w-1.5 h-1.5 rounded-full ${d.color} shadow-xs inline-block"></span>`
+            : `<span title="${d.name} ${isEn ? 'Used' : 'ใช้แล้ว'}" class="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 inline-block opacity-40"></span>`
+          ).join('');
+
           rowsHtml += `
             <tr class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/80">
               <td class="py-2.5 px-1 sm:px-2 text-center text-xs font-bold w-[36px] min-w-[36px] max-w-[36px] sm:w-[44px] sm:min-w-[44px] sticky left-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/60 z-10">
                 ${rankBadge}
               </td>
-              <td class="py-2.5 px-2.5 sm:px-3 min-w-[130px] sm:min-w-[180px] max-w-[160px] sm:max-w-[220px] sticky left-[36px] sm:left-[44px] bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/60 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
+              <td class="py-2.5 px-2.5 sm:px-3 min-w-[130px] sm:min-w-[180px] max-w-[160px] sm:max-w-[220px] sticky left-[36px] sm:left-[44px] bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/60 z-10 border-r border-slate-200/80 dark:border-slate-800 shadow-[1px_0_3px_rgba(0,0,0,0.04)] dark:shadow-[1px_0_3px_rgba(0,0,0,0.2)]">
                 <button onclick="app.openTeamModal(${t.entry_id})" class="text-left group cursor-pointer block truncate w-full">
                   <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate flex items-center gap-1.5 flex-wrap">
                     <span class="truncate">${this.escapeHtml(t.entry_name)}</span>
@@ -10852,9 +11180,14 @@ selectShi62GW(gwName) {
               </td>
               <td class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">
                 <div class="inline-flex flex-col items-center">
-                  <span class="text-xs font-bold text-slate-900 dark:text-white font-display">${remainingCount} / ${totalCardsPossible}</span>
-                  <div class="w-14 sm:w-16 bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden mt-1">
-                    <div class="${meterColor} h-full" style="width: ${(remainingCount / totalCardsPossible) * 100}%"></div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-xs font-bold text-slate-900 dark:text-white font-display">${remainingCount} / ${totalCardsPossible}</span>
+                    <div class="flex items-center gap-0.5">
+                      ${dotsHtml}
+                    </div>
+                  </div>
+                  <div class="w-16 sm:w-20 bg-slate-200 dark:bg-slate-700/80 h-1.5 rounded-full overflow-hidden mt-1.5">
+                    <div class="${meterColor} h-full rounded-full transition-all duration-300" style="width: ${(remainingCount / totalCardsPossible) * 100}%"></div>
                   </div>
                 </div>
               </td>
@@ -10877,20 +11210,23 @@ selectShi62GW(gwName) {
 
         tableContainer.innerHTML = `
           <!-- Mobile Scroll Affordance Bar -->
-          <div class="sm:hidden flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 px-3 py-1.5 bg-slate-50/80 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
-            <span class="flex items-center gap-1">
+          <div class="sm:hidden flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 px-3.5 py-2 bg-slate-50/90 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800">
+            <span class="flex items-center gap-1.5 font-medium">
               <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
               ${isEn ? 'Sorted by Overall Standings' : 'เรียงตาม Total Leaderboard'}
             </span>
-            <span class="text-[10px] text-slate-400 font-medium">${isEn ? '👉 Scroll right to view chips' : '👉 เลื่อนขวาดูสถานะการ์ด'}</span>
+            <span class="text-[10px] text-slate-400 dark:text-slate-400 font-medium flex items-center gap-1">
+              <span>${isEn ? 'Scroll right for chips' : 'เลื่อนขวาดูสถานะการ์ด'}</span>
+              <svg class="w-3 h-3 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </span>
           </div>
 
           <div class="overflow-x-auto touch-scroll scrollbar-thin">
             <table class="w-full text-left border-collapse">
               <thead>
-                <tr class="bg-slate-50/70 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider">
+                <tr class="bg-slate-50/80 dark:bg-slate-800/70 border-b border-slate-200/90 dark:border-slate-800 text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider">
                   <th class="py-2.5 px-1 sm:px-2 text-center w-[36px] min-w-[36px] max-w-[36px] sm:w-[44px] sm:min-w-[44px] sticky left-0 bg-slate-50 dark:bg-slate-800 z-20">#</th>
-                  <th class="py-2.5 px-2.5 sm:px-3 sticky left-[36px] sm:left-[44px] bg-slate-50 dark:bg-slate-800 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
+                  <th class="py-2.5 px-2.5 sm:px-3 sticky left-[36px] sm:left-[44px] bg-slate-50 dark:bg-slate-800 z-20 border-r border-slate-200/80 dark:border-slate-800 shadow-[1px_0_3px_rgba(0,0,0,0.04)] dark:shadow-[1px_0_3px_rgba(0,0,0,0.2)]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                   <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">${isEn ? 'Chips Remaining' : 'การ์ดคงเหลือ'}</th>
                   <th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Wildcard 1</th>
                   ${showWc2 ? '<th class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Wildcard 2</th>' : ''}
@@ -10961,7 +11297,8 @@ selectShi62GW(gwName) {
             <div>
               <!-- Header -->
               <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
-                <div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-blue-500"></span>
                   <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
                     ${isEn ? 'Important Players (> 70%)' : 'นักเตะมหาชน > 70%'}
                   </h3>
@@ -10998,7 +11335,7 @@ selectShi62GW(gwName) {
               const posColor = posBadgeColors[p.pos] || 'bg-slate-100 text-slate-800';
 
               impHtml += `
-                <div class="bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl p-3 border border-slate-200/80 dark:border-slate-800 transition-all">
+                <div class="bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl p-3 border border-slate-200/80 dark:border-slate-800 transition-all hover:border-blue-400/50">
                   <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center gap-2.5 min-w-0">
                       <img src="${shirtUrl}" alt="${p.team}" class="w-8 h-8 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
@@ -11017,22 +11354,22 @@ selectShi62GW(gwName) {
                   </div>
 
                   <!-- Progress Bar -->
-                  <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden mt-2.5">
+                  <div class="w-full bg-slate-200 dark:bg-slate-700/80 h-2 rounded-full overflow-hidden mt-2.5">
                     <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
                   </div>
 
                   <!-- Collapsible Teams List Toggle -->
                   <div class="mt-2.5 pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between">
-                    <button id="important-btn-${p.id}" onclick="app.toggleImportantTeamList(${p.id})" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
-                      ${isEn ? `▼ View teams (${p.teams.length})` : `▼ ดูรายชื่อทีมที่เลือก (${p.teams.length} ทีม)`}
+                    <button id="important-btn-${p.id}" onclick="app.toggleImportantTeamList(${p.id})" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer flex items-center gap-1">
+                      <span>${isEn ? `▼ View teams (${p.teams.length})` : `▼ ดูรายชื่อทีมที่เลือก (${p.teams.length} ทีม)`}</span>
                     </button>
-                    <span class="text-[10px] text-slate-400">${isEn ? 'High Template' : 'มหาชนตัวจริง'}</span>
+                    <span class="text-[10px] text-slate-400 dark:text-slate-500 font-medium">${isEn ? 'High Template' : 'มหาชนตัวจริง'}</span>
                   </div>
 
                   <!-- Team tags list (hidden by default) -->
                   <div id="important-teams-${p.id}" class="hidden mt-2 pt-1 flex flex-wrap gap-1.5">
                     ${p.teams.map(t => `
-                      <button onclick="app.openTeamModal(${t.entry_id})" class="text-[10px] px-2 py-0.5 rounded-md bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-500 transition-colors cursor-pointer truncate max-w-[150px]">
+                      <button onclick="app.openTeamModal(${t.entry_id})" class="text-[10px] px-2 py-0.5 rounded-lg bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-500 transition-colors cursor-pointer truncate max-w-[150px]">
                         ${this.escapeHtml(t.team_name)}
                       </button>
                     `).join('')}
@@ -11101,7 +11438,8 @@ selectShi62GW(gwName) {
           <div>
             <!-- Header -->
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
-              <div>
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
                 <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
                   ${isEn ? 'Differential Players (< 20%)' : 'นักเตะทีเด็ด < 20%'}
                 </h3>
@@ -11116,23 +11454,31 @@ selectShi62GW(gwName) {
 
             <!-- Position Filter Pills & Search -->
             <div class="space-y-2 mb-3.5">
-              <div class="flex items-center gap-1 overflow-x-auto scrollbar-thin touch-scroll py-0.5">
+              <div class="flex items-center gap-1.5 overflow-x-auto scrollbar-thin touch-scroll py-0.5 -mx-1 px-1">
                 ${['ALL', 'GKP', 'DEF', 'MID', 'FWD'].map(pos => {
                   const posName = (pos === 'ALL') ? (isEn ? 'ALL' : 'ทั้งหมด') : pos;
                   return `
-                  <button onclick="app.setCompDiffPosFilter('${pos}')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.compDiffPosFilter === pos ? 'bg-slate-900 text-white dark:bg-amber-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300'}">
+                  <button onclick="app.setCompDiffPosFilter('${pos}')" class="px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${this.compDiffPosFilter === pos ? 'bg-amber-600 text-white shadow-xs ring-2 ring-amber-500/40' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/60'}">
                     ${posName} (${countsByPos[pos]})
                   </button>
                 `;}).join('')}
               </div>
               <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                  </svg>
+                </span>
                 <input 
                   type="text" 
                   placeholder="${isEn ? 'Search differential player...' : 'ค้นหานักเตะทีเด็ด...'}" 
                   value="${this.escapeHtml(this.compDiffSearch)}"
                   oninput="app.setCompDiffSearch(this.value)"
-                  class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  class="w-full bg-slate-50/90 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all shadow-2xs"
                 />
+                ${this.compDiffSearch ? `
+                  <button onclick="app.setCompDiffSearch('')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer p-0.5">✕</button>
+                ` : ''}
               </div>
             </div>
 
@@ -11173,9 +11519,9 @@ selectShi62GW(gwName) {
 
                 <!-- Teams that picked this differential -->
                 <div class="mt-2 pt-1.5 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center gap-1.5 flex-wrap">
-                  <span class="text-[10px] text-slate-400 dark:text-slate-500">${isEn ? 'Owned by:' : 'ทีมที่ถือครอง:'}</span>
+                  <span class="text-[10px] text-slate-400 dark:text-slate-500 font-medium">${isEn ? 'Owned by:' : 'ทีมที่ถือครอง:'}</span>
                   ${p.teams.map(t => `
-                    <button onclick="app.openTeamModal(${t.entry_id})" class="text-[10px] px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/80 hover:bg-amber-100 dark:hover:bg-amber-900/60 transition-colors cursor-pointer truncate max-w-[130px]" title="${this.escapeHtml(t.player_name)}">
+                    <button onclick="app.openTeamModal(${t.entry_id})" class="text-[10px] px-2 py-0.5 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/80 hover:bg-amber-100 dark:hover:bg-amber-900/60 transition-colors cursor-pointer truncate max-w-[130px]" title="${this.escapeHtml(t.player_name)}">
                       ${this.escapeHtml(t.team_name)}
                     </button>
                   `).join('')}
@@ -11205,12 +11551,13 @@ selectShi62GW(gwName) {
 
         container.innerHTML = `
           <!-- Section Container with Light/Dark Mode support -->
-          <div class="glass-card rounded-2xl p-3.5 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs dark:shadow-xl space-y-3 sm:space-y-4">
+          <div class="glass-card rounded-2xl p-3.5 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-2xs space-y-3 sm:space-y-4">
             
             <!-- Header Row -->
             <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
               <div>
                 <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
                   ${isEn ? 'Transfer Suggestions' : 'คำแนะนำการย้ายตัว'}
                   <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-sans">
                     GW ${suggGw}
@@ -11229,7 +11576,7 @@ selectShi62GW(gwName) {
                 <select 
                   id="comp-transfers-team-select" 
                   onchange="app.setCompTransferTeam(this.value)"
-                  class="w-full sm:w-auto bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer shadow-2xs"
+                  class="w-full sm:w-auto max-w-full bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer shadow-2xs"
                 >
                   <option value="">${isEn ? '-- Full League Overview (League % Ownership) --' : '-- ภาพรวมทั้งลีก (แสดง % ถือครองในลีก) --'}</option>
                   ${sortedTeams.map(t => {
@@ -11308,10 +11655,10 @@ selectShi62GW(gwName) {
         };
 
         const categories = [
-          { key: 'GoalKeepers', title: 'Goalkeepers', pos: 'GKP' },
-          { key: 'Defenders', title: 'Defenders', pos: 'DEF' },
-          { key: 'Midfielders', title: 'Midfielders', pos: 'MID' },
-          { key: 'Forwards', title: 'Forwards', pos: 'FWD' }
+          { key: 'GoalKeepers', title: isEn ? 'Goalkeepers' : 'ผู้รักษาประตู (GKP)', pos: 'GKP' },
+          { key: 'Defenders', title: isEn ? 'Defenders' : 'กองหลัง (DEF)', pos: 'DEF' },
+          { key: 'Midfielders', title: isEn ? 'Midfielders' : 'กองกลาง (MID)', pos: 'MID' },
+          { key: 'Forwards', title: isEn ? 'Forwards' : 'กองหน้า (FWD)', pos: 'FWD' }
         ];
 
         const hasAnyItems = categories.some(cat => (sugg[cat.key] || []).length > 0);
@@ -11379,15 +11726,15 @@ selectShi62GW(gwName) {
           });
 
           tableContainer.innerHTML = `
-            <div class="w-full">
-              <table class="w-full text-left border-collapse">
+            <div class="w-full overflow-x-auto touch-scroll scrollbar-thin">
+              <table class="w-full min-w-[320px] text-left border-collapse">
                 <thead>
                   <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
                     <th style="width: 60%;" class="py-2 px-2.5 text-left">${isEn ? 'Best players' : 'ตัวเลือกยอดเยี่ยม'}</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">
                       <span class="inline-flex items-center justify-end gap-1">
-                        ${isEn ? 'Pts' : 'แต้ม'}
+                        ${isEn ? 'xP' : 'แต้ม xP'}
                         <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="${isEn ? 'Projected Points Info' : 'ข้อมูลคะแนนคาดการณ์'}">?</button>
                       </span>
                     </th>
@@ -11455,15 +11802,15 @@ selectShi62GW(gwName) {
           });
 
           tableContainer.innerHTML = `
-            <div class="w-full">
-              <table class="w-full text-left border-collapse">
+            <div class="w-full overflow-x-auto touch-scroll scrollbar-thin">
+              <table class="w-full min-w-[320px] text-left border-collapse">
                 <thead>
                   <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
                     <th style="width: 60%;" class="py-2 px-2.5 text-left">${isEn ? 'Best Value' : 'ตัวเลือกสุดคุ้ม'}</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">
                       <span class="inline-flex items-center justify-end gap-1">
-                        ${isEn ? 'Pts' : 'แต้ม'}
+                        ${isEn ? 'xP' : 'แต้ม xP'}
                         <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="${isEn ? 'Projected Points Info' : 'ข้อมูลคะแนนคาดการณ์'}">?</button>
                       </span>
                     </th>
@@ -11588,15 +11935,15 @@ selectShi62GW(gwName) {
             <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">${isEn ? '👈 Swipe to view Best Value 👉' : '👈 เลื่อนดูตัวเลือกสุดคุ้ม 👉'}</span>
           </div>
 
-          <div class="overflow-x-auto touch-scroll scrollbar-thin -mx-2 sm:mx-0">
-            <table class="w-full text-left border-collapse">
+          <div class="overflow-x-auto touch-scroll scrollbar-thin w-full max-w-full">
+            <table class="min-w-[620px] w-full text-left border-collapse">
               <thead>
                 <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
-                  <th style="width: 28%;" class="py-2 px-2.5 sm:px-3 text-left">${isEn ? 'Best players' : 'ตัวเลือกยอดเยี่ยม'}</th>
+                  <th style="width: 28%;" class="py-2 px-2.5 sm:px-3 text-left">${isEn ? 'Best Players' : 'ตัวเลือกยอดเยี่ยม'}</th>
                   <th style="width: 10%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
                   <th style="width: 11%;" class="py-2 px-2 text-right">
                     <span class="inline-flex items-center justify-end gap-1">
-                      ${isEn ? 'Pts' : 'แต้ม'}
+                      ${isEn ? 'xP' : 'แต้ม xP'}
                       <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="${isEn ? 'Projected Points Info' : 'ข้อมูลคะแนนคาดการณ์'}">?</button>
                     </span>
                   </th>
@@ -11605,7 +11952,7 @@ selectShi62GW(gwName) {
                   <th style="width: 10%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
                   <th style="width: 11%;" class="py-2 px-2 text-right">
                     <span class="inline-flex items-center justify-end gap-1">
-                      ${isEn ? 'Pts' : 'แต้ม'}
+                      ${isEn ? 'xP' : 'แต้ม xP'}
                       <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="${isEn ? 'Projected Points Info' : 'ข้อมูลคะแนนคาดการณ์'}">?</button>
                     </span>
                   </th>
@@ -11619,7 +11966,7 @@ selectShi62GW(gwName) {
         `;
       }
 
-      renderPrizesView() {
+            renderPrizesView() {
         const isEn = (this.currentLang === 'en');
         const titleEl = document.getElementById('prizes-overview-title');
         const subEl = document.getElementById('prizes-overview-subtitle');
@@ -13431,8 +13778,14 @@ selectShi62GW(gwName) {
             const denom = topAvg - minScale;
             const pct = (denom > 0 && topAvg > 0) ? Math.max(0, Math.min(100, Math.round(((lb.avg - minScale) / denom) * 100))) : 0;
 
-            // Uniform clean rank badge (no medals)
-            const rankBadge = `<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold inline-flex items-center justify-center text-[10px] sm:text-xs border border-slate-200 dark:border-slate-700/80 flex-shrink-0 font-display">${rank}</span>`;
+            // Podium subtle rank badges
+            const rankBadge = rank === 1
+              ? `<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 font-black inline-flex items-center justify-center text-[10px] sm:text-xs border border-amber-500/40 flex-shrink-0 font-display shadow-2xs">1</span>`
+              : rank === 2
+                ? `<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-300/40 text-slate-700 dark:text-slate-300 font-black inline-flex items-center justify-center text-[10px] sm:text-xs border border-slate-400/50 flex-shrink-0 font-display shadow-2xs">2</span>`
+                : rank === 3
+                  ? `<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-700/20 text-amber-700 dark:text-amber-400 font-black inline-flex items-center justify-center text-[10px] sm:text-xs border border-amber-700/40 flex-shrink-0 font-display shadow-2xs">3</span>`
+                  : `<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold inline-flex items-center justify-center text-[10px] sm:text-xs border border-slate-200 dark:border-slate-700/80 flex-shrink-0 font-display">${rank}</span>`;
 
             const isEn = (this.currentLang === 'en');
             const currentBadge = isCurrentLeague
@@ -13440,7 +13793,7 @@ selectShi62GW(gwName) {
               : '';
 
             const selectedBorder = isSelected
-              ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-50/40 dark:bg-blue-950/40 shadow-xs'
+              ? 'ring-2 ring-blue-500 border-blue-500 bg-blue-50/50 dark:bg-blue-950/50 shadow-xs'
               : isCurrentLeague
                 ? 'border-blue-400/50 dark:border-blue-500/40 bg-white/80 dark:bg-slate-900/50 hover:border-blue-400'
                 : 'border-slate-200/80 dark:border-slate-800/80 bg-white/60 dark:bg-slate-900/40 hover:border-blue-400 dark:hover:border-blue-500';
@@ -13450,8 +13803,8 @@ selectShi62GW(gwName) {
                    class="group relative overflow-hidden rounded-xl border ${selectedBorder} p-2.5 sm:p-3 transition-all cursor-pointer flex items-center justify-between gap-3 active:scale-[0.99]"
                    title="${isSelected ? (isEn ? 'Click to clear filter' : 'คลิกเพื่อยกเลิกการกรอง') : (isEn ? 'Click to filter this league' : 'คลิกเพื่อกรองเฉพาะลีกนี้')}">
                 
-                <!-- Power Bar Background -->
-                <div class="absolute left-0 top-0 bottom-0 bg-slate-200 dark:bg-slate-700/80 pointer-events-none transition-all group-hover:bg-slate-300/80 dark:group-hover:bg-slate-600/80" style="width: ${pct}%"></div>
+                <!-- Power Bar Background with enhanced contrast -->
+                <div class="absolute left-0 top-0 bottom-0 bg-blue-50/80 dark:bg-slate-700/70 pointer-events-none transition-all group-hover:bg-blue-100/80 dark:group-hover:bg-slate-600/70 border-r-2 border-blue-400/30 dark:border-blue-400/20" style="width: ${pct}%"></div>
 
                 <!-- Left info: Uniform Rank + League Name + Current League Badge -->
                 <div class="relative flex items-center gap-2.5 sm:gap-3 min-w-0">
@@ -13459,14 +13812,14 @@ selectShi62GW(gwName) {
                   <div class="min-w-0 flex items-center gap-2 flex-wrap">
                     <span class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white font-display truncate">${this.escapeHtml(lb.short_name)}</span>
                     ${currentBadge}
-                    ${isSelected ? `<span class="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/30">${isEn ? 'Filtering' : 'กำลังกรอง'}</span>` : ''}
+                    ${isSelected ? `<span class="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/30 flex items-center gap-1">${isEn ? 'Filtering' : 'กำลังกรอง'} <span class="text-[8px]">✕</span></span>` : ''}
                   </div>
                 </div>
 
                 <!-- Right Score: Only Average Score pts -->
                 <div class="relative text-right flex-shrink-0">
                   <span class="text-sm sm:text-base font-black text-slate-900 dark:text-white font-display">${lb.avg.toFixed(1)}</span>
-                  <span class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 font-display"> pts</span>
+                  <span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-display"> pts</span>
                 </div>
               </div>
             `;
@@ -13538,10 +13891,10 @@ selectShi62GW(gwName) {
         }
 
         // 3. Compute stats for each team
-        let globalTopScore = { score: 0, team: '-', player: '-', gw: 1, league: '-' };
-        let globalTopAvg = { avg: 0, team: '-', player: '-', total: 0, league: '-' };
-        let globalMostConsistent = { spread: 999, floor: 0, team: '-', player: '-', avg: 0, league: '-' };
-        let globalBestBench = { bench: 0, team: '-', player: '-', league: '-' };
+        let globalTopScore = { score: 0, team: '-', player: '-', gw: 1, league: '-', entry_id: 0 };
+        let globalTopAvg = { avg: 0, team: '-', player: '-', total: 0, league: '-', entry_id: 0 };
+        let globalMostConsistent = { spread: 999, floor: 0, team: '-', player: '-', avg: 0, league: '-', entry_id: 0 };
+        let globalBestBench = { bench: 0, team: '-', player: '-', league: '-', entry_id: 0 };
 
         const teamList = Object.values(teamsMap).map(t => {
           const finishedScores = Object.entries(t.scores_by_gw).map(([gw, pts]) => ({ gw: Number(gw), pts }));
@@ -13561,18 +13914,18 @@ selectShi62GW(gwName) {
 
           // Update records
           if (high > globalTopScore.score) {
-            globalTopScore = { score: high, team: t.team_name, player: t.player_name, gw: highObj.gw, league: primaryLeague };
+            globalTopScore = { score: high, team: t.team_name, player: t.player_name, gw: highObj.gw, league: primaryLeague, entry_id: t.entry_id };
           }
           if (avg > globalTopAvg.avg) {
-            globalTopAvg = { avg: avg, team: t.team_name, player: t.player_name, total: totalNet, league: primaryLeague };
+            globalTopAvg = { avg: avg, team: t.team_name, player: t.player_name, total: totalNet, league: primaryLeague, entry_id: t.entry_id };
           }
           if (count >= 4 && avg >= 60) {
             if (spread < globalMostConsistent.spread || (spread === globalMostConsistent.spread && low > globalMostConsistent.floor)) {
-              globalMostConsistent = { spread: spread, floor: low, team: t.team_name, player: t.player_name, avg: avg, league: primaryLeague };
+              globalMostConsistent = { spread: spread, floor: low, team: t.team_name, player: t.player_name, avg: avg, league: primaryLeague, entry_id: t.entry_id };
             }
           }
           if (totalBench > globalBestBench.bench) {
-            globalBestBench = { bench: totalBench, team: t.team_name, player: t.player_name, league: primaryLeague };
+            globalBestBench = { bench: totalBench, team: t.team_name, player: t.player_name, league: primaryLeague, entry_id: t.entry_id };
           }
 
           // Consistency Tier Badge (Multi-Criteria: High, Low vs Avg)
@@ -13661,7 +14014,7 @@ selectShi62GW(gwName) {
           const listToUse = eligibleTeams.length > 0 ? eligibleTeams : teamList;
           const sortedBySpread = [...listToUse].sort((a, b) => a.spread - b.spread);
           const topC = sortedBySpread[0];
-          globalMostConsistent = { spread: topC.spread, floor: topC.low, team: topC.team_name, player: topC.player_name, avg: topC.avg, league: topC.leagues[0] ? topC.leagues[0].name : '-' };
+          globalMostConsistent = { spread: topC.spread, floor: topC.low, team: topC.team_name, player: topC.player_name, avg: topC.avg, league: topC.leagues[0] ? topC.leagues[0].name : '-', entry_id: topC.entry_id };
         }
 
         // Sort teamList by total_net descending, avg descending,
@@ -13701,47 +14054,127 @@ selectShi62GW(gwName) {
         // Render Record Cards (Mobile: 2x2 grid, Desktop: 4 columns)
         if (recordsContainer) {
           recordsContainer.innerHTML = `
-            <div class="glass-card rounded-xl sm:rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+            <!-- Card 1: Top Average -->
+            <div class="glass-card rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/50 hover:border-cyan-500/40 dark:hover:border-cyan-500/40 transition-all flex flex-col justify-between group shadow-xs">
               <div>
-                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">${isEn ? 'Highest Average in System' : 'คะแนนเฉลี่ยสูงสุดในระบบ'}</span>
-                <div class="text-base sm:text-xl font-black text-slate-900 dark:text-white mt-0.5 sm:mt-1 font-display leading-tight">${globalTopAvg.avg.toFixed(1)} <span class="text-[10px] sm:text-xs font-normal">PTS/GW</span></div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 flex items-center justify-center flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                    </span>
+                    <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 font-display truncate">
+                      ${isEn ? 'Top Average' : 'คะแนนเฉลี่ยสูงสุด'}
+                    </span>
+                  </div>
+                  <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800/60 font-display whitespace-nowrap">
+                    ${isEn ? 'OVERALL' : 'ทั้งระบบ'}
+                  </span>
+                </div>
+                <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display leading-tight flex items-baseline gap-1">
+                  <span>${globalTopAvg.avg.toFixed(1)}</span>
+                  <span class="text-[10px] sm:text-xs font-bold text-slate-400 dark:text-slate-500 uppercase">PTS/GW</span>
+                </div>
               </div>
-              <div class="mt-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
-                <div class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 truncate" title="${this.escapeHtml(globalTopAvg.team)}">${this.escapeHtml(globalTopAvg.team)}</div>
-                <div class="text-[9px] sm:text-[10px] text-slate-500 font-display">${isEn ? 'Total' : 'รวม'} ${globalTopAvg.total} pts</div>
+              <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+                <button onclick="app.openTeamModal(${globalTopAvg.entry_id || 0})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors cursor-pointer block truncate w-full group-hover:underline">
+                  ${this.escapeHtml(globalTopAvg.team)}
+                </button>
+                <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">
+                  ${this.escapeHtml(globalTopAvg.player)} • <span class="text-slate-600 dark:text-slate-300 font-bold">${isEn ? 'Total' : 'รวม'} ${globalTopAvg.total} pts</span>
+                </div>
               </div>
             </div>
 
-            <div class="glass-card rounded-xl sm:rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+            <!-- Card 2: Most Consistent -->
+            <div class="glass-card rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/50 hover:border-emerald-500/40 dark:hover:border-emerald-500/40 transition-all flex flex-col justify-between group shadow-xs">
               <div>
-                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">${isEn ? 'Most Consistent (Spread)' : 'ความนิ่งสูงสุด'}</span>
-                <div class="text-base sm:text-xl font-black text-slate-900 dark:text-white mt-0.5 sm:mt-1 font-display leading-tight">±${globalMostConsistent.spread} <span class="text-[10px] sm:text-xs font-normal">PTS</span></div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>
+                    </span>
+                    <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 font-display truncate">
+                      ${isEn ? 'Most Consistent' : 'ความนิ่งสูงสุด'}
+                    </span>
+                  </div>
+                  <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 font-display whitespace-nowrap">
+                    ${isEn ? 'LOW SPREAD' : 'แกว่งน้อยสุด'}
+                  </span>
+                </div>
+                <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display leading-tight flex items-baseline gap-1">
+                  <span>±${globalMostConsistent.spread}</span>
+                  <span class="text-[10px] sm:text-xs font-bold text-slate-400 dark:text-slate-500 uppercase">PTS</span>
+                </div>
               </div>
-              <div class="mt-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
-                <div class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 truncate" title="${this.escapeHtml(globalMostConsistent.team)}">${this.escapeHtml(globalMostConsistent.team)}</div>
-                <div class="text-[9px] sm:text-[10px] text-slate-500 font-display">Floor ${globalMostConsistent.floor} pts</div>
+              <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+                <button onclick="app.openTeamModal(${globalMostConsistent.entry_id || 0})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer block truncate w-full group-hover:underline">
+                  ${this.escapeHtml(globalMostConsistent.team)}
+                </button>
+                <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">
+                  ${this.escapeHtml(globalMostConsistent.player)} • <span class="text-slate-600 dark:text-slate-300 font-bold">Floor ${globalMostConsistent.floor} pts</span>
+                </div>
               </div>
             </div>
 
-            <div class="glass-card rounded-xl sm:rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+            <!-- Card 3: Highest Single GW -->
+            <div class="glass-card rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/50 hover:border-amber-500/40 dark:hover:border-amber-500/40 transition-all flex flex-col justify-between group shadow-xs">
               <div>
-                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">${isEn ? 'Highest GW Score' : 'ระเบิดฟอร์มสูงสุด'}</span>
-                <div class="text-base sm:text-xl font-black text-slate-900 dark:text-white mt-0.5 sm:mt-1 font-display leading-tight">${globalTopScore.score} <span class="text-[10px] sm:text-xs font-normal">PTS</span></div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center justify-center flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/></svg>
+                    </span>
+                    <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 font-display truncate">
+                      ${isEn ? 'Highest GW Score' : 'ระเบิดฟอร์มสูงสุด'}
+                    </span>
+                  </div>
+                  <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 font-display whitespace-nowrap">
+                    GW ${globalTopScore.gw}
+                  </span>
+                </div>
+                <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display leading-tight flex items-baseline gap-1">
+                  <span>${globalTopScore.score}</span>
+                  <span class="text-[10px] sm:text-xs font-bold text-slate-400 dark:text-slate-500 uppercase">PTS</span>
+                </div>
               </div>
-              <div class="mt-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
-                <div class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 truncate" title="${this.escapeHtml(globalTopScore.team)}">${this.escapeHtml(globalTopScore.team)}</div>
-                <div class="text-[9px] sm:text-[10px] text-slate-500 font-display">GW ${globalTopScore.gw}</div>
+              <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+                <button onclick="app.openTeamModal(${globalTopScore.entry_id || 0})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer block truncate w-full group-hover:underline">
+                  ${this.escapeHtml(globalTopScore.team)}
+                </button>
+                <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">
+                  ${this.escapeHtml(globalTopScore.player)} • <span class="text-slate-600 dark:text-slate-300 font-bold">${this.escapeHtml(globalTopScore.league)}</span>
+                </div>
               </div>
             </div>
 
-            <div class="glass-card rounded-xl sm:rounded-2xl p-2.5 sm:p-4 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+            <!-- Card 4: Bench Depth -->
+            <div class="glass-card rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/50 hover:border-purple-500/40 dark:hover:border-purple-500/40 transition-all flex flex-col justify-between group shadow-xs">
               <div>
-                <span class="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block font-display truncate">${isEn ? 'Highest Bench Points' : 'คะแนนสำรองสูงสุด'}</span>
-                <div class="text-base sm:text-xl font-black text-slate-900 dark:text-white mt-0.5 sm:mt-1 font-display leading-tight">${globalBestBench.bench} <span class="text-[10px] sm:text-xs font-normal">PTS</span></div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 flex items-center justify-center flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                    </span>
+                    <span class="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 font-display truncate">
+                      ${isEn ? 'Highest Bench Points' : 'คะแนนสำรองสูงสุด'}
+                    </span>
+                  </div>
+                  <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60 font-display whitespace-nowrap">
+                    ${isEn ? 'BENCH' : 'ตัวสำรอง'}
+                  </span>
+                </div>
+                <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display leading-tight flex items-baseline gap-1">
+                  <span>${globalBestBench.bench}</span>
+                  <span class="text-[10px] sm:text-xs font-bold text-slate-400 dark:text-slate-500 uppercase">PTS</span>
+                </div>
               </div>
-              <div class="mt-1 pt-1 border-t border-slate-100 dark:border-slate-800/80">
-                <div class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 truncate" title="${this.escapeHtml(globalBestBench.team)}">${this.escapeHtml(globalBestBench.team)}</div>
-                <div class="text-[9px] sm:text-[10px] text-slate-500 font-display">${isEn ? 'Benched total' : 'ตกน้ำสะสม'}</div>
+              <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+                <button onclick="app.openTeamModal(${globalBestBench.entry_id || 0})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors cursor-pointer block truncate w-full group-hover:underline">
+                  ${this.escapeHtml(globalBestBench.team)}
+                </button>
+                <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">
+                  ${this.escapeHtml(globalBestBench.player)} • <span class="text-slate-600 dark:text-slate-300 font-bold">${isEn ? 'Benched total' : 'ตกน้ำสะสม'}</span>
+                </div>
               </div>
             </div>
           `;
@@ -13751,8 +14184,9 @@ selectShi62GW(gwName) {
         if (pillsContainer) {
           const curFilter = this.radarLeagueFilter || 'all';
           let phtml = `
-            <button onclick="app.setRadarLeagueFilter('all')" class="px-2.5 py-1 rounded-lg font-bold font-display text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 ${curFilter === 'all' ? 'bg-slate-900 text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}">
-              ${isEn ? 'All Leagues' : 'ทุกลีก'} (${teamList.length})
+            <button onclick="app.setRadarLeagueFilter('all')" class="px-3 py-1.5 rounded-xl font-bold font-display text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 ${curFilter === 'all' ? 'bg-slate-900 text-white dark:bg-blue-600 shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              <span>${isEn ? 'All Leagues' : 'ทุกลีก'}</span>
+              <span class="text-[10px] opacity-75 font-semibold">(${teamList.length})</span>
             </button>
           `;
           leagueOrder.forEach(lid => {
@@ -13762,8 +14196,9 @@ selectShi62GW(gwName) {
             const count = (lData.teams || []).length;
             const isAct = curFilter === String(lid);
             phtml += `
-              <button onclick="app.setRadarLeagueFilter('${lid}')" class="px-2.5 py-1 rounded-lg font-bold font-display text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 ${isAct ? 'bg-slate-900 text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}">
-                ${this.escapeHtml(sName)} (${count})
+              <button onclick="app.setRadarLeagueFilter('${lid}')" class="px-3 py-1.5 rounded-xl font-bold font-display text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 ${isAct ? 'bg-slate-900 text-white dark:bg-blue-600 shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+                <span>${this.escapeHtml(sName)}</span>
+                <span class="text-[10px] opacity-75 font-semibold">(${count})</span>
               </button>
             `;
           });
@@ -13916,24 +14351,36 @@ selectShi62GW(gwName) {
 
         let html = '';
         filtered.forEach((t) => {
-          const spreadColor = t.spread <= 30 ? 'text-emerald-600 font-bold' : (t.spread <= 45 ? 'text-slate-700 dark:text-slate-300' : 'text-amber-600 font-bold');
+          const spreadColor = t.spread <= 38
+            ? 'text-emerald-600 dark:text-emerald-400 font-bold'
+            : (t.spread >= 75
+              ? 'text-amber-600 dark:text-amber-400 font-bold'
+              : 'text-slate-600 dark:text-slate-400 font-medium');
+
+          const hitsHtml = t.total_hits > 0
+            ? `<span class="text-rose-600 dark:text-rose-400 font-bold">-${t.total_hits}</span>`
+            : `<span class="text-slate-400 dark:text-slate-600 font-medium">-</span>`;
+
+          const benchHtml = t.total_bench > 0
+            ? `<span class="text-slate-700 dark:text-slate-300 font-semibold">${t.total_bench}</span>`
+            : `<span class="text-slate-400 dark:text-slate-600 font-medium">-</span>`;
 
           html += `
             <tr class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/80">
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500 whitespace-nowrap w-[36px] min-w-[36px] max-w-[36px] sm:w-[40px] sm:min-w-[40px] max-sm:sticky max-sm:left-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 max-sm:z-10">${t.global_rank}</td>
-              <td class="py-2.5 px-1.5 sm:px-3 min-w-[110px] sm:min-w-0 max-w-[130px] sm:max-w-none max-sm:sticky max-sm:left-[36px] bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 max-sm:z-10 max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:max-sm:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
-                <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer block truncate w-full">
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap w-[36px] min-w-[36px] max-w-[36px] sm:w-[40px] sm:min-w-[40px] max-sm:sticky max-sm:left-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 max-sm:z-10">${t.global_rank}</td>
+              <td class="py-2.5 px-1.5 sm:px-3 min-w-[110px] sm:min-w-0 max-w-[130px] sm:max-w-none max-sm:sticky max-sm:left-[36px] bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 max-sm:z-10 max-sm:shadow-[2px_0_6px_-2px_rgba(0,0,0,0.08)] dark:max-sm:shadow-[2px_0_6px_-2px_rgba(0,0,0,0.5)]">
+                <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer block truncate w-full group-hover:underline">
                   ${this.escapeHtml(t.team_name)}
                 </button>
-                <div class="text-[10px] sm:text-[11px] text-slate-500 truncate mt-0.5">${this.escapeHtml(t.player_name || '')}</div>
+                <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">${this.escapeHtml(t.player_name || '')}</div>
               </td>
               <td class="py-2.5 px-1.5 sm:px-2 text-center font-display font-black text-slate-900 dark:text-white whitespace-nowrap">${t.total_net}</td>
               <td class="py-2.5 px-1.5 sm:px-2 text-center font-display font-bold text-blue-600 dark:text-blue-400 whitespace-nowrap">${t.avg.toFixed(1)}</td>
-              <td class="py-2.5 px-1.5 sm:px-2 text-center font-display text-emerald-600 font-bold whitespace-nowrap" title="Gameweek ${t.high_gw}">${t.high}</td>
-              <td class="py-2.5 px-1.5 sm:px-2 text-center font-display text-slate-500 whitespace-nowrap" title="Gameweek ${t.low_gw}">${t.low}</td>
+              <td class="py-2.5 px-1.5 sm:px-2 text-center font-display text-emerald-600 dark:text-emerald-400 font-bold whitespace-nowrap" title="Gameweek ${t.high_gw}">${t.high}</td>
+              <td class="py-2.5 px-1.5 sm:px-2 text-center font-display text-slate-500 dark:text-slate-400 whitespace-nowrap" title="Gameweek ${t.low_gw}">${t.low}</td>
               <td class="py-2.5 px-1.5 sm:px-2 text-center font-display whitespace-nowrap ${spreadColor}" title="${isEn ? 'Points spread: Highest score minus Lowest score' : 'ส่วนต่างแต้มสูงสุด - ต่ำสุด'}">±${t.spread}</td>
-              <td class="py-2.5 px-1.5 sm:px-2 text-center font-display whitespace-nowrap ${t.total_hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'}">${t.total_hits > 0 ? `-${t.total_hits}` : '-'}</td>
-              <td class="py-2.5 px-1.5 sm:px-2 text-center font-display text-slate-500 whitespace-nowrap">${t.total_bench > 0 ? t.total_bench : '-'}</td>
+              <td class="py-2.5 px-1.5 sm:px-2 text-center font-display whitespace-nowrap">${hitsHtml}</td>
+              <td class="py-2.5 px-1.5 sm:px-2 text-center font-display whitespace-nowrap">${benchHtml}</td>
               <td class="py-2.5 px-2 sm:px-3 text-center font-display whitespace-nowrap">${t.tier_badge}</td>
             </tr>
           `;
@@ -13954,8 +14401,9 @@ selectShi62GW(gwName) {
           const leaguesConfig = this.configs || {};
           const leagueOrder = (this.multiData && this.multiData.league_order) || Object.keys(leaguesObj);
           let phtml = `
-            <button onclick="app.setRadarLeagueFilter('all')" class="px-2.5 py-1 rounded-lg font-bold font-display text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 ${this.radarLeagueFilter === 'all' ? 'bg-slate-900 text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}">
-              ${(this.currentLang === 'en') ? `All Leagues (${this._radarTeamList.length})` : `ทุกลีก (${this._radarTeamList.length})`}
+            <button onclick="app.setRadarLeagueFilter('all')" class="px-3 py-1.5 rounded-xl font-bold font-display text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 ${this.radarLeagueFilter === 'all' ? 'bg-slate-900 text-white dark:bg-blue-600 shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+              <span>${(this.currentLang === 'en') ? 'All Leagues' : 'ทุกลีก'}</span>
+              <span class="text-[10px] opacity-75 font-semibold">(${this._radarTeamList.length})</span>
             </button>
           `;
           leagueOrder.forEach(id => {
@@ -13965,8 +14413,9 @@ selectShi62GW(gwName) {
             const count = (lData.teams || []).length;
             const isAct = this.radarLeagueFilter === String(id);
             phtml += `
-              <button onclick="app.setRadarLeagueFilter('${id}')" class="px-2.5 py-1 rounded-lg font-bold font-display text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 ${isAct ? 'bg-slate-900 text-white dark:bg-blue-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}">
-                ${this.escapeHtml(sName)} (${count})
+              <button onclick="app.setRadarLeagueFilter('${id}')" class="px-3 py-1.5 rounded-xl font-bold font-display text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 ${isAct ? 'bg-slate-900 text-white dark:bg-blue-600 shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+                <span>${this.escapeHtml(sName)}</span>
+                <span class="text-[10px] opacity-75 font-semibold">(${count})</span>
               </button>
             `;
           });
