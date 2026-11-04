@@ -44,6 +44,66 @@ PLAYER_MAPPING = {
     "micky": {"entry_id": 306983, "display_name": "Micky", "team_name": "GEMINI UNITED", "manager": "Micky Asawamanasak", "is_guest": True}
 }
 
+# Local Optimized LiveScore Premier League Team Data & Media Assets (Self-hosted in images/teams/)
+LIVESCORE_LOCAL_ASSET_DIR = "images/teams"
+
+LIVESCORE_TEAMS = {
+    # 20 Official Premier League Clubs from LiveScore Standings (Local Cached PNGs)
+    "ARS": {"name": "Arsenal", "code": "ars", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/ars.png"},
+    "AVL": {"name": "Aston Villa", "code": "avl", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/avl.png"},
+    "BOU": {"name": "AFC Bournemouth", "code": "bou", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/bou.png"},
+    "BRE": {"name": "Brentford", "code": "bre", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/bre.png"},
+    "BHA": {"name": "Brighton", "code": "bha", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/bha.png"},
+    "BRI": {"name": "Brighton", "code": "bha", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/bha.png"},
+    "CHE": {"name": "Chelsea", "code": "che", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/che.png"},
+    "CRY": {"name": "Crystal Palace", "code": "cry", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/cry.png"},
+    "CPL": {"name": "Crystal Palace", "code": "cry", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/cry.png"},
+    "EVE": {"name": "Everton", "code": "eve", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/eve.png"},
+    "FUL": {"name": "Fulham", "code": "ful", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/ful.png"},
+    "FLU": {"name": "Fulham", "code": "ful", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/ful.png"},
+    "IPS": {"name": "Ipswich Town", "code": "ips", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/ips.png"},
+    "LEE": {"name": "Leeds United", "code": "lee", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/lee.png"},
+    "LIV": {"name": "Liverpool", "code": "liv", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/liv.png"},
+    "MCI": {"name": "Manchester City", "code": "mci", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/mci.png"},
+    "MUN": {"name": "Manchester United", "code": "mun", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/mun.png"},
+    "NEW": {"name": "Newcastle United", "code": "new", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/new.png"},
+    "NFO": {"name": "Nottingham Forest", "code": "nfo", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/nfo.png"},
+    "SPU": {"name": "Tottenham Hotspur", "code": "tot", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/tot.png"},
+    "TOT": {"name": "Tottenham Hotspur", "code": "tot", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/tot.png"},
+    "SUN": {"name": "Sunderland", "code": "sun", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/sun.png"},
+    "HUL": {"name": "Hull City", "code": "hul", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/hul.png"},
+    "COV": {"name": "Coventry City", "code": "cov", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/cov.png"},
+    # Additional English Clubs (Championship & Cup)
+    "WOL": {"name": "Wolves", "code": "wol", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/wol.png"},
+    "WHU": {"name": "West Ham United", "code": "whu", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/whu.png"},
+    "WHA": {"name": "West Ham United", "code": "whu", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/whu.png"},
+    "LEI": {"name": "Leicester City", "code": "lei", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/lei.png"},
+    "SOU": {"name": "Southampton", "code": "sou", "logo": f"{LIVESCORE_LOCAL_ASSET_DIR}/sou.png"},
+}
+
+def resolve_livescore_team(label, match_title="", side_index=1):
+    """
+    Resolves a raw input team abbreviation or code to full team name, code, and local optimized logo.
+    Disambiguates single-letter codes (e.g. I., S., B.) using the match fixture title.
+    """
+    clean = label.upper().rstrip('.').rstrip('/')
+    
+    # Disambiguate single-letter or shorthand abbreviations using match_title
+    if clean in ("I", "S", "B") and match_title:
+        parts = re.split(r'\s+vs\s+', match_title, flags=re.IGNORECASE)
+        if len(parts) == 2:
+            target_part = parts[0] if side_index == 1 else parts[1]
+            m_code = re.findall(r'[A-Za-z]+', target_part)
+            if m_code:
+                cand = m_code[0].upper()
+                if cand in LIVESCORE_TEAMS:
+                    return LIVESCORE_TEAMS[cand]
+
+    if clean in LIVESCORE_TEAMS:
+        return LIVESCORE_TEAMS[clean]
+        
+    return {"name": label, "code": clean.lower(), "logo": ""}
+
 def get_player_info(raw_name):
     clean = raw_name.lower().strip()
     if clean in PLAYER_MAPPING:
@@ -238,10 +298,17 @@ def parse_bramann_prediction_file(file_path):
 
             payouts, pool, status = calculate_bramann_payouts(s1_bets, s2_bets, winning_side)
 
+            t1 = resolve_livescore_team(s1_label, fixture_title, 1)
+            t2 = resolve_livescore_team(s2_label, fixture_title, 2)
+
             current_matches.append({
                 "title": fixture_title,
                 "side1_label": s1_label,
                 "side2_label": s2_label,
+                "side1_full_name": t1["name"],
+                "side1_logo": t1["logo"],
+                "side2_full_name": t2["name"],
+                "side2_logo": t2["logo"],
                 "side1_bets": s1_bets,
                 "side2_bets": s2_bets,
                 "side1_legs": sum(b["legs"] for b in s1_bets),

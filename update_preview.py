@@ -2525,6 +2525,58 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     const BRAMANN_CHALLENGE_DATA = __BRAMANN_CHALLENGE_DATA_JSON__;
     const INITIAL_DEFAULT_LEAGUE = __DEFAULT_LID__;
 
+    // Self-hosted Optimized LiveScore Premier League Team Data & Media Assets (Self-hosted in images/teams/)
+    const LIVESCORE_LOCAL_ASSET_DIR = "images/teams";
+    const LIVESCORE_TEAMS = {
+      "ARS": { name: "Arsenal", code: "ars", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/ars.png` },
+      "AVL": { name: "Aston Villa", code: "avl", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/avl.png` },
+      "BOU": { name: "AFC Bournemouth", code: "bou", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/bou.png` },
+      "BRE": { name: "Brentford", code: "bre", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/bre.png` },
+      "BHA": { name: "Brighton", code: "bha", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/bha.png` },
+      "BRI": { name: "Brighton", code: "bha", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/bha.png` },
+      "CHE": { name: "Chelsea", code: "che", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/che.png` },
+      "CRY": { name: "Crystal Palace", code: "cry", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/cry.png` },
+      "CPL": { name: "Crystal Palace", code: "cry", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/cry.png` },
+      "EVE": { name: "Everton", code: "eve", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/eve.png` },
+      "FUL": { name: "Fulham", code: "ful", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/ful.png` },
+      "FLU": { name: "Fulham", code: "ful", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/ful.png` },
+      "IPS": { name: "Ipswich Town", code: "ips", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/ips.png` },
+      "LEE": { name: "Leeds United", code: "lee", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/lee.png` },
+      "LIV": { name: "Liverpool", code: "liv", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/liv.png` },
+      "MCI": { name: "Manchester City", code: "mci", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/mci.png` },
+      "MUN": { name: "Manchester United", code: "mun", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/mun.png` },
+      "NEW": { name: "Newcastle United", code: "new", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/new.png` },
+      "NFO": { name: "Nottingham Forest", code: "nfo", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/nfo.png` },
+      "SPU": { name: "Tottenham Hotspur", code: "tot", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/tot.png` },
+      "TOT": { name: "Tottenham Hotspur", code: "tot", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/tot.png` },
+      "SUN": { name: "Sunderland", code: "sun", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/sun.png` },
+      "HUL": { name: "Hull City", code: "hul", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/hul.png` },
+      "COV": { name: "Coventry City", code: "cov", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/cov.png` },
+      "WOL": { name: "Wolves", code: "wol", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/wol.png` },
+      "WHU": { name: "West Ham United", code: "whu", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/whu.png` },
+      "WHA": { name: "West Ham United", code: "whu", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/whu.png` },
+      "LEI": { name: "Leicester City", code: "lei", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/lei.png` },
+      "SOU": { name: "Southampton", code: "sou", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/sou.png` }
+    };
+
+    function resolveLiveScoreTeam(label, matchTitle = '', sideIndex = 1) {
+      if (!label) return { name: '', code: '', logo: '' };
+      const clean = String(label).toUpperCase().replace(/[.\/]+$/, '').trim();
+      if ((clean === 'I' || clean === 'S' || clean === 'B') && matchTitle) {
+        const parts = matchTitle.split(/\s+vs\s+/i);
+        if (parts.length === 2) {
+          const targetPart = sideIndex === 1 ? parts[0] : parts[1];
+          const words = targetPart.match(/[A-Za-z]+/g);
+          if (words && words.length > 0) {
+            const cand = words[0].toUpperCase();
+            if (LIVESCORE_TEAMS[cand]) return LIVESCORE_TEAMS[cand];
+          }
+        }
+      }
+      if (LIVESCORE_TEAMS[clean]) return LIVESCORE_TEAMS[clean];
+      return { name: label, code: clean.toLowerCase(), logo: '' };
+    }
+
     /**
      * Dynamic Live Commentary Engine (Bor.Bou Style - 100% Football Fanatic)
      * ระบบวิเคราะห์สด 3 ตอนสไตล์ บอ.บู๋ แท้ๆ: ประโยคเปิดหัวตามสถานการณ์ + เจาะลึกดราม่าแท็กติก + หมัดฮุกกวนๆ ปิดท้าย
@@ -4188,6 +4240,34 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       hasBramannChalFeature(lid = this.activeLeagueId) {
         const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null);
         return Boolean((c && c.features && c.features.has_bramann_challenge) || String(lid) === '5349');
+      }
+
+      getTeamLogoUrl(logoOrCode) {
+        if (!logoOrCode) return '';
+        let clean = String(logoOrCode).trim();
+        if (clean.startsWith('http://') || clean.startsWith('https://')) return clean;
+        if (!clean.includes('/')) {
+          clean = `images/teams/${clean.toLowerCase()}.png`;
+        } else if (clean.startsWith('./')) {
+          clean = clean.substring(2);
+        } else if (clean.startsWith('../')) {
+          clean = clean.substring(3);
+        } else if (clean.startsWith('/')) {
+          clean = clean.substring(1);
+        }
+
+        if (typeof window !== 'undefined' && window.location && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
+          const isGitHubPages = window.location.pathname.includes('/fpl-mini');
+          const basePath = isGitHubPages ? '/fpl-mini/' : '/';
+          return `${basePath}${clean}`;
+        }
+
+        const configuredIds = Object.keys(this.configs || {});
+        const inSubdir = Boolean(typeof window !== 'undefined' && window.location && window.location.pathname && (
+          configuredIds.some(lid => window.location.pathname.includes('/' + lid + '/') || window.location.pathname.endsWith('/' + lid))
+        ));
+        const prefix = inSubdir ? '../' : './';
+        return `${prefix}${clean}`;
       }
 
       normalizeTab(tabName) {
@@ -6899,6 +6979,21 @@ selectShi62GW(gwName) {
                   const s1Won = m.winning_side === 1;
                   const s2Won = m.winning_side === 2;
 
+                  const s1Resolved = (typeof resolveLiveScoreTeam === 'function') 
+                    ? resolveLiveScoreTeam(m.side1_label, m.title, 1) 
+                    : { name: m.side1_label, logo: '' };
+                  const s2Resolved = (typeof resolveLiveScoreTeam === 'function') 
+                    ? resolveLiveScoreTeam(m.side2_label, m.title, 2) 
+                    : { name: m.side2_label, logo: '' };
+
+                  const s1Name = m.side1_full_name || s1Resolved.name || m.side1_label;
+                  const s1Logo = m.side1_logo || s1Resolved.logo || '';
+                  const s2Name = m.side2_full_name || s2Resolved.name || m.side2_label;
+                  const s2Logo = m.side2_logo || s2Resolved.logo || '';
+
+                  const s1LogoSrc = this.getTeamLogoUrl(s1Logo);
+                  const s2LogoSrc = this.getTeamLogoUrl(s2Logo);
+
                   return `
                     <div class="rounded-xl border ${isPush ? 'border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/40 dark:bg-slate-900/20' : 'border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-2xs'} p-3 flex flex-col justify-between space-y-2.5">
                       <div class="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800/80 pb-2">
@@ -6917,9 +7012,12 @@ selectShi62GW(gwName) {
                       <div class="grid grid-cols-2 gap-2 text-xs">
                         <!-- Side 1 -->
                         <div class="rounded-lg p-2 border ${s1Won ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-slate-50/60 dark:bg-slate-800/30 border-slate-200/60 dark:border-slate-800'}">
-                          <div class="flex items-center justify-between mb-1.5">
-                            <span class="font-bold text-slate-900 dark:text-white">${m.side1_label}</span>
-                            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${s1Won ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${m.side1_legs} ${isEn ? (m.side1_legs > 1 ? 'legs' : 'leg') : 'ขา'}</span>
+                          <div class="flex items-center justify-between mb-1.5 gap-1.5">
+                            <div class="flex items-center gap-1.5 min-w-0 pr-1">
+                              ${s1LogoSrc ? `<img src="${s1LogoSrc}" alt="${s1Name}" class="w-4 h-4 sm:w-4.5 sm:h-4.5 object-contain shrink-0" loading="lazy" onerror="this.style.display='none'">` : ''}
+                              <span class="font-bold text-xs text-slate-900 dark:text-white truncate" title="${s1Name}">${s1Name}</span>
+                            </div>
+                            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded shrink-0 ${s1Won ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${m.side1_legs} ${isEn ? (m.side1_legs > 1 ? 'legs' : 'leg') : 'ขา'}</span>
                           </div>
                           <div class="flex flex-wrap gap-1">
                             ${m.side1_bets.length > 0 
@@ -6931,9 +7029,12 @@ selectShi62GW(gwName) {
 
                         <!-- Side 2 -->
                         <div class="rounded-lg p-2 border ${s2Won ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-slate-50/60 dark:bg-slate-800/30 border-slate-200/60 dark:border-slate-800'}">
-                          <div class="flex items-center justify-between mb-1.5">
-                            <span class="font-bold text-slate-900 dark:text-white">${m.side2_label}</span>
-                            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded ${s2Won ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${m.side2_legs} ${isEn ? (m.side2_legs > 1 ? 'legs' : 'leg') : 'ขา'}</span>
+                          <div class="flex items-center justify-between mb-1.5 gap-1.5">
+                            <div class="flex items-center gap-1.5 min-w-0 pr-1">
+                              ${s2LogoSrc ? `<img src="${s2LogoSrc}" alt="${s2Name}" class="w-4 h-4 sm:w-4.5 sm:h-4.5 object-contain shrink-0" loading="lazy" onerror="this.style.display='none'">` : ''}
+                              <span class="font-bold text-xs text-slate-900 dark:text-white truncate" title="${s2Name}">${s2Name}</span>
+                            </div>
+                            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded shrink-0 ${s2Won ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${m.side2_legs} ${isEn ? (m.side2_legs > 1 ? 'legs' : 'leg') : 'ขา'}</span>
                           </div>
                           <div class="flex flex-wrap gap-1">
                             ${m.side2_bets.length > 0 
