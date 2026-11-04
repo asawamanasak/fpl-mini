@@ -251,33 +251,20 @@ export default {
 
         const city = (request.cf && request.cf.city) ? request.cf.city : 'Bangkok';
 
-        if (env && env.ANALYTICS_KV && ctx && ctx.waitUntil) {
+        if (env && (env.DB || env.ANALYTICS_KV) && ctx && ctx.waitUntil) {
           ctx.waitUntil((async () => {
             try {
               const today = new Date().toISOString().split('T')[0];
               const pfx = `telem:${today}`;
 
-              // 1. Total Daily Visits
-              const totalKey = `${pfx}:total_visits`;
-              const curTotal = parseInt(await env.ANALYTICS_KV.get(totalKey) || '0', 10);
-              await env.ANALYTICS_KV.put(totalKey, String(curTotal + 1), { expirationTtl: 86400 * 30 });
+              const increments = [
+                { metric: `${pfx}:total_visits`, amount: 1 },
+                { metric: `${pfx}:src:${browser}`, amount: 1 },
+                { metric: `${pfx}:dev:${device}`, amount: 1 },
+                { metric: `${pfx}:city:${city}`, amount: 1 },
+              ];
 
-              // 2. Source counter (line, fb, safari, chrome, other)
-              const srcKey = `${pfx}:src:${browser}`;
-              const curSrc = parseInt(await env.ANALYTICS_KV.get(srcKey) || '0', 10);
-              await env.ANALYTICS_KV.put(srcKey, String(curSrc + 1), { expirationTtl: 86400 * 30 });
-
-              // 3. Device counter (mobile, desktop, tablet)
-              const devKey = `${pfx}:dev:${device}`;
-              const curDev = parseInt(await env.ANALYTICS_KV.get(devKey) || '0', 10);
-              await env.ANALYTICS_KV.put(devKey, String(curDev + 1), { expirationTtl: 86400 * 30 });
-
-              // 4. City counter
-              const cityKey = `${pfx}:city:${city}`;
-              const curCity = parseInt(await env.ANALYTICS_KV.get(cityKey) || '0', 10);
-              await env.ANALYTICS_KV.put(cityKey, String(curCity + 1), { expirationTtl: 86400 * 30 });
-
-              // 5. League Views & Dwell Time Counter
+              // League Views & Dwell Time Counter
               let targetLeague = eventData.league_id;
               if (!targetLeague && eventData.path) {
                 const lm = eventData.path.match(/\/(\d{4,8})\/?/);
@@ -291,34 +278,39 @@ export default {
                 const hour = (new Date().getUTCHours() + 7) % 24;
 
                 if (eventData.type === 'page_view' || eventData.type === 'league_view') {
-                  const lViewKey = `${pfx}:l:${targetLeague}:views`;
-                  const curLViews = parseInt(await env.ANALYTICS_KV.get(lViewKey) || '0', 10);
-                  await env.ANALYTICS_KV.put(lViewKey, String(curLViews + 1), { expirationTtl: 86400 * 30 });
-
-                  const lHourKey = `${pfx}:l:${targetLeague}:h:${hour}`;
-                  const curLHour = parseInt(await env.ANALYTICS_KV.get(lHourKey) || '0', 10);
-                  await env.ANALYTICS_KV.put(lHourKey, String(curLHour + 1), { expirationTtl: 86400 * 30 });
+                  increments.push({ metric: `${pfx}:l:${targetLeague}:views`, amount: 1 });
+                  increments.push({ metric: `${pfx}:l:${targetLeague}:h:${hour}`, amount: 1 });
                 }
 
                 if (eventData.type === 'dwell_time') {
                   const dur = parseInt(eventData.duration, 10);
                   if (dur >= 2 && dur <= 3600) {
-                    const lDwellKey = `${pfx}:l:${targetLeague}:dwell_sec`;
-                    const curDwell = parseInt(await env.ANALYTICS_KV.get(lDwellKey) || '0', 10);
-                    await env.ANALYTICS_KV.put(lDwellKey, String(curDwell + dur), { expirationTtl: 86400 * 30 });
-
-                    const lSessKey = `${pfx}:l:${targetLeague}:dwell_sess`;
-                    const curSess = parseInt(await env.ANALYTICS_KV.get(lSessKey) || '0', 10);
-                    await env.ANALYTICS_KV.put(lSessKey, String(curSess + 1), { expirationTtl: 86400 * 30 });
+                    increments.push({ metric: `${pfx}:l:${targetLeague}:dwell_sec`, amount: dur });
+                    increments.push({ metric: `${pfx}:l:${targetLeague}:dwell_sess`, amount: 1 });
                   }
                 }
               }
 
-              // 6. Team view counter
+              // Team view counter
               if (eventData.type === 'team_view' && eventData.target) {
-                const teamKey = `${pfx}:team:${eventData.target}`;
-                const curTeam = parseInt(await env.ANALYTICS_KV.get(teamKey) || '0', 10);
-                await env.ANALYTICS_KV.put(teamKey, String(curTeam + 1), { expirationTtl: 86400 * 30 });
+                increments.push({ metric: `${pfx}:team:${eventData.target}`, amount: 1 });
+              }
+
+              // Primary Storage: Cloudflare D1 (100k daily write limit, atomic updates, 0 KV ops)
+              if (env.DB) {
+                const stmt = env.DB.prepare(`
+                  INSERT INTO telemetry_counters (metric, date, val, updated_at)
+                  VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+                  ON CONFLICT(metric) DO UPDATE SET val = val + excluded.val, updated_at = CURRENT_TIMESTAMP
+                `);
+                const batch = increments.map(item => stmt.bind(item.metric, today, item.amount));
+                await env.DB.batch(batch);
+              } else if (env.ANALYTICS_KV) {
+                // Secondary Fallback: Workers KV
+                for (const item of increments) {
+                  const cur = parseInt(await env.ANALYTICS_KV.get(item.metric) || '0', 10);
+                  await env.ANALYTICS_KV.put(item.metric, String(cur + item.amount), { expirationTtl: 86400 * 30 });
+                }
               }
             } catch (err) {
               console.warn('Telemetry enrichment warning:', err);
@@ -417,9 +409,9 @@ export default {
           if (resp.ok) {
             const data = await resp.json();
 
-            // Enrich with edge KV telemetry if available
+            // Enrich with edge telemetry (Cloudflare D1 primary, KV fallback)
             try {
-              if (env && env.ANALYTICS_KV) {
+              if (env && (env.DB || env.ANALYTICS_KV)) {
                 const now = new Date();
                 const dates = [];
                 for (let i = 0; i < 7; i++) {
@@ -427,22 +419,50 @@ export default {
                   dates.push(d.toISOString().split('T')[0]);
                 }
 
-                // Query keys across rolling dates in parallel
-                const fetchPromises = [];
-                dates.forEach(d => {
-                  const pfx = `telem:${d}`;
-                  fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:total_visits`));
-                  fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:src:line`));
-                  fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:src:safari`));
-                  fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:src:chrome`));
-                  fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:src:web`));
-                  fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:src:fb`));
-                  fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:dev:mobile`));
-                  fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:dev:desktop`));
-                  fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:dev:tablet`));
-                });
+                const metricMap = new Map();
 
-                const results = await Promise.all(fetchPromises);
+                if (env.DB) {
+                  // Single fast SQL query fetching rolling 7 days metrics
+                  const placeholders = dates.map(() => '?').join(',');
+                  const query = `SELECT metric, val FROM telemetry_counters WHERE date IN (${placeholders})`;
+                  const result = await env.DB.prepare(query).bind(...dates).all();
+                  if (result && Array.isArray(result.results)) {
+                    for (const row of result.results) {
+                      metricMap.set(row.metric, Number(row.val) || 0);
+                    }
+                  }
+                } else if (env.ANALYTICS_KV) {
+                  // Fallback to KV if DB binding is not available
+                  const fetchPromises = [];
+                  dates.forEach(d => {
+                    const pfx = `telem:${d}`;
+                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:total_visits`));
+                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:src:line`));
+                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:src:safari`));
+                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:src:chrome`));
+                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:src:web`));
+                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:src:fb`));
+                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:dev:mobile`));
+                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:dev:desktop`));
+                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:dev:tablet`));
+                  });
+                  const results = await Promise.all(fetchPromises);
+                  for (let i = 0; i < dates.length; i++) {
+                    const d = dates[i];
+                    const pfx = `telem:${d}`;
+                    const offset = i * 9;
+                    metricMap.set(`${pfx}:total_visits`, parseInt(results[offset] || '0', 10));
+                    metricMap.set(`${pfx}:src:line`, parseInt(results[offset + 1] || '0', 10));
+                    metricMap.set(`${pfx}:src:safari`, parseInt(results[offset + 2] || '0', 10));
+                    metricMap.set(`${pfx}:src:chrome`, parseInt(results[offset + 3] || '0', 10));
+                    metricMap.set(`${pfx}:src:web`, parseInt(results[offset + 4] || '0', 10));
+                    metricMap.set(`${pfx}:src:fb`, parseInt(results[offset + 5] || '0', 10));
+                    metricMap.set(`${pfx}:dev:mobile`, parseInt(results[offset + 6] || '0', 10));
+                    metricMap.set(`${pfx}:dev:desktop`, parseInt(results[offset + 7] || '0', 10));
+                    metricMap.set(`${pfx}:dev:tablet`, parseInt(results[offset + 8] || '0', 10));
+                  }
+                }
+
                 let totalVisitsKV = 0;
                 let lineCount = 0;
                 let safariCount = 0;
@@ -454,16 +474,17 @@ export default {
                 let tabletCount = 0;
 
                 for (let i = 0; i < dates.length; i++) {
-                  const offset = i * 9;
-                  totalVisitsKV += parseInt(results[offset] || '0', 10);
-                  lineCount += parseInt(results[offset + 1] || '0', 10);
-                  safariCount += parseInt(results[offset + 2] || '0', 10);
-                  chromeCount += parseInt(results[offset + 3] || '0', 10);
-                  webCount += parseInt(results[offset + 4] || '0', 10);
-                  fbCount += parseInt(results[offset + 5] || '0', 10);
-                  mobileCount += parseInt(results[offset + 6] || '0', 10);
-                  desktopCount += parseInt(results[offset + 7] || '0', 10);
-                  tabletCount += parseInt(results[offset + 8] || '0', 10);
+                  const d = dates[i];
+                  const pfx = `telem:${d}`;
+                  totalVisitsKV += metricMap.get(`${pfx}:total_visits`) || 0;
+                  lineCount += metricMap.get(`${pfx}:src:line`) || 0;
+                  safariCount += metricMap.get(`${pfx}:src:safari`) || 0;
+                  chromeCount += metricMap.get(`${pfx}:src:chrome`) || 0;
+                  webCount += metricMap.get(`${pfx}:src:web`) || 0;
+                  fbCount += metricMap.get(`${pfx}:src:fb`) || 0;
+                  mobileCount += metricMap.get(`${pfx}:dev:mobile`) || 0;
+                  desktopCount += metricMap.get(`${pfx}:dev:desktop`) || 0;
+                  tabletCount += metricMap.get(`${pfx}:dev:tablet`) || 0;
                 }
 
                 if (webCount > 0) {
@@ -517,29 +538,38 @@ export default {
                 };
 
                 const leagueIds = Object.keys(LEAGUE_BASELINES);
-                const leagueFetchPromises = [];
-                dates.forEach(d => {
-                  const pfx = `telem:${d}`;
-                  leagueIds.forEach(lid => {
-                    leagueFetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:l:${lid}:views`));
-                    leagueFetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:l:${lid}:dwell_sec`));
-                    leagueFetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:l:${lid}:dwell_sess`));
-                  });
-                });
 
-                const lResults = await Promise.all(leagueFetchPromises);
+                if (!env.DB && env.ANALYTICS_KV) {
+                  const leagueFetchPromises = [];
+                  dates.forEach(d => {
+                    const pfx = `telem:${d}`;
+                    leagueIds.forEach(lid => {
+                      leagueFetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:l:${lid}:views`));
+                      leagueFetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:l:${lid}:dwell_sec`));
+                      leagueFetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:l:${lid}:dwell_sess`));
+                    });
+                  });
+                  const lResults = await Promise.all(leagueFetchPromises);
+                  let lIdx = 0;
+                  dates.forEach(d => {
+                    const pfx = `telem:${d}`;
+                    leagueIds.forEach(lid => {
+                      metricMap.set(`${pfx}:l:${lid}:views`, parseInt(lResults[lIdx] || '0', 10));
+                      metricMap.set(`${pfx}:l:${lid}:dwell_sec`, parseInt(lResults[lIdx + 1] || '0', 10));
+                      metricMap.set(`${pfx}:l:${lid}:dwell_sess`, parseInt(lResults[lIdx + 2] || '0', 10));
+                      lIdx += 3;
+                    });
+                  });
+                }
+
                 const leagueStats = {};
                 leagueIds.forEach(lid => {
                   leagueStats[lid] = { kvViews: 0, kvDwellSec: 0, kvDwellSess: 0 };
-                });
-
-                let lIdx = 0;
-                dates.forEach(() => {
-                  leagueIds.forEach(lid => {
-                    leagueStats[lid].kvViews += parseInt(lResults[lIdx] || '0', 10);
-                    leagueStats[lid].kvDwellSec += parseInt(lResults[lIdx + 1] || '0', 10);
-                    leagueStats[lid].kvDwellSess += parseInt(lResults[lIdx + 2] || '0', 10);
-                    lIdx += 3;
+                  dates.forEach(d => {
+                    const pfx = `telem:${d}`;
+                    leagueStats[lid].kvViews += metricMap.get(`${pfx}:l:${lid}:views`) || 0;
+                    leagueStats[lid].kvDwellSec += metricMap.get(`${pfx}:l:${lid}:dwell_sec`) || 0;
+                    leagueStats[lid].kvDwellSess += metricMap.get(`${pfx}:l:${lid}:dwell_sess`) || 0;
                   });
                 });
 
