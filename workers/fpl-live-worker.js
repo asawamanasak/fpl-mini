@@ -399,9 +399,42 @@ export default {
         );
       }
 
+      // Telemetry Retention Management Endpoint (Prune rows older than 30 days)
+      if (path === '/api/admin/prune-telemetry') {
+        let pruned = 0;
+        if (env && env.DB) {
+          try {
+            const res = await env.DB.prepare(`
+              DELETE FROM telemetry_counters WHERE date < DATE('now', '-30 days')
+            `).run();
+            pruned = (res && res.meta && typeof res.meta.changes === 'number') ? res.meta.changes : 0;
+          } catch (e) {
+            return new Response(
+              JSON.stringify({ success: false, error: e.message }),
+              { status: 500, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' } }
+            );
+          }
+        }
+        return new Response(
+          JSON.stringify({ success: true, message: `เคลียร์สถิติ D1 ที่เก่ากว่า 30 วันสำเร็จ (${pruned} แถว)` }),
+          { status: 200, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' } }
+        );
+      }
+
       // Live Telemetry & FPL Sync Data Endpoint
       if (path === '/api/admin/data' || path === '/api/admin/telemetry') {
         try {
+          // Automated background retention prune (runs once per admin visit without latency impact)
+          if (env && env.DB && ctx && ctx.waitUntil) {
+            ctx.waitUntil((async () => {
+              try {
+                await env.DB.prepare(`
+                  DELETE FROM telemetry_counters WHERE date < DATE('now', '-30 days')
+                `).run();
+              } catch (_) {}
+            })());
+          }
+
           const resp = await fetch('https://www.fplsawadika.com/multi_fpl_data.json', {
             headers: { 'User-Agent': 'FPLSaWaDiKa-Admin-Relay/2.0' },
             cf: { cacheTtl: 15, cacheEverything: true },
@@ -688,10 +721,14 @@ export default {
     const isForce = url.searchParams.get('force') === '1';
 
     // 2. Construct Edge Cache Key
-    // Normal poll uses 15-second bucket; ?force=1 uses 5-second bucket to prevent upstream spam
-    const nowBucket = isForce ? Math.floor(Date.now() / 5000) : Math.floor(Date.now() / 15000);
+    // Force refresh (?force=1) uses 5-second burst protection bucket; standard poll uses clean URL cache key with dynamic edge TTL
     const cacheKeyUrl = new URL(request.url);
-    cacheKeyUrl.search = `?path=${path}&gw=${gw}&slim=${isSlim ? 1 : 0}&bucket=${nowBucket}`;
+    if (isForce) {
+      const forceBucket = Math.floor(Date.now() / 5000);
+      cacheKeyUrl.search = `?path=${path}&gw=${gw}&slim=${isSlim ? 1 : 0}&force=1&b=${forceBucket}`;
+    } else {
+      cacheKeyUrl.search = `?path=${path}&gw=${gw}&slim=${isSlim ? 1 : 0}`;
+    }
     const cacheKey = new Request(cacheKeyUrl.toString(), { method: 'GET' });
     const cache = caches.default;
 
@@ -732,6 +769,11 @@ export default {
             }))
           : [];
 
+        const anyFixStarted = fixtures.some(f => Boolean(f.started));
+        const allFixFinished = fixtures.length > 0 && fixtures.every(f => Boolean(f.started) && (Boolean(f.finished) || Boolean(f.finished_provisional)));
+        const fixInPlay = fixtures.filter(f => Boolean(f.started) && !f.finished && !f.finished_provisional).length > 0;
+        const fixTtl = fixInPlay ? 15 : (allFixFinished ? 300 : 120);
+
         const body = JSON.stringify({
           gw,
           colo,
@@ -744,12 +786,19 @@ export default {
           headers: {
             ...CORS_HEADERS,
             'Content-Type': 'application/json; charset=utf-8',
-            'Cache-Control': 'public, max-age=15, s-maxage=15, stale-while-revalidate=30',
+            'Cache-Control': `public, max-age=${fixTtl}, s-maxage=${fixTtl}, stale-while-revalidate=30`,
             'X-FPL-Edge-Cache': 'MISS',
             'X-FPL-Edge-Colo': colo,
           },
         });
-        ctx.waitUntil(cache.put(cacheKey, response.clone()));
+        if (isForce) {
+          const normalKeyUrl = new URL(request.url);
+          normalKeyUrl.search = `?path=${path}&gw=${gw}&slim=${isSlim ? 1 : 0}`;
+          const normalKey = new Request(normalKeyUrl.toString(), { method: 'GET' });
+          ctx.waitUntil(Promise.all([cache.put(cacheKey, response.clone()), cache.put(normalKey, response.clone())]));
+        } else {
+          ctx.waitUntil(cache.put(cacheKey, response.clone()));
+        }
         return response;
       }
 
@@ -821,19 +870,35 @@ export default {
         elements: enrichedElements,
       };
 
-      const ttl = inPlayCount > 0 ? 15 : 30;
+      // Intelligent Dynamic Edge TTL:
+      // 1. In-play matches active: 15s TTL (second-by-second live updates)
+      // 2. All matches finished in gameweek: 300s TTL (5 minutes - scores frozen)
+      // 3. Pre-kickoff / between match days: 120s TTL (2 minutes)
+      const ttl = inPlayCount > 0 ? 15 : (allFinished ? 300 : 120);
+      const swrTtl = inPlayCount > 0 ? 15 : 60;
       const response = new Response(JSON.stringify(payload), {
         status: 200,
         headers: {
           ...CORS_HEADERS,
           'Content-Type': 'application/json; charset=utf-8',
-          'Cache-Control': `public, max-age=${ttl}, s-maxage=${ttl}, stale-while-revalidate=30`,
+          'Cache-Control': `public, max-age=${ttl}, s-maxage=${ttl}, stale-while-revalidate=${swrTtl}`,
           'X-FPL-Edge-Cache': 'MISS',
           'X-FPL-Edge-Colo': colo,
         },
       });
 
-      ctx.waitUntil(cache.put(cacheKey, response.clone()));
+      if (isForce) {
+        // Also prime the normal (non-force) cache key so all other users instantly get fresh data
+        const normalKeyUrl = new URL(request.url);
+        normalKeyUrl.search = `?path=${path}&gw=${gw}&slim=${isSlim ? 1 : 0}`;
+        const normalKey = new Request(normalKeyUrl.toString(), { method: 'GET' });
+        ctx.waitUntil(Promise.all([
+          cache.put(cacheKey, response.clone()),
+          cache.put(normalKey, response.clone())
+        ]));
+      } else {
+        ctx.waitUntil(cache.put(cacheKey, response.clone()));
+      }
       return response;
     } catch (err) {
       return new Response(

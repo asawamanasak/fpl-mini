@@ -31,6 +31,7 @@ const ICONS = {
   clock: `<svg class="w-4 h-4 shrink-0 text-slate-500 dark:text-neutral-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
   bolt: `<svg class="w-4 h-4 shrink-0 text-slate-500 dark:text-neutral-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>`,
   trash: `<svg class="w-4 h-4 shrink-0 text-slate-500 dark:text-neutral-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>`,
+  database: `<svg class="w-4 h-4 shrink-0 text-slate-500 dark:text-neutral-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"/></svg>`,
   external: `<svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>`,
   logout: `<svg class="w-4 h-4 shrink-0 text-slate-500 dark:text-neutral-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>`,
   sun: `<svg class="w-4 h-4 shrink-0 text-slate-500 dark:text-neutral-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>`,
@@ -1261,7 +1262,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         </p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
         
         <div class="p-3.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 flex flex-col justify-between space-y-3">
           <div>
@@ -1274,6 +1275,19 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <span>ล้างแคช Edge</span>
           </button>
           <div id="actionMsg" class="hidden text-[11px] font-mono text-center"></div>
+        </div>
+
+        <div class="p-3.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 flex flex-col justify-between space-y-3">
+          <div>
+            <div class="font-medium text-slate-900 dark:text-white">Prune D1 telemetry</div>
+            <div class="text-[11px] text-slate-500 dark:text-neutral-400 mt-0.5">ล้างสถิติที่เก่ากว่า 30 วันใน D1 เพื่อประหยัดพื้นที่</div>
+          </div>
+          <button id="pruneD1Btn" onclick="pruneD1Telemetry()"
+            class="w-full min-h-[36px] flex items-center justify-center gap-2 py-1.5 px-3 rounded-md border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-neutral-800 active:scale-[0.98] focus-visible:ring-1 focus-visible:ring-slate-400 focus:outline-none text-slate-700 dark:text-neutral-200 text-xs font-medium transition-colors duration-150">
+            ${ICONS.database}
+            <span>เคลียร์สถิติ D1</span>
+          </button>
+          <div id="pruneD1Msg" class="hidden text-[11px] font-mono text-center"></div>
         </div>
 
         <a href="https://github.com/asawamanasak/fpl-mini/actions" target="_blank" rel="noopener"
@@ -1337,6 +1351,37 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         } else {
           msg.className = 'text-[11px] font-mono text-center text-rose-600 dark:text-rose-400';
           msg.textContent = data.message || 'การล้างแคชล้มเหลว';
+        }
+      } catch (e) {
+        msg.className = 'text-[11px] font-mono text-center text-rose-600 dark:text-rose-400';
+        msg.textContent = 'เกิดข้อผิดพลาดในการเชื่อมต่อ';
+      } finally {
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.classList.remove('opacity-50');
+        }, 1500);
+      }
+    }
+
+    // Prune D1 Telemetry Action
+    async function pruneD1Telemetry() {
+      const btn = document.getElementById('pruneD1Btn');
+      const msg = document.getElementById('pruneD1Msg');
+      btn.disabled = true;
+      btn.classList.add('opacity-50');
+      msg.className = 'text-[11px] font-mono text-center text-slate-500 dark:text-neutral-400';
+      msg.textContent = 'กำลังเคลียร์สถิติ D1 เก่ากว่า 30 วัน...';
+      msg.classList.remove('hidden');
+
+      try {
+        const res = await fetch('/api/admin/prune-telemetry', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          msg.className = 'text-[11px] font-mono text-center text-emerald-600 dark:text-emerald-400';
+          msg.textContent = data.message || 'เคลียร์สถิติเก่าเรียบร้อยแล้ว';
+        } else {
+          msg.className = 'text-[11px] font-mono text-center text-rose-600 dark:text-rose-400';
+          msg.textContent = data.error || 'การเคลียร์สถิติล้มเหลว';
         }
       } catch (e) {
         msg.className = 'text-[11px] font-mono text-center text-rose-600 dark:text-rose-400';
