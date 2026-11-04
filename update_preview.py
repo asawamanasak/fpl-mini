@@ -1375,17 +1375,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         >
           <svg class="w-4 h-4 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
         </button>
-
-        <!-- Share to LINE Button (Compact Header Action) -->
-        <button 
-          id="btn-header-share"
-          onclick="window.app ? window.app.shareCurrentView() : (window.shareCurrentViewFallback ? window.shareCurrentViewFallback() : null)"
-          class="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 min-w-[36px] sm:min-w-[40px] min-h-[36px] sm:min-h-[40px] rounded-lg sm:rounded-xl bg-[#06C755] hover:bg-[#05b34c] border border-[#05b34c] text-white transition-colors shadow-2xs active:scale-95 flex-shrink-0 cursor-pointer"
-          title="แชร์สรุปผลเข้า LINE / Share to LINE"
-          aria-label="Share to LINE"
-        >
-          <svg class="w-4 h-4 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-        </button>
       </div>
     </div>
 
@@ -1531,15 +1520,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           </span>
           <div class="flex items-center gap-2">
             <span id="gw-range-status" class="text-xs font-bold text-emerald-600 dark:text-emerald-400"><span class="hidden min-[380px]:inline">สัปดาห์ที่ </span>1 - 38</span>
-            <button 
-              id="btn-gw-selector-share"
-              onclick="window.app && window.app.shareCurrentGameweek()"
-              class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 transition-all active:scale-95 cursor-pointer"
-              title="แชร์สรุปผล Gameweek เข้า LINE"
-            >
-              <svg class="w-3 h-3 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-              <span>แชร์ LINE</span>
-            </button>
           </div>
         </div>
         <div id="gw-selector-container" class="flex space-x-1.5 overflow-x-auto touch-scroll scrollbar-thin py-1 pb-2">
@@ -1566,15 +1546,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               <h3 id="matchday-table-title" class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">ตารางคะแนน Gameweek 2</h3>
             </div>
             <div class="flex items-center gap-2">
-              <button 
-                id="btn-matchday-share-line"
-                onclick="window.app && window.app.shareCurrentGameweek()" 
-                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap" 
-                title="แชร์สรุปผล Gameweek เข้า LINE"
-              >
-                <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-                <span>แชร์ LINE</span>
-              </button>
               <span id="matchday-table-badge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                 ผลการแข่งขัน
               </span>
@@ -1752,15 +1723,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         </div>
         <div class="flex items-center gap-2">
           <span id="prizes-pool-badge" class="bg-slate-100 text-slate-700 border border-slate-200 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
-          <button 
-            id="btn-prizes-share-line"
-            onclick="window.app && window.app.sharePrizes()"
-            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
-            title="แชร์สรุปเงินรางวัลเข้า LINE"
-          >
-            <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-            <span>แชร์ LINE</span>
-          </button>
         </div>
       </div>
 
@@ -2548,10 +2510,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           <button id="btn-modal-copy" onclick="app.copyFromModal()" class="px-3.5 sm:px-4 py-2 min-h-[44px] rounded-xl text-xs font-bold text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all shadow-2xs active:scale-95 cursor-pointer flex items-center gap-1.5">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
             <span id="btn-modal-copy-label">คัดลอกข้อความ</span>
-          </button>
-          <button id="btn-modal-share-line" onclick="app.shareToLine()" class="px-4 sm:px-5 py-2 min-h-[44px] rounded-xl text-xs font-bold text-white bg-[#06C755] hover:bg-[#05b34c] transition-all shadow-sm active:scale-95 cursor-pointer flex items-center gap-1.5">
-            <svg class="w-4 h-4 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-            <span id="btn-modal-share-line-label">ส่งเข้า LINE</span>
           </button>
         </div>
       </div>
@@ -5224,28 +5182,6 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (summaryModalCopySpan) {
           summaryModalCopySpan.innerText = isEn ? 'Copy Text' : 'คัดลอกข้อความ';
         }
-        const summaryModalShareLineSpan = document.getElementById('btn-modal-share-line-label');
-        if (summaryModalShareLineSpan) {
-          summaryModalShareLineSpan.innerText = isEn ? 'Share to LINE' : 'ส่งเข้า LINE';
-        }
-        const gwSelectorShareBtn = document.getElementById('btn-gw-selector-share');
-        if (gwSelectorShareBtn) {
-          gwSelectorShareBtn.title = isEn ? 'Share Gameweek summary to LINE' : 'แชร์สรุปผล Gameweek เข้า LINE';
-          const sp = gwSelectorShareBtn.querySelector('span');
-          if (sp) sp.innerText = isEn ? 'Share LINE' : 'แชร์ LINE';
-        }
-        const matchdayShareBtn = document.getElementById('btn-matchday-share-line');
-        if (matchdayShareBtn) {
-          matchdayShareBtn.title = isEn ? 'Share Gameweek summary to LINE' : 'แชร์สรุปผล Gameweek เข้า LINE';
-          const sp = matchdayShareBtn.querySelector('span');
-          if (sp) sp.innerText = isEn ? 'Share LINE' : 'แชร์ LINE';
-        }
-        const prizesShareBtn = document.getElementById('btn-prizes-share-line');
-        if (prizesShareBtn) {
-          prizesShareBtn.title = isEn ? 'Share prize summary to LINE' : 'แชร์สรุปเงินรางวัลเข้า LINE';
-          const sp = prizesShareBtn.querySelector('span');
-          if (sp) sp.innerText = isEn ? 'Share LINE' : 'แชร์ LINE';
-        }
 
         // 9. Competition View Header Banner
         const compTitle = document.getElementById('competition-overview-title');
@@ -6416,14 +6352,12 @@ selectShi62GW(gwName) {
         const copyIndText = document.getElementById('modal-copy-indicator-text');
         const closeBtn = document.getElementById('modal-summary-close-btn');
         const copyBtnLabel = document.getElementById('btn-modal-copy-label');
-        const shareLineLabel = document.getElementById('btn-modal-share-line-label');
 
         if (titleEl) titleEl.innerText = titleText || (isEn ? 'Gameweek Summary' : 'สรุปผล Gameweek');
-        if (subtitleEl) subtitleEl.innerText = subtitleText || (isEn ? 'Formatted text ready to share with your league or friends:' : 'ข้อความถูกจัดรูปแบบสำหรับส่งเข้ากลุ่ม LINE เรียบร้อยแล้ว:');
+        if (subtitleEl) subtitleEl.innerText = subtitleText || (isEn ? 'Formatted text summary:' : 'ข้อความสรุปผล:');
         if (copyIndText) copyIndText.innerText = isEn ? 'Copied to clipboard!' : 'คัดลอกลงคลิปบอร์ดแล้ว!';
         if (closeBtn) closeBtn.innerText = isEn ? 'Close' : 'ปิด';
         if (copyBtnLabel) copyBtnLabel.innerText = isEn ? 'Copy Text' : 'คัดลอกข้อความ';
-        if (shareLineLabel) shareLineLabel.innerText = isEn ? 'Share to LINE' : 'ส่งเข้า LINE';
 
         if (contentArea) {
           contentArea.value = text;
@@ -6901,15 +6835,6 @@ selectShi62GW(gwName) {
                     `;
                   }).join('')}
                 </div>
-
-                <button 
-                  onclick="app.copyBramannPredLINEResult('${activeGWObj.name}')"
-                  class="ml-auto sm:ml-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
-                  title="${isEn ? 'Share weekly summary to LINE' : 'แชร์สรุปผลสัปดาห์นี้เข้า LINE'}"
-                >
-                  <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-                  <span>${isEn ? 'Share LINE' : 'แชร์ LINE'}</span>
-                </button>
               </div>
             </div>
 
@@ -7207,15 +7132,6 @@ selectShi62GW(gwName) {
                     `;
                   }).join('')}
                 </div>
-
-                <button 
-                  onclick="app.copyBramannChalLINEResult('${activeGWObj.name}')"
-                  class="ml-auto sm:ml-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
-                  title="${isEn ? 'Share weekly summary to LINE' : 'แชร์สรุปผลสัปดาห์นี้เข้า LINE'}"
-                >
-                  <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-                  <span>${isEn ? 'Share LINE' : 'แชร์ LINE'}</span>
-                </button>
               </div>
             </div>
 
@@ -7836,15 +7752,6 @@ selectShi62GW(gwName) {
                     `;
                   }).join('')}
                 </div>
-
-                <button 
-                  onclick="app.copyShi62LINEResult('${activeGWObj.name}')"
-                  class="ml-auto sm:ml-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#06C755]/10 hover:bg-[#06C755]/20 dark:bg-[#06C755]/15 dark:hover:bg-[#06C755]/25 text-[#04a044] dark:text-[#06C755] border border-[#06C755]/25 dark:border-[#06C755]/30 shadow-2xs transition-all active:scale-95 cursor-pointer whitespace-nowrap"
-                  title="${isEn ? 'Share weekly summary to LINE' : 'แชร์สรุปผลสัปดาห์นี้เข้า LINE'}"
-                >
-                  <svg class="w-3.5 h-3.5 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
-                  <span>${isEn ? 'Share LINE' : 'แชร์ LINE'}</span>
-                </button>
               </div>
             </div>
 
