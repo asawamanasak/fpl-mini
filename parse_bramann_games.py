@@ -301,10 +301,28 @@ def parse_bramann_prediction_file(file_path):
             t1 = resolve_livescore_team(s1_label, fixture_title, 1)
             t2 = resolve_livescore_team(s2_label, fixture_title, 2)
 
+            # Parse handicap from fixture_title
+            # e.g. 'CHE -1 vs MUN' -> s1_hdc: '-1', s2_hdc: ''
+            title_parts = re.split(r'\s+vs\s+', fixture_title, flags=re.IGNORECASE)
+            s1_hdc, s2_hdc = '', ''
+            if len(title_parts) == 2:
+                h1_m = re.search(r'([+-]?\d+(?:\.\d+)?(?:[/]\d+(?:\.\d+)?)?)', title_parts[0])
+                h2_m = re.search(r'([+-]?\d+(?:\.\d+)?(?:[/]\d+(?:\.\d+)?)?)', title_parts[1])
+                if h1_m:
+                    s1_hdc = h1_m.group(1)
+                    if not (s1_hdc.startswith('-') or s1_hdc.startswith('+')):
+                        s1_hdc = '-' + s1_hdc
+                if h2_m:
+                    s2_hdc = h2_m.group(1)
+                    if not (s2_hdc.startswith('-') or s2_hdc.startswith('+')):
+                        s2_hdc = '-' + s2_hdc
+
             current_matches.append({
                 "title": fixture_title,
                 "side1_label": s1_label,
                 "side2_label": s2_label,
+                "side1_handicap": s1_hdc,
+                "side2_handicap": s2_hdc,
                 "side1_full_name": t1["name"],
                 "side1_logo": t1["logo"],
                 "side2_full_name": t2["name"],

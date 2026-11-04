@@ -1541,7 +1541,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <div>
               <span class="text-[10px] sm:text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold font-display flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                คะแนนประจำสัปดาห์
+                <span id="matchday-sub-label">คะแนนประจำสัปดาห์</span>
               </span>
               <h3 id="matchday-table-title" class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">ตารางคะแนน Gameweek 2</h3>
             </div>
@@ -1557,11 +1557,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               <thead>
                 <tr class="border-b border-slate-100 dark:border-slate-800/80 text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display bg-slate-50/50 dark:bg-slate-900/50">
                   <th class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center w-8 sm:w-10">#</th>
-                  <th class="py-2.5 px-2 sm:px-3 min-w-0">ทีม & ผู้จัดการ</th>
-                  <th class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">กัปตัน</th>
-                  <th class="py-2.5 px-1 sm:px-2 text-center text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-400 font-bold whitespace-nowrap"><span class="hidden sm:inline">คะแนนสด</span><span class="sm:hidden">คะแนนสด</span></th>
-                  <th class="py-2.5 px-1 sm:px-2 text-center w-8 sm:w-10 text-[10px] sm:text-[11px]"><span class="hidden sm:inline">คะแนนลบ</span><span class="sm:hidden">ลบ</span></th>
-                  <th class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right w-14 sm:w-16 text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 font-bold whitespace-nowrap"><span class="hidden sm:inline">คะแนนสุทธิ</span><span class="sm:hidden">สุทธิ</span></th>
+                  <th id="th-matchday-team" class="py-2.5 px-2 sm:px-3 min-w-0">ทีม & ผู้จัดการ</th>
+                  <th id="th-matchday-captain" class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">กัปตัน</th>
+                  <th id="th-matchday-points" class="py-2.5 px-1 sm:px-2 text-center text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-400 font-bold whitespace-nowrap"><span class="hidden sm:inline">คะแนนสด</span><span class="sm:hidden">สด</span></th>
+                  <th id="th-matchday-hits" class="py-2.5 px-1 sm:px-2 text-center w-8 sm:w-10 text-[10px] sm:text-[11px]"><span class="hidden sm:inline">คะแนนลบ</span><span class="sm:hidden">ลบ</span></th>
+                  <th id="th-matchday-net" class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right w-14 sm:w-16 text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 font-bold whitespace-nowrap"><span class="hidden sm:inline">คะแนนสุทธิ</span><span class="sm:hidden">สุทธิ</span></th>
                 </tr>
               </thead>
               <tbody id="matchday-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
@@ -1577,9 +1577,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
             <div>
               <span class="text-[10px] sm:text-xs uppercase tracking-wider text-blue-600 dark:text-blue-400 font-bold font-display flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-                คะแนนรวมสะสม
+                <span id="overall-sub-label">คะแนนรวมสะสม</span>
               </span>
-              <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">ตารางคะแนนรวมสะสม</h3>
+              <h3 id="overall-table-title" class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display mt-0.5">ตารางคะแนนรวมสะสม</h3>
             </div>
             <span id="overall-gw-pill" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 font-display">
               หลังจบ GW <span id="overall-gw-num">2</span>
@@ -1591,9 +1591,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
               <thead>
                 <tr class="border-b border-slate-100 dark:border-slate-800/80 text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display bg-slate-50/50 dark:bg-slate-900/50">
                   <th class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center w-8 sm:w-10">#</th>
-                  <th class="py-2.5 px-2 sm:px-3 min-w-0">ทีม & ผู้จัดการ</th>
-                  <th class="py-2.5 px-1 sm:px-3 text-center w-14 sm:w-18 text-[10px] sm:text-[11px] whitespace-nowrap">GW ล่าสุด</th>
-                  <th class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right w-14 sm:w-16 text-blue-700 dark:text-blue-400 font-bold whitespace-nowrap">คะแนนรวม</th>
+                  <th id="th-overall-team" class="py-2.5 px-2 sm:px-3 min-w-0">ทีม & ผู้จัดการ</th>
+                  <th id="th-overall-lastgw" class="py-2.5 px-1 sm:px-3 text-center w-14 sm:w-18 text-[10px] sm:text-[11px] whitespace-nowrap">GW ล่าสุด</th>
+                  <th id="th-overall-total" class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right w-14 sm:w-16 text-blue-700 dark:text-blue-400 font-bold whitespace-nowrap">คะแนนรวม</th>
                 </tr>
               </thead>
               <tbody id="overall-standings-body" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
@@ -2556,7 +2556,9 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
       "WHU": { name: "West Ham United", code: "whu", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/whu.png` },
       "WHA": { name: "West Ham United", code: "whu", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/whu.png` },
       "LEI": { name: "Leicester City", code: "lei", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/lei.png` },
-      "SOU": { name: "Southampton", code: "sou", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/sou.png` }
+      "SOU": { name: "Southampton", code: "sou", logo: `${LIVESCORE_LOCAL_ASSET_DIR}/sou.png` },
+      "BAY": { name: "Bayern Munich", code: "bay", logo: "" },
+      "COM": { name: "Como", code: "com", logo: "" }
     };
 
     function resolveLiveScoreTeam(label, matchTitle = '', sideIndex = 1) {
@@ -5046,42 +5048,47 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         if (gwRangeStatus) {
           gwRangeStatus.innerHTML = isEn ? '<span class="hidden min-[380px]:inline">Gameweeks </span>1 - 38' : '<span class="hidden min-[380px]:inline">สัปดาห์ที่ </span>1 - 38';
         }
-        const totalLdTitle = document.querySelector('#gameweek-view .border-t-blue-600 h3');
-        if (totalLdTitle) {
-          totalLdTitle.innerText = isEn ? 'Total Leaderboard' : 'ตารางคะแนนรวมสะสม';
+
+        const matchdaySub = document.getElementById('matchday-sub-label');
+        if (matchdaySub) {
+          matchdaySub.innerText = isEn ? 'GAMEWEEK STANDINGS' : 'คะแนนประจำสัปดาห์';
         }
-        const totalLdBadge = document.querySelector('#gameweek-view .border-t-blue-600 span.uppercase');
-        if (totalLdBadge) {
-          totalLdBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-blue-600"></span>${isEn ? 'OVERALL STANDINGS' : 'คะแนนรวมสะสม'}`;
+
+        const overallSub = document.getElementById('overall-sub-label');
+        if (overallSub) {
+          overallSub.innerText = isEn ? 'OVERALL STANDINGS' : 'คะแนนรวมสะสม';
         }
-        const matchdayLdBadge = document.querySelector('#gameweek-view .border-t-emerald-500 span.uppercase');
-        if (matchdayLdBadge) {
-          matchdayLdBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span>${isEn ? 'GAMEWEEK STANDING' : 'คะแนนประจำสัปดาห์'}`;
+
+        const overallTitle = document.getElementById('overall-table-title');
+        if (overallTitle) {
+          overallTitle.innerText = isEn ? 'Overall Cumulative Standings' : 'ตารางคะแนนรวมสะสม';
         }
 
         // Live table headers (both desktop and mobile spans)
-        const thLiveHeaders = document.querySelectorAll('#gameweek-view table thead tr th');
-        if (thLiveHeaders && thLiveHeaders.length >= 6) {
-          thLiveHeaders[1].innerText = isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ';
-          thLiveHeaders[2].innerText = isEn ? 'Captain' : 'กัปตัน';
-          thLiveHeaders[3].innerHTML = isEn 
-            ? '<span class="hidden sm:inline">Live Pts (GW)</span><span class="sm:hidden">Live</span>'
-            : '<span class="hidden sm:inline">คะแนนสด</span><span class="sm:hidden">คะแนนสด</span>';
-          thLiveHeaders[4].innerHTML = isEn
-            ? '<span class="hidden sm:inline">Hits</span><span class="sm:hidden">Hits</span>'
-            : '<span class="hidden sm:inline">คะแนนลบ</span><span class="sm:hidden">ลบ</span>';
-          thLiveHeaders[5].innerHTML = isEn
-            ? '<span class="hidden sm:inline">Net Pts</span><span class="sm:hidden">Net</span>'
-            : '<span class="hidden sm:inline">คะแนนสุทธิ</span><span class="sm:hidden">สุทธิ</span>';
-        }
+        const thLiveTeam = document.getElementById('th-matchday-team');
+        if (thLiveTeam) thLiveTeam.innerText = isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ';
+        const thLiveCapt = document.getElementById('th-matchday-captain');
+        if (thLiveCapt) thLiveCapt.innerText = isEn ? 'Captain' : 'กัปตัน';
+        const thLivePts = document.getElementById('th-matchday-points');
+        if (thLivePts) thLivePts.innerHTML = isEn 
+          ? '<span class="hidden sm:inline">Live Pts</span><span class="sm:hidden">Live</span>'
+          : '<span class="hidden sm:inline">คะแนนสด</span><span class="sm:hidden">สด</span>';
+        const thLiveHits = document.getElementById('th-matchday-hits');
+        if (thLiveHits) thLiveHits.innerHTML = isEn
+          ? '<span class="hidden sm:inline">Hits</span><span class="sm:hidden">Hits</span>'
+          : '<span class="hidden sm:inline">คะแนนลบ</span><span class="sm:hidden">ลบ</span>';
+        const thLiveNet = document.getElementById('th-matchday-net');
+        if (thLiveNet) thLiveNet.innerHTML = isEn
+          ? '<span class="hidden sm:inline">Net Pts</span><span class="sm:hidden">Net</span>'
+          : '<span class="hidden sm:inline">คะแนนสุทธิ</span><span class="sm:hidden">สุทธิ</span>';
 
         // Overall table headers
-        const thOverallHeaders = document.querySelectorAll('#gameweek-view .border-t-blue-600 table thead tr th');
-        if (thOverallHeaders && thOverallHeaders.length >= 4) {
-          thOverallHeaders[1].innerText = isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ';
-          thOverallHeaders[2].innerText = isEn ? 'Latest GW' : 'GW ล่าสุด';
-          thOverallHeaders[3].innerText = isEn ? 'Total Net' : 'คะแนนรวม';
-        }
+        const thOverallTeam = document.getElementById('th-overall-team');
+        if (thOverallTeam) thOverallTeam.innerText = isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ';
+        const thOverallLast = document.getElementById('th-overall-lastgw');
+        if (thOverallLast) thOverallLast.innerText = isEn ? 'Latest GW' : 'GW ล่าสุด';
+        const thOverallTotal = document.getElementById('th-overall-total');
+        if (thOverallTotal) thOverallTotal.innerText = isEn ? 'Total Pts' : 'คะแนนรวม';
 
         // 5. Radar Guide Title & Buttons
         const radarGuideH3 = document.getElementById('radar-guide-heading');
@@ -6889,7 +6896,7 @@ selectShi62GW(gwName) {
           </div>
 
           <!-- SECTION 1: Gameweek Breakdown & Match Details -->
-          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-4">
+          <div class="glass-card rounded-2xl p-3 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-4">
             <!-- Gameweek Controls Header -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
               <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
@@ -6968,12 +6975,12 @@ selectShi62GW(gwName) {
 
             <!-- Matches List Grid -->
             <div>
-              <div class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2.5 flex items-center justify-between">
+              <div class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-3 flex items-center justify-between">
                 <span>${isEn ? `All Matches Breakdown (${activeGWObj.matches.length} Matches)` : `รายละเอียดการทายผลทุกคู่ (${activeGWObj.matches.length} คู่)`}</span>
-                <span class="text-[10.5px] text-slate-400 font-normal">${isEn ? '✅ indicates winning selection' : 'เครื่องหมาย ✅ คือผลชนะ'}</span>
+                <span class="text-[11px] text-slate-400 font-normal">${isEn ? '✅ indicates winning selection' : 'เครื่องหมาย ✅ คือผลชนะ'}</span>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5 sm:gap-4">
                 ${activeGWObj.matches.map((m, idx) => {
                   const isPush = m.status === 'push' || m.winning_side === 'push';
                   const s1Won = m.winning_side === 1;
@@ -6994,66 +7001,176 @@ selectShi62GW(gwName) {
                   const s1LogoSrc = this.getTeamLogoUrl(s1Logo);
                   const s2LogoSrc = this.getTeamLogoUrl(s2Logo);
 
+                  const hdcInfo = (function(title, s1HdcDef, s2HdcDef) {
+                    if (s1HdcDef || s2HdcDef) {
+                      const cleanT = (title || '').replace(/\s*[+-]?\d+(?:\.\d+)?(?:[/]\d+(?:\.\d+)?)?\s*/g, ' ').trim();
+                      const parts = cleanT.split(/\s+vs\s+/i);
+                      return {
+                        s1Hdc: s1HdcDef || '',
+                        s2Hdc: s2HdcDef || '',
+                        s1Clean: (parts[0] || m.side1_label || '').trim(),
+                        s2Clean: (parts[1] || m.side2_label || '').trim()
+                      };
+                    }
+                    if (!title || !title.includes(' vs ')) {
+                      return { s1Hdc: '', s2Hdc: '', s1Clean: title || '', s2Clean: '' };
+                    }
+                    const parts = title.split(/\s+vs\s+/i);
+                    const s1Raw = (parts[0] || '').trim();
+                    const s2Raw = (parts[1] || '').trim();
+                    
+                    const h1Match = s1Raw.match(/([+-]?\d+(?:\.\d+)?(?:[/]\d+(?:\.\d+)?)?)/);
+                    const h2Match = s2Raw.match(/([+-]?\d+(?:\.\d+)?(?:[/]\d+(?:\.\d+)?)?)/);
+                    
+                    let s1Hdc = h1Match ? h1Match[1] : '';
+                    let s2Hdc = h2Match ? h2Match[1] : '';
+                    
+                    if (s1Hdc && !s1Hdc.startsWith('-') && !s1Hdc.startsWith('+')) s1Hdc = '-' + s1Hdc;
+                    if (s2Hdc && !s2Hdc.startsWith('-') && !s2Hdc.startsWith('+')) s2Hdc = '-' + s2Hdc;
+                    
+                    const s1Clean = s1Raw.replace(/\s*[+-]?\d+(?:\.\d+)?(?:[/]\d+(?:\.\d+)?)?\s*/g, '').trim();
+                    const s2Clean = s2Raw.replace(/\s*[+-]?\d+(?:\.\d+)?(?:[/]\d+(?:\.\d+)?)?\s*/g, '').trim();
+                    
+                    return { s1Hdc, s2Hdc, s1Clean, s2Clean };
+                  })(m.title, m.side1_handicap, m.side2_handicap);
+
                   return `
-                    <div class="rounded-xl border ${isPush ? 'border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/40 dark:bg-slate-900/20' : 'border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-2xs'} p-3 flex flex-col justify-between space-y-2.5">
-                      <div class="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800/80 pb-2">
-                        <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white font-display">
-                          ${m.title}
+                    <div class="rounded-2xl border ${
+                      isPush 
+                        ? 'border-dashed border-slate-300 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-900/40' 
+                        : 'border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900/90 shadow-xs hover:border-slate-300 dark:hover:border-slate-700/90 hover:shadow-md'
+                    } p-3 sm:p-4 flex flex-col justify-between transition-all duration-200">
+                      
+                      <!-- Header Row: Match # + Matchup Title + Winner Badge & Pool -->
+                      <div class="flex items-center justify-between gap-1.5 border-b border-slate-100 dark:border-slate-800/80 pb-2 mb-2.5">
+                        <div class="flex items-center gap-1.5 min-w-0 pr-1">
+                          <span class="w-5 h-5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center text-[10px] font-bold font-display shrink-0 border border-slate-200/60 dark:border-slate-700/60">
+                            ${idx + 1}
+                          </span>
+                          <div class="flex items-center gap-1 text-xs sm:text-sm text-slate-900 dark:text-white font-display truncate">
+                            <span class="font-bold">${hdcInfo.s1Clean}</span>
+                            ${hdcInfo.s1Hdc ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] sm:text-[10.5px] font-extrabold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 font-display shadow-2xs">${hdcInfo.s1Hdc}</span>` : ''}
+                            <span class="text-slate-400 font-normal text-[11px] px-0.5">vs</span>
+                            <span class="font-bold">${hdcInfo.s2Clean}</span>
+                            ${hdcInfo.s2Hdc ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] sm:text-[10.5px] font-extrabold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 font-display shadow-2xs">${hdcInfo.s2Hdc}</span>` : ''}
+                          </div>
                         </div>
-                        <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
                           ${isPush 
-                            ? `<span class="text-[10.5px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${isEn ? 'Push / Void' : 'เสมอ / ยก (Push)'}</span>`
-                            : `<span class="text-[10.5px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">${isEn ? 'Won' : 'ชนะ'}: ${m.winning_label} ✅</span>`
+                            ? `<span class="text-[9.5px] sm:text-[10.5px] font-semibold px-1.5 sm:px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60">${isEn ? 'Push / Void' : 'เสมอ / ยก'}</span>`
+                            : `<span class="inline-flex items-center gap-0.5 text-[9.5px] sm:text-[11px] font-bold px-1.5 sm:px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/80 shadow-2xs">${isEn ? 'Won' : 'ชนะ'}: ${m.winning_label} ✅</span>`
                           }
-                          <span class="text-[10.5px] font-bold px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 font-display">฿${m.pool.toLocaleString()}</span>
+                          <span class="text-[9.5px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-slate-100/90 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-display border border-slate-200/50 dark:border-slate-700/50">฿${m.pool.toLocaleString()}</span>
                         </div>
                       </div>
 
-                      <div class="grid grid-cols-2 gap-2 text-xs">
-                        <!-- Side 1 -->
-                        <div class="rounded-lg p-2 border ${s1Won ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-slate-50/60 dark:bg-slate-800/30 border-slate-200/60 dark:border-slate-800'}">
-                          <div class="flex items-center justify-between mb-1.5 gap-1.5">
-                            <div class="flex items-center gap-1.5 min-w-0 pr-1">
-                              ${s1LogoSrc ? `<img src="${s1LogoSrc}" alt="${s1Name}" class="w-4 h-4 sm:w-4.5 sm:h-4.5 object-contain shrink-0" loading="lazy" onerror="this.style.display='none'">` : ''}
-                              <span class="font-bold text-xs text-slate-900 dark:text-white truncate" title="${s1Name}">${s1Name}</span>
+                      <!-- Options Grid: Side 1 vs Side 2 -->
+                      <div class="grid grid-cols-2 gap-2 sm:gap-2.5">
+                        
+                        <!-- Side 1 Box -->
+                        <div class="rounded-xl p-2.5 sm:p-3 border flex flex-col justify-between transition-all duration-150 hover:brightness-105 ${
+                          s1Won 
+                            ? 'bg-emerald-500/[0.08] dark:bg-emerald-500/[0.12] border-emerald-500/40 dark:border-emerald-500/50 ring-1 ring-emerald-500/20 shadow-2xs' 
+                            : 'bg-slate-50/80 dark:bg-slate-800/40 border-slate-200/80 dark:border-slate-800/80'
+                        }">
+                          <div class="flex flex-col justify-between h-full">
+                            <!-- Team & Legs Header -->
+                            <div class="flex items-start gap-2 mb-2">
+                              ${s1LogoSrc ? `<img src="${s1LogoSrc}" alt="${s1Name}" class="w-6 h-6 sm:w-6.5 sm:h-6.5 object-contain shrink-0 mt-0.5 filter drop-shadow-2xs" loading="lazy" onerror="this.style.display='none'">` : ''}
+                              <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                  <span class="font-bold text-xs sm:text-[13px] text-slate-900 dark:text-white leading-tight" title="${s1Name}">${s1Name}</span>
+                                  ${hdcInfo.s1Hdc ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] sm:text-[10.5px] font-extrabold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 font-display shrink-0 shadow-2xs">${hdcInfo.s1Hdc}</span>` : ''}
+                                </div>
+                                <div class="flex items-center gap-1.5 mt-1">
+                                  <span class="inline-flex items-center text-[10px] font-bold px-1.5 py-0.2 rounded-full shadow-2xs ${
+                                    s1Won 
+                                      ? 'bg-emerald-600 text-white' 
+                                      : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                                  }">${m.side1_legs} ${isEn ? (m.side1_legs > 1 ? 'legs' : 'leg') : 'ขา'}</span>
+                                  ${s1Won ? `<span class="text-[9.5px] font-bold text-emerald-600 dark:text-emerald-400">ชนะ ✅</span>` : ''}
+                                </div>
+                              </div>
                             </div>
-                            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded shrink-0 ${s1Won ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${m.side1_legs} ${isEn ? (m.side1_legs > 1 ? 'legs' : 'leg') : 'ขา'}</span>
-                          </div>
-                          <div class="flex flex-wrap gap-1">
-                            ${m.side1_bets.length > 0 
-                              ? m.side1_bets.map(b => `<span class="text-[10px] px-1.5 py-0.5 rounded bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium">${b.name}${b.legs > 1 ? ` <strong class="text-blue-600 dark:text-blue-400">x${b.legs}</strong>` : ''}</span>`).join('')
-                              : `<span class="text-[10px] text-slate-400 italic">${isEn ? 'No selections' : 'ไม่มีผู้เลือก'}</span>`
-                            }
+
+                            <!-- Bettors Tags -->
+                            <div class="flex flex-wrap gap-1 min-h-[26px] items-center pt-2 border-t border-slate-200/60 dark:border-slate-700/50 mt-1">
+                              ${m.side1_bets.length > 0 
+                                ? m.side1_bets.map(b => `
+                                  <span class="inline-flex items-center text-[10px] sm:text-[10.5px] px-1.5 py-0.5 rounded-md transition-transform hover:scale-105 cursor-default ${
+                                    s1Won
+                                      ? 'bg-white dark:bg-slate-900 text-emerald-800 dark:text-emerald-200 border border-emerald-300/60 dark:border-emerald-700/60 shadow-2xs font-medium'
+                                      : 'bg-white dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-medium'
+                                  }">
+                                    ${b.name}${b.legs > 1 ? ` <strong class="ml-0.5 text-blue-600 dark:text-blue-400 font-bold">x${b.legs}</strong>` : ''}
+                                  </span>
+                                `).join('')
+                                : `<span class="text-[10px] text-slate-400 italic">${isEn ? 'No selections' : 'ไม่มีผู้เลือก'}</span>`
+                              }
+                            </div>
                           </div>
                         </div>
 
-                        <!-- Side 2 -->
-                        <div class="rounded-lg p-2 border ${s2Won ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-slate-50/60 dark:bg-slate-800/30 border-slate-200/60 dark:border-slate-800'}">
-                          <div class="flex items-center justify-between mb-1.5 gap-1.5">
-                            <div class="flex items-center gap-1.5 min-w-0 pr-1">
-                              ${s2LogoSrc ? `<img src="${s2LogoSrc}" alt="${s2Name}" class="w-4 h-4 sm:w-4.5 sm:h-4.5 object-contain shrink-0" loading="lazy" onerror="this.style.display='none'">` : ''}
-                              <span class="font-bold text-xs text-slate-900 dark:text-white truncate" title="${s2Name}">${s2Name}</span>
+                        <!-- Side 2 Box -->
+                        <div class="rounded-xl p-2.5 sm:p-3 border flex flex-col justify-between transition-all duration-150 hover:brightness-105 ${
+                          s2Won 
+                            ? 'bg-emerald-500/[0.08] dark:bg-emerald-500/[0.12] border-emerald-500/40 dark:border-emerald-500/50 ring-1 ring-emerald-500/20 shadow-2xs' 
+                            : 'bg-slate-50/80 dark:bg-slate-800/40 border-slate-200/80 dark:border-slate-800/80'
+                        }">
+                          <div class="flex flex-col justify-between h-full">
+                            <!-- Team & Legs Header -->
+                            <div class="flex items-start gap-2 mb-2">
+                              ${s2LogoSrc ? `<img src="${s2LogoSrc}" alt="${s2Name}" class="w-6 h-6 sm:w-6.5 sm:h-6.5 object-contain shrink-0 mt-0.5 filter drop-shadow-2xs" loading="lazy" onerror="this.style.display='none'">` : ''}
+                              <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                  <span class="font-bold text-xs sm:text-[13px] text-slate-900 dark:text-white leading-tight" title="${s2Name}">${s2Name}</span>
+                                  ${hdcInfo.s2Hdc ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] sm:text-[10.5px] font-extrabold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 font-display shrink-0 shadow-2xs">${hdcInfo.s2Hdc}</span>` : ''}
+                                </div>
+                                <div class="flex items-center gap-1.5 mt-1">
+                                  <span class="inline-flex items-center text-[10px] font-bold px-1.5 py-0.2 rounded-full shadow-2xs ${
+                                    s2Won 
+                                      ? 'bg-emerald-600 text-white' 
+                                      : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                                  }">${m.side2_legs} ${isEn ? (m.side2_legs > 1 ? 'legs' : 'leg') : 'ขา'}</span>
+                                  ${s2Won ? `<span class="text-[9.5px] font-bold text-emerald-600 dark:text-emerald-400">ชนะ ✅</span>` : ''}
+                                </div>
+                              </div>
                             </div>
-                            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded shrink-0 ${s2Won ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${m.side2_legs} ${isEn ? (m.side2_legs > 1 ? 'legs' : 'leg') : 'ขา'}</span>
-                          </div>
-                          <div class="flex flex-wrap gap-1">
-                            ${m.side2_bets.length > 0 
-                              ? m.side2_bets.map(b => `<span class="text-[10px] px-1.5 py-0.5 rounded bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-medium">${b.name}${b.legs > 1 ? ` <strong class="text-blue-600 dark:text-blue-400">x${b.legs}</strong>` : ''}</span>`).join('')
-                              : `<span class="text-[10px] text-slate-400 italic">${isEn ? 'No selections' : 'ไม่มีผู้เลือก'}</span>`
-                            }
+
+                            <!-- Bettors Tags -->
+                            <div class="flex flex-wrap gap-1 min-h-[26px] items-center pt-2 border-t border-slate-200/60 dark:border-slate-700/50 mt-1">
+                              ${m.side2_bets.length > 0 
+                                ? m.side2_bets.map(b => `
+                                  <span class="inline-flex items-center text-[10px] sm:text-[10.5px] px-1.5 py-0.5 rounded-md transition-transform hover:scale-105 cursor-default ${
+                                    s2Won
+                                      ? 'bg-white dark:bg-slate-900 text-emerald-800 dark:text-emerald-200 border border-emerald-300/60 dark:border-emerald-700/60 shadow-2xs font-medium'
+                                      : 'bg-white dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-medium'
+                                  }">
+                                    ${b.name}${b.legs > 1 ? ` <strong class="ml-0.5 text-blue-600 dark:text-blue-400 font-bold">x${b.legs}</strong>` : ''}
+                                  </span>
+                                `).join('')
+                                : `<span class="text-[10px] text-slate-400 italic">${isEn ? 'No selections' : 'ไม่มีผู้เลือก'}</span>`
+                              }
+                            </div>
                           </div>
                         </div>
+
                       </div>
 
-                      <div class="pt-1 border-t border-slate-100 dark:border-slate-800/60 flex items-center gap-1.5 flex-wrap">
-                        <span class="text-[10px] text-slate-400 font-medium">${isEn ? 'Net Payout:' : 'ผลได้-เสีย:'}</span>
+                      <!-- Payout Breakdown Footer -->
+                      <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-1.5 flex-wrap">
+                        <span class="text-[10.5px] font-semibold text-slate-400 dark:text-slate-500 shrink-0">${isEn ? 'Net Payout:' : 'ผลได้-เสีย:'}</span>
                         ${Object.entries(m.payouts || {}).map(([pname, pinfo]) => {
                           const netVal = pinfo.net || 0;
                           const isPos = netVal > 0;
                           const isNeg = netVal < 0;
-                          const chipClass = isPos ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200/60' : (isNeg ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200/60' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200');
+                          const chipClass = isPos 
+                            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200/80 dark:border-emerald-800/60' 
+                            : (isNeg 
+                              ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border-rose-200/80 dark:border-rose-800/60' 
+                              : 'bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700/60');
                           return `
-                            <span class="text-[10px] px-1.5 py-0.5 rounded border ${chipClass} font-display">
+                            <span class="text-[10px] px-1.5 py-0.5 rounded-md border ${chipClass} font-display">
                               ${pname}: <strong>${fmtMoney(netVal)}</strong>
                             </span>
                           `;
@@ -7827,7 +7944,7 @@ selectShi62GW(gwName) {
           </div>
 
           <!-- SECTION 1: Gameweek Breakdown & Match Details -->
-          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-4">
+          <div class="glass-card rounded-2xl p-3 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-4">
             <!-- Gameweek Controls Header -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
               <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
@@ -7863,10 +7980,13 @@ selectShi62GW(gwName) {
                 <div>
                   <div class="flex items-center justify-between mb-1.5">
                     <span class="text-xs font-bold text-slate-700 dark:text-slate-300 font-display">${activeGWObj.name}</span>
-                    <span class="text-[10.5px] font-medium px-2 py-0.5 rounded-md bg-slate-200/70 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300">${activeGWObj.matches.length} คู่</span>
+                    <span class="text-[10.5px] font-medium px-2 py-0.5 rounded-md bg-slate-200/70 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300">${activeGWObj.matches.length} ${isEn ? 'Matches' : 'คู่'}</span>
                   </div>
                   <div class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white font-display mt-2">
                     ฿${Number(activeGWObj.total_pool).toLocaleString()}
+                  </div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                    ${isEn ? 'Total pool turnover this Gameweek' : 'ยอดเงินพูลที่หมุนเวียนในสัปดาห์นี้'}
                   </div>
                 </div>
               </div>
@@ -7874,8 +7994,8 @@ selectShi62GW(gwName) {
               <!-- Right 2 cols: GW Standings -->
               <div class="md:col-span-2 bg-slate-50/50 dark:bg-slate-800/30 rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800">
                 <div class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center justify-between">
-                  <span>สรุปยอดเงินได้-เสียสุทธิในสัปดาห์นี้ (${activeGWObj.name})</span>
-                  <span class="text-[10.5px] text-slate-400 font-normal">เรียงตามกำไรสุทธิ</span>
+                  <span>${isEn ? `Weekly Net Balance Summary (${activeGWObj.name})` : `สรุปยอดเงินได้-เสียสุทธิในสัปดาห์นี้ (${activeGWObj.name})`}</span>
+                  <span class="text-[10.5px] text-slate-400 font-normal">${isEn ? 'Sorted by net profit' : 'เรียงตามกำไรสุทธิ'}</span>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                   ${activeGWObj.summary.map(s => {
@@ -7903,75 +8023,173 @@ selectShi62GW(gwName) {
 
             <!-- Matches List Grid -->
             <div>
-              <div class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2.5 flex items-center justify-between">
-                <span>รายละเอียดการทายผลทุกคู่ (${activeGWObj.matches.length} คู่)</span>
-                <span class="text-[10.5px] text-slate-400 font-normal">เครื่องหมาย ✅ คือผลชนะ</span>
+              <div class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-3 flex items-center justify-between">
+                <span>${isEn ? `All Matches Breakdown (${activeGWObj.matches.length} Matches)` : `รายละเอียดการทายผลทุกคู่ (${activeGWObj.matches.length} คู่)`}</span>
+                <span class="text-[11px] text-slate-400 font-normal">${isEn ? '✅ indicates winning selection' : 'เครื่องหมาย ✅ คือผลชนะ'}</span>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5 sm:gap-4">
                 ${activeGWObj.matches.map((m, idx) => {
-                  const isVoid = m.status === 'void';
+                  const isVoid = m.status === 'void' || !m.winning_option;
+                  const winningOpt = m.winning_option;
+                  const isDrawWin = winningOpt === 'draw';
+                  const winningLabelText = isDrawWin ? (isEn ? 'Draw' : 'เสมอ') : (winningOpt || '');
+
+                  const titleInfo = (function(title) {
+                    let clean = (title || '').trim();
+                    let tour = '';
+                    const tourMatch = clean.match(/^\[(.*?)\]\s*/);
+                    if (tourMatch) {
+                      tour = tourMatch[1];
+                      clean = clean.substring(tourMatch[0].length).trim();
+                    }
+                    const parts = clean.split(/\s+vs\s+/i);
+                    const s1Raw = (parts[0] || '').trim();
+                    const s2Raw = (parts[1] || '').trim();
+
+                    const parseSideHdc = (s) => {
+                      const hMatch = s.match(/\(([+-]?\d+(?:\.\d+)?(?:[/]\d+(?:\.\d+)?)?)\)/) || s.match(/([+-]?\d+(?:\.\d+)?(?:[/]\d+(?:\.\d+)?)?)/);
+                      let hdc = hMatch ? hMatch[1] : '';
+                      if (hdc && !hdc.startsWith('-') && !hdc.startsWith('+')) hdc = '-' + hdc;
+                      const team = s.replace(/\s*\([+-]?\d+(?:\.\d+)?(?:[/]\d+(?:\.\d+)?)?\)\s*/g, '').replace(/\s*[+-]?\d+(?:\.\d+)?(?:[/]\d+(?:\.\d+)?)?\s*/g, '').trim();
+                      return { team, hdc };
+                    };
+
+                    const s1 = parseSideHdc(s1Raw);
+                    const s2 = parseSideHdc(s2Raw);
+
+                    return { tour, s1Team: s1.team, s1Hdc: s1.hdc, s2Team: s2.team, s2Hdc: s2.hdc };
+                  })(m.title);
+
                   return `
-                    <div class="rounded-xl border ${isVoid ? 'border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/40 dark:bg-slate-900/20' : 'border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/50 shadow-2xs'} p-3 flex flex-col justify-between space-y-2.5">
-                      <!-- Match Top Header -->
-                      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-2">
-                        <div class="flex items-center gap-2">
-                          <span class="w-4 h-4 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center text-[10px] font-bold font-display">
+                    <div class="rounded-2xl border ${
+                      isVoid 
+                        ? 'border-dashed border-slate-300 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-900/40' 
+                        : 'border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900/90 shadow-xs hover:border-slate-300 dark:hover:border-slate-700/90 hover:shadow-md'
+                    } p-3 sm:p-4 flex flex-col justify-between transition-all duration-200">
+                      
+                      <!-- Header Row: Match # + Matchup Title + Winner Badge & Pool -->
+                      <div class="flex items-center justify-between gap-1.5 border-b border-slate-100 dark:border-slate-800/80 pb-2 mb-2.5">
+                        <div class="flex items-center gap-1.5 min-w-0 pr-1">
+                          <span class="w-5 h-5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center text-[10px] font-bold font-display shrink-0 border border-slate-200/60 dark:border-slate-700/60">
                             ${idx + 1}
                           </span>
-                          <span class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white font-display">
-                            ${m.title}
-                          </span>
+                          ${titleInfo.tour ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[9.5px] font-extrabold bg-blue-500/15 text-blue-700 dark:text-blue-400 border border-blue-500/30 uppercase shrink-0 font-display shadow-2xs">${titleInfo.tour}</span>` : ''}
+                          <div class="flex items-center gap-1 text-xs sm:text-sm text-slate-900 dark:text-white font-display truncate">
+                            <span class="font-bold">${titleInfo.s1Team}</span>
+                            ${titleInfo.s1Hdc ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] sm:text-[10.5px] font-extrabold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 font-display shadow-2xs">${titleInfo.s1Hdc}</span>` : ''}
+                            <span class="text-slate-400 font-normal text-[11px] px-0.5">vs</span>
+                            <span class="font-bold">${titleInfo.s2Team}</span>
+                            ${titleInfo.s2Hdc ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] sm:text-[10.5px] font-extrabold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 font-display shadow-2xs">${titleInfo.s2Hdc}</span>` : ''}
+                          </div>
                         </div>
-                        <div>
+                        <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
                           ${isVoid 
-                            ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">${isEn ? 'Push / Void (No winner)' : 'เสมอ / ยก (ไม่มีผู้ชนะ)'}</span>`
-                            : `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60">฿${m.pool} (${m.winners.length} ${isEn ? 'won' : 'คนชนะ'})</span>`
+                            ? `<span class="text-[9.5px] sm:text-[10.5px] font-semibold px-1.5 sm:px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60">${isEn ? 'Push / Void' : 'เสมอ / ยก'}</span>`
+                            : `<span class="inline-flex items-center gap-0.5 text-[9.5px] sm:text-[11px] font-bold px-1.5 sm:px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/80 shadow-2xs">${isEn ? 'Won' : 'ชนะ'}: ${winningLabelText} ✅</span>`
                           }
+                          <span class="text-[9.5px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-slate-100/90 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-display border border-slate-200/50 dark:border-slate-700/50">฿${Number(m.pool || 0).toLocaleString()}</span>
                         </div>
                       </div>
 
-                      <!-- Options Rows -->
-                      <div class="space-y-1">
-                        ${m.options.map(opt => {
-                          const isWinOpt = opt.is_win;
-                          const hasNames = opt.names && opt.names.length > 0;
+                      <!-- Options Grid -->
+                      <div class="${(m.options && m.options.length === 3) ? 'grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5' : 'grid grid-cols-2 gap-2 sm:gap-2.5'}">
+                        ${m.options.map((opt, optIdx) => {
+                          const isWinOpt = Boolean(opt.is_win);
+                          const optRawLower = (opt.raw_label || opt.label || '').toLowerCase().trim();
+                          const isDraw = (opt.label === 'draw' || optRawLower === 'd' || optRawLower === 'draw' || optRawLower === 'เสมอ');
+
+                          let teamName = opt.label;
+                          let logoSrc = '';
+                          let teamHdc = '';
+
+                          if (isDraw) {
+                            teamName = isEn ? 'Draw' : 'เสมอ (Draw)';
+                          } else {
+                            const sideNum = optIdx === 0 ? 1 : 2;
+                            const resolved = (typeof resolveLiveScoreTeam === 'function') 
+                              ? resolveLiveScoreTeam(opt.label, m.title, sideNum) 
+                              : { name: opt.label, logo: '' };
+                            teamName = resolved.name || opt.label;
+                            if (resolved.logo) {
+                              logoSrc = this.getTeamLogoUrl(resolved.logo);
+                            }
+                            const optUpper = String(opt.label).toUpperCase();
+                            if (titleInfo.s1Team.toUpperCase() === optUpper && titleInfo.s1Hdc) {
+                              teamHdc = titleInfo.s1Hdc;
+                            } else if (titleInfo.s2Team.toUpperCase() === optUpper && titleInfo.s2Hdc) {
+                              teamHdc = titleInfo.s2Hdc;
+                            }
+                          }
+
+                          const bettorCount = (opt.names && opt.names.length) || 0;
+
                           return `
-                            <div class="flex items-center justify-between p-1.5 px-2 rounded-lg text-xs transition-colors ${
+                            <div class="rounded-xl p-2.5 sm:p-3 border flex flex-col justify-between transition-all duration-150 hover:brightness-105 ${
                               isWinOpt 
-                                ? 'bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/20' 
-                                : 'bg-slate-50/60 dark:bg-slate-800/40 border border-transparent'
+                                ? 'bg-emerald-500/[0.08] dark:bg-emerald-500/[0.12] border-emerald-500/40 dark:border-emerald-500/50 ring-1 ring-emerald-500/20 shadow-2xs' 
+                                : 'bg-slate-50/80 dark:bg-slate-800/40 border-slate-200/80 dark:border-slate-800/80'
                             }">
-                              <div class="flex items-center gap-2 min-w-0">
-                                <span class="font-bold text-xs font-display w-9 sm:w-10 shrink-0 ${isWinOpt ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400'}">
-                                  ${opt.label}
-                                </span>
-                                <div class="flex items-center gap-1 flex-wrap">
-                                  ${hasNames 
-                                    ? opt.names.map(name => {
-                                        const pRes = m.payouts[name] || {};
-                                        const netVal = pRes.net || 0;
-                                        const badgeColor = netVal > 0 
-                                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 font-bold' 
-                                          : (netVal < 0 ? 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400');
-                                        return `
-                                          <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] ${badgeColor}">
-                                            ${name}
-                                            <span class="text-[9px] opacity-75">${fmtMoney(netVal, true)}</span>
-                                          </span>
-                                        `;
-                                      }).join('')
-                                    : `<span class="text-[10.5px] text-slate-400 italic">${isEn ? '(No picks)' : '(ไม่มีผู้เลือก)'}</span>`
+                              <div class="flex flex-col justify-between h-full">
+                                <!-- Team / Option Header -->
+                                <div class="flex items-start gap-2 mb-2">
+                                  ${logoSrc 
+                                    ? `<img src="${logoSrc}" alt="${teamName}" class="w-6 h-6 sm:w-6.5 sm:h-6.5 object-contain shrink-0 mt-0.5 filter drop-shadow-2xs" loading="lazy" onerror="this.style.display='none'">` 
+                                    : (isDraw ? `<div class="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-full bg-slate-200/80 dark:bg-slate-700/80 flex items-center justify-center text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0 mt-0.5">🤝</div>` : '')
+                                  }
+                                  <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                      <span class="font-bold text-xs sm:text-[13px] text-slate-900 dark:text-white leading-tight" title="${teamName}">${teamName}</span>
+                                      ${teamHdc ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] sm:text-[10.5px] font-extrabold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 font-display shrink-0 shadow-2xs">${teamHdc}</span>` : ''}
+                                    </div>
+                                    <div class="flex items-center gap-1.5 mt-1">
+                                      <span class="inline-flex items-center text-[10px] font-bold px-1.5 py-0.2 rounded-full shadow-2xs ${
+                                        isWinOpt 
+                                          ? 'bg-emerald-600 text-white' 
+                                          : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                                      }">${bettorCount} ${isEn ? (bettorCount > 1 ? 'picks' : 'pick') : 'ขา'}</span>
+                                      ${isWinOpt ? `<span class="text-[9.5px] font-bold text-emerald-600 dark:text-emerald-400">ชนะ ✅</span>` : ''}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <!-- Bettors Tags -->
+                                <div class="flex flex-wrap gap-1 min-h-[26px] items-center pt-2 border-t border-slate-200/60 dark:border-slate-700/50 mt-1">
+                                  ${bettorCount > 0 
+                                    ? opt.names.map(name => `
+                                      <span class="inline-flex items-center text-[10px] sm:text-[10.5px] px-1.5 py-0.5 rounded-md transition-transform hover:scale-105 cursor-default ${
+                                        isWinOpt
+                                          ? 'bg-white dark:bg-slate-900 text-emerald-800 dark:text-emerald-200 border border-emerald-300/60 dark:border-emerald-700/60 shadow-2xs font-medium'
+                                          : 'bg-white dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-medium'
+                                      }">
+                                        ${name}
+                                      </span>
+                                    `).join('')
+                                    : `<span class="text-[10px] text-slate-400 italic">${isEn ? 'No selections' : 'ไม่มีผู้เลือก'}</span>`
                                   }
                                 </div>
                               </div>
-                              <div class="flex items-center pl-2 flex-shrink-0">
-                                ${isWinOpt 
-                                  ? '<span class="text-xs">✅</span>' 
-                                  : (hasNames ? '<span class="text-[10.5px] text-rose-500/80 font-medium">-100</span>' : '')
-                                }
-                              </div>
                             </div>
+                          `;
+                        }).join('')}
+                      </div>
+
+                      <!-- Payout Breakdown Footer -->
+                      <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-1.5 flex-wrap">
+                        <span class="text-[10.5px] font-semibold text-slate-400 dark:text-slate-500 shrink-0">${isEn ? 'Net Payout:' : 'ผลได้-เสีย:'}</span>
+                        ${Object.entries(m.payouts || {}).map(([pname, pinfo]) => {
+                          const netVal = pinfo.net || 0;
+                          const isPos = netVal > 0;
+                          const isNeg = netVal < 0;
+                          const chipClass = isPos 
+                            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200/80 dark:border-emerald-800/60' 
+                            : (isNeg 
+                              ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border-rose-200/80 dark:border-rose-800/60' 
+                              : 'bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700/60');
+                          return `
+                            <span class="text-[10px] px-1.5 py-0.5 rounded-md border ${chipClass} font-display">
+                              ${pname}: <strong>${fmtMoney(netVal)}</strong>
+                            </span>
                           `;
                         }).join('')}
                       </div>
@@ -7985,9 +8203,14 @@ selectShi62GW(gwName) {
           <!-- SECTION 2: Cumulative Standings Table (ตารางการแข่งขันทายผล) -->
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-3">
             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
-                ${isEn ? 'Cumulative Prediction Standings' : 'ตารางการแข่งขันทายผลสะสม'}
-              </h2>
+              <div>
+                <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">
+                  ${isEn ? 'Cumulative Prediction Standings' : 'ตารางการแข่งขันทายผลสะสม'}
+                </h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  ${isEn ? `Prediction performance from GW 1 to ${activeGWObj.name} • Zero-Sum Balance calculation (Total net equals 0 THB)` : `สรุปผลงานทายผล GW 1 ถึง ${activeGWObj.name} • คิดเงินแบบ Zero-Sum Balance (ยอดรวมได้-เสียสุทธิเท่ากับ 0 บาท)`}
+                </p>
+              </div>
             </div>
 
             <!-- Standings Table -->
@@ -8103,8 +8326,9 @@ selectShi62GW(gwName) {
 
           html += `
             <button 
+              id="gw-btn-${gw}"
               onclick="${isPlayed ? `app.selectGW(${gw})` : ''}"
-              class="flex-shrink-0 flex flex-col items-center justify-center w-14 sm:w-16 py-1.5 min-h-[44px] rounded-xl transition-colors duration-150 font-display active:scale-95 focus-visible:ring-2 focus-visible:ring-blue-500 ${badgeClass}"
+              class="flex-shrink-0 flex flex-col items-center justify-center w-14 sm:w-16 py-1.5 min-h-[44px] rounded-xl transition-all duration-150 font-display active:scale-95 focus-visible:ring-2 focus-visible:ring-blue-500 ${badgeClass}"
               ${!isPlayed ? 'disabled' : ''}
             >
               <span class="text-xs font-bold">GW ${gw}</span>
@@ -8113,6 +8337,15 @@ selectShi62GW(gwName) {
           `;
         }
         container.innerHTML = html;
+
+        // Auto-scroll active GW button into center view
+        try {
+          const activeBtn = document.getElementById(`gw-btn-${this.selectedGW}`);
+          if (activeBtn && container) {
+            const scrollLeft = activeBtn.offsetLeft - (container.clientWidth / 2) + (activeBtn.clientWidth / 2);
+            container.scrollTo({ left: Math.max(0, scrollLeft), behavior: 'smooth' });
+          }
+        } catch (e) {}
       }
 
       selectGW(gw, fromPopstate = false, skipRender = false) {
@@ -8178,6 +8411,13 @@ selectShi62GW(gwName) {
         }
 
         if (tableTitle) tableTitle.innerText = isEn ? `Gameweek ${this.selectedGW} Standings` : `ตารางคะแนน Gameweek ${this.selectedGW}`;
+        const overallTableTitle = document.getElementById('overall-table-title');
+        if (overallTableTitle) overallTableTitle.innerText = isEn ? 'Overall Cumulative Standings' : 'ตารางคะแนนรวมสะสม';
+        const matchdaySub = document.getElementById('matchday-sub-label');
+        if (matchdaySub) matchdaySub.innerText = isEn ? 'Gameweek Standings' : 'คะแนนประจำสัปดาห์';
+        const overallSub = document.getElementById('overall-sub-label');
+        if (overallSub) overallSub.innerText = isEn ? 'Overall Standings' : 'คะแนนรวมสะสม';
+        this.translateStaticElements();
         if (tableBadge) {
           if (isFinished) {
             tableBadge.innerText = isEn ? 'Official Results' : 'ผลการแข่งขันทางการ';
@@ -8545,10 +8785,10 @@ selectShi62GW(gwName) {
                     ${managerNamesHtml}
                   </div>
 
-                  <div class="flex items-center justify-end gap-2.5 sm:gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/70 dark:border-slate-700'}">
-                    <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xs px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl border ${isFinished ? 'border-slate-200 dark:border-slate-700' : 'border-emerald-200/90 dark:border-slate-700'} shadow-2xs flex items-center gap-2.5 sm:gap-3 ml-auto sm:ml-0">
+                  <div class="flex items-center justify-end gap-2.5 sm:gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 ${isFinished ? 'border-slate-200/80 dark:border-slate-800' : 'border-emerald-200/70 dark:border-slate-700'}">
+                    <div class="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xs px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl border ${isFinished ? 'border-amber-300/80 dark:border-amber-700/60 shadow-xs' : 'border-emerald-300/80 dark:border-emerald-700/60 shadow-xs'} flex items-center gap-2.5 sm:gap-3 ml-auto sm:ml-0">
                       <div class="text-right">
-                        <span class="text-[10px] sm:text-[11px] ${isFinished ? 'text-slate-700 dark:text-slate-300' : 'text-emerald-900/80 dark:text-slate-400'} uppercase font-bold font-display block leading-tight">
+                        <span class="text-[10px] sm:text-[11px] ${isFinished ? 'text-amber-800 dark:text-amber-300' : 'text-emerald-800 dark:text-emerald-300'} uppercase font-bold font-display block leading-tight">
                           ${isEn 
                             ? (isFinished ? (isWeeklyPrize ? 'Net Pts' : 'Official Score') : (isWeeklyPrize ? 'Live Net Pts' : 'Live Pts'))
                             : (isFinished ? (isWeeklyPrize ? 'แต้มสุทธิ' : 'คะแนนทางการ') : (isWeeklyPrize ? 'แต้มสุทธิสด' : 'คะแนนสด'))
@@ -8556,7 +8796,7 @@ selectShi62GW(gwName) {
                         </span>
                         <span class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-display leading-none">${prizeLeader[scoreProp]} <span class="text-xs font-bold text-slate-500 dark:text-slate-400">pts</span></span>
                       </div>
-                      <div class="text-right pl-2.5 sm:pl-3 border-l ${isFinished ? 'border-slate-200 dark:border-slate-700' : 'border-emerald-200/90 dark:border-slate-700'}">
+                      <div class="text-right pl-2.5 sm:pl-3 border-l ${isFinished ? 'border-amber-200/90 dark:border-slate-700' : 'border-emerald-200/90 dark:border-slate-700'}">
                         <span class="text-[10px] ${prizeLeader.hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-500 dark:text-slate-400'} block font-display">${isEn ? 'Hits:' : 'แต้มลบ:'} ${prizeLeader.hits > 0 ? `-${prizeLeader.hits}` : '-'}</span>
                         <span class="text-[9px] text-slate-500 dark:text-slate-400 block font-display">${prizeLeader.hits > 0 ? (isEn ? ((isFinished || isWeeklyPrize) ? 'Deducted in Net' : 'Deducted in Total') : ((isFinished || isWeeklyPrize) ? 'หักในแต้มสุทธิแล้ว' : 'หักในแต้มรวม')) : (isEn ? 'No Hits' : 'ไม่มีแต้มลบ')}</span>
                       </div>
@@ -8647,13 +8887,13 @@ selectShi62GW(gwName) {
             }
 
             mHtml += `
-              <tr class="hover:bg-emerald-50/20 dark:hover:bg-slate-800/40 transition-colors ${penaltyRowBg} ${isWinner ? 'bg-emerald-50/25 dark:bg-emerald-950/25 font-semibold' : ''}">
+              <tr onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer hover:bg-emerald-50/40 dark:hover:bg-slate-800/50 transition-colors ${penaltyRowBg} ${isWinner ? 'bg-emerald-50/25 dark:bg-emerald-950/25 font-semibold' : ''}">
                 <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-2 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors cursor-pointer max-w-[150px] xs:max-w-[200px] sm:max-w-none truncate block">
-                      <span class="truncate block">${this.escapeHtml(team.team_name)}</span>
-                    </button>
+                    <span class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors max-w-[150px] xs:max-w-[200px] sm:max-w-none truncate block">
+                      ${this.escapeHtml(team.team_name)}
+                    </span>
                     ${chip}
                     ${prizeBadge}
                     ${penaltyBadgeHtml}
@@ -8661,16 +8901,16 @@ selectShi62GW(gwName) {
                   <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                     <div class="truncate">${this.escapeHtml(team.player_name)}</div>
                     <div class="sm:hidden text-[10px] text-slate-600 dark:text-slate-400 font-medium mt-0.5 truncate">
-                      <span class="text-emerald-600 dark:text-emerald-400 font-semibold">(C)</span> ${this.escapeHtml((team.captain || '-').replace(/\s*\(C\)/gi, '').trim())}
+                      <span class="inline-flex items-center px-1 py-0.2 rounded text-[9px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 mr-0.5">(C)</span> ${this.escapeHtml((team.captain || '-').replace(/\s*\(C\)/gi, '').trim())}
                     </div>
                   </div>
                 </td>
                 <td class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">
-                  <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">${team.captain && team.captain !== '-' ? `<span class="text-slate-400 font-normal">(C)</span> ${this.escapeHtml(team.captain.replace(/\s*\(C\)/gi, '').trim())}` : '-'}</span>
+                  <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">${team.captain && team.captain !== '-' ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 mr-1">(C)</span>${this.escapeHtml(team.captain.replace(/\s*\(C\)/gi, '').trim())}` : '-'}</span>
                 </td>
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold tabular-nums text-xs sm:text-sm ${isStarted ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300'}">${team.points}</td>
                 <td class="py-2.5 px-1 sm:px-2 text-center tabular-nums text-xs sm:text-sm">${hits}</td>
-                <td class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right font-display font-medium tabular-nums text-xs sm:text-sm text-slate-700 dark:text-slate-300">${team.net_points}</td>
+                <td class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right font-display font-bold tabular-nums text-xs sm:text-sm text-slate-900 dark:text-white">${team.net_points}</td>
               </tr>
             `;
           });
@@ -8770,13 +9010,13 @@ selectShi62GW(gwName) {
             const hitsBadge = team.last_gw_hits > 0 ? `<span class="text-[10px] sm:text-[11px] font-bold text-rose-500 dark:text-rose-400 font-display ml-0.5">(-${team.last_gw_hits})</span>` : '';
 
             oHtml += `
-              <tr class="hover:bg-blue-50/30 dark:hover:bg-slate-800/40 transition-colors ${team.overall_rank && team.overall_rank <= 3 && isPrize ? 'bg-blue-50/20 dark:bg-blue-950/20' : ''}">
+              <tr onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer hover:bg-blue-50/40 dark:hover:bg-slate-800/50 transition-colors ${team.overall_rank && team.overall_rank <= 3 && isPrize ? 'bg-blue-50/20 dark:bg-blue-950/20' : ''}">
                 <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-2 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <button onclick="app.openTeamModal(${team.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-400 transition-colors block truncate cursor-pointer max-w-[150px] xs:max-w-[200px] sm:max-w-none">
+                    <span class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors block truncate max-w-[150px] xs:max-w-[200px] sm:max-w-none">
                       ${this.escapeHtml(team.team_name)}
-                    </button>
+                    </span>
                     ${prizeBadge}
                   </div>
                   <span class="text-[11px] text-slate-500 dark:text-slate-400 block truncate">${this.escapeHtml(team.player_name)}</span>
