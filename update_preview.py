@@ -2099,23 +2099,39 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     </div>
 
     <!-- ==================== TAB 5: กติกาของลีก (RULES VIEW) ==================== -->
-    <div id="rules-view" class="tab-content hidden space-y-4">
+    <div id="rules-view" class="tab-content hidden space-y-4 w-full max-w-full overflow-hidden">
       
-      <!-- Top Rules Overview Banner -->
-      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <span id="rules-kicker" class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-bold font-display"></span>
-          <h2 id="rules-header-title" class="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white font-display mt-0.5">กติกาแฟนตาซี</h2>
-          <p id="rules-header-desc" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5"></p>
+      <!-- Top Rules Overview Banner (Consistent with Highlights, Chips, Transfers, Dev Corner) -->
+      <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs w-full max-w-full overflow-hidden">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse flex-shrink-0"></span>
+            <span id="rules-kicker" class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-bold font-display truncate">
+              กฎระเบียบและข้อบังคับลีกทางการ
+            </span>
+          </div>
+          <h2 id="rules-header-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display mt-0.5 leading-snug break-words">
+            กติกาและการจัดสรรรางวัล
+          </h2>
+          <div id="rules-header-desc" class="mt-1"></div>
         </div>
-        <div class="flex items-center gap-2">
-          <span id="rules-gw-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display">38 สัปดาห์</span>
-          <span id="rules-header-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
+        <div class="flex items-center gap-2 flex-wrap flex-shrink-0">
+          <span id="rules-gw-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display">
+            38 สัปดาห์
+          </span>
+          <span id="rules-header-badge" class="bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60 text-xs px-3 py-1 rounded-xl font-bold font-display">
+            OFFICIAL RULES
+          </span>
         </div>
       </div>
 
-      <!-- 3-Column Dynamic Grid for Rules -->
-      <div id="rules-cards-container" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Dynamic Rules Grid (League Specific Rule Cards) -->
+      <div id="rules-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 w-full min-w-0">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Dedicated Section: Official Rules & Integrity Standards Protocol (Full-Width) -->
+      <div id="rules-governance-container" class="w-full min-w-0">
         <!-- Rendered dynamically -->
       </div>
 
@@ -5480,9 +5496,10 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
         // 12.1 Rules View Kicker & Badge
         const rulesKicker = document.getElementById('rules-kicker');
-        if (rulesKicker) rulesKicker.innerText = isEn ? 'OFFICIAL LEAGUE RULES & PRIZE MATRIX' : '';
+        if (rulesKicker) rulesKicker.innerText = isEn ? 'OFFICIAL LEAGUE RULES & PRIZE MATRIX' : 'กฎระเบียบและข้อบังคับลีกทางการ';
         const rulesGwBadge = document.getElementById('rules-gw-badge');
         if (rulesGwBadge) rulesGwBadge.innerText = isEn ? '38 GAMEWEEKS' : '38 สัปดาห์';
+        this.renderRulesView();
 
         // 13. About View
         this.renderAboutView();
@@ -14652,12 +14669,13 @@ selectShi62GW(gwName) {
         const descEl = document.getElementById('rules-header-desc');
         const badgeEl = document.getElementById('rules-header-badge');
         const cardsContainer = document.getElementById('rules-cards-container');
+        const govContainer = document.getElementById('rules-governance-container');
 
         const isEn = (this.currentLang === 'en');
         if (titleEl) {
           titleEl.innerText = isEn 
-            ? `Fantasy Rules: ${this.data.name} (${this.data.season || '2026/27'})`
-            : `กติกาแฟนตาซี ${this.data.name} (${this.data.season || '2026/27'})`;
+            ? 'Official League Rules & Governance'
+            : 'กติกาและการจัดสรรรางวัล';
         }
         const nonPrizeCount = (this.config && this.config.non_prize_teams) ? this.config.non_prize_teams.length : 0;
         const totalTeams = (this.data.teams || []).length;
@@ -14666,8 +14684,8 @@ selectShi62GW(gwName) {
         let teamDesc = '';
         if (isEn) {
           teamDesc = nonPrizeCount > 0 
-            ? `${totalTeams} Members (${prizeTeamsCount} Contenders, ${nonPrizeCount} Casual)`
-            : `${totalTeams} Members`;
+            ? `${totalTeams} Teams (${prizeTeamsCount} Contenders, ${nonPrizeCount} Casual)`
+            : `${totalTeams} Teams`;
         } else {
           teamDesc = nonPrizeCount > 0 
             ? `สมาชิก ${totalTeams} ทีม (ชิงรางวัล ${prizeTeamsCount} ทีม, ร่วมสนุก ${nonPrizeCount} ทีม)`
@@ -14676,51 +14694,89 @@ selectShi62GW(gwName) {
 
         const feeLabel = isEn ? 'Entry Fee:' : 'ค่าสมัคร:';
         const poolLabel = isEn ? 'Prize Pool:' : 'กองกลาง:';
-        const feeVal = (isEn && this.config.entry_fee_en) ? this.config.entry_fee_en : this.config.entry_fee;
-        const poolVal = (isEn && this.config.total_pool_en) ? this.config.total_pool_en : this.config.total_pool;
+        const feeVal = (isEn && this.config.entry_fee_en) ? this.config.entry_fee_en : (this.config.entry_fee || '-');
+        const poolVal = (isEn && this.config.total_pool_en) ? this.config.total_pool_en : (this.config.total_pool || '-');
 
         if (descEl) {
           descEl.innerHTML = `
-            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-2 text-xs">
-              <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-semibold border border-blue-200/60 dark:border-blue-800/60">League ID: ${this.activeLeagueId}</span>
-              <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">${teamDesc}</span>
-              <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-semibold border border-emerald-200/60 dark:border-emerald-800/60">${feeLabel} ${feeVal}</span>
-              <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 font-bold border border-amber-200/60 dark:border-amber-800/60">${poolLabel} ${poolVal}</span>
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-1.5 text-xs">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-semibold border border-blue-200/60 dark:border-blue-800/60 font-mono text-[11px]">League ID: ${this.activeLeagueId}</span>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">${teamDesc}</span>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-semibold border border-emerald-200/60 dark:border-emerald-800/60">${feeLabel} ${feeVal}</span>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 font-bold border border-amber-200/60 dark:border-amber-800/60">${poolLabel} ${poolVal}</span>
             </div>
           `;
         }
-        if (badgeEl) badgeEl.innerText = poolVal || (isEn ? 'OFFICIAL RULES' : 'OFFICIAL RULES');
+        if (badgeEl) {
+          badgeEl.innerText = isEn ? 'OFFICIAL RULES' : 'กติกาทางการ';
+        }
 
-        const activeRulesCards = (isEn && this.config.rules_cards_en) ? this.config.rules_cards_en : this.config.rules_cards;
-        if (cardsContainer && activeRulesCards) {
+        const activeRulesCards = (isEn && this.config.rules_cards_en) ? this.config.rules_cards_en : (this.config.rules_cards || []);
+        if (cardsContainer) {
+          if (activeRulesCards.length === 1) {
+            cardsContainer.className = "grid grid-cols-1 max-w-3xl mx-auto gap-4 sm:gap-5 w-full min-w-0";
+          } else if (activeRulesCards.length === 2) {
+            cardsContainer.className = "grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 w-full min-w-0";
+          } else {
+            cardsContainer.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 w-full min-w-0";
+          }
+
+          const cardThemes = [
+            {
+              badgeText: isEn ? 'RULE 01' : 'กติกา 01',
+              badgeClass: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border-blue-200/60 dark:border-blue-800/60',
+              iconContainer: 'bg-blue-50 dark:bg-blue-950/50 border-blue-200/80 dark:border-blue-800/60 text-blue-600 dark:text-blue-400',
+              dotClass: 'bg-blue-500 dark:bg-blue-400',
+              bulletDot: 'bg-blue-500/80 dark:bg-blue-400/80',
+              iconSvg: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>`
+            },
+            {
+              badgeText: isEn ? 'RULE 02' : 'กติกา 02',
+              badgeClass: 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/60 border-purple-200/60 dark:border-purple-800/60',
+              iconContainer: 'bg-purple-50 dark:bg-purple-950/50 border-purple-200/80 dark:border-purple-800/60 text-purple-600 dark:text-purple-400',
+              dotClass: 'bg-purple-500 dark:bg-purple-400',
+              bulletDot: 'bg-purple-500/80 dark:bg-purple-400/80',
+              iconSvg: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
+            },
+            {
+              badgeText: isEn ? 'RULE 03' : 'กติกา 03',
+              badgeClass: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200/60 dark:border-emerald-800/60',
+              iconContainer: 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200/80 dark:border-emerald-800/60 text-emerald-600 dark:text-emerald-400',
+              dotClass: 'bg-emerald-500 dark:bg-emerald-400',
+              bulletDot: 'bg-emerald-500/80 dark:bg-emerald-400/80',
+              iconSvg: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>`
+            }
+          ];
+
           let html = '';
           activeRulesCards.forEach((card, idx) => {
+            const theme = cardThemes[idx % cardThemes.length];
             let itemsHtml = '';
             card.items.forEach(item => {
               let formattedDesc = '';
               if (item.desc) {
-                const lines = item.desc.split('\\n').map(l => l.trim()).filter(Boolean);
+                const lines = (item.desc || "").split("\\n").flatMap(l => l.split("\\\\n")).map(l => l.trim()).filter(Boolean);
                 if (lines.length > 1) {
                   const listItems = lines.map(line => {
-                    const isBullet = line.startsWith('•') || line.startsWith('-');
-                    const content = isBullet ? line.replace(/^[•\\-]\\s*/, '') : line;
+                    const isBullet = line.startsWith('•') || line.startsWith('-') || line.startsWith('*');
+                    const content = isBullet ? line.replace(/^[•\-\*]\s*/, '') : line;
                     return `
-                      <li class="flex items-start gap-2 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">
-                        <span class="text-blue-500 dark:text-blue-400 font-bold leading-tight select-none mt-0.5">•</span>
+                      <li class="flex items-start gap-2.5 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">
+                        <span class="w-1.5 h-1.5 rounded-full ${theme.bulletDot} mt-1.5 flex-shrink-0"></span>
                         <span class="flex-1">${content}</span>
                       </li>
                     `;
                   }).join('');
-                  formattedDesc = `<ul class="space-y-1.5 mt-2 pl-0.5">${listItems}</ul>`;
+                  formattedDesc = `<ul class="space-y-2 mt-2 pl-0.5">${listItems}</ul>`;
                 } else {
-                  formattedDesc = `<p class="mt-1.5 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">${item.desc}</p>`;
+                  formattedDesc = `<p class="mt-2 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">${item.desc}</p>`;
                 }
               }
 
               itemsHtml += `
-                <div class="bg-slate-50/90 dark:bg-slate-900/60 p-3.5 sm:p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 transition-colors shadow-2xs">
-                  <div class="flex items-center gap-2 border-b border-slate-200/40 dark:border-slate-800/60 pb-1.5">
-                    <span class="w-2 h-2 rounded-full bg-blue-500 dark:bg-blue-400 flex-shrink-0"></span>
+                <div class="bg-slate-50/80 dark:bg-slate-900/50 p-3.5 sm:p-4 rounded-xl border border-slate-200/70 dark:border-slate-800/80 shadow-2xs">
+                  <div class="flex items-center gap-2 border-b border-slate-200/50 dark:border-slate-800/70 pb-2">
+                    <span class="w-2 h-2 rounded-full ${theme.dotClass} flex-shrink-0"></span>
                     <strong class="text-slate-900 dark:text-slate-100 font-bold text-xs sm:text-sm tracking-tight">${item.label}</strong>
                   </div>
                   ${formattedDesc}
@@ -14729,79 +14785,186 @@ selectShi62GW(gwName) {
             });
 
             html += `
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3.5 shadow-2xs">
-                <div>
-                  <div class="flex items-center gap-2 mb-3 pb-2.5 border-b border-slate-100 dark:border-slate-800/80">
-                    <span class="w-6 h-6 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center justify-center font-display border border-blue-200/50 dark:border-blue-800/50">${idx + 1}</span>
-                    <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight">${card.title}</h3>
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+                <div class="min-w-0">
+                  <div class="flex items-center justify-between mb-3 gap-2">
+                    <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${theme.iconContainer} border inline-flex items-center justify-center shadow-2xs flex-shrink-0">
+                      ${theme.iconSvg}
+                    </span>
+                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md border tracking-wider flex-shrink-0 ${theme.badgeClass}">${theme.badgeText}</span>
                   </div>
-                  <div class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+                  <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight leading-snug mb-3 pb-2.5 border-b border-slate-100 dark:border-slate-800/80">${card.title}</h3>
+                  <div class="space-y-3 text-xs text-slate-600 dark:text-slate-300">
                     ${itemsHtml}
                   </div>
                 </div>
-                <div class="text-[11px] text-slate-400 dark:text-slate-500 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 leading-normal">
-                  ${card.footer || ''}
-                </div>
+                ${card.footer ? `
+                  <div class="text-[11px] text-slate-400 dark:text-slate-500 pt-3 mt-3 border-t border-slate-100 dark:border-slate-800/80 leading-normal flex items-start gap-1.5">
+                    <span class="text-blue-500 flex-shrink-0 select-none">•</span>
+                    <span class="italic">${card.footer.replace(/^[\*\s]+/, '')}</span>
+                  </div>
+                ` : ''}
               </div>
             `;
           });
-          // Standard Clarifications & Official System Matrix Card (Appended to ensure full clarity across all leagues)
-          const stdClarifyTitle = isEn ? 'Official Rules & Clarifications' : 'ข้อกำหนดและกติกามาตรฐานสากล';
+          cardsContainer.innerHTML = html;
+        }
+
+        // Dedicated Full-Width Governance & Standard Clarifications Section
+        if (govContainer) {
+          const stdClarifyTitle = isEn ? 'Official Rules & Integrity Standards' : 'ข้อกำหนดและกติกามาตรฐานสากล';
+          const stdClarifySubtitle = isEn 
+            ? 'Premier League Official Data Standards, Tie-Breaker Principles & Competition Integrity'
+            : 'มาตรฐานความโปร่งใส การตัดสินคะแนน และระบบแข่งขันทางการ (Premier League Data Standards)';
+          
           const tieBreakLabel = isEn ? 'Tie-Breaker Principles' : 'เกณฑ์การตัดสินกรณีคะแนนเท่ากัน (Tie-Breaker)';
           const tieBreakLines = isEn 
             ? [
-                'Weekly Head-to-Head & Weekly Prize: When enabled, tied net points are decided by comparing individual active scoring players (starters + autosubs) in descending score order. Under Bench Boost, top 11 scoring players across the squad are compared.',
+                'Weekly Head-to-Head & Weekly Prize: Tied net points are decided by comparing individual active scoring players (starters + autosubs) in descending score order. Under Bench Boost, top 11 scoring players across the squad are compared.',
                 'Season Cumulative Overall: Ties in 38-gameweek cumulative net points are broken by Official Premier League Rank (fpl_rank).'
               ]
             : [
-                'แชมป์ประจำสัปดาห์ & การหักค่าปรับ: กรณีเปิดใช้ระบบ Tie-breaker หากคะแนนสุทธิเท่ากัน จะตัดสินด้วยคะแนนของผู้เล่นตัวจริงและตัวสำรองที่ถูกเปลี่ยนลงสนาม (Autosubs) เรียงจากมากไปน้อย (กรณีใช้ Bench Boost จะเปรียบเทียบจาก 11 ผู้เล่นที่ทำแต้มสูงสุด)',
+                'แชมป์ประจำสัปดาห์ & การหักค่าปรับ: กรณีคะแนนสุทธิเท่ากัน จะตัดสินด้วยคะแนนของผู้เล่นตัวจริงและตัวสำรองที่ถูกเปลี่ยนลงสนาม (Autosubs) เรียงจากมากไปน้อย (กรณีใช้ Bench Boost จะเปรียบเทียบจาก 11 ผู้เล่นที่ทำแต้มสูงสุด)',
                 'ตารางคะแนนรวมตลอดฤดูกาล: หากคะแนนสะสมสุทธิเท่ากันหลังจบ 38 สัปดาห์ จะตัดสินตามลำดับ Official FPL Rank (อันดับทางการของพรีเมียร์ลีก)'
               ];
-          const cupRuleLabel = isEn ? 'Official FPL Cup Tournament' : 'การแข่งขันฟุตบอลถ้วย';
+
+          const cupRuleLabel = isEn ? 'Official FPL Cup Tournament & Fair Play' : 'การแข่งขันฟุตบอลถ้วย & สิทธิประโยชน์';
           const cupRuleLines = isEn
             ? [
                 'Knockout Bracket: Pairings and progression are powered automatically by the Official FPL Cup engine starting on the designated kickoff gameweek.',
-                'Eligibility: Prize payouts are reserved for verified league participants.'
+                'Eligibility & Payouts: Prize payouts and awards are strictly reserved for verified participating members of this league.'
               ]
             : [
                 'ผังประกบคู่ Knockout: ประกบคู่และตัดสินผลแพ้-ชนะแบบอัตโนมัติตามระบบ Official FPL Cup เมื่อถึงสัปดาห์ที่เริ่มแข่งขันที่กำหนด',
-                'คุณสมบัติ: สงวนสิทธิ์การรับเงินรางวัลเฉพาะทีมแข่งขันที่มีสิทธิ์รับรางวัล'
+                'คุณสมบัติ & การรับรางวัล: สงวนสิทธิ์การรับเงินรางวัลเฉพาะทีมแข่งขันที่มีสิทธิ์รับรางวัลและเป็นสมาชิกทางการของลีก'
               ];
-          
-          html += `
-            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3.5 shadow-2xs">
-              <div>
-                <div class="flex items-center gap-2 mb-3 pb-2.5 border-b border-slate-100 dark:border-slate-800/80">
-                  <span class="w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 font-bold text-xs flex items-center justify-center font-display border border-emerald-200/50 dark:border-emerald-800/50">ℹ️</span>
-                  <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight">${stdClarifyTitle}</h3>
+
+          const quickNavPrizesText = isEn ? 'Jump to: Prizes Tab' : 'ไปยังแท็บ: เงินรางวัล';
+          const quickNavChipsText = isEn ? 'Jump to: Chips Matrix' : 'ไปยังแท็บ: สถานะชิป';
+          const quickNavHofText = isEn ? 'Jump to: Hall of Fame' : 'ไปยังแท็บ: ทำเนียบแชมป์';
+          const copyRulesText = isEn ? 'Copy Rules for LINE Group' : 'คัดลอกสรุปกติกาเพื่อส่งไลน์';
+
+          govContainer.innerHTML = `
+            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-2xs w-full min-w-0 overflow-hidden">
+              <div class="flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-100 dark:border-slate-800/80">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/70 dark:border-emerald-800/70 inline-flex items-center justify-center shadow-2xs flex-shrink-0">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                  </span>
+                  <div>
+                    <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-base tracking-tight font-display">${stdClarifyTitle}</h3>
+                    <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">${stdClarifySubtitle}</p>
+                  </div>
                 </div>
-                <div class="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
-                  <div class="bg-slate-50/90 dark:bg-slate-900/60 p-3.5 sm:p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-                    <div class="flex items-center gap-2 border-b border-slate-200/40 dark:border-slate-800/60 pb-1.5">
+                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md border text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200/60 dark:border-emerald-800/60 tracking-wider flex-shrink-0">
+                  ${isEn ? 'HIGH INTEGRITY' : 'มาตรฐานพรีเมียร์ลีก'}
+                </span>
+              </div>
+
+              <!-- 2-Column Balanced Micro-Cards -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
+                <!-- Tie-Breaker Card -->
+                <div class="bg-slate-50/80 dark:bg-slate-900/50 p-3.5 sm:p-4 rounded-xl border border-slate-200/70 dark:border-slate-800/80 shadow-2xs flex flex-col justify-between">
+                  <div>
+                    <div class="flex items-center gap-2 border-b border-slate-200/50 dark:border-slate-800/70 pb-2">
                       <span class="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 flex-shrink-0"></span>
                       <strong class="text-slate-900 dark:text-slate-100 font-bold text-xs sm:text-sm tracking-tight">${tieBreakLabel}</strong>
                     </div>
-                    <ul class="space-y-1.5 mt-2 pl-0.5">
-                      ${tieBreakLines.map(l => `<li class="flex items-start gap-2 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300"><span class="text-emerald-500 font-bold leading-tight mt-0.5">•</span><span class="flex-1">${l}</span></li>`).join('')}
+                    <ul class="space-y-2.5 mt-2.5 pl-0.5">
+                      ${tieBreakLines.map(l => `
+                        <li class="flex items-start gap-2.5 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">
+                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/80 dark:bg-emerald-400/80 mt-1.5 flex-shrink-0"></span>
+                          <span class="flex-1">${l}</span>
+                        </li>
+                      `).join('')}
                     </ul>
                   </div>
-                  <div class="bg-slate-50/90 dark:bg-slate-900/60 p-3.5 sm:p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-                    <div class="flex items-center gap-2 border-b border-slate-200/40 dark:border-slate-800/60 pb-1.5">
+                </div>
+
+                <!-- Cup & Eligibility Card -->
+                <div class="bg-slate-50/80 dark:bg-slate-900/50 p-3.5 sm:p-4 rounded-xl border border-slate-200/70 dark:border-slate-800/80 shadow-2xs flex flex-col justify-between">
+                  <div>
+                    <div class="flex items-center gap-2 border-b border-slate-200/50 dark:border-slate-800/70 pb-2">
                       <span class="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 flex-shrink-0"></span>
                       <strong class="text-slate-900 dark:text-slate-100 font-bold text-xs sm:text-sm tracking-tight">${cupRuleLabel}</strong>
                     </div>
-                    <ul class="space-y-1.5 mt-2 pl-0.5">
-                      ${cupRuleLines.map(l => `<li class="flex items-start gap-2 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300"><span class="text-emerald-500 font-bold leading-tight mt-0.5">•</span><span class="flex-1">${l}</span></li>`).join('')}
+                    <ul class="space-y-2.5 mt-2.5 pl-0.5">
+                      ${cupRuleLines.map(l => `
+                        <li class="flex items-start gap-2.5 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">
+                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/80 dark:bg-emerald-400/80 mt-1.5 flex-shrink-0"></span>
+                          <span class="flex-1">${l}</span>
+                        </li>
+                      `).join('')}
                     </ul>
                   </div>
                 </div>
               </div>
-              <div class="text-[11px] text-slate-400 dark:text-slate-500 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 leading-normal">
-                ${isEn ? '* Official Premier League rules and data integrity apply.' : '* อ้างอิงตามกติกาและข้อมูลทางการของ Premier League'}
+
+              <!-- Quick Cross-Tab Navigation & Admin Share Utility -->
+              <div class="mt-4 pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-2.5">
+                <div class="flex flex-wrap items-center gap-2">
+                  <button type="button" onclick="app.switchTab('prizes-view')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer">
+                    <svg class="w-3.5 h-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span>${quickNavPrizesText}</span>
+                  </button>
+                  <button type="button" onclick="app.switchTab('chips-view')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer">
+                    <svg class="w-3.5 h-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    <span>${quickNavChipsText}</span>
+                  </button>
+                  <button type="button" onclick="app.switchTab('hall-of-fame-view')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer">
+                    <svg class="w-3.5 h-3.5 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+                    <span>${quickNavHofText}</span>
+                  </button>
+                </div>
+                <button type="button" onclick="app.copyRulesSummary()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold shadow-2xs transition-colors cursor-pointer active:scale-95">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                  <span>${copyRulesText}</span>
+                </button>
               </div>
             </div>
           `;
-          cardsContainer.innerHTML = html;
+        }
+      }
+
+      copyRulesSummary() {
+        const isEn = (this.currentLang === 'en');
+        const name = this.data.name || '';
+        const season = this.data.season || '2026/27';
+        const fee = (isEn && this.config.entry_fee_en) ? this.config.entry_fee_en : (this.config.entry_fee || '-');
+        const pool = (isEn && this.config.total_pool_en) ? this.config.total_pool_en : (this.config.total_pool || '-');
+        const teams = (this.data.teams || []).length;
+        const nonPrizeCount = (this.config && this.config.non_prize_teams) ? this.config.non_prize_teams.length : 0;
+        const prizeTeamsCount = teams - nonPrizeCount;
+        const memberInfo = nonPrizeCount > 0 
+          ? (isEn ? `${teams} Teams (${prizeTeamsCount} Contenders, ${nonPrizeCount} Casual)` : `${teams} ทีม (ชิงรางวัล ${prizeTeamsCount} ทีม, ร่วมสนุก ${nonPrizeCount} ทีม)`)
+          : (isEn ? `${teams} Teams` : `${teams} ทีม`);
+
+        let text = isEn 
+          ? `📋 [Official FPL Rules Summary] ${name} (${season})\n` +
+            `• League ID: ${this.activeLeagueId}\n` +
+            `• Participants: ${memberInfo}\n` +
+            `• Entry Fee: ${fee}\n` +
+            `• Prize Pool: ${pool}\n` +
+            `• Duration: 38 Gameweeks\n` +
+            `• Data Standards: Official FPL Rules & Tie-breaker apply.\n` +
+            `👉 View Full Rules Dashboard: ${window.location.href}`
+          : `📋 [สรุปกติกาแฟนตาซีพรีเมียร์ลีก] ${name} (${season})\n` +
+            `• รหัสลีก (League ID): ${this.activeLeagueId}\n` +
+            `• สมาชิก: ${memberInfo}\n` +
+            `• ค่าสมัคร: ${fee}\n` +
+            `• เงินรางวัลกองกลาง: ${pool}\n` +
+            `• ระยะเวลาแข่งขัน: 38 สัปดาห์\n` +
+            `• มาตรฐานการตัดสิน: อ้างอิงตามกติกาและคะแนนทางการของ Premier League\n` +
+            `👉 ดูรายละเอียดกติกาฉบับเต็ม: ${window.location.href}`;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            this.showToast(isEn ? 'Rules summary copied to clipboard!' : 'คัดลอกสรุปกติกาลง Clipboard เรียบร้อย!');
+          }).catch(() => {
+            prompt(isEn ? 'Copy rules summary:' : 'คัดลอกสรุปกติกา:', text);
+          });
+        } else {
+          prompt(isEn ? 'Copy rules summary:' : 'คัดลอกสรุปกติกา:', text);
         }
       }
 
