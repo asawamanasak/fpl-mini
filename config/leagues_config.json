@@ -917,7 +917,7 @@
     ],
     "features": {
       "prize_model": "bramann_dual_prize",
-      "prize1_target_gw": 19,
+      "prize1_target_gw": 18,
       "prize1_total": 4500,
       "prize1_tiers": {
         "1": 500,
@@ -958,8 +958,8 @@
             "desc": "• สมาชิกแข่งขัน: 19 ทีม เก็บคนละ 500 บาท รวม 9,500 บาท\n• ทีมร่วมสนุก (1 ทีม): GEMINI UNITED (ID: 306983) ไม่ได้รับเงินรางวัล\n• สมาชิกรวมทั้งสิ้น: 20 ทีม"
           },
           {
-            "label": "Prize 1: สิ้นปี 2026 (หลังจบ GW 19 รวม 4,500 บาท)",
-            "desc": "• ให้รางวัลเรียงตามลำดับ FPL หลังจบ GW 19 จำนวน 9 อันดับ\n• อันดับที่ได้รับ: 1, 2, 3, 5, 7, 9, 11, 13, 15 ได้รับคนละ 500 บาทเท่ากัน (9 x 500 = 4,500 บาท)"
+            "label": "Prize 1: สิ้นปี 2026 (หลังจบ GW 18 รวม 4,500 บาท)",
+            "desc": "• ให้รางวัลเรียงตามลำดับ FPL หลังจบ GW 18 จำนวน 9 อันดับ\n• อันดับที่ได้รับ: 1, 2, 3, 5, 7, 9, 11, 13, 15 ได้รับคนละ 500 บาทเท่ากัน (9 x 500 = 4,500 บาท)"
           },
           {
             "label": "Prize 2: สิ้นฤดูกาล (หลังจบ GW 38 รวม 5,000 บาท)",
@@ -1008,8 +1008,8 @@
             "desc": "• 19 Prize-Eligible Teams (500 THB each = 9,500 THB pool)\n• 1 Guest Team: GEMINI UNITED (Non-prize casual entry)\n• Total Members: 20 Teams"
           },
           {
-            "label": "Prize 1: Mid-Season Finale (After GW 19, 4,500 THB)",
-            "desc": "• Awarded to 9 designated ranks after GW 19\n• Eligible ranks: 1st, 2nd, 3rd, 5th, 7th, 9th, 11th, 13th, 15th (500 THB each = 4,500 THB)"
+            "label": "Prize 1: Mid-Season Finale (After GW 18, 4,500 THB)",
+            "desc": "• Awarded to 9 designated ranks after GW 18\n• Eligible ranks: 1st, 2nd, 3rd, 5th, 7th, 9th, 11th, 13th, 15th (500 THB each = 4,500 THB)"
           },
           {
             "label": "Prize 2: Season Finale (After GW 38, 5,000 THB)",

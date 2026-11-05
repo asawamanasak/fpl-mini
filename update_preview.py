@@ -6943,7 +6943,7 @@ selectShi62GW(gwName) {
         lines.push(`(อันดับ • ทีม • คะแนนรวม • P1 • P2 • รางวัล FPL • ทายผลสะสม • ท้าชนสะสม • ยอดรวมสุทธิ)`);
 
         const feat = (this.config && this.config.features) || {};
-        const p1GW = Number(feat.prize1_target_gw) || 19;
+        const p1GW = Number(feat.prize1_target_gw) || 18;
         const p2GW = Number(feat.prize2_target_gw) || 38;
         const p1Tiers = feat.prize1_tiers || { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
         const p2Tiers = feat.prize2_tiers || { "1": 1000, "2": 800, "3": 700, "7": 700, "8": 500, "9": 400, "13": 400, "14": 300, "15": 200 };
@@ -7068,8 +7068,8 @@ selectShi62GW(gwName) {
         }
 
         lines.push(`---------------------------------`);
-        lines.push(`• Prize 1 (หลังจบ GW 19): 9 อันดับ (1, 2, 3, 5, 7, 9, 11, 13, 15) คนละ 500 บ. (รวม 4,500 บ.)`);
-        lines.push(`• Prize 2 (หลังจบ GW 38): 9 อันดับขั้นบันได (รวม 5,000 บ.)`);
+        lines.push(`• Prize 1 (หลังจบ GW ${p1GW}): 9 อันดับ (1, 2, 3, 5, 7, 9, 11, 13, 15) คนละ 500 บ. (รวม 4,500 บ.)`);
+        lines.push(`• Prize 2 (หลังจบ GW ${p2GW}): 9 อันดับขั้นบันได (รวม 5,000 บ.)`);
         lines.push(`---------------------------------`);
         lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
 
@@ -7808,9 +7808,15 @@ selectShi62GW(gwName) {
       renderBramannDualPrizeView(titleEl, subEl, poolBadge, tagEl, mainContainer) {
         if (!(this.config && this.config.features && this.config.features.prize_model === 'bramann_dual_prize') && String(this.activeLeagueId) !== '5349') return;
         const isEn = (this.currentLang === 'en');
-        if (tagEl) tagEl.innerText = "BRAMANN DUAL PRIZE (GW 19 & GW 38)";
+        const feat = (this.config && this.config.features) || {};
+        const p1GW = Number(feat.prize1_target_gw) || 18;
+        const p2GW = Number(feat.prize2_target_gw) || 38;
+        const p1Tiers = feat.prize1_tiers || { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
+        const p2Tiers = feat.prize2_tiers || { "1": 1000, "2": 800, "3": 700, "7": 700, "8": 500, "9": 400, "13": 400, "14": 300, "15": 200 };
+
+        if (tagEl) tagEl.innerText = `BRAMANN DUAL PRIZE (GW ${p1GW} & GW ${p2GW})`;
         if (titleEl) titleEl.innerText = isEn ? "FPL Prize & Treasury Summary" : "สรุปเงินรางวัล FPL & การจัดสรรกองกลาง";
-        if (subEl) subEl.innerText = isEn ? "Total treasury 9,500 THB (19 teams x 500 THB) • Prize 1 (Post-GW 19 total 4,500 THB) + Prize 2 (Post-GW 38 total 5,000 THB)" : "เงินกองกลางรวม 9,500 THB (19 ทีม x 500 THB) • Prize 1 (หลังจบ GW 19 รวม 4,500 THB) + Prize 2 (หลังจบ GW 38 รวม 5,000 THB)";
+        if (subEl) subEl.innerText = isEn ? `Total treasury 9,500 THB (19 teams x 500 THB) • Prize 1 (Post-GW ${p1GW} total 4,500 THB) + Prize 2 (Post-GW ${p2GW} total 5,000 THB)` : `เงินกองกลางรวม 9,500 THB (19 ทีม x 500 THB) • Prize 1 (หลังจบ GW ${p1GW} รวม 4,500 THB) + Prize 2 (หลังจบ GW ${p2GW} รวม 5,000 THB)`;
         if (poolBadge) poolBadge.innerText = "9,500 THB";
 
         const leagueBadge = document.getElementById('prizes-league-badge');
@@ -7818,12 +7824,6 @@ selectShi62GW(gwName) {
           const memberCount = (this.data.teams || []).length;
           leagueBadge.innerText = isEn ? `${memberCount} Members` : `สมาชิก ${memberCount} ทีม`;
         }
-
-        const feat = (this.config && this.config.features) || {};
-        const p1GW = Number(feat.prize1_target_gw) || 19;
-        const p2GW = Number(feat.prize2_target_gw) || 38;
-        const p1Tiers = feat.prize1_tiers || { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
-        const p2Tiers = feat.prize2_tiers || { "1": 1000, "2": 800, "3": 700, "7": 700, "8": 500, "9": 400, "13": 400, "14": 300, "15": 200 };
 
         const maxGW = Number(this.multiData && this.multiData.max_gw) || 7;
 
@@ -8146,9 +8146,9 @@ selectShi62GW(gwName) {
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-2xs">
                 <div class="flex items-center justify-between">
                   <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60 font-display">
-                    ${isEn ? 'PRIZE 1: Mid-Season (Post GW 19)' : 'PRIZE 1: สิ้นปี 2026 (หลังจบ GW 19)'}
+                    ${isEn ? `PRIZE 1: Mid-Season (Post GW ${p1GW})` : `PRIZE 1: สิ้นปี 2026 (หลังจบ GW ${p1GW})`}
                   </span>
-                  <span class="text-xs font-bold text-slate-500 dark:text-slate-400">${isEn ? `Played ${maxGW} / 19` : `แข่งไปแล้ว ${maxGW} / 19`}</span>
+                  <span class="text-xs font-bold text-slate-500 dark:text-slate-400">${isEn ? `Played ${maxGW} / ${p1GW}` : `แข่งไปแล้ว ${maxGW} / ${p1GW}`}</span>
                 </div>
                 <div>
                   <div class="text-xl sm:text-2xl font-black font-display text-slate-900 dark:text-white">
@@ -8243,8 +8243,8 @@ selectShi62GW(gwName) {
                       <th class="py-2.5 px-2 text-center w-9 min-w-[36px] sticky left-0 bg-slate-50 dark:bg-slate-800 z-20">#</th>
                       <th class="py-2.5 px-3 min-w-[150px] sticky left-[36px] bg-slate-50 dark:bg-slate-800 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.06)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.4)]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                       <th class="py-2.5 px-2 text-center w-16">${isEn ? 'Total Pts' : 'คะแนนรวม'}</th>
-                      <th class="py-2.5 px-2 text-right min-w-[90px]">Prize 1 (GW19)</th>
-                      <th class="py-2.5 px-2 text-right min-w-[90px]">Prize 2 (GW38)</th>
+                      <th class="py-2.5 px-2 text-right min-w-[90px]">Prize 1 (GW${p1GW})</th>
+                      <th class="py-2.5 px-2 text-right min-w-[90px]">Prize 2 (GW${p2GW})</th>
                       <th class="py-2.5 px-2 text-right min-w-[100px]">${isEn ? 'FPL Prize' : 'รางวัล FPL'}</th>
                       <th class="py-2.5 px-2 text-right min-w-[100px]">${isEn ? 'Prediction Net' : 'ทายผลสะสม'}</th>
                       <th class="py-2.5 px-2 text-right min-w-[90px]">${isEn ? 'Challenge Net' : 'ท้าชนสะสม'}</th>
@@ -18152,24 +18152,24 @@ selectShi62GW(gwName) {
             });
           } else if (feat.prize_model === 'bramann_dual_prize') {
             prizeRows.push([isEn ? '=== BRAMANN LEAGUE DUAL PRIZES & MINI-GAMES ===' : '=== สรุปเงินรางวัล FPL & มินิเกม Bramann League ===']);
+            const p1GW = Number(feat.prize1_target_gw) || 18;
+            const p2GW = Number(feat.prize2_target_gw) || 38;
+            const p1Tiers = feat.prize1_tiers || { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
+            const p2Tiers = feat.prize2_tiers || { "1": 1000, "2": 800, "3": 700, "7": 700, "8": 500, "9": 400, "13": 400, "14": 300, "15": 200 };
+
             prizeRows.push([
               'อันดับ',
               'ทีม',
               'ผู้จัดการ',
               'FPL ID',
               'คะแนนรวมสะสม',
-              'Prize 1 (GW 19)',
-              'Prize 2 (GW 38)',
+              `Prize 1 (GW ${p1GW})`,
+              `Prize 2 (GW ${p2GW})`,
               'รวมรางวัล FPL (THB)',
               'ทายผลสะสม (THB)',
               'ท้าชนสะสม (THB)',
               isEn ? 'Grand Total (THB)' : 'ยอดรวมสุทธิ (THB)'
             ]);
-
-            const p1GW = Number(feat.prize1_target_gw) || 19;
-            const p2GW = Number(feat.prize2_target_gw) || 38;
-            const p1Tiers = feat.prize1_tiers || { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
-            const p2Tiers = feat.prize2_tiers || { "1": 1000, "2": 800, "3": 700, "7": 700, "8": 500, "9": 400, "13": 400, "14": 300, "15": 200 };
 
             const overallMap = {};
             (this.data.teams || []).forEach(t => {
