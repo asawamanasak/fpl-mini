@@ -1,3 +1,48 @@
+GW9
+CHE -1 v MUN 2:0
+CHE / Nod Boy ✅
+d / poang
+MUN / Dow Oo
+
+BOU -0.5 v LEE 
+BOU / boy Dow ✅
+LEE / Oo Totti
+
+BRE -0.5 v NFO
+BRE / Dow Totti ✅
+NFO / Oo
+
+COV v SUN -0.5
+COV / Oo Totti ✅
+SUN / Dow
+
+HUL v IPS
+HUL / Dow Totti
+d / poang ✅
+IPS / Oo
+
+MCI -1 v BHA
+MCI / Oo
+d / Totti
+BHA / Dow ✅
+
+TOT -1 v CRY
+TOT / Riin Dow ✅
+d / boy Totti
+CRY / Oo
+
+AVL -0.5 v FUL
+AVL / Dow Totti
+FUL / Oo ✅
+
+LIV v ARS -0.5
+LIV / Boy
+ARS / Oo Dow ✅
+
+NEW -0.5 v EVE
+NEW / Oo
+EVE / Dow ✅
+
 GW8
 UCL
 COM-0.5 v MUN

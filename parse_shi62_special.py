@@ -130,9 +130,17 @@ def format_match_title(raw_title, tournament=None):
         tournament = m_tour.group(1)
         clean_title = clean_title[m_tour.end():].strip()
 
+    # Trailing score check (e.g. ' 2:0' or ' 2-0')
+    m_score = re.search(r'\s+(\d+[:\-]\d+)\s*$', clean_title)
+    score_str = ""
+    if m_score:
+        score_str = f" ({m_score.group(1)})"
+        clean_title = clean_title[:m_score.start()].strip()
+
     parts = re.split(r'\s+[vV:]\s+|\s*:\s*|\s+[vV][sS]\s+', clean_title)
     if len(parts) != 2:
-        return f"[{tournament}] {clean_title}" if tournament else clean_title
+        res = f"[{tournament}] {clean_title}" if tournament else clean_title
+        return res + score_str
 
     def parse_side(side_str):
         s = side_str.strip()
@@ -178,6 +186,7 @@ def parse_shi62_file(file_path):
             return
         title = match.get("title", "")
         clean_title = re.sub(r'^\[.*?\]\s*', '', title)
+        clean_title = re.sub(r'\s*\(\d+[:\-]\d+\)\s*$', '', clean_title)
         parts = re.split(r'\s+[vV:]\s+|\s*:\s*|\s+[vV][sS]\s+', clean_title)
         home_team = ""
         away_team = ""
@@ -338,8 +347,8 @@ def parse_shi62_file(file_path):
             continue
 
         # Check for match title: e.g. "EVE v CHE -0.5", "ARS : MCI", "BRE v LIV", "MCI -2 v IPS"
-        # Match headers contain ' v ' or ' vs ' or ' : ' and do NOT start with an option prefix like 'A.' or 'd.'
-        is_match_header = (' v ' in line.lower() or ' vs ' in line.lower() or ' : ' in line.lower()) and not re.match(r'^[A-Za-z]{1,3}[\.\:]\s*', line)
+        # Match headers contain ' v ' or ' vs ' or ' : ' and do NOT start with an option prefix like 'A.' or 'd.' or 'CHE /'
+        is_match_header = (' v ' in line.lower() or ' vs ' in line.lower() or ' : ' in line.lower()) and not re.match(r'^[A-Za-z]{1,4}[\.\:\/]\s*', line)
         if is_match_header:
             if current_match:
                 current_gw_matches.append(finalize_match(current_match))
@@ -353,11 +362,11 @@ def parse_shi62_file(file_path):
             i += 1
             continue
 
-        # Otherwise, it's a bet option line: e.g. "E. Dow Totti", "C. Nod, Oo✅", "d. poang", "A: Dow✅"
+        # Otherwise, it's a bet option line: e.g. "E. Dow Totti", "C. Nod, Oo✅", "d. poang", "A: Dow✅", "CHE / Nod Boy"
         if current_match:
             is_win = "✅" in line
             cleaned = line.replace("✅", "").strip()
-            parts = re.split(r'[\.\:]\s*', cleaned, maxsplit=1)
+            parts = re.split(r'[\.\:\/]\s*', cleaned, maxsplit=1)
             opt_label = parts[0].strip()
             names_raw = parts[1].strip() if len(parts) > 1 else ""
             
