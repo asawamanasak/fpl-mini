@@ -1132,7 +1132,7 @@
       <div class="inline-flex items-center max-w-full">
         <span id="header-deadline-badge" class="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs max-w-full" title="เส้นตายการจัดทีม Gameweek ถัดไป">
           <svg class="w-3 h-3 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          <span id="header-deadline-val" class="font-mono tabular-nums truncate">เส้นตาย GW 10: 1 วัน 13:36:38</span>
+          <span id="header-deadline-val" class="font-mono tabular-nums truncate">เส้นตาย GW 10: 1 วัน 10:01:32</span>
         </span>
       </div>
     </div>
@@ -1852,200 +1852,264 @@
 
     </div>
 
-    <!-- ==================== TAB 6: DEV CORNER (ABOUT VIEW) ==================== -->
-    <div id="about-view" class="tab-content hidden space-y-4">
+            <!-- ==================== TAB 6: DEV CORNER (ABOUT VIEW) ==================== -->
+    <div id="about-view" class="tab-content hidden space-y-4 w-full max-w-full overflow-hidden">
       
-      <!-- 6 Core Feature Pillars (สรุปฟังก์ชันการใช้งานทั้งหมดของแดชบอร์ดให้ครบถ้วนและเข้าใจง่าย) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+      <!-- Top Overview Banner (Consistent with Highlights, Chips, Transfers, Form Radar) -->
+      <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs w-full max-w-full overflow-hidden">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
+            <h2 id="about-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display truncate">
+              Dev Corner &amp; สถาปัตยกรรมระบบ
+            </h2>
+          </div>
+          <p id="about-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+            คู่มือฟังก์ชันการใช้งาน, ช่องทางติดต่อผู้พัฒนา และสถาปัตยกรรมระบบ Dual-Layer Serverless Jamstack
+          </p>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap flex-shrink-0">
+          <span class="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs px-3 py-1 rounded-xl font-bold font-display">
+            v2.4 Jamstack
+          </span>
+          <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-mono text-[11px] font-semibold">
+            Fastly + Cloudflare Edge
+          </span>
+        </div>
+      </div>
+
+      <!-- 6 Core Feature Pillars (คู่มือฟังก์ชันการใช้งาน 6 เสาหลักของแพลตฟอร์ม) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 w-full min-w-0">
         
-        <!-- Feature 1: Live Scores & Auto-Sub -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-          <div>
-            <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-            </span>
+        <!-- Pillar 1: Live Scores & Auto-Sub -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+          <div class="min-w-0">
+            <div class="flex items-center justify-between mb-3 gap-2">
+              <span class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200/80 dark:border-emerald-800/60 inline-flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs flex-shrink-0">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              </span>
+              <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/60 tracking-wider flex-shrink-0">
+                PILLAR 01
+              </span>
+            </div>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-              1. คะแนนสด & เปลี่ยนตัวอัตโนมัติ
+              1. คะแนนสด &amp; เปลี่ยนตัวอัตโนมัติ
             </h3>
-            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                 <span>อัปเดตคะแนนสดทุก 30 วินาทีพร้อมแต้มโบนัสตลอด 90 นาที ไม่ต้องรอข้ามคืน</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                 <span>เปลี่ยนสำรองและดันรองกัปตัน (VC x2) ให้อัตโนมัติเมื่อตัวจริงไม่ได้ลงแข่ง</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                 <span>บทวิเคราะห์ไฮไลท์สด เกาะติดการสลับอันดับและโมเมนตัมแบบเรียลไทม์</span>
               </li>
             </ul>
           </div>
-          <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-            ✓ แท็บ: คะแนนสด
-          </div>
+          <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors group cursor-pointer text-left min-w-0">
+            <span class="truncate">ไปยังแท็บ: คะแนนสด</span>
+            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+          </button>
         </div>
 
-        <!-- Feature 2: Squad Pitch Modal -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-          <div>
-            <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
-            </span>
+        <!-- Pillar 2: Squad Pitch Modal -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+          <div class="min-w-0">
+            <div class="flex items-center justify-between mb-3 gap-2">
+              <span class="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200/80 dark:border-blue-800/60 inline-flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-2xs flex-shrink-0">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
+              </span>
+              <span class="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded-md border border-blue-200/60 dark:border-blue-800/60 tracking-wider flex-shrink-0">
+                PILLAR 02
+              </span>
+            </div>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
               2. ส่องแผนจัดทัพ 11 ตัวจริง
             </h3>
-            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-blue-500 font-bold flex-shrink-0">•</span>
                 <span>คลิกที่ชื่อทีมเพื่อน เพื่อเปิดดูแผนผังสนามหญ้าและ 4 ตัวสำรอง</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-blue-500 font-bold flex-shrink-0">•</span>
                 <span>แสดงคะแนนรายคน สถานะลงสนาม และนาทีที่ลงเล่นแบบเรียลไทม์</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-blue-500 font-bold flex-shrink-0">•</span>
                 <span>ตรวจเช็กการใช้ชิปพิเศษอย่างชัดเจน (TC, BB, FH, WC)</span>
               </li>
             </ul>
           </div>
-          <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-            ✓ ฟังก์ชัน: คลิกที่ชื่อทีมในตาราง
-          </div>
+          <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors group cursor-pointer text-left min-w-0">
+            <span class="truncate">ไปที่ตารางคะแนนสด (คลิกชื่อทีม)</span>
+            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+          </button>
         </div>
 
-        <!-- Feature 3: Transfers & Analysis -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-          <div>
-            <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
-            </span>
+        <!-- Pillar 3: Transfers & Analysis -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+          <div class="min-w-0">
+            <div class="flex items-center justify-between mb-3 gap-2">
+              <span class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/50 border border-purple-200/80 dark:border-purple-800/60 inline-flex items-center justify-center text-purple-600 dark:text-purple-400 shadow-2xs flex-shrink-0">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+              </span>
+              <span class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/60 px-2 py-0.5 rounded-md border border-purple-200/60 dark:border-purple-800/60 tracking-wider flex-shrink-0">
+                PILLAR 03
+              </span>
+            </div>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-              3. วิเคราะห์การย้ายตัว & ขุมกำลัง
+              3. วิเคราะห์การย้ายตัว &amp; ขุมกำลัง
             </h3>
-            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-purple-500 font-bold flex-shrink-0">•</span>
                 <span>สรุปทุกดีลซื้อขายนักเตะเข้า-ออกของคู่แข่งในลีก พร้อมแต้มลบย้ายตัว</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-purple-500 font-bold flex-shrink-0">•</span>
                 <span>คำนวณแต้มได้-เสียสุทธิจากการย้ายตัวในแต่ละสัปดาห์</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
-                <span>วิเคราะห์นักเตะมหาชน (> 70%), นักเตะทีเด็ด (< 20%) และคำแนะนำการย้ายตัว</span>
+                <span class="text-purple-500 font-bold flex-shrink-0">•</span>
+                <span>วิเคราะห์นักเตะมหาชน (&gt; 70%), นักเตะทีเด็ด (&lt; 20%) และคำแนะนำการย้ายตัว</span>
               </li>
             </ul>
           </div>
-          <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-            ✓ แท็บ: วิเคราะห์การย้ายตัว
-          </div>
+          <button type="button" onclick="app.switchTab('transfers-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors group cursor-pointer text-left min-w-0">
+            <span class="truncate">ไปยังแท็บ: วิเคราะห์การย้ายตัว</span>
+            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+          </button>
         </div>
 
-        <!-- Feature 4: Rival Chips Matrix -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-          <div>
-            <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
-            </span>
+        <!-- Pillar 4: Rival Chips Matrix -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+          <div class="min-w-0">
+            <div class="flex items-center justify-between mb-3 gap-2">
+              <span class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-800/60 inline-flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-2xs flex-shrink-0">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+              </span>
+              <span class="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md border border-amber-200/60 dark:border-amber-800/60 tracking-wider flex-shrink-0">
+                PILLAR 04
+              </span>
+            </div>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
               4. ติดตามสถานะชิปของคู่แข่ง
             </h3>
-            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-amber-500 font-bold flex-shrink-0">•</span>
                 <span>ตารางแมทริกซ์เช็กสถานะชิปพิเศษ (WC, FH, BB, TC) ของผู้จัดการทีมทุกคน</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-amber-500 font-bold flex-shrink-0">•</span>
                 <span>ตรวจสอบชิปที่ใช้ไปแล้วในแต่ละสัปดาห์ และชิปที่ยังเหลืออยู่แบบแยกเดี่ยว</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-amber-500 font-bold flex-shrink-0">•</span>
                 <span>ไฮไลท์พิเศษแจ้งเตือนชิปที่กำลังเปิดใช้งานระหว่างสัปดาห์แข่งขันสด</span>
               </li>
             </ul>
           </div>
-          <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-            ✓ แท็บ: สถานะชิป
-          </div>
+          <button type="button" onclick="app.switchTab('competition-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors group cursor-pointer text-left min-w-0">
+            <span class="truncate">ไปยังแท็บ: สถานะชิป</span>
+            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+          </button>
         </div>
 
-        <!-- Feature 5: Prizes & Treasury -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-          <div>
-            <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            </span>
+        <!-- Pillar 5: Prizes & Treasury -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+          <div class="min-w-0">
+            <div class="flex items-center justify-between mb-3 gap-2">
+              <span class="w-9 h-9 rounded-xl bg-yellow-50 dark:bg-yellow-950/50 border border-yellow-200/80 dark:border-yellow-800/60 inline-flex items-center justify-center text-yellow-600 dark:text-yellow-400 shadow-2xs flex-shrink-0">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              </span>
+              <span class="text-[10px] font-mono font-bold text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-950/60 px-2 py-0.5 rounded-md border border-yellow-200/60 dark:border-yellow-800/60 tracking-wider flex-shrink-0">
+                PILLAR 05
+              </span>
+            </div>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-              5. เงินรางวัล & บัญชีกองกลาง
+              5. เงินรางวัล &amp; บัญชีกองกลาง
             </h3>
-            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-yellow-500 font-bold flex-shrink-0">•</span>
                 <span>คำนวณแชมป์สัปดาห์, แชมป์เดือน, สิ้นฤดูกาล และค่าปรับอัตโนมัติ</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-yellow-500 font-bold flex-shrink-0">•</span>
                 <span>หักแต้มย้ายทีมในตัว พร้อมเฉลี่ยเงินรางวัลอย่างยุติธรรม</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-yellow-500 font-bold flex-shrink-0">•</span>
                 <span>รองรับมินิเกมเฉพาะลีก เช่น ทายผลบอล และท้าชนคะแนนแฟนตาซี</span>
               </li>
             </ul>
           </div>
-          <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-            ✓ แท็บ: เงินรางวัล
-          </div>
+          <button type="button" onclick="app.switchTab('prizes-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 transition-colors group cursor-pointer text-left min-w-0">
+            <span class="truncate">ไปยังแท็บ: เงินรางวัล</span>
+            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+          </button>
         </div>
 
-        <!-- Feature 6: Radar & Hall of Fame -->
-        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-          <div>
-            <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004 0V5.625c0-.621-.504-1.125-1.125-1.125H9.625c-.621 0-1.125.504-1.125 1.125v8.625m5.004 0H9.625" /></svg>
-            </span>
+        <!-- Pillar 6: Radar & Hall of Fame -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+          <div class="min-w-0">
+            <div class="flex items-center justify-between mb-3 gap-2">
+              <span class="w-9 h-9 rounded-xl bg-cyan-50 dark:bg-cyan-950/50 border border-cyan-200/80 dark:border-cyan-800/60 inline-flex items-center justify-center text-cyan-600 dark:text-cyan-400 shadow-2xs flex-shrink-0">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004 0V5.625c0-.621-.504-1.125-1.125-1.125H9.625c-.621 0-1.125.504-1.125 1.125v8.625m5.004 0H9.625" /></svg>
+              </span>
+              <span class="text-[10px] font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/60 px-2 py-0.5 rounded-md border border-cyan-200/60 dark:border-cyan-800/60 tracking-wider flex-shrink-0">
+                PILLAR 06
+              </span>
+            </div>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-              6. เรดาร์ฟอร์ม & ทำเนียบแชมป์
+              6. เรดาร์ฟอร์ม &amp; ทำเนียบแชมป์
             </h3>
-            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+            <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-cyan-500 font-bold flex-shrink-0">•</span>
                 <span>วิเคราะห์ความสม่ำเสมอ ประเมินแต้มต่ำสุด-สูงสุด ของทั้ง 8 ลีก</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-cyan-500 font-bold flex-shrink-0">•</span>
                 <span>บันทึกประวัติศาสตร์ทำเนียบแชมป์และหอเกียรติยศตลอดทุกฤดูกาล</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold">•</span>
+                <span class="text-cyan-500 font-bold flex-shrink-0">•</span>
                 <span>ปุ่มคัดลอกสรุปผลคะแนนส่งเข้ากลุ่ม LINE และส่งออกเป็นตาราง Excel ทันที</span>
               </li>
             </ul>
           </div>
-          <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-            ✓ แท็บ: เรดาร์ฟอร์ม & ทำเนียบแชมป์
-          </div>
+          <button type="button" onclick="app.switchTab('hall-of-fame-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 transition-colors group cursor-pointer text-left min-w-0">
+            <span class="truncate">ไปยังแท็บ: ทำเนียบแชมป์ &amp; เรดาร์ฟอร์ม</span>
+            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+          </button>
         </div>
 
       </div>
 
-      <!-- Ultra Clean LINE Contact Box -->
-      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
-        <div class="space-y-1.5 max-w-xl text-left">
-          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-300/60 dark:border-emerald-700/60">
-            <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
-            LINE CONTACT
-          </span>
+      <!-- Ultra Clean LINE Contact Box (Developer Support) -->
+      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full min-w-0 overflow-hidden">
+        <div class="space-y-1.5 max-w-xl text-left min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-300/60 dark:border-emerald-700/60 flex-shrink-0">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#06C755] animate-pulse"></span>
+              DIRECT LINE HOTLINE
+            </span>
+            <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex-shrink-0">
+              🟢 ตอบกลับภายใน 24 ชม.
+            </span>
+          </div>
           <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white font-display">
-            ทักคุยกับเดฟโดยตรง
+            ทักคุยกับผู้พัฒนาโดยตรง (Developer Support)
           </h3>
           <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-            มีข้อสงสัย แจ้งปัญหาคะแนน หรืออยากเสนอแนะฟีเจอร์ LINE ทักหาเดฟได้
+            มีข้อสงสัยเรื่องแต้มสด, แจ้งปัญหาคะแนน หรืออยากเสนอแนะฟีเจอร์สำหรับมินิลีก สามารถทักคุยกับเดฟผ่าน LINE ส่วนตัวได้ตลอดเวลา
           </p>
         </div>
 
@@ -2055,30 +2119,44 @@
             href="https://line.me/ti/p/lgWPeyIBR7" 
             target="_blank" 
             rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 min-h-[44px] rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display"
+            class="inline-flex items-center justify-center gap-2.5 w-full sm:w-auto px-5 py-3 min-h-[44px] rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-white dark:text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
           >
-            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+            <svg class="w-4 h-4 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
             <span>เปิด LINE ทักหาเดฟ</span>
           </a>
         </div>
       </div>
 
       <!-- Technical Architecture (Collapsible สำหรับสาย Dev) -->
-      <details class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/40 dark:bg-slate-900/20 text-xs text-slate-500 group transition-all">
-        <summary class="cursor-pointer font-semibold text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white flex items-center justify-between select-none">
-          <span class="flex items-center gap-2">
-            <svg class="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            <span class="font-display tracking-tight text-xs sm:text-sm">สถาปัตยกรรมระบบเบื้องหลัง</span>
+      <details class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/40 dark:bg-slate-900/20 text-xs text-slate-500 group transition-all w-full min-w-0 overflow-hidden">
+        <summary class="cursor-pointer font-semibold text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white flex items-center justify-between select-none min-w-0">
+          <span class="flex items-center gap-2 min-w-0 pr-2">
+            <svg class="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span class="font-display tracking-tight text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">สถาปัตยกรรมระบบเบื้องหลัง (Specs)</span>
           </span>
-          <span class="text-[10.5px] text-slate-500 dark:text-slate-400 font-mono font-normal">Dual-Layer Sync • 15m Cron + 30s Edge Live</span>
+          <span class="text-[10.5px] text-slate-500 dark:text-slate-400 font-mono font-normal bg-slate-100/80 dark:bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-700/60 flex-shrink-0">
+            Dual-Layer Sync
+          </span>
         </summary>
-        <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3.5">
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2.5 rounded-xl bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/60 text-[10.5px] font-mono">
-            <div><span class="text-slate-400 block text-[9.5px]">RUNTIME</span><span class="font-bold text-slate-700 dark:text-slate-300">Python 3.11 / Ubuntu</span></div>
-            <div><span class="text-slate-400 block text-[9.5px]">CONCURRENCY</span><span class="font-bold text-slate-700 dark:text-slate-300">8 Leagues • 135 Teams</span></div>
-            <div><span class="text-slate-400 block text-[9.5px]">LIVE RELAY</span><span class="font-bold text-slate-700 dark:text-slate-300">Cloudflare Edge (30s)</span></div>
-            <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">Fastly CDN + Split JSON</span></div>
+        <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3.5 w-full min-w-0">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/60 text-[10.5px] font-mono min-w-0">
+            <div class="flex flex-col gap-0.5 min-w-0">
+              <span class="text-slate-400 block text-[9.5px] uppercase tracking-wider font-semibold truncate">RUNTIME</span>
+              <span class="font-bold text-slate-800 dark:text-slate-200 truncate">Python 3.11</span>
+            </div>
+            <div class="flex flex-col gap-0.5 min-w-0">
+              <span class="text-slate-400 block text-[9.5px] uppercase tracking-wider font-semibold truncate">CONCURRENCY</span>
+              <span class="font-bold text-slate-800 dark:text-slate-200 truncate">8 Leagues</span>
+            </div>
+            <div class="flex flex-col gap-0.5 min-w-0">
+              <span class="text-slate-400 block text-[9.5px] uppercase tracking-wider font-semibold truncate">LIVE RELAY</span>
+              <span class="font-bold text-slate-800 dark:text-slate-200 truncate">Edge (30s)</span>
+            </div>
+            <div class="flex flex-col gap-0.5 min-w-0">
+              <span class="text-slate-400 block text-[9.5px] uppercase tracking-wider font-semibold truncate">DELIVERY</span>
+              <span class="font-bold text-slate-800 dark:text-slate-200 truncate">Fastly CDN</span>
+            </div>
           </div>
           
           <!-- Architecture Workflow Diagram (Visual Guide) -->
@@ -2251,41 +2329,41 @@
             </div>
           </div>
     
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
-            <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
-              <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block mb-1">[INGESTION & CONCURRENCY]</span>
-              <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">1. Pipeline & Multi-Threading Engine</div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-600 dark:text-slate-400 text-xs leading-relaxed w-full min-w-0">
+            <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70 min-w-0">
+              <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block mb-1">[INGESTION &amp; CONCURRENCY]</span>
+              <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">1. Pipeline &amp; Multi-Threading Engine</div>
               <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Serverless Orchestration:</strong> ประมวลผลผ่าน GitHub Actions Runner (Ubuntu Latest / Python 3.11) ตามตาราง Cron ทุก 15 นาที และ Manual Dispatch</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Parallel Concurrency & Incremental Cache:</strong> ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> ดึงข้อมูล 8 ลีก 135 ทีม (165 รายการ) พร้อมกันใน 2-4 วินาที พร้อมแคช GW ที่จบแล้วเพื่อลดการยิง API ซ้ำกว่า 95%</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Azure Transfer AI & Security:</strong> เชื่อมต่อ Azure Functions วิเคราะห์แผนย้ายตัวด้วย Environment Secret (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">AZURE_TRANSFER_FUNCTION_KEY</code>) พร้อมระบบ Fallback อัตโนมัติ</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold flex-shrink-0">•</span><span><strong>Serverless Orchestration:</strong> ประมวลผลผ่าน GitHub Actions Runner (Ubuntu Latest / Python 3.11) ตามตาราง Cron ทุก 15 นาที และ Manual Dispatch</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold flex-shrink-0">•</span><span><strong>Parallel Concurrency &amp; Incremental Cache:</strong> ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> ดึงข้อมูล 8 ลีก 135 ทีม (165 รายการ) พร้อมกันใน 2-4 วินาที พร้อมแคช GW ที่จบแล้วเพื่อลดการยิง API ซ้ำกว่า 95%</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold flex-shrink-0">•</span><span><strong>Azure Transfer AI &amp; Security:</strong> เชื่อมต่อ Azure Functions วิเคราะห์แผนย้ายตัวด้วย Environment Secret (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">AZURE_TRANSFER_FUNCTION_KEY</code>) พร้อมระบบ Fallback อัตโนมัติ</span></li>
               </ul>
             </div>
-            <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
+            <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70 min-w-0">
               <span class="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider block mb-1">[DATA_INTEGRITY]</span>
-              <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">2. Data Integrity & Atomic State Machine</div>
+              <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">2. Data Integrity &amp; Atomic State Machine</div>
               <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>POSIX Atomic Replacement:</strong> บันทึก <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">multi_fpl_data.json</code> และไฟล์รายลีกด้วย <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tempfile</code> + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">os.replace</code> ขจัดปัญหา Race Conditions หรือไฟล์ JSON เสียหาย</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Pre-Commit Validation:</strong> ตรวจสอบความถูกต้องของแต้มสด, Auto-Sub, รองกัปตัน (VC x2), ชิปพิเศษ, แต้มลบย้ายตัว (Hits) และสูตรเฉลี่ยเงินรางวัล (Tie-Pooling) ก่อนบันทึกลงดิสก์</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Zero-Churn Smart Commit:</strong> ตรวจสอบ Semantic Diff ของคะแนนและอันดับ หากข้อมูลไม่เปลี่ยนแปลงจะข้าม Git Commit เพื่อลดขยะใน Git History (Zero Git Bloat) พร้อม Heartbeat Sync ทุก 6 ชั่วโมง</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold flex-shrink-0">•</span><span><strong>POSIX Atomic Replacement:</strong> บันทึก <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">multi_fpl_data.json</code> และไฟล์รายลีกด้วย <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tempfile</code> + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">os.replace</code> ขจัดปัญหา Race Conditions หรือไฟล์ JSON เสียหาย</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold flex-shrink-0">•</span><span><strong>Pre-Commit Validation:</strong> ตรวจสอบความถูกต้องของแต้มสด, Auto-Sub, รองกัปตัน (VC x2), ชิปพิเศษ, แต้มลบย้ายตัว (Hits) และสูตรเฉลี่ยเงินรางวัล (Tie-Pooling) ก่อนบันทึกลงดิสก์</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold flex-shrink-0">•</span><span><strong>Zero-Churn Smart Commit:</strong> ตรวจสอบ Semantic Diff ของคะแนนและอันดับ หากข้อมูลไม่เปลี่ยนแปลงจะข้าม Git Commit เพื่อลดขยะใน Git History (Zero Git Bloat) พร้อม Heartbeat Sync ทุก 6 ชั่วโมง</span></li>
               </ul>
             </div>
-            <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
+            <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70 min-w-0">
               <span class="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block mb-1">[EDGE_JAMSTACK]</span>
-              <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">3. Config-Driven Jamstack & Edge CDN</div>
+              <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">3. Config-Driven Jamstack &amp; Edge CDN</div>
               <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Zero-Code Season Rollover:</strong> ขับเคลื่อนด้วย <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">config/leagues_config.json</code> 100% รองรับการเปลี่ยนลีกและทีมข้ามฤดูกาลพร้อม Auto-Cleanup ลบโฟลเดอร์ลีกเก่าอัตโนมัติ</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Per-League JSON Split:</strong> คอมไพล์เลอร์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> แยกไฟล์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> และสร้าง Route ประจำลีก (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/{id}/index.html</code>) ลดขนาด HTML เริ่มต้นลงกว่า 85%</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Edge CDN Distribution:</strong> กระจายไฟล์ผ่าน Fastly Edge CDN ของ GitHub Pages รองรับ HTTP/2 Multiplexing, การบีบอัด Brotli และส่งมอบข้อมูลด้วย TTFB ต่ำกว่า 50ms</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold flex-shrink-0">•</span><span><strong>Zero-Code Season Rollover:</strong> ขับเคลื่อนด้วย <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">config/leagues_config.json</code> 100% รองรับการเปลี่ยนลีกและทีมข้ามฤดูกาลพร้อม Auto-Cleanup ลบโฟลเดอร์ลีกเก่าอัตโนมัติ</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold flex-shrink-0">•</span><span><strong>Per-League JSON Split:</strong> คอมไพล์เลอร์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> แยกไฟล์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> และสร้าง Route ประจำลีก (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/{id}/index.html</code>) ลดขนาด HTML เริ่มต้นลงกว่า 85%</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold flex-shrink-0">•</span><span><strong>Custom Domain &amp; Edge CDN:</strong> ให้บริการผ่านโดเมนหลัก <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">www.fplsawadika.com</code> บนระบบ Cloudflare DNS (CNAME Flattening) ควบคู่กับ Fastly Edge CDN รองรับ HTTP/2, Brotli และส่งมอบข้อมูลด้วย TTFB ต่ำกว่า 50ms</span></li>
               </ul>
             </div>
-            <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
+            <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70 min-w-0">
               <span class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider block mb-1">[CLIENT_RUNTIME]</span>
-              <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime & 15s Real-Time Relay</div>
+              <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime &amp; 15s Real-Time Relay</div>
               <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>15s Cloudflare Edge Live Poll:</strong> ระหว่างมีแมตช์เตะ เบราว์เซอร์ดึงแต้มสดและโบนัส BPS เรียลไทม์ผ่าน Cloudflare Worker (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">fpl-live-relay</code> / <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">api.fplsawadika.com</code>) ทุก 15 วินาทีโดยไม่ต้องรอบิลด์ HTML ใหม่</span></li>
-                <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Lazy League Switch & Race Guard:</strong> โหลด JSON รายลีกแบบ On-Demand เมื่อสลับลีก พร้อมระบบป้องกัน Race Condition และซิงก์สถานะผ่าน HTML5 History API + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">localStorage</code></span></li>
-                <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Zero-Framework 60 FPS & A11y:</strong> พัฒนาด้วย Vanilla ES6+ (0kb Framework) ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tabular-nums</code> (CLS: 0.00), Page Visibility API ประหยัดแบตเตอรี่ และรองรับ Keyboard Focus Accessibility</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold flex-shrink-0">•</span><span><strong>15s Cloudflare Edge Live Poll:</strong> ระหว่างมีแมตช์เตะ เบราว์เซอร์ดึงแต้มสดและโบนัส BPS เรียลไทม์ผ่าน Cloudflare Worker (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">fpl-live-relay</code> / <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">api.fplsawadika.com</code>) ทุก 15 วินาทีโดยไม่ต้องรอบิลด์ HTML ใหม่</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold flex-shrink-0">•</span><span><strong>Lazy League Switch &amp; Race Guard:</strong> โหลด JSON รายลีกแบบ On-Demand เมื่อสลับลีก พร้อมระบบป้องกัน Race Condition และซิงก์สถานะผ่าน HTML5 History API + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">localStorage</code></span></li>
+                <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold flex-shrink-0">•</span><span><strong>Zero-Framework 60 FPS &amp; A11y:</strong> พัฒนาด้วย Vanilla ES6+ (0kb Framework) ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tabular-nums</code> (CLS: 0.00), Page Visibility API ประหยัดแบตเตอรี่ และรองรับ Keyboard Focus Accessibility</span></li>
               </ul>
             </div>
           </div>
@@ -14671,197 +14749,261 @@ selectShi62GW(gwName) {
 
         if (isEn) {
           container.innerHTML = `
+            <!-- Top Overview Banner -->
+            <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs w-full max-w-full overflow-hidden">
+              <div class="min-w-0">
+                <div class="flex items-center gap-2.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
+                  <h2 id="about-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display truncate">
+                    Dev Corner &amp; System Architecture
+                  </h2>
+                </div>
+                <p id="about-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  Feature walkthrough, developer hotline, and dual-layer serverless Jamstack architecture
+                </p>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap flex-shrink-0">
+                <span class="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs px-3 py-1 rounded-xl font-bold font-display">
+                  v2.4 Jamstack
+                </span>
+                <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-mono text-[11px] font-semibold">
+                  Fastly + Cloudflare Edge
+                </span>
+              </div>
+            </div>
+
             <!-- 6 Core Feature Pillars -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 w-full min-w-0">
               
-              <!-- Feature 1: Live Scores & Auto-Sub -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                  </span>
+              <!-- Pillar 1: Live Scores & Auto-Sub -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+                <div class="min-w-0">
+                  <div class="flex items-center justify-between mb-3 gap-2">
+                    <span class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200/80 dark:border-emerald-800/60 inline-flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    </span>
+                    <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/60 tracking-wider flex-shrink-0">
+                      PILLAR 01
+                    </span>
+                  </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    1. Live Points & Auto-Subs
+                    1. Live Points &amp; Auto-Subs
                   </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Real-time 30s score updates with provisional bonus points throughout the 90 minutes.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Automatic bench substitutions and vice-captain elevation (VC x2) when starters do not play.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Live match highlights and momentum tracking reflecting rank changes as they happen.</span>
                     </li>
                   </ul>
                 </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                  ✓ Tab: Live Points
-                </div>
+                <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors group cursor-pointer text-left min-w-0">
+                  <span class="truncate">Jump to: Live Points</span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">Open <span>&rarr;</span></span>
+                </button>
               </div>
 
-              <!-- Feature 2: Squad Pitch Modal -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
-                  </span>
+              <!-- Pillar 2: Squad Pitch Modal -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+                <div class="min-w-0">
+                  <div class="flex items-center justify-between mb-3 gap-2">
+                    <span class="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200/80 dark:border-blue-800/60 inline-flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
+                    </span>
+                    <span class="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded-md border border-blue-200/60 dark:border-blue-800/60 tracking-wider flex-shrink-0">
+                      PILLAR 02
+                    </span>
+                  </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    2. Starting XI Pitch & Lineup
+                    2. Starting XI Pitch &amp; Lineup
                   </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Click any rival team name to open their authentic pitch formation and 4 substitutes.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Displays individual player points, fixture status, and minutes played in real time.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Clearly displays active special chips (TC, BB, FH, WC).</span>
                     </li>
                   </ul>
                 </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                  ✓ Feature: Click any team name in the leaderboard
-                </div>
+                <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors group cursor-pointer text-left min-w-0">
+                  <span class="truncate">Open Leaderboard (Click Team Name)</span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">Open <span>&rarr;</span></span>
+                </button>
               </div>
 
-              <!-- Feature 3: Transfer Analytics & ROI -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
-                  </span>
+              <!-- Pillar 3: Transfer Analytics & ROI -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+                <div class="min-w-0">
+                  <div class="flex items-center justify-between mb-3 gap-2">
+                    <span class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/50 border border-purple-200/80 dark:border-purple-800/60 inline-flex items-center justify-center text-purple-600 dark:text-purple-400 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+                    </span>
+                    <span class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/60 px-2 py-0.5 rounded-md border border-purple-200/60 dark:border-purple-800/60 tracking-wider flex-shrink-0">
+                      PILLAR 03
+                    </span>
+                  </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    3. Transfer Analytics & ROI
+                    3. Transfer Analytics &amp; ROI
                   </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Full breakdown of every rival transfer move, in/out players, and transfer hits.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Calculates weekly Net Transfer Impact (points gained vs sold players minus hits).</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
-                      <span>Analyzes Template Essentials (> 70%), Differentials (< 20%), and transfer suggestions.</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span>Analyzes Template Essentials (&gt; 70%), Differentials (&lt; 20%), and transfer suggestions.</span>
                     </li>
                   </ul>
                 </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                  ✓ Tab: Transfer Analytics
-                </div>
+                <button type="button" onclick="app.switchTab('transfers-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors group cursor-pointer text-left min-w-0">
+                  <span class="truncate">Jump to: Transfer Analytics</span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">Open <span>&rarr;</span></span>
+                </button>
               </div>
 
-              <!-- Feature 4: Rival Chips Availability Matrix -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
-                  </span>
+              <!-- Pillar 4: Rival Chips Availability Matrix -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+                <div class="min-w-0">
+                  <div class="flex items-center justify-between mb-3 gap-2">
+                    <span class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-800/60 inline-flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+                    </span>
+                    <span class="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md border border-amber-200/60 dark:border-amber-800/60 tracking-wider flex-shrink-0">
+                      PILLAR 04
+                    </span>
+                  </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
                     4. Rival Chips Availability Matrix
                   </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Strategy matrix tracking special chips (WC, FH, BB, TC) across all league rivals.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Monitor gameweek chip usage history and remaining available inventory.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Real-time visual callouts for active chips during ongoing matchdays.</span>
                     </li>
                   </ul>
                 </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                  ✓ Tab: Chips Strategy
-                </div>
+                <button type="button" onclick="app.switchTab('competition-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors group cursor-pointer text-left min-w-0">
+                  <span class="truncate">Jump to: Chips Matrix</span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">Open <span>&rarr;</span></span>
+                </button>
               </div>
 
-              <!-- Feature 5: Prize Pool & Treasury Tracker -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                  </span>
+              <!-- Pillar 5: Prize Pool & Treasury Tracker -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+                <div class="min-w-0">
+                  <div class="flex items-center justify-between mb-3 gap-2">
+                    <span class="w-9 h-9 rounded-xl bg-yellow-50 dark:bg-yellow-950/50 border border-yellow-200/80 dark:border-yellow-800/60 inline-flex items-center justify-center text-yellow-600 dark:text-yellow-400 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </span>
+                    <span class="text-[10px] font-mono font-bold text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-950/60 px-2 py-0.5 rounded-md border border-yellow-200/60 dark:border-yellow-800/60 tracking-wider flex-shrink-0">
+                      PILLAR 05
+                    </span>
+                  </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    5. Prize Pool & Treasury Tracker
+                    5. Prize Pool &amp; Treasury Tracker
                   </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Automated calculation for weekly winners, monthly awards, season podiums, and fines.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Integrated transfer hit deductions with fair tie-pooling split logic.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Supports league-specific mini-games such as match predictions and fantasy challenges.</span>
                     </li>
                   </ul>
                 </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                  ✓ Tab: Prize Pool
-                </div>
+                <button type="button" onclick="app.switchTab('prizes-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 transition-colors group cursor-pointer text-left min-w-0">
+                  <span class="truncate">Jump to: Prize Pool</span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">Open <span>&rarr;</span></span>
+                </button>
               </div>
 
-              <!-- Feature 6: Form Radar & Hall of Fame -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004 0V5.625c0-.621-.504-1.125-1.125-1.125H9.625c-.621 0-1.125.504-1.125 1.125v8.625m5.004 0H9.625" /></svg>
-                  </span>
+              <!-- Pillar 6: Form Radar & Hall of Fame -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+                <div class="min-w-0">
+                  <div class="flex items-center justify-between mb-3 gap-2">
+                    <span class="w-9 h-9 rounded-xl bg-cyan-50 dark:bg-cyan-950/50 border border-cyan-200/80 dark:border-cyan-800/60 inline-flex items-center justify-center text-cyan-600 dark:text-cyan-400 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004 0V5.625c0-.621-.504-1.125-1.125-1.125H9.625c-.621 0-1.125.504-1.125 1.125v8.625m5.004 0H9.625" /></svg>
+                    </span>
+                    <span class="text-[10px] font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/60 px-2 py-0.5 rounded-md border border-cyan-200/60 dark:border-cyan-800/60 tracking-wider flex-shrink-0">
+                      PILLAR 06
+                    </span>
+                  </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    6. Form Radar & Hall of Fame
+                    6. Form Radar &amp; Hall of Fame
                   </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Multi-league consistency analysis measuring floor resilience and ceiling potential across 8 leagues.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Historical Hall of Fame archive for weekly winners, champions, and milestones.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>Instant one-click LINE chat summary copy and season-long Excel (.xlsx) data export.</span>
                     </li>
                   </ul>
                 </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                  ✓ Tab: Form Radar & Hall of Fame
-                </div>
+                <button type="button" onclick="app.switchTab('hall-of-fame-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 transition-colors group cursor-pointer text-left min-w-0">
+                  <span class="truncate">Jump to: Hall of Fame &amp; Radar</span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">Open <span>&rarr;</span></span>
+                </button>
               </div>
 
             </div>
 
             <!-- Ultra Clean Contact Box -->
-            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
-              <div class="space-y-1.5 max-w-xl text-left">
-                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-300/60 dark:border-emerald-700/60">
-                  <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
-                  DIRECT CONTACT
-                </span>
+            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full min-w-0 overflow-hidden">
+              <div class="space-y-1.5 max-w-xl text-left min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-300/60 dark:border-emerald-700/60 flex-shrink-0">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#06C755] animate-pulse"></span>
+                    DIRECT LINE HOTLINE
+                  </span>
+                  <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex-shrink-0">
+                    🟢 Responds within 24h
+                  </span>
+                </div>
                 <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white font-display">
-                  Contact the Developer
+                  Contact the Developer Directly
                 </h3>
                 <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                  Have questions, scoring inquiries, or feature requests? Contact the developer directly on LINE.
+                  Have questions about live points, scoring discrepancies, or want to suggest new league features? Contact the developer directly on LINE.
                 </p>
               </div>
 
@@ -14871,30 +15013,44 @@ selectShi62GW(gwName) {
                   href="https://line.me/ti/p/lgWPeyIBR7" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 min-h-[44px] rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display"
+                  class="inline-flex items-center justify-center gap-2.5 w-full sm:w-auto px-5 py-3 min-h-[44px] rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-white dark:text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
                 >
-                  <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+                  <svg class="w-4 h-4 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
                   <span>Chat with Developer</span>
                 </a>
               </div>
             </div>
 
             <!-- Technical Architecture -->
-            <details class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/40 dark:bg-slate-900/20 text-xs text-slate-500 group transition-all">
-              <summary class="cursor-pointer font-semibold text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white flex items-center justify-between select-none">
-                <span class="flex items-center gap-2">
-                  <svg class="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                  <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                  <span class="font-display tracking-tight text-xs sm:text-sm">System Architecture (Technical Specs for Geeks)</span>
+            <details class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/40 dark:bg-slate-900/20 text-xs text-slate-500 group transition-all w-full min-w-0 overflow-hidden">
+              <summary class="cursor-pointer font-semibold text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white flex items-center justify-between select-none min-w-0">
+                <span class="flex items-center gap-2 min-w-0 pr-2">
+                  <svg class="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                  <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  <span class="font-display tracking-tight text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">System Architecture (Specs)</span>
                 </span>
-                <span class="text-[10.5px] text-slate-500 dark:text-slate-400 font-mono font-normal">Dual-Layer Sync • 15m Cron + 30s Edge Live</span>
+                <span class="text-[10.5px] text-slate-500 dark:text-slate-400 font-mono font-normal bg-slate-100/80 dark:bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-700/60 flex-shrink-0">
+                  Dual-Layer Sync
+                </span>
               </summary>
-              <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3.5">
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2.5 rounded-xl bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/60 text-[10.5px] font-mono">
-                  <div><span class="text-slate-400 block text-[9.5px]">RUNTIME</span><span class="font-bold text-slate-700 dark:text-slate-300">Python 3.11 / Ubuntu</span></div>
-                  <div><span class="text-slate-400 block text-[9.5px]">CONCURRENCY</span><span class="font-bold text-slate-700 dark:text-slate-300">8 Leagues • 135 Teams</span></div>
-                  <div><span class="text-slate-400 block text-[9.5px]">LIVE RELAY</span><span class="font-bold text-slate-700 dark:text-slate-300">Cloudflare Edge (30s)</span></div>
-                  <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">fplsawadika.com • Edge CDN</span></div>
+              <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3.5 w-full min-w-0">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/60 text-[10.5px] font-mono min-w-0">
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="text-slate-400 block text-[9.5px] uppercase tracking-wider font-semibold truncate">RUNTIME</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200 truncate">Python 3.11</span>
+                  </div>
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="text-slate-400 block text-[9.5px] uppercase tracking-wider font-semibold truncate">CONCURRENCY</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200 truncate">8 Leagues</span>
+                  </div>
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="text-slate-400 block text-[9.5px] uppercase tracking-wider font-semibold truncate">LIVE RELAY</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200 truncate">Edge (30s)</span>
+                  </div>
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="text-slate-400 block text-[9.5px] uppercase tracking-wider font-semibold truncate">DELIVERY</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200 truncate">Fastly CDN</span>
+                  </div>
                 </div>
                 
           <!-- Architecture Workflow Diagram (Visual Guide) -->
@@ -15067,41 +15223,41 @@ selectShi62GW(gwName) {
             </div>
           </div>
     
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
-                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
-                    <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block mb-1">[INGESTION & CONCURRENCY]</span>
-                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">1. Pipeline & Multi-Threading Engine</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-600 dark:text-slate-400 text-xs leading-relaxed w-full min-w-0">
+                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70 min-w-0">
+                    <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block mb-1">[INGESTION &amp; CONCURRENCY]</span>
+                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">1. Pipeline &amp; Multi-Threading Engine</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Serverless Orchestration:</strong> Automated execution via GitHub Actions Runners (Ubuntu Latest / Python 3.11) on a 15-minute cron schedule and manual dispatch triggers.</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Parallel Concurrency & Incremental Cache:</strong> Employs <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> to sync 8 leagues and 135 unique teams (165 entries) in 2-4s, caching settled GWs to cut redundant API calls by 95%.</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Azure Transfer AI & Security:</strong> Integrates Azure Functions transfer analytics via environment secrets (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">AZURE_TRANSFER_FUNCTION_KEY</code>) with graceful fallback.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold flex-shrink-0">•</span><span><strong>Serverless Orchestration:</strong> Automated execution via GitHub Actions Runners (Ubuntu Latest / Python 3.11) on a 15-minute cron schedule and manual dispatch triggers.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold flex-shrink-0">•</span><span><strong>Parallel Concurrency &amp; Incremental Cache:</strong> Employs <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> to sync 8 leagues and 135 unique teams (165 entries) in 2-4s, caching settled GWs to cut redundant API calls by 95%.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold flex-shrink-0">•</span><span><strong>Azure Transfer AI &amp; Security:</strong> Integrates Azure Functions transfer analytics via environment secrets (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">AZURE_TRANSFER_FUNCTION_KEY</code>) with graceful fallback.</span></li>
                     </ul>
                   </div>
-                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
+                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70 min-w-0">
                     <span class="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider block mb-1">[DATA_INTEGRITY]</span>
-                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">2. Data Integrity & Atomic State Machine</div>
+                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">2. Data Integrity &amp; Atomic State Machine</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>POSIX Atomic Replacement:</strong> Serializes <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">multi_fpl_data.json</code> and per-league JSONs via <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tempfile</code> + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">os.replace</code>, preventing truncated writes or race condition corruptions.</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Pre-Commit Validation:</strong> Validates live points, auto-subs, Vice-Captain promotions (VC x2), chip activations, transfer hits, and prize tie-pooling formulas before persistence.</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Zero-Churn Smart Commit:</strong> Computes semantic diffs against cached states. If leaderboard ranks and scores are unchanged, Git commits are skipped to eliminate repository bloat (Zero Git Bloat).</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold flex-shrink-0">•</span><span><strong>POSIX Atomic Replacement:</strong> Serializes <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">multi_fpl_data.json</code> and per-league JSONs via <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tempfile</code> + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">os.replace</code>, preventing truncated writes or race condition corruptions.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold flex-shrink-0">•</span><span><strong>Pre-Commit Validation:</strong> Validates live points, auto-subs, Vice-Captain promotions (VC x2), chip activations, transfer hits, and prize tie-pooling formulas before persistence.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold flex-shrink-0">•</span><span><strong>Zero-Churn Smart Commit:</strong> Computes semantic diffs against cached states. If leaderboard ranks and scores are unchanged, Git commits are skipped to eliminate repository bloat (Zero Git Bloat).</span></li>
                     </ul>
                   </div>
-                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
+                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70 min-w-0">
                     <span class="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block mb-1">[EDGE_JAMSTACK]</span>
-                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">3. Config-Driven Jamstack & Edge CDN</div>
+                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">3. Config-Driven Jamstack &amp; Edge CDN</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Zero-Code Season Rollover:</strong> 100% driven by <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">config/leagues_config.json</code> with automatic cleanup of retired league routes and stale JSON payloads across seasons.</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Per-League JSON Split:</strong> Static compiler <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> builds dedicated routes (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/{id}/index.html</code>) and decoupled <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> files (~85% smaller initial HTML).</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Custom Domain &amp; Edge CDN:</strong> Served via <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">www.fplsawadika.com</code> powered by Cloudflare DNS (CNAME Flattening) and GitHub Pages Fastly Edge CDN with HTTP/2, Brotli compression, and sub-50ms TTFB.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold flex-shrink-0">•</span><span><strong>Zero-Code Season Rollover:</strong> ขับเคลื่อนด้วย <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">config/leagues_config.json</code> 100% รองรับการเปลี่ยนลีกและทีมข้ามฤดูกาลพร้อม Auto-Cleanup ลบโฟลเดอร์ลีกเก่าอัตโนมัติ</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold flex-shrink-0">•</span><span><strong>Per-League JSON Split:</strong> Static compiler <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> builds dedicated routes (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/{id}/index.html</code>) and decoupled <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> files (~85% smaller initial HTML).</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold flex-shrink-0">•</span><span><strong>Custom Domain &amp; Edge CDN:</strong> Served via <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">www.fplsawadika.com</code> powered by Cloudflare DNS (CNAME Flattening) and GitHub Pages Fastly Edge CDN with HTTP/2, Brotli compression, and sub-50ms TTFB.</span></li>
                     </ul>
                   </div>
-                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
+                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70 min-w-0">
                     <span class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider block mb-1">[CLIENT_RUNTIME]</span>
-                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime & 15s Real-Time Relay</div>
+                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime &amp; 15s Real-Time Relay</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>15s Cloudflare Edge Live Poll:</strong> During active matches, the client polls Cloudflare Worker (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">fpl-live-relay</code> / <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">api.fplsawadika.com</code>) every 15s to overlay real-time points and provisional BPS bonus without waiting for static rebuilds.</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Lazy League Switch & Race Guard:</strong> On-demand <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> fetching guarded by monotonic request tokens, synchronized via HTML5 History API and <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">localStorage</code>.</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Zero-Framework 60 FPS & A11y:</strong> Pure Vanilla ES6+ (0kb framework runtime), <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tabular-nums</code> (CLS: 0.00), Page Visibility API battery saver, and WCAG AA modal focus restoration.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold flex-shrink-0">•</span><span><strong>15s Cloudflare Edge Live Poll:</strong> During active matches, the client polls Cloudflare Worker (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">fpl-live-relay</code> / <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">api.fplsawadika.com</code>) every 15s to overlay real-time points and provisional BPS bonus without waiting for static rebuilds.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold flex-shrink-0">•</span><span><strong>Lazy League Switch &amp; Race Guard:</strong> On-demand <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> fetching guarded by monotonic request tokens, synchronized via HTML5 History API and <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">localStorage</code>.</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold flex-shrink-0">•</span><span><strong>Zero-Framework 60 FPS &amp; A11y:</strong> Pure Vanilla ES6+ (0kb framework runtime), <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tabular-nums</code> (CLS: 0.00), Page Visibility API battery saver, and WCAG AA modal focus restoration.</span></li>
                     </ul>
                   </div>
                 </div>
@@ -15110,197 +15266,261 @@ selectShi62GW(gwName) {
           `;
         } else {
           container.innerHTML = `
-            <!-- 6 Core Feature Pillars -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            <!-- Top Overview Banner (Consistent with Highlights, Chips, Transfers, Form Radar) -->
+            <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs w-full max-w-full overflow-hidden">
+              <div class="min-w-0">
+                <div class="flex items-center gap-2.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
+                  <h2 id="about-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display truncate">
+                    Dev Corner &amp; สถาปัตยกรรมระบบ
+                  </h2>
+                </div>
+                <p id="about-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  คู่มือฟังก์ชันการใช้งาน, ช่องทางติดต่อผู้พัฒนา และสถาปัตยกรรมระบบ Dual-Layer Serverless Jamstack
+                </p>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap flex-shrink-0">
+                <span class="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs px-3 py-1 rounded-xl font-bold font-display">
+                  v2.4 Jamstack
+                </span>
+                <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-mono text-[11px] font-semibold">
+                  Fastly + Cloudflare Edge
+                </span>
+              </div>
+            </div>
+
+            <!-- 6 Core Feature Pillars (คู่มือฟังก์ชันการใช้งาน 6 เสาหลักของแพลตฟอร์ม) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 w-full min-w-0">
               
-              <!-- Feature 1: Live Scores & Auto-Sub -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                  </span>
+              <!-- Pillar 1: Live Scores & Auto-Sub -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+                <div class="min-w-0">
+                  <div class="flex items-center justify-between mb-3 gap-2">
+                    <span class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200/80 dark:border-emerald-800/60 inline-flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    </span>
+                    <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/60 tracking-wider flex-shrink-0">
+                      PILLAR 01
+                    </span>
+                  </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    1. คะแนนสด & เปลี่ยนตัวอัตโนมัติ
+                    1. คะแนนสด &amp; เปลี่ยนตัวอัตโนมัติ
                   </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>อัปเดตคะแนนสดทุก 30 วินาทีพร้อมแต้มโบนัสตลอด 90 นาที ไม่ต้องรอข้ามคืน</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>เปลี่ยนสำรองและดันรองกัปตัน (VC x2) ให้อัตโนมัติเมื่อตัวจริงไม่ได้ลงแข่ง</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
                       <span>บทวิเคราะห์ไฮไลท์สด เกาะติดการสลับอันดับและโมเมนตัมแบบเรียลไทม์</span>
                     </li>
                   </ul>
                 </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                  ✓ แท็บ: คะแนนสด
-                </div>
+                <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors group cursor-pointer text-left min-w-0">
+                  <span class="truncate">ไปยังแท็บ: คะแนนสด</span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+                </button>
               </div>
 
-              <!-- Feature 2: Squad Pitch Modal -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
-                  </span>
+              <!-- Pillar 2: Squad Pitch Modal -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+                <div class="min-w-0">
+                  <div class="flex items-center justify-between mb-3 gap-2">
+                    <span class="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200/80 dark:border-blue-800/60 inline-flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
+                    </span>
+                    <span class="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded-md border border-blue-200/60 dark:border-blue-800/60 tracking-wider flex-shrink-0">
+                      PILLAR 02
+                    </span>
+                  </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
                     2. ส่องแผนจัดทัพ 11 ตัวจริง
                   </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-blue-500 font-bold flex-shrink-0">•</span>
                       <span>คลิกที่ชื่อทีมเพื่อน เพื่อเปิดดูแผนผังสนามหญ้าและ 4 ตัวสำรอง</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-blue-500 font-bold flex-shrink-0">•</span>
                       <span>แสดงคะแนนรายคน สถานะลงสนาม และนาทีที่ลงเล่นแบบเรียลไทม์</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-blue-500 font-bold flex-shrink-0">•</span>
                       <span>ตรวจเช็กการใช้ชิปพิเศษอย่างชัดเจน (TC, BB, FH, WC)</span>
                     </li>
                   </ul>
                 </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                  ✓ ฟังก์ชัน: คลิกที่ชื่อทีมในตาราง
-                </div>
+                <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors group cursor-pointer text-left min-w-0">
+                  <span class="truncate">ไปที่ตารางคะแนนสด (คลิกชื่อทีม)</span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+                </button>
               </div>
 
-              <!-- Feature 3: Transfers & Analysis -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
-                  </span>
+              <!-- Pillar 3: Transfers & Analysis -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+                <div class="min-w-0">
+                  <div class="flex items-center justify-between mb-3 gap-2">
+                    <span class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/50 border border-purple-200/80 dark:border-purple-800/60 inline-flex items-center justify-center text-purple-600 dark:text-purple-400 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+                    </span>
+                    <span class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/60 px-2 py-0.5 rounded-md border border-purple-200/60 dark:border-purple-800/60 tracking-wider flex-shrink-0">
+                      PILLAR 03
+                    </span>
+                  </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    3. วิเคราะห์การย้ายตัว & ขุมกำลัง
+                    3. วิเคราะห์การย้ายตัว &amp; ขุมกำลัง
                   </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-purple-500 font-bold flex-shrink-0">•</span>
                       <span>สรุปทุกดีลซื้อขายนักเตะเข้า-ออกของคู่แข่งในลีก พร้อมแต้มลบย้ายตัว</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-purple-500 font-bold flex-shrink-0">•</span>
                       <span>คำนวณแต้มได้-เสียสุทธิจากการย้ายตัวในแต่ละสัปดาห์</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
-                      <span>วิเคราะห์นักเตะมหาชน (> 70%), นักเตะทีเด็ด (< 20%) และคำแนะนำการย้ายตัว</span>
+                      <span class="text-purple-500 font-bold flex-shrink-0">•</span>
+                      <span>วิเคราะห์นักเตะมหาชน (&gt; 70%), นักเตะทีเด็ด (&lt; 20%) และคำแนะนำการย้ายตัว</span>
                     </li>
                   </ul>
                 </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                  ✓ แท็บ: วิเคราะห์การย้ายตัว
-                </div>
+                <button type="button" onclick="app.switchTab('transfers-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors group cursor-pointer text-left min-w-0">
+                  <span class="truncate">ไปยังแท็บ: วิเคราะห์การย้ายตัว</span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+                </button>
               </div>
 
-              <!-- Feature 4: Rival Chips Matrix -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
-                  </span>
+              <!-- Pillar 4: Rival Chips Matrix -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+                <div class="min-w-0">
+                  <div class="flex items-center justify-between mb-3 gap-2">
+                    <span class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-800/60 inline-flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+                    </span>
+                    <span class="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md border border-amber-200/60 dark:border-amber-800/60 tracking-wider flex-shrink-0">
+                      PILLAR 04
+                    </span>
+                  </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
                     4. ติดตามสถานะชิปของคู่แข่ง
                   </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-amber-500 font-bold flex-shrink-0">•</span>
                       <span>ตารางแมทริกซ์เช็กสถานะชิปพิเศษ (WC, FH, BB, TC) ของผู้จัดการทีมทุกคน</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-amber-500 font-bold flex-shrink-0">•</span>
                       <span>ตรวจสอบชิปที่ใช้ไปแล้วในแต่ละสัปดาห์ และชิปที่ยังเหลืออยู่แบบแยกเดี่ยว</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-amber-500 font-bold flex-shrink-0">•</span>
                       <span>ไฮไลท์พิเศษแจ้งเตือนชิปที่กำลังเปิดใช้งานระหว่างสัปดาห์แข่งขันสด</span>
                     </li>
                   </ul>
                 </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                  ✓ แท็บ: สถานะชิป
-                </div>
+                <button type="button" onclick="app.switchTab('competition-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors group cursor-pointer text-left min-w-0">
+                  <span class="truncate">ไปยังแท็บ: สถานะชิป</span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+                </button>
               </div>
 
-              <!-- Feature 5: Prizes & Treasury -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                  </span>
+              <!-- Pillar 5: Prizes & Treasury -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+                <div class="min-w-0">
+                  <div class="flex items-center justify-between mb-3 gap-2">
+                    <span class="w-9 h-9 rounded-xl bg-yellow-50 dark:bg-yellow-950/50 border border-yellow-200/80 dark:border-yellow-800/60 inline-flex items-center justify-center text-yellow-600 dark:text-yellow-400 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </span>
+                    <span class="text-[10px] font-mono font-bold text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-950/60 px-2 py-0.5 rounded-md border border-yellow-200/60 dark:border-yellow-800/60 tracking-wider flex-shrink-0">
+                      PILLAR 05
+                    </span>
+                  </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    5. เงินรางวัล & บัญชีกองกลาง
+                    5. เงินรางวัล &amp; บัญชีกองกลาง
                   </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-yellow-500 font-bold flex-shrink-0">•</span>
                       <span>คำนวณแชมป์สัปดาห์, แชมป์เดือน, สิ้นฤดูกาล และค่าปรับอัตโนมัติ</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-yellow-500 font-bold flex-shrink-0">•</span>
                       <span>หักแต้มย้ายทีมในตัว พร้อมเฉลี่ยเงินรางวัลอย่างยุติธรรม</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-yellow-500 font-bold flex-shrink-0">•</span>
                       <span>รองรับมินิเกมเฉพาะลีก เช่น ทายผลบอล และท้าชนคะแนนแฟนตาซี</span>
                     </li>
                   </ul>
                 </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                  ✓ แท็บ: เงินรางวัล
-                </div>
+                <button type="button" onclick="app.switchTab('prizes-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 transition-colors group cursor-pointer text-left min-w-0">
+                  <span class="truncate">ไปยังแท็บ: เงินรางวัล</span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+                </button>
               </div>
 
-              <!-- Feature 6: Radar & Hall of Fame -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-                <div>
-                  <span class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 inline-flex items-center justify-center text-slate-700 dark:text-slate-200 mb-3">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004 0V5.625c0-.621-.504-1.125-1.125-1.125H9.625c-.621 0-1.125.504-1.125 1.125v8.625m5.004 0H9.625" /></svg>
-                  </span>
+              <!-- Pillar 6: Radar & Hall of Fame -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
+                <div class="min-w-0">
+                  <div class="flex items-center justify-between mb-3 gap-2">
+                    <span class="w-9 h-9 rounded-xl bg-cyan-50 dark:bg-cyan-950/50 border border-cyan-200/80 dark:border-cyan-800/60 inline-flex items-center justify-center text-cyan-600 dark:text-cyan-400 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004 0V5.625c0-.621-.504-1.125-1.125-1.125H9.625c-.621 0-1.125.504-1.125 1.125v8.625m5.004 0H9.625" /></svg>
+                    </span>
+                    <span class="text-[10px] font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/60 px-2 py-0.5 rounded-md border border-cyan-200/60 dark:border-cyan-800/60 tracking-wider flex-shrink-0">
+                      PILLAR 06
+                    </span>
+                  </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    6. เรดาร์ฟอร์ม & ทำเนียบแชมป์
+                    6. เรดาร์ฟอร์ม &amp; ทำเนียบแชมป์
                   </h3>
-                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2 space-y-1.5 leading-relaxed">
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-cyan-500 font-bold flex-shrink-0">•</span>
                       <span>วิเคราะห์ความสม่ำเสมอ ประเมินแต้มต่ำสุด-สูงสุด ของทั้ง 8 ลีก</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-cyan-500 font-bold flex-shrink-0">•</span>
                       <span>บันทึกประวัติศาสตร์ทำเนียบแชมป์และหอเกียรติยศตลอดทุกฤดูกาล</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold">•</span>
+                      <span class="text-cyan-500 font-bold flex-shrink-0">•</span>
                       <span>ปุ่มคัดลอกสรุปผลคะแนนส่งเข้ากลุ่ม LINE และส่งออกเป็นตาราง Excel ทันที</span>
                     </li>
                   </ul>
                 </div>
-                <div class="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                  ✓ แท็บ: เรดาร์ฟอร์ม & ทำเนียบแชมป์
-                </div>
+                <button type="button" onclick="app.switchTab('hall-of-fame-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 transition-colors group cursor-pointer text-left min-w-0">
+                  <span class="truncate">ไปยังแท็บ: ทำเนียบแชมป์ &amp; เรดาร์ฟอร์ม</span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+                </button>
               </div>
 
             </div>
 
-            <!-- Ultra Clean LINE Contact Box -->
-            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
-              <div class="space-y-1.5 max-w-xl text-left">
-                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-300/60 dark:border-emerald-700/60">
-                  <span class="w-1.5 h-1.5 rounded-full bg-[#06C755]"></span>
-                  LINE CONTACT
-                </span>
+            <!-- Ultra Clean LINE Contact Box (Developer Support) -->
+            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full min-w-0 overflow-hidden">
+              <div class="space-y-1.5 max-w-xl text-left min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-300/60 dark:border-emerald-700/60 flex-shrink-0">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#06C755] animate-pulse"></span>
+                    DIRECT LINE HOTLINE
+                  </span>
+                  <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex-shrink-0">
+                    🟢 ตอบกลับภายใน 24 ชม.
+                  </span>
+                </div>
                 <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white font-display">
-                  ทักคุยกับเดฟโดยตรง
+                  ทักคุยกับผู้พัฒนาโดยตรง (Developer Support)
                 </h3>
                 <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                  มีข้อสงสัย แจ้งปัญหาคะแนน หรืออยากเสนอแนะฟีเจอร์ LINE ทักหาเดฟได้
+                  มีข้อสงสัยเรื่องแต้มสด, แจ้งปัญหาคะแนน หรืออยากเสนอแนะฟีเจอร์สำหรับมินิลีก สามารถทักคุยกับเดฟผ่าน LINE ส่วนตัวได้ตลอดเวลา
                 </p>
               </div>
 
@@ -15310,30 +15530,44 @@ selectShi62GW(gwName) {
                   href="https://line.me/ti/p/lgWPeyIBR7" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 min-h-[44px] rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display"
+                  class="inline-flex items-center justify-center gap-2.5 w-full sm:w-auto px-5 py-3 min-h-[44px] rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-white dark:text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
                 >
-                  <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+                  <svg class="w-4 h-4 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
                   <span>เปิด LINE ทักหาเดฟ</span>
                 </a>
               </div>
             </div>
 
             <!-- Technical Architecture (Collapsible สำหรับสาย Dev) -->
-            <details class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/40 dark:bg-slate-900/20 text-xs text-slate-500 group transition-all">
-              <summary class="cursor-pointer font-semibold text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white flex items-center justify-between select-none">
-                <span class="flex items-center gap-2">
-                  <svg class="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                  <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                  <span class="font-display tracking-tight text-xs sm:text-sm">${isEn ? 'System Architecture & Engineering Specs' : 'สถาปัตยกรรมระบบเบื้องหลัง'}</span>
+            <details class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/40 dark:bg-slate-900/20 text-xs text-slate-500 group transition-all w-full min-w-0 overflow-hidden">
+              <summary class="cursor-pointer font-semibold text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white flex items-center justify-between select-none min-w-0">
+                <span class="flex items-center gap-2 min-w-0 pr-2">
+                  <svg class="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                  <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  <span class="font-display tracking-tight text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">สถาปัตยกรรมระบบเบื้องหลัง (Specs)</span>
                 </span>
-                <span class="text-[10.5px] text-slate-500 dark:text-slate-400 font-mono font-normal">Dual-Layer Sync • 15m Cron + 30s Edge Live</span>
+                <span class="text-[10.5px] text-slate-500 dark:text-slate-400 font-mono font-normal bg-slate-100/80 dark:bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-700/60 flex-shrink-0">
+                  Dual-Layer Sync
+                </span>
               </summary>
-              <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3.5">
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2.5 rounded-xl bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/60 text-[10.5px] font-mono">
-                  <div><span class="text-slate-400 block text-[9.5px]">RUNTIME</span><span class="font-bold text-slate-700 dark:text-slate-300">Python 3.11 / Ubuntu</span></div>
-                  <div><span class="text-slate-400 block text-[9.5px]">CONCURRENCY</span><span class="font-bold text-slate-700 dark:text-slate-300">8 Leagues • 135 Teams</span></div>
-                  <div><span class="text-slate-400 block text-[9.5px]">LIVE RELAY</span><span class="font-bold text-slate-700 dark:text-slate-300">Cloudflare Edge (30s)</span></div>
-                  <div><span class="text-slate-400 block text-[9.5px]">DELIVERY</span><span class="font-bold text-slate-700 dark:text-slate-300">fplsawadika.com • Edge CDN</span></div>
+              <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3.5 w-full min-w-0">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-slate-100/60 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/60 text-[10.5px] font-mono min-w-0">
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="text-slate-400 block text-[9.5px] uppercase tracking-wider font-semibold truncate">RUNTIME</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200 truncate">Python 3.11</span>
+                  </div>
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="text-slate-400 block text-[9.5px] uppercase tracking-wider font-semibold truncate">CONCURRENCY</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200 truncate">8 Leagues</span>
+                  </div>
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="text-slate-400 block text-[9.5px] uppercase tracking-wider font-semibold truncate">LIVE RELAY</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200 truncate">Edge (30s)</span>
+                  </div>
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="text-slate-400 block text-[9.5px] uppercase tracking-wider font-semibold truncate">DELIVERY</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200 truncate">Fastly CDN</span>
+                  </div>
                 </div>
                 
           <!-- Architecture Workflow Diagram (Visual Guide) -->
@@ -15506,41 +15740,41 @@ selectShi62GW(gwName) {
             </div>
           </div>
     
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
-                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
-                    <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block mb-1">[INGESTION & CONCURRENCY]</span>
-                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">1. Pipeline & Multi-Threading Engine</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-slate-600 dark:text-slate-400 text-xs leading-relaxed w-full min-w-0">
+                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70 min-w-0">
+                    <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block mb-1">[INGESTION &amp; CONCURRENCY]</span>
+                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">1. Pipeline &amp; Multi-Threading Engine</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Serverless Orchestration:</strong> ประมวลผลผ่าน GitHub Actions Runner (Ubuntu Latest / Python 3.11) ตามตาราง Cron ทุก 15 นาที และ Manual Dispatch</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Parallel Concurrency & Incremental Cache:</strong> ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> ดึงข้อมูล 8 ลีก 135 ทีม (165 รายการ) พร้อมกันใน 2-4 วินาที พร้อมแคช GW ที่จบแล้วเพื่อลดการยิง API ซ้ำกว่า 95%</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold">•</span><span><strong>Azure Transfer AI & Security:</strong> เชื่อมต่อ Azure Functions วิเคราะห์แผนย้ายตัวด้วย Environment Secret (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">AZURE_TRANSFER_FUNCTION_KEY</code>) พร้อมระบบ Fallback อัตโนมัติ</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold flex-shrink-0">•</span><span><strong>Serverless Orchestration:</strong> ประมวลผลผ่าน GitHub Actions Runner (Ubuntu Latest / Python 3.11) ตามตาราง Cron ทุก 15 นาที และ Manual Dispatch</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold flex-shrink-0">•</span><span><strong>Parallel Concurrency &amp; Incremental Cache:</strong> ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">ThreadPoolExecutor</code> ดึงข้อมูล 8 ลีก 135 ทีม (165 รายการ) พร้อมกันใน 2-4 วินาที พร้อมแคช GW ที่จบแล้วเพื่อลดการยิง API ซ้ำกว่า 95%</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-emerald-500 font-bold flex-shrink-0">•</span><span><strong>Azure Transfer AI &amp; Security:</strong> เชื่อมต่อ Azure Functions วิเคราะห์แผนย้ายตัวด้วย Environment Secret (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">AZURE_TRANSFER_FUNCTION_KEY</code>) พร้อมระบบ Fallback อัตโนมัติ</span></li>
                     </ul>
                   </div>
-                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
+                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70 min-w-0">
                     <span class="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider block mb-1">[DATA_INTEGRITY]</span>
-                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">2. Data Integrity & Atomic State Machine</div>
+                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">2. Data Integrity &amp; Atomic State Machine</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>POSIX Atomic Replacement:</strong> บันทึก <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">multi_fpl_data.json</code> และไฟล์รายลีกด้วย <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tempfile</code> + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">os.replace</code> ขจัดปัญหา Race Conditions หรือไฟล์ JSON เสียหาย</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Pre-Commit Validation:</strong> ตรวจสอบความถูกต้องของแต้มสด, Auto-Sub, รองกัปตัน (VC x2), ชิปพิเศษ, แต้มลบย้ายตัว (Hits) และสูตรเฉลี่ยเงินรางวัล (Tie-Pooling) ก่อนบันทึกลงดิสก์</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold">•</span><span><strong>Zero-Churn Smart Commit:</strong> ตรวจสอบ Semantic Diff ของคะแนนและอันดับ หากข้อมูลไม่เปลี่ยนแปลงจะข้าม Git Commit เพื่อลดขยะใน Git History (Zero Git Bloat) พร้อม Heartbeat Sync ทุก 6 ชั่วโมง</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold flex-shrink-0">•</span><span><strong>POSIX Atomic Replacement:</strong> บันทึก <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">multi_fpl_data.json</code> และไฟล์รายลีกด้วย <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tempfile</code> + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">os.replace</code> ขจัดปัญหา Race Conditions หรือไฟล์ JSON เสียหาย</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold flex-shrink-0">•</span><span><strong>Pre-Commit Validation:</strong> ตรวจสอบความถูกต้องของแต้มสด, Auto-Sub, รองกัปตัน (VC x2), ชิปพิเศษ, แต้มลบย้ายตัว (Hits) และสูตรเฉลี่ยเงินรางวัล (Tie-Pooling) ก่อนบันทึกลงดิสก์</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-blue-500 font-bold flex-shrink-0">•</span><span><strong>Zero-Churn Smart Commit:</strong> ตรวจสอบ Semantic Diff ของคะแนนและอันดับ หากข้อมูลไม่เปลี่ยนแปลงจะข้าม Git Commit เพื่อลดขยะใน Git History (Zero Git Bloat) พร้อม Heartbeat Sync ทุก 6 ชั่วโมง</span></li>
                     </ul>
                   </div>
-                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
+                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70 min-w-0">
                     <span class="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block mb-1">[EDGE_JAMSTACK]</span>
-                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">3. Config-Driven Jamstack & Edge CDN</div>
+                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">3. Config-Driven Jamstack &amp; Edge CDN</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Zero-Code Season Rollover:</strong> ขับเคลื่อนด้วย <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">config/leagues_config.json</code> 100% รองรับการเปลี่ยนลีกและทีมข้ามฤดูกาลพร้อม Auto-Cleanup ลบโฟลเดอร์ลีกเก่าอัตโนมัติ</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Per-League JSON Split:</strong> คอมไพล์เลอร์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> แยกไฟล์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> และสร้าง Route ประจำลีก (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/{id}/index.html</code>) ลดขนาด HTML เริ่มต้นลงกว่า 85%</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold">•</span><span><strong>Custom Domain &amp; Edge CDN:</strong> ให้บริการผ่านโดเมนหลัก <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">www.fplsawadika.com</code> บนระบบ Cloudflare DNS (CNAME Flattening) ควบคู่กับ Fastly Edge CDN รองรับ HTTP/2, Brotli และส่งมอบข้อมูลด้วย TTFB ต่ำกว่า 50ms</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold flex-shrink-0">•</span><span><strong>Zero-Code Season Rollover:</strong> ขับเคลื่อนด้วย <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">config/leagues_config.json</code> 100% รองรับการเปลี่ยนลีกและทีมข้ามฤดูกาลพร้อม Auto-Cleanup ลบโฟลเดอร์ลีกเก่าอัตโนมัติ</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold flex-shrink-0">•</span><span><strong>Per-League JSON Split:</strong> คอมไพล์เลอร์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> แยกไฟล์ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> และสร้าง Route ประจำลีก (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/{id}/index.html</code>) ลดขนาด HTML เริ่มต้นลงกว่า 85%</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold flex-shrink-0">•</span><span><strong>Custom Domain &amp; Edge CDN:</strong> ให้บริการผ่านโดเมนหลัก <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">www.fplsawadika.com</code> บนระบบ Cloudflare DNS (CNAME Flattening) ควบคู่กับ Fastly Edge CDN รองรับ HTTP/2, Brotli และส่งมอบข้อมูลด้วย TTFB ต่ำกว่า 50ms</span></li>
                     </ul>
                   </div>
-                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70">
+                  <div class="p-3.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/70 dark:border-slate-800/70 min-w-0">
                     <span class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider block mb-1">[CLIENT_RUNTIME]</span>
-                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime & 15s Real-Time Relay</div>
+                    <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">4. Client Runtime &amp; 15s Real-Time Relay</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>15s Cloudflare Edge Live Poll:</strong> ระหว่างมีแมตช์เตะ เบราว์เซอร์ดึงแต้มสดและโบนัส BPS เรียลไทม์ผ่าน Cloudflare Worker (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">fpl-live-relay</code> / <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">api.fplsawadika.com</code>) ทุก 15 วินาทีโดยไม่ต้องรอบิลด์ HTML ใหม่</span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Lazy League Switch & Race Guard:</strong> โหลด JSON รายลีกแบบ On-Demand เมื่อสลับลีก พร้อมระบบป้องกัน Race Condition และซิงก์สถานะผ่าน HTML5 History API + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">localStorage</code></span></li>
-                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold">•</span><span><strong>Zero-Framework 60 FPS & A11y:</strong> พัฒนาด้วย Vanilla ES6+ (0kb Framework) ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tabular-nums</code> (CLS: 0.00), Page Visibility API ประหยัดแบตเตอรี่ และรองรับ Keyboard Focus Accessibility</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold flex-shrink-0">•</span><span><strong>15s Cloudflare Edge Live Poll:</strong> ระหว่างมีแมตช์เตะ เบราว์เซอร์ดึงแต้มสดและโบนัส BPS เรียลไทม์ผ่าน Cloudflare Worker (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">fpl-live-relay</code> / <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">api.fplsawadika.com</code>) ทุก 15 วินาทีโดยไม่ต้องรอบิลด์ HTML ใหม่</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold flex-shrink-0">•</span><span><strong>Lazy League Switch &amp; Race Guard:</strong> โหลด JSON รายลีกแบบ On-Demand เมื่อสลับลีก พร้อมระบบป้องกัน Race Condition และซิงก์สถานะผ่าน HTML5 History API + <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">localStorage</code></span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-purple-500 font-bold flex-shrink-0">•</span><span><strong>Zero-Framework 60 FPS &amp; A11y:</strong> พัฒนาด้วย Vanilla ES6+ (0kb Framework) ใช้ <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">tabular-nums</code> (CLS: 0.00), Page Visibility API ประหยัดแบตเตอรี่ และรองรับ Keyboard Focus Accessibility</span></li>
                     </ul>
                   </div>
                 </div>
