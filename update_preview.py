@@ -2136,14 +2136,28 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     <div id="cup-view" class="tab-content hidden space-y-4">
       
       <!-- Top Cup Banner -->
-      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 shadow-2xs">
         <div>
-          <span id="cup-kicker" class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display"></span>
-          <h2 id="cup-title" class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white font-display mt-0.5">การแข่งขันฟุตบอลถ้วย</h2>
-          <p id="cup-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">ระบบจับคู่ Knockout อัตโนมัติจาก Official FPL</p>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse flex-shrink-0"></span>
+            <span id="cup-kicker" class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-bold font-display">
+              TOURNAMENT KNOCKOUT CUP
+            </span>
+          </div>
+          <h2 id="cup-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display mt-0.5 leading-snug">
+            การแข่งขันฟุตบอลถ้วย
+          </h2>
+          <p id="cup-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            ระบบจับคู่ Knockout อัตโนมัติจาก Official FPL
+          </p>
         </div>
-        <div class="flex items-center gap-2">
-          <span id="cup-prize-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display">ทัวร์นาเมนต์บอลถ้วย</span>
+        <div id="cup-header-badges" class="flex items-center gap-2 flex-wrap">
+          <span id="cup-prize-badge" class="bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60 text-xs px-3 py-1 rounded-xl font-bold font-display shadow-2xs whitespace-nowrap">
+            ทัวร์นาเมนต์บอลถ้วย
+          </span>
+          <span id="cup-teams-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 text-xs px-3 py-1 rounded-xl font-bold font-display shadow-2xs whitespace-nowrap">
+            10 สมาชิก
+          </span>
         </div>
       </div>
 
@@ -4393,6 +4407,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
         this.prizesSearchQuery = '';
         this.prizesFilterMode = 'all';
+        this.cupSearchQuery = '';
+        this.cupFilterMode = 'all';
         let initialTab = this.normalizeTab(queryTab || hashTab || savedTab || 'gameweek-view');
         if (!this.hasShi62Feature() && initialTab === 'shi62-special-view') {
           initialTab = 'gameweek-view';
@@ -4422,6 +4438,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.hofCachedStats = [];
         this.prizesSearchQuery = '';
         this.prizesFilterMode = 'all';
+        this.cupSearchQuery = '';
+        this.cupFilterMode = 'all';
       }
 
       getDefaultLeagueId() {
@@ -5591,12 +5609,13 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         // 12. Cup View Title & Subtitle
         const cupKicker = document.getElementById('cup-kicker');
         if (cupKicker) {
-          cupKicker.innerText = isEn ? 'MINI-LEAGUE KNOCKOUT CUP' : '';
+          cupKicker.innerText = isEn ? 'MINI-LEAGUE KNOCKOUT CUP' : 'การแข่งขันฟุตบอลถ้วยทางการ';
         }
         const cupTitle = document.getElementById('cup-title');
         if (cupTitle) cupTitle.innerText = isEn ? 'Knockout Cup Tournament' : 'การแข่งขันฟุตบอลถ้วย';
         const cupSub = document.getElementById('cup-subtitle');
-        if (cupSub) cupSub.innerText = isEn ? 'Automatic knockout pairings powered by Official FPL' : 'ระบบจับคู่ Knockout อัตโนมัติจาก Official FPL';
+        if (cupSub) cupSub.innerText = isEn ? 'Official FPL single-elimination tournament • Automatic pairings' : 'ระบบประกบคู่แบบแพ้คัดออก 1 ต่อ 1 ตามกติกา Official FPL';
+        this.renderCupView();
 
         // 12.1 Rules View Kicker & Badge
         const rulesKicker = document.getElementById('rules-kicker');
@@ -5960,6 +5979,8 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
         this.prizesSearchQuery = '';
         this.prizesFilterMode = 'all';
+        this.cupSearchQuery = '';
+        this.cupFilterMode = 'all';
         
         try {
           if (typeof localStorage !== 'undefined') {
@@ -14064,6 +14085,16 @@ selectShi62GW(gwName) {
         this.renderPrizesView();
       }
 
+      handleCupSearch(val) {
+        this.cupSearchQuery = (val || '').trim();
+        this.renderCupView();
+      }
+
+      setCupFilter(mode) {
+        this.cupFilterMode = mode || 'all';
+        this.renderCupView();
+      }
+
       selectMonth(monthId) {
         this.selectedMonthId = monthId;
         this.renderPrizesView();
@@ -15358,106 +15389,548 @@ selectShi62GW(gwName) {
         const isEn = (this.currentLang === 'en');
         const titleEl = document.getElementById('cup-title');
         const subEl = document.getElementById('cup-subtitle');
+        const kickerEl = document.getElementById('cup-kicker');
         const prizeBadge = document.getElementById('cup-prize-badge');
+        const teamsBadge = document.getElementById('cup-teams-badge');
         const container = document.getElementById('cup-tournament-container');
 
-        if (titleEl) titleEl.innerText = isEn ? 'Knockout Cup Tournament' : 'การแข่งขันฟุตบอลถ้วย';
-        if (subEl) subEl.innerText = isEn ? 'Automatic knockout pairings powered by Official FPL' : 'ระบบจับคู่ Knockout อัตโนมัติจาก Official FPL';
+        if (kickerEl) {
+          kickerEl.innerText = isEn ? 'MINI-LEAGUE KNOCKOUT CUP' : 'การแข่งขันฟุตบอลถ้วยทางการ';
+        }
 
         const feat = (this.config && this.config.features) || {};
         const hasCup = Boolean(feat.has_cup);
-        if (!hasCup) return;
+
+        if (!hasCup) {
+          if (titleEl) titleEl.innerText = isEn ? 'Knockout Cup Tournament' : 'การแข่งขันฟุตบอลถ้วย';
+          if (subEl) subEl.innerText = isEn ? 'No cup competition configured for this league' : 'มินิลีกนี้ไม่มีการแข่งขันฟุตบอลถ้วย';
+          if (prizeBadge) prizeBadge.innerText = isEn ? 'NO CUP' : 'ไม่มีบอลถ้วย';
+          if (teamsBadge) teamsBadge.classList.add('hidden');
+          if (container) {
+            container.innerHTML = `
+              <div class="glass-card rounded-2xl p-8 border border-slate-200 dark:border-slate-800 text-center">
+                <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 mx-auto flex items-center justify-center mb-3">
+                  <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                </div>
+                <h4 class="text-base font-bold text-slate-800 dark:text-white font-display">${isEn ? 'No Cup Competition' : 'ไม่มีการแข่งขันฟุตบอลถ้วย'}</h4>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-md mx-auto">${isEn ? 'This mini-league does not feature an official knockout cup competition. Please check the League Table or Prizes tab.' : 'มินิลีกนี้ไม่ได้เปิดใช้งานระบบฟุตบอลถ้วย สามารถติดตามผลคะแนนได้ที่หน้าตารางคะแนนรวมหรือเงินรางวัล'}</p>
+              </div>
+            `;
+          }
+          return;
+        }
 
         const champPrize = feat.cup_champion_prize;
         const runnerPrize = feat.cup_runner_up_prize;
-        const startGW = feat.cup_start_gw;
+        const startGW = Number(feat.cup_start_gw) || 35;
+        const cupNote = feat.cup_rule_note || '';
+
+        if (titleEl) {
+          titleEl.innerText = isEn ? `${this.data.name || 'Mini-League'} Cup Tournament` : `ฟุตบอลถ้วย ${this.data.name || 'ประจำลีก'}`;
+        }
+        if (subEl) {
+          subEl.innerText = isEn 
+            ? `Official FPL single-elimination tournament • Kickoff GW ${startGW}` 
+            : `ระบบจับคู่แบบแพ้คัดออก 1 ต่อ 1 ตามกติกา Official FPL • เริ่มสัปดาห์ที่ ${startGW}`;
+        }
+
+        const allRawTeams = (this.data && this.data.teams) ? this.data.teams : [];
+        const eligibleCount = allRawTeams.filter(t => this.isPrizeEligible(t.entry_id)).length;
 
         if (prizeBadge) {
           if (champPrize && runnerPrize) {
-            prizeBadge.innerText = isEn ? `${champPrize} + ${runnerPrize} PRIZE` : `รางวัล ${champPrize} + ${runnerPrize}`;
+            prizeBadge.innerText = isEn ? `${champPrize} + ${runnerPrize}` : `รางวัล ${champPrize} + ${runnerPrize}`;
           } else if (champPrize) {
-            prizeBadge.innerText = isEn ? `${champPrize} PRIZE` : `รางวัล ${champPrize}`;
+            prizeBadge.innerText = isEn ? `${champPrize}` : `รางวัล ${champPrize}`;
           } else {
             prizeBadge.innerText = isEn ? 'CUP TOURNAMENT' : 'ทัวร์นาเมนต์บอลถ้วย';
           }
         }
+        if (teamsBadge) {
+          teamsBadge.classList.remove('hidden');
+          teamsBadge.innerText = isEn ? `${allRawTeams.length} Teams (${eligibleCount} Contenders)` : `${allRawTeams.length} ทีม (${eligibleCount} ลุ้นรางวัล)`;
+        }
 
-        if (container) {
-          const cupTrophySvg = `<div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-400 flex items-center justify-center shadow-xs shrink-0"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 4h16v6a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6V4z"></path><path d="M12 16v4"></path><path d="M8 20h8"></path></svg></div>`;
-          const cupRunnerSvg = `<div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center shadow-xs shrink-0"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg></div>`;
+        if (!container) return;
 
-          let prizeCardsHtml = '';
-          if (champPrize && runnerPrize) {
-            prizeCardsHtml = `
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
-                  <div class="flex items-center gap-3">
-                    ${cupTrophySvg}
-                    <div>
-                      <span class="text-xs uppercase font-bold text-amber-700 dark:text-amber-400 font-display">${isEn ? 'CUP CHAMPION' : 'แชมป์ฟุตบอลถ้วย'}</span>
-                      <h3 class="text-lg font-bold text-slate-900 dark:text-white">${isEn ? 'Cup Champion' : 'แชมป์ฟุตบอลถ้วย'}</h3>
-                      <div class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-display mt-0.5">${champPrize}</div>
-                    </div>
-                  </div>
-                </div>
+        // Compute standings & cumulative net score
+        const overallMap = {};
+        allRawTeams.forEach(t => {
+          overallMap[t.entry_id] = {
+            entry_id: t.entry_id,
+            team_name: t.entry_name || t.team_name || '',
+            player_name: t.player_name || '',
+            rank: t.rank || 999,
+            total_net: 0,
+            gw_count: 0
+          };
+        });
 
-                <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
-                  <div class="flex items-center gap-3">
-                    ${cupRunnerSvg}
-                    <div>
-                      <span class="text-xs uppercase font-bold text-slate-600 dark:text-slate-400 font-display">${isEn ? 'RUNNER-UP' : 'รองแชมป์'}</span>
-                      <h3 class="text-lg font-bold text-slate-900 dark:text-white">${isEn ? 'Cup Runner-Up' : 'รองแชมป์ฟุตบอลถ้วย'}</h3>
-                      <div class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-display mt-0.5">${runnerPrize}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            `;
-          } else if (champPrize) {
-            const cupNote = feat.cup_rule_note || '';
-            prizeCardsHtml = `
-              <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
-                <div class="flex items-center gap-3.5">
-                  ${cupTrophySvg}
-                  <div>
-                    <span class="text-xs uppercase font-bold text-amber-700 dark:text-amber-400 font-display">${isEn ? 'MINI-LEAGUE CUP CHAMPION' : 'แชมป์ฟุตบอลถ้วย'}</span>
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">${isEn ? `League Cup Champion ${startGW ? `(Starts GW ${startGW})` : ''}` : `แชมป์ลีกคัพ ${startGW ? `(เริ่ม Gameweek ${startGW})` : ''}`}</h3>
-                    <div class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-display mt-0.5">${champPrize}</div>
-                    ${cupNote ? `<p class="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-1">* ${cupNote}</p>` : ''}
-                    ${startGW ? `<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">* ${isEn ? `Starts in Gameweek ${startGW} (Eligible for fully paid entries only)` : `เริ่มแข่งขันใน Gameweek ${startGW} (สงวนสิทธิ์เฉพาะทีมที่ชำระค่าสมัครครบถ้วน)`}</p>` : ''}
-                  </div>
-                </div>
-              </div>
-            `;
-          } else {
-            prizeCardsHtml = `
-              <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
-                <div class="flex items-center gap-3.5">
-                  ${cupTrophySvg}
-                  <div>
-                    <span class="text-xs uppercase font-bold text-amber-700 dark:text-amber-400 font-display">${isEn ? `${this.escapeHtml(this.data.name || 'MINI-LEAGUE')} CUP` : `ฟุตบอลถ้วย ${this.escapeHtml(this.data.name || 'มินิลีก')}`}</span>
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">${isEn ? 'Cup Winner Prizes' : 'รางวัลผู้ชนะฟุตบอลถ้วย'}</h3>
-                    <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">${isEn ? 'Awaiting kickoff gameweek and prize allocation details based on entries.' : 'รอสรุปสัปดาห์ที่เริ่มแข่งขัน และจัดสรรเงินรางวัลตามยอดสมัคร'}</p>
-                  </div>
-                </div>
-              </div>
-            `;
+        if (this.data && this.data.gameweeks) {
+          const maxGW = Number(this.multiData.max_gw) || 38;
+          for (let gw = 1; gw <= maxGW; gw++) {
+            const gData = this.data.gameweeks[String(gw)];
+            if (!gData || !gData.results) continue;
+            const gIsStarted = gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+            if (gIsStarted) {
+              const seen = new Set();
+              gData.results.forEach(r => {
+                if (seen.has(r.entry_id)) return;
+                seen.add(r.entry_id);
+                if (overallMap[r.entry_id]) {
+                  overallMap[r.entry_id].total_net += (r.net_points !== undefined ? r.net_points : (r.points || 0));
+                  overallMap[r.entry_id].gw_count += 1;
+                }
+              });
+            }
           }
+        }
 
-          const gwInfoText = startGW 
-            ? (isEn ? `Official FPL Cup knockout pairings will be generated automatically starting from Gameweek ${startGW}. Winners in each round advance to the next.` : `ระบบ Official FPL Cup จะเริ่มจัดประกบคู่แข่งขันแบบแพ้คัดออกอัตโนมัติในสัปดาห์ที่ ${startGW} สมาชิกที่ชนะในแต่ละรอบจะผ่านเข้าสู่รอบต่อไปจนถึงรอบชิงชนะเลิศ`)
-            : (isEn ? `Official FPL Cup knockout pairings will be generated automatically once the designated gameweek arrives. Winners in each round advance to the next.` : `ระบบ Official FPL Cup จะทำการจับคู่รอบ Knockout อัตโนมัติเมื่อถึงสัปดาห์ที่กำหนด สมาชิกที่ชนะในแต่ละสัปดาห์จะผ่านเข้าสู่รอบต่อไป`);
+        const allTeamsList = Object.values(overallMap);
+        const eligibleTeams = allTeamsList
+          .filter(t => this.isPrizeEligible(t.entry_id))
+          .sort((a, b) => (b.total_net - a.total_net) || (a.rank - b.rank));
 
-          container.innerHTML = `
-            ${prizeCardsHtml}
-            <div class="glass-card rounded-2xl p-5 border border-slate-200 dark:border-slate-800 text-center py-8">
-              <svg class="w-8 h-8 mx-auto text-slate-400 mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
-              <h4 class="text-base font-bold text-slate-900 dark:text-white">${isEn ? `Knockout Cup Rounds ${startGW ? `(Starts GW ${startGW})` : ''}` : `รอบการแข่งขัน Knockout Cup ${startGW ? `(เริ่ม GW ${startGW})` : ''}`}</h4>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-md mx-auto">${gwInfoText}</p>
+        eligibleTeams.forEach((t, idx) => {
+          t.seed_rank = idx + 1;
+          t.is_eligible = true;
+        });
+
+        const nonEligibleTeams = allTeamsList
+          .filter(t => !this.isPrizeEligible(t.entry_id))
+          .sort((a, b) => (b.total_net - a.total_net) || (a.rank - b.rank));
+
+        nonEligibleTeams.forEach(t => {
+          t.seed_rank = null;
+          t.is_eligible = false;
+        });
+
+        // Search & Filter
+        let displayTeams = [];
+        if (this.cupFilterMode === 'contenders') {
+          displayTeams = [...eligibleTeams];
+        } else if (this.cupFilterMode === 'seeds') {
+          displayTeams = eligibleTeams.slice(0, Math.min(eligibleTeams.length, 16));
+        } else if (this.cupFilterMode === 'non_prize') {
+          displayTeams = [...nonEligibleTeams];
+        } else {
+          displayTeams = [...eligibleTeams, ...nonEligibleTeams];
+        }
+
+        if (this.cupSearchQuery) {
+          const q = this.cupSearchQuery.toLowerCase();
+          displayTeams = displayTeams.filter(t =>
+            (t.team_name || '').toLowerCase().includes(q) ||
+            (t.player_name || '').toLowerCase().includes(q)
+          );
+        }
+
+        // SVGs
+        const cupTrophySvg = `<svg class="w-6 h-6 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 4h16v6a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6V4z"></path><path d="M12 16v4"></path><path d="M8 20h8"></path></svg>`;
+        const cupMedalSvg = `<svg class="w-6 h-6 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg>`;
+        const shieldSvg = `<svg class="w-5 h-5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`;
+        const kickoffSvg = `<svg class="w-5 h-5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`;
+
+        // 1. Silverware Showcase Cards
+        let silverwareHtml = '';
+        if (champPrize && runnerPrize) {
+          silverwareHtml = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Champion Card -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-amber-300/60 dark:border-amber-700/60 bg-linear-to-br from-amber-50/50 via-transparent to-transparent dark:from-amber-950/20 shadow-2xs">
+                <div class="flex items-start gap-3.5">
+                  <div class="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-900/60 border border-amber-300 dark:border-amber-700/80 flex items-center justify-center shrink-0 shadow-xs">
+                    ${cupTrophySvg}
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-amber-700 dark:text-amber-400 font-display">${isEn ? 'TOURNAMENT CHAMPION' : 'แชมป์ฟุตบอลถ้วย'}</span>
+                      <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100/80 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800">${isEn ? '1st Place' : 'อันดับ 1'}</span>
+                    </div>
+                    <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5">${isEn ? 'Cup Champion Silverware' : 'ถ้วยเกียรติยศแชมป์ฟุตบอลถ้วย'}</h3>
+                    <div class="text-xl sm:text-2xl font-black text-amber-700 dark:text-amber-400 font-display mt-1">${champPrize}</div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${isEn ? 'Awarded to the winner of the Grand Final knockout match.' : 'มอบให้แก่ผู้ชนะเลิศนัดชิงชนะเลิศรอบ Final (สัปดาห์ที่ 38)'}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Runner-Up Card -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-300/80 dark:border-slate-700/80 bg-linear-to-br from-slate-100/60 via-transparent to-transparent dark:from-slate-800/20 shadow-2xs">
+                <div class="flex items-start gap-3.5">
+                  <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center shrink-0 shadow-xs">
+                    ${cupMedalSvg}
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-slate-600 dark:text-slate-400 font-display">${isEn ? 'RUNNER-UP' : 'รองชนะเลิศ'}</span>
+                      <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-200/80 text-slate-700 dark:bg-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-600">${isEn ? '2nd Place' : 'อันดับ 2'}</span>
+                    </div>
+                    <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5">${isEn ? 'Cup Runner-Up Medal' : 'รางวัลรองชนะเลิศฟุตบอลถ้วย'}</h3>
+                    <div class="text-xl sm:text-2xl font-black text-slate-700 dark:text-slate-300 font-display mt-1">${runnerPrize}</div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${isEn ? 'Awarded to the runner-up contesting the Grand Final.' : 'มอบให้แก่ทีมรองชนะเลิศที่ผ่านเข้าสู่รอบชิงชนะเลิศ'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        } else if (champPrize) {
+          silverwareHtml = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Champion Card -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-amber-300/60 dark:border-amber-700/60 bg-linear-to-br from-amber-50/50 via-transparent to-transparent dark:from-amber-950/20 shadow-2xs">
+                <div class="flex items-start gap-3.5">
+                  <div class="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-900/60 border border-amber-300 dark:border-amber-700/80 flex items-center justify-center shrink-0 shadow-xs">
+                    ${cupTrophySvg}
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-amber-700 dark:text-amber-400 font-display">${isEn ? 'TOURNAMENT CHAMPION' : 'แชมป์ฟุตบอลถ้วย'}</span>
+                      <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100/80 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800">${isEn ? 'Winner Takes All' : 'ผู้ชนะคว้าเดี่ยว'}</span>
+                    </div>
+                    <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5">${isEn ? 'Cup Champion Silverware' : 'ถ้วยเกียรติยศแชมป์ฟุตบอลถ้วย'}</h3>
+                    <div class="text-xl sm:text-2xl font-black text-amber-700 dark:text-amber-400 font-display mt-1">${champPrize}</div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${isEn ? 'Awarded to the ultimate winner of the knockout tournament.' : 'มอบให้แก่ผู้ชนะเลิศทัวร์นาเมนต์บอลถ้วย'}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Context Schedule / Rule Card -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-linear-to-br from-indigo-50/30 via-transparent to-transparent dark:from-indigo-950/15 shadow-2xs">
+                <div class="flex items-start gap-3.5">
+                  <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center shrink-0 shadow-xs">
+                    ${cupNote ? shieldSvg : kickoffSvg}
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-indigo-600 dark:text-indigo-400 font-display">
+                      ${cupNote ? (isEn ? 'LEAGUE SPECIAL RULE' : 'กติกาพิเศษประจำลีก') : (isEn ? 'KICKOFF SCHEDULE' : 'กำหนดการเปิดสนาม')}
+                    </span>
+                    <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5">
+                      ${cupNote ? (isEn ? 'Tie-Break Qualification Rule' : 'เกณฑ์ชี้ขาดพิเศษเฉพาะลีก') : (isEn ? `Knockout Commences GW ${startGW}` : `เริ่มแข่งขัน Gameweek ${startGW}`)}
+                    </h3>
+                    <div class="text-sm font-semibold text-slate-700 dark:text-slate-300 mt-1">
+                      ${cupNote ? cupNote : (isEn ? `Bracket pairings automatically kick off in Gameweek ${startGW}.` : `ตารางประกบคู่รอบแพ้คัดออกจะเริ่มอย่างเป็นทางการในสัปดาห์ที่ ${startGW}`)}
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      ${cupNote 
+                        ? (isEn ? 'If prize contenders are knocked out in the same round, the manager with higher total tournament points takes the prize.' : 'หากทีมผู้ลุ้นรางวัลตกรอบพร้อมกันในรอบเดียวกัน จะวัดผลจากคะแนนสะสมรวมสูงสุด') 
+                        : (isEn ? 'Contenders must ensure league fees are settled to receive prizes.' : 'สงวนสิทธิ์เงินรางวัลเฉพาะผู้จัดการทีมที่ชำระค่าสมัครครบถ้วน')}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           `;
         }
+
+        // Special rule callout if both prizes exist and note exists
+        let noteCalloutHtml = '';
+        if (cupNote && champPrize && runnerPrize) {
+          noteCalloutHtml = `
+            <div class="rounded-2xl p-4 border border-amber-300/80 dark:border-amber-800/80 bg-amber-50/70 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 flex items-start gap-3">
+              <div class="p-1.5 rounded-xl bg-amber-100 dark:bg-amber-900/60 text-amber-600 dark:text-amber-400 shrink-0">
+                ${shieldSvg}
+              </div>
+              <div class="text-xs">
+                <span class="font-bold">${isEn ? 'Special League Rule:' : 'กติกาพิเศษประจำลีก:'}</span>
+                <span class="ml-1">${cupNote}</span>
+                <p class="text-[11px] text-amber-700 dark:text-amber-400 mt-0.5">${isEn ? 'If contenders are eliminated in the same round, the team with the higher cumulative points wins.' : 'หากผู้ลุ้นรางวัลตกรอบพร้อมกันในรอบเดียวกัน ทีมที่มีคะแนนรวมสะสมสูงกว่าจะได้รับสิทธิ์อันดับที่ดีกว่า'}</p>
+              </div>
+            </div>
+          `;
+        }
+
+        // 2. Tournament Roadmap & Bracket Pipeline
+        const qualEndGW = Math.max(1, startGW - 1);
+        const knockoutEndGW = Math.min(36, startGW + 1);
+        const roadmapHtml = `
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+            <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
+              <div>
+                <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-slate-500 dark:text-slate-400 font-display">${isEn ? 'TOURNAMENT PIPELINE' : 'เส้นทางสู่บัลลังก์แชมป์'}</span>
+                <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5 font-display">${isEn ? 'Cup Tournament Stages' : 'ไทม์ไลน์และรอบการแข่งขัน'}</h3>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-3 py-1 rounded-xl border border-slate-200 dark:border-slate-700">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span class="font-semibold">${isEn ? 'Single Elimination 1v1' : 'แพ้คัดออก 1 ต่อ 1'}</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <!-- Stage 1 -->
+              <div class="rounded-xl p-3.5 border border-amber-300/60 dark:border-amber-700/60 bg-amber-50/40 dark:bg-amber-950/20 relative flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-black text-amber-700 dark:text-amber-400 font-display">01 • GW 1-${qualEndGW}</span>
+                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-700 dark:text-amber-300">
+                      <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                      ${isEn ? 'Live' : 'กำลังแข่ง'}
+                    </span>
+                  </div>
+                  <h4 class="text-sm font-bold text-slate-900 dark:text-white font-display">${isEn ? 'Qualification & Seeding' : 'รอบจัดอันดับมือวาง'}</h4>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">${isEn ? 'All teams compete in weekly league matches. Cumulative net score determines seed rank.' : 'ทุกทีมลงแข่งสะสมคะแนนสุทธิเพื่อกำหนดอันดับมือวาง (Seeds) ในสายการแข่งขัน'}</p>
+                </div>
+                <div class="mt-3 pt-2 border-t border-amber-200/60 dark:border-amber-800/40 text-[11px] font-bold text-amber-700 dark:text-amber-400">
+                  ${isEn ? `${eligibleTeams.length} Contenders Qualify` : `${eligibleTeams.length} ทีมลุ้นสิทธิ์เข้ารอบ`}
+                </div>
+              </div>
+
+              <!-- Stage 2 -->
+              <div class="rounded-xl p-3.5 border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 relative flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-black text-slate-500 dark:text-slate-400 font-display">02 • GW ${startGW}-${knockoutEndGW}</span>
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-200/80 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                      ${isEn ? 'Upcoming' : 'รอเปิดสาย'}
+                    </span>
+                  </div>
+                  <h4 class="text-sm font-bold text-slate-900 dark:text-white font-display">${isEn ? 'Knockout Playoff' : 'รอบประกบคู่แพ้คัดออก'}</h4>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">${isEn ? '1v1 Head-to-Head single elimination. Manager with higher GW net score advances.' : 'ประกบคู่ 1 ต่อ 1 ใครได้คะแนนมากกว่าในสัปดาห์นั้นผ่านเข้ารอบทันที'}</p>
+                </div>
+                <div class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-700 text-[11px] font-bold text-slate-600 dark:text-slate-400">
+                  ${isEn ? 'High Seeds vs Low Seeds' : 'มือวางสูงพบมือวางต่ำ'}
+                </div>
+              </div>
+
+              <!-- Stage 3 -->
+              <div class="rounded-xl p-3.5 border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 relative flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-black text-slate-500 dark:text-slate-400 font-display">03 • GW 37</span>
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100/80 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300">
+                      ${isEn ? 'Final 4' : '4 ทีมสุดท้าย'}
+                    </span>
+                  </div>
+                  <h4 class="text-sm font-bold text-slate-900 dark:text-white font-display">${isEn ? 'Semi-Finals' : 'รอบรองชนะเลิศ'}</h4>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">${isEn ? 'The final four managers clash for a coveted ticket to the Championship Match.' : 'การต่อสู้ของ 4 ผู้จัดการทีมสุดท้ายเพื่อชิงตั๋วเข้าสู่รอบชิงชนะเลิศ'}</p>
+                </div>
+                <div class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-700 text-[11px] font-bold text-blue-600 dark:text-blue-400">
+                  ${isEn ? '2 Finalists Advance' : '2 ผู้ชนะเข้าชิงแชมป์'}
+                </div>
+              </div>
+
+              <!-- Stage 4 -->
+              <div class="rounded-xl p-3.5 border border-amber-300/80 dark:border-amber-700/80 bg-linear-to-b from-amber-500/10 to-transparent dark:from-amber-950/30 relative flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-black text-amber-700 dark:text-amber-400 font-display">04 • GW 38</span>
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-700 dark:text-amber-300">
+                      🏆 ${isEn ? 'Final' : 'นัดชิง'}
+                    </span>
+                  </div>
+                  <h4 class="text-sm font-bold text-slate-900 dark:text-white font-display">${isEn ? 'Grand Final & Silverware' : 'รอบชิงชนะเลิศ ชิงถ้วยแชมป์'}</h4>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">${isEn ? 'The championship match to crown the Mini-League Cup Champion.' : 'เกมนัดชิงชนะเลิศตัดสินแชมป์บอลถ้วยประจำลีกและมอบเงินรางวัล'}</p>
+                </div>
+                <div class="mt-3 pt-2 border-t border-amber-200/60 dark:border-amber-800/40 text-[11px] font-black text-amber-700 dark:text-amber-400">
+                  ${isEn ? `Champion: ${champPrize || 'Trophy'}` : `แชมป์รับ: ${champPrize || 'ถ้วยเกียรติยศ'}`}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // 3. Live Seeding & Contenders Table
+        let tableRowsHtml = '';
+        if (displayTeams.length === 0) {
+          tableRowsHtml = `
+            <tr>
+              <td colspan="5" class="py-8 text-center text-xs text-slate-500 dark:text-slate-400">
+                ${isEn ? 'No teams matching the filter or search criteria.' : 'ไม่พบทีมที่ตรงกับเงื่อนไขการค้นหาหรือตัวกรอง'}
+              </td>
+            </tr>
+          `;
+        } else {
+          tableRowsHtml = displayTeams.map((t) => {
+            const isEligible = t.is_eligible;
+            const seedBadge = isEligible 
+              ? (t.seed_rank <= 3
+                  ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-black ${t.seed_rank === 1 ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700' : (t.seed_rank === 2 ? 'bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600' : 'bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300 border border-orange-300 dark:border-orange-700')}">#${t.seed_rank}</span>`
+                  : `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">#${t.seed_rank}</span>`)
+              : `<span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700">-</span>`;
+
+            let statusPill = '';
+            if (isEligible) {
+              if (t.seed_rank <= 4) {
+                statusPill = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${isEn ? 'Top Seed' : 'มือวางแถวหน้า'}</span>`;
+              } else {
+                statusPill = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">${isEn ? 'Qualified Contender' : 'ผู้มีสิทธิ์ลุ้นแชมป์'}</span>`;
+              }
+            } else {
+              statusPill = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">${isEn ? 'Guest Entry (Non-Prize)' : 'ร่วมสนุก (ไม่ลุ้นรางวัล)'}</span>`;
+            }
+
+            const avgPts = t.gw_count > 0 ? (t.total_net / t.gw_count).toFixed(1) : '-';
+
+            return `
+              <tr class="border-b border-slate-100 dark:border-slate-800/80 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
+                <td class="py-3 px-3 sm:px-4 text-center font-display font-bold">
+                  ${seedBadge}
+                </td>
+                <td class="py-3 px-3 sm:px-4">
+                  <div class="flex items-center gap-1.5">
+                    <span class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate max-w-[140px] xs:max-w-[200px] sm:max-w-xs block">${this.escapeHtml(t.team_name)}</span>
+                    ${!isEligible ? this.getPrizeBadge(t.entry_id) : ''}
+                  </div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[140px] xs:max-w-[200px] sm:max-w-xs">${this.escapeHtml(t.player_name)}</div>
+                </td>
+                <td class="py-3 px-3 sm:px-4 whitespace-nowrap">
+                  ${statusPill}
+                </td>
+                <td class="py-3 px-3 sm:px-4 text-right whitespace-nowrap">
+                  <span class="text-xs sm:text-sm font-black font-display text-slate-900 dark:text-white">${t.total_net.toLocaleString()}</span>
+                  <span class="text-[10px] text-slate-500 dark:text-slate-400 ml-0.5 font-normal">pts</span>
+                </td>
+                <td class="py-3 px-3 sm:px-4 text-right whitespace-nowrap hidden sm:table-cell">
+                  <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">${avgPts}</span>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
+
+        const seedingTableHtml = `
+          <div class="glass-card rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs overflow-hidden">
+            <!-- Header & Filter Bar -->
+            <div class="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3.5">
+              <div>
+                <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-slate-500 dark:text-slate-400 font-display">${isEn ? 'TOURNAMENT QUALIFICATION' : 'ตารางจัดอันดับมือวาง'}</span>
+                <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5 font-display">${isEn ? 'Live Seeding & Contenders' : 'อันดับมือวางและสถานะการลุ้นถ้วย'}</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? 'Rankings based on cumulative league net points heading into knockout rounds.' : 'คำนวณจากคะแนนสุทธิสะสมในลีกเพื่อประกบคู่ในรอบน็อคเอาท์'}</p>
+              </div>
+
+              <!-- Search & Filters -->
+              <div class="flex items-center gap-2 flex-wrap">
+                <div class="relative min-w-[130px] sm:min-w-[180px] flex-1">
+                  <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                  </span>
+                  <input 
+                    id="cup-search-input"
+                    type="text" 
+                    value="${this.escapeHtml(this.cupSearchQuery || '')}" 
+                    oninput="app.handleCupSearch(this.value)"
+                    placeholder="${isEn ? 'Search team / manager...' : 'ค้นหาชื่อทีม / ผู้จัดการ...'}"
+                    class="w-full pl-8 pr-7 py-1.5 text-xs bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-all font-sans"
+                  />
+                  ${this.cupSearchQuery ? `
+                    <button onclick="app.handleCupSearch('')" class="absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                  ` : ''}
+                </div>
+
+                <div class="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-wrap">
+                  <button onclick="app.setCupFilter('all')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.cupFilterMode === 'all' ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
+                    ${isEn ? `All (${allTeamsList.length})` : `ทั้งหมด (${allTeamsList.length})`}
+                  </button>
+                  <button onclick="app.setCupFilter('contenders')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.cupFilterMode === 'contenders' ? 'bg-amber-600 text-white shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-amber-600'}">
+                    ${isEn ? `Contenders (${eligibleTeams.length})` : `ลุ้นรางวัล (${eligibleTeams.length})`}
+                  </button>
+                  <button onclick="app.setCupFilter('seeds')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.cupFilterMode === 'seeds' ? 'bg-amber-600 text-white shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-amber-600'}">
+                    ${isEn ? 'Top Seeds' : 'มือวาง'}
+                  </button>
+                  ${nonEligibleTeams.length > 0 ? `
+                    <button onclick="app.setCupFilter('non_prize')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.cupFilterMode === 'non_prize' ? 'bg-slate-600 text-white shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
+                      ${isEn ? `Guest (${nonEligibleTeams.length})` : `ร่วมสนุก (${nonEligibleTeams.length})`}
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase font-extrabold tracking-wider font-display text-[10px]">
+                    <th scope="col" class="py-2.5 px-3 sm:px-4 text-center w-14">${isEn ? 'Seed' : 'มือวาง'}</th>
+                    <th scope="col" class="py-2.5 px-3 sm:px-4">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
+                    <th scope="col" class="py-2.5 px-3 sm:px-4 whitespace-nowrap">${isEn ? 'Cup Status' : 'สถานะการแข่งขัน'}</th>
+                    <th scope="col" class="py-2.5 px-3 sm:px-4 text-right whitespace-nowrap">${isEn ? 'Net Points' : 'คะแนนสุทธิ'}</th>
+                    <th scope="col" class="py-2.5 px-3 sm:px-4 text-right whitespace-nowrap hidden sm:table-cell">${isEn ? 'Avg / GW' : 'เฉลี่ย/นัด'}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${tableRowsHtml}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+
+        // 4. Official FPL Cup Rules Matrix
+        const rulesMatrixHtml = `
+          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+            <div class="mb-4">
+              <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-slate-500 dark:text-slate-400 font-display">${isEn ? 'TOURNAMENT RULES & REGULATIONS' : 'กติกาและข้อบังคับทางการ'}</span>
+              <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5 font-display">${isEn ? 'Official FPL Cup Tournament Matrix' : 'ข้อกำหนดการแข่งขัน Official FPL Cup'}</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              <!-- Card 1: Format -->
+              <div class="rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+                <div class="flex items-center gap-2 mb-1.5">
+                  <div class="w-6 h-6 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="14.5" y1="17.5" x2="3" y2="6"></line><line x1="14.5" y1="6" x2="3" y2="17.5"></line><line x1="21" y1="14" x2="16.5" y2="18.5"></line><line x1="21" y1="10" x2="16.5" y2="5.5"></line></svg>
+                  </div>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">${isEn ? 'Match Format & Knockout' : 'รูปแบบประกบคู่ 1 ต่อ 1'}</h4>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">${isEn ? 'Single-elimination head-to-head match per gameweek. The team with the higher net points in that gameweek advances to the next round automatically.' : 'แข่งขันประกบคู่ 1 ต่อ 1 แบบแพ้คัดออกในแต่ละสัปดาห์ ทีมที่ทำคะแนนสุทธิได้สูงกว่าในสัปดาห์นั้นจะผ่านเข้าสู่รอบต่อไปทันที'}</p>
+              </div>
+
+              <!-- Card 2: Qualification -->
+              <div class="rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+                <div class="flex items-center gap-2 mb-1.5">
+                  <div class="w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                  </div>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">${isEn ? 'Seeding & Pairing Tree' : 'การจัดอันดับมือวางและประกบคู่'}</h4>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">${isEn ? `Bracket pairings are determined by league standings prior to GW ${startGW}. Higher seeds are paired against lower seeds according to the official FPL bracket structure.` : `จัดอันดับมือวางตามคะแนนสุทธิในลีกก่อนเริ่มสัปดาห์ที่ ${startGW} ทีมมือวางอันดับสูงจะถูกประกบพบกับทีมมือวางอันดับล่างตามผังการแข่งขัน Official FPL`}</p>
+              </div>
+
+              <!-- Card 3: Tie-Breakers -->
+              <div class="rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+                <div class="flex items-center gap-2 mb-1.5">
+                  <div class="w-6 h-6 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+                  </div>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">${isEn ? 'Official Tie-Breaker Priority' : 'เกณฑ์ตัดสินเมื่อเสมอกัน'}</h4>
+                </div>
+                <ul class="text-xs text-slate-500 dark:text-slate-400 space-y-1 list-disc list-inside leading-relaxed">
+                  <li>${isEn ? '1. Most goals scored in the Gameweek' : '1. ประตูที่นักเตะในทีมทำได้มากกว่าในสัปดาห์นั้น'}</li>
+                  <li>${isEn ? '2. Fewest goals conceded in the Gameweek' : '2. เสียประตูน้อยกว่าในสัปดาห์นั้น'}</li>
+                  <li>${isEn ? '3. Virtual coin toss by FPL system' : '3. จับสลากสุ่มผู้ชนะเสมือนจริงโดยระบบ FPL'}</li>
+                </ul>
+                ${cupNote ? `
+                  <div class="mt-2 pt-2 border-t border-amber-200/60 dark:border-amber-800/40 text-[11px] font-bold text-amber-700 dark:text-amber-400">
+                    * ${cupNote}
+                  </div>
+                ` : ''}
+              </div>
+
+              <!-- Card 4: Hits & Chips -->
+              <div class="rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+                <div class="flex items-center gap-2 mb-1.5">
+                  <div class="w-6 h-6 rounded-lg bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                  </div>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">${isEn ? 'Transfer Hits & Chips Impact' : 'การคิดแต้มลบ (Hits) และการใช้ชิป'}</h4>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">${isEn ? 'Transfer hits (-4 pts per extra transfer) are deducted directly from cup match scores. All chips (Bench Boost, Triple Captain, Free Hit) are valid and count.' : 'แต้มลบจากการย้ายตัว (-4 ต่อครั้ง) จะถูกหักออกจากคะแนนการแข่งขันคัพโดยตรง ส่วนชิปทุกชนิด (Bench Boost, Triple Captain, Free Hit) สามารถใช้งานได้ตามปกติและนับคะแนนเต็ม'}</p>
+              </div>
+            </div>
+          </div>
+        `;
+
+        container.innerHTML = `
+          ${silverwareHtml}
+          ${noteCalloutHtml}
+          ${roadmapHtml}
+          ${seedingTableHtml}
+          ${rulesMatrixHtml}
+        `;
       }
+
 
       renderRulesView() {
         const titleEl = document.getElementById('rules-header-title');
