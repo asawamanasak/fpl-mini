@@ -17574,7 +17574,7 @@ selectShi62GW(gwName) {
 
           const isWeekly = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
           const isFinished = Boolean(gwData.is_finished);
-          const scoreProp = (isFinished || isWeekly) ? 'net_points' : 'points';
+          const scoreProp = 'net_points';
           const useHighestPlayerTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
           const sorted = [...gwData.results].sort((a, b) => {
             const diff = (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points);
@@ -18076,7 +18076,7 @@ selectShi62GW(gwName) {
             const statusText = isFinished ? (isEn ? 'Finished' : 'จบการแข่งขัน') : (isStarted ? (isEn ? 'Live' : 'กำลังแข่งขัน') : (isEn ? 'Upcoming' : 'รอคิกออฟ'));
 
             const isWeeklyPrize = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
-            const scoreProp = (isFinished || isWeeklyPrize) ? 'net_points' : 'points';
+            const scoreProp = 'net_points';
             const useHighestPlayerTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
             const sortedGWResults = [...gwData.results].sort((a, b) => {
               const diff = (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points);

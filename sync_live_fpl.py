@@ -862,9 +862,12 @@ def sync_once(args):
                         this_gw_started = gw_started_map.get(gw, False)
                         this_gw_checked = gw_checked_map.get(gw, False)
                         can_reuse_raw_picks = gw_can_reuse_raw_picks_map.get(gw, False)
+                        s_key = f"{eid}_{gw}"
+                        c_gw = cached_gw_data.get(str(gw), {}) if cached_gw_data else {}
+                        c_res = next((r for r in c_gw.get("results", []) if r.get("entry_id") == eid), None)
+                        c_sq = cached_squads.get(s_key) if cached_squads else None
                         try:
-                            s_key = f"{eid}_{gw}"
-                            cached_sq = cached_squads.get(s_key)
+                            cached_sq = c_sq
                             is_safe_cached_sq = cached_sq and cached_sq.get("raw_picks") and (
                                 (not this_gw_finished and this_gw_started) or cached_sq.get("final_checked") or not this_gw_checked
                             )
@@ -1127,7 +1130,7 @@ def sync_once(args):
                                 raw_points = official_pts
 
                             # Resiliency: If live elements fetch failed during active GW, preserve cached non-zero points
-                            if raw_points == 0 and c_res and (c_res.get('points', 0) > 0 or c_res.get('net_points', 0) > 0) and (gw in live_fetch_failed_gws or not live_pts_gw) and not this_gw_checked:
+                            if raw_points == 0 and (gw in live_fetch_failed_gws or not live_pts_gw) and c_res and (c_res.get('points', 0) > 0 or c_res.get('net_points', 0) > 0) and not this_gw_checked:
                                 print(f" -> Preserving cached live points for team {eid} GW {gw} (live elements fetch was unavailable).")
                                 return (gw, eid, c_res, c_sq or {})
 
