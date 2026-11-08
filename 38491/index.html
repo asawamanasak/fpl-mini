@@ -62,6 +62,9 @@
         var shouldBeDark = (urlTheme === 'dark') || (!urlTheme && (savedTheme === 'dark' || (!savedTheme && systemDark)));
         if (urlTheme === 'light') shouldBeDark = false;
 
+        if (urlTheme === 'dark' || urlTheme === 'light') {
+          try { localStorage.setItem('fpl_theme', urlTheme); } catch (e) {}
+        }
         if (shouldBeDark) {
           document.documentElement.classList.add('dark');
         } else {
@@ -70,6 +73,9 @@
 
         // Language initialization
         var urlLang = params.get('lang');
+        if (urlLang === 'en' || urlLang === 'th') {
+          try { localStorage.setItem('fpl_lang', urlLang); } catch (e) {}
+        }
         var savedLang = localStorage.getItem('fpl_lang');
         var initialLang = (urlLang === 'en' || (!urlLang && savedLang === 'en')) ? 'en' : 'th';
         document.documentElement.lang = initialLang;
@@ -16701,7 +16707,7 @@ selectShi62GW(gwName) {
                     <span class="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block mb-1">[EDGE_JAMSTACK]</span>
                     <div class="font-bold text-slate-900 dark:text-slate-100 text-xs sm:text-sm mb-1.5 font-display">3. Config-Driven Jamstack &amp; Edge CDN</div>
                     <ul class="space-y-1.5 text-[11.5px] leading-relaxed">
-                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold flex-shrink-0">•</span><span><strong>Zero-Code Season Rollover:</strong> ขับเคลื่อนด้วย <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">config/leagues_config.json</code> 100% รองรับการเปลี่ยนลีกและทีมข้ามฤดูกาลพร้อม Auto-Cleanup ลบโฟลเดอร์ลีกเก่าอัตโนมัติ</span></li>
+                      <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold flex-shrink-0">•</span><span><strong>Zero-Code Season Rollover:</strong> 100% driven by <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">config/leagues_config.json</code>, supporting seamless multi-season league and team transitions with automated legacy directory cleanup.</span></li>
                       <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold flex-shrink-0">•</span><span><strong>Per-League JSON Split:</strong> Static compiler <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">update_preview.py</code> builds dedicated routes (<code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">/{id}/index.html</code>) and decoupled <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">data/leagues/{id}.json</code> files (~85% smaller initial HTML).</span></li>
                       <li class="flex items-start gap-1.5"><span class="text-amber-500 font-bold flex-shrink-0">•</span><span><strong>Custom Domain &amp; Edge CDN:</strong> Served via <code class="font-mono text-[10.5px] bg-slate-200/60 dark:bg-slate-800 px-1 py-0.5 rounded">www.fplsawadika.com</code> powered by Cloudflare DNS (CNAME Flattening) and GitHub Pages Fastly Edge CDN with HTTP/2, Brotli compression, and sub-50ms TTFB.</span></li>
                     </ul>
