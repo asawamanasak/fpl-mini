@@ -6249,6 +6249,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
           targetView = document.getElementById('gameweek-view');
         }
         this.activeTab = normalized;
+        try {
+          if (typeof window._trackFeature === 'function') {
+            window._trackFeature('tab', normalized);
+          }
+        } catch (_) {}
 
         document.querySelectorAll('.tab-content').forEach(view => view.classList.add('hidden'));
         if (targetView) targetView.classList.remove('hidden');
@@ -6751,6 +6756,11 @@ selectShi62GW(gwName) {
       }
 
       triggerCopyAction(text) {
+        try {
+          if (typeof window._trackFeature === 'function') {
+            window._trackFeature('share', 'line_copy');
+          }
+        } catch (_) {}
         this.copyToClipboard(text, () => {
           this.showCopyIndicator();
         });
@@ -17141,6 +17151,11 @@ selectShi62GW(gwName) {
         const defaultShirtUrl = this.getDefaultShirtUrl();
         const entryIdNum = Number(entryId);
         this.currentModalEntryId = entryIdNum;
+        try {
+          if (typeof window._trackFeature === 'function') {
+            window._trackFeature('pitch', entryIdNum);
+          }
+        } catch (_) {}
         let targetLeagueId = null;
         let teamObj = (this.data.teams || []).find(t => Number(t.entry_id) === entryIdNum);
         if (teamObj) {
@@ -18990,7 +19005,7 @@ selectShi62GW(gwName) {
       };
     }
 
-    // FPLSaWaDiKa League Engagement & Screen Time Telemetry (Edge Analytics)
+    // FPLSaWaDiKa League Engagement & Product Analytics Telemetry (Edge Analytics)
     (function() {
       try {
         var telemEndpoint = "https://api.fplsawadika.com/api/telemetry/event";
@@ -19005,6 +19020,25 @@ selectShi62GW(gwName) {
           currentLeague = "40700";
         }
 
+        // In-Memory Feature Queue (Smart Session Batching - 0 Extra HTTP Calls)
+        var featureInteractions = {
+          tabs: {},
+          pitch_opens: 0,
+          line_shares: 0
+        };
+
+        window._trackFeature = function(cat, act) {
+          try {
+            if (cat === 'tab' && act) {
+              featureInteractions.tabs[act] = (featureInteractions.tabs[act] || 0) + 1;
+            } else if (cat === 'pitch') {
+              featureInteractions.pitch_opens += 1;
+            } else if (cat === 'share') {
+              featureInteractions.line_shares += 1;
+            }
+          } catch (_) {}
+        };
+
         function sendBeaconEvent(payload) {
           if (typeof navigator !== "undefined" && navigator.sendBeacon) {
             navigator.sendBeacon(telemEndpoint, JSON.stringify(payload));
@@ -19018,16 +19052,28 @@ selectShi62GW(gwName) {
           path: window.location.pathname
         });
 
-        // 2. Dwell Time Flush
+        // 2. Batched Dwell Time & Feature Usage Flush
         function flushDwellTime() {
           if (!currentLeague) return;
           var elapsedSec = Math.round((Date.now() - sessionStartTime) / 1000);
           if (elapsedSec >= 2 && elapsedSec <= 3600) {
-            sendBeaconEvent({
+            var payload = {
               type: "dwell_time",
               league_id: currentLeague,
               duration: elapsedSec
-            });
+            };
+            if (Object.keys(featureInteractions.tabs).length > 0) {
+              payload.tabs = featureInteractions.tabs;
+            }
+            if (featureInteractions.pitch_opens > 0) {
+              payload.pitch_opens = featureInteractions.pitch_opens;
+            }
+            if (featureInteractions.line_shares > 0) {
+              payload.line_shares = featureInteractions.line_shares;
+            }
+            // Reset in-memory queue
+            featureInteractions = { tabs: {}, pitch_opens: 0, line_shares: 0 };
+            sendBeaconEvent(payload);
           }
           sessionStartTime = Date.now();
         }

@@ -45,8 +45,17 @@ socket.setdefaulttimeout(20)
 
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)'}
 
+# Global thread-safe telemetry counters for backend execution tracking
+_stats_lock = threading.Lock()
+_api_call_count = 0
+_api_retry_count = 0
+_api_rate_limit_count = 0
+
 def fetch(url, headers_override=None, retries=5, delay=2.0, timeout=15):
     """Fetch JSON from URL with exponential backoff, jitter, and network timeout recovery."""
+    global _api_call_count, _api_retry_count, _api_rate_limit_count
+    with _stats_lock:
+        _api_call_count += 1
     req_headers = headers_override if headers_override is not None else headers
     for attempt in range(retries):
         try:
@@ -55,6 +64,10 @@ def fetch(url, headers_override=None, retries=5, delay=2.0, timeout=15):
                 data = resp.read().decode('utf-8')
                 return json.loads(data)
         except urllib.error.HTTPError as e:
+            with _stats_lock:
+                _api_retry_count += 1
+                if e.code == 429:
+                    _api_rate_limit_count += 1
             if e.code == 404:
                 # 404 Not Found is deterministic; do not retry
                 raise e
@@ -1454,6 +1467,27 @@ def sync_once(args):
         multi_league_output["last_sync"] = sync_time_str
         multi_league_output["last_sync_iso"] = sync_iso_str
 
+        # Preserve or populate sync telemetry
+        if "sync_telemetry" in cached_data:
+            multi_league_output["sync_telemetry"] = cached_data["sync_telemetry"]
+        else:
+            multi_league_output["sync_telemetry"] = {
+                "sync_duration_sec": round(time.time() - start_time, 2),
+                "api_calls_count": _api_call_count,
+                "api_retry_count": _api_retry_count,
+                "api_rate_limit_count": _api_rate_limit_count,
+                "master_payload_bytes": os.path.getsize(multi_json_path) if os.path.exists(multi_json_path) else 0,
+                "tier1_teams_count": sum(s['teams_count'] for s in summary_stats if s.get('tier', 1) == 1),
+                "tier2_teams_count": sum(s['teams_count'] for s in summary_stats if s.get('tier', 1) == 2),
+                "total_teams_count": sum(s['teams_count'] for s in summary_stats),
+                "tier1_leagues_count": len([s for s in summary_stats if s.get('tier', 1) == 1]),
+                "tier2_leagues_count": len([s for s in summary_stats if s.get('tier', 1) == 2]),
+                "total_leagues_count": len(summary_stats),
+                "smart_commit_active": True,
+                "last_sync": sync_time_str,
+                "last_sync_iso": sync_iso_str
+            }
+
         # If data is completely identical to cached data on disk, do not touch files to avoid git churn
         try:
             if multi_league_output == cached_data:
@@ -1468,6 +1502,25 @@ def sync_once(args):
     else:
         change_reason = "Points/Rank change" if has_changed else ("Heartbeat" if is_heartbeat else "Initial/Force sync")
         print(f"\n🚀 [Smart Commit] Live data update triggered: {change_reason} -> Updating sync timestamp to {sync_time_str}")
+
+    # Build fresh sync telemetry
+    elapsed = time.time() - start_time
+    multi_league_output["sync_telemetry"] = {
+        "sync_duration_sec": round(elapsed, 2),
+        "api_calls_count": _api_call_count,
+        "api_retry_count": _api_retry_count,
+        "api_rate_limit_count": _api_rate_limit_count,
+        "master_payload_bytes": os.path.getsize(multi_json_path) if os.path.exists(multi_json_path) else 0,
+        "tier1_teams_count": sum(s['teams_count'] for s in summary_stats if s.get('tier', 1) == 1),
+        "tier2_teams_count": sum(s['teams_count'] for s in summary_stats if s.get('tier', 1) == 2),
+        "total_teams_count": sum(s['teams_count'] for s in summary_stats),
+        "tier1_leagues_count": len([s for s in summary_stats if s.get('tier', 1) == 1]),
+        "tier2_leagues_count": len([s for s in summary_stats if s.get('tier', 1) == 2]),
+        "total_leagues_count": len(summary_stats),
+        "smart_commit_active": True,
+        "last_sync": sync_time_str,
+        "last_sync_iso": sync_iso_str
+    }
 
     # 5. Write multi_fpl_data.json atomically
     atomic_json_dump(multi_league_output, multi_json_path)

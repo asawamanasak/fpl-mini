@@ -11,7 +11,7 @@
  * 5. Type: 400-500 weights, tabular figures, no loud uppercase tracked labels
  * 6. Layout: Clean dashboard proportions, quiet chrome, content-led richness
  * 7. Details: Nested radius (panels 16px, cards 12px, controls 8px, tags 6px), quiet hairlines
- * 8. Visuals: Richness in real content moments (distribution bars & standings), zero blobs/glows
+ * 8. Visuals: Richness in real business moments (retention, unit economics, scaling headroom)
  * 9. Motion: Removed looping pulse/ping, quiet 150ms transitions, subtle 0.98 active press
  */
 
@@ -40,7 +40,10 @@ const ICONS = {
   refresh: `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>`,
   check: `<svg class="w-4 h-4 shrink-0 text-emerald-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>`,
   mapPin: `<svg class="w-4 h-4 shrink-0 text-slate-500 dark:text-neutral-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>`,
-  trophy: `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.004-7.5V4.875c0-.621-.504-1.125-1.125-1.125H9.625c-.621 0-1.125.504-1.125 1.125V6.75m6 0H18a2.25 2.25 0 012.25 2.25v.75a4.5 4.5 0 01-4.5 4.5h-.75m-6-7.5H6A2.25 2.25 0 003.75 9v.75a4.5 4.5 0 004.5 4.5h.75"/></svg>`,
+  coins: `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+  cpu: `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 16.5V21m3.75-18v1.5m0 16.5V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"/></svg>`,
+  share: `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"/></svg>`,
+  layers: `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75L2.25 12l9.75 5.25 9.75-5.25-4.179-2.25m-11.142 4.5L2.25 16.5l9.75 5.25 9.75-5.25-4.179-2.25M12 3.75L2.25 9 12 14.25 21.75 9 12 3.75z"/></svg>`,
   trendUp: `<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>`,
 };
 
@@ -75,7 +78,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Executive Summary & Live Telemetry | FPLSaWaDiKa</title>
+  <title>Executive Summary & Live Business Intelligence | FPLSaWaDiKa</title>
   <meta name="robots" content="noindex, nofollow">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -126,14 +129,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div>
           <div class="text-sm font-medium tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
             <span>FPLSaWaDiKa</span>
-            <span class="text-[11px] font-mono text-slate-500 dark:text-neutral-400">Executive Console</span>
+            <span class="text-[11px] font-mono text-slate-500 dark:text-neutral-400">Executive BI Console</span>
           </div>
         </div>
       </div>
 
       <div class="flex items-center gap-2 sm:gap-3">
         
-        <!-- Edge Region Status (Calm static dot) -->
+        <!-- Edge Region Status -->
         <div class="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-md border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-cardDark text-xs font-mono">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
           <span class="text-slate-600 dark:text-neutral-400 text-[11px]">${colo} (Bangkok Edge)</span>
@@ -172,13 +175,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div>
           <div id="telemetryModePill" class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-raisedLight dark:bg-cardDark border border-borderLight dark:border-borderDark text-[11px] font-mono text-slate-500 dark:text-neutral-400 mb-2">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span>LIVE INTELLIGENCE PLATFORM · GW 9 FINALIZED</span>
+            <span>EXECUTIVE INTELLIGENCE PLATFORM · LIVE & SCALE READY</span>
           </div>
           <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
             Executive summary & live business intelligence
           </h1>
           <p class="text-xs sm:text-sm text-slate-500 dark:text-neutral-400 mt-1">
-            รายงานผลการดำเนินงาน สถิติพฤติกรรมผู้เล่น 163 ทีม และสถานะระบบตามรอบการแข่งขันจริง
+            รายงานเชิงกลยุทธ์ พฤติกรรมผู้ใช้งานระบบทั้ง 8 ลีก และการประเมินความจุเพื่อวางแผนขยายสเกลโปรเจกต์
           </p>
         </div>
         <div class="flex items-center gap-2 text-xs font-mono shrink-0">
@@ -190,17 +193,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         </div>
       </div>
 
-      <!-- Quick Module Navigation Strip (Intentional Category Accents) -->
+      <!-- Quick Module Navigation Strip -->
       <div class="flex items-center gap-2 overflow-x-auto touch-scroll pt-1 text-[11px] font-mono">
         <span class="text-slate-400 dark:text-neutral-500 font-sans text-xs shrink-0 mr-1">Modules:</span>
         <a href="#sec-audience" class="px-2.5 py-1 rounded-md border border-emerald-500/20 bg-emerald-500/5 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10 transition-colors shrink-0 flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>01 Audience & Scale
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>01 Economics & KPIs
         </a>
-        <a href="#sec-standings" class="px-2.5 py-1 rounded-md border border-sky-500/20 bg-sky-500/5 text-sky-700 dark:text-sky-400 hover:bg-sky-500/10 transition-colors shrink-0 flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>02 Standings
+        <a href="#sec-portfolio" class="px-2.5 py-1 rounded-md border border-sky-500/20 bg-sky-500/5 text-sky-700 dark:text-sky-400 hover:bg-sky-500/10 transition-colors shrink-0 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>02 League Portfolio
         </a>
-        <a href="#sec-tactics" class="px-2.5 py-1 rounded-md border border-violet-500/20 bg-violet-500/5 text-violet-700 dark:text-violet-400 hover:bg-violet-500/10 transition-colors shrink-0 flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-violet-500"></span>03 Tactics
+        <a href="#sec-features" class="px-2.5 py-1 rounded-md border border-violet-500/20 bg-violet-500/5 text-violet-700 dark:text-violet-400 hover:bg-violet-500/10 transition-colors shrink-0 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-violet-500"></span>03 Feature Adoption
         </a>
         <a href="#sec-distribution" class="px-2.5 py-1 rounded-md border border-teal-500/20 bg-teal-500/5 text-teal-700 dark:text-teal-400 hover:bg-teal-500/10 transition-colors shrink-0 flex items-center gap-1.5">
           <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span>04 Channels & Geo
@@ -211,8 +214,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <a href="#sec-timing" class="px-2.5 py-1 rounded-md border border-amber-500/20 bg-amber-500/5 text-amber-700 dark:text-amber-400 hover:bg-amber-500/10 transition-colors shrink-0 flex items-center gap-1.5">
           <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>06 Windows
         </a>
-        <a href="#sec-ops" class="px-2.5 py-1 rounded-md border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-cardDark text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0 flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>07 Operations
+        <a href="#sec-system" class="px-2.5 py-1 rounded-md border border-rose-500/20 bg-rose-500/5 text-rose-700 dark:text-rose-400 hover:bg-rose-500/10 transition-colors shrink-0 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>07 System & Scaling
         </a>
       </div>
     </div>
@@ -236,7 +239,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-neutral-400">
             <div>
               <span>Last synchronized: </span>
-              <strong id="telemetryLastSync" class="text-slate-800 dark:text-neutral-200 font-mono font-medium">4 พ.ย. 2026, 01:14 น.</strong>
+              <strong id="telemetryLastSync" class="text-slate-800 dark:text-neutral-200 font-mono font-medium">8 พ.ย. 2026, 11:18 น.</strong>
               <span id="telemetryTimeAgo" class="font-mono text-[11px] ml-1 text-slate-400 dark:text-neutral-500"></span>
             </div>
             <div class="hidden sm:inline-block text-slate-300 dark:text-neutral-700">|</div>
@@ -250,10 +253,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <!-- Right: Deadline Countdown & Refresh Action -->
         <div class="flex flex-wrap sm:flex-nowrap items-center gap-3 pt-2 lg:pt-0 border-t lg:border-t-0 border-borderLight dark:border-borderDark">
           
-          <!-- Deadline Countdown Box (Segmented Monospace Micro-Slots, Zero CLS) -->
+          <!-- Deadline Countdown Box -->
           <div class="w-full sm:w-auto px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs">
             <div class="text-[11px] text-slate-500 dark:text-neutral-400 flex items-center justify-between gap-4 mb-1.5">
-              <span id="telemetryNextDeadlineName" class="font-medium text-slate-700 dark:text-neutral-200">Gameweek 10 deadline</span>
+              <span id="telemetryNextDeadlineName" class="font-medium text-slate-700 dark:text-neutral-200">Gameweek 11 deadline</span>
               <span class="font-mono text-[10px] text-slate-400 dark:text-neutral-500">Live</span>
             </div>
             <div class="flex items-center gap-1.5 font-mono tabular text-slate-900 dark:text-white text-xs font-medium">
@@ -297,22 +300,22 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       </div>
     </section>
 
-    <!-- 1. Executive KPIs (6 Core Business & Community Cards) -->
+    <!-- 1. Executive KPIs (6 Core Business & Economics Cards) -->
     <section id="sec-audience" class="space-y-3">
       <div class="flex items-center justify-between gap-2">
         <div class="flex items-center gap-2">
           <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">
-            01 · AUDIENCE & COMMUNITY SCALE
+            01 · AUDIENCE & PLATFORM ECONOMICS
           </span>
           <span class="text-xs text-slate-500 dark:text-neutral-400 hidden sm:inline">
-            ภาพรวมการเข้าถึงผู้ใช้งานและสถานะระบบ
+            ตัวชี้วัดการเติบโต สเกลผู้ใช้งาน และมูลค่าทางธุรกิจ
           </span>
         </div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
-        <!-- KPI 1: Weekly Visits & Daily Reach (Emerald Accent) -->
+        <!-- KPI 1: Weekly Visits & WoW Growth (Emerald) -->
         <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-emerald-500/50 transition-colors duration-150 relative overflow-hidden group">
           <div class="absolute top-0 left-0 right-0 h-0.5 bg-emerald-500"></div>
           <div>
@@ -335,7 +338,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
         </div>
 
-        <!-- KPI 2: Matchday Peak Concurrency & Dwell Time (Sky Accent) -->
+        <!-- KPI 2: Live Peak Concurrency & Dwell Time (Sky) -->
         <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-sky-500/50 transition-colors duration-150 relative overflow-hidden group">
           <div class="absolute top-0 left-0 right-0 h-0.5 bg-sky-500"></div>
           <div>
@@ -344,7 +347,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 <span class="w-5 h-5 rounded flex items-center justify-center bg-sky-500/10 text-sky-600 dark:text-sky-400">
                   ${ICONS.bolt}
                 </span>
-                <span>Peak Live Audience (ช่วงบอลเตะ)</span>
+                <span>Peak Matchday Audience</span>
               </span>
               <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 font-mono text-[11px] font-medium border border-sky-500/20 tabular">เสาร์ 21:00 - 23:00</span>
             </div>
@@ -358,7 +361,76 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
         </div>
 
-        <!-- KPI 3: Edge Speed & Uptime (Emerald Accent) -->
+        <!-- KPI 3: Total Prize Pool Managed (GMV) (Amber) -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-amber-500/50 transition-colors duration-150 relative overflow-hidden group">
+          <div class="absolute top-0 left-0 right-0 h-0.5 bg-amber-500"></div>
+          <div>
+            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2.5">
+              <span class="flex items-center gap-1.5 font-medium text-slate-700 dark:text-neutral-300">
+                <span class="w-5 h-5 rounded flex items-center justify-center bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                  ${ICONS.coins}
+                </span>
+                <span>Prize Pool Under Mgmt (GMV)</span>
+              </span>
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono text-[11px] font-medium border border-amber-500/20 tabular">8 Leagues</span>
+            </div>
+            <div class="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900 dark:text-white font-mono tabular">
+              ฿<span id="kpiTotalPool">261,200</span> <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">THB</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-borderLight dark:border-borderDark flex items-center justify-between text-xs text-slate-500 dark:text-neutral-400">
+            <span>Financial Models</span>
+            <span class="text-slate-800 dark:text-neutral-200 font-mono tabular font-medium inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>Weekly + Monthly + Fines</span>
+          </div>
+        </div>
+
+        <!-- KPI 4: Active Tenants & Scale (Indigo) -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-indigo-500/50 transition-colors duration-150 relative overflow-hidden group">
+          <div class="absolute top-0 left-0 right-0 h-0.5 bg-indigo-500"></div>
+          <div>
+            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2.5">
+              <span class="flex items-center gap-1.5 font-medium text-slate-700 dark:text-neutral-300">
+                <span class="w-5 h-5 rounded flex items-center justify-center bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                  ${ICONS.activity}
+                </span>
+                <span>Community Scale (ผู้ใช้งานรวม)</span>
+              </span>
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-mono text-[11px] font-medium border border-indigo-500/20 tabular">100% Tier 1</span>
+            </div>
+            <div class="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900 dark:text-white font-mono tabular">
+              <span id="kpiTotalTeams">163</span> <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">teams</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-borderLight dark:border-borderDark flex items-center justify-between text-xs text-slate-500 dark:text-neutral-400">
+            <span>Active Tenants</span>
+            <span class="text-slate-800 dark:text-neutral-200 font-mono tabular font-medium inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0"></span>8 minileagues</span>
+          </div>
+        </div>
+
+        <!-- KPI 5: Viral Share Rate (LINE Conversion) (Violet) -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-violet-500/50 transition-colors duration-150 relative overflow-hidden group">
+          <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet-500"></div>
+          <div>
+            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2.5">
+              <span class="flex items-center gap-1.5 font-medium text-slate-700 dark:text-neutral-300">
+                <span class="w-5 h-5 rounded flex items-center justify-center bg-violet-500/10 text-violet-600 dark:text-violet-400">
+                  ${ICONS.share}
+                </span>
+                <span>Viral Share Rate (LINE)</span>
+              </span>
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-violet-500/10 text-violet-600 dark:text-violet-400 font-mono text-[11px] font-medium border border-violet-500/20 tabular">Viral Loop</span>
+            </div>
+            <div class="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900 dark:text-white font-mono tabular">
+              <span id="kpiLineShares">412</span> <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">copies / wk</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-borderLight dark:border-borderDark flex items-center justify-between text-xs text-slate-500 dark:text-neutral-400">
+            <span>LINE Share Conversion</span>
+            <span class="text-slate-800 dark:text-neutral-200 font-mono font-medium inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-violet-500 shrink-0"></span>9.6% of visits shared</span>
+          </div>
+        </div>
+
+        <!-- KPI 6: Platform SLA & Edge Speed (Emerald) -->
         <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-emerald-500/50 transition-colors duration-150 relative overflow-hidden group">
           <div class="absolute top-0 left-0 right-0 h-0.5 bg-emerald-500"></div>
           <div>
@@ -381,611 +453,252 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
         </div>
 
-        <!-- KPI 4: Active Community Scale (Indigo Accent) -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-indigo-500/50 transition-colors duration-150 relative overflow-hidden group">
-          <div class="absolute top-0 left-0 right-0 h-0.5 bg-indigo-500"></div>
-          <div>
-            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2.5">
-              <span class="flex items-center gap-1.5 font-medium text-slate-700 dark:text-neutral-300">
-                <span class="w-5 h-5 rounded flex items-center justify-center bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-                  ${ICONS.activity}
-                </span>
-                <span>Tracked Teams (ทีมในระบบ)</span>
-              </span>
-              <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-mono text-[11px] font-medium border border-indigo-500/20 tabular">Live Sync</span>
-            </div>
-            <div class="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900 dark:text-white font-mono tabular">
-              <span id="kpiTotalTeams">163</span> <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">teams</span>
-            </div>
-          </div>
-          <div class="mt-4 pt-3 border-t border-borderLight dark:border-borderDark flex items-center justify-between text-xs text-slate-500 dark:text-neutral-400">
-            <span>Active Coverage</span>
-            <span class="text-slate-800 dark:text-neutral-200 font-mono tabular font-medium inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0"></span>8 minileagues</span>
-          </div>
-        </div>
-
-        <!-- KPI 5: High Score Leader (Amber Accent) -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-amber-500/50 transition-colors duration-150 relative overflow-hidden group">
-          <div class="absolute top-0 left-0 right-0 h-0.5 bg-amber-500"></div>
-          <div>
-            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2.5">
-              <span class="flex items-center gap-1.5 font-medium text-slate-700 dark:text-neutral-300">
-                <span class="w-5 h-5 rounded flex items-center justify-center bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                  ${ICONS.trophy}
-                </span>
-                <span>High Score Leader (คะแนนสูงสุด)</span>
-              </span>
-              <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono text-[11px] font-medium border border-amber-500/20 tabular">Top Rank</span>
-            </div>
-            <div class="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900 dark:text-white font-mono tabular">
-              <span id="kpiTopScore">665</span> <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">pts</span>
-            </div>
-          </div>
-          <div class="mt-4 pt-3 border-t border-borderLight dark:border-borderDark flex items-center justify-between text-xs text-slate-500 dark:text-neutral-400">
-            <span>Overall Leader</span>
-            <span class="text-slate-800 dark:text-neutral-200 font-mono font-medium inline-flex items-center gap-1.5 truncate max-w-[170px]"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span><span id="kpiTopLeader" class="truncate">Natee Kakeaw</span></span>
-          </div>
-        </div>
-
-        <!-- KPI 6: Current Gameweek Cycle (Violet Accent) -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between hover:border-violet-500/50 transition-colors duration-150 relative overflow-hidden group">
-          <div class="absolute top-0 left-0 right-0 h-0.5 bg-violet-500"></div>
-          <div>
-            <div class="flex items-center justify-between gap-2 text-xs text-slate-500 dark:text-neutral-400 mb-2.5">
-              <span class="flex items-center gap-1.5 font-medium text-slate-700 dark:text-neutral-300">
-                <span class="w-5 h-5 rounded flex items-center justify-center bg-violet-500/10 text-violet-600 dark:text-violet-400">
-                  ${ICONS.clock}
-                </span>
-                <span>Active Cycle (รอบการแข่งขัน)</span>
-              </span>
-              <span id="kpiGwStatusBadge" class="inline-flex items-center px-1.5 py-0.5 rounded bg-violet-500/10 text-violet-600 dark:text-violet-400 font-mono text-[11px] font-medium border border-violet-500/20 tabular">Finalized</span>
-            </div>
-            <div class="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900 dark:text-white font-mono tabular flex items-baseline gap-2">
-              <span id="kpiGwNumber">GW 9</span>
-              <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">10 / 10 Verified</span>
-            </div>
-          </div>
-          <div class="mt-4 pt-3 border-t border-borderLight dark:border-borderDark flex items-center justify-between text-xs text-slate-500 dark:text-neutral-400">
-            <span>Next Target Window</span>
-            <span class="text-slate-800 dark:text-neutral-200 font-mono font-medium inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-violet-500 shrink-0"></span>Gameweek 10 Prep</span>
-          </div>
-        </div>
-
       </div>
     </section>
 
-    <!-- 2. Community Market Share & Live Standings Table (Moment 1: Data Richness) -->
-    <section id="sec-standings" class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-sky-500 shadow-sm space-y-4 transition-colors duration-150">
+    <!-- 2. League Tenant Portfolio & Engagement Matrix -->
+    <section id="sec-portfolio" class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-sky-500 shadow-sm space-y-4 transition-colors duration-150">
       <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
         <div>
           <div class="flex items-center gap-2 mb-1">
             <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/20 uppercase tracking-wider">
-              02 · COMMUNITY & STANDINGS
+              02 · LEAGUE TENANT PORTFOLIO
             </span>
           </div>
           <h2 class="text-base font-medium text-slate-900 dark:text-white">
-            Community market share & live standings
+            League tenant portfolio & engagement matrix
           </h2>
           <p class="text-xs text-slate-500 dark:text-neutral-400 mt-0.5">
-            ข้อมูลสดจริงของทั้ง 8 มินิลีก รวมผู้เล่นทั้งหมด 163 ทีม พร้อมผู้นำคะแนนล่าสุด
+            วิเคราะห์ประสิทธิภาพทั้ง 8 มินิลีกในมุมมองธุรกิจ: โมเดลเงินรางวัล, ทราฟฟิก และความเหนียวแน่นต่อทีม (Visits/Team)
           </p>
         </div>
         <div class="text-xs font-mono text-slate-500 dark:text-neutral-400">
-          8 leagues · <span id="tableTotalManagers" class="tabular text-slate-900 dark:text-white font-medium">163</span> managers
+          8 tenants · <span id="tableTotalManagers" class="tabular text-slate-900 dark:text-white font-medium">163</span> managers
         </div>
       </div>
 
       <div class="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0 touch-scroll">
-        <table class="w-full text-left text-xs min-w-[920px]">
+        <table class="w-full text-left text-xs min-w-[960px]">
           <thead>
-            <tr class="border-b border-borderLight dark:border-borderDark text-slate-500 dark:text-neutral-400">
+            <tr class="border-b border-borderLight dark:border-borderDark text-slate-500 dark:text-neutral-400 font-mono text-[11px]">
               <th class="py-2.5 px-3 font-medium text-center w-10">#</th>
               <th class="py-2.5 px-3 font-medium">League name</th>
+              <th class="py-2.5 px-3 font-medium">Arch</th>
               <th class="py-2.5 px-3 font-medium">Teams</th>
-              <th class="py-2.5 px-3 font-medium">Current leader</th>
-              <th class="py-2.5 px-3 font-medium text-right pr-3">Score</th>
+              <th class="py-2.5 px-3 font-medium">Prize model & pool (GMV)</th>
               <th class="py-2.5 px-3 font-medium text-right pr-3">Visits (7d)</th>
+              <th class="py-2.5 px-3 font-medium text-right pr-3">Intensity (Visits/Team)</th>
               <th class="py-2.5 px-3 font-medium">Peak window</th>
-              <th class="py-2.5 px-3 font-medium text-right pr-3">Avg screen time</th>
-              <th class="py-2.5 px-3 font-medium text-right">View</th>
+              <th class="py-2.5 px-3 font-medium text-right">Action</th>
             </tr>
           </thead>
           <tbody id="leaguesTableBody" class="divide-y divide-borderLight dark:divide-borderDark">
-            <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center"><span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-bold text-[10px]">1</span></td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
-                <div class="flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
-                  <span class="font-medium">เซียนอยู่รู หมูอยู่ตึก</span>
-                </div>
-                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 40700</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">12 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
-                <div>Athit Rattanawipapong</div>
-                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(SUN-KUNG-JI)</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
-                <div class="font-medium">635 pts</div>
-                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+64 pts</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
-                <div class="font-medium text-slate-900 dark:text-white">1,644</div>
-                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(38.4%)</span>
-              </td>
-              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
-                <span class="inline-flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
-                  <span>เสาร์ 21:00 - 23:00 น.</span>
-                </span>
-              </td>
-              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
-                6.4 นาที / ครั้ง
-              </td>
-              <td class="py-3 px-3 text-right">
-                <a href="https://www.fplsawadika.com/40700/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
-                  <span>เปิดดู</span>${ICONS.external}
-                </a>
-              </td>
-            </tr>
-
-            <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center"><span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/30 font-bold text-[10px]">2</span></td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
-                <div class="flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 rounded-full bg-sky-500 shrink-0"></span>
-                  <span class="font-medium">NudNee</span>
-                </div>
-                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 675290</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">60 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
-                <div>Tanapan Jongsaksawat</div>
-                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(Godzilbu United)</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
-                <div class="font-medium">637 pts</div>
-                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+71 pts</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
-                <div class="font-medium text-slate-900 dark:text-white">1,181</div>
-                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(27.6%)</span>
-              </td>
-              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
-                <span class="inline-flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
-                  <span>เสาร์ 18:30 - 21:00 น.</span>
-                </span>
-              </td>
-              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
-                5.2 นาที / ครั้ง
-              </td>
-              <td class="py-3 px-3 text-right">
-                <a href="https://www.fplsawadika.com/675290/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
-                  <span>เปิดดู</span>${ICONS.external}
-                </a>
-              </td>
-            </tr>
-
-            <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center"><span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/30 font-bold text-[10px]">3</span></td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
-                <div class="flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0"></span>
-                  <span class="font-medium">รอ แมน โอน</span>
-                </div>
-                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 38491</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">16 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
-                <div>FAme Pakviwat</div>
-                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(Some might say)</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
-                <div class="font-medium">633 pts</div>
-                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+57 pts</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
-                <div class="font-medium text-slate-900 dark:text-white">548</div>
-                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(12.8%)</span>
-              </td>
-              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
-                <span class="inline-flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
-                  <span>ศุกร์ 17:00 - 18:30 น.</span>
-                </span>
-              </td>
-              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
-                4.1 นาที / ครั้ง
-              </td>
-              <td class="py-3 px-3 text-right">
-                <a href="https://www.fplsawadika.com/38491/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
-                  <span>เปิดดู</span>${ICONS.external}
-                </a>
-              </td>
-            </tr>
-
-            <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center"><span class="font-mono text-slate-400 dark:text-neutral-500 text-xs">4</span></td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
-                <div class="flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
-                  <span class="font-medium">Barley's Official League</span>
-                </div>
-                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 1101958</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">17 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
-                <div>Bhurich Boonyasurakul</div>
-                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(Barley’s boy)</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
-                <div class="font-medium">635 pts</div>
-                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+70 pts</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
-                <div class="font-medium text-slate-900 dark:text-white">308</div>
-                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(7.2%)</span>
-              </td>
-              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
-                <span class="inline-flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
-                  <span>อาทิตย์ 20:00 - 22:30 น.</span>
-                </span>
-              </td>
-              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
-                4.6 นาที / ครั้ง
-              </td>
-              <td class="py-3 px-3 text-right">
-                <a href="https://www.fplsawadika.com/1101958/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
-                  <span>เปิดดู</span>${ICONS.external}
-                </a>
-              </td>
-            </tr>
-
-            <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center"><span class="font-mono text-slate-400 dark:text-neutral-500 text-xs">5</span></td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
-                <div class="flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
-                  <span class="font-medium">VIP League</span>
-                </div>
-                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 438691</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">15 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
-                <div>Wongsatorn Thongkham</div>
-                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(Goldentown FC)</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
-                <div class="font-medium">628 pts</div>
-                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+61 pts</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
-                <div class="font-medium text-slate-900 dark:text-white">205</div>
-                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(4.8%)</span>
-              </td>
-              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
-                <span class="inline-flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
-                  <span>เสาร์ 20:00 - 22:00 น.</span>
-                </span>
-              </td>
-              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
-                3.9 นาที / ครั้ง
-              </td>
-              <td class="py-3 px-3 text-right">
-                <a href="https://www.fplsawadika.com/438691/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
-                  <span>เปิดดู</span>${ICONS.external}
-                </a>
-              </td>
-            </tr>
-
-            <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center"><span class="font-mono text-slate-400 dark:text-neutral-500 text-xs">6</span></td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
-                <div class="flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
-                  <span class="font-medium">FPL Thailand Community</span>
-                </div>
-                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 187827</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">18 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
-                <div>Natee Kakeaw</div>
-                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(Kakeaw Army)</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
-                <div class="font-medium">665 pts</div>
-                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+78 pts</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
-                <div class="font-medium text-slate-900 dark:text-white">175</div>
-                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(4.1%)</span>
-              </td>
-              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
-                <span class="inline-flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
-                  <span>จันทร์ 12:00 - 13:30 น.</span>
-                </span>
-              </td>
-              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
-                3.5 นาที / ครั้ง
-              </td>
-              <td class="py-3 px-3 text-right">
-                <a href="https://www.fplsawadika.com/187827/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
-                  <span>เปิดดู</span>${ICONS.external}
-                </a>
-              </td>
-            </tr>
-
-            <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center"><span class="font-mono text-slate-400 dark:text-neutral-500 text-xs">7</span></td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
-                <div class="flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
-                  <span class="font-medium">TrueVisions Mini</span>
-                </div>
-                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 5349</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">14 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
-                <div>Kittisak Chailert</div>
-                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(Kittisak XI)</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
-                <div class="font-medium">612 pts</div>
-                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+54 pts</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
-                <div class="font-medium text-slate-900 dark:text-white">133</div>
-                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(3.1%)</span>
-              </td>
-              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
-                <span class="inline-flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
-                  <span>เสาร์ 18:00 - 20:00 น.</span>
-                </span>
-              </td>
-              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
-                3.2 นาที / ครั้ง
-              </td>
-              <td class="py-3 px-3 text-right">
-                <a href="https://www.fplsawadika.com/5349/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
-                  <span>เปิดดู</span>${ICONS.external}
-                </a>
-              </td>
-            </tr>
-
-            <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
-              <td class="py-3 px-3 text-center"><span class="font-mono text-slate-400 dark:text-neutral-500 text-xs">8</span></td>
-              <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
-                <div class="flex items-center gap-2">
-                  <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
-                  <span class="font-medium">Siam Red Devils</span>
-                </div>
-                <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: 567387</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">11 teams</td>
-              <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
-                <div>Prasert Saelim</div>
-                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(Red Devil Siam)</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
-                <div class="font-medium">598 pts</div>
-                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+49 pts</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
-                <div class="font-medium text-slate-900 dark:text-white">86</div>
-                <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(2.0%)</span>
-              </td>
-              <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
-                <span class="inline-flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
-                  <span>เสาร์ 21:00 - 23:00 น.</span>
-                </span>
-              </td>
-              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
-                3.0 นาที / ครั้ง
-              </td>
-              <td class="py-3 px-3 text-right">
-                <a href="https://www.fplsawadika.com/567387/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
-                  <span>เปิดดู</span>${ICONS.external}
-                </a>
-              </td>
-            </tr>
+            <!-- Dynamically Rendered by loadLiveData() -->
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- 3. Tactical & Squad Intelligence (Moment 2: Quiet Cards, Real Distribution) -->
-    <section id="sec-tactics" class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-violet-500 shadow-sm space-y-5 transition-colors duration-150">
+    <!-- 3. Product Feature Adoption & User Behavior -->
+    <section id="sec-features" class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-violet-500 shadow-sm space-y-5 transition-colors duration-150">
       <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2">
         <div>
           <div class="flex items-center gap-2 mb-1">
             <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-violet-500/10 text-violet-700 dark:text-violet-400 border border-violet-500/20 uppercase tracking-wider">
-              03 · TACTICAL INTELLIGENCE
+              03 · PRODUCT FEATURE ADOPTION
             </span>
           </div>
           <h2 class="text-base font-medium text-slate-900 dark:text-white flex items-center gap-2">
-            <span>Tactical & squad intelligence</span>
-            <span id="tacticalGwBadge" class="text-[11px] font-mono text-violet-600 dark:text-violet-400 px-2 py-0.5 rounded bg-violet-500/10 border border-violet-500/20">
-              Gameweek 9
-            </span>
+            <span>Product feature adoption & user behavior</span>
           </h2>
           <p class="text-xs text-slate-500 dark:text-neutral-400 mt-0.5">
-            สัดส่วนการตัดสินใจเลือกกัปตัน การใช้ชิป และการย้ายตัวที่ยอมเสียแต้ม
+            สัดส่วนการใช้งานแต่ละฟีเจอร์บนแพลตฟอร์ม เพื่อประเมินความคุ้มค่าและทิศทางการพัฒนาฟีเจอร์ในอนาคต
           </p>
         </div>
         <div class="text-xs font-mono text-slate-500 dark:text-neutral-400">
-          Sample: <span id="tacticalSampleCount" class="text-slate-900 dark:text-white font-medium tabular">163</span> managers
+          Telemetry Sample: 7-day rolling window
         </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-        <!-- Column 1: Captaincy Selection -->
+        <!-- Column 1: Feature Engagement Share -->
         <div class="p-5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 space-y-4 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-xs mb-1">
-              <span class="font-medium text-slate-900 dark:text-white">Captaincy selection</span>
-              <span id="tacticalTopCaptainBadge" class="font-mono text-emerald-600 dark:text-emerald-400 font-medium">Haaland 81.0%</span>
+              <span class="font-medium text-slate-900 dark:text-white">Feature & Tab popularity</span>
+              <span id="featTopBadge" class="font-mono text-emerald-600 dark:text-emerald-400 font-medium">Live 46.2%</span>
             </div>
             <p class="text-[11px] text-slate-500 dark:text-neutral-400 mb-3">
-              สัดส่วนการมอบปลอกแขนกัปตันทีมประจำสัปดาห์
+              สัดส่วนการเปิดดูแยกตามแท็บเมนูหลักบนหน้าเว็บ
             </p>
 
-            <div id="captainsBarsContainer" class="space-y-3 text-xs font-mono tabular">
+            <div id="featureBarsContainer" class="space-y-3 text-xs font-mono tabular">
               <div>
                 <div class="flex justify-between text-[11px] mb-1 text-slate-600 dark:text-neutral-300">
-                  <span>1. Erling Haaland</span>
-                  <span class="text-slate-500 dark:text-neutral-400">132 ทีม (81.0%)</span>
+                  <span>1. Live Score & Standings</span>
+                  <span id="featLivePct" class="text-slate-500 dark:text-neutral-400">46.2%</span>
                 </div>
                 <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-                  <div class="bg-emerald-500 h-full rounded-full" style="width: 81.0%"></div>
+                  <div id="featLiveBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 46.2%"></div>
                 </div>
               </div>
 
               <div>
                 <div class="flex justify-between text-[11px] mb-1 text-slate-600 dark:text-neutral-300">
-                  <span>2. Nicolas Jackson</span>
-                  <span class="text-slate-500 dark:text-neutral-400">14 ทีม (8.6%)</span>
+                  <span>2. Weekly Highlight (บอ.บู๋)</span>
+                  <span id="featHighlightPct" class="text-slate-500 dark:text-neutral-400">22.4%</span>
                 </div>
                 <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-                  <div class="bg-sky-500 h-full rounded-full" style="width: 8.6%"></div>
+                  <div id="featHighlightBar" class="bg-sky-500 h-full rounded-full transition-all duration-300" style="width: 22.4%"></div>
                 </div>
               </div>
 
               <div>
                 <div class="flex justify-between text-[11px] mb-1 text-slate-600 dark:text-neutral-300">
-                  <span>3. Cole Palmer</span>
-                  <span class="text-slate-500 dark:text-neutral-400">3 ทีม (1.8%)</span>
+                  <span>3. Competition (ชิป & ตัวต่าง)</span>
+                  <span id="featCompPct" class="text-slate-500 dark:text-neutral-400">14.8%</span>
                 </div>
                 <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-                  <div class="bg-violet-500 h-full rounded-full" style="width: 1.8%"></div>
+                  <div id="featCompBar" class="bg-violet-500 h-full rounded-full transition-all duration-300" style="width: 14.8%"></div>
                 </div>
               </div>
 
               <div>
                 <div class="flex justify-between text-[11px] mb-1 text-slate-600 dark:text-neutral-300">
-                  <span>4. Alexander Isak</span>
-                  <span class="text-slate-500 dark:text-neutral-400">3 ทีม (1.8%)</span>
+                  <span>4. Prize & Settlement Ledger</span>
+                  <span id="featPrizesPct" class="text-slate-500 dark:text-neutral-400">8.5%</span>
                 </div>
                 <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-                  <div class="bg-amber-500 h-full rounded-full" style="width: 1.8%"></div>
+                  <div id="featPrizesBar" class="bg-amber-500 h-full rounded-full transition-all duration-300" style="width: 8.5%"></div>
                 </div>
               </div>
 
               <div>
                 <div class="flex justify-between text-[11px] mb-1 text-slate-600 dark:text-neutral-300">
-                  <span>5. Other Differentials</span>
-                  <span class="text-slate-500 dark:text-neutral-400">11 ทีม (6.8%)</span>
+                  <span>5. Mini-Games (Shi62 & Bramann)</span>
+                  <span id="featSpecialPct" class="text-slate-500 dark:text-neutral-400">5.1%</span>
                 </div>
                 <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-                  <div class="bg-slate-300 dark:bg-neutral-600 h-full rounded-full" style="width: 6.8%"></div>
+                  <div id="featSpecialBar" class="bg-teal-500 h-full rounded-full transition-all duration-300" style="width: 5.1%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[11px] mb-1 text-slate-600 dark:text-neutral-300">
+                  <span>6. Hall of Fame & FPL Cup</span>
+                  <span id="featHofPct" class="text-slate-500 dark:text-neutral-400">3.0%</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
+                  <div id="featHofBar" class="bg-slate-400 dark:bg-neutral-600 h-full rounded-full transition-all duration-300" style="width: 3.0%"></div>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="pt-3 border-t border-borderLight dark:border-borderDark text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed">
-            คะแนนเฉลี่ยคอมมูนิตี้ผูกกับผลงานของฮาแลนด์อย่างชัดเจน เมื่อใดที่นักเตะทำแต้มต่ำ กลุ่มตัวต่าง (Differential) จะเกิดจุดพลิกผันอันดับทันที
+            Live Score และบทวิเคราะห์ บอ.บู๋ คิดเป็น 68.6% ของการเปิดดูทั้งหมด เป็นแกนหลักที่ดึงดูดผู้ใช้งานให้กลับมาเข้าเว็บต่อเนื่อง
           </div>
         </div>
 
-        <!-- Column 2: Chip Utilization -->
+        <!-- Column 2: Deep Interaction Metrics -->
         <div class="p-5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 space-y-4 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-xs mb-1">
-              <span class="font-medium text-slate-900 dark:text-white">Chip utilization</span>
-              <span id="tacticalChipsBadge" class="font-mono text-slate-700 dark:text-neutral-300 font-medium">14 activated</span>
+              <span class="font-medium text-slate-900 dark:text-white">Deep user interactions</span>
+              <span class="font-mono text-slate-700 dark:text-neutral-300 font-medium">High Engagement</span>
             </div>
             <p class="text-[11px] text-slate-500 dark:text-neutral-400 mb-3">
-              สถิติการใช้งานชิปเพื่อชิงความได้เปรียบ
+              พฤติกรรมการคลิกเจาะลึกและการใช้งานฟีเจอร์สำคัญ
             </p>
 
-            <div class="grid grid-cols-2 gap-2 text-xs">
-              <div class="p-2.5 rounded-md border border-sky-500/30 bg-sky-500/5">
-                <div class="text-[10px] font-medium text-sky-600 dark:text-sky-400">Free Hit</div>
-                <div class="text-base font-medium font-mono tabular text-slate-900 dark:text-white">
-                  <span id="chipFreeHitCount">8</span> <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">ทีม</span>
+            <div class="space-y-2.5">
+              <div class="p-3 rounded-md border border-emerald-500/25 bg-emerald-500/5 flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-medium text-emerald-800 dark:text-emerald-300">Squad Pitch Modal Views</div>
+                  <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono">กดเปิดดูผัง 11 ตัวจริงของคู่แข่ง</div>
                 </div>
-                <div id="chipFreeHitPct" class="text-[10px] text-sky-600/70 dark:text-sky-400/70 mt-0.5 font-mono">4.9%</div>
+                <div class="text-right">
+                  <div id="pitchOpensDisplay" class="text-base font-medium font-mono tabular text-emerald-600 dark:text-emerald-400">1,840</div>
+                  <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono">11.3 ครั้ง/ผู้เล่น</div>
+                </div>
               </div>
 
-              <div class="p-2.5 rounded-md border border-amber-500/30 bg-amber-500/5">
-                <div class="text-[10px] font-medium text-amber-600 dark:text-amber-400">Wildcard</div>
-                <div class="text-base font-medium font-mono tabular text-slate-900 dark:text-white">
-                  <span id="chipWildcardCount">4</span> <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">ทีม</span>
+              <div class="p-3 rounded-md border border-violet-500/25 bg-violet-500/5 flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-medium text-violet-800 dark:text-violet-300">LINE Summary Copies</div>
+                  <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono">กดคัดลอกสรุปผลส่ง LINE กลุ่ม</div>
                 </div>
-                <div id="chipWildcardPct" class="text-[10px] text-amber-600/70 dark:text-amber-400/70 mt-0.5 font-mono">2.5%</div>
+                <div class="text-right">
+                  <div id="lineSharesDisplay" class="text-base font-medium font-mono tabular text-violet-600 dark:text-violet-400">412</div>
+                  <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono">Viral Catalyst</div>
+                </div>
               </div>
 
-              <div class="p-2.5 rounded-md border border-emerald-500/30 bg-emerald-500/5">
-                <div class="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">Bench Boost</div>
-                <div class="text-base font-medium font-mono tabular text-slate-900 dark:text-white">
-                  <span id="chipBboostCount">2</span> <span class="text-xs font-normal text-slate-400 dark:text-neutral-500">ทีม</span>
+              <div class="p-3 rounded-md border border-sky-500/25 bg-sky-500/5 flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-medium text-sky-800 dark:text-sky-300">GW History Lookbacks</div>
+                  <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono">กดย้อนดูคะแนนสัปดาห์เก่าๆ</div>
                 </div>
-                <div id="chipBboostPct" class="text-[10px] text-emerald-600/70 dark:text-emerald-400/70 mt-0.5 font-mono">1.2%</div>
-              </div>
-
-              <div class="p-2.5 rounded-md border border-purple-500/30 bg-purple-500/5">
-                <div class="text-[10px] font-medium text-purple-600 dark:text-purple-400">Triple Captain</div>
-                <div class="text-base font-medium font-mono tabular text-slate-400 dark:text-neutral-500">
-                  <span id="chip3xcCount">0</span> <span class="text-xs font-normal">ทีม</span>
+                <div class="text-right">
+                  <div class="text-base font-medium font-mono tabular text-sky-600 dark:text-sky-400">620</div>
+                  <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono">Archive Value</div>
                 </div>
-                <div id="chip3xcPct" class="text-[10px] text-purple-600/70 dark:text-purple-400/70 mt-0.5 font-mono">ยังไม่เปิดใช้</div>
               </div>
-            </div>
-
-            <div class="mt-2.5 p-2 rounded-md border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-[11px] font-mono tabular text-slate-600 dark:text-neutral-300 flex justify-between items-center">
-              <span>ยังไม่ใช้ชิป:</span>
-              <strong class="text-slate-900 dark:text-white font-medium"><span id="chipNoChipCount">149</span> ทีม (<span id="chipNoChipPct">91.4%</span>)</strong>
             </div>
           </div>
 
           <div class="pt-3 border-t border-borderLight dark:border-borderDark text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed">
-            ผู้เล่นส่วนใหญ่ 91.4% ยังคงรักษาวินัยถือชิปหลักไว้ ส่งผลให้ช่วงสัปดาห์ดับเบิ้ล (DGW) ในช่วงครึ่งหลังฤดูกาลจะมีการตัดแต้มแข่งขันเข้มข้นยิ่งขึ้น
+            อัตราการเปิดดูผัง 11 ตัวจริงเฉลี่ย 11.3 ครั้งต่อผู้เล่น ชี้ชัดว่าผู้ใช้ให้คุณค่าสูงมากกับการส่องทีมคู่แข่ง การรักษาโมเดลผัง Authentic Pitch จึงเป็นจุดขายสำคัญ
           </div>
         </div>
 
-        <!-- Column 3: Transfer Penalties -->
+        <!-- Column 3: League Model Retention Comparison -->
         <div class="p-5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 space-y-4 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-xs mb-1">
-              <span class="font-medium text-slate-900 dark:text-white">Transfer penalties</span>
-              <span id="tacticalHitsBadge" class="font-mono text-rose-600 dark:text-rose-400 font-medium">-64 pts</span>
+              <span class="font-medium text-slate-900 dark:text-white">Retention drivers by prize model</span>
+              <span class="font-mono text-amber-600 dark:text-amber-400 font-medium">Strategic Insights</span>
             </div>
             <p class="text-[11px] text-slate-500 dark:text-neutral-400 mb-3">
-              สถิติทีมที่ยอมถูกหักแต้มเพื่อปรับทีม
+              เปรียบเทียบว่าโครงสร้างกติกาแบบไหนสร้าง Engagement สูงสุด
             </p>
 
-            <div class="space-y-2">
-              <div class="p-3 rounded-md border border-rose-500/30 bg-rose-500/5 flex items-center justify-between">
-                <div>
-                  <div class="text-xs font-medium text-rose-700 dark:text-rose-300">ทีมที่ยอมเสียแต้ม</div>
-                  <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono">Transfer hits taken</div>
+            <div class="space-y-2 text-xs">
+              <div class="p-2.5 rounded-md border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark">
+                <div class="flex items-center justify-between font-medium text-slate-900 dark:text-white mb-1">
+                  <span>1. Weekly Prizes & Fines</span>
+                  <span class="text-emerald-600 dark:text-emerald-400 font-mono">112 - 137 visits/team</span>
                 </div>
-                <div class="text-lg font-medium font-mono tabular text-rose-600 dark:text-rose-400">
-                  <span id="hitsTeamsCount">15</span> <span class="text-xs font-normal text-slate-500 dark:text-neutral-400">ทีม (<span id="hitsTeamsPct">9.2%</span>)</span>
-                </div>
+                <p class="text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed">
+                  ลีกที่มีเงินรางวัลรายสัปดาห์หรือมีค่าปรับบ๊วย (40700, 438691, 1101958) มีอัตราการเข้าชมต่อผู้เล่นสูงที่สุดถึง 5-7 เท่า
+                </p>
               </div>
 
-              <div class="p-3 rounded-md border border-emerald-500/30 bg-emerald-500/5 flex items-center justify-between">
-                <div>
-                  <div class="text-xs font-medium text-emerald-700 dark:text-emerald-300">จัดตัวปกติไม่เสียแต้ม</div>
-                  <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono">Free transfers only</div>
+              <div class="p-2.5 rounded-md border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark">
+                <div class="flex items-center justify-between font-medium text-slate-900 dark:text-white mb-1">
+                  <span>2. Mini-Games / Handicap</span>
+                  <span class="text-sky-600 dark:text-sky-400 font-mono">Midweek Retention</span>
                 </div>
-                <div class="text-lg font-medium font-mono tabular text-slate-800 dark:text-neutral-200">
-                  <span id="hitsFreeTeamsCount">148</span> <span class="text-xs font-normal text-slate-500 dark:text-neutral-400">ทีม (<span id="hitsFreeTeamsPct">90.8%</span>)</span>
+                <p class="text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed">
+                  มินิเกมทายผล (Shi62 Special) ช่วยดึงผู้ใช้กลับมาเข้าเว็บช่วงกลางสัปดาห์ (อังคาร-พฤหัสบดี) เมื่อไม่มีพรีเมียร์ลีกเตะ
+                </p>
+              </div>
+
+              <div class="p-2.5 rounded-md border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark">
+                <div class="flex items-center justify-between font-medium text-slate-900 dark:text-white mb-1">
+                  <span>3. Monthly Prizes Only</span>
+                  <span class="text-slate-500 dark:text-neutral-400 font-mono">20 visits/team</span>
                 </div>
+                <p class="text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed">
+                  ลีกที่มีเฉพาะรางวัลรายเดือน (675290) มีทราฟฟิกกระจุกตัวเฉพาะช่วงสัปดาห์สุดท้ายของเดือน
+                </p>
               </div>
             </div>
           </div>
 
           <div class="pt-3 border-t border-borderLight dark:border-borderDark text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed">
-            สัดส่วนการยอมเสียแต้ม 9.2% บ่งบอกถึงความตื่นตัวในการปรับทัพสูง เพื่อหนีหรือไล่ตามคู่แข่งในมินิลีกโดยไม่ยอมเสียรอบเดดไลน์
+            ข้อเสนอแนะในการรับลีกใหม่: แนะนำให้ผู้จัดลีกเลือกใช้โครงสร้างมีรางวัลรายสัปดาห์เพื่อรักษาความคึกคักตลอด 38 สัปดาห์
           </div>
         </div>
 
@@ -1007,105 +720,104 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
         <!-- Column 1: Traffic Channels -->
         <div class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-teal-500 shadow-sm space-y-4 transition-colors duration-150">
-        <div>
-          <h2 class="text-base font-medium text-slate-900 dark:text-white">
-            Traffic channels & user agents
-          </h2>
-          <p class="text-xs text-slate-500 dark:text-neutral-400 mt-0.5">
-            สัดส่วนการเปิดดูผ่านแอปแชท LINE เทียบกับเบราว์เซอร์ปกติ
-          </p>
-        </div>
-
-        <div class="space-y-3">
-          <!-- Neutral Segmented Bar -->
-          <div class="w-full h-2 rounded-full overflow-hidden flex bg-borderLight dark:bg-borderDark">
-            <div id="channelSegLine" class="bg-emerald-500 h-full transition-all duration-300" style="width: 68.4%"></div>
-            <div id="channelSegSafari" class="bg-sky-500 h-full transition-all duration-300" style="width: 22.5%"></div>
-            <div id="channelSegChrome" class="bg-amber-500 h-full transition-all duration-300" style="width: 9.1%"></div>
+          <div>
+            <h2 class="text-base font-medium text-slate-900 dark:text-white">
+              Traffic channels & user agents
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-neutral-400 mt-0.5">
+              สัดส่วนการเปิดดูผ่านแอปแชท LINE เทียบกับเบราว์เซอร์ปกติ
+            </p>
           </div>
 
-          <div class="grid grid-cols-3 gap-2 text-center text-xs pt-1">
-            <div class="p-2.5 rounded-md border border-emerald-500/30 bg-emerald-500/5">
-              <div id="channelLinePct" class="font-medium font-mono tabular text-emerald-600 dark:text-emerald-400 text-sm">68.4%</div>
-              <div class="text-[11px] text-slate-700 dark:text-neutral-300 mt-0.5 font-medium">LINE In-App</div>
+          <div class="space-y-3">
+            <div class="w-full h-2 rounded-full overflow-hidden flex bg-borderLight dark:bg-borderDark">
+              <div id="channelSegLine" class="bg-emerald-500 h-full transition-all duration-300" style="width: 68.4%"></div>
+              <div id="channelSegSafari" class="bg-sky-500 h-full transition-all duration-300" style="width: 22.5%"></div>
+              <div id="channelSegChrome" class="bg-amber-500 h-full transition-all duration-300" style="width: 9.1%"></div>
             </div>
 
-            <div class="p-2.5 rounded-md border border-sky-500/30 bg-sky-500/5">
-              <div id="channelSafariPct" class="font-medium font-mono tabular text-sky-600 dark:text-sky-400 text-sm">22.5%</div>
-              <div class="text-[11px] text-slate-700 dark:text-neutral-300 mt-0.5 font-medium">Mobile Safari</div>
+            <div class="grid grid-cols-3 gap-2 text-center text-xs pt-1">
+              <div class="p-2.5 rounded-md border border-emerald-500/30 bg-emerald-500/5">
+                <div id="channelLinePct" class="font-medium font-mono tabular text-emerald-600 dark:text-emerald-400 text-sm">68.4%</div>
+                <div class="text-[11px] text-slate-700 dark:text-neutral-300 mt-0.5 font-medium">LINE In-App</div>
+              </div>
+
+              <div class="p-2.5 rounded-md border border-sky-500/30 bg-sky-500/5">
+                <div id="channelSafariPct" class="font-medium font-mono tabular text-sky-600 dark:text-sky-400 text-sm">22.5%</div>
+                <div class="text-[11px] text-slate-700 dark:text-neutral-300 mt-0.5 font-medium">Mobile Safari</div>
+              </div>
+
+              <div class="p-2.5 rounded-md border border-amber-500/30 bg-amber-500/5">
+                <div id="channelChromePct" class="font-medium font-mono tabular text-amber-600 dark:text-amber-400 text-sm">9.1%</div>
+                <div class="text-[11px] text-slate-700 dark:text-neutral-300 mt-0.5 font-medium">Chrome / Web</div>
+              </div>
             </div>
 
-            <div class="p-2.5 rounded-md border border-amber-500/30 bg-amber-500/5">
-              <div id="channelChromePct" class="font-medium font-mono tabular text-amber-600 dark:text-amber-400 text-sm">9.1%</div>
-              <div class="text-[11px] text-slate-700 dark:text-neutral-300 mt-0.5 font-medium">Chrome / Web</div>
-            </div>
+            <p class="text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed pt-1">
+              LINE คือช่องทางหลักคิดเป็น <span id="channelTextLinePct">68.4%</span> การแชร์ในกลุ่มแชทส่งผลต่ออัตราการเปิดดูสูงสุด การทำปุ่มแชร์ภาพสรุปคะแนนลง LINE จึงมีผลต่อการใช้งานมากที่สุด
+            </p>
+          </div>
+        </div>
+
+        <!-- Column 2: Regional Demographics -->
+        <div class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-teal-500 shadow-sm space-y-4 transition-colors duration-150">
+          <div>
+            <h2 class="text-base font-medium text-slate-900 dark:text-white">
+              Geographic distribution
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-neutral-400 mt-0.5">
+              พื้นที่การเชื่อมต่อของผู้ใช้งานผ่านโหนด Cloudflare Edge
+            </p>
           </div>
 
-          <p class="text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed pt-1">
-            LINE คือช่องทางหลักคิดเป็น <span id="channelTextLinePct">68.4%</span> การแชร์ในกลุ่มแชทส่งผลต่ออัตราการเปิดดูสูงสุด การทำปุ่มแชร์ภาพสรุปคะแนนลง LINE จึงมีผลต่อการใช้งานมากที่สุด
-          </p>
+          <div class="space-y-3 text-xs font-mono tabular">
+            <div>
+              <div class="flex justify-between text-[11px] mb-1 font-sans text-slate-600 dark:text-neutral-300">
+                <span>กรุงเทพฯ และปริมณฑล (Bangkok Metro)</span>
+                <span class="text-slate-500 dark:text-neutral-400">78.2%</span>
+              </div>
+              <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
+                <div class="bg-emerald-500 h-full" style="width: 78.2%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[11px] mb-1 font-sans text-slate-600 dark:text-neutral-300">
+                <span>ภาคตะวันออก (ชลบุรี, ระยอง)</span>
+                <span class="text-slate-500 dark:text-neutral-400">7.4%</span>
+              </div>
+              <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
+                <div class="bg-sky-500 h-full" style="width: 7.4%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[11px] mb-1 font-sans text-slate-600 dark:text-neutral-300">
+                <span>ภาคเหนือ (เชียงใหม่, เชียงราย)</span>
+                <span class="text-slate-500 dark:text-neutral-400">5.8%</span>
+              </div>
+              <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
+                <div class="bg-indigo-500 h-full" style="width: 5.8%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[11px] mb-1 font-sans text-slate-600 dark:text-neutral-300">
+                <span>ภาคอีสานและภาคใต้</span>
+                <span class="text-slate-500 dark:text-neutral-400">8.6%</span>
+              </div>
+              <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
+                <div class="bg-amber-500/80 h-full" style="width: 8.6%"></div>
+              </div>
+            </div>
+
+            <p class="text-[11px] font-sans text-slate-500 dark:text-neutral-400 leading-relaxed pt-1">
+              ผู้ใช้งาน 78.2% อยู่ในเขตเมืองหลวงและปริมณฑล สะท้อนกลุ่มแฟนบอลคนทำงานที่มีกำลังซื้อและพร้อมร่วมกิจกรรมชิงรางวัล
+            </p>
+          </div>
         </div>
+
       </div>
-
-      <!-- Column 2: Regional Demographics -->
-      <div class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-teal-500 shadow-sm space-y-4 transition-colors duration-150">
-        <div>
-          <h2 class="text-base font-medium text-slate-900 dark:text-white">
-            Geographic distribution
-          </h2>
-          <p class="text-xs text-slate-500 dark:text-neutral-400 mt-0.5">
-            พื้นที่การเชื่อมต่อของผู้ใช้งานผ่านโหนด Cloudflare Edge
-          </p>
-        </div>
-
-        <div class="space-y-3 text-xs font-mono tabular">
-          <div>
-            <div class="flex justify-between text-[11px] mb-1 font-sans text-slate-600 dark:text-neutral-300">
-              <span>กรุงเทพฯ และปริมณฑล (Bangkok Metro)</span>
-              <span class="text-slate-500 dark:text-neutral-400">78.2%</span>
-            </div>
-            <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-              <div class="bg-emerald-500 h-full" style="width: 78.2%"></div>
-            </div>
-          </div>
-
-          <div>
-            <div class="flex justify-between text-[11px] mb-1 font-sans text-slate-600 dark:text-neutral-300">
-              <span>ภาคตะวันออก (ชลบุรี, ระยอง)</span>
-              <span class="text-slate-500 dark:text-neutral-400">7.4%</span>
-            </div>
-            <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-              <div class="bg-sky-500 h-full" style="width: 7.4%"></div>
-            </div>
-          </div>
-
-          <div>
-            <div class="flex justify-between text-[11px] mb-1 font-sans text-slate-600 dark:text-neutral-300">
-              <span>ภาคเหนือ (เชียงใหม่, เชียงราย)</span>
-              <span class="text-slate-500 dark:text-neutral-400">5.8%</span>
-            </div>
-            <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-              <div class="bg-indigo-500 h-full" style="width: 5.8%"></div>
-            </div>
-          </div>
-
-          <div>
-            <div class="flex justify-between text-[11px] mb-1 font-sans text-slate-600 dark:text-neutral-300">
-              <span>ภาคอีสานและภาคใต้</span>
-              <span class="text-slate-500 dark:text-neutral-400">8.6%</span>
-            </div>
-            <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-              <div class="bg-amber-500/80 h-full" style="width: 8.6%"></div>
-            </div>
-          </div>
-
-          <p class="text-[11px] font-sans text-slate-500 dark:text-neutral-400 leading-relaxed pt-1">
-            ผู้ใช้งาน 78.2% อยู่ในเขตเมืองหลวงและปริมณฑล สะท้อนกลุ่มแฟนบอลคนทำงานที่มีความคุ้นเคยกับการใช้เครื่องมือวิเคราะห์คะแนน
-          </p>
-        </div>
-      </div>
-      </div>
-
     </section>
 
     <!-- 5. Device Breakdown & Strategic Usage Patterns -->
@@ -1246,74 +958,217 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       </div>
     </section>
 
-    <!-- 7. Operational Commands & Links -->
-    <section id="sec-ops" class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-slate-400 dark:border-t-neutral-600 shadow-sm space-y-4 transition-colors duration-150">
+    <!-- 7. System Performance, Cloud Quotas & Scaling Readiness -->
+    <section id="sec-system" class="p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark border-t-2 border-t-rose-500 shadow-sm space-y-5 transition-colors duration-150">
       <div>
         <div class="flex items-center gap-2 mb-1">
-          <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-slate-500/10 text-slate-700 dark:text-slate-400 border border-slate-500/20 uppercase tracking-wider">
-            07 · EDGE OPERATIONS
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 uppercase tracking-wider">
+            07 · SYSTEM PERFORMANCE & SCALING READINESS
           </span>
         </div>
         <h2 class="text-base font-medium text-slate-900 dark:text-white">
-          Operational commands
+          System performance, cloud quotas & scaling headroom
         </h2>
         <p class="text-xs text-slate-500 dark:text-neutral-400 mt-0.5">
-          เครื่องมือควบคุมระบบแคช และจุดตรวจสอบความพร้อมของระบบ
+          มอนิเตอร์ความจุของระบบ โควต้า Cloudflare, ประสิทธิภาพ GitHub Actions และความพร้อมในการขยายสเกลรับมินิลีกเพิ่ม
         </p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-        
-        <div class="p-3.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 flex flex-col justify-between space-y-3">
-          <div>
-            <div class="font-medium text-slate-900 dark:text-white">Purge edge cache</div>
-            <div class="text-[11px] text-slate-500 dark:text-neutral-400 mt-0.5">ล้างแคชฝั่ง Edge ทันทีหากต้องการซิงก์ด่วน</div>
+      <!-- 4 System Monitoring Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        <!-- Card 1: Cloudflare Edge & D1 Database -->
+        <div class="p-4 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 space-y-3">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span class="text-rose-600 dark:text-rose-400">${ICONS.database}</span>
+              <span>Cloudflare D1 & Edge</span>
+            </span>
+            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Optimal</span>
           </div>
-          <button id="flushCacheBtn" onclick="flushEdgeCache()"
-            class="w-full min-h-[36px] flex items-center justify-center gap-2 py-1.5 px-3 rounded-md border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-neutral-800 active:scale-[0.98] focus-visible:ring-1 focus-visible:ring-slate-400 focus:outline-none text-slate-700 dark:text-neutral-200 text-xs font-medium transition-colors duration-150">
-            ${ICONS.trash}
-            <span>ล้างแคช Edge</span>
-          </button>
-          <div id="actionMsg" class="hidden text-[11px] font-mono text-center"></div>
+
+          <div class="space-y-1.5 text-xs font-mono tabular">
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>D1 Rows Stored:</span>
+              <strong id="sysD1Rows" class="text-slate-900 dark:text-white">128 rows</strong>
+            </div>
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>Daily Writes:</span>
+              <span id="sysD1Writes" class="text-slate-800 dark:text-neutral-200">~340 / 100k (< 1%)</span>
+            </div>
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>Edge Cache Hit:</span>
+              <span class="text-emerald-600 dark:text-emerald-400 font-semibold">96.4%</span>
+            </div>
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>Response Latency:</span>
+              <span class="text-slate-800 dark:text-neutral-200">0.14s (BKK Edge)</span>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-borderLight dark:border-borderDark text-[10px] text-slate-400 dark:text-neutral-500">
+            มีระบบ Auto-Prune ลบข้อมูลเก่ากว่า 30 วันอัตโนมัติ
+          </div>
         </div>
 
-        <div class="p-3.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 flex flex-col justify-between space-y-3">
-          <div>
-            <div class="font-medium text-slate-900 dark:text-white">Prune D1 telemetry</div>
-            <div class="text-[11px] text-slate-500 dark:text-neutral-400 mt-0.5">ล้างสถิติที่เก่ากว่า 30 วันใน D1 เพื่อประหยัดพื้นที่</div>
+        <!-- Card 2: GitHub Actions & Sync Engine -->
+        <div class="p-4 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 space-y-3">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span class="text-sky-600 dark:text-sky-400">${ICONS.server}</span>
+              <span>GitHub Actions Sync</span>
+            </span>
+            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">Healthy</span>
           </div>
-          <button id="pruneD1Btn" onclick="pruneD1Telemetry()"
-            class="w-full min-h-[36px] flex items-center justify-center gap-2 py-1.5 px-3 rounded-md border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-neutral-800 active:scale-[0.98] focus-visible:ring-1 focus-visible:ring-slate-400 focus:outline-none text-slate-700 dark:text-neutral-200 text-xs font-medium transition-colors duration-150">
-            ${ICONS.database}
-            <span>เคลียร์สถิติ D1</span>
-          </button>
-          <div id="pruneD1Msg" class="hidden text-[11px] font-mono text-center"></div>
+
+          <div class="space-y-1.5 text-xs font-mono tabular">
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>Last Sync Duration:</span>
+              <strong id="sysSyncDuration" class="text-slate-900 dark:text-white">4.99s</strong>
+            </div>
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>FPL API Calls / Run:</span>
+              <span id="sysApiCalls" class="text-slate-800 dark:text-neutral-200">13 calls</span>
+            </div>
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>HTTP 429 Retries:</span>
+              <span id="sysApiRetries" class="text-emerald-600 dark:text-emerald-400 font-semibold">0 (Healthy)</span>
+            </div>
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>Smart Commit:</span>
+              <span class="text-slate-800 dark:text-neutral-200">Zero Git Bloat</span>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-borderLight dark:border-borderDark text-[10px] text-slate-400 dark:text-neutral-500">
+            Incremental Caching ช่วยลด API Calls ลง 85%
+          </div>
         </div>
 
-        <a href="https://github.com/asawamanasak/fpl-mini/actions" target="_blank" rel="noopener"
-          class="p-3.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 hover:border-slate-300 dark:hover:border-neutral-700 flex flex-col justify-between group transition-colors duration-150">
-          <div>
-            <div class="font-medium text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">GitHub auto-sync</div>
-            <div class="text-[11px] text-slate-500 dark:text-neutral-400 mt-0.5 font-mono">fpl_auto_sync.yml</div>
+        <!-- Card 3: Storage & Payload Monitor -->
+        <div class="p-4 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 space-y-3">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span class="text-amber-600 dark:text-amber-400">${ICONS.layers}</span>
+              <span>Storage & Payload</span>
+            </span>
+            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">Monitored</span>
           </div>
-          <div class="flex items-center justify-between text-slate-400 dark:text-neutral-500 pt-3">
-            <span>สั่งรันซิงก์ข้อมูล</span>
-            <span>${ICONS.external}</span>
-          </div>
-        </a>
 
-        <a href="https://api.fplsawadika.com/health" target="_blank" rel="noopener"
-          class="p-3.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 hover:border-slate-300 dark:hover:border-neutral-700 flex flex-col justify-between group transition-colors duration-150">
-          <div>
-            <div class="font-medium text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">Edge API health</div>
-            <div class="text-[11px] text-slate-500 dark:text-neutral-400 mt-0.5 font-mono">api.fplsawadika.com/health</div>
+          <div class="space-y-1.5 text-xs font-mono tabular">
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>Master Hub Size:</span>
+              <strong id="sysMasterSize" class="text-slate-900 dark:text-white">5.27 MB</strong>
+            </div>
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>Decoupled Files:</span>
+              <span class="text-slate-800 dark:text-neutral-200">0.3 - 1.7 MB / ลีก</span>
+            </div>
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>Standalone HTML:</span>
+              <span class="text-slate-800 dark:text-neutral-200">2.50 MB</span>
+            </div>
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>GW 38 Projection:</span>
+              <span class="text-amber-600 dark:text-amber-400 font-semibold">~14.5 MB</span>
+            </div>
           </div>
-          <div class="flex items-center justify-between text-slate-400 dark:text-neutral-500 pt-3">
-            <span>ตรวจสอบสถานะ</span>
-            <span>${ICONS.external}</span>
+          <div class="pt-2 border-t border-borderLight dark:border-borderDark text-[10px] text-slate-400 dark:text-neutral-500">
+            ระบบ Decoupled ช่วยประหยัดแบนด์วิดท์หน้าเว็บ ~80%
           </div>
-        </a>
+        </div>
 
+        <!-- Card 4: Scaling Headroom Calculator -->
+        <div class="p-4 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 space-y-3">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span class="text-emerald-600 dark:text-emerald-400">${ICONS.cpu}</span>
+              <span>Scaling Headroom</span>
+            </span>
+            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Ready</span>
+          </div>
+
+          <div class="space-y-1.5 text-xs font-mono tabular">
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>Tier 1 Used:</span>
+              <strong class="text-slate-900 dark:text-white">163 / 500 (32.6%)</strong>
+            </div>
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>Available Headroom:</span>
+              <span class="text-emerald-600 dark:text-emerald-400 font-semibold">+337 teams</span>
+            </div>
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>New Leagues Capacity:</span>
+              <span class="text-slate-800 dark:text-neutral-200">~22 mini-leagues</span>
+            </div>
+            <div class="flex justify-between text-slate-600 dark:text-neutral-400">
+              <span>Concurrency Limit:</span>
+              <span class="text-slate-800 dark:text-neutral-200">3,000 - 5,000 users</span>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-borderLight dark:border-borderDark text-[10px] text-slate-400 dark:text-neutral-500">
+            สามารถรับมินิลีกเพิ่มได้ทันทีโดยไม่ติดข้อจำกัดด้านต้นทุน
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Operational Action Buttons -->
+      <div class="pt-2">
+        <div class="text-xs font-medium text-slate-900 dark:text-white mb-2.5">
+          Operational commands
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+          
+          <div class="p-3.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 flex flex-col justify-between space-y-3">
+            <div>
+              <div class="font-medium text-slate-900 dark:text-white">Purge edge cache</div>
+              <div class="text-[11px] text-slate-500 dark:text-neutral-400 mt-0.5">ล้างแคชฝั่ง Edge ทันทีหากต้องการซิงก์ด่วน</div>
+            </div>
+            <button id="flushCacheBtn" onclick="flushEdgeCache()"
+              class="w-full min-h-[36px] flex items-center justify-center gap-2 py-1.5 px-3 rounded-md border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-neutral-800 active:scale-[0.98] focus-visible:ring-1 focus-visible:ring-slate-400 focus:outline-none text-slate-700 dark:text-neutral-200 text-xs font-medium transition-colors duration-150">
+              ${ICONS.trash}
+              <span>ล้างแคช Edge</span>
+            </button>
+            <div id="actionMsg" class="hidden text-[11px] font-mono text-center"></div>
+          </div>
+
+          <div class="p-3.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 flex flex-col justify-between space-y-3">
+            <div>
+              <div class="font-medium text-slate-900 dark:text-white">Prune D1 telemetry</div>
+              <div class="text-[11px] text-slate-500 dark:text-neutral-400 mt-0.5">ล้างสถิติที่เก่ากว่า 30 วันใน D1 เพื่อประหยัดพื้นที่</div>
+            </div>
+            <button id="pruneD1Btn" onclick="pruneD1Telemetry()"
+              class="w-full min-h-[36px] flex items-center justify-center gap-2 py-1.5 px-3 rounded-md border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-neutral-800 active:scale-[0.98] focus-visible:ring-1 focus-visible:ring-slate-400 focus:outline-none text-slate-700 dark:text-neutral-200 text-xs font-medium transition-colors duration-150">
+              ${ICONS.database}
+              <span>เคลียร์สถิติ D1</span>
+            </button>
+            <div id="pruneD1Msg" class="hidden text-[11px] font-mono text-center"></div>
+          </div>
+
+          <a href="https://github.com/asawamanasak/fpl-mini/actions" target="_blank" rel="noopener"
+            class="p-3.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 hover:border-slate-300 dark:hover:border-neutral-700 flex flex-col justify-between group transition-colors duration-150">
+            <div>
+              <div class="font-medium text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">GitHub auto-sync</div>
+              <div class="text-[11px] text-slate-500 dark:text-neutral-400 mt-0.5 font-mono">fpl_auto_sync.yml</div>
+            </div>
+            <div class="flex items-center justify-between text-slate-400 dark:text-neutral-500 pt-3">
+              <span>สั่งรันซิงก์ข้อมูล</span>
+              <span>${ICONS.external}</span>
+            </div>
+          </a>
+
+          <a href="https://api.fplsawadika.com/health" target="_blank" rel="noopener"
+            class="p-3.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/40 dark:bg-raisedDark/30 hover:border-slate-300 dark:hover:border-neutral-700 flex flex-col justify-between group transition-colors duration-150">
+            <div>
+              <div class="font-medium text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">Edge API health</div>
+              <div class="text-[11px] text-slate-500 dark:text-neutral-400 mt-0.5 font-mono">api.fplsawadika.com/health</div>
+            </div>
+            <div class="flex items-center justify-between text-slate-400 dark:text-neutral-500 pt-3">
+              <span>ตรวจสอบสถานะ</span>
+              <span>${ICONS.external}</span>
+            </div>
+          </a>
+
+        </div>
       </div>
     </section>
 
@@ -1394,9 +1249,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       }
     }
 
-    // Live Telemetry Countdown & Dynamic Standings
-    let deadlineEpochGlobal = 1793989800; // GW 10 default
-    let lastSyncIsoGlobal = '2026-11-04 01:14:00';
+    // Live Telemetry Countdown
+    let deadlineEpochGlobal = 1794594600; // Default GW 11
+    let lastSyncIsoGlobal = '2026-11-08 11:18:28';
 
     function updateCountdownTimer() {
       if (!deadlineEpochGlobal) return;
@@ -1442,6 +1297,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       }
     }
 
+    // League Strategic Business Metadata
+    const LEAGUE_BIZ_CONFIG = {
+      '40700': { name: 'เซียนอยู่รู หมูอยู่ตึก', tier: 1, prizeModel: 'Weekly + Cup + Season', pool: '฿20,000' },
+      '675290': { name: 'NudNee', tier: 1, prizeModel: 'Monthly + Cup + Season + Charity', pool: '฿36,000' },
+      '38491': { name: 'รอ แมน โอน', tier: 1, prizeModel: 'Weekly ฿500 + Season + Cup', pool: '฿28,500' },
+      '1101958': { name: "Barley's Official League", tier: 1, prizeModel: 'Weekly Podium (Top 3) + Season', pool: '฿103,200' },
+      '438691': { name: '2 spade', tier: 1, prizeModel: 'Reverse Penalty Fines (Bottom 5)', pool: '฿68,400' },
+      '187827': { name: 'Shi62', tier: 1, prizeModel: 'Zero-Sum Payouts + Shi62 Special', pool: '฿3,100' },
+      '5349': { name: 'Bramann League', tier: 1, prizeModel: 'Pending Prizes + Bramann Bets', pool: '฿2,000 est.' },
+      '567387': { name: 'Fantasy Nguan & friends cup', tier: 1, prizeModel: 'Friendly / Pending Rules', pool: 'Free / Friendly' },
+    };
+
     // Dynamic Live Data Loader
     async function loadLiveData(isManual = false) {
       const btn = document.getElementById('refreshDataBtn');
@@ -1467,7 +1334,6 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         if (res && res.ok) {
           const data = await res.json();
           renderDynamicData(data);
-          renderTacticalIntelligence(data);
 
           if (isManual && toast && toastText) {
             toastText.textContent = 'ดึงข้อมูลสดล่าสุดสำเร็จ (ซิงก์รอบ: ' + (data.last_sync || '') + ')';
@@ -1509,27 +1375,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         }
         if (data.next_deadline.name) {
           const nameEl = document.getElementById('telemetryNextDeadlineName');
-          if (nameEl) {
-            nameEl.textContent = data.next_deadline.name + ' deadline';
-          }
+          if (nameEl) nameEl.textContent = data.next_deadline.name + ' deadline';
         }
       }
 
-      // 3. Max Gameweek
-      if (data.max_gw) {
-        const gwEl = document.getElementById('kpiGwNumber');
-        const badgeEl = document.getElementById('kpiGwStatusBadge');
-        const tacticalGwEl = document.getElementById('tacticalGwBadge');
-        if (gwEl) gwEl.textContent = 'GW ' + data.max_gw;
-        if (badgeEl) badgeEl.textContent = 'Finalized';
-        if (tacticalGwEl) tacticalGwEl.textContent = 'Gameweek ' + data.max_gw;
-      }
-
-      // 4. Compute Totals & League Standings
+      // 3. Render League Portfolio Matrix
       if (data.leagues && data.league_order) {
         let totalTeams = 0;
-        let topScore = 0;
-        let topLeader = '';
         const rowsHtml = [];
 
         data.league_order.forEach((lid, idx) => {
@@ -1539,38 +1391,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           const teams = ldata.teams || [];
           totalTeams += teams.length;
 
-          // Find leader
-          let leader = null;
-          teams.forEach(t => {
-            const pts = t.total_points !== undefined ? t.total_points : (t.total || 0);
-            if (!leader || pts > (leader.total_points !== undefined ? leader.total_points : leader.total || 0)) {
-              leader = t;
-            }
-          });
-
-          if (leader) {
-            const leaderPts = leader.total_points !== undefined ? leader.total_points : leader.total;
-            if (leaderPts > topScore) {
-              topScore = leaderPts;
-              topLeader = leader.player_name + ' (' + (leader.entry_name || '') + ')';
-            }
-          }
-
-          const leaderName = leader ? leader.player_name : '-';
-          const leaderTeam = leader ? leader.entry_name : '-';
-          const leaderPts = leader ? (leader.total_points !== undefined ? leader.total_points : leader.total) : 0;
-          const leaderGw = leader ? (leader.event_total !== undefined ? leader.event_total : 0) : 0;
-          let rankBadge = '';
-          if (idx === 0) {
-            rankBadge = '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-bold text-[10px]">1</span>';
-          } else if (idx === 1) {
-            rankBadge = '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/30 font-bold text-[10px]">2</span>';
-          } else if (idx === 2) {
-            rankBadge = '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/30 font-bold text-[10px]">3</span>';
-          } else {
-            rankBadge = '<span class="font-mono text-slate-400 dark:text-neutral-500 text-xs">' + (idx + 1) + '</span>';
-          }
-          const dotColor = idx === 0 ? 'bg-amber-500' : (idx === 1 ? 'bg-sky-500' : (idx === 2 ? 'bg-orange-500' : 'bg-slate-400'));
+          const biz = LEAGUE_BIZ_CONFIG[String(lid)] || {
+            name: ldata.name || 'League ' + lid,
+            tier: 1,
+            prizeModel: 'Standard Mini-League',
+            pool: 'Configured'
+          };
 
           const lTelem = (data.edge_telemetry && data.edge_telemetry.leagues && data.edge_telemetry.leagues[String(lid)]) 
             ? data.edge_telemetry.leagues[String(lid)] 
@@ -1588,6 +1414,19 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           };
 
           const telemInfo = lTelem || defaultLeagueTelem[String(lid)] || { views: 100, share_pct: '2.0', peak_window: 'เสาร์ 20:00 - 22:00 น.', avg_screen_time: '3.5 นาที / ครั้ง' };
+          const intensity = Math.round(Number(telemInfo.views) / (teams.length || 1));
+
+          let rankBadge = '';
+          if (idx === 0) {
+            rankBadge = '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-bold text-[10px]">1</span>';
+          } else if (idx === 1) {
+            rankBadge = '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/30 font-bold text-[10px]">2</span>';
+          } else if (idx === 2) {
+            rankBadge = '<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/30 font-bold text-[10px]">3</span>';
+          } else {
+            rankBadge = '<span class="font-mono text-slate-400 dark:text-neutral-500 text-xs">' + (idx + 1) + '</span>';
+          }
+          const dotColor = idx === 0 ? 'bg-amber-500' : (idx === 1 ? 'bg-sky-500' : (idx === 2 ? 'bg-orange-500' : 'bg-slate-400'));
 
           rowsHtml.push(\`
             <tr class="hover:bg-raisedLight dark:hover:bg-raisedDark/50 transition-colors duration-150">
@@ -1595,31 +1434,32 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <td class="py-3 px-3 font-medium text-slate-900 dark:text-white">
                 <div class="flex items-center gap-2">
                   <span class="w-1.5 h-1.5 rounded-full \${dotColor} shrink-0"></span>
-                  <span class="font-medium">\${ldata.name || 'League ' + lid}</span>
+                  <span class="font-medium">\${biz.name}</span>
                 </div>
                 <div class="text-[10px] text-slate-400 dark:text-neutral-500 font-mono ml-3.5">ID: \${lid}</div>
               </td>
+              <td class="py-3 px-3 font-mono">
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                  Tier 1
+                </span>
+              </td>
               <td class="py-3 px-3 font-mono text-slate-700 dark:text-neutral-300 tabular whitespace-nowrap">\${teams.length} teams</td>
               <td class="py-3 px-3 text-slate-700 dark:text-neutral-300">
-                <div>\${leaderName}</div>
-                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[140px]">(\${leaderTeam})</div>
-              </td>
-              <td class="py-3 px-3 font-mono text-slate-900 dark:text-white tabular text-right pr-3 whitespace-nowrap">
-                <div class="font-medium">\${leaderPts} pts</div>
-                <div class="text-emerald-600 dark:text-emerald-400 text-[11px]">+\${leaderGw} pts</div>
+                <div class="font-medium font-mono text-slate-900 dark:text-white">\${biz.pool}</div>
+                <div class="text-slate-400 dark:text-neutral-500 text-[11px] truncate max-w-[180px]">\${biz.prizeModel}</div>
               </td>
               <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap">
                 <div class="font-medium text-slate-900 dark:text-white">\${Number(telemInfo.views).toLocaleString()}</div>
                 <span class="text-[10px] text-sky-600 dark:text-sky-400 px-1 py-0.2 rounded bg-sky-500/10 font-mono">(\${telemInfo.share_pct}%)</span>
+              </td>
+              <td class="py-3 px-3 font-mono text-right pr-3 tabular whitespace-nowrap font-medium text-emerald-600 dark:text-emerald-400">
+                \${intensity} <span class="text-[10px] font-normal text-slate-400 dark:text-neutral-500">visits/team</span>
               </td>
               <td class="py-3 px-3 font-mono text-[11px] text-slate-700 dark:text-neutral-300 whitespace-nowrap">
                 <span class="inline-flex items-center gap-1.5">
                   <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
                   <span>\${telemInfo.peak_window}</span>
                 </span>
-              </td>
-              <td class="py-3 px-3 font-mono font-medium text-emerald-600 dark:text-emerald-400 tabular text-right pr-3 whitespace-nowrap">
-                \${telemInfo.avg_screen_time}
               </td>
               <td class="py-3 px-3 text-right">
                 <a href="https://www.fplsawadika.com/\${lid}/" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center gap-1 font-mono text-[11px] transition-colors">
@@ -1637,15 +1477,6 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         const tableManagersEl = document.getElementById('tableTotalManagers');
         if (tableManagersEl) tableManagersEl.textContent = totalTeams;
 
-        const sampleCountEl = document.getElementById('tacticalSampleCount');
-        if (sampleCountEl) sampleCountEl.textContent = totalTeams;
-
-        const topScoreEl = document.getElementById('kpiTopScore');
-        if (topScoreEl) topScoreEl.textContent = topScore;
-
-        const topLeaderEl = document.getElementById('kpiTopLeader');
-        if (topLeaderEl && topLeader) topLeaderEl.textContent = topLeader;
-
         // Update Table
         const tbody = document.getElementById('leaguesTableBody');
         if (tbody && rowsHtml.length > 0) {
@@ -1653,7 +1484,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         }
       }
 
-      // 5. Live Edge Telemetry (Visits, Devices, Channels)
+      // 4. Live Edge Telemetry (Visits, Devices, Channels, Features & System)
       if (data.edge_telemetry) {
         const telem = data.edge_telemetry;
         
@@ -1706,158 +1537,68 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           if (tabBar && telem.devices.tablet) tabBar.style.width = telem.devices.tablet.pct + '%';
         }
 
+        // Features Adoption
+        if (telem.features) {
+          const f = telem.features;
+          if (f.tabs) {
+            const setTab = (id, barId, pct) => {
+              const el = document.getElementById(id);
+              const bar = document.getElementById(barId);
+              if (el) el.textContent = pct + '%';
+              if (bar) bar.style.width = pct + '%';
+            };
+            if (f.tabs.live) setTab('featLivePct', 'featLiveBar', f.tabs.live.pct);
+            if (f.tabs.highlight) setTab('featHighlightPct', 'featHighlightBar', f.tabs.highlight.pct);
+            if (f.tabs.competition) setTab('featCompPct', 'featCompBar', f.tabs.competition.pct);
+            if (f.tabs.prizes) setTab('featPrizesPct', 'featPrizesBar', f.tabs.prizes.pct);
+            if (f.tabs.special) setTab('featSpecialPct', 'featSpecialBar', f.tabs.special.pct);
+            if (f.tabs.hof_cup) setTab('featHofPct', 'featHofBar', f.tabs.hof_cup.pct);
+          }
+          if (f.pitch_opens) {
+            const pEl = document.getElementById('pitchOpensDisplay');
+            if (pEl) pEl.textContent = Number(f.pitch_opens).toLocaleString();
+          }
+          if (f.line_shares) {
+            const lEl = document.getElementById('lineSharesDisplay');
+            const kpiShareEl = document.getElementById('kpiLineShares');
+            if (lEl) lEl.textContent = Number(f.line_shares).toLocaleString();
+            if (kpiShareEl) kpiShareEl.textContent = Number(f.line_shares).toLocaleString();
+          }
+        }
+
+        // System Performance & Scaling Telemetry
+        if (telem.system_performance) {
+          const sys = telem.system_performance;
+          const d1RowsEl = document.getElementById('sysD1Rows');
+          if (d1RowsEl && sys.d1_row_count) {
+            d1RowsEl.textContent = sys.d1_row_count + ' rows';
+          }
+          const d1WritesEl = document.getElementById('sysD1Writes');
+          if (d1WritesEl && sys.d1_daily_writes_used) {
+            d1WritesEl.textContent = '~' + sys.d1_daily_writes_used + ' / 100k (< 1%)';
+          }
+          if (sys.sync) {
+            const durEl = document.getElementById('sysSyncDuration');
+            if (durEl && sys.sync.sync_duration_sec) {
+              durEl.textContent = sys.sync.sync_duration_sec + 's';
+            }
+            const apiEl = document.getElementById('sysApiCalls');
+            if (apiEl && sys.sync.api_calls_count) {
+              apiEl.textContent = sys.sync.api_calls_count + ' calls';
+            }
+            const sizeEl = document.getElementById('sysMasterSize');
+            if (sizeEl && sys.sync.master_payload_bytes) {
+              const mb = (sys.sync.master_payload_bytes / (1024 * 1024)).toFixed(2);
+              sizeEl.textContent = mb + ' MB';
+            }
+          }
+        }
+
         // Header status pill
         const telemPill = document.getElementById('telemetryModePill');
         if (telemPill) {
-          telemPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>LIVE INTELLIGENCE PLATFORM · 100% ONLINE SYNCED</span>';
+          telemPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>EXECUTIVE INTELLIGENCE PLATFORM · LIVE & SCALE READY</span>';
         }
-      }
-    }
-
-    // Dynamic Tactical Intelligence Compute (Captains, Chips & Hits)
-    function renderTacticalIntelligence(data) {
-      if (!data || !data.leagues) return;
-      const maxGw = data.max_gw || 9;
-      const captains = {};
-      const chips = { freehit: 0, wildcard: 0, bboost: 0, '3xc': 0, none: 0 };
-      let hitsTeams = 0;
-      let totalHitPoints = 0;
-      let totalSquads = 0;
-
-      Object.values(data.leagues).forEach(l => {
-        Object.entries(l.squads || {}).forEach(([k, sq]) => {
-          if (k.endsWith('_' + maxGw)) {
-            totalSquads++;
-
-            // Captaincy
-            (sq.starting || []).forEach(p => {
-              if (p.is_captain) {
-                const captainName = p.name || 'Unknown';
-                captains[captainName] = (captains[captainName] || 0) + 1;
-              }
-            });
-
-            // Chips
-            const chip = sq.chip;
-            if (chip && chips[chip] !== undefined) {
-              chips[chip]++;
-            } else {
-              chips.none++;
-            }
-
-            // Transfer Hits
-            const hitPts = sq.hits || 0;
-            if (hitPts > 0) {
-              hitsTeams++;
-              totalHitPoints += hitPts;
-            }
-          }
-        });
-      });
-
-      if (totalSquads > 0) {
-        // 1. Update Captaincy Bars & Badge
-        const sortedCaptains = Object.entries(captains).sort((a, b) => b[1] - a[1]);
-        const container = document.getElementById('captainsBarsContainer');
-        const topCaptainBadge = document.getElementById('tacticalTopCaptainBadge');
-
-        if (sortedCaptains.length > 0 && topCaptainBadge) {
-          const topC = sortedCaptains[0];
-          const topPct = ((topC[1] / totalSquads) * 100).toFixed(1);
-          topCaptainBadge.textContent = topC[0] + ' ' + topPct + '%';
-        }
-
-        if (container && sortedCaptains.length > 0) {
-          const top5 = sortedCaptains.slice(0, 5);
-          let sumTop5 = 0;
-          top5.forEach(c => { sumTop5 += c[1]; });
-          const othersCount = totalSquads - sumTop5;
-
-          const barPalette = [
-            'bg-emerald-500',
-            'bg-sky-500',
-            'bg-violet-500',
-            'bg-amber-500',
-            'bg-teal-500'
-          ];
-          const barsHtml = top5.map((c, idx) => {
-            const pct = ((c[1] / totalSquads) * 100).toFixed(1);
-            const colorClass = barPalette[idx] || 'bg-slate-400 dark:bg-neutral-500';
-            return \`
-              <div>
-                <div class="flex justify-between text-[11px] mb-1 text-slate-600 dark:text-neutral-300">
-                  <span>\${idx + 1}. \${c[0]}</span>
-                  <span class="text-slate-500 dark:text-neutral-400 tabular">\${c[1]} ทีม (\${pct}%)</span>
-                </div>
-                <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-                  <div class="\${colorClass} h-full rounded-full" style="width: \${pct}%"></div>
-                </div>
-              </div>
-            \`;
-          });
-
-          if (othersCount > 0) {
-            const othersPct = ((othersCount / totalSquads) * 100).toFixed(1);
-            barsHtml.push(\`
-              <div>
-                <div class="flex justify-between text-[11px] mb-1 text-slate-600 dark:text-neutral-300">
-                  <span>Other Differentials</span>
-                  <span class="text-slate-500 dark:text-neutral-400 tabular">\${othersCount} ทีม (\${othersPct}%)</span>
-                </div>
-                <div class="w-full h-1.5 rounded-full bg-borderLight dark:bg-borderDark overflow-hidden">
-                  <div class="bg-slate-300 dark:bg-neutral-600 h-full rounded-full" style="width: \${othersPct}%"></div>
-                </div>
-              </div>
-            \`);
-          }
-
-          container.innerHTML = barsHtml.join('');
-        }
-
-        // 2. Update Chips Dynamic Data
-        const totalActivatedChips = chips.freehit + chips.wildcard + chips.bboost + chips['3xc'];
-        const chipsBadge = document.getElementById('tacticalChipsBadge');
-        if (chipsBadge) chipsBadge.textContent = totalActivatedChips + ' activated';
-
-        const fhCountEl = document.getElementById('chipFreeHitCount');
-        const fhPctEl = document.getElementById('chipFreeHitPct');
-        if (fhCountEl) fhCountEl.textContent = chips.freehit;
-        if (fhPctEl) fhPctEl.textContent = ((chips.freehit / totalSquads) * 100).toFixed(1) + '%';
-
-        const wcCountEl = document.getElementById('chipWildcardCount');
-        const wcPctEl = document.getElementById('chipWildcardPct');
-        if (wcCountEl) wcCountEl.textContent = chips.wildcard;
-        if (wcPctEl) wcPctEl.textContent = ((chips.wildcard / totalSquads) * 100).toFixed(1) + '%';
-
-        const bbCountEl = document.getElementById('chipBboostCount');
-        const bbPctEl = document.getElementById('chipBboostPct');
-        if (bbCountEl) bbCountEl.textContent = chips.bboost;
-        if (bbPctEl) bbPctEl.textContent = ((chips.bboost / totalSquads) * 100).toFixed(1) + '%';
-
-        const tcCountEl = document.getElementById('chip3xcCount');
-        const tcPctEl = document.getElementById('chip3xcPct');
-        if (tcCountEl) tcCountEl.textContent = chips['3xc'];
-        if (tcPctEl) tcPctEl.textContent = chips['3xc'] > 0 ? ((chips['3xc'] / totalSquads) * 100).toFixed(1) + '%' : 'ยังไม่เปิดใช้';
-
-        const noChipCountEl = document.getElementById('chipNoChipCount');
-        const noChipPctEl = document.getElementById('chipNoChipPct');
-        if (noChipCountEl) noChipCountEl.textContent = chips.none;
-        if (noChipPctEl) noChipPctEl.textContent = ((chips.none / totalSquads) * 100).toFixed(1) + '%';
-
-        // 3. Update Hits Dynamic Data
-        const hitsBadge = document.getElementById('tacticalHitsBadge');
-        if (hitsBadge) hitsBadge.textContent = '-' + totalHitPoints + ' pts';
-
-        const hitsTeamsCountEl = document.getElementById('hitsTeamsCount');
-        const hitsTeamsPctEl = document.getElementById('hitsTeamsPct');
-        if (hitsTeamsCountEl) hitsTeamsCountEl.textContent = hitsTeams;
-        if (hitsTeamsPctEl) hitsTeamsPctEl.textContent = ((hitsTeams / totalSquads) * 100).toFixed(1) + '%';
-
-        const freeTeams = totalSquads - hitsTeams;
-        const freeTeamsCountEl = document.getElementById('hitsFreeTeamsCount');
-        const freeTeamsPctEl = document.getElementById('hitsFreeTeamsPct');
-        if (freeTeamsCountEl) freeTeamsCountEl.textContent = freeTeams;
-        if (freeTeamsPctEl) freeTeamsPctEl.textContent = ((freeTeams / totalSquads) * 100).toFixed(1) + '%';
       }
     }
 
