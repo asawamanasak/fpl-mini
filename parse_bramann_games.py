@@ -121,7 +121,7 @@ def parse_bettor_token(token):
     Parses token like 'Dotmanx5', 'Bx5', 'fee*5', 'feex2', 'jrj'
     Returns (clean_name, legs)
     """
-    t = token.strip()
+    t = token.strip().lstrip('/').lstrip('.')
     # Check for multiplier like x5, *5, X5
     m = re.search(r'[xX*](\d+)$', t)
     if m:

@@ -366,3 +366,35 @@ EVE fee ✅
 NEW -0.5 vs EVE
 NEW Oo
 EVE fee ✅
+GW10
+ARS -2 vs HUL
+ARS Oo oakx5
+HUL Bx5 jrj Hong feex5 Dotmanx5 ✅
+
+FUL vs NEW -0.5
+FUL 4OURx5 Bx5 feex5 ✅
+NEW Dotmanx5
+
+NFO vs MCI -1
+NFO Dotmanx5 ✅
+MCI 4OURx5 Oo Bx5 Hongx5
+
+BHA -0.5 vs BRE
+BHA 4OURx5 Bx5 jrj feex5 Hong ✅
+BRE Dotmanx5
+
+CRY vs LIV -1
+CRY Oo Dotmanx5 oak
+LIV 4OURx5 feex5 Hongx5 ✅
+
+IPS vs BOU -0.5
+IPS Dotmanx5
+BOU Oo ✅
+
+SUN vs CHE -0.5
+SUN Dotmanx5 ✅
+CHE 4OURx5 Oo Bx5 feex5 Hong
+
+MUN -0.5 vs AVL
+MUN 4OURx5 Oo Dotmanx5 Bx5
+AVL jrj Hong feex5 ✅
