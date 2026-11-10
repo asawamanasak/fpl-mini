@@ -1386,8 +1386,8 @@ __STRUCTURED_DATA_JSON__
 
     /* Desktop override for live table mobile switcher */
     @media (min-width: 1280px) {
-      #overall-table-card.max-xl\:hidden,
-      #matchday-table-card.max-xl\:hidden {
+      #overall-table-card,
+      #matchday-table-card {
         display: block !important;
       }
     }
@@ -1656,41 +1656,49 @@ __STRUCTURED_DATA_JSON__
 
       <!-- 2.3 ตัวควบคุมตาราง: ช่องค้นหาทีม & แท็บสลับตารางบนมือถือ (Search & Mobile Switcher) -->
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
-        <div class="relative flex-1 max-w-md">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <div class="relative flex-1 max-w-md flex items-center gap-2">
+          <div class="relative flex-1">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            <input 
+              type="text" 
+              id="live-team-search" 
+              oninput="app.onLiveSearchInput(this.value)" 
+              placeholder="ค้นหาชื่อทีม / ผู้จัดการ..." 
+              class="w-full pl-9 pr-8 py-2 min-h-[40px] text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 shadow-2xs transition-all"
+            >
+            <button 
+              id="live-team-search-clear" 
+              type="button"
+              onclick="app.clearLiveSearch()" 
+              class="hidden absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+              aria-label="Clear search"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+            </button>
           </div>
-          <input 
-            type="text" 
-            id="live-team-search" 
-            oninput="app.onLiveSearchInput(this.value)" 
-            placeholder="ค้นหาชื่อทีม / ผู้จัดการ..." 
-            class="w-full pl-9 pr-8 py-2 min-h-[40px] text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 shadow-2xs transition-all"
-          >
-          <button 
-            id="live-team-search-clear" 
-            onclick="app.clearLiveSearch()" 
-            class="hidden absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-            aria-label="Clear search"
-          >
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg>
-          </button>
+          <span id="live-search-count" class="hidden text-[11px] font-bold text-blue-600 dark:text-blue-400 font-display whitespace-nowrap px-1"></span>
         </div>
 
-        <div class="xl:hidden inline-flex p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 self-start sm:self-auto shadow-2xs">
+        <div class="xl:hidden flex w-full sm:w-auto p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs" role="tablist">
           <button 
             id="btn-switch-matchday-table" 
             type="button" 
+            role="tab"
+            aria-selected="true"
             onclick="app.switchLiveMobileTable('matchday')"
-            class="px-3 py-1.5 min-h-[36px] rounded-lg text-xs font-bold font-display transition-all cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs"
+            class="flex-1 sm:flex-initial px-3 py-1.5 min-h-[38px] rounded-lg text-xs font-bold font-display transition-all cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs"
           >
             ตารางประจำสัปดาห์
           </button>
           <button 
             id="btn-switch-overall-table" 
             type="button" 
+            role="tab"
+            aria-selected="false"
             onclick="app.switchLiveMobileTable('overall')"
-            class="px-3 py-1.5 min-h-[36px] rounded-lg text-xs font-semibold font-display transition-all cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+            class="flex-1 sm:flex-initial px-3 py-1.5 min-h-[38px] rounded-lg text-xs font-semibold font-display transition-all cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           >
             ตารางคะแนนรวม
           </button>
@@ -1705,9 +1713,9 @@ __STRUCTURED_DATA_JSON__
           <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3">
             <div>
               <span id="matchday-sub-label" class="hidden"></span>
-              <h3 id="matchday-table-title" class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display flex items-center gap-2">
+              <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
-                <span>ตารางคะแนน Gameweek 2</span>
+                <span id="matchday-table-title">ตารางคะแนน Gameweek 2</span>
               </h3>
             </div>
             <div class="flex items-center gap-2">
@@ -1737,13 +1745,13 @@ __STRUCTURED_DATA_JSON__
         </div>
 
         <!-- ขวา: ตารางคะแนนรวมสะสม (Overall Standings - Royal Blue Championship Theme) -->
-        <div id="overall-table-card" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs relative max-xl:hidden">
+        <div id="overall-table-card" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs relative hidden xl:block">
           <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3">
             <div>
               <span id="overall-sub-label" class="hidden"></span>
-              <h3 id="overall-table-title" class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display flex items-center gap-2">
+              <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0"></span>
-                <span>ตารางคะแนนรวมสะสม</span>
+                <span id="overall-table-title">ตารางคะแนนรวมสะสม</span>
               </h3>
             </div>
             <span id="overall-gw-pill" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 font-display">
@@ -9613,7 +9621,7 @@ selectShi62GW(gwName) {
             }
 
             mHtml += `
-              <tr tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer hover:bg-emerald-50/40 dark:hover:bg-slate-800/50 transition-colors ${penaltyRowBg} ${isWinner ? 'bg-emerald-50/25 dark:bg-emerald-950/25 font-semibold' : ''}">
+              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer hover:bg-emerald-50/40 dark:hover:bg-slate-800/50 transition-colors ${penaltyRowBg} ${isWinner ? 'bg-emerald-50/25 dark:bg-emerald-950/25 font-semibold' : ''}">
                 <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-2 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
@@ -9795,7 +9803,7 @@ selectShi62GW(gwName) {
             const hitsBadge = team.last_gw_hits > 0 ? `<span class="text-[10px] sm:text-[11px] font-bold text-rose-500 dark:text-rose-400 font-display ml-0.5">(-${team.last_gw_hits})</span>` : '';
 
             oHtml += `
-              <tr tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer hover:bg-blue-50/40 dark:hover:bg-slate-800/50 transition-colors ${team.overall_rank && team.overall_rank <= 3 && isPrize ? 'bg-blue-50/20 dark:bg-blue-950/20' : ''}">
+              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer hover:bg-blue-50/40 dark:hover:bg-slate-800/50 transition-colors ${team.overall_rank && team.overall_rank <= 3 && isPrize ? 'bg-blue-50/20 dark:bg-blue-950/20' : ''}">
                 <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">
                   <div class="flex flex-col items-center justify-center">
                     ${rankBadge}
@@ -18448,32 +18456,43 @@ selectShi62GW(gwName) {
       filterLiveTables() {
         const input = document.getElementById('live-team-search');
         const term = input ? input.value.trim().toLowerCase() : '';
-        const matchdayBody = document.getElementById('gw-results-body');
-        const overallBody = document.getElementById('gw-total-results-body');
+        const matchdayBody = document.getElementById('matchday-table-body');
+        const overallBody = document.getElementById('overall-standings-body');
         const countEl = document.getElementById('live-search-count');
         const isEn = (this.currentLang === 'en');
 
-        let matchCount = 0;
+        let matchdayMatches = 0;
 
-        const filterRows = (tbody) => {
+        const filterRows = (tbody, colSpan, isMatchday) => {
           if (!tbody) return;
+          const oldEmpty = tbody.querySelector('tr.live-search-empty-row');
+          if (oldEmpty) oldEmpty.remove();
           const rows = tbody.querySelectorAll('tr[data-team-name]');
+          let visibleInTable = 0;
           rows.forEach(tr => {
             const tName = (tr.getAttribute('data-team-name') || '').toLowerCase();
             const mName = (tr.getAttribute('data-manager-name') || '').toLowerCase();
             const visible = !term || tName.includes(term) || mName.includes(term);
             tr.style.display = visible ? '' : 'none';
-            if (visible) matchCount++;
+            if (visible) {
+              visibleInTable++;
+              if (isMatchday) matchdayMatches++;
+            }
           });
+          if (term && rows.length > 0 && visibleInTable === 0) {
+            const emptyTr = document.createElement('tr');
+            emptyTr.className = 'live-search-empty-row';
+            emptyTr.innerHTML = `<td colspan="${colSpan}" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs">${isEn ? 'No matching teams found' : 'ไม่พบทีมหรือผู้จัดการที่ค้นหา'}</td>`;
+            tbody.appendChild(emptyTr);
+          }
         };
 
-        filterRows(matchdayBody);
-        filterRows(overallBody);
+        filterRows(matchdayBody, 6, true);
+        filterRows(overallBody, 4, false);
 
         if (countEl) {
           if (term && term.length > 0) {
-            const uniqueMatches = Math.round(matchCount / 2);
-            countEl.textContent = isEn ? `Found ${uniqueMatches} teams` : `พบ ${uniqueMatches} ทีม`;
+            countEl.textContent = isEn ? `Found ${matchdayMatches} teams` : `พบ ${matchdayMatches} ทีม`;
             countEl.classList.remove('hidden');
           } else {
             countEl.textContent = '';
@@ -18490,26 +18509,31 @@ selectShi62GW(gwName) {
 
         if (!matchdayCard || !overallCard) return;
 
+        const activeBtnClass = 'flex-1 sm:flex-initial px-3 py-1.5 min-h-[38px] rounded-lg text-xs font-bold font-display transition-all cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs';
+        const inactiveBtnClass = 'flex-1 sm:flex-initial px-3 py-1.5 min-h-[38px] rounded-lg text-xs font-semibold font-display transition-all cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+
         if (tab === 'matchday') {
-          matchdayCard.classList.remove('hidden');
-          overallCard.classList.add('hidden');
+          matchdayCard.classList.remove('hidden', 'max-xl:hidden');
+          overallCard.classList.add('hidden', 'xl:block');
+          overallCard.classList.remove('max-xl:hidden');
           if (btnMatchday) {
-            btnMatchday.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs';
+            btnMatchday.className = activeBtnClass;
             btnMatchday.setAttribute('aria-selected', 'true');
           }
           if (btnOverall) {
-            btnOverall.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+            btnOverall.className = inactiveBtnClass;
             btnOverall.setAttribute('aria-selected', 'false');
           }
         } else {
-          matchdayCard.classList.add('hidden');
-          overallCard.classList.remove('hidden');
+          matchdayCard.classList.add('hidden', 'xl:block');
+          matchdayCard.classList.remove('max-xl:hidden');
+          overallCard.classList.remove('hidden', 'max-xl:hidden');
           if (btnMatchday) {
-            btnMatchday.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+            btnMatchday.className = inactiveBtnClass;
             btnMatchday.setAttribute('aria-selected', 'false');
           }
           if (btnOverall) {
-            btnOverall.className = 'flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs';
+            btnOverall.className = activeBtnClass;
             btnOverall.setAttribute('aria-selected', 'true');
           }
         }
