@@ -1190,7 +1190,7 @@
       <div class="inline-flex items-center max-w-full">
         <span id="header-deadline-badge" class="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs max-w-full" title="เส้นตายการจัดทีม Gameweek ถัดไป">
           <svg class="w-3 h-3 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          <span id="header-deadline-val" class="font-mono tabular-nums truncate">เส้นตาย GW 11: 10 วัน 15:54:13</span>
+          <span id="header-deadline-val" class="font-mono tabular-nums truncate">เส้นตาย GW 11: 10 วัน 15:47:12</span>
         </span>
       </div>
     </div>
@@ -1307,19 +1307,7 @@
           <span id="gw-selector-title" class="text-xs font-bold text-slate-500 uppercase tracking-wider font-display">
             <span id="gw-selector-main-label">เลือกสัปดาห์การแข่งขัน</span>
           </span>
-          <div class="flex items-center gap-2">
-            <span id="gw-range-status" class="text-xs font-bold text-emerald-700 dark:text-emerald-400"><span class="hidden min-[380px]:inline">สัปดาห์ที่ </span>1 - 38</span>
-            <button 
-              type="button"
-              onclick="app.shareCurrentGameweek()"
-              class="inline-flex items-center gap-1.5 px-2.5 py-1 min-h-[36px] rounded-xl text-xs font-bold bg-[#06C755]/10 hover:bg-[#06C755]/20 text-[#06C755] dark:text-[#06C755] border border-[#06C755]/30 transition-all cursor-pointer active:scale-95 shadow-2xs font-display"
-              title="แชร์สรุปผลสัปดาห์นี้เข้า LINE"
-              aria-label="Share gameweek summary"
-            >
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.019 9.578.39.082.923.254 1.058.583.12.296.079.76.038 1.062l-.164 1.018c-.05.309-.244 1.209 1.062.659 1.306-.55 7.039-4.148 9.608-7.099 1.621-1.782 2.379-3.623 2.379-5.743z"/></svg>
-              <span id="btn-gw-share-label">แชร์สรุป</span>
-            </button>
-          </div>
+          <span id="gw-range-status" class="text-xs font-bold text-emerald-700 dark:text-emerald-400"><span class="hidden min-[380px]:inline">สัปดาห์ที่ </span>1 - 38</span>
         </div>
         <div id="gw-selector-container" class="flex space-x-1.5 overflow-x-auto touch-scroll scrollbar-thin py-1 pb-2">
           <!-- Rendered dynamically -->
@@ -5433,10 +5421,6 @@
         const btnOverall = document.getElementById('btn-switch-overall-table');
         if (btnOverall) {
           btnOverall.innerText = isEn ? 'Overall Standings' : 'ตารางคะแนนรวม';
-        }
-        const shareBtnLabel = document.getElementById('btn-gw-share-label');
-        if (shareBtnLabel) {
-          shareBtnLabel.innerText = isEn ? 'Share Summary' : 'แชร์สรุป';
         }
 
         // Overall table headers

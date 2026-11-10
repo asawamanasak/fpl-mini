@@ -1630,19 +1630,7 @@ __STRUCTURED_DATA_JSON__
           <span id="gw-selector-title" class="text-xs font-bold text-slate-500 uppercase tracking-wider font-display">
             <span id="gw-selector-main-label">เลือกสัปดาห์การแข่งขัน</span>
           </span>
-          <div class="flex items-center gap-2">
-            <span id="gw-range-status" class="text-xs font-bold text-emerald-700 dark:text-emerald-400"><span class="hidden min-[380px]:inline">สัปดาห์ที่ </span>1 - 38</span>
-            <button 
-              type="button"
-              onclick="app.shareCurrentGameweek()"
-              class="inline-flex items-center gap-1.5 px-2.5 py-1 min-h-[36px] rounded-xl text-xs font-bold bg-[#06C755]/10 hover:bg-[#06C755]/20 text-[#06C755] dark:text-[#06C755] border border-[#06C755]/30 transition-all cursor-pointer active:scale-95 shadow-2xs font-display"
-              title="แชร์สรุปผลสัปดาห์นี้เข้า LINE"
-              aria-label="Share gameweek summary"
-            >
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.019 9.578.39.082.923.254 1.058.583.12.296.079.76.038 1.062l-.164 1.018c-.05.309-.244 1.209 1.062.659 1.306-.55 7.039-4.148 9.608-7.099 1.621-1.782 2.379-3.623 2.379-5.743z"/></svg>
-              <span id="btn-gw-share-label">แชร์สรุป</span>
-            </button>
-          </div>
+          <span id="gw-range-status" class="text-xs font-bold text-emerald-700 dark:text-emerald-400"><span class="hidden min-[380px]:inline">สัปดาห์ที่ </span>1 - 38</span>
         </div>
         <div id="gw-selector-container" class="flex space-x-1.5 overflow-x-auto touch-scroll scrollbar-thin py-1 pb-2">
           <!-- Rendered dynamically -->
@@ -5583,10 +5571,6 @@ __STRUCTURED_DATA_JSON__
         const btnOverall = document.getElementById('btn-switch-overall-table');
         if (btnOverall) {
           btnOverall.innerText = isEn ? 'Overall Standings' : 'ตารางคะแนนรวม';
-        }
-        const shareBtnLabel = document.getElementById('btn-gw-share-label');
-        if (shareBtnLabel) {
-          shareBtnLabel.innerText = isEn ? 'Share Summary' : 'แชร์สรุป';
         }
 
         // Overall table headers
