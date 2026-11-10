@@ -136,7 +136,7 @@
     <div class="diagram-container">
       <svg viewBox="0 0 1020 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fpl-arch-title fpl-arch-desc">
         <title id="fpl-arch-title">สถาปัตยกรรมระบบเบื้องหลังและการประมวลผลข้อมูล FPLSaWaDiKa</title>
-        <desc id="fpl-arch-desc">ไดอะแกรมแสดงโฟลว์การทำงานแบบ Dual-Layer Serverless Jamstack: ซิงก์พื้นหลังทุก 15 นาทีผ่าน GitHub Actions (8 ลีก 135 ทีม) แยกไฟล์ JSON รายลีก และดึงคะแนนสดทุก 30 วินาทีผ่าน Cloudflare Edge Live Relay</desc>
+        <desc id="fpl-arch-desc">ไดอะแกรมแสดงโฟลว์การทำงานแบบ Dual-Layer Serverless Jamstack: ซิงก์พื้นหลังทุก 15 นาทีผ่าน GitHub Actions (8 ลีก 146 ทีม 163 รายการ) แยกไฟล์ JSON รายลีก และดึงคะแนนสดทุก 15 วินาทีผ่าน Cloudflare Edge Live Relay</desc>
 
         <defs>
           <pattern id="bg-dots" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -214,7 +214,7 @@
         <path d="M 816,244 H 794 Q 786,244 786,252 V 300 Q 786,308 778,308 H 756"
               fill="none" stroke="var(--color-muted)" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
 
-        <!-- C8: Cloudflare Live Relay -> Vanilla Client App (30s Real-Time Matchday Poll) -->
+        <!-- C8: Cloudflare Live Relay -> Vanilla Client App (15s Real-Time Matchday Poll) -->
         <path d="M 102,324 V 412 Q 102,420 110,420 H 892 Q 900,420 900,412 V 264"
               fill="none" stroke="var(--color-link)" stroke-width="1.3" stroke-dasharray="5,3" marker-end="url(#arrow-link)"/>
 
@@ -250,9 +250,9 @@
         <rect x="748" y="330" width="76" height="14" rx="2" fill="var(--color-paper)"/>
         <text x="786" y="340" fill="var(--color-muted)" font-size="7" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.06em">LAZY /{ID}.JSON</text>
 
-        <!-- Label C8: 30s LIVE POLL -->
+        <!-- Label C8: 15s LIVE POLL -->
         <rect x="366" y="413" width="268" height="14" rx="2" fill="var(--color-paper)"/>
-        <text x="500" y="423" fill="var(--color-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">30s LIVE POLL • REAL-TIME SCORE &amp; BONUS OVERLAY</text>
+        <text x="500" y="423" fill="var(--color-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">15s LIVE POLL • REAL-TIME SCORE &amp; BONUS OVERLAY</text>
 
         <!-- ========================================== -->
         <!-- NODES                                      -->
@@ -275,7 +275,7 @@
           <rect x="32" y="260" width="66" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
           <text x="65" y="269" fill="var(--color-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EDGE WORKER</text>
           <text x="102" y="290" fill="var(--color-ink)" font-size="11.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Cloudflare Live Relay</text>
-          <text x="102" y="308" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">30s Matchday Poll • CORS</text>
+          <text x="102" y="308" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">15s Matchday Poll • CORS</text>
         </g>
 
         <!-- Node 2: sync_live_fpl.py (Focal Accent 1) -->
@@ -285,7 +285,7 @@
           <rect x="248" y="100" width="76" height="12" rx="2" fill="var(--color-accent)" opacity="0.18"/>
           <text x="286" y="109" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">PARALLEL CORE</text>
           <text x="364" y="130" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">sync_live_fpl.py</text>
-          <text x="364" y="148" fill="var(--color-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">ThreadPoolExecutor • 8 ลีก 135 ทีม (165 รายการ)</text>
+          <text x="364" y="148" fill="var(--color-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">ThreadPoolExecutor • 8 ลีก 146 ทีม (163 รายการ)</text>
         </g>
 
         <!-- Node 3: POSIX Atomic Write -->
@@ -335,7 +335,7 @@
           <rect x="824" y="200" width="64" height="12" rx="2" fill="var(--color-accent)" opacity="0.18"/>
           <text x="856" y="209" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">BROWSER SPA</text>
           <text x="900" y="230" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Vanilla Client App</text>
-          <text x="900" y="248" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">0kb SPA • 30s Poll • Lazy JSON</text>
+          <text x="900" y="248" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">0kb SPA • 15s Poll • Lazy JSON</text>
         </g>
       </svg>
     </div>

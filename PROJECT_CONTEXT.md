@@ -53,7 +53,7 @@ flowchart TD
     end
 
     subgraph CI/CD Layer [3. Automation & Hosting]
-        J[GitHub Actions Cron: */20 * * * *] -->|Run sync & build| B
+        J[GitHub Actions Cron: 3,18,33,48 * * * * (15m)] -->|Run sync & build| B
         J -->|Git Auto-Commit| K[GitHub Pages Deployment]
     end
 ```
@@ -66,7 +66,7 @@ flowchart TD
 /Users/micky/Desktop/FPL เซียนอยู่รู/
 ├── .github/
 │   └── workflows/
-│       └── fpl_auto_sync.yml     # GitHub Actions รัน Auto-Sync ทุก 20 นาที
+│       └── fpl_auto_sync.yml     # GitHub Actions รัน Auto-Sync ทุก 15 นาที (3, 18, 33, 48)
 ├── config/
 │   ├── leagues_config.json       # ไฟล์ตั้งค่ามินิลีก (ID, ชื่อลีก, กติการางวัล)
 │   └── shi62_special.txt         # ไฟล์บันทึกข้อมูลมินิเกม Shi'62 Special รายสัปดาห์
@@ -287,7 +287,7 @@ flowchart TD
      - `/api/entry/{eid}/event/{gw}/picks/` (11 ตัวจริง, ตัวสำรอง, กัปตัน, Hits, ชิป)
    - คำนวณ Net Points = `Raw Points - Transfer Cost (Hits)` อย่างแม่นยำ
 2. **การทำงานของ GitHub Actions Workflow (`fpl_auto_sync.yml`):**
-   - Trigger: รันอัตโนมัติทุกๆ 20 นาที (`cron: '*/20 * * * *'`) หรือกดรันมือได้ (`workflow_dispatch`)
+   - Trigger: รันอัตโนมัติทุกๆ 15 นาที (`cron: '3,18,33,48 * * * *'`) หรือกดรันมือได้ (`workflow_dispatch`)
    - ขั้นตอน: Checkout -> Python 3.11 -> `python3 sync_live_fpl.py` -> `python3 update_preview.py` -> Auto Commit & Push `[skip ci]`
 
 ---
@@ -304,7 +304,7 @@ flowchart TD
 
 ### เรื่อง: การบันทึกไฟล์อัตโนมัติใน GitHub Actions (`.github/workflows/fpl_auto_sync.yml`)
 * **จุดที่ตรวจพบ:** บรรทัดที่ 39 ในไฟล์ workflow เดิมมีคำสั่ง `git add real_fpl_40700_data.json index.html preview.html` ซึ่งข้ามการบันทึก `multi_fpl_data.json` และหน้าลีกลำดับอื่น (`40700/index.html`, `675290/index.html`, `38491/index.html`, `404.html`)
-* **วิธีแก้ไข:** แนะนำให้กด Edit ไฟล์ `.github/workflows/fpl_auto_sync.yml` บนหน้าเว็บ GitHub โดยเปลี่ยนบรรทัดที่ 39 เป็น `git add -A` เพื่อให้ระบบ Auto Sync ทุก 20 นาทีบันทึกและอัปเดตไฟล์ของทุกลีกขึ้นสู่เว็บอย่างสมบูรณ์แบบ
+* **วิธีแก้ไข:** แนะนำให้กด Edit ไฟล์ `.github/workflows/fpl_auto_sync.yml` บนหน้าเว็บ GitHub โดยเปลี่ยนบรรทัดที่ 39 เป็น `git add -A` เพื่อให้ระบบ Auto Sync ทุก 15 นาทีบันทึกและอัปเดตไฟล์ของทุกลีกขึ้นสู่เว็บอย่างสมบูรณ์แบบ
 
 
 ### เรื่อง: ฟังก์ชัน Competition (ข้อมูลเจาะลึกคู่แข่ง & การวิเคราะห์ขุมกำลัง)

@@ -1,7 +1,7 @@
 # FPLSaWaDiKa — Multi-League Fantasy Dashboard
 ### Fantasy Premier League Mini-League Presentation & Real-Time Analytics Hub
 
-เว็บแอปพลิเคชัน **FPLSaWaDiKa** (`www.fplsawadika.com`) สำหรับแสดงผลคะแนนสด Real-time (อัปเดตทุก 30 วินาทีผ่าน Cloudflare Edge Relay และซิงก์ข้อมูลทุก 15 นาทีผ่าน GitHub Actions), ตารางคะแนน, บทวิเคราะห์การย้ายตัว, สถานะชิปคู่แข่ง, เรดาร์ฟอร์ม, ทำเนียบแชมป์ (Hall of Fame) และระบบคำนวณเงินรางวัลกองกลาง รองรับการจัดการหลายมินิลีกอย่างอิสระ (ปัจจุบันดูแล 8 ลีก รวม 135 ทีม)
+เว็บแอปพลิเคชัน **FPLSaWaDiKa** (`www.fplsawadika.com`) สำหรับแสดงผลคะแนนสด Real-time (อัปเดตทุก 15 วินาทีผ่าน Cloudflare Edge Relay และซิงก์ข้อมูลทุก 15 นาทีผ่าน GitHub Actions), ตารางคะแนน, บทวิเคราะห์การย้ายตัว, สถานะชิปคู่แข่ง, เรดาร์ฟอร์ม, ทำเนียบแชมป์ (Hall of Fame) และระบบคำนวณเงินรางวัลกองกลาง รองรับการจัดการหลายมินิลีกอย่างอิสระ (ปัจจุบันดูแล 8 ลีก รวม 146 ทีม 163 รายการ)
 
 ---
 

@@ -29,3 +29,7 @@ scratch/
 .idea/
 *.sublime-project
 *.sublime-workspace
+
+# Cloudflare Wrangler cache
+.wrangler/
+
