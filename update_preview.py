@@ -1416,10 +1416,15 @@ __STRUCTURED_DATA_JSON__
         
         <!-- League Switcher Container -->
         <div class="relative inline-block text-left min-w-0">
+          <div class="flex items-center gap-1.5 leading-none mb-0.5">
+            <span class="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 font-display">FPLSaWaDiKa</span>
+            <span class="text-slate-300 dark:text-slate-700 text-[10px]">•</span>
+            <span class="text-[9.5px] sm:text-[10px] font-semibold text-slate-500 dark:text-slate-400 font-display" id="header-platform-sub">มินิลีก</span>
+          </div>
           <button 
             id="league-switcher-btn" 
             onclick="app.toggleLeagueDropdown(event)" 
-            class="group flex items-center gap-1.5 text-left cursor-pointer transition-colors leading-tight py-1 min-h-[36px] sm:min-h-[40px]"
+            class="group flex items-center gap-1.5 text-left cursor-pointer transition-colors leading-tight py-0.5 min-h-[30px] sm:min-h-[34px]"
             title="คลิกเพื่อสลับดูมินิลีกอื่น"
           >
             <span id="header-league-name" class="text-sm sm:text-lg font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight truncate max-w-[110px] min-[360px]:max-w-[130px] min-[390px]:max-w-[160px] min-[430px]:max-w-[200px] sm:max-w-[340px] md:max-w-[440px]">กำลังโหลดลีก...</span>
@@ -1431,8 +1436,8 @@ __STRUCTURED_DATA_JSON__
           <!-- Dropdown Menu Box -->
           <div id="league-dropdown-menu" class="hidden absolute top-full left-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-white dark:bg-[#0d0d0f] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 animate-in fade-in zoom-in duration-100" onclick="event.stopPropagation()">
             <div class="px-3.5 py-1.5 text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400 font-display border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-              <span>เลือกลีก</span>
-              <span class="text-[9px] text-slate-500 dark:text-slate-400 font-normal">คลิกเพื่อสลับ</span>
+              <span id="league-dropdown-header-title">สลับมินิลีก (FPLSaWaDiKa)</span>
+              <span class="text-[9px] text-slate-500 dark:text-slate-400 font-normal" id="league-dropdown-header-hint">คลิกเพื่อสลับ</span>
             </div>
             <div id="league-dropdown-options" class="p-1 space-y-0.5">
               <!-- Dynamic options for 40700 and 675290 -->
@@ -4042,7 +4047,7 @@ __STRUCTURED_DATA_JSON__
         if (isFinished) {
           endOptions = [
             `ของแทร่ไม่ต้องพูดเยอะ สัปดาห์หน้าดวลกันใหม่!`,
-            `เซียนอยู่รูของจริง วัดกันที่ผลงานบนตารางคะแนนล้วนๆ!`,
+            `ของจริงวัดกันที่ผลงานบนตารางคะแนนล้วนๆ!`,
             `แดกเต็มข้อ ล่อเต็มแข้ง หวานเจี๊ยบบบ!`,
             `ใครจัดตัวพลาดสัปดาห์นี้ รีบไปอาบน้ำมนต์ล้างซวยก่อนลงสนามรอบหน้าด่วน!`,
             `สัปดาห์หน้าเดดไลน์มาไว อย่ามัวแต่เหม่อเดี๋ยวตกรถด่วนขบวนแชมป์!`,
@@ -5559,6 +5564,14 @@ __STRUCTURED_DATA_JSON__
           ? '<span class="hidden sm:inline">Net Pts</span><span class="sm:hidden">Net</span>'
           : '<span class="hidden sm:inline">คะแนนสุทธิ</span><span class="sm:hidden">สุทธิ</span>';
 
+        // Header platform branding and league switcher
+        const platformSub = document.getElementById('header-platform-sub');
+        if (platformSub) platformSub.innerText = isEn ? 'Mini-League' : 'มินิลีก';
+        const dropdownHeaderTitle = document.getElementById('league-dropdown-header-title');
+        if (dropdownHeaderTitle) dropdownHeaderTitle.innerText = isEn ? 'Switch Mini-League (FPLSaWaDiKa)' : 'สลับมินิลีก (FPLSaWaDiKa)';
+        const dropdownHeaderHint = document.getElementById('league-dropdown-header-hint');
+        if (dropdownHeaderHint) dropdownHeaderHint.innerText = isEn ? 'Click to switch' : 'คลิกเพื่อสลับ';
+
         // Live search and table switcher labels
         const liveSearchInput = document.getElementById('live-team-search');
         if (liveSearchInput) {
@@ -6323,6 +6336,12 @@ __STRUCTURED_DATA_JSON__
 
       updateHeaderInfo() {
         const isEn = (this.currentLang === 'en');
+        const platformSub = document.getElementById('header-platform-sub');
+        if (platformSub) platformSub.innerText = isEn ? 'Mini-League' : 'มินิลีก';
+        const dropdownHeaderTitle = document.getElementById('league-dropdown-header-title');
+        if (dropdownHeaderTitle) dropdownHeaderTitle.innerText = isEn ? 'Switch Mini-League (FPLSaWaDiKa)' : 'สลับมินิลีก (FPLSaWaDiKa)';
+        const dropdownHeaderHint = document.getElementById('league-dropdown-header-hint');
+        if (dropdownHeaderHint) dropdownHeaderHint.innerText = isEn ? 'Click to switch' : 'คลิกเพื่อสลับ';
         const nameEl = document.getElementById('header-league-name');
         const idBadge = document.getElementById('header-league-id-badge');
         const seasonEl = document.getElementById('header-season');
