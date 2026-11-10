@@ -274,6 +274,87 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
     else:
         next_deadline_text = f"เส้นตาย GW {gw_num}"
 
+    # Headless SEO: Dynamic Per-League Metadata, Schema Breadcrumbs & Keywords
+    if default_league_id and str(default_league_id) in leagues_config:
+        l_info = leagues_config[str(default_league_id)]
+        l_name = l_info.get('name') or f"ลีก {default_league_id}"
+        page_title = f"{l_name} | FPLSaWaDiKa"
+        page_description = f"เกาะติดคะแนนสด ตารางคะแนน และสรุปเงินรางวัลมินิลีก {l_name} (ID: {default_league_id}) บน FPLSaWaDiKa อัปเดตเรียลไทม์ทุก 15 วินาที"
+        page_keywords = f"{l_name}, FPL, Fantasy Premier League, คะแนนสด FPL, ตารางคะแนนแฟนตาซี, มินิลีก {l_name}, FPLSaWaDiKa"
+        schema_graph = [
+            {
+                "@type": "WebSite",
+                "@id": "https://www.fplsawadika.com/#website",
+                "name": "FPLSaWaDiKa",
+                "alternateName": ["FPL SaWaDiKa", "มินิลีกแฟนตาซี FPLSaWaDiKa", "FPL Thailand Hub"],
+                "url": "https://www.fplsawadika.com/",
+                "description": "เกาะติดคะแนนสด Fantasy Premier League (FPL) ภาษาไทย อัปเดตทุก 15 วินาที พร้อมตารางคะแนนมินิลีก ผัง 11 ตัวจริง คำนวณเงินรางวัล และบทวิเคราะห์ประจำสัปดาห์",
+                "inLanguage": ["th-TH", "en-US"]
+            },
+            {
+                "@type": "WebApplication",
+                "@id": f"https://www.fplsawadika.com/{default_league_id}/#webapp",
+                "name": f"{l_name} - FPLSaWaDiKa Live Dashboard",
+                "url": f"https://www.fplsawadika.com/{default_league_id}/",
+                "applicationCategory": "SportsApplication",
+                "operatingSystem": "All",
+                "browserRequirements": "Requires JavaScript. Requires HTML5.",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "THB"
+                }
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": f"https://www.fplsawadika.com/{default_league_id}/#breadcrumbs",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "หน้าแรก",
+                        "item": "https://www.fplsawadika.com/"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": l_name,
+                        "item": f"https://www.fplsawadika.com/{default_league_id}/"
+                    }
+                ]
+            }
+        ]
+    else:
+        page_title = "FPLSaWaDiKa - เช็คคะแนนสด FPL ตารางคะแนนแฟนตาซี & คำนวณเงินรางวัลมินิลีก"
+        page_description = "เกาะติดคะแนนสด Fantasy Premier League (FPL) ภาษาไทย อัปเดตทุก 15 วินาที พร้อมตารางคะแนนมินิลีก ผัง 11 ตัวจริง คำนวณเงินรางวัล และบทวิเคราะห์แชมป์ประจำสัปดาห์สไตล์ บอ.บู๋"
+        page_keywords = "FPL, Fantasy Premier League, คะแนนสด FPL, ตารางคะแนนแฟนตาซี, มินิลีก, คำนวณเงินรางวัล FPL, จัดทีมแฟนตาซี, FPL ภาษาไทย, พรีเมียร์ลีก"
+        schema_graph = [
+            {
+                "@type": "WebSite",
+                "@id": "https://www.fplsawadika.com/#website",
+                "name": "FPLSaWaDiKa",
+                "alternateName": ["FPL SaWaDiKa", "มินิลีกแฟนตาซี FPLSaWaDiKa", "FPL Thailand Hub"],
+                "url": "https://www.fplsawadika.com/",
+                "description": "เกาะติดคะแนนสด Fantasy Premier League (FPL) ภาษาไทย อัปเดตทุก 15 วินาที พร้อมตารางคะแนนมินิลีก ผัง 11 ตัวจริง คำนวณเงินรางวัล และบทวิเคราะห์ประจำสัปดาห์",
+                "inLanguage": ["th-TH", "en-US"]
+            },
+            {
+                "@type": "WebApplication",
+                "@id": "https://www.fplsawadika.com/#webapp",
+                "name": "FPLSaWaDiKa - FPL Mini-League Live Dashboard",
+                "url": "https://www.fplsawadika.com/",
+                "applicationCategory": "SportsApplication",
+                "operatingSystem": "All",
+                "browserRequirements": "Requires JavaScript. Requires HTML5.",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "THB"
+                }
+            }
+        ]
+    structured_data_json_str = json.dumps({"@context": "https://schema.org", "@graph": schema_graph}, ensure_ascii=False, indent=2)
+
     html_template = """<!DOCTYPE html>
 <html lang="th" class="h-full bg-slate-50 dark:bg-slate-950 transition-colors duration-150">
 <head>
@@ -282,16 +363,23 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>FPLSaWaDiKa - มินิลีกแฟนตาซี</title>
-  <meta name="description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPLSaWaDiKa มินิลีกแฟนตาซี">
+  <title>__PAGE_TITLE__</title>
+  <meta name="description" content="__PAGE_DESCRIPTION__">
+  <meta name="keywords" content="__PAGE_KEYWORDS__">
   <meta name="theme-color" content="#0f172a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FPLSaWaDiKa">
 
+  <!-- Preconnect & DNS Prefetch for Speed & Core Web Vitals (Zero-UI Background Boost) -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://api.fplsawadika.com" crossorigin>
+  <link rel="dns-prefetch" href="https://api.fplsawadika.com">
+  <link rel="dns-prefetch" href="https://fantasy.premierleague.com">
+
   <!-- Canonical URL & Search Engine Optimization -->
   <link rel="canonical" href="__CANONICAL_URL__">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 
   <!-- Favicons & App Shortcut Icons (Chrome / Safari / iOS / Android) -->
   <link rel="shortcut icon" href="__ASSET_PREFIX__favicon.ico?v=2">
@@ -305,27 +393,23 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
   <!-- Open Graph / Social Media Share Thumbnail -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="FPLSaWaDiKa - มินิลีกแฟนตาซี">
-  <meta property="og:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPLSaWaDiKa มินิลีกแฟนตาซี">
+  <meta property="og:site_name" content="FPLSaWaDiKa">
+  <meta property="og:title" content="__PAGE_TITLE__">
+  <meta property="og:description" content="__PAGE_DESCRIPTION__">
   <meta property="og:url" content="__CANONICAL_URL__">
   <meta property="og:image" content="https://www.fplsawadika.com/images/icons/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="th_TH">
+  <meta property="og:locale:alternate" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="FPLSaWaDiKa - มินิลีกแฟนตาซี">
-  <meta name="twitter:description" content="เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPLSaWaDiKa มินิลีกแฟนตาซี">
+  <meta name="twitter:title" content="__PAGE_TITLE__">
+  <meta name="twitter:description" content="__PAGE_DESCRIPTION__">
   <meta name="twitter:image" content="https://www.fplsawadika.com/images/icons/og-image.png">
 
-  <!-- Structured Data (JSON-LD) for Google Search -->
+  <!-- Structured Data (JSON-LD) for Google Search Rich Results -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "FPLSaWaDiKa",
-    "alternateName": ["FPL SaWaDiKa", "มินิลีกแฟนตาซี FPLSaWaDiKa"],
-    "url": "https://www.fplsawadika.com/",
-    "description": "เกาะติดคะแนนสด ตารางคะแนน ไฮไลท์ประจำสัปดาห์ และสรุปเงินรางวัล FPLSaWaDiKa มินิลีกแฟนตาซี"
-  }
+__STRUCTURED_DATA_JSON__
   </script>
   
   <script>
@@ -19326,6 +19410,10 @@ selectShi62GW(gwName) {
     html = html.replace('__ASSET_PREFIX__', asset_prefix)
     canonical_url = f"https://www.fplsawadika.com/{default_league_id}/" if default_league_id else "https://www.fplsawadika.com/"
     html = html.replace('__CANONICAL_URL__', canonical_url)
+    html = html.replace('__PAGE_TITLE__', page_title)
+    html = html.replace('__PAGE_DESCRIPTION__', page_description)
+    html = html.replace('__PAGE_KEYWORDS__', page_keywords)
+    html = html.replace('__STRUCTURED_DATA_JSON__', structured_data_json_str)
     html = html.replace('__ARCHITECTURE_DIAGRAM_TH__', get_architecture_diagram_html('th', asset_prefix))
     html = html.replace('__ARCHITECTURE_DIAGRAM_EN__', get_architecture_diagram_html('en', asset_prefix))
     return html
