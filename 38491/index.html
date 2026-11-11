@@ -1213,7 +1213,7 @@
       <div class="inline-flex items-center max-w-full">
         <span id="header-deadline-badge" class="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs max-w-full" title="เส้นตายการจัดทีม Gameweek ถัดไป">
           <svg class="w-3 h-3 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          <span id="header-deadline-val" class="font-mono tabular-nums truncate">เส้นตาย GW 11: 10 วัน 01:56:48</span>
+          <span id="header-deadline-val" class="font-mono tabular-nums truncate">เส้นตาย GW 11: 9 วัน 21:16:03</span>
         </span>
       </div>
     </div>
@@ -1580,7 +1580,7 @@
       <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs w-full max-w-full">
         <div>
           <div class="flex items-center gap-2.5 flex-wrap">
-            <span id="transfers-live-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="transfers-live-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 motion-safe:animate-pulse"></span>
             <h2 id="transfers-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">
               วิเคราะห์การย้ายตัว
             </h2>
@@ -1628,7 +1628,7 @@
       <div id="prizes-top-banner" class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs">
         <div>
           <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 motion-safe:animate-pulse"></span>
             <span id="prizes-overview-tag" class="text-[10px] sm:text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold font-display"></span>
           </div>
           <h2 id="prizes-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display mt-0.5">สรุปเงินรางวัลสะสม</h2>
@@ -1773,7 +1773,7 @@
         </div>
         <div class="flex items-center gap-2">
           <span id="radar-banner-stat-badge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/70 font-display shadow-2xs">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="w-2 h-2 rounded-full bg-emerald-500 motion-safe:animate-pulse"></span>
             <span id="radar-banner-stat-text">วิเคราะห์ข้าม 8 ลีกสมบูรณ์</span>
           </span>
         </div>
@@ -2055,7 +2055,7 @@
           </h2>
           <div id="rules-header-desc" class="mt-1"></div>
         </div>
-        <div class="flex items-center gap-2 flex-wrap flex-shrink-0">
+        <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap w-full sm:w-auto mt-1 sm:mt-0">
           <span id="rules-gw-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display">
             38 สัปดาห์
           </span>
@@ -2084,16 +2084,20 @@
       <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs w-full max-w-full overflow-hidden">
         <div class="min-w-0">
           <div class="flex items-center gap-2.5">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 motion-safe:animate-pulse flex-shrink-0"></span>
             <h2 id="about-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display truncate">
               Dev Corner &amp; สถาปัตยกรรมระบบ
             </h2>
           </div>
           <p id="about-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-            คู่มือฟังก์ชันการใช้งาน, ช่องทางติดต่อผู้พัฒนา และสถาปัตยกรรมระบบ Dual-Layer Serverless Jamstack
+            คู่มือ 6 เสาหลักของแพลตฟอร์ม, ช่องทางติดต่อผู้พัฒนา และสถาปัตยกรรม Dual-Layer Serverless Jamstack
           </p>
         </div>
-        <div class="flex items-center gap-2 flex-wrap flex-shrink-0">
+        <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap w-full sm:w-auto mt-1 sm:mt-0">
+          <span id="about-status-pill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold font-mono bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 shadow-2xs">
+            <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+            ✓ OFFICIAL SETTLED • แคชระดับ Edge
+          </span>
           <span class="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs px-3 py-1 rounded-xl font-bold font-display">
             v2.4 Jamstack
           </span>
@@ -2106,224 +2110,236 @@
       <!-- 6 Core Feature Pillars (คู่มือฟังก์ชันการใช้งาน 6 เสาหลักของแพลตฟอร์ม) -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 w-full min-w-0">
         
-        <!-- Pillar 1: Live Scores & Auto-Sub -->
+        <!-- Pillar 01: Live Points & Auto-Sub -->
         <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
           <div class="min-w-0">
             <div class="flex items-center justify-between mb-3 gap-2">
-              <span class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200/80 dark:border-emerald-800/60 inline-flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs flex-shrink-0">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
               </span>
-              <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/60 tracking-wider flex-shrink-0">
-                PILLAR 01
-              </span>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                  01
+                </span>
+              </div>
             </div>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-              1. คะแนนสด &amp; เปลี่ยนตัวอัตโนมัติ
+              คะแนนสด &amp; เปลี่ยนตัวอัตโนมัติ
             </h3>
             <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>อัปเดตคะแนนสดทุก 30 วินาทีพร้อมแต้มโบนัสตลอด 90 นาที ไม่ต้องรอข้ามคืน</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>เปลี่ยนสำรองและดันรองกัปตัน (VC x2) ให้อัตโนมัติเมื่อตัวจริงไม่ได้ลงแข่ง</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>บทวิเคราะห์ไฮไลท์สด เกาะติดการสลับอันดับและโมเมนตัมแบบเรียลไทม์</span>
               </li>
             </ul>
           </div>
-          <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors group cursor-pointer text-left min-w-0">
+          <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
             <span class="truncate">ไปยังแท็บ: คะแนนสด</span>
-            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">เปิดดู <span>&rarr;</span></span>
           </button>
         </div>
 
-        <!-- Pillar 2: Squad Pitch Modal -->
+        <!-- Pillar 02: Squad Pitch Lineup -->
         <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
           <div class="min-w-0">
             <div class="flex items-center justify-between mb-3 gap-2">
-              <span class="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200/80 dark:border-blue-800/60 inline-flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-2xs flex-shrink-0">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
+              <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
               </span>
-              <span class="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded-md border border-blue-200/60 dark:border-blue-800/60 tracking-wider flex-shrink-0">
-                PILLAR 02
-              </span>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                  02
+                </span>
+              </div>
             </div>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-              2. ส่องแผนจัดทัพ 11 ตัวจริง
+              ส่องแผนจัดทัพ 11 ตัวจริง
             </h3>
             <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
               <li class="flex items-start gap-1.5">
-                <span class="text-blue-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>คลิกที่ชื่อทีมเพื่อน เพื่อเปิดดูแผนผังสนามหญ้าและ 4 ตัวสำรอง</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-blue-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>แสดงคะแนนรายคน สถานะลงสนาม และนาทีที่ลงเล่นแบบเรียลไทม์</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-blue-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>ตรวจเช็กการใช้ชิปพิเศษอย่างชัดเจน (TC, BB, FH, WC)</span>
               </li>
             </ul>
           </div>
-          <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors group cursor-pointer text-left min-w-0">
-            <span class="truncate">ไปที่ตารางคะแนนสด (คลิกชื่อทีม)</span>
-            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+          <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
+            <span class="truncate">ไปที่ตารางคะแนน (คลิกชื่อทีม)</span>
+            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">เปิดดู <span>&rarr;</span></span>
           </button>
         </div>
 
-        <!-- Pillar 3: Transfers & Analysis -->
+        <!-- Pillar 03: Transfers & Squad Depth -->
         <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
           <div class="min-w-0">
             <div class="flex items-center justify-between mb-3 gap-2">
-              <span class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/50 border border-purple-200/80 dark:border-purple-800/60 inline-flex items-center justify-center text-purple-600 dark:text-purple-400 shadow-2xs flex-shrink-0">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+              <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
               </span>
-              <span class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/60 px-2 py-0.5 rounded-md border border-purple-200/60 dark:border-purple-800/60 tracking-wider flex-shrink-0">
-                PILLAR 03
-              </span>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                  03
+                </span>
+              </div>
             </div>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-              3. วิเคราะห์การย้ายตัว &amp; ขุมกำลัง
+              วิเคราะห์การย้ายตัว &amp; ขุมกำลัง
             </h3>
             <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
               <li class="flex items-start gap-1.5">
-                <span class="text-purple-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>สรุปทุกดีลซื้อขายนักเตะเข้า-ออกของคู่แข่งในลีก พร้อมแต้มลบย้ายตัว</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-purple-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>คำนวณแต้มได้-เสียสุทธิจากการย้ายตัวในแต่ละสัปดาห์</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-purple-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>วิเคราะห์นักเตะมหาชน (&gt; 70%), นักเตะทีเด็ด (&lt; 20%) และคำแนะนำการย้ายตัว</span>
               </li>
             </ul>
           </div>
-          <button type="button" onclick="app.switchTab('transfers-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors group cursor-pointer text-left min-w-0">
+          <button type="button" onclick="app.switchTab('transfers-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
             <span class="truncate">ไปยังแท็บ: วิเคราะห์การย้ายตัว</span>
-            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">เปิดดู <span>&rarr;</span></span>
           </button>
         </div>
 
-        <!-- Pillar 4: Rival Chips Matrix -->
+        <!-- Pillar 04: Rival Chips Matrix -->
         <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
           <div class="min-w-0">
             <div class="flex items-center justify-between mb-3 gap-2">
-              <span class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-800/60 inline-flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-2xs flex-shrink-0">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+              <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
               </span>
-              <span class="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md border border-amber-200/60 dark:border-amber-800/60 tracking-wider flex-shrink-0">
-                PILLAR 04
-              </span>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                  04
+                </span>
+              </div>
             </div>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-              4. ติดตามสถานะชิปของคู่แข่ง
+              ติดตามสถานะชิปของคู่แข่ง
             </h3>
             <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
               <li class="flex items-start gap-1.5">
-                <span class="text-amber-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>ตารางแมทริกซ์เช็กสถานะชิปพิเศษ (WC, FH, BB, TC) ของผู้จัดการทีมทุกคน</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-amber-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>ตรวจสอบชิปที่ใช้ไปแล้วในแต่ละสัปดาห์ และชิปที่ยังเหลืออยู่แบบแยกเดี่ยว</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-amber-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>ไฮไลท์พิเศษแจ้งเตือนชิปที่กำลังเปิดใช้งานระหว่างสัปดาห์แข่งขันสด</span>
               </li>
             </ul>
           </div>
-          <button type="button" onclick="app.switchTab('competition-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors group cursor-pointer text-left min-w-0">
+          <button type="button" onclick="app.switchTab('competition-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
             <span class="truncate">ไปยังแท็บ: สถานะชิป</span>
-            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">เปิดดู <span>&rarr;</span></span>
           </button>
         </div>
 
-        <!-- Pillar 5: Prizes & Treasury -->
+        <!-- Pillar 05: Prizes & Treasury -->
         <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
           <div class="min-w-0">
             <div class="flex items-center justify-between mb-3 gap-2">
-              <span class="w-9 h-9 rounded-xl bg-yellow-50 dark:bg-yellow-950/50 border border-yellow-200/80 dark:border-yellow-800/60 inline-flex items-center justify-center text-yellow-600 dark:text-yellow-400 shadow-2xs flex-shrink-0">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               </span>
-              <span class="text-[10px] font-mono font-bold text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-950/60 px-2 py-0.5 rounded-md border border-yellow-200/60 dark:border-yellow-800/60 tracking-wider flex-shrink-0">
-                PILLAR 05
-              </span>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                  05
+                </span>
+              </div>
             </div>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-              5. เงินรางวัล &amp; บัญชีกองกลาง
+              เงินรางวัล &amp; บัญชีกองกลาง
             </h3>
             <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
               <li class="flex items-start gap-1.5">
-                <span class="text-yellow-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>คำนวณแชมป์สัปดาห์, แชมป์เดือน, สิ้นฤดูกาล และค่าปรับอัตโนมัติ</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-yellow-500 font-bold flex-shrink-0">•</span>
-                <span>หักแต้มย้ายทีมในตัว พร้อมเฉลี่ยเงินรางวัลอย่างยุติธรรม</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
+                <span>หักแต้มย้ายทีมในตัว พร้อมเฉลี่ยเงินรางวัลอย่างยุติธรรม (Tie-Pooling)</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-yellow-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>รองรับมินิเกมเฉพาะลีก เช่น ทายผลบอล และท้าชนคะแนนแฟนตาซี</span>
               </li>
             </ul>
           </div>
-          <button type="button" onclick="app.switchTab('prizes-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 transition-colors group cursor-pointer text-left min-w-0">
+          <button type="button" onclick="app.switchTab('prizes-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
             <span class="truncate">ไปยังแท็บ: เงินรางวัล</span>
-            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">เปิดดู <span>&rarr;</span></span>
           </button>
         </div>
 
-        <!-- Pillar 6: Radar & Hall of Fame -->
+        <!-- Pillar 06: Radar & Hall of Fame -->
         <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
           <div class="min-w-0">
             <div class="flex items-center justify-between mb-3 gap-2">
-              <span class="w-9 h-9 rounded-xl bg-cyan-50 dark:bg-cyan-950/50 border border-cyan-200/80 dark:border-cyan-800/60 inline-flex items-center justify-center text-cyan-600 dark:text-cyan-400 shadow-2xs flex-shrink-0">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
+              <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                <svg class="w-4 h-4" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
               </span>
-              <span class="text-[10px] font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/60 px-2 py-0.5 rounded-md border border-cyan-200/60 dark:border-cyan-800/60 tracking-wider flex-shrink-0">
-                PILLAR 06
-              </span>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                  06
+                </span>
+              </div>
             </div>
             <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-              6. เรดาร์ฟอร์ม &amp; ทำเนียบแชมป์
+              เรดาร์ฟอร์ม &amp; ทำเนียบแชมป์
             </h3>
             <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
               <li class="flex items-start gap-1.5">
-                <span class="text-cyan-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>วิเคราะห์ความสม่ำเสมอ ประเมินแต้มต่ำสุด-สูงสุด ของทั้ง 8 ลีก</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-cyan-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>บันทึกประวัติศาสตร์ทำเนียบแชมป์และหอเกียรติยศตลอดทุกฤดูกาล</span>
               </li>
               <li class="flex items-start gap-1.5">
-                <span class="text-cyan-500 font-bold flex-shrink-0">•</span>
+                <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                 <span>ปุ่มคัดลอกสรุปผลคะแนนส่งเข้ากลุ่ม LINE และส่งออกเป็นตาราง Excel ทันที</span>
               </li>
             </ul>
           </div>
-          <button type="button" onclick="app.switchTab('hall-of-fame-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 transition-colors group cursor-pointer text-left min-w-0">
+          <button type="button" onclick="app.switchTab('hall-of-fame-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
             <span class="truncate">ไปยังแท็บ: ทำเนียบแชมป์ &amp; เรดาร์ฟอร์ม</span>
-            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+            <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">เปิดดู <span>&rarr;</span></span>
           </button>
         </div>
 
       </div>
 
       <!-- Ultra Clean LINE Contact Box (Developer Support) -->
-      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full min-w-0 overflow-hidden">
+      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full min-w-0 overflow-hidden">
         <div class="space-y-1.5 max-w-xl text-left min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
-            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-300/60 dark:border-emerald-700/60 flex-shrink-0">
-              <span class="w-1.5 h-1.5 rounded-full bg-[#06C755] animate-pulse"></span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-full border border-slate-200 dark:border-slate-700 flex-shrink-0">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#06C755] motion-safe:animate-pulse"></span>
               DIRECT LINE HOTLINE
             </span>
             <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex-shrink-0">
@@ -2344,9 +2360,10 @@
             href="https://line.me/ti/p/lgWPeyIBR7" 
             target="_blank" 
             rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2.5 w-full sm:w-auto px-5 py-3 min-h-[44px] rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-white dark:text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
+            aria-label="ติดต่อผู้พัฒนาผ่าน LINE (เปิดหน้าต่างใหม่)"
+            class="inline-flex items-center justify-center gap-2.5 w-full sm:w-auto px-5 py-3 min-h-[44px] rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
           >
-            <svg class="w-4 h-4 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+            <svg class="w-4 h-4 fill-current flex-shrink-0" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
             <span>เปิด LINE ทักหาเดฟ</span>
           </a>
         </div>
@@ -2356,12 +2373,12 @@
       <details class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/40 dark:bg-slate-900/20 text-xs text-slate-500 group transition-all w-full min-w-0 overflow-hidden">
         <summary class="cursor-pointer font-semibold text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white flex items-center justify-between select-none min-w-0 rounded-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500/70">
           <span class="flex items-center gap-2 min-w-0 pr-2">
-            <svg class="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <svg class="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform flex-shrink-0" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             <span class="font-display tracking-tight text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">สถาปัตยกรรมระบบเบื้องหลัง (Specs)</span>
           </span>
           <span class="inline-flex items-center gap-1.5 text-[10.5px] text-emerald-700 dark:text-emerald-300 font-mono font-medium bg-emerald-500/10 dark:bg-emerald-500/15 px-2.5 py-0.5 rounded-full border border-emerald-500/20 dark:border-emerald-500/30 flex-shrink-0">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 motion-safe:animate-pulse"></span>
             Dual-Layer Sync
           </span>
         </summary>
@@ -2567,7 +2584,7 @@
             <div class="p-4 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-2xs min-w-0 flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between gap-2 mb-2">
-                  <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-500/20">STAGE 01 • INGESTION</span>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">STAGE 01 • INGESTION</span>
                   <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">ThreadPool</span>
                 </div>
                 <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">1. Pipeline &amp; Multi-Threading Engine</h4>
@@ -2590,7 +2607,7 @@
             <div class="p-4 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-2xs min-w-0 flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between gap-2 mb-2">
-                  <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-sky-700 dark:text-sky-400 bg-sky-500/10 dark:bg-sky-500/15 px-2 py-0.5 rounded border border-sky-500/20">STAGE 02 • STATE MACHINE</span>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">STAGE 02 • STATE MACHINE</span>
                   <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">Atomic Store</span>
                 </div>
                 <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">2. Data Integrity &amp; Atomic State Machine</h4>
@@ -2613,7 +2630,7 @@
             <div class="p-4 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-2xs min-w-0 flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between gap-2 mb-2">
-                  <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-amber-700 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/20">STAGE 03 • JAMSTACK</span>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">STAGE 03 • JAMSTACK</span>
                   <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">Edge Compiler</span>
                 </div>
                 <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">3. Config-Driven Jamstack &amp; Edge CDN</h4>
@@ -2636,7 +2653,7 @@
             <div class="p-4 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-2xs min-w-0 flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between gap-2 mb-2">
-                  <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-purple-700 dark:text-purple-400 bg-purple-500/10 dark:bg-purple-500/15 px-2 py-0.5 rounded border border-purple-500/20">STAGE 04 • CLIENT RUNTIME</span>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">STAGE 04 • CLIENT RUNTIME</span>
                   <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">15s Live Relay</span>
                 </div>
                 <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">4. Client Runtime &amp; 15s Real-Time Relay</h4>
@@ -10114,7 +10131,7 @@ selectShi62GW(gwName) {
           if (!isStarted) {
             statusBadgeEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 font-display"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>${isEn ? 'Upcoming' : 'ยังไม่เริ่ม'}</span>`;
           } else if (!isFinished) {
-            statusBadgeEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-display"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>${isEn ? 'LIVE In-Play' : 'กำลังแข่งขันสด'}</span>`;
+            statusBadgeEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-display"><span class="w-2 h-2 rounded-full bg-emerald-500 motion-safe:animate-pulse"></span>${isEn ? 'LIVE In-Play' : 'กำลังแข่งขันสด'}</span>`;
           } else {
             statusBadgeEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-display"><svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>${isEn ? 'OFFICIAL Finalized' : 'สรุปผลทางการ'}</span>`;
           }
@@ -11074,7 +11091,7 @@ selectShi62GW(gwName) {
         const statusPill = document.getElementById('transfers-status-pill');
         if (liveDot) {
           if (isLive) {
-            liveDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse';
+            liveDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 motion-safe:animate-pulse';
           } else if (isFinished) {
             liveDot.className = 'w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-500';
           } else {
@@ -11703,7 +11720,7 @@ selectShi62GW(gwName) {
               <div class="rounded-2xl p-3.5 sm:p-4 bg-slate-50/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
                 <div class="flex items-center justify-between pb-2.5 border-b border-slate-200/70 dark:border-slate-800">
                   <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 motion-safe:animate-pulse"></span>
                     <h3 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display">
                       ${isEn ? `Active Chips Spotlight (Gameweek ${maxGw})` : `ชิปที่เปิดใช้งานในสัปดาห์นี้ (Gameweek ${maxGw})`}
                     </h3>
@@ -16594,7 +16611,7 @@ selectShi62GW(gwName) {
               iconContainer: 'bg-blue-50 dark:bg-blue-950/50 border-blue-200/80 dark:border-blue-800/60 text-blue-600 dark:text-blue-400',
               dotClass: 'bg-blue-500 dark:bg-blue-400',
               bulletDot: 'bg-blue-500/80 dark:bg-blue-400/80',
-              iconSvg: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>`
+              iconSvg: `<svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>`
             },
             {
               badgeText: isEn ? 'RULE 02' : 'กติกา 02',
@@ -16602,7 +16619,7 @@ selectShi62GW(gwName) {
               iconContainer: 'bg-purple-50 dark:bg-purple-950/50 border-purple-200/80 dark:border-purple-800/60 text-purple-600 dark:text-purple-400',
               dotClass: 'bg-purple-500 dark:bg-purple-400',
               bulletDot: 'bg-purple-500/80 dark:bg-purple-400/80',
-              iconSvg: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
+              iconSvg: `<svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
             },
             {
               badgeText: isEn ? 'RULE 03' : 'กติกา 03',
@@ -16610,7 +16627,7 @@ selectShi62GW(gwName) {
               iconContainer: 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200/80 dark:border-emerald-800/60 text-emerald-600 dark:text-emerald-400',
               dotClass: 'bg-emerald-500 dark:bg-emerald-400',
               bulletDot: 'bg-emerald-500/80 dark:bg-emerald-400/80',
-              iconSvg: `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>`
+              iconSvg: `<svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>`
             }
           ];
 
@@ -16715,7 +16732,7 @@ selectShi62GW(gwName) {
               <div class="flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-100 dark:border-slate-800/80">
                 <div class="flex items-center gap-2.5 min-w-0">
                   <span class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/70 dark:border-emerald-800/70 inline-flex items-center justify-center shadow-2xs flex-shrink-0">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                    <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                   </span>
                   <div>
                     <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-base tracking-tight font-display">${stdClarifyTitle}</h3>
@@ -16889,22 +16906,72 @@ selectShi62GW(gwName) {
         if (!container) return;
         const isEn = (this.currentLang === 'en');
 
+        // Dynamic Live vs Finished Matchday Detection
+        const maxGw = Number(this.multiData && this.multiData.max_gw) || this.selectedGW || 1;
+        const gwKey = String(maxGw);
+        const gwData = (this.data && this.data.gameweeks) ? this.data.gameweeks[gwKey] : null;
+        const isFinished = Boolean(gwData && gwData.is_finished);
+        const isStarted = gwData ? (gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || (gwData.results && gwData.results.some(r => r.points > 0)))) : false;
+        const isLive = isStarted && !isFinished;
+
+        const statusPill = isLive
+          ? `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold font-mono bg-emerald-50 text-emerald-700 border border-emerald-200/80 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-800 shadow-2xs">
+               <span class="w-2 h-2 rounded-full bg-emerald-500 motion-safe:animate-pulse"></span>
+               ${isEn ? '⚡ LIVE RELAY • 15s Edge Poll' : '⚡ กำลังแข่งขันสด • รีเลย์ 15 วิ'}
+             </span>`
+          : `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold font-mono bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 shadow-2xs">
+               <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+               ${isEn ? '✓ OFFICIAL SETTLED • Cached' : '✓ สรุปผลทางการ • แคชระดับ Edge'}
+             </span>`;
+
+        const subtitle = isLive
+          ? (isEn
+              ? 'Real-time 15s score & provisional BPS relay active • Inspect Live Points (Pillar 01) and Starting XI Lineups (Pillar 02)'
+              : 'กำลังรีเลย์คะแนนสดและโบนัส BPS เรียลไทม์ผ่าน Edge Worker • แนะนำดูคะแนนสด (เสาหลัก 01) และส่องแผน 11 ตัวจริง (เสาหลัก 02)')
+          : (isEn
+              ? 'Official gameweek results finalized and cached • Review Prize Pool (Pillar 05) and Hall of Fame Radar (Pillar 06)'
+              : 'สรุปผลคะแนนเป็นทางการและบันทึกแคชแล้ว • แนะนำตรวจสอบเงินรางวัล (เสาหลัก 05) และสถิติทำเนียบแชมป์ (เสาหลัก 06)');
+
+        const p1LiveTag = isLive
+          ? `<span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/60 tracking-wider motion-safe:animate-pulse flex-shrink-0">${isEn ? '● LIVE' : '● สดตอนนี้'}</span>`
+          : '';
+        const p2LiveTag = isLive
+          ? `<span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/60 tracking-wider flex-shrink-0">${isEn ? '● IN-ACTION' : '● กำลังเตะ'}</span>`
+          : '';
+        const p5SettledTag = isFinished
+          ? `<span class="text-[10px] font-mono font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">${isEn ? '✓ SETTLED' : '✓ สรุปผล'}</span>`
+          : '';
+        const p6SettledTag = isFinished
+          ? `<span class="text-[10px] font-mono font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">${isEn ? '✓ FINAL' : '✓ บันทึกผล'}</span>`
+          : '';
+
+        const stage4Border = isLive
+          ? 'border-emerald-500/40 dark:border-emerald-500/30 ring-1 ring-emerald-500/20'
+          : 'border-slate-200/80 dark:border-slate-800';
+        const stage4Badge = isLive
+          ? 'bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20'
+          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700';
+        const stage4LiveDot = isLive
+          ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 motion-safe:animate-pulse mr-1"></span>'
+          : '';
+
         if (isEn) {
           container.innerHTML = `
             <!-- Top Overview Banner -->
             <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs w-full max-w-full overflow-hidden">
               <div class="min-w-0">
                 <div class="flex items-center gap-2.5">
-                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 motion-safe:animate-pulse flex-shrink-0"></span>
                   <h2 id="about-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display truncate">
                     Dev Corner &amp; System Architecture
                   </h2>
                 </div>
                 <p id="about-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                  Feature walkthrough, developer hotline, and dual-layer serverless Jamstack architecture
+                  ${subtitle}
                 </p>
               </div>
-              <div class="flex items-center gap-2 flex-wrap flex-shrink-0">
+              <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap w-full sm:w-auto mt-1 sm:mt-0">
+                ${statusPill}
                 <span class="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs px-3 py-1 rounded-xl font-bold font-display">
                   v2.4 Jamstack
                 </span>
@@ -16917,224 +16984,240 @@ selectShi62GW(gwName) {
             <!-- 6 Core Feature Pillars -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 w-full min-w-0">
               
-              <!-- Pillar 1: Live Scores & Auto-Sub -->
+              <!-- Pillar 01: Live Points & Auto-Sub -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
                 <div class="min-w-0">
                   <div class="flex items-center justify-between mb-3 gap-2">
-                    <span class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200/80 dark:border-emerald-800/60 inline-flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs flex-shrink-0">
-                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                     </span>
-                    <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/60 tracking-wider flex-shrink-0">
-                      PILLAR 01
-                    </span>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                      ${p1LiveTag}
+                      <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                        01
+                      </span>
+                    </div>
                   </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    1. Live Points &amp; Auto-Subs
+                    Live Points &amp; Auto-Subs
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
-                      <span>Real-time 30s score updates with provisional bonus points throughout the 90 minutes.</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
+                      <span>Real-time score updates with provisional bonus points throughout the 90 minutes.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Automatic bench substitutions and vice-captain elevation (VC x2) when starters do not play.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Live match highlights and momentum tracking reflecting rank changes as they happen.</span>
                     </li>
                   </ul>
                 </div>
-                <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors group cursor-pointer text-left min-w-0">
+                <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
                   <span class="truncate">Jump to: Live Points</span>
-                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">Open <span>&rarr;</span></span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">Open <span>&rarr;</span></span>
                 </button>
               </div>
 
-              <!-- Pillar 2: Squad Pitch Modal -->
+              <!-- Pillar 02: Squad Pitch Lineup -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
                 <div class="min-w-0">
                   <div class="flex items-center justify-between mb-3 gap-2">
-                    <span class="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200/80 dark:border-blue-800/60 inline-flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-2xs flex-shrink-0">
-                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
+                    <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
                     </span>
-                    <span class="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded-md border border-blue-200/60 dark:border-blue-800/60 tracking-wider flex-shrink-0">
-                      PILLAR 02
-                    </span>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                      ${p2LiveTag}
+                      <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                        02
+                      </span>
+                    </div>
                   </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    2. Starting XI Pitch &amp; Lineup
+                    Starting XI Pitch &amp; Lineup
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
-                      <span>Click any rival team name to open their authentic pitch formation and 4 substitutes.</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
+                      <span>Click any rival team name to inspect authentic pitch formation and 4 substitutes.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Displays individual player points, fixture status, and minutes played in real time.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Clearly displays active special chips (TC, BB, FH, WC).</span>
                     </li>
                   </ul>
                 </div>
-                <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors group cursor-pointer text-left min-w-0">
+                <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
                   <span class="truncate">Open Leaderboard (Click Team Name)</span>
-                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">Open <span>&rarr;</span></span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">Open <span>&rarr;</span></span>
                 </button>
               </div>
 
-              <!-- Pillar 3: Transfer Analytics & ROI -->
+              <!-- Pillar 03: Transfers & Squad Depth -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
                 <div class="min-w-0">
                   <div class="flex items-center justify-between mb-3 gap-2">
-                    <span class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/50 border border-purple-200/80 dark:border-purple-800/60 inline-flex items-center justify-center text-purple-600 dark:text-purple-400 shadow-2xs flex-shrink-0">
-                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+                    <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
                     </span>
-                    <span class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/60 px-2 py-0.5 rounded-md border border-purple-200/60 dark:border-purple-800/60 tracking-wider flex-shrink-0">
-                      PILLAR 03
-                    </span>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                      <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                        03
+                      </span>
+                    </div>
                   </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    3. Transfer Analytics &amp; ROI
+                    Transfer Analytics &amp; Squad Depth
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Full breakdown of every rival transfer move, in/out players, and transfer hits.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Calculates weekly Net Transfer Impact (points gained vs sold players minus hits).</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Analyzes Template Essentials (&gt; 70%), Differentials (&lt; 20%), and transfer suggestions.</span>
                     </li>
                   </ul>
                 </div>
-                <button type="button" onclick="app.switchTab('transfers-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors group cursor-pointer text-left min-w-0">
+                <button type="button" onclick="app.switchTab('transfers-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
                   <span class="truncate">Jump to: Transfer Analytics</span>
-                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">Open <span>&rarr;</span></span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">Open <span>&rarr;</span></span>
                 </button>
               </div>
 
-              <!-- Pillar 4: Rival Chips Availability Matrix -->
+              <!-- Pillar 04: Rival Chips Matrix -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
                 <div class="min-w-0">
                   <div class="flex items-center justify-between mb-3 gap-2">
-                    <span class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-800/60 inline-flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-2xs flex-shrink-0">
-                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+                    <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
                     </span>
-                    <span class="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md border border-amber-200/60 dark:border-amber-800/60 tracking-wider flex-shrink-0">
-                      PILLAR 04
-                    </span>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                      <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                        04
+                      </span>
+                    </div>
                   </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    4. Rival Chips Availability Matrix
+                    Rival Chips Availability Matrix
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Strategy matrix tracking special chips (WC, FH, BB, TC) across all league rivals.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Monitor gameweek chip usage history and remaining available inventory.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Real-time visual callouts for active chips during ongoing matchdays.</span>
                     </li>
                   </ul>
                 </div>
-                <button type="button" onclick="app.switchTab('competition-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors group cursor-pointer text-left min-w-0">
+                <button type="button" onclick="app.switchTab('competition-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
                   <span class="truncate">Jump to: Chips Matrix</span>
-                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">Open <span>&rarr;</span></span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">Open <span>&rarr;</span></span>
                 </button>
               </div>
 
-              <!-- Pillar 5: Prize Pool & Treasury Tracker -->
+              <!-- Pillar 05: Prize Pool & Treasury -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
                 <div class="min-w-0">
                   <div class="flex items-center justify-between mb-3 gap-2">
-                    <span class="w-9 h-9 rounded-xl bg-yellow-50 dark:bg-yellow-950/50 border border-yellow-200/80 dark:border-yellow-800/60 inline-flex items-center justify-center text-yellow-600 dark:text-yellow-400 shadow-2xs flex-shrink-0">
-                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </span>
-                    <span class="text-[10px] font-mono font-bold text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-950/60 px-2 py-0.5 rounded-md border border-yellow-200/60 dark:border-yellow-800/60 tracking-wider flex-shrink-0">
-                      PILLAR 05
-                    </span>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                      ${p5SettledTag}
+                      <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                        05
+                      </span>
+                    </div>
                   </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    5. Prize Pool &amp; Treasury Tracker
+                    Prize Pool &amp; Treasury Tracker
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Automated calculation for weekly winners, monthly awards, season podiums, and fines.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Integrated transfer hit deductions with fair tie-pooling split logic.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Supports league-specific mini-games such as match predictions and fantasy challenges.</span>
                     </li>
                   </ul>
                 </div>
-                <button type="button" onclick="app.switchTab('prizes-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 transition-colors group cursor-pointer text-left min-w-0">
+                <button type="button" onclick="app.switchTab('prizes-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
                   <span class="truncate">Jump to: Prize Pool</span>
-                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">Open <span>&rarr;</span></span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">Open <span>&rarr;</span></span>
                 </button>
               </div>
 
-              <!-- Pillar 6: Form Radar & Hall of Fame -->
+              <!-- Pillar 06: Radar & Hall of Fame -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
                 <div class="min-w-0">
                   <div class="flex items-center justify-between mb-3 gap-2">
-                    <span class="w-9 h-9 rounded-xl bg-cyan-50 dark:bg-cyan-950/50 border border-cyan-200/80 dark:border-cyan-800/60 inline-flex items-center justify-center text-cyan-600 dark:text-cyan-400 shadow-2xs flex-shrink-0">
-                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
+                    <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
                     </span>
-                    <span class="text-[10px] font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/60 px-2 py-0.5 rounded-md border border-cyan-200/60 dark:border-cyan-800/60 tracking-wider flex-shrink-0">
-                      PILLAR 06
-                    </span>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                      ${p6SettledTag}
+                      <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                        06
+                      </span>
+                    </div>
                   </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    6. Form Radar &amp; Hall of Fame
+                    Form Radar &amp; Hall of Fame
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Multi-league consistency analysis measuring floor resilience and ceiling potential across 8 leagues.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Historical Hall of Fame archive for weekly winners, champions, and milestones.</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>Instant one-click LINE chat summary copy and season-long Excel (.xlsx) data export.</span>
                     </li>
                   </ul>
                 </div>
-                <button type="button" onclick="app.switchTab('hall-of-fame-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 transition-colors group cursor-pointer text-left min-w-0">
+                <button type="button" onclick="app.switchTab('hall-of-fame-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
                   <span class="truncate">Jump to: Hall of Fame &amp; Radar</span>
-                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">Open <span>&rarr;</span></span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">Open <span>&rarr;</span></span>
                 </button>
               </div>
 
             </div>
 
-            <!-- Ultra Clean Contact Box -->
-            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full min-w-0 overflow-hidden">
+            <!-- Ultra Clean LINE Contact Box -->
+            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full min-w-0 overflow-hidden">
               <div class="space-y-1.5 max-w-xl text-left min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-300/60 dark:border-emerald-700/60 flex-shrink-0">
-                    <span class="w-1.5 h-1.5 rounded-full bg-[#06C755] animate-pulse"></span>
+                  <span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-full border border-slate-200 dark:border-slate-700 flex-shrink-0">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#06C755] motion-safe:animate-pulse"></span>
                     DIRECT LINE HOTLINE
                   </span>
                   <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex-shrink-0">
@@ -17155,9 +17238,10 @@ selectShi62GW(gwName) {
                   href="https://line.me/ti/p/lgWPeyIBR7" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  class="inline-flex items-center justify-center gap-2.5 w-full sm:w-auto px-5 py-3 min-h-[44px] rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-white dark:text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
+                  aria-label="Contact the developer via LINE (opens in a new window)"
+                  class="inline-flex items-center justify-center gap-2.5 w-full sm:w-auto px-5 py-3 min-h-[44px] rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
                 >
-                  <svg class="w-4 h-4 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+                  <svg class="w-4 h-4 fill-current flex-shrink-0" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
                   <span>Chat with Developer</span>
                 </a>
               </div>
@@ -17167,12 +17251,12 @@ selectShi62GW(gwName) {
             <details class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/40 dark:bg-slate-900/20 text-xs text-slate-500 group transition-all w-full min-w-0 overflow-hidden">
               <summary class="cursor-pointer font-semibold text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white flex items-center justify-between select-none min-w-0 rounded-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500/70">
                 <span class="flex items-center gap-2 min-w-0 pr-2">
-                  <svg class="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                  <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  <svg class="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform flex-shrink-0" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                  <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                   <span class="font-display tracking-tight text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">System Architecture (Specs)</span>
                 </span>
                 <span class="inline-flex items-center gap-1.5 text-[10.5px] text-emerald-700 dark:text-emerald-300 font-mono font-medium bg-emerald-500/10 dark:bg-emerald-500/15 px-2.5 py-0.5 rounded-full border border-emerald-500/20 dark:border-emerald-500/30 flex-shrink-0">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 motion-safe:animate-pulse"></span>
                   Dual-Layer Sync
                 </span>
               </summary>
@@ -17378,7 +17462,7 @@ selectShi62GW(gwName) {
                   <div class="p-4 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-2xs min-w-0 flex flex-col justify-between">
                     <div>
                       <div class="flex items-center justify-between gap-2 mb-2">
-                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-500/20">STAGE 01 • INGESTION</span>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">STAGE 01 • INGESTION</span>
                         <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">ThreadPool</span>
                       </div>
                       <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">1. Pipeline &amp; Multi-Threading Engine</h4>
@@ -17401,7 +17485,7 @@ selectShi62GW(gwName) {
                   <div class="p-4 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-2xs min-w-0 flex flex-col justify-between">
                     <div>
                       <div class="flex items-center justify-between gap-2 mb-2">
-                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-sky-700 dark:text-sky-400 bg-sky-500/10 dark:bg-sky-500/15 px-2 py-0.5 rounded border border-sky-500/20">STAGE 02 • STATE MACHINE</span>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">STAGE 02 • STATE MACHINE</span>
                         <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">Atomic Store</span>
                       </div>
                       <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">2. Data Integrity &amp; Atomic State Machine</h4>
@@ -17424,7 +17508,7 @@ selectShi62GW(gwName) {
                   <div class="p-4 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-2xs min-w-0 flex flex-col justify-between">
                     <div>
                       <div class="flex items-center justify-between gap-2 mb-2">
-                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-amber-700 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/20">STAGE 03 • JAMSTACK</span>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">STAGE 03 • JAMSTACK</span>
                         <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">Edge Compiler</span>
                       </div>
                       <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">3. Config-Driven Jamstack &amp; Edge CDN</h4>
@@ -17444,10 +17528,12 @@ selectShi62GW(gwName) {
                       </ul>
                     </div>
                   </div>
-                  <div class="p-4 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-2xs min-w-0 flex flex-col justify-between">
+                  <div class="p-4 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-2xs min-w-0 flex flex-col justify-between ${stage4Border}">
                     <div>
                       <div class="flex items-center justify-between gap-2 mb-2">
-                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-purple-700 dark:text-purple-400 bg-purple-500/10 dark:bg-purple-500/15 px-2 py-0.5 rounded border border-purple-500/20">STAGE 04 • CLIENT RUNTIME</span>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider px-2 py-0.5 rounded border ${stage4Badge}">
+                          ${stage4LiveDot}STAGE 04 • CLIENT RUNTIME
+                        </span>
                         <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">15s Live Relay</span>
                       </div>
                       <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">4. Client Runtime &amp; 15s Real-Time Relay</h4>
@@ -17477,16 +17563,17 @@ selectShi62GW(gwName) {
             <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs w-full max-w-full overflow-hidden">
               <div class="min-w-0">
                 <div class="flex items-center gap-2.5">
-                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 motion-safe:animate-pulse flex-shrink-0"></span>
                   <h2 id="about-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display truncate">
                     Dev Corner &amp; สถาปัตยกรรมระบบ
                   </h2>
                 </div>
                 <p id="about-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                  คู่มือฟังก์ชันการใช้งาน, ช่องทางติดต่อผู้พัฒนา และสถาปัตยกรรมระบบ Dual-Layer Serverless Jamstack
+                  ${subtitle}
                 </p>
               </div>
-              <div class="flex items-center gap-2 flex-wrap flex-shrink-0">
+              <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap w-full sm:w-auto mt-1 sm:mt-0">
+                ${statusPill}
                 <span class="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs px-3 py-1 rounded-xl font-bold font-display">
                   v2.4 Jamstack
                 </span>
@@ -17499,224 +17586,240 @@ selectShi62GW(gwName) {
             <!-- 6 Core Feature Pillars (คู่มือฟังก์ชันการใช้งาน 6 เสาหลักของแพลตฟอร์ม) -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 w-full min-w-0">
               
-              <!-- Pillar 1: Live Scores & Auto-Sub -->
+              <!-- Pillar 01: Live Scores & Auto-Sub -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
                 <div class="min-w-0">
                   <div class="flex items-center justify-between mb-3 gap-2">
-                    <span class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200/80 dark:border-emerald-800/60 inline-flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-2xs flex-shrink-0">
-                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                     </span>
-                    <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/60 tracking-wider flex-shrink-0">
-                      PILLAR 01
-                    </span>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                      ${p1LiveTag}
+                      <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                        01
+                      </span>
+                    </div>
                   </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    1. คะแนนสด &amp; เปลี่ยนตัวอัตโนมัติ
+                    คะแนนสด &amp; เปลี่ยนตัวอัตโนมัติ
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>อัปเดตคะแนนสดทุก 30 วินาทีพร้อมแต้มโบนัสตลอด 90 นาที ไม่ต้องรอข้ามคืน</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>เปลี่ยนสำรองและดันรองกัปตัน (VC x2) ให้อัตโนมัติเมื่อตัวจริงไม่ได้ลงแข่ง</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-emerald-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>บทวิเคราะห์ไฮไลท์สด เกาะติดการสลับอันดับและโมเมนตัมแบบเรียลไทม์</span>
                     </li>
                   </ul>
                 </div>
-                <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors group cursor-pointer text-left min-w-0">
+                <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
                   <span class="truncate">ไปยังแท็บ: คะแนนสด</span>
-                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">เปิดดู <span>&rarr;</span></span>
                 </button>
               </div>
 
-              <!-- Pillar 2: Squad Pitch Modal -->
+              <!-- Pillar 02: Squad Pitch Lineup -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
                 <div class="min-w-0">
                   <div class="flex items-center justify-between mb-3 gap-2">
-                    <span class="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200/80 dark:border-blue-800/60 inline-flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-2xs flex-shrink-0">
-                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
+                    <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
                     </span>
-                    <span class="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded-md border border-blue-200/60 dark:border-blue-800/60 tracking-wider flex-shrink-0">
-                      PILLAR 02
-                    </span>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                      ${p2LiveTag}
+                      <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                        02
+                      </span>
+                    </div>
                   </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    2. ส่องแผนจัดทัพ 11 ตัวจริง
+                    ส่องแผนจัดทัพ 11 ตัวจริง
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-blue-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>คลิกที่ชื่อทีมเพื่อน เพื่อเปิดดูแผนผังสนามหญ้าและ 4 ตัวสำรอง</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-blue-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>แสดงคะแนนรายคน สถานะลงสนาม และนาทีที่ลงเล่นแบบเรียลไทม์</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-blue-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>ตรวจเช็กการใช้ชิปพิเศษอย่างชัดเจน (TC, BB, FH, WC)</span>
                     </li>
                   </ul>
                 </div>
-                <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors group cursor-pointer text-left min-w-0">
-                  <span class="truncate">ไปที่ตารางคะแนนสด (คลิกชื่อทีม)</span>
-                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+                <button type="button" onclick="app.switchTab('gameweek-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
+                  <span class="truncate">ไปที่ตารางคะแนน (คลิกชื่อทีม)</span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">เปิดดู <span>&rarr;</span></span>
                 </button>
               </div>
 
-              <!-- Pillar 3: Transfers & Analysis -->
+              <!-- Pillar 03: Transfers & Squad Depth -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
                 <div class="min-w-0">
                   <div class="flex items-center justify-between mb-3 gap-2">
-                    <span class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/50 border border-purple-200/80 dark:border-purple-800/60 inline-flex items-center justify-center text-purple-600 dark:text-purple-400 shadow-2xs flex-shrink-0">
-                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
+                    <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
                     </span>
-                    <span class="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/60 px-2 py-0.5 rounded-md border border-purple-200/60 dark:border-purple-800/60 tracking-wider flex-shrink-0">
-                      PILLAR 03
-                    </span>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                      <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                        03
+                      </span>
+                    </div>
                   </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    3. วิเคราะห์การย้ายตัว &amp; ขุมกำลัง
+                    วิเคราะห์การย้ายตัว &amp; ขุมกำลัง
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-purple-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>สรุปทุกดีลซื้อขายนักเตะเข้า-ออกของคู่แข่งในลีก พร้อมแต้มลบย้ายตัว</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-purple-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>คำนวณแต้มได้-เสียสุทธิจากการย้ายตัวในแต่ละสัปดาห์</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-purple-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>วิเคราะห์นักเตะมหาชน (&gt; 70%), นักเตะทีเด็ด (&lt; 20%) และคำแนะนำการย้ายตัว</span>
                     </li>
                   </ul>
                 </div>
-                <button type="button" onclick="app.switchTab('transfers-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors group cursor-pointer text-left min-w-0">
+                <button type="button" onclick="app.switchTab('transfers-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
                   <span class="truncate">ไปยังแท็บ: วิเคราะห์การย้ายตัว</span>
-                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">เปิดดู <span>&rarr;</span></span>
                 </button>
               </div>
 
-              <!-- Pillar 4: Rival Chips Matrix -->
+              <!-- Pillar 04: Rival Chips Matrix -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
                 <div class="min-w-0">
                   <div class="flex items-center justify-between mb-3 gap-2">
-                    <span class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-800/60 inline-flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-2xs flex-shrink-0">
-                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+                    <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
                     </span>
-                    <span class="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-md border border-amber-200/60 dark:border-amber-800/60 tracking-wider flex-shrink-0">
-                      PILLAR 04
-                    </span>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                      <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                        04
+                      </span>
+                    </div>
                   </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    4. ติดตามสถานะชิปของคู่แข่ง
+                    ติดตามสถานะชิปของคู่แข่ง
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-amber-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>ตารางแมทริกซ์เช็กสถานะชิปพิเศษ (WC, FH, BB, TC) ของผู้จัดการทีมทุกคน</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-amber-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>ตรวจสอบชิปที่ใช้ไปแล้วในแต่ละสัปดาห์ และชิปที่ยังเหลืออยู่แบบแยกเดี่ยว</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-amber-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>ไฮไลท์พิเศษแจ้งเตือนชิปที่กำลังเปิดใช้งานระหว่างสัปดาห์แข่งขันสด</span>
                     </li>
                   </ul>
                 </div>
-                <button type="button" onclick="app.switchTab('competition-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors group cursor-pointer text-left min-w-0">
+                <button type="button" onclick="app.switchTab('competition-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
                   <span class="truncate">ไปยังแท็บ: สถานะชิป</span>
-                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">เปิดดู <span>&rarr;</span></span>
                 </button>
               </div>
 
-              <!-- Pillar 5: Prizes & Treasury -->
+              <!-- Pillar 05: Prizes & Treasury -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
                 <div class="min-w-0">
                   <div class="flex items-center justify-between mb-3 gap-2">
-                    <span class="w-9 h-9 rounded-xl bg-yellow-50 dark:bg-yellow-950/50 border border-yellow-200/80 dark:border-yellow-800/60 inline-flex items-center justify-center text-yellow-600 dark:text-yellow-400 shadow-2xs flex-shrink-0">
-                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </span>
-                    <span class="text-[10px] font-mono font-bold text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-950/60 px-2 py-0.5 rounded-md border border-yellow-200/60 dark:border-yellow-800/60 tracking-wider flex-shrink-0">
-                      PILLAR 05
-                    </span>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                      ${p5SettledTag}
+                      <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                        05
+                      </span>
+                    </div>
                   </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    5. เงินรางวัล &amp; บัญชีกองกลาง
+                    เงินรางวัล &amp; บัญชีกองกลาง
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-yellow-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>คำนวณแชมป์สัปดาห์, แชมป์เดือน, สิ้นฤดูกาล และค่าปรับอัตโนมัติ</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-yellow-500 font-bold flex-shrink-0">•</span>
-                      <span>หักแต้มย้ายทีมในตัว พร้อมเฉลี่ยเงินรางวัลอย่างยุติธรรม</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
+                      <span>หักแต้มย้ายทีมในตัว พร้อมเฉลี่ยเงินรางวัลอย่างยุติธรรม (Tie-Pooling)</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-yellow-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>รองรับมินิเกมเฉพาะลีก เช่น ทายผลบอล และท้าชนคะแนนแฟนตาซี</span>
                     </li>
                   </ul>
                 </div>
-                <button type="button" onclick="app.switchTab('prizes-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-yellow-600 dark:text-yellow-400 hover:text-yellow-700 dark:hover:text-yellow-300 transition-colors group cursor-pointer text-left min-w-0">
+                <button type="button" onclick="app.switchTab('prizes-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
                   <span class="truncate">ไปยังแท็บ: เงินรางวัล</span>
-                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">เปิดดู <span>&rarr;</span></span>
                 </button>
               </div>
 
-              <!-- Pillar 6: Radar & Hall of Fame -->
+              <!-- Pillar 06: Radar & Hall of Fame -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
                 <div class="min-w-0">
                   <div class="flex items-center justify-between mb-3 gap-2">
-                    <span class="w-9 h-9 rounded-xl bg-cyan-50 dark:bg-cyan-950/50 border border-cyan-200/80 dark:border-cyan-800/60 inline-flex items-center justify-center text-cyan-600 dark:text-cyan-400 shadow-2xs flex-shrink-0">
-                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
+                    <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0">
+                      <svg class="w-4 h-4" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
                     </span>
-                    <span class="text-[10px] font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/60 px-2 py-0.5 rounded-md border border-cyan-200/60 dark:border-cyan-800/60 tracking-wider flex-shrink-0">
-                      PILLAR 06
-                    </span>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                      ${p6SettledTag}
+                      <span class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                        06
+                      </span>
+                    </div>
                   </div>
                   <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white font-display">
-                    6. เรดาร์ฟอร์ม &amp; ทำเนียบแชมป์
+                    เรดาร์ฟอร์ม &amp; ทำเนียบแชมป์
                   </h3>
                   <ul class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 space-y-1.5 leading-relaxed">
                     <li class="flex items-start gap-1.5">
-                      <span class="text-cyan-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>วิเคราะห์ความสม่ำเสมอ ประเมินแต้มต่ำสุด-สูงสุด ของทั้ง 8 ลีก</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-cyan-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>บันทึกประวัติศาสตร์ทำเนียบแชมป์และหอเกียรติยศตลอดทุกฤดูกาล</span>
                     </li>
                     <li class="flex items-start gap-1.5">
-                      <span class="text-cyan-500 font-bold flex-shrink-0">•</span>
+                      <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
                       <span>ปุ่มคัดลอกสรุปผลคะแนนส่งเข้ากลุ่ม LINE และส่งออกเป็นตาราง Excel ทันที</span>
                     </li>
                   </ul>
                 </div>
-                <button type="button" onclick="app.switchTab('hall-of-fame-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 transition-colors group cursor-pointer text-left min-w-0">
+                <button type="button" onclick="app.switchTab('hall-of-fame-view')" class="inline-flex items-center justify-between w-full pt-2.5 mt-3.5 border-t border-slate-100 dark:border-slate-800/60 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group cursor-pointer text-left min-w-0">
                   <span class="truncate">ไปยังแท็บ: ทำเนียบแชมป์ &amp; เรดาร์ฟอร์ม</span>
-                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1">เปิดดู <span>&rarr;</span></span>
+                  <span class="inline-flex items-center gap-1 font-semibold group-hover:translate-x-0.5 transition-transform flex-shrink-0 ml-1 text-emerald-600 dark:text-emerald-400">เปิดดู <span>&rarr;</span></span>
                 </button>
               </div>
 
             </div>
 
-            <!-- Ultra Clean LINE Contact Box (Developer Support) -->
-            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full min-w-0 overflow-hidden">
+            <!-- Ultra Clean LINE Contact Box -->
+            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 w-full min-w-0 overflow-hidden">
               <div class="space-y-1.5 max-w-xl text-left min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-300/60 dark:border-emerald-700/60 flex-shrink-0">
-                    <span class="w-1.5 h-1.5 rounded-full bg-[#06C755] animate-pulse"></span>
+                  <span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-full border border-slate-200 dark:border-slate-700 flex-shrink-0">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#06C755] motion-safe:animate-pulse"></span>
                     DIRECT LINE HOTLINE
                   </span>
                   <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex-shrink-0">
@@ -17737,24 +17840,25 @@ selectShi62GW(gwName) {
                   href="https://line.me/ti/p/lgWPeyIBR7" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  class="inline-flex items-center justify-center gap-2.5 w-full sm:w-auto px-5 py-3 min-h-[44px] rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-white dark:text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
+                  aria-label="ติดต่อผู้พัฒนาผ่าน LINE (เปิดหน้าต่างใหม่)"
+                  class="inline-flex items-center justify-center gap-2.5 w-full sm:w-auto px-5 py-3 min-h-[44px] rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display focus:outline-hidden focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900"
                 >
-                  <svg class="w-4 h-4 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
+                  <svg class="w-4 h-4 fill-current flex-shrink-0" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
                   <span>เปิด LINE ทักหาเดฟ</span>
                 </a>
               </div>
             </div>
 
-            <!-- Technical Architecture (Collapsible สำหรับสาย Dev) -->
+            <!-- Technical Architecture -->
             <details class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/40 dark:bg-slate-900/20 text-xs text-slate-500 group transition-all w-full min-w-0 overflow-hidden">
               <summary class="cursor-pointer font-semibold text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white flex items-center justify-between select-none min-w-0 rounded-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500/70">
                 <span class="flex items-center gap-2 min-w-0 pr-2">
-                  <svg class="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                  <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  <svg class="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform flex-shrink-0" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                  <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                   <span class="font-display tracking-tight text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">สถาปัตยกรรมระบบเบื้องหลัง (Specs)</span>
                 </span>
                 <span class="inline-flex items-center gap-1.5 text-[10.5px] text-emerald-700 dark:text-emerald-300 font-mono font-medium bg-emerald-500/10 dark:bg-emerald-500/15 px-2.5 py-0.5 rounded-full border border-emerald-500/20 dark:border-emerald-500/30 flex-shrink-0">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 motion-safe:animate-pulse"></span>
                   Dual-Layer Sync
                 </span>
               </summary>
@@ -17960,7 +18064,7 @@ selectShi62GW(gwName) {
                   <div class="p-4 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-2xs min-w-0 flex flex-col justify-between">
                     <div>
                       <div class="flex items-center justify-between gap-2 mb-2">
-                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-500/20">STAGE 01 • INGESTION</span>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">STAGE 01 • INGESTION</span>
                         <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">ThreadPool</span>
                       </div>
                       <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">1. Pipeline &amp; Multi-Threading Engine</h4>
@@ -17983,7 +18087,7 @@ selectShi62GW(gwName) {
                   <div class="p-4 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-2xs min-w-0 flex flex-col justify-between">
                     <div>
                       <div class="flex items-center justify-between gap-2 mb-2">
-                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-sky-700 dark:text-sky-400 bg-sky-500/10 dark:bg-sky-500/15 px-2 py-0.5 rounded border border-sky-500/20">STAGE 02 • STATE MACHINE</span>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">STAGE 02 • STATE MACHINE</span>
                         <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">Atomic Store</span>
                       </div>
                       <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">2. Data Integrity &amp; Atomic State Machine</h4>
@@ -18006,7 +18110,7 @@ selectShi62GW(gwName) {
                   <div class="p-4 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-2xs min-w-0 flex flex-col justify-between">
                     <div>
                       <div class="flex items-center justify-between gap-2 mb-2">
-                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-amber-700 dark:text-amber-400 bg-amber-500/10 dark:bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/20">STAGE 03 • JAMSTACK</span>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">STAGE 03 • JAMSTACK</span>
                         <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">Edge Compiler</span>
                       </div>
                       <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">3. Config-Driven Jamstack &amp; Edge CDN</h4>
@@ -18026,10 +18130,12 @@ selectShi62GW(gwName) {
                       </ul>
                     </div>
                   </div>
-                  <div class="p-4 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-2xs min-w-0 flex flex-col justify-between">
+                  <div class="p-4 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-2xs min-w-0 flex flex-col justify-between ${stage4Border}">
                     <div>
                       <div class="flex items-center justify-between gap-2 mb-2">
-                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-purple-700 dark:text-purple-400 bg-purple-500/10 dark:bg-purple-500/15 px-2 py-0.5 rounded border border-purple-500/20">STAGE 04 • CLIENT RUNTIME</span>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider px-2 py-0.5 rounded border ${stage4Badge}">
+                          ${stage4LiveDot}STAGE 04 • CLIENT RUNTIME
+                        </span>
                         <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">15s Live Relay</span>
                       </div>
                       <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">4. Client Runtime &amp; 15s Real-Time Relay</h4>
