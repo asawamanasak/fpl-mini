@@ -1997,6 +1997,7 @@ __STRUCTURED_DATA_JSON__
                 id="hof-search-input" 
                 oninput="app.handleHofSearch(this.value)"
                 placeholder="ค้นหาชื่อทีม / ผู้จัดการ..." 
+                aria-label="ค้นหาชื่อทีมหรือผู้จัดการในตารางทำเนียบแชมป์"
                 class="w-full text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-3 pr-8 py-1.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-amber-500 transition-all"
               />
               <span class="absolute right-2.5 top-2 text-slate-400 pointer-events-none">
@@ -2008,6 +2009,7 @@ __STRUCTURED_DATA_JSON__
               <select 
                 id="hof-sort-select"
                 onchange="app.setHofSortBy(this.value)"
+                aria-label="เรียงลำดับตารางความสม่ำเสมอ"
                 class="text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-slate-800 dark:text-slate-200 font-bold focus:outline-hidden focus:ring-2 focus:ring-amber-500 cursor-pointer shadow-2xs"
               >
                 <option value="total_net">เรียง: คะแนนรวม ▼</option>
@@ -2024,7 +2026,7 @@ __STRUCTURED_DATA_JSON__
         </div>
 
         <!-- Filter Pills -->
-        <div class="flex items-center gap-1.5 overflow-x-auto touch-scroll scrollbar-thin pb-2 mb-2.5 border-b border-slate-100 dark:border-slate-800 text-xs" id="hof-filter-pills">
+        <div class="flex items-center gap-1.5 overflow-x-auto touch-scroll scrollbar-thin pb-2 mb-2.5 border-b border-slate-100 dark:border-slate-800 text-xs" id="hof-filter-pills" role="toolbar" aria-label="ตัวกรองตารางทำเนียบแชมป์">
           <!-- Rendered dynamically -->
         </div>
 
@@ -2038,17 +2040,17 @@ __STRUCTURED_DATA_JSON__
         </div>
 
         <div class="overflow-x-auto scrollbar-thin -mx-3.5 sm:mx-0 touch-scroll relative">
-          <table class="w-full text-left border-collapse">
+          <table class="w-full text-left border-collapse" role="table" aria-label="ตารางวัดความสม่ำเสมอของทีม">
             <thead>
               <tr class="border-b border-slate-200 dark:border-slate-800 text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display bg-slate-50/70 dark:bg-slate-900/70">
-                <th onclick="app.setHofSortBy('total_net')" class="py-2.5 px-2 text-center w-9 sm:w-11 whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none sticky left-0 z-30 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-xs" id="hof-th-rank">#</th>
-                <th onclick="app.setHofSortBy('team_name')" class="py-2.5 px-2 sm:px-3 min-w-[130px] sm:min-w-[180px] whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none sticky left-9 sm:left-11 z-30 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-xs border-r border-slate-200/80 dark:border-slate-800/80 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.3)]" id="hof-th-team">ทีม</th>
-                <th onclick="app.setHofSortBy('wins')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-wins">#1 แชมป์สัปดาห์</th>
-                <th onclick="app.setHofSortBy('avg')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-avg">คะแนนเฉลี่ย</th>
-                <th onclick="app.setHofSortBy('high')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-high">คะแนนสูงสุด</th>
-                <th onclick="app.setHofSortBy('low')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-low">คะแนนต่ำสุด</th>
-                <th onclick="app.setHofSortBy('spread')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-spread">ความแกว่ง</th>
-                <th onclick="app.setHofSortBy('hits')" class="py-2.5 px-1.5 sm:px-3 text-right whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-hits">คะแนนลบสะสม</th>
+                <th scope="col" role="columnheader" onclick="app.setHofSortBy('total_net')" class="py-2.5 px-2 text-center w-9 sm:w-11 whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none sticky left-0 z-30 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-xs" id="hof-th-rank">#</th>
+                <th scope="col" role="columnheader" onclick="app.setHofSortBy('team_name')" class="py-2.5 px-2 sm:px-3 min-w-[130px] sm:min-w-[180px] whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none sticky left-9 sm:left-11 z-30 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-xs border-r border-slate-200/80 dark:border-slate-800/80 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.3)]" id="hof-th-team">ทีม</th>
+                <th scope="col" role="columnheader" onclick="app.setHofSortBy('wins')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-wins">#1 แชมป์สัปดาห์</th>
+                <th scope="col" role="columnheader" onclick="app.setHofSortBy('avg')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-avg">คะแนนเฉลี่ย</th>
+                <th scope="col" role="columnheader" onclick="app.setHofSortBy('high')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-high">คะแนนสูงสุด</th>
+                <th scope="col" role="columnheader" onclick="app.setHofSortBy('low')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-low">คะแนนต่ำสุด</th>
+                <th scope="col" role="columnheader" onclick="app.setHofSortBy('spread')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-spread">ความแกว่ง</th>
+                <th scope="col" role="columnheader" onclick="app.setHofSortBy('hits')" class="py-2.5 px-1.5 sm:px-3 text-right whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-hits">คะแนนลบสะสม</th>
               </tr>
             </thead>
             <tbody id="hall-of-fame-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
@@ -5853,6 +5855,7 @@ __STRUCTURED_DATA_JSON__
         const hofSearch = document.getElementById('hof-search-input');
         if (hofSearch) {
           hofSearch.placeholder = isEn ? 'Search team / manager...' : 'ค้นหาชื่อทีม / ผู้จัดการ...';
+          hofSearch.setAttribute('aria-label', isEn ? 'Search team or manager in consistency matrix' : 'ค้นหาชื่อทีมหรือผู้จัดการในตารางทำเนียบแชมป์');
         }
         const hofScrollHint = document.getElementById('mobile-hof-scroll-hint');
         if (hofScrollHint) {
@@ -5860,6 +5863,7 @@ __STRUCTURED_DATA_JSON__
         }
         const hofSortSelect = document.getElementById('hof-sort-select');
         if (hofSortSelect) {
+          hofSortSelect.setAttribute('aria-label', isEn ? 'Sort team consistency standings' : 'เรียงลำดับตารางความสม่ำเสมอ');
           const curVal = hofSortSelect.value;
           hofSortSelect.innerHTML = isEn ? `
             <option value="total_net">Sort: Total Net Pts ▼</option>
@@ -15112,8 +15116,10 @@ selectShi62GW(gwName) {
           html += `
             <button 
               type="button"
+              role="button"
+              aria-pressed="${isActive}"
               onclick="app.setHofFilter('${f.id}')" 
-              class="px-2.5 sm:px-3 py-1 rounded-xl font-bold font-display text-[11px] sm:text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 ${isActive ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs font-black' : 'bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 font-semibold'}"
+              class="px-3 py-1.5 min-h-[32px] rounded-xl font-bold font-display text-[11px] sm:text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 ${isActive ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs font-black' : 'bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 font-semibold'}"
             >
               <span>${f.label}</span>
               <span class="text-[10px] opacity-75 font-semibold font-mono">(${f.count})</span>
@@ -15210,9 +15216,11 @@ selectShi62GW(gwName) {
             if (this.hofSortBy === col.key) {
               el.classList.add('text-slate-900', 'dark:text-white', 'font-black');
               el.classList.remove('text-slate-500', 'dark:text-slate-400');
+              el.setAttribute('aria-sort', isAsc ? 'ascending' : 'descending');
             } else {
               el.classList.remove('text-slate-900', 'dark:text-white', 'font-black');
               el.classList.add('text-slate-500', 'dark:text-slate-400');
+              el.removeAttribute('aria-sort');
             }
           }
         });
