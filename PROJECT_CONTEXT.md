@@ -30,6 +30,16 @@
 > **หลักการปรับปรุงโครงสร้าง UX/UI (Cross-League Feature Consistency Principle):**
 > ทุกครั้งที่มีการปรับปรุงโครงสร้างการแสดงผล, รูปแบบการจัดวาง (Layout), โทนสี หรือ UX/UI ของหัวข้อ/ฟีเจอร์ใดๆ จะต้องตรวจสอบและอัปเดตให้ครอบคลุม **"ทุกลีกที่มีหัวข้อ/ฟีเจอร์นั้นๆ เกี่ยวข้อง"** เสมอ เพื่อรักษามาตรฐาน ประสบการณ์ผู้ใช้ และความสอดคล้องของแม่แบบ (Template Archetype) ให้เหมือนกันทั่วทั้งระบบ 100% โดยไม่มีตกหล่น.
 
+> [!IMPORTANT]
+> **ข้อกำหนดการทดสอบแบบครบวงจรระดับเข้มงวด (Mandatory Comprehensive Interactive Testing Protocol):**
+> ทุกครั้งที่มีการพัฒนา เพิ่มเติม หรือแก้ไขฟีเจอร์และ UX/UI ใดๆ ในระบบ **จะต้องดำเนินการทดสอบเชิงลึกแบบครบวงจรผ่าน Headless Chrome / CDP ก่อนส่งมอบงานเสมอ** โดยครอบคลุม:
+> 1. **Multi-Viewport:** ทดสอบจริงทั้ง **Desktop (1440x900)**, **Tablet/iPad (768x1024)** และ **Mobile (375x812 - iPhone Standard)**
+> 2. **All Interactive Elements & Buttons:** ทดสอบการคลิกจริงของ "ทุกปุ่มและทุกฟังก์ชัน" ที่เกี่ยวข้อง เช่น Tab Navigation, Gameweek Stepper (`prev`/`next`), Gameweek Select Dropdown, Language Toggle (`th` <-> `en`), Theme Switcher (`light` <-> `dark`), และปุ่มเปิด/ปิด Modal (เช่น Squad Pitch Modal)
+> 3. **Mobile Layout & Zero Overflow:** ตรวจสอบอย่างเข้มงวดว่าไม่มีการล้นขอบแนวนอนบนหน้าจอมือถือ (`scrollWidth <= clientWidth`, `overflowCount = 0`) และการ์ดจัดเรียงแบบ Single-Column สวยงาม
+> 4. **Touch Targets:** ขนาดปุ่มกดบนมือถือต้องมีพื้นที่สัมผัสที่แตะได้ง่าย ไม่ซ้อนทับ และไม่ตกขอบ
+> 5. **Cross-League Consistency:** ตรวจสอบความถูกต้องของการเรนเดอร์ข้ามทุกลีกในระบบ (ครบทั้ง 8 ลีก)
+> 6. **Visual Proof & Screenshots:** จับภาพหน้าจอจริง (Screenshots) ทั้ง Light Mode และ Dark Mode บนทุก Viewport เพื่อตรวจสอบความเรียบร้อยก่อนรายงานผู้ใช้ทุกครั้ง.
+
 ---
 
 ## 🏗️ 2. สถาปัตยกรรมระบบ (System Architecture)
@@ -333,7 +343,7 @@ flowchart TD
 
 ### เรื่อง: มาตรฐานการปรับปรุง UX/UI ข้ามทุกลีก (Cross-League Archetype Standardization)
 * **หลักการ:** เมื่อมีการอัปเกรดหน้าตาหรือโครงสร้างของฟีเจอร์ใดๆ ต้องปรับปรุงให้ทุกลีกที่มีฟีเจอร์นั้นๆ มีหน้าตาตรงกันเสมอ
-* **กรณีศึกษา - แท็บ "ทายผล" (Prediction Feature):**
+* **กรณีศึกษา 1 - แท็บ "ทายผล" (Prediction Feature):**
   * ลีกที่มีฟีเจอร์นี้: **League 5349 (Bramann League)** และ **League 187827 (Shi62 Special)**
   * **แม่แบบที่กำหนด (Archetype Standards):**
     1. การ์ดยกระดับ `rounded-2xl` ขอบมนและเงามิติละมุน
@@ -343,6 +353,24 @@ flowchart TD
     5. ไฮไลต์ฝั่งชนะด้วย Emerald Box พร้อม Badge `ชนะ ✅`, ฝั่งแพ้ใช้ Slate Neutral นิ่งตา
     6. ชิปรายชื่อผู้ทายผลพร้อมเอฟเฟกต์ Hover และแถบสรุปเงินได้-เสียสุทธิรายบุคคลใต้คู่ (Net Payout Chips)
     7. Responsive Layout รองรับทั้ง 2 ตัวเลือกและ 3 ตัวเลือก ไม่มีการบีบอัดตัวอักษรบนจอมือถือ
+* **กรณีศึกษา 2 - แท็บ "เรดาร์ฟอร์ม" (Team Consistency Radar) - [ACTIVE & VERIFIED]:**
+  * ครอบคลุม: **ทุกลีกในระบบ (ครบทั้ง 8 ลีก)** ผ่านการสร้างเทมเพลตเดียวใน `update_preview.py`
+  * **แม่แบบที่กำหนด (Unslopping & Editorial Clean Standards):**
+    1. **Color Reduction & Neutral Ramp:** ปลดสีลูกกวาด (Cyan, Emerald, Amber, Purple) ในการ์ด 4 สถิติเด่นออกทั้งหมด ใช้การ์ดยกพื้นสีสเลทนิ่งตาเท่ากัน เน้นตัวเลขสถิติแบบ `tabular-nums font-mono` ชัดเจน
+    2. **Restrained Tier Palette:** ปรับระบบป้ายระดับความสม่ำเสมอ (Consistency Tiers) จาก 5 สีฉูดฉาดเป็น 3 โทนกลมกลืน (S-Tier สีดำ/ขาวพรีเมียม, A-Tier สเลทคอนทราสต์, B/C-Tier นิวทรัลซอฟต์, Volatile สีเตือนระวังแบบนุ่มนวล)
+    3. **Live vs Finished Dual States:** ระบบคำนวณเฉพาะ Gameweek ที่จบสมบูรณ์ 100% (Official Settled Only) เพื่อป้องกันสถิติแกว่งหลอกตา พร้อมแสดงแบนเนอร์แจ้งเตือนสถานะชัดเจนเมื่อมีคู่แข่งสด (`GW X In-Play • Stats based on finalized GW 1 - X-1`)
+    4. **Adaptive Sticky Table (Mobile Priority):** ตรึงคอลัมน์ `#` และ `ชื่อทีม` ชิดซ้าย พร้อมจัดลำดับคอลัมน์สำคัญ (คะแนนรวม, คะแนนเฉลี่ย, ระดับ Tier) ให้อยู่ถัดจากชื่อทีมทันที เพื่อให้อ่านข้อมูลหลักได้ทันทีบนจอมือถือโดยไม่ต้องเลื่อนจอไปทางขวาไกล
+    5. **Compact Collapsible Layout:** ยุบกล่องเกณฑ์การประเมินให้พับเก็บเป็นค่าเริ่มต้น (`Collapsed by default`) ช่วยประหยัดพื้นที่แนวตั้งบนมือถือกว่า 350px และปรับแถบจัดอันดับความแข็งแกร่งลีกให้กะทัดรัด สบายตา
+    6. **100% Bilingual & Multi-Device Parity:** รองรับการสลับภาษา ไทย/อังกฤษ คมชัดทุกป้าย และผ่านการทดสอบเรนเดอร์จริงบน Desktop (1440x900), Tablet (768x1024), และ Mobile (375x812) โดยไม่มี Horizontal Overflow (`scrollWidth <= clientWidth`)
+* **กรณีศึกษา 3 - แท็บ "ไฮไลท์" (Weekly Highlights Architecture & Impeccable Audit) - [ACTIVE & VERIFIED]:**
+  * ครอบคลุม: **ทุกลีกในระบบ (ครบทั้ง 8 ลีก)** ผ่านการเรนเดอร์จาก `renderHighlightsView()` ใน `update_preview.py`
+  * **แม่แบบที่กำหนด (Impeccable & Smart Deduplication Standards):**
+    1. **Hero Spotlight with Subtle Gold Hairline:** ปรับการ์ดแชมป์ประจำสัปดาห์ด้วยขอบทองละมุนตา (`border-amber-400/40 dark:border-amber-500/30 ring-1 ring-amber-400/20`) แสดงผลสถิติแบบคลีนล้วน (Pure Stats: คะแนน, กัปตัน, แต้มลบ, และสถานะสด/สรุปผล) โดยไม่ใส่ข้อความบทวิเคราะห์ที่รกรุงรัง
+    2. **Smart Deduplication:** ตัดปัญหาการ์ดซ้ำซ้อน (เช่น ผู้จัดการคนเดียวกันได้ทั้ง `Sharpest Trader` และ `Hit Hero` พร้อมข้อความตัวย้ายซ้ำกัน 100%) ให้เหลือการ์ดเด่นเพียงใบเดียวแบบมีเอกลักษณ์ และตัดการ์ดย้ายตัวผิดซ้ำซ้อน (`Transfer Tangle` vs `Painful Hit`)
+    3. **Balanced 3-Section Hierarchy:** ยุบรวม `มูลค่าทีมสูงสุด (Value King)` เข้ากับหมวด `แท็กติก & มูลค่าทีม (Tactics, Chips & Finances)` กำจัดการ์ดใบเดียวโดดเดี่ยวใน Section 4 ทำให้ตาราง Grid 3 คอลัมน์บน Desktop เต็มแน่นสมดุล
+    4. **Strict Localization (100% Thai / 100% English):** ชื่อหัวข้อการ์ดรางวัลทุกใบแปลเป็นภาษาไทย 100% เมื่อเลือกภาษาไทย (`ฟอร์มสะดุด`, `ไต่อันดับสูงสุด`, `อันดับร่วงลงแรง`, `เซียนเปิดการ์ด`, `ไม่ง้อชิปการ์ด`, `การ์ดยังไม่โดน`, `ดองแต้มสำรอง`, `มูลค่าทีมสูงสุด`, `ดึงตัวเข้าเป้าสุดปัง`, `ดึงผิดชีวิตเปลี่ยน`, `ย้ายตัวเดียวเสียวทั้งลีก`, `สายลบไม่ยั้ง`) และภาษาอังกฤษสากล 100% เมื่อเลือกภาษาอังกฤษ
+    5. **Collision-Free Mobile Headers:** บนจอมือถือ (< 640px) ซ่อนคำอธิบายย่อยทางขวา (`hidden sm:inline`) เหลือเฉพาะชื่อหมวดหลักสั้นกระชับ เพื่อแก้ปัญหาข้อความเบียดขึ้นบรรทัดใหม่ซ้อนกัน
+    6. **Accessibility Complete:** เพิ่ม `aria-label` และ `title` ให้กับปุ่ม Stepper เปลี่ยน GW ก่อนหน้า/ถัดไป และปุ่มกดเปิดดูผังทีมครบถ้วน ผ่านการตรวจสอบ Headless Chrome 0 runtime errors ทุกลีก 100%
 
 ---
 
@@ -366,7 +394,20 @@ flowchart TD
    * ตรวจสอบสถานะจบ Gameweek ทันทีจากผลการแข่งขันจริงใน `/api/fixtures/?event=X` โดยไม่ต้องรอ Batch `data_checked` ของ FPL Server
 4. **Head-to-Head & Cup Bracket Visualization:** ผังสายการแข่งขันบอลถ้วยแบบอินเทอร์แอคทีฟ
 5. **Player Transfer Analytics & Dedicated Transfers Tab - [ACTIVE & VERIFIED]:** แยกแท็บใหม่ “วิเคราะห์การย้ายตัว” (Transfers) รวมสถิติการย้ายตัวประจำสัปดาห์ (Transfers In/Out, Hits Deduction, Net Points Impact, Best Transfer of the Week), นักเตะมหาชน > 70%, นักเตะทีเด็ด < 20%, และคำแนะนำการย้ายตัว (Transfer Suggestions) พร้อมระบบสองภาษา (ไทย/อังกฤษ) 100% ไม่ปนกัน
-6. **Export as Image (Social Share Card) - [CANCELLED / REMOVED]:** ยกเลิกการพัฒนาตาม Product Strategy เพื่อส่งเสริมให้สมาชิกเข้ามาดูอันดับและคะแนนสดผ่านหน้าเว็บไซต์โดยตรง (Retain Direct Web Traffic)
+6. **Unslop Chips Status Redesign (Status-First Architecture) - [ACTIVE & VERIFIED]:** ปรับปรุง UX/UI หน้า 'สถานะชิป' (Chips Status) ตามหลัก Unslop:
+   * **Status-First Color Architecture:** ลดสีรุ้ง (7-8 สี) เหลือ Neutral Ramp นุ่มตา + Semantic Status (Active/Live = Hero Accent, Available = เขียวมินิมอล, Used = เทานิ่ง GW X, Expired = เทาอ่อน) พร้อม Typographic Badges (WC, FH, TC, BB)
+   * **Live Matchday Spotlight:** แผง Spotlight สรุปผู้จัดการทีมที่เปิดใช้งานชิปในสัปดาห์นั้นแบบสดๆ (พร้อมบอกกัปตัน TC และแต้มม้านั่ง BB) และติดป้าย `⚡ LIVE` ในตาราง เมื่อแข่งจบจะปรับเป็นโหมดคลังชิปนิ่งสงบอัตโนมัติ
+   * **Interactive Metric Cards:** รวมการ์ดสถิติ 4 ใบเข้ากับฟิลเตอร์กรองข้อมูลในตัว ตัดปุ่มฟิลเตอร์ซ้ำซ้อนด้านล่างออก เหลือเพียงช่องค้นหาคลีนๆ
+   * **Streamlined Sticky Table:** ตัดหลอดกราฟหนาๆ ในช่องสรุปให้เหลือตัวเลข 4/4 โปร่งสบายตา ล็อกคอลัมน์ชื่อทีม เลื่อนตารางแนวนอนลื่นไหลบน Mobile/Tablet/Desktop รองรับทั้ง Light/Dark mode และ สองภาษา (TH/EN) ครบทั้ง 8 มินิลีก
+7. **Export as Image (Social Share Card) - [CANCELLED / REMOVED]:** ยกเลิกการพัฒนาตาม Product Strategy เพื่อส่งเสริมให้สมาชิกเข้ามาดูอันดับและคะแนนสดผ่านหน้าเว็บไซต์โดยตรง (Retain Direct Web Traffic)
+8. **Unslop Transfer Analytics Redesign (Monochrome & Semantic Architecture) - [ACTIVE & VERIFIED]:** ปรับปรุง UX/UI หน้า 'วิเคราะห์การย้ายตัว' (Transfers Analytics) ตามหลัก Unslop:
+   * **Monochrome Neutral Ramp + Semantic Accent:** ลดสีลูกกวาด (เดิม 8+ สี) เหลือเพียง Slate Ramp (50-950) คุมพื้นผิวทั้งหมด และสงวนสีเขียว/แดงไว้เฉพาะความหมายของข้อมูล (กำไร/ขาดทุน/In/Out)
+   * **Typographic Numbering (01 / 02 / 03):** แยก 3 ส่วนหลัก (01 / สถิติการย้ายตัว, 02 / โครงสร้างนักเตะ, 03 / คำแนะนำการย้ายตัว) ด้วยตัวเลขโมโนสเปซและเส้นแบ่ง Hairline ชัดเจน สบายตา
+   * **Live vs Finished Dual-Mode:** เมื่อ Live แสดงป้าย `⚡ LIVE` กะพริบนวลตา พร้อมระบุแต้ม ROI ชั่วคราว / เมื่อ Finished แสดง `✓ OFFICIAL` นิ่งสงบ พร้อมสรุปผลทางการและดีลยอดเยี่ยมประจำสัปดาห์
+   * **Interactive KPI Filter Cards:** การ์ดสถิติ 4 ใบด้านบนทำหน้าที่เป็นตัวกรองในตัว (ย้ายตัว, แต้มลบ, กำไรสุทธิ, ดีลยอดเยี่ยม) ตัดปุ่มฟิลเตอร์ซ้ำซ้อนออก เหลือช่องค้นหาคลีนๆ
+   * **Clean Monochromatic Tags & Solid Bar:** ป้ายตำแหน่งนักเตะ (GKP, DEF, MID, FWD) ปรับเป็น Monospace Tag โทน Slate เรียบหรู ตัดสีลูกกวาด 4 สีออก, เปลี่ยน Progress Bar เป็นเส้นสีทึบเรียบเนียนไร้ Gradient
+   * **Segmented Mobile Switcher & Crisp Table:** ตารางคำแนะนำการย้ายตัวใช้ Segmented Control บน Mobile ไร้การล้นขอบ (Zero Overflow) และตารางคู่ Side-by-Side คมชัดบน Desktop/iPad พร้อมไฮไลท์นักเตะในทีมด้วยป้ายมินิมอลสบายตา รองรับทั้ง 8 มินิลีก, 2 ภาษา (TH/EN) และ 2 โหมดสี (Light/Dark)
+   * **Impeccable Audit & Micro-Polish:** ผ่านการตรวจประเมินคุณภาพตามมาตรฐาน Impeccable (7 มิติ UX/UI) พร้อมเพิ่ม Actionable Empty State มีปุ่มรีเซ็ตฟิลเตอร์คลิกเดียวสำหรับรายการย้ายตัวและนักเตะทีเด็ด, ปรับ Smooth Hover Transition (duration-200 / duration-150) บนการ์ดผู้จัดการและ KPI Filter Buttons ครบถ้วน 100% ไร้ Runtime Error บนทุกอุปกรณ์.
 
 ---
 
@@ -382,6 +423,7 @@ flowchart TD
   * `rollback_14` : ปรับเปลี่ยนฟอนต์ของทั้งระบบเป็น Sarabun (Google Fonts + Local Fallback TTF)
   * `rollback_16` : รองรับ 8 ลีกสมบูรณ์แบบ (เพิ่มลีก 567387: Fantasy Nguan & friends cup ครบทั้งการวิเคราะห์สดและผังสนาม)
   * `rollback_17` : สร้างแท็บใหม่ "วิเคราะห์การย้ายตัว" แยกจาก "สถานะชิป", รองรับสถิติย้ายตัวประจำสัปดาห์ (Transfers In/Out & ROI), และทำความสะอาดภาษา ไทย/อังกฤษ 100% ไม่ปนกัน
+  * `rollback_25` : ปรับปรุง UX/UI หน้าวิเคราะห์การย้ายตัว (Transfers Analytics) ตามมาตรฐาน Unslop และ Impeccable (Monochrome Palette, Interactive KPI Filters, Dynamic Live/Finished Mode, Mobile Segmented Control Zero Overflow และ Actionable Empty States)
 * **เครื่องมือนำทาง (`./rollback.sh`):**
   * ดูรายชื่อ rollback ทั้งหมด: `./rollback.sh list`
   * ย้ายไปยังเวอร์ชันที่ต้องการ: `./rollback.sh go <number>`
