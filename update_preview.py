@@ -2043,8 +2043,8 @@ __STRUCTURED_DATA_JSON__
           <table class="w-full text-left border-collapse" role="table" aria-label="ตารางวัดความสม่ำเสมอของทีม">
             <thead>
               <tr class="border-b border-slate-200 dark:border-slate-800 text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display bg-slate-50/70 dark:bg-slate-900/70">
-                <th scope="col" role="columnheader" onclick="app.setHofSortBy('total_net')" class="py-2.5 px-2 text-center w-9 sm:w-11 whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none sticky left-0 z-30 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-xs" id="hof-th-rank">#</th>
-                <th scope="col" role="columnheader" onclick="app.setHofSortBy('team_name')" class="py-2.5 px-2 sm:px-3 min-w-[130px] sm:min-w-[180px] whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none sticky left-9 sm:left-11 z-30 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-xs border-r border-slate-200/80 dark:border-slate-800/80 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.3)]" id="hof-th-team">ทีม</th>
+                <th scope="col" role="columnheader" onclick="app.setHofSortBy('total_net')" class="py-2.5 px-2 text-center w-9 sm:w-11 whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-rank">#</th>
+                <th scope="col" role="columnheader" onclick="app.setHofSortBy('team_name')" class="py-2.5 px-2 sm:px-3 min-w-[130px] sm:min-w-[180px] whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-team">ทีม</th>
                 <th scope="col" role="columnheader" onclick="app.setHofSortBy('wins')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-wins">#1 แชมป์สัปดาห์</th>
                 <th scope="col" role="columnheader" onclick="app.setHofSortBy('avg')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-avg">คะแนนเฉลี่ย</th>
                 <th scope="col" role="columnheader" onclick="app.setHofSortBy('high')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-high">คะแนนสูงสุด</th>
@@ -15294,8 +15294,8 @@ selectShi62GW(gwName) {
 
           html += `
             <tr class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
-              <td class="py-2.5 px-2 text-center whitespace-nowrap sticky left-0 z-20 bg-white/95 dark:bg-slate-900/95 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 transition-colors">${rankBadge}</td>
-              <td class="py-2.5 px-2 sm:px-3 min-w-[130px] sm:min-w-[180px] sticky left-9 sm:left-11 z-20 bg-white/95 dark:bg-slate-900/95 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 transition-colors border-r border-slate-200/80 dark:border-slate-800/80 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.3)]">
+              <td class="py-2.5 px-2 text-center whitespace-nowrap">${rankBadge}</td>
+              <td class="py-2.5 px-2 sm:px-3 min-w-[130px] sm:min-w-[180px]">
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer block truncate max-w-[110px] xs:max-w-[140px] sm:max-w-[180px] md:max-w-none">${this.escapeHtml(t.team_name)}</button>
                   ${this.getPrizeBadge(t.entry_id)}
