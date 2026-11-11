@@ -416,6 +416,14 @@ flowchart TD
    * **100% Cross-League & Bilingual Parity:** อัปเดตรองรับทั้ง 8 มินิลีกในระบบ (5349, 38491, 40700, 187827, 438691, 567387, 675290, 1101958, index.html, preview.html, 404.html), รองรับ 2 ภาษา (TH/EN 100% ไม่ปนกัน) และ 2 โหมดสี (Light/Dark Mode) ผ่านการตรวจสอบ Headless Chrome 0 runtime errors ครบทุกหน้า.
    * **Impeccable Technical Audit & A11y Polish (19/20 Score):** ผ่านการตรวจประเมินคุณภาพตามมาตรฐาน Impeccable ทั้ง 5 มิติ (Accessibility, Performance, Theming, Responsive, Implementation Integrity) พร้อมเพิ่ม `aria-label` แจ้งเตือนการเปิดหน้าต่างใหม่ของปุ่ม LINE สองภาษา, เพิ่ม `aria-hidden="true"` ให้ SVG ตกแต่งทั้งหมด และใส่พรีฟิกซ์ `motion-safe:animate-pulse` เคารพการตั้งค่าลดการเคลื่อนไหวของผู้ใช้ตามมาตรฐาน WCAG 2.1 AA ครบถ้วน 100%.
 
+ 10. **Unslop Hall of Fame & All-Time Records Modernization (Monochrome + Single Trophy Accent & Pure Finished Archive) - [ACTIVE & VERIFIED]:** ปรับปรุง UX/UI หน้า 'ทำเนียบแชมป์' (Hall of Fame) และตารางวัดความสม่ำเสมอตามมาตรฐาน Unslop & Impeccable:
+    * **Monochrome Neutral Ramp + Single Trophy Accent:** ปลดสีรุ้ง 4 สี (ส้ม, เหลือง, ฟ้า, ม่วง) ออกจากการ์ดสถิติไฮไลต์ทั้ง 4 ใบ ใช้ Slate Neutral Ramp สบายตาเท่ากันทุกใบ และขับเน้นความสำคัญด้วยตัวเลข Tabular Nums ขนาดใหญ่ที่คมชัด โดยสงวนสีทองอำพันโทนอุ่น (`amber-500/600`) ไว้เฉพาะสัญลักษณ์อันดับ 1 ในตาราง และจำนวนสัปดาห์ที่ครองแชมป์
+    * **Pure Finished Only Architecture:** วางตำแหน่งหน้าทำเนียบแชมป์เป็นหอเกียรติยศถาวรที่บันทึกผลงานทางการเท่านั้น ตัดจุดส้มกะพริบ (`animate-pulse`) ที่หลอกตาออก และแก้ไขตรรกะการคำนวณแต้มลบสะสม (Hits) ให้ประมวลผลจากสัปดาห์ที่จบสมบูรณ์ (`is_finished`) สอดคล้องกับคะแนนรวมและค่าเฉลี่ย 100% พร้อมป้ายระบุสัปดาห์ทางการชัดเจน (`Official Archive: GW 1 - GW {N}`)
+    * **Minimalist Stat Cards:** ตัดป้ายคำประดับตกแต่งส่วนเกิน (เช่น 'ตัวสำรองระเบิด', '#1 Net') ออก ปรับให้แสดงชื่อทีมและบริบทสัปดาห์ที่ทำได้เด่นชัด คลิกเปิด Modal ตรวจสอบข้อมูลได้สะดวก
+    * **Sticky Left Column on Mobile (Zero Context Loss):** ปรับตารางวัดความสม่ำเสมอให้ตรึงคอลัมน์ลำดับ (#) และคอลัมน์ชื่อทีมไว้ทางซ้าย (`position: sticky; left: 0`) เวลาปัดดูสถิติความแกว่ง (Spread) หรือแต้มลบ (Hits) ทางขวาบนมือถือ ทำให้ไม่หลุดบริบทชื่อทีม
+    * **High-Contrast Monochrome Filter Pills:** ปรับปุ่มตัวกรองที่เลือกอยู่ให้เป็นสีเทาเข้มตัดขาว (`bg-slate-900 text-white dark:bg-white dark:text-slate-900`) ที่ชัดเจนและไม่รบกวนสายตา
+    * **100% Cross-League & Bilingual Parity:** อัปเดตรองรับทั้ง 8 มินิลีกในระบบ (5349, 38491, 40700, 187827, 438691, 567387, 675290, 1101958, index.html, preview.html, 404.html), รองรับ 2 ภาษา (TH/EN) และ 2 โหมดสี (Light/Dark Mode) ผ่านการตรวจสอบ Headless Chrome 0 runtime errors ครบทุกหน้า 100%.
+
 ---
 
 ## ⏪ 9. ระบบ Rollback & Milestone Management
@@ -432,6 +440,7 @@ flowchart TD
   * `rollback_17` : สร้างแท็บใหม่ "วิเคราะห์การย้ายตัว" แยกจาก "สถานะชิป", รองรับสถิติย้ายตัวประจำสัปดาห์ (Transfers In/Out & ROI), และทำความสะอาดภาษา ไทย/อังกฤษ 100% ไม่ปนกัน
   * `rollback_25` : ปรับปรุง UX/UI หน้าวิเคราะห์การย้ายตัว (Transfers Analytics) ตามมาตรฐาน Unslop และ Impeccable (Monochrome Palette, Interactive KPI Filters, Dynamic Live/Finished Mode, Mobile Segmented Control Zero Overflow และ Actionable Empty States)
   * `rollback_26` : ปรับปรุง UX/UI หน้า Dev Corner & สถาปัตยกรรมระบบ ตามมาตรฐาน Unslop และ Impeccable (Slate Neutral Ramp, Typographic Indexing 01-06, Dynamic Live/Settled Telemetry, Progressive Disclosure Specs, A11y ARIA 2 ภาษา และ motion-safe pulse ครบทั้ง 8 มินิลีก)
+  * `rollback_27` : ปรับปรุง UX/UI หน้าทำเนียบแชมป์ (Hall of Fame) และตารางความสม่ำเสมอ ตามมาตรฐาน Unslop (Slate Neutral Ramp, ตัดสีรุ้ง 4 สี, Single Trophy Accent สีทองอำพัน, Pure Finished Archive ปลอดจุดไฟกะพริบ, Minimalist Stat Cards และ Sticky Left Column บนจอมือถือ รองรับทุกลีก 100%)
 * **เครื่องมือนำทาง (`./rollback.sh`):**
   * ดูรายชื่อ rollback ทั้งหมด: `./rollback.sh list`
   * ย้ายไปยังเวอร์ชันที่ต้องการ: `./rollback.sh go <number>`

@@ -1959,18 +1959,20 @@ __STRUCTURED_DATA_JSON__
       <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs">
         <div>
           <div class="flex items-center gap-2.5">
-            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+            <span class="w-7 h-7 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/60 inline-flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-2xs flex-shrink-0" aria-hidden="true">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
+            </span>
             <h2 id="hof-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">
               ทำเนียบแชมป์
             </h2>
           </div>
           <p id="hof-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            บันทึกที่สุดของลีก สถิติคะแนนสูงสุดตลอดกาล และความสม่ำเสมอของทุกทีมในลีก
+            บันทึกที่สุดของลีก สถิติคะแนนสูงสุดตลอดกาล และความสม่ำเสมอของทุกทีมในลีก (เฉพาะสัปดาห์ที่จบทางการ)
           </p>
         </div>
         <div class="flex items-center gap-2 flex-wrap">
-          <span id="hof-league-badge" class="bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
-          <span id="hof-gw-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
+          <span id="hof-league-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-2.5 py-1 rounded-xl font-semibold font-display"></span>
+          <span id="hof-gw-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs px-2.5 py-1 rounded-xl font-semibold font-display"></span>
         </div>
       </div>
 
@@ -2029,24 +2031,24 @@ __STRUCTURED_DATA_JSON__
         <!-- Mobile Scroll Affordance Bar -->
         <div class="sm:hidden flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 px-1 py-1 mb-1.5">
           <span class="flex items-center gap-1 font-medium">
-            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500"></span>
             <span id="mobile-hof-sort-label">เรียงตามคะแนนรวม (# อันดับรวม)</span>
           </span>
           <span id="mobile-hof-scroll-hint" class="text-slate-500 dark:text-slate-400 font-medium">เลื่อนขวาดูสถิติเพิ่มเติม →</span>
         </div>
 
-        <div class="overflow-x-auto scrollbar-thin -mx-3.5 sm:mx-0 touch-scroll">
+        <div class="overflow-x-auto scrollbar-thin -mx-3.5 sm:mx-0 touch-scroll relative">
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-200 dark:border-slate-800 text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display bg-slate-50/70 dark:bg-slate-900/70">
-                <th onclick="app.setHofSortBy('total_net')" class="py-2.5 px-1.5 sm:px-2 text-center w-8 sm:w-10 whitespace-nowrap cursor-pointer hover:text-amber-600 transition-colors select-none" id="hof-th-rank">#</th>
-                <th onclick="app.setHofSortBy('team_name')" class="py-2.5 px-2 sm:px-3 min-w-0 whitespace-nowrap cursor-pointer hover:text-amber-600 transition-colors select-none" id="hof-th-team">ทีม</th>
-                <th onclick="app.setHofSortBy('wins')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-amber-600 transition-colors select-none" id="hof-th-wins">#1 แชมป์สัปดาห์</th>
-                <th onclick="app.setHofSortBy('avg')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-amber-600 transition-colors select-none" id="hof-th-avg">คะแนนเฉลี่ย</th>
-                <th onclick="app.setHofSortBy('high')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-amber-600 transition-colors select-none" id="hof-th-high">คะแนนสูงสุด</th>
-                <th onclick="app.setHofSortBy('low')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-amber-600 transition-colors select-none" id="hof-th-low">คะแนนต่ำสุด</th>
-                <th onclick="app.setHofSortBy('spread')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-amber-600 transition-colors select-none" id="hof-th-spread">ความแกว่ง</th>
-                <th onclick="app.setHofSortBy('hits')" class="py-2.5 px-1.5 sm:px-3 text-right whitespace-nowrap cursor-pointer hover:text-amber-600 transition-colors select-none" id="hof-th-hits">คะแนนลบสะสม</th>
+                <th onclick="app.setHofSortBy('total_net')" class="py-2.5 px-2 text-center w-9 sm:w-11 whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none sticky left-0 z-30 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-xs" id="hof-th-rank">#</th>
+                <th onclick="app.setHofSortBy('team_name')" class="py-2.5 px-2 sm:px-3 min-w-[130px] sm:min-w-[180px] whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none sticky left-9 sm:left-11 z-30 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-xs border-r border-slate-200/80 dark:border-slate-800/80 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.3)]" id="hof-th-team">ทีม</th>
+                <th onclick="app.setHofSortBy('wins')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-wins">#1 แชมป์สัปดาห์</th>
+                <th onclick="app.setHofSortBy('avg')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-avg">คะแนนเฉลี่ย</th>
+                <th onclick="app.setHofSortBy('high')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-high">คะแนนสูงสุด</th>
+                <th onclick="app.setHofSortBy('low')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-low">คะแนนต่ำสุด</th>
+                <th onclick="app.setHofSortBy('spread')" class="py-2.5 px-1 sm:px-2 text-center whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-spread">ความแกว่ง</th>
+                <th onclick="app.setHofSortBy('hits')" class="py-2.5 px-1.5 sm:px-3 text-right whitespace-nowrap cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors select-none" id="hof-th-hits">คะแนนลบสะสม</th>
               </tr>
             </thead>
             <tbody id="hall-of-fame-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
@@ -5834,19 +5836,19 @@ __STRUCTURED_DATA_JSON__
         // 11. Hall of Fame Consistency Title & Headers
         const hofOverviewTitle = document.getElementById('hof-overview-title');
         if (hofOverviewTitle) {
-          hofOverviewTitle.innerText = isEn ? 'Hall of Fame & All-Time Honors' : 'ทำเนียบแชมป์';
+          hofOverviewTitle.innerText = isEn ? 'Hall of Fame' : 'ทำเนียบแชมป์';
         }
         const hofOverviewSub = document.getElementById('hof-overview-subtitle');
         if (hofOverviewSub) {
-          hofOverviewSub.innerText = isEn ? 'All-time league records, peak gameweek scores, and team consistency radar.' : 'บันทึกที่สุดของลีก สถิติคะแนนสูงสุดตลอดกาล และความสม่ำเสมอของทุกทีมในลีก';
+          hofOverviewSub.innerText = isEn ? 'All-time league records, peak performances, and squad consistency across official finished gameweeks.' : 'บันทึกที่สุดของลีก สถิติคะแนนสูงสุดตลอดกาล และความสม่ำเสมอของทุกทีมในลีก (เฉพาะสัปดาห์ที่จบทางการ)';
         }
         const hofKicker = document.getElementById('hof-consistency-kicker');
         if (hofKicker) {
-          hofKicker.innerText = isEn ? 'CONSISTENCY RADAR' : 'สถิติความสม่ำเสมอ';
+          hofKicker.innerText = isEn ? 'CONSISTENCY MATRIX' : 'สถิติความสม่ำเสมอ';
         }
         const hofTitle = document.getElementById('hof-consistency-title');
         if (hofTitle) {
-          hofTitle.innerText = isEn ? 'Team Consistency Matrix' : 'ตารางวัดความสม่ำเสมอของทีม';
+          hofTitle.innerText = isEn ? 'Team Consistency Standings' : 'ตารางวัดความสม่ำเสมอของทีม';
         }
         const hofSearch = document.getElementById('hof-search-input');
         if (hofSearch) {
@@ -5854,7 +5856,7 @@ __STRUCTURED_DATA_JSON__
         }
         const hofScrollHint = document.getElementById('mobile-hof-scroll-hint');
         if (hofScrollHint) {
-          hofScrollHint.innerText = isEn ? 'Scroll right for more stats →' : 'เลื่อนขวาดูสถิติเพิ่มเติม →';
+          hofScrollHint.innerText = isEn ? 'Swipe right for more stats →' : 'เลื่อนขวาดูสถิติเพิ่มเติม →';
         }
         const hofSortSelect = document.getElementById('hof-sort-select');
         if (hofSortSelect) {
@@ -14841,7 +14843,9 @@ selectShi62GW(gwName) {
         }
         const gwBadge = document.getElementById('hof-gw-badge');
         if (gwBadge) {
-          gwBadge.innerText = isEn ? `GW ${finGWCount} Finished` : `จบแล้ว GW ${finGWCount}`;
+          gwBadge.innerText = finGWCount > 0 
+            ? (isEn ? `Official Archive: GW 1 - GW ${finGWCount}` : `บันทึกทางการ: GW 1 - GW ${finGWCount}`)
+            : (isEn ? 'Awaiting Official Final' : 'รอผลการแข่งขันทางการ');
         }
 
         let highGW = { score: 0, team: '-', gw: 1, entry_id: null };
@@ -14861,96 +14865,75 @@ selectShi62GW(gwName) {
           };
         });
 
+        // Pure Finished Only: Evaluate records, scores, wins, and transfer hits strictly for completed gameweeks
         for (let g = 1; g <= maxGW; g++) {
           const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
-          if (gData && gData.results) {
-            const gIsStarted = gData.is_started !== undefined 
-              ? Boolean(gData.is_started) 
-              : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
-
-            // Cumulative transfer hits accumulate for all started gameweeks
-            if (gIsStarted) {
-              gData.results.forEach(r => {
-                if (!teamStats[r.entry_id]) {
-                  teamStats[r.entry_id] = {
-                    entry_id: r.entry_id,
-                    team_name: r.team_name,
-                    player_name: r.player_name,
-                    total_net: 0,
-                    scores: [],
-                    total_hits: 0,
-                    wins: 0,
-                    top3: 0
-                  };
-                }
-                teamStats[r.entry_id].total_hits += (r.hits || 0);
-              });
-            }
-
-            // Performance records, averages, highs/lows, and wins are evaluated only for finished gameweeks
-            if (gData.is_finished) {
-              const eligibleResults = gData.results.filter(r => this.isPrizeEligible(r.entry_id));
-              const useTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
-              const eligibleSorted = [...eligibleResults].sort((a, b) => {
-                const diff = b.net_points - a.net_points;
-                if (diff !== 0) return diff;
-                if (useTieBreaker) {
-                  return this.compareTeamPlayerScores(a.entry_id, b.entry_id, g);
-                }
-                return 0;
-              });
-              const highEligiblePts = eligibleSorted.length > 0 ? eligibleSorted[0].net_points : 0;
-              let topEligibleWinners = [];
-              if (eligibleSorted.length > 0) {
-                const topLeader = eligibleSorted[0];
-                if (useTieBreaker) {
-                  topEligibleWinners = eligibleSorted.filter(x => 
-                    x.net_points === highEligiblePts && 
-                    this.compareTeamPlayerScores(x.entry_id, topLeader.entry_id, g) === 0
-                  );
-                } else {
-                  topEligibleWinners = eligibleSorted.filter(x => x.net_points === highEligiblePts);
-                }
+          if (gData && gData.results && gData.is_finished) {
+            gData.results.forEach(r => {
+              if (!teamStats[r.entry_id]) {
+                teamStats[r.entry_id] = {
+                  entry_id: r.entry_id,
+                  team_name: r.team_name,
+                  player_name: r.player_name,
+                  total_net: 0,
+                  scores: [],
+                  total_hits: 0,
+                  wins: 0,
+                  top3: 0
+                };
               }
-              const winCredit = topEligibleWinners.length > 0 ? 1 / topEligibleWinners.length : 0;
+              teamStats[r.entry_id].total_hits += (r.hits || 0);
+            });
 
-              const sorted = [...gData.results].sort((a, b) => {
-                const diff = b.net_points - a.net_points;
-                if (diff !== 0) return diff;
-                if (useTieBreaker) {
-                  return this.compareTeamPlayerScores(a.entry_id, b.entry_id, g);
-                }
-                return 0;
-              });
-              sorted.forEach((r, idx) => {
-                if (!teamStats[r.entry_id]) {
-                  teamStats[r.entry_id] = {
-                    entry_id: r.entry_id,
-                    team_name: r.team_name,
-                    player_name: r.player_name,
-                    total_net: 0,
-                    scores: [],
-                    total_hits: 0,
-                    wins: 0,
-                    top3: 0
-                  };
-                }
-                const ts = teamStats[r.entry_id];
-                ts.total_net += r.net_points;
-                ts.scores.push(r.net_points);
-                if (this.isPrizeEligible(r.entry_id) && topEligibleWinners.some(w => w.entry_id === r.entry_id)) {
-                  ts.wins += winCredit;
-                }
-                if (idx < 3) ts.top3 += 1;
-
-                if (r.net_points > highGW.score) {
-                  highGW = { score: r.net_points, team: r.team_name, gw: g, entry_id: r.entry_id };
-                }
-                if (r.bench_points > bestBench.bench) {
-                  bestBench = { bench: r.bench_points, team: r.team_name, gw: g, entry_id: r.entry_id };
-                }
-              });
+            const eligibleResults = gData.results.filter(r => this.isPrizeEligible(r.entry_id));
+            const useTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
+            const eligibleSorted = [...eligibleResults].sort((a, b) => {
+              const diff = b.net_points - a.net_points;
+              if (diff !== 0) return diff;
+              if (useTieBreaker) {
+                return this.compareTeamPlayerScores(a.entry_id, b.entry_id, g);
+              }
+              return 0;
+            });
+            const highEligiblePts = eligibleSorted.length > 0 ? eligibleSorted[0].net_points : 0;
+            let topEligibleWinners = [];
+            if (eligibleSorted.length > 0) {
+              const topLeader = eligibleSorted[0];
+              if (useTieBreaker) {
+                topEligibleWinners = eligibleSorted.filter(x => 
+                  x.net_points === highEligiblePts && 
+                  this.compareTeamPlayerScores(x.entry_id, topLeader.entry_id, g) === 0
+                );
+              } else {
+                topEligibleWinners = eligibleSorted.filter(x => x.net_points === highEligiblePts);
+              }
             }
+            const winCredit = topEligibleWinners.length > 0 ? 1 / topEligibleWinners.length : 0;
+
+            const sorted = [...gData.results].sort((a, b) => {
+              const diff = b.net_points - a.net_points;
+              if (diff !== 0) return diff;
+              if (useTieBreaker) {
+                return this.compareTeamPlayerScores(a.entry_id, b.entry_id, g);
+              }
+              return 0;
+            });
+            sorted.forEach((r, idx) => {
+              const ts = teamStats[r.entry_id];
+              ts.total_net += r.net_points;
+              ts.scores.push(r.net_points);
+              if (this.isPrizeEligible(r.entry_id) && topEligibleWinners.some(w => w.entry_id === r.entry_id)) {
+                ts.wins += winCredit;
+              }
+              if (idx < 3) ts.top3 += 1;
+
+              if (r.net_points > highGW.score) {
+                highGW = { score: r.net_points, team: r.team_name, gw: g, entry_id: r.entry_id };
+              }
+              if (r.bench_points > bestBench.bench) {
+                bestBench = { bench: r.bench_points, team: r.team_name, gw: g, entry_id: r.entry_id };
+              }
+            });
           }
         }
 
@@ -15006,12 +14989,12 @@ selectShi62GW(gwName) {
           let mostWinsTeamsHtml = '';
           if (mostWinsTeams.length === 1) {
             const wt = mostWinsTeams[0];
-            mostWinsTeamsHtml = `<button onclick="app.openTeamModal(${wt.entry_id})" class="text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-amber-500 dark:hover:text-amber-400 transition-colors truncate block text-left cursor-pointer w-full">${this.escapeHtml(wt.name)}</button>`;
+            mostWinsTeamsHtml = `<button onclick="app.openTeamModal(${wt.entry_id})" class="text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400 transition-colors truncate block text-left cursor-pointer w-full">${this.escapeHtml(wt.name)}</button>`;
           } else if (mostWinsTeams.length > 1) {
             mostWinsTeamsHtml = `
               <div class="flex items-center gap-1 flex-wrap">
                 ${mostWinsTeams.map(wt => `
-                  <button onclick="app.openTeamModal(${wt.entry_id})" class="text-[10px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-amber-500 dark:hover:text-amber-400 bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer truncate max-w-[120px]">${this.escapeHtml(wt.name)}</button>
+                  <button onclick="app.openTeamModal(${wt.entry_id})" class="text-[10px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400 bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 px-1.5 py-0.5 rounded-lg border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer truncate max-w-[120px]">${this.escapeHtml(wt.name)}</button>
                 `).join('')}
               </div>
             `;
@@ -15021,82 +15004,82 @@ selectShi62GW(gwName) {
 
           recordsContainer.innerHTML = `
             <!-- Card 1: Highest Single GW Score -->
-            <div class="glass-card rounded-2xl p-3 sm:p-4 border border-amber-200/60 dark:border-amber-900/40 relative overflow-hidden flex flex-col justify-between">
+            <div class="glass-card rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 dark:border-slate-800/80 relative overflow-hidden flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
               <div class="flex items-center justify-between gap-1.5 mb-1.5">
-                <span class="text-[9.5px] sm:text-[10px] uppercase font-bold text-amber-700 dark:text-amber-300 font-display truncate">${isEn ? 'Highest Single GW' : 'คะแนนสูงสุด 1 GW'}</span>
-                <span class="w-6 h-6 rounded-lg bg-amber-500/10 dark:bg-amber-400/15 flex items-center justify-center flex-shrink-0 text-amber-600 dark:text-amber-400">
+                <span class="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider truncate">${isEn ? 'Highest Single GW' : 'คะแนนสูงสุดต่อสัปดาห์'}</span>
+                <span class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center flex-shrink-0 text-slate-500 dark:text-slate-400" aria-hidden="true">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                 </span>
               </div>
               <div>
-                <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display tracking-tight">${highGW.score} <span class="text-xs font-bold text-amber-500">PTS</span></div>
+                <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display tracking-tight tabular-nums">${highGW.score} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500 font-mono">PTS</span></div>
                 <div class="mt-1">
-                  ${highGW.entry_id ? `<button onclick="app.openTeamModal(${highGW.entry_id})" class="text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-amber-500 dark:hover:text-amber-400 transition-colors truncate block text-left cursor-pointer w-full">${this.escapeHtml(highGW.team)}</button>` : `<span class="text-xs font-bold text-slate-700 dark:text-slate-300 truncate block">${this.escapeHtml(highGW.team)}</span>`}
+                  ${highGW.entry_id ? `<button onclick="app.openTeamModal(${highGW.entry_id})" class="text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400 transition-colors truncate block text-left cursor-pointer w-full">${this.escapeHtml(highGW.team)}</button>` : `<span class="text-xs font-bold text-slate-700 dark:text-slate-300 truncate block">${this.escapeHtml(highGW.team)}</span>`}
                 </div>
               </div>
-              <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 font-display">
+              <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 font-display">
                 <span>Gameweek ${highGW.gw}</span>
-                <span class="font-bold text-amber-600 dark:text-amber-400">${isEn ? 'Record' : 'สถิติสูงสุด'}</span>
+                <span class="font-medium text-slate-500 dark:text-slate-400">${highGW.score > 0 ? (isEn ? 'Record High' : 'สถิติสูงสุด') : '-'}</span>
               </div>
             </div>
 
             <!-- Card 2: Most Gameweek Wins -->
-            <div class="glass-card rounded-2xl p-3 sm:p-4 border border-yellow-200/60 dark:border-yellow-900/40 relative overflow-hidden flex flex-col justify-between">
+            <div class="glass-card rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 dark:border-slate-800/80 relative overflow-hidden flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
               <div class="flex items-center justify-between gap-1.5 mb-1.5">
-                <span class="text-[9.5px] sm:text-[10px] uppercase font-bold text-yellow-700 dark:text-yellow-300 font-display truncate">${isEn ? 'Most GW #1 Wins' : 'ครองอันดับ 1 บ่อยสุด'}</span>
-                <span class="w-6 h-6 rounded-lg bg-yellow-500/10 dark:bg-yellow-400/15 flex items-center justify-center flex-shrink-0 text-yellow-600 dark:text-yellow-400">
+                <span class="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider truncate">${isEn ? 'Most GW #1 Wins' : 'ครองอันดับ 1 มากที่สุด'}</span>
+                <span class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center flex-shrink-0 text-slate-500 dark:text-slate-400" aria-hidden="true">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3h14v4a5 5 0 01-5 5h-4a5 5 0 01-5-5V3zm2 4v0a3 3 0 003 3h4a3 3 0 003-3V5H7v2zm5 7v4m-4 4h8"/></svg>
                 </span>
               </div>
               <div>
-                <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display tracking-tight">${mostWinsDisplay} <span class="text-xs font-bold text-yellow-500">${isEn ? 'WINS' : 'ครั้ง'}</span></div>
+                <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display tracking-tight tabular-nums">${mostWinsDisplay} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500 font-mono">${isEn ? 'WINS' : 'ครั้ง'}</span></div>
                 <div class="mt-1">
                   ${mostWinsTeamsHtml}
                 </div>
               </div>
-              <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 font-display">
+              <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 font-display">
                 <span>${isEn ? 'Prize Eligible' : 'ชิงเงินรางวัล'}</span>
-                <span class="font-bold text-yellow-600 dark:text-yellow-400">${mostWinsTeams.length > 1 ? `${mostWinsTeams.length} ${isEn ? 'Teams' : 'ทีมร่วม'}` : (isEn ? 'Champion' : 'แชมป์สัปดาห์')}</span>
+                <span class="font-medium text-slate-500 dark:text-slate-400">${mostWinsTeams.length > 1 ? `${mostWinsTeams.length} ${isEn ? 'Tied Teams' : 'ทีมร่วม'}` : (isEn ? 'Sole Leader' : 'แชมป์เดี่ยว')}</span>
               </div>
             </div>
 
             <!-- Card 3: Overall Leader -->
-            <div class="glass-card rounded-2xl p-3 sm:p-4 border border-cyan-200/60 dark:border-cyan-900/40 relative overflow-hidden flex flex-col justify-between">
+            <div class="glass-card rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 dark:border-slate-800/80 relative overflow-hidden flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
               <div class="flex items-center justify-between gap-1.5 mb-1.5">
-                <span class="text-[9.5px] sm:text-[10px] uppercase font-bold text-cyan-700 dark:text-cyan-300 font-display truncate">${isEn ? 'Overall Leader' : 'จ่าฝูงชิงรางวัล'}</span>
-                <span class="w-6 h-6 rounded-lg bg-cyan-500/10 dark:bg-cyan-400/15 flex items-center justify-center flex-shrink-0 text-cyan-600 dark:text-cyan-400">
+                <span class="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider truncate">${isEn ? 'Overall Leader' : 'จ่าฝูงคะแนนรวม'}</span>
+                <span class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center flex-shrink-0 text-slate-500 dark:text-slate-400" aria-hidden="true">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
                 </span>
               </div>
               <div>
-                <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display tracking-tight">${leader.total_net} <span class="text-xs font-bold text-cyan-500">PTS</span></div>
+                <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display tracking-tight tabular-nums">${leader.total_net} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500 font-mono">PTS</span></div>
                 <div class="mt-1">
-                  ${leader.entry_id ? `<button onclick="app.openTeamModal(${leader.entry_id})" class="text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors truncate block text-left cursor-pointer w-full">${this.escapeHtml(leader.team_name)}</button>` : `<span class="text-xs font-bold text-slate-700 dark:text-slate-300 truncate block">${this.escapeHtml(leader.team_name)}</span>`}
+                  ${leader.entry_id ? `<button onclick="app.openTeamModal(${leader.entry_id})" class="text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400 transition-colors truncate block text-left cursor-pointer w-full">${this.escapeHtml(leader.team_name)}</button>` : `<span class="text-xs font-bold text-slate-700 dark:text-slate-300 truncate block">${this.escapeHtml(leader.team_name)}</span>`}
                 </div>
               </div>
-              <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 font-display">
+              <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 font-display">
                 <span class="truncate max-w-[130px] sm:max-w-none">${isNonPrizeOverallLead ? (isEn ? `*Friendly Lead: ${this.escapeHtml(overallTopLeader.team_name)}` : `*ร่วมสนุกนำ: ${this.escapeHtml(overallTopLeader.team_name)}`) : (isEn ? `Avg ${(leader.avg || 0).toFixed(1)} pts/GW` : `เฉลี่ย ${(leader.avg || 0).toFixed(1)} pts/GW`)}</span>
-                <span class="font-bold text-cyan-600 dark:text-cyan-400">#1 Net</span>
+                <span class="font-medium text-slate-500 dark:text-slate-400">#1 Net</span>
               </div>
             </div>
 
             <!-- Card 4: Best Single GW Bench -->
-            <div class="glass-card rounded-2xl p-3 sm:p-4 border border-purple-200/60 dark:border-purple-900/40 relative overflow-hidden flex flex-col justify-between">
+            <div class="glass-card rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 dark:border-slate-800/80 relative overflow-hidden flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
               <div class="flex items-center justify-between gap-1.5 mb-1.5">
-                <span class="text-[9.5px] sm:text-[10px] uppercase font-bold text-purple-700 dark:text-purple-300 font-display truncate">${isEn ? 'Best Single GW Bench' : 'สำรองสูงสุด 1 GW'}</span>
-                <span class="w-6 h-6 rounded-lg bg-purple-500/10 dark:bg-purple-400/15 flex items-center justify-center flex-shrink-0 text-purple-600 dark:text-purple-400">
+                <span class="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider truncate">${isEn ? 'Best Single GW Bench' : 'คะแนนสำรองสูงสุด'}</span>
+                <span class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center flex-shrink-0 text-slate-500 dark:text-slate-400" aria-hidden="true">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                 </span>
               </div>
               <div>
-                <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display tracking-tight">${bestBench.bench} <span class="text-xs font-bold text-purple-500">PTS</span></div>
+                <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display tracking-tight tabular-nums">${bestBench.bench} <span class="text-xs font-semibold text-slate-400 dark:text-slate-500 font-mono">PTS</span></div>
                 <div class="mt-1">
-                  ${bestBench.entry_id ? `<button onclick="app.openTeamModal(${bestBench.entry_id})" class="text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-purple-500 dark:hover:text-purple-400 transition-colors truncate block text-left cursor-pointer w-full">${this.escapeHtml(bestBench.team)}</button>` : `<span class="text-xs font-bold text-slate-700 dark:text-slate-300 truncate block">${this.escapeHtml(bestBench.team)}</span>`}
+                  ${bestBench.entry_id ? `<button onclick="app.openTeamModal(${bestBench.entry_id})" class="text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400 transition-colors truncate block text-left cursor-pointer w-full">${this.escapeHtml(bestBench.team)}</button>` : `<span class="text-xs font-bold text-slate-700 dark:text-slate-300 truncate block">${this.escapeHtml(bestBench.team)}</span>`}
                 </div>
               </div>
-              <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 font-display">
+              <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 font-display">
                 <span>Gameweek ${bestBench.gw}</span>
-                <span class="font-bold text-purple-600 dark:text-purple-400">${isEn ? 'Bench Power' : 'ตัวสำรองระเบิด'}</span>
+                <span class="font-medium text-slate-500 dark:text-slate-400">${isEn ? 'Bench Power' : 'ตัวสำรองแต้มสูง'}</span>
               </div>
             </div>
           `;
@@ -15120,7 +15103,7 @@ selectShi62GW(gwName) {
           { id: 'all', label: isEn ? 'All Teams' : 'ทุกทีม', count: totalCount },
           { id: 'top10', label: isEn ? 'Top 10' : '10 อันดับแรก', count: top10Count },
           { id: 'prize', label: isEn ? 'Prize Contenders' : 'ชิงเงินรางวัล', count: prizeCount },
-          { id: 'winners', label: isEn ? 'GW Winners' : 'เคยได้แชมป์ GW', count: winnersCount }
+          { id: 'winners', label: isEn ? 'GW Winners' : 'เคยได้แชมป์สัปดาห์', count: winnersCount }
         ];
 
         let html = '';
@@ -15130,10 +15113,10 @@ selectShi62GW(gwName) {
             <button 
               type="button"
               onclick="app.setHofFilter('${f.id}')" 
-              class="px-2.5 sm:px-3 py-1 rounded-xl font-bold font-display text-[11px] sm:text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 ${isActive ? 'bg-amber-500 text-slate-950 shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}"
+              class="px-2.5 sm:px-3 py-1 rounded-xl font-bold font-display text-[11px] sm:text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 ${isActive ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs font-black' : 'bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 font-semibold'}"
             >
               <span>${f.label}</span>
-              <span class="text-[10px] opacity-75 font-semibold">(${f.count})</span>
+              <span class="text-[10px] opacity-75 font-semibold font-mono">(${f.count})</span>
             </button>
           `;
         });
@@ -15225,9 +15208,11 @@ selectShi62GW(gwName) {
           const el = document.getElementById(`hof-th-${col.id}`);
           if (el) {
             if (this.hofSortBy === col.key) {
-              el.classList.add('text-amber-600', 'dark:text-amber-400');
+              el.classList.add('text-slate-900', 'dark:text-white', 'font-black');
+              el.classList.remove('text-slate-500', 'dark:text-slate-400');
             } else {
-              el.classList.remove('text-amber-600', 'dark:text-amber-400');
+              el.classList.remove('text-slate-900', 'dark:text-white', 'font-black');
+              el.classList.add('text-slate-500', 'dark:text-slate-400');
             }
           }
         });
@@ -15264,7 +15249,7 @@ selectShi62GW(gwName) {
           sortSelect.value = sortKey;
         }
 
-        // 6. Render Table Rows
+        // 6. Render Table Rows with Sticky Columns & Refined Hierarchy
         if (list.length === 0) {
           tableBody.innerHTML = `
             <tr>
@@ -15284,13 +15269,13 @@ selectShi62GW(gwName) {
           if (!t.isPrize) {
             rankBadge = this.getNonPrizeRankBadge();
           } else if (t.hof_rank === 1) {
-            rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400/20 text-amber-600 dark:text-amber-400 border border-amber-400/50 font-black text-xs shadow-2xs font-display">1</span>`;
+            rankBadge = `<span class="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-black text-xs font-display">1</span>`;
           } else if (t.hof_rank === 2) {
-            rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-300/30 text-slate-700 dark:text-slate-200 border border-slate-300/60 font-black text-xs shadow-2xs font-display">2</span>`;
+            rankBadge = `<span class="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300/60 dark:border-slate-700 font-bold text-xs font-display">2</span>`;
           } else if (t.hof_rank === 3) {
-            rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-700/20 text-amber-700 dark:text-amber-500 border border-amber-700/40 font-black text-xs shadow-2xs font-display">3</span>`;
+            rankBadge = `<span class="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 font-bold text-xs font-display">3</span>`;
           } else {
-            rankBadge = `<span class="text-slate-500 dark:text-slate-400 font-bold font-display">${t.hof_rank}</span>`;
+            rankBadge = `<span class="text-slate-400 dark:text-slate-500 font-semibold font-display text-xs">${t.hof_rank}</span>`;
           }
 
           const avgDisp = t.scores.length > 0 ? t.avg.toFixed(1) : '-';
@@ -15300,23 +15285,23 @@ selectShi62GW(gwName) {
           const winsDisp = (t.wins % 1 === 0) ? t.wins : t.wins.toFixed(1);
 
           html += `
-            <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
-              <td class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap">${rankBadge}</td>
-              <td class="py-2.5 px-2 sm:px-3 min-w-0">
+            <tr class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+              <td class="py-2.5 px-2 text-center whitespace-nowrap sticky left-0 z-20 bg-white/95 dark:bg-slate-900/95 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 transition-colors">${rankBadge}</td>
+              <td class="py-2.5 px-2 sm:px-3 min-w-[130px] sm:min-w-[180px] sticky left-9 sm:left-11 z-20 bg-white/95 dark:bg-slate-900/95 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/90 transition-colors border-r border-slate-200/80 dark:border-slate-800/80 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.3)]">
                 <div class="flex items-center gap-1.5 flex-wrap">
-                  <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer block truncate max-w-[130px] xs:max-w-[180px] sm:max-w-none">${this.escapeHtml(t.team_name)}</button>
+                  <button onclick="app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer block truncate max-w-[110px] xs:max-w-[140px] sm:max-w-[180px] md:max-w-none">${this.escapeHtml(t.team_name)}</button>
                   ${this.getPrizeBadge(t.entry_id)}
                 </div>
-                <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(t.player_name || '')}</div>
+                <div class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 truncate">${this.escapeHtml(t.player_name || '')}</div>
               </td>
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold whitespace-nowrap ${t.wins > 0 ? 'text-amber-600 dark:text-amber-400 font-black' : 'text-slate-500 dark:text-slate-400'}">${winsDisp}</td>
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold whitespace-nowrap ${t.wins > 0 ? 'text-amber-600 dark:text-amber-400 font-black' : 'text-slate-400 dark:text-slate-500'}">${winsDisp}</td>
               <td class="py-2.5 px-1 sm:px-2 text-center font-display font-black text-slate-900 dark:text-white whitespace-nowrap">${avgDisp}</td>
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display text-emerald-600 dark:text-emerald-400 font-bold whitespace-nowrap">${highDisp}</td>
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display text-slate-500 dark:text-slate-400 whitespace-nowrap">${lowDisp}</td>
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display text-slate-700 dark:text-slate-300 font-bold whitespace-nowrap">${highDisp}</td>
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display text-slate-400 dark:text-slate-500 whitespace-nowrap">${lowDisp}</td>
               <td class="py-2.5 px-1 sm:px-2 text-center font-display whitespace-nowrap">
-                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] sm:text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${spreadDisp}</span>
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] sm:text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono">${spreadDisp}</span>
               </td>
-              <td class="py-2.5 px-1.5 sm:px-3 text-right font-display whitespace-nowrap ${t.total_hits > 0 ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-400 dark:text-slate-500'}">${t.total_hits > 0 ? `-${t.total_hits}` : '-'}</td>
+              <td class="py-2.5 px-1.5 sm:px-3 text-right font-display whitespace-nowrap ${t.total_hits > 0 ? 'text-rose-600/80 dark:text-rose-400/80 font-semibold font-mono' : 'text-slate-400 dark:text-slate-500 font-mono'}">${t.total_hits > 0 ? `-${t.total_hits}` : '-'}</td>
             </tr>
           `;
         });
