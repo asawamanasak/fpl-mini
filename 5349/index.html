@@ -1213,7 +1213,7 @@
       <div class="inline-flex items-center max-w-full">
         <span id="header-deadline-badge" class="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs max-w-full" title="เส้นตายการจัดทีม Gameweek ถัดไป">
           <svg class="w-3 h-3 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          <span id="header-deadline-val" class="font-mono tabular-nums truncate">เส้นตาย GW 11: 9 วัน 16:07:55</span>
+          <span id="header-deadline-val" class="font-mono tabular-nums truncate">เส้นตาย GW 11: 9 วัน 15:17:34</span>
         </span>
       </div>
     </div>
@@ -8371,6 +8371,38 @@ selectShi62GW(gwName) {
           `;
         }
 
+        const existingBramannTbody = document.getElementById('bramann-prizes-tbody');
+        const existingBramannInput = document.getElementById('bramann-prizes-search-input');
+        if (existingBramannTbody && existingBramannInput) {
+          existingBramannTbody.innerHTML = tableRowsHtml;
+          const countEl = document.getElementById('bramann-prizes-count');
+          if (countEl) {
+            if (searchQuery || filterMode !== 'all') {
+              countEl.innerText = isEn ? `Showing ${filteredTeams.length} of ${overallSorted.length} teams` : `แสดง ${filteredTeams.length} จาก ${overallSorted.length} ทีม`;
+              countEl.classList.remove('hidden');
+            } else {
+              countEl.classList.add('hidden');
+            }
+          }
+          const clearBtn = document.getElementById('bramann-prizes-search-clear');
+          if (clearBtn) {
+            if (this.prizesSearchQuery) clearBtn.classList.remove('hidden');
+            else clearBtn.classList.add('hidden');
+          }
+          ['all', 'winners', 'fined', 'non_prize'].forEach(m => {
+            const btn = document.getElementById(`btn-bramann-filter-${m}`);
+            if (btn) {
+              const isAct = (this.prizesFilterMode === m);
+              btn.setAttribute('aria-pressed', isAct ? 'true' : 'false');
+              btn.className = `min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${isAct ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}`;
+            }
+          });
+          if (existingBramannInput.value !== (this.prizesSearchQuery || '')) {
+            existingBramannInput.value = this.prizesSearchQuery || '';
+          }
+          return;
+        }
+
         if (mainContainer) {
           mainContainer.innerHTML = `
             <!-- 01 / BRAMANN DUAL-PRIZE STRUCTURE -->
@@ -8445,40 +8477,37 @@ selectShi62GW(gwName) {
                 </div>
                 <!-- Search & Filters -->
                 <div class="flex items-center gap-2 flex-wrap">
-                  ${(searchQuery || filterMode !== 'all') ? `
-                    <span class="inline-flex items-center text-[11px] font-mono font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-shrink-0">
-                      ${isEn ? `Showing ${filteredTeams.length} of ${overallSorted.length} teams` : `แสดง ${filteredTeams.length} จาก ${overallSorted.length} ทีม`}
-                    </span>
-                  ` : ''}
+                  <span id="bramann-prizes-count" class="${(searchQuery || filterMode !== 'all') ? '' : 'hidden '}inline-flex items-center text-[11px] font-mono font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-shrink-0">
+                    ${isEn ? `Showing ${filteredTeams.length} of ${overallSorted.length} teams` : `แสดง ${filteredTeams.length} จาก ${overallSorted.length} ทีม`}
+                  </span>
                   <div class="relative min-w-[140px] xs:min-w-[180px] max-w-xs flex-1">
                     <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
                       <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </span>
                     <input 
                       type="text" 
+                      id="bramann-prizes-search-input"
                       value="${this.escapeHtml(this.prizesSearchQuery || '')}" 
                       oninput="app.handlePrizesSearch(this.value)"
                       aria-label="${isEn ? 'Search team name or manager' : 'ค้นหาชื่อทีมหรือผู้จัดการ'}"
                       placeholder="${isEn ? 'Search team...' : 'ค้นหาทีม...'}"
                       class="w-full pl-8 pr-7 py-2 min-h-[38px] sm:min-h-[34px] text-xs bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-400 transition-all font-sans"
                     />
-                    ${this.prizesSearchQuery ? `
-                      <button onclick="app.handlePrizesSearch('')" class="absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                      </button>
-                    ` : ''}
+                    <button id="bramann-prizes-search-clear" onclick="app.handlePrizesSearch('')" class="${this.prizesSearchQuery ? '' : 'hidden '}absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
                   </div>
                   <div class="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-wrap">
-                    <button type="button" onclick="app.setPrizesFilter('all')" aria-pressed="${this.prizesFilterMode === 'all' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'all' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
+                    <button id="btn-bramann-filter-all" type="button" onclick="app.setPrizesFilter('all')" aria-pressed="${this.prizesFilterMode === 'all' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'all' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
                       ${isEn ? 'All' : 'ทั้งหมด'}
                     </button>
-                    <button type="button" onclick="app.setPrizesFilter('winners')" aria-pressed="${this.prizesFilterMode === 'winners' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'winners' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
+                    <button id="btn-bramann-filter-winners" type="button" onclick="app.setPrizesFilter('winners')" aria-pressed="${this.prizesFilterMode === 'winners' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'winners' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
                       ${isEn ? 'Winners' : 'มีรางวัล'}
                     </button>
-                    <button type="button" onclick="app.setPrizesFilter('fined')" aria-pressed="${this.prizesFilterMode === 'fined' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'fined' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
+                    <button id="btn-bramann-filter-fined" type="button" onclick="app.setPrizesFilter('fined')" aria-pressed="${this.prizesFilterMode === 'fined' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'fined' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
                       ${isEn ? 'Paying' : 'จ่ายส่วนต่าง'}
                     </button>
-                    <button type="button" onclick="app.setPrizesFilter('non_prize')" aria-pressed="${this.prizesFilterMode === 'non_prize' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'non_prize' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
+                    <button id="btn-bramann-filter-non_prize" type="button" onclick="app.setPrizesFilter('non_prize')" aria-pressed="${this.prizesFilterMode === 'non_prize' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'non_prize' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
                       ${isEn ? 'Guest' : 'ร่วมสนุก'}
                     </button>
                   </div>
@@ -8501,7 +8530,7 @@ selectShi62GW(gwName) {
                       <th scope="col" class="py-2.5 px-3 text-right min-w-[110px] font-black">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                  <tbody id="bramann-prizes-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
                     ${tableRowsHtml}
                   </tbody>
                   <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-mono text-xs sm:text-sm font-bold">
@@ -10916,13 +10945,17 @@ selectShi62GW(gwName) {
       }
 
       setCompDiffPosFilter(pos) {
-        this.compDiffPosFilter = pos;
-        this.renderCompetitionDiffPlayersOnly();
+        this.preserveInputFocus(() => {
+          this.compDiffPosFilter = pos;
+          this.renderCompetitionDiffPlayersOnly();
+        });
       }
 
       setCompDiffSearch(val) {
-        this.compDiffSearch = (val || '').toLowerCase().trim();
-        this.renderCompetitionDiffPlayersOnly();
+        this.preserveInputFocus(() => {
+          this.compDiffSearch = (val || '').toLowerCase().trim();
+          this.renderCompetitionDiffPlayersOnly();
+        });
       }
 
       setCompTransferTeam(entryId) {
@@ -11060,19 +11093,23 @@ selectShi62GW(gwName) {
       }
 
       setTransfersFilter(filter) {
-        if (this.transfersFilter === filter && filter !== 'all') {
-          this.transfersFilter = 'all';
-        } else {
-          this.transfersFilter = filter;
-        }
-        const teams = this.getLeaderboardTeams();
-        this.renderTransfersWeeklyAnalytics(teams, teams.length, this.selectedGW);
+        this.preserveInputFocus(() => {
+          if (this.transfersFilter === filter && filter !== 'all') {
+            this.transfersFilter = 'all';
+          } else {
+            this.transfersFilter = filter;
+          }
+          const teams = this.getLeaderboardTeams();
+          this.renderTransfersWeeklyAnalytics(teams, teams.length, this.selectedGW);
+        });
       }
 
       setTransfersSearch(val) {
-        this.transfersSearch = (val || '').toLowerCase().trim();
-        const teams = this.getLeaderboardTeams();
-        this.renderTransfersWeeklyAnalytics(teams, teams.length, this.selectedGW);
+        this.preserveInputFocus(() => {
+          this.transfersSearch = (val || '').toLowerCase().trim();
+          const teams = this.getLeaderboardTeams();
+          this.renderTransfersWeeklyAnalytics(teams, teams.length, this.selectedGW);
+        });
       }
 
       renderTransfersView() {
@@ -11294,6 +11331,36 @@ selectShi62GW(gwName) {
           'best': isEn ? 'Best Deal of GW' : 'ดีลยอดเยี่ยม'
         };
 
+        const cardsListHtml = this.renderTransfersCardsListHtml(filteredRows, isEn);
+
+        const existingCards = document.getElementById('transfers-cards-list');
+        const existingInput = document.getElementById('transfers-search-input');
+        if (existingCards && existingInput) {
+          existingCards.innerHTML = cardsListHtml;
+          const badgeEl = document.getElementById('transfers-filter-badge');
+          if (badgeEl) {
+            badgeEl.innerText = `${filterLabels[activeFilter] || activeFilter} (${filteredRows.length})`;
+            badgeEl.className = `inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold ${activeFilter === 'all' ? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300' : 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs'}`;
+          }
+          const clearBtn = document.getElementById('transfers-search-clear');
+          if (clearBtn) {
+            if (this.transfersSearch) clearBtn.classList.remove('hidden');
+            else clearBtn.classList.add('hidden');
+          }
+          ['transferred', 'hits', 'profit', 'best'].forEach(k => {
+            const btn = document.getElementById(`kpi-btn-transfers-${k}`);
+            if (btn) {
+              const isAct = (activeFilter === k);
+              btn.setAttribute('aria-pressed', isAct ? 'true' : 'false');
+              btn.className = `text-left rounded-2xl p-3 sm:p-4 border transition-all duration-150 cursor-pointer flex flex-col justify-between shadow-2xs group ${isAct ? 'border-slate-900 dark:border-white ring-2 ring-slate-900/15 dark:ring-white/20 bg-slate-50/90 dark:bg-slate-800/80' : 'border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/70 hover:border-slate-400 dark:hover:border-slate-600'}`;
+            }
+          });
+          if (existingInput.value !== (this.transfersSearch || '')) {
+            existingInput.value = this.transfersSearch || '';
+          }
+          return;
+        }
+
         container.innerHTML = `
           <div class="glass-card rounded-2xl p-4 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-2xs space-y-4">
             
@@ -11324,6 +11391,7 @@ selectShi62GW(gwName) {
               
               <!-- KPI 1: Total Transfers -->
               <button 
+                id="kpi-btn-transfers-transferred"
                 type="button"
                 onclick="app.setTransfersFilter('transferred')"
                 aria-pressed="${activeFilter === 'transferred'}"
@@ -11355,6 +11423,7 @@ selectShi62GW(gwName) {
 
               <!-- KPI 2: Hits Cost -->
               <button 
+                id="kpi-btn-transfers-hits"
                 type="button"
                 onclick="app.setTransfersFilter('hits')"
                 aria-pressed="${activeFilter === 'hits'}"
@@ -11386,6 +11455,7 @@ selectShi62GW(gwName) {
 
               <!-- KPI 3: Net Impact -->
               <button 
+                id="kpi-btn-transfers-profit"
                 type="button"
                 onclick="app.setTransfersFilter('profit')"
                 aria-pressed="${activeFilter === 'profit'}"
@@ -11417,6 +11487,7 @@ selectShi62GW(gwName) {
 
               <!-- KPI 4: Best Transfer of the Week -->
               <button 
+                id="kpi-btn-transfers-best"
                 type="button"
                 onclick="app.setTransfersFilter('best')"
                 aria-pressed="${activeFilter === 'best'}"
@@ -11462,7 +11533,7 @@ selectShi62GW(gwName) {
                 <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">
                   ${isEn ? 'Filter:' : 'ตัวกรอง:'}
                 </span>
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold ${activeFilter === 'all' ? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300' : 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs'}">
+                <span id="transfers-filter-badge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-bold ${activeFilter === 'all' ? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300' : 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs'}">
                   ${filterLabels[activeFilter] || activeFilter} (${filteredRows.length})
                 </span>
                 ${activeFilter !== 'all' ? `
@@ -11482,168 +11553,175 @@ selectShi62GW(gwName) {
                 </span>
                 <input 
                   type="text" 
+                  id="transfers-search-input"
                   value="${this.escapeHtml(this.transfersSearch || '')}"
                   placeholder="${isEn ? 'Search team, manager, player...' : 'ค้นหาทีม, ผู้จัดการ, นักเตะ...'}"
                   oninput="app.setTransfersSearch(this.value)"
                   class="w-full bg-slate-50/90 dark:bg-slate-800/80 text-slate-800 dark:text-white text-xs border border-slate-200 dark:border-slate-700/80 rounded-xl pl-9 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 transition-all shadow-2xs"
                 />
-                ${this.transfersSearch ? `
-                  <button onclick="app.setTransfersSearch('')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer p-0.5">✕</button>
-                ` : ''}
+                <button id="transfers-search-clear" onclick="app.setTransfersSearch('')" class="${this.transfersSearch ? '' : 'hidden '}absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer p-0.5">✕</button>
               </div>
             </div>
 
             <!-- List of Manager Transfer Cards -->
-            <div class="space-y-2.5">
-              ${filteredRows.length === 0 ? `
-                <div class="py-10 px-4 text-center rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 my-3">
-                  <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 mb-2.5">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                  </div>
-                  <div class="text-xs font-bold text-slate-700 dark:text-slate-300">
-                    ${isEn ? 'No teams match the selected filter or search keyword' : 'ไม่พบทีมที่ตรงกับตัวกรองหรือคำค้นหา'}
-                  </div>
-                  <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
-                    ${isEn ? 'Try adjusting your search query or reset filters to display all league transfers.' : 'ลองเปลี่ยนคำค้นหา หรือกดล้างตัวกรองเพื่อแสดงรายชื่อทีมและการย้ายตัวทั้งหมด'}
-                  </div>
-                  <div class="mt-3.5">
-                    <button onclick="app.setTransfersFilter('all'); app.setTransfersSearch('');" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold font-display shadow-2xs transition-colors cursor-pointer">
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                      <span>${isEn ? 'Reset All Filters' : 'ล้างตัวกรองทั้งหมด'}</span>
-                    </button>
-                  </div>
-                </div>
-              ` : filteredRows.map(row => {
-                const isPrize = this.isPrizeEligible(row.team.entry_id);
-                const rankBadge = isPrize 
-                  ? this.getRankBadge(row.team.leaderboard_rank)
-                  : this.getNonPrizeRankBadge();
-                const prizeBadge = this.getPrizeBadge(row.team.entry_id);
-
-                let chipBadge = '';
-                if (row.chip) {
-                  const cLow = String(row.chip).toLowerCase().trim().replace(/_/g, '');
-                  let cText = row.chip;
-                  if (cLow === 'wildcard') cText = 'Wildcard';
-                  else if (cLow === 'freehit') cText = 'Free Hit';
-                  else if (cLow === '3xc' || cLow === 'triplecaptain') cText = '3xC';
-                  else if (cLow === 'bboost' || cLow === 'benchboost') cText = 'Bench Boost';
-                  chipBadge = `
-                    <span class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold uppercase border bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700">
-                      ${cText}
-                    </span>
-                  `;
-                }
-
-                const hitBadge = row.hits > 0 ? `
-                  <span class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
-                    -${row.hits} pts
-                  </span>
-                ` : '';
-
-                const transferCountText = row.transfers_count === 0 
-                  ? (isEn ? '0 Transfer (Rolled FT)' : '0 ย้ายตัว (สะสมสิทธิ์)')
-                  : (isEn ? `${row.transfers_count} ${row.transfers_count === 1 ? 'Transfer' : 'Transfers'}` : `ย้าย ${row.transfers_count} คน`);
-
-                // Net impact badge styling
-                let netBadgeClass = 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700';
-                let netSign = '';
-                if (row.net > 0) {
-                  netBadgeClass = 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
-                  netSign = '+';
-                } else if (row.net < 0) {
-                  netBadgeClass = 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800';
-                }
-
-                return `
-                  <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/70 p-3.5 sm:p-4 hover:border-slate-400/80 dark:hover:border-slate-600 hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-2xs group max-w-full overflow-hidden">
-                    
-                    <!-- Left: Manager & Status -->
-                    <div class="flex items-center gap-2.5 w-full md:w-auto md:min-w-[220px]">
-                      <div class="w-[32px] min-w-[32px] text-center flex-shrink-0">
-                        ${rankBadge}
-                      </div>
-                      <div class="truncate">
-                        <button onclick="app.openTeamModal(${row.team.entry_id})" class="text-left group cursor-pointer block truncate">
-                          <div class="flex items-center gap-1.5 flex-wrap">
-                            <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
-                              ${this.escapeHtml(row.team.entry_name || '-')}
-                            </span>
-                            ${prizeBadge}
-                            ${chipBadge}
-                          </div>
-                          <div class="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">
-                            <span>${this.escapeHtml(row.team.player_name || '-')}</span>
-                            <span>•</span>
-                            <span class="font-semibold ${row.transfers_count > 0 ? 'text-slate-900 dark:text-white' : 'text-slate-400'}">${transferCountText}</span>
-                            ${hitBadge}
-                          </div>
-                        </button>
-                      </div>
-                    </div>
-
-                    <!-- Center: Transfer Moves -->
-                    <div class="flex-1 min-w-0 max-w-full">
-                      ${row.moves.length > 0 ? `
-                        <div class="flex flex-wrap items-center gap-2">
-                          ${row.moves.map(m => {
-                            const mNet = Number(m.net) || 0;
-                            const mNetClass = mNet > 0 
-                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' 
-                              : (mNet < 0 
-                                ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30' 
-                                : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700');
-                            const mNetSign = mNet > 0 ? '+' : '';
-                            return `
-                              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-50/90 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/70 text-xs shadow-2xs flex-wrap max-w-full">
-                                <span class="text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1 min-w-0">
-                                  <span class="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-extrabold flex-shrink-0">${isEn ? 'IN' : 'เข้า'}</span>
-                                  <span class="truncate max-w-[95px] sm:max-w-none">${this.escapeHtml(m.in || '-')}</span>
-                                  <span class="text-[10px] font-normal text-emerald-600/80 dark:text-emerald-400/80 font-mono flex-shrink-0">(${m.in_pts || 0}p)</span>
-                                </span>
-                                <span class="text-slate-400 dark:text-slate-500 text-xs font-bold flex-shrink-0">➔</span>
-                                <span class="text-rose-600 dark:text-rose-400 font-medium flex items-center gap-1 min-w-0">
-                                  <span class="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 font-extrabold flex-shrink-0">${isEn ? 'OUT' : 'ออก'}</span>
-                                  <span class="truncate max-w-[95px] sm:max-w-none">${this.escapeHtml(m.out || '-')}</span>
-                                  <span class="text-[10px] font-normal text-rose-500/80 dark:text-rose-400/80 font-mono flex-shrink-0">(${m.out_pts || 0}p)</span>
-                                </span>
-                                <span class="ml-1 px-1.5 py-0.5 rounded-md text-[10.5px] font-mono font-bold border flex-shrink-0 ${mNetClass}">
-                                  ${mNetSign}${mNet} pts
-                                </span>
-                              </div>
-                            `;
-                          }).join('')}
-                        </div>
-                      ` : `
-                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-dashed border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 max-w-full">
-                          <span class="w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-500 text-[10px] flex-shrink-0 font-mono">✓</span>
-                          <span class="font-medium truncate">${isEn ? 'No transfers made • Rolled Free Transfer for next GW' : 'ไม่มีการย้ายตัวในสัปดาห์นี้ • สะสมโควตาย้ายตัวฟรีไปสัปดาห์ถัดไป'}</span>
-                        </div>
-                      `}
-                    </div>
-
-                    <!-- Right: Net Points Impact Badge -->
-                    <div class="flex items-center justify-between md:justify-end gap-3 flex-shrink-0 pt-2.5 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-slate-800/80 w-full md:w-auto">
-                      <div class="md:hidden text-[11px] text-slate-400 font-medium">
-                        ${isEn ? 'Net Gameweek Impact:' : 'ผลตอบแทนแต้มสุทธิ:'}
-                      </div>
-                      <div class="flex flex-col items-end">
-                        <span class="hidden md:block text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 font-display mb-0.5">
-                          ${isEn ? 'Net Impact' : 'แต้มสุทธิ'}
-                        </span>
-                        <div class="text-xs sm:text-sm font-black px-2.5 py-1 rounded-xl border font-mono shadow-2xs tabular-nums ${netBadgeClass}">
-                          ${row.transfers_count > 0 ? `${netSign}${row.net} pts` : '0 pts'}
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-                `;
-              }).join('')}
+            <div id="transfers-cards-list" class="space-y-2.5">
+              ${cardsListHtml}
             </div>
 
           </div>
         `;
+      }
+
+      renderTransfersCardsListHtml(filteredRows, isEn) {
+        if (!filteredRows || filteredRows.length === 0) {
+          return `
+            <div class="py-10 px-4 text-center rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 my-3">
+              <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 mb-2.5">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              </div>
+              <div class="text-xs font-bold text-slate-700 dark:text-slate-300">
+                ${isEn ? 'No teams match the selected filter or search keyword' : 'ไม่พบทีมที่ตรงกับตัวกรองหรือคำค้นหา'}
+              </div>
+              <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
+                ${isEn ? 'Try adjusting your search query or reset filters to display all league transfers.' : 'ลองเปลี่ยนคำค้นหา หรือกดล้างตัวกรองเพื่อแสดงรายชื่อทีมและการย้ายตัวทั้งหมด'}
+              </div>
+              <div class="mt-3.5">
+                <button onclick="app.setTransfersFilter('all'); app.setTransfersSearch('');" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold font-display shadow-2xs transition-colors cursor-pointer">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                  <span>${isEn ? 'Reset All Filters' : 'ล้างตัวกรองทั้งหมด'}</span>
+                </button>
+              </div>
+            </div>
+          `;
+        }
+
+        return filteredRows.map(row => {
+          const isPrize = this.isPrizeEligible(row.team.entry_id);
+          const rankBadge = isPrize 
+            ? this.getRankBadge(row.team.leaderboard_rank)
+            : this.getNonPrizeRankBadge();
+          const prizeBadge = this.getPrizeBadge(row.team.entry_id);
+
+          let chipBadge = '';
+          if (row.chip) {
+            const cLow = String(row.chip).toLowerCase().trim().replace(/_/g, '');
+            let cText = row.chip;
+            if (cLow === 'wildcard') cText = 'Wildcard';
+            else if (cLow === 'freehit') cText = 'Free Hit';
+            else if (cLow === '3xc' || cLow === 'triplecaptain') cText = '3xC';
+            else if (cLow === 'bboost' || cLow === 'benchboost') cText = 'Bench Boost';
+            chipBadge = `
+              <span class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold uppercase border bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700">
+                ${cText}
+              </span>
+            `;
+          }
+
+          const hitBadge = row.hits > 0 ? `
+            <span class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
+              -${row.hits} pts
+            </span>
+          ` : '';
+
+          const transferCountText = row.transfers_count === 0 
+            ? (isEn ? '0 Transfer (Rolled FT)' : '0 ย้ายตัว (สะสมสิทธิ์)')
+            : (isEn ? `${row.transfers_count} ${row.transfers_count === 1 ? 'Transfer' : 'Transfers'}` : `ย้าย ${row.transfers_count} คน`);
+
+          // Net impact badge styling
+          let netBadgeClass = 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700';
+          let netSign = '';
+          if (row.net > 0) {
+            netBadgeClass = 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
+            netSign = '+';
+          } else if (row.net < 0) {
+            netBadgeClass = 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800';
+          }
+
+          return `
+            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900/70 p-3.5 sm:p-4 hover:border-slate-400/80 dark:hover:border-slate-600 hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-2xs group max-w-full overflow-hidden">
+              
+              <!-- Left: Manager & Status -->
+              <div class="flex items-center gap-2.5 w-full md:w-auto md:min-w-[220px]">
+                <div class="w-[32px] min-w-[32px] text-center flex-shrink-0">
+                  ${rankBadge}
+                </div>
+                <div class="truncate">
+                  <button onclick="app.openTeamModal(${row.team.entry_id})" class="text-left group cursor-pointer block truncate">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+                        ${this.escapeHtml(row.team.entry_name || '-')}
+                      </span>
+                      ${prizeBadge}
+                      ${chipBadge}
+                    </div>
+                    <div class="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                      <span>${this.escapeHtml(row.team.player_name || '-')}</span>
+                      <span>•</span>
+                      <span class="font-semibold ${row.transfers_count > 0 ? 'text-slate-900 dark:text-white' : 'text-slate-400'}">${transferCountText}</span>
+                      ${hitBadge}
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Center: Transfer Moves -->
+              <div class="flex-1 min-w-0 max-w-full">
+                ${row.moves.length > 0 ? `
+                  <div class="flex flex-wrap items-center gap-2">
+                    ${row.moves.map(m => {
+                      const mNet = Number(m.net) || 0;
+                      const mNetClass = mNet > 0 
+                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' 
+                        : (mNet < 0 
+                          ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30' 
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700');
+                      const mNetSign = mNet > 0 ? '+' : '';
+                      return `
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-50/90 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/70 text-xs shadow-2xs flex-wrap max-w-full">
+                          <span class="text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1 min-w-0">
+                            <span class="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-extrabold flex-shrink-0">${isEn ? 'IN' : 'เข้า'}</span>
+                            <span class="truncate max-w-[95px] sm:max-w-none">${this.escapeHtml(m.in || '-')}</span>
+                            <span class="text-[10px] font-normal text-emerald-600/80 dark:text-emerald-400/80 font-mono flex-shrink-0">(${m.in_pts || 0}p)</span>
+                          </span>
+                          <span class="text-slate-400 dark:text-slate-500 text-xs font-bold flex-shrink-0">➔</span>
+                          <span class="text-rose-600 dark:text-rose-400 font-medium flex items-center gap-1 min-w-0">
+                            <span class="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 font-extrabold flex-shrink-0">${isEn ? 'OUT' : 'ออก'}</span>
+                            <span class="truncate max-w-[95px] sm:max-w-none">${this.escapeHtml(m.out || '-')}</span>
+                            <span class="text-[10px] font-normal text-rose-500/80 dark:text-rose-400/80 font-mono flex-shrink-0">(${m.out_pts || 0}p)</span>
+                          </span>
+                          <span class="ml-1 px-1.5 py-0.5 rounded-md text-[10.5px] font-mono font-bold border flex-shrink-0 ${mNetClass}">
+                            ${mNetSign}${mNet} pts
+                          </span>
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+                ` : `
+                  <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-dashed border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 max-w-full">
+                    <span class="w-4 h-4 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-500 text-[10px] flex-shrink-0 font-mono">✓</span>
+                    <span class="font-medium truncate">${isEn ? 'No transfers made • Rolled Free Transfer for next GW' : 'ไม่มีการย้ายตัวในสัปดาห์นี้ • สะสมโควตาย้ายตัวฟรีไปสัปดาห์ถัดไป'}</span>
+                  </div>
+                `}
+              </div>
+
+              <!-- Right: Net Points Impact Badge -->
+              <div class="flex items-center justify-between md:justify-end gap-3 flex-shrink-0 pt-2.5 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-slate-800/80 w-full md:w-auto">
+                <div class="md:hidden text-[11px] text-slate-400 font-medium">
+                  ${isEn ? 'Net Gameweek Impact:' : 'ผลตอบแทนแต้มสุทธิ:'}
+                </div>
+                <div class="flex flex-col items-end">
+                  <span class="hidden md:block text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 font-display mb-0.5">
+                    ${isEn ? 'Net Impact' : 'แต้มสุทธิ'}
+                  </span>
+                  <div class="text-xs sm:text-sm font-black px-2.5 py-1 rounded-xl border font-mono shadow-2xs tabular-nums ${netBadgeClass}">
+                    ${row.transfers_count > 0 ? `${netSign}${row.net} pts` : '0 pts'}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          `;
+        }).join('');
       }
 
       // --- Part 1: Cards Available & Live Spotlight ---
@@ -12378,7 +12456,7 @@ selectShi62GW(gwName) {
         const totalTeams = teams.length;
 
         const posFilter = this.compDiffPosFilter || 'ALL';
-        const search = this.compDiffSearch || '';
+        const search = (this.compDiffSearch || '').toLowerCase().trim();
 
         let diffList = Object.values(pCounts)
           .filter(p => (p.count / totalTeams) < 0.20 && p.count > 0)
@@ -12398,12 +12476,36 @@ selectShi62GW(gwName) {
 
         if (search) {
           diffList = diffList.filter(p => 
-            p.name.toLowerCase().includes(search) || 
-            p.team.toLowerCase().includes(search)
+            (p.name || '').toLowerCase().includes(search) || 
+            (p.team || '').toLowerCase().includes(search)
           );
         }
 
         const posClass = 'px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/60';
+
+        const diffListInnerHtml = this.renderCompetitionDiffListHtml(diffList, isEn, posFilter, search, totalTeams, defaultShirtUrl, posClass);
+
+        const existingDiffContainer = document.getElementById('comp-diff-list-container');
+        const existingDiffInput = document.getElementById('comp-diff-search-input');
+        if (existingDiffContainer && existingDiffInput) {
+          existingDiffContainer.innerHTML = diffListInnerHtml;
+          const clearBtn = document.getElementById('comp-diff-search-clear');
+          if (clearBtn) {
+            if (this.compDiffSearch) clearBtn.classList.remove('hidden');
+            else clearBtn.classList.add('hidden');
+          }
+          ['ALL', 'GKP', 'DEF', 'MID', 'FWD'].forEach(pos => {
+            const btn = document.getElementById(`btn-comp-diff-pos-${pos}`);
+            if (btn) {
+              const isActive = (this.compDiffPosFilter === pos);
+              btn.className = `px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${isActive ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/60'}`;
+            }
+          });
+          if (existingDiffInput.value !== (this.compDiffSearch || '')) {
+            existingDiffInput.value = this.compDiffSearch || '';
+          }
+          return;
+        }
 
         let diffHtml = `
           <div>
@@ -12431,7 +12533,7 @@ selectShi62GW(gwName) {
                   const posName = (pos === 'ALL') ? (isEn ? 'ALL' : 'ทั้งหมด') : pos;
                   const isActive = (this.compDiffPosFilter === pos);
                   return `
-                  <button onclick="app.setCompDiffPosFilter('${pos}')" class="px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${isActive ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/60'}">
+                  <button id="btn-comp-diff-pos-${pos}" onclick="app.setCompDiffPosFilter('${pos}')" class="px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${isActive ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/60'}">
                     ${posName} (${countsByPos[pos]})
                   </button>
                 `;}).join('')}
@@ -12444,23 +12546,28 @@ selectShi62GW(gwName) {
                 </span>
                 <input 
                   type="text" 
+                  id="comp-diff-search-input"
                   placeholder="${isEn ? 'Search differential player...' : 'ค้นหานักเตะทีเด็ด...'}" 
                   value="${this.escapeHtml(this.compDiffSearch)}"
                   oninput="app.setCompDiffSearch(this.value)"
                   class="w-full bg-slate-50/90 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 transition-all shadow-2xs"
                 />
-                ${this.compDiffSearch ? `
-                  <button onclick="app.setCompDiffSearch('')" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer p-0.5">✕</button>
-                ` : ''}
+                <button id="comp-diff-search-clear" onclick="app.setCompDiffSearch('')" class="${this.compDiffSearch ? '' : 'hidden '}absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer p-0.5">✕</button>
               </div>
             </div>
 
             <!-- Scrollable List of Differentials -->
-            <div class="max-h-[520px] overflow-y-auto space-y-2.5 pr-1 touch-scroll">
+            <div id="comp-diff-list-container" class="max-h-[520px] overflow-y-auto space-y-2.5 pr-1 touch-scroll">
+              ${diffListInnerHtml}
+            </div>
+          </div>
         `;
+        diffSection.innerHTML = diffHtml;
+      }
 
-        if (diffList.length === 0) {
-          diffHtml += `
+      renderCompetitionDiffListHtml(diffList, isEn, posFilter, search, totalTeams, defaultShirtUrl, posClass) {
+        if (!diffList || diffList.length === 0) {
+          return `
             <div class="py-8 px-4 text-center text-slate-400 dark:text-slate-500 text-xs bg-slate-50/50 dark:bg-slate-800/30 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
               <div class="font-bold text-slate-700 dark:text-slate-300 mb-1">${isEn ? 'No differential players found matching selected filters' : 'ไม่พบนักเตะทีเด็ดตามเงื่อนไขที่เลือก'}</div>
               ${(posFilter !== 'ALL' || search) ? `
@@ -12471,49 +12578,43 @@ selectShi62GW(gwName) {
               ` : ''}
             </div>
           `;
-        } else {
-          diffList.forEach(p => {
-            const pct = (p.count / totalTeams) * 100;
-            const shirtUrl = this.getPlayerShirtUrl(p);
-
-            diffHtml += `
-              <div class="bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl p-2.5 sm:p-3 border border-slate-200/80 dark:border-slate-800 transition-all hover:border-slate-300 dark:hover:border-slate-700">
-                <div class="flex items-center justify-between gap-2.5">
-                  <div class="flex items-center gap-2 min-w-0">
-                    <img src="${shirtUrl}" alt="${p.team}" class="w-7 h-7 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
-                    <div class="min-w-0">
-                      <div class="flex items-center gap-1.5 flex-wrap">
-                        <span class="font-bold text-slate-900 dark:text-white text-xs sm:text-sm truncate">${this.escapeHtml(p.name)}</span>
-                        <span class="${posClass}">${p.pos}</span>
-                        <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">${p.team}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="text-right flex-shrink-0">
-                    <div class="text-xs font-mono font-bold text-slate-900 dark:text-white">${pct.toFixed(1)}%</div>
-                    <div class="text-[10px] text-slate-500 dark:text-slate-400">${p.count}/${totalTeams} ${isEn ? 'teams' : 'ทีม'}</div>
-                  </div>
-                </div>
-
-                <!-- Teams that picked this differential -->
-                <div class="mt-2 pt-1.5 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5 flex-wrap">
-                  <span class="text-[10px] text-slate-400 dark:text-slate-500 font-medium">${isEn ? 'Owned by:' : 'ทีมที่ถือครอง:'}</span>
-                  ${p.teams.map(t => `
-                    <button onclick="app.openTeamModal(${t.entry_id})" class="text-[10px] px-2 py-0.5 rounded-lg bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-400 transition-colors cursor-pointer truncate max-w-[130px]" title="${this.escapeHtml(t.player_name)}">
-                      ${this.escapeHtml(t.team_name)}
-                    </button>
-                  `).join('')}
-                </div>
-              </div>
-            `;
-          });
         }
 
-        diffHtml += `
+        return diffList.map(p => {
+          const pct = (p.count / totalTeams) * 100;
+          const shirtUrl = this.getPlayerShirtUrl(p);
+
+          return `
+            <div class="bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl p-2.5 sm:p-3 border border-slate-200/80 dark:border-slate-800 transition-all hover:border-slate-300 dark:hover:border-slate-700">
+              <div class="flex items-center justify-between gap-2.5">
+                <div class="flex items-center gap-2 min-w-0">
+                  <img src="${shirtUrl}" alt="${p.team}" class="w-7 h-7 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span class="font-bold text-slate-900 dark:text-white text-xs sm:text-sm truncate">${this.escapeHtml(p.name)}</span>
+                      <span class="${posClass}">${p.pos}</span>
+                      <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">${p.team}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right flex-shrink-0">
+                  <div class="text-xs font-mono font-bold text-slate-900 dark:text-white">${pct.toFixed(1)}%</div>
+                  <div class="text-[10px] text-slate-500 dark:text-slate-400">${p.count}/${totalTeams} ${isEn ? 'teams' : 'ทีม'}</div>
+                </div>
+              </div>
+
+              <!-- Teams that picked this differential -->
+              <div class="mt-2 pt-1.5 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5 flex-wrap">
+                <span class="text-[10px] text-slate-400 dark:text-slate-500 font-medium">${isEn ? 'Owned by:' : 'ทีมที่ถือครอง:'}</span>
+                ${p.teams.map(t => `
+                  <button onclick="app.openTeamModal(${t.entry_id})" class="text-[10px] px-2 py-0.5 rounded-lg bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-400 transition-colors cursor-pointer truncate max-w-[130px]" title="${this.escapeHtml(t.player_name)}">
+                    ${this.escapeHtml(t.team_name)}
+                  </button>
+                `).join('')}
+              </div>
             </div>
-          </div>
-        `;
-        diffSection.innerHTML = diffHtml;
+          `;
+        }).join('');
       }
 
       // --- Part 3: Transfer Suggestions ---
@@ -13539,6 +13640,38 @@ selectShi62GW(gwName) {
             }).join('');
           }
 
+          const existingWeeklyTbody = document.getElementById('weekly-prizes-tbody');
+          const existingWeeklyInput = document.getElementById('weekly-prizes-search-input');
+          if (existingWeeklyTbody && existingWeeklyInput) {
+            existingWeeklyTbody.innerHTML = tableRows;
+            const countEl = document.getElementById('weekly-prizes-count');
+            if (countEl) {
+              if (searchQuery || filterMode !== 'all') {
+                countEl.innerText = isEn ? `Showing ${filteredTeams.length} of ${sortedTeams.length} teams` : `แสดง ${filteredTeams.length} จาก ${sortedTeams.length} ทีม`;
+                countEl.classList.remove('hidden');
+              } else {
+                countEl.classList.add('hidden');
+              }
+            }
+            const clearBtn = document.getElementById('weekly-prizes-search-clear');
+            if (clearBtn) {
+              if (this.prizesSearchQuery) clearBtn.classList.remove('hidden');
+              else clearBtn.classList.add('hidden');
+            }
+            ['all', 'winners', 'fined', 'non_prize'].forEach(m => {
+              const btn = document.getElementById(`btn-weekly-filter-${m}`);
+              if (btn) {
+                const isAct = (this.prizesFilterMode === m);
+                btn.setAttribute('aria-pressed', isAct ? 'true' : 'false');
+                btn.className = `min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${isAct ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}`;
+              }
+            });
+            if (existingWeeklyInput.value !== (this.prizesSearchQuery || '')) {
+              existingWeeklyInput.value = this.prizesSearchQuery || '';
+            }
+            return;
+          }
+
           if (mainContainer) {
             mainContainer.innerHTML = `
               <!-- 01 / TREASURY LEDGER & PRIZE STRUCTURE -->
@@ -13622,43 +13755,40 @@ selectShi62GW(gwName) {
                   </div>
                   <!-- Search & Filter Controls (Monochrome Style) -->
                   <div class="flex items-center gap-2 flex-wrap">
-                    ${(searchQuery || filterMode !== 'all') ? `
-                      <span class="inline-flex items-center text-[11px] font-mono font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-shrink-0">
-                        ${isEn ? `Showing ${filteredTeams.length} of ${sortedTeams.length} teams` : `แสดง ${filteredTeams.length} จาก ${sortedTeams.length} ทีม`}
-                      </span>
-                    ` : ''}
+                    <span id="weekly-prizes-count" class="${(searchQuery || filterMode !== 'all') ? '' : 'hidden '}inline-flex items-center text-[11px] font-mono font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-shrink-0">
+                      ${isEn ? `Showing ${filteredTeams.length} of ${sortedTeams.length} teams` : `แสดง ${filteredTeams.length} จาก ${sortedTeams.length} ทีม`}
+                    </span>
                     <div class="relative min-w-[140px] xs:min-w-[180px] max-w-xs flex-1">
                       <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                       </span>
                       <input 
                         type="text" 
+                        id="weekly-prizes-search-input"
                         value="${this.escapeHtml(this.prizesSearchQuery || '')}" 
                         oninput="app.handlePrizesSearch(this.value)"
                         aria-label="${isEn ? 'Search team name or manager' : 'ค้นหาชื่อทีมหรือผู้จัดการ'}"
                         placeholder="${isEn ? 'Search team...' : 'ค้นหาทีม...'}"
                         class="w-full pl-8 pr-7 py-2 min-h-[38px] sm:min-h-[34px] text-xs bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-400 transition-all font-sans"
                       />
-                      ${this.prizesSearchQuery ? `
-                        <button onclick="app.handlePrizesSearch('')" class="absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                      ` : ''}
+                      <button id="weekly-prizes-search-clear" onclick="app.handlePrizesSearch('')" class="${this.prizesSearchQuery ? '' : 'hidden '}absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                      </button>
                     </div>
                     <div class="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-wrap">
-                      <button type="button" onclick="app.setPrizesFilter('all')" aria-pressed="${this.prizesFilterMode === 'all' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'all' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
+                      <button id="btn-weekly-filter-all" type="button" onclick="app.setPrizesFilter('all')" aria-pressed="${this.prizesFilterMode === 'all' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'all' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
                         ${isEn ? 'All' : 'ทั้งหมด'}
                       </button>
-                      <button type="button" onclick="app.setPrizesFilter('winners')" aria-pressed="${this.prizesFilterMode === 'winners' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'winners' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
+                      <button id="btn-weekly-filter-winners" type="button" onclick="app.setPrizesFilter('winners')" aria-pressed="${this.prizesFilterMode === 'winners' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'winners' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
                         ${isEn ? 'Winners' : 'มีรางวัล'}
                       </button>
                       ${hasWeeklyPenalties ? `
-                      <button type="button" onclick="app.setPrizesFilter('fined')" aria-pressed="${this.prizesFilterMode === 'fined' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'fined' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
+                      <button id="btn-weekly-filter-fined" type="button" onclick="app.setPrizesFilter('fined')" aria-pressed="${this.prizesFilterMode === 'fined' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'fined' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
                         ${isEn ? 'Fined' : 'โดนปรับ'}
                       </button>
                       ` : ''}
                       ${sortedTeams.some(t => !this.isPrizeEligible(t.entry_id)) ? `
-                      <button type="button" onclick="app.setPrizesFilter('non_prize')" aria-pressed="${this.prizesFilterMode === 'non_prize' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'non_prize' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
+                      <button id="btn-weekly-filter-non_prize" type="button" onclick="app.setPrizesFilter('non_prize')" aria-pressed="${this.prizesFilterMode === 'non_prize' ? 'true' : 'false'}" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all touch-manipulation cursor-pointer ${this.prizesFilterMode === 'non_prize' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
                         ${isEn ? 'Guest' : 'ร่วมสนุก'}
                       </button>
                       ` : ''}
@@ -13696,7 +13826,7 @@ selectShi62GW(gwName) {
                         `)}
                       </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                    <tbody id="weekly-prizes-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
                       ${tableRows}
                     </tbody>
                     <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-mono text-xs sm:text-sm font-bold">
@@ -14168,6 +14298,21 @@ selectShi62GW(gwName) {
             `;
           });
 
+          const existingMonthlyTbody = document.getElementById('monthly-prizes-tbody');
+          const existingMonthlyInput = document.getElementById('monthly-prizes-search-input');
+          if (existingMonthlyTbody && existingMonthlyInput) {
+            existingMonthlyTbody.innerHTML = monthlyTableRows;
+            const clearBtn = document.getElementById('monthly-prizes-search-clear');
+            if (clearBtn) {
+              if (this.prizesSearchQuery) clearBtn.classList.remove('hidden');
+              else clearBtn.classList.add('hidden');
+            }
+            if (existingMonthlyInput.value !== (this.prizesSearchQuery || '')) {
+              existingMonthlyInput.value = this.prizesSearchQuery || '';
+            }
+            return;
+          }
+
           if (mainContainer) {
             mainContainer.innerHTML = `
               <!-- 01 / MONTHLY AWARDS & TREASURY ALLOCATION -->
@@ -14230,17 +14375,16 @@ selectShi62GW(gwName) {
                       </span>
                       <input 
                         type="text" 
+                        id="monthly-prizes-search-input"
                         value="${this.escapeHtml(this.prizesSearchQuery || '')}" 
                         oninput="app.handlePrizesSearch(this.value)"
                         aria-label="${isEn ? 'Search team name or manager' : 'ค้นหาชื่อทีมหรือผู้จัดการ'}"
                         placeholder="${isEn ? 'Search team...' : 'ค้นหาทีม...'}"
                         class="w-full pl-8 pr-7 py-2 min-h-[38px] sm:min-h-[34px] text-xs bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-400 transition-all font-sans"
                       />
-                      ${this.prizesSearchQuery ? `
-                        <button onclick="app.handlePrizesSearch('')" class="absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                      ` : ''}
+                      <button id="monthly-prizes-search-clear" onclick="app.handlePrizesSearch('')" class="${this.prizesSearchQuery ? '' : 'hidden '}absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                      </button>
                     </div>
                     <div class="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-wrap">
                       <button onclick="app.setPrizesFilter('all')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${this.prizesFilterMode === 'all' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
@@ -14273,7 +14417,7 @@ selectShi62GW(gwName) {
                         <th scope="col" class="py-2.5 px-3 text-right font-black font-mono">${isEn ? 'Monthly Total' : 'คะแนนรวมเดือน'}</th>
                       </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                    <tbody id="monthly-prizes-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
                       ${monthlyTableRows}
                     </tbody>
                     <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-mono text-xs sm:text-sm font-bold">
@@ -14627,6 +14771,28 @@ selectShi62GW(gwName) {
             `;
           }
 
+          const existingStandardTbody = document.getElementById('standard-prizes-tbody');
+          const existingStandardInput = document.getElementById('standard-prizes-search-input');
+          if (existingStandardTbody && existingStandardInput) {
+            existingStandardTbody.innerHTML = tableRowsHtml;
+            const clearBtn = document.getElementById('standard-prizes-search-clear');
+            if (clearBtn) {
+              if (this.prizesSearchQuery) clearBtn.classList.remove('hidden');
+              else clearBtn.classList.add('hidden');
+            }
+            ['all', 'winners', 'fined', 'non_prize'].forEach(m => {
+              const btn = document.getElementById(`btn-standard-filter-${m}`);
+              if (btn) {
+                const isAct = (this.prizesFilterMode === m);
+                btn.className = `px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${isAct ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}`;
+              }
+            });
+            if (existingStandardInput.value !== (this.prizesSearchQuery || '')) {
+              existingStandardInput.value = this.prizesSearchQuery || '';
+            }
+            return;
+          }
+
           let tableHeadersHtml = '';
           let tableFootHtml = '';
 
@@ -14673,6 +14839,8 @@ selectShi62GW(gwName) {
               </tr>
             `;
           }
+
+
 
           if (mainContainer) {
             mainContainer.innerHTML = `
@@ -14725,30 +14893,29 @@ selectShi62GW(gwName) {
                       </span>
                       <input 
                         type="text" 
+                        id="standard-prizes-search-input"
                         value="${this.escapeHtml(this.prizesSearchQuery || '')}" 
                         oninput="app.handlePrizesSearch(this.value)"
                         aria-label="${isEn ? 'Search team name or manager' : 'ค้นหาชื่อทีมหรือผู้จัดการ'}"
                         placeholder="${isEn ? 'Search team...' : 'ค้นหาทีม...'}"
                         class="w-full pl-8 pr-7 py-2 min-h-[38px] sm:min-h-[34px] text-xs bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-400 transition-all font-sans"
                       />
-                      ${this.prizesSearchQuery ? `
-                        <button onclick="app.handlePrizesSearch('')" class="absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                      ` : ''}
+                      <button id="standard-prizes-search-clear" onclick="app.handlePrizesSearch('')" class="${this.prizesSearchQuery ? '' : 'hidden '}absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                      </button>
                     </div>
                     <div class="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-wrap">
-                      <button onclick="app.setPrizesFilter('all')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${this.prizesFilterMode === 'all' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
+                      <button id="btn-standard-filter-all" onclick="app.setPrizesFilter('all')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${this.prizesFilterMode === 'all' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
                         ${isEn ? 'All' : 'ทั้งหมด'}
                       </button>
-                      <button onclick="app.setPrizesFilter('winners')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${this.prizesFilterMode === 'winners' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
+                      <button id="btn-standard-filter-winners" onclick="app.setPrizesFilter('winners')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${this.prizesFilterMode === 'winners' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
                         ${isEn ? 'Receiving' : 'รับเงินรางวัล'}
                       </button>
-                      <button onclick="app.setPrizesFilter('fined')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${this.prizesFilterMode === 'fined' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
+                      <button id="btn-standard-filter-fined" onclick="app.setPrizesFilter('fined')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${this.prizesFilterMode === 'fined' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
                         ${isEn ? 'Paying' : 'ร่วมจ่ายเงิน'}
                       </button>
                       ${overallSorted.some(t => !this.isPrizeEligible(t.entry_id)) ? `
-                      <button onclick="app.setPrizesFilter('non_prize')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${this.prizesFilterMode === 'non_prize' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
+                      <button id="btn-standard-filter-non_prize" onclick="app.setPrizesFilter('non_prize')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${this.prizesFilterMode === 'non_prize' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
                         ${isEn ? 'Guest' : 'ร่วมสนุก'}
                       </button>
                       ` : ''}
@@ -14760,7 +14927,7 @@ selectShi62GW(gwName) {
                     <thead>
                       ${tableHeadersHtml}
                     </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                    <tbody id="standard-prizes-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
                       ${tableRowsHtml}
                     </tbody>
                     <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-mono text-xs sm:text-sm font-bold">
@@ -14808,14 +14975,38 @@ selectShi62GW(gwName) {
           }
         }
       }
+      preserveInputFocus(fn) {
+        const active = document.activeElement;
+        const isInput = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA');
+        const activeId = isInput ? active.id : null;
+        const start = isInput ? active.selectionStart : null;
+        const end = isInput ? active.selectionEnd : null;
+
+        fn();
+
+        if (activeId) {
+          const el = document.getElementById(activeId);
+          if (el && document.activeElement !== el) {
+            el.focus();
+            if (start !== null && end !== null && el.setSelectionRange) {
+              try { el.setSelectionRange(start, end); } catch (_) {}
+            }
+          }
+        }
+      }
+
       handlePrizesSearch(val) {
-        this.prizesSearchQuery = (val || '').trim();
-        this.renderPrizesView();
+        this.preserveInputFocus(() => {
+          this.prizesSearchQuery = (val || '').trim();
+          this.renderPrizesView();
+        });
       }
 
       setPrizesFilter(mode) {
-        this.prizesFilterMode = mode || 'all';
-        this.renderPrizesView();
+        this.preserveInputFocus(() => {
+          this.prizesFilterMode = mode || 'all';
+          this.renderPrizesView();
+        });
       }
 
       togglePrizesHistory() {
@@ -14824,13 +15015,17 @@ selectShi62GW(gwName) {
       }
 
       handleCupSearch(val) {
-        this.cupSearchQuery = (val || '').trim();
-        this.renderCupView();
+        this.preserveInputFocus(() => {
+          this.cupSearchQuery = (val || '').trim();
+          this.renderCupView();
+        });
       }
 
       setCupFilter(mode) {
-        this.cupFilterMode = mode || 'all';
-        this.renderCupView();
+        this.preserveInputFocus(() => {
+          this.cupFilterMode = mode || 'all';
+          this.renderCupView();
+        });
       }
 
       selectMonth(monthId) {
@@ -16747,6 +16942,29 @@ selectShi62GW(gwName) {
           }).join('');
         }
 
+        const existingCupTbody = document.getElementById('cup-seeding-tbody');
+        const existingCupInput = document.getElementById('cup-search-input');
+        if (existingCupTbody && existingCupInput) {
+          existingCupTbody.innerHTML = tableRowsHtml;
+          const cupClearBtn = document.getElementById('cup-search-clear');
+          if (cupClearBtn) {
+            if (this.cupSearchQuery) cupClearBtn.classList.remove('hidden');
+            else cupClearBtn.classList.add('hidden');
+          }
+          ['all', 'contenders', 'seeds', 'non_prize'].forEach(mode => {
+            const btn = document.getElementById(`cup-filter-${mode === 'non_prize' ? 'guest' : mode}`);
+            if (btn) {
+              const isAct = (this.cupFilterMode === mode);
+              btn.setAttribute('aria-selected', isAct ? 'true' : 'false');
+              btn.className = `px-3 py-1.5 min-h-[36px] rounded-lg text-xs font-bold transition-colors cursor-pointer ${isAct ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}`;
+            }
+          });
+          if (existingCupInput.value !== (this.cupSearchQuery || '')) {
+            existingCupInput.value = this.cupSearchQuery || '';
+          }
+          return;
+        }
+
         const section03Html = `
           <div class="space-y-3" role="region" aria-labelledby="cup-sec-03">
             <div class="flex items-center gap-2">
@@ -16783,16 +17001,15 @@ selectShi62GW(gwName) {
                       placeholder="${isEn ? 'Search team / manager...' : 'ค้นหาชื่อทีม / ผู้จัดการ...'}"
                       class="w-full pl-8 pr-8 py-2 min-h-[36px] text-xs bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-400 transition-colors duration-150 font-sans"
                     />
-                    ${this.cupSearchQuery ? `
-                      <button 
-                        type="button"
-                        onclick="app.handleCupSearch('')" 
-                        aria-label="${isEn ? 'Clear search text' : 'ล้างคำค้นหา'}"
-                        class="absolute inset-y-0 right-0 pr-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-                      >
-                        <svg class="w-3.5 h-3.5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                      </button>
-                    ` : ''}
+                    <button 
+                      id="cup-search-clear"
+                      type="button"
+                      onclick="app.handleCupSearch('')" 
+                      aria-label="${isEn ? 'Clear search text' : 'ล้างคำค้นหา'}"
+                      class="${this.cupSearchQuery ? '' : 'hidden '}absolute inset-y-0 right-0 pr-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                    >
+                      <svg class="w-3.5 h-3.5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
                   </div>
 
                   <div role="tablist" aria-label="${isEn ? 'Cup contender filters' : 'ตัวกรองผู้ลุ้นรางวัลบอลถ้วย'}" class="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-wrap">
@@ -16863,7 +17080,7 @@ selectShi62GW(gwName) {
                       <th scope="col" class="py-2.5 px-3 sm:px-4 text-right whitespace-nowrap hidden sm:table-cell">${isEn ? 'Avg / GW' : 'เฉลี่ย/นัด'}</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody id="cup-seeding-tbody">
                     ${tableRowsHtml}
                   </tbody>
                 </table>
