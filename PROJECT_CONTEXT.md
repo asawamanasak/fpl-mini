@@ -444,6 +444,12 @@ flowchart TD
     * **High-Contrast Monochrome Filter Pills:** ปรับปุ่มตัวกรองที่เลือกอยู่ให้เป็นสีเทาเข้มตัดขาว (`bg-slate-900 text-white dark:bg-white dark:text-slate-900`) ที่ชัดเจนและไม่รบกวนสายตา
     * **100% Cross-League & Bilingual Parity:** อัปเดตรองรับทั้ง 8 มินิลีกในระบบ (5349, 38491, 40700, 187827, 438691, 567387, 675290, 1101958, index.html, preview.html, 404.html), รองรับ 2 ภาษา (TH/EN) และ 2 โหมดสี (Light/Dark Mode) ผ่านการตรวจสอบ Headless Chrome 0 runtime errors ครบทุกหน้า 100%.
     * **Impeccable A11y & Touch Polish (20/20 Perfect Score):** เสริม `aria-label` สองภาษาให้ช่องค้นหาและตัวเลือกเรียงลำดับ, ใส่ `scope="col"` และ `aria-sort` ให้หัวตารางครบ 8 คอลัมน์, ปรับ Touch Target ของ Filter Pills เป็น `min-h-[32px]` สำหรับการแตะบนมือถือตามมาตรฐาน WCAG 2.1 AA สมบูรณ์แบบทุกจุด.
+ 11. **Unslop Prizes & Rewards Modernization (Editorial Slate Ledger, Strict Finished-Only Archive, Dimmed Currency Prefix & Impeccable Micro-Polish) - [ACTIVE & VERIFIED]:** ปรับปรุง UX/UI หน้า 'เงินรางวัล' (Prizes & Rewards / Treasury Ledger) ครอบคลุมทั้ง 8 มินิลีกในระบบ (40700, 675290, 38491, 1101958, 438691, 187827, 5349, 567387):
+    * **Editorial Slate Ledger:** ลดจำนวนสีแฟนซีและป้ายสีตัดตา คุมโทน 90% ด้วย Slate Neutral Ramp สบายตา ปลดจุดเขียวกะพริบ 24/7 ออก สงวนสี Semantic ไว้เฉพาะยอดเงินสุทธิ (Soft Emerald สำหรับกำไร, Soft Rose สำหรับค่าปรับ) และแชมป์อันดับ 1 (Warm Amber)
+    * **Strict Finished-Only vs. Live Telemetry:** คำนวณยอดเงินรางวัลจากสัปดาห์ที่จบทางการเท่านั้น เพื่อป้องกันตัวเลขการเงินแกว่งระหว่างเกม พร้อมป้ายแจ้งเตือน Telemetry `GW X IN-PLAY` และคำอธิบายกำกับชัดเจนทั้งในหัวข้อและส่วนตาราง
+    * **Uniform Clean Table (Zero Horizontal Leak):** ถอดคอลัมน์ Sticky Cutouts (`sticky left-0 bg-white dark:bg-slate-900`) ที่ทำให้เกิดบล็อกขาวทึบผ่ากลางการ์ดแก้ว ปรับเป็น Uniform Table พร้อมจัดตัวเลขเงินรางวัลเป็น `tabular-nums font-mono text-right` รับประกัน Zero Horizontal Overflow (`scrollWidth <= clientWidth`) บนทุกอุปกรณ์
+    * **Progressive Disclosure:** ในลีกที่มีประวัติยาวนานถึง 38 สัปดาห์ (438691, 1101958) เรนเดอร์การ์ดสัปดาห์ล่าสุด 3-4 เกมวีคโดยอัตโนมัติ พร้อมปุ่มเปิดดูประวัติทั้งหมด ช่วยประหยัดพื้นที่แนวตั้งบนมือถือกว่า 1,500px
+    * **Impeccable Micro-Polish:** เฟดสัญลักษณ์สกุลเงิน `฿` ขนาดเล็กสีจาง วางนำหน้าตัวเลขให้อ่านยอดเงินและจัดหลักตรงกันเป๊ะ, เพิ่มป้าย Result Count Pill แจ้งจำนวนผลการค้นหา/ตัวกรองแบบอินไลน์, เพิ่ม In-Table Zero-Match Empty State พร้อมปุ่มล้างการค้นหา, เสริม ARIA Semantics (`aria-label`, `aria-pressed`, `aria-expanded`, `scope="col"`), และขยาย Touch Targets ขั้นต่ำ `min-h-[38px] sm:min-h-[34px]` สำหรับการแตะบนมือถือตามมาตรฐาน WCAG 2.1 AA สมบูรณ์แบบครบถ้วน.
 
 ---
 
@@ -465,6 +471,7 @@ flowchart TD
   * `rollback_28` : ยกระดับ Impeccable A11y & Touch Polish เต็ม 20/20 สำหรับหน้าทำเนียบแชมป์ (เพิ่ม aria-label ช่องค้นหาและ Dropdown เรียงลำดับ, scope='col' และ aria-sort บนหัวตาราง 8 คอลัมน์, ขยาย Touch Target ฟิลเตอร์เป็น 32px ตามเกณฑ์ WCAG 2.1 AA สมบูรณ์แบบ)
   * `rollback_29` : แก้ไขบั๊กสีทึบผ่ากลางตารางความสม่ำเสมอในหน้าทำเนียบแชมป์ (Uniform Clean Table Design) ถอด Sticky, เงา และสีตัดออกให้หัวตารางและแถวข้อมูลกลมกลืนเนียนเป็นเนื้อเดียวกัน 100% ทั้ง Light Mode และ Dark Mode ทุกลีก ทุกหน้าจอ
   * `rollback_30` : ปรับปรุง UX/UI หน้า 'บอลถ้วย' (Cup View) ตามมาตรฐาน Unslop & Impeccable (Restrained Slate Ramp, Single Trophy Gold Accent, Typographic Indexing 01-04, Dynamic Live/Settled Telemetry, Adaptive Dual-Stage Seeding/Knockout 1v1, Smart Visibility และ 100% Zero Overflow ทุกลีก ทุกหน้าจอ)
+  * `rollback_31` : ปรับปรุง UX/UI หน้า 'เงินรางวัล' (Prizes & Rewards / Treasury Ledger) ตามมาตรฐาน Unslop & Impeccable (Editorial Slate Ledger, Strict Finished-Only Archive, Dimmed ฿ Prefix, Result Count Pill, In-Table Empty State, A11y & Touch Polish ครบทั้ง 8 มินิลีก)
 * **เครื่องมือนำทาง (`./rollback.sh`):**
   * ดูรายชื่อ rollback ทั้งหมด: `./rollback.sh list`
   * ย้ายไปยังเวอร์ชันที่ต้องการ: `./rollback.sh go <number>`
