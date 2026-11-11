@@ -2312,36 +2312,34 @@ __STRUCTURED_DATA_JSON__
     </div>
 
     <!-- ==================== TAB 4: CUP (LEAGUE CUP) ==================== -->
-    <div id="cup-view" class="tab-content hidden space-y-4">
+    <div id="cup-view" class="tab-content hidden space-y-4 w-full max-w-full overflow-hidden">
       
-      <!-- Top Cup Banner -->
-      <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 shadow-2xs">
-        <div>
+      <!-- Top Cup Banner (Consistent with Highlights, Chips, Transfers, Rules) -->
+      <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs w-full max-w-full overflow-hidden">
+        <div class="min-w-0">
           <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse flex-shrink-0"></span>
-            <span id="cup-kicker" class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-bold font-display">
-              TOURNAMENT KNOCKOUT CUP
+            <span id="cup-header-dot" class="w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-500 flex-shrink-0"></span>
+            <span id="cup-kicker" class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-bold font-display truncate">
+              MINI-LEAGUE KNOCKOUT CUP
             </span>
           </div>
-          <h2 id="cup-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display mt-0.5 leading-snug">
+          <h2 id="cup-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display mt-0.5 leading-snug break-words">
             การแข่งขันฟุตบอลถ้วย
           </h2>
-          <p id="cup-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            ระบบจับคู่ Knockout อัตโนมัติจาก Official FPL
-          </p>
+          <div id="cup-subtitle" class="mt-1"></div>
         </div>
-        <div id="cup-header-badges" class="flex items-center gap-2 flex-wrap">
-          <span id="cup-prize-badge" class="bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60 text-xs px-3 py-1 rounded-xl font-bold font-display shadow-2xs whitespace-nowrap">
+        <div id="cup-header-badges" class="flex items-center gap-1.5 sm:gap-2 flex-wrap w-full sm:w-auto mt-1 sm:mt-0">
+          <span id="cup-prize-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display shadow-2xs whitespace-nowrap">
             ทัวร์นาเมนต์บอลถ้วย
           </span>
-          <span id="cup-teams-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 text-xs px-3 py-1 rounded-xl font-bold font-display shadow-2xs whitespace-nowrap">
+          <span id="cup-teams-badge" class="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-mono text-[11px] font-semibold whitespace-nowrap">
             10 สมาชิก
           </span>
         </div>
       </div>
 
       <!-- Cup Structure Container -->
-      <div id="cup-tournament-container" class="space-y-4">
+      <div id="cup-tournament-container" class="space-y-5 w-full min-w-0">
         <!-- Rendered dynamically -->
       </div>
 
@@ -2354,7 +2352,7 @@ __STRUCTURED_DATA_JSON__
       <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs w-full max-w-full overflow-hidden">
         <div class="min-w-0">
           <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse flex-shrink-0"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-500 flex-shrink-0"></span>
             <span id="rules-kicker" class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-bold font-display truncate">
               กฎระเบียบและข้อบังคับลีกทางการ
             </span>
@@ -2368,10 +2366,15 @@ __STRUCTURED_DATA_JSON__
           <span id="rules-gw-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display">
             38 สัปดาห์
           </span>
-          <span id="rules-header-badge" class="bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60 text-xs px-3 py-1 rounded-xl font-bold font-display">
+          <span id="rules-header-badge" class="bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-mono text-[11px] font-semibold">
             OFFICIAL RULES
           </span>
         </div>
+      </div>
+
+      <!-- Clean Ledger Strip: 4 Data Pillars (League ID, Members, Fee, Pool) -->
+      <div id="rules-ledger-container" class="w-full min-w-0">
+        <!-- Rendered dynamically -->
       </div>
 
       <!-- Dynamic Rules Grid (League Specific Rule Cards) -->
@@ -6478,9 +6481,6 @@ __STRUCTURED_DATA_JSON__
             cupTabBtn.classList.remove('hidden');
           } else {
             cupTabBtn.classList.add('hidden');
-            if (this.activeTab === 'cup-view') {
-              this.switchTab('gameweek-view');
-            }
           }
         }
 
@@ -16130,6 +16130,7 @@ selectShi62GW(gwName) {
         const titleEl = document.getElementById('cup-title');
         const subEl = document.getElementById('cup-subtitle');
         const kickerEl = document.getElementById('cup-kicker');
+        const dotEl = document.getElementById('cup-header-dot');
         const prizeBadge = document.getElementById('cup-prize-badge');
         const teamsBadge = document.getElementById('cup-teams-badge');
         const container = document.getElementById('cup-tournament-container');
@@ -16141,19 +16142,39 @@ selectShi62GW(gwName) {
         const feat = (this.config && this.config.features) || {};
         const hasCup = Boolean(feat.has_cup);
 
+        // 1. Graceful Unslop Empty State for leagues without cup
         if (!hasCup) {
           if (titleEl) titleEl.innerText = isEn ? 'Knockout Cup Tournament' : 'การแข่งขันฟุตบอลถ้วย';
-          if (subEl) subEl.innerText = isEn ? 'No cup competition configured for this league' : 'มินิลีกนี้ไม่มีการแข่งขันฟุตบอลถ้วย';
-          if (prizeBadge) prizeBadge.innerText = isEn ? 'NO CUP' : 'ไม่มีบอลถ้วย';
+          if (dotEl) dotEl.className = 'w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-500 flex-shrink-0';
+          if (subEl) {
+            subEl.innerHTML = `
+              <div class="inline-flex flex-wrap items-center gap-2 mt-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
+                <span class="w-2 h-2 rounded-full bg-slate-400 flex-shrink-0"></span>
+                <span>${isEn ? 'This mini-league operates without an official knockout cup competition.' : 'มินิลีกนี้ไม่ได้เปิดใช้งานระบบฟุตบอลถ้วย'}</span>
+              </div>
+            `;
+          }
+          if (prizeBadge) {
+            prizeBadge.innerText = isEn ? 'NO CUP' : 'ไม่มีบอลถ้วย';
+            prizeBadge.className = 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-mono text-[11px] font-semibold';
+          }
           if (teamsBadge) teamsBadge.classList.add('hidden');
           if (container) {
             container.innerHTML = `
-              <div class="glass-card rounded-2xl p-8 border border-slate-200 dark:border-slate-800 text-center">
-                <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 mx-auto flex items-center justify-center mb-3">
-                  <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+              <div class="glass-card rounded-2xl p-8 sm:p-12 border border-slate-200/80 dark:border-slate-800 text-center max-w-xl mx-auto shadow-2xs" role="region" aria-labelledby="no-cup-title">
+                <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-400 mx-auto flex items-center justify-center mb-3.5" aria-hidden="true">
+                  <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
                 </div>
-                <h4 class="text-base font-bold text-slate-800 dark:text-white font-display">${isEn ? 'No Cup Competition' : 'ไม่มีการแข่งขันฟุตบอลถ้วย'}</h4>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-md mx-auto">${isEn ? 'This mini-league does not feature an official knockout cup competition. Please check the League Table or Prizes tab.' : 'มินิลีกนี้ไม่ได้เปิดใช้งานระบบฟุตบอลถ้วย สามารถติดตามผลคะแนนได้ที่หน้าตารางคะแนนรวมหรือเงินรางวัล'}</p>
+                <h4 id="no-cup-title" class="text-base font-bold text-slate-900 dark:text-white font-display">${isEn ? 'No Cup Competition Configured' : 'ไม่มีการแข่งขันฟุตบอลถ้วย'}</h4>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed max-w-md mx-auto">${isEn ? 'This mini-league does not feature an official knockout cup competition. All standings, points, and prizes are tracked in the League Table and Prizes tabs.' : 'มินิลีกนี้ไม่ได้เปิดใช้งานระบบฟุตบอลถ้วย สามารถติดตามอันดับ คะแนน และเงินรางวัลได้ที่หน้าตารางคะแนนรวมหรือหน้าสรุปรางวัล'}</p>
+                <div class="mt-5 flex items-center justify-center gap-2.5 flex-wrap">
+                  <button type="button" onclick="app.switchTab('gameweek-view')" aria-label="${isEn ? 'Navigate to League Standings' : 'ดูตารางคะแนนรวมของลีก'}" class="px-3.5 py-2 min-h-[36px] rounded-xl text-xs font-semibold bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:opacity-90 transition-opacity cursor-pointer shadow-2xs">
+                    ${isEn ? 'View League Standings →' : 'ดูตารางคะแนนรวม →'}
+                  </button>
+                  <button type="button" onclick="app.switchTab('prizes-view')" aria-label="${isEn ? 'Navigate to Prize Summary' : 'ดูสรุปเงินรางวัลของลีก'}" class="px-3.5 py-2 min-h-[36px] rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer">
+                    ${isEn ? 'View Prizes →' : 'ดูสรุปเงินรางวัล →'}
+                  </button>
+                </div>
               </div>
             `;
           }
@@ -16165,35 +16186,84 @@ selectShi62GW(gwName) {
         const startGW = Number(feat.cup_start_gw) || 35;
         const cupNote = feat.cup_rule_note || '';
 
+        // 2. Real Live vs Finished Telemetry & State Detection
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || 1;
+        const curGWData = (this.data && this.data.gameweeks) ? this.data.gameweeks[String(maxGW)] : null;
+        const isCurFinished = Boolean(curGWData && curGWData.is_finished);
+        const isCurStarted = curGWData ? (curGWData.is_started !== undefined ? Boolean(curGWData.is_started) : (isCurFinished || (curGWData.results && curGWData.results.some(r => r.points > 0)))) : false;
+        const isLive = isCurStarted && !isCurFinished;
+        const isKnockoutStarted = maxGW >= startGW;
+
         if (titleEl) {
           titleEl.innerText = isEn ? `${this.data.name || 'Mini-League'} Cup Tournament` : `ฟุตบอลถ้วย ${this.data.name || 'ประจำลีก'}`;
         }
+
+        if (dotEl) {
+          dotEl.className = isLive 
+            ? 'w-2.5 h-2.5 rounded-full bg-amber-500 motion-safe:animate-pulse flex-shrink-0' 
+            : (isCurFinished ? 'w-2.5 h-2.5 rounded-full bg-emerald-500 flex-shrink-0' : 'w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-500 flex-shrink-0');
+        }
+
         if (subEl) {
-          subEl.innerText = isEn 
-            ? `Official FPL single-elimination tournament • Kickoff GW ${startGW}` 
-            : `ระบบจับคู่แบบแพ้คัดออก 1 ต่อ 1 ตามกติกา Official FPL • เริ่มสัปดาห์ที่ ${startGW}`;
+          if (isLive) {
+            subEl.innerHTML = `
+              <div class="inline-flex flex-wrap items-center gap-2 mt-2 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-800 dark:text-amber-300 text-xs leading-relaxed" role="status">
+                <span class="w-2 h-2 rounded-full bg-amber-500 motion-safe:animate-pulse flex-shrink-0"></span>
+                <span class="font-bold font-mono tracking-tight flex-shrink-0">${isEn ? `GW ${maxGW} IN-PLAY (LIVE)` : `GW ${maxGW} กำลังแข่งขัน (LIVE)`}</span>
+                <span class="text-slate-600 dark:text-slate-300 border-l border-amber-500/30 pl-2 text-[11px] sm:text-xs">
+                  ${isKnockoutStarted 
+                    ? (isEn ? 'Head-to-head knockout matches in progress. Scores reflect live provisional net points.' : 'การแข่งขันรอบแพ้คัดออก 1 ต่อ 1 กำลังฟาดแข้งสด คะแนนสะท้อนผลสุทธิชั่วคราว')
+                    : (isEn ? 'Qualification phase live. Ranks reflect provisional net points towards knockout seeds.' : 'รอบสะสมคะแนนมือวางกำลังแข่งขันสด อันดับสะท้อนผลคะแนนสุทธิชั่วคราว')}
+                </span>
+              </div>
+            `;
+          } else if (isCurFinished) {
+            subEl.innerHTML = `
+              <div class="inline-flex flex-wrap items-center gap-2 mt-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 text-xs leading-relaxed" role="status">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
+                <span class="font-bold font-mono tracking-tight flex-shrink-0 text-slate-900 dark:text-slate-100">${isEn ? `GW ${maxGW} OFFICIAL SETTLED` : `GW ${maxGW} สรุปผลทางการแล้ว`}</span>
+                <span class="text-slate-600 dark:text-slate-400 border-l border-slate-300 dark:border-slate-700 pl-2 text-[11px] sm:text-xs">
+                  ${isKnockoutStarted
+                    ? (isEn ? 'Knockout scores finalized. Advancing managers are officially confirmed.' : 'ผลการประกบคู่รอบน็อคเอาท์ได้รับการยืนยันทางการเรียบร้อย')
+                    : (isEn ? `Official seed standings updated through GW ${maxGW} • Knockout commences GW ${startGW}.` : `อันดับมือวางได้รับการยืนยันถึง GW ${maxGW} • รอบน็อคเอาท์เริ่ม GW ${startGW}`)}
+                </span>
+              </div>
+            `;
+          } else {
+            subEl.innerHTML = `
+              <div class="inline-flex flex-wrap items-center gap-2 mt-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 text-xs leading-relaxed" role="status">
+                <span class="w-2 h-2 rounded-full bg-slate-400 flex-shrink-0"></span>
+                <span class="font-bold font-mono tracking-tight flex-shrink-0 text-slate-900 dark:text-slate-100">${isEn ? `GW ${maxGW} UPCOMING` : `GW ${maxGW} รอคิกออฟ`}</span>
+                <span class="text-slate-600 dark:text-slate-400 border-l border-slate-300 dark:border-slate-700 pl-2 text-[11px] sm:text-xs">
+                  ${isEn ? `Official FPL single-elimination tournament • Kickoff GW ${startGW}` : `ระบบจับคู่แบบแพ้คัดออก 1 ต่อ 1 ตามกติกา Official FPL • เริ่มสัปดาห์ที่ ${startGW}`}
+                </span>
+              </div>
+            `;
+          }
         }
 
         const allRawTeams = (this.data && this.data.teams) ? this.data.teams : [];
         const eligibleCount = allRawTeams.filter(t => this.isPrizeEligible(t.entry_id)).length;
 
         if (prizeBadge) {
+          prizeBadge.className = 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display shadow-2xs whitespace-nowrap';
           if (champPrize && runnerPrize) {
-            prizeBadge.innerText = isEn ? `${champPrize} + ${runnerPrize}` : `รางวัล ${champPrize} + ${runnerPrize}`;
+            prizeBadge.innerText = isEn ? `Prizes: ${champPrize} + ${runnerPrize}` : `รางวัล ${champPrize} + ${runnerPrize}`;
           } else if (champPrize) {
-            prizeBadge.innerText = isEn ? `${champPrize}` : `รางวัล ${champPrize}`;
+            prizeBadge.innerText = isEn ? `Prize: ${champPrize}` : `รางวัล ${champPrize}`;
           } else {
             prizeBadge.innerText = isEn ? 'CUP TOURNAMENT' : 'ทัวร์นาเมนต์บอลถ้วย';
           }
         }
         if (teamsBadge) {
           teamsBadge.classList.remove('hidden');
+          teamsBadge.className = 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-mono text-[11px] font-semibold whitespace-nowrap';
           teamsBadge.innerText = isEn ? `${allRawTeams.length} Teams (${eligibleCount} Contenders)` : `${allRawTeams.length} ทีม (${eligibleCount} ลุ้นรางวัล)`;
         }
 
         if (!container) return;
 
-        // Compute standings & cumulative net score
+        // 3. Compute standings & cumulative net score
         const overallMap = {};
         allRawTeams.forEach(t => {
           overallMap[t.entry_id] = {
@@ -16202,13 +16272,15 @@ selectShi62GW(gwName) {
             player_name: t.player_name || '',
             rank: t.rank || 999,
             total_net: 0,
-            gw_count: 0
+            gw_count: 0,
+            cur_net: 0,
+            cur_played: false
           };
         });
 
         if (this.data && this.data.gameweeks) {
-          const maxGW = Number(this.multiData.max_gw) || 38;
-          for (let gw = 1; gw <= maxGW; gw++) {
+          const maxGWNum = Number(this.multiData.max_gw) || 38;
+          for (let gw = 1; gw <= maxGWNum; gw++) {
             const gData = this.data.gameweeks[String(gw)];
             if (!gData || !gData.results) continue;
             const gIsStarted = gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
@@ -16218,8 +16290,13 @@ selectShi62GW(gwName) {
                 if (seen.has(r.entry_id)) return;
                 seen.add(r.entry_id);
                 if (overallMap[r.entry_id]) {
-                  overallMap[r.entry_id].total_net += (r.net_points !== undefined ? r.net_points : (r.points || 0));
+                  const net = (r.net_points !== undefined ? r.net_points : (r.points || 0));
+                  overallMap[r.entry_id].total_net += net;
                   overallMap[r.entry_id].gw_count += 1;
+                  if (gw === maxGWNum) {
+                    overallMap[r.entry_id].cur_net = net;
+                    overallMap[r.entry_id].cur_played = true;
+                  }
                 }
               });
             }
@@ -16265,48 +16342,49 @@ selectShi62GW(gwName) {
           );
         }
 
-        // SVGs
-        const cupTrophySvg = `<svg class="w-6 h-6 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 4h16v6a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6V4z"></path><path d="M12 16v4"></path><path d="M8 20h8"></path></svg>`;
-        const cupMedalSvg = `<svg class="w-6 h-6 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg>`;
-        const shieldSvg = `<svg class="w-5 h-5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`;
-        const kickoffSvg = `<svg class="w-5 h-5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`;
+        // Shared Neutral Line SVGs with aria-hidden="true"
+        const cupTrophySvg = `<svg class="w-5 h-5 sm:w-6 sm:h-6 text-amber-500" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 4h16v6a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6V4z"></path><path d="M12 16v4"></path><path d="M8 20h8"></path></svg>`;
+        const cupMedalSvg = `<svg class="w-5 h-5 sm:w-6 sm:h-6 text-slate-400 dark:text-slate-300" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg>`;
+        const shieldSvg = `<svg class="w-4 h-4 text-slate-400 dark:text-slate-500" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`;
+        const kickoffSvg = `<svg class="w-4 h-4 text-slate-400 dark:text-slate-500" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`;
+        const swordsSvg = `<svg class="w-4 h-4 text-slate-400 dark:text-slate-500" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"></polyline><line x1="13" y1="19" x2="19" y2="13"></line><line x1="16" y1="16" x2="20" y2="20"></line><line x1="19" y1="21" x2="21" y2="19"></line><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"></polyline><line x1="5" y1="14" x2="9" y2="18"></line><line x1="7" y1="17" x2="4" y2="20"></line><line x1="3" y1="19" x2="5" y2="21"></line></svg>`;
 
-        // 1. Silverware Showcase Cards
-        let silverwareHtml = '';
+        // 4. Section 01: The Silverware (ถ้วยเกียรติยศและเงินรางวัล)
+        let silverwareCardsHtml = '';
         if (champPrize && runnerPrize) {
-          silverwareHtml = `
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          silverwareCardsHtml = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
               <!-- Champion Card -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-amber-300/60 dark:border-amber-700/60 bg-linear-to-br from-amber-50/50 via-transparent to-transparent dark:from-amber-950/20 shadow-2xs">
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-amber-400/40 dark:border-amber-500/30 ring-1 ring-amber-400/15 bg-slate-50/70 dark:bg-slate-900/60 shadow-2xs">
                 <div class="flex items-start gap-3.5">
-                  <div class="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-900/60 border border-amber-300 dark:border-amber-700/80 flex items-center justify-center shrink-0 shadow-xs">
+                  <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/60 flex items-center justify-center shrink-0 shadow-2xs">
                     ${cupTrophySvg}
                   </div>
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-2 flex-wrap">
-                      <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-amber-700 dark:text-amber-400 font-display">${isEn ? 'TOURNAMENT CHAMPION' : 'แชมป์ฟุตบอลถ้วย'}</span>
+                      <span class="font-mono text-[10px] sm:text-[11px] font-bold text-amber-600 dark:text-amber-400 tracking-wider uppercase">${isEn ? 'TOURNAMENT CHAMPION' : 'แชมป์ฟุตบอลถ้วย'}</span>
                       <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100/80 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800">${isEn ? '1st Place' : 'อันดับ 1'}</span>
                     </div>
-                    <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5">${isEn ? 'Cup Champion Silverware' : 'ถ้วยเกียรติยศแชมป์ฟุตบอลถ้วย'}</h3>
-                    <div class="text-xl sm:text-2xl font-black text-amber-700 dark:text-amber-400 font-display mt-1">${champPrize}</div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${isEn ? 'Awarded to the winner of the Grand Final knockout match.' : 'มอบให้แก่ผู้ชนะเลิศนัดชิงชนะเลิศรอบ Final (สัปดาห์ที่ 38)'}</p>
+                    <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5 font-display">${isEn ? 'Cup Champion Silverware' : 'ถ้วยเกียรติยศแชมป์ฟุตบอลถ้วย'}</h3>
+                    <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-display mt-1 tracking-tight tabular-nums">${champPrize}</div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${isEn ? 'Awarded to the ultimate winner of the Grand Final knockout match.' : 'มอบให้แก่ผู้ชนะเลิศนัดชิงชนะเลิศรอบ Final (สัปดาห์ที่ 38)'}</p>
                   </div>
                 </div>
               </div>
 
               <!-- Runner-Up Card -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-300/80 dark:border-slate-700/80 bg-linear-to-br from-slate-100/60 via-transparent to-transparent dark:from-slate-800/20 shadow-2xs">
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 shadow-2xs">
                 <div class="flex items-start gap-3.5">
-                  <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center shrink-0 shadow-xs">
+                  <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0 shadow-2xs">
                     ${cupMedalSvg}
                   </div>
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-2 flex-wrap">
-                      <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-slate-600 dark:text-slate-400 font-display">${isEn ? 'RUNNER-UP' : 'รองชนะเลิศ'}</span>
+                      <span class="font-mono text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 tracking-wider uppercase">${isEn ? 'RUNNER-UP' : 'รองชนะเลิศ'}</span>
                       <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-200/80 text-slate-700 dark:bg-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-600">${isEn ? '2nd Place' : 'อันดับ 2'}</span>
                     </div>
-                    <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5">${isEn ? 'Cup Runner-Up Medal' : 'รางวัลรองชนะเลิศฟุตบอลถ้วย'}</h3>
-                    <div class="text-xl sm:text-2xl font-black text-slate-700 dark:text-slate-300 font-display mt-1">${runnerPrize}</div>
+                    <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5 font-display">${isEn ? 'Cup Runner-Up Medal' : 'รางวัลรองชนะเลิศฟุตบอลถ้วย'}</h3>
+                    <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-display mt-1 tracking-tight tabular-nums">${runnerPrize}</div>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${isEn ? 'Awarded to the runner-up contesting the Grand Final.' : 'มอบให้แก่ทีมรองชนะเลิศที่ผ่านเข้าสู่รอบชิงชนะเลิศ'}</p>
                   </div>
                 </div>
@@ -16314,40 +16392,40 @@ selectShi62GW(gwName) {
             </div>
           `;
         } else if (champPrize) {
-          silverwareHtml = `
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          silverwareCardsHtml = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
               <!-- Champion Card -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-amber-300/60 dark:border-amber-700/60 bg-linear-to-br from-amber-50/50 via-transparent to-transparent dark:from-amber-950/20 shadow-2xs">
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-amber-400/40 dark:border-amber-500/30 ring-1 ring-amber-400/15 bg-slate-50/70 dark:bg-slate-900/60 shadow-2xs">
                 <div class="flex items-start gap-3.5">
-                  <div class="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-900/60 border border-amber-300 dark:border-amber-700/80 flex items-center justify-center shrink-0 shadow-xs">
+                  <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/60 flex items-center justify-center shrink-0 shadow-2xs">
                     ${cupTrophySvg}
                   </div>
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-2 flex-wrap">
-                      <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-amber-700 dark:text-amber-400 font-display">${isEn ? 'TOURNAMENT CHAMPION' : 'แชมป์ฟุตบอลถ้วย'}</span>
+                      <span class="font-mono text-[10px] sm:text-[11px] font-bold text-amber-600 dark:text-amber-400 tracking-wider uppercase">${isEn ? 'TOURNAMENT CHAMPION' : 'แชมป์ฟุตบอลถ้วย'}</span>
                       <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100/80 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800">${isEn ? 'Winner Takes All' : 'ผู้ชนะคว้าเดี่ยว'}</span>
                     </div>
-                    <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5">${isEn ? 'Cup Champion Silverware' : 'ถ้วยเกียรติยศแชมป์ฟุตบอลถ้วย'}</h3>
-                    <div class="text-xl sm:text-2xl font-black text-amber-700 dark:text-amber-400 font-display mt-1">${champPrize}</div>
+                    <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5 font-display">${isEn ? 'Cup Champion Silverware' : 'ถ้วยเกียรติยศแชมป์ฟุตบอลถ้วย'}</h3>
+                    <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-display mt-1 tracking-tight tabular-nums">${champPrize}</div>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${isEn ? 'Awarded to the ultimate winner of the knockout tournament.' : 'มอบให้แก่ผู้ชนะเลิศทัวร์นาเมนต์บอลถ้วย'}</p>
                   </div>
                 </div>
               </div>
 
-              <!-- Context Schedule / Rule Card -->
-              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-linear-to-br from-indigo-50/30 via-transparent to-transparent dark:from-indigo-950/15 shadow-2xs">
+              <!-- Context Schedule / League Special Rule Card -->
+              <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 shadow-2xs">
                 <div class="flex items-start gap-3.5">
-                  <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center shrink-0 shadow-xs">
+                  <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0 shadow-2xs">
                     ${cupNote ? shieldSvg : kickoffSvg}
                   </div>
                   <div class="min-w-0 flex-1">
-                    <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-indigo-600 dark:text-indigo-400 font-display">
-                      ${cupNote ? (isEn ? 'LEAGUE SPECIAL RULE' : 'กติกาพิเศษประจำลีก') : (isEn ? 'KICKOFF SCHEDULE' : 'กำหนดการเปิดสนาม')}
+                    <span class="font-mono text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 tracking-wider uppercase">
+                      ${cupNote ? (isEn ? 'SPECIAL LEAGUE RULE' : 'กติกาพิเศษประจำลีก') : (isEn ? 'KICKOFF SCHEDULE' : 'กำหนดการเปิดสนาม')}
                     </span>
-                    <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5">
+                    <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5 font-display">
                       ${cupNote ? (isEn ? 'Tie-Break Qualification Rule' : 'เกณฑ์ชี้ขาดพิเศษเฉพาะลีก') : (isEn ? `Knockout Commences GW ${startGW}` : `เริ่มแข่งขัน Gameweek ${startGW}`)}
                     </h3>
-                    <div class="text-sm font-semibold text-slate-700 dark:text-slate-300 mt-1">
+                    <div class="text-sm font-semibold text-slate-800 dark:text-slate-200 mt-1">
                       ${cupNote ? cupNote : (isEn ? `Bracket pairings automatically kick off in Gameweek ${startGW}.` : `ตารางประกบคู่รอบแพ้คัดออกจะเริ่มอย่างเป็นทางการในสัปดาห์ที่ ${startGW}`)}
                     </div>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -16362,105 +16440,130 @@ selectShi62GW(gwName) {
           `;
         }
 
-        // Special rule callout if both prizes exist and note exists
         let noteCalloutHtml = '';
         if (cupNote && champPrize && runnerPrize) {
           noteCalloutHtml = `
-            <div class="rounded-2xl p-4 border border-amber-300/80 dark:border-amber-800/80 bg-amber-50/70 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 flex items-start gap-3">
-              <div class="p-1.5 rounded-xl bg-amber-100 dark:bg-amber-900/60 text-amber-600 dark:text-amber-400 shrink-0">
+            <div class="rounded-xl p-3.5 border border-slate-200/90 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 flex items-start gap-3 mt-3 shadow-2xs">
+              <div class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 shrink-0">
                 ${shieldSvg}
               </div>
-              <div class="text-xs">
-                <span class="font-bold">${isEn ? 'Special League Rule:' : 'กติกาพิเศษประจำลีก:'}</span>
+              <div class="text-xs leading-relaxed">
+                <span class="font-bold text-slate-900 dark:text-white">${isEn ? 'Special League Rule:' : 'กติกาพิเศษประจำลีก:'}</span>
                 <span class="ml-1">${cupNote}</span>
-                <p class="text-[11px] text-amber-700 dark:text-amber-400 mt-0.5">${isEn ? 'If contenders are eliminated in the same round, the team with the higher cumulative points wins.' : 'หากผู้ลุ้นรางวัลตกรอบพร้อมกันในรอบเดียวกัน ทีมที่มีคะแนนรวมสะสมสูงกว่าจะได้รับสิทธิ์อันดับที่ดีกว่า'}</p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? 'If contenders are eliminated in the same round, the team with the higher cumulative points wins.' : 'หากผู้ลุ้นรางวัลตกรอบพร้อมกันในรอบเดียวกัน ทีมที่มีคะแนนรวมสะสมสูงกว่าจะได้รับสิทธิ์อันดับที่ดีกว่า'}</p>
               </div>
             </div>
           `;
         }
 
-        // 2. Tournament Roadmap & Bracket Pipeline
+        const section01Html = `
+          <div class="space-y-3" role="region" aria-labelledby="cup-sec-01">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-xs font-bold text-slate-400 dark:text-slate-500">01</span>
+              <span id="cup-sec-01" class="text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 font-display">${isEn ? 'THE SILVERWARE & PRIZES' : 'ถ้วยเกียรติยศและเงินรางวัล'}</span>
+            </div>
+            ${silverwareCardsHtml}
+            ${noteCalloutHtml}
+          </div>
+        `;
+
+        // 5. Section 02: Tournament Pipeline & Stages (ไทม์ไลน์และรอบการแข่งขัน)
         const qualEndGW = Math.max(1, startGW - 1);
         const knockoutEndGW = Math.min(36, startGW + 1);
-        const roadmapHtml = `
-          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-            <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
-              <div>
-                <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-slate-500 dark:text-slate-400 font-display">${isEn ? 'TOURNAMENT PIPELINE' : 'เส้นทางสู่บัลลังก์แชมป์'}</span>
-                <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5 font-display">${isEn ? 'Cup Tournament Stages' : 'ไทม์ไลน์และรอบการแข่งขัน'}</h3>
+
+        // Determine current active stage index (1, 2, 3, or 4)
+        let activeStageNum = 1;
+        if (maxGW >= 38) activeStageNum = 4;
+        else if (maxGW >= 37) activeStageNum = 3;
+        else if (maxGW >= startGW) activeStageNum = 2;
+        else activeStageNum = 1;
+
+        function getStageBadge(stageNum) {
+          if (stageNum === activeStageNum) {
+            if (isLive) {
+              return `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/25"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 motion-safe:animate-pulse"></span>${isEn ? 'Live' : 'กำลังแข่ง'}</span>`;
+            } else if (isCurFinished) {
+              return `<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-600">${isEn ? 'Current' : 'ปัจจุบัน'}</span>`;
+            } else {
+              return `<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${isEn ? 'Upcoming' : 'รอแข่ง'}</span>`;
+            }
+          } else if (stageNum < activeStageNum) {
+            return `<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">${isEn ? 'Done' : 'แข่งแล้ว'}</span>`;
+          } else {
+            return `<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700">${isEn ? 'Upcoming' : 'รอเปิดสาย'}</span>`;
+          }
+        }
+
+        const section02Html = `
+          <div class="space-y-3" role="region" aria-labelledby="cup-sec-02">
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs font-bold text-slate-400 dark:text-slate-500">02</span>
+                <span id="cup-sec-02" class="text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 font-display">${isEn ? 'TOURNAMENT PIPELINE & STAGES' : 'ไทม์ไลน์และรอบการแข่งขัน'}</span>
               </div>
-              <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-3 py-1 rounded-xl border border-slate-200 dark:border-slate-700">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span class="font-semibold">${isEn ? 'Single Elimination 1v1' : 'แพ้คัดออก 1 ต่อ 1'}</span>
+              <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-200 dark:border-slate-700">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span class="font-mono text-[11px] font-semibold">${isEn ? 'Single Elimination 1v1' : 'แพ้คัดออก 1 ต่อ 1'}</span>
               </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <!-- Stage 1 -->
-              <div class="rounded-xl p-3.5 border border-amber-300/60 dark:border-amber-700/60 bg-amber-50/40 dark:bg-amber-950/20 relative flex flex-col justify-between">
+              <div class="rounded-xl p-3.5 border ${activeStageNum === 1 ? 'border-slate-300 dark:border-slate-700 ring-1 ring-slate-400/20' : 'border-slate-200/80 dark:border-slate-800'} bg-slate-50/70 dark:bg-slate-900/60 shadow-2xs flex flex-col justify-between">
                 <div>
                   <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-black text-amber-700 dark:text-amber-400 font-display">01 • GW 1-${qualEndGW}</span>
-                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-700 dark:text-amber-300">
-                      <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                      ${isEn ? 'Live' : 'กำลังแข่ง'}
-                    </span>
+                    <span class="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">01 • GW 1-${qualEndGW}</span>
+                    ${getStageBadge(1)}
                   </div>
-                  <h4 class="text-sm font-bold text-slate-900 dark:text-white font-display">${isEn ? 'Qualification & Seeding' : 'รอบจัดอันดับมือวาง'}</h4>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display">${isEn ? 'Qualification & Seeding' : 'รอบจัดอันดับมือวาง'}</h4>
                   <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">${isEn ? 'All teams compete in weekly league matches. Cumulative net score determines seed rank.' : 'ทุกทีมลงแข่งสะสมคะแนนสุทธิเพื่อกำหนดอันดับมือวาง (Seeds) ในสายการแข่งขัน'}</p>
                 </div>
-                <div class="mt-3 pt-2 border-t border-amber-200/60 dark:border-amber-800/40 text-[11px] font-bold text-amber-700 dark:text-amber-400">
+                <div class="mt-3 pt-2 border-t border-slate-200/80 dark:border-slate-800 font-mono text-[11px] font-semibold text-slate-600 dark:text-slate-400">
                   ${isEn ? `${eligibleTeams.length} Contenders Qualify` : `${eligibleTeams.length} ทีมลุ้นสิทธิ์เข้ารอบ`}
                 </div>
               </div>
 
               <!-- Stage 2 -->
-              <div class="rounded-xl p-3.5 border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 relative flex flex-col justify-between">
+              <div class="rounded-xl p-3.5 border ${activeStageNum === 2 ? 'border-slate-300 dark:border-slate-700 ring-1 ring-slate-400/20' : 'border-slate-200/80 dark:border-slate-800'} bg-slate-50/70 dark:bg-slate-900/60 shadow-2xs flex flex-col justify-between">
                 <div>
                   <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-black text-slate-500 dark:text-slate-400 font-display">02 • GW ${startGW}-${knockoutEndGW}</span>
-                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-200/80 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
-                      ${isEn ? 'Upcoming' : 'รอเปิดสาย'}
-                    </span>
+                    <span class="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">02 • GW ${startGW}-${knockoutEndGW}</span>
+                    ${getStageBadge(2)}
                   </div>
-                  <h4 class="text-sm font-bold text-slate-900 dark:text-white font-display">${isEn ? 'Knockout Playoff' : 'รอบประกบคู่แพ้คัดออก'}</h4>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display">${isEn ? 'Knockout Playoff' : 'รอบประกบคู่แพ้คัดออก'}</h4>
                   <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">${isEn ? '1v1 Head-to-Head single elimination. Manager with higher GW net score advances.' : 'ประกบคู่ 1 ต่อ 1 ใครได้คะแนนมากกว่าในสัปดาห์นั้นผ่านเข้ารอบทันที'}</p>
                 </div>
-                <div class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-700 text-[11px] font-bold text-slate-600 dark:text-slate-400">
+                <div class="mt-3 pt-2 border-t border-slate-200/80 dark:border-slate-800 font-mono text-[11px] font-semibold text-slate-600 dark:text-slate-400">
                   ${isEn ? 'High Seeds vs Low Seeds' : 'มือวางสูงพบมือวางต่ำ'}
                 </div>
               </div>
 
               <!-- Stage 3 -->
-              <div class="rounded-xl p-3.5 border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 relative flex flex-col justify-between">
+              <div class="rounded-xl p-3.5 border ${activeStageNum === 3 ? 'border-slate-300 dark:border-slate-700 ring-1 ring-slate-400/20' : 'border-slate-200/80 dark:border-slate-800'} bg-slate-50/70 dark:bg-slate-900/60 shadow-2xs flex flex-col justify-between">
                 <div>
                   <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-black text-slate-500 dark:text-slate-400 font-display">03 • GW 37</span>
-                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100/80 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300">
-                      ${isEn ? 'Final 4' : '4 ทีมสุดท้าย'}
-                    </span>
+                    <span class="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">03 • GW 37</span>
+                    ${getStageBadge(3)}
                   </div>
-                  <h4 class="text-sm font-bold text-slate-900 dark:text-white font-display">${isEn ? 'Semi-Finals' : 'รอบรองชนะเลิศ'}</h4>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display">${isEn ? 'Semi-Finals' : 'รอบรองชนะเลิศ'}</h4>
                   <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">${isEn ? 'The final four managers clash for a coveted ticket to the Championship Match.' : 'การต่อสู้ของ 4 ผู้จัดการทีมสุดท้ายเพื่อชิงตั๋วเข้าสู่รอบชิงชนะเลิศ'}</p>
                 </div>
-                <div class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-700 text-[11px] font-bold text-blue-600 dark:text-blue-400">
+                <div class="mt-3 pt-2 border-t border-slate-200/80 dark:border-slate-800 font-mono text-[11px] font-semibold text-slate-600 dark:text-slate-400">
                   ${isEn ? '2 Finalists Advance' : '2 ผู้ชนะเข้าชิงแชมป์'}
                 </div>
               </div>
 
               <!-- Stage 4 -->
-              <div class="rounded-xl p-3.5 border border-amber-300/80 dark:border-amber-700/80 bg-linear-to-b from-amber-500/10 to-transparent dark:from-amber-950/30 relative flex flex-col justify-between">
+              <div class="rounded-xl p-3.5 border ${activeStageNum === 4 ? 'border-amber-400/40 dark:border-amber-500/30 ring-1 ring-amber-400/15' : 'border-slate-200/80 dark:border-slate-800'} bg-slate-50/70 dark:bg-slate-900/60 shadow-2xs flex flex-col justify-between">
                 <div>
                   <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-black text-amber-700 dark:text-amber-400 font-display">04 • GW 38</span>
-                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-700 dark:text-amber-300">
-                      🏆 ${isEn ? 'Final' : 'นัดชิง'}
-                    </span>
+                    <span class="font-mono text-xs font-bold ${activeStageNum === 4 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-700 dark:text-slate-300'}">04 • GW 38</span>
+                    ${getStageBadge(4)}
                   </div>
-                  <h4 class="text-sm font-bold text-slate-900 dark:text-white font-display">${isEn ? 'Grand Final & Silverware' : 'รอบชิงชนะเลิศ ชิงถ้วยแชมป์'}</h4>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display">${isEn ? 'Grand Final & Trophy' : 'รอบชิงชนะเลิศ ชิงถ้วยแชมป์'}</h4>
                   <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">${isEn ? 'The championship match to crown the Mini-League Cup Champion.' : 'เกมนัดชิงชนะเลิศตัดสินแชมป์บอลถ้วยประจำลีกและมอบเงินรางวัล'}</p>
                 </div>
-                <div class="mt-3 pt-2 border-t border-amber-200/60 dark:border-amber-800/40 text-[11px] font-black text-amber-700 dark:text-amber-400">
+                <div class="mt-3 pt-2 border-t border-slate-200/80 dark:border-slate-800 font-mono text-[11px] font-bold ${activeStageNum === 4 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-700 dark:text-slate-300'}">
                   ${isEn ? `Champion: ${champPrize || 'Trophy'}` : `แชมป์รับ: ${champPrize || 'ถ้วยเกียรติยศ'}`}
                 </div>
               </div>
@@ -16468,12 +16571,115 @@ selectShi62GW(gwName) {
           </div>
         `;
 
-        // 3. Live Seeding & Contenders Table
+        // 6. Section 03: Adaptive Head-to-Head Knockout (if maxGW >= startGW) & Seeding Race
+        let knockoutMatchupsHtml = '';
+        if (isKnockoutStarted) {
+          // Compute pairings for current GW
+          const pairings = [];
+          const numPairs = Math.floor(eligibleTeams.length / 2);
+          for (let i = 0; i < numPairs; i++) {
+            const teamA = eligibleTeams[i];
+            const teamB = eligibleTeams[eligibleTeams.length - 1 - i];
+            pairings.push({ teamA, teamB, index: i + 1 });
+          }
+
+          // De-nested Flat Container (Eliminates nested-cards antipattern)
+          knockoutMatchupsHtml = `
+            <div class="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/30 overflow-hidden mb-4" role="region" aria-labelledby="h2h-knockout-title">
+              <div class="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 flex-wrap">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0" aria-hidden="true">
+                    ${swordsSvg}
+                  </div>
+                  <div>
+                    <h3 id="h2h-knockout-title" class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display">${isEn ? `GW ${maxGW} Head-to-Head Knockout Matches` : `ประกบคู่รอบน็อคเอาท์ GW ${maxGW}`}</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? 'Single-elimination 1v1 match. Higher gameweek net score advances to next round.' : 'การแข่งขันแพ้คัดออก 1 ต่อ 1 ทีมที่ทำแต้มสุทธิในสัปดาห์นี้ได้มากกว่าจะผ่านเข้ารอบต่อไป'}</p>
+                  </div>
+                </div>
+                <div>
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-mono font-bold ${isLive ? 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/25' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}">
+                    ${isLive ? `<span class="w-1.5 h-1.5 rounded-full bg-amber-500 motion-safe:animate-pulse"></span>LIVE IN-PLAY` : `✓ OFFICIAL SETTLED`}
+                  </span>
+                </div>
+              </div>
+
+              <div class="p-4 sm:p-5 grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
+                ${pairings.map(pair => {
+                  const scoreA = pair.teamA.cur_net || 0;
+                  const scoreB = pair.teamB.cur_net || 0;
+                  const isLeadA = scoreA > scoreB;
+                  const isLeadB = scoreB > scoreA;
+                  
+                  return `
+                    <div class="rounded-xl p-3.5 border border-slate-200/70 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 shadow-2xs flex flex-col justify-between">
+                      <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-2.5 pb-2 border-b border-slate-100 dark:border-slate-800">
+                        <span>MATCH #${pair.index}</span>
+                        <span>${isLive ? 'LIVE' : (isCurFinished ? 'FINAL' : 'UPCOMING')}</span>
+                      </div>
+                      
+                      <!-- Team A -->
+                      <div class="flex items-center justify-between py-1.5">
+                        <div class="min-w-0 flex-1 pr-2">
+                          <div class="flex items-center gap-1.5">
+                            <span class="font-mono text-xs font-bold text-slate-400">#${pair.teamA.seed_rank}</span>
+                            <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate block">${this.escapeHtml(pair.teamA.team_name)}</span>
+                          </div>
+                          <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(pair.teamA.player_name)}</div>
+                        </div>
+                        <div class="text-right shrink-0">
+                          <span class="text-sm sm:text-base font-black font-mono tabular-nums ${isLeadA ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-white'}">${scoreA}</span>
+                          <span class="text-[10px] text-slate-400 ml-0.5">pts</span>
+                        </div>
+                      </div>
+
+                      <!-- Divider -->
+                      <div class="my-1 border-t border-dashed border-slate-200 dark:border-slate-800"></div>
+
+                      <!-- Team B -->
+                      <div class="flex items-center justify-between py-1.5">
+                        <div class="min-w-0 flex-1 pr-2">
+                          <div class="flex items-center gap-1.5">
+                            <span class="font-mono text-xs font-bold text-slate-400">#${pair.teamB.seed_rank}</span>
+                            <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate block">${this.escapeHtml(pair.teamB.team_name)}</span>
+                          </div>
+                          <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(pair.teamB.player_name)}</div>
+                        </div>
+                        <div class="text-right shrink-0">
+                          <span class="text-sm sm:text-base font-black font-mono tabular-nums ${isLeadB ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-white'}">${scoreB}</span>
+                          <span class="text-[10px] text-slate-400 ml-0.5">pts</span>
+                        </div>
+                      </div>
+
+                      <!-- Match Result / Status Footer -->
+                      <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800 text-[11px] font-mono text-right">
+                        ${isCurFinished 
+                          ? (isLeadA 
+                              ? `<span class="text-emerald-600 dark:text-emerald-400 font-bold">${isEn ? `${pair.teamA.team_name} Advances →` : `${pair.teamA.team_name} ชนะผ่านเข้ารอบ →`}</span>`
+                              : (isLeadB 
+                                  ? `<span class="text-emerald-600 dark:text-emerald-400 font-bold">${isEn ? `${pair.teamB.team_name} Advances →` : `${pair.teamB.team_name} ชนะผ่านเข้ารอบ →`}</span>`
+                                  : `<span class="text-amber-600 dark:text-amber-400 font-bold">${isEn ? 'Tied • Decided by Tie-Breaker' : 'เสมอ • ชี้ขาดตามกติกาไทเบรก'}</span>`))
+                          : (isLive 
+                              ? (isLeadA 
+                                  ? `<span class="text-amber-600 dark:text-amber-400 font-bold">${isEn ? `${pair.teamA.team_name} currently leads` : `${pair.teamA.team_name} นำอยู่ขณะนี้`}</span>`
+                                  : (isLeadB 
+                                      ? `<span class="text-amber-600 dark:text-amber-400 font-bold">${isEn ? `${pair.teamB.team_name} currently leads` : `${pair.teamB.team_name} นำอยู่ขณะนี้`}</span>`
+                                      : `<span class="text-slate-500 font-semibold">${isEn ? 'Scores Level' : 'คะแนนเสมอกัน'}</span>`))
+                              : `<span class="text-slate-400">${isEn ? 'Match upcoming' : 'รอการแข่งขัน'}</span>`)}
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        // Table Rows for Seeding
         let tableRowsHtml = '';
         if (displayTeams.length === 0) {
           tableRowsHtml = `
             <tr>
-              <td colspan="5" class="py-8 text-center text-xs text-slate-500 dark:text-slate-400">
+              <td colspan="5" class="py-10 text-center text-xs text-slate-500 dark:text-slate-400 font-mono">
                 ${isEn ? 'No teams matching the filter or search criteria.' : 'ไม่พบทีมที่ตรงกับเงื่อนไขการค้นหาหรือตัวกรอง'}
               </td>
             </tr>
@@ -16482,27 +16688,31 @@ selectShi62GW(gwName) {
           tableRowsHtml = displayTeams.map((t) => {
             const isEligible = t.is_eligible;
             const seedBadge = isEligible 
-              ? (t.seed_rank <= 3
-                  ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-black ${t.seed_rank === 1 ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700' : (t.seed_rank === 2 ? 'bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600' : 'bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300 border border-orange-300 dark:border-orange-700')}">#${t.seed_rank}</span>`
-                  : `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">#${t.seed_rank}</span>`)
-              : `<span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700">-</span>`;
+              ? (t.seed_rank === 1
+                  ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-black font-mono text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-700">#1</span>`
+                  : (t.seed_rank === 2
+                      ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-bold font-mono text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">#2</span>`
+                      : (t.seed_rank === 3
+                          ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-bold font-mono text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">#3</span>`
+                          : `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-semibold font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">#${t.seed_rank}</span>`)))
+              : `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-mono text-slate-400 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800">-</span>`;
 
             let statusPill = '';
             if (isEligible) {
               if (t.seed_rank <= 4) {
-                statusPill = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${isEn ? 'Top Seed' : 'มือวางแถวหน้า'}</span>`;
+                statusPill = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${isEn ? 'Top Seed' : 'มือวางแถวหน้า'}</span>`;
               } else {
-                statusPill = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">${isEn ? 'Qualified Contender' : 'ผู้มีสิทธิ์ลุ้นแชมป์'}</span>`;
+                statusPill = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">${isEn ? 'Contender' : 'ผู้มีสิทธิ์ลุ้นแชมป์'}</span>`;
               }
             } else {
-              statusPill = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">${isEn ? 'Guest Entry (Non-Prize)' : 'ร่วมสนุก (ไม่ลุ้นรางวัล)'}</span>`;
+              statusPill = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold font-mono bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700">${isEn ? 'Guest (Non-Prize)' : 'ร่วมสนุก (ไม่ลุ้นรางวัล)'}</span>`;
             }
 
             const avgPts = t.gw_count > 0 ? (t.total_net / t.gw_count).toFixed(1) : '-';
 
             return `
               <tr class="border-b border-slate-100 dark:border-slate-800/80 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
-                <td class="py-3 px-3 sm:px-4 text-center font-display font-bold">
+                <td class="py-3 px-3 sm:px-4 text-center font-mono font-bold">
                   ${seedBadge}
                 </td>
                 <td class="py-3 px-3 sm:px-4">
@@ -16516,158 +16726,211 @@ selectShi62GW(gwName) {
                   ${statusPill}
                 </td>
                 <td class="py-3 px-3 sm:px-4 text-right whitespace-nowrap">
-                  <span class="text-xs sm:text-sm font-black font-display text-slate-900 dark:text-white">${t.total_net.toLocaleString()}</span>
-                  <span class="text-[10px] text-slate-500 dark:text-slate-400 ml-0.5 font-normal">pts</span>
+                  <span class="text-xs sm:text-sm font-black font-mono tabular-nums text-slate-900 dark:text-white">${t.total_net.toLocaleString()}</span>
+                  <span class="text-[10px] text-slate-400 ml-0.5 font-normal">pts</span>
                 </td>
                 <td class="py-3 px-3 sm:px-4 text-right whitespace-nowrap hidden sm:table-cell">
-                  <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">${avgPts}</span>
+                  <span class="text-xs font-semibold font-mono tabular-nums text-slate-600 dark:text-slate-300">${avgPts}</span>
                 </td>
               </tr>
             `;
           }).join('');
         }
 
-        const seedingTableHtml = `
-          <div class="glass-card rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs overflow-hidden">
-            <!-- Header & Filter Bar -->
-            <div class="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3.5">
-              <div>
-                <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-slate-500 dark:text-slate-400 font-display">${isEn ? 'TOURNAMENT QUALIFICATION' : 'ตารางจัดอันดับมือวาง'}</span>
-                <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5 font-display">${isEn ? 'Live Seeding & Contenders' : 'อันดับมือวางและสถานะการลุ้นถ้วย'}</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? 'Rankings based on cumulative league net points heading into knockout rounds.' : 'คำนวณจากคะแนนสุทธิสะสมในลีกเพื่อประกบคู่ในรอบน็อคเอาท์'}</p>
-              </div>
-
-              <!-- Search & Filters -->
-              <div class="flex items-center gap-2 flex-wrap">
-                <div class="relative min-w-[130px] sm:min-w-[180px] flex-1">
-                  <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                  </span>
-                  <input 
-                    id="cup-search-input"
-                    type="text" 
-                    value="${this.escapeHtml(this.cupSearchQuery || '')}" 
-                    oninput="app.handleCupSearch(this.value)"
-                    placeholder="${isEn ? 'Search team / manager...' : 'ค้นหาชื่อทีม / ผู้จัดการ...'}"
-                    class="w-full pl-8 pr-7 py-1.5 text-xs bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-all font-sans"
-                  />
-                  ${this.cupSearchQuery ? `
-                    <button onclick="app.handleCupSearch('')" class="absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                    </button>
-                  ` : ''}
-                </div>
-
-                <div class="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-wrap">
-                  <button onclick="app.setCupFilter('all')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.cupFilterMode === 'all' ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
-                    ${isEn ? `All (${allTeamsList.length})` : `ทั้งหมด (${allTeamsList.length})`}
-                  </button>
-                  <button onclick="app.setCupFilter('contenders')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.cupFilterMode === 'contenders' ? 'bg-amber-600 text-white shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-amber-600'}">
-                    ${isEn ? `Contenders (${eligibleTeams.length})` : `ลุ้นรางวัล (${eligibleTeams.length})`}
-                  </button>
-                  <button onclick="app.setCupFilter('seeds')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.cupFilterMode === 'seeds' ? 'bg-amber-600 text-white shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-amber-600'}">
-                    ${isEn ? 'Top Seeds' : 'มือวาง'}
-                  </button>
-                  ${nonEligibleTeams.length > 0 ? `
-                    <button onclick="app.setCupFilter('non_prize')" class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${this.cupFilterMode === 'non_prize' ? 'bg-slate-600 text-white shadow-2xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}">
-                      ${isEn ? `Guest (${nonEligibleTeams.length})` : `ร่วมสนุก (${nonEligibleTeams.length})`}
-                    </button>
-                  ` : ''}
-                </div>
-              </div>
+        const section03Html = `
+          <div class="space-y-3" role="region" aria-labelledby="cup-sec-03">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-xs font-bold text-slate-400 dark:text-slate-500">03</span>
+              <span id="cup-sec-03" class="text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 font-display">
+                ${isKnockoutStarted 
+                  ? (isEn ? 'KNOCKOUT MATCHES & SEEDING RACE' : 'รอบน็อคเอาท์และอันดับมือวาง') 
+                  : (isEn ? 'TOURNAMENT QUALIFICATION & SEEDING' : 'อันดับมือวางและสถานะการลุ้นถ้วย')}
+              </span>
             </div>
 
-            <!-- Table -->
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
-                <thead>
-                  <tr class="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase font-extrabold tracking-wider font-display text-[10px]">
-                    <th scope="col" class="py-2.5 px-3 sm:px-4 text-center w-14">${isEn ? 'Seed' : 'มือวาง'}</th>
-                    <th scope="col" class="py-2.5 px-3 sm:px-4">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
-                    <th scope="col" class="py-2.5 px-3 sm:px-4 whitespace-nowrap">${isEn ? 'Cup Status' : 'สถานะการแข่งขัน'}</th>
-                    <th scope="col" class="py-2.5 px-3 sm:px-4 text-right whitespace-nowrap">${isEn ? 'Net Points' : 'คะแนนสุทธิ'}</th>
-                    <th scope="col" class="py-2.5 px-3 sm:px-4 text-right whitespace-nowrap hidden sm:table-cell">${isEn ? 'Avg / GW' : 'เฉลี่ย/นัด'}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${tableRowsHtml}
-                </tbody>
-              </table>
+            ${knockoutMatchupsHtml}
+
+            <!-- Seeding Table Card -->
+            <div class="glass-card rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs overflow-hidden">
+              <div class="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3.5">
+                <div>
+                  <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">${isEn ? 'Live Seeding & Contenders' : 'อันดับมือวางและคะแนนสะสมสุทธิ'}</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? 'Rankings based on cumulative league net points heading into knockout rounds.' : 'คำนวณจากคะแนนสุทธิสะสมในลีกเพื่อประกบคู่ในรอบน็อคเอาท์'}</p>
+                </div>
+
+                <!-- Search & Monochrome Segmented Filters with Touch Targets >= 36px & ARIA Roles -->
+                <div class="flex items-center gap-2 flex-wrap">
+                  <div class="relative min-w-[140px] sm:min-w-[190px] flex-1">
+                    <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400" aria-hidden="true">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </span>
+                    <input 
+                      id="cup-search-input"
+                      type="text" 
+                      aria-label="${isEn ? 'Search team or manager name' : 'ค้นหาชื่อทีมหรือผู้จัดการ'}"
+                      value="${this.escapeHtml(this.cupSearchQuery || '')}" 
+                      oninput="app.handleCupSearch(this.value)"
+                      placeholder="${isEn ? 'Search team / manager...' : 'ค้นหาชื่อทีม / ผู้จัดการ...'}"
+                      class="w-full pl-8 pr-8 py-2 min-h-[36px] text-xs bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-400 transition-colors duration-150 font-sans"
+                    />
+                    ${this.cupSearchQuery ? `
+                      <button 
+                        type="button"
+                        onclick="app.handleCupSearch('')" 
+                        aria-label="${isEn ? 'Clear search text' : 'ล้างคำค้นหา'}"
+                        class="absolute inset-y-0 right-0 pr-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                      >
+                        <svg class="w-3.5 h-3.5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                      </button>
+                    ` : ''}
+                  </div>
+
+                  <div role="tablist" aria-label="${isEn ? 'Cup contender filters' : 'ตัวกรองผู้ลุ้นรางวัลบอลถ้วย'}" class="flex items-center gap-1 bg-slate-100/80 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-wrap">
+                    <button 
+                      type="button"
+                      role="tab"
+                      id="cup-filter-all"
+                      aria-selected="${this.cupFilterMode === 'all'}"
+                      aria-label="${isEn ? `Show all ${allTeamsList.length} teams` : `แสดงทั้งหมด ${allTeamsList.length} ทีม`}"
+                      onclick="app.setCupFilter('all')" 
+                      class="px-3 py-1.5 min-h-[36px] rounded-lg text-xs font-bold transition-colors cursor-pointer ${this.cupFilterMode === 'all' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
+                    >
+                      ${isEn ? `All (${allTeamsList.length})` : `ทั้งหมด (${allTeamsList.length})`}
+                    </button>
+                    <button 
+                      type="button"
+                      role="tab"
+                      id="cup-filter-contenders"
+                      aria-selected="${this.cupFilterMode === 'contenders'}"
+                      aria-label="${isEn ? `Show ${eligibleTeams.length} prize contenders` : `แสดง ${eligibleTeams.length} ทีมลุ้นรางวัล`}"
+                      onclick="app.setCupFilter('contenders')" 
+                      class="px-3 py-1.5 min-h-[36px] rounded-lg text-xs font-bold transition-colors cursor-pointer ${this.cupFilterMode === 'contenders' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
+                    >
+                      ${isEn ? `Contenders (${eligibleTeams.length})` : `ลุ้นรางวัล (${eligibleTeams.length})`}
+                    </button>
+                    <button 
+                      type="button"
+                      role="tab"
+                      id="cup-filter-seeds"
+                      aria-selected="${this.cupFilterMode === 'seeds'}"
+                      aria-label="${isEn ? 'Show top seeded teams' : 'แสดงเฉพาะทีมมือวาง'}"
+                      onclick="app.setCupFilter('seeds')" 
+                      class="px-3 py-1.5 min-h-[36px] rounded-lg text-xs font-bold transition-colors cursor-pointer ${this.cupFilterMode === 'seeds' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
+                    >
+                      ${isEn ? 'Top Seeds' : 'มือวาง'}
+                    </button>
+                    ${nonEligibleTeams.length > 0 ? `
+                      <button 
+                        type="button"
+                        role="tab"
+                        id="cup-filter-guest"
+                        aria-selected="${this.cupFilterMode === 'non_prize'}"
+                        aria-label="${isEn ? `Show ${nonEligibleTeams.length} guest teams` : `แสดง ${nonEligibleTeams.length} ทีมร่วมสนุก`}"
+                        onclick="app.setCupFilter('non_prize')" 
+                        class="px-3 py-1.5 min-h-[36px] rounded-lg text-xs font-bold transition-colors cursor-pointer ${this.cupFilterMode === 'non_prize' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}"
+                      >
+                        ${isEn ? `Guest (${nonEligibleTeams.length})` : `ร่วมสนุก (${nonEligibleTeams.length})`}
+                      </button>
+                    ` : ''}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Polite Screen Reader Announcement -->
+              <div class="sr-only" role="status" aria-live="polite">
+                ${isEn ? `${displayTeams.length} teams shown in seeding table` : `แสดงผลลัพธ์ ${displayTeams.length} ทีมในตารางจัดอันดับมือวาง`}
+              </div>
+
+              <!-- Table with Accessible Semantic Markup -->
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs" aria-label="${isEn ? 'Cup Tournament Seeding Table' : 'ตารางจัดอันดับมือวางฟุตบอลถ้วย'}">
+                  <thead>
+                    <tr class="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase font-mono font-bold text-[10px] tracking-wider">
+                      <th scope="col" class="py-2.5 px-3 sm:px-4 text-center w-14">${isEn ? 'Seed' : 'มือวาง'}</th>
+                      <th scope="col" class="py-2.5 px-3 sm:px-4">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
+                      <th scope="col" class="py-2.5 px-3 sm:px-4 whitespace-nowrap">${isEn ? 'Cup Status' : 'สถานะการแข่งขัน'}</th>
+                      <th scope="col" class="py-2.5 px-3 sm:px-4 text-right whitespace-nowrap">${isEn ? 'Net Points' : 'คะแนนสุทธิ'}</th>
+                      <th scope="col" class="py-2.5 px-3 sm:px-4 text-right whitespace-nowrap hidden sm:table-cell">${isEn ? 'Avg / GW' : 'เฉลี่ย/นัด'}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${tableRowsHtml}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         `;
 
-        // 4. Official FPL Cup Rules Matrix
-        const rulesMatrixHtml = `
-          <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-            <div class="mb-4">
-              <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-slate-500 dark:text-slate-400 font-display">${isEn ? 'TOURNAMENT RULES & REGULATIONS' : 'กติกาและข้อบังคับทางการ'}</span>
-              <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5 font-display">${isEn ? 'Official FPL Cup Tournament Matrix' : 'ข้อกำหนดการแข่งขัน Official FPL Cup'}</h3>
+        // 7. Section 04: Tournament Rules & Regulations (กติกาและข้อกำหนดทางการ)
+        const section04Html = `
+          <div class="space-y-3" role="region" aria-labelledby="cup-sec-04">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-xs font-bold text-slate-400 dark:text-slate-500">04</span>
+              <span id="cup-sec-04" class="text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 font-display">${isEn ? 'TOURNAMENT RULES & REGULATIONS' : 'กติกาและข้อบังคับทางการ'}</span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-              <!-- Card 1: Format -->
-              <div class="rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-                <div class="flex items-center gap-2 mb-1.5">
-                  <div class="w-6 h-6 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="14.5" y1="17.5" x2="3" y2="6"></line><line x1="14.5" y1="6" x2="3" y2="17.5"></line><line x1="21" y1="14" x2="16.5" y2="18.5"></line><line x1="21" y1="10" x2="16.5" y2="5.5"></line></svg>
-                  </div>
-                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">${isEn ? 'Match Format & Knockout' : 'รูปแบบประกบคู่ 1 ต่อ 1'}</h4>
-                </div>
-                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">${isEn ? 'Single-elimination head-to-head match per gameweek. The team with the higher net points in that gameweek advances to the next round automatically.' : 'แข่งขันประกบคู่ 1 ต่อ 1 แบบแพ้คัดออกในแต่ละสัปดาห์ ทีมที่ทำคะแนนสุทธิได้สูงกว่าในสัปดาห์นั้นจะผ่านเข้าสู่รอบต่อไปทันที'}</p>
+            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+              <div class="mb-4">
+                <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">${isEn ? 'Official FPL Cup Tournament Matrix' : 'ข้อกำหนดการแข่งขัน Official FPL Cup'}</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? 'Standardized single-elimination rules applied uniformly across all tournament rounds.' : 'กติกามาตรฐานสากลสำหรับการแข่งขันแบบแพ้คัดออกในทุกรอบ'}</p>
               </div>
 
-              <!-- Card 2: Qualification -->
-              <div class="rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-                <div class="flex items-center gap-2 mb-1.5">
-                  <div class="w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                <!-- Card 1: Format -->
+                <div class="rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                  <div class="flex items-center gap-2 mb-1.5">
+                    <span class="font-mono text-xs font-bold text-slate-400">01</span>
+                    <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">${isEn ? 'Match Format & Knockout' : 'รูปแบบประกบคู่ 1 ต่อ 1'}</h4>
                   </div>
-                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">${isEn ? 'Seeding & Pairing Tree' : 'การจัดอันดับมือวางและประกบคู่'}</h4>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">${isEn ? 'Single-elimination head-to-head match per gameweek. The team with the higher net points in that gameweek advances to the next round automatically.' : 'แข่งขันประกบคู่ 1 ต่อ 1 แบบแพ้คัดออกในแต่ละสัปดาห์ ทีมที่ทำคะแนนสุทธิได้สูงกว่าในสัปดาห์นั้นจะผ่านเข้าสู่รอบต่อไปทันที'}</p>
                 </div>
-                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">${isEn ? `Bracket pairings are determined by league standings prior to GW ${startGW}. Higher seeds are paired against lower seeds according to the official FPL bracket structure.` : `จัดอันดับมือวางตามคะแนนสุทธิในลีกก่อนเริ่มสัปดาห์ที่ ${startGW} ทีมมือวางอันดับสูงจะถูกประกบพบกับทีมมือวางอันดับล่างตามผังการแข่งขัน Official FPL`}</p>
-              </div>
 
-              <!-- Card 3: Tie-Breakers -->
-              <div class="rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-                <div class="flex items-center gap-2 mb-1.5">
-                  <div class="w-6 h-6 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg>
+                <!-- Card 2: Qualification -->
+                <div class="rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                  <div class="flex items-center gap-2 mb-1.5">
+                    <span class="font-mono text-xs font-bold text-slate-400">02</span>
+                    <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">${isEn ? 'Seeding & Pairing Tree' : 'การจัดอันดับมือวางและประกบคู่'}</h4>
                   </div>
-                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">${isEn ? 'Official Tie-Breaker Priority' : 'เกณฑ์ตัดสินเมื่อเสมอกัน'}</h4>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">${isEn ? `Bracket pairings are determined by league standings prior to GW ${startGW}. Higher seeds are paired against lower seeds according to the official FPL bracket structure.` : `จัดอันดับมือวางตามคะแนนสุทธิในลีกก่อนเริ่มสัปดาห์ที่ ${startGW} ทีมมือวางอันดับสูงจะถูกประกบพบกับทีมมือวางอันดับล่างตามผังการแข่งขัน Official FPL`}</p>
                 </div>
-                <ul class="text-xs text-slate-500 dark:text-slate-400 space-y-1 list-disc list-inside leading-relaxed">
-                  <li>${isEn ? '1. Most goals scored in the Gameweek' : '1. ประตูที่นักเตะในทีมทำได้มากกว่าในสัปดาห์นั้น'}</li>
-                  <li>${isEn ? '2. Fewest goals conceded in the Gameweek' : '2. เสียประตูน้อยกว่าในสัปดาห์นั้น'}</li>
-                  <li>${isEn ? '3. Virtual coin toss by FPL system' : '3. จับสลากสุ่มผู้ชนะเสมือนจริงโดยระบบ FPL'}</li>
-                </ul>
-                ${cupNote ? `
-                  <div class="mt-2 pt-2 border-t border-amber-200/60 dark:border-amber-800/40 text-[11px] font-bold text-amber-700 dark:text-amber-400">
-                    * ${cupNote}
-                  </div>
-                ` : ''}
-              </div>
 
-              <!-- Card 4: Hits & Chips -->
-              <div class="rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-                <div class="flex items-center gap-2 mb-1.5">
-                  <div class="w-6 h-6 rounded-lg bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                <!-- Card 3: Tie-Breakers -->
+                <div class="rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                  <div class="flex items-center gap-2 mb-1.5">
+                    <span class="font-mono text-xs font-bold text-slate-400">03</span>
+                    <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">${isEn ? 'Official Tie-Breaker Priority' : 'เกณฑ์ตัดสินเมื่อเสมอกัน'}</h4>
                   </div>
-                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">${isEn ? 'Transfer Hits & Chips Impact' : 'การคิดแต้มลบ (Hits) และการใช้ชิป'}</h4>
+                  <ul class="text-xs text-slate-500 dark:text-slate-400 space-y-1 list-disc list-inside leading-relaxed">
+                    <li>${isEn ? '1. Most goals scored in the Gameweek' : '1. ประตูที่นักเตะในทีมทำได้มากกว่าในสัปดาห์นั้น'}</li>
+                    <li>${isEn ? '2. Fewest goals conceded in the Gameweek' : '2. เสียประตูน้อยกว่าในสัปดาห์นั้น'}</li>
+                    <li>${isEn ? '3. Virtual coin toss by FPL system' : '3. จับสลากสุ่มผู้ชนะเสมือนจริงโดยระบบ FPL'}</li>
+                  </ul>
+                  ${cupNote ? `
+                    <div class="mt-2.5 pt-2 border-t border-slate-200/60 dark:border-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                      * ${cupNote}
+                    </div>
+                  ` : ''}
                 </div>
-                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">${isEn ? 'Transfer hits (-4 pts per extra transfer) are deducted directly from cup match scores. All chips (Bench Boost, Triple Captain, Free Hit) are valid and count.' : 'แต้มลบจากการย้ายตัว (-4 ต่อครั้ง) จะถูกหักออกจากคะแนนการแข่งขันคัพโดยตรง ส่วนชิปทุกชนิด (Bench Boost, Triple Captain, Free Hit) สามารถใช้งานได้ตามปกติและนับคะแนนเต็ม'}</p>
+
+                <!-- Card 4: Hits & Chips -->
+                <div class="rounded-xl p-3.5 border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                  <div class="flex items-center gap-2 mb-1.5">
+                    <span class="font-mono text-xs font-bold text-slate-400">04</span>
+                    <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">${isEn ? 'Transfer Hits & Chips Impact' : 'การคิดแต้มลบ (Hits) และการใช้ชิป'}</h4>
+                  </div>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">${isEn ? 'Transfer hits (-4 pts per extra transfer) are deducted directly from cup match scores. All chips (Bench Boost, Triple Captain, Free Hit) are valid and count.' : 'แต้มลบจากการย้ายตัว (-4 ต่อครั้ง) จะถูกหักออกจากคะแนนการแข่งขันคัพโดยตรง ส่วนชิปทุกชนิด (Bench Boost, Triple Captain, Free Hit) สามารถใช้งานได้ตามปกติและนับคะแนนเต็ม'}</p>
+                </div>
               </div>
             </div>
           </div>
         `;
 
         container.innerHTML = `
-          ${silverwareHtml}
-          ${noteCalloutHtml}
-          ${roadmapHtml}
-          ${seedingTableHtml}
-          ${rulesMatrixHtml}
+          ${section01Html}
+          ${section02Html}
+          ${section03Html}
+          ${section04Html}
         `;
       }
 
@@ -16676,6 +16939,7 @@ selectShi62GW(gwName) {
         const titleEl = document.getElementById('rules-header-title');
         const descEl = document.getElementById('rules-header-desc');
         const badgeEl = document.getElementById('rules-header-badge');
+        const ledgerContainer = document.getElementById('rules-ledger-container');
         const cardsContainer = document.getElementById('rules-cards-container');
         const govContainer = document.getElementById('rules-governance-container');
 
@@ -16685,6 +16949,61 @@ selectShi62GW(gwName) {
             ? 'Official League Rules & Governance'
             : 'กติกาและการจัดสรรรางวัล';
         }
+        if (badgeEl) {
+          badgeEl.innerText = isEn ? 'OFFICIAL RULES' : 'กติกาทางการ';
+        }
+
+        // 1. Contextual Gameweek State (Live vs Settled vs Upcoming)
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || 1;
+        const curGWData = (this.data && this.data.gameweeks) ? this.data.gameweeks[String(maxGW)] : null;
+        const isFinished = Boolean(curGWData && curGWData.is_finished);
+        const isStarted = curGWData ? (curGWData.is_started !== undefined ? Boolean(curGWData.is_started) : (isFinished || (curGWData.results && curGWData.results.some(r => r.points > 0)))) : false;
+        const isLive = isStarted && !isFinished;
+
+        if (descEl) {
+          if (isLive) {
+            descEl.innerHTML = `
+              <div class="inline-flex flex-wrap items-center gap-2 mt-2 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-800 dark:text-amber-300 text-xs leading-relaxed">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse flex-shrink-0"></span>
+                <span class="font-bold font-mono tracking-tight flex-shrink-0">${isEn ? `GW ${maxGW} IN-PLAY (LIVE)` : `GW ${maxGW} กำลังแข่งขัน (LIVE)`}</span>
+                <span class="text-slate-600 dark:text-slate-300 border-l border-amber-500/30 pl-2 text-[11px] sm:text-xs">
+                  ${isEn 
+                    ? 'Scores and ranks are provisional. Official weekly prize payouts & penalties will be settled post-gameweek upon final data confirmation.' 
+                    : 'คะแนนสดและอันดับระหว่างแข่งยังเป็นผลชั่วคราว การตัดสินเงินรางวัลและค่าปรับประจำสัปดาห์จะยึดตามผลคะแนนทางการ (Official Settled) หลังจบคู่สุดท้าย'}
+                </span>
+              </div>
+            `;
+          } else if (isFinished) {
+            descEl.innerHTML = `
+              <div class="inline-flex flex-wrap items-center gap-2 mt-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 text-xs leading-relaxed">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
+                <span class="font-bold font-mono tracking-tight flex-shrink-0 text-slate-900 dark:text-slate-100">${isEn ? `GW ${maxGW} OFFICIAL SETTLED` : `GW ${maxGW} สรุปผลทางการแล้ว`}</span>
+                <span class="text-slate-600 dark:text-slate-400 border-l border-slate-300 dark:border-slate-700 pl-2 text-[11px] sm:text-xs">
+                  ${isEn 
+                    ? 'Scores finalized. Prize awards & penalty balances are fully calculated in the' 
+                    : 'คะแนนสุทธิได้รับการยืนยันเรียบร้อย — สามารถตรวจสอบการแจกแจงเงินรางวัลและค่าปรับได้ที่'}
+                </span>
+                <button type="button" onclick="app.switchTab('prizes-view')" class="inline-flex items-center gap-1 font-semibold text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 underline underline-offset-2 cursor-pointer text-[11px] sm:text-xs">
+                  <span>${isEn ? 'Prizes Tab →' : 'แท็บสรุปรางวัล →'}</span>
+                </button>
+              </div>
+            `;
+          } else {
+            descEl.innerHTML = `
+              <div class="inline-flex flex-wrap items-center gap-2 mt-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 text-xs leading-relaxed">
+                <span class="w-2 h-2 rounded-full bg-slate-400 flex-shrink-0"></span>
+                <span class="font-bold font-mono tracking-tight flex-shrink-0 text-slate-900 dark:text-slate-100">${isEn ? `GW ${maxGW} UPCOMING` : `GW ${maxGW} รอเปิดสนาม`}</span>
+                <span class="text-slate-600 dark:text-slate-400 border-l border-slate-300 dark:border-slate-700 pl-2 text-[11px] sm:text-xs">
+                  ${isEn 
+                    ? 'Squad picks and chip activations will lock automatically at the scheduled deadline prior to kickoff.' 
+                    : 'การจัดทัพและการใช้ชิปพิเศษจะล็อกอัตโนมัติเมื่อถึงกำหนด Deadline ก่อนเกมคู่แรกเริ่มแข่งขัน'}
+                </span>
+              </div>
+            `;
+          }
+        }
+
+        // 2. Clean Ledger Strip: 4 Data Pillars (League ID, Membership, Fee, Pool)
         const nonPrizeCount = (this.config && this.config.non_prize_teams) ? this.config.non_prize_teams.length : 0;
         const totalTeams = (this.data.teams || []).length;
         const prizeTeamsCount = totalTeams - nonPrizeCount;
@@ -16700,25 +17019,39 @@ selectShi62GW(gwName) {
             : `สมาชิก ${totalTeams} ทีม`;
         }
 
-        const feeLabel = isEn ? 'Entry Fee:' : 'ค่าสมัคร:';
-        const poolLabel = isEn ? 'Prize Pool:' : 'กองกลาง:';
         const feeVal = (isEn && this.config.entry_fee_en) ? this.config.entry_fee_en : (this.config.entry_fee || '-');
         const poolVal = (isEn && this.config.total_pool_en) ? this.config.total_pool_en : (this.config.total_pool || '-');
 
-        if (descEl) {
-          descEl.innerHTML = `
-            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-1.5 text-xs">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-semibold border border-blue-200/60 dark:border-blue-800/60 font-mono text-[11px]">League ID: ${this.activeLeagueId}</span>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">${teamDesc}</span>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-semibold border border-emerald-200/60 dark:border-emerald-800/60">${feeLabel} ${feeVal}</span>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 font-bold border border-amber-200/60 dark:border-amber-800/60">${poolLabel} ${poolVal}</span>
+        if (ledgerContainer) {
+          ledgerContainer.innerHTML = `
+            <div class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-2xs w-full min-w-0 overflow-hidden">
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 divide-y md:divide-y-0 md:divide-x divide-slate-200/70 dark:divide-slate-800/80">
+                <!-- Item 1: League ID -->
+                <div class="flex flex-col justify-center px-1 sm:px-3 pt-0">
+                  <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">${isEn ? 'LEAGUE IDENTIFIER' : 'รหัสลีกทางการ'}</span>
+                  <span class="text-xs sm:text-sm font-bold font-mono text-slate-900 dark:text-slate-100 mt-1 tabular-nums">#${this.activeLeagueId}</span>
+                </div>
+                <!-- Item 2: Members -->
+                <div class="flex flex-col justify-center px-1 sm:px-3 pt-2 md:pt-0">
+                  <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">${isEn ? 'MEMBERSHIP' : 'สมาชิกในลีก'}</span>
+                  <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 mt-1 truncate" title="${teamDesc}">${teamDesc}</span>
+                </div>
+                <!-- Item 3: Fee -->
+                <div class="flex flex-col justify-center px-1 sm:px-3 pt-2 md:pt-0">
+                  <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">${isEn ? 'ENTRY STAKE' : 'ค่าสมัครลงแข่ง'}</span>
+                  <span class="text-xs sm:text-sm font-bold font-mono text-slate-900 dark:text-slate-100 mt-1 tabular-nums truncate" title="${feeVal}">${feeVal}</span>
+                </div>
+                <!-- Item 4: Pool -->
+                <div class="flex flex-col justify-center px-1 sm:px-3 pt-2 md:pt-0">
+                  <span class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold font-display">${isEn ? 'CENTRAL POOL' : 'งบประมาณกองกลาง'}</span>
+                  <span class="text-xs sm:text-sm font-bold font-mono text-slate-900 dark:text-slate-100 mt-1 tabular-nums truncate" title="${poolVal}">${poolVal}</span>
+                </div>
+              </div>
             </div>
           `;
         }
-        if (badgeEl) {
-          badgeEl.innerText = isEn ? 'OFFICIAL RULES' : 'กติกาทางการ';
-        }
 
+        // 3. Dynamic Rules Grid (Editorial Monochrome & De-nested Clean Flow)
         const activeRulesCards = (isEn && this.config.rules_cards_en) ? this.config.rules_cards_en : (this.config.rules_cards || []);
         if (cardsContainer) {
           if (activeRulesCards.length === 1) {
@@ -16729,38 +17062,13 @@ selectShi62GW(gwName) {
             cardsContainer.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 w-full min-w-0";
           }
 
-          const cardThemes = [
-            {
-              badgeText: isEn ? 'RULE 01' : 'กติกา 01',
-              badgeClass: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border-blue-200/60 dark:border-blue-800/60',
-              iconContainer: 'bg-blue-50 dark:bg-blue-950/50 border-blue-200/80 dark:border-blue-800/60 text-blue-600 dark:text-blue-400',
-              dotClass: 'bg-blue-500 dark:bg-blue-400',
-              bulletDot: 'bg-blue-500/80 dark:bg-blue-400/80',
-              iconSvg: `<svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>`
-            },
-            {
-              badgeText: isEn ? 'RULE 02' : 'กติกา 02',
-              badgeClass: 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/60 border-purple-200/60 dark:border-purple-800/60',
-              iconContainer: 'bg-purple-50 dark:bg-purple-950/50 border-purple-200/80 dark:border-purple-800/60 text-purple-600 dark:text-purple-400',
-              dotClass: 'bg-purple-500 dark:bg-purple-400',
-              bulletDot: 'bg-purple-500/80 dark:bg-purple-400/80',
-              iconSvg: `<svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
-            },
-            {
-              badgeText: isEn ? 'RULE 03' : 'กติกา 03',
-              badgeClass: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200/60 dark:border-emerald-800/60',
-              iconContainer: 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200/80 dark:border-emerald-800/60 text-emerald-600 dark:text-emerald-400',
-              dotClass: 'bg-emerald-500 dark:bg-emerald-400',
-              bulletDot: 'bg-emerald-500/80 dark:bg-emerald-400/80',
-              iconSvg: `<svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>`
-            }
-          ];
-
           let html = '';
           activeRulesCards.forEach((card, idx) => {
-            const theme = cardThemes[idx % cardThemes.length];
+            const ruleNum = String(idx + 1).padStart(2, '0');
+            const ruleBadge = isEn ? `RULE ${ruleNum}` : `กติกา ${ruleNum}`;
+
             let itemsHtml = '';
-            card.items.forEach(item => {
+            (card.items || []).forEach(item => {
               let formattedDesc = '';
               if (item.desc) {
                 const lines = (item.desc || "").split("\\n").flatMap(l => l.split("\\\\n")).map(l => l.trim()).filter(Boolean);
@@ -16769,23 +17077,23 @@ selectShi62GW(gwName) {
                     const isBullet = line.startsWith('•') || line.startsWith('-') || line.startsWith('*');
                     const content = isBullet ? line.replace(/^[•\-\*]\s*/, '') : line;
                     return `
-                      <li class="flex items-start gap-2.5 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">
-                        <span class="w-1.5 h-1.5 rounded-full ${theme.bulletDot} mt-1.5 flex-shrink-0"></span>
+                      <li class="flex items-start gap-2 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">
+                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
                         <span class="flex-1">${content}</span>
                       </li>
                     `;
                   }).join('');
-                  formattedDesc = `<ul class="space-y-2 mt-2 pl-0.5">${listItems}</ul>`;
+                  formattedDesc = `<ul class="space-y-2 mt-2 pl-1">${listItems}</ul>`;
                 } else {
-                  formattedDesc = `<p class="mt-2 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">${item.desc}</p>`;
+                  formattedDesc = `<p class="mt-1.5 pl-1 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">${item.desc}</p>`;
                 }
               }
 
               itemsHtml += `
-                <div class="bg-slate-50/80 dark:bg-slate-900/50 p-3.5 sm:p-4 rounded-xl border border-slate-200/70 dark:border-slate-800/80 shadow-2xs">
-                  <div class="flex items-center gap-2 border-b border-slate-200/50 dark:border-slate-800/70 pb-2">
-                    <span class="w-2 h-2 rounded-full ${theme.dotClass} flex-shrink-0"></span>
-                    <strong class="text-slate-900 dark:text-slate-100 font-bold text-xs sm:text-sm tracking-tight">${item.label}</strong>
+                <div class="pb-3.5 mb-3.5 border-b border-slate-100 dark:border-slate-800/70 last:border-0 last:pb-0 last:mb-0">
+                  <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 flex-shrink-0"></span>
+                    <strong class="text-slate-900 dark:text-slate-100 font-bold text-xs sm:text-sm tracking-tight font-display">${item.label}</strong>
                   </div>
                   ${formattedDesc}
                 </div>
@@ -16795,20 +17103,20 @@ selectShi62GW(gwName) {
             html += `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
                 <div class="min-w-0">
-                  <div class="flex items-center justify-between mb-3 gap-2">
-                    <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl ${theme.iconContainer} border inline-flex items-center justify-center shadow-2xs flex-shrink-0">
-                      ${theme.iconSvg}
+                  <div class="flex items-center justify-between pb-2.5 mb-3.5 border-b border-slate-100 dark:border-slate-800/80">
+                    <span class="text-[11px] font-mono font-bold px-2 py-0.5 rounded-md border text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
+                      ${ruleBadge}
                     </span>
-                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md border tracking-wider flex-shrink-0 ${theme.badgeClass}">${theme.badgeText}</span>
+                    <span class="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 tracking-wider font-display">${isEn ? 'OFFICIAL PROVISION' : 'ข้อบังคับทางการ'}</span>
                   </div>
-                  <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight leading-snug mb-3 pb-2.5 border-b border-slate-100 dark:border-slate-800/80">${card.title}</h3>
-                  <div class="space-y-3 text-xs text-slate-600 dark:text-slate-300">
+                  <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight leading-snug mb-3.5 pb-2.5 border-b border-slate-100 dark:border-slate-800/60 font-display">${card.title}</h3>
+                  <div class="text-xs text-slate-600 dark:text-slate-300">
                     ${itemsHtml}
                   </div>
                 </div>
                 ${card.footer ? `
                   <div class="text-[11px] text-slate-400 dark:text-slate-500 pt-3 mt-3 border-t border-slate-100 dark:border-slate-800/80 leading-normal flex items-start gap-1.5">
-                    <span class="text-blue-500 flex-shrink-0 select-none">•</span>
+                    <span class="text-slate-400 dark:text-slate-500 flex-shrink-0 select-none">•</span>
                     <span class="italic">${card.footer.replace(/^[\*\s]+/, '')}</span>
                   </div>
                 ` : ''}
@@ -16818,7 +17126,7 @@ selectShi62GW(gwName) {
           cardsContainer.innerHTML = html;
         }
 
-        // Dedicated Full-Width Governance & Standard Clarifications Section
+        // 4. Dedicated Full-Width Governance & Standard Clarifications Section (Integrated Clean Section)
         if (govContainer) {
           const stdClarifyTitle = isEn ? 'Official Rules & Integrity Standards' : 'ข้อกำหนดและกติกามาตรฐานสากล';
           const stdClarifySubtitle = isEn 
@@ -16847,16 +17155,16 @@ selectShi62GW(gwName) {
                 'คุณสมบัติ & การรับรางวัล: สงวนสิทธิ์การรับเงินรางวัลเฉพาะทีมแข่งขันที่มีสิทธิ์รับรางวัลและเป็นสมาชิกทางการของลีก'
               ];
 
-          const quickNavPrizesText = isEn ? 'Jump to: Prizes Tab' : 'ไปยังแท็บ: เงินรางวัล';
-          const quickNavChipsText = isEn ? 'Jump to: Chips Matrix' : 'ไปยังแท็บ: สถานะชิป';
-          const quickNavHofText = isEn ? 'Jump to: Hall of Fame' : 'ไปยังแท็บ: ทำเนียบแชมป์';
+          const quickNavPrizesText = isEn ? 'Prizes Tab' : 'แท็บเงินรางวัล';
+          const quickNavChipsText = isEn ? 'Chips Matrix' : 'สถานะชิป';
+          const quickNavHofText = isEn ? 'Hall of Fame' : 'ทำเนียบแชมป์';
           const copyRulesText = isEn ? 'Copy Rules for LINE Group' : 'คัดลอกสรุปกติกาเพื่อส่งไลน์';
 
           govContainer.innerHTML = `
             <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-2xs w-full min-w-0 overflow-hidden">
               <div class="flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-100 dark:border-slate-800/80">
                 <div class="flex items-center gap-2.5 min-w-0">
-                  <span class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/70 dark:border-emerald-800/70 inline-flex items-center justify-center shadow-2xs flex-shrink-0">
+                  <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 inline-flex items-center justify-center shadow-2xs flex-shrink-0">
                     <svg class="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                   </span>
                   <div>
@@ -16864,24 +17172,24 @@ selectShi62GW(gwName) {
                     <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">${stdClarifySubtitle}</p>
                   </div>
                 </div>
-                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md border text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200/60 dark:border-emerald-800/60 tracking-wider flex-shrink-0">
+                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md border text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 tracking-wider flex-shrink-0">
                   ${isEn ? 'HIGH INTEGRITY' : 'มาตรฐานพรีเมียร์ลีก'}
                 </span>
               </div>
 
-              <!-- 2-Column Balanced Micro-Cards -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
+              <!-- 2-Column Balanced Micro-Cards (De-nested Clean Flow) -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <!-- Tie-Breaker Card -->
-                <div class="bg-slate-50/80 dark:bg-slate-900/50 p-3.5 sm:p-4 rounded-xl border border-slate-200/70 dark:border-slate-800/80 shadow-2xs flex flex-col justify-between">
+                <div class="flex flex-col justify-between">
                   <div>
-                    <div class="flex items-center gap-2 border-b border-slate-200/50 dark:border-slate-800/70 pb-2">
-                      <span class="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 flex-shrink-0"></span>
-                      <strong class="text-slate-900 dark:text-slate-100 font-bold text-xs sm:text-sm tracking-tight">${tieBreakLabel}</strong>
+                    <div class="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800/80 pb-2">
+                      <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 flex-shrink-0"></span>
+                      <strong class="text-slate-900 dark:text-slate-100 font-bold text-xs sm:text-sm tracking-tight font-display">${tieBreakLabel}</strong>
                     </div>
-                    <ul class="space-y-2.5 mt-2.5 pl-0.5">
+                    <ul class="space-y-2.5 mt-2.5 pl-1">
                       ${tieBreakLines.map(l => `
-                        <li class="flex items-start gap-2.5 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">
-                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/80 dark:bg-emerald-400/80 mt-1.5 flex-shrink-0"></span>
+                        <li class="flex items-start gap-2 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">
+                          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
                           <span class="flex-1">${l}</span>
                         </li>
                       `).join('')}
@@ -16890,16 +17198,16 @@ selectShi62GW(gwName) {
                 </div>
 
                 <!-- Cup & Eligibility Card -->
-                <div class="bg-slate-50/80 dark:bg-slate-900/50 p-3.5 sm:p-4 rounded-xl border border-slate-200/70 dark:border-slate-800/80 shadow-2xs flex flex-col justify-between">
+                <div class="flex flex-col justify-between pt-3 md:pt-0 border-t md:border-t-0 md:border-l border-slate-100 dark:border-slate-800/80 md:pl-6">
                   <div>
-                    <div class="flex items-center gap-2 border-b border-slate-200/50 dark:border-slate-800/70 pb-2">
-                      <span class="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 flex-shrink-0"></span>
-                      <strong class="text-slate-900 dark:text-slate-100 font-bold text-xs sm:text-sm tracking-tight">${cupRuleLabel}</strong>
+                    <div class="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800/80 pb-2">
+                      <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 flex-shrink-0"></span>
+                      <strong class="text-slate-900 dark:text-slate-100 font-bold text-xs sm:text-sm tracking-tight font-display">${cupRuleLabel}</strong>
                     </div>
-                    <ul class="space-y-2.5 mt-2.5 pl-0.5">
+                    <ul class="space-y-2.5 mt-2.5 pl-1">
                       ${cupRuleLines.map(l => `
-                        <li class="flex items-start gap-2.5 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">
-                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500/80 dark:bg-emerald-400/80 mt-1.5 flex-shrink-0"></span>
+                        <li class="flex items-start gap-2 leading-relaxed text-xs sm:text-[13px] text-slate-600 dark:text-slate-300">
+                          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
                           <span class="flex-1">${l}</span>
                         </li>
                       `).join('')}
@@ -16909,22 +17217,23 @@ selectShi62GW(gwName) {
               </div>
 
               <!-- Quick Cross-Tab Navigation & Admin Share Utility -->
-              <div class="mt-4 pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-2.5">
-                <div class="flex flex-wrap items-center gap-2">
-                  <button type="button" onclick="app.switchTab('prizes-view')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer">
-                    <svg class="w-3.5 h-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              <div class="mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-semibold text-slate-600 dark:text-slate-400">
+                  <span class="text-slate-400 dark:text-slate-500 text-[11px] uppercase tracking-wider font-display font-bold">${isEn ? 'JUMP TO:' : 'ไปยังแท็บ:'}</span>
+                  <button type="button" onclick="app.switchTab('prizes-view')" class="inline-flex items-center gap-1 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer">
                     <span>${quickNavPrizesText}</span>
+                    <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                   </button>
-                  <button type="button" onclick="app.switchTab('chips-view')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer">
-                    <svg class="w-3.5 h-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                  <button type="button" onclick="app.switchTab('chips-view')" class="inline-flex items-center gap-1 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer">
                     <span>${quickNavChipsText}</span>
+                    <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                   </button>
-                  <button type="button" onclick="app.switchTab('hall-of-fame-view')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer">
-                    <svg class="w-3.5 h-3.5 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+                  <button type="button" onclick="app.switchTab('hall-of-fame-view')" class="inline-flex items-center gap-1 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer">
                     <span>${quickNavHofText}</span>
+                    <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                   </button>
                 </div>
-                <button type="button" onclick="app.copyRulesSummary()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold shadow-2xs transition-colors cursor-pointer active:scale-95">
+                <button type="button" onclick="app.copyRulesSummary()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-black dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 text-xs sm:text-[13px] font-bold shadow-xs hover:shadow-sm transition-all cursor-pointer active:scale-95 w-full sm:w-auto justify-center">
                   <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
                   <span>${copyRulesText}</span>
                 </button>

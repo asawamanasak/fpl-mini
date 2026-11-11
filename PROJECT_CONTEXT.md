@@ -371,6 +371,26 @@ flowchart TD
     4. **Strict Localization (100% Thai / 100% English):** ชื่อหัวข้อการ์ดรางวัลทุกใบแปลเป็นภาษาไทย 100% เมื่อเลือกภาษาไทย (`ฟอร์มสะดุด`, `ไต่อันดับสูงสุด`, `อันดับร่วงลงแรง`, `เซียนเปิดการ์ด`, `ไม่ง้อชิปการ์ด`, `การ์ดยังไม่โดน`, `ดองแต้มสำรอง`, `มูลค่าทีมสูงสุด`, `ดึงตัวเข้าเป้าสุดปัง`, `ดึงผิดชีวิตเปลี่ยน`, `ย้ายตัวเดียวเสียวทั้งลีก`, `สายลบไม่ยั้ง`) และภาษาอังกฤษสากล 100% เมื่อเลือกภาษาอังกฤษ
     5. **Collision-Free Mobile Headers:** บนจอมือถือ (< 640px) ซ่อนคำอธิบายย่อยทางขวา (`hidden sm:inline`) เหลือเฉพาะชื่อหมวดหลักสั้นกระชับ เพื่อแก้ปัญหาข้อความเบียดขึ้นบรรทัดใหม่ซ้อนกัน
     6. **Accessibility Complete:** เพิ่ม `aria-label` และ `title` ให้กับปุ่ม Stepper เปลี่ยน GW ก่อนหน้า/ถัดไป และปุ่มกดเปิดดูผังทีมครบถ้วน ผ่านการตรวจสอบ Headless Chrome 0 runtime errors ทุกลีก 100%
+* **กรณีศึกษา 4 - แท็บ "กติกา" (Rules View Architecture & Unslopping Polish) - [ACTIVE & VERIFIED]:**
+  * ครอบคลุม: **ทุกลีกในระบบ (ครบทั้ง 8 ลีก)** ผ่านการเรนเดอร์จาก `renderRulesView()` ใน `update_preview.py`
+  * **แม่แบบที่กำหนด (Editorial Monochrome & Contextual Status Standards):**
+    1. **Editorial Monochrome & Color Reduction:** ปลดสีลูกกวาดเดิมออก 100% (Rule 01 ฟ้า, Rule 02 ม่วง, Rule 03 เขียว) ทุกการ์ดใช้พื้นผิวสเลทนิวทรัลเรียบหรูระดับเดียวกัน สบายตาสูงสุดทั้งโหมดสว่างและมืด และแยกหัวข้อด้วยดัชนีโมโนคลีนตา `01 / 02 / 03`
+    2. **Contextual Live/Settled Banner:** แสดงแถบสถานะกะทัดรัดใต้ชื่อหัวข้อ: ตอน LIVE ขึ้นแถบเตือนสีเหลืองอำพันแบบเรียบหรูว่าคะแนน/อันดับยังเป็นผลชั่วคราว การตัดรอบรางวัลจะยึดผลทางการหลังจบคู่สุดท้าย; ตอน FINISHED แสดงเครื่องหมายยืนยันผลทางการ พร้อมปุ่มลัดไปยังแท็บสรุปเงินรางวัล
+    3. **Flat Editorial Flow (De-nesting):** ปลดกล่องซ้อนกล่อง `.bg-slate-50/80 p-3.5 rounded-xl border` ออกทั้งหมด ปล่อยพื้นที่โปร่งสบายตา คั่นแต่ละประเด็นด้วยเส้น Hairline จางๆ และ Bullet point นุ่มตา
+    4. **Clean Ledger Strip:** รวม 4 ตัวเลขสำคัญของลีก (League ID, สมาชิก, ค่าสมัคร, กองกลาง) ในแถบสถิติบัญชีสไตล์มินิมอล ใช้ตัวเลข `tabular-nums font-mono` แถวเดียวบน Desktop และจัดเป็นกริด 2x2 กะทัดรัดบน Mobile ป้องกันข้อความเบียดหรือตกขอบ 100%
+    5. **Integrated Governance & One-Bright-Action LINE Button:** ปรับส่วนกติกามาตรฐานสากล (Tie-Breakers & บอลถ้วย) เป็นเนื้อหาชิ้นเดียวกัน ปลดไอคอนสีรุ้งออก เปลี่ยนปุ่มข้ามแท็บเป็นลิงก์ข้อความนุ่มนวล และยกให้ปุ่ม "คัดลอกสรุปกติกาเพื่อส่งไลน์" เป็น One Primary Action เด่นเพียงปุ่มเดียว
+    6. **100% Multi-Device, Bilingual & Cross-League Parity:** ผ่านการตรวจสอบ Headless Chrome 0 runtime errors ทุกลีก 100% และตรวจสอบ Zero Horizontal Overflow (`hasOverflow: false`) บน Desktop (1280x1200), Tablet (820x1180), และ Mobile (390x844).
+* **กรณีศึกษา 5 - แท็บ "บอลถ้วย" (Cup View Architecture & Unslopping Polish) - [ACTIVE & VERIFIED]:**
+  * ครอบคลุม: **ทุกลีกในระบบ (ครบทั้ง 8 ลีก)** ผ่านการเรนเดอร์จาก `renderCupView()` ใน `update_preview.py`
+  * **แม่แบบที่กำหนด (Adaptive Stage, Restrained Slate & Single Trophy Accent Standards):**
+    1. **Restrained Slate Ramp & Single Trophy Gold Accent:** ปลดสีรุ้งลูกกวาดเดิมออก 100% (Amber, Slate, Indigo, Blue, Emerald, Rose) ทุกการ์ดใช้พื้นผิวสเลทนิวทรัลเรียบหรูระดับเดียวกัน สบายตาสูงสุดทั้งโหมดสว่างและมืด และสงวนสีทองอำพันละมุน (`amber-400/500`) ไว้เฉพาะถ้วยแชมป์เกียรติยศ (Silverware) และป้ายมือวางอันดับ 1
+    2. **Typographic Indexing (01 / 02 / 03 / 04):** แยก 4 หัวข้อหลัก (01 / ถ้วยรางวัล, 02 / เส้นทางสู่รอบชิง, 03 / อันดับมือวางและประกบคู่น็อคเอาท์, 04 / กติกาทางการ) ด้วยตัวเลขโมโนสเปซคมชัด สบายตา
+    3. **Contextual Live/Settled Dual Telemetry:** แถบสถานะด้านบนแจ้งเตือนตามเกมวีคจริงอัตโนมัติ (Live: แจ้งเตือน `⚡ GW X IN-PLAY (LIVE)` พร้อมไฟกะพริบและสถานะคะแนนสุทธิชั่วคราว / Finished: ปรับเป็น `✓ GW X OFFICIAL SETTLED` ยืนยันผลทางการนิ่งสงบ)
+    4. **Adaptive Dual-Stage Architecture:** 
+       - ช่วง GW 1 - 34: เน้นตารางสะสมคะแนนจัดอันดับมือวาง (Seeding Race) เป็นพระเอก พร้อมไทม์ไลน์ 4 สเตจ
+       - ช่วง GW 35+: สลับนำการ์ดประกบคู่รอบแพ้คัดออก 1 ต่อ 1 (Head-to-Head Matchups) ขึ้นมาแสดงด้านบนสุด แสดงผลคะแนนสดขณะแข่ง และผลแพ้-ชนะผ่านเข้ารอบเมื่อจบเกม
+    5. **Smart Visibility & Graceful Empty State:** ลีกที่เปิดแข่งขันบอลถ้วย (40700, 675290, 38491) แสดงผลเต็มรูปแบบ ส่วนลีกที่ไม่มีบอลถ้วย (1101958, 438691, 187827, 5349, 567387) ซ่อนปุ่มแท็บบนเมนูเพื่อความสะอาดตา และหากเข้าผ่าน URL ตรงจะพบ Empty State สไตล์เรียบหรูพร้อมปุ่มนำทางลัด
+    6. **100% Multi-Device, Bilingual & Cross-League Parity:** ผ่านการตรวจสอบ Headless Chrome 0 runtime errors ครบทั้ง 8 ลีก และตรวจสอบ Zero Horizontal Overflow (`hasOverflow: false`) บน Desktop (1280x1400), Tablet (820x1600), และ Mobile (375x1900 iPhone Standard).
 
 ---
 
@@ -444,6 +464,7 @@ flowchart TD
   * `rollback_27` : ปรับปรุง UX/UI หน้าทำเนียบแชมป์ (Hall of Fame) และตารางความสม่ำเสมอ ตามมาตรฐาน Unslop (Slate Neutral Ramp, ตัดสีรุ้ง 4 สี, Single Trophy Accent สีทองอำพัน, Pure Finished Archive ปลอดจุดไฟกะพริบ, Minimalist Stat Cards และ Sticky Left Column บนจอมือถือ รองรับทุกลีก 100%)
   * `rollback_28` : ยกระดับ Impeccable A11y & Touch Polish เต็ม 20/20 สำหรับหน้าทำเนียบแชมป์ (เพิ่ม aria-label ช่องค้นหาและ Dropdown เรียงลำดับ, scope='col' และ aria-sort บนหัวตาราง 8 คอลัมน์, ขยาย Touch Target ฟิลเตอร์เป็น 32px ตามเกณฑ์ WCAG 2.1 AA สมบูรณ์แบบ)
   * `rollback_29` : แก้ไขบั๊กสีทึบผ่ากลางตารางความสม่ำเสมอในหน้าทำเนียบแชมป์ (Uniform Clean Table Design) ถอด Sticky, เงา และสีตัดออกให้หัวตารางและแถวข้อมูลกลมกลืนเนียนเป็นเนื้อเดียวกัน 100% ทั้ง Light Mode และ Dark Mode ทุกลีก ทุกหน้าจอ
+  * `rollback_30` : ปรับปรุง UX/UI หน้า 'บอลถ้วย' (Cup View) ตามมาตรฐาน Unslop & Impeccable (Restrained Slate Ramp, Single Trophy Gold Accent, Typographic Indexing 01-04, Dynamic Live/Settled Telemetry, Adaptive Dual-Stage Seeding/Knockout 1v1, Smart Visibility และ 100% Zero Overflow ทุกลีก ทุกหน้าจอ)
 * **เครื่องมือนำทาง (`./rollback.sh`):**
   * ดูรายชื่อ rollback ทั้งหมด: `./rollback.sh list`
   * ย้ายไปยังเวอร์ชันที่ต้องการ: `./rollback.sh go <number>`
