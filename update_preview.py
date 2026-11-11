@@ -4759,39 +4759,31 @@ __STRUCTURED_DATA_JSON__
       normalizeTab(tabName) {
         if (!tabName) return 'gameweek-view';
         let t = String(tabName).trim().toLowerCase();
-        if (t === 'live' || t === 'gw' || t === 'gameweek') return 'gameweek-view';
-        if (t === 'highlight' || t === 'highlights' || t === 'weekly-highlight') return 'highlights-view';
-        if (t === 'competition' || t === 'comp' || t === 'standings' || t === 'chips' || t === 'chip') return 'competition-view';
-        if (t === 'transfers' || t === 'transfer' || t === 'transfer-analytics') return 'transfers-view';
-        if (t === 'prize' || t === 'prizes' || t === 'reward' || t === 'rewards') return 'prizes-view';
-        if (t === 'hof' || t === 'hall-of-fame' || t === 'halloffame') return 'hall-of-fame-view';
-        if (t === 'global-radar' || t === 'radar' || t === 'global' || t === 'all-leagues' || t === 'consistency-radar' || t === 'consistency') return 'global-radar-view';
-        if (t === 'cup') return 'cup-view';
-        if (t === 'shi62' || t === 'shi62-special' || t === 'special' || t === 'beta') {
+        let clean = t.endsWith('-view') ? t.slice(0, -5) : t;
+        if (clean === 'live' || clean === 'gw' || clean === 'gameweek') return 'gameweek-view';
+        if (clean === 'highlight' || clean === 'highlights' || clean === 'weekly-highlight') return 'highlights-view';
+        if (clean === 'competition' || clean === 'comp' || clean === 'standings' || clean === 'chips' || clean === 'chip') return 'competition-view';
+        if (clean === 'transfers' || clean === 'transfer' || clean === 'transfer-analytics') return 'transfers-view';
+        if (clean === 'prize' || clean === 'prizes' || clean === 'reward' || clean === 'rewards') return 'prizes-view';
+        if (clean === 'hof' || clean === 'hall-of-fame' || clean === 'halloffame') return 'hall-of-fame-view';
+        if (clean === 'global-radar' || clean === 'radar' || clean === 'global' || clean === 'all-leagues' || clean === 'consistency-radar' || clean === 'consistency') return 'global-radar-view';
+        if (clean === 'cup') return 'cup-view';
+        if (clean === 'shi62' || clean === 'shi62-special' || clean === 'special' || clean === 'beta') {
           return this.hasShi62Feature() ? 'shi62-special-view' : 'gameweek-view';
         }
-        if (t === 'bramann-prediction' || t === 'bramann-pred') {
+        if (clean === 'bramann-prediction' || clean === 'bramann-pred') {
           return this.hasBramannPredFeature() ? 'bramann-prediction-view' : 'gameweek-view';
         }
-        if (t === 'bramann-challenge' || t === 'bramann-chal' || t === 'chal' || t === 'challenge') {
+        if (clean === 'bramann-challenge' || clean === 'bramann-chal' || clean === 'chal' || clean === 'challenge') {
           return this.hasBramannChalFeature() ? 'bramann-challenge-view' : 'gameweek-view';
         }
-        if (t === 'pred' || t === 'prediction') {
+        if (clean === 'pred' || clean === 'prediction') {
           if (this.hasShi62Feature()) return 'shi62-special-view';
           if (this.hasBramannPredFeature()) return 'bramann-prediction-view';
           return 'gameweek-view';
         }
-        if (t === 'shi62-special-view') {
-          return this.hasShi62Feature() ? 'shi62-special-view' : 'gameweek-view';
-        }
-        if (t === 'bramann-prediction-view') {
-          return this.hasBramannPredFeature() ? 'bramann-prediction-view' : 'gameweek-view';
-        }
-        if (t === 'bramann-challenge-view') {
-          return this.hasBramannChalFeature() ? 'bramann-challenge-view' : 'gameweek-view';
-        }
-        if (t === 'rule' || t === 'rules') return 'rules-view';
-        if (t === 'about' || t === 'about-us' || t === 'about-me' || t === 'feature' || t === 'features' || t === 'function' || t === 'functions' || t === 'capabilities') return 'about-view';
+        if (clean === 'rule' || clean === 'rules') return 'rules-view';
+        if (clean === 'about' || clean === 'about-us' || clean === 'about-me' || clean === 'feature' || clean === 'features' || clean === 'function' || clean === 'functions' || clean === 'capabilities' || clean === 'dev' || clean === 'dev-corner') return 'about-view';
         if (!t.endsWith('-view')) return t + '-view';
         return t;
       }
@@ -8357,10 +8349,10 @@ selectShi62GW(gwName) {
           const grandNet = Number((fplTotal + predNet + chalNet).toFixed(2));
 
           if (filterMode === 'winners') {
-            return isEligible && (grandNet > 0 || fplTotal > 0 || predNet > 0 || chalNet > 0);
+            return isEligible && (grandNet > 0 || (fplTotal > 0 && grandNet >= 0));
           }
           if (filterMode === 'fined') {
-            return isEligible && (grandNet < 0 || predNet < 0 || chalNet < 0);
+            return isEligible && grandNet < 0;
           }
           if (filterMode === 'non_prize') {
             return !isEligible;
@@ -8587,7 +8579,7 @@ selectShi62GW(gwName) {
                 <div class="flex items-center gap-2 flex-wrap">
                   ${(searchQuery || filterMode !== 'all') ? `
                     <span class="inline-flex items-center text-[11px] font-mono font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-shrink-0">
-                      ${isEn ? `Showing ${filteredTeams.length} of ${allStandings.length} teams` : `แสดง ${filteredTeams.length} จาก ${allStandings.length} ทีม`}
+                      ${isEn ? `Showing ${filteredTeams.length} of ${overallSorted.length} teams` : `แสดง ${filteredTeams.length} จาก ${overallSorted.length} ทีม`}
                     </span>
                   ` : ''}
                   <div class="relative min-w-[140px] xs:min-w-[180px] max-w-xs flex-1">
