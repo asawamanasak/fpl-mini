@@ -1501,6 +1501,32 @@ __STRUCTURED_DATA_JSON__
       box-shadow: 4px 0 14px -2px rgba(59, 130, 246, 0.35) !important;
     }
 
+    /* Active Row Cue (Visual Guide upon returning from modal) */
+    tr.active-row-cue td {
+      background-color: rgba(59, 130, 246, 0.08) !important;
+      transition: background-color 0.4s ease;
+    }
+    .dark tr.active-row-cue td {
+      background-color: rgba(59, 130, 246, 0.18) !important;
+      transition: background-color 0.4s ease;
+    }
+    table.table-sticky tbody tr.active-row-cue td.sticky-col-rank {
+      border-left: 3px solid #3b82f6 !important;
+      background-color: #eff6ff !important;
+    }
+    table.table-sticky tbody tr.active-row-cue td.sticky-col-team {
+      background-color: #eff6ff !important;
+      box-shadow: 4px 0 12px -2px rgba(59, 130, 246, 0.18) !important;
+    }
+    .dark table.table-sticky tbody tr.active-row-cue td.sticky-col-rank {
+      border-left: 3px solid #60a5fa !important;
+      background-color: #1e293b !important;
+    }
+    .dark table.table-sticky tbody tr.active-row-cue td.sticky-col-team {
+      background-color: #1e293b !important;
+      box-shadow: 4px 0 14px -2px rgba(59, 130, 246, 0.35) !important;
+    }
+
     /* Non-prize row background adjustment for sticky cells */
     table.table-sticky tbody tr.is-non-prize td.sticky-col-rank,
     table.table-sticky tbody tr.is-non-prize td.sticky-col-team {
@@ -7170,7 +7196,7 @@ selectShi62GW(gwName) {
             this._lastFocusedElement = document.activeElement;
           }
           modal.classList.remove('hidden');
-          document.body.classList.add('overflow-hidden');
+          this.lockBodyScroll();
         }
 
         if (contentArea) {
@@ -11264,7 +11290,7 @@ selectShi62GW(gwName) {
 
           this._lastFocusedElement = document.activeElement;
           modal.classList.remove('hidden');
-          document.body.classList.add('overflow-hidden');
+          this.lockBodyScroll();
           if (btn) btn.focus({ preventScroll: true });
           else modal.focus({ preventScroll: true });
         }
@@ -11274,10 +11300,11 @@ selectShi62GW(gwName) {
         const modal = document.getElementById('projected-points-modal');
         if (modal && !modal.classList.contains('hidden')) {
           modal.classList.add('hidden');
-          document.body.classList.remove('overflow-hidden');
-          if (this._lastFocusedElement && typeof this._lastFocusedElement.focus === 'function') {
+          this.unlockBodyScroll();
+          if (this._lastFocusedElement && this._lastFocusedElement !== document.body && typeof this._lastFocusedElement.focus === 'function') {
             this._lastFocusedElement.focus({ preventScroll: true });
           }
+          this._lastFocusedElement = null;
         }
       }
 
@@ -15255,6 +15282,55 @@ selectShi62GW(gwName) {
         }
       }
 
+      lockBodyScroll() {
+        if (this._isScrollLocked) return;
+        this._savedScrollY = window.pageYOffset || document.documentElement.scrollTop || window.scrollY || 0;
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${this._savedScrollY}px`;
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.width = '100%';
+        document.body.style.overflow = 'hidden';
+        this._isScrollLocked = true;
+      }
+
+      unlockBodyScroll(targetEntryId = null) {
+        if (!this._isScrollLocked) return;
+        const y = this._savedScrollY || 0;
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        this._isScrollLocked = false;
+        window.scrollTo(0, y);
+
+        if (targetEntryId) {
+          this.highlightRecentTeam(targetEntryId);
+        }
+      }
+
+      highlightRecentTeam(targetEntryId) {
+        if (!targetEntryId) return;
+        try {
+          document.querySelectorAll('.active-row-cue').forEach(el => {
+            el.classList.remove('active-row-cue');
+          });
+          const selector = `tr[onclick*="${targetEntryId}"], button[onclick*="${targetEntryId}"]`;
+          const matches = document.querySelectorAll(selector);
+          matches.forEach(el => {
+            const row = el.tagName === 'TR' ? el : el.closest('tr');
+            if (row) {
+              row.classList.add('active-row-cue');
+              setTimeout(() => {
+                row.classList.remove('active-row-cue');
+              }, 2500);
+            }
+          });
+        } catch (_) {}
+      }
+
       preserveInputFocus(fn) {
         const active = document.activeElement;
         const isInput = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA');
@@ -19076,8 +19152,11 @@ selectShi62GW(gwName) {
             if (benchTotal) benchTotal.innerHTML = '';
             const modal = document.getElementById('team-modal');
             if (modal) {
+              if (modal.classList.contains('hidden')) {
+                this._lastFocusedElement = document.activeElement;
+              }
               modal.classList.remove('hidden');
-              document.body.classList.add('overflow-hidden');
+              this.lockBodyScroll();
             }
             this.fetchLeagueData(leagueToFetch, 2).then(fullLeagueData => {
               if (this.currentModalEntryId === entryIdNum) {
@@ -19108,8 +19187,11 @@ selectShi62GW(gwName) {
           if (benchTotal) benchTotal.innerHTML = '';
           const modal = document.getElementById('team-modal');
           if (modal) {
+            if (modal.classList.contains('hidden')) {
+              this._lastFocusedElement = document.activeElement;
+            }
             modal.classList.remove('hidden');
-            document.body.classList.add('overflow-hidden');
+            this.lockBodyScroll();
           }
           return;
         }
@@ -19253,7 +19335,7 @@ selectShi62GW(gwName) {
             this._lastFocusedElement = document.activeElement;
           }
           modal.classList.remove('hidden');
-          document.body.classList.add('overflow-hidden');
+          this.lockBodyScroll();
           const modalBody = document.getElementById('team-modal-body');
           if (modalBody) modalBody.scrollTop = 0;
           modal.focus({ preventScroll: true });
@@ -19268,6 +19350,7 @@ selectShi62GW(gwName) {
       }
 
       closeTeamModal() {
+        const closedEntryId = this.currentModalEntryId;
         this.currentModalEntryId = null;
         if (this._teamModalEscBound) {
           window.removeEventListener('keydown', this._teamModalEscBound);
@@ -19276,10 +19359,11 @@ selectShi62GW(gwName) {
         const modal = document.getElementById('team-modal');
         if (modal && !modal.classList.contains('hidden')) {
           modal.classList.add('hidden');
-          document.body.classList.remove('overflow-hidden');
-          if (this._lastFocusedElement && typeof this._lastFocusedElement.focus === 'function') {
+          this.unlockBodyScroll(closedEntryId);
+          if (this._lastFocusedElement && this._lastFocusedElement !== document.body && typeof this._lastFocusedElement.focus === 'function') {
             this._lastFocusedElement.focus({ preventScroll: true });
           }
+          this._lastFocusedElement = null;
         }
       }
 
@@ -19662,11 +19746,11 @@ selectShi62GW(gwName) {
         const modal = document.getElementById('text-summary-modal');
         if (modal && !modal.classList.contains('hidden')) {
           modal.classList.add('hidden');
-          document.body.classList.remove('overflow-hidden');
-          if (this._lastFocusedElement && typeof this._lastFocusedElement.focus === 'function') {
-            this._lastFocusedElement.focus();
-            this._lastFocusedElement = null;
+          this.unlockBodyScroll();
+          if (this._lastFocusedElement && this._lastFocusedElement !== document.body && typeof this._lastFocusedElement.focus === 'function') {
+            this._lastFocusedElement.focus({ preventScroll: true });
           }
+          this._lastFocusedElement = null;
         }
       }
 

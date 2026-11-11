@@ -40,6 +40,16 @@
 > 5. **Cross-League Consistency:** ตรวจสอบความถูกต้องของการเรนเดอร์ข้ามทุกลีกในระบบ (ครบทั้ง 8 ลีก)
 > 6. **Visual Proof & Screenshots:** จับภาพหน้าจอจริง (Screenshots) ทั้ง Light Mode และ Dark Mode บนทุก Viewport เพื่อตรวจสอบความเรียบร้อยก่อนรายงานผู้ใช้ทุกครั้ง.
 
+> [!IMPORTANT]
+> **หลักการออกแบบและพัฒนาเพื่อผู้ใช้ Mobile & Tablet เป็นอันดับหนึ่ง (Mobile & Tablet-First User Behavior Mandate):**
+> **ข้อเท็จจริงสำคัญด้านพฤติกรรมผู้ใช้:** ลูกค้าและผู้ใช้งานจริงของแพลตฟอร์ม FPLSaWaDiKa **มากกว่า 50% ใช้งานผ่าน Mobile และ iPad/Tablet**
+> ดังนั้น ในทุกการออกแบบ, การพัฒนา, การเพิ่มฟีเจอร์, และการทดสอบ UX/UI **ห้ามคิดหรือทดสอบเฉพาะบนหน้าจอ Desktop โดยเด็ดขาด** ต้องยึดหลักเกณฑ์ความสะดวกสบายและสรีระการสัมผัส (Ergonomics) ของผู้ใช้ Mobile & Tablet ดังนี้เสมอ:
+> 1. **Horizontal Drift Protection (การป้องกันการหลงบรรทัดด้วย Frozen Columns):** ตารางข้อมูลที่มีความกว้างแนวนอน (เช่น หน้าเงินรางวัล, ทำเนียบแชมป์, เรดาร์ฟอร์มรวม, บอลถ้วย) **จะต้องตรึงคอลัมน์ระบุตัวตน 2 คอลัมน์แรกเสมอ** ได้แก่ คอลัมน์ลำดับ (`#`) และคอลัมน์ `ทีม & ผู้จัดการ` เพื่อให้ผู้ใช้สามารถเลื่อนปัดดูข้อมูลตัวเลขด้านขวาได้อย่างมั่นใจ โดยไม่หลุดบรรทัดและไม่จำสลับแถว
+> 2. **Glitch-Free Solid Styling (พื้นหลังทึบ 100% ไร้รอยโปร่งแสง):** คอลัมน์ที่ถูกตรึง (`sticky-col-rank`, `sticky-col-team`) จะต้องมีพื้นหลังทึบแสง 100% สอดคล้องกับโหมดสี (`bg-white` สำหรับ Light Mode และ `bg-slate-900` สำหรับ Dark Mode) พร้อมเงายกมิติขอบขวา (`drop-shadow`) คมชัด และใช้ `border-collapse: separate; border-spacing: 0;` เพื่อป้องกันตัวหนังสือเลื่อนมาทับซ้อนกันจนอ่านไม่รู้เรื่อง
+> 3. **Tap-to-Track Row (`row-tracked`):** รองรับฟังก์ชันการแตะเพื่อล็อกไฮไลต์ทั้งแถวบนหน้าจอสัมผัส เพื่อช่วยนำสายตาผู้ใช้เมื่อต้องกวาดสายตาอ่านตัวเลขสถิติหรือเงินรางวัลหลายช่อง
+> 4. **Touch Target Standard (ขนาดสัมผัสขั้นต่ำ 32px – 44px):** ทุกปุ่มกด, ช่องค้นหา, ตัวกรอง และไอคอนบน Mobile และ Tablet จะต้องมีขนาดพื้นที่แตะเพียงพอตามมาตรฐาน WCAG 2.1 AA ป้องกันการกดพลาด
+> 5. **Multi-Device Automated CDP Verification:** ทุกการเปลี่ยนแปลง UX/UI ต้องผ่านการทดสอบจริงบน Viewport ของ Mobile (เช่น iPhone 390x844) และ iPad/Tablet (เช่น iPad Air 820x1180) เสมอ ทั้งการสัมผัส การเลื่อนแนวนอน และการทำงานของทุกปุ่ม/ตัวกรอง
+
 ---
 
 ## 🏗️ 2. สถาปัตยกรรมระบบ (System Architecture)
@@ -451,6 +461,12 @@ flowchart TD
     * **Progressive Disclosure:** ในลีกที่มีประวัติยาวนานถึง 38 สัปดาห์ (438691, 1101958) เรนเดอร์การ์ดสัปดาห์ล่าสุด 3-4 เกมวีคโดยอัตโนมัติ พร้อมปุ่มเปิดดูประวัติทั้งหมด ช่วยประหยัดพื้นที่แนวตั้งบนมือถือกว่า 1,500px
     * **Impeccable Micro-Polish:** เฟดสัญลักษณ์สกุลเงิน `฿` ขนาดเล็กสีจาง วางนำหน้าตัวเลขให้อ่านยอดเงินและจัดหลักตรงกันเป๊ะ, เพิ่มป้าย Result Count Pill แจ้งจำนวนผลการค้นหา/ตัวกรองแบบอินไลน์, เพิ่ม In-Table Zero-Match Empty State พร้อมปุ่มล้างการค้นหา, เสริม ARIA Semantics (`aria-label`, `aria-pressed`, `aria-expanded`, `scope="col"`), และขยาย Touch Targets ขั้นต่ำ `min-h-[38px] sm:min-h-[34px]` สำหรับการแตะบนมือถือตามมาตรฐาน WCAG 2.1 AA สมบูรณ์แบบครบถ้วน.
 
+ 12. **Mobile & Tablet-First Sticky Table Architecture & Tap-to-Track Row (Zero Drift & Ergonomics System) - [ACTIVE & VERIFIED]:** สถาปัตยกรรมการแสดงผลตารางเพื่อผู้ใช้ Mobile และ iPad/Tablet (ซึ่งคิดเป็น >50% ของผู้ใช้งานทั้งหมดในระบบ) ครอบคลุมทั้ง 8 มินิลีก:
+    * **Frozen Identification Columns (# & Team):** ตรึงคอลัมน์ลำดับ (`#`) ไว้ที่ `left: 0px` และคอลัมน์ `ทีม & ผู้จัดการ` ไว้ที่ `left: 38px` บนตารางแนวนอนทุกหน้า (หน้าเงินรางวัล, ทำเนียบแชมป์, เรดาร์ฟอร์มรวม, บอลถ้วย) ช่วยให้ผู้ใช้เลื่อนปัดดูตัวเลขเงินรางวัลหรือสถิติทางขวาได้อย่างมั่นใจ ไม่สูญเสียบริบทชื่อทีมและอันดับ
+    * **Glitch-Free Solid Background & Elevation Shadow:** คอลัมน์ที่ถูกตรึงใช้พื้นหลังทึบแสง 100% (`bg-white` สำหรับ Light Mode และ `bg-slate-900` สำหรับ Dark Mode) พร้อมติดตั้งเงายกมิติขอบขวา (`box-shadow: 4px 0 8px -2px rgba(...)`) และแยกขอบเซลล์ด้วย `border-collapse: separate; border-spacing: 0;` ขจัดปัญหาตัวหนังสือเลื่อนมาทับซ้อนหรือโปร่งแสงอย่างถาวร
+    * **Tap-to-Track Row (`row-tracked`):** ฟังก์ชันล็อกสายตาสำหรับหน้าจอสัมผัส เมื่อแตะแถวใดก็ตาม ระบบจะเปิดไฮไลต์สีฟ้าอ่อนคลุมทั้งแถวตลอดแนวตาราง เพื่อให้ผู้ใช้กวาดสายตาอ่านตัวเลขสถิติหรือยอดเงินโดยไม่หลุดหรือหลงบรรทัด
+    * **100% Cross-League, Viewport & Bilingual Parity:** ผ่านการตรวจสอบด้วย Headless Chrome CDP ทั้งบน iPhone (390x844) และ iPad Air (820x1180) ครบทั้ง 8 มินิลีก, 2 ภาษา (TH/EN) และ 2 โหมดสี (Light/Dark Mode) โดยมี 0 JavaScript Runtime Errors.
+
 ---
 
 ## ⏪ 9. ระบบ Rollback & Milestone Management
@@ -472,6 +488,8 @@ flowchart TD
   * `rollback_29` : แก้ไขบั๊กสีทึบผ่ากลางตารางความสม่ำเสมอในหน้าทำเนียบแชมป์ (Uniform Clean Table Design) ถอด Sticky, เงา และสีตัดออกให้หัวตารางและแถวข้อมูลกลมกลืนเนียนเป็นเนื้อเดียวกัน 100% ทั้ง Light Mode และ Dark Mode ทุกลีก ทุกหน้าจอ
   * `rollback_30` : ปรับปรุง UX/UI หน้า 'บอลถ้วย' (Cup View) ตามมาตรฐาน Unslop & Impeccable (Restrained Slate Ramp, Single Trophy Gold Accent, Typographic Indexing 01-04, Dynamic Live/Settled Telemetry, Adaptive Dual-Stage Seeding/Knockout 1v1, Smart Visibility และ 100% Zero Overflow ทุกลีก ทุกหน้าจอ)
   * `rollback_31` : ปรับปรุง UX/UI หน้า 'เงินรางวัล' (Prizes & Rewards / Treasury Ledger) ตามมาตรฐาน Unslop & Impeccable (Editorial Slate Ledger, Strict Finished-Only Archive, Dimmed ฿ Prefix, Result Count Pill, In-Table Empty State, A11y & Touch Polish ครบทั้ง 8 มินิลีก)
+  * `rollback_32` : แก้ไขบั๊ก allStandings runtime error และปรับปรุงตรรกะตัวกรองใน Bramann league (75 minutes ago)
+  * `rollback_33` : สถาปัตยกรรม Mobile & Tablet First: ตรึงคอลัมน์ระบุตัวตน (Frozen Identification Columns: # และ ทีม & ผู้จัดการ) บนตารางแนวนอนทุกหน้า พร้อมฟังก์ชันล็อกสายตา Tap-to-Track Row (`row-tracked`), ระบบ Global Modal Scroll Lock & Restore และ Active Row Cue ป้องกันหน้าเว็บเด้งขึ้นบนสุดเวลาเปิด/ปิดหน้าต่างขุมกำลัง รองรับทั้ง 8 มินิลีก ครบทั้ง 2 ภาษาและ 2 ธีมสี 100% ผ่านการทดสอบ CDP ไร้รอยโปร่งแสงและ 0 Runtime Errors
 * **เครื่องมือนำทาง (`./rollback.sh`):**
   * ดูรายชื่อ rollback ทั้งหมด: `./rollback.sh list`
   * ย้ายไปยังเวอร์ชันที่ต้องการ: `./rollback.sh go <number>`
