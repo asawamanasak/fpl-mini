@@ -1578,6 +1578,7 @@ __STRUCTURED_DATA_JSON__
   <!-- 1. Header (League Identity, Switcher Dropdown, Status & Tabs) -->
   <header class="border-b border-slate-200/90 dark:border-slate-800 bg-slate-100/90 dark:bg-black/90 backdrop-blur-xl sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-1.5 sm:py-3 w-full">
+      <h1 id="main-page-heading" class="sr-only">FPLSaWaDiKa — Mini-League Dashboard</h1>
       
       <!-- 1.1 ข้อมูลประจำลีก & Action Header -->
       <div class="flex items-center justify-between gap-2 w-full">
@@ -1833,6 +1834,7 @@ __STRUCTURED_DATA_JSON__
               type="text" 
               id="live-team-search" 
               oninput="app.onLiveSearchInput(this.value)" 
+              aria-label="ค้นหาชื่อทีม / ผู้จัดการ"
               placeholder="ค้นหาชื่อทีม / ผู้จัดการ..." 
               class="w-full pl-9 pr-8 py-2 min-h-[40px] text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 shadow-2xs transition-all"
             >
@@ -2399,6 +2401,7 @@ __STRUCTURED_DATA_JSON__
                 type="text" 
                 id="global-radar-search-input" 
                 oninput="app.handleRadarSearch(this.value)"
+                aria-label="ค้นหาชื่อทีม / ผู้จัดการ (Global Radar)"
                 placeholder="ค้นหาชื่อทีม / ผู้จัดการ..." 
                 class="w-full text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-3 pr-8 py-1.5 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500 transition-all"
               />
@@ -2411,6 +2414,7 @@ __STRUCTURED_DATA_JSON__
               <select 
                 id="global-radar-sort-select"
                 onchange="app.setRadarSortBy(this.value)"
+                aria-label="เรียงลำดับข้อมูล (Global Radar)"
                 class="text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-slate-800 dark:text-slate-200 font-bold focus:outline-hidden focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-2xs"
               >
                 <option value="total_net">เรียง: คะแนนรวม ▼</option>
@@ -3139,7 +3143,7 @@ __STRUCTURED_DATA_JSON__
         <p id="modal-summary-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mb-3">ข้อความถูกจัดรูปแบบสำหรับส่งเข้ากลุ่ม LINE เรียบร้อยแล้ว:</p>
         
         <div class="relative">
-          <textarea id="text-summary-content" readonly class="w-full h-60 sm:h-72 p-3.5 bg-slate-50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs sm:text-[13px] font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-blue-600 resize-none selection:bg-slate-900 selection:text-white dark:selection:bg-blue-600 leading-relaxed"></textarea>
+          <textarea id="text-summary-content" readonly aria-label="สรุปผลคะแนนประจำสัปดาห์" class="w-full h-60 sm:h-72 p-3.5 bg-slate-50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs sm:text-[13px] font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-blue-600 resize-none selection:bg-slate-900 selection:text-white dark:selection:bg-blue-600 leading-relaxed"></textarea>
         </div>
       </div>
 
@@ -4881,6 +4885,8 @@ __STRUCTURED_DATA_JSON__
         this.prizesHistoryExpanded = false;
         this.cupSearchQuery = '';
         this.cupFilterMode = 'all';
+        this._dataVersion = 0;
+        this._renderedState = {};
       }
 
       getDefaultLeagueId() {
@@ -5035,7 +5041,8 @@ __STRUCTURED_DATA_JSON__
         }
 
         // Listen for browser Back/Forward navigation
-        if (typeof window !== 'undefined' && window.addEventListener) {
+        if (typeof window !== 'undefined' && window.addEventListener && !this._popstateBound) {
+          this._popstateBound = true;
           window.addEventListener('popstate', () => {
             try {
               if (this.currentModalEntryId) {
@@ -6637,6 +6644,10 @@ __STRUCTURED_DATA_JSON__
         const cupTabBtn = document.getElementById('tab-btn-cup');
 
         if (nameEl) nameEl.innerText = this.data.name;
+        const pageHeading = document.getElementById('main-page-heading');
+        if (pageHeading && this.data && this.data.name) {
+          pageHeading.textContent = `${this.data.name} — FPLSaWaDiKa`;
+        }
         if (typeof document !== 'undefined' && this.data && this.data.name) {
           document.title = `FPLSaWaDiKa — ${this.data.name}`;
         }
@@ -6820,12 +6831,15 @@ __STRUCTURED_DATA_JSON__
       }
 
       initTabNavigation() {
-        document.querySelectorAll('.tab-nav-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const target = btn.getAttribute('data-tab-target');
-            this.switchTab(target);
+        if (!this._tabNavBound) {
+          this._tabNavBound = true;
+          document.querySelectorAll('.tab-nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const target = btn.getAttribute('data-tab-target');
+              this.switchTab(target);
+            });
           });
-        });
+        }
         this.updateHighlightsTabBlink();
       }
 
@@ -6908,7 +6922,7 @@ __STRUCTURED_DATA_JSON__
 
         this.updateHighlightsTabBlink();
         if (!skipRender) {
-          this.renderCurrentTab();
+          this.renderCurrentTab(false);
         }
       }
 
@@ -6992,66 +7006,70 @@ __STRUCTURED_DATA_JSON__
         }
       }
 
+      getRenderStamp() {
+        return `${this.activeLeagueId || ''}|${this.selectedGW || ''}|${this.currentLang || 'th'}|${this._dataVersion || 0}`;
+      }
+
+      invalidateRenderCache() {
+        this._dataVersion = (this._dataVersion || 0) + 1;
+        this._renderedState = {};
+      }
+
       renderAll() {
+        this.invalidateRenderCache();
         this.renderGWSelector();
-        this.renderGameweekView();
-        this.renderHighlightsView();
-        this.renderCompetitionView();
-        this.renderTransfersView();
-        this.renderPrizesView();
-        this.renderHallOfFameView();
-        this.renderGlobalRadarView();
-        this.renderCupView();
-        this.renderRulesView();
-        this.renderAboutView();
-        if (this.shi62Data && this.hasShi62Feature()) {
-          this.renderShi62Special();
-        }
-        if (this.bramannPredData && this.hasBramannPredFeature()) {
-          this.renderBramannPrediction();
-        }
-        if (this.bramannChalData && this.hasBramannChalFeature()) {
-          this.renderBramannChallenge();
-        }
+        this.renderCurrentTab(true);
         this.updateHighlightsTabBlink();
       }
 
-      renderCurrentTab() {
-        if (this.activeTab === 'gameweek-view') this.renderGameweekView();
-        else if (this.activeTab === 'highlights-view') this.renderHighlightsView();
-        else if (this.activeTab === 'competition-view') this.renderCompetitionView();
-        else if (this.activeTab === 'transfers-view') this.renderTransfersView();
-        else if (this.activeTab === 'prizes-view') this.renderPrizesView();
-        else if (this.activeTab === 'hall-of-fame-view') this.renderHallOfFameView();
-        else if (this.activeTab === 'global-radar-view') this.renderGlobalRadarView();
-        else if (this.activeTab === 'cup-view') this.renderCupView();
-        else if (this.activeTab === 'rules-view') this.renderRulesView();
-        else if (this.activeTab === 'shi62-special-view') {
+      renderCurrentTab(force = false) {
+        const tab = this.activeTab || 'gameweek-view';
+        const stamp = this.getRenderStamp();
+        if (!force && this._renderedState && this._renderedState[tab] === stamp) {
+          return;
+        }
+        if (!this._renderedState) this._renderedState = {};
+
+        if (tab === 'gameweek-view') this.renderGameweekView();
+        else if (tab === 'highlights-view') this.renderHighlightsView();
+        else if (tab === 'competition-view') this.renderCompetitionView();
+        else if (tab === 'transfers-view') this.renderTransfersView();
+        else if (tab === 'prizes-view') this.renderPrizesView();
+        else if (tab === 'hall-of-fame-view') this.renderHallOfFameView();
+        else if (tab === 'global-radar-view') this.renderGlobalRadarView();
+        else if (tab === 'cup-view') this.renderCupView();
+        else if (tab === 'rules-view') this.renderRulesView();
+        else if (tab === 'shi62-special-view') {
           if (this.hasShi62Feature()) {
             this.renderShi62Special();
           } else {
             this.switchTab('gameweek-view');
+            return;
           }
         }
-        else if (this.activeTab === 'bramann-prediction-view') {
+        else if (tab === 'bramann-prediction-view') {
           if (this.hasBramannPredFeature()) {
             this.renderBramannPrediction();
           } else {
             this.switchTab('gameweek-view');
+            return;
           }
         }
-        else if (this.activeTab === 'bramann-challenge-view') {
+        else if (tab === 'bramann-challenge-view') {
           if (this.hasBramannChalFeature()) {
             this.renderBramannChallenge();
           } else {
             this.switchTab('gameweek-view');
+            return;
           }
         }
-        else if (this.activeTab === 'about-view') {
+        else if (tab === 'about-view') {
           this.renderAboutView();
         } else {
           this.renderGameweekView();
         }
+
+        this._renderedState[tab] = stamp;
       }
 
 selectShi62GW(gwName) {
@@ -8942,7 +8960,7 @@ selectShi62GW(gwName) {
                       placeholder="${isEn ? 'Search team...' : 'ค้นหาทีม...'}"
                       class="w-full pl-8 pr-7 py-2 min-h-[38px] sm:min-h-[34px] text-xs bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-400 transition-all font-sans"
                     />
-                    <button id="bramann-prizes-search-clear" onclick="app.handlePrizesSearch('')" class="${this.prizesSearchQuery ? '' : 'hidden '}absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <button id="bramann-prizes-search-clear" type="button" aria-label="${isEn ? 'Clear search' : 'ล้างการค้นหา'}" onclick="app.handlePrizesSearch('')" class="${this.prizesSearchQuery ? '' : 'hidden '}absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                       <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                   </div>
@@ -9514,6 +9532,7 @@ selectShi62GW(gwName) {
                 gwData.results = chunkJson.results;
                 if (chunkJson.is_finished !== undefined) gwData.is_finished = chunkJson.is_finished;
                 if (chunkJson.is_started !== undefined) gwData.is_started = chunkJson.is_started;
+                this.invalidateRenderCache();
               }
             }
           } catch (_) {}
@@ -9522,7 +9541,7 @@ selectShi62GW(gwName) {
         this.renderGWSelector();
         this.updateHighlightsTabBlink();
         if (!skipRender) {
-          this.renderCurrentTab();
+          this.renderCurrentTab(true);
         }
       }
 
@@ -12198,11 +12217,12 @@ selectShi62GW(gwName) {
                   type="text" 
                   id="transfers-search-input"
                   value="${this.escapeHtml(this.transfersSearch || '')}"
+                  aria-label="${isEn ? 'Search team, manager, player' : 'ค้นหาทีม, ผู้จัดการ, นักเตะ'}"
                   placeholder="${isEn ? 'Search team, manager, player...' : 'ค้นหาทีม, ผู้จัดการ, นักเตะ...'}"
                   oninput="app.setTransfersSearch(this.value)"
                   class="w-full bg-slate-50/90 dark:bg-slate-800/80 text-slate-800 dark:text-white text-xs border border-slate-200 dark:border-slate-700/80 rounded-xl pl-9 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 transition-all shadow-2xs"
                 />
-                <button id="transfers-search-clear" onclick="app.setTransfersSearch('')" class="${this.transfersSearch ? '' : 'hidden '}absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer p-0.5">✕</button>
+                <button id="transfers-search-clear" type="button" aria-label="${isEn ? 'Clear search' : 'ล้างการค้นหา'}" onclick="app.setTransfersSearch('')" class="${this.transfersSearch ? '' : 'hidden '}absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer p-0.5">✕</button>
               </div>
             </div>
 
@@ -13190,12 +13210,13 @@ selectShi62GW(gwName) {
                 <input 
                   type="text" 
                   id="comp-diff-search-input"
+                  aria-label="${isEn ? 'Search differential player' : 'ค้นหานักเตะทีเด็ด'}"
                   placeholder="${isEn ? 'Search differential player...' : 'ค้นหานักเตะทีเด็ด...'}" 
                   value="${this.escapeHtml(this.compDiffSearch)}"
                   oninput="app.setCompDiffSearch(this.value)"
                   class="w-full bg-slate-50/90 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 transition-all shadow-2xs"
                 />
-                <button id="comp-diff-search-clear" onclick="app.setCompDiffSearch('')" class="${this.compDiffSearch ? '' : 'hidden '}absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer p-0.5">✕</button>
+                <button id="comp-diff-search-clear" type="button" aria-label="${isEn ? 'Clear search' : 'ล้างการค้นหา'}" onclick="app.setCompDiffSearch('')" class="${this.compDiffSearch ? '' : 'hidden '}absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer p-0.5">✕</button>
               </div>
             </div>
 
@@ -14412,7 +14433,7 @@ selectShi62GW(gwName) {
                         placeholder="${isEn ? 'Search team...' : 'ค้นหาทีม...'}"
                         class="w-full pl-8 pr-7 py-2 min-h-[38px] sm:min-h-[34px] text-xs bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-400 transition-all font-sans"
                       />
-                      <button id="weekly-prizes-search-clear" onclick="app.handlePrizesSearch('')" class="${this.prizesSearchQuery ? '' : 'hidden '}absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                      <button id="weekly-prizes-search-clear" type="button" aria-label="${isEn ? 'Clear search' : 'ล้างการค้นหา'}" onclick="app.handlePrizesSearch('')" class="${this.prizesSearchQuery ? '' : 'hidden '}absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                       </button>
                     </div>
@@ -15025,7 +15046,7 @@ selectShi62GW(gwName) {
                         placeholder="${isEn ? 'Search team...' : 'ค้นหาทีม...'}"
                         class="w-full pl-8 pr-7 py-2 min-h-[38px] sm:min-h-[34px] text-xs bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-400 transition-all font-sans"
                       />
-                      <button id="monthly-prizes-search-clear" onclick="app.handlePrizesSearch('')" class="${this.prizesSearchQuery ? '' : 'hidden '}absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                      <button id="monthly-prizes-search-clear" type="button" aria-label="${isEn ? 'Clear search' : 'ล้างการค้นหา'}" onclick="app.handlePrizesSearch('')" class="${this.prizesSearchQuery ? '' : 'hidden '}absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                       </button>
                     </div>
@@ -15548,7 +15569,7 @@ selectShi62GW(gwName) {
                         placeholder="${isEn ? 'Search team...' : 'ค้นหาทีม...'}"
                         class="w-full pl-8 pr-7 py-2 min-h-[38px] sm:min-h-[34px] text-xs bg-slate-50 dark:bg-slate-800/80 text-slate-900 dark:text-white rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-400 transition-all font-sans"
                       />
-                      <button id="standard-prizes-search-clear" onclick="app.handlePrizesSearch('')" class="${this.prizesSearchQuery ? '' : 'hidden '}absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                      <button id="standard-prizes-search-clear" type="button" aria-label="${isEn ? 'Clear search' : 'ล้างการค้นหา'}" onclick="app.handlePrizesSearch('')" class="${this.prizesSearchQuery ? '' : 'hidden '}absolute inset-y-0 right-0 pr-2 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                       </button>
                     </div>
