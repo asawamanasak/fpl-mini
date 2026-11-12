@@ -77,13 +77,39 @@ jobs:
             git push origin main
           fi
 
+      - name: Stage Public Pages Artifact
+        run: |
+          rm -rf _site
+          mkdir -p _site
+          for f in .nojekyll CNAME favicon.ico robots.txt sitemap.xml site.webmanifest index.html 404.html; do
+            if [ -f "$f" ]; then
+              cp "$f" _site/
+            fi
+          done
+          for d in data docs fonts images; do
+            if [ -d "$d" ]; then
+              cp -R "$d" _site/
+            fi
+          done
+          for d in [0-9]*/; do
+            d_clean="${d%/}"
+            if [ -d "$d_clean" ]; then
+              cp -R "$d_clean" _site/
+            fi
+          done
+          test -f _site/index.html
+          if [ -e _site/workers ] || [ -e _site/config ]; then
+            echo "Error: Private directories leaked into _site!" >&2
+            exit 1
+          fi
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: '_site'
 
       - name: Deploy to GitHub Pages
         id: deployment

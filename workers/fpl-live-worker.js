@@ -23,9 +23,65 @@ import {
   isRequestAuthenticated,
   renderDashboardHtml,
   renderLoginHtml,
-  DEFAULT_ADMIN_KEY,
-  ADMIN_EMAIL,
+  getSessionSecret,
+  verifyAdminPasskey,
+  signAdminSession,
 } from './admin-dashboard.js';
+
+const ADMIN_JSON_HEADERS = {
+  'Content-Type': 'application/json; charset=utf-8',
+  'Cache-Control': 'no-store, private',
+};
+
+const TELEMETRY_MAX_BODY_BYTES = 4096;
+const TELEMETRY_ALLOWED_TYPES = new Set(['page_view', 'league_view', 'dwell_time', 'team_view']);
+const TELEMETRY_RATE_LIMIT_PER_MIN = 30;
+
+function isTelemetryOriginAllowed(originHeader) {
+  if (!originHeader || originHeader === 'null') return true;
+  try {
+    const o = new URL(originHeader);
+    const h = o.hostname.toLowerCase();
+    return (
+      h === 'fplsawadika.com' ||
+      h.endsWith('.fplsawadika.com') ||
+      h.endsWith('.github.io') ||
+      h === 'localhost' ||
+      h === '127.0.0.1'
+    );
+  } catch (_) {
+    return false;
+  }
+}
+
+function isAutomatedTelemetryUa(userAgent) {
+  return /bot|crawl|spider|slurp|curl|wget|python-requests|go-http-client|headless/i.test(userAgent || '');
+}
+
+async function allowTelemetryIpBurst(request) {
+  try {
+    const ip = request.headers.get('cf-connecting-ip') || '';
+    if (!ip || typeof caches === 'undefined' || !caches.default) return true;
+    const minuteBucket = Math.floor(Date.now() / 60000);
+    const keyReq = new Request(`https://telemetry-ratelimit.internal/${encodeURIComponent(ip)}/${minuteBucket}`);
+    const existing = await caches.default.match(keyReq);
+    let count = 0;
+    if (existing) {
+      const parsed = await existing.json().catch(() => ({ count: 0 }));
+      count = Number(parsed && parsed.count) || 0;
+    }
+    if (count >= TELEMETRY_RATE_LIMIT_PER_MIN) return false;
+    await caches.default.put(
+      keyReq,
+      new Response(JSON.stringify({ count: count + 1 }), {
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=65' },
+      })
+    );
+    return true;
+  } catch (_) {
+    return true;
+  }
+}
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -214,32 +270,80 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, '') || '/';
     const colo = (request.cf && request.cf.colo) ? request.cf.colo : 'EDGE';
-    const isAdminDomain = url.hostname === 'admin.fplsawadika.com' || path.startsWith('/admin') || path.startsWith('/api/admin');
+    const isAdminDomain =
+      url.hostname === 'admin.fplsawadika.com' ||
+      path.startsWith('/admin') ||
+      path.startsWith('/api/admin') ||
+      path === '/login' ||
+      path === '/logout';
 
     // ==========================================
-    // Telemetry Beacon Handler (Zero Latency Tracking)
+    // Telemetry Beacon Handler (Validated + Rate-Guarded)
     // ==========================================
     if (path === '/api/telemetry/event' || path === '/telemetry/event') {
+      if (request.method !== 'POST') {
+        return new Response(JSON.stringify({ ok: false, error: 'Method not allowed' }), {
+          status: 405,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+        });
+      }
+
+      if (!isTelemetryOriginAllowed(request.headers.get('origin'))) {
+        return new Response(JSON.stringify({ ok: false, error: 'Origin not allowed' }), {
+          status: 403,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+        });
+      }
+
+      const userAgent = request.headers.get('user-agent') || '';
+      if (isAutomatedTelemetryUa(userAgent)) {
+        return new Response(JSON.stringify({ ok: true, ignored: 'bot' }), {
+          status: 202,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+        });
+      }
+
       try {
-        let eventData = {};
-        if (request.method === 'POST') {
-          try {
-            eventData = await request.json();
-          } catch (_) {
-            try {
-              const text = await request.text();
-              eventData = JSON.parse(text);
-            } catch (_) {}
-          }
-        } else {
-          eventData = {
-            type: url.searchParams.get('type') || 'page_view',
-            path: url.searchParams.get('path') || '/',
-            target: url.searchParams.get('target') || '',
-          };
+        const contentLen = Number(request.headers.get('content-length') || 0);
+        if (contentLen > TELEMETRY_MAX_BODY_BYTES) {
+          return new Response(JSON.stringify({ ok: false, error: 'Payload too large' }), {
+            status: 413,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+          });
         }
 
-        const userAgent = request.headers.get('user-agent') || '';
+        const rawText = await request.text();
+        if (!rawText || rawText.length > TELEMETRY_MAX_BODY_BYTES) {
+          return new Response(JSON.stringify({ ok: false, error: 'Invalid payload size' }), {
+            status: rawText ? 413 : 400,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+          });
+        }
+
+        let eventData = null;
+        try {
+          eventData = JSON.parse(rawText);
+        } catch (_) {
+          return new Response(JSON.stringify({ ok: false, error: 'Malformed JSON' }), {
+            status: 400,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+          });
+        }
+
+        if (!eventData || typeof eventData !== 'object' || !TELEMETRY_ALLOWED_TYPES.has(eventData.type)) {
+          return new Response(JSON.stringify({ ok: false, error: 'Unsupported event type' }), {
+            status: 400,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+          });
+        }
+
+        if (!(await allowTelemetryIpBurst(request))) {
+          return new Response(JSON.stringify({ ok: true, throttled: true }), {
+            status: 202,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+          });
+        }
+
         const isLine = /Line\//i.test(userAgent);
         const isFb = /FB_IAB|FBAV/i.test(userAgent);
         const isSafari = /safari/i.test(userAgent) && !/chrome|crios|crmo/i.test(userAgent);
@@ -250,7 +354,8 @@ export default {
         const isMobile = !isTablet && /mobile|iphone|ipod|android/i.test(userAgent);
         const device = isTablet ? 'tablet' : (isMobile ? 'mobile' : 'desktop');
 
-        const city = (request.cf && request.cf.city) ? request.cf.city : 'Bangkok';
+        const rawCity = (request.cf && request.cf.city) ? String(request.cf.city) : 'Bangkok';
+        const city = rawCity.replace(/[^a-zA-Z0-9 _-]/g, '').trim().slice(0, 40) || 'Bangkok';
 
         if (env && (env.DB || env.ANALYTICS_KV) && ctx && ctx.waitUntil) {
           ctx.waitUntil((async () => {
@@ -265,14 +370,18 @@ export default {
                 { metric: `${pfx}:city:${city}`, amount: 1 },
               ];
 
-              // League Views & Dwell Time Counter
-              let targetLeague = eventData.league_id;
-              if (!targetLeague && eventData.path) {
+              // League Views & Dwell Time Counter (numeric league IDs only)
+              let targetLeague = '';
+              if (eventData.league_id !== undefined && eventData.league_id !== null) {
+                const candidate = String(eventData.league_id).trim();
+                if (/^\d{1,10}$/.test(candidate)) targetLeague = candidate;
+              }
+              if (!targetLeague && typeof eventData.path === 'string') {
                 const lm = eventData.path.match(/\/(\d{4,8})\/?/);
                 if (lm) targetLeague = lm[1];
               }
               if (!targetLeague && (eventData.type === 'page_view' || eventData.type === 'league_view')) {
-                targetLeague = '40700'; // Default to primary league if on root
+                targetLeague = '40700';
               }
 
               if (targetLeague) {
@@ -289,9 +398,8 @@ export default {
                     increments.push({ metric: `${pfx}:l:${targetLeague}:dwell_sec`, amount: dur });
                     increments.push({ metric: `${pfx}:l:${targetLeague}:dwell_sess`, amount: 1 });
                   }
-                  // Smart Batched Interaction Features (0 extra network calls)
-                  if (eventData.tabs && typeof eventData.tabs === 'object') {
-                    for (const [tabId, count] of Object.entries(eventData.tabs)) {
+                  if (eventData.tabs && typeof eventData.tabs === 'object' && !Array.isArray(eventData.tabs)) {
+                    for (const [tabId, count] of Object.entries(eventData.tabs).slice(0, 15)) {
                       const cleanTab = String(tabId).replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 32);
                       const tCount = Math.min(Math.max(parseInt(count, 10) || 1, 1), 50);
                       if (cleanTab) {
@@ -310,12 +418,14 @@ export default {
                 }
               }
 
-              // Team view counter
-              if (eventData.type === 'team_view' && eventData.target) {
-                increments.push({ metric: `${pfx}:team:${eventData.target}`, amount: 1 });
+              // Team view counter (numeric entry IDs only)
+              if (eventData.type === 'team_view' && eventData.target !== undefined && eventData.target !== null) {
+                const cleanTarget = String(eventData.target).trim();
+                if (/^\d{1,12}$/.test(cleanTarget)) {
+                  increments.push({ metric: `${pfx}:team:${cleanTarget}`, amount: 1 });
+                }
               }
 
-              // Primary Storage: Cloudflare D1 (100k daily write limit, atomic updates, 0 KV ops)
               if (env.DB) {
                 const stmt = env.DB.prepare(`
                   INSERT INTO telemetry_counters (metric, date, val, updated_at)
@@ -325,7 +435,6 @@ export default {
                 const batch = increments.map(item => stmt.bind(item.metric, today, item.amount));
                 await env.DB.batch(batch);
               } else if (env.ANALYTICS_KV) {
-                // Secondary Fallback: Workers KV
                 for (const item of increments) {
                   const cur = parseInt(await env.ANALYTICS_KV.get(item.metric) || '0', 10);
                   await env.ANALYTICS_KV.put(item.metric, String(cur + item.amount), { expirationTtl: 86400 * 30 });
@@ -342,8 +451,8 @@ export default {
           headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
         });
       } catch (e) {
-        return new Response(JSON.stringify({ ok: false, error: e.message }), {
-          status: 200,
+        return new Response(JSON.stringify({ ok: false, error: 'Telemetry processing error' }), {
+          status: 400,
           headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
         });
       }
@@ -353,60 +462,79 @@ export default {
     // Executive Admin Terminal Routing
     // ==========================================
     if (isAdminDomain) {
+      const isHttps = url.protocol === 'https:';
+      const secureFlag = isHttps ? '; Secure' : '';
+      const adminRedirectTarget = url.hostname === 'admin.fplsawadika.com' ? '/' : '/admin';
+
       // 1. Logout Handler
       if (path === '/logout' || path === '/admin/logout') {
         return new Response(null, {
           status: 302,
           headers: {
-            'Location': isAdminDomain && !path.startsWith('/admin') ? '/' : '/admin',
-            'Set-Cookie': 'fpl_admin_auth=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Strict',
+            'Location': adminRedirectTarget,
+            'Set-Cookie': `fpl_admin_auth=; Path=/; Max-Age=0; HttpOnly${secureFlag}; SameSite=Strict`,
           },
         });
       }
 
       // 2. Login Form Submission Handler
       if (request.method === 'POST' && (path === '/login' || path === '/admin/login')) {
+        const secretKey = getSessionSecret(env);
+        if (!secretKey) {
+          return new Response(
+            renderLoginHtml('ระบบยังไม่พร้อมใช้งาน: กรุณาตั้งค่า ADMIN_SECRET_KEY บน Cloudflare Worker Secrets'),
+            { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store, private' } }
+          );
+        }
+
         let passkey = '';
         try {
           const contentType = request.headers.get('content-type') || '';
           if (contentType.includes('application/json')) {
             const body = await request.json();
-            passkey = (body && body.passkey) ? body.passkey.trim() : '';
+            const raw = body && (body.passkey ?? body.token);
+            passkey = typeof raw === 'string' ? raw.trim() : '';
           } else {
             const formData = await request.formData();
-            passkey = (formData.get('passkey') || '').trim();
+            const raw = formData.get('passkey') ?? formData.get('token');
+            passkey = typeof raw === 'string' ? raw.trim() : '';
           }
         } catch (_) {}
 
-        const secretKey = (env && env.ADMIN_SECRET_KEY) ? env.ADMIN_SECRET_KEY : DEFAULT_ADMIN_KEY;
-        if (passkey && passkey === secretKey) {
-          const target = isAdminDomain && !path.startsWith('/admin') ? '/' : '/admin';
+        if (await verifyAdminPasskey(passkey, env)) {
+          const sessionToken = await signAdminSession(secretKey);
           return new Response(null, {
             status: 302,
             headers: {
-              'Location': target,
-              'Set-Cookie': `fpl_admin_auth=${secretKey}; Path=/; Max-Age=2592000; HttpOnly; Secure; SameSite=Strict`,
+              'Location': adminRedirectTarget,
+              'Set-Cookie': `fpl_admin_auth=${encodeURIComponent(sessionToken)}; Path=/; Max-Age=2592000; HttpOnly${secureFlag}; SameSite=Strict`,
             },
           });
         }
 
         return new Response(renderLoginHtml('รหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง'), {
           status: 401,
-          headers: { 'Content-Type': 'text/html; charset=utf-8' },
+          headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store, private' },
         });
       }
 
-      // 3. Authenticate Session (Cloudflare Zero Trust or Cookie)
-      const auth = isRequestAuthenticated(request, env);
+      // 3. Authenticate Session (Verified Zero Trust JWT or Signed Cookie)
+      const auth = await isRequestAuthenticated(request, env);
       if (!auth.authenticated) {
         return new Response(renderLoginHtml(), {
           status: 401,
-          headers: { 'Content-Type': 'text/html; charset=utf-8' },
+          headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store, private' },
         });
       }
 
       // 4. Authenticated API Actions
       if (path === '/api/admin/flush-cache') {
+        if (request.method !== 'POST') {
+          return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+            status: 405,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
         let deletedCount = 0;
         try {
           const cache = caches.default;
@@ -430,12 +558,18 @@ export default {
         } catch (_) {}
         return new Response(
           JSON.stringify({ success: true, deleted_keys: deletedCount, message: 'Edge cache flushed successfully' }),
-          { status: 200, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' } }
+          { status: 200, headers: ADMIN_JSON_HEADERS }
         );
       }
 
       // Telemetry Retention Management Endpoint (Prune rows older than 30 days)
       if (path === '/api/admin/prune-telemetry') {
+        if (request.method !== 'POST') {
+          return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+            status: 405,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
         let pruned = 0;
         if (env && env.DB) {
           try {
@@ -446,14 +580,59 @@ export default {
           } catch (e) {
             return new Response(
               JSON.stringify({ success: false, error: e.message }),
-              { status: 500, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' } }
+              { status: 500, headers: ADMIN_JSON_HEADERS }
             );
           }
         }
         return new Response(
           JSON.stringify({ success: true, pruned_rows: pruned, message: `เคลียร์สถิติ D1 ที่เก่ากว่า 30 วันสำเร็จ (${pruned} แถว)` }),
-          { status: 200, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' } }
+          { status: 200, headers: ADMIN_JSON_HEADERS }
         );
+      }
+
+      // Live Upstream FPL API Latency Diagnostic Endpoint
+      if (path === '/api/admin/ping-upstream') {
+        if (request.method !== 'POST') {
+          return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+            status: 405,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        const tStart = Date.now();
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 5000);
+        try {
+          const upstreamResp = await fetch('https://fantasy.premierleague.com/api/event-status/', {
+            headers: FPL_HEADERS,
+            signal: ctrl.signal,
+            cf: { cacheTtl: 0, cacheEverything: false },
+          });
+          clearTimeout(timer);
+          const latencyMs = Math.max(1, Date.now() - tStart);
+          return new Response(
+            JSON.stringify({
+              success: upstreamResp.ok,
+              upstream_status: upstreamResp.status,
+              upstream_latency_ms: latencyMs,
+              message: upstreamResp.ok
+                ? `FPL Upstream API ตอบกลับปกติใน ${latencyMs} ms (HTTP ${upstreamResp.status})`
+                : `FPL Upstream API ตอบกลับสถานะ HTTP ${upstreamResp.status} (${latencyMs} ms)`,
+            }),
+            { status: 200, headers: ADMIN_JSON_HEADERS }
+          );
+        } catch (err) {
+          clearTimeout(timer);
+          const latencyMs = Math.max(1, Date.now() - tStart);
+          return new Response(
+            JSON.stringify({
+              success: false,
+              upstream_status: 502,
+              upstream_latency_ms: latencyMs,
+              message: `ไม่สามารถติดต่อ FPL Upstream API ได้: ${err.message}`,
+            }),
+            { status: 502, headers: ADMIN_JSON_HEADERS }
+          );
+        }
       }
 
       // Live Telemetry & FPL Sync Data Endpoint
@@ -471,15 +650,60 @@ export default {
             })());
           }
 
-          const fetchUrl = isForce
-            ? `https://www.fplsawadika.com/multi_fpl_data.json?t=${Date.now()}`
-            : 'https://www.fplsawadika.com/multi_fpl_data.json';
-          const resp = await fetch(fetchUrl, {
-            headers: { 'User-Agent': 'FPLSaWaDiKa-Admin-Relay/2.0' },
-            cf: isForce ? { cacheTtl: 0, cacheEverything: false } : { cacheTtl: 15, cacheEverything: true },
-          });
-          if (resp.ok) {
+          const tsSuffix = isForce ? `?t=${Date.now()}` : '';
+          const candidateUrls = [
+            `https://raw.githubusercontent.com/asawamanasak/fpl-mini/main/multi_fpl_data.json${tsSuffix}`,
+            `https://www.fplsawadika.com/multi_fpl_data.json${tsSuffix}`,
+          ];
+          let resp = null;
+          for (const candidateUrl of candidateUrls) {
+            try {
+              const r = await fetch(candidateUrl, {
+                headers: { 'User-Agent': 'FPLSaWaDiKa-Admin-Relay/2.0' },
+                cf: isForce ? { cacheTtl: 0, cacheEverything: false } : { cacheTtl: 15, cacheEverything: true },
+              });
+              if (r.ok) {
+                resp = r;
+                break;
+              }
+            } catch (_) {}
+          }
+          if (resp && resp.ok) {
             const data = await resp.json();
+
+            const rawLeagues = (data && data.leagues && typeof data.leagues === 'object') ? data.leagues : {};
+            let liveTier1Managers = 0;
+            let liveAllManagers = 0;
+            const liveLeagueSummaries = {};
+            for (const [lid, lObj] of Object.entries(rawLeagues)) {
+              const teamsCount = Array.isArray(lObj && lObj.teams) ? lObj.teams.length : 0;
+              const tier = (lObj && lObj.tier) ? Number(lObj.tier) : 1;
+              liveAllManagers += teamsCount;
+              if (tier !== 2) liveTier1Managers += teamsCount;
+              liveLeagueSummaries[lid] = {
+                id: lid,
+                name: (lObj && lObj.name) ? String(lObj.name) : lid,
+                teams: teamsCount,
+                tier,
+              };
+            }
+
+            data.portfolio = {
+              total_managers: liveTier1Managers || 163,
+              total_managers_tier1: liveTier1Managers || 163,
+              total_managers_all: liveAllManagers || liveTier1Managers || 163,
+              total_pool_gmv: 268700,
+              tier1_leagues_count: Object.values(liveLeagueSummaries).filter(x => x.tier !== 2).length || 8,
+              total_leagues_count: Object.keys(liveLeagueSummaries).length || 8,
+              leagues: liveLeagueSummaries,
+            };
+
+            if (data.next_deadline && typeof data.next_deadline === 'object') {
+              data.fpl_upstream = {
+                next_deadline_time: data.next_deadline.deadline_time || null,
+                next_gw_name: data.next_deadline.name || null,
+              };
+            }
 
             // Enrich with edge telemetry (Cloudflare D1 primary, KV fallback)
             try {
@@ -661,6 +885,7 @@ export default {
 
                   leaguesOutput[lid] = {
                     views: actViews,
+                    raw_live_views: st.kvViews,
                     peak_window: base.peakWindow,
                     peak_window_en: base.peakWindowEn,
                     avg_screen_time: avgMins + ' นาที / ครั้ง',
@@ -761,10 +986,13 @@ export default {
 
                 data.edge_telemetry = {
                   is_live: true,
+                  telemetry_model: 'calibrated_baseline_plus_live',
+                  baseline_visits_prior: baselineVisits,
+                  raw_live_visits_7d: totalKvVisits,
                   weekly_visits: dynamicVisits,
                   daily_reach: dailyAvgReach,
                   peak_live_audience: 284,
-                  total_pool_gmv: 268700, // 268,700 THB managed across 8 leagues (verified against leagues_config.json)
+                  total_pool_gmv: 268700, // 268,700 THB managed across 8 Tier-1 leagues (verified against leagues_config.json)
                   daily_series: dailySeries,
                   hourly_series: hourlySeries,
                   sources: {
@@ -780,18 +1008,18 @@ export default {
                   leagues: leaguesOutput,
                   features: featuresSummary,
                   system_performance: {
-                    d1_row_count: d1RowCount || 128,
+                    d1_row_count: d1RowCount,
                     d1_daily_writes_used: Math.min(Math.round((dynamicVisits / 7) * 4), 100000),
                     d1_daily_writes_limit: 100000,
                     edge_cache_hit_pct: 96.4,
                     edge_avg_latency_ms: 140,
                     sync: syncTelem,
                     scaling: {
-                      tier1_used_teams: 163,
+                      tier1_used_teams: data.portfolio.total_managers_tier1,
                       tier1_safe_capacity_teams: 500,
-                      tier1_headroom_teams: 337,
+                      tier1_headroom_teams: Math.max(0, 500 - data.portfolio.total_managers_tier1),
                       tier1_headroom_leagues: 22,
-                      tier2_capacity: 'Unlimited (Standings Only)',
+                      tier2_capacity: 'Unlimited (Decoupled JSON)',
                       peak_concurrent_capacity: '3,000 - 5,000 users',
                     }
                   },
@@ -809,20 +1037,26 @@ export default {
               data_source: (env && env.DB) ? 'Cloudflare D1 SQL' : ((env && env.ANALYTICS_KV) ? 'Cloudflare KV' : 'Static Multi-League JSON')
             };
 
-            return new Response(JSON.stringify(data), {
+            const compactAdminPayload = {
+              ok: true,
+              last_sync: data.last_sync || null,
+              last_sync_iso: data.last_sync_iso || null,
+              portfolio: data.portfolio,
+              fpl_upstream: data.fpl_upstream || null,
+              edge_telemetry: data.edge_telemetry || null,
+              edge_metadata: data.edge_metadata,
+            };
+
+            return new Response(JSON.stringify(compactAdminPayload), {
               status: 200,
-              headers: {
-                ...CORS_HEADERS,
-                'Content-Type': 'application/json; charset=utf-8',
-                'Cache-Control': 'no-store, private',
-              },
+              headers: ADMIN_JSON_HEADERS,
             });
           }
-          throw new Error(`Upstream returned ${resp.status}`);
+          throw new Error(`Upstream returned ${resp ? resp.status : 'network_error'}`);
         } catch (err) {
           return new Response(
             JSON.stringify({ error: err.message, status: 'fallback_needed' }),
-            { status: 500, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' } }
+            { status: 500, headers: ADMIN_JSON_HEADERS }
           );
         }
       }

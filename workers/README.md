@@ -36,6 +36,14 @@ cd workers
 npx wrangler deploy
 ```
 
+### 🔐 การตั้งค่า Secrets สำหรับ Admin Terminal (`admin.fplsawadika.com`)
+ระบบยืนยันตัวตนของ `/admin` จะไม่ใช้รหัสผ่านที่ฝังในโค้ดอีกต่อไป กรุณาตั้งค่า Secret ก่อน Deploy:
+```bash
+cd workers
+npx wrangler secret put ADMIN_SECRET_KEY
+```
+*(หากใช้ Cloudflare Zero Trust Access ร่วมด้วย ให้ตั้งค่า `CF_ACCESS_TEAM_DOMAIN` และ `CF_ACCESS_AUD` ใน Worker Variables/Secrets เพื่อให้ระบบตรวจสอบลายเซ็น JWT จริง)*
+
 ---
 
 ## 🔗 รายการ Endpoints ที่รองรับ

@@ -491,8 +491,7 @@ __STRUCTURED_DATA_JSON__
     @variant dark (&:where(.dark, .dark *));
   </style>
 
-  <!-- SheetJS (xlsx) for Export Excel -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- SheetJS (xlsx) is lazy-loaded on demand when Export Excel is clicked -->
 
   <!-- Google Fonts: Sarabun -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2996,15 +2995,15 @@ __STRUCTURED_DATA_JSON__
 
   </main>
 
-  <!-- 5.5 Footer & Site Visitor Counter -->
+  <!-- 5.5 Footer & Site Visitor Counter (Hidden when legacy badge disabled) -->
   <footer class="w-full py-6 text-center select-none">
     <div class="max-w-7xl mx-auto px-4 flex items-center justify-center">
-      <span id="site-visitor-counter" class="inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-normal tracking-wide">
+      <span id="site-visitor-counter" class="hidden inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-normal tracking-wide">
         <svg class="w-3.5 h-3.5 text-slate-500/80 dark:text-slate-400/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
         </svg>
-        <span id="visitor-counter-text">Visitors: ...</span>
+        <span id="visitor-counter-text"></span>
       </span>
     </div>
   </footer>
@@ -20661,10 +20660,40 @@ selectShi62GW(gwName) {
         this.showToast(msg, 'info');
       }
 
-      exportToExcel() {
+      ensureXlsxLoaded() {
+        if (typeof XLSX !== 'undefined' && XLSX.utils && XLSX.writeFile) {
+          return Promise.resolve(true);
+        }
+        if (this._xlsxLoadPromise) {
+          return this._xlsxLoadPromise;
+        }
+        this._xlsxLoadPromise = new Promise((resolve) => {
+          if (typeof document === 'undefined') {
+            resolve(false);
+            return;
+          }
+          const script = document.createElement('script');
+          script.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+          script.async = true;
+          const timer = setTimeout(() => resolve(false), 6000);
+          script.onload = () => {
+            clearTimeout(timer);
+            resolve(typeof XLSX !== 'undefined' && Boolean(XLSX.utils && XLSX.writeFile));
+          };
+          script.onerror = () => {
+            clearTimeout(timer);
+            resolve(false);
+          };
+          document.head.appendChild(script);
+        });
+        return this._xlsxLoadPromise;
+      }
+
+      async exportToExcel() {
         try {
           const isEn = (this.currentLang === 'en');
           this.showToast(isEn ? 'Preparing data for Excel export...' : 'กำลังจัดเตรียมข้อมูลเพื่อ Export Excel...');
+          await this.ensureXlsxLoaded();
           const leagueName = (this.data && this.data.name) ? this.data.name : `League_${this.activeLeagueId}`;
           const cleanLeagueName = leagueName.replace(/[\\/*?:"<>|]/g, '_').trim();
           const maxGW = Number(this.multiData && this.multiData.max_gw) || 1;
@@ -21648,70 +21677,10 @@ selectShi62GW(gwName) {
       }
 
       initVisitorCounter() {
-        const counterEl = document.getElementById('visitor-counter-text');
-        if (!counterEl) return;
-
-        let cached = null;
-        let lastCountedStr = null;
-        try {
-          if (typeof localStorage !== 'undefined') {
-            cached = localStorage.getItem('fpl_visitor_count');
-            lastCountedStr = localStorage.getItem('fpl_visitor_last_counted');
-          }
-        } catch (e) {}
-
-        // Display cached count immediately to eliminate loading delay
-        if (cached) {
-          const num = parseInt(cached, 10);
-          if (!isNaN(num)) {
-            counterEl.textContent = `Visitors: ${num.toLocaleString()}`;
-          }
+        const badgeEl = document.getElementById('site-visitor-counter');
+        if (badgeEl) {
+          badgeEl.classList.add('hidden');
         }
-
-        // 1-Hour Cooldown per browser to prevent refresh/F5 count abuse
-        const COOLDOWN_MS = 60 * 60 * 1000; // 1 hour in milliseconds
-        const now = Date.now();
-        if (lastCountedStr && cached) {
-          const lastCounted = parseInt(lastCountedStr, 10);
-          if (!isNaN(lastCounted) && (now - lastCounted < COOLDOWN_MS)) {
-            // Still within 1-hour cooldown window: keep cached count and skip API call
-            return;
-          }
-        }
-
-        // Outside cooldown: Fetch live visitor count (sitewide path: asawamanasak-fpl-mini)
-        const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-        const timeoutId = controller ? setTimeout(() => controller.abort(), 4000) : null;
-
-        fetch('https://api.visitorbadge.io/api/visitors?path=asawamanasak-fpl-mini', {
-          signal: controller ? controller.signal : undefined
-        })
-          .then(res => {
-            if (timeoutId) clearTimeout(timeoutId);
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            return res.text();
-          })
-          .then(svgText => {
-            const match = svgText.match(/VISITORS:\s*([\d,]+)/i);
-            if (match && match[1]) {
-              const count = parseInt(match[1].replace(/,/g, ''), 10);
-              if (!isNaN(count)) {
-                try {
-                  if (typeof localStorage !== 'undefined') {
-                    localStorage.setItem('fpl_visitor_count', count.toString());
-                    localStorage.setItem('fpl_visitor_last_counted', now.toString());
-                  }
-                } catch (e) {}
-                counterEl.textContent = `Visitors: ${count.toLocaleString()}`;
-              }
-            }
-          })
-          .catch(err => {
-            console.debug('Visitor count unavailable:', err);
-            if (!cached) {
-              counterEl.textContent = 'Visitors: -';
-            }
-          });
       }
     }
 
@@ -21951,10 +21920,12 @@ def main():
                 pruned_squads[s_key] = pruned_sq
             else:
                 pruned_squads[s_key] = s_data
+        league_tier = l_obj.get("tier") or leagues_config.get(str(lid), {}).get("tier", 1)
         pruned_data["leagues"][lid] = {
             "id": l_obj.get("id"),
             "name": l_obj.get("name"),
             "season": l_obj.get("season"),
+            "tier": league_tier,
             "teams": l_obj.get("teams", []),
             "gameweeks": l_obj.get("gameweeks", {}),
             "squads": pruned_squads
@@ -22010,14 +21981,29 @@ def main():
         }
         for lid, l_dict in pruned_data["leagues"].items():
             member_count = len(l_dict.get("teams", []))
+            l_tier = l_dict.get("tier") or leagues_config.get(str(lid), {}).get("tier", 1)
             if str(lid) == str(target_lid):
                 target_obj = dict(l_dict)
+                target_obj["tier"] = l_tier
                 target_obj["member_count"] = member_count
                 page_pruned["leagues"][lid] = target_obj
+            elif l_tier == 2:
+                # Decoupled Tier-2 Skeleton: Keep only switcher metadata so 1,700+ team
+                # rosters never bloat Tier-1 HTML files; full Tier-2 data loads on demand.
+                page_pruned["leagues"][lid] = {
+                    "id": l_dict["id"],
+                    "name": l_dict["name"],
+                    "season": l_dict["season"],
+                    "tier": 2,
+                    "member_count": member_count,
+                    "teams": [],
+                    "gameweeks": {},
+                    "squads": {}
+                }
             else:
                 # Lightweight Inlined Telemetry: Keep teams and lightweight gameweek results
-                # so Cross-League features (Tab Radar Form, Benchmarks, Leaderboard) have full 8-league data,
-                # while keeping squads: {} pruned to maintain ultra-fast loading speed.
+                # so Cross-League features (Tab Radar Form, Benchmarks, Leaderboard) have full Tier-1 data,
+                # while keeping squads: {} pruned to maintain fast loading speed.
                 light_teams = l_dict.get("teams", [])
                 light_gws = {}
                 for gw_k, gw_v in l_dict.get("gameweeks", {}).items():

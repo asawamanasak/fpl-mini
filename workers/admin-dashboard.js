@@ -13,7 +13,178 @@
  */
 
 export const ADMIN_EMAIL = 'asawamanasak@gmail.com';
-export const DEFAULT_ADMIN_KEY = 'fplsawadika2026';
+
+const SESSION_TTL_SECONDS = 2592000; // 30 days
+const JWKS_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+const jwksCache = new Map();
+
+function escapeHtmlAttr(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function toBase64Url(bytes) {
+  let bin = '';
+  for (let i = 0; i < bytes.length; i++) {
+    bin += String.fromCharCode(bytes[i]);
+  }
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function fromBase64Url(b64url) {
+  const b64 = String(b64url || '').replace(/-/g, '+').replace(/_/g, '/');
+  const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4);
+  const bin = atob(padded);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) {
+    out[i] = bin.charCodeAt(i);
+  }
+  return out;
+}
+
+function decodeJwtPart(b64url) {
+  const bytes = fromBase64Url(b64url);
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+
+export function getSessionSecret(env) {
+  const key = env && typeof env.ADMIN_SECRET_KEY === 'string' ? env.ADMIN_SECRET_KEY.trim() : '';
+  return key;
+}
+
+export function getAllowedAdminEmail(env) {
+  const email = env && typeof env.ADMIN_EMAIL === 'string' ? env.ADMIN_EMAIL.trim() : '';
+  return email || ADMIN_EMAIL;
+}
+
+async function importHmacKey(secret) {
+  const raw = new TextEncoder().encode(secret);
+  return crypto.subtle.importKey(
+    'raw',
+    raw,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign', 'verify']
+  );
+}
+
+async function constantTimeEqual(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const enc = new TextEncoder();
+  const [hashA, hashB] = await Promise.all([
+    crypto.subtle.digest('SHA-256', enc.encode(a)),
+    crypto.subtle.digest('SHA-256', enc.encode(b)),
+  ]);
+  const bytesA = new Uint8Array(hashA);
+  const bytesB = new Uint8Array(hashB);
+  let diff = 0;
+  for (let i = 0; i < bytesA.length; i++) {
+    diff |= bytesA[i] ^ bytesB[i];
+  }
+  return diff === 0;
+}
+
+export async function verifyAdminPasskey(passkey, env) {
+  const secretKey = getSessionSecret(env);
+  if (!secretKey || typeof passkey !== 'string' || !passkey) return false;
+  return constantTimeEqual(passkey, secretKey);
+}
+
+export async function signAdminSession(secret, ttlSeconds = SESSION_TTL_SECONDS) {
+  const expMs = Date.now() + ttlSeconds * 1000;
+  const payload = String(expMs);
+  const key = await importHmacKey(secret);
+  const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload));
+  return `${payload}.${toBase64Url(new Uint8Array(sig))}`;
+}
+
+export async function verifyAdminSession(token, secret) {
+  if (!token || !secret || typeof token !== 'string') return false;
+  const dotIdx = token.indexOf('.');
+  if (dotIdx <= 0) return false;
+  const payload = token.slice(0, dotIdx);
+  const sigB64 = token.slice(dotIdx + 1);
+  if (!/^\d+$/.test(payload) || !sigB64) return false;
+  const expMs = Number(payload);
+  if (!Number.isFinite(expMs) || expMs <= Date.now()) return false;
+  try {
+    const key = await importHmacKey(secret);
+    const sigBytes = fromBase64Url(sigB64);
+    return await crypto.subtle.verify('HMAC', key, sigBytes, new TextEncoder().encode(payload));
+  } catch (_) {
+    return false;
+  }
+}
+
+async function fetchAccessJwks(teamDomain) {
+  const cleanDomain = String(teamDomain || '').replace(/^https?:\/\//, '').replace(/\/+$/, '');
+  if (!cleanDomain) return [];
+  const cached = jwksCache.get(cleanDomain);
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.keys;
+  }
+  const resp = await fetch(`https://${cleanDomain}/cdn-cgi/access/certs`, {
+    headers: { 'Accept': 'application/json' },
+  });
+  if (!resp.ok) return [];
+  const data = await resp.json();
+  const keys = Array.isArray(data && data.keys) ? data.keys : [];
+  jwksCache.set(cleanDomain, { keys, expiresAt: Date.now() + JWKS_CACHE_TTL_MS });
+  return keys;
+}
+
+async function verifyAccessJwt(request, env) {
+  const jwt = request.headers.get('cf-access-jwt-assertion');
+  const teamDomain = env && typeof env.CF_ACCESS_TEAM_DOMAIN === 'string' ? env.CF_ACCESS_TEAM_DOMAIN.trim() : '';
+  const expectedAud = env && typeof env.CF_ACCESS_AUD === 'string' ? env.CF_ACCESS_AUD.trim() : '';
+  if (!jwt || !teamDomain || !expectedAud) return null;
+
+  const parts = jwt.split('.');
+  if (parts.length !== 3) return null;
+
+  try {
+    const header = decodeJwtPart(parts[0]);
+    const payload = decodeJwtPart(parts[1]);
+    if (!header || header.alg !== 'RS256' || !header.kid) return null;
+
+    const nowSec = Math.floor(Date.now() / 1000);
+    if (typeof payload.exp !== 'number' || payload.exp <= nowSec) return null;
+    if (typeof payload.nbf === 'number' && payload.nbf > nowSec + 60) return null;
+
+    const audList = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
+    if (!audList.includes(expectedAud)) return null;
+
+    const cleanDomain = teamDomain.replace(/^https?:\/\//, '').replace(/\/+$/, '');
+    const expectedIss = `https://${cleanDomain}`;
+    if (payload.iss !== expectedIss) return null;
+
+    const allowedEmail = getAllowedAdminEmail(env).toLowerCase();
+    const tokenEmail = typeof payload.email === 'string' ? payload.email.toLowerCase() : '';
+    if (!tokenEmail || tokenEmail !== allowedEmail) return null;
+
+    const keys = await fetchAccessJwks(cleanDomain);
+    const jwk = keys.find(k => k && k.kid === header.kid);
+    if (!jwk) return null;
+
+    const cryptoKey = await crypto.subtle.importKey(
+      'jwk',
+      jwk,
+      { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+      false,
+      ['verify']
+    );
+    const signedData = new TextEncoder().encode(`${parts[0]}.${parts[1]}`);
+    const sigBytes = fromBase64Url(parts[2]);
+    const valid = await crypto.subtle.verify('RSASSA-PKCS1-v1_5', cryptoKey, sigBytes, signedData);
+    return valid ? payload.email : null;
+  } catch (_) {
+    return null;
+  }
+}
 
 // Accessible 16x16 Line Icons (1.5 stroke, currentColor inheritance, aria-hidden="true")
 const ICONS = {
@@ -46,20 +217,24 @@ const ICONS = {
 };
 
 /**
- * Verify whether request is authenticated
+ * Verify whether request is authenticated (fail-closed: verified Zero Trust JWT or HMAC-signed session cookie)
  */
-export function isRequestAuthenticated(request, env) {
-  const accessEmail = request.headers.get('cf-access-authenticated-user-email');
-  if (accessEmail && accessEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-    return { authenticated: true, identity: accessEmail, provider: 'Cloudflare Zero Trust' };
+export async function isRequestAuthenticated(request, env) {
+  const verifiedEmail = await verifyAccessJwt(request, env);
+  if (verifiedEmail) {
+    return { authenticated: true, identity: verifiedEmail, provider: 'Cloudflare Zero Trust (JWT)' };
   }
 
-  const cookieHeader = request.headers.get('Cookie') || '';
-  const match = cookieHeader.match(/fpl_admin_auth=([^;]+)/);
-  const secretKey = (env && env.ADMIN_SECRET_KEY) ? env.ADMIN_SECRET_KEY : DEFAULT_ADMIN_KEY;
-
-  if (match && match[1] === secretKey) {
-    return { authenticated: true, identity: ADMIN_EMAIL, provider: 'Secure Passkey' };
+  const secretKey = getSessionSecret(env);
+  if (secretKey) {
+    const cookieHeader = request.headers.get('Cookie') || '';
+    const match = cookieHeader.match(/(?:^|;\s*)fpl_admin_auth=([^;]+)/);
+    if (match && match[1]) {
+      const validSession = await verifyAdminSession(decodeURIComponent(match[1]), secretKey);
+      if (validSession) {
+        return { authenticated: true, identity: getAllowedAdminEmail(env), provider: 'Signed Passkey Session' };
+      }
+    }
   }
 
   return { authenticated: false };
@@ -216,16 +391,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <label for="quickLeagueSelect" class="sr-only" data-i18n="nav_jump_league_label">สลับไปหน้ามินิลีก</label>
           <select id="quickLeagueSelect" onchange="jumpToLeague(this.value)"
             class="min-h-[44px] px-2.5 sm:px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark text-slate-800 dark:text-neutral-200 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 transition-colors duration-150 cursor-pointer max-w-[136px] sm:max-w-[200px]">
-            <option value="" data-i18n="nav_jump_placeholder">เปิดหน้าลีก (8 ลีก)...</option>
+            <option value="" data-i18n="nav_jump_placeholder">เปิดหน้าลีก (8 ลีก + Tier 2)...</option>
             <option value="hub" data-i18n="nav_jump_hub">หน้าหลัก (Main Hub)</option>
-            <option value="40700">40700 · FPL SaWaDiKa</option>
-            <option value="675290">675290 · 2 spade</option>
-            <option value="38491">38491 · Think Tank League</option>
-            <option value="1101958">1101958 · Shi62</option>
-            <option value="438691">438691 · The 49ers</option>
-            <option value="187827">187827 · Tylers</option>
+            <option value="40700">40700 · เซียนอยู่รู หมูอยู่ตึก</option>
+            <option value="675290">675290 · NudNee</option>
+            <option value="38491">38491 · รอ แมน โอน</option>
+            <option value="1101958">1101958 · Barley's Official League</option>
+            <option value="438691">438691 · 2 spade</option>
+            <option value="187827">187827 · Shi62</option>
             <option value="5349">5349 · Bramann League</option>
             <option value="567387">567387 · Fantasy Nguan & friends cup</option>
+            <option value="139836">139836 · FPL Growth Mindset 2026/27 (Tier 2)</option>
           </select>
         </div>
 
@@ -325,7 +501,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <div class="flex flex-wrap items-center gap-2 text-xs">
             <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
             <span class="font-medium text-slate-900 dark:text-white" data-i18n="telem_live_active">ระบบตรวจวัดข้อมูลสดทำงานปกติ</span>
-            <span class="mono text-slate-600 dark:text-neutral-400" data-i18n="telem_auto_sync">(ซิงก์อัตโนมัติทุก 15 นาที · ${authProvider})</span>
+            <span class="mono text-slate-600 dark:text-neutral-400" data-i18n="telem_auto_sync">(ซิงก์อัตโนมัติ 1 ชม./4 ชม. · ${authProvider})</span>
+            <span id="telemetryModelBadge" class="px-2 py-0.5 rounded bg-slate-100 dark:bg-neutral-800 text-[11px] mono text-slate-600 dark:text-neutral-300">Baseline + Live D1</span>
           </div>
           <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 dark:text-neutral-400">
             <div>
@@ -395,8 +572,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" data-i18n="pitch_tier1_ready">
             Tier 1: พร้อมเปิดใช้งานทันที
           </span>
-          <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-neutral-800 text-slate-700 dark:text-neutral-300 border border-slate-200 dark:border-neutral-700" data-i18n="pitch_tier2_roadmap">
-            Tier 2: Roadmap (สเกล 1,700+ ทีม)
+          <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800" data-i18n="pitch_tier2_roadmap">
+            Tier 2: Live Beta (สเกล 1,780 ทีม)
           </span>
         </div>
       </div>
@@ -601,7 +778,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <div>
               <div class="flex items-center justify-between">
                 <span class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400" data-i18n="graphic3_eyebrow">มิติที่ 3 · การเงินและความโปร่งใส</span>
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300" data-i18n="graphic3_badge">GMV รวม ฿261,200</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300" data-i18n="graphic3_badge">GMV รวม ฿268,700</span>
               </div>
               <h4 class="text-base font-semibold text-slate-900 dark:text-white mt-1" data-i18n="graphic3_title">ระบบรองรับโมเดลเงินรางวัลและค่าปรับ 5 รูปแบบ</h4>
               <p class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="graphic3_sub">ยืดหยุ่นตามกติกาของแต่ละมินิลีก จัดการอัตโนมัติ 0 ข้อผิดพลาด</p>
@@ -655,7 +832,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300" data-i18n="graphic4_badge">Tier 1 vs Tier 2</span>
               </div>
               <h4 class="text-base font-semibold text-slate-900 dark:text-white mt-1" data-i18n="graphic4_title">ตารางเปรียบเทียบฟังก์ชันและความพร้อมใช้งาน</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="graphic4_sub">เปรียบเทียบระหว่าง Official FPL, Tier 2 Roadmap, และ Tier 1 Core</p>
+              <p class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="graphic4_sub">เปรียบเทียบระหว่าง Official FPL, Tier 2 (Live Beta), และ Tier 1 Core</p>
             </div>
 
             <!-- Mini Matrix Table -->
@@ -665,7 +842,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                   <tr class="border-b border-borderLight dark:border-borderDark text-[11px] mono text-slate-500 dark:text-neutral-400">
                     <th class="py-1.5 px-2 font-medium" data-i18n="col_feat">ฟังก์ชัน</th>
                     <th class="py-1.5 px-2 text-center" data-i18n="col_fpl_app">Official App</th>
-                    <th class="py-1.5 px-2 text-center" data-i18n="col_tier2">Tier 2 (Roadmap)</th>
+                    <th class="py-1.5 px-2 text-center" data-i18n="col_tier2">Tier 2 (Live Beta)</th>
                     <th class="py-1.5 px-2 text-center font-bold text-emerald-600 dark:text-emerald-400" data-i18n="col_tier1">Tier 1 (พร้อมขาย)</th>
                   </tr>
                 </thead>
@@ -705,7 +882,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </div>
 
             <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark flex items-center justify-between text-xs">
-              <span class="text-slate-600 dark:text-neutral-400" data-i18n="graphic4_callout">Tier 1 พร้อมส่งมอบทันที · Tier 2 รองรับ 1,700+ ทีม</span>
+              <span class="text-slate-600 dark:text-neutral-400" data-i18n="graphic4_callout">Tier 1 พร้อมส่งมอบทันที · Tier 2 (Live Beta) รองรับ 1,780 ทีม</span>
               <span class="mono font-bold text-indigo-600 dark:text-indigo-400">Turnkey Core</span>
             </div>
           </div>
@@ -766,7 +943,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </a>
 
           <!-- Jump 4: Global Radar -->
-          <a href="https://www.fplsawadika.com/preview.html?tab=radar" target="_blank" rel="noopener"
+          <a href="https://www.fplsawadika.com/?tab=radar" target="_blank" rel="noopener"
             class="p-3 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-purple-500/50 hover:bg-purple-50/20 dark:hover:bg-purple-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
             <div class="space-y-1">
               <div class="text-[10px] font-bold uppercase text-purple-600 dark:text-purple-400 flex items-center justify-between">
@@ -813,8 +990,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
           <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_managers_label">ผู้จัดการทีมที่ติดตาม</div>
           <div>
-            <div id="kpiManagersCount" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">378</div>
-            <div id="kpiManagersSub" class="text-xs text-emerald-700 dark:text-emerald-400 mt-1" data-i18n="kpi_managers_sub">ครอบคลุม 8 มินิลีก (ซิงก์ 100%)</div>
+            <div id="kpiManagersCount" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">163</div>
+            <div id="kpiManagersSub" class="text-xs text-emerald-700 dark:text-emerald-400 mt-1" data-i18n="kpi_managers_sub">Tier 1 ครบ 8 มินิลีก (รวม Tier 2 = 1,943)</div>
           </div>
         </div>
 
@@ -950,89 +1127,89 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <tbody id="leagueTableBody" class="divide-y divide-borderLight dark:divide-borderDark text-xs">
               <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
                 <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://fplsawadika.com/league_40700.html" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">FPL SaWaDiKa</a>
+                  <a href="https://www.fplsawadika.com/40700/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">เซียนอยู่รู หมูอยู่ตึก</a>
                   <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 40700 · Flagship</div>
                 </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">20</td>
-                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿138,000</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Live Matrix · H2H · Weekly Prize · Hall of Fame</td>
+                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">12</td>
+                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿20,000</td>
+                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Weekly 300 THB · Cup · Settlement Phases</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">4,820</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">98.5%</td>
               </tr>
               <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
                 <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://fplsawadika.com/league_675290.html" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">2 spade</a>
+                  <a href="https://www.fplsawadika.com/675290/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">NudNee</a>
                   <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 675290</div>
                 </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">126</td>
-                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿45,000</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Live Matrix · Knock-out Cup · Monthly Awards</td>
+                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">60</td>
+                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿36,000</td>
+                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Monthly · Knock-out Cup · Charity</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">3,610</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">94.8%</td>
               </tr>
               <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
                 <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://fplsawadika.com/league_38491.html" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">Think Tank League</a>
+                  <a href="https://www.fplsawadika.com/38491/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">รอ แมน โอน</a>
                   <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 38491</div>
                 </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">37</td>
-                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿27,200</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Live Matrix · Monthly Shell · Prize Ledger</td>
+                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">16</td>
+                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿28,500</td>
+                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Weekly · Cup · Settlement Phases</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">1,490</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">93.2%</td>
               </tr>
               <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
                 <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://fplsawadika.com/league_1101958.html" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">Shi62</a>
+                  <a href="https://www.fplsawadika.com/1101958/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">Barley's Official League</a>
                   <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 1101958</div>
                 </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">20</td>
-                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿20,000</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Live Matrix · 2nd Half Race · Custom Payouts</td>
+                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">17</td>
+                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿103,200</td>
+                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Weekly Tier Prizes · Cup · Ledger</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">980</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">95.0%</td>
               </tr>
               <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
                 <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://fplsawadika.com/league_438691.html" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">The 49ers</a>
+                  <a href="https://www.fplsawadika.com/438691/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">2 spade</a>
                   <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 438691</div>
                 </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">15</td>
-                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿15,000</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Live Matrix · Weekly Bounty · Transfer Audit</td>
+                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">13</td>
+                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿68,400</td>
+                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Weekly · Bottom-5 Penalty · Cup</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">810</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">92.4%</td>
               </tr>
               <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
                 <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://fplsawadika.com/league_187827.html" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">Tylers</a>
+                  <a href="https://www.fplsawadika.com/187827/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">Shi62</a>
                   <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 187827</div>
                 </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">14</td>
-                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿14,000</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Live Matrix · Monthly Split · H2H Comparison</td>
+                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">13</td>
+                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿3,100</td>
+                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Zero-Sum Annual Tiers · 2nd Half Special</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">740</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">91.8%</td>
               </tr>
               <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
                 <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://fplsawadika.com/league_5349.html" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">Bramann League</a>
+                  <a href="https://www.fplsawadika.com/5349/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">Bramann League</a>
                   <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 5349</div>
                 </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">19</td>
+                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">20</td>
                 <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿9,500</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Live Matrix · Season Podium · Chip Tracker</td>
+                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Dual Prize · Prediction & Challenge</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">860</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">90.5%</td>
               </tr>
               <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
                 <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://fplsawadika.com/league_567387.html" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">Fantasy Nguan & friends cup</a>
+                  <a href="https://www.fplsawadika.com/567387/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">Fantasy Nguan & friends cup</a>
                   <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 567387 · Community</div>
                 </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">127</td>
+                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">12</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-600 dark:text-neutral-400">Community</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Live Matrix · Large League Benchmarking</td>
+                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Community · Cup · Live Matrix</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">2,190</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-800 dark:text-neutral-200">88.4%</td>
               </tr>
@@ -1134,13 +1311,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
           <div class="divide-y divide-borderLight dark:divide-borderDark text-xs">
             <div class="py-3 space-y-1">
-              <div class="text-slate-600 dark:text-neutral-400" data-i18n="feat_paid_label">ลีกที่มีเงินรางวัลสูง (เช่น 40700 · ฿138,000)</div>
+              <div class="text-slate-600 dark:text-neutral-400" data-i18n="feat_paid_label">ลีกที่มีเงินรางวัลสูง (เช่น 1101958 · ฿103,200)</div>
               <div class="text-xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400" data-i18n="feat_paid_val">241 ครั้ง / ทีม / GW</div>
               <p class="text-slate-600 dark:text-neutral-400" data-i18n="feat_paid_sub">ผู้เล่นและกลุ่มเพื่อนเปิดเช็กตารางเงินรางวัลและอันดับสดตลอดเวลาที่บอลเตะ</p>
             </div>
 
             <div class="py-3 space-y-1">
-              <div class="text-slate-600 dark:text-neutral-400" data-i18n="feat_comm_label">ลีกคอมมูนิตี้ทั่วไป (เช่น 567387 · 127 ทีม)</div>
+              <div class="text-slate-600 dark:text-neutral-400" data-i18n="feat_comm_label">ลีกคอมมูนิตี้และพรีเมียม (เช่น 675290 · 60 ทีม / Tier 2 · 1,780 ทีม)</div>
               <div class="text-xl font-semibold mono tabular text-slate-900 dark:text-white" data-i18n="feat_comm_val">17.2 ครั้ง / ทีม / GW</div>
               <p class="text-slate-600 dark:text-neutral-400" data-i18n="feat_comm_sub">เน้นเช็กผลสรุปหลังจบแมตช์เป็นหลัก ความถี่น้อยกว่าลีกมีเงินรางวัล ~14 เท่า</p>
             </div>
@@ -1201,13 +1378,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
             <div class="pt-3 space-y-1.5">
               <div class="flex justify-between font-medium">
-                <span class="text-slate-900 dark:text-white" data-i18n="chan_3_name">Facebook / Discord / QR Share Card (โซเชียลและการ์ดแชร์ผล)</span>
+                <span class="text-slate-900 dark:text-white" data-i18n="chan_3_name">Deep-Link Direct &amp; Smart Text Summary (แชร์ลิงก์ตรงและข้อความสรุปผล)</span>
                 <span class="mono tabular text-slate-900 dark:text-white font-semibold">12.8%</span>
               </div>
               <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
                 <div class="bg-slate-500 dark:bg-neutral-500 h-full rounded-full" style="width: 12.8%"></div>
               </div>
-              <p class="text-slate-600 dark:text-neutral-400" data-i18n="chan_3_desc">โอกาสขยายตัว: เพิ่มปุ่มสร้างรูปสรุปอันดับ (Shareable Image Card) ลงสตอรี่/กลุ่ม</p>
+              <p class="text-slate-600 dark:text-neutral-400" data-i18n="chan_3_desc">พร้อมใช้งานแล้ว: คัดลอกสรุปยอดรับ–จ่ายเข้า LINE กลุ่ม และส่งลิงก์เฉพาะลีก (/{id}/) โดยตรง</p>
             </div>
           </div>
         </div>
@@ -1467,7 +1644,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <div class="space-y-1">
             <div class="flex items-center justify-between text-xs">
               <span class="font-medium text-slate-600 dark:text-neutral-400">GitHub Actions Cron</span>
-              <span class="mono font-semibold text-emerald-700 dark:text-emerald-400">Every 15m</span>
+              <span class="mono font-semibold text-emerald-700 dark:text-emerald-400">Hourly / 4h</span>
             </div>
             <div class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">42s <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">/ build</span></div>
           </div>
@@ -1552,13 +1729,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <!-- Op 4: Prune D1 Telemetry (>90d) -->
           <div class="flex flex-col justify-between gap-3 py-3 sm:py-1 sm:pl-4">
             <div class="space-y-1">
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_prune_title">เคลียร์ประวัติ D1 ที่เก่าเกิน 90 วัน</div>
+              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_prune_title">เคลียร์ประวัติ D1 ที่เก่าเกิน 30 วัน</div>
               <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="op_prune_desc">รักษาขนาดฐานข้อมูลให้กะทัดรัดและอยู่ใน Free Quota เสมอ</p>
             </div>
             <button type="button" id="btnPruneD1" onclick="runEdgeAction('prune-telemetry')"
               class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 active:scale-[0.98] text-xs font-medium text-rose-700 dark:text-rose-300 transition-colors"
               data-i18n="op_prune_btn">
-              ล้างข้อมูลเก่าเกิน 90 วัน
+              ล้างข้อมูลเก่าเกิน 30 วัน
             </button>
           </div>
         </div>
@@ -1621,7 +1798,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sec0_title: '00. โซลูชันบริหารมินิลีกแบบ Zero-Touch และข้อเสนอทางธุรกิจ',
         sec0_sub: 'เปลี่ยนมินิลีกของคุณให้จัดการตัวเองอัตโนมัติ 100% · ลดเวลาทำ Excel 190+ ชม./ปี · สร้างการมีส่วนร่วมของลูกลีกเพิ่มขึ้น 5.7 เท่า พร้อมรองรับเงินรางวัลหมุนเวียนอย่างโปร่งใส',
         pitch_tier1_ready: 'Tier 1: พร้อมเปิดใช้งานทันที',
-        pitch_tier2_roadmap: 'Tier 2: Roadmap (สเกล 1,700+ ทีม)',
+        pitch_tier2_roadmap: 'Tier 2: Live Beta (สเกล 1,780+ ทีม)',
         pitch_step1_title: 'ปัญหาใหญ่ของผู้จัดลีก (Organizer Pain Points) vs ทางออก FPLSaWaDiKa',
         pitch_step1_sub: 'เปรียบเทียบภาระงานจริง',
         pain_1_badge: 'ปัญหาแอดมิน',
@@ -1663,7 +1840,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         graphic2_sub: 'ยอดเปิดดูเฉลี่ยต่อผู้จัดการทีม 1 คน ในแต่ละสัปดาห์ (Visits/Team/GW)',
         graphic2_callout: 'Weekly Stakes + บอ.บู๋ AI ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์',
         graphic3_eyebrow: 'มิติที่ 3 · การเงินและความโปร่งใส',
-        graphic3_badge: 'GMV รวม ฿261,200',
+        graphic3_badge: 'GMV รวม ฿268,700',
         graphic3_title: 'ระบบรองรับโมเดลเงินรางวัลและค่าปรับ 5 รูปแบบ',
         graphic3_sub: 'ยืดหยุ่นตามกติกาของแต่ละมินิลีก จัดการอัตโนมัติ 0 ข้อผิดพลาด',
         pmodel_1_title: 'Weekly Top-Score',
@@ -1678,17 +1855,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         graphic4_eyebrow: 'มิติที่ 4 · ความครบครันของระบบ',
         graphic4_badge: 'Tier 1 vs Tier 2',
         graphic4_title: 'ตารางเปรียบเทียบฟังก์ชันและความพร้อมใช้งาน',
-        graphic4_sub: 'เปรียบเทียบระหว่าง Official FPL, Tier 2 Roadmap, และ Tier 1 Core',
+        graphic4_sub: 'เปรียบเทียบระหว่าง Official FPL, Tier 2 Live Beta, และ Tier 1 Core',
         col_feat: 'ฟังก์ชัน',
         col_fpl_app: 'Official App',
-        col_tier2: 'Tier 2 (Roadmap)',
+        col_tier2: 'Tier 2 (Live Beta)',
         col_tier1: 'Tier 1 (พร้อมขาย)',
         matrix_f1: 'แต้มสด & โบนัส BPS 15 วิ',
         matrix_f2: 'หักแต้มย้ายตัว Net Pts สด',
         matrix_f3: 'AI บอ.บู๋ พากย์เกมดราม่า',
         matrix_f4: 'คำนวณเงินรางวัล/ค่าปรับอัตโนมัติ',
         matrix_f5: 'Interactive Squad Pitch Modal',
-        graphic4_callout: 'Tier 1 พร้อมส่งมอบทันที · Tier 2 รองรับ 1,700+ ทีม',
+        graphic4_callout: 'Tier 1 พร้อมส่งมอบทันที · Tier 2 (Live Beta) รองรับ 1,780 ทีม',
         pitch_step3_title: 'ทางลัดเปิดโชว์ระบบจริงต่อหน้าลูกค้า (Live Interactive Jump Links)',
         pitch_step3_sub: 'คลิกเพื่อเปิดหน้าจริงในแท็บใหม่',
         jump_1_title: 'คะแนนสด & ผัง 11 ตัวจริง',
@@ -1702,14 +1879,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         jump_5_title: 'บอลถ้วยแพ้คัดออก',
         jump_5_sub: 'สายการแข่งขันอัตโนมัติ',
         telem_live_active: 'ระบบตรวจวัดข้อมูลสดทำงานปกติ',
-        telem_auto_sync: '(ซิงก์อัตโนมัติทุก 15 นาที · ${authProvider})',
+        telem_auto_sync: '(ซิงก์อัตโนมัติรายชั่วโมง · ${authProvider})',
         telem_last_sync_label: 'ซิงก์ข้อมูลล่าสุด: ',
         telem_runner_label: 'ตัวประมวลผล: ',
         telem_countdown_sub: 'นับถอยหลังปิดตลาดย้ายตัว',
         sec1_title: '01. ขนาดฐานผู้ใช้งานและอัตราการรักษาลูกค้า',
         sec1_sub: 'ตัวชี้วัดการเติบโตและสัดส่วนความเหนียวแน่นของผู้ใช้งาน',
         kpi_managers_label: 'ผู้จัดการทีมที่ติดตาม',
-        kpi_managers_sub: 'ครอบคลุม 8 มินิลีก (ซิงก์ 100%)',
+        kpi_managers_sub: 'Tier 1 ครบ 8 มินิลีก (รวม Tier 2 = 1,943)',
         kpi_mau_label: 'ผู้ใช้งานวันแข่งขัน (MAU)',
         kpi_mau_sub: 'รวมผู้ชม 3.7x ต่อผู้จัดการ 1 คน',
         kpi_offpeak_label: 'ผู้ใช้งานนอกวันแข่ง (DAU)',
@@ -1750,10 +1927,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         feat_5_name: '5. ประวัติศาสตร์ลีก & ทำเนียบแชมป์ (Hall of Fame & Records)',
         feat_insight_title: 'ความต่างพฤติกรรม: ลีกมีเงินรางวัล vs ลีกคอมมูนิตี้',
         feat_insight_desc: 'เปรียบเทียบความถี่การเปิดใช้งานต่อผู้จัดการทีม 1 คน เพื่อกำหนดแพ็กเกจราคา SaaS / White-Label',
-        feat_paid_label: 'ลีกที่มีเงินรางวัลสูง (เช่น 40700 · ฿138,000)',
+        feat_paid_label: 'ลีกที่มีเงินรางวัลสูง (เช่น 1101958 · ฿103,200)',
         feat_paid_val: '241 ครั้ง / ทีม / GW',
         feat_paid_sub: 'ผู้เล่นและกลุ่มเพื่อนเปิดเช็กตารางเงินรางวัลและอันดับสดตลอดเวลาที่บอลเตะ',
-        feat_comm_label: 'ลีกคอมมูนิตี้ทั่วไป (เช่น 567387 · 127 ทีม)',
+        feat_comm_label: 'ลีกคอมมูนิตี้และพรีเมียม (เช่น 675290 · 60 ทีม / Tier 2 · 1,780 ทีม)',
         feat_comm_val: '17.2 ครั้ง / ทีม / GW',
         feat_comm_sub: 'เน้นเช็กผลสรุปหลังจบแมตช์เป็นหลัก ความถี่น้อยกว่าลีกมีเงินรางวัล ~14 เท่า',
         feat_takeaway_title: 'ข้อสรุปเชิงกลยุทธ์ (Executive Takeaway)',
@@ -1765,8 +1942,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         chan_1_desc: 'ไวรัลลูปหลัก: ประธานลีกและเพื่อนส่งลิงก์ตารางคะแนนลงกลุ่ม LINE ทุกสัปดาห์',
         chan_2_name: 'Direct / Home Screen Bookmark (เข้าตรง & ปักหมุดหน้าจอ)',
         chan_2_desc: 'กลุ่มแฟนพันธุ์แท้ที่บันทึกเว็บไว้บนหน้าจอมือถือเหมือนแอปเนทีฟ',
-        chan_3_name: 'Facebook / Discord / QR Share Card (โซเชียลและการ์ดแชร์ผล)',
-        chan_3_desc: 'โอกาสขยายตัว: เพิ่มปุ่มสร้างรูปสรุปอันดับ (Shareable Image Card) ลงสตอรี่/กลุ่ม',
+        chan_3_name: 'Deep-Link Direct & Smart Text Summary (แชร์ลิงก์ตรงและข้อความสรุปผล)',
+        chan_3_desc: 'พร้อมใช้งานแล้ว: คัดลอกสรุปยอดรับ–จ่ายเข้า LINE กลุ่ม และส่งลิงก์เฉพาะลีก (/{id}/) โดยตรง',
         geo_title: 'การกระจายตัวตามภูมิศาสตร์และภาษา (Geo & Locale)',
         geo_1: 'กรุงเทพมหานครและปริมณฑล (BKK & Metro)',
         geo_2: 'หัวเมืองใหญ่ (เชียงใหม่ · ชลบุรี · ขอนแก่น · ภูเก็ต)',
@@ -1823,12 +2000,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         op_export_title: 'ดาวน์โหลดรายงาน JSON ฉบับเต็ม',
         op_export_desc: 'บันทึกข้อมูลสถิติและพอร์ตโฟลิโอทั้ง 8 ลีกเก็บไว้เปรียบเทียบ',
         op_export_btn: 'ส่งออกไฟล์ JSON',
-        op_prune_title: 'เคลียร์ประวัติ D1 ที่เก่าเกิน 90 วัน',
+        op_prune_title: 'เคลียร์ประวัติ D1 ที่เก่าเกิน 30 วัน',
         op_prune_desc: 'รักษาขนาดฐานข้อมูลให้กะทัดรัดและอยู่ใน Free Quota เสมอ',
-        op_prune_btn: 'ล้างข้อมูลเก่าเกิน 90 วัน',
+        op_prune_btn: 'ล้างข้อมูลเก่าเกิน 30 วัน',
         footer_rights: 'ศูนย์วิเคราะห์ข้อมูลธุรกิจและโครงสร้างพื้นฐานครบวงจร (8 มินิลีก)',
         toast_refreshed: 'อัปเดตข้อมูลสถานะล่าสุดจากเซิร์ฟเวอร์เรียบร้อยแล้ว',
-        confirm_prune: 'ยืนยันการลบข้อมูล Telemetry ที่เก่าเกิน 90 วันออกจากฐานข้อมูล D1 หรือไม่?'
+        confirm_prune: 'ยืนยันการลบข้อมูล Telemetry ที่เก่าเกิน 30 วันออกจากฐานข้อมูล D1 หรือไม่?'
       },
       en: {
         skip_to_content: 'Skip to main content',
@@ -1866,7 +2043,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sec0_title: '00. Turnkey Platform Solution for Mini-League Organizers',
         sec0_sub: '100% Self-Managing Mini-Leagues · Saves 190+ hrs/year · 5.7x Higher Member Engagement with fully auditable prize settlements.',
         pitch_tier1_ready: 'Tier 1: Turnkey & Ready to Onboard',
-        pitch_tier2_roadmap: 'Tier 2: Active Roadmap (1,700+ Teams)',
+        pitch_tier2_roadmap: 'Tier 2: Live Beta (1,780+ Teams)',
         pitch_step1_title: 'Organizer Pain Points vs FPLSaWaDiKa Zero-Touch Solution',
         pitch_step1_sub: 'Real-World Operational Comparison',
         pain_1_badge: 'Admin Pain',
@@ -1908,7 +2085,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         graphic2_sub: 'Average weekly pageviews per manager (Visits/Team/GW)',
         graphic2_callout: 'Weekly Stakes + Bor.Bou AI sparks non-stop chat group banter',
         graphic3_eyebrow: 'Dimension 3 · Financial Integrity',
-        graphic3_badge: 'Total GMV ฿261,200',
+        graphic3_badge: 'Total GMV ฿268,700',
         graphic3_title: 'Supports 5 Automated Prize & Penalty Frameworks',
         graphic3_sub: 'Flexible to any custom mini-league rules with zero human error',
         pmodel_1_title: 'Weekly Top-Score',
@@ -1922,18 +2099,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         graphic3_callout: 'Fully auditable financial history with zero disputed baht',
         graphic4_eyebrow: 'Dimension 4 · Feature Matrix',
         graphic4_badge: 'Tier 1 vs Tier 2',
-        graphic4_title: 'Feature Comparison Matrix & Roadmap Readiness',
-        graphic4_sub: 'Official App vs Tier 2 Roadmap vs Tier 1 Turnkey Core',
+        graphic4_title: 'Feature Comparison Matrix & Live Readiness',
+        graphic4_sub: 'Official App vs Tier 2 Live Beta vs Tier 1 Turnkey Core',
         col_feat: 'Feature',
         col_fpl_app: 'Official App',
-        col_tier2: 'Tier 2 (Roadmap)',
+        col_tier2: 'Tier 2 (Live Beta)',
         col_tier1: 'Tier 1 (Turnkey Core)',
         matrix_f1: '15s Real-Time Score & Live BPS',
         matrix_f2: 'Live Net Pts (Transfer Cost Hit)',
         matrix_f3: 'Bor.Bou Fanatic AI Match Commentary',
         matrix_f4: 'Automated Custom Prize/Penalty Engine',
         matrix_f5: 'One-Tap Squad Lineup Pitch Modal',
-        graphic4_callout: 'Tier 1 ready to onboard immediately · Tier 2 scales to 1,700+ teams',
+        graphic4_callout: 'Tier 1 ready to onboard immediately · Tier 2 (Live Beta) scales to 1,780 teams',
         pitch_step3_title: 'Live Interactive Demo Jump Links',
         pitch_step3_sub: 'Click any module to open live demo in new tab',
         jump_1_title: 'Live Scores & Squad Pitch',
@@ -1947,14 +2124,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         jump_5_title: 'Knockout Cup Bracket',
         jump_5_sub: 'Automated tournament grid',
         telem_live_active: 'Live Edge Telemetry Active',
-        telem_auto_sync: '(Auto-sync every 15m · ${authProvider})',
+        telem_auto_sync: '(Auto-sync Hourly / 4h · ${authProvider})',
         telem_last_sync_label: 'Last Data Sync: ',
         telem_runner_label: 'Pipeline Runner: ',
         telem_countdown_sub: 'Next Transfer Deadline Countdown',
         sec1_title: '01. Audience Scale & Retention Velocity',
         sec1_sub: 'Core user growth, matchday concurrency, and week-over-week cohort stickiness',
         kpi_managers_label: 'Tracked Managers',
-        kpi_managers_sub: 'Across 8 Active Leagues (100% Synced)',
+        kpi_managers_sub: '8 Tier 1 Leagues (1,943 Total incl. Tier 2)',
         kpi_mau_label: 'Matchday Active Users',
         kpi_mau_sub: 'Includes 3.7x spectator multiplier',
         kpi_offpeak_label: 'Off-Peak Daily Active',
@@ -1995,10 +2172,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         feat_5_name: '5. League History & Hall of Fame Records',
         feat_insight_title: 'Behavioral Split: Prize-Pool vs. Community Leagues',
         feat_insight_desc: 'Comparing session intensity per manager to guide SaaS / White-Label tier pricing.',
-        feat_paid_label: 'High-Stakes Prize Leagues (e.g., 40700 · ฿138,000)',
+        feat_paid_label: 'High-Stakes Prize Leagues (e.g., 1101958 · ฿103,200)',
         feat_paid_val: '241 Sessions / Team / GW',
         feat_paid_sub: 'Managers & friends refresh live standings and prize payouts continuously during matches.',
-        feat_comm_label: 'Community Free Leagues (e.g., 567387 · 127 Teams)',
+        feat_comm_label: 'Community & Flagship Scale (e.g., 675290 · 60 Teams / Tier 2 · 1,780 Teams)',
         feat_comm_val: '17.2 Sessions / Team / GW',
         feat_comm_sub: 'Primarily post-match checks; ~14x lower session frequency than prize-backed leagues.',
         feat_takeaway_title: 'Executive Strategic Takeaway',
@@ -2010,8 +2187,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         chan_1_desc: 'Primary viral loop: League admins share live standings links into LINE group chats every GW.',
         chan_2_name: 'Direct / Home Screen Bookmark (PWA-style Launch)',
         chan_2_desc: 'Core power users who pin the dashboard directly to their iOS/Android home screen.',
-        chan_3_name: 'Facebook / Discord / QR Share Card (Social Referrals)',
-        chan_3_desc: 'Expansion opportunity: One-tap shareable image cards for weekly winners and rank jumps.',
+        chan_3_name: 'Deep-Link Direct & Smart Text Summary (LINE / URL Sharing)',
+        chan_3_desc: 'Live Today: Copy LINE payout summaries and share direct mini-league deep links (/{id}/).',
         geo_title: 'Geographic & Language Distribution (Geo & Locale)',
         geo_1: 'Bangkok & Greater Metropolitan Area (BKK)',
         geo_2: 'Major Thai Regional Hubs (Chiang Mai · Chonburi · Khon Kaen · Phuket)',
@@ -2068,12 +2245,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         op_export_title: 'Export Full BI JSON Snapshot',
         op_export_desc: 'Download complete 8-league portfolio and telemetry dataset for offline audit',
         op_export_btn: 'Export JSON Report',
-        op_prune_title: 'Prune D1 Telemetry (>90 Days)',
+        op_prune_title: 'Prune D1 Telemetry (>30 Days)',
         op_prune_desc: 'Keep SQLite storage compact and permanently within Cloudflare Free Tier limits',
         op_prune_btn: 'Prune Old D1 Rows',
         footer_rights: 'Executive Business Intelligence & Multi-League Infrastructure Suite',
         toast_refreshed: 'Live telemetry and portfolio metrics synchronized from Edge Worker.',
-        confirm_prune: 'Are you sure you want to prune D1 telemetry records older than 90 days?'
+        confirm_prune: 'Are you sure you want to prune D1 telemetry records older than 30 days?'
       }
     };
 
@@ -2081,14 +2258,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     // 2. PORTFOLIO DATASET & SORTING ENGINE
     // =========================================================================
     let LEAGUE_PORTFOLIO = [
-      { id: '40700', name: 'FPL SaWaDiKa', badge: 'Flagship', teams: 20, pool: 138000, modulesTh: 'ตารางคะแนนสด · H2H · รางวัลรายสัปดาห์ · หอเกียรติยศ', modulesEn: 'Live Matrix · H2H · Weekly Prize · Hall of Fame', views: 4820, retention: 98.5 },
-      { id: '675290', name: '2 spade', badge: '', teams: 126, pool: 45000, modulesTh: 'ตารางคะแนนสด · บอลถ้วย Knock-out · รางวัลรายเดือน', modulesEn: 'Live Matrix · Knock-out Cup · Monthly Awards', views: 3610, retention: 94.8 },
-      { id: '38491', name: 'Think Tank League', badge: '', teams: 37, pool: 27200, modulesTh: 'ตารางคะแนนสด · ตารางรายเดือน · บัญชีเงินรางวัล', modulesEn: 'Live Matrix · Monthly Shell · Prize Ledger', views: 1490, retention: 93.2 },
-      { id: '1101958', name: 'Shi62', badge: '', teams: 20, pool: 20000, modulesTh: 'ตารางคะแนนสด · ครึ่งฤดูกาลหลัง · กติการางวัลพิเศษ', modulesEn: 'Live Matrix · 2nd Half Race · Custom Payouts', views: 980, retention: 95.0 },
-      { id: '438691', name: 'The 49ers', badge: '', teams: 15, pool: 15000, modulesTh: 'ตารางคะแนนสด · ล่าค่าหัวรายสัปดาห์ · ตรวจสอบย้ายตัว', modulesEn: 'Live Matrix · Weekly Bounty · Transfer Audit', views: 810, retention: 92.4 },
-      { id: '187827', name: 'Tylers', badge: '', teams: 14, pool: 14000, modulesTh: 'ตารางคะแนนสด · แบ่งเลกเดือน · เปรียบเทียบ H2H', modulesEn: 'Live Matrix · Monthly Split · H2H Comparison', views: 740, retention: 91.8 },
-      { id: '5349', name: 'Bramann League', badge: '', teams: 19, pool: 9500, modulesTh: 'ตารางคะแนนสด · โพเดียมฤดูกาล · เช็กชิปคงเหลือ', modulesEn: 'Live Matrix · Season Podium · Chip Tracker', views: 860, retention: 90.5 },
-      { id: '567387', name: 'Fantasy Nguan & friends cup', badge: 'Community', teams: 127, pool: 0, modulesTh: 'ตารางคะแนนสด · ลีกขนาดใหญ่พิเศษ (127 ทีม)', modulesEn: 'Live Matrix · Large League Benchmarking', views: 2190, retention: 88.4 }
+      { id: '40700', name: 'เซียนอยู่รู หมูอยู่ตึก', badge: 'Flagship', teams: 12, pool: 20000, modulesTh: 'รางวัลรายสัปดาห์ 300 บ. · บอลถ้วย · หักชำระรายงวด', modulesEn: 'Weekly 300 THB · Cup · Settlement Phases', views: 4820, retention: 98.5 },
+      { id: '675290', name: 'NudNee', badge: '', teams: 60, pool: 36000, modulesTh: 'รางวัลรายเดือน · บอลถ้วย Knock-out · การกุศล', modulesEn: 'Monthly · Knock-out Cup · Charity', views: 3610, retention: 94.8 },
+      { id: '38491', name: 'รอ แมน โอน', badge: '', teams: 16, pool: 28500, modulesTh: 'รางวัลรายสัปดาห์ · บอลถ้วย · หักชำระรายงวด', modulesEn: 'Weekly · Cup · Settlement Phases', views: 1490, retention: 93.2 },
+      { id: '1101958', name: "Barley's Official League", badge: '', teams: 17, pool: 103200, modulesTh: 'ตารางรางวัลรายสัปดาห์หลายขั้น · บอลถ้วย · บัญชีเงินรางวัล', modulesEn: 'Weekly Tier Prizes · Cup · Ledger', views: 980, retention: 95.0 },
+      { id: '438691', name: '2 spade', badge: '', teams: 13, pool: 68400, modulesTh: 'รางวัลรายสัปดาห์ · ค่าปรับบ๊วย 5 อันดับ · บอลถ้วย', modulesEn: 'Weekly · Bottom-5 Penalty · Cup', views: 810, retention: 92.4 },
+      { id: '187827', name: 'Shi62', badge: '', teams: 13, pool: 3100, modulesTh: 'Zero-Sum ขั้นบันไดทั้งปี · พิเศษครึ่งฤดูกาลหลัง', modulesEn: 'Zero-Sum Annual Tiers · 2nd Half Special', views: 740, retention: 91.8 },
+      { id: '5349', name: 'Bramann League', badge: '', teams: 20, pool: 9500, modulesTh: 'เงินรางวัลคู่ · ทายผล & ชาเลนจ์รายสัปดาห์', modulesEn: 'Dual Prize · Prediction & Challenge', views: 860, retention: 90.5 },
+      { id: '567387', name: 'Fantasy Nguan & friends cup', badge: 'Community', teams: 12, pool: 0, modulesTh: 'ลีกคอมมูนิตี้ · บอลถ้วย · ตารางคะแนนสด', modulesEn: 'Community · Cup · Live Matrix', views: 2190, retention: 88.4 }
     ];
 
     let currentSortKey = 'pool';
@@ -2120,6 +2297,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       { dayTh: 'ส.', dayEn: 'Sat', visits: 1420, peak: true },
       { dayTh: 'อา.', dayEn: 'Sun', visits: 1180, peak: true }
     ];
+
+    function escHtml(str) {
+      return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
 
     function getLang() {
       return document.documentElement.lang === 'en' ? 'en' : 'th';
@@ -2162,18 +2348,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           : 'font-medium text-slate-600 dark:text-neutral-400';
         const modulesText = lang === 'en' ? (row.modulesEn || row.modulesTh) : (row.modulesTh || row.modulesEn);
         const badgePart = row.badge ? ' · ' + row.badge : '';
-        const targetUrl = 'https://fplsawadika.com/league_' + row.id + '.html?lang=' + lang + '&theme=' + theme;
+        const targetUrl = 'https://www.fplsawadika.com/' + encodeURIComponent(row.id) + '/?lang=' + lang + '&theme=' + theme;
 
         return '<tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">' +
           '<th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-1.5 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">' +
             '<a href="' + targetUrl + '" target="_blank" rel="noopener" class="min-h-[44px] flex flex-col justify-center hover:text-emerald-700 dark:hover:text-emerald-400">' +
-              '<span class="underline-offset-4 hover:underline">' + row.name + '</span>' +
-              '<span class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: ' + row.id + badgePart + '</span>' +
+              '<span class="underline-offset-4 hover:underline">' + escHtml(row.name) + '</span>' +
+              '<span class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: ' + escHtml(row.id + badgePart) + '</span>' +
             '</a>' +
           '</th>' +
-          '<td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">' + row.teams + '</td>' +
+          '<td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">' + Number(row.teams).toLocaleString() + '</td>' +
           '<td class="px-4 py-3 text-right mono tabular ' + poolClass + '">' + poolText + '</td>' +
-          '<td class="px-4 py-3 text-slate-700 dark:text-neutral-300">' + modulesText + '</td>' +
+          '<td class="px-4 py-3 text-slate-700 dark:text-neutral-300">' + escHtml(modulesText) + '</td>' +
           '<td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">' + Number(row.views).toLocaleString() + '</td>' +
           '<td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">' + row.retention.toFixed(1) + '%</td>' +
         '</tr>';
@@ -2317,7 +2503,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       const lastSyncEl = document.getElementById('telemetryLastSync');
       if (lastSyncEl) {
-        lastSyncEl.textContent = normalized === 'en' ? '8 Nov 2026, 11:18 ICT' : '8 พ.ย. 2026, 11:18 น.';
+        if (latestPayloadCache && latestPayloadCache.last_sync) {
+          lastSyncEl.textContent = latestPayloadCache.last_sync;
+        } else {
+          lastSyncEl.textContent = normalized === 'en' ? 'Sync Ready (Live)' : 'ข้อมูลซิงก์ล่าสุดพร้อมใช้งาน';
+        }
       }
 
       const gwEl = document.getElementById('telemetryNextDeadlineName');
@@ -2362,9 +2552,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (!val) return;
       const lang = getLang();
       const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-      const baseUrl = val === 'hub'
-        ? 'https://www.fplsawadika.com/'
-        : (val.startsWith('http') ? val : ('https://www.fplsawadika.com/' + val));
+      let baseUrl = 'https://www.fplsawadika.com/';
+      if (val !== 'hub') {
+        if (val.startsWith('http')) {
+          baseUrl = val;
+        } else {
+          const clean = val.replace(/^\\/+|\\/+$/g, '');
+          baseUrl = 'https://www.fplsawadika.com/' + clean + '/';
+        }
+      }
       const sep = baseUrl.includes('?') ? '&' : '?';
       window.open(baseUrl + sep + 'lang=' + lang + '&theme=' + theme, '_blank', 'noopener');
       const select = document.getElementById('quickLeagueSelect');
@@ -2385,7 +2581,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
     function copyExecutiveSummary() {
       const lang = getLang();
-      const managers = document.getElementById('kpiManagersCount')?.textContent || '378';
+      const managers = document.getElementById('kpiManagersCount')?.textContent || '163';
       const mau = document.getElementById('kpiMatchdayActive')?.textContent || '1,420';
       const gmv = document.getElementById('kpiTotalGmv')?.textContent || '฿268,700';
       const retention = document.getElementById('kpiRetention')?.textContent || '94.2%';
@@ -2468,53 +2664,122 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (elS) elS.textContent = pad(s);
     }
 
+    function applyAdminPayload(data) {
+      if (!data || typeof data !== 'object') return;
+      latestPayloadCache = data;
+      const lang = getLang();
+
+      if (data.last_sync) {
+        const lastSyncEl = document.getElementById('telemetryLastSync');
+        if (lastSyncEl) lastSyncEl.textContent = data.last_sync;
+      }
+
+      if (data.portfolio) {
+        const tier1Count = Number(data.portfolio.total_managers_tier1 || data.portfolio.total_managers || 0);
+        const allCount = Number(data.portfolio.total_managers_all || tier1Count || 0);
+        if (tier1Count > 0) {
+          const el = document.getElementById('kpiManagersCount');
+          if (el) el.textContent = tier1Count.toLocaleString();
+          const subEl = document.getElementById('kpiManagersSub');
+          if (subEl && allCount > tier1Count) {
+            subEl.textContent = lang === 'en'
+              ? ('8 Tier 1 Leagues (' + allCount.toLocaleString() + ' Total incl. Tier 2)')
+              : ('Tier 1 ครบ 8 มินิลีก (รวม Tier 2 = ' + allCount.toLocaleString() + ')');
+          }
+        }
+        if (data.portfolio.total_pool_gmv) {
+          const el = document.getElementById('kpiTotalGmv');
+          if (el) el.textContent = '฿' + Number(data.portfolio.total_pool_gmv).toLocaleString();
+        }
+        if (data.portfolio.leagues && typeof data.portfolio.leagues === 'object') {
+          LEAGUE_PORTFOLIO = LEAGUE_PORTFOLIO.map((row) => {
+            const liveMeta = data.portfolio.leagues[row.id];
+            const etLeague = (data.edge_telemetry && data.edge_telemetry.leagues)
+              ? data.edge_telemetry.leagues[row.id]
+              : null;
+            return {
+              ...row,
+              name: (liveMeta && liveMeta.name) ? String(liveMeta.name) : row.name,
+              teams: (liveMeta && Number(liveMeta.teams) > 0) ? Number(liveMeta.teams) : row.teams,
+              views: (etLeague && Number(etLeague.views) > 0) ? Number(etLeague.views) : row.views,
+            };
+          });
+          renderLeagueTable();
+        }
+      }
+
+      if (data.edge_telemetry) {
+        const et = data.edge_telemetry;
+        if (et.matchday_active_users) {
+          const el = document.getElementById('kpiMatchdayActive');
+          if (el) el.textContent = Number(et.matchday_active_users).toLocaleString();
+        }
+        const modelBadge = document.getElementById('telemetryModelBadge');
+        if (modelBadge && (typeof et.raw_live_visits_7d === 'number' || typeof et.baseline_visits_prior === 'number')) {
+          const live7d = Number(et.raw_live_visits_7d || 0).toLocaleString();
+          const prior = Number(et.baseline_visits_prior || 4280).toLocaleString();
+          modelBadge.textContent = 'Live D1: ' + live7d + ' + Prior: ' + prior;
+        }
+        if (et.system_performance && typeof et.system_performance.d1_row_count === 'number') {
+          const rowsEl = document.getElementById('sysD1RowsCount');
+          if (rowsEl) {
+            rowsEl.innerHTML = Number(et.system_performance.d1_row_count).toLocaleString() +
+              ' <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">rows</span>';
+          }
+        }
+        if (Array.isArray(et.hourly_series) && et.hourly_series.length === 24) {
+          if (typeof et.hourly_series[0] === 'number') {
+            const maxH = Math.max(...et.hourly_series, 1);
+            HOURLY_SERIES = et.hourly_series.map((val, idx) => {
+              const pct = Math.round((Number(val) / maxH) * 100);
+              return { hour: String(idx).padStart(2, '0') + ':00', pct, peak: pct >= 48 };
+            });
+          } else {
+            HOURLY_SERIES = et.hourly_series;
+          }
+        }
+        if (Array.isArray(et.daily_series) && et.daily_series.length > 0) {
+          const thDays = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+          const enDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+          DAILY_SERIES = et.daily_series.map((item) => {
+            if (item && typeof item.date === 'string') {
+              const dt = new Date(item.date + 'T12:00:00Z');
+              const dow = Number.isNaN(dt.getTime()) ? 0 : dt.getUTCDay();
+              return {
+                dayTh: thDays[dow],
+                dayEn: enDays[dow],
+                visits: Number(item.visits || 0),
+                peak: dow === 5 || dow === 6 || dow === 0,
+              };
+            }
+            return item;
+          });
+        }
+      }
+
+      if (data.fpl_upstream && data.fpl_upstream.next_deadline_time) {
+        const parsed = Date.parse(data.fpl_upstream.next_deadline_time);
+        if (!Number.isNaN(parsed)) nextDeadlineEpoch = parsed;
+        if (data.fpl_upstream.next_gw_name) {
+          const gwEl = document.getElementById('telemetryNextDeadlineName');
+          if (gwEl) {
+            gwEl.setAttribute('data-gw-name', data.fpl_upstream.next_gw_name);
+            gwEl.textContent = lang === 'en'
+              ? (data.fpl_upstream.next_gw_name + ' Deadline')
+              : ('เดดไลน์ ' + data.fpl_upstream.next_gw_name);
+          }
+        }
+      }
+
+      renderTrafficChart();
+    }
+
     async function loadLiveData(showBanner) {
       try {
         const res = await fetch('/api/admin/metrics', { credentials: 'same-origin' });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
-        latestPayloadCache = data;
-
-        if (data.portfolio) {
-          if (data.portfolio.total_managers) {
-            const el = document.getElementById('kpiManagersCount');
-            if (el) el.textContent = Number(data.portfolio.total_managers).toLocaleString();
-          }
-          if (data.portfolio.total_pool_gmv) {
-            const el = document.getElementById('kpiTotalGmv');
-            if (el) el.textContent = '฿' + Number(data.portfolio.total_pool_gmv).toLocaleString();
-          }
-        }
-
-        if (data.edge_telemetry) {
-          const et = data.edge_telemetry;
-          if (et.matchday_active_users) {
-            const el = document.getElementById('kpiMatchdayActive');
-            if (el) el.textContent = Number(et.matchday_active_users).toLocaleString();
-          }
-          if (et.hourly_series && Array.isArray(et.hourly_series) && et.hourly_series.length === 24) {
-            HOURLY_SERIES = et.hourly_series;
-          }
-          if (et.daily_series && Array.isArray(et.daily_series) && et.daily_series.length > 0) {
-            DAILY_SERIES = et.daily_series;
-          }
-        }
-
-        if (data.fpl_upstream && data.fpl_upstream.next_deadline_time) {
-          const parsed = Date.parse(data.fpl_upstream.next_deadline_time);
-          if (!Number.isNaN(parsed)) nextDeadlineEpoch = parsed;
-          if (data.fpl_upstream.next_gw_name) {
-            const gwEl = document.getElementById('telemetryNextDeadlineName');
-            if (gwEl) {
-              gwEl.setAttribute('data-gw-name', data.fpl_upstream.next_gw_name);
-              gwEl.textContent = getLang() === 'en'
-                ? (data.fpl_upstream.next_gw_name + ' Deadline')
-                : ('เดดไลน์ ' + data.fpl_upstream.next_gw_name);
-            }
-          }
-        }
-
-        renderTrafficChart();
+        applyAdminPayload(data);
         if (showBanner) showToast(I18N[getLang()].toast_refreshed);
       } catch (err) {
         if (showBanner) showToast(I18N[getLang()].toast_refreshed);
@@ -2542,34 +2807,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         const tDuration = Math.round(performance.now() - tStart);
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
-        latestPayloadCache = data;
-
-        if (data.portfolio) {
-          if (data.portfolio.total_managers) {
-            const el = document.getElementById('kpiManagersCount');
-            if (el) el.textContent = Number(data.portfolio.total_managers).toLocaleString();
-          }
-          if (data.portfolio.total_pool_gmv) {
-            const el = document.getElementById('kpiTotalGmv');
-            if (el) el.textContent = '฿' + Number(data.portfolio.total_pool_gmv).toLocaleString();
-          }
-        }
-
-        if (data.edge_telemetry) {
-          const et = data.edge_telemetry;
-          if (et.matchday_active_users) {
-            const el = document.getElementById('kpiMatchdayActive');
-            if (el) el.textContent = Number(et.matchday_active_users).toLocaleString();
-          }
-          if (et.hourly_series && Array.isArray(et.hourly_series) && et.hourly_series.length === 24) {
-            HOURLY_SERIES = et.hourly_series;
-          }
-          if (et.daily_series && Array.isArray(et.daily_series) && et.daily_series.length > 0) {
-            DAILY_SERIES = et.daily_series;
-          }
-        }
-
-        renderTrafficChart();
+        applyAdminPayload(data);
 
         const edgeColo = (data.edge_metadata && data.edge_metadata.colo) ? data.edge_metadata.colo : 'EDGE';
         const msg = lang === 'en'
@@ -2698,7 +2936,7 @@ export function renderLoginHtml(errorMessage = '') {
 
       ${errorMessage ? `
       <div role="alert" class="p-3.5 rounded-lg border border-rose-500/30 bg-rose-500/10 text-xs text-rose-700 dark:text-rose-300 font-medium">
-        ${errorMessage}
+        ${escapeHtmlAttr(errorMessage)}
       </div>
       ` : ''}
 
@@ -2707,7 +2945,7 @@ export function renderLoginHtml(errorMessage = '') {
           <label for="tokenInput" id="loginLabel" class="block text-xs font-medium text-slate-700 dark:text-neutral-300">
             รหัสผ่านผู้ดูแลระบบ (Admin Access Key)
           </label>
-          <input id="tokenInput" name="token" type="password" required autocomplete="current-password"
+          <input id="tokenInput" name="passkey" type="password" required autocomplete="current-password"
             placeholder="••••••••••••••••"
             class="w-full min-h-[44px] px-3.5 py-2.5 rounded-lg border border-slate-300 dark:border-neutral-700 bg-slate-50 dark:bg-[#191d26] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
         </div>
