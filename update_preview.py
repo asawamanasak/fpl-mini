@@ -211,7 +211,7 @@ def get_architecture_diagram_html(lang='th', asset_prefix='./'):
           </div>
     """
 
-def generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=None, precomputed_cfg_str=None, shi62_data_json_str=None, bramann_pred_json_str=None, bramann_chal_json_str=None):
+def generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=None, precomputed_cfg_str=None, shi62_data_json_str=None, bramann_pred_json_str=None, bramann_chal_json_str=None, precomputed_players_str=None):
     if precomputed_json_str is None:
         # Performance Optimization: Deep-strip raw_picks and raw_hist before serializing into HTML
         pruned_data = {
@@ -248,6 +248,22 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         leagues_config_json_str = json.dumps(leagues_config, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     else:
         leagues_config_json_str = precomputed_cfg_str
+
+    if precomputed_players_str is None:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        players_path = os.path.join(base_dir, 'data', 'players.json')
+        if os.path.exists(players_path):
+            with open(players_path, 'r', encoding='utf-8') as pf:
+                raw_players = json.load(pf)
+            compact_players = {
+                int(k): [v.get('name', ''), v.get('team', ''), v.get('pos', ''), int(v.get('team_code', 0))]
+                for k, v in raw_players.items()
+            }
+            players_dict_json_str = json.dumps(compact_players, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+        else:
+            players_dict_json_str = '{}'
+    else:
+        players_dict_json_str = precomputed_players_str
 
     default_lid_code = f'"{default_league_id}"' if default_league_id else 'null'
     asset_prefix = "../" if default_league_id else "./"
@@ -3153,6 +3169,7 @@ __STRUCTURED_DATA_JSON__
     const BRAMANN_PREDICTION_DATA = __BRAMANN_PREDICTION_DATA_JSON__;
     const BRAMANN_CHALLENGE_DATA = __BRAMANN_CHALLENGE_DATA_JSON__;
     const INITIAL_DEFAULT_LEAGUE = __DEFAULT_LID__;
+    const PLAYERS_DICT = __PLAYERS_DICT_JSON__;
 
     // Self-hosted Optimized LiveScore Premier League Team Data & Media Assets (Self-hosted in images/teams/)
     const LIVESCORE_LOCAL_ASSET_DIR = "images/teams";
@@ -19315,15 +19332,19 @@ selectShi62GW(gwName) {
           const entryIdNum = Number(entryId);
           const gwNum = Number(gw);
 
-          // 1. Ensure players dictionary is loaded (cached in this.playersDict)
+          // 1. Ensure players dictionary is loaded (cached in this.playersDict or fallback to embedded PLAYERS_DICT)
           if (!this.playersDict || Object.keys(this.playersDict).length === 0) {
-            try {
-              const pUrl = this.getPlayersDataUrl ? this.getPlayersDataUrl() : 'data/players.json';
-              const pResp = await fetch(pUrl);
-              if (pResp.ok) {
-                this.playersDict = await pResp.json();
-              }
-            } catch (_) {}
+            if (typeof PLAYERS_DICT !== 'undefined' && PLAYERS_DICT && Object.keys(PLAYERS_DICT).length > 0) {
+              this.playersDict = PLAYERS_DICT;
+            } else {
+              try {
+                const pUrl = this.getPlayersDataUrl ? this.getPlayersDataUrl() : 'data/players.json';
+                const pResp = await fetch(pUrl);
+                if (pResp.ok) {
+                  this.playersDict = await pResp.json();
+                }
+              } catch (_) {}
+            }
             if (!this.playersDict) this.playersDict = {};
           }
 
@@ -19398,12 +19419,24 @@ selectShi62GW(gwName) {
 
           for (const p of rawPicks) {
             const pid = p.element;
-            const pInfo = this.playersDict[String(pid)] || this.playersDict[pid] || {};
+            const pInfo = this.playersDict[String(pid)] || this.playersDict[pid] || null;
+            let name, team, pos, teamCode;
+            if (Array.isArray(pInfo)) {
+              name = pInfo[0];
+              team = pInfo[1];
+              pos = pInfo[2];
+              teamCode = pInfo[3];
+            } else if (pInfo && typeof pInfo === 'object') {
+              name = pInfo.name;
+              team = pInfo.team;
+              pos = pInfo.pos;
+              teamCode = pInfo.team_code;
+            }
             const posType = p.element_type === 1 ? 'GKP' : (p.element_type === 2 ? 'DEF' : (p.element_type === 3 ? 'MID' : 'FWD'));
-            const pos = pInfo.pos || posType;
-            const name = pInfo.name || `Player ${pid}`;
-            const team = pInfo.team || 'PL';
-            const teamCode = pInfo.team_code || 0;
+            pos = pos || posType;
+            name = name || `Player ${pid}`;
+            team = team || 'PL';
+            teamCode = teamCode || 0;
             const mult = Number(p.multiplier || 1);
             const isCap = Boolean(p.is_captain);
             const isVice = Boolean(p.is_vice_captain);
@@ -21737,6 +21770,7 @@ selectShi62GW(gwName) {
     html = html.replace('__BRAMANN_PREDICTION_DATA_JSON__', bramann_pred_json_str or 'null')
     html = html.replace('__BRAMANN_CHALLENGE_DATA_JSON__', bramann_chal_json_str or 'null')
     html = html.replace('__DEFAULT_LID__', default_lid_code)
+    html = html.replace('__PLAYERS_DICT_JSON__', players_dict_json_str)
     html = html.replace('__ASSET_PREFIX__', asset_prefix)
     canonical_url = f"https://www.fplsawadika.com/{default_league_id}/" if default_league_id else "https://www.fplsawadika.com/"
     html = html.replace('__CANONICAL_URL__', canonical_url)
@@ -21877,13 +21911,26 @@ def main():
     bramann_pred_json_str = json.dumps(bramann_pred_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
     bramann_chal_json_str = json.dumps(bramann_chal_data, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 
+    # Precompute compact players dictionary once for zero-overhead HTML generation
+    players_path = os.path.join(base_dir, 'data', 'players.json')
+    if os.path.exists(players_path):
+        with open(players_path, 'r', encoding='utf-8') as pf:
+            raw_players = json.load(pf)
+        compact_players = {
+            int(k): [v.get('name', ''), v.get('team', ''), v.get('pos', ''), int(v.get('team_code', 0))]
+            for k, v in raw_players.items()
+        }
+        players_compact_json_str = json.dumps(compact_players, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+    else:
+        players_compact_json_str = '{}'
+
     # 1. Resolve default league ID dynamically from leagues_config (is_default: true or first entry)
     default_root_lid = next(
         (str(k) for k, v in leagues_config.items() if isinstance(v, dict) and v.get("is_default")),
         next(iter(leagues_config.keys()), "40700")
     )
     root_json_str = get_pruned_data_for_target(default_root_lid)
-    root_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=root_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str)
+    root_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=root_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str, precomputed_players_str=players_compact_json_str)
     with open(os.path.join(base_dir, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(root_html)
 
@@ -21897,7 +21944,7 @@ def main():
     for lid in leagues_config.keys():
         dir_league = os.path.join(base_dir, str(lid))
         os.makedirs(dir_league, exist_ok=True)
-        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid), precomputed_json_str=get_pruned_data_for_target(str(lid)), precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str)
+        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid), precomputed_json_str=get_pruned_data_for_target(str(lid)), precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str, precomputed_players_str=players_compact_json_str)
         with open(os.path.join(dir_league, 'index.html'), 'w', encoding='utf-8') as f:
             f.write(html_league)
 
