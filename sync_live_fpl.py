@@ -424,6 +424,24 @@ def sync_once(args):
     teams_by_id = {t['id']: t['short_name'] for t in boot['teams']}
     element_types = {et['id']: et['singular_name_short'] for et in boot['element_types']}
 
+    # Save lightweight players dictionary for On-Demand Tier 2 Squad rendering (~43 KB raw / ~6.5 KB gzipped)
+    try:
+        players_dict = {
+            str(p['id']): {
+                "name": p.get('web_name', 'Player'),
+                "pos": element_types.get(p.get('element_type'), 'MID'),
+                "team": teams_by_id.get(p.get('team'), 'PL'),
+                "team_code": p.get('team_code', 0)
+            }
+            for p in boot['elements']
+        }
+        players_json_path = os.path.join(base_dir, 'data', 'players.json')
+        os.makedirs(os.path.dirname(players_json_path), exist_ok=True)
+        atomic_json_dump(players_dict, players_json_path)
+        print(f" -> Saved lightweight players dictionary: {len(players_dict)} players -> data/players.json")
+    except Exception as e:
+        print(f"⚠️  [Warning] Failed to save data/players.json: {e}")
+
     events = boot['events']
     current_event = next((e for e in events if e['is_current']), events[0])
     max_gw = current_event['id']
@@ -781,6 +799,21 @@ def sync_once(args):
                     else:
                         gameweeks_dict[gw_str]["results"] = []
                 squads_dict = {}
+                tier2_chunk_dir = os.path.join(base_dir, "data", "leagues", str(lid))
+                os.makedirs(tier2_chunk_dir, exist_ok=True)
+                for gw in range(1, max_gw + 1):
+                    gw_str = str(gw)
+                    res = gameweeks_dict[gw_str].get("results", [])
+                    if res:
+                        chunk_file = os.path.join(tier2_chunk_dir, f"gw{gw}.json")
+                        chunk_payload = {
+                            "league_id": lid,
+                            "gw": gw,
+                            "is_finished": gameweeks_dict[gw_str].get("is_finished", False),
+                            "is_started": gameweeks_dict[gw_str].get("is_started", False),
+                            "results": res
+                        }
+                        atomic_json_dump(chunk_payload, chunk_file)
             else:
                 work_items = []
                 gw_can_reuse_raw_picks_map = {}

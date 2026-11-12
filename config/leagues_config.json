@@ -1089,5 +1089,85 @@
         "footer": "* Stay tuned for official announcements from the league commissioner."
       }
     ]
+  },
+  "139836": {
+    "id": 139836,
+    "name": "FPL Growth Mindset 2026/27",
+    "short_name": "FPL Growth Mindset [Tier-2 • 1.7k]",
+    "season": "2026/27",
+    "tier": 2,
+    "entry_fee": "ร่วมสนุกฟรี (กิจกรรมเพจ)",
+    "total_pool": "เสื้อบอลแท้ถูกลิขสิทธิ์",
+    "non_prize_teams": [],
+    "features": {
+      "prize_model": "standard",
+      "has_settlement_phases": false,
+      "has_monthly_prizes": false,
+      "has_cup": false
+    },
+    "rules_cards": [
+      {
+        "title": "กติกาการร่วมสนุก & ของรางวัล (FPL Growth Mindset)",
+        "image": "images/growth-mindset-rules.jpg",
+        "items": [
+          {
+            "label": "ของรางวัลประจำมินิลีก",
+            "desc": "• ลุ้นรับรางวัล: เสื้อบอลแท้ถูกลิขสิทธิ์ เกรดแฟนบอล ฤดูกาล 2026/27 (สำหรับแชมป์ลีก)\n• ของรางวัลพิเศษ: มีการแจกของรางวัลพิเศษเพิ่มเติมตลอดทั้งฤดูกาล\n• เกณฑ์ตัดสินมาตรฐาน: อ้างอิงจากอันดับคะแนนรวมสะสมหลังจบฤดูกาล (GW 38)\n• การมอบรางวัลและการตัดสินขั้นสุดท้ายขึ้นอยู่กับดุลยพินิจของเพจ FPL Growth Mindset"
+          },
+          {
+            "label": "ขั้นตอนและเงื่อนไขการเข้าร่วม (วิธีเข้าร่วมง่ายๆ)",
+            "desc": "• 1. กดไลก์เพจ FPL Growth Mindset\n• 2. แชร์โพสต์กิจกรรมนี้เป็นสาธารณะ (เพื่อให้แอดมินตรวจสอบได้)\n• 3. คอมเมนต์ชื่อทีม FPL ของคุณใต้โพสต์กิจกรรม\n• กำหนดเวลา: เปิดรับสมัครจนถึง Deadline Gameweek 4\n• รหัสเข้าร่วมลีก (Join Code): TP802K"
+          }
+        ],
+        "footer": "* กิจกรรมร่วมสนุกโดยเพจ FPL Growth Mindset เล่นฟรี ไม่มีค่าใช้จ่าย"
+      },
+      {
+        "title": "สถาปัตยกรรมแสดงผล (Tier 2 High-Scale)",
+        "items": [
+          {
+            "label": "โหมดแสดงผล Standings & Leaderboard Only",
+            "desc": "• จำนวนทีมในลีก: 1,780 ทีม (สเกลคอมมูนิตี้สาธารณะ)\n• การทำงาน: ทำงานในโหมด Tier 2 เน้นความเร็วในการโหลดตารางคะแนนและอันดับสะสมแบบเรียลไทม์\n• การค้นหา: มีระบบค้นหาชื่อทีมและชื่อผู้จัดการแบบทันที (Instant Search) สำหรับค้นหาท่ามกลางสมาชิก 1,780 คน"
+          },
+          {
+            "label": "ข้อจำกัดและการแสดงผล",
+            "desc": "• เพื่อรักษาความเร็วในการโหลดและไม่ให้ชน Rate Limit ของ FPL ระบบจะไม่ดึงผังจัดทัพ 11 ตัวจริง (Picks) และการวิเคราะห์การย้ายตัวรายคน\n• แท็บสถานะชิปและการวิเคราะห์การย้ายตัวจะสงวนไว้สำหรับมินิลีกระดับ Tier 1"
+          }
+        ],
+        "footer": "* สถาปัตยกรรม Tier 2 ออกแบบเพื่อรองรับสเกลระดับ 1,000+ ทีมอย่างมีประสิทธิภาพ"
+      }
+    ],
+    "entry_fee_en": "Free Entry (Page Community Event)",
+    "total_pool_en": "Authentic Official Football Shirt",
+    "rules_cards_en": [
+      {
+        "title": "Contest Rules & Prize (FPL Growth Mindset)",
+        "image": "images/growth-mindset-rules.jpg",
+        "items": [
+          {
+            "label": "Mini-League Prize",
+            "desc": "• Grand Prize: Authentic Official Football Shirt (Stadium/Fan Grade, Season 2026/27 - For League Champion)\n• Special Prizes: Additional special campaign giveaways throughout the season\n• Benchmark Criteria: Evaluated based on overall season points standing at GW 38 completion\n• Final verification and prize allocation managed by FPL Growth Mindset page"
+          },
+          {
+            "label": "Entry Requirements & Registration",
+            "desc": "• 1. Like the 'FPL Growth Mindset' Facebook page\n• 2. Share the official event post publicly\n• 3. Comment your FPL team name under the event post\n• Registration Window: Open until Gameweek 4 Deadline\n• League Join Code: TP802K"
+          }
+        ],
+        "footer": "* Free public community event organized by FPL Growth Mindset page."
+      },
+      {
+        "title": "Tier 2 Large Community League Architecture",
+        "items": [
+          {
+            "label": "Standings & Leaderboard Only Mode",
+            "desc": "• League scale: 1,780 teams (Public Community)\n• Performance: Operates in Tier 2 mode optimized for high-speed live standings and leaderboard rendering\n• Instant Search: Quick manager and team name filter across all 1,780 entries"
+          },
+          {
+            "label": "Tier 2 Boundaries",
+            "desc": "• To protect FPL rate limits and mobile performance, detailed squad pitch formations and transfer logs are omitted in Tier 2\n• Chips inventory and transfer analytics are active for Tier 1 leagues"
+          }
+        ],
+        "footer": "* Tier 2 High-Scale architecture designed to support 1,000+ member leagues."
+      }
+    ]
   }
 }

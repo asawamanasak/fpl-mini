@@ -1457,7 +1457,10 @@ __STRUCTURED_DATA_JSON__
 
     /* Header Priority Z-Index */
     table.table-sticky thead th {
-      background-color: #f8fafc;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background-color: #f1f5f9;
       border-bottom: 1px solid rgba(226, 232, 240, 0.9);
     }
     .dark table.table-sticky thead th {
@@ -1466,8 +1469,10 @@ __STRUCTURED_DATA_JSON__
     }
     table.table-sticky thead th.sticky-col-rank,
     table.table-sticky thead th.sticky-col-team {
-      z-index: 20;
-      background-color: #f8fafc !important;
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 30 !important;
+      background-color: #f1f5f9 !important;
     }
     .dark table.table-sticky thead th.sticky-col-rank,
     .dark table.table-sticky thead th.sticky-col-team {
@@ -1692,28 +1697,28 @@ __STRUCTURED_DATA_JSON__
         <button 
           id="tab-btn-highlights"
           data-tab-target="highlights-view" 
-          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn__TIER2_TAB_HIDDEN__ flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           ไฮไลท์
         </button>
         <button 
           id="tab-btn-global-radar"
           data-tab-target="global-radar-view" 
-          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn__TIER2_TAB_HIDDEN__ flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           เรดาร์ฟอร์ม
         </button>
         <button 
           id="tab-btn-competition"
           data-tab-target="competition-view" 
-          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn__TIER2_TAB_HIDDEN__ flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           สถานะชิป
         </button>
         <button 
           id="tab-btn-transfers"
           data-tab-target="transfers-view" 
-          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn__TIER2_TAB_HIDDEN__ flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           วิเคราะห์การย้ายตัว
         </button>
@@ -1741,21 +1746,21 @@ __STRUCTURED_DATA_JSON__
         <button 
           id="tab-btn-prizes"
           data-tab-target="prizes-view" 
-          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn__PRIZES_TAB_HIDDEN__ flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           เงินรางวัล
         </button>
         <button 
           id="tab-btn-cup"
           data-tab-target="cup-view" 
-          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn__CUP_TAB_HIDDEN__ flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           บอลถ้วย
         </button>
         <button 
           id="tab-btn-hall-of-fame"
           data-tab-target="hall-of-fame-view" 
-          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn__TIER2_TAB_HIDDEN__ flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           ทำเนียบแชมป์
         </button>
@@ -2422,12 +2427,12 @@ __STRUCTURED_DATA_JSON__
 
 
         <!-- Table Container with Locked/Sticky Headers & Columns -->
-        <div class="overflow-auto max-h-[65vh] sm:max-h-[75vh] scrollbar-thin -mx-3.5 sm:mx-0 touch-scroll isolate">
-          <table class="w-full text-left border-separate border-spacing-0">
+        <div class="overflow-auto max-h-[65vh] sm:max-h-[75vh] scrollbar-thin -mx-3.5 sm:mx-0 touch-scroll isolate table-sticky-container">
+          <table class="w-full min-w-[640px] text-left border-separate border-spacing-0 table-sticky">
             <thead>
               <tr class="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
-                <th onclick="app.setRadarSortBy('total_net')" class="sticky-col-rank py-2.5 px-1 sm:px-2 text-center whitespace-nowrap sticky top-0 cursor-pointer hover:text-blue-600 transition-colors select-none" title="คลิกเพื่อเรียงตามอันดับคะแนนรวม">#</th>
-                <th onclick="app.setRadarSortBy('team_name')" class="sticky-col-team py-2.5 px-1.5 sm:px-3 whitespace-nowrap sticky top-0 cursor-pointer hover:text-blue-600 transition-colors select-none" title="คลิกเพื่อเรียงตามชื่อทีม">
+                <th onclick="app.setRadarSortBy('total_net')" class="sticky-col-rank py-2.5 px-1 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 cursor-pointer hover:text-blue-600 transition-colors select-none" title="คลิกเพื่อเรียงตามอันดับคะแนนรวม">#</th>
+                <th onclick="app.setRadarSortBy('team_name')" class="sticky-col-team py-2.5 px-1.5 sm:px-3 whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 cursor-pointer hover:text-blue-600 transition-colors select-none" title="คลิกเพื่อเรียงตามชื่อทีม">
                   <span id="th-radar-team_name">ทีม & ผู้จัดการ</span>
                 </th>
                 <th onclick="app.setRadarSortBy('total_net')" class="py-2.5 px-1.5 sm:px-2 text-center whitespace-nowrap sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-10 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors select-none text-blue-600 dark:text-blue-400 font-black" title="คลิกเพื่อเรียงตามคะแนนรวมสุทธิ">
@@ -4820,6 +4825,8 @@ __STRUCTURED_DATA_JSON__
         }
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
+        this.matchdayChunkLimit = 100;
+        this.overallChunkLimit = 100;
         this.prizesSearchQuery = '';
         this.prizesFilterMode = 'all';
         this.prizesHistoryExpanded = false;
@@ -4915,6 +4922,34 @@ __STRUCTURED_DATA_JSON__
         if (!tabName) return 'gameweek-view';
         let t = String(tabName).trim().toLowerCase();
         let clean = t.endsWith('-view') ? t.slice(0, -5) : t;
+
+        const isTier2 = Boolean(this.data && this.data.tier === 2) || Boolean(this.config && this.config.tier === 2);
+        if (isTier2) {
+          if (clean === 'highlight' || clean === 'highlights' || clean === 'weekly-highlight' ||
+              clean === 'competition' || clean === 'comp' || clean === 'chips' || clean === 'chip' ||
+              clean === 'transfers' || clean === 'transfer' || clean === 'transfer-analytics' ||
+              clean === 'prize' || clean === 'prizes' || clean === 'reward' || clean === 'rewards' ||
+              clean === 'hof' || clean === 'hall-of-fame' || clean === 'halloffame' ||
+              clean === 'global-radar' || clean === 'radar' || clean === 'global' || clean === 'all-leagues' || clean === 'consistency-radar' || clean === 'consistency' ||
+              clean === 'cup' || clean === 'shi62' || clean === 'shi62-special' || clean === 'bramann-prediction' || clean === 'bramann-challenge') {
+            return 'gameweek-view';
+          }
+        }
+
+        const hasPrizes = !isTier2 && Boolean(
+          (this.config && this.config.features && (
+            this.config.features.prize_model === 'bramann_dual_prize' ||
+            this.config.features.has_weekly_prizes ||
+            this.config.features.has_monthly_prizes ||
+            this.config.features.has_settlement_phases ||
+            this.config.features.has_weekly_penalties
+          )) ||
+          (this.config && this.config.total_pool && this.config.total_pool !== '-' && !String(this.config.total_pool).includes('เสื้อบอล') && !String(this.config.entry_fee).includes('ฟรี'))
+        );
+        if (!hasPrizes && (clean === 'prize' || clean === 'prizes' || clean === 'reward' || clean === 'rewards')) {
+          return 'gameweek-view';
+        }
+
         if (clean === 'live' || clean === 'gw' || clean === 'gameweek') return 'gameweek-view';
         if (clean === 'highlight' || clean === 'highlights' || clean === 'weekly-highlight') return 'highlights-view';
         if (clean === 'competition' || clean === 'comp' || clean === 'standings' || clean === 'chips' || clean === 'chip') return 'competition-view';
@@ -4969,11 +5004,17 @@ __STRUCTURED_DATA_JSON__
         this.initLivePolling();
         this.initDeadlineCountdown();
 
-        // Proactively fetch squads for active league if not yet embedded (e.g. index.html with savedLeague)
-        const hasSquads = Boolean(this.data && this.data.squads && Object.keys(this.data.squads).length > 0);
+        // Proactively fetch squads/data for active league if not yet embedded (e.g. index.html with savedLeague)
         const isTier2 = Boolean(this.config && this.config.tier === 2);
-        if (!hasSquads && !isTier2) {
-          this.fetchLeagueData(this.activeLeagueId);
+        const hasData = isTier2
+          ? Boolean(this.data && this.data.teams && this.data.teams.length > 0)
+          : Boolean(this.data && this.data.squads && Object.keys(this.data.squads).length > 0);
+        if (!hasData) {
+          this.fetchLeagueData(this.activeLeagueId).then(loaded => {
+            if (loaded) {
+              this.renderAll();
+            }
+          });
         }
 
         // Listen for browser Back/Forward navigation
@@ -5352,6 +5393,7 @@ __STRUCTURED_DATA_JSON__
             };
           }
         });
+        this._latestLiveMap = liveMap;
 
         const gwKey = String(gw);
         const anyMatchStarted = startedFixtures.size > 0;
@@ -6336,15 +6378,47 @@ __STRUCTURED_DATA_JSON__
         return `${basePath}data/leagues/${lidStr}.json`;
       }
 
+      getLeagueChunkUrl(lid, gw) {
+        const lidStr = String(lid);
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          const configuredIds = Object.keys(this.configs || {});
+          const currentInSubdir = configuredIds.some(cid => window.location.pathname.includes('/' + cid));
+          const prefix = currentInSubdir ? '../' : './';
+          return `${prefix}data/leagues/${lidStr}/gw${gw}.json`;
+        }
+        const pathname = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '';
+        const isGitHubPages = pathname.includes('/fpl-mini');
+        const basePath = isGitHubPages ? '/fpl-mini/' : '/';
+        return `${basePath}data/leagues/${lidStr}/gw${gw}.json`;
+      }
+
+      getPlayersDataUrl() {
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          const configuredIds = Object.keys(this.configs || {});
+          const currentInSubdir = configuredIds.some(cid => window.location.pathname.includes('/' + cid));
+          const prefix = currentInSubdir ? '../' : './';
+          return `${prefix}data/players.json`;
+        }
+        const pathname = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '';
+        const isGitHubPages = pathname.includes('/fpl-mini');
+        const basePath = isGitHubPages ? '/fpl-mini/' : '/';
+        return `${basePath}data/players.json`;
+      }
+
       async fetchLeagueData(leagueId, retryCount = 1) {
         const lidStr = String(leagueId);
         if (!this.multiData || !this.multiData.leagues || !this.multiData.leagues[lidStr]) return null;
         const targetLeague = this.multiData.leagues[lidStr];
-        if (targetLeague.squads && Object.keys(targetLeague.squads).length > 0) {
-          return targetLeague;
-        }
-        if (targetLeague.tier === 2 || (this.configs[lidStr] && this.configs[lidStr].tier === 2)) {
-          return targetLeague;
+        const isTier2 = (targetLeague.tier === 2) || (this.configs[lidStr] && this.configs[lidStr].tier === 2);
+
+        if (isTier2) {
+          if (targetLeague.teams && targetLeague.teams.length > 0) {
+            return targetLeague;
+          }
+        } else {
+          if (targetLeague.squads && Object.keys(targetLeague.squads).length > 0) {
+            return targetLeague;
+          }
         }
 
         const url = this.getLeagueDataUrl(lidStr);
@@ -6353,7 +6427,7 @@ __STRUCTURED_DATA_JSON__
             const resp = await fetch(url);
             if (resp.ok) {
               const fullLeagueData = await resp.json();
-              if (fullLeagueData && fullLeagueData.squads) {
+              if (fullLeagueData && (fullLeagueData.squads || (isTier2 && fullLeagueData.teams))) {
                 this.multiData.leagues[lidStr] = fullLeagueData;
                 if (this.lastLiveJson && this.lastLiveGw) {
                   this.applyLiveElements(this.lastLiveJson, this.lastLiveGw);
@@ -6387,9 +6461,11 @@ __STRUCTURED_DATA_JSON__
         // Decoupled loading: Check if target league needs squads/data fetched
         const targetLeague = this.multiData.leagues[lidStr];
         const isTier2 = (targetLeague.tier === 2) || (this.configs[lidStr] && this.configs[lidStr].tier === 2);
-        const hasSquads = targetLeague.squads && Object.keys(targetLeague.squads).length > 0;
+        const hasData = isTier2
+          ? Boolean(targetLeague.teams && targetLeague.teams.length > 0)
+          : Boolean(targetLeague.squads && Object.keys(targetLeague.squads).length > 0);
 
-        if (!hasSquads && !isTier2) {
+        if (!hasData) {
           if (selectorContainer) {
             selectorContainer.classList.add('opacity-60', 'pointer-events-none');
             selectorContainer.setAttribute('aria-busy', 'true');
@@ -6406,8 +6482,8 @@ __STRUCTURED_DATA_JSON__
                 const isEn = (this.currentLang === 'en');
                 this.showToast(
                   isEn
-                    ? 'Could not load full squad data. Please check your connection.'
-                    : 'ไม่สามารถโหลดข้อมูลเชิงลึกของลีกได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต',
+                    ? 'Could not load league data. Please check your connection.'
+                    : 'ไม่สามารถโหลดข้อมูลของลีกได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต',
                   'error'
                 );
               }
@@ -6426,6 +6502,8 @@ __STRUCTURED_DATA_JSON__
         if (!this.config.features) this.config.features = {};
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
+        this.matchdayChunkLimit = 100;
+        this.overallChunkLimit = 100;
         this.prizesSearchQuery = '';
         this.prizesFilterMode = 'all';
         this.prizesHistoryExpanded = false;
@@ -6502,13 +6580,15 @@ __STRUCTURED_DATA_JSON__
           const lData = this.multiData.leagues[lid];
           if (!lData) return;
           const isCurrent = (lid === this.activeLeagueId);
-          const memberCount = (lData.teams || []).length;
+          const memberCount = lData.member_count !== undefined ? lData.member_count : (lData.teams || []).length;
+          const isLidTier2 = (lData.tier === 2) || (this.configs[lid] && this.configs[lid].tier === 2);
+          const tier2Badge = isLidTier2 ? `<span class="ml-1 px-1.5 py-0.2 rounded text-[9px] font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/80 font-display">Tier 2</span>` : '';
 
           html += `
             <button onclick="app.switchLeague('${lid}')" class="w-full text-left px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-blue-50/60 dark:hover:bg-slate-800/80 rounded-xl flex items-center justify-between transition-colors cursor-pointer ${isCurrent ? 'bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/80 text-blue-950 dark:text-blue-300 font-black' : ''}">
               <div>
                 <div class="${isCurrent ? 'text-blue-950 dark:text-blue-300 font-black' : 'text-slate-900 dark:text-white'}">${this.escapeHtml(lData.name)}</div>
-                <div class="text-[10px] text-slate-500 dark:text-slate-400 font-normal">League ${lid} • ${memberCount} ${isEn ? 'Teams' : 'ทีม'}</div>
+                <div class="text-[10px] text-slate-500 dark:text-slate-400 font-normal flex items-center gap-1 mt-0.5">League ${lid} • ${memberCount.toLocaleString()} ${isEn ? 'Teams' : 'ทีม'} ${tier2Badge}</div>
               </div>
               ${isCurrent ? `<span class="text-blue-600 dark:text-blue-400 font-black text-xs font-display">✓ ${isEn ? 'Active' : 'กำลังดู'}</span>` : ''}
             </button>
@@ -6623,6 +6703,33 @@ __STRUCTURED_DATA_JSON__
 
         this.updateHeaderDeadline();
 
+        // Dynamic Tier-2 & Prize Feature Flags
+        const isTier2 = Boolean(this.data && this.data.tier === 2) || Boolean(this.config && this.config.tier === 2);
+        const hasPrizes = !isTier2 && Boolean(
+          (this.config && this.config.features && (
+            this.config.features.prize_model === 'bramann_dual_prize' ||
+            this.config.features.has_weekly_prizes ||
+            this.config.features.has_monthly_prizes ||
+            this.config.features.has_settlement_phases ||
+            this.config.features.has_weekly_penalties
+          )) ||
+          (this.config && this.config.total_pool && this.config.total_pool !== '-' && !String(this.config.total_pool).includes('เสื้อบอล') && !String(this.config.entry_fee).includes('ฟรี'))
+        );
+
+        const hlTabBtn = document.getElementById('tab-btn-highlights');
+        const compTabBtn = document.getElementById('tab-btn-competition');
+        const transTabBtn = document.getElementById('tab-btn-transfers');
+        const radarTabBtn = document.getElementById('tab-btn-global-radar');
+        const hofTabBtn = document.getElementById('tab-btn-hall-of-fame');
+        const prizesTabBtn = document.getElementById('tab-btn-prizes');
+
+        if (hlTabBtn) hlTabBtn.classList.toggle('hidden', isTier2);
+        if (compTabBtn) compTabBtn.classList.toggle('hidden', isTier2);
+        if (transTabBtn) transTabBtn.classList.toggle('hidden', isTier2);
+        if (radarTabBtn) radarTabBtn.classList.toggle('hidden', isTier2);
+        if (hofTabBtn) hofTabBtn.classList.toggle('hidden', isTier2);
+        if (prizesTabBtn) prizesTabBtn.classList.toggle('hidden', !hasPrizes);
+
         // Check Cup Feature Flag
         const hasCup = Boolean(this.config.features && this.config.features.has_cup);
         if (cupTabBtn) {
@@ -6673,7 +6780,12 @@ __STRUCTURED_DATA_JSON__
           }
         }
 
-        if (!isShi62 && this.activeTab === 'shi62-special-view') {
+        const unsupportedTier2Tabs = ['highlights-view', 'competition-view', 'transfers-view', 'hall-of-fame-view', 'global-radar-view'];
+        if (isTier2 && unsupportedTier2Tabs.includes(this.activeTab)) {
+          this.switchTab('gameweek-view');
+        } else if (!hasPrizes && this.activeTab === 'prizes-view') {
+          this.switchTab('gameweek-view');
+        } else if (!isShi62 && this.activeTab === 'shi62-special-view') {
           this.switchTab('gameweek-view');
         } else if (!hasBramannPred && this.activeTab === 'bramann-prediction-view') {
           this.switchTab('gameweek-view');
@@ -6711,11 +6823,31 @@ __STRUCTURED_DATA_JSON__
         document.querySelectorAll('.tab-content').forEach(view => view.classList.add('hidden'));
         if (targetView) targetView.classList.remove('hidden');
 
+        const isTier2 = Boolean(this.data && this.data.tier === 2) || Boolean(this.config && this.config.tier === 2);
+        const hasPrizes = !isTier2 && Boolean(
+          (this.config && this.config.features && (
+            this.config.features.prize_model === 'bramann_dual_prize' ||
+            this.config.features.has_weekly_prizes ||
+            this.config.features.has_monthly_prizes ||
+            this.config.features.has_settlement_phases ||
+            this.config.features.has_weekly_penalties
+          )) ||
+          (this.config && this.config.total_pool && this.config.total_pool !== '-' && !String(this.config.total_pool).includes('เสื้อบอล') && !String(this.config.entry_fee).includes('ฟรี'))
+        );
+
         document.querySelectorAll('.tab-nav-btn').forEach(btn => {
           const isTarget = btn.getAttribute('data-tab-target') === this.activeTab;
           let cls = isTarget 
             ? 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white'
             : 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-2 sm:py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800';
+          if (isTier2) {
+            if (btn.id === 'tab-btn-highlights' || btn.id === 'tab-btn-competition' || btn.id === 'tab-btn-transfers' || btn.id === 'tab-btn-global-radar' || btn.id === 'tab-btn-hall-of-fame') {
+              cls += ' hidden';
+            }
+          }
+          if (!hasPrizes && btn.id === 'tab-btn-prizes') {
+            cls += ' hidden';
+          }
           if (btn.id === 'tab-btn-cup' && !Boolean(this.config && this.config.features && this.config.features.has_cup)) {
             cls += ' hidden';
           }
@@ -6761,6 +6893,12 @@ __STRUCTURED_DATA_JSON__
         const liveTabBtn = document.getElementById('tab-btn-live');
         const hlTabBtn = document.getElementById('tab-btn-highlights');
         const compTabBtn = document.getElementById('tab-btn-competition');
+        const isTier2 = Boolean(this.data && this.data.tier === 2) || Boolean(this.config && this.config.tier === 2);
+        if (isTier2) {
+          if (hlTabBtn) hlTabBtn.classList.add('hidden');
+          if (compTabBtn) compTabBtn.classList.add('hidden');
+        }
+
         const gwKey = String(this.selectedGW);
         const gwData = this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
         const isFinished = gwData ? Boolean(gwData.is_finished) : false;
@@ -6778,7 +6916,7 @@ __STRUCTURED_DATA_JSON__
             }
           }
 
-          if (hlTabBtn) {
+          if (hlTabBtn && !isTier2) {
             const isHlActive = this.activeTab === 'highlights-view';
             if (isHlActive) {
               hlTabBtn.className = 'tab-nav-btn tab-pulse-live-active flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-emerald-600 text-white border border-emerald-500 shadow-xs dark:bg-emerald-600 dark:text-white dark:border-emerald-400';
@@ -6787,7 +6925,7 @@ __STRUCTURED_DATA_JSON__
             }
           }
 
-          if (compTabBtn) {
+          if (compTabBtn && !isTier2) {
             const isCompActive = this.activeTab === 'competition-view';
             if (isCompActive) {
               compTabBtn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white border border-transparent';
@@ -6808,7 +6946,7 @@ __STRUCTURED_DATA_JSON__
             liveTabBtn.classList.remove('tab-pulse-live', 'tab-pulse-live-active');
           }
 
-          if (hlTabBtn) {
+          if (hlTabBtn && !isTier2) {
             const isHlActive = this.activeTab === 'highlights-view';
             if (isHlActive) {
               hlTabBtn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white border border-transparent';
@@ -6819,7 +6957,7 @@ __STRUCTURED_DATA_JSON__
           }
 
           // Tab สถานะชิป (Competition) ไม่ต้องมี highlight box หรือกระพริบอีกต่อไป
-          if (compTabBtn) {
+          if (compTabBtn && !isTier2) {
             const isCompActive = this.activeTab === 'competition-view';
             if (isCompActive) {
               compTabBtn.className = 'tab-nav-btn flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white border border-transparent';
@@ -9319,7 +9457,7 @@ selectShi62GW(gwName) {
         }
       }
 
-      selectGW(gw, fromPopstate = false, skipRender = false) {
+      async selectGW(gw, fromPopstate = false, skipRender = false) {
         const maxGW = Number(this.multiData.max_gw) || 2;
         this.selectedGW = Math.min(Math.max(Number(gw) || 1, 1), maxGW);
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
@@ -9337,6 +9475,25 @@ selectShi62GW(gwName) {
               window.history.replaceState(null, '', newUrl);
             }
           } catch (e) {}
+        }
+
+        // On-Demand fetch for Tier-2 chunked historical gameweek
+        const isTier2 = Boolean(this.data && this.data.tier === 2) || Boolean(this.config && this.config.tier === 2);
+        const gwKey = String(this.selectedGW);
+        const gwData = this.data && this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
+        if (isTier2 && gwData && (!gwData.results || gwData.results.length === 0) && gwData.is_finished) {
+          try {
+            const chunkUrl = this.getLeagueChunkUrl(this.activeLeagueId, this.selectedGW);
+            const res = await fetch(chunkUrl);
+            if (res.ok) {
+              const chunkJson = await res.json();
+              if (chunkJson && chunkJson.results && chunkJson.results.length > 0) {
+                gwData.results = chunkJson.results;
+                if (chunkJson.is_finished !== undefined) gwData.is_finished = chunkJson.is_finished;
+                if (chunkJson.is_started !== undefined) gwData.is_started = chunkJson.is_started;
+              }
+            }
+          } catch (_) {}
         }
 
         this.renderGWSelector();
@@ -9359,6 +9516,9 @@ selectShi62GW(gwName) {
 
         const isEn = (this.currentLang === 'en');
         if (overallNum) overallNum.innerText = this.selectedGW;
+
+        const searchInput = (typeof document !== 'undefined') ? document.getElementById('live-team-search') : null;
+        const searchTerm = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
         if (!gwData || !gwData.results || gwData.results.length === 0) {
           if (matchdayBody) matchdayBody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs">${isEn ? 'No data available for this Gameweek' : 'ยังไม่มีข้อมูลในสัปดาห์นี้'}</td></tr>`;
@@ -9388,7 +9548,6 @@ selectShi62GW(gwName) {
         if (matchdaySub) matchdaySub.innerText = isEn ? 'Gameweek Standings' : 'คะแนนประจำสัปดาห์';
         const overallSub = document.getElementById('overall-sub-label');
         if (overallSub) overallSub.innerText = isEn ? 'Overall Standings' : 'คะแนนรวมสะสม';
-        this.translateStaticElements();
         if (tableBadge) {
           if (isFinished) {
             tableBadge.innerText = isEn ? 'Official Results' : 'ผลการแข่งขันทางการ';
@@ -9839,7 +9998,17 @@ selectShi62GW(gwName) {
             }
           }
 
-          sorted.forEach((team, idx) => {
+          const isLargeMatchday = sorted.length > 100;
+          this.matchdayChunkLimit = this.matchdayChunkLimit || 100;
+
+          let displaySorted = sorted;
+          if (searchTerm) {
+            displaySorted = sorted.filter(t => (t.team_name || '').toLowerCase().includes(searchTerm) || (t.player_name || '').toLowerCase().includes(searchTerm));
+          } else if (isLargeMatchday) {
+            displaySorted = sorted.slice(0, this.matchdayChunkLimit);
+          }
+
+          displaySorted.forEach((team, idx) => {
             const chip = team.chip ? `<span class="chip-badge badge-${team.chip.toLowerCase()} font-display">${team.chip.toUpperCase()}</span>` : '';
             const hits = team.hits > 0 ? `<span class="text-rose-600 dark:text-rose-400 font-bold font-display">-${team.hits}</span>` : '<span class="text-slate-500 dark:text-slate-400 font-medium">-</span>';
             const isPrize = this.isPrizeEligible(team.entry_id);
@@ -9919,6 +10088,25 @@ selectShi62GW(gwName) {
               </tr>
             `;
           });
+
+          if (!searchTerm && isLargeMatchday && this.matchdayChunkLimit < sorted.length) {
+            const curShown = Math.min(this.matchdayChunkLimit, sorted.length);
+            mHtml += `
+              <tr class="chunk-control-row">
+                <td colspan="6" class="py-3 px-4 text-center bg-slate-50/70 dark:bg-slate-900/60 border-t border-slate-200/80 dark:border-slate-800">
+                  <div class="flex items-center justify-center gap-2.5 flex-wrap text-xs">
+                    <span class="text-slate-500 dark:text-slate-400 font-medium font-mono">${isEn ? `Showing 1 - ${curShown} of ${sorted.length.toLocaleString()} teams` : `แสดง 1 - ${curShown} จากทั้งหมด ${sorted.length.toLocaleString()} ทีม`}</span>
+                    <button onclick="app.showMoreMatchdayTeams(100)" class="px-3 py-1.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl text-xs hover:opacity-90 transition-opacity cursor-pointer shadow-2xs">
+                      ${isEn ? 'Load +100 More' : 'โหลดเพิ่มอีก 100 ทีม (+100)'}
+                    </button>
+                    <button onclick="app.showMoreMatchdayTeams('all')" class="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-xs hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors cursor-pointer">
+                      ${isEn ? `Show All ${sorted.length.toLocaleString()}` : `แสดงทั้งหมด ${sorted.length.toLocaleString()} ทีม`}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          }
           matchdayBody.innerHTML = mHtml;
         }
 
@@ -10044,7 +10232,17 @@ selectShi62GW(gwName) {
           });
 
           let oHtml = '';
-          overallSorted.forEach((team) => {
+          const isLargeOverall = overallSorted.length > 100;
+          this.overallChunkLimit = this.overallChunkLimit || 100;
+
+          let displayOverall = overallSorted;
+          if (searchTerm) {
+            displayOverall = overallSorted.filter(t => (t.team_name || '').toLowerCase().includes(searchTerm) || (t.player_name || '').toLowerCase().includes(searchTerm));
+          } else if (isLargeOverall) {
+            displayOverall = overallSorted.slice(0, this.overallChunkLimit);
+          }
+
+          displayOverall.forEach((team) => {
             const isPrize = this.isPrizeEligible(team.entry_id);
             const prizeBadge = this.getPrizeBadge(team.entry_id);
 
@@ -10092,11 +10290,45 @@ selectShi62GW(gwName) {
               </tr>
             `;
           });
+
+          if (!searchTerm && isLargeOverall && this.overallChunkLimit < overallSorted.length) {
+            const curShown = Math.min(this.overallChunkLimit, overallSorted.length);
+            oHtml += `
+              <tr class="chunk-control-row">
+                <td colspan="4" class="py-3 px-4 text-center bg-slate-50/70 dark:bg-slate-900/60 border-t border-slate-200/80 dark:border-slate-800">
+                  <div class="flex items-center justify-center gap-2.5 flex-wrap text-xs">
+                    <span class="text-slate-500 dark:text-slate-400 font-medium font-mono">${isEn ? `Showing 1 - ${curShown} of ${overallSorted.length.toLocaleString()} teams` : `แสดง 1 - ${curShown} จากทั้งหมด ${overallSorted.length.toLocaleString()} ทีม`}</span>
+                    <button onclick="app.showMoreOverallTeams(100)" class="px-3 py-1.5 bg-blue-600 text-white font-bold rounded-xl text-xs hover:bg-blue-700 transition-colors cursor-pointer shadow-2xs">
+                      ${isEn ? 'Load +100 More' : 'โหลดเพิ่มอีก 100 ทีม (+100)'}
+                    </button>
+                    <button onclick="app.showMoreOverallTeams('all')" class="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-xs hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors cursor-pointer">
+                      ${isEn ? `Show All ${overallSorted.length.toLocaleString()}` : `แสดงทั้งหมด ${overallSorted.length.toLocaleString()} ทีม`}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          }
           overallBody.innerHTML = oHtml;
         }
 
-        // Apply any active team search filter to both rendered tables
-        this.filterLiveTables();
+        // Apply active team search filter or sync counter for large/small leagues
+        const totalTeams = (this.data && this.data.teams) ? this.data.teams.length : 0;
+        if (totalTeams <= 100) {
+          this.filterLiveTables();
+        } else {
+          const countEl = document.getElementById('live-search-count');
+          if (countEl) {
+            if (searchTerm) {
+              const matchCount = sorted.filter(t => (t.team_name || '').toLowerCase().includes(searchTerm) || (t.player_name || '').toLowerCase().includes(searchTerm)).length;
+              countEl.textContent = isEn ? `Found ${matchCount} of ${totalTeams.toLocaleString()} teams` : `พบ ${matchCount} จาก ${totalTeams.toLocaleString()} ทีม`;
+              countEl.classList.remove('hidden');
+            } else {
+              countEl.textContent = '';
+              countEl.classList.add('hidden');
+            }
+          }
+        }
       }
 
       getChipCode(chip) {
@@ -10485,6 +10717,29 @@ selectShi62GW(gwName) {
         this.updateHighlightsTabBlink();
 
         if (!grid) return;
+
+        if (this.data.tier === 2 || (this.config && this.config.tier === 2)) {
+          if (statusBadgeEl) statusBadgeEl.innerHTML = '';
+          grid.innerHTML = `
+            <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 text-center shadow-xs max-w-xl mx-auto my-8">
+              <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400 text-xl font-bold font-display">
+                ⭐
+              </div>
+              <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-2 font-display">
+                ${isEn ? 'Tier 2 League: Standings & Leaderboard Only' : 'มินิลีกระดับ Tier 2: โหมดแสดงตารางคะแนน'}
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                ${isEn 
+                  ? 'Weekly highlights, squad awards, and tactical badges are optimized for Tier 1 leagues. For Tier 2 leagues, please refer to the Standings table.' 
+                  : 'ไฮไลท์ประจำสัปดาห์ รางวัลผู้จัดการทีม และสถิติแท็กติกเปิดให้ใช้งานสำหรับลีกระดับ Tier 1 สำหรับลีก Tier 2 สามารถติดตามคะแนนสดและอันดับได้ที่ตารางคะแนน'}
+              </p>
+              <button onclick="app.switchTab('gameweek-view')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold font-display shadow-2xs transition-colors cursor-pointer">
+                ${isEn ? 'View Standings & Live Points' : 'กลับไปดูตารางคะแนน & แต้มสด'}
+              </button>
+            </div>
+          `;
+          return;
+        }
 
         if (!gwData || !gwData.results || gwData.results.length === 0) {
           if (statusBadgeEl) statusBadgeEl.innerHTML = '';
@@ -15391,8 +15646,34 @@ selectShi62GW(gwName) {
 
       renderHallOfFameView() {
         const recordsContainer = document.getElementById('hall-of-fame-records');
+        const tableBody = document.getElementById('hall-of-fame-table-body');
         const maxGW = Number(this.multiData.max_gw) || 2;
         const isEn = (this.currentLang === 'en');
+
+        if (this.data.tier === 2 || (this.config && this.config.tier === 2)) {
+          if (recordsContainer) {
+            recordsContainer.innerHTML = `
+              <div class="col-span-full bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 text-center shadow-xs max-w-xl mx-auto my-4">
+                <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-amber-50 dark:bg-amber-950/60 flex items-center justify-center text-amber-600 dark:text-amber-400 text-xl font-bold font-display">
+                  🏆
+                </div>
+                <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-2 font-display">
+                  ${isEn ? 'Tier 2 League: Standings & Leaderboard Only' : 'มินิลีกระดับ Tier 2: โหมดแสดงตารางคะแนน'}
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                  ${isEn 
+                    ? 'Hall of Fame consistency metrics, medalists, and variance benchmarking are designed for Tier 1 leagues. For Tier 2 leagues, please refer to the Standings table.' 
+                    : 'ทำเนียบแชมป์และสถิติความสม่ำเสมอออกแบบมาสำหรับลีกระดับ Tier 1 สำหรับลีก Tier 2 สามารถติดตามอันดับและคะแนนรวมได้ที่หน้าตารางคะแนน'}
+                </p>
+                <button onclick="app.switchTab('gameweek-view')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold font-display shadow-2xs transition-colors cursor-pointer">
+                  ${isEn ? 'View Standings & Live Points' : 'กลับไปดูตารางคะแนน & แต้มสด'}
+                </button>
+              </div>
+            `;
+          }
+          if (tableBody) tableBody.innerHTML = '';
+          return;
+        }
 
         // Update Hero Banner Badges
         const leagueBadge = document.getElementById('hof-league-badge');
@@ -15882,7 +16163,11 @@ selectShi62GW(gwName) {
         const isEn = (this.currentLang === 'en');
         if (headerPill) {
           const leaguesMapForCount = (this.multiData && this.multiData.leagues) || {};
-          const leagueIdsForCount = (this.multiData && this.multiData.league_order) || Object.keys(leaguesMapForCount);
+          const leaguesCfgForCount = this.configs || {};
+          const leagueIdsForCount = ((this.multiData && this.multiData.league_order) || Object.keys(leaguesMapForCount)).filter(lid => {
+            const l = leaguesMapForCount[lid];
+            return l && l.tier !== 2 && (!leaguesCfgForCount[lid] || leaguesCfgForCount[lid].tier !== 2);
+          });
           const uniqueTeamIdsForCount = new Set();
           leagueIdsForCount.forEach(lid => {
             ((leaguesMapForCount[lid] && leaguesMapForCount[lid].teams) || []).forEach(tm => {
@@ -15926,6 +16211,7 @@ selectShi62GW(gwName) {
         leagueOrder.forEach(lid => {
           const lData = leaguesObj[lid];
           if (!lData) return;
+          if (lData.tier === 2 || (leaguesConfig[lid] && leaguesConfig[lid].tier === 2)) return;
           const teams = lData.teams || [];
           const gws = lData.gameweeks || {};
           let totalNet = 0;
@@ -16027,6 +16313,8 @@ selectShi62GW(gwName) {
         const teamsMap = {};
         Object.keys(leaguesObj).forEach(lid => {
           const lData = leaguesObj[lid];
+          if (!lData) return;
+          if (lData.tier === 2 || (leaguesConfig[lid] && leaguesConfig[lid].tier === 2)) return;
           const lName = (leaguesConfig[lid] && leaguesConfig[lid].short_name) || lData.name || `League ${lid}`;
           (lData.teams || []).forEach(t => {
             const eid = Number(t.entry_id);
@@ -16414,6 +16702,7 @@ selectShi62GW(gwName) {
           leagueOrder.forEach(lid => {
             const lData = leaguesObj[lid];
             if (!lData) return;
+            if (lData.tier === 2 || (leaguesConfig[lid] && leaguesConfig[lid].tier === 2)) return;
             const sName = (leaguesConfig[lid] && leaguesConfig[lid].short_name) || lData.name;
             const count = (lData.teams || []).length;
             const isAct = curFilter === String(lid);
@@ -16631,6 +16920,7 @@ selectShi62GW(gwName) {
           leagueOrder.forEach(id => {
             const lData = leaguesObj[id];
             if (!lData) return;
+            if (lData.tier === 2 || (leaguesConfig[id] && leaguesConfig[id].tier === 2)) return;
             const sName = (leaguesConfig[id] && leaguesConfig[id].short_name) || lData.name;
             const count = (lData.teams || []).length;
             const isAct = this.radarLeagueFilter === String(id);
@@ -17683,6 +17973,25 @@ selectShi62GW(gwName) {
               `;
             });
 
+            let imageHtml = '';
+            if (card.image) {
+              const imgUrl = this.getAssetUrl(card.image);
+              const imgTitle = this.escapeHtml(card.title);
+              const clickTitle = isEn ? 'Click to view full image' : 'คลิกเพื่อดูรูปภาพขนาดเต็ม';
+              const expandText = isEn ? 'Expand ↗' : 'ดูรูปเต็ม ↗';
+              imageHtml = `
+                <div class="mb-4 overflow-hidden rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 shadow-2xs">
+                  <a href="${imgUrl}" target="_blank" rel="noopener noreferrer" class="block group relative cursor-zoom-in" title="${clickTitle}">
+                    <img src="${imgUrl}" alt="${imgTitle}" class="w-full h-auto rounded-xl object-contain max-h-[520px] mx-auto transition-transform duration-200 group-hover:scale-[1.01]" loading="lazy">
+                    <div class="absolute bottom-2.5 right-2.5 px-2 py-1 rounded bg-slate-900/85 text-white text-[10px] font-mono opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 shadow-xs">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                      <span>${expandText}</span>
+                    </div>
+                  </a>
+                </div>
+              `;
+            }
+
             html += `
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 flex flex-col justify-between shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors w-full min-w-0 overflow-hidden">
                 <div class="min-w-0">
@@ -17693,6 +18002,7 @@ selectShi62GW(gwName) {
                     <span class="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 tracking-wider font-display">${isEn ? 'OFFICIAL PROVISION' : 'ข้อบังคับทางการ'}</span>
                   </div>
                   <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-[15px] tracking-tight leading-snug mb-3.5 pb-2.5 border-b border-slate-100 dark:border-slate-800/60 font-display">${card.title}</h3>
+                  ${imageHtml}
                   <div class="text-xs text-slate-600 dark:text-slate-300">
                     ${itemsHtml}
                   </div>
@@ -17866,6 +18176,25 @@ selectShi62GW(gwName) {
         } else {
           prompt(isEn ? 'Copy rules summary:' : 'คัดลอกสรุปกติกา:', text);
         }
+      }
+
+      getAssetUrl(relativePath) {
+        if (!relativePath) return '';
+        if (relativePath.startsWith('http://') || relativePath.startsWith('https://') || relativePath.startsWith('data:')) {
+          return relativePath;
+        }
+        const cleanPath = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
+        if (typeof window !== 'undefined' && window.location && (window.location.protocol === 'http:' || window.location.protocol === 'https:')) {
+          const isGitHubPages = window.location.pathname.includes('/fpl-mini');
+          const basePath = isGitHubPages ? '/fpl-mini/' : '/';
+          return `${basePath}${cleanPath}`;
+        }
+        const configuredIds = Object.keys(this.configs || {});
+        const inSubdir = Boolean(typeof window !== 'undefined' && window.location && window.location.pathname && (
+          configuredIds.some(lid => window.location.pathname.includes('/' + lid + '/') || window.location.pathname.endsWith('/' + lid))
+        ));
+        const prefix = inSubdir ? '../' : './';
+        return `${prefix}${cleanPath}`;
       }
 
       getDefaultShirtUrl() {
@@ -18981,6 +19310,161 @@ selectShi62GW(gwName) {
         return `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-0.5 rounded-full text-[11px] sm:text-xs font-medium tracking-wide font-display bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 shadow-2xs flex-shrink-0 cursor-help" title="${title}"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span><span>${label}</span></span>`;
       }
 
+      async fetchTier2TeamSquad(entryId, gw) {
+        try {
+          const entryIdNum = Number(entryId);
+          const gwNum = Number(gw);
+
+          // 1. Ensure players dictionary is loaded (cached in this.playersDict)
+          if (!this.playersDict || Object.keys(this.playersDict).length === 0) {
+            try {
+              const pUrl = this.getPlayersDataUrl ? this.getPlayersDataUrl() : 'data/players.json';
+              const pResp = await fetch(pUrl);
+              if (pResp.ok) {
+                this.playersDict = await pResp.json();
+              }
+            } catch (_) {}
+            if (!this.playersDict) this.playersDict = {};
+          }
+
+          // 2. Ensure live elements map is available for live points calculation
+          if (!this._latestLiveMap || Object.keys(this._latestLiveMap).length === 0) {
+            try {
+              const liveResp = await fetch(`https://api.fplsawadika.com/live?event=${gwNum}&slim=1`);
+              if (liveResp.ok) {
+                const liveJson = await liveResp.json();
+                if (liveJson && Array.isArray(liveJson.elements)) {
+                  const lMap = {};
+                  liveJson.elements.forEach(el => {
+                    if (el && el.id && el.stats) {
+                      lMap[el.id] = {
+                        total_points: Number(el.stats.total_points) || 0,
+                        provisional_bonus: Number(el.stats.provisional_bonus) || 0,
+                        bps: Number(el.stats.bps) || 0,
+                        played: Boolean(el.stats.played)
+                      };
+                    }
+                  });
+                  this._latestLiveMap = lMap;
+                }
+              }
+            } catch (_) {}
+          }
+
+          // 3. Fetch picks from Cloudflare Worker Relay (or local server in dev mode)
+          let picksData = null;
+          const isLocal = typeof window !== 'undefined' && window.location && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+          if (isLocal) {
+            try {
+              const lResp = await fetch(`/picks?entry=${entryIdNum}&gw=${gwNum}`);
+              if (lResp.ok) {
+                const lj = await lResp.json();
+                if (lj && Array.isArray(lj.picks)) picksData = lj;
+              }
+            } catch (_) {}
+          }
+
+          if (!picksData) {
+            const primaryUrl = `https://api.fplsawadika.com/picks?entry=${entryIdNum}&gw=${gwNum}`;
+            try {
+              const resp = await fetch(primaryUrl);
+              if (resp.ok) {
+                const j = await resp.json();
+                if (j && Array.isArray(j.picks)) picksData = j;
+              }
+            } catch (_) {}
+          }
+
+          if (!picksData) {
+            try {
+              const fbUrl = `https://fpl-live-relay.asawamanasak.workers.dev/picks?entry=${entryIdNum}&gw=${gwNum}`;
+              const fbResp = await fetch(fbUrl);
+              if (fbResp.ok) {
+                const fbj = await fbResp.json();
+                if (fbj && Array.isArray(fbj.picks)) picksData = fbj;
+              }
+            } catch (_) {}
+          }
+
+          if (!picksData || !Array.isArray(picksData.picks) || picksData.picks.length === 0) {
+            return false;
+          }
+
+          // 4. Map picks into starting 11 and bench
+          const rawPicks = picksData.picks;
+          const starters = [];
+          const bench = [];
+          const lMap = this._latestLiveMap || {};
+
+          for (const p of rawPicks) {
+            const pid = p.element;
+            const pInfo = this.playersDict[String(pid)] || this.playersDict[pid] || {};
+            const posType = p.element_type === 1 ? 'GKP' : (p.element_type === 2 ? 'DEF' : (p.element_type === 3 ? 'MID' : 'FWD'));
+            const pos = pInfo.pos || posType;
+            const name = pInfo.name || `Player ${pid}`;
+            const team = pInfo.team || 'PL';
+            const teamCode = pInfo.team_code || 0;
+            const mult = Number(p.multiplier || 1);
+            const isCap = Boolean(p.is_captain);
+            const isVice = Boolean(p.is_vice_captain);
+
+            let rawPts = 0;
+            let provBonus = 0;
+            if (lMap[pid]) {
+              rawPts = Number(lMap[pid].total_points || 0);
+              provBonus = Number(lMap[pid].provisional_bonus || 0);
+            }
+
+            const pObj = {
+              id: pid,
+              name: name,
+              pos: pos,
+              team: team,
+              team_code: teamCode,
+              points: rawPts * (mult > 0 ? mult : 1),
+              raw_points: rawPts,
+              multiplier: mult,
+              is_captain: isCap,
+              is_vice: isVice,
+              provisional_bonus: provBonus,
+              not_played_yet: false
+            };
+
+            if (p.position <= 11) {
+              starters.push(pObj);
+            } else {
+              bench.push(pObj);
+            }
+          }
+
+          const squadKey = `${entryIdNum}_${gwNum}`;
+          const squadObj = {
+            starting: starters,
+            bench: bench,
+            chip: picksData.active_chip,
+            raw_hist: picksData.entry_history || {}
+          };
+
+          if (!this.data.squads) this.data.squads = {};
+          this.data.squads[squadKey] = squadObj;
+
+          // Propagate into multiData.leagues
+          if (this.multiData && this.multiData.leagues) {
+            for (const l of Object.values(this.multiData.leagues)) {
+              if ((l.teams || []).some(t => Number(t.entry_id) === entryIdNum)) {
+                if (!l.squads) l.squads = {};
+                l.squads[squadKey] = squadObj;
+              }
+            }
+          }
+
+          return true;
+        } catch (err) {
+          console.warn('[FPLSaWaDiKa] fetchTier2TeamSquad failed:', err);
+          return false;
+        }
+      }
+
       openTeamModal(entryId) {
         const isEn = (this.currentLang === 'en');
         const defaultShirtUrl = this.getDefaultShirtUrl();
@@ -19100,13 +19584,18 @@ selectShi62GW(gwName) {
         if (ptsLabelEl) ptsLabelEl.innerText = isEn ? `GW ${this.selectedGW} Points:` : `คะแนน GW ${this.selectedGW}:`;
 
         const ptsEl = document.getElementById('team-modal-pts');
-        if (ptsEl) ptsEl.innerText = `${matchdayRes.net_points !== undefined ? matchdayRes.net_points : 0} pts`;
+        let displayNetPts = matchdayRes.net_points;
+        if ((displayNetPts === undefined || displayNetPts === null) && squad && squad.raw_hist && squad.raw_hist.points !== undefined) {
+          displayNetPts = squad.raw_hist.points;
+        }
+        if (ptsEl) ptsEl.innerText = `${displayNetPts !== undefined ? displayNetPts : 0} pts`;
 
         const chipBadge = document.getElementById('team-modal-chip-badge');
+        const activeChip = matchdayRes.chip || (squad && squad.chip);
         if (chipBadge) {
-          if (matchdayRes.chip) {
-            chipBadge.className = `chip-badge badge-${matchdayRes.chip.toLowerCase()} font-display px-2 py-0.5 rounded-lg text-[10px] sm:text-xs font-bold tracking-wider`;
-            chipBadge.innerText = matchdayRes.chip.toUpperCase();
+          if (activeChip) {
+            chipBadge.className = `chip-badge badge-${String(activeChip).toLowerCase()} font-display px-2 py-0.5 rounded-lg text-[10px] sm:text-xs font-bold tracking-wider`;
+            chipBadge.innerText = String(activeChip).toUpperCase();
           } else {
             chipBadge.className = 'hidden';
             chipBadge.innerText = '';
@@ -19172,14 +19661,88 @@ selectShi62GW(gwName) {
             return;
           }
 
+          if (isTier2League) {
+            const currentMaxGw = Number((this.multiData && this.multiData.max_gw) || (this.data && this.data.current_gw) || (this.config && this.config.current_gw) || 10);
+            if (Number(this.selectedGW) !== currentMaxGw) {
+              if (formationEl) formationEl.innerText = '-';
+              if (gkpLine) gkpLine.innerHTML = '';
+              const pastMsg = isEn 
+                ? `Squad & pitch lineup for Tier 2 leagues is available for the current Gameweek (GW ${currentMaxGw}) only.` 
+                : `ผังจัดทัพลีกขนาดใหญ่ (Tier 2) เปิดให้ดูเฉพาะสัปดาห์ปัจจุบัน (GW ${currentMaxGw}) เท่านั้น`;
+              if (defLine) defLine.innerHTML = `<div class="text-center text-white/80 py-8 font-bold text-xs w-full">${pastMsg}</div>`;
+              if (midLine) midLine.innerHTML = '';
+              if (fwdLine) fwdLine.innerHTML = '';
+              if (benchContainer) benchContainer.innerHTML = `<div class="text-center text-slate-400 py-4 col-span-2 text-xs">${isEn ? 'No bench data for past gameweeks' : 'ไม่มีข้อมูลตัวสำรองสำหรับสัปดาห์ย้อนหลัง'}</div>`;
+              if (benchTotal) benchTotal.innerHTML = '';
+              const modal = document.getElementById('team-modal');
+              if (modal) {
+                if (modal.classList.contains('hidden')) {
+                  this._lastFocusedElement = document.activeElement;
+                }
+                modal.classList.remove('hidden');
+                this.lockBodyScroll();
+              }
+              return;
+            }
+
+            // Render Instant Pitch Shimmer
+            if (formationEl) formationEl.innerText = '...';
+            const shimmerCard = (count) => `
+              <div class="flex flex-col items-center justify-center p-0.5 text-center min-w-0 animate-pulse" style="width: ${100 / Math.max(count, 3)}%; max-width: ${count >= 5 ? '80px' : '76px'};">
+                <div class="w-8 h-9 xs:w-9 xs:h-10 sm:w-11 sm:h-12 rounded-lg bg-white/20 mb-1"></div>
+                <div class="h-2.5 xs:h-3 w-10 xs:w-12 bg-white/30 rounded mb-1"></div>
+                <div class="h-2.5 xs:h-3 w-7 xs:w-8 bg-emerald-500/40 rounded"></div>
+              </div>
+            `;
+            if (gkpLine) gkpLine.innerHTML = shimmerCard(1);
+            if (defLine) defLine.innerHTML = [1,2,3,4].map(() => shimmerCard(4)).join('');
+            if (midLine) midLine.innerHTML = [1,2,3,4].map(() => shimmerCard(4)).join('');
+            if (fwdLine) fwdLine.innerHTML = [1,2].map(() => shimmerCard(2)).join('');
+            if (benchContainer) {
+              benchContainer.innerHTML = [1,2,3,4].map(() => `
+                <div class="bg-white/10 dark:bg-slate-800/60 border border-slate-200/20 dark:border-slate-700/40 rounded-xl p-2 sm:p-2.5 flex items-center justify-between animate-pulse">
+                  <div class="flex items-center gap-2 sm:gap-2.5">
+                    <div class="w-7 h-8 bg-slate-300/40 dark:bg-slate-700/60 rounded-md"></div>
+                    <div class="h-3 w-16 bg-slate-300/40 dark:bg-slate-700/60 rounded"></div>
+                  </div>
+                  <div class="h-3 w-8 bg-slate-300/40 dark:bg-slate-700/60 rounded"></div>
+                </div>
+              `).join('');
+            }
+            if (benchTotal) benchTotal.innerHTML = `<span class="animate-pulse text-xs text-slate-400 font-display">${isEn ? '⚡ Fetching lineup via Edge Relay...' : '⚡ กำลังดึงข้อมูลผังนักเตะผ่าน Edge Relay...'}</span>`;
+
+            const modal = document.getElementById('team-modal');
+            if (modal) {
+              if (modal.classList.contains('hidden')) {
+                this._lastFocusedElement = document.activeElement;
+              }
+              modal.classList.remove('hidden');
+              this.lockBodyScroll();
+            }
+
+            this.fetchTier2TeamSquad(entryIdNum, currentMaxGw).then(success => {
+              if (this.currentModalEntryId === entryIdNum) {
+                if (success) {
+                  this.openTeamModal(entryIdNum);
+                } else {
+                  if (formationEl) formationEl.innerText = '-';
+                  if (gkpLine) gkpLine.innerHTML = '';
+                  if (defLine) defLine.innerHTML = `<div class="text-center text-white/90 py-8 font-bold text-xs w-full">${isEn ? 'Unable to load lineup (Match not started or connection error)' : 'ไม่สามารถโหลดข้อมูลผังผู้เล่นได้ (อาจยังไม่เริ่มแข่งหรือข้อผิดพลาดการเชื่อมต่อ)'}</div>`;
+                  if (midLine) midLine.innerHTML = '';
+                  if (fwdLine) fwdLine.innerHTML = '';
+                  if (benchContainer) benchContainer.innerHTML = `<div class="text-center text-slate-400 py-4 col-span-2 text-xs">${isEn ? 'No bench data available' : 'ไม่มีข้อมูลตัวสำรอง'}</div>`;
+                  if (benchTotal) benchTotal.innerHTML = '';
+                }
+              }
+            });
+            return;
+          }
+
           if (formationEl) formationEl.innerText = '-';
           if (gkpLine) gkpLine.innerHTML = '';
-          const isTier2 = (this.data && this.data.tier === 2) || (this.config && this.config.tier === 2);
-          const emptyMsg = isTier2
-            ? (isEn ? 'Squad & pitch lineup is disabled for Tier 2 leagues (Standings & Leaderboard Only mode).' : 'ระบบปิดการแสดงผังจัดทัพสำหรับลีกระดับ Tier 2 (โหมดแสดงตารางคะแนนอย่างเดียว)')
-            : ((squad && squad.dnp) 
-                ? (isEn ? `This team joined after this gameweek (Did not enter in GW ${this.selectedGW})` : `ทีมนี้เข้าร่วมการแข่งขันหลังจากสัปดาห์นี้ (ไม่ได้ส่งทีมใน GW ${this.selectedGW})`)
-                : (isEn ? 'No lineup data available for this gameweek' : 'ยังไม่มีข้อมูลแผนการจัดทัพในสัปดาห์นี้'));
+          const emptyMsg = (squad && squad.dnp) 
+            ? (isEn ? `This team joined after this gameweek (Did not enter in GW ${this.selectedGW})` : `ทีมนี้เข้าร่วมการแข่งขันหลังจากสัปดาห์นี้ (ไม่ได้ส่งทีมใน GW ${this.selectedGW})`)
+            : (isEn ? 'No lineup data available for this gameweek' : 'ยังไม่มีข้อมูลแผนการจัดทัพในสัปดาห์นี้');
           if (defLine) defLine.innerHTML = `<div class="text-center text-white/80 py-8 font-bold text-xs w-full">${emptyMsg}</div>`;
           if (midLine) midLine.innerHTML = '';
           if (fwdLine) fwdLine.innerHTML = '';
@@ -19804,6 +20367,24 @@ selectShi62GW(gwName) {
         this.filterLiveTables();
       }
 
+      showMoreMatchdayTeams(amount) {
+        if (amount === 'all') {
+          this.matchdayChunkLimit = 999999;
+        } else {
+          this.matchdayChunkLimit = (this.matchdayChunkLimit || 100) + Number(amount || 100);
+        }
+        this.renderGameweekView();
+      }
+
+      showMoreOverallTeams(amount) {
+        if (amount === 'all') {
+          this.overallChunkLimit = 999999;
+        } else {
+          this.overallChunkLimit = (this.overallChunkLimit || 100) + Number(amount || 100);
+        }
+        this.renderGameweekView();
+      }
+
       filterLiveTables() {
         const input = document.getElementById('live-team-search');
         const term = input ? input.value.trim().toLowerCase() : '';
@@ -19811,6 +20392,23 @@ selectShi62GW(gwName) {
         const overallBody = document.getElementById('overall-standings-body');
         const countEl = document.getElementById('live-search-count');
         const isEn = (this.currentLang === 'en');
+        const totalTeams = (this.data && this.data.teams) ? this.data.teams.length : 0;
+
+        if (totalTeams > 100) {
+          this.renderGameweekView();
+          if (countEl) {
+            const rows = matchdayBody ? matchdayBody.querySelectorAll('tr[data-team-name]') : [];
+            const matchCount = rows.length;
+            if (term && term.length > 0) {
+              countEl.textContent = isEn ? `Found ${matchCount} of ${totalTeams.toLocaleString()} teams` : `พบ ${matchCount} จาก ${totalTeams.toLocaleString()} ทีม`;
+              countEl.classList.remove('hidden');
+            } else {
+              countEl.textContent = '';
+              countEl.classList.add('hidden');
+            }
+          }
+          return;
+        }
 
         let matchdayMatches = 0;
 
@@ -21109,9 +21707,30 @@ selectShi62GW(gwName) {
     radar_total_leagues = len(multi_data.get("leagues", {}))
     radar_banner_text = f"{radar_total_leagues} ลีก • {radar_unique_teams} ทีม"
 
+    effective_lid = str(default_league_id) if default_league_id else next(
+        (str(k) for k, v in leagues_config.items() if isinstance(v, dict) and v.get("is_default")),
+        next(iter(leagues_config.keys()), "40700")
+    )
+    target_cfg = leagues_config.get(effective_lid, {})
+    target_tier = target_cfg.get('tier', 1)
+    is_initial_tier2 = (target_tier == 2)
+    target_features = target_cfg.get('features', {})
+    has_initial_prizes = not is_initial_tier2 and (
+        target_features.get('prize_model') == 'bramann_dual_prize' or
+        bool(target_features.get('has_weekly_prizes')) or
+        bool(target_features.get('has_monthly_prizes')) or
+        bool(target_features.get('has_settlement_phases')) or
+        bool(target_features.get('has_weekly_penalties')) or
+        (bool(target_cfg.get('total_pool')) and target_cfg.get('total_pool') != '-' and 'เสื้อบอล' not in str(target_cfg.get('total_pool')) and 'ฟรี' not in str(target_cfg.get('entry_fee', '')))
+    )
+    has_initial_cup = bool(target_features.get('has_cup'))
+
     html = html_template.replace('__LAST_SYNC__', last_sync_str)
     html = html.replace('__NEXT_DEADLINE_TEXT__', next_deadline_text)
     html = html.replace('__RADAR_BANNER_TEXT__', radar_banner_text)
+    html = html.replace('__TIER2_TAB_HIDDEN__', ' hidden' if is_initial_tier2 else '')
+    html = html.replace('__PRIZES_TAB_HIDDEN__', '' if has_initial_prizes else ' hidden')
+    html = html.replace('__CUP_TAB_HIDDEN__', '' if has_initial_cup else ' hidden')
     html = html.replace('__MULTI_DATA_JSON__', multi_data_json_str)
     html = html.replace('__LEAGUES_CONFIG_JSON__', leagues_config_json_str)
     html = html.replace('__SHI62_SPECIAL_DATA_JSON__', shi62_data_json_str or 'null')
@@ -21182,6 +21801,24 @@ def main():
         with open(league_file, 'w', encoding='utf-8') as f:
             json.dump(l_dict, f, ensure_ascii=False, separators=(',', ':'))
 
+        # Tier-2 Chunked Export: data/leagues/{lid}/gw{gw}.json for on-demand loading
+        is_tier2 = (l_dict.get("tier") == 2) or (leagues_config.get(str(lid), {}).get("tier") == 2)
+        if is_tier2:
+            lid_chunks_dir = os.path.join(data_dir, str(lid))
+            os.makedirs(lid_chunks_dir, exist_ok=True)
+            for gw_k, gw_v in l_dict.get("gameweeks", {}).items():
+                gw_res = gw_v.get("results", [])
+                if gw_res:
+                    gw_file = os.path.join(lid_chunks_dir, f"gw{gw_k}.json")
+                    with open(gw_file, 'w', encoding='utf-8') as gf:
+                        json.dump({
+                            "league_id": lid,
+                            "gw": int(gw_k),
+                            "is_finished": gw_v.get("is_finished", False),
+                            "is_started": gw_v.get("is_started", False),
+                            "results": gw_res
+                        }, gf, ensure_ascii=False, separators=(',', ':'))
+
     # Auto-cleanup retired league JSON files from previous seasons
     for fname in os.listdir(data_dir):
         if fname.endswith('.json'):
@@ -21205,16 +21842,20 @@ def main():
             "leagues": {}
         }
         for lid, l_dict in pruned_data["leagues"].items():
+            member_count = len(l_dict.get("teams", []))
             if str(lid) == str(target_lid):
-                page_pruned["leagues"][lid] = l_dict
+                target_obj = dict(l_dict)
+                target_obj["member_count"] = member_count
+                page_pruned["leagues"][lid] = target_obj
             else:
                 page_pruned["leagues"][lid] = {
                     "id": l_dict["id"],
                     "name": l_dict["name"],
                     "season": l_dict["season"],
                     "tier": l_dict.get("tier", 1),
-                    "teams": l_dict.get("teams", []),
-                    "gameweeks": l_dict.get("gameweeks", {}),
+                    "member_count": member_count,
+                    "teams": [],
+                    "gameweeks": {},
                     "squads": {}
                 }
         return json.dumps(page_pruned, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')

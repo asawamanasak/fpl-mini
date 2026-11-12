@@ -4,6 +4,7 @@
  *   GET /?event={gw}              -> Full or Slim live elements + fixtures + provisional bonus
  *   GET /live?event={gw}&slim=1   -> Optimized lightweight live payload (~85% smaller)
  *   GET /fixtures?event={gw}      -> Live Premier League match scores, minutes & BPS leaders
+ *   GET /picks?entry={id}&gw={gw} -> On-Demand team squad lineup & picks for Tier 2 leagues
  *   GET /health                   -> Edge health check & colocation status
  *
  * Executive Dashboard:
@@ -860,15 +861,17 @@ export default {
 
     const isSlim = url.searchParams.get('slim') === '1' || url.searchParams.get('mode') === 'slim';
     const isForce = url.searchParams.get('force') === '1';
+    const entryParam = url.searchParams.get('entry') || '';
 
     // 2. Construct Edge Cache Key
     // Force refresh (?force=1) uses 5-second burst protection bucket; standard poll uses clean URL cache key with dynamic edge TTL
     const cacheKeyUrl = new URL(request.url);
+    const entrySuffix = entryParam ? `&entry=${encodeURIComponent(entryParam)}` : '';
     if (isForce) {
       const forceBucket = Math.floor(Date.now() / 5000);
-      cacheKeyUrl.search = `?path=${path}&gw=${gw}&slim=${isSlim ? 1 : 0}&force=1&b=${forceBucket}`;
+      cacheKeyUrl.search = `?path=${path}&gw=${gw}&slim=${isSlim ? 1 : 0}${entrySuffix}&force=1&b=${forceBucket}`;
     } else {
-      cacheKeyUrl.search = `?path=${path}&gw=${gw}&slim=${isSlim ? 1 : 0}`;
+      cacheKeyUrl.search = `?path=${path}&gw=${gw}&slim=${isSlim ? 1 : 0}${entrySuffix}`;
     }
     const cacheKey = new Request(cacheKeyUrl.toString(), { method: 'GET' });
     const cache = caches.default;
@@ -885,6 +888,81 @@ export default {
     }
 
     try {
+      // 2.5 Team Picks Endpoint (/picks?entry={id}&gw={gw} or /api/picks)
+      if (path === '/picks' || path === '/api/picks') {
+        const entryId = url.searchParams.get('entry');
+        const targetGw = url.searchParams.get('gw') || url.searchParams.get('event') || String(gw);
+        if (!entryId || !/^\d+$/.test(entryId)) {
+          return new Response(
+            JSON.stringify({ error: 'Valid entry ID parameter is required (e.g. ?entry=7563)' }),
+            {
+              status: 400,
+              headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+            }
+          );
+        }
+
+        const picksResp = await fetch(`https://fantasy.premierleague.com/api/entry/${entryId}/event/${targetGw}/picks/`, {
+          headers: FPL_HEADERS,
+        });
+
+        if (!picksResp.ok) {
+          return new Response(
+            JSON.stringify({
+              error: `FPL picks upstream returned ${picksResp.status}`,
+              status: picksResp.status,
+              entry: Number(entryId),
+              gw: Number(targetGw),
+            }),
+            {
+              status: picksResp.status,
+              headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+            }
+          );
+        }
+
+        const picksData = await picksResp.json();
+        const ttl = 1800; // 30 minutes cache for team picks (15 players are locked post-deadline)
+        const responseBody = JSON.stringify({
+          entry_id: Number(entryId),
+          gw: Number(targetGw),
+          active_chip: picksData.active_chip,
+          automatic_subs: picksData.automatic_subs || [],
+          entry_history: picksData.entry_history || {},
+          picks: (picksData.picks || []).map(p => ({
+            element: p.element,
+            position: p.position,
+            multiplier: p.multiplier,
+            is_captain: Boolean(p.is_captain),
+            is_vice_captain: Boolean(p.is_vice_captain),
+            element_type: p.element_type,
+          })),
+          updated_at: new Date().toISOString(),
+          colo,
+        });
+
+        const picksResponse = new Response(responseBody, {
+          status: 200,
+          headers: {
+            ...CORS_HEADERS,
+            'Content-Type': 'application/json; charset=utf-8',
+            'Cache-Control': `public, max-age=${ttl}, s-maxage=${ttl}, stale-while-revalidate=60`,
+            'X-FPL-Edge-Cache': 'MISS',
+            'X-FPL-Edge-Colo': colo,
+          },
+        });
+
+        if (isForce) {
+          const normalKeyUrl = new URL(request.url);
+          normalKeyUrl.search = `?path=${path}&gw=${targetGw}&entry=${entryId}&slim=0`;
+          const normalKey = new Request(normalKeyUrl.toString(), { method: 'GET' });
+          ctx.waitUntil(Promise.all([cache.put(cacheKey, picksResponse.clone()), cache.put(normalKey, picksResponse.clone())]));
+        } else {
+          ctx.waitUntil(cache.put(cacheKey, picksResponse.clone()));
+        }
+
+        return picksResponse;
+      }
       // 3. Fetch Fixtures Only endpoint (/fixtures?event={gw})
       if (path === '/fixtures') {
         const fixResp = await fetch(`https://fantasy.premierleague.com/api/fixtures/?event=${gw}`, {
