@@ -18,8 +18,8 @@ from parse_bramann_games import parse_bramann_prediction_file, parse_bramann_cha
 
 def get_architecture_diagram_html(lang='th', asset_prefix='./'):
     is_th = lang == 'th'
-    arch_title = "สถาปัตยกรรมระบบเบื้องหลังและเวิร์กโฟลว์การประมวลผลข้อมูล FPLSaWaDiKa" if is_th else "FPLSaWaDiKa System Architecture & Pipeline Workflow"
-    arch_desc = "ไดอะแกรมแสดงโฟลว์การทำงานแบบ Dual-Layer Serverless Jamstack" if is_th else "Architecture diagram showing Dual-Layer Jamstack serverless pipeline"
+    arch_title = "สถาปัตยกรรมระบบเบื้องหลังและเวิร์กโฟลว์การประมวลผลข้อมูล FPLSaWaDiKa (Season 2026/27)" if is_th else "FPLSaWaDiKa System Architecture & Pipeline Workflow (Season 2026/27)"
+    arch_desc = "ไดอะแกรมแสดงโฟลว์การทำงานแบบ Hybrid Dual-Layer Serverless Jamstack" if is_th else "Architecture diagram showing Hybrid Dual-Layer Jamstack serverless pipeline"
     fullscreen_label = "เปิดดูเต็มจอ ↗" if is_th else "Open Fullscreen ↗"
     stack_expand_label = "คลิกเพื่อเปิดดูรูปขนาดเต็ม ↗" if is_th else "Click to expand high-res diagram ↗"
     pan_hint = "← เลื่อนแนวนอนเพื่อดูผังเต็ม →" if is_th else "← Swipe horizontally to view full →"
@@ -29,12 +29,12 @@ def get_architecture_diagram_html(lang='th', asset_prefix='./'):
     zone1_title = "1. INGESTION &amp; ATOMIC STATE"
     zone2_title = "2. JAMSTACK &amp; EDGE CDN"
     zone3_title = "3. CLIENT RUNTIME"
-    sync_sub = "ThreadPoolExecutor • 8 ลีก 146 ทีม (163 รายการ)" if is_th else "ThreadPoolExecutor • 8 Leagues • 146 Teams (163 Entries)"
-    atomic_sub = "multi_fpl_data.json • Incremental GW Cache"
+    sync_sub = "Tier 1: 8 ลีก (146 ทีม) • Tier 2: 1 ลีก (1.7k ทีม)" if is_th else "Tier 1: 8 Leagues (146 Teams) • Tier 2: 1.7k Teams"
+    atomic_sub = "multi_fpl_data.json • Decoupled Chunks"
     smart_commit_sub = "15m Cron • ข้าม Commit ถ้าไร้แต้มเปลี่ยน" if is_th else "15m Cron • Semantic Diff Zero-Churn"
-    preview_compiler_sub = "Config-Driven • data/leagues/{id}.json"
+    preview_compiler_sub = "Config-Driven • /{id}.json & gw{gw}.json"
     edge_cdn_sub = "fplsawadika.com • /{id}/ Routes • Brotli"
-    client_sub = "0kb SPA • 15s Poll • Lazy JSON"
+    client_sub = "0kb SPA • 15s Poll • Lazy & Chunks"
 
     return f"""
           <!-- Architecture Workflow Diagram (Visual Guide) -->
@@ -96,14 +96,14 @@ def get_architecture_diagram_html(lang='th', asset_prefix='./'):
                 <text x="364" y="287" fill="var(--diag-muted)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">OS.REPLACE</text>
                 <rect x="487" y="242" width="62" height="14" rx="2" fill="var(--diag-paper)"/>
                 <text x="518" y="252" fill="var(--diag-accent)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DIFF DETECT</text>
-                <rect x="618" y="221" width="68" height="14" rx="2" fill="var(--diag-paper)"/>
-                <text x="652" y="231" fill="var(--diag-muted)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">SPLIT JSON</text>
+                <rect x="612" y="221" width="80" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="652" y="231" fill="var(--diag-muted)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.06em">SPLIT &amp; CHUNKS</text>
                 <rect x="752" y="168" width="68" height="14" rx="2" fill="var(--diag-paper)"/>
                 <text x="786" y="178" fill="var(--diag-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">TTFB &lt; 50ms</text>
-                <rect x="748" y="330" width="76" height="14" rx="2" fill="var(--diag-paper)"/>
-                <text x="786" y="340" fill="var(--diag-muted)" font-size="7" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.06em">LAZY /{{ID}}.JSON</text>
-                <rect x="366" y="413" width="268" height="14" rx="2" fill="var(--diag-paper)"/>
-                <text x="500" y="423" fill="var(--diag-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">15s LIVE POLL • REAL-TIME SCORE &amp; BONUS OVERLAY</text>
+                <rect x="744" y="330" width="84" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="786" y="340" fill="var(--diag-muted)" font-size="7" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.06em">LAZY &amp; CHUNKS</text>
+                <rect x="340" y="413" width="320" height="14" rx="2" fill="var(--diag-paper)"/>
+                <text x="500" y="423" fill="var(--diag-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">15s LIVE POLL &amp; ON-DEMAND /PICKS • ZERO-CORS RELAY</text>
                 <g id="embed-node-fpl-api">
                   <rect x="24" y="92" width="156" height="72" rx="6" fill="var(--diag-paper)"/>
                   <rect x="24" y="92" width="156" height="72" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--diag-link)" stroke-width="1.2"/>
@@ -118,13 +118,13 @@ def get_architecture_diagram_html(lang='th', asset_prefix='./'):
                   <rect x="32" y="260" width="66" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
                   <text x="65" y="269" fill="var(--diag-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EDGE WORKER</text>
                   <text x="102" y="290" fill="var(--diag-ink)" font-size="11.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Cloudflare Live Relay</text>
-                  <text x="102" y="308" fill="var(--diag-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">15s Matchday Poll • CORS</text>
+                  <text x="102" y="308" fill="var(--diag-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">15s Live Poll • /picks On-Demand</text>
                 </g>
                 <g id="embed-node-sync-engine">
                   <rect x="240" y="92" width="248" height="72" rx="6" fill="var(--diag-paper)"/>
                   <rect x="240" y="92" width="248" height="72" rx="6" fill="var(--diag-accent-tint)" stroke="var(--diag-accent)" stroke-width="1.5"/>
-                  <rect x="248" y="100" width="76" height="12" rx="2" fill="var(--diag-accent)" opacity="0.18"/>
-                  <text x="286" y="109" fill="var(--diag-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">PARALLEL CORE</text>
+                  <rect x="248" y="100" width="88" height="12" rx="2" fill="var(--diag-accent)" opacity="0.18"/>
+                  <text x="292" y="109" fill="var(--diag-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">HYBRID PIPELINE</text>
                   <text x="364" y="130" fill="var(--diag-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">sync_live_fpl.py</text>
                   <text x="364" y="148" fill="var(--diag-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">{sync_sub}</text>
                 </g>
@@ -2879,13 +2879,13 @@ __STRUCTURED_DATA_JSON__
             </div>
             <div class="flex flex-col gap-0.5 min-w-0 p-1.5 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-slate-200/40 dark:border-slate-700/40">
               <span class="text-slate-400 dark:text-slate-500 block text-[9.5px] uppercase tracking-wider font-semibold truncate">การประมวลผลคู่ขนาน</span>
-              <span class="font-bold text-slate-900 dark:text-slate-100 truncate">8 ลีก • 146 ทีม</span>
-              <span class="text-[9.5px] text-slate-500 dark:text-slate-400 truncate">163 รายการ • ThreadPool</span>
+              <span class="font-bold text-slate-900 dark:text-slate-100 truncate">9 ลีก • 1,943 ทีม</span>
+              <span class="text-[9.5px] text-slate-500 dark:text-slate-400 truncate">Tier 1 &amp; 2 • Hybrid Pipeline</span>
             </div>
             <div class="flex flex-col gap-0.5 min-w-0 p-1.5 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-slate-200/40 dark:border-slate-700/40">
               <span class="text-slate-400 dark:text-slate-500 block text-[9.5px] uppercase tracking-wider font-semibold truncate">รีเลย์คะแนนสด</span>
               <span class="font-bold text-slate-900 dark:text-slate-100 truncate">Cloudflare Worker</span>
-              <span class="text-[9.5px] text-slate-500 dark:text-slate-400 truncate">สด 15s • Zero CORS</span>
+              <span class="text-[9.5px] text-slate-500 dark:text-slate-400 truncate">สด 15s • On-Demand /picks</span>
             </div>
             <div class="flex flex-col gap-0.5 min-w-0 p-1.5 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-slate-200/40 dark:border-slate-700/40">
               <span class="text-slate-400 dark:text-slate-500 block text-[9.5px] uppercase tracking-wider font-semibold truncate">เครือข่ายส่งข้อมูล</span>
@@ -2899,7 +2899,7 @@ __STRUCTURED_DATA_JSON__
               <div>
                 <div class="flex items-center justify-between gap-2 mb-2">
                   <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">STAGE 01 • INGESTION</span>
-                  <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">ThreadPool</span>
+                  <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">ThreadPool &amp; Chunks</span>
                 </div>
                 <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">1. Pipeline &amp; Multi-Threading Engine</h4>
                 <ul class="space-y-2 text-xs sm:text-[12px] leading-relaxed">
@@ -2909,7 +2909,7 @@ __STRUCTURED_DATA_JSON__
                   </li>
                   <li class="flex items-start gap-2">
                     <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                    <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Parallel Concurrency &amp; Incremental Cache:</strong> ใช้ <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">ThreadPoolExecutor</code> ดึงข้อมูล 8 ลีก 146 ทีม (163 รายการ) พร้อมกันใน 2-4 วินาที พร้อมแคช GW ที่จบแล้วเพื่อลดการยิง API ซ้ำกว่า 95%</span>
+                    <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Hybrid Concurrency &amp; Incremental Cache:</strong> ใช้สถาปัตยกรรม 2 ระดับ (Dual-Scale Pipeline) โดยมินิลีกมาตรฐาน (Tier 1: 8 ลีก 146 ทีม 163 รายการ) ซิงก์ควบคู่กันด้วย <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">ThreadPoolExecutor</code> พร้อมแคช GW สำเร็จรูปเพื่อลดการยิง API ซ้ำกว่า 95% ขณะที่มินิลีกระดับคอมมูนิตี้ (Tier 2: 1 ลีก 1,780 ทีม) ใช้โหมด Standings Only เพื่อขจัดปัญหา Rate Limit</span>
                   </li>
                   <li class="flex items-start gap-2">
                     <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
@@ -2928,7 +2928,7 @@ __STRUCTURED_DATA_JSON__
                 <ul class="space-y-2 text-xs sm:text-[12px] leading-relaxed">
                   <li class="flex items-start gap-2">
                     <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                    <span><strong class="font-semibold text-slate-900 dark:text-slate-100">POSIX Atomic Replacement:</strong> บันทึก <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">multi_fpl_data.json</code> และไฟล์รายลีกด้วย <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">tempfile</code> + <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">os.replace</code> ขจัดปัญหา Race Conditions หรือไฟล์ JSON เสียหาย</span>
+                    <span><strong class="font-semibold text-slate-900 dark:text-slate-100">POSIX Atomic Replacement:</strong> บันทึก <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">multi_fpl_data.json</code>, ไฟล์แยกรายลีก และ Chunks ด้วย <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">tempfile</code> + <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">os.replace</code> ขจัดปัญหา Race Conditions หรือไฟล์ JSON เสียหาย</span>
                   </li>
                   <li class="flex items-start gap-2">
                     <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
@@ -2951,11 +2951,11 @@ __STRUCTURED_DATA_JSON__
                 <ul class="space-y-2 text-xs sm:text-[12px] leading-relaxed">
                   <li class="flex items-start gap-2">
                     <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                    <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Zero-Code Season Rollover:</strong> ขับเคลื่อนด้วย <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">config/leagues_config.json</code> 100% รองรับการเปลี่ยนลีกและทีมข้ามฤดูกาลพร้อม Auto-Cleanup ลบโฟลเดอร์ลีกเก่าอัตโนมัติ</span>
+                    <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Zero-Code Season Rollover:</strong> ขับเคลื่อนด้วย <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">config/leagues_config.json</code> 100% สำหรับฤดูกาล 2026/27 รองรับการเปลี่ยนลีกและทีมข้ามฤดูกาลพร้อม Auto-Cleanup ลบโฟลเดอร์ลีกเก่าอัตโนมัติ</span>
                   </li>
                   <li class="flex items-start gap-2">
                     <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                    <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Per-League JSON Split:</strong> คอมไพล์เลอร์ <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">update_preview.py</code> แยกไฟล์ <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">data/leagues/{id}.json</code> และสร้าง Route ประจำลีก (<code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">/{id}/index.html</code>) ลดขนาด HTML เริ่มต้นลงกว่า 85%</span>
+                    <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Decoupled JSON Split &amp; Tier 2 Chunking:</strong> คอมไพล์เลอร์ <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">update_preview.py</code> แยกไฟล์ <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">data/leagues/{id}.json</code> และสร้าง Route ประจำลีก (<code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">/{id}/index.html</code>) พร้อมแบ่ง Chunks รายสัปดาห์ (<code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">data/leagues/{id}/gw{gw}.json</code>) สำหรับ Tier 2 ลดขนาด Initial HTML ลงกว่า 85%</span>
                   </li>
                   <li class="flex items-start gap-2">
                     <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
@@ -2968,13 +2968,13 @@ __STRUCTURED_DATA_JSON__
               <div>
                 <div class="flex items-center justify-between gap-2 mb-2">
                   <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">STAGE 04 • CLIENT RUNTIME</span>
-                  <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">15s Live Relay</span>
+                  <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">15s Live Relay &amp; Picks</span>
                 </div>
                 <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">4. Client Runtime &amp; 15s Real-Time Relay</h4>
                 <ul class="space-y-2 text-xs sm:text-[12px] leading-relaxed">
                   <li class="flex items-start gap-2">
                     <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                    <span><strong class="font-semibold text-slate-900 dark:text-slate-100">15s Cloudflare Edge Live Poll:</strong> ระหว่างมีแมตช์เตะ เบราว์เซอร์ดึงแต้มสดและโบนัส BPS เรียลไทม์ผ่าน Cloudflare Worker (<code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">fpl-live-relay</code> / <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">api.fplsawadika.com</code>) ทุก 15 วินาทีโดยไม่ต้องรอบิลด์ HTML ใหม่</span>
+                    <span><strong class="font-semibold text-slate-900 dark:text-slate-100">15s Cloudflare Edge Live Poll &amp; On-Demand Picks:</strong> ระหว่างมีแมตช์เตะ เบราว์เซอร์ดึงแต้มสดและโบนัส BPS เรียลไทม์ผ่าน Cloudflare Worker (<code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">fpl-live-relay</code> / <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">api.fplsawadika.com</code>) ทุก 15 วินาที พร้อมดึงผัง 11 ตัวจริงของ Tier 2 แบบ On-Demand ผ่านเอนด์พอยต์ <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">/picks</code></span>
                   </li>
                   <li class="flex items-start gap-2">
                     <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
@@ -10131,122 +10131,171 @@ selectShi62GW(gwName) {
         if (overallBody) {
           const overallMap = {};
           const maxGW = Number(this.multiData.max_gw) || 2;
-
-          (this.data.teams || []).forEach(t => {
-            overallMap[t.entry_id] = {
-              entry_id: t.entry_id,
-              team_name: t.entry_name,
-              player_name: t.player_name,
-              fpl_rank: t.rank || 999,
-              total_points: 0,
-              last_gw_pts: 0,
-              last_gw_raw: 0,
-              last_gw_hits: 0
-            };
-          });
-
           const targetGW = Math.min(Number(this.selectedGW) || maxGW, maxGW);
-          for (let g = 1; g <= targetGW; g++) {
-            const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
-            if (gData && gData.results) {
-              const gIsStarted = gData.is_started !== undefined 
-                ? Boolean(gData.is_started) 
-                : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+          const isTier2 = Boolean(this.data && this.data.tier === 2) || Boolean(this.config && this.config.tier === 2);
 
-              // Only accumulate into overall total if gameweek has actually started!
-              if (gIsStarted) {
-                const seenInGw = new Set();
-                gData.results.forEach(r => {
-                  if (seenInGw.has(r.entry_id)) return;
-                  seenInGw.add(r.entry_id);
-                  if (!overallMap[r.entry_id]) {
-                    overallMap[r.entry_id] = {
-                      entry_id: r.entry_id,
-                      team_name: r.team_name,
-                      player_name: r.player_name,
-                      fpl_rank: 999,
-                      total_points: 0,
-                      last_gw_pts: 0,
-                      last_gw_raw: 0,
-                      last_gw_hits: 0
-                    };
-                  }
-                  overallMap[r.entry_id].total_points += (Number(r.net_points) || 0);
-                });
-              }
-
-              if (g === this.selectedGW) {
-                gData.results.forEach(r => {
-                  if (overallMap[r.entry_id]) {
-                    overallMap[r.entry_id].last_gw_pts = (Number(r.net_points) || 0);
-                    overallMap[r.entry_id].last_gw_raw = (Number(r.points) || 0);
-                    overallMap[r.entry_id].last_gw_hits = Number(r.hits) || 0;
-                  }
-                });
-              }
+          if (isTier2) {
+            // Tier 2 Direct Official Binding: Directly bind to official FPL total_points, rank, last_rank, and event_total
+            const currentGwResultsMap = {};
+            if (gwData && Array.isArray(gwData.results)) {
+              gwData.results.forEach(r => {
+                currentGwResultsMap[r.entry_id] = r;
+              });
             }
-          }
 
-          // Also calculate standings up to targetGW - 1 for rank movement delta
-          if (targetGW > 1) {
-            const prevOverallMap = {};
             (this.data.teams || []).forEach(t => {
-              prevOverallMap[t.entry_id] = { entry_id: t.entry_id, fpl_rank: t.rank || 999, total_points: 0 };
+              const r = currentGwResultsMap[t.entry_id];
+              const lastGwPts = r ? (Number(r.net_points) || 0) : (Number(t.event_total) || 0);
+              const lastGwRaw = r ? (Number(r.points) || 0) : (Number(t.event_total) || 0);
+              const lastGwHits = r ? (Number(r.hits) || 0) : 0;
+              const fplRank = (t.rank !== undefined && t.rank !== null) ? Number(t.rank) : 999;
+              const lastRank = (t.last_rank !== undefined && t.last_rank !== null) ? Number(t.last_rank) : null;
+
+              const isLatestGw = (targetGW >= maxGW);
+              const teamTotalPoints = (isLatestGw || !r || r.total_points === undefined)
+                ? (Number(t.total_points) || 0)
+                : (Number(r.total_points) || 0);
+              const teamOverallRank = (isLatestGw || !r || r.overall_rank === undefined)
+                ? fplRank
+                : (Number(r.overall_rank) || fplRank);
+              const teamPrevRank = (isLatestGw || !r || r.last_rank === undefined)
+                ? lastRank
+                : (Number(r.last_rank) || null);
+
+              overallMap[t.entry_id] = {
+                entry_id: t.entry_id,
+                team_name: t.entry_name,
+                player_name: t.player_name,
+                fpl_rank: teamOverallRank,
+                overall_rank: teamOverallRank,
+                prev_rank: teamPrevRank,
+                total_points: teamTotalPoints,
+                last_gw_pts: lastGwPts,
+                last_gw_raw: lastGwRaw,
+                last_gw_hits: lastGwHits
+              };
             });
-            for (let g = 1; g < targetGW; g++) {
+          } else {
+            (this.data.teams || []).forEach(t => {
+              overallMap[t.entry_id] = {
+                entry_id: t.entry_id,
+                team_name: t.entry_name,
+                player_name: t.player_name,
+                fpl_rank: t.rank || 999,
+                total_points: 0,
+                last_gw_pts: 0,
+                last_gw_raw: 0,
+                last_gw_hits: 0
+              };
+            });
+
+            for (let g = 1; g <= targetGW; g++) {
               const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
               if (gData && gData.results) {
-                const gIsStarted = gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+                const gIsStarted = gData.is_started !== undefined 
+                  ? Boolean(gData.is_started) 
+                  : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+
+                // Only accumulate into overall total if gameweek has actually started!
                 if (gIsStarted) {
                   const seenInGw = new Set();
                   gData.results.forEach(r => {
                     if (seenInGw.has(r.entry_id)) return;
                     seenInGw.add(r.entry_id);
-                    if (!prevOverallMap[r.entry_id]) {
-                      prevOverallMap[r.entry_id] = { entry_id: r.entry_id, fpl_rank: 999, total_points: 0 };
+                    if (!overallMap[r.entry_id]) {
+                      overallMap[r.entry_id] = {
+                        entry_id: r.entry_id,
+                        team_name: r.team_name,
+                        player_name: r.player_name,
+                        fpl_rank: 999,
+                        total_points: 0,
+                        last_gw_pts: 0,
+                        last_gw_raw: 0,
+                        last_gw_hits: 0
+                      };
                     }
-                    prevOverallMap[r.entry_id].total_points += (Number(r.net_points) || 0);
+                    overallMap[r.entry_id].total_points += (Number(r.net_points) || 0);
+                  });
+                }
+
+                if (g === this.selectedGW) {
+                  gData.results.forEach(r => {
+                    if (overallMap[r.entry_id]) {
+                      overallMap[r.entry_id].last_gw_pts = (Number(r.net_points) || 0);
+                      overallMap[r.entry_id].last_gw_raw = (Number(r.points) || 0);
+                      overallMap[r.entry_id].last_gw_hits = Number(r.hits) || 0;
+                    }
                   });
                 }
               }
             }
-            const prevSorted = Object.values(prevOverallMap).sort((a, b) => (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999)));
-            let curPrevRank = 1;
-            let prevEligibleCount = 0;
-            let prevTot = null;
-            prevSorted.forEach(team => {
-              if (!this.isPrizeEligible(team.entry_id)) {
-                team.prev_rank = null;
-                return;
+
+            // Also calculate standings up to targetGW - 1 for rank movement delta
+            if (targetGW > 1) {
+              const prevOverallMap = {};
+              (this.data.teams || []).forEach(t => {
+                prevOverallMap[t.entry_id] = { entry_id: t.entry_id, fpl_rank: t.rank || 999, total_points: 0 };
+              });
+              for (let g = 1; g < targetGW; g++) {
+                const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+                if (gData && gData.results) {
+                  const gIsStarted = gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+                  if (gIsStarted) {
+                    const seenInGw = new Set();
+                    gData.results.forEach(r => {
+                      if (seenInGw.has(r.entry_id)) return;
+                      seenInGw.add(r.entry_id);
+                      if (!prevOverallMap[r.entry_id]) {
+                        prevOverallMap[r.entry_id] = { entry_id: r.entry_id, fpl_rank: 999, total_points: 0 };
+                      }
+                      prevOverallMap[r.entry_id].total_points += (Number(r.net_points) || 0);
+                    });
+                  }
+                }
               }
-              prevEligibleCount++;
-              if (prevTot !== null && team.total_points < prevTot) {
-                curPrevRank = prevEligibleCount;
-              }
-              prevTot = team.total_points;
-              team.prev_rank = curPrevRank;
-              if (overallMap[team.entry_id]) {
-                overallMap[team.entry_id].prev_rank = curPrevRank;
-              }
-            });
+              const prevSorted = Object.values(prevOverallMap).sort((a, b) => (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999)));
+              let curPrevRank = 1;
+              let prevEligibleCount = 0;
+              let prevTot = null;
+              prevSorted.forEach(team => {
+                if (!this.isPrizeEligible(team.entry_id)) {
+                  team.prev_rank = null;
+                  return;
+                }
+                prevEligibleCount++;
+                if (prevTot !== null && team.total_points < prevTot) {
+                  curPrevRank = prevEligibleCount;
+                }
+                prevTot = team.total_points;
+                team.prev_rank = curPrevRank;
+                if (overallMap[team.entry_id]) {
+                  overallMap[team.entry_id].prev_rank = curPrevRank;
+                }
+              });
+            }
           }
 
-          const overallSorted = Object.values(overallMap).sort((a, b) => (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999)));
-          let curOverallRank = 1;
-          let eligibleCount = 0;
-          let prevEligibleTotal = null;
-          overallSorted.forEach((team) => {
-            if (!this.isPrizeEligible(team.entry_id)) {
-              team.overall_rank = null;
-              return;
-            }
-            eligibleCount++;
-            if (prevEligibleTotal !== null && team.total_points < prevEligibleTotal) {
-              curOverallRank = eligibleCount;
-            }
-            prevEligibleTotal = team.total_points;
-            team.overall_rank = curOverallRank;
-          });
+          const overallSorted = isTier2
+            ? Object.values(overallMap).sort((a, b) => ((a.overall_rank || 999) - (b.overall_rank || 999)) || (b.total_points - a.total_points))
+            : Object.values(overallMap).sort((a, b) => (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999)));
+
+          if (!isTier2) {
+            let curOverallRank = 1;
+            let eligibleCount = 0;
+            let prevEligibleTotal = null;
+            overallSorted.forEach((team) => {
+              if (!this.isPrizeEligible(team.entry_id)) {
+                team.overall_rank = null;
+                return;
+              }
+              eligibleCount++;
+              if (prevEligibleTotal !== null && team.total_points < prevEligibleTotal) {
+                curOverallRank = eligibleCount;
+              }
+              prevEligibleTotal = team.total_points;
+              team.overall_rank = curOverallRank;
+            });
+          }
 
           let oHtml = '';
           const isLargeOverall = overallSorted.length > 100;
@@ -11383,6 +11432,7 @@ selectShi62GW(gwName) {
         if (!leagueData) return [];
         const teams = leagueData.teams || [];
         const maxGW = Number(this.multiData.max_gw) || 1;
+        const isTier2 = Boolean(this.data && this.data.tier === 2) || Boolean(this.config && this.config.tier === 2);
 
         const overallMap = {};
         teams.forEach(t => {
@@ -11392,26 +11442,35 @@ selectShi62GW(gwName) {
             entry_name: t.entry_name,
             player_name: t.player_name,
             fpl_rank: Number(t.rank) || 999,
-            total_points: 0
+            total_points: isTier2 ? (Number(t.total_points) || 0) : 0
           };
         });
 
-        for (let g = 1; g <= maxGW; g++) {
-          const gData = leagueData.gameweeks ? leagueData.gameweeks[String(g)] : null;
-          if (gData && gData.results) {
-            const gIsStarted = gData.is_started !== undefined 
-              ? Boolean(gData.is_started) 
-              : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+        if (!isTier2) {
+          for (let g = 1; g <= maxGW; g++) {
+            const gData = leagueData.gameweeks ? leagueData.gameweeks[String(g)] : null;
+            if (gData && gData.results) {
+              const gIsStarted = gData.is_started !== undefined 
+                ? Boolean(gData.is_started) 
+                : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
 
-            if (gIsStarted) {
-              const seenInGw = new Set();
-              gData.results.forEach(r => {
-                if (seenInGw.has(r.entry_id)) return;
-                seenInGw.add(r.entry_id);
-                if (overallMap[r.entry_id]) {
+              if (gIsStarted) {
+                const seenInGw = new Set();
+                gData.results.forEach(r => {
+                  if (seenInGw.has(r.entry_id)) return;
+                  seenInGw.add(r.entry_id);
+                  if (!overallMap[r.entry_id]) {
+                    overallMap[r.entry_id] = {
+                      entry_id: r.entry_id,
+                      entry_name: r.entry_name,
+                      player_name: r.player_name,
+                      fpl_rank: 999,
+                      total_points: 0
+                    };
+                  }
                   overallMap[r.entry_id].total_points += (r.net_points || 0);
-                }
-              });
+                });
+              }
             }
           }
         }
@@ -11420,6 +11479,9 @@ selectShi62GW(gwName) {
           const aEligible = this.isPrizeEligible(a.entry_id) ? 1 : 0;
           const bEligible = this.isPrizeEligible(b.entry_id) ? 1 : 0;
           if (aEligible !== bEligible) return bEligible - aEligible;
+          if (isTier2) {
+            return ((a.fpl_rank || 999) - (b.fpl_rank || 999)) || (b.total_points - a.total_points);
+          }
           return (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999));
         });
 
@@ -11430,6 +11492,10 @@ selectShi62GW(gwName) {
           const isPrize = this.isPrizeEligible(team.entry_id);
           if (!isPrize) {
             team.leaderboard_rank = null;
+            return;
+          }
+          if (isTier2) {
+            team.leaderboard_rank = Number(team.rank) || curRank;
             return;
           }
           eligibleCount++;
@@ -18619,13 +18685,13 @@ selectShi62GW(gwName) {
                   </div>
                   <div class="flex flex-col gap-0.5 min-w-0 p-1.5 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-slate-200/40 dark:border-slate-700/40">
                     <span class="text-slate-400 dark:text-slate-500 block text-[9.5px] uppercase tracking-wider font-semibold truncate">CONCURRENCY &amp; STATE</span>
-                    <span class="font-bold text-slate-900 dark:text-slate-100 truncate">8 Leagues • 146 Teams</span>
-                    <span class="text-[9.5px] text-slate-500 dark:text-slate-400 truncate">163 Entries • ThreadPool</span>
+                    <span class="font-bold text-slate-900 dark:text-slate-100 truncate">9 Leagues • 1,943 Teams</span>
+                    <span class="text-[9.5px] text-slate-500 dark:text-slate-400 truncate">Tier 1 &amp; 2 • Hybrid Pipeline</span>
                   </div>
                   <div class="flex flex-col gap-0.5 min-w-0 p-1.5 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-slate-200/40 dark:border-slate-700/40">
                     <span class="text-slate-400 dark:text-slate-500 block text-[9.5px] uppercase tracking-wider font-semibold truncate">LIVE RELAY ENGINE</span>
                     <span class="font-bold text-slate-900 dark:text-slate-100 truncate">Cloudflare Worker</span>
-                    <span class="text-[9.5px] text-slate-500 dark:text-slate-400 truncate">15s Live • Zero CORS</span>
+                    <span class="text-[9.5px] text-slate-500 dark:text-slate-400 truncate">15s Live • On-Demand /picks</span>
                   </div>
                   <div class="flex flex-col gap-0.5 min-w-0 p-1.5 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-slate-200/40 dark:border-slate-700/40">
                     <span class="text-slate-400 dark:text-slate-500 block text-[9.5px] uppercase tracking-wider font-semibold truncate">EDGE DELIVERY</span>
@@ -18639,7 +18705,7 @@ selectShi62GW(gwName) {
                     <div>
                       <div class="flex items-center justify-between gap-2 mb-2">
                         <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">STAGE 01 • INGESTION</span>
-                        <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">ThreadPool</span>
+                        <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">ThreadPool &amp; Chunks</span>
                       </div>
                       <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">1. Pipeline &amp; Multi-Threading Engine</h4>
                       <ul class="space-y-2 text-xs sm:text-[12px] leading-relaxed">
@@ -18649,7 +18715,7 @@ selectShi62GW(gwName) {
                         </li>
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Parallel Concurrency &amp; Incremental Cache:</strong> Employs <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">ThreadPoolExecutor</code> to sync 8 leagues and 146 unique teams (163 entries) in 2-4s, caching settled GWs to cut redundant API calls by 95%.</span>
+                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Hybrid Concurrency &amp; Incremental Cache:</strong> Employs a Dual-Scale pipeline: standard mini-leagues (Tier 1: 8 leagues, 146 unique teams, 163 entries) sync in parallel via <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">ThreadPoolExecutor</code> in 2-4s with incremental GW caching (&gt;95% API reduction), while large community leagues (Tier 2: 1 league, 1,780 teams) run in Standings &amp; Leaderboard Only mode to safeguard API rate limits.</span>
                         </li>
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
@@ -18668,7 +18734,7 @@ selectShi62GW(gwName) {
                       <ul class="space-y-2 text-xs sm:text-[12px] leading-relaxed">
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">POSIX Atomic Replacement:</strong> Serializes <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">multi_fpl_data.json</code> and per-league JSONs via <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">tempfile</code> + <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">os.replace</code>, preventing truncated writes or race condition corruptions.</span>
+                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">POSIX Atomic Replacement:</strong> Serializes <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">multi_fpl_data.json</code>, per-league JSONs, and data chunks via <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">tempfile</code> + <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">os.replace</code>, preventing truncated writes or race condition corruptions.</span>
                         </li>
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
@@ -18676,7 +18742,7 @@ selectShi62GW(gwName) {
                         </li>
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Zero-Churn Smart Commit:</strong> Computes semantic diffs against cached states. If leaderboard ranks and scores are unchanged, Git commits are skipped to eliminate repository bloat (Zero Git Bloat).</span>
+                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Zero-Churn Smart Commit:</strong> Computes semantic diffs against cached states. If leaderboard ranks and scores are unchanged, Git commits are skipped to eliminate repository bloat (Zero Git Bloat) with a 6-hour periodic heartbeat.</span>
                         </li>
                       </ul>
                     </div>
@@ -18691,11 +18757,11 @@ selectShi62GW(gwName) {
                       <ul class="space-y-2 text-xs sm:text-[12px] leading-relaxed">
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Zero-Code Season Rollover:</strong> 100% driven by <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">config/leagues_config.json</code>, supporting seamless multi-season league and team transitions with automated legacy directory cleanup.</span>
+                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Zero-Code Season Rollover:</strong> 100% driven by <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">config/leagues_config.json</code> for Season 2026/27, supporting seamless multi-season league and team transitions with automated legacy directory cleanup.</span>
                         </li>
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Per-League JSON Split:</strong> Static compiler <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">update_preview.py</code> builds dedicated routes (<code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">/{id}/index.html</code>) and decoupled <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">data/leagues/{id}.json</code> files (~85% smaller initial HTML).</span>
+                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Decoupled JSON Split &amp; Tier 2 Chunking:</strong> Static compiler <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">update_preview.py</code> builds dedicated routes (<code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">/{id}/index.html</code>), decoupled <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">data/leagues/{id}.json</code> files (~85% smaller initial HTML), and weekly chunks (<code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">data/leagues/{id}/gw{gw}.json</code>) for Tier 2 on-demand consumption.</span>
                         </li>
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
@@ -18710,14 +18776,25 @@ selectShi62GW(gwName) {
                         <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider px-2 py-0.5 rounded border ${stage4Badge}">
                           ${stage4LiveDot}STAGE 04 • CLIENT RUNTIME
                         </span>
-                        <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">15s Live Relay</span>
+                        <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">15s Live Relay &amp; Picks</span>
                       </div>
                       <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">4. Client Runtime &amp; 15s Real-Time Relay</h4>
                       <ul class="space-y-2 text-xs sm:text-[12px] leading-relaxed">
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">15s Cloudflare Edge Live Poll:</strong> During active matches, the client polls Cloudflare Worker (<code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">fpl-live-relay</code> / <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">api.fplsawadika.com</code>) every 15s to overlay real-time points and provisional BPS bonus without waiting for static rebuilds.</span>
+                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">15s Cloudflare Edge Live Poll &amp; On-Demand Picks:</strong> During active matches, the client polls Cloudflare Worker (<code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">fpl-live-relay</code> / <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">api.fplsawadika.com</code>) every 15s to overlay real-time points and provisional BPS bonus, while fetching Tier 2 squad lineups on demand via <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">/picks</code>.</span>
                         </li>
+                        <li class="flex items-start gap-2">
+                          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
+                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Lazy League Switch &amp; Race Guard:</strong> On-demand <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">data/leagues/{id}.json</code> fetching guarded by monotonic request tokens, synchronized via HTML5 History API and <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">localStorage</code>.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
+                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Zero-Framework 60 FPS &amp; A11y:</strong> Pure Vanilla ES6+ (0kb framework runtime), <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">tabular-nums</code> (CLS: 0.00), Page Visibility API battery saver, and WCAG AA modal focus restoration.</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
                           <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Lazy League Switch &amp; Race Guard:</strong> On-demand <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">data/leagues/{id}.json</code> fetching guarded by monotonic request tokens, synchronized via HTML5 History API and <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">localStorage</code>.</span>
@@ -19048,13 +19125,13 @@ selectShi62GW(gwName) {
                   </div>
                   <div class="flex flex-col gap-0.5 min-w-0 p-1.5 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-slate-200/40 dark:border-slate-700/40">
                     <span class="text-slate-400 dark:text-slate-500 block text-[9.5px] uppercase tracking-wider font-semibold truncate">การประมวลผลคู่ขนาน</span>
-                    <span class="font-bold text-slate-900 dark:text-slate-100 truncate">8 ลีก • 146 ทีม</span>
-                    <span class="text-[9.5px] text-slate-500 dark:text-slate-400 truncate">163 รายการ • ThreadPool</span>
+                    <span class="font-bold text-slate-900 dark:text-slate-100 truncate">9 ลีก • 1,943 ทีม</span>
+                    <span class="text-[9.5px] text-slate-500 dark:text-slate-400 truncate">Tier 1 &amp; 2 • Hybrid Pipeline</span>
                   </div>
                   <div class="flex flex-col gap-0.5 min-w-0 p-1.5 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-slate-200/40 dark:border-slate-700/40">
                     <span class="text-slate-400 dark:text-slate-500 block text-[9.5px] uppercase tracking-wider font-semibold truncate">รีเลย์คะแนนสด</span>
                     <span class="font-bold text-slate-900 dark:text-slate-100 truncate">Cloudflare Worker</span>
-                    <span class="text-[9.5px] text-slate-500 dark:text-slate-400 truncate">สด 15s • Zero CORS</span>
+                    <span class="text-[9.5px] text-slate-500 dark:text-slate-400 truncate">สด 15s • On-Demand /picks</span>
                   </div>
                   <div class="flex flex-col gap-0.5 min-w-0 p-1.5 rounded-lg bg-white/50 dark:bg-slate-800/40 border border-slate-200/40 dark:border-slate-700/40">
                     <span class="text-slate-400 dark:text-slate-500 block text-[9.5px] uppercase tracking-wider font-semibold truncate">เครือข่ายส่งข้อมูล</span>
@@ -19068,7 +19145,7 @@ selectShi62GW(gwName) {
                     <div>
                       <div class="flex items-center justify-between gap-2 mb-2">
                         <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">STAGE 01 • INGESTION</span>
-                        <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">ThreadPool</span>
+                        <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">ThreadPool &amp; Chunks</span>
                       </div>
                       <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">1. Pipeline &amp; Multi-Threading Engine</h4>
                       <ul class="space-y-2 text-xs sm:text-[12px] leading-relaxed">
@@ -19078,7 +19155,7 @@ selectShi62GW(gwName) {
                         </li>
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Parallel Concurrency &amp; Incremental Cache:</strong> ใช้ <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">ThreadPoolExecutor</code> ดึงข้อมูล 8 ลีก 146 ทีม (163 รายการ) พร้อมกันใน 2-4 วินาที พร้อมแคช GW ที่จบแล้วเพื่อลดการยิง API ซ้ำกว่า 95%</span>
+                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Hybrid Concurrency &amp; Incremental Cache:</strong> ใช้สถาปัตยกรรม 2 ระดับ (Dual-Scale Pipeline) โดยมินิลีกมาตรฐาน (Tier 1: 8 ลีก 146 ทีม 163 รายการ) ซิงก์ควบคู่กันด้วย <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">ThreadPoolExecutor</code> พร้อมแคช GW สำเร็จรูปเพื่อลดการยิง API ซ้ำกว่า 95% ขณะที่มินิลีกระดับคอมมูนิตี้ (Tier 2: 1 ลีก 1,780 ทีม) ใช้โหมด Standings Only เพื่อขจัดปัญหา Rate Limit</span>
                         </li>
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
@@ -19097,7 +19174,7 @@ selectShi62GW(gwName) {
                       <ul class="space-y-2 text-xs sm:text-[12px] leading-relaxed">
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">POSIX Atomic Replacement:</strong> บันทึก <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">multi_fpl_data.json</code> และไฟล์รายลีกด้วย <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">tempfile</code> + <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">os.replace</code> ขจัดปัญหา Race Conditions หรือไฟล์ JSON เสียหาย</span>
+                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">POSIX Atomic Replacement:</strong> บันทึก <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">multi_fpl_data.json</code>, ไฟล์แยกรายลีก และ Chunks ด้วย <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">tempfile</code> + <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">os.replace</code> ขจัดปัญหา Race Conditions หรือไฟล์ JSON เสียหาย</span>
                         </li>
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
@@ -19120,11 +19197,11 @@ selectShi62GW(gwName) {
                       <ul class="space-y-2 text-xs sm:text-[12px] leading-relaxed">
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Zero-Code Season Rollover:</strong> ขับเคลื่อนด้วย <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">config/leagues_config.json</code> 100% รองรับการเปลี่ยนลีกและทีมข้ามฤดูกาลพร้อม Auto-Cleanup ลบโฟลเดอร์ลีกเก่าอัตโนมัติ</span>
+                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Zero-Code Season Rollover:</strong> ขับเคลื่อนด้วย <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">config/leagues_config.json</code> 100% สำหรับฤดูกาล 2026/27 รองรับการเปลี่ยนลีกและทีมข้ามฤดูกาลพร้อม Auto-Cleanup ลบโฟลเดอร์ลีกเก่าอัตโนมัติ</span>
                         </li>
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Per-League JSON Split:</strong> คอมไพล์เลอร์ <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">update_preview.py</code> แยกไฟล์ <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">data/leagues/{id}.json</code> และสร้าง Route ประจำลีก (<code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">/{id}/index.html</code>) ลดขนาด HTML เริ่มต้นลงกว่า 85%</span>
+                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Decoupled JSON Split &amp; Tier 2 Chunking:</strong> คอมไพล์เลอร์ <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">update_preview.py</code> แยกไฟล์ <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">data/leagues/{id}.json</code> และสร้าง Route ประจำลีก (<code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">/{id}/index.html</code>) พร้อมแบ่ง Chunks รายสัปดาห์ (<code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">data/leagues/{id}/gw{gw}.json</code>) สำหรับ Tier 2 ลดขนาด Initial HTML ลงกว่า 85%</span>
                         </li>
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
@@ -19139,14 +19216,25 @@ selectShi62GW(gwName) {
                         <span class="inline-flex items-center gap-1 text-[10px] font-mono font-semibold tracking-wider px-2 py-0.5 rounded border ${stage4Badge}">
                           ${stage4LiveDot}STAGE 04 • CLIENT RUNTIME
                         </span>
-                        <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">15s Live Relay</span>
+                        <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">15s Live Relay &amp; Picks</span>
                       </div>
                       <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base font-display mb-2.5">4. Client Runtime &amp; 15s Real-Time Relay</h4>
                       <ul class="space-y-2 text-xs sm:text-[12px] leading-relaxed">
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">15s Cloudflare Edge Live Poll:</strong> ระหว่างมีแมตช์เตะ เบราว์เซอร์ดึงแต้มสดและโบนัส BPS เรียลไทม์ผ่าน Cloudflare Worker (<code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">fpl-live-relay</code> / <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">api.fplsawadika.com</code>) ทุก 15 วินาทีโดยไม่ต้องรอบิลด์ HTML ใหม่</span>
+                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">15s Cloudflare Edge Live Poll &amp; On-Demand Picks:</strong> ระหว่างมีแมตช์เตะ เบราว์เซอร์ดึงแต้มสดและโบนัส BPS เรียลไทม์ผ่าน Cloudflare Worker (<code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">fpl-live-relay</code> / <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">api.fplsawadika.com</code>) ทุก 15 วินาที พร้อมดึงผัง 11 ตัวจริงของ Tier 2 แบบ On-Demand ผ่านเอนด์พอยต์ <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">/picks</code></span>
                         </li>
+                        <li class="flex items-start gap-2">
+                          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
+                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Lazy League Switch &amp; Race Guard:</strong> โหลด JSON รายลีกแบบ On-Demand เมื่อสลับลีก พร้อมระบบป้องกัน Race Condition และซิงก์สถานะผ่าน HTML5 History API + <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">localStorage</code></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
+                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Zero-Framework 60 FPS &amp; A11y:</strong> พัฒนาด้วย Vanilla ES6+ (0kb Framework) ใช้ <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">tabular-nums</code> (CLS: 0.00), Page Visibility API ประหยัดแบตเตอรี่ และรองรับ Keyboard Focus Accessibility</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                         <li class="flex items-start gap-2">
                           <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
                           <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Lazy League Switch &amp; Race Guard:</strong> โหลด JSON รายลีกแบบ On-Demand เมื่อสลับลีก พร้อมระบบป้องกัน Race Condition และซิงก์สถานะผ่าน HTML5 History API + <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">localStorage</code></span>
@@ -21157,6 +21245,7 @@ selectShi62GW(gwName) {
               "7": -100, "8": -200, "9": -400, "10": -600, "11": -800, "12": -1000
             };
 
+            const isTier2 = Boolean(this.data && this.data.tier === 2) || Boolean(this.config && this.config.tier === 2);
             const overallMap = {};
             (this.data.teams || []).forEach(t => {
               overallMap[t.entry_id] = {
@@ -21164,30 +21253,32 @@ selectShi62GW(gwName) {
                 team_name: t.entry_name,
                 player_name: t.player_name,
                 fpl_rank: t.rank || 999,
-                total_points: 0
+                total_points: isTier2 ? (Number(t.total_points) || 0) : 0
               };
             });
 
-            for (let g = 1; g <= maxGW; g++) {
-              const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
-              if (gData && gData.results) {
-                const gIsStarted = gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
-                if (gIsStarted) {
-                  const seenInGw = new Set();
-                  gData.results.forEach(r => {
-                    if (seenInGw.has(r.entry_id)) return;
-                    seenInGw.add(r.entry_id);
-                    if (!overallMap[r.entry_id]) {
-                      overallMap[r.entry_id] = {
-                        entry_id: r.entry_id,
-                        team_name: r.team_name,
-                        player_name: r.player_name,
-                        fpl_rank: 999,
-                        total_points: 0
-                      };
-                    }
-                    overallMap[r.entry_id].total_points += r.net_points;
-                  });
+            if (!isTier2) {
+              for (let g = 1; g <= maxGW; g++) {
+                const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+                if (gData && gData.results) {
+                  const gIsStarted = gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+                  if (gIsStarted) {
+                    const seenInGw = new Set();
+                    gData.results.forEach(r => {
+                      if (seenInGw.has(r.entry_id)) return;
+                      seenInGw.add(r.entry_id);
+                      if (!overallMap[r.entry_id]) {
+                        overallMap[r.entry_id] = {
+                          entry_id: r.entry_id,
+                          team_name: r.team_name,
+                          player_name: r.player_name,
+                          fpl_rank: 999,
+                          total_points: 0
+                        };
+                      }
+                      overallMap[r.entry_id].total_points += r.net_points;
+                    });
+                  }
                 }
               }
             }
@@ -21196,6 +21287,9 @@ selectShi62GW(gwName) {
               const aEligible = this.isPrizeEligible(a.entry_id) ? 1 : 0;
               const bEligible = this.isPrizeEligible(b.entry_id) ? 1 : 0;
               if (aEligible !== bEligible) return bEligible - aEligible;
+              if (isTier2) {
+                return ((a.fpl_rank || 999) - (b.fpl_rank || 999)) || (b.total_points - a.total_points);
+              }
               return (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999));
             });
 

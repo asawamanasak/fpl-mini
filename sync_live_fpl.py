@@ -806,6 +806,9 @@ def sync_once(args):
                     res = gameweeks_dict[gw_str].get("results", [])
                     if res:
                         chunk_file = os.path.join(tier2_chunk_dir, f"gw{gw}.json")
+                        # For finished historical gameweeks, preserve existing chunk files on disk
+                        if gw < max_gw and os.path.exists(chunk_file):
+                            continue
                         chunk_payload = {
                             "league_id": lid,
                             "gw": gw,

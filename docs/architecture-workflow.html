@@ -130,13 +130,13 @@
 </head>
 <body>
   <div class="frame">
-    <p class="eyebrow">Architecture Workflow · FPLSaWaDiKa (Season 2025/26)</p>
+    <p class="eyebrow">Architecture Workflow · FPLSaWaDiKa (Season 2026/27)</p>
     <h1>สถาปัตยกรรมระบบเบื้องหลังและการประมวลผลข้อมูล (Dual-Layer System Architecture)</h1>
 
     <div class="diagram-container">
       <svg viewBox="0 0 1020 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fpl-arch-title fpl-arch-desc">
-        <title id="fpl-arch-title">สถาปัตยกรรมระบบเบื้องหลังและการประมวลผลข้อมูล FPLSaWaDiKa</title>
-        <desc id="fpl-arch-desc">ไดอะแกรมแสดงโฟลว์การทำงานแบบ Dual-Layer Serverless Jamstack: ซิงก์พื้นหลังทุก 15 นาทีผ่าน GitHub Actions (8 ลีก 146 ทีม 163 รายการ) แยกไฟล์ JSON รายลีก และดึงคะแนนสดทุก 15 วินาทีผ่าน Cloudflare Edge Live Relay</desc>
+        <title id="fpl-arch-title">สถาปัตยกรรมระบบเบื้องหลังและเวิร์กโฟลว์การประมวลผลข้อมูล FPLSaWaDiKa (Season 2026/27)</title>
+        <desc id="fpl-arch-desc">ไดอะแกรมแสดงโฟลว์การทำงานแบบ Hybrid Dual-Layer Serverless Jamstack: Tier 1 (8 ลีก 146 ทีม) ซิงก์คู่ขนานเต็มรูปแบบ และ Tier 2 (1 ลีก 1,780 ทีม) แบบ Decoupled Chunks พร้อมดึงคะแนนสดและจัดทัพ On-Demand ผ่าน Cloudflare Edge Live Relay</desc>
 
         <defs>
           <pattern id="bg-dots" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -238,21 +238,21 @@
         <rect x="487" y="242" width="62" height="14" rx="2" fill="var(--color-paper)"/>
         <text x="518" y="252" fill="var(--color-accent)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DIFF DETECT</text>
 
-        <!-- Label C5: SPLIT JSON -->
-        <rect x="618" y="221" width="68" height="14" rx="2" fill="var(--color-paper)"/>
-        <text x="652" y="231" fill="var(--color-muted)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">SPLIT JSON</text>
+        <!-- Label C5: SPLIT & CHUNKS -->
+        <rect x="612" y="221" width="80" height="14" rx="2" fill="var(--color-paper)"/>
+        <text x="652" y="231" fill="var(--color-muted)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.06em">SPLIT &amp; CHUNKS</text>
 
         <!-- Label C6: TTFB < 50ms -->
         <rect x="752" y="168" width="68" height="14" rx="2" fill="var(--color-paper)"/>
         <text x="786" y="178" fill="var(--color-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.08em">TTFB &lt; 50ms</text>
 
-        <!-- Label C7: LAZY /{ID}.JSON -->
-        <rect x="748" y="330" width="76" height="14" rx="2" fill="var(--color-paper)"/>
-        <text x="786" y="340" fill="var(--color-muted)" font-size="7" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.06em">LAZY /{ID}.JSON</text>
+        <!-- Label C7: LAZY & CHUNKS -->
+        <rect x="744" y="330" width="84" height="14" rx="2" fill="var(--color-paper)"/>
+        <text x="786" y="340" fill="var(--color-muted)" font-size="7" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.06em">LAZY &amp; CHUNKS</text>
 
-        <!-- Label C8: 15s LIVE POLL -->
-        <rect x="366" y="413" width="268" height="14" rx="2" fill="var(--color-paper)"/>
-        <text x="500" y="423" fill="var(--color-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">15s LIVE POLL • REAL-TIME SCORE &amp; BONUS OVERLAY</text>
+        <!-- Label C8: 15s LIVE POLL & ON-DEMAND /PICKS -->
+        <rect x="340" y="413" width="320" height="14" rx="2" fill="var(--color-paper)"/>
+        <text x="500" y="423" fill="var(--color-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">15s LIVE POLL &amp; ON-DEMAND /PICKS • ZERO-CORS RELAY</text>
 
         <!-- ========================================== -->
         <!-- NODES                                      -->
@@ -275,17 +275,17 @@
           <rect x="32" y="260" width="66" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
           <text x="65" y="269" fill="var(--color-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EDGE WORKER</text>
           <text x="102" y="290" fill="var(--color-ink)" font-size="11.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Cloudflare Live Relay</text>
-          <text x="102" y="308" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">15s Matchday Poll • CORS</text>
+          <text x="102" y="308" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">15s Live Poll • /picks On-Demand</text>
         </g>
 
         <!-- Node 2: sync_live_fpl.py (Focal Accent 1) -->
         <g id="node-sync-engine">
           <rect x="240" y="92" width="248" height="72" rx="6" fill="var(--color-paper)"/>
           <rect x="240" y="92" width="248" height="72" rx="6" fill="var(--color-accent-tint)" stroke="var(--color-accent)" stroke-width="1.5"/>
-          <rect x="248" y="100" width="76" height="12" rx="2" fill="var(--color-accent)" opacity="0.18"/>
-          <text x="286" y="109" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">PARALLEL CORE</text>
+          <rect x="248" y="100" width="88" height="12" rx="2" fill="var(--color-accent)" opacity="0.18"/>
+          <text x="292" y="109" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">HYBRID PIPELINE</text>
           <text x="364" y="130" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">sync_live_fpl.py</text>
-          <text x="364" y="148" fill="var(--color-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">ThreadPoolExecutor • 8 ลีก 146 ทีม (163 รายการ)</text>
+          <text x="364" y="148" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">Tier 1: 8 ลีก (146 ทีม) • Tier 2: 1 ลีก (1.7k ทีม)</text>
         </g>
 
         <!-- Node 3: POSIX Atomic Write -->
@@ -295,7 +295,7 @@
           <rect x="248" y="204" width="74" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
           <text x="285" y="213" fill="var(--color-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DATA INTEGRITY</text>
           <text x="364" y="234" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">POSIX Atomic Store</text>
-          <text x="364" y="252" fill="var(--color-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">multi_fpl_data.json • Incremental GW Cache</text>
+          <text x="364" y="252" fill="var(--color-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">multi_fpl_data.json • Decoupled Chunks</text>
         </g>
 
         <!-- Node 4: Smart Commit & Cache -->
@@ -315,7 +315,7 @@
           <rect x="556" y="140" width="80" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
           <text x="596" y="149" fill="var(--color-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">JAMSTACK BUILD</text>
           <text x="652" y="170" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">update_preview.py</text>
-          <text x="652" y="188" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">Config-Driven • data/leagues/{id}.json</text>
+          <text x="652" y="188" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">Config-Driven • /{id}.json &amp; gw{gw}.json</text>
         </g>
 
         <!-- Node 6: Fastly Global Edge CDN -->
@@ -335,7 +335,7 @@
           <rect x="824" y="200" width="64" height="12" rx="2" fill="var(--color-accent)" opacity="0.18"/>
           <text x="856" y="209" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">BROWSER SPA</text>
           <text x="900" y="230" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Vanilla Client App</text>
-          <text x="900" y="248" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">0kb SPA • 15s Poll • Lazy JSON</text>
+          <text x="900" y="248" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">0kb SPA • 15s Poll • Lazy &amp; Chunks</text>
         </g>
       </svg>
     </div>
