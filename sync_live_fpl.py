@@ -739,8 +739,11 @@ def sync_once(args):
             league_tier = int(lcfg.get('tier', 1 if len(standings_teams) <= 30 else 2))
             tier_label = "Tier 1 (Full Analytics & Pitch View)" if league_tier == 1 else "Tier 2 (Standings & Leaderboard Only)"
             print(f" -> League Tier: {tier_label}")
+            cached_teams_map = {ct.get('entry_id'): ct for ct in cached_league.get('teams', [])} if cached_league else {}
             teams_list = []
             for t in standings_teams:
+                ct = cached_teams_map.get(t['entry'])
+                tot_hits = ct.get('total_hits', 0) if ct else 0
                 teams_list.append({
                     "entry_id": t['entry'],
                     "entry_name": t['entry_name'],
@@ -748,7 +751,8 @@ def sync_once(args):
                     "rank": t.get('rank'),
                     "last_rank": t.get('last_rank'),
                     "total_points": t.get('total'),
-                    "event_total": t.get('event_total')
+                    "event_total": t.get('event_total'),
+                    "total_hits": tot_hits
                 })
 
             gameweeks_dict = {}

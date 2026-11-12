@@ -1935,6 +1935,7 @@ __STRUCTURED_DATA_JSON__
                   <th scope="col" class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center w-8 sm:w-10">#</th>
                   <th scope="col" id="th-overall-team" class="py-2.5 px-2 sm:px-3 min-w-0">ทีม & ผู้จัดการ</th>
                   <th scope="col" id="th-overall-lastgw" class="py-2.5 px-1 sm:px-3 text-center w-14 sm:w-18 text-[10px] sm:text-[11px] whitespace-nowrap">GW ล่าสุด</th>
+                  <th scope="col" id="th-overall-hits" class="py-2.5 px-1 sm:px-2 text-center w-12 sm:w-16 text-[10px] sm:text-[11px] whitespace-nowrap"><span class="hidden sm:inline">คะแนนลบสะสม</span><span class="sm:hidden">ลบสะสม</span></th>
                   <th scope="col" id="th-overall-total" class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right w-14 sm:w-16 text-blue-700 dark:text-blue-400 font-bold whitespace-nowrap">คะแนนรวม</th>
                 </tr>
               </thead>
@@ -5831,6 +5832,12 @@ __STRUCTURED_DATA_JSON__
         if (thOverallTeam) thOverallTeam.innerText = isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ';
         const thOverallLast = document.getElementById('th-overall-lastgw');
         if (thOverallLast) thOverallLast.innerText = isEn ? 'Latest GW' : 'GW ล่าสุด';
+        const thOverallHits = document.getElementById('th-overall-hits');
+        if (thOverallHits) {
+          thOverallHits.innerHTML = isEn 
+            ? '<span class="hidden sm:inline">Total Hits</span><span class="sm:hidden">Hits</span>' 
+            : '<span class="hidden sm:inline">คะแนนลบสะสม</span><span class="sm:hidden">ลบสะสม</span>';
+        }
         const thOverallTotal = document.getElementById('th-overall-total');
         if (thOverallTotal) thOverallTotal.innerText = isEn ? 'Total Pts' : 'คะแนนรวม';
 
@@ -10148,6 +10155,7 @@ selectShi62GW(gwName) {
               const lastGwPts = r ? (Number(r.net_points) || 0) : (Number(t.event_total) || 0);
               const lastGwRaw = r ? (Number(r.points) || 0) : (Number(t.event_total) || 0);
               const lastGwHits = r ? (Number(r.hits) || 0) : 0;
+              const teamTotalHits = (r && r.total_hits !== undefined) ? Number(r.total_hits) : (Number(t.total_hits) || 0);
               const fplRank = (t.rank !== undefined && t.rank !== null) ? Number(t.rank) : 999;
               const lastRank = (t.last_rank !== undefined && t.last_rank !== null) ? Number(t.last_rank) : null;
 
@@ -10170,6 +10178,7 @@ selectShi62GW(gwName) {
                 overall_rank: teamOverallRank,
                 prev_rank: teamPrevRank,
                 total_points: teamTotalPoints,
+                total_hits: teamTotalHits,
                 last_gw_pts: lastGwPts,
                 last_gw_raw: lastGwRaw,
                 last_gw_hits: lastGwHits
@@ -10183,6 +10192,7 @@ selectShi62GW(gwName) {
                 player_name: t.player_name,
                 fpl_rank: t.rank || 999,
                 total_points: 0,
+                total_hits: 0,
                 last_gw_pts: 0,
                 last_gw_raw: 0,
                 last_gw_hits: 0
@@ -10209,12 +10219,14 @@ selectShi62GW(gwName) {
                         player_name: r.player_name,
                         fpl_rank: 999,
                         total_points: 0,
+                        total_hits: 0,
                         last_gw_pts: 0,
                         last_gw_raw: 0,
                         last_gw_hits: 0
                       };
                     }
                     overallMap[r.entry_id].total_points += (Number(r.net_points) || 0);
+                    overallMap[r.entry_id].total_hits = (overallMap[r.entry_id].total_hits || 0) + (Number(r.hits) || 0);
                   });
                 }
 
@@ -10333,6 +10345,9 @@ selectShi62GW(gwName) {
 
             const rawScore = team.last_gw_raw !== undefined ? team.last_gw_raw : team.last_gw_pts;
             const hitsBadge = team.last_gw_hits > 0 ? `<span class="text-[10px] sm:text-[11px] font-bold text-rose-500 dark:text-rose-400 font-display ml-0.5">(-${team.last_gw_hits})</span>` : '';
+            const cumHitsText = team.total_hits > 0 
+              ? `<span class="font-bold text-rose-500 dark:text-rose-400 font-display">-${team.total_hits}</span>` 
+              : `<span class="text-slate-400 dark:text-slate-500 font-medium font-display">-</span>`;
 
             oHtml += `
               <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer hover:bg-blue-50/40 dark:hover:bg-slate-800/50 transition-colors ${team.overall_rank && team.overall_rank <= 3 && isPrize ? 'bg-blue-50/20 dark:bg-blue-950/20' : ''}">
@@ -10352,6 +10367,7 @@ selectShi62GW(gwName) {
                   <span class="text-[11px] text-slate-500 dark:text-slate-400 block truncate">${this.escapeHtml(team.player_name)}</span>
                 </td>
                 <td class="py-2.5 px-1 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-700 dark:text-slate-300 tabular-nums whitespace-nowrap"><span class="font-semibold">${rawScore}</span>${hitsBadge}</td>
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display text-xs sm:text-sm tabular-nums whitespace-nowrap">${cumHitsText}</td>
                 <td class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right font-display font-black tabular-nums text-xs sm:text-sm text-blue-900 dark:text-blue-400">${team.total_points}</td>
               </tr>
             `;
@@ -10361,7 +10377,7 @@ selectShi62GW(gwName) {
             const curShown = Math.min(this.overallChunkLimit, overallSorted.length);
             oHtml += `
               <tr class="chunk-control-row">
-                <td colspan="4" class="py-3 px-4 text-center bg-slate-50/70 dark:bg-slate-900/60 border-t border-slate-200/80 dark:border-slate-800">
+                <td colspan="5" class="py-3 px-4 text-center bg-slate-50/70 dark:bg-slate-900/60 border-t border-slate-200/80 dark:border-slate-800">
                   <div class="flex items-center justify-center gap-2.5 flex-wrap text-xs">
                     <span class="text-slate-500 dark:text-slate-400 font-medium font-mono">${isEn ? `Showing 1 - ${curShown} of ${overallSorted.length.toLocaleString()} teams` : `แสดง 1 - ${curShown} จากทั้งหมด ${overallSorted.length.toLocaleString()} ทีม`}</span>
                     <button onclick="app.showMoreOverallTeams(100)" class="px-3 py-1.5 bg-blue-600 text-white font-bold rounded-xl text-xs hover:bg-blue-700 transition-colors cursor-pointer shadow-2xs">
@@ -20580,7 +20596,7 @@ selectShi62GW(gwName) {
         };
 
         filterRows(matchdayBody, 6, true);
-        filterRows(overallBody, 4, false);
+        filterRows(overallBody, 5, false);
 
         if (countEl) {
           if (term && term.length > 0) {
