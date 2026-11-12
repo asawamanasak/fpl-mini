@@ -33,3 +33,6 @@ scratch/
 # Cloudflare Wrangler cache
 .wrangler/
 
+# Generated audit output
+deep_audit_report.json
+

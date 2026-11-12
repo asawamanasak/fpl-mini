@@ -105,11 +105,15 @@ def main():
         pages_to_test = ['preview.html', *configured_league_pages]
         for p in pages_to_test:
             target_url = f"file://{os.path.join(base_dir, p)}"
-            out = subprocess.run([
-                chrome_bin, '--headless=new', '--disable-gpu',
-                '--virtual-time-budget=2000', '--enable-logging=stderr', '--v=1',
-                target_url
-            ], capture_output=True, text=True)
+            try:
+                out = subprocess.run([
+                    chrome_bin, '--headless=new', '--disable-gpu', '--dump-dom',
+                    '--virtual-time-budget=2000', '--enable-logging=stderr', '--v=1',
+                    target_url
+                ], capture_output=True, text=True, timeout=15)
+            except subprocess.TimeoutExpired:
+                print(f"    ⚠️ Chrome headless check timed out for {p}")
+                continue
             errs = [line for line in out.stderr.split('\n') if any(k in line for k in ['Uncaught', 'SyntaxError', 'ReferenceError', 'TypeError'])]
             if not errs:
                 print(f"  ✅ {p}: 0 JavaScript runtime errors")

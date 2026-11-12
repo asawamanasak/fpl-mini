@@ -11,6 +11,7 @@ Supporting clean short user URLs:
 Build Version: 2026.08.31.01
 """
 
+import hashlib
 import json
 import os
 from parse_shi62_special import parse_shi62_file
@@ -211,7 +212,7 @@ def get_architecture_diagram_html(lang='th', asset_prefix='./'):
           </div>
     """
 
-def generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=None, precomputed_cfg_str=None, shi62_data_json_str=None, bramann_pred_json_str=None, bramann_chal_json_str=None, precomputed_players_str=None):
+def generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=None, precomputed_cfg_str=None, shi62_data_json_str=None, bramann_pred_json_str=None, bramann_chal_json_str=None, precomputed_players_str=None, precomputed_app_js_hash=None, export_app_js_path=None):
     if precomputed_json_str is None:
         # Performance Optimization: Deep-strip raw_picks and raw_hist before serializing into HTML
         pruned_data = {
@@ -493,10 +494,12 @@ __STRUCTURED_DATA_JSON__
 
   <!-- SheetJS (xlsx) is lazy-loaded on demand when Export Excel is clicked -->
 
-  <!-- Google Fonts: Sarabun -->
+  <!-- Google Fonts: Sarabun (non-render-blocking; critical @font-face glyphs inlined below) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&display=swap" rel="stylesheet"></noscript>
 
   <style>
     /* Sarabun Font-Face Declarations */
@@ -1600,7 +1603,7 @@ __STRUCTURED_DATA_JSON__
           <button 
             id="league-switcher-btn" 
             onclick="app.toggleLeagueDropdown(event)" 
-            class="group flex items-center gap-1.5 text-left cursor-pointer transition-colors leading-tight py-0.5 min-h-[30px] sm:min-h-[34px]"
+            class="group flex items-center gap-1.5 text-left cursor-pointer transition-colors leading-tight py-1 min-h-[40px] sm:min-h-[38px]"
             title="คลิกเพื่อสลับดูมินิลีกอื่น"
           >
             <span id="header-league-name" class="text-sm sm:text-lg font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight truncate max-w-[110px] min-[360px]:max-w-[130px] min-[390px]:max-w-[160px] min-[430px]:max-w-[200px] sm:max-w-[340px] md:max-w-[440px]">กำลังโหลดลีก...</span>
@@ -3174,7 +3177,10 @@ __STRUCTURED_DATA_JSON__
     const BRAMANN_CHALLENGE_DATA = __BRAMANN_CHALLENGE_DATA_JSON__;
     const INITIAL_DEFAULT_LEAGUE = __DEFAULT_LID__;
     const PLAYERS_DICT = __PLAYERS_DICT_JSON__;
-
+    const APP_ASSET_PREFIX = '__ASSET_PREFIX__';
+  </script>
+  <script src="__ASSET_PREFIX__assets/dashboard-app.js?v=__APP_JS_HASH__"></script>
+  <!-- __APP_JS_START__ -->
     // Self-hosted Optimized LiveScore Premier League Team Data & Media Assets (Self-hosted in images/teams/)
     const LIVESCORE_LOCAL_ASSET_DIR = "images/teams";
     const LIVESCORE_TEAMS = {
@@ -5027,7 +5033,7 @@ __STRUCTURED_DATA_JSON__
         this.initLivePolling();
         this.initDeadlineCountdown();
 
-        // Proactively fetch squads/data for active league if not yet embedded (e.g. index.html with savedLeague)
+        // Proactively fetch squads/data + special league datasets for active league if not yet embedded (e.g. index.html with savedLeague)
         const isTier2 = Boolean(this.config && this.config.tier === 2);
         const hasData = isTier2
           ? Boolean(this.data && this.data.teams && this.data.teams.length > 0)
@@ -5039,6 +5045,11 @@ __STRUCTURED_DATA_JSON__
             }
           });
         }
+        this.ensureSpecialFeatureData(this.activeLeagueId).then(loaded => {
+          if (loaded) {
+            this.renderAll();
+          }
+        });
 
         // Listen for browser Back/Forward navigation
         if (typeof window !== 'undefined' && window.addEventListener && !this._popstateBound) {
@@ -5250,22 +5261,23 @@ __STRUCTURED_DATA_JSON__
           const dHour = String(thDate.getUTCHours()).padStart(2, '0');
           const dMin = String(thDate.getUTCMinutes()).padStart(2, '0');
           const dSec = String(thDate.getUTCSeconds()).padStart(2, '0');
-          const liveSyncStr = `${dDay} ${dMonth} ${dYear}, ${dHour}:${dMin} น.`;
+          const liveSyncStrTh = `${dDay} ${dMonth} ${dYear}, ${dHour}:${dMin} น.`;
           const liveIsoStr = `${dYear}-${String(thDate.getUTCMonth() + 1).padStart(2, '0')}-${String(dDay).padStart(2, '0')} ${dHour}:${dMin}:${dSec}`;
           if (this.multiData) {
-            this.multiData.last_sync = liveSyncStr;
+            this.multiData.last_sync = liveSyncStrTh;
             this.multiData.last_sync_iso = liveIsoStr;
             this.multiData.sync_status = 'ok';
           }
+          const formattedSyncStr = this.formatSyncDate(liveIsoStr) || liveSyncStrTh;
           const lastSyncEl = document.getElementById('header-last-sync');
           if (lastSyncEl) {
-            lastSyncEl.innerText = liveSyncStr;
+            lastSyncEl.innerText = formattedSyncStr;
           }
           const lastSyncIcon = document.getElementById('header-last-sync-icon');
           if (lastSyncIcon) {
             const isEn = (this.currentLang === 'en');
             const statusText = isEn ? 'Auto-Sync Online' : 'ระบบเชื่อมต่อ Auto-Sync ปกติ';
-            lastSyncIcon.setAttribute('title', `${statusText} (${liveSyncStr})`);
+            lastSyncIcon.setAttribute('title', `${statusText} (${formattedSyncStr})`);
           }
 
           if (changed || force) {
@@ -6435,6 +6447,55 @@ __STRUCTURED_DATA_JSON__
         return `${basePath}data/players.json`;
       }
 
+      getAssetPrefix() {
+        return (typeof APP_ASSET_PREFIX !== 'undefined' && APP_ASSET_PREFIX) ? APP_ASSET_PREFIX : './';
+      }
+
+      async ensureSpecialFeatureData(leagueId) {
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          return false;
+        }
+        const lidStr = String(leagueId);
+        const cfg = (this.configs && this.configs[lidStr]) || {};
+        const feat = cfg.features || {};
+        const prefix = this.getAssetPrefix();
+        if (!this._specialFetchPromises) this._specialFetchPromises = {};
+
+        const fetchJsonOnce = (key, filename, assignFn) => {
+          if (!this._specialFetchPromises[key]) {
+            this._specialFetchPromises[key] = fetch(`${prefix}data/${filename}`)
+              .then(resp => (resp.ok ? resp.json() : null))
+              .then(parsed => {
+                if (parsed) {
+                  assignFn(parsed);
+                  return true;
+                }
+                delete this._specialFetchPromises[key];
+                return false;
+              })
+              .catch(() => {
+                delete this._specialFetchPromises[key];
+                return false;
+              });
+          }
+          return this._specialFetchPromises[key];
+        };
+
+        const tasks = [];
+        if (feat.has_shi62_special && !this.shi62Data) {
+          tasks.push(fetchJsonOnce('shi62', 'shi62_special.json', d => { this.shi62Data = d; }));
+        }
+        if ((feat.has_bramann_prediction || feat.prize_model === 'bramann_dual_prize') && !this.bramannPredData) {
+          tasks.push(fetchJsonOnce('bramann_pred', 'bramann_prediction.json', d => { this.bramannPredData = d; }));
+        }
+        if ((feat.has_bramann_challenge || feat.prize_model === 'bramann_dual_prize') && !this.bramannChalData) {
+          tasks.push(fetchJsonOnce('bramann_chal', 'bramann_challenge.json', d => { this.bramannChalData = d; }));
+        }
+        if (tasks.length === 0) return false;
+        const results = await Promise.all(tasks);
+        return results.some(Boolean);
+      }
+
       async fetchLeagueData(leagueId, retryCount = 1) {
         const lidStr = String(leagueId);
         if (!this.multiData || !this.multiData.leagues || !this.multiData.leagues[lidStr]) return null;
@@ -6501,7 +6562,10 @@ __STRUCTURED_DATA_JSON__
             selectorContainer.setAttribute('aria-busy', 'true');
           }
           try {
-            const fetched = await this.fetchLeagueData(lidStr, 1);
+            const [fetched] = await Promise.all([
+              this.fetchLeagueData(lidStr, 1),
+              this.ensureSpecialFeatureData(lidStr)
+            ]);
             if (this._switchingTargetId !== lidStr) return;
             if (!fetched) {
               if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
@@ -6524,6 +6588,9 @@ __STRUCTURED_DATA_JSON__
               selectorContainer.removeAttribute('aria-busy');
             }
           }
+        } else {
+          await this.ensureSpecialFeatureData(lidStr);
+          if (this._switchingTargetId !== lidStr) return;
         }
 
         this.activeLeagueId = lidStr;
@@ -7793,9 +7860,9 @@ selectShi62GW(gwName) {
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h1 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
+                <h2 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
                   ${(this.data && this.data.name) ? this.data.name : 'Bramann League'} ${isEn ? 'Prediction' : 'ทายผล'}
-                </h1>
+                </h2>
               </div>
 
               <!-- Quick Stats Grid -->
@@ -8226,9 +8293,9 @@ selectShi62GW(gwName) {
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h1 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
+                <h2 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
                   ${(this.data && this.data.name) ? this.data.name : 'Bramann League'} ${isEn ? 'Challenge' : 'ท้าชน'}
-                </h1>
+                </h2>
               </div>
 
               <!-- Quick Stats Grid -->
@@ -9057,9 +9124,9 @@ selectShi62GW(gwName) {
           <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h1 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
+                <h2 class="text-xl sm:text-2xl font-bold font-display tracking-tight text-slate-900 dark:text-white">
                   ${(this.data && this.data.name) ? this.data.name : 'Shi62'} ${isEn ? 'Prediction Game' : 'ทายผล'}
-                </h1>
+                </h2>
               </div>
 
               <!-- Quick Stats Grid (Clean & Minimal) -->
@@ -21719,12 +21786,49 @@ selectShi62GW(gwName) {
         document.addEventListener('DOMContentLoaded', startApp);
       }
 
-      // Keyboard Accessibility: Escape key closes any active modal
+      // Keyboard Accessibility: Escape closes active modal & Tab traps focus inside open modal
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && window.app) {
           window.app.closeTeamModal();
           window.app.closeProjectedPointsModal();
           window.app.closeTextSummaryModal();
+          return;
+        }
+        if (e.key === 'Tab') {
+          const activeModal = ['team-modal', 'projected-points-modal', 'text-summary-modal']
+            .map(id => document.getElementById(id))
+            .find(m => m && !m.classList.contains('hidden'));
+          if (!activeModal) return;
+
+          const focusSelector = 'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+          const focusables = Array.from(activeModal.querySelectorAll(focusSelector)).filter(el => {
+            const style = window.getComputedStyle(el);
+            return style.display !== 'none' && style.visibility !== 'hidden' && (el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0);
+          });
+
+          if (focusables.length === 0) {
+            e.preventDefault();
+            activeModal.focus({ preventScroll: true });
+            return;
+          }
+
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+          const active = document.activeElement;
+
+          if (!activeModal.contains(active)) {
+            e.preventDefault();
+            (e.shiftKey ? last : first).focus({ preventScroll: true });
+          } else if (active === activeModal) {
+            e.preventDefault();
+            (e.shiftKey ? last : first).focus({ preventScroll: true });
+          } else if (e.shiftKey && active === first) {
+            e.preventDefault();
+            last.focus({ preventScroll: true });
+          } else if (!e.shiftKey && active === last) {
+            e.preventDefault();
+            first.focus({ preventScroll: true });
+          }
         }
       });
 
@@ -21850,7 +21954,7 @@ selectShi62GW(gwName) {
         };
       } catch (_) {}
     })();
-  </script>
+  <!-- __APP_JS_END__ -->
 </body>
 </html>"""
 
@@ -21881,7 +21985,27 @@ selectShi62GW(gwName) {
     )
     has_initial_cup = bool(target_features.get('has_cup'))
 
-    html = html_template.replace('__LAST_SYNC__', last_sync_str)
+    app_js_start = '  <!-- __APP_JS_START__ -->\n'
+    app_js_end = '\n  <!-- __APP_JS_END__ -->'
+    if app_js_start in html_template and app_js_end in html_template:
+        html_prefix, js_and_suffix = html_template.split(app_js_start, 1)
+        app_js_raw, html_suffix = js_and_suffix.split(app_js_end, 1)
+        html_shell = html_prefix + html_suffix.lstrip('\n')
+        if precomputed_app_js_hash is None or export_app_js_path:
+            app_js_code = app_js_raw.replace('__ARCHITECTURE_DIAGRAM_TH__', get_architecture_diagram_html('th', '${this.getAssetPrefix()}'))
+            app_js_code = app_js_code.replace('__ARCHITECTURE_DIAGRAM_EN__', get_architecture_diagram_html('en', '${this.getAssetPrefix()}'))
+            app_js_hash = hashlib.sha256(app_js_code.encode('utf-8')).hexdigest()[:8]
+            if export_app_js_path:
+                os.makedirs(os.path.dirname(export_app_js_path), exist_ok=True)
+                with open(export_app_js_path, 'w', encoding='utf-8') as jsf:
+                    jsf.write(app_js_code)
+        else:
+            app_js_hash = precomputed_app_js_hash
+    else:
+        html_shell = html_template
+        app_js_hash = precomputed_app_js_hash or '1'
+
+    html = html_shell.replace('__LAST_SYNC__', last_sync_str)
     html = html.replace('__NEXT_DEADLINE_TEXT__', next_deadline_text)
     html = html.replace('__RADAR_BANNER_TEXT__', radar_banner_text)
     html = html.replace('__TIER2_TAB_HIDDEN__', ' hidden' if is_initial_tier2 else '')
@@ -21895,6 +22019,7 @@ selectShi62GW(gwName) {
     html = html.replace('__DEFAULT_LID__', default_lid_code)
     html = html.replace('__PLAYERS_DICT_JSON__', players_dict_json_str)
     html = html.replace('__ASSET_PREFIX__', asset_prefix)
+    html = html.replace('__APP_JS_HASH__', app_js_hash)
     canonical_url = f"https://www.fplsawadika.com/{default_league_id}/" if default_league_id else "https://www.fplsawadika.com/"
     html = html.replace('__CANONICAL_URL__', canonical_url)
     html = html.replace('__PAGE_TITLE__', page_title)
@@ -22086,13 +22211,36 @@ def main():
     else:
         players_compact_json_str = '{}'
 
+    # Export decoupled special-league JSON datasets for on-demand loading when switching leagues
+    data_root_dir = os.path.join(base_dir, 'data')
+    os.makedirs(data_root_dir, exist_ok=True)
+    for fname, payload_obj in [
+        ('shi62_special.json', shi62_special_data),
+        ('bramann_prediction.json', bramann_pred_data),
+        ('bramann_challenge.json', bramann_chal_data),
+    ]:
+        with open(os.path.join(data_root_dir, fname), 'w', encoding='utf-8') as sf:
+            json.dump(payload_obj, sf, ensure_ascii=False, separators=(',', ':'))
+
+    def get_special_jsons_for_target(target_lid):
+        t_feat = leagues_config.get(str(target_lid), {}).get('features', {})
+        s62 = shi62_special_json_str if t_feat.get('has_shi62_special') else 'null'
+        bpred = bramann_pred_json_str if (t_feat.get('has_bramann_prediction') or t_feat.get('prize_model') == 'bramann_dual_prize') else 'null'
+        bchal = bramann_chal_json_str if (t_feat.get('has_bramann_challenge') or t_feat.get('prize_model') == 'bramann_dual_prize') else 'null'
+        return s62, bpred, bchal
+
     # 1. Resolve default league ID dynamically from leagues_config (is_default: true or first entry)
     default_root_lid = next(
         (str(k) for k, v in leagues_config.items() if isinstance(v, dict) and v.get("is_default")),
         next(iter(leagues_config.keys()), "40700")
     )
+    app_js_out_path = os.path.join(base_dir, 'assets', 'dashboard-app.js')
+    root_s62, root_bpred, root_bchal = get_special_jsons_for_target(default_root_lid)
     root_json_str = get_pruned_data_for_target(default_root_lid)
-    root_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=root_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str, precomputed_players_str=players_compact_json_str)
+    root_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=root_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=root_s62, bramann_pred_json_str=root_bpred, bramann_chal_json_str=root_bchal, precomputed_players_str=players_compact_json_str, export_app_js_path=app_js_out_path)
+    with open(app_js_out_path, 'rb') as jsbf:
+        app_js_hash = hashlib.sha256(jsbf.read()).hexdigest()[:8]
+
     with open(os.path.join(base_dir, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(root_html)
 
@@ -22106,7 +22254,8 @@ def main():
     for lid in leagues_config.keys():
         dir_league = os.path.join(base_dir, str(lid))
         os.makedirs(dir_league, exist_ok=True)
-        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid), precomputed_json_str=get_pruned_data_for_target(str(lid)), precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=shi62_special_json_str, bramann_pred_json_str=bramann_pred_json_str, bramann_chal_json_str=bramann_chal_json_str, precomputed_players_str=players_compact_json_str)
+        lid_s62, lid_bpred, lid_bchal = get_special_jsons_for_target(str(lid))
+        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid), precomputed_json_str=get_pruned_data_for_target(str(lid)), precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=lid_s62, bramann_pred_json_str=lid_bpred, bramann_chal_json_str=lid_bchal, precomputed_players_str=players_compact_json_str, precomputed_app_js_hash=app_js_hash)
         with open(os.path.join(dir_league, 'index.html'), 'w', encoding='utf-8') as f:
             f.write(html_league)
 
