@@ -457,7 +457,8 @@ export default {
       }
 
       // Live Telemetry & FPL Sync Data Endpoint
-      if (path === '/api/admin/data' || path === '/api/admin/telemetry') {
+      if (path === '/api/admin/data' || path === '/api/admin/telemetry' || path === '/api/admin/metrics') {
+        const isForce = url.searchParams.get('force') === '1';
         try {
           // Automated background retention prune (runs once per admin visit without latency impact)
           if (env && env.DB && ctx && ctx.waitUntil) {
@@ -470,9 +471,12 @@ export default {
             })());
           }
 
-          const resp = await fetch('https://www.fplsawadika.com/multi_fpl_data.json', {
+          const fetchUrl = isForce
+            ? `https://www.fplsawadika.com/multi_fpl_data.json?t=${Date.now()}`
+            : 'https://www.fplsawadika.com/multi_fpl_data.json';
+          const resp = await fetch(fetchUrl, {
             headers: { 'User-Agent': 'FPLSaWaDiKa-Admin-Relay/2.0' },
-            cf: { cacheTtl: 15, cacheEverything: true },
+            cf: isForce ? { cacheTtl: 0, cacheEverything: false } : { cacheTtl: 15, cacheEverything: true },
           });
           if (resp.ok) {
             const data = await resp.json();
@@ -797,6 +801,13 @@ export default {
             } catch (err) {
               console.warn('Telemetry enrichment warning:', err);
             }
+
+            data.edge_metadata = {
+              colo,
+              edge_timestamp: new Date().toISOString(),
+              forced_refresh: isForce,
+              data_source: (env && env.DB) ? 'Cloudflare D1 SQL' : ((env && env.ANALYTICS_KV) ? 'Cloudflare KV' : 'Static Multi-League JSON')
+            };
 
             return new Response(JSON.stringify(data), {
               status: 200,
