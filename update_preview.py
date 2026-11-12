@@ -16657,7 +16657,8 @@ selectShi62GW(gwName) {
         this._radarTeamList = teamList;
 
         if (headerPill) {
-          headerPill.innerText = isEn ? `${leagueOrder.length} Leagues • ${teamList.length} Teams` : `${leagueOrder.length} ลีก • ${teamList.length} ทีม`;
+          const tier1LeaguesCount = leagueBenchmarks.length || 8;
+          headerPill.innerText = isEn ? `${tier1LeaguesCount} Leagues • ${teamList.length} Teams` : `${tier1LeaguesCount} ลีก • ${teamList.length} ทีม`;
         }
 
         // Render Record Cards (Mobile: 2x2 grid, Desktop: 4 columns - Editorial Clean)
@@ -22014,14 +22015,36 @@ def main():
                 target_obj["member_count"] = member_count
                 page_pruned["leagues"][lid] = target_obj
             else:
+                # Lightweight Inlined Telemetry: Keep teams and lightweight gameweek results
+                # so Cross-League features (Tab Radar Form, Benchmarks, Leaderboard) have full 8-league data,
+                # while keeping squads: {} pruned to maintain ultra-fast loading speed.
+                light_teams = l_dict.get("teams", [])
+                light_gws = {}
+                for gw_k, gw_v in l_dict.get("gameweeks", {}).items():
+                    if isinstance(gw_v, dict):
+                        light_res = [
+                            {
+                                "entry_id": r.get("entry_id"),
+                                "points": r.get("points", 0),
+                                "net_points": r.get("net_points", 0),
+                                "hits": r.get("hits", 0),
+                                "bench_points": r.get("bench_points", 0)
+                            }
+                            for r in gw_v.get("results", [])
+                        ]
+                        light_gws[gw_k] = {
+                            "is_finished": gw_v.get("is_finished", False),
+                            "is_started": gw_v.get("is_started", False),
+                            "results": light_res
+                        }
                 page_pruned["leagues"][lid] = {
                     "id": l_dict["id"],
                     "name": l_dict["name"],
                     "season": l_dict["season"],
                     "tier": l_dict.get("tier", 1),
                     "member_count": member_count,
-                    "teams": [],
-                    "gameweeks": {},
+                    "teams": light_teams,
+                    "gameweeks": light_gws,
                     "squads": {}
                 }
         return json.dumps(page_pruned, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
