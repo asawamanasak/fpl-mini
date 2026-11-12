@@ -383,6 +383,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <title>__PAGE_TITLE__</title>
   <meta name="description" content="__PAGE_DESCRIPTION__">
   <meta name="keywords" content="__PAGE_KEYWORDS__">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="theme-color" content="#0f172a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -484,7 +485,12 @@ __STRUCTURED_DATA_JSON__
   </script>
 
   <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.5/dist/index.global.js"
+    integrity="sha384-t+qLIxS5zM/KF99/doWY+dxTsavdvgayaZt8A9ntLsUjEkiXzYl5M3Ij8zVFPL9j"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
   <style type="text/tailwindcss">
     @theme {
       --breakpoint-xs: 380px;
@@ -1704,96 +1710,96 @@ __STRUCTURED_DATA_JSON__
   </div>
 
     <!-- 1.4 แถบเมนูแท็บหลัก (จัดหมวดหมู่และเรียงลำดับภาษาไทย) -->
-    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 border-t border-slate-200/80 dark:border-slate-800/80">
-      <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto touch-scroll scrollbar-thin py-1.5 sm:py-2 pr-4 sm:pr-0">
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-4 xl:px-8 border-t border-slate-200/80 dark:border-slate-800/80">
+      <nav class="flex space-x-1 sm:space-x-2 lg:space-x-1 xl:space-x-2 overflow-x-auto touch-scroll scrollbar-thin py-1.5 sm:py-2 pr-4 sm:pr-0">
         <button 
           id="tab-btn-live"
           data-tab-target="gameweek-view" 
-          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-bold transition-colors duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white active:scale-95 cursor-pointer"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-bold transition-colors duration-200 bg-slate-900 text-white shadow-xs dark:bg-blue-600 dark:text-white active:scale-95 cursor-pointer"
         >
           คะแนนสด
         </button>
         <button 
           id="tab-btn-highlights"
           data-tab-target="highlights-view" 
-          class="tab-nav-btn__TIER2_TAB_HIDDEN__ flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn__TIER2_TAB_HIDDEN__ flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           ไฮไลท์
         </button>
         <button 
           id="tab-btn-global-radar"
           data-tab-target="global-radar-view" 
-          class="tab-nav-btn__TIER2_TAB_HIDDEN__ flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn__TIER2_TAB_HIDDEN__ flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           เรดาร์ฟอร์ม
         </button>
         <button 
           id="tab-btn-competition"
           data-tab-target="competition-view" 
-          class="tab-nav-btn__TIER2_TAB_HIDDEN__ flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn__TIER2_TAB_HIDDEN__ flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           สถานะชิป
         </button>
         <button 
           id="tab-btn-transfers"
           data-tab-target="transfers-view" 
-          class="tab-nav-btn__TIER2_TAB_HIDDEN__ flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn__TIER2_TAB_HIDDEN__ flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           วิเคราะห์การย้ายตัว
         </button>
         <button 
           id="tab-btn-shi62-special"
           data-tab-target="shi62-special-view" 
-          class="tab-nav-btn hidden flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn hidden flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           ทายผล
         </button>
         <button 
           id="tab-btn-bramann-prediction"
           data-tab-target="bramann-prediction-view" 
-          class="tab-nav-btn hidden flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn hidden flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           ทายผล
         </button>
         <button 
           id="tab-btn-bramann-challenge"
           data-tab-target="bramann-challenge-view" 
-          class="tab-nav-btn hidden flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn hidden flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           ท้าชน
         </button>
         <button 
           id="tab-btn-prizes"
           data-tab-target="prizes-view" 
-          class="tab-nav-btn__PRIZES_TAB_HIDDEN__ flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn__PRIZES_TAB_HIDDEN__ flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           เงินรางวัล
         </button>
         <button 
           id="tab-btn-cup"
           data-tab-target="cup-view" 
-          class="tab-nav-btn__CUP_TAB_HIDDEN__ flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn__CUP_TAB_HIDDEN__ flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           บอลถ้วย
         </button>
         <button 
           id="tab-btn-hall-of-fame"
           data-tab-target="hall-of-fame-view" 
-          class="tab-nav-btn__TIER2_TAB_HIDDEN__ flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn__TIER2_TAB_HIDDEN__ flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           ทำเนียบแชมป์
         </button>
         <button 
           id="tab-btn-rules"
           data-tab-target="rules-view" 
-          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           กติกา
         </button>
         <button 
           id="tab-btn-about"
           data-tab-target="about-view" 
-          class="tab-nav-btn flex-shrink-0 px-3.5 sm:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           Dev Corner
         </button>
@@ -2579,7 +2585,7 @@ __STRUCTURED_DATA_JSON__
         <div class="min-w-0">
           <div class="flex items-center gap-2.5">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 motion-safe:animate-pulse flex-shrink-0"></span>
-            <h2 id="about-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display truncate">
+            <h2 id="about-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display leading-snug">
               Dev Corner &amp; สถาปัตยกรรมระบบ
             </h2>
           </div>
@@ -5219,14 +5225,13 @@ __STRUCTURED_DATA_JSON__
         try {
           let liveJson = null;
           for (const url of endpoints) {
+            const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+            const timer = controller ? setTimeout(() => controller.abort(), 6000) : null;
             try {
-              const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-              const timer = controller ? setTimeout(() => controller.abort(), 6000) : null;
               const resp = await fetch(url, {
                 cache: 'no-store',
                 signal: controller ? controller.signal : undefined
               });
-              if (timer) clearTimeout(timer);
               if (resp && resp.ok) {
                 const parsed = await resp.json();
                 if (parsed && Array.isArray(parsed.elements)) {
@@ -5235,7 +5240,10 @@ __STRUCTURED_DATA_JSON__
                   break;
                 }
               }
-            } catch (_) {}
+            } catch (_) {
+            } finally {
+              if (timer) clearTimeout(timer);
+            }
           }
 
           if (!liveJson || !Array.isArray(liveJson.elements)) {
@@ -7338,21 +7346,7 @@ selectShi62GW(gwName) {
       }
 
       showCopiedToast(text = 'คัดลอกข้อความสำเร็จ!') {
-        let toast = document.getElementById('global-copied-toast');
-        if (!toast) {
-          toast = document.createElement('div');
-          toast.id = 'global-copied-toast';
-          toast.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white font-bold text-xs px-4 py-2 rounded-full shadow-2xl border border-slate-700/80 z-50 flex items-center gap-1.5 transition-all duration-200 opacity-0 pointer-events-none translate-y-2 backdrop-blur-xs font-display';
-          document.body.appendChild(toast);
-        }
-        toast.innerHTML = `<svg class="w-3.5 h-3.5 text-[#06C755] flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg><span>${text}</span>`;
-        toast.classList.remove('opacity-0', 'translate-y-2');
-        toast.classList.add('opacity-100', 'translate-y-0');
-        if (this._toastTimer) clearTimeout(this._toastTimer);
-        this._toastTimer = setTimeout(() => {
-          toast.classList.remove('opacity-100', 'translate-y-0');
-          toast.classList.add('opacity-0', 'translate-y-2');
-        }, 1800);
+        this.showToast(text, 'line', 1800);
       }
 
       copyToClipboard(textToCopy, onCopied) {
@@ -7877,11 +7871,11 @@ selectShi62GW(gwName) {
                 </div>
                 <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
                   <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Top Profit Leader' : 'ผู้นำทำกำไรสูงสุด'}</div>
-                  <div class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 font-display truncate mt-0.5">${data.cumulative_standings[0] ? data.cumulative_standings[0].player.display_name + ' (' + fmtMoney(data.cumulative_standings[0].net) + ')' : '-'}</div>
+                  <div class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 font-display truncate mt-0.5">${data.cumulative_standings[0] ? this.escapeHtml(data.cumulative_standings[0].player.display_name) + ' (' + fmtMoney(data.cumulative_standings[0].net) + ')' : '-'}</div>
                 </div>
                 <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
                   <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Highest Win Rate' : 'แม่นยำสูงสุด (%ชนะ)'}</div>
-                  <div class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 font-display mt-0.5">${sortedByWinRate[0]?.player.display_name || '-'} (${sortedByWinRate[0]?.win_rate || 0}%)</div>
+                  <div class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 font-display mt-0.5">${this.escapeHtml(sortedByWinRate[0]?.player.display_name || '-')} (${sortedByWinRate[0]?.win_rate || 0}%)</div>
                 </div>
               </div>
             </div>
@@ -8221,14 +8215,14 @@ selectShi62GW(gwName) {
                         <td class="py-2.5 px-3">
                           <div class="flex items-center gap-2">
                             <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
-                              ${c.player.display_name}
+                              ${this.escapeHtml(c.player.display_name)}
                             </span>
                             <div>
                               ${c.player.is_guest 
                                 ? `<div class="text-xs text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Prediction only' : 'เล่นเฉพาะทายผล'}</div>` 
                                 : `
-                                  <div class="font-bold text-slate-900 dark:text-white leading-tight">${c.player.team_name}</div>
-                                  <div class="text-[11px] text-slate-400 leading-tight">${c.player.manager}</div>
+                                  <div class="font-bold text-slate-900 dark:text-white leading-tight">${this.escapeHtml(c.player.team_name)}</div>
+                                  <div class="text-[11px] text-slate-400 leading-tight">${this.escapeHtml(c.player.manager)}</div>
                                 `}
                             </div>
                           </div>
@@ -8310,7 +8304,7 @@ selectShi62GW(gwName) {
                 </div>
                 <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center col-span-2 sm:col-span-1">
                   <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Top Profit Leader' : 'ผู้นำทำกำไรสูงสุด'}</div>
-                  <div class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 font-display truncate mt-0.5">${data.cumulative_standings[0] ? data.cumulative_standings[0].player.display_name + ' (' + fmtMoney(data.cumulative_standings[0].net) + ')' : '-'}</div>
+                  <div class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 font-display truncate mt-0.5">${data.cumulative_standings[0] ? this.escapeHtml(data.cumulative_standings[0].player.display_name) + ' (' + fmtMoney(data.cumulative_standings[0].net) + ')' : '-'}</div>
                 </div>
               </div>
             </div>
@@ -9141,11 +9135,11 @@ selectShi62GW(gwName) {
                 </div>
                 <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
                   <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Top Profit Leader' : 'ผู้นำทำกำไรสูงสุด'}</div>
-                  <div class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 font-display truncate mt-0.5">${data.cumulative_standings[0] ? data.cumulative_standings[0].player.display_name + ' (' + fmtMoney(data.cumulative_standings[0].net) + ')' : '-'}</div>
+                  <div class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 font-display truncate mt-0.5">${data.cumulative_standings[0] ? this.escapeHtml(data.cumulative_standings[0].player.display_name) + ' (' + fmtMoney(data.cumulative_standings[0].net) + ')' : '-'}</div>
                 </div>
                 <div class="bg-slate-50/70 dark:bg-slate-800/40 rounded-xl p-2.5 sm:p-3 border border-slate-200/60 dark:border-slate-700/60 text-center">
                   <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Highest Win Rate' : 'แม่นยำสูงสุด (%ชนะ)'}</div>
-                  <div class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 font-display mt-0.5">${[...(Array.isArray(data.cumulative_standings) ? data.cumulative_standings : [])].sort((a,b) => b.win_rate - a.win_rate)[0]?.player.display_name || '-'} (${[...(Array.isArray(data.cumulative_standings) ? data.cumulative_standings : [])].sort((a,b) => b.win_rate - a.win_rate)[0]?.win_rate || 0}%)</div>
+                  <div class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 font-display mt-0.5">${this.escapeHtml([...(Array.isArray(data.cumulative_standings) ? data.cumulative_standings : [])].sort((a,b) => b.win_rate - a.win_rate)[0]?.player.display_name || '-')} (${[...(Array.isArray(data.cumulative_standings) ? data.cumulative_standings : [])].sort((a,b) => b.win_rate - a.win_rate)[0]?.win_rate || 0}%)</div>
                 </div>
               </div>
             </div>
@@ -9216,7 +9210,7 @@ selectShi62GW(gwName) {
                     return `
                       <div class="p-2 rounded-lg border ${bgStyle} flex flex-col justify-between">
                         <div class="flex items-center justify-between">
-                          <span class="font-bold text-xs text-slate-800 dark:text-slate-200">${s.player.display_name}</span>
+                          <span class="font-bold text-xs text-slate-800 dark:text-slate-200">${this.escapeHtml(s.player.display_name)}</span>
                           <span class="text-[10px] text-slate-400">${s.won}W - ${s.lost}L</span>
                         </div>
                         <div class="text-xs sm:text-sm font-bold font-display mt-1 ${textStyle}">
@@ -9454,14 +9448,14 @@ selectShi62GW(gwName) {
                         <td class="py-2.5 px-3">
                           <div class="flex items-center gap-2">
                             <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
-                              ${c.player.display_name}
+                              ${this.escapeHtml(c.player.display_name)}
                             </span>
                             <div>
                               ${c.player.is_guest 
                                 ? '<div class="text-xs text-slate-500 dark:text-slate-400 font-medium">เล่นเฉพาะทายผล</div>' 
                                 : `
-                                  <div class="font-bold text-slate-900 dark:text-white leading-tight">${c.player.team_name}</div>
-                                  <div class="text-[11px] text-slate-400 leading-tight">${c.player.manager}</div>
+                                  <div class="font-bold text-slate-900 dark:text-white leading-tight">${this.escapeHtml(c.player.team_name)}</div>
+                                  <div class="text-[11px] text-slate-400 leading-tight">${this.escapeHtml(c.player.manager)}</div>
                                 `}
                             </div>
                           </div>
@@ -17692,15 +17686,15 @@ selectShi62GW(gwName) {
                       <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800 text-[11px] font-mono text-right">
                         ${isCurFinished 
                           ? (isLeadA 
-                              ? `<span class="text-emerald-600 dark:text-emerald-400 font-bold">${isEn ? `${pair.teamA.team_name} Advances →` : `${pair.teamA.team_name} ชนะผ่านเข้ารอบ →`}</span>`
+                              ? `<span class="text-emerald-600 dark:text-emerald-400 font-bold">${isEn ? `${this.escapeHtml(pair.teamA.team_name)} Advances →` : `${this.escapeHtml(pair.teamA.team_name)} ชนะผ่านเข้ารอบ →`}</span>`
                               : (isLeadB 
-                                  ? `<span class="text-emerald-600 dark:text-emerald-400 font-bold">${isEn ? `${pair.teamB.team_name} Advances →` : `${pair.teamB.team_name} ชนะผ่านเข้ารอบ →`}</span>`
+                                  ? `<span class="text-emerald-600 dark:text-emerald-400 font-bold">${isEn ? `${this.escapeHtml(pair.teamB.team_name)} Advances →` : `${this.escapeHtml(pair.teamB.team_name)} ชนะผ่านเข้ารอบ →`}</span>`
                                   : `<span class="text-amber-600 dark:text-amber-400 font-bold">${isEn ? 'Tied • Decided by Tie-Breaker' : 'เสมอ • ชี้ขาดตามกติกาไทเบรก'}</span>`))
                           : (isLive 
                               ? (isLeadA 
-                                  ? `<span class="text-amber-600 dark:text-amber-400 font-bold">${isEn ? `${pair.teamA.team_name} currently leads` : `${pair.teamA.team_name} นำอยู่ขณะนี้`}</span>`
+                                  ? `<span class="text-amber-600 dark:text-amber-400 font-bold">${isEn ? `${this.escapeHtml(pair.teamA.team_name)} currently leads` : `${this.escapeHtml(pair.teamA.team_name)} นำอยู่ขณะนี้`}</span>`
                                   : (isLeadB 
-                                      ? `<span class="text-amber-600 dark:text-amber-400 font-bold">${isEn ? `${pair.teamB.team_name} currently leads` : `${pair.teamB.team_name} นำอยู่ขณะนี้`}</span>`
+                                      ? `<span class="text-amber-600 dark:text-amber-400 font-bold">${isEn ? `${this.escapeHtml(pair.teamB.team_name)} currently leads` : `${this.escapeHtml(pair.teamB.team_name)} นำอยู่ขณะนี้`}</span>`
                                       : `<span class="text-slate-500 font-semibold">${isEn ? 'Scores Level' : 'คะแนนเสมอกัน'}</span>`))
                               : `<span class="text-slate-400">${isEn ? 'Match upcoming' : 'รอการแข่งขัน'}</span>`)}
                       </div>
@@ -18481,7 +18475,7 @@ selectShi62GW(gwName) {
               <div class="min-w-0">
                 <div class="flex items-center gap-2.5">
                   <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 motion-safe:animate-pulse flex-shrink-0"></span>
-                  <h2 id="about-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display truncate">
+                  <h2 id="about-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display leading-snug">
                     Dev Corner &amp; System Architecture
                   </h2>
                 </div>
@@ -18921,7 +18915,7 @@ selectShi62GW(gwName) {
               <div class="min-w-0">
                 <div class="flex items-center gap-2.5">
                   <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 motion-safe:animate-pulse flex-shrink-0"></span>
-                  <h2 id="about-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display truncate">
+                  <h2 id="about-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display leading-snug">
                     Dev Corner &amp; สถาปัตยกรรมระบบ
                   </h2>
                 </div>
@@ -19600,26 +19594,28 @@ selectShi62GW(gwName) {
             } catch (_) {}
           }
 
-          if (!picksData) {
-            const primaryUrl = `https://api.fplsawadika.com/picks?entry=${entryIdNum}&gw=${gwNum}`;
+          const fetchJsonWithTimeout = async (url, timeoutMs = 6000) => {
+            const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+            const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
             try {
-              const resp = await fetch(primaryUrl);
-              if (resp.ok) {
-                const j = await resp.json();
-                if (j && Array.isArray(j.picks)) picksData = j;
-              }
-            } catch (_) {}
+              const resp = await fetch(url, { signal: controller ? controller.signal : undefined });
+              if (!resp || !resp.ok) return null;
+              return await resp.json();
+            } catch (_) {
+              return null;
+            } finally {
+              if (timer) clearTimeout(timer);
+            }
+          };
+
+          if (!picksData) {
+            const j = await fetchJsonWithTimeout(`https://api.fplsawadika.com/picks?entry=${entryIdNum}&gw=${gwNum}`);
+            if (j && Array.isArray(j.picks)) picksData = j;
           }
 
           if (!picksData) {
-            try {
-              const fbUrl = `https://fpl-live-relay.asawamanasak.workers.dev/picks?entry=${entryIdNum}&gw=${gwNum}`;
-              const fbResp = await fetch(fbUrl);
-              if (fbResp.ok) {
-                const fbj = await fbResp.json();
-                if (fbj && Array.isArray(fbj.picks)) picksData = fbj;
-              }
-            } catch (_) {}
+            const fbj = await fetchJsonWithTimeout(`https://fpl-live-relay.asawamanasak.workers.dev/picks?entry=${entryIdNum}&gw=${gwNum}`);
+            if (fbj && Array.isArray(fbj.picks)) picksData = fbj;
           }
 
           if (!picksData || !Array.isArray(picksData.picks) || picksData.picks.length === 0) {
@@ -20063,9 +20059,15 @@ selectShi62GW(gwName) {
                 ` : `
                   <button 
                     type="button"
-                    onclick="app.showPlayerStatsToast(event, '${this.escapeHtml(p.name)}', ${p.points || 0}, ${Number(p.multiplier || 1)}, ${Boolean(p.is_captain)}, ${Number(p.provisional_bonus || 0)}, '${this.escapeHtml(p.team || '')}')"
+                    data-player-name="${this.escapeHtml(p.name)}"
+                    data-player-points="${Number(p.points || 0)}"
+                    data-player-mult="${Number(p.multiplier || 1)}"
+                    data-player-cap="${p.is_captain ? '1' : '0'}"
+                    data-player-bonus="${Number(p.provisional_bonus || 0)}"
+                    data-player-team="${this.escapeHtml(p.team || '')}"
+                    onclick="app.handlePlayerStatsClick(event, this)"
                     class="bg-emerald-950/90 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/40 text-[8px] xs:text-[8.5px] sm:text-[9.5px] font-black font-display px-1 sm:px-1.5 py-0.5 rounded mt-0.5 shadow-xs whitespace-nowrap cursor-pointer active:scale-95 transition-all"
-                    title="${isEn ? `${p.name}: ${p.points} pts (Tap to view stats)` : `${p.name}: ${p.points} แต้ม (แตะเพื่อดูสถิติ)`}"
+                    title="${this.escapeHtml(isEn ? `${p.name}: ${p.points} pts (Tap to view stats)` : `${p.name}: ${p.points} แต้ม (แตะเพื่อดูสถิติ)`)}"
                   >
                     ${p.points} pts
                   </button>
@@ -20233,25 +20235,7 @@ selectShi62GW(gwName) {
             ind.classList.add('opacity-0');
           }, 1800);
         }
-
-        // Mobile on-screen notification toast
-        let toast = document.getElementById('global-copied-toast');
-        if (!toast) {
-          toast = document.createElement('div');
-          toast.id = 'global-copied-toast';
-          toast.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white font-bold text-xs px-4 py-2 rounded-full shadow-2xl border border-slate-700/80 z-[70] flex items-center gap-1.5 transition-all duration-200 opacity-0 pointer-events-none translate-y-2 backdrop-blur-xs font-display';
-          toast.innerHTML = `<svg class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span>${copiedText}</span>`;
-          document.body.appendChild(toast);
-        } else {
-          toast.innerHTML = `<svg class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span>${copiedText}</span>`;
-        }
-
-        toast.classList.remove('opacity-0', 'translate-y-2');
-        toast.classList.add('opacity-100', 'translate-y-0');
-        setTimeout(() => {
-          toast.classList.remove('opacity-100', 'translate-y-0');
-          toast.classList.add('opacity-0', 'translate-y-2');
-        }, 1600);
+        this.showToast(copiedText, 'success', 1600);
       }
 
       shareCurrentGameweek() {
@@ -20564,31 +20548,35 @@ selectShi62GW(gwName) {
         }
       }
 
-      showToast(msg, type = 'success') {
+      showToast(msg, type = 'success', durationMs = 2500) {
         if (typeof document === 'undefined') return;
         let toast = document.getElementById('global-copied-toast');
         if (!toast) {
           toast = document.createElement('div');
           toast.id = 'global-copied-toast';
-          toast.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white font-bold text-xs px-4 py-2 rounded-full shadow-2xl border border-slate-700/80 z-[70] flex items-center gap-1.5 transition-all duration-200 opacity-0 pointer-events-none translate-y-2 backdrop-blur-xs font-display';
           document.body.appendChild(toast);
-        } else {
-          toast.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white font-bold text-xs px-4 py-2 rounded-full shadow-2xl border border-slate-700/80 z-[70] flex items-center gap-1.5 transition-all duration-200 opacity-0 pointer-events-none translate-y-2 backdrop-blur-xs font-display';
         }
+        toast.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white font-bold text-xs px-4 py-2 rounded-full shadow-2xl border border-slate-700/80 z-[70] flex items-center gap-1.5 transition-all duration-200 opacity-0 pointer-events-none translate-y-2 backdrop-blur-xs font-display';
+
         let icon = '<svg class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>';
         if (type === 'error') {
           icon = '<svg class="w-3.5 h-3.5 text-rose-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>';
         } else if (type === 'info') {
           icon = '<svg class="w-3.5 h-3.5 text-sky-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+        } else if (type === 'line') {
+          icon = '<svg class="w-3.5 h-3.5 text-[#06C755] flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>';
         }
-        toast.innerHTML = `${icon}<span>${msg}</span>`;
+        toast.innerHTML = icon;
+        const msgSpan = document.createElement('span');
+        msgSpan.textContent = String(msg ?? '');
+        toast.appendChild(msgSpan);
         toast.classList.remove('opacity-0', 'translate-y-2');
         toast.classList.add('opacity-100', 'translate-y-0');
         if (this._toastTimer) clearTimeout(this._toastTimer);
         this._toastTimer = setTimeout(() => {
           toast.classList.remove('opacity-100', 'translate-y-0');
           toast.classList.add('opacity-0', 'translate-y-2');
-        }, 2500);
+        }, durationMs);
       }
 
       onLiveSearchInput(val) {
@@ -20735,6 +20723,20 @@ selectShi62GW(gwName) {
         }
       }
 
+      handlePlayerStatsClick(event, btn) {
+        if (!btn || !btn.dataset) return;
+        const ds = btn.dataset;
+        this.showPlayerStatsToast(
+          event,
+          ds.playerName || '',
+          Number(ds.playerPoints || 0),
+          Number(ds.playerMult || 1),
+          ds.playerCap === '1',
+          Number(ds.playerBonus || 0),
+          ds.playerTeam || ''
+        );
+      }
+
       showPlayerStatsToast(event, name, points, multiplier, isCap, provisionalBonus, team) {
         if (event && typeof event.stopPropagation === 'function') {
           event.stopPropagation();
@@ -20757,21 +20759,26 @@ selectShi62GW(gwName) {
         }
         this._xlsxLoadPromise = new Promise((resolve) => {
           if (typeof document === 'undefined') {
+            this._xlsxLoadPromise = null;
             resolve(false);
             return;
           }
           const script = document.createElement('script');
           script.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+          script.integrity = 'sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw';
+          script.crossOrigin = 'anonymous';
+          script.referrerPolicy = 'no-referrer';
           script.async = true;
-          const timer = setTimeout(() => resolve(false), 6000);
+          const finish = (ok) => {
+            clearTimeout(timer);
+            if (!ok) this._xlsxLoadPromise = null;
+            resolve(ok);
+          };
+          const timer = setTimeout(() => finish(false), 6000);
           script.onload = () => {
-            clearTimeout(timer);
-            resolve(typeof XLSX !== 'undefined' && Boolean(XLSX.utils && XLSX.writeFile));
+            finish(typeof XLSX !== 'undefined' && Boolean(XLSX.utils && XLSX.writeFile));
           };
-          script.onerror = () => {
-            clearTimeout(timer);
-            resolve(false);
-          };
+          script.onerror = () => finish(false);
           document.head.appendChild(script);
         });
         return this._xlsxLoadPromise;

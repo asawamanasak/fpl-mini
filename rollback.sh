@@ -9,7 +9,15 @@
 # ========================================================
 
 ACTION="${1:-list}"
-TARGET="$2"
+TARGET="${2:-}"
+
+require_clean_worktree() {
+  if [ -n "$(git status --porcelain)" ]; then
+    echo "❌ พบไฟล์ที่ยังไม่ถูก commit ใน working tree (uncommitted changes) — กรุณา commit หรือ stash ก่อนสลับ branch/tag:"
+    git status --short
+    exit 1
+  fi
+}
 
 case "$ACTION" in
   list)
@@ -41,15 +49,17 @@ case "$ACTION" in
       TARGET="rollback_${TARGET}"
     fi
     echo "🔄 Switching to $TARGET..."
-    git checkout "$TARGET"
-    python3 update_preview.py
+    require_clean_worktree
+    git checkout "$TARGET" || { echo "❌ Failed to checkout $TARGET"; exit 1; }
+    python3 update_preview.py || { echo "❌ Failed to regenerate static files"; exit 1; }
     echo "✅ Switched to $TARGET successfully!"
     ;;
 
   main|latest)
     echo "🔄 Returning to main (latest version)..."
-    git checkout main
-    python3 update_preview.py
+    require_clean_worktree
+    git checkout main || { echo "❌ Failed to checkout main"; exit 1; }
+    python3 update_preview.py || { echo "❌ Failed to regenerate static files"; exit 1; }
     echo "✅ Switched to main successfully!"
     ;;
 

@@ -23,22 +23,42 @@ import {
   isRequestAuthenticated,
   renderDashboardHtml,
   renderLoginHtml,
-  getSessionSecret,
+  getSessionSigningSecret,
   verifyAdminPasskey,
   signAdminSession,
 } from './admin-dashboard.js';
 
+const SHARED_SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), geolocation=(), microphone=(), focus-without-user-activation=()',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+};
+
 const ADMIN_JSON_HEADERS = {
+  ...SHARED_SECURITY_HEADERS,
   'Content-Type': 'application/json; charset=utf-8',
   'Cache-Control': 'no-store, private',
+  'Cross-Origin-Resource-Policy': 'same-origin',
+};
+
+const ADMIN_HTML_HEADERS = {
+  ...SHARED_SECURITY_HEADERS,
+  'Content-Type': 'text/html; charset=utf-8',
+  'Cache-Control': 'no-store, private',
+  'X-Frame-Options': 'DENY',
+  'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+  'Cross-Origin-Resource-Policy': 'same-origin',
+  'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
 };
 
 const TELEMETRY_MAX_BODY_BYTES = 4096;
 const TELEMETRY_ALLOWED_TYPES = new Set(['page_view', 'league_view', 'dwell_time', 'team_view']);
 const TELEMETRY_RATE_LIMIT_PER_MIN = 30;
+const LOGIN_RATE_LIMIT_PER_MIN = 8;
 
 function isTelemetryOriginAllowed(originHeader) {
-  if (!originHeader || originHeader === 'null') return true;
+  if (!originHeader || originHeader === 'null') return false;
   try {
     const o = new URL(originHeader);
     const h = o.hostname.toLowerCase();
@@ -58,19 +78,19 @@ function isAutomatedTelemetryUa(userAgent) {
   return /bot|crawl|spider|slurp|curl|wget|python-requests|go-http-client|headless/i.test(userAgent || '');
 }
 
-async function allowTelemetryIpBurst(request) {
+async function allowIpRateLimit(request, namespace, maxPerMin) {
   try {
     const ip = request.headers.get('cf-connecting-ip') || '';
     if (!ip || typeof caches === 'undefined' || !caches.default) return true;
     const minuteBucket = Math.floor(Date.now() / 60000);
-    const keyReq = new Request(`https://telemetry-ratelimit.internal/${encodeURIComponent(ip)}/${minuteBucket}`);
+    const keyReq = new Request(`https://ratelimit.internal/${namespace}/${encodeURIComponent(ip)}/${minuteBucket}`);
     const existing = await caches.default.match(keyReq);
     let count = 0;
     if (existing) {
       const parsed = await existing.json().catch(() => ({ count: 0 }));
       count = Number(parsed && parsed.count) || 0;
     }
-    if (count >= TELEMETRY_RATE_LIMIT_PER_MIN) return false;
+    if (count >= maxPerMin) return false;
     await caches.default.put(
       keyReq,
       new Response(JSON.stringify({ count: count + 1 }), {
@@ -84,9 +104,11 @@ async function allowTelemetryIpBurst(request) {
 }
 
 const CORS_HEADERS = {
+  ...SHARED_SECURITY_HEADERS,
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Accept, Cache-Control',
+  'Cross-Origin-Resource-Policy': 'cross-origin',
 };
 
 const FPL_HEADERS = {
@@ -337,7 +359,7 @@ export default {
           });
         }
 
-        if (!(await allowTelemetryIpBurst(request))) {
+        if (!(await allowIpRateLimit(request, 'telemetry', TELEMETRY_RATE_LIMIT_PER_MIN))) {
           return new Response(JSON.stringify({ ok: true, throttled: true }), {
             status: 202,
             headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
@@ -435,10 +457,10 @@ export default {
                 const batch = increments.map(item => stmt.bind(item.metric, today, item.amount));
                 await env.DB.batch(batch);
               } else if (env.ANALYTICS_KV) {
-                for (const item of increments) {
+                await Promise.all(increments.map(async (item) => {
                   const cur = parseInt(await env.ANALYTICS_KV.get(item.metric) || '0', 10);
                   await env.ANALYTICS_KV.put(item.metric, String(cur + item.amount), { expirationTtl: 86400 * 30 });
-                }
+                }));
               }
             } catch (err) {
               console.warn('Telemetry enrichment warning:', err);
@@ -471,19 +493,31 @@ export default {
         return new Response(null, {
           status: 302,
           headers: {
+            ...SHARED_SECURITY_HEADERS,
             'Location': adminRedirectTarget,
             'Set-Cookie': `fpl_admin_auth=; Path=/; Max-Age=0; HttpOnly${secureFlag}; SameSite=Strict`,
+            'Clear-Site-Data': '"cookies", "storage", "cache"',
           },
         });
       }
 
       // 2. Login Form Submission Handler
       if (request.method === 'POST' && (path === '/login' || path === '/admin/login')) {
-        const secretKey = getSessionSecret(env);
-        if (!secretKey) {
+        if (!(await allowIpRateLimit(request, 'admin-login', LOGIN_RATE_LIMIT_PER_MIN))) {
+          return new Response(
+            renderLoginHtml('พยายามเข้าสู่ระบบบ่อยเกินไป กรุณารอ 1 นาทีแล้วลองใหม่อีกครั้ง'),
+            {
+              status: 429,
+              headers: { ...ADMIN_HTML_HEADERS, 'Retry-After': '60' },
+            }
+          );
+        }
+
+        const signingSecret = await getSessionSigningSecret(env);
+        if (!signingSecret) {
           return new Response(
             renderLoginHtml('ระบบยังไม่พร้อมใช้งาน: กรุณาตั้งค่า ADMIN_SECRET_KEY บน Cloudflare Worker Secrets'),
-            { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store, private' } }
+            { status: 503, headers: ADMIN_HTML_HEADERS }
           );
         }
 
@@ -502,10 +536,11 @@ export default {
         } catch (_) {}
 
         if (await verifyAdminPasskey(passkey, env)) {
-          const sessionToken = await signAdminSession(secretKey);
+          const sessionToken = await signAdminSession(signingSecret);
           return new Response(null, {
             status: 302,
             headers: {
+              ...SHARED_SECURITY_HEADERS,
               'Location': adminRedirectTarget,
               'Set-Cookie': `fpl_admin_auth=${encodeURIComponent(sessionToken)}; Path=/; Max-Age=2592000; HttpOnly${secureFlag}; SameSite=Strict`,
             },
@@ -514,7 +549,7 @@ export default {
 
         return new Response(renderLoginHtml('รหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง'), {
           status: 401,
-          headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store, private' },
+          headers: ADMIN_HTML_HEADERS,
         });
       }
 
@@ -523,7 +558,7 @@ export default {
       if (!auth.authenticated) {
         return new Response(renderLoginHtml(), {
           status: 401,
-          headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store, private' },
+          headers: ADMIN_HTML_HEADERS,
         });
       }
 
@@ -655,6 +690,11 @@ export default {
             `https://raw.githubusercontent.com/asawamanasak/fpl-mini/main/multi_fpl_data.json${tsSuffix}`,
             `https://www.fplsawadika.com/multi_fpl_data.json${tsSuffix}`,
           ];
+          const cfgPromise = fetch(`https://raw.githubusercontent.com/asawamanasak/fpl-mini/main/config/leagues_config.json${tsSuffix}`, {
+            headers: { 'User-Agent': 'FPLSaWaDiKa-Admin-Relay/2.0' },
+            cf: isForce ? { cacheTtl: 0, cacheEverything: false } : { cacheTtl: 300, cacheEverything: true },
+          }).then(r => (r && r.ok ? r.json() : null)).catch(() => null);
+
           let resp = null;
           for (const candidateUrl of candidateUrls) {
             try {
@@ -667,6 +707,15 @@ export default {
                 break;
               }
             } catch (_) {}
+          }
+          const leaguesConfigJson = await cfgPromise;
+          let dynamicPoolGmv = 0;
+          if (leaguesConfigJson && typeof leaguesConfigJson === 'object') {
+            for (const cfgItem of Object.values(leaguesConfigJson)) {
+              const poolStr = cfgItem && typeof cfgItem.total_pool === 'string' ? cfgItem.total_pool : '';
+              const m = poolStr.match(/^([\d,]+)\s*THB/i);
+              if (m) dynamicPoolGmv += parseInt(m[1].replace(/,/g, ''), 10) || 0;
+            }
           }
           if (resp && resp.ok) {
             const data = await resp.json();
@@ -692,9 +741,9 @@ export default {
               total_managers: liveTier1Managers || 163,
               total_managers_tier1: liveTier1Managers || 163,
               total_managers_all: liveAllManagers || liveTier1Managers || 163,
-              total_pool_gmv: 268700,
+              total_pool_gmv: dynamicPoolGmv || 268700,
               tier1_leagues_count: Object.values(liveLeagueSummaries).filter(x => x.tier !== 2).length || 8,
-              total_leagues_count: Object.keys(liveLeagueSummaries).length || 8,
+              total_leagues_count: Object.keys(liveLeagueSummaries).length || 9,
               leagues: liveLeagueSummaries,
             };
 
@@ -831,9 +880,10 @@ export default {
                   '187827': { name: 'Shi62', baseViews: 175, baseDwellSec: 210, peakWindow: 'จันทร์ 12:00 - 13:30 น.', peakWindowEn: 'Mon 12:00 - 13:30' },
                   '5349': { name: 'Bramann League', baseViews: 133, baseDwellSec: 192, peakWindow: 'เสาร์ 18:00 - 20:00 น.', peakWindowEn: 'Sat 18:00 - 20:00' },
                   '567387': { name: 'Fantasy Nguan & friends cup', baseViews: 86, baseDwellSec: 180, peakWindow: 'เสาร์ 21:00 - 23:00 น.', peakWindowEn: 'Sat 21:00 - 23:00' },
+                  '139836': { name: 'FPL Growth Mindset 2026/27', baseViews: 0, baseDwellSec: 180, peakWindow: 'เสาร์ 20:00 - 22:30 น.', peakWindowEn: 'Sat 20:00 - 22:30' },
                 };
 
-                const leagueIds = Object.keys(LEAGUE_BASELINES);
+                const leagueIds = Array.from(new Set([...Object.keys(LEAGUE_BASELINES), ...Object.keys(liveLeagueSummaries)]));
 
                 if (!env.DB && env.ANALYTICS_KV) {
                   const leagueFetchPromises = [];
@@ -873,7 +923,7 @@ export default {
                 const leaguesOutput = {};
 
                 leagueIds.forEach(lid => {
-                  const base = LEAGUE_BASELINES[lid];
+                  const base = LEAGUE_BASELINES[lid] || { peakWindow: '-', peakWindowEn: '-', baseViews: 0, baseDwellSec: 180 };
                   const st = leagueStats[lid];
                   const actViews = base.baseViews + st.kvViews;
                   totalLeaguesVisits += actViews;
@@ -977,8 +1027,8 @@ export default {
                   master_payload_bytes: 5273401,
                   tier1_teams_count: 163,
                   total_teams_count: 163,
-                  tier1_leagues_count: 8,
-                  total_leagues_count: 8,
+                  tier1_leagues_count: data.portfolio.tier1_leagues_count,
+                  total_leagues_count: data.portfolio.total_leagues_count,
                   smart_commit_active: true,
                   last_sync: data.last_sync || '8 พ.ย. 2026, 11:18 น.',
                   last_sync_iso: data.last_sync_iso || '2026-11-08 11:18:28',
@@ -992,7 +1042,7 @@ export default {
                   weekly_visits: dynamicVisits,
                   daily_reach: dailyAvgReach,
                   peak_live_audience: 284,
-                  total_pool_gmv: 268700, // 268,700 THB managed across 8 Tier-1 leagues (verified against leagues_config.json)
+                  total_pool_gmv: data.portfolio.total_pool_gmv, // Summed dynamically from config/leagues_config.json with safe fallback
                   daily_series: dailySeries,
                   hourly_series: hourlySeries,
                   sources: {
@@ -1064,10 +1114,7 @@ export default {
       // 5. Render Executive Summary Dashboard
       return new Response(renderDashboardHtml(colo, auth.provider), {
         status: 200,
-        headers: {
-          'Content-Type': 'text/html; charset=utf-8',
-          'Cache-Control': 'no-store, private',
-        },
+        headers: ADMIN_HTML_HEADERS,
       });
     }
 
@@ -1091,10 +1138,25 @@ export default {
       );
     }
 
-    // Parse Gameweek event parameter (default to 1..38 validation)
-    const eventParam = url.searchParams.get('event') || url.searchParams.get('gw');
-    const gw = parseInt(eventParam || '1', 10);
-    if (isNaN(gw) || gw < 1 || gw > 38) {
+    // Parse Gameweek event parameter (strict integer 1..38; reject non-numeric or conflicting event/gw params)
+    const rawEvent = url.searchParams.get('event');
+    const rawGw = url.searchParams.get('gw');
+    if (
+      (rawEvent !== null && !/^\d+$/.test(rawEvent)) ||
+      (rawGw !== null && !/^\d+$/.test(rawGw)) ||
+      (rawEvent !== null && rawGw !== null && Number(rawEvent) !== Number(rawGw))
+    ) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid event/gameweek parameter (must be 1-38)' }),
+        {
+          status: 400,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+        }
+      );
+    }
+    const eventParam = rawEvent !== null ? rawEvent : rawGw;
+    const gw = eventParam !== null ? Number(eventParam) : 1;
+    if (!Number.isInteger(gw) || gw < 1 || gw > 38) {
       return new Response(
         JSON.stringify({ error: 'Invalid event/gameweek parameter (must be 1-38)' }),
         {
@@ -1136,8 +1198,7 @@ export default {
       // 2.5 Team Picks Endpoint (/picks?entry={id}&gw={gw} or /api/picks)
       if (path === '/picks' || path === '/api/picks') {
         const entryId = url.searchParams.get('entry');
-        const targetGw = url.searchParams.get('gw') || url.searchParams.get('event') || String(gw);
-        if (!entryId || !/^\d+$/.test(entryId)) {
+        if (!entryId || !/^\d{1,12}$/.test(entryId)) {
           return new Response(
             JSON.stringify({ error: 'Valid entry ID parameter is required (e.g. ?entry=7563)' }),
             {
@@ -1147,7 +1208,7 @@ export default {
           );
         }
 
-        const picksResp = await fetch(`https://fantasy.premierleague.com/api/entry/${entryId}/event/${targetGw}/picks/`, {
+        const picksResp = await fetch(`https://fantasy.premierleague.com/api/entry/${entryId}/event/${gw}/picks/`, {
           headers: FPL_HEADERS,
         });
 
@@ -1157,7 +1218,7 @@ export default {
               error: `FPL picks upstream returned ${picksResp.status}`,
               status: picksResp.status,
               entry: Number(entryId),
-              gw: Number(targetGw),
+              gw,
             }),
             {
               status: picksResp.status,
@@ -1170,7 +1231,7 @@ export default {
         const ttl = 1800; // 30 minutes cache for team picks (15 players are locked post-deadline)
         const responseBody = JSON.stringify({
           entry_id: Number(entryId),
-          gw: Number(targetGw),
+          gw,
           active_chip: picksData.active_chip,
           automatic_subs: picksData.automatic_subs || [],
           entry_history: picksData.entry_history || {},
@@ -1199,7 +1260,7 @@ export default {
 
         if (isForce) {
           const normalKeyUrl = new URL(request.url);
-          normalKeyUrl.search = `?path=${path}&gw=${targetGw}&entry=${entryId}&slim=0`;
+          normalKeyUrl.search = `?path=${path}&gw=${gw}&entry=${entryId}&slim=0`;
           const normalKey = new Request(normalKeyUrl.toString(), { method: 'GET' });
           ctx.waitUntil(Promise.all([cache.put(cacheKey, picksResponse.clone()), cache.put(normalKey, picksResponse.clone())]));
         } else {

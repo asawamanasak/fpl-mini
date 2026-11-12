@@ -52,8 +52,23 @@ function decodeJwtPart(b64url) {
 }
 
 export function getSessionSecret(env) {
+  const sessionSecret = env && typeof env.ADMIN_SESSION_SECRET === 'string' ? env.ADMIN_SESSION_SECRET.trim() : '';
+  if (sessionSecret) return sessionSecret;
   const key = env && typeof env.ADMIN_SECRET_KEY === 'string' ? env.ADMIN_SECRET_KEY.trim() : '';
   return key;
+}
+
+export async function getSessionSigningSecret(env) {
+  const dedicated = env && typeof env.ADMIN_SESSION_SECRET === 'string' ? env.ADMIN_SESSION_SECRET.trim() : '';
+  if (dedicated) return dedicated;
+  const passkey = env && typeof env.ADMIN_SECRET_KEY === 'string' ? env.ADMIN_SECRET_KEY.trim() : '';
+  if (!passkey) return '';
+  // Domain-separated session signing key so raw passkey is never reused directly as HMAC key
+  const digest = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(`fpl-admin-session-v1:${passkey}`)
+  );
+  return toBase64Url(new Uint8Array(digest));
 }
 
 export function getAllowedAdminEmail(env) {
@@ -89,9 +104,9 @@ async function constantTimeEqual(a, b) {
 }
 
 export async function verifyAdminPasskey(passkey, env) {
-  const secretKey = getSessionSecret(env);
-  if (!secretKey || typeof passkey !== 'string' || !passkey) return false;
-  return constantTimeEqual(passkey, secretKey);
+  const expected = env && typeof env.ADMIN_SECRET_KEY === 'string' ? env.ADMIN_SECRET_KEY.trim() : '';
+  if (!expected || typeof passkey !== 'string' || !passkey) return false;
+  return constantTimeEqual(passkey, expected);
 }
 
 export async function signAdminSession(secret, ttlSeconds = SESSION_TTL_SECONDS) {
@@ -225,12 +240,12 @@ export async function isRequestAuthenticated(request, env) {
     return { authenticated: true, identity: verifiedEmail, provider: 'Cloudflare Zero Trust (JWT)' };
   }
 
-  const secretKey = getSessionSecret(env);
-  if (secretKey) {
+  const signingSecret = await getSessionSigningSecret(env);
+  if (signingSecret) {
     const cookieHeader = request.headers.get('Cookie') || '';
     const match = cookieHeader.match(/(?:^|;\s*)fpl_admin_auth=([^;]+)/);
     if (match && match[1]) {
-      const validSession = await verifyAdminSession(decodeURIComponent(match[1]), secretKey);
+      const validSession = await verifyAdminSession(decodeURIComponent(match[1]), signingSecret);
       if (validSession) {
         return { authenticated: true, identity: getAllowedAdminEmail(env), provider: 'Signed Passkey Session' };
       }
