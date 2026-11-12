@@ -19437,7 +19437,8 @@ selectShi62GW(gwName) {
           }
 
           // 2. Ensure live elements map is available for live points calculation
-          if (!this._latestLiveMap || Object.keys(this._latestLiveMap).length === 0) {
+          this._liveMapsByGw = this._liveMapsByGw || {};
+          if (!this._liveMapsByGw[gwNum] || Object.keys(this._liveMapsByGw[gwNum]).length === 0) {
             try {
               const liveResp = await fetch(`https://api.fplsawadika.com/live?event=${gwNum}&slim=1`);
               if (liveResp.ok) {
@@ -19454,10 +19455,32 @@ selectShi62GW(gwName) {
                       };
                     }
                   });
-                  this._latestLiveMap = lMap;
+                  this._liveMapsByGw[gwNum] = lMap;
                 }
               }
             } catch (_) {}
+            if (!this._liveMapsByGw[gwNum]) {
+              try {
+                const fbLive = await fetch(`https://fpl-live-relay.asawamanasak.workers.dev/live?event=${gwNum}&slim=1`);
+                if (fbLive.ok) {
+                  const fbLiveJson = await fbLive.json();
+                  if (fbLiveJson && Array.isArray(fbLiveJson.elements)) {
+                    const lMap = {};
+                    fbLiveJson.elements.forEach(el => {
+                      if (el && el.id && el.stats) {
+                        lMap[el.id] = {
+                          total_points: Number(el.stats.total_points) || 0,
+                          provisional_bonus: Number(el.stats.provisional_bonus) || 0,
+                          bps: Number(el.stats.bps) || 0,
+                          played: Boolean(el.stats.played)
+                        };
+                      }
+                    });
+                    this._liveMapsByGw[gwNum] = lMap;
+                  }
+                }
+              } catch (_) {}
+            }
           }
 
           // 3. Fetch picks from Cloudflare Worker Relay (or local server in dev mode)
@@ -19499,13 +19522,30 @@ selectShi62GW(gwName) {
             return false;
           }
 
-          // 4. Map picks into starting 11 and bench
+          // 4. Map picks into starting 11 and bench (with automatic substitutions if any)
           const rawPicks = picksData.picks;
-          const starters = [];
-          const bench = [];
-          const lMap = this._latestLiveMap || {};
+          const autoSubs = picksData.automatic_subs || [];
+          const actualStartersPicks = rawPicks.filter(p => (p.position || 1) <= 11).map(p => ({ ...p }));
+          const actualBenchPicks = rawPicks.filter(p => (p.position || 1) > 11).map(p => ({ ...p }));
 
-          for (const p of rawPicks) {
+          if (Array.isArray(autoSubs) && autoSubs.length > 0) {
+            for (const sub of autoSubs) {
+              const elIn = sub.element_in;
+              const elOut = sub.element_out;
+              const sIdx = actualStartersPicks.findIndex(p => p.element === elOut);
+              const bIdx = actualBenchPicks.findIndex(p => p.element === elIn);
+              if (sIdx !== -1 && bIdx !== -1) {
+                const sPick = actualStartersPicks[sIdx];
+                const bPick = actualBenchPicks[bIdx];
+                actualStartersPicks[sIdx] = { ...bPick, multiplier: sPick.multiplier, is_captain: sPick.is_captain, is_vice_captain: sPick.is_vice_captain, is_sub: true };
+                actualBenchPicks[bIdx] = { ...sPick, multiplier: 0, is_captain: false, is_vice_captain: false, is_sub_out: true };
+              }
+            }
+          }
+
+          const lMap = (this._liveMapsByGw && this._liveMapsByGw[gwNum]) || this._latestLiveMap || {};
+
+          const buildPlayerObj = (p) => {
             const pid = p.element;
             const pInfo = this.playersDict[String(pid)] || this.playersDict[pid] || null;
             let name, team, pos, teamCode;
@@ -19525,9 +19565,12 @@ selectShi62GW(gwName) {
             name = name || `Player ${pid}`;
             team = team || 'PL';
             teamCode = teamCode || 0;
-            const mult = Number(p.multiplier || 1);
             const isCap = Boolean(p.is_captain);
             const isVice = Boolean(p.is_vice_captain);
+            let mult = Number(p.multiplier !== undefined ? p.multiplier : (isCap ? 2 : 1));
+            if (picksData.active_chip === '3xc' && isCap) {
+              mult = 3;
+            }
 
             let rawPts = 0;
             let provBonus = 0;
@@ -19536,7 +19579,7 @@ selectShi62GW(gwName) {
               provBonus = Number(lMap[pid].provisional_bonus || 0);
             }
 
-            const pObj = {
+            return {
               id: pid,
               name: name,
               pos: pos,
@@ -19548,15 +19591,14 @@ selectShi62GW(gwName) {
               is_captain: isCap,
               is_vice: isVice,
               provisional_bonus: provBonus,
+              is_sub: Boolean(p.is_sub),
+              is_sub_out: Boolean(p.is_sub_out),
               not_played_yet: false
             };
+          };
 
-            if (p.position <= 11) {
-              starters.push(pObj);
-            } else {
-              bench.push(pObj);
-            }
-          }
+          const starters = actualStartersPicks.map(buildPlayerObj);
+          const bench = actualBenchPicks.map(buildPlayerObj);
 
           const squadKey = `${entryIdNum}_${gwNum}`;
           const squadObj = {
@@ -19784,27 +19826,7 @@ selectShi62GW(gwName) {
 
           if (isTier2League) {
             const currentMaxGw = Number((this.multiData && this.multiData.max_gw) || (this.data && this.data.current_gw) || (this.config && this.config.current_gw) || 10);
-            if (Number(this.selectedGW) !== currentMaxGw) {
-              if (formationEl) formationEl.innerText = '-';
-              if (gkpLine) gkpLine.innerHTML = '';
-              const pastMsg = isEn 
-                ? `Squad & pitch lineup for Tier 2 leagues is available for the current Gameweek (GW ${currentMaxGw}) only.` 
-                : `ผังจัดทัพลีกขนาดใหญ่ (Tier 2) เปิดให้ดูเฉพาะสัปดาห์ปัจจุบัน (GW ${currentMaxGw}) เท่านั้น`;
-              if (defLine) defLine.innerHTML = `<div class="text-center text-white/80 py-8 font-bold text-xs w-full">${pastMsg}</div>`;
-              if (midLine) midLine.innerHTML = '';
-              if (fwdLine) fwdLine.innerHTML = '';
-              if (benchContainer) benchContainer.innerHTML = `<div class="text-center text-slate-400 py-4 col-span-2 text-xs">${isEn ? 'No bench data for past gameweeks' : 'ไม่มีข้อมูลตัวสำรองสำหรับสัปดาห์ย้อนหลัง'}</div>`;
-              if (benchTotal) benchTotal.innerHTML = '';
-              const modal = document.getElementById('team-modal');
-              if (modal) {
-                if (modal.classList.contains('hidden')) {
-                  this._lastFocusedElement = document.activeElement;
-                }
-                modal.classList.remove('hidden');
-                this.lockBodyScroll();
-              }
-              return;
-            }
+            const targetGw = Number(this.selectedGW) || currentMaxGw;
 
             // Render Instant Pitch Shimmer
             if (formationEl) formationEl.innerText = '...';
@@ -19841,14 +19863,14 @@ selectShi62GW(gwName) {
               this.lockBodyScroll();
             }
 
-            this.fetchTier2TeamSquad(entryIdNum, currentMaxGw).then(success => {
+            this.fetchTier2TeamSquad(entryIdNum, targetGw).then(success => {
               if (this.currentModalEntryId === entryIdNum) {
                 if (success) {
                   this.openTeamModal(entryIdNum);
                 } else {
                   if (formationEl) formationEl.innerText = '-';
                   if (gkpLine) gkpLine.innerHTML = '';
-                  if (defLine) defLine.innerHTML = `<div class="text-center text-white/90 py-8 font-bold text-xs w-full">${isEn ? 'Unable to load lineup (Match not started or connection error)' : 'ไม่สามารถโหลดข้อมูลผังผู้เล่นได้ (อาจยังไม่เริ่มแข่งหรือข้อผิดพลาดการเชื่อมต่อ)'}</div>`;
+                  if (defLine) defLine.innerHTML = `<div class="text-center text-white/90 py-8 font-bold text-xs w-full">${isEn ? 'Unable to load lineup (Team did not enter this GW or connection error)' : 'ไม่สามารถโหลดข้อมูลผังผู้เล่นได้ (ทีมอาจไม่ได้ส่งในสัปดาห์นี้หรือข้อผิดพลาดการเชื่อมต่อ)'}</div>`;
                   if (midLine) midLine.innerHTML = '';
                   if (fwdLine) fwdLine.innerHTML = '';
                   if (benchContainer) benchContainer.innerHTML = `<div class="text-center text-slate-400 py-4 col-span-2 text-xs">${isEn ? 'No bench data available' : 'ไม่มีข้อมูลตัวสำรอง'}</div>`;

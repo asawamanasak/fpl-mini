@@ -396,6 +396,7 @@ def check_data_has_changed(cached_data, new_output):
 
 def sync_once(args):
     start_time = time.time()
+    base_dir = os.path.dirname(os.path.abspath(__file__))
     print(f"[{datetime.now().strftime('%H:%M:%S')}] Starting FPL Sync Engine (force={args.force})...")
 
     # 1. Fetch bootstrap-static (with FPL Maintenance Window resiliency)
@@ -766,49 +767,71 @@ def sync_once(args):
 
             if league_tier == 2:
                 print(f" -> [Tier 2] Standings & Leaderboard Only mode for League {lid} ({len(standings_teams)} teams). Skipping squads/picks fetch.")
+                tier2_chunk_dir = os.path.join(base_dir, "data", "leagues", str(lid))
+                os.makedirs(tier2_chunk_dir, exist_ok=True)
                 for gw in range(1, max_gw + 1):
                     gw_str = str(gw)
                     cached_gw = cached_gw_data.get(gw_str, {})
                     cached_res = cached_gw.get("results", [])
                     if gw == max_gw:
-                        current_results = []
-                        for t in standings_teams:
-                            ev_pts = t.get('event_total') if t.get('event_total') is not None else 0
-                            current_results.append({
-                                "entry_id": t['entry'],
-                                "entry_name": t['entry_name'],
-                                "team_name": t['entry_name'],
-                                "player_name": t['player_name'],
-                                "rank": t.get('rank'),
-                                "last_rank": t.get('last_rank'),
-                                "points": ev_pts,
-                                "net_points": ev_pts,
-                                "hits": 0,
-                                "chip": None,
-                                "captain": "-",
-                                "team_value": None,
-                                "transfers_count": 0,
-                                "transfers_pts_gain": 0,
-                                "transfers_net_impact": 0,
-                                "transfer_moves": [],
-                                "overall_rank": t.get('rank')
-                            })
-                        gameweeks_dict[gw_str]["results"] = current_results
+                        chunk_file = os.path.join(tier2_chunk_dir, f"gw{gw}.json")
+                        enriched_loaded = False
+                        if os.path.exists(chunk_file):
+                            try:
+                                with open(chunk_file, "r", encoding="utf-8") as cf:
+                                    existing_chk = json.load(cf)
+                                existing_res = existing_chk.get("results", [])
+                                if existing_chk.get("is_finished") and any(r.get("captain") not in ("-", None, "") or r.get("hits", 0) > 0 for r in existing_res):
+                                    gameweeks_dict[gw_str]["results"] = existing_res
+                                    enriched_loaded = True
+                            except Exception:
+                                pass
+                        if not enriched_loaded:
+                            current_results = []
+                            for t in standings_teams:
+                                ev_pts = t.get('event_total') if t.get('event_total') is not None else 0
+                                current_results.append({
+                                    "entry_id": t['entry'],
+                                    "entry_name": t['entry_name'],
+                                    "team_name": t['entry_name'],
+                                    "player_name": t['player_name'],
+                                    "rank": t.get('rank'),
+                                    "last_rank": t.get('last_rank'),
+                                    "points": ev_pts,
+                                    "net_points": ev_pts,
+                                    "hits": 0,
+                                    "chip": None,
+                                    "captain": "-",
+                                    "team_value": None,
+                                    "transfers_count": 0,
+                                    "transfers_pts_gain": 0,
+                                    "transfers_net_impact": 0,
+                                    "transfer_moves": [],
+                                    "overall_rank": t.get('rank')
+                                })
+                            gameweeks_dict[gw_str]["results"] = current_results
                     elif cached_res:
                         gameweeks_dict[gw_str]["results"] = cached_res
                     else:
                         gameweeks_dict[gw_str]["results"] = []
                 squads_dict = {}
-                tier2_chunk_dir = os.path.join(base_dir, "data", "leagues", str(lid))
-                os.makedirs(tier2_chunk_dir, exist_ok=True)
                 for gw in range(1, max_gw + 1):
                     gw_str = str(gw)
                     res = gameweeks_dict[gw_str].get("results", [])
                     if res:
                         chunk_file = os.path.join(tier2_chunk_dir, f"gw{gw}.json")
-                        # For finished historical gameweeks, preserve existing chunk files on disk
-                        if gw < max_gw and os.path.exists(chunk_file):
-                            continue
+                        # For finished historical or enriched gameweeks, preserve existing chunk files on disk
+                        if os.path.exists(chunk_file):
+                            try:
+                                with open(chunk_file, "r", encoding="utf-8") as cf:
+                                    existing_chk = json.load(cf)
+                                existing_res = existing_chk.get("results", [])
+                                is_enriched = any(r.get("captain") not in ("-", None, "") or r.get("hits", 0) > 0 for r in existing_res)
+                                if gw < max_gw or (existing_chk.get("is_finished") and is_enriched):
+                                    continue
+                            except Exception:
+                                if gw < max_gw:
+                                    continue
                         chunk_payload = {
                             "league_id": lid,
                             "gw": gw,
