@@ -496,3 +496,35 @@ flowchart TD
   * กลับมายังเวอร์ชันล่าสุด: `./rollback.sh main`
   * บันทึก milestone ใหม่: `./rollback.sh save <number>`
 
+---
+
+## 🛡️ 10. อัปเดตล่าสุด (Nov 13, 2026 — Full Audit Hardening, Shared Bundle & First-Party Visitor Counter)
+
+### 10.1 การแยก Bundle และขยายเป็น 9 ลีก (Current Production Topology)
+* ปัจจุบันระบบรองรับ **9 มินิลีก** (`40700`, `675290`, `38491`, `1101958`, `438691`, `187827`, `5349`, `567387`, และ `139836`) โดยมี Shared Client Bundle อยู่ที่ `assets/dashboard-app.js` และข้อมูลแยกรายลีกที่ `data/leagues/{id}.json` (สร้างจาก `update_preview.py`)
+* **Backend Edge Relay:** Cloudflare Worker `fpl-live-relay` (`workers/fpl-live-worker.js` + `workers/admin-dashboard.js`) ผูกกับ KV (`ANALYTICS_KV`) และ Cloudflare D1 (`fpl-database`) ให้บริการที่ `https://api.fplsawadika.com` และ `https://fpl-live-relay.asawamanasak.workers.dev`
+
+### 10.2 การแก้ไขความปลอดภัยและเสถียรภาพ (Commit `b9d0d6a0`)
+* **Frontend DOM, SRI & Referrer:**
+  * เพิ่ม `<meta name="referrer" content="strict-origin-when-cross-origin">` และปักเวอร์ชัน `@tailwindcss/browser@4.3.5` กับ `xlsx@0.18.5` (Lazy-loaded ใน `ensureXlsxLoaded()`) พร้อม SRI `integrity="sha384-..."`, `crossOrigin="anonymous"`, `referrerPolicy="no-referrer"`
+  * เปลี่ยนคลิกสถิตินักเตะบนผังสนามจาก inline string interpolation มาใช้ `data-player-*` + `handlePlayerStatsClick(event, this)` (แก้ `SyntaxError` จากชื่อที่มี `'` เช่น `N.O'Reilly`)
+  * รวม `showToast(msg, type, durationMs)` ให้เขียนข้อความผ่าน `textContent` แทน `innerHTML` และเพิ่ม `this.escapeHtml(...)` ใน Bramann Prediction/Challenge, Shi62, และ Cup Bracket
+  * ย้าย `clearTimeout` ของ `fetchLivePoints` เข้า `finally`, เพิ่ม `fetchJsonWithTimeout` (6s), แก้ปุ่ม `Dev Corner` บนแถบเมนูไม่ให้ล้นที่ความกว้าง `1055px` (`navOverflow = 0`), และถอด `truncate` ออกจาก `#about-overview-title` บนมือถือ (`390px`)
+* **Cloudflare Worker & Admin Security:**
+  * แยกคีย์ HMAC session ใน `admin-dashboard.js` (`getSessionSigningSecret`: ใช้ `ADMIN_SESSION_SECRET` หรือ derive ด้วย SHA-256 `fpl-admin-session-v1:${passkey}`)
+  * เพิ่ม `SHARED_SECURITY_HEADERS` & `ADMIN_HTML_HEADERS` (`CSP` มี `frame-ancestors 'none'`, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `COOP`, `CORP`, `HSTS`) ทั้งหน้า `200` และ `401 /admin`, ส่ง `Clear-Site-Data` ใน `/logout`, และเพิ่ม IP rate limit (`allowIpRateLimit`: `8/min` บน `POST /login` → `429`, `30/min` บน telemetry)
+  * บังคับ `Origin` allowlist ใน `/api/telemetry/event` (ปฏิเสธ missing/`null` → `403`), และตรวจสอบ `event`/`gw` (`1..38` เข้มงวด, ปฏิเสธเมื่อขัดแย้งหรือมีอักขระแปลกปลอม → `400`) + `entry` (`/^\d{1,12}$/`) ใน `/picks`
+  * ปรับ `/api/admin/data` ดึงรายชื่อลีกและ `total_pool_gmv` แบบไดนามิกจาก `config/leagues_config.json` (รวมลีก `139836`)
+* **CI & Rollback Guardrails:**
+  * ปัก commit SHA ครบทั้ง 5 GitHub Actions ใน `.github/workflows/fpl_auto_sync.yml`
+  * เพิ่ม `require_clean_worktree` ใน `rollback.sh` ก่อน `git checkout` เพื่อป้องกันการทับไฟล์ที่ยังไม่ commit
+
+### 10.3 First-Party Lifetime Site Views Counter (Commit `a3e282eb`, Worker Version `5c5dedca-2eb8-42a1-a0e0-4ac98053209d`)
+* **ยกเลิก `visitorbadge.io`** (ซึ่งถูก Cloudflare บล็อก) และเปลี่ยนมาใช้ระบบนับบน **Cloudflare D1 (`fpl-database`)** ของตัวเอง:
+  * Seed คีย์ถาวร `lifetime:total_views` (`date = '9999-12-31'`) ที่ยอดจริง **`2,790`** (`league_views` ตั้งแต่ `2026-11-03`) และยกเว้นออกจากคำสั่ง auto-prune 30 วันทั้งใน retention query และ `/api/admin/prune-telemetry`
+  * แก้ปัญหาการนับเบิ้ล: `lifetime:total_views` นับเฉพาะ `page_view` (พร้อม dedup ฝั่งเบราว์เซอร์ 30 นาทีผ่าน `localStorage` `fpl_visit_dedup_ts`) ส่วน `league_view` (สลับลีก/รีเฟรชภายใน 30 นาที) และ `dwell_time` ไม่เพิ่มยอดเข้าชมสะสม
+  * เพิ่ม Public Endpoint `GET /visitors` (Edge Cached 30 วินาที, `Cache-Control: public, max-age=30, s-maxage=30, stale-while-revalidate=120`) และแสดงผลที่ footer ผ่าน `initVisitorCounter()` / `renderVisitorCounterText()` ทั้ง 2 ภาษา:
+    * TH: `ยอดเข้าชมสะสม: X,XXX ครั้ง (ตั้งแต่ พ.ย. 2026)`
+    * EN: `Views: X,XXX (since Nov 2026)`
+
+
