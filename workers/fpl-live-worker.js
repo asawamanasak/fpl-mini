@@ -384,13 +384,21 @@ export default {
             try {
               const today = new Date().toISOString().split('T')[0];
               const pfx = `telem:${today}`;
+              const isViewEvent = eventData.type === 'page_view' || eventData.type === 'league_view';
 
-              const increments = [
-                { metric: `${pfx}:total_visits`, amount: 1 },
-                { metric: `${pfx}:src:${browser}`, amount: 1 },
-                { metric: `${pfx}:dev:${device}`, amount: 1 },
-                { metric: `${pfx}:city:${city}`, amount: 1 },
-              ];
+              const increments = [];
+              if (eventData.type === 'page_view') {
+                // Lifetime cumulative site views (exempt from 30-day retention pruning)
+                increments.push({ metric: 'lifetime:total_views', date: '9999-12-31', amount: 1 });
+              }
+              if (isViewEvent) {
+                increments.push(
+                  { metric: `${pfx}:total_visits`, date: today, amount: 1 },
+                  { metric: `${pfx}:src:${browser}`, date: today, amount: 1 },
+                  { metric: `${pfx}:dev:${device}`, date: today, amount: 1 },
+                  { metric: `${pfx}:city:${city}`, date: today, amount: 1 }
+                );
+              }
 
               // League Views & Dwell Time Counter (numeric league IDs only)
               let targetLeague = '';
@@ -448,18 +456,23 @@ export default {
                 }
               }
 
+              if (increments.length === 0) {
+                return;
+              }
+
               if (env.DB) {
                 const stmt = env.DB.prepare(`
                   INSERT INTO telemetry_counters (metric, date, val, updated_at)
                   VALUES (?, ?, ?, CURRENT_TIMESTAMP)
                   ON CONFLICT(metric) DO UPDATE SET val = val + excluded.val, updated_at = CURRENT_TIMESTAMP
                 `);
-                const batch = increments.map(item => stmt.bind(item.metric, today, item.amount));
+                const batch = increments.map(item => stmt.bind(item.metric, item.date || today, item.amount));
                 await env.DB.batch(batch);
               } else if (env.ANALYTICS_KV) {
                 await Promise.all(increments.map(async (item) => {
                   const cur = parseInt(await env.ANALYTICS_KV.get(item.metric) || '0', 10);
-                  await env.ANALYTICS_KV.put(item.metric, String(cur + item.amount), { expirationTtl: 86400 * 30 });
+                  const putOpts = item.metric === 'lifetime:total_views' ? undefined : { expirationTtl: 86400 * 30 };
+                  await env.ANALYTICS_KV.put(item.metric, String(cur + item.amount), putOpts);
                 }));
               }
             } catch (err) {
@@ -609,7 +622,7 @@ export default {
         if (env && env.DB) {
           try {
             const res = await env.DB.prepare(`
-              DELETE FROM telemetry_counters WHERE date < DATE('now', '-30 days')
+              DELETE FROM telemetry_counters WHERE date < DATE('now', '-30 days') AND date != '9999-12-31' AND metric NOT LIKE 'lifetime:%'
             `).run();
             pruned = (res && res.meta && typeof res.meta.changes === 'number') ? res.meta.changes : 0;
           } catch (e) {
@@ -679,7 +692,7 @@ export default {
             ctx.waitUntil((async () => {
               try {
                 await env.DB.prepare(`
-                  DELETE FROM telemetry_counters WHERE date < DATE('now', '-30 days')
+                  DELETE FROM telemetry_counters WHERE date < DATE('now', '-30 days') AND date != '9999-12-31' AND metric NOT LIKE 'lifetime:%'
                 `).run();
               } catch (_) {}
             })());
@@ -1136,6 +1149,76 @@ export default {
           },
         }
       );
+    }
+
+    // 1.5 Public Lifetime Site Views Counter (Edge Cached 30s)
+    if (path === '/visitors' || path === '/api/visitors') {
+      if (request.method !== 'GET' && request.method !== 'HEAD') {
+        return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+          status: 405,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+        });
+      }
+      const cache = caches.default;
+      const visitorsCacheUrl = new URL(request.url);
+      visitorsCacheUrl.search = '';
+      const visitorsCacheKey = new Request(visitorsCacheUrl.toString(), { method: 'GET' });
+      const cachedVisitors = await cache.match(visitorsCacheKey);
+      if (cachedVisitors) {
+        const hitHeaders = new Headers(cachedVisitors.headers);
+        hitHeaders.set('X-FPL-Edge-Cache', 'HIT');
+        hitHeaders.set('X-FPL-Edge-Colo', colo);
+        return new Response(request.method === 'HEAD' ? null : cachedVisitors.body, {
+          status: cachedVisitors.status,
+          headers: hitHeaders,
+        });
+      }
+
+      let views = 0;
+      let source = 'unavailable';
+      try {
+        if (env && env.DB) {
+          const row = await env.DB.prepare(
+            "SELECT val FROM telemetry_counters WHERE metric = 'lifetime:total_views' LIMIT 1"
+          ).first();
+          if (row && row.val !== undefined && row.val !== null) {
+            views = Number(row.val) || 0;
+            source = 'edge-d1';
+          } else {
+            const sumRow = await env.DB.prepare(
+              "SELECT COALESCE(SUM(val), 0) AS total FROM telemetry_counters WHERE metric LIKE '%:views'"
+            ).first();
+            views = Number(sumRow && sumRow.total) || 0;
+            source = 'edge-d1-sum';
+          }
+        } else if (env && env.ANALYTICS_KV) {
+          const raw = await env.ANALYTICS_KV.get('lifetime:total_views');
+          views = parseInt(raw || '0', 10) || 0;
+          source = 'edge-kv';
+        }
+      } catch (err) {
+        console.warn('Public visitors read warning:', err);
+      }
+
+      const payload = JSON.stringify({
+        views,
+        since: '2026-11-03',
+        source,
+      });
+      const resp = new Response(request.method === 'HEAD' ? null : payload, {
+        status: 200,
+        headers: {
+          ...CORS_HEADERS,
+          'Content-Type': 'application/json; charset=utf-8',
+          'Cache-Control': 'public, max-age=30, s-maxage=30, stale-while-revalidate=120',
+          'X-FPL-Edge-Cache': 'MISS',
+          'X-FPL-Edge-Colo': colo,
+        },
+      });
+      if (request.method === 'GET' && source !== 'unavailable' && ctx && ctx.waitUntil) {
+        ctx.waitUntil(cache.put(visitorsCacheKey, resp.clone()));
+      }
+      return resp;
     }
 
     // Parse Gameweek event parameter (strict integer 1..38; reject non-numeric or conflicting event/gw params)

@@ -2478,6 +2478,9 @@
           btnExcel.title = isEn ? 'Export to Excel (.xlsx)' : 'ส่งออกไฟล์ Excel (.xlsx)';
         }
         this.translateStaticElements();
+        if (typeof this.renderVisitorCounterText === 'function') {
+          this.renderVisitorCounterText();
+        }
       }
 
       formatSyncDate(isoStr) {
@@ -19006,10 +19009,80 @@ ${this.getPublicLeagueUrl()}`;
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       }
 
-      initVisitorCounter() {
+      renderVisitorCounterText() {
         const badgeEl = document.getElementById('site-visitor-counter');
-        if (badgeEl) {
+        const textEl = document.getElementById('visitor-counter-text');
+        if (!badgeEl || !textEl) return;
+        const count = Number(this._visitorCount);
+        if (!Number.isFinite(count) || count <= 0) {
           badgeEl.classList.add('hidden');
+          return;
+        }
+        const formatted = Math.floor(count).toLocaleString();
+        const isEn = (this.currentLang === 'en');
+        textEl.textContent = isEn
+          ? `Views: ${formatted} (since Nov 2026)`
+          : `ยอดเข้าชมสะสม: ${formatted} ครั้ง (ตั้งแต่ พ.ย. 2026)`;
+        badgeEl.title = isEn
+          ? 'Cumulative views recorded by FPLSaWaDiKa Edge Telemetry since Nov 2026 (30-min refresh dedup)'
+          : 'ยอดเข้าชมสะสมจากระบบ Edge Telemetry ของ FPLSaWaDiKa ตั้งแต่ พ.ย. 2026 (ไม่นับรีเฟรชซ้ำภายใน 30 นาที)';
+        badgeEl.classList.remove('hidden');
+      }
+
+      async initVisitorCounter() {
+        const badgeEl = document.getElementById('site-visitor-counter');
+        const textEl = document.getElementById('visitor-counter-text');
+        if (!badgeEl || !textEl) return;
+
+        let cachedCount = 0;
+        let cachedTs = 0;
+        try {
+          if (typeof localStorage !== 'undefined') {
+            const rawCount = parseInt(localStorage.getItem('fpl_visitor_count_v2') || '0', 10);
+            const rawTs = parseInt(localStorage.getItem('fpl_visitor_last_fetched_v2') || '0', 10);
+            if (!isNaN(rawCount) && rawCount > 0) cachedCount = rawCount;
+            if (!isNaN(rawTs) && rawTs > 0) cachedTs = rawTs;
+          }
+        } catch (_) {}
+
+        if (cachedCount > 0) {
+          this._visitorCount = cachedCount;
+          this.renderVisitorCounterText();
+        }
+
+        // Skip extra network request on local file:// preview or within 5-minute client cache
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          return;
+        }
+        const CACHE_TTL_MS = 5 * 60 * 1000;
+        if (cachedCount > 0 && cachedTs > 0 && (Date.now() - cachedTs) < CACHE_TTL_MS) {
+          return;
+        }
+
+        const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+        const timer = ctrl ? setTimeout(() => ctrl.abort(), 4000) : null;
+        try {
+          const resp = await fetch('https://api.fplsawadika.com/visitors', {
+            method: 'GET',
+            signal: ctrl ? ctrl.signal : undefined,
+          });
+          if (!resp.ok) return;
+          const data = await resp.json();
+          const liveViews = Number(data && data.views);
+          if (Number.isFinite(liveViews) && liveViews > 0) {
+            this._visitorCount = Math.floor(liveViews);
+            try {
+              if (typeof localStorage !== 'undefined') {
+                localStorage.setItem('fpl_visitor_count_v2', String(this._visitorCount));
+                localStorage.setItem('fpl_visitor_last_fetched_v2', String(Date.now()));
+              }
+            } catch (_) {}
+            this.renderVisitorCounterText();
+          }
+        } catch (_) {
+          // Keep cached value if present; remain hidden when offline without cache
+        } finally {
+          if (timer) clearTimeout(timer);
         }
       }
     }
@@ -19139,9 +19212,22 @@ ${this.getPublicLeagueUrl()}`;
           }
         }
 
-        // 1. Initial Page & League View
+        // 1. Initial Page & League View (30-min browser dedup so F5 reloads don't inflate lifetime views)
+        var VISIT_DEDUP_MS = 30 * 60 * 1000;
+        var shouldCountSiteVisit = true;
+        try {
+          if (typeof localStorage !== "undefined") {
+            var lastVisitTs = parseInt(localStorage.getItem("fpl_visit_dedup_ts") || "0", 10);
+            if (!isNaN(lastVisitTs) && (Date.now() - lastVisitTs) < VISIT_DEDUP_MS) {
+              shouldCountSiteVisit = false;
+            } else {
+              localStorage.setItem("fpl_visit_dedup_ts", String(Date.now()));
+            }
+          }
+        } catch (_) {}
+
         sendBeaconEvent({
-          type: "league_view",
+          type: shouldCountSiteVisit ? "page_view" : "league_view",
           league_id: currentLeague,
           path: window.location.pathname
         });
