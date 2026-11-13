@@ -543,6 +543,16 @@ def sync_once(args):
     elif cached_data and args.force:
         print("Loaded existing multi_fpl_data.json cache as fallback buffer for --force sync.")
 
+    # Determine which leagues will be actively synced in this run
+    target_league_arg = str(getattr(args, 'league', '') or '').strip()
+    active_sync_lids = []
+    for lid_str, lcfg in leagues_config.items():
+        if target_league_arg and str(lid_str) != target_league_arg:
+            continue
+        if str(lcfg.get('status', 'active')).lower() == 'paused' and not (target_league_arg and args.force):
+            continue
+        active_sync_lids.append(str(lid_str))
+
     # Determine which GWs need live points fetched
     gws_to_fetch_live = set()
     for gw in range(1, max_gw + 1):
@@ -551,7 +561,7 @@ def sync_once(args):
         else:
             needs_gw = False
             if cached_data and "leagues" in cached_data:
-                for lid_str in leagues_config.keys():
+                for lid_str in active_sync_lids:
                     cached_league = cached_data["leagues"].get(lid_str)
                     if not cached_league or str(gw) not in cached_league.get("gameweeks", {}):
                         needs_gw = True
@@ -689,6 +699,36 @@ def sync_once(args):
     for lid_str, lcfg in leagues_config.items():
         lid = int(lid_str)
         league_name_cfg = lcfg.get('name', 'League')
+        league_status = str(lcfg.get('status', 'active')).lower()
+
+        # Single-league fast sync mode (--league) or paused league preservation
+        if (target_league_arg and str(lid_str) != target_league_arg) or (league_status == 'paused' and not (target_league_arg and args.force)):
+            cached_l = cached_data.get("leagues", {}).get(str(lid_str)) if (cached_data and isinstance(cached_data.get("leagues"), dict)) else None
+            if cached_l:
+                multi_league_output["leagues"][str(lid_str)] = cached_l
+                summary_stats.append({
+                    "id": lid,
+                    "name": cached_l.get("name", league_name_cfg),
+                    "tier": cached_l.get("tier", lcfg.get("tier", 1)),
+                    "teams_count": len(cached_l.get("teams", [])),
+                    "gws_count": len(cached_l.get("gameweeks", {}))
+                })
+                reason = "Paused (API skipped)" if league_status == 'paused' else "Skipped (--league filter)"
+                print(f"\nPreserving League {lid} ({league_name_cfg}) from cache [{reason}].")
+            elif league_status == 'paused':
+                multi_league_output["leagues"][str(lid_str)] = {
+                    "id": lid,
+                    "name": league_name_cfg,
+                    "season": lcfg.get("season", "2026/27"),
+                    "tier": lcfg.get("tier", 1),
+                    "status": "paused",
+                    "teams": [],
+                    "gameweeks": {},
+                    "squads": {}
+                }
+                print(f"\nLeague {lid} ({league_name_cfg}) is paused with no prior cache; skipping FPL API.")
+            continue
+
         print(f"\nProcessing League {lid} ({league_name_cfg})...")
         try:
             page = 1
@@ -1627,6 +1667,7 @@ def sync_once(args):
 def main():
     parser = argparse.ArgumentParser(description="FPLSaWaDiKa Live Data Sync Engine")
     parser.add_argument('--force', action='store_true', help="Force full re-sync for all GWs (bypass cache)")
+    parser.add_argument('--league', type=str, default=None, help="Sync only a single league ID and merge with existing cache")
     parser.add_argument('--live-loop', action='store_true', help="Run continuous live polling daemon during matchday in-play window")
     parser.add_argument('--max-minutes', type=int, default=14, help="Max duration in minutes to keep daemon alive (default: 14)")
     parser.add_argument('--interval', type=int, default=60, help="Polling interval in seconds during in-play (default: 60)")

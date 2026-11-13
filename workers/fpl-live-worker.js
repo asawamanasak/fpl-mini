@@ -400,17 +400,21 @@ export default {
                 );
               }
 
-              // League Views & Dwell Time Counter (numeric league IDs only)
+              // League Views & Dwell Time Counter (numeric league IDs only; exclude landing / 404)
+              const rawLeagueId = eventData.league_id !== undefined && eventData.league_id !== null
+                ? String(eventData.league_id).trim()
+                : '';
+              const isNonLeaguePage = rawLeagueId === 'landing' || rawLeagueId === '404'
+                || eventData.path === '/' || eventData.path === '/index.html' || eventData.path === '/404.html';
               let targetLeague = '';
-              if (eventData.league_id !== undefined && eventData.league_id !== null) {
-                const candidate = String(eventData.league_id).trim();
-                if (/^\d{1,10}$/.test(candidate)) targetLeague = candidate;
+              if (!isNonLeaguePage && /^\d{1,10}$/.test(rawLeagueId)) {
+                targetLeague = rawLeagueId;
               }
-              if (!targetLeague && typeof eventData.path === 'string') {
+              if (!isNonLeaguePage && !targetLeague && typeof eventData.path === 'string') {
                 const lm = eventData.path.match(/\/(\d{4,8})\/?/);
                 if (lm) targetLeague = lm[1];
               }
-              if (!targetLeague && (eventData.type === 'page_view' || eventData.type === 'league_view')) {
+              if (!isNonLeaguePage && !targetLeague && (eventData.type === 'page_view' || eventData.type === 'league_view')) {
                 targetLeague = '40700';
               }
 
@@ -683,6 +687,116 @@ export default {
         }
       }
 
+      // Live Customer League Inspector for Concierge Onboarding Wizard
+      if (path === '/api/admin/inspect-league') {
+        if (request.method !== 'GET') {
+          return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+            status: 405,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        const lid = (url.searchParams.get('id') || '').trim();
+        if (!/^\d{1,10}$/.test(lid)) {
+          return new Response(
+            JSON.stringify({ success: false, error: 'Invalid FPL League ID. Expected digits only.' }),
+            { status: 400, headers: ADMIN_JSON_HEADERS }
+          );
+        }
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 8000);
+        try {
+          const baseApi = `https://fantasy.premierleague.com/api/leagues-classic/${lid}/standings/?page_standings=1&page_new_entries=1`;
+          const resp1 = await fetch(baseApi, {
+            headers: FPL_HEADERS,
+            signal: ctrl.signal,
+            cf: { cacheTtl: 0, cacheEverything: false },
+          });
+          if (!resp1.ok) {
+            clearTimeout(timer);
+            return new Response(
+              JSON.stringify({
+                success: false,
+                upstream_status: resp1.status,
+                error: resp1.status === 404
+                  ? `FPL League ${lid} not found`
+                  : `FPL Upstream returned HTTP ${resp1.status}`,
+              }),
+              { status: resp1.status === 404 ? 404 : 502, headers: ADMIN_JSON_HEADERS }
+            );
+          }
+          const page1 = await resp1.json();
+          const leagueMeta = page1 && page1.league ? page1.league : {};
+          const teamMap = new Map();
+          const addRows = (rows) => {
+            if (!Array.isArray(rows)) return;
+            for (const row of rows) {
+              const entryId = Number(row && row.entry);
+              if (!entryId || teamMap.has(entryId)) continue;
+              teamMap.set(entryId, {
+                entry: entryId,
+                entry_name: String(row.entry_name || ''),
+                player_name: String(row.player_name || ''),
+                rank: Number(row.rank || 0),
+                total: Number(row.total || 0),
+              });
+            }
+          };
+          addRows(page1 && page1.standings && page1.standings.results);
+          addRows(page1 && page1.new_entries && page1.new_entries.results);
+
+          const hasNextPage1 = Boolean(
+            (page1 && page1.standings && page1.standings.has_next) ||
+            (page1 && page1.new_entries && page1.new_entries.has_next)
+          );
+          let hasMoreThan100 = false;
+          if (hasNextPage1) {
+            const resp2 = await fetch(
+              `https://fantasy.premierleague.com/api/leagues-classic/${lid}/standings/?page_standings=2&page_new_entries=2`,
+              {
+                headers: FPL_HEADERS,
+                signal: ctrl.signal,
+                cf: { cacheTtl: 0, cacheEverything: false },
+              }
+            );
+            if (resp2.ok) {
+              const page2 = await resp2.json();
+              addRows(page2 && page2.standings && page2.standings.results);
+              addRows(page2 && page2.new_entries && page2.new_entries.results);
+              hasMoreThan100 = Boolean(
+                (page2 && page2.standings && page2.standings.has_next) ||
+                (page2 && page2.new_entries && page2.new_entries.has_next)
+              );
+            }
+          }
+          clearTimeout(timer);
+          const teams = Array.from(teamMap.values());
+          const teamCount = teams.length;
+          return new Response(
+            JSON.stringify({
+              success: true,
+              league: {
+                id: lid,
+                name: String(leagueMeta.name || `League ${lid}`),
+                created: leagueMeta.created || null,
+                admin_entry: leagueMeta.admin_entry || null,
+              },
+              team_count: teamCount,
+              has_more_pages: hasNextPage1,
+              has_more_than_100: hasMoreThan100,
+              recommended_tier: teamCount > 30 ? 'custom_quote_or_tier2' : 'tier1_standard_or_custom',
+              teams,
+            }),
+            { status: 200, headers: ADMIN_JSON_HEADERS }
+          );
+        } catch (err) {
+          clearTimeout(timer);
+          return new Response(
+            JSON.stringify({ success: false, error: `Failed to inspect FPL League ${lid}: ${err.message}` }),
+            { status: 502, headers: ADMIN_JSON_HEADERS }
+          );
+        }
+      }
+
       // Live Telemetry & FPL Sync Data Endpoint
       if (path === '/api/admin/data' || path === '/api/admin/telemetry' || path === '/api/admin/metrics') {
         const isForce = url.searchParams.get('force') === '1';
@@ -896,7 +1010,11 @@ export default {
                   '139836': { name: 'FPL Growth Mindset 2026/27', baseViews: 0, baseDwellSec: 180, peakWindow: 'เสาร์ 20:00 - 22:30 น.', peakWindowEn: 'Sat 20:00 - 22:30' },
                 };
 
-                const leagueIds = Array.from(new Set([...Object.keys(LEAGUE_BASELINES), ...Object.keys(liveLeagueSummaries)]));
+                const extraQueryLeagues = (url.searchParams.get('extra_leagues') || '')
+                  .split(',')
+                  .map(s => s.trim())
+                  .filter(s => /^\d{1,10}$/.test(s));
+                const leagueIds = Array.from(new Set([...Object.keys(LEAGUE_BASELINES), ...Object.keys(liveLeagueSummaries), ...extraQueryLeagues]));
 
                 if (!env.DB && env.ANALYTICS_KV) {
                   const leagueFetchPromises = [];

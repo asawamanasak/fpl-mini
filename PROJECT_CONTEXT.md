@@ -8,8 +8,8 @@
 ## 📌 1. ภาพรวมโปรเจกต์ (Project Overview)
 โปรเจกต์ **FPLSaWaDiKa** เป็นแพลตฟอร์ม **Fantasy Premier League (FPL) Mini-League Presentation & Analytics Dashboard** ที่ออกแบบมาเพื่อรองรับแฟนตาซีมินิลีกหลายลีกพร้อมกัน นำเสนอข้อมูลแบบ Real-time Live & Historical พร้อมระบบคำนวณเงินรางวัล, Hall of Fame, ผังผู้เล่น 11 ตัวจริง (Authentic Pitch), และระบบบทวิเคราะห์แชมป์ประจำสัปดาห์สไตล์ **"บอ.บู๋" (Borbou Commentary Engine)**
 
-* **Production URL:** `https://www.fplsawadika.com/`
-* **Direct League URLs:**
+* **Production URL:** `https://www.fplsawadika.com/` (Cloudflare CDN + GitHub Pages) • **Live Edge API:** `https://api.fplsawadika.com/` (Cloudflare Worker `fpl-live-relay`)
+* **Direct League URLs (9 ลีก = 8 Tier-1 + 1 Tier-2):**
   * ลีก 5349 (Bramann League): `https://www.fplsawadika.com/5349`
   * ลีก 38491 (รอ แมน โอน): `https://www.fplsawadika.com/38491`
   * ลีก 40700 (เซียนอยู่รู หมูอยู่ตึก): `https://www.fplsawadika.com/40700`
@@ -18,13 +18,14 @@
   * ลีก 567387 (Fantasy Nguan & friends cup): `https://www.fplsawadika.com/567387`
   * ลีก 675290 (NudNee): `https://www.fplsawadika.com/675290`
   * ลีก 1101958 (Barley's Official League): `https://www.fplsawadika.com/1101958`
+  * ลีก 139836 (FPL Growth Mindset 2026/27 - Tier 2): `https://www.fplsawadika.com/139836`
 * **Repository:** `https://github.com/asawamanasak/fpl-mini`
 
 > [!IMPORTANT]
 > **ข้อกำหนดการทำงานด้าน Git & Deploy (Strict Deployment Gatekeeper):**
-> ห้ามรัน `git commit` หรือ `git push` (รวมถึงคำสั่ง `./rollback.sh save`) โดยพลการโดยเด็ดขาด!
-> ทุกการเปลี่ยนแปลงให้ทำและทดสอบบนเครื่อง Local เท่านั้น (`update_preview.py`, `verify_local.py`, Headless Chrome, `preview.html`) 
-> เมื่อตรวจสอบเสร็จสิ้น ให้รายงานผลและรอให้ผู้ใช้เป็นผู้สั่งให้นำขึ้นระบบออนไลน์ด้วยตนเองทุกครั้ง.
+> ห้ามรัน `git commit`, `git push`, `./rollback.sh save`, หรือ `wrangler deploy` โดยพลการโดยเด็ดขาด!
+> ทุกการเปลี่ยนแปลงให้ทำและทดสอบบนเครื่อง Local เท่านั้น (`update_preview.py`, `verify_local.py`, Headless Chrome, `preview.html`)
+> เมื่อตรวจสอบเสร็จสิ้น ให้รายงานผลและรอให้ผู้ใช้เป็นผู้สั่ง **`push git`** (หรือสั่ง deploy) ด้วยตนเองทุกครั้ง.
 
 > [!IMPORTANT]
 > **หลักการปรับปรุงโครงสร้าง UX/UI (Cross-League Feature Consistency Principle):**
@@ -54,27 +55,31 @@
 
 ## 🏗️ 2. สถาปัตยกรรมระบบ (System Architecture)
 
-ระบบแบ่งออกเป็น 3 เลเยอร์หลัก:
+ระบบแบ่งออกเป็น 4 เลเยอร์หลัก:
 
 ```mermaid
 flowchart TD
     subgraph Data Layer [1. Backend & Live Data Fetcher]
         A[Official FPL API] -->|urllib + ThreadPool| B[sync_live_fpl.py]
         B --> C[multi_fpl_data.json]
-        B --> D[real_fpl_40700_data.json]
+        B --> D[data/leagues/id.json]
     end
 
-    subgraph Build Layer [2. Standalone HTML Generator]
+    subgraph Build Layer [2. Shared Bundle & Entry HTML Generator]
         C --> E[update_preview.py]
-        F[config/leagues_config.json] --> E
-        E --> G[index.html / preview.html]
-        E --> H[40700/index.html & 675290/index.html]
-        E --> I[404.html]
+        F[config/leagues_config.json + Mini-game Parsers] --> E
+        E --> G[assets/dashboard-app.js]
+        E --> H[index.html / preview.html / 404.html]
+        E --> I[9 League Folders id/index.html]
     end
 
-    subgraph CI/CD Layer [3. Automation & Hosting]
-        J[GitHub Actions Cron: 3,18,33,48 * * * * (15m)] -->|Run sync & build| B
-        J -->|Git Auto-Commit| K[GitHub Pages Deployment]
+    subgraph Edge Layer [3. Cloudflare Edge Relay & Storage]
+        W[workers/fpl-live-worker.js + admin-dashboard.js] -->|api.fplsawadika.com| KV[ANALYTICS_KV + D1 fpl-database]
+    end
+
+    subgraph CI/CD Layer [4. Automation & Hosting]
+        J[GitHub Actions Cron: 3,18,33,48 * * * * 15m] -->|Run sync & build| B
+        J -->|git add -A & Push| K[GitHub Pages + Cloudflare CDN]
     end
 ```
 
@@ -83,44 +88,33 @@ flowchart TD
 ## 📁 3. โครงสร้างไฟล์ในโปรเจกต์ (File Directory Map)
 
 ```
-/Users/micky/Desktop/FPL เซียนอยู่รู/
-├── .github/
-│   └── workflows/
-│       └── fpl_auto_sync.yml     # GitHub Actions รัน Auto-Sync ทุก 15 นาที (3, 18, 33, 48)
+/Users/micky/Desktop/Antigravity/FPLSaWaDiKa/
+├── GEMINI.md                     # กฎ Workspace ที่ Antigravity โหลดอัตโนมัติทุกแชทใหม่
+├── PROJECT_CONTEXT.md            # [ไฟล์นี้] สรุปพิมพ์เขียวและบริบทโปรเจกต์ทั้งหมด
+├── .github/workflows/
+│   └── fpl_auto_sync.yml         # GitHub Actions รัน Auto-Sync ทุก 15 นาที (3, 18, 33, 48)
 ├── config/
-│   ├── leagues_config.json       # ไฟล์ตั้งค่ามินิลีก (ID, ชื่อลีก, กติการางวัล)
-│   └── shi62_special.txt         # ไฟล์บันทึกข้อมูลมินิเกม Shi'62 Special รายสัปดาห์
-├── fonts/
-│   ├── SukhumvitSet-Bold.ttf
-│   ├── SukhumvitSet-Medium.ttf
-│   ├── SukhumvitSet-SemiBold.ttf
-│   └── SukhumvitSet-Text.ttf     # ฟอนต์พรีเมียม Sukhumvit Set ภาษาไทย
-├── images/
-│   └── fpl-logo.jpg              # โลโก้ FPL ประจำหัวเว็บ
-├── js/ (Modular Core for Local Dev)
-│   ├── api.js                   # API Fetcher & Fallback Proxy
-│   ├── app.js                   # App Controller
-│   ├── calculator.js            # สูตรคำนวณแต้มสุทธิ (หัก Hits), สถิติ Hall of Fame
-│   ├── config.js                # ค่าคอนฟิกลีก 40700
-│   ├── mockData.js              # ข้อมูลออฟไลน์สำรอง
-│   ├── share.js                 # ฟังก์ชันคัดลอกสรุปผลส่ง LINE
-│   ├── taglines.js              # เครื่องมือสร้างคำคมแชมป์
-│   └── ui.js                    # UI Rendering Engine
-├── css/
-│   └── styles.css               # สไตล์ CSS และสนามฟุตบอล
-├── 40700/index.html             # Entrypoint ตรงสำหรับลีก 40700
-├── 675290/index.html            # Entrypoint ตรงสำหรับลีก 675290
-├── 38491/index.html             # Entrypoint ตรงสำหรับลีก 38491
-├── 404.html                     # รองรับ Single-Page Routing บน GitHub Pages
-├── index.html                   # หน้า Dashboard หลัก (Standalone Bundle)
-├── preview.html                 # หน้า Preview ในเครื่อง
-├── multi_fpl_data.json          # ไฟล์ข้อมูลรวมทุกมินิลีก (Data Hub)
-├── real_fpl_40700_data.json     # ไฟล์ข้อมูลย้อนหลังเฉพาะลีก 40700
-├── sync_live_fpl.py             # สคริปต์ Python ดึงข้อมูลสดจาก Official FPL API
-├── parse_shi62_special.py       # ระบบ Parser & คำนวณเงินรางวัลมินิเกม Shi'62 Special
-├── update_preview.py            # สคริปต์คอมไพล์ Standalone HTML ทุกมินิลีก
-├── PROJECT_CONTEXT.md           # [ไฟล์นี้] สรุปพิมพ์เขียวโปรเจกต์ทั้งหมด
-└── README.md                    # เอกสารแนะนำและกติกา
+│   ├── leagues_config.json       # ตั้งค่ามินิลีก 9 ลีก (ID, ชื่อลีก, กติกา, Tier 1/2)
+│   ├── bramann_prediction.txt    # บันทึกทายผล Bramann Prediction รายสัปดาห์
+│   ├── bramann_challenge.json    # บันทึกคู่ท้าชน Bramann Challenge (Extra)
+│   └── shi62_special.txt         # บันทึกมินิเกม Shi'62 Special รายสัปดาห์
+├── assets/
+│   └── dashboard-app.js          # Shared Client JS Bundle (สร้างอัตโนมัติจาก update_preview.py)
+├── data/leagues/                 # ไฟล์ข้อมูลแยกรายลีก {id}.json (Decoupled Data)
+├── workers/
+│   ├── fpl-live-worker.js        # Cloudflare Worker (Live Score, BPS, Telemetry, D1 /visitors)
+│   ├── admin-dashboard.js        # Executive Admin Terminal (/admin)
+│   └── wrangler.toml             # Config KV (ANALYTICS_KV) & D1 (fpl-database)
+├── fonts/ & images/              # ฟอนต์ Sukhumvit Set + โลโก้สโมสร + เสื้อทีม FPL
+├── 40700/, 675290/, 38491/, ...  # Entrypoint HTML ของแต่ละลีก (รวม 139836/)
+├── index.html / preview.html / 404.html
+├── multi_fpl_data.json           # Data Hub รวมทุกมินิลีก
+├── sync_live_fpl.py              # สคริปต์ Python ดึงข้อมูลสดจาก Official FPL API
+├── parse_bramann_games.py        # Parser & คำนวณเงินมินิเกม Bramann (Prediction & Challenge)
+├── parse_shi62_special.py        # Parser & คำนวณเงินมินิเกม Shi'62 Special
+├── update_preview.py             # Source of Truth: คอมไพล์ Shared Bundle + Entry HTML ทั้งหมด
+├── verify_local.py               # Suite ทดสอบ JSON, Sync, Build และ Headless Chrome
+└── rollback.sh                   # สคริปต์จัดการ Milestone ย้อนหลัง (มี worktree guard)
 ```
 
 ---
@@ -259,6 +253,20 @@ flowchart TD
   * **สมาชิกแข่งขัน (19 ทีม):** -Nk_KOP, Oöraora Grandé, van Xke, BMFC™, Putun KNVB, Micchester United, 4OUR, NUKE-UTD®, CasanoVej, Univerpool, Falco.245, Talidtidty, KwangSettha, HereAu, golden club, Pongacku, Dotman 2026, 67, Supalerk's Team
 * **สถานะกติกา & เงินรางวัล:** อยู่ระหว่างรอประกาศกติกาและโครงสร้างเงินรางวัลอย่างเป็นทางการ (Pending Rules & Prizes)
 * **Direct League URL:** `https://www.fplsawadika.com/5349`
+* **มินิเกมเฉพาะลีก 5349 (Bramann Prediction & Bramann Challenge):**
+  * **1) Bramann Prediction (ทายผลฟุตบอลแฮนดิแคปรายสัปดาห์):**
+    * **ไฟล์ข้อมูล & Parser:** [`config/bramann_prediction.txt`](config/bramann_prediction.txt) และประมวลผลโดย [`parse_bramann_games.py`](parse_bramann_games.py)
+    * **รูปแบบบันทึก (Input Syntax):**
+      * ขึ้นหัวข้อด้วย `GW<n>` ตามด้วยคู่แข่งขัน เช่น `CHE -1 v MUN` (หรือ `vs`), รองรับชื่อทีมย่อ/แฮนดิแคป (`-0.5`, `-1`, `-1.5`, `-2`), บรรทัดฝั่งทาย เช่น `CHE / Bx5  jrj feex5`, และเติมเครื่องหมาย `✅` ท้ายบรรทัดฝั่งที่ชนะเมื่อผลออกแล้ว (มี 2 ฝั่ง ฝั่งที่ไม่ชนะไม่ต้องใส่)
+      * **ตัวคูณขาเดิมพัน:** ค่าเริ่มต้นขาละ `100` บาท; เติม `x5` ท้ายชื่อเพื่อทาย 5 ขา เช่น `4OURx5`, `Bx5`, `Dotmanx5`, `feex5`, `jrjx5`, `Hongx5`, `Hereaux5`, `oakx5`
+      * **รายชื่อ Alias หลัก (`PLAYER_MAPPING`):** `jrj`/`jrjl`/`67`, `Oak`/`bmfc`, `Oo`, `HereAu`/`auau`, `Hong`, `B`/`pongacku`, `Dotman`, `4OUR`/`4`, `kwang`, `Fee`/`f` (Guest), `Natee`, `Vares`, `Tanong`, `Ravi`, `Vej`, `Falco`, `Jatsada`, `Sema`, `Supalerk`, `Micky` (Guest)
+  * **2) Bramann Challenge (ท้าชน / Extra Match):**
+    * **ไฟล์ข้อมูล:** [`config/bramann_challenge.json`](config/bramann_challenge.json) (ประมวลผลร่วมกับ [`parse_bramann_games.py`](parse_bramann_games.py))
+    * **รูปแบบ:** ประกบคู่ดวลแต้ม FPL ตัวต่อตัวประจำสัปดาห์ เช่น `GW9 Extra: Oo v 4OUR` โดยระบุ `team1_id`, `team2_id`, `count_hits`, `count_chips`, `stake_per_leg` (100 บาท), พร้อม `side1_bets` / `side2_bets` สำหรับผู้ร่วมวางเดิมพันเสริม
+  * **ขั้นตอน Workflow อัปเดตทายผลประจำสัปดาห์ (Bramann & Shi62):**
+    1. เมื่อผู้ใช้ส่งคำสั่ง `update ทายผล` พร้อมข้อความทายผลของ **Bramann** หรือ **Shi62**: อัปเดตไฟล์ `config/bramann_prediction.txt` / `config/bramann_challenge.json` (สำหรับ Bramann) หรือ `config/shi62_special.txt` (สำหรับ Shi62)
+    2. รัน `python3 update_preview.py` เพื่อประมวลผล Parser และสร้าง HTML/JS ใหม่ทั้งหมด จากนั้นรัน `python3 verify_local.py` (หรือตรวจ Headless Chrome)
+    3. รายงานผลและรอคำสั่ง **`push git`** จากผู้ใช้ก่อน commit & push ขึ้น `origin/main`
 
 ### ลีก 8: 567387 - "Fantasy Nguan & friends cup"
 * **สมาชิก:** 12 ทีม
@@ -266,13 +274,18 @@ flowchart TD
 * **สถานะกติกา & เงินรางวัล:** อยู่ระหว่างรอผู้ดูแลลีกประกาศกติกาและโครงสร้างเงินรางวัล (Pending Rules & Prizes)
 * **Direct League URL:** `https://www.fplsawadika.com/567387`
 
+### ลีก 9: 139836 - "FPL Growth Mindset 2026/27" (Tier 2 Community)
+* **สมาชิก:** ~1,780 ทีม (คอมมูนิตี้สาธารณะ)
+* **สถาปัตยกรรม:** **Tier 2 (`Standings & Leaderboard Only`)** — ข้ามการดึง Squad Picks และปิดแท็บ Chips/Transfers เพื่อป้องกัน FPL API Rate Limit 429 และรักษาความเร็วการโหลดบนมือถือ รองรับ Instant Search ค้นหาชื่อทีม/ผู้จัดการท่ามกลาง 1,780 ทีม
+* **ค่าสมัคร & รางวัล:** ร่วมสนุกฟรี (กิจกรรมเพจ FPL Growth Mindset), รางวัลใหญ่เสื้อบอลแท้ถูกลิขสิทธิ์ (ฤดูกาล 2026/27) + รางวัลพิเศษตลอดฤดูกาล วัดผลคะแนนรวมจบ GW 38
+* **Direct League URL:** `https://www.fplsawadika.com/139836`
+
 ---
 
 ## 🎨 5. ไฮไลต์ฟีเจอร์สำคัญด้าน UI/UX & Frontend
 
-1. **Standalone Single-File Distribution (`update_preview.py`):**
-   - รวม HTML, Tailwind CSS (CDN), Chart.js (CDN), และ Multi-League Data JSON ไว้ในไฟล์เดียว
-   - ตัดปัญหา CORS 100% รันได้ทันทีทั้ง Local (file://) และ GitHub Pages
+1. **Shared Bundle + Decoupled Entrypoints (`update_preview.py`):**
+   - สร้าง [`assets/dashboard-app.js`](assets/dashboard-app.js) เป็น Shared Client Bundle และแยกข้อมูลรายลีกลง [`data/leagues/{id}.json`](data/leagues/) ทำให้ไฟล์ HTML แต่ละลีกเบาและโหลดเร็วมาก พร้อมรองรับทั้ง Local (`http://localhost:8000`) และ GitHub Pages / Cloudflare CDN
 2. **Authentic Pitch Formation & Official FPL Club Kits:**
    - ผังสนามฟุตบอล 4 ชั้น (GK, DEF, MID, FWD) พร้อมม้านั่งสำรอง
    - แสดงเสื้อแข่งจริงของสโมสร (Official FPL Kits) ทั้งเสื้อผู้เล่นเหย้าและเสื้อผู้รักษาประตู พร้อมเซฟเป็น Local Assets ใน `images/shirts/`
@@ -281,12 +294,10 @@ flowchart TD
    - **กฎเหล็ก:** **งดใช้อีโมจิ 100%**, ใช้สำนวนดุดัน กวน ขยี้ ปากจัด แบบคอลัมนิสต์รุ่นเก๋า
    - **Century Club:** มีคำคมพิเศษเฉพาะสำหรับทีมที่ทำแต้มทะลุ 100+ คะแนนในสัปดาห์เดียว
    - **Customizable Note:** แอดมินสามารถพิมพ์แก้ไขบทวิเคราะห์สดได้บนหน้าเว็บ
-4. **Instant LINE Copy:**
-   - ปุ่มคัดลอกสรุปผลคะแนน ตารางอันดับ และเงินรางวัล เพื่อนำไปวางในกลุ่มแชท LINE ได้ทันที
-5. **Visitor Counter Badge:**
-   - แสดงยอดผู้เข้าชมเว็บไซต์แบบเรียลไทม์ที่ Footer ดีไซน์มินิมอลสีเทา `Visitors: xxxx`
-   - เชื่อมต่อกับ `api.visitorbadge.io` แบบ Serverless พร้อมระบบ Cache บน `localStorage` ป้องกันหน้ากระตุก
-   - **Anti-Spam / Cooldown Lock:** ล็อกคูลดาวน์ 1 ชั่วโมงต่อบราวเซอร์ ป้องกันยอดเฟ้อจากการกด Refresh (F5) หรือสลับแท็บไปมา
+4. **Instant LINE Copy & Cross-Tab Share Consistency:**
+   - ปุ่มคัดลอกสรุปผลคะแนน ตารางอันดับ กติกา และผลทายผล (Gameweek, Prediction, Challenge, Shi62, Rules) เพื่อนำไปวางในกลุ่มแชท LINE ได้ทันที โดยยึดคะแนนสุทธิ `scoreProp = 'net_points'` ตรงกันทั้งหน้าเว็บ, LINE Share และ Excel Export แม้ระหว่าง Live GW
+5. **First-Party D1 Visitor Counter:**
+   - แสดงยอดผู้เข้าชมเว็บไซต์สะสมที่ Footer ผ่าน First-Party Endpoint `GET https://api.fplsawadika.com/visitors` บน Cloudflare D1 (`fpl-database`) พร้อม Edge Cache 30 วินาที และ Deduplicate 30 นาทีฝั่งเบราว์เซอร์ (`localStorage` `fpl_visit_dedup_ts`) *(ยกเลิก `api.visitorbadge.io` แล้ว — ดูรายละเอียดใน Section 10.3)*
 6. **Competition View (ภาพรวมการแข่งขัน & ข้อมูลเชิงลึก):**
    - อยู่ระหว่างแท็บ **Weekly Highlight** และ **สรุปรางวัล** รองรับข้อมูลแบบไดนามิกตามมินิลีกที่ผู้ใช้เลือก (Dynamic Multi-League Integration)
    - **Card Available:** ตารางวิเคราะห์ชิป/การ์ดคงเหลือของทุกทีมในลีก (WC1, WC2, FH, 3xC, BB) พร้อมการ์ดสรุปยอดคงเหลือของทั้งลีก ช่วยให้ประเมินการ์ดคู่แข่งได้ทันที
@@ -299,16 +310,17 @@ flowchart TD
 ## 🔄 6. ระบบ Backend & GitHub Actions Sync
 
 1. **สคริปต์ `sync_live_fpl.py`:**
-   - ใช้ `ThreadPoolExecutor(max_workers=10)` ดึงข้อมูล Picks, Live Points, Sub, Captain ของทุกทีมพร้อมกัน
+   - ใช้ `ThreadPoolExecutor` ดึงข้อมูล Picks, Live Points, Sub, Captain ของทุกทีมพร้อมกัน (รองรับทั้ง Tier 1 และ Tier 2)
    - ดึงข้อมูลจาก:
      - `/api/bootstrap-static/` (รายชื่อนักเตะ, ทีม, สถานะ GW)
      - `/api/event/{gw}/live/` (แต้มสดและโบนัส BPS)
      - `/api/leagues-classic/{lid}/standings/` (ตารางอันดับลีก)
-     - `/api/entry/{eid}/event/{gw}/picks/` (11 ตัวจริง, ตัวสำรอง, กัปตัน, Hits, ชิป)
+     - `/api/entry/{eid}/event/{gw}/picks/` (11 ตัวจริง, ตัวสำรอง, กัปตัน, Hits, ชิป — เฉพาะ Tier 1)
    - คำนวณ Net Points = `Raw Points - Transfer Cost (Hits)` อย่างแม่นยำ
+   - **ข้อควรระวังกรณีสัปดาห์เริ่มเตะคืนวันศุกร์คู่เดียว (`raw_points == 0` Invariant):** ในฟังก์ชัน `process_team_picks()` ต้องประกาศค่าเริ่มต้นของ `s_key`, `c_gw`, `c_res`, `c_sq` ก่อนเข้าบล็อก `try:` และตรวจสอบ `(gw in live_fetch_failed_gws or not live_pts_gw)` ก่อนตรวจ `c_res` เพื่อป้องกัน `UnboundLocalError` ซึ่งเคยทำให้ทีมที่มี 0 แต้ม (เพราะไม่มีนักเตะลงเตะวันศุกร์) ถูกตัดออกจาก GW results และพลาดการหัก `-4`/`-8`/`-12` hits ใน Overall Standings (แก้ไขแล้วตั้งแต่ GW10)
 2. **การทำงานของ GitHub Actions Workflow (`fpl_auto_sync.yml`):**
    - Trigger: รันอัตโนมัติทุกๆ 15 นาที (`cron: '3,18,33,48 * * * *'`) หรือกดรันมือได้ (`workflow_dispatch`)
-   - ขั้นตอน: Checkout -> Python 3.11 -> `python3 sync_live_fpl.py` -> `python3 update_preview.py` -> Auto Commit & Push `[skip ci]`
+   - ขั้นตอน: Stagger 58s -> Checkout (Pinned Action SHAs) -> Python 3.11 -> `python3 sync_live_fpl.py` -> `python3 update_preview.py` -> `git add -A` -> Auto Commit & Rebase-safe Push `[skip ci]`
 
 ---
 
@@ -322,9 +334,8 @@ flowchart TD
 * **สาเหตุ:** ชื่อทีมที่มีเครื่องหมาย `'` เช่น `Ziang's Team` หรือ `Chatiwat's Team` ทำให้ inline `onclick` string attribute ถูกตัดสตริงและเกิด JS SyntaxError
 * **แนวทางแก้ไขที่เสร็จสิ้น:** ปรับให้ส่งเฉพาะ `entry_id` (Number) เท่านั้น และค้นหาข้อมูลจาก JSON Object โดยตรง พร้อมเพิ่มการจัดการกรณีไม่มีข้อมูลแผนในสัปดาห์นั้นให้แสดงกล่องว่างแบบสวยงาม (Graceful Empty State) แทนการดึงข้อมูลทีมอื่นมาแสดง
 
-### เรื่อง: การบันทึกไฟล์อัตโนมัติใน GitHub Actions (`.github/workflows/fpl_auto_sync.yml`)
-* **จุดที่ตรวจพบ:** บรรทัดที่ 39 ในไฟล์ workflow เดิมมีคำสั่ง `git add real_fpl_40700_data.json index.html preview.html` ซึ่งข้ามการบันทึก `multi_fpl_data.json` และหน้าลีกลำดับอื่น (`40700/index.html`, `675290/index.html`, `38491/index.html`, `404.html`)
-* **วิธีแก้ไข:** แนะนำให้กด Edit ไฟล์ `.github/workflows/fpl_auto_sync.yml` บนหน้าเว็บ GitHub โดยเปลี่ยนบรรทัดที่ 39 เป็น `git add -A` เพื่อให้ระบบ Auto Sync ทุก 15 นาทีบันทึกและอัปเดตไฟล์ของทุกลีกขึ้นสู่เว็บอย่างสมบูรณ์แบบ
+### เรื่อง: การบันทึกไฟล์อัตโนมัติใน GitHub Actions (`.github/workflows/fpl_auto_sync.yml`) `[RESOLVED]`
+* **ประวัติการแก้ไข:** workflow เวอร์ชันแรกเคยใช้ `git add` แบบเจาะจงแค่บางไฟล์ ปัจจุบันแก้ไขเป็น `git add -A` พร้อม Auto Rebase Recovery และปัก Commit SHA ของ GitHub Actions ครบทุกตัวแล้ว ทำให้ทุกลีก (`data/leagues/*.json`, `assets/dashboard-app.js`, `{id}/index.html`) อัปเดตครบถ้วนอัตโนมัติทุก 15 นาที
 
 
 ### เรื่อง: ฟังก์ชัน Competition (ข้อมูลเจาะลึกคู่แข่ง & การวิเคราะห์ขุมกำลัง)
@@ -526,5 +537,38 @@ flowchart TD
   * เพิ่ม Public Endpoint `GET /visitors` (Edge Cached 30 วินาที, `Cache-Control: public, max-age=30, s-maxage=30, stale-while-revalidate=120`) และแสดงผลที่ footer ผ่าน `initVisitorCounter()` / `renderVisitorCounterText()` ทั้ง 2 ภาษา:
     * TH: `ยอดเข้าชมสะสม: X,XXX ครั้ง (ตั้งแต่ พ.ย. 2026)`
     * EN: `Views: X,XXX (since Nov 2026)`
+
+---
+
+## 💼 11. Commercial Launch Architecture — Product Landing Page, Tenant Isolation & Concierge Onboarding
+
+### 11.1 โครงสร้าง Domain & หน้าแรกเชิงพาณิชย์ (`https://www.fplsawadika.com/`)
+* **`index.html` (Product Landing Page):** ปรับหน้าแรกเป็น Landing Page ขายบริการมินิลีกแบบ Concierge (Type A) ผ่าน LINE (`https://line.me/ti/p/lgWPeyIBR7`) รองรับ 2 ภาษา (`TH`/`EN`), Dark/Light Theme, และสกุลเงินคู่ (`THB`/`USD` โดยผูกค่าเริ่มต้น `TH -> THB`, `EN -> USD` พร้อมปุ่มสลับ)
+  * **แพ็กเกจ Tier 1 (≤ 30 ทีม/ลีก; เกิน 30 ทีมคิดราคาพิเศษ):**
+    * **Standard Tier 1:** `฿500 / ฤดูกาล` (`$19 USD / season`) — คะแนนสด 15 วินาที, บัญชีรางวัล, บอลถ้วย, ส่องผัง 11 ตัวจริงคู่แข่ง, Export Excel/LINE
+    * **Custom Tier 1:** `฿900 / ฤดูกาล` (`$29 USD / season`) — รวม Standard + กติกาเงินรางวัลเฉพาะลีก และมินิเกมเสริม 1 แท็บ (เช่น ทายผล/ท้าชน/ขั้นบันได)
+  * **Tier 2 Community Scale:** แสดงเป็น Roadmap / Coming Soon พร้อมลิงก์ตัวอย่างสดไปยังลีก `139836`
+  * **Order Request Builder:** ฟอร์มตรวจสอบ League ID และสร้างข้อความสรุปคำสั่งซื้อให้กดคัดลอก/ส่งเข้า LINE พร้อม `config/site_config.json` เป็นแหล่งข้อมูลกลางของราคา, Showcase Demos (`40700`, `675290`, `438691`, `187827`, `139836`) และช่องทางติดต่อ
+* **Routing ใหม่:**
+  * `index.html` → Product Landing Page
+  * `preview.html` → Interactive Demo Dashboard (ลีก `40700`)
+  * `404.html` → Branded 404 Page พร้อมลิงก์กลับหน้าแรก / Demo / ติดต่อ LINE
+  * `{league_id}/index.html` → หน้า Dashboard ของแต่ละมินิลีก (ตั้งลิงก์โลโก้/แบรนด์ใน Header กลับหน้า Landing Page)
+
+### 11.2 Tenant Isolation, SEO Privacy & League Lifecycle
+* **Tenant Isolation (`tenant_group` & `visibility`):**
+  * ลีกทดลองของเพื่อนทั้ง 9 ลีกอยู่ใน `"tenant_group": "showcase"`, `"visibility": "showcase"` เพื่อให้เห็นร่วมกันใน League Switcher และ Global Radar (แก้ปัญหาผู้เล่นที่จอยหลายลีกในกลุ่มทดลอง)
+  * ลีกลูกค้าที่ซื้อแยกจะตั้ง `"tenant_group": "private_<id>"` และ `"visibility": "private"` — ระหว่าง build (`update_preview.py`), `get_scoped_config_for_target()` และ `get_pruned_data_for_target()` จะกรองทั้ง config และข้อมูล `DATA` เหลือเฉพาะลีกใน `tenant_group` เดียวกัน, ซ่อนปุ่มสลับลีกและ cross-league benchmark เมื่อมี 1 ลีก, ใส่ `<meta name="robots" content="noindex, nofollow">`, และยกเว้นออกจาก `sitemap.xml`
+* **League Lifecycle (`status`):** รองรับ `"active" | "trial" | "paused"`
+  * `trial` แสดง badge ทดลองใช้งานบน Header
+  * `paused` ข้ามการซิงก์ FPL API ใน `sync_live_fpl.py`, หยุด polling ฝั่ง client และแสดงหน้าจอต่ออายุพร้อมปุ่ม LINE
+* **Single-League Sync (`sync_live_fpl.py --league <id>`):** รองรับการดึงข้อมูลเฉพาะลีกเดียวโดยรักษาแคชของลีกอื่นใน `multi_fpl_data.json` ไว้ครบถ้วน
+
+### 11.3 Concierge Onboarding Tooling (`/admin` & `onboard_league.py`)
+* **Worker Endpoints (`workers/fpl-live-worker.js`):**
+  * ป้องกัน `/api/telemetry/event` ไม่ให้ traffic ของ `landing` (`/` หรือ `league_id: "landing"`) และ `404` ถูกนับรวมเข้าสถิติของลีก `40700`
+  * เพิ่ม Authenticated `GET /api/admin/inspect-league?id=<league_id>` สำหรับดึงชื่อลีกและรายชื่อทีมสด (รวมถึงช่วง Pre-Season `new_entries` และหน้าถัดไปสำหรับลีกเกิน 30/50 ทีม)
+* **Admin Onboarding Wizard (`workers/admin-dashboard.js`):** เพิ่ม Section `08. Customer League Onboarding Wizard` ให้แอดมินตรวจสอบ League ID, ติ๊กเลือก `non_prize_teams`, เลือกแพ็กเกจ/รูปแบบรางวัล/สถานะสิทธิ์ และคัดลอกคำสั่ง `onboard_league.py`, JSON snippet, และข้อความส่งมอบลูกค้าทาง LINE ได้ทันที
+* **CLI (`onboard_league.py`):** ตรวจสอบ FPL Classic League API, บันทึก `config/leagues_config.json`, ซิงก์ `sync_live_fpl.py --league <id>`, และรัน `update_preview.py` เพื่อสร้าง `{league_id}/index.html` ครบจบในคำสั่งเดียว
 
 

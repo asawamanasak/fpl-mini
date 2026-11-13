@@ -1,0 +1,84 @@
+{
+  "brand_name": "FPLSaWaDiKa",
+  "site_url": "https://www.fplsawadika.com",
+  "api_base_url": "https://api.fplsawadika.com",
+  "contact": {
+    "line_url": "https://line.me/ti/p/lgWPeyIBR7",
+    "line_label_th": "ติดต่อเปิดลีกผ่าน LINE",
+    "line_label_en": "Chat on LINE to Launch"
+  },
+  "pricing": {
+    "tier1_max_teams": 30,
+    "tier1_flexible_max_teams": 60,
+    "standard": {
+      "id": "standard",
+      "name_th": "Standard Tier 1",
+      "name_en": "Standard Tier 1",
+      "thb": 500,
+      "usd": 19,
+      "unit_th": "บาท / ฤดูกาล",
+      "unit_en": "/ season"
+    },
+    "custom": {
+      "id": "custom",
+      "name_th": "Custom Tier 1",
+      "name_en": "Custom Tier 1",
+      "thb": 900,
+      "usd": 29,
+      "unit_th": "บาท / ฤดูกาล",
+      "unit_en": "/ season"
+    }
+  },
+  "showcase_demos": [
+    {
+      "id": "40700",
+      "tag_th": "ยอดนิยม • แชมป์วีค + บอลถ้วย",
+      "tag_en": "Popular • Weekly + Cup",
+      "title_th": "เซียนอยู่รู หมูอยู่ตึก",
+      "title_en": "Sian Yoo Roo (12 Teams)",
+      "desc_th": "รางวัลแชมป์สัปดาห์, 6 รอบเคลียร์เงิน (Settlement Phases) และถ้วยน็อคเอาท์",
+      "desc_en": "Weekly payouts, 6 settlement phases, and knockout cup bracket",
+      "plan": "standard"
+    },
+    {
+      "id": "675290",
+      "tag_th": "ลีกใหญ่ • รายเดือน + การกุศล",
+      "tag_en": "Monthly • 59 Teams + Charity",
+      "title_th": "NudNee League",
+      "title_en": "NudNee League (59 Teams)",
+      "desc_th": "ระบบแชมป์ประจำเดือน 10 เดือน, ตาราง Top 5 ฤดูกาล, ถ้วย และสมทบการกุศล",
+      "desc_en": "10 monthly leaderboards, overall top 5, cup & charity ledger",
+      "plan": "standard"
+    },
+    {
+      "id": "438691",
+      "tag_th": "สายฮา • ค่าปรับบ๊วย 5 อันดับ",
+      "tag_en": "Penalties • Bottom-5 Fines",
+      "title_th": "2 spade",
+      "title_en": "2 spade (13 Teams)",
+      "desc_th": "เก็บค่าปรับ 5 อันดับสุดท้ายเข้ากองกลางอัตโนมัติ พร้อมระบบ Tie-breaker ทางการ",
+      "desc_en": "Automated bottom-5 penalty ladder into central pool with tie-breakers",
+      "plan": "standard"
+    },
+    {
+      "id": "187827",
+      "tag_th": "Custom • Zero-Sum + ทายผล",
+      "tag_en": "Custom • Zero-Sum + Picks",
+      "title_th": "Shi62 Special",
+      "title_en": "Shi62 + Mini-Game",
+      "desc_th": "อันดับบนรับเงินจากอันดับล่างเมื่อจบฤดูกาล พร้อมแท็บทายผลแฮนดิแคปเฉพาะลีก",
+      "desc_en": "End-of-season zero-sum ladder plus custom weekly handicap prediction tab",
+      "plan": "custom"
+    },
+    {
+      "id": "139836",
+      "tag_th": "Roadmap • Tier 2 (1,780 ทีม)",
+      "tag_en": "Roadmap • Tier 2 (1,780 Teams)",
+      "title_th": "FPL Growth Mindset",
+      "title_en": "FPL Growth Mindset (Tier 2)",
+      "desc_th": "ต้นแบบลีกคอมมูนิตี้สเกลใหญ่ 1,000+ ทีม พร้อมระบบค้นหาทีมและดูผัง On-Demand",
+      "desc_en": "High-scale 1,000+ team community preview with instant search & on-demand lineups",
+      "plan": "tier2_roadmap"
+    }
+  ]
+}

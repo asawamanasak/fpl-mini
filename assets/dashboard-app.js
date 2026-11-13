@@ -1721,19 +1721,106 @@
         return order.length > 0 ? String(order[0]) : "40700";
       }
 
+      isLeaguePaused(lid = this.activeLeagueId) {
+        const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null) || {};
+        return String(c.status || 'active').toLowerCase() === 'paused';
+      }
+
+      isLeagueTrial(lid = this.activeLeagueId) {
+        const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null) || {};
+        return String(c.status || 'active').toLowerCase() === 'trial';
+      }
+
+      getSeasonPrizeSummary(isEn) {
+        const cfg = this.config || {};
+        const prizes = cfg.season_prizes && typeof cfg.season_prizes === 'object' ? cfg.season_prizes : null;
+        let total = cfg.season_total_prize;
+        if (!total && prizes) {
+          let sum = 0;
+          Object.values(prizes).forEach(val => {
+            const num = Number(String(val).replace(/[^0-9.-]/g, ''));
+            if (Number.isFinite(num)) sum += num;
+          });
+          total = sum > 0 ? sum.toLocaleString() : '0';
+        }
+        if (!total) total = '9,000';
+
+        let desc = cfg.season_prize_desc;
+        if (!desc && prizes && Object.keys(prizes).length > 0) {
+          const rankMapTh = { '1st': 'ที่ 1', '2nd': 'ที่ 2', '3rd': 'ที่ 3', '4th': 'ที่ 4', '5th': 'ที่ 5' };
+          desc = Object.entries(prizes)
+            .map(([rank, val]) => `${isEn ? rank : (rankMapTh[rank] || rank)}: ${String(val).replace(/\s*THB$/i, '')}`)
+            .join(' / ') + ' THB';
+        }
+        if (!desc) {
+          desc = isEn ? '1st: 4,500 / 2nd: 2,500 / 3rd: 1,000 / 4th-5th: 500' : 'แชมป์ 4,500 / รอง 2,500 / ที่ 3 1,000 / ที่ 4-5 500';
+        }
+        return { total, desc };
+      }
+
+      renderPausedOverlay(isPaused) {
+        const overlay = document.getElementById('paused-league-overlay');
+        const tabsBar = document.getElementById('header-tabs-bar');
+        const tabContents = document.querySelectorAll('.tab-content');
+        if (tabsBar) tabsBar.classList.toggle('hidden', isPaused);
+        if (!overlay) return;
+
+        if (!isPaused) {
+          overlay.classList.add('hidden');
+          overlay.innerHTML = '';
+          return;
+        }
+
+        tabContents.forEach(el => el.classList.add('hidden'));
+        const isEn = (this.currentLang === 'en');
+        const lName = this.escapeHtml((this.data && this.data.name) || (this.config && this.config.name) || `League ${this.activeLeagueId}`);
+        const lineUrl = (typeof SITE_LINE_URL !== 'undefined' && SITE_LINE_URL) ? SITE_LINE_URL : 'https://line.me/ti/p/lgWPeyIBR7';
+        const prefix = this.getAssetPrefix();
+        const isFile = typeof window !== 'undefined' && window.location && window.location.protocol === 'file:';
+        const homeHref = isFile ? `${prefix}index.html` : prefix;
+
+        overlay.classList.remove('hidden');
+        overlay.innerHTML = `
+          <div class="max-w-xl mx-auto my-8 sm:my-14 glass-card rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-lg text-center space-y-4">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 mx-auto">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div class="space-y-1.5">
+              <span class="inline-block text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                ${isEn ? 'LEAGUE PAUSED' : 'ปิดปรับปรุง / พักการใช้งานชั่วคราว'}
+              </span>
+              <h2 class="text-lg sm:text-xl font-black text-slate-900 dark:text-white font-display">${lName}</h2>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                ${isEn
+                  ? 'Live updates for this mini-league dashboard are currently paused or awaiting season renewal.'
+                  : 'แดชบอร์ดมินิลีกนี้อยู่ระหว่างพักการอัปเดตชั่วคราวหรือรอการต่ออายุฤดูกาล หากคุณเป็นผู้ดูแลลีก สามารถติดต่อทีมงานเพื่อเปิดใช้งานได้ทันที'}
+              </p>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-2">
+              <a href="${this.escapeHtml(lineUrl)}" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold shadow-sm transition-colors">
+                <span>${isEn ? 'Renew / Contact via LINE' : 'ติดต่อต่ออายุ / เปิดลีกผ่าน LINE'}</span>
+              </a>
+              <a href="${this.escapeHtml(homeHref)}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-bold transition-colors">
+                <span>${isEn ? 'Back to Home' : 'กลับหน้าแรก FPLSaWaDiKa'}</span>
+              </a>
+            </div>
+          </div>
+        `;
+      }
+
       hasShi62Feature(lid = this.activeLeagueId) {
         const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null);
-        return Boolean((c && c.features && c.features.has_shi62_special) || String(lid) === '187827');
+        return Boolean((c && c.features && c.features.has_shi62_special) || ((!c || !c.features) && String(lid) === '187827'));
       }
 
       hasBramannPredFeature(lid = this.activeLeagueId) {
         const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null);
-        return Boolean((c && c.features && c.features.has_bramann_prediction) || String(lid) === '5349');
+        return Boolean((c && c.features && c.features.has_bramann_prediction) || ((!c || !c.features) && String(lid) === '5349'));
       }
 
       hasBramannChalFeature(lid = this.activeLeagueId) {
         const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null);
-        return Boolean((c && c.features && c.features.has_bramann_challenge) || String(lid) === '5349');
+        return Boolean((c && c.features && c.features.has_bramann_challenge) || ((!c || !c.features) && String(lid) === '5349'));
       }
 
       getTeamLogoUrl(logoOrCode) {
@@ -1841,6 +1928,11 @@
         this.initTheme();
         this.renderLeagueDropdown();
         this.updateHeaderInfo();
+        if (this.isLeaguePaused()) {
+          this.initVisitorCounter();
+          this.initDeadlineCountdown();
+          return;
+        }
         this.initTabNavigation();
         this.renderAll();
         if (this.activeTab) {
@@ -1972,6 +2064,13 @@
 
       initLivePolling() {
         if (typeof window === 'undefined' || typeof fetch === 'undefined') return;
+        if (this.isLeaguePaused()) {
+          if (this.livePollInterval) {
+            clearInterval(this.livePollInterval);
+            this.livePollInterval = null;
+          }
+          return;
+        }
 
         const pollIntervalMs = 15000; // 15-second real-time Cloudflare Edge polling
         const checkAndPoll = () => {
@@ -3519,6 +3618,38 @@
 
       updateHeaderInfo() {
         const isEn = (this.currentLang === 'en');
+        const brandHomeLink = document.getElementById('header-brand-home');
+        if (brandHomeLink) {
+          const isFile = typeof window !== 'undefined' && window.location && window.location.protocol === 'file:';
+          const prefix = this.getAssetPrefix();
+          brandHomeLink.href = isFile ? `${prefix}index.html` : prefix;
+          brandHomeLink.title = isEn ? 'Back to FPLSaWaDiKa Home' : 'กลับหน้าแรก FPLSaWaDiKa';
+        }
+        const trialBadge = document.getElementById('header-trial-badge');
+        if (trialBadge) {
+          const isTrial = this.isLeagueTrial();
+          trialBadge.classList.toggle('hidden', !isTrial);
+          trialBadge.textContent = isEn ? 'TRIAL' : 'ทดลองใช้';
+        }
+        const availableLeaguesCount = Object.keys((this.multiData && this.multiData.leagues) || {}).length;
+        const isSingleLeague = availableLeaguesCount <= 1;
+        const switcherBtn = document.getElementById('league-switcher-btn');
+        const switcherChevronWrap = document.getElementById('league-switcher-chevron-wrap');
+        if (switcherChevronWrap) switcherChevronWrap.classList.toggle('hidden', isSingleLeague);
+        if (switcherBtn) {
+          switcherBtn.classList.toggle('cursor-default', isSingleLeague);
+          switcherBtn.classList.toggle('cursor-pointer', !isSingleLeague);
+          switcherBtn.disabled = isSingleLeague;
+          switcherBtn.title = isSingleLeague ? '' : (isEn ? 'Click to switch mini-league' : 'คลิกเพื่อสลับดูมินิลีกอื่น');
+        }
+        const isPaused = this.isLeaguePaused();
+        this.renderPausedOverlay(isPaused);
+        if (isPaused) {
+          if (this.livePollInterval) {
+            clearInterval(this.livePollInterval);
+            this.livePollInterval = null;
+          }
+        }
         const platformSub = document.getElementById('header-platform-sub');
         if (platformSub) platformSub.innerText = isEn ? 'Mini-League' : 'มินิลีก';
         const dropdownHeaderTitle = document.getElementById('league-dropdown-header-title');
@@ -4334,10 +4465,11 @@ selectShi62GW(gwName) {
       }
 
       sharePrizes() {
+        const feat = (this.config && this.config.features) || {};
         const lid = String(this.activeLeagueId);
-        if (lid === '5349') {
+        if (feat.prize_model === 'bramann_dual_prize' || lid === '5349') {
           this.copyBramannPrizesLINEResult();
-        } else if (lid === '675290') {
+        } else if (feat.has_monthly_prizes || lid === '675290') {
           this.copyShi62PrizesLINEResult();
         } else {
           this.shareCurrentGameweek();
@@ -11264,8 +11396,8 @@ selectShi62GW(gwName) {
                   </div>
                   <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
                     <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${this.config.season_prizes && Object.keys(this.config.season_prizes).length ? (isEn ? `Season Champions (${Object.keys(this.config.season_prizes).length} Places)` : `แชมป์ฤดูกาล (รวม ${Object.keys(this.config.season_prizes).length} อันดับ)`) : (isEn ? 'Season Champions' : 'แชมป์ฤดูกาล')}</span>
-                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${this.config.season_total_prize || (this.activeLeagueId === '1101958' ? '12,000' : '9,000')} <span class="text-xs font-normal text-slate-400">THB</span></div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${this.config.season_prize_desc || (this.activeLeagueId === '1101958' ? (isEn ? '1st: 6,000 / 2nd: 3,600 / 3rd: 2,400 THB' : 'ที่ 1: 6,000 / ที่ 2: 3,600 / ที่ 3: 2,400 THB') : (isEn ? '1st: 4,500 / 2nd: 2,500 / 3rd: 1,000 / 4th-5th: 500' : 'แชมป์ 4,500 / รอง 2,500 / ที่ 3 1,000 / ที่ 4-5 500'))}</div>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${this.getSeasonPrizeSummary(isEn).total} <span class="text-xs font-normal text-slate-400">THB</span></div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${this.escapeHtml(this.getSeasonPrizeSummary(isEn).desc)}</div>
                   </div>
                   <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
                     <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${this.config.coordinator ? (isEn ? 'League Coordinator & Treasury' : 'ผู้ประสานงาน & ดูแลกองกลาง') : (isEn ? 'Entry Fee & Total Treasury' : 'ค่าสมัคร & กองกลางรวม')}</span>
@@ -13168,9 +13300,37 @@ selectShi62GW(gwName) {
               if (tm && tm.entry_id !== undefined) uniqueTeamIdsForCount.add(Number(tm.entry_id));
             });
           });
-          const numLeagues = leagueIdsForCount.length || 8;
-          const numTeams = uniqueTeamIdsForCount.size || 146;
-          headerPill.innerText = isEn ? `${numLeagues} Leagues • ${numTeams} Teams` : `${numLeagues} ลีก • ${numTeams} ทีม`;
+          const numLeagues = leagueIdsForCount.length;
+          const numTeams = uniqueTeamIdsForCount.size;
+          headerPill.innerText = isEn ? `${numLeagues} ${numLeagues === 1 ? 'League' : 'Leagues'} • ${numTeams} Teams` : `${numLeagues} ลีก • ${numTeams} ทีม`;
+        }
+        const radarMainSub = document.getElementById('radar-main-subtitle');
+        const radarBannerText = document.getElementById('radar-banner-stat-text');
+        const radarTier1IdsCount = Object.keys((this.multiData && this.multiData.leagues) || {}).filter(lid => {
+          const l = this.multiData.leagues[lid];
+          const cfg = (this.configs && this.configs[lid]) || {};
+          return l && l.tier !== 2 && cfg.tier !== 2;
+        }).length;
+        const isSingleTier1Tenant = radarTier1IdsCount <= 1;
+        if (radarMainSub) {
+          if (isSingleTier1Tenant) {
+            radarMainSub.innerText = isEn
+              ? 'Compare consistency, floor scores, and variance across all managers in your mini-league'
+              : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมภายในมินิลีกของคุณ';
+          } else {
+            radarMainSub.innerText = isEn
+              ? 'Compare performance consistency, stability, and volatility across all Tier-1 leagues in this group'
+              : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมในกลุ่มลีกที่เชื่อมต่อ';
+          }
+        }
+        if (radarBannerText) {
+          radarBannerText.innerText = isSingleTier1Tenant
+            ? (isEn ? 'League Consistency Audit' : 'วิเคราะห์ความสม่ำเสมอภายในลีก')
+            : (isEn ? `Analyzed across ${radarTier1IdsCount} Leagues` : `วิเคราะห์ข้าม ${radarTier1IdsCount} ลีกสมบูรณ์`);
+        }
+        const benchmarkCard = document.getElementById('benchmark-ranking-card');
+        if (benchmarkCard) {
+          benchmarkCard.classList.toggle('hidden', isSingleTier1Tenant);
         }
         const radarGuideHeading = document.getElementById('radar-guide-heading');
         if (radarGuideHeading) {
@@ -13685,9 +13845,14 @@ selectShi62GW(gwName) {
           `;
         }
 
-        // Render Filter Pills
+        // Render Filter Pills (hidden when single-league tenant)
         if (pillsContainer) {
-          const curFilter = this.radarLeagueFilter || 'all';
+          if (leagueBenchmarks.length <= 1) {
+            pillsContainer.classList.add('hidden');
+            pillsContainer.innerHTML = '';
+          } else {
+            pillsContainer.classList.remove('hidden');
+            const curFilter = this.radarLeagueFilter || 'all';
           let phtml = `
             <button onclick="app.setRadarLeagueFilter('all')" class="px-3 py-1.5 rounded-xl font-bold font-display text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 ${curFilter === 'all' ? 'bg-slate-900 text-white dark:bg-blue-600 shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}">
               <span>${isEn ? 'All Leagues' : 'ทุกลีก'}</span>
@@ -13707,8 +13872,9 @@ selectShi62GW(gwName) {
                 <span class="text-[10px] opacity-75 font-semibold">(${count})</span>
               </button>
             `;
-          });
-          pillsContainer.innerHTML = phtml;
+            });
+            pillsContainer.innerHTML = phtml;
+          }
         }
 
         this.renderGlobalRadarTable();
@@ -18291,7 +18457,7 @@ ${this.getPublicLeagueUrl()}`;
               'หมายเหตุ'
             ]);
 
-            const weeklyPrize = feat.weekly_prize_amount || (this.activeLeagueId === '38491' ? 500 : 350);
+            const weeklyPrize = Number(feat.weekly_prize_amount) || 350;
             const teamWinnings = {};
             teams.forEach(t => {
               teamWinnings[t.entry_id] = {
@@ -18309,7 +18475,7 @@ ${this.getPublicLeagueUrl()}`;
             const weeklyPrizesConfig = feat.weekly_prizes;
             const tierPrizes = weeklyPrizesConfig 
               ? Object.values(weeklyPrizesConfig).map(Number)
-              : [feat.weekly_prize_amount || (this.activeLeagueId === '38491' ? 500 : 350)];
+              : [Number(feat.weekly_prize_amount) || 350];
 
             for (let g = 1; g <= maxGW; g++) {
               const gwData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
@@ -19175,6 +19341,14 @@ ${this.getPublicLeagueUrl()}`;
     // FPLSaWaDiKa League Engagement & Product Analytics Telemetry (Edge Analytics)
     (function() {
       try {
+        var host = (typeof window !== "undefined" && window.location) ? String(window.location.hostname || "").toLowerCase() : "";
+        var proto = (typeof window !== "undefined" && window.location) ? String(window.location.protocol || "").toLowerCase() : "";
+        var isLocalOrigin = proto === "file:" || !host || host === "localhost" || host === "127.0.0.1" || host === "::1" || host === "[::1]" || host === "0.0.0.0" || host.endsWith(".local");
+        if (isLocalOrigin) {
+          window._trackFeature = function() {};
+          window._trackLeagueSwitch = function() {};
+          return;
+        }
         var telemEndpoint = "https://api.fplsawadika.com/api/telemetry/event";
         var currentLeague = "";
         var sessionStartTime = Date.now();
@@ -19184,7 +19358,7 @@ ${this.getPublicLeagueUrl()}`;
         } else if (window.app && window.app.activeLeagueId) {
           currentLeague = String(window.app.activeLeagueId);
         } else {
-          currentLeague = "40700";
+          currentLeague = (typeof INITIAL_DEFAULT_LEAGUE !== 'undefined' && INITIAL_DEFAULT_LEAGUE) ? String(INITIAL_DEFAULT_LEAGUE) : "40700";
         }
 
         // In-Memory Feature Queue (Smart Session Batching - 0 Extra HTTP Calls)

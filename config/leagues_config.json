@@ -174,7 +174,11 @@
         ],
         "footer": "* Prize payouts transferred transparently at the end of each settlement window."
       }
-    ]
+    ],
+    "tenant_group": "showcase",
+    "visibility": "showcase",
+    "status": "active",
+    "plan": "standard"
   },
   "675290": {
     "id": 675290,
@@ -451,7 +455,11 @@
         ],
         "footer": "* Transparent community pool with charitable social contribution."
       }
-    ]
+    ],
+    "tenant_group": "showcase",
+    "visibility": "showcase",
+    "status": "active",
+    "plan": "standard"
   },
   "38491": {
     "id": 38491,
@@ -576,7 +584,11 @@
         ],
         "footer": "* Payouts verified and distributed following official FPL updates."
       }
-    ]
+    ],
+    "tenant_group": "showcase",
+    "visibility": "showcase",
+    "status": "active",
+    "plan": "standard"
   },
   "1101958": {
     "id": 1101958,
@@ -692,7 +704,11 @@
         ],
         "footer": "* Final standings calculated upon conclusion of Gameweek 38."
       }
-    ]
+    ],
+    "tenant_group": "showcase",
+    "visibility": "showcase",
+    "status": "active",
+    "plan": "standard"
   },
   "438691": {
     "id": 438691,
@@ -787,7 +803,11 @@
         ],
         "footer": "* Reverse-fee structure creates constant excitement at both ends of the table."
       }
-    ]
+    ],
+    "tenant_group": "showcase",
+    "visibility": "showcase",
+    "status": "active",
+    "plan": "standard"
   },
   "187827": {
     "id": 187827,
@@ -902,7 +922,11 @@
         ],
         "footer": "* Direct settlement among league members post-GW 38."
       }
-    ]
+    ],
+    "tenant_group": "showcase",
+    "visibility": "showcase",
+    "status": "active",
+    "plan": "custom"
   },
   "5349": {
     "id": 5349,
@@ -1046,7 +1070,11 @@
         ],
         "footer": "* High-excitement fantasy duel action alongside real matches."
       }
-    ]
+    ],
+    "tenant_group": "showcase",
+    "visibility": "showcase",
+    "status": "active",
+    "plan": "custom"
   },
   "567387": {
     "id": 567387,
@@ -1088,7 +1116,11 @@
         ],
         "footer": "* Stay tuned for official announcements from the league commissioner."
       }
-    ]
+    ],
+    "tenant_group": "showcase",
+    "visibility": "showcase",
+    "status": "active",
+    "plan": "standard"
   },
   "139836": {
     "id": 139836,
@@ -1168,6 +1200,10 @@
         ],
         "footer": "* Tier 2 High-Scale architecture designed to support 1,000+ member leagues."
       }
-    ]
+    ],
+    "tenant_group": "showcase",
+    "visibility": "showcase",
+    "status": "active",
+    "plan": "tier2_beta"
   }
 }

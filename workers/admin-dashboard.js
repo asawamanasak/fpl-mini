@@ -474,6 +474,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <a href="#sec-system" class="min-h-[44px] px-3 py-2 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2">
           <span data-i18n="mod_nav_7">7. ประสิทธิภาพระบบและการขยายสเกล</span>
         </a>
+        <a href="#sec-onboarding" class="min-h-[44px] px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 hover:bg-amber-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-500 transition-colors shrink-0 inline-flex items-center gap-2 font-semibold">
+          <span data-i18n="mod_nav_8">8. เพิ่มลีกลูกค้าใหม่ (Onboarding)</span>
+        </a>
       </div>
     </nav>
   </header>
@@ -1756,6 +1759,139 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         </div>
       </div>
     </section>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 8: CONCIERGE CUSTOMER LEAGUE ONBOARDING WIZARD              -->
+    <!-- =================================================================== -->
+    <section id="sec-onboarding" class="space-y-4 scroll-mt-28" aria-labelledby="sec-onboarding-title">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div>
+          <h2 id="sec-onboarding-title" class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec8_title">
+            08. เครื่องมือเปิดลีกลูกค้าใหม่ (Concierge Onboarding Wizard)
+          </h2>
+          <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec8_sub">
+            ตรวจสอบ FPL Classic League ID สดจากเซิร์ฟเวอร์พรีเมียร์ลีก เลือกทีมที่ไม่ร่วมชิงรางวัล ตั้งค่าแพ็กเกจ และสร้างสคริปต์เปิดใช้งานทันที
+          </p>
+        </div>
+        <span class="px-2.5 py-1 rounded-md text-xs font-medium mono bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/30 self-start sm:self-auto">
+          Type A Concierge Flow
+        </span>
+      </div>
+
+      <div class="p-5 sm:p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-end">
+          <div class="lg:col-span-4 space-y-1.5">
+            <label for="onbLeagueId" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_id">
+              FPL Classic League ID (ตัวเลขเท่านั้น)
+            </label>
+            <div class="flex gap-2">
+              <input id="onbLeagueId" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 40700"
+                class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-sm mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+              <button type="button" id="btnOnbInspect"
+                class="min-h-[44px] px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-xs font-semibold whitespace-nowrap transition-colors"
+                data-i18n="onb_btn_inspect">
+                ดึงข้อมูลลีกสด
+              </button>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2 space-y-1.5">
+            <label for="onbPlan" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_plan">แพ็กเกจ (Plan)</label>
+            <select id="onbPlan" class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-900 dark:text-white">
+              <option value="standard">Standard (฿500 / $19)</option>
+              <option value="custom">Custom (฿900 / $29)</option>
+            </select>
+          </div>
+
+          <div class="lg:col-span-2 space-y-1.5">
+            <label for="onbPrizeModel" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_prize">รูปแบบรางวัล</label>
+            <select id="onbPrizeModel" class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-900 dark:text-white">
+              <option value="weekly">Weekly Top-Score</option>
+              <option value="standard">Season Top Only</option>
+              <option value="monthly">Monthly Top-Score</option>
+              <option value="penalties">Weekly + Penalties</option>
+            </select>
+          </div>
+
+          <div class="lg:col-span-2 space-y-1.5">
+            <label for="onbWeeklyPrize" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_weekly">รางวัล/สัปดาห์ (บาท)</label>
+            <input id="onbWeeklyPrize" type="text" inputmode="numeric" value="300"
+              class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-sm mono text-slate-900 dark:text-white" />
+          </div>
+
+          <div class="lg:col-span-2 space-y-1.5">
+            <label for="onbStatus" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_status">สถานะสิทธิ์ (Status)</label>
+            <select id="onbStatus" class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-900 dark:text-white">
+              <option value="active">Active (ใช้งานเต็มระบบ)</option>
+              <option value="trial">Trial (ทดลองใช้งาน)</option>
+              <option value="paused">Paused (หมดอายุ/พักระบบ)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="space-y-1.5">
+            <label for="onbTenantGroup" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_tenant">Tenant Group (แยกการมองเห็น)</label>
+            <input id="onbTenantGroup" type="text" placeholder="private_<id> (auto)"
+              class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs mono text-slate-900 dark:text-white" />
+          </div>
+          <div class="space-y-1.5">
+            <label for="onbVisibility" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_visibility">การมองเห็น & SEO</label>
+            <select id="onbVisibility" class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-900 dark:text-white">
+              <option value="private">Private (noindex, isolated)</option>
+              <option value="showcase">Showcase (public demo + sitemap)</option>
+            </select>
+          </div>
+          <div class="space-y-1.5">
+            <label for="onbShortName" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_short">ชื่อย่อหน้าลีก (Short Name)</label>
+            <input id="onbShortName" type="text" placeholder="Auto from FPL name"
+              class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs text-slate-900 dark:text-white" />
+          </div>
+        </div>
+
+        <div id="onbInspectStatus" role="status" class="hidden p-3 rounded-lg text-xs border"></div>
+
+        <div id="onbInspectResult" class="hidden space-y-3 p-4 rounded-xl border border-borderLight dark:border-borderDark bg-raisedLight/60 dark:bg-raisedDark/60">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <div id="onbLeagueNameTitle" class="text-sm font-bold text-slate-900 dark:text-white">-</div>
+              <div id="onbLeagueMetaLine" class="text-xs mono text-slate-600 dark:text-neutral-400">-</div>
+            </div>
+            <span id="onbTierBadge" class="px-2.5 py-1 rounded-md text-xs font-semibold mono"></span>
+          </div>
+          <div class="text-xs font-medium text-slate-700 dark:text-neutral-300" data-i18n="onb_teams_hint">
+            ติ๊กเลือกทีมที่ไม่ร่วมชิงรางวัล (non_prize_teams) หากมี:
+          </div>
+          <div id="onbTeamsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-60 overflow-y-auto pr-1"></div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label for="onbOutCli" class="text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_out_cli">1. คำสั่ง CLI (รันบนเครื่องเพื่อเปิดลีก)</label>
+              <button type="button" data-copy-target="onbOutCli" class="onb-copy-btn min-h-[36px] px-2.5 py-1 rounded border border-borderLight dark:border-borderDark text-xs mono hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
+            </div>
+            <textarea id="onbOutCli" readonly rows="5" class="w-full p-3 rounded-lg border border-borderLight dark:border-borderDark bg-slate-950 text-emerald-300 text-xs mono leading-relaxed"></textarea>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label for="onbOutJson" class="text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_out_json">2. Config JSON (leagues_config.json)</label>
+              <button type="button" data-copy-target="onbOutJson" class="onb-copy-btn min-h-[36px] px-2.5 py-1 rounded border border-borderLight dark:border-borderDark text-xs mono hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
+            </div>
+            <textarea id="onbOutJson" readonly rows="5" class="w-full p-3 rounded-lg border border-borderLight dark:border-borderDark bg-slate-950 text-sky-300 text-xs mono leading-relaxed"></textarea>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label for="onbOutLine" class="text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_out_line">3. ข้อความส่งมอบลูกค้าทาง LINE</label>
+              <button type="button" data-copy-target="onbOutLine" class="onb-copy-btn min-h-[36px] px-2.5 py-1 rounded border border-borderLight dark:border-borderDark text-xs mono hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
+            </div>
+            <textarea id="onbOutLine" readonly rows="5" class="w-full p-3 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-900 dark:text-neutral-100 text-xs leading-relaxed"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="border-t border-borderLight dark:border-borderDark py-8 mt-12">
@@ -1791,6 +1927,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         mod_nav_5: '5. อุปกรณ์ที่ใช้งาน',
         mod_nav_6: '6. กราฟทราฟฟิกและช่วงเวลาพีค',
         mod_nav_7: '7. ประสิทธิภาพระบบและการขยายสเกล',
+        mod_nav_8: '8. เพิ่มลีกลูกค้าใหม่',
         header_subtitle: 'ศูนย์วิเคราะห์ข้อมูลธุรกิจและระบบ',
         quick_league_placeholder: 'สลับไปหน้ามินิลีก (8 ลีก)...',
         quick_hub_home: 'หน้าแรกศูนย์รวม (Main Hub)',
@@ -2020,7 +2157,22 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         op_prune_btn: 'ล้างข้อมูลเก่าเกิน 30 วัน',
         footer_rights: 'ศูนย์วิเคราะห์ข้อมูลธุรกิจและโครงสร้างพื้นฐานครบวงจร (8 มินิลีก)',
         toast_refreshed: 'อัปเดตข้อมูลสถานะล่าสุดจากเซิร์ฟเวอร์เรียบร้อยแล้ว',
-        confirm_prune: 'ยืนยันการลบข้อมูล Telemetry ที่เก่าเกิน 30 วันออกจากฐานข้อมูล D1 หรือไม่?'
+        confirm_prune: 'ยืนยันการลบข้อมูล Telemetry ที่เก่าเกิน 30 วันออกจากฐานข้อมูล D1 หรือไม่?',
+        sec8_title: '08. เครื่องมือเปิดลีกลูกค้าใหม่ (Concierge Onboarding Wizard)',
+        sec8_sub: 'ตรวจสอบ FPL Classic League ID สดจากเซิร์ฟเวอร์พรีเมียร์ลีก เลือกทีมที่ไม่ร่วมชิงรางวัล ตั้งค่าแพ็กเกจ และสร้างสคริปต์เปิดใช้งานทันที',
+        onb_lbl_id: 'FPL Classic League ID (ตัวเลขเท่านั้น)',
+        onb_btn_inspect: 'ดึงข้อมูลลีกสด',
+        onb_lbl_plan: 'แพ็กเกจ (Plan)',
+        onb_lbl_prize: 'รูปแบบรางวัล',
+        onb_lbl_weekly: 'รางวัล/สัปดาห์ (บาท)',
+        onb_lbl_status: 'สถานะสิทธิ์ (Status)',
+        onb_lbl_tenant: 'Tenant Group (แยกการมองเห็น)',
+        onb_lbl_visibility: 'การมองเห็น & SEO',
+        onb_lbl_short: 'ชื่อย่อหน้าลีก (Short Name)',
+        onb_teams_hint: 'ติ๊กเลือกทีมที่ไม่ร่วมชิงรางวัล (non_prize_teams) หากมี:',
+        onb_out_cli: '1. คำสั่ง CLI (รันบนเครื่องเพื่อเปิดลีก)',
+        onb_out_json: '2. Config JSON (leagues_config.json)',
+        onb_out_line: '3. ข้อความส่งมอบลูกค้าทาง LINE'
       },
       en: {
         skip_to_content: 'Skip to main content',
@@ -2036,6 +2188,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         mod_nav_5: '5. Client Devices',
         mod_nav_6: '6. Matchday Traffic',
         mod_nav_7: '7. Cloud & Scaling',
+        mod_nav_8: '8. Customer Onboarding',
         header_subtitle: 'Executive BI & Infrastructure Control',
         quick_league_placeholder: 'Jump to League (8 Leagues)...',
         quick_hub_home: 'Main League Hub (Home)',
@@ -2265,7 +2418,22 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         op_prune_btn: 'Prune Old D1 Rows',
         footer_rights: 'Executive Business Intelligence & Multi-League Infrastructure Suite',
         toast_refreshed: 'Live telemetry and portfolio metrics synchronized from Edge Worker.',
-        confirm_prune: 'Are you sure you want to prune D1 telemetry records older than 30 days?'
+        confirm_prune: 'Are you sure you want to prune D1 telemetry records older than 30 days?',
+        sec8_title: '08. Customer League Onboarding Wizard (Concierge Flow)',
+        sec8_sub: 'Inspect live FPL Classic League IDs from Premier League servers, exclude non-prize teams, pick package presets, and generate deploy commands.',
+        onb_lbl_id: 'FPL Classic League ID (digits only)',
+        onb_btn_inspect: 'Inspect Live League',
+        onb_lbl_plan: 'Package Plan',
+        onb_lbl_prize: 'Prize Model',
+        onb_lbl_weekly: 'Weekly Prize (THB)',
+        onb_lbl_status: 'Access Status',
+        onb_lbl_tenant: 'Tenant Group (Visibility Scope)',
+        onb_lbl_visibility: 'Visibility & SEO',
+        onb_lbl_short: 'Short Display Name',
+        onb_teams_hint: 'Select any teams excluded from prize calculations (non_prize_teams):',
+        onb_out_cli: '1. CLI Onboarding Command',
+        onb_out_json: '2. Config JSON (leagues_config.json)',
+        onb_out_line: '3. Customer LINE Handoff Message'
       }
     };
 
@@ -2533,6 +2701,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       renderLeagueTable();
       renderTrafficChart();
+      if (typeof refreshOnboardingOutputs === 'function') refreshOnboardingOutputs();
     }
 
     function toggleLanguage() {
@@ -2855,6 +3024,216 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       }
     }
 
+    // =========================================================================
+    // 6. CONCIERGE CUSTOMER LEAGUE ONBOARDING WIZARD
+    // =========================================================================
+    let onbInspectedLeague = null;
+    let onbExcludedEntryIds = new Set();
+
+    function setOnbStatusMessage(text, isError) {
+      const box = document.getElementById('onbInspectStatus');
+      if (!box) return;
+      if (!text) {
+        box.className = 'hidden p-3 rounded-lg text-xs border';
+        box.textContent = '';
+        return;
+      }
+      box.className = isError
+        ? 'p-3 rounded-lg text-xs border border-rose-500/30 bg-rose-500/10 text-rose-700 dark:text-rose-300'
+        : 'p-3 rounded-lg text-xs border border-emerald-500/30 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300';
+      box.textContent = text;
+    }
+
+    function refreshOnboardingOutputs() {
+      const idEl = document.getElementById('onbLeagueId');
+      const planEl = document.getElementById('onbPlan');
+      const prizeEl = document.getElementById('onbPrizeModel');
+      const weeklyEl = document.getElementById('onbWeeklyPrize');
+      const statusEl = document.getElementById('onbStatus');
+      const tenantEl = document.getElementById('onbTenantGroup');
+      const visEl = document.getElementById('onbVisibility');
+      const shortEl = document.getElementById('onbShortName');
+
+      const outCli = document.getElementById('onbOutCli');
+      const outJson = document.getElementById('onbOutJson');
+      const outLine = document.getElementById('onbOutLine');
+      if (!idEl || !outCli || !outJson || !outLine) return;
+
+      const lid = (idEl.value || '').replace(/[^0-9]+/g, '') || '40700';
+      const plan = planEl ? planEl.value : 'standard';
+      const prizeModel = prizeEl ? prizeEl.value : 'weekly';
+      const weeklyVal = parseInt((weeklyEl ? weeklyEl.value : '300').replace(/[^0-9]+/g, ''), 10) || 0;
+      const accessStatus = statusEl ? statusEl.value : 'active';
+      const tenantGroup = (tenantEl && tenantEl.value.trim()) ? tenantEl.value.trim() : ('private_' + lid);
+      const visibility = visEl ? visEl.value : 'private';
+      const detectedName = (onbInspectedLeague && onbInspectedLeague.league && onbInspectedLeague.league.name)
+        ? onbInspectedLeague.league.name
+        : ('League ' + lid);
+      const shortName = (shortEl && shortEl.value.trim()) ? shortEl.value.trim() : detectedName.slice(0, 12).trim();
+      const nonPrizeArr = Array.from(onbExcludedEntryIds);
+
+      const cliParts = [
+        'python3 onboard_league.py',
+        '--league-id ' + lid,
+        '--plan ' + plan,
+        '--prize-model ' + prizeModel,
+        '--weekly-prize ' + weeklyVal,
+        '--tenant-group ' + tenantGroup,
+        '--visibility ' + visibility,
+        '--status ' + accessStatus
+      ];
+      if (shortName) cliParts.push('--short-name "' + shortName.replace(/"/g, '') + '"');
+      if (nonPrizeArr.length > 0) cliParts.push('--non-prize-teams ' + nonPrizeArr.join(','));
+      outCli.value = cliParts.join(' ');
+
+      const cfgObj = {};
+      cfgObj[lid] = {
+        name: detectedName,
+        short_name: shortName,
+        tier: 1,
+        plan: plan,
+        status: accessStatus,
+        tenant_group: tenantGroup,
+        visibility: visibility,
+        non_prize_teams: nonPrizeArr,
+        payout_model: prizeModel,
+        features: {
+          cup: true,
+          monthly_prize: prizeModel === 'monthly',
+          penalties: prizeModel === 'penalties'
+        }
+      };
+      if ((prizeModel === 'weekly' || prizeModel === 'penalties') && weeklyVal > 0) {
+        cfgObj[lid].weekly_prize_amount = weeklyVal;
+      }
+      outJson.value = JSON.stringify(cfgObj, null, 2);
+
+      const urlStr = 'https://www.fplsawadika.com/' + lid + '/';
+      if (getLang() === 'en') {
+        outLine.value = 'FPLSaWaDiKa Dashboard is ready for ' + detectedName + ' (ID ' + lid + ')!\\n'
+          + 'URL: ' + urlStr + '\\n'
+          + 'Plan: ' + plan.toUpperCase() + ' | Status: ' + accessStatus + '\\n'
+          + 'Private & hidden from search engines (noindex). Bookmark on your home screen for live GW matchday updates!';
+      } else {
+        outLine.value = 'เปิดระบบ FPLSaWaDiKa สำหรับลีก "' + detectedName + '" (ID: ' + lid + ') เรียบร้อยแล้วครับ!\\n'
+          + 'ลิงก์เข้าดูคะแนนสด: ' + urlStr + '\\n'
+          + 'แพ็กเกจ: ' + plan.toUpperCase() + ' | สถานะ: ' + accessStatus + '\\n'
+          + 'หมายเหตุ: ลิงก์นี้ตั้งค่า Private (noindex) เพื่อความเป็นส่วนตัวเฉพาะสมาชิกในกลุ่ม LINE ครับ';
+      }
+    }
+
+    function renderInspectedTeams(payload) {
+      const wrap = document.getElementById('onbInspectResult');
+      const titleEl = document.getElementById('onbLeagueNameTitle');
+      const metaEl = document.getElementById('onbLeagueMetaLine');
+      const badgeEl = document.getElementById('onbTierBadge');
+      const grid = document.getElementById('onbTeamsGrid');
+      if (!wrap || !titleEl || !metaEl || !badgeEl || !grid) return;
+
+      const league = payload.league || {};
+      const count = Number(payload.team_count || 0);
+      const countLabel = payload.has_more_than_100 ? '100+ teams' : (payload.has_more_pages ? count + '+ teams' : count + ' teams');
+      titleEl.textContent = (league.name || ('League ' + league.id)) + ' (ID: ' + (league.id || '-') + ')';
+      metaEl.textContent = countLabel + ' · ' + (count > 30 ? 'Exceeds 30-team Standard cap' : 'Fits Standard / Custom Tier 1');
+      badgeEl.className = count > 30
+        ? 'px-2.5 py-1 rounded-md text-xs font-semibold mono bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30'
+        : 'px-2.5 py-1 rounded-md text-xs font-semibold mono bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30';
+      badgeEl.textContent = count > 30 ? 'Custom Quote (31+)' : 'Tier 1 Ready (<=30)';
+
+      grid.innerHTML = '';
+      (payload.teams || []).forEach((team) => {
+        const label = document.createElement('label');
+        label.className = 'flex items-center gap-2 p-2 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-xs cursor-pointer';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.value = String(team.entry);
+        cb.checked = onbExcludedEntryIds.has(Number(team.entry));
+        cb.className = 'rounded border-slate-400 text-emerald-600 focus:ring-emerald-500';
+        cb.addEventListener('change', () => {
+          const eid = Number(cb.value);
+          if (cb.checked) onbExcludedEntryIds.add(eid);
+          else onbExcludedEntryIds.delete(eid);
+          refreshOnboardingOutputs();
+        });
+        const span = document.createElement('span');
+        span.className = 'truncate text-slate-800 dark:text-neutral-200';
+        span.textContent = (team.entry_name || ('Team ' + team.entry)) + ' (' + (team.player_name || team.entry) + ')';
+        label.appendChild(cb);
+        label.appendChild(span);
+        grid.appendChild(label);
+      });
+
+      wrap.classList.remove('hidden');
+      const shortInput = document.getElementById('onbShortName');
+      if (shortInput && !shortInput.value.trim() && league.name) {
+        shortInput.value = String(league.name).slice(0, 12).trim();
+      }
+      const tenantInput = document.getElementById('onbTenantGroup');
+      if (tenantInput && !tenantInput.value.trim() && league.id) {
+        tenantInput.value = 'private_' + String(league.id);
+      }
+      refreshOnboardingOutputs();
+    }
+
+    async function inspectCustomerLeague() {
+      const idEl = document.getElementById('onbLeagueId');
+      const btn = document.getElementById('btnOnbInspect');
+      if (!idEl) return;
+      const lid = (idEl.value || '').trim();
+      if (!/^[0-9]{1,10}$/.test(lid)) {
+        setOnbStatusMessage(getLang() === 'en' ? 'Please enter digits only for FPL League ID.' : 'กรุณากรอก FPL League ID เป็นตัวเลขเท่านั้น', true);
+        return;
+      }
+      if (btn) btn.disabled = true;
+      setOnbStatusMessage(getLang() === 'en' ? 'Inspecting FPL league ' + lid + '...' : 'กำลังดึงข้อมูลลีก ' + lid + ' จาก FPL API...', false);
+      try {
+        const resp = await fetch('/api/admin/inspect-league?id=' + encodeURIComponent(lid), { credentials: 'same-origin' });
+        const payload = await resp.json();
+        if (!resp.ok || !payload.success) {
+          throw new Error(payload.error || ('HTTP ' + resp.status));
+        }
+        onbInspectedLeague = payload;
+        onbExcludedEntryIds = new Set();
+        renderInspectedTeams(payload);
+        setOnbStatusMessage(
+          getLang() === 'en'
+            ? 'Loaded "' + payload.league.name + '" (' + payload.team_count + ' teams).'
+            : 'ดึงข้อมูลลีก "' + payload.league.name + '" สำเร็จ (' + payload.team_count + ' ทีม)',
+          false
+        );
+      } catch (err) {
+        setOnbStatusMessage(err.message || 'Failed to inspect league', true);
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    function initOnboardingWizard() {
+      const btn = document.getElementById('btnOnbInspect');
+      if (btn) btn.addEventListener('click', inspectCustomerLeague);
+      ['onbLeagueId', 'onbPlan', 'onbPrizeModel', 'onbWeeklyPrize', 'onbStatus', 'onbTenantGroup', 'onbVisibility', 'onbShortName'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('input', refreshOnboardingOutputs);
+          el.addEventListener('change', refreshOnboardingOutputs);
+        }
+      });
+      document.querySelectorAll('.onb-copy-btn').forEach((copyBtn) => {
+        copyBtn.addEventListener('click', async () => {
+          const targetId = copyBtn.getAttribute('data-copy-target');
+          const ta = targetId ? document.getElementById(targetId) : null;
+          if (!ta) return;
+          try {
+            await navigator.clipboard.writeText(ta.value);
+            const prev = copyBtn.textContent;
+            copyBtn.textContent = getLang() === 'en' ? 'Copied!' : 'คัดลอกแล้ว';
+            setTimeout(() => { copyBtn.textContent = prev; }, 1400);
+          } catch (_) {}
+        });
+      });
+      refreshOnboardingOutputs();
+    }
+
     // Keyboard shortcuts (R = Refresh, L = Language, T = Theme)
     document.addEventListener('keydown', (e) => {
       if (e.target && ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.tagName)) return;
@@ -2868,6 +3247,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     // Initialize UI on DOM ready
     updateThemeUI();
     setLanguage(document.documentElement.lang || 'th');
+    initOnboardingWizard();
     tickCountdown();
     setInterval(tickCountdown, 1000);
     loadLiveData(false);

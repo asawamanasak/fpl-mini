@@ -212,7 +212,7 @@ def get_architecture_diagram_html(lang='th', asset_prefix='./'):
           </div>
     """
 
-def generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=None, precomputed_cfg_str=None, shi62_data_json_str=None, bramann_pred_json_str=None, bramann_chal_json_str=None, precomputed_players_str=None, precomputed_app_js_hash=None, export_app_js_path=None):
+def generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=None, precomputed_cfg_str=None, shi62_data_json_str=None, bramann_pred_json_str=None, bramann_chal_json_str=None, precomputed_players_str=None, precomputed_app_js_hash=None, export_app_js_path=None, site_line_url='https://line.me/ti/p/lgWPeyIBR7', radar_leagues_count=None, radar_teams_count=None):
     if precomputed_json_str is None:
         # Performance Optimization: Deep-strip raw_picks and raw_hist before serializing into HTML
         pruned_data = {
@@ -397,7 +397,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
 
   <!-- Canonical URL & Search Engine Optimization -->
   <link rel="canonical" href="__CANONICAL_URL__">
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="robots" content="__ROBOTS_META__">
 
   <!-- Favicons & App Shortcut Icons (Chrome / Safari / iOS / Android) -->
   <link rel="shortcut icon" href="__ASSET_PREFIX__favicon.ico?v=2">
@@ -1602,9 +1602,10 @@ __STRUCTURED_DATA_JSON__
         <!-- League Switcher Container -->
         <div class="relative inline-block text-left min-w-0">
           <div class="flex items-center gap-1.5 leading-none mb-0.5">
-            <span class="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 font-display">FPLSaWaDiKa</span>
+            <a id="header-brand-home" href="../" class="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 hover:underline font-display" title="กลับหน้าแรก FPLSaWaDiKa">FPLSaWaDiKa</a>
             <span class="text-slate-300 dark:text-slate-700 text-[10px]">•</span>
             <span class="text-[9.5px] sm:text-[10px] font-semibold text-slate-500 dark:text-slate-400 font-display" id="header-platform-sub">มินิลีก</span>
+            <span id="header-trial-badge" class="hidden text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/80 leading-none">TRIAL</span>
           </div>
           <button 
             id="league-switcher-btn" 
@@ -1613,7 +1614,7 @@ __STRUCTURED_DATA_JSON__
             title="คลิกเพื่อสลับดูมินิลีกอื่น"
           >
             <span id="header-league-name" class="text-sm sm:text-lg font-black text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight truncate max-w-[110px] min-[360px]:max-w-[130px] min-[390px]:max-w-[160px] min-[430px]:max-w-[200px] sm:max-w-[340px] md:max-w-[440px]">กำลังโหลดลีก...</span>
-            <span class="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-blue-50 dark:bg-slate-800 group-hover:bg-blue-100 dark:group-hover:bg-slate-700 text-blue-600 dark:text-blue-400 transition-colors flex-shrink-0 shadow-2xs">
+            <span id="league-switcher-chevron-wrap" class="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-blue-50 dark:bg-slate-800 group-hover:bg-blue-100 dark:group-hover:bg-slate-700 text-blue-600 dark:text-blue-400 transition-colors flex-shrink-0 shadow-2xs">
               <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover:translate-y-0.5 transition-transform" id="league-switcher-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
             </span>
           </button>
@@ -1710,7 +1711,7 @@ __STRUCTURED_DATA_JSON__
   </div>
 
     <!-- 1.4 แถบเมนูแท็บหลัก (จัดหมวดหมู่และเรียงลำดับภาษาไทย) -->
-    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-4 xl:px-8 border-t border-slate-200/80 dark:border-slate-800/80">
+    <div id="header-tabs-bar" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-4 xl:px-8 border-t border-slate-200/80 dark:border-slate-800/80">
       <nav class="flex space-x-1 sm:space-x-2 lg:space-x-1 xl:space-x-2 overflow-x-auto touch-scroll scrollbar-thin py-1.5 sm:py-2 pr-4 sm:pr-0">
         <button 
           id="tab-btn-live"
@@ -1810,6 +1811,9 @@ __STRUCTURED_DATA_JSON__
 
   <!-- 2. Main Content Container -->
   <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 flex-1 w-full space-y-4 sm:space-y-6">
+
+    <!-- Paused League Renewal Screen (shown only when status === 'paused') -->
+    <div id="paused-league-overlay" class="hidden"></div>
 
     <!-- ==================== TAB 1: LIVE (GAMEWEEK VIEW) ==================== -->
     <div id="gameweek-view" class="tab-content space-y-4">
@@ -3184,6 +3188,7 @@ __STRUCTURED_DATA_JSON__
     const INITIAL_DEFAULT_LEAGUE = __DEFAULT_LID__;
     const PLAYERS_DICT = __PLAYERS_DICT_JSON__;
     const APP_ASSET_PREFIX = '__ASSET_PREFIX__';
+    const SITE_LINE_URL = __SITE_LINE_URL_JSON__;
   </script>
   <script src="__ASSET_PREFIX__assets/dashboard-app.js?v=__APP_JS_HASH__"></script>
   <!-- __APP_JS_START__ -->
@@ -4910,19 +4915,106 @@ __STRUCTURED_DATA_JSON__
         return order.length > 0 ? String(order[0]) : "40700";
       }
 
+      isLeaguePaused(lid = this.activeLeagueId) {
+        const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null) || {};
+        return String(c.status || 'active').toLowerCase() === 'paused';
+      }
+
+      isLeagueTrial(lid = this.activeLeagueId) {
+        const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null) || {};
+        return String(c.status || 'active').toLowerCase() === 'trial';
+      }
+
+      getSeasonPrizeSummary(isEn) {
+        const cfg = this.config || {};
+        const prizes = cfg.season_prizes && typeof cfg.season_prizes === 'object' ? cfg.season_prizes : null;
+        let total = cfg.season_total_prize;
+        if (!total && prizes) {
+          let sum = 0;
+          Object.values(prizes).forEach(val => {
+            const num = Number(String(val).replace(/[^0-9.-]/g, ''));
+            if (Number.isFinite(num)) sum += num;
+          });
+          total = sum > 0 ? sum.toLocaleString() : '0';
+        }
+        if (!total) total = '9,000';
+
+        let desc = cfg.season_prize_desc;
+        if (!desc && prizes && Object.keys(prizes).length > 0) {
+          const rankMapTh = { '1st': 'ที่ 1', '2nd': 'ที่ 2', '3rd': 'ที่ 3', '4th': 'ที่ 4', '5th': 'ที่ 5' };
+          desc = Object.entries(prizes)
+            .map(([rank, val]) => `${isEn ? rank : (rankMapTh[rank] || rank)}: ${String(val).replace(/\s*THB$/i, '')}`)
+            .join(' / ') + ' THB';
+        }
+        if (!desc) {
+          desc = isEn ? '1st: 4,500 / 2nd: 2,500 / 3rd: 1,000 / 4th-5th: 500' : 'แชมป์ 4,500 / รอง 2,500 / ที่ 3 1,000 / ที่ 4-5 500';
+        }
+        return { total, desc };
+      }
+
+      renderPausedOverlay(isPaused) {
+        const overlay = document.getElementById('paused-league-overlay');
+        const tabsBar = document.getElementById('header-tabs-bar');
+        const tabContents = document.querySelectorAll('.tab-content');
+        if (tabsBar) tabsBar.classList.toggle('hidden', isPaused);
+        if (!overlay) return;
+
+        if (!isPaused) {
+          overlay.classList.add('hidden');
+          overlay.innerHTML = '';
+          return;
+        }
+
+        tabContents.forEach(el => el.classList.add('hidden'));
+        const isEn = (this.currentLang === 'en');
+        const lName = this.escapeHtml((this.data && this.data.name) || (this.config && this.config.name) || `League ${this.activeLeagueId}`);
+        const lineUrl = (typeof SITE_LINE_URL !== 'undefined' && SITE_LINE_URL) ? SITE_LINE_URL : 'https://line.me/ti/p/lgWPeyIBR7';
+        const prefix = this.getAssetPrefix();
+        const isFile = typeof window !== 'undefined' && window.location && window.location.protocol === 'file:';
+        const homeHref = isFile ? `${prefix}index.html` : prefix;
+
+        overlay.classList.remove('hidden');
+        overlay.innerHTML = `
+          <div class="max-w-xl mx-auto my-8 sm:my-14 glass-card rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-lg text-center space-y-4">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 mx-auto">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div class="space-y-1.5">
+              <span class="inline-block text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                ${isEn ? 'LEAGUE PAUSED' : 'ปิดปรับปรุง / พักการใช้งานชั่วคราว'}
+              </span>
+              <h2 class="text-lg sm:text-xl font-black text-slate-900 dark:text-white font-display">${lName}</h2>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                ${isEn
+                  ? 'Live updates for this mini-league dashboard are currently paused or awaiting season renewal.'
+                  : 'แดชบอร์ดมินิลีกนี้อยู่ระหว่างพักการอัปเดตชั่วคราวหรือรอการต่ออายุฤดูกาล หากคุณเป็นผู้ดูแลลีก สามารถติดต่อทีมงานเพื่อเปิดใช้งานได้ทันที'}
+              </p>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-2">
+              <a href="${this.escapeHtml(lineUrl)}" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold shadow-sm transition-colors">
+                <span>${isEn ? 'Renew / Contact via LINE' : 'ติดต่อต่ออายุ / เปิดลีกผ่าน LINE'}</span>
+              </a>
+              <a href="${this.escapeHtml(homeHref)}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-bold transition-colors">
+                <span>${isEn ? 'Back to Home' : 'กลับหน้าแรก FPLSaWaDiKa'}</span>
+              </a>
+            </div>
+          </div>
+        `;
+      }
+
       hasShi62Feature(lid = this.activeLeagueId) {
         const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null);
-        return Boolean((c && c.features && c.features.has_shi62_special) || String(lid) === '187827');
+        return Boolean((c && c.features && c.features.has_shi62_special) || ((!c || !c.features) && String(lid) === '187827'));
       }
 
       hasBramannPredFeature(lid = this.activeLeagueId) {
         const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null);
-        return Boolean((c && c.features && c.features.has_bramann_prediction) || String(lid) === '5349');
+        return Boolean((c && c.features && c.features.has_bramann_prediction) || ((!c || !c.features) && String(lid) === '5349'));
       }
 
       hasBramannChalFeature(lid = this.activeLeagueId) {
         const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null);
-        return Boolean((c && c.features && c.features.has_bramann_challenge) || String(lid) === '5349');
+        return Boolean((c && c.features && c.features.has_bramann_challenge) || ((!c || !c.features) && String(lid) === '5349'));
       }
 
       getTeamLogoUrl(logoOrCode) {
@@ -5030,6 +5122,11 @@ __STRUCTURED_DATA_JSON__
         this.initTheme();
         this.renderLeagueDropdown();
         this.updateHeaderInfo();
+        if (this.isLeaguePaused()) {
+          this.initVisitorCounter();
+          this.initDeadlineCountdown();
+          return;
+        }
         this.initTabNavigation();
         this.renderAll();
         if (this.activeTab) {
@@ -5161,6 +5258,13 @@ __STRUCTURED_DATA_JSON__
 
       initLivePolling() {
         if (typeof window === 'undefined' || typeof fetch === 'undefined') return;
+        if (this.isLeaguePaused()) {
+          if (this.livePollInterval) {
+            clearInterval(this.livePollInterval);
+            this.livePollInterval = null;
+          }
+          return;
+        }
 
         const pollIntervalMs = 15000; // 15-second real-time Cloudflare Edge polling
         const checkAndPoll = () => {
@@ -6708,6 +6812,38 @@ __STRUCTURED_DATA_JSON__
 
       updateHeaderInfo() {
         const isEn = (this.currentLang === 'en');
+        const brandHomeLink = document.getElementById('header-brand-home');
+        if (brandHomeLink) {
+          const isFile = typeof window !== 'undefined' && window.location && window.location.protocol === 'file:';
+          const prefix = this.getAssetPrefix();
+          brandHomeLink.href = isFile ? `${prefix}index.html` : prefix;
+          brandHomeLink.title = isEn ? 'Back to FPLSaWaDiKa Home' : 'กลับหน้าแรก FPLSaWaDiKa';
+        }
+        const trialBadge = document.getElementById('header-trial-badge');
+        if (trialBadge) {
+          const isTrial = this.isLeagueTrial();
+          trialBadge.classList.toggle('hidden', !isTrial);
+          trialBadge.textContent = isEn ? 'TRIAL' : 'ทดลองใช้';
+        }
+        const availableLeaguesCount = Object.keys((this.multiData && this.multiData.leagues) || {}).length;
+        const isSingleLeague = availableLeaguesCount <= 1;
+        const switcherBtn = document.getElementById('league-switcher-btn');
+        const switcherChevronWrap = document.getElementById('league-switcher-chevron-wrap');
+        if (switcherChevronWrap) switcherChevronWrap.classList.toggle('hidden', isSingleLeague);
+        if (switcherBtn) {
+          switcherBtn.classList.toggle('cursor-default', isSingleLeague);
+          switcherBtn.classList.toggle('cursor-pointer', !isSingleLeague);
+          switcherBtn.disabled = isSingleLeague;
+          switcherBtn.title = isSingleLeague ? '' : (isEn ? 'Click to switch mini-league' : 'คลิกเพื่อสลับดูมินิลีกอื่น');
+        }
+        const isPaused = this.isLeaguePaused();
+        this.renderPausedOverlay(isPaused);
+        if (isPaused) {
+          if (this.livePollInterval) {
+            clearInterval(this.livePollInterval);
+            this.livePollInterval = null;
+          }
+        }
         const platformSub = document.getElementById('header-platform-sub');
         if (platformSub) platformSub.innerText = isEn ? 'Mini-League' : 'มินิลีก';
         const dropdownHeaderTitle = document.getElementById('league-dropdown-header-title');
@@ -7523,10 +7659,11 @@ selectShi62GW(gwName) {
       }
 
       sharePrizes() {
+        const feat = (this.config && this.config.features) || {};
         const lid = String(this.activeLeagueId);
-        if (lid === '5349') {
+        if (feat.prize_model === 'bramann_dual_prize' || lid === '5349') {
           this.copyBramannPrizesLINEResult();
-        } else if (lid === '675290') {
+        } else if (feat.has_monthly_prizes || lid === '675290') {
           this.copyShi62PrizesLINEResult();
         } else {
           this.shareCurrentGameweek();
@@ -14453,8 +14590,8 @@ selectShi62GW(gwName) {
                   </div>
                   <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
                     <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${this.config.season_prizes && Object.keys(this.config.season_prizes).length ? (isEn ? `Season Champions (${Object.keys(this.config.season_prizes).length} Places)` : `แชมป์ฤดูกาล (รวม ${Object.keys(this.config.season_prizes).length} อันดับ)`) : (isEn ? 'Season Champions' : 'แชมป์ฤดูกาล')}</span>
-                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${this.config.season_total_prize || (this.activeLeagueId === '1101958' ? '12,000' : '9,000')} <span class="text-xs font-normal text-slate-400">THB</span></div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${this.config.season_prize_desc || (this.activeLeagueId === '1101958' ? (isEn ? '1st: 6,000 / 2nd: 3,600 / 3rd: 2,400 THB' : 'ที่ 1: 6,000 / ที่ 2: 3,600 / ที่ 3: 2,400 THB') : (isEn ? '1st: 4,500 / 2nd: 2,500 / 3rd: 1,000 / 4th-5th: 500' : 'แชมป์ 4,500 / รอง 2,500 / ที่ 3 1,000 / ที่ 4-5 500'))}</div>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${this.getSeasonPrizeSummary(isEn).total} <span class="text-xs font-normal text-slate-400">THB</span></div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${this.escapeHtml(this.getSeasonPrizeSummary(isEn).desc)}</div>
                   </div>
                   <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
                     <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${this.config.coordinator ? (isEn ? 'League Coordinator & Treasury' : 'ผู้ประสานงาน & ดูแลกองกลาง') : (isEn ? 'Entry Fee & Total Treasury' : 'ค่าสมัคร & กองกลางรวม')}</span>
@@ -16357,9 +16494,37 @@ selectShi62GW(gwName) {
               if (tm && tm.entry_id !== undefined) uniqueTeamIdsForCount.add(Number(tm.entry_id));
             });
           });
-          const numLeagues = leagueIdsForCount.length || 8;
-          const numTeams = uniqueTeamIdsForCount.size || 146;
-          headerPill.innerText = isEn ? `${numLeagues} Leagues • ${numTeams} Teams` : `${numLeagues} ลีก • ${numTeams} ทีม`;
+          const numLeagues = leagueIdsForCount.length;
+          const numTeams = uniqueTeamIdsForCount.size;
+          headerPill.innerText = isEn ? `${numLeagues} ${numLeagues === 1 ? 'League' : 'Leagues'} • ${numTeams} Teams` : `${numLeagues} ลีก • ${numTeams} ทีม`;
+        }
+        const radarMainSub = document.getElementById('radar-main-subtitle');
+        const radarBannerText = document.getElementById('radar-banner-stat-text');
+        const radarTier1IdsCount = Object.keys((this.multiData && this.multiData.leagues) || {}).filter(lid => {
+          const l = this.multiData.leagues[lid];
+          const cfg = (this.configs && this.configs[lid]) || {};
+          return l && l.tier !== 2 && cfg.tier !== 2;
+        }).length;
+        const isSingleTier1Tenant = radarTier1IdsCount <= 1;
+        if (radarMainSub) {
+          if (isSingleTier1Tenant) {
+            radarMainSub.innerText = isEn
+              ? 'Compare consistency, floor scores, and variance across all managers in your mini-league'
+              : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมภายในมินิลีกของคุณ';
+          } else {
+            radarMainSub.innerText = isEn
+              ? 'Compare performance consistency, stability, and volatility across all Tier-1 leagues in this group'
+              : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมในกลุ่มลีกที่เชื่อมต่อ';
+          }
+        }
+        if (radarBannerText) {
+          radarBannerText.innerText = isSingleTier1Tenant
+            ? (isEn ? 'League Consistency Audit' : 'วิเคราะห์ความสม่ำเสมอภายในลีก')
+            : (isEn ? `Analyzed across ${radarTier1IdsCount} Leagues` : `วิเคราะห์ข้าม ${radarTier1IdsCount} ลีกสมบูรณ์`);
+        }
+        const benchmarkCard = document.getElementById('benchmark-ranking-card');
+        if (benchmarkCard) {
+          benchmarkCard.classList.toggle('hidden', isSingleTier1Tenant);
         }
         const radarGuideHeading = document.getElementById('radar-guide-heading');
         if (radarGuideHeading) {
@@ -16874,9 +17039,14 @@ selectShi62GW(gwName) {
           `;
         }
 
-        // Render Filter Pills
+        // Render Filter Pills (hidden when single-league tenant)
         if (pillsContainer) {
-          const curFilter = this.radarLeagueFilter || 'all';
+          if (leagueBenchmarks.length <= 1) {
+            pillsContainer.classList.add('hidden');
+            pillsContainer.innerHTML = '';
+          } else {
+            pillsContainer.classList.remove('hidden');
+            const curFilter = this.radarLeagueFilter || 'all';
           let phtml = `
             <button onclick="app.setRadarLeagueFilter('all')" class="px-3 py-1.5 rounded-xl font-bold font-display text-xs transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 ${curFilter === 'all' ? 'bg-slate-900 text-white dark:bg-blue-600 shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}">
               <span>${isEn ? 'All Leagues' : 'ทุกลีก'}</span>
@@ -16896,8 +17066,9 @@ selectShi62GW(gwName) {
                 <span class="text-[10px] opacity-75 font-semibold">(${count})</span>
               </button>
             `;
-          });
-          pillsContainer.innerHTML = phtml;
+            });
+            pillsContainer.innerHTML = phtml;
+          }
         }
 
         this.renderGlobalRadarTable();
@@ -21056,7 +21227,7 @@ selectShi62GW(gwName) {
               'หมายเหตุ'
             ]);
 
-            const weeklyPrize = feat.weekly_prize_amount || (this.activeLeagueId === '38491' ? 500 : 350);
+            const weeklyPrize = Number(feat.weekly_prize_amount) || 350;
             const teamWinnings = {};
             teams.forEach(t => {
               teamWinnings[t.entry_id] = {
@@ -21074,7 +21245,7 @@ selectShi62GW(gwName) {
             const weeklyPrizesConfig = feat.weekly_prizes;
             const tierPrizes = weeklyPrizesConfig 
               ? Object.values(weeklyPrizesConfig).map(Number)
-              : [feat.weekly_prize_amount || (this.activeLeagueId === '38491' ? 500 : 350)];
+              : [Number(feat.weekly_prize_amount) || 350];
 
             for (let g = 1; g <= maxGW; g++) {
               const gwData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
@@ -21940,6 +22111,14 @@ selectShi62GW(gwName) {
     // FPLSaWaDiKa League Engagement & Product Analytics Telemetry (Edge Analytics)
     (function() {
       try {
+        var host = (typeof window !== "undefined" && window.location) ? String(window.location.hostname || "").toLowerCase() : "";
+        var proto = (typeof window !== "undefined" && window.location) ? String(window.location.protocol || "").toLowerCase() : "";
+        var isLocalOrigin = proto === "file:" || !host || host === "localhost" || host === "127.0.0.1" || host === "::1" || host === "[::1]" || host === "0.0.0.0" || host.endsWith(".local");
+        if (isLocalOrigin) {
+          window._trackFeature = function() {};
+          window._trackLeagueSwitch = function() {};
+          return;
+        }
         var telemEndpoint = "https://api.fplsawadika.com/api/telemetry/event";
         var currentLeague = "";
         var sessionStartTime = Date.now();
@@ -21949,7 +22128,7 @@ selectShi62GW(gwName) {
         } else if (window.app && window.app.activeLeagueId) {
           currentLeague = String(window.app.activeLeagueId);
         } else {
-          currentLeague = "40700";
+          currentLeague = (typeof INITIAL_DEFAULT_LEAGUE !== 'undefined' && INITIAL_DEFAULT_LEAGUE) ? String(INITIAL_DEFAULT_LEAGUE) : "40700";
         }
 
         // In-Memory Feature Queue (Smart Session Batching - 0 Extra HTTP Calls)
@@ -22051,13 +22230,17 @@ selectShi62GW(gwName) {
 </body>
 </html>"""
 
-    unique_entry_ids = set()
-    for l_obj in multi_data.get("leagues", {}).values():
-        for t in l_obj.get("teams", []):
-            if t.get("entry_id"):
-                unique_entry_ids.add(t.get("entry_id"))
-    radar_unique_teams = len(unique_entry_ids)
-    radar_total_leagues = len(multi_data.get("leagues", {}))
+    if radar_leagues_count is not None and radar_teams_count is not None:
+        radar_unique_teams = int(radar_teams_count)
+        radar_total_leagues = int(radar_leagues_count)
+    else:
+        unique_entry_ids = set()
+        for l_obj in multi_data.get("leagues", {}).values():
+            for t in l_obj.get("teams", []):
+                if t.get("entry_id"):
+                    unique_entry_ids.add(t.get("entry_id"))
+        radar_unique_teams = len(unique_entry_ids)
+        radar_total_leagues = len(multi_data.get("leagues", {}))
     radar_banner_text = f"{radar_total_leagues} ลีก • {radar_unique_teams} ทีม"
 
     effective_lid = str(default_league_id) if default_league_id else next(
@@ -22067,6 +22250,8 @@ selectShi62GW(gwName) {
     target_cfg = leagues_config.get(effective_lid, {})
     target_tier = target_cfg.get('tier', 1)
     is_initial_tier2 = (target_tier == 2)
+    is_showcase_visible = (target_cfg.get('visibility', 'showcase') == 'showcase') or bool(target_cfg.get('include_in_sitemap', False))
+    robots_meta = "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" if is_showcase_visible else "noindex, nofollow"
     target_features = target_cfg.get('features', {})
     has_initial_prizes = not is_initial_tier2 and (
         target_features.get('prize_model') == 'bramann_dual_prize' or
@@ -22112,15 +22297,1381 @@ selectShi62GW(gwName) {
     html = html.replace('__DEFAULT_LID__', default_lid_code)
     html = html.replace('__PLAYERS_DICT_JSON__', players_dict_json_str)
     html = html.replace('__ASSET_PREFIX__', asset_prefix)
+    html = html.replace('__SITE_LINE_URL_JSON__', json.dumps(site_line_url, ensure_ascii=False))
     html = html.replace('__APP_JS_HASH__', app_js_hash)
     canonical_url = f"https://www.fplsawadika.com/{default_league_id}/" if default_league_id else "https://www.fplsawadika.com/"
     html = html.replace('__CANONICAL_URL__', canonical_url)
+    html = html.replace('__ROBOTS_META__', robots_meta)
     html = html.replace('__PAGE_TITLE__', page_title)
     html = html.replace('__PAGE_DESCRIPTION__', page_description)
     html = html.replace('__PAGE_KEYWORDS__', page_keywords)
     html = html.replace('__STRUCTURED_DATA_JSON__', structured_data_json_str)
     html = html.replace('__ARCHITECTURE_DIAGRAM_TH__', get_architecture_diagram_html('th', asset_prefix))
     html = html.replace('__ARCHITECTURE_DIAGRAM_EN__', get_architecture_diagram_html('en', asset_prefix))
+    return html
+
+def load_site_config(base_dir):
+    site_cfg_path = os.path.join(base_dir, 'config', 'site_config.json')
+    if os.path.exists(site_cfg_path):
+        with open(site_cfg_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return {
+        "brand_name": "FPLSaWaDiKa",
+        "site_url": "https://www.fplsawadika.com",
+        "api_base_url": "https://api.fplsawadika.com",
+        "contact": {
+            "line_url": "https://line.me/ti/p/lgWPeyIBR7",
+            "line_label_th": "ติดต่อเปิดลีกผ่าน LINE",
+            "line_label_en": "Chat on LINE to Launch"
+        },
+        "pricing": {
+            "tier1_max_teams": 30,
+            "tier1_flexible_max_teams": 60,
+            "standard": {"id": "standard", "thb": 500, "usd": 19},
+            "custom": {"id": "custom", "thb": 900, "usd": 29}
+        },
+        "showcase_demos": []
+    }
+
+def generate_landing_html(multi_data, leagues_config, site_config):
+    line_url = (site_config.get('contact') or {}).get('line_url') or 'https://line.me/ti/p/lgWPeyIBR7'
+    pricing = site_config.get('pricing') or {}
+    std_p = pricing.get('standard') or {'thb': 500, 'usd': 19}
+    cus_p = pricing.get('custom') or {'thb': 900, 'usd': 29}
+    max_teams = int(pricing.get('tier1_max_teams') or 30)
+    demos = site_config.get('showcase_demos') or []
+
+    showcase_lids = [
+        str(k) for k, v in leagues_config.items()
+        if isinstance(v, dict) and v.get('visibility', 'showcase') == 'showcase'
+    ]
+    total_showcase_leagues = len(showcase_lids)
+    total_showcase_teams = sum(len((multi_data.get('leagues') or {}).get(lid, {}).get('teams', [])) for lid in showcase_lids)
+    max_gw = int(multi_data.get('max_gw') or 1)
+    last_sync_str = str(multi_data.get('last_sync') or 'Live Sync')
+
+    demo_cards = []
+    for d in demos:
+        did = str(d.get('id', ''))
+        l_meta = (multi_data.get('leagues') or {}).get(did, {})
+        real_teams = len(l_meta.get('teams', []))
+        demo_cards.append({
+            "id": did,
+            "tag_th": d.get('tag_th', ''),
+            "tag_en": d.get('tag_en', ''),
+            "title_th": d.get('title_th') or l_meta.get('name') or f"League {did}",
+            "title_en": d.get('title_en') or l_meta.get('name') or f"League {did}",
+            "desc_th": d.get('desc_th', ''),
+            "desc_en": d.get('desc_en', ''),
+            "plan": d.get('plan', 'standard'),
+            "teams_count": real_teams
+        })
+
+    demos_json = json.dumps(demo_cards, ensure_ascii=False).replace('</', '<\\/')
+    pricing_json = json.dumps({
+        "standard": {"thb": int(std_p.get('thb', 500)), "usd": int(std_p.get('usd', 19))},
+        "custom": {"thb": int(cus_p.get('thb', 900)), "usd": int(cus_p.get('usd', 29))},
+        "tier1_max_teams": max_teams,
+        "line_url": line_url,
+        "api_base_url": site_config.get('api_base_url') or 'https://api.fplsawadika.com'
+    }, ensure_ascii=False).replace('</', '<\\/')
+
+    # Live preview snapshot from default showcase league 40700 (anonymized / public standings preview)
+    preview_lid = next((str(k) for k, v in leagues_config.items() if isinstance(v, dict) and v.get('is_default')), '40700')
+    preview_league = (multi_data.get('leagues') or {}).get(preview_lid, {})
+    preview_teams = sorted(preview_league.get('teams', []), key=lambda t: int(t.get('rank') or 999))[:5]
+    sample_rows = []
+    for t in preview_teams:
+        sample_rows.append({
+            "rank": int(t.get('rank') or 0),
+            "last_rank": int(t.get('last_rank') or 0),
+            "team": str(t.get('entry_name') or ''),
+            "manager": str(t.get('player_name') or ''),
+            "total": int(t.get('total_points') or t.get('total') or 0),
+            "gw": int(t.get('event_total') or 0)
+        })
+    sample_preview_json = json.dumps({
+        "league_id": preview_lid,
+        "league_name": str(preview_league.get('name') or leagues_config.get(preview_lid, {}).get('name') or 'FPL Mini-League'),
+        "max_gw": max_gw,
+        "rows": sample_rows
+    }, ensure_ascii=False).replace('</', '<\\/')
+
+    schema_graph = [
+        {
+            "@type": "WebSite",
+            "@id": "https://www.fplsawadika.com/#website",
+            "name": "FPLSaWaDiKa",
+            "alternateName": ["FPL SaWaDiKa", "แดชบอร์ดมินิลีก FPLSaWaDiKa"],
+            "url": "https://www.fplsawadika.com/",
+            "inLanguage": ["th-TH", "en-US"]
+        },
+        {
+            "@type": "SoftwareApplication",
+            "@id": "https://www.fplsawadika.com/#product",
+            "name": "FPLSaWaDiKa Mini-League Dashboard",
+            "applicationCategory": "SportsApplication",
+            "operatingSystem": "Web",
+            "offers": [
+                {"@type": "Offer", "name": "Standard Tier 1", "price": str(std_p.get('thb', 500)), "priceCurrency": "THB"},
+                {"@type": "Offer", "name": "Custom Tier 1", "price": str(cus_p.get('thb', 900)), "priceCurrency": "THB"}
+            ]
+        }
+    ]
+    structured_json = json.dumps({"@context": "https://schema.org", "@graph": schema_graph}, ensure_ascii=False, indent=2)
+
+    html = """<!DOCTYPE html>
+<html lang="th" class="h-full scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FPLSaWaDiKa — แดชบอร์ดมินิลีก FPL สดทุก 15 วินาที พร้อมคำนวณเงินรางวัลอัตโนมัติ</title>
+  <meta name="description" content="เปลี่ยนมินิลีก Fantasy Premier League กลุ่มเพื่อนและออฟฟิศให้โปรกว่าที่เคย เช็คคะแนนสดทุก 15 วินาที คำนวณเงินรางวัลรายสัปดาห์/รายเดือน/ค่าปรับบ๊วยอัตโนมัติ ส่งสรุปเข้า LINE ได้ทันที">
+  <meta name="keywords" content="FPL, Fantasy Premier League, มินิลีก FPL, แดชบอร์ด FPL, คะแนนสด FPL, คำนวณเงินรางวัลมินิลีก, FPLSaWaDiKa">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#f3f5f4">
+  <link rel="canonical" href="https://www.fplsawadika.com/">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://api.fplsawadika.com" crossorigin>
+  <link rel="shortcut icon" href="./favicon.ico?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/icons/favicon-32x32.png?v=2">
+  <link rel="icon" type="image/png" sizes="16x16" href="./images/icons/favicon-16x16.png?v=2">
+  <link rel="apple-touch-icon" sizes="180x180" href="./images/icons/apple-touch-icon.png?v=2">
+  <link rel="manifest" href="./site.webmanifest?v=2">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="FPLSaWaDiKa">
+  <meta property="og:title" content="FPLSaWaDiKa — แดชบอร์ดมินิลีก FPL สำหรับลีกที่มีเงินรางวัล">
+  <meta property="og:description" content="เช็คคะแนนสดทุก 15 วินาที คำนวณเงินรางวัล/ค่าปรับอัตโนมัติ ไม่ต้องทำ Excel เอง เริ่มต้น 500 บาท/ฤดูกาล">
+  <meta property="og:url" content="https://www.fplsawadika.com/">
+  <meta property="og:image" content="https://www.fplsawadika.com/images/icons/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+__STRUCTURED_DATA_JSON__
+  </script>
+
+  <script>
+    (function() {
+      var shouldBeDark = false;
+      var initialLang = 'th';
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var urlTheme = params.get('theme');
+        var savedTheme = null;
+        try { savedTheme = localStorage.getItem('fpl_theme'); } catch (_) {}
+        if (urlTheme === 'dark') shouldBeDark = true;
+        else if (urlTheme === 'light') shouldBeDark = false;
+        else if (savedTheme === 'dark') shouldBeDark = true;
+        else if (savedTheme === 'light') shouldBeDark = false;
+        if (urlTheme === 'dark' || urlTheme === 'light') {
+          try { localStorage.setItem('fpl_theme', urlTheme); } catch (_) {}
+        }
+
+        var urlLang = params.get('lang');
+        var savedLang = null;
+        try { savedLang = localStorage.getItem('fpl_lang'); } catch (_) {}
+        initialLang = (urlLang === 'en' || (!urlLang && savedLang === 'en')) ? 'en' : 'th';
+        if (urlLang === 'en' || urlLang === 'th') {
+          try { localStorage.setItem('fpl_lang', urlLang); } catch (_) {}
+        }
+      } catch (_) {}
+      document.documentElement.classList.toggle('dark', shouldBeDark);
+      document.documentElement.lang = initialLang;
+      window.INITIAL_LANG = initialLang;
+    })();
+  </script>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.5/dist/index.global.js"
+    integrity="sha384-t+qLIxS5zM/KF99/doWY+dxTsavdvgayaZt8A9ntLsUjEkiXzYl5M3Ij8zVFPL9j"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --breakpoint-xs: 380px;
+    }
+    @variant dark (&:where(.dark, .dark *));
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <style>
+    @font-face {
+      font-family: 'Sarabun';
+      src: local('Sarabun'), local('Sarabun Regular'), url('./fonts/Sarabun-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sarabun';
+      src: local('Sarabun Medium'), url('./fonts/Sarabun-Medium.ttf') format('truetype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sarabun';
+      src: local('Sarabun SemiBold'), url('./fonts/Sarabun-SemiBold.ttf') format('truetype');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sarabun';
+      src: local('Sarabun Bold'), url('./fonts/Sarabun-Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sukhumvit Set';
+      src: local('Sukhumvit Set'), local('SukhumvitSet-Text'), url('./fonts/SukhumvitSet-Text.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sukhumvit Set';
+      src: local('Sukhumvit Set Medium'), local('SukhumvitSet-Medium'), url('./fonts/SukhumvitSet-Medium.ttf') format('truetype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sukhumvit Set';
+      src: local('Sukhumvit Set SemiBold'), local('SukhumvitSet-SemiBold'), url('./fonts/SukhumvitSet-SemiBold.ttf') format('truetype');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Sukhumvit Set';
+      src: local('Sukhumvit Set Bold'), local('SukhumvitSet-Bold'), url('./fonts/SukhumvitSet-Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    :root {
+      --font-family: 'Sarabun', 'Sukhumvit Set', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --paper-ground: #f3f5f4;
+      --paper-sheet: #fbfcfb;
+      --paper-raised: #e8ece9;
+      --ink-primary: #1a151c;
+      --ink-secondary: #48424b;
+      --ink-muted: #645d68;
+      --paper-rule: rgba(26, 21, 28, 0.14);
+      --paper-rule-strong: #1a151c;
+      --pitch-accent: #0f7a44;
+      --pitch-accent-hover: #0b6136;
+      color-scheme: light;
+    }
+    html.dark {
+      --paper-ground: #121413;
+      --paper-sheet: #191c1a;
+      --paper-raised: #222623;
+      --ink-primary: #efece4;
+      --ink-secondary: #bbb6ac;
+      --ink-muted: #938e85;
+      --paper-rule: rgba(239, 236, 228, 0.12);
+      --paper-rule-strong: rgba(239, 236, 228, 0.45);
+      --pitch-accent: #10884c;
+      --pitch-accent-hover: #14a05a;
+      color-scheme: dark;
+    }
+    html, body {
+      background-color: var(--paper-ground);
+      color: var(--ink-primary);
+      font-family: var(--font-family);
+      font-size: 15px;
+      line-height: 1.65;
+      overflow-x: clip;
+      max-width: 100vw;
+      scrollbar-width: thin;
+      scrollbar-color: var(--ink-muted) var(--paper-ground);
+    }
+    .font-editorial {
+      font-family: var(--font-family);
+    }
+    h1 {
+      font-size: clamp(1.9rem, 3.2vw, 2.65rem);
+      line-height: 1.24;
+      font-weight: 700;
+    }
+    h2 {
+      font-size: clamp(1.45rem, 2.2vw, 1.875rem);
+      line-height: 1.28;
+      font-weight: 700;
+    }
+    h3 {
+      font-size: 1.125rem;
+      line-height: 1.38;
+      font-weight: 600;
+    }
+    .site-masthead {
+      padding: 0.75rem 1.25rem;
+      background-color: rgba(243, 245, 244, 0.94);
+    }
+    html.dark .site-masthead {
+      background-color: rgba(18, 20, 19, 0.94);
+    }
+    .card-pad { padding: 1.5rem; }
+    .card-pad-sm { padding: 1rem 1.25rem; }
+    ::selection {
+      background-color: rgba(15, 122, 68, 0.18);
+      color: var(--ink-primary);
+    }
+    input, textarea, select {
+      caret-color: var(--pitch-accent);
+    }
+    .paper-sheet {
+      background-color: var(--paper-sheet);
+      border: 1px solid var(--paper-rule);
+    }
+    .paper-raised {
+      background-color: var(--paper-raised);
+    }
+    .hairline-rule {
+      border-color: var(--paper-rule);
+    }
+    .editorial-rule-strong {
+      border-color: var(--paper-rule-strong);
+    }
+    .ink-secondary { color: var(--ink-secondary); }
+    .ink-muted { color: var(--ink-muted); }
+    .accent-fill {
+      background-color: var(--pitch-accent);
+      color: #ffffff;
+    }
+    .accent-fill:hover {
+      background-color: var(--pitch-accent-hover);
+    }
+    .accent-ink {
+      color: #0d6c3c;
+    }
+    html.dark .accent-ink {
+      color: #4ade80;
+    }
+    a { text-underline-offset: 4px; }
+    :focus-visible { outline: 2px solid var(--pitch-accent); outline-offset: 2px; }
+  </style>
+</head>
+<body class="min-h-full flex flex-col antialiased">
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:rounded-md accent-fill text-xs font-medium">Skip to content</a>
+
+  <!-- Newspaper Masthead Header (Single <nav> Landmark) -->
+  <header class="site-masthead sticky top-0 z-40 border-b-2 editorial-rule-strong backdrop-blur-sm">
+    <div class="max-w-6xl mx-auto sm:px-2 lg:px-4 flex items-center justify-between gap-4">
+      <a href="#top" class="flex items-center gap-3 min-w-0 flex-shrink-0">
+        <img src="./images/icons/favicon-192x192.png?v=2" width="40" height="40" alt="FPLSaWaDiKa Mascot Crest" class="w-10 h-10 rounded-md flex-shrink-0">
+        <div class="min-w-0">
+          <div class="font-editorial text-lg font-semibold tracking-tight leading-none">FPLSaWaDiKa</div>
+          <div id="nav-brand-sub" class="text-xs ink-muted mt-1 truncate">มินิลีกวันแข่ง</div>
+        </div>
+      </a>
+
+      <nav aria-label="Primary Navigation" class="flex items-center gap-2 sm:gap-3">
+        <div id="primary-nav-links" class="hidden md:flex items-center gap-5 text-sm font-medium ink-secondary mr-2">
+          <a href="#features" id="nav-link-features" class="hover:underline whitespace-nowrap">จุดเด่น</a>
+          <a href="#demos" id="nav-link-demos" class="hover:underline whitespace-nowrap">ลีกตัวอย่าง</a>
+          <a href="#pricing" id="nav-link-pricing" class="hover:underline whitespace-nowrap">ราคา</a>
+          <a href="#order" id="nav-link-order" class="hover:underline whitespace-nowrap">เปิดลีก</a>
+        </div>
+
+        <button type="button" id="landing-lang-btn" onclick="landingApp.toggleLang()" class="flex items-center justify-center h-9 px-3 rounded-md border hairline-rule paper-sheet text-xs font-medium hover:paper-raised transition-colors cursor-pointer" aria-label="Switch Language">EN</button>
+
+        <button type="button" id="landing-theme-btn" onclick="landingApp.toggleTheme()" class="flex items-center justify-center w-9 h-9 rounded-md border hairline-rule paper-sheet ink-secondary hover:paper-raised transition-colors cursor-pointer" aria-label="Toggle Dark Mode">
+          <svg class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        </button>
+
+        <a href="#order" id="nav-cta-btn" class="hidden sm:inline-flex items-center justify-center h-9 px-4 rounded-md accent-fill text-xs font-medium transition-colors whitespace-nowrap">เปิดลีกของคุณ</a>
+
+        <button type="button" id="mobile-menu-toggle" onclick="landingApp.toggleMobileMenu()" class="md:hidden flex items-center justify-center w-9 h-9 rounded-md border hairline-rule paper-sheet ink-secondary cursor-pointer" aria-expanded="false" aria-controls="mobile-nav-drawer" aria-label="Toggle Menu">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Mobile Menu Panel -->
+    <div id="mobile-nav-drawer" class="hidden md:hidden paper-sheet card-pad-sm rounded-lg mt-3 space-y-1 text-sm font-medium">
+      <a href="#features" onclick="landingApp.closeMobileMenu()" id="m-nav-features" class="block px-3 py-2 rounded-md">จุดเด่น</a>
+      <a href="#demos" onclick="landingApp.closeMobileMenu()" id="m-nav-demos" class="block px-3 py-2 rounded-md">ลีกตัวอย่างจริง</a>
+      <a href="#pricing" onclick="landingApp.closeMobileMenu()" id="m-nav-pricing" class="block px-3 py-2 rounded-md">แพ็กเกจราคา</a>
+      <a href="#order" onclick="landingApp.closeMobileMenu()" id="m-nav-order" class="block px-3 py-2 rounded-md accent-fill text-center mt-2">เปิดลีกผ่าน LINE</a>
+    </div>
+  </header>
+
+  <main id="main-content" class="flex-1 w-full">
+    <!-- 1. Front Page Split: Editorial Headline & Live Broadsheet Scoreboard -->
+    <section id="top" class="border-b hairline-rule">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          <div class="lg:col-span-6 space-y-6">
+            <h1 id="hero-title" class="font-editorial text-3xl sm:text-4xl lg:text-[2.65rem] font-semibold tracking-[-0.02em] leading-[1.18]">
+              ตารางคะแนนสดและบัญชีเงินรางวัล สำหรับมินิลีกเพื่อนและออฟฟิศ
+            </h1>
+
+            <p id="hero-subtitle" class="text-base ink-secondary leading-relaxed max-w-[58ch]">
+              หยุดแคปหน้าจอและคำนวณเงินรางวัลใน Excel เอง เพียงส่งเลข FPL League ID ก็ได้หน้าเว็บส่วนตัวให้ทุกคนในกลุ่มเช็คคะแนนสดทุก 15 วินาที พร้อมสรุปยอดจ่ายประจำสัปดาห์และค่าปรับลง LINE ได้ทันที
+            </p>
+
+            <div class="flex flex-wrap items-center gap-4 pt-1">
+              <a href="#order" id="hero-primary-cta" class="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-md accent-fill text-sm font-medium transition-colors">
+                <span>สั่งเปิดลีก (เริ่มต้น 500฿)</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6l6 6-6 6"/></svg>
+              </a>
+              <a href="#demos" id="hero-secondary-cta" class="inline-flex items-center justify-center h-11 px-4 rounded-md border hairline-rule paper-sheet hover:paper-raised text-sm font-medium transition-colors">
+                <span>ดู 5 ลีกตัวอย่างจริง</span>
+              </a>
+            </div>
+
+            <!-- Editorial Proof Strip featuring Project Crest Logo -->
+            <div class="pt-6 border-t hairline-rule flex items-center gap-4">
+              <img src="./images/icons/favicon-192x192.png?v=2" width="48" height="48" alt="FPLSaWaDiKa Edition Crest" class="w-12 h-12 rounded-md border hairline-rule flex-shrink-0">
+              <div class="text-xs sm:text-sm ink-secondary leading-snug space-y-0.5">
+                <div id="hero-edition-line" class="font-medium text-[var(--ink-primary)]">
+                  ใช้งานจริงแล้ว __TOTAL_SHOWCASE_LEAGUES__ มินิลีก (__TOTAL_SHOWCASE_TEAMS__+ ทีม) ในฤดูกาลนี้
+                </div>
+                <div id="hero-edition-sub" class="ink-muted flex flex-wrap items-center gap-x-3 gap-y-1 tabular-nums">
+                  <span>รีเฟรชสดทุก 15 วินาที</span>
+                  <span>•</span>
+                  <span id="hero-views-inline">แยกข้อมูลอิสระรายลีก</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Crisp Newspaper Results Ledger Sheet -->
+          <div class="lg:col-span-6">
+            <div class="paper-sheet rounded-lg card-pad-sm space-y-3">
+              <div class="pb-3 border-b editorial-rule-strong flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="w-2 h-2 rounded-full bg-emerald-600 dark:bg-emerald-400 flex-shrink-0" aria-hidden="true"></span>
+                  <div class="min-w-0">
+                    <span id="preview-card-title" class="font-editorial text-sm sm:text-base font-semibold truncate">__PREVIEW_LEAGUE_NAME__</span>
+                    <span class="text-xs font-mono ink-muted ml-2 tabular-nums">GW __MAX_GW__</span>
+                  </div>
+                </div>
+                <a href="./__PREVIEW_LID__/" data-demo-lid="__PREVIEW_LID__" id="hero-open-demo-link" class="text-xs font-medium accent-ink hover:underline flex-shrink-0">เปิดตารางเต็ม ↗</a>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs sm:text-sm tabular-nums">
+                  <thead>
+                    <tr class="border-b hairline-rule ink-muted text-xs">
+                      <th scope="col" class="py-2 pr-2 font-medium w-10">#</th>
+                      <th scope="col" id="th-team" class="py-2 px-2 font-medium">ทีม / ผู้จัดการ</th>
+                      <th scope="col" id="th-gw" class="py-2 px-2 font-medium text-right w-16">GW __MAX_GW__</th>
+                      <th scope="col" id="th-total" class="py-2 pl-2 font-medium text-right w-20">คะแนนรวม</th>
+                    </tr>
+                  </thead>
+                  <tbody id="preview-standings-body" class="divide-y hairline-rule">
+                    <!-- Populated cleanly from sample preview JSON -->
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="pt-3 border-t hairline-rule flex flex-wrap items-center justify-between gap-2 text-xs ink-muted">
+                <span class="font-mono">fplsawadika.com/__PREVIEW_LID__/</span>
+                <span id="preview-sync-badge" class="font-mono tabular-nums">__LAST_SYNC__</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Newspaper Editorial Columns: Why Admins Switch (No Cards, Thin Column Rules) -->
+    <section id="features" class="border-b hairline-rule">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-8">
+        <div class="max-w-2xl space-y-2">
+          <h2 id="feat-title" class="font-editorial text-2xl sm:text-3xl font-semibold tracking-tight">ทำไมแอดมินมินิลีกถึงเลิกใช้ตาราง Excel</h2>
+          <p id="feat-sub" class="text-sm sm:text-base ink-secondary">ออกแบบจากโจทย์จริงของมินิลีกที่มีเงินรางวัล ตั้งแต่ระหว่างบอลเตะไปจนถึงวันเคลียร์บัญชี</p>
+        </div>
+
+        <div id="features-columns" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 lg:divide-x hairline-rule border-y hairline-rule">
+          <!-- Rendered cleanly as newspaper columns in JS -->
+        </div>
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2 text-sm">
+          <div class="space-y-1 max-w-2xl">
+            <h3 id="iso-title" class="font-semibold">ความเป็นส่วนตัวและแยกข้อมูลอิสระทุกลีก</h3>
+            <p id="iso-desc" class="ink-secondary text-sm">สมาชิกในลีกของคุณเห็นเฉพาะตารางของลีกตนเอง ไม่มีปุ่มสลับไปลีกอื่น และหน้าลีกส่วนตัวถูกตั้งค่า noindex ไม่ให้ปรากฏบน Search Engine</p>
+          </div>
+          <a href="./preview.html" id="iso-preview-link" class="text-sm font-medium accent-ink hover:underline flex-shrink-0">ลองดูตัวอย่างแดชบอร์ดชุดเต็ม ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Live Production Directory (5 Real Leagues in Classified Results Table) -->
+    <section id="demos" class="border-b hairline-rule">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div class="space-y-1.5 max-w-2xl">
+            <h2 id="demos-title" class="font-editorial text-2xl sm:text-3xl font-semibold tracking-tight">กดดูลีกจริง 5 รูปแบบที่เปิดใช้งานอยู่</h2>
+            <p id="demos-sub" class="text-sm sm:text-base ink-secondary">เลือกเปิดดูได้ทั้งลีกแชมป์สัปดาห์ รายเดือน ค่าปรับบ๊วย เกม Zero-Sum และลีกใหญ่ 1,700+ ทีม</p>
+          </div>
+          <span id="demos-note" class="text-xs font-mono ink-muted">เปิดหน้าแดชบอร์ดจริง</span>
+        </div>
+
+        <div class="paper-sheet rounded-lg card-pad-sm">
+          <div id="demos-list" class="divide-y hairline-rule">
+            <!-- Populated cleanly from DEMOS_DATA -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Season-Pass Pricing (2 Real Plans + Quiet Tier 2 Notice) -->
+    <section id="pricing" class="border-b hairline-rule">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-8">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div class="space-y-1.5 max-w-2xl">
+            <h2 id="pricing-title" class="font-editorial text-2xl sm:text-3xl font-semibold tracking-tight">ค่าบริการเหมาจ่ายตลอดฤดูกาล</h2>
+            <p id="pricing-sub" class="text-sm sm:text-base ink-secondary">รองรับไม่เกิน __MAX_TEAMS__ ทีมต่อลีก (กรณี 31–60 ทีมสอบถามราคาเพิ่มเติมได้) จ่ายครั้งเดียวจบฤดูกาล</p>
+          </div>
+
+          <div class="inline-flex items-center gap-2 self-start sm:self-auto" role="group" aria-label="Currency Toggle">
+            <button type="button" id="curr-btn-thb" onclick="landingApp.setCurrency('THB')" class="px-3.5 py-2 rounded-md text-xs font-medium transition-colors cursor-pointer">฿ THB</button>
+            <button type="button" id="curr-btn-usd" onclick="landingApp.setCurrency('USD')" class="px-3.5 py-2 rounded-md text-xs font-medium transition-colors cursor-pointer">$ USD</button>
+          </div>
+        </div>
+
+        <div id="pricing-plans-wrap" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+          <!-- 2 Main Plans populated in JS -->
+        </div>
+
+        <div class="paper-sheet rounded-lg card-pad flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <div id="tier2-title" class="font-medium text-sm sm:text-base">Tier 2 Community Scale (60 – 2,000+ ทีม · Coming soon)</div>
+            <p id="tier2-desc" class="text-xs sm:text-sm ink-secondary">สำหรับเพจฟุตบอลและคอมมูนิตี้ขนาดใหญ่ที่ต้องการค้นหาทีมเร็วและดูผังแบบ On-Demand</p>
+          </div>
+          <a href="./139836/" data-demo-lid="139836" target="_blank" rel="noopener noreferrer" id="tier2-link" class="text-sm font-medium accent-ink hover:underline flex-shrink-0">ชมตัวอย่างลีก #139836 ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Concierge Order Brief -->
+    <section id="order">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          <div class="lg:col-span-5 space-y-5">
+            <div class="flex items-center gap-3">
+              <img src="./images/icons/favicon-192x192.png?v=2" width="44" height="44" alt="FPLSaWaDiKa Crest" class="w-11 h-11 rounded-md border hairline-rule flex-shrink-0">
+              <h2 id="order-title" class="font-editorial text-2xl sm:text-3xl font-semibold tracking-tight">สั่งเปิดลีกผ่าน LINE</h2>
+            </div>
+            <p id="order-sub" class="text-sm sm:text-base ink-secondary leading-relaxed">
+              กรอกข้อมูลลีกของคุณเพื่อสร้างข้อความสรุป จากนั้นกดคัดลอกส่งทาง LINE เพื่อให้แอดมินตั้งค่ารูปแบบรางวัลและเปิดลิงก์ให้พร้อมใช้งาน
+            </p>
+            <ol class="space-y-2.5 text-sm ink-secondary border-t hairline-rule pt-4 list-decimal list-inside tabular-nums">
+              <li id="step-1">กรอกเลข FPL League ID และเลือกรูปแบบเงินรางวัล</li>
+              <li id="step-2">กดคัดลอกข้อความสรุปคำสั่งซื้อ</li>
+              <li id="step-3">วางส่งในแชท LINE เพื่อรับลิงก์ส่วนตัวของลีก</li>
+            </ol>
+          </div>
+
+          <div class="lg:col-span-7">
+            <form id="order-form" novalidate class="paper-sheet rounded-lg card-pad space-y-5">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="order-league-id" id="lbl-league-id" class="block text-xs font-medium ink-secondary mb-1.5">FPL League ID (ตัวเลขจากลิงก์ FPL) *</label>
+                  <input
+                    type="text"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
+                    id="order-league-id"
+                    name="league_id"
+                    placeholder="เช่น 40700"
+                    required
+                    class="w-full h-10 px-3 rounded-md border hairline-rule paper-sheet text-sm font-mono focus:outline-none focus:border-emerald-700"
+                  >
+                  <p id="order-league-id-error" role="alert" aria-live="polite" class="hidden mt-1.5 text-xs font-medium text-rose-700 dark:text-rose-400"></p>
+                </div>
+
+                <div>
+                  <label for="order-league-name" id="lbl-league-name" class="block text-xs font-medium ink-secondary mb-1.5">ชื่อลีกหรือชื่อกลุ่ม (ถ้ามี)</label>
+                  <input
+                    type="text"
+                    id="order-league-name"
+                    name="league_name"
+                    placeholder="เช่น ลีกออฟฟิศ 2026"
+                    class="w-full h-10 px-3 rounded-md border hairline-rule paper-sheet text-sm focus:outline-none focus:border-emerald-700"
+                  >
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label for="order-plan" id="lbl-plan" class="block text-xs font-medium ink-secondary mb-1.5">แพ็กเกจ</label>
+                  <select id="order-plan" name="plan" class="w-full h-10 px-3 rounded-md border hairline-rule paper-sheet text-sm">
+                    <option value="standard">Standard Tier 1</option>
+                    <option value="custom">Custom Tier 1</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="order-prize-model" id="lbl-prize-model" class="block text-xs font-medium ink-secondary mb-1.5">รูปแบบเงินรางวัลหลัก</label>
+                  <select id="order-prize-model" name="prize_model" class="w-full h-10 px-3 rounded-md border hairline-rule paper-sheet text-sm">
+                    <option value="weekly">แชมป์ประจำสัปดาห์ + แชมป์ฤดูกาล</option>
+                    <option value="monthly">แชมป์ประจำเดือน + Top 5 ฤดูกาล</option>
+                    <option value="penalties">เก็บค่าปรับอันดับท้าย + รางวัล</option>
+                    <option value="zero_sum">Zero-Sum / กติกาพิเศษกำหนดเอง</option>
+                    <option value="standard">เน้นดูคะแนนสด (ไม่มีเงินรางวัล)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="order-team-tier" id="lbl-team-tier" class="block text-xs font-medium ink-secondary mb-1.5">จำนวนทีมในลีก</label>
+                  <select id="order-team-tier" name="team_tier" class="w-full h-10 px-3 rounded-md border hairline-rule paper-sheet text-sm">
+                    <option value="<=30">ไม่เกิน 30 ทีม (ราคาปกติ)</option>
+                    <option value="31-60">31–60 ทีม (สอบถามราคาเพิ่ม)</option>
+                    <option value="60+">มากกว่า 60 ทีม (Tier 2 Roadmap)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="rounded-md border hairline-rule paper-raised card-pad-sm space-y-2">
+                <div class="flex items-center justify-between gap-2 text-xs">
+                  <span id="order-preview-label" class="font-medium ink-muted">ข้อความคำสั่งซื้อสำหรับส่ง LINE</span>
+                  <span id="order-price-badge" class="font-mono font-semibold accent-ink tabular-nums"></span>
+                </div>
+                <pre id="order-summary-preview" class="text-xs font-mono whitespace-pre-wrap break-words leading-relaxed"></pre>
+              </div>
+
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <button type="submit" id="btn-copy-order" class="flex-1 inline-flex items-center justify-center gap-2 h-11 px-4 rounded-md bg-[#1a151c] text-white dark:bg-[#efece4] dark:text-[#121413] text-sm font-medium hover:opacity-90 transition-opacity cursor-pointer">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                  <span id="btn-copy-order-text">คัดลอกรายละเอียดคำสั่งซื้อ</span>
+                </button>
+                <a href="__LINE_URL__" target="_blank" rel="noopener noreferrer" id="btn-open-line" class="flex-1 inline-flex items-center justify-center gap-2 h-11 px-4 rounded-md accent-fill text-sm font-medium transition-colors">
+                  <span id="btn-open-line-text">เปิดแชท LINE เพื่อส่งข้อความ ↗</span>
+                </a>
+              </div>
+              <p id="order-copy-feedback" aria-live="polite" class="hidden text-center text-xs font-medium accent-ink"></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t-2 editorial-rule-strong py-6 text-xs ink-muted">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <img src="./images/icons/favicon-32x32.png?v=2" width="20" height="20" alt="FPLSaWaDiKa Icon" class="w-5 h-5 rounded-sm border hairline-rule">
+        <span class="font-medium text-[var(--ink-primary)]">FPLSaWaDiKa</span>
+        <span>•</span>
+        <span>Fantasy Premier League Mini-League Platform</span>
+      </div>
+      <div class="flex items-center gap-5">
+        <span id="landing-visitor-badge" class="hidden font-mono tabular-nums"></span>
+        <a href="./preview.html" class="hover:underline font-mono">Dashboard Preview</a>
+        <a href="__LINE_URL__" target="_blank" rel="noopener noreferrer" class="hover:underline font-medium accent-ink">LINE Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const LANDING_CONFIG = __PRICING_JSON__;
+    const LANDING_DEMOS = __DEMOS_JSON__;
+    const LANDING_SAMPLE_PREVIEW = __SAMPLE_PREVIEW_JSON__;
+
+    const landingApp = {
+      lang: window.INITIAL_LANG || 'th',
+      currency: (window.INITIAL_LANG === 'en') ? 'USD' : 'THB',
+      currencyManual: false,
+      visitorViews: 0,
+      hasInteractedLeagueId: false,
+
+      init() {
+        this.applyThemeMeta();
+        this.bindEvents();
+        this.renderAll();
+        this.rewriteFileLinksIfNeeded();
+        this.fetchVisitorCount();
+        this.sendLandingTelemetry();
+      },
+
+      rewriteFileLinksIfNeeded() {
+        if (window.location.protocol !== 'file:') return;
+        document.querySelectorAll('a[data-demo-lid]').forEach(a => {
+          const lid = a.getAttribute('data-demo-lid');
+          if (lid) a.setAttribute('href', './' + lid + '/index.html');
+        });
+      },
+
+      toggleTheme() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        try {
+          localStorage.setItem('fpl_theme', isDark ? 'dark' : 'light');
+        } catch (_) {}
+        this.applyThemeMeta();
+      },
+
+      applyThemeMeta() {
+        document.documentElement.lang = this.lang;
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) {
+          metaTheme.setAttribute('content', document.documentElement.classList.contains('dark') ? '#121413' : '#f3f5f4');
+        }
+      },
+
+      toggleLang() {
+        this.lang = this.lang === 'en' ? 'th' : 'en';
+        try {
+          localStorage.setItem('fpl_lang', this.lang);
+        } catch (_) {}
+        if (!this.currencyManual) {
+          this.currency = this.lang === 'en' ? 'USD' : 'THB';
+        }
+        document.documentElement.lang = this.lang;
+        this.renderAll();
+        this.rewriteFileLinksIfNeeded();
+      },
+
+      setCurrency(curr) {
+        this.currency = curr === 'USD' ? 'USD' : 'THB';
+        this.currencyManual = true;
+        this.renderPricing();
+        this.updateOrderSummary();
+      },
+
+      selectPlanFromCard(planId) {
+        const sel = document.getElementById('order-plan');
+        if (sel && (planId === 'standard' || planId === 'custom')) {
+          sel.value = planId;
+          this.updateOrderSummary();
+        }
+        const orderSec = document.getElementById('order');
+        if (orderSec) orderSec.scrollIntoView({ behavior: 'smooth' });
+      },
+
+      toggleMobileMenu() {
+        const drawer = document.getElementById('mobile-nav-drawer');
+        const btn = document.getElementById('mobile-menu-toggle');
+        if (!drawer || !btn) return;
+        const willOpen = drawer.classList.contains('hidden');
+        drawer.classList.toggle('hidden', !willOpen);
+        btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      },
+
+      closeMobileMenu() {
+        const drawer = document.getElementById('mobile-nav-drawer');
+        const btn = document.getElementById('mobile-menu-toggle');
+        if (drawer) drawer.classList.add('hidden');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+      },
+
+      escapeHtml(str) {
+        return String(str === null || str === undefined ? '' : str)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      },
+
+      bindEvents() {
+        const lidInput = document.getElementById('order-league-id');
+        const nameInput = document.getElementById('order-league-name');
+        const planSel = document.getElementById('order-plan');
+        const prizeSel = document.getElementById('order-prize-model');
+        const teamSel = document.getElementById('order-team-tier');
+        const form = document.getElementById('order-form');
+
+        if (lidInput) {
+          lidInput.addEventListener('blur', () => {
+            this.hasInteractedLeagueId = true;
+            this.validateLeagueId(true);
+            this.updateOrderSummary();
+          });
+          lidInput.addEventListener('input', () => {
+            if (this.hasInteractedLeagueId) this.validateLeagueId(true);
+            this.updateOrderSummary();
+          });
+        }
+        [nameInput, planSel, prizeSel, teamSel].forEach(el => {
+          if (el) el.addEventListener('change', () => this.updateOrderSummary());
+          if (el && el.tagName === 'INPUT') el.addEventListener('input', () => this.updateOrderSummary());
+        });
+
+        if (form) {
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            this.hasInteractedLeagueId = true;
+            const valid = this.validateLeagueId(true);
+            this.updateOrderSummary();
+            if (!valid) {
+              if (lidInput) lidInput.focus();
+              return;
+            }
+            const summaryText = (document.getElementById('order-summary-preview') || {}).textContent || '';
+            const fb = document.getElementById('order-copy-feedback');
+            try {
+              if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(summaryText);
+              }
+              if (fb) {
+                fb.textContent = (this.lang === 'en')
+                  ? 'Order summary copied. Paste it in LINE chat to get started.'
+                  : 'คัดลอกรายละเอียดเรียบร้อย กดปุ่มเปิดแชท LINE แล้ววางส่งได้เลย';
+                fb.classList.remove('hidden');
+              }
+            } catch (_) {
+              if (fb) {
+                fb.textContent = (this.lang === 'en')
+                  ? 'Copy the order slip above and send via LINE.'
+                  : 'กรุณาคัดลอกข้อความในกล่องด้านบนเพื่อส่งผ่าน LINE';
+                fb.classList.remove('hidden');
+              }
+            }
+          });
+        }
+      },
+
+      validateLeagueId(showError) {
+        const input = document.getElementById('order-league-id');
+        const errEl = document.getElementById('order-league-id-error');
+        if (!input || !errEl) return true;
+        const val = input.value.trim();
+        const isValid = /^\d{3,8}$/.test(val);
+        if (!isValid && showError) {
+          errEl.textContent = (this.lang === 'en')
+            ? 'Please enter a numeric FPL League ID (3–8 digits, e.g. 40700).'
+            : 'กรุณากรอกเลข FPL League ID เป็นตัวเลข 3–8 หลัก (เช่น 40700)';
+          errEl.classList.remove('hidden');
+          input.setAttribute('aria-invalid', 'true');
+          input.setAttribute('aria-describedby', 'order-league-id-error');
+        } else {
+          errEl.classList.add('hidden');
+          errEl.textContent = '';
+          input.removeAttribute('aria-invalid');
+          input.removeAttribute('aria-describedby');
+        }
+        return isValid;
+      },
+
+      renderAll() {
+        const isEn = this.lang === 'en';
+        const setTxt = (id, th, en) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = isEn ? en : th;
+        };
+
+        document.getElementById('landing-lang-btn').textContent = isEn ? 'TH' : 'EN';
+        setTxt('nav-brand-sub', 'มินิลีกวันแข่ง', 'Matchday Mini-League Edition');
+        setTxt('nav-link-features', 'จุดเด่น', 'Highlights');
+        setTxt('nav-link-demos', 'ลีกตัวอย่าง', 'Live Leagues');
+        setTxt('nav-link-pricing', 'ราคา', 'Pricing');
+        setTxt('nav-link-order', 'เปิดลีก', 'Launch');
+        setTxt('nav-cta-btn', 'เปิดลีกของคุณ', 'Get started');
+        setTxt('m-nav-features', 'จุดเด่น', 'Highlights');
+        setTxt('m-nav-demos', 'ลีกตัวอย่างจริง', 'Live Leagues');
+        setTxt('m-nav-pricing', 'แพ็กเกจราคา', 'Pricing');
+        setTxt('m-nav-order', 'เปิดลีกผ่าน LINE', 'Launch via LINE');
+
+        setTxt('hero-title',
+          'ตารางคะแนนสดและบัญชีเงินรางวัล สำหรับมินิลีกเพื่อนและออฟฟิศ',
+          'Live standings and prize ledgers for friend and office FPL leagues'
+        );
+        setTxt('hero-subtitle',
+          'หยุดแคปหน้าจอและคำนวณเงินรางวัลใน Excel เอง เพียงส่งเลข FPL League ID ก็ได้หน้าเว็บส่วนตัวให้ทุกคนในกลุ่มเช็คคะแนนสดทุก 15 วินาที พร้อมสรุปยอดจ่ายประจำสัปดาห์และค่าปรับลง LINE ได้ทันที',
+          'Stop taking screenshots and tracking payouts in spreadsheets. Send your FPL League ID to launch a dedicated dashboard with 15-second live scores, chip tracking, and weekly LINE payout slips.'
+        );
+        const pPrice = this.currency === 'USD' ? `$${LANDING_CONFIG.standard.usd}` : `${LANDING_CONFIG.standard.thb}฿`;
+        const pCta = document.querySelector('#hero-primary-cta span');
+        if (pCta) pCta.textContent = isEn ? `Launch league (from ${pPrice})` : `สั่งเปิดลีก (เริ่มต้น ${pPrice})`;
+        const sCta = document.querySelector('#hero-secondary-cta span');
+        if (sCta) sCta.textContent = isEn ? 'Inspect 5 live leagues' : 'ดู 5 ลีกตัวอย่างจริง';
+
+        setTxt('hero-edition-line',
+          'ใช้งานจริงแล้ว __TOTAL_SHOWCASE_LEAGUES__ มินิลีก (__TOTAL_SHOWCASE_TEAMS__+ ทีม) ในฤดูกาลนี้',
+          'Trusted across __TOTAL_SHOWCASE_LEAGUES__ live leagues (__TOTAL_SHOWCASE_TEAMS__+ teams) this season'
+        );
+        setTxt('hero-open-demo-link', 'เปิดตารางเต็ม ↗', 'Open full table ↗');
+        setTxt('th-team', 'ทีม / ผู้จัดการ', 'Team / Manager');
+        setTxt('th-total', 'คะแนนรวม', 'Total');
+        this.renderVisitorStat();
+        this.renderPreviewStandings();
+
+        setTxt('feat-title', 'ทำไมแอดมินมินิลีกถึงเลิกใช้ตาราง Excel', 'Built to replace weekend spreadsheet work');
+        setTxt('feat-sub',
+          'ออกแบบจากโจทย์จริงของมินิลีกที่มีเงินรางวัล ตั้งแต่ระหว่างบอลเตะไปจนถึงวันเคลียร์บัญชี',
+          'Designed around prize-backed mini-leagues from Saturday kickoffs through weekly settlement.'
+        );
+        this.renderFeatures();
+
+        setTxt('iso-title', 'ความเป็นส่วนตัวและแยกข้อมูลอิสระทุกลีก', 'Isolated private leagues with clean URLs');
+        setTxt('iso-desc',
+          'สมาชิกในลีกของคุณเห็นเฉพาะตารางของลีกตนเอง ไม่มีปุ่มสลับไปลีกอื่น และหน้าลีกส่วนตัวถูกตั้งค่า noindex ไม่ให้ปรากฏบน Search Engine',
+          'Members in a customer league see only their own league. Other leagues are excluded from navigation and search engine sitemaps.'
+        );
+        setTxt('iso-preview-link', 'ลองดูตัวอย่างแดชบอร์ดชุดเต็ม ↗', 'Preview full league workspace ↗');
+
+        setTxt('demos-title', 'กดดูลีกจริง 5 รูปแบบที่เปิดใช้งานอยู่', 'Explore 5 live production showcases');
+        setTxt('demos-sub',
+          'เลือกเปิดดูได้ทั้งลีกแชมป์สัปดาห์ รายเดือน ค่าปรับบ๊วย เกม Zero-Sum และลีกใหญ่ 1,700+ ทีม',
+          'Inspect real standings, weekly payouts, bottom-5 fines, zero-sum tables, and our 1,700+ team preview.'
+        );
+        setTxt('demos-note', 'เปิดหน้าแดชบอร์ดจริง', 'Opens live dashboard');
+        this.renderDemos();
+
+        setTxt('pricing-title', 'ค่าบริการเหมาจ่ายตลอดฤดูกาล', 'Season-pass pricing');
+        setTxt('pricing-sub',
+          `รองรับไม่เกิน ${LANDING_CONFIG.tier1_max_teams} ทีมต่อลีก (กรณี 31–60 ทีมสอบถามราคาเพิ่มเติมได้) จ่ายครั้งเดียวจบฤดูกาล`,
+          `Up to ${LANDING_CONFIG.tier1_max_teams} teams per league (custom quote for 31–60 teams). One payment covers the entire season.`
+        );
+        this.renderPricing();
+
+        setTxt('tier2-title', 'Tier 2 Community Scale (60 – 2,000+ ทีม · เร็วๆ นี้)', 'Tier 2 Community Scale (60 – 2,000+ teams · Coming soon)');
+        setTxt('tier2-desc',
+          'สำหรับเพจฟุตบอลและคอมมูนิตี้ขนาดใหญ่ที่ต้องการค้นหาทีมเร็วและดูผังแบบ On-Demand',
+          'Engineered for creator and community leagues with chunked GW loading and instant team search.'
+        );
+        setTxt('tier2-link', 'ชมตัวอย่างลีก #139836 ↗', 'View live preview #139836 ↗');
+
+        setTxt('order-title', 'สั่งเปิดลีกผ่าน LINE', 'Launch your league via LINE');
+        setTxt('order-sub',
+          'กรอกข้อมูลลีกของคุณเพื่อสร้างข้อความสรุป จากนั้นกดคัดลอกส่งทาง LINE เพื่อให้แอดมินตั้งค่ารูปแบบรางวัลและเปิดลิงก์ให้พร้อมใช้งาน',
+          'Fill in your league details to generate an order slip, copy it, and paste it in LINE for setup.'
+        );
+        setTxt('step-1', 'กรอกเลข FPL League ID และเลือกรูปแบบเงินรางวัล', 'Enter your FPL League ID and prize format');
+        setTxt('step-2', 'กดคัดลอกข้อความสรุปคำสั่งซื้อ', 'Copy the generated order slip');
+        setTxt('step-3', 'วางส่งในแชท LINE เพื่อรับลิงก์ส่วนตัวของลีก', 'Send in LINE chat to receive your private link');
+        setTxt('lbl-league-id', 'FPL League ID (ตัวเลขจากลิงก์ FPL) *', 'FPL League ID (numeric ID from FPL URL) *');
+        setTxt('lbl-league-name', 'ชื่อลีกหรือชื่อกลุ่ม (ถ้ามี)', 'League or group name (optional)');
+        setTxt('lbl-plan', 'แพ็กเกจ', 'Package');
+        setTxt('lbl-prize-model', 'รูปแบบเงินรางวัลหลัก', 'Primary prize model');
+        setTxt('lbl-team-tier', 'จำนวนทีมในลีก', 'League size');
+        setTxt('order-preview-label', 'ข้อความคำสั่งซื้อสำหรับส่ง LINE', 'Order slip for LINE');
+        setTxt('btn-copy-order-text', 'คัดลอกรายละเอียดคำสั่งซื้อ', 'Copy order slip');
+        setTxt('btn-open-line-text', 'เปิดแชท LINE เพื่อส่งข้อความ ↗', 'Open LINE chat ↗');
+
+        const prizeSelect = document.getElementById('order-prize-model');
+        if (prizeSelect && prizeSelect.options.length >= 5) {
+          prizeSelect.options[0].textContent = isEn ? 'Weekly Winner + Season Podium' : 'แชมป์ประจำสัปดาห์ + แชมป์ฤดูกาล';
+          prizeSelect.options[1].textContent = isEn ? 'Monthly Champions + Season Top 5' : 'แชมป์ประจำเดือน + Top 5 ฤดูกาล';
+          prizeSelect.options[2].textContent = isEn ? 'Bottom-5 Penalties + Weekly Winner' : 'เก็บค่าปรับอันดับท้าย + รางวัล';
+          prizeSelect.options[3].textContent = isEn ? 'Zero-Sum / Custom Mini-Game' : 'Zero-Sum / กติกาพิเศษกำหนดเอง';
+          prizeSelect.options[4].textContent = isEn ? 'Live Dashboard Only (No Prizes)' : 'เน้นดูคะแนนสด (ไม่มีเงินรางวัล)';
+        }
+        const teamSelect = document.getElementById('order-team-tier');
+        if (teamSelect && teamSelect.options.length >= 3) {
+          teamSelect.options[0].textContent = isEn ? `Up to ${LANDING_CONFIG.tier1_max_teams} Teams (Included)` : `ไม่เกิน ${LANDING_CONFIG.tier1_max_teams} ทีม (ราคาปกติ)`;
+          teamSelect.options[1].textContent = isEn ? '31–60 Teams (Custom Quote)' : '31–60 ทีม (สอบถามราคาเพิ่ม)';
+          teamSelect.options[2].textContent = isEn ? '60+ Teams (Tier 2 Roadmap)' : 'มากกว่า 60 ทีม (Tier 2 Roadmap)';
+        }
+        if (this.hasInteractedLeagueId) this.validateLeagueId(true);
+        this.updateOrderSummary();
+      },
+
+      renderPreviewStandings() {
+        const tbody = document.getElementById('preview-standings-body');
+        if (!tbody) return;
+        const rows = LANDING_SAMPLE_PREVIEW.rows || [];
+        tbody.innerHTML = rows.map(r => {
+          const prev = Number(r.last_rank || 0);
+          const cur = Number(r.rank || 0);
+          let moveHtml = '<span class="ink-muted">–</span>';
+          if (prev > 0 && cur > 0) {
+            if (prev > cur) moveHtml = `<span class="accent-ink">+${prev - cur}</span>`;
+            else if (prev < cur) moveHtml = `<span class="text-rose-700 dark:text-rose-400">-${cur - prev}</span>`;
+          }
+          return `
+            <tr class="hover:paper-raised transition-colors">
+              <td class="py-2.5 pr-2 font-mono">
+                <span class="font-medium">${cur}</span>
+                <span class="block text-xs leading-none mt-0.5">${moveHtml}</span>
+              </td>
+              <td class="py-2.5 px-2 min-w-0">
+                <div class="font-medium truncate">${this.escapeHtml(r.team)}</div>
+                <div class="text-xs ink-muted truncate">${this.escapeHtml(r.manager)}</div>
+              </td>
+              <td class="py-2.5 px-2 text-right font-mono accent-ink">+${Number(r.gw || 0)}</td>
+              <td class="py-2.5 pl-2 text-right font-mono font-semibold">${Number(r.total || 0).toLocaleString()}</td>
+            </tr>
+          `;
+        }).join('');
+      },
+
+      renderFeatures() {
+        const grid = document.getElementById('features-columns');
+        if (!grid) return;
+        const isEn = this.lang === 'en';
+        const items = [
+          {
+            title: isEn ? '15-second live updates' : 'คะแนนสดทุก 15 วินาที',
+            desc: isEn ? 'Live bonus projections, captain points, and automatic bench substitutions while matches play.' : 'คำนวณโบนัสคาดการณ์ กัปตัน และตัวสำรองอัตโนมัติระหว่างเกมแข่ง ไม่ต้องรอเว็บหลักสรุปหลังจบวัน'
+          },
+          {
+            title: isEn ? 'Automated prize ledger' : 'สมุดเงินรางวัลและค่าปรับ',
+            desc: isEn ? 'Weekly top scores, monthly tables, bottom-5 fines, and automatic exclusion of non-prize entries.' : 'แยกทีมไม่ชิงรางวัลออกให้ทันที พร้อมคำนวณแชมป์วีค รายเดือน ค่าปรับบ๊วย และรอบเคลียร์ยอดชัดเจน'
+          },
+          {
+            title: isEn ? 'LINE slip & Excel export' : 'คัดลอกส่ง LINE และ Excel',
+            desc: isEn ? 'One-tap matchday summary formatted cleanly for LINE group chats plus full .xlsx workbook download.' : 'กดคัดลอกตารางสรุปผลสัปดาห์แบบอ่านง่ายส่งเข้าแชท LINE หรือดาวน์โหลดไฟล์ .xlsx ได้ทันที'
+          },
+          {
+            title: isEn ? 'Squad scout & cup bracket' : 'ส่องผัง 11 ตัวจริงและบอลถ้วย',
+            desc: isEn ? 'Inspect opponent lineups, remaining chips, transfer ROI, and knockout bracket rounds in one view.' : 'ดูผังนักเตะและชิปที่เหลือของทุกทีมในลีก ความคุ้มค่าการเปลี่ยนตัว และสายประกบคู่บอลถ้วย'
+          }
+        ];
+        grid.innerHTML = items.map(it => `
+          <div class="py-6 md:px-5 first:md:pl-0 last:md:pr-0 space-y-2">
+            <h3 class="font-editorial text-base sm:text-lg font-semibold leading-snug">${it.title}</h3>
+            <p class="text-sm ink-secondary leading-relaxed">${it.desc}</p>
+          </div>
+        `).join('');
+      },
+
+      renderDemos() {
+        const list = document.getElementById('demos-list');
+        if (!list) return;
+        const isEn = this.lang === 'en';
+        list.innerHTML = LANDING_DEMOS.map(d => {
+          const planLabel = d.plan === 'tier2_roadmap'
+            ? (isEn ? 'Tier 2 preview' : 'ตัวอย่าง Tier 2')
+            : d.plan === 'custom'
+              ? 'Custom Tier 1'
+              : 'Standard Tier 1';
+          return `
+            <a href="./${this.escapeHtml(d.id)}/" data-demo-lid="${this.escapeHtml(d.id)}" target="_blank" rel="noopener noreferrer"
+               class="group py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:paper-raised transition-colors">
+              <div class="space-y-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <span class="font-editorial text-base font-semibold group-hover:underline">${this.escapeHtml(isEn ? d.title_en : d.title_th)}</span>
+                  <span class="text-xs font-mono ink-muted">#${this.escapeHtml(d.id)}</span>
+                  <span class="text-xs font-medium accent-ink">${this.escapeHtml(planLabel)}</span>
+                </div>
+                <p class="text-xs sm:text-sm ink-secondary">${this.escapeHtml(isEn ? d.desc_en : d.desc_th)}</p>
+              </div>
+              <div class="flex items-center justify-between sm:justify-end gap-5 flex-shrink-0 text-xs sm:text-sm tabular-nums">
+                <span class="font-mono ink-muted">${d.teams_count.toLocaleString()} ${isEn ? 'teams' : 'ทีม'}</span>
+                <span class="font-medium accent-ink whitespace-nowrap">${isEn ? 'Open live ↗' : 'เปิดดูลีก ↗'}</span>
+              </div>
+            </a>
+          `;
+        }).join('');
+      },
+
+      renderPricing() {
+        const isEn = this.lang === 'en';
+        const isUsd = this.currency === 'USD';
+        const bThb = document.getElementById('curr-btn-thb');
+        const bUsd = document.getElementById('curr-btn-usd');
+        if (bThb && bUsd) {
+          const activeCls = 'bg-[#1a151c] text-white border border-[#1a151c] dark:bg-[#efece4] dark:text-[#121413] dark:border-[#efece4]';
+          const idleCls = 'border hairline-rule paper-sheet ink-secondary hover:paper-raised';
+          bThb.className = 'px-3.5 py-2 rounded-md text-xs font-medium transition-colors cursor-pointer ' + (!isUsd ? activeCls : idleCls);
+          bUsd.className = 'px-3.5 py-2 rounded-md text-xs font-medium transition-colors cursor-pointer ' + (isUsd ? activeCls : idleCls);
+        }
+
+        const stdPrice = isUsd ? `$${LANDING_CONFIG.standard.usd}` : `${LANDING_CONFIG.standard.thb.toLocaleString()} บาท`;
+        const cusPrice = isUsd ? `$${LANDING_CONFIG.custom.usd}` : `${LANDING_CONFIG.custom.thb.toLocaleString()} บาท`;
+        const unit = isEn ? '/ season' : '/ ฤดูกาล';
+
+        const plans = [
+          {
+            id: 'standard',
+            name: 'Standard Tier 1',
+            tag: isEn ? 'Recommended for prize mini-leagues' : 'แนะนำสำหรับมินิลีกทั่วไป',
+            price: stdPrice,
+            unit,
+            sub: isEn ? `Up to ${LANDING_CONFIG.tier1_max_teams} teams • Standard prize & cup suite` : `ไม่เกิน ${LANDING_CONFIG.tier1_max_teams} ทีม • ครบทุกฟีเจอร์มาตรฐาน`,
+            features: isEn ? [
+              '15-second live scores with auto-sub and captain preview',
+              'Weekly top score, monthly winners, or bottom-5 penalty ledger',
+              'Knockout cup bracket, chip tracker, and form radar',
+              'Private isolated URL plus LINE summary & Excel export'
+            ] : [
+              'คะแนนสดทุก 15 วินาที พร้อมคำนวณตัวสำรองและโบนัส',
+              'เลือกได้ทั้งแชมป์วีค รายเดือน หรือเก็บค่าปรับอันดับท้าย',
+              'บอลถ้วยน็อคเอาท์ ตารางชิป และเรดาร์เปรียบเทียบฟอร์ม',
+              'ลิงก์ส่วนตัวแยกข้อมูลอิสระ พร้อมส่งสลิป LINE และ Excel'
+            ],
+            cta: isEn ? 'Select Standard' : 'เลือก Standard',
+            primary: true
+          },
+          {
+            id: 'custom',
+            name: 'Custom Tier 1',
+            tag: isEn ? 'Tailored rules & mini-games' : 'ปรับกติกาและมินิเกมเฉพาะกลุ่ม',
+            price: cusPrice,
+            unit,
+            sub: isEn ? `Up to ${LANDING_CONFIG.tier1_max_teams} teams • Custom payout engine` : `ไม่เกิน ${LANDING_CONFIG.tier1_max_teams} ทีม • ออกแบบกติกาเฉพาะลีก`,
+            features: isEn ? [
+              'Includes every capability of Standard Tier 1',
+              'Custom payout formula such as Zero-Sum or split-season pots',
+              '1 bespoke mini-game tab such as handicap picks or H2H challenge',
+              'Direct configuration review with admin on LINE'
+            ] : [
+              'ครบทุกความสามารถของแพ็กเกจ Standard Tier 1',
+              'ตั้งสูตรเงินรางวัลเฉพาะลีก เช่น Zero-Sum หรือแบ่งจ่าย 2 รอบ',
+              'เพิ่มแท็บมินิเกมพิเศษ 1 แท็บ เช่น ทายผลแฮนดิแคป หรือท้าชน',
+              'ปรึกษาและปรับแต่งเงื่อนไขร่วมกันโดยตรงทาง LINE'
+            ],
+            cta: isEn ? 'Select Custom' : 'เลือก Custom',
+            primary: false
+          }
+        ];
+
+        const wrap = document.getElementById('pricing-plans-wrap');
+        if (!wrap) return;
+        wrap.innerHTML = plans.map(p => `
+          <div class="paper-sheet rounded-lg card-pad flex flex-col justify-between gap-6 ${p.primary ? 'border-t-2 border-t-[#0f7a44] dark:border-t-[#4ade80]' : ''}">
+            <div class="space-y-4">
+              <div class="flex items-baseline justify-between gap-2 pb-3 border-b hairline-rule">
+                <h3 class="font-editorial text-xl font-semibold">${p.name}</h3>
+                <span class="text-xs font-medium ${p.primary ? 'accent-ink' : 'ink-muted'}">${p.tag}</span>
+              </div>
+              <div>
+                <div class="flex items-baseline gap-2 tabular-nums">
+                  <span class="font-editorial text-3xl font-semibold">${p.price}</span>
+                  <span class="text-sm ink-muted">${p.unit}</span>
+                </div>
+                <p class="text-xs sm:text-sm ink-secondary mt-1">${p.sub}</p>
+              </div>
+              <ul class="space-y-2.5 text-sm ink-secondary pt-2">
+                ${p.features.map(f => `
+                  <li class="flex items-start gap-2.5">
+                    <svg class="w-4 h-4 accent-ink flex-shrink-0 mt-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    <span>${f}</span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+            <button type="button" onclick="landingApp.selectPlanFromCard('${p.id}')" class="w-full h-11 px-4 rounded-md text-sm font-medium transition-colors cursor-pointer ${p.primary ? 'accent-fill' : 'border hairline-rule paper-sheet hover:paper-raised'}">${p.cta}</button>
+          </div>
+        `).join('');
+      },
+
+      updateOrderSummary() {
+        const isEn = this.lang === 'en';
+        const lidVal = (document.getElementById('order-league-id') || {}).value?.trim() || '<League ID>';
+        const nameVal = (document.getElementById('order-league-name') || {}).value?.trim() || '-';
+        const planVal = (document.getElementById('order-plan') || {}).value || 'standard';
+        const prizeEl = document.getElementById('order-prize-model');
+        const prizeText = prizeEl && prizeEl.selectedIndex >= 0 ? prizeEl.options[prizeEl.selectedIndex].textContent : 'Weekly';
+        const teamEl = document.getElementById('order-team-tier');
+        const teamVal = teamEl ? teamEl.value : '<=30';
+        const teamText = teamEl && teamEl.selectedIndex >= 0 ? teamEl.options[teamEl.selectedIndex].textContent : '';
+
+        const pkgCfg = planVal === 'custom' ? LANDING_CONFIG.custom : LANDING_CONFIG.standard;
+        const priceStr = this.currency === 'USD'
+          ? `$${pkgCfg.usd} USD / season`
+          : `${pkgCfg.thb.toLocaleString()} THB / season`;
+
+        const quoteNote = teamVal !== '<=30'
+          ? (isEn ? ' (Custom quote for 31+ teams)' : ' (ประเมินราคาเพิ่มสำหรับ 31+ ทีม)')
+          : '';
+
+        const badge = document.getElementById('order-price-badge');
+        if (badge) badge.textContent = teamVal !== '<=30' ? (isEn ? 'Custom quote' : 'ประเมินราคาเพิ่ม') : priceStr;
+
+        const pre = document.getElementById('order-summary-preview');
+        if (pre) {
+          pre.textContent = isEn
+            ? [
+                `FPLSaWaDiKa Order Request`,
+                `FPL League ID: ${lidVal}`,
+                `League Name: ${nameVal}`,
+                `Package: ${planVal === 'custom' ? 'Custom Tier 1' : 'Standard Tier 1'} (${priceStr})${quoteNote}`,
+                `Prize Format: ${prizeText}`,
+                `League Size: ${teamText}`
+              ].join('\\n')
+            : [
+                `สั่งเปิดมินิลีก FPLSaWaDiKa`,
+                `FPL League ID: ${lidVal}`,
+                `ชื่อลีก: ${nameVal}`,
+                `แพ็กเกจ: ${planVal === 'custom' ? 'Custom Tier 1' : 'Standard Tier 1'} (${priceStr})${quoteNote}`,
+                `รูปแบบเงินรางวัล: ${prizeText}`,
+                `จำนวนทีม: ${teamText}`
+              ].join('\\n');
+        }
+      },
+
+      renderVisitorStat() {
+        const inlineEl = document.getElementById('hero-views-inline');
+        const footerBadge = document.getElementById('landing-visitor-badge');
+        const isEn = this.lang === 'en';
+        if (this.visitorViews > 0) {
+          const viewsFmt = Math.floor(this.visitorViews).toLocaleString();
+          if (inlineEl) inlineEl.textContent = isEn ? `${viewsFmt} views recorded` : `ยอดเข้าชมสะสม ${viewsFmt} ครั้ง`;
+          if (footerBadge) {
+            footerBadge.textContent = isEn ? `Views: ${viewsFmt}` : `ยอดเข้าชมสะสม: ${viewsFmt}`;
+            footerBadge.classList.remove('hidden');
+          }
+        } else {
+          if (inlineEl) inlineEl.textContent = isEn ? 'Isolated private URL per league' : 'แยกข้อมูลอิสระรายลีก';
+        }
+      },
+
+      async fetchVisitorCount() {
+        if (window.location.protocol === 'file:') return;
+        try {
+          const resp = await fetch((LANDING_CONFIG.api_base_url || 'https://api.fplsawadika.com') + '/visitors');
+          if (!resp.ok) return;
+          const data = await resp.json();
+          if (Number(data && data.views) > 0) {
+            this.visitorViews = Number(data.views);
+            this.renderVisitorStat();
+          }
+        } catch (_) {}
+      },
+
+      isLocalOrigin() {
+        if (typeof window === 'undefined' || !window.location) return true;
+        const proto = String(window.location.protocol || '').toLowerCase();
+        const host = String(window.location.hostname || '').toLowerCase();
+        return proto === 'file:' || !host || host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]' || host === '0.0.0.0' || host.endsWith('.local');
+      },
+
+      sendLandingTelemetry() {
+        if (this.isLocalOrigin() || typeof navigator === 'undefined' || !navigator.sendBeacon) return;
+        try {
+          var VISIT_DEDUP_MS = 30 * 60 * 1000;
+          var shouldCount = true;
+          try {
+            var lastTs = parseInt(localStorage.getItem('fpl_visit_dedup_ts') || '0', 10);
+            if (!isNaN(lastTs) && (Date.now() - lastTs) < VISIT_DEDUP_MS) {
+              shouldCount = false;
+            } else {
+              localStorage.setItem('fpl_visit_dedup_ts', String(Date.now()));
+            }
+          } catch (_) {}
+          navigator.sendBeacon(
+            (LANDING_CONFIG.api_base_url || 'https://api.fplsawadika.com') + '/api/telemetry/event',
+            JSON.stringify({
+              type: shouldCount ? 'page_view' : 'landing_view',
+              league_id: 'landing',
+              path: window.location.pathname
+            })
+          );
+        } catch (_) {}
+      }
+    };
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      landingApp.init();
+    } else {
+      document.addEventListener('DOMContentLoaded', () => landingApp.init());
+    }
+  </script>
+</body>
+</html>"""
+
+    html = html.replace('__STRUCTURED_DATA_JSON__', structured_json)
+    html = html.replace('__TOTAL_SHOWCASE_LEAGUES__', str(total_showcase_leagues))
+    html = html.replace('__TOTAL_SHOWCASE_TEAMS__', f"{total_showcase_teams:,}")
+    html = html.replace('__MAX_GW__', str(max_gw))
+    html = html.replace('__PREVIEW_LID__', preview_lid)
+    html = html.replace('__PREVIEW_LEAGUE_NAME__', str(preview_league.get('name') or 'FPL Mini-League'))
+    html = html.replace('__LAST_SYNC__', last_sync_str)
+    html = html.replace('__MAX_TEAMS__', str(max_teams))
+    html = html.replace('__LINE_URL__', line_url)
+    html = html.replace('__PRICING_JSON__', pricing_json)
+    html = html.replace('__DEMOS_JSON__', demos_json)
+    html = html.replace('__SAMPLE_PREVIEW_JSON__', sample_preview_json)
+    return html
+
+def generate_404_html(site_config, leagues_config):
+    line_url = (site_config.get('contact') or {}).get('line_url') or 'https://line.me/ti/p/lgWPeyIBR7'
+    demos = (site_config.get('showcase_demos') or [])[:3]
+    quick_demos = [{"id": str(d.get("id", "")), "title_th": d.get("title_th", ""), "title_en": d.get("title_en", "")} for d in demos]
+    quick_demos_json = json.dumps(quick_demos, ensure_ascii=False).replace('</', '<\\/')
+
+    html = """<!DOCTYPE html>
+<html lang="th" class="h-full bg-slate-50 dark:bg-slate-950 transition-colors duration-150">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>404 — ไม่พบหน้าลีกที่ต้องการ | FPLSaWaDiKa</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script>
+    (function() {
+      var dark = false;
+      var lang = 'th';
+      try {
+        var savedTheme = null;
+        try { savedTheme = localStorage.getItem('fpl_theme'); } catch (_) {}
+        var sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        dark = savedTheme === 'dark' || (!savedTheme && sysDark);
+        var savedLang = null;
+        try { savedLang = localStorage.getItem('fpl_lang'); } catch (_) {}
+        lang = savedLang === 'en' ? 'en' : 'th';
+      } catch (_) {}
+      document.documentElement.classList.toggle('dark', dark);
+      document.documentElement.lang = lang;
+    })();
+  </script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.5/dist/index.global.js"
+    integrity="sha384-t+qLIxS5zM/KF99/doWY+dxTsavdvgayaZt8A9ntLsUjEkiXzYl5M3Ij8zVFPL9j"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <style type="text/tailwindcss">
+    @variant dark (&:where(.dark, .dark *));
+  </style>
+  <style>
+    body { font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  </style>
+</head>
+<body class="min-h-full flex items-center justify-center p-4 bg-slate-50 text-slate-900 dark:bg-black dark:text-slate-100">
+  <main class="max-w-lg w-full bg-white dark:bg-slate-950 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xl text-center space-y-5">
+    <div class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-xs font-bold text-slate-600 dark:text-slate-300">
+      HTTP 404 • FPLSaWaDiKa
+    </div>
+    <h1 id="e404-title" class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">ไม่พบหน้าลีกที่คุณกำลังค้นหา</h1>
+    <p id="e404-desc" class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+      ลิงก์นี้อาจพิมพ์ผิด หมดอายุ หรือมินิลีกนี้ยังไม่ได้เชื่อมต่อเข้าระบบของ FPLSaWaDiKa
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-1">
+      <a id="e404-home-btn" href="./" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-500 text-white text-xs sm:text-sm font-bold transition-colors">กลับหน้าแรก FPLSaWaDiKa</a>
+      <a id="e404-line-btn" href="__LINE_URL__" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold transition-colors">ติดต่อเปิดลีกผ่าน LINE ↗</a>
+    </div>
+
+    <div class="pt-4 border-t border-slate-200/80 dark:border-slate-800 space-y-2.5">
+      <div id="e404-demos-lbl" class="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400">ตัวอย่างลีกที่เปิดให้ชมฟรี</div>
+      <div id="e404-demos-row" class="flex flex-wrap items-center justify-center gap-2"></div>
+    </div>
+  </main>
+
+  <script>
+    (function() {
+      const demos = __QUICK_DEMOS_JSON__;
+      const isEn = document.documentElement.lang === 'en';
+      const isFile = window.location.protocol === 'file:';
+      const homeBtn = document.getElementById('e404-home-btn');
+      if (homeBtn) homeBtn.setAttribute('href', isFile ? './index.html' : '/');
+      if (isEn) {
+        document.getElementById('e404-title').textContent = 'Mini-League Page Not Found';
+        document.getElementById('e404-desc').textContent = 'This URL may be mistyped, expired, or this FPL mini-league has not been onboarded yet.';
+        if (homeBtn) homeBtn.textContent = 'Back to Home';
+        document.getElementById('e404-line-btn').textContent = 'Request League Setup via LINE ↗';
+        document.getElementById('e404-demos-lbl').textContent = 'Explore Live Demos';
+      }
+      const row = document.getElementById('e404-demos-row');
+      if (row) {
+        row.innerHTML = demos.map(d => {
+          const href = isFile ? ('./' + d.id + '/index.html') : ('/' + d.id + '/');
+          const label = isEn ? d.title_en : d.title_th;
+          return '<a href="' + href + '" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 hover:border-blue-500 text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors">' + label + '</a>';
+        }).join('');
+      }
+    })();
+  </script>
+</body>
+</html>"""
+
+    html = html.replace('__LINE_URL__', line_url)
+    html = html.replace('__QUICK_DEMOS_JSON__', quick_demos_json)
     return html
 
 def main():
@@ -22138,6 +23689,9 @@ def main():
 
     with open(config_path, 'r', encoding='utf-8') as f:
         leagues_config = json.load(f)
+
+    site_config = load_site_config(base_dir)
+    site_line_url = (site_config.get('contact') or {}).get('line_url') or 'https://line.me/ti/p/lgWPeyIBR7'
 
     # Performance Optimization: Deep-strip raw_picks and serialize JSON strings once
     pruned_data = {
@@ -22206,20 +23760,42 @@ def main():
                 except OSError:
                     pass
 
+    def get_tenant_lids(target_lid):
+        t_cfg = leagues_config.get(str(target_lid), {})
+        t_group = t_cfg.get("tenant_group") or f"private_{target_lid}"
+        allowed = {
+            str(k) for k, v in leagues_config.items()
+            if isinstance(v, dict) and (v.get("tenant_group") or f"private_{k}") == t_group
+        }
+        allowed.add(str(target_lid))
+        return allowed
+
+    def get_scoped_config_for_target(target_lid):
+        allowed = get_tenant_lids(target_lid)
+        scoped_cfg = {k: v for k, v in leagues_config.items() if str(k) in allowed}
+        return json.dumps(scoped_cfg, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+
     def get_pruned_data_for_target(target_lid):
+        allowed = get_tenant_lids(target_lid)
         page_pruned = {
             "last_sync": pruned_data["last_sync"],
             "last_sync_iso": pruned_data["last_sync_iso"],
             "sync_status": pruned_data["sync_status"],
             "max_gw": pruned_data["max_gw"],
-            "league_order": pruned_data["league_order"],
+            "league_order": [lid for lid in pruned_data["league_order"] if str(lid) in allowed],
             "transfer_suggestions": pruned_data["transfer_suggestions"],
             "next_deadline": pruned_data["next_deadline"],
             "events_deadlines": pruned_data["events_deadlines"],
             "leagues": {}
         }
+        unique_entry_ids = set()
         for lid, l_dict in pruned_data["leagues"].items():
+            if str(lid) not in allowed:
+                continue
             member_count = len(l_dict.get("teams", []))
+            for t in l_dict.get("teams", []):
+                if t.get("entry_id"):
+                    unique_entry_ids.add(t.get("entry_id"))
             l_tier = l_dict.get("tier") or leagues_config.get(str(lid), {}).get("tier", 1)
             if str(lid) == str(target_lid):
                 target_obj = dict(l_dict)
@@ -22272,9 +23848,11 @@ def main():
                     "gameweeks": light_gws,
                     "squads": {}
                 }
-        return json.dumps(page_pruned, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
-
-    leagues_config_json_str = json.dumps(leagues_config, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+        return (
+            json.dumps(page_pruned, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/'),
+            len(page_pruned["leagues"]),
+            len(unique_entry_ids)
+        )
 
     shi62_txt_path = os.path.join(base_dir, 'config', 'shi62_special.txt')
     shi62_special_data = parse_shi62_file(shi62_txt_path)
@@ -22322,33 +23900,53 @@ def main():
         bchal = bramann_chal_json_str if (t_feat.get('has_bramann_challenge') or t_feat.get('prize_model') == 'bramann_dual_prize') else 'null'
         return s62, bpred, bchal
 
-    # 1. Resolve default league ID dynamically from leagues_config (is_default: true or first entry)
+    # 1. Resolve default showcase league ID dynamically & export shared dashboard-app.js + preview.html
     default_root_lid = next(
         (str(k) for k, v in leagues_config.items() if isinstance(v, dict) and v.get("is_default")),
         next(iter(leagues_config.keys()), "40700")
     )
     app_js_out_path = os.path.join(base_dir, 'assets', 'dashboard-app.js')
     root_s62, root_bpred, root_bchal = get_special_jsons_for_target(default_root_lid)
-    root_json_str = get_pruned_data_for_target(default_root_lid)
-    root_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=root_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=root_s62, bramann_pred_json_str=root_bpred, bramann_chal_json_str=root_bchal, precomputed_players_str=players_compact_json_str, export_app_js_path=app_js_out_path)
+    root_json_str, root_l_cnt, root_t_cnt = get_pruned_data_for_target(default_root_lid)
+    root_cfg_str = get_scoped_config_for_target(default_root_lid)
+    preview_html = generate_html(
+        multi_data, leagues_config, default_league_id=None,
+        precomputed_json_str=root_json_str, precomputed_cfg_str=root_cfg_str,
+        shi62_data_json_str=root_s62, bramann_pred_json_str=root_bpred,
+        bramann_chal_json_str=root_bchal, precomputed_players_str=players_compact_json_str,
+        export_app_js_path=app_js_out_path, site_line_url=site_line_url,
+        radar_leagues_count=root_l_cnt, radar_teams_count=root_t_cnt
+    )
     with open(app_js_out_path, 'rb') as jsbf:
         app_js_hash = hashlib.sha256(jsbf.read()).hexdigest()[:8]
 
+    landing_html = generate_landing_html(multi_data, leagues_config, site_config)
+    page_404_html = generate_404_html(site_config, leagues_config)
+
     with open(os.path.join(base_dir, 'index.html'), 'w', encoding='utf-8') as f:
-        f.write(root_html)
+        f.write(landing_html)
 
     with open(os.path.join(base_dir, 'preview.html'), 'w', encoding='utf-8') as f:
-        f.write(root_html)
+        f.write(preview_html)
 
     with open(os.path.join(base_dir, '404.html'), 'w', encoding='utf-8') as f:
-        f.write(root_html)
+        f.write(page_404_html)
 
-    # 2. Generate dedicated folder entry points for all configured leagues dynamically
+    # 2. Generate dedicated folder entry points for all configured leagues (scoped by tenant_group)
     for lid in leagues_config.keys():
         dir_league = os.path.join(base_dir, str(lid))
         os.makedirs(dir_league, exist_ok=True)
         lid_s62, lid_bpred, lid_bchal = get_special_jsons_for_target(str(lid))
-        html_league = generate_html(multi_data, leagues_config, default_league_id=str(lid), precomputed_json_str=get_pruned_data_for_target(str(lid)), precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=lid_s62, bramann_pred_json_str=lid_bpred, bramann_chal_json_str=lid_bchal, precomputed_players_str=players_compact_json_str, precomputed_app_js_hash=app_js_hash)
+        lid_json_str, lid_l_cnt, lid_t_cnt = get_pruned_data_for_target(str(lid))
+        lid_cfg_str = get_scoped_config_for_target(str(lid))
+        html_league = generate_html(
+            multi_data, leagues_config, default_league_id=str(lid),
+            precomputed_json_str=lid_json_str, precomputed_cfg_str=lid_cfg_str,
+            shi62_data_json_str=lid_s62, bramann_pred_json_str=lid_bpred,
+            bramann_chal_json_str=lid_bchal, precomputed_players_str=players_compact_json_str,
+            precomputed_app_js_hash=app_js_hash, site_line_url=site_line_url,
+            radar_leagues_count=lid_l_cnt, radar_teams_count=lid_t_cnt
+        )
         with open(os.path.join(dir_league, 'index.html'), 'w', encoding='utf-8') as f:
             f.write(html_league)
 
@@ -22362,7 +23960,11 @@ def main():
             except OSError:
                 pass
 
-    # 4. Generate SEO sitemap.xml and robots.txt
+    # 4. Generate SEO sitemap.xml (homepage + showcase leagues only; private tenants excluded) and robots.txt
+    showcase_sitemap_lids = [
+        lid for lid in sorted(active_lids, key=lambda k: int(k) if str(k).isdigit() else 999999999)
+        if (leagues_config.get(lid, {}).get("visibility", "showcase") == "showcase") or bool(leagues_config.get(lid, {}).get("include_in_sitemap", False))
+    ]
     sitemap_lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -22372,7 +23974,7 @@ def main():
         '    <priority>1.0</priority>',
         '  </url>'
     ]
-    for lid in sorted(active_lids, key=lambda k: int(k) if str(k).isdigit() else 999999999):
+    for lid in showcase_sitemap_lids:
         sitemap_lines.extend([
             '  <url>',
             f'    <loc>https://www.fplsawadika.com/{lid}/</loc>',
