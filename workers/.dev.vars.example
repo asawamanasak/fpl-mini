@@ -1,0 +1,6 @@
+# Local Secrets for `wrangler dev --local --env staging`
+# Copy this file to `workers/.dev.vars` (gitignored) and replace with your own test passkey.
+# NEVER commit `workers/.dev.vars` or put real production secrets here.
+
+ADMIN_SECRET_KEY=replace-with-local-staging-passkey
+ADMIN_SESSION_SECRET=replace-with-local-session-hmac-secret

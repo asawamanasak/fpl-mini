@@ -1581,6 +1581,48 @@
     }
 
     /**
+     * Resolve Cloudflare Worker API Base (allows ?api=local / ?api=<staging-url> ONLY on localhost/127.0.0.1)
+     */
+    function resolveWorkerApiBase(defaultBase = 'https://api.fplsawadika.com') {
+      try {
+        if (typeof window === 'undefined' || !window.location) return { base: defaultBase, isOverride: false, isNonProdTarget: false };
+        const host = String(window.location.hostname || '').toLowerCase();
+        const proto = String(window.location.protocol || '').toLowerCase();
+        const isLocal = proto === 'file:' || !host || host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]' || host === '0.0.0.0' || host.endsWith('.local');
+        if (!isLocal) return { base: defaultBase, isOverride: false, isNonProdTarget: false };
+
+        let candidate = '';
+        if (window.location.search) {
+          const qp = new URLSearchParams(window.location.search).get('api');
+          if (qp !== null) {
+            const trimmed = qp.trim();
+            if (trimmed === 'reset' || trimmed === 'prod' || trimmed === '') {
+              try { sessionStorage.removeItem('fpl_dev_api_base'); } catch (_) {}
+            } else {
+              candidate = (trimmed === 'local' || trimmed === 'staging') ? 'http://127.0.0.1:8787' : trimmed;
+            }
+          }
+        }
+        if (!candidate) {
+          try { candidate = sessionStorage.getItem('fpl_dev_api_base') || ''; } catch (_) {}
+        }
+        if (candidate) {
+          const parsed = new URL(candidate);
+          const ch = parsed.hostname.toLowerCase();
+          const ok = (parsed.protocol === 'http:' && (ch === '127.0.0.1' || ch === 'localhost')) ||
+                     (parsed.protocol === 'https:' && (ch.endsWith('.workers.dev') || ch === 'api.fplsawadika.com' || ch.endsWith('.fplsawadika.com')));
+          if (ok) {
+            const clean = parsed.origin;
+            try { sessionStorage.setItem('fpl_dev_api_base', clean); } catch (_) {}
+            const isProdHost = ch === 'api.fplsawadika.com' || ch === 'fpl-live-relay.asawamanasak.workers.dev';
+            return { base: clean, isOverride: true, isNonProdTarget: !isProdHost };
+          }
+        }
+      } catch (_) {}
+      return { base: defaultBase, isOverride: false, isNonProdTarget: false };
+    }
+
+    /**
      * Official Premier League Club Kit Mapping (Team Short Name -> Kit Code)
      */
     const FPL_TEAM_CODES = {
@@ -2121,16 +2163,21 @@
         this._nextLivePollAt = Date.now() + 15000;
 
         const forceQuery = force ? '&force=1' : '';
+        const apiCfg = (typeof resolveWorkerApiBase === 'function')
+          ? resolveWorkerApiBase()
+          : { base: 'https://api.fplsawadika.com', isOverride: false };
+        const defaultEndpoints = apiCfg.isOverride
+          ? [`${apiCfg.base}/live?event=${maxGW}&slim=1${forceQuery}`]
+          : [
+              `${apiCfg.base}/live?event=${maxGW}&slim=1${forceQuery}`,
+              `https://fpl-live-relay.asawamanasak.workers.dev/?event=${maxGW}&slim=1${forceQuery}`
+            ];
         const endpoints = this._preferredWorkerEndpoint
           ? [
               `${this._preferredWorkerEndpoint}?event=${maxGW}&slim=1${forceQuery}`,
-              `https://api.fplsawadika.com/live?event=${maxGW}&slim=1${forceQuery}`,
-              `https://fpl-live-relay.asawamanasak.workers.dev/?event=${maxGW}&slim=1${forceQuery}`
+              ...defaultEndpoints
             ]
-          : [
-              `https://api.fplsawadika.com/live?event=${maxGW}&slim=1${forceQuery}`,
-              `https://fpl-live-relay.asawamanasak.workers.dev/?event=${maxGW}&slim=1${forceQuery}`
-            ];
+          : defaultEndpoints;
 
         try {
           let liveJson = null;
@@ -16875,10 +16922,13 @@ selectShi62GW(gwName) {
           }
 
           // 2. Ensure live elements map is available for live points calculation
+          const modalApiCfg = (typeof resolveWorkerApiBase === 'function')
+            ? resolveWorkerApiBase()
+            : { base: 'https://api.fplsawadika.com', isOverride: false };
           this._liveMapsByGw = this._liveMapsByGw || {};
           if (!this._liveMapsByGw[gwNum] || Object.keys(this._liveMapsByGw[gwNum]).length === 0) {
             try {
-              const liveResp = await fetch(`https://api.fplsawadika.com/live?event=${gwNum}&slim=1`);
+              const liveResp = await fetch(`${modalApiCfg.base}/live?event=${gwNum}&slim=1`);
               if (liveResp.ok) {
                 const liveJson = await liveResp.json();
                 if (liveJson && Array.isArray(liveJson.elements)) {
@@ -16897,7 +16947,7 @@ selectShi62GW(gwName) {
                 }
               }
             } catch (_) {}
-            if (!this._liveMapsByGw[gwNum]) {
+            if (!this._liveMapsByGw[gwNum] && !modalApiCfg.isOverride) {
               try {
                 const fbLive = await fetch(`https://fpl-live-relay.asawamanasak.workers.dev/live?event=${gwNum}&slim=1`);
                 if (fbLive.ok) {
@@ -16949,11 +16999,11 @@ selectShi62GW(gwName) {
           };
 
           if (!picksData) {
-            const j = await fetchJsonWithTimeout(`https://api.fplsawadika.com/picks?entry=${entryIdNum}&gw=${gwNum}`);
+            const j = await fetchJsonWithTimeout(`${modalApiCfg.base}/picks?entry=${entryIdNum}&gw=${gwNum}`);
             if (j && Array.isArray(j.picks)) picksData = j;
           }
 
-          if (!picksData) {
+          if (!picksData && !modalApiCfg.isOverride) {
             const fbj = await fetchJsonWithTimeout(`https://fpl-live-relay.asawamanasak.workers.dev/picks?entry=${entryIdNum}&gw=${gwNum}`);
             if (fbj && Array.isArray(fbj.picks)) picksData = fbj;
           }
@@ -19227,8 +19277,11 @@ ${this.getPublicLeagueUrl()}`;
 
         const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
         const timer = ctrl ? setTimeout(() => ctrl.abort(), 4000) : null;
+        const visitorsApiBase = (typeof resolveWorkerApiBase === 'function')
+          ? resolveWorkerApiBase().base
+          : 'https://api.fplsawadika.com';
         try {
-          const resp = await fetch('https://api.fplsawadika.com/visitors', {
+          const resp = await fetch(`${visitorsApiBase}/visitors`, {
             method: 'GET',
             signal: ctrl ? ctrl.signal : undefined,
           });
@@ -19344,12 +19397,13 @@ ${this.getPublicLeagueUrl()}`;
         var host = (typeof window !== "undefined" && window.location) ? String(window.location.hostname || "").toLowerCase() : "";
         var proto = (typeof window !== "undefined" && window.location) ? String(window.location.protocol || "").toLowerCase() : "";
         var isLocalOrigin = proto === "file:" || !host || host === "localhost" || host === "127.0.0.1" || host === "::1" || host === "[::1]" || host === "0.0.0.0" || host.endsWith(".local");
-        if (isLocalOrigin) {
+        var resolvedTelem = (typeof resolveWorkerApiBase === "function") ? resolveWorkerApiBase("https://api.fplsawadika.com") : { base: "https://api.fplsawadika.com", isOverride: false, isNonProdTarget: false };
+        if (isLocalOrigin && !resolvedTelem.isNonProdTarget) {
           window._trackFeature = function() {};
           window._trackLeagueSwitch = function() {};
           return;
         }
-        var telemEndpoint = "https://api.fplsawadika.com/api/telemetry/event";
+        var telemEndpoint = resolvedTelem.base + "/api/telemetry/event";
         var currentLeague = "";
         var sessionStartTime = Date.now();
         var match = window.location.pathname.match(/\/(\d{4,8})\/?/);

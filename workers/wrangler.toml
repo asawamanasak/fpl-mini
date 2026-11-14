@@ -3,13 +3,41 @@ main = "fpl-live-worker.js"
 compatibility_date = "2026-10-01"
 workers_dev = true
 
-# Cloudflare KV Storage Binding
+[vars]
+ENVIRONMENT = "production"
+GITHUB_BRANCH = "main"
+
+# Cloudflare KV Storage Binding (Production)
 [[kv_namespaces]]
 binding = "ANALYTICS_KV"
 id = "a582535614b9489ebd626534ba6c0da1"
 
-# Cloudflare D1 Database Binding
+# Cloudflare D1 Database Binding (Production)
 [[d1_databases]]
 binding = "DB"
 database_name = "fpl-database"
 database_id = "b37459ac-6632-4db5-8afa-822b76b26184"
+
+# ==========================================================
+# Isolated Staging Environment (Local Dev & Commercial QA)
+# Use: `npx wrangler dev --local --env staging --port 8787`
+# Remote deploy (only when ready): `npx wrangler deploy --env staging`
+# ==========================================================
+[env.staging]
+name = "fpl-live-relay-staging"
+workers_dev = true
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+GITHUB_BRANCH = "feat/commercial-landing"
+
+# Local emulation binds automatically with --local.
+# Before remote deploy (--env staging), replace placeholder IDs with `wrangler kv namespace create` & `wrangler d1 create fpl-database-staging`.
+[[env.staging.kv_namespaces]]
+binding = "ANALYTICS_KV"
+id = "00000000000000000000000000000001"
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "fpl-database-staging"
+database_id = "00000000-0000-0000-0000-000000000000"

@@ -813,11 +813,13 @@ export default {
           }
 
           const tsSuffix = isForce ? `?t=${Date.now()}` : '';
+          const rawBranch = (env && typeof env.GITHUB_BRANCH === 'string' && env.GITHUB_BRANCH.trim()) ? env.GITHUB_BRANCH.trim() : 'main';
+          const safeBranch = /^[A-Za-z0-9._\/-]+$/.test(rawBranch) ? rawBranch : 'main';
           const candidateUrls = [
-            `https://raw.githubusercontent.com/asawamanasak/fpl-mini/main/multi_fpl_data.json${tsSuffix}`,
+            `https://raw.githubusercontent.com/asawamanasak/fpl-mini/${safeBranch}/multi_fpl_data.json${tsSuffix}`,
             `https://www.fplsawadika.com/multi_fpl_data.json${tsSuffix}`,
           ];
-          const cfgPromise = fetch(`https://raw.githubusercontent.com/asawamanasak/fpl-mini/main/config/leagues_config.json${tsSuffix}`, {
+          const cfgPromise = fetch(`https://raw.githubusercontent.com/asawamanasak/fpl-mini/${safeBranch}/config/leagues_config.json${tsSuffix}`, {
             headers: { 'User-Agent': 'FPLSaWaDiKa-Admin-Relay/2.0' },
             cf: isForce ? { cacheTtl: 0, cacheEverything: false } : { cacheTtl: 300, cacheEverything: true },
           }).then(r => (r && r.ok ? r.json() : null)).catch(() => null);
@@ -1213,6 +1215,8 @@ export default {
 
             data.edge_metadata = {
               colo,
+              environment: (env && env.ENVIRONMENT) ? String(env.ENVIRONMENT) : 'production',
+              github_branch: safeBranch,
               edge_timestamp: new Date().toISOString(),
               forced_refresh: isForce,
               data_source: (env && env.DB) ? 'Cloudflare D1 SQL' : ((env && env.ANALYTICS_KV) ? 'Cloudflare KV' : 'Static Multi-League JSON')
@@ -1251,10 +1255,16 @@ export default {
 
     // 1. Health Check Endpoint
     if (path === '/health') {
+      const workerEnv = (env && env.ENVIRONMENT) ? String(env.ENVIRONMENT) : 'production';
+      const rawGhBranch = (env && typeof env.GITHUB_BRANCH === 'string' && env.GITHUB_BRANCH.trim()) ? env.GITHUB_BRANCH.trim() : 'main';
       return new Response(
         JSON.stringify({
           status: 'ok',
           worker: 'fplsawadika-live-engine',
+          environment: workerEnv,
+          github_branch: rawGhBranch,
+          has_db: Boolean(env && env.DB),
+          has_kv: Boolean(env && env.ANALYTICS_KV),
           colo,
           timestamp: new Date().toISOString(),
         }),

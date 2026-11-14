@@ -23,3 +23,12 @@ These instructions apply automatically to every conversation inside the `FPLSaWa
   * Keep pinned versions + Subresource Integrity (`integrity="sha384-..."`, `crossorigin="anonymous"`) on third-party scripts (`@tailwindcss/browser@4.3.5`, `xlsx@0.18.5`).
   * Prefer `textContent`, `data-*` attributes, or `this.escapeHtml(...)` over raw interpolation in `innerHTML` or inline `onclick="..."`.
   * Keep Cloudflare D1 row `lifetime:total_views` (`date = '9999-12-31'`) excluded from 30-day telemetry pruning queries in `workers/fpl-live-worker.js`.
+
+## 4. Dual-Workspace Routing & Isolation (`feat/commercial-landing` Commercial Local)
+* **This Worktree (`/Users/micky/Desktop/Antigravity/FPLSaWaDiKa-commercial`, branch `feat/commercial-landing`):** Dedicated **exclusively** to Commercial development (Product Landing Page, Pricing, Payment/Subscription, Customer Onboarding, Tenant Isolation, and `[env.staging]` Local Worker `fpl-live-relay-staging`).
+* **Never Touch Online Production:** Do **not** modify `/Users/micky/Desktop/Antigravity/FPLSaWaDiKa` (`main`), do **not** merge into `main`, and do **not** deploy Cloudflare Worker `fpl-live-relay` (`api.fplsawadika.com`) from this worktree unless explicitly ordered by the user to launch publicly.
+* **Local Staging & Telemetry Isolation:**
+  * Run local Worker with `cd /Users/micky/Desktop/Antigravity/FPLSaWaDiKa-commercial/workers && npx wrangler dev --local --env staging --port 8787` (uses local SQLite initialized from `workers/schema.sql` and gitignored `workers/.dev.vars`).
+  * Run local web server on `127.0.0.1:8000` and test full integration via `http://127.0.0.1:8000/?api=local` (`resolveWorkerApiBase()` keeps production domains strictly locked to `https://api.fplsawadika.com` and keeps localhost telemetry blocked unless `?api=local` points to local/staging).
+  * **Important Shell Path Guardrail:** If invoked from a conversation rooted in `/Users/micky/Desktop/Antigravity/FPLSaWaDiKa`, always `cd /Users/micky/Desktop/Antigravity/FPLSaWaDiKa-commercial && ...` before running any command or editing files.
+* **User Workflow Support:** The user prefers plain-language explanations without terminal jargon and relies on the agent to run build/verification scripts, dev servers, and approved `feat/commercial-landing` Git operations on their behalf.

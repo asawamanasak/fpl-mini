@@ -30,8 +30,17 @@ scratch/
 *.sublime-project
 *.sublime-workspace
 
-# Cloudflare Wrangler cache
+# Cloudflare Wrangler local state & secrets (never commit!)
 .wrangler/
+workers/.wrangler/
+.dev.vars
+.dev.vars.*
+workers/.dev.vars
+workers/.dev.vars.*
+!workers/.dev.vars.example
+
+# Temporary design audit artifacts
+.hallmark/
 
 # Generated audit output
 deep_audit_report.json

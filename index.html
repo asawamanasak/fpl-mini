@@ -1896,10 +1896,55 @@
         }
       },
 
+      isLocalOrigin() {
+        if (typeof window === 'undefined' || !window.location) return true;
+        const proto = String(window.location.protocol || '').toLowerCase();
+        const host = String(window.location.hostname || '').toLowerCase();
+        return proto === 'file:' || !host || host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]' || host === '0.0.0.0' || host.endsWith('.local');
+      },
+
+      resolveApiBase() {
+        const fallback = LANDING_CONFIG.api_base_url || 'https://api.fplsawadika.com';
+        try {
+          if (!this.isLocalOrigin() || typeof window === 'undefined' || !window.location) {
+            return { base: fallback, isOverride: false, isNonProdTarget: false };
+          }
+          let candidate = '';
+          if (window.location.search) {
+            const qp = new URLSearchParams(window.location.search).get('api');
+            if (qp !== null) {
+              const trimmed = qp.trim();
+              if (trimmed === 'reset' || trimmed === 'prod' || trimmed === '') {
+                try { sessionStorage.removeItem('fpl_dev_api_base'); } catch (_) {}
+              } else {
+                candidate = (trimmed === 'local' || trimmed === 'staging') ? 'http://127.0.0.1:8787' : trimmed;
+              }
+            }
+          }
+          if (!candidate) {
+            try { candidate = sessionStorage.getItem('fpl_dev_api_base') || ''; } catch (_) {}
+          }
+          if (candidate) {
+            const parsed = new URL(candidate);
+            const ch = parsed.hostname.toLowerCase();
+            const ok = (parsed.protocol === 'http:' && (ch === '127.0.0.1' || ch === 'localhost')) ||
+                       (parsed.protocol === 'https:' && (ch.endsWith('.workers.dev') || ch === 'api.fplsawadika.com' || ch.endsWith('.fplsawadika.com')));
+            if (ok) {
+              const clean = parsed.origin;
+              try { sessionStorage.setItem('fpl_dev_api_base', clean); } catch (_) {}
+              const isProdHost = ch === 'api.fplsawadika.com' || ch === 'fpl-live-relay.asawamanasak.workers.dev';
+              return { base: clean, isOverride: true, isNonProdTarget: !isProdHost };
+            }
+          }
+        } catch (_) {}
+        return { base: fallback, isOverride: false, isNonProdTarget: false };
+      },
+
       async fetchVisitorCount() {
         if (window.location.protocol === 'file:') return;
         try {
-          const resp = await fetch((LANDING_CONFIG.api_base_url || 'https://api.fplsawadika.com') + '/visitors');
+          const apiCfg = this.resolveApiBase();
+          const resp = await fetch(apiCfg.base + '/visitors');
           if (!resp.ok) return;
           const data = await resp.json();
           if (Number(data && data.views) > 0) {
@@ -1909,15 +1954,10 @@
         } catch (_) {}
       },
 
-      isLocalOrigin() {
-        if (typeof window === 'undefined' || !window.location) return true;
-        const proto = String(window.location.protocol || '').toLowerCase();
-        const host = String(window.location.hostname || '').toLowerCase();
-        return proto === 'file:' || !host || host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]' || host === '0.0.0.0' || host.endsWith('.local');
-      },
-
       sendLandingTelemetry() {
-        if (this.isLocalOrigin() || typeof navigator === 'undefined' || !navigator.sendBeacon) return;
+        if (typeof navigator === 'undefined' || !navigator.sendBeacon) return;
+        const apiCfg = this.resolveApiBase();
+        if (this.isLocalOrigin() && !apiCfg.isNonProdTarget) return;
         try {
           var VISIT_DEDUP_MS = 30 * 60 * 1000;
           var shouldCount = true;
@@ -1930,7 +1970,7 @@
             }
           } catch (_) {}
           navigator.sendBeacon(
-            (LANDING_CONFIG.api_base_url || 'https://api.fplsawadika.com') + '/api/telemetry/event',
+            apiCfg.base + '/api/telemetry/event',
             JSON.stringify({
               type: shouldCount ? 'page_view' : 'landing_view',
               league_id: 'landing',
