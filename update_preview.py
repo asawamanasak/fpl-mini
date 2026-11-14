@@ -3045,16 +3045,15 @@ __STRUCTURED_DATA_JSON__
 
   </main>
 
-  <!-- 5.5 Footer & First-Party Site Visitor Counter -->
-  <footer class="w-full py-6 text-center select-none">
-    <div class="max-w-7xl mx-auto px-4 flex items-center justify-center">
-      <span id="site-visitor-counter" class="hidden inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-normal tracking-wide tabular-nums">
-        <svg class="w-3.5 h-3.5 text-slate-500/80 dark:text-slate-400/80 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-        </svg>
-        <span id="visitor-counter-text"></span>
-      </span>
+  <!-- 5.5 Footer (Product Credit + Soft Dev Corner CTA) -->
+  <footer id="site-footer" data-leagues="__FOOTER_LEAGUES_COUNT__" data-teams="__FOOTER_TEAMS_COUNT__" class="w-full py-6 text-center select-none">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-normal tracking-wide tabular-nums">
+      <span id="footer-brand-copy">FPLSaWaDiKa • ใช้งานจริง __FOOTER_LEAGUES_COUNT__ มินิลีก (__FOOTER_TEAMS_FORMATTED__ ทีม)</span>
+      <span class="text-slate-300 dark:text-slate-600" aria-hidden="true">·</span>
+      <button type="button" id="footer-upsell-btn" onclick="app.openDevCornerFromFooter()" class="inline-flex items-center gap-1 font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer group rounded-md px-1 -mx-1 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500/70">
+        <span id="footer-upsell-text">สนใจระบบสำหรับลีกของคุณ</span>
+        <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
+      </button>
     </div>
   </footer>
 
@@ -5081,7 +5080,6 @@ __STRUCTURED_DATA_JSON__
         if (this.activeTab) {
           this.switchTab(this.activeTab, true, true);
         }
-        this.initVisitorCounter();
         this.initLivePolling();
         this.initDeadlineCountdown();
 
@@ -5745,8 +5743,8 @@ __STRUCTURED_DATA_JSON__
           btnExcel.title = isEn ? 'Export to Excel (.xlsx)' : 'ส่งออกไฟล์ Excel (.xlsx)';
         }
         this.translateStaticElements();
-        if (typeof this.renderVisitorCounterText === 'function') {
-          this.renderVisitorCounterText();
+        if (typeof this.renderFooterCta === 'function') {
+          this.renderFooterCta();
         }
       }
 
@@ -21908,80 +21906,56 @@ selectShi62GW(gwName) {
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       }
 
-      renderVisitorCounterText() {
-        const badgeEl = document.getElementById('site-visitor-counter');
-        const textEl = document.getElementById('visitor-counter-text');
-        if (!badgeEl || !textEl) return;
-        const count = Number(this._visitorCount);
-        if (!Number.isFinite(count) || count <= 0) {
-          badgeEl.classList.add('hidden');
-          return;
+      openDevCornerFromFooter() {
+        this.switchTab('about-view');
+        if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+          try {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } catch (_) {
+            window.scrollTo(0, 0);
+          }
         }
-        const formatted = Math.floor(count).toLocaleString();
-        const isEn = (this.currentLang === 'en');
-        textEl.textContent = isEn
-          ? `Views: ${formatted} (since Nov 2026)`
-          : `ยอดเข้าชมสะสม: ${formatted} ครั้ง (ตั้งแต่ พ.ย. 2026)`;
-        badgeEl.title = isEn
-          ? 'Cumulative views recorded by FPLSaWaDiKa Edge Telemetry since Nov 2026 (30-min refresh dedup)'
-          : 'ยอดเข้าชมสะสมจากระบบ Edge Telemetry ของ FPLSaWaDiKa ตั้งแต่ พ.ย. 2026 (ไม่นับรีเฟรชซ้ำภายใน 30 นาที)';
-        badgeEl.classList.remove('hidden');
       }
 
-      async initVisitorCounter() {
-        const badgeEl = document.getElementById('site-visitor-counter');
-        const textEl = document.getElementById('visitor-counter-text');
-        if (!badgeEl || !textEl) return;
+      renderFooterCta() {
+        const footerEl = document.getElementById('site-footer');
+        const copyEl = document.getElementById('footer-brand-copy');
+        const ctaEl = document.getElementById('footer-upsell-text');
+        const btnEl = document.getElementById('footer-upsell-btn');
+        if (!footerEl || !copyEl || !ctaEl) return;
 
-        let cachedCount = 0;
-        let cachedTs = 0;
-        try {
-          if (typeof localStorage !== 'undefined') {
-            const rawCount = parseInt(localStorage.getItem('fpl_visitor_count_v2') || '0', 10);
-            const rawTs = parseInt(localStorage.getItem('fpl_visitor_last_fetched_v2') || '0', 10);
-            if (!isNaN(rawCount) && rawCount > 0) cachedCount = rawCount;
-            if (!isNaN(rawTs) && rawTs > 0) cachedTs = rawTs;
-          }
-        } catch (_) {}
-
-        if (cachedCount > 0) {
-          this._visitorCount = cachedCount;
-          this.renderVisitorCounterText();
+        let leaguesCount = parseInt(footerEl.dataset.leagues || '0', 10);
+        let teamsCount = parseInt(footerEl.dataset.teams || '0', 10);
+        if (!Number.isFinite(leaguesCount) || leaguesCount <= 0) {
+          const leaguesObj = (this.multiData && this.multiData.leagues) || {};
+          leaguesCount = Object.keys(leaguesObj).length;
         }
-
-        // Skip extra network request on local file:// preview or within 5-minute client cache
-        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
-          return;
-        }
-        const CACHE_TTL_MS = 5 * 60 * 1000;
-        if (cachedCount > 0 && cachedTs > 0 && (Date.now() - cachedTs) < CACHE_TTL_MS) {
-          return;
-        }
-
-        const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-        const timer = ctrl ? setTimeout(() => ctrl.abort(), 4000) : null;
-        try {
-          const resp = await fetch('https://api.fplsawadika.com/visitors', {
-            method: 'GET',
-            signal: ctrl ? ctrl.signal : undefined,
+        if (!Number.isFinite(teamsCount) || teamsCount <= 0) {
+          const leaguesObj = (this.multiData && this.multiData.leagues) || {};
+          const uniq = new Set();
+          Object.values(leaguesObj).forEach(l => {
+            ((l && l.teams) || []).forEach(tm => {
+              if (tm && tm.entry_id !== undefined) uniq.add(Number(tm.entry_id));
+            });
           });
-          if (!resp.ok) return;
-          const data = await resp.json();
-          const liveViews = Number(data && data.views);
-          if (Number.isFinite(liveViews) && liveViews > 0) {
-            this._visitorCount = Math.floor(liveViews);
-            try {
-              if (typeof localStorage !== 'undefined') {
-                localStorage.setItem('fpl_visitor_count_v2', String(this._visitorCount));
-                localStorage.setItem('fpl_visitor_last_fetched_v2', String(Date.now()));
-              }
-            } catch (_) {}
-            this.renderVisitorCounterText();
-          }
-        } catch (_) {
-          // Keep cached value if present; remain hidden when offline without cache
-        } finally {
-          if (timer) clearTimeout(timer);
+          teamsCount = uniq.size;
+        }
+
+        const isEn = (this.currentLang === 'en');
+        const formattedTeams = (teamsCount > 0) ? Math.floor(teamsCount).toLocaleString() : '1,900+';
+        const leaguesDisplay = (leaguesCount > 0) ? leaguesCount : 9;
+
+        copyEl.textContent = isEn
+          ? `FPLSaWaDiKa • Live across ${leaguesDisplay} mini-leagues (${formattedTeams} teams)`
+          : `FPLSaWaDiKa • ใช้งานจริง ${leaguesDisplay} มินิลีก (${formattedTeams} ทีม)`;
+        ctaEl.textContent = isEn
+          ? 'Launch for your league'
+          : 'สนใจระบบสำหรับลีกของคุณ';
+        if (btnEl) {
+          btnEl.setAttribute(
+            'aria-label',
+            isEn ? 'Explore Dev Corner & contact developer for your league' : 'เปิดแท็บ Dev Corner เพื่อดูฟีเจอร์และติดต่อผู้พัฒนาสำหรับลีกของคุณ'
+          );
         }
       }
     }
@@ -22276,6 +22250,9 @@ selectShi62GW(gwName) {
     html = html_shell.replace('__LAST_SYNC__', last_sync_str)
     html = html.replace('__NEXT_DEADLINE_TEXT__', next_deadline_text)
     html = html.replace('__RADAR_BANNER_TEXT__', radar_banner_text)
+    html = html.replace('__FOOTER_LEAGUES_COUNT__', str(radar_total_leagues))
+    html = html.replace('__FOOTER_TEAMS_COUNT__', str(radar_unique_teams))
+    html = html.replace('__FOOTER_TEAMS_FORMATTED__', f"{radar_unique_teams:,}")
     html = html.replace('__TIER2_TAB_HIDDEN__', ' hidden' if is_initial_tier2 else '')
     html = html.replace('__PRIZES_TAB_HIDDEN__', '' if has_initial_prizes else ' hidden')
     html = html.replace('__CUP_TAB_HIDDEN__', '' if has_initial_cup else ' hidden')
