@@ -4996,12 +4996,12 @@ selectShi62GW(gwName) {
               </div>
             </div>
 
-            <div class="overflow-x-auto touch-scroll">
-              <table class="w-full text-left border-collapse min-w-[640px]">
+            <div class="overflow-x-auto touch-scroll -mx-4 sm:mx-0 scrollbar-thin table-sticky-container">
+              <table class="w-full text-left min-w-[640px] table-sticky table-clean">
                 <thead>
-                  <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    <th class="py-2.5 px-3 text-center w-12">${isEn ? '#' : 'อันดับ'}</th>
-                    <th class="py-2.5 px-3">${isEn ? 'Player / FPL Team' : 'ผู้เล่น / ทีม FPL'}</th>
+                  <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
+                    <th class="sticky-col-rank py-2.5 px-2 text-center">${isEn ? '#' : 'อันดับ'}</th>
+                    <th class="sticky-col-team py-2.5 px-3">${isEn ? 'Player / FPL Team' : 'ผู้เล่น / ทีม FPL'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Played' : 'แข่ง (คู่)'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Total Legs' : 'ขารวม'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Won' : 'ชนะ'}</th>
@@ -5010,10 +5010,10 @@ selectShi62GW(gwName) {
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Win %' : '% ชนะ'}</th>
                     <th class="py-2.5 px-3 text-right">${isEn ? 'Won Amt' : 'เงินที่ได้'}</th>
                     <th class="py-2.5 px-3 text-right">${isEn ? 'Lost Amt' : 'เงินที่เสีย'}</th>
-                    <th class="py-2.5 px-3 text-right font-bold">${isEn ? 'Net Profit/Loss' : 'กำไร/ขาดทุนสุทธิ'}</th>
+                    <th class="py-2.5 px-3 text-right font-bold text-slate-800 dark:text-slate-200">${isEn ? 'Net Profit/Loss' : 'กำไร/ขาดทุนสุทธิ'}</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
+                <tbody class="text-xs sm:text-sm">
                   ${data.cumulative_standings.map(c => {
                     const isPositive = c.net > 0;
                     const isNegative = c.net < 0;
@@ -5024,32 +5024,32 @@ selectShi62GW(gwName) {
                     const rankBadge = `<span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${c.rank}</span>`;
 
                     return `
-                      <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                        <td class="py-2.5 px-3 text-center font-display">${rankBadge}</td>
-                        <td class="py-2.5 px-3">
+                      <tr onclick="app.toggleTrackedRow(this)" class="cursor-pointer transition-colors">
+                        <td class="sticky-col-rank py-2.5 px-2 text-center font-display">${rankBadge}</td>
+                        <td class="sticky-col-team py-2.5 px-3 min-w-[140px] sm:min-w-0">
                           <div class="flex items-center gap-2">
                             <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
                               ${this.escapeHtml(c.player.display_name)}
                             </span>
-                            <div>
+                            <div class="min-w-0">
                               ${c.player.is_guest 
-                                ? `<div class="text-xs text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Prediction only' : 'เล่นเฉพาะทายผล'}</div>` 
+                                ? `<div class="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">${isEn ? 'Prediction only' : 'เล่นเฉพาะทายผล'}</div>` 
                                 : `
-                                  <div class="font-bold text-slate-900 dark:text-white leading-tight">${this.escapeHtml(c.player.team_name)}</div>
-                                  <div class="text-[11px] text-slate-400 leading-tight">${this.escapeHtml(c.player.manager)}</div>
+                                  <div class="font-bold text-slate-900 dark:text-white leading-tight truncate">${this.escapeHtml(c.player.team_name)}</div>
+                                  <div class="text-[11px] text-slate-400 leading-tight truncate">${this.escapeHtml(c.player.manager)}</div>
                                 `}
                             </div>
                           </div>
                         </td>
-                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.legs_total}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
-                        <td class="py-2.5 px-3 text-center font-display text-slate-400">${c.push}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-600 dark:text-slate-400">${c.win_rate}%</td>
-                        <td class="py-2.5 px-3 text-right font-display text-emerald-600 dark:text-emerald-400">${c.total_won_amount.toLocaleString()}</td>
-                        <td class="py-2.5 px-3 text-right font-display text-rose-500 dark:text-rose-400">${c.total_lost_amount > 0 ? `-${c.total_lost_amount.toLocaleString()}` : '0'}</td>
-                        <td class="py-2.5 px-3 text-right font-display ${netColor}">
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-medium text-slate-700 dark:text-slate-300">${c.legs_total}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums text-slate-400">${c.push}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-medium text-slate-600 dark:text-slate-400">${c.win_rate}%</td>
+                        <td class="py-2.5 px-3 text-right font-display tabular-nums text-emerald-600 dark:text-emerald-400">${c.total_won_amount.toLocaleString()}</td>
+                        <td class="py-2.5 px-3 text-right font-display tabular-nums text-rose-500 dark:text-rose-400">${c.total_lost_amount > 0 ? `-${c.total_lost_amount.toLocaleString()}` : '0'}</td>
+                        <td class="py-2.5 px-3 text-right font-display tabular-nums ${netColor}">
                           ${fmtMoney(c.net)}
                         </td>
                       </tr>
@@ -5294,20 +5294,20 @@ selectShi62GW(gwName) {
               </div>
             </div>
 
-            <div class="overflow-x-auto touch-scroll">
-              <table class="w-full text-left border-collapse min-w-[580px]">
+            <div class="overflow-x-auto touch-scroll -mx-4 sm:mx-0 scrollbar-thin table-sticky-container">
+              <table class="w-full text-left min-w-[580px] table-sticky table-clean">
                 <thead>
-                  <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    <th class="py-2.5 px-3 text-center w-12">${isEn ? '#' : 'อันดับ'}</th>
-                    <th class="py-2.5 px-3">${isEn ? 'Player / FPL Team' : 'ผู้เล่น / ทีม FPL'}</th>
+                  <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
+                    <th class="sticky-col-rank py-2.5 px-2 text-center">${isEn ? '#' : 'อันดับ'}</th>
+                    <th class="sticky-col-team py-2.5 px-3">${isEn ? 'Player / FPL Team' : 'ผู้เล่น / ทีม FPL'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Played' : 'แข่ง (คู่)'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Won' : 'ชนะ'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Lost' : 'แพ้'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Push' : 'เสมอ'}</th>
-                    <th class="py-2.5 px-3 text-right font-bold">${isEn ? 'Net Profit/Loss' : 'กำไร/ขาดทุนสุทธิ'}</th>
+                    <th class="py-2.5 px-3 text-right font-bold text-slate-800 dark:text-slate-200">${isEn ? 'Net Profit/Loss' : 'กำไร/ขาดทุนสุทธิ'}</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
+                <tbody class="text-xs sm:text-sm">
                   ${data.cumulative_standings.map(c => {
                     const isPositive = c.net > 0;
                     const isNegative = c.net < 0;
@@ -5316,19 +5316,19 @@ selectShi62GW(gwName) {
                       : (isNegative ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 font-medium');
 
                     return `
-                      <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-slate-500">${c.rank}</td>
-                        <td class="py-2.5 px-3">
-                          <div>
-                            <div class="font-bold text-slate-900 dark:text-white leading-tight">${this.escapeHtml(c.player.team_name || c.player.display_name)}</div>
-                            <div class="text-[11px] text-slate-400 leading-tight">${this.escapeHtml(c.player.manager || '')}</div>
+                      <tr onclick="app.toggleTrackedRow(this)" class="cursor-pointer transition-colors">
+                        <td class="sticky-col-rank py-2.5 px-2 text-center font-display font-semibold text-slate-500">${c.rank}</td>
+                        <td class="sticky-col-team py-2.5 px-3 min-w-[140px] sm:min-w-0">
+                          <div class="min-w-0">
+                            <div class="font-bold text-slate-900 dark:text-white leading-tight truncate">${this.escapeHtml(c.player.team_name || c.player.display_name)}</div>
+                            <div class="text-[11px] text-slate-400 leading-tight truncate">${this.escapeHtml(c.player.manager || '')}</div>
                           </div>
                         </td>
-                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
-                        <td class="py-2.5 px-3 text-center font-display text-slate-400">${c.push}</td>
-                        <td class="py-2.5 px-3 text-right font-display ${netColor}">
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums text-slate-400">${c.push}</td>
+                        <td class="py-2.5 px-3 text-right font-display tabular-nums ${netColor}">
                           ${fmtMoney(c.net)}
                         </td>
                       </tr>
@@ -5626,18 +5626,14 @@ selectShi62GW(gwName) {
             : '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">0</span>';
 
           const grandCol = grandNet > 0 
-            ? `<span class="inline-flex items-baseline px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20"><span class="text-[10px] font-normal opacity-70 mr-0.5">+฿</span><span class="tabular-nums">${grandNet.toLocaleString()}</span></span>`
+            ? `<span class="font-mono font-bold text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 tabular-nums"><span class="text-[10px] font-normal opacity-75 mr-0.5">+฿</span>${grandNet.toLocaleString()}</span>`
             : (grandNet < 0 
-                ? `<span class="inline-flex items-baseline px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-rose-700 dark:text-rose-300 bg-rose-500/10 border border-rose-500/20"><span class="text-[10px] font-normal opacity-70 mr-0.5">-฿</span><span class="tabular-nums">${Math.abs(grandNet).toLocaleString()}</span></span>`
-                : `<span class="text-slate-400 dark:text-slate-500 font-mono font-bold text-xs sm:text-sm"><span class="text-[10px] font-normal mr-0.5">฿</span>0</span>`);
+                ? `<span class="font-mono font-bold text-xs sm:text-sm text-rose-600 dark:text-rose-400 tabular-nums"><span class="text-[10px] font-normal opacity-75 mr-0.5">-฿</span>${Math.abs(grandNet).toLocaleString()}</span>`
+                : `<span class="text-slate-400 dark:text-slate-500 font-mono font-bold text-xs sm:text-sm tabular-nums"><span class="text-[10px] font-normal mr-0.5">฿</span>0</span>`);
 
-          const rowBg = !isEligible 
-            ? 'opacity-70 bg-slate-50/40 dark:bg-slate-800/20' 
-            : (rankDisplay === 1 ? 'bg-amber-50/15 dark:bg-amber-950/15' : '');
-
-          const rankClass = !isEligible ? 'is-non-prize opacity-70' : (rankDisplay === 1 ? 'is-gold-rank bg-amber-50/15 dark:bg-amber-950/15' : '');
+          const rankClass = !isEligible ? 'is-non-prize opacity-70' : '';
           tableRowsHtml += `
-            <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer ${rankClass}">
+            <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer ${rankClass}">
               <td class="sticky-col-rank py-2.5 px-2 text-center font-display">${rankBadge}</td>
               <td class="sticky-col-team py-2.5 px-3 min-w-[140px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                 <div class="flex items-center gap-1.5 flex-wrap">
@@ -5646,10 +5642,10 @@ selectShi62GW(gwName) {
                 </div>
                 <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 flex-wrap truncate">
                   <span>${this.escapeHtml(team.player_name)}</span>
-                  ${!isEligible ? `<span class="text-[9.5px] px-1.5 py-0.2 rounded bg-slate-150 text-slate-700 dark:bg-slate-800 dark:text-slate-300 font-bold font-mono">${isEn ? 'Guest' : 'ร่วมสนุก'}</span>` : ''}
+                  ${!isEligible ? `<span class="text-[9.5px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 font-bold font-mono">${isEn ? 'Guest' : 'ร่วมสนุก'}</span>` : ''}
                 </div>
               </td>
-              <td class="py-2.5 px-2 text-center font-mono font-bold text-slate-900 dark:text-white text-xs">${team.total_points}</td>
+              <td class="py-2.5 px-2 text-center font-mono tabular-nums font-bold text-slate-900 dark:text-white text-xs">${team.total_points}</td>
               <td class="py-2.5 px-2 text-right font-display">${p1Badge}</td>
               <td class="py-2.5 px-2 text-right font-display">${p2Badge}</td>
               <td class="py-2.5 px-2 text-right font-display">${fplTotalBadge}</td>
@@ -5675,12 +5671,12 @@ selectShi62GW(gwName) {
         if (showFeeGuest && feeCum) {
           const feeNet = feeCum.net || 0;
           tableRowsHtml += `
-            <tr class="bg-slate-50/40 dark:bg-slate-800/20 text-slate-500 border-t border-dashed border-slate-200 dark:border-slate-800">
-              <td class="py-2.5 px-2 text-center font-mono text-xs text-slate-400 w-9 min-w-[36px]">•</td>
-              <td class="py-2.5 px-3 min-w-[140px]">
+            <tr onclick="app.toggleTrackedRow(this)" class="is-non-prize text-slate-500 cursor-pointer">
+              <td class="sticky-col-rank py-2.5 px-2 text-center font-mono text-xs text-slate-400">•</td>
+              <td class="sticky-col-team py-2.5 px-3 min-w-[140px]">
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <span class="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200">Fee</span>
-                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono">Guest</span>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200/80 dark:border-slate-700/80 font-mono">Guest</span>
                 </div>
                 <span class="text-[11px] text-slate-400 block truncate">${isEn ? 'Prediction only' : 'เล่นเฉพาะทายผล'}</span>
               </td>
@@ -5688,9 +5684,9 @@ selectShi62GW(gwName) {
               <td class="py-2.5 px-2 text-right font-mono text-slate-400 text-xs">-</td>
               <td class="py-2.5 px-2 text-right font-mono text-slate-400 text-xs">-</td>
               <td class="py-2.5 px-2 text-right font-mono text-slate-400 text-xs">-</td>
-              <td class="py-2.5 px-2 text-right font-mono text-xs ${feeNet < 0 ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-emerald-600 dark:text-emerald-400 font-bold'}">${fmtMoney(feeNet)}</td>
+              <td class="py-2.5 px-2 text-right font-mono tabular-nums text-xs ${feeNet < 0 ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-emerald-600 dark:text-emerald-400 font-bold'}">${fmtMoney(feeNet)}</td>
               <td class="py-2.5 px-2 text-right font-mono text-slate-400 text-xs">-</td>
-              <td class="py-2.5 px-3 text-right font-display ${feeNet < 0 ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-emerald-600 dark:text-emerald-400 font-bold'} text-xs sm:text-sm">${fmtMoney(feeNet)} THB</td>
+              <td class="py-2.5 px-3 text-right font-mono tabular-nums ${feeNet < 0 ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-emerald-600 dark:text-emerald-400 font-bold'} text-xs sm:text-sm">${fmtMoney(feeNet)} THB</td>
             </tr>
           `;
         }
@@ -5858,9 +5854,9 @@ selectShi62GW(gwName) {
 
               <!-- Standings Table (High-Craft Responsive Sticky Freeze) -->
               <div class="overflow-x-auto touch-scroll -mx-4 sm:mx-0 scrollbar-thin table-sticky-container">
-                <table aria-label="${isEn ? 'Bramann Dual Prize and Overall Standings Table' : 'ตารางสรุปเงินรางวัลแบบคู่และอันดับรวม Bramann'}" class="w-full text-left border-collapse table-sticky">
+                <table aria-label="${isEn ? 'Bramann Dual Prize and Overall Standings Table' : 'ตารางสรุปเงินรางวัลแบบคู่และอันดับรวม Bramann'}" class="w-full text-left table-sticky table-clean">
                   <thead>
-                    <tr class="border-b border-slate-200/80 dark:border-slate-800 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider bg-slate-50/50 dark:bg-slate-800/30">
+                    <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
                       <th scope="col" class="sticky-col-rank py-2.5 px-2 text-center">#</th>
                       <th scope="col" class="sticky-col-team py-2.5 px-3">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                       <th scope="col" class="py-2.5 px-2 text-center w-16">${isEn ? 'Total Pts' : 'คะแนนรวม'}</th>
@@ -5869,10 +5865,10 @@ selectShi62GW(gwName) {
                       <th scope="col" class="py-2.5 px-2 text-right min-w-[90px]">${isEn ? 'FPL Prize' : 'รางวัล FPL'}</th>
                       <th scope="col" class="py-2.5 px-2 text-right min-w-[95px]">${isEn ? 'Prediction Net' : 'ทายผลสะสม'}</th>
                       <th scope="col" class="py-2.5 px-2 text-right min-w-[90px]">${isEn ? 'Challenge Net' : 'ท้าชนสะสม'}</th>
-                      <th scope="col" class="py-2.5 px-3 text-right min-w-[110px] font-black">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
+                      <th scope="col" class="py-2.5 px-3 text-right min-w-[110px] font-black text-slate-800 dark:text-slate-200">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
                     </tr>
                   </thead>
-                  <tbody id="bramann-prizes-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                  <tbody id="bramann-prizes-tbody" class="text-xs sm:text-sm">
                     ${tableRowsHtml}
                   </tbody>
                   <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-mono text-xs sm:text-sm font-bold">
@@ -6230,12 +6226,12 @@ selectShi62GW(gwName) {
             </div>
 
             <!-- Standings Table -->
-            <div class="overflow-x-auto touch-scroll">
-              <table class="w-full text-left border-collapse min-w-[640px]">
+            <div class="overflow-x-auto touch-scroll -mx-4 sm:mx-0 scrollbar-thin table-sticky-container">
+              <table class="w-full text-left min-w-[640px] table-sticky table-clean">
                 <thead>
-                  <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    <th class="py-2.5 px-3 text-center w-12">#</th>
-                    <th class="py-2.5 px-3">${isEn ? 'Player / FPL Team' : 'ผู้เล่น / ทีม FPL'}</th>
+                  <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
+                    <th class="sticky-col-rank py-2.5 px-2 text-center">#</th>
+                    <th class="sticky-col-team py-2.5 px-3">${isEn ? 'Player / FPL Team' : 'ผู้เล่น / ทีม FPL'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Matches' : 'แข่ง (คู่)'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Won' : 'ชนะ'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Lost' : 'แพ้'}</th>
@@ -6243,10 +6239,10 @@ selectShi62GW(gwName) {
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Win %' : '% ชนะ'}</th>
                     <th class="py-2.5 px-3 text-right">${isEn ? 'Won' : 'เงินที่ได้'}</th>
                     <th class="py-2.5 px-3 text-right">${isEn ? 'Lost' : 'เงินที่เสีย'}</th>
-                    <th class="py-2.5 px-3 text-right font-bold">${isEn ? 'Net P/L' : 'กำไร/ขาดทุนสุทธิ'}</th>
+                    <th class="py-2.5 px-3 text-right font-bold text-slate-800 dark:text-slate-200">${isEn ? 'Net P/L' : 'กำไร/ขาดทุนสุทธิ'}</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
+                <tbody class="text-xs sm:text-sm">
                   ${data.cumulative_standings.map(c => {
                     const isPositive = c.net > 0;
                     const isNegative = c.net < 0;
@@ -6257,31 +6253,31 @@ selectShi62GW(gwName) {
                     const rankBadge = `<span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${c.rank}</span>`;
 
                     return `
-                      <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                        <td class="py-2.5 px-3 text-center font-display">${rankBadge}</td>
-                        <td class="py-2.5 px-3">
+                      <tr onclick="app.toggleTrackedRow(this)" class="cursor-pointer transition-colors">
+                        <td class="sticky-col-rank py-2.5 px-2 text-center font-display">${rankBadge}</td>
+                        <td class="sticky-col-team py-2.5 px-3 min-w-[140px] sm:min-w-0">
                           <div class="flex items-center gap-2">
                             <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
                               ${this.escapeHtml(c.player.display_name)}
                             </span>
-                            <div>
+                            <div class="min-w-0">
                               ${c.player.is_guest 
-                                ? '<div class="text-xs text-slate-500 dark:text-slate-400 font-medium">เล่นเฉพาะทายผล</div>' 
+                                ? '<div class="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">เล่นเฉพาะทายผล</div>' 
                                 : `
-                                  <div class="font-bold text-slate-900 dark:text-white leading-tight">${this.escapeHtml(c.player.team_name)}</div>
-                                  <div class="text-[11px] text-slate-400 leading-tight">${this.escapeHtml(c.player.manager)}</div>
+                                  <div class="font-bold text-slate-900 dark:text-white leading-tight truncate">${this.escapeHtml(c.player.team_name)}</div>
+                                  <div class="text-[11px] text-slate-400 leading-tight truncate">${this.escapeHtml(c.player.manager)}</div>
                                 `}
                             </div>
                           </div>
                         </td>
-                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
-                        <td class="py-2.5 px-3 text-center font-display text-slate-400">${c.push}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-600 dark:text-slate-400">${c.win_rate}%</td>
-                        <td class="py-2.5 px-3 text-right font-display text-emerald-600 dark:text-emerald-400">${c.total_won_amount.toLocaleString()}</td>
-                        <td class="py-2.5 px-3 text-right font-display text-rose-500 dark:text-rose-400">${c.total_lost_amount > 0 ? `-${c.total_lost_amount.toLocaleString()}` : '0'}</td>
-                        <td class="py-2.5 px-3 text-right font-display ${netColor}">
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums text-slate-400">${c.push}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-medium text-slate-600 dark:text-slate-400">${c.win_rate}%</td>
+                        <td class="py-2.5 px-3 text-right font-display tabular-nums text-emerald-600 dark:text-emerald-400">${c.total_won_amount.toLocaleString()}</td>
+                        <td class="py-2.5 px-3 text-right font-display tabular-nums text-rose-500 dark:text-rose-400">${c.total_lost_amount > 0 ? `-${c.total_lost_amount.toLocaleString()}` : '0'}</td>
+                        <td class="py-2.5 px-3 text-right font-display tabular-nums ${netColor}">
                           ${fmtMoney(c.net)}
                         </td>
                       </tr>
@@ -6944,19 +6940,12 @@ selectShi62GW(gwName) {
             }
 
             let penaltyBadgeHtml = '';
-            let penaltyRowBg = '';
             if (this.config.features && this.config.features.has_weekly_penalties && isPrize && isStarted) {
               if (team.rank === 1) {
-                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-50 text-amber-900 border border-amber-300 dark:bg-amber-950/40 dark:text-amber-200 ml-1">+${weeklyWinnerPrize} THB</span>`;
+                penaltyBadgeHtml = `<span class="text-[10.5px] font-mono font-bold text-emerald-600 dark:text-emerald-400 ml-1 tabular-nums">+${weeklyWinnerPrize} THB</span>`;
               } else if (weeklyPenaltiesMap[team.entry_id]) {
                 const p = weeklyPenaltiesMap[team.entry_id];
-                const cardStyle = p.bottomTierIndex === 0 
-                  ? 'bg-rose-50 text-rose-900 border border-rose-300 dark:bg-rose-950/40 dark:text-rose-200' 
-                  : (p.bottomTierIndex === 1
-                      ? 'bg-rose-50/70 text-rose-800 border border-rose-200 dark:bg-rose-950/30 dark:text-rose-300'
-                      : 'bg-amber-50/70 text-amber-800 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-300');
-                penaltyBadgeHtml = `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold ${cardStyle} ml-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>-${p.fine.toLocaleString()} THB</span>`;
-                penaltyRowBg = p.bottomTierIndex === 0 ? 'bg-rose-50/40 dark:bg-rose-950/20' : (p.bottomTierIndex === 1 ? 'bg-rose-50/20 dark:bg-rose-950/10' : '');
+                penaltyBadgeHtml = `<span class="text-[10.5px] font-mono font-bold text-rose-600 dark:text-rose-400 ml-1 tabular-nums">-${p.fine.toLocaleString()} THB</span>`;
               }
             }
 
@@ -6975,7 +6964,7 @@ selectShi62GW(gwName) {
             }
 
             mHtml += `
-              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer hover:bg-emerald-50/40 dark:hover:bg-slate-800/50 transition-colors ${penaltyRowBg} ${isWinner ? 'bg-emerald-50/25 dark:bg-emerald-950/25 font-semibold' : ''}">
+              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isWinner ? 'font-semibold' : ''}">
                 <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-2 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
@@ -7243,7 +7232,7 @@ selectShi62GW(gwName) {
               : `<span class="text-slate-400 dark:text-slate-500 font-medium font-display">-</span>`;
 
             oHtml += `
-              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer hover:bg-blue-50/40 dark:hover:bg-slate-800/50 transition-colors ${team.overall_rank && team.overall_rank <= 3 && isPrize ? 'bg-blue-50/20 dark:bg-blue-950/20' : ''}">
+              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors">
                 <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">
                   <div class="flex flex-col items-center justify-center">
                     ${rankBadge}
@@ -7252,7 +7241,7 @@ selectShi62GW(gwName) {
                 </td>
                 <td class="py-2.5 px-2 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors block truncate max-w-[150px] xs:max-w-[200px] sm:max-w-none">
+                    <span class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors block truncate max-w-[150px] xs:max-w-[200px] sm:max-w-none">
                       ${this.escapeHtml(team.team_name)}
                     </span>
                     ${prizeBadge}
@@ -7261,7 +7250,7 @@ selectShi62GW(gwName) {
                 </td>
                 <td class="py-2.5 px-1 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-700 dark:text-slate-300 tabular-nums whitespace-nowrap"><span class="font-semibold">${rawScore}</span>${hitsBadge}</td>
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display text-xs sm:text-sm tabular-nums whitespace-nowrap">${cumHitsText}</td>
-                <td class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right font-display font-black tabular-nums text-xs sm:text-sm text-blue-900 dark:text-blue-400">${team.total_points}</td>
+                <td class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right font-display font-black tabular-nums text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
               </tr>
             `;
           });
@@ -9763,12 +9752,12 @@ selectShi62GW(gwName) {
           ).join('');
 
           rowsHtml += `
-            <tr class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/80">
-              <td class="py-2.5 px-1 sm:px-2 text-center text-xs font-bold w-[36px] min-w-[36px] max-w-[36px] sm:w-[44px] sm:min-w-[44px] sticky left-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/60 z-10">
+            <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer">
+              <td class="sticky-col-rank py-2.5 px-2 text-center text-xs font-bold">
                 ${rankBadge}
               </td>
-              <td class="py-2.5 px-2.5 sm:px-3 min-w-[130px] sm:min-w-[180px] max-w-[160px] sm:max-w-[220px] sticky left-[36px] sm:left-[44px] bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/60 z-10 border-r border-slate-200/80 dark:border-slate-800 shadow-[1px_0_3px_rgba(0,0,0,0.03)] dark:shadow-[1px_0_3px_rgba(0,0,0,0.2)]">
-                <button onclick="app.openTeamModal(${t.entry_id})" class="text-left group cursor-pointer block truncate w-full">
+              <td class="sticky-col-team py-2.5 px-2.5 sm:px-3 min-w-[130px] sm:min-w-[180px] max-w-[160px] sm:max-w-[220px]">
+                <button onclick="event.stopPropagation(); app.openTeamModal(${t.entry_id})" class="text-left group cursor-pointer block truncate w-full">
                   <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate flex items-center gap-1.5 flex-wrap">
                     <span class="truncate">${this.escapeHtml(t.entry_name)}</span>
                     ${prizeBadge}
@@ -9806,7 +9795,7 @@ selectShi62GW(gwName) {
 
         tableContainer.innerHTML = `
           <!-- Mobile Scroll Affordance Bar -->
-          <div class="sm:hidden flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 px-3.5 py-2 bg-slate-50/90 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800">
+          <div class="sm:hidden flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 px-3.5 py-2 border-b border-slate-200/80 dark:border-slate-800">
             <span class="flex items-center gap-1.5 font-medium">
               <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
               ${isEn ? 'Sorted by Overall Standings' : 'เรียงตาม Total Leaderboard'}
@@ -9817,12 +9806,12 @@ selectShi62GW(gwName) {
             </span>
           </div>
 
-          <div class="overflow-x-auto touch-scroll scrollbar-thin">
-            <table class="w-full text-left border-collapse">
+          <div class="overflow-x-auto touch-scroll scrollbar-thin table-sticky-container">
+            <table class="w-full text-left table-sticky table-clean">
               <thead>
-                <tr class="bg-slate-50/90 dark:bg-slate-800/80 border-b border-slate-200/90 dark:border-slate-800 text-[11px] font-bold text-slate-600 dark:text-slate-400 font-display uppercase tracking-wider">
-                  <th scope="col" class="py-2.5 px-1 sm:px-2 text-center w-[36px] min-w-[36px] max-w-[36px] sm:w-[44px] sm:min-w-[44px] sticky left-0 bg-slate-50 dark:bg-slate-800 z-20">#</th>
-                  <th scope="col" class="py-2.5 px-2.5 sm:px-3 sticky left-[36px] sm:left-[44px] bg-slate-50 dark:bg-slate-800 z-20 border-r border-slate-200/80 dark:border-slate-800 shadow-[1px_0_3px_rgba(0,0,0,0.03)] dark:shadow-[1px_0_3px_rgba(0,0,0,0.2)]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
+                <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider">
+                  <th scope="col" class="sticky-col-rank py-2.5 px-2 text-center">#</th>
+                  <th scope="col" class="sticky-col-team py-2.5 px-2.5 sm:px-3">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                   <th scope="col" class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">${isEn ? 'Remaining' : 'การ์ดคงเหลือ'}</th>
                   <th scope="col" class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Wildcard 1</th>
                   ${showWc2 ? '<th scope="col" class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Wildcard 2</th>' : ''}
@@ -9831,7 +9820,7 @@ selectShi62GW(gwName) {
                   <th scope="col" class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Bench Boost</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80">
+              <tbody class="text-xs sm:text-sm">
                 ${rowsHtml}
               </tbody>
             </table>
@@ -10302,8 +10291,8 @@ selectShi62GW(gwName) {
             if (items.length === 0) return;
 
             rowsHtml += `
-              <tr class="bg-slate-100/90 dark:bg-slate-800/90 border-y border-slate-200/80 dark:border-slate-700/60">
-                <td colspan="3" class="py-2 px-3 text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider font-display">
+              <tr>
+                <td colspan="3" class="pt-3 pb-1.5 px-2.5 text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
                   ${cat.title}
                 </td>
               </tr>
@@ -10329,7 +10318,7 @@ selectShi62GW(gwName) {
                 : inSquadTag;
 
               rowsHtml += `
-                <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60 text-xs">
+                <tr class="transition-colors text-xs">
                   <td class="py-2.5 px-2.5 text-left">
                     <div class="flex items-center gap-2 min-w-0 flex-wrap">
                       <img src="${bestShirtUrl}" alt="${best.TeamName || ''}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
@@ -10352,9 +10341,9 @@ selectShi62GW(gwName) {
 
           tableContainer.innerHTML = `
             <div class="w-full overflow-x-auto touch-scroll scrollbar-thin">
-              <table class="w-full min-w-[320px] text-left border-collapse">
+              <table class="w-full min-w-[320px] text-left table-clean">
                 <thead>
-                  <tr class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
+                  <tr class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider pb-2">
                     <th style="width: 60%;" class="py-2 px-2.5 text-left">${isEn ? 'Best players' : 'ตัวเลือกยอดเยี่ยม'}</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">
@@ -10365,7 +10354,7 @@ selectShi62GW(gwName) {
                     </th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/40">
+                <tbody>
                   ${rowsHtml}
                 </tbody>
               </table>
@@ -10382,8 +10371,8 @@ selectShi62GW(gwName) {
             if (items.length === 0) return;
 
             rowsHtml += `
-              <tr class="bg-slate-100/90 dark:bg-slate-800/90 border-y border-slate-200/80 dark:border-slate-700/60">
-                <td colspan="3" class="py-2 px-3 text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider font-display">
+              <tr>
+                <td colspan="3" class="pt-3 pb-1.5 px-2.5 text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
                   ${cat.title}
                 </td>
               </tr>
@@ -10409,7 +10398,7 @@ selectShi62GW(gwName) {
                 : inSquadTag;
 
               rowsHtml += `
-                <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60 text-xs">
+                <tr class="transition-colors text-xs">
                   <td class="py-2.5 px-2.5 text-left">
                     <div class="flex items-center gap-2 min-w-0 flex-wrap">
                       <img src="${valShirtUrl}" alt="${val.TeamName || ''}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
@@ -10432,9 +10421,9 @@ selectShi62GW(gwName) {
 
           tableContainer.innerHTML = `
             <div class="w-full overflow-x-auto touch-scroll scrollbar-thin">
-              <table class="w-full min-w-[320px] text-left border-collapse">
+              <table class="w-full min-w-[320px] text-left table-clean">
                 <thead>
-                  <tr class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
+                  <tr class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider pb-2">
                     <th style="width: 60%;" class="py-2 px-2.5 text-left">${isEn ? 'Best Value' : 'ตัวเลือกสุดคุ้ม'}</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">
@@ -10445,7 +10434,7 @@ selectShi62GW(gwName) {
                     </th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/40">
+                <tbody>
                   ${rowsHtml}
                 </tbody>
               </table>
@@ -10463,8 +10452,8 @@ selectShi62GW(gwName) {
 
           // Category Subheader Row
           tableRowsHtml += `
-            <tr class="bg-slate-100/90 dark:bg-slate-800/90 border-y border-slate-200/80 dark:border-slate-700/60">
-              <td colspan="7" class="py-2.5 px-3 text-xs sm:text-sm font-mono font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider font-display">
+            <tr>
+              <td colspan="7" class="pt-3.5 pb-1.5 px-3 text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
                 ${cat.title}
               </td>
             </tr>
@@ -10513,7 +10502,7 @@ selectShi62GW(gwName) {
               : valInSquadTag;
 
             tableRowsHtml += `
-              <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60 text-xs">
+              <tr class="transition-colors text-xs">
                 
                 <!-- Best Player: Shirt + Name -->
                 <td class="py-2.5 px-2.5 sm:px-3 text-left">
@@ -10573,9 +10562,9 @@ selectShi62GW(gwName) {
           </div>
 
           <div class="overflow-x-auto touch-scroll scrollbar-thin w-full max-w-full">
-            <table class="min-w-[620px] w-full text-left border-collapse">
+            <table class="min-w-[620px] w-full text-left table-clean">
               <thead>
-                <tr class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
+                <tr class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider pb-2">
                   <th style="width: 28%;" class="py-2 px-2.5 sm:px-3 text-left">${isEn ? 'Best Players' : 'ตัวเลือกยอดเยี่ยม'}</th>
                   <th style="width: 10%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
                   <th style="width: 11%;" class="py-2 px-2 text-right">
@@ -10595,7 +10584,7 @@ selectShi62GW(gwName) {
                   </th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100 dark:divide-slate-800/40">
+              <tbody>
                 ${tableRowsHtml}
               </tbody>
             </table>
@@ -10885,8 +10874,8 @@ selectShi62GW(gwName) {
             if (!isEligible && !hasRenderedNonPrizeHeader && filterMode === 'all') {
               hasRenderedNonPrizeHeader = true;
               tableRows += `
-                <tr class="bg-slate-100/75 dark:bg-slate-800/60 border-y border-slate-200/80 dark:border-slate-700/80">
-                  <td colspan="${hasWeeklyPenalties ? 7 : (hasMultiTier ? 6 : 4)}" class="py-2 px-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
+                <tr>
+                  <td colspan="${hasWeeklyPenalties ? 7 : (hasMultiTier ? 6 : 4)}" class="pt-3 pb-1.5 px-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
                     ${isEn ? 'Guest Teams (Excluded from prize & fine calculation)' : 'ทีมร่วมสนุก (ไม่นำมาคิดคำนวณเงินรางวัลและค่าปรับ)'}
                   </td>
                 </tr>
@@ -10896,17 +10885,17 @@ selectShi62GW(gwName) {
             const winsDisplay = isEligible ? ((wins % 1 === 0) ? wins : wins.toFixed(1)) : '-';
             const prizeDisplay = isEligible 
               ? (actualPrize > 0 
-                  ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20">+${actualPrize.toLocaleString()} THB</span>`
-                  : '<span class="font-mono text-slate-400 dark:text-slate-500 text-xs sm:text-sm">0 THB</span>')
+                  ? `<span class="font-mono font-bold tabular-nums text-xs sm:text-sm text-emerald-600 dark:text-emerald-400">+${actualPrize.toLocaleString()} <span class="text-[10px] font-normal opacity-75">THB</span></span>`
+                  : '<span class="font-mono text-slate-400 dark:text-slate-500 text-xs sm:text-sm tabular-nums">0 THB</span>')
               : `<span class="text-slate-400 font-mono text-xs">${isEn ? 'Guest' : 'ร่วมสนุก'}</span>`;
 
             let countCellsHtml = '';
             if (hasWeeklyPenalties) {
               const winsHtml = isEligible 
-                ? (wins > 0 ? `<span class="font-mono font-black text-xs text-slate-900 dark:text-white px-1.5 py-0.5 rounded bg-slate-150 dark:bg-slate-800">${wins}</span>` : '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">-</span>')
+                ? (wins > 0 ? `<span class="font-mono font-bold tabular-nums text-xs text-slate-900 dark:text-white">${wins}</span>` : '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">-</span>')
                 : '-';
               const dangerHtml = isEligible
-                ? (danger > 0 ? `<span class="font-mono font-bold text-xs text-rose-600 dark:text-rose-400 px-1.5 py-0.5 rounded bg-rose-500/10 border border-rose-500/20">${danger}</span>` : `<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">${isEn ? 'Safe' : 'รอด'}</span>`)
+                ? (danger > 0 ? `<span class="font-mono font-bold tabular-nums text-xs text-rose-600 dark:text-rose-400">${danger}</span>` : `<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">${isEn ? 'Safe' : 'รอด'}</span>`)
                 : '-';
               const finesDisplay = isEligible
                 ? (fines > 0 ? `<span class="inline-flex items-baseline justify-end font-mono font-bold text-xs text-rose-600 dark:text-rose-400"><span class="text-[10px] font-normal opacity-70 mr-0.5">-฿</span><span class="tabular-nums">${fines.toLocaleString()}</span></span>` : '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs"><span class="text-[10px] font-normal mr-0.5">฿</span>0</span>')
@@ -10916,9 +10905,9 @@ selectShi62GW(gwName) {
                 : '-';
               const netDisplayCell = isEligible
                 ? (netBalance > 0 
-                    ? `<span class="inline-flex items-baseline px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20"><span class="text-[10px] font-normal opacity-70 mr-0.5">+฿</span><span class="tabular-nums">${netBalance.toLocaleString()}</span></span>` 
+                    ? `<span class="inline-flex items-baseline font-mono font-bold text-xs sm:text-sm text-emerald-600 dark:text-emerald-400"><span class="text-[10px] font-normal opacity-75 mr-0.5">+฿</span><span class="tabular-nums">${netBalance.toLocaleString()}</span></span>` 
                     : (netBalance < 0 
-                        ? `<span class="inline-flex items-baseline px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-rose-700 dark:text-rose-300 bg-rose-500/10 border border-rose-500/20"><span class="text-[10px] font-normal opacity-70 mr-0.5">-฿</span><span class="tabular-nums">${Math.abs(netBalance).toLocaleString()}</span></span>` 
+                        ? `<span class="inline-flex items-baseline font-mono font-bold text-xs sm:text-sm text-rose-600 dark:text-rose-400"><span class="text-[10px] font-normal opacity-75 mr-0.5">-฿</span><span class="tabular-nums">${Math.abs(netBalance).toLocaleString()}</span></span>` 
                         : `<span class="font-mono text-xs sm:text-sm text-slate-400 dark:text-slate-500"><span class="text-[10px] font-normal mr-0.5">฿</span>0</span>`))
                 : `<span class="text-slate-400 font-mono text-xs">${isEn ? 'Guest' : 'ร่วมสนุก'}</span>`;
 
@@ -10939,9 +10928,9 @@ selectShi62GW(gwName) {
                 if (cnt === 0) return '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">-</span>';
                 const disp = (cnt % 1 === 0) ? cnt : cnt.toFixed(1);
                 if (rankIdx === 1) {
-                  return `<span class="font-mono font-black text-xs text-slate-900 dark:text-white px-1.5 py-0.5 rounded bg-slate-150 dark:bg-slate-800">${disp}</span>`;
+                  return `<span class="font-mono font-black tabular-nums text-xs text-slate-900 dark:text-white">${disp}</span>`;
                 }
-                return `<span class="font-mono font-bold text-xs text-slate-700 dark:text-slate-300">${disp}</span>`;
+                return `<span class="font-mono font-bold tabular-nums text-xs text-slate-700 dark:text-slate-300">${disp}</span>`;
               };
 
               countCellsHtml = `
@@ -10952,7 +10941,7 @@ selectShi62GW(gwName) {
               `;
             } else {
               countCellsHtml = `
-                <td class="py-2.5 px-3 text-center font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">${winsDisplay}</td>
+                <td class="py-2.5 px-3 text-center font-mono font-bold tabular-nums text-slate-800 dark:text-slate-200 text-xs">${winsDisplay}</td>
                 <td class="py-2.5 px-3 text-right font-display">${prizeDisplay}</td>
               `;
             }
@@ -10970,10 +10959,10 @@ selectShi62GW(gwName) {
               rankBadge = `<span class="text-xs font-bold text-slate-500 dark:text-slate-400 font-display">${idx + 1}</span>`;
             }
 
-            const wRankClass = !isEligible ? 'is-non-prize opacity-70' : (idx === 0 ? 'is-gold-rank bg-amber-50/15 dark:bg-amber-950/15' : '');
+            const wRankClass = !isEligible ? 'is-non-prize opacity-70' : '';
 
             tableRows += `
-              <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer ${wRankClass}">
+              <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer ${wRankClass}">
                 <td class="sticky-col-rank py-2.5 px-2 text-center font-display">${rankBadge}</td>
                 <td class="sticky-col-team py-2.5 px-3 min-w-[140px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                   <div class="flex items-center gap-1.5 flex-wrap">
@@ -11335,9 +11324,9 @@ selectShi62GW(gwName) {
 
                 <!-- Standings Table (High-Craft Responsive Sticky Freeze) -->
                 <div class="overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 touch-scroll table-sticky-container">
-                  <table aria-label="${isEn ? 'Prize Money and Treasury Standings Table' : 'ตารางสรุปเงินรางวัลสะสมและยอดกองกลาง'}" class="w-full text-left border-collapse table-sticky">
+                  <table aria-label="${isEn ? 'Prize Money and Treasury Standings Table' : 'ตารางสรุปเงินรางวัลสะสมและยอดกองกลาง'}" class="w-full text-left table-sticky table-clean">
                     <thead>
-                      <tr class="border-b border-slate-200/80 dark:border-slate-800 text-[11px] font-bold text-slate-400 dark:text-slate-500 font-display bg-slate-50/50 dark:bg-slate-800/30">
+                      <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
                         <th scope="col" class="sticky-col-rank py-2.5 px-2 text-center">#</th>
                         <th scope="col" class="sticky-col-team py-2.5 px-3 min-w-[140px]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                         ${hasWeeklyPenalties ? `
@@ -11345,7 +11334,7 @@ selectShi62GW(gwName) {
                         <th scope="col" class="py-2.5 px-2 text-center w-14">${isEn ? 'Fined' : 'โดนปรับ'}</th>
                         <th scope="col" class="py-2.5 px-3 text-right">${isEn ? 'Total Fines' : 'ค่าปรับสะสม'}</th>
                         <th scope="col" class="py-2.5 px-3 text-right">${isEn ? 'Total Prizes' : 'รางวัลสะสม'}</th>
-                        <th scope="col" class="py-2.5 px-3 text-right font-black">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
+                        <th scope="col" class="py-2.5 px-3 text-right font-black text-slate-800 dark:text-slate-200">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
                         ` : (hasMultiTier ? `
                         <th scope="col" class="py-2.5 px-2 text-center w-14 sm:w-16">
                           <span>${isEn ? '1st' : 'ที่ 1'}</span>
@@ -11356,14 +11345,14 @@ selectShi62GW(gwName) {
                         <th scope="col" class="py-2.5 px-2 text-center w-14 sm:w-16">
                           <span>${isEn ? '3rd' : 'ที่ 3'}</span>
                         </th>
-                        <th scope="col" class="py-2.5 px-3 text-right">${isEn ? 'Accumulated Prize' : 'เงินรางวัลสะสม'}</th>
+                        <th scope="col" class="py-2.5 px-3 text-right text-slate-800 dark:text-slate-200">${isEn ? 'Accumulated Prize' : 'เงินรางวัลสะสม'}</th>
                         ` : `
                         <th scope="col" class="py-2.5 px-3 text-center">${isEn ? 'GW Wins' : 'แชมป์สัปดาห์'}</th>
-                        <th scope="col" class="py-2.5 px-3 text-right">${isEn ? 'Accumulated Prize' : 'เงินรางวัลสะสม'}</th>
+                        <th scope="col" class="py-2.5 px-3 text-right text-slate-800 dark:text-slate-200">${isEn ? 'Accumulated Prize' : 'เงินรางวัลสะสม'}</th>
                         `)}
                       </tr>
                     </thead>
-                    <tbody id="weekly-prizes-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                    <tbody id="weekly-prizes-tbody" class="text-xs sm:text-sm">
                       ${tableRows}
                     </tbody>
                     <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-mono text-xs sm:text-sm font-bold">
@@ -11638,12 +11627,11 @@ selectShi62GW(gwName) {
               const gData = this.data.gameweeks ? this.data.gameweeks[String(gwNum)] : null;
               const gIsStarted = gData ? (gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || (gData.results && gData.results.some(r => r.points > 0)))) : false;
               const pts = (gIsStarted && t.gw_scores[gwNum] !== undefined) ? t.gw_scores[gwNum] : '-';
-              scoreCols += `<td class="py-2.5 px-2 text-center font-mono text-xs text-slate-600 dark:text-slate-300">${pts}</td>`;
+              scoreCols += `<td class="py-2.5 px-2 text-center font-mono tabular-nums text-xs text-slate-600 dark:text-slate-300">${pts}</td>`;
             });
 
-            const mLeaderClass = isLeader ? 'is-gold-rank bg-amber-50/15 dark:bg-amber-950/15' : '';
             monthlyTableRows += `
-              <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer ${mLeaderClass}">
+              <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer">
                 <td class="sticky-col-rank py-2.5 px-2 text-center font-display">${rankBadge}</td>
                 <td class="sticky-col-team py-2.5 px-3 min-w-[140px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                   <div class="flex items-center gap-1.5 flex-wrap">
@@ -11653,7 +11641,7 @@ selectShi62GW(gwName) {
                   <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(t.player_name)}</div>
                 </td>
                 ${scoreCols}
-                <td class="py-2.5 px-3 text-right font-mono font-black text-xs sm:text-sm ${isLeader ? 'text-amber-700 dark:text-amber-400 font-bold' : (isRunnerUp ? 'text-slate-900 dark:text-white font-bold' : 'text-slate-800 dark:text-slate-200')}">${t.month_total}</td>
+                <td class="py-2.5 px-3 text-right font-mono tabular-nums font-black text-xs sm:text-sm ${isLeader ? 'text-amber-600 dark:text-amber-400' : (isRunnerUp ? 'text-slate-900 dark:text-white' : 'text-slate-800 dark:text-slate-200')}">${t.month_total}</td>
               </tr>
             `;
           });
@@ -11947,16 +11935,16 @@ selectShi62GW(gwName) {
                 </div>
 
                 <div class="overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 touch-scroll table-sticky-container">
-                  <table aria-label="${isEn ? 'Prize Money and Treasury Standings Table' : 'ตารางสรุปเงินรางวัลสะสมและยอดกองกลาง'}" class="w-full text-left border-collapse table-sticky">
+                  <table aria-label="${isEn ? 'Prize Money and Treasury Standings Table' : 'ตารางสรุปเงินรางวัลสะสมและยอดกองกลาง'}" class="w-full text-left table-sticky table-clean">
                     <thead>
-                      <tr class="border-b border-slate-200/80 dark:border-slate-800 text-[11px] font-bold text-slate-400 dark:text-slate-500 font-display bg-slate-50/50 dark:bg-slate-800/30">
+                      <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
                         <th scope="col" class="sticky-col-rank py-2.5 px-2 text-center">#</th>
                         <th scope="col" class="sticky-col-team py-2.5 px-3 min-w-[140px]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                         ${curMonth.gw_list.map(g => `<th scope="col" class="py-2 px-2 text-center font-mono">GW ${g}</th>`).join('')}
-                        <th scope="col" class="py-2.5 px-3 text-right font-black font-mono">${isEn ? 'Monthly Total' : 'คะแนนรวมเดือน'}</th>
+                        <th scope="col" class="py-2.5 px-3 text-right font-black font-mono text-slate-800 dark:text-slate-200">${isEn ? 'Monthly Total' : 'คะแนนรวมเดือน'}</th>
                       </tr>
                     </thead>
-                    <tbody id="monthly-prizes-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                    <tbody id="monthly-prizes-tbody" class="text-xs sm:text-sm">
                       ${monthlyTableRows}
                     </tbody>
                     <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-mono text-xs sm:text-sm font-bold">
@@ -12186,17 +12174,13 @@ selectShi62GW(gwName) {
             const grandTotal = isPrize ? (payout + extraNet) : 0;
 
             let rankBadge = '';
-            let rowBg = '';
 
             if (!isPrize) {
               rankBadge = this.getNonPrizeRankBadge();
-              rowBg = 'opacity-70 bg-slate-50/40 dark:bg-slate-800/20';
             } else if (team.is_joint) {
               rankBadge = `<span class="text-slate-600 dark:text-slate-300 font-bold" title="${isEn ? `Tied with ${team.joint_count} teams` : `คะแนนเท่ากัน ${team.joint_count} ทีม`}">${team.overall_rank} <span class="text-[9px] text-slate-400 font-mono">${isEn ? 'T' : 'ร่วม'}</span></span>`;
-              if (team.overall_rank === 1) rowBg = 'bg-amber-50/15 dark:bg-amber-950/15';
             } else if (r === 1) {
               rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400 text-slate-950 font-black text-xs shadow-2xs">1</span>`;
-              rowBg = 'bg-amber-50/15 dark:bg-amber-950/15';
             } else if (r === 2) {
               rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-200 font-bold text-xs">2</span>`;
             } else if (r === 3) {
@@ -12208,14 +12192,14 @@ selectShi62GW(gwName) {
             }
 
             const fmtCol = (v) => {
-              if (v > 0) return `<span class="font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400">+${Number(v).toLocaleString()}</span>`;
-              if (v < 0) return `<span class="font-mono font-bold text-xs text-rose-600 dark:text-rose-400">${Number(v).toLocaleString()}</span>`;
-              return `<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">0</span>`;
+              if (v > 0) return `<span class="font-mono font-bold tabular-nums text-xs text-emerald-600 dark:text-emerald-400">+${Number(v).toLocaleString()}</span>`;
+              if (v < 0) return `<span class="font-mono font-bold tabular-nums text-xs text-rose-600 dark:text-rose-400">${Number(v).toLocaleString()}</span>`;
+              return `<span class="text-slate-400 dark:text-slate-500 font-mono tabular-nums text-xs">0</span>`;
             };
             const fmtGrandCol = (v) => {
-              if (v > 0) return `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20">+${Number(v).toLocaleString()} THB</span>`;
-              if (v < 0) return `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-rose-700 dark:text-rose-300 bg-rose-500/10 border border-rose-500/20">${Number(v).toLocaleString()} THB</span>`;
-              return `<span class="text-slate-400 dark:text-slate-500 font-mono font-bold text-xs sm:text-sm">0 THB</span>`;
+              if (v > 0) return `<span class="font-mono font-bold tabular-nums text-xs sm:text-sm text-emerald-600 dark:text-emerald-400">+${Number(v).toLocaleString()} <span class="text-[10px] font-normal opacity-75">THB</span></span>`;
+              if (v < 0) return `<span class="font-mono font-bold tabular-nums text-xs sm:text-sm text-rose-600 dark:text-rose-400">${Number(v).toLocaleString()} <span class="text-[10px] font-normal opacity-75">THB</span></span>`;
+              return `<span class="text-slate-400 dark:text-slate-500 font-mono font-bold tabular-nums text-xs sm:text-sm">0 THB</span>`;
             };
 
             if (isShi62) {
@@ -12224,9 +12208,9 @@ selectShi62GW(gwName) {
                 ? `<span class="font-bold text-slate-700 dark:text-slate-300">${shortName}</span> <span class="text-slate-400">(${this.escapeHtml(team.player_name)})</span>`
                 : this.escapeHtml(team.player_name);
 
-              const sRankClass = !isPrize ? 'is-non-prize opacity-70' : (r === 1 ? 'is-gold-rank bg-amber-50/15 dark:bg-amber-950/15' : '');
+              const sRankClass = !isPrize ? 'is-non-prize opacity-70' : '';
               tableRowsHtml += `
-                <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer ${sRankClass}">
+                <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer ${sRankClass}">
                   <td class="sticky-col-rank py-3 px-2 text-center font-display">${rankBadge}</td>
                   <td class="sticky-col-team py-3 px-3 min-w-[140px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                     <div class="flex items-center gap-1.5 flex-wrap">
@@ -12237,16 +12221,16 @@ selectShi62GW(gwName) {
                     </div>
                     <span class="text-[11px] block truncate text-slate-500 dark:text-slate-400">${dispManager}</span>
                   </td>
-                  <td class="py-3 px-2 text-center font-mono font-black text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
+                  <td class="py-3 px-2 text-center font-mono tabular-nums font-black text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
                   <td class="py-3 px-3 text-right font-display text-xs sm:text-sm">${isPrize ? fmtCol(payout) : '<span class="text-slate-400 font-mono text-xs">-</span>'}</td>
                   <td class="py-3 px-3 text-right font-display text-xs sm:text-sm">${isPrize ? fmtCol(extraNet) : '<span class="text-slate-400 font-mono text-xs">-</span>'}</td>
                   <td class="py-3 px-3 text-right font-display">${isPrize ? fmtGrandCol(grandTotal) : '<span class="text-slate-400 font-mono text-xs">-</span>'}</td>
                 </tr>
               `;
             } else {
-              const sNonRankClass = !isPrize ? 'is-non-prize opacity-70' : (r === 1 ? 'is-gold-rank bg-amber-50/15 dark:bg-amber-950/15' : '');
+              const sNonRankClass = !isPrize ? 'is-non-prize opacity-70' : '';
               tableRowsHtml += `
-                <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer ${sNonRankClass}">
+                <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer ${sNonRankClass}">
                   <td class="sticky-col-rank py-3 px-2 text-center font-display">${rankBadge}</td>
                   <td class="sticky-col-team py-3 px-3 min-w-[140px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                     <div class="flex items-center gap-1.5 flex-wrap">
@@ -12257,7 +12241,7 @@ selectShi62GW(gwName) {
                     </div>
                     <span class="text-[11px] text-slate-500 dark:text-slate-400 block truncate">${this.escapeHtml(team.player_name)}</span>
                   </td>
-                  <td class="py-3 px-2 text-center font-mono font-black text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
+                  <td class="py-3 px-2 text-center font-mono tabular-nums font-black text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
                   <td class="py-3 px-3 text-right font-display">${isPrize ? fmtGrandCol(payout) : '<span class="text-slate-400 font-mono text-xs">-</span>'}</td>
                 </tr>
               `;
@@ -12279,19 +12263,19 @@ selectShi62GW(gwName) {
           if (showNodGuest && nodCum) {
             const nodNet = Number(nodCum.net) || 0;
             const fmtNodNet = nodNet > 0 
-              ? `<span class="font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400">+${Number(nodNet).toLocaleString()}</span>`
-              : (nodNet < 0 ? `<span class="font-mono font-bold text-xs text-rose-600 dark:text-rose-400">${Number(nodNet).toLocaleString()}</span>` : '<span class="text-slate-400 font-mono text-xs">0</span>');
+              ? `<span class="font-mono font-bold tabular-nums text-xs text-emerald-600 dark:text-emerald-400">+${Number(nodNet).toLocaleString()}</span>`
+              : (nodNet < 0 ? `<span class="font-mono font-bold tabular-nums text-xs text-rose-600 dark:text-rose-400">${Number(nodNet).toLocaleString()}</span>` : '<span class="text-slate-400 font-mono tabular-nums text-xs">0</span>');
             const fmtNodGrand = nodNet > 0 
-              ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20">+${Number(nodNet).toLocaleString()} THB</span>`
-              : (nodNet < 0 ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-rose-700 dark:text-rose-300 bg-rose-500/10 border border-rose-500/20">${Number(nodNet).toLocaleString()} THB</span>` : '<span class="text-slate-400 font-mono font-bold text-xs sm:text-sm">0 THB</span>');
+              ? `<span class="font-mono font-bold tabular-nums text-xs sm:text-sm text-emerald-600 dark:text-emerald-400">+${Number(nodNet).toLocaleString()} <span class="text-[10px] font-normal opacity-75">THB</span></span>`
+              : (nodNet < 0 ? `<span class="font-mono font-bold tabular-nums text-xs sm:text-sm text-rose-600 dark:text-rose-400">${Number(nodNet).toLocaleString()} <span class="text-[10px] font-normal opacity-75">THB</span></span>` : '<span class="text-slate-400 font-mono font-bold tabular-nums text-xs sm:text-sm">0 THB</span>');
 
             tableRowsHtml += `
-              <tr class="bg-slate-50/40 dark:bg-slate-800/20 text-slate-500 border-t border-dashed border-slate-200 dark:border-slate-800">
-                <td class="py-3 px-2 text-center font-mono text-xs text-slate-400 w-9 min-w-[36px]">•</td>
-                <td class="py-3 px-3 min-w-[140px]">
+              <tr onclick="app.toggleTrackedRow(this)" class="is-non-prize text-slate-500 cursor-pointer">
+                <td class="sticky-col-rank py-3 px-2 text-center font-mono text-xs text-slate-400">•</td>
+                <td class="sticky-col-team py-3 px-3 min-w-[140px]">
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <span class="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200">Nod</span>
-                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono">Guest</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200/80 dark:border-slate-700/80 font-mono">Guest</span>
                   </div>
                   <span class="text-[11px] text-slate-400 block truncate">${isEn ? 'Prediction only' : 'เล่นเฉพาะทายผล'}</span>
                 </td>
@@ -12340,13 +12324,13 @@ selectShi62GW(gwName) {
 
           if (isShi62) {
             tableHeadersHtml = `
-              <tr class="border-b border-slate-200/80 dark:border-slate-800 text-[11px] font-bold text-slate-400 dark:text-slate-500 font-display bg-slate-50/50 dark:bg-slate-800/30">
+              <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
                 <th scope="col" class="sticky-col-rank py-2.5 px-2 text-center">#</th>
                 <th scope="col" class="sticky-col-team py-2.5 px-3 min-w-[140px]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                 <th scope="col" class="py-2.5 px-2 text-center w-16">${isEn ? 'Total Pts' : 'คะแนนรวม'}</th>
                 <th scope="col" class="py-2.5 px-3 text-right min-w-[90px]">${isEn ? 'FPL Prize' : 'รางวัล FPL'}</th>
                 <th scope="col" class="py-2.5 px-3 text-right min-w-[95px]">${isEn ? 'Prediction Net' : 'ทายผลสะสม'}</th>
-                <th scope="col" class="py-2.5 px-3 text-right min-w-[110px] font-black">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
+                <th scope="col" class="py-2.5 px-3 text-right min-w-[110px] font-black text-slate-800 dark:text-slate-200">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
               </tr>
             `;
 
@@ -12364,11 +12348,11 @@ selectShi62GW(gwName) {
             `;
           } else {
             tableHeadersHtml = `
-              <tr class="border-b border-slate-200/80 dark:border-slate-800 text-[11px] font-bold text-slate-400 dark:text-slate-500 font-display bg-slate-50/50 dark:bg-slate-800/30">
+              <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
                 <th scope="col" class="sticky-col-rank py-2.5 px-2 text-center">#</th>
                 <th scope="col" class="sticky-col-team py-2.5 px-3 min-w-[140px]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                 <th scope="col" class="py-2.5 px-2 text-center">${isEn ? 'Total Pts' : 'คะแนนรวม'}</th>
-                <th scope="col" class="py-2.5 px-3 text-right font-black">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
+                <th scope="col" class="py-2.5 px-3 text-right font-black text-slate-800 dark:text-slate-200">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
               </tr>
             `;
 
@@ -12467,11 +12451,11 @@ selectShi62GW(gwName) {
                   </div>
                 </div>
                 <div class="overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 touch-scroll table-sticky-container">
-                  <table class="w-full text-left border-collapse table-sticky ${isShi62 ? 'min-w-[620px]' : ''}">
+                  <table class="w-full text-left table-sticky table-clean ${isShi62 ? 'min-w-[620px]' : ''}">
                     <thead>
                       ${tableHeadersHtml}
                     </thead>
-                    <tbody id="standard-prizes-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                    <tbody id="standard-prizes-tbody" class="text-xs sm:text-sm">
                       ${tableRowsHtml}
                     </tbody>
                     <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-mono text-xs sm:text-sm font-bold">
@@ -13129,7 +13113,7 @@ selectShi62GW(gwName) {
           const winsDisp = (t.wins % 1 === 0) ? t.wins : t.wins.toFixed(1);
 
           html += `
-            <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer">
+            <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer">
               <td class="sticky-col-rank py-2.5 px-2 text-center whitespace-nowrap">${rankBadge}</td>
               <td class="sticky-col-team py-2.5 px-2 sm:px-3 min-w-[130px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                 <div class="flex items-center gap-1.5 flex-wrap">
@@ -13138,14 +13122,14 @@ selectShi62GW(gwName) {
                 </div>
                 <div class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 truncate">${this.escapeHtml(t.player_name || '')}</div>
               </td>
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold whitespace-nowrap ${t.wins > 0 ? 'text-amber-600 dark:text-amber-400 font-black' : 'text-slate-400 dark:text-slate-500'}">${winsDisp}</td>
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display font-black text-slate-900 dark:text-white whitespace-nowrap">${avgDisp}</td>
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display text-slate-700 dark:text-slate-300 font-bold whitespace-nowrap">${highDisp}</td>
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display text-slate-400 dark:text-slate-500 whitespace-nowrap">${lowDisp}</td>
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display whitespace-nowrap">
-                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] sm:text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono">${spreadDisp}</span>
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display tabular-nums font-bold whitespace-nowrap ${t.wins > 0 ? 'text-amber-600 dark:text-amber-400 font-black' : 'text-slate-400 dark:text-slate-500'}">${winsDisp}</td>
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display tabular-nums font-black text-slate-900 dark:text-white whitespace-nowrap">${avgDisp}</td>
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display tabular-nums text-slate-700 dark:text-slate-300 font-bold whitespace-nowrap">${highDisp}</td>
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display tabular-nums text-slate-400 dark:text-slate-500 whitespace-nowrap">${lowDisp}</td>
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display tabular-nums whitespace-nowrap">
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] sm:text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 font-mono">${spreadDisp}</span>
               </td>
-              <td class="py-2.5 px-1.5 sm:px-3 text-right font-display whitespace-nowrap ${t.total_hits > 0 ? 'text-rose-600/80 dark:text-rose-400/80 font-semibold font-mono' : 'text-slate-400 dark:text-slate-500 font-mono'}">${t.total_hits > 0 ? `-${t.total_hits}` : '-'}</td>
+              <td class="py-2.5 px-1.5 sm:px-3 text-right font-display tabular-nums whitespace-nowrap ${t.total_hits > 0 ? 'text-rose-600/80 dark:text-rose-400/80 font-semibold font-mono' : 'text-slate-400 dark:text-slate-500 font-mono'}">${t.total_hits > 0 ? `-${t.total_hits}` : '-'}</td>
             </tr>
           `;
         });
@@ -13872,8 +13856,8 @@ selectShi62GW(gwName) {
             : `<span class="text-slate-400 dark:text-slate-600 font-medium">-</span>`;
 
           html += `
-            <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer border-b border-slate-100 dark:border-slate-800/80">
-              <td class="sticky-col-rank py-2.5 px-1 sm:px-2 text-center font-mono font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap">${t.global_rank}</td>
+            <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer">
+              <td class="sticky-col-rank py-2.5 px-1 sm:px-2 text-center font-mono tabular-nums font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap">${t.global_rank}</td>
               <td class="sticky-col-team py-2.5 px-1.5 sm:px-3 min-w-[135px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                 <button onclick="event.stopPropagation(); app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer block truncate w-full group-hover:underline">
                   ${this.escapeHtml(t.team_name)}
@@ -14535,29 +14519,29 @@ selectShi62GW(gwName) {
             const isEligible = t.is_eligible;
             const seedBadge = isEligible 
               ? (t.seed_rank === 1
-                  ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-black font-mono text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-700">#1</span>`
+                  ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-black font-mono text-slate-950 bg-amber-400 shadow-2xs">1</span>`
                   : (t.seed_rank === 2
-                      ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-bold font-mono text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">#2</span>`
+                      ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold font-mono text-slate-900 dark:text-slate-200 bg-slate-200 dark:bg-slate-700">2</span>`
                       : (t.seed_rank === 3
-                          ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-bold font-mono text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">#3</span>`
-                          : `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-semibold font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">#${t.seed_rank}</span>`)))
-              : `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-mono text-slate-400 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800">-</span>`;
+                          ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold font-mono text-white bg-amber-700/80">3</span>`
+                          : `<span class="text-xs font-bold font-mono tabular-nums text-slate-500 dark:text-slate-400">${t.seed_rank}</span>`)))
+              : `<span class="text-xs font-mono text-slate-400 dark:text-slate-500">-</span>`;
 
             let statusPill = '';
             if (isEligible) {
               if (t.seed_rank <= 4) {
-                statusPill = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${isEn ? 'Top Seed' : 'มือวางแถวหน้า'}</span>`;
+                statusPill = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${isEn ? 'Top Seed' : 'มือวางแถวหน้า'}</span>`;
               } else {
-                statusPill = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">${isEn ? 'Contender' : 'ผู้มีสิทธิ์ลุ้นแชมป์'}</span>`;
+                statusPill = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">${isEn ? 'Contender' : 'ผู้มีสิทธิ์ลุ้นแชมป์'}</span>`;
               }
             } else {
-              statusPill = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold font-mono bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700">${isEn ? 'Guest (Non-Prize)' : 'ร่วมสนุก (ไม่ลุ้นรางวัล)'}</span>`;
+              statusPill = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold font-mono bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700">${isEn ? 'Guest (Non-Prize)' : 'ร่วมสนุก (ไม่ลุ้นรางวัล)'}</span>`;
             }
 
             const avgPts = t.gw_count > 0 ? (t.total_net / t.gw_count).toFixed(1) : '-';
 
             return `
-              <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors cursor-pointer border-b border-slate-100 dark:border-slate-800/80">
+              <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer">
                 <td class="sticky-col-rank py-3 px-2 text-center font-mono font-bold">
                   ${seedBadge}
                 </td>
@@ -14711,13 +14695,13 @@ selectShi62GW(gwName) {
 
               <!-- Table with Accessible Semantic Markup (High-Craft Responsive Sticky Freeze) -->
               <div class="overflow-x-auto scrollbar-thin table-sticky-container">
-                <table class="w-full text-left text-xs table-sticky" aria-label="${isEn ? 'Cup Tournament Seeding Table' : 'ตารางจัดอันดับมือวางฟุตบอลถ้วย'}">
+                <table class="w-full text-left text-xs table-sticky table-clean" aria-label="${isEn ? 'Cup Tournament Seeding Table' : 'ตารางจัดอันดับมือวางฟุตบอลถ้วย'}">
                   <thead>
-                    <tr class="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase font-mono font-bold text-[10px] tracking-wider">
+                    <tr class="text-slate-500 dark:text-slate-400 uppercase font-mono font-bold text-[10px] tracking-wider">
                       <th scope="col" class="sticky-col-rank py-2.5 px-2 text-center">${isEn ? 'Seed' : 'มือวาง'}</th>
                       <th scope="col" class="sticky-col-team py-2.5 px-3 sm:px-4 min-w-[140px]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                       <th scope="col" class="py-2.5 px-3 sm:px-4 whitespace-nowrap">${isEn ? 'Cup Status' : 'สถานะการแข่งขัน'}</th>
-                      <th scope="col" class="py-2.5 px-3 sm:px-4 text-right whitespace-nowrap">${isEn ? 'Net Points' : 'คะแนนสุทธิ'}</th>
+                      <th scope="col" class="py-2.5 px-3 sm:px-4 text-right whitespace-nowrap text-slate-800 dark:text-slate-200">${isEn ? 'Net Points' : 'คะแนนสุทธิ'}</th>
                       <th scope="col" class="py-2.5 px-3 sm:px-4 text-right whitespace-nowrap hidden sm:table-cell">${isEn ? 'Avg / GW' : 'เฉลี่ย/นัด'}</th>
                     </tr>
                   </thead>
