@@ -1658,14 +1658,12 @@
         if (!this.config.features) this.config.features = {};
         
         const maxGW = Number(this.multiData.max_gw) || 2;
-        const latestGWData = this.data && this.data.gameweeks ? this.data.gameweeks[String(maxGW)] : null;
-        const isLatestStarted = latestGWData ? (latestGWData.is_started !== undefined ? Boolean(latestGWData.is_started) : (Boolean(latestGWData.is_finished) || (latestGWData.results && latestGWData.results.some(r => r.points > 0)))) : false;
-        
         const queryGWNum = Number(queryGW);
-        if (queryGWNum >= 1 && queryGWNum <= maxGW) {
+        this._hasExplicitQueryGW = (queryGWNum >= 1 && queryGWNum <= maxGW);
+        if (this._hasExplicitQueryGW) {
           this.selectedGW = queryGWNum;
         } else {
-          this.selectedGW = (!isLatestStarted && maxGW > 1) ? (maxGW - 1) : maxGW;
+          this.selectedGW = this.resolveDefaultGW(this.data);
         }
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
@@ -1710,6 +1708,17 @@
         this.cupFilterMode = 'all';
         this._dataVersion = 0;
         this._renderedState = {};
+      }
+
+      resolveDefaultGW(leagueObj = this.data) {
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || 2;
+        const latestGWData = leagueObj && leagueObj.gameweeks ? leagueObj.gameweeks[String(maxGW)] : null;
+        const isLatestStarted = latestGWData
+          ? (latestGWData.is_started !== undefined
+              ? Boolean(latestGWData.is_started)
+              : (Boolean(latestGWData.is_finished) || (latestGWData.results && latestGWData.results.some(r => r.points > 0))))
+          : false;
+        return (!isLatestStarted && maxGW > 1) ? (maxGW - 1) : maxGW;
       }
 
       getDefaultLeagueId() {
@@ -1851,13 +1860,42 @@
         this.initDeadlineCountdown();
 
         // Proactively fetch squads/data + special league datasets for active league if not yet embedded (e.g. index.html with savedLeague)
-        const isTier2 = Boolean(this.config && this.config.tier === 2);
+        const initialLidStr = String(this.activeLeagueId);
+        const isTier2 = Boolean(this.config && this.config.tier === 2) || Boolean(this.data && this.data.tier === 2);
         const hasData = isTier2
           ? Boolean(this.data && this.data.teams && this.data.teams.length > 0)
           : Boolean(this.data && this.data.squads && Object.keys(this.data.squads).length > 0);
         if (!hasData) {
-          this.fetchLeagueData(this.activeLeagueId).then(loaded => {
-            if (loaded) {
+          this._isLoadingLeague = initialLidStr;
+          this.renderAll();
+          this.fetchLeagueData(initialLidStr, 2).then(async loaded => {
+            if (this._isLoadingLeague === initialLidStr) {
+              this._isLoadingLeague = null;
+            }
+            if (loaded && String(this.activeLeagueId) === initialLidStr) {
+              if (!this._hasExplicitQueryGW) {
+                this.selectedGW = this.resolveDefaultGW(loaded);
+              }
+              await this.ensureTier2GWChunk(this.selectedGW);
+              this.updateHeaderInfo();
+              this.initLivePolling();
+              this.renderAll();
+            } else if (!loaded && String(this.activeLeagueId) === initialLidStr) {
+              this.renderAll();
+              if (typeof this.showToast === 'function') {
+                const isEn = (this.currentLang === 'en');
+                this.showToast(
+                  isEn
+                    ? 'Could not load league data. Please check your connection.'
+                    : 'ไม่สามารถโหลดข้อมูลของลีกได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต',
+                  'error'
+                );
+              }
+            }
+          });
+        } else if (isTier2) {
+          this.ensureTier2GWChunk(this.selectedGW).then(chunkLoaded => {
+            if (chunkLoaded && String(this.activeLeagueId) === initialLidStr) {
               this.renderAll();
             }
           });
@@ -3318,7 +3356,74 @@
         return results.some(Boolean);
       }
 
-      async fetchLeagueData(leagueId, retryCount = 1) {
+      async _fetchJsonWithRetry(url, retryCount = 2, timeoutMs = 12000) {
+        for (let attempt = 0; attempt <= retryCount; attempt++) {
+          const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+          const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+          try {
+            const resp = await fetch(url, { signal: controller ? controller.signal : undefined });
+            if (resp && resp.ok) {
+              return await resp.json();
+            }
+            if (resp && resp.status === 404) {
+              return null;
+            }
+          } catch (e) {
+            console.debug(`Dynamic fetch attempt ${attempt + 1} error (${url}):`, e);
+          } finally {
+            if (timer) clearTimeout(timer);
+          }
+          if (attempt < retryCount) {
+            await new Promise(r => setTimeout(r, 400 * (attempt + 1)));
+          }
+        }
+        return null;
+      }
+
+      async ensureTier2GWChunk(gw = this.selectedGW, retryCount = 1) {
+        const lidStr = String(this.activeLeagueId);
+        const isTier2 = Boolean(this.data && this.data.tier === 2) || Boolean(this.configs && this.configs[lidStr] && this.configs[lidStr].tier === 2);
+        if (!isTier2 || !this.data) return false;
+
+        const gwNum = Number(gw);
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || gwNum;
+        if (!gwNum || gwNum < 1 || gwNum > maxGW) return false;
+
+        if (!this.data.gameweeks) this.data.gameweeks = {};
+        const gwKey = String(gwNum);
+        let gwData = this.data.gameweeks[gwKey];
+        if (gwData && Array.isArray(gwData.results) && gwData.results.length > 0) {
+          return false;
+        }
+
+        const inflightKey = `${lidStr}_${gwKey}`;
+        if (!this._tier2ChunkPromises) this._tier2ChunkPromises = {};
+        if (!this._tier2ChunkPromises[inflightKey]) {
+          const chunkUrl = this.getLeagueChunkUrl(lidStr, gwNum);
+          this._tier2ChunkPromises[inflightKey] = this._fetchJsonWithRetry(chunkUrl, retryCount, 12000)
+            .then(chunkJson => {
+              if (chunkJson && Array.isArray(chunkJson.results) && chunkJson.results.length > 0) {
+                const targetLeague = (this.multiData && this.multiData.leagues && this.multiData.leagues[lidStr]) || this.data;
+                if (targetLeague) {
+                  if (!targetLeague.gameweeks) targetLeague.gameweeks = {};
+                  if (!targetLeague.gameweeks[gwKey]) targetLeague.gameweeks[gwKey] = { gw: gwNum };
+                  targetLeague.gameweeks[gwKey].results = chunkJson.results;
+                  if (chunkJson.is_finished !== undefined) targetLeague.gameweeks[gwKey].is_finished = chunkJson.is_finished;
+                  if (chunkJson.is_started !== undefined) targetLeague.gameweeks[gwKey].is_started = chunkJson.is_started;
+                }
+                this.invalidateRenderCache();
+                return true;
+              }
+              return false;
+            })
+            .finally(() => {
+              if (this._tier2ChunkPromises) delete this._tier2ChunkPromises[inflightKey];
+            });
+        }
+        return this._tier2ChunkPromises[inflightKey];
+      }
+
+      async fetchLeagueData(leagueId, retryCount = 2) {
         const lidStr = String(leagueId);
         if (!this.multiData || !this.multiData.leagues || !this.multiData.leagues[lidStr]) return null;
         const targetLeague = this.multiData.leagues[lidStr];
@@ -3334,12 +3439,11 @@
           }
         }
 
-        const url = this.getLeagueDataUrl(lidStr);
-        for (let attempt = 0; attempt <= retryCount; attempt++) {
-          try {
-            const resp = await fetch(url);
-            if (resp.ok) {
-              const fullLeagueData = await resp.json();
+        if (!this._leagueFetchPromises) this._leagueFetchPromises = {};
+        if (!this._leagueFetchPromises[lidStr]) {
+          const url = this.getLeagueDataUrl(lidStr);
+          this._leagueFetchPromises[lidStr] = this._fetchJsonWithRetry(url, retryCount, 15000)
+            .then(fullLeagueData => {
               if (fullLeagueData && (fullLeagueData.squads || (isTier2 && fullLeagueData.teams))) {
                 this.multiData.leagues[lidStr] = fullLeagueData;
                 if (this.lastLiveJson && this.lastLiveGw) {
@@ -3350,15 +3454,13 @@
                 }
                 return this.multiData.leagues[lidStr];
               }
-            }
-          } catch (e) {
-            console.debug(`Dynamic fetch attempt ${attempt + 1} error:`, e);
-            if (attempt < retryCount) {
-              await new Promise(r => setTimeout(r, 400));
-            }
-          }
+              return null;
+            })
+            .finally(() => {
+              if (this._leagueFetchPromises) delete this._leagueFetchPromises[lidStr];
+            });
         }
-        return null;
+        return this._leagueFetchPromises[lidStr];
       }
 
       async switchLeague(leagueId, fromPopstate = false) {
@@ -3379,15 +3481,19 @@
           : Boolean(targetLeague.squads && Object.keys(targetLeague.squads).length > 0);
 
         if (!hasData) {
+          this._isLoadingLeague = lidStr;
           if (selectorContainer) {
             selectorContainer.classList.add('opacity-60', 'pointer-events-none');
             selectorContainer.setAttribute('aria-busy', 'true');
           }
           try {
             const [fetched] = await Promise.all([
-              this.fetchLeagueData(lidStr, 1),
+              this.fetchLeagueData(lidStr, 2),
               this.ensureSpecialFeatureData(lidStr)
             ]);
+            if (this._isLoadingLeague === lidStr) {
+              this._isLoadingLeague = null;
+            }
             if (this._switchingTargetId !== lidStr) return;
             if (!fetched) {
               if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
@@ -3405,6 +3511,9 @@
               }
             }
           } finally {
+            if (this._isLoadingLeague === lidStr) {
+              this._isLoadingLeague = null;
+            }
             if (selectorContainer && this._switchingTargetId === lidStr) {
               selectorContainer.classList.remove('opacity-60', 'pointer-events-none');
               selectorContainer.removeAttribute('aria-busy');
@@ -3419,6 +3528,10 @@
         this.data = this.multiData.leagues[this.activeLeagueId] || {};
         this.config = this.configs[this.activeLeagueId] || {};
         if (!this.config.features) this.config.features = {};
+        if (isTier2) {
+          await this.ensureTier2GWChunk(this.selectedGW);
+          if (this._switchingTargetId !== lidStr) return;
+        }
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
         this.matchdayChunkLimit = 100;
@@ -6390,24 +6503,7 @@ selectShi62GW(gwName) {
         }
 
         // On-Demand fetch for Tier-2 chunked historical gameweek
-        const isTier2 = Boolean(this.data && this.data.tier === 2) || Boolean(this.config && this.config.tier === 2);
-        const gwKey = String(this.selectedGW);
-        const gwData = this.data && this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
-        if (isTier2 && gwData && (!gwData.results || gwData.results.length === 0) && gwData.is_finished) {
-          try {
-            const chunkUrl = this.getLeagueChunkUrl(this.activeLeagueId, this.selectedGW);
-            const res = await fetch(chunkUrl);
-            if (res.ok) {
-              const chunkJson = await res.json();
-              if (chunkJson && chunkJson.results && chunkJson.results.length > 0) {
-                gwData.results = chunkJson.results;
-                if (chunkJson.is_finished !== undefined) gwData.is_finished = chunkJson.is_finished;
-                if (chunkJson.is_started !== undefined) gwData.is_started = chunkJson.is_started;
-                this.invalidateRenderCache();
-              }
-            }
-          } catch (_) {}
-        }
+        await this.ensureTier2GWChunk(this.selectedGW);
 
         this.renderGWSelector();
         this.updateHighlightsTabBlink();
@@ -6433,13 +6529,19 @@ selectShi62GW(gwName) {
         const searchInput = (typeof document !== 'undefined') ? document.getElementById('live-team-search') : null;
         const searchTerm = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
-        if (!gwData || !gwData.results || gwData.results.length === 0) {
-          if (matchdayBody) matchdayBody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs">${isEn ? 'No data available for this Gameweek' : 'ยังไม่มีข้อมูลในสัปดาห์นี้'}</td></tr>`;
+        if (String(this._isLoadingLeague || '') === String(this.activeLeagueId)) {
+          const loadingText = isEn ? 'Loading league data...' : 'กำลังโหลดข้อมูลลีก...';
+          if (championCard) championCard.innerHTML = '';
+          if (matchdayBody) matchdayBody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs animate-pulse">${loadingText}</td></tr>`;
+          if (overallBody) overallBody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs animate-pulse">${loadingText}</td></tr>`;
           return;
         }
 
-        const isFinished = Boolean(gwData.is_finished);
-        const isStarted = gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || (gwData.results && gwData.results.some(r => r.points > 0)));
+        const hasMatchdayResults = Boolean(gwData && Array.isArray(gwData.results) && gwData.results.length > 0);
+        const isFinished = gwData ? Boolean(gwData.is_finished) : false;
+        const isStarted = hasMatchdayResults
+          ? (gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || gwData.results.some(r => r.points > 0)))
+          : Boolean(gwData && gwData.is_started);
 
         const overallPill = document.getElementById('overall-gw-pill');
         if (overallPill) {
@@ -6494,14 +6596,14 @@ selectShi62GW(gwName) {
         const isWeeklyPrize = (this.config.features && this.config.features.prize_model === 'weekly');
         const useHighestPlayerTieBreaker = Boolean(this.config.features && this.config.features.tie_breaker === 'highest_player');
         const scoreProp = 'net_points';
-        const sorted = [...gwData.results].sort((a, b) => {
+        const sorted = hasMatchdayResults ? [...gwData.results].sort((a, b) => {
           const scoreDiff = (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points);
           if (scoreDiff !== 0) return scoreDiff;
           if (useHighestPlayerTieBreaker) {
             return this.compareTeamPlayerScores(a.entry_id, b.entry_id, this.selectedGW);
           }
           return 0;
-        });
+        }) : [];
         let curRank = 1;
         let prevEligiblePoints = null;
         let prevEligibleTeam = null;
@@ -6562,7 +6664,9 @@ selectShi62GW(gwName) {
         const leader = prizeLeader;
 
         // 1. Render Spotlight Card (Pre-Match Lineup Preview OR Live Leader / Weekly Winner)
-        if (championCard && leader) {
+        if (championCard && !hasMatchdayResults) {
+          championCard.innerHTML = '';
+        } else if (championCard && leader) {
           const cacheKey = `${this.activeLeagueId}_${this.selectedGW}_${this.currentLang}_${isFinished}_${isStarted}`;
           const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
           const currentLiveNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeeklyPrize, useHighestPlayerTieBreaker, isEn);
@@ -6896,7 +7000,9 @@ selectShi62GW(gwName) {
         }
 
         // 2. Render Matchday Table Body
-        if (matchdayBody) {
+        if (matchdayBody && !hasMatchdayResults) {
+          matchdayBody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs">${isEn ? 'No data available for this Gameweek' : 'ยังไม่มีข้อมูลในสัปดาห์นี้'}</td></tr>`;
+        } else if (matchdayBody) {
           let mHtml = '';
           const weeklyPenaltiesMap = {};
           let weeklyWinnerPrize = 200;
@@ -7273,7 +7379,7 @@ selectShi62GW(gwName) {
               </tr>
             `;
           }
-          overallBody.innerHTML = oHtml;
+          overallBody.innerHTML = oHtml || `<tr><td colspan="5" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs">${isEn ? 'No data available for this Gameweek' : 'ยังไม่มีข้อมูลในสัปดาห์นี้'}</td></tr>`;
         }
 
         // Apply active team search filter or sync counter for large/small leagues
@@ -7284,7 +7390,8 @@ selectShi62GW(gwName) {
           const countEl = document.getElementById('live-search-count');
           if (countEl) {
             if (searchTerm) {
-              const matchCount = sorted.filter(t => (t.team_name || '').toLowerCase().includes(searchTerm) || (t.player_name || '').toLowerCase().includes(searchTerm)).length;
+              const searchList = sorted.length > 0 ? sorted : ((this.data && this.data.teams) || []).map(t => ({ team_name: t.entry_name, player_name: t.player_name }));
+              const matchCount = searchList.filter(t => (t.team_name || '').toLowerCase().includes(searchTerm) || (t.player_name || '').toLowerCase().includes(searchTerm)).length;
               countEl.textContent = isEn ? `Found ${matchCount} of ${totalTeams.toLocaleString()} teams` : `พบ ${matchCount} จาก ${totalTeams.toLocaleString()} ทีม`;
               countEl.classList.remove('hidden');
             } else {
