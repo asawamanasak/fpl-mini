@@ -2096,6 +2096,9 @@
           }
 
           if (!liveJson || !Array.isArray(liveJson.elements)) {
+            if (typeof window._reportClientError === 'function') {
+              window._reportClientError('api_http');
+            }
             if (force && typeof this.showCopiedToast === 'function') {
               const isEn = (this.currentLang === 'en');
               this.showCopiedToast(isEn ? 'Unable to reach Cloudflare Live Edge' : 'ไม่สามารถเชื่อมต่อ Cloudflare Live Edge ได้ในขณะนี้');
@@ -16884,6 +16887,9 @@ selectShi62GW(gwName) {
           }
 
           if (!picksData || !Array.isArray(picksData.picks) || picksData.picks.length === 0) {
+            if (typeof window._reportClientError === 'function') {
+              window._reportClientError('data_load');
+            }
             return false;
           }
 
@@ -19371,5 +19377,46 @@ ${this.getPublicLeagueUrl()}`;
             path: "/" + currentLeague + "/"
           });
         };
+
+        // 3. Real Client Health & Error Beacon (throttled max 3 per session, deduped per category)
+        var errSentCount = 0;
+        var errSentCats = {};
+        window._reportClientError = function(category) {
+          try {
+            if (errSentCount >= 3) return;
+            var cat = String(category || "js_error").toLowerCase();
+            if (cat !== "js_error" && cat !== "api_timeout" && cat !== "api_http" && cat !== "data_load") {
+              cat = "js_error";
+            }
+            if (errSentCats[cat]) return;
+            errSentCats[cat] = true;
+            errSentCount += 1;
+            sendBeaconEvent({
+              type: "client_error",
+              category: cat,
+              league_id: currentLeague
+            });
+          } catch (_) {}
+        };
+
+        window.addEventListener("error", function(ev) {
+          try {
+            var src = (ev && ev.filename) ? String(ev.filename) : "";
+            var host = (window.location && window.location.hostname) ? window.location.hostname : "";
+            if (src && host && src.indexOf(host) === -1 && src.indexOf("fplsawadika") === -1) return;
+            window._reportClientError("js_error");
+          } catch (_) {}
+        });
+
+        window.addEventListener("unhandledrejection", function(ev) {
+          try {
+            var reason = ev && ev.reason ? String(ev.reason.message || ev.reason) : "";
+            if (/AbortError|timeout/i.test(reason)) {
+              window._reportClientError("api_timeout");
+            } else {
+              window._reportClientError("js_error");
+            }
+          } catch (_) {}
+        });
       } catch (_) {}
     })();
