@@ -760,26 +760,30 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </div>
 
             <!-- SVG Engagement Chart -->
-            <div class="py-2">
-              <svg viewBox="0 0 440 120" class="w-full h-28 overflow-visible" role="img" aria-label="Engagement comparison chart">
+            <div class="py-2 space-y-1.5">
+              <div class="flex items-center justify-between text-[11px] text-slate-600 dark:text-neutral-400">
+                <span data-i18n="graphic2_axis_y">แกนตั้ง: ความถี่เปิดดูเฉลี่ยต่อทีม (ครั้ง / สัปดาห์)</span>
+                <span class="mono" data-i18n="graphic2_axis_x">กลุ่มผู้ใช้</span>
+              </div>
+              <svg viewBox="0 0 440 128" class="w-full h-32 overflow-visible" role="img" aria-label="Engagement comparison chart">
                 <!-- Bar 1: Standard FPL -->
-                <rect x="20" y="70" width="70" height="30" rx="4" fill="#94a3b8" class="transition-all"></rect>
-                <text x="55" y="60" text-anchor="middle" font-size="12" font-family="monospace" font-weight="bold" fill="#64748b">21.8</text>
-                <text x="55" y="115" text-anchor="middle" font-size="10" fill="#64748b">Official App</text>
+                <rect x="20" y="74" width="76" height="32" rx="4" fill="#94a3b8" class="transition-all"><title>Official FPL App: 21.8 visits/team/GW</title></rect>
+                <text id="g2Val1" x="58" y="64" text-anchor="middle" font-size="11" font-family="monospace" font-weight="bold" fill="#64748b">21.8 ครั้ง/วีค</text>
+                <text x="58" y="122" text-anchor="middle" font-size="10" fill="#64748b">Official App</text>
 
                 <!-- Arrow / Multiplier -->
-                <path d="M120 75 L170 45" stroke="#10b981" stroke-width="2" stroke-dasharray="3,3" fill="none"></path>
-                <text x="145" y="45" font-size="12" font-weight="bold" fill="#10b981" text-anchor="middle">+471%</text>
+                <path d="M116 78 L172 48" stroke="#10b981" stroke-width="2" stroke-dasharray="3,3" fill="none"></path>
+                <text id="g2Mult" x="144" y="45" font-size="11" font-weight="bold" fill="#10b981" text-anchor="middle">+471% (5.7x)</text>
 
                 <!-- Bar 2: FPLSaWaDiKa -->
-                <rect x="190" y="20" width="70" height="80" rx="4" fill="#10b981" class="transition-all"></rect>
-                <text x="225" y="12" text-anchor="middle" font-size="13" font-family="monospace" font-weight="bold" fill="#10b981">124.6</text>
-                <text x="225" y="115" text-anchor="middle" font-size="10" font-weight="bold" fill="#047857">FPLSaWaDiKa</text>
+                <rect x="186" y="24" width="76" height="82" rx="4" fill="#10b981" class="transition-all"><title>FPLSaWaDiKa Average: 124.6 visits/team/GW</title></rect>
+                <text id="g2Val2" x="224" y="15" text-anchor="middle" font-size="11.5" font-family="monospace" font-weight="bold" fill="#10b981">124.6 ครั้ง/วีค</text>
+                <text x="224" y="122" text-anchor="middle" font-size="10" font-weight="bold" fill="#047857">FPLSaWaDiKa</text>
 
                 <!-- Bar 3: Peak Weekly Stakes (e.g. 40700) -->
-                <rect x="290" y="10" width="70" height="90" rx="4" fill="#3b82f6" class="transition-all"></rect>
-                <text x="325" y="5" text-anchor="middle" font-size="13" font-family="monospace" font-weight="bold" fill="#3b82f6">137.4</text>
-                <text x="325" y="115" text-anchor="middle" font-size="10" font-weight="bold" fill="#1d4ed8">Weekly Stakes</text>
+                <rect x="302" y="14" width="76" height="92" rx="4" fill="#3b82f6" class="transition-all"><title>Weekly Stakes League (40700): 137.4 visits/team/GW</title></rect>
+                <text id="g2Val3" x="340" y="7" text-anchor="middle" font-size="11.5" font-family="monospace" font-weight="bold" fill="#3b82f6">137.4 ครั้ง/วีค</text>
+                <text x="340" y="122" text-anchor="middle" font-size="10" font-weight="bold" fill="#1d4ed8">Weekly Stakes</text>
               </svg>
             </div>
 
@@ -1559,7 +1563,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
 
           <!-- Responsive SVG Chart Container -->
-          <div class="w-full pt-2">
+          <div class="w-full pt-2 space-y-1.5">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-600 dark:text-neutral-400">
+              <span id="trafficYAxisUnit" class="font-medium">แกนตั้ง (Y): ดัชนีความหนาแน่นเทียบช่วงพีคสูงสุด (%)</span>
+              <span id="trafficXAxisUnit" class="mono">แกนนอน (X): เวลาไทย (ICT)</span>
+            </div>
             <svg id="trafficSvgChart" viewBox="0 0 680 220" class="w-full h-48 sm:h-56 overflow-visible" role="img" aria-label="Matchday traffic distribution chart"></svg>
           </div>
 
@@ -1854,7 +1862,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
         </div>
 
-        <div class="w-full">
+        <div class="w-full space-y-1.5">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-600 dark:text-neutral-400">
+            <span id="monitorYAxisUnit" class="font-medium">แกนตั้ง (Y): จำนวนเหตุการณ์ใช้งานจริง &amp; Error (ครั้ง/ชม.)</span>
+            <span id="monitorXAxisUnit" class="mono">แกนนอน (X): ช่วงเวลา 24 ชม. ล่าสุด (เวลาไทย · น.)</span>
+          </div>
           <svg id="monitorSvgChart" viewBox="0 0 680 220" class="w-full h-52 sm:h-60 overflow-visible" role="img" aria-label="Project Health and Error Log Chart"></svg>
         </div>
 
@@ -1988,6 +2000,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         graphic2_badge: 'พุ่งสูงขึ้น 5.7 เท่า',
         graphic2_title: 'ความถี่การเข้าชมเฉลี่ย: ลีกทางการ vs ลีกบน FPLSaWaDiKa',
         graphic2_sub: 'ยอดเปิดดูเฉลี่ยต่อผู้จัดการทีม 1 คน ในแต่ละสัปดาห์ (Visits/Team/GW)',
+        graphic2_axis_y: 'แกนตั้ง: ความถี่เปิดดูเฉลี่ยต่อทีม (ครั้ง / สัปดาห์)',
+        graphic2_axis_x: 'กลุ่มผู้ใช้',
         graphic2_callout: 'Weekly Stakes + บอ.บู๋ AI ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์',
         graphic3_eyebrow: 'มิติที่ 3 · การเงินและความโปร่งใส',
         graphic3_badge: 'GMV รวม ฿268,700',
@@ -2256,6 +2270,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         graphic2_badge: '5.7x Higher Visits',
         graphic2_title: 'Weekly Visit Intensity: Official FPL vs FPLSaWaDiKa',
         graphic2_sub: 'Average weekly pageviews per manager (Visits/Team/GW)',
+        graphic2_axis_y: 'Y-Axis: Avg Visits per Team (visits / GW)',
+        graphic2_axis_x: 'Platform Segment',
         graphic2_callout: 'Weekly Stakes + Bor.Bou AI sparks non-stop chat group banter',
         graphic3_eyebrow: 'Dimension 3 · Financial Integrity',
         graphic3_badge: 'Total GMV ฿268,700',
@@ -2618,16 +2634,27 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const titleEl = document.getElementById('trafficChartTitle');
       const subEl = document.getElementById('trafficChartSub');
       const calloutEl = document.getElementById('chartPeakCallout');
+      const yAxisEl = document.getElementById('trafficYAxisUnit');
+      const xAxisEl = document.getElementById('trafficXAxisUnit');
       const dict = I18N[lang];
 
       if (currentChartMode === 'hourly') {
         if (titleEl) titleEl.textContent = dict.chart_title_hourly;
         if (subEl) subEl.textContent = dict.chart_sub_hourly;
-        if (calloutEl) calloutEl.textContent = lang === 'en' ? 'Peak: 22:00 ICT (100% Index)' : 'จุดพีคสูงสุด: 22:00 น. (ดัชนี 100%)';
+        if (yAxisEl) yAxisEl.textContent = lang === 'en'
+          ? 'Y-Axis: Traffic Load Index (% of peak hour)'
+          : 'แกนตั้ง (Y): ดัชนีความหนาแน่นเทียบพีคสูงสุด (% ของจุดพีค)';
+        if (xAxisEl) xAxisEl.textContent = lang === 'en'
+          ? 'X-Axis: Time of Day (ICT)'
+          : 'แกนนอน (X): ช่วงเวลาในวัน (เวลาไทย · น.)';
+        const peakPt = HOURLY_SERIES.reduce((best, cur) => (cur.pct > best.pct ? cur : best), { hour: '22:00', pct: 100 });
+        if (calloutEl) calloutEl.textContent = lang === 'en'
+          ? ('Peak: ' + peakPt.hour + ' ICT (' + peakPt.pct + '% Load Index)')
+          : ('จุดพีคสูงสุด: ' + peakPt.hour + ' น. (' + peakPt.pct + '% ของจุดพีค)');
 
-        const chartLeft = 36;
+        const chartLeft = 40;
         const chartRight = 668;
-        const chartTop = 18;
+        const chartTop = 22;
         const chartBottom = 184;
         const chartHeight = chartBottom - chartTop;
         const stepX = (chartRight - chartLeft) / HOURLY_SERIES.length;
@@ -2645,11 +2672,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           const barH = Math.max(4, (pt.pct / 100) * chartHeight);
           const y = chartBottom - barH;
           const fill = pt.peak ? peakBarColor : normalBarColor;
+          const tip = lang === 'en'
+            ? (pt.hour + ' ICT: ' + pt.pct + '% of peak traffic load' + (pt.peak ? ' (Peak Window)' : ''))
+            : ('เวลา ' + pt.hour + ' น. · ความหนาแน่น ' + pt.pct + '% ของจุดพีค' + (pt.peak ? ' (ช่วงพีค)' : ''));
           html += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + barH.toFixed(1) + '" rx="3" fill="' + fill + '">' +
-            '<title>' + pt.hour + ' ICT: ' + pt.pct + '%</title></rect>';
+            '<title>' + escHtml(tip) + '</title></rect>';
+
+          if (pt.hour === peakPt.hour || (pt.pct >= 80 && idx % 2 === 0)) {
+            html += '<text x="' + (x + barWidth / 2).toFixed(1) + '" y="' + (y - 5).toFixed(1) + '" text-anchor="middle" fill="' + peakBarColor + '" font-size="9.5" font-weight="600" font-family="JetBrains Mono, monospace">' + pt.pct + '%</text>';
+          }
 
           if (idx % 3 === 0 || idx === 22) {
-            html += '<text x="' + (x + barWidth / 2).toFixed(1) + '" y="206" text-anchor="middle" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + pt.hour.slice(0, 2) + 'h</text>';
+            html += '<text x="' + (x + barWidth / 2).toFixed(1) + '" y="206" text-anchor="middle" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + pt.hour.slice(0, 2) + (lang === 'en' ? 'h' : ':00') + '</text>';
           }
         });
 
@@ -2657,25 +2691,32 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       } else {
         if (titleEl) titleEl.textContent = dict.chart_title_daily;
         if (subEl) subEl.textContent = dict.chart_sub_daily;
+        if (yAxisEl) yAxisEl.textContent = lang === 'en'
+          ? 'Y-Axis: Website Visits (visits/day)'
+          : 'แกนตั้ง (Y): ปริมาณการเข้าชมเว็บ (ครั้ง/วัน)';
+        if (xAxisEl) xAxisEl.textContent = lang === 'en'
+          ? 'X-Axis: Day of Week (Last 7 Days)'
+          : 'แกนนอน (X): วันในสัปดาห์ (ย้อนหลัง 7 วัน)';
         const maxVisits = Math.max(...DAILY_SERIES.map((d) => d.visits), 100);
         if (calloutEl) calloutEl.textContent = lang === 'en'
           ? 'Weekend Peak: ' + maxVisits.toLocaleString() + ' visits/day'
-          : 'พีควันเสาร์: ' + maxVisits.toLocaleString() + ' ครั้ง/วัน';
+          : 'พีคสูงสุด: ' + maxVisits.toLocaleString() + ' ครั้ง/วัน';
 
-        const chartLeft = 44;
+        const chartLeft = 52;
         const chartRight = 660;
-        const chartTop = 20;
+        const chartTop = 24;
         const chartBottom = 184;
         const chartHeight = chartBottom - chartTop;
         const stepX = (chartRight - chartLeft) / DAILY_SERIES.length;
         const barWidth = Math.min(48, stepX - 24);
+        const unitSuffix = lang === 'en' ? ' visits' : ' ครั้ง';
 
         let html = '';
         [0, 0.25, 0.5, 0.75, 1].forEach((ratio) => {
           const val = Math.round(maxVisits * ratio);
           const y = chartBottom - ratio * chartHeight;
           html += '<line x1="' + chartLeft + '" y1="' + y + '" x2="' + chartRight + '" y2="' + y + '" stroke="' + gridColor + '" stroke-dasharray="3 3" stroke-width="1" />';
-          html += '<text x="2" y="' + (y + 4) + '" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + val + '</text>';
+          html += '<text x="2" y="' + (y + 4) + '" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + val.toLocaleString() + '</text>';
         });
 
         DAILY_SERIES.forEach((pt, idx) => {
@@ -2685,10 +2726,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           const y = chartBottom - barH;
           const fill = pt.peak ? peakBarColor : normalBarColor;
           const label = lang === 'en' ? pt.dayEn : pt.dayTh;
+          const tip = label + ': ' + pt.visits.toLocaleString() + (lang === 'en' ? ' visits/day' : ' ครั้ง/วัน');
 
-          html += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + barH.toFixed(1) + '" rx="4" fill="' + fill + '" />';
-          html += '<text x="' + center.toFixed(1) + '" y="' + (y - 6).toFixed(1) + '" text-anchor="middle" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + pt.visits.toLocaleString() + '</text>';
-          html += '<text x="' + center.toFixed(1) + '" y="206" text-anchor="middle" fill="' + labelColor + '" font-size="11" font-family="JetBrains Mono, monospace">' + label + '</text>';
+          html += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + barH.toFixed(1) + '" rx="4" fill="' + fill + '">' +
+            '<title>' + escHtml(tip) + '</title></rect>';
+          html += '<text x="' + center.toFixed(1) + '" y="' + (y - 6).toFixed(1) + '" text-anchor="middle" fill="' + labelColor + '" font-size="10" font-weight="600" font-family="JetBrains Mono, monospace">' + pt.visits.toLocaleString() + unitSuffix + '</text>';
+          html += '<text x="' + center.toFixed(1) + '" y="206" text-anchor="middle" fill="' + labelColor + '" font-size="11" font-family="JetBrains Mono, monospace">' + escHtml(label) + '</text>';
         });
 
         svg.innerHTML = html;
@@ -2855,11 +2898,23 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const titleEl = document.getElementById('monitorChartTitle');
       const subEl = document.getElementById('monitorChartSub');
       const calloutEl = document.getElementById('monitorWindowCallout');
+      const yAxisEl = document.getElementById('monitorYAxisUnit');
+      const xAxisEl = document.getElementById('monitorXAxisUnit');
       const series = currentMonitorMode === '7d' ? (MONITOR_STATE.series_7d || []) : (MONITOR_STATE.series_24h || []);
       const anomalies = currentMonitorMode === '7d' ? (MONITOR_STATE.anomaly_windows_7d || []) : (MONITOR_STATE.anomaly_windows_24h || []);
 
       if (titleEl) titleEl.textContent = currentMonitorMode === '7d' ? dict.mon_chart_title_7d : dict.mon_chart_title_24h;
       if (subEl) subEl.textContent = currentMonitorMode === '7d' ? dict.mon_chart_sub_7d : dict.mon_chart_sub_24h;
+      if (yAxisEl) {
+        yAxisEl.textContent = currentMonitorMode === '7d'
+          ? (lang === 'en' ? 'Y-Axis: Real Events & Errors (count/day)' : 'แกนตั้ง (Y): จำนวนเหตุการณ์ใช้งานจริง & Error (ครั้ง/วัน)')
+          : (lang === 'en' ? 'Y-Axis: Real Events & Errors (count/hr)' : 'แกนตั้ง (Y): จำนวนเหตุการณ์ใช้งานจริง & Error (ครั้ง/ชม.)');
+      }
+      if (xAxisEl) {
+        xAxisEl.textContent = currentMonitorMode === '7d'
+          ? (lang === 'en' ? 'X-Axis: Date (Last 7 Days)' : 'แกนนอน (X): วันที่ (ย้อนหลัง 7 วัน)')
+          : (lang === 'en' ? 'X-Axis: Last 24 Hours (ICT)' : 'แกนนอน (X): ช่วงเวลา 24 ชม. ล่าสุด (เวลาไทย · น.)');
+      }
       if (calloutEl) {
         if (anomalies.length === 0) {
           calloutEl.className = 'mono text-emerald-700 dark:text-emerald-400 font-medium';
@@ -2882,20 +2937,21 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ...series.map((d) => Math.max(Number(d.activity || 0), Number(d.total_errors || 0) * 4))
       );
 
-      const chartLeft = 40;
+      const chartLeft = 46;
       const chartRight = 666;
-      const chartTop = 20;
+      const chartTop = 24;
       const chartBottom = 184;
       const chartHeight = chartBottom - chartTop;
       const stepX = (chartRight - chartLeft) / series.length;
       const barWidth = currentMonitorMode === '7d' ? Math.min(48, stepX - 24) : Math.max(10, stepX - 7);
+      const okUnit = lang === 'en' ? ' ok' : ' ครั้ง';
 
       let html = '';
       [0, 0.25, 0.5, 0.75, 1].forEach((ratio) => {
         const val = Math.round(maxVal * ratio);
         const y = chartBottom - ratio * chartHeight;
         html += '<line x1="' + chartLeft + '" y1="' + y + '" x2="' + chartRight + '" y2="' + y + '" stroke="' + gridColor + '" stroke-dasharray="3 3" stroke-width="1" />';
-        html += '<text x="2" y="' + (y + 4) + '" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + val + '</text>';
+        html += '<text x="2" y="' + (y + 4) + '" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + val.toLocaleString() + '</text>';
       });
 
       const thDays = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
@@ -2920,15 +2976,21 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             xLabel = 'D' + (idx + 1);
           }
         } else {
-          xLabel = String(pt.label || '').slice(0, 2) + 'h';
+          xLabel = String(pt.label || '').slice(0, 2) + (lang === 'en' ? 'h' : ':00');
         }
 
-        const tooltipText = (pt.label || pt.date || '') +
-          ' | OK: ' + act + ' | Errors: ' + errCount +
-          ' (Client: ' + Number(pt.client_errors || 0) + ', Upstream: ' + Number(pt.upstream_errors || 0) + ')';
+        const tooltipText = lang === 'en'
+          ? ((pt.label || pt.date || '') + ' | Normal Events: ' + act.toLocaleString() + ' | Total Errors: ' + errCount +
+             ' (User Web: ' + Number(pt.client_errors || 0) + ', Upstream FPL 5xx: ' + Number(pt.upstream_errors || 0) + ')')
+          : ((pt.label ? (pt.label + ' น.') : (pt.date || '')) + ' | ใช้งานปกติ: ' + act.toLocaleString() + ' ครั้ง | Error รวม: ' + errCount +
+             ' ครั้ง (ฝั่งผู้ใช้ ' + Number(pt.client_errors || 0) + ', เว็บ FPL ' + Number(pt.upstream_errors || 0) + ')');
 
         html += '<rect x="' + x.toFixed(1) + '" y="' + actY.toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + actH.toFixed(1) + '" rx="3" fill="' + barFill + '" opacity="' + (act > 0 ? '0.88' : '0.45') + '">' +
           '<title>' + escHtml(tooltipText) + '</title></rect>';
+
+        if (act > 0 && errCount === 0 && (currentMonitorMode === '7d' || act >= maxVal * 0.25)) {
+          html += '<text x="' + center.toFixed(1) + '" y="' + Math.max(12, actY - 6).toFixed(1) + '" text-anchor="middle" fill="' + labelColor + '" font-size="9.5" font-weight="600" font-family="JetBrains Mono, monospace">' + act.toLocaleString() + okUnit + '</text>';
+        }
 
         if (errCount > 0) {
           const errH = Math.max(12, Math.min(chartHeight, ((errCount * 4) / maxVal) * chartHeight));
@@ -2936,7 +2998,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           html += '<rect x="' + x.toFixed(1) + '" y="' + errY.toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + errH.toFixed(1) + '" rx="3" fill="' + errBarColor + '" opacity="0.95">' +
             '<title>' + escHtml(tooltipText) + '</title></rect>';
           html += '<circle cx="' + center.toFixed(1) + '" cy="' + Math.max(10, errY - 7).toFixed(1) + '" r="4" fill="' + errBarColor + '" />';
-          html += '<text x="' + center.toFixed(1) + '" y="' + Math.max(10, errY - 14).toFixed(1) + '" text-anchor="middle" fill="' + errBarColor + '" font-size="9" font-weight="600" font-family="JetBrains Mono, monospace">!' + errCount + '</text>';
+          const errLabel = '!' + errCount + ' Err';
+          html += '<text x="' + center.toFixed(1) + '" y="' + Math.max(10, errY - 14).toFixed(1) + '" text-anchor="middle" fill="' + errBarColor + '" font-size="9" font-weight="600" font-family="JetBrains Mono, monospace">' + escHtml(errLabel) + '</text>';
         }
 
         if (currentMonitorMode === '7d' || idx % 3 === 0 || idx === series.length - 1) {
@@ -2997,6 +3060,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       renderLeagueTable();
       renderTrafficChart();
+      const g2Unit = normalized === 'en' ? ' visits/wk' : ' ครั้ง/วีค';
+      const g2v1 = document.getElementById('g2Val1');
+      const g2v2 = document.getElementById('g2Val2');
+      const g2v3 = document.getElementById('g2Val3');
+      if (g2v1) g2v1.textContent = '21.8' + g2Unit;
+      if (g2v2) g2v2.textContent = '124.6' + g2Unit;
+      if (g2v3) g2v3.textContent = '137.4' + g2Unit;
       if (typeof renderMonitorSummary === 'function') renderMonitorSummary();
       if (typeof renderMonitorChart === 'function') renderMonitorChart();
       if (typeof renderAllOpResults === 'function') renderAllOpResults();
