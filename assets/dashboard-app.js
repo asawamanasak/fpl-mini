@@ -16975,7 +16975,8 @@ selectShi62GW(gwName) {
             starting: starters,
             bench: bench,
             chip: picksData.active_chip,
-            raw_hist: picksData.entry_history || {}
+            raw_hist: picksData.entry_history || {},
+            summary_overall_rank: picksData.summary_overall_rank || null
           };
 
           if (!this.data.squads) this.data.squads = {};
@@ -17068,26 +17069,77 @@ selectShi62GW(gwName) {
 
         const rankBadge = document.getElementById('team-modal-overall-rank-badge');
         if (rankBadge) {
-          let ovRank = matchdayRes.overall_rank;
-          if (!ovRank && squad && squad.raw_hist && squad.raw_hist.overall_rank) {
-            ovRank = squad.raw_hist.overall_rank;
+          const maxGw = Number((this.multiData && this.multiData.max_gw) || (this.data && this.data.current_gw) || this.selectedGW || 1);
+          const isLatestGw = (Number(this.selectedGW) >= maxGw);
+          const isTier2Target = Boolean(
+            (targetLeague && targetLeague.tier === 2) ||
+            (this.configs && targetLeagueId && this.configs[targetLeagueId] && this.configs[targetLeagueId].tier === 2) ||
+            (this.data && this.data.tier === 2 && !targetLeagueId)
+          );
+
+          let ovRank = null;
+          if (isTier2Target) {
+            // Tier 2 stores mini-league cumulative rank in overall_rank; read world rank from fpl_overall_rank or live /picks instead.
+            if (isLatestGw) {
+              ovRank = (squad && squad.summary_overall_rank)
+                || matchdayRes.fpl_overall_rank
+                || teamObj.fpl_overall_rank
+                || (squad && squad.raw_hist && squad.raw_hist.overall_rank)
+                || null;
+            } else {
+              ovRank = matchdayRes.fpl_overall_rank
+                || (squad && squad.raw_hist && squad.raw_hist.overall_rank)
+                || null;
+            }
+          } else {
+            if (isLatestGw) {
+              ovRank = teamObj.overall_rank
+                || (squad && squad.summary_overall_rank)
+                || matchdayRes.fpl_overall_rank
+                || matchdayRes.overall_rank
+                || (squad && squad.raw_hist && squad.raw_hist.overall_rank)
+                || null;
+            } else {
+              ovRank = matchdayRes.fpl_overall_rank
+                || matchdayRes.overall_rank
+                || (squad && squad.raw_hist && squad.raw_hist.overall_rank)
+                || null;
+            }
           }
-          if (!ovRank && teamObj.overall_rank) {
-            ovRank = teamObj.overall_rank;
-          }
+
           if (!ovRank && this.multiData && this.multiData.leagues) {
-            const maxGw = this.multiData.max_gw || this.selectedGW;
+            const lookupGwKey = String(this.selectedGW);
             for (const l of Object.values(this.multiData.leagues)) {
-              const s = (l.squads || {})[`${entryIdNum}_${maxGw}`];
+              const lIsTier2 = (l && l.tier === 2);
+              if (isLatestGw) {
+                const lt = (l.teams || []).find(t => Number(t.entry_id) === entryIdNum);
+                if (lt) {
+                  const candTeamOv = lIsTier2 ? lt.fpl_overall_rank : lt.overall_rank;
+                  if (candTeamOv) {
+                    ovRank = candTeamOv;
+                    break;
+                  }
+                }
+              }
+              const s = (l.squads || {})[`${entryIdNum}_${lookupGwKey}`];
+              if (s && isLatestGw && s.summary_overall_rank) {
+                ovRank = s.summary_overall_rank;
+                break;
+              }
               if (s && s.raw_hist && s.raw_hist.overall_rank) {
                 ovRank = s.raw_hist.overall_rank;
                 break;
               }
-              const gr = ((l.gameweeks || {})[String(maxGw)] || {}).results || [];
+              const gr = ((l.gameweeks || {})[lookupGwKey] || {}).results || [];
               const foundRes = gr.find(r => Number(r.entry_id) === entryIdNum);
-              if (foundRes && foundRes.overall_rank) {
-                ovRank = foundRes.overall_rank;
-                break;
+              if (foundRes) {
+                const candResOv = lIsTier2
+                  ? foundRes.fpl_overall_rank
+                  : (foundRes.fpl_overall_rank || foundRes.overall_rank);
+                if (candResOv) {
+                  ovRank = candResOv;
+                  break;
+                }
               }
             }
           }

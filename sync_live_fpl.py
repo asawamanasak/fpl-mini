@@ -683,6 +683,8 @@ def sync_once(args):
     }
 
     global_picks_cache = {}
+    global_entry_cache = {}
+    global_history_cache = {}
     picks_lock = threading.Lock()
     summary_stats = []
 
@@ -721,6 +723,8 @@ def sync_once(args):
                 if not any(t['entry'] == np_id_int for t in standings_teams):
                     try:
                         e_info = fetch(f'https://fantasy.premierleague.com/api/entry/{np_id_int}/')
+                        with picks_lock:
+                            global_entry_cache[np_id_int] = e_info
                         p_name = f"{e_info.get('player_first_name', '')} {e_info.get('player_last_name', '')}".strip()
                         standings_teams.append({
                             'entry': np_id_int,
@@ -1400,11 +1404,85 @@ def sync_once(args):
                 gameweeks_dict[gw_str]["is_started"] = gw_started_map.get(gw, False)
                 gameweeks_dict[gw_str]["unstarted_teams"] = [teams_by_id.get(tid, str(tid)) for tid in gw_unstarted_teams_map.get(gw, set())]
 
-            # Enrich teams_list with latest overall_rank
-            latest_gw_res = {r["entry_id"]: r.get("overall_rank") for r in gameweeks_dict.get(str(max_gw), {}).get("results", []) if r.get("overall_rank")}
-            for t in teams_list:
-                if t["entry_id"] in latest_gw_res:
-                    t["overall_rank"] = latest_gw_res[t["entry_id"]]
+            # Backfill missing historical GW overall_rank via /history/ (Tier 1 only, once per missing GW)
+            if league_tier == 1:
+                gws_missing_ov = {}
+                for gw_num in range(1, max_gw + 1):
+                    if not gw_status_map.get(gw_num, False):
+                        continue
+                    res_list = gameweeks_dict.get(str(gw_num), {}).get("results", [])
+                    missing_in_gw = [r["entry_id"] for r in res_list if not r.get("overall_rank")]
+                    if missing_in_gw:
+                        gws_missing_ov[gw_num] = set(missing_in_gw)
+
+                if gws_missing_ov:
+                    all_missing_eids = sorted({eid for s in gws_missing_ov.values() for eid in s})
+                    to_fetch_hist = [eid for eid in all_missing_eids if eid not in global_history_cache]
+                    if to_fetch_hist:
+                        print(f" -> Backfilling historical overall_rank for {len(to_fetch_hist)} Tier 1 team(s) across {len(gws_missing_ov)} finished GW(s)...")
+                        def _fetch_entry_hist(eid_val):
+                            try:
+                                h_resp = fetch(f'https://fantasy.premierleague.com/api/entry/{eid_val}/history/')
+                                ev_map = {
+                                    int(item['event']): item.get('overall_rank')
+                                    for item in (h_resp.get('current') or [])
+                                    if item.get('event') and item.get('overall_rank')
+                                }
+                                return (eid_val, ev_map)
+                            except Exception as h_err:
+                                logging.debug("History backfill skipped for %s: %s", eid_val, h_err)
+                                return (eid_val, None)
+                        with ThreadPoolExecutor(max_workers=5) as h_exec:
+                            for eid_val, ev_map in h_exec.map(_fetch_entry_hist, to_fetch_hist):
+                                if ev_map is not None:
+                                    with picks_lock:
+                                        global_history_cache[eid_val] = ev_map
+                    for gw_num in gws_missing_ov:
+                        for r in gameweeks_dict.get(str(gw_num), {}).get("results", []):
+                            if not r.get("overall_rank"):
+                                hist_ev_map = global_history_cache.get(r["entry_id"])
+                                if hist_ev_map and gw_num in hist_ev_map:
+                                    r["overall_rank"] = hist_ev_map[gw_num]
+
+            # Enrich teams_list with official Overall Rank
+            if league_tier == 1:
+                latest_gw_res = {r["entry_id"]: r.get("overall_rank") for r in gameweeks_dict.get(str(max_gw), {}).get("results", []) if r.get("overall_rank")}
+                t1_eids = [t["entry_id"] for t in teams_list]
+                to_fetch_entry = [eid for eid in t1_eids if eid not in global_entry_cache]
+                if to_fetch_entry:
+                    def _fetch_entry_summary(eid_val):
+                        try:
+                            e_resp = fetch(f'https://fantasy.premierleague.com/api/entry/{eid_val}/')
+                            return (eid_val, e_resp)
+                        except Exception as e_err:
+                            logging.debug("Entry summary fetch skipped for %s: %s", eid_val, e_err)
+                            return (eid_val, None)
+                    with ThreadPoolExecutor(max_workers=5) as e_exec:
+                        for eid_val, e_resp in e_exec.map(_fetch_entry_summary, to_fetch_entry):
+                            if isinstance(e_resp, dict):
+                                with picks_lock:
+                                    global_entry_cache[eid_val] = e_resp
+
+                for t in teams_list:
+                    eid = t["entry_id"]
+                    cached_ov = cached_teams_map.get(eid, {}).get("overall_rank")
+                    e_summary = global_entry_cache.get(eid, {})
+                    sum_ov = e_summary.get("summary_overall_rank") if isinstance(e_summary, dict) else None
+                    if sum_ov and int(sum_ov) > 0:
+                        t["overall_rank"] = int(sum_ov)
+                    elif eid in latest_gw_res:
+                        t["overall_rank"] = latest_gw_res[eid]
+                    elif cached_ov:
+                        t["overall_rank"] = cached_ov
+            else:
+                latest_fpl_ov = {r["entry_id"]: r.get("fpl_overall_rank") for r in gameweeks_dict.get(str(max_gw), {}).get("results", []) if r.get("fpl_overall_rank")}
+                for t in teams_list:
+                    eid = t["entry_id"]
+                    cached_fpl_ov = cached_teams_map.get(eid, {}).get("fpl_overall_rank")
+                    if eid in latest_fpl_ov:
+                        t["fpl_overall_rank"] = latest_fpl_ov[eid]
+                    elif cached_fpl_ov:
+                        t["fpl_overall_rank"] = cached_fpl_ov
 
             if cached_league and cached_league.get("teams") and len(teams_list) == 0:
                 print(f" -> [Resilience] Fetched teams empty for League {lid}. Safely falling back to cached league data.")

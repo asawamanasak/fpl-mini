@@ -1605,9 +1605,14 @@ export default {
           );
         }
 
-        const picksResp = await fetch(`https://fantasy.premierleague.com/api/entry/${entryId}/event/${gw}/picks/`, {
-          headers: FPL_HEADERS,
-        });
+        const [picksResp, entryResp] = await Promise.all([
+          fetch(`https://fantasy.premierleague.com/api/entry/${entryId}/event/${gw}/picks/`, {
+            headers: FPL_HEADERS,
+          }),
+          fetch(`https://fantasy.premierleague.com/api/entry/${entryId}/`, {
+            headers: FPL_HEADERS,
+          }).catch(() => null),
+        ]);
 
         if (!picksResp.ok) {
           if (picksResp.status >= 500) {
@@ -1628,6 +1633,15 @@ export default {
         }
 
         const picksData = await picksResp.json();
+        let summaryOverallRank = null;
+        if (entryResp && entryResp.ok) {
+          try {
+            const entryData = await entryResp.json();
+            if (entryData && Number(entryData.summary_overall_rank) > 0) {
+              summaryOverallRank = Number(entryData.summary_overall_rank);
+            }
+          } catch (_) {}
+        }
         const ttl = 1800; // 30 minutes cache for team picks (15 players are locked post-deadline)
         const responseBody = JSON.stringify({
           entry_id: Number(entryId),
@@ -1635,6 +1649,7 @@ export default {
           active_chip: picksData.active_chip,
           automatic_subs: picksData.automatic_subs || [],
           entry_history: picksData.entry_history || {},
+          summary_overall_rank: summaryOverallRank,
           picks: (picksData.picks || []).map(p => ({
             element: p.element,
             position: p.position,
