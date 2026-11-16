@@ -102,7 +102,7 @@ def main():
     print("\nStep 5: Testing Front-End JavaScript Runtime (Headless Chrome)...")
     chrome_bin = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
     if os.path.exists(chrome_bin):
-        pages_to_test = ['preview.html', *configured_league_pages]
+        pages_to_test = ['index.html', '404.html', 'preview.html', *configured_league_pages]
         for p in pages_to_test:
             target_url = f"file://{os.path.join(base_dir, p)}"
             try:
@@ -112,7 +112,8 @@ def main():
                     target_url
                 ], capture_output=True, text=True, timeout=15)
             except subprocess.TimeoutExpired:
-                print(f"    ⚠️ Chrome headless check timed out for {p}")
+                print(f"    ❌ Chrome headless check timed out for {p}!")
+                all_passed = False
                 continue
             errs = [line for line in out.stderr.split('\n') if any(k in line for k in ['Uncaught', 'SyntaxError', 'ReferenceError', 'TypeError'])]
             if not errs:

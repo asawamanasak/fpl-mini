@@ -163,7 +163,7 @@ def format_match_title(raw_title, tournament=None):
 
     s1 = f"{t1} ({h1})" if h1 else t1
     s2 = f"{t2} ({h2})" if h2 else t2
-    base = f"{s1} vs {s2}"
+    base = f"{s1} vs {s2}{score_str}"
     if tournament:
         return f"[{tournament}] {base}"
     return base
@@ -264,6 +264,8 @@ def parse_shi62_file(file_path):
                             "won": 0,
                             "lost": 0,
                             "push": 0,
+                            "won_amount": 0,
+                            "lost_amount": 0,
                             "net": 0
                         }
 
@@ -278,6 +280,10 @@ def parse_shi62_file(file_path):
                     st["lost"] += 1
                 elif p_res["status"] == "push":
                     st["push"] += 1
+                if p_res["net"] > 0:
+                    st["won_amount"] += p_res["net"]
+                elif p_res["net"] < 0:
+                    st["lost_amount"] += abs(p_res["net"])
                 st["net"] += p_res["net"]
 
         # Sort GW summary descending by net
@@ -306,16 +312,16 @@ def parse_shi62_file(file_path):
 
         # Check for tournament category header (e.g. "UCL", "EPL", "FA CUP", "CARABAO")
         if upper_line in ("UCL", "EPL", "FA CUP", "CARABAO"):
-            if upper_line == "UCL":
-                current_tournament = "UCL"
-            elif upper_line == "EPL":
+            if upper_line == "EPL":
                 current_tournament = None
+            else:
+                current_tournament = upper_line
             i += 1
             continue
 
         # Check for GW header (e.g. W8, GW8, W7, GW6, W5, GW4, GW3, GW2, W1, Commu)
         is_gw_header = False
-        if (upper_line.startswith("GW") or upper_line.startswith("W") or upper_line == "COMMU") and len(line) <= 8 and not (':' in line or ' v ' in line.lower()):
+        if (bool(re.match(r'^(?:GW|W)\s*\d+\b', upper_line)) or upper_line == "COMMU") and len(line) <= 8 and not (':' in line or ' v ' in line.lower()):
             is_gw_header = True
 
         if is_gw_header:
@@ -433,10 +439,8 @@ def parse_shi62_file(file_path):
             c["lost"] += p_stat["lost"]
             c["push"] += p_stat["push"]
             c["net"] += p_stat["net"]
-            if p_stat["net"] > 0:
-                c["total_won_amount"] += p_stat["net"]
-            elif p_stat["net"] < 0:
-                c["total_lost_amount"] += abs(p_stat["net"])
+            c["total_won_amount"] += p_stat.get("won_amount", p_stat["net"] if p_stat["net"] > 0 else 0)
+            c["total_lost_amount"] += p_stat.get("lost_amount", abs(p_stat["net"]) if p_stat["net"] < 0 else 0)
 
     # Calculate win rate and sort cumulative
     cumulative_list = []

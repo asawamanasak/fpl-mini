@@ -21,16 +21,29 @@ CHROME_BIN = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 HTTP_PORT = 8765
 
-TIER1_LEAGUES = [
-    ("40700", "เซียนอยู่รู หมูอยู่ตึก"),
-    ("675290", "NudNee"),
-    ("38491", "รอ แมน โอน"),
-    ("1101958", "Barley's Official League"),
-    ("438691", "2 spade"),
-    ("187827", "Shi62"),
-    ("5349", "Bramann League"),
-    ("567387", "Fantasy Nguan & friends cup")
-]
+def _load_tier1_leagues():
+    cfg_path = os.path.join(BASE_DIR, "config", "leagues_config.json")
+    try:
+        with open(cfg_path, "r", encoding="utf-8") as cf:
+            cfg = json.load(cf)
+        return [
+            (str(lid), lobj.get("name", f"League {lid}"))
+            for lid, lobj in cfg.items()
+            if isinstance(lobj, dict) and int(lobj.get("tier", 1)) == 1
+        ]
+    except Exception:
+        return [
+            ("40700", "เซียนอยู่รู หมูอยู่ตึก"),
+            ("675290", "NudNee"),
+            ("38491", "รอ แมน โอน"),
+            ("1101958", "Barley's Official League"),
+            ("438691", "2 spade"),
+            ("187827", "Shi62"),
+            ("5349", "Bramann League"),
+            ("567387", "Fantasy Nguan & friends cup"),
+        ]
+
+TIER1_LEAGUES = _load_tier1_leagues()
 
 VIEWPORTS = [
     {

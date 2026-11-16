@@ -229,6 +229,8 @@ const ICONS = {
   globe: `<svg aria-hidden="true" focusable="false" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"/></svg>`,
   copy: `<svg aria-hidden="true" focusable="false" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"/></svg>`,
   sort: `<svg aria-hidden="true" focusable="false" class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"/></svg>`,
+  chart: `<svg aria-hidden="true" focusable="false" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>`,
+  smartphone: `<svg aria-hidden="true" focusable="false" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/></svg>`,
 };
 
 /**
@@ -668,7 +670,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 ${ICONS.check} FPLSaWaDiKa Solution
               </span>
               <p class="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed" data-i18n="sol_3_desc">
-                Weekly Micro-Stakes + บอ.บู๋ AI Banter ปลุกกระแสลุ้นทุกสัปดาห์ พร้อมเรดาร์ฟอร์มและบอลถ้วย Knockout
+                Weekly Micro-Stakes + บทพากย์กูรูลูกหนังสายดราม่า ปลุกกระแสลุ้นทุกสัปดาห์ พร้อมเรดาร์ฟอร์มและบอลถ้วย Knockout
               </p>
             </div>
           </div>
@@ -788,7 +790,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </div>
 
             <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark flex items-center justify-between text-xs">
-              <span class="text-slate-600 dark:text-neutral-400" data-i18n="graphic2_callout">Weekly Stakes + บอ.บู๋ AI ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์</span>
+              <span class="text-slate-600 dark:text-neutral-400" data-i18n="graphic2_callout">Weekly Stakes + บทวิเคราะห์กูรูลูกหนังสายดราม่า ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์</span>
               <span class="mono font-bold text-blue-600 dark:text-blue-400">5.7x Stickiness</span>
             </div>
           </div>
@@ -882,7 +884,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                     <td class="py-1.5 px-2 text-center font-bold text-emerald-600 dark:text-emerald-400">✅ สดทันที</td>
                   </tr>
                   <tr>
-                    <td class="py-1.5 px-2 font-medium" data-i18n="matrix_f3">AI บอ.บู๋ พากย์เกมดราม่า</td>
+                    <td class="py-1.5 px-2 font-medium" data-i18n="matrix_f3">บทพากย์กูรูลูกหนังสายดราม่า</td>
                     <td class="py-1.5 px-2 text-center text-rose-500">❌ ไม่มี</td>
                     <td class="py-1.5 px-2 text-center text-rose-500">❌ ไม่มี</td>
                     <td class="py-1.5 px-2 text-center font-bold text-emerald-600 dark:text-emerald-400">✅ อัตโนมัติ</td>
@@ -936,7 +938,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <span class="text-[10px] mono text-slate-400 dark:text-neutral-500">ลีก 40700</span>
           </a>
 
-          <!-- Jump 2: Highlights & Bor.Bou -->
+          <!-- Jump 2: Highlights & Pundit Banter -->
           <a href="https://www.fplsawadika.com/40700?tab=highlights" target="_blank" rel="noopener"
             class="p-3 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-blue-500/50 hover:bg-blue-50/20 dark:hover:bg-blue-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
             <div class="space-y-1">
@@ -944,7 +946,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 <span>02. Commentary</span>
                 <span class="group-hover:translate-x-0.5 transition-transform">↗</span>
               </div>
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_2_title">บทวิเคราะห์ AI บอ.บู๋</div>
+              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_2_title">บทวิเคราะห์กูรูสายดราม่า</div>
               <div class="text-[11px] text-slate-500 dark:text-neutral-400" data-i18n="jump_2_sub">พากย์เกมดราม่าสุดกวน</div>
             </div>
             <span class="text-[10px] mono text-slate-400 dark:text-neutral-500">ลีก 40700</span>
@@ -1980,7 +1982,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pain_3_title: 'แต้มตามเยอะ ถอดใจ ไม่เข้าดูแอป',
         pain_3_desc: 'ถ้าลุ้นแค่แชมป์สิ้นปี พอผ่านไป 10 นัด คนตาม 50+ แต้มก็เลิกเล่น ลีกกลายเป็นป่าช้า',
         sol_3_badge: 'FPLSaWaDiKa Solution',
-        sol_3_desc: 'Weekly Micro-Stakes + บอ.บู๋ AI Banter ปลุกกระแสลุ้นทุกสัปดาห์ พร้อมเรดาร์ฟอร์มและบอลถ้วย Knockout',
+        sol_3_desc: 'Weekly Micro-Stakes + บทพากย์กูรูลูกหนังสายดราม่า ปลุกกระแสลุ้นทุกสัปดาห์ พร้อมเรดาร์ฟอร์มและบอลถ้วย Knockout',
         pain_4_badge: 'ปัญหาแอปหลัก',
         pain_4_metric: 'UX ส่องทีมคู่แข่งช้า',
         pain_4_title: 'ส่องทีมคู่แข่งยาก ขาดม้านั่งสำรอง',
@@ -2002,7 +2004,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         graphic2_sub: 'ยอดเปิดดูเฉลี่ยต่อผู้จัดการทีม 1 คน ในแต่ละสัปดาห์ (Visits/Team/GW)',
         graphic2_axis_y: 'แกนตั้ง: ความถี่เปิดดูเฉลี่ยต่อทีม (ครั้ง / สัปดาห์)',
         graphic2_axis_x: 'กลุ่มผู้ใช้',
-        graphic2_callout: 'Weekly Stakes + บอ.บู๋ AI ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์',
+        graphic2_callout: 'Weekly Stakes + บทวิเคราะห์กูรูลูกหนังสายดราม่า ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์',
         graphic3_eyebrow: 'มิติที่ 3 · การเงินและความโปร่งใส',
         graphic3_badge: 'GMV รวม ฿268,700',
         graphic3_title: 'ระบบรองรับโมเดลเงินรางวัลและค่าปรับ 5 รูปแบบ',
@@ -2026,7 +2028,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         col_tier1: 'Tier 1 (พร้อมขาย)',
         matrix_f1: 'แต้มสด & โบนัส BPS 15 วิ',
         matrix_f2: 'หักแต้มย้ายตัว Net Pts สด',
-        matrix_f3: 'AI บอ.บู๋ พากย์เกมดราม่า',
+        matrix_f3: 'บทพากย์กูรูลูกหนังสายดราม่า',
         matrix_f4: 'คำนวณเงินรางวัล/ค่าปรับอัตโนมัติ',
         matrix_f5: 'Interactive Squad Pitch Modal',
         graphic4_callout: 'Tier 1 พร้อมส่งมอบทันที · Tier 2 (Live Beta) รองรับ 1,780 ทีม',
@@ -2034,7 +2036,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pitch_step3_sub: 'คลิกเพื่อเปิดหน้าจริงในแท็บใหม่',
         jump_1_title: 'คะแนนสด & ผัง 11 ตัวจริง',
         jump_1_sub: 'เปิดดูผังทีมจริง & แต้ม Net',
-        jump_2_title: 'บทวิเคราะห์ AI บอ.บู๋',
+        jump_2_title: 'บทวิเคราะห์กูรูสายดราม่า',
         jump_2_sub: 'พากย์เกมดราม่าสุดกวน',
         jump_3_title: 'ระบบค่าปรับ & รางวัล',
         jump_3_sub: 'บ๊วย 5 อันดับโดนปรับสด',
@@ -2250,7 +2252,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pain_3_title: 'Trailers Quit Early When Deficit Grows',
         pain_3_desc: 'If only annual prizes exist, trailing managers quit by GW10 when behind by 50+ points.',
         sol_3_badge: 'FPLSaWaDiKa Solution',
-        sol_3_desc: 'Weekly Micro-Stakes + Bor.Bou AI Banter keeps everyone fighting every gameweek till GW38.',
+        sol_3_desc: 'Weekly Micro-Stakes + Pundit AI Banter keeps everyone fighting every gameweek till GW38.',
         pain_4_badge: 'App UX Pain',
         pain_4_metric: 'Cumbersome Scouting',
         pain_4_title: 'Slow Opponent Squad Scouting',
@@ -2272,7 +2274,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         graphic2_sub: 'Average weekly pageviews per manager (Visits/Team/GW)',
         graphic2_axis_y: 'Y-Axis: Avg Visits per Team (visits / GW)',
         graphic2_axis_x: 'Platform Segment',
-        graphic2_callout: 'Weekly Stakes + Bor.Bou AI sparks non-stop chat group banter',
+        graphic2_callout: 'Weekly Stakes + Pundit AI Banter sparks non-stop chat group banter',
         graphic3_eyebrow: 'Dimension 3 · Financial Integrity',
         graphic3_badge: 'Total GMV ฿268,700',
         graphic3_title: 'Supports 5 Automated Prize & Penalty Frameworks',
@@ -2296,7 +2298,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         col_tier1: 'Tier 1 (Turnkey Core)',
         matrix_f1: '15s Real-Time Score & Live BPS',
         matrix_f2: 'Live Net Pts (Transfer Cost Hit)',
-        matrix_f3: 'Bor.Bou Fanatic AI Match Commentary',
+        matrix_f3: 'Hardcore Pundit AI Match Commentary',
         matrix_f4: 'Automated Custom Prize/Penalty Engine',
         matrix_f5: 'One-Tap Squad Lineup Pitch Modal',
         graphic4_callout: 'Tier 1 ready to onboard immediately · Tier 2 (Live Beta) scales to 1,780 teams',
@@ -2304,7 +2306,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pitch_step3_sub: 'Click any module to open live demo in new tab',
         jump_1_title: 'Live Scores & Squad Pitch',
         jump_1_sub: 'Scout starting 11 & bench live',
-        jump_2_title: 'Bor.Bou AI Commentary',
+        jump_2_title: 'Pundit AI Commentary',
         jump_2_sub: 'Authentic matchday drama',
         jump_3_title: 'Automated Payouts & Penalties',
         jump_3_sub: 'Bottom penalty ledger',

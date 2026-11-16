@@ -65,9 +65,16 @@ jobs:
               echo "Notice: Rebase conflict detected. Preserving fresh sync JSON and re-generating on top of origin/main..."
               git rebase --abort || true
               cp multi_fpl_data.json /tmp/multi_fpl_data.json.fresh
+              if [ -f data/players.json ]; then
+                cp data/players.json /tmp/players.json.fresh
+              fi
               git fetch origin main
               git reset --hard origin/main
               mv /tmp/multi_fpl_data.json.fresh multi_fpl_data.json
+              if [ -f /tmp/players.json.fresh ]; then
+                mkdir -p data
+                mv /tmp/players.json.fresh data/players.json
+              fi
               python3 update_preview.py
               git add -A
               if ! git diff --staged --quiet; then
@@ -97,6 +104,7 @@ jobs:
               cp -R "$d_clean" _site/
             fi
           done
+          find _site -name '*.bak' -type f -delete
           test -f _site/index.html
           if [ -e _site/workers ] || [ -e _site/config ]; then
             echo "Error: Private directories leaked into _site!" >&2

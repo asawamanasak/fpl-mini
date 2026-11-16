@@ -70,11 +70,40 @@ async function recordTelemetryIncrements(env, increments) {
     const batch = increments.map(item => stmt.bind(item.metric, item.date || today, item.amount));
     await env.DB.batch(batch);
   } else if (env.ANALYTICS_KV) {
-    await Promise.all(increments.map(async (item) => {
-      const cur = parseInt(await env.ANALYTICS_KV.get(item.metric) || '0', 10);
-      const putOpts = item.metric === 'lifetime:total_views' ? undefined : { expirationTtl: 86400 * 30 };
-      await env.ANALYTICS_KV.put(item.metric, String(cur + item.amount), putOpts);
-    }));
+    // Store compacted daily JSON blob per date (plus lifetime:total_views) so KV reads never exceed Workers 50-subrequest limit
+    const byDate = new Map();
+    let lifetimeDelta = 0;
+    for (const item of increments) {
+      if (item.metric === 'lifetime:total_views') {
+        lifetimeDelta += Number(item.amount) || 0;
+      } else {
+        const dKey = item.date || today;
+        if (!byDate.has(dKey)) byDate.set(dKey, []);
+        byDate.get(dKey).push(item);
+      }
+    }
+    const kvTasks = [];
+    if (lifetimeDelta > 0) {
+      kvTasks.push((async () => {
+        const cur = parseInt(await env.ANALYTICS_KV.get('lifetime:total_views') || '0', 10);
+        await env.ANALYTICS_KV.put('lifetime:total_views', String(cur + lifetimeDelta));
+      })());
+    }
+    for (const [dKey, items] of byDate.entries()) {
+      kvTasks.push((async () => {
+        const blobKey = `telem_day:${dKey}`;
+        let dayObj = {};
+        try {
+          const existing = await env.ANALYTICS_KV.get(blobKey, 'json');
+          if (existing && typeof existing === 'object') dayObj = existing;
+        } catch (_) {}
+        for (const it of items) {
+          dayObj[it.metric] = (Number(dayObj[it.metric]) || 0) + (Number(it.amount) || 0);
+        }
+        await env.ANALYTICS_KV.put(blobKey, JSON.stringify(dayObj), { expirationTtl: 86400 * 30 });
+      })());
+    }
+    await Promise.all(kvTasks);
   }
 }
 
@@ -123,22 +152,37 @@ function isAutomatedTelemetryUa(userAgent) {
   return /bot|crawl|spider|slurp|curl|wget|python-requests|go-http-client|headless/i.test(userAgent || '');
 }
 
+const RATE_LIMIT_MEM = new Map();
+
 async function allowIpRateLimit(request, namespace, maxPerMin) {
   try {
-    const ip = request.headers.get('cf-connecting-ip') || '';
-    if (!ip || typeof caches === 'undefined' || !caches.default) return true;
+    const rawIp =
+      request.headers.get('cf-connecting-ip') ||
+      (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
+      'anon-unknown';
     const minuteBucket = Math.floor(Date.now() / 60000);
-    const keyReq = new Request(`https://ratelimit.internal/${namespace}/${encodeURIComponent(ip)}/${minuteBucket}`);
+    const memKey = `${namespace}:${rawIp}:${minuteBucket}`;
+    if (RATE_LIMIT_MEM.size > 5000) {
+      RATE_LIMIT_MEM.clear();
+    }
+    const memCount = RATE_LIMIT_MEM.get(memKey) || 0;
+    if (memCount >= maxPerMin) return false;
+    RATE_LIMIT_MEM.set(memKey, memCount + 1);
+
+    if (typeof caches === 'undefined' || !caches.default) return true;
+    const keyReq = new Request(`https://ratelimit.internal/${namespace}/${encodeURIComponent(rawIp)}/${minuteBucket}`);
     const existing = await caches.default.match(keyReq);
-    let count = 0;
+    let count = memCount;
     if (existing) {
       const parsed = await existing.json().catch(() => ({ count: 0 }));
-      count = Number(parsed && parsed.count) || 0;
+      count = Math.max(count, Number(parsed && parsed.count) || 0);
     }
     if (count >= maxPerMin) return false;
+    const nextCount = count + 1;
+    RATE_LIMIT_MEM.set(memKey, nextCount);
     await caches.default.put(
       keyReq,
-      new Response(JSON.stringify({ count: count + 1 }), {
+      new Response(JSON.stringify({ count: nextCount }), {
         headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=65' },
       })
     );
@@ -151,7 +195,7 @@ async function allowIpRateLimit(request, namespace, maxPerMin) {
 const CORS_HEADERS = {
   ...SHARED_SECURITY_HEADERS,
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+  'Access-Control-Allow-Methods': 'GET, HEAD, POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Accept, Cache-Control',
   'Cross-Origin-Resource-Policy': 'cross-origin',
 };
@@ -865,37 +909,19 @@ export default {
                     }
                   }
                 } else if (env.ANALYTICS_KV) {
-                  // Fallback to KV if DB binding is not available
-                  const fetchPromises = [];
-                  dates.forEach(d => {
-                    const pfx = `telem:${d}`;
-                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:total_visits`));
-                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:src:line`));
-                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:src:safari`));
-                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:src:chrome`));
-                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:src:other`));
-                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:src:fb`));
-                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:dev:mobile`));
-                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:dev:desktop`));
-                    fetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:dev:tablet`));
-                  });
-                  fetchPromises.push(env.ANALYTICS_KV.get('lifetime:total_views'));
-                  const results = await Promise.all(fetchPromises);
+                  // Fallback to KV using compacted daily blobs (8 KV gets total, well under the 50-subrequest limit)
+                  const dayPromises = dates.map(d => env.ANALYTICS_KV.get(`telem_day:${d}`, 'json').catch(() => null));
+                  dayPromises.push(env.ANALYTICS_KV.get('lifetime:total_views').catch(() => '0'));
+                  const results = await Promise.all(dayPromises);
                   for (let i = 0; i < dates.length; i++) {
-                    const d = dates[i];
-                    const pfx = `telem:${d}`;
-                    const offset = i * 9;
-                    metricMap.set(`${pfx}:total_visits`, parseInt(results[offset] || '0', 10));
-                    metricMap.set(`${pfx}:src:line`, parseInt(results[offset + 1] || '0', 10));
-                    metricMap.set(`${pfx}:src:safari`, parseInt(results[offset + 2] || '0', 10));
-                    metricMap.set(`${pfx}:src:chrome`, parseInt(results[offset + 3] || '0', 10));
-                    metricMap.set(`${pfx}:src:other`, parseInt(results[offset + 4] || '0', 10));
-                    metricMap.set(`${pfx}:src:fb`, parseInt(results[offset + 5] || '0', 10));
-                    metricMap.set(`${pfx}:dev:mobile`, parseInt(results[offset + 6] || '0', 10));
-                    metricMap.set(`${pfx}:dev:desktop`, parseInt(results[offset + 7] || '0', 10));
-                    metricMap.set(`${pfx}:dev:tablet`, parseInt(results[offset + 8] || '0', 10));
+                    const dayBlob = results[i];
+                    if (dayBlob && typeof dayBlob === 'object') {
+                      for (const [k, v] of Object.entries(dayBlob)) {
+                        metricMap.set(k, parseInt(String(v || '0'), 10) || 0);
+                      }
+                    }
                   }
-                  metricMap.set('lifetime:total_views', parseInt(results[dates.length * 9] || '0', 10));
+                  metricMap.set('lifetime:total_views', parseInt(String(results[dates.length] || '0'), 10) || 0);
                 }
 
                 let totalVisitsKV = 0;
@@ -974,29 +1000,6 @@ export default {
                 };
 
                 const leagueIds = Array.from(new Set([...Object.keys(LEAGUE_BASELINES), ...Object.keys(liveLeagueSummaries)]));
-
-                if (!env.DB && env.ANALYTICS_KV) {
-                  const leagueFetchPromises = [];
-                  dates.forEach(d => {
-                    const pfx = `telem:${d}`;
-                    leagueIds.forEach(lid => {
-                      leagueFetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:l:${lid}:views`));
-                      leagueFetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:l:${lid}:dwell_sec`));
-                      leagueFetchPromises.push(env.ANALYTICS_KV.get(`${pfx}:l:${lid}:dwell_sess`));
-                    });
-                  });
-                  const lResults = await Promise.all(leagueFetchPromises);
-                  let lIdx = 0;
-                  dates.forEach(d => {
-                    const pfx = `telem:${d}`;
-                    leagueIds.forEach(lid => {
-                      metricMap.set(`${pfx}:l:${lid}:views`, parseInt(lResults[lIdx] || '0', 10));
-                      metricMap.set(`${pfx}:l:${lid}:dwell_sec`, parseInt(lResults[lIdx + 1] || '0', 10));
-                      metricMap.set(`${pfx}:l:${lid}:dwell_sess`, parseInt(lResults[lIdx + 2] || '0', 10));
-                      lIdx += 3;
-                    });
-                  });
-                }
 
                 const leagueStats = {};
                 leagueIds.forEach(lid => {
@@ -1535,6 +1538,28 @@ export default {
       return resp;
     }
 
+    // Enforce HTTP Method & Route Allowlist before touching Edge Cache or FPL Upstream
+    if (request.method !== 'GET' && request.method !== 'HEAD') {
+      return new Response(
+        JSON.stringify({ error: 'Method not allowed' }),
+        {
+          status: 405,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        }
+      );
+    }
+
+    const ALLOWED_RELAY_PATHS = new Set(['/', '/live', '/picks', '/api/picks', '/fixtures']);
+    if (!ALLOWED_RELAY_PATHS.has(path)) {
+      return new Response(
+        JSON.stringify({ error: 'Not found', path }),
+        {
+          status: 404,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        }
+      );
+    }
+
     // Parse Gameweek event parameter (strict integer 1..38; reject non-numeric or conflicting event/gw params)
     const rawEvent = url.searchParams.get('event');
     const rawGw = url.searchParams.get('gw');
@@ -1566,11 +1591,12 @@ export default {
     const isSlim = url.searchParams.get('slim') === '1' || url.searchParams.get('mode') === 'slim';
     const isForce = url.searchParams.get('force') === '1';
     const entryParam = url.searchParams.get('entry') || '';
+    const isPicksPath = path === '/picks' || path === '/api/picks';
 
     // 2. Construct Edge Cache Key
     // Force refresh (?force=1) uses 5-second burst protection bucket; standard poll uses clean URL cache key with dynamic edge TTL
     const cacheKeyUrl = new URL(request.url);
-    const entrySuffix = entryParam ? `&entry=${encodeURIComponent(entryParam)}` : '';
+    const entrySuffix = (isPicksPath && entryParam) ? `&entry=${encodeURIComponent(entryParam)}` : '';
     if (isForce) {
       const forceBucket = Math.floor(Date.now() / 5000);
       cacheKeyUrl.search = `?path=${path}&gw=${gw}&slim=${isSlim ? 1 : 0}${entrySuffix}&force=1&b=${forceBucket}`;
@@ -1627,7 +1653,11 @@ export default {
             }),
             {
               status: picksResp.status,
-              headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+              headers: {
+                ...CORS_HEADERS,
+                'Content-Type': 'application/json; charset=utf-8',
+                'Cache-Control': 'no-store',
+              },
             }
           );
         }
@@ -1675,7 +1705,7 @@ export default {
 
         if (isForce) {
           const normalKeyUrl = new URL(request.url);
-          normalKeyUrl.search = `?path=${path}&gw=${gw}&entry=${entryId}&slim=0`;
+          normalKeyUrl.search = `?path=${path}&gw=${gw}&slim=${isSlim ? 1 : 0}${entrySuffix}`;
           const normalKey = new Request(normalKeyUrl.toString(), { method: 'GET' });
           ctx.waitUntil(Promise.all([cache.put(cacheKey, picksResponse.clone()), cache.put(normalKey, picksResponse.clone())]));
         } else {
@@ -1761,11 +1791,13 @@ export default {
       let inPlayCount = 0;
       let allFinished = false;
       let anyStarted = false;
+      let fixturesOk = false;
 
       if (fixResp && fixResp.ok) {
         try {
           const fixturesRaw = await fixResp.json();
           if (Array.isArray(fixturesRaw)) {
+            fixturesOk = true;
             const activeFixtures = fixturesRaw.filter(f => !f.postponed);
             anyStarted = activeFixtures.some(f => Boolean(f.started));
             allFinished =
@@ -1811,37 +1843,48 @@ export default {
         provisional_bonus_by_fixture: fixtureBonusSummary,
         elements: enrichedElements,
       };
+      if (!fixturesOk) {
+        payload.fixtures_degraded = true;
+      }
 
       // Intelligent Dynamic Edge TTL:
       // 1. In-play matches active: 15s TTL (second-by-second live updates)
       // 2. All matches finished in gameweek: 300s TTL (5 minutes - scores frozen)
       // 3. Pre-kickoff / between match days: 120s TTL (2 minutes)
+      // 4. Degraded fixtures upstream: no-store (never poison Edge cache with empty fixtures)
       const ttl = inPlayCount > 0 ? 15 : (allFinished ? 300 : 120);
       const swrTtl = inPlayCount > 0 ? 15 : 60;
+      const cacheControlHeader = fixturesOk
+        ? `public, max-age=${ttl}, s-maxage=${ttl}, stale-while-revalidate=${swrTtl}`
+        : 'no-store';
       const response = new Response(JSON.stringify(payload), {
         status: 200,
         headers: {
           ...CORS_HEADERS,
           'Content-Type': 'application/json; charset=utf-8',
-          'Cache-Control': `public, max-age=${ttl}, s-maxage=${ttl}, stale-while-revalidate=${swrTtl}`,
-          'X-FPL-Edge-Cache': 'MISS',
+          'Cache-Control': cacheControlHeader,
+          'X-FPL-Edge-Cache': fixturesOk ? 'MISS' : 'BYPASS',
           'X-FPL-Edge-Colo': colo,
         },
       });
 
-      if (isForce) {
-        // Also prime the normal (non-force) cache key so all other users instantly get fresh data
-        const normalKeyUrl = new URL(request.url);
-        normalKeyUrl.search = `?path=${path}&gw=${gw}&slim=${isSlim ? 1 : 0}`;
-        const normalKey = new Request(normalKeyUrl.toString(), { method: 'GET' });
-        ctx.waitUntil(Promise.all([
-          cache.put(cacheKey, response.clone()),
-          cache.put(normalKey, response.clone())
-        ]));
+      if (fixturesOk) {
+        if (isForce) {
+          // Also prime the normal (non-force) cache key so all other users instantly get fresh data
+          const normalKeyUrl = new URL(request.url);
+          normalKeyUrl.search = `?path=${path}&gw=${gw}&slim=${isSlim ? 1 : 0}`;
+          const normalKey = new Request(normalKeyUrl.toString(), { method: 'GET' });
+          ctx.waitUntil(Promise.all([
+            cache.put(cacheKey, response.clone()),
+            cache.put(normalKey, response.clone())
+          ]));
+        } else {
+          ctx.waitUntil(cache.put(cacheKey, response.clone()));
+        }
+        scheduleWorkerHealthMetric(env, ctx, false);
       } else {
-        ctx.waitUntil(cache.put(cacheKey, response.clone()));
+        scheduleWorkerHealthMetric(env, ctx, true, 'upstream_fixtures');
       }
-      scheduleWorkerHealthMetric(env, ctx, false);
       return response;
     } catch (err) {
       scheduleWorkerHealthMetric(env, ctx, true, 'upstream_5xx');

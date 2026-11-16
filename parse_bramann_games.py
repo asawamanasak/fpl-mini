@@ -159,9 +159,10 @@ def calculate_bramann_payouts(side1_bets, side2_bets, winning_side):
     total_side1_legs = sum(b["legs"] for b in agg_side1)
     total_side2_legs = sum(b["legs"] for b in agg_side2)
 
-    # Initialize all to 0 push
+    # Initialize all to 0 push (summing legs if a player bet on both sides)
     for b in agg_side1 + agg_side2:
-        payouts[b["name"]] = {"net": 0, "legs": b["legs"], "status": "push"}
+        prev_legs = payouts.get(b["name"], {}).get("legs", 0)
+        payouts[b["name"]] = {"net": 0, "legs": prev_legs + b["legs"], "status": "push"}
 
     if winning_side not in (1, 2) or total_side1_legs == 0 or total_side2_legs == 0:
         return payouts, 0, "push"
@@ -204,18 +205,23 @@ def calculate_bramann_payouts(side1_bets, side2_bets, winning_side):
     winner_alloc = allocate_shares(winners, winner_legs, pool)
     loser_alloc = allocate_shares(losers, loser_legs, pool)
 
+    combined_net = {}
+    combined_legs = {}
     for w in winners:
-        payouts[w["name"]] = {
-            "net": winner_alloc[w["name"]],
-            "legs": w["legs"],
-            "status": "won"
-        }
+        nm = w["name"]
+        combined_net[nm] = combined_net.get(nm, 0) + winner_alloc[nm]
+        combined_legs[nm] = combined_legs.get(nm, 0) + w["legs"]
 
     for l in losers:
-        payouts[l["name"]] = {
-            "net": -loser_alloc[l["name"]],
-            "legs": l["legs"],
-            "status": "lost"
+        nm = l["name"]
+        combined_net[nm] = combined_net.get(nm, 0) - loser_alloc[nm]
+        combined_legs[nm] = combined_legs.get(nm, 0) + l["legs"]
+
+    for nm, net_val in combined_net.items():
+        payouts[nm] = {
+            "net": net_val,
+            "legs": combined_legs[nm],
+            "status": "won" if net_val > 0 else ("lost" if net_val < 0 else "push")
         }
 
     return payouts, pool, "normal"
@@ -358,8 +364,10 @@ def parse_bramann_prediction_file(file_path):
             total_season_matches += 1
             total_season_turnover += m["pool"]
             
-            # Combine all participants
-            all_participants = {b["name"]: b["legs"] for b in m["side1_bets"] + m["side2_bets"]}
+            # Combine all participants (accumulate legs if a player appears multiple times)
+            all_participants = {}
+            for b in m["side1_bets"] + m["side2_bets"]:
+                all_participants[b["name"]] = all_participants.get(b["name"], 0) + b["legs"]
             for pname, legs in all_participants.items():
                 pinfo = get_player_info(pname)
                 disp = pinfo["display_name"]

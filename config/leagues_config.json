@@ -404,7 +404,7 @@
           },
           {
             "label": "ข้อมูลบัญชีโอนเงิน",
-            "desc": "• ธนาคาร: ออมสิน (GSB)\n• เลขที่บัญชี: 020178090310 (Siwawut Sewatanon)\n• ส่งสลิปยืนยันที่ไลน์ส่วนตัว: เยเมนส์"
+            "desc": "• โอนเข้าบัญชีผู้ก่อตั้งลีก\n• สอบถามเลขบัญชีและส่งสลิปยืนยันได้ที่ไลน์ส่วนตัวของผู้ก่อตั้งลีก (เยเมนส์)"
           }
         ],
         "footer": "* กองกลางรวม 36,000 บาท จัดสรรอย่างโปร่งใสและร่วมทำบุญ"
@@ -421,35 +421,43 @@
             "desc": "• 1st Place (Champion): 5,000 THB\n• 2nd Place: 3,500 THB\n• 3rd Place: 2,500 THB\n• 4th Place: 1,500 THB\n• 5th Place: 1,000 THB"
           },
           {
-            "label": "FPL Cup Prizes (3,000 THB Total)",
-            "desc": "• Cup Champion: 2,000 THB\n• Cup Runner-up: 1,000 THB\n• Knockout format based on official FPL Cup qualifying"
+            "label": "FPL Cup Champion Prize (3,000 THB)",
+            "desc": "• Cup Winner: 3,000 THB\n• Evaluated strictly among prize-eligible participants\n• If eliminated in the same round, the team with higher cumulative points wins"
           }
         ],
-        "footer": "* Overall season standings decided after completion of GW 38."
+        "footer": "* Decided by cumulative net points after GW 38 and official FPL Cup results."
       },
       {
         "title": "Monthly Awards (10,000 THB Budget)",
         "items": [
           {
-            "label": "Monthly Champion (1,000 THB / Month x 10 Months)",
-            "desc": "• Months: Aug, Sep, Oct, Nov, Dec, Jan, Feb, Mar, Apr, May (1,000 THB each)\n• Criteria: Highest cumulative net score across the calendar month's Gameweeks\n• Eligible: Season members and monthly fee contributors"
+            "label": "Awarded Across 10 Consecutive Months (Aug 2026 - May 2027)",
+            "desc": "• Monthly Champion: 600 THB / Month (6,000 THB total)\n• Monthly Runner-up: 400 THB / Month (4,000 THB total)\n• Total Monthly Prize Budget: 10,000 THB"
+          },
+          {
+            "label": "Monthly Gameweek Allocation & Tie-Breaker",
+            "desc": "• Calculated from net points scored in the scheduled Gameweeks of each month\n• Month-end Gameweeks spanning into early next month count toward the previous month\n• Tied scores share the award and split the prize money equally"
           }
         ],
-        "footer": "* Monthly scores reset on the 1st of each calendar month."
+        "footer": "* Decided by highest net points scored within each designated monthly schedule."
       },
       {
         "title": "Charity Donation & Pool Notes",
         "items": [
           {
-            "label": "Charity Contribution (9,500 THB Budget)",
-            "desc": "• 9,500 THB from total pool donated to verified charitable causes\n• Official donation receipts shared transparently with all league members"
+            "label": "Hospital Charity Contribution (9,500 THB)",
+            "desc": "• 9,500 THB from the central pool is allocated to hospital charity donations"
           },
           {
-            "label": "Pool Governance",
-            "desc": "• Maintained with zero commission by league organizers\n• Real-time financial reconciliation via automated dashboard"
+            "label": "Additional Prize Pool Contributions",
+            "desc": "• Total prize money may increase if additional monthly participants join during the season"
+          },
+          {
+            "label": "Pool Governance & Payment",
+            "desc": "• Payment: Transfer directly to the league founder's bank account\n• Request account details and submit payment slip via the founder's personal LINE (Yemens)"
           }
         ],
-        "footer": "* Transparent community pool with charitable social contribution."
+        "footer": "* Total pool of 36,000 THB managed transparently with charitable contribution."
       }
     ]
   },
@@ -538,43 +546,47 @@
         "title": "Competition Structure & Weekly Winner Prizes",
         "items": [
           {
-            "label": "League Structure & Entry Fee",
-            "desc": "• 15 Competing Teams (38 Gameweeks)\n• Entry Fee: 1,900 THB / team (50 THB / GW)\n• Total Prize Pool: 28,500 THB"
+            "label": "League Structure & Members (15 Competing + 1 Guest)",
+            "desc": "• Competing Teams: 15 prize-eligible teams (+ 1 guest team GEMINI UNITED, 16 teams total)\n• Duration: 38 Gameweeks (GW 1 - 38)\n• Entry Fee: 1,900 THB / team\n• Total Prize Pool: 28,500 THB"
           },
           {
-            "label": "Weekly Winner Prizes (38 Gameweeks, 19,000 THB Total)",
-            "desc": "• Weekly Prize: 500 THB / Gameweek (38 prizes)\n• Criteria: Highest Net Gameweek Points (Score - Transfer Hits)\n• Tied Scores: Shared champion title and equal prize split"
+            "label": "Weekly Winner Prizes (38 Gameweeks, 19,000 THB Budget)",
+            "desc": "• Weekly Prize: 500 THB / Gameweek (38 prizes)\n• Criteria: Highest Net Gameweek Points (Raw Score - Transfer Hits)\n• Condition: Evaluated only after official Gameweek completion\n• Tied Scores: Shared champion title and equal prize split"
           }
         ],
-        "footer": "* Weekly winner based on net score after deduction of transfer hits."
+        "footer": "* Transfer hits directly affect weekly winner determination."
       },
       {
-        "title": "Season Champions & Cup Prizes",
+        "title": "Season Champions & League Cup",
         "items": [
           {
-            "label": "Season Overall Champions (6,500 THB Total)",
-            "desc": "• 1st Place (Champion): 3,500 THB\n• 2nd Place: 2,000 THB\n• 3rd Place: 1,000 THB"
+            "label": "Season Top 5 Standings (9,000 THB Total)",
+            "desc": "• 1st Place (League Champion): 4,500 THB\n• 2nd Place: 2,500 THB\n• 3rd Place: 1,000 THB\n• 4th - 5th Place: 500 THB each"
           },
           {
-            "label": "FPL Cup Prizes (3,000 THB Total)",
-            "desc": "• Cup Champion: 2,000 THB\n• Cup Runner-up: 1,000 THB"
+            "label": "League Cup Champion (Starts GW 35)",
+            "desc": "• Cup Champion Prize: 500 THB\n• Knockout bracket starts from Gameweek 35 onward\n• (Excludes non-prize guest teams)"
           }
         ],
-        "footer": "* Overall season ranks finalized after GW 38 completion."
+        "footer": "* Season prizes total 9,000 THB, decided by cumulative net points after GW 38."
       },
       {
-        "title": "Fee Collection & Pool Governance",
+        "title": "Entry Fee Collection & Pool Rules",
         "items": [
           {
-            "label": "Collection Windows",
-            "desc": "• Payments collected in structured blocks throughout the season\n• Transparent tracking via league ledger"
+            "label": "Entry Fee Collection System",
+            "desc": "• Single full-payment collection of 1,900 THB / team\n• Coordinator: 'Fame' (Some might say) manages and safeguards the central prize pool"
+          },
+          {
+            "label": "Special Chips Rules",
+            "desc": "• Follows official FPL rules (Bench Boost, Triple Captain, Free Hit, Wildcard)\n• Points calculated and updated automatically per official FPL scoring"
           },
           {
             "label": "Tie-Breaker Rules",
             "desc": "• Follows official FPL tie-breaker (Total Net Points -> Total Goals Scored -> Fewest Goals Conceded)"
           }
         ],
-        "footer": "* Payouts verified and distributed following official FPL updates."
+        "footer": "* Total prize pool of 28,500 THB managed transparently."
       }
     ]
   },
@@ -673,10 +685,14 @@
         "items": [
           {
             "label": "Weekly Podium Breakdown (2,400 THB / Gameweek x 38 GWs)",
-            "desc": "• 1st Place: 1,200 THB / Gameweek\n• 2nd Place: 720 THB / Gameweek\n• 3rd Place: 480 THB / Gameweek\n• Criteria: Highest Net Gameweek Points (Score - Transfer Hits)\n• Ties: Split prizes equally among tied podium finishers"
+            "desc": "• 1st Place: 1,200 THB / Gameweek\n• 2nd Place: 720 THB / Gameweek\n• 3rd Place: 480 THB / Gameweek"
+          },
+          {
+            "label": "Evaluation & Tie-Breaker Rules",
+            "desc": "• Calculated from Net Points (Raw Points minus Transfer Hits)\n• Evaluated strictly after official Gameweek completion (Official Finished)\n• Tied Net Points: Decided by the team with the Highest Scoring Player in that Gameweek, cascading to the next highest-scoring player one by one until broken (prizes split equally only if all players' scores are identical)"
           }
         ],
-        "footer": "* Podium rewards top 3 performers every single Gameweek."
+        "footer": "* Transfer hits directly affect weekly podium prize determination."
       },
       {
         "title": "Season Overall Champions (12,000 THB Total)",
@@ -760,32 +776,36 @@
     "total_pool_en": "68,400 THB (1,800 THB/GW x 38 GWs)",
     "rules_cards_en": [
       {
-        "title": "Weekly Penalty Ladder into Prize Pool",
+        "title": "Weekly Winner Prize & Treasury Penalty Rules",
         "items": [
+          {
+            "label": "Weekly Champion Prize (+200 THB)",
+            "desc": "• The team with the highest Net Points (Raw Score minus Transfer Hits) each Gameweek wins 200 THB\n• This 200 THB prize is funded directly from the weekly penalty pool (2,000 THB)"
+          },
           {
             "label": "Bottom 5 Penalty Ladder (2,000 THB / Gameweek)",
-            "desc": "• Last Place (Wooden Spoon): 600 THB\n• 2nd from Bottom: 500 THB\n• 3rd from Bottom: 400 THB\n• 4th from Bottom: 300 THB\n• 5th from Bottom: 200 THB\n• Top teams pay nothing and compete for the end-of-season accumulated pool!"
+            "desc": "• Last Place (Wooden Spoon): 600 THB fine\n• 2nd from Bottom: 500 THB fine\n• 3rd from Bottom: 400 THB fine\n• 4th from Bottom: 300 THB fine\n• 5th from Bottom: 200 THB fine\n• (Ranks 2 to 7 are safe and pay no fine)"
           },
           {
-            "label": "Criteria & Hits",
-            "desc": "• Rankings determined by Net Gameweek Points (Raw Score - Transfer Hits)\n• Penalty payments due weekly following official Gameweek completion"
+            "label": "Net Treasury Accumulation (1,800 THB / Gameweek)",
+            "desc": "• From 2,000 THB in weekly fines, 200 THB is paid to the weekly champion, leaving 1,800 THB net added to the central pot each week\n• Across 38 Gameweeks, the net accumulated treasury pot totals 68,400 THB"
           }
         ],
-        "footer": "* High-intensity survival format: Avoid the bottom 5 spots each week!"
+        "footer": "* Transfer hits directly affect weekly standings and penalty determination."
       },
       {
-        "title": "Tie-Breakers & Season Distribution",
+        "title": "Tie-Breaker Rules & Participating Teams",
         "items": [
           {
-            "label": "Weekly Tie-Breaker for Penalty Positions",
-            "desc": "• If net points are tied: Fewest Transfer Hits -> Highest Goals Scored -> FPL Overall Rank\n• Penalties split equally if entirely tied"
+            "label": "Tied Net Points Resolution (Tie-Breaker)",
+            "desc": "• Decided by the team with the Highest Scoring Player in that Gameweek\n• If still tied, compares the next highest-scoring player one by one until a winner/loser is determined\n• Prizes or penalties are split equally only if all players' scores are identical"
           },
           {
-            "label": "Grand Pool Payouts at Season End",
-            "desc": "• Accumulated 68,400 THB distributed to season top finishers\n• Payout details published before mid-season"
+            "label": "Total Members & Guest Team",
+            "desc": "• Total Members: 13 teams\n• Guest Team (1 team): GEMINI UNITED (excluded from weekly prizes and treasury fines)\n• Eligible Competing Teams: 12 teams"
           }
         ],
-        "footer": "* Reverse-fee structure creates constant excitement at both ends of the table."
+        "footer": "* Evaluated strictly after official Gameweek completion (Official Finished)."
       }
     ]
   },
@@ -882,12 +902,12 @@
         "title": "Prize & Penalty Payout Scale (Rank 1 - 12)",
         "items": [
           {
-            "label": "Winning Half (Rank 1 - 6 Receives):",
-            "desc": "• 1st Place (Champion): +1,200 THB\n• 2nd Place: +800 THB\n• 3rd Place: +500 THB\n• 4th Place: +300 THB\n• 5th Place: +200 THB\n• 6th Place: +100 THB"
+            "label": "Winning Half (Rank 1 - 6 Receives +3,100 THB Total)",
+            "desc": "• 1st Place (Champion): +1,000 THB\n• 2nd Place: +800 THB\n• 3rd Place: +600 THB\n• 4th Place: +400 THB\n• 5th Place: +200 THB\n• 6th Place: +100 THB"
           },
           {
-            "label": "Paying Half (Rank 7 - 12 Pays):",
-            "desc": "• 7th Place: -100 THB\n• 8th Place: -200 THB\n• 9th Place: -300 THB\n• 10th Place: -500 THB\n• 11th Place: -800 THB\n• 12th Place (Wooden Spoon): -1,200 THB"
+            "label": "Paying Half (Rank 7 - 12 Pays -3,100 THB Total)",
+            "desc": "• 7th Place: -100 THB\n• 8th Place: -200 THB\n• 9th Place: -400 THB\n• 10th Place: -600 THB\n• 11th Place: -800 THB\n• 12th Place (Wooden Spoon): -1,000 THB"
           }
         ],
         "footer": "* Perfect balance: Total payouts (+3,100 THB) = Total penalties (-3,100 THB)."
@@ -896,8 +916,12 @@
         "title": "Members & Tie-Break Rulings",
         "items": [
           {
-            "label": "Season Tie-Breaker",
-            "desc": "• Cumulative Net Points after GW 38\n• Tied positions split the combined prize/penalty of the tied ranks"
+            "label": "Members & Guest Team",
+            "desc": "• Competing Prize/Penalty Teams: 12 teams\n• Guest Team (1 team): GEMINI UNITED (excluded from prizes and penalties)\n• Total League Members: 13 teams"
+          },
+          {
+            "label": "Evaluation & Tie-Breaker",
+            "desc": "• Evaluated by cumulative Net Points after GW 38 completion\n• Tied cumulative points follow official FPL tie-breaker (Total Net Points -> Total Goals Scored -> Fewest Goals Conceded)\n• Special Chips and transfers follow official Fantasy Premier League rules"
           }
         ],
         "footer": "* Direct settlement among league members post-GW 38."

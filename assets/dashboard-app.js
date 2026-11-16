@@ -53,8 +53,8 @@
     }
 
     /**
-     * Dynamic Live Commentary Engine (Bor.Bou Style - 100% Football Fanatic)
-     * ระบบวิเคราะห์สด 3 ตอนสไตล์ บอ.บู๋ แท้ๆ: ประโยคเปิดหัวตามสถานการณ์ + เจาะลึกดราม่าแท็กติก + หมัดฮุกกวนๆ ปิดท้าย
+     * Dynamic Live Commentary Engine (Hardcore Football Pundit Style)
+     * ระบบวิเคราะห์สด 3 ตอนสไตล์กูรูลูกหนังสายฮาร์ดคอร์: ประโยคเปิดหัวตามสถานการณ์ + เจาะลึกดราม่าแท็กติก + หมัดฮุกกวนๆ ปิดท้าย
      */
     class LiveCommentaryEngine {
       static _refreshStep = 0;
@@ -158,7 +158,7 @@
             `จัดทัพพร้อมรบ Gameweek ${gwNumber}! ${popCapText} ${tacticalSubText} รอดูกระสุนนัดแรกคิกออฟ ใครของจริงหรือใครจะโดนตบกบาลแยก เดี๋ยวสนามจริงให้คำตอบ!`,
             `เข้าสู่โหมดรอคิกออฟ Gameweek ${gwNumber}! ${popCapText} ${tacticalSubText} เตรียมลุ้นกันจนเยี่ยวเหนียว ใครกึ๋นถึงเดี๋ยวแต้มลั่นทุ่งแน่นอน!`,
             `ระฆังเดดไลน์ดังแล้วพี่น้อง! ${popCapText} ${tacticalSubText} สัปดาห์นี้ใครจะสะเด่าไปเลยอีน้อง หรือใครจะซดน้ำใบบัวบก เดี๋ยวรอดู!`,
-            `เปิดโผขุมกำลัง GW ${gwNumber} อย่างเป็นทางการ! ${popCapText} ${tacticalSubText} กูรูบอ.บู๋ฟันธงเลยว่าสัปดาห์นี้มีคนน้ำตาตกในแน่นอน เตรียมป๊อปคอร์นรอดูได้เลย!`,
+            `เปิดโผขุมกำลัง GW ${gwNumber} อย่างเป็นทางการ! ${popCapText} ${tacticalSubText} กูรูลูกหนังฟันธงเลยว่าสัปดาห์นี้มีคนน้ำตาตกในแน่นอน เตรียมป๊อปคอร์นรอดูได้เลย!`,
             `ศึกดวลกึ๋นลูกหนัง GW ${gwNumber} กำลังจะระเบิด! ${popCapText} ${tacticalSubText} จัดตัวเสร็จแยกย้ายไปสวดมนต์ ใครตาถึงได้เฮ ใครตาถั่วได้นอนกุมขมับ!`,
             `เสียงนกหวีดกำลังจะดัง สมรภูมิแข้งพร้อมเปิดศึก! ${popCapText} ${tacticalSubText} บอลลูกกลมๆ มีลมอยู่ข้างใน ทีมใครจะรุ่งหรือจะร่วง เดี๋ยวได้เห็นดีกัน!`
           ];
@@ -392,7 +392,7 @@
         }
 
         // =========================================================
-        // 1. LEAD PHRASE (ประโยคเปิดหัวตามสถานการณ์จริง สไตล์ บอ.บู๋)
+        // 1. LEAD PHRASE (ประโยคเปิดหัวตามสถานการณ์จริง สไตล์กูรูลูกหนังสายดุเดือด)
         // =========================================================
         let leadOptions = [];
 
@@ -556,7 +556,7 @@
             `ขึ้นหิ้งระดับตำนาน! "${top.team_name}" ทะยานแตะหลักร้อยที่ ${topPts} แต้ม ${heroPhrase} และ${marginPhrase} แบบเต็มคาราเบล!`,
             `ฟอร์มปีศาจลงมาจุติ! "${top.team_name}" ยิงแหลกแจกแต้มร้อยทะลุ ${topPts} แต้ม ${marginPhrase} สถาปนาตัวเองเป็นบอสใหญ่ประจำสัปดาห์!`,
             `ตารางแทบระเบิด! "${top.team_name}" กวาดสามหลักเน้นๆ ${topPts} แต้ม ${heroPhrase} และ${marginPhrase} ไร้เทียมทานอย่างแท้จริง!`,
-            `กูรูบอ.บู๋ขอคารวะ! "${top.team_name}" จัดสกอร์ประวัติศาสตร์ ${topPts} แต้ม ${marginPhrase} แดกเต็มข้อล่อเต็มแข้งจนคู่แข่งร้องไห้ระงม!`
+            `กูรูลูกหนังขอคารวะ! "${top.team_name}" จัดสกอร์ประวัติศาสตร์ ${topPts} แต้ม ${marginPhrase} แดกเต็มข้อล่อเต็มแข้งจนคู่แข่งร้องไห้ระงม!`
           ];
         } else if (diff <= 2 && second) {
           leadOptions = [
@@ -616,7 +616,7 @@
         const leadSentence = pickRnd(11, leadOptions);
 
         // =========================================================
-        // 2. TACTICAL & DRAMA STORYLINES (เจาะลึก 12 มิติดราม่าลูกหนังแท้ๆ สไตล์ บอ.บู๋)
+        // 2. TACTICAL & DRAMA STORYLINES (เจาะลึก 12 มิติดราม่าลูกหนังแท้ๆ สไตล์กูรูลูกหนังสายฮาร์ดคอร์)
         // =========================================================
         let midOptions = [];
 
@@ -1077,7 +1077,7 @@
         }
 
         // =========================================================
-        // 3. ENDING PUNCHLINE (คลังประโยคปิดท้าย 38 ประโยค สไตล์ บอ.บู๋ แท้ๆ)
+        // 3. ENDING PUNCHLINE (คลังประโยคปิดท้าย 38 ประโยค สไตล์กูรูลูกหนังสายฮาร์ดคอร์)
         // =========================================================
         let endOptions = [];
         if (isFinished) {
@@ -1090,7 +1090,7 @@
             `นี่แหละเสน่ห์แฟนตาซี วันนี้แพ้ สัปดาห์หน้าอาจระเบิดฟอร์มแชมป์!`,
             `คนชนะเดินแอ็คหล่อได้เต็มที่ ส่วนคนแพ้ซุ่มจัดทัพรอล้างตา!`,
             `สามแต้มในสนามจริงยังสู้ความสะใจที่ได้เหยียบเพื่อนในมินิลีกไม่ได้เลยโว้ย!`,
-            `กูรูบอ.บู๋ซูฮกให้หนึ่งจอก จัดตัวได้สะเด่าทรวงจริงๆ!`,
+            `กูรูข้างสนามขอซูฮกให้หนึ่งจอก จัดตัวได้สะเด่าทรวงจริงๆ!`,
             `แต้มเป็นเรื่องของวาสนา แต่กึ๋นจัดทัพเป็นเรื่องของฝีมือล้วนๆ!`,
             `จบสัปดาห์นี้แยกย้ายไปเลียแผลใจ แล้วเจอกันใหม่แมตช์หน้า!`,
             `ตารางคะแนนไม่เคยโกหกใคร ตัวตึงหรือตัวตลกเขาวัดกันตรงนี้!`,
@@ -1928,7 +1928,7 @@
         // Listen for browser Back/Forward navigation
         if (typeof window !== 'undefined' && window.addEventListener && !this._popstateBound) {
           this._popstateBound = true;
-          window.addEventListener('popstate', () => {
+          window.addEventListener('popstate', async () => {
             try {
               if (this.currentModalEntryId) {
                 this.closeTeamModal();
@@ -1942,13 +1942,13 @@
               const qTab = this.normalizeTab(urlParams.get('tab'));
               const qGW = urlParams.get('gw');
               if (qLeague && this.multiData.leagues[qLeague] && qLeague !== this.activeLeagueId) {
-                this.switchLeague(qLeague, true);
+                await this.switchLeague(qLeague, true);
               }
               if (qTab && qTab !== this.activeTab) {
                 this.switchTab(qTab, true);
               }
               if (qGW && Number(qGW) !== this.selectedGW) {
-                this.selectGW(Number(qGW), true);
+                await this.selectGW(Number(qGW), true);
               }
             } catch (e) {}
           });
@@ -3942,7 +3942,7 @@
           } else {
             shi62TabBtn.classList.add('hidden');
             if (this.activeTab === 'shi62-special-view') {
-              this.switchTab('gameweek-view');
+              this.switchTab('gameweek-view', true);
             }
           }
         }
@@ -3958,7 +3958,7 @@
           } else {
             bramannPredTabBtn.classList.add('hidden');
             if (this.activeTab === 'bramann-prediction-view') {
-              this.switchTab('gameweek-view');
+              this.switchTab('gameweek-view', true);
             }
           }
         }
@@ -3968,24 +3968,24 @@
           } else {
             bramannChalTabBtn.classList.add('hidden');
             if (this.activeTab === 'bramann-challenge-view') {
-              this.switchTab('gameweek-view');
+              this.switchTab('gameweek-view', true);
             }
           }
         }
 
         const unsupportedTier2Tabs = ['highlights-view', 'competition-view', 'transfers-view', 'hall-of-fame-view', 'global-radar-view'];
         if (isTier2 && unsupportedTier2Tabs.includes(this.activeTab)) {
-          this.switchTab('gameweek-view');
+          this.switchTab('gameweek-view', true);
         } else if (!hasPrizes && this.activeTab === 'prizes-view') {
-          this.switchTab('gameweek-view');
+          this.switchTab('gameweek-view', true);
         } else if (!isShi62 && this.activeTab === 'shi62-special-view') {
-          this.switchTab('gameweek-view');
+          this.switchTab('gameweek-view', true);
         } else if (!hasBramannPred && this.activeTab === 'bramann-prediction-view') {
-          this.switchTab('gameweek-view');
+          this.switchTab('gameweek-view', true);
         } else if (!hasBramannChal && this.activeTab === 'bramann-challenge-view') {
-          this.switchTab('gameweek-view');
+          this.switchTab('gameweek-view', true);
         } else {
-          this.switchTab(this.activeTab);
+          this.switchTab(this.activeTab, true, true);
         }
       }
 
@@ -5037,7 +5037,7 @@ selectShi62GW(gwName) {
                     return `
                       <div class="p-2 rounded-lg border ${bgStyle} flex flex-col justify-between">
                         <div class="flex items-center justify-between">
-                          <span class="font-bold text-xs text-slate-800 dark:text-slate-200">${s.name}</span>
+                          <span class="font-bold text-xs text-slate-800 dark:text-slate-200">${this.escapeHtml(s.name)}</span>
                           <span class="text-[10px] text-slate-400">${s.won}W - ${s.lost}L</span>
                         </div>
                         <div class="text-xs sm:text-sm font-bold font-display mt-1 ${textStyle}">
@@ -5248,7 +5248,7 @@ selectShi62GW(gwName) {
                               : 'bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700/60');
                           return `
                             <span class="text-[10px] px-1.5 py-0.5 rounded-md border ${chipClass} font-display">
-                              ${pname}: <strong>${fmtMoney(netVal)}</strong>
+                              ${this.escapeHtml(pname)}: <strong>${fmtMoney(netVal)}</strong>
                             </span>
                           `;
                         }).join('')}
@@ -5546,7 +5546,7 @@ selectShi62GW(gwName) {
                           const chipClass = isPos ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200/60' : (isNeg ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200/60' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200');
                           return `
                             <span class="text-[10px] px-2 py-0.5 rounded border ${chipClass} font-display">
-                              ${pname}: <strong>${fmtMoney(netVal)}</strong>
+                              ${this.escapeHtml(pname)}: <strong>${fmtMoney(netVal)}</strong>
                             </span>
                           `;
                         }).join('')}
@@ -5986,9 +5986,15 @@ selectShi62GW(gwName) {
           `;
         }
 
+        const renderedLang = isEn ? 'en' : 'th';
+        const renderedLeague = String(this.activeLeagueId || '');
         const existingBramannTbody = document.getElementById('bramann-prizes-tbody');
         const existingBramannInput = document.getElementById('bramann-prizes-search-input');
-        if (existingBramannTbody && existingBramannInput) {
+        if (
+          existingBramannTbody && existingBramannInput &&
+          existingBramannInput.dataset.renderedLang === renderedLang &&
+          existingBramannInput.dataset.renderedLeague === renderedLeague
+        ) {
           existingBramannTbody.innerHTML = tableRowsHtml;
           const countEl = document.getElementById('bramann-prizes-count');
           if (countEl) {
@@ -6102,6 +6108,8 @@ selectShi62GW(gwName) {
                     <input 
                       type="text" 
                       id="bramann-prizes-search-input"
+                      data-rendered-lang="${renderedLang}"
+                      data-rendered-league="${this.escapeHtml(renderedLeague)}"
                       value="${this.escapeHtml(this.prizesSearchQuery || '')}" 
                       oninput="app.handlePrizesSearch(this.value)"
                       aria-label="${isEn ? 'Search team name or manager' : 'ค้นหาชื่อทีมหรือผู้จัดการ'}"
@@ -6451,7 +6459,7 @@ selectShi62GW(gwName) {
                                           ? 'bg-white dark:bg-slate-900 text-emerald-800 dark:text-emerald-200 border border-emerald-300/60 dark:border-emerald-700/60 shadow-2xs font-medium'
                                           : 'bg-white dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-medium'
                                       }">
-                                        ${name}
+                                        ${this.escapeHtml(name)}
                                       </span>
                                     `).join('')
                                     : `<span class="text-[10px] text-slate-400 italic">${isEn ? 'No selections' : 'ไม่มีผู้เลือก'}</span>`
@@ -6477,7 +6485,7 @@ selectShi62GW(gwName) {
                               : 'bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700/60');
                           return `
                             <span class="text-[10px] px-1.5 py-0.5 rounded-md border ${chipClass} font-display">
-                              ${pname}: <strong>${fmtMoney(netVal)}</strong>
+                              ${this.escapeHtml(pname)}: <strong>${fmtMoney(netVal)}</strong>
                             </span>
                           `;
                         }).join('')}
@@ -6647,6 +6655,7 @@ selectShi62GW(gwName) {
       }
 
       async selectGW(gw, fromPopstate = false, skipRender = false) {
+        const reqSeq = (this._selectGwSeq = (this._selectGwSeq || 0) + 1);
         const maxGW = Number(this.multiData.max_gw) || 2;
         this.selectedGW = Math.min(Math.max(Number(gw) || 1, 1), maxGW);
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
@@ -6668,7 +6677,9 @@ selectShi62GW(gwName) {
 
         // On-Demand fetch for Tier-2 chunked historical gameweek & Tier-1 historical squads chunk
         await this.ensureTier2GWChunk(this.selectedGW);
+        if (this._selectGwSeq !== reqSeq) return;
         await this.ensureTier1GWSquads(this.selectedGW);
+        if (this._selectGwSeq !== reqSeq) return;
 
         this.renderGWSelector();
         this.updateHighlightsTabBlink();
@@ -6903,7 +6914,7 @@ selectShi62GW(gwName) {
                   </div>
                 </div>
 
-                <!-- Highlight Note (Borbou Style with Copy & Refresh Buttons) -->
+                <!-- Highlight Note (Pundit Banter Style with Copy & Refresh Buttons) -->
                 <div class="mt-3 pt-3 border-t border-indigo-100/80 dark:border-slate-700/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600 dark:text-slate-400">
                   <div class="min-w-0 pr-1 flex items-start sm:items-center gap-2 flex-wrap sm:flex-nowrap">
                     <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/15 text-indigo-800 dark:text-indigo-300 border border-indigo-400/40 shrink-0 font-display">
@@ -6917,7 +6928,7 @@ selectShi62GW(gwName) {
                     <button onclick="app.copyHighlightQuote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Copy Analysis Quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}" aria-label="${isEn ? 'Copy analysis quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     </button>
-                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋'}">
+                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์กูรูสายดุเดือด'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์กูรูสายดุเดือด'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
                   </div>
@@ -7137,7 +7148,7 @@ selectShi62GW(gwName) {
                 ${multiTierPayoutsHtml}
                 ${penaltyPayoutsHtml}
 
-                <!-- Highlight Note (Borbou Style with Copy & Refresh Buttons) -->
+                <!-- Highlight Note (Pundit Banter Style with Copy & Refresh Buttons) -->
                 <div class="mt-3.5 pt-3 border-t ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/70 dark:border-slate-700/60'} flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600 dark:text-slate-400">
                   <div class="min-w-0 pr-1 flex items-start sm:items-center gap-2 flex-wrap sm:flex-nowrap">
                     ${!isFinished ? `
@@ -7153,7 +7164,7 @@ selectShi62GW(gwName) {
                     <button onclick="app.copyHighlightQuote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Copy Analysis Quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}" aria-label="${isEn ? 'Copy analysis quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     </button>
-                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋'}">
+                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์กูรูสายดุเดือด'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์กูรูสายดุเดือด'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
                   </div>
@@ -8143,7 +8154,7 @@ selectShi62GW(gwName) {
                     <button 
                       onclick="app.openTeamModal(${topGun.entry_id})" 
                       class="text-base sm:text-xl font-bold font-display text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer text-left truncate"
-                      aria-label="${isEn ? `View squad of ${topGun.team_name}` : `ดูแผนทีม ${topGun.team_name}`}"
+                      aria-label="${this.escapeHtml(isEn ? `View squad of ${topGun.team_name}` : `ดูแผนทีม ${topGun.team_name}`)}"
                     >
                       ${this.escapeHtml(topGun.team_name)}
                     </button>
@@ -9131,9 +9142,17 @@ selectShi62GW(gwName) {
 
         const cardsListHtml = this.renderTransfersCardsListHtml(filteredRows, isEn);
 
+        const renderedLang = isEn ? 'en' : 'th';
+        const renderedLeague = String(this.activeLeagueId || '');
+        const renderedGw = String(this.selectedGW || '');
         const existingCards = document.getElementById('transfers-cards-list');
         const existingInput = document.getElementById('transfers-search-input');
-        if (existingCards && existingInput) {
+        if (
+          existingCards && existingInput &&
+          existingInput.dataset.renderedLang === renderedLang &&
+          existingInput.dataset.renderedLeague === renderedLeague &&
+          existingInput.dataset.renderedGw === renderedGw
+        ) {
           existingCards.innerHTML = cardsListHtml;
           const badgeEl = document.getElementById('transfers-filter-badge');
           if (badgeEl) {
@@ -9352,6 +9371,9 @@ selectShi62GW(gwName) {
                 <input 
                   type="text" 
                   id="transfers-search-input"
+                  data-rendered-lang="${renderedLang}"
+                  data-rendered-league="${this.escapeHtml(renderedLeague)}"
+                  data-rendered-gw="${this.escapeHtml(renderedGw)}"
                   value="${this.escapeHtml(this.transfersSearch || '')}"
                   aria-label="${isEn ? 'Search team, manager, player' : 'ค้นหาทีม, ผู้จัดการ, นักเตะ'}"
                   placeholder="${isEn ? 'Search team, manager, player...' : 'ค้นหาทีม, ผู้จัดการ, นักเตะ...'}"
@@ -9620,7 +9642,8 @@ selectShi62GW(gwName) {
                 const cap = sq.starting.find(p => p.is_captain) || sq.starting.find(p => p.multiplier > 1);
                 if (cap) {
                   const pts = (cap.points !== undefined && cap.points !== null) ? `${cap.points} pts` : '';
-                  detail = isEn ? `Captain: ${cap.name} ${pts ? `(${pts})` : ''}` : `กัปตัน: ${cap.name} ${pts ? `(${pts})` : ''}`;
+                  const safeCapName = this.escapeHtml(cap.name);
+                  detail = isEn ? `Captain: ${safeCapName} ${pts ? `(${pts})` : ''}` : `กัปตัน: ${safeCapName} ${pts ? `(${pts})` : ''}`;
                 }
               } else if (activeChipKey === 'bb' && sq && Array.isArray(sq.bench)) {
                 let benchPts = 0;
@@ -10191,12 +10214,12 @@ selectShi62GW(gwName) {
                 <div class="bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl p-3 border border-slate-200/80 dark:border-slate-800 transition-all hover:border-slate-300 dark:hover:border-slate-700">
                   <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center gap-2.5 min-w-0">
-                      <img src="${shirtUrl}" alt="${p.team}" class="w-8 h-8 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+                      <img src="${shirtUrl}" alt="${this.escapeHtml(p.team)}" class="w-8 h-8 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
                       <div class="min-w-0">
                         <div class="flex items-center gap-1.5 flex-wrap">
                           <span class="font-bold text-slate-900 dark:text-white text-sm truncate">${this.escapeHtml(p.name)}</span>
-                          <span class="${posClass}">${p.pos}</span>
-                          <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">${p.team}</span>
+                          <span class="${posClass}">${this.escapeHtml(p.pos)}</span>
+                          <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">${this.escapeHtml(p.team)}</span>
                         </div>
                       </div>
                     </div>
@@ -10284,9 +10307,17 @@ selectShi62GW(gwName) {
 
         const diffListInnerHtml = this.renderCompetitionDiffListHtml(diffList, isEn, posFilter, search, totalTeams, defaultShirtUrl, posClass);
 
+        const renderedLang = isEn ? 'en' : 'th';
+        const renderedLeague = String(this.activeLeagueId || '');
+        const renderedGw = String(this.selectedGW || '');
         const existingDiffContainer = document.getElementById('comp-diff-list-container');
         const existingDiffInput = document.getElementById('comp-diff-search-input');
-        if (existingDiffContainer && existingDiffInput) {
+        if (
+          existingDiffContainer && existingDiffInput &&
+          existingDiffInput.dataset.renderedLang === renderedLang &&
+          existingDiffInput.dataset.renderedLeague === renderedLeague &&
+          existingDiffInput.dataset.renderedGw === renderedGw
+        ) {
           existingDiffContainer.innerHTML = diffListInnerHtml;
           const clearBtn = document.getElementById('comp-diff-search-clear');
           if (clearBtn) {
@@ -10346,6 +10377,9 @@ selectShi62GW(gwName) {
                 <input 
                   type="text" 
                   id="comp-diff-search-input"
+                  data-rendered-lang="${renderedLang}"
+                  data-rendered-league="${this.escapeHtml(renderedLeague)}"
+                  data-rendered-gw="${this.escapeHtml(renderedGw)}"
                   aria-label="${isEn ? 'Search differential player' : 'ค้นหานักเตะทีเด็ด'}"
                   placeholder="${isEn ? 'Search differential player...' : 'ค้นหานักเตะทีเด็ด...'}" 
                   value="${this.escapeHtml(this.compDiffSearch)}"
@@ -10388,12 +10422,12 @@ selectShi62GW(gwName) {
             <div class="bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl p-2.5 sm:p-3 border border-slate-200/80 dark:border-slate-800 transition-all hover:border-slate-300 dark:hover:border-slate-700">
               <div class="flex items-center justify-between gap-2.5">
                 <div class="flex items-center gap-2 min-w-0">
-                  <img src="${shirtUrl}" alt="${p.team}" class="w-7 h-7 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+                  <img src="${shirtUrl}" alt="${this.escapeHtml(p.team)}" class="w-7 h-7 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
                   <div class="min-w-0">
                     <div class="flex items-center gap-1.5 flex-wrap">
                       <span class="font-bold text-slate-900 dark:text-white text-xs sm:text-sm truncate">${this.escapeHtml(p.name)}</span>
-                      <span class="${posClass}">${p.pos}</span>
-                      <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">${p.team}</span>
+                      <span class="${posClass}">${this.escapeHtml(p.pos)}</span>
+                      <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">${this.escapeHtml(p.team)}</span>
                     </div>
                   </div>
                 </div>
@@ -10565,7 +10599,7 @@ selectShi62GW(gwName) {
             rowsHtml += `
               <tr>
                 <td colspan="3" class="pt-3 pb-1.5 px-2.5 text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
-                  ${cat.title}
+                  ${this.escapeHtml(cat.title)}
                 </td>
               </tr>
             `;
@@ -10593,9 +10627,9 @@ selectShi62GW(gwName) {
                 <tr class="transition-colors text-xs">
                   <td class="py-2.5 px-2.5 text-left">
                     <div class="flex items-center gap-2 min-w-0 flex-wrap">
-                      <img src="${bestShirtUrl}" alt="${best.TeamName || ''}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
-                      <span class="${bestNameClass} truncate" title="${best.PlayerWebName || ''}">
-                        ${best.PlayerWebName || '-'}
+                      <img src="${bestShirtUrl}" alt="${this.escapeHtml(best.TeamName || '')}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+                      <span class="${bestNameClass} truncate" title="${this.escapeHtml(best.PlayerWebName || '')}">
+                        ${this.escapeHtml(best.PlayerWebName || '-')}
                       </span>
                       ${bestLeagueTag}
                     </div>
@@ -10645,7 +10679,7 @@ selectShi62GW(gwName) {
             rowsHtml += `
               <tr>
                 <td colspan="3" class="pt-3 pb-1.5 px-2.5 text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
-                  ${cat.title}
+                  ${this.escapeHtml(cat.title)}
                 </td>
               </tr>
             `;
@@ -10673,9 +10707,9 @@ selectShi62GW(gwName) {
                 <tr class="transition-colors text-xs">
                   <td class="py-2.5 px-2.5 text-left">
                     <div class="flex items-center gap-2 min-w-0 flex-wrap">
-                      <img src="${valShirtUrl}" alt="${val.TeamName || ''}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
-                      <span class="${valNameClass} truncate" title="${val.PlayerWebName || ''}">
-                        ${val.PlayerWebName || '-'}
+                      <img src="${valShirtUrl}" alt="${this.escapeHtml(val.TeamName || '')}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+                      <span class="${valNameClass} truncate" title="${this.escapeHtml(val.PlayerWebName || '')}">
+                        ${this.escapeHtml(val.PlayerWebName || '-')}
                       </span>
                       ${valLeagueTag}
                     </div>
@@ -10726,7 +10760,7 @@ selectShi62GW(gwName) {
           tableRowsHtml += `
             <tr>
               <td colspan="7" class="pt-3.5 pb-1.5 px-3 text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
-                ${cat.title}
+                ${this.escapeHtml(cat.title)}
               </td>
             </tr>
           `;
@@ -10779,9 +10813,9 @@ selectShi62GW(gwName) {
                 <!-- Best Player: Shirt + Name -->
                 <td class="py-2.5 px-2.5 sm:px-3 text-left">
                   <div class="flex items-center gap-2 min-w-0 flex-wrap">
-                    <img src="${bestShirtUrl}" alt="${best.TeamName || ''}" class="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
-                    <span class="${bestNameClass} truncate" title="${best.PlayerWebName || ''}">
-                      ${best.PlayerWebName || '-'}
+                    <img src="${bestShirtUrl}" alt="${this.escapeHtml(best.TeamName || '')}" class="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+                    <span class="${bestNameClass} truncate" title="${this.escapeHtml(best.PlayerWebName || '')}">
+                      ${this.escapeHtml(best.PlayerWebName || '-')}
                     </span>
                     ${bestLeagueTag}
                   </div>
@@ -10803,9 +10837,9 @@ selectShi62GW(gwName) {
                 <!-- Best Value: Shirt + Name -->
                 <td class="py-2.5 px-2.5 sm:px-3 text-left">
                   <div class="flex items-center gap-2 min-w-0 flex-wrap">
-                    <img src="${valShirtUrl}" alt="${val.TeamName || ''}" class="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
-                    <span class="${valNameClass} truncate" title="${val.PlayerWebName || ''}">
-                      ${val.PlayerWebName || '-'}
+                    <img src="${valShirtUrl}" alt="${this.escapeHtml(val.TeamName || '')}" class="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+                    <span class="${valNameClass} truncate" title="${this.escapeHtml(val.PlayerWebName || '')}">
+                      ${this.escapeHtml(val.PlayerWebName || '-')}
                     </span>
                     ${valLeagueTag}
                   </div>
@@ -11070,9 +11104,13 @@ selectShi62GW(gwName) {
           let totalFinesPaid = 0;
           let totalDangerCount = 0;
           let total1st = 0, total2nd = 0, total3rd = 0;
+          const prizeRankMap = {};
+          let eligibleRankSeq = 0;
 
           sortedTeams.forEach(t => {
             if (this.isPrizeEligible(t.entry_id)) {
+              eligibleRankSeq += 1;
+              prizeRankMap[t.entry_id] = eligibleRankSeq;
               totalDistributedWins += (winsCount[t.entry_id] || 0);
               totalDistributedPrize += (prizeEarnings[t.entry_id] || 0);
               totalFinesPaid += (finesPaid[t.entry_id] || 0);
@@ -11084,6 +11122,10 @@ selectShi62GW(gwName) {
               }
             }
           });
+          const totalWinsRounded = Math.round(totalDistributedWins * 100) / 100;
+          const totalWinsDisplay = Math.abs(totalWinsRounded - Math.round(totalWinsRounded)) < 1e-9
+            ? Math.round(totalWinsRounded)
+            : totalWinsRounded.toFixed(1);
 
           // Live Search & Filter
           const searchQuery = (this.prizesSearchQuery || '').toLowerCase().trim();
@@ -11164,7 +11206,7 @@ selectShi62GW(gwName) {
             let countCellsHtml = '';
             if (hasWeeklyPenalties) {
               const winsHtml = isEligible 
-                ? (wins > 0 ? `<span class="font-mono font-bold tabular-nums text-xs text-slate-900 dark:text-white">${wins}</span>` : '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">-</span>')
+                ? (wins > 0 ? `<span class="font-mono font-bold tabular-nums text-xs text-slate-900 dark:text-white">${winsDisplay}</span>` : '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">-</span>')
                 : '-';
               const dangerHtml = isEligible
                 ? (danger > 0 ? `<span class="font-mono font-bold tabular-nums text-xs text-rose-600 dark:text-rose-400">${danger}</span>` : `<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">${isEn ? 'Safe' : 'รอด'}</span>`)
@@ -11218,17 +11260,18 @@ selectShi62GW(gwName) {
               `;
             }
 
+            const trueRank = prizeRankMap[t.entry_id] || (idx + 1);
             let rankBadge = '';
             if (!isEligible) {
               rankBadge = this.getNonPrizeRankBadge();
-            } else if (idx === 0) {
+            } else if (trueRank === 1) {
               rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400 text-slate-950 font-black text-xs shadow-2xs">1</span>`;
-            } else if (idx === 1) {
+            } else if (trueRank === 2) {
               rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-200 font-bold text-xs">2</span>`;
-            } else if (idx === 2) {
+            } else if (trueRank === 3) {
               rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-700/80 text-white font-bold text-xs">3</span>`;
             } else {
-              rankBadge = `<span class="text-xs font-bold text-slate-500 dark:text-slate-400 font-display">${idx + 1}</span>`;
+              rankBadge = `<span class="text-xs font-bold text-slate-500 dark:text-slate-400 font-display">${trueRank}</span>`;
             }
 
             const wRankClass = !isEligible ? 'is-non-prize opacity-70' : '';
@@ -11247,16 +11290,6 @@ selectShi62GW(gwName) {
               </tr>
             `;
           });
-
-          if (filteredTeams.length === 0) {
-            tableRows = `
-              <tr>
-                <td colspan="${hasWeeklyPenalties ? 7 : (hasMultiTier ? 6 : 4)}" class="py-8 text-center text-slate-400 dark:text-slate-500 font-medium">
-                  ${isEn ? 'No teams match your search or filter' : 'ไม่พบทีมที่ตรงกับคำค้นหาหรือตัวกรอง'}
-                </td>
-              </tr>
-            `;
-          }
 
           // Section 03 Content Builders
           let phasesHtml = '';
@@ -11438,9 +11471,15 @@ selectShi62GW(gwName) {
             }).join('');
           }
 
+          const renderedLang = isEn ? 'en' : 'th';
+          const renderedLeague = String(this.activeLeagueId || '');
           const existingWeeklyTbody = document.getElementById('weekly-prizes-tbody');
           const existingWeeklyInput = document.getElementById('weekly-prizes-search-input');
-          if (existingWeeklyTbody && existingWeeklyInput) {
+          if (
+            existingWeeklyTbody && existingWeeklyInput &&
+            existingWeeklyInput.dataset.renderedLang === renderedLang &&
+            existingWeeklyInput.dataset.renderedLeague === renderedLeague
+          ) {
             existingWeeklyTbody.innerHTML = tableRows;
             const countEl = document.getElementById('weekly-prizes-count');
             if (countEl) {
@@ -11563,6 +11602,8 @@ selectShi62GW(gwName) {
                       <input 
                         type="text" 
                         id="weekly-prizes-search-input"
+                        data-rendered-lang="${renderedLang}"
+                        data-rendered-league="${this.escapeHtml(renderedLeague)}"
                         value="${this.escapeHtml(this.prizesSearchQuery || '')}" 
                         oninput="app.handlePrizesSearch(this.value)"
                         aria-label="${isEn ? 'Search team name or manager' : 'ค้นหาชื่อทีมหรือผู้จัดการ'}"
@@ -11637,7 +11678,7 @@ selectShi62GW(gwName) {
                           </div>
                         </td>
                         ${hasWeeklyPenalties ? `
-                        <td class="py-3 px-2 text-center text-slate-900 dark:text-white font-black">${totalDistributedWins}</td>
+                        <td class="py-3 px-2 text-center text-slate-900 dark:text-white font-black">${totalWinsDisplay}</td>
                         <td class="py-3 px-2 text-center text-rose-600 dark:text-rose-400 font-black">${totalDangerCount}</td>
                         <td class="py-3 px-3 text-right font-black text-rose-600 dark:text-rose-400">-${totalFinesPaid.toLocaleString()} THB</td>
                         <td class="py-3 px-3 text-right font-black text-emerald-600 dark:text-emerald-400">+${totalDistributedPrize.toLocaleString()} THB</td>
@@ -11648,7 +11689,7 @@ selectShi62GW(gwName) {
                         <td class="py-3 px-2 text-center text-slate-700 dark:text-slate-300 font-black">${total3rd % 1 === 0 ? total3rd : total3rd.toFixed(1)}</td>
                         <td class="py-3 px-3 text-right font-black text-emerald-600 dark:text-emerald-400">${totalDistributedPrize.toLocaleString()} THB</td>
                         ` : `
-                        <td class="py-3 px-3 text-center text-slate-800 dark:text-slate-200 font-bold">${totalDistributedWins % 1 === 0 ? totalDistributedWins : totalDistributedWins.toFixed(1)}</td>
+                        <td class="py-3 px-3 text-center text-slate-800 dark:text-slate-200 font-bold">${totalWinsDisplay}</td>
                         <td class="py-3 px-3 text-right font-black text-emerald-600 dark:text-emerald-400">${totalDistributedPrize.toLocaleString()} THB</td>
                         `)}
                       </tr>
@@ -12097,9 +12138,17 @@ selectShi62GW(gwName) {
             `;
           });
 
+          const renderedLang = isEn ? 'en' : 'th';
+          const renderedLeague = String(this.activeLeagueId || '');
+          const renderedMonth = String((curMonth && curMonth.month) || '');
           const existingMonthlyTbody = document.getElementById('monthly-prizes-tbody');
           const existingMonthlyInput = document.getElementById('monthly-prizes-search-input');
-          if (existingMonthlyTbody && existingMonthlyInput) {
+          if (
+            existingMonthlyTbody && existingMonthlyInput &&
+            existingMonthlyInput.dataset.renderedLang === renderedLang &&
+            existingMonthlyInput.dataset.renderedLeague === renderedLeague &&
+            existingMonthlyInput.dataset.renderedMonth === renderedMonth
+          ) {
             existingMonthlyTbody.innerHTML = monthlyTableRows;
             const clearBtn = document.getElementById('monthly-prizes-search-clear');
             if (clearBtn) {
@@ -12175,6 +12224,9 @@ selectShi62GW(gwName) {
                       <input 
                         type="text" 
                         id="monthly-prizes-search-input"
+                        data-rendered-lang="${renderedLang}"
+                        data-rendered-league="${this.escapeHtml(renderedLeague)}"
+                        data-rendered-month="${this.escapeHtml(renderedMonth)}"
                         value="${this.escapeHtml(this.prizesSearchQuery || '')}" 
                         oninput="app.handlePrizesSearch(this.value)"
                         aria-label="${isEn ? 'Search team name or manager' : 'ค้นหาชื่อทีมหรือผู้จัดการ'}"
@@ -12569,9 +12621,15 @@ selectShi62GW(gwName) {
             `;
           }
 
+          const renderedLang = isEn ? 'en' : 'th';
+          const renderedLeague = String(this.activeLeagueId || '');
           const existingStandardTbody = document.getElementById('standard-prizes-tbody');
           const existingStandardInput = document.getElementById('standard-prizes-search-input');
-          if (existingStandardTbody && existingStandardInput) {
+          if (
+            existingStandardTbody && existingStandardInput &&
+            existingStandardInput.dataset.renderedLang === renderedLang &&
+            existingStandardInput.dataset.renderedLeague === renderedLeague
+          ) {
             existingStandardTbody.innerHTML = tableRowsHtml;
             const clearBtn = document.getElementById('standard-prizes-search-clear');
             if (clearBtn) {
@@ -12694,6 +12752,8 @@ selectShi62GW(gwName) {
                       <input 
                         type="text" 
                         id="standard-prizes-search-input"
+                        data-rendered-lang="${renderedLang}"
+                        data-rendered-league="${this.escapeHtml(renderedLeague)}"
                         value="${this.escapeHtml(this.prizesSearchQuery || '')}" 
                         oninput="app.handlePrizesSearch(this.value)"
                         aria-label="${isEn ? 'Search team name or manager' : 'ค้นหาชื่อทีมหรือผู้จัดการ'}"
@@ -14853,9 +14913,15 @@ selectShi62GW(gwName) {
           }).join('');
         }
 
+        const renderedLang = isEn ? 'en' : 'th';
+        const renderedLeague = String(this.activeLeagueId || '');
         const existingCupTbody = document.getElementById('cup-seeding-tbody');
         const existingCupInput = document.getElementById('cup-search-input');
-        if (existingCupTbody && existingCupInput) {
+        if (
+          existingCupTbody && existingCupInput &&
+          existingCupInput.dataset.renderedLang === renderedLang &&
+          existingCupInput.dataset.renderedLeague === renderedLeague
+        ) {
           existingCupTbody.innerHTML = tableRowsHtml;
           const cupClearBtn = document.getElementById('cup-search-clear');
           if (cupClearBtn) {
@@ -14906,6 +14972,8 @@ selectShi62GW(gwName) {
                     <input 
                       id="cup-search-input"
                       type="text" 
+                      data-rendered-lang="${renderedLang}"
+                      data-rendered-league="${this.escapeHtml(renderedLeague)}"
                       aria-label="${isEn ? 'Search team or manager name' : 'ค้นหาชื่อทีมหรือผู้จัดการ'}"
                       value="${this.escapeHtml(this.cupSearchQuery || '')}" 
                       oninput="app.handleCupSearch(this.value)"
@@ -16164,17 +16232,6 @@ selectShi62GW(gwName) {
                       </ul>
                     </div>
                   </div>
-                        <li class="flex items-start gap-2">
-                          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Lazy League Switch &amp; Race Guard:</strong> On-demand <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">data/leagues/{id}.json</code> fetching guarded by monotonic request tokens, synchronized via HTML5 History API and <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">localStorage</code>.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Zero-Framework 60 FPS &amp; A11y:</strong> Pure Vanilla ES6+ (0kb framework runtime), <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">tabular-nums</code> (CLS: 0.00), Page Visibility API battery saver, and WCAG AA modal focus restoration.</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
                 </div>
               </div>
             </details>
@@ -17091,8 +17148,11 @@ selectShi62GW(gwName) {
           }
 
           const lMap = (this._liveMapsByGw && this._liveMapsByGw[gwNum]) || this._latestLiveMap || {};
+          const gwObj = (this.data && this.data.gameweeks) ? this.data.gameweeks[String(gwNum)] : null;
+          const isGwFinished = gwObj ? Boolean(gwObj.is_finished) : false;
+          const unstartedTeams = (gwObj && Array.isArray(gwObj.unstarted_teams)) ? gwObj.unstarted_teams : [];
 
-          const buildPlayerObj = (p) => {
+          const buildPlayerObj = (p, isBench = false) => {
             const pid = p.element;
             const pInfo = this.playersDict[String(pid)] || this.playersDict[pid] || null;
             let name, team, pos, teamCode;
@@ -17125,6 +17185,7 @@ selectShi62GW(gwName) {
               rawPts = Number(lMap[pid].total_points || 0);
               provBonus = Number(lMap[pid].provisional_bonus || 0);
             }
+            const notPlayedYet = (!isGwFinished) && (unstartedTeams.includes(team) || unstartedTeams.includes(teamCode));
 
             return {
               id: pid,
@@ -17132,7 +17193,7 @@ selectShi62GW(gwName) {
               pos: pos,
               team: team,
               team_code: teamCode,
-              points: rawPts * (mult > 0 ? mult : 1),
+              points: isBench ? (rawPts * (mult > 0 ? mult : 1)) : (rawPts * mult),
               raw_points: rawPts,
               multiplier: mult,
               is_captain: isCap,
@@ -17140,12 +17201,12 @@ selectShi62GW(gwName) {
               provisional_bonus: provBonus,
               is_sub: Boolean(p.is_sub),
               is_sub_out: Boolean(p.is_sub_out),
-              not_played_yet: false
+              not_played_yet: notPlayedYet
             };
           };
 
-          const starters = actualStartersPicks.map(buildPlayerObj);
-          const bench = actualBenchPicks.map(buildPlayerObj);
+          const starters = actualStartersPicks.map(p => buildPlayerObj(p, false));
+          const bench = actualBenchPicks.map(p => buildPlayerObj(p, true));
 
           const squadKey = `${entryIdNum}_${gwNum}`;
           const squadObj = {
@@ -18419,7 +18480,12 @@ ${this.getPublicLeagueUrl()}`;
 
             for (let g = 1; g <= maxGW; g++) {
               const gwData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
-              if (gwData && gwData.results) {
+              const gwActive = gwData && (
+                Boolean(gwData.is_finished) ||
+                Boolean(gwData.is_started) ||
+                (Array.isArray(gwData.results) && gwData.results.some(r => (r.points || 0) > 0 || (r.net_points || 0) !== 0))
+              );
+              if (gwActive && gwData.results) {
                 const res = gwData.results.find(r => Number(r.entry_id) === eid);
                 if (res) {
                   gwPoints[g] = res.net_points;
@@ -18538,7 +18604,8 @@ ${this.getPublicLeagueUrl()}`;
 
             const isFinished = Boolean(gwData.is_finished);
             const isStarted = gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || gwData.results.some(r => r.points > 0));
-            const statusText = isFinished ? (isEn ? 'Finished' : 'จบการแข่งขัน') : (isStarted ? (isEn ? 'Live' : 'กำลังแข่งขัน') : (isEn ? 'Upcoming' : 'รอคิกออฟ'));
+            if (!isFinished && !isStarted) continue;
+            const statusText = isFinished ? (isEn ? 'Finished' : 'จบการแข่งขัน') : (isEn ? 'Live' : 'กำลังแข่งขัน');
 
             const isWeeklyPrize = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
             const scoreProp = 'net_points';
