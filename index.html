@@ -165,7 +165,7 @@
       --color-card: oklch(100% 0 0);
       --color-ink: oklch(12% 0.012 25);
       --color-ink-2: oklch(34% 0.012 25);
-      --color-ink-3: oklch(52% 0.012 25);
+      --color-ink-3: oklch(44% 0.012 25);
       --color-border: oklch(88% 0.008 25);
       --color-border-strong: oklch(78% 0.012 25);
 
@@ -180,7 +180,7 @@
 
       --color-accent: oklch(54% 0.22 25);
       --color-accent-hover: oklch(47% 0.23 25);
-      --color-accent-ink: oklch(99% 0.003 25);
+      --color-accent-ink: oklch(100% 0 0);
       --color-accent-text: oklch(43% 0.20 25);
       --color-accent-soft: oklch(54% 0.22 25 / 0.12);
       --color-live: oklch(62% 0.18 150);
@@ -214,9 +214,9 @@
       --dark-arena-ink: oklch(98.5% 0.004 25);
       --dark-arena-ink-2: oklch(78% 0.01 25);
       --dark-arena-border: oklch(25% 0.018 25);
-      --dark-accent: oklch(59% 0.22 25);
-      --dark-accent-hover: oklch(64% 0.22 25);
-      --dark-accent-ink: oklch(99% 0.003 25);
+      --dark-accent: oklch(54.5% 0.22 25);
+      --dark-accent-hover: oklch(60% 0.22 25);
+      --dark-accent-ink: oklch(100% 0 0);
       --dark-accent-text: oklch(78% 0.16 25);
       --dark-accent-soft: oklch(59% 0.22 25 / 0.18);
       --dark-chrome: oklch(9% 0.012 25);
@@ -284,6 +284,9 @@
     .tabular-nums {
       font-variant-numeric: tabular-nums;
     }
+    .bm-nowrap {
+      white-space: nowrap;
+    }
 
     .skip-link {
       position: absolute;
@@ -339,7 +342,8 @@
     .bm-brand-text {
       display: flex;
       flex-direction: column;
-      line-height: 1.15;
+      gap: 0.18rem;
+      line-height: 1.25;
     }
     .bm-brand-name {
       font-size: 1rem;
@@ -349,6 +353,7 @@
     .bm-brand-sub {
       font-size: 0.75rem;
       font-weight: 500;
+      line-height: 1.4;
       color: var(--color-arena-ink-2);
     }
 
@@ -391,9 +396,9 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 2.35rem;
-      height: 2.35rem;
-      padding: 0 0.65rem;
+      min-width: 2.75rem;
+      height: 2.75rem;
+      padding: 0 0.7rem;
       border-radius: 0.45rem;
       border: 1px solid var(--color-arena-border);
       background-color: transparent;
@@ -420,6 +425,7 @@
       display: none;
       align-items: center;
       gap: 0.4rem;
+      min-height: 2.75rem;
       padding: 0.45rem 0.9rem;
       border-radius: 0.45rem;
       border: 1px solid var(--color-live-border);
@@ -430,6 +436,30 @@
       text-decoration: none;
       white-space: nowrap;
       transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+    @media (max-width: 479px) {
+      .bm-nav-inner {
+        padding: 0.65rem 0.85rem;
+        gap: 0.5rem;
+      }
+      .bm-brand {
+        min-width: 0;
+        flex-shrink: 1;
+        gap: 0.5rem;
+      }
+      .bm-brand-text {
+        min-width: 0;
+      }
+      .bm-brand-sub {
+        font-size: 0.7rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 11rem;
+      }
+      .bm-nav-actions {
+        gap: 0.35rem;
+      }
     }
     @media (min-width: 640px) {
       .bm-cta-nav {
@@ -579,10 +609,13 @@
     .bm-hero-h1 {
       font-size: clamp(2rem, 8.2vw, 3.45rem);
       font-weight: 800;
-      line-height: 1.12;
-      margin: 0;
+      line-height: 1.15;
+      margin: 0 0 0.75rem;
       color: var(--color-arena-ink);
       text-wrap: balance;
+    }
+    html[lang="th"] .bm-hero-h1 {
+      line-height: 1.34;
     }
     .bm-hero-h1-accent {
       display: block;
@@ -590,7 +623,7 @@
     }
     .bm-hero-lead {
       font-size: clamp(0.95rem, 1.4vw, 1.14rem);
-      line-height: 1.5;
+      line-height: 1.55;
       color: var(--color-arena-ink-2);
       margin: 0 0 1.05rem;
       max-width: 37.5rem;
@@ -599,7 +632,7 @@
     @media (min-width: 700px) {
       .bm-hero-h1 {
         font-size: clamp(2.15rem, 4.4vw, 3.45rem);
-        margin: 0 0 0.85rem;
+        margin: 0 0 1rem;
       }
       .bm-hero-lead {
         margin: 0 0 1.45rem;
@@ -834,14 +867,14 @@
       font-weight: 800;
       font-variant-numeric: tabular-nums;
       color: var(--color-ink);
-      line-height: 1.15;
+      line-height: 1.22;
     }
     .bm-stat-lbl {
       font-size: 0.8rem;
       color: var(--color-ink-2);
-      margin-top: 0.2rem;
+      margin-top: 0.25rem;
       font-weight: 500;
-      line-height: 1.35;
+      line-height: 1.45;
     }
     @media (min-width: 768px) {
       .bm-stat-lbl {
@@ -874,8 +907,11 @@
     .bm-section-head {
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
+      gap: 0;
       margin-bottom: 2rem;
+    }
+    .bm-section-head-row {
+      gap: 1rem;
     }
     @media (min-width: 768px) {
       .bm-section-head-row {
@@ -888,20 +924,31 @@
       font-size: clamp(1.65rem, 3vw, 2.35rem);
       font-weight: 800;
       margin: 0;
-      line-height: 1.2;
+      line-height: 1.25;
       text-wrap: balance;
+    }
+    html[lang="th"] .bm-h2 {
+      line-height: 1.44;
+    }
+    .bm-h2 + .bm-lead,
+    .bm-h2 + .bm-lead-arena {
+      margin-top: 0.85rem;
     }
     .bm-lead {
       font-size: 1rem;
+      line-height: 1.65;
       color: var(--color-ink-2);
       margin: 0;
-      max-width: 44rem;
+      max-width: 40rem;
+      text-wrap: pretty;
     }
     .bm-lead-arena {
       font-size: 1rem;
+      line-height: 1.65;
       color: var(--color-arena-ink-2);
       margin: 0;
-      max-width: 44rem;
+      max-width: 40rem;
+      text-wrap: pretty;
     }
 
     /* 6-Channel Feature Stage */
@@ -930,25 +977,28 @@
     }
     .bm-channel-btn {
       width: 100%;
+      height: 100%;
       text-align: left;
-      padding: 0.72rem 0.75rem;
-      min-height: 44px;
+      padding: 0.62rem 0.65rem;
+      min-height: 48px;
       border-radius: 0.55rem;
       border: 1px solid var(--color-border);
       background-color: transparent;
       color: var(--color-ink);
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      gap: 0.5rem;
-      white-space: nowrap;
+      gap: 0.42rem;
+      white-space: normal;
       cursor: pointer;
       transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
     }
     @media (min-width: 560px) {
       .bm-channel-btn {
+        align-items: center;
         padding: 0.85rem 1rem;
         gap: 0.75rem;
+        white-space: nowrap;
       }
     }
     .bm-channel-btn:hover {
@@ -969,25 +1019,38 @@
     }
     .bm-channel-num {
       font-weight: 800;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
+      padding-top: 0.1rem;
       color: var(--color-accent-text);
       flex-shrink: 0;
+    }
+    @media (min-width: 560px) {
+      .bm-channel-num {
+        font-size: 0.82rem;
+        padding-top: 0;
+      }
     }
     .bm-channel-btn.is-active .bm-channel-num {
       color: var(--color-accent-text);
     }
     .bm-channel-label {
       font-weight: 700;
-      font-size: 0.85rem;
-      line-height: 1.25;
+      font-size: 0.82rem;
+      line-height: 1.35;
       flex: 1;
       min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+      text-wrap: balance;
     }
     @media (min-width: 560px) {
       .bm-channel-label {
         font-size: 0.96rem;
+        line-height: 1.38;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
     .bm-channel-mode {
@@ -1100,13 +1163,17 @@
     .bm-stage-caption-title {
       font-size: 1.1rem;
       font-weight: 800;
+      line-height: 1.4;
       margin: 0 0 0.25rem;
       color: var(--color-arena-ink);
+      text-wrap: balance;
     }
     .bm-stage-caption-desc {
       font-size: 0.92rem;
+      line-height: 1.58;
       color: var(--color-arena-ink-2);
       margin: 0;
+      text-wrap: pretty;
     }
     .bm-stage-disclosure {
       margin-top: 0.85rem;
@@ -1178,8 +1245,10 @@
     }
     .bm-demo-desc {
       font-size: 0.9rem;
+      line-height: 1.58;
       color: var(--color-arena-ink-2);
       margin: 0;
+      text-wrap: pretty;
     }
     .bm-demo-action {
       display: inline-flex;
@@ -1219,7 +1288,8 @@
       flex-shrink: 0;
     }
     .bm-curr-btn {
-      padding: 0.42rem 0.9rem;
+      min-height: 44px;
+      padding: 0.5rem 1rem;
       border-radius: 0.35rem;
       border: 1px solid transparent;
       background-color: transparent;
@@ -1328,8 +1398,10 @@
     }
     .bm-plan-desc {
       font-size: 0.95rem;
+      line-height: 1.58;
       color: var(--color-ink-2);
       margin: 0 0 1rem;
+      text-wrap: pretty;
     }
     .bm-plan-card.is-featured .bm-plan-desc {
       color: var(--color-arena-ink-2);
@@ -1340,8 +1412,9 @@
       padding: 0;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.55rem;
       font-size: 0.92rem;
+      line-height: 1.52;
     }
     .bm-plan-list li {
       display: flex;
@@ -1559,15 +1632,17 @@
     .bm-drama-title {
       font-size: 0.96rem;
       font-weight: 800;
-      line-height: 1.35;
+      line-height: 1.45;
       margin: 0 0 0.2rem;
       color: var(--color-arena-ink);
+      text-wrap: balance;
     }
     .bm-drama-desc {
       font-size: 0.84rem;
-      line-height: 1.45;
+      line-height: 1.52;
       margin: 0;
       color: var(--color-arena-ink-2);
+      text-wrap: pretty;
     }
 
     /* Scroll Motion (reactvibe LinearReveal adaptation, progressive enhancement) */
@@ -1619,7 +1694,7 @@
       font-family: var(--font-sans);
       font-size: 0.98rem;
       font-weight: 700;
-      line-height: 1.35;
+      line-height: 1.48;
       text-align: left;
       cursor: pointer;
       display: flex;
@@ -1627,6 +1702,9 @@
       justify-content: space-between;
       gap: 1rem;
       transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    .bm-faq-trigger > span:first-child {
+      text-wrap: balance;
     }
     .bm-faq-trigger:hover {
       background-color: var(--color-surface);
@@ -1660,8 +1738,9 @@
       padding: 0.95rem 1.15rem 1.1rem;
       border-top: 1px solid var(--color-border);
       font-size: 0.92rem;
-      line-height: 1.6;
+      line-height: 1.62;
       color: var(--color-ink-2);
+      text-wrap: pretty;
     }
 
     section[id] {
@@ -1679,10 +1758,15 @@
       border-bottom: 1px solid var(--color-border-strong);
       background-color: var(--color-surface);
     }
-    @media (min-width: 760px) {
+    @media (min-width: 960px) {
       .bm-launch-steps {
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 1.25rem;
+        gap: 1rem;
+      }
+    }
+    @media (min-width: 1120px) {
+      .bm-launch-steps {
+        gap: 1.5rem;
       }
     }
     .bm-launch-step {
@@ -1690,6 +1774,7 @@
       align-items: baseline;
       gap: 0.6rem;
       font-size: 0.9rem;
+      line-height: 1.5;
       color: var(--color-ink);
     }
     .bm-launch-num {
@@ -1702,7 +1787,8 @@
       margin: 0.35rem 0 0;
       font-size: 0.8rem;
       color: var(--color-ink-2);
-      line-height: 1.4;
+      line-height: 1.5;
+      text-wrap: pretty;
     }
     .bm-order-grid {
       display: grid;
@@ -1752,6 +1838,10 @@
       font-size: 0.95rem;
       transition: border-color 0.15s ease;
     }
+    .bm-input::placeholder {
+      color: var(--color-ink-3);
+      opacity: 1;
+    }
     .bm-input:focus, .bm-select:focus {
       outline: 2px solid var(--color-accent);
       outline-offset: 1px;
@@ -1791,6 +1881,8 @@
       color: var(--color-accent-ink);
       font-weight: 800;
       font-size: 0.92rem;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .bm-slip-box {
       background-color: var(--color-arena-surface);
@@ -1820,6 +1912,19 @@
       color: var(--color-live);
       min-height: 1.25rem;
     }
+    .bm-slip-reassure {
+      margin: 0;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--color-arena-ink-2);
+      text-align: center;
+      text-wrap: pretty;
+    }
+    .bm-textarea {
+      resize: vertical;
+      min-height: 3.3rem;
+      line-height: 1.5;
+    }
 
     /* Footer */
     .bm-footer {
@@ -1828,6 +1933,11 @@
       border-top: 1px solid var(--color-arena-border);
       padding: 2.25rem 1.25rem;
       font-size: 0.88rem;
+    }
+    #footer-note {
+      max-width: 38rem;
+      line-height: 1.6;
+      text-wrap: pretty;
     }
     .bm-footer-inner {
       max-width: 1200px;
@@ -2106,7 +2216,7 @@
         </div>
 
         <div id="demos-list" class="bm-demo-bars"></div>
-        <p id="demos-note" class="bm-lead-arena" style="margin-top: 1rem; font-size: 0.86rem;">ข้อมูลการแข่งขันจริงในลีกสาธารณะทั้ง 9 ลีก (1,943 ทีม) ซิงค์ล่าสุด 17 พ.ย. 2026, 01:22 น.</p>
+        <p id="demos-note" class="bm-lead-arena" style="margin-top: 1rem; font-size: 0.86rem;">ข้อมูลการแข่งขันจริงในลีกสาธารณะทั้ง 9 ลีก (1,943 ทีม) ซิงค์ล่าสุด 17 พ.ย. 2026, 03:39 น.</p>
       </div>
     </section>
 
@@ -2129,8 +2239,8 @@
 
         <div class="bm-tier2-bar">
           <div>
-            <strong id="tier2-title" style="display: block; font-size: 1.05rem;">ลีกใหญ่ 50 ทีมขึ้นไป (ลีกคอมมูนิตี้ / กลุ่มใหญ่)</strong>
-            <span id="tier2-desc" style="font-size: 0.9rem; color: var(--color-ink-2);">รองรับตั้งแต่ 50 ถึง 1,000+ ทีม พร้อมระบบค้นหาเร็วและจัดสายบอลถ้วย</span>
+            <strong id="tier2-title" style="display: block; font-size: 1.05rem; line-height: 1.45; margin-bottom: 0.3rem;">ลีกใหญ่ 50 ทีมขึ้นไป (ลีกคอมมูนิตี้ / กลุ่มใหญ่)</strong>
+            <span id="tier2-desc" style="display: block; font-size: 0.9rem; line-height: 1.58; color: var(--color-ink-2);">รองรับตั้งแต่ 50 ถึง 1,000+ ทีม พร้อมระบบค้นหาเร็วและจัดสายบอลถ้วย</span>
           </div>
           <a id="tier2-link" href="./139836/" data-demo-lid="139836" class="bm-btn-primary">
             <span id="tier2-link-text">ดูตัวอย่าง 1,780 ทีม</span>
@@ -2182,17 +2292,11 @@
 
         <div class="bm-order-grid">
           <form id="order-form" class="bm-form-card" data-endpoint="" novalidate>
-            <div class="bm-field-row">
-              <div class="bm-field">
-                <label id="lbl-league-id" for="order-league-id" class="bm-label">รหัส League ID ทางการ</label>
-                <input id="order-league-id" name="league_id" type="text" placeholder="เช่น 40700 หรือวางลิงก์หน้าลีก FPL" class="bm-input" required>
-                <p id="hint-league-id" class="bm-field-hint">กรอกตัวเลข เช่น 40700 หรือวางลิงก์หน้าลีกเพื่อดึงรหัสอัตโนมัติ</p>
-                <p id="order-league-id-error" class="bm-error hidden">กรุณากรอกเลข League ID เป็นตัวเลข</p>
-              </div>
-              <div class="bm-field">
-                <label id="lbl-league-name" for="order-league-name" class="bm-label">ชื่อลีกที่จะแสดงบนเว็บ</label>
-                <input id="order-league-name" name="league_name" type="text" placeholder="เช่น เพื่อนรักบอลพรีเมียร์" class="bm-input">
-              </div>
+            <div class="bm-field">
+              <label id="lbl-league-id" for="order-league-id" class="bm-label">รหัส League ID ทางการ</label>
+              <input id="order-league-id" name="league_id" type="text" placeholder="เช่น 40700 หรือวางลิงก์หน้าลีก FPL" class="bm-input" required>
+              <p id="hint-league-id" class="bm-field-hint">กรอกตัวเลข เช่น 40700 หรือวางลิงก์หน้าลีกเพื่อดึงรหัสอัตโนมัติ (ระบบดึงชื่อลีกให้จาก FPL)</p>
+              <p id="order-league-id-error" class="bm-error hidden">กรุณากรอกรหัส League ID เป็นตัวเลข</p>
             </div>
 
             <div class="bm-field-row">
@@ -2204,22 +2308,17 @@
                 </select>
               </div>
               <div class="bm-field">
-                <label id="lbl-prize-model" for="order-prize-model" class="bm-label">รูปแบบกติกาเงินรางวัล</label>
-                <select id="order-prize-model" name="prize_model" class="bm-select">
-                  <option value="weekly">รายสัปดาห์ (Weekly Winner)</option>
-                  <option value="monthly">รายเดือน + อันดับรวม</option>
-                  <option value="penalty">ค่าปรับบ๊วย + กองกลาง</option>
-                  <option value="zero_sum">หักยอดหัวท้าย / กติกาเฉพาะกลุ่ม</option>
+                <label id="lbl-team-tier" for="order-team-tier" class="bm-label">จำนวนสมาชิกในลีก</label>
+                <select id="order-team-tier" name="team_tier" class="bm-select">
+                  <option value="tier1">ไม่เกิน 30 ทีม (แพ็กเกจ Standard)</option>
+                  <option value="tier2">31 ทีมขึ้นไป / ลีกใหญ่ 50+ (ประเมินราคาทาง LINE)</option>
                 </select>
               </div>
             </div>
 
-            <div class="bm-field">
-              <label id="lbl-team-tier" for="order-team-tier" class="bm-label">จำนวนสมาชิกในลีก</label>
-              <select id="order-team-tier" name="team_tier" class="bm-select">
-                <option value="tier1">ไม่เกิน 30 ทีม</option>
-                <option value="tier2">31 ทีมขึ้นไป (ประเมินราคาทาง LINE)</option>
-              </select>
+            <div class="bm-field" style="margin-bottom: 0;">
+              <label id="lbl-prize-model" for="order-prize-model" class="bm-label">รูปแบบกติกาและเงินรางวัลของลีก</label>
+              <textarea id="order-prize-model" name="prize_model" rows="3" placeholder="เช่น แชมป์วีค 200฿, แชมป์เดือน 500฿, บ๊วยโดน 50฿, บอลถ้วย 500฿ (หรือระบุคร่าวๆ แล้วคุยต่อทาง LINE)" class="bm-input bm-textarea"></textarea>
             </div>
           </form>
 
@@ -2237,11 +2336,12 @@
               <button id="btn-copy-order" type="submit" form="order-form" class="bm-btn-primary">
                 <span id="btn-copy-order-text">คัดลอกข้อความสั่งซื้อ</span>
               </button>
-              <a id="btn-open-line" href="https://line.me/ti/p/lgWPeyIBR7" target="_blank" rel="noopener noreferrer" class="bm-btn-outline-dark">
+              <a id="btn-open-line" href="https://line.me/ti/p/lgWPeyIBR7" target="_blank" rel="noopener noreferrer" class="bm-btn-primary is-line" onclick="landingApp.prepareLineOpen()">
                 <span id="btn-open-line-text">เปิดแชท LINE</span>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
               </a>
             </div>
+            <p id="order-reassure-note" class="bm-slip-reassure">ตั้งค่าและส่งลิงก์ให้ตรวจเช็กก่อน • ชำระเงินหลังลิงก์พร้อมใช้งานจริง</p>
           </div>
         </div>
       </div>
@@ -2256,10 +2356,11 @@
       </div>
       <div class="bm-footer-links">
         <span id="landing-visitor-badge" class="tabular-nums">ผู้เข้าชม: …</span>
-        <a href="#features">6 จอฟีเจอร์</a>
-        <a href="#demos">ลีกตัวอย่าง</a>
-        <a href="#pricing">ราคา</a>
-        <a href="https://line.me/ti/p/lgWPeyIBR7" target="_blank" rel="noopener noreferrer">LINE Official</a>
+        <a id="footer-link-features" href="#features">6 จอฟีเจอร์</a>
+        <a id="footer-link-demos" href="#demos">ลีกตัวอย่าง</a>
+        <a id="footer-link-pricing" href="#pricing">ราคา</a>
+        <a id="footer-link-faq" href="#faq">คำถามที่พบบ่อย</a>
+        <a id="footer-link-line" href="https://line.me/ti/p/lgWPeyIBR7" target="_blank" rel="noopener noreferrer">LINE Official</a>
       </div>
     </div>
   </footer>
@@ -2287,6 +2388,85 @@
           .replace(/>/g, '&gt;')
           .replace(/"/g, '&quot;')
           .replace(/'/g, '&#39;');
+      },
+
+      formatTypoHtml(val) {
+        let html = this.escapeHtml(val);
+        if (!html) return '';
+        if (!this._typoPhrases) {
+          this._typoPhrases = [
+            '(ลีกคอมมูนิตี้ / กลุ่มใหญ่)',
+            'Triple Captain สัปดาห์นี้',
+            'สลับโหมดมืดและสว่าง)',
+            'ประจำสัปดาห์ (กำลังพัฒนา)',
+            'พร้อมส่งเข้า LINE ทันที',
+            'หน้าลีกเพื่อดึงรหัสอัตโนมัติ',
+            'บนมือถือและคอมพิวเตอร์',
+            'คิดรวมเป็นรางวัลได้',
+            'ภายใน 24 ชม.',
+            'พร้อมใช้งานจริง',
+            'อัตโนมัติทันเกม',
+            'official tie-breakers',
+            'automatically from FPL)',
+            'earlier Gameweeks?',
+            'ทัก LINE ได้ทันที',
+            'ก็รู้ผลครบทุกคน',
+            'ตรวจเช็กก่อน',
+            'account password?',
+            'engine (In Dev)',
+            'system (In Dev)',
+            '(within 24h)',
+            'link is ready',
+            'H2H Challenge:',
+            'within 24h',
+            'Head-to-Head',
+            'ลงขันได้ไหม?',
+            'เท่ากันทางการ',
+            'monthly fees?',
+            'results 100%?',
+            'from payouts?',
+            '(กำลังพัฒนา)',
+            'รูปแบบกติกา',
+            'ย้อนหลังครบ',
+            '100% ไหม?',
+            'นานแค่ไหน?',
+            'หรือเปล่า?',
+            'demo list?',
+            'all teams.',
+            'LINE chat.',
+            '& payouts',
+            '& rules',
+            'เงินรางวัล',
+            'ค้นหาเร็ว',
+            'ได้ไหม?',
+            'ทาง LINE',
+            'มินิลีก',
+            'รายเดือน',
+            'ครบ 38 วีค',
+            '(In Dev)',
+            '30 teams)',
+            'via LINE',
+            'on LINE'
+          ]
+            .map((p) => this.escapeHtml(p))
+            .sort((a, b) => b.length - a.length);
+        }
+        const tokens = [];
+        for (let i = 0; i < this._typoPhrases.length; i += 1) {
+          const phrase = this._typoPhrases[i];
+          if (html.includes(phrase)) {
+            const safe = phrase
+              .replace(/tie-breakers/g, 'tie&#8209;breakers')
+              .replace(/Head-to-Head/g, 'Head&#8209;to&#8209;Head');
+            const marker = `__BMTP_${tokens.length}__`;
+            tokens.push(`<span class="bm-nowrap">${safe}</span>`);
+            html = html.split(phrase).join(marker);
+          }
+        }
+        for (let i = 0; i < tokens.length; i += 1) {
+          html = html.split(`__BMTP_${i}__`).join(tokens[i]);
+        }
+        return html;
       },
 
       init() {
@@ -2360,6 +2540,10 @@
           const el = document.getElementById(id);
           if (el && text != null) el.textContent = text;
         };
+        const setTypo = (id, text) => {
+          const el = document.getElementById(id);
+          if (el && text != null) el.innerHTML = this.formatTypoHtml(text);
+        };
 
         setTxt('landing-lang-btn', this.lang === 'th' ? 'EN' : 'TH');
         setTxt('nav-brand-sub', copy.brand_sub);
@@ -2376,7 +2560,7 @@
 
         setTxt('hero-h1-line1', copy.hero_h1_line1);
         setTxt('hero-h1-line2', copy.hero_h1_line2);
-        setTxt('hero-subtitle', copy.hero_lead);
+        setTypo('hero-subtitle', copy.hero_lead);
         setTxt('hero-primary-cta-text', copy.hero_cta_primary);
         setTxt('hero-secondary-cta-text', copy.hero_cta_secondary);
         setTxt('hero-badge-text', copy.hero_badge);
@@ -2389,55 +2573,57 @@
         this.renderStats(copy.stats || []);
         this.renderStream(copy);
         setTxt('feat-title', copy.screens_heading);
-        setTxt('feat-sub', copy.screens_lead);
+        setTypo('feat-sub', copy.screens_lead);
         setTxt('stage-disclosure-text', copy.screens_note);
         this.renderScreens();
 
         setTxt('drama-title', copy.drama_heading);
-        setTxt('drama-sub', copy.drama_lead);
+        setTypo('drama-sub', copy.drama_lead);
         setTxt('drama-cta-text', copy.drama_cta);
         setTxt('drama-screen-label', this.lang === 'en' ? 'Live Friend-League Moments' : 'เหตุการณ์สดในกลุ่มเพื่อน');
         this.renderDrama(copy);
 
         setTxt('demos-title', copy.demos_heading);
-        setTxt('demos-sub', copy.demos_lead);
+        setTypo('demos-sub', copy.demos_lead);
         setTxt('demos-note', this.lang === 'en'
-          ? 'Real public showcase leagues (9 leagues, 1,943 teams), synced 17 พ.ย. 2026, 01:22 น.'
-          : 'ข้อมูลการแข่งขันจริงในลีกสาธารณะทั้ง 9 ลีก (1,943 ทีม) ซิงค์ล่าสุด 17 พ.ย. 2026, 01:22 น.');
+          ? 'Real public showcase leagues (9 leagues, 1,943 teams), synced 17 พ.ย. 2026, 03:39 น.'
+          : 'ข้อมูลการแข่งขันจริงในลีกสาธารณะทั้ง 9 ลีก (1,943 ทีม) ซิงค์ล่าสุด 17 พ.ย. 2026, 03:39 น.');
         this.renderDemos(copy);
 
         setTxt('pricing-title', copy.pricing_heading);
-        setTxt('pricing-sub', copy.pricing_lead);
+        setTypo('pricing-sub', copy.pricing_lead);
         this.renderPricing();
-        setTxt('tier2-title', copy.pricing_tier2_title);
-        setTxt('tier2-desc', copy.pricing_tier2_desc);
+        setTypo('tier2-title', copy.pricing_tier2_title);
+        setTypo('tier2-desc', copy.pricing_tier2_desc);
         setTxt('tier2-link-text', this.lang === 'en' ? 'Explore 1,780-Team Preview' : 'ดูตัวอย่าง 1,780 ทีม');
 
         setTxt('faq-title', copy.faq_heading);
-        setTxt('faq-sub', copy.faq_lead);
+        setTypo('faq-sub', copy.faq_lead);
         setTxt('faq-line-text', copy.faq_cta);
         this.renderFaq(copy);
 
         const isEn = this.lang === 'en';
         setTxt('order-title', copy.order_heading);
-        setTxt('order-sub', copy.order_lead);
-        setTxt('launch-step-1', isEn ? 'Send League ID & prize rule via LINE' : 'ส่งเลข League ID และกติกาลีกทาง LINE');
-        setTxt('launch-step-2', isEn ? 'We backfill all prior Gameweeks & payouts' : 'แอดมินตั้งค่าคะแนนสดและเงินรางวัลย้อนหลังครบ');
-        setTxt('launch-step-3', isEn ? 'Share your private league link within 24h' : 'รับลิงก์ส่วนตัวส่งเข้ากลุ่มเพื่อนได้ภายใน 24 ชม.');
+        setTypo('order-sub', copy.order_lead);
+        setTypo('launch-step-1', isEn ? 'Send League ID & prize rule via LINE' : 'ส่งเลข League ID และกติกาลีกทาง LINE');
+        setTypo('launch-step-2', isEn ? 'We backfill all prior Gameweeks & rules' : 'แอดมินตั้งค่าคะแนนสดและกติกาย้อนหลังครบ');
+        setTypo('launch-step-3', isEn ? 'Verify your private link before paying (within 24h)' : 'ตรวจเช็กลิงก์ส่วนตัวก่อนโอน ภายใน 24 ชม.');
         setTxt('btn-copy-order-text', copy.order_copy_btn);
         setTxt('btn-open-line-text', copy.order_line_btn);
+        setTypo('order-reassure-note', isEn ? 'Send your slip for setup & live link verification first • Pay only after your league link is ready' : 'ตั้งค่าและส่งลิงก์ให้ตรวจเช็กก่อน • ชำระเงินหลังลิงก์พร้อมใช้งานจริง');
         setTxt('order-preview-label', isEn ? 'LINE Order Summary Slip' : 'ข้อความสรุปรายการส่ง LINE');
         setTxt('lbl-league-id', isEn ? 'Official FPL League ID' : 'รหัส League ID ทางการ');
-        setTxt('hint-league-id', isEn ? 'Enter digits e.g. 40700, or paste your league link' : 'กรอกตัวเลข เช่น 40700 หรือวางลิงก์หน้าลีกเพื่อดึงรหัสอัตโนมัติ');
-        setTxt('lbl-league-name', isEn ? 'Display League Name' : 'ชื่อลีกที่จะแสดงบนเว็บ');
+        setTypo('hint-league-id', isEn ? 'Enter digits e.g. 40700, or paste your league link (league name is fetched automatically from FPL)' : 'กรอกตัวเลข เช่น 40700 หรือวางลิงก์หน้าลีกเพื่อดึงรหัสอัตโนมัติ (ระบบดึงชื่อลีกให้จาก FPL)');
         setTxt('lbl-plan', isEn ? 'Selected Plan' : 'แพ็กเกจที่ต้องการ');
-        setTxt('lbl-prize-model', isEn ? 'Prize Rule Format' : 'รูปแบบกติกาเงินรางวัล');
+        setTxt('lbl-prize-model', isEn ? 'League Prize Rules & Amounts' : 'รูปแบบกติกาและเงินรางวัลของลีก');
         setTxt('lbl-team-tier', isEn ? 'League Size' : 'จำนวนสมาชิกในลีก');
 
         const lidInput = document.getElementById('order-league-id');
         if (lidInput) lidInput.placeholder = isEn ? 'e.g. 40700 or paste league URL' : 'เช่น 40700 หรือวางลิงก์หน้าลีก FPL';
-        const lnameInput = document.getElementById('order-league-name');
-        if (lnameInput) lnameInput.placeholder = isEn ? 'e.g. Sunday Premier League' : 'เช่น เพื่อนรักบอลพรีเมียร์';
+        const prizeInput = document.getElementById('order-prize-model');
+        if (prizeInput) prizeInput.placeholder = isEn
+          ? 'e.g. Weekly winner 200, Monthly 500, Season top 3, Bottom fine 50 (or summarize and finalize on LINE)'
+          : 'เช่น แชมป์วีค 200฿, แชมป์เดือน 500฿, บ๊วยโดน 50฿, บอลถ้วย 500฿ (หรือระบุคร่าวๆ แล้วคุยต่อทาง LINE)';
 
         const setOpts = (selId, labels) => {
           const sel = document.getElementById(selId);
@@ -2449,24 +2635,15 @@
         setOpts('order-plan', isEn
           ? { standard: 'Standard (500 THB / $19)', custom: 'Custom (Roadmap / Coming Soon, 900 THB / $29)' }
           : { standard: 'Standard (500฿)', custom: 'Custom (Roadmap / กำลังพัฒนา, 900฿)' });
-        setOpts('order-prize-model', isEn
-          ? {
-              weekly: 'Weekly Winner Ledger',
-              monthly: 'Monthly Awards + Overall Podium',
-              penalty: 'Bottom Penalty Pool',
-              zero_sum: 'Head-to-Head Balance / Bespoke Ruleset'
-            }
-          : {
-              weekly: 'รายสัปดาห์ (Weekly Winner)',
-              monthly: 'รายเดือน + อันดับรวม',
-              penalty: 'ค่าปรับบ๊วย + กองกลาง',
-              zero_sum: 'หักยอดหัวท้าย / กติกาเฉพาะกลุ่ม'
-            });
         setOpts('order-team-tier', isEn
-          ? { tier1: 'Up to 30 Teams', tier2: '31+ Teams (LINE Quote)' }
-          : { tier1: 'ไม่เกิน 30 ทีม', tier2: '31 ทีมขึ้นไป (ประเมินราคาทาง LINE)' });
+          ? { tier1: 'Up to 30 Teams (Standard Pass)', tier2: '31+ Teams / 50+ Community (LINE Quote)' }
+          : { tier1: 'ไม่เกิน 30 ทีม (แพ็กเกจ Standard)', tier2: '31 ทีมขึ้นไป / ลีกใหญ่ 50+ (ประเมินราคาทาง LINE)' });
 
-        setTxt('footer-note', copy.footer_note);
+        setTypo('footer-note', copy.footer_note);
+        setTxt('footer-link-features', isEn ? '6 Live Views' : '6 จอฟีเจอร์');
+        setTxt('footer-link-demos', isEn ? 'Live Demos' : 'ลีกตัวอย่าง');
+        setTxt('footer-link-pricing', isEn ? 'Pricing' : 'ราคา');
+        setTxt('footer-link-faq', isEn ? 'FAQ' : 'คำถามที่พบบ่อย');
         this.renderVisitorStat();
         this.updateOrderSummary();
       },
@@ -2487,7 +2664,7 @@
           return `
           <div class="bm-stat-cell">
             <div class="bm-stat-val tabular-nums">${this.escapeHtml(val)}</div>
-            <div class="bm-stat-lbl">${this.escapeHtml(st.label)}</div>
+            <div class="bm-stat-lbl">${this.formatTypoHtml(st.label)}</div>
           </div>
         `;
         }).join('');
@@ -2542,8 +2719,8 @@
                   <span class="bm-drama-tag">${this.escapeHtml(item.tag)}</span>
                   <span class="tabular-nums">${this.escapeHtml(item.time)}</span>
                 </span>
-                <span class="bm-drama-title" style="display:block;">${this.escapeHtml(item.title)}</span>
-                <span class="bm-drama-desc" style="display:block;">${this.escapeHtml(item.desc)}</span>
+                <span class="bm-drama-title" style="display:block;">${this.formatTypoHtml(item.title)}</span>
+                <span class="bm-drama-desc" style="display:block;">${this.formatTypoHtml(item.desc)}</span>
               </span>
             </button>
           `;
@@ -2573,13 +2750,28 @@
       },
 
       initReveal() {
-        const nodes = document.querySelectorAll('[data-reveal]');
+        const nodes = Array.from(document.querySelectorAll('[data-reveal]'));
         if (!nodes.length) return;
         const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (reduced || typeof IntersectionObserver === 'undefined') {
           nodes.forEach((el) => el.classList.add('is-in'));
           return;
         }
+        const revealVisible = () => {
+          let pending = 0;
+          nodes.forEach((el) => {
+            if (el.classList.contains('is-in')) return;
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight + 120) {
+              el.classList.add('is-in');
+            } else {
+              pending += 1;
+            }
+          });
+          if (pending === 0) {
+            window.removeEventListener('scroll', revealVisible);
+          }
+        };
         const observer = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
@@ -2587,15 +2779,10 @@
               observer.unobserve(entry.target);
             }
           });
-        }, { threshold: 0.06, rootMargin: '0px 0px -20px 0px' });
-        nodes.forEach((el) => {
-          const rect = el.getBoundingClientRect();
-          if (rect.top < window.innerHeight + 60) {
-            el.classList.add('is-in');
-          } else {
-            observer.observe(el);
-          }
-        });
+        }, { threshold: 0.04, rootMargin: '0px 0px 80px 0px' });
+        nodes.forEach((el) => observer.observe(el));
+        revealVisible();
+        window.addEventListener('scroll', revealVisible, { passive: true });
       },
 
       toggleFaq(idx) {
@@ -2621,11 +2808,11 @@
                 aria-controls="faq-panel-${idx}"
                 onclick="landingApp.toggleFaq(${idx})"
               >
-                <span>${this.escapeHtml(item.q)}</span>
+                <span>${this.formatTypoHtml(item.q)}</span>
                 <span class="bm-faq-icon">${plusSvg}</span>
               </button>
               <div id="faq-panel-${idx}" role="region" aria-labelledby="faq-btn-${idx}" class="bm-faq-panel" ${isOpen ? '' : 'hidden'}>
-                ${this.escapeHtml(item.a)}
+                ${this.formatTypoHtml(item.a)}
               </div>
             </div>
           `;
@@ -2665,8 +2852,8 @@
           badge.textContent = `League ${fakeLid} (${current.theme})`;
         }
         if (spec) spec.textContent = current.spec;
-        if (title) title.textContent = current.title;
-        if (desc) desc.textContent = current.desc;
+        if (title) title.innerHTML = this.formatTypoHtml(current.title);
+        if (desc) desc.innerHTML = this.formatTypoHtml(current.desc);
       },
 
       renderDemos(copy) {
@@ -2691,7 +2878,7 @@
                   <span class="bm-demo-badge">${this.escapeHtml(tag)}</span>
                   <span class="tabular-nums" style="font-size:0.84rem;color:var(--color-arena-ink-2);">${this.escapeHtml(teamTxt)}</span>
                 </span>
-                <p class="bm-demo-desc">${this.escapeHtml(desc)}</p>
+                <p class="bm-demo-desc">${this.formatTypoHtml(desc)}</p>
               </span>
               <span class="bm-demo-action">
                 <span>${this.escapeHtml(ctaText)}</span>
@@ -2780,9 +2967,9 @@
                 <span class="bm-plan-badge">${this.escapeHtml(p.badge)}</span>
               </div>
               <div class="bm-plan-price tabular-nums">${this.escapeHtml(p.price)} <span class="bm-plan-unit">${this.escapeHtml(unit)}</span></div>
-              <p class="bm-plan-desc">${this.escapeHtml(p.desc)}</p>
+              <p class="bm-plan-desc">${this.formatTypoHtml(p.desc)}</p>
               <ul class="bm-plan-list">
-                ${p.items.map((it) => `<li>${icon}<span>${this.escapeHtml(it)}</span></li>`).join('')}
+                ${p.items.map((it) => `<li>${icon}<span>${this.formatTypoHtml(it)}</span></li>`).join('')}
               </ul>
             </div>
             ${btnHtml}
@@ -2798,13 +2985,16 @@
         if (lidEl) {
           lidEl.addEventListener('input', () => {
             const raw = lidEl.value.trim();
-            const urlMatch = raw.match(/leagues\/(\d{1,12})/i);
+            const urlMatch = raw.match(/leagues\/([0-9]{1,12})/i);
+            const hashMatch = raw.match(/^#([0-9]{1,12})$/);
             if (urlMatch && urlMatch[1]) {
               lidEl.value = urlMatch[1];
+            } else if (hashMatch && hashMatch[1]) {
+              lidEl.value = hashMatch[1];
             }
           });
         }
-        ['order-league-id', 'order-league-name', 'order-plan', 'order-prize-model', 'order-team-tier'].forEach((id) => {
+        ['order-league-id', 'order-plan', 'order-prize-model', 'order-team-tier'].forEach((id) => {
           const el = document.getElementById(id);
           if (el) {
             el.addEventListener('input', () => this.updateOrderSummary());
@@ -2817,9 +3007,28 @@
         });
       },
 
-      updateOrderSummary() {
+      getOrderIdError(rawLid, forSubmit) {
+        const isEn = this.lang === 'en';
+        if (!rawLid) {
+          return forSubmit
+            ? (isEn ? 'Please enter a valid numeric FPL League ID' : 'กรุณากรอกรหัส League ID เป็นตัวเลข')
+            : '';
+        }
+        if (/\/entry\/[0-9]+/i.test(rawLid)) {
+          return isEn
+            ? 'That is a team URL (/entry/). Paste your mini-league URL (/leagues/…) or numeric ID.'
+            : 'ลิงก์นี้เป็นหน้าทีม (/entry/) กรุณาวางลิงก์หน้าลีก (/leagues/…) หรือกรอกเฉพาะตัวเลข';
+        }
+        if (!/^[0-9]+$/.test(rawLid)) {
+          return isEn
+            ? 'Please enter a numeric FPL League ID (e.g. 40700)'
+            : 'กรุณากรอกรหัส League ID เป็นตัวเลข (เช่น 40700)';
+        }
+        return '';
+      },
+
+      updateOrderSummary(forSubmit) {
         const lidEl = document.getElementById('order-league-id');
-        const nameEl = document.getElementById('order-league-name');
         const planEl = document.getElementById('order-plan');
         const modelEl = document.getElementById('order-prize-model');
         const tierEl = document.getElementById('order-team-tier');
@@ -2828,20 +3037,25 @@
         const boxEl = document.getElementById('order-summary-preview');
 
         const rawLid = lidEl ? lidEl.value.trim() : '';
-        const cleanLid = rawLid.replace(/[^0-9]/g, '');
+        const cleanLid = /^[0-9]+$/.test(rawLid) ? rawLid : rawLid.replace(/[^0-9]/g, '');
         if (errEl) {
-          const invalid = rawLid.length > 0 && cleanLid !== rawLid;
-          errEl.classList.toggle('hidden', !invalid);
+          const errMsg = this.getOrderIdError(rawLid, Boolean(forSubmit));
+          if (errMsg) {
+            errEl.textContent = errMsg;
+            errEl.classList.remove('hidden');
+          } else {
+            errEl.classList.add('hidden');
+          }
         }
 
         const plan = (planEl && planEl.value === 'custom') ? 'standard' : (planEl ? planEl.value : 'standard');
         if (planEl && planEl.value === 'custom') planEl.value = 'standard';
         const tier = tierEl ? tierEl.value : 'tier1';
-        const modelText = modelEl ? modelEl.options[modelEl.selectedIndex].text : 'Weekly';
-        const leagueName = nameEl && nameEl.value.trim() ? nameEl.value.trim() : '-';
+        const isEn = this.lang === 'en';
+        const modelRaw = modelEl ? modelEl.value.trim() : '';
+        const modelText = modelRaw || (isEn ? '(To discuss details on LINE)' : '(คุยรายละเอียดกติกาทาง LINE)');
         const pCfg = window.PRICING_CONFIG || {};
         const isUsd = this.currency === 'USD';
-        const isEn = this.lang === 'en';
 
         let priceStr = '';
         if (tier === 'tier2') {
@@ -2852,57 +3066,66 @@
         if (badgeEl) badgeEl.textContent = priceStr;
 
         const planLabel = 'Standard';
-        const tierLabel = tier === 'tier2' ? (isEn ? '31+ Teams' : '31 ทีมขึ้นไป') : (isEn ? 'Up to 30 Teams' : 'ไม่เกิน 30 ทีม');
-        const lidOut = cleanLid || (isEn ? '(Pending ID)' : '(รอระบุเลข ID)');
+        const tierLabel = tier === 'tier2' ? (isEn ? '31+ Teams / 50+ Community' : '31 ทีมขึ้นไป / ลีกใหญ่ 50+') : (isEn ? 'Up to 30 Teams' : 'ไม่เกิน 30 ทีม');
+        const lidOut = (/^[0-9]+$/.test(rawLid) ? rawLid : '') || cleanLid || (isEn ? '(Pending ID)' : '(รอระบุเลข ID)');
 
         if (boxEl) {
-          boxEl.textContent = isEn
+          const lines = isEn
             ? [
                 'FPLSaWaDiKa Setup Request',
                 'Official League ID: ' + lidOut,
-                'League Name: ' + leagueName,
                 'Plan: ' + planLabel,
                 'Size: ' + tierLabel,
-                'Prize Rule: ' + modelText,
-                'Estimated Rate: ' + priceStr
-              ].join('\n')
+                'Prize Rules & Amounts: ' + modelText,
+                'Starting Rate: ' + priceStr
+              ]
             : [
                 'แจ้งขอเปิดแดชบอร์ด FPLSaWaDiKa',
                 'รหัส League ID: ' + lidOut,
-                'ชื่อลีก: ' + leagueName,
                 'แพ็กเกจ: ' + planLabel,
                 'ขนาดลีก: ' + tierLabel,
-                'กติกาเงินรางวัล: ' + modelText,
-                'ราคาประมาณการ: ' + priceStr
-              ].join('\n');
+                'กติกาและเงินรางวัล: ' + modelText,
+                'ราคาเริ่มต้น: ' + priceStr
+              ];
+          boxEl.textContent = lines.join('\n');
         }
       },
 
       async copyOrderSlip() {
         const lidEl = document.getElementById('order-league-id');
-        const errEl = document.getElementById('order-league-id-error');
         const boxEl = document.getElementById('order-summary-preview');
         const fbEl = document.getElementById('order-copy-feedback');
         const isEn = this.lang === 'en';
 
         const lidVal = lidEl ? lidEl.value.trim() : '';
         if (!/^[0-9]+$/.test(lidVal)) {
-          if (errEl) {
-            errEl.textContent = isEn ? 'Please enter a valid numeric FPL League ID' : 'กรุณากรอกรหัส League ID เป็นตัวเลข';
-            errEl.classList.remove('hidden');
-          }
+          this.updateOrderSummary(true);
           if (lidEl) lidEl.focus();
           return;
         }
-        if (errEl) errEl.classList.add('hidden');
-        this.updateOrderSummary();
+        this.updateOrderSummary(false);
         const text = boxEl ? boxEl.textContent : '';
         try {
           await navigator.clipboard.writeText(text);
-          if (fbEl) fbEl.textContent = isEn ? 'Order slip copied. Paste in LINE chat to continue.' : 'คัดลอกข้อความสำเร็จแล้ว กดเปิดแชท LINE แล้ววางส่งได้เลย';
+          if (fbEl) fbEl.textContent = isEn ? 'Order slip copied ✓ Paste in LINE chat to send.' : 'คัดลอกข้อความแล้ว ✓ กดปุ่มเปิดแชท LINE แล้ววางส่งได้เลย';
         } catch (_) {
           if (fbEl) fbEl.textContent = isEn ? 'Please copy the summary text above and send via LINE.' : 'กรุณาคัดลอกข้อความในกล่องด้านบนเพื่อส่งทาง LINE';
         }
+      },
+
+      prepareLineOpen() {
+        const lidEl = document.getElementById('order-league-id');
+        const boxEl = document.getElementById('order-summary-preview');
+        const fbEl = document.getElementById('order-copy-feedback');
+        const isEn = this.lang === 'en';
+        const lidVal = lidEl ? lidEl.value.trim() : '';
+        if (!/^[0-9]+$/.test(lidVal) || !boxEl) return;
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(boxEl.textContent).catch(() => {});
+            if (fbEl) fbEl.textContent = isEn ? 'Slip copied automatically for LINE ✓' : 'คัดลอกสรุปรายการให้อัตโนมัติแล้ว พร้อมวางในแชท LINE ✓';
+          }
+        } catch (_) {}
       },
 
       isLocalOrigin() {
