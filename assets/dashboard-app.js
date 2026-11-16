@@ -1876,6 +1876,9 @@
                 this.selectedGW = this.resolveDefaultGW(loaded);
               }
               await this.ensureTier2GWChunk(this.selectedGW);
+              if (!isTier2) {
+                await this.ensureTier1GWSquads(this.selectedGW, initialLidStr);
+              }
               this.updateHeaderInfo();
               this.initLivePolling();
               this.renderAll();
@@ -1898,12 +1901,29 @@
               this.renderAll();
             }
           });
+        } else if (!this.hasTier1SquadsForGw(this.data, this.selectedGW)) {
+          this.ensureTier1GWSquads(this.selectedGW, initialLidStr).then(chunkLoaded => {
+            if (chunkLoaded && String(this.activeLeagueId) === initialLidStr) {
+              this.renderAll();
+            }
+          });
         }
         this.ensureSpecialFeatureData(this.activeLeagueId).then(loaded => {
           if (loaded) {
             this.renderAll();
           }
         });
+        if (typeof window !== 'undefined' && window.location && window.location.protocol !== 'file:') {
+          setTimeout(() => {
+            if (typeof this.ensureRadarData === 'function') {
+              this.ensureRadarData().then(loaded => {
+                if (loaded && this.activeTab === 'global-radar-view') {
+                  this.renderCurrentTab(true);
+                }
+              });
+            }
+          }, 1500);
+        }
 
         // Listen for browser Back/Forward navigation
         if (typeof window !== 'undefined' && window.addEventListener && !this._popstateBound) {
@@ -2010,7 +2030,7 @@
       initLivePolling() {
         if (typeof window === 'undefined' || typeof fetch === 'undefined') return;
 
-        const pollIntervalMs = 15000; // 15-second real-time Cloudflare Edge polling
+        const pollIntervalMs = 20000; // 20-second real-time Cloudflare Edge polling (protects daily quota as scale grows)
         const checkAndPoll = () => {
           if (!this.isLiveWindowActive()) {
             if (this.livePollInterval) {
@@ -2056,7 +2076,7 @@
         if (!force && gwData.is_finished && gwData.data_checked) return;
 
         this._isFetchingLive = true;
-        this._nextLivePollAt = Date.now() + 15000;
+        this._nextLivePollAt = Date.now() + 20000;
 
         const forceQuery = force ? '&force=1' : '';
         const endpoints = this._preferredWorkerEndpoint
@@ -3425,6 +3445,138 @@
         return this._tier2ChunkPromises[inflightKey];
       }
 
+      getLeagueSquadChunkUrl(leagueId, gw) {
+        const lidStr = String(leagueId);
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          const configuredIds = Object.keys(this.configs || {});
+          const currentInSubdir = configuredIds.some(cid => window.location.pathname.includes('/' + cid));
+          const prefix = currentInSubdir ? '../' : './';
+          return `${prefix}data/leagues/${lidStr}/gw${gw}_squads.json`;
+        }
+        const pathname = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '';
+        const isGitHubPages = pathname.includes('/fpl-mini');
+        const basePath = isGitHubPages ? '/fpl-mini/' : '/';
+        return `${basePath}data/leagues/${lidStr}/gw${gw}_squads.json`;
+      }
+
+      getRadarDataUrl() {
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          const configuredIds = Object.keys(this.configs || {});
+          const currentInSubdir = configuredIds.some(cid => window.location.pathname.includes('/' + cid));
+          const prefix = currentInSubdir ? '../' : './';
+          return `${prefix}data/radar.json`;
+        }
+        const pathname = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '';
+        const isGitHubPages = pathname.includes('/fpl-mini');
+        const basePath = isGitHubPages ? '/fpl-mini/' : '/';
+        return `${basePath}data/radar.json`;
+      }
+
+      hasTier1SquadsForGw(leagueObj, gwNum) {
+        if (!leagueObj || !leagueObj.squads) return false;
+        const n = Number(gwNum);
+        if (Array.isArray(leagueObj._loaded_squad_gws) && leagueObj._loaded_squad_gws.includes(n)) {
+          return true;
+        }
+        const suffix = `_${n}`;
+        return Object.keys(leagueObj.squads).some(k => k.endsWith(suffix));
+      }
+
+      async ensureTier1GWSquads(gw = this.selectedGW, leagueId = this.activeLeagueId, retryCount = 1) {
+        const lidStr = String(leagueId);
+        if (!this.multiData || !this.multiData.leagues) return false;
+        const targetLeague = this.multiData.leagues[lidStr] || (lidStr === String(this.activeLeagueId) ? this.data : null);
+        if (!targetLeague) return false;
+        const isTier2 = (targetLeague.tier === 2) || (this.configs && this.configs[lidStr] && this.configs[lidStr].tier === 2);
+        if (isTier2) return false;
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          return false;
+        }
+
+        const gwNum = Number(gw);
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || gwNum;
+        if (!gwNum || gwNum < 1 || gwNum > maxGW) return false;
+        if (this.hasTier1SquadsForGw(targetLeague, gwNum)) return false;
+
+        const inflightKey = `${lidStr}_${gwNum}`;
+        if (!this._tier1SquadChunkPromises) this._tier1SquadChunkPromises = {};
+        if (!this._tier1SquadChunkPromises[inflightKey]) {
+          const url = this.getLeagueSquadChunkUrl(lidStr, gwNum);
+          this._tier1SquadChunkPromises[inflightKey] = this._fetchJsonWithRetry(url, retryCount, 12000)
+            .then(chunkJson => {
+              if (chunkJson && chunkJson.squads && typeof chunkJson.squads === 'object') {
+                if (!targetLeague.squads) targetLeague.squads = {};
+                Object.assign(targetLeague.squads, chunkJson.squads);
+                if (!Array.isArray(targetLeague._loaded_squad_gws)) targetLeague._loaded_squad_gws = [];
+                if (!targetLeague._loaded_squad_gws.includes(gwNum)) targetLeague._loaded_squad_gws.push(gwNum);
+                if (lidStr === String(this.activeLeagueId) && this.data && this.data !== targetLeague) {
+                  if (!this.data.squads) this.data.squads = {};
+                  Object.assign(this.data.squads, chunkJson.squads);
+                }
+                this.invalidateRenderCache();
+                return true;
+              }
+              return false;
+            })
+            .finally(() => {
+              if (this._tier1SquadChunkPromises) delete this._tier1SquadChunkPromises[inflightKey];
+            });
+        }
+        return this._tier1SquadChunkPromises[inflightKey];
+      }
+
+      async ensureRadarData(retryCount = 1) {
+        if (!this.multiData || !this.multiData.leagues) return false;
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          return false;
+        }
+        const configs = this.configs || {};
+        const needsRadar = Object.entries(this.multiData.leagues).some(([lid, l]) => {
+          if (!l || l.tier === 2 || (configs[lid] && configs[lid].tier === 2)) return false;
+          return !Array.isArray(l.teams) || l.teams.length === 0 || !l.gameweeks || Object.keys(l.gameweeks).length === 0;
+        });
+        if (!needsRadar) return false;
+
+        if (!this._radarFetchPromise) {
+          const url = this.getRadarDataUrl();
+          this._radarFetchPromise = this._fetchJsonWithRetry(url, retryCount, 12000)
+            .then(radarJson => {
+              if (radarJson && radarJson.leagues) {
+                let anyUpdated = false;
+                Object.entries(radarJson.leagues).forEach(([lid, rl]) => {
+                  const existing = this.multiData.leagues[lid];
+                  if (!existing) {
+                    this.multiData.leagues[lid] = rl;
+                    anyUpdated = true;
+                    return;
+                  }
+                  const hasOwnFullData = Boolean(
+                    (Array.isArray(existing.teams) && existing.teams.length > 0 && existing.gameweeks && Object.keys(existing.gameweeks).length > 0) ||
+                    (existing.squads && Object.keys(existing.squads).length > 0)
+                  );
+                  if (!hasOwnFullData) {
+                    existing.teams = rl.teams || [];
+                    existing.gameweeks = rl.gameweeks || {};
+                    if (rl.member_count !== undefined) existing.member_count = rl.member_count;
+                    anyUpdated = true;
+                  }
+                });
+                if (anyUpdated) {
+                  this._radarTeamList = null;
+                  this._teamTierCache = {};
+                  this.invalidateRenderCache();
+                }
+                return anyUpdated;
+              }
+              return false;
+            })
+            .finally(() => {
+              this._radarFetchPromise = null;
+            });
+        }
+        return this._radarFetchPromise;
+      }
+
       async fetchLeagueData(leagueId, retryCount = 2) {
         const lidStr = String(leagueId);
         if (!this.multiData || !this.multiData.leagues || !this.multiData.leagues[lidStr]) return null;
@@ -3532,6 +3684,9 @@
         if (!this.config.features) this.config.features = {};
         if (isTier2) {
           await this.ensureTier2GWChunk(this.selectedGW);
+          if (this._switchingTargetId !== lidStr) return;
+        } else {
+          await this.ensureTier1GWSquads(this.selectedGW, lidStr);
           if (this._switchingTargetId !== lidStr) return;
         }
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
@@ -3927,6 +4082,13 @@
         this.updateHighlightsTabBlink();
         if (!skipRender) {
           this.renderCurrentTab(false);
+        }
+        if (this.activeTab === 'global-radar-view' && typeof this.ensureRadarData === 'function') {
+          this.ensureRadarData().then(loaded => {
+            if (loaded && this.activeTab === 'global-radar-view') {
+              this.renderCurrentTab(true);
+            }
+          });
         }
       }
 
@@ -6504,8 +6666,9 @@ selectShi62GW(gwName) {
           } catch (e) {}
         }
 
-        // On-Demand fetch for Tier-2 chunked historical gameweek
+        // On-Demand fetch for Tier-2 chunked historical gameweek & Tier-1 historical squads chunk
         await this.ensureTier2GWChunk(this.selectedGW);
+        await this.ensureTier1GWSquads(this.selectedGW);
 
         this.renderGWSelector();
         this.updateHighlightsTabBlink();
@@ -13292,6 +13455,20 @@ selectShi62GW(gwName) {
         const leaguesObj = this.multiData.leagues || {};
         const leaguesConfig = this.configs || {};
 
+        const needsRadarLoad = Object.entries(leaguesObj).some(([lid, l]) => {
+          if (!l || l.tier === 2 || (leaguesConfig[lid] && leaguesConfig[lid].tier === 2)) return false;
+          return !Array.isArray(l.teams) || l.teams.length === 0 || !l.gameweeks || Object.keys(l.gameweeks).length === 0;
+        });
+        if (needsRadarLoad && typeof window !== 'undefined' && window.location && window.location.protocol !== 'file:') {
+          tableBody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-slate-400 dark:text-slate-500 text-xs animate-pulse">${isEn ? 'Loading cross-league radar telemetry...' : 'กำลังโหลดข้อมูลเรดาร์ฟอร์มทุกลีก...'}</td></tr>`;
+          this.ensureRadarData().then(loaded => {
+            if (loaded && this.activeTab === 'global-radar-view') {
+              this.renderGlobalRadarView();
+            }
+          });
+          return;
+        }
+
         // 1. Compute League Benchmarks
         const leagueOrder = (this.multiData && this.multiData.league_order) || Object.keys(leaguesObj);
         const leagueBenchmarks = [];
@@ -17216,7 +17393,9 @@ selectShi62GW(gwName) {
           }
 
           const isTier2League = Boolean((tgtLeagueObj && tgtLeagueObj.tier === 2) || (this.configs && this.configs[leagueToFetch] && this.configs[leagueToFetch].tier === 2));
-          if (!hasSquads && !isTier2League) {
+          const targetGwNum = Number(this.selectedGW) || Number(this.multiData && this.multiData.max_gw) || 1;
+          const isGwSquadsLoaded = isTier2League ? true : this.hasTier1SquadsForGw(tgtLeagueObj, targetGwNum);
+          if ((!hasSquads || !isGwSquadsLoaded) && !isTier2League) {
             if (formationEl) formationEl.innerText = '...';
             if (gkpLine) gkpLine.innerHTML = '';
             if (midLine) midLine.innerHTML = '';
@@ -17232,9 +17411,18 @@ selectShi62GW(gwName) {
               modal.classList.remove('hidden');
               this.lockBodyScroll();
             }
-            this.fetchLeagueData(leagueToFetch, 2).then(fullLeagueData => {
+            const loadPromise = !hasSquads
+              ? this.fetchLeagueData(leagueToFetch, 2).then(async fullLeagueData => {
+                  if (fullLeagueData && !this.hasTier1SquadsForGw(fullLeagueData, targetGwNum)) {
+                    await this.ensureTier1GWSquads(targetGwNum, leagueToFetch);
+                  }
+                  return fullLeagueData;
+                })
+              : this.ensureTier1GWSquads(targetGwNum, leagueToFetch).then(() => tgtLeagueObj);
+
+            loadPromise.then(fullLeagueData => {
               if (this.currentModalEntryId === entryIdNum) {
-                if (fullLeagueData && fullLeagueData.squads) {
+                if (fullLeagueData && fullLeagueData.squads && this.hasTier1SquadsForGw(fullLeagueData, targetGwNum)) {
                   this.openTeamModal(entryIdNum);
                 } else {
                   if (formationEl) formationEl.innerText = '-';

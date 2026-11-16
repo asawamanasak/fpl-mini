@@ -686,6 +686,16 @@ def sync_once(args):
     global_entry_cache = {}
     global_history_cache = {}
     picks_lock = threading.Lock()
+
+    HEARTBEAT_INTERVAL_SECONDS = 6 * 3600
+    is_heartbeat_window = True
+    if cached_data and cached_data.get("last_sync_iso"):
+        try:
+            _last_sync_dt = datetime.strptime(cached_data["last_sync_iso"], '%Y-%m-%d %H:%M:%S').replace(tzinfo=tz_th)
+            is_heartbeat_window = (now_th - _last_sync_dt).total_seconds() >= HEARTBEAT_INTERVAL_SECONDS
+        except Exception:
+            is_heartbeat_window = True
+
     summary_stats = []
 
     for lid_str, lcfg in leagues_config.items():
@@ -1447,21 +1457,34 @@ def sync_once(args):
             # Enrich teams_list with official Overall Rank
             if league_tier == 1:
                 latest_gw_res = {r["entry_id"]: r.get("overall_rank") for r in gameweeks_dict.get(str(max_gw), {}).get("results", []) if r.get("overall_rank")}
-                t1_eids = [t["entry_id"] for t in teams_list]
-                to_fetch_entry = [eid for eid in t1_eids if eid not in global_entry_cache]
-                if to_fetch_entry:
-                    def _fetch_entry_summary(eid_val):
-                        try:
-                            e_resp = fetch(f'https://fantasy.premierleague.com/api/entry/{eid_val}/')
-                            return (eid_val, e_resp)
-                        except Exception as e_err:
-                            logging.debug("Entry summary fetch skipped for %s: %s", eid_val, e_err)
-                            return (eid_val, None)
-                    with ThreadPoolExecutor(max_workers=5) as e_exec:
-                        for eid_val, e_resp in e_exec.map(_fetch_entry_summary, to_fetch_entry):
-                            if isinstance(e_resp, dict):
-                                with picks_lock:
-                                    global_entry_cache[eid_val] = e_resp
+                max_gw_finished = gw_status_map.get(max_gw, False)
+                cached_max_gw_fin = bool(cached_gw_data.get(str(max_gw), {}).get("is_finished")) if cached_gw_data else False
+                gw_just_settled = bool(max_gw_finished and not cached_max_gw_fin)
+                any_missing_ov = any(not (cached_teams_map.get(t["entry_id"], {}).get("overall_rank")) for t in teams_list)
+                # Only query /entry/{eid}/ when GW is settled & on heartbeat/settlement/force/missing, avoiding 146-500 calls on every live poll loop
+                should_refresh_entry_summary = bool(
+                    args.force
+                    or not cached_data
+                    or any_missing_ov
+                    or (max_gw_finished and (gw_just_settled or is_heartbeat_window))
+                )
+
+                if should_refresh_entry_summary:
+                    t1_eids = [t["entry_id"] for t in teams_list]
+                    to_fetch_entry = [eid for eid in t1_eids if eid not in global_entry_cache]
+                    if to_fetch_entry:
+                        def _fetch_entry_summary(eid_val):
+                            try:
+                                e_resp = fetch(f'https://fantasy.premierleague.com/api/entry/{eid_val}/')
+                                return (eid_val, e_resp)
+                            except Exception as e_err:
+                                logging.debug("Entry summary fetch skipped for %s: %s", eid_val, e_err)
+                                return (eid_val, None)
+                        with ThreadPoolExecutor(max_workers=5) as e_exec:
+                            for eid_val, e_resp in e_exec.map(_fetch_entry_summary, to_fetch_entry):
+                                if isinstance(e_resp, dict):
+                                    with picks_lock:
+                                        global_entry_cache[eid_val] = e_resp
 
                 for t in teams_list:
                     eid = t["entry_id"]
@@ -1470,6 +1493,8 @@ def sync_once(args):
                     sum_ov = e_summary.get("summary_overall_rank") if isinstance(e_summary, dict) else None
                     if sum_ov and int(sum_ov) > 0:
                         t["overall_rank"] = int(sum_ov)
+                    elif cached_ov and max_gw_finished:
+                        t["overall_rank"] = cached_ov
                     elif eid in latest_gw_res:
                         t["overall_rank"] = latest_gw_res[eid]
                     elif cached_ov:

@@ -5101,6 +5101,9 @@ __STRUCTURED_DATA_JSON__
                 this.selectedGW = this.resolveDefaultGW(loaded);
               }
               await this.ensureTier2GWChunk(this.selectedGW);
+              if (!isTier2) {
+                await this.ensureTier1GWSquads(this.selectedGW, initialLidStr);
+              }
               this.updateHeaderInfo();
               this.initLivePolling();
               this.renderAll();
@@ -5123,12 +5126,29 @@ __STRUCTURED_DATA_JSON__
               this.renderAll();
             }
           });
+        } else if (!this.hasTier1SquadsForGw(this.data, this.selectedGW)) {
+          this.ensureTier1GWSquads(this.selectedGW, initialLidStr).then(chunkLoaded => {
+            if (chunkLoaded && String(this.activeLeagueId) === initialLidStr) {
+              this.renderAll();
+            }
+          });
         }
         this.ensureSpecialFeatureData(this.activeLeagueId).then(loaded => {
           if (loaded) {
             this.renderAll();
           }
         });
+        if (typeof window !== 'undefined' && window.location && window.location.protocol !== 'file:') {
+          setTimeout(() => {
+            if (typeof this.ensureRadarData === 'function') {
+              this.ensureRadarData().then(loaded => {
+                if (loaded && this.activeTab === 'global-radar-view') {
+                  this.renderCurrentTab(true);
+                }
+              });
+            }
+          }, 1500);
+        }
 
         // Listen for browser Back/Forward navigation
         if (typeof window !== 'undefined' && window.addEventListener && !this._popstateBound) {
@@ -5235,7 +5255,7 @@ __STRUCTURED_DATA_JSON__
       initLivePolling() {
         if (typeof window === 'undefined' || typeof fetch === 'undefined') return;
 
-        const pollIntervalMs = 15000; // 15-second real-time Cloudflare Edge polling
+        const pollIntervalMs = 20000; // 20-second real-time Cloudflare Edge polling (protects daily quota as scale grows)
         const checkAndPoll = () => {
           if (!this.isLiveWindowActive()) {
             if (this.livePollInterval) {
@@ -5281,7 +5301,7 @@ __STRUCTURED_DATA_JSON__
         if (!force && gwData.is_finished && gwData.data_checked) return;
 
         this._isFetchingLive = true;
-        this._nextLivePollAt = Date.now() + 15000;
+        this._nextLivePollAt = Date.now() + 20000;
 
         const forceQuery = force ? '&force=1' : '';
         const endpoints = this._preferredWorkerEndpoint
@@ -6650,6 +6670,138 @@ __STRUCTURED_DATA_JSON__
         return this._tier2ChunkPromises[inflightKey];
       }
 
+      getLeagueSquadChunkUrl(leagueId, gw) {
+        const lidStr = String(leagueId);
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          const configuredIds = Object.keys(this.configs || {});
+          const currentInSubdir = configuredIds.some(cid => window.location.pathname.includes('/' + cid));
+          const prefix = currentInSubdir ? '../' : './';
+          return `${prefix}data/leagues/${lidStr}/gw${gw}_squads.json`;
+        }
+        const pathname = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '';
+        const isGitHubPages = pathname.includes('/fpl-mini');
+        const basePath = isGitHubPages ? '/fpl-mini/' : '/';
+        return `${basePath}data/leagues/${lidStr}/gw${gw}_squads.json`;
+      }
+
+      getRadarDataUrl() {
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          const configuredIds = Object.keys(this.configs || {});
+          const currentInSubdir = configuredIds.some(cid => window.location.pathname.includes('/' + cid));
+          const prefix = currentInSubdir ? '../' : './';
+          return `${prefix}data/radar.json`;
+        }
+        const pathname = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '';
+        const isGitHubPages = pathname.includes('/fpl-mini');
+        const basePath = isGitHubPages ? '/fpl-mini/' : '/';
+        return `${basePath}data/radar.json`;
+      }
+
+      hasTier1SquadsForGw(leagueObj, gwNum) {
+        if (!leagueObj || !leagueObj.squads) return false;
+        const n = Number(gwNum);
+        if (Array.isArray(leagueObj._loaded_squad_gws) && leagueObj._loaded_squad_gws.includes(n)) {
+          return true;
+        }
+        const suffix = `_${n}`;
+        return Object.keys(leagueObj.squads).some(k => k.endsWith(suffix));
+      }
+
+      async ensureTier1GWSquads(gw = this.selectedGW, leagueId = this.activeLeagueId, retryCount = 1) {
+        const lidStr = String(leagueId);
+        if (!this.multiData || !this.multiData.leagues) return false;
+        const targetLeague = this.multiData.leagues[lidStr] || (lidStr === String(this.activeLeagueId) ? this.data : null);
+        if (!targetLeague) return false;
+        const isTier2 = (targetLeague.tier === 2) || (this.configs && this.configs[lidStr] && this.configs[lidStr].tier === 2);
+        if (isTier2) return false;
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          return false;
+        }
+
+        const gwNum = Number(gw);
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || gwNum;
+        if (!gwNum || gwNum < 1 || gwNum > maxGW) return false;
+        if (this.hasTier1SquadsForGw(targetLeague, gwNum)) return false;
+
+        const inflightKey = `${lidStr}_${gwNum}`;
+        if (!this._tier1SquadChunkPromises) this._tier1SquadChunkPromises = {};
+        if (!this._tier1SquadChunkPromises[inflightKey]) {
+          const url = this.getLeagueSquadChunkUrl(lidStr, gwNum);
+          this._tier1SquadChunkPromises[inflightKey] = this._fetchJsonWithRetry(url, retryCount, 12000)
+            .then(chunkJson => {
+              if (chunkJson && chunkJson.squads && typeof chunkJson.squads === 'object') {
+                if (!targetLeague.squads) targetLeague.squads = {};
+                Object.assign(targetLeague.squads, chunkJson.squads);
+                if (!Array.isArray(targetLeague._loaded_squad_gws)) targetLeague._loaded_squad_gws = [];
+                if (!targetLeague._loaded_squad_gws.includes(gwNum)) targetLeague._loaded_squad_gws.push(gwNum);
+                if (lidStr === String(this.activeLeagueId) && this.data && this.data !== targetLeague) {
+                  if (!this.data.squads) this.data.squads = {};
+                  Object.assign(this.data.squads, chunkJson.squads);
+                }
+                this.invalidateRenderCache();
+                return true;
+              }
+              return false;
+            })
+            .finally(() => {
+              if (this._tier1SquadChunkPromises) delete this._tier1SquadChunkPromises[inflightKey];
+            });
+        }
+        return this._tier1SquadChunkPromises[inflightKey];
+      }
+
+      async ensureRadarData(retryCount = 1) {
+        if (!this.multiData || !this.multiData.leagues) return false;
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          return false;
+        }
+        const configs = this.configs || {};
+        const needsRadar = Object.entries(this.multiData.leagues).some(([lid, l]) => {
+          if (!l || l.tier === 2 || (configs[lid] && configs[lid].tier === 2)) return false;
+          return !Array.isArray(l.teams) || l.teams.length === 0 || !l.gameweeks || Object.keys(l.gameweeks).length === 0;
+        });
+        if (!needsRadar) return false;
+
+        if (!this._radarFetchPromise) {
+          const url = this.getRadarDataUrl();
+          this._radarFetchPromise = this._fetchJsonWithRetry(url, retryCount, 12000)
+            .then(radarJson => {
+              if (radarJson && radarJson.leagues) {
+                let anyUpdated = false;
+                Object.entries(radarJson.leagues).forEach(([lid, rl]) => {
+                  const existing = this.multiData.leagues[lid];
+                  if (!existing) {
+                    this.multiData.leagues[lid] = rl;
+                    anyUpdated = true;
+                    return;
+                  }
+                  const hasOwnFullData = Boolean(
+                    (Array.isArray(existing.teams) && existing.teams.length > 0 && existing.gameweeks && Object.keys(existing.gameweeks).length > 0) ||
+                    (existing.squads && Object.keys(existing.squads).length > 0)
+                  );
+                  if (!hasOwnFullData) {
+                    existing.teams = rl.teams || [];
+                    existing.gameweeks = rl.gameweeks || {};
+                    if (rl.member_count !== undefined) existing.member_count = rl.member_count;
+                    anyUpdated = true;
+                  }
+                });
+                if (anyUpdated) {
+                  this._radarTeamList = null;
+                  this._teamTierCache = {};
+                  this.invalidateRenderCache();
+                }
+                return anyUpdated;
+              }
+              return false;
+            })
+            .finally(() => {
+              this._radarFetchPromise = null;
+            });
+        }
+        return this._radarFetchPromise;
+      }
+
       async fetchLeagueData(leagueId, retryCount = 2) {
         const lidStr = String(leagueId);
         if (!this.multiData || !this.multiData.leagues || !this.multiData.leagues[lidStr]) return null;
@@ -6757,6 +6909,9 @@ __STRUCTURED_DATA_JSON__
         if (!this.config.features) this.config.features = {};
         if (isTier2) {
           await this.ensureTier2GWChunk(this.selectedGW);
+          if (this._switchingTargetId !== lidStr) return;
+        } else {
+          await this.ensureTier1GWSquads(this.selectedGW, lidStr);
           if (this._switchingTargetId !== lidStr) return;
         }
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
@@ -7152,6 +7307,13 @@ __STRUCTURED_DATA_JSON__
         this.updateHighlightsTabBlink();
         if (!skipRender) {
           this.renderCurrentTab(false);
+        }
+        if (this.activeTab === 'global-radar-view' && typeof this.ensureRadarData === 'function') {
+          this.ensureRadarData().then(loaded => {
+            if (loaded && this.activeTab === 'global-radar-view') {
+              this.renderCurrentTab(true);
+            }
+          });
         }
       }
 
@@ -9729,8 +9891,9 @@ selectShi62GW(gwName) {
           } catch (e) {}
         }
 
-        // On-Demand fetch for Tier-2 chunked historical gameweek
+        // On-Demand fetch for Tier-2 chunked historical gameweek & Tier-1 historical squads chunk
         await this.ensureTier2GWChunk(this.selectedGW);
+        await this.ensureTier1GWSquads(this.selectedGW);
 
         this.renderGWSelector();
         this.updateHighlightsTabBlink();
@@ -16517,6 +16680,20 @@ selectShi62GW(gwName) {
         const leaguesObj = this.multiData.leagues || {};
         const leaguesConfig = this.configs || {};
 
+        const needsRadarLoad = Object.entries(leaguesObj).some(([lid, l]) => {
+          if (!l || l.tier === 2 || (leaguesConfig[lid] && leaguesConfig[lid].tier === 2)) return false;
+          return !Array.isArray(l.teams) || l.teams.length === 0 || !l.gameweeks || Object.keys(l.gameweeks).length === 0;
+        });
+        if (needsRadarLoad && typeof window !== 'undefined' && window.location && window.location.protocol !== 'file:') {
+          tableBody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-slate-400 dark:text-slate-500 text-xs animate-pulse">${isEn ? 'Loading cross-league radar telemetry...' : 'กำลังโหลดข้อมูลเรดาร์ฟอร์มทุกลีก...'}</td></tr>`;
+          this.ensureRadarData().then(loaded => {
+            if (loaded && this.activeTab === 'global-radar-view') {
+              this.renderGlobalRadarView();
+            }
+          });
+          return;
+        }
+
         // 1. Compute League Benchmarks
         const leagueOrder = (this.multiData && this.multiData.league_order) || Object.keys(leaguesObj);
         const leagueBenchmarks = [];
@@ -20081,7 +20258,9 @@ selectShi62GW(gwName) {
           }
 
           const isTier2League = Boolean((tgtLeagueObj && tgtLeagueObj.tier === 2) || (this.configs && this.configs[leagueToFetch] && this.configs[leagueToFetch].tier === 2));
-          if (!hasSquads && !isTier2League) {
+          const targetGwNum = Number(this.selectedGW) || Number(this.multiData && this.multiData.max_gw) || 1;
+          const isGwSquadsLoaded = isTier2League ? true : this.hasTier1SquadsForGw(tgtLeagueObj, targetGwNum);
+          if ((!hasSquads || !isGwSquadsLoaded) && !isTier2League) {
             if (formationEl) formationEl.innerText = '...';
             if (gkpLine) gkpLine.innerHTML = '';
             if (midLine) midLine.innerHTML = '';
@@ -20097,9 +20276,18 @@ selectShi62GW(gwName) {
               modal.classList.remove('hidden');
               this.lockBodyScroll();
             }
-            this.fetchLeagueData(leagueToFetch, 2).then(fullLeagueData => {
+            const loadPromise = !hasSquads
+              ? this.fetchLeagueData(leagueToFetch, 2).then(async fullLeagueData => {
+                  if (fullLeagueData && !this.hasTier1SquadsForGw(fullLeagueData, targetGwNum)) {
+                    await this.ensureTier1GWSquads(targetGwNum, leagueToFetch);
+                  }
+                  return fullLeagueData;
+                })
+              : this.ensureTier1GWSquads(targetGwNum, leagueToFetch).then(() => tgtLeagueObj);
+
+            loadPromise.then(fullLeagueData => {
               if (this.currentModalEntryId === entryIdNum) {
-                if (fullLeagueData && fullLeagueData.squads) {
+                if (fullLeagueData && fullLeagueData.squads && this.hasTier1SquadsForGw(fullLeagueData, targetGwNum)) {
                   this.openTeamModal(entryIdNum);
                 } else {
                   if (formationEl) formationEl.innerText = '-';
@@ -22373,20 +22561,30 @@ def main():
             "gameweeks": l_obj.get("gameweeks", {}),
             "squads": pruned_squads
         }
-    # Decoupled Data Architecture: Export pure JSON per league to data/leagues/{lid}.json
-    data_dir = os.path.join(base_dir, 'data', 'leagues')
+    # Decoupled Data Architecture:
+    # 1) Keep only recent 2 GWs of squads inline in data/leagues/{lid}.json & production HTMLs
+    # 2) Export per-GW Tier-1 historical squad chunks to data/leagues/{lid}/gw{gw}_squads.json
+    # 3) Export decoupled data/radar.json for Cross-League Global Radar tab
+    data_root_dir = os.path.join(base_dir, 'data')
+    data_dir = os.path.join(data_root_dir, 'leagues')
     os.makedirs(data_dir, exist_ok=True)
     active_lids = set(str(k) for k in leagues_config.keys())
-    for lid, l_dict in pruned_data["leagues"].items():
-        league_file = os.path.join(data_dir, f"{lid}.json")
-        with open(league_file, 'w', encoding='utf-8') as f:
-            json.dump(l_dict, f, ensure_ascii=False, separators=(',', ':'))
+    max_gw_int = int(pruned_data.get("max_gw") or 1)
+    recent_squad_gws = set(range(max(1, max_gw_int - 1), max_gw_int + 1))
 
-        # Tier-2 Chunked Export: data/leagues/{lid}/gw{gw}.json for on-demand loading
+    radar_payload = {
+        "max_gw": pruned_data.get("max_gw"),
+        "leagues": {}
+    }
+
+    slim_leagues = {}
+    for lid, l_dict in pruned_data["leagues"].items():
         is_tier2 = (l_dict.get("tier") == 2) or (leagues_config.get(str(lid), {}).get("tier") == 2)
+        lid_chunks_dir = os.path.join(data_dir, str(lid))
+        os.makedirs(lid_chunks_dir, exist_ok=True)
+
         if is_tier2:
-            lid_chunks_dir = os.path.join(data_dir, str(lid))
-            os.makedirs(lid_chunks_dir, exist_ok=True)
+            slim_leagues[lid] = l_dict
             for gw_k, gw_v in l_dict.get("gameweeks", {}).items():
                 gw_res = gw_v.get("results", [])
                 if gw_res:
@@ -22399,18 +22597,88 @@ def main():
                             "is_started": gw_v.get("is_started", False),
                             "results": gw_res
                         }, gf, ensure_ascii=False, separators=(',', ':'))
+        else:
+            all_squads = l_dict.get("squads", {})
+            squads_by_gw = {}
+            recent_squads = {}
+            for s_key, s_val in all_squads.items():
+                try:
+                    gw_num = int(str(s_key).rsplit('_', 1)[-1])
+                except (ValueError, IndexError):
+                    recent_squads[s_key] = s_val
+                    continue
+                squads_by_gw.setdefault(gw_num, {})[s_key] = s_val
+                if gw_num in recent_squad_gws:
+                    recent_squads[s_key] = s_val
 
-    # Auto-cleanup retired league JSON files from previous seasons
+            for gw_num in range(1, max_gw_int + 1):
+                gw_sq = squads_by_gw.get(gw_num, {})
+                sq_file = os.path.join(lid_chunks_dir, f"gw{gw_num}_squads.json")
+                with open(sq_file, 'w', encoding='utf-8') as sf:
+                    json.dump({
+                        "league_id": lid,
+                        "gw": gw_num,
+                        "squads": gw_sq
+                    }, sf, ensure_ascii=False, separators=(',', ':'))
+
+            slim_league_dict = dict(l_dict)
+            slim_league_dict["squads"] = recent_squads
+            slim_league_dict["_loaded_squad_gws"] = sorted(recent_squad_gws)
+            slim_leagues[lid] = slim_league_dict
+
+            light_gws = {}
+            for gw_k, gw_v in l_dict.get("gameweeks", {}).items():
+                if isinstance(gw_v, dict):
+                    light_gws[gw_k] = {
+                        "is_finished": gw_v.get("is_finished", False),
+                        "is_started": gw_v.get("is_started", False),
+                        "results": [
+                            {
+                                "entry_id": r.get("entry_id"),
+                                "points": r.get("points", 0),
+                                "net_points": r.get("net_points", 0),
+                                "hits": r.get("hits", 0),
+                                "bench_points": r.get("bench_points", 0)
+                            }
+                            for r in gw_v.get("results", [])
+                        ]
+                    }
+            radar_payload["leagues"][lid] = {
+                "id": l_dict["id"],
+                "name": l_dict["name"],
+                "season": l_dict["season"],
+                "tier": l_dict.get("tier", 1),
+                "member_count": len(l_dict.get("teams", [])),
+                "teams": l_dict.get("teams", []),
+                "gameweeks": light_gws,
+                "squads": {}
+            }
+
+        league_file = os.path.join(data_dir, f"{lid}.json")
+        with open(league_file, 'w', encoding='utf-8') as f:
+            json.dump(slim_leagues[lid], f, ensure_ascii=False, separators=(',', ':'))
+
+    with open(os.path.join(data_root_dir, 'radar.json'), 'w', encoding='utf-8') as rf:
+        json.dump(radar_payload, rf, ensure_ascii=False, separators=(',', ':'))
+
+    # Auto-cleanup retired league JSON files and chunk directories from previous seasons
     for fname in os.listdir(data_dir):
+        fpath = os.path.join(data_dir, fname)
         if fname.endswith('.json'):
             lid_stem = fname[:-5]
             if lid_stem not in active_lids:
                 try:
-                    os.remove(os.path.join(data_dir, fname))
+                    os.remove(fpath)
                 except OSError:
                     pass
+        elif fname.isdigit() and os.path.isdir(fpath) and fname not in active_lids:
+            try:
+                import shutil
+                shutil.rmtree(fpath)
+            except OSError:
+                pass
 
-    def get_pruned_data_for_target(target_lid):
+    def get_pruned_data_for_target(target_lid, inline_full=False):
         page_pruned = {
             "last_sync": pruned_data["last_sync"],
             "last_sync_iso": pruned_data["last_sync_iso"],
@@ -22422,7 +22690,8 @@ def main():
             "events_deadlines": pruned_data["events_deadlines"],
             "leagues": {}
         }
-        for lid, l_dict in pruned_data["leagues"].items():
+        source_leagues = pruned_data["leagues"] if inline_full else slim_leagues
+        for lid, l_dict in source_leagues.items():
             member_count = len(l_dict.get("teams", []))
             l_tier = l_dict.get("tier") or leagues_config.get(str(lid), {}).get("tier", 1)
             if str(lid) == str(target_lid):
@@ -22430,50 +22699,29 @@ def main():
                 target_obj["tier"] = l_tier
                 target_obj["member_count"] = member_count
                 page_pruned["leagues"][lid] = target_obj
-            elif l_tier == 2:
-                # Decoupled Tier-2 Skeleton: Keep only switcher metadata so 1,700+ team
-                # rosters never bloat Tier-1 HTML files; full Tier-2 data loads on demand.
+            elif l_tier == 2 or not inline_full:
+                # Decoupled Skeleton: sibling leagues load on demand via data/radar.json or data/leagues/{lid}.json
                 page_pruned["leagues"][lid] = {
                     "id": l_dict["id"],
                     "name": l_dict["name"],
                     "season": l_dict["season"],
-                    "tier": 2,
+                    "tier": l_tier,
                     "member_count": member_count,
                     "teams": [],
                     "gameweeks": {},
                     "squads": {}
                 }
             else:
-                # Lightweight Inlined Telemetry: Keep teams and lightweight gameweek results
-                # so Cross-League features (Tab Radar Form, Benchmarks, Leaderboard) have full Tier-1 data,
-                # while keeping squads: {} pruned to maintain fast loading speed.
-                light_teams = l_dict.get("teams", [])
-                light_gws = {}
-                for gw_k, gw_v in l_dict.get("gameweeks", {}).items():
-                    if isinstance(gw_v, dict):
-                        light_res = [
-                            {
-                                "entry_id": r.get("entry_id"),
-                                "points": r.get("points", 0),
-                                "net_points": r.get("net_points", 0),
-                                "hits": r.get("hits", 0),
-                                "bench_points": r.get("bench_points", 0)
-                            }
-                            for r in gw_v.get("results", [])
-                        ]
-                        light_gws[gw_k] = {
-                            "is_finished": gw_v.get("is_finished", False),
-                            "is_started": gw_v.get("is_started", False),
-                            "results": light_res
-                        }
+                # Self-contained offline fallback (for preview.html opened on file://)
+                radar_src = radar_payload["leagues"].get(lid, {})
                 page_pruned["leagues"][lid] = {
                     "id": l_dict["id"],
                     "name": l_dict["name"],
                     "season": l_dict["season"],
-                    "tier": l_dict.get("tier", 1),
+                    "tier": l_tier,
                     "member_count": member_count,
-                    "teams": light_teams,
-                    "gameweeks": light_gws,
+                    "teams": radar_src.get("teams", []),
+                    "gameweeks": radar_src.get("gameweeks", {}),
                     "squads": {}
                 }
         return json.dumps(page_pruned, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
@@ -22541,8 +22789,10 @@ def main():
     with open(os.path.join(base_dir, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(root_html)
 
+    preview_json_str = get_pruned_data_for_target(default_root_lid, inline_full=True)
+    preview_html = generate_html(multi_data, leagues_config, default_league_id=None, precomputed_json_str=preview_json_str, precomputed_cfg_str=leagues_config_json_str, shi62_data_json_str=root_s62, bramann_pred_json_str=root_bpred, bramann_chal_json_str=root_bchal, precomputed_players_str=players_compact_json_str, precomputed_app_js_hash=app_js_hash)
     with open(os.path.join(base_dir, 'preview.html'), 'w', encoding='utf-8') as f:
-        f.write(root_html)
+        f.write(preview_html)
 
     with open(os.path.join(base_dir, '404.html'), 'w', encoding='utf-8') as f:
         f.write(root_html)
