@@ -706,7 +706,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <span class="w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-bold">2</span>
             <span data-i18n="pitch_step2_title">หลักฐานเชิงประจักษ์ 4 มิติ (Visual Proof & Analytics)</span>
           </h3>
-          <span class="text-xs text-slate-500 dark:text-neutral-400" data-i18n="pitch_step2_sub">ข้อมูลจริงจาก 8 มินิลีก</span>
+          <span class="text-xs text-slate-500 dark:text-neutral-400" data-i18n="pitch_step2_sub">ข้อมูลจริงจาก 9 มินิลีก</span>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -1136,7 +1136,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 <th scope="col" class="px-4 py-2.5 font-medium" data-i18n="col_modules">โมดูลและกติกาที่เปิดใช้งาน</th>
                 <th scope="col" id="th-views" aria-sort="none" class="p-0 text-right">
                   <button type="button" onclick="sortLeagueTable('views')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-end gap-1.5 hover:text-slate-900 dark:hover:text-white font-medium">
-                    <span data-i18n="col_views">ยอดเปิดดู / GW</span>
+                    <span data-i18n="col_views">ยอดเปิดดู (7 วันล่าสุด)</span>
                     <span id="sort-icon-views" class="text-slate-500 dark:text-neutral-400">${ICONS.sort}</span>
                   </button>
                 </th>
@@ -1656,7 +1656,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
           <div class="text-xs text-slate-600 dark:text-neutral-400 flex justify-between">
             <span data-i18n="sys_cache_hit_label">อัตราเสิร์ฟจากแคช (Cache Hit):</span>
-            <span class="mono font-semibold text-emerald-700 dark:text-emerald-400">94.2%</span>
+            <span id="sysWorkerCacheHit" class="mono font-semibold text-emerald-700 dark:text-emerald-400">96.4%</span>
           </div>
         </div>
 
@@ -1990,7 +1990,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sol_4_badge: 'FPLSaWaDiKa Solution',
         sol_4_desc: 'Interactive Squad Pitch Modal คลิกเดียวเห็นผัง 11 ตัวจริง + ม้านั่ง Auto-Sub และแต้มสดทันที',
         pitch_step2_title: 'หลักฐานเชิงประจักษ์ 4 มิติ (Visual Proof & Analytics)',
-        pitch_step2_sub: 'ข้อมูลจริงจาก 8 มินิลีก',
+        pitch_step2_sub: 'ข้อมูลจริงจาก 9 มินิลีก',
         graphic1_eyebrow: 'มิติที่ 1 · ความคุ้มค่าด้านเวลา',
         graphic1_badge: 'ประหยัด 190 ชม./ปี',
         graphic1_title: 'ภาระงานแอดมิน: จัดการเอง (Excel) vs FPLSaWaDiKa',
@@ -2076,7 +2076,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         col_teams: 'จำนวนทีม',
         col_pool: 'เงินรางวัลรวม (GMV)',
         col_modules: 'โมดูลและกติกาที่เปิดใช้งาน',
-        col_views: 'ยอดเปิดดู / GW',
+        col_views: 'ยอดเปิดดู (7 วันล่าสุด)',
         col_retention: 'ความเหนียวแน่น',
         sec3_title: '03. พฤติกรรมการใช้งานฟีเจอร์และคุณค่าผลิตภัณฑ์',
         sec3_sub: 'ฟีเจอร์ใดดึงดูดผู้ใช้มากที่สุด และควรพัฒนาต่อยอดส่วนใดก่อน',
@@ -2260,7 +2260,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sol_4_badge: 'FPLSaWaDiKa Solution',
         sol_4_desc: 'Interactive Squad Pitch Modal shows complete 11 starters + bench auto-subs in one single tap.',
         pitch_step2_title: '4 Visual Proof Dimensions & Proven Analytics',
-        pitch_step2_sub: 'Audited Data Across 8 Mini-Leagues',
+        pitch_step2_sub: 'Audited Data Across 9 Mini-Leagues',
         graphic1_eyebrow: 'Dimension 1 · Operational ROI',
         graphic1_badge: '190 hrs/yr saved',
         graphic1_title: 'Organizer Workload: Manual (Excel) vs FPLSaWaDiKa',
@@ -2346,7 +2346,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         col_teams: 'Teams',
         col_pool: 'Prize Pool (GMV)',
         col_modules: 'Active Modules & Rule Engine',
-        col_views: 'Views / GW',
+        col_views: 'Views (Last 7d)',
         col_retention: 'Retention',
         sec3_title: '03. Feature Adoption & Product Value Matrix',
         sec3_sub: 'Which modules drive repeat engagement and justify SaaS / White-Label monetization',
@@ -3072,6 +3072,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (typeof renderMonitorSummary === 'function') renderMonitorSummary();
       if (typeof renderMonitorChart === 'function') renderMonitorChart();
       if (typeof renderAllOpResults === 'function') renderAllOpResults();
+      if (latestPayloadCache) applyAdminPayload(latestPayloadCache);
     }
 
     function toggleLanguage() {
@@ -3151,6 +3152,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const stickiness = document.getElementById('kpiStickiness')?.textContent || '68.4%';
       const totalLeagues = (latestPayloadCache && latestPayloadCache.portfolio && latestPayloadCache.portfolio.total_leagues_count) || LEAGUE_PORTFOLIO.length;
       const customPct = (latestPayloadCache && latestPayloadCache.portfolio && latestPayloadCache.portfolio.custom_rules_pct) || 78;
+      const cacheHit = document.getElementById('sysWorkerCacheHit')?.textContent || '96.4%';
 
       const summary = lang === 'en'
         ? [
@@ -3158,14 +3160,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             '• Active Portfolio: ' + totalLeagues + ' Mini-Leagues (' + managers + ' Tier-1 Managers / ' + mau + ' Matchday Active Users)',
             '• Total Prize Pool (GMV): ' + gmv + ' (' + customPct + '% Custom Rule Attachment)',
             '• Retention & Stickiness: ' + retention + ' GW-over-GW Retention | ' + stickiness + ' Matchday Stickiness',
-            '• Infrastructure: Cloudflare Edge Cache 96.4% Hit Rate | Free-Tier Scaling Ready'
+            '• Infrastructure: Cloudflare Edge Cache ' + cacheHit + ' Hit Rate | Free-Tier Scaling Ready'
           ].join('\\n')
         : [
             'สรุปผู้บริหาร FPL SaWaDiKa (Executive BI Brief)',
             '• พอร์ตโฟลิโอปัจจุบัน: ' + totalLeagues + ' มินิลีก (' + managers + ' ผู้จัดการทีม Tier 1 / ผู้ใช้งานวันแข่ง ' + mau + ' คน)',
             '• มูลค่าเงินรางวัลรวม (GMV): ' + gmv + ' (ผูกกติกาพิเศษ ' + customPct + '% ของลีกทั้งหมด)',
             '• อัตราความเหนียวแน่น: กลับมาใช้งาน ' + retention + ' ต่อสัปดาห์ | เปิดเช็กซ้ำวันแข่ง ' + stickiness,
-            '• ความพร้อมระบบ: Cloudflare Edge Cache รับโหลด 96.4% | พร้อมขยายสเกลต่อบน Free Tier'
+            '• ความพร้อมระบบ: Cloudflare Edge Cache รับโหลด ' + cacheHit + ' | พร้อมขยายสเกลต่อบน Free Tier'
           ].join('\\n');
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -3593,11 +3595,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         const modelBadge = document.getElementById('telemetryModelBadge');
         if (modelBadge && (typeof et.raw_live_visits_7d === 'number' || typeof et.baseline_visits_prior === 'number')) {
           const live7d = Number(et.raw_live_visits_7d || 0).toLocaleString();
-          const prior = Number(et.baseline_visits_prior || 4280).toLocaleString();
+          const priorNum = Number(et.baseline_visits_prior || 0);
+          const priorPart = priorNum > 0 ? (' + Prior: ' + priorNum.toLocaleString()) : '';
           const lifetimePart = (typeof et.lifetime_total_views === 'number' && et.lifetime_total_views > 0)
             ? (' · Total: ' + Number(et.lifetime_total_views).toLocaleString())
             : '';
-          modelBadge.textContent = 'Live 7d: ' + live7d + ' + Prior: ' + prior + lifetimePart;
+          modelBadge.textContent = (priorNum > 0 ? 'Live 7d: ' : 'Live D1 (7d): ') + live7d + priorPart + lifetimePart;
         }
 
         // Section 03: Feature Adoption Bars
@@ -3660,6 +3663,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             const headEl = document.getElementById('sysScalingHeadroom');
             if (headEl) headEl.textContent = '+' + sp.scaling.tier1_headroom_leagues + ' Leagues';
           }
+          if (typeof sp.edge_cache_hit_pct === 'number') {
+            const cacheEl = document.getElementById('sysWorkerCacheHit');
+            if (cacheEl) cacheEl.textContent = sp.edge_cache_hit_pct.toFixed(1) + '%';
+          }
         }
 
         if (Array.isArray(et.hourly_series) && et.hourly_series.length === 24) {
@@ -3697,7 +3704,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       if (data.fpl_upstream && data.fpl_upstream.next_deadline_time) {
         const parsed = Date.parse(data.fpl_upstream.next_deadline_time);
-        if (!Number.isNaN(parsed)) nextDeadlineEpoch = parsed;
+        if (!Number.isNaN(parsed)) {
+          nextDeadlineEpoch = parsed;
+          tickCountdown();
+        }
         if (data.fpl_upstream.next_gw_name) {
           const gwEl = document.getElementById('telemetryNextDeadlineName');
           if (gwEl) {
@@ -3874,7 +3884,7 @@ export function renderLoginHtml(errorMessage = '') {
           เข้าสู่ระบบศูนย์ข้อมูลผู้บริหาร
         </h1>
         <p id="loginSub" class="text-xs sm:text-sm text-slate-600 dark:text-neutral-400 leading-relaxed">
-          กรุณายืนยันตัวตนเพื่อเข้าถึงข้อมูลวิเคราะห์ธุรกิจและสถานะระบบของทั้ง 8 มินิลีก
+          กรุณายืนยันตัวตนเพื่อเข้าถึงข้อมูลวิเคราะห์ธุรกิจและสถานะระบบของทั้ง 9 มินิลีก
         </p>
         <div class="inline-flex items-center gap-2 text-xs font-mono text-emerald-700 dark:text-emerald-400 pt-1">
           <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
@@ -3925,8 +3935,8 @@ export function renderLoginHtml(errorMessage = '') {
         ? 'Executive BI Sign In'
         : 'เข้าสู่ระบบศูนย์ข้อมูลผู้บริหาร';
       document.getElementById('loginSub').textContent = next === 'en'
-        ? 'Authenticate to access real-time portfolio economics and cloud telemetry across all 8 leagues.'
-        : 'กรุณายืนยันตัวตนเพื่อเข้าถึงข้อมูลวิเคราะห์ธุรกิจและสถานะระบบของทั้ง 8 มินิลีก';
+        ? 'Authenticate to access real-time portfolio economics and cloud telemetry across all 9 leagues.'
+        : 'กรุณายืนยันตัวตนเพื่อเข้าถึงข้อมูลวิเคราะห์ธุรกิจและสถานะระบบของทั้ง 9 มินิลีก';
       document.getElementById('loginLabel').textContent = next === 'en'
         ? 'Admin Access Key'
         : 'รหัสผ่านผู้ดูแลระบบ (Admin Access Key)';

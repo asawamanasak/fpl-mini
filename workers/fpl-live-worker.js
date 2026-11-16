@@ -58,9 +58,17 @@ const TELEMETRY_ERROR_CATEGORIES = new Set(['js_error', 'api_timeout', 'api_http
 const TELEMETRY_RATE_LIMIT_PER_MIN = 30;
 const LOGIN_RATE_LIMIT_PER_MIN = 8;
 
+function getIctNowParts(now = new Date()) {
+  const ict = new Date(now.getTime() + 7 * 3600000);
+  return {
+    date: ict.toISOString().split('T')[0],
+    hour: ict.getUTCHours(),
+  };
+}
+
 async function recordTelemetryIncrements(env, increments) {
   if (!env || !Array.isArray(increments) || increments.length === 0) return;
-  const today = new Date().toISOString().split('T')[0];
+  const today = getIctNowParts().date;
   if (env.DB) {
     const stmt = env.DB.prepare(`
       INSERT INTO telemetry_counters (metric, date, val, updated_at)
@@ -109,9 +117,7 @@ async function recordTelemetryIncrements(env, increments) {
 
 function scheduleWorkerHealthMetric(env, ctx, isError, category = 'upstream_5xx') {
   if (!env || (!env.DB && !env.ANALYTICS_KV) || !ctx || !ctx.waitUntil) return;
-  const now = new Date();
-  const today = now.toISOString().split('T')[0];
-  const hour = (now.getUTCHours() + 7) % 24;
+  const { date: today, hour } = getIctNowParts();
   const pfx = `telem:${today}`;
   const cleanCat = String(category || 'upstream_5xx').replace(/[^a-z0-9_]/g, '').slice(0, 24) || 'upstream_5xx';
   const increments = isError
@@ -471,7 +477,7 @@ export default {
         if (env && (env.DB || env.ANALYTICS_KV) && ctx && ctx.waitUntil) {
           ctx.waitUntil((async () => {
             try {
-              const today = new Date().toISOString().split('T')[0];
+              const { date: today, hour } = getIctNowParts();
               const pfx = `telem:${today}`;
               const isViewEvent = eventData.type === 'page_view' || eventData.type === 'league_view';
 
@@ -504,8 +510,6 @@ export default {
               }
 
               if (targetLeague) {
-                const hour = (new Date().getUTCHours() + 7) % 24;
-
                 if (eventData.type === 'page_view' || eventData.type === 'league_view') {
                   increments.push({ metric: `${pfx}:l:${targetLeague}:views`, amount: 1 });
                   increments.push({ metric: `${pfx}:l:${targetLeague}:h:${hour}`, amount: 1 });
@@ -543,12 +547,11 @@ export default {
 
               // Client-side error & API failure beacon (categorized allowlist only)
               if (eventData.type === 'client_error') {
-                const errHour = (new Date().getUTCHours() + 7) % 24;
                 const rawCat = typeof eventData.category === 'string' ? eventData.category.trim().toLowerCase() : 'js_error';
                 const errCat = TELEMETRY_ERROR_CATEGORIES.has(rawCat) ? rawCat : 'js_error';
                 increments.push(
                   { metric: `${pfx}:err:client`, date: today, amount: 1 },
-                  { metric: `${pfx}:err:client:h:${errHour}`, date: today, amount: 1 },
+                  { metric: `${pfx}:err:client:h:${hour}`, date: today, amount: 1 },
                   { metric: `${pfx}:err:cat:${errCat}`, date: today, amount: 1 }
                 );
               }
@@ -876,8 +879,11 @@ export default {
             };
 
             if (data.next_deadline && typeof data.next_deadline === 'object') {
+              const isoFallback = data.next_deadline.deadline_epoch
+                ? new Date(Number(data.next_deadline.deadline_epoch) * 1000).toISOString()
+                : null;
               data.fpl_upstream = {
-                next_deadline_time: data.next_deadline.deadline_time || null,
+                next_deadline_time: data.next_deadline.deadline_iso || data.next_deadline.deadline_time || isoFallback,
                 next_gw_name: data.next_deadline.name || null,
               };
             }
@@ -888,8 +894,7 @@ export default {
                 const now = new Date();
                 const dates = [];
                 for (let i = 0; i < 7; i++) {
-                  const d = new Date(now.getTime() - i * 86400000);
-                  dates.push(d.toISOString().split('T')[0]);
+                  dates.push(getIctNowParts(new Date(now.getTime() - i * 86400000)).date);
                 }
 
                 const metricMap = new Map();
@@ -950,49 +955,50 @@ export default {
                 }
 
                 const totalKvVisits = totalVisitsKV > 0 ? totalVisitsKV : (lineCount + safariCount + chromeCount + fbCount);
-                const baselineVisits = 4280;
+                const usePureRealTelemetry = totalKvVisits > 0;
+                const baselineVisits = usePureRealTelemetry ? 0 : 4280;
                 const dynamicVisits = baselineVisits + totalKvVisits;
                 const dailyAvgReach = Math.round(dynamicVisits / 7);
 
-                // Calibrated weighted blending with live telemetry (Bayesian Prior model)
-                const baseLineHits = Math.round(baselineVisits * 0.524);
-                const baseSafariHits = Math.round(baselineVisits * 0.348);
-                const baseChromeHits = baselineVisits - baseLineHits - baseSafariHits;
+                // Direct 7-day real telemetry (only falls back to priors when D1 has 0 visits)
+                const baseLineHits = usePureRealTelemetry ? 0 : Math.round(baselineVisits * 0.524);
+                const baseSafariHits = usePureRealTelemetry ? 0 : Math.round(baselineVisits * 0.348);
+                const baseChromeHits = usePureRealTelemetry ? 0 : (baselineVisits - baseLineHits - baseSafariHits);
 
                 const activeLineHits = baseLineHits + lineCount;
                 const activeSafariHits = baseSafariHits + safariCount;
                 const activeChromeHits = baseChromeHits + chromeCount + fbCount;
-                const activeSrcTotal = activeLineHits + activeSafariHits + activeChromeHits;
+                const activeSrcTotal = Math.max(1, activeLineHits + activeSafariHits + activeChromeHits);
 
                 const linePct = ((activeLineHits / activeSrcTotal) * 100).toFixed(1);
                 const safariPct = ((activeSafariHits / activeSrcTotal) * 100).toFixed(1);
                 const chromePct = Math.max(0, 100.0 - parseFloat(linePct) - parseFloat(safariPct)).toFixed(1);
 
-                // Device calibrated blending
-                const baseMobileHits = Math.round(baselineVisits * 0.764);
-                const baseDesktopHits = Math.round(baselineVisits * 0.182);
-                const baseTabletHits = baselineVisits - baseMobileHits - baseDesktopHits;
+                // Device distribution (pure real D1 counts)
+                const baseMobileHits = usePureRealTelemetry ? 0 : Math.round(baselineVisits * 0.764);
+                const baseDesktopHits = usePureRealTelemetry ? 0 : Math.round(baselineVisits * 0.182);
+                const baseTabletHits = usePureRealTelemetry ? 0 : (baselineVisits - baseMobileHits - baseDesktopHits);
 
                 const activeMobileHits = baseMobileHits + mobileCount;
                 const activeDesktopHits = baseDesktopHits + desktopCount;
                 const activeTabletHits = baseTabletHits + tabletCount;
-                const activeDevTotal = activeMobileHits + activeDesktopHits + activeTabletHits;
+                const activeDevTotal = Math.max(1, activeMobileHits + activeDesktopHits + activeTabletHits);
 
                 const mobilePct = ((activeMobileHits / activeDevTotal) * 100).toFixed(1);
                 const desktopPct = ((activeDesktopHits / activeDevTotal) * 100).toFixed(1);
                 const tabletPct = Math.max(0, 100.0 - parseFloat(mobilePct) - parseFloat(desktopPct)).toFixed(1);
 
-                // League Intelligence Baselines calibrated from 4,280 weekly visits
+                // League metadata (real 7-day views & dwell directly from D1 without synthetic baseline skew)
                 const LEAGUE_BASELINES = {
-                  '40700': { name: 'เซียนอยู่รู หมูอยู่ตึก', baseViews: 1644, baseDwellSec: 384, peakWindow: 'เสาร์ 21:00 - 23:00 น.', peakWindowEn: 'Sat 21:00 - 23:00' },
-                  '675290': { name: 'NudNee', baseViews: 1181, baseDwellSec: 312, peakWindow: 'เสาร์ 18:30 - 21:00 น.', peakWindowEn: 'Sat 18:30 - 21:00' },
-                  '38491': { name: 'รอ แมน โอน', baseViews: 548, baseDwellSec: 246, peakWindow: 'ศุกร์ 17:00 - 18:30 น.', peakWindowEn: 'Fri 17:00 - 18:30' },
-                  '1101958': { name: "Barley's Official League", baseViews: 308, baseDwellSec: 276, peakWindow: 'อาทิตย์ 20:00 - 22:30 น.', peakWindowEn: 'Sun 20:00 - 22:30' },
-                  '438691': { name: '2 spade', baseViews: 205, baseDwellSec: 234, peakWindow: 'เสาร์ 20:00 - 22:00 น.', peakWindowEn: 'Sat 20:00 - 22:00' },
-                  '187827': { name: 'Shi62', baseViews: 175, baseDwellSec: 210, peakWindow: 'จันทร์ 12:00 - 13:30 น.', peakWindowEn: 'Mon 12:00 - 13:30' },
-                  '5349': { name: 'Bramann League', baseViews: 133, baseDwellSec: 192, peakWindow: 'เสาร์ 18:00 - 20:00 น.', peakWindowEn: 'Sat 18:00 - 20:00' },
-                  '567387': { name: 'Fantasy Nguan & friends cup', baseViews: 86, baseDwellSec: 180, peakWindow: 'เสาร์ 21:00 - 23:00 น.', peakWindowEn: 'Sat 21:00 - 23:00' },
-                  '139836': { name: 'FPL Growth Mindset 2026/27', baseViews: 0, baseDwellSec: 180, peakWindow: 'เสาร์ 20:00 - 22:30 น.', peakWindowEn: 'Sat 20:00 - 22:30' },
+                  '40700': { name: 'เซียนอยู่รู หมูอยู่ตึก', baseDwellSec: 384, peakWindow: 'เสาร์ 21:00 - 23:00 น.', peakWindowEn: 'Sat 21:00 - 23:00' },
+                  '675290': { name: 'NudNee', baseDwellSec: 312, peakWindow: 'เสาร์ 18:30 - 21:00 น.', peakWindowEn: 'Sat 18:30 - 21:00' },
+                  '38491': { name: 'รอ แมน โอน', baseDwellSec: 246, peakWindow: 'ศุกร์ 17:00 - 18:30 น.', peakWindowEn: 'Fri 17:00 - 18:30' },
+                  '1101958': { name: "Barley's Official League", baseDwellSec: 276, peakWindow: 'อาทิตย์ 20:00 - 22:30 น.', peakWindowEn: 'Sun 20:00 - 22:30' },
+                  '438691': { name: '2 spade', baseDwellSec: 234, peakWindow: 'เสาร์ 20:00 - 22:00 น.', peakWindowEn: 'Sat 20:00 - 22:00' },
+                  '187827': { name: 'Shi62', baseDwellSec: 210, peakWindow: 'จันทร์ 12:00 - 13:30 น.', peakWindowEn: 'Mon 12:00 - 13:30' },
+                  '5349': { name: 'Bramann League', baseDwellSec: 192, peakWindow: 'เสาร์ 18:00 - 20:00 น.', peakWindowEn: 'Sat 18:00 - 20:00' },
+                  '567387': { name: 'Fantasy Nguan & friends cup', baseDwellSec: 180, peakWindow: 'เสาร์ 21:00 - 23:00 น.', peakWindowEn: 'Sat 21:00 - 23:00' },
+                  '139836': { name: 'FPL Growth Mindset 2026/27', baseDwellSec: 180, peakWindow: 'เสาร์ 20:00 - 22:30 น.', peakWindowEn: 'Sat 20:00 - 22:30' },
                 };
 
                 const leagueIds = Array.from(new Set([...Object.keys(LEAGUE_BASELINES), ...Object.keys(liveLeagueSummaries)]));
@@ -1014,16 +1020,16 @@ export default {
                 const leaguesOutput = {};
 
                 leagueIds.forEach(lid => {
-                  const base = LEAGUE_BASELINES[lid] || { peakWindow: '-', peakWindowEn: '-', baseViews: 0, baseDwellSec: 180 };
+                  const base = LEAGUE_BASELINES[lid] || { peakWindow: '-', peakWindowEn: '-', baseDwellSec: 180 };
                   const st = leagueStats[lid];
-                  const actViews = base.baseViews + st.kvViews;
+                  const actViews = st.kvViews;
                   totalLeaguesVisits += actViews;
 
-                  const totalDwellSec = (base.baseViews * base.baseDwellSec) + st.kvDwellSec;
-                  const totalDwellSess = base.baseViews + st.kvDwellSess;
                   globalDwellSec += st.kvDwellSec;
                   globalDwellSess += st.kvDwellSess;
-                  const avgDwellSec = Math.round(totalDwellSec / (totalDwellSess > 0 ? totalDwellSess : 1));
+                  const avgDwellSec = st.kvDwellSess > 0
+                    ? Math.round(st.kvDwellSec / st.kvDwellSess)
+                    : 0;
                   const avgMins = (avgDwellSec / 60).toFixed(1);
 
                   leaguesOutput[lid] = {
@@ -1031,8 +1037,8 @@ export default {
                     raw_live_views: st.kvViews,
                     peak_window: base.peakWindow,
                     peak_window_en: base.peakWindowEn,
-                    avg_screen_time: avgMins + ' นาที / ครั้ง',
-                    avg_screen_time_en: avgMins + ' min / visit',
+                    avg_screen_time: st.kvDwellSess > 0 ? (avgMins + ' นาที / ครั้ง') : '-',
+                    avg_screen_time_en: st.kvDwellSess > 0 ? (avgMins + ' min / visit') : '-',
                     avg_screen_time_mins: parseFloat(avgMins),
                   };
                 });
@@ -1053,15 +1059,28 @@ export default {
                 let featTabHof = 0;
                 let featPitchOpens = 0;
 
-                const BKK_METRO_CITIES = new Set(['bangkok', 'nonthaburi', 'pathum thani', 'samut prakan', 'samut sakhon', 'nakhon pathom', 'pak kret', 'bang kruai', 'bangใหญ่', 'bang yai', 'rangsit']);
-                const TH_REGIONAL_CITIES = new Set(['chiang mai', 'chonburi', 'pattaya', 'khon kaen', 'phuket', 'hat yai', 'songkhla', 'nakhon ratchasima', 'udon thani', 'rayong', 'surat thani', 'chiang rai', 'phitsanulok', 'ubon ratchathani', 'hua hin', 'saraburi', 'ayutthaya', 'krabi', 'lampang', 'nakhon si thammarat']);
+                const BKK_METRO_CITIES = new Set(['bangkok', 'nonthaburi', 'pathum thani', 'samut prakan', 'samut sakhon', 'nakhon pathom', 'pak kret', 'bang kruai', 'bangใหญ่', 'bang yai', 'rangsit', 'bang phli', 'bang bo', 'thanyaburi', 'khlong luang', 'lam luk ka']);
+                const TH_REGIONAL_CITIES = new Set([
+                  'chiang mai', 'chonburi', 'pattaya', 'khon kaen', 'phuket', 'hat yai', 'songkhla', 'nakhon ratchasima',
+                  'udon thani', 'rayong', 'surat thani', 'chiang rai', 'phitsanulok', 'ubon ratchathani', 'hua hin',
+                  'saraburi', 'ayutthaya', 'krabi', 'lampang', 'nakhon si thammarat', 'surin', 'pak chong', 'buriram',
+                  'buri ram', 'si sa ket', 'sisaket', 'roi et', 'maha sarakham', 'kalasin', 'sakon nakhon', 'nakhon phanom',
+                  'loei', 'nong khai', 'chaiyaphum', 'phetchabun', 'nan', 'phrae', 'phayao', 'lamphun', 'mae hong son',
+                  'uttaradit', 'sukhothai', 'kamphaeng phet', 'tak', 'nakhon sawan', 'uthai thani', 'chai nat', 'sing buri',
+                  'lop buri', 'lopburi', 'ang thong', 'suphan buri', 'kanchanaburi', 'ratchaburi', 'phetchaburi',
+                  'prachuap khiri khan', 'chachoengsao', 'prachin buri', 'prachinburi', 'sa kaeo', 'chanthaburi', 'trat',
+                  'chumphon', 'ranong', 'phang nga', 'trang', 'phatthalung', 'satun', 'pattani', 'yala', 'narathiwat',
+                  'yasothon', 'amnat charoen', 'mukdahan', 'bueng kan', 'nong bua lam phu', 'nakhon nayok',
+                  'samut songkhram', 'si racha', 'sriracha', 'laem chabang', 'mae sot', 'koh samui'
+                ]);
                 let cityBkkCount = 0;
                 let cityRegionalCount = 0;
                 let cityIntlCount = 0;
 
-                // Hourly traffic aggregation (0..23 ICT)
+                // Hourly traffic aggregation (0..23 ICT) directly from real D1 visits
                 const hourlyBase = [42, 28, 14, 8, 6, 9, 18, 34, 62, 95, 118, 145, 190, 165, 140, 155, 198, 265, 390, 485, 620, 740, 580, 210];
-                const hourlySeries = [...hourlyBase];
+                const realHourlySeries = new Array(24).fill(0);
+                let totalRealHourlyHits = 0;
 
                 for (const [mKey, mVal] of metricMap.entries()) {
                   if (mKey.includes(':feat:tab:gameweek-view') || mKey.includes(':feat:tab:live')) featTabLive += mVal;
@@ -1071,7 +1090,7 @@ export default {
                   else if (mKey.includes(':feat:tab:shi62') || mKey.includes(':feat:tab:bramann')) featTabSpecial += mVal;
                   else if (mKey.includes(':feat:tab:transfers')) featTabTransfers += mVal;
                   else if (mKey.includes(':feat:tab:chips')) featTabChips += mVal;
-                  else if (mKey.includes(':feat:tab:hall-of-fame') || mKey.includes(':feat:tab:cup') || mKey.includes(':feat:tab:rules')) featTabHof += mVal;
+                  else if (mKey.includes(':feat:tab:hall-of-fame') || mKey.includes(':feat:tab:cup') || mKey.includes(':feat:tab:rules') || mKey.includes(':feat:tab:about')) featTabHof += mVal;
                   else if (mKey.includes(':feat:pitch_opens')) featPitchOpens += mVal;
                   else {
                     const cMatch = mKey.match(/:city:(.+)$/);
@@ -1085,39 +1104,45 @@ export default {
                   const hMatch = mKey.match(/:l:\d+:h:(\d{1,2})$/);
                   if (hMatch) {
                     const hr = parseInt(hMatch[1], 10);
-                    if (hr >= 0 && hr < 24) hourlySeries[hr] += mVal;
+                    if (hr >= 0 && hr < 24) {
+                      realHourlySeries[hr] += mVal;
+                      totalRealHourlyHits += mVal;
+                    }
                   }
                 }
+                const hourlySeries = totalRealHourlyHits > 0 ? realHourlySeries : [...hourlyBase];
 
-                // Geographic calibrated blending
-                const baseBkkHits = Math.round(baselineVisits * 0.685);
-                const baseRegHits = Math.round(baselineVisits * 0.237);
-                const baseIntlHits = baselineVisits - baseBkkHits - baseRegHits;
-                const activeBkkHits = baseBkkHits + cityBkkCount;
-                const activeRegHits = baseRegHits + cityRegionalCount;
-                const activeIntlHits = baseIntlHits + cityIntlCount;
-                const activeGeoTotal = activeBkkHits + activeRegHits + activeIntlHits;
+                // Geographic split (pure real D1 city hits when recorded)
+                const hasRealGeo = (cityBkkCount + cityRegionalCount + cityIntlCount) > 0;
+                const activeBkkHits = hasRealGeo ? cityBkkCount : Math.round(baselineVisits * 0.685);
+                const activeRegHits = hasRealGeo ? cityRegionalCount : Math.round(baselineVisits * 0.237);
+                const activeIntlHits = hasRealGeo ? cityIntlCount : (baselineVisits - Math.round(baselineVisits * 0.685) - Math.round(baselineVisits * 0.237));
+                const activeGeoTotal = Math.max(1, activeBkkHits + activeRegHits + activeIntlHits);
                 const geoBkkPct = ((activeBkkHits / activeGeoTotal) * 100).toFixed(1);
                 const geoRegPct = ((activeRegHits / activeGeoTotal) * 100).toFixed(1);
                 const geoIntlPct = Math.max(0, 100.0 - parseFloat(geoBkkPct) - parseFloat(geoRegPct)).toFixed(1);
 
-                // 7-Day Rolling Daily Visits Series (oldest to newest)
+                // 7-Day Rolling Daily Visits Series (oldest to newest ICT date)
                 const dailyBaseWeights = [0.095, 0.082, 0.078, 0.088, 0.142, 0.285, 0.230];
                 const dailySeries = dates.slice().reverse().map((d, idx) => {
                   const kvDay = metricMap.get(`telem:${d}:total_visits`) || 0;
+                  if (usePureRealTelemetry) {
+                    return { date: d, visits: kvDay };
+                  }
                   const dt = new Date(d + 'T12:00:00Z');
                   const dow = Number.isNaN(dt.getTime()) ? idx : dt.getUTCDay();
-                  // Calibrate base weekday weights by real day-of-week (Mon..Sun)
                   const dowWeights = [0.230, 0.125, 0.078, 0.074, 0.088, 0.145, 0.260];
                   const calDay = Math.round(baselineVisits * (dowWeights[dow] ?? dailyBaseWeights[idx] ?? 0.14));
                   return { date: d, visits: calDay + kvDay };
                 });
 
-                // Matchday peak active & off-peak Tue-Thu DAU derived from dailySeries
+                // Peak daily visits & off-peak Tue-Thu avg directly from dailySeries
                 let weekendMaxVisits = 0;
+                let overallMaxVisits = 0;
                 let offPeakSum = 0;
                 let offPeakDays = 0;
                 dailySeries.forEach((item) => {
+                  if (item.visits > overallMaxVisits) overallMaxVisits = item.visits;
                   const dt = new Date(item.date + 'T12:00:00Z');
                   const dow = Number.isNaN(dt.getTime()) ? 0 : dt.getUTCDay();
                   if (dow === 5 || dow === 6 || dow === 0) {
@@ -1127,18 +1152,30 @@ export default {
                     offPeakDays += 1;
                   }
                 });
-                const matchdayActiveUsers = weekendMaxVisits || Math.round(dynamicVisits * 0.28);
-                const offPeakDau = offPeakDays > 0 ? Math.round(offPeakSum / offPeakDays) : Math.round(dynamicVisits * 0.08);
-                const avgSessionSec = Math.round(
-                  ((baselineVisits * 402) + globalDwellSec) / Math.max(1, baselineVisits + globalDwellSess)
-                );
+                const matchdayActiveUsers = usePureRealTelemetry
+                  ? (overallMaxVisits || totalKvVisits)
+                  : (weekendMaxVisits || Math.round(dynamicVisits * 0.28));
+                const offPeakDau = offPeakDays > 0
+                  ? Math.round(offPeakSum / offPeakDays)
+                  : Math.round(dynamicVisits * 0.08);
+                const avgSessionSec = globalDwellSess > 0
+                  ? Math.round(globalDwellSec / globalDwellSess)
+                  : 402;
 
-                // Bayesian Prior Calibrated Blending for Features (both legacy tabs & 5 UI modules)
-                const baseLiveHits = Math.round(dynamicVisits * 0.442) + featTabLive + featTabHighlight;
-                const basePrizesHits = Math.round(dynamicVisits * 0.238) + featTabPrizes + featTabSpecial;
-                const baseSquadHits = Math.round(dynamicVisits * 0.165) + featTabComp + featPitchOpens;
-                const basePlannerHits = Math.round(dynamicVisits * 0.094) + featTabTransfers + featTabChips;
-                const baseHofHits = Math.round(dynamicVisits * 0.061) + featTabHof;
+                // Pure 7-Day Real Feature Adoption (only falls back if D1 has 0 feature clicks)
+                const rawLiveHits = featTabLive + featTabHighlight;
+                const rawPrizesHits = featTabPrizes + featTabSpecial;
+                const rawSquadHits = featTabComp + featPitchOpens;
+                const rawPlannerHits = featTabTransfers + featTabChips;
+                const rawHofHits = featTabHof;
+                const rawFeatTotal = rawLiveHits + rawPrizesHits + rawSquadHits + rawPlannerHits + rawHofHits;
+                const hasRealFeat = rawFeatTotal > 0;
+
+                const baseLiveHits = hasRealFeat ? rawLiveHits : Math.round(dynamicVisits * 0.442);
+                const basePrizesHits = hasRealFeat ? rawPrizesHits : Math.round(dynamicVisits * 0.238);
+                const baseSquadHits = hasRealFeat ? rawSquadHits : Math.round(dynamicVisits * 0.165);
+                const basePlannerHits = hasRealFeat ? rawPlannerHits : Math.round(dynamicVisits * 0.094);
+                const baseHofHits = hasRealFeat ? rawHofHits : Math.round(dynamicVisits * 0.061);
                 const totalFeatHits = Math.max(1, baseLiveHits + basePrizesHits + baseSquadHits + basePlannerHits + baseHofHits);
 
                 const modStandingsPct = ((baseLiveHits / totalFeatHits) * 100).toFixed(1);
@@ -1156,14 +1193,14 @@ export default {
                     hof: { count: baseHofHits, pct: modHofPct },
                   },
                   tabs: {
-                    live: { count: baseLiveHits, pct: modStandingsPct },
-                    highlight: { count: Math.round(dynamicVisits * 0.224) + featTabHighlight, pct: (( (Math.round(dynamicVisits * 0.224) + featTabHighlight) / totalFeatHits ) * 100).toFixed(1) },
+                    live: { count: featTabLive || baseLiveHits, pct: modStandingsPct },
+                    highlight: { count: featTabHighlight, pct: (((hasRealFeat ? featTabHighlight : Math.round(dynamicVisits * 0.224)) / totalFeatHits) * 100).toFixed(1) },
                     competition: { count: baseSquadHits, pct: modSquadPct },
-                    prizes: { count: basePrizesHits, pct: modPrizesPct },
-                    special: { count: Math.round(dynamicVisits * 0.051) + featTabSpecial, pct: (((Math.round(dynamicVisits * 0.051) + featTabSpecial) / totalFeatHits) * 100).toFixed(1) },
+                    prizes: { count: featTabPrizes || basePrizesHits, pct: modPrizesPct },
+                    special: { count: featTabSpecial, pct: (((hasRealFeat ? featTabSpecial : Math.round(dynamicVisits * 0.051)) / totalFeatHits) * 100).toFixed(1) },
                     hof_cup: { count: baseHofHits, pct: modHofPct },
                   },
-                  pitch_opens: 1840 + featPitchOpens,
+                  pitch_opens: featPitchOpens,
                 };
 
                 // Cloudflare D1 & Storage Telemetry
@@ -1212,14 +1249,19 @@ export default {
 
                 for (let ago = 23; ago >= 0; ago--) {
                   const t = new Date(now.getTime() - ago * 3600000);
+                  const { date: iDate, hour: iHour } = getIctNowParts(t);
                   const uDate = t.toISOString().split('T')[0];
-                  const iHour = (t.getUTCHours() + 7) % 24;
-                  const pfx = `telem:${uDate}`;
+                  const pfx = `telem:${iDate}`;
+                  const legacyPfx = (iHour < 7 && uDate <= '2026-11-16' && uDate !== iDate) ? `telem:${uDate}` : null;
                   const label = `${String(iHour).padStart(2, '0')}:00`;
-                  const visits = hourlyVisitsByUtcHour.get(`${uDate}:${iHour}`) || 0;
-                  const apiOk = metricMap.get(`${pfx}:api:ok:h:${iHour}`) || 0;
-                  const cErr = metricMap.get(`${pfx}:err:client:h:${iHour}`) || 0;
-                  const uErr = metricMap.get(`${pfx}:err:upstream:h:${iHour}`) || 0;
+                  const visits = (hourlyVisitsByUtcHour.get(`${iDate}:${iHour}`) || 0) +
+                    (legacyPfx ? (hourlyVisitsByUtcHour.get(`${uDate}:${iHour}`) || 0) : 0);
+                  const apiOk = (metricMap.get(`${pfx}:api:ok:h:${iHour}`) || 0) +
+                    (legacyPfx ? (metricMap.get(`${legacyPfx}:api:ok:h:${iHour}`) || 0) : 0);
+                  const cErr = (metricMap.get(`${pfx}:err:client:h:${iHour}`) || 0) +
+                    (legacyPfx ? (metricMap.get(`${legacyPfx}:err:client:h:${iHour}`) || 0) : 0);
+                  const uErr = (metricMap.get(`${pfx}:err:upstream:h:${iHour}`) || 0) +
+                    (legacyPfx ? (metricMap.get(`${legacyPfx}:err:upstream:h:${iHour}`) || 0) : 0);
                   const totalErr = cErr + uErr;
                   const activity = visits + apiOk;
                   const totalEvents = activity + totalErr;
@@ -1319,9 +1361,18 @@ export default {
                   errCats7d.upstream_5xx += (metricMap.get(`${pfx}:err:cat:upstream_5xx`) || 0) + (metricMap.get(`${pfx}:err:cat:upstream_picks`) || 0);
                 }
 
+                const todayIctPfx = `telem:${dates[0]}`;
+                const todayVisitsD1 = metricMap.get(`${todayIctPfx}:total_visits`) || 0;
+                const todayApiOkD1 = metricMap.get(`${todayIctPfx}:api:ok`) || 0;
+                const todayErrD1 = (metricMap.get(`${todayIctPfx}:err:client`) || 0) + (metricMap.get(`${todayIctPfx}:err:upstream`) || 0);
+                const estD1WritesToday = Math.min(
+                  (todayVisitsD1 * 5) + (todayApiOkD1 * 2) + (todayErrD1 * 3),
+                  100000
+                );
+
                 data.edge_telemetry = {
                   is_live: true,
-                  telemetry_model: 'calibrated_baseline_plus_live',
+                  telemetry_model: usePureRealTelemetry ? 'real_d1_live_7d' : 'fallback_prior',
                   baseline_visits_prior: baselineVisits,
                   raw_live_visits_7d: totalKvVisits,
                   lifetime_total_views: lifetimeTotalViews,
@@ -1353,7 +1404,7 @@ export default {
                   features: featuresSummary,
                   system_performance: {
                     d1_row_count: d1RowCount,
-                    d1_daily_writes_used: Math.min(Math.round((dynamicVisits / 7) * 4), 100000),
+                    d1_daily_writes_used: estD1WritesToday > 0 ? estD1WritesToday : Math.min(Math.round((dynamicVisits / 7) * 5), 100000),
                     d1_daily_writes_limit: 100000,
                     edge_cache_hit_pct: 96.4,
                     edge_avg_latency_ms: 140,
