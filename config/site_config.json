@@ -12,8 +12,9 @@
     "tier1_flexible_max_teams": 60,
     "standard": {
       "id": "standard",
-      "name_th": "Standard Tier 1",
-      "name_en": "Standard Tier 1",
+      "name_th": "Standard",
+      "name_en": "Standard",
+      "status": "active",
       "thb": 500,
       "usd": 19,
       "unit_th": "บาท / ฤดูกาล",
@@ -21,8 +22,9 @@
     },
     "custom": {
       "id": "custom",
-      "name_th": "Custom Tier 1",
-      "name_en": "Custom Tier 1",
+      "name_th": "Custom",
+      "name_en": "Custom",
+      "status": "roadmap",
       "thb": 900,
       "usd": 29,
       "unit_th": "บาท / ฤดูกาล",
@@ -80,5 +82,205 @@
       "desc_en": "High-scale 1,000+ team community preview with instant search & on-demand lineups",
       "plan": "tier2_roadmap"
     }
-  ]
+  ],
+  "landing_copy": {
+    "th": {
+      "brand_sub": "ศูนย์ควบคุมมินิลีก FPL",
+      "nav_features": "ฟีเจอร์หลัก",
+      "nav_demos": "ลีกตัวอย่างจริง",
+      "nav_pricing": "แพ็กเกจราคา",
+      "nav_order": "เปิดใช้งานลีก",
+      "nav_cta": "ลองเดโมสด",
+      "hero_badge": "อัปเดตสดทุก 15 วินาที",
+      "hero_h1_line1": "มินิลีกของคุณ",
+      "hero_h1_line2": "สดระดับห้องส่ง",
+      "hero_lead": "คะแนนสดเปลี่ยนตัวอัตโนมัติ เช็คชิปคู่แข่ง และสรุปเงินรางวัลครบ 38 วีค",
+      "hero_cta_primary": "เปิดใช้งานลีกทันที",
+      "hero_cta_secondary": "ดู 6 จอฟีเจอร์จริง",
+      "hero_metric_views": "ยอดเข้าชมระบบจริง",
+      "hero_metric_sync": "รอบอัปเดตสด",
+      "stats": [
+        { "value": "15 วิ", "label": "รีเฟรชคะแนนสด" },
+        { "value": "500฿", "label": "ต่อฤดูกาล (≤30 ทีม)" },
+        { "value": "0%", "label": "ไม่ต้องทำ Excel เอง" },
+        { "value": "38 GW", "label": "ปิดยอดจบซีซั่นให้" }
+      ],
+      "screens_heading": "6 หน้าจอหลักในห้องควบคุมลีก",
+      "screens_lead": "สลับดูทุกมุมมองที่ผู้จัดการลีกและสมาชิกใช้จริงตลอดสัปดาห์แข่งขัน (ภาพจำลองข้อมูลสมมติ สลับโหมดมืดและสว่าง)",
+      "screens_note": "ภาพหน้าจอจากระบบจริง ปรับชื่อลีกและผู้จัดการทีมเป็นข้อมูลสมมติ",
+      "screens": [
+        {
+          "key": "live",
+          "num": "01",
+          "theme": "Dark UI",
+          "tab": "คะแนนสด & ออโต้ซับ",
+          "title": "เช็คคะแนนสดพร้อมเปลี่ยนตัวอัตโนมัติทันเกม",
+          "desc": "เห็นแต้มดิบ คะแนนลบ และตัวสำรองที่รอลงสนามแทนตัวจริงที่ไม่ได้ลงเล่นแบบเรียลไทม์",
+          "spec": "รีเฟรชทุก 15 วินาที"
+        },
+        {
+          "key": "pitch",
+          "num": "02",
+          "theme": "Dark UI",
+          "tab": "แผน 11 ตัวจริง",
+          "title": "ส่องแผนจัดทัพ 11 ตัวจริงของทุกทีมในลีก",
+          "desc": "กดดูหน้าสนามเพื่อเทียบกัปตัน ฟอร์เมชัน และคะแนนตัวสำรองของคู่แข่งได้ในคลิกเดียว",
+          "spec": "เทียบผังสนามทุกทีม"
+        },
+        {
+          "key": "transfers",
+          "num": "03",
+          "theme": "Light UI",
+          "tab": "ย้ายตัว & ขุมกำลัง",
+          "title": "วิเคราะห์การซื้อขายนักเตะและกำไรแต้มสุทธิ",
+          "desc": "วัดผลทันทีว่าตัวที่ซื้อเข้ากับตัวที่ขายออกใครทำแต้มมากกว่า พร้อมสรุปดีลเด็ดประจำสัปดาห์",
+          "spec": "หักลบแต้มฮิตอัตโนมัติ"
+        },
+        {
+          "key": "chips",
+          "num": "04",
+          "theme": "Dark UI",
+          "tab": "สถานะชิปคู่แข่ง",
+          "title": "ติดตามสถานะชิปคงเหลือของทั้งลีกในตารางเดียว",
+          "desc": "เช็คทันทีว่าใครใช้ Wildcard, Free Hit, Triple Captain หรือ Bench Boost ไปแล้วในสัปดาห์ไหน",
+          "spec": "เห็นชิปครบ 4 ใบ"
+        },
+        {
+          "key": "prizes",
+          "num": "05",
+          "theme": "Light UI",
+          "tab": "เงินรางวัล & กองกลาง",
+          "title": "คำนวณเงินรางวัลรายสัปดาห์ รายเดือน และค่าปรับบ๊วย",
+          "desc": "ออกแบบตารางรับจ่ายยอดสุทธิ บริจาคการกุศล หรือหักยอดเข้ากองกลางอัตโนมัติ",
+          "spec": "ส่งออก Excel / LINE ได้"
+        },
+        {
+          "key": "radar",
+          "num": "06",
+          "theme": "Dark UI",
+          "tab": "เรดาร์ & ทำเนียบแชมป์",
+          "title": "บันทึกสถิติสูงสุดตลอดฤดูกาลและทำเนียบแชมป์",
+          "desc": "รวมคะแนนสูงสุดต่อสัปดาห์ สถิติครองแชมป์สัปดาห์มากที่สุด และความสม่ำเสมอตลอด 38 นัด",
+          "spec": "สถิติครบจบฤดูกาล"
+        }
+      ],
+      "demos_heading": "ลีกตัวอย่างจริงในระบบ",
+      "demos_lead": "กดเข้าชมแดชบอร์ดของลีกตัวอย่างจริงทั้ง 5 รูปแบบกติกา เปิดใช้งานได้ทันทีทั้งบนมือถือและคอมพิวเตอร์",
+      "demos_cta": "เปิดลีกจริง",
+      "pricing_heading": "แพ็กเกจเปิดใช้งานรายฤดูกาล",
+      "pricing_lead": "จ่ายครั้งเดียวดูแลครบทั้ง 38 Gameweeks สำหรับมินิลีกขนาดไม่เกิน 30 ทีม",
+      "pricing_std_badge": "พร้อมเปิดใช้งาน",
+      "pricing_std_desc": "เหมาะสำหรับลีกเพื่อนหรือออฟฟิศที่ใช้กติการางวัลรายสัปดาห์ รายเดือน ค่าปรับบ๊วย หรืออันดับรวมจบฤดูกาล",
+      "pricing_std_cta": "เลือก Standard",
+      "pricing_cus_badge": "Roadmap • กำลังพัฒนา",
+      "pricing_cus_desc": "อยู่ระหว่างพัฒนาระบบท้าชน (H2H) ระบบทายผล และกติกาเฉพาะลีกแบบอัตโนมัติ (แสดงผลเป็นแผนพัฒนา ยังไม่เปิดสั่งซื้อ)",
+      "pricing_cus_cta": "กำลังพัฒนา (Roadmap)",
+      "pricing_tier2_title": "ลีกใหญ่ 31 ทีมขึ้นไป (Enterprise / Community)",
+      "pricing_tier2_desc": "รองรับตั้งแต่ 31 ถึง 1,000+ ทีม พร้อมระบบค้นหาเร็วและจัดสายบอลถ้วย ประเมินราคาตามจำนวนทีมทาง LINE",
+      "order_heading": "สร้างข้อความสั่งเปิดลีกส่ง LINE",
+      "order_lead": "กรอกรหัส League ID จากเว็บไซต์ FPL ทางการ ระบบจะจัดข้อความสรุปรายการให้พร้อมส่งเข้า LINE ทันที",
+      "order_copy_btn": "คัดลอกข้อความสั่งซื้อ",
+      "order_line_btn": "เปิดแชท LINE",
+      "footer_note": "แดชบอร์ดอิสระสำหรับคอมมูนิตี้ Fantasy Premier League ไม่ใช่บริการอย่างเป็นทางการของ Premier League"
+    },
+    "en": {
+      "brand_sub": "FPL Mini-League Control Room",
+      "nav_features": "Features",
+      "nav_demos": "Live Demos",
+      "nav_pricing": "Pricing",
+      "nav_order": "Launch League",
+      "nav_cta": "Open Live Demo",
+      "hero_badge": "15s Live Feed",
+      "hero_h1_line1": "YOUR MINI-LEAGUE",
+      "hero_h1_line2": "LIVE BROADCAST",
+      "hero_lead": "Live auto-subs, rival chip tracking, and automated prize ledgers across 38 Gameweeks.",
+      "hero_cta_primary": "Launch Your League",
+      "hero_cta_secondary": "Explore 6 Live Screens",
+      "hero_metric_views": "Live System Views",
+      "hero_metric_sync": "Live Poll Cycle",
+      "stats": [
+        { "value": "15s", "label": "Live Poll Cycle" },
+        { "value": "500 THB", "label": "Season Pass (≤30 teams)" },
+        { "value": "0%", "label": "Manual Spreadsheets" },
+        { "value": "38 GW", "label": "Season Automation" }
+      ],
+      "screens_heading": "Six Live Views Inside Your League",
+      "screens_lead": "Switch through the core matchday modules used across the season, captured with anonymized clubs in alternating dark and light modes.",
+      "screens_note": "Real dashboard captures using fictional league IDs, clubs, and managers",
+      "screens": [
+        {
+          "key": "live",
+          "num": "01",
+          "theme": "Dark UI",
+          "tab": "Live & Auto-Subs",
+          "title": "Real-Time Points With Automatic Bench Substitutions",
+          "desc": "Follow raw scores, transfer hits, provisional bonus points, and projected bench auto-subs as matches unfold.",
+          "spec": "15s Matchday Poll"
+        },
+        {
+          "key": "pitch",
+          "num": "02",
+          "theme": "Dark UI",
+          "tab": "11-Player Pitch",
+          "title": "Inspect Full Starting Lineups and Captaincy Choices",
+          "desc": "Open any manager pitch modal to compare formations, active captains, vice-captains, and bench depth.",
+          "spec": "Full Pitch Modal"
+        },
+        {
+          "key": "transfers",
+          "num": "03",
+          "theme": "Light UI",
+          "tab": "Transfers Analytics",
+          "title": "Net Transfer Gain and Squad Move Breakdown",
+          "desc": "Measure points gained versus sold players after deducting hits across every squad in the league.",
+          "spec": "Net Hit Audit"
+        },
+        {
+          "key": "chips",
+          "num": "04",
+          "theme": "Dark UI",
+          "tab": "Chips Tracker",
+          "title": "League-Wide Chip Availability Matrix",
+          "desc": "Verify remaining Wildcard, Free Hit, Triple Captain, and Bench Boost chips before locking transfers.",
+          "spec": "All 4 Chips Tracked"
+        },
+        {
+          "key": "prizes",
+          "num": "05",
+          "theme": "Light UI",
+          "tab": "Prize Ledger",
+          "title": "Automated Weekly, Monthly, and Season Prize Ledger",
+          "desc": "Clean payout and penalty sheets supporting podium splits, charity pools, and zero-sum settlements.",
+          "spec": "Excel & LINE Export"
+        },
+        {
+          "key": "radar",
+          "num": "06",
+          "theme": "Dark UI",
+          "tab": "Hall of Fame",
+          "title": "Season Records, Consistency Metrics, and Honors",
+          "desc": "Preserve weekly high scores, number-one podium counts, bench records, and consistency variance all season.",
+          "spec": "All-Season Records"
+        }
+      ],
+      "demos_heading": "Real Live Demo Leagues",
+      "demos_lead": "Open five live production-style demo leagues covering weekly, monthly, penalty, zero-sum, and Tier 2 community formats.",
+      "demos_cta": "Open Live League",
+      "pricing_heading": "Simple Per-Season Pricing",
+      "pricing_lead": "One season pass covers all 38 Gameweeks for leagues up to 30 teams.",
+      "pricing_std_badge": "Ready to Launch",
+      "pricing_std_desc": "Built for friend and office mini-leagues with weekly, monthly, bottom-penalty, or season podium rankings.",
+      "pricing_std_cta": "Select Standard",
+      "pricing_cus_badge": "Roadmap • Coming Soon",
+      "pricing_cus_desc": "Currently building automated Head-to-Head challenges, weekly match predictions, and bespoke rulesets (preview only).",
+      "pricing_cus_cta": "On Roadmap (Not Yet Open)",
+      "pricing_tier2_title": "Large Leagues (31+ Teams)",
+      "pricing_tier2_desc": "Supports 31 to 1,000+ entries with fast roster search and bracket automation via LINE quote.",
+      "order_heading": "Build Your LINE Order Slip",
+      "order_lead": "Enter your official FPL League ID to generate a formatted setup slip ready to paste in our LINE chat.",
+      "order_copy_btn": "Copy Order Slip",
+      "order_line_btn": "Open LINE Chat",
+      "footer_note": "Independent Fantasy Premier League companion dashboard. Not affiliated with the Premier League."
+    }
+  }
 }

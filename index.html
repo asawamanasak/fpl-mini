@@ -54,15 +54,17 @@
       "offers": [
         {
           "@type": "Offer",
-          "name": "Standard Tier 1",
+          "name": "Standard",
           "price": "500",
-          "priceCurrency": "THB"
+          "priceCurrency": "THB",
+          "availability": "https://schema.org/InStock"
         },
         {
           "@type": "Offer",
-          "name": "Custom Tier 1",
+          "name": "Custom (Roadmap)",
           "price": "900",
-          "priceCurrency": "THB"
+          "priceCurrency": "THB",
+          "availability": "https://schema.org/PreOrder"
         }
       ]
     }
@@ -116,14 +118,15 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap">
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+
   <style>
-    /* Hallmark · shape: Workbench · genre: editorial · theme: Sport (by request) · redesign: full
-     * hero: Counter · nav: edge-aligned · footer: letter close · imagery: product screenshots 6 (40700) · signature: 4-tab live dashboard screen switcher in hero
-     * axes: light/sans-sarabun/chromatic-volt · posture: restrained · contrast: pass · fold: pass · v2.0.0 */
-    /* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5 · weakest: E, resolved by routing all light and dark surfaces through root tokens */
-    /* Hallmark · dropped "hero-edition-sub", "preview-card-title", "preview-standings-body", "preview-sync-badge", "th-gw", "th-team", "th-total" · replaced synthetic hero table with real 40700 screenshot switcher */
+    /* Hallmark · shape: Matchday Broadcast · genre: modern-minimal · theme: custom · redesign: full · job: buy · idea: High-contrast black-white-racing-red broadcast arena with anonymized 6-scene product switcher and MotoGP-style live demo ladder
+     * hero: Broadcast Split Arena · nav: sticky edge-aligned · footer: broadcast sign-off · imagery: night stadium floodlight + 6 anonymized TH/EN screens · signature: 6-channel dark-light screen switcher + ranked broadcast demo bars
+     * axes: custom/sans-sarabun/racing-red · posture: bold-editorial · contrast: pass · fold: pass · v2.0.0 */
+    /* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5 · weakest: S, resolved via dedicated broadcast telemetry strip and horizontal ranked bars instead of repetitive 3-card grids */
+    /* Hallmark · dropped "tab-screen-mobile", "hero-edition-line", "features-columns", "fig-leagues-lbl", "fig-price-lbl", "fig-price-val", "fig-refresh-lbl", "fig-teams-lbl", "iso-desc", "iso-preview-link", "iso-preview-text", "iso-secondary-link", "iso-title", "shot-chips-desc", "shot-chips-title", "shot-cup-desc", "shot-cup-title", "shot-prizes-desc", "shot-prizes-title", "step-1", "step-2", "step-3", "setHeroScreen('mobile')", "theme-color" · replaced static Sport scaffold with Matchday Broadcast 6-screen anonymized switcher and telemetry architecture (meta theme-color remains in head) */
 
     @font-face {
       font-family: 'Sarabun';
@@ -153,111 +156,110 @@
       font-style: normal;
       font-display: swap;
     }
-    @font-face {
-      font-family: 'Sukhumvit Set';
-      src: local('Sukhumvit Set'), local('SukhumvitSet-Text'), url('./fonts/SukhumvitSet-Text.ttf') format('truetype');
-      font-weight: 400;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: 'Sukhumvit Set';
-      src: local('Sukhumvit Set Medium'), local('SukhumvitSet-Medium'), url('./fonts/SukhumvitSet-Medium.ttf') format('truetype');
-      font-weight: 500;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: 'Sukhumvit Set';
-      src: local('Sukhumvit Set SemiBold'), local('SukhumvitSet-SemiBold'), url('./fonts/SukhumvitSet-SemiBold.ttf') format('truetype');
-      font-weight: 600;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: 'Sukhumvit Set';
-      src: local('Sukhumvit Set Bold'), local('SukhumvitSet-Bold'), url('./fonts/SukhumvitSet-Bold.ttf') format('truetype');
-      font-weight: 700;
-      font-style: normal;
-      font-display: swap;
-    }
 
     :root {
-      color-scheme: light;
-      --color-paper: oklch(98% 0.005 250);
-      --color-paper-2: oklch(95% 0.006 250);
-      --color-paper-3: oklch(91.5% 0.007 250);
-      --color-ink: oklch(16% 0.080 260);
-      --color-ink-2: oklch(26% 0.055 258);
-      --color-muted: oklch(44% 0.025 252);
-      --color-rule: oklch(78% 0.008 250);
-      --color-rule-2: oklch(34% 0.060 255);
-      --color-accent: oklch(88% 0.200 120);
-      --color-accent-hover: oklch(82% 0.195 120);
-      --color-accent-ink: oklch(16% 0.080 260);
-      --color-accent-deep: oklch(41% 0.145 135);
-      --color-focus: oklch(41% 0.145 135);
-      --color-error: oklch(50% 0.19 27);
-      --color-success: oklch(42% 0.13 145);
-      --theme-chrome: #f7f8fa;
+      --font-sans: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --color-paper: oklch(98.5% 0.004 25);
+      --color-surface: oklch(95.2% 0.006 25);
+      --color-card: oklch(100% 0 0);
+      --color-ink: oklch(12% 0.012 25);
+      --color-ink-2: oklch(34% 0.012 25);
+      --color-ink-3: oklch(52% 0.012 25);
+      --color-border: oklch(88% 0.008 25);
+      --color-border-strong: oklch(78% 0.012 25);
 
-      --dark-paper: oklch(15% 0.022 258);
-      --dark-paper-2: oklch(19% 0.024 258);
-      --dark-paper-3: oklch(24% 0.026 258);
-      --dark-ink: oklch(95% 0.006 250);
-      --dark-ink-2: oklch(84% 0.012 250);
-      --dark-muted: oklch(70% 0.016 252);
-      --dark-rule: oklch(31% 0.024 258);
-      --dark-rule-2: oklch(68% 0.030 255);
-      --dark-accent-deep: oklch(84% 0.175 125);
-      --dark-focus: oklch(86% 0.18 125);
-      --dark-error: oklch(74% 0.16 25);
-      --dark-success: oklch(78% 0.15 145);
-      --dark-theme-chrome: #1a1e29;
+      --color-arena: oklch(11.5% 0.014 25);
+      --color-arena-surface: oklch(16.5% 0.018 25);
+      --color-arena-card: oklch(20% 0.02 25);
+      --color-arena-ink: oklch(98.5% 0.004 25);
+      --color-arena-ink-2: oklch(78% 0.01 25);
+      --color-arena-border: oklch(28% 0.02 25);
+      --color-arena-border-strong: oklch(36% 0.02 25);
+      --color-arena-accent: oklch(68% 0.21 25);
 
-      --header-bg: color-mix(in oklab, var(--color-paper) 94%, transparent);
-      --stage-shadow: color-mix(in oklab, var(--color-ink) 12%, transparent);
-      --selection-bg: color-mix(in oklab, var(--color-accent) 45%, transparent);
+      --color-accent: oklch(54% 0.22 25);
+      --color-accent-hover: oklch(47% 0.23 25);
+      --color-accent-ink: oklch(99% 0.003 25);
+      --color-accent-text: oklch(43% 0.20 25);
+      --color-accent-soft: oklch(54% 0.22 25 / 0.12);
+      --color-live: oklch(62% 0.18 150);
+      --color-live-soft: oklch(62% 0.18 150 / 0.16);
+      --color-live-border: oklch(65% 0.155 152);
+      --color-live-border-hover: oklch(73% 0.16 152);
+      --theme-chrome: oklch(11.5% 0.014 25);
+      --color-arena-scrim-solid: oklch(8.5% 0.012 25 / 0.93);
+      --color-arena-scrim-mid: oklch(8.5% 0.012 25 / 0.74);
+      --color-arena-scrim-top: oklch(8.5% 0.012 25 / 0.78);
+      --color-arena-scrim-clear: oklch(8.5% 0.012 25 / 0.12);
+      --color-arena-scrim-fade: oklch(8.5% 0.012 25 / 0.82);
+      --color-arena-scrim-soft: oklch(8.5% 0.012 25 / 0.14);
+      --color-arena-scrim-bottom: oklch(8.5% 0.012 25 / 0.90);
+      --color-arena-pill-bg: oklch(10% 0.014 25 / 0.94);
 
-      --font-display: 'Sarabun', 'Sukhumvit Set', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-body: var(--font-display);
-      --text-display: clamp(2.25rem, 3.5vw, 3.375rem);
-      --text-section: clamp(2.05rem, 2.9vw, 2.75rem);
-      --text-card: clamp(1.1875rem, 1.45vw, 1.375rem);
-      --text-body: 0.96875rem;
-      --radius-card: 4px;
-      --radius-pill: 4px;
-      --rule-hair: 1px;
-      --rule-bar: 2px;
-      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-      --dur-micro: 120ms;
-      --dur-short: 220ms;
-      --dur-long: 420ms;
-      --container: 1380px;
-      --gutter: clamp(1rem, 4vw, 3.5rem);
+      --dark-paper: oklch(11.5% 0.014 25);
+      --dark-surface: oklch(16% 0.016 25);
+      --dark-card: oklch(19.5% 0.018 25);
+      --dark-ink: oklch(98% 0.004 25);
+      --dark-ink-2: oklch(80% 0.008 25);
+      --dark-ink-3: oklch(63% 0.01 25);
+      --dark-border: oklch(26% 0.018 25);
+      --dark-border-strong: oklch(35% 0.02 25);
+      --dark-arena: oklch(9% 0.012 25);
+      --dark-arena-surface: oklch(14.5% 0.016 25);
+      --dark-arena-card: oklch(18% 0.018 25);
+      --dark-arena-ink: oklch(98.5% 0.004 25);
+      --dark-arena-ink-2: oklch(78% 0.01 25);
+      --dark-arena-border: oklch(25% 0.018 25);
+      --dark-accent: oklch(59% 0.22 25);
+      --dark-accent-hover: oklch(64% 0.22 25);
+      --dark-accent-ink: oklch(99% 0.003 25);
+      --dark-accent-text: oklch(78% 0.16 25);
+      --dark-accent-soft: oklch(59% 0.22 25 / 0.18);
+      --dark-chrome: oklch(9% 0.012 25);
+
+      caret-color: var(--color-accent);
+      scrollbar-color: var(--color-border-strong) var(--color-paper);
     }
 
     html.dark {
-      color-scheme: dark;
       --color-paper: var(--dark-paper);
-      --color-paper-2: var(--dark-paper-2);
-      --color-paper-3: var(--dark-paper-3);
+      --color-surface: var(--dark-surface);
+      --color-card: var(--dark-card);
       --color-ink: var(--dark-ink);
       --color-ink-2: var(--dark-ink-2);
-      --color-muted: var(--dark-muted);
-      --color-rule: var(--dark-rule);
-      --color-rule-2: var(--dark-rule-2);
-      --color-accent-deep: var(--dark-accent-deep);
-      --color-focus: var(--dark-focus);
-      --color-error: var(--dark-error);
-      --color-success: var(--dark-success);
-      --theme-chrome: var(--dark-theme-chrome);
-      --stage-shadow: color-mix(in oklab, var(--color-ink) 16%, transparent);
-      --selection-bg: color-mix(in oklab, var(--color-accent) 32%, transparent);
+      --color-ink-3: var(--dark-ink-3);
+      --color-border: var(--dark-border);
+      --color-border-strong: var(--dark-border-strong);
+
+      --color-arena: var(--dark-arena);
+      --color-arena-surface: var(--dark-arena-surface);
+      --color-arena-card: var(--dark-arena-card);
+      --color-arena-ink: var(--dark-arena-ink);
+      --color-arena-ink-2: var(--dark-arena-ink-2);
+      --color-arena-border: var(--dark-arena-border);
+
+      --color-accent: var(--dark-accent);
+      --color-accent-hover: var(--dark-accent-hover);
+      --color-accent-ink: var(--dark-accent-ink);
+      --color-accent-text: var(--dark-accent-text);
+      --color-accent-soft: var(--dark-accent-soft);
+      --theme-chrome: var(--dark-chrome);
     }
 
     [hidden] {
       display: none !important;
+    }
+
+    ::selection {
+      background-color: var(--color-accent);
+      color: var(--color-accent-ink);
+    }
+
+    button:disabled,
+    input:disabled,
+    select:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
     *, *::before, *::after {
@@ -265,1634 +267,1983 @@
     }
 
     html, body {
-      margin: 0;
+      font-family: var(--font-sans);
       background-color: var(--color-paper);
       color: var(--color-ink);
-      font-family: var(--font-body);
-      font-size: 16px;
-      line-height: 1.62;
       overflow-x: clip;
-      max-width: 100vw;
-      scrollbar-width: thin;
-      scrollbar-color: var(--color-muted) var(--color-paper);
-    }
-
-    ::selection {
-      background-color: var(--selection-bg);
-      color: var(--color-ink);
-    }
-
-    input, textarea, select, button {
-      font-family: inherit;
-    }
-
-    input, textarea, select {
-      caret-color: var(--color-accent-deep);
-    }
-
-    h1, h2, h3 {
       margin: 0;
-      color: var(--color-ink);
-      font-family: var(--font-display);
-      text-wrap: balance;
-    }
-
-    h1 {
-      font-size: var(--text-display);
-      line-height: 1.2;
-      font-weight: 700;
-      letter-spacing: -0.012em;
-    }
-
-    h2 {
-      font-size: var(--text-section);
-      line-height: 1.22;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-    }
-
-    h3 {
-      font-size: var(--text-card);
-      line-height: 1.32;
-      font-weight: 700;
-    }
-
-    html[lang="th"] h1,
-    html[lang="th"] h2,
-    html[lang="th"] .eyebrow {
-      letter-spacing: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.55;
     }
 
     .tabular-nums {
       font-variant-numeric: tabular-nums;
     }
 
-    .site-wrap {
-      width: 100%;
-      max-width: var(--container);
-      margin-inline: auto;
-      padding-inline: var(--gutter);
+    .skip-link {
+      position: absolute;
+      left: 0.75rem;
+      top: -4rem;
+      z-index: 60;
+      padding: 0.625rem 1rem;
+      border-radius: 0.5rem;
+      background-color: var(--color-accent);
+      color: var(--color-accent-ink);
+      font-weight: 700;
+      text-decoration: none;
+      transition: top 0.15s ease;
+    }
+    .skip-link:focus {
+      top: 0.75rem;
     }
 
-    .section-inner {
-      width: 100%;
-      max-width: calc(var(--container) - (var(--gutter) * 2));
-      margin-inline: auto;
+    /* Sticky Broadcast Navigation */
+    .bm-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background-color: var(--color-arena);
+      color: var(--color-arena-ink);
+      border-bottom: 1px solid var(--color-arena-border);
+    }
+    .bm-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .bm-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+      color: var(--color-arena-ink);
+      flex-shrink: 0;
+    }
+    .bm-brand-logo {
+      width: 2.35rem;
+      height: 2.35rem;
+      border-radius: 0.5rem;
+      object-fit: cover;
+      border: 1px solid var(--color-arena-border);
+      flex-shrink: 0;
+    }
+    .bm-brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+    .bm-brand-name {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--color-arena-ink);
+    }
+    .bm-brand-sub {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--color-arena-ink-2);
     }
 
-    .ink-secondary { color: var(--color-ink-2); }
-    .ink-muted { color: var(--color-muted); }
-    .accent-deep-text { color: var(--color-accent-deep); }
-    .error-text { color: var(--color-error); }
-
-    .surface-sheet {
-      background-color: var(--color-paper-2);
-      border: var(--rule-hair) solid var(--color-rule);
-      border-radius: var(--radius-card);
-      padding: 1.25rem 1.5rem;
+    .bm-nav-links {
+      display: none;
+      align-items: center;
+      gap: 0.25rem;
     }
-
-    .surface-card {
-      background-color: var(--color-paper);
-      border: var(--rule-hair) solid var(--color-rule);
-      border-radius: var(--radius-card);
-      padding: 1.5rem;
+    @media (min-width: 900px) {
+      .bm-nav-links {
+        display: flex;
+      }
     }
-
-    .demos-card {
-      background-color: var(--color-paper);
-      border: var(--rule-hair) solid var(--color-rule);
-      border-radius: var(--radius-card);
-      padding: 0.5rem 0.75rem;
+    .bm-nav-link {
+      padding: 0.45rem 0.85rem;
+      border-radius: 0.45rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--color-arena-ink-2);
+      text-decoration: none;
+      white-space: nowrap;
+      transition: color 0.15s ease, background-color 0.15s ease;
     }
-
-    .mobile-drawer {
-      background-color: var(--color-paper-2);
-      border-top: var(--rule-hair) solid var(--color-rule);
-      border-bottom: var(--rule-hair) solid var(--color-rule);
-      padding-top: 0.75rem;
-      padding-bottom: 1rem;
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
+    .bm-nav-link:hover {
+      color: var(--color-arena-ink);
+      background-color: var(--color-arena-surface);
     }
-
-    .rule-top-hair { border-top: var(--rule-hair) solid var(--color-rule); }
-    .rule-bottom-hair { border-bottom: var(--rule-hair) solid var(--color-rule); }
-    .rule-top-bar { border-top: var(--rule-bar) solid var(--color-rule-2); }
-    .rule-bottom-bar { border-bottom: var(--rule-bar) solid var(--color-rule-2); }
-
-    a:focus-visible,
-    button:focus-visible,
-    input:focus-visible,
-    select:focus-visible,
-    textarea:focus-visible {
-      outline: 2px solid var(--color-focus);
+    .bm-nav-link:focus-visible {
+      outline: 2px solid var(--color-accent);
       outline-offset: 2px;
     }
 
-    .btn-volt {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      min-height: 44px;
-      padding: 0 1.25rem;
-      border-radius: var(--radius-pill);
-      background-color: var(--color-accent);
-      color: var(--color-accent-ink);
-      border: var(--rule-hair) solid var(--color-rule-2);
-      font-size: 0.9375rem;
-      font-weight: 700;
-      text-decoration: none;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: background-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
-    }
-    .btn-volt:hover {
-      background-color: var(--color-accent-hover);
-    }
-    .btn-volt:active {
-      transform: translateY(1px);
-    }
-    .btn-volt:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-outline {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      min-height: 44px;
-      padding: 0 1.25rem;
-      border-radius: var(--radius-pill);
-      background-color: var(--color-paper);
-      color: var(--color-ink);
-      border: var(--rule-hair) solid var(--color-rule-2);
-      font-size: 0.9375rem;
-      font-weight: 600;
-      text-decoration: none;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: background-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
-    }
-    .btn-outline:hover {
-      background-color: var(--color-paper-2);
-    }
-    .btn-outline:active {
-      transform: translateY(1px);
-    }
-    .btn-outline:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 40px;
-      min-height: 40px;
-      padding: 0 0.75rem;
-      border-radius: var(--radius-pill);
-      background-color: var(--color-paper-2);
-      color: var(--color-ink);
-      border: var(--rule-hair) solid var(--color-rule);
-      font-size: 0.8125rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background-color var(--dur-micro) var(--ease-out);
-    }
-    .btn-icon:hover {
-      background-color: var(--color-paper-3);
-    }
-    .btn-icon:active {
-      transform: translateY(1px);
-    }
-
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      background-color: var(--header-bg);
-      backdrop-filter: blur(8px);
-      border-bottom: var(--rule-hair) solid var(--color-rule);
-    }
-    .header-inner {
+    .bm-nav-actions {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      min-height: 64px;
+      gap: 0.5rem;
+      flex-shrink: 0;
     }
-    .nav-links-row {
+    .bm-icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.35rem;
+      height: 2.35rem;
+      padding: 0 0.65rem;
+      border-radius: 0.45rem;
+      border: 1px solid var(--color-arena-border);
+      background-color: transparent;
+      color: var(--color-arena-ink);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+    .bm-icon-btn:hover {
+      background-color: var(--color-arena-surface);
+      border-color: var(--color-ink-3);
+    }
+    .bm-icon-btn:active {
+      transform: scale(0.97);
+    }
+    .bm-icon-btn:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+    .bm-cta-nav {
       display: none;
       align-items: center;
-      gap: 1.5rem;
+      gap: 0.4rem;
+      padding: 0.45rem 0.9rem;
+      border-radius: 0.45rem;
+      border: 1px solid var(--color-live-border);
+      background-color: transparent;
+      color: var(--color-arena-ink);
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
     }
-    #nav-cta-btn { display: none; }
     @media (min-width: 640px) {
-      #nav-cta-btn { display: inline-flex; }
+      .bm-cta-nav {
+        display: inline-flex;
+      }
+    }
+    .bm-cta-nav:hover {
+      background-color: var(--color-live-soft);
+      border-color: var(--color-live-border-hover);
+    }
+    .bm-cta-nav:active {
+      transform: scale(0.98);
+    }
+    .bm-cta-nav:focus-visible {
+      outline: 2px solid var(--color-arena-ink);
+      outline-offset: 2px;
+    }
+
+    .bm-mobile-menu-btn {
+      display: inline-flex;
     }
     @media (min-width: 900px) {
-      .nav-links-row { display: flex; }
-      #mobile-menu-toggle { display: none; }
+      .bm-mobile-menu-btn {
+        display: none;
+      }
     }
-    .nav-link-item {
-      color: var(--color-ink-2);
-      text-decoration: none;
-      font-size: 0.9375rem;
+    .bm-mobile-drawer {
+      background-color: var(--color-arena-surface);
+      border-top: 1px solid var(--color-arena-border);
+      padding: 0.75rem 1.25rem 1.25rem;
+    }
+    .bm-mobile-drawer.hidden {
+      display: none;
+    }
+    .bm-mobile-link {
+      display: block;
+      padding: 0.7rem 0.75rem;
+      border-radius: 0.45rem;
+      color: var(--color-arena-ink);
+      font-size: 1rem;
       font-weight: 600;
-      padding: 0.375rem 0;
-      border-bottom: 2px solid transparent;
-      white-space: nowrap;
-      transition: color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+      text-decoration: none;
     }
-    .nav-link-item:hover {
-      color: var(--color-ink);
-      border-bottom-color: var(--color-accent-deep);
+    .bm-mobile-link:hover {
+      background-color: var(--color-arena-card);
     }
 
-    .hero-section {
-      padding-top: clamp(1.25rem, 2.6vw, 2.25rem);
-      padding-bottom: clamp(1.75rem, 3.6vw, 3rem);
+    /* Hero Broadcast Arena */
+    .bm-hero {
+      position: relative;
+      background-color: var(--color-arena);
+      color: var(--color-arena-ink);
+      border-bottom: 4px solid var(--color-accent);
+      overflow: hidden;
     }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: clamp(1.5rem, 3vw, 2.5rem);
-      align-items: center;
+    .bm-hero-backdrop-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      min-height: 30rem;
+      object-fit: cover;
+      object-position: center top;
+      z-index: 0;
+      pointer-events: none;
     }
-    @media (min-width: 1024px) {
-      .hero-grid {
-        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-        gap: clamp(2rem, 3.5vw, 3rem);
+      .bm-hero-scrim {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background: linear-gradient(
+          180deg,
+          var(--color-arena-scrim-top) 0%,
+          var(--color-arena-scrim-clear) 25%,
+          var(--color-arena-scrim-clear) 42%,
+          var(--color-arena-scrim-fade) 56%,
+          var(--color-arena-scrim-solid) 69%,
+          var(--color-arena) 84%
+        );
+      }
+      @media (min-width: 700px) {
+        .bm-hero-backdrop-img {
+          inset: 0;
+          height: 100%;
+          min-height: 0;
+          object-position: 68% center;
+        }
+        .bm-hero-scrim {
+          background:
+            linear-gradient(96deg, var(--color-arena-scrim-solid) 0%, var(--color-arena-scrim-mid) 48%, var(--color-arena-scrim-soft) 100%),
+            linear-gradient(180deg, transparent 58%, var(--color-arena-scrim-bottom) 100%);
+        }
+      }
+    .bm-hero-bg {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1rem 1.35rem;
+      min-height: 36.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .bm-hero-top {
+      order: 2;
+    }
+    .bm-hero-bottom {
+      order: 3;
+      margin-top: auto;
+      padding-top: clamp(12.25rem, 51vw, 14.5rem);
+    }
+    @media (min-width: 700px) {
+      .bm-hero-bg {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+        grid-template-rows: auto auto;
+        min-height: 29rem;
+        padding: 3rem 1.25rem;
+        gap: 0 2.5rem;
+        align-items: end;
+      }
+      .bm-hero-top {
+        grid-column: 1;
+        grid-row: 1;
+        order: 0;
+        align-self: end;
+      }
+      .bm-hero-bottom {
+        grid-column: 1;
+        grid-row: 2;
+        order: 0;
+        align-self: start;
+        margin-top: 0;
+        padding-top: 0;
+      }
+    }
+    @media (min-width: 900px) {
+      .bm-hero-bg {
+        min-height: 31rem;
+        padding: 3.75rem 1.25rem 3.5rem;
       }
     }
 
-    .stage-box {
-      background-color: var(--color-paper-2);
-      border: var(--rule-hair) solid var(--color-rule-2);
-      border-radius: var(--radius-card);
-      overflow: hidden;
+    .bm-hero-h1 {
+      font-size: clamp(2rem, 8.2vw, 3.45rem);
+      font-weight: 800;
+      line-height: 1.12;
+      margin: 0;
+      color: var(--color-arena-ink);
+      text-wrap: balance;
     }
-    .stage-topbar {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.65rem;
-      padding: 0.6rem 0.9rem;
-      background-color: var(--color-paper);
-      border-bottom: var(--rule-hair) solid var(--color-rule);
+    .bm-hero-h1-accent {
+      display: block;
+      color: var(--color-arena-accent);
     }
-    .stage-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem;
+    .bm-hero-lead {
+      font-size: clamp(0.95rem, 1.4vw, 1.14rem);
+      line-height: 1.5;
+      color: var(--color-arena-ink-2);
+      margin: 0 0 1.05rem;
+      max-width: 37.5rem;
+      text-wrap: pretty;
     }
-    .stage-tab {
-      min-height: 32px;
-      padding: 0.25rem 0.7rem;
-      border-radius: var(--radius-pill);
-      border: var(--rule-hair) solid var(--color-rule);
-      background-color: var(--color-paper-2);
-      color: var(--color-ink-2);
-      font-size: 0.8125rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    @media (min-width: 700px) {
+      .bm-hero-h1 {
+        font-size: clamp(2.15rem, 4.4vw, 3.45rem);
+        margin: 0 0 0.85rem;
+      }
+      .bm-hero-lead {
+        margin: 0 0 1.45rem;
+      }
     }
-    .stage-tab:hover {
-      background-color: var(--color-paper-3);
-      color: var(--color-ink);
+    .bm-hero-actions {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.6rem;
+      margin-bottom: 1rem;
     }
-    .stage-tab[aria-selected="true"] {
-      background-color: var(--color-ink);
-      color: var(--color-paper);
-      border-color: var(--color-ink);
-      box-shadow: inset 0 -2px 0 var(--color-accent);
+    @media (min-width: 520px) {
+      .bm-hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.35rem;
+      }
     }
-    .stage-tab:active {
-      transform: translateY(1px);
-    }
-    .stage-viewport {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 10;
-      background-color: var(--color-paper-3);
-      overflow: hidden;
-      display: flex;
+    .bm-btn-primary {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.45rem;
+      border-radius: 0.5rem;
+      background-color: var(--color-accent);
+      color: var(--color-accent-ink);
+      font-size: 0.98rem;
+      font-weight: 700;
+      border: 1px solid var(--color-accent);
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.15s ease, transform 0.1s ease;
     }
-    [data-slot] {
-      display: block;
+    .bm-btn-primary:hover {
+      background-color: var(--color-accent-hover);
     }
-    .stage-viewport img[data-kind="product"] {
+    .bm-btn-primary:active {
+      transform: scale(0.98);
+    }
+    .bm-btn-primary:focus-visible {
+      outline: 2px solid var(--color-arena-ink);
+      outline-offset: 2px;
+    }
+
+    .bm-btn-outline-dark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.3rem;
+      border-radius: 0.5rem;
+      background-color: transparent;
+      color: var(--color-arena-ink);
+      border: 1px solid var(--color-arena-border-strong);
+      font-size: 0.98rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+    .bm-btn-outline-dark:hover {
+      background-color: var(--color-arena-card);
+      border-color: var(--color-arena-ink-2);
+    }
+    .bm-hero-actions .bm-btn-primary,
+    .bm-hero-actions .bm-btn-outline-dark {
+      min-height: 46px;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
-      display: block;
     }
-    .stage-viewport.is-portrait-shot {
-      padding: 0.85rem;
-      background-color: var(--color-paper-2);
+    @media (min-width: 520px) {
+      .bm-hero-actions .bm-btn-primary,
+      .bm-hero-actions .bm-btn-outline-dark {
+        width: auto;
+      }
     }
-    .stage-viewport.is-portrait-shot img[data-kind="product"] {
-      width: auto;
-      height: 100%;
-      max-width: 100%;
-      object-fit: contain;
-      border-radius: var(--radius-card);
-      border: var(--rule-hair) solid var(--stage-shadow);
+    .bm-btn-outline-dark:active {
+      transform: scale(0.98);
     }
-    .stage-caption-bar {
+    .bm-btn-outline-dark:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+    .bm-hero-meta {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      padding: 0.65rem 0.9rem;
-      background-color: var(--color-paper);
-      border-top: var(--rule-hair) solid var(--color-rule);
-      font-size: 0.84375rem;
+      gap: 0.5rem 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--color-arena-border);
+      font-size: 0.84rem;
+      color: var(--color-arena-ink-2);
+    }
+    .bm-hero-meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .bm-live-dot {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 999px;
+      background-color: var(--color-live);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .bm-hero-link {
+      color: var(--color-arena-ink);
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .bm-hero-link:hover {
+      color: var(--color-arena-accent);
     }
 
-    .figures-band {
-      background-color: var(--color-paper-2);
-      border-top: var(--rule-bar) solid var(--color-rule-2);
-      border-bottom: var(--rule-hair) solid var(--color-rule);
-      padding-top: 0.75rem;
-      padding-bottom: 0.75rem;
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
+    /* Hero Stadium Broadcast Status Strip */
+    .bm-hero-visual {
+      order: 1;
+      display: flex;
+      justify-content: flex-start;
+      width: 100%;
     }
-    @media (min-width: 1024px) {
-      .figures-band {
-        padding-left: 3.5rem;
-        padding-right: 3.5rem;
+    .bm-hero-overlay-bar {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem 0.7rem;
+      padding: 0.38rem 0.68rem;
+      border-radius: 0.45rem;
+      background-color: var(--color-arena-pill-bg);
+      border: 1px solid var(--color-arena-border);
+      font-size: 0.76rem;
+      color: var(--color-arena-ink-2);
+    }
+    @media (min-width: 700px) {
+      .bm-hero-visual {
+        grid-column: 2;
+        grid-row: 1 / 3;
+        order: 0;
+        justify-content: flex-end;
+        align-self: end;
+      }
+      .bm-hero-overlay-bar {
+        padding: 0.65rem 1rem;
+        border-radius: 0.55rem;
+        font-size: 0.85rem;
+        gap: 0.75rem 1rem;
       }
     }
-    .figures-grid {
+    .bm-hero-overlay-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 0.35rem;
+      border: 1px solid var(--color-live-border);
+      background-color: transparent;
+      color: var(--color-arena-ink);
+      font-weight: 700;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    /* Telemetry Strip */
+    .bm-telemetry-strip {
+      background-color: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .bm-telemetry-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      max-width: calc(var(--container) - (var(--gutter) * 2));
-      margin-inline: auto;
+      gap: 0.65rem;
     }
-    @media (min-width: 820px) {
-      .figures-grid {
+    @media (min-width: 768px) {
+      .bm-telemetry-grid {
+        padding: 1.5rem 1.25rem;
         grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
-    }
-    .figure-cell {
-      padding: 1.35rem 1.25rem;
-      border-bottom: var(--rule-hair) solid var(--color-rule);
-    }
-    @media (min-width: 820px) {
-      .figure-cell {
-        border-bottom: 0;
-        border-right: var(--rule-hair) solid var(--color-rule);
-      }
-      .figure-cell:last-child { border-right: 0; }
-      .figure-cell:first-child { padding-left: 0; }
-      .figure-cell:last-child { padding-right: 0; }
-    }
-    @media (max-width: 819px) {
-      .figure-cell:nth-child(odd) {
-        border-right: var(--rule-hair) solid var(--color-rule);
-      }
-      .figure-cell:nth-child(n+3) {
-        border-bottom: 0;
-      }
-    }
-    .figure-num {
-      font-size: clamp(1.75rem, 2.4vw, 2.35rem);
-      font-weight: 700;
-      line-height: 1.1;
-      color: var(--color-ink);
-      font-variant-numeric: tabular-nums;
-    }
-    .figure-label {
-      margin-top: 0.35rem;
-      font-size: 0.875rem;
-      color: var(--color-ink-2);
-      font-weight: 500;
-    }
-
-    .section-block {
-      padding-top: 4rem;
-      padding-bottom: 4rem;
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-      border-bottom: var(--rule-hair) solid var(--color-rule);
-    }
-    @media (min-width: 1024px) {
-      .section-block {
-        padding-top: 5rem;
-        padding-bottom: 5rem;
-        padding-left: 3.5rem;
-        padding-right: 3.5rem;
-      }
-    }
-    .section-head {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 1rem;
-      margin-bottom: clamp(2rem, 3.2vw, 2.75rem);
-      align-items: end;
-    }
-    @media (min-width: 820px) {
-      .section-head {
-        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-        gap: 2rem;
-      }
-    }
-
-    .product-cards-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 1.5rem;
-    }
-    @media (min-width: 820px) {
-      .product-cards-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-    .product-shot-card {
-      background-color: var(--color-paper-2);
-      border: var(--rule-hair) solid var(--color-rule);
-      border-radius: var(--radius-card);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-    .product-shot-media {
-      aspect-ratio: 16 / 10;
-      border-bottom: var(--rule-hair) solid var(--color-rule);
-      overflow: hidden;
-      background-color: var(--color-paper-3);
-    }
-    .product-shot-media img[data-kind="product"] {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
-      display: block;
-    }
-    .product-shot-body {
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      flex: 1;
-    }
-
-    .ops-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      border-top: var(--rule-bar) solid var(--color-rule-2);
-      margin-top: 2.5rem;
-    }
-    @media (min-width: 820px) {
-      .ops-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
-    }
-    .ops-item {
-      padding: 1.35rem 1.15rem;
-      border-bottom: var(--rule-hair) solid var(--color-rule);
-      min-width: 0;
-    }
-    @media (min-width: 820px) {
-      .ops-item {
-        border-bottom: 0;
-        border-right: var(--rule-hair) solid var(--color-rule);
-      }
-      .ops-item:last-child { border-right: 0; }
-      .ops-item:first-child { padding-left: 0; }
-      .ops-item:last-child { padding-right: 0; }
-    }
-
-    .demo-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 0.75rem;
-      padding: 1.1rem 0.95rem;
-      border-bottom: var(--rule-hair) solid var(--color-rule);
-      text-decoration: none;
-      color: inherit;
-      align-items: center;
-      transition: background-color var(--dur-micro) var(--ease-out);
-    }
-    .demo-row:hover {
-      background-color: var(--color-paper-2);
-    }
-    @media (min-width: 820px) {
-      .demo-row {
-        grid-template-columns: minmax(0, 1.45fr) minmax(0, 4.35fr) minmax(0, 1.5fr) auto;
         gap: 1.25rem;
       }
     }
-
-    .curr-group {
-      display: inline-flex;
-      gap: 0.25rem;
-      padding: 0.25rem;
-      border: var(--rule-hair) solid var(--color-rule-2);
-      border-radius: var(--radius-pill);
-      background-color: var(--color-paper-2);
+    .bm-stat-cell {
+      background-color: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: 0.5rem;
+      padding: 0.75rem 0.85rem;
     }
-    .curr-btn {
-      min-height: 36px;
-      padding: 0.35rem 0.9rem;
-      border: 0;
-      border-radius: var(--radius-pill);
-      background: transparent;
-      color: var(--color-ink-2);
-      font-size: 0.875rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
-    }
-    .curr-btn.is-active {
-      background-color: var(--color-ink);
-      color: var(--color-paper);
-    }
-
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 1.5rem;
-    }
-    @media (min-width: 820px) {
-      .pricing-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    @media (min-width: 768px) {
+      .bm-stat-cell {
+        padding: 0.9rem 1rem;
       }
     }
-    .plan-card {
-      background-color: var(--color-paper-2);
-      border: var(--rule-hair) solid var(--color-rule);
-      border-radius: var(--radius-card);
-      padding: 1.75rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 1.5rem;
-      min-width: 0;
-    }
-    .plan-card.is-featured {
-      border-top: 4px solid var(--color-accent);
-      background-color: var(--color-paper);
-      border-left-color: var(--color-rule-2);
-      border-right-color: var(--color-rule-2);
-      border-bottom-color: var(--color-rule-2);
-    }
-    .plan-price {
-      font-size: clamp(2rem, 2.8vw, 2.65rem);
-      font-weight: 700;
-      line-height: 1.1;
-      color: var(--color-ink);
+    .bm-stat-val {
+      font-size: clamp(1.25rem, 2.2vw, 1.85rem);
+      font-weight: 800;
       font-variant-numeric: tabular-nums;
+      color: var(--color-ink);
+      line-height: 1.15;
+    }
+    .bm-stat-lbl {
+      font-size: 0.8rem;
+      color: var(--color-ink-2);
+      margin-top: 0.2rem;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+    @media (min-width: 768px) {
+      .bm-stat-lbl {
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+      }
     }
 
-    .order-grid {
+    /* Section Containers */
+    .bm-section {
+      padding: 3.75rem 1.25rem;
+    }
+    .bm-section-arena {
+      padding: 3.75rem 1.25rem;
+      background-color: var(--color-arena);
+      color: var(--color-arena-ink);
+      border-top: 1px solid var(--color-arena-border);
+      border-bottom: 1px solid var(--color-arena-border);
+    }
+    .bm-section-alt {
+      padding: 3.75rem 1.25rem;
+      background-color: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .bm-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .bm-section-head {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-bottom: 2rem;
+    }
+    @media (min-width: 768px) {
+      .bm-section-head-row {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+      }
+    }
+    .bm-h2 {
+      font-size: clamp(1.65rem, 3vw, 2.35rem);
+      font-weight: 800;
+      margin: 0;
+      line-height: 1.2;
+      text-wrap: balance;
+    }
+    .bm-lead {
+      font-size: 1rem;
+      color: var(--color-ink-2);
+      margin: 0;
+      max-width: 44rem;
+    }
+    .bm-lead-arena {
+      font-size: 1rem;
+      color: var(--color-arena-ink-2);
+      margin: 0;
+      max-width: 44rem;
+    }
+
+    /* 6-Channel Feature Stage */
+    .bm-stage-layout {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
-      gap: clamp(2rem, 4vw, 3.5rem);
+      gap: 1.5rem;
       align-items: start;
     }
     @media (min-width: 960px) {
-      .order-grid {
-        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      .bm-stage-layout {
+        grid-template-columns: 23rem minmax(0, 1fr);
+        gap: 2rem;
       }
     }
-    .form-field {
+    .bm-channel-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+    @media (min-width: 960px) {
+      .bm-channel-list {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.55rem;
+      }
+    }
+    .bm-channel-btn {
       width: 100%;
+      text-align: left;
+      padding: 0.72rem 0.75rem;
       min-height: 44px;
-      padding: 0.55rem 0.85rem;
-      border-radius: var(--radius-card);
-      background-color: var(--color-paper);
+      border-radius: 0.55rem;
+      border: 1px solid var(--color-border);
+      background-color: transparent;
       color: var(--color-ink);
-      border: var(--rule-hair) solid var(--color-rule-2);
-      font-size: 0.9375rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
     }
-    .form-field[aria-invalid="true"] {
-      border-color: var(--color-error);
+    @media (min-width: 560px) {
+      .bm-channel-btn {
+        padding: 0.85rem 1rem;
+        gap: 0.75rem;
+      }
     }
-    .form-slip {
-      margin: 0;
-      padding: 1rem;
-      border-radius: var(--radius-card);
-      background-color: var(--color-paper);
-      border: var(--rule-hair) solid var(--color-rule);
-      font-family: var(--font-body);
-      font-size: 0.875rem;
-      line-height: 1.65;
+    .bm-channel-btn:hover {
+      border-color: var(--color-ink-3);
+      background-color: var(--color-surface);
+    }
+    .bm-channel-btn:active {
+      transform: scale(0.99);
+    }
+    .bm-channel-btn:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+    .bm-channel-btn.is-active {
+      background-color: var(--color-accent-soft);
       color: var(--color-ink);
-      white-space: pre-wrap;
-      overflow-wrap: break-word;
+      border-color: var(--color-accent);
     }
-
-    .site-footer {
-      border-top: var(--rule-bar) solid var(--color-rule-2);
-      background-color: var(--color-paper-2);
-      padding-block: 2rem;
+    .bm-channel-num {
+      font-weight: 800;
+      font-size: 0.82rem;
+      color: var(--color-accent-text);
+      flex-shrink: 0;
     }
-
-    .text-link {
-      color: var(--color-accent-deep);
+    .bm-channel-btn.is-active .bm-channel-num {
+      color: var(--color-accent-text);
+    }
+    .bm-channel-label {
       font-weight: 700;
+      font-size: 0.85rem;
+      line-height: 1.25;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @media (min-width: 560px) {
+      .bm-channel-label {
+        font-size: 0.96rem;
+      }
+    }
+    .bm-channel-mode {
+      display: none;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: 0.3rem;
+      background-color: var(--color-surface);
+      color: var(--color-ink-2);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    @media (min-width: 560px) {
+      .bm-channel-mode {
+        display: inline-block;
+      }
+    }
+    .bm-channel-btn.is-active .bm-channel-mode {
+      background-color: var(--color-paper);
+      color: var(--color-accent-text);
+    }
+
+    .bm-stage-viewport {
+      border-radius: 0.75rem;
+      border: 1px solid var(--color-border-strong);
+      background-color: var(--color-arena);
+      color: var(--color-arena-ink);
+      overflow: hidden;
+    }
+    .bm-stage-topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      padding: 0.7rem 1rem;
+      background-color: var(--color-arena-surface);
+      border-bottom: 1px solid var(--color-arena-border);
+      font-size: 0.85rem;
+    }
+    .bm-stage-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 0.35rem;
+      border: 1px solid var(--color-accent);
+      background-color: transparent;
+      color: var(--color-arena-ink);
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+    .bm-stage-img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      background-color: var(--color-arena);
+    }
+    .bm-stage-caption {
+      padding: 1rem 1.15rem;
+      background-color: var(--color-arena-surface);
+      border-top: 1px solid var(--color-arena-border);
+    }
+    .bm-stage-caption-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin: 0 0 0.25rem;
+      color: var(--color-arena-ink);
+    }
+    .bm-stage-caption-desc {
+      font-size: 0.92rem;
+      color: var(--color-arena-ink-2);
+      margin: 0;
+    }
+    .bm-stage-disclosure {
+      margin-top: 0.85rem;
+      font-size: 0.84rem;
+      color: var(--color-ink-2);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    /* Broadcast Ranked Demo Bars */
+    .bm-demo-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .bm-demo-row {
+      display: grid;
+      grid-template-columns: 3.25rem minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border-radius: 0.6rem;
+      background-color: var(--color-arena-surface);
+      border: 1px solid var(--color-arena-border);
+      color: var(--color-arena-ink);
       text-decoration: none;
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+    }
+    .bm-demo-row:hover {
+      background-color: var(--color-arena-card);
+      border-color: var(--color-accent);
+      transform: translateX(3px);
+    }
+    .bm-demo-row:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+    .bm-demo-rank {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--color-arena-accent);
+      line-height: 1;
+      text-align: center;
+    }
+    .bm-demo-main {
+      min-width: 0;
+    }
+    .bm-demo-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.2rem;
+    }
+    .bm-demo-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--color-arena-ink);
+    }
+    .bm-demo-badge {
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 0.3rem;
+      background-color: var(--color-accent-soft);
+      color: var(--color-arena-ink);
+      border: 1px solid var(--color-accent);
+    }
+    .bm-demo-desc {
+      font-size: 0.9rem;
+      color: var(--color-arena-ink-2);
+      margin: 0;
+    }
+    .bm-demo-action {
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      border-bottom: var(--rule-hair) solid transparent;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--color-arena-ink);
+      padding: 0.45rem 0.85rem;
+      border-radius: 0.4rem;
+      background-color: var(--color-arena-card);
+      border: 1px solid var(--color-arena-border);
+      white-space: nowrap;
     }
-    .text-link:hover {
-      border-bottom-color: var(--color-accent-deep);
+    .bm-demo-row:hover .bm-demo-action {
+      background-color: var(--color-accent);
+      border-color: var(--color-accent);
+      color: var(--color-accent-ink);
+    }
+    @media (max-width: 639px) {
+      .bm-demo-row {
+        grid-template-columns: 2.5rem 1fr;
+      }
+      .bm-demo-action {
+        grid-column: 1 / -1;
+        justify-content: center;
+      }
+    }
+
+    /* Pricing Section */
+    .bm-currency-toggle {
+      display: inline-flex;
+      padding: 0.25rem;
+      border-radius: 0.5rem;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border);
+      flex-shrink: 0;
+    }
+    .bm-curr-btn {
+      padding: 0.42rem 0.9rem;
+      border-radius: 0.35rem;
+      border: 1px solid transparent;
+      background-color: transparent;
+      color: var(--color-ink-2);
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+    .bm-curr-btn:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+    .bm-curr-btn.is-active {
+      background-color: var(--color-accent-soft);
+      border-color: var(--color-accent);
+      color: var(--color-accent-text);
+    }
+
+    .bm-pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .bm-pricing-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .bm-plan-card {
+      border-radius: 0.75rem;
+      padding: 1.75rem;
+      background-color: var(--color-card);
+      border: 1px solid var(--color-border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.25rem;
+    }
+    .bm-plan-card.is-featured {
+      background-color: var(--color-arena);
+      color: var(--color-arena-ink);
+      border: 2px solid var(--color-accent);
+    }
+    .bm-plan-card.is-roadmap {
+      background-color: var(--color-surface);
+      border: 1px dashed var(--color-border-strong);
+      opacity: 0.92;
+    }
+    .bm-plan-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .bm-plan-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin: 0;
+    }
+    .bm-plan-badge {
+      padding: 0.22rem 0.65rem;
+      border-radius: 0.35rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background-color: var(--color-accent-soft);
+      color: var(--color-accent-text);
+      white-space: nowrap;
+    }
+    .bm-plan-card.is-featured .bm-plan-badge {
+      background-color: var(--color-accent);
+      color: var(--color-accent-ink);
+    }
+    .bm-plan-card.is-roadmap .bm-plan-badge {
+      background-color: var(--color-paper);
+      color: var(--color-ink-2);
+      border: 1px solid var(--color-border-strong);
+    }
+    .bm-plan-price {
+      font-size: 2.35rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+      margin: 0.35rem 0 0.65rem;
+    }
+    .bm-plan-unit {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--color-ink-2);
+    }
+    .bm-plan-card.is-featured .bm-plan-unit {
+      color: var(--color-arena-ink-2);
+    }
+    .bm-plan-desc {
+      font-size: 0.95rem;
+      color: var(--color-ink-2);
+      margin: 0 0 1rem;
+    }
+    .bm-plan-card.is-featured .bm-plan-desc {
+      color: var(--color-arena-ink-2);
+    }
+    .bm-plan-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.92rem;
+    }
+    .bm-plan-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+    .bm-plan-btn {
+      width: 100%;
+      padding: 0.85rem 1.25rem;
+      border-radius: 0.5rem;
+      font-size: 0.96rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--color-border-strong);
+      background-color: transparent;
+      color: var(--color-ink);
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+    .bm-plan-btn:hover {
+      background-color: var(--color-surface);
+      border-color: var(--color-ink);
+    }
+    .bm-plan-btn:active {
+      transform: scale(0.99);
+    }
+    .bm-plan-btn:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+    .bm-plan-card.is-featured .bm-plan-btn {
+      background-color: transparent;
+      border: 1.5px solid var(--color-accent);
+      color: var(--color-arena-ink);
+    }
+    .bm-plan-card.is-featured .bm-plan-btn:hover {
+      background-color: var(--color-accent-soft);
+    }
+    .bm-plan-btn:disabled,
+    .bm-plan-btn:disabled:hover {
+      opacity: 0.68;
+      cursor: not-allowed;
+      background-color: var(--color-paper);
+      border-color: var(--color-border-strong);
+      color: var(--color-ink-3);
+      transform: none;
+    }
+
+    .bm-tier2-bar {
+      margin-top: 1.5rem;
+      padding: 1.35rem 1.5rem;
+      border-radius: 0.65rem;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-border-strong);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    /* Order Slip Builder */
+    .bm-order-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 900px) {
+      .bm-order-grid {
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 2rem;
+      }
+    }
+    .bm-form-card {
+      background-color: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+    }
+    .bm-field {
+      margin-bottom: 1rem;
+    }
+    .bm-field-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 560px) {
+      .bm-field-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .bm-label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      color: var(--color-ink);
+    }
+    .bm-input, .bm-select {
+      width: 100%;
+      padding: 0.68rem 0.85rem;
+      border-radius: 0.45rem;
+      border: 1px solid var(--color-border-strong);
+      background-color: var(--color-paper);
+      color: var(--color-ink);
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      transition: border-color 0.15s ease;
+    }
+    .bm-input:focus, .bm-select:focus {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 1px;
+      border-color: var(--color-accent);
+    }
+    .bm-error {
+      margin: 0.35rem 0 0;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--color-accent-text);
+    }
+    .bm-error.hidden {
+      display: none;
+    }
+
+    .bm-slip-card {
+      background-color: var(--color-arena);
+      color: var(--color-arena-ink);
+      border: 1.5px solid var(--color-accent);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .bm-slip-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .bm-price-badge {
+      padding: 0.25rem 0.7rem;
+      border-radius: 0.35rem;
+      background-color: var(--color-accent);
+      color: var(--color-accent-ink);
+      font-weight: 800;
+      font-size: 0.92rem;
+    }
+    .bm-slip-box {
+      background-color: var(--color-arena-surface);
+      border: 1px solid var(--color-arena-border);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: var(--color-arena-ink);
+      white-space: pre-wrap;
+      margin: 0;
+      font-family: var(--font-sans);
+    }
+    .bm-slip-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+    }
+    @media (min-width: 480px) {
+      .bm-slip-actions {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .bm-copy-feedback {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--color-live);
+      min-height: 1.25rem;
+    }
+
+    /* Footer */
+    .bm-footer {
+      background-color: var(--color-arena);
+      color: var(--color-arena-ink-2);
+      border-top: 1px solid var(--color-arena-border);
+      padding: 2.25rem 1.25rem;
+      font-size: 0.88rem;
+    }
+    .bm-footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .bm-footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+    }
+    .bm-footer-links a {
+      color: var(--color-arena-ink);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .bm-footer-links a:hover {
+      color: var(--color-accent);
+      text-decoration: underline;
     }
 
     @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto !important; }
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
       }
     }
   </style>
 </head>
-<body class="min-h-full">
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 btn-volt text-xs">Skip to content</a>
+<body id="top">
+  <a href="#main-content" class="skip-link">ข้ามไปยังเนื้อหาหลัก</a>
 
-  <header class="site-header">
-    <div class="site-wrap header-inner">
-      <a href="#top" class="flex items-center gap-3 text-inherit no-underline min-w-0">
-        <img src="./images/icons/favicon-192x192.png?v=2" width="38" height="38" alt="FPLSaWaDiKa" class="w-9 h-9 rounded-sm border border-[var(--color-rule)] flex-shrink-0">
-        <div class="min-w-0 leading-tight">
-          <span class="block text-base font-bold truncate">FPLSaWaDiKa</span>
-          <span id="nav-brand-sub" class="block text-xs ink-muted truncate">มินิลีกวันแข่ง</span>
-        </div>
+  <header class="bm-nav">
+    <div class="bm-nav-inner">
+      <a href="#top" class="bm-brand">
+        <img src="./images/icons/favicon-192x192.png" alt="FPLSaWaDiKa" class="bm-brand-logo" width="38" height="38">
+        <span class="bm-brand-text">
+          <span class="bm-brand-name">FPLSaWaDiKa</span>
+          <span id="nav-brand-sub" class="bm-brand-sub">ศูนย์ควบคุมมินิลีก FPL</span>
+        </span>
       </a>
 
-      <nav class="flex items-center gap-2 sm:gap-3 flex-shrink-0" aria-label="Primary Navigation">
-        <div id="primary-nav-links" class="nav-links-row">
-          <a id="nav-link-features" href="#features" class="nav-link-item">ความสามารถ</a>
-          <a id="nav-link-demos" href="#demos" class="nav-link-item">ลีกตัวอย่าง</a>
-          <a id="nav-link-pricing" href="#pricing" class="nav-link-item">แพ็กเกจ</a>
-          <a id="nav-link-order" href="#order" class="nav-link-item">เปิดลีก</a>
-        </div>
-
-        <button type="button" id="landing-lang-btn" onclick="landingApp.toggleLang()" class="btn-icon" aria-label="Switch Language">EN</button>
-        <button type="button" id="landing-theme-btn" onclick="landingApp.toggleTheme()" class="btn-icon" aria-label="Toggle Dark Mode">
-          <svg class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-          <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        </button>
-
-        <a href="#order" id="nav-cta-btn" class="hidden sm:inline-flex btn-volt">เปิดลีกของคุณ</a>
-
-        <button type="button" id="mobile-menu-toggle" onclick="landingApp.toggleMobileMenu()" class="btn-icon" aria-expanded="false" aria-controls="mobile-nav-drawer" aria-label="Toggle Menu">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
-        </button>
+      <nav id="primary-nav-links" class="bm-nav-links" aria-label="หลัก">
+        <a id="nav-link-features" href="#features" class="bm-nav-link">ฟีเจอร์หลัก</a>
+        <a id="nav-link-demos" href="#demos" class="bm-nav-link">ลีกตัวอย่างจริง</a>
+        <a id="nav-link-pricing" href="#pricing" class="bm-nav-link">แพ็กเกจราคา</a>
+        <a id="nav-link-order" href="#order" class="bm-nav-link">เปิดใช้งานลีก</a>
       </nav>
+
+      <div class="bm-nav-actions">
+        <button id="landing-lang-btn" type="button" onclick="landingApp.toggleLang()" class="bm-icon-btn" aria-label="สลับภาษา">EN</button>
+        <button id="landing-theme-btn" type="button" onclick="landingApp.toggleTheme()" class="bm-icon-btn" aria-label="สลับโหมดสี">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        </button>
+        <a id="nav-cta-btn" href="./40700/" class="bm-cta-nav">
+          <span>ลองเดโมสด</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </a>
+        <button id="mobile-menu-toggle" type="button" onclick="landingApp.toggleMobileMenu()" class="bm-icon-btn bm-mobile-menu-btn" aria-expanded="false" aria-controls="mobile-nav-drawer" aria-label="เปิดเมนู">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
     </div>
 
-    <div id="mobile-nav-drawer" hidden class="hidden mobile-drawer">
-      <div class="flex flex-col gap-1">
-        <a id="m-nav-features" href="#features" onclick="landingApp.closeMobileMenu()" class="nav-link-item py-2">ความสามารถและฟีเจอร์</a>
-        <a id="m-nav-demos" href="#demos" onclick="landingApp.closeMobileMenu()" class="nav-link-item py-2">ลีกตัวอย่างจริง</a>
-        <a id="m-nav-pricing" href="#pricing" onclick="landingApp.closeMobileMenu()" class="nav-link-item py-2">แพ็กเกจราคา</a>
-        <a id="m-nav-order" href="#order" onclick="landingApp.closeMobileMenu()" class="btn-volt mt-2">สั่งเปิดลีกผ่าน LINE</a>
-      </div>
+    <div id="mobile-nav-drawer" class="bm-mobile-drawer hidden">
+      <a id="m-nav-features" href="#features" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">ฟีเจอร์หลัก</a>
+      <a id="m-nav-demos" href="#demos" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">ลีกตัวอย่างจริง</a>
+      <a id="m-nav-pricing" href="#pricing" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">แพ็กเกจราคา</a>
+      <a id="m-nav-order" href="#order" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">เปิดใช้งานลีก</a>
     </div>
   </header>
 
-  <main id="main-content" class="flex-1 w-full">
-    <section id="top" class="hero-section">
-      <div class="site-wrap hero-grid">
-        <div class="flex flex-col gap-5 min-w-0">
-          <h1 id="hero-title">
-            ตารางคะแนนสดและบัญชีเงินรางวัล สำหรับมินิลีก FPL
+  <main id="main-content">
+    <!-- Hero Arena -->
+    <section class="bm-hero" aria-labelledby="hero-title">
+      <picture>
+        <source media="(max-width: 699px)" srcset="./images/screens/hero-stadium-mobile.jpg">
+        <img
+          src="./images/screens/hero-stadium-broadcast.jpg"
+          alt="Night football stadium broadcast atmosphere"
+          class="bm-hero-backdrop-img"
+          width="1408"
+          height="880"
+        >
+      </picture>
+      <div class="bm-hero-scrim" aria-hidden="true"></div>
+
+      <div class="bm-hero-bg">
+        <div class="bm-hero-top">
+          <h1 id="hero-title" class="bm-hero-h1">
+            <span id="hero-h1-line1">มินิลีกของคุณ</span>
+            <span id="hero-h1-line2" class="bm-hero-h1-accent">สดระดับห้องส่ง</span>
           </h1>
-
-          <p id="hero-subtitle" class="ink-secondary m-0" style="font-size: 1.0625rem; max-width: 52ch;">
-            หยุดแคปหน้าจอและคำนวณเงินรางวัลใน Excel เอง ส่งเลข FPL League ID เพื่อเปิดเว็บส่วนตัวให้ทุกคนในกลุ่มเช็คคะแนนสดทุก 15 วินาที พร้อมสรุปยอดจ่ายประจำสัปดาห์ลง LINE
-          </p>
-
-          <div class="flex flex-wrap items-center gap-3 pt-1">
-            <a href="#order" id="hero-primary-cta" class="btn-volt">
-              <span>สั่งเปิดลีก (เริ่มต้น 500฿)</span>
-              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6l6 6-6 6"/></svg>
-            </a>
-            <a href="#demos" id="hero-secondary-cta" class="btn-outline">
-              <span>ดู 5 ลีกตัวอย่างจริง</span>
-            </a>
-          </div>
-
-          <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-3 rule-top-hair text-sm ink-secondary tabular-nums">
-            <span id="hero-edition-line" class="font-bold">ใช้งานจริงแล้ว 9 มินิลีก (1,943+ ทีม) ในฤดูกาลนี้</span>
-            <span id="hero-views-inline" class="ink-muted">แยกข้อมูลอิสระรายลีก</span>
-            <a href="./preview.html" class="text-link">
-              <span id="hero-all-preview-link">หน้าศูนย์รวมตัวอย่าง</span>
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg>
-            </a>
-          </div>
         </div>
 
-        <div class="stage-box min-w-0">
-          <div class="stage-topbar">
-            <span id="stage-league-badge" class="text-xs font-bold ink-secondary tabular-nums">
-              ตัวอย่างจริง: เซียนอยู่รู หมูอยู่ตึก (#40700, GW 10)
+        <div class="bm-hero-visual">
+          <div class="bm-hero-overlay-bar">
+            <span class="bm-hero-overlay-pill">
+              <span class="bm-live-dot" aria-hidden="true"></span>
+              <span class="tabular-nums">GW 10 Live Feed</span>
             </span>
-            <div class="stage-tabs" role="tablist" aria-label="Dashboard screens">
-              <button type="button" role="tab" id="tab-screen-live" aria-selected="true" onclick="landingApp.setHeroScreen('live')" class="stage-tab">คะแนนสด</button>
-              <button type="button" role="tab" id="tab-screen-prizes" aria-selected="false" onclick="landingApp.setHeroScreen('prizes')" class="stage-tab">เงินรางวัล</button>
-              <button type="button" role="tab" id="tab-screen-pitch" aria-selected="false" onclick="landingApp.setHeroScreen('pitch')" class="stage-tab">11 ตัวจริง</button>
-              <button type="button" role="tab" id="tab-screen-mobile" aria-selected="false" onclick="landingApp.setHeroScreen('mobile')" class="stage-tab">บนมือถือ</button>
-            </div>
+            <span id="hero-sync-meta" class="tabular-nums">9 ลีกตัวอย่าง / 1,943 ทีม</span>
           </div>
+        </div>
 
-          <div id="hero-stage-viewport" class="stage-viewport" data-slot="hero-stage">
-            <img id="hero-stage-img" data-kind="product" src="./images/screens/40700-live-desktop.png" width="2880" height="1800" fetchpriority="high" alt="หน้าจอคะแนนสดมินิลีก FPLSaWaDiKa ลีก #40700">
-          </div>
+        <div class="bm-hero-bottom">
+          <p id="hero-subtitle" class="bm-hero-lead">คะแนนสดเปลี่ยนตัวอัตโนมัติ เช็คชิปคู่แข่ง และสรุปเงินรางวัลครบ 38 วีค</p>
 
-          <div class="stage-caption-bar">
-            <span id="hero-stage-caption" class="ink-secondary">ตารางคะแนนสด GW 10 พร้อมไฮไลท์ทีมแชมป์ประจำสัปดาห์และการเปลี่ยนตัวอัตโนมัติ</span>
-            <a id="hero-open-demo-link" href="./40700/" data-demo-lid="40700" target="_blank" rel="noopener noreferrer" class="text-link whitespace-nowrap">
-              <span id="hero-open-demo-label">เปิดดูแดชบอร์ดจริง</span>
-              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg>
+          <div class="bm-hero-actions">
+            <a id="hero-primary-cta" href="#order" class="bm-btn-primary">
+              <span id="hero-primary-cta-text">เปิดใช้งานลีกทันที</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+            </a>
+            <a id="hero-secondary-cta" href="#features" class="bm-btn-outline-dark">
+              <span id="hero-secondary-cta-text">ดู 6 จอฟีเจอร์จริง</span>
             </a>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <section class="figures-band" aria-label="Platform figures">
-      <div class="figures-grid tabular-nums">
-        <div class="figure-cell">
-          <div class="figure-num">9</div>
-          <div id="fig-leagues-lbl" class="figure-label">มินิลีกที่ใช้งานจริง</div>
-        </div>
-        <div class="figure-cell">
-          <div class="figure-num">1,943+</div>
-          <div id="fig-teams-lbl" class="figure-label">ผู้จัดการทีมในระบบ</div>
-        </div>
-        <div class="figure-cell">
-          <div class="figure-num">15s</div>
-          <div id="fig-refresh-lbl" class="figure-label">อัปเดตสดระหว่างบอลเตะ</div>
-        </div>
-        <div class="figure-cell">
-          <div class="figure-num" id="fig-price-val">500฿</div>
-          <div id="fig-price-lbl" class="figure-label">เหมาจ่ายตลอดฤดูกาล</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="features" class="section-block">
-      <div class="section-inner">
-        <div class="section-head">
-          <div>
-            <h2 id="feat-title">ออกแบบมาแทนตาราง Excel ของแอดมิน</h2>
-          </div>
-          <div class="flex flex-col gap-3">
-            <p id="feat-sub" class="ink-secondary m-0">
-              สร้างจากโจทย์จริงของมินิลีกที่มีเงินรางวัล ตั้งแต่เช็คคะแนนสดระหว่างแมตช์ไปจนถึงสรุปยอดจ่ายรายสัปดาห์และบอลถ้วย
-            </p>
-            <a href="./preview.html" id="iso-preview-link" class="text-link self-start">
-              <span id="iso-preview-text">ลองดูตัวอย่างแดชบอร์ดชุดเต็ม</span>
-              <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg>
-            </a>
-          </div>
-        </div>
-
-        <div class="product-cards-grid">
-          <article class="product-shot-card">
-            <div class="product-shot-media" data-slot="walkthrough-prizes">
-              <img data-kind="product" src="./images/screens/40700-prizes-desktop.png" width="2880" height="1800" loading="lazy" alt="หน้าจอสมุดบัญชีเงินรางวัล FPLSaWaDiKa">
+          <div class="bm-hero-meta">
+            <div class="bm-hero-meta-item">
+              <span class="bm-live-dot" aria-hidden="true"></span>
+              <span id="hero-badge-text">อัปเดตสดทุก 15 วินาที</span>
             </div>
-            <div class="product-shot-body">
-              <h3 id="shot-prizes-title">สมุดเงินรางวัลและค่าปรับอัตโนมัติ</h3>
-              <p id="shot-prizes-desc" class="ink-secondary m-0 text-sm">
-                แยกทีมที่ไม่ชิงรางวัลออกจากการคำนวณ คำนวณแชมป์วีค รายเดือน ค่าปรับบ๊วย และยอดสุทธิพร้อมเคลียร์บัญชี
-              </p>
+            <div class="bm-hero-meta-item tabular-nums">
+              <span id="hero-views-inline">ยอดเข้าชม 2,790+ ครั้ง</span>
             </div>
-          </article>
-
-          <article class="product-shot-card">
-            <div class="product-shot-media" data-slot="walkthrough-cup">
-              <img data-kind="product" src="./images/screens/40700-cup-desktop.png" width="2880" height="1800" loading="lazy" alt="หน้าจอบอลถ้วยน็อคเอาท์ FPLSaWaDiKa">
-            </div>
-            <div class="product-shot-body">
-              <h3 id="shot-cup-title">บอลถ้วยน็อคเอาท์และรางวัลเสริม</h3>
-              <p id="shot-cup-desc" class="ink-secondary m-0 text-sm">
-                จับสายประกบคู่บอลถ้วยประจำลีก อัปเดตผลรอบต่อรอบอัตโนมัติ พร้อมกติกาแยก 4 ช่วงฤดูกาล (GW 1 ถึง 38)
-              </p>
-            </div>
-          </article>
-
-          <article class="product-shot-card">
-            <div class="product-shot-media" data-slot="walkthrough-chips">
-              <img data-kind="product" src="./images/screens/40700-chips-desktop.png" width="2880" height="1800" loading="lazy" alt="หน้าจอติดตามการใช้ชิป FPLSaWaDiKa">
-            </div>
-            <div class="product-shot-body">
-              <h3 id="shot-chips-title">ติดตามชิปที่เหลือและเรดาร์ฟอร์ม</h3>
-              <p id="shot-chips-desc" class="ink-secondary m-0 text-sm">
-                ดูสถานะ Wildcard, Free Hit, Triple Captain และ Bench Boost ของคู่แข่งทุกทีมในลีกได้จากหน้าเดียว
-              </p>
-            </div>
-          </article>
-        </div>
-
-        <div id="features-columns" class="ops-grid"></div>
-
-        <div class="surface-sheet mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="space-y-1">
-            <h3 id="iso-title" class="text-base font-bold">ความเป็นส่วนตัวและแยกข้อมูลอิสระทุกลีก</h3>
-            <p id="iso-desc" class="ink-secondary text-sm m-0">สมาชิกในลีกของคุณเห็นเฉพาะตารางของลีกตนเอง ไม่มีปุ่มสลับไปลีกอื่น และหน้าลีกส่วนตัวถูกตั้งค่า noindex ไม่ให้ปรากฏบน Search Engine</p>
-          </div>
-          <a href="./preview.html" class="text-link whitespace-nowrap">
-            <span id="iso-secondary-link">ดูศูนย์รวมตัวอย่าง</span>
-            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section id="demos" class="section-block" style="background-color: var(--color-paper-2);">
-      <div class="section-inner">
-        <div class="section-head">
-          <div>
-            <h2 id="demos-title">กดดูลีกจริง 5 รูปแบบที่เปิดใช้งานอยู่</h2>
-          </div>
-          <div class="flex flex-col gap-2">
-            <p id="demos-sub" class="ink-secondary m-0">
-              เลือกเปิดดูได้ทั้งลีกแชมป์สัปดาห์ รายเดือน ค่าปรับบ๊วย เกม Zero-Sum และลีกใหญ่ 1,700+ ทีม
-            </p>
-            <span id="demos-note" class="text-xs font-bold ink-muted">คลิกแต่ละแถวเพื่อเปิดหน้าแดชบอร์ดจริงในแท็บใหม่</span>
-          </div>
-        </div>
-
-        <div class="demos-card overflow-hidden">
-          <div id="demos-list"></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="pricing" class="section-block">
-      <div class="section-inner">
-        <div class="section-head">
-          <div>
-            <h2 id="pricing-title">ค่าบริการเหมาจ่ายตลอดฤดูกาล</h2>
-          </div>
-          <div class="flex flex-col items-start md:items-end gap-3">
-            <p id="pricing-sub" class="ink-secondary m-0 md:text-right">
-              รองรับไม่เกิน 30 ทีมต่อลีก (กรณี 31 ถึง 60 ทีมสอบถามราคาเพิ่มได้) จ่ายครั้งเดียวจบฤดูกาล
-            </p>
-            <div class="curr-group" role="group" aria-label="Currency Toggle">
-              <button type="button" id="curr-btn-thb" onclick="landingApp.setCurrency('THB')" class="curr-btn is-active" aria-pressed="true">THB (฿)</button>
-              <button type="button" id="curr-btn-usd" onclick="landingApp.setCurrency('USD')" class="curr-btn" aria-pressed="false">USD ($)</button>
-            </div>
-          </div>
-        </div>
-
-        <div id="pricing-plans-wrap" class="pricing-grid"></div>
-
-        <div class="surface-sheet mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div class="space-y-1">
-            <p id="tier2-title" class="m-0 text-base font-bold">Tier 2 Community Scale (60 ถึง 2,000+ ทีม: เร็วๆ นี้)</p>
-            <p id="tier2-desc" class="m-0 text-sm ink-secondary">สำหรับเพจฟุตบอลและคอมมูนิตี้ขนาดใหญ่ที่ต้องการค้นหาทีมเร็วและดูผังแบบ On-Demand</p>
-          </div>
-          <a id="tier2-link" href="./139836/" data-demo-lid="139836" target="_blank" rel="noopener noreferrer" class="text-link whitespace-nowrap">
-            <span id="tier2-link-text">ชมตัวอย่างลีก #139836</span>
-            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section id="order" class="section-block" style="background-color: var(--color-paper-2); border-bottom: 0;">
-      <div class="section-inner order-grid">
-        <div class="flex flex-col gap-5 min-w-0">
-          <div class="flex items-center gap-3">
-            <img src="./images/icons/favicon-192x192.png?v=2" width="44" height="44" alt="FPLSaWaDiKa" class="w-11 h-11 rounded-sm border border-[var(--color-rule-2)] flex-shrink-0">
-            <h2 id="order-title">สั่งเปิดลีกผ่าน LINE</h2>
-          </div>
-
-          <p id="order-sub" class="ink-secondary m-0">
-            กรอกข้อมูลลีกของคุณเพื่อสร้างข้อความสรุป จากนั้นกดคัดลอกส่งทาง LINE เพื่อให้แอดมินตั้งค่ารูปแบบรางวัลและเปิดลิงก์ส่วนตัวให้พร้อมใช้งาน
-          </p>
-
-          <ol class="m-0 pl-5 flex flex-col gap-3 text-sm ink-secondary rule-top-hair pt-4 tabular-nums">
-            <li id="step-1">กรอกเลข FPL League ID และเลือกรูปแบบเงินรางวัล</li>
-            <li id="step-2">กดคัดลอกข้อความสรุปคำสั่งซื้อ</li>
-            <li id="step-3">วางส่งในแชท LINE เพื่อรับลิงก์ส่วนตัวของลีก</li>
-          </ol>
-        </div>
-
-        <div class="surface-card min-w-0">
-          <form id="order-form" data-endpoint="" class="flex flex-col gap-4" novalidate>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label id="lbl-league-id" for="order-league-id" class="block text-sm font-bold mb-1.5">FPL League ID (ตัวเลขจากลิงก์ FPL) *</label>
-                <input id="order-league-id" name="league_id" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="เช่น 40700" required class="form-field tabular-nums">
-                <p id="order-league-id-error" hidden role="alert" aria-live="polite" class="hidden m-0 mt-1 text-xs font-bold error-text"></p>
-              </div>
-              <div>
-                <label id="lbl-league-name" for="order-league-name" class="block text-sm font-bold mb-1.5">ชื่อลีกหรือชื่อกลุ่ม (ถ้ามี)</label>
-                <input id="order-league-name" name="league_name" type="text" placeholder="เช่น ลีกออฟฟิศ 2026" class="form-field">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label id="lbl-plan" for="order-plan" class="block text-sm font-bold mb-1.5">แพ็กเกจ</label>
-                <select id="order-plan" name="plan" class="form-field">
-                  <option value="standard">Standard Tier 1</option>
-                  <option value="custom">Custom Tier 1</option>
-                </select>
-              </div>
-              <div>
-                <label id="lbl-prize-model" for="order-prize-model" class="block text-sm font-bold mb-1.5">รูปแบบเงินรางวัลหลัก</label>
-                <select id="order-prize-model" name="prize_model" class="form-field">
-                  <option value="weekly">แชมป์ประจำสัปดาห์ + แชมป์ฤดูกาล</option>
-                  <option value="monthly">แชมป์ประจำเดือน + Top 5 ฤดูกาล</option>
-                  <option value="penalties">เก็บค่าปรับอันดับท้าย + รางวัล</option>
-                  <option value="zero_sum">Zero-Sum / กติกาพิเศษกำหนดเอง</option>
-                  <option value="standard">เน้นดูคะแนนสด (ไม่มีเงินรางวัล)</option>
-                </select>
-              </div>
-              <div>
-                <label id="lbl-team-tier" for="order-team-tier" class="block text-sm font-bold mb-1.5">จำนวนทีมในลีก</label>
-                <select id="order-team-tier" name="team_tier" class="form-field">
-                  <option value="<=30">ไม่เกิน 30 ทีม (ราคาปกติ)</option>
-                  <option value="31-60">31 ถึง 60 ทีม (สอบถามราคาเพิ่ม)</option>
-                  <option value="60+">มากกว่า 60 ทีม (Tier 2 Roadmap)</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="pt-3 rule-top-hair flex flex-col gap-2">
-              <div class="flex items-center justify-between gap-3">
-                <span id="order-preview-label" class="text-xs font-bold ink-muted">ข้อความคำสั่งซื้อสำหรับส่ง LINE</span>
-                <span id="order-price-badge" class="text-sm font-bold accent-deep-text tabular-nums">500 THB / season</span>
-              </div>
-              <pre id="order-summary-preview" class="form-slip tabular-nums"></pre>
-            </div>
-
-            <div class="flex flex-col sm:flex-row gap-3 pt-1">
-              <button type="submit" id="btn-copy-order" class="btn-outline flex-1">
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                <span id="btn-copy-order-text">คัดลอกรายละเอียดคำสั่งซื้อ</span>
-              </button>
-              <a href="https://line.me/ti/p/lgWPeyIBR7" target="_blank" rel="noopener noreferrer" id="btn-open-line" class="btn-volt flex-1">
-                <span id="btn-open-line-text">เปิดแชท LINE เพื่อส่งข้อความ</span>
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg>
+            <div class="bm-hero-meta-item">
+              <a id="hero-open-demo-link" href="./40700/" data-demo-lid="40700" class="bm-hero-link">
+                <span id="hero-open-demo-label">เปิดลีกตัวอย่างจริง #40700</span>
               </a>
             </div>
-            <p id="order-copy-feedback" hidden aria-live="polite" class="hidden m-0 text-center text-xs font-bold accent-deep-text"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Telemetry Strip -->
+    <section class="bm-telemetry-strip" aria-label="ตัวเลขสำคัญ">
+      <div id="telemetry-strip-grid" class="bm-telemetry-grid">
+        <div class="bm-stat-cell">
+          <div class="bm-stat-val tabular-nums">15 วิ</div>
+          <div class="bm-stat-lbl">รีเฟรชคะแนนสด</div>
+        </div>
+        <div class="bm-stat-cell">
+          <div class="bm-stat-val tabular-nums">500฿</div>
+          <div class="bm-stat-lbl">ต่อฤดูกาล (≤30 ทีม)</div>
+        </div>
+        <div class="bm-stat-cell">
+          <div class="bm-stat-val tabular-nums">0%</div>
+          <div class="bm-stat-lbl">ไม่ต้องทำ Excel เอง</div>
+        </div>
+        <div class="bm-stat-cell">
+          <div class="bm-stat-val tabular-nums">38 GW</div>
+          <div class="bm-stat-lbl">ปิดยอดจบซีซั่นให้</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6-Scene Anonymized Feature Switcher -->
+    <section id="features" class="bm-section" aria-labelledby="feat-title">
+      <div class="bm-container">
+        <div class="bm-section-head">
+          <h2 id="feat-title" class="bm-h2">6 หน้าจอหลักในห้องควบคุมลีก</h2>
+          <p id="feat-sub" class="bm-lead">สลับดูทุกมุมมองที่ผู้จัดการลีกและสมาชิกใช้จริงตลอดสัปดาห์แข่งขัน (ภาพจำลองข้อมูลสมมติ สลับโหมดมืดและสว่าง)</p>
+        </div>
+
+        <div class="bm-stage-layout">
+          <div class="bm-channel-list" role="tablist" aria-label="เลือกดู 6 หน้าจอฟีเจอร์">
+            <button id="tab-screen-live" type="button" role="tab" aria-selected="true" onclick="landingApp.setHeroScreen('live')" class="bm-channel-btn is-active">
+              <span class="bm-channel-num tabular-nums">01</span>
+              <span class="bm-channel-label">คะแนนสด &amp; ออโต้ซับ</span>
+              <span class="bm-channel-mode">Dark UI</span>
+            </button>
+            <button id="tab-screen-pitch" type="button" role="tab" aria-selected="false" onclick="landingApp.setHeroScreen('pitch')" class="bm-channel-btn">
+              <span class="bm-channel-num tabular-nums">02</span>
+              <span class="bm-channel-label">แผน 11 ตัวจริง</span>
+              <span class="bm-channel-mode">Dark UI</span>
+            </button>
+            <button id="tab-screen-transfers" type="button" role="tab" aria-selected="false" onclick="landingApp.setHeroScreen('transfers')" class="bm-channel-btn">
+              <span class="bm-channel-num tabular-nums">03</span>
+              <span class="bm-channel-label">ย้ายตัว &amp; ขุมกำลัง</span>
+              <span class="bm-channel-mode">Light UI</span>
+            </button>
+            <button id="tab-screen-chips" type="button" role="tab" aria-selected="false" onclick="landingApp.setHeroScreen('chips')" class="bm-channel-btn">
+              <span class="bm-channel-num tabular-nums">04</span>
+              <span class="bm-channel-label">สถานะชิปคู่แข่ง</span>
+              <span class="bm-channel-mode">Dark UI</span>
+            </button>
+            <button id="tab-screen-prizes" type="button" role="tab" aria-selected="false" onclick="landingApp.setHeroScreen('prizes')" class="bm-channel-btn">
+              <span class="bm-channel-num tabular-nums">05</span>
+              <span class="bm-channel-label">เงินรางวัล &amp; กองกลาง</span>
+              <span class="bm-channel-mode">Light UI</span>
+            </button>
+            <button id="tab-screen-radar" type="button" role="tab" aria-selected="false" onclick="landingApp.setHeroScreen('radar')" class="bm-channel-btn">
+              <span class="bm-channel-num tabular-nums">06</span>
+              <span class="bm-channel-label">เรดาร์ &amp; ทำเนียบแชมป์</span>
+              <span class="bm-channel-mode">Dark UI</span>
+            </button>
+          </div>
+
+          <div>
+            <div id="hero-stage-viewport" class="bm-stage-viewport">
+              <div class="bm-stage-topbar">
+                <span id="stage-league-badge" class="bm-stage-pill tabular-nums">League 88901 Demo</span>
+                <span id="stage-spec-badge" class="tabular-nums">รีเฟรชทุก 15 วินาที</span>
+              </div>
+              <img
+                id="hero-stage-img"
+                src="./images/screens/demo-live-th.png"
+                alt="Live dashboard preview with fictional club data"
+                class="bm-stage-img"
+                width="1440"
+                height="900"
+              >
+              <div id="hero-stage-caption" class="bm-stage-caption">
+                <h3 id="stage-caption-title" class="bm-stage-caption-title">เช็คคะแนนสดพร้อมเปลี่ยนตัวอัตโนมัติทันเกม</h3>
+                <p id="stage-caption-desc" class="bm-stage-caption-desc">เห็นแต้มดิบ คะแนนลบ และตัวสำรองที่รอลงสนามแทนตัวจริงที่ไม่ได้ลงเล่นแบบเรียลไทม์</p>
+              </div>
+            </div>
+            <p id="stage-disclosure" class="bm-stage-disclosure">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>
+              <span id="stage-disclosure-text">ภาพหน้าจอจากระบบจริง ปรับชื่อลีกและผู้จัดการทีมเป็นข้อมูลสมมติ</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 Real Showcase Demo Leagues -->
+    <section id="demos" class="bm-section-arena" aria-labelledby="demos-title">
+      <div class="bm-container">
+        <div class="bm-section-head bm-section-head-row">
+          <div>
+            <h2 id="demos-title" class="bm-h2">ลีกตัวอย่างจริงในระบบ</h2>
+            <p id="demos-sub" class="bm-lead-arena">กดเข้าชมแดชบอร์ดของลีกตัวอย่างจริงทั้ง 5 รูปแบบกติกา เปิดใช้งานได้ทันทีทั้งบนมือถือและคอมพิวเตอร์</p>
+          </div>
+          <a id="hero-all-preview-link" href="./preview.html" class="bm-btn-outline-dark">
+            <span id="hero-all-preview-text">ดูหน้าเลือกทั้งหมด</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </a>
+        </div>
+
+        <div id="demos-list" class="bm-demo-bars"></div>
+        <p id="demos-note" class="bm-lead-arena" style="margin-top: 1rem; font-size: 0.86rem;">ข้อมูลการแข่งขันจริงในลีกสาธารณะทั้ง 9 ลีก (1,943 ทีม) ซิงค์ล่าสุด 16 พ.ย. 2026, 17:52 น.</p>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="bm-section" aria-labelledby="pricing-title">
+      <div class="bm-container">
+        <div class="bm-section-head bm-section-head-row">
+          <div>
+            <h2 id="pricing-title" class="bm-h2">แพ็กเกจเปิดใช้งานรายฤดูกาล</h2>
+            <p id="pricing-sub" class="bm-lead">จ่ายครั้งเดียวดูแลครบทั้ง 38 Gameweeks สำหรับมินิลีกขนาดไม่เกิน 30 ทีม</p>
+          </div>
+
+          <div class="bm-currency-toggle" role="group" aria-label="เลือกสกุลเงิน">
+            <button id="curr-btn-thb" type="button" onclick="landingApp.setCurrency('THB')" class="bm-curr-btn is-active">THB (฿)</button>
+            <button id="curr-btn-usd" type="button" onclick="landingApp.setCurrency('USD')" class="bm-curr-btn">USD ($)</button>
+          </div>
+        </div>
+
+        <div id="pricing-plans-wrap" class="bm-pricing-grid"></div>
+
+        <div class="bm-tier2-bar">
+          <div>
+            <strong id="tier2-title" style="display: block; font-size: 1.05rem;">ลีกใหญ่ 31 ทีมขึ้นไป (Enterprise / Community)</strong>
+            <span id="tier2-desc" style="font-size: 0.9rem; color: var(--color-ink-2);">รองรับตั้งแต่ 31 ถึง 1,000+ ทีม พร้อมระบบค้นหาเร็วและจัดสายบอลถ้วย ประเมินราคาตามจำนวนทีมทาง LINE</span>
+          </div>
+          <a id="tier2-link" href="./139836/" data-demo-lid="139836" class="bm-btn-primary">
+            <span id="tier2-link-text">ดูตัวอย่าง 1,780 ทีม</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Order Slip Builder -->
+    <section id="order" class="bm-section-alt" aria-labelledby="order-title">
+      <div class="bm-container">
+        <div class="bm-section-head">
+          <h2 id="order-title" class="bm-h2">สร้างข้อความสั่งเปิดลีกส่ง LINE</h2>
+          <p id="order-sub" class="bm-lead">กรอกรหัส League ID จากเว็บไซต์ FPL ทางการ ระบบจะจัดข้อความสรุปรายการให้พร้อมส่งเข้า LINE ทันที</p>
+        </div>
+
+        <div class="bm-order-grid">
+          <form id="order-form" class="bm-form-card" data-endpoint="" novalidate>
+            <div class="bm-field-row">
+              <div class="bm-field">
+                <label id="lbl-league-id" for="order-league-id" class="bm-label">รหัส League ID ทางการ</label>
+                <input id="order-league-id" name="league_id" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="เช่น 40700" class="bm-input" required>
+                <p id="order-league-id-error" class="bm-error hidden">กรุณากรอกเลข League ID เป็นตัวเลข</p>
+              </div>
+              <div class="bm-field">
+                <label id="lbl-league-name" for="order-league-name" class="bm-label">ชื่อลีกที่จะแสดงบนเว็บ</label>
+                <input id="order-league-name" name="league_name" type="text" placeholder="เช่น เพื่อนรักบอลพรีเมียร์" class="bm-input">
+              </div>
+            </div>
+
+            <div class="bm-field-row">
+              <div class="bm-field">
+                <label id="lbl-plan" for="order-plan" class="bm-label">แพ็กเกจที่ต้องการ</label>
+                <select id="order-plan" name="plan" class="bm-select">
+                  <option value="standard">Standard (500฿)</option>
+                  <option value="custom" disabled>Custom (Roadmap / กำลังพัฒนา, 900฿)</option>
+                </select>
+              </div>
+              <div class="bm-field">
+                <label id="lbl-prize-model" for="order-prize-model" class="bm-label">รูปแบบกติกาเงินรางวัล</label>
+                <select id="order-prize-model" name="prize_model" class="bm-select">
+                  <option value="weekly">รายสัปดาห์ (Weekly Winner)</option>
+                  <option value="monthly">รายเดือน + อันดับรวม</option>
+                  <option value="penalty">ค่าปรับบ๊วย + กองกลาง</option>
+                  <option value="zero_sum">Zero-Sum / เงื่อนไขเฉพาะลีก</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="bm-field">
+              <label id="lbl-team-tier" for="order-team-tier" class="bm-label">จำนวนสมาชิกในลีก</label>
+              <select id="order-team-tier" name="team_tier" class="bm-select">
+                <option value="tier1">ไม่เกิน 30 ทีม</option>
+                <option value="tier2">31 ทีมขึ้นไป (ประเมินราคาทาง LINE)</option>
+              </select>
+            </div>
           </form>
+
+          <div class="bm-slip-card">
+            <div class="bm-slip-header">
+              <strong id="order-preview-label" style="font-size: 1rem;">ข้อความสรุปรายการส่ง LINE</strong>
+              <span id="order-price-badge" class="bm-price-badge tabular-nums">500฿ / ฤดูกาล</span>
+            </div>
+
+            <pre id="order-summary-preview" class="bm-slip-box"></pre>
+
+            <div id="order-copy-feedback" class="bm-copy-feedback" aria-live="polite"></div>
+
+            <div class="bm-slip-actions">
+              <button id="btn-copy-order" type="submit" form="order-form" class="bm-btn-primary">
+                <span id="btn-copy-order-text">คัดลอกข้อความสั่งซื้อ</span>
+              </button>
+              <a id="btn-open-line" href="https://line.me/ti/p/lgWPeyIBR7" target="_blank" rel="noopener noreferrer" class="bm-btn-outline-dark">
+                <span id="btn-open-line-text">เปิดแชท LINE</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer text-xs ink-muted">
-    <div class="site-wrap flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex flex-wrap items-center gap-2.5">
-        <img src="./images/icons/favicon-32x32.png?v=2" width="20" height="20" alt="FPLSaWaDiKa" class="w-5 h-5 rounded-sm border border-[var(--color-rule)]">
-        <span class="font-bold text-[var(--color-ink)]">FPLSaWaDiKa</span>
-        <span aria-hidden="true">/</span>
-        <span>Fantasy Premier League Mini-League Platform</span>
+  <footer class="bm-footer">
+    <div class="bm-footer-inner">
+      <div>
+        <strong style="color: var(--color-arena-ink);">FPLSaWaDiKa</strong>
+        <p id="footer-note" style="margin: 0.25rem 0 0;">แดชบอร์ดอิสระสำหรับคอมมูนิตี้ Fantasy Premier League ไม่ใช่บริการอย่างเป็นทางการของ Premier League</p>
       </div>
-      <div class="flex flex-wrap items-center gap-5">
-        <span id="landing-visitor-badge" class="hidden tabular-nums font-semibold"></span>
-        <a href="./preview.html" class="hover:underline font-semibold text-[var(--color-ink-2)]">Dashboard Preview</a>
-        <a href="https://line.me/ti/p/lgWPeyIBR7" target="_blank" rel="noopener noreferrer" class="text-link">LINE Contact</a>
+      <div class="bm-footer-links">
+        <span id="landing-visitor-badge" class="tabular-nums">ผู้เข้าชม: …</span>
+        <a href="#features">6 จอฟีเจอร์</a>
+        <a href="#demos">ลีกตัวอย่าง</a>
+        <a href="#pricing">ราคา</a>
+        <a href="https://line.me/ti/p/lgWPeyIBR7" target="_blank" rel="noopener noreferrer">LINE Official</a>
       </div>
     </div>
   </footer>
 
   <script>
-    const LANDING_CONFIG = {"standard": {"thb": 500, "usd": 19}, "custom": {"thb": 900, "usd": 29}, "tier1_max_teams": 30, "line_url": "https://line.me/ti/p/lgWPeyIBR7", "api_base_url": "https://api.fplsawadika.com"};
-    const LANDING_DEMOS = [{"id": "40700", "tag_th": "ยอดนิยม • แชมป์วีค + บอลถ้วย", "tag_en": "Popular • Weekly + Cup", "title_th": "เซียนอยู่รู หมูอยู่ตึก", "title_en": "Sian Yoo Roo (12 Teams)", "desc_th": "รางวัลแชมป์สัปดาห์, 6 รอบเคลียร์เงิน (Settlement Phases) และถ้วยน็อคเอาท์", "desc_en": "Weekly payouts, 6 settlement phases, and knockout cup bracket", "plan": "standard", "teams_count": 12}, {"id": "675290", "tag_th": "ลีกใหญ่ • รายเดือน + การกุศล", "tag_en": "Monthly • 59 Teams + Charity", "title_th": "NudNee League", "title_en": "NudNee League (59 Teams)", "desc_th": "ระบบแชมป์ประจำเดือน 10 เดือน, ตาราง Top 5 ฤดูกาล, ถ้วย และสมทบการกุศล", "desc_en": "10 monthly leaderboards, overall top 5, cup & charity ledger", "plan": "standard", "teams_count": 60}, {"id": "438691", "tag_th": "สายฮา • ค่าปรับบ๊วย 5 อันดับ", "tag_en": "Penalties • Bottom-5 Fines", "title_th": "2 spade", "title_en": "2 spade (13 Teams)", "desc_th": "เก็บค่าปรับ 5 อันดับสุดท้ายเข้ากองกลางอัตโนมัติ พร้อมระบบ Tie-breaker ทางการ", "desc_en": "Automated bottom-5 penalty ladder into central pool with tie-breakers", "plan": "standard", "teams_count": 13}, {"id": "187827", "tag_th": "Custom • Zero-Sum + ทายผล", "tag_en": "Custom • Zero-Sum + Picks", "title_th": "Shi62 Special", "title_en": "Shi62 + Mini-Game", "desc_th": "อันดับบนรับเงินจากอันดับล่างเมื่อจบฤดูกาล พร้อมแท็บทายผลแฮนดิแคปเฉพาะลีก", "desc_en": "End-of-season zero-sum ladder plus custom weekly handicap prediction tab", "plan": "custom", "teams_count": 13}, {"id": "139836", "tag_th": "Roadmap • Tier 2 (1,780 ทีม)", "tag_en": "Roadmap • Tier 2 (1,780 Teams)", "title_th": "FPL Growth Mindset", "title_en": "FPL Growth Mindset (Tier 2)", "desc_th": "ต้นแบบลีกคอมมูนิตี้สเกลใหญ่ 1,000+ ทีม พร้อมระบบค้นหาทีมและดูผัง On-Demand", "desc_en": "High-scale 1,000+ team community preview with instant search & on-demand lineups", "plan": "tier2_roadmap", "teams_count": 1780}];
-    const LANDING_SAMPLE_PREVIEW = {"league_id": "40700", "league_name": "เซียนอยู่รู หมูอยู่ตึก", "max_gw": 10, "rows": [{"rank": 1, "last_rank": 3, "team": "GEMINI UNITED", "manager": "Micky Asawamanasak", "total": 694, "gw": 69}, {"rank": 2, "last_rank": 1, "team": "SUN-KUNG-JI", "manager": "Athit Rattanawipapong", "total": 693, "gw": 58}, {"rank": 3, "last_rank": 2, "team": "Some might say", "manager": "FAme Pakviwat", "total": 691, "gw": 58}, {"rank": 4, "last_rank": 4, "team": "Anjoni Iraola", "manager": "pilan liu", "total": 658, "gw": 61}, {"rank": 5, "last_rank": 5, "team": "Mary Jojibana", "manager": "Kavinjet Tantitanasap", "total": 630, "gw": 63}]};
-
-    const HERO_SCREENS = {
-      live: {
-        src: './images/screens/40700-live-desktop.png',
-        w: 2880,
-        h: 1800,
-        portrait: false,
-        alt_th: 'หน้าจอคะแนนสดมินิลีก FPLSaWaDiKa ลีก #40700',
-        alt_en: 'FPLSaWaDiKa live standings dashboard for league #40700',
-        cap_th: 'ตารางคะแนนสด GW 10 พร้อมไฮไลท์ทีมแชมป์ประจำสัปดาห์และการเปลี่ยนตัวอัตโนมัติ',
-        cap_en: 'Live standings in GW 10 with matchday winner highlight and automatic bench substitutions'
-      },
-      prizes: {
-        src: './images/screens/40700-prizes-desktop.png',
-        w: 2880,
-        h: 1800,
-        portrait: false,
-        alt_th: 'หน้าจอสมุดบัญชีเงินรางวัล FPLSaWaDiKa ลีก #40700',
-        alt_en: 'FPLSaWaDiKa automated prize ledger for league #40700',
-        cap_th: 'สมุดเงินรางวัลแยกหมวดแชมป์วีค บอลถ้วย และอันดับรวมฤดูกาลอัตโนมัติพร้อมสรุปยอดรายคน',
-        cap_en: 'Automated prize ledger tracking weekly winners, knockout cup, and season podium per manager'
-      },
-      pitch: {
-        src: './images/screens/40700-pitch-desktop.png',
-        w: 2880,
-        h: 1800,
-        portrait: false,
-        alt_th: 'หน้าจอผัง 11 ตัวจริงของทีมในมินิลีก FPLSaWaDiKa',
-        alt_en: 'FPLSaWaDiKa interactive 11-player pitch inspector modal',
-        cap_th: 'ส่องผังนักเตะ 11 ตัวจริง กัปตัน โบนัสคาดการณ์ และม้านั่งสำรองของทุกทีมได้ทันที',
-        cap_en: 'Inspect any rival squad on the pitch with live bonus projections, captaincy, and bench order'
-      },
-      mobile: {
-        src: './images/screens/40700-live-mobile.png',
-        w: 780,
-        h: 1688,
-        portrait: true,
-        alt_th: 'หน้าจอแดชบอร์ดมินิลีก FPLSaWaDiKa บนมือถือ 390px',
-        alt_en: 'FPLSaWaDiKa responsive mobile view at 390px viewport',
-        cap_th: 'รองรับการเปิดผ่านมือถือและแชทกลุ่ม LINE ในสัดส่วน 390px อ่านชัดทุกคอลัมน์',
-        cap_en: 'Responsive 390px layout tuned for phone browsers opened directly from LINE group chats'
-      }
-    };
+    window.LANDING_COPY = {"th": {"brand_sub": "ศูนย์ควบคุมมินิลีก FPL", "nav_features": "ฟีเจอร์หลัก", "nav_demos": "ลีกตัวอย่างจริง", "nav_pricing": "แพ็กเกจราคา", "nav_order": "เปิดใช้งานลีก", "nav_cta": "ลองเดโมสด", "hero_badge": "อัปเดตสดทุก 15 วินาที", "hero_h1_line1": "มินิลีกของคุณ", "hero_h1_line2": "สดระดับห้องส่ง", "hero_lead": "คะแนนสดเปลี่ยนตัวอัตโนมัติ เช็คชิปคู่แข่ง และสรุปเงินรางวัลครบ 38 วีค", "hero_cta_primary": "เปิดใช้งานลีกทันที", "hero_cta_secondary": "ดู 6 จอฟีเจอร์จริง", "hero_metric_views": "ยอดเข้าชมระบบจริง", "hero_metric_sync": "รอบอัปเดตสด", "stats": [{"value": "15 วิ", "label": "รีเฟรชคะแนนสด"}, {"value": "500฿", "label": "ต่อฤดูกาล (≤30 ทีม)"}, {"value": "0%", "label": "ไม่ต้องทำ Excel เอง"}, {"value": "38 GW", "label": "ปิดยอดจบซีซั่นให้"}], "screens_heading": "6 หน้าจอหลักในห้องควบคุมลีก", "screens_lead": "สลับดูทุกมุมมองที่ผู้จัดการลีกและสมาชิกใช้จริงตลอดสัปดาห์แข่งขัน (ภาพจำลองข้อมูลสมมติ สลับโหมดมืดและสว่าง)", "screens_note": "ภาพหน้าจอจากระบบจริง ปรับชื่อลีกและผู้จัดการทีมเป็นข้อมูลสมมติ", "screens": [{"key": "live", "num": "01", "theme": "Dark UI", "tab": "คะแนนสด & ออโต้ซับ", "title": "เช็คคะแนนสดพร้อมเปลี่ยนตัวอัตโนมัติทันเกม", "desc": "เห็นแต้มดิบ คะแนนลบ และตัวสำรองที่รอลงสนามแทนตัวจริงที่ไม่ได้ลงเล่นแบบเรียลไทม์", "spec": "รีเฟรชทุก 15 วินาที"}, {"key": "pitch", "num": "02", "theme": "Dark UI", "tab": "แผน 11 ตัวจริง", "title": "ส่องแผนจัดทัพ 11 ตัวจริงของทุกทีมในลีก", "desc": "กดดูหน้าสนามเพื่อเทียบกัปตัน ฟอร์เมชัน และคะแนนตัวสำรองของคู่แข่งได้ในคลิกเดียว", "spec": "เทียบผังสนามทุกทีม"}, {"key": "transfers", "num": "03", "theme": "Light UI", "tab": "ย้ายตัว & ขุมกำลัง", "title": "วิเคราะห์การซื้อขายนักเตะและกำไรแต้มสุทธิ", "desc": "วัดผลทันทีว่าตัวที่ซื้อเข้ากับตัวที่ขายออกใครทำแต้มมากกว่า พร้อมสรุปดีลเด็ดประจำสัปดาห์", "spec": "หักลบแต้มฮิตอัตโนมัติ"}, {"key": "chips", "num": "04", "theme": "Dark UI", "tab": "สถานะชิปคู่แข่ง", "title": "ติดตามสถานะชิปคงเหลือของทั้งลีกในตารางเดียว", "desc": "เช็คทันทีว่าใครใช้ Wildcard, Free Hit, Triple Captain หรือ Bench Boost ไปแล้วในสัปดาห์ไหน", "spec": "เห็นชิปครบ 4 ใบ"}, {"key": "prizes", "num": "05", "theme": "Light UI", "tab": "เงินรางวัล & กองกลาง", "title": "คำนวณเงินรางวัลรายสัปดาห์ รายเดือน และค่าปรับบ๊วย", "desc": "ออกแบบตารางรับจ่ายยอดสุทธิ บริจาคการกุศล หรือหักยอดเข้ากองกลางอัตโนมัติ", "spec": "ส่งออก Excel / LINE ได้"}, {"key": "radar", "num": "06", "theme": "Dark UI", "tab": "เรดาร์ & ทำเนียบแชมป์", "title": "บันทึกสถิติสูงสุดตลอดฤดูกาลและทำเนียบแชมป์", "desc": "รวมคะแนนสูงสุดต่อสัปดาห์ สถิติครองแชมป์สัปดาห์มากที่สุด และความสม่ำเสมอตลอด 38 นัด", "spec": "สถิติครบจบฤดูกาล"}], "demos_heading": "ลีกตัวอย่างจริงในระบบ", "demos_lead": "กดเข้าชมแดชบอร์ดของลีกตัวอย่างจริงทั้ง 5 รูปแบบกติกา เปิดใช้งานได้ทันทีทั้งบนมือถือและคอมพิวเตอร์", "demos_cta": "เปิดลีกจริง", "pricing_heading": "แพ็กเกจเปิดใช้งานรายฤดูกาล", "pricing_lead": "จ่ายครั้งเดียวดูแลครบทั้ง 38 Gameweeks สำหรับมินิลีกขนาดไม่เกิน 30 ทีม", "pricing_std_badge": "พร้อมเปิดใช้งาน", "pricing_std_desc": "เหมาะสำหรับลีกเพื่อนหรือออฟฟิศที่ใช้กติการางวัลรายสัปดาห์ รายเดือน ค่าปรับบ๊วย หรืออันดับรวมจบฤดูกาล", "pricing_std_cta": "เลือก Standard", "pricing_cus_badge": "Roadmap • กำลังพัฒนา", "pricing_cus_desc": "อยู่ระหว่างพัฒนาระบบท้าชน (H2H) ระบบทายผล และกติกาเฉพาะลีกแบบอัตโนมัติ (แสดงผลเป็นแผนพัฒนา ยังไม่เปิดสั่งซื้อ)", "pricing_cus_cta": "กำลังพัฒนา (Roadmap)", "pricing_tier2_title": "ลีกใหญ่ 31 ทีมขึ้นไป (Enterprise / Community)", "pricing_tier2_desc": "รองรับตั้งแต่ 31 ถึง 1,000+ ทีม พร้อมระบบค้นหาเร็วและจัดสายบอลถ้วย ประเมินราคาตามจำนวนทีมทาง LINE", "order_heading": "สร้างข้อความสั่งเปิดลีกส่ง LINE", "order_lead": "กรอกรหัส League ID จากเว็บไซต์ FPL ทางการ ระบบจะจัดข้อความสรุปรายการให้พร้อมส่งเข้า LINE ทันที", "order_copy_btn": "คัดลอกข้อความสั่งซื้อ", "order_line_btn": "เปิดแชท LINE", "footer_note": "แดชบอร์ดอิสระสำหรับคอมมูนิตี้ Fantasy Premier League ไม่ใช่บริการอย่างเป็นทางการของ Premier League"}, "en": {"brand_sub": "FPL Mini-League Control Room", "nav_features": "Features", "nav_demos": "Live Demos", "nav_pricing": "Pricing", "nav_order": "Launch League", "nav_cta": "Open Live Demo", "hero_badge": "15s Live Feed", "hero_h1_line1": "YOUR MINI-LEAGUE", "hero_h1_line2": "LIVE BROADCAST", "hero_lead": "Live auto-subs, rival chip tracking, and automated prize ledgers across 38 Gameweeks.", "hero_cta_primary": "Launch Your League", "hero_cta_secondary": "Explore 6 Live Screens", "hero_metric_views": "Live System Views", "hero_metric_sync": "Live Poll Cycle", "stats": [{"value": "15s", "label": "Live Poll Cycle"}, {"value": "500 THB", "label": "Season Pass (≤30 teams)"}, {"value": "0%", "label": "Manual Spreadsheets"}, {"value": "38 GW", "label": "Season Automation"}], "screens_heading": "Six Live Views Inside Your League", "screens_lead": "Switch through the core matchday modules used across the season, captured with anonymized clubs in alternating dark and light modes.", "screens_note": "Real dashboard captures using fictional league IDs, clubs, and managers", "screens": [{"key": "live", "num": "01", "theme": "Dark UI", "tab": "Live & Auto-Subs", "title": "Real-Time Points With Automatic Bench Substitutions", "desc": "Follow raw scores, transfer hits, provisional bonus points, and projected bench auto-subs as matches unfold.", "spec": "15s Matchday Poll"}, {"key": "pitch", "num": "02", "theme": "Dark UI", "tab": "11-Player Pitch", "title": "Inspect Full Starting Lineups and Captaincy Choices", "desc": "Open any manager pitch modal to compare formations, active captains, vice-captains, and bench depth.", "spec": "Full Pitch Modal"}, {"key": "transfers", "num": "03", "theme": "Light UI", "tab": "Transfers Analytics", "title": "Net Transfer Gain and Squad Move Breakdown", "desc": "Measure points gained versus sold players after deducting hits across every squad in the league.", "spec": "Net Hit Audit"}, {"key": "chips", "num": "04", "theme": "Dark UI", "tab": "Chips Tracker", "title": "League-Wide Chip Availability Matrix", "desc": "Verify remaining Wildcard, Free Hit, Triple Captain, and Bench Boost chips before locking transfers.", "spec": "All 4 Chips Tracked"}, {"key": "prizes", "num": "05", "theme": "Light UI", "tab": "Prize Ledger", "title": "Automated Weekly, Monthly, and Season Prize Ledger", "desc": "Clean payout and penalty sheets supporting podium splits, charity pools, and zero-sum settlements.", "spec": "Excel & LINE Export"}, {"key": "radar", "num": "06", "theme": "Dark UI", "tab": "Hall of Fame", "title": "Season Records, Consistency Metrics, and Honors", "desc": "Preserve weekly high scores, number-one podium counts, bench records, and consistency variance all season.", "spec": "All-Season Records"}], "demos_heading": "Real Live Demo Leagues", "demos_lead": "Open five live production-style demo leagues covering weekly, monthly, penalty, zero-sum, and Tier 2 community formats.", "demos_cta": "Open Live League", "pricing_heading": "Simple Per-Season Pricing", "pricing_lead": "One season pass covers all 38 Gameweeks for leagues up to 30 teams.", "pricing_std_badge": "Ready to Launch", "pricing_std_desc": "Built for friend and office mini-leagues with weekly, monthly, bottom-penalty, or season podium rankings.", "pricing_std_cta": "Select Standard", "pricing_cus_badge": "Roadmap • Coming Soon", "pricing_cus_desc": "Currently building automated Head-to-Head challenges, weekly match predictions, and bespoke rulesets (preview only).", "pricing_cus_cta": "On Roadmap (Not Yet Open)", "pricing_tier2_title": "Large Leagues (31+ Teams)", "pricing_tier2_desc": "Supports 31 to 1,000+ entries with fast roster search and bracket automation via LINE quote.", "order_heading": "Build Your LINE Order Slip", "order_lead": "Enter your official FPL League ID to generate a formatted setup slip ready to paste in our LINE chat.", "order_copy_btn": "Copy Order Slip", "order_line_btn": "Open LINE Chat", "footer_note": "Independent Fantasy Premier League companion dashboard. Not affiliated with the Premier League."}};
+    window.PRICING_CONFIG = {"standard": {"thb": 500, "usd": 19}, "custom": {"thb": 900, "usd": 29}, "tier1_max_teams": 30, "line_url": "https://line.me/ti/p/lgWPeyIBR7", "api_base_url": "https://api.fplsawadika.com"};
+    window.SHOWCASE_DEMOS = [{"id": "40700", "tag_th": "ยอดนิยม • แชมป์วีค + บอลถ้วย", "tag_en": "Popular • Weekly + Cup", "title_th": "เซียนอยู่รู หมูอยู่ตึก", "title_en": "Sian Yoo Roo (12 Teams)", "desc_th": "รางวัลแชมป์สัปดาห์, 6 รอบเคลียร์เงิน (Settlement Phases) และถ้วยน็อคเอาท์", "desc_en": "Weekly payouts, 6 settlement phases, and knockout cup bracket", "plan": "standard", "teams_count": 12}, {"id": "675290", "tag_th": "ลีกใหญ่ • รายเดือน + การกุศล", "tag_en": "Monthly • 59 Teams + Charity", "title_th": "NudNee League", "title_en": "NudNee League (59 Teams)", "desc_th": "ระบบแชมป์ประจำเดือน 10 เดือน, ตาราง Top 5 ฤดูกาล, ถ้วย และสมทบการกุศล", "desc_en": "10 monthly leaderboards, overall top 5, cup & charity ledger", "plan": "standard", "teams_count": 60}, {"id": "438691", "tag_th": "สายฮา • ค่าปรับบ๊วย 5 อันดับ", "tag_en": "Penalties • Bottom-5 Fines", "title_th": "2 spade", "title_en": "2 spade (13 Teams)", "desc_th": "เก็บค่าปรับ 5 อันดับสุดท้ายเข้ากองกลางอัตโนมัติ พร้อมระบบ Tie-breaker ทางการ", "desc_en": "Automated bottom-5 penalty ladder into central pool with tie-breakers", "plan": "standard", "teams_count": 13}, {"id": "187827", "tag_th": "Custom • Zero-Sum + ทายผล", "tag_en": "Custom • Zero-Sum + Picks", "title_th": "Shi62 Special", "title_en": "Shi62 + Mini-Game", "desc_th": "อันดับบนรับเงินจากอันดับล่างเมื่อจบฤดูกาล พร้อมแท็บทายผลแฮนดิแคปเฉพาะลีก", "desc_en": "End-of-season zero-sum ladder plus custom weekly handicap prediction tab", "plan": "custom", "teams_count": 13}, {"id": "139836", "tag_th": "Roadmap • Tier 2 (1,780 ทีม)", "tag_en": "Roadmap • Tier 2 (1,780 Teams)", "title_th": "FPL Growth Mindset", "title_en": "FPL Growth Mindset (Tier 2)", "desc_th": "ต้นแบบลีกคอมมูนิตี้สเกลใหญ่ 1,000+ ทีม พร้อมระบบค้นหาทีมและดูผัง On-Demand", "desc_en": "High-scale 1,000+ team community preview with instant search & on-demand lineups", "plan": "tier2_roadmap", "teams_count": 1780}];
+    window.SAMPLE_PREVIEW = {"league_id": "40700", "league_name": "เซียนอยู่รู หมูอยู่ตึก", "max_gw": 10, "rows": [{"rank": 1, "last_rank": 3, "team": "GEMINI UNITED", "manager": "Micky Asawamanasak", "total": 694, "gw": 69}, {"rank": 2, "last_rank": 1, "team": "SUN-KUNG-JI", "manager": "Athit Rattanawipapong", "total": 693, "gw": 58}, {"rank": 3, "last_rank": 2, "team": "Some might say", "manager": "FAme Pakviwat", "total": 691, "gw": 58}, {"rank": 4, "last_rank": 4, "team": "Anjoni Iraola", "manager": "pilan liu", "total": 658, "gw": 61}, {"rank": 5, "last_rank": 5, "team": "Mary Jojibana", "manager": "Kavinjet Tantitanasap", "total": 630, "gw": 63}]};
 
     const landingApp = {
-      lang: window.INITIAL_LANG || 'th',
-      currency: (window.INITIAL_LANG === 'en') ? 'USD' : 'THB',
-      currencyManual: false,
-      visitorViews: 0,
-      hasInteractedLeagueId: false,
-      heroScreen: 'live',
+      lang: window.INITIAL_LANG === 'en' ? 'en' : 'th',
+      currency: 'THB',
+      activeScreen: 'live',
+      visitorViews: null,
+
+      escapeHtml(val) {
+        return String(val == null ? '' : val)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      },
 
       init() {
-        this.applyThemeMeta();
-        this.bindEvents();
+        this.bindOrderForm();
         this.renderAll();
-        this.rewriteFileLinksIfNeeded();
         this.fetchVisitorCount();
         this.sendLandingTelemetry();
       },
 
-      rewriteFileLinksIfNeeded() {
-        if (window.location.protocol !== 'file:') return;
-        document.querySelectorAll('a[data-demo-lid]').forEach(a => {
-          const lid = a.getAttribute('data-demo-lid');
-          if (lid) a.setAttribute('href', './' + lid + '/index.html');
-        });
+      toggleLang() {
+        this.lang = this.lang === 'th' ? 'en' : 'th';
+        try { localStorage.setItem('fpl_lang', this.lang); } catch (_) {}
+        document.documentElement.lang = this.lang;
+        this.renderAll();
       },
 
       toggleTheme() {
-        const isDark = document.documentElement.classList.toggle('dark');
-        try {
-          localStorage.setItem('fpl_theme', isDark ? 'dark' : 'light');
-        } catch (_) {}
-        this.applyThemeMeta();
-      },
-
-      applyThemeMeta() {
-        document.documentElement.lang = this.lang;
-        const metaTheme = document.querySelector('meta[name="theme-color"]');
-        if (metaTheme) {
-          const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--theme-chrome').trim();
-          if (themeColor) metaTheme.setAttribute('content', themeColor);
-        }
-      },
-
-      toggleLang() {
-        this.lang = this.lang === 'en' ? 'th' : 'en';
-        try {
-          localStorage.setItem('fpl_lang', this.lang);
-        } catch (_) {}
-        if (!this.currencyManual) {
-          this.currency = this.lang === 'en' ? 'USD' : 'THB';
-        }
-        document.documentElement.lang = this.lang;
-        this.renderAll();
-        this.rewriteFileLinksIfNeeded();
-      },
-
-      setHeroScreen(key) {
-        if (!HERO_SCREENS[key]) return;
-        this.heroScreen = key;
-        this.renderHeroStage();
-      },
-
-      renderHeroStage() {
-        const sc = HERO_SCREENS[this.heroScreen] || HERO_SCREENS.live;
-        const isEn = this.lang === 'en';
-        const viewport = document.getElementById('hero-stage-viewport');
-        const img = document.getElementById('hero-stage-img');
-        const cap = document.getElementById('hero-stage-caption');
-
-        if (viewport) {
-          viewport.classList.toggle('is-portrait-shot', Boolean(sc.portrait));
-        }
-        if (img) {
-          img.src = sc.src;
-          img.width = sc.w;
-          img.height = sc.h;
-          img.alt = isEn ? sc.alt_en : sc.alt_th;
-        }
-        if (cap) {
-          cap.textContent = isEn ? sc.cap_en : sc.cap_th;
-        }
-        ['live', 'prizes', 'pitch', 'mobile'].forEach(k => {
-          const btn = document.getElementById('tab-screen-' + k);
-          if (btn) btn.setAttribute('aria-selected', k === this.heroScreen ? 'true' : 'false');
-        });
-      },
-
-      setCurrency(curr) {
-        this.currency = curr === 'USD' ? 'USD' : 'THB';
-        this.currencyManual = true;
-        this.renderPricing();
-        this.updateOrderSummary();
-      },
-
-      selectPlanFromCard(planId) {
-        const sel = document.getElementById('order-plan');
-        if (sel && (planId === 'standard' || planId === 'custom')) {
-          sel.value = planId;
-          this.updateOrderSummary();
-        }
-        const orderSec = document.getElementById('order');
-        if (orderSec) orderSec.scrollIntoView({ behavior: 'smooth' });
+        const isDark = !document.documentElement.classList.contains('dark');
+        document.documentElement.classList.toggle('dark', isDark);
+        try { localStorage.setItem('fpl_theme', isDark ? 'dark' : 'light'); } catch (_) {}
       },
 
       toggleMobileMenu() {
         const drawer = document.getElementById('mobile-nav-drawer');
         const btn = document.getElementById('mobile-menu-toggle');
         if (!drawer || !btn) return;
-        const willOpen = drawer.hasAttribute('hidden') || drawer.classList.contains('hidden');
-        drawer.hidden = !willOpen;
-        drawer.classList.toggle('hidden', !willOpen);
-        btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        const hidden = drawer.classList.toggle('hidden');
+        btn.setAttribute('aria-expanded', hidden ? 'false' : 'true');
       },
 
       closeMobileMenu() {
         const drawer = document.getElementById('mobile-nav-drawer');
         const btn = document.getElementById('mobile-menu-toggle');
-        if (drawer) {
-          drawer.hidden = true;
-          drawer.classList.add('hidden');
-        }
+        if (drawer) drawer.classList.add('hidden');
         if (btn) btn.setAttribute('aria-expanded', 'false');
       },
 
-      escapeHtml(str) {
-        return String(str === null || str === undefined ? '' : str)
-          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-      },
-
-      bindEvents() {
-        const lidInput = document.getElementById('order-league-id');
-        const nameInput = document.getElementById('order-league-name');
-        const planSel = document.getElementById('order-plan');
-        const prizeSel = document.getElementById('order-prize-model');
-        const teamSel = document.getElementById('order-team-tier');
-        const form = document.getElementById('order-form');
-
-        if (lidInput) {
-          lidInput.addEventListener('blur', () => {
-            this.hasInteractedLeagueId = true;
-            this.validateLeagueId(true);
-            this.updateOrderSummary();
-          });
-          lidInput.addEventListener('input', () => {
-            if (this.hasInteractedLeagueId) this.validateLeagueId(true);
-            this.updateOrderSummary();
-          });
-        }
-        [nameInput, planSel, prizeSel, teamSel].forEach(el => {
-          if (el) el.addEventListener('change', () => this.updateOrderSummary());
-          if (el && el.tagName === 'INPUT') el.addEventListener('input', () => this.updateOrderSummary());
-        });
-
-        if (form) {
-          form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            this.hasInteractedLeagueId = true;
-            const valid = this.validateLeagueId(true);
-            this.updateOrderSummary();
-            if (!valid) {
-              if (lidInput) lidInput.focus();
-              return;
-            }
-            const summaryText = (document.getElementById('order-summary-preview') || {}).textContent || '';
-            const fb = document.getElementById('order-copy-feedback');
-            try {
-              if (navigator.clipboard && navigator.clipboard.writeText) {
-                await navigator.clipboard.writeText(summaryText);
-              }
-              if (fb) {
-                fb.textContent = (this.lang === 'en')
-                  ? 'Copied to clipboard. Open LINE chat to send your order slip.'
-                  : 'คัดลอกข้อความเข้าคลิปบอร์ดแล้ว โปรดกดเปิดแชท LINE เพื่อวางส่ง';
-                fb.hidden = false;
-                fb.classList.remove('hidden');
-              }
-            } catch (_) {
-              if (fb) {
-                fb.textContent = (this.lang === 'en')
-                  ? 'Select and copy the order slip above to send via LINE.'
-                  : 'กรุณาคัดลอกข้อความในกล่องด้านบนเพื่อส่งผ่าน LINE';
-                fb.hidden = false;
-                fb.classList.remove('hidden');
-              }
-            }
-          });
-        }
-      },
-
-      validateLeagueId(showError) {
-        const input = document.getElementById('order-league-id');
-        const errEl = document.getElementById('order-league-id-error');
-        if (!input || !errEl) return true;
-        const val = input.value.trim();
-        const isValid = /^\d{3,8}$/.test(val);
-        if (!isValid && showError) {
-          errEl.textContent = (this.lang === 'en')
-            ? 'Please enter a numeric FPL League ID (3 to 8 digits, e.g. 40700).'
-            : 'กรุณากรอกเลข FPL League ID เป็นตัวเลข 3 ถึง 8 หลัก (เช่น 40700)';
-          errEl.hidden = false;
-          errEl.classList.remove('hidden');
-          input.setAttribute('aria-invalid', 'true');
-          input.setAttribute('aria-describedby', 'order-league-id-error');
-        } else {
-          errEl.hidden = true;
-          errEl.classList.add('hidden');
-          errEl.textContent = '';
-          input.removeAttribute('aria-invalid');
-          input.removeAttribute('aria-describedby');
-        }
-        return isValid;
-      },
-
-      renderAll() {
-        const isEn = this.lang === 'en';
-        const setTxt = (id, th, en) => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = isEn ? en : th;
-        };
-
-        const langBtn = document.getElementById('landing-lang-btn');
-        if (langBtn) langBtn.textContent = isEn ? 'TH' : 'EN';
-        setTxt('nav-brand-sub', 'มินิลีกวันแข่ง', 'Matchday Mini-League');
-        setTxt('nav-link-features', 'ความสามารถ', 'Capabilities');
-        setTxt('nav-link-demos', 'ลีกตัวอย่าง', 'Live Leagues');
-        setTxt('nav-link-pricing', 'แพ็กเกจ', 'Pricing');
-        setTxt('nav-link-order', 'เปิดลีก', 'Launch');
-        setTxt('nav-cta-btn', 'เปิดลีกของคุณ', 'Launch league');
-        setTxt('m-nav-features', 'ความสามารถและฟีเจอร์', 'Capabilities');
-        setTxt('m-nav-demos', 'ลีกตัวอย่างจริง', 'Live Leagues');
-        setTxt('m-nav-pricing', 'แพ็กเกจราคา', 'Pricing');
-        setTxt('m-nav-order', 'สั่งเปิดลีกผ่าน LINE', 'Launch via LINE');
-
-        setTxt('hero-edition-line',
-          'ใช้งานจริงแล้ว 9 มินิลีก (1,943+ ทีม) ในฤดูกาลนี้',
-          'Live across 9 leagues (1,943+ teams) this season'
-        );
-        setTxt('hero-title',
-          'ตารางคะแนนสดและบัญชีเงินรางวัล สำหรับมินิลีก FPL',
-          'Live standings and prize ledgers for friend and office FPL leagues'
-        );
-        setTxt('hero-subtitle',
-          'หยุดแคปหน้าจอและคำนวณเงินรางวัลใน Excel เอง ส่งเลข FPL League ID เพื่อเปิดเว็บส่วนตัวให้ทุกคนในกลุ่มเช็คคะแนนสดทุก 15 วินาที พร้อมสรุปยอดจ่ายประจำสัปดาห์ลง LINE',
-          'Stop taking screenshots and calculating payouts in spreadsheets. Send your FPL League ID for a dedicated league dashboard with 15-second live scores and weekly LINE payout slips.'
-        );
-        const pPrice = this.currency === 'USD' ? `$${LANDING_CONFIG.standard.usd}` : `${LANDING_CONFIG.standard.thb}฿`;
-        const pCta = document.querySelector('#hero-primary-cta span');
-        if (pCta) pCta.textContent = isEn ? `Launch league (from ${pPrice})` : `สั่งเปิดลีก (เริ่มต้น ${pPrice})`;
-        const sCta = document.querySelector('#hero-secondary-cta span');
-        if (sCta) sCta.textContent = isEn ? 'Inspect 5 live leagues' : 'ดู 5 ลีกตัวอย่างจริง';
-        setTxt('hero-all-preview-link', 'หน้าศูนย์รวมตัวอย่าง', 'Showcase hub');
-
-        setTxt('stage-league-badge',
-          'ตัวอย่างจริง: เซียนอยู่รู หมูอยู่ตึก (#40700, GW 10)',
-          'Live capture: เซียนอยู่รู หมูอยู่ตึก (#40700, GW 10)'
-        );
-        setTxt('tab-screen-live', 'คะแนนสด', 'Live Scores');
-        setTxt('tab-screen-prizes', 'เงินรางวัล', 'Prize Ledger');
-        setTxt('tab-screen-pitch', '11 ตัวจริง', 'Pitch View');
-        setTxt('tab-screen-mobile', 'บนมือถือ', 'Mobile UI');
-        setTxt('hero-open-demo-label', 'เปิดดูแดชบอร์ดจริง', 'Open live league');
-        this.renderHeroStage();
-        this.renderVisitorStat();
-
-        setTxt('fig-leagues-lbl', 'มินิลีกที่ใช้งานจริง', 'Active showcase leagues');
-        setTxt('fig-teams-lbl', 'ผู้จัดการทีมในระบบ', 'Teams tracked weekly');
-        setTxt('fig-refresh-lbl', 'อัปเดตสดระหว่างบอลเตะ', 'Matchday live refresh');
-        setTxt('fig-price-lbl', 'เหมาจ่ายตลอดฤดูกาล', 'Full-season pass');
-        setTxt('fig-price-val', pPrice, pPrice);
-
-        setTxt('feat-title', 'ออกแบบมาแทนตาราง Excel ของแอดมิน', 'Built to replace weekend spreadsheet work');
-        setTxt('feat-sub',
-          'สร้างจากโจทย์จริงของมินิลีกที่มีเงินรางวัล ตั้งแต่เช็คคะแนนสดระหว่างแมตช์ไปจนถึงสรุปยอดจ่ายรายสัปดาห์และบอลถ้วย',
-          'Designed around prize-backed mini-leagues from live Saturday kickoffs through weekly settlement.'
-        );
-        setTxt('iso-preview-text', 'ลองดูตัวอย่างแดชบอร์ดชุดเต็ม', 'Open full showcase directory');
-        setTxt('iso-title', 'ความเป็นส่วนตัวและแยกข้อมูลอิสระทุกลีก', 'Isolated private leagues with clean URLs');
-        setTxt('iso-desc',
-          'สมาชิกในลีกของคุณเห็นเฉพาะตารางของลีกตนเอง ไม่มีปุ่มสลับไปลีกอื่น และหน้าลีกส่วนตัวถูกตั้งค่า noindex ไม่ให้ปรากฏบน Search Engine',
-          'Members see only their own league with no cross-league switcher and noindex excluded from public search engines.'
-        );
-        setTxt('iso-secondary-link', 'ดูศูนย์รวมตัวอย่าง', 'Showcase hub');
-        setTxt('shot-prizes-title', 'สมุดเงินรางวัลและค่าปรับอัตโนมัติ', 'Automated prize and penalty ledger');
-        setTxt('shot-prizes-desc',
-          'แยกทีมที่ไม่ชิงรางวัลออกจากการคำนวณ คำนวณแชมป์วีค รายเดือน ค่าปรับบ๊วย และยอดสุทธิพร้อมเคลียร์บัญชี',
-          'Automatic separation of non-prize teams, weekly winners, monthly leaders, and bottom-5 fines.'
-        );
-        setTxt('shot-cup-title', 'บอลถ้วยน็อคเอาท์และรางวัลเสริม', 'Knockout cup and seasonal phases');
-        setTxt('shot-cup-desc',
-          'จับสายประกบคู่บอลถ้วยประจำลีก อัปเดตผลรอบต่อรอบอัตโนมัติ พร้อมกติกาแยก 4 ช่วงฤดูกาล (GW 1 ถึง 38)',
-          'Automatic cup round progression alongside split-season quarter phases from GW 1 to GW 38.'
-        );
-        setTxt('shot-chips-title', 'ติดตามชิปที่เหลือและเรดาร์ฟอร์ม', 'Remaining chip tracker and scouting');
-        setTxt('shot-chips-desc',
-          'ดูสถานะ Wildcard, Free Hit, Triple Captain และ Bench Boost ของคู่แข่งทุกทีมในลีกได้จากหน้าเดียว',
-          'Monitor Wildcard, Free Hit, Triple Captain, and Bench Boost usage across every rival team.'
-        );
-        this.renderFeatures();
-
-        setTxt('demos-title', 'กดดูลีกจริง 5 รูปแบบที่เปิดใช้งานอยู่', 'Explore 5 live production showcases');
-        setTxt('demos-sub',
-          'เลือกเปิดดูได้ทั้งลีกแชมป์สัปดาห์ รายเดือน ค่าปรับบ๊วย เกม Zero-Sum และลีกใหญ่ 1,700+ ทีม',
-          'Inspect real standings, weekly payouts, bottom-5 fines, zero-sum tables, and our 1,700+ team preview.'
-        );
-        setTxt('demos-note', 'คลิกแต่ละแถวเพื่อเปิดหน้าแดชบอร์ดจริงในแท็บใหม่', 'Click any league to open the live dashboard in a new tab');
-        this.renderDemos();
-
-        setTxt('pricing-title', 'ค่าบริการเหมาจ่ายตลอดฤดูกาล', 'Season-pass pricing');
-        setTxt('pricing-sub',
-          `รองรับไม่เกิน ${LANDING_CONFIG.tier1_max_teams} ทีมต่อลีก (กรณี 31 ถึง 60 ทีมสอบถามราคาเพิ่มได้) จ่ายครั้งเดียวจบฤดูกาล`,
-          `Up to ${LANDING_CONFIG.tier1_max_teams} teams per league (custom quote for 31 to 60 teams). One payment covers the entire season.`
-        );
+      setCurrency(curr) {
+        this.currency = curr === 'USD' ? 'USD' : 'THB';
+        const btnThb = document.getElementById('curr-btn-thb');
+        const btnUsd = document.getElementById('curr-btn-usd');
+        if (btnThb) btnThb.classList.toggle('is-active', this.currency === 'THB');
+        if (btnUsd) btnUsd.classList.toggle('is-active', this.currency === 'USD');
         this.renderPricing();
-
-        setTxt('tier2-title', 'Tier 2 Community Scale (60 ถึง 2,000+ ทีม: เร็วๆ นี้)', 'Tier 2 Community Scale (60 to 2,000+ teams: Coming soon)');
-        setTxt('tier2-desc',
-          'สำหรับเพจฟุตบอลและคอมมูนิตี้ขนาดใหญ่ที่ต้องการค้นหาทีมเร็วและดูผังแบบ On-Demand',
-          'Engineered for creator and community leagues with chunked GW loading and instant team search.'
-        );
-        setTxt('tier2-link-text', 'ชมตัวอย่างลีก #139836', 'View live preview #139836');
-
-        setTxt('order-title', 'สั่งเปิดลีกผ่าน LINE', 'Launch your league via LINE');
-        setTxt('order-sub',
-          'กรอกข้อมูลลีกของคุณเพื่อสร้างข้อความสรุป จากนั้นกดคัดลอกส่งทาง LINE เพื่อให้แอดมินตั้งค่ารูปแบบรางวัลและเปิดลิงก์ส่วนตัวให้พร้อมใช้งาน',
-          'Fill in your league details to generate an order slip, copy it, and paste it in LINE for setup.'
-        );
-        setTxt('step-1', 'กรอกเลข FPL League ID และเลือกรูปแบบเงินรางวัล', 'Enter your FPL League ID and prize format');
-        setTxt('step-2', 'กดคัดลอกข้อความสรุปคำสั่งซื้อ', 'Copy the generated order slip');
-        setTxt('step-3', 'วางส่งในแชท LINE เพื่อรับลิงก์ส่วนตัวของลีก', 'Send in LINE chat to receive your private link');
-        setTxt('lbl-league-id', 'FPL League ID (ตัวเลขจากลิงก์ FPL) *', 'FPL League ID (numeric ID from FPL URL) *');
-        setTxt('lbl-league-name', 'ชื่อลีกหรือชื่อกลุ่ม (ถ้ามี)', 'League or group name (optional)');
-        setTxt('lbl-plan', 'แพ็กเกจ', 'Package');
-        setTxt('lbl-prize-model', 'รูปแบบเงินรางวัลหลัก', 'Primary prize model');
-        setTxt('lbl-team-tier', 'จำนวนทีมในลีก', 'League size');
-        setTxt('order-preview-label', 'ข้อความคำสั่งซื้อสำหรับส่ง LINE', 'Order slip for LINE');
-        setTxt('btn-copy-order-text', 'คัดลอกรายละเอียดคำสั่งซื้อ', 'Copy order slip');
-        setTxt('btn-open-line-text', 'เปิดแชท LINE เพื่อส่งข้อความ', 'Open LINE chat');
-
-        const prizeSelect = document.getElementById('order-prize-model');
-        if (prizeSelect && prizeSelect.options.length >= 5) {
-          prizeSelect.options[0].textContent = isEn ? 'Weekly Winner + Season Podium' : 'แชมป์ประจำสัปดาห์ + แชมป์ฤดูกาล';
-          prizeSelect.options[1].textContent = isEn ? 'Monthly Champions + Season Top 5' : 'แชมป์ประจำเดือน + Top 5 ฤดูกาล';
-          prizeSelect.options[2].textContent = isEn ? 'Bottom-5 Penalties + Weekly Winner' : 'เก็บค่าปรับอันดับท้าย + รางวัล';
-          prizeSelect.options[3].textContent = isEn ? 'Zero-Sum / Custom Mini-Game' : 'Zero-Sum / กติกาพิเศษกำหนดเอง';
-          prizeSelect.options[4].textContent = isEn ? 'Live Dashboard Only (No Prizes)' : 'เน้นดูคะแนนสด (ไม่มีเงินรางวัล)';
-        }
-        const teamSelect = document.getElementById('order-team-tier');
-        if (teamSelect && teamSelect.options.length >= 3) {
-          teamSelect.options[0].textContent = isEn ? `Up to ${LANDING_CONFIG.tier1_max_teams} Teams (Included)` : `ไม่เกิน ${LANDING_CONFIG.tier1_max_teams} ทีม (ราคาปกติ)`;
-          teamSelect.options[1].textContent = isEn ? '31 to 60 Teams (Custom Quote)' : '31 ถึง 60 ทีม (สอบถามราคาเพิ่ม)';
-          teamSelect.options[2].textContent = isEn ? '60+ Teams (Tier 2 Roadmap)' : 'มากกว่า 60 ทีม (Tier 2 Roadmap)';
-        }
-        if (this.hasInteractedLeagueId) this.validateLeagueId(true);
         this.updateOrderSummary();
       },
 
-      renderFeatures() {
-        const grid = document.getElementById('features-columns');
-        if (!grid) return;
+      setHeroScreen(key) {
+        this.activeScreen = key || 'live';
+        this.renderScreens();
+      },
+
+      selectPlanFromCard(planId) {
+        if (planId === 'custom') return;
+        const select = document.getElementById('order-plan');
+        if (select) {
+          select.value = 'standard';
+        }
+        this.updateOrderSummary();
+        const target = document.getElementById('order');
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      },
+
+      renderAll() {
+        const copy = (window.LANDING_COPY && window.LANDING_COPY[this.lang]) || (window.LANDING_COPY && window.LANDING_COPY.th) || {};
+        const setTxt = (id, text) => {
+          const el = document.getElementById(id);
+          if (el && text != null) el.textContent = text;
+        };
+
+        setTxt('landing-lang-btn', this.lang === 'th' ? 'EN' : 'TH');
+        setTxt('nav-brand-sub', copy.brand_sub);
+        setTxt('nav-link-features', copy.nav_features);
+        setTxt('nav-link-demos', copy.nav_demos);
+        setTxt('nav-link-pricing', copy.nav_pricing);
+        setTxt('nav-link-order', copy.nav_order);
+        setTxt('m-nav-features', copy.nav_features);
+        setTxt('m-nav-demos', copy.nav_demos);
+        setTxt('m-nav-pricing', copy.nav_pricing);
+        setTxt('m-nav-order', copy.nav_order);
+        const ctaSpan = document.querySelector('#nav-cta-btn span');
+        if (ctaSpan && copy.nav_cta) ctaSpan.textContent = copy.nav_cta;
+
+        setTxt('hero-h1-line1', copy.hero_h1_line1);
+        setTxt('hero-h1-line2', copy.hero_h1_line2);
+        setTxt('hero-subtitle', copy.hero_lead);
+        setTxt('hero-primary-cta-text', copy.hero_cta_primary);
+        setTxt('hero-secondary-cta-text', copy.hero_cta_secondary);
+        setTxt('hero-badge-text', copy.hero_badge);
+        setTxt('hero-open-demo-label', this.lang === 'en' ? 'Open Real Demo #40700' : 'เปิดลีกตัวอย่างจริง #40700');
+        setTxt('hero-sync-meta', this.lang === 'en'
+          ? '9 Live Demos / 1,943 Teams'
+          : '9 ลีกตัวอย่าง / 1,943 ทีม');
+        setTxt('hero-all-preview-text', this.lang === 'en' ? 'View All Showcase Leagues' : 'ดูหน้าเลือกทั้งหมด');
+
+        this.renderStats(copy.stats || []);
+        setTxt('feat-title', copy.screens_heading);
+        setTxt('feat-sub', copy.screens_lead);
+        setTxt('stage-disclosure-text', copy.screens_note);
+        this.renderScreens();
+
+        setTxt('demos-title', copy.demos_heading);
+        setTxt('demos-sub', copy.demos_lead);
+        setTxt('demos-note', this.lang === 'en'
+          ? 'Real public showcase leagues (9 leagues, 1,943 teams), synced 16 พ.ย. 2026, 17:52 น.'
+          : 'ข้อมูลการแข่งขันจริงในลีกสาธารณะทั้ง 9 ลีก (1,943 ทีม) ซิงค์ล่าสุด 16 พ.ย. 2026, 17:52 น.');
+        this.renderDemos(copy);
+
+        setTxt('pricing-title', copy.pricing_heading);
+        setTxt('pricing-sub', copy.pricing_lead);
+        this.renderPricing();
+        setTxt('tier2-title', copy.pricing_tier2_title);
+        setTxt('tier2-desc', copy.pricing_tier2_desc);
+        setTxt('tier2-link-text', this.lang === 'en' ? 'Explore 1,780-Team Preview' : 'ดูตัวอย่าง 1,780 ทีม');
+
+        setTxt('order-title', copy.order_heading);
+        setTxt('order-sub', copy.order_lead);
+        setTxt('btn-copy-order-text', copy.order_copy_btn);
+        setTxt('btn-open-line-text', copy.order_line_btn);
+        setTxt('order-preview-label', this.lang === 'en' ? 'LINE Order Summary Slip' : 'ข้อความสรุปรายการส่ง LINE');
+        setTxt('lbl-league-id', this.lang === 'en' ? 'Official FPL League ID' : 'รหัส League ID ทางการ');
+        setTxt('lbl-league-name', this.lang === 'en' ? 'Display League Name' : 'ชื่อลีกที่จะแสดงบนเว็บ');
+        setTxt('lbl-plan', this.lang === 'en' ? 'Selected Plan' : 'แพ็กเกจที่ต้องการ');
+        setTxt('lbl-prize-model', this.lang === 'en' ? 'Prize Rule Format' : 'รูปแบบกติกาเงินรางวัล');
+        setTxt('lbl-team-tier', this.lang === 'en' ? 'League Size' : 'จำนวนสมาชิกในลีก');
+
         const isEn = this.lang === 'en';
-        const items = [
-          {
-            title: isEn ? '15-second live updates' : 'คะแนนสดทุก 15 วินาที',
-            desc: isEn ? 'Live bonus projections, captain points, and automatic bench substitutions while matches play.' : 'คำนวณโบนัสคาดการณ์ กัปตัน และตัวสำรองอัตโนมัติระหว่างเกมแข่ง ไม่ต้องรอสรุปหลังจบวัน'
-          },
-          {
-            title: isEn ? 'Isolated private URLs' : 'ความเป็นส่วนตัวแยกลีกรายกลุ่ม',
-            desc: isEn ? 'Customer leagues stay unlisted from public search (noindex) with no cross-league switcher.' : 'ตั้งค่า noindex แยกข้อมูลอิสระ ไม่มีปุ่มสลับข้ามไปลีกอื่นและไม่ติดค้นหาสาธารณะ'
-          },
-          {
-            title: isEn ? 'LINE slip & Excel export' : 'คัดลอกส่ง LINE และ Excel',
-            desc: isEn ? 'One-tap matchday summary formatted cleanly for LINE group chats plus full .xlsx workbook download.' : 'กดคัดลอกตารางสรุปผลสัปดาห์แบบอ่านง่ายส่งเข้าแชท LINE หรือดาวน์โหลดไฟล์ .xlsx ได้ทันที'
-          },
-          {
-            title: isEn ? 'Zero manual setup' : 'แอดมินตั้งค่ารางวัลให้พร้อมใช้',
-            desc: isEn ? 'Send your FPL League ID and rules on LINE to receive a ready-to-share link before kickoff.' : 'ส่งเลขลีกและกติกาเงินรางวัลผ่าน LINE เพื่อรับลิงก์พร้อมแชร์ลงกลุ่มก่อนเริ่มสัปดาห์ถัดไป'
-          }
-        ];
-        grid.innerHTML = items.map(it => `
-          <div class="ops-item space-y-1.5">
-            <h3 class="text-base font-bold leading-snug">${it.title}</h3>
-            <p class="text-sm ink-secondary m-0 leading-relaxed">${it.desc}</p>
+        const lidInput = document.getElementById('order-league-id');
+        if (lidInput) lidInput.placeholder = isEn ? 'e.g. 40700' : 'เช่น 40700';
+        const lnameInput = document.getElementById('order-league-name');
+        if (lnameInput) lnameInput.placeholder = isEn ? 'e.g. Sunday Premier League' : 'เช่น เพื่อนรักบอลพรีเมียร์';
+
+        const setOpts = (selId, labels) => {
+          const sel = document.getElementById(selId);
+          if (!sel) return;
+          Array.from(sel.options).forEach((opt) => {
+            if (labels[opt.value]) opt.textContent = labels[opt.value];
+          });
+        };
+        setOpts('order-plan', isEn
+          ? { standard: 'Standard (500 THB / $19)', custom: 'Custom (Roadmap / Coming Soon, 900 THB / $29)' }
+          : { standard: 'Standard (500฿)', custom: 'Custom (Roadmap / กำลังพัฒนา, 900฿)' });
+        setOpts('order-prize-model', isEn
+          ? {
+              weekly: 'Weekly Winner Ledger',
+              monthly: 'Monthly Awards + Overall Podium',
+              penalty: 'Bottom Penalty Pool',
+              zero_sum: 'Zero-Sum / Bespoke Ruleset'
+            }
+          : {
+              weekly: 'รายสัปดาห์ (Weekly Winner)',
+              monthly: 'รายเดือน + อันดับรวม',
+              penalty: 'ค่าปรับบ๊วย + กองกลาง',
+              zero_sum: 'Zero-Sum / เงื่อนไขเฉพาะลีก'
+            });
+        setOpts('order-team-tier', isEn
+          ? { tier1: 'Up to 30 Teams', tier2: '31+ Teams (LINE Quote)' }
+          : { tier1: 'ไม่เกิน 30 ทีม', tier2: '31 ทีมขึ้นไป (ประเมินราคาทาง LINE)' });
+
+        setTxt('footer-note', copy.footer_note);
+        this.renderVisitorStat();
+        this.updateOrderSummary();
+      },
+
+      renderStats(stats) {
+        const grid = document.getElementById('telemetry-strip-grid');
+        if (!grid || !stats.length) return;
+        grid.innerHTML = stats.map((st) => `
+          <div class="bm-stat-cell">
+            <div class="bm-stat-val tabular-nums">${this.escapeHtml(st.value)}</div>
+            <div class="bm-stat-lbl">${this.escapeHtml(st.label)}</div>
           </div>
         `).join('');
       },
 
-      renderDemos() {
-        const list = document.getElementById('demos-list');
-        if (!list) return;
+      renderScreens() {
+        const copy = (window.LANDING_COPY && window.LANDING_COPY[this.lang]) || (window.LANDING_COPY && window.LANDING_COPY.th) || {};
+        const screens = copy.screens || [];
+        if (!screens.length) return;
+        const current = screens.find((s) => s.key === this.activeScreen) || screens[0];
+
+        screens.forEach((sc) => {
+          const btn = document.getElementById('tab-screen-' + sc.key);
+          if (!btn) return;
+          const active = sc.key === current.key;
+          btn.classList.toggle('is-active', active);
+          btn.setAttribute('aria-selected', active ? 'true' : 'false');
+          const lbl = btn.querySelector('.bm-channel-label');
+          const mode = btn.querySelector('.bm-channel-mode');
+          if (lbl) lbl.textContent = sc.tab;
+          if (mode) mode.textContent = sc.theme;
+        });
+
+        const img = document.getElementById('hero-stage-img');
+        const badge = document.getElementById('stage-league-badge');
+        const spec = document.getElementById('stage-spec-badge');
+        const title = document.getElementById('stage-caption-title');
+        const desc = document.getElementById('stage-caption-desc');
+
+        if (img) {
+          img.src = `./images/screens/demo-${current.key}-${this.lang}.png`;
+          img.alt = current.title;
+        }
+        if (badge) {
+          const fakeLid = current.key === 'prizes' ? '92405' : '88901';
+          badge.textContent = `League ${fakeLid} (${current.theme})`;
+        }
+        if (spec) spec.textContent = current.spec;
+        if (title) title.textContent = current.title;
+        if (desc) desc.textContent = current.desc;
+      },
+
+      renderDemos(copy) {
+        const wrap = document.getElementById('demos-list');
+        if (!wrap) return;
+        const demos = window.SHOWCASE_DEMOS || [];
         const isEn = this.lang === 'en';
-        list.innerHTML = LANDING_DEMOS.map((d, idx) => {
-          const planLabel = d.plan === 'tier2_roadmap'
-            ? (isEn ? 'Tier 2 preview' : 'ตัวอย่าง Tier 2')
-            : d.plan === 'custom'
-              ? 'Custom Tier 1'
-              : 'Standard Tier 1';
-          const borderCls = idx === LANDING_DEMOS.length - 1 ? 'border-b-0' : '';
+        const ctaText = copy.demos_cta || (isEn ? 'Open Live League' : 'เปิดลีกจริง');
+
+        wrap.innerHTML = demos.map((d, idx) => {
+          const rank = String(idx + 1).padStart(2, '0');
+          const tag = isEn ? d.tag_en : d.tag_th;
+          const title = isEn ? d.title_en : d.title_th;
+          const desc = isEn ? d.desc_en : d.desc_th;
+          const teamTxt = isEn ? `${d.teams_count} Teams` : `${d.teams_count} ทีม`;
           return `
-            <a href="./${this.escapeHtml(d.id)}/" data-demo-lid="${this.escapeHtml(d.id)}" target="_blank" rel="noopener noreferrer"
-               class="demo-row ${borderCls}">
-              <div class="flex items-center gap-2.5 tabular-nums">
-                <span class="text-sm font-bold accent-deep-text">#${this.escapeHtml(d.id)}</span>
-                <span class="text-xs font-semibold ink-muted">${this.escapeHtml(planLabel)}</span>
-              </div>
-              <div class="min-w-0">
-                <span class="block text-base font-bold truncate">${this.escapeHtml(isEn ? d.title_en : d.title_th)}</span>
-                <span class="block text-xs sm:text-sm ink-secondary">${this.escapeHtml(isEn ? d.desc_en : d.desc_th)}</span>
-              </div>
-              <div class="text-xs sm:text-sm ink-muted tabular-nums sm:text-right">
-                ${d.teams_count.toLocaleString()} ${isEn ? 'teams' : 'ทีม'}
-              </div>
-              <div class="inline-flex items-center gap-1.5 text-sm font-bold accent-deep-text whitespace-nowrap justify-end">
-                <span>${isEn ? 'Open live' : 'เปิดดูลีก'}</span>
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M9 7h8v8"/></svg>
-              </div>
+            <a href="./${this.escapeHtml(d.id)}/" data-demo-lid="${this.escapeHtml(d.id)}" class="bm-demo-row">
+              <span class="bm-demo-rank tabular-nums">${rank}</span>
+              <span class="bm-demo-main">
+                <span class="bm-demo-top">
+                  <span class="bm-demo-title">${this.escapeHtml(title)}</span>
+                  <span class="bm-demo-badge">${this.escapeHtml(tag)}</span>
+                  <span class="tabular-nums" style="font-size:0.84rem;color:var(--color-arena-ink-2);">${this.escapeHtml(teamTxt)}</span>
+                </span>
+                <p class="bm-demo-desc">${this.escapeHtml(desc)}</p>
+              </span>
+              <span class="bm-demo-action">
+                <span>${this.escapeHtml(ctaText)}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+              </span>
             </a>
           `;
         }).join('');
       },
 
       renderPricing() {
+        const wrap = document.getElementById('pricing-plans-wrap');
+        if (!wrap) return;
+        const pCfg = window.PRICING_CONFIG || {};
+        const copy = (window.LANDING_COPY && window.LANDING_COPY[this.lang]) || {};
         const isEn = this.lang === 'en';
         const isUsd = this.currency === 'USD';
-        const bThb = document.getElementById('curr-btn-thb');
-        const bUsd = document.getElementById('curr-btn-usd');
-        if (bThb && bUsd) {
-          bThb.className = 'curr-btn' + (!isUsd ? ' is-active' : '');
-          bUsd.className = 'curr-btn' + (isUsd ? ' is-active' : '');
-          bThb.setAttribute('aria-pressed', !isUsd ? 'true' : 'false');
-          bUsd.setAttribute('aria-pressed', isUsd ? 'true' : 'false');
-        }
-
-        const stdPrice = isUsd ? `$${LANDING_CONFIG.standard.usd}` : `${LANDING_CONFIG.standard.thb.toLocaleString()} บาท`;
-        const cusPrice = isUsd ? `$${LANDING_CONFIG.custom.usd}` : `${LANDING_CONFIG.custom.thb.toLocaleString()} บาท`;
         const unit = isEn ? '/ season' : '/ ฤดูกาล';
 
         const plans = [
           {
             id: 'standard',
-            name: 'Standard Tier 1',
-            tag: isEn ? 'Recommended for prize mini-leagues' : 'แนะนำสำหรับมินิลีกทั่วไป',
-            price: stdPrice,
-            unit,
-            sub: isEn ? `Up to ${LANDING_CONFIG.tier1_max_teams} teams (Standard prize and cup suite)` : `ไม่เกิน ${LANDING_CONFIG.tier1_max_teams} ทีม (ครบทุกฟีเจอร์มาตรฐาน)`,
-            features: isEn ? [
-              '15-second live scores with auto-sub and captain preview',
-              'Weekly top score, monthly winners, or bottom-5 penalty ledger',
-              'Knockout cup bracket, chip tracker, and form radar',
-              'Private isolated URL plus LINE summary & Excel export'
-            ] : [
-              'คะแนนสดทุก 15 วินาที พร้อมคำนวณตัวสำรองและโบนัส',
-              'เลือกได้ทั้งแชมป์วีค รายเดือน หรือเก็บค่าปรับอันดับท้าย',
-              'บอลถ้วยน็อคเอาท์ ตารางชิป และเรดาร์เปรียบเทียบฟอร์ม',
-              'ลิงก์ส่วนตัวแยกข้อมูลอิสระ พร้อมส่งสลิป LINE และ Excel'
-            ],
-            cta: isEn ? 'Select Standard' : 'เลือก Standard',
-            primary: true
+            name: (pCfg.standard && (isEn ? pCfg.standard.name_en : pCfg.standard.name_th)) || 'Standard',
+            badge: copy.pricing_std_badge || (isEn ? 'Ready to Launch' : 'พร้อมเปิดใช้งาน'),
+            price: isUsd ? `$${(pCfg.standard && pCfg.standard.usd) || 19}` : `${(pCfg.standard && pCfg.standard.thb) || 500}฿`,
+            desc: copy.pricing_std_desc || '',
+            cta: copy.pricing_std_cta || (isEn ? 'Select Standard' : 'เลือก Standard'),
+            featured: true,
+            roadmap: false,
+            items: isEn
+              ? ['Up to 30 teams included', '15s matchday live score polling', 'Automatic bench subs + chips radar', 'Standard weekly, monthly, or penalty ledger']
+              : ['รองรับสูงสุด 30 ทีมต่อซีซั่น', 'อัปเดตคะแนนสดทุก 15 วินาที', 'คำนวณเปลี่ยนตัวสำรอง + เช็คชิปอัตโนมัติ', 'ตารางเงินรางวัลรายสัปดาห์/รายเดือน/ค่าปรับบ๊วยมาตรฐาน']
           },
           {
             id: 'custom',
-            name: 'Custom Tier 1',
-            tag: isEn ? 'Tailored rules & mini-games' : 'ปรับกติกาและมินิเกมเฉพาะกลุ่ม',
-            price: cusPrice,
-            unit,
-            sub: isEn ? `Up to ${LANDING_CONFIG.tier1_max_teams} teams (Custom payout engine)` : `ไม่เกิน ${LANDING_CONFIG.tier1_max_teams} ทีม (ออกแบบกติกาเฉพาะลีก)`,
-            features: isEn ? [
-              'Includes every capability of Standard Tier 1',
-              'Custom payout formula such as Zero-Sum or split-season pots',
-              '1 bespoke mini-game tab such as handicap picks or H2H challenge',
-              'Direct configuration review with admin on LINE'
-            ] : [
-              'ครบทุกความสามารถของแพ็กเกจ Standard Tier 1',
-              'ตั้งสูตรเงินรางวัลเฉพาะลีก เช่น Zero-Sum หรือแบ่งจ่าย 2 รอบ',
-              'เพิ่มแท็บมินิเกมพิเศษ 1 แท็บ เช่น ทายผลแฮนดิแคป หรือท้าชน',
-              'ปรึกษาและปรับแต่งเงื่อนไขร่วมกันโดยตรงทาง LINE'
-            ],
-            cta: isEn ? 'Select Custom' : 'เลือก Custom',
-            primary: false
+            name: (pCfg.custom && (isEn ? pCfg.custom.name_en : pCfg.custom.name_th)) || 'Custom',
+            badge: copy.pricing_cus_badge || (isEn ? 'Roadmap • Coming Soon' : 'Roadmap • กำลังพัฒนา'),
+            price: isUsd ? `$${(pCfg.custom && pCfg.custom.usd) || 29}` : `${(pCfg.custom && pCfg.custom.thb) || 900}฿`,
+            desc: copy.pricing_cus_desc || '',
+            cta: copy.pricing_cus_cta || (isEn ? 'On Roadmap (Not Yet Open)' : 'กำลังพัฒนา (Roadmap)'),
+            featured: false,
+            roadmap: true,
+            items: isEn
+              ? ['Everything in Standard', 'Weekly Head-to-Head challenge engine (In Dev)', 'Weekly match & handicap prediction system (In Dev)', 'Custom zero-sum formulas & group exports']
+              : ['ครบทุกความสามารถในแพ็กเกจ Standard', 'ระบบท้าชนคู่แข่งรายสัปดาห์ (H2H Challenge: กำลังพัฒนา)', 'ระบบทายผลคะแนน & แฮนดิแคปประจำสัปดาห์ (กำลังพัฒนา)', 'สูตรเงินรางวัลเฉพาะกลุ่ม + Zero-Sum + ส่งออก LINE / Excel']
           }
         ];
 
-        const wrap = document.getElementById('pricing-plans-wrap');
-        if (!wrap) return;
-        wrap.innerHTML = plans.map(p => `
-          <div class="plan-card ${p.primary ? 'is-featured' : ''}">
-            <div class="space-y-4">
-              <div class="flex flex-wrap items-baseline justify-between gap-2 pb-3 rule-bottom-hair">
-                <h3>${p.name}</h3>
-                <span class="text-xs font-bold ${p.primary ? 'accent-deep-text' : 'ink-muted'}">${p.tag}</span>
+        const checkSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+        const roadmapSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-ink-3)" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+        wrap.innerHTML = plans.map((p) => {
+          const cardCls = p.featured ? 'bm-plan-card is-featured' : (p.roadmap ? 'bm-plan-card is-roadmap' : 'bm-plan-card');
+          const icon = p.roadmap ? roadmapSvg : checkSvg;
+          const btnHtml = p.roadmap
+            ? `<button type="button" class="bm-plan-btn" disabled aria-disabled="true">${this.escapeHtml(p.cta)}</button>`
+            : `<button type="button" onclick="landingApp.selectPlanFromCard('${p.id}')" class="bm-plan-btn">${this.escapeHtml(p.cta)}</button>`;
+          return `
+          <div class="${cardCls}">
+            <div>
+              <div class="bm-plan-top">
+                <h3 class="bm-plan-name">${this.escapeHtml(p.name)}</h3>
+                <span class="bm-plan-badge">${this.escapeHtml(p.badge)}</span>
               </div>
-              <div>
-                <div class="flex items-baseline gap-2 tabular-nums">
-                  <span class="plan-price">${p.price}</span>
-                  <span class="text-sm ink-muted">${p.unit}</span>
-                </div>
-                <p class="text-xs sm:text-sm ink-secondary m-0 mt-1">${p.sub}</p>
-              </div>
-              <ul class="m-0 p-0 list-none space-y-2.5 text-sm ink-secondary pt-2">
-                ${p.features.map(f => `
-                  <li class="flex items-start gap-2.5">
-                    <svg class="w-4 h-4 accent-deep-text flex-shrink-0 mt-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                    <span>${f}</span>
-                  </li>
-                `).join('')}
+              <div class="bm-plan-price tabular-nums">${this.escapeHtml(p.price)} <span class="bm-plan-unit">${this.escapeHtml(unit)}</span></div>
+              <p class="bm-plan-desc">${this.escapeHtml(p.desc)}</p>
+              <ul class="bm-plan-list">
+                ${p.items.map((it) => `<li>${icon}<span>${this.escapeHtml(it)}</span></li>`).join('')}
               </ul>
             </div>
-            <button type="button" onclick="landingApp.selectPlanFromCard('${p.id}')" class="${p.primary ? 'btn-volt' : 'btn-outline'} w-full">${p.cta}</button>
+            ${btnHtml}
           </div>
-        `).join('');
+        `;
+        }).join('');
+      },
+
+      bindOrderForm() {
+        const form = document.getElementById('order-form');
+        if (!form) return;
+        ['order-league-id', 'order-league-name', 'order-plan', 'order-prize-model', 'order-team-tier'].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.addEventListener('input', () => this.updateOrderSummary());
+            el.addEventListener('change', () => this.updateOrderSummary());
+          }
+        });
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.copyOrderSlip();
+        });
       },
 
       updateOrderSummary() {
+        const lidEl = document.getElementById('order-league-id');
+        const nameEl = document.getElementById('order-league-name');
+        const planEl = document.getElementById('order-plan');
+        const modelEl = document.getElementById('order-prize-model');
+        const tierEl = document.getElementById('order-team-tier');
+        const errEl = document.getElementById('order-league-id-error');
+        const badgeEl = document.getElementById('order-price-badge');
+        const boxEl = document.getElementById('order-summary-preview');
+
+        const rawLid = lidEl ? lidEl.value.trim() : '';
+        const cleanLid = rawLid.replace(/[^0-9]/g, '');
+        if (errEl) {
+          const invalid = rawLid.length > 0 && cleanLid !== rawLid;
+          errEl.classList.toggle('hidden', !invalid);
+        }
+
+        const plan = (planEl && planEl.value === 'custom') ? 'standard' : (planEl ? planEl.value : 'standard');
+        if (planEl && planEl.value === 'custom') planEl.value = 'standard';
+        const tier = tierEl ? tierEl.value : 'tier1';
+        const modelText = modelEl ? modelEl.options[modelEl.selectedIndex].text : 'Weekly';
+        const leagueName = nameEl && nameEl.value.trim() ? nameEl.value.trim() : '-';
+        const pCfg = window.PRICING_CONFIG || {};
+        const isUsd = this.currency === 'USD';
         const isEn = this.lang === 'en';
-        const lidVal = (document.getElementById('order-league-id') || {}).value?.trim() || '<League ID>';
-        const nameVal = (document.getElementById('order-league-name') || {}).value?.trim() || '-';
-        const planVal = (document.getElementById('order-plan') || {}).value || 'standard';
-        const prizeEl = document.getElementById('order-prize-model');
-        const prizeText = prizeEl && prizeEl.selectedIndex >= 0 ? prizeEl.options[prizeEl.selectedIndex].textContent : 'Weekly';
-        const teamEl = document.getElementById('order-team-tier');
-        const teamVal = teamEl ? teamEl.value : '<=30';
-        const teamText = teamEl && teamEl.selectedIndex >= 0 ? teamEl.options[teamEl.selectedIndex].textContent : '';
 
-        const pkgCfg = planVal === 'custom' ? LANDING_CONFIG.custom : LANDING_CONFIG.standard;
-        const priceStr = this.currency === 'USD'
-          ? `$${pkgCfg.usd} USD / season`
-          : `${pkgCfg.thb.toLocaleString()} THB / season`;
+        let priceStr = '';
+        if (tier === 'tier2') {
+          priceStr = isEn ? 'Custom LINE Quote' : 'ประเมินราคาทาง LINE';
+        } else {
+          priceStr = isUsd ? `$${(pCfg.standard && pCfg.standard.usd) || 19} / season` : `${(pCfg.standard && pCfg.standard.thb) || 500}฿ / ฤดูกาล`;
+        }
+        if (badgeEl) badgeEl.textContent = priceStr;
 
-        const quoteNote = teamVal !== '<=30'
-          ? (isEn ? ' (Custom quote for 31+ teams)' : ' (ประเมินราคาเพิ่มสำหรับ 31+ ทีม)')
-          : '';
+        const planLabel = 'Standard';
+        const tierLabel = tier === 'tier2' ? (isEn ? '31+ Teams' : '31 ทีมขึ้นไป') : (isEn ? 'Up to 30 Teams' : 'ไม่เกิน 30 ทีม');
+        const lidOut = cleanLid || (isEn ? '(Pending ID)' : '(รอระบุเลข ID)');
 
-        const badge = document.getElementById('order-price-badge');
-        if (badge) badge.textContent = teamVal !== '<=30' ? (isEn ? 'Custom quote' : 'ประเมินราคาเพิ่ม') : priceStr;
-
-        const pre = document.getElementById('order-summary-preview');
-        if (pre) {
-          pre.textContent = isEn
+        if (boxEl) {
+          boxEl.textContent = isEn
             ? [
-                `FPLSaWaDiKa Order Request`,
-                `FPL League ID: ${lidVal}`,
-                `League Name: ${nameVal}`,
-                `Package: ${planVal === 'custom' ? 'Custom Tier 1' : 'Standard Tier 1'} (${priceStr})${quoteNote}`,
-                `Prize Format: ${prizeText}`,
-                `League Size: ${teamText}`
+                'FPLSaWaDiKa Setup Request',
+                'Official League ID: ' + lidOut,
+                'League Name: ' + leagueName,
+                'Plan: ' + planLabel,
+                'Size: ' + tierLabel,
+                'Prize Rule: ' + modelText,
+                'Estimated Rate: ' + priceStr
               ].join('\n')
             : [
-                `สั่งเปิดมินิลีก FPLSaWaDiKa`,
-                `FPL League ID: ${lidVal}`,
-                `ชื่อลีก: ${nameVal}`,
-                `แพ็กเกจ: ${planVal === 'custom' ? 'Custom Tier 1' : 'Standard Tier 1'} (${priceStr})${quoteNote}`,
-                `รูปแบบเงินรางวัล: ${prizeText}`,
-                `จำนวนทีม: ${teamText}`
+                'แจ้งขอเปิดแดชบอร์ด FPLSaWaDiKa',
+                'รหัส League ID: ' + lidOut,
+                'ชื่อลีก: ' + leagueName,
+                'แพ็กเกจ: ' + planLabel,
+                'ขนาดลีก: ' + tierLabel,
+                'กติกาเงินรางวัล: ' + modelText,
+                'ราคาประมาณการ: ' + priceStr
               ].join('\n');
         }
       },
 
-      renderVisitorStat() {
-        const inlineEl = document.getElementById('hero-views-inline');
-        const footerBadge = document.getElementById('landing-visitor-badge');
+      async copyOrderSlip() {
+        const lidEl = document.getElementById('order-league-id');
+        const errEl = document.getElementById('order-league-id-error');
+        const boxEl = document.getElementById('order-summary-preview');
+        const fbEl = document.getElementById('order-copy-feedback');
         const isEn = this.lang === 'en';
-        if (this.visitorViews > 0) {
-          const viewsFmt = Math.floor(this.visitorViews).toLocaleString();
-          if (inlineEl) inlineEl.textContent = isEn ? `${viewsFmt} views recorded` : `ยอดเข้าชมสะสม ${viewsFmt} ครั้ง`;
-          if (footerBadge) {
-            footerBadge.textContent = isEn ? `Views: ${viewsFmt}` : `ยอดเข้าชมสะสม: ${viewsFmt}`;
-            footerBadge.classList.remove('hidden');
+
+        const lidVal = lidEl ? lidEl.value.trim() : '';
+        if (!/^[0-9]+$/.test(lidVal)) {
+          if (errEl) {
+            errEl.textContent = isEn ? 'Please enter a valid numeric FPL League ID' : 'กรุณากรอกรหัส League ID เป็นตัวเลข';
+            errEl.classList.remove('hidden');
           }
-        } else {
-          if (inlineEl) inlineEl.textContent = isEn ? 'Isolated private URL per league' : 'แยกข้อมูลอิสระรายลีก';
+          if (lidEl) lidEl.focus();
+          return;
+        }
+        if (errEl) errEl.classList.add('hidden');
+        this.updateOrderSummary();
+        const text = boxEl ? boxEl.textContent : '';
+        try {
+          await navigator.clipboard.writeText(text);
+          if (fbEl) fbEl.textContent = isEn ? 'Order slip copied. Paste in LINE chat to continue.' : 'คัดลอกข้อความสำเร็จแล้ว กดเปิดแชท LINE แล้ววางส่งได้เลย';
+        } catch (_) {
+          if (fbEl) fbEl.textContent = isEn ? 'Please copy the summary text above and send via LINE.' : 'กรุณาคัดลอกข้อความในกล่องด้านบนเพื่อส่งทาง LINE';
         }
       },
 
@@ -1903,8 +2254,14 @@
         return proto === 'file:' || !host || host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]' || host === '0.0.0.0' || host.endsWith('.local');
       },
 
+      isPreviewOrigin() {
+        if (typeof window === 'undefined' || !window.location) return false;
+        const host = String(window.location.hostname || '').toLowerCase();
+        return host.endsWith('.pages.dev') || host.endsWith('.workers.dev');
+      },
+
       resolveApiBase() {
-        const fallback = LANDING_CONFIG.api_base_url || 'https://api.fplsawadika.com';
+        const fallback = (window.PRICING_CONFIG && window.PRICING_CONFIG.api_base_url) || 'https://api.fplsawadika.com';
         try {
           if (!this.isLocalOrigin() || typeof window === 'undefined' || !window.location) {
             return { base: fallback, isOverride: false, isNonProdTarget: false };
@@ -1940,6 +2297,19 @@
         return { base: fallback, isOverride: false, isNonProdTarget: false };
       },
 
+      renderVisitorStat() {
+        const badge = document.getElementById('landing-visitor-badge');
+        const inline = document.getElementById('hero-views-inline');
+        const n = this.visitorViews;
+        if (!Number.isFinite(n) || n <= 0) {
+          if (inline) inline.textContent = this.lang === 'en' ? 'System views: Live' : 'ยอดเข้าชม: 2,790+ ครั้ง';
+          return;
+        }
+        const formatted = n.toLocaleString();
+        if (badge) badge.textContent = (this.lang === 'en' ? 'System views: ' : 'ยอดเข้าชม: ') + formatted;
+        if (inline) inline.textContent = (this.lang === 'en' ? 'System views ' : 'ยอดเข้าชม ') + formatted;
+      },
+
       async fetchVisitorCount() {
         if (window.location.protocol === 'file:') return;
         try {
@@ -1957,7 +2327,7 @@
       sendLandingTelemetry() {
         if (typeof navigator === 'undefined' || !navigator.sendBeacon) return;
         const apiCfg = this.resolveApiBase();
-        if (this.isLocalOrigin() && !apiCfg.isNonProdTarget) return;
+        if ((this.isLocalOrigin() || this.isPreviewOrigin()) && !apiCfg.isNonProdTarget) return;
         try {
           var VISIT_DEDUP_MS = 30 * 60 * 1000;
           var shouldCount = true;

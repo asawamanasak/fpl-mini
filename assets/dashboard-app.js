@@ -19397,8 +19397,9 @@ ${this.getPublicLeagueUrl()}`;
         var host = (typeof window !== "undefined" && window.location) ? String(window.location.hostname || "").toLowerCase() : "";
         var proto = (typeof window !== "undefined" && window.location) ? String(window.location.protocol || "").toLowerCase() : "";
         var isLocalOrigin = proto === "file:" || !host || host === "localhost" || host === "127.0.0.1" || host === "::1" || host === "[::1]" || host === "0.0.0.0" || host.endsWith(".local");
+        var isPreviewOrigin = host.endsWith(".pages.dev") || host.endsWith(".workers.dev");
         var resolvedTelem = (typeof resolveWorkerApiBase === "function") ? resolveWorkerApiBase("https://api.fplsawadika.com") : { base: "https://api.fplsawadika.com", isOverride: false, isNonProdTarget: false };
-        if (isLocalOrigin && !resolvedTelem.isNonProdTarget) {
+        if ((isLocalOrigin || isPreviewOrigin) && !resolvedTelem.isNonProdTarget) {
           window._trackFeature = function() {};
           window._trackLeagueSwitch = function() {};
           return;

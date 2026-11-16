@@ -1799,7 +1799,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <label for="onbPlan" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_plan">แพ็กเกจ (Plan)</label>
             <select id="onbPlan" class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-900 dark:text-white">
               <option value="standard">Standard (฿500 / $19)</option>
-              <option value="custom">Custom (฿900 / $29)</option>
+              <option value="custom" disabled>Custom — Roadmap H2H/Predict (฿900 / $29)</option>
             </select>
           </div>
 
@@ -3134,11 +3134,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const count = Number(payload.team_count || 0);
       const countLabel = payload.has_more_than_100 ? '100+ teams' : (payload.has_more_pages ? count + '+ teams' : count + ' teams');
       titleEl.textContent = (league.name || ('League ' + league.id)) + ' (ID: ' + (league.id || '-') + ')';
-      metaEl.textContent = countLabel + ' · ' + (count > 30 ? 'Exceeds 30-team Standard cap' : 'Fits Standard / Custom Tier 1');
+      metaEl.textContent = countLabel + ' · ' + (count > 30 ? 'Exceeds 30-team Standard cap' : 'Fits Standard Package (<=30 teams)');
       badgeEl.className = count > 30
         ? 'px-2.5 py-1 rounded-md text-xs font-semibold mono bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30'
         : 'px-2.5 py-1 rounded-md text-xs font-semibold mono bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30';
-      badgeEl.textContent = count > 30 ? 'Custom Quote (31+)' : 'Tier 1 Ready (<=30)';
+      badgeEl.textContent = count > 30 ? 'Custom Quote (31+)' : 'Standard Ready (<=30)';
 
       grid.innerHTML = '';
       (payload.teams || []).forEach((team) => {
