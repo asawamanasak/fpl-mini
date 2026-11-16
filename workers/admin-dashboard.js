@@ -668,7 +668,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 ${ICONS.check} FPLSaWaDiKa Solution
               </span>
               <p class="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed" data-i18n="sol_3_desc">
-                Weekly Micro-Stakes + บอ.บู๋ AI Banter ปลุกกระแสลุ้นทุกสัปดาห์ พร้อมเรดาร์ฟอร์มและบอลถ้วย Knockout
+                Weekly Micro-Stakes + AI พากย์ดราม่าปลุกกระแสลุ้นทุกสัปดาห์ พร้อมเรดาร์ฟอร์มและบอลถ้วย Knockout
               </p>
             </div>
           </div>
@@ -784,7 +784,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </div>
 
             <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark flex items-center justify-between text-xs">
-              <span class="text-slate-600 dark:text-neutral-400" data-i18n="graphic2_callout">Weekly Stakes + บอ.บู๋ AI ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์</span>
+              <span class="text-slate-600 dark:text-neutral-400" data-i18n="graphic2_callout">Weekly Stakes + AI พากย์ดราม่า ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์</span>
               <span class="mono font-bold text-blue-600 dark:text-blue-400">5.7x Stickiness</span>
             </div>
           </div>
@@ -878,7 +878,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                     <td class="py-1.5 px-2 text-center font-bold text-emerald-600 dark:text-emerald-400">✅ สดทันที</td>
                   </tr>
                   <tr>
-                    <td class="py-1.5 px-2 font-medium" data-i18n="matrix_f3">AI บอ.บู๋ พากย์เกมดราม่า</td>
+                    <td class="py-1.5 px-2 font-medium" data-i18n="matrix_f3">AI พากย์เกมดราม่า</td>
                     <td class="py-1.5 px-2 text-center text-rose-500">❌ ไม่มี</td>
                     <td class="py-1.5 px-2 text-center text-rose-500">❌ ไม่มี</td>
                     <td class="py-1.5 px-2 text-center font-bold text-emerald-600 dark:text-emerald-400">✅ อัตโนมัติ</td>
@@ -932,7 +932,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <span class="text-[10px] mono text-slate-400 dark:text-neutral-500">ลีก 40700</span>
           </a>
 
-          <!-- Jump 2: Highlights & Bor.Bou -->
+          <!-- Jump 2: Highlights & Drama Banter -->
           <a href="https://www.fplsawadika.com/40700?tab=highlights" target="_blank" rel="noopener"
             class="p-3 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-blue-500/50 hover:bg-blue-50/20 dark:hover:bg-blue-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
             <div class="space-y-1">
@@ -940,7 +940,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 <span>02. Commentary</span>
                 <span class="group-hover:translate-x-0.5 transition-transform">↗</span>
               </div>
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_2_title">บทวิเคราะห์ AI บอ.บู๋</div>
+              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_2_title">บทวิเคราะห์ AI ดราม่า</div>
               <div class="text-[11px] text-slate-500 dark:text-neutral-400" data-i18n="jump_2_sub">พากย์เกมดราม่าสุดกวน</div>
             </div>
             <span class="text-[10px] mono text-slate-400 dark:text-neutral-500">ลีก 40700</span>
@@ -1970,7 +1970,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pain_3_title: 'แต้มตามเยอะ ถอดใจ ไม่เข้าดูแอป',
         pain_3_desc: 'ถ้าลุ้นแค่แชมป์สิ้นปี พอผ่านไป 10 นัด คนตาม 50+ แต้มก็เลิกเล่น ลีกกลายเป็นป่าช้า',
         sol_3_badge: 'FPLSaWaDiKa Solution',
-        sol_3_desc: 'Weekly Micro-Stakes + บอ.บู๋ AI Banter ปลุกกระแสลุ้นทุกสัปดาห์ พร้อมเรดาร์ฟอร์มและบอลถ้วย Knockout',
+        sol_3_desc: 'Weekly Micro-Stakes + AI พากย์ดราม่าปลุกกระแสลุ้นทุกสัปดาห์ พร้อมเรดาร์ฟอร์มและบอลถ้วย Knockout',
         pain_4_badge: 'ปัญหาแอปหลัก',
         pain_4_metric: 'UX ส่องทีมคู่แข่งช้า',
         pain_4_title: 'ส่องทีมคู่แข่งยาก ขาดม้านั่งสำรอง',
@@ -1990,7 +1990,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         graphic2_badge: 'พุ่งสูงขึ้น 5.7 เท่า',
         graphic2_title: 'ความถี่การเข้าชมเฉลี่ย: ลีกทางการ vs ลีกบน FPLSaWaDiKa',
         graphic2_sub: 'ยอดเปิดดูเฉลี่ยต่อผู้จัดการทีม 1 คน ในแต่ละสัปดาห์ (Visits/Team/GW)',
-        graphic2_callout: 'Weekly Stakes + บอ.บู๋ AI ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์',
+        graphic2_callout: 'Weekly Stakes + AI พากย์ดราม่า ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์',
         graphic3_eyebrow: 'มิติที่ 3 · การเงินและความโปร่งใส',
         graphic3_badge: 'GMV รวม ฿268,700',
         graphic3_title: 'ระบบรองรับโมเดลเงินรางวัลและค่าปรับ 5 รูปแบบ',
@@ -2014,7 +2014,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         col_tier1: 'Tier 1 (พร้อมขาย)',
         matrix_f1: 'แต้มสด & โบนัส BPS 15 วิ',
         matrix_f2: 'หักแต้มย้ายตัว Net Pts สด',
-        matrix_f3: 'AI บอ.บู๋ พากย์เกมดราม่า',
+        matrix_f3: 'AI พากย์เกมดราม่า',
         matrix_f4: 'คำนวณเงินรางวัล/ค่าปรับอัตโนมัติ',
         matrix_f5: 'Interactive Squad Pitch Modal',
         graphic4_callout: 'Tier 1 พร้อมส่งมอบทันที · Tier 2 (Live Beta) รองรับ 1,780 ทีม',
@@ -2022,7 +2022,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pitch_step3_sub: 'คลิกเพื่อเปิดหน้าจริงในแท็บใหม่',
         jump_1_title: 'คะแนนสด & ผัง 11 ตัวจริง',
         jump_1_sub: 'เปิดดูผังทีมจริง & แต้ม Net',
-        jump_2_title: 'บทวิเคราะห์ AI บอ.บู๋',
+        jump_2_title: 'บทวิเคราะห์ AI ดราม่า',
         jump_2_sub: 'พากย์เกมดราม่าสุดกวน',
         jump_3_title: 'ระบบค่าปรับ & รางวัล',
         jump_3_sub: 'บ๊วย 5 อันดับโดนปรับสด',
@@ -2231,7 +2231,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pain_3_title: 'Trailers Quit Early When Deficit Grows',
         pain_3_desc: 'If only annual prizes exist, trailing managers quit by GW10 when behind by 50+ points.',
         sol_3_badge: 'FPLSaWaDiKa Solution',
-        sol_3_desc: 'Weekly Micro-Stakes + Bor.Bou AI Banter keeps everyone fighting every gameweek till GW38.',
+        sol_3_desc: 'Weekly Micro-Stakes + Playful AI Banter keeps everyone fighting every gameweek till GW38.',
         pain_4_badge: 'App UX Pain',
         pain_4_metric: 'Cumbersome Scouting',
         pain_4_title: 'Slow Opponent Squad Scouting',
@@ -2251,7 +2251,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         graphic2_badge: '5.7x Higher Visits',
         graphic2_title: 'Weekly Visit Intensity: Official FPL vs FPLSaWaDiKa',
         graphic2_sub: 'Average weekly pageviews per manager (Visits/Team/GW)',
-        graphic2_callout: 'Weekly Stakes + Bor.Bou AI sparks non-stop chat group banter',
+        graphic2_callout: 'Weekly Stakes + Playful AI sparks non-stop chat group banter',
         graphic3_eyebrow: 'Dimension 3 · Financial Integrity',
         graphic3_badge: 'Total GMV ฿268,700',
         graphic3_title: 'Supports 5 Automated Prize & Penalty Frameworks',
@@ -2275,7 +2275,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         col_tier1: 'Tier 1 (Turnkey Core)',
         matrix_f1: '15s Real-Time Score & Live BPS',
         matrix_f2: 'Live Net Pts (Transfer Cost Hit)',
-        matrix_f3: 'Bor.Bou Fanatic AI Match Commentary',
+        matrix_f3: 'Playful Fanatic AI Match Commentary',
         matrix_f4: 'Automated Custom Prize/Penalty Engine',
         matrix_f5: 'One-Tap Squad Lineup Pitch Modal',
         graphic4_callout: 'Tier 1 ready to onboard immediately · Tier 2 (Live Beta) scales to 1,780 teams',
@@ -2283,7 +2283,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pitch_step3_sub: 'Click any module to open live demo in new tab',
         jump_1_title: 'Live Scores & Squad Pitch',
         jump_1_sub: 'Scout starting 11 & bench live',
-        jump_2_title: 'Bor.Bou AI Commentary',
+        jump_2_title: 'Matchday AI Commentary',
         jump_2_sub: 'Authentic matchday drama',
         jump_3_title: 'Automated Payouts & Penalties',
         jump_3_sub: 'Bottom penalty ledger',

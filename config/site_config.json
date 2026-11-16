@@ -91,16 +91,16 @@
       "nav_pricing": "แพ็กเกจราคา",
       "nav_order": "เปิดใช้งานลีก",
       "nav_cta": "ลองเดโมสด",
-      "hero_badge": "อัปเดตสดทุก 15 วินาที",
+      "hero_badge": "อัปเดตสดทุกวินาที",
       "hero_h1_line1": "มินิลีกของคุณ",
-      "hero_h1_line2": "สดระดับห้องส่ง",
+      "hero_h1_line2": "เดือดทุกวินาที",
       "hero_lead": "คะแนนสดเปลี่ยนตัวอัตโนมัติ เช็คชิปคู่แข่ง และสรุปเงินรางวัลครบ 38 วีค",
       "hero_cta_primary": "เปิดใช้งานลีกทันที",
       "hero_cta_secondary": "ดู 6 จอฟีเจอร์จริง",
       "hero_metric_views": "ยอดเข้าชมระบบจริง",
       "hero_metric_sync": "รอบอัปเดตสด",
       "stats": [
-        { "value": "15 วิ", "label": "รีเฟรชคะแนนสด" },
+        { "value": "ทุกวินาที", "label": "รีเฟรชคะแนนสด" },
         { "value": "500฿", "label": "ต่อฤดูกาล (≤30 ทีม)" },
         { "value": "0%", "label": "ไม่ต้องทำ Excel เอง" },
         { "value": "38 GW", "label": "ปิดยอดจบซีซั่นให้" }
@@ -113,7 +113,7 @@
         "เก็บค่าปรับบ๊วยอัตโนมัติ",
         "จัดสายบอลถ้วยน็อคเอาท์",
         "ส่องผัง 11 ตัวจริงเพื่อนร่วมลีก",
-        "บอ.บู๋พากย์ดราม่าหลังจบเกม",
+        "พากย์ดราม่าหลังจบเกมสุดกวน",
         "คัดลอกยอดโอนส่ง LINE ได้เลย"
       ],
       "drama_heading": "วันแข่งจริง กลุ่มเพื่อนจะสนุกและง่ายขึ้นแบบนี้",
@@ -160,7 +160,7 @@
           "tab": "คะแนนสด & ออโต้ซับ",
           "title": "เช็คคะแนนสดพร้อมเปลี่ยนตัวอัตโนมัติทันเกม",
           "desc": "เห็นแต้มดิบ คะแนนลบ และตัวสำรองที่รอลงสนามแทนตัวจริงที่ไม่ได้ลงเล่นแบบเรียลไทม์",
-          "spec": "รีเฟรชทุก 15 วินาที"
+          "spec": "รีเฟรชทุกวินาที"
         },
         {
           "key": "pitch",
@@ -214,13 +214,13 @@
       "pricing_heading": "แพ็กเกจเปิดใช้งานรายฤดูกาล",
       "pricing_lead": "จ่ายครั้งเดียวดูแลครบทั้ง 38 Gameweeks สำหรับมินิลีกขนาดไม่เกิน 30 ทีม",
       "pricing_std_badge": "พร้อมเปิดใช้งาน",
-      "pricing_std_desc": "เหมาะสำหรับลีกเพื่อนหรือออฟฟิศที่ใช้กติการางวัลรายสัปดาห์ รายเดือน ค่าปรับบ๊วย หรืออันดับรวมจบฤดูกาล",
+      "pricing_std_desc": "เหมาะสำหรับลีกใช้กติการางวัล รายสัปดาห์ รายเดือน แชมป์ฤดูกาล แชมป์บอลถ้วย หรือเงินรางวัลอื่นๆ ที่หน้าแสดงผลมาตรฐานมีให้ สามารถนำมาคิดรวมเป็นรางวัลได้",
       "pricing_std_cta": "เลือก Standard",
       "pricing_cus_badge": "Roadmap • กำลังพัฒนา",
-      "pricing_cus_desc": "อยู่ระหว่างพัฒนาระบบท้าชน (H2H) ระบบทายผล และกติกาเฉพาะลีกแบบอัตโนมัติ (แสดงผลเป็นแผนพัฒนา ยังไม่เปิดสั่งซื้อ)",
+      "pricing_cus_desc": "อยู่ระหว่างพัฒนาระบบ (เพิ่มกฎเฉพาะของลีคขึ้นมาเองได้ เช่น ท้าชน หรือ ทายผล)",
       "pricing_cus_cta": "กำลังพัฒนา (Roadmap)",
-      "pricing_tier2_title": "ลีกใหญ่ 31 ทีมขึ้นไป (Enterprise / Community)",
-      "pricing_tier2_desc": "รองรับตั้งแต่ 31 ถึง 1,000+ ทีม พร้อมระบบค้นหาเร็วและจัดสายบอลถ้วย ประเมินราคาตามจำนวนทีมทาง LINE",
+      "pricing_tier2_title": "ลีกใหญ่ 50 ทีมขึ้นไป (ลีกคอมมูนิตี้ / กลุ่มใหญ่)",
+      "pricing_tier2_desc": "รองรับตั้งแต่ 50 ถึง 1,000+ ทีม พร้อมระบบค้นหาเร็วและจัดสายบอลถ้วย",
       "faq_eyebrow": "FAQ",
       "faq_heading": "คำถามที่พบบ่อยก่อนเปิดลีก",
       "faq_lead": "คำตอบสำคัญสำหรับแอดมินและสมาชิกมินิลีก หากต้องการสอบถามกติกาเฉพาะกลุ่มทัก LINE ได้ทันที",
@@ -240,11 +240,23 @@
         },
         {
           "q": "หน้าเว็บลีกของเราจะถูกเปิดเป็นสาธารณะหรือค้นเจอบน Google ไหม?",
-          "a": "ไม่เปิดเป็นสาธารณะ ลีกลูกค้าแต่ละกลุ่มแยก URL ส่วนตัว ไม่แสดงในหน้าตัวอย่าง และตั้งค่า noindex ป้องกันการค้นหาบน Search Engine"
+          "a": "ไม่เปิดเป็นสาธารณะ ลีกลูกค้าแต่ละกลุ่มแยกเฉพาะลิงก์ส่วนตัว ไม่แสดงในหน้าตัวอย่าง และปิดการค้นหา ไม่ให้ลิงก์ลีกของคุณไปแสดงบน Google"
         },
         {
           "q": "หลังส่งรหัสลีกทาง LINE ใช้เวลาตั้งค่านานแค่ไหน?",
-          "a": "สำหรับแพ็กเกจ Standard ที่ใช้กติการายสัปดาห์ รายเดือน หรือค่าปรับบ๊วย เมื่อยืนยันรายละเอียดครบ พร้อมส่งมอบลิงก์ใช้งานจริงภายใน 24 ชั่วโมง"
+          "a": "สำหรับแพ็กเกจ Standard เมื่อยืนยันรายละเอียดกติกาครบ พร้อมส่งมอบลิงก์ใช้งานจริงภายใน 24 ชั่วโมง"
+        },
+        {
+          "q": "ในลีกมีเพื่อนบางคนขอจอยสนุกๆ ไม่ได้ร่วมลงเงินรางวัล แยกคิดเฉพาะคนลงขันได้ไหม?",
+          "a": "ได้ทันที ระบบสามารถระบุชื่อทีมที่ 'ไม่ร่วมชิงรางวัล' แยกไว้ต่างหากได้ ดังนั้นแชมป์สัปดาห์ อันดับเงินรางวัล และค่าปรับบ๊วยจะคำนวณเฉพาะทีมที่ลงขันจริงเท่านั้น"
+        },
+        {
+          "q": "คะแนนสด ตัวสำรอง และตารางเงินรางวัล จะตรงกับเว็บ FPL ทางการ 100% ไหม?",
+          "a": "ระหว่างแข่งขัน ระบบคำนวณคะแนนสด โบนัสจำลอง และตัวสำรองที่รอลงแทนให้ลุ้นแบบเรียลไทม์ จากนั้นเมื่อจบ Gameweek ทางการ ระบบจะยึดผลคะแนนและอันดับทางการ 100% เพื่อสรุปยอดเงินรางวัลอย่างยุติธรรม"
+        },
+        {
+          "q": "ราคา 500฿ จ่ายครั้งเดียวจบถึงนัดสุดท้ายเลยไหม มีค่ารายเดือนแฝงหรือเปล่า?",
+          "a": "จ่ายครั้งเดียว 500฿ ดูแลครบทั้งลีกจนจบสัปดาห์ที่ 38 ไม่มีค่ารายเดือนและไม่เก็บเงินเพิ่มจากสมาชิกในกลุ่ม ชำระผ่าน PromptPay หรือโอนธนาคารได้หลังแอดมินตั้งค่าและส่งลิงก์ให้ตรวจเรียบร้อย"
         }
       ],
       "order_heading": "สร้างข้อความสั่งเปิดลีกส่ง LINE",
@@ -260,7 +272,7 @@
       "nav_pricing": "Pricing",
       "nav_order": "Launch League",
       "nav_cta": "Open Live Demo",
-      "hero_badge": "15s Live Feed",
+      "hero_badge": "Live Every Second",
       "hero_h1_line1": "YOUR MINI-LEAGUE",
       "hero_h1_line2": "LIVE BROADCAST",
       "hero_lead": "Live auto-subs, rival chip tracking, and automated prize ledgers across 38 Gameweeks.",
@@ -269,7 +281,7 @@
       "hero_metric_views": "Live System Views",
       "hero_metric_sync": "Live Poll Cycle",
       "stats": [
-        { "value": "15s", "label": "Live Poll Cycle" },
+        { "value": "Every Second", "label": "Live Score Refresh" },
         { "value": "500 THB", "label": "Season Pass (≤30 teams)" },
         { "value": "0%", "label": "Manual Spreadsheets" },
         { "value": "38 GW", "label": "Season Automation" }
@@ -329,7 +341,7 @@
           "tab": "Live & Auto-Subs",
           "title": "Real-Time Points With Automatic Bench Substitutions",
           "desc": "Follow raw scores, transfer hits, provisional bonus points, and projected bench auto-subs as matches unfold.",
-          "spec": "15s Matchday Poll"
+          "spec": "Live Every Second"
         },
         {
           "key": "pitch",
@@ -383,13 +395,13 @@
       "pricing_heading": "Simple Per-Season Pricing",
       "pricing_lead": "One season pass covers all 38 Gameweeks for leagues up to 30 teams.",
       "pricing_std_badge": "Ready to Launch",
-      "pricing_std_desc": "Built for friend and office mini-leagues with weekly, monthly, bottom-penalty, or season podium rankings.",
+      "pricing_std_desc": "Built for leagues using weekly, monthly, season champion, knockout cup, or any other standard dashboard views combined into your prize pool.",
       "pricing_std_cta": "Select Standard",
       "pricing_cus_badge": "Roadmap • Coming Soon",
-      "pricing_cus_desc": "Currently building automated Head-to-Head challenges, weekly match predictions, and bespoke rulesets (preview only).",
+      "pricing_cus_desc": "Currently in development (add custom league rules of your own, such as Head-to-Head challenges or weekly predictions).",
       "pricing_cus_cta": "On Roadmap (Not Yet Open)",
-      "pricing_tier2_title": "Large Leagues (31+ Teams)",
-      "pricing_tier2_desc": "Supports 31 to 1,000+ entries with fast roster search and bracket automation via LINE quote.",
+      "pricing_tier2_title": "Large Leagues 50+ Teams (Community / Large Groups)",
+      "pricing_tier2_desc": "Supports 50 to 1,000+ teams with fast roster search and knockout cup brackets.",
       "faq_eyebrow": "FAQ",
       "faq_heading": "Frequently Asked Questions",
       "faq_lead": "Key answers for mini-league admins before getting started. Have a custom rule question? Message us on LINE.",
@@ -409,11 +421,23 @@
         },
         {
           "q": "Will our private mini-league appear on Google or the public demo list?",
-          "a": "No. Each customer league lives in an isolated tenant URL excluded from public showcase switchers, sitemap.xml, and search indexing (noindex)."
+          "a": "No. Each customer league gets a private dedicated link excluded from public demos and hidden from Google search indexing."
         },
         {
           "q": "How long does setup take after sending our League ID on LINE?",
-          "a": "For Standard leagues (weekly, monthly, or bottom penalty rules), setup and live link delivery are typically completed within 24 hours."
+          "a": "For Standard leagues, setup and live link delivery are typically completed within 24 hours once your prize rules are confirmed."
+        },
+        {
+          "q": "Some friends joined just for fun without entering the prize pool. Can we exclude them from payouts?",
+          "a": "Yes. We can mark non-prize teams separately so weekly winners, standings payouts, and bottom-place penalties are calculated strictly among paying participants."
+        },
+        {
+          "q": "Do live scores, auto-subs, and prize payouts match official FPL results 100%?",
+          "a": "During matches, the dashboard shows real-time scores, provisional bonus points, and projected bench auto-subs. Once each Gameweek is finalized, payouts lock strictly to official FPL points and tie-breakers."
+        },
+        {
+          "q": "Is 500 THB ($19) truly a one-time season pass with no hidden monthly fees?",
+          "a": "Yes. One payment covers your entire league through Gameweek 38 with zero recurring charges or per-member fees. Payment is made only after setup and live preview confirmation."
         }
       ],
       "order_heading": "Build Your LINE Order Slip",

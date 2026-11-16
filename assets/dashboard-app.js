@@ -53,8 +53,8 @@
     }
 
     /**
-     * Dynamic Live Commentary Engine (Bor.Bou Style - 100% Football Fanatic)
-     * ระบบวิเคราะห์สด 3 ตอนสไตล์ บอ.บู๋ แท้ๆ: ประโยคเปิดหัวตามสถานการณ์ + เจาะลึกดราม่าแท็กติก + หมัดฮุกกวนๆ ปิดท้าย
+     * Dynamic Live Commentary Engine (100% Football Fanatic Banter Style)
+     * ระบบวิเคราะห์สด 3 ตอนสไตล์กูรูลูกหนังสุดกวน: ประโยคเปิดหัวตามสถานการณ์ + เจาะลึกดราม่าแท็กติก + หมัดฮุกกวนๆ ปิดท้าย
      */
     class LiveCommentaryEngine {
       static _refreshStep = 0;
@@ -158,7 +158,7 @@
             `จัดทัพพร้อมรบ Gameweek ${gwNumber}! ${popCapText} ${tacticalSubText} รอดูกระสุนนัดแรกคิกออฟ ใครของจริงหรือใครจะโดนตบกบาลแยก เดี๋ยวสนามจริงให้คำตอบ!`,
             `เข้าสู่โหมดรอคิกออฟ Gameweek ${gwNumber}! ${popCapText} ${tacticalSubText} เตรียมลุ้นกันจนเยี่ยวเหนียว ใครกึ๋นถึงเดี๋ยวแต้มลั่นทุ่งแน่นอน!`,
             `ระฆังเดดไลน์ดังแล้วพี่น้อง! ${popCapText} ${tacticalSubText} สัปดาห์นี้ใครจะสะเด่าไปเลยอีน้อง หรือใครจะซดน้ำใบบัวบก เดี๋ยวรอดู!`,
-            `เปิดโผขุมกำลัง GW ${gwNumber} อย่างเป็นทางการ! ${popCapText} ${tacticalSubText} กูรูบอ.บู๋ฟันธงเลยว่าสัปดาห์นี้มีคนน้ำตาตกในแน่นอน เตรียมป๊อปคอร์นรอดูได้เลย!`,
+            `เปิดโผขุมกำลัง GW ${gwNumber} อย่างเป็นทางการ! ${popCapText} ${tacticalSubText} กูรูประจำลีกฟันธงเลยว่าสัปดาห์นี้มีคนน้ำตาตกในแน่นอน เตรียมป๊อปคอร์นรอดูได้เลย!`,
             `ศึกดวลกึ๋นลูกหนัง GW ${gwNumber} กำลังจะระเบิด! ${popCapText} ${tacticalSubText} จัดตัวเสร็จแยกย้ายไปสวดมนต์ ใครตาถึงได้เฮ ใครตาถั่วได้นอนกุมขมับ!`,
             `เสียงนกหวีดกำลังจะดัง สมรภูมิแข้งพร้อมเปิดศึก! ${popCapText} ${tacticalSubText} บอลลูกกลมๆ มีลมอยู่ข้างใน ทีมใครจะรุ่งหรือจะร่วง เดี๋ยวได้เห็นดีกัน!`
           ];
@@ -392,7 +392,7 @@
         }
 
         // =========================================================
-        // 1. LEAD PHRASE (ประโยคเปิดหัวตามสถานการณ์จริง สไตล์ บอ.บู๋)
+        // 1. LEAD PHRASE (ประโยคเปิดหัวตามสถานการณ์จริง สไตล์กูรูลูกหนัง)
         // =========================================================
         let leadOptions = [];
 
@@ -556,7 +556,7 @@
             `ขึ้นหิ้งระดับตำนาน! "${top.team_name}" ทะยานแตะหลักร้อยที่ ${topPts} แต้ม ${heroPhrase} และ${marginPhrase} แบบเต็มคาราเบล!`,
             `ฟอร์มปีศาจลงมาจุติ! "${top.team_name}" ยิงแหลกแจกแต้มร้อยทะลุ ${topPts} แต้ม ${marginPhrase} สถาปนาตัวเองเป็นบอสใหญ่ประจำสัปดาห์!`,
             `ตารางแทบระเบิด! "${top.team_name}" กวาดสามหลักเน้นๆ ${topPts} แต้ม ${heroPhrase} และ${marginPhrase} ไร้เทียมทานอย่างแท้จริง!`,
-            `กูรูบอ.บู๋ขอคารวะ! "${top.team_name}" จัดสกอร์ประวัติศาสตร์ ${topPts} แต้ม ${marginPhrase} แดกเต็มข้อล่อเต็มแข้งจนคู่แข่งร้องไห้ระงม!`
+            `กูรูประจำลีกขอคารวะ! "${top.team_name}" จัดสกอร์ประวัติศาสตร์ ${topPts} แต้ม ${marginPhrase} แดกเต็มข้อล่อเต็มแข้งจนคู่แข่งร้องไห้ระงม!`
           ];
         } else if (diff <= 2 && second) {
           leadOptions = [
@@ -616,7 +616,7 @@
         const leadSentence = pickRnd(11, leadOptions);
 
         // =========================================================
-        // 2. TACTICAL & DRAMA STORYLINES (เจาะลึก 12 มิติดราม่าลูกหนังแท้ๆ สไตล์ บอ.บู๋)
+        // 2. TACTICAL & DRAMA STORYLINES (เจาะลึก 12 มิติดราม่าลูกหนังสุดเดือด)
         // =========================================================
         let midOptions = [];
 
@@ -1077,7 +1077,7 @@
         }
 
         // =========================================================
-        // 3. ENDING PUNCHLINE (คลังประโยคปิดท้าย 38 ประโยค สไตล์ บอ.บู๋ แท้ๆ)
+        // 3. ENDING PUNCHLINE (คลังประโยคปิดท้าย 38 ประโยค สไตล์กวนๆ สนุกสนาน)
         // =========================================================
         let endOptions = [];
         if (isFinished) {
@@ -1090,7 +1090,7 @@
             `นี่แหละเสน่ห์แฟนตาซี วันนี้แพ้ สัปดาห์หน้าอาจระเบิดฟอร์มแชมป์!`,
             `คนชนะเดินแอ็คหล่อได้เต็มที่ ส่วนคนแพ้ซุ่มจัดทัพรอล้างตา!`,
             `สามแต้มในสนามจริงยังสู้ความสะใจที่ได้เหยียบเพื่อนในมินิลีกไม่ได้เลยโว้ย!`,
-            `กูรูบอ.บู๋ซูฮกให้หนึ่งจอก จัดตัวได้สะเด่าทรวงจริงๆ!`,
+            `กูรูประจำลีกซูฮกให้หนึ่งจอก จัดตัวได้สะเด่าทรวงจริงๆ!`,
             `แต้มเป็นเรื่องของวาสนา แต่กึ๋นจัดทัพเป็นเรื่องของฝีมือล้วนๆ!`,
             `จบสัปดาห์นี้แยกย้ายไปเลียแผลใจ แล้วเจอกันใหม่แมตช์หน้า!`,
             `ตารางคะแนนไม่เคยโกหกใคร ตัวตึงหรือตัวตลกเขาวัดกันตรงนี้!`,
@@ -6831,7 +6831,7 @@ selectShi62GW(gwName) {
                     <button onclick="app.copyHighlightQuote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Copy Analysis Quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}" aria-label="${isEn ? 'Copy analysis quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     </button>
-                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋'}">
+                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ดราม่าใหม่'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ดราม่าใหม่'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
                   </div>
@@ -7067,7 +7067,7 @@ selectShi62GW(gwName) {
                     <button onclick="app.copyHighlightQuote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Copy Analysis Quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}" aria-label="${isEn ? 'Copy analysis quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     </button>
-                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋'}">
+                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ดราม่าใหม่'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ดราม่าใหม่'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
                   </div>

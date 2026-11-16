@@ -343,7 +343,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
         ]
     else:
         page_title = "FPLSaWaDiKa - เช็คคะแนนสด FPL ตารางคะแนนแฟนตาซี & คำนวณเงินรางวัลมินิลีก"
-        page_description = "เกาะติดคะแนนสด Fantasy Premier League (FPL) ภาษาไทย อัปเดตทุก 15 วินาที พร้อมตารางคะแนนมินิลีก ผัง 11 ตัวจริง คำนวณเงินรางวัล และบทวิเคราะห์แชมป์ประจำสัปดาห์สไตล์ บอ.บู๋"
+        page_description = "เกาะติดคะแนนสด Fantasy Premier League (FPL) ภาษาไทย อัปเดตทุก 15 วินาที พร้อมตารางคะแนนมินิลีก ผัง 11 ตัวจริง คำนวณเงินรางวัล และบทวิเคราะห์แชมป์ประจำสัปดาห์สไตล์จัดจ้านสุดกวน"
         page_keywords = "FPL, Fantasy Premier League, คะแนนสด FPL, ตารางคะแนนแฟนตาซี, มินิลีก, คำนวณเงินรางวัล FPL, จัดทีมแฟนตาซี, FPL ภาษาไทย, พรีเมียร์ลีก"
         schema_graph = [
             {
@@ -3247,8 +3247,8 @@ __STRUCTURED_DATA_JSON__
     }
 
     /**
-     * Dynamic Live Commentary Engine (Bor.Bou Style - 100% Football Fanatic)
-     * ระบบวิเคราะห์สด 3 ตอนสไตล์ บอ.บู๋ แท้ๆ: ประโยคเปิดหัวตามสถานการณ์ + เจาะลึกดราม่าแท็กติก + หมัดฮุกกวนๆ ปิดท้าย
+     * Dynamic Live Commentary Engine (100% Football Fanatic Banter Style)
+     * ระบบวิเคราะห์สด 3 ตอนสไตล์กูรูลูกหนังสุดกวน: ประโยคเปิดหัวตามสถานการณ์ + เจาะลึกดราม่าแท็กติก + หมัดฮุกกวนๆ ปิดท้าย
      */
     class LiveCommentaryEngine {
       static _refreshStep = 0;
@@ -3352,7 +3352,7 @@ __STRUCTURED_DATA_JSON__
             `จัดทัพพร้อมรบ Gameweek ${gwNumber}! ${popCapText} ${tacticalSubText} รอดูกระสุนนัดแรกคิกออฟ ใครของจริงหรือใครจะโดนตบกบาลแยก เดี๋ยวสนามจริงให้คำตอบ!`,
             `เข้าสู่โหมดรอคิกออฟ Gameweek ${gwNumber}! ${popCapText} ${tacticalSubText} เตรียมลุ้นกันจนเยี่ยวเหนียว ใครกึ๋นถึงเดี๋ยวแต้มลั่นทุ่งแน่นอน!`,
             `ระฆังเดดไลน์ดังแล้วพี่น้อง! ${popCapText} ${tacticalSubText} สัปดาห์นี้ใครจะสะเด่าไปเลยอีน้อง หรือใครจะซดน้ำใบบัวบก เดี๋ยวรอดู!`,
-            `เปิดโผขุมกำลัง GW ${gwNumber} อย่างเป็นทางการ! ${popCapText} ${tacticalSubText} กูรูบอ.บู๋ฟันธงเลยว่าสัปดาห์นี้มีคนน้ำตาตกในแน่นอน เตรียมป๊อปคอร์นรอดูได้เลย!`,
+            `เปิดโผขุมกำลัง GW ${gwNumber} อย่างเป็นทางการ! ${popCapText} ${tacticalSubText} กูรูประจำลีกฟันธงเลยว่าสัปดาห์นี้มีคนน้ำตาตกในแน่นอน เตรียมป๊อปคอร์นรอดูได้เลย!`,
             `ศึกดวลกึ๋นลูกหนัง GW ${gwNumber} กำลังจะระเบิด! ${popCapText} ${tacticalSubText} จัดตัวเสร็จแยกย้ายไปสวดมนต์ ใครตาถึงได้เฮ ใครตาถั่วได้นอนกุมขมับ!`,
             `เสียงนกหวีดกำลังจะดัง สมรภูมิแข้งพร้อมเปิดศึก! ${popCapText} ${tacticalSubText} บอลลูกกลมๆ มีลมอยู่ข้างใน ทีมใครจะรุ่งหรือจะร่วง เดี๋ยวได้เห็นดีกัน!`
           ];
@@ -3586,7 +3586,7 @@ __STRUCTURED_DATA_JSON__
         }
 
         // =========================================================
-        // 1. LEAD PHRASE (ประโยคเปิดหัวตามสถานการณ์จริง สไตล์ บอ.บู๋)
+        // 1. LEAD PHRASE (ประโยคเปิดหัวตามสถานการณ์จริง สไตล์กูรูลูกหนัง)
         // =========================================================
         let leadOptions = [];
 
@@ -3750,7 +3750,7 @@ __STRUCTURED_DATA_JSON__
             `ขึ้นหิ้งระดับตำนาน! "${top.team_name}" ทะยานแตะหลักร้อยที่ ${topPts} แต้ม ${heroPhrase} และ${marginPhrase} แบบเต็มคาราเบล!`,
             `ฟอร์มปีศาจลงมาจุติ! "${top.team_name}" ยิงแหลกแจกแต้มร้อยทะลุ ${topPts} แต้ม ${marginPhrase} สถาปนาตัวเองเป็นบอสใหญ่ประจำสัปดาห์!`,
             `ตารางแทบระเบิด! "${top.team_name}" กวาดสามหลักเน้นๆ ${topPts} แต้ม ${heroPhrase} และ${marginPhrase} ไร้เทียมทานอย่างแท้จริง!`,
-            `กูรูบอ.บู๋ขอคารวะ! "${top.team_name}" จัดสกอร์ประวัติศาสตร์ ${topPts} แต้ม ${marginPhrase} แดกเต็มข้อล่อเต็มแข้งจนคู่แข่งร้องไห้ระงม!`
+            `กูรูประจำลีกขอคารวะ! "${top.team_name}" จัดสกอร์ประวัติศาสตร์ ${topPts} แต้ม ${marginPhrase} แดกเต็มข้อล่อเต็มแข้งจนคู่แข่งร้องไห้ระงม!`
           ];
         } else if (diff <= 2 && second) {
           leadOptions = [
@@ -3810,7 +3810,7 @@ __STRUCTURED_DATA_JSON__
         const leadSentence = pickRnd(11, leadOptions);
 
         // =========================================================
-        // 2. TACTICAL & DRAMA STORYLINES (เจาะลึก 12 มิติดราม่าลูกหนังแท้ๆ สไตล์ บอ.บู๋)
+        // 2. TACTICAL & DRAMA STORYLINES (เจาะลึก 12 มิติดราม่าลูกหนังสุดเดือด)
         // =========================================================
         let midOptions = [];
 
@@ -4271,7 +4271,7 @@ __STRUCTURED_DATA_JSON__
         }
 
         // =========================================================
-        // 3. ENDING PUNCHLINE (คลังประโยคปิดท้าย 38 ประโยค สไตล์ บอ.บู๋ แท้ๆ)
+        // 3. ENDING PUNCHLINE (คลังประโยคปิดท้าย 38 ประโยค สไตล์กวนๆ สนุกสนาน)
         // =========================================================
         let endOptions = [];
         if (isFinished) {
@@ -4284,7 +4284,7 @@ __STRUCTURED_DATA_JSON__
             `นี่แหละเสน่ห์แฟนตาซี วันนี้แพ้ สัปดาห์หน้าอาจระเบิดฟอร์มแชมป์!`,
             `คนชนะเดินแอ็คหล่อได้เต็มที่ ส่วนคนแพ้ซุ่มจัดทัพรอล้างตา!`,
             `สามแต้มในสนามจริงยังสู้ความสะใจที่ได้เหยียบเพื่อนในมินิลีกไม่ได้เลยโว้ย!`,
-            `กูรูบอ.บู๋ซูฮกให้หนึ่งจอก จัดตัวได้สะเด่าทรวงจริงๆ!`,
+            `กูรูประจำลีกซูฮกให้หนึ่งจอก จัดตัวได้สะเด่าทรวงจริงๆ!`,
             `แต้มเป็นเรื่องของวาสนา แต่กึ๋นจัดทัพเป็นเรื่องของฝีมือล้วนๆ!`,
             `จบสัปดาห์นี้แยกย้ายไปเลียแผลใจ แล้วเจอกันใหม่แมตช์หน้า!`,
             `ตารางคะแนนไม่เคยโกหกใคร ตัวตึงหรือตัวตลกเขาวัดกันตรงนี้!`,
@@ -10025,7 +10025,7 @@ selectShi62GW(gwName) {
                     <button onclick="app.copyHighlightQuote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Copy Analysis Quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}" aria-label="${isEn ? 'Copy analysis quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     </button>
-                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋'}">
+                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ดราม่าใหม่'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ดราม่าใหม่'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
                   </div>
@@ -10261,7 +10261,7 @@ selectShi62GW(gwName) {
                     <button onclick="app.copyHighlightQuote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Copy Analysis Quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}" aria-label="${isEn ? 'Copy analysis quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     </button>
-                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์ บอ.บู๋'}">
+                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ดราม่าใหม่'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ดราม่าใหม่'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
                   </div>
@@ -22482,8 +22482,8 @@ def generate_landing_html(multi_data, leagues_config, site_config):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>FPLSaWaDiKa: แดชบอร์ดมินิลีก FPL สดทุก 15 วินาที พร้อมคำนวณเงินรางวัลอัตโนมัติ</title>
-  <meta name="description" content="เปลี่ยนมินิลีก Fantasy Premier League กลุ่มเพื่อนและออฟฟิศให้โปรกว่าที่เคย เช็คคะแนนสดทุก 15 วินาที คำนวณเงินรางวัลรายสัปดาห์/รายเดือน/ค่าปรับบ๊วยอัตโนมัติ ส่งสรุปเข้า LINE ได้ทันที">
+  <title>FPLSaWaDiKa: แดชบอร์ดมินิลีก FPL สดทุกวินาที พร้อมคำนวณเงินรางวัลอัตโนมัติ</title>
+  <meta name="description" content="เปลี่ยนมินิลีก Fantasy Premier League กลุ่มเพื่อนและออฟฟิศให้โปรกว่าที่เคย เช็คคะแนนสดทุกวินาที คำนวณเงินรางวัลรายสัปดาห์/รายเดือน/ค่าปรับบ๊วยอัตโนมัติ ส่งสรุปเข้า LINE ได้ทันที">
   <meta name="keywords" content="FPL, Fantasy Premier League, มินิลีก FPL, แดชบอร์ด FPL, คะแนนสด FPL, คำนวณเงินรางวัลมินิลีก, FPLSaWaDiKa">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="theme-color" content="var(--theme-chrome)">
@@ -22501,7 +22501,7 @@ def generate_landing_html(multi_data, leagues_config, site_config):
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="FPLSaWaDiKa">
   <meta property="og:title" content="FPLSaWaDiKa: แดชบอร์ดมินิลีก FPL สำหรับลีกที่มีเงินรางวัล">
-  <meta property="og:description" content="เช็คคะแนนสดทุก 15 วินาที คำนวณเงินรางวัลและค่าปรับอัตโนมัติ ไม่ต้องทำ Excel เอง เริ่มต้น 500 บาท/ฤดูกาล">
+  <meta property="og:description" content="เช็คคะแนนสดทุกวินาที คำนวณเงินรางวัลและค่าปรับอัตโนมัติ ไม่ต้องทำ Excel เอง เริ่มต้น 500 บาท/ฤดูกาล">
   <meta property="og:url" content="https://www.fplsawadika.com/">
   <meta property="og:image" content="https://www.fplsawadika.com/images/icons/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -22625,6 +22625,9 @@ __STRUCTURED_DATA_JSON__
       --color-live-soft: oklch(62% 0.18 150 / 0.16);
       --color-live-border: oklch(65% 0.155 152);
       --color-live-border-hover: oklch(73% 0.16 152);
+      --color-line: #06c755;
+      --color-line-hover: #05b34c;
+      --color-line-ink: oklch(11% 0.015 146);
       --theme-chrome: oklch(11.5% 0.014 25);
       --color-arena-scrim-solid: oklch(8.5% 0.012 25 / 0.93);
       --color-arena-scrim-mid: oklch(8.5% 0.012 25 / 0.74);
@@ -23075,11 +23078,20 @@ __STRUCTURED_DATA_JSON__
     .bm-btn-primary:hover {
       background-color: var(--color-accent-hover);
     }
+    .bm-btn-primary.is-line {
+      background-color: var(--color-line);
+      color: var(--color-line-ink);
+      border-color: var(--color-line);
+    }
+    .bm-btn-primary.is-line:hover {
+      background-color: var(--color-line-hover);
+      border-color: var(--color-line-hover);
+    }
     .bm-btn-primary:active {
       transform: scale(0.98);
     }
     .bm-btn-primary:focus-visible {
-      outline: 2px solid var(--color-arena-ink);
+      outline: 2px solid var(--color-ink);
       outline-offset: 2px;
     }
 
@@ -23256,7 +23268,7 @@ __STRUCTURED_DATA_JSON__
       }
     }
     .bm-stat-val {
-      font-size: clamp(1.25rem, 2.2vw, 1.85rem);
+      font-size: clamp(1.12rem, 2.1vw, 1.8rem);
       font-weight: 800;
       font-variant-numeric: tabular-nums;
       color: var(--color-ink);
@@ -23440,41 +23452,49 @@ __STRUCTURED_DATA_JSON__
     .bm-stage-viewport {
       position: relative;
       border-radius: 0.75rem;
-      padding: 2px;
-      background-color: var(--color-arena-border);
+      padding: 0;
+      background-color: var(--color-arena);
       color: var(--color-arena-ink);
       overflow: hidden;
+      border: 1.5px solid var(--color-accent);
     }
-    .bm-stage-viewport::before,
-    .bm-plan-card.is-featured::before {
-      content: "";
-      position: absolute;
-      inset: -65%;
-      background: conic-gradient(from 0deg, transparent 0deg, transparent 292deg, var(--color-accent) 334deg, var(--color-live) 352deg, transparent 360deg);
-      animation: bm-orbit-spin 8.5s linear infinite;
-      z-index: 0;
-      pointer-events: none;
-    }
-    .bm-stage-viewport::after,
-    .bm-plan-card.is-featured::after {
-      content: "";
-      position: absolute;
-      inset: 2px;
-      border-radius: 0.65rem;
-      background-color: var(--color-arena);
-      z-index: 0;
-      pointer-events: none;
+    @media (hover: hover) and (pointer: fine) {
+      .bm-stage-viewport,
+      .bm-plan-card.is-featured {
+        border: none;
+      }
+      .bm-stage-viewport::before,
+      .bm-plan-card.is-featured::before {
+        content: "";
+        position: absolute;
+        inset: -50%;
+        background: conic-gradient(from 0deg, transparent 0deg, transparent 292deg, var(--color-accent) 334deg, var(--color-live) 352deg, transparent 360deg);
+        will-change: transform;
+        animation: bm-orbit-spin 8.5s linear infinite;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .bm-stage-viewport::after,
+      .bm-plan-card.is-featured::after {
+        content: "";
+        position: absolute;
+        inset: 2px;
+        border-radius: 0.65rem;
+        background-color: var(--color-arena);
+        z-index: 0;
+        pointer-events: none;
+      }
+      .bm-stage-viewport:hover::before,
+      .bm-stage-viewport:focus-within::before,
+      .bm-plan-card.is-featured:hover::before,
+      .bm-plan-card.is-featured:focus-within::before {
+        animation-play-state: paused;
+      }
     }
     .bm-stage-viewport > *,
     .bm-plan-card.is-featured > * {
       position: relative;
       z-index: 1;
-    }
-    .bm-stage-viewport:hover::before,
-    .bm-stage-viewport:focus-within::before,
-    .bm-plan-card.is-featured:hover::before,
-    .bm-plan-card.is-featured:focus-within::before {
-      animation-play-state: paused;
     }
     @keyframes bm-orbit-spin {
       from { transform: rotate(0deg); }
@@ -23683,7 +23703,16 @@ __STRUCTURED_DATA_JSON__
       overflow: hidden;
       background-color: var(--color-arena);
       color: var(--color-arena-ink);
-      border: 0;
+      border: 1.5px solid var(--color-accent);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .bm-stage-viewport {
+        padding: 2px;
+        border: none;
+      }
+      .bm-plan-card.is-featured {
+        border: none;
+      }
     }
     .bm-plan-card.is-roadmap {
       background-color: var(--color-surface);
@@ -23818,21 +23847,39 @@ __STRUCTURED_DATA_JSON__
       border-top: 1px solid var(--color-arena-border);
       border-bottom: 1px solid var(--color-arena-border);
       overflow: hidden;
+      overflow-x: clip;
+      touch-action: pan-y;
+      contain: layout paint;
       padding: 0.75rem 0;
     }
     .bm-stream-track {
       display: flex;
+      flex-wrap: nowrap;
       width: max-content;
-      gap: 0.75rem;
+      will-change: transform;
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
       animation: bm-stream-scroll 34s linear infinite;
     }
-    .bm-stream-band:hover .bm-stream-track,
+    .bm-stream-group {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 0.75rem;
+      padding-right: 0.75rem;
+      flex-shrink: 0;
+    }
     .bm-stream-band:focus-within .bm-stream-track {
       animation-play-state: paused;
     }
+    @media (hover: hover) and (pointer: fine) {
+      .bm-stream-band:hover .bm-stream-track {
+        animation-play-state: paused;
+      }
+    }
     @keyframes bm-stream-scroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
     }
     .bm-stream-pill {
       display: inline-flex;
@@ -24317,7 +24364,7 @@ __STRUCTURED_DATA_JSON__
         <div class="bm-hero-top">
           <h1 id="hero-title" class="bm-hero-h1">
             <span id="hero-h1-line1">มินิลีกของคุณ</span>
-            <span id="hero-h1-line2" class="bm-hero-h1-accent">สดระดับห้องส่ง</span>
+            <span id="hero-h1-line2" class="bm-hero-h1-accent">เดือดทุกวินาที</span>
           </h1>
         </div>
 
@@ -24347,7 +24394,7 @@ __STRUCTURED_DATA_JSON__
           <div class="bm-hero-meta">
             <div class="bm-hero-meta-item">
               <span class="bm-live-dot" aria-hidden="true"></span>
-              <span id="hero-badge-text">อัปเดตสดทุก 15 วินาที</span>
+              <span id="hero-badge-text">อัปเดตสดทุกวินาที</span>
             </div>
             <div class="bm-hero-meta-item tabular-nums">
               <span id="hero-views-inline">ยอดเข้าชม 2,790+ ครั้ง</span>
@@ -24366,7 +24413,7 @@ __STRUCTURED_DATA_JSON__
     <section class="bm-telemetry-strip" aria-label="ตัวเลขสำคัญ">
       <div id="telemetry-strip-grid" class="bm-telemetry-grid">
         <div class="bm-stat-cell">
-          <div class="bm-stat-val tabular-nums">15 วิ</div>
+          <div class="bm-stat-val tabular-nums">ทุกวินาที</div>
           <div class="bm-stat-lbl">รีเฟรชคะแนนสด</div>
         </div>
         <div class="bm-stat-cell">
@@ -24435,7 +24482,7 @@ __STRUCTURED_DATA_JSON__
             <div id="hero-stage-viewport" class="bm-stage-viewport">
               <div class="bm-stage-topbar">
                 <span id="stage-league-badge" class="bm-stage-pill tabular-nums">League 88901 Demo</span>
-                <span id="stage-spec-badge" class="tabular-nums">รีเฟรชทุก 15 วินาที</span>
+                <span id="stage-spec-badge" class="tabular-nums">รีเฟรชทุกวินาที</span>
               </div>
               <img
                 id="hero-stage-img"
@@ -24520,8 +24567,8 @@ __STRUCTURED_DATA_JSON__
 
         <div class="bm-tier2-bar">
           <div>
-            <strong id="tier2-title" style="display: block; font-size: 1.05rem;">ลีกใหญ่ 31 ทีมขึ้นไป (Enterprise / Community)</strong>
-            <span id="tier2-desc" style="font-size: 0.9rem; color: var(--color-ink-2);">รองรับตั้งแต่ 31 ถึง 1,000+ ทีม พร้อมระบบค้นหาเร็วและจัดสายบอลถ้วย ประเมินราคาตามจำนวนทีมทาง LINE</span>
+            <strong id="tier2-title" style="display: block; font-size: 1.05rem;">ลีกใหญ่ 50 ทีมขึ้นไป (ลีกคอมมูนิตี้ / กลุ่มใหญ่)</strong>
+            <span id="tier2-desc" style="font-size: 0.9rem; color: var(--color-ink-2);">รองรับตั้งแต่ 50 ถึง 1,000+ ทีม พร้อมระบบค้นหาเร็วและจัดสายบอลถ้วย</span>
           </div>
           <a id="tier2-link" href="./139836/" data-demo-lid="139836" class="bm-btn-primary">
             <span id="tier2-link-text">ดูตัวอย่าง 1,780 ทีม</span>
@@ -24538,7 +24585,7 @@ __STRUCTURED_DATA_JSON__
           <div>
             <h2 id="faq-title" class="bm-h2">คำถามที่พบบ่อยก่อนเปิดลีก</h2>
             <p id="faq-sub" class="bm-lead" style="margin-bottom: 1.25rem;">คำตอบสำคัญสำหรับแอดมินและสมาชิกมินิลีก หากต้องการสอบถามกติกาเฉพาะกลุ่มทัก LINE ได้ทันที</p>
-            <a id="faq-line-btn" href="__LINE_URL__" target="_blank" rel="noopener noreferrer" class="bm-btn-primary">
+            <a id="faq-line-btn" href="__LINE_URL__" target="_blank" rel="noopener noreferrer" class="bm-btn-primary is-line">
               <span id="faq-line-text">สอบถามเพิ่มเติมทาง LINE</span>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
             </a>
@@ -24895,7 +24942,7 @@ __STRUCTURED_DATA_JSON__
             <span>${this.escapeHtml(label)}</span>
           </span>
         `).join('');
-        track.innerHTML = pills + pills;
+        track.innerHTML = `<div class="bm-stream-group">${pills}</div><div class="bm-stream-group" aria-hidden="true">${pills}</div>`;
       },
 
       setDramaIndex(idx) {
@@ -24946,10 +24993,17 @@ __STRUCTURED_DATA_JSON__
         if (!screen) return;
         const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (reduced) return;
-        screen.addEventListener('mouseenter', () => { this.dramaPaused = true; });
-        screen.addEventListener('mouseleave', () => { this.dramaPaused = false; });
-        screen.addEventListener('focusin', () => { this.dramaPaused = true; });
-        screen.addEventListener('focusout', () => { this.dramaPaused = false; });
+        const finePointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        if (finePointer) {
+          screen.addEventListener('pointerenter', (e) => {
+            if (!e || e.pointerType === 'mouse') this.dramaPaused = true;
+          });
+          screen.addEventListener('pointerleave', (e) => {
+            if (!e || e.pointerType === 'mouse') this.dramaPaused = false;
+          });
+          screen.addEventListener('focusin', () => { this.dramaPaused = true; });
+          screen.addEventListener('focusout', () => { this.dramaPaused = false; });
+        }
         if (this.dramaTimer) clearInterval(this.dramaTimer);
         this.dramaTimer = setInterval(() => {
           if (!this.dramaPaused) this.setDramaIndex(this.activeDrama + 1);
@@ -25106,8 +25160,24 @@ __STRUCTURED_DATA_JSON__
             featured: true,
             roadmap: false,
             items: isEn
-              ? ['Up to 30 teams included', '15s matchday live score polling', 'Automatic bench subs + chips radar', 'Standard weekly, monthly, or penalty ledger']
-              : ['รองรับสูงสุด 30 ทีมต่อซีซั่น', 'อัปเดตคะแนนสดทุก 15 วินาที', 'คำนวณเปลี่ยนตัวสำรอง + เช็คชิปอัตโนมัติ', 'ตารางเงินรางวัลรายสัปดาห์/รายเดือน/ค่าปรับบ๊วยมาตรฐาน']
+              ? [
+                  'Up to 30 teams included',
+                  'Live Scores & Automatic Bench Subs',
+                  'Inspect Full 11-Player Starting Lineups',
+                  'Transfers & Squad Depth Analytics',
+                  'Rival Chip Availability Tracker',
+                  'Prize Pool & Central Treasury Ledger',
+                  'Form Radar & Hall of Fame'
+                ]
+              : [
+                  'รองรับสูงสุด 30 ทีมต่อซีซั่น',
+                  'คะแนนสด & เปลี่ยนตัวอัตโนมัติ',
+                  'ส่องแผนจัดทัพ 11 ตัวจริง',
+                  'วิเคราะห์การย้ายตัว & ขุมกำลัง',
+                  'ติดตามสถานะชิปของคู่แข่ง',
+                  'เงินรางวัล & บัญชีกองกลาง',
+                  'เรดาร์ฟอร์ม & ทำเนียบแชมป์'
+                ]
           },
           {
             id: 'custom',
@@ -25119,13 +25189,21 @@ __STRUCTURED_DATA_JSON__
             featured: false,
             roadmap: true,
             items: isEn
-              ? ['Everything in Standard', 'Weekly Head-to-Head challenge engine (In Dev)', 'Weekly match & handicap prediction system (In Dev)', 'Custom head-to-head payout ledger & group exports']
-              : ['ครบทุกความสามารถในแพ็กเกจ Standard', 'ระบบท้าชนคู่แข่งรายสัปดาห์ (H2H Challenge: กำลังพัฒนา)', 'ระบบทายผลคะแนน & แฮนดิแคปประจำสัปดาห์ (กำลังพัฒนา)', 'สูตรเงินรางวัลเฉพาะลีก + ส่งออก LINE / Excel']
+              ? [
+                  'Everything in Standard',
+                  'Weekly Head-to-Head challenge engine (In Dev)',
+                  'Weekly match & handicap prediction system (In Dev)'
+                ]
+              : [
+                  'ครบทุกความสามารถในแพ็กเกจ Standard',
+                  'ระบบท้าชนคู่แข่งรายสัปดาห์ (H2H Challenge: กำลังพัฒนา)',
+                  'ระบบทายผลคะแนน & แฮนดิแคปประจำสัปดาห์ (กำลังพัฒนา)'
+                ]
           }
         ];
 
-        const checkSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
-        const roadmapSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-ink-3)" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+        const checkSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+        const roadmapSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-live)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
         wrap.innerHTML = plans.map((p) => {
           const cardCls = p.featured ? 'bm-plan-card is-featured' : (p.roadmap ? 'bm-plan-card is-roadmap' : 'bm-plan-card');
           const icon = p.roadmap ? roadmapSvg : checkSvg;
