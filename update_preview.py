@@ -1075,7 +1075,6 @@ __STRUCTURED_DATA_JSON__
     /* Modals & Dropdowns in Dark Mode */
     .dark #team-modal-content,
     .dark #summary-modal-content,
-    .dark #text-summary-modal > div:last-child,
     .dark #team-modal > div:last-child,
     .dark #projected-points-modal > div:last-child {
       background-color: #0d0d0f !important;
@@ -2859,7 +2858,7 @@ __STRUCTURED_DATA_JSON__
               </li>
               <li class="flex items-start gap-1.5">
                 <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
-                <span>ปุ่มคัดลอกสรุปผลคะแนนส่งเข้ากลุ่ม LINE และส่งออกเป็นตาราง Excel ทันที</span>
+                <span>ปุ่มคัดลอกสรุปกติกาลีก พาดหัววิเคราะห์ และส่งออกตารางข้อมูลเป็นไฟล์ Excel (.xlsx)</span>
               </li>
             </ul>
           </div>
@@ -3169,43 +3168,6 @@ __STRUCTURED_DATA_JSON__
         <button id="projected-points-btn" onclick="app.closeProjectedPointsModal()" class="px-4 py-2.5 min-h-[44px] bg-slate-900 dark:bg-blue-600 text-white font-bold rounded-xl text-xs hover:bg-slate-800 dark:hover:bg-blue-700 transition-colors cursor-pointer active:scale-95">
           เข้าใจแล้ว
         </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 6.3 หน้าต่าง Text Summary Modal สำหรับส่ง LINE -->
-  <div id="text-summary-modal" role="dialog" aria-modal="true" aria-labelledby="modal-summary-title" tabindex="-1" class="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/80 backdrop-blur-sm sm:backdrop-blur-md hidden transition-all duration-200 overscroll-contain focus:outline-none" onclick="if (event.target === this) app.closeTextSummaryModal()" ontouchmove="if (event.target === this) event.preventDefault()">
-    <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92dvh] sm:max-h-[90dvh] flex flex-col justify-between overflow-y-auto overscroll-contain modal-animate-in" onclick="event.stopPropagation()">
-      <div>
-        <div class="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-slate-800 mb-3">
-          <div class="flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-            <h3 id="modal-summary-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">สรุปผล Gameweek</h3>
-          </div>
-          <button onclick="app.closeTextSummaryModal()" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold transition-colors cursor-pointer text-lg active:scale-95" aria-label="Close modal">✕</button>
-        </div>
-        
-        <p id="modal-summary-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mb-3">ข้อความถูกจัดรูปแบบสำหรับส่งเข้ากลุ่ม LINE เรียบร้อยแล้ว:</p>
-        
-        <div class="relative">
-          <textarea id="text-summary-content" readonly aria-label="สรุปผลคะแนนประจำสัปดาห์" class="w-full h-60 sm:h-72 p-3.5 bg-slate-50 dark:bg-[#050505] border border-slate-200 dark:border-slate-800 rounded-2xl text-xs sm:text-[13px] font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-blue-600 resize-none selection:bg-slate-900 selection:text-white dark:selection:bg-blue-600 leading-relaxed"></textarea>
-        </div>
-      </div>
-
-      <div class="mt-4 pt-3.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
-        <span id="modal-copy-indicator" class="text-xs text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1.5 opacity-0 transition-opacity duration-200">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-          <span id="modal-copy-indicator-text">คัดลอกลงคลิปบอร์ดแล้ว!</span>
-        </span>
-        <div class="flex items-center gap-2 ml-auto flex-wrap">
-          <button id="modal-summary-close-btn" onclick="app.closeTextSummaryModal()" class="px-3.5 py-2 min-h-[44px] rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer active:scale-95">
-            ปิด
-          </button>
-          <button id="btn-modal-copy" onclick="app.copyFromModal()" class="px-3.5 sm:px-4 py-2 min-h-[44px] rounded-xl text-xs font-bold text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all shadow-2xs active:scale-95 cursor-pointer flex items-center gap-1.5">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-            <span id="btn-modal-copy-label">คัดลอกข้อความ</span>
-          </button>
-        </div>
       </div>
     </div>
   </div>
@@ -5158,10 +5120,6 @@ __STRUCTURED_DATA_JSON__
               if (this.currentModalEntryId) {
                 this.closeTeamModal();
               }
-              const summaryModal = document.getElementById('text-summary-modal');
-              if (summaryModal && !summaryModal.classList.contains('hidden')) {
-                this.closeTextSummaryModal();
-              }
               const urlParams = new URLSearchParams((window.location && window.location.search) ? window.location.search : '');
               const qLeague = urlParams.get('league') || this.detectPathLeague();
               const qTab = this.normalizeTab(urlParams.get('tab'));
@@ -6126,26 +6084,6 @@ __STRUCTURED_DATA_JSON__
           projModalBtn.innerText = isEn ? 'Got it' : 'เข้าใจแล้ว';
         }
 
-        // 8. Text Summary Modal (LINE copy modal)
-        const summaryModalTitle = document.getElementById('modal-summary-title');
-        if (summaryModalTitle) {
-          summaryModalTitle.innerText = isEn ? 'Gameweek Summary' : 'สรุปผล Gameweek';
-        }
-        const summaryModalP = document.querySelector('#text-summary-modal p.text-xs');
-        if (summaryModalP) {
-          summaryModalP.innerText = isEn
-            ? 'The text has been formatted and is ready to share in messaging apps:'
-            : 'ข้อความถูกจัดรูปแบบสำหรับส่งเข้ากลุ่ม LINE เรียบร้อยแล้ว:';
-        }
-        const summaryModalCloseBtn = document.querySelector('#text-summary-modal div.mt-4 button:first-child');
-        if (summaryModalCloseBtn) {
-          summaryModalCloseBtn.innerText = isEn ? 'Close' : 'ปิด';
-        }
-        const summaryModalCopySpan = document.querySelector('#btn-modal-copy span');
-        if (summaryModalCopySpan) {
-          summaryModalCopySpan.innerText = isEn ? 'Copy Text' : 'คัดลอกข้อความ';
-        }
-
         // 9. Competition View Header Banner
         const compTitle = document.getElementById('competition-overview-title');
         if (compTitle) {
@@ -6507,10 +6445,6 @@ __STRUCTURED_DATA_JSON__
           menu.classList.add('hidden');
           if (chevron) chevron.style.transform = 'rotate(0deg)';
         }
-      }
-
-      getPublicLeagueUrl() {
-        return `https://www.fplsawadika.com/${this.activeLeagueId}`;
       }
 
       getLeagueDataUrl(lid) {
@@ -7463,387 +7397,13 @@ __STRUCTURED_DATA_JSON__
         this._renderedState[tab] = stamp;
       }
 
-selectShi62GW(gwName) {
+      selectShi62GW(gwName) {
         this.activeShi62GW = gwName;
         this.renderShi62Special();
       }
 
-      copyShi62LINEResult(gwName) {
-        if (!this.shi62Data) return;
-        const gw = (this.shi62Data.gameweeks || []).find(g => g.name === gwName);
-        if (!gw) return;
-
-        const gwDisplayName = gw.name.startsWith('GW') ? gw.name : `GW${gw.name}`;
-        let lines = [];
-        lines.push(`สรุปผลการทายผล ${gwDisplayName}`);
-        lines.push(`---------------------------------`);
-        lines.push(`⚽ ผลประจำสัปดาห์ (${gwDisplayName})`);
-        (gw.summary || []).forEach((s, i) => {
-          const sign = s.net > 0 ? '+' : '';
-          const pushStr = s.push > 0 ? ` ${s.push}D` : '';
-          lines.push(`${i + 1}. ${s.player.display_name}: ${sign}${Number(s.net).toLocaleString()} (${s.won}W ${s.lost}L${pushStr})`);
-        });
-        lines.push(`---------------------------------`);
-        lines.push(`💰 พูลสัปดาห์นี้: ${Number(gw.total_pool).toLocaleString()} บาท (${gw.matches.length} คู่)`);
-        lines.push(`---------------------------------`);
-
-        if (gw.matches && gw.matches.length > 0) {
-          lines.push(`📋 ผลการแข่งขัน (${gwDisplayName}):`);
-          const formatPlayerName = (name) => {
-            if (!name) return '';
-            const clean = name.trim();
-            if (clean.toLowerCase() === 'pong+') return 'Pong+';
-            return clean.charAt(0).toUpperCase() + clean.slice(1);
-          };
-
-          gw.matches.forEach(m => {
-            if (m.winners && m.winners.length > 0) {
-              const winNames = m.winners.map(formatPlayerName).join(', ');
-              lines.push(`• ${m.title} ➔ ${m.winning_option} ✅ [${winNames}]`);
-            } else {
-              const winSide = m.winning_option || 'ยกเลิก';
-              lines.push(`• ${m.title} ➔ ${winSide} (ไม่มีคนถูก)`);
-            }
-          });
-          lines.push(`---------------------------------`);
-        }
-
-        lines.push(`🏆 ตารางอันดับสะสมทายผล:`);
-
-        (this.shi62Data.cumulative_standings || []).forEach((c, idx) => {
-          const sign = c.net > 0 ? '+' : '';
-          lines.push(`${idx + 1}. ${c.player.display_name}: ${sign}${Number(c.net).toLocaleString()}`);
-        });
-
-        lines.push(`---------------------------------`);
-        lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
-
-        const textToCopy = lines.join(String.fromCharCode(10));
-        const isEn = (this.currentLang === 'en');
-        this.openTextSummaryModal({
-          title: isEn ? `Shi62 Prediction (${gwDisplayName})` : `สรุปผลทายผล Shi62 (${gwDisplayName})`,
-          subtitle: isEn ? 'Weekly prediction results ready to share in LINE:' : 'สรุปผลทายผลประจำสัปดาห์สำหรับส่งเข้ากลุ่ม LINE:',
-          text: textToCopy
-        });
-      }
-
-      copyShi62PrizesLINEResult() {
-        if (!this.shi62Data) return;
-        const maxGW = Number(this.multiData && this.multiData.max_gw) || 7;
-        let lines = [];
-        lines.push(`สรุปรางวัล (FPL & ทายผล) GW${maxGW}`);
-        lines.push(`---------------------------------`);
-        lines.push(`🏆 สรุปรางวัล:`);
-        lines.push(`(อันดับ • รางวัล FPL • ทายผลสะสม • ยอดรวมสุทธิ)`);
-
-        const tiers = (this.config && this.config.features && this.config.features.annual_payout_tiers) || {
-          "1": 1000, "2": 800, "3": 600, "4": 400, "5": 200, "6": 100,
-          "7": -100, "8": -200, "9": -400, "10": -600, "11": -800, "12": -1000
-        };
-
-        const extraMapByEntryId = {};
-        const extraMapByName = {};
-        (this.shi62Data.cumulative_standings || []).forEach(c => {
-          if (c.player) {
-            if (c.player.entry_id) extraMapByEntryId[c.player.entry_id] = Number(c.net) || 0;
-            if (c.player.display_name) extraMapByName[c.player.display_name.toLowerCase()] = Number(c.net) || 0;
-          }
-        });
-
-        const shi62ShortNames = {
-          1309919: "Tong",
-          837763: "Oo",
-          2342390: "Riin",
-          720631: "Totti",
-          1153245: "Poang",
-          7601484: "Oan",
-          3508212: "Sia",
-          1312974: "Mai",
-          2804957: "Boy",
-          5463640: "Dow",
-          4549514: "Bert",
-          5340913: "Pong+"
-        };
-
-        const overallMap = {};
-        (this.data && this.data.teams ? this.data.teams : []).forEach(t => {
-          overallMap[t.entry_id] = {
-            entry_id: t.entry_id,
-            entry_name: t.entry_name,
-            player_name: t.player_name,
-            rank: t.rank || 999,
-            total_points: 0
-          };
-        });
-
-        for (let g = 1; g <= maxGW; g++) {
-          const gData = (this.data && this.data.gameweeks) ? this.data.gameweeks[String(g)] : null;
-          if (gData && gData.results) {
-            const gIsStarted = gData.is_started !== undefined
-              ? Boolean(gData.is_started)
-              : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
-            if (gIsStarted) {
-              const seenInGw = new Set();
-              gData.results.forEach(r => {
-                if (seenInGw.has(r.entry_id)) return;
-                seenInGw.add(r.entry_id);
-                if (overallMap[r.entry_id]) {
-                  overallMap[r.entry_id].total_points += (r.net_points || 0);
-                }
-              });
-            }
-          }
-        }
-
-        const overallTeams = Object.values(overallMap)
-          .filter(t => this.isPrizeEligible(t.entry_id))
-          .sort((a, b) => (b.total_points - a.total_points) || ((a.rank || 999) - (b.rank || 999)));
-
-        // Resolve tie-pooled payouts matching renderPrizesView
-        let curIdx = 0;
-        while (curIdx < overallTeams.length) {
-          let nxtIdx = curIdx + 1;
-          while (nxtIdx < overallTeams.length && overallTeams[nxtIdx].total_points === overallTeams[curIdx].total_points) {
-            nxtIdx++;
-          }
-          const cnt = nxtIdx - curIdx;
-          const rStart = curIdx + 1;
-          const rEnd = curIdx + cnt;
-          let tierSum = 0;
-          for (let rPos = rStart; rPos <= rEnd; rPos++) {
-            tierSum += Number(tiers[String(rPos)] || 0);
-          }
-          const avgPayout = cnt > 0 ? (tierSum / cnt) : 0;
-          for (let i = curIdx; i < nxtIdx; i++) {
-            overallTeams[i].overall_rank = rStart;
-            overallTeams[i].is_joint = cnt > 1;
-            overallTeams[i].payout = avgPayout;
-          }
-          curIdx = nxtIdx;
-        }
-
-        const fmtVal = (v) => {
-          const rounded = Number.isInteger(v) ? v : Number(v.toFixed(2));
-          if (rounded > 0) return `+${rounded.toLocaleString()}`;
-          if (rounded < 0) return `${rounded.toLocaleString()}`;
-          return '0';
-        };
-
-        overallTeams.forEach((t) => {
-          const rank = t.overall_rank;
-          const seasonPrize = t.payout || 0;
-          const extraNet = (extraMapByEntryId[t.entry_id] !== undefined)
-            ? extraMapByEntryId[t.entry_id]
-            : (extraMapByName[(t.player_name || '').toLowerCase()] || 0);
-          const grandTotal = seasonPrize + extraNet;
-
-          const dispName = shi62ShortNames[t.entry_id] || t.player_name;
-          const rankStr = t.is_joint ? `${rank}(ร่วม)` : `${rank}`;
-
-          lines.push(`${rankStr}. ${dispName}: FPL ${fmtVal(seasonPrize)} | ทายผล ${fmtVal(extraNet)} | รวม ${fmtVal(grandTotal)}`);
-        });
-
-        const nodCum = (this.shi62Data.cumulative_standings || []).find(c => c.player && c.player.is_guest);
-        if (nodCum) {
-          const nodNet = nodCum.net || 0;
-          lines.push(`• Nod (Guest): FPL - | ทายผล ${fmtVal(nodNet)} | รวม ${fmtVal(nodNet)}`);
-        }
-
-        lines.push(`---------------------------------`);
-        lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
-
-        const textToCopy = lines.join(String.fromCharCode(10));
-        const isEn = (this.currentLang === 'en');
-        this.openTextSummaryModal({
-          title: isEn ? 'Shi62 Season Prizes' : 'สรุปเงินรางวัล Shi62 League',
-          subtitle: isEn ? 'Prize breakdown ready to share in LINE:' : 'สรุปเงินรางวัลสำหรับส่งเข้ากลุ่ม LINE:',
-          text: textToCopy
-        });
-      }
-
       showCopiedToast(text = 'คัดลอกข้อความสำเร็จ!') {
         this.showToast(text, 'line', 1800);
-      }
-
-      copyToClipboard(textToCopy, onCopied) {
-        if (!textToCopy) return false;
-        let copied = false;
-
-        // 1. Modern Clipboard API
-        if (navigator && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-          navigator.clipboard.writeText(textToCopy).then(() => {
-            if (typeof onCopied === 'function') onCopied();
-          }).catch(() => {
-            // Handled synchronously below
-          });
-        }
-
-        // 2. Synchronous fallback via modal textarea if matching
-        const modalTextarea = document.getElementById('text-summary-content');
-        if (modalTextarea && modalTextarea.value === textToCopy) {
-          try {
-            modalTextarea.focus();
-            modalTextarea.select();
-            modalTextarea.setSelectionRange(0, modalTextarea.value.length);
-            copied = document.execCommand('copy');
-          } catch (e) {
-            copied = false;
-          }
-        }
-
-        // 3. Fallback via offscreen temporary textarea (iOS Safari compatible)
-        if (!copied) {
-          try {
-            const textarea = document.createElement('textarea');
-            textarea.value = textToCopy;
-            textarea.style.position = 'fixed';
-            textarea.style.top = '0';
-            textarea.style.left = '0';
-            textarea.style.width = '2em';
-            textarea.style.height = '2em';
-            textarea.style.padding = '0';
-            textarea.style.border = 'none';
-            textarea.style.outline = 'none';
-            textarea.style.boxShadow = 'none';
-            textarea.style.background = 'transparent';
-            textarea.style.opacity = '0.01';
-            textarea.style.zIndex = '-9999';
-            textarea.setAttribute('readonly', '');
-            document.body.appendChild(textarea);
-            textarea.focus();
-            textarea.select();
-            textarea.setSelectionRange(0, textToCopy.length);
-            copied = document.execCommand('copy');
-            document.body.removeChild(textarea);
-          } catch (err) {
-            copied = false;
-          }
-        }
-
-        if (copied && typeof onCopied === 'function') {
-          onCopied();
-        }
-        return copied;
-      }
-
-      openTextSummaryModal(options = {}) {
-        const { title: titleText, subtitle: subtitleText, text = '' } = options;
-        const isEn = (this.currentLang === 'en');
-        const modal = document.getElementById('text-summary-modal');
-        const contentArea = document.getElementById('text-summary-content');
-        const titleEl = document.getElementById('modal-summary-title');
-        const subtitleEl = document.getElementById('modal-summary-subtitle');
-        const copyIndText = document.getElementById('modal-copy-indicator-text');
-        const closeBtn = document.getElementById('modal-summary-close-btn');
-        const copyBtnLabel = document.getElementById('btn-modal-copy-label');
-
-        if (titleEl) titleEl.innerText = titleText || (isEn ? 'Gameweek Summary' : 'สรุปผล Gameweek');
-        if (subtitleEl) subtitleEl.innerText = subtitleText || (isEn ? 'Formatted text summary:' : 'ข้อความสรุปผล:');
-        if (copyIndText) copyIndText.innerText = isEn ? 'Copied to clipboard!' : 'คัดลอกลงคลิปบอร์ดแล้ว!';
-        if (closeBtn) closeBtn.innerText = isEn ? 'Close' : 'ปิด';
-        if (copyBtnLabel) copyBtnLabel.innerText = isEn ? 'Copy Text' : 'คัดลอกข้อความ';
-
-        if (contentArea) {
-          contentArea.value = text;
-        }
-
-        if (modal) {
-          if (modal.classList.contains('hidden')) {
-            this._lastFocusedElement = document.activeElement;
-          }
-          modal.classList.remove('hidden');
-          this.lockBodyScroll();
-        }
-
-        if (contentArea) {
-          contentArea.focus();
-          contentArea.select();
-          contentArea.setSelectionRange(0, text.length);
-        }
-
-        this.triggerCopyAction(text);
-      }
-
-      triggerCopyAction(text) {
-        try {
-          if (typeof window._trackFeature === 'function') {
-            window._trackFeature('share', 'line_copy');
-          }
-        } catch (_) {}
-        this.copyToClipboard(text, () => {
-          this.showCopyIndicator();
-        });
-      }
-
-      showCopyIndicator() {
-        const ind = document.getElementById('modal-copy-indicator');
-        const isEn = (this.currentLang === 'en');
-        const copyIndText = document.getElementById('modal-copy-indicator-text');
-        if (copyIndText) copyIndText.innerText = isEn ? 'Copied to clipboard!' : 'คัดลอกลงคลิปบอร์ดแล้ว!';
-        if (ind) {
-          ind.style.opacity = '1';
-          if (this._modalIndTimer) clearTimeout(this._modalIndTimer);
-          this._modalIndTimer = setTimeout(() => {
-            ind.style.opacity = '0';
-          }, 3000);
-        }
-        this.showCopiedToast(isEn ? 'Copied to clipboard!' : 'คัดลอกข้อความสำเร็จ!');
-      }
-
-      shareToLine(customText) {
-        const contentArea = document.getElementById('text-summary-content');
-        const text = customText || (contentArea ? contentArea.value : '');
-        if (!text) return;
-
-        // Ensure text is also in clipboard
-        this.copyToClipboard(text);
-
-        // Try Web Share on mobile devices
-        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
-        if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ text })) {
-          navigator.share({
-            title: document.getElementById('modal-summary-title')?.innerText || 'FPL Summary',
-            text: text
-          }).catch(err => {
-            if (err.name !== 'AbortError') {
-              this.openLineUrl(text);
-            }
-          });
-          return;
-        }
-
-        this.openLineUrl(text);
-      }
-
-      openLineUrl(text) {
-        const lineUrl = `https://line.me/R/msg/text/?${encodeURIComponent(text)}`;
-        window.open(lineUrl, '_blank');
-      }
-
-      shareCurrentView() {
-        const activeTab = this.activeTab || 'gameweek-view';
-        if (activeTab === 'bramann-prediction-view') {
-          this.copyBramannPredLINEResult(this.activeBramannPredGW);
-        } else if (activeTab === 'bramann-challenge-view') {
-          this.copyBramannChalLINEResult(this.activeBramannChalGW);
-        } else if (activeTab === 'shi62-special-view') {
-          this.copyShi62LINEResult(this.activeShi62GW);
-        } else if (activeTab === 'prizes-view') {
-          this.sharePrizes();
-        } else {
-          this.shareCurrentGameweek();
-        }
-      }
-
-      sharePrizes() {
-        const lid = String(this.activeLeagueId);
-        if (lid === '5349') {
-          this.copyBramannPrizesLINEResult();
-        } else if (lid === '675290') {
-          this.copyShi62PrizesLINEResult();
-        } else {
-          this.shareCurrentGameweek();
-        }
       }
 
       selectBramannPredGW(gwName) {
@@ -7851,275 +7411,9 @@ selectShi62GW(gwName) {
         this.renderBramannPrediction();
       }
 
-      copyBramannPredLINEResult(gwName) {
-        if (!this.bramannPredData) return;
-        const gw = (this.bramannPredData.gameweeks || []).find(g => g.name === gwName);
-        if (!gw) return;
-
-        const gwDisplayName = gw.name.startsWith('GW') ? gw.name : `GW${gw.name}`;
-        let lines = [];
-        lines.push(`สรุปผลการทายผล Bramann Prediction ${gwDisplayName}`);
-        lines.push(`---------------------------------`);
-        lines.push(`⚽ สรุปได้-เสียประจำสัปดาห์ (${gwDisplayName})`);
-
-        const gwPlayerNet = {};
-        (gw.matches || []).forEach(m => {
-          Object.entries(m.payouts || {}).forEach(([pname, pinfo]) => {
-            if (!gwPlayerNet[pname]) gwPlayerNet[pname] = { net: 0, won: 0, lost: 0, push: 0 };
-            gwPlayerNet[pname].net += (pinfo.net || 0);
-            if (pinfo.net > 0) gwPlayerNet[pname].won += 1;
-            else if (pinfo.net < 0) gwPlayerNet[pname].lost += 1;
-            else gwPlayerNet[pname].push += 1;
-          });
-        });
-
-        const sortedGwPlayers = Object.entries(gwPlayerNet)
-          .map(([name, s]) => ({ name, ...s }))
-          .sort((a, b) => b.net - a.net);
-
-        sortedGwPlayers.forEach((s, i) => {
-          const sign = s.net > 0 ? '+' : '';
-          const pushStr = s.push > 0 ? ` ${s.push}D` : '';
-          lines.push(`${i + 1}. ${s.name}: ${sign}${Number(s.net).toLocaleString()} (${s.won}W ${s.lost}L${pushStr})`);
-        });
-        lines.push(`---------------------------------`);
-        const totalGwPool = (gw.matches || []).reduce((sum, m) => sum + (m.pool || 0), 0);
-        lines.push(`💰 พูลสัปดาห์นี้: ${Number(totalGwPool).toLocaleString()} บาท (${gw.matches.length} คู่)`);
-        lines.push(`---------------------------------`);
-
-        if (gw.matches && gw.matches.length > 0) {
-          lines.push(`📋 ผลการแข่งขัน (${gwDisplayName}):`);
-          gw.matches.forEach(m => {
-            if (m.status === 'push' || m.winning_side === 'push') {
-              lines.push(`• ${m.title} ➔ เสมอ (แยกย้าย)`);
-            } else {
-              const winSideLabel = m.winning_side === 1 ? m.side1_label : m.side2_label;
-              const winBets = m.winning_side === 1 ? m.side1_bets : m.side2_bets;
-              const winNames = winBets.map(b => `${b.name}${b.legs > 1 ? `x${b.legs}` : ''}`).join(', ');
-              lines.push(`• ${m.title} ➔ ${winSideLabel} ✅ [${winNames}]`);
-            }
-          });
-          lines.push(`---------------------------------`);
-        }
-
-        lines.push(`🏆 ตารางอันดับสะสมทายผล:`);
-        (this.bramannPredData.cumulative_standings || []).forEach((c, idx) => {
-          const sign = c.net > 0 ? '+' : '';
-          lines.push(`${idx + 1}. ${c.player.display_name}: ${sign}${Number(c.net).toLocaleString()}`);
-        });
-
-        lines.push(`---------------------------------`);
-        lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
-
-        const textToCopy = lines.join(String.fromCharCode(10));
-        const isEn = (this.currentLang === 'en');
-        this.openTextSummaryModal({
-          title: isEn ? `Bramann Prediction (${gwDisplayName})` : `สรุปผลทายผล Bramann (${gwDisplayName})`,
-          subtitle: isEn ? 'Weekly prediction settlement ready to share in LINE:' : 'สรุปยอดเงินได้-เสียและผลทายผลสำหรับส่งเข้ากลุ่ม LINE:',
-          text: textToCopy
-        });
-      }
-
       selectBramannChalGW(gwName) {
         this.activeBramannChalGW = gwName;
         this.renderBramannChallenge();
-      }
-
-      copyBramannChalLINEResult(gwName) {
-        if (!this.bramannChalData) return;
-        const gw = (this.bramannChalData.gameweeks || []).find(g => g.name === gwName);
-        if (!gw) return;
-
-        const gwDisplayName = gw.name.startsWith('GW') ? gw.name : `GW${gw.name}`;
-        let lines = [];
-        lines.push(`สรุปผลท้าชน Bramann Challenge ${gwDisplayName}`);
-        lines.push(`---------------------------------`);
-        lines.push(`⚔️ การดวลคะแนนแฟนตาซี (${gwDisplayName}):`);
-        (gw.matches || []).forEach(m => {
-          const t1Pts = m.team1_pts !== undefined ? `${m.team1_pts} pts` : '-';
-          const t2Pts = m.team2_pts !== undefined ? `${m.team2_pts} pts` : '-';
-          lines.push(`• ${m.team1_name} (${t1Pts}) vs ${m.team2_name} (${t2Pts})`);
-          if (m.winning_side === 1) {
-            lines.push(`  ผู้ชนะ: ${m.team1_name} ✅${m.tie_break_note ? ` (${m.tie_break_note})` : ''}`);
-          } else if (m.winning_side === 2) {
-            lines.push(`  ผู้ชนะ: ${m.team2_name} ✅${m.tie_break_note ? ` (${m.tie_break_note})` : ''}`);
-          } else {
-            lines.push(`  ผลการแข่งขัน: เสมอแยกย้าย (Push)`);
-          }
-          if (m.payouts && Object.keys(m.payouts).length > 0) {
-            lines.push(`  💰 ผลได้-เสีย:`);
-            Object.entries(m.payouts).forEach(([pname, pinfo]) => {
-              const sign = pinfo.net > 0 ? '+' : '';
-              lines.push(`    - ${pname}: ${sign}${Number(pinfo.net).toLocaleString()} บาท`);
-            });
-          }
-        });
-
-        lines.push(`---------------------------------`);
-        lines.push(`🏆 ตารางอันดับสะสมท้าชน:`);
-        (this.bramannChalData.cumulative_standings || []).forEach((c, idx) => {
-          const sign = c.net > 0 ? '+' : '';
-          lines.push(`${idx + 1}. ${c.player.display_name}: ${sign}${Number(c.net).toLocaleString()}`);
-        });
-
-        lines.push(`---------------------------------`);
-        lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
-
-        const textToCopy = lines.join(String.fromCharCode(10));
-        const isEn = (this.currentLang === 'en');
-        this.openTextSummaryModal({
-          title: isEn ? `Bramann Challenge (${gwDisplayName})` : `สรุปผลท้าชน Bramann (${gwDisplayName})`,
-          subtitle: isEn ? 'Fantasy challenge duel results ready to share in LINE:' : 'สรุปผลการดวลแฟนตาซีตัวต่อตัวสำหรับส่งเข้ากลุ่ม LINE:',
-          text: textToCopy
-        });
-      }
-
-      copyBramannPrizesLINEResult() {
-        const maxGW = Number(this.multiData && this.multiData.max_gw) || 7;
-        let lines = [];
-        lines.push(`สรุปเงินรางวัล FPL & มินิเกม Bramann League (GW${maxGW})`);
-        lines.push(`---------------------------------`);
-        lines.push(`🏆 สรุปเงินรางวัล FPL (Prize 1 + Prize 2) รวม 9,500 THB:`);
-        lines.push(`(อันดับ • ทีม • คะแนนรวม • P1 • P2 • รางวัล FPL • ทายผลสะสม • ท้าชนสะสม • ยอดรวมสุทธิ)`);
-
-        const feat = (this.config && this.config.features) || {};
-        const p1GW = Number(feat.prize1_target_gw) || 18;
-        const p2GW = Number(feat.prize2_target_gw) || 38;
-        const p1Tiers = feat.prize1_tiers || { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
-        const p2Tiers = feat.prize2_tiers || { "1": 1000, "2": 800, "3": 700, "7": 700, "8": 500, "9": 400, "13": 400, "14": 300, "15": 200 };
-
-        const predMap = {};
-        if (this.bramannPredData && this.bramannPredData.cumulative_standings) {
-          this.bramannPredData.cumulative_standings.forEach(c => {
-            if (c.player) {
-              if (c.player.entry_id) predMap[c.player.entry_id] = Number(c.net) || 0;
-              if (c.player.display_name) predMap[c.player.display_name.toLowerCase()] = Number(c.net) || 0;
-            }
-          });
-        }
-
-        const chalMap = {};
-        if (this.bramannChalData && this.bramannChalData.cumulative_standings) {
-          this.bramannChalData.cumulative_standings.forEach(c => {
-            if (c.player) {
-              if (c.player.entry_id) chalMap[c.player.entry_id] = Number(c.net) || 0;
-              if (c.player.display_name) chalMap[c.player.display_name.toLowerCase()] = Number(c.net) || 0;
-            }
-          });
-        }
-
-        const overallMap = {};
-        (this.data && this.data.teams ? this.data.teams : []).forEach(t => {
-          overallMap[t.entry_id] = {
-            entry_id: t.entry_id,
-            entry_name: t.entry_name,
-            player_name: t.player_name,
-            rank: t.rank || 999,
-            p1_points: 0,
-            p2_points: 0,
-            total_points: 0
-          };
-        });
-
-        for (let g = 1; g <= maxGW; g++) {
-          const gData = (this.data && this.data.gameweeks) ? this.data.gameweeks[String(g)] : null;
-          if (gData && gData.results) {
-            const gIsStarted = gData.is_started !== undefined
-              ? Boolean(gData.is_started)
-              : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
-            if (gIsStarted) {
-              const seenInGw = new Set();
-              gData.results.forEach(r => {
-                if (seenInGw.has(r.entry_id)) return;
-                seenInGw.add(r.entry_id);
-                const tm = overallMap[r.entry_id];
-                if (tm) {
-                  const net = r.net_points || 0;
-                  tm.total_points += net;
-                  if (g <= p1GW) tm.p1_points += net;
-                  if (g <= p2GW) tm.p2_points += net;
-                }
-              });
-            }
-          }
-        }
-
-        const eligibleTeams = Object.values(overallMap).filter(t => this.isPrizeEligible(t.entry_id));
-
-        const assignTiePooledTiers = (teamsList, scoreProp, tiersObj, outAmtProp, outRankProp, outJointProp) => {
-          const sorted = [...teamsList].sort((a, b) => (b[scoreProp] - a[scoreProp]) || ((a.rank || 999) - (b.rank || 999)));
-          let idx = 0;
-          while (idx < sorted.length) {
-            let nxt = idx + 1;
-            while (nxt < sorted.length && sorted[nxt][scoreProp] === sorted[idx][scoreProp]) {
-              nxt++;
-            }
-            const cnt = nxt - idx;
-            const rStart = idx + 1;
-            const rEnd = idx + cnt;
-            let tSum = 0;
-            for (let rPos = rStart; rPos <= rEnd; rPos++) {
-              tSum += Number(tiersObj[String(rPos)] || 0);
-            }
-            const avgAmt = cnt > 0 ? (tSum / cnt) : 0;
-            for (let i = idx; i < nxt; i++) {
-              sorted[i][outAmtProp] = Number.isInteger(avgAmt) ? avgAmt : Number(avgAmt.toFixed(2));
-              if (outRankProp) sorted[i][outRankProp] = rStart;
-              if (outJointProp) sorted[i][outJointProp] = cnt > 1;
-            }
-            idx = nxt;
-          }
-          return sorted;
-        };
-
-        assignTiePooledTiers(eligibleTeams, 'p1_points', p1Tiers, 'p1_amt', 'p1_rank', 'p1_joint');
-        const overallTeams = assignTiePooledTiers(eligibleTeams, 'p2_points', p2Tiers, 'p2_amt', 'p2_rank', 'p2_joint');
-
-        const fmtVal = (v) => {
-          const rounded = Number.isInteger(v) ? v : Number(v.toFixed(2));
-          if (rounded > 0) return `+${rounded.toLocaleString()}`;
-          if (rounded < 0) return `${rounded.toLocaleString()}`;
-          return '0';
-        };
-
-        overallTeams.forEach((t) => {
-          const rank = t.p2_rank;
-          const rankStr = t.p2_joint ? `${rank}(ร่วม)` : `${rank}`;
-          const p1 = t.p1_amt || 0;
-          const p2 = t.p2_amt || 0;
-          const totalFpl = p1 + p2;
-          const predNet = (predMap[t.entry_id] !== undefined)
-            ? predMap[t.entry_id]
-            : (predMap[(t.player_name || '').toLowerCase()] || 0);
-          const chalNet = (chalMap[t.entry_id] !== undefined)
-            ? chalMap[t.entry_id]
-            : (chalMap[(t.player_name || '').toLowerCase()] || 0);
-          const grandNet = totalFpl + predNet + chalNet;
-
-          lines.push(`${rankStr}. ${t.entry_name}: ${t.total_points} pts | P1: ${p1 > 0 ? p1.toLocaleString() : '-'} | P2: ${p2 > 0 ? p2.toLocaleString() : '-'} | FPL: ${totalFpl > 0 ? totalFpl.toLocaleString() : '-'} | ทายผล: ${fmtVal(predNet)} | ท้าชน: ${fmtVal(chalNet)} | รวม: ${fmtVal(grandNet)}`);
-        });
-
-        const feeCum = (this.bramannPredData && this.bramannPredData.cumulative_standings)
-          ? this.bramannPredData.cumulative_standings.find(c => c.player && c.player.is_guest)
-          : null;
-        if (feeCum) {
-          const feeNet = feeCum.net || 0;
-          lines.push(`• Fee (Guest): FPL - | ทายผล ${fmtVal(feeNet)} | รวม ${fmtVal(feeNet)}`);
-        }
-
-        lines.push(`---------------------------------`);
-        lines.push(`• Prize 1 (หลังจบ GW ${p1GW}): 9 อันดับ (1, 2, 3, 5, 7, 9, 11, 13, 15) คนละ 500 บ. (รวม 4,500 บ.)`);
-        lines.push(`• Prize 2 (หลังจบ GW ${p2GW}): 9 อันดับขั้นบันได (รวม 5,000 บ.)`);
-        lines.push(`---------------------------------`);
-        lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
-
-        const textToCopy = lines.join(String.fromCharCode(10));
-        const isEn = (this.currentLang === 'en');
-        this.openTextSummaryModal({
-          title: isEn ? 'Bramann Season & Mid-Season Prizes' : 'สรุปเงินรางวัล Bramann League',
-          subtitle: isEn ? 'Prize breakdown ready to share in LINE:' : 'สรุปตารางเงินรางวัล FPL และมินิเกมสำหรับส่งเข้ากลุ่ม LINE:',
-          text: textToCopy
-        });
       }
 
       renderBramannPrediction() {
@@ -18609,7 +17903,7 @@ selectShi62GW(gwName) {
           const quickNavPrizesText = isEn ? 'Prizes Tab' : 'แท็บเงินรางวัล';
           const quickNavChipsText = isEn ? 'Chips Matrix' : 'สถานะชิป';
           const quickNavHofText = isEn ? 'Hall of Fame' : 'ทำเนียบแชมป์';
-          const copyRulesText = isEn ? 'Copy Rules for LINE Group' : 'คัดลอกสรุปกติกาเพื่อส่งไลน์';
+          const copyRulesText = isEn ? 'Copy Rules for Chat' : 'คัดลอกสรุปกติกาเพื่อส่งแชท';
 
           govContainer.innerHTML = `
             <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-2xs w-full min-w-0 overflow-hidden">
@@ -19090,7 +18384,7 @@ selectShi62GW(gwName) {
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
-                      <span>Instant one-click LINE chat summary copy and season-long Excel (.xlsx) data export.</span>
+                      <span>One-click league rules &amp; pundit quote copy, plus full-season Excel (.xlsx) export.</span>
                     </li>
                   </ul>
                 </div>
@@ -19519,7 +18813,7 @@ selectShi62GW(gwName) {
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
-                      <span>ปุ่มคัดลอกสรุปผลคะแนนส่งเข้ากลุ่ม LINE และส่งออกเป็นตาราง Excel ทันที</span>
+                      <span>ปุ่มคัดลอกสรุปกติกาลีก พาดหัววิเคราะห์ และส่งออกตารางข้อมูลเป็นไฟล์ Excel (.xlsx)</span>
                     </li>
                   </ul>
                 </div>
@@ -20672,316 +19966,6 @@ selectShi62GW(gwName) {
           }, 1800);
         }
         this.showToast(copiedText, 'success', 1600);
-      }
-
-      shareCurrentGameweek() {
-        try {
-          const gwKey = String(this.selectedGW || 2);
-          const gwData = (this.data && this.data.gameweeks) ? (this.data.gameweeks[gwKey] || this.data.gameweeks[this.selectedGW]) : null;
-          const isEn = (this.currentLang === 'en');
-          if (!gwData || !gwData.results || gwData.results.length === 0) {
-            if (typeof alert !== 'undefined') alert(isEn ? 'Loading gameweek data, please try again.' : 'กำลังโหลดข้อมูล Gameweek กรุณาลองใหม่อีกครั้ง');
-            return;
-          }
-
-          const isWeekly = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
-          const isFinished = Boolean(gwData.is_finished);
-          const scoreProp = 'net_points';
-          const useHighestPlayerTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
-          const sorted = [...gwData.results].sort((a, b) => {
-            const diff = (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points);
-            if (diff !== 0) return diff;
-            if (useHighestPlayerTieBreaker) {
-              return this.compareTeamPlayerScores(a.entry_id, b.entry_id, Number(gwKey));
-            }
-            return 0;
-          });
-          const eligibleResults = sorted.filter(r => this.isPrizeEligible(r.entry_id));
-          const eligibleHighestScore = eligibleResults.length > 0 ? eligibleResults[0][scoreProp] : 0;
-          let eligibleWinners = [];
-          if (eligibleResults.length > 0) {
-            const topLeader = eligibleResults[0];
-            if (useHighestPlayerTieBreaker) {
-              eligibleWinners = eligibleResults.filter(r => 
-                r[scoreProp] === topLeader[scoreProp] && 
-                this.compareTeamPlayerScores(r.entry_id, topLeader.entry_id, Number(gwKey)) === 0
-              );
-            } else {
-              eligibleWinners = eligibleResults.filter(r => r[scoreProp] === eligibleHighestScore);
-            }
-          }
-          const isJointPrize = eligibleWinners.length > 1;
-          const overallTop = sorted[0];
-          const prizeLeader = eligibleWinners[0] || overallTop;
-          const hasPassedPrize = !this.isPrizeEligible(overallTop.entry_id) && eligibleWinners.length > 0 && overallTop[scoreProp] > prizeLeader[scoreProp];
-
-          const noteEl = document.getElementById('current-gw-note-text');
-          let currentLiveNote = noteEl ? noteEl.innerText.replace(/^"|"$/g, '').trim() : '';
-          if (!currentLiveNote) {
-            const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
-            const cacheKey = `${this.activeLeagueId}_${this.selectedGW}_${this.currentLang}`;
-            const rawHtmlNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeekly, useHighestPlayerTieBreaker, isEn);
-            currentLiveNote = String(rawHtmlNote).replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
-          }
-
-          let text = '';
-          if (isEn) {
-            text += `${this.data.name} (League ${this.activeLeagueId})\n`;
-            text += `Gameweek ${gwKey} Summary (${isFinished ? 'Final Result' : 'Live In-Play'})\n`;
-            text += `----------------------------------------\n`;
-
-            if (isFinished) {
-              if (isWeekly) {
-                const weeklyPrizesConfig = this.config.features.weekly_prizes;
-                if (weeklyPrizesConfig) {
-                  const tierPrizes = Object.values(weeklyPrizesConfig).map(Number);
-                  const eligibleSorted = sorted.filter(r => this.isPrizeEligible(r.entry_id));
-                  const payouts = this.calculateWeeklyTierPrizes(eligibleSorted, tierPrizes, Number(gwKey));
-                  text += `🏆 Weekly Prize Breakdown (Top ${tierPrizes.length}) (GW ${gwKey}):\n`;
-                  payouts.forEach(p => {
-                    const medal = p.rank === 1 ? '🥇 1st' : (p.rank === 2 ? '🥈 2nd' : '🥉 3rd');
-                    const jointText = p.isJoint ? ` (Tied ${p.jointCount} teams, split)` : '';
-                    const tieText = p.tieBreakNote ? ` [${p.tieBreakNote}]` : '';
-                    text += `• ${medal}: ${p.team_name} (${p.player_name}) • ${p.net_points} pts • ${p.prize.toLocaleString()} THB${jointText}${tieText}\n`;
-                  });
-                } else {
-                  if (hasPassedPrize) {
-                    text += `💡 Note: Team ${overallTop.team_name} scored highest this week (${overallTop.points} pts) but participates as guest, passing prize eligibility to the next team.\n`;
-                  }
-                  if (isJointPrize) {
-                    const names = eligibleWinners.map(w => `${w.team_name} (${w.player_name})`).join(' & ');
-                    text += `🏆 Joint Weekly Winners (${eligibleWinners.length} teams): ${names}\n`;
-                  } else {
-                    text += `🏆 Weekly Winner: ${prizeLeader.team_name} (${prizeLeader.player_name})\n`;
-                  }
-                  const w0 = prizeLeader;
-                  const hitsStr = (w0.hits && w0.hits > 0) ? ` | Hits: -${w0.hits}` : '';
-                  text += `Score: ${w0.points} pts (Net ${w0.net_points}${hitsStr})\n`;
-                  const weeklyPrize = this.config.features.weekly_prize_amount || 300;
-                  const prizePerTeam = isJointPrize ? (weeklyPrize / eligibleWinners.length).toFixed(0) : weeklyPrize;
-                  text += `Prize: ${prizePerTeam} THB${isJointPrize ? ' / team (Split)' : ''}\n`;
-                }
-              } else {
-                text += `👑 Highest Scorer Gameweek ${gwKey}: ${overallTop.team_name} (${overallTop.player_name})\n`;
-                const w0 = overallTop;
-                const hitsStr = (w0.hits && w0.hits > 0) ? ` | Hits: -${w0.hits}` : '';
-                text += `Score: ${w0.points} pts (Net ${w0.net_points}${hitsStr})\n`;
-              }
-            } else {
-              if (hasPassedPrize) {
-                text += `💡 Note: Team ${overallTop.team_name} (${overallTop.points} pts) leads live scores as guest • Prize eligibility passes to ${prizeLeader.team_name}\n`;
-              }
-              text += `⚡ Live Leader for Weekly Prize: ${prizeLeader.team_name} (${prizeLeader.player_name})\n`;
-              const w0 = prizeLeader;
-              const hitsStr = (w0.hits && w0.hits > 0) ? ` | Hits: -${w0.hits} (deducted in total)` : '';
-              text += `Live Score: ${w0.points} pts (Matches Official)${hitsStr}\n`;
-              if (w0.chip) {
-                text += `Chip Active: ${w0.chip.toUpperCase()}\n`;
-              }
-            }
-
-            if (!isWeekly && Array.isArray(this.config.monthly_schedule) && this.config.monthly_schedule.length > 0) {
-              const curMonth = this.config.monthly_schedule.find(m => m.gw_list && m.gw_list.includes(Number(gwKey))) || this.config.monthly_schedule[0];
-              if (curMonth) {
-                const monthlyScores = {};
-                (this.data.teams || []).forEach(t => monthlyScores[t.entry_id] = { name: t.entry_name, pts: 0 });
-                curMonth.gw_list.forEach(g => {
-                  const gd = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
-                  if (gd && gd.results) {
-                    gd.results.forEach(r => {
-                      if (monthlyScores[r.entry_id]) monthlyScores[r.entry_id].pts += r.net_points;
-                    });
-                  }
-                });
-                const eligibleMonthly = Object.entries(monthlyScores)
-                  .filter(([eid]) => this.isPrizeEligible(eid))
-                  .map(([, t]) => t)
-                  .sort((a, b) => (b.pts - a.pts) || (a.name || '').localeCompare(b.name || ''));
-                if (eligibleMonthly.length > 0 && eligibleMonthly[0].pts > 0) {
-                  const topScore = eligibleMonthly[0].pts;
-                  const topLeads = eligibleMonthly.filter(t => t.pts === topScore);
-                  text += `\n📅 Monthly Prize Race (${curMonth.month} - Pool ${curMonth.budget}):\n`;
-                  if (topLeads.length > 1) {
-                    const leadNames = topLeads.map(t => t.name).join(', ');
-                    text += `• Joint Leaders (${topLeads.length} teams): ${leadNames} (${topScore} pts)\n`;
-                  } else {
-                    text += `• Leader: ${topLeads[0].name} (${topScore} pts)\n`;
-                  }
-                }
-              }
-            }
-
-            text += `\n⭐ Gameweek Highlights:\n"${currentLiveNote}"\n`;
-
-            const transfers = sorted.filter(r => r.hits && r.hits > 0);
-            const chipsUsed = sorted.filter(r => r.chip);
-
-            if (transfers.length > 0 || chipsUsed.length > 0) {
-              text += `\n🔥 Transfers & Chips:\n`;
-              if (transfers.length > 0) {
-                const tfList = transfers.map(t => `${t.team_name} (-${t.hits})`).join(', ');
-                text += `• Hits Taken: ${tfList}\n`;
-              }
-              if (chipsUsed.length > 0) {
-                const cpList = chipsUsed.map(c => `${c.team_name} (${c.chip.toUpperCase()})`).join(', ');
-                text += `• Special Chips: ${cpList}\n`;
-              }
-            }
-
-            text += `\n📊 Gameweek ${gwKey} Leaderboard (Top 5):\n`;
-            sorted.slice(0, 5).forEach((t, i) => {
-              const hitsPart = (t.hits && t.hits > 0) ? ` (-${t.hits})` : '';
-              const chipPart = t.chip ? ` [${t.chip.toUpperCase()}]` : '';
-              const funTag = !this.isPrizeEligible(t.entry_id) ? ' (Guest)' : '';
-              text += `${i + 1}. ${t.team_name}${funTag}: ${t.net_points} pts${hitsPart}${chipPart}\n`;
-            });
-
-            text += `\n🌐 Check Live Results & Full Standings:\n${this.getPublicLeagueUrl()}`;
-
-          } else {
-            text += `${this.data.name} (League ${this.activeLeagueId})\n`;
-            text += `สรุปผล Gameweek ${gwKey} (${isFinished ? 'จบการแข่งขัน' : 'กำลังแข่งขัน'})\n`;
-            text += `----------------------------------------\n`;
-
-            if (isFinished) {
-              if (isWeekly) {
-                const weeklyPrizesConfig = this.config.features.weekly_prizes;
-                if (weeklyPrizesConfig) {
-                  const tierPrizes = Object.values(weeklyPrizesConfig).map(Number);
-                  const eligibleSorted = sorted.filter(r => this.isPrizeEligible(r.entry_id));
-                  const payouts = this.calculateWeeklyTierPrizes(eligibleSorted, tierPrizes, Number(gwKey));
-                  text += `🏆 สรุปเงินรางวัลประจำสัปดาห์ 3 อันดับ (GW ${gwKey}):\n`;
-                  payouts.forEach(p => {
-                    const medal = p.rank === 1 ? '🥇 อันดับ 1' : (p.rank === 2 ? '🥈 อันดับ 2' : '🥉 อันดับ 3');
-                    const jointText = p.isJoint ? ` (เสมอ ${p.jointCount} ทีม หารเท่า)` : '';
-                    const tieText = p.tieBreakNote ? ` [${p.tieBreakNote}]` : '';
-                    text += `• ${medal}: ${p.team_name} (${p.player_name}) • ${p.net_points} pts • ${p.prize.toLocaleString()} THB${jointText}${tieText}\n`;
-                  });
-                } else {
-                  if (hasPassedPrize) {
-                    text += `💡 หมายเหตุ: ทีม ${overallTop.team_name} ทำแต้มสูงสุดสัปดาห์นี้ (${overallTop.points} pts) แต่เป็นทีมร่วมสนุก จึงส่งมอบสิทธิ์เงินรางวัลประจำสัปดาห์ให้แก่ทีมถัดไป\n`;
-                  }
-                  if (isJointPrize) {
-                    const names = eligibleWinners.map(w => `${w.team_name} (${w.player_name})`).join(' & ');
-                    text += `🏆 แชมป์ร่วมประจำสัปดาห์ (${eligibleWinners.length} ทีม): ${names}\n`;
-                  } else {
-                    text += `🏆 แชมป์ประจำสัปดาห์: ${prizeLeader.team_name} (${prizeLeader.player_name})\n`;
-                  }
-                  const w0 = prizeLeader;
-                  const hitsStr = (w0.hits && w0.hits > 0) ? ` | คะแนนลบ: -${w0.hits}` : '';
-                  text += `คะแนน: ${w0.points} pts (สุทธิ ${w0.net_points}${hitsStr})\n`;
-                  const weeklyPrize = this.config.features.weekly_prize_amount || 300;
-                  const prizePerTeam = isJointPrize ? (weeklyPrize / eligibleWinners.length).toFixed(0) : weeklyPrize;
-                  text += `เงินรางวัล: ${prizePerTeam} THB${isJointPrize ? ' / ทีม (หารเท่า)' : ''}\n`;
-                }
-              } else {
-                text += `👑 คะแนนสูงสุด Gameweek ${gwKey}: ${overallTop.team_name} (${overallTop.player_name})\n`;
-                const w0 = overallTop;
-                const hitsStr = (w0.hits && w0.hits > 0) ? ` | คะแนนลบ: -${w0.hits}` : '';
-                text += `คะแนน: ${w0.points} pts (สุทธิ ${w0.net_points}${hitsStr})\n`;
-              }
-            } else {
-              if (hasPassedPrize) {
-                text += `💡 หมายเหตุ: ทีม ${overallTop.team_name} (${overallTop.points} pts) นำคะแนนสดสูงสุด (ร่วมสนุก) • สิทธิ์ชิงเงินรางวัลส่งต่อให้ ${prizeLeader.team_name}\n`;
-              }
-              text += `⚡ ผู้นำคะแนนสดชิงรางวัล: ${prizeLeader.team_name} (${prizeLeader.player_name})\n`;
-              const w0 = prizeLeader;
-              const hitsStr = (w0.hits && w0.hits > 0) ? ` | คะแนนลบ: -${w0.hits} (หักในคะแนนรวม)` : '';
-              text += `คะแนนสด: ${w0.points} pts (ตรงกับ Official)${hitsStr}\n`;
-              if (w0.chip) {
-                text += `ชิปที่ใช้: ${w0.chip.toUpperCase()}\n`;
-              }
-            }
-
-            if (!isWeekly && Array.isArray(this.config.monthly_schedule) && this.config.monthly_schedule.length > 0) {
-              const curMonth = this.config.monthly_schedule.find(m => m.gw_list && m.gw_list.includes(Number(gwKey))) || this.config.monthly_schedule[0];
-              if (curMonth) {
-                const monthlyScores = {};
-                (this.data.teams || []).forEach(t => monthlyScores[t.entry_id] = { name: t.entry_name, pts: 0 });
-                curMonth.gw_list.forEach(g => {
-                  const gd = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
-                  if (gd && gd.results) {
-                    gd.results.forEach(r => {
-                      if (monthlyScores[r.entry_id]) monthlyScores[r.entry_id].pts += r.net_points;
-                    });
-                  }
-                });
-                const eligibleMonthly = Object.entries(monthlyScores)
-                  .filter(([eid]) => this.isPrizeEligible(eid))
-                  .map(([, t]) => t)
-                  .sort((a, b) => (b.pts - a.pts) || (a.name || '').localeCompare(b.name || ''));
-                if (eligibleMonthly.length > 0 && eligibleMonthly[0].pts > 0) {
-                  const topScore = eligibleMonthly[0].pts;
-                  const topLeads = eligibleMonthly.filter(t => t.pts === topScore);
-                  text += `\n📅 สถานการณ์รางวัลประจำเดือน (${curMonth.month} - ชิง ${curMonth.budget}):\n`;
-                  if (topLeads.length > 1) {
-                    const leadNames = topLeads.map(t => t.name).join(', ');
-                    text += `• จ่าฝูงร่วมเดือนนี้ (${topLeads.length} ทีม): ${leadNames} (${topScore} pts)\n`;
-                  } else {
-                    text += `• จ่าฝูงเดือนนี้: ${topLeads[0].name} (${topScore} pts)\n`;
-                  }
-                }
-              }
-            }
-
-            text += `\n⭐ จุดเด่นสัปดาห์นี้:\n"${currentLiveNote}"\n`;
-
-            const transfers = sorted.filter(r => r.hits && r.hits > 0);
-            const chipsUsed = sorted.filter(r => r.chip);
-
-            if (transfers.length > 0 || chipsUsed.length > 0) {
-              text += `\n🔥 ย้ายตัว & ชิป:\n`;
-              if (transfers.length > 0) {
-                const tfList = transfers.map(t => `${t.team_name} (-${t.hits})`).join(', ');
-                text += `• คะแนนลบ: ${tfList}\n`;
-              }
-              if (chipsUsed.length > 0) {
-                const cpList = chipsUsed.map(c => `${c.team_name} (${c.chip.toUpperCase()})`).join(', ');
-                text += `• ชิปพิเศษ: ${cpList}\n`;
-              }
-            }
-
-            text += `\n📊 อันดับคะแนน GW ${gwKey} (Top 5):\n`;
-            sorted.slice(0, 5).forEach((t, i) => {
-              const hitsPart = (t.hits && t.hits > 0) ? ` (-${t.hits})` : '';
-              const chipPart = t.chip ? ` [${t.chip.toUpperCase()}]` : '';
-              const funTag = !this.isPrizeEligible(t.entry_id) ? ' (ร่วมสนุก)' : '';
-              text += `${i + 1}. ${t.team_name}${funTag}: ${t.net_points} pts${hitsPart}${chipPart}\n`;
-            });
-
-            text += `\n🌐 ตรวจสอบผลสด & อันดับตารางเต็มได้ที่:\n${this.getPublicLeagueUrl()}`;
-          }
-
-          this.openTextSummaryModal({
-            title: isEn ? `Gameweek Summary: ${this.data.name} (GW ${gwKey})` : `สรุปผล ${this.data.name} (GW ${gwKey})`,
-            subtitle: isEn ? 'Formatted text ready to share with your league or friends:' : 'ข้อความถูกจัดรูปแบบสำหรับส่งเข้ากลุ่ม LINE เรียบร้อยแล้ว:',
-            text: text
-          });
-
-        } catch (e) {
-          console.error('shareCurrentGameweek error:', e);
-          const isEn = (this.currentLang === 'en');
-          this.showToast(isEn ? 'Could not open summary. Please try again.' : 'ไม่สามารถเปิดสรุปผลได้ กรุณาลองใหม่อีกครั้ง', 'error');
-        }
-      }
-
-      copyFromModal() {
-        const contentArea = document.getElementById('text-summary-content');
-        if (contentArea) {
-          this.triggerCopyAction(contentArea.value);
-        }
-      }
-
-      closeTextSummaryModal() {
-        const modal = document.getElementById('text-summary-modal');
-        if (modal && !modal.classList.contains('hidden')) {
-          modal.classList.add('hidden');
-          this.unlockBodyScroll();
-          if (this._lastFocusedElement && this._lastFocusedElement !== document.body && typeof this._lastFocusedElement.focus === 'function') {
-            this._lastFocusedElement.focus({ preventScroll: true });
-          }
-          this._lastFocusedElement = null;
-        }
       }
 
       showToast(msg, type = 'success', durationMs = 2500) {
@@ -22286,11 +21270,10 @@ selectShi62GW(gwName) {
         if (e.key === 'Escape' && window.app) {
           window.app.closeTeamModal();
           window.app.closeProjectedPointsModal();
-          window.app.closeTextSummaryModal();
           return;
         }
         if (e.key === 'Tab') {
-          const activeModal = ['team-modal', 'projected-points-modal', 'text-summary-modal']
+          const activeModal = ['team-modal', 'projected-points-modal']
             .map(id => document.getElementById(id))
             .find(m => m && !m.classList.contains('hidden'));
           if (!activeModal) return;
@@ -22334,22 +21317,6 @@ selectShi62GW(gwName) {
           alert('ระบบกำลังโหลดข้อมูล กรุณารอสักครู่แล้วคลิกใหม่อีกครั้ง');
         }
       };
-
-      window.shareCurrentGameweekFallback = function() {
-        if (window.app && typeof window.app.shareCurrentGameweek === 'function') {
-          window.app.shareCurrentGameweek();
-        } else {
-          alert('ระบบกำลังโหลดข้อมูล กรุณารอสักครู่แล้วคลิกใหม่อีกครั้ง');
-        }
-      };
-
-      window.shareCurrentViewFallback = function() {
-        if (window.app && typeof window.app.shareCurrentView === 'function') {
-          window.app.shareCurrentView();
-        } else {
-          alert('ระบบกำลังโหลดข้อมูล กรุณารอสักครู่แล้วคลิกใหม่อีกครั้ง');
-        }
-      };
     }
 
     // FPLSaWaDiKa League Engagement & Product Analytics Telemetry (Edge Analytics)
@@ -22370,8 +21337,7 @@ selectShi62GW(gwName) {
         // In-Memory Feature Queue (Smart Session Batching - 0 Extra HTTP Calls)
         var featureInteractions = {
           tabs: {},
-          pitch_opens: 0,
-          line_shares: 0
+          pitch_opens: 0
         };
 
         window._trackFeature = function(cat, act) {
@@ -22380,8 +21346,6 @@ selectShi62GW(gwName) {
               featureInteractions.tabs[act] = (featureInteractions.tabs[act] || 0) + 1;
             } else if (cat === 'pitch') {
               featureInteractions.pitch_opens += 1;
-            } else if (cat === 'share') {
-              featureInteractions.line_shares += 1;
             }
           } catch (_) {}
         };
@@ -22428,11 +21392,8 @@ selectShi62GW(gwName) {
             if (featureInteractions.pitch_opens > 0) {
               payload.pitch_opens = featureInteractions.pitch_opens;
             }
-            if (featureInteractions.line_shares > 0) {
-              payload.line_shares = featureInteractions.line_shares;
-            }
             // Reset in-memory queue
-            featureInteractions = { tabs: {}, pitch_opens: 0, line_shares: 0 };
+            featureInteractions = { tabs: {}, pitch_opens: 0 };
             sendBeaconEvent(payload);
           }
           sessionStartTime = Date.now();

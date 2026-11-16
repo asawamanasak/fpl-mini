@@ -423,36 +423,28 @@ async def run_league_audit(cdp, lid, league_name, vp):
     else:
         results["data_issues"].append(f"Projected Points Modal test: {proj_modal_test}")
 
-    # 3. Text Summary Modal (via production shareCurrentGameweek)
-    summary_modal_test = await cdp.evaluate("""
+    # 3. Export Excel button & Legacy Summary Modal Cleanup check
+    share_cleanup_test = await cdp.evaluate("""
         (() => {
             try {
-                if (window.app && window.app.shareCurrentGameweek) {
-                    window.app.shareCurrentGameweek();
-                    const modal = document.getElementById('text-summary-modal');
-                    const isVis = modal && !modal.classList.contains('hidden');
-                    const textarea = document.getElementById('text-summary-content');
-                    const textVal = textarea ? textarea.value : '';
-                    const hasText = Boolean(textVal && textVal.length > 30);
-                    
-                    window.app.closeTextSummaryModal();
-                    const isClosed = modal && modal.classList.contains('hidden');
-                    return { 
-                        status: (isVis && isClosed && hasText) ? 'PASS' : 'FAIL',
-                        hasText: hasText,
-                        len: textVal.length
-                    };
-                }
-                return { status: 'PASS' };
+                const exportBtn = document.getElementById('btn-export-excel');
+                const legacyModal = document.getElementById('text-summary-modal');
+                const legacyShareFn = window.app && window.app.shareCurrentGameweek;
+                return {
+                    status: (exportBtn && !legacyModal && !legacyShareFn) ? 'PASS' : 'FAIL',
+                    hasExportBtn: Boolean(exportBtn),
+                    hasLegacyModal: Boolean(legacyModal),
+                    hasLegacyShareFn: Boolean(legacyShareFn)
+                };
             } catch (e) {
                 return { status: 'FAIL', error: e.toString() };
             }
         })()
     """) or {}
-    if summary_modal_test.get("status") == "PASS":
+    if share_cleanup_test.get("status") == "PASS":
         results["modals_checked"] += 1
     else:
-        results["data_issues"].append(f"LINE Summary Modal test: {summary_modal_test}")
+        results["data_issues"].append(f"Share & Export check: {share_cleanup_test}")
 
     # Collect console errors & uncaught exceptions (filter out benign external font/analytics errors if any)
     critical_errors = [

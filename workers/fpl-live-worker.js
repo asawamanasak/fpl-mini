@@ -530,10 +530,6 @@ export default {
                     const pOpens = Math.min(Math.max(parseInt(eventData.pitch_opens, 10) || 1, 1), 100);
                     increments.push({ metric: `${pfx}:feat:pitch_opens`, amount: pOpens });
                   }
-                  if (eventData.line_shares) {
-                    const lShares = Math.min(Math.max(parseInt(eventData.line_shares, 10) || 1, 1), 50);
-                    increments.push({ metric: `${pfx}:feat:line_shares`, amount: lShares });
-                  }
                 }
               }
 
@@ -1056,7 +1052,6 @@ export default {
                 let featTabChips = 0;
                 let featTabHof = 0;
                 let featPitchOpens = 0;
-                let featLineShares = 0;
 
                 const BKK_METRO_CITIES = new Set(['bangkok', 'nonthaburi', 'pathum thani', 'samut prakan', 'samut sakhon', 'nakhon pathom', 'pak kret', 'bang kruai', 'bangใหญ่', 'bang yai', 'rangsit']);
                 const TH_REGIONAL_CITIES = new Set(['chiang mai', 'chonburi', 'pattaya', 'khon kaen', 'phuket', 'hat yai', 'songkhla', 'nakhon ratchasima', 'udon thani', 'rayong', 'surat thani', 'chiang rai', 'phitsanulok', 'ubon ratchathani', 'hua hin', 'saraburi', 'ayutthaya', 'krabi', 'lampang', 'nakhon si thammarat']);
@@ -1078,7 +1073,6 @@ export default {
                   else if (mKey.includes(':feat:tab:chips')) featTabChips += mVal;
                   else if (mKey.includes(':feat:tab:hall-of-fame') || mKey.includes(':feat:tab:cup') || mKey.includes(':feat:tab:rules')) featTabHof += mVal;
                   else if (mKey.includes(':feat:pitch_opens')) featPitchOpens += mVal;
-                  else if (mKey.includes(':feat:line_shares')) featLineShares += mVal;
                   else {
                     const cMatch = mKey.match(/:city:(.+)$/);
                     if (cMatch) {
@@ -1170,7 +1164,6 @@ export default {
                     hof_cup: { count: baseHofHits, pct: modHofPct },
                   },
                   pitch_opens: 1840 + featPitchOpens,
-                  line_shares: 412 + featLineShares,
                 };
 
                 // Cloudflare D1 & Storage Telemetry
