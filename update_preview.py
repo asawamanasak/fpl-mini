@@ -22536,6 +22536,7 @@ __STRUCTURED_DATA_JSON__
         }
       } catch (_) {}
       document.documentElement.classList.toggle('dark', shouldBeDark);
+      document.documentElement.classList.add('js');
       document.documentElement.lang = initialLang;
       window.INITIAL_LANG = initialLang;
     })();
@@ -23138,12 +23139,32 @@ __STRUCTURED_DATA_JSON__
       gap: 0.4rem;
     }
     .bm-live-dot {
+      position: relative;
       width: 0.55rem;
       height: 0.55rem;
       border-radius: 999px;
       background-color: var(--color-live);
       display: inline-block;
       flex-shrink: 0;
+    }
+    .bm-live-dot::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background-color: var(--color-live);
+      opacity: 0.65;
+      animation: bm-live-ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+      pointer-events: none;
+    }
+    .bm-hero-overlay-pill:hover .bm-live-dot::after,
+    .bm-hero-meta-item:hover .bm-live-dot::after,
+    .bm-drama-screen:hover .bm-live-dot::after {
+      animation-play-state: paused;
+    }
+    @keyframes bm-live-ping {
+      0% { transform: scale(1); opacity: 0.65; }
+      75%, 100% { transform: scale(2.4); opacity: 0; }
     }
     .bm-hero-link {
       color: var(--color-arena-ink);
@@ -23417,11 +23438,47 @@ __STRUCTURED_DATA_JSON__
     }
 
     .bm-stage-viewport {
+      position: relative;
       border-radius: 0.75rem;
-      border: 1px solid var(--color-border-strong);
-      background-color: var(--color-arena);
+      padding: 2px;
+      background-color: var(--color-arena-border);
       color: var(--color-arena-ink);
       overflow: hidden;
+    }
+    .bm-stage-viewport::before,
+    .bm-plan-card.is-featured::before {
+      content: "";
+      position: absolute;
+      inset: -65%;
+      background: conic-gradient(from 0deg, transparent 0deg, transparent 292deg, var(--color-accent) 334deg, var(--color-live) 352deg, transparent 360deg);
+      animation: bm-orbit-spin 8.5s linear infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .bm-stage-viewport::after,
+    .bm-plan-card.is-featured::after {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      border-radius: 0.65rem;
+      background-color: var(--color-arena);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .bm-stage-viewport > *,
+    .bm-plan-card.is-featured > * {
+      position: relative;
+      z-index: 1;
+    }
+    .bm-stage-viewport:hover::before,
+    .bm-stage-viewport:focus-within::before,
+    .bm-plan-card.is-featured:hover::before,
+    .bm-plan-card.is-featured:focus-within::before {
+      animation-play-state: paused;
+    }
+    @keyframes bm-orbit-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
     .bm-stage-topbar {
       display: flex;
@@ -23622,9 +23679,11 @@ __STRUCTURED_DATA_JSON__
       gap: 1.25rem;
     }
     .bm-plan-card.is-featured {
+      position: relative;
+      overflow: hidden;
       background-color: var(--color-arena);
       color: var(--color-arena-ink);
-      border: 2px solid var(--color-accent);
+      border: 0;
     }
     .bm-plan-card.is-roadmap {
       background-color: var(--color-surface);
@@ -23752,7 +23811,290 @@ __STRUCTURED_DATA_JSON__
       gap: 1rem;
     }
 
+    /* Stream Ribbon (reactvibe Stream adaptation in plain FPL language) */
+    .bm-stream-band {
+      background-color: var(--color-arena);
+      color: var(--color-arena-ink);
+      border-top: 1px solid var(--color-arena-border);
+      border-bottom: 1px solid var(--color-arena-border);
+      overflow: hidden;
+      padding: 0.75rem 0;
+    }
+    .bm-stream-track {
+      display: flex;
+      width: max-content;
+      gap: 0.75rem;
+      animation: bm-stream-scroll 34s linear infinite;
+    }
+    .bm-stream-band:hover .bm-stream-track,
+    .bm-stream-band:focus-within .bm-stream-track {
+      animation-play-state: paused;
+    }
+    @keyframes bm-stream-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .bm-stream-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      background-color: var(--color-arena-surface);
+      border: 1px solid var(--color-arena-border-strong);
+      color: var(--color-arena-ink);
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .bm-stream-dot {
+      width: 0.42rem;
+      height: 0.42rem;
+      border-radius: 999px;
+      background-color: var(--color-live);
+      flex-shrink: 0;
+    }
+
+    /* Matchday Drama Feed (reactvibe NotificationScreen adaptation) */
+    .bm-drama-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2rem;
+      align-items: center;
+    }
+    @media (min-width: 900px) {
+      .bm-drama-layout {
+        grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+        gap: 3rem;
+      }
+    }
+    .bm-drama-screen {
+      border-radius: 0.85rem;
+      background-color: var(--color-arena);
+      color: var(--color-arena-ink);
+      border: 1px solid var(--color-arena-border-strong);
+      overflow: hidden;
+    }
+    .bm-drama-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.15rem;
+      background-color: var(--color-arena-surface);
+      border-bottom: 1px solid var(--color-arena-border);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--color-arena-ink-2);
+    }
+    .bm-drama-feed {
+      display: flex;
+      flex-direction: column;
+      padding: 0.5rem;
+      gap: 0.45rem;
+    }
+    .bm-drama-item {
+      width: 100%;
+      text-align: left;
+      padding: 0.85rem 1rem;
+      border-radius: 0.55rem;
+      border: 1px solid transparent;
+      background-color: transparent;
+      color: var(--color-arena-ink);
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: 2rem minmax(0, 1fr);
+      gap: 0.85rem;
+      align-items: start;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+    .bm-drama-item:hover {
+      background-color: var(--color-arena-surface);
+    }
+    .bm-drama-item:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: -2px;
+    }
+    .bm-drama-item.is-active {
+      background-color: var(--color-arena-card);
+      border-color: var(--color-accent);
+      transform: translateX(3px);
+    }
+    .bm-drama-icon {
+      width: 2rem;
+      height: 2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-arena-ink-2);
+    }
+    .bm-drama-item.is-active .bm-drama-icon {
+      color: var(--color-arena-accent);
+    }
+    .bm-drama-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.2rem;
+      font-size: 0.76rem;
+      color: var(--color-arena-ink-2);
+    }
+    .bm-drama-tag {
+      font-weight: 700;
+      color: var(--color-live);
+    }
+    .bm-drama-item.is-active .bm-drama-tag {
+      color: var(--color-arena-accent);
+    }
+    .bm-drama-title {
+      font-size: 0.96rem;
+      font-weight: 800;
+      line-height: 1.35;
+      margin: 0 0 0.2rem;
+      color: var(--color-arena-ink);
+    }
+    .bm-drama-desc {
+      font-size: 0.84rem;
+      line-height: 1.45;
+      margin: 0;
+      color: var(--color-arena-ink-2);
+    }
+
+    /* Scroll Motion (reactvibe LinearReveal adaptation, progressive enhancement) */
+    html.js .bm-reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    html.js .bm-reveal.is-in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* FAQ Split Accordion (reactvibe Glide-Accordion / Split-FAQ adaptation) */
+    .bm-faq-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.75rem;
+      align-items: start;
+    }
+    @media (min-width: 900px) {
+      .bm-faq-layout {
+        grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+        gap: 3rem;
+      }
+    }
+    .bm-faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .bm-faq-item {
+      border-radius: 0.65rem;
+      background-color: var(--color-paper);
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+      transition: border-color 0.15s ease;
+    }
+    .bm-faq-item.is-open {
+      border-color: var(--color-accent);
+    }
+    .bm-faq-trigger {
+      width: 100%;
+      padding: 1rem 1.15rem;
+      min-height: 48px;
+      border: 0;
+      background-color: transparent;
+      color: var(--color-ink);
+      font-family: var(--font-sans);
+      font-size: 0.98rem;
+      font-weight: 700;
+      line-height: 1.35;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    .bm-faq-trigger:hover {
+      background-color: var(--color-surface);
+    }
+    .bm-faq-trigger:active {
+      transform: scale(0.995);
+    }
+    .bm-faq-trigger:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: -2px;
+    }
+    .bm-faq-item.is-open .bm-faq-trigger {
+      background-color: var(--color-arena);
+      color: var(--color-arena-ink);
+    }
+    .bm-faq-icon {
+      width: 1.1rem;
+      height: 1.1rem;
+      color: var(--color-ink-2);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), color 0.15s ease;
+    }
+    .bm-faq-item.is-open .bm-faq-icon {
+      color: var(--color-arena-accent);
+      transform: rotate(45deg);
+    }
+    .bm-faq-panel {
+      padding: 0.95rem 1.15rem 1.1rem;
+      border-top: 1px solid var(--color-border);
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: var(--color-ink-2);
+    }
+
+    section[id] {
+      scroll-margin-top: 5.25rem;
+    }
+
     /* Order Slip Builder */
+    .bm-launch-steps {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      padding: 0.9rem 1rem;
+      border-top: 1px solid var(--color-border-strong);
+      border-bottom: 1px solid var(--color-border-strong);
+      background-color: var(--color-surface);
+    }
+    @media (min-width: 760px) {
+      .bm-launch-steps {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.25rem;
+      }
+    }
+    .bm-launch-step {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      font-size: 0.9rem;
+      color: var(--color-ink);
+    }
+    .bm-launch-num {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--color-accent-text);
+      flex-shrink: 0;
+    }
+    .bm-field-hint {
+      margin: 0.35rem 0 0;
+      font-size: 0.8rem;
+      color: var(--color-ink-2);
+      line-height: 1.4;
+    }
     .bm-order-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -24042,9 +24384,14 @@ __STRUCTURED_DATA_JSON__
       </div>
     </section>
 
+    <!-- League Highlights Stream (reactvibe Stream adaptation) -->
+    <section class="bm-stream-band" aria-label="ไฮไลต์มินิลีก">
+      <div id="rule-stream-track" class="bm-stream-track"></div>
+    </section>
+
     <!-- 6-Scene Anonymized Feature Switcher -->
     <section id="features" class="bm-section" aria-labelledby="feat-title">
-      <div class="bm-container">
+      <div class="bm-container bm-reveal" data-reveal>
         <div class="bm-section-head">
           <h2 id="feat-title" class="bm-h2">6 หน้าจอหลักในห้องควบคุมลีก</h2>
           <p id="feat-sub" class="bm-lead">สลับดูทุกมุมมองที่ผู้จัดการลีกและสมาชิกใช้จริงตลอดสัปดาห์แข่งขัน (ภาพจำลองข้อมูลสมมติ สลับโหมดมืดและสว่าง)</p>
@@ -24112,9 +24459,32 @@ __STRUCTURED_DATA_JSON__
       </div>
     </section>
 
+    <!-- Matchday Drama Feed (reactvibe NotificationScreen adaptation) -->
+    <section id="matchday-drama" class="bm-section-alt" aria-labelledby="drama-title">
+      <div class="bm-container bm-reveal" data-reveal>
+        <div class="bm-drama-layout">
+          <div>
+            <h2 id="drama-title" class="bm-h2">วันแข่งจริง กลุ่มเพื่อนจะสนุกและง่ายขึ้นแบบนี้</h2>
+            <p id="drama-sub" class="bm-lead" style="margin-bottom: 1.25rem;">ไม่ต้องรอเว็บหลักอัปเดตช้า ไม่ต้องไล่บวกลบตัวสำรองหรือจดเงินใน Excel เอง แค่เปิดลิงก์ลีกก็รู้ผลครบทุกคน</p>
+            <a id="drama-demo-link" href="./__PREVIEW_LID__/" data-demo-lid="__PREVIEW_LID__" class="bm-btn-primary">
+              <span id="drama-cta-text">ลองเปิดลีกตัวอย่างดูจริง</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+            </a>
+          </div>
+          <div id="drama-screen" class="bm-drama-screen">
+            <div class="bm-drama-topbar">
+              <span class="bm-hero-meta-item"><span class="bm-live-dot" aria-hidden="true"></span><span id="drama-screen-label">เหตุการณ์สดในกลุ่มเพื่อน</span></span>
+              <span class="tabular-nums">GW __MAX_GW__</span>
+            </div>
+            <div id="drama-feed-list" class="bm-drama-feed"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 5 Real Showcase Demo Leagues -->
     <section id="demos" class="bm-section-arena" aria-labelledby="demos-title">
-      <div class="bm-container">
+      <div class="bm-container bm-reveal" data-reveal>
         <div class="bm-section-head bm-section-head-row">
           <div>
             <h2 id="demos-title" class="bm-h2">ลีกตัวอย่างจริงในระบบ</h2>
@@ -24133,7 +24503,7 @@ __STRUCTURED_DATA_JSON__
 
     <!-- Pricing -->
     <section id="pricing" class="bm-section" aria-labelledby="pricing-title">
-      <div class="bm-container">
+      <div class="bm-container bm-reveal" data-reveal>
         <div class="bm-section-head bm-section-head-row">
           <div>
             <h2 id="pricing-title" class="bm-h2">แพ็กเกจเปิดใช้งานรายฤดูกาล</h2>
@@ -24161,12 +24531,44 @@ __STRUCTURED_DATA_JSON__
       </div>
     </section>
 
+    <!-- FAQ -->
+    <section id="faq" class="bm-section-alt" aria-labelledby="faq-title">
+      <div class="bm-container bm-reveal" data-reveal>
+        <div class="bm-faq-layout">
+          <div>
+            <h2 id="faq-title" class="bm-h2">คำถามที่พบบ่อยก่อนเปิดลีก</h2>
+            <p id="faq-sub" class="bm-lead" style="margin-bottom: 1.25rem;">คำตอบสำคัญสำหรับแอดมินและสมาชิกมินิลีก หากต้องการสอบถามกติกาเฉพาะกลุ่มทัก LINE ได้ทันที</p>
+            <a id="faq-line-btn" href="__LINE_URL__" target="_blank" rel="noopener noreferrer" class="bm-btn-primary">
+              <span id="faq-line-text">สอบถามเพิ่มเติมทาง LINE</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
+            </a>
+          </div>
+          <div id="faq-list" class="bm-faq-list"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- Order Slip Builder -->
-    <section id="order" class="bm-section-alt" aria-labelledby="order-title">
-      <div class="bm-container">
+    <section id="order" class="bm-section" aria-labelledby="order-title">
+      <div class="bm-container bm-reveal" data-reveal>
         <div class="bm-section-head">
           <h2 id="order-title" class="bm-h2">สร้างข้อความสั่งเปิดลีกส่ง LINE</h2>
           <p id="order-sub" class="bm-lead">กรอกรหัส League ID จากเว็บไซต์ FPL ทางการ ระบบจะจัดข้อความสรุปรายการให้พร้อมส่งเข้า LINE ทันที</p>
+        </div>
+
+        <div class="bm-launch-steps" aria-label="ขั้นตอนเปิดใช้งานลีก">
+          <div class="bm-launch-step">
+            <span class="bm-launch-num tabular-nums">01</span>
+            <span id="launch-step-1">ส่งเลข League ID และกติกาลีกทาง LINE</span>
+          </div>
+          <div class="bm-launch-step">
+            <span class="bm-launch-num tabular-nums">02</span>
+            <span id="launch-step-2">แอดมินตั้งค่าคะแนนสดและเงินรางวัลย้อนหลังครบ</span>
+          </div>
+          <div class="bm-launch-step">
+            <span class="bm-launch-num tabular-nums">03</span>
+            <span id="launch-step-3">รับลิงก์ส่วนตัวส่งเข้ากลุ่มเพื่อนได้ภายใน 24 ชม.</span>
+          </div>
         </div>
 
         <div class="bm-order-grid">
@@ -24174,7 +24576,8 @@ __STRUCTURED_DATA_JSON__
             <div class="bm-field-row">
               <div class="bm-field">
                 <label id="lbl-league-id" for="order-league-id" class="bm-label">รหัส League ID ทางการ</label>
-                <input id="order-league-id" name="league_id" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="เช่น 40700" class="bm-input" required>
+                <input id="order-league-id" name="league_id" type="text" placeholder="เช่น 40700 หรือวางลิงก์หน้าลีก FPL" class="bm-input" required>
+                <p id="hint-league-id" class="bm-field-hint">กรอกตัวเลข เช่น 40700 หรือวางลิงก์หน้าลีกเพื่อดึงรหัสอัตโนมัติ</p>
                 <p id="order-league-id-error" class="bm-error hidden">กรุณากรอกเลข League ID เป็นตัวเลข</p>
               </div>
               <div class="bm-field">
@@ -24197,7 +24600,7 @@ __STRUCTURED_DATA_JSON__
                   <option value="weekly">รายสัปดาห์ (Weekly Winner)</option>
                   <option value="monthly">รายเดือน + อันดับรวม</option>
                   <option value="penalty">ค่าปรับบ๊วย + กองกลาง</option>
-                  <option value="zero_sum">Zero-Sum / เงื่อนไขเฉพาะลีก</option>
+                  <option value="zero_sum">หักยอดหัวท้าย / กติกาเฉพาะกลุ่ม</option>
                 </select>
               </div>
             </div>
@@ -24262,6 +24665,10 @@ __STRUCTURED_DATA_JSON__
       lang: window.INITIAL_LANG === 'en' ? 'en' : 'th',
       currency: 'THB',
       activeScreen: 'live',
+      activeFaq: 0,
+      activeDrama: 0,
+      dramaTimer: null,
+      dramaPaused: false,
       visitorViews: null,
 
       escapeHtml(val) {
@@ -24276,6 +24683,8 @@ __STRUCTURED_DATA_JSON__
       init() {
         this.bindOrderForm();
         this.renderAll();
+        this.initReveal();
+        this.initDramaCycle();
         this.fetchVisitorCount();
         this.sendLandingTelemetry();
       },
@@ -24314,6 +24723,8 @@ __STRUCTURED_DATA_JSON__
         const btnUsd = document.getElementById('curr-btn-usd');
         if (btnThb) btnThb.classList.toggle('is-active', this.currency === 'THB');
         if (btnUsd) btnUsd.classList.toggle('is-active', this.currency === 'USD');
+        const copy = (window.LANDING_COPY && window.LANDING_COPY[this.lang]) || (window.LANDING_COPY && window.LANDING_COPY.th) || {};
+        this.renderStats(copy.stats || []);
         this.renderPricing();
         this.updateOrderSummary();
       },
@@ -24367,10 +24778,17 @@ __STRUCTURED_DATA_JSON__
         setTxt('hero-all-preview-text', this.lang === 'en' ? 'View All Showcase Leagues' : 'ดูหน้าเลือกทั้งหมด');
 
         this.renderStats(copy.stats || []);
+        this.renderStream(copy);
         setTxt('feat-title', copy.screens_heading);
         setTxt('feat-sub', copy.screens_lead);
         setTxt('stage-disclosure-text', copy.screens_note);
         this.renderScreens();
+
+        setTxt('drama-title', copy.drama_heading);
+        setTxt('drama-sub', copy.drama_lead);
+        setTxt('drama-cta-text', copy.drama_cta);
+        setTxt('drama-screen-label', this.lang === 'en' ? 'Live Friend-League Moments' : 'เหตุการณ์สดในกลุ่มเพื่อน');
+        this.renderDrama(copy);
 
         setTxt('demos-title', copy.demos_heading);
         setTxt('demos-sub', copy.demos_lead);
@@ -24386,20 +24804,29 @@ __STRUCTURED_DATA_JSON__
         setTxt('tier2-desc', copy.pricing_tier2_desc);
         setTxt('tier2-link-text', this.lang === 'en' ? 'Explore 1,780-Team Preview' : 'ดูตัวอย่าง 1,780 ทีม');
 
-        setTxt('order-title', copy.order_heading);
-        setTxt('order-sub', copy.order_lead);
-        setTxt('btn-copy-order-text', copy.order_copy_btn);
-        setTxt('btn-open-line-text', copy.order_line_btn);
-        setTxt('order-preview-label', this.lang === 'en' ? 'LINE Order Summary Slip' : 'ข้อความสรุปรายการส่ง LINE');
-        setTxt('lbl-league-id', this.lang === 'en' ? 'Official FPL League ID' : 'รหัส League ID ทางการ');
-        setTxt('lbl-league-name', this.lang === 'en' ? 'Display League Name' : 'ชื่อลีกที่จะแสดงบนเว็บ');
-        setTxt('lbl-plan', this.lang === 'en' ? 'Selected Plan' : 'แพ็กเกจที่ต้องการ');
-        setTxt('lbl-prize-model', this.lang === 'en' ? 'Prize Rule Format' : 'รูปแบบกติกาเงินรางวัล');
-        setTxt('lbl-team-tier', this.lang === 'en' ? 'League Size' : 'จำนวนสมาชิกในลีก');
+        setTxt('faq-title', copy.faq_heading);
+        setTxt('faq-sub', copy.faq_lead);
+        setTxt('faq-line-text', copy.faq_cta);
+        this.renderFaq(copy);
 
         const isEn = this.lang === 'en';
+        setTxt('order-title', copy.order_heading);
+        setTxt('order-sub', copy.order_lead);
+        setTxt('launch-step-1', isEn ? 'Send League ID & prize rule via LINE' : 'ส่งเลข League ID และกติกาลีกทาง LINE');
+        setTxt('launch-step-2', isEn ? 'We backfill all prior Gameweeks & payouts' : 'แอดมินตั้งค่าคะแนนสดและเงินรางวัลย้อนหลังครบ');
+        setTxt('launch-step-3', isEn ? 'Share your private league link within 24h' : 'รับลิงก์ส่วนตัวส่งเข้ากลุ่มเพื่อนได้ภายใน 24 ชม.');
+        setTxt('btn-copy-order-text', copy.order_copy_btn);
+        setTxt('btn-open-line-text', copy.order_line_btn);
+        setTxt('order-preview-label', isEn ? 'LINE Order Summary Slip' : 'ข้อความสรุปรายการส่ง LINE');
+        setTxt('lbl-league-id', isEn ? 'Official FPL League ID' : 'รหัส League ID ทางการ');
+        setTxt('hint-league-id', isEn ? 'Enter digits e.g. 40700, or paste your league link' : 'กรอกตัวเลข เช่น 40700 หรือวางลิงก์หน้าลีกเพื่อดึงรหัสอัตโนมัติ');
+        setTxt('lbl-league-name', isEn ? 'Display League Name' : 'ชื่อลีกที่จะแสดงบนเว็บ');
+        setTxt('lbl-plan', isEn ? 'Selected Plan' : 'แพ็กเกจที่ต้องการ');
+        setTxt('lbl-prize-model', isEn ? 'Prize Rule Format' : 'รูปแบบกติกาเงินรางวัล');
+        setTxt('lbl-team-tier', isEn ? 'League Size' : 'จำนวนสมาชิกในลีก');
+
         const lidInput = document.getElementById('order-league-id');
-        if (lidInput) lidInput.placeholder = isEn ? 'e.g. 40700' : 'เช่น 40700';
+        if (lidInput) lidInput.placeholder = isEn ? 'e.g. 40700 or paste league URL' : 'เช่น 40700 หรือวางลิงก์หน้าลีก FPL';
         const lnameInput = document.getElementById('order-league-name');
         if (lnameInput) lnameInput.placeholder = isEn ? 'e.g. Sunday Premier League' : 'เช่น เพื่อนรักบอลพรีเมียร์';
 
@@ -24418,13 +24845,13 @@ __STRUCTURED_DATA_JSON__
               weekly: 'Weekly Winner Ledger',
               monthly: 'Monthly Awards + Overall Podium',
               penalty: 'Bottom Penalty Pool',
-              zero_sum: 'Zero-Sum / Bespoke Ruleset'
+              zero_sum: 'Head-to-Head Balance / Bespoke Ruleset'
             }
           : {
               weekly: 'รายสัปดาห์ (Weekly Winner)',
               monthly: 'รายเดือน + อันดับรวม',
               penalty: 'ค่าปรับบ๊วย + กองกลาง',
-              zero_sum: 'Zero-Sum / เงื่อนไขเฉพาะลีก'
+              zero_sum: 'หักยอดหัวท้าย / กติกาเฉพาะกลุ่ม'
             });
         setOpts('order-team-tier', isEn
           ? { tier1: 'Up to 30 Teams', tier2: '31+ Teams (LINE Quote)' }
@@ -24438,12 +24865,155 @@ __STRUCTURED_DATA_JSON__
       renderStats(stats) {
         const grid = document.getElementById('telemetry-strip-grid');
         if (!grid || !stats.length) return;
-        grid.innerHTML = stats.map((st) => `
+        const pCfg = window.PRICING_CONFIG || {};
+        const isUsd = this.currency === 'USD';
+        const isEn = this.lang === 'en';
+        grid.innerHTML = stats.map((st, idx) => {
+          let val = st.value;
+          if (idx === 1) {
+            val = isUsd
+              ? `$${(pCfg.standard && pCfg.standard.usd) || 19}`
+              : (isEn ? `${(pCfg.standard && pCfg.standard.thb) || 500} THB` : `${(pCfg.standard && pCfg.standard.thb) || 500}฿`);
+          }
+          return `
           <div class="bm-stat-cell">
-            <div class="bm-stat-val tabular-nums">${this.escapeHtml(st.value)}</div>
+            <div class="bm-stat-val tabular-nums">${this.escapeHtml(val)}</div>
             <div class="bm-stat-lbl">${this.escapeHtml(st.label)}</div>
           </div>
+        `;
+        }).join('');
+      },
+
+      renderStream(copy) {
+        const track = document.getElementById('rule-stream-track');
+        if (!track) return;
+        const items = (copy && copy.stream_items) || [];
+        if (!items.length) return;
+        const pills = items.map((label) => `
+          <span class="bm-stream-pill">
+            <span class="bm-stream-dot" aria-hidden="true"></span>
+            <span>${this.escapeHtml(label)}</span>
+          </span>
         `).join('');
+        track.innerHTML = pills + pills;
+      },
+
+      setDramaIndex(idx) {
+        const copy = (window.LANDING_COPY && window.LANDING_COPY[this.lang]) || (window.LANDING_COPY && window.LANDING_COPY.th) || {};
+        const items = copy.drama_feed || [];
+        if (!items.length) return;
+        this.activeDrama = ((idx % items.length) + items.length) % items.length;
+        this.renderDrama(copy);
+      },
+
+      renderDrama(copy) {
+        const wrap = document.getElementById('drama-feed-list');
+        if (!wrap) return;
+        const items = (copy && copy.drama_feed) || [];
+        const icons = {
+          goal: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+          sub: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>',
+          chip: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
+          line: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+        };
+        wrap.innerHTML = items.map((item, idx) => {
+          const isActive = idx === this.activeDrama;
+          const iconSvg = icons[item.kind] || icons.goal;
+          return `
+            <button
+              type="button"
+              id="drama-item-${idx}"
+              class="bm-drama-item ${isActive ? 'is-active' : ''}"
+              aria-pressed="${isActive ? 'true' : 'false'}"
+              onclick="landingApp.setDramaIndex(${idx})"
+            >
+              <span class="bm-drama-icon">${iconSvg}</span>
+              <span>
+                <span class="bm-drama-meta">
+                  <span class="bm-drama-tag">${this.escapeHtml(item.tag)}</span>
+                  <span class="tabular-nums">${this.escapeHtml(item.time)}</span>
+                </span>
+                <span class="bm-drama-title" style="display:block;">${this.escapeHtml(item.title)}</span>
+                <span class="bm-drama-desc" style="display:block;">${this.escapeHtml(item.desc)}</span>
+              </span>
+            </button>
+          `;
+        }).join('');
+      },
+
+      initDramaCycle() {
+        const screen = document.getElementById('drama-screen');
+        if (!screen) return;
+        const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduced) return;
+        screen.addEventListener('mouseenter', () => { this.dramaPaused = true; });
+        screen.addEventListener('mouseleave', () => { this.dramaPaused = false; });
+        screen.addEventListener('focusin', () => { this.dramaPaused = true; });
+        screen.addEventListener('focusout', () => { this.dramaPaused = false; });
+        if (this.dramaTimer) clearInterval(this.dramaTimer);
+        this.dramaTimer = setInterval(() => {
+          if (!this.dramaPaused) this.setDramaIndex(this.activeDrama + 1);
+        }, 3600);
+      },
+
+      initReveal() {
+        const nodes = document.querySelectorAll('[data-reveal]');
+        if (!nodes.length) return;
+        const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduced || typeof IntersectionObserver === 'undefined') {
+          nodes.forEach((el) => el.classList.add('is-in'));
+          return;
+        }
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-in');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.06, rootMargin: '0px 0px -20px 0px' });
+        nodes.forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight + 60) {
+            el.classList.add('is-in');
+          } else {
+            observer.observe(el);
+          }
+        });
+      },
+
+      toggleFaq(idx) {
+        this.activeFaq = this.activeFaq === idx ? null : idx;
+        const copy = (window.LANDING_COPY && window.LANDING_COPY[this.lang]) || (window.LANDING_COPY && window.LANDING_COPY.th) || {};
+        this.renderFaq(copy);
+      },
+
+      renderFaq(copy) {
+        const wrap = document.getElementById('faq-list');
+        if (!wrap) return;
+        const faqs = (copy && copy.faqs) || [];
+        const plusSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+        wrap.innerHTML = faqs.map((item, idx) => {
+          const isOpen = this.activeFaq === idx;
+          return `
+            <div class="bm-faq-item ${isOpen ? 'is-open' : ''}">
+              <button
+                type="button"
+                id="faq-btn-${idx}"
+                class="bm-faq-trigger"
+                aria-expanded="${isOpen ? 'true' : 'false'}"
+                aria-controls="faq-panel-${idx}"
+                onclick="landingApp.toggleFaq(${idx})"
+              >
+                <span>${this.escapeHtml(item.q)}</span>
+                <span class="bm-faq-icon">${plusSvg}</span>
+              </button>
+              <div id="faq-panel-${idx}" role="region" aria-labelledby="faq-btn-${idx}" class="bm-faq-panel" ${isOpen ? '' : 'hidden'}>
+                ${this.escapeHtml(item.a)}
+              </div>
+            </div>
+          `;
+        }).join('');
       },
 
       renderScreens() {
@@ -24549,8 +25119,8 @@ __STRUCTURED_DATA_JSON__
             featured: false,
             roadmap: true,
             items: isEn
-              ? ['Everything in Standard', 'Weekly Head-to-Head challenge engine (In Dev)', 'Weekly match & handicap prediction system (In Dev)', 'Custom zero-sum formulas & group exports']
-              : ['ครบทุกความสามารถในแพ็กเกจ Standard', 'ระบบท้าชนคู่แข่งรายสัปดาห์ (H2H Challenge: กำลังพัฒนา)', 'ระบบทายผลคะแนน & แฮนดิแคปประจำสัปดาห์ (กำลังพัฒนา)', 'สูตรเงินรางวัลเฉพาะกลุ่ม + Zero-Sum + ส่งออก LINE / Excel']
+              ? ['Everything in Standard', 'Weekly Head-to-Head challenge engine (In Dev)', 'Weekly match & handicap prediction system (In Dev)', 'Custom head-to-head payout ledger & group exports']
+              : ['ครบทุกความสามารถในแพ็กเกจ Standard', 'ระบบท้าชนคู่แข่งรายสัปดาห์ (H2H Challenge: กำลังพัฒนา)', 'ระบบทายผลคะแนน & แฮนดิแคปประจำสัปดาห์ (กำลังพัฒนา)', 'สูตรเงินรางวัลเฉพาะลีก + ส่งออก LINE / Excel']
           }
         ];
 
@@ -24584,6 +25154,16 @@ __STRUCTURED_DATA_JSON__
       bindOrderForm() {
         const form = document.getElementById('order-form');
         if (!form) return;
+        const lidEl = document.getElementById('order-league-id');
+        if (lidEl) {
+          lidEl.addEventListener('input', () => {
+            const raw = lidEl.value.trim();
+            const urlMatch = raw.match(/leagues\/(\d{1,12})/i);
+            if (urlMatch && urlMatch[1]) {
+              lidEl.value = urlMatch[1];
+            }
+          });
+        }
         ['order-league-id', 'order-league-name', 'order-plan', 'order-prize-model', 'order-team-tier'].forEach((id) => {
           const el = document.getElementById(id);
           if (el) {

@@ -37,17 +37,17 @@
       "tag_th": "ยอดนิยม • แชมป์วีค + บอลถ้วย",
       "tag_en": "Popular • Weekly + Cup",
       "title_th": "เซียนอยู่รู หมูอยู่ตึก",
-      "title_en": "Sian Yoo Roo (12 Teams)",
-      "desc_th": "รางวัลแชมป์สัปดาห์, 6 รอบเคลียร์เงิน (Settlement Phases) และถ้วยน็อคเอาท์",
-      "desc_en": "Weekly payouts, 6 settlement phases, and knockout cup bracket",
+      "title_en": "Sian Yoo Roo",
+      "desc_th": "รางวัลแชมป์สัปดาห์ 6 รอบเคลียร์เงิน และถ้วยน็อคเอาท์",
+      "desc_en": "Weekly payouts, 6 settlement rounds, and knockout cup bracket",
       "plan": "standard"
     },
     {
       "id": "675290",
       "tag_th": "ลีกใหญ่ • รายเดือน + การกุศล",
-      "tag_en": "Monthly • 59 Teams + Charity",
+      "tag_en": "Monthly • Charity Pool",
       "title_th": "NudNee League",
-      "title_en": "NudNee League (59 Teams)",
+      "title_en": "NudNee League",
       "desc_th": "ระบบแชมป์ประจำเดือน 10 เดือน, ตาราง Top 5 ฤดูกาล, ถ้วย และสมทบการกุศล",
       "desc_en": "10 monthly leaderboards, overall top 5, cup & charity ledger",
       "plan": "standard"
@@ -57,29 +57,29 @@
       "tag_th": "สายฮา • ค่าปรับบ๊วย 5 อันดับ",
       "tag_en": "Penalties • Bottom-5 Fines",
       "title_th": "2 spade",
-      "title_en": "2 spade (13 Teams)",
-      "desc_th": "เก็บค่าปรับ 5 อันดับสุดท้ายเข้ากองกลางอัตโนมัติ พร้อมระบบ Tie-breaker ทางการ",
-      "desc_en": "Automated bottom-5 penalty ladder into central pool with tie-breakers",
+      "title_en": "2 spade",
+      "desc_th": "เก็บค่าปรับ 5 อันดับสุดท้ายเข้ากองกลางอัตโนมัติ พร้อมระบบตัดสินอันดับเท่ากันทางการ",
+      "desc_en": "Automated bottom-5 penalty ladder into central pool with official tie-breakers",
       "plan": "standard"
     },
     {
       "id": "187827",
-      "tag_th": "Custom • Zero-Sum + ทายผล",
-      "tag_en": "Custom • Zero-Sum + Picks",
+      "tag_th": "Custom • หักยอดหัวท้าย + ทายผล",
+      "tag_en": "Custom • Balance Ledger + Picks",
       "title_th": "Shi62 Special",
-      "title_en": "Shi62 + Mini-Game",
-      "desc_th": "อันดับบนรับเงินจากอันดับล่างเมื่อจบฤดูกาล พร้อมแท็บทายผลแฮนดิแคปเฉพาะลีก",
-      "desc_en": "End-of-season zero-sum ladder plus custom weekly handicap prediction tab",
+      "title_en": "Shi62 Special",
+      "desc_th": "อันดับบนรับเงินจากอันดับล่างเมื่อจบฤดูกาล พร้อมแท็บทายผลเฉพาะลีก",
+      "desc_en": "End-of-season head-to-head balance ledger plus custom weekly picks tab",
       "plan": "custom"
     },
     {
       "id": "139836",
-      "tag_th": "Roadmap • Tier 2 (1,780 ทีม)",
-      "tag_en": "Roadmap • Tier 2 (1,780 Teams)",
+      "tag_th": "ลีกใหญ่ • 1,000+ ทีม",
+      "tag_en": "Large League • 1,000+ Teams",
       "title_th": "FPL Growth Mindset",
-      "title_en": "FPL Growth Mindset (Tier 2)",
-      "desc_th": "ต้นแบบลีกคอมมูนิตี้สเกลใหญ่ 1,000+ ทีม พร้อมระบบค้นหาทีมและดูผัง On-Demand",
-      "desc_en": "High-scale 1,000+ team community preview with instant search & on-demand lineups",
+      "title_en": "FPL Growth Mindset",
+      "desc_th": "ต้นแบบลีกคอมมูนิตี้สเกลใหญ่ 1,000+ ทีม ค้นหาทีมไวและเปิดดูผังสนามรายทีมทันที",
+      "desc_en": "High-scale 1,000+ team community preview with fast search and instant team lineups",
       "plan": "tier2_roadmap"
     }
   ],
@@ -104,6 +104,50 @@
         { "value": "500฿", "label": "ต่อฤดูกาล (≤30 ทีม)" },
         { "value": "0%", "label": "ไม่ต้องทำ Excel เอง" },
         { "value": "38 GW", "label": "ปิดยอดจบซีซั่นให้" }
+      ],
+      "stream_items": [
+        "เช็คแต้มสดทันเกม",
+        "เปลี่ยนตัวสำรองให้อัตโนมัติ",
+        "รู้ทันชิปคู่แข่งทั้งลีก",
+        "สรุปแชมป์วีคและแชมป์เดือน",
+        "เก็บค่าปรับบ๊วยอัตโนมัติ",
+        "จัดสายบอลถ้วยน็อคเอาท์",
+        "ส่องผัง 11 ตัวจริงเพื่อนร่วมลีก",
+        "บอ.บู๋พากย์ดราม่าหลังจบเกม",
+        "คัดลอกยอดโอนส่ง LINE ได้เลย"
+      ],
+      "drama_heading": "วันแข่งจริง กลุ่มเพื่อนจะสนุกและง่ายขึ้นแบบนี้",
+      "drama_lead": "ไม่ต้องรอเว็บหลักอัปเดตช้า ไม่ต้องไล่บวกลบตัวสำรองหรือจดเงินใน Excel เอง แค่เปิดลิงก์ลีกก็รู้ผลครบทุกคน",
+      "drama_cta": "ลองเปิดลีกตัวอย่างดูจริง",
+      "drama_feed": [
+        {
+          "kind": "goal",
+          "tag": "แต้มสดพุ่ง",
+          "time": "สดตอนนี้",
+          "title": "กัปตัน Haaland ยิง 2 ลูก! สายเขียว FC แซงขึ้นที่ 1",
+          "desc": "ขยับนำอันดับ 2 อยู่ +6 แต้ม ลุ้นคว้ารางวัลแชมป์ประจำสัปดาห์ (+500฿)"
+        },
+        {
+          "kind": "sub",
+          "tag": "ออโต้ซับ",
+          "time": "เมื่อสักครู่",
+          "title": "ตัวจริงไม่ได้ลงสนาม สำรอง 11 แต้มลงแทนอัตโนมัติ",
+          "desc": "ระบบคำนวณคะแนนสุทธิหลังเปลี่ยนตัวสำรองให้ทันที ไม่ต้องเดาเองจนจบเกม"
+        },
+        {
+          "kind": "chip",
+          "tag": "เช็คชิป",
+          "time": "ก่อนเตะ",
+          "title": "ทีมอันดับ 2 แอบเปิด Triple Captain สัปดาห์นี้",
+          "desc": "เช็คได้ครบทั้งลีกว่าใครเหลือ Wildcard, Free Hit หรือ Bench Boost กี่ใบ"
+        },
+        {
+          "kind": "line",
+          "tag": "ปิดยอดกลุ่ม",
+          "time": "จบสัปดาห์",
+          "title": "ตารางรับจ่ายสัปดาห์ที่ 10 พร้อมส่งเข้ากลุ่ม LINE แล้ว",
+          "desc": "สรุปยอดคนได้รางวัล คนโดนค่าปรับบ๊วย และยอดสุทธิครบทุกทีมในหน้าเดียว"
+        }
       ],
       "screens_heading": "6 หน้าจอหลักในห้องควบคุมลีก",
       "screens_lead": "สลับดูทุกมุมมองที่ผู้จัดการลีกและสมาชิกใช้จริงตลอดสัปดาห์แข่งขัน (ภาพจำลองข้อมูลสมมติ สลับโหมดมืดและสว่าง)",
@@ -177,6 +221,32 @@
       "pricing_cus_cta": "กำลังพัฒนา (Roadmap)",
       "pricing_tier2_title": "ลีกใหญ่ 31 ทีมขึ้นไป (Enterprise / Community)",
       "pricing_tier2_desc": "รองรับตั้งแต่ 31 ถึง 1,000+ ทีม พร้อมระบบค้นหาเร็วและจัดสายบอลถ้วย ประเมินราคาตามจำนวนทีมทาง LINE",
+      "faq_eyebrow": "FAQ",
+      "faq_heading": "คำถามที่พบบ่อยก่อนเปิดลีก",
+      "faq_lead": "คำตอบสำคัญสำหรับแอดมินและสมาชิกมินิลีก หากต้องการสอบถามกติกาเฉพาะกลุ่มทัก LINE ได้ทันที",
+      "faq_cta": "สอบถามเพิ่มเติมทาง LINE",
+      "faqs": [
+        {
+          "q": "ต้องให้รหัสผ่านบัญชี FPL ของตัวเองไหม?",
+          "a": "ไม่ต้องใช้รหัสผ่านใด ๆ ทั้งสิ้น ใช้เพียงเลข League ID สาธารณะจากหน้าเว็บ FPL ทางการเท่านั้น บัญชีของคุณปลอดภัย 100%"
+        },
+        {
+          "q": "ลีกเริ่มแข่งไปหลายสัปดาห์แล้ว เปิดใช้งานย้อนหลังได้ไหม?",
+          "a": "ได้ทันที ระบบดึงข้อมูลย้อนหลังตั้งแต่ Gameweek 1 มาคำนวณคะแนน แชมป์ประจำสัปดาห์ ค่าปรับบ๊วย และสรุปยอดรวมให้ครบตั้งแต่วันแรก"
+        },
+        {
+          "q": "สมาชิกในกลุ่มต้องโหลดแอปหรือสมัครสมาชิกเพิ่มไหม?",
+          "a": "ไม่ต้องโหลดแอปและไม่ต้องสมัครบัญชีเพิ่ม แค่เปิดลิงก์ผ่าน Safari หรือ Chrome จากกลุ่ม LINE ก็เช็คคะแนนสดและตารางเงินรางวัลได้ทันที"
+        },
+        {
+          "q": "หน้าเว็บลีกของเราจะถูกเปิดเป็นสาธารณะหรือค้นเจอบน Google ไหม?",
+          "a": "ไม่เปิดเป็นสาธารณะ ลีกลูกค้าแต่ละกลุ่มแยก URL ส่วนตัว ไม่แสดงในหน้าตัวอย่าง และตั้งค่า noindex ป้องกันการค้นหาบน Search Engine"
+        },
+        {
+          "q": "หลังส่งรหัสลีกทาง LINE ใช้เวลาตั้งค่านานแค่ไหน?",
+          "a": "สำหรับแพ็กเกจ Standard ที่ใช้กติการายสัปดาห์ รายเดือน หรือค่าปรับบ๊วย เมื่อยืนยันรายละเอียดครบ พร้อมส่งมอบลิงก์ใช้งานจริงภายใน 24 ชั่วโมง"
+        }
+      ],
       "order_heading": "สร้างข้อความสั่งเปิดลีกส่ง LINE",
       "order_lead": "กรอกรหัส League ID จากเว็บไซต์ FPL ทางการ ระบบจะจัดข้อความสรุปรายการให้พร้อมส่งเข้า LINE ทันที",
       "order_copy_btn": "คัดลอกข้อความสั่งซื้อ",
@@ -203,6 +273,50 @@
         { "value": "500 THB", "label": "Season Pass (≤30 teams)" },
         { "value": "0%", "label": "Manual Spreadsheets" },
         { "value": "38 GW", "label": "Season Automation" }
+      ],
+      "stream_items": [
+        "Real-Time Matchday Scores",
+        "Instant Auto-Sub Projections",
+        "Full League Chip Radar",
+        "Weekly & Monthly Champions",
+        "Automated Bottom-Place Fines",
+        "Knockout Cup Brackets",
+        "Spy Rival Starting XI",
+        "Matchday Drama Recap",
+        "One-Click LINE Prize Sheet"
+      ],
+      "drama_heading": "How Every Matchday Feels Inside Your Group",
+      "drama_lead": "No slow official delays, no guessing bench points, and zero weekend spreadsheet math. Everyone tracks live drama in one shared link.",
+      "drama_cta": "Open Live Demo League",
+      "drama_feed": [
+        {
+          "kind": "goal",
+          "tag": "Live Surge",
+          "time": "Just now",
+          "title": "Captain Haaland braces! GreenLine FC jumps to #1",
+          "desc": "6 points ahead of 2nd place for this week's top-score prize pool (+500 THB)."
+        },
+        {
+          "kind": "sub",
+          "tag": "Auto-Sub",
+          "time": "2m ago",
+          "title": "Starter benched: 11-pt first sub enters automatically",
+          "desc": "Projected net score adjusts in real time so your group knows the true table early."
+        },
+        {
+          "kind": "chip",
+          "tag": "Chip Watch",
+          "time": "Kickoff",
+          "title": "2nd place manager just triggered Triple Captain",
+          "desc": "Track Wildcard, Free Hit, and Bench Boost availability across every rival squad."
+        },
+        {
+          "kind": "line",
+          "tag": "Group Payout",
+          "time": "Full Time",
+          "title": "Gameweek 10 payout sheet is ready to share in LINE",
+          "desc": "Weekly winners, bottom fines, and cumulative balances calculated across all teams."
+        }
       ],
       "screens_heading": "Six Live Views Inside Your League",
       "screens_lead": "Switch through the core matchday modules used across the season, captured with anonymized clubs in alternating dark and light modes.",
@@ -250,7 +364,7 @@
           "theme": "Light UI",
           "tab": "Prize Ledger",
           "title": "Automated Weekly, Monthly, and Season Prize Ledger",
-          "desc": "Clean payout and penalty sheets supporting podium splits, charity pools, and zero-sum settlements.",
+          "desc": "Clean payout and penalty sheets supporting podium splits, charity pools, and head-to-head balance ledgers.",
           "spec": "Excel & LINE Export"
         },
         {
@@ -264,7 +378,7 @@
         }
       ],
       "demos_heading": "Real Live Demo Leagues",
-      "demos_lead": "Open five live production-style demo leagues covering weekly, monthly, penalty, zero-sum, and Tier 2 community formats.",
+      "demos_lead": "Open five live production-style demo leagues covering weekly, monthly, penalty, balance-ledger, and 1,000+ team community formats.",
       "demos_cta": "Open Live League",
       "pricing_heading": "Simple Per-Season Pricing",
       "pricing_lead": "One season pass covers all 38 Gameweeks for leagues up to 30 teams.",
@@ -276,6 +390,32 @@
       "pricing_cus_cta": "On Roadmap (Not Yet Open)",
       "pricing_tier2_title": "Large Leagues (31+ Teams)",
       "pricing_tier2_desc": "Supports 31 to 1,000+ entries with fast roster search and bracket automation via LINE quote.",
+      "faq_eyebrow": "FAQ",
+      "faq_heading": "Frequently Asked Questions",
+      "faq_lead": "Key answers for mini-league admins before getting started. Have a custom rule question? Message us on LINE.",
+      "faq_cta": "Ask Us on LINE",
+      "faqs": [
+        {
+          "q": "Do I need to share my FPL account password?",
+          "a": "Never. We only need your public numeric FPL League ID. Your official FPL login and credentials remain 100% private."
+        },
+        {
+          "q": "The season has already started. Can you backfill earlier Gameweeks?",
+          "a": "Yes. The sync engine pulls historical points from Gameweek 1 onward so weekly winners, penalties, and season totals are complete immediately."
+        },
+        {
+          "q": "Do league members need to install an app or create an account?",
+          "a": "No installs and no sign-ups. Everyone opens the private league link straight from LINE in Safari or Chrome on mobile or desktop."
+        },
+        {
+          "q": "Will our private mini-league appear on Google or the public demo list?",
+          "a": "No. Each customer league lives in an isolated tenant URL excluded from public showcase switchers, sitemap.xml, and search indexing (noindex)."
+        },
+        {
+          "q": "How long does setup take after sending our League ID on LINE?",
+          "a": "For Standard leagues (weekly, monthly, or bottom penalty rules), setup and live link delivery are typically completed within 24 hours."
+        }
+      ],
       "order_heading": "Build Your LINE Order Slip",
       "order_lead": "Enter your official FPL League ID to generate a formatted setup slip ready to paste in our LINE chat.",
       "order_copy_btn": "Copy Order Slip",
