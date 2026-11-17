@@ -1004,26 +1004,33 @@ export default {
                 const safariPct = ((activeSafariHits / activeSrcTotal) * 100).toFixed(1);
                 const chromePct = Math.max(0, 100.0 - parseFloat(linePct) - parseFloat(safariPct)).toFixed(1);
 
-                // Device distribution (30-day rolling real D1 counts when available, fallback to 7d/prior)
+                // Device distribution (compute both 7d and 30d rolling real D1 windows)
+                const buildDeviceWindow = (mob, desk, tab, winDays, allowFallback) => {
+                  const rawSum = mob + desk + tab;
+                  const baseMob = (allowFallback && rawSum === 0) ? Math.round(baselineVisits * 0.764) : 0;
+                  const baseDesk = (allowFallback && rawSum === 0) ? Math.round(baselineVisits * 0.182) : 0;
+                  const baseTab = (allowFallback && rawSum === 0) ? (baselineVisits - baseMob - baseDesk) : 0;
+                  const mHits = baseMob + mob;
+                  const dHits = baseDesk + desk;
+                  const tHits = baseTab + tab;
+                  const tot = Math.max(1, mHits + dHits + tHits);
+                  const mPct = ((mHits / tot) * 100).toFixed(1);
+                  const dPct = ((dHits / tot) * 100).toFixed(1);
+                  const tPct = Math.max(0, 100.0 - parseFloat(mPct) - parseFloat(dPct)).toFixed(1);
+                  return {
+                    window_days: winDays,
+                    mobile: { count: mob, pct: mPct },
+                    desktop: { count: desk, pct: dPct },
+                    tablet: { count: tab, pct: tPct },
+                  };
+                };
+
                 const hasDev30d = dev30d.hasData && (dev30d.mobile + dev30d.desktop + dev30d.tablet) > 0;
-                const devMobCount = hasDev30d ? dev30d.mobile : mobileCount;
-                const devDeskCount = hasDev30d ? dev30d.desktop : desktopCount;
-                const devTabCount = hasDev30d ? dev30d.tablet : tabletCount;
-                const devicesWindowDays = hasDev30d ? 30 : 7;
-
-                const usePureDevices = usePureRealTelemetry || hasDev30d;
-                const baseMobileHits = usePureDevices ? 0 : Math.round(baselineVisits * 0.764);
-                const baseDesktopHits = usePureDevices ? 0 : Math.round(baselineVisits * 0.182);
-                const baseTabletHits = usePureDevices ? 0 : (baselineVisits - baseMobileHits - baseDesktopHits);
-
-                const activeMobileHits = baseMobileHits + devMobCount;
-                const activeDesktopHits = baseDesktopHits + devDeskCount;
-                const activeTabletHits = baseTabletHits + devTabCount;
-                const activeDevTotal = Math.max(1, activeMobileHits + activeDesktopHits + activeTabletHits);
-
-                const mobilePct = ((activeMobileHits / activeDevTotal) * 100).toFixed(1);
-                const desktopPct = ((activeDesktopHits / activeDevTotal) * 100).toFixed(1);
-                const tabletPct = Math.max(0, 100.0 - parseFloat(mobilePct) - parseFloat(desktopPct)).toFixed(1);
+                const devices7dObj = buildDeviceWindow(mobileCount, desktopCount, tabletCount, 7, !usePureRealTelemetry);
+                const devices30dObj = hasDev30d
+                  ? buildDeviceWindow(dev30d.mobile, dev30d.desktop, dev30d.tablet, 30, false)
+                  : { ...devices7dObj, window_days: 7 };
+                const activeDevicesDefault = hasDev30d ? devices30dObj : devices7dObj;
 
                 // League metadata (real 7-day views & dwell directly from D1 without synthetic baseline skew)
                 const LEAGUE_BASELINES = {
@@ -1433,10 +1440,12 @@ export default {
                     intl: { count: cityIntlCount, pct: geoIntlPct },
                   },
                   devices: {
-                    window_days: devicesWindowDays,
-                    mobile: { count: devMobCount, pct: mobilePct },
-                    desktop: { count: devDeskCount, pct: desktopPct },
-                    tablet: { count: devTabCount, pct: tabletPct },
+                    window_days: activeDevicesDefault.window_days,
+                    mobile: activeDevicesDefault.mobile,
+                    desktop: activeDevicesDefault.desktop,
+                    tablet: activeDevicesDefault.tablet,
+                    w7: devices7dObj,
+                    w30: devices30dObj,
                   },
                   leagues: leaguesOutput,
                   features: featuresSummary,

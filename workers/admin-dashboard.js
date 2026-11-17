@@ -1478,16 +1478,30 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     <!-- 05. DEVICE, VIEWPORT & CLIENT ENVIRONMENT                                 -->
     <!-- ========================================================================= -->
     <section id="sec-devices" class="space-y-4 scroll-mt-28" aria-labelledby="sec-devices-title">
-      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
-        <div class="flex items-center gap-2.5">
-          <span class="text-slate-700 dark:text-neutral-300">${ICONS.smartphone}</span>
-          <h2 id="sec-devices-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec5_title">
-            05. อุปกรณ์ หน้าจอ และสภาพแวดล้อมของผู้ใช้งาน
-          </h2>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-borderLight dark:border-borderDark pb-3">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="text-slate-700 dark:text-neutral-300">${ICONS.smartphone}</span>
+            <h2 id="sec-devices-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec5_title">
+              05. อุปกรณ์ หน้าจอ และสภาพแวดล้อมของผู้ใช้งาน
+            </h2>
+          </div>
+          <p class="text-xs mono text-slate-600 dark:text-neutral-400 mt-1" data-i18n="sec5_sub">
+            เลือกดูข้อมูลจริงจาก D1 Telemetry เพื่อการออกแบบ UX/UI ให้เหมาะกับอุปกรณ์หลัก
+          </p>
         </div>
-        <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="sec5_sub">
-          ข้อมูลจริง 30 วันล่าสุดจาก D1 Telemetry เพื่อการออกแบบ UX/UI ให้เหมาะกับอุปกรณ์หลัก
-        </span>
+        <div class="inline-flex items-center gap-2 self-start sm:self-auto shrink-0" role="group" aria-label="Device telemetry window">
+          <button type="button" id="btnDev7d" onclick="switchDeviceWindow('7d')"
+            class="min-h-[44px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors"
+            data-i18n="dev_btn_7d">
+            7 วันล่าสุด
+          </button>
+          <button type="button" id="btnDev30d" onclick="switchDeviceWindow('30d')"
+            class="min-h-[44px] px-3.5 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 transition-colors"
+            data-i18n="dev_btn_30d">
+            30 วันล่าสุด
+          </button>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -2136,7 +2150,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         geo_edge_title: 'Cloudflare Bangkok Edge (BKK): ',
         geo_edge_desc: 'ทราฟฟิก 92.2% ในไทยวิ่งเข้า Data Center กรุงเทพฯ โดยตรง ค่าความหน่วงเฉลี่ยต่ำเพียง 18–26 ms',
         sec5_title: '05. อุปกรณ์ หน้าจอ และสภาพแวดล้อมของผู้ใช้งาน',
-        sec5_sub: 'ข้อมูลจริง 30 วันล่าสุดจาก D1 Telemetry เพื่อการออกแบบ UX/UI ให้เหมาะกับอุปกรณ์หลัก',
+        sec5_sub: 'เลือกดูสถิติอุปกรณ์จริงจาก D1 Telemetry ได้ทั้ง 7 วัน และ 30 วันล่าสุด',
+        dev_btn_7d: '7 วันล่าสุด',
+        dev_btn_30d: '30 วันล่าสุด',
         dev_mobile_label: 'สมาร์ตโฟน (Mobile Phones)',
         dev_primary_badge: 'อันดับ 1 (30 วันล่าสุด)',
         dev_mobile_desc: 'หน้าจอมือถือขนาด 375px–430px (กำลังโหลดสถิติจริง 30 วันล่าสุด...)',
@@ -2406,7 +2422,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         geo_edge_title: 'Cloudflare Bangkok Edge (BKK): ',
         geo_edge_desc: '92.2% of traffic is served directly from the Bangkok PoP with 18–26 ms average latency.',
         sec5_title: '05. Device, Viewport & Client Environment',
-        sec5_sub: 'Live 30-day client telemetry from Cloudflare D1 informing UX prioritization',
+        sec5_sub: 'Switch between 7-day and 30-day live device telemetry from Cloudflare D1',
+        dev_btn_7d: 'Last 7d',
+        dev_btn_30d: 'Last 30d',
         dev_mobile_label: 'Mobile Smartphones',
         dev_primary_badge: '#1 Top Device (30d)',
         dev_mobile_desc: 'Mobile viewports 375px–430px (loading 30d live telemetry...)',
@@ -2503,7 +2521,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     let currentSortDir = 'desc';
     let currentChartMode = 'hourly';
     let currentMonitorMode = '24h';
+    let currentDeviceWindow = '30d';
     let latestPayloadCache = null;
+    let DEVICES_STATE = { w7: null, w30: null };
 
     let MONITOR_STATE = {
       summary_24h: { activity_count: 0, client_errors: 0, upstream_errors: 0, total_errors: 0, error_rate_pct: '0.00', uptime_pct: '100.00', status: 'healthy' },
@@ -3040,6 +3060,87 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (btn7) btn7.className = currentMonitorMode === '7d' ? activeCls : inactiveCls;
       renderMonitorSummary();
       renderMonitorChart();
+    }
+
+    function renderDeviceCards() {
+      const devWin = currentDeviceWindow === '7d'
+        ? (DEVICES_STATE.w7 || DEVICES_STATE.w30)
+        : (DEVICES_STATE.w30 || DEVICES_STATE.w7);
+      if (!devWin) return;
+      const lang = getLang();
+      if (devWin.mobile) setMetricBar('deviceMobilePct', 'deviceMobileBar', devWin.mobile.pct);
+      if (devWin.desktop) setMetricBar('deviceDesktopPct', 'deviceDesktopBar', devWin.desktop.pct);
+      if (devWin.tablet) setMetricBar('deviceTabletPct', 'deviceTabletBar', devWin.tablet.pct);
+      const winDays = Number(devWin.window_days || (currentDeviceWindow === '7d' ? 7 : 30));
+
+      const devList = [
+        {
+          key: 'mobile',
+          count: Number((devWin.mobile && devWin.mobile.count) || 0),
+          pct: parseFloat((devWin.mobile && devWin.mobile.pct) || 0) || 0,
+          badgeId: 'devMobileBadge',
+          barId: 'deviceMobileBar',
+          descId: 'devMobileDesc',
+          descTh: 'เข้าชมจริง ' + Number((devWin.mobile && devWin.mobile.count) || 0).toLocaleString() + ' ครั้ง (' + winDays + ' วันล่าสุด) · หน้าจอมือถือ 375px–430px',
+          descEn: Number((devWin.mobile && devWin.mobile.count) || 0).toLocaleString() + ' recorded visits (last ' + winDays + 'd) · Smartphone viewports 375px–430px',
+        },
+        {
+          key: 'desktop',
+          count: Number((devWin.desktop && devWin.desktop.count) || 0),
+          pct: parseFloat((devWin.desktop && devWin.desktop.pct) || 0) || 0,
+          badgeId: 'devDesktopBadge',
+          barId: 'deviceDesktopBar',
+          descId: 'devDesktopDesc',
+          descTh: 'เข้าชมจริง ' + Number((devWin.desktop && devWin.desktop.count) || 0).toLocaleString() + ' ครั้ง (' + winDays + ' วันล่าสุด) · เปิดบนคอมพิวเตอร์/โน้ตบุ๊ก 1024px+',
+          descEn: Number((devWin.desktop && devWin.desktop.count) || 0).toLocaleString() + ' recorded visits (last ' + winDays + 'd) · Desktop & laptop browsers 1024px+',
+        },
+        {
+          key: 'tablet',
+          count: Number((devWin.tablet && devWin.tablet.count) || 0),
+          pct: parseFloat((devWin.tablet && devWin.tablet.pct) || 0) || 0,
+          badgeId: 'devTabletBadge',
+          barId: 'deviceTabletBar',
+          descId: 'devTabletDesc',
+          descTh: 'เข้าชมจริง ' + Number((devWin.tablet && devWin.tablet.count) || 0).toLocaleString() + ' ครั้ง (' + winDays + ' วันล่าสุด) · หน้าจอแท็บเล็ต 768px–1024px',
+          descEn: Number((devWin.tablet && devWin.tablet.count) || 0).toLocaleString() + ' recorded visits (last ' + winDays + 'd) · Tablet viewports 768px–1024px',
+        }
+      ];
+      const sortedDevs = devList.slice().sort((a, b) => (b.count - a.count) || (b.pct - a.pct));
+      const rankByKey = new Map(sortedDevs.map((item, idx) => [item.key, idx + 1]));
+
+      devList.forEach((item) => {
+        const rank = rankByKey.get(item.key) || 3;
+        const isTop = rank === 1;
+        const badgeEl = document.getElementById(item.badgeId);
+        const barEl = document.getElementById(item.barId);
+        const descEl = document.getElementById(item.descId);
+
+        if (badgeEl) {
+          badgeEl.textContent = lang === 'en'
+            ? (isTop ? ('#1 Top Device (' + winDays + 'd)') : ('Rank #' + rank + ' (' + winDays + 'd)'))
+            : (isTop ? ('อันดับ 1 (' + winDays + ' วันล่าสุด)') : ('อันดับ ' + rank + ' (' + winDays + ' วันล่าสุด)'));
+          badgeEl.className = isTop
+            ? 'text-xs mono font-semibold text-emerald-700 dark:text-emerald-400'
+            : 'text-xs mono text-slate-600 dark:text-neutral-400';
+        }
+        if (barEl) {
+          barEl.className = (isTop ? 'bg-emerald-500' : 'bg-slate-600 dark:bg-neutral-400') + ' h-full rounded-full transition-all duration-300';
+        }
+        if (descEl) {
+          descEl.textContent = lang === 'en' ? item.descEn : item.descTh;
+        }
+      });
+    }
+
+    function switchDeviceWindow(win) {
+      currentDeviceWindow = win === '7d' ? '7d' : '30d';
+      const btn7 = document.getElementById('btnDev7d');
+      const btn30 = document.getElementById('btnDev30d');
+      const activeCls = 'min-h-[44px] px-3.5 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 transition-colors';
+      const inactiveCls = 'min-h-[44px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors';
+      if (btn7) btn7.className = currentDeviceWindow === '7d' ? activeCls : inactiveCls;
+      if (btn30) btn30.className = currentDeviceWindow === '30d' ? activeCls : inactiveCls;
+      renderDeviceCards();
     }
 
     // =========================================================================
@@ -3646,70 +3747,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           if (intlEl && et.geo.intl) intlEl.textContent = parseFloat(et.geo.intl.pct).toFixed(1) + '%';
         }
 
-        // Section 05: Device Distribution (Live rank, bar highlight, and real 30d/7d visit counts)
+        // Section 05: Device Distribution (Stores both 7d and 30d windows for instant toggle)
         if (et.devices) {
-          if (et.devices.mobile) setMetricBar('deviceMobilePct', 'deviceMobileBar', et.devices.mobile.pct);
-          if (et.devices.desktop) setMetricBar('deviceDesktopPct', 'deviceDesktopBar', et.devices.desktop.pct);
-          if (et.devices.tablet) setMetricBar('deviceTabletPct', 'deviceTabletBar', et.devices.tablet.pct);
-          const winDays = Number(et.devices.window_days || 30);
-
-          const devList = [
-            {
-              key: 'mobile',
-              count: Number((et.devices.mobile && et.devices.mobile.count) || 0),
-              pct: parseFloat((et.devices.mobile && et.devices.mobile.pct) || 0) || 0,
-              badgeId: 'devMobileBadge',
-              barId: 'deviceMobileBar',
-              descId: 'devMobileDesc',
-              descTh: 'เข้าชมจริง ' + Number((et.devices.mobile && et.devices.mobile.count) || 0).toLocaleString() + ' ครั้ง (' + winDays + ' วันล่าสุด) · หน้าจอมือถือ 375px–430px',
-              descEn: Number((et.devices.mobile && et.devices.mobile.count) || 0).toLocaleString() + ' recorded visits (last ' + winDays + 'd) · Smartphone viewports 375px–430px',
-            },
-            {
-              key: 'desktop',
-              count: Number((et.devices.desktop && et.devices.desktop.count) || 0),
-              pct: parseFloat((et.devices.desktop && et.devices.desktop.pct) || 0) || 0,
-              badgeId: 'devDesktopBadge',
-              barId: 'deviceDesktopBar',
-              descId: 'devDesktopDesc',
-              descTh: 'เข้าชมจริง ' + Number((et.devices.desktop && et.devices.desktop.count) || 0).toLocaleString() + ' ครั้ง (' + winDays + ' วันล่าสุด) · เปิดบนคอมพิวเตอร์/โน้ตบุ๊ก 1024px+',
-              descEn: Number((et.devices.desktop && et.devices.desktop.count) || 0).toLocaleString() + ' recorded visits (last ' + winDays + 'd) · Desktop & laptop browsers 1024px+',
-            },
-            {
-              key: 'tablet',
-              count: Number((et.devices.tablet && et.devices.tablet.count) || 0),
-              pct: parseFloat((et.devices.tablet && et.devices.tablet.pct) || 0) || 0,
-              badgeId: 'devTabletBadge',
-              barId: 'deviceTabletBar',
-              descId: 'devTabletDesc',
-              descTh: 'เข้าชมจริง ' + Number((et.devices.tablet && et.devices.tablet.count) || 0).toLocaleString() + ' ครั้ง (' + winDays + ' วันล่าสุด) · หน้าจอแท็บเล็ต 768px–1024px',
-              descEn: Number((et.devices.tablet && et.devices.tablet.count) || 0).toLocaleString() + ' recorded visits (last ' + winDays + 'd) · Tablet viewports 768px–1024px',
-            }
-          ];
-          const sortedDevs = devList.slice().sort((a, b) => (b.count - a.count) || (b.pct - a.pct));
-          const rankByKey = new Map(sortedDevs.map((item, idx) => [item.key, idx + 1]));
-
-          devList.forEach((item) => {
-            const rank = rankByKey.get(item.key) || 3;
-            const isTop = rank === 1;
-            const badgeEl = document.getElementById(item.badgeId);
-            const barEl = document.getElementById(item.barId);
-            const descEl = document.getElementById(item.descId);
-
-            if (badgeEl) {
-              badgeEl.textContent = lang === 'en'
-                ? (isTop ? ('#1 Top Device (' + winDays + 'd)') : ('Rank #' + rank + ' (' + winDays + 'd)'))
-                : (isTop ? ('อันดับ 1 (' + winDays + ' วันล่าสุด)') : ('อันดับ ' + rank + ' (' + winDays + ' วันล่าสุด)'));
-              badgeEl.className = isTop
-                ? 'text-xs mono font-semibold text-emerald-700 dark:text-emerald-400'
-                : 'text-xs mono text-slate-600 dark:text-neutral-400';
-            }
-            if (barEl) {
-              barEl.className = (isTop ? 'bg-emerald-500' : 'bg-slate-600 dark:bg-neutral-400') + ' h-full rounded-full transition-all duration-300';
-            }
-            if (descEl) {
-              descEl.textContent = lang === 'en' ? item.descEn : item.descTh;
-            }
-          });
+          DEVICES_STATE = {
+            w7: et.devices.w7 || et.devices,
+            w30: et.devices.w30 || et.devices,
+          };
+          renderDeviceCards();
         }
 
         // Section 07: Cloud & Scaling Performance
