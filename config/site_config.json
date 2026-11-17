@@ -90,13 +90,13 @@
       "nav_demos": "ลีกตัวอย่างจริง",
       "nav_pricing": "แพ็กเกจราคา",
       "nav_order": "เปิดใช้งานลีก",
-      "nav_cta": "ลองเดโมสด",
+      "nav_cta": "เปิดดูลีกตัวอย่าง",
       "hero_badge": "อัปเดตสดทุกวินาที",
       "hero_h1_line1": "มินิลีกของคุณ",
       "hero_h1_line2": "เดือดทุกวินาที",
       "hero_lead": "คะแนนสดเปลี่ยนตัวอัตโนมัติ เช็คชิปคู่แข่ง และสรุปเงินรางวัลครบ 38 วีค",
       "hero_cta_primary": "เปิดใช้งานลีกทันที",
-      "hero_cta_secondary": "ดู 6 จอฟีเจอร์จริง",
+      "hero_cta_secondary": "ห้องควบคุมหลัก",
       "hero_metric_views": "ยอดเข้าชมระบบจริง",
       "hero_metric_sync": "รอบอัปเดตสด",
       "stats": [
@@ -149,15 +149,15 @@
           "desc": "สรุปยอดคนได้รางวัล คนโดนค่าปรับบ๊วย และยอดสุทธิครบทุกทีมในหน้าเดียว"
         }
       ],
-      "screens_heading": "6 หน้าจอหลักในห้องควบคุมลีก",
-      "screens_lead": "สลับดูทุกมุมมองที่ผู้จัดการลีกและสมาชิกใช้จริงตลอดสัปดาห์แข่งขัน (ภาพจำลองข้อมูลสมมติ สลับโหมดมืดและสว่าง)",
+      "screens_heading": "ห้องควบคุมหลัก",
+      "screens_lead": "สลับดูทุกมุมมองที่ผู้จัดการลีกและสมาชิกใช้จริงตลอดสัปดาห์แข่งขัน\n(ภาพจำลองข้อมูลสมมติ สลับโหมดมืดและสว่าง)",
       "screens_note": "ภาพหน้าจอจากระบบจริง ปรับชื่อลีกและผู้จัดการทีมเป็นข้อมูลสมมติ",
       "screens": [
         {
           "key": "live",
           "num": "01",
-          "theme": "Dark UI",
-          "tab": "คะแนนสด & ออโต้ซับ",
+          "theme": "Dark theme",
+          "tab": "อัพเดทคะแนนสด",
           "title": "เช็คคะแนนสดพร้อมเปลี่ยนตัวอัตโนมัติทันเกม",
           "desc": "เห็นแต้มดิบ คะแนนลบ และตัวสำรองที่รอลงสนามแทนตัวจริงที่ไม่ได้ลงเล่นแบบเรียลไทม์",
           "spec": "รีเฟรชทุกวินาที"
@@ -165,7 +165,7 @@
         {
           "key": "pitch",
           "num": "02",
-          "theme": "Dark UI",
+          "theme": "Dark theme",
           "tab": "แผน 11 ตัวจริง",
           "title": "ส่องแผนจัดทัพ 11 ตัวจริงของทุกทีมในลีก",
           "desc": "กดดูหน้าสนามเพื่อเทียบกัปตัน ฟอร์เมชัน และคะแนนตัวสำรองของคู่แข่งได้ในคลิกเดียว",
@@ -174,7 +174,7 @@
         {
           "key": "transfers",
           "num": "03",
-          "theme": "Light UI",
+          "theme": "Light theme",
           "tab": "ย้ายตัว & ขุมกำลัง",
           "title": "วิเคราะห์การซื้อขายนักเตะและกำไรแต้มสุทธิ",
           "desc": "วัดผลทันทีว่าตัวที่ซื้อเข้ากับตัวที่ขายออกใครทำแต้มมากกว่า พร้อมสรุปดีลเด็ดประจำสัปดาห์",
@@ -183,7 +183,7 @@
         {
           "key": "chips",
           "num": "04",
-          "theme": "Dark UI",
+          "theme": "Dark theme",
           "tab": "สถานะชิปคู่แข่ง",
           "title": "ติดตามสถานะชิปคงเหลือของทั้งลีกในตารางเดียว",
           "desc": "เช็คทันทีว่าใครใช้ Wildcard, Free Hit, Triple Captain หรือ Bench Boost ไปแล้วในสัปดาห์ไหน",
@@ -192,7 +192,7 @@
         {
           "key": "prizes",
           "num": "05",
-          "theme": "Light UI",
+          "theme": "Light theme",
           "tab": "เงินรางวัล & กองกลาง",
           "title": "คำนวณเงินรางวัลรายสัปดาห์ รายเดือน และค่าปรับบ๊วย",
           "desc": "ออกแบบตารางรับจ่ายยอดสุทธิ บริจาคการกุศล หรือหักยอดเข้ากองกลางอัตโนมัติ",
@@ -201,8 +201,8 @@
         {
           "key": "radar",
           "num": "06",
-          "theme": "Dark UI",
-          "tab": "เรดาร์ & ทำเนียบแชมป์",
+          "theme": "Dark theme",
+          "tab": "ทำเนียบแชมป์",
           "title": "บันทึกสถิติสูงสุดตลอดฤดูกาลและทำเนียบแชมป์",
           "desc": "รวมคะแนนสูงสุดต่อสัปดาห์ สถิติครองแชมป์สัปดาห์มากที่สุด และความสม่ำเสมอตลอด 38 นัด",
           "spec": "สถิติครบจบฤดูกาล"
@@ -271,13 +271,13 @@
       "nav_demos": "Live Demos",
       "nav_pricing": "Pricing",
       "nav_order": "Launch League",
-      "nav_cta": "Open Live Demo",
+      "nav_cta": "Open Demo League",
       "hero_badge": "Live Every Second",
       "hero_h1_line1": "YOUR MINI-LEAGUE",
       "hero_h1_line2": "LIVE BROADCAST",
       "hero_lead": "Live auto-subs, rival chip tracking, and automated prize ledgers across 38 Gameweeks.",
       "hero_cta_primary": "Launch Your League",
-      "hero_cta_secondary": "Explore 6 Live Screens",
+      "hero_cta_secondary": "Main Control Room",
       "hero_metric_views": "Live System Views",
       "hero_metric_sync": "Live Poll Cycle",
       "stats": [
@@ -330,15 +330,15 @@
           "desc": "Weekly winners, bottom fines, and cumulative balances calculated across all teams."
         }
       ],
-      "screens_heading": "Six Live Views Inside Your League",
-      "screens_lead": "Switch through the core matchday modules used across the season, captured with anonymized clubs in alternating dark and light modes.",
+      "screens_heading": "Main Control Room",
+      "screens_lead": "Switch through the core matchday modules used across the season\n(Captured with anonymized clubs in alternating dark and light themes)",
       "screens_note": "Real dashboard captures using fictional league IDs, clubs, and managers",
       "screens": [
         {
           "key": "live",
           "num": "01",
-          "theme": "Dark UI",
-          "tab": "Live & Auto-Subs",
+          "theme": "Dark theme",
+          "tab": "Live Score Updates",
           "title": "Real-Time Points With Automatic Bench Substitutions",
           "desc": "Follow raw scores, transfer hits, provisional bonus points, and projected bench auto-subs as matches unfold.",
           "spec": "Live Every Second"
@@ -346,7 +346,7 @@
         {
           "key": "pitch",
           "num": "02",
-          "theme": "Dark UI",
+          "theme": "Dark theme",
           "tab": "11-Player Pitch",
           "title": "Inspect Full Starting Lineups and Captaincy Choices",
           "desc": "Open any manager pitch modal to compare formations, active captains, vice-captains, and bench depth.",
@@ -355,7 +355,7 @@
         {
           "key": "transfers",
           "num": "03",
-          "theme": "Light UI",
+          "theme": "Light theme",
           "tab": "Transfers Analytics",
           "title": "Net Transfer Gain and Squad Move Breakdown",
           "desc": "Measure points gained versus sold players after deducting hits across every squad in the league.",
@@ -364,7 +364,7 @@
         {
           "key": "chips",
           "num": "04",
-          "theme": "Dark UI",
+          "theme": "Dark theme",
           "tab": "Chips Tracker",
           "title": "League-Wide Chip Availability Matrix",
           "desc": "Verify remaining Wildcard, Free Hit, Triple Captain, and Bench Boost chips before locking transfers.",
@@ -373,7 +373,7 @@
         {
           "key": "prizes",
           "num": "05",
-          "theme": "Light UI",
+          "theme": "Light theme",
           "tab": "Prize Ledger",
           "title": "Automated Weekly, Monthly, and Season Prize Ledger",
           "desc": "Clean payout and penalty sheets supporting podium splits, charity pools, and head-to-head balance ledgers.",
@@ -382,7 +382,7 @@
         {
           "key": "radar",
           "num": "06",
-          "theme": "Dark UI",
+          "theme": "Dark theme",
           "tab": "Hall of Fame",
           "title": "Season Records, Consistency Metrics, and Honors",
           "desc": "Preserve weekly high scores, number-one podium counts, bench records, and consistency variance all season.",

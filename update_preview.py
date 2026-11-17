@@ -22402,6 +22402,11 @@ def generate_landing_html(multi_data, leagues_config, site_config):
     ]
     total_showcase_leagues = len(showcase_lids)
     total_showcase_teams = sum(len((multi_data.get('leagues') or {}).get(lid, {}).get('teams', [])) for lid in showcase_lids)
+    all_active_lids = [
+        str(k) for k, v in leagues_config.items()
+        if isinstance(v, dict) and v.get('status', 'active') != 'archived'
+    ]
+    total_online_teams = sum(len((multi_data.get('leagues') or {}).get(lid, {}).get('teams', [])) for lid in all_active_lids) or total_showcase_teams
     max_gw = int(multi_data.get('max_gw') or 1)
     last_sync_str = str(multi_data.get('last_sync') or 'Live Sync')
 
@@ -23191,6 +23196,7 @@ __STRUCTURED_DATA_JSON__
       background-color: var(--color-live);
       display: inline-block;
       flex-shrink: 0;
+      animation: bm-heartbeat 1.8s ease-in-out infinite;
     }
     .bm-live-dot::after {
       content: "";
@@ -23198,18 +23204,20 @@ __STRUCTURED_DATA_JSON__
       inset: 0;
       border-radius: 999px;
       background-color: var(--color-live);
-      opacity: 0.65;
-      animation: bm-live-ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+      opacity: 0.7;
+      animation: bm-heartbeat-ring 1.8s ease-out infinite;
       pointer-events: none;
     }
-    .bm-hero-overlay-pill:hover .bm-live-dot::after,
-    .bm-hero-meta-item:hover .bm-live-dot::after,
-    .bm-drama-screen:hover .bm-live-dot::after {
-      animation-play-state: paused;
+    @keyframes bm-heartbeat {
+      0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.55); }
+      14% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 8px 2px rgba(34, 197, 94, 0.75); }
+      28% { transform: scale(0.92); opacity: 0.85; box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+      42% { transform: scale(1.22); opacity: 1; box-shadow: 0 0 6px 1px rgba(34, 197, 94, 0.6); }
+      65% { transform: scale(1); opacity: 0.92; box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
     }
-    @keyframes bm-live-ping {
-      0% { transform: scale(1); opacity: 0.65; }
-      75%, 100% { transform: scale(2.4); opacity: 0; }
+    @keyframes bm-heartbeat-ring {
+      0% { transform: scale(1); opacity: 0.75; }
+      50%, 100% { transform: scale(2.45); opacity: 0; }
     }
     .bm-hero-link {
       color: var(--color-arena-ink);
@@ -23232,13 +23240,13 @@ __STRUCTURED_DATA_JSON__
       display: inline-flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 0.45rem 0.7rem;
-      padding: 0.38rem 0.68rem;
-      border-radius: 0.45rem;
+      gap: 0.45rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
       background-color: var(--color-arena-pill-bg);
-      border: 1px solid var(--color-arena-border);
-      font-size: 0.76rem;
-      color: var(--color-arena-ink-2);
+      border: 1px solid var(--color-live-border);
+      font-size: 0.78rem;
+      color: var(--color-arena-ink);
     }
     @media (min-width: 700px) {
       .bm-hero-visual {
@@ -23249,23 +23257,22 @@ __STRUCTURED_DATA_JSON__
         align-self: end;
       }
       .bm-hero-overlay-bar {
-        padding: 0.65rem 1rem;
-        border-radius: 0.55rem;
+        padding: 0.48rem 0.95rem;
+        border-radius: 999px;
         font-size: 0.85rem;
-        gap: 0.75rem 1rem;
+        gap: 0.55rem;
       }
     }
     .bm-hero-overlay-pill {
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      padding: 0.2rem 0.55rem;
-      border-radius: 0.35rem;
-      border: 1px solid var(--color-live-border);
+      gap: 0.45rem;
+      padding: 0;
+      border: 0;
       background-color: transparent;
       color: var(--color-arena-ink);
       font-weight: 700;
-      font-size: 0.78rem;
+      font-size: inherit;
       white-space: nowrap;
     }
 
@@ -24438,7 +24445,7 @@ __STRUCTURED_DATA_JSON__
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         </button>
         <a id="nav-cta-btn" href="./__PREVIEW_LID__/" class="bm-cta-nav">
-          <span>ลองเดโมสด</span>
+          <span>เปิดดูลีกตัวอย่าง</span>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
         </a>
         <button id="mobile-menu-toggle" type="button" onclick="landingApp.toggleMobileMenu()" class="bm-icon-btn bm-mobile-menu-btn" aria-expanded="false" aria-controls="mobile-nav-drawer" aria-label="เปิดเมนู">
@@ -24482,9 +24489,8 @@ __STRUCTURED_DATA_JSON__
           <div class="bm-hero-overlay-bar">
             <span class="bm-hero-overlay-pill">
               <span class="bm-live-dot" aria-hidden="true"></span>
-              <span class="tabular-nums">GW __MAX_GW__ Live Feed</span>
+              <span id="hero-live-pill-text" class="tabular-nums">__TOTAL_ONLINE_TEAMS__ ทีมออนไลน์ในระบบ</span>
             </span>
-            <span id="hero-sync-meta" class="tabular-nums">__TOTAL_SHOWCASE_LEAGUES__ ลีกตัวอย่าง / __TOTAL_SHOWCASE_TEAMS__ ทีม</span>
           </div>
         </div>
 
@@ -24497,7 +24503,7 @@ __STRUCTURED_DATA_JSON__
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
             </a>
             <a id="hero-secondary-cta" href="#features" class="bm-btn-outline-dark">
-              <span id="hero-secondary-cta-text">ดู 6 จอฟีเจอร์จริง</span>
+              <span id="hero-secondary-cta-text">ห้องควบคุมหลัก</span>
             </a>
           </div>
 
@@ -24507,11 +24513,11 @@ __STRUCTURED_DATA_JSON__
               <span id="hero-badge-text">อัปเดตสดทุกวินาที</span>
             </div>
             <div class="bm-hero-meta-item tabular-nums">
-              <span id="hero-views-inline">ยอดเข้าชม 2,790+ ครั้ง</span>
+              <span id="hero-views-inline">ยอดเข้าชม 2,850+ ครั้ง</span>
             </div>
             <div class="bm-hero-meta-item">
               <a id="hero-open-demo-link" href="./__PREVIEW_LID__/" data-demo-lid="__PREVIEW_LID__" class="bm-hero-link">
-                <span id="hero-open-demo-label">เปิดลีกตัวอย่างจริง #__PREVIEW_LID__</span>
+                <span id="hero-open-demo-label">เปิดดูลีกตัวอย่าง</span>
               </a>
             </div>
           </div>
@@ -24550,41 +24556,41 @@ __STRUCTURED_DATA_JSON__
     <section id="features" class="bm-section" aria-labelledby="feat-title">
       <div class="bm-container bm-reveal" data-reveal>
         <div class="bm-section-head">
-          <h2 id="feat-title" class="bm-h2">6 หน้าจอหลักในห้องควบคุมลีก</h2>
-          <p id="feat-sub" class="bm-lead">สลับดูทุกมุมมองที่ผู้จัดการลีกและสมาชิกใช้จริงตลอดสัปดาห์แข่งขัน (ภาพจำลองข้อมูลสมมติ สลับโหมดมืดและสว่าง)</p>
+          <h2 id="feat-title" class="bm-h2">ห้องควบคุมหลัก</h2>
+          <p id="feat-sub" class="bm-lead">สลับดูทุกมุมมองที่ผู้จัดการลีกและสมาชิกใช้จริงตลอดสัปดาห์แข่งขัน<br>(ภาพจำลองข้อมูลสมมติ สลับโหมดมืดและสว่าง)</p>
         </div>
 
         <div class="bm-stage-layout">
-          <div class="bm-channel-list" role="tablist" aria-label="เลือกดู 6 หน้าจอฟีเจอร์">
+          <div class="bm-channel-list" role="tablist" aria-label="เลือกดูฟีเจอร์ห้องควบคุมหลัก">
             <button id="tab-screen-live" type="button" role="tab" aria-selected="true" onclick="landingApp.setHeroScreen('live')" class="bm-channel-btn is-active">
               <span class="bm-channel-num tabular-nums">01</span>
-              <span class="bm-channel-label">คะแนนสด &amp; ออโต้ซับ</span>
-              <span class="bm-channel-mode">Dark UI</span>
+              <span class="bm-channel-label">อัพเดทคะแนนสด</span>
+              <span class="bm-channel-mode">Dark theme</span>
             </button>
             <button id="tab-screen-pitch" type="button" role="tab" aria-selected="false" onclick="landingApp.setHeroScreen('pitch')" class="bm-channel-btn">
               <span class="bm-channel-num tabular-nums">02</span>
               <span class="bm-channel-label">แผน 11 ตัวจริง</span>
-              <span class="bm-channel-mode">Dark UI</span>
+              <span class="bm-channel-mode">Dark theme</span>
             </button>
             <button id="tab-screen-transfers" type="button" role="tab" aria-selected="false" onclick="landingApp.setHeroScreen('transfers')" class="bm-channel-btn">
               <span class="bm-channel-num tabular-nums">03</span>
               <span class="bm-channel-label">ย้ายตัว &amp; ขุมกำลัง</span>
-              <span class="bm-channel-mode">Light UI</span>
+              <span class="bm-channel-mode">Light theme</span>
             </button>
             <button id="tab-screen-chips" type="button" role="tab" aria-selected="false" onclick="landingApp.setHeroScreen('chips')" class="bm-channel-btn">
               <span class="bm-channel-num tabular-nums">04</span>
               <span class="bm-channel-label">สถานะชิปคู่แข่ง</span>
-              <span class="bm-channel-mode">Dark UI</span>
+              <span class="bm-channel-mode">Dark theme</span>
             </button>
             <button id="tab-screen-prizes" type="button" role="tab" aria-selected="false" onclick="landingApp.setHeroScreen('prizes')" class="bm-channel-btn">
               <span class="bm-channel-num tabular-nums">05</span>
               <span class="bm-channel-label">เงินรางวัล &amp; กองกลาง</span>
-              <span class="bm-channel-mode">Light UI</span>
+              <span class="bm-channel-mode">Light theme</span>
             </button>
             <button id="tab-screen-radar" type="button" role="tab" aria-selected="false" onclick="landingApp.setHeroScreen('radar')" class="bm-channel-btn">
               <span class="bm-channel-num tabular-nums">06</span>
-              <span class="bm-channel-label">เรดาร์ &amp; ทำเนียบแชมป์</span>
-              <span class="bm-channel-mode">Dark UI</span>
+              <span class="bm-channel-label">ทำเนียบแชมป์</span>
+              <span class="bm-channel-mode">Dark theme</span>
             </button>
           </div>
 
@@ -24607,10 +24613,6 @@ __STRUCTURED_DATA_JSON__
                 <p id="stage-caption-desc" class="bm-stage-caption-desc">เห็นแต้มดิบ คะแนนลบ และตัวสำรองที่รอลงสนามแทนตัวจริงที่ไม่ได้ลงเล่นแบบเรียลไทม์</p>
               </div>
             </div>
-            <p id="stage-disclosure" class="bm-stage-disclosure">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>
-              <span id="stage-disclosure-text">ภาพหน้าจอจากระบบจริง ปรับชื่อลีกและผู้จัดการทีมเป็นข้อมูลสมมติ</span>
-            </p>
           </div>
         </div>
       </div>
@@ -24794,7 +24796,7 @@ __STRUCTURED_DATA_JSON__
       </div>
       <div class="bm-footer-links">
         <span id="landing-visitor-badge" class="tabular-nums">ผู้เข้าชม: …</span>
-        <a id="footer-link-features" href="#features">6 จอฟีเจอร์</a>
+        <a id="footer-link-features" href="#features">ห้องควบคุมหลัก</a>
         <a id="footer-link-demos" href="#demos">ลีกตัวอย่าง</a>
         <a id="footer-link-pricing" href="#pricing">ราคา</a>
         <a id="footer-link-faq" href="#faq">คำถามที่พบบ่อย</a>
@@ -24904,15 +24906,22 @@ __STRUCTURED_DATA_JSON__
         for (let i = 0; i < tokens.length; i += 1) {
           html = html.split(`__BMTP_${i}__`).join(tokens[i]);
         }
-        return html;
+        return html.replace(/\\n/g, '<br>');
       },
 
       init() {
+        try {
+          const cached = Number(localStorage.getItem('fpl_visitor_count_v2'));
+          if (Number.isFinite(cached) && cached > 0) this.visitorViews = Math.floor(cached);
+        } catch (_) {}
         this.bindOrderForm();
         this.renderAll();
         this.initReveal();
         this.initDramaCycle();
         this.fetchVisitorCount();
+        if (!this._visitorTimer) {
+          this._visitorTimer = setInterval(() => this.fetchVisitorCount(), 30000);
+        }
         this.sendLandingTelemetry();
       },
 
@@ -25003,17 +25012,14 @@ __STRUCTURED_DATA_JSON__
         setTxt('hero-primary-cta-text', copy.hero_cta_primary);
         setTxt('hero-secondary-cta-text', copy.hero_cta_secondary);
         setTxt('hero-badge-text', copy.hero_badge);
-        setTxt('hero-open-demo-label', this.lang === 'en' ? 'Open Real Demo #__PREVIEW_LID__' : 'เปิดลีกตัวอย่างจริง #__PREVIEW_LID__');
-        setTxt('hero-sync-meta', this.lang === 'en'
-          ? '__TOTAL_SHOWCASE_LEAGUES__ Live Demos / __TOTAL_SHOWCASE_TEAMS__ Teams'
-          : '__TOTAL_SHOWCASE_LEAGUES__ ลีกตัวอย่าง / __TOTAL_SHOWCASE_TEAMS__ ทีม');
+        setTxt('hero-live-pill-text', this.lang === 'en' ? '__TOTAL_ONLINE_TEAMS__ Teams Online' : '__TOTAL_ONLINE_TEAMS__ ทีมออนไลน์ในระบบ');
+        setTxt('hero-open-demo-label', this.lang === 'en' ? 'Open Demo League' : 'เปิดดูลีกตัวอย่าง');
         setTxt('hero-all-preview-text', this.lang === 'en' ? 'View All Showcase Leagues' : 'ดูหน้าเลือกทั้งหมด');
 
         this.renderStats(copy.stats || []);
         this.renderStream(copy);
         setTxt('feat-title', copy.screens_heading);
         setTypo('feat-sub', copy.screens_lead);
-        setTxt('stage-disclosure-text', copy.screens_note);
         this.renderScreens();
 
         setTxt('drama-title', copy.drama_heading);
@@ -25079,7 +25085,7 @@ __STRUCTURED_DATA_JSON__
           : { tier1: 'ไม่เกิน 30 ทีม (แพ็กเกจ Standard)', tier2: '31 ทีมขึ้นไป / ลีกใหญ่ 50+ (ประเมินราคาทาง LINE)' });
 
         setTypo('footer-note', copy.footer_note);
-        setTxt('footer-link-features', isEn ? '6 Live Views' : '6 จอฟีเจอร์');
+        setTxt('footer-link-features', isEn ? 'Main Control Room' : 'ห้องควบคุมหลัก');
         setTxt('footer-link-demos', isEn ? 'Live Demos' : 'ลีกตัวอย่าง');
         setTxt('footer-link-pricing', isEn ? 'Pricing' : 'ราคา');
         setTxt('footer-link-faq', isEn ? 'FAQ' : 'คำถามที่พบบ่อย');
@@ -25623,26 +25629,33 @@ __STRUCTURED_DATA_JSON__
         const inline = document.getElementById('hero-views-inline');
         const n = this.visitorViews;
         if (!Number.isFinite(n) || n <= 0) {
-          if (inline) inline.textContent = this.lang === 'en' ? 'System views: Live' : 'ยอดเข้าชม: 2,790+ ครั้ง';
+          if (inline) inline.textContent = this.lang === 'en' ? 'System views: 2,850+' : 'ยอดเข้าชม 2,850+ ครั้ง';
           return;
         }
-        const formatted = n.toLocaleString();
-        if (badge) badge.textContent = (this.lang === 'en' ? 'System views: ' : 'ยอดเข้าชม: ') + formatted;
-        if (inline) inline.textContent = (this.lang === 'en' ? 'System views ' : 'ยอดเข้าชม ') + formatted;
+        const formatted = Math.floor(n).toLocaleString();
+        if (badge) badge.textContent = this.lang === 'en' ? 'System views: ' + formatted : 'ผู้เข้าชม: ' + formatted + ' ครั้ง';
+        if (inline) inline.textContent = this.lang === 'en' ? 'System views: ' + formatted : 'ยอดเข้าชม ' + formatted + ' ครั้ง';
       },
 
       async fetchVisitorCount() {
         if (window.location.protocol === 'file:') return;
-        try {
-          const apiCfg = this.resolveApiBase();
-          const resp = await fetch(apiCfg.base + '/visitors');
-          if (!resp.ok) return;
-          const data = await resp.json();
-          if (Number(data && data.views) > 0) {
-            this.visitorViews = Number(data.views);
-            this.renderVisitorStat();
-          }
-        } catch (_) {}
+        const apiCfg = this.resolveApiBase();
+        const prodFallback = 'https://api.fplsawadika.com';
+        const urls = [apiCfg.base + '/visitors'];
+        if (apiCfg.base !== prodFallback) urls.push(prodFallback + '/visitors');
+        for (let i = 0; i < urls.length; i += 1) {
+          try {
+            const resp = await fetch(urls[i]);
+            if (!resp.ok) continue;
+            const data = await resp.json();
+            if (Number(data && data.views) > 0) {
+              this.visitorViews = Math.floor(Number(data.views));
+              try { localStorage.setItem('fpl_visitor_count_v2', String(this.visitorViews)); } catch (_) {}
+              this.renderVisitorStat();
+              return;
+            }
+          } catch (_) {}
+        }
       },
 
       sendLandingTelemetry() {
@@ -25685,6 +25698,7 @@ __STRUCTURED_DATA_JSON__
     html = html.replace('__LANDING_COPY_JSON__', landing_copy_json)
     html = html.replace('__TOTAL_SHOWCASE_LEAGUES__', str(total_showcase_leagues))
     html = html.replace('__TOTAL_SHOWCASE_TEAMS__', f"{total_showcase_teams:,}")
+    html = html.replace('__TOTAL_ONLINE_TEAMS__', f"{total_online_teams:,}")
     html = html.replace('__MAX_GW__', str(max_gw))
     html = html.replace('__PREVIEW_LID__', preview_lid)
     html = html.replace('__PREVIEW_LEAGUE_NAME__', str(preview_league.get('name') or 'FPL Mini-League'))
