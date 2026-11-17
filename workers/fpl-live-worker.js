@@ -914,15 +914,29 @@ export default {
                 }
 
                 const metricMap = new Map();
+                let dev30d = { mobile: 0, desktop: 0, tablet: 0, hasData: false };
 
                 if (env.DB) {
                   // Single fast SQL query fetching rolling 7 days metrics + lifetime cumulative views
                   const placeholders = dates.map(() => '?').join(',');
                   const query = `SELECT metric, val FROM telemetry_counters WHERE date IN (${placeholders}) OR metric = 'lifetime:total_views'`;
-                  const result = await env.DB.prepare(query).bind(...dates).all();
+                  const cutoff30d = getIctNowParts(new Date(now.getTime() - 29 * 86400000)).date;
+                  const devQuery = `SELECT CASE WHEN metric LIKE '%:dev:mobile' THEN 'mobile' WHEN metric LIKE '%:dev:desktop' THEN 'desktop' WHEN metric LIKE '%:dev:tablet' THEN 'tablet' END AS dev_type, SUM(val) AS total FROM telemetry_counters WHERE date >= ? AND date != '9999-12-31' AND (metric LIKE '%:dev:mobile' OR metric LIKE '%:dev:desktop' OR metric LIKE '%:dev:tablet') GROUP BY dev_type`;
+                  const [result, devRes] = await Promise.all([
+                    env.DB.prepare(query).bind(...dates).all(),
+                    env.DB.prepare(devQuery).bind(cutoff30d).all().catch(() => null),
+                  ]);
                   if (result && Array.isArray(result.results)) {
                     for (const row of result.results) {
                       metricMap.set(row.metric, Number(row.val) || 0);
+                    }
+                  }
+                  if (devRes && Array.isArray(devRes.results)) {
+                    for (const dr of devRes.results) {
+                      if (dr && dr.dev_type && typeof dev30d[dr.dev_type] === 'number') {
+                        dev30d[dr.dev_type] = Number(dr.total) || 0;
+                        dev30d.hasData = true;
+                      }
                     }
                   }
                 } else if (env.ANALYTICS_KV) {
@@ -990,14 +1004,21 @@ export default {
                 const safariPct = ((activeSafariHits / activeSrcTotal) * 100).toFixed(1);
                 const chromePct = Math.max(0, 100.0 - parseFloat(linePct) - parseFloat(safariPct)).toFixed(1);
 
-                // Device distribution (pure real D1 counts)
-                const baseMobileHits = usePureRealTelemetry ? 0 : Math.round(baselineVisits * 0.764);
-                const baseDesktopHits = usePureRealTelemetry ? 0 : Math.round(baselineVisits * 0.182);
-                const baseTabletHits = usePureRealTelemetry ? 0 : (baselineVisits - baseMobileHits - baseDesktopHits);
+                // Device distribution (30-day rolling real D1 counts when available, fallback to 7d/prior)
+                const hasDev30d = dev30d.hasData && (dev30d.mobile + dev30d.desktop + dev30d.tablet) > 0;
+                const devMobCount = hasDev30d ? dev30d.mobile : mobileCount;
+                const devDeskCount = hasDev30d ? dev30d.desktop : desktopCount;
+                const devTabCount = hasDev30d ? dev30d.tablet : tabletCount;
+                const devicesWindowDays = hasDev30d ? 30 : 7;
 
-                const activeMobileHits = baseMobileHits + mobileCount;
-                const activeDesktopHits = baseDesktopHits + desktopCount;
-                const activeTabletHits = baseTabletHits + tabletCount;
+                const usePureDevices = usePureRealTelemetry || hasDev30d;
+                const baseMobileHits = usePureDevices ? 0 : Math.round(baselineVisits * 0.764);
+                const baseDesktopHits = usePureDevices ? 0 : Math.round(baselineVisits * 0.182);
+                const baseTabletHits = usePureDevices ? 0 : (baselineVisits - baseMobileHits - baseDesktopHits);
+
+                const activeMobileHits = baseMobileHits + devMobCount;
+                const activeDesktopHits = baseDesktopHits + devDeskCount;
+                const activeTabletHits = baseTabletHits + devTabCount;
                 const activeDevTotal = Math.max(1, activeMobileHits + activeDesktopHits + activeTabletHits);
 
                 const mobilePct = ((activeMobileHits / activeDevTotal) * 100).toFixed(1);
@@ -1412,9 +1433,10 @@ export default {
                     intl: { count: cityIntlCount, pct: geoIntlPct },
                   },
                   devices: {
-                    mobile: { count: mobileCount, pct: mobilePct },
-                    desktop: { count: desktopCount, pct: desktopPct },
-                    tablet: { count: tabletCount, pct: tabletPct },
+                    window_days: devicesWindowDays,
+                    mobile: { count: devMobCount, pct: mobilePct },
+                    desktop: { count: devDeskCount, pct: desktopPct },
+                    tablet: { count: devTabCount, pct: tabletPct },
                   },
                   leagues: leaguesOutput,
                   features: featuresSummary,
