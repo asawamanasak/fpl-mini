@@ -24524,19 +24524,19 @@ __STRUCTURED_DATA_JSON__
       <div id="telemetry-strip-grid" class="bm-telemetry-grid">
         <div class="bm-stat-cell">
           <div class="bm-stat-val tabular-nums">ทุกวินาที</div>
-          <div class="bm-stat-lbl">รีเฟรชคะแนนสด</div>
+          <div class="bm-stat-lbl">ปรับคะแนนสด</div>
+        </div>
+        <div class="bm-stat-cell">
+          <div class="bm-stat-val tabular-nums">100%</div>
+          <div class="bm-stat-lbl">ลุ้นให้สุด ไม่ต้องหยุดมานั่งนับแต้ม</div>
+        </div>
+        <div class="bm-stat-cell">
+          <div class="bm-stat-val tabular-nums">38 GW</div>
+          <div class="bm-stat-lbl">ปิดยอด พร้อมสถิติตอนจบฤดูกาล</div>
         </div>
         <div class="bm-stat-cell">
           <div class="bm-stat-val tabular-nums">500฿</div>
           <div class="bm-stat-lbl">ต่อฤดูกาล (≤__MAX_TEAMS__ ทีม)</div>
-        </div>
-        <div class="bm-stat-cell">
-          <div class="bm-stat-val tabular-nums">0%</div>
-          <div class="bm-stat-lbl">ไม่ต้องทำ Excel เอง</div>
-        </div>
-        <div class="bm-stat-cell">
-          <div class="bm-stat-val tabular-nums">38 GW</div>
-          <div class="bm-stat-lbl">ปิดยอดจบซีซั่นให้</div>
         </div>
       </div>
     </section>
@@ -24945,6 +24945,7 @@ __STRUCTURED_DATA_JSON__
       },
 
       setCurrency(curr) {
+        this.currencyExplicit = true;
         this.currency = curr === 'USD' ? 'USD' : 'THB';
         const btnThb = document.getElementById('curr-btn-thb');
         const btnUsd = document.getElementById('curr-btn-usd');
@@ -25094,8 +25095,9 @@ __STRUCTURED_DATA_JSON__
         const isEn = this.lang === 'en';
         grid.innerHTML = stats.map((st, idx) => {
           let val = st.value;
-          if (idx === 1) {
-            val = isUsd
+          if (idx === 3) {
+            const showUsd = isUsd || (isEn && !this.currencyExplicit);
+            val = showUsd
               ? `$${(pCfg.standard && pCfg.standard.usd) || 19}`
               : (isEn ? `${(pCfg.standard && pCfg.standard.thb) || 500} THB` : `${(pCfg.standard && pCfg.standard.thb) || 500}฿`);
           }

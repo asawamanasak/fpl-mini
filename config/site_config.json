@@ -100,10 +100,10 @@
       "hero_metric_views": "ยอดเข้าชมระบบจริง",
       "hero_metric_sync": "รอบอัปเดตสด",
       "stats": [
-        { "value": "ทุกวินาที", "label": "รีเฟรชคะแนนสด" },
-        { "value": "500฿", "label": "ต่อฤดูกาล (≤30 ทีม)" },
-        { "value": "0%", "label": "ไม่ต้องทำ Excel เอง" },
-        { "value": "38 GW", "label": "ปิดยอดจบซีซั่นให้" }
+        { "value": "ทุกวินาที", "label": "ปรับคะแนนสด" },
+        { "value": "100%", "label": "ลุ้นให้สุด ไม่ต้องหยุดมานั่งนับแต้ม" },
+        { "value": "38 GW", "label": "ปิดยอด พร้อมสถิติตอนจบฤดูกาล" },
+        { "value": "500฿", "label": "ต่อฤดูกาล (≤30 ทีม)" }
       ],
       "stream_items": [
         "เช็คแต้มสดทันเกม",
@@ -282,9 +282,9 @@
       "hero_metric_sync": "Live Poll Cycle",
       "stats": [
         { "value": "Every Second", "label": "Live Score Refresh" },
-        { "value": "500 THB", "label": "Season Pass (≤30 teams)" },
-        { "value": "0%", "label": "Manual Spreadsheets" },
-        { "value": "38 GW", "label": "Season Automation" }
+        { "value": "100%", "label": "Pure thrill, zero manual score math" },
+        { "value": "38 GW", "label": "Season-end payouts & full stats" },
+        { "value": "$19", "label": "Season Pass (≤30 teams)" }
       ],
       "stream_items": [
         "Real-Time Matchday Scores",
