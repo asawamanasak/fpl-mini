@@ -1,6 +1,6 @@
 /**
  * FPLSaWaDiKa Executive Terminal & Business Intelligence Dashboard
- * Secure Private Management Console for asawamanasak@gmail.com
+ * Secure Private Management Console (asawamanasak@gmail.com, noii.patchara@gmail.com)
  * Protected by Cloudflare Zero Trust (Email OTP)
  *
  * Impeccable + Unslop Broadcast Control Room Edition:
@@ -13,6 +13,7 @@
  */
 
 export const ADMIN_EMAIL = 'asawamanasak@gmail.com';
+export const ADMIN_EMAILS = ['asawamanasak@gmail.com', 'noii.patchara@gmail.com'];
 
 const SESSION_TTL_SECONDS = 2592000; // 30 days
 const JWKS_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
@@ -72,8 +73,25 @@ export async function getSessionSigningSecret(env) {
 }
 
 export function getAllowedAdminEmail(env) {
-  const email = env && typeof env.ADMIN_EMAIL === 'string' ? env.ADMIN_EMAIL.trim() : '';
-  return email || ADMIN_EMAIL;
+  const raw = env && typeof env.ADMIN_EMAIL === 'string' ? env.ADMIN_EMAIL.trim() : '';
+  if (!raw) return ADMIN_EMAIL;
+  const first = raw.split(',')[0].trim();
+  return first || ADMIN_EMAIL;
+}
+
+export function getAllowedAdminEmails(env) {
+  const fromEnv = [
+    env && typeof env.ADMIN_EMAIL === 'string' ? env.ADMIN_EMAIL : '',
+    env && typeof env.ADMIN_EMAILS === 'string' ? env.ADMIN_EMAILS : '',
+  ]
+    .join(',')
+    .split(',')
+    .map(s => s.trim().toLowerCase())
+    .filter(Boolean);
+  if (fromEnv.length > 0) {
+    return Array.from(new Set(fromEnv));
+  }
+  return ADMIN_EMAILS.map(e => e.toLowerCase());
 }
 
 async function importHmacKey(secret) {
@@ -177,9 +195,9 @@ async function verifyAccessJwt(request, env) {
     const expectedIss = `https://${cleanDomain}`;
     if (payload.iss !== expectedIss) return null;
 
-    const allowedEmail = getAllowedAdminEmail(env).toLowerCase();
+    const allowedEmails = new Set(getAllowedAdminEmails(env));
     const tokenEmail = typeof payload.email === 'string' ? payload.email.toLowerCase() : '';
-    if (!tokenEmail || tokenEmail !== allowedEmail) return null;
+    if (!tokenEmail || !allowedEmails.has(tokenEmail)) return null;
 
     const keys = await fetchAccessJwks(cleanDomain);
     const jwk = keys.find(k => k && k.kid === header.kid);
