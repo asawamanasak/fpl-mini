@@ -24621,7 +24621,7 @@ __STRUCTURED_DATA_JSON__
       <div class="bm-container bm-reveal" data-reveal>
         <div class="bm-drama-layout">
           <div>
-            <h2 id="drama-title" class="bm-h2">วันแข่งจริง กลุ่มเพื่อนจะสนุกและง่ายขึ้นแบบนี้</h2>
+            <h2 id="drama-title" class="bm-h2">ลุ้นสด รู้ไว จบครบในหน้าเดียว</h2>
             <p id="drama-sub" class="bm-lead" style="margin-bottom: 1.25rem;">ไม่ต้องรอเว็บหลักอัปเดตช้า ไม่ต้องไล่บวกลบตัวสำรองหรือจดเงินใน Excel เอง แค่เปิดลิงก์ลีกก็รู้ผลครบทุกคน</p>
             <a id="drama-demo-link" href="./__PREVIEW_LID__/" data-demo-lid="__PREVIEW_LID__" class="bm-btn-primary">
               <span id="drama-cta-text">ลองเปิดลีกตัวอย่างดูจริง</span>
