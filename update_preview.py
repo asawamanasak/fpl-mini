@@ -21322,6 +21322,9 @@ __STRUCTURED_DATA_JSON__
     // FPLSaWaDiKa League Engagement & Product Analytics Telemetry (Edge Analytics)
     (function() {
       try {
+        var hostNow = (window.location && window.location.hostname ? window.location.hostname : "").toLowerCase();
+        var protoNow = (window.location && window.location.protocol ? window.location.protocol : "").toLowerCase();
+        var isLocalTelemetrySkip = !hostNow || hostNow === "localhost" || hostNow === "127.0.0.1" || protoNow === "file:";
         var telemEndpoint = "https://api.fplsawadika.com/api/telemetry/event";
         var currentLeague = "";
         var sessionStartTime = Date.now();
@@ -21342,6 +21345,7 @@ __STRUCTURED_DATA_JSON__
 
         window._trackFeature = function(cat, act) {
           try {
+            if (isLocalTelemetrySkip) return;
             if (cat === 'tab' && act) {
               featureInteractions.tabs[act] = (featureInteractions.tabs[act] || 0) + 1;
             } else if (cat === 'pitch') {
@@ -21351,6 +21355,7 @@ __STRUCTURED_DATA_JSON__
         };
 
         function sendBeaconEvent(payload) {
+          if (isLocalTelemetrySkip) return;
           if (typeof navigator !== "undefined" && navigator.sendBeacon) {
             navigator.sendBeacon(telemEndpoint, JSON.stringify(payload));
           }

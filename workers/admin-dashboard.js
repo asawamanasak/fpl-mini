@@ -1495,14 +1495,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="dev_mobile_label">สมาร์ตโฟน (Mobile Phones)</span>
-            <span class="text-xs mono font-semibold text-emerald-700 dark:text-emerald-400" data-i18n="dev_primary_badge">อุปกรณ์หลักอันดับ 1</span>
+            <span id="devMobileBadge" class="text-xs mono text-slate-600 dark:text-neutral-400">-</span>
           </div>
-          <div id="deviceMobilePct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">76.4%</div>
+          <div id="deviceMobilePct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">-</div>
           <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div id="deviceMobileBar" class="bg-emerald-500 h-full rounded-full" style="width: 76.4%"></div>
+            <div id="deviceMobileBar" class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
           </div>
-          <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_mobile_desc">
-            iOS Safari 49.2% · LINE In-App WebView 16.8% · Android Chrome 10.4% (ความกว้างจอหลัก 375px–430px)
+          <p id="devMobileDesc" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_mobile_desc">
+            หน้าจอมือถือขนาด 375px–430px (กำลังโหลดสถิติจริง 7 วันล่าสุด...)
           </p>
         </div>
 
@@ -1510,14 +1510,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="dev_desktop_label">คอมพิวเตอร์ตั้งโต๊ะ / โน้ตบุ๊ก (Desktop)</span>
-            <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="dev_desktop_badge">สายวิเคราะห์ข้อมูลลึก</span>
+            <span id="devDesktopBadge" class="text-xs mono text-slate-600 dark:text-neutral-400">-</span>
           </div>
-          <div id="deviceDesktopPct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">18.2%</div>
+          <div id="deviceDesktopPct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">-</div>
           <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div id="deviceDesktopBar" class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full" style="width: 18.2%"></div>
+            <div id="deviceDesktopBar" class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
           </div>
-          <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_desktop_desc">
-            ใช้งานสูงในช่วงวางแผนจัดตัววันศุกร์ และเปิดตารางเปรียบเทียบหลายคอลัมน์บนจอ 1440px+
+          <p id="devDesktopDesc" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_desktop_desc">
+            หน้าจอคอมพิวเตอร์และโน้ตบุ๊ก 1024px+ (กำลังโหลดสถิติจริง 7 วันล่าสุด...)
           </p>
         </div>
 
@@ -1525,14 +1525,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="dev_tablet_label">ไอแพดและแท็บเล็ต (iPad / Tablet)</span>
-            <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="dev_tablet_badge">จอที่สองขณะดูบอลสด</span>
+            <span id="devTabletBadge" class="text-xs mono text-slate-600 dark:text-neutral-400">-</span>
           </div>
-          <div id="deviceTabletPct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">5.4%</div>
+          <div id="deviceTabletPct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">-</div>
           <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div id="deviceTabletBar" class="bg-slate-500 dark:bg-neutral-500 h-full rounded-full" style="width: 5.4%"></div>
+            <div id="deviceTabletBar" class="bg-slate-500 dark:bg-neutral-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
           </div>
-          <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_tablet_desc">
-            วางเปิดคู่ขณะดูถ่ายทอดสดพรีเมียร์ลีก (ความกว้างจอ 768px–1024px ทั้งแนวตั้งและแนวนอน)
+          <p id="devTabletDesc" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_tablet_desc">
+            หน้าจอแท็บเล็ต 768px–1024px (กำลังโหลดสถิติจริง 7 วันล่าสุด...)
           </p>
         </div>
       </div>
@@ -2138,14 +2138,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sec5_title: '05. อุปกรณ์ หน้าจอ และสภาพแวดล้อมของผู้ใช้งาน',
         sec5_sub: 'ข้อมูลจริงจาก D1 Telemetry เพื่อการออกแบบ UX/UI ให้เหมาะกับอุปกรณ์หลัก',
         dev_mobile_label: 'สมาร์ตโฟน (Mobile Phones)',
-        dev_primary_badge: 'อุปกรณ์หลักอันดับ 1',
-        dev_mobile_desc: 'iOS Safari 49.2% · LINE In-App WebView 16.8% · Android Chrome 10.4% (ความกว้างจอหลัก 375px–430px)',
+        dev_primary_badge: 'อันดับ 1 (7 วันล่าสุด)',
+        dev_mobile_desc: 'หน้าจอมือถือขนาด 375px–430px (กำลังโหลดสถิติจริง 7 วันล่าสุด...)',
         dev_desktop_label: 'คอมพิวเตอร์ตั้งโต๊ะ / โน้ตบุ๊ก (Desktop)',
-        dev_desktop_badge: 'สายวิเคราะห์ข้อมูลลึก',
-        dev_desktop_desc: 'ใช้งานสูงในช่วงวางแผนจัดตัววันศุกร์ และเปิดตารางเปรียบเทียบหลายคอลัมน์บนจอ 1440px+',
+        dev_desktop_badge: 'ใช้งานบนจอ 1024px+',
+        dev_desktop_desc: 'หน้าจอคอมพิวเตอร์และโน้ตบุ๊ก 1024px+ (กำลังโหลดสถิติจริง 7 วันล่าสุด...)',
         dev_tablet_label: 'ไอแพดและแท็บเล็ต (iPad / Tablet)',
-        dev_tablet_badge: 'จอที่สองขณะดูบอลสด',
-        dev_tablet_desc: 'วางเปิดคู่ขณะดูถ่ายทอดสดพรีเมียร์ลีก (ความกว้างจอ 768px–1024px ทั้งแนวตั้งและแนวนอน)',
+        dev_tablet_badge: 'หน้าจอ 768px–1024px',
+        dev_tablet_desc: 'หน้าจอแท็บเล็ต 768px–1024px (กำลังโหลดสถิติจริง 7 วันล่าสุด...)',
         sec6_title: '06. จังหวะทราฟฟิกวันแข่งขันและช่วงเวลาใช้งานสูงสุด',
         sec6_sub: 'กราฟวิเคราะห์ความหนาแน่นทราฟฟิกรายวัน (7 วัน) และรายชั่วโมงวันแข่ง (เวลาไทย ICT)',
         chart_title_hourly: 'กราฟความหนาแน่นทราฟฟิกรายชั่วโมงในวันแข่งขัน (24 ชั่วโมง · ICT)',
@@ -2408,14 +2408,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sec5_title: '05. Device, Viewport & Client Environment',
         sec5_sub: 'Live client telemetry from Cloudflare D1 informing mobile-first UX prioritization',
         dev_mobile_label: 'Mobile Smartphones',
-        dev_primary_badge: '#1 Primary Viewport',
-        dev_mobile_desc: 'iOS Safari 49.2% · LINE In-App WebView 16.8% · Android Chrome 10.4% (375px–430px viewports)',
+        dev_primary_badge: '#1 Top Device (7d)',
+        dev_mobile_desc: 'Mobile viewports 375px–430px (loading 7d live telemetry...)',
         dev_desktop_label: 'Desktop & Laptop Workstations',
-        dev_desktop_badge: 'Deep Research Mode',
-        dev_desktop_desc: 'Heavy usage on Friday pre-deadline planning and multi-column H2H comparison (1440px+)',
+        dev_desktop_badge: '1024px+ Screen',
+        dev_desktop_desc: 'Desktop & laptop screens 1024px+ (loading 7d live telemetry...)',
         dev_tablet_label: 'iPad & Tablet Devices',
-        dev_tablet_badge: 'Matchday Couch Screen',
-        dev_tablet_desc: 'Used as a dedicated second screen alongside live Premier League broadcasts (768px–1024px)',
+        dev_tablet_badge: '768px–1024px Screen',
+        dev_tablet_desc: 'Tablet screens 768px–1024px (loading 7d live telemetry...)',
         sec6_title: '06. Matchday Traffic Rhythm & Concurrency Windows',
         sec6_sub: 'Interactive 24-hour matchday concurrency curve (ICT) and 7-day rolling session volume',
         chart_title_hourly: '24-Hour Matchday Concurrency Curve (Thailand Time · ICT)',
@@ -3646,11 +3646,69 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           if (intlEl && et.geo.intl) intlEl.textContent = parseFloat(et.geo.intl.pct).toFixed(1) + '%';
         }
 
-        // Section 05: Device Distribution
+        // Section 05: Device Distribution (Live rank, bar highlight, and real visit counts)
         if (et.devices) {
           if (et.devices.mobile) setMetricBar('deviceMobilePct', 'deviceMobileBar', et.devices.mobile.pct);
           if (et.devices.desktop) setMetricBar('deviceDesktopPct', 'deviceDesktopBar', et.devices.desktop.pct);
           if (et.devices.tablet) setMetricBar('deviceTabletPct', 'deviceTabletBar', et.devices.tablet.pct);
+
+          const devList = [
+            {
+              key: 'mobile',
+              count: Number((et.devices.mobile && et.devices.mobile.count) || 0),
+              pct: parseFloat((et.devices.mobile && et.devices.mobile.pct) || 0) || 0,
+              badgeId: 'devMobileBadge',
+              barId: 'deviceMobileBar',
+              descId: 'devMobileDesc',
+              descTh: 'เข้าชมจริง ' + Number((et.devices.mobile && et.devices.mobile.count) || 0).toLocaleString() + ' ครั้ง (7 วันล่าสุด) · หน้าจอมือถือ 375px–430px',
+              descEn: Number((et.devices.mobile && et.devices.mobile.count) || 0).toLocaleString() + ' recorded visits (last 7d) · Smartphone viewports 375px–430px',
+            },
+            {
+              key: 'desktop',
+              count: Number((et.devices.desktop && et.devices.desktop.count) || 0),
+              pct: parseFloat((et.devices.desktop && et.devices.desktop.pct) || 0) || 0,
+              badgeId: 'devDesktopBadge',
+              barId: 'deviceDesktopBar',
+              descId: 'devDesktopDesc',
+              descTh: 'เข้าชมจริง ' + Number((et.devices.desktop && et.devices.desktop.count) || 0).toLocaleString() + ' ครั้ง (7 วันล่าสุด) · เปิดบนคอมพิวเตอร์/โน้ตบุ๊ก 1024px+',
+              descEn: Number((et.devices.desktop && et.devices.desktop.count) || 0).toLocaleString() + ' recorded visits (last 7d) · Desktop & laptop browsers 1024px+',
+            },
+            {
+              key: 'tablet',
+              count: Number((et.devices.tablet && et.devices.tablet.count) || 0),
+              pct: parseFloat((et.devices.tablet && et.devices.tablet.pct) || 0) || 0,
+              badgeId: 'devTabletBadge',
+              barId: 'deviceTabletBar',
+              descId: 'devTabletDesc',
+              descTh: 'เข้าชมจริง ' + Number((et.devices.tablet && et.devices.tablet.count) || 0).toLocaleString() + ' ครั้ง (7 วันล่าสุด) · หน้าจอแท็บเล็ต 768px–1024px',
+              descEn: Number((et.devices.tablet && et.devices.tablet.count) || 0).toLocaleString() + ' recorded visits (last 7d) · Tablet viewports 768px–1024px',
+            }
+          ];
+          const sortedDevs = devList.slice().sort((a, b) => (b.count - a.count) || (b.pct - a.pct));
+          const rankByKey = new Map(sortedDevs.map((item, idx) => [item.key, idx + 1]));
+
+          devList.forEach((item) => {
+            const rank = rankByKey.get(item.key) || 3;
+            const isTop = rank === 1;
+            const badgeEl = document.getElementById(item.badgeId);
+            const barEl = document.getElementById(item.barId);
+            const descEl = document.getElementById(item.descId);
+
+            if (badgeEl) {
+              badgeEl.textContent = lang === 'en'
+                ? (isTop ? '#1 Top Device (7d)' : ('Rank #' + rank + ' (7d)'))
+                : (isTop ? 'อันดับ 1 (7 วันล่าสุด)' : ('อันดับ ' + rank + ' (7 วันล่าสุด)'));
+              badgeEl.className = isTop
+                ? 'text-xs mono font-semibold text-emerald-700 dark:text-emerald-400'
+                : 'text-xs mono text-slate-600 dark:text-neutral-400';
+            }
+            if (barEl) {
+              barEl.className = (isTop ? 'bg-emerald-500' : 'bg-slate-600 dark:bg-neutral-400') + ' h-full rounded-full transition-all duration-300';
+            }
+            if (descEl) {
+              descEl.textContent = lang === 'en' ? item.descEn : item.descTh;
+            }
+          });
         }
 
         // Section 07: Cloud & Scaling Performance

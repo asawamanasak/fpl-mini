@@ -137,6 +137,16 @@ function scheduleWorkerHealthMetric(env, ctx, isError, category = 'upstream_5xx'
   );
 }
 
+function isLocalOrigin(originHeader) {
+  if (!originHeader || originHeader === 'null') return false;
+  try {
+    const h = new URL(originHeader).hostname.toLowerCase();
+    return h === 'localhost' || h === '127.0.0.1' || h === '[::1]';
+  } catch (_) {
+    return false;
+  }
+}
+
 function isTelemetryOriginAllowed(originHeader) {
   if (!originHeader || originHeader === 'null') return false;
   try {
@@ -145,9 +155,7 @@ function isTelemetryOriginAllowed(originHeader) {
     return (
       h === 'fplsawadika.com' ||
       h.endsWith('.fplsawadika.com') ||
-      h.endsWith('.github.io') ||
-      h === 'localhost' ||
-      h === '127.0.0.1'
+      h.endsWith('.github.io')
     );
   } catch (_) {
     return false;
@@ -155,7 +163,7 @@ function isTelemetryOriginAllowed(originHeader) {
 }
 
 function isAutomatedTelemetryUa(userAgent) {
-  return /bot|crawl|spider|slurp|curl|wget|python-requests|go-http-client|headless/i.test(userAgent || '');
+  return /bot|crawl|spider|slurp|curl|wget|python-requests|go-http-client|headless|puppeteer|playwright|lighthouse/i.test(userAgent || '');
 }
 
 const RATE_LIMIT_MEM = new Map();
@@ -405,7 +413,15 @@ export default {
         });
       }
 
-      if (!isTelemetryOriginAllowed(request.headers.get('origin'))) {
+      const reqOrigin = request.headers.get('origin');
+      if (isLocalOrigin(reqOrigin)) {
+        return new Response(JSON.stringify({ ok: true, ignored: 'local' }), {
+          status: 202,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+        });
+      }
+
+      if (!isTelemetryOriginAllowed(reqOrigin)) {
         return new Response(JSON.stringify({ ok: false, error: 'Origin not allowed' }), {
           status: 403,
           headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
