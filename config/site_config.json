@@ -118,7 +118,7 @@
       ],
       "drama_heading": "ลุ้นสด รู้ไว จบครบในหน้าเดียว",
       "drama_lead": "ไม่ต้องรอเว็บหลักอัปเดตช้า ไม่ต้องไล่บวกลบตัวสำรองหรือจดเงินใน Excel เอง แค่เปิดลิงก์ลีกก็รู้ผลครบทุกคน",
-      "drama_cta": "ลองเปิดลีกตัวอย่างดูจริง",
+      "drama_cta": "เปิดดูลีกตัวอย่าง",
       "drama_feed": [
         {
           "kind": "goal",
@@ -145,7 +145,7 @@
           "kind": "line",
           "tag": "ปิดยอดกลุ่ม",
           "time": "จบสัปดาห์",
-          "title": "ตารางรับจ่ายสัปดาห์ที่ 10 พร้อมส่งเข้ากลุ่ม LINE แล้ว",
+          "title": "ตารางรับจ่ายประจำสัปดาห์พร้อมส่งเข้ากลุ่ม LINE แล้ว",
           "desc": "สรุปยอดคนได้รางวัล คนโดนค่าปรับบ๊วย และยอดสุทธิครบทุกทีมในหน้าเดียว"
         }
       ],
@@ -263,7 +263,7 @@
       "order_lead": "กรอกรหัส League ID จากเว็บไซต์ FPL ทางการ ระบบจะจัดข้อความสรุปรายการให้พร้อมส่งเข้า LINE ทันที",
       "order_copy_btn": "คัดลอกข้อความสั่งซื้อ",
       "order_line_btn": "เปิดแชท LINE",
-      "footer_note": "แดชบอร์ดอิสระสำหรับคอมมูนิตี้ Fantasy Premier League ไม่ใช่บริการอย่างเป็นทางการของ Premier League"
+      "footer_note": "แดชบอร์ดอิสระสำหรับคอมมูนิตี้ Fantasy Premier League"
     },
     "en": {
       "brand_sub": "FPL Mini-League Control Room",
@@ -297,9 +297,9 @@
         "Matchday Drama Recap",
         "One-Click LINE Prize Sheet"
       ],
-      "drama_heading": "How Every Matchday Feels Inside Your Group",
+      "drama_heading": "Live Thrills, Instant Updates, All in One View",
       "drama_lead": "No slow official delays, no guessing bench points, and zero weekend spreadsheet math. Everyone tracks live drama in one shared link.",
-      "drama_cta": "Open Live Demo League",
+      "drama_cta": "Open Demo League",
       "drama_feed": [
         {
           "kind": "goal",
@@ -326,7 +326,7 @@
           "kind": "line",
           "tag": "Group Payout",
           "time": "Full Time",
-          "title": "Gameweek 10 payout sheet is ready to share in LINE",
+          "title": "Weekly payout sheet is ready to share in LINE",
           "desc": "Weekly winners, bottom fines, and cumulative balances calculated across all teams."
         }
       ],
@@ -444,7 +444,7 @@
       "order_lead": "Enter your official FPL League ID to generate a formatted setup slip ready to paste in our LINE chat.",
       "order_copy_btn": "Copy Order Slip",
       "order_line_btn": "Open LINE Chat",
-      "footer_note": "Independent Fantasy Premier League companion dashboard. Not affiliated with the Premier League."
+      "footer_note": "Independent Fantasy Premier League community dashboard"
     }
   }
 }

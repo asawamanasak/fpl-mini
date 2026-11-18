@@ -24626,7 +24626,7 @@ __STRUCTURED_DATA_JSON__
             <h2 id="drama-title" class="bm-h2">ลุ้นสด รู้ไว จบครบในหน้าเดียว</h2>
             <p id="drama-sub" class="bm-lead" style="margin-bottom: 1.25rem;">ไม่ต้องรอเว็บหลักอัปเดตช้า ไม่ต้องไล่บวกลบตัวสำรองหรือจดเงินใน Excel เอง แค่เปิดลิงก์ลีกก็รู้ผลครบทุกคน</p>
             <a id="drama-demo-link" href="./__PREVIEW_LID__/" data-demo-lid="__PREVIEW_LID__" class="bm-btn-primary">
-              <span id="drama-cta-text">ลองเปิดลีกตัวอย่างดูจริง</span>
+              <span id="drama-cta-text">เปิดดูลีกตัวอย่าง</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
             </a>
           </div>
@@ -24792,7 +24792,7 @@ __STRUCTURED_DATA_JSON__
     <div class="bm-footer-inner">
       <div>
         <strong style="color: var(--color-arena-ink);">FPLSaWaDiKa</strong>
-        <p id="footer-note" style="margin: 0.25rem 0 0;">แดชบอร์ดอิสระสำหรับคอมมูนิตี้ Fantasy Premier League ไม่ใช่บริการอย่างเป็นทางการของ Premier League</p>
+        <p id="footer-note" style="margin: 0.25rem 0 0;">แดชบอร์ดอิสระสำหรับคอมมูนิตี้ Fantasy Premier League</p>
       </div>
       <div class="bm-footer-links">
         <span id="landing-visitor-badge" class="tabular-nums">ผู้เข้าชม: …</span>
