@@ -1855,8 +1855,28 @@
       font-weight: 700;
       color: var(--color-accent-text);
     }
-    .bm-error.hidden {
+    .bm-error.hidden,
+    .bm-lookup-status.hidden {
       display: none;
+    }
+    .bm-lookup-status {
+      margin: 0.4rem 0 0;
+      font-size: 0.85rem;
+      font-weight: 700;
+      line-height: 1.45;
+      color: var(--color-ink-2);
+    }
+    .bm-lookup-status.is-ok {
+      color: #15803d;
+    }
+    html.dark .bm-lookup-status.is-ok {
+      color: #4ade80;
+    }
+    .bm-lookup-status.is-warn {
+      color: #b45309;
+    }
+    html.dark .bm-lookup-status.is-warn {
+      color: #fbbf24;
     }
 
     .bm-slip-card {
@@ -2294,6 +2314,7 @@
               <input id="order-league-id" name="league_id" type="text" placeholder="เช่น 40700 หรือวางลิงก์หน้าลีก FPL" class="bm-input" required>
               <p id="hint-league-id" class="bm-field-hint">กรอกตัวเลข เช่น 40700 หรือวางลิงก์หน้าลีกเพื่อดึงรหัสอัตโนมัติ (ระบบดึงชื่อลีกให้จาก FPL)</p>
               <p id="order-league-id-error" class="bm-error hidden">กรุณากรอกรหัส League ID เป็นตัวเลข</p>
+              <p id="order-league-lookup" class="bm-lookup-status hidden" aria-live="polite"></p>
             </div>
 
             <div class="bm-field-row">
@@ -2377,6 +2398,11 @@
       dramaTimer: null,
       dramaPaused: false,
       visitorViews: null,
+      lookupResult: null,
+      lookupState: 'idle',
+      lookupLid: '',
+      _lookupTimer: null,
+      _lookupSeq: 0,
 
       escapeHtml(val) {
         return String(val == null ? '' : val)
@@ -2647,6 +2673,7 @@
         setTxt('footer-link-pricing', isEn ? 'Pricing' : 'ราคา');
         setTxt('footer-link-faq', isEn ? 'FAQ' : 'คำถามที่พบบ่อย');
         this.renderVisitorStat();
+        this.renderLeagueLookupStatus();
         this.updateOrderSummary();
       },
 
@@ -2986,7 +3013,7 @@
         if (!form) return;
         const lidEl = document.getElementById('order-league-id');
         if (lidEl) {
-          lidEl.addEventListener('input', () => {
+          const handleLidInput = () => {
             const raw = lidEl.value.trim();
             const urlMatch = raw.match(/leagues\/([0-9]{1,12})/i);
             const hashMatch = raw.match(/^#([0-9]{1,12})$/);
@@ -2995,7 +3022,10 @@
             } else if (hashMatch && hashMatch[1]) {
               lidEl.value = hashMatch[1];
             }
-          });
+            this.scheduleLeagueLookup(lidEl.value.trim());
+          };
+          lidEl.addEventListener('input', handleLidInput);
+          lidEl.addEventListener('change', handleLidInput);
         }
         ['order-league-id', 'order-plan', 'order-prize-model', 'order-team-tier'].forEach((id) => {
           const el = document.getElementById(id);
@@ -3008,6 +3038,116 @@
           e.preventDefault();
           this.copyOrderSlip();
         });
+      },
+
+      resolveLeaguePreviewUrl(lid) {
+        const enc = encodeURIComponent(String(lid || '').trim());
+        if (this.isPreviewOrigin()) {
+          return '/api/public/league-preview?id=' + enc;
+        }
+        return this.resolveApiBase().base + '/api/public/league-preview?id=' + enc;
+      },
+
+      renderLeagueLookupStatus() {
+        const el = document.getElementById('order-league-lookup');
+        if (!el) return;
+        const isEn = this.lang === 'en';
+        el.classList.remove('is-loading', 'is-ok', 'is-warn', 'hidden');
+        if (this.lookupState === 'idle' || !this.lookupLid) {
+          el.textContent = '';
+          el.classList.add('hidden');
+          return;
+        }
+        if (this.lookupState === 'loading') {
+          el.textContent = isEn
+            ? 'Checking official league name and team count from FPL…'
+            : 'กำลังตรวจสอบชื่อลีกและจำนวนทีมจาก FPL…';
+          el.classList.add('is-loading');
+          return;
+        }
+        if (this.lookupState === 'found' && this.lookupResult) {
+          const r = this.lookupResult;
+          const cnt = Number(r.team_count || 0);
+          const countLabel = r.has_more
+            ? (cnt >= 50 ? (isEn ? '50+ teams' : '50+ ทีม') : (isEn ? `${cnt}+ teams` : `${cnt}+ ทีม`))
+            : (isEn ? `${cnt} teams` : `${cnt} ทีม`);
+          const isTier2 = r.tier_suggested === 'tier2';
+          el.textContent = isEn
+            ? `✓ Found: ${r.name} • ${countLabel} (${isTier2 ? '31+ teams — Custom LINE quote' : 'Fits Standard Pass $19'})`
+            : `✓ พบลีก: ${r.name} • ${countLabel} (${isTier2 ? 'ลีกใหญ่ 31+ ทีม — ประเมินราคาทาง LINE' : 'ตรงเงื่อนไขแพ็กเกจ Standard 500฿'})`;
+          el.classList.add('is-ok');
+          return;
+        }
+        if (this.lookupState === 'not_found') {
+          el.textContent = isEn
+            ? 'League ID not found on FPL. Double-check the number (or still send it on LINE for us to verify).'
+            : 'ไม่พบลีกหมายเลขนี้ในระบบ FPL กรุณาเช็กตัวเลขอีกครั้ง (หรือคัดลอกส่งตรวจสอบทาง LINE ได้เลย)';
+          el.classList.add('is-warn');
+          return;
+        }
+        el.textContent = isEn
+          ? 'Live lookup unavailable right now — you can still copy and send your ID via LINE.'
+          : 'ไม่สามารถเช็กชื่อลีกอัตโนมัติได้ชั่วคราว — สามารถคัดลอกส่งเลข ID ทาง LINE ได้เลย';
+        el.classList.add('is-loading');
+      },
+
+      scheduleLeagueLookup(rawVal) {
+        if (this._lookupTimer) {
+          clearTimeout(this._lookupTimer);
+          this._lookupTimer = null;
+        }
+        const lid = String(rawVal || '').trim();
+        if (!/^[0-9]{1,10}$/.test(lid) || (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:')) {
+          this.lookupState = 'idle';
+          this.lookupResult = null;
+          this.lookupLid = '';
+          this._lookupSeq += 1;
+          this.renderLeagueLookupStatus();
+          return;
+        }
+        if (this.lookupLid === lid && (this.lookupState === 'found' || this.lookupState === 'not_found')) {
+          this.renderLeagueLookupStatus();
+          return;
+        }
+        this.lookupLid = lid;
+        this.lookupState = 'loading';
+        this.lookupResult = null;
+        this.renderLeagueLookupStatus();
+        const seq = ++this._lookupSeq;
+        this._lookupTimer = setTimeout(async () => {
+          this._lookupTimer = null;
+          try {
+            const resp = await fetch(this.resolveLeaguePreviewUrl(lid));
+            if (seq !== this._lookupSeq) return;
+            const data = await resp.json().catch(() => null);
+            if (resp.ok && data && data.success) {
+              this.lookupResult = data;
+              this.lookupState = 'found';
+              const tierEl = document.getElementById('order-team-tier');
+              if (tierEl) {
+                tierEl.value = data.tier_suggested === 'tier2' ? 'tier2' : 'tier1';
+              }
+              this.renderLeagueLookupStatus();
+              this.updateOrderSummary();
+              return;
+            }
+            if (resp.status === 404 || (data && data.not_found)) {
+              this.lookupResult = null;
+              this.lookupState = 'not_found';
+              this.renderLeagueLookupStatus();
+              this.updateOrderSummary();
+              return;
+            }
+            this.lookupResult = null;
+            this.lookupState = 'error';
+            this.renderLeagueLookupStatus();
+          } catch (_) {
+            if (seq !== this._lookupSeq) return;
+            this.lookupResult = null;
+            this.lookupState = 'error';
+            this.renderLeagueLookupStatus();
+          }
+        }, 450);
       },
 
       getOrderIdError(rawLid, forSubmit) {
@@ -3073,10 +3213,18 @@
         const lidOut = (/^[0-9]+$/.test(rawLid) ? rawLid : '') || cleanLid || (isEn ? '(Pending ID)' : '(รอระบุเลข ID)');
 
         if (boxEl) {
+          const hasFoundLookup = this.lookupState === 'found' && this.lookupResult && String(this.lookupResult.league_id) === lidOut;
+          const cnt = hasFoundLookup ? Number(this.lookupResult.team_count || 0) : 0;
+          const countLabel = hasFoundLookup
+            ? (this.lookupResult.has_more
+                ? (cnt >= 50 ? (isEn ? '50+ teams' : '50+ ทีม') : (isEn ? `${cnt}+ teams` : `${cnt}+ ทีม`))
+                : (isEn ? `${cnt} teams` : `${cnt} ทีม`))
+            : '';
           const lines = isEn
             ? [
                 'FPLSaWaDiKa Setup Request',
                 'Official League ID: ' + lidOut,
+                ...(hasFoundLookup ? ['League Name (FPL): ' + this.lookupResult.name + ' (' + countLabel + ')'] : []),
                 'Plan: ' + planLabel,
                 'Size: ' + tierLabel,
                 'Prize Rules & Amounts: ' + modelText,
@@ -3085,6 +3233,7 @@
             : [
                 'แจ้งขอเปิดแดชบอร์ด FPLSaWaDiKa',
                 'รหัส League ID: ' + lidOut,
+                ...(hasFoundLookup ? ['ชื่อลีก (จาก FPL): ' + this.lookupResult.name + ' (' + countLabel + ')'] : []),
                 'แพ็กเกจ: ' + planLabel,
                 'ขนาดลีก: ' + tierLabel,
                 'กติกาและเงินรางวัล: ' + modelText,

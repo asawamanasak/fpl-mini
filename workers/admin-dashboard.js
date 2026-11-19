@@ -3087,7 +3087,22 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       outCli.value = cliParts.join(' ');
 
       const cfgObj = {};
+      const featObj = {
+        prize_model: prizeModel,
+        has_weekly_prizes: prizeModel === 'weekly' || prizeModel === 'standard' || prizeModel === 'penalties',
+        has_monthly_prizes: prizeModel === 'monthly',
+        has_weekly_penalties: prizeModel === 'penalties',
+        has_settlement_phases: false,
+        has_cup: true
+      };
+      if ((prizeModel === 'weekly' || prizeModel === 'penalties') && weeklyVal > 0) {
+        featObj.weekly_prize_amount = weeklyVal;
+      } else if (prizeModel === 'monthly' && weeklyVal > 0) {
+        featObj.monthly_prize_amount = weeklyVal;
+      }
       cfgObj[lid] = {
+        id: Number(lid),
+        season: '2026/27',
         name: detectedName,
         short_name: shortName,
         tier: 1,
@@ -3096,16 +3111,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         tenant_group: tenantGroup,
         visibility: visibility,
         non_prize_teams: nonPrizeArr,
-        payout_model: prizeModel,
-        features: {
-          cup: true,
-          monthly_prize: prizeModel === 'monthly',
-          penalties: prizeModel === 'penalties'
-        }
+        features: featObj
       };
-      if ((prizeModel === 'weekly' || prizeModel === 'penalties') && weeklyVal > 0) {
-        cfgObj[lid].weekly_prize_amount = weeklyVal;
-      }
       outJson.value = JSON.stringify(cfgObj, null, 2);
 
       const urlStr = 'https://www.fplsawadika.com/' + lid + '/';

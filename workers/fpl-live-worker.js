@@ -1349,6 +1349,111 @@ export default {
       return resp;
     }
 
+    // 1.6 Public Read-Only FPL League Lookup for Landing Page Order Slip (/api/public/league-preview?id=...)
+    if (path === '/api/public/league-preview') {
+      if (request.method !== 'GET' && request.method !== 'HEAD') {
+        return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+          status: 405,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+        });
+      }
+      const lid = (url.searchParams.get('id') || '').trim();
+      if (!/^\d{1,10}$/.test(lid)) {
+        return new Response(JSON.stringify({ success: false, error: 'Invalid numeric League ID' }), {
+          status: 400,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+        });
+      }
+      const cache = caches.default;
+      const cacheKey = new Request(`${url.origin}/api/public/league-preview?id=${lid}`, { method: 'GET' });
+      const cached = await cache.match(cacheKey);
+      if (cached) {
+        const hitHeaders = new Headers(cached.headers);
+        hitHeaders.set('X-FPL-Edge-Cache', 'HIT');
+        hitHeaders.set('X-FPL-Edge-Colo', colo);
+        return new Response(request.method === 'HEAD' ? null : cached.body, {
+          status: cached.status,
+          headers: hitHeaders,
+        });
+      }
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 6000);
+      try {
+        const upstream = await fetch(
+          `https://fantasy.premierleague.com/api/leagues-classic/${lid}/standings/?page_standings=1&page_new_entries=1`,
+          {
+            headers: FPL_HEADERS,
+            signal: ctrl.signal,
+            cf: { cacheTtl: 30, cacheEverything: true },
+          }
+        );
+        clearTimeout(timer);
+        if (upstream.status === 404) {
+          const nfPayload = JSON.stringify({ success: false, not_found: true, league_id: lid });
+          const nfResp = new Response(request.method === 'HEAD' ? null : nfPayload, {
+            status: 404,
+            headers: {
+              ...CORS_HEADERS,
+              'Content-Type': 'application/json; charset=utf-8',
+              'Cache-Control': 'public, max-age=30, s-maxage=60, stale-while-revalidate=120',
+              'X-FPL-Edge-Cache': 'MISS',
+              'X-FPL-Edge-Colo': colo,
+            },
+          });
+          if (request.method === 'GET' && ctx && ctx.waitUntil) ctx.waitUntil(cache.put(cacheKey, nfResp.clone()));
+          return nfResp;
+        }
+        if (!upstream.ok) {
+          return new Response(JSON.stringify({ success: false, league_id: lid, upstream_status: upstream.status }), {
+            status: 502,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+          });
+        }
+        const data = await upstream.json();
+        const leagueMeta = (data && data.league) || {};
+        const uniqueEntries = new Set();
+        for (const list of [data && data.standings && data.standings.results, data && data.new_entries && data.new_entries.results]) {
+          if (!Array.isArray(list)) continue;
+          for (const row of list) {
+            const eid = Number(row && row.entry);
+            if (eid > 0) uniqueEntries.add(eid);
+          }
+        }
+        const teamCount = uniqueEntries.size;
+        const hasMore = Boolean(
+          (data && data.standings && data.standings.has_next) ||
+          (data && data.new_entries && data.new_entries.has_next)
+        );
+        const tierSuggested = (hasMore || teamCount > 30) ? 'tier2' : 'tier1';
+        const payload = JSON.stringify({
+          success: true,
+          league_id: lid,
+          name: String(leagueMeta.name || `League ${lid}`).trim(),
+          team_count: teamCount,
+          has_more: hasMore,
+          tier_suggested: tierSuggested,
+        });
+        const resp = new Response(request.method === 'HEAD' ? null : payload, {
+          status: 200,
+          headers: {
+            ...CORS_HEADERS,
+            'Content-Type': 'application/json; charset=utf-8',
+            'Cache-Control': 'public, max-age=30, s-maxage=60, stale-while-revalidate=120',
+            'X-FPL-Edge-Cache': 'MISS',
+            'X-FPL-Edge-Colo': colo,
+          },
+        });
+        if (request.method === 'GET' && ctx && ctx.waitUntil) ctx.waitUntil(cache.put(cacheKey, resp.clone()));
+        return resp;
+      } catch (err) {
+        clearTimeout(timer);
+        return new Response(JSON.stringify({ success: false, league_id: lid, error: err && err.name === 'AbortError' ? 'timeout' : 'upstream_error' }), {
+          status: 502,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+    }
+
     // Parse Gameweek event parameter (strict integer 1..38; reject non-numeric or conflicting event/gw params)
     const rawEvent = url.searchParams.get('event');
     const rawGw = url.searchParams.get('gw');

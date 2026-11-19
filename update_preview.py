@@ -1800,7 +1800,7 @@ __STRUCTURED_DATA_JSON__
         <button 
           id="tab-btn-about"
           data-tab-target="about-view" 
-          class="tab-nav-btn flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+          class="tab-nav-btn__ABOUT_TAB_HIDDEN__ flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           Dev Corner
         </button>
@@ -4999,15 +4999,20 @@ __STRUCTURED_DATA_JSON__
         const tabsBar = document.getElementById('header-tabs-bar');
         const tabContents = document.querySelectorAll('.tab-content');
         if (tabsBar) tabsBar.classList.toggle('hidden', isPaused);
+        if (tabsBar) tabsBar.style.display = isPaused ? 'none' : '';
         if (!overlay) return;
 
         if (!isPaused) {
           overlay.classList.add('hidden');
           overlay.innerHTML = '';
+          tabContents.forEach(el => { el.style.display = ''; });
           return;
         }
 
-        tabContents.forEach(el => el.classList.add('hidden'));
+        tabContents.forEach(el => {
+          el.classList.add('hidden');
+          el.style.display = 'none';
+        });
         const isEn = (this.currentLang === 'en');
         const lName = this.escapeHtml((this.data && this.data.name) || (this.config && this.config.name) || `League ${this.activeLeagueId}`);
         const lineUrl = (typeof SITE_LINE_URL !== 'undefined' && SITE_LINE_URL) ? SITE_LINE_URL : 'https://line.me/ti/p/lgWPeyIBR7';
@@ -5033,7 +5038,7 @@ __STRUCTURED_DATA_JSON__
               </p>
             </div>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-2">
-              <a href="${this.escapeHtml(lineUrl)}" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold shadow-sm transition-colors">
+              <a href="${this.escapeHtml(lineUrl)}" target="_blank" rel="noopener noreferrer" style="background-color: #06C755;" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl hover:brightness-95 text-white text-xs sm:text-sm font-bold shadow-sm transition-all">
                 <span>${isEn ? 'Renew / Contact via LINE' : 'ติดต่อต่ออายุ / เปิดลีกผ่าน LINE'}</span>
               </a>
               <a href="${this.escapeHtml(homeHref)}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-bold transition-colors">
@@ -6049,15 +6054,23 @@ __STRUCTURED_DATA_JSON__
         if (radarMainTitle) {
           radarMainTitle.innerText = isEn ? 'Team Consistency Radar' : 'เรดาร์ความสม่ำเสมอของทีม';
         }
+        const isSingleRadarTenant = Object.keys((this.multiData && this.multiData.leagues) || {}).filter(lid => {
+          const l = this.multiData.leagues[lid];
+          const cfg = (this.configs && this.configs[lid]) || {};
+          return l && l.tier !== 2 && cfg.tier !== 2;
+        }).length <= 1;
+        const singleTeamCount = (this.data && Array.isArray(this.data.teams)) ? this.data.teams.length : 0;
         const radarMainSub = document.getElementById('radar-main-subtitle');
         if (radarMainSub) {
-          radarMainSub.innerText = isEn 
-            ? 'Comparing baseline scoring, floor resilience, and spread across all fantasy managers in the system.'
-            : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมในระบบ ไม่จำกัดเฉพาะในลีก';
+          radarMainSub.innerText = isSingleRadarTenant
+            ? (isEn ? 'Compare form consistency, scoring floor, and ceiling across every team in your league' : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมภายในลีกของคุณ')
+            : (isEn ? 'Comparing baseline scoring, floor resilience, and spread across all fantasy managers in the system.' : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมในระบบ ไม่จำกัดเฉพาะในลีก');
         }
         const bannerStatText = document.getElementById('radar-banner-stat-text');
         if (bannerStatText) {
-          bannerStatText.innerText = isEn ? 'Cross-League Analytics Active' : 'วิเคราะห์ข้าม 8 ลีกสมบูรณ์';
+          bannerStatText.innerText = isSingleRadarTenant
+            ? (isEn ? `All ${singleTeamCount} league teams analyzed` : `วิเคราะห์ครบทั้ง ${singleTeamCount} ทีมในลีก`)
+            : (isEn ? 'Cross-League Analytics Active' : 'วิเคราะห์ข้าม 8 ลีกสมบูรณ์');
         }
         const benchmarkTitle = document.getElementById('radar-benchmark-title');
         if (benchmarkTitle) {
@@ -6876,7 +6889,10 @@ __STRUCTURED_DATA_JSON__
         const isSingleLeague = availableLeaguesCount <= 1;
         const switcherBtn = document.getElementById('league-switcher-btn');
         const switcherChevronWrap = document.getElementById('league-switcher-chevron-wrap');
-        if (switcherChevronWrap) switcherChevronWrap.classList.toggle('hidden', isSingleLeague);
+        if (switcherChevronWrap) {
+          switcherChevronWrap.classList.toggle('hidden', isSingleLeague);
+          switcherChevronWrap.style.display = isSingleLeague ? 'none' : '';
+        }
         if (switcherBtn) {
           switcherBtn.classList.toggle('cursor-default', isSingleLeague);
           switcherBtn.classList.toggle('cursor-pointer', !isSingleLeague);
@@ -7035,6 +7051,16 @@ __STRUCTURED_DATA_JSON__
           }
         }
 
+        // Hide Dev Corner tab on private customer tenants (visibility === 'private')
+        const aboutTabBtn = document.getElementById('tab-btn-about');
+        const isPrivateTenant = Boolean(this.config && this.config.visibility === 'private');
+        if (aboutTabBtn) {
+          aboutTabBtn.classList.toggle('hidden', isPrivateTenant);
+          if (isPrivateTenant && this.activeTab === 'about-view') {
+            this.switchTab('gameweek-view');
+          }
+        }
+
         // Check Shi'62 Special Feature Flag
         const shi62TabBtn = document.getElementById('tab-btn-shi62-special');
         const isShi62 = this.hasShi62Feature();
@@ -7105,7 +7131,15 @@ __STRUCTURED_DATA_JSON__
       }
 
       switchTab(target, fromPopstate = false, skipRender = false) {
+        if (this.isLeaguePaused()) {
+          this.renderPausedOverlay(true);
+          return;
+        }
         let normalized = this.normalizeTab(target);
+        const isPrivateTenant = Boolean(this.config && this.config.visibility === 'private');
+        if (isPrivateTenant && normalized === 'about-view') {
+          normalized = 'gameweek-view';
+        }
         let targetView = document.getElementById(normalized);
         if (!targetView) {
           normalized = 'gameweek-view';
@@ -7156,6 +7190,9 @@ __STRUCTURED_DATA_JSON__
             cls += ' hidden';
           }
           if (btn.id === 'tab-btn-bramann-challenge' && !this.hasBramannChalFeature()) {
+            cls += ' hidden';
+          }
+          if (btn.id === 'tab-btn-about' && Boolean(this.config && this.config.visibility === 'private')) {
             cls += ' hidden';
           }
           btn.className = cls;
@@ -7277,6 +7314,10 @@ __STRUCTURED_DATA_JSON__
       }
 
       renderAll() {
+        if (this.isLeaguePaused()) {
+          this.renderPausedOverlay(true);
+          return;
+        }
         this.invalidateRenderCache();
         this.renderGWSelector();
         this.renderCurrentTab(true);
@@ -16556,8 +16597,8 @@ selectShi62GW(gwName) {
         if (radarMainSub) {
           if (isSingleTier1Tenant) {
             radarMainSub.innerText = isEn
-              ? 'Compare consistency, floor scores, and variance across all managers in your mini-league'
-              : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมภายในมินิลีกของคุณ';
+              ? 'Compare form consistency, scoring floor, and ceiling across every team in your league'
+              : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมภายในลีกของคุณ';
           } else {
             radarMainSub.innerText = isEn
               ? 'Compare performance consistency, stability, and volatility across all Tier-1 leagues in this group'
@@ -16565,8 +16606,9 @@ selectShi62GW(gwName) {
           }
         }
         if (radarBannerText) {
+          const singleTeams = (this.data && Array.isArray(this.data.teams)) ? this.data.teams.length : 0;
           radarBannerText.innerText = isSingleTier1Tenant
-            ? (isEn ? 'League Consistency Audit' : 'วิเคราะห์ความสม่ำเสมอภายในลีก')
+            ? (isEn ? `All ${singleTeams} league teams analyzed` : `วิเคราะห์ครบทั้ง ${singleTeams} ทีมในลีก`)
             : (isEn ? `Analyzed across ${radarTier1IdsCount} Leagues` : `วิเคราะห์ข้าม ${radarTier1IdsCount} ลีกสมบูรณ์`);
         }
         const benchmarkCard = document.getElementById('benchmark-ranking-card');
@@ -16953,8 +16995,16 @@ selectShi62GW(gwName) {
         this._radarTeamList = teamList;
 
         if (headerPill) {
-          const tier1LeaguesCount = leagueBenchmarks.length || 8;
-          headerPill.innerText = isEn ? `${tier1LeaguesCount} Leagues • ${teamList.length} Teams` : `${tier1LeaguesCount} ลีก • ${teamList.length} ทีม`;
+          const isSingleRadar = leagueBenchmarks.length <= 1;
+          headerPill.innerText = isSingleRadar
+            ? (isEn ? `League Radar • ${teamList.length} Teams` : `เรดาร์ในลีก • ${teamList.length} ทีม`)
+            : (isEn ? `${leagueBenchmarks.length} Leagues • ${teamList.length} Teams` : `${leagueBenchmarks.length} ลีก • ${teamList.length} ทีม`);
+        }
+        const radarBannerTextFinal = document.getElementById('radar-banner-stat-text');
+        if (radarBannerTextFinal && leagueBenchmarks.length <= 1) {
+          radarBannerTextFinal.innerText = isEn
+            ? `All ${teamList.length} league teams analyzed`
+            : `วิเคราะห์ครบทั้ง ${teamList.length} ทีมในลีก`;
         }
 
         // Render Record Cards (Mobile: 2x2 grid, Desktop: 4 columns - Editorial Clean)
@@ -22344,6 +22394,7 @@ selectShi62GW(gwName) {
     html = html.replace('__TIER2_TAB_HIDDEN__', ' hidden' if is_initial_tier2 else '')
     html = html.replace('__PRIZES_TAB_HIDDEN__', '' if has_initial_prizes else ' hidden')
     html = html.replace('__CUP_TAB_HIDDEN__', '' if has_initial_cup else ' hidden')
+    html = html.replace('__ABOUT_TAB_HIDDEN__', ' hidden' if not is_showcase_visible else '')
     html = html.replace('__MULTI_DATA_JSON__', multi_data_json_str)
     html = html.replace('__LEAGUES_CONFIG_JSON__', leagues_config_json_str)
     html = html.replace('__SHI62_SPECIAL_DATA_JSON__', shi62_data_json_str or 'null')
@@ -24298,8 +24349,28 @@ __STRUCTURED_DATA_JSON__
       font-weight: 700;
       color: var(--color-accent-text);
     }
-    .bm-error.hidden {
+    .bm-error.hidden,
+    .bm-lookup-status.hidden {
       display: none;
+    }
+    .bm-lookup-status {
+      margin: 0.4rem 0 0;
+      font-size: 0.85rem;
+      font-weight: 700;
+      line-height: 1.45;
+      color: var(--color-ink-2);
+    }
+    .bm-lookup-status.is-ok {
+      color: #15803d;
+    }
+    html.dark .bm-lookup-status.is-ok {
+      color: #4ade80;
+    }
+    .bm-lookup-status.is-warn {
+      color: #b45309;
+    }
+    html.dark .bm-lookup-status.is-warn {
+      color: #fbbf24;
     }
 
     .bm-slip-card {
@@ -24737,6 +24808,7 @@ __STRUCTURED_DATA_JSON__
               <input id="order-league-id" name="league_id" type="text" placeholder="เช่น 40700 หรือวางลิงก์หน้าลีก FPL" class="bm-input" required>
               <p id="hint-league-id" class="bm-field-hint">กรอกตัวเลข เช่น 40700 หรือวางลิงก์หน้าลีกเพื่อดึงรหัสอัตโนมัติ (ระบบดึงชื่อลีกให้จาก FPL)</p>
               <p id="order-league-id-error" class="bm-error hidden">กรุณากรอกรหัส League ID เป็นตัวเลข</p>
+              <p id="order-league-lookup" class="bm-lookup-status hidden" aria-live="polite"></p>
             </div>
 
             <div class="bm-field-row">
@@ -24820,6 +24892,11 @@ __STRUCTURED_DATA_JSON__
       dramaTimer: null,
       dramaPaused: false,
       visitorViews: null,
+      lookupResult: null,
+      lookupState: 'idle',
+      lookupLid: '',
+      _lookupTimer: null,
+      _lookupSeq: 0,
 
       escapeHtml(val) {
         return String(val == null ? '' : val)
@@ -25090,6 +25167,7 @@ __STRUCTURED_DATA_JSON__
         setTxt('footer-link-pricing', isEn ? 'Pricing' : 'ราคา');
         setTxt('footer-link-faq', isEn ? 'FAQ' : 'คำถามที่พบบ่อย');
         this.renderVisitorStat();
+        this.renderLeagueLookupStatus();
         this.updateOrderSummary();
       },
 
@@ -25429,7 +25507,7 @@ __STRUCTURED_DATA_JSON__
         if (!form) return;
         const lidEl = document.getElementById('order-league-id');
         if (lidEl) {
-          lidEl.addEventListener('input', () => {
+          const handleLidInput = () => {
             const raw = lidEl.value.trim();
             const urlMatch = raw.match(/leagues\/([0-9]{1,12})/i);
             const hashMatch = raw.match(/^#([0-9]{1,12})$/);
@@ -25438,7 +25516,10 @@ __STRUCTURED_DATA_JSON__
             } else if (hashMatch && hashMatch[1]) {
               lidEl.value = hashMatch[1];
             }
-          });
+            this.scheduleLeagueLookup(lidEl.value.trim());
+          };
+          lidEl.addEventListener('input', handleLidInput);
+          lidEl.addEventListener('change', handleLidInput);
         }
         ['order-league-id', 'order-plan', 'order-prize-model', 'order-team-tier'].forEach((id) => {
           const el = document.getElementById(id);
@@ -25451,6 +25532,116 @@ __STRUCTURED_DATA_JSON__
           e.preventDefault();
           this.copyOrderSlip();
         });
+      },
+
+      resolveLeaguePreviewUrl(lid) {
+        const enc = encodeURIComponent(String(lid || '').trim());
+        if (this.isPreviewOrigin()) {
+          return '/api/public/league-preview?id=' + enc;
+        }
+        return this.resolveApiBase().base + '/api/public/league-preview?id=' + enc;
+      },
+
+      renderLeagueLookupStatus() {
+        const el = document.getElementById('order-league-lookup');
+        if (!el) return;
+        const isEn = this.lang === 'en';
+        el.classList.remove('is-loading', 'is-ok', 'is-warn', 'hidden');
+        if (this.lookupState === 'idle' || !this.lookupLid) {
+          el.textContent = '';
+          el.classList.add('hidden');
+          return;
+        }
+        if (this.lookupState === 'loading') {
+          el.textContent = isEn
+            ? 'Checking official league name and team count from FPL…'
+            : 'กำลังตรวจสอบชื่อลีกและจำนวนทีมจาก FPL…';
+          el.classList.add('is-loading');
+          return;
+        }
+        if (this.lookupState === 'found' && this.lookupResult) {
+          const r = this.lookupResult;
+          const cnt = Number(r.team_count || 0);
+          const countLabel = r.has_more
+            ? (cnt >= 50 ? (isEn ? '50+ teams' : '50+ ทีม') : (isEn ? `${cnt}+ teams` : `${cnt}+ ทีม`))
+            : (isEn ? `${cnt} teams` : `${cnt} ทีม`);
+          const isTier2 = r.tier_suggested === 'tier2';
+          el.textContent = isEn
+            ? `✓ Found: ${r.name} • ${countLabel} (${isTier2 ? '31+ teams — Custom LINE quote' : 'Fits Standard Pass $19'})`
+            : `✓ พบลีก: ${r.name} • ${countLabel} (${isTier2 ? 'ลีกใหญ่ 31+ ทีม — ประเมินราคาทาง LINE' : 'ตรงเงื่อนไขแพ็กเกจ Standard 500฿'})`;
+          el.classList.add('is-ok');
+          return;
+        }
+        if (this.lookupState === 'not_found') {
+          el.textContent = isEn
+            ? 'League ID not found on FPL. Double-check the number (or still send it on LINE for us to verify).'
+            : 'ไม่พบลีกหมายเลขนี้ในระบบ FPL กรุณาเช็กตัวเลขอีกครั้ง (หรือคัดลอกส่งตรวจสอบทาง LINE ได้เลย)';
+          el.classList.add('is-warn');
+          return;
+        }
+        el.textContent = isEn
+          ? 'Live lookup unavailable right now — you can still copy and send your ID via LINE.'
+          : 'ไม่สามารถเช็กชื่อลีกอัตโนมัติได้ชั่วคราว — สามารถคัดลอกส่งเลข ID ทาง LINE ได้เลย';
+        el.classList.add('is-loading');
+      },
+
+      scheduleLeagueLookup(rawVal) {
+        if (this._lookupTimer) {
+          clearTimeout(this._lookupTimer);
+          this._lookupTimer = null;
+        }
+        const lid = String(rawVal || '').trim();
+        if (!/^[0-9]{1,10}$/.test(lid) || (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:')) {
+          this.lookupState = 'idle';
+          this.lookupResult = null;
+          this.lookupLid = '';
+          this._lookupSeq += 1;
+          this.renderLeagueLookupStatus();
+          return;
+        }
+        if (this.lookupLid === lid && (this.lookupState === 'found' || this.lookupState === 'not_found')) {
+          this.renderLeagueLookupStatus();
+          return;
+        }
+        this.lookupLid = lid;
+        this.lookupState = 'loading';
+        this.lookupResult = null;
+        this.renderLeagueLookupStatus();
+        const seq = ++this._lookupSeq;
+        this._lookupTimer = setTimeout(async () => {
+          this._lookupTimer = null;
+          try {
+            const resp = await fetch(this.resolveLeaguePreviewUrl(lid));
+            if (seq !== this._lookupSeq) return;
+            const data = await resp.json().catch(() => null);
+            if (resp.ok && data && data.success) {
+              this.lookupResult = data;
+              this.lookupState = 'found';
+              const tierEl = document.getElementById('order-team-tier');
+              if (tierEl) {
+                tierEl.value = data.tier_suggested === 'tier2' ? 'tier2' : 'tier1';
+              }
+              this.renderLeagueLookupStatus();
+              this.updateOrderSummary();
+              return;
+            }
+            if (resp.status === 404 || (data && data.not_found)) {
+              this.lookupResult = null;
+              this.lookupState = 'not_found';
+              this.renderLeagueLookupStatus();
+              this.updateOrderSummary();
+              return;
+            }
+            this.lookupResult = null;
+            this.lookupState = 'error';
+            this.renderLeagueLookupStatus();
+          } catch (_) {
+            if (seq !== this._lookupSeq) return;
+            this.lookupResult = null;
+            this.lookupState = 'error';
+            this.renderLeagueLookupStatus();
+          }
+        }, 450);
       },
 
       getOrderIdError(rawLid, forSubmit) {
@@ -25516,10 +25707,18 @@ __STRUCTURED_DATA_JSON__
         const lidOut = (/^[0-9]+$/.test(rawLid) ? rawLid : '') || cleanLid || (isEn ? '(Pending ID)' : '(รอระบุเลข ID)');
 
         if (boxEl) {
+          const hasFoundLookup = this.lookupState === 'found' && this.lookupResult && String(this.lookupResult.league_id) === lidOut;
+          const cnt = hasFoundLookup ? Number(this.lookupResult.team_count || 0) : 0;
+          const countLabel = hasFoundLookup
+            ? (this.lookupResult.has_more
+                ? (cnt >= 50 ? (isEn ? '50+ teams' : '50+ ทีม') : (isEn ? `${cnt}+ teams` : `${cnt}+ ทีม`))
+                : (isEn ? `${cnt} teams` : `${cnt} ทีม`))
+            : '';
           const lines = isEn
             ? [
                 'FPLSaWaDiKa Setup Request',
                 'Official League ID: ' + lidOut,
+                ...(hasFoundLookup ? ['League Name (FPL): ' + this.lookupResult.name + ' (' + countLabel + ')'] : []),
                 'Plan: ' + planLabel,
                 'Size: ' + tierLabel,
                 'Prize Rules & Amounts: ' + modelText,
@@ -25528,6 +25727,7 @@ __STRUCTURED_DATA_JSON__
             : [
                 'แจ้งขอเปิดแดชบอร์ด FPLSaWaDiKa',
                 'รหัส League ID: ' + lidOut,
+                ...(hasFoundLookup ? ['ชื่อลีก (จาก FPL): ' + this.lookupResult.name + ' (' + countLabel + ')'] : []),
                 'แพ็กเกจ: ' + planLabel,
                 'ขนาดลีก: ' + tierLabel,
                 'กติกาและเงินรางวัล: ' + modelText,

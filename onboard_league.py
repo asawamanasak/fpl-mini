@@ -74,15 +74,26 @@ def build_league_entry(
     prize_model: str,
     weekly_prize: int,
     non_prize_teams: list,
+    no_cup: bool = False,
     override_cfg: dict | None = None,
 ) -> dict:
-    """Construct a validated config/leagues_config.json record."""
+    """Construct a validated config/leagues_config.json record aligned with update_preview.py."""
     features = {
-        "cup": True,
-        "monthly_prize": prize_model == "monthly",
-        "penalties": prize_model == "penalties",
+        "prize_model": prize_model if prize_model != "none" else "standard",
+        "has_weekly_prizes": prize_model in ("weekly", "standard", "penalties"),
+        "has_monthly_prizes": prize_model == "monthly",
+        "has_weekly_penalties": prize_model == "penalties",
+        "has_settlement_phases": False,
+        "has_cup": not no_cup,
     }
+    if prize_model in ("weekly", "penalties") and weekly_prize > 0:
+        features["weekly_prize_amount"] = weekly_prize
+    elif prize_model == "monthly" and weekly_prize > 0:
+        features["monthly_prize_amount"] = weekly_prize
+
     entry = {
+        "id": int(league_id),
+        "season": "2026/27",
         "name": league_name,
         "short_name": short_name or league_name[:12].strip(),
         "tier": tier,
@@ -91,11 +102,8 @@ def build_league_entry(
         "tenant_group": tenant_group,
         "visibility": visibility,
         "non_prize_teams": non_prize_teams,
-        "payout_model": prize_model,
         "features": features,
     }
-    if prize_model in ("weekly", "penalties") and weekly_prize > 0:
-        entry["weekly_prize_amount"] = weekly_prize
     if override_cfg:
         for k, v in override_cfg.items():
             if k != "league_id":
@@ -119,11 +127,12 @@ def main() -> int:
     parser.add_argument("--plan", choices=["standard", "custom"], default="standard", help="Commercial tier plan")
     parser.add_argument(
         "--prize-model",
-        choices=["weekly", "standard", "monthly", "penalties"],
+        choices=["weekly", "standard", "monthly", "penalties", "none"],
         default="weekly",
         help="Prize settlement preset",
     )
-    parser.add_argument("--weekly-prize", type=int, default=300, help="Weekly payout amount in THB (default: 300)")
+    parser.add_argument("--weekly-prize", type=int, default=300, help="Weekly/monthly payout amount in THB (default: 300)")
+    parser.add_argument("--no-cup", action="store_true", help="Disable Knockout Cup tab for leagues that do not play a cup")
     parser.add_argument("--tenant-group", default="", help="Tenant isolation key (default: private_<league_id>)")
     parser.add_argument("--visibility", choices=["private", "showcase"], default="private", help="Visibility & sitemap exposure")
     parser.add_argument("--status", choices=["active", "trial", "paused"], default="active", help="League lifecycle status")
@@ -194,6 +203,7 @@ def main() -> int:
         prize_model=args.prize_model,
         weekly_prize=args.weekly_prize,
         non_prize_teams=non_prize,
+        no_cup=args.no_cup,
         override_cfg=override_cfg,
     )
 

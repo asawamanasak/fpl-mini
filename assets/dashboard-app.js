@@ -1805,15 +1805,20 @@
         const tabsBar = document.getElementById('header-tabs-bar');
         const tabContents = document.querySelectorAll('.tab-content');
         if (tabsBar) tabsBar.classList.toggle('hidden', isPaused);
+        if (tabsBar) tabsBar.style.display = isPaused ? 'none' : '';
         if (!overlay) return;
 
         if (!isPaused) {
           overlay.classList.add('hidden');
           overlay.innerHTML = '';
+          tabContents.forEach(el => { el.style.display = ''; });
           return;
         }
 
-        tabContents.forEach(el => el.classList.add('hidden'));
+        tabContents.forEach(el => {
+          el.classList.add('hidden');
+          el.style.display = 'none';
+        });
         const isEn = (this.currentLang === 'en');
         const lName = this.escapeHtml((this.data && this.data.name) || (this.config && this.config.name) || `League ${this.activeLeagueId}`);
         const lineUrl = (typeof SITE_LINE_URL !== 'undefined' && SITE_LINE_URL) ? SITE_LINE_URL : 'https://line.me/ti/p/lgWPeyIBR7';
@@ -1839,7 +1844,7 @@
               </p>
             </div>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-2">
-              <a href="${this.escapeHtml(lineUrl)}" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold shadow-sm transition-colors">
+              <a href="${this.escapeHtml(lineUrl)}" target="_blank" rel="noopener noreferrer" style="background-color: #06C755;" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl hover:brightness-95 text-white text-xs sm:text-sm font-bold shadow-sm transition-all">
                 <span>${isEn ? 'Renew / Contact via LINE' : 'ติดต่อต่ออายุ / เปิดลีกผ่าน LINE'}</span>
               </a>
               <a href="${this.escapeHtml(homeHref)}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-bold transition-colors">
@@ -2855,15 +2860,23 @@
         if (radarMainTitle) {
           radarMainTitle.innerText = isEn ? 'Team Consistency Radar' : 'เรดาร์ความสม่ำเสมอของทีม';
         }
+        const isSingleRadarTenant = Object.keys((this.multiData && this.multiData.leagues) || {}).filter(lid => {
+          const l = this.multiData.leagues[lid];
+          const cfg = (this.configs && this.configs[lid]) || {};
+          return l && l.tier !== 2 && cfg.tier !== 2;
+        }).length <= 1;
+        const singleTeamCount = (this.data && Array.isArray(this.data.teams)) ? this.data.teams.length : 0;
         const radarMainSub = document.getElementById('radar-main-subtitle');
         if (radarMainSub) {
-          radarMainSub.innerText = isEn 
-            ? 'Comparing baseline scoring, floor resilience, and spread across all fantasy managers in the system.'
-            : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมในระบบ ไม่จำกัดเฉพาะในลีก';
+          radarMainSub.innerText = isSingleRadarTenant
+            ? (isEn ? 'Compare form consistency, scoring floor, and ceiling across every team in your league' : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมภายในลีกของคุณ')
+            : (isEn ? 'Comparing baseline scoring, floor resilience, and spread across all fantasy managers in the system.' : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมในระบบ ไม่จำกัดเฉพาะในลีก');
         }
         const bannerStatText = document.getElementById('radar-banner-stat-text');
         if (bannerStatText) {
-          bannerStatText.innerText = isEn ? 'Cross-League Analytics Active' : 'วิเคราะห์ข้าม 8 ลีกสมบูรณ์';
+          bannerStatText.innerText = isSingleRadarTenant
+            ? (isEn ? `All ${singleTeamCount} league teams analyzed` : `วิเคราะห์ครบทั้ง ${singleTeamCount} ทีมในลีก`)
+            : (isEn ? 'Cross-League Analytics Active' : 'วิเคราะห์ข้าม 8 ลีกสมบูรณ์');
         }
         const benchmarkTitle = document.getElementById('radar-benchmark-title');
         if (benchmarkTitle) {
@@ -3682,7 +3695,10 @@
         const isSingleLeague = availableLeaguesCount <= 1;
         const switcherBtn = document.getElementById('league-switcher-btn');
         const switcherChevronWrap = document.getElementById('league-switcher-chevron-wrap');
-        if (switcherChevronWrap) switcherChevronWrap.classList.toggle('hidden', isSingleLeague);
+        if (switcherChevronWrap) {
+          switcherChevronWrap.classList.toggle('hidden', isSingleLeague);
+          switcherChevronWrap.style.display = isSingleLeague ? 'none' : '';
+        }
         if (switcherBtn) {
           switcherBtn.classList.toggle('cursor-default', isSingleLeague);
           switcherBtn.classList.toggle('cursor-pointer', !isSingleLeague);
@@ -3841,6 +3857,16 @@
           }
         }
 
+        // Hide Dev Corner tab on private customer tenants (visibility === 'private')
+        const aboutTabBtn = document.getElementById('tab-btn-about');
+        const isPrivateTenant = Boolean(this.config && this.config.visibility === 'private');
+        if (aboutTabBtn) {
+          aboutTabBtn.classList.toggle('hidden', isPrivateTenant);
+          if (isPrivateTenant && this.activeTab === 'about-view') {
+            this.switchTab('gameweek-view');
+          }
+        }
+
         // Check Shi'62 Special Feature Flag
         const shi62TabBtn = document.getElementById('tab-btn-shi62-special');
         const isShi62 = this.hasShi62Feature();
@@ -3911,7 +3937,15 @@
       }
 
       switchTab(target, fromPopstate = false, skipRender = false) {
+        if (this.isLeaguePaused()) {
+          this.renderPausedOverlay(true);
+          return;
+        }
         let normalized = this.normalizeTab(target);
+        const isPrivateTenant = Boolean(this.config && this.config.visibility === 'private');
+        if (isPrivateTenant && normalized === 'about-view') {
+          normalized = 'gameweek-view';
+        }
         let targetView = document.getElementById(normalized);
         if (!targetView) {
           normalized = 'gameweek-view';
@@ -3962,6 +3996,9 @@
             cls += ' hidden';
           }
           if (btn.id === 'tab-btn-bramann-challenge' && !this.hasBramannChalFeature()) {
+            cls += ' hidden';
+          }
+          if (btn.id === 'tab-btn-about' && Boolean(this.config && this.config.visibility === 'private')) {
             cls += ' hidden';
           }
           btn.className = cls;
@@ -4083,6 +4120,10 @@
       }
 
       renderAll() {
+        if (this.isLeaguePaused()) {
+          this.renderPausedOverlay(true);
+          return;
+        }
         this.invalidateRenderCache();
         this.renderGWSelector();
         this.renderCurrentTab(true);
@@ -13362,8 +13403,8 @@ selectShi62GW(gwName) {
         if (radarMainSub) {
           if (isSingleTier1Tenant) {
             radarMainSub.innerText = isEn
-              ? 'Compare consistency, floor scores, and variance across all managers in your mini-league'
-              : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมภายในมินิลีกของคุณ';
+              ? 'Compare form consistency, scoring floor, and ceiling across every team in your league'
+              : 'เปรียบเทียบมาตรฐานฟอร์มการเล่น ความนิ่ง และความแกว่ง ของทุกทีมภายในลีกของคุณ';
           } else {
             radarMainSub.innerText = isEn
               ? 'Compare performance consistency, stability, and volatility across all Tier-1 leagues in this group'
@@ -13371,8 +13412,9 @@ selectShi62GW(gwName) {
           }
         }
         if (radarBannerText) {
+          const singleTeams = (this.data && Array.isArray(this.data.teams)) ? this.data.teams.length : 0;
           radarBannerText.innerText = isSingleTier1Tenant
-            ? (isEn ? 'League Consistency Audit' : 'วิเคราะห์ความสม่ำเสมอภายในลีก')
+            ? (isEn ? `All ${singleTeams} league teams analyzed` : `วิเคราะห์ครบทั้ง ${singleTeams} ทีมในลีก`)
             : (isEn ? `Analyzed across ${radarTier1IdsCount} Leagues` : `วิเคราะห์ข้าม ${radarTier1IdsCount} ลีกสมบูรณ์`);
         }
         const benchmarkCard = document.getElementById('benchmark-ranking-card');
@@ -13759,8 +13801,16 @@ selectShi62GW(gwName) {
         this._radarTeamList = teamList;
 
         if (headerPill) {
-          const tier1LeaguesCount = leagueBenchmarks.length || 8;
-          headerPill.innerText = isEn ? `${tier1LeaguesCount} Leagues • ${teamList.length} Teams` : `${tier1LeaguesCount} ลีก • ${teamList.length} ทีม`;
+          const isSingleRadar = leagueBenchmarks.length <= 1;
+          headerPill.innerText = isSingleRadar
+            ? (isEn ? `League Radar • ${teamList.length} Teams` : `เรดาร์ในลีก • ${teamList.length} ทีม`)
+            : (isEn ? `${leagueBenchmarks.length} Leagues • ${teamList.length} Teams` : `${leagueBenchmarks.length} ลีก • ${teamList.length} ทีม`);
+        }
+        const radarBannerTextFinal = document.getElementById('radar-banner-stat-text');
+        if (radarBannerTextFinal && leagueBenchmarks.length <= 1) {
+          radarBannerTextFinal.innerText = isEn
+            ? `All ${teamList.length} league teams analyzed`
+            : `วิเคราะห์ครบทั้ง ${teamList.length} ทีมในลีก`;
         }
 
         // Render Record Cards (Mobile: 2x2 grid, Desktop: 4 columns - Editorial Clean)
