@@ -21,16 +21,29 @@ CHROME_BIN = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 HTTP_PORT = 8765
 
-TIER1_LEAGUES = [
-    ("40700", "เซียนอยู่รู หมูอยู่ตึก"),
-    ("675290", "NudNee"),
-    ("38491", "รอ แมน โอน"),
-    ("1101958", "Barley's Official League"),
-    ("438691", "2 spade"),
-    ("187827", "Shi62"),
-    ("5349", "Bramann League"),
-    ("567387", "Fantasy Nguan & friends cup")
-]
+def _load_tier1_leagues():
+    cfg_path = os.path.join(BASE_DIR, "config", "leagues_config.json")
+    try:
+        with open(cfg_path, "r", encoding="utf-8") as cf:
+            cfg = json.load(cf)
+        return [
+            (str(lid), lobj.get("name", f"League {lid}"))
+            for lid, lobj in cfg.items()
+            if isinstance(lobj, dict) and int(lobj.get("tier", 1)) == 1
+        ]
+    except Exception:
+        return [
+            ("40700", "เซียนอยู่รู หมูอยู่ตึก"),
+            ("675290", "NudNee"),
+            ("38491", "รอ แมน โอน"),
+            ("1101958", "Barley's Official League"),
+            ("438691", "2 spade"),
+            ("187827", "Shi62"),
+            ("5349", "Bramann League"),
+            ("567387", "Fantasy Nguan & friends cup"),
+        ]
+
+TIER1_LEAGUES = _load_tier1_leagues()
 
 VIEWPORTS = [
     {
@@ -410,36 +423,28 @@ async def run_league_audit(cdp, lid, league_name, vp):
     else:
         results["data_issues"].append(f"Projected Points Modal test: {proj_modal_test}")
 
-    # 3. Text Summary Modal (via production shareCurrentGameweek)
-    summary_modal_test = await cdp.evaluate("""
+    # 3. Export Excel button & Legacy Summary Modal Cleanup check
+    share_cleanup_test = await cdp.evaluate("""
         (() => {
             try {
-                if (window.app && window.app.shareCurrentGameweek) {
-                    window.app.shareCurrentGameweek();
-                    const modal = document.getElementById('text-summary-modal');
-                    const isVis = modal && !modal.classList.contains('hidden');
-                    const textarea = document.getElementById('text-summary-content');
-                    const textVal = textarea ? textarea.value : '';
-                    const hasText = Boolean(textVal && textVal.length > 30);
-                    
-                    window.app.closeTextSummaryModal();
-                    const isClosed = modal && modal.classList.contains('hidden');
-                    return { 
-                        status: (isVis && isClosed && hasText) ? 'PASS' : 'FAIL',
-                        hasText: hasText,
-                        len: textVal.length
-                    };
-                }
-                return { status: 'PASS' };
+                const exportBtn = document.getElementById('btn-export-excel');
+                const legacyModal = document.getElementById('text-summary-modal');
+                const legacyShareFn = window.app && window.app.shareCurrentGameweek;
+                return {
+                    status: (exportBtn && !legacyModal && !legacyShareFn) ? 'PASS' : 'FAIL',
+                    hasExportBtn: Boolean(exportBtn),
+                    hasLegacyModal: Boolean(legacyModal),
+                    hasLegacyShareFn: Boolean(legacyShareFn)
+                };
             } catch (e) {
                 return { status: 'FAIL', error: e.toString() };
             }
         })()
     """) or {}
-    if summary_modal_test.get("status") == "PASS":
+    if share_cleanup_test.get("status") == "PASS":
         results["modals_checked"] += 1
     else:
-        results["data_issues"].append(f"LINE Summary Modal test: {summary_modal_test}")
+        results["data_issues"].append(f"Share & Export check: {share_cleanup_test}")
 
     # Collect console errors & uncaught exceptions (filter out benign external font/analytics errors if any)
     critical_errors = [

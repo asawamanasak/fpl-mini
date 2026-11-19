@@ -1,6 +1,6 @@
 /**
  * FPLSaWaDiKa Executive Terminal & Business Intelligence Dashboard
- * Secure Private Management Console for asawamanasak@gmail.com
+ * Secure Private Management Console (asawamanasak@gmail.com, noii.patchara@gmail.com)
  * Protected by Cloudflare Zero Trust (Email OTP)
  *
  * Impeccable + Unslop Broadcast Control Room Edition:
@@ -13,6 +13,7 @@
  */
 
 export const ADMIN_EMAIL = 'asawamanasak@gmail.com';
+export const ADMIN_EMAILS = ['asawamanasak@gmail.com', 'noii.patchara@gmail.com'];
 
 const SESSION_TTL_SECONDS = 2592000; // 30 days
 const JWKS_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
@@ -72,8 +73,25 @@ export async function getSessionSigningSecret(env) {
 }
 
 export function getAllowedAdminEmail(env) {
-  const email = env && typeof env.ADMIN_EMAIL === 'string' ? env.ADMIN_EMAIL.trim() : '';
-  return email || ADMIN_EMAIL;
+  const raw = env && typeof env.ADMIN_EMAIL === 'string' ? env.ADMIN_EMAIL.trim() : '';
+  if (!raw) return ADMIN_EMAIL;
+  const first = raw.split(',')[0].trim();
+  return first || ADMIN_EMAIL;
+}
+
+export function getAllowedAdminEmails(env) {
+  const fromEnv = [
+    env && typeof env.ADMIN_EMAIL === 'string' ? env.ADMIN_EMAIL : '',
+    env && typeof env.ADMIN_EMAILS === 'string' ? env.ADMIN_EMAILS : '',
+  ]
+    .join(',')
+    .split(',')
+    .map(s => s.trim().toLowerCase())
+    .filter(Boolean);
+  if (fromEnv.length > 0) {
+    return Array.from(new Set(fromEnv));
+  }
+  return ADMIN_EMAILS.map(e => e.toLowerCase());
 }
 
 async function importHmacKey(secret) {
@@ -177,9 +195,9 @@ async function verifyAccessJwt(request, env) {
     const expectedIss = `https://${cleanDomain}`;
     if (payload.iss !== expectedIss) return null;
 
-    const allowedEmail = getAllowedAdminEmail(env).toLowerCase();
+    const allowedEmails = new Set(getAllowedAdminEmails(env));
     const tokenEmail = typeof payload.email === 'string' ? payload.email.toLowerCase() : '';
-    if (!tokenEmail || tokenEmail !== allowedEmail) return null;
+    if (!tokenEmail || !allowedEmails.has(tokenEmail)) return null;
 
     const keys = await fetchAccessJwks(cleanDomain);
     const jwk = keys.find(k => k && k.kid === header.kid);
@@ -229,6 +247,8 @@ const ICONS = {
   globe: `<svg aria-hidden="true" focusable="false" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"/></svg>`,
   copy: `<svg aria-hidden="true" focusable="false" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"/></svg>`,
   sort: `<svg aria-hidden="true" focusable="false" class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"/></svg>`,
+  chart: `<svg aria-hidden="true" focusable="false" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>`,
+  smartphone: `<svg aria-hidden="true" focusable="false" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"/></svg>`,
 };
 
 /**
@@ -401,12 +421,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       <!-- Right Action Controls (All >= 44x44px touch targets) -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
 
-        <!-- Quick League Switcher (Connects directly to all 8 leagues + Main Hub) -->
+        <!-- Quick League Switcher (Connects directly to all 9 leagues + Main Hub) -->
         <div class="relative">
           <label for="quickLeagueSelect" class="sr-only" data-i18n="nav_jump_league_label">สลับไปหน้ามินิลีก</label>
           <select id="quickLeagueSelect" onchange="jumpToLeague(this.value)"
             class="min-h-[44px] px-2.5 sm:px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark text-slate-800 dark:text-neutral-200 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 transition-colors duration-150 cursor-pointer max-w-[136px] sm:max-w-[200px]">
-            <option value="" data-i18n="nav_jump_placeholder">เปิดหน้าลีก (8 ลีก + Tier 2)...</option>
+            <option value="" data-i18n="nav_jump_placeholder">เปิดหน้าลีก (9 ลีก)...</option>
             <option value="hub" data-i18n="nav_jump_hub">หน้าหลัก (Main Hub)</option>
             <option value="40700">40700 · เซียนอยู่รู หมูอยู่ตึก</option>
             <option value="675290">675290 · NudNee</option>
@@ -457,7 +477,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <span data-i18n="mod_nav_1">1. ภาพรวมธุรกิจและ KPI</span>
         </a>
         <a href="#sec-portfolio" class="min-h-[44px] px-3 py-2 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2">
-          <span data-i18n="mod_nav_2">2. พอร์ตโฟลิโอ 8 ลีก</span>
+          <span data-i18n="mod_nav_2">2. พอร์ตโฟลิโอ 9 ลีก</span>
         </a>
         <a href="#sec-features" class="min-h-[44px] px-3 py-2 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2">
           <span data-i18n="mod_nav_3">3. พฤติกรรมฟีเจอร์</span>
@@ -474,8 +494,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <a href="#sec-system" class="min-h-[44px] px-3 py-2 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2">
           <span data-i18n="mod_nav_7">7. ประสิทธิภาพระบบและการขยายสเกล</span>
         </a>
+        <a href="#sec-monitor" class="min-h-[44px] px-3 py-2 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2">
+          <span data-i18n="mod_nav_8">8. ตรวจสุขภาพระบบย้อนหลัง</span>
+        </a>
         <a href="#sec-onboarding" class="min-h-[44px] px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 hover:bg-amber-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-500 transition-colors shrink-0 inline-flex items-center gap-2 font-semibold">
-          <span data-i18n="mod_nav_8">8. เพิ่มลีกลูกค้าใหม่ (Onboarding)</span>
+          <span data-i18n="mod_nav_9">9. เพิ่มลีกลูกค้าใหม่ (Onboarding)</span>
         </a>
       </div>
     </nav>
@@ -492,7 +515,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             สรุปภาพรวมผู้บริหารและข้อมูลวิเคราะห์ธุรกิจสด
           </h1>
           <p class="text-sm text-slate-600 dark:text-neutral-300 leading-relaxed" data-i18n="page_subtitle">
-            ศูนย์ควบคุมข้อมูลระบบ พฤติกรรมผู้ใช้งานทั้ง 8 มินิลีก เศรษฐศาสตร์เงินรางวัล และการประเมินความจุคลาวด์เพื่อขยายสเกลโปรเจกต์
+            ศูนย์ควบคุมข้อมูลระบบ พฤติกรรมผู้ใช้งานทั้ง 9 มินิลีก (8 Tier 1 + 1 Tier 2) เศรษฐศาสตร์เงินรางวัล และการประเมินความจุคลาวด์เพื่อขยายสเกลโปรเจกต์
           </p>
         </div>
 
@@ -668,7 +691,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 ${ICONS.check} FPLSaWaDiKa Solution
               </span>
               <p class="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed" data-i18n="sol_3_desc">
-                Weekly Micro-Stakes + AI พากย์ดราม่าปลุกกระแสลุ้นทุกสัปดาห์ พร้อมเรดาร์ฟอร์มและบอลถ้วย Knockout
+                Weekly Micro-Stakes + บทพากย์กูรูลูกหนังสายดราม่า ปลุกกระแสลุ้นทุกสัปดาห์ พร้อมเรดาร์ฟอร์มและบอลถ้วย Knockout
               </p>
             </div>
           </div>
@@ -704,7 +727,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <span class="w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-bold">2</span>
             <span data-i18n="pitch_step2_title">หลักฐานเชิงประจักษ์ 4 มิติ (Visual Proof & Analytics)</span>
           </h3>
-          <span class="text-xs text-slate-500 dark:text-neutral-400" data-i18n="pitch_step2_sub">ข้อมูลจริงจาก 8 มินิลีก</span>
+          <span class="text-xs text-slate-500 dark:text-neutral-400" data-i18n="pitch_step2_sub">ข้อมูลจริงจาก 9 มินิลีก</span>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -760,31 +783,35 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </div>
 
             <!-- SVG Engagement Chart -->
-            <div class="py-2">
-              <svg viewBox="0 0 440 120" class="w-full h-28 overflow-visible" role="img" aria-label="Engagement comparison chart">
+            <div class="py-2 space-y-1.5">
+              <div class="flex items-center justify-between text-[11px] text-slate-600 dark:text-neutral-400">
+                <span data-i18n="graphic2_axis_y">แกนตั้ง: ความถี่เปิดดูเฉลี่ยต่อทีม (ครั้ง / สัปดาห์)</span>
+                <span class="mono" data-i18n="graphic2_axis_x">กลุ่มผู้ใช้</span>
+              </div>
+              <svg viewBox="0 0 440 128" class="w-full h-32 overflow-visible" role="img" aria-label="Engagement comparison chart">
                 <!-- Bar 1: Standard FPL -->
-                <rect x="20" y="70" width="70" height="30" rx="4" fill="#94a3b8" class="transition-all"></rect>
-                <text x="55" y="60" text-anchor="middle" font-size="12" font-family="monospace" font-weight="bold" fill="#64748b">21.8</text>
-                <text x="55" y="115" text-anchor="middle" font-size="10" fill="#64748b">Official App</text>
+                <rect x="20" y="74" width="76" height="32" rx="4" fill="#94a3b8" class="transition-all"><title>Official FPL App: 21.8 visits/team/GW</title></rect>
+                <text id="g2Val1" x="58" y="64" text-anchor="middle" font-size="11" font-family="monospace" font-weight="bold" fill="#64748b">21.8 ครั้ง/วีค</text>
+                <text x="58" y="122" text-anchor="middle" font-size="10" fill="#64748b">Official App</text>
 
                 <!-- Arrow / Multiplier -->
-                <path d="M120 75 L170 45" stroke="#10b981" stroke-width="2" stroke-dasharray="3,3" fill="none"></path>
-                <text x="145" y="45" font-size="12" font-weight="bold" fill="#10b981" text-anchor="middle">+471%</text>
+                <path d="M116 78 L172 48" stroke="#10b981" stroke-width="2" stroke-dasharray="3,3" fill="none"></path>
+                <text id="g2Mult" x="144" y="45" font-size="11" font-weight="bold" fill="#10b981" text-anchor="middle">+471% (5.7x)</text>
 
                 <!-- Bar 2: FPLSaWaDiKa -->
-                <rect x="190" y="20" width="70" height="80" rx="4" fill="#10b981" class="transition-all"></rect>
-                <text x="225" y="12" text-anchor="middle" font-size="13" font-family="monospace" font-weight="bold" fill="#10b981">124.6</text>
-                <text x="225" y="115" text-anchor="middle" font-size="10" font-weight="bold" fill="#047857">FPLSaWaDiKa</text>
+                <rect x="186" y="24" width="76" height="82" rx="4" fill="#10b981" class="transition-all"><title>FPLSaWaDiKa Average: 124.6 visits/team/GW</title></rect>
+                <text id="g2Val2" x="224" y="15" text-anchor="middle" font-size="11.5" font-family="monospace" font-weight="bold" fill="#10b981">124.6 ครั้ง/วีค</text>
+                <text x="224" y="122" text-anchor="middle" font-size="10" font-weight="bold" fill="#047857">FPLSaWaDiKa</text>
 
                 <!-- Bar 3: Peak Weekly Stakes (e.g. 40700) -->
-                <rect x="290" y="10" width="70" height="90" rx="4" fill="#3b82f6" class="transition-all"></rect>
-                <text x="325" y="5" text-anchor="middle" font-size="13" font-family="monospace" font-weight="bold" fill="#3b82f6">137.4</text>
-                <text x="325" y="115" text-anchor="middle" font-size="10" font-weight="bold" fill="#1d4ed8">Weekly Stakes</text>
+                <rect x="302" y="14" width="76" height="92" rx="4" fill="#3b82f6" class="transition-all"><title>Weekly Stakes League (40700): 137.4 visits/team/GW</title></rect>
+                <text id="g2Val3" x="340" y="7" text-anchor="middle" font-size="11.5" font-family="monospace" font-weight="bold" fill="#3b82f6">137.4 ครั้ง/วีค</text>
+                <text x="340" y="122" text-anchor="middle" font-size="10" font-weight="bold" fill="#1d4ed8">Weekly Stakes</text>
               </svg>
             </div>
 
             <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark flex items-center justify-between text-xs">
-              <span class="text-slate-600 dark:text-neutral-400" data-i18n="graphic2_callout">Weekly Stakes + AI พากย์ดราม่า ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์</span>
+              <span class="text-slate-600 dark:text-neutral-400" data-i18n="graphic2_callout">Weekly Stakes + บทวิเคราะห์กูรูลูกหนังสายดราม่า ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์</span>
               <span class="mono font-bold text-blue-600 dark:text-blue-400">5.7x Stickiness</span>
             </div>
           </div>
@@ -878,7 +905,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                     <td class="py-1.5 px-2 text-center font-bold text-emerald-600 dark:text-emerald-400">✅ สดทันที</td>
                   </tr>
                   <tr>
-                    <td class="py-1.5 px-2 font-medium" data-i18n="matrix_f3">AI พากย์เกมดราม่า</td>
+                    <td class="py-1.5 px-2 font-medium" data-i18n="matrix_f3">บทพากย์กูรูลูกหนังสายดราม่า</td>
                     <td class="py-1.5 px-2 text-center text-rose-500">❌ ไม่มี</td>
                     <td class="py-1.5 px-2 text-center text-rose-500">❌ ไม่มี</td>
                     <td class="py-1.5 px-2 text-center font-bold text-emerald-600 dark:text-emerald-400">✅ อัตโนมัติ</td>
@@ -932,7 +959,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <span class="text-[10px] mono text-slate-400 dark:text-neutral-500">ลีก 40700</span>
           </a>
 
-          <!-- Jump 2: Highlights & Drama Banter -->
+          <!-- Jump 2: Highlights & Pundit Banter -->
           <a href="https://www.fplsawadika.com/40700?tab=highlights" target="_blank" rel="noopener"
             class="p-3 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-blue-500/50 hover:bg-blue-50/20 dark:hover:bg-blue-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
             <div class="space-y-1">
@@ -940,7 +967,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 <span>02. Commentary</span>
                 <span class="group-hover:translate-x-0.5 transition-transform">↗</span>
               </div>
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_2_title">บทวิเคราะห์ AI ดราม่า</div>
+              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_2_title">บทวิเคราะห์กูรูสายดราม่า</div>
               <div class="text-[11px] text-slate-500 dark:text-neutral-400" data-i18n="jump_2_sub">พากย์เกมดราม่าสุดกวน</div>
             </div>
             <span class="text-[10px] mono text-slate-400 dark:text-neutral-500">ลีก 40700</span>
@@ -1068,7 +1095,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="flex items-center gap-2.5">
           <span class="text-slate-700 dark:text-neutral-300">${ICONS.layers}</span>
           <h2 id="sec-portfolio-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec2_title">
-            02. พอร์ตโฟลิโอ 8 มินิลีก และเศรษฐศาสตร์เงินรางวัลรวม
+            02. พอร์ตโฟลิโอ 9 มินิลีก และเศรษฐศาสตร์เงินรางวัลรวม
           </h2>
         </div>
         <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="sec2_sub">
@@ -1089,7 +1116,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex items-center justify-between gap-4">
           <div class="space-y-1">
             <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="port_custom_label">ลีกที่ผูกกติกาพิเศษ (Custom Rules)</div>
-            <div class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">6 / 8 <span class="text-sm font-normal text-slate-600 dark:text-neutral-400">(75%)</span></div>
+            <div id="portCustomRulesVal" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">7 / 9 <span class="text-sm font-normal text-slate-600 dark:text-neutral-400">(78%)</span></div>
             <div class="text-xs text-emerald-700 dark:text-emerald-400" data-i18n="port_custom_sub">สร้าง Switching Cost สูงกว่าเว็บ FPL ทั่วไป</div>
           </div>
         </div>
@@ -1130,7 +1157,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 <th scope="col" class="px-4 py-2.5 font-medium" data-i18n="col_modules">โมดูลและกติกาที่เปิดใช้งาน</th>
                 <th scope="col" id="th-views" aria-sort="none" class="p-0 text-right">
                   <button type="button" onclick="sortLeagueTable('views')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-end gap-1.5 hover:text-slate-900 dark:hover:text-white font-medium">
-                    <span data-i18n="col_views">ยอดเปิดดู / GW</span>
+                    <span data-i18n="col_views">ยอดเปิดดู (7 วันล่าสุด)</span>
                     <span id="sort-icon-views" class="text-slate-500 dark:text-neutral-400">${ICONS.sort}</span>
                   </button>
                 </th>
@@ -1231,6 +1258,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">2,190</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-800 dark:text-neutral-200">88.4%</td>
               </tr>
+              <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
+                <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
+                  <a href="https://www.fplsawadika.com/139836/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">FPL Growth Mindset 2026/27</a>
+                  <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 139836 · Tier 2</div>
+                </th>
+                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">1,780</td>
+                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-600 dark:text-neutral-400">เสื้อบอลแท้</td>
+                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Standings &amp; Leaderboard Only · Instant 1,780-Team Search</td>
+                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">0</td>
+                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-800 dark:text-neutral-200">91.2%</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1265,10 +1303,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <div class="py-3 space-y-1.5">
               <div class="flex justify-between items-baseline gap-2">
                 <span class="font-medium text-slate-900 dark:text-white" data-i18n="feat_1_name">1. ตารางคะแนนสด & คำนวณโบนัสเรียลไทม์ (Live Standings & BPS)</span>
-                <span class="mono tabular font-semibold text-emerald-700 dark:text-emerald-400">44.2%</span>
+                <span id="featMod1Pct" class="mono tabular font-semibold text-emerald-700 dark:text-emerald-400">44.2%</span>
               </div>
               <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div class="bg-emerald-500 h-full rounded-full" style="width: 44.2%"></div>
+                <div id="featMod1Bar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 44.2%"></div>
               </div>
               <p class="text-slate-600 dark:text-neutral-400" data-i18n="feat_1_desc">คุณค่าหลัก: ผู้ใช้เปิดค้างไว้ดูอันดับขึ้น-ลงทุกครั้งที่มีประตูหรือคลีนชีตหลุด</p>
             </div>
@@ -1276,10 +1314,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <div class="py-3 space-y-1.5">
               <div class="flex justify-between items-baseline gap-2">
                 <span class="font-medium text-slate-900 dark:text-white" data-i18n="feat_2_name">2. สรุปเงินรางวัลรายสัปดาห์ / รายเดือน / สุทธิ (Prize & Financial Ledger)</span>
-                <span class="mono tabular font-semibold text-slate-900 dark:text-white">23.8%</span>
+                <span id="featMod2Pct" class="mono tabular font-semibold text-slate-900 dark:text-white">23.8%</span>
               </div>
               <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full" style="width: 23.8%"></div>
+                <div id="featMod2Bar" class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full transition-all duration-300" style="width: 23.8%"></div>
               </div>
               <p class="text-slate-600 dark:text-neutral-400" data-i18n="feat_2_desc">เหตุผลที่ชนะแอปหลัก: แอป FPL ทางการไม่มีระบบคำนวณเงินรางวัลและค่าปรับโดนหักแต้ม</p>
             </div>
@@ -1287,10 +1325,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <div class="py-3 space-y-1.5">
               <div class="flex justify-between items-baseline gap-2">
                 <span class="font-medium text-slate-900 dark:text-white" data-i18n="feat_3_name">3. เจาะลึก 11 ตัวจริง & เทียบทีมคู่แข่ง (Squad Modal & H2H Matrix)</span>
-                <span class="mono tabular font-semibold text-slate-900 dark:text-white">16.5%</span>
+                <span id="featMod3Pct" class="mono tabular font-semibold text-slate-900 dark:text-white">16.5%</span>
               </div>
               <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full" style="width: 16.5%"></div>
+                <div id="featMod3Bar" class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full transition-all duration-300" style="width: 16.5%"></div>
               </div>
               <p class="text-slate-600 dark:text-neutral-400" data-i18n="feat_3_desc">พฤติกรรมเด่น: กดส่องตัวจริงสำรองอัตโนมัติ (Auto-Sub) ของคู่แข่งที่ลุ้นแชมป์ด้วยกัน</p>
             </div>
@@ -1298,10 +1336,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <div class="py-3 space-y-1.5">
               <div class="flex justify-between items-baseline gap-2">
                 <span class="font-medium text-slate-900 dark:text-white" data-i18n="feat_4_name">4. จำลองสถานการณ์ & วางแผนซื้อขายล่วงหน้า (What-If & Planner)</span>
-                <span class="mono tabular font-semibold text-slate-900 dark:text-white">9.4%</span>
+                <span id="featMod4Pct" class="mono tabular font-semibold text-slate-900 dark:text-white">9.4%</span>
               </div>
               <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div class="bg-slate-500 dark:bg-neutral-500 h-full rounded-full" style="width: 9.4%"></div>
+                <div id="featMod4Bar" class="bg-slate-500 dark:bg-neutral-500 h-full rounded-full transition-all duration-300" style="width: 9.4%"></div>
               </div>
               <p class="text-slate-600 dark:text-neutral-400" data-i18n="feat_4_desc">โอกาสเติบโต: ดึงผู้ใช้ให้เข้าเว็บวันอังคาร–ศุกร์ ก่อนเดดไลน์ปิดตลาด</p>
             </div>
@@ -1309,10 +1347,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <div class="pt-3 space-y-1.5">
               <div class="flex justify-between items-baseline gap-2">
                 <span class="font-medium text-slate-900 dark:text-white" data-i18n="feat_5_name">5. ประวัติศาสตร์ลีก & ทำเนียบแชมป์ (Hall of Fame & Records)</span>
-                <span class="mono tabular font-semibold text-slate-900 dark:text-white">6.1%</span>
+                <span id="featMod5Pct" class="mono tabular font-semibold text-slate-900 dark:text-white">6.1%</span>
               </div>
               <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div class="bg-slate-500 dark:bg-neutral-500 h-full rounded-full" style="width: 6.1%"></div>
+                <div id="featMod5Bar" class="bg-slate-500 dark:bg-neutral-500 h-full rounded-full transition-all duration-300" style="width: 6.1%"></div>
               </div>
             </div>
           </div>
@@ -1375,10 +1413,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <div class="py-3 space-y-1.5">
               <div class="flex justify-between font-medium">
                 <span class="text-slate-900 dark:text-white" data-i18n="chan_1_name">LINE Group Links & In-App Browser (ลิงก์ในกลุ่มไลน์มินิลีก)</span>
-                <span class="mono tabular text-emerald-700 dark:text-emerald-400 font-semibold">52.4%</span>
+                <span id="chan1Pct" class="mono tabular text-emerald-700 dark:text-emerald-400 font-semibold">52.4%</span>
               </div>
               <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div class="bg-emerald-500 h-full rounded-full" style="width: 52.4%"></div>
+                <div id="chan1Bar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 52.4%"></div>
               </div>
               <p class="text-slate-600 dark:text-neutral-400" data-i18n="chan_1_desc">ไวรัลลูปหลัก: ประธานลีกและเพื่อนส่งลิงก์ตารางคะแนนลงกลุ่ม LINE ทุกสัปดาห์</p>
             </div>
@@ -1386,10 +1424,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <div class="py-3 space-y-1.5">
               <div class="flex justify-between font-medium">
                 <span class="text-slate-900 dark:text-white" data-i18n="chan_2_name">Direct / Home Screen Bookmark (เข้าตรง & ปักหมุดหน้าจอ)</span>
-                <span class="mono tabular text-slate-900 dark:text-white font-semibold">34.8%</span>
+                <span id="chan2Pct" class="mono tabular text-slate-900 dark:text-white font-semibold">34.8%</span>
               </div>
               <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full" style="width: 34.8%"></div>
+                <div id="chan2Bar" class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full transition-all duration-300" style="width: 34.8%"></div>
               </div>
               <p class="text-slate-600 dark:text-neutral-400" data-i18n="chan_2_desc">กลุ่มแฟนพันธุ์แท้ที่บันทึกเว็บไว้บนหน้าจอมือถือเหมือนแอปเนทีฟ</p>
             </div>
@@ -1397,10 +1435,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <div class="pt-3 space-y-1.5">
               <div class="flex justify-between font-medium">
                 <span class="text-slate-900 dark:text-white" data-i18n="chan_3_name">Deep-Link Direct &amp; Smart Text Summary (แชร์ลิงก์ตรงและข้อความสรุปผล)</span>
-                <span class="mono tabular text-slate-900 dark:text-white font-semibold">12.8%</span>
+                <span id="chan3Pct" class="mono tabular text-slate-900 dark:text-white font-semibold">12.8%</span>
               </div>
               <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div class="bg-slate-500 dark:bg-neutral-500 h-full rounded-full" style="width: 12.8%"></div>
+                <div id="chan3Bar" class="bg-slate-500 dark:bg-neutral-500 h-full rounded-full transition-all duration-300" style="width: 12.8%"></div>
               </div>
               <p class="text-slate-600 dark:text-neutral-400" data-i18n="chan_3_desc">พร้อมใช้งานแล้ว: คัดลอกสรุปยอดรับ–จ่ายเข้า LINE กลุ่ม และส่งลิงก์เฉพาะลีก (/{id}/) โดยตรง</p>
             </div>
@@ -1414,15 +1452,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <div class="divide-y divide-borderLight dark:divide-borderDark text-xs">
               <div class="py-2.5 flex items-center justify-between">
                 <span class="text-slate-800 dark:text-neutral-200 font-medium" data-i18n="geo_1">กรุงเทพมหานครและปริมณฑล (BKK & Metro)</span>
-                <span class="mono tabular font-semibold text-emerald-700 dark:text-emerald-400">68.5%</span>
+                <span id="geoBkkPct" class="mono tabular font-semibold text-emerald-700 dark:text-emerald-400">68.5%</span>
               </div>
               <div class="py-2.5 flex items-center justify-between">
                 <span class="text-slate-800 dark:text-neutral-200 font-medium" data-i18n="geo_2">หัวเมืองใหญ่ (เชียงใหม่ · ชลบุรี · ขอนแก่น · ภูเก็ต)</span>
-                <span class="mono tabular font-semibold text-slate-900 dark:text-white">23.7%</span>
+                <span id="geoRegPct" class="mono tabular font-semibold text-slate-900 dark:text-white">23.7%</span>
               </div>
               <div class="py-2.5 flex items-center justify-between">
                 <span class="text-slate-800 dark:text-neutral-200 font-medium" data-i18n="geo_3">ต่างประเทศ (UK · Singapore · Australia · Japan)</span>
-                <span class="mono tabular font-semibold text-slate-900 dark:text-white">7.8%</span>
+                <span id="geoIntlPct" class="mono tabular font-semibold text-slate-900 dark:text-white">7.8%</span>
               </div>
               <div class="py-2.5 flex items-center justify-between">
                 <span class="text-slate-600 dark:text-neutral-400" data-i18n="geo_lang_label">สัดส่วนภาษาที่เลือกใช้งาน (TH / EN)</span>
@@ -1443,16 +1481,30 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     <!-- 05. DEVICE, VIEWPORT & CLIENT ENVIRONMENT                                 -->
     <!-- ========================================================================= -->
     <section id="sec-devices" class="space-y-4 scroll-mt-28" aria-labelledby="sec-devices-title">
-      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
-        <div class="flex items-center gap-2.5">
-          <span class="text-slate-700 dark:text-neutral-300">${ICONS.smartphone}</span>
-          <h2 id="sec-devices-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec5_title">
-            05. อุปกรณ์ หน้าจอ และสภาพแวดล้อมของผู้ใช้งาน
-          </h2>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-borderLight dark:border-borderDark pb-3">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="text-slate-700 dark:text-neutral-300">${ICONS.smartphone}</span>
+            <h2 id="sec-devices-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec5_title">
+              05. อุปกรณ์ หน้าจอ และสภาพแวดล้อมของผู้ใช้งาน
+            </h2>
+          </div>
+          <p class="text-xs mono text-slate-600 dark:text-neutral-400 mt-1" data-i18n="sec5_sub">
+            เลือกดูข้อมูลจริงจาก D1 Telemetry เพื่อการออกแบบ UX/UI ให้เหมาะกับอุปกรณ์หลัก
+          </p>
         </div>
-        <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="sec5_sub">
-          ข้อมูลจริงจาก D1 Telemetry เพื่อการออกแบบ UX/UI ให้เหมาะกับอุปกรณ์หลัก
-        </span>
+        <div class="inline-flex items-center gap-2 self-start sm:self-auto shrink-0" role="group" aria-label="Device telemetry window">
+          <button type="button" id="btnDev7d" onclick="switchDeviceWindow('7d')"
+            class="min-h-[44px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors"
+            data-i18n="dev_btn_7d">
+            7 วันล่าสุด
+          </button>
+          <button type="button" id="btnDev30d" onclick="switchDeviceWindow('30d')"
+            class="min-h-[44px] px-3.5 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 transition-colors"
+            data-i18n="dev_btn_30d">
+            30 วันล่าสุด
+          </button>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1460,14 +1512,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="dev_mobile_label">สมาร์ตโฟน (Mobile Phones)</span>
-            <span class="text-xs mono font-semibold text-emerald-700 dark:text-emerald-400" data-i18n="dev_primary_badge">อุปกรณ์หลักอันดับ 1</span>
+            <span id="devMobileBadge" class="text-xs mono text-slate-600 dark:text-neutral-400">-</span>
           </div>
-          <div id="deviceMobilePct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">76.4%</div>
+          <div id="deviceMobilePct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">-</div>
           <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div id="deviceMobileBar" class="bg-emerald-500 h-full rounded-full" style="width: 76.4%"></div>
+            <div id="deviceMobileBar" class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
           </div>
-          <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_mobile_desc">
-            iOS Safari 49.2% · LINE In-App WebView 16.8% · Android Chrome 10.4% (ความกว้างจอหลัก 375px–430px)
+          <p id="devMobileDesc" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_mobile_desc">
+            หน้าจอมือถือขนาด 375px–430px (กำลังโหลดสถิติจริง 30 วันล่าสุด...)
           </p>
         </div>
 
@@ -1475,14 +1527,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="dev_desktop_label">คอมพิวเตอร์ตั้งโต๊ะ / โน้ตบุ๊ก (Desktop)</span>
-            <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="dev_desktop_badge">สายวิเคราะห์ข้อมูลลึก</span>
+            <span id="devDesktopBadge" class="text-xs mono text-slate-600 dark:text-neutral-400">-</span>
           </div>
-          <div id="deviceDesktopPct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">18.2%</div>
+          <div id="deviceDesktopPct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">-</div>
           <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div id="deviceDesktopBar" class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full" style="width: 18.2%"></div>
+            <div id="deviceDesktopBar" class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
           </div>
-          <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_desktop_desc">
-            ใช้งานสูงในช่วงวางแผนจัดตัววันศุกร์ และเปิดตารางเปรียบเทียบหลายคอลัมน์บนจอ 1440px+
+          <p id="devDesktopDesc" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_desktop_desc">
+            หน้าจอคอมพิวเตอร์และโน้ตบุ๊ก 1024px+ (กำลังโหลดสถิติจริง 30 วันล่าสุด...)
           </p>
         </div>
 
@@ -1490,14 +1542,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="dev_tablet_label">ไอแพดและแท็บเล็ต (iPad / Tablet)</span>
-            <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="dev_tablet_badge">จอที่สองขณะดูบอลสด</span>
+            <span id="devTabletBadge" class="text-xs mono text-slate-600 dark:text-neutral-400">-</span>
           </div>
-          <div id="deviceTabletPct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">5.4%</div>
+          <div id="deviceTabletPct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">-</div>
           <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div id="deviceTabletBar" class="bg-slate-500 dark:bg-neutral-500 h-full rounded-full" style="width: 5.4%"></div>
+            <div id="deviceTabletBar" class="bg-slate-500 dark:bg-neutral-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
           </div>
-          <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_tablet_desc">
-            วางเปิดคู่ขณะดูถ่ายทอดสดพรีเมียร์ลีก (ความกว้างจอ 768px–1024px ทั้งแนวตั้งและแนวนอน)
+          <p id="devTabletDesc" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_tablet_desc">
+            หน้าจอแท็บเล็ต 768px–1024px (กำลังโหลดสถิติจริง 30 วันล่าสุด...)
           </p>
         </div>
       </div>
@@ -1548,7 +1600,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
 
           <!-- Responsive SVG Chart Container -->
-          <div class="w-full pt-2">
+          <div class="w-full pt-2 space-y-1.5">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-600 dark:text-neutral-400">
+              <span id="trafficYAxisUnit" class="font-medium">แกนตั้ง (Y): ดัชนีความหนาแน่นเทียบช่วงพีคสูงสุด (%)</span>
+              <span id="trafficXAxisUnit" class="mono">แกนนอน (X): เวลาไทย (ICT)</span>
+            </div>
             <svg id="trafficSvgChart" viewBox="0 0 680 220" class="w-full h-48 sm:h-56 overflow-visible" role="img" aria-label="Matchday traffic distribution chart"></svg>
           </div>
 
@@ -1635,7 +1691,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
           <div class="text-xs text-slate-600 dark:text-neutral-400 flex justify-between">
             <span data-i18n="sys_cache_hit_label">อัตราเสิร์ฟจากแคช (Cache Hit):</span>
-            <span class="mono font-semibold text-emerald-700 dark:text-emerald-400">94.2%</span>
+            <span id="sysWorkerCacheHit" class="mono font-semibold text-emerald-700 dark:text-emerald-400">96.4%</span>
           </div>
         </div>
 
@@ -1649,11 +1705,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <div id="sysD1RowsCount" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">12,480 <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">rows</span></div>
           </div>
           <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div class="bg-emerald-500 h-full rounded-full" style="width: 6.2%"></div>
+            <div id="sysD1ReadsBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 6.2%"></div>
           </div>
           <div class="text-xs text-slate-600 dark:text-neutral-400 flex justify-between">
             <span data-i18n="sys_d1_reads_label">โควตาอ่าน-เขียนรายวัน:</span>
-            <span class="mono font-semibold text-slate-900 dark:text-white">4.1% of 5M</span>
+            <span id="sysD1ReadsPct" class="mono font-semibold text-slate-900 dark:text-white">4.1% of 100k</span>
           </div>
         </div>
 
@@ -1662,12 +1718,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <div class="space-y-1">
             <div class="flex items-center justify-between text-xs">
               <span class="font-medium text-slate-600 dark:text-neutral-400">GitHub Actions Cron</span>
-              <span class="mono font-semibold text-emerald-700 dark:text-emerald-400">Hourly / 4h</span>
+              <span class="mono font-semibold text-emerald-700 dark:text-emerald-400">15m / Sync</span>
             </div>
-            <div class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">42s <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">/ build</span></div>
+            <div id="sysGhSyncTime" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">15.9s <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">/ build</span></div>
           </div>
           <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div class="bg-emerald-500 h-full rounded-full" style="width: 14%"></div>
+            <div id="sysGhSyncBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 16%"></div>
           </div>
           <div class="text-xs text-slate-600 dark:text-neutral-400 flex justify-between">
             <span data-i18n="sys_gh_success_label">อัตราซิงก์สำเร็จ 30 วัน:</span>
@@ -1689,7 +1745,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
           <div class="text-xs text-slate-600 dark:text-neutral-400 flex justify-between">
             <span data-i18n="sys_scale_headroom_label">เพดานขยายสเกล (Headroom):</span>
-            <span class="mono font-semibold text-emerald-700 dark:text-emerald-400">11.8x Capacity</span>
+            <span id="sysScalingHeadroom" class="mono font-semibold text-emerald-700 dark:text-emerald-400">+22 Leagues</span>
           </div>
         </div>
       </div>
@@ -1698,8 +1754,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h3 class="text-base font-semibold text-slate-900 dark:text-white" data-i18n="ops_title">ชุดคำสั่งดูแลระบบและจัดการแคช (Edge Operational Controls)</h3>
-            <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="ops_sub">คำสั่งเชื่อมต่อกับ Cloudflare Worker และฐานข้อมูล D1 โดยตรง (ไม่มีผลกระทบต่อความเร็วฝั่งผู้ใช้งาน)</p>
+            <h3 class="text-base font-semibold text-slate-900 dark:text-white" data-i18n="ops_title">ปุ่มดูแลและเช็กความพร้อมของเว็บ</h3>
+            <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="ops_sub">กดเฉพาะตอนที่ต้องการตรวจสอบหรือแก้ไขปัญหา ผลลัพธ์จะแสดงใต้ปุ่มทันที (คนเข้าเว็บทั่วไปไม่ได้รับผลกระทบ)</p>
           </div>
           <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="ops_shortcut_hint">คีย์ลัด: R รีเฟรช · L สลับภาษา · T สลับธีม</span>
         </div>
@@ -1708,68 +1764,191 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <!-- Op 1: Flush Edge Cache -->
           <div class="flex flex-col justify-between gap-3 py-3 sm:py-1 sm:pr-4">
             <div class="space-y-1">
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_flush_title">ล้างแคชคะแนนสดทั้ง 38 GW</div>
-              <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="op_flush_desc">บังคับดึงข้อมูลใหม่จาก FPL API ทันทีในคำขอถัดไป</p>
+              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_flush_title">รีเฟรชคะแนนสดใหม่ทั้งเว็บ</div>
+              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="op_flush_desc">ใช้เมื่อคะแนนหรือโบนัสบนหน้าเว็บค้างไม่ขยับ กดเพื่อล้างข้อมูลค้างเก่าและดึงผลล่าสุดให้ทุกคนทันที</p>
             </div>
-            <button type="button" id="btnFlushCache" onclick="runEdgeAction('flush-cache')"
-              class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200/70 dark:hover:bg-neutral-800 active:scale-[0.98] text-xs font-medium text-slate-900 dark:text-white transition-colors"
-              data-i18n="op_flush_btn">
-              ล้าง Edge Cache ทันที
-            </button>
+            <div class="space-y-2">
+              <button type="button" id="btnFlushCache" onclick="runEdgeAction('flush-cache')"
+                class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200/70 dark:hover:bg-neutral-800 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-xs font-medium text-slate-900 dark:text-white transition-colors"
+                data-i18n="op_flush_btn">
+                รีเฟรชคะแนนสดทันที
+              </button>
+              <div id="opResult-flush-cache" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-[11px] leading-relaxed"></div>
+            </div>
           </div>
 
           <!-- Op 2: Ping Upstream FPL API -->
           <div class="flex flex-col justify-between gap-3 py-3 sm:py-1 sm:px-4">
             <div class="space-y-1">
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_ping_title">ทดสอบความเร็ว FPL API ต้นทาง</div>
-              <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="op_ping_desc">วัดค่า Latency และสถานะเซิร์ฟเวอร์พรีเมียร์ลีกสด</p>
+              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_ping_title">เช็กว่าระบบ FPL ล่มหรือช้าไหม</div>
+              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="op_ping_desc">ใช้ตรวจดูว่าปัญหาคะแนนไม่ขึ้นเกิดจากเว็บพรีเมียร์ลีกต้นทางช้าหรือล่มอยู่หรือไม่</p>
             </div>
-            <button type="button" id="btnPingUpstream" onclick="runEdgeAction('ping-upstream')"
-              class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200/70 dark:hover:bg-neutral-800 active:scale-[0.98] text-xs font-medium text-slate-900 dark:text-white transition-colors"
-              data-i18n="op_ping_btn">
-              ทดสอบความหน่วงต้นทาง
-            </button>
+            <div class="space-y-2">
+              <button type="button" id="btnPingUpstream" onclick="runEdgeAction('ping-upstream')"
+                class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200/70 dark:hover:bg-neutral-800 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-xs font-medium text-slate-900 dark:text-white transition-colors"
+                data-i18n="op_ping_btn">
+                เช็กสถานะเว็บ FPL
+              </button>
+              <div id="opResult-ping-upstream" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-[11px] leading-relaxed"></div>
+            </div>
           </div>
 
           <!-- Op 3: Export JSON Snapshot -->
           <div class="flex flex-col justify-between gap-3 py-3 sm:py-1 sm:px-4">
             <div class="space-y-1">
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_export_title">ดาวน์โหลดรายงาน JSON ฉบับเต็ม</div>
-              <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="op_export_desc">บันทึกข้อมูลสถิติและพอร์ตโฟลิโอทั้ง 8 ลีกเก็บไว้เปรียบเทียบ</p>
+              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_export_title">ดาวน์โหลดไฟล์สถิติเก็บไว้</div>
+              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="op_export_desc">เก็บข้อมูลยอดคนดูและรายละเอียดทั้ง 9 ลีกลงเครื่องไว้ดูย้อนหลังหรือสรุปรายงาน</p>
             </div>
-            <button type="button" id="btnExportJson" onclick="exportDashboardJson()"
-              class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200/70 dark:hover:bg-neutral-800 active:scale-[0.98] text-xs font-medium text-slate-900 dark:text-white transition-colors"
-              data-i18n="op_export_btn">
-              ส่งออกไฟล์ JSON
-            </button>
+            <div class="space-y-2">
+              <button type="button" id="btnExportJson" onclick="exportDashboardJson()"
+                class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200/70 dark:hover:bg-neutral-800 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-xs font-medium text-slate-900 dark:text-white transition-colors"
+                data-i18n="op_export_btn">
+                ดาวน์โหลดไฟล์สถิติ
+              </button>
+              <div id="opResult-export-json" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-[11px] leading-relaxed"></div>
+            </div>
           </div>
 
-          <!-- Op 4: Prune D1 Telemetry (>90d) -->
+          <!-- Op 4: Prune D1 Telemetry (>30d) -->
           <div class="flex flex-col justify-between gap-3 py-3 sm:py-1 sm:pl-4">
             <div class="space-y-1">
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_prune_title">เคลียร์ประวัติ D1 ที่เก่าเกิน 30 วัน</div>
-              <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="op_prune_desc">รักษาขนาดฐานข้อมูลให้กะทัดรัดและอยู่ใน Free Quota เสมอ</p>
+              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_prune_title">ลบประวัติคนดูเก่าที่เกิน 30 วัน</div>
+              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="op_prune_desc">ช่วยเคลียร์บันทึกเก่าที่ไม่ใช้แล้วให้ระบบลื่นและประหยัดพื้นที่ (ยอดคนดูรวมทั้งหมดยังอยู่ครบ)</p>
             </div>
-            <button type="button" id="btnPruneD1" onclick="runEdgeAction('prune-telemetry')"
-              class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 active:scale-[0.98] text-xs font-medium text-rose-700 dark:text-rose-300 transition-colors"
-              data-i18n="op_prune_btn">
-              ล้างข้อมูลเก่าเกิน 30 วัน
+            <div class="space-y-2">
+              <button type="button" id="btnPruneD1" onclick="runEdgeAction('prune-telemetry')"
+                class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-xs font-medium text-rose-700 dark:text-rose-300 transition-colors"
+                data-i18n="op_prune_btn">
+                ลบประวัติเก่าเกิน 30 วัน
+              </button>
+              <div id="opResult-prune-telemetry" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-[11px] leading-relaxed"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- SECTION 8: PROJECT HEALTH & ERROR MONITOR (1 DAY & 7 DAYS)              -->
+    <!-- ======================================================================= -->
+    <section id="sec-monitor" aria-labelledby="sec8-heading" class="space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h2 id="sec8-heading" class="text-base sm:text-lg font-semibold text-slate-900 dark:text-white" data-i18n="sec8_title">
+            08. ตรวจสุขภาพระบบและ Error ย้อนหลัง (Monitor)
+          </h2>
+          <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec8_sub">
+            เช็กย้อนหลัง 1 วัน (รายชั่วโมง) และ 1 สัปดาห์ (รายวัน) ว่าช่วงเวลาไหนทำงานปกติหรือมี Error เกิดขึ้นกับผู้ใช้
+          </p>
+        </div>
+        <div id="monitorOverallBadge" class="inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-xs font-medium text-emerald-700 dark:text-emerald-300 shrink-0">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span id="monitorOverallBadgeText" data-i18n="mon_status_healthy">ทำงานปกติ 100%</span>
+        </div>
+      </div>
+
+      <!-- 4 Health Summary KPI Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
+          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_24h_label">ความพร้อมใช้งาน 1 วัน (24 ชม.)</div>
+          <div id="mon24hUptime" class="text-2xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400">100.0%</div>
+          <div id="mon24hSub" class="text-[11px] text-slate-600 dark:text-neutral-400 leading-relaxed">0 Error จากกิจกรรมทั้งหมด</div>
+        </div>
+
+        <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
+          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_7d_label">ความพร้อมใช้งาน 1 สัปดาห์ (7 วัน)</div>
+          <div id="mon7dUptime" class="text-2xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400">100.0%</div>
+          <div id="mon7dSub" class="text-[11px] text-slate-600 dark:text-neutral-400 leading-relaxed">0 Error ตลอด 7 วันที่ผ่านมา</div>
+        </div>
+
+        <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
+          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_client_label">ปัญหาฝั่งผู้ใช้งาน (หน้าเว็บ)</div>
+          <div id="monClientErrTotal" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0</div>
+          <div id="monClientErrSub" class="text-[11px] text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="mon_kpi_client_sub">หน้าเว็บค้าง โหลดข้อมูลไม่ขึ้น หรือ JS Error</div>
+        </div>
+
+        <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
+          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_upstream_label">ปัญหาเว็บ FPL ต้นทาง (5xx)</div>
+          <div id="monUpstreamErrTotal" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0</div>
+          <div id="monUpstreamErrSub" class="text-[11px] text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="mon_kpi_upstream_sub">เว็บพรีเมียร์ลีกต้นทางตอบช้าหรือล่มชั่วคราว</div>
+        </div>
+      </div>
+
+      <!-- Interactive Chart & Anomaly Timeline -->
+      <div class="p-5 sm:p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 id="monitorChartTitle" class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="mon_chart_title_24h">
+              บันทึกการทำงานย้อนหลัง 24 ชั่วโมงล่าสุด (เวลาไทย · ICT)
+            </h3>
+            <p id="monitorChartSub" class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="mon_chart_sub_24h">
+              เปรียบเทียบช่วงเวลาที่ระบบทำงานปกติ กับช่วงเวลาที่ตรวจพบ Error
+            </p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0" role="group" aria-label="Monitor time range">
+            <button type="button" id="btnMon24h" onclick="switchMonitorMode('24h')"
+              class="min-h-[44px] px-3.5 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 transition-colors"
+              data-i18n="mon_btn_24h">
+              1 วัน (24 ชม.)
             </button>
+            <button type="button" id="btnMon7d" onclick="switchMonitorMode('7d')"
+              class="min-h-[44px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors"
+              data-i18n="mon_btn_7d">
+              1 สัปดาห์ (7 วัน)
+            </button>
+          </div>
+        </div>
+
+        <div class="w-full space-y-1.5">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-600 dark:text-neutral-400">
+            <span id="monitorYAxisUnit" class="font-medium">แกนตั้ง (Y): จำนวนเหตุการณ์ใช้งานจริง &amp; Error (ครั้ง/ชม.)</span>
+            <span id="monitorXAxisUnit" class="mono">แกนนอน (X): ช่วงเวลา 24 ชม. ล่าสุด (เวลาไทย · น.)</span>
+          </div>
+          <svg id="monitorSvgChart" viewBox="0 0 680 220" class="w-full h-52 sm:h-60 overflow-visible" role="img" aria-label="Project Health and Error Log Chart"></svg>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600 dark:text-neutral-400 pt-2 border-t border-borderLight dark:border-borderDark">
+          <div class="flex flex-wrap items-center gap-4">
+            <span class="inline-flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-sm bg-emerald-500 inline-block"></span>
+              <span data-i18n="mon_legend_ok">ใช้งานปกติ (จำนวนครั้ง)</span>
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-sm bg-rose-500 inline-block"></span>
+              <span data-i18n="mon_legend_err">ช่วงเวลาที่พบ Error</span>
+            </span>
+          </div>
+          <span id="monitorWindowCallout" class="mono text-emerald-700 dark:text-emerald-400 font-medium">ไม่มีช่วงเวลาผิดปกติ</span>
+        </div>
+
+        <!-- Anomaly Windows & Error Breakdown Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-2 border-t border-borderLight dark:border-borderDark">
+          <div class="lg:col-span-7 space-y-2">
+            <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="mon_anomaly_title">
+              ประวัติช่วงเวลาที่ทำงานผิดปกติ (Anomaly Timeline)
+            </div>
+            <div id="monitorAnomalyList" class="space-y-2 text-xs"></div>
+          </div>
+          <div class="lg:col-span-5 space-y-2">
+            <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="mon_cat_title">
+              สรุปประเภท Error สะสม 7 วันล่าสุด
+            </div>
+            <div id="monitorCategoryBreakdown" class="space-y-2 text-xs"></div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- =================================================================== -->
-    <!-- SECTION 8: CONCIERGE CUSTOMER LEAGUE ONBOARDING WIZARD              -->
+    <!-- SECTION 9: CONCIERGE CUSTOMER LEAGUE ONBOARDING WIZARD              -->
     <!-- =================================================================== -->
     <section id="sec-onboarding" class="space-y-4 scroll-mt-28" aria-labelledby="sec-onboarding-title">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
         <div>
-          <h2 id="sec-onboarding-title" class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec8_title">
-            08. เครื่องมือเปิดลีกลูกค้าใหม่ (Concierge Onboarding Wizard)
+          <h2 id="sec-onboarding-title" class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec9_title">
+            09. เครื่องมือเปิดลีกลูกค้าใหม่ (Concierge Onboarding Wizard)
           </h2>
-          <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec8_sub">
+          <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec9_sub">
             ตรวจสอบ FPL Classic League ID สดจากเซิร์ฟเวอร์พรีเมียร์ลีก เลือกทีมที่ไม่ร่วมชิงรางวัล ตั้งค่าแพ็กเกจ และสร้างสคริปต์เปิดใช้งานทันที
           </p>
         </div>
@@ -1900,7 +2079,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
         <span class="mono font-medium text-slate-800 dark:text-neutral-200">FPL SaWaDiKa Executive BI v2.4</span>
         <span>·</span>
-        <span data-i18n="footer_rights">ศูนย์วิเคราะห์ข้อมูลธุรกิจและโครงสร้างพื้นฐานครบวงจร (8 มินิลีก)</span>
+        <span data-i18n="footer_rights">ศูนย์วิเคราะห์ข้อมูลธุรกิจและโครงสร้างพื้นฐานครบวงจร (9 มินิลีก)</span>
       </div>
       <div class="mono">
         <span>Cloudflare Workers + D1 Edge Telemetry</span>
@@ -1917,31 +2096,33 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         skip_to_content: 'ข้ามไปยังเนื้อหาหลัก',
         nav_console_badge: 'ศูนย์วิเคราะห์ข้อมูลธุรกิจ',
         nav_jump_league_label: 'สลับไปหน้ามินิลีก',
-        nav_jump_placeholder: 'เปิดหน้าลีก (8 ลีก)...',
+        nav_jump_placeholder: 'เปิดหน้าลีก (9 ลีก)...',
         nav_jump_hub: 'หน้าหลัก (Main Hub)',
         mod_nav_0: '0. Pitch Deck ขายงานผู้จัดลีก',
         mod_nav_1: '1. ภาพรวมธุรกิจและ KPI',
-        mod_nav_2: '2. พอร์ตโฟลิโอ 8 ลีก',
+        mod_nav_2: '2. พอร์ตโฟลิโอ 9 ลีก',
         mod_nav_3: '3. พฤติกรรมฟีเจอร์',
         mod_nav_4: '4. ช่องทางและภูมิภาค',
         mod_nav_5: '5. อุปกรณ์ที่ใช้งาน',
         mod_nav_6: '6. กราฟทราฟฟิกและช่วงเวลาพีค',
         mod_nav_7: '7. ประสิทธิภาพระบบและการขยายสเกล',
-        mod_nav_8: '8. เพิ่มลีกลูกค้าใหม่',
+        mod_nav_8: '8. ตรวจสุขภาพระบบย้อนหลัง',
+        mod_nav_9: '9. เพิ่มลีกลูกค้าใหม่',
         header_subtitle: 'ศูนย์วิเคราะห์ข้อมูลธุรกิจและระบบ',
-        quick_league_placeholder: 'สลับไปหน้ามินิลีก (8 ลีก)...',
+        quick_league_placeholder: 'สลับไปหน้ามินิลีก (9 ลีก)...',
         quick_hub_home: 'หน้าแรกศูนย์รวม (Main Hub)',
         sign_out: 'ออกจากระบบ',
         nav_pitch: '00. Pitch Deck',
         nav_audience: '01. ผู้ใช้งาน',
-        nav_portfolio: '02. พอร์ต 8 ลีก',
+        nav_portfolio: '02. พอร์ต 9 ลีก',
         nav_features: '03. ฟีเจอร์',
         nav_channels: '04. ช่องทางเข้าถึง',
         nav_devices: '05. อุปกรณ์',
         nav_timing: '06. ช่วงเวลาพีค',
         nav_system: '07. ระบบ & โควตา',
+        nav_monitor: '08. Monitor',
         page_title: 'สรุปภาพรวมผู้บริหารและข้อมูลวิเคราะห์ธุรกิจสด',
-        page_subtitle: 'ศูนย์ควบคุมข้อมูลระบบ พฤติกรรมผู้ใช้งานทั้ง 8 มินิลีก เศรษฐศาสตร์เงินรางวัล และการประเมินความจุคลาวด์เพื่อขยายสเกลโปรเจกต์',
+        page_subtitle: 'ศูนย์ควบคุมข้อมูลระบบ พฤติกรรมผู้ใช้งานทั้ง 9 มินิลีก (8 Tier 1 + 1 Tier 2) เศรษฐศาสตร์เงินรางวัล และการประเมินความจุคลาวด์เพื่อขยายสเกลโปรเจกต์',
         btn_copy_exec: 'คัดลอกสรุปผู้บริหาร',
         btn_copied_exec: 'คัดลอกสรุปลงคลิปบอร์ดแล้ว!',
         btn_refresh: 'รีเฟรชข้อมูลสด',
@@ -1970,7 +2151,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pain_3_title: 'แต้มตามเยอะ ถอดใจ ไม่เข้าดูแอป',
         pain_3_desc: 'ถ้าลุ้นแค่แชมป์สิ้นปี พอผ่านไป 10 นัด คนตาม 50+ แต้มก็เลิกเล่น ลีกกลายเป็นป่าช้า',
         sol_3_badge: 'FPLSaWaDiKa Solution',
-        sol_3_desc: 'Weekly Micro-Stakes + AI พากย์ดราม่าปลุกกระแสลุ้นทุกสัปดาห์ พร้อมเรดาร์ฟอร์มและบอลถ้วย Knockout',
+        sol_3_desc: 'Weekly Micro-Stakes + บทพากย์กูรูลูกหนังสายดราม่า ปลุกกระแสลุ้นทุกสัปดาห์ พร้อมเรดาร์ฟอร์มและบอลถ้วย Knockout',
         pain_4_badge: 'ปัญหาแอปหลัก',
         pain_4_metric: 'UX ส่องทีมคู่แข่งช้า',
         pain_4_title: 'ส่องทีมคู่แข่งยาก ขาดม้านั่งสำรอง',
@@ -1978,7 +2159,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sol_4_badge: 'FPLSaWaDiKa Solution',
         sol_4_desc: 'Interactive Squad Pitch Modal คลิกเดียวเห็นผัง 11 ตัวจริง + ม้านั่ง Auto-Sub และแต้มสดทันที',
         pitch_step2_title: 'หลักฐานเชิงประจักษ์ 4 มิติ (Visual Proof & Analytics)',
-        pitch_step2_sub: 'ข้อมูลจริงจาก 8 มินิลีก',
+        pitch_step2_sub: 'ข้อมูลจริงจาก 9 มินิลีก',
         graphic1_eyebrow: 'มิติที่ 1 · ความคุ้มค่าด้านเวลา',
         graphic1_badge: 'ประหยัด 190 ชม./ปี',
         graphic1_title: 'ภาระงานแอดมิน: จัดการเอง (Excel) vs FPLSaWaDiKa',
@@ -1990,7 +2171,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         graphic2_badge: 'พุ่งสูงขึ้น 5.7 เท่า',
         graphic2_title: 'ความถี่การเข้าชมเฉลี่ย: ลีกทางการ vs ลีกบน FPLSaWaDiKa',
         graphic2_sub: 'ยอดเปิดดูเฉลี่ยต่อผู้จัดการทีม 1 คน ในแต่ละสัปดาห์ (Visits/Team/GW)',
-        graphic2_callout: 'Weekly Stakes + AI พากย์ดราม่า ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์',
+        graphic2_axis_y: 'แกนตั้ง: ความถี่เปิดดูเฉลี่ยต่อทีม (ครั้ง / สัปดาห์)',
+        graphic2_axis_x: 'กลุ่มผู้ใช้',
+        graphic2_callout: 'Weekly Stakes + บทวิเคราะห์กูรูลูกหนังสายดราม่า ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์',
         graphic3_eyebrow: 'มิติที่ 3 · การเงินและความโปร่งใส',
         graphic3_badge: 'GMV รวม ฿268,700',
         graphic3_title: 'ระบบรองรับโมเดลเงินรางวัลและค่าปรับ 5 รูปแบบ',
@@ -2014,7 +2197,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         col_tier1: 'Tier 1 (พร้อมขาย)',
         matrix_f1: 'แต้มสด & โบนัส BPS 15 วิ',
         matrix_f2: 'หักแต้มย้ายตัว Net Pts สด',
-        matrix_f3: 'AI พากย์เกมดราม่า',
+        matrix_f3: 'บทพากย์กูรูลูกหนังสายดราม่า',
         matrix_f4: 'คำนวณเงินรางวัล/ค่าปรับอัตโนมัติ',
         matrix_f5: 'Interactive Squad Pitch Modal',
         graphic4_callout: 'Tier 1 พร้อมส่งมอบทันที · Tier 2 (Live Beta) รองรับ 1,780 ทีม',
@@ -2022,7 +2205,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pitch_step3_sub: 'คลิกเพื่อเปิดหน้าจริงในแท็บใหม่',
         jump_1_title: 'คะแนนสด & ผัง 11 ตัวจริง',
         jump_1_sub: 'เปิดดูผังทีมจริง & แต้ม Net',
-        jump_2_title: 'บทวิเคราะห์ AI ดราม่า',
+        jump_2_title: 'บทวิเคราะห์กูรูสายดราม่า',
         jump_2_sub: 'พากย์เกมดราม่าสุดกวน',
         jump_3_title: 'ระบบค่าปรับ & รางวัล',
         jump_3_sub: 'บ๊วย 5 อันดับโดนปรับสด',
@@ -2049,7 +2232,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         kpi_retention_sub: 'อัตราเลิกเล่นต่ำมาก (< 6%)',
         kpi_screentime_label: 'เวลาใช้งานเฉลี่ยต่อครั้ง',
         kpi_screentime_sub: 'เปิดหน้าจอค้างระหว่างบอลเตะสด',
-        sec2_title: '02. พอร์ตโฟลิโอ 8 มินิลีก และเศรษฐศาสตร์เงินรางวัลรวม',
+        sec2_title: '02. พอร์ตโฟลิโอ 9 มินิลีก และเศรษฐศาสตร์เงินรางวัลรวม',
         sec2_sub: 'คลิกหัวตารางเพื่อเรียงลำดับ · คอลัมน์ชื่อลีกตรึงอยู่กับที่เมื่อเลื่อนแนวนอนบนมือถือ',
         port_gmv_label: 'มูลค่าเงินรางวัลรวมทั้งระบบ (GMV)',
         port_gmv_sub: 'รวมเงินรางวัลประจำฤดูกาล + รางวัลรายสัปดาห์/เดือน',
@@ -2062,7 +2245,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         col_teams: 'จำนวนทีม',
         col_pool: 'เงินรางวัลรวม (GMV)',
         col_modules: 'โมดูลและกติกาที่เปิดใช้งาน',
-        col_views: 'ยอดเปิดดู / GW',
+        col_views: 'ยอดเปิดดู (7 วันล่าสุด)',
         col_retention: 'ความเหนียวแน่น',
         sec3_title: '03. พฤติกรรมการใช้งานฟีเจอร์และคุณค่าผลิตภัณฑ์',
         sec3_sub: 'ฟีเจอร์ใดดึงดูดผู้ใช้มากที่สุด และควรพัฒนาต่อยอดส่วนใดก่อน',
@@ -2104,16 +2287,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         geo_edge_title: 'Cloudflare Bangkok Edge (BKK): ',
         geo_edge_desc: 'ทราฟฟิก 92.2% ในไทยวิ่งเข้า Data Center กรุงเทพฯ โดยตรง ค่าความหน่วงเฉลี่ยต่ำเพียง 18–26 ms',
         sec5_title: '05. อุปกรณ์ หน้าจอ และสภาพแวดล้อมของผู้ใช้งาน',
-        sec5_sub: 'ข้อมูลจริงจาก D1 Telemetry เพื่อการออกแบบ UX/UI ให้เหมาะกับอุปกรณ์หลัก',
+        sec5_sub: 'เลือกดูสถิติอุปกรณ์จริงจาก D1 Telemetry ได้ทั้ง 7 วัน และ 30 วันล่าสุด',
+        dev_btn_7d: '7 วันล่าสุด',
+        dev_btn_30d: '30 วันล่าสุด',
         dev_mobile_label: 'สมาร์ตโฟน (Mobile Phones)',
-        dev_primary_badge: 'อุปกรณ์หลักอันดับ 1',
-        dev_mobile_desc: 'iOS Safari 49.2% · LINE In-App WebView 16.8% · Android Chrome 10.4% (ความกว้างจอหลัก 375px–430px)',
+        dev_primary_badge: 'อันดับ 1 (30 วันล่าสุด)',
+        dev_mobile_desc: 'หน้าจอมือถือขนาด 375px–430px (กำลังโหลดสถิติจริง 30 วันล่าสุด...)',
         dev_desktop_label: 'คอมพิวเตอร์ตั้งโต๊ะ / โน้ตบุ๊ก (Desktop)',
-        dev_desktop_badge: 'สายวิเคราะห์ข้อมูลลึก',
-        dev_desktop_desc: 'ใช้งานสูงในช่วงวางแผนจัดตัววันศุกร์ และเปิดตารางเปรียบเทียบหลายคอลัมน์บนจอ 1440px+',
+        dev_desktop_badge: 'ใช้งานบนจอ 1024px+',
+        dev_desktop_desc: 'หน้าจอคอมพิวเตอร์และโน้ตบุ๊ก 1024px+ (กำลังโหลดสถิติจริง 30 วันล่าสุด...)',
         dev_tablet_label: 'ไอแพดและแท็บเล็ต (iPad / Tablet)',
-        dev_tablet_badge: 'จอที่สองขณะดูบอลสด',
-        dev_tablet_desc: 'วางเปิดคู่ขณะดูถ่ายทอดสดพรีเมียร์ลีก (ความกว้างจอ 768px–1024px ทั้งแนวตั้งและแนวนอน)',
+        dev_tablet_badge: 'หน้าจอ 768px–1024px',
+        dev_tablet_desc: 'หน้าจอแท็บเล็ต 768px–1024px (กำลังโหลดสถิติจริง 30 วันล่าสุด...)',
         sec6_title: '06. จังหวะทราฟฟิกวันแข่งขันและช่วงเวลาใช้งานสูงสุด',
         sec6_sub: 'กราฟวิเคราะห์ความหนาแน่นทราฟฟิกรายวัน (7 วัน) และรายชั่วโมงวันแข่ง (เวลาไทย ICT)',
         chart_title_hourly: 'กราฟความหนาแน่นทราฟฟิกรายชั่วโมงในวันแข่งขัน (24 ชั่วโมง · ICT)',
@@ -2140,26 +2325,47 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sys_d1_reads_label: 'โควตาอ่าน-เขียนรายวัน:',
         sys_gh_success_label: 'อัตราซิงก์สำเร็จ 30 วัน:',
         sys_scale_headroom_label: 'เพดานขยายสเกล (Headroom):',
-        ops_title: 'ชุดคำสั่งดูแลระบบและจัดการแคช (Edge Operational Controls)',
-        ops_sub: 'คำสั่งเชื่อมต่อกับ Cloudflare Worker และฐานข้อมูล D1 โดยตรง (ไม่มีผลกระทบต่อความเร็วฝั่งผู้ใช้งาน)',
+        ops_title: 'ปุ่มดูแลและเช็กความพร้อมของเว็บ',
+        ops_sub: 'กดเฉพาะตอนที่ต้องการตรวจสอบหรือแก้ไขปัญหา ผลลัพธ์จะแสดงใต้ปุ่มทันที (คนเข้าเว็บทั่วไปไม่ได้รับผลกระทบ)',
         ops_shortcut_hint: 'คีย์ลัด: R รีเฟรช · L สลับภาษา · T สลับธีม',
-        op_flush_title: 'ล้างแคชคะแนนสดทั้ง 38 GW',
-        op_flush_desc: 'บังคับดึงข้อมูลใหม่จาก FPL API ทันทีในคำขอถัดไป',
-        op_flush_btn: 'ล้าง Edge Cache ทันที',
-        op_ping_title: 'ทดสอบความเร็ว FPL API ต้นทาง',
-        op_ping_desc: 'วัดค่า Latency และสถานะเซิร์ฟเวอร์พรีเมียร์ลีกสด',
-        op_ping_btn: 'ทดสอบความหน่วงต้นทาง',
-        op_export_title: 'ดาวน์โหลดรายงาน JSON ฉบับเต็ม',
-        op_export_desc: 'บันทึกข้อมูลสถิติและพอร์ตโฟลิโอทั้ง 8 ลีกเก็บไว้เปรียบเทียบ',
-        op_export_btn: 'ส่งออกไฟล์ JSON',
-        op_prune_title: 'เคลียร์ประวัติ D1 ที่เก่าเกิน 30 วัน',
-        op_prune_desc: 'รักษาขนาดฐานข้อมูลให้กะทัดรัดและอยู่ใน Free Quota เสมอ',
-        op_prune_btn: 'ล้างข้อมูลเก่าเกิน 30 วัน',
-        footer_rights: 'ศูนย์วิเคราะห์ข้อมูลธุรกิจและโครงสร้างพื้นฐานครบวงจร (8 มินิลีก)',
+        op_flush_title: 'รีเฟรชคะแนนสดใหม่ทั้งเว็บ',
+        op_flush_desc: 'ใช้เมื่อคะแนนหรือโบนัสบนหน้าเว็บค้างไม่ขยับ กดเพื่อล้างข้อมูลค้างเก่าและดึงผลล่าสุดให้ทุกคนทันที',
+        op_flush_btn: 'รีเฟรชคะแนนสดทันที',
+        op_ping_title: 'เช็กว่าระบบ FPL ล่มหรือช้าไหม',
+        op_ping_desc: 'ใช้ตรวจดูว่าปัญหาคะแนนไม่ขึ้นเกิดจากเว็บพรีเมียร์ลีกต้นทางช้าหรือล่มอยู่หรือไม่',
+        op_ping_btn: 'เช็กสถานะเว็บ FPL',
+        op_export_title: 'ดาวน์โหลดไฟล์สถิติเก็บไว้',
+        op_export_desc: 'เก็บข้อมูลยอดคนดูและรายละเอียดทั้ง 9 ลีกลงเครื่องไว้ดูย้อนหลังหรือสรุปรายงาน',
+        op_export_btn: 'ดาวน์โหลดไฟล์สถิติ',
+        op_prune_title: 'ลบประวัติคนดูเก่าที่เกิน 30 วัน',
+        op_prune_desc: 'ช่วยเคลียร์บันทึกเก่าที่ไม่ใช้แล้วให้ระบบลื่นและประหยัดพื้นที่ (ยอดคนดูรวมทั้งหมดยังอยู่ครบ)',
+        op_prune_btn: 'ลบประวัติเก่าเกิน 30 วัน',
+        sec8_title: '08. ตรวจสุขภาพระบบและ Error ย้อนหลัง (Monitor)',
+        sec8_sub: 'เช็กย้อนหลัง 1 วัน (รายชั่วโมง) และ 1 สัปดาห์ (รายวัน) ว่าช่วงเวลาไหนทำงานปกติหรือมี Error เกิดขึ้นกับผู้ใช้',
+        mon_status_healthy: 'ทำงานปกติ 100%',
+        mon_status_warning: 'พบปัญหาเล็กน้อยบางช่วง',
+        mon_status_incident: 'พบความผิดปกติ — ควรตรวจสอบ',
+        mon_kpi_24h_label: 'ความพร้อมใช้งาน 1 วัน (24 ชม.)',
+        mon_kpi_7d_label: 'ความพร้อมใช้งาน 1 สัปดาห์ (7 วัน)',
+        mon_kpi_client_label: 'ปัญหาฝั่งผู้ใช้งาน (หน้าเว็บ)',
+        mon_kpi_client_sub: 'หน้าเว็บค้าง โหลดข้อมูลไม่ขึ้น หรือ JS Error',
+        mon_kpi_upstream_label: 'ปัญหาเว็บ FPL ต้นทาง (5xx)',
+        mon_kpi_upstream_sub: 'เว็บพรีเมียร์ลีกต้นทางตอบช้าหรือล่มชั่วคราว',
+        mon_chart_title_24h: 'บันทึกการทำงานย้อนหลัง 24 ชั่วโมงล่าสุด (เวลาไทย · ICT)',
+        mon_chart_sub_24h: 'เปรียบเทียบช่วงเวลาที่ระบบทำงานปกติ กับช่วงเวลาที่ตรวจพบ Error รายชั่วโมง',
+        mon_chart_title_7d: 'บันทึกการทำงานย้อนหลัง 7 วันล่าสุด (1 สัปดาห์)',
+        mon_chart_sub_7d: 'สรุปปริมาณการใช้งานและจำนวน Error แยกตามวันย้อนหลัง 7 วัน',
+        mon_btn_24h: '1 วัน (24 ชม.)',
+        mon_btn_7d: '1 สัปดาห์ (7 วัน)',
+        mon_legend_ok: 'ใช้งานปกติ (จำนวนครั้ง)',
+        mon_legend_err: 'ช่วงเวลาที่พบ Error',
+        mon_anomaly_title: 'ประวัติช่วงเวลาที่ทำงานผิดปกติ (Anomaly Timeline)',
+        mon_cat_title: 'สรุปประเภท Error สะสม 7 วันล่าสุด',
+        footer_rights: 'ศูนย์วิเคราะห์ข้อมูลธุรกิจและโครงสร้างพื้นฐานครบวงจร (9 มินิลีก)',
         toast_refreshed: 'อัปเดตข้อมูลสถานะล่าสุดจากเซิร์ฟเวอร์เรียบร้อยแล้ว',
-        confirm_prune: 'ยืนยันการลบข้อมูล Telemetry ที่เก่าเกิน 30 วันออกจากฐานข้อมูล D1 หรือไม่?',
-        sec8_title: '08. เครื่องมือเปิดลีกลูกค้าใหม่ (Concierge Onboarding Wizard)',
-        sec8_sub: 'ตรวจสอบ FPL Classic League ID สดจากเซิร์ฟเวอร์พรีเมียร์ลีก เลือกทีมที่ไม่ร่วมชิงรางวัล ตั้งค่าแพ็กเกจ และสร้างสคริปต์เปิดใช้งานทันที',
+        confirm_prune: 'ยืนยันการลบประวัติการเข้าชมเก่าที่เกิน 30 วันหรือไม่? (ยอดผู้เข้าชมรวมทั้งหมดจะยังอยู่ครบไม่ถูกลบ)',
+        sec9_title: '09. เครื่องมือเปิดลีกลูกค้าใหม่ (Concierge Onboarding Wizard)',
+        sec9_sub: 'ตรวจสอบ FPL Classic League ID สดจากเซิร์ฟเวอร์พรีเมียร์ลีก เลือกทีมที่ไม่ร่วมชิงรางวัล ตั้งค่าแพ็กเกจ และสร้างสคริปต์เปิดใช้งานทันที',
         onb_lbl_id: 'FPL Classic League ID (ตัวเลขเท่านั้น)',
         onb_btn_inspect: 'ดึงข้อมูลลีกสด',
         onb_lbl_plan: 'แพ็กเกจ (Plan)',
@@ -2178,31 +2384,32 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         skip_to_content: 'Skip to main content',
         nav_console_badge: 'Executive BI Console',
         nav_jump_league_label: 'Switch Mini-League',
-        nav_jump_placeholder: 'Open League (8 Leagues)...',
+        nav_jump_placeholder: 'Open League (9 Leagues)...',
         nav_jump_hub: 'Main Hub (All Leagues)',
         mod_nav_0: '0. Organizer Pitch Deck',
         mod_nav_1: '1. Audience & KPIs',
-        mod_nav_2: '2. 8-League Portfolio',
+        mod_nav_2: '2. 9-League Portfolio',
         mod_nav_3: '3. Feature Value',
         mod_nav_4: '4. Channels & Geo',
         mod_nav_5: '5. Client Devices',
         mod_nav_6: '6. Matchday Traffic',
         mod_nav_7: '7. Cloud & Scaling',
-        mod_nav_8: '8. Customer Onboarding',
+        mod_nav_8: '8. Project Health Monitor',
         header_subtitle: 'Executive BI & Infrastructure Control',
-        quick_league_placeholder: 'Jump to League (8 Leagues)...',
+        quick_league_placeholder: 'Jump to League (9 Leagues)...',
         quick_hub_home: 'Main League Hub (Home)',
         sign_out: 'Sign Out',
         nav_pitch: '00. Pitch Deck',
         nav_audience: '01. Audience',
-        nav_portfolio: '02. 8-League Portfolio',
+        nav_portfolio: '02. 9-League Portfolio',
         nav_features: '03. Product Value',
         nav_channels: '04. Acquisition',
         nav_devices: '05. Devices',
         nav_timing: '06. Traffic Rhythm',
         nav_system: '07. Cloud & Scaling',
+        nav_monitor: '08. Health Monitor',
         page_title: 'Executive Summary & Live Business Intelligence',
-        page_subtitle: 'Real-time portfolio economics across all 8 mini-leagues, user retention behavior, product adoption, and cloud scaling headroom.',
+        page_subtitle: 'Real-time portfolio economics across all 9 mini-leagues (8 Tier 1 + 1 Tier 2), user retention behavior, product adoption, and cloud scaling headroom.',
         btn_copy_exec: 'Copy Executive Brief',
         btn_copied_exec: 'Copied Brief to Clipboard!',
         btn_refresh: 'Refresh Live Data',
@@ -2231,7 +2438,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pain_3_title: 'Trailers Quit Early When Deficit Grows',
         pain_3_desc: 'If only annual prizes exist, trailing managers quit by GW10 when behind by 50+ points.',
         sol_3_badge: 'FPLSaWaDiKa Solution',
-        sol_3_desc: 'Weekly Micro-Stakes + Playful AI Banter keeps everyone fighting every gameweek till GW38.',
+        sol_3_desc: 'Weekly Micro-Stakes + Pundit AI Banter keeps everyone fighting every gameweek till GW38.',
         pain_4_badge: 'App UX Pain',
         pain_4_metric: 'Cumbersome Scouting',
         pain_4_title: 'Slow Opponent Squad Scouting',
@@ -2239,7 +2446,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sol_4_badge: 'FPLSaWaDiKa Solution',
         sol_4_desc: 'Interactive Squad Pitch Modal shows complete 11 starters + bench auto-subs in one single tap.',
         pitch_step2_title: '4 Visual Proof Dimensions & Proven Analytics',
-        pitch_step2_sub: 'Audited Data Across 8 Mini-Leagues',
+        pitch_step2_sub: 'Audited Data Across 9 Mini-Leagues',
         graphic1_eyebrow: 'Dimension 1 · Operational ROI',
         graphic1_badge: '190 hrs/yr saved',
         graphic1_title: 'Organizer Workload: Manual (Excel) vs FPLSaWaDiKa',
@@ -2251,7 +2458,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         graphic2_badge: '5.7x Higher Visits',
         graphic2_title: 'Weekly Visit Intensity: Official FPL vs FPLSaWaDiKa',
         graphic2_sub: 'Average weekly pageviews per manager (Visits/Team/GW)',
-        graphic2_callout: 'Weekly Stakes + Playful AI sparks non-stop chat group banter',
+        graphic2_axis_y: 'Y-Axis: Avg Visits per Team (visits / GW)',
+        graphic2_axis_x: 'Platform Segment',
+        graphic2_callout: 'Weekly Stakes + Pundit AI Banter sparks non-stop chat group banter',
         graphic3_eyebrow: 'Dimension 3 · Financial Integrity',
         graphic3_badge: 'Total GMV ฿268,700',
         graphic3_title: 'Supports 5 Automated Prize & Penalty Frameworks',
@@ -2275,7 +2484,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         col_tier1: 'Tier 1 (Turnkey Core)',
         matrix_f1: '15s Real-Time Score & Live BPS',
         matrix_f2: 'Live Net Pts (Transfer Cost Hit)',
-        matrix_f3: 'Playful Fanatic AI Match Commentary',
+        matrix_f3: 'Hardcore Pundit AI Match Commentary',
         matrix_f4: 'Automated Custom Prize/Penalty Engine',
         matrix_f5: 'One-Tap Squad Lineup Pitch Modal',
         graphic4_callout: 'Tier 1 ready to onboard immediately · Tier 2 (Live Beta) scales to 1,780 teams',
@@ -2283,7 +2492,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pitch_step3_sub: 'Click any module to open live demo in new tab',
         jump_1_title: 'Live Scores & Squad Pitch',
         jump_1_sub: 'Scout starting 11 & bench live',
-        jump_2_title: 'Matchday AI Commentary',
+        jump_2_title: 'Pundit AI Commentary',
         jump_2_sub: 'Authentic matchday drama',
         jump_3_title: 'Automated Payouts & Penalties',
         jump_3_sub: 'Bottom penalty ledger',
@@ -2310,10 +2519,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         kpi_retention_sub: 'Ultra-low season churn (< 6%)',
         kpi_screentime_label: 'Avg Session Duration',
         kpi_screentime_sub: 'Second-screen live match tracking',
-        sec2_title: '02. Multi-League Portfolio & Commercial Economics',
+        sec2_title: '02. Multi-League Portfolio (9 Leagues) & Commercial Economics',
         sec2_sub: 'Click column headers to sort · League name column stays pinned on mobile horizontal scroll',
         port_gmv_label: 'Total Prize Pool Under Management (GMV)',
-        port_gmv_sub: 'Combined season pot + weekly & monthly payouts across 8 leagues',
+        port_gmv_sub: 'Combined season pot + weekly & monthly payouts across all leagues',
         port_custom_label: 'Leagues with Custom Prize Rules',
         port_custom_sub: 'High switching cost vs generic FPL trackers',
         port_whitelabel_label: 'White-Label Expansion Capacity',
@@ -2323,7 +2532,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         col_teams: 'Teams',
         col_pool: 'Prize Pool (GMV)',
         col_modules: 'Active Modules & Rule Engine',
-        col_views: 'Views / GW',
+        col_views: 'Views (Last 7d)',
         col_retention: 'Retention',
         sec3_title: '03. Feature Adoption & Product Value Matrix',
         sec3_sub: 'Which modules drive repeat engagement and justify SaaS / White-Label monetization',
@@ -2365,16 +2574,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         geo_edge_title: 'Cloudflare Bangkok Edge (BKK): ',
         geo_edge_desc: '92.2% of traffic is served directly from the Bangkok PoP with 18–26 ms average latency.',
         sec5_title: '05. Device, Viewport & Client Environment',
-        sec5_sub: 'Live client telemetry from Cloudflare D1 informing mobile-first UX prioritization',
+        sec5_sub: 'Switch between 7-day and 30-day live device telemetry from Cloudflare D1',
+        dev_btn_7d: 'Last 7d',
+        dev_btn_30d: 'Last 30d',
         dev_mobile_label: 'Mobile Smartphones',
-        dev_primary_badge: '#1 Primary Viewport',
-        dev_mobile_desc: 'iOS Safari 49.2% · LINE In-App WebView 16.8% · Android Chrome 10.4% (375px–430px viewports)',
+        dev_primary_badge: '#1 Top Device (30d)',
+        dev_mobile_desc: 'Mobile viewports 375px–430px (loading 30d live telemetry...)',
         dev_desktop_label: 'Desktop & Laptop Workstations',
-        dev_desktop_badge: 'Deep Research Mode',
-        dev_desktop_desc: 'Heavy usage on Friday pre-deadline planning and multi-column H2H comparison (1440px+)',
+        dev_desktop_badge: '1024px+ Screen',
+        dev_desktop_desc: 'Desktop & laptop screens 1024px+ (loading 30d live telemetry...)',
         dev_tablet_label: 'iPad & Tablet Devices',
-        dev_tablet_badge: 'Matchday Couch Screen',
-        dev_tablet_desc: 'Used as a dedicated second screen alongside live Premier League broadcasts (768px–1024px)',
+        dev_tablet_badge: '768px–1024px Screen',
+        dev_tablet_desc: 'Tablet screens 768px–1024px (loading 30d live telemetry...)',
         sec6_title: '06. Matchday Traffic Rhythm & Concurrency Windows',
         sec6_sub: 'Interactive 24-hour matchday concurrency curve (ICT) and 7-day rolling session volume',
         chart_title_hourly: '24-Hour Matchday Concurrency Curve (Thailand Time · ICT)',
@@ -2401,26 +2612,47 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sys_d1_reads_label: 'Daily Read/Write Quota:',
         sys_gh_success_label: '30-Day Sync Reliability:',
         sys_scale_headroom_label: 'Scaling Headroom:',
-        ops_title: 'Edge Operational Controls & Maintenance',
-        ops_sub: 'Direct Cloudflare Worker & D1 database commands (zero performance impact on end users)',
+        ops_title: 'Site Care & Quick Diagnostic Controls',
+        ops_sub: 'Use only when checking or fixing live issues. Results appear directly under each button (zero impact on visitors).',
         ops_shortcut_hint: 'Shortcuts: R Refresh · L Language · T Theme',
-        op_flush_title: 'Purge Edge Cache (All 38 GWs)',
-        op_flush_desc: 'Force immediate upstream re-fetch from official FPL API on next request',
-        op_flush_btn: 'Flush Edge Cache Now',
-        op_ping_title: 'Ping Upstream FPL API',
-        op_ping_desc: 'Measure live round-trip latency and HTTP status from Premier League servers',
-        op_ping_btn: 'Test Upstream Latency',
-        op_export_title: 'Export Full BI JSON Snapshot',
-        op_export_desc: 'Download complete 8-league portfolio and telemetry dataset for offline audit',
-        op_export_btn: 'Export JSON Report',
-        op_prune_title: 'Prune D1 Telemetry (>30 Days)',
-        op_prune_desc: 'Keep SQLite storage compact and permanently within Cloudflare Free Tier limits',
-        op_prune_btn: 'Prune Old D1 Rows',
+        op_flush_title: 'Refresh Live Scores Across Site',
+        op_flush_desc: 'Use when live scores or bonus points appear stuck so everyone gets fresh data right away.',
+        op_flush_btn: 'Refresh Live Scores Now',
+        op_ping_title: 'Check Premier League Server Status',
+        op_ping_desc: 'Verify whether score delays are coming from the official FPL website being slow or down.',
+        op_ping_btn: 'Check FPL Server',
+        op_export_title: 'Save Full Stats Snapshot',
+        op_export_desc: 'Download a backup file of all 9 leagues and visitor stats for your records or sharing.',
+        op_export_btn: 'Download Stats File',
+        op_prune_title: 'Clean Up Old Visitor Logs (>30 Days)',
+        op_prune_desc: 'Remove old daily logs to keep the system fast (total lifetime visitor count stays completely safe).',
+        op_prune_btn: 'Clean Old Logs (>30d)',
+        sec8_title: '08. Project Health & Error Monitor (1 Day / 7 Days)',
+        sec8_sub: 'Track 24-hour (hourly) and 7-day (daily) project stability, uptime, and exact timestamps of any user-facing errors',
+        mon_status_healthy: 'All Systems Healthy (100%)',
+        mon_status_warning: 'Minor Errors Detected',
+        mon_status_incident: 'Anomalies Detected — Review Needed',
+        mon_kpi_24h_label: '24-Hour Availability (1 Day)',
+        mon_kpi_7d_label: '7-Day Availability (1 Week)',
+        mon_kpi_client_label: 'User-Facing Web Errors',
+        mon_kpi_client_sub: 'Browser JS exceptions, timeouts, or data fetch failures',
+        mon_kpi_upstream_label: 'FPL Upstream Errors (5xx)',
+        mon_kpi_upstream_sub: 'Official FPL API slowdowns or temporary 5xx outages',
+        mon_chart_title_24h: 'Last 24 Hours Health & Error Log (Thailand Time · ICT)',
+        mon_chart_sub_24h: 'Hourly normal activity vs. detected client/upstream errors',
+        mon_chart_title_7d: 'Last 7 Days Health & Error Log (1 Week)',
+        mon_chart_sub_7d: 'Daily system activity vs. client/upstream errors across 7 days',
+        mon_btn_24h: '1 Day (24h)',
+        mon_btn_7d: '1 Week (7d)',
+        mon_legend_ok: 'Normal Activity (events)',
+        mon_legend_err: 'Window with Errors',
+        mon_anomaly_title: 'Anomaly & Error Timeline',
+        mon_cat_title: '7-Day Error Breakdown by Type',
         footer_rights: 'Executive Business Intelligence & Multi-League Infrastructure Suite',
         toast_refreshed: 'Live telemetry and portfolio metrics synchronized from Edge Worker.',
-        confirm_prune: 'Are you sure you want to prune D1 telemetry records older than 30 days?',
-        sec8_title: '08. Customer League Onboarding Wizard (Concierge Flow)',
-        sec8_sub: 'Inspect live FPL Classic League IDs from Premier League servers, exclude non-prize teams, pick package presets, and generate deploy commands.',
+        confirm_prune: 'Remove daily visitor logs older than 30 days? (Your total lifetime views will NOT be deleted.)',
+        sec9_title: '09. Customer League Onboarding Wizard (Concierge Flow)',
+        sec9_sub: 'Inspect live FPL Classic League IDs from Premier League servers, exclude non-prize teams, pick package presets, and generate deploy commands.',
         onb_lbl_id: 'FPL Classic League ID (digits only)',
         onb_btn_inspect: 'Inspect Live League',
         onb_lbl_plan: 'Package Plan',
@@ -2448,13 +2680,47 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       { id: '438691', name: '2 spade', badge: '', teams: 13, pool: 68400, modulesTh: 'รางวัลรายสัปดาห์ · ค่าปรับบ๊วย 5 อันดับ · บอลถ้วย', modulesEn: 'Weekly · Bottom-5 Penalty · Cup', views: 810, retention: 92.4 },
       { id: '187827', name: 'Shi62', badge: '', teams: 13, pool: 3100, modulesTh: 'Zero-Sum ขั้นบันไดทั้งปี · พิเศษครึ่งฤดูกาลหลัง', modulesEn: 'Zero-Sum Annual Tiers · 2nd Half Special', views: 740, retention: 91.8 },
       { id: '5349', name: 'Bramann League', badge: '', teams: 20, pool: 9500, modulesTh: 'เงินรางวัลคู่ · ทายผล & ชาเลนจ์รายสัปดาห์', modulesEn: 'Dual Prize · Prediction & Challenge', views: 860, retention: 90.5 },
-      { id: '567387', name: 'Fantasy Nguan & friends cup', badge: 'Community', teams: 12, pool: 0, modulesTh: 'ลีกคอมมูนิตี้ · บอลถ้วย · ตารางคะแนนสด', modulesEn: 'Community · Cup · Live Matrix', views: 2190, retention: 88.4 }
+      { id: '567387', name: 'Fantasy Nguan & friends cup', badge: 'Community', teams: 12, pool: 0, poolLabelTh: 'คอมมูนิตี้', poolLabelEn: 'Community', modulesTh: 'ลีกคอมมูนิตี้ · ตารางคะแนนสด · ผัง 11 ตัวจริง', modulesEn: 'Community · Live Matrix · Pitch Modal', views: 2190, retention: 88.4 },
+      { id: '139836', name: 'FPL Growth Mindset 2026/27', badge: 'Tier 2', teams: 1780, pool: 0, poolLabelTh: 'เสื้อบอลแท้', poolLabelEn: 'Official Shirt', modulesTh: 'Tier 2 Standings & Leaderboard · ค้นหา 1,780 ทีมทันที', modulesEn: 'Tier 2 Standings & Leaderboard · 1,780-Team Search', views: 0, retention: 91.2 }
     ];
 
     let currentSortKey = 'pool';
     let currentSortDir = 'desc';
     let currentChartMode = 'hourly';
+    let currentMonitorMode = '24h';
+    let currentDeviceWindow = '30d';
     let latestPayloadCache = null;
+    let DEVICES_STATE = { w7: null, w30: null };
+
+    let MONITOR_STATE = {
+      summary_24h: { activity_count: 0, client_errors: 0, upstream_errors: 0, total_errors: 0, error_rate_pct: '0.00', uptime_pct: '100.00', status: 'healthy' },
+      summary_7d: { activity_count: 0, client_errors: 0, upstream_errors: 0, total_errors: 0, error_rate_pct: '0.00', uptime_pct: '100.00', status: 'healthy' },
+      error_categories_7d: { js_error: 0, api_timeout: 0, api_http: 0, data_load: 0, upstream_5xx: 0 },
+      anomaly_windows_24h: [],
+      anomaly_windows_7d: [],
+      series_24h: Array.from({ length: 24 }, (_, idx) => ({
+        label: String(idx).padStart(2, '0') + ':00',
+        utc_date: '',
+        ict_hour: idx,
+        visits: 0,
+        api_ok: 0,
+        activity: 0,
+        client_errors: 0,
+        upstream_errors: 0,
+        total_errors: 0,
+        status: 'healthy'
+      })),
+      series_7d: Array.from({ length: 7 }, (_, idx) => ({
+        date: '',
+        visits: 0,
+        api_ok: 0,
+        activity: 0,
+        client_errors: 0,
+        upstream_errors: 0,
+        total_errors: 0,
+        status: 'healthy'
+      }))
+    };
 
     let HOURLY_SERIES = [
       { hour: '00:00', pct: 48, peak: true }, { hour: '01:00', pct: 32, peak: false },
@@ -2525,7 +2791,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       tbody.innerHTML = sorted.map((row) => {
         const poolText = row.pool > 0
           ? '฿' + Number(row.pool).toLocaleString()
-          : (lang === 'en' ? 'Community' : 'คอมมูนิตี้');
+          : escHtml(lang === 'en' ? (row.poolLabelEn || 'Community') : (row.poolLabelTh || 'คอมมูนิตี้'));
         const poolClass = row.pool > 0
           ? 'font-semibold text-emerald-700 dark:text-emerald-400'
           : 'font-medium text-slate-600 dark:text-neutral-400';
@@ -2575,16 +2841,27 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const titleEl = document.getElementById('trafficChartTitle');
       const subEl = document.getElementById('trafficChartSub');
       const calloutEl = document.getElementById('chartPeakCallout');
+      const yAxisEl = document.getElementById('trafficYAxisUnit');
+      const xAxisEl = document.getElementById('trafficXAxisUnit');
       const dict = I18N[lang];
 
       if (currentChartMode === 'hourly') {
         if (titleEl) titleEl.textContent = dict.chart_title_hourly;
         if (subEl) subEl.textContent = dict.chart_sub_hourly;
-        if (calloutEl) calloutEl.textContent = lang === 'en' ? 'Peak: 22:00 ICT (100% Index)' : 'จุดพีคสูงสุด: 22:00 น. (ดัชนี 100%)';
+        if (yAxisEl) yAxisEl.textContent = lang === 'en'
+          ? 'Y-Axis: Traffic Load Index (% of peak hour)'
+          : 'แกนตั้ง (Y): ดัชนีความหนาแน่นเทียบพีคสูงสุด (% ของจุดพีค)';
+        if (xAxisEl) xAxisEl.textContent = lang === 'en'
+          ? 'X-Axis: Time of Day (ICT)'
+          : 'แกนนอน (X): ช่วงเวลาในวัน (เวลาไทย · น.)';
+        const peakPt = HOURLY_SERIES.reduce((best, cur) => (cur.pct > best.pct ? cur : best), { hour: '22:00', pct: 100 });
+        if (calloutEl) calloutEl.textContent = lang === 'en'
+          ? ('Peak: ' + peakPt.hour + ' ICT (' + peakPt.pct + '% Load Index)')
+          : ('จุดพีคสูงสุด: ' + peakPt.hour + ' น. (' + peakPt.pct + '% ของจุดพีค)');
 
-        const chartLeft = 36;
+        const chartLeft = 40;
         const chartRight = 668;
-        const chartTop = 18;
+        const chartTop = 22;
         const chartBottom = 184;
         const chartHeight = chartBottom - chartTop;
         const stepX = (chartRight - chartLeft) / HOURLY_SERIES.length;
@@ -2602,11 +2879,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           const barH = Math.max(4, (pt.pct / 100) * chartHeight);
           const y = chartBottom - barH;
           const fill = pt.peak ? peakBarColor : normalBarColor;
+          const tip = lang === 'en'
+            ? (pt.hour + ' ICT: ' + pt.pct + '% of peak traffic load' + (pt.peak ? ' (Peak Window)' : ''))
+            : ('เวลา ' + pt.hour + ' น. · ความหนาแน่น ' + pt.pct + '% ของจุดพีค' + (pt.peak ? ' (ช่วงพีค)' : ''));
           html += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + barH.toFixed(1) + '" rx="3" fill="' + fill + '">' +
-            '<title>' + pt.hour + ' ICT: ' + pt.pct + '%</title></rect>';
+            '<title>' + escHtml(tip) + '</title></rect>';
+
+          if (pt.hour === peakPt.hour || (pt.pct >= 80 && idx % 2 === 0)) {
+            html += '<text x="' + (x + barWidth / 2).toFixed(1) + '" y="' + (y - 5).toFixed(1) + '" text-anchor="middle" fill="' + peakBarColor + '" font-size="9.5" font-weight="600" font-family="JetBrains Mono, monospace">' + pt.pct + '%</text>';
+          }
 
           if (idx % 3 === 0 || idx === 22) {
-            html += '<text x="' + (x + barWidth / 2).toFixed(1) + '" y="206" text-anchor="middle" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + pt.hour.slice(0, 2) + 'h</text>';
+            html += '<text x="' + (x + barWidth / 2).toFixed(1) + '" y="206" text-anchor="middle" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + pt.hour.slice(0, 2) + (lang === 'en' ? 'h' : ':00') + '</text>';
           }
         });
 
@@ -2614,25 +2898,32 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       } else {
         if (titleEl) titleEl.textContent = dict.chart_title_daily;
         if (subEl) subEl.textContent = dict.chart_sub_daily;
+        if (yAxisEl) yAxisEl.textContent = lang === 'en'
+          ? 'Y-Axis: Website Visits (visits/day)'
+          : 'แกนตั้ง (Y): ปริมาณการเข้าชมเว็บ (ครั้ง/วัน)';
+        if (xAxisEl) xAxisEl.textContent = lang === 'en'
+          ? 'X-Axis: Day of Week (Last 7 Days)'
+          : 'แกนนอน (X): วันในสัปดาห์ (ย้อนหลัง 7 วัน)';
         const maxVisits = Math.max(...DAILY_SERIES.map((d) => d.visits), 100);
         if (calloutEl) calloutEl.textContent = lang === 'en'
           ? 'Weekend Peak: ' + maxVisits.toLocaleString() + ' visits/day'
-          : 'พีควันเสาร์: ' + maxVisits.toLocaleString() + ' ครั้ง/วัน';
+          : 'พีคสูงสุด: ' + maxVisits.toLocaleString() + ' ครั้ง/วัน';
 
-        const chartLeft = 44;
+        const chartLeft = 52;
         const chartRight = 660;
-        const chartTop = 20;
+        const chartTop = 24;
         const chartBottom = 184;
         const chartHeight = chartBottom - chartTop;
         const stepX = (chartRight - chartLeft) / DAILY_SERIES.length;
         const barWidth = Math.min(48, stepX - 24);
+        const unitSuffix = lang === 'en' ? ' visits' : ' ครั้ง';
 
         let html = '';
         [0, 0.25, 0.5, 0.75, 1].forEach((ratio) => {
           const val = Math.round(maxVisits * ratio);
           const y = chartBottom - ratio * chartHeight;
           html += '<line x1="' + chartLeft + '" y1="' + y + '" x2="' + chartRight + '" y2="' + y + '" stroke="' + gridColor + '" stroke-dasharray="3 3" stroke-width="1" />';
-          html += '<text x="2" y="' + (y + 4) + '" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + val + '</text>';
+          html += '<text x="2" y="' + (y + 4) + '" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + val.toLocaleString() + '</text>';
         });
 
         DAILY_SERIES.forEach((pt, idx) => {
@@ -2642,10 +2933,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           const y = chartBottom - barH;
           const fill = pt.peak ? peakBarColor : normalBarColor;
           const label = lang === 'en' ? pt.dayEn : pt.dayTh;
+          const tip = label + ': ' + pt.visits.toLocaleString() + (lang === 'en' ? ' visits/day' : ' ครั้ง/วัน');
 
-          html += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + barH.toFixed(1) + '" rx="4" fill="' + fill + '" />';
-          html += '<text x="' + center.toFixed(1) + '" y="' + (y - 6).toFixed(1) + '" text-anchor="middle" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + pt.visits.toLocaleString() + '</text>';
-          html += '<text x="' + center.toFixed(1) + '" y="206" text-anchor="middle" fill="' + labelColor + '" font-size="11" font-family="JetBrains Mono, monospace">' + label + '</text>';
+          html += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + barH.toFixed(1) + '" rx="4" fill="' + fill + '">' +
+            '<title>' + escHtml(tip) + '</title></rect>';
+          html += '<text x="' + center.toFixed(1) + '" y="' + (y - 6).toFixed(1) + '" text-anchor="middle" fill="' + labelColor + '" font-size="10" font-weight="600" font-family="JetBrains Mono, monospace">' + pt.visits.toLocaleString() + unitSuffix + '</text>';
+          html += '<text x="' + center.toFixed(1) + '" y="206" text-anchor="middle" fill="' + labelColor + '" font-size="11" font-family="JetBrains Mono, monospace">' + escHtml(label) + '</text>';
         });
 
         svg.innerHTML = html;
@@ -2663,6 +2956,360 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       renderTrafficChart();
     }
 
+    function renderMonitorSummary() {
+      const lang = getLang();
+      const dict = I18N[lang];
+      const s24 = MONITOR_STATE.summary_24h || {};
+      const s7 = MONITOR_STATE.summary_7d || {};
+      const activeSummary = currentMonitorMode === '7d' ? s7 : s24;
+
+      const overallStatus = (s24.status === 'incident' || s7.status === 'incident')
+        ? 'incident'
+        : ((s24.status === 'warning' || s7.status === 'warning') ? 'warning' : 'healthy');
+
+      const badge = document.getElementById('monitorOverallBadge');
+      const badgeText = document.getElementById('monitorOverallBadgeText');
+      if (badge && badgeText) {
+        const dot = badge.querySelector('span:first-child');
+        if (overallStatus === 'healthy') {
+          badge.className = 'inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-xs font-medium text-emerald-700 dark:text-emerald-300 shrink-0';
+          if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-500';
+          badgeText.textContent = dict.mon_status_healthy;
+        } else if (overallStatus === 'warning') {
+          badge.className = 'inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-xs font-medium text-amber-700 dark:text-amber-300 shrink-0';
+          if (dot) dot.className = 'w-2 h-2 rounded-full bg-amber-500';
+          badgeText.textContent = dict.mon_status_warning;
+        } else {
+          badge.className = 'inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full border border-rose-500/30 bg-rose-500/10 text-xs font-medium text-rose-700 dark:text-rose-300 shrink-0';
+          if (dot) dot.className = 'w-2 h-2 rounded-full bg-rose-500 animate-pulse';
+          badgeText.textContent = dict.mon_status_incident;
+        }
+      }
+
+      const up24El = document.getElementById('mon24hUptime');
+      const sub24El = document.getElementById('mon24hSub');
+      if (up24El) {
+        up24El.textContent = (s24.uptime_pct || '100.00') + '%';
+        up24El.className = 'text-2xl font-semibold mono tabular ' + (s24.total_errors > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-700 dark:text-emerald-400');
+      }
+      if (sub24El) {
+        sub24El.textContent = lang === 'en'
+          ? (Number(s24.total_errors || 0).toLocaleString() + ' errors across ' + Number(s24.activity_count || 0).toLocaleString() + ' events')
+          : ('พบ ' + Number(s24.total_errors || 0).toLocaleString() + ' Error จากกิจกรรม ' + Number(s24.activity_count || 0).toLocaleString() + ' ครั้ง');
+      }
+
+      const up7El = document.getElementById('mon7dUptime');
+      const sub7El = document.getElementById('mon7dSub');
+      if (up7El) {
+        up7El.textContent = (s7.uptime_pct || '100.00') + '%';
+        up7El.className = 'text-2xl font-semibold mono tabular ' + (s7.total_errors > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-700 dark:text-emerald-400');
+      }
+      if (sub7El) {
+        sub7El.textContent = lang === 'en'
+          ? (Number(s7.total_errors || 0).toLocaleString() + ' errors across ' + Number(s7.activity_count || 0).toLocaleString() + ' events')
+          : ('พบ ' + Number(s7.total_errors || 0).toLocaleString() + ' Error จากกิจกรรม ' + Number(s7.activity_count || 0).toLocaleString() + ' ครั้ง');
+      }
+
+      const cliEl = document.getElementById('monClientErrTotal');
+      const upErrEl = document.getElementById('monUpstreamErrTotal');
+      const cliCount = Number(activeSummary.client_errors || 0);
+      const upCount = Number(activeSummary.upstream_errors || 0);
+      if (cliEl) {
+        cliEl.textContent = cliCount.toLocaleString();
+        cliEl.className = 'text-2xl font-semibold mono tabular ' + (cliCount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white');
+      }
+      if (upErrEl) {
+        upErrEl.textContent = upCount.toLocaleString();
+        upErrEl.className = 'text-2xl font-semibold mono tabular ' + (upCount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white');
+      }
+
+      const anomalyListEl = document.getElementById('monitorAnomalyList');
+      if (anomalyListEl) {
+        const anomalies = currentMonitorMode === '7d'
+          ? (MONITOR_STATE.anomaly_windows_7d || [])
+          : (MONITOR_STATE.anomaly_windows_24h || []);
+        if (anomalies.length === 0) {
+          anomalyListEl.innerHTML =
+            '<div class="p-3 rounded-lg border border-emerald-500/25 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 leading-relaxed">' +
+            (lang === 'en'
+              ? 'No errors or abnormal windows recorded in this period. All services ran normally.'
+              : '✓ ไม่พบ Error หรือช่วงเวลาที่ทำงานผิดปกติในช่วงนี้ — ระบบทำงานเรียบร้อยดี 100%') +
+            '</div>';
+        } else {
+          anomalyListEl.innerHTML = anomalies.slice().reverse().slice(0, 6).map((item) => {
+            const whenLabel = currentMonitorMode === '7d'
+              ? escHtml(item.date || '-')
+              : (escHtml(item.label || '-') + (lang === 'en' ? ' ICT' : ' น.') + (item.utc_date ? ' (' + escHtml(item.utc_date) + ')' : ''));
+            const sevCls = item.status === 'incident'
+              ? 'border-rose-500/30 bg-rose-500/10 text-rose-800 dark:text-rose-300'
+              : 'border-amber-500/30 bg-amber-500/10 text-amber-800 dark:text-amber-300';
+            const detailText = lang === 'en'
+              ? (Number(item.client_errors || 0) + ' web errors · ' + Number(item.upstream_errors || 0) + ' FPL upstream 5xx')
+              : ('ฝั่งผู้ใช้ ' + Number(item.client_errors || 0) + ' ครั้ง · เว็บ FPL ล่ม/ช้า ' + Number(item.upstream_errors || 0) + ' ครั้ง');
+            return '<div class="flex items-center justify-between gap-2 p-2.5 rounded-lg border ' + sevCls + '">' +
+              '<div class="font-medium mono">' + whenLabel + '</div>' +
+              '<div>' + escHtml(detailText) + '</div>' +
+              '</div>';
+          }).join('');
+        }
+      }
+
+      const breakdownEl = document.getElementById('monitorCategoryBreakdown');
+      if (breakdownEl) {
+        const cats = MONITOR_STATE.error_categories_7d || {};
+        const items = [
+          { key: 'js_error', val: Number(cats.js_error || 0), labelTh: 'สคริปต์หน้าเว็บขัดข้อง (JS Error)', labelEn: 'Frontend JS Exception' },
+          { key: 'api_timeout', val: Number(cats.api_timeout || 0), labelTh: 'เชื่อมต่อช้าเกินกำหนด (Timeout)', labelEn: 'API Request Timeout' },
+          { key: 'api_http', val: Number(cats.api_http || 0), labelTh: 'ดึงคะแนนสดไม่สำเร็จ (Live API)', labelEn: 'Live Edge Fetch Failure' },
+          { key: 'data_load', val: Number(cats.data_load || 0), labelTh: 'เปิดดูข้อมูลทีมไม่ขึ้น (Picks Load)', labelEn: 'Squad Picks Load Failure' },
+          { key: 'upstream_5xx', val: Number(cats.upstream_5xx || 0), labelTh: 'เว็บ FPL ต้นทางล่มชั่วคราว (5xx)', labelEn: 'Upstream FPL 5xx Outage' }
+        ];
+        const totalCatErr = items.reduce((s, x) => s + x.val, 0);
+        if (totalCatErr === 0) {
+          breakdownEl.innerHTML =
+            '<div class="p-3 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-600 dark:text-neutral-400 leading-relaxed">' +
+            (lang === 'en'
+              ? '0 errors recorded across all 5 categories during the past 7 days.'
+              : 'ยังไม่มี Error สะสมในทุกหมวดหมู่ตลอด 7 วันที่ผ่านมา') +
+            '</div>';
+        } else {
+          breakdownEl.innerHTML = items.map((c) => {
+            const pct = Math.round((c.val / totalCatErr) * 100);
+            const barColor = c.val > 0 ? 'bg-rose-500' : 'bg-slate-400/30 dark:bg-neutral-700';
+            return '<div class="space-y-1">' +
+              '<div class="flex items-center justify-between text-[11px]">' +
+                '<span class="text-slate-700 dark:text-neutral-300">' + escHtml(lang === 'en' ? c.labelEn : c.labelTh) + '</span>' +
+                '<span class="mono font-medium text-slate-900 dark:text-white">' + c.val.toLocaleString() + ' (' + pct + '%)</span>' +
+              '</div>' +
+              '<div class="w-full h-1.5 rounded-full bg-raisedLight dark:bg-raisedDark overflow-hidden">' +
+                '<div class="h-full rounded-full ' + barColor + '" style="width:' + Math.max(c.val > 0 ? 4 : 0, pct) + '%"></div>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+        }
+      }
+    }
+
+    function renderMonitorChart() {
+      const svg = document.getElementById('monitorSvgChart');
+      if (!svg) return;
+      const lang = getLang();
+      const dict = I18N[lang];
+      const isDark = document.documentElement.classList.contains('dark');
+      const gridColor = isDark ? '#282e3d' : '#e2e8f0';
+      const labelColor = isDark ? '#a3a3a3' : '#475569';
+      const okBarColor = '#10b981';
+      const idleBarColor = isDark ? '#334155' : '#cbd5e1';
+      const errBarColor = '#f43f5e';
+
+      const titleEl = document.getElementById('monitorChartTitle');
+      const subEl = document.getElementById('monitorChartSub');
+      const calloutEl = document.getElementById('monitorWindowCallout');
+      const yAxisEl = document.getElementById('monitorYAxisUnit');
+      const xAxisEl = document.getElementById('monitorXAxisUnit');
+      const series = currentMonitorMode === '7d' ? (MONITOR_STATE.series_7d || []) : (MONITOR_STATE.series_24h || []);
+      const anomalies = currentMonitorMode === '7d' ? (MONITOR_STATE.anomaly_windows_7d || []) : (MONITOR_STATE.anomaly_windows_24h || []);
+
+      if (titleEl) titleEl.textContent = currentMonitorMode === '7d' ? dict.mon_chart_title_7d : dict.mon_chart_title_24h;
+      if (subEl) subEl.textContent = currentMonitorMode === '7d' ? dict.mon_chart_sub_7d : dict.mon_chart_sub_24h;
+      if (yAxisEl) {
+        yAxisEl.textContent = currentMonitorMode === '7d'
+          ? (lang === 'en' ? 'Y-Axis: Real Events & Errors (count/day)' : 'แกนตั้ง (Y): จำนวนเหตุการณ์ใช้งานจริง & Error (ครั้ง/วัน)')
+          : (lang === 'en' ? 'Y-Axis: Real Events & Errors (count/hr)' : 'แกนตั้ง (Y): จำนวนเหตุการณ์ใช้งานจริง & Error (ครั้ง/ชม.)');
+      }
+      if (xAxisEl) {
+        xAxisEl.textContent = currentMonitorMode === '7d'
+          ? (lang === 'en' ? 'X-Axis: Date (Last 7 Days)' : 'แกนนอน (X): วันที่ (ย้อนหลัง 7 วัน)')
+          : (lang === 'en' ? 'X-Axis: Last 24 Hours (ICT)' : 'แกนนอน (X): ช่วงเวลา 24 ชม. ล่าสุด (เวลาไทย · น.)');
+      }
+      if (calloutEl) {
+        if (anomalies.length === 0) {
+          calloutEl.className = 'mono text-emerald-700 dark:text-emerald-400 font-medium';
+          calloutEl.textContent = lang === 'en' ? '0 Anomaly Windows Detected' : 'ไม่มีช่วงเวลาผิดปกติ (ปกติ 100%)';
+        } else {
+          calloutEl.className = 'mono text-rose-600 dark:text-rose-400 font-medium';
+          calloutEl.textContent = lang === 'en'
+            ? (anomalies.length + ' Window(s) with Errors')
+            : ('พบความผิดปกติ ' + anomalies.length + ' ช่วงเวลา');
+        }
+      }
+
+      if (series.length === 0) {
+        svg.innerHTML = '';
+        return;
+      }
+
+      const maxVal = Math.max(
+        10,
+        ...series.map((d) => Math.max(Number(d.activity || 0), Number(d.total_errors || 0) * 4))
+      );
+
+      const chartLeft = 46;
+      const chartRight = 666;
+      const chartTop = 24;
+      const chartBottom = 184;
+      const chartHeight = chartBottom - chartTop;
+      const stepX = (chartRight - chartLeft) / series.length;
+      const barWidth = currentMonitorMode === '7d' ? Math.min(48, stepX - 24) : Math.max(10, stepX - 7);
+      const okUnit = lang === 'en' ? ' ok' : ' ครั้ง';
+
+      let html = '';
+      [0, 0.25, 0.5, 0.75, 1].forEach((ratio) => {
+        const val = Math.round(maxVal * ratio);
+        const y = chartBottom - ratio * chartHeight;
+        html += '<line x1="' + chartLeft + '" y1="' + y + '" x2="' + chartRight + '" y2="' + y + '" stroke="' + gridColor + '" stroke-dasharray="3 3" stroke-width="1" />';
+        html += '<text x="2" y="' + (y + 4) + '" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + val.toLocaleString() + '</text>';
+      });
+
+      const thDays = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+      const enDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+      series.forEach((pt, idx) => {
+        const act = Number(pt.activity || 0);
+        const errCount = Number(pt.total_errors || 0);
+        const center = chartLeft + idx * stepX + stepX / 2;
+        const x = center - barWidth / 2;
+        const actH = act > 0 ? Math.max(6, (act / maxVal) * chartHeight) : 4;
+        const actY = chartBottom - actH;
+        const barFill = act > 0 ? okBarColor : idleBarColor;
+
+        let xLabel = '';
+        if (currentMonitorMode === '7d') {
+          if (pt.date) {
+            const dt = new Date(pt.date + 'T12:00:00Z');
+            const dow = Number.isNaN(dt.getTime()) ? 0 : dt.getUTCDay();
+            xLabel = (lang === 'en' ? enDays[dow] : thDays[dow]) + ' ' + pt.date.slice(5);
+          } else {
+            xLabel = 'D' + (idx + 1);
+          }
+        } else {
+          xLabel = String(pt.label || '').slice(0, 2) + (lang === 'en' ? 'h' : ':00');
+        }
+
+        const tooltipText = lang === 'en'
+          ? ((pt.label || pt.date || '') + ' | Normal Events: ' + act.toLocaleString() + ' | Total Errors: ' + errCount +
+             ' (User Web: ' + Number(pt.client_errors || 0) + ', Upstream FPL 5xx: ' + Number(pt.upstream_errors || 0) + ')')
+          : ((pt.label ? (pt.label + ' น.') : (pt.date || '')) + ' | ใช้งานปกติ: ' + act.toLocaleString() + ' ครั้ง | Error รวม: ' + errCount +
+             ' ครั้ง (ฝั่งผู้ใช้ ' + Number(pt.client_errors || 0) + ', เว็บ FPL ' + Number(pt.upstream_errors || 0) + ')');
+
+        html += '<rect x="' + x.toFixed(1) + '" y="' + actY.toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + actH.toFixed(1) + '" rx="3" fill="' + barFill + '" opacity="' + (act > 0 ? '0.88' : '0.45') + '">' +
+          '<title>' + escHtml(tooltipText) + '</title></rect>';
+
+        if (act > 0 && errCount === 0 && (currentMonitorMode === '7d' || act >= maxVal * 0.25)) {
+          html += '<text x="' + center.toFixed(1) + '" y="' + Math.max(12, actY - 6).toFixed(1) + '" text-anchor="middle" fill="' + labelColor + '" font-size="9.5" font-weight="600" font-family="JetBrains Mono, monospace">' + act.toLocaleString() + okUnit + '</text>';
+        }
+
+        if (errCount > 0) {
+          const errH = Math.max(12, Math.min(chartHeight, ((errCount * 4) / maxVal) * chartHeight));
+          const errY = chartBottom - errH;
+          html += '<rect x="' + x.toFixed(1) + '" y="' + errY.toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + errH.toFixed(1) + '" rx="3" fill="' + errBarColor + '" opacity="0.95">' +
+            '<title>' + escHtml(tooltipText) + '</title></rect>';
+          html += '<circle cx="' + center.toFixed(1) + '" cy="' + Math.max(10, errY - 7).toFixed(1) + '" r="4" fill="' + errBarColor + '" />';
+          const errLabel = '!' + errCount + ' Err';
+          html += '<text x="' + center.toFixed(1) + '" y="' + Math.max(10, errY - 14).toFixed(1) + '" text-anchor="middle" fill="' + errBarColor + '" font-size="9" font-weight="600" font-family="JetBrains Mono, monospace">' + escHtml(errLabel) + '</text>';
+        }
+
+        if (currentMonitorMode === '7d' || idx % 3 === 0 || idx === series.length - 1) {
+          html += '<text x="' + center.toFixed(1) + '" y="206" text-anchor="middle" fill="' + labelColor + '" font-size="' + (currentMonitorMode === '7d' ? '10' : '9.5') + '" font-family="JetBrains Mono, monospace">' + escHtml(xLabel) + '</text>';
+        }
+      });
+
+      svg.innerHTML = html;
+    }
+
+    function switchMonitorMode(mode) {
+      currentMonitorMode = mode === '7d' ? '7d' : '24h';
+      const btn24 = document.getElementById('btnMon24h');
+      const btn7 = document.getElementById('btnMon7d');
+      const activeCls = 'min-h-[44px] px-3.5 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 transition-colors';
+      const inactiveCls = 'min-h-[44px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors';
+      if (btn24) btn24.className = currentMonitorMode === '24h' ? activeCls : inactiveCls;
+      if (btn7) btn7.className = currentMonitorMode === '7d' ? activeCls : inactiveCls;
+      renderMonitorSummary();
+      renderMonitorChart();
+    }
+
+    function renderDeviceCards() {
+      const devWin = currentDeviceWindow === '7d'
+        ? (DEVICES_STATE.w7 || DEVICES_STATE.w30)
+        : (DEVICES_STATE.w30 || DEVICES_STATE.w7);
+      if (!devWin) return;
+      const lang = getLang();
+      if (devWin.mobile) setMetricBar('deviceMobilePct', 'deviceMobileBar', devWin.mobile.pct);
+      if (devWin.desktop) setMetricBar('deviceDesktopPct', 'deviceDesktopBar', devWin.desktop.pct);
+      if (devWin.tablet) setMetricBar('deviceTabletPct', 'deviceTabletBar', devWin.tablet.pct);
+      const winDays = Number(devWin.window_days || (currentDeviceWindow === '7d' ? 7 : 30));
+
+      const devList = [
+        {
+          key: 'mobile',
+          count: Number((devWin.mobile && devWin.mobile.count) || 0),
+          pct: parseFloat((devWin.mobile && devWin.mobile.pct) || 0) || 0,
+          badgeId: 'devMobileBadge',
+          barId: 'deviceMobileBar',
+          descId: 'devMobileDesc',
+          descTh: 'เข้าชมจริง ' + Number((devWin.mobile && devWin.mobile.count) || 0).toLocaleString() + ' ครั้ง (' + winDays + ' วันล่าสุด) · หน้าจอมือถือ 375px–430px',
+          descEn: Number((devWin.mobile && devWin.mobile.count) || 0).toLocaleString() + ' recorded visits (last ' + winDays + 'd) · Smartphone viewports 375px–430px',
+        },
+        {
+          key: 'desktop',
+          count: Number((devWin.desktop && devWin.desktop.count) || 0),
+          pct: parseFloat((devWin.desktop && devWin.desktop.pct) || 0) || 0,
+          badgeId: 'devDesktopBadge',
+          barId: 'deviceDesktopBar',
+          descId: 'devDesktopDesc',
+          descTh: 'เข้าชมจริง ' + Number((devWin.desktop && devWin.desktop.count) || 0).toLocaleString() + ' ครั้ง (' + winDays + ' วันล่าสุด) · เปิดบนคอมพิวเตอร์/โน้ตบุ๊ก 1024px+',
+          descEn: Number((devWin.desktop && devWin.desktop.count) || 0).toLocaleString() + ' recorded visits (last ' + winDays + 'd) · Desktop & laptop browsers 1024px+',
+        },
+        {
+          key: 'tablet',
+          count: Number((devWin.tablet && devWin.tablet.count) || 0),
+          pct: parseFloat((devWin.tablet && devWin.tablet.pct) || 0) || 0,
+          badgeId: 'devTabletBadge',
+          barId: 'deviceTabletBar',
+          descId: 'devTabletDesc',
+          descTh: 'เข้าชมจริง ' + Number((devWin.tablet && devWin.tablet.count) || 0).toLocaleString() + ' ครั้ง (' + winDays + ' วันล่าสุด) · หน้าจอแท็บเล็ต 768px–1024px',
+          descEn: Number((devWin.tablet && devWin.tablet.count) || 0).toLocaleString() + ' recorded visits (last ' + winDays + 'd) · Tablet viewports 768px–1024px',
+        }
+      ];
+      const sortedDevs = devList.slice().sort((a, b) => (b.count - a.count) || (b.pct - a.pct));
+      const rankByKey = new Map(sortedDevs.map((item, idx) => [item.key, idx + 1]));
+
+      devList.forEach((item) => {
+        const rank = rankByKey.get(item.key) || 3;
+        const isTop = rank === 1;
+        const badgeEl = document.getElementById(item.badgeId);
+        const barEl = document.getElementById(item.barId);
+        const descEl = document.getElementById(item.descId);
+
+        if (badgeEl) {
+          badgeEl.textContent = lang === 'en'
+            ? (isTop ? ('#1 Top Device (' + winDays + 'd)') : ('Rank #' + rank + ' (' + winDays + 'd)'))
+            : (isTop ? ('อันดับ 1 (' + winDays + ' วันล่าสุด)') : ('อันดับ ' + rank + ' (' + winDays + ' วันล่าสุด)'));
+          badgeEl.className = isTop
+            ? 'text-xs mono font-semibold text-emerald-700 dark:text-emerald-400'
+            : 'text-xs mono text-slate-600 dark:text-neutral-400';
+        }
+        if (barEl) {
+          barEl.className = (isTop ? 'bg-emerald-500' : 'bg-slate-600 dark:bg-neutral-400') + ' h-full rounded-full transition-all duration-300';
+        }
+        if (descEl) {
+          descEl.textContent = lang === 'en' ? item.descEn : item.descTh;
+        }
+      });
+    }
+
+    function switchDeviceWindow(win) {
+      currentDeviceWindow = win === '7d' ? '7d' : '30d';
+      const btn7 = document.getElementById('btnDev7d');
+      const btn30 = document.getElementById('btnDev30d');
+      const activeCls = 'min-h-[44px] px-3.5 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 transition-colors';
+      const inactiveCls = 'min-h-[44px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors';
+      if (btn7) btn7.className = currentDeviceWindow === '7d' ? activeCls : inactiveCls;
+      if (btn30) btn30.className = currentDeviceWindow === '30d' ? activeCls : inactiveCls;
+      renderDeviceCards();
+    }
+
     // =========================================================================
     // 4. LANGUAGE, THEME & CROSS-LEAGUE SWITCHER
     // =========================================================================
@@ -2674,7 +3321,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const dict = I18N[normalized];
       document.querySelectorAll('[data-i18n]').forEach((el) => {
         const key = el.getAttribute('data-i18n');
-        if (dict[key]) {
+        if (dict[key] && !el.disabled) {
           el.textContent = dict[key];
         }
       });
@@ -2701,7 +3348,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       renderLeagueTable();
       renderTrafficChart();
+      const g2Unit = normalized === 'en' ? ' visits/wk' : ' ครั้ง/วีค';
+      const g2v1 = document.getElementById('g2Val1');
+      const g2v2 = document.getElementById('g2Val2');
+      const g2v3 = document.getElementById('g2Val3');
+      if (g2v1) g2v1.textContent = '21.8' + g2Unit;
+      if (g2v2) g2v2.textContent = '124.6' + g2Unit;
+      if (g2v3) g2v3.textContent = '137.4' + g2Unit;
+      if (typeof renderMonitorSummary === 'function') renderMonitorSummary();
+      if (typeof renderMonitorChart === 'function') renderMonitorChart();
+      if (typeof renderAllOpResults === 'function') renderAllOpResults();
       if (typeof refreshOnboardingOutputs === 'function') refreshOnboardingOutputs();
+      if (latestPayloadCache) applyAdminPayload(latestPayloadCache);
     }
 
     function toggleLanguage() {
@@ -2722,6 +3380,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       }
       renderTrafficChart();
       renderLeagueTable();
+      if (typeof renderMonitorChart === 'function') renderMonitorChart();
     }
 
     function toggleTheme() {
@@ -2754,10 +3413,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     // =========================================================================
     // 5. EXECUTIVE BRIEF COPY & OPERATIONAL COMMANDS
     // =========================================================================
-    function showToast(msg) {
+    function showToast(msg, isError = false) {
       const toast = document.getElementById('liveStatusToast');
       const text = document.getElementById('liveStatusToastText');
       if (!toast || !text) return;
+      toast.classList.toggle('border-rose-500/40', Boolean(isError));
+      toast.classList.toggle('bg-rose-500/10', Boolean(isError));
+      toast.classList.toggle('text-rose-800', Boolean(isError));
+      toast.classList.toggle('dark:text-rose-300', Boolean(isError));
+      toast.classList.toggle('border-emerald-500/30', !isError);
+      toast.classList.toggle('bg-emerald-500/10', !isError);
+      toast.classList.toggle('text-emerald-800', !isError);
+      toast.classList.toggle('dark:text-emerald-300', !isError);
       text.textContent = msg;
       toast.classList.remove('hidden');
       setTimeout(() => { toast.classList.add('hidden'); }, 4500);
@@ -2769,21 +3436,25 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const mau = document.getElementById('kpiMatchdayActive')?.textContent || '1,420';
       const gmv = document.getElementById('kpiTotalGmv')?.textContent || '฿268,700';
       const retention = document.getElementById('kpiRetention')?.textContent || '94.2%';
+      const stickiness = document.getElementById('kpiStickiness')?.textContent || '68.4%';
+      const totalLeagues = (latestPayloadCache && latestPayloadCache.portfolio && latestPayloadCache.portfolio.total_leagues_count) || LEAGUE_PORTFOLIO.length;
+      const customPct = (latestPayloadCache && latestPayloadCache.portfolio && latestPayloadCache.portfolio.custom_rules_pct) || 78;
+      const cacheHit = document.getElementById('sysWorkerCacheHit')?.textContent || '96.4%';
 
       const summary = lang === 'en'
         ? [
             'FPL SaWaDiKa — Executive BI Brief',
-            '• Active Portfolio: 8 Mini-Leagues (' + managers + ' Managers / ' + mau + ' Matchday Active Users)',
-            '• Total Prize Pool (GMV): ' + gmv + ' (75% Custom Rule Attachment)',
-            '• Retention & Stickiness: ' + retention + ' GW-over-GW Retention | 68.4% Matchday Stickiness',
-            '• Infrastructure: Cloudflare Edge Cache 94.2% Hit Rate | 11.8x Free-Tier Scaling Headroom'
+            '• Active Portfolio: ' + totalLeagues + ' Mini-Leagues (' + managers + ' Tier-1 Managers / ' + mau + ' Matchday Active Users)',
+            '• Total Prize Pool (GMV): ' + gmv + ' (' + customPct + '% Custom Rule Attachment)',
+            '• Retention & Stickiness: ' + retention + ' GW-over-GW Retention | ' + stickiness + ' Matchday Stickiness',
+            '• Infrastructure: Cloudflare Edge Cache ' + cacheHit + ' Hit Rate | Free-Tier Scaling Ready'
           ].join('\\n')
         : [
             'สรุปผู้บริหาร FPL SaWaDiKa (Executive BI Brief)',
-            '• พอร์ตโฟลิโอปัจจุบัน: 8 มินิลีก (' + managers + ' ผู้จัดการทีม / ผู้ใช้งานวันแข่ง ' + mau + ' คน)',
-            '• มูลค่าเงินรางวัลรวม (GMV): ' + gmv + ' (ผูกกติกาพิเศษ 75% ของลีกทั้งหมด)',
-            '• อัตราความเหนียวแน่น: กลับมาใช้งาน ' + retention + ' ต่อสัปดาห์ | เปิดเช็กซ้ำวันแข่ง 68.4%',
-            '• ความพร้อมระบบ: Cloudflare Edge Cache รับโหลด 94.2% | รองรับการขยายสเกลเพิ่มได้อีก 11.8 เท่าบน Free Tier'
+            '• พอร์ตโฟลิโอปัจจุบัน: ' + totalLeagues + ' มินิลีก (' + managers + ' ผู้จัดการทีม Tier 1 / ผู้ใช้งานวันแข่ง ' + mau + ' คน)',
+            '• มูลค่าเงินรางวัลรวม (GMV): ' + gmv + ' (ผูกกติกาพิเศษ ' + customPct + '% ของลีกทั้งหมด)',
+            '• อัตราความเหนียวแน่น: กลับมาใช้งาน ' + retention + ' ต่อสัปดาห์ | เปิดเช็กซ้ำวันแข่ง ' + stickiness,
+            '• ความพร้อมระบบ: Cloudflare Edge Cache รับโหลด ' + cacheHit + ' | พร้อมขยายสเกลต่อบน Free Tier'
           ].join('\\n');
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -2793,25 +3464,251 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       }
     }
 
+    const OP_META = {
+      'flush-cache': { btnId: 'btnFlushCache', i18nKey: 'op_flush_btn', cooldownSec: 10 },
+      'ping-upstream': { btnId: 'btnPingUpstream', i18nKey: 'op_ping_btn', cooldownSec: 5 },
+      'export-json': { btnId: 'btnExportJson', i18nKey: 'op_export_btn', cooldownSec: 4 },
+      'prune-telemetry': { btnId: 'btnPruneD1', i18nKey: 'op_prune_btn', cooldownSec: 10 },
+    };
+    const OP_STATE = {};
+
+    function formatOpTime(ts) {
+      try {
+        return new Date(ts).toLocaleTimeString('th-TH', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      } catch (_) {
+        return '';
+      }
+    }
+
+    function renderOpResult(action) {
+      const state = OP_STATE[action];
+      const box = document.getElementById('opResult-' + action);
+      if (!box || !state || !state.lastResult) return;
+      const lang = getLang();
+      const r = state.lastResult;
+      const timeStr = formatOpTime(r.at);
+
+      box.className = r.ok
+        ? 'rounded-lg border p-2.5 text-[11px] leading-relaxed border-emerald-500/35 bg-emerald-500/10 text-emerald-900 dark:text-emerald-200 space-y-1'
+        : 'rounded-lg border p-2.5 text-[11px] leading-relaxed border-rose-500/35 bg-rose-500/10 text-rose-900 dark:text-rose-200 space-y-1';
+
+      const head = document.createElement('div');
+      head.className = 'flex items-center justify-between gap-2 font-semibold';
+      const titleSpan = document.createElement('span');
+      titleSpan.textContent = lang === 'en' ? r.titleEn : r.titleTh;
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'mono text-[10px] opacity-80 shrink-0';
+      timeSpan.textContent = timeStr;
+      head.append(titleSpan, timeSpan);
+
+      const desc = document.createElement('p');
+      desc.className = 'opacity-90';
+      desc.textContent = lang === 'en' ? r.detailEn : r.detailTh;
+
+      box.replaceChildren(head, desc);
+      box.classList.remove('hidden');
+    }
+
+    function renderAllOpResults() {
+      Object.keys(OP_META).forEach((act) => {
+        renderOpResult(act);
+        const st = OP_STATE[act];
+        const meta = OP_META[act];
+        const btn = document.getElementById(meta.btnId);
+        if (btn && st && st.cooldown > 0) {
+          btn.textContent = getLang() === 'en'
+            ? ('✓ Done · Wait ' + st.cooldown + 's')
+            : ('✓ กดแล้ว · ไม่ต้องกดซ้ำ (' + st.cooldown + ' วิ)');
+        }
+      });
+    }
+
+    function startOpCooldown(action) {
+      const meta = OP_META[action];
+      if (!meta) return;
+      const btn = document.getElementById(meta.btnId);
+      if (!OP_STATE[action]) OP_STATE[action] = {};
+      const st = OP_STATE[action];
+      if (st.timer) clearInterval(st.timer);
+
+      let left = meta.cooldownSec;
+      st.cooldown = left;
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = getLang() === 'en'
+          ? ('✓ Done · Wait ' + left + 's')
+          : ('✓ กดแล้ว · ไม่ต้องกดซ้ำ (' + left + ' วิ)');
+      }
+
+      st.timer = setInterval(() => {
+        left -= 1;
+        st.cooldown = left;
+        const b = document.getElementById(meta.btnId);
+        if (left <= 0) {
+          clearInterval(st.timer);
+          st.timer = null;
+          st.cooldown = 0;
+          if (b) {
+            b.disabled = false;
+            const dict = I18N[getLang()];
+            b.textContent = (dict && dict[meta.i18nKey]) ? dict[meta.i18nKey] : b.textContent;
+          }
+        } else if (b) {
+          b.textContent = getLang() === 'en'
+            ? ('✓ Done · Wait ' + left + 's')
+            : ('✓ กดแล้ว · ไม่ต้องกดซ้ำ (' + left + ' วิ)');
+        }
+      }, 1000);
+    }
+
+    function buildEdgeResultText(action, data) {
+      const at = Date.now();
+      if (action === 'flush-cache') {
+        const keys = Number(data.deleted_keys || 0);
+        return {
+          ok: true,
+          at,
+          titleTh: '✓ ล้างข้อมูลค้างเรียบร้อย (ไม่ต้องกดซ้ำ)',
+          titleEn: '✓ Live Cache Cleared (No need to repeat)',
+          detailTh: keys > 0
+            ? ('ล้างแคชที่ค้างไปแล้ว ' + keys + ' จุด — หน้าเว็บจะดึงคะแนนล่าสุดให้ทุกคนอัตโนมัติในรอบถัดไป')
+            : 'เคลียร์สถานะเรียบร้อยแล้ว — หน้าเว็บจะดึงข้อมูลสดล่าสุดให้ทุกคนทันทีที่เปิดดูใหม่',
+          detailEn: keys > 0
+            ? ('Cleared ' + keys + ' cached entries — visitors will receive fresh live scores on the next refresh.')
+            : 'Cache is clean — visitors will receive fresh live scores immediately.',
+        };
+      }
+      if (action === 'ping-upstream') {
+        const ms = Number(data.upstream_latency_ms || 0);
+        const stCode = Number(data.upstream_status || 200);
+        const speedTh = ms < 300 ? 'เร็วมาก' : (ms < 800 ? 'ปกติ' : 'ค่อนข้างช้า');
+        const speedEn = ms < 300 ? 'Fast' : (ms < 800 ? 'Normal' : 'Slow');
+        return {
+          ok: Boolean(data.success),
+          at,
+          titleTh: data.success ? ('✓ เว็บ FPL ใช้งานได้ปกติ (' + ms + ' ms)') : ('⚠️ เว็บ FPL ตอบสนองผิดปกติ (HTTP ' + stCode + ')'),
+          titleEn: data.success ? ('✓ FPL Server Healthy (' + ms + ' ms)') : ('⚠️ FPL Server Issue (HTTP ' + stCode + ')'),
+          detailTh: data.success
+            ? ('เชื่อมต่อกับเซิร์ฟเวอร์พรีเมียร์ลีกได้ปกติ ความเร็วระดับ "' + speedTh + '" (สถานะ ' + stCode + ')')
+            : ('เว็บพรีเมียร์ลีกต้นทางอาจกำลังช้าหรือปรับปรุง (HTTP ' + stCode + ' · ' + ms + ' ms)'),
+          detailEn: data.success
+            ? ('Official Premier League server responded normally — speed "' + speedEn + '" (HTTP ' + stCode + ').')
+            : ('Official FPL server returned HTTP ' + stCode + ' (' + ms + ' ms).'),
+        };
+      }
+      if (action === 'prune-telemetry') {
+        const pruned = Number(data.pruned_rows || 0);
+        return {
+          ok: true,
+          at,
+          titleTh: '✓ ล้างประวัติเก่าเรียบร้อย (ไม่ต้องกดซ้ำ)',
+          titleEn: '✓ Old Logs Cleaned (No need to repeat)',
+          detailTh: pruned > 0
+            ? ('ลบประวัติรายวันเก่าเกิน 30 วันไปแล้ว ' + pruned.toLocaleString() + ' รายการ (ยอดผู้เข้าชมรวมทั้งหมดยังอยู่ครบ)')
+            : 'ตอนนี้ยังไม่มีประวัติที่เก่าเกิน 30 วัน ระบบสะอาดดีอยู่แล้ว (ยอดผู้เข้าชมรวมยังอยู่ครบ)',
+          detailEn: pruned > 0
+            ? ('Removed ' + pruned.toLocaleString() + ' daily records older than 30 days (lifetime view counter untouched).')
+            : 'No records older than 30 days found — database is already tidy (lifetime views untouched).',
+        };
+      }
+      return {
+        ok: true,
+        at,
+        titleTh: '✓ ดำเนินการสำเร็จ (ไม่ต้องกดซ้ำ)',
+        titleEn: '✓ Completed (No need to repeat)',
+        detailTh: data.message || 'ดำเนินการเรียบร้อยแล้ว',
+        detailEn: data.message || 'Operation completed.',
+      };
+    }
+
     async function runEdgeAction(action) {
       const lang = getLang();
+      const meta = OP_META[action];
+      if (!OP_STATE[action]) OP_STATE[action] = {};
+      const st = OP_STATE[action];
+      if (st.loading || (st.cooldown && st.cooldown > 0)) return;
+
       if (action === 'prune-telemetry') {
         if (!window.confirm(I18N[lang].confirm_prune)) return;
       }
+
+      const btn = meta ? document.getElementById(meta.btnId) : null;
+      st.loading = true;
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = lang === 'en' ? 'Working...' : 'กำลังดำเนินการ...';
+      }
+
       try {
         const res = await fetch('/api/admin/' + action, { method: 'POST', credentials: 'same-origin' });
-        const data = await res.json();
+        let data = {};
+        try { data = await res.json(); } catch (_) {}
+        if (!res.ok || (data.success === false && action !== 'ping-upstream')) {
+          const errMsg = data.error || data.message || ('HTTP ' + res.status);
+          st.lastResult = {
+            ok: false,
+            at: Date.now(),
+            titleTh: '⚠️ ดำเนินการไม่สำเร็จ',
+            titleEn: '⚠️ Action Failed',
+            detailTh: 'เกิดข้อผิดพลาด (' + errMsg + ') — กรุณารอสักครู่แล้วลองใหม่อีกครั้ง',
+            detailEn: 'Error (' + errMsg + ') — please check connection or re-login and try again.',
+          };
+          renderOpResult(action);
+          if (btn) {
+            btn.disabled = false;
+            const dict = I18N[getLang()];
+            if (meta && dict[meta.i18nKey]) btn.textContent = dict[meta.i18nKey];
+          }
+          showToast(lang === 'en' ? ('Action failed: ' + errMsg) : ('ดำเนินการไม่สำเร็จ: ' + errMsg), true);
+          return;
+        }
         if (action === 'ping-upstream' && data.upstream_latency_ms) {
           const el = document.getElementById('sysUpstreamLatency');
           if (el) el.textContent = data.upstream_latency_ms + ' ms';
+          const badgeEl = document.getElementById('sysUpstreamBadge');
+          if (badgeEl) badgeEl.textContent = data.success ? 'Healthy' : ('HTTP ' + (data.upstream_status || 502));
         }
-        showToast(data.message || I18N[lang].toast_refreshed);
+        if (action === 'prune-telemetry' && data.success) {
+          loadLiveData(false);
+        }
+        st.lastResult = buildEdgeResultText(action, data);
+        renderOpResult(action);
+        startOpCooldown(action);
+        showToast(lang === 'en' ? st.lastResult.titleEn : st.lastResult.titleTh, !st.lastResult.ok);
       } catch (err) {
-        showToast('Edge Action Completed (Local Preview Mode)');
+        const errDetail = (err && err.message) ? err.message : 'network unreachable';
+        st.lastResult = {
+          ok: false,
+          at: Date.now(),
+          titleTh: '⚠️ เชื่อมต่อระบบไม่สำเร็จ',
+          titleEn: '⚠️ Network Error',
+          detailTh: 'ไม่สามารถติดต่อเซิร์ฟเวอร์ได้ในขณะนี้ (' + errDetail + ')',
+          detailEn: 'Could not reach Edge Worker (' + errDetail + ').',
+        };
+        renderOpResult(action);
+        if (btn) {
+          btn.disabled = false;
+          const dict = I18N[getLang()];
+          if (meta && dict[meta.i18nKey]) btn.textContent = dict[meta.i18nKey];
+        }
+        showToast(
+          lang === 'en'
+            ? ('Network error executing edge action: ' + errDetail)
+            : ('ไม่สามารถติดต่อเซิร์ฟเวอร์ได้: ' + errDetail),
+          true
+        );
+      } finally {
+        st.loading = false;
       }
     }
 
     function exportDashboardJson() {
+      const action = 'export-json';
+      if (!OP_STATE[action]) OP_STATE[action] = {};
+      const st = OP_STATE[action];
+      if (st.cooldown && st.cooldown > 0) return;
+
+      const filename = 'fplsawadika-executive-bi-snapshot.json';
       const payload = latestPayloadCache || {
         exported_at: new Date().toISOString(),
         total_pool_gmv: 268700,
@@ -2821,9 +3718,22 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'fplsawadika-executive-bi-snapshot.json';
+      a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
+
+      const totalLeagues = (payload.portfolio && payload.portfolio.total_leagues_count) || LEAGUE_PORTFOLIO.length;
+      st.lastResult = {
+        ok: true,
+        at: Date.now(),
+        titleTh: '✓ ดาวน์โหลดไฟล์เรียบร้อย (ไม่ต้องกดซ้ำ)',
+        titleEn: '✓ File Downloaded (No need to repeat)',
+        detailTh: 'บันทึกไฟล์ "' + filename + '" (ข้อมูล ' + totalLeagues + ' ลีก) ลงในเครื่องเรียบร้อยแล้ว',
+        detailEn: 'Saved "' + filename + '" (' + totalLeagues + ' leagues snapshot) to your device.',
+      };
+      renderOpResult(action);
+      startOpCooldown(action);
+      showToast(getLang() === 'en' ? st.lastResult.titleEn : st.lastResult.titleTh);
     }
 
     // =========================================================================
@@ -2848,6 +3758,25 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (elS) elS.textContent = pad(s);
     }
 
+    function setMetricBar(pctId, barId, pctVal) {
+      const num = Math.max(0, Math.min(100, parseFloat(pctVal)));
+      if (Number.isNaN(num)) return;
+      const txtEl = document.getElementById(pctId);
+      const barEl = document.getElementById(barId);
+      const formatted = num.toFixed(1) + '%';
+      if (txtEl) txtEl.textContent = formatted;
+      if (barEl) barEl.style.width = formatted;
+    }
+
+    function setValueWithUnit(elId, primaryText, unitText) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      const unitSpan = document.createElement('span');
+      unitSpan.className = 'text-xs font-normal text-slate-600 dark:text-neutral-400';
+      unitSpan.textContent = unitText;
+      el.replaceChildren(document.createTextNode(primaryText + ' '), unitSpan);
+    }
+
     function applyAdminPayload(data) {
       if (!data || typeof data !== 'object') return;
       latestPayloadCache = data;
@@ -2861,21 +3790,39 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (data.portfolio) {
         const tier1Count = Number(data.portfolio.total_managers_tier1 || data.portfolio.total_managers || 0);
         const allCount = Number(data.portfolio.total_managers_all || tier1Count || 0);
+        const tier1LeaguesCount = Number(data.portfolio.tier1_leagues_count || 8);
+        const totalLeaguesCount = Number(data.portfolio.total_leagues_count || LEAGUE_PORTFOLIO.length);
         if (tier1Count > 0) {
           const el = document.getElementById('kpiManagersCount');
           if (el) el.textContent = tier1Count.toLocaleString();
           const subEl = document.getElementById('kpiManagersSub');
           if (subEl && allCount > tier1Count) {
             subEl.textContent = lang === 'en'
-              ? ('8 Tier 1 Leagues (' + allCount.toLocaleString() + ' Total incl. Tier 2)')
-              : ('Tier 1 ครบ 8 มินิลีก (รวม Tier 2 = ' + allCount.toLocaleString() + ')');
+              ? (tier1LeaguesCount + ' Tier 1 Leagues (' + allCount.toLocaleString() + ' Total incl. Tier 2)')
+              : ('Tier 1 ครบ ' + tier1LeaguesCount + ' มินิลีก (รวม Tier 2 = ' + allCount.toLocaleString() + ')');
           }
         }
         if (data.portfolio.total_pool_gmv) {
           const el = document.getElementById('kpiTotalGmv');
           if (el) el.textContent = '฿' + Number(data.portfolio.total_pool_gmv).toLocaleString();
         }
+        if (typeof data.portfolio.custom_rules_count === 'number') {
+          const customEl = document.getElementById('portCustomRulesVal');
+          if (customEl) {
+            const pct = typeof data.portfolio.custom_rules_pct === 'number'
+              ? data.portfolio.custom_rules_pct
+              : Math.round((data.portfolio.custom_rules_count / Math.max(1, totalLeaguesCount)) * 100);
+            const pctSpan = document.createElement('span');
+            pctSpan.className = 'text-sm font-normal text-slate-600 dark:text-neutral-400';
+            pctSpan.textContent = '(' + pct + '%)';
+            customEl.replaceChildren(
+              document.createTextNode(data.portfolio.custom_rules_count + ' / ' + totalLeaguesCount + ' '),
+              pctSpan
+            );
+          }
+        }
         if (data.portfolio.leagues && typeof data.portfolio.leagues === 'object') {
+          const knownIds = new Set(LEAGUE_PORTFOLIO.map((r) => r.id));
           LEAGUE_PORTFOLIO = LEAGUE_PORTFOLIO.map((row) => {
             const liveMeta = data.portfolio.leagues[row.id];
             const etLeague = (data.edge_telemetry && data.edge_telemetry.leagues)
@@ -2885,9 +3832,31 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               ...row,
               name: (liveMeta && liveMeta.name) ? String(liveMeta.name) : row.name,
               teams: (liveMeta && Number(liveMeta.teams) > 0) ? Number(liveMeta.teams) : row.teams,
-              views: (etLeague && Number(etLeague.views) > 0) ? Number(etLeague.views) : row.views,
+              pool: (liveMeta && typeof liveMeta.pool === 'number' && liveMeta.pool > 0) ? liveMeta.pool : row.pool,
+              poolLabelTh: (liveMeta && liveMeta.pool_label && liveMeta.pool === 0 && liveMeta.pool_label !== '-') ? String(liveMeta.pool_label) : row.poolLabelTh,
+              poolLabelEn: (liveMeta && liveMeta.pool_label_en && liveMeta.pool === 0 && liveMeta.pool_label_en !== '-') ? String(liveMeta.pool_label_en) : row.poolLabelEn,
+              views: (etLeague && typeof etLeague.views === 'number') ? Number(etLeague.views) : row.views,
             };
           });
+          // Append any newly onboarded league present in live data but not yet in static table
+          for (const [lid, liveMeta] of Object.entries(data.portfolio.leagues)) {
+            if (!knownIds.has(lid) && liveMeta && typeof liveMeta === 'object') {
+              const etLeague = (data.edge_telemetry && data.edge_telemetry.leagues) ? data.edge_telemetry.leagues[lid] : null;
+              LEAGUE_PORTFOLIO.push({
+                id: lid,
+                name: String(liveMeta.name || lid),
+                badge: Number(liveMeta.tier) === 2 ? 'Tier 2' : 'New',
+                teams: Number(liveMeta.teams || 0),
+                pool: Number(liveMeta.pool || 0),
+                poolLabelTh: liveMeta.pool_label && liveMeta.pool_label !== '-' ? String(liveMeta.pool_label) : 'คอมมูนิตี้',
+                poolLabelEn: liveMeta.pool_label_en && liveMeta.pool_label_en !== '-' ? String(liveMeta.pool_label_en) : 'Community',
+                modulesTh: Number(liveMeta.tier) === 2 ? 'Tier 2 Standings & Leaderboard' : 'ตารางคะแนนสด · วิเคราะห์ทีม',
+                modulesEn: Number(liveMeta.tier) === 2 ? 'Tier 2 Standings & Leaderboard' : 'Live Standings & Analytics',
+                views: etLeague && typeof etLeague.views === 'number' ? Number(etLeague.views) : 0,
+                retention: 90.0,
+              });
+            }
+          }
           renderLeagueTable();
         }
       }
@@ -2898,19 +3867,97 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           const el = document.getElementById('kpiMatchdayActive');
           if (el) el.textContent = Number(et.matchday_active_users).toLocaleString();
         }
+        if (et.off_peak_dau) {
+          const el = document.getElementById('kpiOffPeakDau');
+          if (el) el.textContent = Number(et.off_peak_dau).toLocaleString();
+        }
+        if (typeof et.avg_session_sec === 'number' && et.avg_session_sec > 0) {
+          const el = document.getElementById('kpiScreenTime');
+          if (el) {
+            const mins = Math.floor(et.avg_session_sec / 60);
+            const secs = et.avg_session_sec % 60;
+            el.textContent = mins + 'm ' + String(secs).padStart(2, '0') + 's';
+          }
+        }
         const modelBadge = document.getElementById('telemetryModelBadge');
         if (modelBadge && (typeof et.raw_live_visits_7d === 'number' || typeof et.baseline_visits_prior === 'number')) {
           const live7d = Number(et.raw_live_visits_7d || 0).toLocaleString();
-          const prior = Number(et.baseline_visits_prior || 4280).toLocaleString();
-          modelBadge.textContent = 'Live D1: ' + live7d + ' + Prior: ' + prior;
+          const priorNum = Number(et.baseline_visits_prior || 0);
+          const priorPart = priorNum > 0 ? (' + Prior: ' + priorNum.toLocaleString()) : '';
+          const lifetimePart = (typeof et.lifetime_total_views === 'number' && et.lifetime_total_views > 0)
+            ? (' · Total: ' + Number(et.lifetime_total_views).toLocaleString())
+            : '';
+          modelBadge.textContent = (priorNum > 0 ? 'Live 7d: ' : 'Live D1 (7d): ') + live7d + priorPart + lifetimePart;
         }
-        if (et.system_performance && typeof et.system_performance.d1_row_count === 'number') {
-          const rowsEl = document.getElementById('sysD1RowsCount');
-          if (rowsEl) {
-            rowsEl.innerHTML = Number(et.system_performance.d1_row_count).toLocaleString() +
-              ' <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">rows</span>';
+
+        // Section 03: Feature Adoption Bars
+        if (et.features && et.features.modules) {
+          const mods = et.features.modules;
+          if (mods.standings) setMetricBar('featMod1Pct', 'featMod1Bar', mods.standings.pct);
+          if (mods.prizes) setMetricBar('featMod2Pct', 'featMod2Bar', mods.prizes.pct);
+          if (mods.squad) setMetricBar('featMod3Pct', 'featMod3Bar', mods.squad.pct);
+          if (mods.planner) setMetricBar('featMod4Pct', 'featMod4Bar', mods.planner.pct);
+          if (mods.hof) setMetricBar('featMod5Pct', 'featMod5Bar', mods.hof.pct);
+        }
+
+        // Section 04: Traffic Sources & Geographic Split
+        if (et.sources) {
+          if (et.sources.line) setMetricBar('chan1Pct', 'chan1Bar', et.sources.line.pct);
+          if (et.sources.safari) setMetricBar('chan2Pct', 'chan2Bar', et.sources.safari.pct);
+          if (et.sources.chrome) setMetricBar('chan3Pct', 'chan3Bar', et.sources.chrome.pct);
+        }
+        if (et.geo) {
+          const bkkEl = document.getElementById('geoBkkPct');
+          const regEl = document.getElementById('geoRegPct');
+          const intlEl = document.getElementById('geoIntlPct');
+          if (bkkEl && et.geo.bkk_metro) bkkEl.textContent = parseFloat(et.geo.bkk_metro.pct).toFixed(1) + '%';
+          if (regEl && et.geo.regional) regEl.textContent = parseFloat(et.geo.regional.pct).toFixed(1) + '%';
+          if (intlEl && et.geo.intl) intlEl.textContent = parseFloat(et.geo.intl.pct).toFixed(1) + '%';
+        }
+
+        // Section 05: Device Distribution (Stores both 7d and 30d windows for instant toggle)
+        if (et.devices) {
+          DEVICES_STATE = {
+            w7: et.devices.w7 || et.devices,
+            w30: et.devices.w30 || et.devices,
+          };
+          renderDeviceCards();
+        }
+
+        // Section 07: Cloud & Scaling Performance
+        if (et.system_performance) {
+          const sp = et.system_performance;
+          if (typeof sp.d1_row_count === 'number') {
+            setValueWithUnit('sysD1RowsCount', Number(sp.d1_row_count).toLocaleString(), 'rows');
+          }
+          if (typeof sp.d1_daily_writes_used === 'number' && typeof sp.d1_daily_writes_limit === 'number' && sp.d1_daily_writes_limit > 0) {
+            const d1Pct = ((sp.d1_daily_writes_used / sp.d1_daily_writes_limit) * 100).toFixed(1);
+            const d1PctEl = document.getElementById('sysD1ReadsPct');
+            const d1BarEl = document.getElementById('sysD1ReadsBar');
+            if (d1PctEl) d1PctEl.textContent = d1Pct + '% of ' + Math.round(sp.d1_daily_writes_limit / 1000) + 'k';
+            if (d1BarEl) d1BarEl.style.width = Math.min(100, Math.max(2, parseFloat(d1Pct))) + '%';
+          }
+          if (typeof et.daily_reach === 'number') {
+            const estDailyReqs = Math.max(100, Math.round(et.daily_reach * 14));
+            setValueWithUnit('sysWorkerReqs', '~' + estDailyReqs.toLocaleString(), '/ 100k req/d');
+            const wBar = document.getElementById('sysWorkerBar');
+            if (wBar) wBar.style.width = Math.min(100, Math.max(2, (estDailyReqs / 100000) * 100)).toFixed(1) + '%';
+          }
+          if (sp.sync && typeof sp.sync.sync_duration_sec === 'number') {
+            setValueWithUnit('sysGhSyncTime', sp.sync.sync_duration_sec.toFixed(1) + 's', '/ build');
+            const ghBar = document.getElementById('sysGhSyncBar');
+            if (ghBar) ghBar.style.width = Math.min(100, Math.max(4, (sp.sync.sync_duration_sec / 60) * 100)).toFixed(1) + '%';
+          }
+          if (sp.scaling && typeof sp.scaling.tier1_headroom_leagues === 'number') {
+            const headEl = document.getElementById('sysScalingHeadroom');
+            if (headEl) headEl.textContent = '+' + sp.scaling.tier1_headroom_leagues + ' Leagues';
+          }
+          if (typeof sp.edge_cache_hit_pct === 'number') {
+            const cacheEl = document.getElementById('sysWorkerCacheHit');
+            if (cacheEl) cacheEl.textContent = sp.edge_cache_hit_pct.toFixed(1) + '%';
           }
         }
+
         if (Array.isArray(et.hourly_series) && et.hourly_series.length === 24) {
           if (typeof et.hourly_series[0] === 'number') {
             const maxH = Math.max(...et.hourly_series, 1);
@@ -2939,11 +3986,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             return item;
           });
         }
+        if (et.monitor) {
+          MONITOR_STATE = et.monitor;
+        }
       }
 
       if (data.fpl_upstream && data.fpl_upstream.next_deadline_time) {
         const parsed = Date.parse(data.fpl_upstream.next_deadline_time);
-        if (!Number.isNaN(parsed)) nextDeadlineEpoch = parsed;
+        if (!Number.isNaN(parsed)) {
+          nextDeadlineEpoch = parsed;
+          tickCountdown();
+        }
         if (data.fpl_upstream.next_gw_name) {
           const gwEl = document.getElementById('telemetryNextDeadlineName');
           if (gwEl) {
@@ -2956,17 +4009,27 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       }
 
       renderTrafficChart();
+      if (typeof renderMonitorSummary === 'function') renderMonitorSummary();
+      if (typeof renderMonitorChart === 'function') renderMonitorChart();
     }
 
     async function loadLiveData(showBanner) {
+      const lang = getLang();
       try {
         const res = await fetch('/api/admin/metrics', { credentials: 'same-origin' });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         applyAdminPayload(data);
-        if (showBanner) showToast(I18N[getLang()].toast_refreshed);
+        if (showBanner) showToast(I18N[lang].toast_refreshed);
       } catch (err) {
-        if (showBanner) showToast(I18N[getLang()].toast_refreshed);
+        if (showBanner) {
+          showToast(
+            lang === 'en'
+              ? ('Failed to load live metrics (' + (err && err.message ? err.message : 'network') + ')')
+              : ('โหลดข้อมูลสดไม่สำเร็จ (' + (err && err.message ? err.message : 'กรุณาตรวจสอบการเชื่อมต่อ') + ')'),
+            true
+          );
+        }
       }
     }
 
@@ -3001,9 +4064,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       } catch (err) {
         const tDuration = Math.round(performance.now() - tStart);
         const msg = lang === 'en'
-          ? '⚡ Live refresh completed in ' + tDuration + 'ms (Cached)'
-          : '⚡ อัปเดตข้อมูลสดสำเร็จใน ' + tDuration + 'ms (สำรอง)';
-        showToast(msg);
+          ? '⚠️ Live refresh failed in ' + tDuration + 'ms (' + (err && err.message ? err.message : 'Please re-login') + ')'
+          : '⚠️ อัปเดตข้อมูลสดไม่สำเร็จใน ' + tDuration + 'ms (' + (err && err.message ? err.message : 'กรุณาลองใหม่') + ')';
+        showToast(msg, true);
       } finally {
         isPitchRefreshing = false;
         if (icon) icon.classList.remove('animate-spin');
@@ -3329,7 +4392,7 @@ export function renderLoginHtml(errorMessage = '') {
           เข้าสู่ระบบศูนย์ข้อมูลผู้บริหาร
         </h1>
         <p id="loginSub" class="text-xs sm:text-sm text-slate-600 dark:text-neutral-400 leading-relaxed">
-          กรุณายืนยันตัวตนเพื่อเข้าถึงข้อมูลวิเคราะห์ธุรกิจและสถานะระบบของทั้ง 8 มินิลีก
+          กรุณายืนยันตัวตนเพื่อเข้าถึงข้อมูลวิเคราะห์ธุรกิจและสถานะระบบของทั้ง 9 มินิลีก
         </p>
         <div class="inline-flex items-center gap-2 text-xs font-mono text-emerald-700 dark:text-emerald-400 pt-1">
           <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
@@ -3380,8 +4443,8 @@ export function renderLoginHtml(errorMessage = '') {
         ? 'Executive BI Sign In'
         : 'เข้าสู่ระบบศูนย์ข้อมูลผู้บริหาร';
       document.getElementById('loginSub').textContent = next === 'en'
-        ? 'Authenticate to access real-time portfolio economics and cloud telemetry across all 8 leagues.'
-        : 'กรุณายืนยันตัวตนเพื่อเข้าถึงข้อมูลวิเคราะห์ธุรกิจและสถานะระบบของทั้ง 8 มินิลีก';
+        ? 'Authenticate to access real-time portfolio economics and cloud telemetry across all 9 leagues.'
+        : 'กรุณายืนยันตัวตนเพื่อเข้าถึงข้อมูลวิเคราะห์ธุรกิจและสถานะระบบของทั้ง 9 มินิลีก';
       document.getElementById('loginLabel').textContent = next === 'en'
         ? 'Admin Access Key'
         : 'รหัสผ่านผู้ดูแลระบบ (Admin Access Key)';

@@ -53,8 +53,8 @@
     }
 
     /**
-     * Dynamic Live Commentary Engine (100% Football Fanatic Banter Style)
-     * ระบบวิเคราะห์สด 3 ตอนสไตล์กูรูลูกหนังสุดกวน: ประโยคเปิดหัวตามสถานการณ์ + เจาะลึกดราม่าแท็กติก + หมัดฮุกกวนๆ ปิดท้าย
+     * Dynamic Live Commentary Engine (Hardcore Football Pundit Style)
+     * ระบบวิเคราะห์สด 3 ตอนสไตล์กูรูลูกหนังสายฮาร์ดคอร์: ประโยคเปิดหัวตามสถานการณ์ + เจาะลึกดราม่าแท็กติก + หมัดฮุกกวนๆ ปิดท้าย
      */
     class LiveCommentaryEngine {
       static _refreshStep = 0;
@@ -158,7 +158,7 @@
             `จัดทัพพร้อมรบ Gameweek ${gwNumber}! ${popCapText} ${tacticalSubText} รอดูกระสุนนัดแรกคิกออฟ ใครของจริงหรือใครจะโดนตบกบาลแยก เดี๋ยวสนามจริงให้คำตอบ!`,
             `เข้าสู่โหมดรอคิกออฟ Gameweek ${gwNumber}! ${popCapText} ${tacticalSubText} เตรียมลุ้นกันจนเยี่ยวเหนียว ใครกึ๋นถึงเดี๋ยวแต้มลั่นทุ่งแน่นอน!`,
             `ระฆังเดดไลน์ดังแล้วพี่น้อง! ${popCapText} ${tacticalSubText} สัปดาห์นี้ใครจะสะเด่าไปเลยอีน้อง หรือใครจะซดน้ำใบบัวบก เดี๋ยวรอดู!`,
-            `เปิดโผขุมกำลัง GW ${gwNumber} อย่างเป็นทางการ! ${popCapText} ${tacticalSubText} กูรูประจำลีกฟันธงเลยว่าสัปดาห์นี้มีคนน้ำตาตกในแน่นอน เตรียมป๊อปคอร์นรอดูได้เลย!`,
+            `เปิดโผขุมกำลัง GW ${gwNumber} อย่างเป็นทางการ! ${popCapText} ${tacticalSubText} กูรูลูกหนังฟันธงเลยว่าสัปดาห์นี้มีคนน้ำตาตกในแน่นอน เตรียมป๊อปคอร์นรอดูได้เลย!`,
             `ศึกดวลกึ๋นลูกหนัง GW ${gwNumber} กำลังจะระเบิด! ${popCapText} ${tacticalSubText} จัดตัวเสร็จแยกย้ายไปสวดมนต์ ใครตาถึงได้เฮ ใครตาถั่วได้นอนกุมขมับ!`,
             `เสียงนกหวีดกำลังจะดัง สมรภูมิแข้งพร้อมเปิดศึก! ${popCapText} ${tacticalSubText} บอลลูกกลมๆ มีลมอยู่ข้างใน ทีมใครจะรุ่งหรือจะร่วง เดี๋ยวได้เห็นดีกัน!`
           ];
@@ -392,7 +392,7 @@
         }
 
         // =========================================================
-        // 1. LEAD PHRASE (ประโยคเปิดหัวตามสถานการณ์จริง สไตล์กูรูลูกหนัง)
+        // 1. LEAD PHRASE (ประโยคเปิดหัวตามสถานการณ์จริง สไตล์กูรูลูกหนังสายดุเดือด)
         // =========================================================
         let leadOptions = [];
 
@@ -556,7 +556,7 @@
             `ขึ้นหิ้งระดับตำนาน! "${top.team_name}" ทะยานแตะหลักร้อยที่ ${topPts} แต้ม ${heroPhrase} และ${marginPhrase} แบบเต็มคาราเบล!`,
             `ฟอร์มปีศาจลงมาจุติ! "${top.team_name}" ยิงแหลกแจกแต้มร้อยทะลุ ${topPts} แต้ม ${marginPhrase} สถาปนาตัวเองเป็นบอสใหญ่ประจำสัปดาห์!`,
             `ตารางแทบระเบิด! "${top.team_name}" กวาดสามหลักเน้นๆ ${topPts} แต้ม ${heroPhrase} และ${marginPhrase} ไร้เทียมทานอย่างแท้จริง!`,
-            `กูรูประจำลีกขอคารวะ! "${top.team_name}" จัดสกอร์ประวัติศาสตร์ ${topPts} แต้ม ${marginPhrase} แดกเต็มข้อล่อเต็มแข้งจนคู่แข่งร้องไห้ระงม!`
+            `กูรูลูกหนังขอคารวะ! "${top.team_name}" จัดสกอร์ประวัติศาสตร์ ${topPts} แต้ม ${marginPhrase} แดกเต็มข้อล่อเต็มแข้งจนคู่แข่งร้องไห้ระงม!`
           ];
         } else if (diff <= 2 && second) {
           leadOptions = [
@@ -616,7 +616,7 @@
         const leadSentence = pickRnd(11, leadOptions);
 
         // =========================================================
-        // 2. TACTICAL & DRAMA STORYLINES (เจาะลึก 12 มิติดราม่าลูกหนังสุดเดือด)
+        // 2. TACTICAL & DRAMA STORYLINES (เจาะลึก 12 มิติดราม่าลูกหนังแท้ๆ สไตล์กูรูลูกหนังสายฮาร์ดคอร์)
         // =========================================================
         let midOptions = [];
 
@@ -1077,7 +1077,7 @@
         }
 
         // =========================================================
-        // 3. ENDING PUNCHLINE (คลังประโยคปิดท้าย 38 ประโยค สไตล์กวนๆ สนุกสนาน)
+        // 3. ENDING PUNCHLINE (คลังประโยคปิดท้าย 38 ประโยค สไตล์กูรูลูกหนังสายฮาร์ดคอร์)
         // =========================================================
         let endOptions = [];
         if (isFinished) {
@@ -1090,7 +1090,7 @@
             `นี่แหละเสน่ห์แฟนตาซี วันนี้แพ้ สัปดาห์หน้าอาจระเบิดฟอร์มแชมป์!`,
             `คนชนะเดินแอ็คหล่อได้เต็มที่ ส่วนคนแพ้ซุ่มจัดทัพรอล้างตา!`,
             `สามแต้มในสนามจริงยังสู้ความสะใจที่ได้เหยียบเพื่อนในมินิลีกไม่ได้เลยโว้ย!`,
-            `กูรูประจำลีกซูฮกให้หนึ่งจอก จัดตัวได้สะเด่าทรวงจริงๆ!`,
+            `กูรูข้างสนามขอซูฮกให้หนึ่งจอก จัดตัวได้สะเด่าทรวงจริงๆ!`,
             `แต้มเป็นเรื่องของวาสนา แต่กึ๋นจัดทัพเป็นเรื่องของฝีมือล้วนๆ!`,
             `จบสัปดาห์นี้แยกย้ายไปเลียแผลใจ แล้วเจอกันใหม่แมตช์หน้า!`,
             `ตารางคะแนนไม่เคยโกหกใคร ตัวตึงหรือตัวตลกเขาวัดกันตรงนี้!`,
@@ -1700,14 +1700,12 @@
         if (!this.config.features) this.config.features = {};
         
         const maxGW = Number(this.multiData.max_gw) || 2;
-        const latestGWData = this.data && this.data.gameweeks ? this.data.gameweeks[String(maxGW)] : null;
-        const isLatestStarted = latestGWData ? (latestGWData.is_started !== undefined ? Boolean(latestGWData.is_started) : (Boolean(latestGWData.is_finished) || (latestGWData.results && latestGWData.results.some(r => r.points > 0)))) : false;
-        
         const queryGWNum = Number(queryGW);
-        if (queryGWNum >= 1 && queryGWNum <= maxGW) {
+        this._hasExplicitQueryGW = (queryGWNum >= 1 && queryGWNum <= maxGW);
+        if (this._hasExplicitQueryGW) {
           this.selectedGW = queryGWNum;
         } else {
-          this.selectedGW = (!isLatestStarted && maxGW > 1) ? (maxGW - 1) : maxGW;
+          this.selectedGW = this.resolveDefaultGW(this.data);
         }
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
@@ -1752,6 +1750,17 @@
         this.cupFilterMode = 'all';
         this._dataVersion = 0;
         this._renderedState = {};
+      }
+
+      resolveDefaultGW(leagueObj = this.data) {
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || 2;
+        const latestGWData = leagueObj && leagueObj.gameweeks ? leagueObj.gameweeks[String(maxGW)] : null;
+        const isLatestStarted = latestGWData
+          ? (latestGWData.is_started !== undefined
+              ? Boolean(latestGWData.is_started)
+              : (Boolean(latestGWData.is_finished) || (latestGWData.results && latestGWData.results.some(r => r.points > 0))))
+          : false;
+        return (!isLatestStarted && maxGW > 1) ? (maxGW - 1) : maxGW;
       }
 
       getDefaultLeagueId() {
@@ -1976,7 +1985,7 @@
         this.renderLeagueDropdown();
         this.updateHeaderInfo();
         if (this.isLeaguePaused()) {
-          this.initVisitorCounter();
+          if (typeof this.renderFooterCta === 'function') this.renderFooterCta();
           this.initDeadlineCountdown();
           return;
         }
@@ -1985,18 +1994,55 @@
         if (this.activeTab) {
           this.switchTab(this.activeTab, true, true);
         }
-        this.initVisitorCounter();
         this.initLivePolling();
         this.initDeadlineCountdown();
 
         // Proactively fetch squads/data + special league datasets for active league if not yet embedded (e.g. index.html with savedLeague)
-        const isTier2 = Boolean(this.config && this.config.tier === 2);
+        const initialLidStr = String(this.activeLeagueId);
+        const isTier2 = Boolean(this.config && this.config.tier === 2) || Boolean(this.data && this.data.tier === 2);
         const hasData = isTier2
           ? Boolean(this.data && this.data.teams && this.data.teams.length > 0)
           : Boolean(this.data && this.data.squads && Object.keys(this.data.squads).length > 0);
         if (!hasData) {
-          this.fetchLeagueData(this.activeLeagueId).then(loaded => {
-            if (loaded) {
+          this._isLoadingLeague = initialLidStr;
+          this.renderAll();
+          this.fetchLeagueData(initialLidStr, 2).then(async loaded => {
+            if (this._isLoadingLeague === initialLidStr) {
+              this._isLoadingLeague = null;
+            }
+            if (loaded && String(this.activeLeagueId) === initialLidStr) {
+              if (!this._hasExplicitQueryGW) {
+                this.selectedGW = this.resolveDefaultGW(loaded);
+              }
+              await this.ensureTier2GWChunk(this.selectedGW);
+              if (!isTier2) {
+                await this.ensureTier1GWSquads(this.selectedGW, initialLidStr);
+              }
+              this.updateHeaderInfo();
+              this.initLivePolling();
+              this.renderAll();
+            } else if (!loaded && String(this.activeLeagueId) === initialLidStr) {
+              this.renderAll();
+              if (typeof this.showToast === 'function') {
+                const isEn = (this.currentLang === 'en');
+                this.showToast(
+                  isEn
+                    ? 'Could not load league data. Please check your connection.'
+                    : 'ไม่สามารถโหลดข้อมูลของลีกได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต',
+                  'error'
+                );
+              }
+            }
+          });
+        } else if (isTier2) {
+          this.ensureTier2GWChunk(this.selectedGW).then(chunkLoaded => {
+            if (chunkLoaded && String(this.activeLeagueId) === initialLidStr) {
+              this.renderAll();
+            }
+          });
+        } else if (!this.hasTier1SquadsForGw(this.data, this.selectedGW)) {
+          this.ensureTier1GWSquads(this.selectedGW, initialLidStr).then(chunkLoaded => {
+            if (chunkLoaded && String(this.activeLeagueId) === initialLidStr) {
               this.renderAll();
             }
           });
@@ -2006,31 +2052,38 @@
             this.renderAll();
           }
         });
+        if (typeof window !== 'undefined' && window.location && window.location.protocol !== 'file:') {
+          setTimeout(() => {
+            if (typeof this.ensureRadarData === 'function') {
+              this.ensureRadarData().then(loaded => {
+                if (loaded && this.activeTab === 'global-radar-view') {
+                  this.renderCurrentTab(true);
+                }
+              });
+            }
+          }, 1500);
+        }
 
         // Listen for browser Back/Forward navigation
         if (typeof window !== 'undefined' && window.addEventListener && !this._popstateBound) {
           this._popstateBound = true;
-          window.addEventListener('popstate', () => {
+          window.addEventListener('popstate', async () => {
             try {
               if (this.currentModalEntryId) {
                 this.closeTeamModal();
-              }
-              const summaryModal = document.getElementById('text-summary-modal');
-              if (summaryModal && !summaryModal.classList.contains('hidden')) {
-                this.closeTextSummaryModal();
               }
               const urlParams = new URLSearchParams((window.location && window.location.search) ? window.location.search : '');
               const qLeague = urlParams.get('league') || this.detectPathLeague();
               const qTab = this.normalizeTab(urlParams.get('tab'));
               const qGW = urlParams.get('gw');
               if (qLeague && this.multiData.leagues[qLeague] && qLeague !== this.activeLeagueId) {
-                this.switchLeague(qLeague, true);
+                await this.switchLeague(qLeague, true);
               }
               if (qTab && qTab !== this.activeTab) {
                 this.switchTab(qTab, true);
               }
               if (qGW && Number(qGW) !== this.selectedGW) {
-                this.selectGW(Number(qGW), true);
+                await this.selectGW(Number(qGW), true);
               }
             } catch (e) {}
           });
@@ -2119,7 +2172,7 @@
           return;
         }
 
-        const pollIntervalMs = 15000; // 15-second real-time Cloudflare Edge polling
+        const pollIntervalMs = 20000; // 20-second real-time Cloudflare Edge polling (protects daily quota as scale grows)
         const checkAndPoll = () => {
           if (!this.isLiveWindowActive()) {
             if (this.livePollInterval) {
@@ -2165,7 +2218,7 @@
         if (!force && gwData.is_finished && gwData.data_checked) return;
 
         this._isFetchingLive = true;
-        this._nextLivePollAt = Date.now() + 15000;
+        this._nextLivePollAt = Date.now() + 20000;
 
         const forceQuery = force ? '&force=1' : '';
         const apiCfg = (typeof resolveWorkerApiBase === 'function')
@@ -2209,6 +2262,9 @@
           }
 
           if (!liveJson || !Array.isArray(liveJson.elements)) {
+            if (typeof window._reportClientError === 'function') {
+              window._reportClientError('api_http');
+            }
             if (force && typeof this.showCopiedToast === 'function') {
               const isEn = (this.currentLang === 'en');
               this.showCopiedToast(isEn ? 'Unable to reach Cloudflare Live Edge' : 'ไม่สามารถเชื่อมต่อ Cloudflare Live Edge ได้ในขณะนี้');
@@ -2629,8 +2685,8 @@
           btnExcel.title = isEn ? 'Export to Excel (.xlsx)' : 'ส่งออกไฟล์ Excel (.xlsx)';
         }
         this.translateStaticElements();
-        if (typeof this.renderVisitorCounterText === 'function') {
-          this.renderVisitorCounterText();
+        if (typeof this.renderFooterCta === 'function') {
+          this.renderFooterCta();
         }
       }
 
@@ -3000,26 +3056,6 @@
           projModalBtn.innerText = isEn ? 'Got it' : 'เข้าใจแล้ว';
         }
 
-        // 8. Text Summary Modal (LINE copy modal)
-        const summaryModalTitle = document.getElementById('modal-summary-title');
-        if (summaryModalTitle) {
-          summaryModalTitle.innerText = isEn ? 'Gameweek Summary' : 'สรุปผล Gameweek';
-        }
-        const summaryModalP = document.querySelector('#text-summary-modal p.text-xs');
-        if (summaryModalP) {
-          summaryModalP.innerText = isEn
-            ? 'The text has been formatted and is ready to share in messaging apps:'
-            : 'ข้อความถูกจัดรูปแบบสำหรับส่งเข้ากลุ่ม LINE เรียบร้อยแล้ว:';
-        }
-        const summaryModalCloseBtn = document.querySelector('#text-summary-modal div.mt-4 button:first-child');
-        if (summaryModalCloseBtn) {
-          summaryModalCloseBtn.innerText = isEn ? 'Close' : 'ปิด';
-        }
-        const summaryModalCopySpan = document.querySelector('#btn-modal-copy span');
-        if (summaryModalCopySpan) {
-          summaryModalCopySpan.innerText = isEn ? 'Copy Text' : 'คัดลอกข้อความ';
-        }
-
         // 9. Competition View Header Banner
         const compTitle = document.getElementById('competition-overview-title');
         if (compTitle) {
@@ -3383,10 +3419,6 @@
         }
       }
 
-      getPublicLeagueUrl() {
-        return `https://www.fplsawadika.com/${this.activeLeagueId}`;
-      }
-
       getLeagueDataUrl(lid) {
         const lidStr = String(lid);
         if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
@@ -3477,7 +3509,210 @@
         return results.some(Boolean);
       }
 
-      async fetchLeagueData(leagueId, retryCount = 1) {
+      async _fetchJsonWithRetry(url, retryCount = 2, timeoutMs = 12000) {
+        for (let attempt = 0; attempt <= retryCount; attempt++) {
+          const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+          const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+          try {
+            const resp = await fetch(url, { signal: controller ? controller.signal : undefined });
+            if (resp && resp.ok) {
+              return await resp.json();
+            }
+            if (resp && resp.status === 404) {
+              return null;
+            }
+          } catch (e) {
+            console.debug(`Dynamic fetch attempt ${attempt + 1} error (${url}):`, e);
+          } finally {
+            if (timer) clearTimeout(timer);
+          }
+          if (attempt < retryCount) {
+            await new Promise(r => setTimeout(r, 400 * (attempt + 1)));
+          }
+        }
+        return null;
+      }
+
+      async ensureTier2GWChunk(gw = this.selectedGW, retryCount = 1) {
+        const lidStr = String(this.activeLeagueId);
+        const isTier2 = Boolean(this.data && this.data.tier === 2) || Boolean(this.configs && this.configs[lidStr] && this.configs[lidStr].tier === 2);
+        if (!isTier2 || !this.data) return false;
+
+        const gwNum = Number(gw);
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || gwNum;
+        if (!gwNum || gwNum < 1 || gwNum > maxGW) return false;
+
+        if (!this.data.gameweeks) this.data.gameweeks = {};
+        const gwKey = String(gwNum);
+        let gwData = this.data.gameweeks[gwKey];
+        if (gwData && Array.isArray(gwData.results) && gwData.results.length > 0) {
+          return false;
+        }
+
+        const inflightKey = `${lidStr}_${gwKey}`;
+        if (!this._tier2ChunkPromises) this._tier2ChunkPromises = {};
+        if (!this._tier2ChunkPromises[inflightKey]) {
+          const chunkUrl = this.getLeagueChunkUrl(lidStr, gwNum);
+          this._tier2ChunkPromises[inflightKey] = this._fetchJsonWithRetry(chunkUrl, retryCount, 12000)
+            .then(chunkJson => {
+              if (chunkJson && Array.isArray(chunkJson.results) && chunkJson.results.length > 0) {
+                const targetLeague = (this.multiData && this.multiData.leagues && this.multiData.leagues[lidStr]) || this.data;
+                if (targetLeague) {
+                  if (!targetLeague.gameweeks) targetLeague.gameweeks = {};
+                  if (!targetLeague.gameweeks[gwKey]) targetLeague.gameweeks[gwKey] = { gw: gwNum };
+                  targetLeague.gameweeks[gwKey].results = chunkJson.results;
+                  if (chunkJson.is_finished !== undefined) targetLeague.gameweeks[gwKey].is_finished = chunkJson.is_finished;
+                  if (chunkJson.is_started !== undefined) targetLeague.gameweeks[gwKey].is_started = chunkJson.is_started;
+                }
+                this.invalidateRenderCache();
+                return true;
+              }
+              return false;
+            })
+            .finally(() => {
+              if (this._tier2ChunkPromises) delete this._tier2ChunkPromises[inflightKey];
+            });
+        }
+        return this._tier2ChunkPromises[inflightKey];
+      }
+
+      getLeagueSquadChunkUrl(leagueId, gw) {
+        const lidStr = String(leagueId);
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          const configuredIds = Object.keys(this.configs || {});
+          const currentInSubdir = configuredIds.some(cid => window.location.pathname.includes('/' + cid));
+          const prefix = currentInSubdir ? '../' : './';
+          return `${prefix}data/leagues/${lidStr}/gw${gw}_squads.json`;
+        }
+        const pathname = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '';
+        const isGitHubPages = pathname.includes('/fpl-mini');
+        const basePath = isGitHubPages ? '/fpl-mini/' : '/';
+        return `${basePath}data/leagues/${lidStr}/gw${gw}_squads.json`;
+      }
+
+      getRadarDataUrl() {
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          const configuredIds = Object.keys(this.configs || {});
+          const currentInSubdir = configuredIds.some(cid => window.location.pathname.includes('/' + cid));
+          const prefix = currentInSubdir ? '../' : './';
+          return `${prefix}data/radar.json`;
+        }
+        const pathname = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '';
+        const isGitHubPages = pathname.includes('/fpl-mini');
+        const basePath = isGitHubPages ? '/fpl-mini/' : '/';
+        return `${basePath}data/radar.json`;
+      }
+
+      hasTier1SquadsForGw(leagueObj, gwNum) {
+        if (!leagueObj || !leagueObj.squads) return false;
+        const n = Number(gwNum);
+        if (Array.isArray(leagueObj._loaded_squad_gws) && leagueObj._loaded_squad_gws.includes(n)) {
+          return true;
+        }
+        const suffix = `_${n}`;
+        return Object.keys(leagueObj.squads).some(k => k.endsWith(suffix));
+      }
+
+      async ensureTier1GWSquads(gw = this.selectedGW, leagueId = this.activeLeagueId, retryCount = 1) {
+        const lidStr = String(leagueId);
+        if (!this.multiData || !this.multiData.leagues) return false;
+        const targetLeague = this.multiData.leagues[lidStr] || (lidStr === String(this.activeLeagueId) ? this.data : null);
+        if (!targetLeague) return false;
+        const isTier2 = (targetLeague.tier === 2) || (this.configs && this.configs[lidStr] && this.configs[lidStr].tier === 2);
+        if (isTier2) return false;
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          return false;
+        }
+
+        const gwNum = Number(gw);
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || gwNum;
+        if (!gwNum || gwNum < 1 || gwNum > maxGW) return false;
+        if (this.hasTier1SquadsForGw(targetLeague, gwNum)) return false;
+
+        const inflightKey = `${lidStr}_${gwNum}`;
+        if (!this._tier1SquadChunkPromises) this._tier1SquadChunkPromises = {};
+        if (!this._tier1SquadChunkPromises[inflightKey]) {
+          const url = this.getLeagueSquadChunkUrl(lidStr, gwNum);
+          this._tier1SquadChunkPromises[inflightKey] = this._fetchJsonWithRetry(url, retryCount, 12000)
+            .then(chunkJson => {
+              if (chunkJson && chunkJson.squads && typeof chunkJson.squads === 'object') {
+                if (!targetLeague.squads) targetLeague.squads = {};
+                Object.assign(targetLeague.squads, chunkJson.squads);
+                if (!Array.isArray(targetLeague._loaded_squad_gws)) targetLeague._loaded_squad_gws = [];
+                if (!targetLeague._loaded_squad_gws.includes(gwNum)) targetLeague._loaded_squad_gws.push(gwNum);
+                if (lidStr === String(this.activeLeagueId) && this.data && this.data !== targetLeague) {
+                  if (!this.data.squads) this.data.squads = {};
+                  Object.assign(this.data.squads, chunkJson.squads);
+                }
+                this.invalidateRenderCache();
+                return true;
+              }
+              return false;
+            })
+            .finally(() => {
+              if (this._tier1SquadChunkPromises) delete this._tier1SquadChunkPromises[inflightKey];
+            });
+        }
+        return this._tier1SquadChunkPromises[inflightKey];
+      }
+
+      async ensureRadarData(retryCount = 1) {
+        if (!this.multiData || !this.multiData.leagues) return false;
+        const isPrivateTenant = Boolean(this.config && this.config.visibility === 'private') || Object.keys(this.multiData.leagues).length <= 1;
+        if (isPrivateTenant) {
+          return false;
+        }
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          return false;
+        }
+        const configs = this.configs || {};
+        const needsRadar = Object.entries(this.multiData.leagues).some(([lid, l]) => {
+          if (!l || l.tier === 2 || (configs[lid] && configs[lid].tier === 2)) return false;
+          return !Array.isArray(l.teams) || l.teams.length === 0 || !l.gameweeks || Object.keys(l.gameweeks).length === 0;
+        });
+        if (!needsRadar) return false;
+
+        if (!this._radarFetchPromise) {
+          const url = this.getRadarDataUrl();
+          this._radarFetchPromise = this._fetchJsonWithRetry(url, retryCount, 12000)
+            .then(radarJson => {
+              if (radarJson && radarJson.leagues) {
+                let anyUpdated = false;
+                Object.entries(radarJson.leagues).forEach(([lid, rl]) => {
+                  const existing = this.multiData.leagues[lid];
+                  if (!existing) {
+                    this.multiData.leagues[lid] = rl;
+                    anyUpdated = true;
+                    return;
+                  }
+                  const hasOwnFullData = Boolean(
+                    (Array.isArray(existing.teams) && existing.teams.length > 0 && existing.gameweeks && Object.keys(existing.gameweeks).length > 0) ||
+                    (existing.squads && Object.keys(existing.squads).length > 0)
+                  );
+                  if (!hasOwnFullData) {
+                    existing.teams = rl.teams || [];
+                    existing.gameweeks = rl.gameweeks || {};
+                    if (rl.member_count !== undefined) existing.member_count = rl.member_count;
+                    anyUpdated = true;
+                  }
+                });
+                if (anyUpdated) {
+                  this._radarTeamList = null;
+                  this._teamTierCache = {};
+                  this.invalidateRenderCache();
+                }
+                return anyUpdated;
+              }
+              return false;
+            })
+            .finally(() => {
+              this._radarFetchPromise = null;
+            });
+        }
+        return this._radarFetchPromise;
+      }
+
+      async fetchLeagueData(leagueId, retryCount = 2) {
         const lidStr = String(leagueId);
         if (!this.multiData || !this.multiData.leagues || !this.multiData.leagues[lidStr]) return null;
         const targetLeague = this.multiData.leagues[lidStr];
@@ -3493,12 +3728,11 @@
           }
         }
 
-        const url = this.getLeagueDataUrl(lidStr);
-        for (let attempt = 0; attempt <= retryCount; attempt++) {
-          try {
-            const resp = await fetch(url);
-            if (resp.ok) {
-              const fullLeagueData = await resp.json();
+        if (!this._leagueFetchPromises) this._leagueFetchPromises = {};
+        if (!this._leagueFetchPromises[lidStr]) {
+          const url = this.getLeagueDataUrl(lidStr);
+          this._leagueFetchPromises[lidStr] = this._fetchJsonWithRetry(url, retryCount, 15000)
+            .then(fullLeagueData => {
               if (fullLeagueData && (fullLeagueData.squads || (isTier2 && fullLeagueData.teams))) {
                 this.multiData.leagues[lidStr] = fullLeagueData;
                 if (this.lastLiveJson && this.lastLiveGw) {
@@ -3509,15 +3743,13 @@
                 }
                 return this.multiData.leagues[lidStr];
               }
-            }
-          } catch (e) {
-            console.debug(`Dynamic fetch attempt ${attempt + 1} error:`, e);
-            if (attempt < retryCount) {
-              await new Promise(r => setTimeout(r, 400));
-            }
-          }
+              return null;
+            })
+            .finally(() => {
+              if (this._leagueFetchPromises) delete this._leagueFetchPromises[lidStr];
+            });
         }
-        return null;
+        return this._leagueFetchPromises[lidStr];
       }
 
       async switchLeague(leagueId, fromPopstate = false) {
@@ -3538,15 +3770,19 @@
           : Boolean(targetLeague.squads && Object.keys(targetLeague.squads).length > 0);
 
         if (!hasData) {
+          this._isLoadingLeague = lidStr;
           if (selectorContainer) {
             selectorContainer.classList.add('opacity-60', 'pointer-events-none');
             selectorContainer.setAttribute('aria-busy', 'true');
           }
           try {
             const [fetched] = await Promise.all([
-              this.fetchLeagueData(lidStr, 1),
+              this.fetchLeagueData(lidStr, 2),
               this.ensureSpecialFeatureData(lidStr)
             ]);
+            if (this._isLoadingLeague === lidStr) {
+              this._isLoadingLeague = null;
+            }
             if (this._switchingTargetId !== lidStr) return;
             if (!fetched) {
               if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
@@ -3564,6 +3800,9 @@
               }
             }
           } finally {
+            if (this._isLoadingLeague === lidStr) {
+              this._isLoadingLeague = null;
+            }
             if (selectorContainer && this._switchingTargetId === lidStr) {
               selectorContainer.classList.remove('opacity-60', 'pointer-events-none');
               selectorContainer.removeAttribute('aria-busy');
@@ -3578,6 +3817,13 @@
         this.data = this.multiData.leagues[this.activeLeagueId] || {};
         this.config = this.configs[this.activeLeagueId] || {};
         if (!this.config.features) this.config.features = {};
+        if (isTier2) {
+          await this.ensureTier2GWChunk(this.selectedGW);
+          if (this._switchingTargetId !== lidStr) return;
+        } else {
+          await this.ensureTier1GWSquads(this.selectedGW, lidStr);
+          if (this._switchingTargetId !== lidStr) return;
+        }
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
         this.matchdayChunkLimit = 100;
@@ -3876,7 +4122,7 @@
           } else {
             shi62TabBtn.classList.add('hidden');
             if (this.activeTab === 'shi62-special-view') {
-              this.switchTab('gameweek-view');
+              this.switchTab('gameweek-view', true);
             }
           }
         }
@@ -3892,7 +4138,7 @@
           } else {
             bramannPredTabBtn.classList.add('hidden');
             if (this.activeTab === 'bramann-prediction-view') {
-              this.switchTab('gameweek-view');
+              this.switchTab('gameweek-view', true);
             }
           }
         }
@@ -3902,24 +4148,24 @@
           } else {
             bramannChalTabBtn.classList.add('hidden');
             if (this.activeTab === 'bramann-challenge-view') {
-              this.switchTab('gameweek-view');
+              this.switchTab('gameweek-view', true);
             }
           }
         }
 
         const unsupportedTier2Tabs = ['highlights-view', 'competition-view', 'transfers-view', 'hall-of-fame-view', 'global-radar-view'];
         if (isTier2 && unsupportedTier2Tabs.includes(this.activeTab)) {
-          this.switchTab('gameweek-view');
+          this.switchTab('gameweek-view', true);
         } else if (!hasPrizes && this.activeTab === 'prizes-view') {
-          this.switchTab('gameweek-view');
+          this.switchTab('gameweek-view', true);
         } else if (!isShi62 && this.activeTab === 'shi62-special-view') {
-          this.switchTab('gameweek-view');
+          this.switchTab('gameweek-view', true);
         } else if (!hasBramannPred && this.activeTab === 'bramann-prediction-view') {
-          this.switchTab('gameweek-view');
+          this.switchTab('gameweek-view', true);
         } else if (!hasBramannChal && this.activeTab === 'bramann-challenge-view') {
-          this.switchTab('gameweek-view');
+          this.switchTab('gameweek-view', true);
         } else {
-          this.switchTab(this.activeTab);
+          this.switchTab(this.activeTab, true, true);
         }
       }
 
@@ -4027,6 +4273,13 @@
         this.updateHighlightsTabBlink();
         if (!skipRender) {
           this.renderCurrentTab(false);
+        }
+        if (this.activeTab === 'global-radar-view' && typeof this.ensureRadarData === 'function') {
+          this.ensureRadarData().then(loaded => {
+            if (loaded && this.activeTab === 'global-radar-view') {
+              this.renderCurrentTab(true);
+            }
+          });
         }
       }
 
@@ -4180,388 +4433,13 @@
         this._renderedState[tab] = stamp;
       }
 
-selectShi62GW(gwName) {
+      selectShi62GW(gwName) {
         this.activeShi62GW = gwName;
         this.renderShi62Special();
       }
 
-      copyShi62LINEResult(gwName) {
-        if (!this.shi62Data) return;
-        const gw = (this.shi62Data.gameweeks || []).find(g => g.name === gwName);
-        if (!gw) return;
-
-        const gwDisplayName = gw.name.startsWith('GW') ? gw.name : `GW${gw.name}`;
-        let lines = [];
-        lines.push(`สรุปผลการทายผล ${gwDisplayName}`);
-        lines.push(`---------------------------------`);
-        lines.push(`⚽ ผลประจำสัปดาห์ (${gwDisplayName})`);
-        (gw.summary || []).forEach((s, i) => {
-          const sign = s.net > 0 ? '+' : '';
-          const pushStr = s.push > 0 ? ` ${s.push}D` : '';
-          lines.push(`${i + 1}. ${s.player.display_name}: ${sign}${Number(s.net).toLocaleString()} (${s.won}W ${s.lost}L${pushStr})`);
-        });
-        lines.push(`---------------------------------`);
-        lines.push(`💰 พูลสัปดาห์นี้: ${Number(gw.total_pool).toLocaleString()} บาท (${gw.matches.length} คู่)`);
-        lines.push(`---------------------------------`);
-
-        if (gw.matches && gw.matches.length > 0) {
-          lines.push(`📋 ผลการแข่งขัน (${gwDisplayName}):`);
-          const formatPlayerName = (name) => {
-            if (!name) return '';
-            const clean = name.trim();
-            if (clean.toLowerCase() === 'pong+') return 'Pong+';
-            return clean.charAt(0).toUpperCase() + clean.slice(1);
-          };
-
-          gw.matches.forEach(m => {
-            if (m.winners && m.winners.length > 0) {
-              const winNames = m.winners.map(formatPlayerName).join(', ');
-              lines.push(`• ${m.title} ➔ ${m.winning_option} ✅ [${winNames}]`);
-            } else {
-              const winSide = m.winning_option || 'ยกเลิก';
-              lines.push(`• ${m.title} ➔ ${winSide} (ไม่มีคนถูก)`);
-            }
-          });
-          lines.push(`---------------------------------`);
-        }
-
-        lines.push(`🏆 ตารางอันดับสะสมทายผล:`);
-
-        (this.shi62Data.cumulative_standings || []).forEach((c, idx) => {
-          const sign = c.net > 0 ? '+' : '';
-          lines.push(`${idx + 1}. ${c.player.display_name}: ${sign}${Number(c.net).toLocaleString()}`);
-        });
-
-        lines.push(`---------------------------------`);
-        lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
-
-        const textToCopy = lines.join(String.fromCharCode(10));
-        const isEn = (this.currentLang === 'en');
-        this.openTextSummaryModal({
-          title: isEn ? `Shi62 Prediction (${gwDisplayName})` : `สรุปผลทายผล Shi62 (${gwDisplayName})`,
-          subtitle: isEn ? 'Weekly prediction results ready to share in LINE:' : 'สรุปผลทายผลประจำสัปดาห์สำหรับส่งเข้ากลุ่ม LINE:',
-          text: textToCopy
-        });
-      }
-
-      copyShi62PrizesLINEResult() {
-        if (!this.shi62Data) return;
-        const maxGW = Number(this.multiData && this.multiData.max_gw) || 7;
-        let lines = [];
-        lines.push(`สรุปรางวัล (FPL & ทายผล) GW${maxGW}`);
-        lines.push(`---------------------------------`);
-        lines.push(`🏆 สรุปรางวัล:`);
-        lines.push(`(อันดับ • รางวัล FPL • ทายผลสะสม • ยอดรวมสุทธิ)`);
-
-        const tiers = (this.config && this.config.features && this.config.features.annual_payout_tiers) || {
-          "1": 1000, "2": 800, "3": 600, "4": 400, "5": 200, "6": 100,
-          "7": -100, "8": -200, "9": -400, "10": -600, "11": -800, "12": -1000
-        };
-
-        const extraMapByEntryId = {};
-        const extraMapByName = {};
-        (this.shi62Data.cumulative_standings || []).forEach(c => {
-          if (c.player) {
-            if (c.player.entry_id) extraMapByEntryId[c.player.entry_id] = Number(c.net) || 0;
-            if (c.player.display_name) extraMapByName[c.player.display_name.toLowerCase()] = Number(c.net) || 0;
-          }
-        });
-
-        const shi62ShortNames = {
-          1309919: "Tong",
-          837763: "Oo",
-          2342390: "Riin",
-          720631: "Totti",
-          1153245: "Poang",
-          7601484: "Oan",
-          3508212: "Sia",
-          1312974: "Mai",
-          2804957: "Boy",
-          5463640: "Dow",
-          4549514: "Bert",
-          5340913: "Pong+"
-        };
-
-        const overallMap = {};
-        (this.data && this.data.teams ? this.data.teams : []).forEach(t => {
-          overallMap[t.entry_id] = {
-            entry_id: t.entry_id,
-            entry_name: t.entry_name,
-            player_name: t.player_name,
-            rank: t.rank || 999,
-            total_points: 0
-          };
-        });
-
-        for (let g = 1; g <= maxGW; g++) {
-          const gData = (this.data && this.data.gameweeks) ? this.data.gameweeks[String(g)] : null;
-          if (gData && gData.results) {
-            const gIsStarted = gData.is_started !== undefined
-              ? Boolean(gData.is_started)
-              : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
-            if (gIsStarted) {
-              const seenInGw = new Set();
-              gData.results.forEach(r => {
-                if (seenInGw.has(r.entry_id)) return;
-                seenInGw.add(r.entry_id);
-                if (overallMap[r.entry_id]) {
-                  overallMap[r.entry_id].total_points += (r.net_points || 0);
-                }
-              });
-            }
-          }
-        }
-
-        const overallTeams = Object.values(overallMap)
-          .filter(t => this.isPrizeEligible(t.entry_id))
-          .sort((a, b) => (b.total_points - a.total_points) || ((a.rank || 999) - (b.rank || 999)));
-
-        // Resolve tie-pooled payouts matching renderPrizesView
-        let curIdx = 0;
-        while (curIdx < overallTeams.length) {
-          let nxtIdx = curIdx + 1;
-          while (nxtIdx < overallTeams.length && overallTeams[nxtIdx].total_points === overallTeams[curIdx].total_points) {
-            nxtIdx++;
-          }
-          const cnt = nxtIdx - curIdx;
-          const rStart = curIdx + 1;
-          const rEnd = curIdx + cnt;
-          let tierSum = 0;
-          for (let rPos = rStart; rPos <= rEnd; rPos++) {
-            tierSum += Number(tiers[String(rPos)] || 0);
-          }
-          const avgPayout = cnt > 0 ? (tierSum / cnt) : 0;
-          for (let i = curIdx; i < nxtIdx; i++) {
-            overallTeams[i].overall_rank = rStart;
-            overallTeams[i].is_joint = cnt > 1;
-            overallTeams[i].payout = avgPayout;
-          }
-          curIdx = nxtIdx;
-        }
-
-        const fmtVal = (v) => {
-          const rounded = Number.isInteger(v) ? v : Number(v.toFixed(2));
-          if (rounded > 0) return `+${rounded.toLocaleString()}`;
-          if (rounded < 0) return `${rounded.toLocaleString()}`;
-          return '0';
-        };
-
-        overallTeams.forEach((t) => {
-          const rank = t.overall_rank;
-          const seasonPrize = t.payout || 0;
-          const extraNet = (extraMapByEntryId[t.entry_id] !== undefined)
-            ? extraMapByEntryId[t.entry_id]
-            : (extraMapByName[(t.player_name || '').toLowerCase()] || 0);
-          const grandTotal = seasonPrize + extraNet;
-
-          const dispName = shi62ShortNames[t.entry_id] || t.player_name;
-          const rankStr = t.is_joint ? `${rank}(ร่วม)` : `${rank}`;
-
-          lines.push(`${rankStr}. ${dispName}: FPL ${fmtVal(seasonPrize)} | ทายผล ${fmtVal(extraNet)} | รวม ${fmtVal(grandTotal)}`);
-        });
-
-        const nodCum = (this.shi62Data.cumulative_standings || []).find(c => c.player && c.player.is_guest);
-        if (nodCum) {
-          const nodNet = nodCum.net || 0;
-          lines.push(`• Nod (Guest): FPL - | ทายผล ${fmtVal(nodNet)} | รวม ${fmtVal(nodNet)}`);
-        }
-
-        lines.push(`---------------------------------`);
-        lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
-
-        const textToCopy = lines.join(String.fromCharCode(10));
-        const isEn = (this.currentLang === 'en');
-        this.openTextSummaryModal({
-          title: isEn ? 'Shi62 Season Prizes' : 'สรุปเงินรางวัล Shi62 League',
-          subtitle: isEn ? 'Prize breakdown ready to share in LINE:' : 'สรุปเงินรางวัลสำหรับส่งเข้ากลุ่ม LINE:',
-          text: textToCopy
-        });
-      }
-
       showCopiedToast(text = 'คัดลอกข้อความสำเร็จ!') {
         this.showToast(text, 'line', 1800);
-      }
-
-      copyToClipboard(textToCopy, onCopied) {
-        if (!textToCopy) return false;
-        let copied = false;
-
-        // 1. Modern Clipboard API
-        if (navigator && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-          navigator.clipboard.writeText(textToCopy).then(() => {
-            if (typeof onCopied === 'function') onCopied();
-          }).catch(() => {
-            // Handled synchronously below
-          });
-        }
-
-        // 2. Synchronous fallback via modal textarea if matching
-        const modalTextarea = document.getElementById('text-summary-content');
-        if (modalTextarea && modalTextarea.value === textToCopy) {
-          try {
-            modalTextarea.focus();
-            modalTextarea.select();
-            modalTextarea.setSelectionRange(0, modalTextarea.value.length);
-            copied = document.execCommand('copy');
-          } catch (e) {
-            copied = false;
-          }
-        }
-
-        // 3. Fallback via offscreen temporary textarea (iOS Safari compatible)
-        if (!copied) {
-          try {
-            const textarea = document.createElement('textarea');
-            textarea.value = textToCopy;
-            textarea.style.position = 'fixed';
-            textarea.style.top = '0';
-            textarea.style.left = '0';
-            textarea.style.width = '2em';
-            textarea.style.height = '2em';
-            textarea.style.padding = '0';
-            textarea.style.border = 'none';
-            textarea.style.outline = 'none';
-            textarea.style.boxShadow = 'none';
-            textarea.style.background = 'transparent';
-            textarea.style.opacity = '0.01';
-            textarea.style.zIndex = '-9999';
-            textarea.setAttribute('readonly', '');
-            document.body.appendChild(textarea);
-            textarea.focus();
-            textarea.select();
-            textarea.setSelectionRange(0, textToCopy.length);
-            copied = document.execCommand('copy');
-            document.body.removeChild(textarea);
-          } catch (err) {
-            copied = false;
-          }
-        }
-
-        if (copied && typeof onCopied === 'function') {
-          onCopied();
-        }
-        return copied;
-      }
-
-      openTextSummaryModal(options = {}) {
-        const { title: titleText, subtitle: subtitleText, text = '' } = options;
-        const isEn = (this.currentLang === 'en');
-        const modal = document.getElementById('text-summary-modal');
-        const contentArea = document.getElementById('text-summary-content');
-        const titleEl = document.getElementById('modal-summary-title');
-        const subtitleEl = document.getElementById('modal-summary-subtitle');
-        const copyIndText = document.getElementById('modal-copy-indicator-text');
-        const closeBtn = document.getElementById('modal-summary-close-btn');
-        const copyBtnLabel = document.getElementById('btn-modal-copy-label');
-
-        if (titleEl) titleEl.innerText = titleText || (isEn ? 'Gameweek Summary' : 'สรุปผล Gameweek');
-        if (subtitleEl) subtitleEl.innerText = subtitleText || (isEn ? 'Formatted text summary:' : 'ข้อความสรุปผล:');
-        if (copyIndText) copyIndText.innerText = isEn ? 'Copied to clipboard!' : 'คัดลอกลงคลิปบอร์ดแล้ว!';
-        if (closeBtn) closeBtn.innerText = isEn ? 'Close' : 'ปิด';
-        if (copyBtnLabel) copyBtnLabel.innerText = isEn ? 'Copy Text' : 'คัดลอกข้อความ';
-
-        if (contentArea) {
-          contentArea.value = text;
-        }
-
-        if (modal) {
-          if (modal.classList.contains('hidden')) {
-            this._lastFocusedElement = document.activeElement;
-          }
-          modal.classList.remove('hidden');
-          this.lockBodyScroll();
-        }
-
-        if (contentArea) {
-          contentArea.focus();
-          contentArea.select();
-          contentArea.setSelectionRange(0, text.length);
-        }
-
-        this.triggerCopyAction(text);
-      }
-
-      triggerCopyAction(text) {
-        try {
-          if (typeof window._trackFeature === 'function') {
-            window._trackFeature('share', 'line_copy');
-          }
-        } catch (_) {}
-        this.copyToClipboard(text, () => {
-          this.showCopyIndicator();
-        });
-      }
-
-      showCopyIndicator() {
-        const ind = document.getElementById('modal-copy-indicator');
-        const isEn = (this.currentLang === 'en');
-        const copyIndText = document.getElementById('modal-copy-indicator-text');
-        if (copyIndText) copyIndText.innerText = isEn ? 'Copied to clipboard!' : 'คัดลอกลงคลิปบอร์ดแล้ว!';
-        if (ind) {
-          ind.style.opacity = '1';
-          if (this._modalIndTimer) clearTimeout(this._modalIndTimer);
-          this._modalIndTimer = setTimeout(() => {
-            ind.style.opacity = '0';
-          }, 3000);
-        }
-        this.showCopiedToast(isEn ? 'Copied to clipboard!' : 'คัดลอกข้อความสำเร็จ!');
-      }
-
-      shareToLine(customText) {
-        const contentArea = document.getElementById('text-summary-content');
-        const text = customText || (contentArea ? contentArea.value : '');
-        if (!text) return;
-
-        // Ensure text is also in clipboard
-        this.copyToClipboard(text);
-
-        // Try Web Share on mobile devices
-        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
-        if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ text })) {
-          navigator.share({
-            title: document.getElementById('modal-summary-title')?.innerText || 'FPL Summary',
-            text: text
-          }).catch(err => {
-            if (err.name !== 'AbortError') {
-              this.openLineUrl(text);
-            }
-          });
-          return;
-        }
-
-        this.openLineUrl(text);
-      }
-
-      openLineUrl(text) {
-        const lineUrl = `https://line.me/R/msg/text/?${encodeURIComponent(text)}`;
-        window.open(lineUrl, '_blank');
-      }
-
-      shareCurrentView() {
-        const activeTab = this.activeTab || 'gameweek-view';
-        if (activeTab === 'bramann-prediction-view') {
-          this.copyBramannPredLINEResult(this.activeBramannPredGW);
-        } else if (activeTab === 'bramann-challenge-view') {
-          this.copyBramannChalLINEResult(this.activeBramannChalGW);
-        } else if (activeTab === 'shi62-special-view') {
-          this.copyShi62LINEResult(this.activeShi62GW);
-        } else if (activeTab === 'prizes-view') {
-          this.sharePrizes();
-        } else {
-          this.shareCurrentGameweek();
-        }
-      }
-
-      sharePrizes() {
-        const feat = (this.config && this.config.features) || {};
-        const lid = String(this.activeLeagueId);
-        if (feat.prize_model === 'bramann_dual_prize' || lid === '5349') {
-          this.copyBramannPrizesLINEResult();
-        } else if (feat.has_monthly_prizes || lid === '675290') {
-          this.copyShi62PrizesLINEResult();
-        } else {
-          this.shareCurrentGameweek();
-        }
       }
 
       selectBramannPredGW(gwName) {
@@ -4569,275 +4447,9 @@ selectShi62GW(gwName) {
         this.renderBramannPrediction();
       }
 
-      copyBramannPredLINEResult(gwName) {
-        if (!this.bramannPredData) return;
-        const gw = (this.bramannPredData.gameweeks || []).find(g => g.name === gwName);
-        if (!gw) return;
-
-        const gwDisplayName = gw.name.startsWith('GW') ? gw.name : `GW${gw.name}`;
-        let lines = [];
-        lines.push(`สรุปผลการทายผล Bramann Prediction ${gwDisplayName}`);
-        lines.push(`---------------------------------`);
-        lines.push(`⚽ สรุปได้-เสียประจำสัปดาห์ (${gwDisplayName})`);
-
-        const gwPlayerNet = {};
-        (gw.matches || []).forEach(m => {
-          Object.entries(m.payouts || {}).forEach(([pname, pinfo]) => {
-            if (!gwPlayerNet[pname]) gwPlayerNet[pname] = { net: 0, won: 0, lost: 0, push: 0 };
-            gwPlayerNet[pname].net += (pinfo.net || 0);
-            if (pinfo.net > 0) gwPlayerNet[pname].won += 1;
-            else if (pinfo.net < 0) gwPlayerNet[pname].lost += 1;
-            else gwPlayerNet[pname].push += 1;
-          });
-        });
-
-        const sortedGwPlayers = Object.entries(gwPlayerNet)
-          .map(([name, s]) => ({ name, ...s }))
-          .sort((a, b) => b.net - a.net);
-
-        sortedGwPlayers.forEach((s, i) => {
-          const sign = s.net > 0 ? '+' : '';
-          const pushStr = s.push > 0 ? ` ${s.push}D` : '';
-          lines.push(`${i + 1}. ${s.name}: ${sign}${Number(s.net).toLocaleString()} (${s.won}W ${s.lost}L${pushStr})`);
-        });
-        lines.push(`---------------------------------`);
-        const totalGwPool = (gw.matches || []).reduce((sum, m) => sum + (m.pool || 0), 0);
-        lines.push(`💰 พูลสัปดาห์นี้: ${Number(totalGwPool).toLocaleString()} บาท (${gw.matches.length} คู่)`);
-        lines.push(`---------------------------------`);
-
-        if (gw.matches && gw.matches.length > 0) {
-          lines.push(`📋 ผลการแข่งขัน (${gwDisplayName}):`);
-          gw.matches.forEach(m => {
-            if (m.status === 'push' || m.winning_side === 'push') {
-              lines.push(`• ${m.title} ➔ เสมอ (แยกย้าย)`);
-            } else {
-              const winSideLabel = m.winning_side === 1 ? m.side1_label : m.side2_label;
-              const winBets = m.winning_side === 1 ? m.side1_bets : m.side2_bets;
-              const winNames = winBets.map(b => `${b.name}${b.legs > 1 ? `x${b.legs}` : ''}`).join(', ');
-              lines.push(`• ${m.title} ➔ ${winSideLabel} ✅ [${winNames}]`);
-            }
-          });
-          lines.push(`---------------------------------`);
-        }
-
-        lines.push(`🏆 ตารางอันดับสะสมทายผล:`);
-        (this.bramannPredData.cumulative_standings || []).forEach((c, idx) => {
-          const sign = c.net > 0 ? '+' : '';
-          lines.push(`${idx + 1}. ${c.player.display_name}: ${sign}${Number(c.net).toLocaleString()}`);
-        });
-
-        lines.push(`---------------------------------`);
-        lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
-
-        const textToCopy = lines.join(String.fromCharCode(10));
-        const isEn = (this.currentLang === 'en');
-        this.openTextSummaryModal({
-          title: isEn ? `Bramann Prediction (${gwDisplayName})` : `สรุปผลทายผล Bramann (${gwDisplayName})`,
-          subtitle: isEn ? 'Weekly prediction settlement ready to share in LINE:' : 'สรุปยอดเงินได้-เสียและผลทายผลสำหรับส่งเข้ากลุ่ม LINE:',
-          text: textToCopy
-        });
-      }
-
       selectBramannChalGW(gwName) {
         this.activeBramannChalGW = gwName;
         this.renderBramannChallenge();
-      }
-
-      copyBramannChalLINEResult(gwName) {
-        if (!this.bramannChalData) return;
-        const gw = (this.bramannChalData.gameweeks || []).find(g => g.name === gwName);
-        if (!gw) return;
-
-        const gwDisplayName = gw.name.startsWith('GW') ? gw.name : `GW${gw.name}`;
-        let lines = [];
-        lines.push(`สรุปผลท้าชน Bramann Challenge ${gwDisplayName}`);
-        lines.push(`---------------------------------`);
-        lines.push(`⚔️ การดวลคะแนนแฟนตาซี (${gwDisplayName}):`);
-        (gw.matches || []).forEach(m => {
-          const t1Pts = m.team1_pts !== undefined ? `${m.team1_pts} pts` : '-';
-          const t2Pts = m.team2_pts !== undefined ? `${m.team2_pts} pts` : '-';
-          lines.push(`• ${m.team1_name} (${t1Pts}) vs ${m.team2_name} (${t2Pts})`);
-          if (m.winning_side === 1) {
-            lines.push(`  ผู้ชนะ: ${m.team1_name} ✅${m.tie_break_note ? ` (${m.tie_break_note})` : ''}`);
-          } else if (m.winning_side === 2) {
-            lines.push(`  ผู้ชนะ: ${m.team2_name} ✅${m.tie_break_note ? ` (${m.tie_break_note})` : ''}`);
-          } else {
-            lines.push(`  ผลการแข่งขัน: เสมอแยกย้าย (Push)`);
-          }
-          if (m.payouts && Object.keys(m.payouts).length > 0) {
-            lines.push(`  💰 ผลได้-เสีย:`);
-            Object.entries(m.payouts).forEach(([pname, pinfo]) => {
-              const sign = pinfo.net > 0 ? '+' : '';
-              lines.push(`    - ${pname}: ${sign}${Number(pinfo.net).toLocaleString()} บาท`);
-            });
-          }
-        });
-
-        lines.push(`---------------------------------`);
-        lines.push(`🏆 ตารางอันดับสะสมท้าชน:`);
-        (this.bramannChalData.cumulative_standings || []).forEach((c, idx) => {
-          const sign = c.net > 0 ? '+' : '';
-          lines.push(`${idx + 1}. ${c.player.display_name}: ${sign}${Number(c.net).toLocaleString()}`);
-        });
-
-        lines.push(`---------------------------------`);
-        lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
-
-        const textToCopy = lines.join(String.fromCharCode(10));
-        const isEn = (this.currentLang === 'en');
-        this.openTextSummaryModal({
-          title: isEn ? `Bramann Challenge (${gwDisplayName})` : `สรุปผลท้าชน Bramann (${gwDisplayName})`,
-          subtitle: isEn ? 'Fantasy challenge duel results ready to share in LINE:' : 'สรุปผลการดวลแฟนตาซีตัวต่อตัวสำหรับส่งเข้ากลุ่ม LINE:',
-          text: textToCopy
-        });
-      }
-
-      copyBramannPrizesLINEResult() {
-        const maxGW = Number(this.multiData && this.multiData.max_gw) || 7;
-        let lines = [];
-        lines.push(`สรุปเงินรางวัล FPL & มินิเกม Bramann League (GW${maxGW})`);
-        lines.push(`---------------------------------`);
-        lines.push(`🏆 สรุปเงินรางวัล FPL (Prize 1 + Prize 2) รวม 9,500 THB:`);
-        lines.push(`(อันดับ • ทีม • คะแนนรวม • P1 • P2 • รางวัล FPL • ทายผลสะสม • ท้าชนสะสม • ยอดรวมสุทธิ)`);
-
-        const feat = (this.config && this.config.features) || {};
-        const p1GW = Number(feat.prize1_target_gw) || 18;
-        const p2GW = Number(feat.prize2_target_gw) || 38;
-        const p1Tiers = feat.prize1_tiers || { "1": 500, "2": 500, "3": 500, "5": 500, "7": 500, "9": 500, "11": 500, "13": 500, "15": 500 };
-        const p2Tiers = feat.prize2_tiers || { "1": 1000, "2": 800, "3": 700, "7": 700, "8": 500, "9": 400, "13": 400, "14": 300, "15": 200 };
-
-        const predMap = {};
-        if (this.bramannPredData && this.bramannPredData.cumulative_standings) {
-          this.bramannPredData.cumulative_standings.forEach(c => {
-            if (c.player) {
-              if (c.player.entry_id) predMap[c.player.entry_id] = Number(c.net) || 0;
-              if (c.player.display_name) predMap[c.player.display_name.toLowerCase()] = Number(c.net) || 0;
-            }
-          });
-        }
-
-        const chalMap = {};
-        if (this.bramannChalData && this.bramannChalData.cumulative_standings) {
-          this.bramannChalData.cumulative_standings.forEach(c => {
-            if (c.player) {
-              if (c.player.entry_id) chalMap[c.player.entry_id] = Number(c.net) || 0;
-              if (c.player.display_name) chalMap[c.player.display_name.toLowerCase()] = Number(c.net) || 0;
-            }
-          });
-        }
-
-        const overallMap = {};
-        (this.data && this.data.teams ? this.data.teams : []).forEach(t => {
-          overallMap[t.entry_id] = {
-            entry_id: t.entry_id,
-            entry_name: t.entry_name,
-            player_name: t.player_name,
-            rank: t.rank || 999,
-            p1_points: 0,
-            p2_points: 0,
-            total_points: 0
-          };
-        });
-
-        for (let g = 1; g <= maxGW; g++) {
-          const gData = (this.data && this.data.gameweeks) ? this.data.gameweeks[String(g)] : null;
-          if (gData && gData.results) {
-            const gIsStarted = gData.is_started !== undefined
-              ? Boolean(gData.is_started)
-              : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
-            if (gIsStarted) {
-              const seenInGw = new Set();
-              gData.results.forEach(r => {
-                if (seenInGw.has(r.entry_id)) return;
-                seenInGw.add(r.entry_id);
-                const tm = overallMap[r.entry_id];
-                if (tm) {
-                  const net = r.net_points || 0;
-                  tm.total_points += net;
-                  if (g <= p1GW) tm.p1_points += net;
-                  if (g <= p2GW) tm.p2_points += net;
-                }
-              });
-            }
-          }
-        }
-
-        const eligibleTeams = Object.values(overallMap).filter(t => this.isPrizeEligible(t.entry_id));
-
-        const assignTiePooledTiers = (teamsList, scoreProp, tiersObj, outAmtProp, outRankProp, outJointProp) => {
-          const sorted = [...teamsList].sort((a, b) => (b[scoreProp] - a[scoreProp]) || ((a.rank || 999) - (b.rank || 999)));
-          let idx = 0;
-          while (idx < sorted.length) {
-            let nxt = idx + 1;
-            while (nxt < sorted.length && sorted[nxt][scoreProp] === sorted[idx][scoreProp]) {
-              nxt++;
-            }
-            const cnt = nxt - idx;
-            const rStart = idx + 1;
-            const rEnd = idx + cnt;
-            let tSum = 0;
-            for (let rPos = rStart; rPos <= rEnd; rPos++) {
-              tSum += Number(tiersObj[String(rPos)] || 0);
-            }
-            const avgAmt = cnt > 0 ? (tSum / cnt) : 0;
-            for (let i = idx; i < nxt; i++) {
-              sorted[i][outAmtProp] = Number.isInteger(avgAmt) ? avgAmt : Number(avgAmt.toFixed(2));
-              if (outRankProp) sorted[i][outRankProp] = rStart;
-              if (outJointProp) sorted[i][outJointProp] = cnt > 1;
-            }
-            idx = nxt;
-          }
-          return sorted;
-        };
-
-        assignTiePooledTiers(eligibleTeams, 'p1_points', p1Tiers, 'p1_amt', 'p1_rank', 'p1_joint');
-        const overallTeams = assignTiePooledTiers(eligibleTeams, 'p2_points', p2Tiers, 'p2_amt', 'p2_rank', 'p2_joint');
-
-        const fmtVal = (v) => {
-          const rounded = Number.isInteger(v) ? v : Number(v.toFixed(2));
-          if (rounded > 0) return `+${rounded.toLocaleString()}`;
-          if (rounded < 0) return `${rounded.toLocaleString()}`;
-          return '0';
-        };
-
-        overallTeams.forEach((t) => {
-          const rank = t.p2_rank;
-          const rankStr = t.p2_joint ? `${rank}(ร่วม)` : `${rank}`;
-          const p1 = t.p1_amt || 0;
-          const p2 = t.p2_amt || 0;
-          const totalFpl = p1 + p2;
-          const predNet = (predMap[t.entry_id] !== undefined)
-            ? predMap[t.entry_id]
-            : (predMap[(t.player_name || '').toLowerCase()] || 0);
-          const chalNet = (chalMap[t.entry_id] !== undefined)
-            ? chalMap[t.entry_id]
-            : (chalMap[(t.player_name || '').toLowerCase()] || 0);
-          const grandNet = totalFpl + predNet + chalNet;
-
-          lines.push(`${rankStr}. ${t.entry_name}: ${t.total_points} pts | P1: ${p1 > 0 ? p1.toLocaleString() : '-'} | P2: ${p2 > 0 ? p2.toLocaleString() : '-'} | FPL: ${totalFpl > 0 ? totalFpl.toLocaleString() : '-'} | ทายผล: ${fmtVal(predNet)} | ท้าชน: ${fmtVal(chalNet)} | รวม: ${fmtVal(grandNet)}`);
-        });
-
-        const feeCum = (this.bramannPredData && this.bramannPredData.cumulative_standings)
-          ? this.bramannPredData.cumulative_standings.find(c => c.player && c.player.is_guest)
-          : null;
-        if (feeCum) {
-          const feeNet = feeCum.net || 0;
-          lines.push(`• Fee (Guest): FPL - | ทายผล ${fmtVal(feeNet)} | รวม ${fmtVal(feeNet)}`);
-        }
-
-        lines.push(`---------------------------------`);
-        lines.push(`• Prize 1 (หลังจบ GW ${p1GW}): 9 อันดับ (1, 2, 3, 5, 7, 9, 11, 13, 15) คนละ 500 บ. (รวม 4,500 บ.)`);
-        lines.push(`• Prize 2 (หลังจบ GW ${p2GW}): 9 อันดับขั้นบันได (รวม 5,000 บ.)`);
-        lines.push(`---------------------------------`);
-        lines.push(`🌐 ${this.getPublicLeagueUrl()}`);
-
-        const textToCopy = lines.join(String.fromCharCode(10));
-        const isEn = (this.currentLang === 'en');
-        this.openTextSummaryModal({
-          title: isEn ? 'Bramann Season & Mid-Season Prizes' : 'สรุปเงินรางวัล Bramann League',
-          subtitle: isEn ? 'Prize breakdown ready to share in LINE:' : 'สรุปตารางเงินรางวัล FPL และมินิเกมสำหรับส่งเข้ากลุ่ม LINE:',
-          text: textToCopy
-        });
       }
 
       renderBramannPrediction() {
@@ -4980,7 +4592,7 @@ selectShi62GW(gwName) {
                     return `
                       <div class="p-2 rounded-lg border ${bgStyle} flex flex-col justify-between">
                         <div class="flex items-center justify-between">
-                          <span class="font-bold text-xs text-slate-800 dark:text-slate-200">${s.name}</span>
+                          <span class="font-bold text-xs text-slate-800 dark:text-slate-200">${this.escapeHtml(s.name)}</span>
                           <span class="text-[10px] text-slate-400">${s.won}W - ${s.lost}L</span>
                         </div>
                         <div class="text-xs sm:text-sm font-bold font-display mt-1 ${textStyle}">
@@ -5191,7 +4803,7 @@ selectShi62GW(gwName) {
                               : 'bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700/60');
                           return `
                             <span class="text-[10px] px-1.5 py-0.5 rounded-md border ${chipClass} font-display">
-                              ${pname}: <strong>${fmtMoney(netVal)}</strong>
+                              ${this.escapeHtml(pname)}: <strong>${fmtMoney(netVal)}</strong>
                             </span>
                           `;
                         }).join('')}
@@ -5216,12 +4828,12 @@ selectShi62GW(gwName) {
               </div>
             </div>
 
-            <div class="overflow-x-auto touch-scroll">
-              <table class="w-full text-left border-collapse min-w-[640px]">
+            <div class="overflow-x-auto touch-scroll -mx-4 sm:mx-0 scrollbar-thin table-sticky-container">
+              <table class="w-full text-left min-w-[640px] table-sticky table-clean">
                 <thead>
-                  <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    <th class="py-2.5 px-3 text-center w-12">${isEn ? '#' : 'อันดับ'}</th>
-                    <th class="py-2.5 px-3">${isEn ? 'Player / FPL Team' : 'ผู้เล่น / ทีม FPL'}</th>
+                  <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
+                    <th class="sticky-col-rank py-2.5 px-2 text-center">${isEn ? '#' : 'อันดับ'}</th>
+                    <th class="sticky-col-team py-2.5 px-3">${isEn ? 'Player / FPL Team' : 'ผู้เล่น / ทีม FPL'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Played' : 'แข่ง (คู่)'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Total Legs' : 'ขารวม'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Won' : 'ชนะ'}</th>
@@ -5230,10 +4842,10 @@ selectShi62GW(gwName) {
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Win %' : '% ชนะ'}</th>
                     <th class="py-2.5 px-3 text-right">${isEn ? 'Won Amt' : 'เงินที่ได้'}</th>
                     <th class="py-2.5 px-3 text-right">${isEn ? 'Lost Amt' : 'เงินที่เสีย'}</th>
-                    <th class="py-2.5 px-3 text-right font-bold">${isEn ? 'Net Profit/Loss' : 'กำไร/ขาดทุนสุทธิ'}</th>
+                    <th class="py-2.5 px-3 text-right font-bold text-slate-800 dark:text-slate-200">${isEn ? 'Net Profit/Loss' : 'กำไร/ขาดทุนสุทธิ'}</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
+                <tbody class="text-xs sm:text-sm">
                   ${data.cumulative_standings.map(c => {
                     const isPositive = c.net > 0;
                     const isNegative = c.net < 0;
@@ -5244,32 +4856,32 @@ selectShi62GW(gwName) {
                     const rankBadge = `<span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${c.rank}</span>`;
 
                     return `
-                      <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                        <td class="py-2.5 px-3 text-center font-display">${rankBadge}</td>
-                        <td class="py-2.5 px-3">
+                      <tr onclick="app.toggleTrackedRow(this)" class="cursor-pointer transition-colors">
+                        <td class="sticky-col-rank py-2.5 px-2 text-center font-display">${rankBadge}</td>
+                        <td class="sticky-col-team py-2.5 px-3 min-w-[140px] sm:min-w-0">
                           <div class="flex items-center gap-2">
                             <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
                               ${this.escapeHtml(c.player.display_name)}
                             </span>
-                            <div>
+                            <div class="min-w-0">
                               ${c.player.is_guest 
-                                ? `<div class="text-xs text-slate-500 dark:text-slate-400 font-medium">${isEn ? 'Prediction only' : 'เล่นเฉพาะทายผล'}</div>` 
+                                ? `<div class="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">${isEn ? 'Prediction only' : 'เล่นเฉพาะทายผล'}</div>` 
                                 : `
-                                  <div class="font-bold text-slate-900 dark:text-white leading-tight">${this.escapeHtml(c.player.team_name)}</div>
-                                  <div class="text-[11px] text-slate-400 leading-tight">${this.escapeHtml(c.player.manager)}</div>
+                                  <div class="font-bold text-slate-900 dark:text-white leading-tight truncate">${this.escapeHtml(c.player.team_name)}</div>
+                                  <div class="text-[11px] text-slate-400 leading-tight truncate">${this.escapeHtml(c.player.manager)}</div>
                                 `}
                             </div>
                           </div>
                         </td>
-                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.legs_total}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
-                        <td class="py-2.5 px-3 text-center font-display text-slate-400">${c.push}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-600 dark:text-slate-400">${c.win_rate}%</td>
-                        <td class="py-2.5 px-3 text-right font-display text-emerald-600 dark:text-emerald-400">${c.total_won_amount.toLocaleString()}</td>
-                        <td class="py-2.5 px-3 text-right font-display text-rose-500 dark:text-rose-400">${c.total_lost_amount > 0 ? `-${c.total_lost_amount.toLocaleString()}` : '0'}</td>
-                        <td class="py-2.5 px-3 text-right font-display ${netColor}">
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-medium text-slate-700 dark:text-slate-300">${c.legs_total}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums text-slate-400">${c.push}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-medium text-slate-600 dark:text-slate-400">${c.win_rate}%</td>
+                        <td class="py-2.5 px-3 text-right font-display tabular-nums text-emerald-600 dark:text-emerald-400">${c.total_won_amount.toLocaleString()}</td>
+                        <td class="py-2.5 px-3 text-right font-display tabular-nums text-rose-500 dark:text-rose-400">${c.total_lost_amount > 0 ? `-${c.total_lost_amount.toLocaleString()}` : '0'}</td>
+                        <td class="py-2.5 px-3 text-right font-display tabular-nums ${netColor}">
                           ${fmtMoney(c.net)}
                         </td>
                       </tr>
@@ -5489,7 +5101,7 @@ selectShi62GW(gwName) {
                           const chipClass = isPos ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200/60' : (isNeg ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200/60' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200');
                           return `
                             <span class="text-[10px] px-2 py-0.5 rounded border ${chipClass} font-display">
-                              ${pname}: <strong>${fmtMoney(netVal)}</strong>
+                              ${this.escapeHtml(pname)}: <strong>${fmtMoney(netVal)}</strong>
                             </span>
                           `;
                         }).join('')}
@@ -5514,20 +5126,20 @@ selectShi62GW(gwName) {
               </div>
             </div>
 
-            <div class="overflow-x-auto touch-scroll">
-              <table class="w-full text-left border-collapse min-w-[580px]">
+            <div class="overflow-x-auto touch-scroll -mx-4 sm:mx-0 scrollbar-thin table-sticky-container">
+              <table class="w-full text-left min-w-[580px] table-sticky table-clean">
                 <thead>
-                  <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    <th class="py-2.5 px-3 text-center w-12">${isEn ? '#' : 'อันดับ'}</th>
-                    <th class="py-2.5 px-3">${isEn ? 'Player / FPL Team' : 'ผู้เล่น / ทีม FPL'}</th>
+                  <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
+                    <th class="sticky-col-rank py-2.5 px-2 text-center">${isEn ? '#' : 'อันดับ'}</th>
+                    <th class="sticky-col-team py-2.5 px-3">${isEn ? 'Player / FPL Team' : 'ผู้เล่น / ทีม FPL'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Played' : 'แข่ง (คู่)'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Won' : 'ชนะ'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Lost' : 'แพ้'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Push' : 'เสมอ'}</th>
-                    <th class="py-2.5 px-3 text-right font-bold">${isEn ? 'Net Profit/Loss' : 'กำไร/ขาดทุนสุทธิ'}</th>
+                    <th class="py-2.5 px-3 text-right font-bold text-slate-800 dark:text-slate-200">${isEn ? 'Net Profit/Loss' : 'กำไร/ขาดทุนสุทธิ'}</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
+                <tbody class="text-xs sm:text-sm">
                   ${data.cumulative_standings.map(c => {
                     const isPositive = c.net > 0;
                     const isNegative = c.net < 0;
@@ -5536,19 +5148,19 @@ selectShi62GW(gwName) {
                       : (isNegative ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 font-medium');
 
                     return `
-                      <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-slate-500">${c.rank}</td>
-                        <td class="py-2.5 px-3">
-                          <div>
-                            <div class="font-bold text-slate-900 dark:text-white leading-tight">${this.escapeHtml(c.player.team_name || c.player.display_name)}</div>
-                            <div class="text-[11px] text-slate-400 leading-tight">${this.escapeHtml(c.player.manager || '')}</div>
+                      <tr onclick="app.toggleTrackedRow(this)" class="cursor-pointer transition-colors">
+                        <td class="sticky-col-rank py-2.5 px-2 text-center font-display font-semibold text-slate-500">${c.rank}</td>
+                        <td class="sticky-col-team py-2.5 px-3 min-w-[140px] sm:min-w-0">
+                          <div class="min-w-0">
+                            <div class="font-bold text-slate-900 dark:text-white leading-tight truncate">${this.escapeHtml(c.player.team_name || c.player.display_name)}</div>
+                            <div class="text-[11px] text-slate-400 leading-tight truncate">${this.escapeHtml(c.player.manager || '')}</div>
                           </div>
                         </td>
-                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
-                        <td class="py-2.5 px-3 text-center font-display text-slate-400">${c.push}</td>
-                        <td class="py-2.5 px-3 text-right font-display ${netColor}">
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums text-slate-400">${c.push}</td>
+                        <td class="py-2.5 px-3 text-right font-display tabular-nums ${netColor}">
                           ${fmtMoney(c.net)}
                         </td>
                       </tr>
@@ -5846,18 +5458,14 @@ selectShi62GW(gwName) {
             : '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">0</span>';
 
           const grandCol = grandNet > 0 
-            ? `<span class="inline-flex items-baseline px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20"><span class="text-[10px] font-normal opacity-70 mr-0.5">+฿</span><span class="tabular-nums">${grandNet.toLocaleString()}</span></span>`
+            ? `<span class="font-mono font-bold text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 tabular-nums"><span class="text-[10px] font-normal opacity-75 mr-0.5">+฿</span>${grandNet.toLocaleString()}</span>`
             : (grandNet < 0 
-                ? `<span class="inline-flex items-baseline px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-rose-700 dark:text-rose-300 bg-rose-500/10 border border-rose-500/20"><span class="text-[10px] font-normal opacity-70 mr-0.5">-฿</span><span class="tabular-nums">${Math.abs(grandNet).toLocaleString()}</span></span>`
-                : `<span class="text-slate-400 dark:text-slate-500 font-mono font-bold text-xs sm:text-sm"><span class="text-[10px] font-normal mr-0.5">฿</span>0</span>`);
+                ? `<span class="font-mono font-bold text-xs sm:text-sm text-rose-600 dark:text-rose-400 tabular-nums"><span class="text-[10px] font-normal opacity-75 mr-0.5">-฿</span>${Math.abs(grandNet).toLocaleString()}</span>`
+                : `<span class="text-slate-400 dark:text-slate-500 font-mono font-bold text-xs sm:text-sm tabular-nums"><span class="text-[10px] font-normal mr-0.5">฿</span>0</span>`);
 
-          const rowBg = !isEligible 
-            ? 'opacity-70 bg-slate-50/40 dark:bg-slate-800/20' 
-            : (rankDisplay === 1 ? 'bg-amber-50/15 dark:bg-amber-950/15' : '');
-
-          const rankClass = !isEligible ? 'is-non-prize opacity-70' : (rankDisplay === 1 ? 'is-gold-rank bg-amber-50/15 dark:bg-amber-950/15' : '');
+          const rankClass = !isEligible ? 'is-non-prize opacity-70' : '';
           tableRowsHtml += `
-            <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer ${rankClass}">
+            <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer ${rankClass}">
               <td class="sticky-col-rank py-2.5 px-2 text-center font-display">${rankBadge}</td>
               <td class="sticky-col-team py-2.5 px-3 min-w-[140px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                 <div class="flex items-center gap-1.5 flex-wrap">
@@ -5866,10 +5474,10 @@ selectShi62GW(gwName) {
                 </div>
                 <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 flex-wrap truncate">
                   <span>${this.escapeHtml(team.player_name)}</span>
-                  ${!isEligible ? `<span class="text-[9.5px] px-1.5 py-0.2 rounded bg-slate-150 text-slate-700 dark:bg-slate-800 dark:text-slate-300 font-bold font-mono">${isEn ? 'Guest' : 'ร่วมสนุก'}</span>` : ''}
+                  ${!isEligible ? `<span class="text-[9.5px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 font-bold font-mono">${isEn ? 'Guest' : 'ร่วมสนุก'}</span>` : ''}
                 </div>
               </td>
-              <td class="py-2.5 px-2 text-center font-mono font-bold text-slate-900 dark:text-white text-xs">${team.total_points}</td>
+              <td class="py-2.5 px-2 text-center font-mono tabular-nums font-bold text-slate-900 dark:text-white text-xs">${team.total_points}</td>
               <td class="py-2.5 px-2 text-right font-display">${p1Badge}</td>
               <td class="py-2.5 px-2 text-right font-display">${p2Badge}</td>
               <td class="py-2.5 px-2 text-right font-display">${fplTotalBadge}</td>
@@ -5895,12 +5503,12 @@ selectShi62GW(gwName) {
         if (showFeeGuest && feeCum) {
           const feeNet = feeCum.net || 0;
           tableRowsHtml += `
-            <tr class="bg-slate-50/40 dark:bg-slate-800/20 text-slate-500 border-t border-dashed border-slate-200 dark:border-slate-800">
-              <td class="py-2.5 px-2 text-center font-mono text-xs text-slate-400 w-9 min-w-[36px]">•</td>
-              <td class="py-2.5 px-3 min-w-[140px]">
+            <tr onclick="app.toggleTrackedRow(this)" class="is-non-prize text-slate-500 cursor-pointer">
+              <td class="sticky-col-rank py-2.5 px-2 text-center font-mono text-xs text-slate-400">•</td>
+              <td class="sticky-col-team py-2.5 px-3 min-w-[140px]">
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <span class="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200">Fee</span>
-                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono">Guest</span>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200/80 dark:border-slate-700/80 font-mono">Guest</span>
                 </div>
                 <span class="text-[11px] text-slate-400 block truncate">${isEn ? 'Prediction only' : 'เล่นเฉพาะทายผล'}</span>
               </td>
@@ -5908,9 +5516,9 @@ selectShi62GW(gwName) {
               <td class="py-2.5 px-2 text-right font-mono text-slate-400 text-xs">-</td>
               <td class="py-2.5 px-2 text-right font-mono text-slate-400 text-xs">-</td>
               <td class="py-2.5 px-2 text-right font-mono text-slate-400 text-xs">-</td>
-              <td class="py-2.5 px-2 text-right font-mono text-xs ${feeNet < 0 ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-emerald-600 dark:text-emerald-400 font-bold'}">${fmtMoney(feeNet)}</td>
+              <td class="py-2.5 px-2 text-right font-mono tabular-nums text-xs ${feeNet < 0 ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-emerald-600 dark:text-emerald-400 font-bold'}">${fmtMoney(feeNet)}</td>
               <td class="py-2.5 px-2 text-right font-mono text-slate-400 text-xs">-</td>
-              <td class="py-2.5 px-3 text-right font-display ${feeNet < 0 ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-emerald-600 dark:text-emerald-400 font-bold'} text-xs sm:text-sm">${fmtMoney(feeNet)} THB</td>
+              <td class="py-2.5 px-3 text-right font-mono tabular-nums ${feeNet < 0 ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-emerald-600 dark:text-emerald-400 font-bold'} text-xs sm:text-sm">${fmtMoney(feeNet)} THB</td>
             </tr>
           `;
         }
@@ -5933,9 +5541,15 @@ selectShi62GW(gwName) {
           `;
         }
 
+        const renderedLang = isEn ? 'en' : 'th';
+        const renderedLeague = String(this.activeLeagueId || '');
         const existingBramannTbody = document.getElementById('bramann-prizes-tbody');
         const existingBramannInput = document.getElementById('bramann-prizes-search-input');
-        if (existingBramannTbody && existingBramannInput) {
+        if (
+          existingBramannTbody && existingBramannInput &&
+          existingBramannInput.dataset.renderedLang === renderedLang &&
+          existingBramannInput.dataset.renderedLeague === renderedLeague
+        ) {
           existingBramannTbody.innerHTML = tableRowsHtml;
           const countEl = document.getElementById('bramann-prizes-count');
           if (countEl) {
@@ -6049,6 +5663,8 @@ selectShi62GW(gwName) {
                     <input 
                       type="text" 
                       id="bramann-prizes-search-input"
+                      data-rendered-lang="${renderedLang}"
+                      data-rendered-league="${this.escapeHtml(renderedLeague)}"
                       value="${this.escapeHtml(this.prizesSearchQuery || '')}" 
                       oninput="app.handlePrizesSearch(this.value)"
                       aria-label="${isEn ? 'Search team name or manager' : 'ค้นหาชื่อทีมหรือผู้จัดการ'}"
@@ -6078,9 +5694,9 @@ selectShi62GW(gwName) {
 
               <!-- Standings Table (High-Craft Responsive Sticky Freeze) -->
               <div class="overflow-x-auto touch-scroll -mx-4 sm:mx-0 scrollbar-thin table-sticky-container">
-                <table aria-label="${isEn ? 'Bramann Dual Prize and Overall Standings Table' : 'ตารางสรุปเงินรางวัลแบบคู่และอันดับรวม Bramann'}" class="w-full text-left border-collapse table-sticky">
+                <table aria-label="${isEn ? 'Bramann Dual Prize and Overall Standings Table' : 'ตารางสรุปเงินรางวัลแบบคู่และอันดับรวม Bramann'}" class="w-full text-left table-sticky table-clean">
                   <thead>
-                    <tr class="border-b border-slate-200/80 dark:border-slate-800 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider bg-slate-50/50 dark:bg-slate-800/30">
+                    <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
                       <th scope="col" class="sticky-col-rank py-2.5 px-2 text-center">#</th>
                       <th scope="col" class="sticky-col-team py-2.5 px-3">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                       <th scope="col" class="py-2.5 px-2 text-center w-16">${isEn ? 'Total Pts' : 'คะแนนรวม'}</th>
@@ -6089,10 +5705,10 @@ selectShi62GW(gwName) {
                       <th scope="col" class="py-2.5 px-2 text-right min-w-[90px]">${isEn ? 'FPL Prize' : 'รางวัล FPL'}</th>
                       <th scope="col" class="py-2.5 px-2 text-right min-w-[95px]">${isEn ? 'Prediction Net' : 'ทายผลสะสม'}</th>
                       <th scope="col" class="py-2.5 px-2 text-right min-w-[90px]">${isEn ? 'Challenge Net' : 'ท้าชนสะสม'}</th>
-                      <th scope="col" class="py-2.5 px-3 text-right min-w-[110px] font-black">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
+                      <th scope="col" class="py-2.5 px-3 text-right min-w-[110px] font-black text-slate-800 dark:text-slate-200">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
                     </tr>
                   </thead>
-                  <tbody id="bramann-prizes-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                  <tbody id="bramann-prizes-tbody" class="text-xs sm:text-sm">
                     ${tableRowsHtml}
                   </tbody>
                   <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-mono text-xs sm:text-sm font-bold">
@@ -6398,7 +6014,7 @@ selectShi62GW(gwName) {
                                           ? 'bg-white dark:bg-slate-900 text-emerald-800 dark:text-emerald-200 border border-emerald-300/60 dark:border-emerald-700/60 shadow-2xs font-medium'
                                           : 'bg-white dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-medium'
                                       }">
-                                        ${name}
+                                        ${this.escapeHtml(name)}
                                       </span>
                                     `).join('')
                                     : `<span class="text-[10px] text-slate-400 italic">${isEn ? 'No selections' : 'ไม่มีผู้เลือก'}</span>`
@@ -6424,7 +6040,7 @@ selectShi62GW(gwName) {
                               : 'bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700/60');
                           return `
                             <span class="text-[10px] px-1.5 py-0.5 rounded-md border ${chipClass} font-display">
-                              ${pname}: <strong>${fmtMoney(netVal)}</strong>
+                              ${this.escapeHtml(pname)}: <strong>${fmtMoney(netVal)}</strong>
                             </span>
                           `;
                         }).join('')}
@@ -6450,12 +6066,12 @@ selectShi62GW(gwName) {
             </div>
 
             <!-- Standings Table -->
-            <div class="overflow-x-auto touch-scroll">
-              <table class="w-full text-left border-collapse min-w-[640px]">
+            <div class="overflow-x-auto touch-scroll -mx-4 sm:mx-0 scrollbar-thin table-sticky-container">
+              <table class="w-full text-left min-w-[640px] table-sticky table-clean">
                 <thead>
-                  <tr class="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    <th class="py-2.5 px-3 text-center w-12">#</th>
-                    <th class="py-2.5 px-3">${isEn ? 'Player / FPL Team' : 'ผู้เล่น / ทีม FPL'}</th>
+                  <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
+                    <th class="sticky-col-rank py-2.5 px-2 text-center">#</th>
+                    <th class="sticky-col-team py-2.5 px-3">${isEn ? 'Player / FPL Team' : 'ผู้เล่น / ทีม FPL'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Matches' : 'แข่ง (คู่)'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Won' : 'ชนะ'}</th>
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Lost' : 'แพ้'}</th>
@@ -6463,10 +6079,10 @@ selectShi62GW(gwName) {
                     <th class="py-2.5 px-3 text-center">${isEn ? 'Win %' : '% ชนะ'}</th>
                     <th class="py-2.5 px-3 text-right">${isEn ? 'Won' : 'เงินที่ได้'}</th>
                     <th class="py-2.5 px-3 text-right">${isEn ? 'Lost' : 'เงินที่เสีย'}</th>
-                    <th class="py-2.5 px-3 text-right font-bold">${isEn ? 'Net P/L' : 'กำไร/ขาดทุนสุทธิ'}</th>
+                    <th class="py-2.5 px-3 text-right font-bold text-slate-800 dark:text-slate-200">${isEn ? 'Net P/L' : 'กำไร/ขาดทุนสุทธิ'}</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
+                <tbody class="text-xs sm:text-sm">
                   ${data.cumulative_standings.map(c => {
                     const isPositive = c.net > 0;
                     const isNegative = c.net < 0;
@@ -6477,31 +6093,31 @@ selectShi62GW(gwName) {
                     const rankBadge = `<span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${c.rank}</span>`;
 
                     return `
-                      <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                        <td class="py-2.5 px-3 text-center font-display">${rankBadge}</td>
-                        <td class="py-2.5 px-3">
+                      <tr onclick="app.toggleTrackedRow(this)" class="cursor-pointer transition-colors">
+                        <td class="sticky-col-rank py-2.5 px-2 text-center font-display">${rankBadge}</td>
+                        <td class="sticky-col-team py-2.5 px-3 min-w-[140px] sm:min-w-0">
                           <div class="flex items-center gap-2">
                             <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80">
                               ${this.escapeHtml(c.player.display_name)}
                             </span>
-                            <div>
+                            <div class="min-w-0">
                               ${c.player.is_guest 
-                                ? '<div class="text-xs text-slate-500 dark:text-slate-400 font-medium">เล่นเฉพาะทายผล</div>' 
+                                ? '<div class="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">เล่นเฉพาะทายผล</div>' 
                                 : `
-                                  <div class="font-bold text-slate-900 dark:text-white leading-tight">${this.escapeHtml(c.player.team_name)}</div>
-                                  <div class="text-[11px] text-slate-400 leading-tight">${this.escapeHtml(c.player.manager)}</div>
+                                  <div class="font-bold text-slate-900 dark:text-white leading-tight truncate">${this.escapeHtml(c.player.team_name)}</div>
+                                  <div class="text-[11px] text-slate-400 leading-tight truncate">${this.escapeHtml(c.player.manager)}</div>
                                 `}
                             </div>
                           </div>
                         </td>
-                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
-                        <td class="py-2.5 px-3 text-center font-display text-slate-400">${c.push}</td>
-                        <td class="py-2.5 px-3 text-center font-display font-medium text-slate-600 dark:text-slate-400">${c.win_rate}%</td>
-                        <td class="py-2.5 px-3 text-right font-display text-emerald-600 dark:text-emerald-400">${c.total_won_amount.toLocaleString()}</td>
-                        <td class="py-2.5 px-3 text-right font-display text-rose-500 dark:text-rose-400">${c.total_lost_amount > 0 ? `-${c.total_lost_amount.toLocaleString()}` : '0'}</td>
-                        <td class="py-2.5 px-3 text-right font-display ${netColor}">
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-medium text-slate-700 dark:text-slate-300">${c.matches}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-semibold text-emerald-600 dark:text-emerald-400">${c.won}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-semibold text-rose-500 dark:text-rose-400">${c.lost}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums text-slate-400">${c.push}</td>
+                        <td class="py-2.5 px-3 text-center font-display tabular-nums font-medium text-slate-600 dark:text-slate-400">${c.win_rate}%</td>
+                        <td class="py-2.5 px-3 text-right font-display tabular-nums text-emerald-600 dark:text-emerald-400">${c.total_won_amount.toLocaleString()}</td>
+                        <td class="py-2.5 px-3 text-right font-display tabular-nums text-rose-500 dark:text-rose-400">${c.total_lost_amount > 0 ? `-${c.total_lost_amount.toLocaleString()}` : '0'}</td>
+                        <td class="py-2.5 px-3 text-right font-display tabular-nums ${netColor}">
                           ${fmtMoney(c.net)}
                         </td>
                       </tr>
@@ -6594,6 +6210,7 @@ selectShi62GW(gwName) {
       }
 
       async selectGW(gw, fromPopstate = false, skipRender = false) {
+        const reqSeq = (this._selectGwSeq = (this._selectGwSeq || 0) + 1);
         const maxGW = Number(this.multiData.max_gw) || 2;
         this.selectedGW = Math.min(Math.max(Number(gw) || 1, 1), maxGW);
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
@@ -6613,25 +6230,11 @@ selectShi62GW(gwName) {
           } catch (e) {}
         }
 
-        // On-Demand fetch for Tier-2 chunked historical gameweek
-        const isTier2 = Boolean(this.data && this.data.tier === 2) || Boolean(this.config && this.config.tier === 2);
-        const gwKey = String(this.selectedGW);
-        const gwData = this.data && this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
-        if (isTier2 && gwData && (!gwData.results || gwData.results.length === 0) && gwData.is_finished) {
-          try {
-            const chunkUrl = this.getLeagueChunkUrl(this.activeLeagueId, this.selectedGW);
-            const res = await fetch(chunkUrl);
-            if (res.ok) {
-              const chunkJson = await res.json();
-              if (chunkJson && chunkJson.results && chunkJson.results.length > 0) {
-                gwData.results = chunkJson.results;
-                if (chunkJson.is_finished !== undefined) gwData.is_finished = chunkJson.is_finished;
-                if (chunkJson.is_started !== undefined) gwData.is_started = chunkJson.is_started;
-                this.invalidateRenderCache();
-              }
-            }
-          } catch (_) {}
-        }
+        // On-Demand fetch for Tier-2 chunked historical gameweek & Tier-1 historical squads chunk
+        await this.ensureTier2GWChunk(this.selectedGW);
+        if (this._selectGwSeq !== reqSeq) return;
+        await this.ensureTier1GWSquads(this.selectedGW);
+        if (this._selectGwSeq !== reqSeq) return;
 
         this.renderGWSelector();
         this.updateHighlightsTabBlink();
@@ -6657,13 +6260,19 @@ selectShi62GW(gwName) {
         const searchInput = (typeof document !== 'undefined') ? document.getElementById('live-team-search') : null;
         const searchTerm = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
-        if (!gwData || !gwData.results || gwData.results.length === 0) {
-          if (matchdayBody) matchdayBody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs">${isEn ? 'No data available for this Gameweek' : 'ยังไม่มีข้อมูลในสัปดาห์นี้'}</td></tr>`;
+        if (String(this._isLoadingLeague || '') === String(this.activeLeagueId)) {
+          const loadingText = isEn ? 'Loading league data...' : 'กำลังโหลดข้อมูลลีก...';
+          if (championCard) championCard.innerHTML = '';
+          if (matchdayBody) matchdayBody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs animate-pulse">${loadingText}</td></tr>`;
+          if (overallBody) overallBody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs animate-pulse">${loadingText}</td></tr>`;
           return;
         }
 
-        const isFinished = Boolean(gwData.is_finished);
-        const isStarted = gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || (gwData.results && gwData.results.some(r => r.points > 0)));
+        const hasMatchdayResults = Boolean(gwData && Array.isArray(gwData.results) && gwData.results.length > 0);
+        const isFinished = gwData ? Boolean(gwData.is_finished) : false;
+        const isStarted = hasMatchdayResults
+          ? (gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || gwData.results.some(r => r.points > 0)))
+          : Boolean(gwData && gwData.is_started);
 
         const overallPill = document.getElementById('overall-gw-pill');
         if (overallPill) {
@@ -6718,14 +6327,14 @@ selectShi62GW(gwName) {
         const isWeeklyPrize = (this.config.features && this.config.features.prize_model === 'weekly');
         const useHighestPlayerTieBreaker = Boolean(this.config.features && this.config.features.tie_breaker === 'highest_player');
         const scoreProp = 'net_points';
-        const sorted = [...gwData.results].sort((a, b) => {
+        const sorted = hasMatchdayResults ? [...gwData.results].sort((a, b) => {
           const scoreDiff = (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points);
           if (scoreDiff !== 0) return scoreDiff;
           if (useHighestPlayerTieBreaker) {
             return this.compareTeamPlayerScores(a.entry_id, b.entry_id, this.selectedGW);
           }
           return 0;
-        });
+        }) : [];
         let curRank = 1;
         let prevEligiblePoints = null;
         let prevEligibleTeam = null;
@@ -6786,7 +6395,9 @@ selectShi62GW(gwName) {
         const leader = prizeLeader;
 
         // 1. Render Spotlight Card (Pre-Match Lineup Preview OR Live Leader / Weekly Winner)
-        if (championCard && leader) {
+        if (championCard && !hasMatchdayResults) {
+          championCard.innerHTML = '';
+        } else if (championCard && leader) {
           const cacheKey = `${this.activeLeagueId}_${this.selectedGW}_${this.currentLang}_${isFinished}_${isStarted}`;
           const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
           const currentLiveNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeeklyPrize, useHighestPlayerTieBreaker, isEn);
@@ -6858,7 +6469,7 @@ selectShi62GW(gwName) {
                   </div>
                 </div>
 
-                <!-- Highlight Note (Borbou Style with Copy & Refresh Buttons) -->
+                <!-- Highlight Note (Pundit Banter Style with Copy & Refresh Buttons) -->
                 <div class="mt-3 pt-3 border-t border-indigo-100/80 dark:border-slate-700/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600 dark:text-slate-400">
                   <div class="min-w-0 pr-1 flex items-start sm:items-center gap-2 flex-wrap sm:flex-nowrap">
                     <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/15 text-indigo-800 dark:text-indigo-300 border border-indigo-400/40 shrink-0 font-display">
@@ -6872,7 +6483,7 @@ selectShi62GW(gwName) {
                     <button onclick="app.copyHighlightQuote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Copy Analysis Quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}" aria-label="${isEn ? 'Copy analysis quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     </button>
-                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ดราม่าใหม่'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ดราม่าใหม่'}">
+                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์กูรูสายดุเดือด'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์กูรูสายดุเดือด'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
                   </div>
@@ -7092,7 +6703,7 @@ selectShi62GW(gwName) {
                 ${multiTierPayoutsHtml}
                 ${penaltyPayoutsHtml}
 
-                <!-- Highlight Note (Borbou Style with Copy & Refresh Buttons) -->
+                <!-- Highlight Note (Pundit Banter Style with Copy & Refresh Buttons) -->
                 <div class="mt-3.5 pt-3 border-t ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/70 dark:border-slate-700/60'} flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600 dark:text-slate-400">
                   <div class="min-w-0 pr-1 flex items-start sm:items-center gap-2 flex-wrap sm:flex-nowrap">
                     ${!isFinished ? `
@@ -7108,7 +6719,7 @@ selectShi62GW(gwName) {
                     <button onclick="app.copyHighlightQuote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Copy Analysis Quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}" aria-label="${isEn ? 'Copy analysis quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                     </button>
-                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ดราม่าใหม่'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ดราม่าใหม่'}">
+                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์กูรูสายดุเดือด'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์กูรูสายดุเดือด'}">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     </button>
                   </div>
@@ -7120,7 +6731,9 @@ selectShi62GW(gwName) {
         }
 
         // 2. Render Matchday Table Body
-        if (matchdayBody) {
+        if (matchdayBody && !hasMatchdayResults) {
+          matchdayBody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs">${isEn ? 'No data available for this Gameweek' : 'ยังไม่มีข้อมูลในสัปดาห์นี้'}</td></tr>`;
+        } else if (matchdayBody) {
           let mHtml = '';
           const weeklyPenaltiesMap = {};
           let weeklyWinnerPrize = 200;
@@ -7164,19 +6777,12 @@ selectShi62GW(gwName) {
             }
 
             let penaltyBadgeHtml = '';
-            let penaltyRowBg = '';
             if (this.config.features && this.config.features.has_weekly_penalties && isPrize && isStarted) {
               if (team.rank === 1) {
-                penaltyBadgeHtml = `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-50 text-amber-900 border border-amber-300 dark:bg-amber-950/40 dark:text-amber-200 ml-1">+${weeklyWinnerPrize} THB</span>`;
+                penaltyBadgeHtml = `<span class="text-[10.5px] font-mono font-bold text-emerald-600 dark:text-emerald-400 ml-1 tabular-nums">+${weeklyWinnerPrize} THB</span>`;
               } else if (weeklyPenaltiesMap[team.entry_id]) {
                 const p = weeklyPenaltiesMap[team.entry_id];
-                const cardStyle = p.bottomTierIndex === 0 
-                  ? 'bg-rose-50 text-rose-900 border border-rose-300 dark:bg-rose-950/40 dark:text-rose-200' 
-                  : (p.bottomTierIndex === 1
-                      ? 'bg-rose-50/70 text-rose-800 border border-rose-200 dark:bg-rose-950/30 dark:text-rose-300'
-                      : 'bg-amber-50/70 text-amber-800 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-300');
-                penaltyBadgeHtml = `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold ${cardStyle} ml-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>-${p.fine.toLocaleString()} THB</span>`;
-                penaltyRowBg = p.bottomTierIndex === 0 ? 'bg-rose-50/40 dark:bg-rose-950/20' : (p.bottomTierIndex === 1 ? 'bg-rose-50/20 dark:bg-rose-950/10' : '');
+                penaltyBadgeHtml = `<span class="text-[10.5px] font-mono font-bold text-rose-600 dark:text-rose-400 ml-1 tabular-nums">-${p.fine.toLocaleString()} THB</span>`;
               }
             }
 
@@ -7195,7 +6801,7 @@ selectShi62GW(gwName) {
             }
 
             mHtml += `
-              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer hover:bg-emerald-50/40 dark:hover:bg-slate-800/50 transition-colors ${penaltyRowBg} ${isWinner ? 'bg-emerald-50/25 dark:bg-emerald-950/25 font-semibold' : ''}">
+              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isWinner ? 'font-semibold' : ''}">
                 <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-2 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
@@ -7463,7 +7069,7 @@ selectShi62GW(gwName) {
               : `<span class="text-slate-400 dark:text-slate-500 font-medium font-display">-</span>`;
 
             oHtml += `
-              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer hover:bg-blue-50/40 dark:hover:bg-slate-800/50 transition-colors ${team.overall_rank && team.overall_rank <= 3 && isPrize ? 'bg-blue-50/20 dark:bg-blue-950/20' : ''}">
+              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors">
                 <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">
                   <div class="flex flex-col items-center justify-center">
                     ${rankBadge}
@@ -7472,7 +7078,7 @@ selectShi62GW(gwName) {
                 </td>
                 <td class="py-2.5 px-2 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors block truncate max-w-[150px] xs:max-w-[200px] sm:max-w-none">
+                    <span class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors block truncate max-w-[150px] xs:max-w-[200px] sm:max-w-none">
                       ${this.escapeHtml(team.team_name)}
                     </span>
                     ${prizeBadge}
@@ -7481,7 +7087,7 @@ selectShi62GW(gwName) {
                 </td>
                 <td class="py-2.5 px-1 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-700 dark:text-slate-300 tabular-nums whitespace-nowrap"><span class="font-semibold">${rawScore}</span>${hitsBadge}</td>
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display text-xs sm:text-sm tabular-nums whitespace-nowrap">${cumHitsText}</td>
-                <td class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right font-display font-black tabular-nums text-xs sm:text-sm text-blue-900 dark:text-blue-400">${team.total_points}</td>
+                <td class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right font-display font-black tabular-nums text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
               </tr>
             `;
           });
@@ -7504,7 +7110,7 @@ selectShi62GW(gwName) {
               </tr>
             `;
           }
-          overallBody.innerHTML = oHtml;
+          overallBody.innerHTML = oHtml || `<tr><td colspan="5" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs">${isEn ? 'No data available for this Gameweek' : 'ยังไม่มีข้อมูลในสัปดาห์นี้'}</td></tr>`;
         }
 
         // Apply active team search filter or sync counter for large/small leagues
@@ -7515,7 +7121,8 @@ selectShi62GW(gwName) {
           const countEl = document.getElementById('live-search-count');
           if (countEl) {
             if (searchTerm) {
-              const matchCount = sorted.filter(t => (t.team_name || '').toLowerCase().includes(searchTerm) || (t.player_name || '').toLowerCase().includes(searchTerm)).length;
+              const searchList = sorted.length > 0 ? sorted : ((this.data && this.data.teams) || []).map(t => ({ team_name: t.entry_name, player_name: t.player_name }));
+              const matchCount = searchList.filter(t => (t.team_name || '').toLowerCase().includes(searchTerm) || (t.player_name || '').toLowerCase().includes(searchTerm)).length;
               countEl.textContent = isEn ? `Found ${matchCount} of ${totalTeams.toLocaleString()} teams` : `พบ ${matchCount} จาก ${totalTeams.toLocaleString()} ทีม`;
               countEl.classList.remove('hidden');
             } else {
@@ -8102,7 +7709,7 @@ selectShi62GW(gwName) {
                     <button 
                       onclick="app.openTeamModal(${topGun.entry_id})" 
                       class="text-base sm:text-xl font-bold font-display text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer text-left truncate"
-                      aria-label="${isEn ? `View squad of ${topGun.team_name}` : `ดูแผนทีม ${topGun.team_name}`}"
+                      aria-label="${this.escapeHtml(isEn ? `View squad of ${topGun.team_name}` : `ดูแผนทีม ${topGun.team_name}`)}"
                     >
                       ${this.escapeHtml(topGun.team_name)}
                     </button>
@@ -9090,9 +8697,17 @@ selectShi62GW(gwName) {
 
         const cardsListHtml = this.renderTransfersCardsListHtml(filteredRows, isEn);
 
+        const renderedLang = isEn ? 'en' : 'th';
+        const renderedLeague = String(this.activeLeagueId || '');
+        const renderedGw = String(this.selectedGW || '');
         const existingCards = document.getElementById('transfers-cards-list');
         const existingInput = document.getElementById('transfers-search-input');
-        if (existingCards && existingInput) {
+        if (
+          existingCards && existingInput &&
+          existingInput.dataset.renderedLang === renderedLang &&
+          existingInput.dataset.renderedLeague === renderedLeague &&
+          existingInput.dataset.renderedGw === renderedGw
+        ) {
           existingCards.innerHTML = cardsListHtml;
           const badgeEl = document.getElementById('transfers-filter-badge');
           if (badgeEl) {
@@ -9311,6 +8926,9 @@ selectShi62GW(gwName) {
                 <input 
                   type="text" 
                   id="transfers-search-input"
+                  data-rendered-lang="${renderedLang}"
+                  data-rendered-league="${this.escapeHtml(renderedLeague)}"
+                  data-rendered-gw="${this.escapeHtml(renderedGw)}"
                   value="${this.escapeHtml(this.transfersSearch || '')}"
                   aria-label="${isEn ? 'Search team, manager, player' : 'ค้นหาทีม, ผู้จัดการ, นักเตะ'}"
                   placeholder="${isEn ? 'Search team, manager, player...' : 'ค้นหาทีม, ผู้จัดการ, นักเตะ...'}"
@@ -9579,7 +9197,8 @@ selectShi62GW(gwName) {
                 const cap = sq.starting.find(p => p.is_captain) || sq.starting.find(p => p.multiplier > 1);
                 if (cap) {
                   const pts = (cap.points !== undefined && cap.points !== null) ? `${cap.points} pts` : '';
-                  detail = isEn ? `Captain: ${cap.name} ${pts ? `(${pts})` : ''}` : `กัปตัน: ${cap.name} ${pts ? `(${pts})` : ''}`;
+                  const safeCapName = this.escapeHtml(cap.name);
+                  detail = isEn ? `Captain: ${safeCapName} ${pts ? `(${pts})` : ''}` : `กัปตัน: ${safeCapName} ${pts ? `(${pts})` : ''}`;
                 }
               } else if (activeChipKey === 'bb' && sq && Array.isArray(sq.bench)) {
                 let benchPts = 0;
@@ -9983,12 +9602,12 @@ selectShi62GW(gwName) {
           ).join('');
 
           rowsHtml += `
-            <tr class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/80">
-              <td class="py-2.5 px-1 sm:px-2 text-center text-xs font-bold w-[36px] min-w-[36px] max-w-[36px] sm:w-[44px] sm:min-w-[44px] sticky left-0 bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/60 z-10">
+            <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer">
+              <td class="sticky-col-rank py-2.5 px-2 text-center text-xs font-bold">
                 ${rankBadge}
               </td>
-              <td class="py-2.5 px-2.5 sm:px-3 min-w-[130px] sm:min-w-[180px] max-w-[160px] sm:max-w-[220px] sticky left-[36px] sm:left-[44px] bg-white dark:bg-slate-900 group-hover:bg-slate-50 dark:group-hover:bg-slate-800/60 z-10 border-r border-slate-200/80 dark:border-slate-800 shadow-[1px_0_3px_rgba(0,0,0,0.03)] dark:shadow-[1px_0_3px_rgba(0,0,0,0.2)]">
-                <button onclick="app.openTeamModal(${t.entry_id})" class="text-left group cursor-pointer block truncate w-full">
+              <td class="sticky-col-team py-2.5 px-2.5 sm:px-3 min-w-[130px] sm:min-w-[180px] max-w-[160px] sm:max-w-[220px]">
+                <button onclick="event.stopPropagation(); app.openTeamModal(${t.entry_id})" class="text-left group cursor-pointer block truncate w-full">
                   <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate flex items-center gap-1.5 flex-wrap">
                     <span class="truncate">${this.escapeHtml(t.entry_name)}</span>
                     ${prizeBadge}
@@ -10026,7 +9645,7 @@ selectShi62GW(gwName) {
 
         tableContainer.innerHTML = `
           <!-- Mobile Scroll Affordance Bar -->
-          <div class="sm:hidden flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 px-3.5 py-2 bg-slate-50/90 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800">
+          <div class="sm:hidden flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 px-3.5 py-2 border-b border-slate-200/80 dark:border-slate-800">
             <span class="flex items-center gap-1.5 font-medium">
               <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
               ${isEn ? 'Sorted by Overall Standings' : 'เรียงตาม Total Leaderboard'}
@@ -10037,12 +9656,12 @@ selectShi62GW(gwName) {
             </span>
           </div>
 
-          <div class="overflow-x-auto touch-scroll scrollbar-thin">
-            <table class="w-full text-left border-collapse">
+          <div class="overflow-x-auto touch-scroll scrollbar-thin table-sticky-container">
+            <table class="w-full text-left table-sticky table-clean">
               <thead>
-                <tr class="bg-slate-50/90 dark:bg-slate-800/80 border-b border-slate-200/90 dark:border-slate-800 text-[11px] font-bold text-slate-600 dark:text-slate-400 font-display uppercase tracking-wider">
-                  <th scope="col" class="py-2.5 px-1 sm:px-2 text-center w-[36px] min-w-[36px] max-w-[36px] sm:w-[44px] sm:min-w-[44px] sticky left-0 bg-slate-50 dark:bg-slate-800 z-20">#</th>
-                  <th scope="col" class="py-2.5 px-2.5 sm:px-3 sticky left-[36px] sm:left-[44px] bg-slate-50 dark:bg-slate-800 z-20 border-r border-slate-200/80 dark:border-slate-800 shadow-[1px_0_3px_rgba(0,0,0,0.03)] dark:shadow-[1px_0_3px_rgba(0,0,0,0.2)]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
+                <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display uppercase tracking-wider">
+                  <th scope="col" class="sticky-col-rank py-2.5 px-2 text-center">#</th>
+                  <th scope="col" class="sticky-col-team py-2.5 px-2.5 sm:px-3">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                   <th scope="col" class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">${isEn ? 'Remaining' : 'การ์ดคงเหลือ'}</th>
                   <th scope="col" class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Wildcard 1</th>
                   ${showWc2 ? '<th scope="col" class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Wildcard 2</th>' : ''}
@@ -10051,7 +9670,7 @@ selectShi62GW(gwName) {
                   <th scope="col" class="py-2.5 px-2 sm:px-3 text-center whitespace-nowrap">Bench Boost</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80">
+              <tbody class="text-xs sm:text-sm">
                 ${rowsHtml}
               </tbody>
             </table>
@@ -10150,12 +9769,12 @@ selectShi62GW(gwName) {
                 <div class="bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl p-3 border border-slate-200/80 dark:border-slate-800 transition-all hover:border-slate-300 dark:hover:border-slate-700">
                   <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center gap-2.5 min-w-0">
-                      <img src="${shirtUrl}" alt="${p.team}" class="w-8 h-8 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+                      <img src="${shirtUrl}" alt="${this.escapeHtml(p.team)}" class="w-8 h-8 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
                       <div class="min-w-0">
                         <div class="flex items-center gap-1.5 flex-wrap">
                           <span class="font-bold text-slate-900 dark:text-white text-sm truncate">${this.escapeHtml(p.name)}</span>
-                          <span class="${posClass}">${p.pos}</span>
-                          <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">${p.team}</span>
+                          <span class="${posClass}">${this.escapeHtml(p.pos)}</span>
+                          <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">${this.escapeHtml(p.team)}</span>
                         </div>
                       </div>
                     </div>
@@ -10243,9 +9862,17 @@ selectShi62GW(gwName) {
 
         const diffListInnerHtml = this.renderCompetitionDiffListHtml(diffList, isEn, posFilter, search, totalTeams, defaultShirtUrl, posClass);
 
+        const renderedLang = isEn ? 'en' : 'th';
+        const renderedLeague = String(this.activeLeagueId || '');
+        const renderedGw = String(this.selectedGW || '');
         const existingDiffContainer = document.getElementById('comp-diff-list-container');
         const existingDiffInput = document.getElementById('comp-diff-search-input');
-        if (existingDiffContainer && existingDiffInput) {
+        if (
+          existingDiffContainer && existingDiffInput &&
+          existingDiffInput.dataset.renderedLang === renderedLang &&
+          existingDiffInput.dataset.renderedLeague === renderedLeague &&
+          existingDiffInput.dataset.renderedGw === renderedGw
+        ) {
           existingDiffContainer.innerHTML = diffListInnerHtml;
           const clearBtn = document.getElementById('comp-diff-search-clear');
           if (clearBtn) {
@@ -10305,6 +9932,9 @@ selectShi62GW(gwName) {
                 <input 
                   type="text" 
                   id="comp-diff-search-input"
+                  data-rendered-lang="${renderedLang}"
+                  data-rendered-league="${this.escapeHtml(renderedLeague)}"
+                  data-rendered-gw="${this.escapeHtml(renderedGw)}"
                   aria-label="${isEn ? 'Search differential player' : 'ค้นหานักเตะทีเด็ด'}"
                   placeholder="${isEn ? 'Search differential player...' : 'ค้นหานักเตะทีเด็ด...'}" 
                   value="${this.escapeHtml(this.compDiffSearch)}"
@@ -10347,12 +9977,12 @@ selectShi62GW(gwName) {
             <div class="bg-slate-50/80 dark:bg-slate-800/50 rounded-2xl p-2.5 sm:p-3 border border-slate-200/80 dark:border-slate-800 transition-all hover:border-slate-300 dark:hover:border-slate-700">
               <div class="flex items-center justify-between gap-2.5">
                 <div class="flex items-center gap-2 min-w-0">
-                  <img src="${shirtUrl}" alt="${p.team}" class="w-7 h-7 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+                  <img src="${shirtUrl}" alt="${this.escapeHtml(p.team)}" class="w-7 h-7 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
                   <div class="min-w-0">
                     <div class="flex items-center gap-1.5 flex-wrap">
                       <span class="font-bold text-slate-900 dark:text-white text-xs sm:text-sm truncate">${this.escapeHtml(p.name)}</span>
-                      <span class="${posClass}">${p.pos}</span>
-                      <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">${p.team}</span>
+                      <span class="${posClass}">${this.escapeHtml(p.pos)}</span>
+                      <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">${this.escapeHtml(p.team)}</span>
                     </div>
                   </div>
                 </div>
@@ -10522,9 +10152,9 @@ selectShi62GW(gwName) {
             if (items.length === 0) return;
 
             rowsHtml += `
-              <tr class="bg-slate-100/90 dark:bg-slate-800/90 border-y border-slate-200/80 dark:border-slate-700/60">
-                <td colspan="3" class="py-2 px-3 text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider font-display">
-                  ${cat.title}
+              <tr>
+                <td colspan="3" class="pt-3 pb-1.5 px-2.5 text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
+                  ${this.escapeHtml(cat.title)}
                 </td>
               </tr>
             `;
@@ -10549,12 +10179,12 @@ selectShi62GW(gwName) {
                 : inSquadTag;
 
               rowsHtml += `
-                <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60 text-xs">
+                <tr class="transition-colors text-xs">
                   <td class="py-2.5 px-2.5 text-left">
                     <div class="flex items-center gap-2 min-w-0 flex-wrap">
-                      <img src="${bestShirtUrl}" alt="${best.TeamName || ''}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
-                      <span class="${bestNameClass} truncate" title="${best.PlayerWebName || ''}">
-                        ${best.PlayerWebName || '-'}
+                      <img src="${bestShirtUrl}" alt="${this.escapeHtml(best.TeamName || '')}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+                      <span class="${bestNameClass} truncate" title="${this.escapeHtml(best.PlayerWebName || '')}">
+                        ${this.escapeHtml(best.PlayerWebName || '-')}
                       </span>
                       ${bestLeagueTag}
                     </div>
@@ -10572,9 +10202,9 @@ selectShi62GW(gwName) {
 
           tableContainer.innerHTML = `
             <div class="w-full overflow-x-auto touch-scroll scrollbar-thin">
-              <table class="w-full min-w-[320px] text-left border-collapse">
+              <table class="w-full min-w-[320px] text-left table-clean">
                 <thead>
-                  <tr class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
+                  <tr class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider pb-2">
                     <th style="width: 60%;" class="py-2 px-2.5 text-left">${isEn ? 'Best players' : 'ตัวเลือกยอดเยี่ยม'}</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">
@@ -10585,7 +10215,7 @@ selectShi62GW(gwName) {
                     </th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/40">
+                <tbody>
                   ${rowsHtml}
                 </tbody>
               </table>
@@ -10602,9 +10232,9 @@ selectShi62GW(gwName) {
             if (items.length === 0) return;
 
             rowsHtml += `
-              <tr class="bg-slate-100/90 dark:bg-slate-800/90 border-y border-slate-200/80 dark:border-slate-700/60">
-                <td colspan="3" class="py-2 px-3 text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider font-display">
-                  ${cat.title}
+              <tr>
+                <td colspan="3" class="pt-3 pb-1.5 px-2.5 text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
+                  ${this.escapeHtml(cat.title)}
                 </td>
               </tr>
             `;
@@ -10629,12 +10259,12 @@ selectShi62GW(gwName) {
                 : inSquadTag;
 
               rowsHtml += `
-                <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60 text-xs">
+                <tr class="transition-colors text-xs">
                   <td class="py-2.5 px-2.5 text-left">
                     <div class="flex items-center gap-2 min-w-0 flex-wrap">
-                      <img src="${valShirtUrl}" alt="${val.TeamName || ''}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
-                      <span class="${valNameClass} truncate" title="${val.PlayerWebName || ''}">
-                        ${val.PlayerWebName || '-'}
+                      <img src="${valShirtUrl}" alt="${this.escapeHtml(val.TeamName || '')}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+                      <span class="${valNameClass} truncate" title="${this.escapeHtml(val.PlayerWebName || '')}">
+                        ${this.escapeHtml(val.PlayerWebName || '-')}
                       </span>
                       ${valLeagueTag}
                     </div>
@@ -10652,9 +10282,9 @@ selectShi62GW(gwName) {
 
           tableContainer.innerHTML = `
             <div class="w-full overflow-x-auto touch-scroll scrollbar-thin">
-              <table class="w-full min-w-[320px] text-left border-collapse">
+              <table class="w-full min-w-[320px] text-left table-clean">
                 <thead>
-                  <tr class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
+                  <tr class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider pb-2">
                     <th style="width: 60%;" class="py-2 px-2.5 text-left">${isEn ? 'Best Value' : 'ตัวเลือกสุดคุ้ม'}</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
                     <th style="width: 20%;" class="py-2 px-2 text-right">
@@ -10665,7 +10295,7 @@ selectShi62GW(gwName) {
                     </th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/40">
+                <tbody>
                   ${rowsHtml}
                 </tbody>
               </table>
@@ -10683,9 +10313,9 @@ selectShi62GW(gwName) {
 
           // Category Subheader Row
           tableRowsHtml += `
-            <tr class="bg-slate-100/90 dark:bg-slate-800/90 border-y border-slate-200/80 dark:border-slate-700/60">
-              <td colspan="7" class="py-2.5 px-3 text-xs sm:text-sm font-mono font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider font-display">
-                ${cat.title}
+            <tr>
+              <td colspan="7" class="pt-3.5 pb-1.5 px-3 text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
+                ${this.escapeHtml(cat.title)}
               </td>
             </tr>
           `;
@@ -10733,14 +10363,14 @@ selectShi62GW(gwName) {
               : valInSquadTag;
 
             tableRowsHtml += `
-              <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors border-b border-slate-100 dark:border-slate-800/60 text-xs">
+              <tr class="transition-colors text-xs">
                 
                 <!-- Best Player: Shirt + Name -->
                 <td class="py-2.5 px-2.5 sm:px-3 text-left">
                   <div class="flex items-center gap-2 min-w-0 flex-wrap">
-                    <img src="${bestShirtUrl}" alt="${best.TeamName || ''}" class="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
-                    <span class="${bestNameClass} truncate" title="${best.PlayerWebName || ''}">
-                      ${best.PlayerWebName || '-'}
+                    <img src="${bestShirtUrl}" alt="${this.escapeHtml(best.TeamName || '')}" class="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+                    <span class="${bestNameClass} truncate" title="${this.escapeHtml(best.PlayerWebName || '')}">
+                      ${this.escapeHtml(best.PlayerWebName || '-')}
                     </span>
                     ${bestLeagueTag}
                   </div>
@@ -10762,9 +10392,9 @@ selectShi62GW(gwName) {
                 <!-- Best Value: Shirt + Name -->
                 <td class="py-2.5 px-2.5 sm:px-3 text-left">
                   <div class="flex items-center gap-2 min-w-0 flex-wrap">
-                    <img src="${valShirtUrl}" alt="${val.TeamName || ''}" class="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
-                    <span class="${valNameClass} truncate" title="${val.PlayerWebName || ''}">
-                      ${val.PlayerWebName || '-'}
+                    <img src="${valShirtUrl}" alt="${this.escapeHtml(val.TeamName || '')}" class="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+                    <span class="${valNameClass} truncate" title="${this.escapeHtml(val.PlayerWebName || '')}">
+                      ${this.escapeHtml(val.PlayerWebName || '-')}
                     </span>
                     ${valLeagueTag}
                   </div>
@@ -10793,9 +10423,9 @@ selectShi62GW(gwName) {
           </div>
 
           <div class="overflow-x-auto touch-scroll scrollbar-thin w-full max-w-full">
-            <table class="min-w-[620px] w-full text-left border-collapse">
+            <table class="min-w-[620px] w-full text-left table-clean">
               <thead>
-                <tr class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800 pb-2">
+                <tr class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider pb-2">
                   <th style="width: 28%;" class="py-2 px-2.5 sm:px-3 text-left">${isEn ? 'Best Players' : 'ตัวเลือกยอดเยี่ยม'}</th>
                   <th style="width: 10%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
                   <th style="width: 11%;" class="py-2 px-2 text-right">
@@ -10815,7 +10445,7 @@ selectShi62GW(gwName) {
                   </th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100 dark:divide-slate-800/40">
+              <tbody>
                 ${tableRowsHtml}
               </tbody>
             </table>
@@ -11030,9 +10660,13 @@ selectShi62GW(gwName) {
           let totalFinesPaid = 0;
           let totalDangerCount = 0;
           let total1st = 0, total2nd = 0, total3rd = 0;
+          const prizeRankMap = {};
+          let eligibleRankSeq = 0;
 
           sortedTeams.forEach(t => {
             if (this.isPrizeEligible(t.entry_id)) {
+              eligibleRankSeq += 1;
+              prizeRankMap[t.entry_id] = eligibleRankSeq;
               totalDistributedWins += (winsCount[t.entry_id] || 0);
               totalDistributedPrize += (prizeEarnings[t.entry_id] || 0);
               totalFinesPaid += (finesPaid[t.entry_id] || 0);
@@ -11044,6 +10678,10 @@ selectShi62GW(gwName) {
               }
             }
           });
+          const totalWinsRounded = Math.round(totalDistributedWins * 100) / 100;
+          const totalWinsDisplay = Math.abs(totalWinsRounded - Math.round(totalWinsRounded)) < 1e-9
+            ? Math.round(totalWinsRounded)
+            : totalWinsRounded.toFixed(1);
 
           // Live Search & Filter
           const searchQuery = (this.prizesSearchQuery || '').toLowerCase().trim();
@@ -11106,8 +10744,8 @@ selectShi62GW(gwName) {
             if (!isEligible && !hasRenderedNonPrizeHeader && filterMode === 'all') {
               hasRenderedNonPrizeHeader = true;
               tableRows += `
-                <tr class="bg-slate-100/75 dark:bg-slate-800/60 border-y border-slate-200/80 dark:border-slate-700/80">
-                  <td colspan="${hasWeeklyPenalties ? 7 : (hasMultiTier ? 6 : 4)}" class="py-2 px-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
+                <tr>
+                  <td colspan="${hasWeeklyPenalties ? 7 : (hasMultiTier ? 6 : 4)}" class="pt-3 pb-1.5 px-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
                     ${isEn ? 'Guest Teams (Excluded from prize & fine calculation)' : 'ทีมร่วมสนุก (ไม่นำมาคิดคำนวณเงินรางวัลและค่าปรับ)'}
                   </td>
                 </tr>
@@ -11117,17 +10755,17 @@ selectShi62GW(gwName) {
             const winsDisplay = isEligible ? ((wins % 1 === 0) ? wins : wins.toFixed(1)) : '-';
             const prizeDisplay = isEligible 
               ? (actualPrize > 0 
-                  ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20">+${actualPrize.toLocaleString()} THB</span>`
-                  : '<span class="font-mono text-slate-400 dark:text-slate-500 text-xs sm:text-sm">0 THB</span>')
+                  ? `<span class="font-mono font-bold tabular-nums text-xs sm:text-sm text-emerald-600 dark:text-emerald-400">+${actualPrize.toLocaleString()} <span class="text-[10px] font-normal opacity-75">THB</span></span>`
+                  : '<span class="font-mono text-slate-400 dark:text-slate-500 text-xs sm:text-sm tabular-nums">0 THB</span>')
               : `<span class="text-slate-400 font-mono text-xs">${isEn ? 'Guest' : 'ร่วมสนุก'}</span>`;
 
             let countCellsHtml = '';
             if (hasWeeklyPenalties) {
               const winsHtml = isEligible 
-                ? (wins > 0 ? `<span class="font-mono font-black text-xs text-slate-900 dark:text-white px-1.5 py-0.5 rounded bg-slate-150 dark:bg-slate-800">${wins}</span>` : '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">-</span>')
+                ? (wins > 0 ? `<span class="font-mono font-bold tabular-nums text-xs text-slate-900 dark:text-white">${winsDisplay}</span>` : '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">-</span>')
                 : '-';
               const dangerHtml = isEligible
-                ? (danger > 0 ? `<span class="font-mono font-bold text-xs text-rose-600 dark:text-rose-400 px-1.5 py-0.5 rounded bg-rose-500/10 border border-rose-500/20">${danger}</span>` : `<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">${isEn ? 'Safe' : 'รอด'}</span>`)
+                ? (danger > 0 ? `<span class="font-mono font-bold tabular-nums text-xs text-rose-600 dark:text-rose-400">${danger}</span>` : `<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">${isEn ? 'Safe' : 'รอด'}</span>`)
                 : '-';
               const finesDisplay = isEligible
                 ? (fines > 0 ? `<span class="inline-flex items-baseline justify-end font-mono font-bold text-xs text-rose-600 dark:text-rose-400"><span class="text-[10px] font-normal opacity-70 mr-0.5">-฿</span><span class="tabular-nums">${fines.toLocaleString()}</span></span>` : '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs"><span class="text-[10px] font-normal mr-0.5">฿</span>0</span>')
@@ -11137,9 +10775,9 @@ selectShi62GW(gwName) {
                 : '-';
               const netDisplayCell = isEligible
                 ? (netBalance > 0 
-                    ? `<span class="inline-flex items-baseline px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20"><span class="text-[10px] font-normal opacity-70 mr-0.5">+฿</span><span class="tabular-nums">${netBalance.toLocaleString()}</span></span>` 
+                    ? `<span class="inline-flex items-baseline font-mono font-bold text-xs sm:text-sm text-emerald-600 dark:text-emerald-400"><span class="text-[10px] font-normal opacity-75 mr-0.5">+฿</span><span class="tabular-nums">${netBalance.toLocaleString()}</span></span>` 
                     : (netBalance < 0 
-                        ? `<span class="inline-flex items-baseline px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-rose-700 dark:text-rose-300 bg-rose-500/10 border border-rose-500/20"><span class="text-[10px] font-normal opacity-70 mr-0.5">-฿</span><span class="tabular-nums">${Math.abs(netBalance).toLocaleString()}</span></span>` 
+                        ? `<span class="inline-flex items-baseline font-mono font-bold text-xs sm:text-sm text-rose-600 dark:text-rose-400"><span class="text-[10px] font-normal opacity-75 mr-0.5">-฿</span><span class="tabular-nums">${Math.abs(netBalance).toLocaleString()}</span></span>` 
                         : `<span class="font-mono text-xs sm:text-sm text-slate-400 dark:text-slate-500"><span class="text-[10px] font-normal mr-0.5">฿</span>0</span>`))
                 : `<span class="text-slate-400 font-mono text-xs">${isEn ? 'Guest' : 'ร่วมสนุก'}</span>`;
 
@@ -11160,9 +10798,9 @@ selectShi62GW(gwName) {
                 if (cnt === 0) return '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">-</span>';
                 const disp = (cnt % 1 === 0) ? cnt : cnt.toFixed(1);
                 if (rankIdx === 1) {
-                  return `<span class="font-mono font-black text-xs text-slate-900 dark:text-white px-1.5 py-0.5 rounded bg-slate-150 dark:bg-slate-800">${disp}</span>`;
+                  return `<span class="font-mono font-black tabular-nums text-xs text-slate-900 dark:text-white">${disp}</span>`;
                 }
-                return `<span class="font-mono font-bold text-xs text-slate-700 dark:text-slate-300">${disp}</span>`;
+                return `<span class="font-mono font-bold tabular-nums text-xs text-slate-700 dark:text-slate-300">${disp}</span>`;
               };
 
               countCellsHtml = `
@@ -11173,28 +10811,29 @@ selectShi62GW(gwName) {
               `;
             } else {
               countCellsHtml = `
-                <td class="py-2.5 px-3 text-center font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">${winsDisplay}</td>
+                <td class="py-2.5 px-3 text-center font-mono font-bold tabular-nums text-slate-800 dark:text-slate-200 text-xs">${winsDisplay}</td>
                 <td class="py-2.5 px-3 text-right font-display">${prizeDisplay}</td>
               `;
             }
 
+            const trueRank = prizeRankMap[t.entry_id] || (idx + 1);
             let rankBadge = '';
             if (!isEligible) {
               rankBadge = this.getNonPrizeRankBadge();
-            } else if (idx === 0) {
+            } else if (trueRank === 1) {
               rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400 text-slate-950 font-black text-xs shadow-2xs">1</span>`;
-            } else if (idx === 1) {
+            } else if (trueRank === 2) {
               rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-200 font-bold text-xs">2</span>`;
-            } else if (idx === 2) {
+            } else if (trueRank === 3) {
               rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-700/80 text-white font-bold text-xs">3</span>`;
             } else {
-              rankBadge = `<span class="text-xs font-bold text-slate-500 dark:text-slate-400 font-display">${idx + 1}</span>`;
+              rankBadge = `<span class="text-xs font-bold text-slate-500 dark:text-slate-400 font-display">${trueRank}</span>`;
             }
 
-            const wRankClass = !isEligible ? 'is-non-prize opacity-70' : (idx === 0 ? 'is-gold-rank bg-amber-50/15 dark:bg-amber-950/15' : '');
+            const wRankClass = !isEligible ? 'is-non-prize opacity-70' : '';
 
             tableRows += `
-              <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer ${wRankClass}">
+              <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer ${wRankClass}">
                 <td class="sticky-col-rank py-2.5 px-2 text-center font-display">${rankBadge}</td>
                 <td class="sticky-col-team py-2.5 px-3 min-w-[140px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                   <div class="flex items-center gap-1.5 flex-wrap">
@@ -11207,16 +10846,6 @@ selectShi62GW(gwName) {
               </tr>
             `;
           });
-
-          if (filteredTeams.length === 0) {
-            tableRows = `
-              <tr>
-                <td colspan="${hasWeeklyPenalties ? 7 : (hasMultiTier ? 6 : 4)}" class="py-8 text-center text-slate-400 dark:text-slate-500 font-medium">
-                  ${isEn ? 'No teams match your search or filter' : 'ไม่พบทีมที่ตรงกับคำค้นหาหรือตัวกรอง'}
-                </td>
-              </tr>
-            `;
-          }
 
           // Section 03 Content Builders
           let phasesHtml = '';
@@ -11398,9 +11027,15 @@ selectShi62GW(gwName) {
             }).join('');
           }
 
+          const renderedLang = isEn ? 'en' : 'th';
+          const renderedLeague = String(this.activeLeagueId || '');
           const existingWeeklyTbody = document.getElementById('weekly-prizes-tbody');
           const existingWeeklyInput = document.getElementById('weekly-prizes-search-input');
-          if (existingWeeklyTbody && existingWeeklyInput) {
+          if (
+            existingWeeklyTbody && existingWeeklyInput &&
+            existingWeeklyInput.dataset.renderedLang === renderedLang &&
+            existingWeeklyInput.dataset.renderedLeague === renderedLeague
+          ) {
             existingWeeklyTbody.innerHTML = tableRows;
             const countEl = document.getElementById('weekly-prizes-count');
             if (countEl) {
@@ -11523,6 +11158,8 @@ selectShi62GW(gwName) {
                       <input 
                         type="text" 
                         id="weekly-prizes-search-input"
+                        data-rendered-lang="${renderedLang}"
+                        data-rendered-league="${this.escapeHtml(renderedLeague)}"
                         value="${this.escapeHtml(this.prizesSearchQuery || '')}" 
                         oninput="app.handlePrizesSearch(this.value)"
                         aria-label="${isEn ? 'Search team name or manager' : 'ค้นหาชื่อทีมหรือผู้จัดการ'}"
@@ -11556,9 +11193,9 @@ selectShi62GW(gwName) {
 
                 <!-- Standings Table (High-Craft Responsive Sticky Freeze) -->
                 <div class="overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 touch-scroll table-sticky-container">
-                  <table aria-label="${isEn ? 'Prize Money and Treasury Standings Table' : 'ตารางสรุปเงินรางวัลสะสมและยอดกองกลาง'}" class="w-full text-left border-collapse table-sticky">
+                  <table aria-label="${isEn ? 'Prize Money and Treasury Standings Table' : 'ตารางสรุปเงินรางวัลสะสมและยอดกองกลาง'}" class="w-full text-left table-sticky table-clean">
                     <thead>
-                      <tr class="border-b border-slate-200/80 dark:border-slate-800 text-[11px] font-bold text-slate-400 dark:text-slate-500 font-display bg-slate-50/50 dark:bg-slate-800/30">
+                      <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
                         <th scope="col" class="sticky-col-rank py-2.5 px-2 text-center">#</th>
                         <th scope="col" class="sticky-col-team py-2.5 px-3 min-w-[140px]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                         ${hasWeeklyPenalties ? `
@@ -11566,7 +11203,7 @@ selectShi62GW(gwName) {
                         <th scope="col" class="py-2.5 px-2 text-center w-14">${isEn ? 'Fined' : 'โดนปรับ'}</th>
                         <th scope="col" class="py-2.5 px-3 text-right">${isEn ? 'Total Fines' : 'ค่าปรับสะสม'}</th>
                         <th scope="col" class="py-2.5 px-3 text-right">${isEn ? 'Total Prizes' : 'รางวัลสะสม'}</th>
-                        <th scope="col" class="py-2.5 px-3 text-right font-black">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
+                        <th scope="col" class="py-2.5 px-3 text-right font-black text-slate-800 dark:text-slate-200">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
                         ` : (hasMultiTier ? `
                         <th scope="col" class="py-2.5 px-2 text-center w-14 sm:w-16">
                           <span>${isEn ? '1st' : 'ที่ 1'}</span>
@@ -11577,14 +11214,14 @@ selectShi62GW(gwName) {
                         <th scope="col" class="py-2.5 px-2 text-center w-14 sm:w-16">
                           <span>${isEn ? '3rd' : 'ที่ 3'}</span>
                         </th>
-                        <th scope="col" class="py-2.5 px-3 text-right">${isEn ? 'Accumulated Prize' : 'เงินรางวัลสะสม'}</th>
+                        <th scope="col" class="py-2.5 px-3 text-right text-slate-800 dark:text-slate-200">${isEn ? 'Accumulated Prize' : 'เงินรางวัลสะสม'}</th>
                         ` : `
                         <th scope="col" class="py-2.5 px-3 text-center">${isEn ? 'GW Wins' : 'แชมป์สัปดาห์'}</th>
-                        <th scope="col" class="py-2.5 px-3 text-right">${isEn ? 'Accumulated Prize' : 'เงินรางวัลสะสม'}</th>
+                        <th scope="col" class="py-2.5 px-3 text-right text-slate-800 dark:text-slate-200">${isEn ? 'Accumulated Prize' : 'เงินรางวัลสะสม'}</th>
                         `)}
                       </tr>
                     </thead>
-                    <tbody id="weekly-prizes-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                    <tbody id="weekly-prizes-tbody" class="text-xs sm:text-sm">
                       ${tableRows}
                     </tbody>
                     <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-mono text-xs sm:text-sm font-bold">
@@ -11597,7 +11234,7 @@ selectShi62GW(gwName) {
                           </div>
                         </td>
                         ${hasWeeklyPenalties ? `
-                        <td class="py-3 px-2 text-center text-slate-900 dark:text-white font-black">${totalDistributedWins}</td>
+                        <td class="py-3 px-2 text-center text-slate-900 dark:text-white font-black">${totalWinsDisplay}</td>
                         <td class="py-3 px-2 text-center text-rose-600 dark:text-rose-400 font-black">${totalDangerCount}</td>
                         <td class="py-3 px-3 text-right font-black text-rose-600 dark:text-rose-400">-${totalFinesPaid.toLocaleString()} THB</td>
                         <td class="py-3 px-3 text-right font-black text-emerald-600 dark:text-emerald-400">+${totalDistributedPrize.toLocaleString()} THB</td>
@@ -11608,7 +11245,7 @@ selectShi62GW(gwName) {
                         <td class="py-3 px-2 text-center text-slate-700 dark:text-slate-300 font-black">${total3rd % 1 === 0 ? total3rd : total3rd.toFixed(1)}</td>
                         <td class="py-3 px-3 text-right font-black text-emerald-600 dark:text-emerald-400">${totalDistributedPrize.toLocaleString()} THB</td>
                         ` : `
-                        <td class="py-3 px-3 text-center text-slate-800 dark:text-slate-200 font-bold">${totalDistributedWins % 1 === 0 ? totalDistributedWins : totalDistributedWins.toFixed(1)}</td>
+                        <td class="py-3 px-3 text-center text-slate-800 dark:text-slate-200 font-bold">${totalWinsDisplay}</td>
                         <td class="py-3 px-3 text-right font-black text-emerald-600 dark:text-emerald-400">${totalDistributedPrize.toLocaleString()} THB</td>
                         `)}
                       </tr>
@@ -11859,12 +11496,11 @@ selectShi62GW(gwName) {
               const gData = this.data.gameweeks ? this.data.gameweeks[String(gwNum)] : null;
               const gIsStarted = gData ? (gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || (gData.results && gData.results.some(r => r.points > 0)))) : false;
               const pts = (gIsStarted && t.gw_scores[gwNum] !== undefined) ? t.gw_scores[gwNum] : '-';
-              scoreCols += `<td class="py-2.5 px-2 text-center font-mono text-xs text-slate-600 dark:text-slate-300">${pts}</td>`;
+              scoreCols += `<td class="py-2.5 px-2 text-center font-mono tabular-nums text-xs text-slate-600 dark:text-slate-300">${pts}</td>`;
             });
 
-            const mLeaderClass = isLeader ? 'is-gold-rank bg-amber-50/15 dark:bg-amber-950/15' : '';
             monthlyTableRows += `
-              <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer ${mLeaderClass}">
+              <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer">
                 <td class="sticky-col-rank py-2.5 px-2 text-center font-display">${rankBadge}</td>
                 <td class="sticky-col-team py-2.5 px-3 min-w-[140px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                   <div class="flex items-center gap-1.5 flex-wrap">
@@ -11874,7 +11510,7 @@ selectShi62GW(gwName) {
                   <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(t.player_name)}</div>
                 </td>
                 ${scoreCols}
-                <td class="py-2.5 px-3 text-right font-mono font-black text-xs sm:text-sm ${isLeader ? 'text-amber-700 dark:text-amber-400 font-bold' : (isRunnerUp ? 'text-slate-900 dark:text-white font-bold' : 'text-slate-800 dark:text-slate-200')}">${t.month_total}</td>
+                <td class="py-2.5 px-3 text-right font-mono tabular-nums font-black text-xs sm:text-sm ${isLeader ? 'text-amber-600 dark:text-amber-400' : (isRunnerUp ? 'text-slate-900 dark:text-white' : 'text-slate-800 dark:text-slate-200')}">${t.month_total}</td>
               </tr>
             `;
           });
@@ -12058,9 +11694,17 @@ selectShi62GW(gwName) {
             `;
           });
 
+          const renderedLang = isEn ? 'en' : 'th';
+          const renderedLeague = String(this.activeLeagueId || '');
+          const renderedMonth = String((curMonth && curMonth.month) || '');
           const existingMonthlyTbody = document.getElementById('monthly-prizes-tbody');
           const existingMonthlyInput = document.getElementById('monthly-prizes-search-input');
-          if (existingMonthlyTbody && existingMonthlyInput) {
+          if (
+            existingMonthlyTbody && existingMonthlyInput &&
+            existingMonthlyInput.dataset.renderedLang === renderedLang &&
+            existingMonthlyInput.dataset.renderedLeague === renderedLeague &&
+            existingMonthlyInput.dataset.renderedMonth === renderedMonth
+          ) {
             existingMonthlyTbody.innerHTML = monthlyTableRows;
             const clearBtn = document.getElementById('monthly-prizes-search-clear');
             if (clearBtn) {
@@ -12136,6 +11780,9 @@ selectShi62GW(gwName) {
                       <input 
                         type="text" 
                         id="monthly-prizes-search-input"
+                        data-rendered-lang="${renderedLang}"
+                        data-rendered-league="${this.escapeHtml(renderedLeague)}"
+                        data-rendered-month="${this.escapeHtml(renderedMonth)}"
                         value="${this.escapeHtml(this.prizesSearchQuery || '')}" 
                         oninput="app.handlePrizesSearch(this.value)"
                         aria-label="${isEn ? 'Search team name or manager' : 'ค้นหาชื่อทีมหรือผู้จัดการ'}"
@@ -12168,16 +11815,16 @@ selectShi62GW(gwName) {
                 </div>
 
                 <div class="overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 touch-scroll table-sticky-container">
-                  <table aria-label="${isEn ? 'Prize Money and Treasury Standings Table' : 'ตารางสรุปเงินรางวัลสะสมและยอดกองกลาง'}" class="w-full text-left border-collapse table-sticky">
+                  <table aria-label="${isEn ? 'Prize Money and Treasury Standings Table' : 'ตารางสรุปเงินรางวัลสะสมและยอดกองกลาง'}" class="w-full text-left table-sticky table-clean">
                     <thead>
-                      <tr class="border-b border-slate-200/80 dark:border-slate-800 text-[11px] font-bold text-slate-400 dark:text-slate-500 font-display bg-slate-50/50 dark:bg-slate-800/30">
+                      <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
                         <th scope="col" class="sticky-col-rank py-2.5 px-2 text-center">#</th>
                         <th scope="col" class="sticky-col-team py-2.5 px-3 min-w-[140px]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                         ${curMonth.gw_list.map(g => `<th scope="col" class="py-2 px-2 text-center font-mono">GW ${g}</th>`).join('')}
-                        <th scope="col" class="py-2.5 px-3 text-right font-black font-mono">${isEn ? 'Monthly Total' : 'คะแนนรวมเดือน'}</th>
+                        <th scope="col" class="py-2.5 px-3 text-right font-black font-mono text-slate-800 dark:text-slate-200">${isEn ? 'Monthly Total' : 'คะแนนรวมเดือน'}</th>
                       </tr>
                     </thead>
-                    <tbody id="monthly-prizes-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                    <tbody id="monthly-prizes-tbody" class="text-xs sm:text-sm">
                       ${monthlyTableRows}
                     </tbody>
                     <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-mono text-xs sm:text-sm font-bold">
@@ -12407,17 +12054,13 @@ selectShi62GW(gwName) {
             const grandTotal = isPrize ? (payout + extraNet) : 0;
 
             let rankBadge = '';
-            let rowBg = '';
 
             if (!isPrize) {
               rankBadge = this.getNonPrizeRankBadge();
-              rowBg = 'opacity-70 bg-slate-50/40 dark:bg-slate-800/20';
             } else if (team.is_joint) {
               rankBadge = `<span class="text-slate-600 dark:text-slate-300 font-bold" title="${isEn ? `Tied with ${team.joint_count} teams` : `คะแนนเท่ากัน ${team.joint_count} ทีม`}">${team.overall_rank} <span class="text-[9px] text-slate-400 font-mono">${isEn ? 'T' : 'ร่วม'}</span></span>`;
-              if (team.overall_rank === 1) rowBg = 'bg-amber-50/15 dark:bg-amber-950/15';
             } else if (r === 1) {
               rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400 text-slate-950 font-black text-xs shadow-2xs">1</span>`;
-              rowBg = 'bg-amber-50/15 dark:bg-amber-950/15';
             } else if (r === 2) {
               rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-200 font-bold text-xs">2</span>`;
             } else if (r === 3) {
@@ -12429,14 +12072,14 @@ selectShi62GW(gwName) {
             }
 
             const fmtCol = (v) => {
-              if (v > 0) return `<span class="font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400">+${Number(v).toLocaleString()}</span>`;
-              if (v < 0) return `<span class="font-mono font-bold text-xs text-rose-600 dark:text-rose-400">${Number(v).toLocaleString()}</span>`;
-              return `<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">0</span>`;
+              if (v > 0) return `<span class="font-mono font-bold tabular-nums text-xs text-emerald-600 dark:text-emerald-400">+${Number(v).toLocaleString()}</span>`;
+              if (v < 0) return `<span class="font-mono font-bold tabular-nums text-xs text-rose-600 dark:text-rose-400">${Number(v).toLocaleString()}</span>`;
+              return `<span class="text-slate-400 dark:text-slate-500 font-mono tabular-nums text-xs">0</span>`;
             };
             const fmtGrandCol = (v) => {
-              if (v > 0) return `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20">+${Number(v).toLocaleString()} THB</span>`;
-              if (v < 0) return `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-rose-700 dark:text-rose-300 bg-rose-500/10 border border-rose-500/20">${Number(v).toLocaleString()} THB</span>`;
-              return `<span class="text-slate-400 dark:text-slate-500 font-mono font-bold text-xs sm:text-sm">0 THB</span>`;
+              if (v > 0) return `<span class="font-mono font-bold tabular-nums text-xs sm:text-sm text-emerald-600 dark:text-emerald-400">+${Number(v).toLocaleString()} <span class="text-[10px] font-normal opacity-75">THB</span></span>`;
+              if (v < 0) return `<span class="font-mono font-bold tabular-nums text-xs sm:text-sm text-rose-600 dark:text-rose-400">${Number(v).toLocaleString()} <span class="text-[10px] font-normal opacity-75">THB</span></span>`;
+              return `<span class="text-slate-400 dark:text-slate-500 font-mono font-bold tabular-nums text-xs sm:text-sm">0 THB</span>`;
             };
 
             if (isShi62) {
@@ -12445,9 +12088,9 @@ selectShi62GW(gwName) {
                 ? `<span class="font-bold text-slate-700 dark:text-slate-300">${shortName}</span> <span class="text-slate-400">(${this.escapeHtml(team.player_name)})</span>`
                 : this.escapeHtml(team.player_name);
 
-              const sRankClass = !isPrize ? 'is-non-prize opacity-70' : (r === 1 ? 'is-gold-rank bg-amber-50/15 dark:bg-amber-950/15' : '');
+              const sRankClass = !isPrize ? 'is-non-prize opacity-70' : '';
               tableRowsHtml += `
-                <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer ${sRankClass}">
+                <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer ${sRankClass}">
                   <td class="sticky-col-rank py-3 px-2 text-center font-display">${rankBadge}</td>
                   <td class="sticky-col-team py-3 px-3 min-w-[140px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                     <div class="flex items-center gap-1.5 flex-wrap">
@@ -12458,16 +12101,16 @@ selectShi62GW(gwName) {
                     </div>
                     <span class="text-[11px] block truncate text-slate-500 dark:text-slate-400">${dispManager}</span>
                   </td>
-                  <td class="py-3 px-2 text-center font-mono font-black text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
+                  <td class="py-3 px-2 text-center font-mono tabular-nums font-black text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
                   <td class="py-3 px-3 text-right font-display text-xs sm:text-sm">${isPrize ? fmtCol(payout) : '<span class="text-slate-400 font-mono text-xs">-</span>'}</td>
                   <td class="py-3 px-3 text-right font-display text-xs sm:text-sm">${isPrize ? fmtCol(extraNet) : '<span class="text-slate-400 font-mono text-xs">-</span>'}</td>
                   <td class="py-3 px-3 text-right font-display">${isPrize ? fmtGrandCol(grandTotal) : '<span class="text-slate-400 font-mono text-xs">-</span>'}</td>
                 </tr>
               `;
             } else {
-              const sNonRankClass = !isPrize ? 'is-non-prize opacity-70' : (r === 1 ? 'is-gold-rank bg-amber-50/15 dark:bg-amber-950/15' : '');
+              const sNonRankClass = !isPrize ? 'is-non-prize opacity-70' : '';
               tableRowsHtml += `
-                <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer ${sNonRankClass}">
+                <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer ${sNonRankClass}">
                   <td class="sticky-col-rank py-3 px-2 text-center font-display">${rankBadge}</td>
                   <td class="sticky-col-team py-3 px-3 min-w-[140px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                     <div class="flex items-center gap-1.5 flex-wrap">
@@ -12478,7 +12121,7 @@ selectShi62GW(gwName) {
                     </div>
                     <span class="text-[11px] text-slate-500 dark:text-slate-400 block truncate">${this.escapeHtml(team.player_name)}</span>
                   </td>
-                  <td class="py-3 px-2 text-center font-mono font-black text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
+                  <td class="py-3 px-2 text-center font-mono tabular-nums font-black text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
                   <td class="py-3 px-3 text-right font-display">${isPrize ? fmtGrandCol(payout) : '<span class="text-slate-400 font-mono text-xs">-</span>'}</td>
                 </tr>
               `;
@@ -12500,19 +12143,19 @@ selectShi62GW(gwName) {
           if (showNodGuest && nodCum) {
             const nodNet = Number(nodCum.net) || 0;
             const fmtNodNet = nodNet > 0 
-              ? `<span class="font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400">+${Number(nodNet).toLocaleString()}</span>`
-              : (nodNet < 0 ? `<span class="font-mono font-bold text-xs text-rose-600 dark:text-rose-400">${Number(nodNet).toLocaleString()}</span>` : '<span class="text-slate-400 font-mono text-xs">0</span>');
+              ? `<span class="font-mono font-bold tabular-nums text-xs text-emerald-600 dark:text-emerald-400">+${Number(nodNet).toLocaleString()}</span>`
+              : (nodNet < 0 ? `<span class="font-mono font-bold tabular-nums text-xs text-rose-600 dark:text-rose-400">${Number(nodNet).toLocaleString()}</span>` : '<span class="text-slate-400 font-mono tabular-nums text-xs">0</span>');
             const fmtNodGrand = nodNet > 0 
-              ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20">+${Number(nodNet).toLocaleString()} THB</span>`
-              : (nodNet < 0 ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md font-mono font-bold text-xs sm:text-sm text-rose-700 dark:text-rose-300 bg-rose-500/10 border border-rose-500/20">${Number(nodNet).toLocaleString()} THB</span>` : '<span class="text-slate-400 font-mono font-bold text-xs sm:text-sm">0 THB</span>');
+              ? `<span class="font-mono font-bold tabular-nums text-xs sm:text-sm text-emerald-600 dark:text-emerald-400">+${Number(nodNet).toLocaleString()} <span class="text-[10px] font-normal opacity-75">THB</span></span>`
+              : (nodNet < 0 ? `<span class="font-mono font-bold tabular-nums text-xs sm:text-sm text-rose-600 dark:text-rose-400">${Number(nodNet).toLocaleString()} <span class="text-[10px] font-normal opacity-75">THB</span></span>` : '<span class="text-slate-400 font-mono font-bold tabular-nums text-xs sm:text-sm">0 THB</span>');
 
             tableRowsHtml += `
-              <tr class="bg-slate-50/40 dark:bg-slate-800/20 text-slate-500 border-t border-dashed border-slate-200 dark:border-slate-800">
-                <td class="py-3 px-2 text-center font-mono text-xs text-slate-400 w-9 min-w-[36px]">•</td>
-                <td class="py-3 px-3 min-w-[140px]">
+              <tr onclick="app.toggleTrackedRow(this)" class="is-non-prize text-slate-500 cursor-pointer">
+                <td class="sticky-col-rank py-3 px-2 text-center font-mono text-xs text-slate-400">•</td>
+                <td class="sticky-col-team py-3 px-3 min-w-[140px]">
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <span class="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200">Nod</span>
-                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono">Guest</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200/80 dark:border-slate-700/80 font-mono">Guest</span>
                   </div>
                   <span class="text-[11px] text-slate-400 block truncate">${isEn ? 'Prediction only' : 'เล่นเฉพาะทายผล'}</span>
                 </td>
@@ -12534,9 +12177,15 @@ selectShi62GW(gwName) {
             `;
           }
 
+          const renderedLang = isEn ? 'en' : 'th';
+          const renderedLeague = String(this.activeLeagueId || '');
           const existingStandardTbody = document.getElementById('standard-prizes-tbody');
           const existingStandardInput = document.getElementById('standard-prizes-search-input');
-          if (existingStandardTbody && existingStandardInput) {
+          if (
+            existingStandardTbody && existingStandardInput &&
+            existingStandardInput.dataset.renderedLang === renderedLang &&
+            existingStandardInput.dataset.renderedLeague === renderedLeague
+          ) {
             existingStandardTbody.innerHTML = tableRowsHtml;
             const clearBtn = document.getElementById('standard-prizes-search-clear');
             if (clearBtn) {
@@ -12561,13 +12210,13 @@ selectShi62GW(gwName) {
 
           if (isShi62) {
             tableHeadersHtml = `
-              <tr class="border-b border-slate-200/80 dark:border-slate-800 text-[11px] font-bold text-slate-400 dark:text-slate-500 font-display bg-slate-50/50 dark:bg-slate-800/30">
+              <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
                 <th scope="col" class="sticky-col-rank py-2.5 px-2 text-center">#</th>
                 <th scope="col" class="sticky-col-team py-2.5 px-3 min-w-[140px]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                 <th scope="col" class="py-2.5 px-2 text-center w-16">${isEn ? 'Total Pts' : 'คะแนนรวม'}</th>
                 <th scope="col" class="py-2.5 px-3 text-right min-w-[90px]">${isEn ? 'FPL Prize' : 'รางวัล FPL'}</th>
                 <th scope="col" class="py-2.5 px-3 text-right min-w-[95px]">${isEn ? 'Prediction Net' : 'ทายผลสะสม'}</th>
-                <th scope="col" class="py-2.5 px-3 text-right min-w-[110px] font-black">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
+                <th scope="col" class="py-2.5 px-3 text-right min-w-[110px] font-black text-slate-800 dark:text-slate-200">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
               </tr>
             `;
 
@@ -12585,11 +12234,11 @@ selectShi62GW(gwName) {
             `;
           } else {
             tableHeadersHtml = `
-              <tr class="border-b border-slate-200/80 dark:border-slate-800 text-[11px] font-bold text-slate-400 dark:text-slate-500 font-display bg-slate-50/50 dark:bg-slate-800/30">
+              <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
                 <th scope="col" class="sticky-col-rank py-2.5 px-2 text-center">#</th>
                 <th scope="col" class="sticky-col-team py-2.5 px-3 min-w-[140px]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                 <th scope="col" class="py-2.5 px-2 text-center">${isEn ? 'Total Pts' : 'คะแนนรวม'}</th>
-                <th scope="col" class="py-2.5 px-3 text-right font-black">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
+                <th scope="col" class="py-2.5 px-3 text-right font-black text-slate-800 dark:text-slate-200">${isEn ? 'Net Total' : 'ยอดรวมสุทธิ'}</th>
               </tr>
             `;
 
@@ -12659,6 +12308,8 @@ selectShi62GW(gwName) {
                       <input 
                         type="text" 
                         id="standard-prizes-search-input"
+                        data-rendered-lang="${renderedLang}"
+                        data-rendered-league="${this.escapeHtml(renderedLeague)}"
                         value="${this.escapeHtml(this.prizesSearchQuery || '')}" 
                         oninput="app.handlePrizesSearch(this.value)"
                         aria-label="${isEn ? 'Search team name or manager' : 'ค้นหาชื่อทีมหรือผู้จัดการ'}"
@@ -12688,11 +12339,11 @@ selectShi62GW(gwName) {
                   </div>
                 </div>
                 <div class="overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 touch-scroll table-sticky-container">
-                  <table class="w-full text-left border-collapse table-sticky ${isShi62 ? 'min-w-[620px]' : ''}">
+                  <table class="w-full text-left table-sticky table-clean ${isShi62 ? 'min-w-[620px]' : ''}">
                     <thead>
                       ${tableHeadersHtml}
                     </thead>
-                    <tbody id="standard-prizes-tbody" class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                    <tbody id="standard-prizes-tbody" class="text-xs sm:text-sm">
                       ${tableRowsHtml}
                     </tbody>
                     <tfoot class="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/60 font-mono text-xs sm:text-sm font-bold">
@@ -13350,7 +13001,7 @@ selectShi62GW(gwName) {
           const winsDisp = (t.wins % 1 === 0) ? t.wins : t.wins.toFixed(1);
 
           html += `
-            <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer">
+            <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer">
               <td class="sticky-col-rank py-2.5 px-2 text-center whitespace-nowrap">${rankBadge}</td>
               <td class="sticky-col-team py-2.5 px-2 sm:px-3 min-w-[130px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                 <div class="flex items-center gap-1.5 flex-wrap">
@@ -13359,14 +13010,14 @@ selectShi62GW(gwName) {
                 </div>
                 <div class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 truncate">${this.escapeHtml(t.player_name || '')}</div>
               </td>
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold whitespace-nowrap ${t.wins > 0 ? 'text-amber-600 dark:text-amber-400 font-black' : 'text-slate-400 dark:text-slate-500'}">${winsDisp}</td>
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display font-black text-slate-900 dark:text-white whitespace-nowrap">${avgDisp}</td>
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display text-slate-700 dark:text-slate-300 font-bold whitespace-nowrap">${highDisp}</td>
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display text-slate-400 dark:text-slate-500 whitespace-nowrap">${lowDisp}</td>
-              <td class="py-2.5 px-1 sm:px-2 text-center font-display whitespace-nowrap">
-                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] sm:text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono">${spreadDisp}</span>
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display tabular-nums font-bold whitespace-nowrap ${t.wins > 0 ? 'text-amber-600 dark:text-amber-400 font-black' : 'text-slate-400 dark:text-slate-500'}">${winsDisp}</td>
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display tabular-nums font-black text-slate-900 dark:text-white whitespace-nowrap">${avgDisp}</td>
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display tabular-nums text-slate-700 dark:text-slate-300 font-bold whitespace-nowrap">${highDisp}</td>
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display tabular-nums text-slate-400 dark:text-slate-500 whitespace-nowrap">${lowDisp}</td>
+              <td class="py-2.5 px-1 sm:px-2 text-center font-display tabular-nums whitespace-nowrap">
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] sm:text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 font-mono">${spreadDisp}</span>
               </td>
-              <td class="py-2.5 px-1.5 sm:px-3 text-right font-display whitespace-nowrap ${t.total_hits > 0 ? 'text-rose-600/80 dark:text-rose-400/80 font-semibold font-mono' : 'text-slate-400 dark:text-slate-500 font-mono'}">${t.total_hits > 0 ? `-${t.total_hits}` : '-'}</td>
+              <td class="py-2.5 px-1.5 sm:px-3 text-right font-display tabular-nums whitespace-nowrap ${t.total_hits > 0 ? 'text-rose-600/80 dark:text-rose-400/80 font-semibold font-mono' : 'text-slate-400 dark:text-slate-500 font-mono'}">${t.total_hits > 0 ? `-${t.total_hits}` : '-'}</td>
             </tr>
           `;
         });
@@ -13448,6 +13099,20 @@ selectShi62GW(gwName) {
         const maxGW = Number(this.multiData.max_gw) || 2;
         const leaguesObj = this.multiData.leagues || {};
         const leaguesConfig = this.configs || {};
+
+        const needsRadarLoad = Object.entries(leaguesObj).some(([lid, l]) => {
+          if (!l || l.tier === 2 || (leaguesConfig[lid] && leaguesConfig[lid].tier === 2)) return false;
+          return !Array.isArray(l.teams) || l.teams.length === 0 || !l.gameweeks || Object.keys(l.gameweeks).length === 0;
+        });
+        if (needsRadarLoad && typeof window !== 'undefined' && window.location && window.location.protocol !== 'file:') {
+          tableBody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-slate-400 dark:text-slate-500 text-xs animate-pulse">${isEn ? 'Loading cross-league radar telemetry...' : 'กำลังโหลดข้อมูลเรดาร์ฟอร์มทุกลีก...'}</td></tr>`;
+          this.ensureRadarData().then(loaded => {
+            if (loaded && this.activeTab === 'global-radar-view') {
+              this.renderGlobalRadarView();
+            }
+          });
+          return;
+        }
 
         // 1. Compute League Benchmarks
         const leagueOrder = (this.multiData && this.multiData.league_order) || Object.keys(leaguesObj);
@@ -14136,8 +13801,8 @@ selectShi62GW(gwName) {
             : `<span class="text-slate-400 dark:text-slate-600 font-medium">-</span>`;
 
           html += `
-            <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer border-b border-slate-100 dark:border-slate-800/80">
-              <td class="sticky-col-rank py-2.5 px-1 sm:px-2 text-center font-mono font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap">${t.global_rank}</td>
+            <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer">
+              <td class="sticky-col-rank py-2.5 px-1 sm:px-2 text-center font-mono tabular-nums font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap">${t.global_rank}</td>
               <td class="sticky-col-team py-2.5 px-1.5 sm:px-3 min-w-[135px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                 <button onclick="event.stopPropagation(); app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer block truncate w-full group-hover:underline">
                   ${this.escapeHtml(t.team_name)}
@@ -14799,29 +14464,29 @@ selectShi62GW(gwName) {
             const isEligible = t.is_eligible;
             const seedBadge = isEligible 
               ? (t.seed_rank === 1
-                  ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-black font-mono text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-700">#1</span>`
+                  ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-black font-mono text-slate-950 bg-amber-400 shadow-2xs">1</span>`
                   : (t.seed_rank === 2
-                      ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-bold font-mono text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">#2</span>`
+                      ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold font-mono text-slate-900 dark:text-slate-200 bg-slate-200 dark:bg-slate-700">2</span>`
                       : (t.seed_rank === 3
-                          ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-bold font-mono text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">#3</span>`
-                          : `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-semibold font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">#${t.seed_rank}</span>`)))
-              : `<span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-mono text-slate-400 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800">-</span>`;
+                          ? `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold font-mono text-white bg-amber-700/80">3</span>`
+                          : `<span class="text-xs font-bold font-mono tabular-nums text-slate-500 dark:text-slate-400">${t.seed_rank}</span>`)))
+              : `<span class="text-xs font-mono text-slate-400 dark:text-slate-500">-</span>`;
 
             let statusPill = '';
             if (isEligible) {
               if (t.seed_rank <= 4) {
-                statusPill = `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${isEn ? 'Top Seed' : 'มือวางแถวหน้า'}</span>`;
+                statusPill = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${isEn ? 'Top Seed' : 'มือวางแถวหน้า'}</span>`;
               } else {
-                statusPill = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">${isEn ? 'Contender' : 'ผู้มีสิทธิ์ลุ้นแชมป์'}</span>`;
+                statusPill = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">${isEn ? 'Contender' : 'ผู้มีสิทธิ์ลุ้นแชมป์'}</span>`;
               }
             } else {
-              statusPill = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold font-mono bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700">${isEn ? 'Guest (Non-Prize)' : 'ร่วมสนุก (ไม่ลุ้นรางวัล)'}</span>`;
+              statusPill = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold font-mono bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700">${isEn ? 'Guest (Non-Prize)' : 'ร่วมสนุก (ไม่ลุ้นรางวัล)'}</span>`;
             }
 
             const avgPts = t.gw_count > 0 ? (t.total_net / t.gw_count).toFixed(1) : '-';
 
             return `
-              <tr onclick="app.toggleTrackedRow(this)" class="group hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors cursor-pointer border-b border-slate-100 dark:border-slate-800/80">
+              <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer">
                 <td class="sticky-col-rank py-3 px-2 text-center font-mono font-bold">
                   ${seedBadge}
                 </td>
@@ -14847,9 +14512,15 @@ selectShi62GW(gwName) {
           }).join('');
         }
 
+        const renderedLang = isEn ? 'en' : 'th';
+        const renderedLeague = String(this.activeLeagueId || '');
         const existingCupTbody = document.getElementById('cup-seeding-tbody');
         const existingCupInput = document.getElementById('cup-search-input');
-        if (existingCupTbody && existingCupInput) {
+        if (
+          existingCupTbody && existingCupInput &&
+          existingCupInput.dataset.renderedLang === renderedLang &&
+          existingCupInput.dataset.renderedLeague === renderedLeague
+        ) {
           existingCupTbody.innerHTML = tableRowsHtml;
           const cupClearBtn = document.getElementById('cup-search-clear');
           if (cupClearBtn) {
@@ -14900,6 +14571,8 @@ selectShi62GW(gwName) {
                     <input 
                       id="cup-search-input"
                       type="text" 
+                      data-rendered-lang="${renderedLang}"
+                      data-rendered-league="${this.escapeHtml(renderedLeague)}"
                       aria-label="${isEn ? 'Search team or manager name' : 'ค้นหาชื่อทีมหรือผู้จัดการ'}"
                       value="${this.escapeHtml(this.cupSearchQuery || '')}" 
                       oninput="app.handleCupSearch(this.value)"
@@ -14975,13 +14648,13 @@ selectShi62GW(gwName) {
 
               <!-- Table with Accessible Semantic Markup (High-Craft Responsive Sticky Freeze) -->
               <div class="overflow-x-auto scrollbar-thin table-sticky-container">
-                <table class="w-full text-left text-xs table-sticky" aria-label="${isEn ? 'Cup Tournament Seeding Table' : 'ตารางจัดอันดับมือวางฟุตบอลถ้วย'}">
+                <table class="w-full text-left text-xs table-sticky table-clean" aria-label="${isEn ? 'Cup Tournament Seeding Table' : 'ตารางจัดอันดับมือวางฟุตบอลถ้วย'}">
                   <thead>
-                    <tr class="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase font-mono font-bold text-[10px] tracking-wider">
+                    <tr class="text-slate-500 dark:text-slate-400 uppercase font-mono font-bold text-[10px] tracking-wider">
                       <th scope="col" class="sticky-col-rank py-2.5 px-2 text-center">${isEn ? 'Seed' : 'มือวาง'}</th>
                       <th scope="col" class="sticky-col-team py-2.5 px-3 sm:px-4 min-w-[140px]">${isEn ? 'Team & Manager' : 'ทีม & ผู้จัดการ'}</th>
                       <th scope="col" class="py-2.5 px-3 sm:px-4 whitespace-nowrap">${isEn ? 'Cup Status' : 'สถานะการแข่งขัน'}</th>
-                      <th scope="col" class="py-2.5 px-3 sm:px-4 text-right whitespace-nowrap">${isEn ? 'Net Points' : 'คะแนนสุทธิ'}</th>
+                      <th scope="col" class="py-2.5 px-3 sm:px-4 text-right whitespace-nowrap text-slate-800 dark:text-slate-200">${isEn ? 'Net Points' : 'คะแนนสุทธิ'}</th>
                       <th scope="col" class="py-2.5 px-3 sm:px-4 text-right whitespace-nowrap hidden sm:table-cell">${isEn ? 'Avg / GW' : 'เฉลี่ย/นัด'}</th>
                     </tr>
                   </thead>
@@ -15310,7 +14983,7 @@ selectShi62GW(gwName) {
           const quickNavPrizesText = isEn ? 'Prizes Tab' : 'แท็บเงินรางวัล';
           const quickNavChipsText = isEn ? 'Chips Matrix' : 'สถานะชิป';
           const quickNavHofText = isEn ? 'Hall of Fame' : 'ทำเนียบแชมป์';
-          const copyRulesText = isEn ? 'Copy Rules for LINE Group' : 'คัดลอกสรุปกติกาเพื่อส่งไลน์';
+          const copyRulesText = isEn ? 'Copy Rules for Chat' : 'คัดลอกสรุปกติกาเพื่อส่งแชท';
 
           govContainer.innerHTML = `
             <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-2xs w-full min-w-0 overflow-hidden">
@@ -15805,7 +15478,7 @@ selectShi62GW(gwName) {
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
-                      <span>Instant one-click LINE chat summary copy and season-long Excel (.xlsx) data export.</span>
+                      <span>One-click league rules &amp; pundit quote copy, plus full-season Excel (.xlsx) export.</span>
                     </li>
                   </ul>
                 </div>
@@ -16158,17 +15831,6 @@ selectShi62GW(gwName) {
                       </ul>
                     </div>
                   </div>
-                        <li class="flex items-start gap-2">
-                          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Lazy League Switch &amp; Race Guard:</strong> On-demand <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">data/leagues/{id}.json</code> fetching guarded by monotonic request tokens, synchronized via HTML5 History API and <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">localStorage</code>.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                          <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 flex-shrink-0"></span>
-                          <span><strong class="font-semibold text-slate-900 dark:text-slate-100">Zero-Framework 60 FPS &amp; A11y:</strong> Pure Vanilla ES6+ (0kb framework runtime), <code class="font-mono text-[11px] bg-slate-100 dark:bg-slate-800/90 text-slate-800 dark:text-slate-200 px-1.5 py-0.5 rounded border border-slate-200/80 dark:border-slate-700/80">tabular-nums</code> (CLS: 0.00), Page Visibility API battery saver, and WCAG AA modal focus restoration.</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
                 </div>
               </div>
             </details>
@@ -16418,7 +16080,7 @@ selectShi62GW(gwName) {
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
-                      <span>ปุ่มคัดลอกสรุปผลคะแนนส่งเข้ากลุ่ม LINE และส่งออกเป็นตาราง Excel ทันที</span>
+                      <span>ปุ่มคัดลอกสรุปกติกาลีก พาดหัววิเคราะห์ และส่งออกตารางข้อมูลเป็นไฟล์ Excel (.xlsx)</span>
                     </li>
                   </ul>
                 </div>
@@ -17060,6 +16722,9 @@ selectShi62GW(gwName) {
           }
 
           if (!picksData || !Array.isArray(picksData.picks) || picksData.picks.length === 0) {
+            if (typeof window._reportClientError === 'function') {
+              window._reportClientError('data_load');
+            }
             return false;
           }
 
@@ -17085,8 +16750,11 @@ selectShi62GW(gwName) {
           }
 
           const lMap = (this._liveMapsByGw && this._liveMapsByGw[gwNum]) || this._latestLiveMap || {};
+          const gwObj = (this.data && this.data.gameweeks) ? this.data.gameweeks[String(gwNum)] : null;
+          const isGwFinished = gwObj ? Boolean(gwObj.is_finished) : false;
+          const unstartedTeams = (gwObj && Array.isArray(gwObj.unstarted_teams)) ? gwObj.unstarted_teams : [];
 
-          const buildPlayerObj = (p) => {
+          const buildPlayerObj = (p, isBench = false) => {
             const pid = p.element;
             const pInfo = this.playersDict[String(pid)] || this.playersDict[pid] || null;
             let name, team, pos, teamCode;
@@ -17119,6 +16787,7 @@ selectShi62GW(gwName) {
               rawPts = Number(lMap[pid].total_points || 0);
               provBonus = Number(lMap[pid].provisional_bonus || 0);
             }
+            const notPlayedYet = (!isGwFinished) && (unstartedTeams.includes(team) || unstartedTeams.includes(teamCode));
 
             return {
               id: pid,
@@ -17126,7 +16795,7 @@ selectShi62GW(gwName) {
               pos: pos,
               team: team,
               team_code: teamCode,
-              points: rawPts * (mult > 0 ? mult : 1),
+              points: isBench ? (rawPts * (mult > 0 ? mult : 1)) : (rawPts * mult),
               raw_points: rawPts,
               multiplier: mult,
               is_captain: isCap,
@@ -17134,19 +16803,20 @@ selectShi62GW(gwName) {
               provisional_bonus: provBonus,
               is_sub: Boolean(p.is_sub),
               is_sub_out: Boolean(p.is_sub_out),
-              not_played_yet: false
+              not_played_yet: notPlayedYet
             };
           };
 
-          const starters = actualStartersPicks.map(buildPlayerObj);
-          const bench = actualBenchPicks.map(buildPlayerObj);
+          const starters = actualStartersPicks.map(p => buildPlayerObj(p, false));
+          const bench = actualBenchPicks.map(p => buildPlayerObj(p, true));
 
           const squadKey = `${entryIdNum}_${gwNum}`;
           const squadObj = {
             starting: starters,
             bench: bench,
             chip: picksData.active_chip,
-            raw_hist: picksData.entry_history || {}
+            raw_hist: picksData.entry_history || {},
+            summary_overall_rank: picksData.summary_overall_rank || null
           };
 
           if (!this.data.squads) this.data.squads = {};
@@ -17239,26 +16909,77 @@ selectShi62GW(gwName) {
 
         const rankBadge = document.getElementById('team-modal-overall-rank-badge');
         if (rankBadge) {
-          let ovRank = matchdayRes.overall_rank;
-          if (!ovRank && squad && squad.raw_hist && squad.raw_hist.overall_rank) {
-            ovRank = squad.raw_hist.overall_rank;
+          const maxGw = Number((this.multiData && this.multiData.max_gw) || (this.data && this.data.current_gw) || this.selectedGW || 1);
+          const isLatestGw = (Number(this.selectedGW) >= maxGw);
+          const isTier2Target = Boolean(
+            (targetLeague && targetLeague.tier === 2) ||
+            (this.configs && targetLeagueId && this.configs[targetLeagueId] && this.configs[targetLeagueId].tier === 2) ||
+            (this.data && this.data.tier === 2 && !targetLeagueId)
+          );
+
+          let ovRank = null;
+          if (isTier2Target) {
+            // Tier 2 stores mini-league cumulative rank in overall_rank; read world rank from fpl_overall_rank or live /picks instead.
+            if (isLatestGw) {
+              ovRank = (squad && squad.summary_overall_rank)
+                || matchdayRes.fpl_overall_rank
+                || teamObj.fpl_overall_rank
+                || (squad && squad.raw_hist && squad.raw_hist.overall_rank)
+                || null;
+            } else {
+              ovRank = matchdayRes.fpl_overall_rank
+                || (squad && squad.raw_hist && squad.raw_hist.overall_rank)
+                || null;
+            }
+          } else {
+            if (isLatestGw) {
+              ovRank = teamObj.overall_rank
+                || (squad && squad.summary_overall_rank)
+                || matchdayRes.fpl_overall_rank
+                || matchdayRes.overall_rank
+                || (squad && squad.raw_hist && squad.raw_hist.overall_rank)
+                || null;
+            } else {
+              ovRank = matchdayRes.fpl_overall_rank
+                || matchdayRes.overall_rank
+                || (squad && squad.raw_hist && squad.raw_hist.overall_rank)
+                || null;
+            }
           }
-          if (!ovRank && teamObj.overall_rank) {
-            ovRank = teamObj.overall_rank;
-          }
+
           if (!ovRank && this.multiData && this.multiData.leagues) {
-            const maxGw = this.multiData.max_gw || this.selectedGW;
+            const lookupGwKey = String(this.selectedGW);
             for (const l of Object.values(this.multiData.leagues)) {
-              const s = (l.squads || {})[`${entryIdNum}_${maxGw}`];
+              const lIsTier2 = (l && l.tier === 2);
+              if (isLatestGw) {
+                const lt = (l.teams || []).find(t => Number(t.entry_id) === entryIdNum);
+                if (lt) {
+                  const candTeamOv = lIsTier2 ? lt.fpl_overall_rank : lt.overall_rank;
+                  if (candTeamOv) {
+                    ovRank = candTeamOv;
+                    break;
+                  }
+                }
+              }
+              const s = (l.squads || {})[`${entryIdNum}_${lookupGwKey}`];
+              if (s && isLatestGw && s.summary_overall_rank) {
+                ovRank = s.summary_overall_rank;
+                break;
+              }
               if (s && s.raw_hist && s.raw_hist.overall_rank) {
                 ovRank = s.raw_hist.overall_rank;
                 break;
               }
-              const gr = ((l.gameweeks || {})[String(maxGw)] || {}).results || [];
+              const gr = ((l.gameweeks || {})[lookupGwKey] || {}).results || [];
               const foundRes = gr.find(r => Number(r.entry_id) === entryIdNum);
-              if (foundRes && foundRes.overall_rank) {
-                ovRank = foundRes.overall_rank;
-                break;
+              if (foundRes) {
+                const candResOv = lIsTier2
+                  ? foundRes.fpl_overall_rank
+                  : (foundRes.fpl_overall_rank || foundRes.overall_rank);
+                if (candResOv) {
+                  ovRank = candResOv;
+                  break;
+                }
               }
             }
           }
@@ -17335,7 +17056,9 @@ selectShi62GW(gwName) {
           }
 
           const isTier2League = Boolean((tgtLeagueObj && tgtLeagueObj.tier === 2) || (this.configs && this.configs[leagueToFetch] && this.configs[leagueToFetch].tier === 2));
-          if (!hasSquads && !isTier2League) {
+          const targetGwNum = Number(this.selectedGW) || Number(this.multiData && this.multiData.max_gw) || 1;
+          const isGwSquadsLoaded = isTier2League ? true : this.hasTier1SquadsForGw(tgtLeagueObj, targetGwNum);
+          if ((!hasSquads || !isGwSquadsLoaded) && !isTier2League) {
             if (formationEl) formationEl.innerText = '...';
             if (gkpLine) gkpLine.innerHTML = '';
             if (midLine) midLine.innerHTML = '';
@@ -17351,9 +17074,18 @@ selectShi62GW(gwName) {
               modal.classList.remove('hidden');
               this.lockBodyScroll();
             }
-            this.fetchLeagueData(leagueToFetch, 2).then(fullLeagueData => {
+            const loadPromise = !hasSquads
+              ? this.fetchLeagueData(leagueToFetch, 2).then(async fullLeagueData => {
+                  if (fullLeagueData && !this.hasTier1SquadsForGw(fullLeagueData, targetGwNum)) {
+                    await this.ensureTier1GWSquads(targetGwNum, leagueToFetch);
+                  }
+                  return fullLeagueData;
+                })
+              : this.ensureTier1GWSquads(targetGwNum, leagueToFetch).then(() => tgtLeagueObj);
+
+            loadPromise.then(fullLeagueData => {
               if (this.currentModalEntryId === entryIdNum) {
-                if (fullLeagueData && fullLeagueData.squads) {
+                if (fullLeagueData && fullLeagueData.squads && this.hasTier1SquadsForGw(fullLeagueData, targetGwNum)) {
                   this.openTeamModal(entryIdNum);
                 } else {
                   if (formationEl) formationEl.innerText = '-';
@@ -17679,381 +17411,6 @@ selectShi62GW(gwName) {
         this.showToast(copiedText, 'success', 1600);
       }
 
-      shareCurrentGameweek() {
-        try {
-          const gwKey = String(this.selectedGW || 2);
-          const gwData = (this.data && this.data.gameweeks) ? (this.data.gameweeks[gwKey] || this.data.gameweeks[this.selectedGW]) : null;
-          const isEn = (this.currentLang === 'en');
-          if (!gwData || !gwData.results || gwData.results.length === 0) {
-            if (typeof alert !== 'undefined') alert(isEn ? 'Loading gameweek data, please try again.' : 'กำลังโหลดข้อมูล Gameweek กรุณาลองใหม่อีกครั้ง');
-            return;
-          }
-
-          const prizesFeat = (this.config && this.config.features) || {};
-          const isWeekly = (prizesFeat.prize_model === 'weekly' || prizesFeat.prize_model === 'penalties' || Boolean(prizesFeat.has_weekly_penalties));
-          const isFinished = Boolean(gwData.is_finished);
-          const scoreProp = 'net_points';
-          const useHighestPlayerTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
-          const sorted = [...gwData.results].sort((a, b) => {
-            const diff = (b[scoreProp] - a[scoreProp]) || (b.net_points - a.net_points) || (b.points - a.points);
-            if (diff !== 0) return diff;
-            if (useHighestPlayerTieBreaker) {
-              return this.compareTeamPlayerScores(a.entry_id, b.entry_id, Number(gwKey));
-            }
-            return 0;
-          });
-          const eligibleResults = sorted.filter(r => this.isPrizeEligible(r.entry_id));
-          const eligibleHighestScore = eligibleResults.length > 0 ? eligibleResults[0][scoreProp] : 0;
-          let eligibleWinners = [];
-          if (eligibleResults.length > 0) {
-            const topLeader = eligibleResults[0];
-            if (useHighestPlayerTieBreaker) {
-              eligibleWinners = eligibleResults.filter(r => 
-                r[scoreProp] === topLeader[scoreProp] && 
-                this.compareTeamPlayerScores(r.entry_id, topLeader.entry_id, Number(gwKey)) === 0
-              );
-            } else {
-              eligibleWinners = eligibleResults.filter(r => r[scoreProp] === eligibleHighestScore);
-            }
-          }
-          const isJointPrize = eligibleWinners.length > 1;
-          const overallTop = sorted[0];
-          const prizeLeader = eligibleWinners[0] || overallTop;
-          const hasPassedPrize = !this.isPrizeEligible(overallTop.entry_id) && eligibleWinners.length > 0 && overallTop[scoreProp] > prizeLeader[scoreProp];
-
-          const noteEl = document.getElementById('current-gw-note-text');
-          let currentLiveNote = noteEl ? noteEl.innerText.replace(/^"|"$/g, '').trim() : '';
-          if (!currentLiveNote) {
-            const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
-            const cacheKey = `${this.activeLeagueId}_${this.selectedGW}_${this.currentLang}`;
-            const rawHtmlNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeekly, useHighestPlayerTieBreaker, isEn);
-            currentLiveNote = String(rawHtmlNote).replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
-          }
-
-          let text = '';
-          if (isEn) {
-            text += `${this.data.name} (League ${this.activeLeagueId})
-`;
-            text += `Gameweek ${gwKey} Summary (${isFinished ? 'Final Result' : 'Live In-Play'})
-`;
-            text += `----------------------------------------
-`;
-
-            if (isFinished) {
-              if (isWeekly) {
-                const weeklyPrizesConfig = this.config.features.weekly_prizes;
-                if (weeklyPrizesConfig) {
-                  const tierPrizes = Object.values(weeklyPrizesConfig).map(Number);
-                  const eligibleSorted = sorted.filter(r => this.isPrizeEligible(r.entry_id));
-                  const payouts = this.calculateWeeklyTierPrizes(eligibleSorted, tierPrizes, Number(gwKey));
-                  text += `🏆 Weekly Prize Breakdown (Top ${tierPrizes.length}) (GW ${gwKey}):
-`;
-                  payouts.forEach(p => {
-                    const medal = p.rank === 1 ? '🥇 1st' : (p.rank === 2 ? '🥈 2nd' : '🥉 3rd');
-                    const jointText = p.isJoint ? ` (Tied ${p.jointCount} teams, split)` : '';
-                    const tieText = p.tieBreakNote ? ` [${p.tieBreakNote}]` : '';
-                    text += `• ${medal}: ${p.team_name} (${p.player_name}) • ${p.net_points} pts • ${p.prize.toLocaleString()} THB${jointText}${tieText}
-`;
-                  });
-                } else {
-                  if (hasPassedPrize) {
-                    text += `💡 Note: Team ${overallTop.team_name} scored highest this week (${overallTop.points} pts) but participates as guest, passing prize eligibility to the next team.
-`;
-                  }
-                  if (isJointPrize) {
-                    const names = eligibleWinners.map(w => `${w.team_name} (${w.player_name})`).join(' & ');
-                    text += `🏆 Joint Weekly Winners (${eligibleWinners.length} teams): ${names}
-`;
-                  } else {
-                    text += `🏆 Weekly Winner: ${prizeLeader.team_name} (${prizeLeader.player_name})
-`;
-                  }
-                  const w0 = prizeLeader;
-                  const hitsStr = (w0.hits && w0.hits > 0) ? ` | Hits: -${w0.hits}` : '';
-                  text += `Score: ${w0.points} pts (Net ${w0.net_points}${hitsStr})
-`;
-                  const weeklyPrize = this.config.features.weekly_prize_amount || 300;
-                  const prizePerTeam = isJointPrize ? (weeklyPrize / eligibleWinners.length).toFixed(0) : weeklyPrize;
-                  text += `Prize: ${prizePerTeam} THB${isJointPrize ? ' / team (Split)' : ''}
-`;
-                }
-              } else {
-                text += `👑 Highest Scorer Gameweek ${gwKey}: ${overallTop.team_name} (${overallTop.player_name})
-`;
-                const w0 = overallTop;
-                const hitsStr = (w0.hits && w0.hits > 0) ? ` | Hits: -${w0.hits}` : '';
-                text += `Score: ${w0.points} pts (Net ${w0.net_points}${hitsStr})
-`;
-              }
-            } else {
-              if (hasPassedPrize) {
-                text += `💡 Note: Team ${overallTop.team_name} (${overallTop.points} pts) leads live scores as guest • Prize eligibility passes to ${prizeLeader.team_name}
-`;
-              }
-              text += `⚡ Live Leader for Weekly Prize: ${prizeLeader.team_name} (${prizeLeader.player_name})
-`;
-              const w0 = prizeLeader;
-              const hitsStr = (w0.hits && w0.hits > 0) ? ` | Hits: -${w0.hits} (deducted in total)` : '';
-              text += `Live Score: ${w0.points} pts (Matches Official)${hitsStr}
-`;
-              if (w0.chip) {
-                text += `Chip Active: ${w0.chip.toUpperCase()}
-`;
-              }
-            }
-
-            if (!isWeekly && Array.isArray(this.config.monthly_schedule) && this.config.monthly_schedule.length > 0) {
-              const curMonth = this.config.monthly_schedule.find(m => m.gw_list && m.gw_list.includes(Number(gwKey))) || this.config.monthly_schedule[0];
-              if (curMonth) {
-                const monthlyScores = {};
-                (this.data.teams || []).forEach(t => monthlyScores[t.entry_id] = { name: t.entry_name, pts: 0 });
-                curMonth.gw_list.forEach(g => {
-                  const gd = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
-                  if (gd && gd.results) {
-                    gd.results.forEach(r => {
-                      if (monthlyScores[r.entry_id]) monthlyScores[r.entry_id].pts += r.net_points;
-                    });
-                  }
-                });
-                const eligibleMonthly = Object.entries(monthlyScores)
-                  .filter(([eid]) => this.isPrizeEligible(eid))
-                  .map(([, t]) => t)
-                  .sort((a, b) => (b.pts - a.pts) || (a.name || '').localeCompare(b.name || ''));
-                if (eligibleMonthly.length > 0 && eligibleMonthly[0].pts > 0) {
-                  const topScore = eligibleMonthly[0].pts;
-                  const topLeads = eligibleMonthly.filter(t => t.pts === topScore);
-                  text += `
-📅 Monthly Prize Race (${curMonth.month} - Pool ${curMonth.budget}):
-`;
-                  if (topLeads.length > 1) {
-                    const leadNames = topLeads.map(t => t.name).join(', ');
-                    text += `• Joint Leaders (${topLeads.length} teams): ${leadNames} (${topScore} pts)
-`;
-                  } else {
-                    text += `• Leader: ${topLeads[0].name} (${topScore} pts)
-`;
-                  }
-                }
-              }
-            }
-
-            text += `
-⭐ Gameweek Highlights:
-"${currentLiveNote}"
-`;
-
-            const transfers = sorted.filter(r => r.hits && r.hits > 0);
-            const chipsUsed = sorted.filter(r => r.chip);
-
-            if (transfers.length > 0 || chipsUsed.length > 0) {
-              text += `
-🔥 Transfers & Chips:
-`;
-              if (transfers.length > 0) {
-                const tfList = transfers.map(t => `${t.team_name} (-${t.hits})`).join(', ');
-                text += `• Hits Taken: ${tfList}
-`;
-              }
-              if (chipsUsed.length > 0) {
-                const cpList = chipsUsed.map(c => `${c.team_name} (${c.chip.toUpperCase()})`).join(', ');
-                text += `• Special Chips: ${cpList}
-`;
-              }
-            }
-
-            text += `
-📊 Gameweek ${gwKey} Leaderboard (Top 5):
-`;
-            sorted.slice(0, 5).forEach((t, i) => {
-              const hitsPart = (t.hits && t.hits > 0) ? ` (-${t.hits})` : '';
-              const chipPart = t.chip ? ` [${t.chip.toUpperCase()}]` : '';
-              const funTag = !this.isPrizeEligible(t.entry_id) ? ' (Guest)' : '';
-              text += `${i + 1}. ${t.team_name}${funTag}: ${t.net_points} pts${hitsPart}${chipPart}
-`;
-            });
-
-            text += `
-🌐 Check Live Results & Full Standings:
-${this.getPublicLeagueUrl()}`;
-
-          } else {
-            text += `${this.data.name} (League ${this.activeLeagueId})
-`;
-            text += `สรุปผล Gameweek ${gwKey} (${isFinished ? 'จบการแข่งขัน' : 'กำลังแข่งขัน'})
-`;
-            text += `----------------------------------------
-`;
-
-            if (isFinished) {
-              if (isWeekly) {
-                const weeklyPrizesConfig = this.config.features.weekly_prizes;
-                if (weeklyPrizesConfig) {
-                  const tierPrizes = Object.values(weeklyPrizesConfig).map(Number);
-                  const eligibleSorted = sorted.filter(r => this.isPrizeEligible(r.entry_id));
-                  const payouts = this.calculateWeeklyTierPrizes(eligibleSorted, tierPrizes, Number(gwKey));
-                  text += `🏆 สรุปเงินรางวัลประจำสัปดาห์ 3 อันดับ (GW ${gwKey}):
-`;
-                  payouts.forEach(p => {
-                    const medal = p.rank === 1 ? '🥇 อันดับ 1' : (p.rank === 2 ? '🥈 อันดับ 2' : '🥉 อันดับ 3');
-                    const jointText = p.isJoint ? ` (เสมอ ${p.jointCount} ทีม หารเท่า)` : '';
-                    const tieText = p.tieBreakNote ? ` [${p.tieBreakNote}]` : '';
-                    text += `• ${medal}: ${p.team_name} (${p.player_name}) • ${p.net_points} pts • ${p.prize.toLocaleString()} THB${jointText}${tieText}
-`;
-                  });
-                } else {
-                  if (hasPassedPrize) {
-                    text += `💡 หมายเหตุ: ทีม ${overallTop.team_name} ทำแต้มสูงสุดสัปดาห์นี้ (${overallTop.points} pts) แต่เป็นทีมร่วมสนุก จึงส่งมอบสิทธิ์เงินรางวัลประจำสัปดาห์ให้แก่ทีมถัดไป
-`;
-                  }
-                  if (isJointPrize) {
-                    const names = eligibleWinners.map(w => `${w.team_name} (${w.player_name})`).join(' & ');
-                    text += `🏆 แชมป์ร่วมประจำสัปดาห์ (${eligibleWinners.length} ทีม): ${names}
-`;
-                  } else {
-                    text += `🏆 แชมป์ประจำสัปดาห์: ${prizeLeader.team_name} (${prizeLeader.player_name})
-`;
-                  }
-                  const w0 = prizeLeader;
-                  const hitsStr = (w0.hits && w0.hits > 0) ? ` | คะแนนลบ: -${w0.hits}` : '';
-                  text += `คะแนน: ${w0.points} pts (สุทธิ ${w0.net_points}${hitsStr})
-`;
-                  const weeklyPrize = this.config.features.weekly_prize_amount || 300;
-                  const prizePerTeam = isJointPrize ? (weeklyPrize / eligibleWinners.length).toFixed(0) : weeklyPrize;
-                  text += `เงินรางวัล: ${prizePerTeam} THB${isJointPrize ? ' / ทีม (หารเท่า)' : ''}
-`;
-                }
-              } else {
-                text += `👑 คะแนนสูงสุด Gameweek ${gwKey}: ${overallTop.team_name} (${overallTop.player_name})
-`;
-                const w0 = overallTop;
-                const hitsStr = (w0.hits && w0.hits > 0) ? ` | คะแนนลบ: -${w0.hits}` : '';
-                text += `คะแนน: ${w0.points} pts (สุทธิ ${w0.net_points}${hitsStr})
-`;
-              }
-            } else {
-              if (hasPassedPrize) {
-                text += `💡 หมายเหตุ: ทีม ${overallTop.team_name} (${overallTop.points} pts) นำคะแนนสดสูงสุด (ร่วมสนุก) • สิทธิ์ชิงเงินรางวัลส่งต่อให้ ${prizeLeader.team_name}
-`;
-              }
-              text += `⚡ ผู้นำคะแนนสดชิงรางวัล: ${prizeLeader.team_name} (${prizeLeader.player_name})
-`;
-              const w0 = prizeLeader;
-              const hitsStr = (w0.hits && w0.hits > 0) ? ` | คะแนนลบ: -${w0.hits} (หักในคะแนนรวม)` : '';
-              text += `คะแนนสด: ${w0.points} pts (ตรงกับ Official)${hitsStr}
-`;
-              if (w0.chip) {
-                text += `ชิปที่ใช้: ${w0.chip.toUpperCase()}
-`;
-              }
-            }
-
-            if (!isWeekly && Array.isArray(this.config.monthly_schedule) && this.config.monthly_schedule.length > 0) {
-              const curMonth = this.config.monthly_schedule.find(m => m.gw_list && m.gw_list.includes(Number(gwKey))) || this.config.monthly_schedule[0];
-              if (curMonth) {
-                const monthlyScores = {};
-                (this.data.teams || []).forEach(t => monthlyScores[t.entry_id] = { name: t.entry_name, pts: 0 });
-                curMonth.gw_list.forEach(g => {
-                  const gd = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
-                  if (gd && gd.results) {
-                    gd.results.forEach(r => {
-                      if (monthlyScores[r.entry_id]) monthlyScores[r.entry_id].pts += r.net_points;
-                    });
-                  }
-                });
-                const eligibleMonthly = Object.entries(monthlyScores)
-                  .filter(([eid]) => this.isPrizeEligible(eid))
-                  .map(([, t]) => t)
-                  .sort((a, b) => (b.pts - a.pts) || (a.name || '').localeCompare(b.name || ''));
-                if (eligibleMonthly.length > 0 && eligibleMonthly[0].pts > 0) {
-                  const topScore = eligibleMonthly[0].pts;
-                  const topLeads = eligibleMonthly.filter(t => t.pts === topScore);
-                  text += `
-📅 สถานการณ์รางวัลประจำเดือน (${curMonth.month} - ชิง ${curMonth.budget}):
-`;
-                  if (topLeads.length > 1) {
-                    const leadNames = topLeads.map(t => t.name).join(', ');
-                    text += `• จ่าฝูงร่วมเดือนนี้ (${topLeads.length} ทีม): ${leadNames} (${topScore} pts)
-`;
-                  } else {
-                    text += `• จ่าฝูงเดือนนี้: ${topLeads[0].name} (${topScore} pts)
-`;
-                  }
-                }
-              }
-            }
-
-            text += `
-⭐ จุดเด่นสัปดาห์นี้:
-"${currentLiveNote}"
-`;
-
-            const transfers = sorted.filter(r => r.hits && r.hits > 0);
-            const chipsUsed = sorted.filter(r => r.chip);
-
-            if (transfers.length > 0 || chipsUsed.length > 0) {
-              text += `
-🔥 ย้ายตัว & ชิป:
-`;
-              if (transfers.length > 0) {
-                const tfList = transfers.map(t => `${t.team_name} (-${t.hits})`).join(', ');
-                text += `• คะแนนลบ: ${tfList}
-`;
-              }
-              if (chipsUsed.length > 0) {
-                const cpList = chipsUsed.map(c => `${c.team_name} (${c.chip.toUpperCase()})`).join(', ');
-                text += `• ชิปพิเศษ: ${cpList}
-`;
-              }
-            }
-
-            text += `
-📊 อันดับคะแนน GW ${gwKey} (Top 5):
-`;
-            sorted.slice(0, 5).forEach((t, i) => {
-              const hitsPart = (t.hits && t.hits > 0) ? ` (-${t.hits})` : '';
-              const chipPart = t.chip ? ` [${t.chip.toUpperCase()}]` : '';
-              const funTag = !this.isPrizeEligible(t.entry_id) ? ' (ร่วมสนุก)' : '';
-              text += `${i + 1}. ${t.team_name}${funTag}: ${t.net_points} pts${hitsPart}${chipPart}
-`;
-            });
-
-            text += `
-🌐 ตรวจสอบผลสด & อันดับตารางเต็มได้ที่:
-${this.getPublicLeagueUrl()}`;
-          }
-
-          this.openTextSummaryModal({
-            title: isEn ? `Gameweek Summary: ${this.data.name} (GW ${gwKey})` : `สรุปผล ${this.data.name} (GW ${gwKey})`,
-            subtitle: isEn ? 'Formatted text ready to share with your league or friends:' : 'ข้อความถูกจัดรูปแบบสำหรับส่งเข้ากลุ่ม LINE เรียบร้อยแล้ว:',
-            text: text
-          });
-
-        } catch (e) {
-          console.error('shareCurrentGameweek error:', e);
-          const isEn = (this.currentLang === 'en');
-          this.showToast(isEn ? 'Could not open summary. Please try again.' : 'ไม่สามารถเปิดสรุปผลได้ กรุณาลองใหม่อีกครั้ง', 'error');
-        }
-      }
-
-      copyFromModal() {
-        const contentArea = document.getElementById('text-summary-content');
-        if (contentArea) {
-          this.triggerCopyAction(contentArea.value);
-        }
-      }
-
-      closeTextSummaryModal() {
-        const modal = document.getElementById('text-summary-modal');
-        if (modal && !modal.classList.contains('hidden')) {
-          modal.classList.add('hidden');
-          this.unlockBodyScroll();
-          if (this._lastFocusedElement && this._lastFocusedElement !== document.body && typeof this._lastFocusedElement.focus === 'function') {
-            this._lastFocusedElement.focus({ preventScroll: true });
-          }
-          this._lastFocusedElement = null;
-        }
-      }
-
       showToast(msg, type = 'success', durationMs = 2500) {
         if (typeof document === 'undefined') return;
         let toast = document.getElementById('global-copied-toast');
@@ -18351,7 +17708,12 @@ ${this.getPublicLeagueUrl()}`;
 
             for (let g = 1; g <= maxGW; g++) {
               const gwData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
-              if (gwData && gwData.results) {
+              const gwActive = gwData && (
+                Boolean(gwData.is_finished) ||
+                Boolean(gwData.is_started) ||
+                (Array.isArray(gwData.results) && gwData.results.some(r => (r.points || 0) > 0 || (r.net_points || 0) !== 0))
+              );
+              if (gwActive && gwData.results) {
                 const res = gwData.results.find(r => Number(r.entry_id) === eid);
                 if (res) {
                   gwPoints[g] = res.net_points;
@@ -18470,7 +17832,8 @@ ${this.getPublicLeagueUrl()}`;
 
             const isFinished = Boolean(gwData.is_finished);
             const isStarted = gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || gwData.results.some(r => r.points > 0));
-            const statusText = isFinished ? (isEn ? 'Finished' : 'จบการแข่งขัน') : (isStarted ? (isEn ? 'Live' : 'กำลังแข่งขัน') : (isEn ? 'Upcoming' : 'รอคิกออฟ'));
+            if (!isFinished && !isStarted) continue;
+            const statusText = isFinished ? (isEn ? 'Finished' : 'จบการแข่งขัน') : (isEn ? 'Live' : 'กำลังแข่งขัน');
 
             const isWeeklyPrize = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
             const scoreProp = 'net_points';
@@ -19277,83 +18640,53 @@ ${this.getPublicLeagueUrl()}`;
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       }
 
-      renderVisitorCounterText() {
-        const badgeEl = document.getElementById('site-visitor-counter');
-        const textEl = document.getElementById('visitor-counter-text');
-        if (!badgeEl || !textEl) return;
-        const count = Number(this._visitorCount);
-        if (!Number.isFinite(count) || count <= 0) {
-          badgeEl.classList.add('hidden');
-          return;
+      openDevCornerFromFooter() {
+        if (typeof window !== 'undefined' && window.location) {
+          const prefix = this.getAssetPrefix();
+          const isFile = window.location.protocol === 'file:';
+          window.location.href = isFile ? `${prefix}index.html#pricing` : `${prefix}#pricing`;
         }
-        const formatted = Math.floor(count).toLocaleString();
-        const isEn = (this.currentLang === 'en');
-        textEl.textContent = isEn
-          ? `Views: ${formatted} (since Nov 2026)`
-          : `ยอดเข้าชมสะสม: ${formatted} ครั้ง (ตั้งแต่ พ.ย. 2026)`;
-        badgeEl.title = isEn
-          ? 'Cumulative views recorded by FPLSaWaDiKa Edge Telemetry since Nov 2026 (30-min refresh dedup)'
-          : 'ยอดเข้าชมสะสมจากระบบ Edge Telemetry ของ FPLSaWaDiKa ตั้งแต่ พ.ย. 2026 (ไม่นับรีเฟรชซ้ำภายใน 30 นาที)';
-        badgeEl.classList.remove('hidden');
       }
 
-      async initVisitorCounter() {
-        const badgeEl = document.getElementById('site-visitor-counter');
-        const textEl = document.getElementById('visitor-counter-text');
-        if (!badgeEl || !textEl) return;
+      renderFooterCta() {
+        const footerEl = document.getElementById('site-footer');
+        const copyEl = document.getElementById('footer-brand-copy');
+        const ctaEl = document.getElementById('footer-upsell-text');
+        const btnEl = document.getElementById('footer-upsell-btn');
+        if (!footerEl || !copyEl || !ctaEl) return;
 
-        let cachedCount = 0;
-        let cachedTs = 0;
-        try {
-          if (typeof localStorage !== 'undefined') {
-            const rawCount = parseInt(localStorage.getItem('fpl_visitor_count_v2') || '0', 10);
-            const rawTs = parseInt(localStorage.getItem('fpl_visitor_last_fetched_v2') || '0', 10);
-            if (!isNaN(rawCount) && rawCount > 0) cachedCount = rawCount;
-            if (!isNaN(rawTs) && rawTs > 0) cachedTs = rawTs;
-          }
-        } catch (_) {}
-
-        if (cachedCount > 0) {
-          this._visitorCount = cachedCount;
-          this.renderVisitorCounterText();
+        let leaguesCount = parseInt(footerEl.dataset.leagues || '0', 10);
+        let teamsCount = parseInt(footerEl.dataset.teams || '0', 10);
+        if (!Number.isFinite(leaguesCount) || leaguesCount <= 0) {
+          const leaguesObj = (this.multiData && this.multiData.leagues) || {};
+          leaguesCount = Object.keys(leaguesObj).length;
         }
-
-        // Skip extra network request on local file:// preview or within 5-minute client cache
-        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
-          return;
-        }
-        const CACHE_TTL_MS = 5 * 60 * 1000;
-        if (cachedCount > 0 && cachedTs > 0 && (Date.now() - cachedTs) < CACHE_TTL_MS) {
-          return;
-        }
-
-        const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-        const timer = ctrl ? setTimeout(() => ctrl.abort(), 4000) : null;
-        const visitorsApiBase = (typeof resolveWorkerApiBase === 'function')
-          ? resolveWorkerApiBase().base
-          : 'https://api.fplsawadika.com';
-        try {
-          const resp = await fetch(`${visitorsApiBase}/visitors`, {
-            method: 'GET',
-            signal: ctrl ? ctrl.signal : undefined,
+        if (!Number.isFinite(teamsCount) || teamsCount <= 0) {
+          const leaguesObj = (this.multiData && this.multiData.leagues) || {};
+          const uniq = new Set();
+          Object.values(leaguesObj).forEach(l => {
+            ((l && l.teams) || []).forEach(tm => {
+              if (tm && tm.entry_id !== undefined) uniq.add(Number(tm.entry_id));
+            });
           });
-          if (!resp.ok) return;
-          const data = await resp.json();
-          const liveViews = Number(data && data.views);
-          if (Number.isFinite(liveViews) && liveViews > 0) {
-            this._visitorCount = Math.floor(liveViews);
-            try {
-              if (typeof localStorage !== 'undefined') {
-                localStorage.setItem('fpl_visitor_count_v2', String(this._visitorCount));
-                localStorage.setItem('fpl_visitor_last_fetched_v2', String(Date.now()));
-              }
-            } catch (_) {}
-            this.renderVisitorCounterText();
-          }
-        } catch (_) {
-          // Keep cached value if present; remain hidden when offline without cache
-        } finally {
-          if (timer) clearTimeout(timer);
+          teamsCount = uniq.size;
+        }
+
+        const isEn = (this.currentLang === 'en');
+        const formattedTeams = (teamsCount > 0) ? Math.floor(teamsCount).toLocaleString() : '1,900+';
+        const leaguesDisplay = (leaguesCount > 0) ? leaguesCount : 9;
+
+        copyEl.textContent = isEn
+          ? `FPLSaWaDiKa • Live across ${leaguesDisplay} mini-leagues (${formattedTeams} teams)`
+          : `FPLSaWaDiKa • ใช้งานจริง ${leaguesDisplay} มินิลีก (${formattedTeams} ทีม)`;
+        ctaEl.textContent = isEn
+          ? 'Launch for your league'
+          : 'สนใจระบบสำหรับลีกของคุณ';
+        if (btnEl) {
+          btnEl.setAttribute(
+            'aria-label',
+            isEn ? 'Explore pricing plans and launch FPLSaWaDiKa for your mini-league' : 'ดูแพ็กเกจราคาและเปิดใช้งาน FPLSaWaDiKa สำหรับมินิลีกของคุณ'
+          );
         }
       }
     }
@@ -19377,11 +18710,10 @@ ${this.getPublicLeagueUrl()}`;
         if (e.key === 'Escape' && window.app) {
           window.app.closeTeamModal();
           window.app.closeProjectedPointsModal();
-          window.app.closeTextSummaryModal();
           return;
         }
         if (e.key === 'Tab') {
-          const activeModal = ['team-modal', 'projected-points-modal', 'text-summary-modal']
+          const activeModal = ['team-modal', 'projected-points-modal']
             .map(id => document.getElementById(id))
             .find(m => m && !m.classList.contains('hidden'));
           if (!activeModal) return;
@@ -19425,22 +18757,6 @@ ${this.getPublicLeagueUrl()}`;
           alert('ระบบกำลังโหลดข้อมูล กรุณารอสักครู่แล้วคลิกใหม่อีกครั้ง');
         }
       };
-
-      window.shareCurrentGameweekFallback = function() {
-        if (window.app && typeof window.app.shareCurrentGameweek === 'function') {
-          window.app.shareCurrentGameweek();
-        } else {
-          alert('ระบบกำลังโหลดข้อมูล กรุณารอสักครู่แล้วคลิกใหม่อีกครั้ง');
-        }
-      };
-
-      window.shareCurrentViewFallback = function() {
-        if (window.app && typeof window.app.shareCurrentView === 'function') {
-          window.app.shareCurrentView();
-        } else {
-          alert('ระบบกำลังโหลดข้อมูล กรุณารอสักครู่แล้วคลิกใหม่อีกครั้ง');
-        }
-      };
     }
 
     // FPLSaWaDiKa League Engagement & Product Analytics Telemetry (Edge Analytics)
@@ -19454,6 +18770,7 @@ ${this.getPublicLeagueUrl()}`;
         if ((isLocalOrigin || isPreviewOrigin) && !resolvedTelem.isNonProdTarget) {
           window._trackFeature = function() {};
           window._trackLeagueSwitch = function() {};
+          window._reportClientError = function() {};
           return;
         }
         var telemEndpoint = resolvedTelem.base + "/api/telemetry/event";
@@ -19471,8 +18788,7 @@ ${this.getPublicLeagueUrl()}`;
         // In-Memory Feature Queue (Smart Session Batching - 0 Extra HTTP Calls)
         var featureInteractions = {
           tabs: {},
-          pitch_opens: 0,
-          line_shares: 0
+          pitch_opens: 0
         };
 
         window._trackFeature = function(cat, act) {
@@ -19481,8 +18797,6 @@ ${this.getPublicLeagueUrl()}`;
               featureInteractions.tabs[act] = (featureInteractions.tabs[act] || 0) + 1;
             } else if (cat === 'pitch') {
               featureInteractions.pitch_opens += 1;
-            } else if (cat === 'share') {
-              featureInteractions.line_shares += 1;
             }
           } catch (_) {}
         };
@@ -19529,11 +18843,8 @@ ${this.getPublicLeagueUrl()}`;
             if (featureInteractions.pitch_opens > 0) {
               payload.pitch_opens = featureInteractions.pitch_opens;
             }
-            if (featureInteractions.line_shares > 0) {
-              payload.line_shares = featureInteractions.line_shares;
-            }
             // Reset in-memory queue
-            featureInteractions = { tabs: {}, pitch_opens: 0, line_shares: 0 };
+            featureInteractions = { tabs: {}, pitch_opens: 0 };
             sendBeaconEvent(payload);
           }
           sessionStartTime = Date.now();
@@ -19561,5 +18872,46 @@ ${this.getPublicLeagueUrl()}`;
             path: "/" + currentLeague + "/"
           });
         };
+
+        // 3. Real Client Health & Error Beacon (throttled max 3 per session, deduped per category)
+        var errSentCount = 0;
+        var errSentCats = {};
+        window._reportClientError = function(category) {
+          try {
+            if (errSentCount >= 3) return;
+            var cat = String(category || "js_error").toLowerCase();
+            if (cat !== "js_error" && cat !== "api_timeout" && cat !== "api_http" && cat !== "data_load") {
+              cat = "js_error";
+            }
+            if (errSentCats[cat]) return;
+            errSentCats[cat] = true;
+            errSentCount += 1;
+            sendBeaconEvent({
+              type: "client_error",
+              category: cat,
+              league_id: currentLeague
+            });
+          } catch (_) {}
+        };
+
+        window.addEventListener("error", function(ev) {
+          try {
+            var src = (ev && ev.filename) ? String(ev.filename) : "";
+            var host = (window.location && window.location.hostname) ? window.location.hostname : "";
+            if (src && host && src.indexOf(host) === -1 && src.indexOf("fplsawadika") === -1) return;
+            window._reportClientError("js_error");
+          } catch (_) {}
+        });
+
+        window.addEventListener("unhandledrejection", function(ev) {
+          try {
+            var reason = ev && ev.reason ? String(ev.reason.message || ev.reason) : "";
+            if (/AbortError|timeout/i.test(reason)) {
+              window._reportClientError("api_timeout");
+            } else {
+              window._reportClientError("js_error");
+            }
+          } catch (_) {}
+        });
       } catch (_) {}
     })();

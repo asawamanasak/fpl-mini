@@ -152,7 +152,8 @@ def main():
                     target_url
                 ], capture_output=True, text=True, timeout=15)
             except subprocess.TimeoutExpired:
-                print(f"    ⚠️ Chrome headless check timed out for {p}")
+                print(f"    ❌ Chrome headless check timed out for {p}!")
+                all_passed = False
                 continue
             errs = [line for line in out.stderr.split('\n') if any(k in line for k in ['Uncaught', 'SyntaxError', 'ReferenceError', 'TypeError'])]
             if not errs:

@@ -6,7 +6,7 @@
 ---
 
 ## 📌 1. ภาพรวมโปรเจกต์ (Project Overview)
-โปรเจกต์ **FPLSaWaDiKa** เป็นแพลตฟอร์ม **Fantasy Premier League (FPL) Mini-League Presentation & Analytics Dashboard** ที่ออกแบบมาเพื่อรองรับแฟนตาซีมินิลีกหลายลีกพร้อมกัน นำเสนอข้อมูลแบบ Real-time Live & Historical พร้อมระบบคำนวณเงินรางวัล, Hall of Fame, ผังผู้เล่น 11 ตัวจริง (Authentic Pitch), และระบบบทวิเคราะห์แชมป์ประจำสัปดาห์สไตล์ **"บอ.บู๋" (Borbou Commentary Engine)**
+โปรเจกต์ **FPLSaWaDiKa** เป็นแพลตฟอร์ม **Fantasy Premier League (FPL) Mini-League Presentation & Analytics Dashboard** ที่ออกแบบมาเพื่อรองรับแฟนตาซีมินิลีกหลายลีกพร้อมกัน นำเสนอข้อมูลแบบ Real-time Live & Historical พร้อมระบบคำนวณเงินรางวัล, Hall of Fame, ผังผู้เล่น 11 ตัวจริง (Authentic Pitch), และระบบบทวิเคราะห์แชมป์ประจำสัปดาห์สไตล์ **"กูรูลูกหนังสายดุเดือด" (Hardcore Pundit Commentary Engine)**
 
 * **Production URL:** `https://www.fplsawadika.com/` (Cloudflare CDN + GitHub Pages) • **Live Edge API:** `https://api.fplsawadika.com/` (Cloudflare Worker `fpl-live-relay`)
 * **Direct League URLs (9 ลีก = 8 Tier-1 + 1 Tier-2):**
@@ -290,7 +290,7 @@ flowchart TD
    - ผังสนามฟุตบอล 4 ชั้น (GK, DEF, MID, FWD) พร้อมม้านั่งสำรอง
    - แสดงเสื้อแข่งจริงของสโมสร (Official FPL Kits) ทั้งเสื้อผู้เล่นเหย้าและเสื้อผู้รักษาประตู พร้อมเซฟเป็น Local Assets ใน `images/shirts/`
    - มี Badge แสดง Captain (C), Vice-Captain (V), และชิป (3xC, Bench Boost, Free Hit, Wildcard)
-3. **Borbou Commentary Engine (ระบบวิเคราะห์สไตล์ บอ.บู๋):**
+3. **Hardcore Pundit Commentary Engine (ระบบวิเคราะห์สไตล์กูรูลูกหนังสายดุเดือด):**
    - **กฎเหล็ก:** **งดใช้อีโมจิ 100%**, ใช้สำนวนดุดัน กวน ขยี้ ปากจัด แบบคอลัมนิสต์รุ่นเก๋า
    - **Century Club:** มีคำคมพิเศษเฉพาะสำหรับทีมที่ทำแต้มทะลุ 100+ คะแนนในสัปดาห์เดียว
    - **Customizable Note:** แอดมินสามารถพิมพ์แก้ไขบทวิเคราะห์สดได้บนหน้าเว็บ
