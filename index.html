@@ -83,6 +83,18 @@
       var initialLang = 'th';
       try {
         var params = new URLSearchParams(window.location.search);
+        var legacyLeague = (params.get('league') || params.get('l') || '').replace(/[^0-9]/g, '');
+        var legacyTab = params.get('tab') || params.get('view') || '';
+        var legacyGw = params.get('gw') || '';
+        if (legacyLeague || legacyTab || legacyGw) {
+          var targetLid = legacyLeague || '40700';
+          var nextParams = new URLSearchParams(window.location.search);
+          nextParams.delete('league');
+          nextParams.delete('l');
+          var qs = nextParams.toString();
+          window.location.replace('./' + targetLid + '/' + (qs ? '?' + qs : '') + (window.location.hash || ''));
+          return;
+        }
         var urlTheme = params.get('theme');
         var savedTheme = null;
         try { savedTheme = localStorage.getItem('fpl_theme'); } catch (_) {}

@@ -988,7 +988,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </a>
 
           <!-- Jump 4: Global Radar -->
-          <a href="https://www.fplsawadika.com/?tab=radar" target="_blank" rel="noopener"
+          <a href="https://www.fplsawadika.com/40700/?tab=radar" target="_blank" rel="noopener"
             class="p-3 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-purple-500/50 hover:bg-purple-50/20 dark:hover:bg-purple-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
             <div class="space-y-1">
               <div class="text-[10px] font-bold uppercase text-purple-600 dark:text-purple-400 flex items-center justify-between">
