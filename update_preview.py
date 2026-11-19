@@ -415,7 +415,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <meta property="og:title" content="__PAGE_TITLE__">
   <meta property="og:description" content="__PAGE_DESCRIPTION__">
   <meta property="og:url" content="__CANONICAL_URL__">
-  <meta property="og:image" content="https://www.fplsawadika.com/images/icons/og-image.png?v=4">
+  <meta property="og:image" content="https://www.fplsawadika.com/images/icons/og-image.png?v=5">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:locale" content="th_TH">
@@ -423,7 +423,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="__PAGE_TITLE__">
   <meta name="twitter:description" content="__PAGE_DESCRIPTION__">
-  <meta name="twitter:image" content="https://www.fplsawadika.com/images/icons/og-image.png?v=4">
+  <meta name="twitter:image" content="https://www.fplsawadika.com/images/icons/og-image.png?v=5">
 
   <!-- Structured Data (JSON-LD) for Google Search Rich Results -->
   <script type="application/ld+json">
@@ -22246,13 +22246,13 @@ def generate_landing_html(multi_data, leagues_config, site_config):
   <meta property="og:title" content="FPLSaWaDiKa: แดชบอร์ดมินิลีก FPL สำหรับลีกที่มีเงินรางวัล">
   <meta property="og:description" content="เช็คคะแนนสดทุกวินาที คำนวณเงินรางวัลและค่าปรับอัตโนมัติ ไม่ต้องทำ Excel เอง เริ่มต้น 500 บาท/ฤดูกาล">
   <meta property="og:url" content="https://www.fplsawadika.com/">
-  <meta property="og:image" content="https://www.fplsawadika.com/images/icons/og-image.png?v=4">
+  <meta property="og:image" content="https://www.fplsawadika.com/images/icons/og-image.png?v=5">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="FPLSaWaDiKa: แดชบอร์ดมินิลีก FPL สำหรับลีกที่มีเงินรางวัล">
   <meta name="twitter:description" content="เช็คคะแนนสดทุกวินาที คำนวณเงินรางวัลและค่าปรับอัตโนมัติ ไม่ต้องทำ Excel เอง เริ่มต้น 500 บาท/ฤดูกาล">
-  <meta name="twitter:image" content="https://www.fplsawadika.com/images/icons/og-image.png?v=4">
+  <meta name="twitter:image" content="https://www.fplsawadika.com/images/icons/og-image.png?v=5">
 
   <script type="application/ld+json">
 __STRUCTURED_DATA_JSON__
