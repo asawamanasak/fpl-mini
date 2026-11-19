@@ -3087,15 +3087,16 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       outCli.value = cliParts.join(' ');
 
       const cfgObj = {};
+      const isWeeklyLike = (prizeModel === 'weekly' || prizeModel === 'penalties');
       const featObj = {
-        prize_model: prizeModel,
-        has_weekly_prizes: prizeModel === 'weekly' || prizeModel === 'standard' || prizeModel === 'penalties',
+        prize_model: isWeeklyLike ? 'weekly' : (prizeModel === 'monthly' ? 'monthly' : 'standard'),
+        has_weekly_prizes: isWeeklyLike,
         has_monthly_prizes: prizeModel === 'monthly',
         has_weekly_penalties: prizeModel === 'penalties',
         has_settlement_phases: false,
         has_cup: true
       };
-      if ((prizeModel === 'weekly' || prizeModel === 'penalties') && weeklyVal > 0) {
+      if (isWeeklyLike && weeklyVal > 0) {
         featObj.weekly_prize_amount = weeklyVal;
       } else if (prizeModel === 'monthly' && weeklyVal > 0) {
         featObj.monthly_prize_amount = weeklyVal;

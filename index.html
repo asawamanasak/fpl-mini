@@ -24,8 +24,13 @@
   <meta property="og:title" content="FPLSaWaDiKa: แดชบอร์ดมินิลีก FPL สำหรับลีกที่มีเงินรางวัล">
   <meta property="og:description" content="เช็คคะแนนสดทุกวินาที คำนวณเงินรางวัลและค่าปรับอัตโนมัติ ไม่ต้องทำ Excel เอง เริ่มต้น 500 บาท/ฤดูกาล">
   <meta property="og:url" content="https://www.fplsawadika.com/">
-  <meta property="og:image" content="https://www.fplsawadika.com/images/icons/og-image.png">
+  <meta property="og:image" content="https://www.fplsawadika.com/images/icons/og-image.png?v=3">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FPLSaWaDiKa: แดชบอร์ดมินิลีก FPL สำหรับลีกที่มีเงินรางวัล">
+  <meta name="twitter:description" content="เช็คคะแนนสดทุกวินาที คำนวณเงินรางวัลและค่าปรับอัตโนมัติ ไม่ต้องทำ Excel เอง เริ่มต้น 500 บาท/ฤดูกาล">
+  <meta name="twitter:image" content="https://www.fplsawadika.com/images/icons/og-image.png?v=3">
 
   <script type="application/ld+json">
 {
@@ -190,6 +195,8 @@
       --color-line: #06c755;
       --color-line-hover: #05b34c;
       --color-line-ink: oklch(11% 0.015 146);
+      --color-ok-text: #15803d;
+      --color-warn-text: #b45309;
       --theme-chrome: oklch(11.5% 0.014 25);
       --color-arena-scrim-solid: oklch(8.5% 0.012 25 / 0.93);
       --color-arena-scrim-mid: oklch(8.5% 0.012 25 / 0.74);
@@ -219,6 +226,8 @@
       --dark-accent-ink: oklch(100% 0 0);
       --dark-accent-text: oklch(78% 0.16 25);
       --dark-accent-soft: oklch(59% 0.22 25 / 0.18);
+      --dark-ok-text: #4ade80;
+      --dark-warn-text: #fbbf24;
       --dark-chrome: oklch(9% 0.012 25);
 
       caret-color: var(--color-accent);
@@ -247,6 +256,8 @@
       --color-accent-ink: var(--dark-accent-ink);
       --color-accent-text: var(--dark-accent-text);
       --color-accent-soft: var(--dark-accent-soft);
+      --color-ok-text: var(--dark-ok-text);
+      --color-warn-text: var(--dark-warn-text);
       --theme-chrome: var(--dark-chrome);
     }
 
@@ -1867,16 +1878,10 @@
       color: var(--color-ink-2);
     }
     .bm-lookup-status.is-ok {
-      color: #15803d;
-    }
-    html.dark .bm-lookup-status.is-ok {
-      color: #4ade80;
+      color: var(--color-ok-text);
     }
     .bm-lookup-status.is-warn {
-      color: #b45309;
-    }
-    html.dark .bm-lookup-status.is-warn {
-      color: #fbbf24;
+      color: var(--color-warn-text);
     }
 
     .bm-slip-card {
@@ -2233,7 +2238,7 @@
         </div>
 
         <div id="demos-list" class="bm-demo-bars"></div>
-        <p id="demos-note" class="bm-lead-arena" style="margin-top: 1rem; font-size: 0.86rem;">ข้อมูลการแข่งขันจริงในลีกสาธารณะทั้ง 9 ลีก (1,943 ทีม) ซิงค์ล่าสุด 19 พ.ย. 2026, 04:57 น.</p>
+        <p id="demos-note" class="bm-lead-arena" style="margin-top: 1rem; font-size: 0.86rem;">ข้อมูลการแข่งขันจริงในลีกสาธารณะทั้ง 9 ลีก (1,943 ทีม) ซิงค์ล่าสุด 19 พ.ย. 2026, 09:14 น.</p>
       </div>
     </section>
 
@@ -2614,8 +2619,8 @@
         setTxt('demos-title', copy.demos_heading);
         setTypo('demos-sub', copy.demos_lead);
         setTxt('demos-note', this.lang === 'en'
-          ? 'Real public showcase leagues (9 leagues, 1,943 teams), synced 19 พ.ย. 2026, 04:57 น.'
-          : 'ข้อมูลการแข่งขันจริงในลีกสาธารณะทั้ง 9 ลีก (1,943 ทีม) ซิงค์ล่าสุด 19 พ.ย. 2026, 04:57 น.');
+          ? 'Real public showcase leagues (9 leagues, 1,943 teams), synced 19 พ.ย. 2026, 09:14 น.'
+          : 'ข้อมูลการแข่งขันจริงในลีกสาธารณะทั้ง 9 ลีก (1,943 ทีม) ซิงค์ล่าสุด 19 พ.ย. 2026, 09:14 น.');
         this.renderDemos(copy);
 
         setTxt('pricing-title', copy.pricing_heading);

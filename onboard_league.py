@@ -78,15 +78,17 @@ def build_league_entry(
     override_cfg: dict | None = None,
 ) -> dict:
     """Construct a validated config/leagues_config.json record aligned with update_preview.py."""
+    is_weekly_like = prize_model in ("weekly", "penalties")
+    resolved_model = "weekly" if is_weekly_like else ("monthly" if prize_model == "monthly" else "standard")
     features = {
-        "prize_model": prize_model if prize_model != "none" else "standard",
-        "has_weekly_prizes": prize_model in ("weekly", "standard", "penalties"),
+        "prize_model": resolved_model,
+        "has_weekly_prizes": is_weekly_like,
         "has_monthly_prizes": prize_model == "monthly",
         "has_weekly_penalties": prize_model == "penalties",
         "has_settlement_phases": False,
         "has_cup": not no_cup,
     }
-    if prize_model in ("weekly", "penalties") and weekly_prize > 0:
+    if is_weekly_like and weekly_prize > 0:
         features["weekly_prize_amount"] = weekly_prize
     elif prize_model == "monthly" and weekly_prize > 0:
         features["monthly_prize_amount"] = weekly_prize

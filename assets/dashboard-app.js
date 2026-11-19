@@ -10885,7 +10885,8 @@ selectShi62GW(gwName) {
           poolBadge.innerText = poolVal;
         }
 
-        const isWeekly = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
+        const prizesFeat = (this.config && this.config.features) || {};
+        const isWeekly = (prizesFeat.prize_model === 'weekly' || prizesFeat.prize_model === 'penalties' || Boolean(prizesFeat.has_weekly_penalties));
 
         if (isWeekly) {
           const weeklyPrizesConfig = this.config.features.weekly_prizes;
@@ -17688,7 +17689,8 @@ selectShi62GW(gwName) {
             return;
           }
 
-          const isWeekly = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
+          const prizesFeat = (this.config && this.config.features) || {};
+          const isWeekly = (prizesFeat.prize_model === 'weekly' || prizesFeat.prize_model === 'penalties' || Boolean(prizesFeat.has_weekly_penalties));
           const isFinished = Boolean(gwData.is_finished);
           const scoreProp = 'net_points';
           const useHighestPlayerTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
@@ -18539,7 +18541,7 @@ ${this.getPublicLeagueUrl()}`;
           // ====================================================
           const prizeRows = [];
           const feat = (this.config && this.config.features) || {};
-          const isWeekly = (feat.prize_model === 'weekly');
+          const isWeekly = (feat.prize_model === 'weekly' || feat.prize_model === 'penalties' || Boolean(feat.has_weekly_penalties));
           const hasWeeklyPenalties = Boolean(feat.has_weekly_penalties);
 
           if (isWeekly) {

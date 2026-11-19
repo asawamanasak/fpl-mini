@@ -415,7 +415,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <meta property="og:title" content="__PAGE_TITLE__">
   <meta property="og:description" content="__PAGE_DESCRIPTION__">
   <meta property="og:url" content="__CANONICAL_URL__">
-  <meta property="og:image" content="https://www.fplsawadika.com/images/icons/og-image.png">
+  <meta property="og:image" content="https://www.fplsawadika.com/images/icons/og-image.png?v=3">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:locale" content="th_TH">
@@ -423,7 +423,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="__PAGE_TITLE__">
   <meta name="twitter:description" content="__PAGE_DESCRIPTION__">
-  <meta name="twitter:image" content="https://www.fplsawadika.com/images/icons/og-image.png">
+  <meta name="twitter:image" content="https://www.fplsawadika.com/images/icons/og-image.png?v=3">
 
   <!-- Structured Data (JSON-LD) for Google Search Rich Results -->
   <script type="application/ld+json">
@@ -14079,7 +14079,8 @@ selectShi62GW(gwName) {
           poolBadge.innerText = poolVal;
         }
 
-        const isWeekly = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
+        const prizesFeat = (this.config && this.config.features) || {};
+        const isWeekly = (prizesFeat.prize_model === 'weekly' || prizesFeat.prize_model === 'penalties' || Boolean(prizesFeat.has_weekly_penalties));
 
         if (isWeekly) {
           const weeklyPrizesConfig = this.config.features.weekly_prizes;
@@ -20522,7 +20523,8 @@ selectShi62GW(gwName) {
             return;
           }
 
-          const isWeekly = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
+          const prizesFeat = (this.config && this.config.features) || {};
+          const isWeekly = (prizesFeat.prize_model === 'weekly' || prizesFeat.prize_model === 'penalties' || Boolean(prizesFeat.has_weekly_penalties));
           const isFinished = Boolean(gwData.is_finished);
           const scoreProp = 'net_points';
           const useHighestPlayerTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
@@ -21309,7 +21311,7 @@ selectShi62GW(gwName) {
           // ====================================================
           const prizeRows = [];
           const feat = (this.config && this.config.features) || {};
-          const isWeekly = (feat.prize_model === 'weekly');
+          const isWeekly = (feat.prize_model === 'weekly' || feat.prize_model === 'penalties' || Boolean(feat.has_weekly_penalties));
           const hasWeeklyPenalties = Boolean(feat.has_weekly_penalties);
 
           if (isWeekly) {
@@ -22559,8 +22561,13 @@ def generate_landing_html(multi_data, leagues_config, site_config):
   <meta property="og:title" content="FPLSaWaDiKa: แดชบอร์ดมินิลีก FPL สำหรับลีกที่มีเงินรางวัล">
   <meta property="og:description" content="เช็คคะแนนสดทุกวินาที คำนวณเงินรางวัลและค่าปรับอัตโนมัติ ไม่ต้องทำ Excel เอง เริ่มต้น 500 บาท/ฤดูกาล">
   <meta property="og:url" content="https://www.fplsawadika.com/">
-  <meta property="og:image" content="https://www.fplsawadika.com/images/icons/og-image.png">
+  <meta property="og:image" content="https://www.fplsawadika.com/images/icons/og-image.png?v=3">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FPLSaWaDiKa: แดชบอร์ดมินิลีก FPL สำหรับลีกที่มีเงินรางวัล">
+  <meta name="twitter:description" content="เช็คคะแนนสดทุกวินาที คำนวณเงินรางวัลและค่าปรับอัตโนมัติ ไม่ต้องทำ Excel เอง เริ่มต้น 500 บาท/ฤดูกาล">
+  <meta name="twitter:image" content="https://www.fplsawadika.com/images/icons/og-image.png?v=3">
 
   <script type="application/ld+json">
 __STRUCTURED_DATA_JSON__
@@ -22684,6 +22691,8 @@ __STRUCTURED_DATA_JSON__
       --color-line: #06c755;
       --color-line-hover: #05b34c;
       --color-line-ink: oklch(11% 0.015 146);
+      --color-ok-text: #15803d;
+      --color-warn-text: #b45309;
       --theme-chrome: oklch(11.5% 0.014 25);
       --color-arena-scrim-solid: oklch(8.5% 0.012 25 / 0.93);
       --color-arena-scrim-mid: oklch(8.5% 0.012 25 / 0.74);
@@ -22713,6 +22722,8 @@ __STRUCTURED_DATA_JSON__
       --dark-accent-ink: oklch(100% 0 0);
       --dark-accent-text: oklch(78% 0.16 25);
       --dark-accent-soft: oklch(59% 0.22 25 / 0.18);
+      --dark-ok-text: #4ade80;
+      --dark-warn-text: #fbbf24;
       --dark-chrome: oklch(9% 0.012 25);
 
       caret-color: var(--color-accent);
@@ -22741,6 +22752,8 @@ __STRUCTURED_DATA_JSON__
       --color-accent-ink: var(--dark-accent-ink);
       --color-accent-text: var(--dark-accent-text);
       --color-accent-soft: var(--dark-accent-soft);
+      --color-ok-text: var(--dark-ok-text);
+      --color-warn-text: var(--dark-warn-text);
       --theme-chrome: var(--dark-chrome);
     }
 
@@ -24361,16 +24374,10 @@ __STRUCTURED_DATA_JSON__
       color: var(--color-ink-2);
     }
     .bm-lookup-status.is-ok {
-      color: #15803d;
-    }
-    html.dark .bm-lookup-status.is-ok {
-      color: #4ade80;
+      color: var(--color-ok-text);
     }
     .bm-lookup-status.is-warn {
-      color: #b45309;
-    }
-    html.dark .bm-lookup-status.is-warn {
-      color: #fbbf24;
+      color: var(--color-warn-text);
     }
 
     .bm-slip-card {
