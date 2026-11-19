@@ -3935,7 +3935,21 @@
         if (trialBadge) {
           const isTrial = this.isLeagueTrial();
           trialBadge.classList.toggle('hidden', !isTrial);
-          trialBadge.textContent = isEn ? 'TRIAL' : 'ทดลองใช้';
+          const expRaw = (this.config && typeof this.config.expires_at === 'string') ? this.config.expires_at.trim() : '';
+          if (isTrial && /^\d{4}-\d{2}-\d{2}$/.test(expRaw)) {
+            const parts = expRaw.split('-').map(n => parseInt(n, 10));
+            const dt = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+            const thMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            const enMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const mIdx = dt.getUTCMonth();
+            const dayNum = dt.getUTCDate();
+            const shortDate = isEn ? `${enMonths[mIdx]} ${dayNum}` : `${dayNum} ${thMonths[mIdx]}`;
+            trialBadge.textContent = isEn ? `TRIAL · til ${shortDate}` : `ทดลองใช้ · ถึง ${shortDate}`;
+            trialBadge.title = isEn ? `Trial expires on ${expRaw}` : `ทดลองใช้งานถึงวันที่ ${expRaw}`;
+          } else {
+            trialBadge.textContent = isEn ? 'TRIAL' : 'ทดลองใช้';
+            trialBadge.removeAttribute('title');
+          }
         }
         const availableLeaguesCount = Object.keys((this.multiData && this.multiData.leagues) || {}).length;
         const isSingleLeague = availableLeaguesCount <= 1;

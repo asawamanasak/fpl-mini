@@ -1130,10 +1130,41 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         </div>
       </div>
 
-      <!-- Sortable & Sticky 8-League Table -->
+      <!-- Expiry Alert Banner & Customer Lifecycle Filter Bar -->
+      <div id="portfolioExpiryAlert" role="status" class="hidden p-3.5 rounded-xl border border-amber-500/35 bg-amber-500/10 text-amber-900 dark:text-amber-200 text-xs leading-relaxed"></div>
+
+      <div id="portfolioLifecycleFilters" role="group" aria-label="Customer lifecycle filters" class="flex flex-wrap items-center gap-2">
+        <button type="button" data-portfolio-filter="all" aria-pressed="true"
+          class="pf-filter-btn min-h-[40px] sm:min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium border border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 inline-flex items-center gap-1.5 transition-colors">
+          <span data-i18n="pf_filter_all">ทั้งหมด</span>
+          <span id="pfCount-all" class="mono text-[11px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">9</span>
+        </button>
+        <button type="button" data-portfolio-filter="private" aria-pressed="false"
+          class="pf-filter-btn min-h-[40px] sm:min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 transition-colors">
+          <span data-i18n="pf_filter_private">ลูกค้าส่วนตัว (Private)</span>
+          <span id="pfCount-private" class="mono text-[11px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">0</span>
+        </button>
+        <button type="button" data-portfolio-filter="expiring" aria-pressed="false"
+          class="pf-filter-btn min-h-[40px] sm:min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 transition-colors">
+          <span data-i18n="pf_filter_expiring">ทดลองใช้ / ใกล้หมดอายุ</span>
+          <span id="pfCount-expiring" class="mono text-[11px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">0</span>
+        </button>
+        <button type="button" data-portfolio-filter="paused" aria-pressed="false"
+          class="pf-filter-btn min-h-[40px] sm:min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 transition-colors">
+          <span data-i18n="pf_filter_paused">พักระบบ (Paused)</span>
+          <span id="pfCount-paused" class="mono text-[11px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">0</span>
+        </button>
+        <button type="button" data-portfolio-filter="showcase" aria-pressed="false"
+          class="pf-filter-btn min-h-[40px] sm:min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 transition-colors">
+          <span data-i18n="pf_filter_showcase">ลีกตัวอย่าง (Showcase)</span>
+          <span id="pfCount-showcase" class="mono text-[11px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">9</span>
+        </button>
+      </div>
+
+      <!-- Sortable & Sticky Portfolio + Lifecycle Table -->
       <div class="rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark overflow-hidden">
         <div class="overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500" tabindex="0" role="region" aria-labelledby="sec-portfolio-title">
-          <table class="w-full text-left border-collapse min-w-[780px]">
+          <table class="w-full text-left border-collapse min-w-[960px]">
             <thead>
               <tr class="border-b border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300">
                 <th scope="col" id="th-name" aria-sort="none" class="sticky left-0 z-10 bg-raisedLight dark:bg-raisedDark p-0 border-r border-borderLight dark:border-borderDark">
@@ -1167,6 +1198,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                     <span id="sort-icon-retention" class="text-slate-500 dark:text-neutral-400">${ICONS.sort}</span>
                   </button>
                 </th>
+                <th scope="col" id="th-status" aria-sort="none" class="p-0">
+                  <button type="button" onclick="sortLeagueTable('status')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-between gap-1.5 hover:text-slate-900 dark:hover:text-white font-medium whitespace-nowrap">
+                    <span data-i18n="col_lifecycle">สถานะ & หมดอายุ</span>
+                    <span id="sort-icon-status" class="text-slate-500 dark:text-neutral-400">${ICONS.sort}</span>
+                  </button>
+                </th>
+                <th scope="col" class="px-4 py-2.5 text-right font-medium whitespace-nowrap" data-i18n="col_actions">จัดการสิทธิ์</th>
               </tr>
             </thead>
             <tbody id="leagueTableBody" class="divide-y divide-borderLight dark:divide-borderDark text-xs">
@@ -1271,6 +1309,50 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Inline Customer Lifecycle Management Panel -->
+      <div id="lifecycleActionPanel" class="hidden p-5 rounded-xl border border-emerald-500/35 bg-cardLight dark:bg-cardDark space-y-4">
+        <div class="flex flex-wrap items-start justify-between gap-3 border-b border-borderLight dark:border-borderDark pb-3">
+          <div class="space-y-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
+              <h3 id="lcPanelTitle" class="text-sm sm:text-base font-semibold text-slate-900 dark:text-white">-</h3>
+              <span id="lcPanelBadges" class="inline-flex flex-wrap items-center gap-1.5 text-[11px] mono"></span>
+            </div>
+            <p id="lcPanelMeta" class="text-xs mono text-slate-600 dark:text-neutral-400">-</p>
+            <p id="lcPanelBillingNote" class="hidden text-xs text-amber-800 dark:text-amber-300 bg-amber-500/10 border border-amber-500/25 rounded-md px-2.5 py-1"></p>
+          </div>
+          <button type="button" id="btnCloseLifecyclePanel" aria-label="Close lifecycle panel"
+            class="min-w-[44px] min-h-[44px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-200 hover:bg-slate-200 dark:hover:bg-neutral-800 transition-colors">
+            ✕
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <label for="lcOutRenewCli" id="lcLblRenew" class="text-xs font-semibold text-slate-800 dark:text-neutral-200">1. ต่ออายุ / เปิดเต็มระบบ (Active)</label>
+              <button type="button" data-copy-target="lcOutRenewCli" class="onb-copy-btn min-h-[36px] px-2.5 py-1 rounded border border-borderLight dark:border-borderDark text-xs mono hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
+            </div>
+            <textarea id="lcOutRenewCli" readonly rows="4" class="w-full p-3 rounded-lg border border-borderLight dark:border-borderDark bg-slate-950 text-emerald-300 text-xs mono leading-relaxed"></textarea>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <label for="lcOutPauseCli" id="lcLblPause" class="text-xs font-semibold text-slate-800 dark:text-neutral-200">2. พักระบบชั่วคราว (Paused)</label>
+              <button type="button" data-copy-target="lcOutPauseCli" class="onb-copy-btn min-h-[36px] px-2.5 py-1 rounded border border-borderLight dark:border-borderDark text-xs mono hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
+            </div>
+            <textarea id="lcOutPauseCli" readonly rows="4" class="w-full p-3 rounded-lg border border-borderLight dark:border-borderDark bg-slate-950 text-amber-300 text-xs mono leading-relaxed"></textarea>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <label for="lcOutLineMsg" id="lcLblLine" class="text-xs font-semibold text-slate-800 dark:text-neutral-200">3. ข้อความแจ้งเตือนต่ออายุทาง LINE</label>
+              <button type="button" data-copy-target="lcOutLineMsg" class="onb-copy-btn min-h-[36px] px-2.5 py-1 rounded border border-borderLight dark:border-borderDark text-xs mono hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
+            </div>
+            <textarea id="lcOutLineMsg" readonly rows="4" class="w-full p-3 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-900 dark:text-neutral-100 text-xs leading-relaxed"></textarea>
+          </div>
         </div>
       </div>
     </section>
@@ -2008,7 +2090,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
           <div class="space-y-1.5">
             <label for="onbTenantGroup" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_tenant">Tenant Group (แยกการมองเห็น)</label>
             <input id="onbTenantGroup" type="text" placeholder="private_<id> (auto)"
@@ -2026,6 +2108,23 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <input id="onbShortName" type="text" placeholder="Auto from FPL name"
               class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs text-slate-900 dark:text-white" />
           </div>
+          <div class="space-y-1.5">
+            <label for="onbExpiresAt" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_expires">วันหมดอายุ (Expires At)</label>
+            <input id="onbExpiresAt" type="date"
+              class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs mono text-slate-900 dark:text-white" />
+          </div>
+          <div class="space-y-1.5">
+            <label for="onbBillingNote" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_billing">บันทึกแอดมิน (Admin Only)</label>
+            <input id="onbBillingNote" type="text" placeholder="e.g. LINE @admin · Paid 500"
+              class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs text-slate-900 dark:text-white" />
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-4">
+          <label for="onbNoCup" class="inline-flex items-center gap-2 min-h-[44px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight/60 dark:bg-raisedDark/60 text-xs font-medium text-slate-800 dark:text-neutral-200 cursor-pointer">
+            <input id="onbNoCup" type="checkbox" class="rounded border-slate-400 text-emerald-600 focus:ring-emerald-500" />
+            <span data-i18n="onb_lbl_nocup">ปิดแท็บบอลถ้วย (--no-cup สำหรับลีกที่ไม่ได้เตะบอลถ้วย)</span>
+          </label>
         </div>
 
         <div id="onbInspectStatus" role="status" class="hidden p-3 rounded-lg text-xs border"></div>
@@ -2375,6 +2474,16 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         onb_lbl_tenant: 'Tenant Group (แยกการมองเห็น)',
         onb_lbl_visibility: 'การมองเห็น & SEO',
         onb_lbl_short: 'ชื่อย่อหน้าลีก (Short Name)',
+        onb_lbl_expires: 'วันหมดอายุ (Expires At)',
+        onb_lbl_billing: 'บันทึกแอดมิน (Admin Only)',
+        onb_lbl_nocup: 'ปิดแท็บบอลถ้วย (--no-cup สำหรับลีกที่ไม่ได้เตะบอลถ้วย)',
+        col_lifecycle: 'สถานะ & หมดอายุ',
+        col_actions: 'จัดการสิทธิ์',
+        pf_filter_all: 'ทั้งหมด',
+        pf_filter_private: 'ลูกค้าส่วนตัว (Private)',
+        pf_filter_expiring: 'ทดลองใช้ / ใกล้หมดอายุ',
+        pf_filter_paused: 'พักระบบ (Paused)',
+        pf_filter_showcase: 'ลีกตัวอย่าง (Showcase)',
         onb_teams_hint: 'ติ๊กเลือกทีมที่ไม่ร่วมชิงรางวัล (non_prize_teams) หากมี:',
         onb_out_cli: '1. คำสั่ง CLI (รันบนเครื่องเพื่อเปิดลีก)',
         onb_out_json: '2. Config JSON (leagues_config.json)',
@@ -2662,6 +2771,16 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         onb_lbl_tenant: 'Tenant Group (Visibility Scope)',
         onb_lbl_visibility: 'Visibility & SEO',
         onb_lbl_short: 'Short Display Name',
+        onb_lbl_expires: 'Expiry Date (Expires At)',
+        onb_lbl_billing: 'Admin Note (Private Only)',
+        onb_lbl_nocup: 'Disable Knockout Cup Tab (--no-cup)',
+        col_lifecycle: 'Lifecycle & Expiry',
+        col_actions: 'Manage',
+        pf_filter_all: 'All Leagues',
+        pf_filter_private: 'Private Customers',
+        pf_filter_expiring: 'Trial / Expiring ≤14d',
+        pf_filter_paused: 'Paused',
+        pf_filter_showcase: 'Showcase Demos',
         onb_teams_hint: 'Select any teams excluded from prize calculations (non_prize_teams):',
         onb_out_cli: '1. CLI Onboarding Command',
         onb_out_json: '2. Config JSON (leagues_config.json)',
@@ -2673,19 +2792,21 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     // 2. PORTFOLIO DATASET & SORTING ENGINE
     // =========================================================================
     let LEAGUE_PORTFOLIO = [
-      { id: '40700', name: 'เซียนอยู่รู หมูอยู่ตึก', badge: 'Flagship', teams: 12, pool: 20000, modulesTh: 'รางวัลรายสัปดาห์ 300 บ. · บอลถ้วย · หักชำระรายงวด', modulesEn: 'Weekly 300 THB · Cup · Settlement Phases', views: 4820, retention: 98.5 },
-      { id: '675290', name: 'NudNee', badge: '', teams: 60, pool: 36000, modulesTh: 'รางวัลรายเดือน · บอลถ้วย Knock-out · การกุศล', modulesEn: 'Monthly · Knock-out Cup · Charity', views: 3610, retention: 94.8 },
-      { id: '38491', name: 'รอ แมน โอน', badge: '', teams: 16, pool: 28500, modulesTh: 'รางวัลรายสัปดาห์ · บอลถ้วย · หักชำระรายงวด', modulesEn: 'Weekly · Cup · Settlement Phases', views: 1490, retention: 93.2 },
-      { id: '1101958', name: "Barley's Official League", badge: '', teams: 17, pool: 103200, modulesTh: 'ตารางรางวัลรายสัปดาห์หลายขั้น · บอลถ้วย · บัญชีเงินรางวัล', modulesEn: 'Weekly Tier Prizes · Cup · Ledger', views: 980, retention: 95.0 },
-      { id: '438691', name: '2 spade', badge: '', teams: 13, pool: 68400, modulesTh: 'รางวัลรายสัปดาห์ · ค่าปรับบ๊วย 5 อันดับ · บอลถ้วย', modulesEn: 'Weekly · Bottom-5 Penalty · Cup', views: 810, retention: 92.4 },
-      { id: '187827', name: 'Shi62', badge: '', teams: 13, pool: 3100, modulesTh: 'Zero-Sum ขั้นบันไดทั้งปี · พิเศษครึ่งฤดูกาลหลัง', modulesEn: 'Zero-Sum Annual Tiers · 2nd Half Special', views: 740, retention: 91.8 },
-      { id: '5349', name: 'Bramann League', badge: '', teams: 20, pool: 9500, modulesTh: 'เงินรางวัลคู่ · ทายผล & ชาเลนจ์รายสัปดาห์', modulesEn: 'Dual Prize · Prediction & Challenge', views: 860, retention: 90.5 },
-      { id: '567387', name: 'Fantasy Nguan & friends cup', badge: 'Community', teams: 12, pool: 0, poolLabelTh: 'คอมมูนิตี้', poolLabelEn: 'Community', modulesTh: 'ลีกคอมมูนิตี้ · ตารางคะแนนสด · ผัง 11 ตัวจริง', modulesEn: 'Community · Live Matrix · Pitch Modal', views: 2190, retention: 88.4 },
-      { id: '139836', name: 'FPL Growth Mindset 2026/27', badge: 'Tier 2', teams: 1780, pool: 0, poolLabelTh: 'เสื้อบอลแท้', poolLabelEn: 'Official Shirt', modulesTh: 'Tier 2 Standings & Leaderboard · ค้นหา 1,780 ทีมทันที', modulesEn: 'Tier 2 Standings & Leaderboard · 1,780-Team Search', views: 0, retention: 91.2 }
+      { id: '40700', name: 'เซียนอยู่รู หมูอยู่ตึก', badge: 'Flagship', teams: 12, pool: 20000, modulesTh: 'รางวัลรายสัปดาห์ 300 บ. · บอลถ้วย · หักชำระรายงวด', modulesEn: 'Weekly 300 THB · Cup · Settlement Phases', views: 4820, retention: 98.5, plan: 'standard', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
+      { id: '675290', name: 'NudNee', badge: '', teams: 60, pool: 36000, modulesTh: 'รางวัลรายเดือน · บอลถ้วย Knock-out · การกุศล', modulesEn: 'Monthly · Knock-out Cup · Charity', views: 3610, retention: 94.8, plan: 'standard', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
+      { id: '38491', name: 'รอ แมน โอน', badge: '', teams: 16, pool: 28500, modulesTh: 'รางวัลรายสัปดาห์ · บอลถ้วย · หักชำระรายงวด', modulesEn: 'Weekly · Cup · Settlement Phases', views: 1490, retention: 93.2, plan: 'standard', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
+      { id: '1101958', name: "Barley's Official League", badge: '', teams: 17, pool: 103200, modulesTh: 'ตารางรางวัลรายสัปดาห์หลายขั้น · บอลถ้วย · บัญชีเงินรางวัล', modulesEn: 'Weekly Tier Prizes · Cup · Ledger', views: 980, retention: 95.0, plan: 'standard', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
+      { id: '438691', name: '2 spade', badge: '', teams: 13, pool: 68400, modulesTh: 'รางวัลรายสัปดาห์ · ค่าปรับบ๊วย 5 อันดับ · บอลถ้วย', modulesEn: 'Weekly · Bottom-5 Penalty · Cup', views: 810, retention: 92.4, plan: 'standard', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
+      { id: '187827', name: 'Shi62', badge: '', teams: 13, pool: 3100, modulesTh: 'Zero-Sum ขั้นบันไดทั้งปี · พิเศษครึ่งฤดูกาลหลัง', modulesEn: 'Zero-Sum Annual Tiers · 2nd Half Special', views: 740, retention: 91.8, plan: 'custom', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
+      { id: '5349', name: 'Bramann League', badge: '', teams: 20, pool: 9500, modulesTh: 'เงินรางวัลคู่ · ทายผล & ชาเลนจ์รายสัปดาห์', modulesEn: 'Dual Prize · Prediction & Challenge', views: 860, retention: 90.5, plan: 'custom', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
+      { id: '567387', name: 'Fantasy Nguan & friends cup', badge: 'Community', teams: 12, pool: 0, poolLabelTh: 'คอมมูนิตี้', poolLabelEn: 'Community', modulesTh: 'ลีกคอมมูนิตี้ · ตารางคะแนนสด · ผัง 11 ตัวจริง', modulesEn: 'Community · Live Matrix · Pitch Modal', views: 2190, retention: 88.4, plan: 'standard', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
+      { id: '139836', name: 'FPL Growth Mindset 2026/27', badge: 'Tier 2', teams: 1780, pool: 0, poolLabelTh: 'เสื้อบอลแท้', poolLabelEn: 'Official Shirt', modulesTh: 'Tier 2 Standings & Leaderboard · ค้นหา 1,780 ทีมทันที', modulesEn: 'Tier 2 Standings & Leaderboard · 1,780-Team Search', views: 0, retention: 91.2, plan: 'tier2_beta', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' }
     ];
 
     let currentSortKey = 'pool';
     let currentSortDir = 'desc';
+    let currentPortfolioFilter = 'all';
+    let selectedLifecycleLeagueId = null;
     let currentChartMode = 'hourly';
     let currentMonitorMode = '24h';
     let currentDeviceWindow = '30d';
@@ -2760,13 +2881,246 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       return document.documentElement.lang === 'en' ? 'en' : 'th';
     }
 
+    function matchesPortfolioFilter(row, filterKey) {
+      if (filterKey === 'private') return row.visibility === 'private';
+      if (filterKey === 'showcase') return row.visibility !== 'private';
+      if (filterKey === 'paused') return row.status === 'paused';
+      if (filterKey === 'expiring') {
+        return row.status === 'trial' || row.expiry_alert === 'expiring_soon' || row.expiry_alert === 'expired';
+      }
+      return true;
+    }
+
+    function getExpirySortRank(row) {
+      if (row.expiry_alert === 'expired') return 0;
+      if (row.expiry_alert === 'expiring_soon') return 1;
+      if (row.status === 'trial') return 2;
+      if (row.status === 'paused') return 3;
+      if (typeof row.days_remaining === 'number') return 10 + row.days_remaining;
+      return 10000;
+    }
+
+    function getLifecycleBadgeHtml(row, lang) {
+      const status = row.status || 'active';
+      const vis = row.visibility === 'private' ? 'private' : 'showcase';
+      const statusCls = status === 'paused'
+        ? 'bg-rose-500/15 text-rose-800 dark:text-rose-300 border-rose-500/30'
+        : (status === 'trial'
+          ? 'bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30'
+          : 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border-emerald-500/30');
+      const statusLbl = status.toUpperCase();
+      const visCls = vis === 'private'
+        ? 'bg-sky-500/15 text-sky-800 dark:text-sky-300 border-sky-500/30'
+        : 'bg-slate-500/10 text-slate-700 dark:text-neutral-300 border-slate-400/30';
+      const visLbl = vis === 'private' ? 'Private' : 'Showcase';
+      const planLbl = String(row.plan || 'standard').toUpperCase();
+
+      let expLine = '';
+      if (row.expires_at) {
+        const d = row.days_remaining;
+        let remText = '';
+        let expTextCls = 'text-slate-600 dark:text-neutral-400';
+        if (typeof d === 'number') {
+          if (d < 0) {
+            remText = lang === 'en' ? (' (expired ' + Math.abs(d) + 'd ago)') : (' (เลยกำหนด ' + Math.abs(d) + ' วัน)');
+            expTextCls = 'text-rose-700 dark:text-rose-400 font-semibold';
+          } else if (d <= 14) {
+            remText = lang === 'en' ? (' (' + d + 'd left)') : (' (เหลือ ' + d + ' วัน)');
+            expTextCls = 'text-amber-800 dark:text-amber-300 font-semibold';
+          } else {
+            remText = lang === 'en' ? (' (' + d + 'd)') : (' (' + d + ' วัน)');
+          }
+        }
+        expLine = '<div class="text-[11px] mono mt-1 ' + expTextCls + '">' + escHtml(row.expires_at + remText) + '</div>';
+      } else {
+        expLine = '<div class="text-[11px] mono mt-1 text-slate-500 dark:text-neutral-400">' + escHtml(planLbl) + ' · —</div>';
+      }
+
+      return '<div class="flex flex-wrap items-center gap-1">' +
+        '<span class="px-1.5 py-0.5 rounded border text-[10px] font-semibold mono ' + statusCls + '">' + escHtml(statusLbl) + '</span>' +
+        '<span class="px-1.5 py-0.5 rounded border text-[10px] font-medium mono ' + visCls + '">' + escHtml(visLbl) + '</span>' +
+      '</div>' + expLine;
+    }
+
+    function renderPortfolioFilterCounts() {
+      const counts = {
+        all: LEAGUE_PORTFOLIO.length,
+        private: LEAGUE_PORTFOLIO.filter(r => matchesPortfolioFilter(r, 'private')).length,
+        expiring: LEAGUE_PORTFOLIO.filter(r => matchesPortfolioFilter(r, 'expiring')).length,
+        paused: LEAGUE_PORTFOLIO.filter(r => matchesPortfolioFilter(r, 'paused')).length,
+        showcase: LEAGUE_PORTFOLIO.filter(r => matchesPortfolioFilter(r, 'showcase')).length,
+      };
+      Object.entries(counts).forEach(([k, val]) => {
+        const el = document.getElementById('pfCount-' + k);
+        if (el) el.textContent = String(val);
+      });
+      document.querySelectorAll('.pf-filter-btn').forEach((btn) => {
+        const key = btn.getAttribute('data-portfolio-filter');
+        const active = key === currentPortfolioFilter;
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+        btn.className = active
+          ? 'pf-filter-btn min-h-[40px] sm:min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium border border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 inline-flex items-center gap-1.5 transition-colors'
+          : 'pf-filter-btn min-h-[40px] sm:min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 transition-colors';
+      });
+    }
+
+    function renderExpiryAlertBanner(lang) {
+      const banner = document.getElementById('portfolioExpiryAlert');
+      if (!banner) return;
+      const flagged = LEAGUE_PORTFOLIO.filter(r => r.expiry_alert === 'expired' || r.expiry_alert === 'expiring_soon');
+      if (!flagged.length) {
+        banner.classList.add('hidden');
+        banner.replaceChildren();
+        return;
+      }
+      const namesList = flagged.map((r) => {
+        const d = typeof r.days_remaining === 'number'
+          ? (r.days_remaining < 0 ? (lang === 'en' ? 'expired' : 'หมดอายุแล้ว') : (lang === 'en' ? r.days_remaining + 'd left' : 'เหลือ ' + r.days_remaining + ' วัน'))
+          : (r.expires_at || '');
+        return r.name + ' (ID ' + r.id + ': ' + d + ')';
+      }).join(' · ');
+      const title = lang === 'en'
+        ? 'Renewal / Trial Alert (' + flagged.length + ' league' + (flagged.length > 1 ? 's' : '') + ' expiring within 14 days or expired): '
+        : 'แจ้งเตือนต่ออายุ / ใกล้หมดช่วงทดลองใช้ (' + flagged.length + ' ลีกภายใน 14 วัน): ';
+      const strong = document.createElement('strong');
+      strong.textContent = title;
+      const span = document.createElement('span');
+      span.textContent = namesList;
+      banner.replaceChildren(strong, span);
+      banner.classList.remove('hidden');
+    }
+
+    function openLifecycleActionPanel(leagueId) {
+      selectedLifecycleLeagueId = String(leagueId || '');
+      renderLifecycleActionPanel();
+      const panel = document.getElementById('lifecycleActionPanel');
+      if (panel && !panel.classList.contains('hidden')) {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    function renderLifecycleActionPanel() {
+      const panel = document.getElementById('lifecycleActionPanel');
+      if (!panel) return;
+      const row = selectedLifecycleLeagueId
+        ? LEAGUE_PORTFOLIO.find(r => String(r.id) === String(selectedLifecycleLeagueId))
+        : null;
+      if (!row) {
+        panel.classList.add('hidden');
+        return;
+      }
+      const lang = getLang();
+      const titleEl = document.getElementById('lcPanelTitle');
+      const badgesEl = document.getElementById('lcPanelBadges');
+      const metaEl = document.getElementById('lcPanelMeta');
+      const noteEl = document.getElementById('lcPanelBillingNote');
+      const renewTa = document.getElementById('lcOutRenewCli');
+      const pauseTa = document.getElementById('lcOutPauseCli');
+      const lineTa = document.getElementById('lcOutLineMsg');
+      const lblRenew = document.getElementById('lcLblRenew');
+      const lblPause = document.getElementById('lcLblPause');
+      const lblLine = document.getElementById('lcLblLine');
+
+      if (titleEl) titleEl.textContent = row.name + ' (ID: ' + row.id + ')';
+      if (badgesEl) {
+        const makeBadge = (txt) => {
+          const s = document.createElement('span');
+          s.className = 'px-2 py-0.5 rounded border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-700 dark:text-neutral-200';
+          s.textContent = txt;
+          return s;
+        };
+        badgesEl.replaceChildren(
+          makeBadge((row.status || 'active').toUpperCase()),
+          makeBadge(row.visibility === 'private' ? 'PRIVATE' : 'SHOWCASE'),
+          makeBadge(String(row.plan || 'standard').toUpperCase())
+        );
+      }
+      if (metaEl) {
+        const expText = row.expires_at
+          ? (row.expires_at + (typeof row.days_remaining === 'number' ? ' (' + row.days_remaining + 'd)' : ''))
+          : (lang === 'en' ? 'No expiry set' : 'ยังไม่กำหนดวันหมดอายุ');
+        metaEl.textContent = 'Tenant: ' + (row.tenant_group || 'showcase') +
+          (lang === 'en' ? ' · Expires: ' : ' · วันหมดอายุ: ') + expText;
+      }
+      if (noteEl) {
+        if (row.billing_note) {
+          noteEl.textContent = (lang === 'en' ? 'Admin Note: ' : 'โน้ตแอดมิน (เฉพาะภายใน): ') + row.billing_note;
+          noteEl.classList.remove('hidden');
+        } else {
+          noteEl.textContent = '';
+          noteEl.classList.add('hidden');
+        }
+      }
+      if (lblRenew) lblRenew.textContent = lang === 'en' ? '1. Activate / Renew (Active)' : '1. ต่ออายุ / เปิดเต็มระบบ (Active)';
+      if (lblPause) lblPause.textContent = lang === 'en' ? '2. Pause Subscription (Paused)' : '2. พักระบบชั่วคราว (Paused)';
+      if (lblLine) lblLine.textContent = lang === 'en' ? '3. Customer LINE Renewal Notice' : '3. ข้อความแจ้งเตือนต่ออายุทาง LINE';
+
+      if (renewTa) {
+        renewTa.value = 'python3 onboard_league.py --league-id ' + row.id + ' --update-lifecycle --status active --expires-at 2027-06-01';
+      }
+      if (pauseTa) {
+        pauseTa.value = 'python3 onboard_league.py --league-id ' + row.id + ' --update-lifecycle --status paused --skip-sync';
+      }
+      if (lineTa) {
+        const dashUrl = 'https://www.fplsawadika.com/' + row.id + '/';
+        const expDisplay = row.expires_at || 'ฤดูกาล 2026/27';
+        lineTa.value = lang === 'en'
+          ? ('FPLSaWaDiKa Renewal Reminder for "' + row.name + '" (ID: ' + row.id + ')\\n'
+            + 'Dashboard: ' + dashUrl + '\\n'
+            + 'Current period ends: ' + (row.expires_at || 'End of 2026/27 Season') + '\\n'
+            + 'Reply here to renew and keep live matchday scores active!')
+          : ('แจ้งเตือนสถานะระบบ FPLSaWaDiKa สำหรับลีก "' + row.name + '" (ID: ' + row.id + ')\\n'
+            + 'ลิงก์แดชบอร์ด: ' + dashUrl + '\\n'
+            + 'วันครบกำหนดรอบปัจจุบัน: ' + expDisplay + '\\n'
+            + 'หากต้องการต่ออายุใช้งานต่อเนื่องตลอดฤดูกาล แจ้งแอดมินทางแชทนี้ได้เลยครับ');
+      }
+      panel.classList.remove('hidden');
+    }
+
+    function initPortfolioLifecycleControls() {
+      const filtersWrap = document.getElementById('portfolioLifecycleFilters');
+      if (filtersWrap) {
+        filtersWrap.addEventListener('click', (e) => {
+          const btn = e.target && e.target.closest ? e.target.closest('[data-portfolio-filter]') : null;
+          if (!btn) return;
+          currentPortfolioFilter = btn.getAttribute('data-portfolio-filter') || 'all';
+          renderLeagueTable();
+        });
+      }
+      const tbody = document.getElementById('leagueTableBody');
+      if (tbody) {
+        tbody.addEventListener('click', (e) => {
+          const btn = e.target && e.target.closest ? e.target.closest('[data-manage-league-id]') : null;
+          if (!btn) return;
+          openLifecycleActionPanel(btn.getAttribute('data-manage-league-id'));
+        });
+      }
+      const closeBtn = document.getElementById('btnCloseLifecyclePanel');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          selectedLifecycleLeagueId = null;
+          const panel = document.getElementById('lifecycleActionPanel');
+          if (panel) panel.classList.add('hidden');
+        });
+      }
+    }
+
     function renderLeagueTable() {
       const tbody = document.getElementById('leagueTableBody');
       if (!tbody) return;
       const lang = getLang();
       const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
 
-      const sorted = [...LEAGUE_PORTFOLIO].sort((a, b) => {
+      renderPortfolioFilterCounts();
+      renderExpiryAlertBanner(lang);
+
+      const filtered = LEAGUE_PORTFOLIO.filter(r => matchesPortfolioFilter(r, currentPortfolioFilter));
+      const sorted = [...filtered].sort((a, b) => {
+        if (currentSortKey === 'status') {
+          const ra = getExpirySortRank(a);
+          const rb = getExpirySortRank(b);
+          return currentSortDir === 'asc' ? ra - rb : rb - ra;
+        }
         let va = a[currentSortKey];
         let vb = b[currentSortKey];
         if (typeof va === 'string') {
@@ -2775,7 +3129,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         return currentSortDir === 'asc' ? va - vb : vb - va;
       });
 
-      ['name', 'teams', 'pool', 'views', 'retention'].forEach((k) => {
+      ['name', 'teams', 'pool', 'views', 'retention', 'status'].forEach((k) => {
         const th = document.getElementById('th-' + k);
         const icon = document.getElementById('sort-icon-' + k);
         if (th) {
@@ -2788,6 +3142,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         }
       });
 
+      if (!sorted.length) {
+        const emptyText = lang === 'en' ? 'No leagues match this lifecycle filter.' : 'ยังไม่มีลีกในกลุ่มสถานะที่เลือก';
+        tbody.innerHTML = '<tr><td colspan="8" class="px-4 py-8 text-center text-xs text-slate-600 dark:text-neutral-400">' + escHtml(emptyText) + '</td></tr>';
+        return;
+      }
+
       tbody.innerHTML = sorted.map((row) => {
         const poolText = row.pool > 0
           ? '฿' + Number(row.pool).toLocaleString()
@@ -2798,6 +3158,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         const modulesText = lang === 'en' ? (row.modulesEn || row.modulesTh) : (row.modulesTh || row.modulesEn);
         const badgePart = row.badge ? ' · ' + row.badge : '';
         const targetUrl = 'https://www.fplsawadika.com/' + encodeURIComponent(row.id) + '/?lang=' + lang + '&theme=' + theme;
+        const manageText = lang === 'en' ? 'Manage' : 'จัดการสิทธิ์';
 
         return '<tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">' +
           '<th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-1.5 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">' +
@@ -2810,7 +3171,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           '<td class="px-4 py-3 text-right mono tabular ' + poolClass + '">' + poolText + '</td>' +
           '<td class="px-4 py-3 text-slate-700 dark:text-neutral-300">' + escHtml(modulesText) + '</td>' +
           '<td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">' + Number(row.views).toLocaleString() + '</td>' +
-          '<td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">' + row.retention.toFixed(1) + '%</td>' +
+          '<td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">' + Number(row.retention || 90).toFixed(1) + '%</td>' +
+          '<td class="px-4 py-2.5 whitespace-nowrap">' + getLifecycleBadgeHtml(row, lang) + '</td>' +
+          '<td class="px-4 py-2.5 text-right whitespace-nowrap">' +
+            '<button type="button" data-manage-league-id="' + escHtml(row.id) + '" class="min-h-[38px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-800 dark:text-neutral-200 hover:border-emerald-500/50 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">' + escHtml(manageText) + '</button>' +
+          '</td>' +
         '</tr>';
       }).join('');
     }
@@ -2820,9 +3185,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         currentSortDir = currentSortDir === 'desc' ? 'asc' : 'desc';
       } else {
         currentSortKey = key;
-        currentSortDir = key === 'name' ? 'asc' : 'desc';
+        currentSortDir = (key === 'name' || key === 'status') ? 'asc' : 'desc';
       }
       renderLeagueTable();
+      if (typeof renderLifecycleActionPanel === 'function' && selectedLifecycleLeagueId) {
+        renderLifecycleActionPanel();
+      }
     }
 
     // =========================================================================
@@ -3347,6 +3715,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       }
 
       renderLeagueTable();
+      if (typeof renderLifecycleActionPanel === 'function' && selectedLifecycleLeagueId) {
+        renderLifecycleActionPanel();
+      }
       renderTrafficChart();
       const g2Unit = normalized === 'en' ? ' visits/wk' : ' ครั้ง/วีค';
       const g2v1 = document.getElementById('g2Val1');
@@ -3380,6 +3751,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       }
       renderTrafficChart();
       renderLeagueTable();
+      if (typeof renderLifecycleActionPanel === 'function' && selectedLifecycleLeagueId) {
+        renderLifecycleActionPanel();
+      }
       if (typeof renderMonitorChart === 'function') renderMonitorChart();
     }
 
@@ -3836,16 +4210,25 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               poolLabelTh: (liveMeta && liveMeta.pool_label && liveMeta.pool === 0 && liveMeta.pool_label !== '-') ? String(liveMeta.pool_label) : row.poolLabelTh,
               poolLabelEn: (liveMeta && liveMeta.pool_label_en && liveMeta.pool === 0 && liveMeta.pool_label_en !== '-') ? String(liveMeta.pool_label_en) : row.poolLabelEn,
               views: (etLeague && typeof etLeague.views === 'number') ? Number(etLeague.views) : row.views,
+              plan: (liveMeta && liveMeta.plan) ? String(liveMeta.plan) : (row.plan || 'standard'),
+              status: (liveMeta && liveMeta.status) ? String(liveMeta.status) : (row.status || 'active'),
+              visibility: (liveMeta && liveMeta.visibility) ? String(liveMeta.visibility) : (row.visibility || 'showcase'),
+              tenant_group: (liveMeta && liveMeta.tenant_group) ? String(liveMeta.tenant_group) : (row.tenant_group || 'showcase'),
+              created_at: (liveMeta && liveMeta.created_at) ? String(liveMeta.created_at) : (row.created_at || null),
+              expires_at: (liveMeta && liveMeta.expires_at) ? String(liveMeta.expires_at) : null,
+              days_remaining: (liveMeta && typeof liveMeta.days_remaining === 'number') ? liveMeta.days_remaining : null,
+              expiry_alert: (liveMeta && liveMeta.expiry_alert) ? String(liveMeta.expiry_alert) : 'none',
+              billing_note: (liveMeta && liveMeta.billing_note) ? String(liveMeta.billing_note) : '',
             };
           });
-          // Append any newly onboarded league present in live data but not yet in static table
+          // Append any newly onboarded league present in live data or config
           for (const [lid, liveMeta] of Object.entries(data.portfolio.leagues)) {
             if (!knownIds.has(lid) && liveMeta && typeof liveMeta === 'object') {
               const etLeague = (data.edge_telemetry && data.edge_telemetry.leagues) ? data.edge_telemetry.leagues[lid] : null;
               LEAGUE_PORTFOLIO.push({
                 id: lid,
                 name: String(liveMeta.name || lid),
-                badge: Number(liveMeta.tier) === 2 ? 'Tier 2' : 'New',
+                badge: Number(liveMeta.tier) === 2 ? 'Tier 2' : (liveMeta.visibility === 'private' ? 'Private' : 'New'),
                 teams: Number(liveMeta.teams || 0),
                 pool: Number(liveMeta.pool || 0),
                 poolLabelTh: liveMeta.pool_label && liveMeta.pool_label !== '-' ? String(liveMeta.pool_label) : 'คอมมูนิตี้',
@@ -3854,10 +4237,22 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 modulesEn: Number(liveMeta.tier) === 2 ? 'Tier 2 Standings & Leaderboard' : 'Live Standings & Analytics',
                 views: etLeague && typeof etLeague.views === 'number' ? Number(etLeague.views) : 0,
                 retention: 90.0,
+                plan: liveMeta.plan ? String(liveMeta.plan) : 'standard',
+                status: liveMeta.status ? String(liveMeta.status) : 'active',
+                visibility: liveMeta.visibility ? String(liveMeta.visibility) : 'private',
+                tenant_group: liveMeta.tenant_group ? String(liveMeta.tenant_group) : ('private_' + lid),
+                created_at: liveMeta.created_at ? String(liveMeta.created_at) : null,
+                expires_at: liveMeta.expires_at ? String(liveMeta.expires_at) : null,
+                days_remaining: typeof liveMeta.days_remaining === 'number' ? liveMeta.days_remaining : null,
+                expiry_alert: liveMeta.expiry_alert ? String(liveMeta.expiry_alert) : 'none',
+                billing_note: liveMeta.billing_note ? String(liveMeta.billing_note) : '',
               });
             }
           }
           renderLeagueTable();
+          if (typeof renderLifecycleActionPanel === 'function' && selectedLifecycleLeagueId) {
+            renderLifecycleActionPanel();
+          }
         }
       }
 
@@ -4107,6 +4502,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       box.textContent = text;
     }
 
+    function getDefaultTrialExpiryIso(days = 14) {
+      const dt = new Date(Date.now() + 7 * 3600000 + days * 86400000);
+      return dt.toISOString().split('T')[0];
+    }
+
     function refreshOnboardingOutputs() {
       const idEl = document.getElementById('onbLeagueId');
       const planEl = document.getElementById('onbPlan');
@@ -4116,6 +4516,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const tenantEl = document.getElementById('onbTenantGroup');
       const visEl = document.getElementById('onbVisibility');
       const shortEl = document.getElementById('onbShortName');
+      const expiresEl = document.getElementById('onbExpiresAt');
+      const billingEl = document.getElementById('onbBillingNote');
+      const noCupEl = document.getElementById('onbNoCup');
 
       const outCli = document.getElementById('onbOutCli');
       const outJson = document.getElementById('onbOutJson');
@@ -4129,6 +4532,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const accessStatus = statusEl ? statusEl.value : 'active';
       const tenantGroup = (tenantEl && tenantEl.value.trim()) ? tenantEl.value.trim() : ('private_' + lid);
       const visibility = visEl ? visEl.value : 'private';
+      const expiresVal = (expiresEl && expiresEl.value) ? expiresEl.value.trim() : '';
+      const billingNote = (billingEl && billingEl.value) ? billingEl.value.trim() : '';
+      const noCup = Boolean(noCupEl && noCupEl.checked);
       const detectedName = (onbInspectedLeague && onbInspectedLeague.league && onbInspectedLeague.league.name)
         ? onbInspectedLeague.league.name
         : ('League ' + lid);
@@ -4146,6 +4552,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         '--status ' + accessStatus
       ];
       if (shortName) cliParts.push('--short-name "' + shortName.replace(/"/g, '') + '"');
+      if (expiresVal) cliParts.push('--expires-at ' + expiresVal);
+      if (billingNote) cliParts.push('--billing-note "' + billingNote.replace(/"/g, '') + '"');
+      if (noCup) cliParts.push('--no-cup');
       if (nonPrizeArr.length > 0) cliParts.push('--non-prize-teams ' + nonPrizeArr.join(','));
       outCli.value = cliParts.join(' ');
 
@@ -4157,14 +4566,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         has_monthly_prizes: prizeModel === 'monthly',
         has_weekly_penalties: prizeModel === 'penalties',
         has_settlement_phases: false,
-        has_cup: true
+        has_cup: !noCup
       };
       if (isWeeklyLike && weeklyVal > 0) {
         featObj.weekly_prize_amount = weeklyVal;
       } else if (prizeModel === 'monthly' && weeklyVal > 0) {
         featObj.monthly_prize_amount = weeklyVal;
       }
-      cfgObj[lid] = {
+      const leagueRecord = {
         id: Number(lid),
         season: '2026/27',
         name: detectedName,
@@ -4177,18 +4586,21 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         non_prize_teams: nonPrizeArr,
         features: featObj
       };
+      if (expiresVal) leagueRecord.expires_at = expiresVal;
+      if (billingNote) leagueRecord.billing_note = billingNote;
+      cfgObj[lid] = leagueRecord;
       outJson.value = JSON.stringify(cfgObj, null, 2);
 
       const urlStr = 'https://www.fplsawadika.com/' + lid + '/';
       if (getLang() === 'en') {
         outLine.value = 'FPLSaWaDiKa Dashboard is ready for ' + detectedName + ' (ID ' + lid + ')!\\n'
           + 'URL: ' + urlStr + '\\n'
-          + 'Plan: ' + plan.toUpperCase() + ' | Status: ' + accessStatus + '\\n'
+          + 'Plan: ' + plan.toUpperCase() + ' | Status: ' + accessStatus + (expiresVal ? (' (valid til ' + expiresVal + ')') : '') + '\\n'
           + 'Private & hidden from search engines (noindex). Bookmark on your home screen for live GW matchday updates!';
       } else {
         outLine.value = 'เปิดระบบ FPLSaWaDiKa สำหรับลีก "' + detectedName + '" (ID: ' + lid + ') เรียบร้อยแล้วครับ!\\n'
           + 'ลิงก์เข้าดูคะแนนสด: ' + urlStr + '\\n'
-          + 'แพ็กเกจ: ' + plan.toUpperCase() + ' | สถานะ: ' + accessStatus + '\\n'
+          + 'แพ็กเกจ: ' + plan.toUpperCase() + ' | สถานะ: ' + accessStatus + (expiresVal ? (' (ใช้งานได้ถึง ' + expiresVal + ')') : '') + '\\n'
           + 'หมายเหตุ: ลิงก์นี้ตั้งค่า Private (noindex) เพื่อความเป็นส่วนตัวเฉพาะสมาชิกในกลุ่ม LINE ครับ';
       }
     }
@@ -4282,7 +4694,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     function initOnboardingWizard() {
       const btn = document.getElementById('btnOnbInspect');
       if (btn) btn.addEventListener('click', inspectCustomerLeague);
-      ['onbLeagueId', 'onbPlan', 'onbPrizeModel', 'onbWeeklyPrize', 'onbStatus', 'onbTenantGroup', 'onbVisibility', 'onbShortName'].forEach((id) => {
+      const statusEl = document.getElementById('onbStatus');
+      const expiresEl = document.getElementById('onbExpiresAt');
+      if (statusEl && expiresEl) {
+        statusEl.addEventListener('change', () => {
+          if (statusEl.value === 'trial' && !expiresEl.value) {
+            expiresEl.value = getDefaultTrialExpiryIso(14);
+          }
+          refreshOnboardingOutputs();
+        });
+      }
+      ['onbLeagueId', 'onbPlan', 'onbPrizeModel', 'onbWeeklyPrize', 'onbStatus', 'onbTenantGroup', 'onbVisibility', 'onbShortName', 'onbExpiresAt', 'onbBillingNote', 'onbNoCup'].forEach((id) => {
         const el = document.getElementById(id);
         if (el) {
           el.addEventListener('input', refreshOnboardingOutputs);
@@ -4317,6 +4739,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
     // Initialize UI on DOM ready
     updateThemeUI();
+    initPortfolioLifecycleControls();
     setLanguage(document.documentElement.lang || 'th');
     initOnboardingWizard();
     tickCountdown();

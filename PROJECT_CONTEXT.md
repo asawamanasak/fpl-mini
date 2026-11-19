@@ -566,11 +566,15 @@ flowchart TD
   * `paused` ข้ามการซิงก์ FPL API ใน `sync_live_fpl.py`, หยุด polling ฝั่ง client และแสดงหน้าจอต่ออายุพร้อมปุ่ม LINE
 * **Single-League Sync (`sync_live_fpl.py --league <id>`):** รองรับการดึงข้อมูลเฉพาะลีกเดียวโดยรักษาแคชของลีกอื่นใน `multi_fpl_data.json` ไว้ครบถ้วน
 
-### 11.3 Concierge Onboarding Tooling (`/admin` & `onboard_league.py`)
+### 11.3 Concierge Onboarding & Customer Lifecycle Tooling (`/admin` & `onboard_league.py`)
 * **Worker Endpoints (`workers/fpl-live-worker.js`):**
   * ป้องกัน `/api/telemetry/event` ไม่ให้ traffic ของ `landing` (`/` หรือ `league_id: "landing"`) และ `404` ถูกนับรวมเข้าสถิติของลีก `40700`
   * เพิ่ม Authenticated `GET /api/admin/inspect-league?id=<league_id>` สำหรับดึงชื่อลีกและรายชื่อทีมสด (รวมถึงช่วง Pre-Season `new_entries` และหน้าถัดไปสำหรับลีกเกิน 30/50 ทีม)
-* **Admin Onboarding Wizard (`workers/admin-dashboard.js`):** เพิ่ม Section `08. Customer League Onboarding Wizard` ให้แอดมินตรวจสอบ League ID, ติ๊กเลือก `non_prize_teams`, เลือกแพ็กเกจ/รูปแบบรางวัล/สถานะสิทธิ์ และคัดลอกคำสั่ง `onboard_league.py`, JSON snippet, และข้อความส่งมอบลูกค้าทาง LINE ได้ทันที
-* **CLI (`onboard_league.py`):** ตรวจสอบ FPL Classic League API, บันทึก `config/leagues_config.json`, ซิงก์ `sync_live_fpl.py --league <id>`, และรัน `update_preview.py` เพื่อสร้าง `{league_id}/index.html` ครบจบในคำสั่งเดียว
+  * เพิ่ม Metadata Lifecycle (`plan`, `status`, `visibility`, `tenant_group`, `created_at`, `expires_at`, `days_remaining`, `expiry_alert`, `billing_note`) และ `portfolio.lifecycle_summary` ใน `/api/admin/data` โดยคำนวณร่วมจาก `multi_fpl_data.json` และ `config/leagues_config.json` (ครอบคลุมทั้งลีกที่ซิงก์แล้วและลีก `paused`/เพิ่งสร้าง)
+* **Admin Fleet Lifecycle & Onboarding Wizard (`workers/admin-dashboard.js`):**
+  * **Section `02` Fleet Lifecycle Tracker:** เพิ่มแถบกรองกลุ่ม (`All` / `Private` / `Trial & Expiring ≤14d` / `Paused` / `Showcase`), แบนเนอร์แจ้งเตือนลีกใกล้หมดอายุภายใน 14 วัน (`#portfolioExpiryAlert`), คอลัมน์สถานะ & วันหมดอายุ, และแผงจัดการสิทธิ์ (`#lifecycleActionPanel`) พร้อมปุ่มคัดลอกคำสั่ง `--update-lifecycle` ต่ออายุ/พักระบบ และข้อความแจ้งเตือนต่ออายุทาง LINE
+  * **Section `09` Customer League Onboarding Wizard:** ให้แอดมินตรวจสอบ League ID, ติ๊กเลือก `non_prize_teams`, เลือกแพ็กเกจ/รูปแบบรางวัล/สถานะสิทธิ์ (Auto-suggest `expires_at` +14 วันเมื่อเลือก `trial`), ระบุ `--expires-at` / `--billing-note` / `--no-cup`, และคัดลอกคำสั่ง `onboard_league.py`, JSON snippet, และข้อความส่งมอบลูกค้าทาง LINE ได้ทันที
+* **Privacy Strip (`update_preview.py`):** กรองคีย์ภายในแอดมิน (`billing_note`, `contact_handle`, `internal_note`) ออกจาก `get_scoped_config_for_target()` เพื่อไม่ให้หลุดลงไฟล์ HTML สาธารณะ และแสดงวันหมดรอบทดลองใช้ (`ทดลองใช้ · ถึง ...` / `TRIAL · til ...`) บน `#header-trial-badge` เมื่อตั้งค่า `expires_at`
+* **CLI (`onboard_league.py`):** ตรวจสอบ FPL Classic League API, บันทึก `config/leagues_config.json` พร้อม `created_at`/`expires_at`/`billing_note`, รองรับ `--list-leagues` และ `--update-lifecycle` (ปรับเฉพาะสถานะ/วันหมดอายุโดยไม่ทับกติกาเดิม), ซิงก์ `sync_live_fpl.py --league <id>`, และรัน `update_preview.py` เพื่อสร้าง `{league_id}/index.html` ครบจบในคำสั่งเดียว
 
 

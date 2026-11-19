@@ -66,6 +66,27 @@ function getIctNowParts(now = new Date()) {
   };
 }
 
+function computeLifecycleExpiry(expiresAtStr, ictTodayStr) {
+  const raw = typeof expiresAtStr === 'string' ? expiresAtStr.trim() : '';
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+    return { expires_at: null, days_remaining: null, expiry_alert: 'none' };
+  }
+  const [ey, em, ed] = raw.split('-').map(n => parseInt(n, 10));
+  const expUtc = Date.UTC(ey, em - 1, ed);
+  const expCheck = new Date(expUtc);
+  if (expCheck.getUTCFullYear() !== ey || expCheck.getUTCMonth() !== (em - 1) || expCheck.getUTCDate() !== ed) {
+    return { expires_at: null, days_remaining: null, expiry_alert: 'none' };
+  }
+  const [ty, tm, td] = String(ictTodayStr || getIctNowParts().date).split('-').map(n => parseInt(n, 10));
+  const todayUtc = Date.UTC(ty, tm - 1, td);
+  const daysRemaining = Math.round((expUtc - todayUtc) / 86400000);
+  return {
+    expires_at: raw,
+    days_remaining: daysRemaining,
+    expiry_alert: daysRemaining < 0 ? 'expired' : (daysRemaining <= 14 ? 'expiring_soon' : 'ok'),
+  };
+}
+
 async function recordTelemetryIncrements(env, increments) {
   if (!env || !Array.isArray(increments) || increments.length === 0) return;
   const today = getIctNowParts().date;
@@ -943,16 +964,18 @@ export default {
             } catch (_) {}
           }
           const leaguesConfigJson = await cfgPromise;
+          const ictToday = getIctNowParts().date;
           let dynamicPoolGmv = 0;
           let customRulesCount = 0;
           const configMetaByLeague = {};
           if (leaguesConfigJson && typeof leaguesConfigJson === 'object') {
             for (const [cfgId, cfgItem] of Object.entries(leaguesConfigJson)) {
-              const poolStr = cfgItem && typeof cfgItem.total_pool === 'string' ? cfgItem.total_pool : '';
+              if (!cfgItem || typeof cfgItem !== 'object') continue;
+              const poolStr = typeof cfgItem.total_pool === 'string' ? cfgItem.total_pool : '';
               const m = poolStr.match(/^([\d,]+)\s*THB/i);
               const poolThb = m ? (parseInt(m[1].replace(/,/g, ''), 10) || 0) : 0;
               dynamicPoolGmv += poolThb;
-              const feats = (cfgItem && cfgItem.features && typeof cfgItem.features === 'object') ? cfgItem.features : {};
+              const feats = (cfgItem.features && typeof cfgItem.features === 'object') ? cfgItem.features : {};
               const hasCustomRules = Boolean(
                 (feats.prize_model && feats.prize_model !== 'standard') ||
                 feats.has_cup ||
@@ -964,12 +987,25 @@ export default {
                 feats.has_bramann_challenge
               );
               if (hasCustomRules) customRulesCount += 1;
+              const vis = cfgItem.visibility === 'private' ? 'private' : 'showcase';
+              const tGroup = (typeof cfgItem.tenant_group === 'string' && cfgItem.tenant_group.trim())
+                ? cfgItem.tenant_group.trim()
+                : (vis === 'showcase' ? 'showcase' : `private_${cfgId}`);
+              const expInfo = computeLifecycleExpiry(cfgItem.expires_at, ictToday);
               configMetaByLeague[cfgId] = {
+                name: (typeof cfgItem.name === 'string' && cfgItem.name.trim()) ? cfgItem.name.trim() : cfgId,
+                plan: (typeof cfgItem.plan === 'string' && cfgItem.plan.trim()) ? cfgItem.plan.trim() : 'standard',
+                status: (typeof cfgItem.status === 'string' && cfgItem.status.trim()) ? cfgItem.status.trim() : 'active',
+                visibility: vis,
+                tenant_group: tGroup,
+                created_at: (typeof cfgItem.created_at === 'string' && cfgItem.created_at.trim()) ? cfgItem.created_at.trim() : null,
+                billing_note: typeof cfgItem.billing_note === 'string' ? cfgItem.billing_note.trim() : '',
+                ...expInfo,
                 pool: poolThb,
                 pool_label: poolStr || '-',
-                pool_label_en: (cfgItem && typeof cfgItem.total_pool_en === 'string') ? cfgItem.total_pool_en : (poolStr || '-'),
+                pool_label_en: typeof cfgItem.total_pool_en === 'string' ? cfgItem.total_pool_en : (poolStr || '-'),
                 has_custom_rules: hasCustomRules,
-                tier: (cfgItem && cfgItem.tier) ? Number(cfgItem.tier) : 1,
+                tier: cfgItem.tier ? Number(cfgItem.tier) : 1,
               };
             }
           }
@@ -980,22 +1016,54 @@ export default {
             let liveTier1Managers = 0;
             let liveAllManagers = 0;
             const liveLeagueSummaries = {};
-            for (const [lid, lObj] of Object.entries(rawLeagues)) {
-              const teamsCount = Array.isArray(lObj && lObj.teams) ? lObj.teams.length : 0;
+            const allLeagueIds = new Set([...Object.keys(rawLeagues), ...Object.keys(configMetaByLeague)]);
+            for (const lid of allLeagueIds) {
+              const lObj = (rawLeagues[lid] && typeof rawLeagues[lid] === 'object') ? rawLeagues[lid] : null;
+              const teamsCount = (lObj && Array.isArray(lObj.teams)) ? lObj.teams.length : 0;
               const cfgMeta = configMetaByLeague[lid] || {};
               const tier = (lObj && lObj.tier) ? Number(lObj.tier) : (cfgMeta.tier || 1);
               liveAllManagers += teamsCount;
               if (tier !== 2) liveTier1Managers += teamsCount;
               liveLeagueSummaries[lid] = {
                 id: lid,
-                name: (lObj && lObj.name) ? String(lObj.name) : lid,
+                name: (lObj && lObj.name) ? String(lObj.name) : (cfgMeta.name || lid),
                 teams: teamsCount,
                 tier,
                 pool: typeof cfgMeta.pool === 'number' ? cfgMeta.pool : 0,
                 pool_label: cfgMeta.pool_label || '-',
                 pool_label_en: cfgMeta.pool_label_en || '-',
                 has_custom_rules: Boolean(cfgMeta.has_custom_rules),
+                plan: cfgMeta.plan || 'standard',
+                status: cfgMeta.status || (lObj && lObj.status) || 'active',
+                visibility: cfgMeta.visibility || 'showcase',
+                tenant_group: cfgMeta.tenant_group || (cfgMeta.visibility === 'private' ? `private_${lid}` : 'showcase'),
+                created_at: cfgMeta.created_at || null,
+                expires_at: cfgMeta.expires_at || null,
+                days_remaining: typeof cfgMeta.days_remaining === 'number' ? cfgMeta.days_remaining : null,
+                expiry_alert: cfgMeta.expiry_alert || 'none',
+                billing_note: cfgMeta.billing_note || '',
               };
+            }
+
+            const lifecycleSummary = {
+              total: 0,
+              showcase: 0,
+              private_customers: 0,
+              active: 0,
+              trial: 0,
+              paused: 0,
+              expiring_soon: 0,
+              expired: 0,
+            };
+            for (const item of Object.values(liveLeagueSummaries)) {
+              lifecycleSummary.total += 1;
+              if (item.visibility === 'private') lifecycleSummary.private_customers += 1;
+              else lifecycleSummary.showcase += 1;
+              if (item.status === 'trial') lifecycleSummary.trial += 1;
+              else if (item.status === 'paused') lifecycleSummary.paused += 1;
+              else lifecycleSummary.active += 1;
+              if (item.expiry_alert === 'expiring_soon') lifecycleSummary.expiring_soon += 1;
+              else if (item.expiry_alert === 'expired') lifecycleSummary.expired += 1;
             }
 
             const totalLeaguesCount = Object.keys(liveLeagueSummaries).length || 9;
@@ -1010,6 +1078,7 @@ export default {
               total_leagues_count: totalLeaguesCount,
               custom_rules_count: effectiveCustomCount,
               custom_rules_pct: Math.round((effectiveCustomCount / totalLeaguesCount) * 100),
+              lifecycle_summary: lifecycleSummary,
               leagues: liveLeagueSummaries,
             };
 

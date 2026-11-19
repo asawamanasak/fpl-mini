@@ -1637,11 +1637,11 @@ __STRUCTURED_DATA_JSON__
         
         <!-- League Switcher Container -->
         <div class="relative inline-block text-left min-w-0">
-          <div class="flex items-center gap-1.5 leading-none mb-0.5">
+          <div class="flex items-center flex-wrap gap-1.5 leading-none mb-0.5">
             <a id="header-brand-home" href="../" class="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 hover:underline font-display" title="กลับหน้าแรก FPLSaWaDiKa">FPLSaWaDiKa</a>
             <span class="text-slate-300 dark:text-slate-700 text-[10px]">•</span>
             <span class="text-[9.5px] sm:text-[10px] font-semibold text-slate-500 dark:text-slate-400 font-display" id="header-platform-sub">มินิลีก</span>
-            <span id="header-trial-badge" class="hidden text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/80 leading-none">TRIAL</span>
+            <span id="header-trial-badge" class="hidden whitespace-nowrap flex-shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/80 leading-none">TRIAL</span>
           </div>
           <button 
             id="league-switcher-btn" 
@@ -7127,7 +7127,21 @@ __STRUCTURED_DATA_JSON__
         if (trialBadge) {
           const isTrial = this.isLeagueTrial();
           trialBadge.classList.toggle('hidden', !isTrial);
-          trialBadge.textContent = isEn ? 'TRIAL' : 'ทดลองใช้';
+          const expRaw = (this.config && typeof this.config.expires_at === 'string') ? this.config.expires_at.trim() : '';
+          if (isTrial && /^\\d{4}-\\d{2}-\\d{2}$/.test(expRaw)) {
+            const parts = expRaw.split('-').map(n => parseInt(n, 10));
+            const dt = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+            const thMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            const enMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const mIdx = dt.getUTCMonth();
+            const dayNum = dt.getUTCDate();
+            const shortDate = isEn ? `${enMonths[mIdx]} ${dayNum}` : `${dayNum} ${thMonths[mIdx]}`;
+            trialBadge.textContent = isEn ? `TRIAL · til ${shortDate}` : `ทดลองใช้ · ถึง ${shortDate}`;
+            trialBadge.title = isEn ? `Trial expires on ${expRaw}` : `ทดลองใช้งานถึงวันที่ ${expRaw}`;
+          } else {
+            trialBadge.textContent = isEn ? 'TRIAL' : 'ทดลองใช้';
+            trialBadge.removeAttribute('title');
+          }
         }
         const availableLeaguesCount = Object.keys((this.multiData && this.multiData.leagues) || {}).length;
         const isSingleLeague = availableLeaguesCount <= 1;
@@ -25643,9 +25657,15 @@ def main():
         allowed.add(str(target_lid))
         return allowed
 
+    ADMIN_ONLY_CONFIG_KEYS = {"billing_note", "contact_handle", "internal_note"}
+
     def get_scoped_config_for_target(target_lid):
         allowed = get_tenant_lids(target_lid)
-        scoped_cfg = {k: v for k, v in leagues_config.items() if str(k) in allowed}
+        scoped_cfg = {
+            k: {fk: fv for fk, fv in v.items() if fk not in ADMIN_ONLY_CONFIG_KEYS}
+            for k, v in leagues_config.items()
+            if str(k) in allowed and isinstance(v, dict)
+        }
         return json.dumps(scoped_cfg, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 
     def get_pruned_data_for_target(target_lid, inline_full=False):
