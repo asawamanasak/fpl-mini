@@ -14,3 +14,10 @@ CREATE INDEX IF NOT EXISTS idx_telemetry_counters_date
 -- Permanent lifetime site view baseline (date = '9999-12-31' excluded from 30-day pruning)
 INSERT OR IGNORE INTO telemetry_counters (metric, date, val)
 VALUES ('lifetime:total_views', '9999-12-31', 2790);
+
+-- Private admin customer notes per league (stored exclusively in Cloudflare D1, never committed to Git)
+CREATE TABLE IF NOT EXISTS league_admin_notes (
+  league_id TEXT PRIMARY KEY,
+  note TEXT NOT NULL DEFAULT '',
+  updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+);

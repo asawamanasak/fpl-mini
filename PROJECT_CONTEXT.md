@@ -577,4 +577,21 @@ flowchart TD
 * **Privacy Strip (`update_preview.py`):** กรองคีย์ภายในแอดมิน (`billing_note`, `contact_handle`, `internal_note`) ออกจาก `get_scoped_config_for_target()` เพื่อไม่ให้หลุดลงไฟล์ HTML สาธารณะ และแสดงวันหมดรอบทดลองใช้ (`ทดลองใช้ · ถึง ...` / `TRIAL · til ...`) บน `#header-trial-badge` เมื่อตั้งค่า `expires_at`
 * **CLI (`onboard_league.py`):** ตรวจสอบ FPL Classic League API, บันทึก `config/leagues_config.json` พร้อม `created_at`/`expires_at`/`billing_note`, รองรับ `--list-leagues` และ `--update-lifecycle` (ปรับเฉพาะสถานะ/วันหมดอายุโดยไม่ทับกติกาเดิม), ซิงก์ `sync_live_fpl.py --league <id>`, และรัน `update_preview.py` เพื่อสร้าง `{league_id}/index.html` ครบจบในคำสั่งเดียว
 
+### 11.4 Standard Pre-Launch Hardening (Step 1 — Zero Demo Leaks, Multi-Currency Standard, Adaptive Polling & D1 Private Notes)
+* **Zero Demo Fallback Leaks & Dynamic Standard Prize Cards (`update_preview.py`):**
+  * ถอดตัวเลขตัวอย่างที่เคย hardcode เป็น fallback ของลีกเดโม่ (`103,200 THB`, `8,600 THB/ทีม`, `9,000 THB`, `13,500 THB`, `3,000 THB`, `9,500 THB` การกุศล NudNee, และบ๊วย 5 อันดับตายตัว `600/500/400/300/200`) ออกจาก `getSeasonPrizeSummary()` และ `renderPrizesView()` โดยซ่อนการ์ดที่ลีกลูกค้าไม่ได้ตั้งค่าอัตโนมัติ (ในขณะที่ทั้ง 9 ลีกเดโม่เดิมระบุค่าไว้ครบใน `config/leagues_config.json` จึงแสดงผลเหมือนเดิม 100%)
+  * รองรับสกุลเงินรางวัลต่อลีก **`THB` (`฿`)** และ **`USD` (`$`)** ผ่าน `getLeagueCurrency()` ในโหมด Standard ทั้งหมด (`weekly`, `monthly`, `penalties`), รองรับจำนวนขั้นค่าปรับบ๊วยแบบยืดหยุ่น `1..N` อันดับ (`getWeeklyPenaltyTiers()` เช่น 3 อันดับท้าย `300,200,100`), และสร้างตาราง 10 เดือนมาตรฐาน (`getMonthlySchedule()`) อัตโนมัติสำหรับลีกรายเดือนเพื่อไม่ให้ `curMonth` เป็น `null`
+* **Adaptive Live Polling & Quota Protection (`update_preview.py`):**
+  * เพิ่ม `setLivePollCadence(nextMs)`: เมื่อมีคู่แข่งกำลังเตะสด (`in_play_count > 0`) จะดึง `/live` ทุก **20 วินาที** และเมื่อไม่มีคู่เตะสด (`in_play_count === 0`) จะผ่อนจังหวะเป็น **90 วินาที** อัตโนมัติ (คงกลไก exponential backoff เมื่อเกิด network error และรีเฟรชทันทีเมื่อสลับกลับมาเปิดแท็บ)
+  * ปรับการอัปเดตตัวนับผู้เข้าชม `/visitors` บนหน้า `index.html` เป็นทุก **5 นาที (`300000 ms`)** และทำงานเฉพาะเมื่อ `!document.hidden`
+* **Build, Sync & Asset Hardening (`update_preview.py`, `sync_live_fpl.py`, `.github/workflows/fpl_auto_sync.yml`):**
+  * แยกโลโก้ Header จาก inline Base64 JPEG (`61.7 KB` ต่อหน้า) ไปใช้ไฟล์ `images/fpl-logo.jpg` (`__ASSET_PREFIX__images/fpl-logo.jpg`) ลดขนาด HTML ทุกหน้าลงหน้าละ ~62 KB
+  * ข้ามการเขียนไฟล์ `data/leagues/gw{N}_squads.json` ซ้ำหากเนื้อหาไม่เปลี่ยนแปลง เพื่อไม่ให้ `git status`/`git diff` บวมเมื่อเปิดลีกใหม่
+  * สร้างไฟล์สรุปขนาดเล็ก `data/admin_summary.json` (`< 10 KB`) สำหรับ `/api/admin/data` (ลดภาระ Worker จากการดึง `multi_fpl_data.json` ขนาด 4+ MB)
+  * เพิ่ม Thread-safe FPL API rate pacer (`FPL_MIN_REQUEST_INTERVAL = 0.12` วินาที) ใน `sync_live_fpl.py` และตั้ง `timeout-minutes: 25` ใน `.github/workflows/fpl_auto_sync.yml`
+* **Private Customer Notes in Cloudflare D1 & Full Standard Onboarding (`workers/schema.sql`, `workers/fpl-live-worker.js`, `workers/admin-dashboard.js`, `onboard_league.py`):**
+  * เพิ่มตาราง `league_admin_notes` ใน Cloudflare D1 พร้อม Authenticated Endpoint `POST /api/admin/league-note` ให้แอดมินบันทึก/แก้ไขโน้ตข้อมูลลูกค้าส่วนตัว (เช่น ชื่อ LINE / วันโอนเงิน) ได้โดยตรงจากแผงจัดการลีกใน `/admin` ข้อ `02` โดยไม่บันทึกลงไฟล์ใน Git (`0% Git exposure`)
+  * อัปเกรด `onboard_league.py` และ `/admin` ข้อ `09` ให้รองรับ `--currency`, `--entry-fee`, `--total-pool`, `--season-prizes`, `--cup-prize`, `--penalty-tiers`, `--monthly-champ`, `--monthly-runner`, สร้างการ์ดกติกา 2 ภาษา (`rules_cards` / `rules_cards_en`) อัตโนมัติ และรัน `verify_built_league()` ตรวจความถูกต้องของไฟล์ HTML หลัง build ทุกครั้ง
+
+
 

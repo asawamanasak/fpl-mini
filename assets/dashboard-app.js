@@ -1782,11 +1782,93 @@
         return String(c.status || 'active').toLowerCase() === 'trial';
       }
 
+      getLeagueCurrency() {
+        const cfg = this.config || {};
+        const feat = cfg.features && typeof cfg.features === 'object' ? cfg.features : {};
+        const raw = cfg.currency || feat.currency || 'THB';
+        const code = String(raw || 'THB').trim().toUpperCase() === 'USD' ? 'USD' : 'THB';
+        return {
+          code,
+          symbol: code === 'USD' ? '$' : '฿',
+        };
+      }
+
+      getWeeklyPenaltyTiers() {
+        const feat = (this.config && this.config.features) || {};
+        const raw = feat.weekly_penalty_tiers;
+        if (Array.isArray(raw)) {
+          const parsed = raw.map(Number).filter(n => Number.isFinite(n) && n > 0);
+          if (parsed.length > 0) return parsed;
+        } else if (raw && typeof raw === 'object') {
+          const keys = Object.keys(raw).sort((a, b) => {
+            const ma = a.match(/^last_(\d+)$/);
+            const mb = b.match(/^last_(\d+)$/);
+            if (ma && mb) return Number(ma[1]) - Number(mb[1]);
+            if (ma) return -1;
+            if (mb) return 1;
+            return a.localeCompare(b);
+          });
+          const parsed = keys.map(k => Number(raw[k])).filter(n => Number.isFinite(n) && n > 0);
+          if (parsed.length > 0) return parsed;
+        }
+        return [600, 500, 400, 300, 200];
+      }
+
+      getMonthlySchedule() {
+        const cfg = this.config || {};
+        const isEn = (this.currentLang === 'en');
+        if (Array.isArray(cfg.monthly_schedule) && cfg.monthly_schedule.length > 0) {
+          return cfg.monthly_schedule.map((m, idx) => ({
+            ...m,
+            id: m.id !== undefined ? m.id : (m.month !== undefined && typeof m.month === 'number' ? m.month : idx + 1),
+            month: String((isEn && m.month_en) ? m.month_en : (m.month || m.name || `Month ${idx + 1}`)),
+          }));
+        }
+        const feat = cfg.features || {};
+        const cur = this.getLeagueCurrency();
+        const champ = Number(feat.monthly_champion_prize ?? feat.monthly_prize_amount ?? 600);
+        const runner = (feat.monthly_runner_up_prize !== undefined && feat.monthly_runner_up_prize !== null)
+          ? Number(feat.monthly_runner_up_prize)
+          : (feat.monthly_champion_prize !== undefined ? 0 : 400);
+        const tot = champ + runner;
+        const budgetText = runner > 0
+          ? (isEn
+              ? `${tot.toLocaleString()} ${cur.code} (Champ ${champ.toLocaleString()} / Runner ${runner.toLocaleString()})`
+              : `${tot.toLocaleString()} ${cur.code} (แชมป์ ${champ.toLocaleString()} / รอง ${runner.toLocaleString()})`)
+          : `${tot.toLocaleString()} ${cur.code}`;
+        const defaults = [
+          { id: 1, monthTh: 'สิงหาคม 2026', monthEn: 'Aug 2026', gw_list: [1, 2, 3] },
+          { id: 2, monthTh: 'กันยายน 2026', monthEn: 'Sep 2026', gw_list: [4, 5, 6] },
+          { id: 3, monthTh: 'ตุลาคม 2026', monthEn: 'Oct 2026', gw_list: [7, 8, 9] },
+          { id: 4, monthTh: 'พฤศจิกายน 2026', monthEn: 'Nov 2026', gw_list: [10, 11, 12, 13] },
+          { id: 5, monthTh: 'ธันวาคม 2026', monthEn: 'Dec 2026', gw_list: [14, 15, 16, 17, 18, 19] },
+          { id: 6, monthTh: 'มกราคม 2027', monthEn: 'Jan 2027', gw_list: [20, 21, 22, 23, 24] },
+          { id: 7, monthTh: 'กุมภาพันธ์ 2027', monthEn: 'Feb 2027', gw_list: [25, 26, 27, 28] },
+          { id: 8, monthTh: 'มีนาคม 2027', monthEn: 'Mar 2027', gw_list: [29, 30, 31] },
+          { id: 9, monthTh: 'เมษายน 2027', monthEn: 'Apr 2027', gw_list: [32, 33, 34, 35] },
+          { id: 10, monthTh: 'พฤษภาคม 2027', monthEn: 'May 2027', gw_list: [36, 37, 38] },
+        ];
+        return defaults.map(m => ({
+          id: m.id,
+          month: isEn ? m.monthEn : m.monthTh,
+          gws: `GW ${m.gw_list[0]} - ${m.gw_list[m.gw_list.length - 1]}`,
+          gw_list: m.gw_list,
+          budget: budgetText,
+        }));
+      }
+
       getSeasonPrizeSummary(isEn) {
         const cfg = this.config || {};
+        const cur = this.getLeagueCurrency();
         const prizes = cfg.season_prizes && typeof cfg.season_prizes === 'object' ? cfg.season_prizes : null;
-        let total = cfg.season_total_prize;
-        if (!total && prizes) {
+        const hasExplicitTotal = Boolean(cfg.season_total_prize !== undefined && cfg.season_total_prize !== null && String(cfg.season_total_prize).trim() !== '');
+        const hasPrizesMap = Boolean(prizes && Object.keys(prizes).length > 0);
+        const hasExplicitDesc = Boolean(cfg.season_prize_desc && String(cfg.season_prize_desc).trim() !== '');
+        if (!hasExplicitTotal && !hasPrizesMap && !hasExplicitDesc) {
+          return { total: null, desc: '' };
+        }
+        let total = hasExplicitTotal ? String(cfg.season_total_prize).trim() : null;
+        if (!total && hasPrizesMap) {
           let sum = 0;
           Object.values(prizes).forEach(val => {
             const num = Number(String(val).replace(/[^0-9.-]/g, ''));
@@ -1794,17 +1876,13 @@
           });
           total = sum > 0 ? sum.toLocaleString() : '0';
         }
-        if (!total) total = '9,000';
 
-        let desc = cfg.season_prize_desc;
-        if (!desc && prizes && Object.keys(prizes).length > 0) {
+        let desc = hasExplicitDesc ? String(cfg.season_prize_desc).trim() : '';
+        if (!desc && hasPrizesMap) {
           const rankMapTh = { '1st': 'ที่ 1', '2nd': 'ที่ 2', '3rd': 'ที่ 3', '4th': 'ที่ 4', '5th': 'ที่ 5' };
           desc = Object.entries(prizes)
-            .map(([rank, val]) => `${isEn ? rank : (rankMapTh[rank] || rank)}: ${String(val).replace(/\s*THB$/i, '')}`)
-            .join(' / ') + ' THB';
-        }
-        if (!desc) {
-          desc = isEn ? '1st: 4,500 / 2nd: 2,500 / 3rd: 1,000 / 4th-5th: 500' : 'แชมป์ 4,500 / รอง 2,500 / ที่ 3 1,000 / ที่ 4-5 500';
+            .map(([rank, val]) => `${isEn ? rank : (rankMapTh[rank] || rank)}: ${String(val).replace(/\s*(THB|USD)\s*$/i, '').trim()}`)
+            .join(' / ') + ` ${cur.code}`;
         }
         return { total, desc };
       }
@@ -2162,6 +2240,23 @@
         this.updateHeaderDeadline();
       }
 
+      setLivePollCadence(nextMs) {
+        const targetMs = Number(nextMs) >= 90000 ? 90000 : 20000;
+        if (this._currentPollIntervalMs === targetMs && this.livePollInterval) {
+          return;
+        }
+        this._currentPollIntervalMs = targetMs;
+        if (this.livePollInterval) {
+          clearInterval(this.livePollInterval);
+          this.livePollInterval = null;
+        }
+        if (typeof window === 'undefined' || this.isLeaguePaused() || !this.isLiveWindowActive() || !this._checkAndPollLiveFn) {
+          return;
+        }
+        this.livePollInterval = setInterval(this._checkAndPollLiveFn, targetMs);
+        this._nextLivePollAt = Date.now() + targetMs;
+      }
+
       initLivePolling() {
         if (typeof window === 'undefined' || typeof fetch === 'undefined') return;
         if (this.isLeaguePaused()) {
@@ -2172,7 +2267,10 @@
           return;
         }
 
-        const pollIntervalMs = 20000; // 20-second real-time Cloudflare Edge polling (protects daily quota as scale grows)
+        const LIVE_POLL_IN_PLAY_MS = 20000;
+        if (!this._currentPollIntervalMs) {
+          this._currentPollIntervalMs = LIVE_POLL_IN_PLAY_MS;
+        }
         const checkAndPoll = () => {
           if (!this.isLiveWindowActive()) {
             if (this.livePollInterval) {
@@ -2181,11 +2279,13 @@
             }
             return;
           }
-          this._nextLivePollAt = Date.now() + pollIntervalMs;
+          const activeIntervalMs = this._currentPollIntervalMs || LIVE_POLL_IN_PLAY_MS;
+          this._nextLivePollAt = Date.now() + activeIntervalMs;
           if (!document.hidden) {
             this.fetchLivePoints(false);
           }
         };
+        this._checkAndPollLiveFn = checkAndPoll;
 
         // Visibility listener to save device battery and bandwidth (deduplicated)
         if (this._boundVisibilityHandler) {
@@ -2199,7 +2299,7 @@
           checkAndPoll();
 
           if (this.livePollInterval) clearInterval(this.livePollInterval);
-          this.livePollInterval = setInterval(checkAndPoll, pollIntervalMs);
+          this.livePollInterval = setInterval(checkAndPoll, this._currentPollIntervalMs);
         }
       }
 
@@ -2275,6 +2375,14 @@
           // Cache latest live payload in memory so switching leagues applies live scores in 0ms
           this.lastLiveJson = liveJson;
           this.lastLiveGw = maxGW;
+
+          // Adaptive Edge polling: 20s during live play, 90s between match slots until FPL marks data_checked
+          const inPlayCount = Number(liveJson.in_play_count || 0);
+          const adaptiveIntervalMs = inPlayCount > 0 ? 20000 : 90000;
+          if (typeof this.setLivePollCadence === 'function') {
+            this.setLivePollCadence(adaptiveIntervalMs);
+          }
+          this._nextLivePollAt = Date.now() + (this._currentPollIntervalMs || adaptiveIntervalMs);
 
           const changed = this.applyLiveElements(liveJson, maxGW);
 
@@ -6599,6 +6707,7 @@
               }
             }
 
+            const cur = this.getLeagueCurrency();
             let multiTierPayoutsHtml = '';
             if (isFinished && isWeeklyPrize && this.config.features && this.config.features.weekly_prizes) {
               const tierPrizes = Object.values(this.config.features.weekly_prizes).map(Number);
@@ -6608,7 +6717,7 @@
                   <div class="mt-3 pt-3 border-t ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/80 dark:border-emerald-900/60'}">
                     <div class="text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2 font-display flex items-center justify-between">
                       <span>${isEn ? 'Weekly Prize Breakdown (Top 3)' : 'สรุปเงินรางวัลประจำสัปดาห์ 3 อันดับ'}</span>
-                      <span class="text-[10px] text-slate-500 font-normal">${isEn ? `Total ${tierPrizes.reduce((a,b)=>a+b,0).toLocaleString()} THB/GW` : `รวมสัปดาห์ละ ${tierPrizes.reduce((a,b)=>a+b,0).toLocaleString()} THB`}</span>
+                      <span class="text-[10px] text-slate-500 font-normal">${isEn ? `Total ${tierPrizes.reduce((a,b)=>a+b,0).toLocaleString()} ${cur.code}/GW` : `รวมสัปดาห์ละ ${tierPrizes.reduce((a,b)=>a+b,0).toLocaleString()} ${cur.code}`}</span>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                       ${weeklyPayouts.map(p => {
@@ -6631,7 +6740,7 @@
                             </div>
                             <div class="text-right flex-shrink-0">
                               <span class="font-black font-display text-emerald-700 dark:text-emerald-400 text-sm block">${p.prize.toLocaleString()}</span>
-                              <span class="text-[9px] text-slate-400 block">${p.isJoint ? (isEn ? 'THB (Split)' : 'THB (หารเท่า)') : 'THB'}</span>
+                              <span class="text-[9px] text-slate-400 block">${p.isJoint ? (isEn ? `${cur.code} (Split)` : `${cur.code} (หารเท่า)`) : cur.code}</span>
                             </div>
                           </div>
                         `;
@@ -6645,20 +6754,19 @@
             let penaltyPayoutsHtml = '';
             if (isFinished && this.config.features && this.config.features.has_weekly_penalties) {
               const weeklyPenalties = this.calculateWeeklyPenalties(eligibleSortedByPrize, this.selectedGW);
-              const penaltyTiersList = (this.config.features && this.config.features.weekly_penalty_tiers)
-                ? Object.values(this.config.features.weekly_penalty_tiers).map(Number)
-                : [600, 500, 400, 300, 200];
+              const penaltyTiersList = this.getWeeklyPenaltyTiers();
+              const penaltyCountN = penaltyTiersList.length;
               const totalWeeklyFines = penaltyTiersList.reduce((a, b) => a + b, 0);
-              const weeklyChampPrize = this.config.features.weekly_prize_amount || 200;
+              const weeklyChampPrize = this.config.features.weekly_prize_amount !== undefined ? Number(this.config.features.weekly_prize_amount) : 200;
               const netWeeklyAccumulated = totalWeeklyFines - weeklyChampPrize;
 
               penaltyPayoutsHtml = `
                 <div class="mt-3 pt-3 border-t ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/80 dark:border-emerald-900/60'}">
                   <div class="text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2 font-display flex items-center justify-between flex-wrap gap-1">
-                    <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> ${isEn ? `Bottom 5 Penalties (Total ${totalWeeklyFines.toLocaleString()} THB - Weekly Champ ${weeklyChampPrize.toLocaleString()} THB)` : `ผู้เสียค่าปรับ 5 อันดับท้าย (รวม ${totalWeeklyFines.toLocaleString()} THB - หักจ่ายแชมป์ ${weeklyChampPrize.toLocaleString()} THB)`}</span>
-                    <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">${isEn ? `+${netWeeklyAccumulated.toLocaleString()} THB to Prize Pool` : `+${netWeeklyAccumulated.toLocaleString()} THB สะสมเข้ากองกลาง`}</span>
+                    <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> ${isEn ? `Bottom ${penaltyCountN} Penalties (Total ${totalWeeklyFines.toLocaleString()} ${cur.code} - Weekly Champ ${weeklyChampPrize.toLocaleString()} ${cur.code})` : `ผู้เสียค่าปรับ ${penaltyCountN} อันดับท้าย (รวม ${totalWeeklyFines.toLocaleString()} ${cur.code} - หักจ่ายแชมป์ ${weeklyChampPrize.toLocaleString()} ${cur.code})`}</span>
+                    <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">${isEn ? `+${netWeeklyAccumulated.toLocaleString()} ${cur.code} to Prize Pool` : `+${netWeeklyAccumulated.toLocaleString()} ${cur.code} สะสมเข้ากองกลาง`}</span>
                   </div>
-                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-${Math.min(Math.max(penaltyCountN, 1), 5)} gap-2">
                     ${weeklyPenalties.map((p, i) => {
                       const cardStyle = p.bottomTierIndex === 0 
                         ? 'bg-rose-100/80 dark:bg-rose-950/50 border-rose-300 dark:border-rose-700/60 text-rose-950 dark:text-rose-200' 
@@ -6667,7 +6775,7 @@
                         <div class="p-2 rounded-xl border ${cardStyle} text-xs shadow-2xs">
                           <div class="flex items-center justify-between">
                             <span class="font-bold text-[10px] block">${p.rankLabel}</span>
-                            <span class="font-black text-rose-600 dark:text-rose-400 text-xs">-${p.fine.toLocaleString()} THB</span>
+                            <span class="font-black text-rose-600 dark:text-rose-400 text-xs">-${p.fine.toLocaleString()} ${cur.code}</span>
                           </div>
                           <div class="font-bold truncate mt-1 text-slate-900 dark:text-white">${this.escapeHtml(p.team_name)}</div>
                           <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(p.player_name)} (${p.net_points} pts)</div>
@@ -6790,13 +6898,14 @@
               rankBadge = this.getRankBadge(rankDisplay, rankDisplay);
             }
 
+            const curGw = this.getLeagueCurrency();
             let penaltyBadgeHtml = '';
             if (this.config.features && this.config.features.has_weekly_penalties && isPrize && isStarted) {
-              if (team.rank === 1) {
-                penaltyBadgeHtml = `<span class="text-[10.5px] font-mono font-bold text-emerald-600 dark:text-emerald-400 ml-1 tabular-nums">+${weeklyWinnerPrize} THB</span>`;
+              if (team.rank === 1 && weeklyWinnerPrize > 0) {
+                penaltyBadgeHtml = `<span class="text-[10.5px] font-mono font-bold text-emerald-600 dark:text-emerald-400 ml-1 tabular-nums">+${weeklyWinnerPrize} ${curGw.code}</span>`;
               } else if (weeklyPenaltiesMap[team.entry_id]) {
                 const p = weeklyPenaltiesMap[team.entry_id];
-                penaltyBadgeHtml = `<span class="text-[10.5px] font-mono font-bold text-rose-600 dark:text-rose-400 ml-1 tabular-nums">-${p.fine.toLocaleString()} THB</span>`;
+                penaltyBadgeHtml = `<span class="text-[10.5px] font-mono font-bold text-rose-600 dark:text-rose-400 ml-1 tabular-nums">-${p.fine.toLocaleString()} ${curGw.code}</span>`;
               }
             }
 
@@ -7357,21 +7466,18 @@
           return 0;
         });
 
-        let penaltyTiers = [600, 500, 400, 300, 200];
-        if (this.config && this.config.features && this.config.features.weekly_penalty_tiers) {
-          const tiersObj = this.config.features.weekly_penalty_tiers;
-          penaltyTiers = [
-            Number(tiersObj.last_1 !== undefined ? tiersObj.last_1 : 600),
-            Number(tiersObj.last_2 !== undefined ? tiersObj.last_2 : 500),
-            Number(tiersObj.last_3 !== undefined ? tiersObj.last_3 : 400),
-            Number(tiersObj.last_4 !== undefined ? tiersObj.last_4 : 300),
-            Number(tiersObj.last_5 !== undefined ? tiersObj.last_5 : 200)
-          ];
-        }
+        const penaltyTiers = this.getWeeklyPenaltyTiers();
         const isEn = (this.currentLang === 'en');
-        const rankLabels = isEn 
-          ? ['💀 Last Place', '⚠️ 2nd from Bottom', '⚠️ 3rd from Bottom', '⚠️ 4th from Bottom', '⚠️ 5th from Bottom']
-          : ['💀 บ๊วย', '⚠️ รองบ๊วย', '⚠️ ท้าย 3', '⚠️ ท้าย 4', '⚠️ ท้าย 5'];
+        const rankLabels = penaltyTiers.map((_, idx) => {
+          if (idx === 0) return isEn ? '💀 Last Place' : '💀 บ๊วย';
+          if (idx === 1) return isEn ? '⚠️ 2nd from Bottom' : '⚠️ รองบ๊วย';
+          if (isEn) {
+            const ord = idx + 1;
+            const suf = ord === 3 ? 'rd' : 'th';
+            return `⚠️ ${ord}${suf} from Bottom`;
+          }
+          return `⚠️ ท้าย ${idx + 1}`;
+        });
 
         const groups = [];
         sortedBottom.forEach(team => {
@@ -10523,14 +10629,29 @@
           leagueBadge.innerText = isEn ? `${memberCount} Members` : `สมาชิก ${memberCount} ทีม`;
         }
 
+        const cur = this.getLeagueCurrency();
+        const prizesFeat = (this.config && this.config.features) || {};
+        const isWeekly = (prizesFeat.prize_model === 'weekly' || prizesFeat.prize_model === 'penalties' || Boolean(prizesFeat.has_weekly_penalties));
+
         if (poolBadge) {
-          const poolVal = this.config.total_pool || (isAnnualZeroSum ? (isEn ? 'Zero-Sum (3,100 THB)' : 'Zero-Sum (ดุล 3,100 THB)') : (isEn ? 'Prize Pool' : 'เงินรางวัล'));
+          const rawPoolVal = isEn ? (this.config.total_pool_en || this.config.total_pool) : this.config.total_pool;
+          let poolVal = (rawPoolVal && String(rawPoolVal).trim() !== '-') ? String(rawPoolVal).trim() : '';
+          if (!poolVal) {
+            if (isAnnualZeroSum) {
+              poolVal = isEn ? `Zero-Sum (3,100 ${cur.code})` : `Zero-Sum (ดุล 3,100 ${cur.code})`;
+            } else if (isWeekly) {
+              const wAmt = Number(prizesFeat.weekly_prize_amount || 300);
+              poolVal = `${(wAmt * 38).toLocaleString()} ${cur.code}`;
+            } else if (prizesFeat.prize_model === 'monthly') {
+              const mAmt = Number(prizesFeat.monthly_prize_amount || ((Number(prizesFeat.monthly_champion_prize ?? 600) + Number(prizesFeat.monthly_runner_up_prize ?? 400))));
+              poolVal = `${(mAmt * this.getMonthlySchedule().length).toLocaleString()} ${cur.code}`;
+            } else {
+              poolVal = isEn ? 'Prize Pool' : 'เงินรางวัล';
+            }
+          }
           poolBadge.className = "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs px-2.5 py-1 rounded-xl font-bold font-display shadow-2xs";
           poolBadge.innerText = poolVal;
         }
-
-        const prizesFeat = (this.config && this.config.features) || {};
-        const isWeekly = (prizesFeat.prize_model === 'weekly' || prizesFeat.prize_model === 'penalties' || Boolean(prizesFeat.has_weekly_penalties));
 
         if (isWeekly) {
           const weeklyPrizesConfig = this.config.features.weekly_prizes;
@@ -10539,15 +10660,14 @@
 
           const tierPrizes = weeklyPrizesConfig 
             ? Object.values(weeklyPrizesConfig).map(Number)
-            : [this.config.features.weekly_prize_amount || (hasWeeklyPenalties ? 200 : 300)];
+            : [this.config.features.weekly_prize_amount !== undefined ? Number(this.config.features.weekly_prize_amount) : (hasWeeklyPenalties ? 200 : 300)];
           const weeklyAmount = tierPrizes.reduce((a, b) => a + b, 0);
           const weeklyTotal = weeklyAmount * 38;
 
-          const penaltyTiersList = (hasWeeklyPenalties && this.config.features.weekly_penalty_tiers)
-            ? Object.values(this.config.features.weekly_penalty_tiers).map(Number)
-            : [600, 500, 400, 300, 200];
+          const penaltyTiersList = hasWeeklyPenalties ? this.getWeeklyPenaltyTiers() : [600, 500, 400, 300, 200];
+          const penaltyCountN = penaltyTiersList.length;
           const totalWeeklyFines = penaltyTiersList.reduce((a, b) => a + b, 0);
-          const weeklyChampPrize = this.config.features.weekly_prize_amount || 200;
+          const weeklyChampPrize = this.config.features.weekly_prize_amount !== undefined ? Number(this.config.features.weekly_prize_amount) : 200;
           const weeklyNetPot = totalWeeklyFines - weeklyChampPrize;
           const seasonNetTotal = weeklyNetPot * 38;
 
@@ -10769,8 +10889,8 @@
             const winsDisplay = isEligible ? ((wins % 1 === 0) ? wins : wins.toFixed(1)) : '-';
             const prizeDisplay = isEligible 
               ? (actualPrize > 0 
-                  ? `<span class="font-mono font-bold tabular-nums text-xs sm:text-sm text-emerald-600 dark:text-emerald-400">+${actualPrize.toLocaleString()} <span class="text-[10px] font-normal opacity-75">THB</span></span>`
-                  : '<span class="font-mono text-slate-400 dark:text-slate-500 text-xs sm:text-sm tabular-nums">0 THB</span>')
+                  ? `<span class="font-mono font-bold tabular-nums text-xs sm:text-sm text-emerald-600 dark:text-emerald-400">+${actualPrize.toLocaleString()} <span class="text-[10px] font-normal opacity-75">${cur.code}</span></span>`
+                  : `<span class="font-mono text-slate-400 dark:text-slate-500 text-xs sm:text-sm tabular-nums">0 ${cur.code}</span>`)
               : `<span class="text-slate-400 font-mono text-xs">${isEn ? 'Guest' : 'ร่วมสนุก'}</span>`;
 
             let countCellsHtml = '';
@@ -10782,17 +10902,17 @@
                 ? (danger > 0 ? `<span class="font-mono font-bold tabular-nums text-xs text-rose-600 dark:text-rose-400">${danger}</span>` : `<span class="text-slate-400 dark:text-slate-500 font-mono text-xs">${isEn ? 'Safe' : 'รอด'}</span>`)
                 : '-';
               const finesDisplay = isEligible
-                ? (fines > 0 ? `<span class="inline-flex items-baseline justify-end font-mono font-bold text-xs text-rose-600 dark:text-rose-400"><span class="text-[10px] font-normal opacity-70 mr-0.5">-฿</span><span class="tabular-nums">${fines.toLocaleString()}</span></span>` : '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs"><span class="text-[10px] font-normal mr-0.5">฿</span>0</span>')
+                ? (fines > 0 ? `<span class="inline-flex items-baseline justify-end font-mono font-bold text-xs text-rose-600 dark:text-rose-400"><span class="text-[10px] font-normal opacity-70 mr-0.5">-${cur.symbol}</span><span class="tabular-nums">${fines.toLocaleString()}</span></span>` : `<span class="text-slate-400 dark:text-slate-500 font-mono text-xs"><span class="text-[10px] font-normal mr-0.5">${cur.symbol}</span>0</span>`)
                 : '-';
               const prizeDisplayCell = isEligible
-                ? (actualPrize > 0 ? `<span class="inline-flex items-baseline justify-end font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400"><span class="text-[10px] font-normal opacity-70 mr-0.5">+฿</span><span class="tabular-nums">${actualPrize.toLocaleString()}</span></span>` : '<span class="text-slate-400 dark:text-slate-500 font-mono text-xs"><span class="text-[10px] font-normal mr-0.5">฿</span>0</span>')
+                ? (actualPrize > 0 ? `<span class="inline-flex items-baseline justify-end font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400"><span class="text-[10px] font-normal opacity-70 mr-0.5">+${cur.symbol}</span><span class="tabular-nums">${actualPrize.toLocaleString()}</span></span>` : `<span class="text-slate-400 dark:text-slate-500 font-mono text-xs"><span class="text-[10px] font-normal mr-0.5">${cur.symbol}</span>0</span>`)
                 : '-';
               const netDisplayCell = isEligible
                 ? (netBalance > 0 
-                    ? `<span class="inline-flex items-baseline font-mono font-bold text-xs sm:text-sm text-emerald-600 dark:text-emerald-400"><span class="text-[10px] font-normal opacity-75 mr-0.5">+฿</span><span class="tabular-nums">${netBalance.toLocaleString()}</span></span>` 
+                    ? `<span class="inline-flex items-baseline font-mono font-bold text-xs sm:text-sm text-emerald-600 dark:text-emerald-400"><span class="text-[10px] font-normal opacity-75 mr-0.5">+${cur.symbol}</span><span class="tabular-nums">${netBalance.toLocaleString()}</span></span>` 
                     : (netBalance < 0 
-                        ? `<span class="inline-flex items-baseline font-mono font-bold text-xs sm:text-sm text-rose-600 dark:text-rose-400"><span class="text-[10px] font-normal opacity-75 mr-0.5">-฿</span><span class="tabular-nums">${Math.abs(netBalance).toLocaleString()}</span></span>` 
-                        : `<span class="font-mono text-xs sm:text-sm text-slate-400 dark:text-slate-500"><span class="text-[10px] font-normal mr-0.5">฿</span>0</span>`))
+                        ? `<span class="inline-flex items-baseline font-mono font-bold text-xs sm:text-sm text-rose-600 dark:text-rose-400"><span class="text-[10px] font-normal opacity-75 mr-0.5">-${cur.symbol}</span><span class="tabular-nums">${Math.abs(netBalance).toLocaleString()}</span></span>` 
+                        : `<span class="font-mono text-xs sm:text-sm text-slate-400 dark:text-slate-500"><span class="text-[10px] font-normal mr-0.5">${cur.symbol}</span>0</span>`))
                 : `<span class="text-slate-400 font-mono text-xs">${isEn ? 'Guest' : 'ร่วมสนุก'}</span>`;
 
               countCellsHtml = `
@@ -10921,12 +11041,12 @@
                           <span class="font-bold text-slate-900 dark:text-white">${this.escapeHtml(w.team_name)}</span>
                           <span class="text-[10px] text-slate-400">(${'GW ' + w.gw}${w.is_joint ? (isEn ? ' Joint #1' : ' แชมป์ร่วม') : ''})</span>
                         </div>
-                        <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400 flex-shrink-0">+${w.amount.toLocaleString()} THB</span>
+                        <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400 flex-shrink-0">+${w.amount.toLocaleString()} ${cur.code}</span>
                       </div>
                     `).join('')}
                     <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-dashed border-slate-200 dark:border-slate-700 font-bold text-slate-800 dark:text-slate-200">
                       <span>${isEn ? 'Total Payout' : 'ยอดรวมรอบนี้'}</span>
-                      <span class="font-mono text-emerald-600 dark:text-emerald-400">${phaseTotalPaid.toLocaleString()} THB</span>
+                      <span class="font-mono text-emerald-600 dark:text-emerald-400">${phaseTotalPaid.toLocaleString()} ${cur.code}</span>
                     </div>
                   </div>
                 `;
@@ -10976,7 +11096,7 @@
                               <span class="font-bold truncate block text-xs text-slate-900 dark:text-white">${this.escapeHtml(p.team_name)}</span>
                               <span class="text-[10px] text-slate-400 block truncate font-mono">${this.escapeHtml(p.player_name)} (${p.net_points} pts)${p.tieBreakNote ? ` • Tie-break` : ''}</span>
                             </div>
-                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs flex-shrink-0">+${p.prize.toLocaleString()} THB</span>
+                            <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs flex-shrink-0">+${p.prize.toLocaleString()} ${cur.code}</span>
                           </div>
                         `;
                       }).join('')}
@@ -10997,7 +11117,7 @@
                   <div>
                     <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-200/80 dark:border-slate-700/80">
                       <span class="font-mono font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Gameweek ${entry.gw}</span>
-                      <span class="text-[10.5px] font-mono font-bold text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">+${(entry.netPot || weeklyNetPot).toLocaleString()} ${isEn ? 'THB Pot' : 'THB กองกลาง'}</span>
+                      <span class="text-[10.5px] font-mono font-bold text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">+${(entry.netPot || weeklyNetPot).toLocaleString()} ${isEn ? `${cur.code} Pot` : `${cur.code} กองกลาง`}</span>
                     </div>
                     
                     ${(entry.winners && entry.winners.length > 1) ? entry.winners.map(w => `
@@ -11007,7 +11127,7 @@
                           <span class="font-bold truncate block text-xs text-slate-900 dark:text-white">${this.escapeHtml(w.team_name)}</span>
                           <span class="text-[10px] text-slate-400 block truncate font-mono">${this.escapeHtml(w.player_name)} (${w.net_points} pts)</span>
                         </div>
-                        <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs flex-shrink-0">+${w.prize.toLocaleString()} THB</span>
+                        <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs flex-shrink-0">+${w.prize.toLocaleString()} ${cur.code}</span>
                       </div>
                     `).join('') : `
                       <div class="mb-2 p-2 rounded-xl bg-white/60 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between">
@@ -11016,12 +11136,12 @@
                           <span class="font-bold truncate block text-xs text-slate-900 dark:text-white">${this.escapeHtml(entry.winner.team_name)}</span>
                           <span class="text-[10px] text-slate-400 block truncate font-mono">${this.escapeHtml(entry.winner.player_name)} (${entry.winner.net_points} pts)</span>
                         </div>
-                        <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs flex-shrink-0">+${(entry.winner.prize || weeklyChampPrize).toLocaleString()} THB</span>
+                        <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs flex-shrink-0">+${(entry.winner.prize !== undefined ? entry.winner.prize : weeklyChampPrize).toLocaleString()} ${cur.code}</span>
                       </div>
                     `}
 
                     <div class="space-y-1">
-                      <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">${isEn ? 'Bottom 5 Fined Teams:' : 'ผู้เสียค่าปรับ 5 อันดับท้าย:'}</div>
+                      <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">${isEn ? `Bottom ${penaltyCountN} Fined Teams:` : `ผู้เสียค่าปรับ ${penaltyCountN} อันดับท้าย:`}</div>
                       ${entry.bottomList.map(b => {
                         return `
                           <div class="px-2 py-1 rounded-lg border border-slate-200/60 dark:border-slate-700/60 bg-white/40 dark:bg-slate-900/30 flex items-center justify-between text-xs">
@@ -11030,7 +11150,7 @@
                               <span class="font-medium text-xs text-slate-900 dark:text-white">${this.escapeHtml(b.team_name)}</span>
                               <span class="text-[10px] text-slate-400 font-mono">(${b.net_points} pts)</span>
                             </div>
-                            <span class="font-mono font-bold text-rose-600 dark:text-rose-400 text-xs flex-shrink-0">-${b.fine.toLocaleString()} THB</span>
+                            <span class="font-mono font-bold text-rose-600 dark:text-rose-400 text-xs flex-shrink-0">-${b.fine.toLocaleString()} ${cur.code}</span>
                           </div>
                         `;
                       }).join('')}
@@ -11080,6 +11200,125 @@
           }
 
           if (mainContainer) {
+            const seasonSummary = this.getSeasonPrizeSummary(isEn);
+            const hasSeasonPrizes = Boolean(seasonSummary && seasonSummary.total);
+            const cupChampStr = (this.config.features && this.config.features.cup_champion_prize) || this.config.cup_champion_prize || '';
+            const cupRunnerStr = (this.config.features && this.config.features.cup_runner_up_prize) || this.config.cup_runner_up_prize || '';
+            const hasCupPrizeCard = Boolean(this.config.features && this.config.features.has_cup && (cupChampStr || cupRunnerStr));
+            let cupTotalText = '';
+            if (hasCupPrizeCard) {
+              const cNum = Number(String(cupChampStr).replace(/[^0-9.-]/g, '')) || 0;
+              const rNum = Number(String(cupRunnerStr).replace(/[^0-9.-]/g, '')) || 0;
+              cupTotalText = (cNum + rNum > 0) ? (cNum + rNum).toLocaleString() : String(cupChampStr).replace(/\s*(THB|USD)\s*$/i, '').trim();
+            }
+            const rawPoolCfg = isEn ? (this.config.total_pool_en || this.config.total_pool) : this.config.total_pool;
+            const rawFeeCfg = isEn ? (this.config.entry_fee_en || this.config.entry_fee) : this.config.entry_fee;
+            const cleanPoolCfg = (rawPoolCfg && String(rawPoolCfg).trim() !== '-') ? String(rawPoolCfg).trim() : '';
+            const cleanFeeCfg = (rawFeeCfg && String(rawFeeCfg).trim() !== '-') ? String(rawFeeCfg).trim() : '';
+            const hasTreasuryCard = Boolean(this.config.coordinator || cleanPoolCfg || this.config.payment_method || cleanFeeCfg);
+
+            const penaltyScaleDesc = penaltyTiersList.map((amt, idx) => {
+              if (idx === 0) return isEn ? `Last ${amt.toLocaleString()}` : `บ๊วย ${amt.toLocaleString()}`;
+              if (idx === 1) return isEn ? `2nd-Last ${amt.toLocaleString()}` : `รองบ๊วย ${amt.toLocaleString()}`;
+              const ord = idx + 1;
+              const suf = ord === 3 ? 'rd' : 'th';
+              return isEn ? `${ord}${suf} ${amt.toLocaleString()}` : `อันดับ ${ord} ${amt.toLocaleString()}`;
+            }).join(' / ');
+
+            let weeklySummarySectionHtml = '';
+            if (hasWeeklyPenalties) {
+              weeklySummarySectionHtml = `
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Current Net Accumulated Pot' : 'ยอดเงินกองกลางสะสมสุทธิปัจจุบัน'}</span>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400 mt-1">${(totalFinesPaid - totalDistributedPrize).toLocaleString()} <span class="text-xs font-normal">${cur.code}</span></div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? `Completed ${finishedGWCount} GWs x ${weeklyNetPot.toLocaleString()} ${cur.code} (Target 38 GWs = ${seasonNetTotal.toLocaleString()} ${cur.code})` : `จบแล้ว ${finishedGWCount} สัปดาห์ x ${weeklyNetPot.toLocaleString()} ${cur.code} (เป้าหมาย 38 สัปดาห์ = ${seasonNetTotal.toLocaleString()} ${cur.code})`}</div>
+                  </div>
+                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Weekly Winner Awards (38 GWs)' : 'รางวัลแชมป์ประจำสัปดาห์ (38 สัปดาห์)'}</span>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${(weeklyChampPrize * 38).toLocaleString()} <span class="text-xs font-normal text-slate-400">${cur.code}</span></div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? `${weeklyChampPrize.toLocaleString()} ${cur.code}/week (Funded from ${totalWeeklyFines.toLocaleString()} ${cur.code} fines)` : `สัปดาห์ละ ${weeklyChampPrize.toLocaleString()} ${cur.code} (หักจากค่าปรับ ${totalWeeklyFines.toLocaleString()} ${cur.code})`}</div>
+                  </div>
+                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? `Bottom ${penaltyCountN} Fines Scale` : `ค่าปรับ ${penaltyCountN} อันดับท้ายจากบ๊วย`}</span>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-rose-600 dark:text-rose-400 mt-1">${totalWeeklyFines.toLocaleString()} <span class="text-xs font-normal">${cur.code} / ${isEn ? 'GW' : 'สัปดาห์'}</span></div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${penaltyScaleDesc}</div>
+                  </div>
+                </div>
+              `;
+            } else if (phasesHtml) {
+              weeklySummarySectionHtml = `
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Weekly Winner Prizes (38 GWs)' : 'รางวัลแชมป์สัปดาห์ (38 สัปดาห์)'}</span>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${weeklyTotal.toLocaleString()} <span class="text-xs font-normal text-slate-400">${cur.code}</span></div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? `${weeklyAmount.toLocaleString()} ${cur.code}/week x 38 awards` : `สัปดาห์ละ ${weeklyAmount.toLocaleString()} ${cur.code} x 38 รางวัล`}</div>
+                  </div>
+                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Cup Tournament Champion' : 'รางวัลแชมป์ฟุตบอลถ้วย'}</span>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${cupTotalText || '1,650'} <span class="text-xs font-normal text-slate-400">${cur.code}</span></div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? `Champion ${cupChampStr || '1,000 THB'} / Runner-Up ${cupRunnerStr || '650 THB'}` : `แชมป์ ${cupChampStr || '1,000 THB'} / รองแชมป์ ${cupRunnerStr || '650 THB'}`}</div>
+                  </div>
+                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Season Podium Prizes' : 'รางวัลแชมป์ฤดูกาล'}</span>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${hasSeasonPrizes ? seasonSummary.total : '7,050'} <span class="text-xs font-normal text-slate-400">${cur.code}</span></div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${hasSeasonPrizes ? this.escapeHtml(seasonSummary.desc) : (isEn ? '1st: 3,500 / 2nd: 2,000 / 3rd: 1,000 / 4th: 550' : 'ที่ 1: 3,500 / ที่ 2: 2,000 / ที่ 3: 1,000 / ที่ 4: 550')}</div>
+                  </div>
+                </div>
+              `;
+            } else {
+              const weeklyCards = [];
+              weeklyCards.push(`
+                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${weeklyPrizesConfig ? (isEn ? 'Weekly Top 3 Awards (38 GWs)' : 'รางวัลประจำสัปดาห์ 3 อันดับ (38 สัปดาห์)') : (isEn ? 'Weekly Winner Awards (38 GWs)' : 'แชมป์ประจำสัปดาห์ (38 สัปดาห์)')}</span>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${weeklyTotal.toLocaleString()} <span class="text-xs font-normal text-slate-400">${cur.code}</span></div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${weeklyPrizesConfig ? (isEn ? `1st: ${weeklyPrizesConfig['1st'].toLocaleString()} / 2nd: ${weeklyPrizesConfig['2nd'].toLocaleString()} / 3rd: ${weeklyPrizesConfig['3rd'].toLocaleString()} (${weeklyAmount.toLocaleString()} ${cur.code}/week)` : `ที่ 1: ${weeklyPrizesConfig['1st'].toLocaleString()} / ที่ 2: ${weeklyPrizesConfig['2nd'].toLocaleString()} / ที่ 3: ${weeklyPrizesConfig['3rd'].toLocaleString()} (สัปดาห์ละ ${weeklyAmount.toLocaleString()} ${cur.code})`) : (isEn ? `${weeklyAmount.toLocaleString()} ${cur.code}/week x 38 weeks` : `สัปดาห์ละ ${weeklyAmount.toLocaleString()} ${cur.code} x 38 สัปดาห์`)}</div>
+                  </div>
+              `);
+              if (hasSeasonPrizes) {
+                weeklyCards.push(`
+                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${this.config.season_prizes && Object.keys(this.config.season_prizes).length ? (isEn ? `Season Champions (${Object.keys(this.config.season_prizes).length} Places)` : `แชมป์ฤดูกาล (รวม ${Object.keys(this.config.season_prizes).length} อันดับ)`) : (isEn ? 'Season Champions' : 'แชมป์ฤดูกาล')}</span>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${this.escapeHtml(seasonSummary.total)} <span class="text-xs font-normal text-slate-400">${cur.code}</span></div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${this.escapeHtml(seasonSummary.desc)}</div>
+                  </div>
+                `);
+              }
+              if (hasCupPrizeCard && !this.config.coordinator) {
+                const cupSubDesc = cupRunnerStr
+                  ? (isEn ? `Champion ${cupChampStr} / Runner-Up ${cupRunnerStr}` : `แชมป์ ${cupChampStr} / รองแชมป์ ${cupRunnerStr}`)
+                  : (isEn ? `Knockout Cup Champion (${cupChampStr})` : `แชมป์บอลถ้วยน็อคเอาท์ (${cupChampStr})`);
+                weeklyCards.push(`
+                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Cup Tournament Champion' : 'รางวัลแชมป์ฟุตบอลถ้วย'}</span>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${this.escapeHtml(cupTotalText)} <span class="text-xs font-normal text-slate-400">${cur.code}</span></div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${this.escapeHtml(cupSubDesc)}</div>
+                  </div>
+                `);
+              }
+              if (hasTreasuryCard) {
+                const topTreasuryVal = this.config.coordinator || cleanPoolCfg || `${weeklyTotal.toLocaleString()} ${cur.code}`;
+                const subTreasuryVal = this.config.payment_method || cleanFeeCfg || (isEn ? '38 Gameweeks Official Settlement' : 'คำนวณคะแนนสุทธิครบ 38 สัปดาห์');
+                weeklyCards.push(`
+                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${this.config.coordinator ? (isEn ? 'League Coordinator & Treasury' : 'ผู้ประสานงาน & ดูแลกองกลาง') : (isEn ? 'Entry Fee & Total Treasury' : 'ค่าสมัคร & กองกลางรวม')}</span>
+                    <div class="${this.config.coordinator ? 'text-base font-bold text-slate-900 dark:text-white' : 'text-xl sm:text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400'} mt-1">${this.escapeHtml(topTreasuryVal)}</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${this.escapeHtml(subTreasuryVal)}</div>
+                  </div>
+                `);
+              }
+              const gridColsCls = weeklyCards.length === 1
+                ? 'grid-cols-1'
+                : (weeklyCards.length === 2
+                    ? 'grid-cols-1 sm:grid-cols-2'
+                    : (weeklyCards.length >= 4 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' : 'grid-cols-1 sm:grid-cols-3'));
+              weeklySummarySectionHtml = `
+                <div class="grid ${gridColsCls} gap-3">
+                  ${weeklyCards.join('')}
+                </div>
+              `;
+            }
+
             mainContainer.innerHTML = `
               <!-- 01 / TREASURY LEDGER & PRIZE STRUCTURE -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
@@ -11089,61 +11328,7 @@
                     ${hasWeeklyPenalties ? (isEn ? 'TREASURY POT & FINES STRUCTURE' : 'สรุปกองกลางสะสม & โครงสร้างค่าปรับ') : (isEn ? 'TREASURY LEDGER & PRIZE STRUCTURE' : 'สรุปบัญชีกองกลาง & โครงสร้างเงินรางวัล')}
                   </h3>
                 </div>
-                ${hasWeeklyPenalties ? `
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Current Net Accumulated Pot' : 'ยอดเงินกองกลางสะสมสุทธิปัจจุบัน'}</span>
-                    <div class="text-xl sm:text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400 mt-1">${(totalFinesPaid - totalDistributedPrize).toLocaleString()} <span class="text-xs font-normal">THB</span></div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? `Completed ${finishedGWCount} GWs x ${weeklyNetPot.toLocaleString()} THB (Target 38 GWs = ${seasonNetTotal.toLocaleString()} THB)` : `จบแล้ว ${finishedGWCount} สัปดาห์ x ${weeklyNetPot.toLocaleString()} THB (เป้าหมาย 38 สัปดาห์ = ${seasonNetTotal.toLocaleString()} THB)`}</div>
-                  </div>
-                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Weekly Winner Awards (38 GWs)' : 'รางวัลแชมป์ประจำสัปดาห์ (38 สัปดาห์)'}</span>
-                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${(weeklyChampPrize * 38).toLocaleString()} <span class="text-xs font-normal text-slate-400">THB</span></div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? `${weeklyChampPrize.toLocaleString()} THB/week (Funded from ${totalWeeklyFines.toLocaleString()} THB fines)` : `สัปดาห์ละ ${weeklyChampPrize.toLocaleString()} THB (หักจากค่าปรับ ${totalWeeklyFines.toLocaleString()} THB)`}</div>
-                  </div>
-                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Bottom 5 Fines Scale' : 'ค่าปรับ 5 อันดับท้ายจากบ๊วย'}</span>
-                    <div class="text-xl sm:text-2xl font-black font-mono text-rose-600 dark:text-rose-400 mt-1">${totalWeeklyFines.toLocaleString()} <span class="text-xs font-normal">THB / ${isEn ? 'GW' : 'สัปดาห์'}</span></div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? 'Last 600 / 2nd-Last 500 / 3rd 400 / 4th 300 / 5th 200' : 'บ๊วย 600 / รองบ๊วย 500 / อันดับ 3 400 / อันดับ 4 300 / อันดับ 5 200'}</div>
-                  </div>
-                </div>
-                ` : (phasesHtml ? `
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Weekly Winner Prizes (38 GWs)' : 'รางวัลแชมป์สัปดาห์ (38 สัปดาห์)'}</span>
-                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${weeklyTotal.toLocaleString()} <span class="text-xs font-normal text-slate-400">THB</span></div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? `${weeklyAmount.toLocaleString()} THB/week x 38 awards` : `สัปดาห์ละ ${weeklyAmount.toLocaleString()} THB x 38 รางวัล`}</div>
-                  </div>
-                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Cup Tournament Champion' : 'รางวัลแชมป์ฟุตบอลถ้วย'}</span>
-                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">1,650 <span class="text-xs font-normal text-slate-400">THB</span></div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? `Champion ${this.config.cup_champion_prize || '1,000 THB'} / Runner-Up ${this.config.cup_runner_up_prize || '650 THB'}` : `แชมป์ ${this.config.cup_champion_prize || '1,000 THB'} / รองแชมป์ ${this.config.cup_runner_up_prize || '650 THB'}`}</div>
-                  </div>
-                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Season Podium Prizes' : 'รางวัลแชมป์ฤดูกาล'}</span>
-                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">7,050 <span class="text-xs font-normal text-slate-400">THB</span></div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? '1st: 3,500 / 2nd: 2,000 / 3rd: 1,000 / 4th: 550' : 'ที่ 1: 3,500 / ที่ 2: 2,000 / ที่ 3: 1,000 / ที่ 4: 550'}</div>
-                  </div>
-                </div>
-                ` : `
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${weeklyPrizesConfig ? (isEn ? 'Weekly Top 3 Awards (38 GWs)' : 'รางวัลประจำสัปดาห์ 3 อันดับ (38 สัปดาห์)') : (isEn ? 'Weekly Winner Awards (38 GWs)' : 'แชมป์ประจำสัปดาห์ (38 สัปดาห์)')}</span>
-                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${weeklyTotal.toLocaleString()} <span class="text-xs font-normal text-slate-400">THB</span></div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${weeklyPrizesConfig ? (isEn ? `1st: ${weeklyPrizesConfig['1st'].toLocaleString()} / 2nd: ${weeklyPrizesConfig['2nd'].toLocaleString()} / 3rd: ${weeklyPrizesConfig['3rd'].toLocaleString()} (${weeklyAmount.toLocaleString()} THB/week)` : `ที่ 1: ${weeklyPrizesConfig['1st'].toLocaleString()} / ที่ 2: ${weeklyPrizesConfig['2nd'].toLocaleString()} / ที่ 3: ${weeklyPrizesConfig['3rd'].toLocaleString()} (สัปดาห์ละ ${weeklyAmount.toLocaleString()} THB)`) : (isEn ? `${weeklyAmount.toLocaleString()} THB/week x 38 weeks` : `สัปดาห์ละ ${weeklyAmount.toLocaleString()} THB x 38 สัปดาห์`)}</div>
-                  </div>
-                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${this.config.season_prizes && Object.keys(this.config.season_prizes).length ? (isEn ? `Season Champions (${Object.keys(this.config.season_prizes).length} Places)` : `แชมป์ฤดูกาล (รวม ${Object.keys(this.config.season_prizes).length} อันดับ)`) : (isEn ? 'Season Champions' : 'แชมป์ฤดูกาล')}</span>
-                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${this.getSeasonPrizeSummary(isEn).total} <span class="text-xs font-normal text-slate-400">THB</span></div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${this.escapeHtml(this.getSeasonPrizeSummary(isEn).desc)}</div>
-                  </div>
-                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${this.config.coordinator ? (isEn ? 'League Coordinator & Treasury' : 'ผู้ประสานงาน & ดูแลกองกลาง') : (isEn ? 'Entry Fee & Total Treasury' : 'ค่าสมัคร & กองกลางรวม')}</span>
-                    <div class="${this.config.coordinator ? 'text-base font-bold text-slate-900 dark:text-white' : 'text-xl sm:text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400'} mt-1">${this.config.coordinator || (this.config.total_pool || '103,200 THB')}</div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${this.config.payment_method || (this.config.entry_fee || (isEn ? '8,600 THB/team' : '8,600 THB/ทีม'))}</div>
-                  </div>
-                </div>
-                `)}
+                ${weeklySummarySectionHtml}
               </div>
 
               <!-- 02 / ACCUMULATED PRIZE LEADERBOARD -->
@@ -11250,17 +11435,17 @@
                         ${hasWeeklyPenalties ? `
                         <td class="py-3 px-2 text-center text-slate-900 dark:text-white font-black">${totalWinsDisplay}</td>
                         <td class="py-3 px-2 text-center text-rose-600 dark:text-rose-400 font-black">${totalDangerCount}</td>
-                        <td class="py-3 px-3 text-right font-black text-rose-600 dark:text-rose-400">-${totalFinesPaid.toLocaleString()} THB</td>
-                        <td class="py-3 px-3 text-right font-black text-emerald-600 dark:text-emerald-400">+${totalDistributedPrize.toLocaleString()} THB</td>
-                        <td class="py-3 px-3 text-right font-black ${(totalFinesPaid - totalDistributedPrize) >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'} text-sm sm:text-base">${(totalFinesPaid - totalDistributedPrize) > 0 ? '+' : ''}${(totalFinesPaid - totalDistributedPrize).toLocaleString()} THB</td>
+                        <td class="py-3 px-3 text-right font-black text-rose-600 dark:text-rose-400">-${totalFinesPaid.toLocaleString()} ${cur.code}</td>
+                        <td class="py-3 px-3 text-right font-black text-emerald-600 dark:text-emerald-400">+${totalDistributedPrize.toLocaleString()} ${cur.code}</td>
+                        <td class="py-3 px-3 text-right font-black ${(totalFinesPaid - totalDistributedPrize) >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'} text-sm sm:text-base">${(totalFinesPaid - totalDistributedPrize) > 0 ? '+' : ''}${(totalFinesPaid - totalDistributedPrize).toLocaleString()} ${cur.code}</td>
                         ` : (hasMultiTier ? `
                         <td class="py-3 px-2 text-center text-slate-900 dark:text-white font-black">${total1st % 1 === 0 ? total1st : total1st.toFixed(1)}</td>
                         <td class="py-3 px-2 text-center text-slate-700 dark:text-slate-300 font-black">${total2nd % 1 === 0 ? total2nd : total2nd.toFixed(1)}</td>
                         <td class="py-3 px-2 text-center text-slate-700 dark:text-slate-300 font-black">${total3rd % 1 === 0 ? total3rd : total3rd.toFixed(1)}</td>
-                        <td class="py-3 px-3 text-right font-black text-emerald-600 dark:text-emerald-400">${totalDistributedPrize.toLocaleString()} THB</td>
+                        <td class="py-3 px-3 text-right font-black text-emerald-600 dark:text-emerald-400">${totalDistributedPrize.toLocaleString()} ${cur.code}</td>
                         ` : `
                         <td class="py-3 px-3 text-center text-slate-800 dark:text-slate-200 font-bold">${totalWinsDisplay}</td>
-                        <td class="py-3 px-3 text-right font-black text-emerald-600 dark:text-emerald-400">${totalDistributedPrize.toLocaleString()} THB</td>
+                        <td class="py-3 px-3 text-right font-black text-emerald-600 dark:text-emerald-400">${totalDistributedPrize.toLocaleString()} ${cur.code}</td>
                         `)}
                       </tr>
                     </tfoot>
@@ -11333,11 +11518,15 @@
 
         } else if (this.config && this.config.features && this.config.features.prize_model === 'monthly') {
           const feat = (this.config && this.config.features) || {};
-          const champPrize = feat.monthly_champion_prize || 600;
-          const runnerPrize = feat.monthly_runner_up_prize || 400;
-          const totalMonthly = feat.total_monthly_budget || '10,000 THB';
+          const monthlySchedule = this.getMonthlySchedule();
+          const champPrize = Number(feat.monthly_champion_prize ?? feat.monthly_prize_amount ?? 600);
+          const runnerPrize = (feat.monthly_runner_up_prize !== undefined && feat.monthly_runner_up_prize !== null)
+            ? Number(feat.monthly_runner_up_prize)
+            : (feat.monthly_champion_prize !== undefined ? 0 : 400);
+          const perMonthTotal = Number(feat.monthly_prize_amount || (champPrize + runnerPrize));
+          const totalMonthly = feat.total_monthly_budget || `${(perMonthTotal * monthlySchedule.length).toLocaleString()} ${cur.code}`;
 
-          const curMonth = (this.config.monthly_schedule || []).find(m => m.id === this.selectedMonthId) || (this.config.monthly_schedule && this.config.monthly_schedule.length > 0 ? this.config.monthly_schedule[0] : null);
+          const curMonth = monthlySchedule.find(m => m.id === this.selectedMonthId) || monthlySchedule[0];
           const monthlyMap = {};
           (this.data.teams || []).forEach(t => {
             monthlyMap[t.entry_id] = {
@@ -11424,7 +11613,7 @@
           }
 
           let monthSelectorBtns = '';
-          (this.config.monthly_schedule || []).forEach(m => {
+          monthlySchedule.forEach(m => {
             const isSel = (m.id === this.selectedMonthId);
             const mGWList = m.gw_list || [];
             const mFinished = (mGWList.length > 0 && mGWList.every(g => {
@@ -11471,12 +11660,12 @@
           const runnerCount = topRunnersInMonth.length;
           const rawSplitChampAmt = leaderCount > 0 ? ((champPrize + (leaderCount > 1 ? runnerPrize : 0)) / leaderCount) : champPrize;
           const splitChampDisplay = (leaderCount > 1 && (champPrize + runnerPrize) % leaderCount !== 0)
-            ? `${rawSplitChampAmt.toFixed(2)} THB`
-            : `${rawSplitChampAmt.toLocaleString()} THB`;
+            ? `${rawSplitChampAmt.toFixed(2)} ${cur.code}`
+            : `${rawSplitChampAmt.toLocaleString()} ${cur.code}`;
           const rawSplitRunnerAmt = runnerCount > 0 ? (runnerPrize / runnerCount) : runnerPrize;
           const splitRunnerDisplay = (runnerCount > 1 && runnerPrize % runnerCount !== 0)
-            ? `${rawSplitRunnerAmt.toFixed(2)} THB`
-            : `${rawSplitRunnerAmt.toLocaleString()} THB`;
+            ? `${rawSplitRunnerAmt.toFixed(2)} ${cur.code}`
+            : `${rawSplitRunnerAmt.toLocaleString()} ${cur.code}`;
 
           filteredMonthly.forEach((t) => {
             const isEligible = this.isPrizeEligible(t.entry_id);
@@ -11540,7 +11729,7 @@
           }
 
           let scheduleCards = '';
-          (this.config.monthly_schedule || []).forEach(m => {
+          monthlySchedule.forEach(m => {
             const gwList = m.gw_list || [];
             let finishedGWCount = 0;
             let startedGWCount = 0;
@@ -11610,8 +11799,8 @@
               if (topChamps.length > 1) {
                 const rawSplitAmt = (champPrize + runnerPrize) / topChamps.length;
                 const splitDisplay = ((champPrize + runnerPrize) % topChamps.length !== 0)
-                  ? `${rawSplitAmt.toFixed(2)} THB`
-                  : `${rawSplitAmt.toLocaleString()} THB`;
+                  ? `${rawSplitAmt.toFixed(2)} ${cur.code}`
+                  : `${rawSplitAmt.toLocaleString()} ${cur.code}`;
                 totalPaidThisMonth = champPrize + runnerPrize;
                 champRows = topChamps.map(c => `
                   <div class="flex items-center justify-between text-xs py-0.5">
@@ -11631,18 +11820,18 @@
                       <span class="font-bold text-slate-900 dark:text-white">${isEn ? 'Monthly Champ:' : 'แชมป์เดือน:'} ${this.escapeHtml(champ.team_name)}</span>
                       <span class="text-[10px] text-slate-400 font-mono">(${champ.total} pts)</span>
                     </div>
-                    <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400 flex-shrink-0">+${champPrize.toLocaleString()} THB</span>
+                    <span class="font-mono font-bold text-emerald-600 dark:text-emerald-400 flex-shrink-0">+${champPrize.toLocaleString()} ${cur.code}</span>
                   </div>
                 `;
 
                 const secondPts = eligibleMonthTeams.find(t => t.total < topPts)?.total;
-                if (secondPts !== undefined && secondPts > 0) {
+                if (runnerPrize > 0 && secondPts !== undefined && secondPts > 0) {
                   const topRunners = eligibleMonthTeams.filter(t => t.total === secondPts);
                   const isJointRunner = topRunners.length > 1;
                   const rawSplitRunnerAmt = (runnerPrize / topRunners.length);
                   const splitRunnerDisplay = (topRunners.length > 1 && runnerPrize % topRunners.length !== 0)
-                    ? `${rawSplitRunnerAmt.toFixed(2)} THB`
-                    : `${rawSplitRunnerAmt.toLocaleString()} THB`;
+                    ? `${rawSplitRunnerAmt.toFixed(2)} ${cur.code}`
+                    : `${rawSplitRunnerAmt.toLocaleString()} ${cur.code}`;
                   totalPaidThisMonth += runnerPrize;
                   runnerRows = topRunners.map(r => `
                     <div class="flex items-center justify-between text-xs py-0.5">
@@ -11663,7 +11852,7 @@
                   ${runnerRows}
                   <div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-dashed border-slate-200 dark:border-slate-700 font-bold text-slate-800 dark:text-slate-200">
                     <span>${isEn ? 'Total Payout' : 'ยอดรวมเดือนนี้'}</span>
-                    <span class="font-mono text-emerald-600 dark:text-emerald-400">${totalPaidThisMonth.toLocaleString()} THB</span>
+                    <span class="font-mono text-emerald-600 dark:text-emerald-400">${totalPaidThisMonth.toLocaleString()} ${cur.code}</span>
                   </div>
                 </div>
               `;
@@ -11732,6 +11921,86 @@
           }
 
           if (mainContainer) {
+            const seasonSummaryM = this.getSeasonPrizeSummary(isEn);
+            const hasSeasonM = Boolean(seasonSummaryM && seasonSummaryM.total);
+            const seasonPlacesCount = (this.config.season_prizes && typeof this.config.season_prizes === 'object') ? Object.keys(this.config.season_prizes).length : 0;
+            const cupChampM = feat.cup_champion_prize || this.config.cup_champion_prize || '';
+            const cupRunnerM = feat.cup_runner_up_prize || this.config.cup_runner_up_prize || '';
+            const hasCupM = Boolean(feat.has_cup && (cupChampM || cupRunnerM));
+            const charityStr = feat.charity_donation || '';
+            const rawPoolCfgM = isEn ? (this.config.total_pool_en || this.config.total_pool) : this.config.total_pool;
+            const rawFeeCfgM = isEn ? (this.config.entry_fee_en || this.config.entry_fee) : this.config.entry_fee;
+            const cleanPoolCfgM = (rawPoolCfgM && String(rawPoolCfgM).trim() !== '-') ? String(rawPoolCfgM).trim() : '';
+            const cleanFeeCfgM = (rawFeeCfgM && String(rawFeeCfgM).trim() !== '-') ? String(rawFeeCfgM).trim() : '';
+
+            const monthlyAllocCards = [];
+            const monthsCount = monthlySchedule.length || 10;
+            const monthlySplitSub = runnerPrize > 0
+              ? (isEn ? `Champion ${champPrize.toLocaleString()} / Runner ${runnerPrize.toLocaleString()}` : `แชมป์ ${champPrize.toLocaleString()} / รอง ${runnerPrize.toLocaleString()}`)
+              : (isEn ? `Champion ${champPrize.toLocaleString()} ${cur.code} / month` : `แชมป์เดือนละ ${champPrize.toLocaleString()} ${cur.code}`);
+            monthlyAllocCards.push(`
+                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? `Monthly Awards (${monthsCount} Months)` : `รางวัลประจำเดือน (${monthsCount} เดือน)`}</span>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${(perMonthTotal * monthsCount).toLocaleString()} <span class="text-xs font-normal text-slate-400">${cur.code}</span></div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${monthlySplitSub}</div>
+                  </div>
+            `);
+            if (hasSeasonM) {
+              const seasonLabelM = seasonPlacesCount > 0
+                ? (isEn ? `Season Podium (Top ${seasonPlacesCount})` : `รางวัลประจำฤดูกาล (${seasonPlacesCount} อันดับ)`)
+                : (isEn ? 'Season Podium' : 'รางวัลประจำฤดูกาล');
+              monthlyAllocCards.push(`
+                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${seasonLabelM}</span>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${this.escapeHtml(seasonSummaryM.total)} <span class="text-xs font-normal text-slate-400">${cur.code}</span></div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${this.escapeHtml(seasonSummaryM.desc)}</div>
+                  </div>
+              `);
+            }
+            if (hasCupM) {
+              const cNumM = Number(String(cupChampM).replace(/[^0-9.-]/g, '')) || 0;
+              const rNumM = Number(String(cupRunnerM).replace(/[^0-9.-]/g, '')) || 0;
+              const cupTotalM = (cNumM + rNumM > 0) ? (cNumM + rNumM).toLocaleString() : String(cupChampM).replace(/\s*(THB|USD)\s*$/i, '').trim();
+              const cupDescM = cupRunnerM
+                ? (isEn ? `Champion ${cupChampM} / Runner-Up ${cupRunnerM}` : `แชมป์ ${cupChampM} / รองแชมป์ ${cupRunnerM}`)
+                : (isEn ? 'Tie-broken by total points if same round' : 'วัดผลคะแนนหากตกรอบพร้อมกัน');
+              monthlyAllocCards.push(`
+                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Cup Tournament Champion' : 'แชมป์ฟุตบอลถ้วย'}</span>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${this.escapeHtml(cupTotalM)} <span class="text-xs font-normal text-slate-400">${cur.code}</span></div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${this.escapeHtml(cupDescM)}</div>
+                  </div>
+              `);
+            }
+            if (charityStr) {
+              const charityClean = String(charityStr).replace(/\s*(THB|USD)\s*$/i, '').trim();
+              monthlyAllocCards.push(`
+                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Charity Donation' : 'บริจาคการกุศล'}</span>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${this.escapeHtml(charityClean)} <span class="text-xs font-normal text-slate-400">${cur.code}</span></div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? 'Hospital designated fund' : 'ร่วมทำบุญให้แก่โรงพยาบาล'}</div>
+                  </div>
+              `);
+            } else if (cleanPoolCfgM || cleanFeeCfgM) {
+              monthlyAllocCards.push(`
+                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
+                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Entry Fee & Total Treasury' : 'ค่าสมัคร & กองกลางรวม'}</span>
+                    <div class="text-xl sm:text-2xl font-black font-mono text-emerald-600 dark:text-emerald-400 mt-1">${this.escapeHtml(cleanPoolCfgM || `${(perMonthTotal * monthsCount).toLocaleString()} ${cur.code}`)}</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${this.escapeHtml(cleanFeeCfgM || (isEn ? 'Official Monthly Settlement' : 'คำนวณคะแนนสุทธิรายเดือน'))}</div>
+                  </div>
+              `);
+            }
+
+            const monthlyGridCls = monthlyAllocCards.length === 1
+              ? 'grid-cols-1'
+              : (monthlyAllocCards.length === 2
+                  ? 'grid-cols-1 sm:grid-cols-2'
+                  : (monthlyAllocCards.length === 3 ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'));
+
+            const monthlyNoteHtml = charityStr
+              ? `<div class="text-right text-[11px] text-slate-400 mt-2">${isEn ? '*** Prize pool may increase if additional participants join throughout the season.' : '*** เงินรางวัลอาจมีการเพิ่มเติม ถ้าในระหว่างสิบเดือนของฤดูกาล มีผู้ลงเล่นประจำเดือน'}</div>`
+              : '';
+
             mainContainer.innerHTML = `
               <!-- 01 / MONTHLY AWARDS & TREASURY ALLOCATION -->
               <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
@@ -11741,35 +12010,10 @@
                     ${isEn ? 'MONTHLY AWARDS & TREASURY ALLOCATION' : 'สรุปรางวัลประจำเดือน & การจัดสรรกองกลาง'}
                   </h3>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Monthly Awards (10 Months)' : 'รางวัลประจำเดือน (10 เดือน)'}</span>
-                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">${((feat.monthly_prize_amount || (champPrize + runnerPrize)) * 10).toLocaleString()} <span class="text-xs font-normal text-slate-400">THB</span></div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? `Champion ${champPrize.toLocaleString()} / Runner ${runnerPrize.toLocaleString()}` : `แชมป์ ${champPrize.toLocaleString()} / รอง ${runnerPrize.toLocaleString()}`}</div>
-                  </div>
-
-                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Season Podium (Top 5)' : 'รางวัลประจำฤดูกาล (5 อันดับ)'}</span>
-                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">13,500 <span class="text-xs font-normal text-slate-400">THB</span></div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? '1st - 5th (5k / 3.5k / 2.5k / 1.5k / 1k)' : 'อันดับ 1-5 (5k / 3.5k / 2.5k / 1.5k / 1k)'}</div>
-                  </div>
-
-                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Cup Tournament Champion' : 'แชมป์ฟุตบอลถ้วย'}</span>
-                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">3,000 <span class="text-xs font-normal text-slate-400">THB</span></div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? 'Tie-broken by total points if same round' : 'วัดผลคะแนนหากตกรอบพร้อมกัน'}</div>
-                  </div>
-
-                  <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 font-display">${isEn ? 'Charity Donation' : 'บริจาคการกุศล'}</span>
-                    <div class="text-xl sm:text-2xl font-black font-mono text-slate-900 dark:text-white mt-1">9,500 <span class="text-xs font-normal text-slate-400">THB</span></div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${isEn ? 'Hospital designated fund' : 'ร่วมทำบุญให้แก่โรงพยาบาล'}</div>
-                  </div>
+                <div class="grid ${monthlyGridCls} gap-3">
+                  ${monthlyAllocCards.join('')}
                 </div>
-
-                <div class="text-right text-[11px] text-slate-400 mt-2">
-                  ${isEn ? '*** Prize pool may increase if additional participants join throughout the season.' : '*** เงินรางวัลอาจมีการเพิ่มเติม ถ้าในระหว่างสิบเดือนของฤดูกาล มีผู้ลงเล่นประจำเดือน'}
-                </div>
+                ${monthlyNoteHtml}
               </div>
 
               <!-- 02 / MONTHLY STANDINGS LEADERBOARD -->
@@ -11851,9 +12095,9 @@
                           </div>
                         </td>
                         <td colspan="${curMonth.gw_list.length}" class="py-3 px-2 text-center text-[11px] text-slate-500 dark:text-slate-400 font-normal">
-                          ${isEn ? `Champ ${champPrize.toLocaleString()} THB • Runner ${runnerPrize.toLocaleString()} THB` : `แชมป์ ${champPrize.toLocaleString()} THB • รอง ${runnerPrize.toLocaleString()} THB`}
+                          ${runnerPrize > 0 ? (isEn ? `Champ ${champPrize.toLocaleString()} ${cur.code} • Runner ${runnerPrize.toLocaleString()} ${cur.code}` : `แชมป์ ${champPrize.toLocaleString()} ${cur.code} • รอง ${runnerPrize.toLocaleString()} ${cur.code}`) : (isEn ? `Champ ${champPrize.toLocaleString()} ${cur.code}` : `แชมป์ ${champPrize.toLocaleString()} ${cur.code}`)}
                         </td>
-                        <td class="py-3 px-3 text-right font-black text-slate-900 dark:text-white">${(feat.monthly_prize_amount || (champPrize + runnerPrize)).toLocaleString()} THB</td>
+                        <td class="py-3 px-3 text-right font-black text-slate-900 dark:text-white">${perMonthTotal.toLocaleString()} ${cur.code}</td>
                       </tr>
                     </tfoot>
                   </table>
@@ -17918,6 +18162,7 @@
           // ====================================================
           const prizeRows = [];
           const feat = (this.config && this.config.features) || {};
+          const cur = this.getLeagueCurrency();
           const isWeekly = (feat.prize_model === 'weekly' || feat.prize_model === 'penalties' || Boolean(feat.has_weekly_penalties));
           const hasWeeklyPenalties = Boolean(feat.has_weekly_penalties);
 
@@ -17932,7 +18177,7 @@
               isEn ? 'Raw Points' : 'คะแนนดิบ',
               isEn ? 'Hits' : 'คะแนนลบ',
               isEn ? 'Net Points' : 'คะแนนสุทธิ',
-              isEn ? 'Prize (THB)' : 'เงินรางวัล (THB)',
+              isEn ? `Prize (${cur.code})` : `เงินรางวัล (${cur.code})`,
               'หมายเหตุ'
             ]);
 
@@ -18013,8 +18258,9 @@
 
             // Weekly Penalties Table (if enabled for this league, e.g. 438691)
             if (hasWeeklyPenalties) {
+              const pTiersLen = this.getWeeklyPenaltyTiers().length;
               prizeRows.push([]);
-              prizeRows.push([isEn ? '=== WEEKLY PENALTY FINES ===' : '=== สรุปค่าปรับ 5 อันดับท้ายประจำสัปดาห์ ===']);
+              prizeRows.push([isEn ? '=== WEEKLY PENALTY FINES ===' : `=== สรุปค่าปรับ ${pTiersLen} อันดับท้ายประจำสัปดาห์ ===`]);
               prizeRows.push([
                 'Gameweek',
                 'สถานะ',
@@ -18025,7 +18271,7 @@
                 isEn ? 'Raw Points' : 'คะแนนดิบ',
                 isEn ? 'Hits' : 'คะแนนลบ',
                 isEn ? 'Net Points' : 'คะแนนสุทธิ',
-                isEn ? 'Fine (THB)' : 'ค่าปรับ (THB)',
+                isEn ? `Fine (${cur.code})` : `ค่าปรับ (${cur.code})`,
                 'หมายเหตุ'
               ]);
 
@@ -18069,10 +18315,10 @@
                 'FPL ID',
                 'สถานะ',
                 'จำนวนแชมป์สัปดาห์ (ครั้ง)',
-                'เงินรางวัลรวม (THB)',
-                'ค่าปรับรวม (THB)',
+                `เงินรางวัลรวม (${cur.code})`,
+                `ค่าปรับรวม (${cur.code})`,
                 'ติดโซนอันตราย (ครั้ง)',
-                isEn ? 'Net Balance (THB)' : 'ยอดรวมสุทธิ (THB)'
+                isEn ? `Net Balance (${cur.code})` : `ยอดรวมสุทธิ (${cur.code})`
               ]);
             } else {
               prizeRows.push([
@@ -18083,7 +18329,7 @@
                 'สถานะ',
                 'จำนวนแชมป์สัปดาห์ (ครั้ง)',
                 'สัปดาห์ที่ชนะ',
-                'เงินรางวัลรวมสะสม (THB)'
+                `เงินรางวัลรวมสะสม (${cur.code})`
               ]);
             }
 
@@ -18151,8 +18397,9 @@
             }
 
           } else if (feat.prize_model === 'monthly') {
-            // Monthly League (e.g. 675290)
-            prizeRows.push([isEn ? '=== MONTHLY AWARDS (10 MONTHS) ===' : '=== สรุปรางวัลประจำเดือน 10 เดือน ===']);
+            // Monthly League (e.g. 675290 or new Standard monthly leagues)
+            const monthlySchedule = this.getMonthlySchedule();
+            prizeRows.push([isEn ? `=== MONTHLY AWARDS (${monthlySchedule.length} MONTHS) ===` : `=== สรุปรางวัลประจำเดือน ${monthlySchedule.length} เดือน ===`]);
             prizeRows.push([
               'เดือน',
               'สัปดาห์แข่งขัน (GWs)',
@@ -18160,16 +18407,17 @@
               'แชมป์ประจำเดือน',
               'ผู้จัดการ (แชมป์)',
               'คะแนนสุทธิเดือนนี้',
-              'เงินรางวัลแชมป์ (THB)',
+              `เงินรางวัลแชมป์ (${cur.code})`,
               'รองแชมป์ประจำเดือน',
               'ผู้จัดการ (รองแชมป์)',
               'คะแนนสุทธิ',
-              'เงินรางวัลรองแชมป์ (THB)'
+              `เงินรางวัลรองแชมป์ (${cur.code})`
             ]);
 
-            const monthlySchedule = this.config.monthly_schedule || [];
-            const champAmount = feat.monthly_champion_prize || 600;
-            const runnerAmount = feat.monthly_runner_up_prize || 400;
+            const champAmount = Number(feat.monthly_champion_prize ?? feat.monthly_prize_amount ?? 600);
+            const runnerAmount = (feat.monthly_runner_up_prize !== undefined && feat.monthly_runner_up_prize !== null)
+              ? Number(feat.monthly_runner_up_prize)
+              : (feat.monthly_champion_prize !== undefined ? 0 : 400);
 
             monthlySchedule.forEach(m => {
               const gwList = m.gw_list || [];
@@ -18257,23 +18505,26 @@
               }
             });
 
-            // Season & Central pool / Charity
-            prizeRows.push([]);
-            prizeRows.push(['=== รางวัลประจำฤดูกาล บอลถ้วย และเงินบริจาคการกุศล ===']);
-            prizeRows.push(['หมวดหมู่', 'รายละเอียด / จำนวนเงิน']);
-            prizeRows.push(['อันดับ 1 ประจำฤดูกาล', '5,000 THB']);
-            prizeRows.push(['อันดับ 2 ประจำฤดูกาล', '3,500 THB']);
-            prizeRows.push(['อันดับ 3 ประจำฤดูกาล', '2,500 THB']);
-            prizeRows.push(['อันดับ 4 ประจำฤดูกาล', '1,500 THB']);
-            prizeRows.push(['อันดับ 5 ประจำฤดูกาล', '1,000 THB']);
-            if (feat.cup_champion_prize) {
-              prizeRows.push(['แชมป์ฟุตบอลถ้วย', feat.cup_champion_prize]);
-            }
-            if (feat.charity_donation) {
-              prizeRows.push(['บริจาคการกุศลให้โรงพยาบาล', feat.charity_donation]);
-            }
-            if (this.config.total_pool) {
-              prizeRows.push(['กองกลางรวมทั้งหมด', this.config.total_pool]);
+            // Season & Central pool / Charity (only include configured sections)
+            const hasSeasonExcel = Boolean(this.config.season_prizes && Object.keys(this.config.season_prizes).length > 0);
+            if (hasSeasonExcel || feat.cup_champion_prize || feat.charity_donation || this.config.total_pool) {
+              prizeRows.push([]);
+              prizeRows.push(['=== รางวัลประจำฤดูกาล บอลถ้วย และกองกลาง ===']);
+              prizeRows.push(['หมวดหมู่', 'รายละเอียด / จำนวนเงิน']);
+              if (hasSeasonExcel) {
+                Object.entries(this.config.season_prizes).forEach(([k, v]) => {
+                  prizeRows.push([`อันดับ ${k} ประจำฤดูกาล`, v]);
+                });
+              }
+              if (feat.cup_champion_prize) {
+                prizeRows.push(['แชมป์ฟุตบอลถ้วย', feat.cup_champion_prize]);
+              }
+              if (feat.charity_donation) {
+                prizeRows.push(['บริจาคการกุศลให้โรงพยาบาล', feat.charity_donation]);
+              }
+              if (this.config.total_pool && this.config.total_pool !== '-') {
+                prizeRows.push(['กองกลางรวมทั้งหมด', this.config.total_pool]);
+              }
             }
           } else if (feat.prize_model === 'annual_zero_sum' || feat.prize_model === 'annual') {
             prizeRows.push([isEn ? '=== ANNUAL ZERO-SUM SETTLEMENT ===' : '=== สรุปยอดเงินรางวัล & ค่าปรับคะแนนรวมสิ้นฤดูกาล ===']);

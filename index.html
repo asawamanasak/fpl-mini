@@ -2508,7 +2508,11 @@
         this.initDramaCycle();
         this.fetchVisitorCount();
         if (!this._visitorTimer) {
-          this._visitorTimer = setInterval(() => this.fetchVisitorCount(), 30000);
+          this._visitorTimer = setInterval(() => {
+            if (typeof document === 'undefined' || !document.hidden) {
+              this.fetchVisitorCount();
+            }
+          }, 300000);
         }
         this.sendLandingTelemetry();
       },

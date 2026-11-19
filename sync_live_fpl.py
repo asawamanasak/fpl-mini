@@ -45,20 +45,32 @@ socket.setdefaulttimeout(20)
 
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)'}
 
-# Global thread-safe telemetry counters for backend execution tracking
+# Global thread-safe telemetry counters & FPL API rate pacer (~8.3 req/sec cap across threads)
 _stats_lock = threading.Lock()
 _api_call_count = 0
 _api_retry_count = 0
 _api_rate_limit_count = 0
 
+_fpl_pace_lock = threading.Lock()
+_fpl_last_req_ts = 0.0
+FPL_MIN_REQUEST_INTERVAL = 0.12
+
 def fetch(url, headers_override=None, retries=5, delay=2.0, timeout=15):
     """Fetch JSON from URL with exponential backoff, jitter, and network timeout recovery."""
-    global _api_call_count, _api_retry_count, _api_rate_limit_count
+    global _api_call_count, _api_retry_count, _api_rate_limit_count, _fpl_last_req_ts
     with _stats_lock:
         _api_call_count += 1
     req_headers = headers_override if headers_override is not None else headers
+    is_fpl_url = 'fantasy.premierleague.com' in str(url)
     for attempt in range(retries):
         try:
+            if is_fpl_url:
+                with _fpl_pace_lock:
+                    now_mono = time.monotonic()
+                    elapsed_mono = now_mono - _fpl_last_req_ts
+                    if elapsed_mono < FPL_MIN_REQUEST_INTERVAL:
+                        time.sleep(FPL_MIN_REQUEST_INTERVAL - elapsed_mono)
+                    _fpl_last_req_ts = time.monotonic()
             req = urllib.request.Request(url, headers=req_headers)
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 data = resp.read().decode('utf-8')

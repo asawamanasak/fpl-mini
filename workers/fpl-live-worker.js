@@ -87,6 +87,24 @@ function computeLifecycleExpiry(expiresAtStr, ictTodayStr) {
   };
 }
 
+let _adminNotesTableReady = false;
+
+async function ensureAdminNotesTable(db) {
+  if (!db || _adminNotesTableReady) return;
+  try {
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS league_admin_notes (
+        league_id TEXT PRIMARY KEY,
+        note TEXT NOT NULL DEFAULT '',
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run();
+    _adminNotesTableReady = true;
+  } catch (err) {
+    console.warn('ensureAdminNotesTable warning:', err);
+  }
+}
+
 async function recordTelemetryIncrements(env, increments) {
   if (!env || !Array.isArray(increments) || increments.length === 0) return;
   const today = getIctNowParts().date;
@@ -923,6 +941,72 @@ export default {
         }
       }
 
+      // Private Customer Note Storage in Cloudflare D1 (never written to Git)
+      if (path === '/api/admin/league-note') {
+        if (request.method !== 'POST') {
+          return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+            status: 405,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        if (!env || !env.DB) {
+          return new Response(JSON.stringify({ success: false, error: 'Cloudflare D1 database binding (DB) is not available' }), {
+            status: 503,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        let body = null;
+        try {
+          body = await request.json();
+        } catch (_) {
+          return new Response(JSON.stringify({ success: false, error: 'Invalid JSON body' }), {
+            status: 400,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        const lid = String((body && body.league_id) || '').trim();
+        if (!/^\d{1,10}$/.test(lid)) {
+          return new Response(JSON.stringify({ success: false, error: 'Invalid league_id (expected numeric digits)' }), {
+            status: 400,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        const rawNote = body && typeof body.note === 'string' ? body.note.trim() : '';
+        if (rawNote.length > 500) {
+          return new Response(JSON.stringify({ success: false, error: 'Note exceeds 500 character limit' }), {
+            status: 400,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        try {
+          await ensureAdminNotesTable(env.DB);
+          if (!rawNote) {
+            await env.DB.prepare('DELETE FROM league_admin_notes WHERE league_id = ?').bind(lid).run();
+          } else {
+            await env.DB.prepare(`
+              INSERT INTO league_admin_notes (league_id, note, updated_at)
+              VALUES (?, ?, CURRENT_TIMESTAMP)
+              ON CONFLICT(league_id) DO UPDATE SET note = excluded.note, updated_at = CURRENT_TIMESTAMP
+            `).bind(lid, rawNote).run();
+          }
+          return new Response(
+            JSON.stringify({
+              success: true,
+              league_id: lid,
+              note: rawNote,
+              source: 'd1',
+              updated_at: new Date().toISOString(),
+            }),
+            { status: 200, headers: ADMIN_JSON_HEADERS }
+          );
+        } catch (err) {
+          return new Response(
+            JSON.stringify({ success: false, error: `Failed to save D1 note: ${err.message}` }),
+            { status: 500, headers: ADMIN_JSON_HEADERS }
+          );
+        }
+      }
+
       // Live Telemetry & FPL Sync Data Endpoint
       if (path === '/api/admin/data' || path === '/api/admin/telemetry' || path === '/api/admin/metrics') {
         const isForce = url.searchParams.get('force') === '1';
@@ -942,6 +1026,8 @@ export default {
           const rawBranch = (env && typeof env.GITHUB_BRANCH === 'string' && env.GITHUB_BRANCH.trim()) ? env.GITHUB_BRANCH.trim() : 'main';
           const safeBranch = /^[A-Za-z0-9._\/-]+$/.test(rawBranch) ? rawBranch : 'main';
           const candidateUrls = [
+            `https://raw.githubusercontent.com/asawamanasak/fpl-mini/${safeBranch}/data/admin_summary.json${tsSuffix}`,
+            `https://www.fplsawadika.com/data/admin_summary.json${tsSuffix}`,
             `https://raw.githubusercontent.com/asawamanasak/fpl-mini/${safeBranch}/multi_fpl_data.json${tsSuffix}`,
             `https://www.fplsawadika.com/multi_fpl_data.json${tsSuffix}`,
           ];
@@ -949,6 +1035,23 @@ export default {
             headers: { 'User-Agent': 'FPLSaWaDiKa-Admin-Relay/2.0' },
             cf: isForce ? { cacheTtl: 0, cacheEverything: false } : { cacheTtl: 300, cacheEverything: true },
           }).then(r => (r && r.ok ? r.json() : null)).catch(() => null);
+
+          const d1NotesPromise = (async () => {
+            const notesMap = new Map();
+            if (!env || !env.DB) return notesMap;
+            try {
+              await ensureAdminNotesTable(env.DB);
+              const q = await env.DB.prepare('SELECT league_id, note FROM league_admin_notes').all();
+              if (q && Array.isArray(q.results)) {
+                for (const r of q.results) {
+                  if (r && r.league_id && typeof r.note === 'string' && r.note.trim()) {
+                    notesMap.set(String(r.league_id).trim(), r.note.trim());
+                  }
+                }
+              }
+            } catch (_) {}
+            return notesMap;
+          })();
 
           let resp = null;
           for (const candidateUrl of candidateUrls) {
@@ -963,7 +1066,7 @@ export default {
               }
             } catch (_) {}
           }
-          const leaguesConfigJson = await cfgPromise;
+          const [leaguesConfigJson, d1NotesMap] = await Promise.all([cfgPromise, d1NotesPromise]);
           const ictToday = getIctNowParts().date;
           let dynamicPoolGmv = 0;
           let customRulesCount = 0;
@@ -1019,9 +1122,14 @@ export default {
             const allLeagueIds = new Set([...Object.keys(rawLeagues), ...Object.keys(configMetaByLeague)]);
             for (const lid of allLeagueIds) {
               const lObj = (rawLeagues[lid] && typeof rawLeagues[lid] === 'object') ? rawLeagues[lid] : null;
-              const teamsCount = (lObj && Array.isArray(lObj.teams)) ? lObj.teams.length : 0;
+              const teamsCount = (lObj && typeof lObj.teams_count === 'number')
+                ? lObj.teams_count
+                : ((lObj && Array.isArray(lObj.teams)) ? lObj.teams.length : 0);
               const cfgMeta = configMetaByLeague[lid] || {};
               const tier = (lObj && lObj.tier) ? Number(lObj.tier) : (cfgMeta.tier || 1);
+              const d1Note = d1NotesMap && d1NotesMap.has(String(lid)) ? d1NotesMap.get(String(lid)) : '';
+              const effectiveNote = d1Note || cfgMeta.billing_note || '';
+              const noteSource = d1Note ? 'd1' : (cfgMeta.billing_note ? 'config' : 'none');
               liveAllManagers += teamsCount;
               if (tier !== 2) liveTier1Managers += teamsCount;
               liveLeagueSummaries[lid] = {
@@ -1041,7 +1149,8 @@ export default {
                 expires_at: cfgMeta.expires_at || null,
                 days_remaining: typeof cfgMeta.days_remaining === 'number' ? cfgMeta.days_remaining : null,
                 expiry_alert: cfgMeta.expiry_alert || 'none',
-                billing_note: cfgMeta.billing_note || '',
+                billing_note: effectiveNote,
+                billing_note_source: noteSource,
               };
             }
 
