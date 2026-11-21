@@ -209,7 +209,7 @@
       --color-line-ink: oklch(11% 0.015 146);
       --color-ok-text: #15803d;
       --color-warn-text: #b45309;
-      --theme-chrome: oklch(11.5% 0.014 25);
+      --theme-chrome: oklch(98.5% 0.004 25);
       --color-arena-scrim-solid: oklch(8.5% 0.012 25 / 0.93);
       --color-arena-scrim-mid: oklch(8.5% 0.012 25 / 0.74);
       --color-arena-scrim-top: oklch(8.5% 0.012 25 / 0.78);
@@ -336,6 +336,7 @@
       background-color: var(--color-arena);
       color: var(--color-arena-ink);
       border-bottom: 1px solid var(--color-arena-border);
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
     .bm-nav-inner {
       max-width: 1200px;
@@ -688,6 +689,7 @@
       color: var(--color-arena-ink);
       border-bottom: 4px solid var(--color-accent);
       overflow: hidden;
+      transition: background-color 0.45s ease, color 0.3s ease;
     }
     .bm-hero-backdrop-img {
       position: absolute;
@@ -700,12 +702,26 @@
       object-position: center top;
       z-index: 0;
       pointer-events: none;
+      transition: opacity 0.45s ease;
+    }
+    .bm-hero-backdrop-img.is-dark-backdrop {
+      opacity: 0;
+    }
+    .bm-hero-backdrop-img.is-light-backdrop {
+      opacity: 1;
+    }
+    html.dark .bm-hero-backdrop-img.is-dark-backdrop {
+      opacity: 1;
+    }
+    html.dark .bm-hero-backdrop-img.is-light-backdrop {
+      opacity: 0;
     }
       .bm-hero-scrim {
         position: absolute;
         inset: 0;
         z-index: 1;
         pointer-events: none;
+        transition: background 0.45s ease;
         background: linear-gradient(
           180deg,
           var(--color-arena-scrim-top) 0%,
@@ -729,6 +745,121 @@
             linear-gradient(180deg, transparent 58%, var(--color-arena-scrim-bottom) 100%);
         }
       }
+
+    /* Light Mode: Daylight Navbar & Broadcast Stadium Hero */
+    html:not(.dark) .bm-nav {
+      background-color: oklch(98.8% 0.004 85 / 0.96);
+      color: var(--color-ink);
+      border-bottom-color: var(--color-border);
+      backdrop-filter: blur(8px);
+    }
+    html:not(.dark) .bm-brand,
+    html:not(.dark) .bm-brand-name {
+      color: var(--color-ink);
+    }
+    html:not(.dark) .bm-brand-logo {
+      border-color: var(--color-border-strong);
+    }
+    html:not(.dark) .bm-brand-sub {
+      color: var(--color-ink-2);
+    }
+    html:not(.dark) .bm-nav-link {
+      color: var(--color-ink-2);
+    }
+    html:not(.dark) .bm-nav-link:hover {
+      color: var(--color-ink);
+      background-color: var(--color-surface);
+    }
+    html:not(.dark) .bm-icon-btn {
+      border-color: var(--color-border-strong);
+      color: var(--color-ink);
+      background-color: var(--color-card);
+    }
+    html:not(.dark) .bm-icon-btn:hover {
+      background-color: var(--color-surface);
+      border-color: var(--color-ink-2);
+    }
+    html:not(.dark) .bm-cta-nav {
+      border-color: oklch(48% 0.16 150 / 0.65);
+      color: var(--color-ink);
+      background-color: oklch(98% 0.015 150 / 0.6);
+    }
+    html:not(.dark) .bm-cta-nav:hover {
+      background-color: oklch(62% 0.18 150 / 0.14);
+      border-color: oklch(45% 0.17 150);
+    }
+    html:not(.dark) .bm-mobile-drawer {
+      background-color: var(--color-paper);
+      border-top-color: var(--color-border);
+    }
+    html:not(.dark) .bm-mobile-link {
+      color: var(--color-ink);
+    }
+    html:not(.dark) .bm-mobile-link:hover {
+      background-color: var(--color-surface);
+    }
+    html:not(.dark) .bm-mobile-link-accent {
+      border-top-color: var(--color-border);
+      color: var(--color-ok-text);
+    }
+
+    html:not(.dark) .bm-hero {
+      background-color: oklch(97.5% 0.006 85);
+      color: var(--color-ink);
+    }
+    html:not(.dark) .bm-hero-scrim {
+      background: linear-gradient(
+        180deg,
+        oklch(98.5% 0.005 85 / 0.80) 0%,
+        oklch(98.5% 0.005 85 / 0.36) 24%,
+        oklch(98.5% 0.005 85 / 0.05) 36%,
+        oklch(98.5% 0.005 85 / 0.04) 51%,
+        oklch(97.5% 0.006 85 / 0.82) 59%,
+        oklch(97.5% 0.006 85 / 0.96) 70%,
+        oklch(97.5% 0.006 85) 82%
+      );
+    }
+    @media (min-width: 700px) {
+      html:not(.dark) .bm-hero-scrim {
+        background:
+          linear-gradient(96deg, oklch(98.5% 0.005 85 / 0.94) 0%, oklch(98.5% 0.005 85 / 0.80) 44%, oklch(98.5% 0.005 85 / 0.14) 72%, oklch(98.5% 0.005 85 / 0.04) 100%),
+          linear-gradient(180deg, transparent 70%, oklch(97.5% 0.006 85 / 0.60) 100%);
+      }
+    }
+    html:not(.dark) .bm-hero-h1 {
+      color: var(--color-ink);
+      text-shadow: 0 1px 12px oklch(100% 0 0 / 0.65);
+    }
+    html:not(.dark) .bm-hero-h1-accent {
+      color: var(--color-accent-text);
+    }
+    html:not(.dark) .bm-hero-lead {
+      color: oklch(25% 0.014 25);
+    }
+    html:not(.dark) .bm-hero-meta {
+      color: oklch(30% 0.014 25);
+      border-top-color: oklch(78% 0.012 25 / 0.8);
+    }
+    html:not(.dark) .bm-hero .bm-btn-outline-dark {
+      background-color: oklch(100% 0 0 / 0.86);
+      color: var(--color-ink);
+      border-color: var(--color-border-strong);
+      backdrop-filter: blur(6px);
+    }
+    html:not(.dark) .bm-hero .bm-btn-outline-dark:hover {
+      background-color: var(--color-card);
+      border-color: var(--color-ink-2);
+    }
+    html:not(.dark) .bm-hero-overlay-bar {
+      background-color: oklch(100% 0 0 / 0.92);
+      border-color: oklch(48% 0.16 150 / 0.6);
+      color: var(--color-ink);
+      box-shadow: 0 4px 14px oklch(15% 0.01 25 / 0.12);
+      backdrop-filter: blur(6px);
+    }
+    html:not(.dark) .bm-hero-overlay-pill {
+      color: var(--color-ink);
+    }
     .bm-hero-bg {
       position: relative;
       z-index: 2;
@@ -2209,9 +2340,21 @@
         <img
           src="./images/screens/hero-stadium-broadcast.jpg"
           alt="Night football stadium broadcast atmosphere"
-          class="bm-hero-backdrop-img"
-          width="1408"
-          height="880"
+          class="bm-hero-backdrop-img is-dark-backdrop"
+          width="1376"
+          height="768"
+          decoding="async"
+        >
+      </picture>
+      <picture aria-hidden="true">
+        <source media="(max-width: 699px)" srcset="./images/screens/hero-stadium-mobile-day.jpg">
+        <img
+          src="./images/screens/hero-stadium-broadcast-day.jpg"
+          alt=""
+          class="bm-hero-backdrop-img is-light-backdrop"
+          width="1376"
+          height="768"
+          decoding="async"
         >
       </picture>
       <div class="bm-hero-scrim" aria-hidden="true"></div>
