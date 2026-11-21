@@ -343,8 +343,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Sarabun", "IBM Plex Sans Thai", "Noto Sans Thai", "Segoe UI", sans-serif;
       font-size: 0.875rem;
-      line-height: 1.6;
+      line-height: 1.65;
       text-underline-offset: 3px;
+    }
+    h1, h2, h3, h4 {
+      text-wrap: balance;
+    }
+    p, li, dd {
+      text-wrap: pretty;
+    }
+    .text-xs {
+      font-size: 0.75rem;
+      line-height: 1.55;
     }
     h1 {
       font-size: 1.75rem;
@@ -396,13 +406,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 </head>
 <body class="bg-pageLight dark:bg-pageDark text-slate-800 dark:text-neutral-200 min-h-screen antialiased transition-colors duration-150 overflow-x-hidden">
 
-  <!-- Top Navigation Header (Quiet Broadcast Chrome, Zero Mobile Overflow) -->
+  <!-- Top Navigation Header (Quiet Broadcast Chrome, Compact Operations Bar) -->
   <header class="border-b border-borderLight dark:border-borderDark bg-cardLight/95 dark:bg-pageDark/95 backdrop-blur sticky top-0 z-40 transition-colors duration-150">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-2">
       
       <!-- Brand & Console Title -->
       <div class="flex items-center gap-2.5 min-w-0">
-        <div class="w-9 h-9 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-cardDark flex items-center justify-center text-emerald-700 dark:text-emerald-400 shrink-0">
+        <div class="w-8 h-8 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-cardDark flex items-center justify-center text-emerald-700 dark:text-emerald-400 shrink-0">
           ${ICONS.shield}
         </div>
         <div class="min-w-0">
@@ -418,14 +428,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         </div>
       </div>
 
-      <!-- Right Action Controls (All >= 44x44px touch targets) -->
+      <!-- Right Action Controls (All >= 42x42px touch targets) -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
 
         <!-- Quick League Switcher (Connects directly to Commercial Landing Page, Demo Hub, and all 9 leagues) -->
         <div class="relative">
           <label for="quickLeagueSelect" class="sr-only" data-i18n="nav_jump_league_label">ทางลัดเปิดหน้าขาย เดโม และมินิลีก</label>
           <select id="quickLeagueSelect" onchange="jumpToLeague(this.value)"
-            class="min-h-[44px] px-2.5 sm:px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark text-slate-800 dark:text-neutral-200 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 transition-colors duration-150 cursor-pointer max-w-[136px] sm:max-w-[200px]">
+            class="min-h-[42px] px-2.5 sm:px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark text-slate-800 dark:text-neutral-200 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 transition-colors duration-150 cursor-pointer max-w-[140px] sm:max-w-[210px]">
             <option value="" data-i18n="nav_jump_placeholder">ทางลัดเปิดหน้าเว็บ (9 ลีก)...</option>
             <option value="landing" data-i18n="nav_jump_landing">🛒 หน้าขายสินค้า (Landing Page)</option>
             <option value="preview" data-i18n="nav_jump_preview">🎮 หน้าเดโมรวมลีก (preview.html)</option>
@@ -443,14 +453,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
         <!-- Language Switcher (TH | EN) -->
         <button type="button" id="langToggleBtn" onclick="toggleLanguage()" title="Switch Language (TH / EN) [Shortcut: L]" aria-label="Switch Language (TH / EN)"
-          class="min-w-[44px] min-h-[44px] px-2.5 flex items-center justify-center gap-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 text-slate-800 dark:text-neutral-200 text-xs mono font-medium transition-colors duration-150">
+          class="min-w-[42px] min-h-[42px] px-2.5 flex items-center justify-center gap-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 text-slate-800 dark:text-neutral-200 text-xs mono font-medium whitespace-nowrap transition-colors duration-150">
           ${ICONS.globe}
           <span id="langToggleLabel">TH</span>
         </button>
 
         <!-- Theme Toggle (Light | Dark) -->
         <button type="button" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Light / Dark Mode [Shortcut: T]" aria-label="Toggle color theme"
-          class="min-w-[44px] min-h-[44px] p-2 flex items-center justify-center rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 text-slate-700 dark:text-neutral-300 transition-colors duration-150">
+          class="min-w-[42px] min-h-[42px] p-2 flex items-center justify-center rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 text-slate-700 dark:text-neutral-300 transition-colors duration-150">
           <span id="themeIconSun" class="hidden dark:inline-block">${ICONS.sun}</span>
           <span id="themeIconMoon" class="inline-block dark:hidden">${ICONS.moon}</span>
         </button>
@@ -458,7 +468,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <!-- Sign Out -->
         <form method="POST" action="/logout" class="m-0">
           <button type="submit" title="Sign Out" aria-label="Sign Out"
-            class="min-w-[44px] min-h-[44px] p-2 flex items-center justify-center rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors duration-150">
+            class="min-w-[42px] min-h-[42px] p-2 flex items-center justify-center rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors duration-150">
             ${ICONS.logout}
           </button>
         </form>
@@ -466,44 +476,44 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       </div>
     </div>
 
-    <!-- Sticky Module Navigation Strip (Quiet Neutral Chrome + Emerald Active Indicator) -->
+    <!-- Sticky Module Navigation Strip (Operations First · Compact Chrome) -->
     <nav aria-label="Dashboard modules" class="border-t border-borderLight dark:border-borderDark bg-raisedLight/80 dark:bg-cardDark/90">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1.5 overflow-x-auto touch-scroll py-1.5 text-xs mono">
-        <a href="#sec-pitch" class="min-h-[44px] px-3.5 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 font-bold shadow-2xs">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span data-i18n="mod_nav_0">0. โซลูชันผู้จัดลีก & Pitch Deck</span>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1.5 overflow-x-auto touch-scroll py-1 text-xs mono">
+        <a href="#sec-orders" class="min-h-[40px] px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-800 dark:text-sky-300 hover:bg-sky-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-500 transition-colors shrink-0 inline-flex items-center gap-2 font-semibold whitespace-nowrap">
+          <span data-i18n="mod_nav_9">9. ออเดอร์ &amp; ตรวจสลิป</span>
+          <span id="navOrderPendingBadge" class="hidden px-2 py-0.5 rounded-full bg-rose-700 text-white text-xs font-mono leading-none">0</span>
         </a>
-        <a href="#sec-audience" class="min-h-[44px] px-3 py-2 rounded-lg text-slate-800 dark:text-neutral-200 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 font-medium">
+        <a href="#sec-onboarding" class="min-h-[40px] px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 hover:bg-amber-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-500 transition-colors shrink-0 inline-flex items-center gap-2 font-semibold whitespace-nowrap">
+          <span data-i18n="mod_nav_10">10. เพิ่มลีกลูกค้าใหม่ (Onboarding)</span>
+        </a>
+        <a href="#sec-portfolio" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-800 dark:text-neutral-200 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 font-medium whitespace-nowrap">
+          <span data-i18n="mod_nav_2">2. พอร์ตโฟลิโอ 9 ลีก</span>
+        </a>
+        <a href="#sec-audience" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-800 dark:text-neutral-200 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 font-medium whitespace-nowrap">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
           <span data-i18n="mod_nav_1">1. ภาพรวมธุรกิจและ KPI</span>
         </a>
-        <a href="#sec-portfolio" class="min-h-[44px] px-3 py-2 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2">
-          <span data-i18n="mod_nav_2">2. พอร์ตโฟลิโอ 9 ลีก</span>
-        </a>
-        <a href="#sec-features" class="min-h-[44px] px-3 py-2 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2">
+        <a href="#sec-features" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 whitespace-nowrap">
           <span data-i18n="mod_nav_3">3. พฤติกรรมฟีเจอร์</span>
         </a>
-        <a href="#sec-distribution" class="min-h-[44px] px-3 py-2 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2">
+        <a href="#sec-distribution" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 whitespace-nowrap">
           <span data-i18n="mod_nav_4">4. ช่องทางและภูมิภาค</span>
         </a>
-        <a href="#sec-devices" class="min-h-[44px] px-3 py-2 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2">
+        <a href="#sec-devices" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 whitespace-nowrap">
           <span data-i18n="mod_nav_5">5. อุปกรณ์ที่ใช้งาน</span>
         </a>
-        <a href="#sec-timing" class="min-h-[44px] px-3 py-2 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2">
+        <a href="#sec-timing" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 whitespace-nowrap">
           <span data-i18n="mod_nav_6">6. กราฟทราฟฟิกและช่วงเวลาพีค</span>
         </a>
-        <a href="#sec-system" class="min-h-[44px] px-3 py-2 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2">
+        <a href="#sec-system" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 whitespace-nowrap">
           <span data-i18n="mod_nav_7">7. ประสิทธิภาพระบบและการขยายสเกล</span>
         </a>
-        <a href="#sec-monitor" class="min-h-[44px] px-3 py-2 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2">
+        <a href="#sec-monitor" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 whitespace-nowrap">
           <span data-i18n="mod_nav_8">8. ตรวจสุขภาพระบบย้อนหลัง</span>
         </a>
-        <a href="#sec-orders" class="min-h-[44px] px-3 py-2 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-800 dark:text-sky-300 hover:bg-sky-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-500 transition-colors shrink-0 inline-flex items-center gap-2 font-semibold">
-          <span data-i18n="mod_nav_9">9. ออเดอร์ &amp; ตรวจสลิป</span>
-          <span id="navOrderPendingBadge" class="hidden px-1.5 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-mono leading-none">0</span>
-        </a>
-        <a href="#sec-onboarding" class="min-h-[44px] px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 hover:bg-amber-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-500 transition-colors shrink-0 inline-flex items-center gap-2 font-semibold">
-          <span data-i18n="mod_nav_10">10. เพิ่มลีกลูกค้าใหม่ (Onboarding)</span>
+        <a href="#sec-pitch" class="min-h-[40px] px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 font-semibold whitespace-nowrap">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span data-i18n="mod_nav_0">0. โซลูชันผู้จัดลีก & Pitch Deck</span>
         </a>
       </div>
     </nav>
@@ -533,7 +543,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </button>
 
           <button type="button" id="refreshDataBtn" onclick="triggerLivePitchRefresh()"
-            class="min-h-[44px] px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-neutral-950 font-bold active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 text-xs inline-flex items-center gap-2 transition-all duration-150 shadow-sm"
+            class="min-h-[44px] px-4 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-neutral-950 font-bold active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 text-xs inline-flex items-center gap-2 whitespace-nowrap transition-all duration-150 shadow-sm"
             title="ดึงข้อมูลสดทันทีจาก Cloudflare Edge & D1 (โชว์ข้อมูลสดทันทีต่อหน้าลูกค้า)">
             <span id="refreshIcon">${ICONS.bolt}</span>
             <span id="refreshBtnText" data-i18n="btn_live_pitch_refresh">⚡ Live Pitch Refresh</span>
@@ -548,7 +558,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
             <span class="font-medium text-slate-900 dark:text-white" data-i18n="telem_live_active">ระบบตรวจวัดข้อมูลสดทำงานปกติ</span>
             <span class="mono text-slate-600 dark:text-neutral-400" data-i18n="telem_auto_sync">(ซิงก์อัตโนมัติ 1 ชม./4 ชม. · ${authProvider})</span>
-            <span id="telemetryModelBadge" class="px-2 py-0.5 rounded bg-slate-100 dark:bg-neutral-800 text-[11px] mono text-slate-600 dark:text-neutral-300">Baseline + Live D1</span>
+            <span id="telemetryModelBadge" class="px-2 py-0.5 rounded bg-slate-100 dark:bg-neutral-800 text-xs mono text-slate-700 dark:text-neutral-300">Baseline + Live D1</span>
           </div>
           <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 dark:text-neutral-400">
             <div>
@@ -600,55 +610,61 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     <!-- ========================================================================= -->
     <!-- 00. EXECUTIVE PITCH FLOW & VALUE PROPOSITION FOR MINI-LEAGUE ORGANIZERS   -->
     <!-- ========================================================================= -->
-    <section id="sec-pitch" class="space-y-6 scroll-mt-28" aria-labelledby="sec-pitch-title">
-      <div class="flex flex-col lg:flex-row lg:items-baseline justify-between gap-3 border-b border-borderLight dark:border-borderDark pb-4">
+    <section id="sec-pitch" class="space-y-5 scroll-mt-24" aria-labelledby="sec-pitch-title">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-borderLight dark:border-borderDark pb-4">
         <div class="space-y-1.5">
-          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-bold font-display uppercase tracking-wider">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-bold tracking-wide">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
             <span data-i18n="pitch_badge">Executive Pitch Deck · For Mini-League Organizers</span>
           </div>
           <h2 id="sec-pitch-title" class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white" data-i18n="sec0_title">
             00. โซลูชันบริหารมินิลีกแบบ Zero-Touch และข้อเสนอทางธุรกิจ
           </h2>
-          <p class="text-xs sm:text-sm text-slate-600 dark:text-neutral-400 max-w-3xl leading-relaxed" data-i18n="sec0_sub">
+          <p class="text-sm text-slate-600 dark:text-neutral-300 max-w-3xl leading-relaxed" data-i18n="sec0_sub">
             เปลี่ยนมินิลีกของคุณให้จัดการตัวเองอัตโนมัติ 100% · ลดเวลาทำ Excel 190+ ชม./ปี · สร้างการมีส่วนร่วมของลูกลีกเพิ่มขึ้น 5.7 เท่า พร้อมรองรับเงินรางวัลหมุนเวียนอย่างโปร่งใส
           </p>
         </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" data-i18n="pitch_tier1_ready">
+        <div class="flex flex-wrap items-center gap-2 shrink-0">
+          <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" data-i18n="pitch_tier1_ready">
             Tier 1: พร้อมเปิดใช้งานทันที
           </span>
-          <span id="pitchTier2Badge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800" data-i18n="pitch_tier2_roadmap">
+          <span id="pitchTier2Badge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800" data-i18n="pitch_tier2_roadmap">
             Tier 2: Live Beta (สเกล 1,779 ทีม)
           </span>
+          <button type="button" id="btnTogglePitchBody" aria-expanded="true"
+            class="min-h-[42px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark text-xs font-semibold text-slate-800 dark:text-neutral-200 whitespace-nowrap transition-colors"
+            data-i18n="btn_collapse_pitch">
+            ซ่อนรายละเอียด Pitch
+          </button>
         </div>
       </div>
 
+      <div id="secPitchBody" class="space-y-6">
       <!-- Step 1: The Organizer Dilemma (Pain Points vs Solution Cards) -->
       <div class="space-y-3">
-        <div class="flex items-center justify-between">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xs font-bold">1</span>
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h3 class="text-sm font-bold tracking-wide text-slate-900 dark:text-white flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-rose-500/10 text-rose-700 dark:text-rose-400 flex items-center justify-center text-xs font-bold shrink-0">1</span>
             <span data-i18n="pitch_step1_title">ปัญหาใหญ่ของผู้จัดลีก (Organizer Pain Points) vs ทางออก FPLSaWaDiKa</span>
           </h3>
-          <span class="text-xs text-slate-500 dark:text-neutral-400" data-i18n="pitch_step1_sub">เปรียบเทียบภาระงานจริง</span>
+          <span class="text-xs text-slate-600 dark:text-neutral-400 whitespace-nowrap" data-i18n="pitch_step1_sub">เปรียบเทียบภาระงานจริง</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           <!-- Card 1: Time & Workload -->
           <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3 shadow-2xs">
             <div class="space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-400" data-i18n="pain_1_badge">ปัญหาแอดมิน</span>
-                <span class="text-xs mono text-rose-600 dark:text-rose-400 font-semibold" data-i18n="pain_1_metric">เสียเวลา 5 ชม./วีค</span>
+              <div class="flex items-center justify-between gap-2">
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300" data-i18n="pain_1_badge">ปัญหาแอดมิน</span>
+                <span class="text-xs mono text-rose-700 dark:text-rose-300 font-semibold whitespace-nowrap" data-i18n="pain_1_metric">เสียเวลา 5 ชม./วีค</span>
               </div>
               <h4 class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="pain_1_title">ทำ Excel สรุปคะแนน & เช็กแต้มลบ</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="pain_1_desc">
+              <p class="text-xs text-slate-600 dark:text-neutral-300 leading-relaxed" data-i18n="pain_1_desc">
                 ต้องมานั่งไล่ดูว่าใครย้ายกี่ตัว โดนลบกี่แต้ม ใครใช้ชิปอะไร สรุปผลช้า 1-2 วันหลังบอลจบ
               </p>
             </div>
-            <div class="pt-3 border-t border-borderLight dark:border-borderDark space-y-1 bg-emerald-50/50 dark:bg-emerald-950/20 -mx-4 -mb-4 p-3 rounded-b-xl border-t border-emerald-500/20">
-              <span class="text-[11px] font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5" data-i18n="sol_1_badge">
+            <div class="pt-3 border-t border-emerald-500/20 space-y-1 bg-emerald-50/50 dark:bg-emerald-950/20 -mx-4 -mb-4 p-3.5 rounded-b-xl">
+              <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5" data-i18n="sol_1_badge">
                 ${ICONS.check} FPLSaWaDiKa Solution
               </span>
               <p class="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed" data-i18n="sol_1_desc">
@@ -660,17 +676,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <!-- Card 2: Financial Transparency -->
           <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3 shadow-2xs">
             <div class="space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-400" data-i18n="pain_2_badge">ปัญหาเหรัญญิก</span>
-                <span class="text-xs mono text-rose-600 dark:text-rose-400 font-semibold" data-i18n="pain_2_metric">ข้อพิพาทเงินรางวัล</span>
+              <div class="flex items-center justify-between gap-2">
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300" data-i18n="pain_2_badge">ปัญหาเหรัญญิก</span>
+                <span class="text-xs mono text-rose-700 dark:text-rose-300 font-semibold whitespace-nowrap" data-i18n="pain_2_metric">ข้อพิพาทเงินรางวัล</span>
               </div>
               <h4 class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="pain_2_title">คำนวณเงินรางวัล & ค่าปรับผิดพลาด</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="pain_2_desc">
+              <p class="text-xs text-slate-600 dark:text-neutral-300 leading-relaxed" data-i18n="pain_2_desc">
                 กติกาซับซ้อน เช่น ค่าปรับบ๊วย 5 อันดับ, รางวัลแต้มสูงสุดรายสัปดาห์, จ่ายเงินก้อนกลางฤดูกาล
               </p>
             </div>
-            <div class="pt-3 border-t border-borderLight dark:border-borderDark space-y-1 bg-emerald-50/50 dark:bg-emerald-950/20 -mx-4 -mb-4 p-3 rounded-b-xl border-t border-emerald-500/20">
-              <span class="text-[11px] font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5" data-i18n="sol_2_badge">
+            <div class="pt-3 border-t border-emerald-500/20 space-y-1 bg-emerald-50/50 dark:bg-emerald-950/20 -mx-4 -mb-4 p-3.5 rounded-b-xl">
+              <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5" data-i18n="sol_2_badge">
                 ${ICONS.check} FPLSaWaDiKa Solution
               </span>
               <p class="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed" data-i18n="sol_2_desc">
@@ -682,17 +698,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <!-- Card 3: Player Churn & Boredom -->
           <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3 shadow-2xs">
             <div class="space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-400" data-i18n="pain_3_badge">ปัญหาคอมมูนิตี้</span>
-                <span class="text-xs mono text-rose-600 dark:text-rose-400 font-semibold" data-i18n="pain_3_metric">คนทิ้งทีมกลางคัน</span>
+              <div class="flex items-center justify-between gap-2">
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300" data-i18n="pain_3_badge">ปัญหาคอมมูนิตี้</span>
+                <span class="text-xs mono text-rose-700 dark:text-rose-300 font-semibold whitespace-nowrap" data-i18n="pain_3_metric">คนทิ้งทีมกลางคัน</span>
               </div>
               <h4 class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="pain_3_title">แต้มตามเยอะ ถอดใจ ไม่เข้าดูแอป</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="pain_3_desc">
+              <p class="text-xs text-slate-600 dark:text-neutral-300 leading-relaxed" data-i18n="pain_3_desc">
                 ถ้าลุ้นแค่แชมป์สิ้นปี พอผ่านไป 10 นัด คนตาม 50+ แต้มก็เลิกเล่น ลีกกลายเป็นป่าช้า
               </p>
             </div>
-            <div class="pt-3 border-t border-borderLight dark:border-borderDark space-y-1 bg-emerald-50/50 dark:bg-emerald-950/20 -mx-4 -mb-4 p-3 rounded-b-xl border-t border-emerald-500/20">
-              <span class="text-[11px] font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5" data-i18n="sol_3_badge">
+            <div class="pt-3 border-t border-emerald-500/20 space-y-1 bg-emerald-50/50 dark:bg-emerald-950/20 -mx-4 -mb-4 p-3.5 rounded-b-xl">
+              <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5" data-i18n="sol_3_badge">
                 ${ICONS.check} FPLSaWaDiKa Solution
               </span>
               <p class="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed" data-i18n="sol_3_desc">
@@ -704,17 +720,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <!-- Card 4: Scouting & Social Banter -->
           <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3 shadow-2xs">
             <div class="space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-400" data-i18n="pain_4_badge">ปัญหาแอปหลัก</span>
-                <span class="text-xs mono text-rose-600 dark:text-rose-400 font-semibold" data-i18n="pain_4_metric">UX ส่องทีมคู่แข่งช้า</span>
+              <div class="flex items-center justify-between gap-2">
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300" data-i18n="pain_4_badge">ปัญหาแอปหลัก</span>
+                <span class="text-xs mono text-rose-700 dark:text-rose-300 font-semibold whitespace-nowrap" data-i18n="pain_4_metric">UX ส่องทีมคู่แข่งช้า</span>
               </div>
               <h4 class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="pain_4_title">ส่องทีมคู่แข่งยาก ขาดม้านั่งสำรอง</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="pain_4_desc">
+              <p class="text-xs text-slate-600 dark:text-neutral-300 leading-relaxed" data-i18n="pain_4_desc">
                 ในแอปทางการต้องกดเข้าออกทีละคน ไม่เห็นม้านั่งและแต้มสดของคู่แข่งพร้อมกัน
               </p>
             </div>
-            <div class="pt-3 border-t border-borderLight dark:border-borderDark space-y-1 bg-emerald-50/50 dark:bg-emerald-950/20 -mx-4 -mb-4 p-3 rounded-b-xl border-t border-emerald-500/20">
-              <span class="text-[11px] font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5" data-i18n="sol_4_badge">
+            <div class="pt-3 border-t border-emerald-500/20 space-y-1 bg-emerald-50/50 dark:bg-emerald-950/20 -mx-4 -mb-4 p-3.5 rounded-b-xl">
+              <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5" data-i18n="sol_4_badge">
                 ${ICONS.check} FPLSaWaDiKa Solution
               </span>
               <p class="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed" data-i18n="sol_4_desc">
@@ -727,32 +743,32 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       <!-- Step 2: Visual Proof & Business Hard Metrics (The 4 Visual Graphics) -->
       <div class="space-y-4 pt-2">
-        <div class="flex items-center justify-between">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-bold">2</span>
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h3 class="text-sm font-bold tracking-wide text-slate-900 dark:text-white flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-xs font-bold shrink-0">2</span>
             <span data-i18n="pitch_step2_title">หลักฐานเชิงประจักษ์ 4 มิติ (Visual Proof & Analytics)</span>
           </h3>
-          <span class="text-xs text-slate-500 dark:text-neutral-400" data-i18n="pitch_step2_sub">ข้อมูลจริงจาก 9 มินิลีก</span>
+          <span class="text-xs text-slate-600 dark:text-neutral-400 whitespace-nowrap" data-i18n="pitch_step2_sub">ข้อมูลจริงจาก 9 มินิลีก</span>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <!-- Graphic 1: Workload Comparison -->
           <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-4 shadow-2xs">
             <div>
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400" data-i18n="graphic1_eyebrow">มิติที่ 1 · ความคุ้มค่าด้านเวลา</span>
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300" data-i18n="graphic1_badge">ประหยัด 190 ชม./ปี</span>
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span class="text-xs font-bold tracking-wide text-emerald-700 dark:text-emerald-400" data-i18n="graphic1_eyebrow">มิติที่ 1 · ความคุ้มค่าด้านเวลา</span>
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 whitespace-nowrap" data-i18n="graphic1_badge">ประหยัด 190 ชม./ปี</span>
               </div>
-              <h4 class="text-base font-semibold text-slate-900 dark:text-white mt-1" data-i18n="graphic1_title">ภาระงานแอดมิน: จัดการเอง (Excel) vs FPLSaWaDiKa</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="graphic1_sub">คำนวณจากลีกขนาด 20–80 ทีม ตลอด 38 สัปดาห์การแข่งขัน</p>
+              <h4 class="text-base font-semibold text-slate-900 dark:text-white mt-1.5" data-i18n="graphic1_title">ภาระงานแอดมิน: จัดการเอง (Excel) vs FPLSaWaDiKa</h4>
+              <p class="text-xs text-slate-600 dark:text-neutral-300 mt-1" data-i18n="graphic1_sub">คำนวณจากลีกขนาด 20–80 ทีม ตลอด 38 สัปดาห์การแข่งขัน</p>
             </div>
 
             <!-- Visual Bar Comparison -->
             <div class="space-y-4 py-2">
               <div class="space-y-1.5">
-                <div class="flex justify-between text-xs font-medium">
-                  <span class="text-rose-600 dark:text-rose-400" data-i18n="bar_manual_label">ทำตาราง Excel มือ + ไล่ตรวจแต้มลบ</span>
-                  <span class="mono font-bold text-rose-600 dark:text-rose-400">5.0 ชม. / GW (190 ชม./ปี)</span>
+                <div class="flex flex-wrap justify-between gap-2 text-xs font-medium">
+                  <span class="text-rose-700 dark:text-rose-300" data-i18n="bar_manual_label">ทำตาราง Excel มือ + ไล่ตรวจแต้มลบ</span>
+                  <span class="mono font-bold text-rose-700 dark:text-rose-300 whitespace-nowrap">5.0 ชม. / GW (190 ชม./ปี)</span>
                 </div>
                 <div class="w-full bg-slate-200 dark:bg-neutral-800 h-4 rounded-full overflow-hidden">
                   <div class="bg-rose-500 h-full rounded-full" style="width: 100%"></div>
@@ -760,9 +776,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               </div>
 
               <div class="space-y-1.5">
-                <div class="flex justify-between text-xs font-medium">
+                <div class="flex flex-wrap justify-between gap-2 text-xs font-medium">
                   <span class="text-emerald-700 dark:text-emerald-400 font-bold" data-i18n="bar_fpl_label">FPLSaWaDiKa Zero-Touch Platform</span>
-                  <span class="mono font-bold text-emerald-700 dark:text-emerald-400">0 วินาที (อัตโนมัติ 100%)</span>
+                  <span class="mono font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">0 วินาที (อัตโนมัติ 100%)</span>
                 </div>
                 <div class="w-full bg-slate-200 dark:bg-neutral-800 h-4 rounded-full overflow-hidden p-0.5">
                   <div class="bg-emerald-500 h-full rounded-full" style="width: 2%"></div>
@@ -770,26 +786,26 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               </div>
             </div>
 
-            <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark flex items-center justify-between text-xs">
-              <span class="text-slate-600 dark:text-neutral-400" data-i18n="graphic1_callout">ประหยัดเวลาแอดมินได้ปีละกว่า 24 วันทำการ!</span>
-              <span class="mono font-bold text-emerald-600 dark:text-emerald-400">ROI 100% Infinite</span>
+            <div class="pt-3 border-t border-borderLight dark:border-borderDark flex flex-wrap items-center justify-between gap-2 text-xs">
+              <span class="text-slate-600 dark:text-neutral-300" data-i18n="graphic1_callout">ประหยัดเวลาแอดมินได้ปีละกว่า 24 วันทำการ!</span>
+              <span class="mono font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">ROI 100% Infinite</span>
             </div>
           </div>
 
           <!-- Graphic 2: Engagement Multiplier -->
           <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-4 shadow-2xs">
             <div>
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400" data-i18n="graphic2_eyebrow">มิติที่ 2 · การมีส่วนร่วมของลูกลีก</span>
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300" data-i18n="graphic2_badge">พุ่งสูงขึ้น 5.7 เท่า</span>
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span class="text-xs font-bold tracking-wide text-blue-700 dark:text-blue-400" data-i18n="graphic2_eyebrow">มิติที่ 2 · การมีส่วนร่วมของลูกลีก</span>
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 whitespace-nowrap" data-i18n="graphic2_badge">พุ่งสูงขึ้น 5.7 เท่า</span>
               </div>
-              <h4 class="text-base font-semibold text-slate-900 dark:text-white mt-1" data-i18n="graphic2_title">ความถี่การเข้าชมเฉลี่ย: ลีกทางการ vs ลีกบน FPLSaWaDiKa</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="graphic2_sub">ยอดเปิดดูเฉลี่ยต่อผู้จัดการทีม 1 คน ในแต่ละสัปดาห์ (Visits/Team/GW)</p>
+              <h4 class="text-base font-semibold text-slate-900 dark:text-white mt-1.5" data-i18n="graphic2_title">ความถี่การเข้าชมเฉลี่ย: ลีกทางการ vs ลีกบน FPLSaWaDiKa</h4>
+              <p class="text-xs text-slate-600 dark:text-neutral-300 mt-1" data-i18n="graphic2_sub">ยอดเปิดดูเฉลี่ยต่อผู้จัดการทีม 1 คน ในแต่ละสัปดาห์ (Visits/Team/GW)</p>
             </div>
 
             <!-- SVG Engagement Chart -->
             <div class="py-2 space-y-1.5">
-              <div class="flex items-center justify-between text-[11px] text-slate-600 dark:text-neutral-400">
+              <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 dark:text-neutral-400">
                 <span data-i18n="graphic2_axis_y">แกนตั้ง: ความถี่เปิดดูเฉลี่ยต่อทีม (ครั้ง / สัปดาห์)</span>
                 <span class="mono" data-i18n="graphic2_axis_x">กลุ่มผู้ใช้</span>
               </div>
@@ -815,9 +831,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               </svg>
             </div>
 
-            <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark flex items-center justify-between text-xs">
-              <span class="text-slate-600 dark:text-neutral-400" data-i18n="graphic2_callout">Weekly Stakes + บทวิเคราะห์กูรูลูกหนังสายดราม่า ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์</span>
-              <span class="mono font-bold text-blue-600 dark:text-blue-400">5.7x Stickiness</span>
+            <div class="pt-3 border-t border-borderLight dark:border-borderDark flex flex-wrap items-center justify-between gap-2 text-xs">
+              <span class="text-slate-600 dark:text-neutral-300" data-i18n="graphic2_callout">Weekly Stakes + บทวิเคราะห์กูรูลูกหนังสายดราม่า ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์</span>
+              <span class="mono font-bold text-blue-700 dark:text-blue-400 whitespace-nowrap">5.7x Stickiness</span>
             </div>
           </div>
         </div>
@@ -826,114 +842,114 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <!-- Graphic 3: Automated Prize Flow -->
           <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-4 shadow-2xs">
             <div>
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400" data-i18n="graphic3_eyebrow">มิติที่ 3 · การเงินและความโปร่งใส</span>
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300" data-i18n="graphic3_badge">GMV รวม ฿268,700</span>
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span class="text-xs font-bold tracking-wide text-amber-700 dark:text-amber-400" data-i18n="graphic3_eyebrow">มิติที่ 3 · การเงินและความโปร่งใส</span>
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 whitespace-nowrap" data-i18n="graphic3_badge">GMV รวม ฿268,700</span>
               </div>
-              <h4 class="text-base font-semibold text-slate-900 dark:text-white mt-1" data-i18n="graphic3_title">ระบบรองรับโมเดลเงินรางวัลและค่าปรับ 5 รูปแบบ</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="graphic3_sub">ยืดหยุ่นตามกติกาของแต่ละมินิลีก จัดการอัตโนมัติ 0 ข้อผิดพลาด</p>
+              <h4 class="text-base font-semibold text-slate-900 dark:text-white mt-1.5" data-i18n="graphic3_title">ระบบรองรับโมเดลเงินรางวัลและค่าปรับ 5 รูปแบบ</h4>
+              <p class="text-xs text-slate-600 dark:text-neutral-300 mt-1" data-i18n="graphic3_sub">ยืดหยุ่นตามกติกาของแต่ละมินิลีก จัดการอัตโนมัติ 0 ข้อผิดพลาด</p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              <div class="p-2.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark flex items-center gap-2">
-                <span class="w-6 h-6 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-xs shrink-0">1</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div class="py-1.5 flex items-start gap-2.5">
+                <span class="w-6 h-6 rounded-md bg-amber-500/15 text-amber-700 dark:text-amber-300 flex items-center justify-center font-bold text-xs shrink-0">1</span>
                 <div>
                   <div class="font-semibold text-slate-900 dark:text-white" data-i18n="pmodel_1_title">Weekly Top-Score</div>
-                  <div class="text-[11px] text-slate-500 dark:text-neutral-400" data-i18n="pmodel_1_sub">จ่ายรางวัลผู้ชนะประจำสัปดาห์</div>
+                  <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="pmodel_1_sub">จ่ายรางวัลผู้ชนะประจำสัปดาห์</div>
                 </div>
               </div>
 
-              <div class="p-2.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark flex items-center gap-2">
-                <span class="w-6 h-6 rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-xs shrink-0">2</span>
+              <div class="py-1.5 flex items-start gap-2.5">
+                <span class="w-6 h-6 rounded-md bg-rose-500/15 text-rose-700 dark:text-rose-300 flex items-center justify-center font-bold text-xs shrink-0">2</span>
                 <div>
                   <div class="font-semibold text-slate-900 dark:text-white" data-i18n="pmodel_2_title">Bottom 5 Penalties</div>
-                  <div class="text-[11px] text-slate-500 dark:text-neutral-400" data-i18n="pmodel_2_sub">ระบบค่าปรับบ๊วย (2 spade)</div>
+                  <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="pmodel_2_sub">ระบบค่าปรับบ๊วย (2 spade)</div>
                 </div>
               </div>
 
-              <div class="p-2.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark flex items-center gap-2">
-                <span class="w-6 h-6 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-xs shrink-0">3</span>
+              <div class="py-1.5 flex items-start gap-2.5">
+                <span class="w-6 h-6 rounded-md bg-blue-500/15 text-blue-700 dark:text-blue-300 flex items-center justify-center font-bold text-xs shrink-0">3</span>
                 <div>
                   <div class="font-semibold text-slate-900 dark:text-white" data-i18n="pmodel_3_title">Zero-Sum Ladder</div>
-                  <div class="text-[11px] text-slate-500 dark:text-neutral-400" data-i18n="pmodel_3_sub">หัวตารางกินท้ายตาราง (Shi62)</div>
+                  <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="pmodel_3_sub">หัวตารางกินท้ายตาราง (Shi62)</div>
                 </div>
               </div>
 
-              <div class="p-2.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark flex items-center gap-2">
-                <span class="w-6 h-6 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-xs shrink-0">4</span>
+              <div class="py-1.5 flex items-start gap-2.5">
+                <span class="w-6 h-6 rounded-md bg-purple-500/15 text-purple-700 dark:text-purple-300 flex items-center justify-center font-bold text-xs shrink-0">4</span>
                 <div>
                   <div class="font-semibold text-slate-900 dark:text-white" data-i18n="pmodel_4_title">Dual Milestones</div>
-                  <div class="text-[11px] text-slate-500 dark:text-neutral-400" data-i18n="pmodel_4_sub">แบ่งจ่ายงวด GW18 & GW38</div>
+                  <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="pmodel_4_sub">แบ่งจ่ายงวด GW18 & GW38</div>
                 </div>
               </div>
             </div>
 
-            <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark flex items-center justify-between text-xs">
-              <span class="text-slate-600 dark:text-neutral-400" data-i18n="graphic3_callout">ตรวจสอบย้อนหลังได้ทุกบาทผ่าน Open Ledger</span>
-              <span class="mono font-bold text-amber-600 dark:text-amber-400">100% Auditable</span>
+            <div class="pt-3 border-t border-borderLight dark:border-borderDark flex flex-wrap items-center justify-between gap-2 text-xs">
+              <span class="text-slate-600 dark:text-neutral-300" data-i18n="graphic3_callout">ตรวจสอบย้อนหลังได้ทุกบาทผ่าน Open Ledger</span>
+              <span class="mono font-bold text-amber-700 dark:text-amber-400 whitespace-nowrap">100% Auditable</span>
             </div>
           </div>
 
           <!-- Graphic 4: Feature Matrix & Roadmap Tiering -->
-          <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-4 shadow-2xs">
+          <div class="min-w-0 p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-4 shadow-2xs">
             <div>
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400" data-i18n="graphic4_eyebrow">มิติที่ 4 · ความครบครันของระบบ</span>
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300" data-i18n="graphic4_badge">Tier 1 vs Tier 2</span>
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span class="text-xs font-bold tracking-wide text-indigo-700 dark:text-indigo-400" data-i18n="graphic4_eyebrow">มิติที่ 4 · ความครบครันของระบบ</span>
+                <span class="px-2 py-0.5 rounded text-xs font-bold bg-indigo-100 dark:bg-indigo-950/80 text-indigo-800 dark:text-indigo-300 whitespace-nowrap" data-i18n="graphic4_badge">Tier 1 vs Tier 2</span>
               </div>
-              <h4 class="text-base font-semibold text-slate-900 dark:text-white mt-1" data-i18n="graphic4_title">ตารางเปรียบเทียบฟังก์ชันและความพร้อมใช้งาน</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="graphic4_sub">เปรียบเทียบระหว่าง Official FPL, Tier 2 (Live Beta), และ Tier 1 Core</p>
+              <h4 class="text-base font-semibold text-slate-900 dark:text-white mt-1.5" data-i18n="graphic4_title">ตารางเปรียบเทียบฟังก์ชันและความพร้อมใช้งาน</h4>
+              <p class="text-xs text-slate-600 dark:text-neutral-300 mt-1" data-i18n="graphic4_sub">เปรียบเทียบระหว่าง Official FPL, Tier 2 (Live Beta), และ Tier 1 Core</p>
             </div>
 
-            <!-- Mini Matrix Table -->
-            <div class="overflow-x-auto text-xs">
-              <table class="w-full text-left border-collapse">
+            <!-- Mini Matrix Table (Horizontal Scrollable Without Cramped Text) -->
+            <div class="overflow-x-auto touch-scroll text-xs">
+              <table class="w-full min-w-[540px] text-left border-collapse">
                 <thead>
-                  <tr class="border-b border-borderLight dark:border-borderDark text-[11px] mono text-slate-500 dark:text-neutral-400">
-                    <th class="py-1.5 px-2 font-medium" data-i18n="col_feat">ฟังก์ชัน</th>
-                    <th class="py-1.5 px-2 text-center" data-i18n="col_fpl_app">Official App</th>
-                    <th class="py-1.5 px-2 text-center" data-i18n="col_tier2">Tier 2 (Live Beta)</th>
-                    <th class="py-1.5 px-2 text-center font-bold text-emerald-600 dark:text-emerald-400" data-i18n="col_tier1">Tier 1 (พร้อมขาย)</th>
+                  <tr class="border-b border-borderLight dark:border-borderDark text-xs mono text-slate-600 dark:text-neutral-300">
+                    <th class="py-2 px-2 font-medium whitespace-nowrap" data-i18n="col_feat">ฟังก์ชัน</th>
+                    <th class="py-2 px-2 text-center whitespace-nowrap" data-i18n="col_fpl_app">Official App</th>
+                    <th class="py-2 px-2 text-center whitespace-nowrap" data-i18n="col_tier2">Tier 2 (Live Beta)</th>
+                    <th class="py-2 px-2 text-center font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap" data-i18n="col_tier1">Tier 1 (พร้อมขาย)</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-borderLight dark:divide-borderDark">
                   <tr>
-                    <td class="py-1.5 px-2 font-medium" data-i18n="matrix_f1">แต้มสด & โบนัส BPS 15 วิ</td>
-                    <td class="py-1.5 px-2 text-center text-slate-400">3-5 นาที</td>
-                    <td class="py-1.5 px-2 text-center text-emerald-600 dark:text-emerald-400">✅ มี</td>
-                    <td class="py-1.5 px-2 text-center font-bold text-emerald-600 dark:text-emerald-400">✅ มีสด 15s</td>
+                    <td class="py-2 px-2 font-medium whitespace-nowrap" data-i18n="matrix_f1">แต้มสด & โบนัส BPS 15 วิ</td>
+                    <td class="py-2 px-2 text-center text-slate-600 dark:text-neutral-400 whitespace-nowrap">3-5 นาที</td>
+                    <td class="py-2 px-2 text-center text-emerald-700 dark:text-emerald-400 whitespace-nowrap">✅ มี</td>
+                    <td class="py-2 px-2 text-center font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">✅ มีสด 15s</td>
                   </tr>
                   <tr>
-                    <td class="py-1.5 px-2 font-medium" data-i18n="matrix_f2">หักแต้มย้ายตัว Net Pts สด</td>
-                    <td class="py-1.5 px-2 text-center text-rose-500">❌ ไม่มี</td>
-                    <td class="py-1.5 px-2 text-center text-slate-400">⚠️ หลังจบวีค</td>
-                    <td class="py-1.5 px-2 text-center font-bold text-emerald-600 dark:text-emerald-400">✅ สดทันที</td>
+                    <td class="py-2 px-2 font-medium whitespace-nowrap" data-i18n="matrix_f2">หักแต้มย้ายตัว Net Pts สด</td>
+                    <td class="py-2 px-2 text-center text-rose-600 dark:text-rose-400 whitespace-nowrap">❌ ไม่มี</td>
+                    <td class="py-2 px-2 text-center text-slate-600 dark:text-neutral-400 whitespace-nowrap">⚠️ หลังจบวีค</td>
+                    <td class="py-2 px-2 text-center font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">✅ สดทันที</td>
                   </tr>
                   <tr>
-                    <td class="py-1.5 px-2 font-medium" data-i18n="matrix_f3">บทพากย์กูรูลูกหนังสายดราม่า</td>
-                    <td class="py-1.5 px-2 text-center text-rose-500">❌ ไม่มี</td>
-                    <td class="py-1.5 px-2 text-center text-rose-500">❌ ไม่มี</td>
-                    <td class="py-1.5 px-2 text-center font-bold text-emerald-600 dark:text-emerald-400">✅ อัตโนมัติ</td>
+                    <td class="py-2 px-2 font-medium whitespace-nowrap" data-i18n="matrix_f3">บทพากย์กูรูลูกหนังสายดราม่า</td>
+                    <td class="py-2 px-2 text-center text-rose-600 dark:text-rose-400 whitespace-nowrap">❌ ไม่มี</td>
+                    <td class="py-2 px-2 text-center text-rose-600 dark:text-rose-400 whitespace-nowrap">❌ ไม่มี</td>
+                    <td class="py-2 px-2 text-center font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">✅ อัตโนมัติ</td>
                   </tr>
                   <tr>
-                    <td class="py-1.5 px-2 font-medium" data-i18n="matrix_f4">คำนวณเงินรางวัล/ค่าปรับอัตโนมัติ</td>
-                    <td class="py-1.5 px-2 text-center text-rose-500">❌ ไม่มี</td>
-                    <td class="py-1.5 px-2 text-center text-slate-400">⚠️ พื้นฐาน</td>
-                    <td class="py-1.5 px-2 text-center font-bold text-emerald-600 dark:text-emerald-400">✅ 100% Custom</td>
+                    <td class="py-2 px-2 font-medium whitespace-nowrap" data-i18n="matrix_f4">คำนวณเงินรางวัล/ค่าปรับอัตโนมัติ</td>
+                    <td class="py-2 px-2 text-center text-rose-600 dark:text-rose-400 whitespace-nowrap">❌ ไม่มี</td>
+                    <td class="py-2 px-2 text-center text-slate-600 dark:text-neutral-400 whitespace-nowrap">⚠️ พื้นฐาน</td>
+                    <td class="py-2 px-2 text-center font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">✅ 100% Custom</td>
                   </tr>
                   <tr>
-                    <td class="py-1.5 px-2 font-medium" data-i18n="matrix_f5">Interactive Squad Pitch Modal</td>
-                    <td class="py-1.5 px-2 text-center text-slate-400">ดูช้า</td>
-                    <td class="py-1.5 px-2 text-center text-slate-400">⚠️ On-Demand</td>
-                    <td class="py-1.5 px-2 text-center font-bold text-emerald-600 dark:text-emerald-400">✅ คลิกเดียวครบ</td>
+                    <td class="py-2 px-2 font-medium whitespace-nowrap" data-i18n="matrix_f5">Interactive Squad Pitch Modal</td>
+                    <td class="py-2 px-2 text-center text-slate-600 dark:text-neutral-400 whitespace-nowrap">ดูช้า</td>
+                    <td class="py-2 px-2 text-center text-slate-600 dark:text-neutral-400 whitespace-nowrap">⚠️ On-Demand</td>
+                    <td class="py-2 px-2 text-center font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">✅ คลิกเดียวครบ</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark flex items-center justify-between text-xs">
-              <span id="graphic4Callout" class="text-slate-600 dark:text-neutral-400" data-i18n="graphic4_callout">Tier 1 พร้อมส่งมอบทันที · Tier 2 (Live Beta) รองรับ 1,779 ทีม</span>
-              <span class="mono font-bold text-indigo-600 dark:text-indigo-400">Turnkey Core</span>
+            <div class="pt-3 border-t border-borderLight dark:border-borderDark flex flex-wrap items-center justify-between gap-2 text-xs">
+              <span id="graphic4Callout" class="text-slate-600 dark:text-neutral-300" data-i18n="graphic4_callout">Tier 1 พร้อมส่งมอบทันที · Tier 2 (Live Beta) รองรับ 1,779 ทีม</span>
+              <span class="mono font-bold text-indigo-700 dark:text-indigo-400 whitespace-nowrap">Turnkey Core</span>
             </div>
           </div>
         </div>
@@ -941,88 +957,89 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       <!-- Step 3: Live Interactive Demo Links (Instant Client Showcases) -->
       <div class="space-y-3 pt-2">
-        <div class="flex items-center justify-between">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-bold">3</span>
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h3 class="text-sm font-bold tracking-wide text-slate-900 dark:text-white flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-400 flex items-center justify-center text-xs font-bold shrink-0">3</span>
             <span data-i18n="pitch_step3_title">ทางลัดเปิดโชว์ระบบจริงต่อหน้าลูกค้า (Live Interactive Jump Links)</span>
           </h3>
-          <span class="text-xs text-slate-500 dark:text-neutral-400" data-i18n="pitch_step3_sub">คลิกเพื่อเปิดหน้าจริงในแท็บใหม่</span>
+          <span class="text-xs text-slate-600 dark:text-neutral-400 whitespace-nowrap" data-i18n="pitch_step3_sub">คลิกเพื่อเปิดหน้าจริงในแท็บใหม่</span>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
           <!-- Jump 1: Live Points & Pitch Modal -->
           <a href="https://www.fplsawadika.com/40700" target="_blank" rel="noopener"
-            class="p-3 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-emerald-500/50 hover:bg-emerald-50/20 dark:hover:bg-emerald-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
+            class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-emerald-500/50 hover:bg-emerald-50/20 dark:hover:bg-emerald-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
             <div class="space-y-1">
-              <div class="text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400 flex items-center justify-between">
+              <div class="text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center justify-between">
                 <span>01. Live Scores</span>
                 <span class="group-hover:translate-x-0.5 transition-transform">↗</span>
               </div>
               <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_1_title">คะแนนสด & ผัง 11 ตัวจริง</div>
-              <div class="text-[11px] text-slate-500 dark:text-neutral-400" data-i18n="jump_1_sub">เปิดดูผังทีมจริง & แต้ม Net</div>
+              <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="jump_1_sub">เปิดดูผังทีมจริง & แต้ม Net</div>
             </div>
-            <span class="text-[10px] mono text-slate-400 dark:text-neutral-500">ลีก 40700</span>
+            <span class="text-xs mono text-slate-600 dark:text-neutral-400">ลีก 40700</span>
           </a>
 
           <!-- Jump 2: Highlights & Pundit Banter -->
           <a href="https://www.fplsawadika.com/40700?tab=highlights" target="_blank" rel="noopener"
-            class="p-3 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-blue-500/50 hover:bg-blue-50/20 dark:hover:bg-blue-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
+            class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-blue-500/50 hover:bg-blue-50/20 dark:hover:bg-blue-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
             <div class="space-y-1">
-              <div class="text-[10px] font-bold uppercase text-blue-600 dark:text-blue-400 flex items-center justify-between">
+              <div class="text-xs font-bold text-blue-700 dark:text-blue-400 flex items-center justify-between">
                 <span>02. Commentary</span>
                 <span class="group-hover:translate-x-0.5 transition-transform">↗</span>
               </div>
               <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_2_title">บทวิเคราะห์กูรูสายดราม่า</div>
-              <div class="text-[11px] text-slate-500 dark:text-neutral-400" data-i18n="jump_2_sub">พากย์เกมดราม่าสุดกวน</div>
+              <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="jump_2_sub">พากย์เกมดราม่าสุดกวน</div>
             </div>
-            <span class="text-[10px] mono text-slate-400 dark:text-neutral-500">ลีก 40700</span>
+            <span class="text-xs mono text-slate-600 dark:text-neutral-400">ลีก 40700</span>
           </a>
 
           <!-- Jump 3: Prize & Penalties -->
           <a href="https://www.fplsawadika.com/438691?tab=prizes" target="_blank" rel="noopener"
-            class="p-3 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-amber-500/50 hover:bg-amber-50/20 dark:hover:bg-amber-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
+            class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-amber-500/50 hover:bg-amber-50/20 dark:hover:bg-amber-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
             <div class="space-y-1">
-              <div class="text-[10px] font-bold uppercase text-amber-600 dark:text-amber-400 flex items-center justify-between">
+              <div class="text-xs font-bold text-amber-700 dark:text-amber-400 flex items-center justify-between">
                 <span>03. Automated Payouts</span>
                 <span class="group-hover:translate-x-0.5 transition-transform">↗</span>
               </div>
               <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_3_title">ระบบค่าปรับ & รางวัล</div>
-              <div class="text-[11px] text-slate-500 dark:text-neutral-400" data-i18n="jump_3_sub">บ๊วย 5 อันดับโดนปรับสด</div>
+              <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="jump_3_sub">บ๊วย 5 อันดับโดนปรับสด</div>
             </div>
-            <span class="text-[10px] mono text-slate-400 dark:text-neutral-500">ลีก 438691</span>
+            <span class="text-xs mono text-slate-600 dark:text-neutral-400">ลีก 438691</span>
           </a>
 
           <!-- Jump 4: Global Radar -->
           <a href="https://www.fplsawadika.com/40700/?tab=radar" target="_blank" rel="noopener"
-            class="p-3 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-purple-500/50 hover:bg-purple-50/20 dark:hover:bg-purple-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
+            class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-purple-500/50 hover:bg-purple-50/20 dark:hover:bg-purple-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
             <div class="space-y-1">
-              <div class="text-[10px] font-bold uppercase text-purple-600 dark:text-purple-400 flex items-center justify-between">
+              <div class="text-xs font-bold text-purple-700 dark:text-purple-400 flex items-center justify-between">
                 <span>04. Form Radar</span>
                 <span class="group-hover:translate-x-0.5 transition-transform">↗</span>
               </div>
               <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_4_title">เรดาร์ฟอร์มทุกลีก</div>
-              <div class="text-[11px] text-slate-500 dark:text-neutral-400" data-i18n="jump_4_sub">เทียบดัชนีคะแนนรวม</div>
+              <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="jump_4_sub">เทียบดัชนีคะแนนรวม</div>
             </div>
-            <span class="text-[10px] mono text-slate-400 dark:text-neutral-500">ลีก 40700 · Radar</span>
+            <span class="text-xs mono text-slate-600 dark:text-neutral-400">ลีก 40700 · Radar</span>
           </a>
 
           <!-- Jump 5: Cup Knockout -->
           <a href="https://www.fplsawadika.com/675290?tab=cup" target="_blank" rel="noopener"
-            class="p-3 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-rose-500/50 hover:bg-rose-50/20 dark:hover:bg-rose-950/20 transition-all flex flex-col justify-between gap-2 group col-span-2 sm:col-span-1 shadow-2xs">
+            class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-rose-500/50 hover:bg-rose-50/20 dark:hover:bg-rose-950/20 transition-all flex flex-col justify-between gap-2 group sm:col-span-2 md:col-span-1 shadow-2xs">
             <div class="space-y-1">
-              <div class="text-[10px] font-bold uppercase text-rose-600 dark:text-rose-400 flex items-center justify-between">
+              <div class="text-xs font-bold text-rose-700 dark:text-rose-400 flex items-center justify-between">
                 <span>05. Knockout Cup</span>
                 <span class="group-hover:translate-x-0.5 transition-transform">↗</span>
               </div>
               <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_5_title">บอลถ้วยแพ้คัดออก</div>
-              <div class="text-[11px] text-slate-500 dark:text-neutral-400" data-i18n="jump_5_sub">สายการแข่งขันอัตโนมัติ</div>
+              <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="jump_5_sub">สายการแข่งขันอัตโนมัติ</div>
             </div>
-            <span class="text-[10px] mono text-slate-400 dark:text-neutral-500">ลีก 675290</span>
+            <span class="text-xs mono text-slate-600 dark:text-neutral-400">ลีก 675290</span>
           </a>
         </div>
       </div>
+      </div>
     </section>
-    <section id="sec-audience" class="space-y-4 scroll-mt-28" aria-labelledby="sec-audience-title">
+    <section id="sec-audience" class="space-y-4 scroll-mt-24" aria-labelledby="sec-audience-title">
       <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
         <div class="flex items-center gap-2.5">
           <span class="text-slate-700 dark:text-neutral-300">${ICONS.users}</span>
@@ -1035,12 +1052,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         </span>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <!-- KPI 1: Tracked Managers -->
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
           <div class="flex items-center justify-between gap-1.5">
             <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_managers_label">ผู้จัดการทีมที่ติดตาม</div>
-            <span class="px-1.5 py-0.5 rounded text-[10px] mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0" data-i18n="badge_live_sync">Live Sync</span>
+            <span class="px-2 py-0.5 rounded text-xs mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0 whitespace-nowrap" data-i18n="badge_live_sync">Live Sync</span>
           </div>
           <div>
             <div id="kpiManagersCount" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">163</div>
@@ -1052,7 +1069,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
           <div class="flex items-center justify-between gap-1.5">
             <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_mau_label">ผู้ใช้งานวันแข่งขัน (MAU)</div>
-            <span class="px-1.5 py-0.5 rounded text-[10px] mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0" data-i18n="badge_live_d1">Live D1</span>
+            <span class="px-2 py-0.5 rounded text-xs mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0 whitespace-nowrap" data-i18n="badge_live_d1">Live D1</span>
           </div>
           <div>
             <div id="kpiMatchdayActive" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">1,420</div>
@@ -1064,7 +1081,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
           <div class="flex items-center justify-between gap-1.5">
             <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_offpeak_label">ผู้ใช้งานนอกวันแข่ง (DAU)</div>
-            <span class="px-1.5 py-0.5 rounded text-[10px] mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0" data-i18n="badge_live_d1">Live D1</span>
+            <span class="px-2 py-0.5 rounded text-xs mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0 whitespace-nowrap" data-i18n="badge_live_d1">Live D1</span>
           </div>
           <div>
             <div id="kpiOffPeakDau" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">310</div>
@@ -1076,7 +1093,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
           <div class="flex items-center justify-between gap-1.5">
             <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_stickiness_label">ความเหนียวแน่นวันแข่ง</div>
-            <span class="px-1.5 py-0.5 rounded text-[10px] mono font-medium bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/25 shrink-0" data-i18n="badge_benchmark">Benchmark</span>
+            <span class="px-2 py-0.5 rounded text-xs mono font-medium bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/25 shrink-0 whitespace-nowrap" data-i18n="badge_benchmark">Benchmark</span>
           </div>
           <div>
             <div id="kpiStickiness" class="text-2xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400">68.4%</div>
@@ -1088,7 +1105,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
           <div class="flex items-center justify-between gap-1.5">
             <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_retention_label">อัตรากลับมาใช้งานต่อ GW</div>
-            <span class="px-1.5 py-0.5 rounded text-[10px] mono font-medium bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/25 shrink-0" data-i18n="badge_benchmark">Benchmark</span>
+            <span class="px-2 py-0.5 rounded text-xs mono font-medium bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/25 shrink-0 whitespace-nowrap" data-i18n="badge_benchmark">Benchmark</span>
           </div>
           <div>
             <div id="kpiRetention" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">94.2%</div>
@@ -1100,7 +1117,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
           <div class="flex items-center justify-between gap-1.5">
             <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_screentime_label">เวลาใช้งานเฉลี่ยต่อครั้ง</div>
-            <span class="px-1.5 py-0.5 rounded text-[10px] mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0" data-i18n="badge_live_d1">Live D1</span>
+            <span class="px-2 py-0.5 rounded text-xs mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0 whitespace-nowrap" data-i18n="badge_live_d1">Live D1</span>
           </div>
           <div>
             <div id="kpiScreenTime" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">6m 42s</div>
@@ -1113,7 +1130,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     <!-- ========================================================================= -->
     <!-- 02. MULTI-LEAGUE PORTFOLIO & COMMERCIAL ECONOMICS                         -->
     <!-- ========================================================================= -->
-    <section id="sec-portfolio" class="space-y-4 scroll-mt-28" aria-labelledby="sec-portfolio-title">
+    <section id="sec-portfolio" class="space-y-4 scroll-mt-24" aria-labelledby="sec-portfolio-title">
       <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
         <div class="flex items-center gap-2.5">
           <span class="text-slate-700 dark:text-neutral-300">${ICONS.layers}</span>
@@ -1148,7 +1165,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <div class="space-y-1 w-full">
             <div class="flex items-center justify-between gap-2">
               <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="port_landing_label">ยอดเข้าชมหน้าขาย (Landing Page · 7 วัน)</div>
-              <span id="portLandingTodayBadge" class="px-1.5 py-0.5 rounded text-[10px] mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0">วันนี้: 0</span>
+              <span id="portLandingTodayBadge" class="px-2 py-0.5 rounded text-xs mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0 whitespace-nowrap">วันนี้: 0</span>
             </div>
             <div id="portLandingViews" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0 <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">ครั้ง</span></div>
             <div id="portLandingSub" class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="port_landing_sub">แยกจากยอดเปิดดู 9 มินิลีก (วัดคนสนใจซื้อระบบ)</div>
@@ -1169,73 +1186,73 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       <div id="portfolioLifecycleFilters" role="group" aria-label="Customer lifecycle filters" class="flex flex-wrap items-center gap-2">
         <button type="button" data-portfolio-filter="all" aria-pressed="true"
-          class="pf-filter-btn min-h-[40px] sm:min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium border border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 inline-flex items-center gap-1.5 transition-colors">
+          class="pf-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg text-xs font-medium border border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 inline-flex items-center gap-1.5 whitespace-nowrap transition-colors">
           <span data-i18n="pf_filter_all">ทั้งหมด</span>
-          <span id="pfCount-all" class="mono text-[11px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">9</span>
+          <span id="pfCount-all" class="mono text-xs px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">9</span>
         </button>
         <button type="button" data-portfolio-filter="private" aria-pressed="false"
-          class="pf-filter-btn min-h-[40px] sm:min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 transition-colors">
+          class="pf-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 whitespace-nowrap transition-colors">
           <span data-i18n="pf_filter_private">ลูกค้าส่วนตัว (Private)</span>
-          <span id="pfCount-private" class="mono text-[11px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">0</span>
+          <span id="pfCount-private" class="mono text-xs px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">0</span>
         </button>
         <button type="button" data-portfolio-filter="expiring" aria-pressed="false"
-          class="pf-filter-btn min-h-[40px] sm:min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 transition-colors">
+          class="pf-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 whitespace-nowrap transition-colors">
           <span data-i18n="pf_filter_expiring">ทดลองใช้ / ใกล้หมดอายุ</span>
-          <span id="pfCount-expiring" class="mono text-[11px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">0</span>
+          <span id="pfCount-expiring" class="mono text-xs px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">0</span>
         </button>
         <button type="button" data-portfolio-filter="paused" aria-pressed="false"
-          class="pf-filter-btn min-h-[40px] sm:min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 transition-colors">
+          class="pf-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 whitespace-nowrap transition-colors">
           <span data-i18n="pf_filter_paused">พักระบบ (Paused)</span>
-          <span id="pfCount-paused" class="mono text-[11px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">0</span>
+          <span id="pfCount-paused" class="mono text-xs px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">0</span>
         </button>
         <button type="button" data-portfolio-filter="showcase" aria-pressed="false"
-          class="pf-filter-btn min-h-[40px] sm:min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 transition-colors">
+          class="pf-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 whitespace-nowrap transition-colors">
           <span data-i18n="pf_filter_showcase">ลีกตัวอย่าง (Showcase)</span>
-          <span id="pfCount-showcase" class="mono text-[11px] px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">9</span>
+          <span id="pfCount-showcase" class="mono text-xs px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">9</span>
         </button>
       </div>
 
       <!-- Sortable & Sticky Portfolio + Lifecycle Table -->
       <div class="rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark overflow-hidden">
-        <div class="overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500" tabindex="0" role="region" aria-labelledby="sec-portfolio-title">
-          <table class="w-full text-left border-collapse min-w-[960px]">
+        <div class="overflow-x-auto touch-scroll focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500" tabindex="0" role="region" aria-labelledby="sec-portfolio-title">
+          <table class="w-full text-left border-collapse min-w-[1060px]">
             <thead>
               <tr class="border-b border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300">
-                <th scope="col" id="th-name" aria-sort="none" class="sticky left-0 z-10 bg-raisedLight dark:bg-raisedDark p-0 border-r border-borderLight dark:border-borderDark">
-                  <button type="button" onclick="sortLeagueTable('name')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-between gap-2 hover:text-slate-900 dark:hover:text-white text-left font-medium">
+                <th scope="col" id="th-name" aria-sort="none" class="sticky left-0 z-10 bg-raisedLight dark:bg-raisedDark p-0 border-r border-borderLight dark:border-borderDark whitespace-nowrap">
+                  <button type="button" onclick="sortLeagueTable('name')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-between gap-2 hover:text-slate-900 dark:hover:text-white text-left font-medium whitespace-nowrap">
                     <span data-i18n="col_league_name">ชื่อมินิลีก & รหัส</span>
-                    <span id="sort-icon-name" class="text-slate-500 dark:text-neutral-400">${ICONS.sort}</span>
+                    <span id="sort-icon-name" class="text-slate-500 dark:text-neutral-400 shrink-0">${ICONS.sort}</span>
                   </button>
                 </th>
-                <th scope="col" id="th-teams" aria-sort="none" class="p-0 text-right">
-                  <button type="button" onclick="sortLeagueTable('teams')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-end gap-1.5 hover:text-slate-900 dark:hover:text-white font-medium">
+                <th scope="col" id="th-teams" aria-sort="none" class="p-0 text-right whitespace-nowrap">
+                  <button type="button" onclick="sortLeagueTable('teams')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-end gap-1.5 hover:text-slate-900 dark:hover:text-white font-medium whitespace-nowrap">
                     <span data-i18n="col_teams">จำนวนทีม</span>
-                    <span id="sort-icon-teams" class="text-slate-500 dark:text-neutral-400">${ICONS.sort}</span>
+                    <span id="sort-icon-teams" class="text-slate-500 dark:text-neutral-400 shrink-0">${ICONS.sort}</span>
                   </button>
                 </th>
-                <th scope="col" id="th-pool" aria-sort="descending" class="p-0 text-right">
-                  <button type="button" onclick="sortLeagueTable('pool')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-end gap-1.5 hover:text-slate-900 dark:hover:text-white font-medium">
+                <th scope="col" id="th-pool" aria-sort="descending" class="p-0 text-right whitespace-nowrap">
+                  <button type="button" onclick="sortLeagueTable('pool')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-end gap-1.5 hover:text-slate-900 dark:hover:text-white font-medium whitespace-nowrap">
                     <span data-i18n="col_pool">เงินรางวัลรวม (GMV)</span>
-                    <span id="sort-icon-pool" class="text-emerald-700 dark:text-emerald-400">${ICONS.sort}</span>
+                    <span id="sort-icon-pool" class="text-emerald-700 dark:text-emerald-400 shrink-0">${ICONS.sort}</span>
                   </button>
                 </th>
-                <th scope="col" class="px-4 py-2.5 font-medium" data-i18n="col_modules">โมดูลและกติกาที่เปิดใช้งาน</th>
-                <th scope="col" id="th-views" aria-sort="none" class="p-0 text-right">
-                  <button type="button" onclick="sortLeagueTable('views')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-end gap-1.5 hover:text-slate-900 dark:hover:text-white font-medium">
+                <th scope="col" class="px-4 py-2.5 font-medium whitespace-nowrap min-w-[220px]" data-i18n="col_modules">โมดูลและกติกาที่เปิดใช้งาน</th>
+                <th scope="col" id="th-views" aria-sort="none" class="p-0 text-right whitespace-nowrap">
+                  <button type="button" onclick="sortLeagueTable('views')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-end gap-1.5 hover:text-slate-900 dark:hover:text-white font-medium whitespace-nowrap">
                     <span data-i18n="col_views">ยอดเปิดดู (7 วันล่าสุด)</span>
-                    <span id="sort-icon-views" class="text-slate-500 dark:text-neutral-400">${ICONS.sort}</span>
+                    <span id="sort-icon-views" class="text-slate-500 dark:text-neutral-400 shrink-0">${ICONS.sort}</span>
                   </button>
                 </th>
-                <th scope="col" id="th-retention" aria-sort="none" class="p-0 text-right">
-                  <button type="button" onclick="sortLeagueTable('retention')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-end gap-1.5 hover:text-slate-900 dark:hover:text-white font-medium">
+                <th scope="col" id="th-retention" aria-sort="none" class="p-0 text-right whitespace-nowrap">
+                  <button type="button" onclick="sortLeagueTable('retention')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-end gap-1.5 hover:text-slate-900 dark:hover:text-white font-medium whitespace-nowrap">
                     <span data-i18n="col_retention">ความเหนียวแน่น (Benchmark)</span>
-                    <span id="sort-icon-retention" class="text-slate-500 dark:text-neutral-400">${ICONS.sort}</span>
+                    <span id="sort-icon-retention" class="text-slate-500 dark:text-neutral-400 shrink-0">${ICONS.sort}</span>
                   </button>
                 </th>
-                <th scope="col" id="th-status" aria-sort="none" class="p-0">
+                <th scope="col" id="th-status" aria-sort="none" class="p-0 whitespace-nowrap">
                   <button type="button" onclick="sortLeagueTable('status')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-between gap-1.5 hover:text-slate-900 dark:hover:text-white font-medium whitespace-nowrap">
                     <span data-i18n="col_lifecycle">สถานะ & หมดอายุ</span>
-                    <span id="sort-icon-status" class="text-slate-500 dark:text-neutral-400">${ICONS.sort}</span>
+                    <span id="sort-icon-status" class="text-slate-500 dark:text-neutral-400 shrink-0">${ICONS.sort}</span>
                   </button>
                 </th>
                 <th scope="col" class="px-4 py-2.5 text-right font-medium whitespace-nowrap" data-i18n="col_actions">จัดการสิทธิ์</th>
@@ -1352,32 +1369,32 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <div class="space-y-1 min-w-0">
             <div class="flex flex-wrap items-center gap-2">
               <h3 id="lcPanelTitle" class="text-sm sm:text-base font-semibold text-slate-900 dark:text-white">-</h3>
-              <span id="lcPanelBadges" class="inline-flex flex-wrap items-center gap-1.5 text-[11px] mono"></span>
+              <span id="lcPanelBadges" class="inline-flex flex-wrap items-center gap-1.5 text-xs mono"></span>
             </div>
             <p id="lcPanelMeta" class="text-xs mono text-slate-600 dark:text-neutral-400">-</p>
             <p id="lcPanelBillingNote" class="hidden text-xs text-amber-800 dark:text-amber-300 bg-amber-500/10 border border-amber-500/25 rounded-md px-2.5 py-1"></p>
           </div>
           <button type="button" id="btnCloseLifecyclePanel" aria-label="Close lifecycle panel"
-            class="min-w-[44px] min-h-[44px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-200 hover:bg-slate-200 dark:hover:bg-neutral-800 transition-colors">
+            class="min-w-[44px] min-h-[44px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-200 hover:bg-slate-200 dark:hover:bg-neutral-800 whitespace-nowrap transition-colors">
             ✕
           </button>
         </div>
 
         <!-- Private D1 Customer Note Editor (Never pushed to Git) -->
-        <div class="p-3.5 rounded-xl border border-emerald-500/25 bg-raisedLight/70 dark:bg-raisedDark/70 space-y-2">
+        <div class="pt-1 pb-4 border-b border-borderLight dark:border-borderDark space-y-2">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <label for="lcNoteInput" id="lcLblD1Note" class="text-xs font-semibold text-slate-800 dark:text-neutral-200">
               โน้ตลูกค้าส่วนตัว (บันทึกใน Cloudflare D1 — ไม่ลง Git)
             </label>
-            <span id="lcNotePrivacyBadge" class="px-2 py-0.5 rounded text-[11px] mono bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30">
+            <span id="lcNotePrivacyBadge" class="px-2 py-0.5 rounded text-xs mono bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30 whitespace-nowrap">
               D1 Private · 0% Git Exposure
             </span>
           </div>
           <div class="flex flex-col sm:flex-row gap-2">
             <input id="lcNoteInput" type="text" maxlength="500" placeholder="เช่น LINE @somchai · โอน 500฿ 19 พ.ย."
-              class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+              class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
             <button type="button" id="btnSaveLeagueNote"
-              class="min-h-[44px] px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-xs font-semibold whitespace-nowrap transition-colors">
+              class="min-h-[44px] px-4 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold whitespace-nowrap shrink-0 transition-colors">
               บันทึกโน้ตลง D1
             </button>
           </div>
@@ -1388,7 +1405,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <div class="space-y-2">
             <div class="flex items-center justify-between gap-2">
               <label for="lcOutRenewCli" id="lcLblRenew" class="text-xs font-semibold text-slate-800 dark:text-neutral-200">1. ต่ออายุ / เปิดเต็มระบบ (Active)</label>
-              <button type="button" data-copy-target="lcOutRenewCli" class="onb-copy-btn min-h-[36px] px-2.5 py-1 rounded border border-borderLight dark:border-borderDark text-xs mono hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
+              <button type="button" data-copy-target="lcOutRenewCli" class="onb-copy-btn min-h-[42px] px-3.5 py-1.5 rounded-lg border border-borderLight dark:border-borderDark text-xs mono whitespace-nowrap shrink-0 hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
             </div>
             <textarea id="lcOutRenewCli" readonly rows="4" class="w-full p-3 rounded-lg border border-borderLight dark:border-borderDark bg-slate-950 text-emerald-300 text-xs mono leading-relaxed"></textarea>
           </div>
@@ -1396,7 +1413,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <div class="space-y-2">
             <div class="flex items-center justify-between gap-2">
               <label for="lcOutPauseCli" id="lcLblPause" class="text-xs font-semibold text-slate-800 dark:text-neutral-200">2. พักระบบชั่วคราว (Paused)</label>
-              <button type="button" data-copy-target="lcOutPauseCli" class="onb-copy-btn min-h-[36px] px-2.5 py-1 rounded border border-borderLight dark:border-borderDark text-xs mono hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
+              <button type="button" data-copy-target="lcOutPauseCli" class="onb-copy-btn min-h-[42px] px-3.5 py-1.5 rounded-lg border border-borderLight dark:border-borderDark text-xs mono whitespace-nowrap shrink-0 hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
             </div>
             <textarea id="lcOutPauseCli" readonly rows="4" class="w-full p-3 rounded-lg border border-borderLight dark:border-borderDark bg-slate-950 text-amber-300 text-xs mono leading-relaxed"></textarea>
           </div>
@@ -1404,7 +1421,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <div class="space-y-2">
             <div class="flex items-center justify-between gap-2">
               <label for="lcOutLineMsg" id="lcLblLine" class="text-xs font-semibold text-slate-800 dark:text-neutral-200">3. ข้อความแจ้งเตือนต่ออายุทาง LINE</label>
-              <button type="button" data-copy-target="lcOutLineMsg" class="onb-copy-btn min-h-[36px] px-2.5 py-1 rounded border border-borderLight dark:border-borderDark text-xs mono hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
+              <button type="button" data-copy-target="lcOutLineMsg" class="onb-copy-btn min-h-[42px] px-3.5 py-1.5 rounded-lg border border-borderLight dark:border-borderDark text-xs mono whitespace-nowrap shrink-0 hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
             </div>
             <textarea id="lcOutLineMsg" readonly rows="4" class="w-full p-3 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-900 dark:text-neutral-100 text-xs leading-relaxed"></textarea>
           </div>
@@ -1632,12 +1649,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         </div>
         <div class="inline-flex items-center gap-2 self-start sm:self-auto shrink-0" role="group" aria-label="Device telemetry window">
           <button type="button" id="btnDev7d" onclick="switchDeviceWindow('7d')"
-            class="min-h-[44px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors"
+            class="min-h-[44px] px-4 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap shrink-0 transition-colors"
             data-i18n="dev_btn_7d">
             7 วันล่าสุด
           </button>
           <button type="button" id="btnDev30d" onclick="switchDeviceWindow('30d')"
-            class="min-h-[44px] px-3.5 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 transition-colors"
+            class="min-h-[44px] px-4 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 whitespace-nowrap shrink-0 transition-colors"
             data-i18n="dev_btn_30d">
             30 วันล่าสุด
           </button>
@@ -1722,14 +1739,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </div>
 
             <!-- Chart View Switcher (44px touch targets) -->
-            <div class="inline-flex items-center gap-2 self-start sm:self-auto" role="group" aria-label="Traffic chart mode">
+            <div class="inline-flex items-center gap-2 self-start sm:self-auto shrink-0" role="group" aria-label="Traffic chart mode">
               <button type="button" id="btnChartHourly" onclick="switchChartMode('hourly')"
-                class="min-h-[44px] px-3.5 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 transition-colors"
+                class="min-h-[44px] px-4 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 whitespace-nowrap shrink-0 transition-colors"
                 data-i18n="chart_btn_24h">
                 24 ชม. (วันแข่ง)
               </button>
               <button type="button" id="btnChartDaily" onclick="switchChartMode('daily')"
-                class="min-h-[44px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors"
+                class="min-h-[44px] px-4 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap shrink-0 transition-colors"
                 data-i18n="chart_btn_7d">
                 7 วันย้อนหลัง
               </button>
@@ -1738,7 +1755,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
           <!-- Responsive SVG Chart Container -->
           <div class="w-full pt-2 space-y-1.5">
-            <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-600 dark:text-neutral-400">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 dark:text-neutral-400">
               <span id="trafficYAxisUnit" class="font-medium">แกนตั้ง (Y): ดัชนีความหนาแน่นเทียบช่วงพีคสูงสุด (%)</span>
               <span id="trafficXAxisUnit" class="mono">แกนนอน (X): เวลาไทย (ICT)</span>
             </div>
@@ -1910,7 +1927,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 data-i18n="op_flush_btn">
                 รีเฟรชคะแนนสดทันที
               </button>
-              <div id="opResult-flush-cache" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-[11px] leading-relaxed"></div>
+              <div id="opResult-flush-cache" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-xs leading-relaxed"></div>
             </div>
           </div>
 
@@ -1926,7 +1943,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 data-i18n="op_ping_btn">
                 เช็กสถานะเว็บ FPL
               </button>
-              <div id="opResult-ping-upstream" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-[11px] leading-relaxed"></div>
+              <div id="opResult-ping-upstream" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-xs leading-relaxed"></div>
             </div>
           </div>
 
@@ -1942,7 +1959,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 data-i18n="op_export_btn">
                 ดาวน์โหลดไฟล์สถิติ
               </button>
-              <div id="opResult-export-json" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-[11px] leading-relaxed"></div>
+              <div id="opResult-export-json" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-xs leading-relaxed"></div>
             </div>
           </div>
 
@@ -1958,7 +1975,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 data-i18n="op_prune_btn">
                 ลบประวัติเก่าเกิน 30 วัน
               </button>
-              <div id="opResult-prune-telemetry" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-[11px] leading-relaxed"></div>
+              <div id="opResult-prune-telemetry" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-xs leading-relaxed"></div>
             </div>
           </div>
         </div>
@@ -1968,17 +1985,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     <!-- ======================================================================= -->
     <!-- SECTION 8: PROJECT HEALTH & ERROR MONITOR (1 DAY & 7 DAYS)              -->
     <!-- ======================================================================= -->
-    <section id="sec-monitor" aria-labelledby="sec8-heading" class="space-y-4">
+    <section id="sec-monitor" aria-labelledby="sec8-heading" class="space-y-4 scroll-mt-24">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 id="sec8-heading" class="text-base sm:text-lg font-semibold text-slate-900 dark:text-white" data-i18n="sec8_title">
+          <h2 id="sec8-heading" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec8_title">
             08. ตรวจสุขภาพระบบและ Error ย้อนหลัง (Monitor)
           </h2>
           <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec8_sub">
             เช็กย้อนหลัง 1 วัน (รายชั่วโมง) และ 1 สัปดาห์ (รายวัน) ว่าช่วงเวลาไหนทำงานปกติหรือมี Error เกิดขึ้นกับผู้ใช้
           </p>
         </div>
-        <div id="monitorOverallBadge" class="inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-xs font-medium text-emerald-700 dark:text-emerald-300 shrink-0">
+        <div id="monitorOverallBadge" class="inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-xs font-medium text-emerald-700 dark:text-emerald-300 shrink-0 whitespace-nowrap">
           <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
           <span id="monitorOverallBadgeText" data-i18n="mon_status_healthy">ทำงานปกติ 100%</span>
         </div>
@@ -1989,25 +2006,25 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
           <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_24h_label">ความพร้อมใช้งาน 1 วัน (24 ชม.)</div>
           <div id="mon24hUptime" class="text-2xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400">100.0%</div>
-          <div id="mon24hSub" class="text-[11px] text-slate-600 dark:text-neutral-400 leading-relaxed">0 Error จากกิจกรรมทั้งหมด</div>
+          <div id="mon24hSub" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">0 Error จากกิจกรรมทั้งหมด</div>
         </div>
 
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
           <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_7d_label">ความพร้อมใช้งาน 1 สัปดาห์ (7 วัน)</div>
           <div id="mon7dUptime" class="text-2xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400">100.0%</div>
-          <div id="mon7dSub" class="text-[11px] text-slate-600 dark:text-neutral-400 leading-relaxed">0 Error ตลอด 7 วันที่ผ่านมา</div>
+          <div id="mon7dSub" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">0 Error ตลอด 7 วันที่ผ่านมา</div>
         </div>
 
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
           <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_client_label">ปัญหาฝั่งผู้ใช้งาน (หน้าเว็บ)</div>
           <div id="monClientErrTotal" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0</div>
-          <div id="monClientErrSub" class="text-[11px] text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="mon_kpi_client_sub">หน้าเว็บค้าง โหลดข้อมูลไม่ขึ้น หรือ JS Error</div>
+          <div id="monClientErrSub" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="mon_kpi_client_sub">หน้าเว็บค้าง โหลดข้อมูลไม่ขึ้น หรือ JS Error</div>
         </div>
 
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
           <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_upstream_label">ปัญหาเว็บ FPL ต้นทาง (5xx)</div>
           <div id="monUpstreamErrTotal" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0</div>
-          <div id="monUpstreamErrSub" class="text-[11px] text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="mon_kpi_upstream_sub">เว็บพรีเมียร์ลีกต้นทางตอบช้าหรือล่มชั่วคราว</div>
+          <div id="monUpstreamErrSub" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="mon_kpi_upstream_sub">เว็บพรีเมียร์ลีกต้นทางตอบช้าหรือล่มชั่วคราว</div>
         </div>
       </div>
 
@@ -2024,12 +2041,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
           <div class="flex items-center gap-2 shrink-0" role="group" aria-label="Monitor time range">
             <button type="button" id="btnMon24h" onclick="switchMonitorMode('24h')"
-              class="min-h-[44px] px-3.5 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 transition-colors"
+              class="min-h-[44px] px-4 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 whitespace-nowrap shrink-0 transition-colors"
               data-i18n="mon_btn_24h">
               1 วัน (24 ชม.)
             </button>
             <button type="button" id="btnMon7d" onclick="switchMonitorMode('7d')"
-              class="min-h-[44px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors"
+              class="min-h-[44px] px-4 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap shrink-0 transition-colors"
               data-i18n="mon_btn_7d">
               1 สัปดาห์ (7 วัน)
             </button>
@@ -2037,7 +2054,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         </div>
 
         <div class="w-full space-y-1.5">
-          <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-600 dark:text-neutral-400">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 dark:text-neutral-400">
             <span id="monitorYAxisUnit" class="font-medium">แกนตั้ง (Y): จำนวนเหตุการณ์ใช้งานจริง &amp; Error (ครั้ง/ชม.)</span>
             <span id="monitorXAxisUnit" class="mono">แกนนอน (X): ช่วงเวลา 24 ชม. ล่าสุด (เวลาไทย · น.)</span>
           </div>
@@ -2079,18 +2096,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     <!-- =================================================================== -->
     <!-- SECTION 09: CUSTOMER ORDERS & PAYMENT SLIP INBOX                    -->
     <!-- =================================================================== -->
-    <section id="sec-orders" class="space-y-4 scroll-mt-28" aria-labelledby="sec-orders-title">
+    <section id="sec-orders" class="space-y-4 scroll-mt-24" aria-labelledby="sec-orders-title">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
         <div>
-          <h2 id="sec-orders-title" class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec9_title">
+          <h2 id="sec-orders-title" class="text-lg sm:text-xl font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec9_title">
             09. กล่องรับคำสั่งซื้อ &amp; ตรวจสลิป
           </h2>
-          <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec9_sub">
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-neutral-400" data-i18n="sec9_sub">
             ตั้งค่ารูป QR รับเงิน ตรวจสอบยอดโอนตามเศษสตางค์ ดูรูปสลิป ส่งข้อมูลเข้าเครื่องมือเปิดลีกด้านล่าง และแจ้งเปิดใช้งานทางอีเมลในคลิกเดียว
           </p>
         </div>
         <button type="button" id="btnRefreshOrders"
-          class="min-h-[40px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark text-xs font-semibold text-slate-800 dark:text-neutral-200 transition-colors self-start sm:self-auto"
+          class="min-h-[42px] px-4 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark text-xs font-semibold text-slate-800 dark:text-neutral-200 whitespace-nowrap shrink-0 transition-colors self-start sm:self-auto"
           data-i18n="ord_btn_refresh">
           รีเฟรชรายการออเดอร์
         </button>
@@ -2102,10 +2119,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <h3 class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="pay_qr_title">
             ตั้งค่า QR รับเงินส่วนตัว (ไม่ต้องใช้เบอร์โทร / บัตร ปชช. / e-Wallet)
           </h3>
-          <span id="payQrModeBadge" class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-500/15 text-slate-700 dark:text-neutral-300 border border-slate-500/30">กำลังโหลด…</span>
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <span id="payQrModeBadge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-500/15 text-slate-700 dark:text-neutral-300 border border-slate-500/30 whitespace-nowrap">กำลังโหลด…</span>
+            <button type="button" id="btnToggleQrBody" aria-expanded="true"
+              class="min-h-[42px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200 dark:hover:bg-neutral-800 text-xs font-semibold text-slate-800 dark:text-neutral-200 whitespace-nowrap transition-colors"
+              data-i18n="btn_toggle_qr_hide">
+              ซ่อนตั้งค่า QR
+            </button>
+          </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+        <div id="paymentQrSettingsBody" class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           <div class="lg:col-span-8 space-y-3">
             <div class="space-y-1.5">
               <label for="payQrAccountNameInput" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="pay_qr_acct_lbl">
@@ -2120,21 +2144,21 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 อัปโหลดรูปภาพ QR Code รับเงิน
               </label>
               <input id="payQrFileInput" type="file" accept="image/png,image/jpeg,image/webp"
-                class="block w-full text-xs text-slate-700 dark:text-neutral-300 file:mr-3 file:min-h-[38px] file:px-3.5 file:py-1.5 file:rounded-lg file:border file:border-borderLight dark:file:border-borderDark file:bg-raisedLight dark:file:bg-raisedDark file:text-xs file:font-semibold file:text-slate-800 dark:file:text-neutral-200 hover:file:bg-slate-200 dark:hover:file:bg-slate-800 cursor-pointer" />
-              <p class="text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed" data-i18n="pay_qr_file_hint">
+                class="block w-full min-h-[42px] text-xs text-slate-700 dark:text-neutral-300 file:mr-3 file:min-h-[40px] file:px-3.5 file:py-1.5 file:rounded-lg file:border file:border-borderLight dark:file:border-borderDark file:bg-raisedLight dark:file:bg-raisedDark file:text-xs file:font-semibold file:text-slate-800 dark:file:text-neutral-200 hover:file:bg-slate-200 dark:hover:file:bg-slate-800 cursor-pointer" />
+              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="pay_qr_file_hint">
                 รองรับไฟล์ PNG / JPG / WebP (ย่อขนาดอัตโนมัติในเบราว์เซอร์) เก็บเป็นความลับในฐานข้อมูล D1 เท่านั้น ไม่บันทึกลง GitHub
               </p>
-              <div id="payQrFileMeta" class="text-[11px] font-mono text-sky-700 dark:text-sky-400"></div>
+              <div id="payQrFileMeta" class="text-xs font-mono text-sky-700 dark:text-sky-400"></div>
             </div>
 
             <div class="flex flex-wrap gap-2 pt-1">
               <button type="button" id="btnSavePaymentQr"
-                class="min-h-[42px] px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-colors"
+                class="min-h-[42px] px-4 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-semibold whitespace-nowrap shrink-0 transition-colors"
                 data-i18n="pay_qr_btn_save">
                 บันทึกการตั้งค่า QR
               </button>
               <button type="button" id="btnClearPaymentQr"
-                class="hidden min-h-[42px] px-3.5 py-2 rounded-lg border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-300 text-xs font-semibold transition-colors"
+                class="hidden min-h-[42px] px-4 py-2 rounded-lg border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-300 text-xs font-semibold whitespace-nowrap shrink-0 transition-colors"
                 data-i18n="pay_qr_btn_clear">
                 ลบรูป QR ออกจากฐานข้อมูล
               </button>
@@ -2143,15 +2167,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <div id="payQrFeedback" role="status" class="hidden p-2.5 rounded-lg text-xs border"></div>
           </div>
 
-          <div class="lg:col-span-4 p-3 rounded-xl border border-borderLight dark:border-borderDark bg-raisedLight/70 dark:bg-raisedDark/70 text-center space-y-2">
-            <div class="text-[11px] font-semibold text-slate-600 dark:text-neutral-300" data-i18n="pay_qr_preview_lbl">
+          <div class="lg:col-span-4 lg:border-l border-borderLight dark:border-borderDark lg:pl-5 pt-3 lg:pt-0 border-t lg:border-t-0 text-center space-y-2">
+            <div class="text-xs font-semibold text-slate-700 dark:text-neutral-300" data-i18n="pay_qr_preview_lbl">
               ตัวอย่างรูป QR ที่แสดงให้ลูกค้า
             </div>
-            <div id="payQrPreviewEmpty" class="py-8 text-xs text-slate-500 dark:text-neutral-400" data-i18n="pay_qr_preview_empty">
+            <div id="payQrPreviewEmpty" class="py-8 text-xs text-slate-600 dark:text-neutral-400" data-i18n="pay_qr_preview_empty">
               ยังไม่ได้อัปโหลดรูป QR ส่วนตัว
             </div>
-            <img id="payQrPreviewImg" alt="Payment QR Preview" class="hidden max-h-[180px] w-auto mx-auto rounded-lg border border-borderLight dark:border-borderDark object-contain bg-white p-1.5" />
-            <div id="payQrUpdatedAt" class="text-[11px] mono text-slate-500 dark:text-neutral-400"></div>
+            <img id="payQrPreviewImg" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=" alt="Payment QR Preview" class="hidden max-h-[180px] w-auto mx-auto rounded-lg border border-borderLight dark:border-borderDark object-contain bg-white p-1.5" />
+            <div id="payQrUpdatedAt" class="text-xs mono text-slate-600 dark:text-neutral-400"></div>
           </div>
         </div>
       </div>
@@ -2159,67 +2183,67 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       <!-- Conversion & 24h Unpaid Order Stats Monitor -->
       <div id="ordersStatsMonitorStrip" class="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <div class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1">
-          <div class="text-[11px] font-medium text-slate-500 dark:text-neutral-400" data-i18n="ord_stat_total_lbl">คำสั่งซื้อสะสมทั้งหมด</div>
+          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="ord_stat_total_lbl">คำสั่งซื้อสะสมทั้งหมด</div>
           <div id="ordStatTotal" class="text-xl font-bold mono text-slate-900 dark:text-white">0</div>
         </div>
         <div class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1">
-          <div class="text-[11px] font-medium text-slate-500 dark:text-neutral-400" data-i18n="ord_stat_paid_lbl">โอนแล้ว / เปิดลีกสำเร็จ</div>
+          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="ord_stat_paid_lbl">โอนแล้ว / เปิดลีกสำเร็จ</div>
           <div class="flex items-center gap-2">
             <span id="ordStatPaidLive" class="text-xl font-bold mono text-emerald-700 dark:text-emerald-400">0</span>
-            <span id="ordStatConvPct" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30">0%</span>
+            <span id="ordStatConvPct" class="px-2 py-0.5 rounded-full text-xs font-mono font-semibold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30">0%</span>
           </div>
         </div>
         <div class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1">
-          <div class="text-[11px] font-medium text-slate-500 dark:text-neutral-400" data-i18n="ord_stat_active_lbl">คิวรอดำเนินการปัจจุบัน</div>
+          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="ord_stat_active_lbl">คิวรอดำเนินการปัจจุบัน</div>
           <div id="ordStatActive" class="text-xl font-bold mono text-sky-700 dark:text-sky-400">0</div>
         </div>
         <div class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1">
-          <div class="text-[11px] font-medium text-slate-500 dark:text-neutral-400" data-i18n="ord_stat_expired_lbl">ไม่โอนเกิน 24 ชม. / ยกเลิกสะสม</div>
+          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="ord_stat_expired_lbl">ไม่โอนเกิน 24 ชม. / ยกเลิกสะสม</div>
           <div id="ordStatExpiredTotal" class="text-xl font-bold mono text-amber-700 dark:text-amber-300">0</div>
         </div>
       </div>
 
       <div id="ordersFilterPills" class="flex flex-wrap gap-2">
-        <button type="button" data-order-filter="all" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-emerald-500 bg-emerald-500/15 text-emerald-800 dark:text-emerald-300">
+        <button type="button" data-order-filter="all" class="ord-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg border text-xs font-semibold whitespace-nowrap transition-colors border-emerald-500 bg-emerald-500/15 text-emerald-800 dark:text-emerald-300">
           <span data-i18n="ord_f_all">ทั้งหมด</span> (<span id="ordCnt_all">0</span>)
         </button>
-        <button type="button" data-order-filter="slip_submitted" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
+        <button type="button" data-order-filter="slip_submitted" class="ord-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg border text-xs font-semibold whitespace-nowrap transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
           <span data-i18n="ord_f_slip">รอตรวจสลิป</span> (<span id="ordCnt_slip_submitted">0</span>)
         </button>
-        <button type="button" data-order-filter="awaiting_payment" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
+        <button type="button" data-order-filter="awaiting_payment" class="ord-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg border text-xs font-semibold whitespace-nowrap transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
           <span data-i18n="ord_f_await">รอโอน QR</span> (<span id="ordCnt_awaiting_payment">0</span>)
         </button>
-        <button type="button" data-order-filter="paid" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
+        <button type="button" data-order-filter="paid" class="ord-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg border text-xs font-semibold whitespace-nowrap transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
           <span data-i18n="ord_f_paid">ตรวจยอดแล้ว</span> (<span id="ordCnt_paid">0</span>)
         </button>
-        <button type="button" data-order-filter="quote_requested" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
+        <button type="button" data-order-filter="quote_requested" class="ord-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg border text-xs font-semibold whitespace-nowrap transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
           <span data-i18n="ord_f_quote">ขอราคา / USD</span> (<span id="ordCnt_quote_requested">0</span>)
         </button>
-        <button type="button" data-order-filter="live" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
+        <button type="button" data-order-filter="live" class="ord-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg border text-xs font-semibold whitespace-nowrap transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
           <span data-i18n="ord_f_live">เปิดลีกแล้ว</span> (<span id="ordCnt_live">0</span>)
         </button>
-        <button type="button" data-order-filter="rejected" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
+        <button type="button" data-order-filter="rejected" class="ord-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg border text-xs font-semibold whitespace-nowrap transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
           <span data-i18n="ord_f_rejected">ปฏิเสธ</span> (<span id="ordCnt_rejected">0</span>)
         </button>
       </div>
 
       <div class="rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-borderLight dark:divide-borderDark text-xs">
+        <div class="overflow-x-auto touch-scroll">
+          <table class="min-w-[860px] w-full divide-y divide-borderLight dark:divide-borderDark text-xs">
             <thead class="bg-raisedLight dark:bg-raisedDark text-slate-700 dark:text-neutral-300">
               <tr>
-                <th scope="col" class="px-4 py-3 text-left font-semibold" data-i18n="ord_col_id">รหัสออเดอร์</th>
-                <th scope="col" class="px-4 py-3 text-left font-semibold" data-i18n="ord_col_league">ลีก FPL</th>
-                <th scope="col" class="px-4 py-3 text-right font-semibold" data-i18n="ord_col_amount">ยอดชำระ</th>
-                <th scope="col" class="px-4 py-3 text-left font-semibold" data-i18n="ord_col_contact">ช่องทางติดต่อ</th>
-                <th scope="col" class="px-4 py-3 text-left font-semibold" data-i18n="ord_col_status">สถานะ</th>
-                <th scope="col" class="px-4 py-3 text-left font-semibold" data-i18n="ord_col_created">เวลาสั่งซื้อ</th>
-                <th scope="col" class="px-4 py-3 text-right font-semibold" data-i18n="ord_col_action">ตรวจสอบ</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold whitespace-nowrap" data-i18n="ord_col_id">รหัสออเดอร์</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold whitespace-nowrap" data-i18n="ord_col_league">ลีก FPL</th>
+                <th scope="col" class="px-4 py-3 text-right font-semibold whitespace-nowrap" data-i18n="ord_col_amount">ยอดชำระ</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold whitespace-nowrap" data-i18n="ord_col_contact">ช่องทางติดต่อ</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold whitespace-nowrap" data-i18n="ord_col_status">สถานะ</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold whitespace-nowrap" data-i18n="ord_col_created">เวลาสั่งซื้อ</th>
+                <th scope="col" class="px-4 py-3 text-right font-semibold whitespace-nowrap" data-i18n="ord_col_action">ตรวจสอบ</th>
               </tr>
             </thead>
             <tbody id="ordersTableBody" class="divide-y divide-borderLight dark:divide-borderDark">
               <tr>
-                <td colspan="7" class="px-4 py-8 text-center text-slate-500 dark:text-neutral-400">กำลังโหลดข้อมูลออเดอร์…</td>
+                <td colspan="7" class="px-4 py-8 text-center text-slate-600 dark:text-neutral-400">กำลังโหลดข้อมูลออเดอร์…</td>
               </tr>
             </tbody>
           </table>
@@ -2229,17 +2253,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       <!-- Order Inspector & Slip Verification Panel -->
       <div id="orderDetailPanel" class="hidden p-5 sm:p-6 rounded-xl border border-sky-500/40 bg-cardLight dark:bg-cardDark space-y-5">
         <div class="flex flex-wrap items-start justify-between gap-3 border-b border-borderLight dark:border-borderDark pb-4">
-          <div class="space-y-1.5">
+          <div class="space-y-2">
             <div class="flex flex-wrap items-center gap-2">
-              <a id="ordDetId" href="#" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-md bg-raisedLight dark:bg-raisedDark font-mono text-xs font-bold text-sky-700 dark:text-sky-300 underline underline-offset-2 hover:text-sky-600 dark:hover:text-sky-200">-</a>
-              <span id="ordDetStatusBadge" class="px-2.5 py-1 rounded-full text-xs font-semibold">-</span>
+              <a id="ordDetId" href="#" target="_blank" rel="noopener noreferrer" class="min-h-[42px] px-3 py-2 rounded-lg bg-raisedLight dark:bg-raisedDark font-mono text-xs font-bold text-sky-700 dark:text-sky-300 underline underline-offset-2 hover:text-sky-600 dark:hover:text-sky-200 inline-flex items-center whitespace-nowrap">-</a>
+              <span id="ordDetStatusBadge" class="px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap">-</span>
               <a id="ordDetOpenPayLink" href="#" target="_blank" rel="noopener noreferrer"
-                class="inline-flex items-center min-h-[30px] px-2.5 py-1 rounded-lg border border-sky-500/40 bg-sky-500/10 hover:bg-sky-500/20 text-[11px] font-semibold text-sky-800 dark:text-sky-300 transition-colors"
+                class="inline-flex items-center min-h-[42px] px-3 py-1.5 rounded-lg border border-sky-500/40 bg-sky-500/10 hover:bg-sky-500/20 text-xs font-semibold text-sky-800 dark:text-sky-300 whitespace-nowrap transition-colors"
                 data-i18n="ord_det_open_pay">
                 เปิดหน้าออเดอร์ลูกค้า (/pay/) ↗
               </a>
               <button type="button" id="btnOrdCopyPayLink"
-                class="inline-flex items-center min-h-[30px] px-2.5 py-1 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:border-sky-500 text-[11px] font-semibold text-slate-800 dark:text-neutral-200 transition-colors"
+                class="inline-flex items-center min-h-[42px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:border-sky-500 text-xs font-semibold text-slate-800 dark:text-neutral-200 whitespace-nowrap transition-colors"
                 data-i18n="ord_det_copy_pay">
                 คัดลอกลิงก์ออเดอร์
               </button>
@@ -2248,21 +2272,21 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <p id="ordDetContact" class="text-xs text-slate-600 dark:text-neutral-400 break-all">-</p>
             <div class="flex flex-wrap gap-2 pt-0.5">
               <button type="button" id="btnOrdCopyLineReply"
-                class="inline-flex items-center min-h-[34px] px-3 py-1 rounded-lg border border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-xs font-semibold text-emerald-800 dark:text-emerald-300 transition-colors"
+                class="inline-flex items-center min-h-[42px] px-3.5 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-xs font-semibold text-emerald-800 dark:text-emerald-300 whitespace-nowrap transition-colors"
                 data-i18n="ord_det_copy_line">
                 คัดลอกข้อความแจ้งสถานะ (ส่ง LINE)
               </button>
               <a id="btnOrdEmailCustomer" href="#"
-                class="inline-flex items-center min-h-[34px] px-3 py-1 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:border-sky-500 text-xs font-semibold text-slate-800 dark:text-neutral-200 transition-colors"
+                class="inline-flex items-center min-h-[42px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:border-sky-500 text-xs font-semibold text-slate-800 dark:text-neutral-200 whitespace-nowrap transition-colors"
                 data-i18n="ord_det_email_cust">
                 เปิดร่างอีเมลตอบลูกค้า ↗
               </a>
             </div>
           </div>
           <div class="text-left sm:text-right">
-            <div class="text-[11px] uppercase tracking-wider text-slate-500 dark:text-neutral-400" data-i18n="ord_det_amount_lbl">ยอดโอนที่ต้องตรงกัน</div>
+            <div class="text-xs uppercase tracking-wide text-slate-600 dark:text-neutral-400" data-i18n="ord_det_amount_lbl">ยอดโอนที่ต้องตรงกัน</div>
             <div id="ordDetAmount" class="text-2xl font-bold mono text-emerald-700 dark:text-emerald-400">-</div>
-            <div id="ordDetCreated" class="text-[11px] mono text-slate-500 dark:text-neutral-400">-</div>
+            <div id="ordDetCreated" class="text-xs mono text-slate-600 dark:text-neutral-400">-</div>
           </div>
         </div>
 
@@ -2271,7 +2295,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <div class="lg:col-span-7 space-y-4">
             <div class="space-y-1.5">
               <div class="text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="ord_det_rules_lbl">กติกาและรายละเอียดที่ลูกค้ากรอก</div>
-              <pre id="ordDetRules" class="p-3 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs text-slate-800 dark:text-neutral-200 whitespace-pre-wrap font-sans">-</pre>
+              <pre id="ordDetRules" class="p-3.5 rounded-lg bg-raisedLight dark:bg-raisedDark text-xs text-slate-800 dark:text-neutral-200 whitespace-pre-wrap font-sans">-</pre>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -2287,57 +2311,64 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               </div>
             </div>
 
-            <div class="flex flex-wrap gap-2 pt-1">
-              <button type="button" id="btnOrdVerifyPaid"
-                class="min-h-[42px] px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-colors"
-                data-i18n="ord_act_verify">
-                ✓ ยืนยันรับยอดโอน (Paid)
-              </button>
-              <button type="button" id="btnOrdPrefillOnb"
-                class="min-h-[42px] px-3.5 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold transition-colors"
-                data-i18n="ord_act_prefill">
-                Prefill Onboarding ↓
-              </button>
-              <button type="button" id="btnOrdMarkLive"
-                class="min-h-[42px] px-3.5 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold transition-colors"
-                data-i18n="ord_act_live">
-                เปิดลีกแล้ว &amp; ส่งอีเมล (Mark Live)
-              </button>
-              <button type="button" id="btnOrdReject"
-                class="min-h-[42px] px-3.5 py-2 rounded-lg border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-300 text-xs font-semibold transition-colors"
-                data-i18n="ord_act_reject">
-                ปฏิเสธสลิป + ส่งอีเมล
-              </button>
-              <button type="button" id="btnOrdDeleteSlip"
-                class="min-h-[42px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-neutral-300 text-xs font-semibold transition-colors"
-                data-i18n="ord_act_delslip">
-                ลบรูปสลิป
-              </button>
-              <button type="button" id="btnOrdDeleteUnpaid"
-                class="min-h-[42px] px-3.5 py-2 rounded-lg border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 text-xs font-semibold transition-colors"
-                data-i18n="ord_act_del_unpaid">
-                ลบออเดอร์ไม่โอน (+นับสถิติ)
-              </button>
-              <button type="button" id="btnOrdDeleteTest"
-                class="min-h-[42px] px-3.5 py-2 rounded-lg border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-300 text-xs font-semibold transition-colors"
-                data-i18n="ord_act_del_test">
-                ลบออเดอร์ทดสอบ (ไม่นับสถิติ)
-              </button>
+            <!-- Primary Fulfillment Workflow Buttons -->
+            <div class="space-y-3 pt-1">
+              <div class="flex flex-wrap gap-2">
+                <button type="button" id="btnOrdVerifyPaid"
+                  class="min-h-[42px] px-4 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-semibold whitespace-nowrap transition-colors"
+                  data-i18n="ord_act_verify">
+                  ✓ ยืนยันรับยอดโอน (Paid)
+                </button>
+                <button type="button" id="btnOrdPrefillOnb"
+                  class="min-h-[42px] px-4 py-2 rounded-lg bg-amber-700 hover:bg-amber-600 text-white text-xs font-semibold whitespace-nowrap transition-colors"
+                  data-i18n="ord_act_prefill">
+                  Prefill Onboarding ↓
+                </button>
+                <button type="button" id="btnOrdMarkLive"
+                  class="min-h-[42px] px-4 py-2 rounded-lg bg-sky-700 hover:bg-sky-600 text-white text-xs font-semibold whitespace-nowrap transition-colors"
+                  data-i18n="ord_act_live">
+                  เปิดลีกแล้ว &amp; ส่งอีเมล (Mark Live)
+                </button>
+              </div>
+
+              <!-- Secondary & Cleanup Controls -->
+              <div class="pt-3 border-t border-borderLight dark:border-borderDark flex flex-wrap gap-2">
+                <button type="button" id="btnOrdReject"
+                  class="min-h-[42px] px-3.5 py-2 rounded-lg border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-300 text-xs font-semibold whitespace-nowrap transition-colors"
+                  data-i18n="ord_act_reject">
+                  ปฏิเสธสลิป + ส่งอีเมล
+                </button>
+                <button type="button" id="btnOrdDeleteSlip"
+                  class="min-h-[42px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-neutral-300 text-xs font-semibold whitespace-nowrap transition-colors"
+                  data-i18n="ord_act_delslip">
+                  ลบรูปสลิป
+                </button>
+                <button type="button" id="btnOrdDeleteUnpaid"
+                  class="min-h-[42px] px-3.5 py-2 rounded-lg border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 text-xs font-semibold whitespace-nowrap transition-colors"
+                  data-i18n="ord_act_del_unpaid">
+                  ลบออเดอร์ไม่โอน (+นับสถิติ)
+                </button>
+                <button type="button" id="btnOrdDeleteTest"
+                  class="min-h-[42px] px-3.5 py-2 rounded-lg border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-300 text-xs font-semibold whitespace-nowrap transition-colors"
+                  data-i18n="ord_act_del_test">
+                  ลบออเดอร์ทดสอบ (ไม่นับสถิติ)
+                </button>
+              </div>
             </div>
 
             <div id="orderActionFeedback" role="status" class="hidden p-3 rounded-lg text-xs border"></div>
           </div>
 
           <!-- Slip Preview -->
-          <div class="lg:col-span-5 p-4 rounded-xl border border-borderLight dark:border-borderDark bg-raisedLight/70 dark:bg-raisedDark/70 space-y-3 text-center">
-            <div class="flex items-center justify-between text-xs">
+          <div class="lg:col-span-5 lg:border-l border-borderLight dark:border-borderDark lg:pl-5 pt-4 lg:pt-0 border-t lg:border-t-0 space-y-3 text-center">
+            <div class="flex items-center justify-between text-xs gap-2">
               <strong class="text-slate-800 dark:text-neutral-200" data-i18n="ord_slip_heading">รูปสลิปโอนเงินที่ลูกค้าแนบ</strong>
-              <span id="ordDetSlipUploadedAt" class="mono text-[11px] text-slate-500 dark:text-neutral-400">-</span>
+              <span id="ordDetSlipUploadedAt" class="mono text-xs text-slate-600 dark:text-neutral-400">-</span>
             </div>
-            <div id="ordDetSlipEmpty" class="py-8 text-xs text-slate-500 dark:text-neutral-400">ยังไม่มีรูปสลิปในคำสั่งซื้อนี้</div>
+            <div id="ordDetSlipEmpty" class="py-8 text-xs text-slate-600 dark:text-neutral-400">ยังไม่มีรูปสลิปในคำสั่งซื้อนี้</div>
             <div id="ordDetSlipLoading" class="hidden py-8 text-xs text-sky-600 dark:text-sky-400">กำลังโหลดรูปสลิปจากฐานข้อมูล…</div>
-            <img id="orderSlipImg" alt="Customer Transfer Slip" class="hidden max-h-[380px] w-auto mx-auto rounded-lg border border-borderLight dark:border-borderDark object-contain bg-white" />
-            <button type="button" id="btnLoadOrderSlip" class="hidden min-h-[36px] px-3 py-1 rounded border border-borderLight dark:border-borderDark text-xs font-medium hover:bg-cardLight dark:hover:bg-cardDark" data-i18n="ord_btn_reload_slip">
+            <img id="orderSlipImg" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=" alt="Customer Transfer Slip" class="hidden max-h-[380px] w-auto mx-auto rounded-lg border border-borderLight dark:border-borderDark object-contain bg-white" />
+            <button type="button" id="btnLoadOrderSlip" class="hidden min-h-[42px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark text-xs font-medium hover:bg-raisedLight dark:hover:bg-raisedDark whitespace-nowrap" data-i18n="ord_btn_reload_slip">
               โหลดรูปสลิปอีกครั้ง
             </button>
           </div>
@@ -2348,17 +2379,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     <!-- =================================================================== -->
     <!-- SECTION 10: CONCIERGE CUSTOMER LEAGUE ONBOARDING WIZARD             -->
     <!-- =================================================================== -->
-    <section id="sec-onboarding" class="space-y-4 scroll-mt-28" aria-labelledby="sec-onboarding-title">
+    <section id="sec-onboarding" class="space-y-4 scroll-mt-24" aria-labelledby="sec-onboarding-title">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
         <div>
-          <h2 id="sec-onboarding-title" class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec10_title">
+          <h2 id="sec-onboarding-title" class="text-lg sm:text-xl font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec10_title">
             10. เครื่องมือเปิดลีกลูกค้าใหม่ (Concierge Onboarding Wizard)
           </h2>
-          <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec10_sub">
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-neutral-400" data-i18n="sec10_sub">
             ตรวจสอบ FPL Classic League ID สดจากเซิร์ฟเวอร์พรีเมียร์ลีก เลือกทีมที่ไม่ร่วมชิงรางวัล ตั้งค่าแพ็กเกจ และสร้างสคริปต์เปิดใช้งานทันที
           </p>
         </div>
-        <span class="px-2.5 py-1 rounded-md text-xs font-medium mono bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/30 self-start sm:self-auto">
+        <span class="px-2.5 py-1 rounded-md text-xs font-medium mono bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/30 self-start sm:self-auto whitespace-nowrap">
           Type A Concierge Flow
         </span>
       </div>
@@ -2373,7 +2404,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <input id="onbLeagueId" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 40700"
                 class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-sm mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
               <button type="button" id="btnOnbInspect"
-                class="min-h-[44px] px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-xs font-semibold whitespace-nowrap transition-colors"
+                class="min-h-[44px] px-4 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] text-white text-xs font-semibold whitespace-nowrap shrink-0 transition-colors"
                 data-i18n="onb_btn_inspect">
                 ดึงข้อมูลลีกสด
               </button>
@@ -2444,7 +2475,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
         </div>
 
-        <div id="onbPenaltyTiersWrap" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 items-end p-3.5 rounded-xl border border-rose-500/25 bg-rose-500/5">
+        <div id="onbPenaltyTiersWrap" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 items-end pt-4 border-t border-borderLight dark:border-borderDark">
           <div class="space-y-1.5">
             <label for="onbPenaltyTiers" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_penalty_tiers">ขั้นค่าปรับบ๊วย N อันดับท้าย (คั่นด้วยจุลภาค จากบ๊วยสุดไปอันดับถัดขึ้นไป)</label>
             <input id="onbPenaltyTiers" type="text" value="300,200,100" placeholder="e.g. 300,200,100 or 600,500,400,300,200"
@@ -2455,7 +2486,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
         </div>
 
-        <div id="onbMonthlySplitWrap" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 items-end p-3.5 rounded-xl border border-sky-500/25 bg-sky-500/5">
+        <div id="onbMonthlySplitWrap" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 items-end pt-4 border-t border-borderLight dark:border-borderDark">
           <div class="space-y-1.5">
             <label for="onbMonthlyChamp" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_monthly_champ">รางวัลแชมป์ประจำเดือน (ต่อเดือน)</label>
             <input id="onbMonthlyChamp" type="text" inputmode="numeric" value="600"
@@ -2505,7 +2536,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
         <div id="onbInspectStatus" role="status" class="hidden p-3 rounded-lg text-xs border"></div>
 
-        <div id="onbInspectResult" class="hidden space-y-3 p-4 rounded-xl border border-borderLight dark:border-borderDark bg-raisedLight/60 dark:bg-raisedDark/60">
+        <div id="onbInspectResult" class="hidden space-y-3 pt-4 border-t border-borderLight dark:border-borderDark">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
               <div id="onbLeagueNameTitle" class="text-sm font-bold text-slate-900 dark:text-white">-</div>
@@ -2521,25 +2552,25 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div class="space-y-2">
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between gap-2">
               <label for="onbOutCli" class="text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_out_cli">1. คำสั่ง CLI (รันบนเครื่องเพื่อเปิดลีก)</label>
-              <button type="button" data-copy-target="onbOutCli" class="onb-copy-btn min-h-[36px] px-2.5 py-1 rounded border border-borderLight dark:border-borderDark text-xs mono hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
+              <button type="button" data-copy-target="onbOutCli" class="onb-copy-btn min-h-[42px] px-3.5 py-1.5 rounded-lg border border-borderLight dark:border-borderDark text-xs mono whitespace-nowrap shrink-0 hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
             </div>
             <textarea id="onbOutCli" readonly rows="5" class="w-full p-3 rounded-lg border border-borderLight dark:border-borderDark bg-slate-950 text-emerald-300 text-xs mono leading-relaxed"></textarea>
           </div>
 
           <div class="space-y-2">
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between gap-2">
               <label for="onbOutJson" class="text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_out_json">2. Config JSON (leagues_config.json)</label>
-              <button type="button" data-copy-target="onbOutJson" class="onb-copy-btn min-h-[36px] px-2.5 py-1 rounded border border-borderLight dark:border-borderDark text-xs mono hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
+              <button type="button" data-copy-target="onbOutJson" class="onb-copy-btn min-h-[42px] px-3.5 py-1.5 rounded-lg border border-borderLight dark:border-borderDark text-xs mono whitespace-nowrap shrink-0 hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
             </div>
             <textarea id="onbOutJson" readonly rows="5" class="w-full p-3 rounded-lg border border-borderLight dark:border-borderDark bg-slate-950 text-sky-300 text-xs mono leading-relaxed"></textarea>
           </div>
 
           <div class="space-y-2">
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between gap-2">
               <label for="onbOutLine" class="text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_out_line">3. ข้อความส่งมอบลูกค้าทาง LINE</label>
-              <button type="button" data-copy-target="onbOutLine" class="onb-copy-btn min-h-[36px] px-2.5 py-1 rounded border border-borderLight dark:border-borderDark text-xs mono hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
+              <button type="button" data-copy-target="onbOutLine" class="onb-copy-btn min-h-[42px] px-3.5 py-1.5 rounded-lg border border-borderLight dark:border-borderDark text-xs mono whitespace-nowrap shrink-0 hover:bg-raisedLight dark:hover:bg-raisedDark">Copy</button>
             </div>
             <textarea id="onbOutLine" readonly rows="5" class="w-full p-3 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-900 dark:text-neutral-100 text-xs leading-relaxed"></textarea>
           </div>
@@ -2927,7 +2958,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pay_qr_btn_save: 'บันทึกการตั้งค่า QR',
         pay_qr_btn_clear: 'ลบรูป QR ออกจากฐานข้อมูล',
         pay_qr_preview_lbl: 'ตัวอย่างรูป QR ที่แสดงให้ลูกค้า',
-        pay_qr_preview_empty: 'ยังไม่ได้อัปโหลดรูป QR ส่วนตัว'
+        pay_qr_preview_empty: 'ยังไม่ได้อัปโหลดรูป QR ส่วนตัว',
+        btn_collapse_pitch: 'ซ่อนรายละเอียด Pitch',
+        btn_expand_pitch: 'แสดงรายละเอียด Pitch',
+        btn_toggle_qr_hide: 'ซ่อนตั้งค่า QR',
+        btn_toggle_qr_show: 'แก้ไข / แสดงตั้งค่า QR'
       },
       en: {
         skip_to_content: 'Skip to main content',
@@ -3289,7 +3324,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pay_qr_btn_save: 'Save QR Settings',
         pay_qr_btn_clear: 'Remove Stored QR Image',
         pay_qr_preview_lbl: 'Customer Checkout QR Preview',
-        pay_qr_preview_empty: 'No private QR image uploaded yet'
+        pay_qr_preview_empty: 'No private QR image uploaded yet',
+        btn_collapse_pitch: 'Collapse Pitch',
+        btn_expand_pitch: 'Show Pitch',
+        btn_toggle_qr_hide: 'Hide QR Settings',
+        btn_toggle_qr_show: 'Edit QR Settings'
       }
     };
 
@@ -3436,14 +3475,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             remText = lang === 'en' ? (' (' + d + 'd)') : (' (' + d + ' วัน)');
           }
         }
-        expLine = '<div class="text-[11px] mono mt-1 ' + expTextCls + '">' + escHtml(row.expires_at + remText) + '</div>';
+        expLine = '<div class="text-xs mono mt-1 whitespace-nowrap ' + expTextCls + '">' + escHtml(row.expires_at + remText) + '</div>';
       } else {
-        expLine = '<div class="text-[11px] mono mt-1 text-slate-500 dark:text-neutral-400">' + escHtml(planLbl) + ' · —</div>';
+        expLine = '<div class="text-xs mono mt-1 text-slate-600 dark:text-neutral-400 whitespace-nowrap">' + escHtml(planLbl) + ' · —</div>';
       }
 
       return '<div class="flex flex-wrap items-center gap-1">' +
-        '<span class="px-1.5 py-0.5 rounded border text-[10px] font-semibold mono ' + statusCls + '">' + escHtml(statusLbl) + '</span>' +
-        '<span class="px-1.5 py-0.5 rounded border text-[10px] font-medium mono ' + visCls + '">' + escHtml(visLbl) + '</span>' +
+        '<span class="px-2 py-0.5 rounded border text-xs font-semibold mono whitespace-nowrap ' + statusCls + '">' + escHtml(statusLbl) + '</span>' +
+        '<span class="px-2 py-0.5 rounded border text-xs font-medium mono whitespace-nowrap ' + visCls + '">' + escHtml(visLbl) + '</span>' +
       '</div>' + expLine;
     }
 
@@ -3464,8 +3503,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         const active = key === currentPortfolioFilter;
         btn.setAttribute('aria-pressed', active ? 'true' : 'false');
         btn.className = active
-          ? 'pf-filter-btn min-h-[40px] sm:min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium border border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 inline-flex items-center gap-1.5 transition-colors'
-          : 'pf-filter-btn min-h-[40px] sm:min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 transition-colors';
+          ? 'pf-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg text-xs font-medium border border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 inline-flex items-center gap-1.5 whitespace-nowrap transition-colors'
+          : 'pf-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 whitespace-nowrap transition-colors';
       });
     }
 
@@ -3761,14 +3800,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               '<span class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: ' + escHtml(row.id + badgePart) + '</span>' +
             '</a>' +
           '</th>' +
-          '<td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">' + Number(row.teams).toLocaleString() + '</td>' +
-          '<td class="px-4 py-3 text-right mono tabular ' + poolClass + '">' + poolText + '</td>' +
-          '<td class="px-4 py-3 text-slate-700 dark:text-neutral-300">' + escHtml(modulesText) + '</td>' +
-          '<td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">' + Number(row.views).toLocaleString() + '</td>' +
-          '<td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">' + Number(row.retention || 90).toFixed(1) + '%</td>' +
+          '<td class="px-4 py-3 text-right mono tabular whitespace-nowrap text-slate-800 dark:text-neutral-200">' + Number(row.teams).toLocaleString() + '</td>' +
+          '<td class="px-4 py-3 text-right mono tabular whitespace-nowrap ' + poolClass + '">' + poolText + '</td>' +
+          '<td class="px-4 py-3 min-w-[220px] max-w-[300px] text-slate-700 dark:text-neutral-300">' + escHtml(modulesText) + '</td>' +
+          '<td class="px-4 py-3 text-right mono tabular whitespace-nowrap font-medium text-slate-900 dark:text-white">' + Number(row.views).toLocaleString() + '</td>' +
+          '<td class="px-4 py-3 text-right mono tabular whitespace-nowrap font-medium text-emerald-700 dark:text-emerald-400">' + Number(row.retention || 90).toFixed(1) + '%</td>' +
           '<td class="px-4 py-2.5 whitespace-nowrap">' + getLifecycleBadgeHtml(row, lang) + '</td>' +
           '<td class="px-4 py-2.5 text-right whitespace-nowrap">' +
-            '<button type="button" data-manage-league-id="' + escHtml(row.id) + '" class="min-h-[38px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-800 dark:text-neutral-200 hover:border-emerald-500/50 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">' + escHtml(manageText) + '</button>' +
+            '<button type="button" data-manage-league-id="' + escHtml(row.id) + '" class="min-h-[42px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-800 dark:text-neutral-200 hover:border-emerald-500/50 hover:text-emerald-700 dark:hover:text-emerald-300 whitespace-nowrap transition-colors">' + escHtml(manageText) + '</button>' +
           '</td>' +
         '</tr>';
       }).join('');
@@ -3911,8 +3950,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       currentChartMode = mode === 'daily' ? 'daily' : 'hourly';
       const btnH = document.getElementById('btnChartHourly');
       const btnD = document.getElementById('btnChartDaily');
-      const activeCls = 'min-h-[44px] px-3.5 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 transition-colors';
-      const inactiveCls = 'min-h-[44px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors';
+      const activeCls = 'min-h-[44px] px-4 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 whitespace-nowrap shrink-0 transition-colors';
+      const inactiveCls = 'min-h-[44px] px-4 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap shrink-0 transition-colors';
       if (btnH) btnH.className = currentChartMode === 'hourly' ? activeCls : inactiveCls;
       if (btnD) btnD.className = currentChartMode === 'daily' ? activeCls : inactiveCls;
       renderTrafficChart();
@@ -4039,7 +4078,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             const pct = Math.round((c.val / totalCatErr) * 100);
             const barColor = c.val > 0 ? 'bg-rose-500' : 'bg-slate-400/30 dark:bg-neutral-700';
             return '<div class="space-y-1">' +
-              '<div class="flex items-center justify-between text-[11px]">' +
+              '<div class="flex items-center justify-between text-xs">' +
                 '<span class="text-slate-700 dark:text-neutral-300">' + escHtml(lang === 'en' ? c.labelEn : c.labelTh) + '</span>' +
                 '<span class="mono font-medium text-slate-900 dark:text-white">' + c.val.toLocaleString() + ' (' + pct + '%)</span>' +
               '</div>' +
@@ -4183,8 +4222,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       currentMonitorMode = mode === '7d' ? '7d' : '24h';
       const btn24 = document.getElementById('btnMon24h');
       const btn7 = document.getElementById('btnMon7d');
-      const activeCls = 'min-h-[44px] px-3.5 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 transition-colors';
-      const inactiveCls = 'min-h-[44px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors';
+      const activeCls = 'min-h-[44px] px-4 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 whitespace-nowrap shrink-0 transition-colors';
+      const inactiveCls = 'min-h-[44px] px-4 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap shrink-0 transition-colors';
       if (btn24) btn24.className = currentMonitorMode === '24h' ? activeCls : inactiveCls;
       if (btn7) btn7.className = currentMonitorMode === '7d' ? activeCls : inactiveCls;
       renderMonitorSummary();
@@ -4265,8 +4304,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       currentDeviceWindow = win === '7d' ? '7d' : '30d';
       const btn7 = document.getElementById('btnDev7d');
       const btn30 = document.getElementById('btnDev30d');
-      const activeCls = 'min-h-[44px] px-3.5 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 transition-colors';
-      const inactiveCls = 'min-h-[44px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white transition-colors';
+      const activeCls = 'min-h-[44px] px-4 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 whitespace-nowrap shrink-0 transition-colors';
+      const inactiveCls = 'min-h-[44px] px-4 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap shrink-0 transition-colors';
       if (btn7) btn7.className = currentDeviceWindow === '7d' ? activeCls : inactiveCls;
       if (btn30) btn30.className = currentDeviceWindow === '30d' ? activeCls : inactiveCls;
       renderDeviceCards();
@@ -4328,6 +4367,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (typeof renderOrdersTable === 'function') renderOrdersTable();
       if (typeof renderOrderDetail === 'function' && selectedOrderObj) renderOrderDetail(selectedOrderObj);
       if (typeof renderPaymentSettingsUI === 'function' && paymentSettingsCache) renderPaymentSettingsUI(paymentSettingsCache);
+      const pitchBtn = document.getElementById('btnTogglePitchBody');
+      const pitchBody = document.getElementById('secPitchBody');
+      if (pitchBtn && pitchBody) {
+        const isClosed = pitchBody.classList.contains('hidden');
+        pitchBtn.textContent = dict[isClosed ? 'btn_expand_pitch' : 'btn_collapse_pitch'] || pitchBtn.textContent;
+      }
+      const qrBtn = document.getElementById('btnToggleQrBody');
+      const qrBody = document.getElementById('paymentQrSettingsBody');
+      if (qrBtn && qrBody) {
+        const isClosed = qrBody.classList.contains('hidden');
+        qrBtn.textContent = dict[isClosed ? 'btn_toggle_qr_show' : 'btn_toggle_qr_hide'] || qrBtn.textContent;
+      }
       if (latestPayloadCache) applyAdminPayload(latestPayloadCache);
     }
 
@@ -4463,15 +4514,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const timeStr = formatOpTime(r.at);
 
       box.className = r.ok
-        ? 'rounded-lg border p-2.5 text-[11px] leading-relaxed border-emerald-500/35 bg-emerald-500/10 text-emerald-900 dark:text-emerald-200 space-y-1'
-        : 'rounded-lg border p-2.5 text-[11px] leading-relaxed border-rose-500/35 bg-rose-500/10 text-rose-900 dark:text-rose-200 space-y-1';
+        ? 'rounded-lg border p-2.5 text-xs leading-relaxed border-emerald-500/35 bg-emerald-500/10 text-emerald-900 dark:text-emerald-200 space-y-1'
+        : 'rounded-lg border p-2.5 text-xs leading-relaxed border-rose-500/35 bg-rose-500/10 text-rose-900 dark:text-rose-200 space-y-1';
 
       const head = document.createElement('div');
       head.className = 'flex items-center justify-between gap-2 font-semibold';
       const titleSpan = document.createElement('span');
       titleSpan.textContent = lang === 'en' ? r.titleEn : r.titleTh;
       const timeSpan = document.createElement('span');
-      timeSpan.className = 'mono text-[10px] opacity-80 shrink-0';
+      timeSpan.className = 'mono text-xs opacity-80 shrink-0';
       timeSpan.textContent = timeStr;
       head.append(titleSpan, timeSpan);
 
@@ -5524,13 +5575,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (badge) {
         if (cfg.mode === 'static_qr') {
           badge.textContent = isEn ? 'Static QR Active ✓' : 'โหมดรูป QR ส่วนตัวพร้อมใช้ ✓';
-          badge.className = 'px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30';
+          badge.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30 whitespace-nowrap';
         } else if (cfg.mode === 'dynamic_qr') {
           badge.textContent = isEn ? 'Dynamic Secret Fallback' : 'ใช้ PromptPay Secret สำรอง';
-          badge.className = 'px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30';
+          badge.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30 whitespace-nowrap';
         } else {
           badge.textContent = isEn ? 'Not Configured' : 'ยังไม่ตั้งค่ารูป QR';
-          badge.className = 'px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-500/15 text-rose-800 dark:text-rose-300 border border-rose-500/30';
+          badge.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/15 text-rose-800 dark:text-rose-300 border border-rose-500/30 whitespace-nowrap';
         }
       }
 
@@ -5547,7 +5598,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           prevEmpty.classList.add('hidden');
         } else {
           prevImg.classList.add('hidden');
-          prevImg.removeAttribute('src');
+          prevImg.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=';
           prevEmpty.classList.remove('hidden');
         }
       }
@@ -5752,7 +5803,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         awaiting_payment: { label: isEn ? 'Awaiting QR' : 'รอโอน QR', cls: 'bg-sky-500/15 text-sky-800 dark:text-sky-300 border border-sky-500/30' },
         slip_submitted: { label: isEn ? 'Slip Submitted' : 'ส่งสลิปแล้ว', cls: 'bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/40' },
         paid: { label: isEn ? 'Paid' : 'ยืนยันยอดแล้ว', cls: 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30' },
-        live: { label: isEn ? 'Live' : 'เปิดลีกแล้ว', cls: 'bg-emerald-600 text-white border border-emerald-500' },
+        live: { label: isEn ? 'Live' : 'เปิดลีกแล้ว', cls: 'bg-emerald-700 text-white border border-emerald-600' },
         quote_requested: { label: isEn ? 'Quote / USD' : 'ขอราคา / USD', cls: 'bg-sky-500/15 text-sky-800 dark:text-sky-300 border border-sky-500/30' },
         rejected: { label: isEn ? 'Rejected' : 'ปฏิเสธสลิป', cls: 'bg-rose-500/15 text-rose-800 dark:text-rose-300 border border-rose-500/30' },
         expired: { label: isEn ? 'Expired' : 'หมดอายุ', cls: 'bg-slate-500/15 text-slate-700 dark:text-neutral-300 border border-slate-500/30' }
@@ -5798,7 +5849,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       btns.forEach((btn) => {
         const f = btn.getAttribute('data-order-filter') || 'all';
         const active = f === currentOrderFilter;
-        btn.className = 'ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors ' + (active
+        btn.className = 'ord-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg border text-xs font-semibold whitespace-nowrap transition-colors ' + (active
           ? 'border-emerald-500 bg-emerald-500/15 text-emerald-800 dark:text-emerald-300'
           : 'border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark');
       });
@@ -5863,7 +5914,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         lName.className = 'font-medium';
         lName.textContent = o.league_name ? (o.league_name + ' (ID: ' + o.league_id + ')') : ('League ' + o.league_id);
         const lMeta = document.createElement('div');
-        lMeta.className = 'text-[11px] text-slate-500 dark:text-neutral-400';
+        lMeta.className = 'text-xs text-slate-600 dark:text-neutral-400';
         lMeta.textContent = (o.team_count ? (o.team_count + (isEn ? ' teams · ' : ' ทีม · ')) : '') + String(o.plan || 'standard');
         tdLeague.appendChild(lName);
         tdLeague.appendChild(lMeta);
@@ -5882,7 +5933,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         tdContact.appendChild(cEmail);
         if (o.customer_line) {
           const cLine = document.createElement('div');
-          cLine.className = 'text-[11px] font-mono text-emerald-700 dark:text-emerald-400 truncate max-w-[180px]';
+          cLine.className = 'text-xs font-mono text-emerald-700 dark:text-emerald-400 truncate max-w-[180px]';
           cLine.textContent = 'LINE: ' + String(o.customer_line);
           tdContact.appendChild(cLine);
         }
@@ -5892,19 +5943,19 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         tdStatus.className = 'px-4 py-3 whitespace-nowrap';
         const meta = getOrderStatusMeta(o.status, lang);
         const stBadge = document.createElement('span');
-        stBadge.className = 'inline-block px-2 py-0.5 rounded-full text-[11px] font-semibold ' + meta.cls;
+        stBadge.className = 'inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold ' + meta.cls;
         stBadge.textContent = meta.label;
         tdStatus.appendChild(stBadge);
         if (o.has_slip) {
           const sDot = document.createElement('span');
-          sDot.className = 'ml-1.5 text-[10px] font-mono text-amber-700 dark:text-amber-300';
+          sDot.className = 'ml-1.5 text-xs font-mono text-amber-700 dark:text-amber-300';
           sDot.textContent = '[Slip]';
           tdStatus.appendChild(sDot);
         }
         tr.appendChild(tdStatus);
 
         const tdTime = document.createElement('td');
-        tdTime.className = 'px-4 py-3 text-[11px] font-mono text-slate-500 dark:text-neutral-400 whitespace-nowrap';
+        tdTime.className = 'px-4 py-3 text-xs font-mono text-slate-600 dark:text-neutral-400 whitespace-nowrap';
         tdTime.textContent = o.created_at ? new Date(o.created_at).toLocaleString(isEn ? 'en-US' : 'th-TH') : '-';
         tr.appendChild(tdTime);
 
@@ -5912,7 +5963,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         tdAct.className = 'px-4 py-3 text-right whitespace-nowrap';
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'min-h-[36px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-800 dark:text-neutral-200 hover:border-sky-500 transition-colors';
+        btn.className = 'min-h-[42px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-800 dark:text-neutral-200 hover:border-sky-500 whitespace-nowrap transition-colors';
         btn.setAttribute('data-inspect-order', String(o.order_id || ''));
         btn.textContent = isEn ? 'Inspect' : 'ตรวจสอบ';
         btn.addEventListener('click', () => selectOrder(o));
@@ -5931,7 +5982,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (emptyEl) emptyEl.classList.add('hidden');
       if (imgEl) {
         imgEl.classList.add('hidden');
-        imgEl.removeAttribute('src');
+        imgEl.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=';
       }
       if (loadEl) loadEl.classList.remove('hidden');
       try {
@@ -6128,7 +6179,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         if (loadEl) loadEl.classList.add('hidden');
         if (imgEl) {
           imgEl.classList.add('hidden');
-          imgEl.removeAttribute('src');
+          imgEl.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=';
         }
         if (reloadBtn) reloadBtn.classList.add('hidden');
         if (emptyEl) {
@@ -6354,6 +6405,29 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (btnDelUnpaid) btnDelUnpaid.addEventListener('click', () => submitOrderAction('delete_unpaid'));
       const btnDelTest = document.getElementById('btnOrdDeleteTest');
       if (btnDelTest) btnDelTest.addEventListener('click', () => submitOrderAction('delete_test'));
+
+      const btnTogglePitch = document.getElementById('btnTogglePitchBody');
+      if (btnTogglePitch) {
+        btnTogglePitch.addEventListener('click', () => {
+          const body = document.getElementById('secPitchBody');
+          if (!body) return;
+          const isHidden = body.classList.toggle('hidden');
+          btnTogglePitch.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
+          const dict = I18N[getLang()] || I18N.th;
+          btnTogglePitch.textContent = dict[isHidden ? 'btn_expand_pitch' : 'btn_collapse_pitch'] || btnTogglePitch.textContent;
+        });
+      }
+      const btnToggleQr = document.getElementById('btnToggleQrBody');
+      if (btnToggleQr) {
+        btnToggleQr.addEventListener('click', () => {
+          const body = document.getElementById('paymentQrSettingsBody');
+          if (!body) return;
+          const isHidden = body.classList.toggle('hidden');
+          btnToggleQr.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
+          const dict = I18N[getLang()] || I18N.th;
+          btnToggleQr.textContent = dict[isHidden ? 'btn_toggle_qr_show' : 'btn_toggle_qr_hide'] || btnToggleQr.textContent;
+        });
+      }
     }
 
     // Keyboard shortcuts (R = Refresh, L = Language, T = Theme)
@@ -6472,7 +6546,7 @@ export function renderLoginHtml(errorMessage = '') {
         </div>
 
         <button type="submit" id="loginSubmit"
-          class="w-full min-h-[44px] px-4 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm transition-colors">
+          class="w-full min-h-[44px] px-4 py-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-medium text-sm transition-colors">
           เข้าสู่ระบบ (Sign In)
         </button>
       </form>
