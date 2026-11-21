@@ -7245,7 +7245,10 @@
                 const pool = isBB ? sq.starting.concat(sq.bench || []) : sq.starting;
                 const unplayed = pool.filter(p => Boolean(p.not_played_yet)).length;
                 const played = Math.max(0, totalStarters - unplayed);
-                playedInfo = `<div class="text-[9.5px] font-medium text-slate-500 dark:text-slate-400 font-display">${isEn ? `${played}/${totalStarters} pl` : `เตะ ${played}/${totalStarters}`}</div>`;
+                const playedTooltip = isEn
+                  ? `Played ${played} of ${totalStarters} players`
+                  : `ลงเตะแล้ว ${played} จาก ${totalStarters} คน`;
+                playedInfo = `<div class="text-[10px] sm:text-[10.5px] font-medium text-slate-500 dark:text-slate-400 font-display tabular-nums whitespace-nowrap" title="${playedTooltip}">${played}/${totalStarters}</div>`;
               }
             }
 
