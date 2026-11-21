@@ -23953,6 +23953,7 @@ __STRUCTURED_DATA_JSON__
       touch-action: pan-y;
       contain: layout paint;
       padding: 0.75rem 0;
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
     .bm-stream-track {
       display: flex;
@@ -23996,6 +23997,7 @@ __STRUCTURED_DATA_JSON__
       font-weight: 600;
       white-space: nowrap;
       flex-shrink: 0;
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
     .bm-stream-dot {
       width: 0.42rem;
@@ -24003,6 +24005,18 @@ __STRUCTURED_DATA_JSON__
       border-radius: 999px;
       background-color: var(--color-live);
       flex-shrink: 0;
+    }
+    html:not(.dark) .bm-stream-band {
+      background-color: oklch(93.6% 0.007 25);
+      color: var(--color-ink);
+      border-top-color: var(--color-border);
+      border-bottom-color: var(--color-border);
+    }
+    html:not(.dark) .bm-stream-pill {
+      background-color: var(--color-card);
+      border-color: var(--color-border-strong);
+      color: var(--color-ink);
+      box-shadow: 0 1px 2px oklch(15% 0.01 25 / 0.06);
     }
 
     /* Matchday Drama Feed (reactvibe NotificationScreen adaptation) */
