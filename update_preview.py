@@ -4899,13 +4899,10 @@ __STRUCTURED_DATA_JSON__
         this.data = this.multiData.leagues[this.activeLeagueId] || Object.values(this.multiData.leagues)[0] || {};
         this.config = this.configs[this.activeLeagueId] || Object.values(this.configs)[0] || {};
         if (!this.config.features) this.config.features = {};
-        try {
-          if (typeof localStorage !== 'undefined' && this.activeLeagueId) {
-            localStorage.setItem('fpl_mini_active_league', String(this.activeLeagueId));
-            const activeLeagueName = String((this.data && this.data.name) || (this.config && this.config.name) || '').slice(0, 80);
-            if (activeLeagueName) localStorage.setItem('fpl_mini_active_league_name', activeLeagueName);
-          }
-        } catch (e) {}
+        const activeLeagueName = String((this.data && this.data.name) || (this.config && this.config.name) || '').slice(0, 80);
+        if (typeof this.recordRecentLeague === 'function') {
+          this.recordRecentLeague(this.activeLeagueId, activeLeagueName);
+        }
         
         const maxGW = Number(this.multiData.max_gw) || 2;
         const queryGWNum = Number(queryGW);
@@ -7068,6 +7065,34 @@ __STRUCTURED_DATA_JSON__
         return this._leagueFetchPromises[lidStr];
       }
 
+      recordRecentLeague(leagueId, leagueName) {
+        const cleanId = String(leagueId || '').trim();
+        if (!/^[0-9]{1,10}$/.test(cleanId)) return;
+        const cleanName = String(leagueName || '').slice(0, 80).trim();
+        try {
+          if (typeof localStorage === 'undefined') return;
+          localStorage.setItem('fpl_mini_active_league', cleanId);
+          if (cleanName) localStorage.setItem('fpl_mini_active_league_name', cleanName);
+          let recent = [];
+          try {
+            const parsed = JSON.parse(localStorage.getItem('fpl_mini_recent_leagues') || '[]');
+            if (Array.isArray(parsed)) recent = parsed;
+          } catch (_) {}
+          const deduped = [{ id: cleanId, name: cleanName }];
+          const seen = new Set([cleanId]);
+          for (let i = 0; i < recent.length; i += 1) {
+            const entry = recent[i];
+            const rid = String((entry && entry.id) || '').trim();
+            if (!/^[0-9]{1,10}$/.test(rid) || seen.has(rid)) continue;
+            seen.add(rid);
+            const rname = String((entry && entry.name) || '').slice(0, 80).trim();
+            deduped.push({ id: rid, name: rname });
+            if (deduped.length >= 3) break;
+          }
+          localStorage.setItem('fpl_mini_recent_leagues', JSON.stringify(deduped));
+        } catch (e) {}
+      }
+
       async switchLeague(leagueId, fromPopstate = false) {
         const lidStr = String(leagueId);
         if (!this.multiData || !this.multiData.leagues || !this.multiData.leagues[lidStr]) return;
@@ -7150,13 +7175,10 @@ __STRUCTURED_DATA_JSON__
         this.cupSearchQuery = '';
         this.cupFilterMode = 'all';
         
-        try {
-          if (typeof localStorage !== 'undefined') {
-            localStorage.setItem('fpl_mini_active_league', String(this.activeLeagueId));
-            const switchedName = String((this.data && this.data.name) || (this.config && this.config.name) || '').slice(0, 80);
-            if (switchedName) localStorage.setItem('fpl_mini_active_league_name', switchedName);
-          }
-        } catch (e) {}
+        const switchedName = String((this.data && this.data.name) || (this.config && this.config.name) || '').slice(0, 80);
+        if (typeof this.recordRecentLeague === 'function') {
+          this.recordRecentLeague(this.activeLeagueId, switchedName);
+        }
 
         // Safely update clean URL without ever breaking script execution
         if (!fromPopstate) {
@@ -22203,7 +22225,19 @@ def generate_landing_html(multi_data, leagues_config, site_config):
         lid: str((multi_data.get('leagues') or {}).get(lid, {}).get('name') or (leagues_config.get(lid) or {}).get('name') or f"League {lid}")
         for lid in showcase_lids
     }
+    showcase_leagues_list = []
+    for lid in showcase_lids:
+        l_obj = (multi_data.get('leagues') or {}).get(lid, {})
+        l_cfg = leagues_config.get(lid) or {}
+        showcase_leagues_list.append({
+            "id": lid,
+            "name": str(l_obj.get('name') or l_cfg.get('name') or f"League {lid}"),
+            "teams_count": len(l_obj.get('teams', [])),
+            "tier": int(l_obj.get('tier') or l_cfg.get('tier') or 1),
+            "is_default": bool(l_cfg.get('is_default', False)),
+        })
     showcase_league_map_json = json.dumps(showcase_league_map, ensure_ascii=False).replace('</', '<\\/')
+    showcase_leagues_json = json.dumps(showcase_leagues_list, ensure_ascii=False).replace('</', '<\\/')
     demos_json = json.dumps(demo_cards, ensure_ascii=False).replace('</', '<\\/')
     pricing_json = json.dumps({
         "standard": {"thb": int(std_p.get('thb', 500)), "usd": int(std_p.get('usd', 19))},
@@ -22876,6 +22910,216 @@ __STRUCTURED_DATA_JSON__
       .bm-return-cta {
         flex: 1 1 auto;
       }
+    }
+
+    /* League Finder Modal (9 Showcase + Private ID Direct Jump) */
+    .bm-lf-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background-color: oklch(8% 0.012 25 / 0.72);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem;
+    }
+    .bm-lf-modal.hidden {
+      display: none;
+    }
+    .bm-lf-panel {
+      width: 100%;
+      max-width: 34rem;
+      max-height: min(86dvh, 720px);
+      background-color: var(--color-card);
+      color: var(--color-ink);
+      border: 1px solid var(--color-border-strong);
+      border-radius: 1rem;
+      box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .bm-lf-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 1rem 1.15rem 0.8rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .bm-lf-title {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--color-ink);
+      line-height: 1.3;
+    }
+    .bm-lf-sub {
+      margin: 0.25rem 0 0;
+      font-size: 0.82rem;
+      color: var(--color-ink-2);
+      line-height: 1.45;
+    }
+    .bm-lf-close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 0.55rem;
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface);
+      color: var(--color-ink);
+      font-size: 1.3rem;
+      line-height: 1;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .bm-lf-close:hover {
+      border-color: var(--color-border-strong);
+    }
+    .bm-lf-search-wrap {
+      padding: 0.75rem 1.15rem;
+      border-bottom: 1px solid var(--color-border);
+      background-color: var(--color-surface);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .bm-lf-search-input {
+      flex: 1 1 auto;
+      min-width: 0;
+      min-height: 44px;
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.55rem;
+      border: 1px solid var(--color-border-strong);
+      background-color: var(--color-card);
+      color: var(--color-ink);
+      font-family: var(--font-sans);
+      font-size: 0.92rem;
+    }
+    .bm-lf-search-input:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+    .bm-lf-clear-btn {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 0 0.75rem;
+      border-radius: 0.55rem;
+      border: 1px solid var(--color-border-strong);
+      background-color: var(--color-card);
+      color: var(--color-ink);
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .bm-lf-list {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 0.75rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .bm-lf-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      min-height: 52px;
+      padding: 0.7rem 0.9rem;
+      border-radius: 0.65rem;
+      border: 1px solid var(--color-border);
+      background-color: var(--color-card);
+      color: var(--color-ink);
+      text-decoration: none;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+    .bm-lf-item:hover,
+    .bm-lf-item:focus-visible {
+      border-color: var(--color-accent);
+      background-color: var(--color-surface);
+      outline: none;
+    }
+    .bm-lf-item.is-direct {
+      border-style: dashed;
+      border-color: var(--color-accent);
+      background-color: var(--color-accent-soft);
+    }
+    .bm-lf-item-main {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+    .bm-lf-item-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--color-ink);
+      overflow-wrap: anywhere;
+      line-height: 1.35;
+    }
+    .bm-lf-item-meta {
+      font-size: 0.78rem;
+      color: var(--color-ink-2);
+      margin-top: 0.15rem;
+    }
+    .bm-lf-item-right {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-shrink: 0;
+    }
+    .bm-lf-badge {
+      padding: 0.18rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .bm-lf-badge.is-recent {
+      background-color: var(--color-live-soft);
+      color: var(--color-ok-text);
+      border: 1px solid var(--color-live-border);
+    }
+    .bm-lf-badge.is-default {
+      background-color: var(--color-accent-soft);
+      color: var(--color-accent-text);
+    }
+    .bm-lf-arrow {
+      font-weight: 800;
+      color: var(--color-ink-2);
+      font-size: 0.95rem;
+    }
+    .bm-lf-empty {
+      padding: 1.5rem 0.75rem;
+      text-align: center;
+      color: var(--color-ink-2);
+      font-size: 0.88rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .bm-lf-foot {
+      padding: 0.65rem 1.15rem;
+      border-top: 1px solid var(--color-border);
+      background-color: var(--color-surface);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      font-size: 0.78rem;
+      color: var(--color-ink-2);
+    }
+    .bm-lf-foot-link {
+      color: var(--color-ink);
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 2px;
     }
 
     /* Hero Broadcast Arena */
@@ -24439,8 +24683,8 @@ __STRUCTURED_DATA_JSON__
         <button id="landing-theme-btn" type="button" onclick="landingApp.toggleTheme()" class="bm-icon-btn" aria-label="สลับโหมดสี">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         </button>
-        <a id="nav-cta-btn" href="./preview.html" class="bm-cta-nav">
-          <span>ลีกทั้งหมด (9 ลีก)</span>
+        <a id="nav-cta-btn" href="./preview.html" onclick="event.preventDefault(); landingApp.openLeagueFinder(this);" class="bm-cta-nav">
+          <span>เข้าดูลีกสด (9 ลีก)</span>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
         </a>
         <button id="mobile-menu-toggle" type="button" onclick="landingApp.toggleMobileMenu()" class="bm-icon-btn bm-mobile-menu-btn" aria-expanded="false" aria-controls="mobile-nav-drawer" aria-label="เปิดเมนู">
@@ -24454,7 +24698,7 @@ __STRUCTURED_DATA_JSON__
       <a id="m-nav-demos" href="#demos" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">ลีกตัวอย่างจริง</a>
       <a id="m-nav-pricing" href="#pricing" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">แพ็กเกจราคา</a>
       <a id="m-nav-order" href="#order" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">เปิดใช้งานลีก</a>
-      <a id="m-nav-all-leagues" href="./preview.html" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link bm-mobile-link-accent">เข้าดูลีกทั้งหมด (__TOTAL_SHOWCASE_LEAGUES__ ลีก) →</a>
+      <a id="m-nav-all-leagues" href="./preview.html" onclick="event.preventDefault(); landingApp.closeMobileMenu(); landingApp.openLeagueFinder(this);" class="bm-mobile-link bm-mobile-link-accent">เข้าดูลีกสดในระบบ (__TOTAL_SHOWCASE_LEAGUES__ ลีก) →</a>
     </div>
   </header>
 
@@ -24467,7 +24711,7 @@ __STRUCTURED_DATA_JSON__
       </div>
       <div class="bm-return-bar-actions">
         <a id="return-bar-go-btn" href="./preview.html" class="bm-return-cta">กลับเข้าลีกของคุณ →</a>
-        <a id="return-bar-all-link" href="./preview.html" class="bm-return-all">ดูทั้ง __TOTAL_SHOWCASE_LEAGUES__ ลีก</a>
+        <a id="return-bar-all-link" href="./preview.html" onclick="event.preventDefault(); landingApp.openLeagueFinder(this);" class="bm-return-all">เปลี่ยนลีก (__TOTAL_SHOWCASE_LEAGUES__ ลีก)</a>
         <button id="return-bar-dismiss" type="button" onclick="landingApp.dismissReturningLeagueBar()" class="bm-return-close" aria-label="ซ่อนแถบนี้">×</button>
       </div>
     </div>
@@ -24513,8 +24757,8 @@ __STRUCTURED_DATA_JSON__
               <span id="hero-primary-cta-text">เปิดใช้งานลีกทันที</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
             </a>
-            <a id="hero-secondary-cta" href="#features" class="bm-btn-outline-dark">
-              <span id="hero-secondary-cta-text">ห้องควบคุมหลัก</span>
+            <a id="hero-secondary-cta" href="./preview.html" onclick="event.preventDefault(); landingApp.openLeagueFinder(this);" class="bm-btn-outline-dark">
+              <span id="hero-secondary-cta-text">เข้าดูลีกสดในระบบ (9 ลีก)</span>
             </a>
           </div>
 
@@ -24527,8 +24771,8 @@ __STRUCTURED_DATA_JSON__
               <span id="hero-views-inline">ยอดเข้าชม 2,850+ ครั้ง</span>
             </div>
             <div class="bm-hero-meta-item">
-              <a id="hero-open-demo-link" href="./__PREVIEW_LID__/" data-demo-lid="__PREVIEW_LID__" class="bm-hero-link">
-                <span id="hero-open-demo-label">เปิดดูลีกตัวอย่าง</span>
+              <a id="hero-open-demo-link" href="#features" class="bm-hero-link">
+                <span id="hero-open-demo-label">ดูห้องควบคุมหลัก ↓</span>
               </a>
             </div>
           </div>
@@ -24660,8 +24904,8 @@ __STRUCTURED_DATA_JSON__
             <h2 id="demos-title" class="bm-h2">ลีกตัวอย่างจริงในระบบ</h2>
             <p id="demos-sub" class="bm-lead-arena">กดเข้าชมแดชบอร์ดของลีกตัวอย่างจริงทั้ง 5 รูปแบบกติกา เปิดใช้งานได้ทันทีทั้งบนมือถือและคอมพิวเตอร์</p>
           </div>
-          <a id="hero-all-preview-link" href="./preview.html" class="bm-btn-outline-dark">
-            <span id="hero-all-preview-text">ดูหน้าเลือกทั้งหมด</span>
+          <a id="hero-all-preview-link" href="./preview.html" onclick="event.preventDefault(); landingApp.openLeagueFinder(this);" class="bm-btn-outline-dark">
+            <span id="hero-all-preview-text">ดูครบทั้ง __TOTAL_SHOWCASE_LEAGUES__ ลีก</span>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
           </a>
         </div>
@@ -24843,11 +25087,34 @@ __STRUCTURED_DATA_JSON__
     </div>
   </footer>
 
+  <!-- League Finder Modal (All 9 Showcase + Recent 3 Pinned + Private ID Direct Jump) -->
+  <div id="league-finder-modal" class="bm-lf-modal hidden" role="dialog" aria-modal="true" aria-labelledby="lf-modal-title">
+    <div class="bm-lf-panel">
+      <div class="bm-lf-head">
+        <div>
+          <h2 id="lf-modal-title" class="bm-lf-title">เข้าดูลีกสดในระบบ (9 ลีก)</h2>
+          <p id="lf-modal-sub" class="bm-lf-sub">เลือกลีกตัวอย่างจริงทั้ง 9 ลีก หรือพิมพ์ชื่อ/รหัส League ID เพื่อเปิดลีกของคุณทันที</p>
+        </div>
+        <button id="lf-close-btn" type="button" onclick="landingApp.closeLeagueFinder()" class="bm-lf-close" aria-label="ปิดหน้าต่าง">×</button>
+      </div>
+      <div class="bm-lf-search-wrap">
+        <input id="lf-search-input" type="search" autocomplete="off" inputmode="search" placeholder="ค้นหาชื่อลีก หรือพิมพ์รหัส League ID..." aria-label="ค้นหาชื่อลีกหรือรหัส League ID" class="bm-lf-search-input">
+        <button id="lf-search-clear" type="button" class="bm-lf-clear-btn hidden">ล้าง</button>
+      </div>
+      <div id="lf-league-list" class="bm-lf-list"></div>
+      <div class="bm-lf-foot">
+        <span id="lf-count-note">แสดงครบทั้ง __TOTAL_SHOWCASE_LEAGUES__ ลีกตัวอย่าง</span>
+        <a id="lf-preview-fallback" href="./preview.html" class="bm-lf-foot-link">เปิดดูตัวอย่างเร็ว (preview.html) ↗</a>
+      </div>
+    </div>
+  </div>
+
   <script>
     window.LANDING_COPY = __LANDING_COPY_JSON__;
     window.PRICING_CONFIG = __PRICING_JSON__;
     window.SHOWCASE_DEMOS = __DEMOS_JSON__;
     window.SHOWCASE_LEAGUE_MAP = __SHOWCASE_LEAGUE_MAP_JSON__;
+    window.SHOWCASE_LEAGUES = __SHOWCASE_LEAGUES_JSON__;
     window.SAMPLE_PREVIEW = __SAMPLE_PREVIEW_JSON__;
 
     const landingApp = {
@@ -24959,6 +25226,7 @@ __STRUCTURED_DATA_JSON__
           if (Number.isFinite(cached) && cached > 0) this.visitorViews = Math.floor(cached);
         } catch (_) {}
         this.bindOrderForm();
+        this.bindLeagueFinder();
         this.renderAll();
         this.initReveal();
         this.initDramaCycle();
@@ -25001,24 +25269,279 @@ __STRUCTURED_DATA_JSON__
         if (btn) btn.setAttribute('aria-expanded', 'false');
       },
 
+      getRecentLeagues() {
+        const showcaseMap = window.SHOWCASE_LEAGUE_MAP || {};
+        const out = [];
+        const seen = new Set();
+        try {
+          if (typeof localStorage !== 'undefined') {
+            const rawArr = localStorage.getItem('fpl_mini_recent_leagues');
+            if (rawArr) {
+              const parsed = JSON.parse(rawArr);
+              if (Array.isArray(parsed)) {
+                for (let i = 0; i < parsed.length; i += 1) {
+                  const ent = parsed[i];
+                  const rid = String((ent && ent.id) || '').trim();
+                  if (!/^[0-9]{1,10}$/.test(rid) || seen.has(rid)) continue;
+                  seen.add(rid);
+                  const rname = String(showcaseMap[rid] || (ent && ent.name) || ('League ' + rid)).slice(0, 80);
+                  out.push({ id: rid, name: rname });
+                  if (out.length >= 3) break;
+                }
+              }
+            }
+            if (out.length === 0) {
+              const activeLid = String(localStorage.getItem('fpl_mini_active_league') || '').trim();
+              if (/^[0-9]{1,10}$/.test(activeLid)) {
+                const activeName = String(showcaseMap[activeLid] || localStorage.getItem('fpl_mini_active_league_name') || ('League ' + activeLid)).slice(0, 80);
+                out.push({ id: activeLid, name: activeName });
+              }
+            }
+          }
+        } catch (_) {}
+        return out;
+      },
+
+      bindLeagueFinder() {
+        const modal = document.getElementById('league-finder-modal');
+        const input = document.getElementById('lf-search-input');
+        const clearBtn = document.getElementById('lf-search-clear');
+        if (modal && !modal._lfBackdropBound) {
+          modal._lfBackdropBound = true;
+          modal.addEventListener('click', (e) => {
+            if (e.target === modal) this.closeLeagueFinder();
+          });
+        }
+        if (input && !input._lfInputBound) {
+          input._lfInputBound = true;
+          input.addEventListener('input', () => {
+            if (clearBtn) clearBtn.classList.toggle('hidden', !String(input.value || '').trim());
+            this.renderLeagueFinderList();
+          });
+        }
+        if (clearBtn && !clearBtn._lfClearBound) {
+          clearBtn._lfClearBound = true;
+          clearBtn.addEventListener('click', () => {
+            if (input) input.value = '';
+            clearBtn.classList.add('hidden');
+            this.renderLeagueFinderList();
+            if (input && !(window.matchMedia && window.matchMedia('(pointer: coarse)').matches)) {
+              input.focus();
+            }
+          });
+        }
+      },
+
+      openLeagueFinder(triggerEl) {
+        const modal = document.getElementById('league-finder-modal');
+        if (!modal) return;
+        this._lfTriggerEl = triggerEl || document.activeElement;
+        const input = document.getElementById('lf-search-input');
+        const clearBtn = document.getElementById('lf-search-clear');
+        if (input) input.value = '';
+        if (clearBtn) clearBtn.classList.add('hidden');
+        this.renderLeagueFinderList();
+        modal.classList.remove('hidden');
+        try { document.body.style.overflow = 'hidden'; } catch (_) {}
+        if (!this._lfEscHandler) {
+          this._lfEscHandler = (e) => {
+            if (e && e.key === 'Escape') {
+              e.preventDefault();
+              this.closeLeagueFinder();
+            }
+          };
+        }
+        document.addEventListener('keydown', this._lfEscHandler);
+        const isCoarse = Boolean(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+        if (input && !isCoarse) {
+          try { input.focus(); } catch (_) {}
+        }
+      },
+
+      closeLeagueFinder() {
+        const modal = document.getElementById('league-finder-modal');
+        if (modal) modal.classList.add('hidden');
+        try { document.body.style.overflow = ''; } catch (_) {}
+        if (this._lfEscHandler) {
+          document.removeEventListener('keydown', this._lfEscHandler);
+        }
+        const trig = this._lfTriggerEl;
+        this._lfTriggerEl = null;
+        if (trig && typeof trig.focus === 'function' && document.contains(trig)) {
+          try { trig.focus(); } catch (_) {}
+        }
+      },
+
+      renderLeagueFinderList() {
+        const listEl = document.getElementById('lf-league-list');
+        if (!listEl) return;
+        const input = document.getElementById('lf-search-input');
+        const countEl = document.getElementById('lf-count-note');
+        const isEn = this.lang === 'en';
+        const isFile = window.location.protocol === 'file:';
+        const q = String((input && input.value) || '').trim();
+        const qLower = q.toLowerCase();
+
+        const showcaseList = Array.isArray(window.SHOWCASE_LEAGUES) ? window.SHOWCASE_LEAGUES : [];
+        const showcaseById = {};
+        for (let i = 0; i < showcaseList.length; i += 1) {
+          showcaseById[String(showcaseList[i].id)] = showcaseList[i];
+        }
+
+        const recent = this.getRecentLeagues();
+        const recentIds = new Set(recent.map((r) => String(r.id)));
+        const ordered = [];
+
+        for (let i = 0; i < recent.length; i += 1) {
+          const r = recent[i];
+          const sc = showcaseById[String(r.id)];
+          ordered.push({
+            id: String(r.id),
+            name: String((sc && sc.name) || r.name || ('League ' + r.id)),
+            teams_count: sc ? Number(sc.teams_count || 0) : 0,
+            tier: sc ? Number(sc.tier || 1) : 1,
+            is_default: sc ? Boolean(sc.is_default) : false,
+            isRecent: true,
+            isPrivateLocal: !sc,
+          });
+        }
+        for (let i = 0; i < showcaseList.length; i += 1) {
+          const sc = showcaseList[i];
+          const sid = String(sc.id);
+          if (recentIds.has(sid)) continue;
+          ordered.push({
+            id: sid,
+            name: String(sc.name || ('League ' + sid)),
+            teams_count: Number(sc.teams_count || 0),
+            tier: Number(sc.tier || 1),
+            is_default: Boolean(sc.is_default),
+            isRecent: false,
+            isPrivateLocal: false,
+          });
+        }
+
+        const filtered = qLower
+          ? ordered.filter((it) => it.name.toLowerCase().includes(qLower) || it.id.toLowerCase().includes(qLower))
+          : ordered;
+
+        listEl.textContent = '';
+
+        const makeRow = (item) => {
+          const a = document.createElement('a');
+          a.className = 'bm-lf-item' + (item.isDirect ? ' is-direct' : '');
+          a.setAttribute('href', isFile ? ('./' + item.id + '/index.html') : ('./' + item.id + '/'));
+          if (item.isDirect) a.id = 'lf-direct-jump-link';
+
+          const left = document.createElement('div');
+          left.className = 'bm-lf-item-main';
+          const title = document.createElement('div');
+          title.className = 'bm-lf-item-title';
+          title.textContent = item.isDirect
+            ? (isEn ? ('Open /' + item.id + '/ directly →') : ('เปิดลิงก์ลีก /' + item.id + '/ โดยตรง →'))
+            : item.name;
+          const meta = document.createElement('div');
+          meta.className = 'bm-lf-item-meta tabular-nums';
+          if (item.isDirect) {
+            meta.textContent = isEn
+              ? 'For private customer leagues excluded from the public showcase list'
+              : 'สำหรับลีกลูกค้าส่วนตัวที่ไม่แสดงในรายชื่อสาธารณะ';
+          } else {
+            const parts = ['ID: ' + item.id];
+            if (item.teams_count > 0) {
+              parts.push(item.teams_count.toLocaleString() + (isEn ? ' teams' : ' ทีม'));
+            }
+            if (item.isPrivateLocal) {
+              parts.push(isEn ? 'Your private league' : 'ลีกส่วนตัวของคุณ');
+            }
+            meta.textContent = parts.join(' · ');
+          }
+          left.appendChild(title);
+          left.appendChild(meta);
+          a.appendChild(left);
+
+          const right = document.createElement('div');
+          right.className = 'bm-lf-item-right';
+          if (!item.isDirect && item.isRecent) {
+            const b = document.createElement('span');
+            b.className = 'bm-lf-badge is-recent';
+            b.textContent = isEn ? 'Recent' : 'ล่าสุด';
+            right.appendChild(b);
+          } else if (!item.isDirect && item.is_default) {
+            const b = document.createElement('span');
+            b.className = 'bm-lf-badge is-default';
+            b.textContent = isEn ? 'Featured' : 'ลีกหลัก';
+            right.appendChild(b);
+          }
+          const arr = document.createElement('span');
+          arr.className = 'bm-lf-arrow';
+          arr.setAttribute('aria-hidden', 'true');
+          arr.textContent = '→';
+          right.appendChild(arr);
+          a.appendChild(right);
+
+          a.addEventListener('click', () => {
+            this.closeLeagueFinder();
+          });
+          return a;
+        };
+
+        for (let i = 0; i < filtered.length; i += 1) {
+          listEl.appendChild(makeRow(filtered[i]));
+        }
+
+        const isNumericQuery = /^[0-9]{1,10}$/.test(q);
+        const exactMatchExists = isNumericQuery && filtered.some((it) => it.id === q);
+        if (isNumericQuery && !showcaseById[q] && !exactMatchExists) {
+          listEl.appendChild(makeRow({ id: q, isDirect: true }));
+        }
+
+        if (listEl.children.length === 0) {
+          const empty = document.createElement('div');
+          empty.className = 'bm-lf-empty';
+          const msg = document.createElement('div');
+          msg.textContent = isEn
+            ? ('No showcase leagues matching "' + q + '". Enter a numeric League ID to open a private link.')
+            : ('ไม่พบชื่อลีก "' + q + '" ในรายการตัวอย่าง (หากเป็นลีกส่วนตัว กรุณาพิมพ์ตัวเลข League ID)');
+          const resetBtn = document.createElement('button');
+          resetBtn.type = 'button';
+          resetBtn.className = 'bm-lf-clear-btn';
+          resetBtn.textContent = isEn ? 'Show All 9 Leagues' : 'แสดงลีกทั้งหมด';
+          resetBtn.addEventListener('click', () => {
+            if (input) input.value = '';
+            const clearBtn = document.getElementById('lf-search-clear');
+            if (clearBtn) clearBtn.classList.add('hidden');
+            this.renderLeagueFinderList();
+          });
+          empty.appendChild(msg);
+          empty.appendChild(resetBtn);
+          listEl.appendChild(empty);
+        }
+
+        if (countEl) {
+          const total = showcaseList.length || 9;
+          countEl.textContent = isEn
+            ? ('Showing ' + filtered.length + ' of ' + total + ' showcase leagues')
+            : ('แสดง ' + filtered.length + ' จาก ' + total + ' ลีกตัวอย่าง');
+        }
+      },
+
       renderReturningLeagueBar() {
         const bar = document.getElementById('returning-league-bar');
         if (!bar) return;
         let dismissed = false;
-        let savedLid = '';
-        let savedName = '';
         try {
           dismissed = sessionStorage.getItem('fpl_return_bar_dismissed') === '1';
-          savedLid = String(localStorage.getItem('fpl_mini_active_league') || '').trim();
-          savedName = String(localStorage.getItem('fpl_mini_active_league_name') || '').trim();
         } catch (_) {}
-        if (dismissed || !/^[0-9]{1,10}$/.test(savedLid)) {
+        const recent = this.getRecentLeagues();
+        const top = recent.length > 0 ? recent[0] : null;
+        if (dismissed || !top || !/^[0-9]{1,10}$/.test(String(top.id))) {
           bar.classList.add('hidden');
           return;
         }
+        const savedLid = String(top.id);
         const isEn = this.lang === 'en';
         const showcaseMap = window.SHOWCASE_LEAGUE_MAP || {};
-        const displayName = String(showcaseMap[savedLid] || savedName || ('League ' + savedLid));
+        const displayName = String(showcaseMap[savedLid] || top.name || ('League ' + savedLid));
         const isFile = window.location.protocol === 'file:';
 
         const prefixEl = document.getElementById('return-bar-prefix');
@@ -25033,7 +25556,7 @@ __STRUCTURED_DATA_JSON__
           goBtn.setAttribute('href', isFile ? ('./' + savedLid + '/index.html') : ('./' + savedLid + '/'));
         }
         if (allLink) {
-          allLink.textContent = isEn ? 'All __TOTAL_SHOWCASE_LEAGUES__ Leagues' : 'ดูทั้ง __TOTAL_SHOWCASE_LEAGUES__ ลีก';
+          allLink.textContent = isEn ? 'Switch League (__TOTAL_SHOWCASE_LEAGUES__)' : 'เปลี่ยนลีก (__TOTAL_SHOWCASE_LEAGUES__ ลีก)';
           allLink.setAttribute('href', './preview.html');
         }
         if (closeBtn) {
@@ -25102,9 +25625,30 @@ __STRUCTURED_DATA_JSON__
         const ctaSpan = document.querySelector('#nav-cta-btn span');
         if (ctaSpan && copy.nav_cta) ctaSpan.textContent = copy.nav_cta;
         setTxt('m-nav-all-leagues', this.lang === 'en'
-          ? 'View All __TOTAL_SHOWCASE_LEAGUES__ Leagues →'
-          : 'เข้าดูลีกทั้งหมด (__TOTAL_SHOWCASE_LEAGUES__ ลีก) →');
+          ? 'Explore Live Leagues (__TOTAL_SHOWCASE_LEAGUES__) →'
+          : 'เข้าดูลีกสดในระบบ (__TOTAL_SHOWCASE_LEAGUES__ ลีก) →');
         this.renderReturningLeagueBar();
+
+        const lfIsEn = this.lang === 'en';
+        setTxt('lf-modal-title', lfIsEn
+          ? 'Explore Live Leagues (__TOTAL_SHOWCASE_LEAGUES__)'
+          : 'เข้าดูลีกสดในระบบ (__TOTAL_SHOWCASE_LEAGUES__ ลีก)');
+        setTxt('lf-modal-sub', lfIsEn
+          ? 'Pick from all __TOTAL_SHOWCASE_LEAGUES__ real showcase leagues or enter your League ID to jump straight in.'
+          : 'เลือกลีกตัวอย่างจริงทั้ง __TOTAL_SHOWCASE_LEAGUES__ ลีก หรือพิมพ์ชื่อ/รหัส League ID เพื่อเปิดลีกของคุณทันที');
+        const lfClose = document.getElementById('lf-close-btn');
+        if (lfClose) lfClose.setAttribute('aria-label', lfIsEn ? 'Close dialog' : 'ปิดหน้าต่าง');
+        const lfSearch = document.getElementById('lf-search-input');
+        if (lfSearch) {
+          lfSearch.placeholder = lfIsEn ? 'Search league name or League ID...' : 'ค้นหาชื่อลีก หรือพิมพ์รหัส League ID...';
+          lfSearch.setAttribute('aria-label', lfIsEn ? 'Search league name or League ID' : 'ค้นหาชื่อลีกหรือรหัส League ID');
+        }
+        setTxt('lf-search-clear', lfIsEn ? 'Clear' : 'ล้าง');
+        setTxt('lf-preview-fallback', lfIsEn ? 'Quick Demo Dashboard (preview.html) ↗' : 'เปิดดูตัวอย่างเร็ว (preview.html) ↗');
+        const lfModal = document.getElementById('league-finder-modal');
+        if (lfModal && !lfModal.classList.contains('hidden')) {
+          this.renderLeagueFinderList();
+        }
 
         setTxt('hero-h1-line1', copy.hero_h1_line1);
         setTxt('hero-h1-line2', copy.hero_h1_line2);
@@ -25113,8 +25657,8 @@ __STRUCTURED_DATA_JSON__
         setTxt('hero-secondary-cta-text', copy.hero_cta_secondary);
         setTxt('hero-badge-text', copy.hero_badge);
         setTxt('hero-live-pill-text', this.lang === 'en' ? '__TOTAL_ONLINE_TEAMS__ Teams Online' : '__TOTAL_ONLINE_TEAMS__ ทีมออนไลน์ในระบบ');
-        setTxt('hero-open-demo-label', this.lang === 'en' ? 'Open Demo League' : 'เปิดดูลีกตัวอย่าง');
-        setTxt('hero-all-preview-text', this.lang === 'en' ? 'View All Showcase Leagues' : 'ดูหน้าเลือกทั้งหมด');
+        setTxt('hero-open-demo-label', this.lang === 'en' ? 'Main Control Room ↓' : 'ดูห้องควบคุมหลัก ↓');
+        setTxt('hero-all-preview-text', this.lang === 'en' ? 'View All __TOTAL_SHOWCASE_LEAGUES__ Leagues' : 'ดูครบทั้ง __TOTAL_SHOWCASE_LEAGUES__ ลีก');
 
         this.renderStats(copy.stats || []);
         this.renderStream(copy);
@@ -26075,6 +26619,7 @@ __STRUCTURED_DATA_JSON__
     html = html.replace('__PRICING_JSON__', pricing_json)
     html = html.replace('__DEMOS_JSON__', demos_json)
     html = html.replace('__SHOWCASE_LEAGUE_MAP_JSON__', showcase_league_map_json)
+    html = html.replace('__SHOWCASE_LEAGUES_JSON__', showcase_leagues_json)
     html = html.replace('__SAMPLE_PREVIEW_JSON__', sample_preview_json)
     return html
 

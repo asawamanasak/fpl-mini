@@ -1698,13 +1698,10 @@
         this.data = this.multiData.leagues[this.activeLeagueId] || Object.values(this.multiData.leagues)[0] || {};
         this.config = this.configs[this.activeLeagueId] || Object.values(this.configs)[0] || {};
         if (!this.config.features) this.config.features = {};
-        try {
-          if (typeof localStorage !== 'undefined' && this.activeLeagueId) {
-            localStorage.setItem('fpl_mini_active_league', String(this.activeLeagueId));
-            const activeLeagueName = String((this.data && this.data.name) || (this.config && this.config.name) || '').slice(0, 80);
-            if (activeLeagueName) localStorage.setItem('fpl_mini_active_league_name', activeLeagueName);
-          }
-        } catch (e) {}
+        const activeLeagueName = String((this.data && this.data.name) || (this.config && this.config.name) || '').slice(0, 80);
+        if (typeof this.recordRecentLeague === 'function') {
+          this.recordRecentLeague(this.activeLeagueId, activeLeagueName);
+        }
         
         const maxGW = Number(this.multiData.max_gw) || 2;
         const queryGWNum = Number(queryGW);
@@ -3867,6 +3864,34 @@
         return this._leagueFetchPromises[lidStr];
       }
 
+      recordRecentLeague(leagueId, leagueName) {
+        const cleanId = String(leagueId || '').trim();
+        if (!/^[0-9]{1,10}$/.test(cleanId)) return;
+        const cleanName = String(leagueName || '').slice(0, 80).trim();
+        try {
+          if (typeof localStorage === 'undefined') return;
+          localStorage.setItem('fpl_mini_active_league', cleanId);
+          if (cleanName) localStorage.setItem('fpl_mini_active_league_name', cleanName);
+          let recent = [];
+          try {
+            const parsed = JSON.parse(localStorage.getItem('fpl_mini_recent_leagues') || '[]');
+            if (Array.isArray(parsed)) recent = parsed;
+          } catch (_) {}
+          const deduped = [{ id: cleanId, name: cleanName }];
+          const seen = new Set([cleanId]);
+          for (let i = 0; i < recent.length; i += 1) {
+            const entry = recent[i];
+            const rid = String((entry && entry.id) || '').trim();
+            if (!/^[0-9]{1,10}$/.test(rid) || seen.has(rid)) continue;
+            seen.add(rid);
+            const rname = String((entry && entry.name) || '').slice(0, 80).trim();
+            deduped.push({ id: rid, name: rname });
+            if (deduped.length >= 3) break;
+          }
+          localStorage.setItem('fpl_mini_recent_leagues', JSON.stringify(deduped));
+        } catch (e) {}
+      }
+
       async switchLeague(leagueId, fromPopstate = false) {
         const lidStr = String(leagueId);
         if (!this.multiData || !this.multiData.leagues || !this.multiData.leagues[lidStr]) return;
@@ -3949,13 +3974,10 @@
         this.cupSearchQuery = '';
         this.cupFilterMode = 'all';
         
-        try {
-          if (typeof localStorage !== 'undefined') {
-            localStorage.setItem('fpl_mini_active_league', String(this.activeLeagueId));
-            const switchedName = String((this.data && this.data.name) || (this.config && this.config.name) || '').slice(0, 80);
-            if (switchedName) localStorage.setItem('fpl_mini_active_league_name', switchedName);
-          }
-        } catch (e) {}
+        const switchedName = String((this.data && this.data.name) || (this.config && this.config.name) || '').slice(0, 80);
+        if (typeof this.recordRecentLeague === 'function') {
+          this.recordRecentLeague(this.activeLeagueId, switchedName);
+        }
 
         // Safely update clean URL without ever breaking script execution
         if (!fromPopstate) {
