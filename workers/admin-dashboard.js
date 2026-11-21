@@ -629,7 +629,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             Tier 1: พร้อมเปิดใช้งานทันที
           </span>
           <span id="pitchTier2Badge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800" data-i18n="pitch_tier2_roadmap">
-            Tier 2: Live Beta (สเกล 1,779 ทีม)
+            Tier 2: Live Auto-Picks (1,779 ทีม · สูงสุด 3,000)
           </span>
           <button type="button" id="btnTogglePitchBody" aria-expanded="true"
             class="min-h-[42px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark text-xs font-semibold text-slate-800 dark:text-neutral-200 whitespace-nowrap transition-colors"
@@ -668,7 +668,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 ${ICONS.check} FPLSaWaDiKa Solution
               </span>
               <p class="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed" data-i18n="sol_1_desc">
-                คำนวณแต้มสด Net Pts หัก Transfer Hit อัตโนมัติทุก 15 วินาที พร้อมตารางคะแนนสดไม่ต้องแตะ Excel
+                คำนวณแต้มสด Net Pts หัก Transfer Hit อัตโนมัติทุก 20 วินาที (Edge Cache 15s) พร้อมตารางคะแนนสดไม่ต้องแตะ Excel
               </p>
             </div>
           </div>
@@ -901,54 +901,54 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <p class="text-xs text-slate-600 dark:text-neutral-300 mt-1" data-i18n="graphic4_sub">เปรียบเทียบระหว่าง Official FPL, Tier 2 (Live Beta), และ Tier 1 Core</p>
             </div>
 
-            <!-- Mini Matrix Table (Horizontal Scrollable Without Cramped Text) -->
-            <div class="overflow-x-auto touch-scroll text-xs">
-              <table class="w-full min-w-[540px] text-left border-collapse">
+            <!-- Mini Matrix Table (Fits cleanly at 390px mobile without right-edge clipping) -->
+            <div id="graphic4MatrixWrap" class="overflow-x-auto touch-scroll text-[10.5px] sm:text-xs leading-tight">
+              <table class="w-full text-left border-collapse">
                 <thead>
-                  <tr class="border-b border-borderLight dark:border-borderDark text-xs mono text-slate-600 dark:text-neutral-300">
-                    <th class="py-2 px-2 font-medium whitespace-nowrap" data-i18n="col_feat">ฟังก์ชัน</th>
-                    <th class="py-2 px-2 text-center whitespace-nowrap" data-i18n="col_fpl_app">Official App</th>
-                    <th class="py-2 px-2 text-center whitespace-nowrap" data-i18n="col_tier2">Tier 2 (Live Beta)</th>
-                    <th class="py-2 px-2 text-center font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap" data-i18n="col_tier1">Tier 1 (พร้อมขาย)</th>
+                  <tr class="border-b border-borderLight dark:border-borderDark text-[10.5px] sm:text-[11px] mono text-slate-600 dark:text-neutral-300">
+                    <th class="py-2 pr-1 sm:pr-2 font-medium" data-i18n="col_feat">ฟังก์ชัน</th>
+                    <th class="py-2 px-0.5 sm:px-1 text-center sm:whitespace-nowrap" data-i18n="col_fpl_app">Official App</th>
+                    <th class="py-2 px-0.5 sm:px-1 text-center sm:whitespace-nowrap" data-i18n="col_tier2">Tier 2 (≤3k)</th>
+                    <th class="py-2 pl-0.5 sm:pl-1 text-center font-bold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="col_tier1">Tier 1 (พร้อมขาย)</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-borderLight dark:divide-borderDark">
                   <tr>
-                    <td class="py-2 px-2 font-medium whitespace-nowrap" data-i18n="matrix_f1">แต้มสด & โบนัส BPS 15 วิ</td>
-                    <td class="py-2 px-2 text-center text-slate-600 dark:text-neutral-400 whitespace-nowrap">3-5 นาที</td>
-                    <td class="py-2 px-2 text-center text-emerald-700 dark:text-emerald-400 whitespace-nowrap">✅ มี</td>
-                    <td class="py-2 px-2 text-center font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">✅ มีสด 15s</td>
+                    <td class="py-2 pr-1 sm:pr-2 font-medium" data-i18n="matrix_f1">แต้มสด &amp; BPS (20s/90s)</td>
+                    <td class="py-2 px-0.5 sm:px-1 text-center text-slate-600 dark:text-neutral-400 sm:whitespace-nowrap" data-i18n="matrix_f1_app">3-5 นาที</td>
+                    <td class="py-2 px-0.5 sm:px-1 text-center font-semibold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f1_t2">✅ สด 20s</td>
+                    <td class="py-2 pl-0.5 sm:pl-1 text-center font-bold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f1_t1">✅ สด 20s</td>
                   </tr>
                   <tr>
-                    <td class="py-2 px-2 font-medium whitespace-nowrap" data-i18n="matrix_f2">หักแต้มย้ายตัว Net Pts สด</td>
-                    <td class="py-2 px-2 text-center text-rose-600 dark:text-rose-400 whitespace-nowrap">❌ ไม่มี</td>
-                    <td class="py-2 px-2 text-center text-slate-600 dark:text-neutral-400 whitespace-nowrap">⚠️ หลังจบวีค</td>
-                    <td class="py-2 px-2 text-center font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">✅ สดทันที</td>
+                    <td class="py-2 pr-1 sm:pr-2 font-medium" data-i18n="matrix_f2">หักแต้มย้ายตัว Net Pts สด</td>
+                    <td class="py-2 px-0.5 sm:px-1 text-center text-rose-600 dark:text-rose-400 sm:whitespace-nowrap" data-i18n="matrix_none">❌ ไม่มี</td>
+                    <td class="py-2 px-0.5 sm:px-1 text-center font-semibold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f2_t2">✅ สด (≤3k ทีม)</td>
+                    <td class="py-2 pl-0.5 sm:pl-1 text-center font-bold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f2_t1">✅ สดทันที</td>
                   </tr>
                   <tr>
-                    <td class="py-2 px-2 font-medium whitespace-nowrap" data-i18n="matrix_f3">บทพากย์กูรูลูกหนังสายดราม่า</td>
-                    <td class="py-2 px-2 text-center text-rose-600 dark:text-rose-400 whitespace-nowrap">❌ ไม่มี</td>
-                    <td class="py-2 px-2 text-center text-rose-600 dark:text-rose-400 whitespace-nowrap">❌ ไม่มี</td>
-                    <td class="py-2 px-2 text-center font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">✅ อัตโนมัติ</td>
+                    <td class="py-2 pr-1 sm:pr-2 font-medium" data-i18n="matrix_f3">บทพากย์กูรูลูกหนัง</td>
+                    <td class="py-2 px-0.5 sm:px-1 text-center text-rose-600 dark:text-rose-400 sm:whitespace-nowrap" data-i18n="matrix_none">❌ ไม่มี</td>
+                    <td class="py-2 px-0.5 sm:px-1 text-center font-semibold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f3_t2">✅ พากย์สด</td>
+                    <td class="py-2 pl-0.5 sm:pl-1 text-center font-bold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f3_t1">✅ ครบทุกแท็บ</td>
                   </tr>
                   <tr>
-                    <td class="py-2 px-2 font-medium whitespace-nowrap" data-i18n="matrix_f4">คำนวณเงินรางวัล/ค่าปรับอัตโนมัติ</td>
-                    <td class="py-2 px-2 text-center text-rose-600 dark:text-rose-400 whitespace-nowrap">❌ ไม่มี</td>
-                    <td class="py-2 px-2 text-center text-slate-600 dark:text-neutral-400 whitespace-nowrap">⚠️ พื้นฐาน</td>
-                    <td class="py-2 px-2 text-center font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">✅ 100% Custom</td>
+                    <td class="py-2 pr-1 sm:pr-2 font-medium" data-i18n="matrix_f4">คำนวณเงินรางวัล/ค่าปรับ</td>
+                    <td class="py-2 px-0.5 sm:px-1 text-center text-rose-600 dark:text-rose-400 sm:whitespace-nowrap" data-i18n="matrix_none">❌ ไม่มี</td>
+                    <td class="py-2 px-0.5 sm:px-1 text-center text-slate-600 dark:text-neutral-400 sm:whitespace-nowrap" data-i18n="matrix_f4_t2">⚠️ พื้นฐาน</td>
+                    <td class="py-2 pl-0.5 sm:pl-1 text-center font-bold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f4_t1">✅ 100% Custom</td>
                   </tr>
                   <tr>
-                    <td class="py-2 px-2 font-medium whitespace-nowrap" data-i18n="matrix_f5">Interactive Squad Pitch Modal</td>
-                    <td class="py-2 px-2 text-center text-slate-600 dark:text-neutral-400 whitespace-nowrap">ดูช้า</td>
-                    <td class="py-2 px-2 text-center text-slate-600 dark:text-neutral-400 whitespace-nowrap">⚠️ On-Demand</td>
-                    <td class="py-2 px-2 text-center font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">✅ คลิกเดียวครบ</td>
+                    <td class="py-2 pr-1 sm:pr-2 font-medium" data-i18n="matrix_f5">Interactive Pitch Modal</td>
+                    <td class="py-2 px-0.5 sm:px-1 text-center text-slate-600 dark:text-neutral-400 sm:whitespace-nowrap" data-i18n="matrix_f5_app">ดูช้า</td>
+                    <td class="py-2 px-0.5 sm:px-1 text-center font-semibold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f5_t2">✅ ทันที (≤3k)</td>
+                    <td class="py-2 pl-0.5 sm:pl-1 text-center font-bold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f5_t1">✅ คลิกเดียวครบ</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
             <div class="pt-3 border-t border-borderLight dark:border-borderDark flex flex-wrap items-center justify-between gap-2 text-xs">
-              <span id="graphic4Callout" class="text-slate-600 dark:text-neutral-300" data-i18n="graphic4_callout">Tier 1 พร้อมส่งมอบทันที · Tier 2 (Live Beta) รองรับ 1,779 ทีม</span>
+              <span id="graphic4Callout" class="text-slate-600 dark:text-neutral-300" data-i18n="graphic4_callout">Tier 1 พร้อมส่งมอบทันที · Tier 2 (Auto-Picks Live) รองรับ 1,779 ทีม (สูงสุด 3,000 ทีม)</span>
               <span class="mono font-bold text-indigo-700 dark:text-indigo-400 whitespace-nowrap">Turnkey Core</span>
             </div>
           </div>
@@ -1354,7 +1354,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 </th>
                 <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">1,779</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-600 dark:text-neutral-400">เสื้อบอลแท้</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Standings &amp; Leaderboard Only · Instant 1,779-Team Search</td>
+                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Tier 2 Auto-Picks Live (Cap/Hits/Pitch) · 1,779-Team Search</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">0</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-800 dark:text-neutral-200">91.2%</td>
               </tr>
@@ -1844,7 +1844,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <div id="sysWorkerBar" class="bg-emerald-500 h-full rounded-full" style="width: 8.4%"></div>
           </div>
           <div class="text-xs text-slate-600 dark:text-neutral-400 flex justify-between">
-            <span data-i18n="sys_cache_hit_label">อัตราเสิร์ฟจากแคช (Cache Hit):</span>
+            <span data-i18n="sys_cache_hit_label">อัตราเสิร์ฟจากแคช (Benchmark):</span>
             <span id="sysWorkerCacheHit" class="mono font-semibold text-emerald-700 dark:text-emerald-400">96.4%</span>
           </div>
         </div>
@@ -1872,7 +1872,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <div class="space-y-1">
             <div class="flex items-center justify-between text-xs">
               <span class="font-medium text-slate-600 dark:text-neutral-400">GitHub Actions Cron</span>
-              <span class="mono font-semibold text-emerald-700 dark:text-emerald-400">15m / Sync</span>
+              <span class="mono font-semibold text-emerald-700 dark:text-emerald-400" title="Matchdays (Fri–Mon): every 1h · Off-days (Tue–Thu): every 4h">1h / 4h Cron</span>
             </div>
             <div id="sysGhSyncTime" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">15.9s <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">/ build</span></div>
           </div>
@@ -1890,12 +1890,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <div class="space-y-1">
             <div class="flex items-center justify-between text-xs">
               <span class="font-medium text-slate-600 dark:text-neutral-400">FPL Upstream Proxy</span>
-              <span id="sysUpstreamBadge" class="mono font-semibold text-emerald-700 dark:text-emerald-400">Healthy</span>
+              <span id="sysUpstreamBadge" class="mono font-semibold text-slate-600 dark:text-neutral-400" data-i18n="sys_upstream_ready">พร้อมเช็ก</span>
             </div>
-            <div id="sysUpstreamLatency" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">142 ms</div>
+            <div id="sysUpstreamLatency" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">— <span class="text-xs font-normal font-sans text-slate-500 dark:text-neutral-400" data-i18n="sys_upstream_tap_hint">(กดเช็กด้านล่าง)</span></div>
           </div>
           <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div class="bg-emerald-500 h-full rounded-full" style="width: 18%"></div>
+            <div id="sysUpstreamBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
           </div>
           <div class="text-xs text-slate-600 dark:text-neutral-400 flex justify-between">
             <span data-i18n="sys_scale_headroom_label">เพดานขยายสเกล (Headroom):</span>
@@ -2415,6 +2415,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <label for="onbPlan" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_plan">แพ็กเกจ (Plan)</label>
             <select id="onbPlan" class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-900 dark:text-white">
               <option value="standard">Standard (฿500 / $19)</option>
+              <option value="tier2_quote">Tier 2 Quote (31+ ทีม)</option>
               <option value="custom" disabled>Custom — Roadmap H2H/Predict (฿900 / $29)</option>
             </select>
           </div>
@@ -2445,7 +2446,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
+          <div class="space-y-1.5">
+            <label for="onbTier" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_tier">ระดับสถาปัตยกรรม (Tier)</label>
+            <select id="onbTier" class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-900 dark:text-white">
+              <option value="1">Tier 1 — Full Analytics (≤30 ทีม)</option>
+              <option value="2">Tier 2 — Auto-Picks Live (31–3,000 ทีม)</option>
+            </select>
+          </div>
           <div class="space-y-1.5">
             <label for="onbCurrency" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_currency">สกุลเงินรางวัล (Currency)</label>
             <select id="onbCurrency" class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-900 dark:text-white">
@@ -2640,7 +2648,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sec0_title: '00. โซลูชันบริหารมินิลีกแบบ Zero-Touch และข้อเสนอทางธุรกิจ',
         sec0_sub: 'เปลี่ยนมินิลีกของคุณให้จัดการตัวเองอัตโนมัติ 100% · ลดเวลาทำ Excel 190+ ชม./ปี · สร้างการมีส่วนร่วมของลูกลีกเพิ่มขึ้น 5.7 เท่า พร้อมรองรับเงินรางวัลหมุนเวียนอย่างโปร่งใส',
         pitch_tier1_ready: 'Tier 1: พร้อมเปิดใช้งานทันที',
-        pitch_tier2_roadmap: 'Tier 2: Live Beta (สเกล 1,779 ทีม)',
+        pitch_tier2_roadmap: 'Tier 2: Live Auto-Picks (1,779 ทีม · สูงสุด 3,000)',
         pitch_step1_title: 'ปัญหาใหญ่ของผู้จัดลีก (Organizer Pain Points) vs ทางออก FPLSaWaDiKa',
         pitch_step1_sub: 'เปรียบเทียบภาระงานจริง',
         pain_1_badge: 'ปัญหาแอดมิน',
@@ -2648,7 +2656,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pain_1_title: 'ทำ Excel สรุปคะแนน & เช็กแต้มลบ',
         pain_1_desc: 'ต้องมานั่งไล่ดูว่าใครย้ายกี่ตัว โดนลบกี่แต้ม ใครใช้ชิปอะไร สรุปผลช้า 1-2 วันหลังบอลจบ',
         sol_1_badge: 'FPLSaWaDiKa Solution',
-        sol_1_desc: 'คำนวณแต้มสด Net Pts หัก Transfer Hit อัตโนมัติทุก 15 วินาที พร้อมตารางคะแนนสดไม่ต้องแตะ Excel',
+        sol_1_desc: 'คำนวณแต้มสด Net Pts หัก Transfer Hit อัตโนมัติทุก 20 วินาที (Edge Cache 15s) พร้อมตารางคะแนนสดไม่ต้องแตะ Excel',
         pain_2_badge: 'ปัญหาเหรัญญิก',
         pain_2_metric: 'ข้อพิพาทเงินรางวัล',
         pain_2_title: 'คำนวณเงินรางวัล & ค่าปรับผิดพลาด',
@@ -2702,14 +2710,27 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         graphic4_sub: 'เปรียบเทียบระหว่าง Official FPL, Tier 2 Live Beta, และ Tier 1 Core',
         col_feat: 'ฟังก์ชัน',
         col_fpl_app: 'Official App',
-        col_tier2: 'Tier 2 (Live Beta)',
+        col_tier2: 'Tier 2 (≤3k)',
         col_tier1: 'Tier 1 (พร้อมขาย)',
-        matrix_f1: 'แต้มสด & โบนัส BPS 15 วิ',
+        matrix_none: '❌ ไม่มี',
+        matrix_f1: 'แต้มสด & BPS (20s/90s)',
+        matrix_f1_app: '3-5 นาที',
+        matrix_f1_t2: '✅ สด 20s',
+        matrix_f1_t1: '✅ สด 20s',
         matrix_f2: 'หักแต้มย้ายตัว Net Pts สด',
-        matrix_f3: 'บทพากย์กูรูลูกหนังสายดราม่า',
-        matrix_f4: 'คำนวณเงินรางวัล/ค่าปรับอัตโนมัติ',
-        matrix_f5: 'Interactive Squad Pitch Modal',
-        graphic4_callout: 'Tier 1 พร้อมส่งมอบทันที · Tier 2 (Live Beta) รองรับ 1,779 ทีม',
+        matrix_f2_t2: '✅ สด (≤3k)',
+        matrix_f2_t1: '✅ สดทันที',
+        matrix_f3: 'บทพากย์กูรูลูกหนัง',
+        matrix_f3_t2: '✅ พากย์สด',
+        matrix_f3_t1: '✅ ครบทุกแท็บ',
+        matrix_f4: 'คำนวณเงินรางวัล/ค่าปรับ',
+        matrix_f4_t2: '⚠️ พื้นฐาน',
+        matrix_f4_t1: '✅ 100% Custom',
+        matrix_f5: 'Interactive Pitch Modal',
+        matrix_f5_app: 'ดูช้า',
+        matrix_f5_t2: '✅ ทันที (≤3k)',
+        matrix_f5_t1: '✅ คลิกเดียวครบ',
+        graphic4_callout: 'Tier 1 พร้อมส่งมอบทันที · Tier 2 (Auto-Picks Live) รองรับ 1,779 ทีม (สูงสุด 3,000 ทีม)',
         pitch_step3_title: 'ทางลัดเปิดโชว์ระบบจริงต่อหน้าลูกค้า (Live Interactive Jump Links)',
         pitch_step3_sub: 'คลิกเพื่อเปิดหน้าจริงในแท็บใหม่',
         jump_1_title: 'คะแนนสด & ผัง 11 ตัวจริง',
@@ -2723,7 +2744,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         jump_5_title: 'บอลถ้วยแพ้คัดออก',
         jump_5_sub: 'สายการแข่งขันอัตโนมัติ',
         telem_live_active: 'ระบบตรวจวัดข้อมูลสดทำงานปกติ',
-        telem_auto_sync: '(ซิงก์อัตโนมัติรายชั่วโมง · ${authProvider})',
+        telem_auto_sync: '(ซิงก์อัตโนมัติ 1 ชม. / 4 ชม. · ${authProvider})',
         telem_last_sync_label: 'ซิงก์ข้อมูลล่าสุด: ',
         telem_runner_label: 'ตัวประมวลผล: ',
         telem_countdown_sub: 'นับถอยหลังปิดตลาดย้ายตัว',
@@ -2835,10 +2856,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         peak_3_desc: 'เหรัญญิกและสมาชิกเข้ามาตรวจผลรางวัลประจำสัปดาห์หลัง GitHub Actions ซิงก์ข้อมูลจบ',
         sec7_title: '07. ประสิทธิภาพระบบ โควตาคลาวด์ และความจุในการขยายสเกล',
         sec7_sub: 'ติดตามสุขภาพระบบจริงเพื่อประเมินเพดานรองรับผู้ใช้งานและควบคุมต้นทุน',
-        sys_cache_hit_label: 'อัตราเสิร์ฟจากแคช (Cache Hit):',
+        sys_cache_hit_label: 'อัตราเสิร์ฟจากแคช (Benchmark):',
         sys_d1_reads_label: 'โควตาอ่าน-เขียนรายวัน:',
         sys_gh_success_label: 'อัตราซิงก์สำเร็จ (Benchmark):',
         sys_scale_headroom_label: 'เพดานขยายสเกล (Headroom):',
+        sys_upstream_ready: 'พร้อมเช็ก',
+        sys_upstream_tap_hint: '(กดเช็กด้านล่าง)',
         ops_title: 'ปุ่มดูแลและเช็กความพร้อมของเว็บ',
         ops_sub: 'กดเฉพาะตอนที่ต้องการตรวจสอบหรือแก้ไขปัญหา ผลลัพธ์จะแสดงใต้ปุ่มทันที (คนเข้าเว็บทั่วไปไม่ได้รับผลกระทบ)',
         ops_shortcut_hint: 'คีย์ลัด: R รีเฟรช · L สลับภาษา · T สลับธีม',
@@ -2888,6 +2911,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         onb_lbl_prize: 'รูปแบบรางวัล',
         onb_lbl_weekly: 'รางวัล/สัปดาห์ (บาท)',
         onb_lbl_status: 'สถานะสิทธิ์ (Status)',
+        onb_lbl_tier: 'ระดับสถาปัตยกรรม (Tier)',
         onb_lbl_tenant: 'Tenant Group (แยกการมองเห็น)',
         onb_lbl_visibility: 'การมองเห็น & SEO',
         onb_lbl_short: 'ชื่อย่อหน้าลีก (Short Name)',
@@ -3006,7 +3030,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sec0_title: '00. Turnkey Platform Solution for Mini-League Organizers',
         sec0_sub: '100% Self-Managing Mini-Leagues · Saves 190+ hrs/year · 5.7x Higher Member Engagement with fully auditable prize settlements.',
         pitch_tier1_ready: 'Tier 1: Turnkey & Ready to Onboard',
-        pitch_tier2_roadmap: 'Tier 2: Live Beta (1,779 Teams)',
+        pitch_tier2_roadmap: 'Tier 2: Live Auto-Picks (1,779 Teams · ≤3k Cap)',
         pitch_step1_title: 'Organizer Pain Points vs FPLSaWaDiKa Zero-Touch Solution',
         pitch_step1_sub: 'Real-World Operational Comparison',
         pain_1_badge: 'Admin Pain',
@@ -3014,7 +3038,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         pain_1_title: 'Manual Excel & Transfer Hit Audits',
         pain_1_desc: 'Manually cross-referencing transfers, deduction hits, and chip activations. Standings delayed 1-2 days.',
         sol_1_badge: 'FPLSaWaDiKa Solution',
-        sol_1_desc: 'Automated 15s live scoring with real-time Net Pts transfer hit deductions and live bonus rankings.',
+        sol_1_desc: 'Automated 20s adaptive live polling (15s Edge Cache) with real-time Net Pts transfer hit deductions and live bonus rankings.',
         pain_2_badge: 'Treasurer Pain',
         pain_2_metric: 'Prize Disputes',
         pain_2_title: 'Complex Prize & Penalty Calculation Errors',
@@ -3068,14 +3092,27 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         graphic4_sub: 'Official App vs Tier 2 Live Beta vs Tier 1 Turnkey Core',
         col_feat: 'Feature',
         col_fpl_app: 'Official App',
-        col_tier2: 'Tier 2 (Live Beta)',
-        col_tier1: 'Tier 1 (Turnkey Core)',
-        matrix_f1: '15s Real-Time Score & Live BPS',
-        matrix_f2: 'Live Net Pts (Transfer Cost Hit)',
-        matrix_f3: 'Hardcore Pundit AI Match Commentary',
-        matrix_f4: 'Automated Custom Prize/Penalty Engine',
-        matrix_f5: 'One-Tap Squad Lineup Pitch Modal',
-        graphic4_callout: 'Tier 1 ready to onboard immediately · Tier 2 (Live Beta) scales to 1,779 teams',
+        col_tier2: 'Tier 2 (≤3k)',
+        col_tier1: 'Tier 1 (Turnkey)',
+        matrix_none: '❌ None',
+        matrix_f1: 'Live Score & BPS (20s/90s)',
+        matrix_f1_app: '3-5 min',
+        matrix_f1_t2: '✅ Live 20s',
+        matrix_f1_t1: '✅ Live 20s',
+        matrix_f2: 'Live Net Pts (Hits Deducted)',
+        matrix_f2_t2: '✅ Live (≤3k)',
+        matrix_f2_t1: '✅ Real-Time',
+        matrix_f3: 'Pundit AI Match Banter',
+        matrix_f3_t2: '✅ Live Note',
+        matrix_f3_t1: '✅ Full Tabs',
+        matrix_f4: 'Automated Prize/Penalty Engine',
+        matrix_f4_t2: '⚠️ Basic',
+        matrix_f4_t1: '✅ 100% Custom',
+        matrix_f5: 'Interactive Pitch Modal',
+        matrix_f5_app: 'Slow',
+        matrix_f5_t2: '✅ Instant (≤3k)',
+        matrix_f5_t1: '✅ One-Tap Full',
+        graphic4_callout: 'Tier 1 ready to onboard · Tier 2 (Auto-Picks Live) running 1,779 teams (≤3,000 cap)',
         pitch_step3_title: 'Live Interactive Demo Jump Links',
         pitch_step3_sub: 'Click any module to open live demo in new tab',
         jump_1_title: 'Live Scores & Squad Pitch',
@@ -3201,10 +3238,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         peak_3_desc: 'League treasurers and members verify final weekly winners after GitHub Actions completes sync.',
         sec7_title: '07. System Performance, Cloud Quota & Scaling Capacity',
         sec7_sub: 'Real-time infrastructure health, free-tier quota utilization, and multi-league scaling headroom',
-        sys_cache_hit_label: 'Edge Cache Hit Ratio:',
+        sys_cache_hit_label: 'Edge Cache Hit Ratio (Benchmark):',
         sys_d1_reads_label: 'Daily Read/Write Quota:',
         sys_gh_success_label: '30-Day Sync Reliability (Benchmark):',
         sys_scale_headroom_label: 'Scaling Headroom:',
+        sys_upstream_ready: 'Ready',
+        sys_upstream_tap_hint: '(Tap Ping)',
         ops_title: 'Site Care & Quick Diagnostic Controls',
         ops_sub: 'Use only when checking or fixing live issues. Results appear directly under each button (zero impact on visitors).',
         ops_shortcut_hint: 'Shortcuts: R Refresh · L Language · T Theme',
@@ -3254,6 +3293,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         onb_lbl_prize: 'Prize Model',
         onb_lbl_weekly: 'Weekly Prize (THB)',
         onb_lbl_status: 'Access Status',
+        onb_lbl_tier: 'Architecture Tier',
         onb_lbl_tenant: 'Tenant Group (Visibility Scope)',
         onb_lbl_visibility: 'Visibility & SEO',
         onb_lbl_short: 'Short Display Name',
@@ -3344,7 +3384,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       { id: '187827', name: 'Shi62', badge: '', teams: 13, pool: 3100, modulesTh: 'Zero-Sum ขั้นบันไดทั้งปี · พิเศษครึ่งฤดูกาลหลัง', modulesEn: 'Zero-Sum Annual Tiers · 2nd Half Special', views: 740, retention: 91.8, plan: 'custom', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
       { id: '5349', name: 'Bramann League', badge: '', teams: 20, pool: 9500, modulesTh: 'เงินรางวัลคู่ · ทายผล & ชาเลนจ์รายสัปดาห์', modulesEn: 'Dual Prize · Prediction & Challenge', views: 860, retention: 90.5, plan: 'custom', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
       { id: '567387', name: 'Fantasy Nguan & friends cup', badge: 'Community', teams: 12, pool: 0, poolLabelTh: 'คอมมูนิตี้', poolLabelEn: 'Community', modulesTh: 'ลีกคอมมูนิตี้ · ตารางคะแนนสด · ผัง 11 ตัวจริง', modulesEn: 'Community · Live Matrix · Pitch Modal', views: 2190, retention: 88.4, plan: 'standard', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
-      { id: '139836', name: 'FPL Growth Mindset 2026/27', badge: 'Tier 2', teams: 1779, pool: 0, poolLabelTh: 'เสื้อบอลแท้', poolLabelEn: 'Official Shirt', modulesTh: 'Tier 2 Standings & Leaderboard · ค้นหา 1,779 ทีมทันที', modulesEn: 'Tier 2 Standings & Leaderboard · 1,779-Team Search', views: 0, retention: 91.2, plan: 'tier2_beta', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' }
+      { id: '139836', name: 'FPL Growth Mindset 2026/27', badge: 'Tier 2', teams: 1779, pool: 0, poolLabelTh: 'เสื้อบอลแท้', poolLabelEn: 'Official Shirt', modulesTh: 'Tier 2 Auto-Picks Live (กัปตัน/Hits/ผังสด) · ค้นหา 1,779 ทีมทันที', modulesEn: 'Tier 2 Auto-Picks Live (Cap/Hits/Pitch) · 1,779-Team Search', views: 0, retention: 91.2, plan: 'tier2_beta', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' }
     ];
 
     let currentSortKey = 'pool';
@@ -4795,10 +4835,25 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           return;
         }
         if (action === 'ping-upstream' && data.upstream_latency_ms) {
+          const msVal = Number(data.upstream_latency_ms) || 0;
           const el = document.getElementById('sysUpstreamLatency');
-          if (el) el.textContent = data.upstream_latency_ms + ' ms';
+          if (el) el.textContent = msVal + ' ms';
           const badgeEl = document.getElementById('sysUpstreamBadge');
-          if (badgeEl) badgeEl.textContent = data.success ? 'Healthy' : ('HTTP ' + (data.upstream_status || 502));
+          if (badgeEl) {
+            badgeEl.removeAttribute('data-i18n');
+            badgeEl.textContent = data.success ? 'Healthy' : ('HTTP ' + (data.upstream_status || 502));
+            badgeEl.className = data.success
+              ? 'mono font-semibold text-emerald-700 dark:text-emerald-400'
+              : 'mono font-semibold text-rose-600 dark:text-rose-400';
+          }
+          const barEl = document.getElementById('sysUpstreamBar');
+          if (barEl) {
+            const pct = Math.min(100, Math.max(8, Math.round((msVal / 1000) * 100)));
+            barEl.style.width = pct + '%';
+            barEl.className = data.success
+              ? 'bg-emerald-500 h-full rounded-full transition-all duration-300'
+              : 'bg-rose-500 h-full rounded-full transition-all duration-300';
+          }
         }
         if (action === 'prune-telemetry' && data.success) {
           loadLiveData(false);
@@ -4916,10 +4971,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const t2Fmt = Number(tier2TeamsCount || 1779).toLocaleString();
       const commFmt = Number(flag675290Teams || 60).toLocaleString();
 
-      I18N.th.pitch_tier2_roadmap = 'Tier 2: Live Beta (สเกล ' + t2Fmt + ' ทีม)';
-      I18N.en.pitch_tier2_roadmap = 'Tier 2: Live Beta (' + t2Fmt + ' Teams)';
-      I18N.th.graphic4_callout = 'Tier 1 พร้อมส่งมอบทันที · Tier 2 (Live Beta) รองรับ ' + t2Fmt + ' ทีม';
-      I18N.en.graphic4_callout = 'Tier 1 ready to onboard immediately · Tier 2 (Live Beta) scales to ' + t2Fmt + ' teams';
+      I18N.th.pitch_tier2_roadmap = 'Tier 2: Live Auto-Picks (' + t2Fmt + ' ทีม · สูงสุด 3,000)';
+      I18N.en.pitch_tier2_roadmap = 'Tier 2: Live Auto-Picks (' + t2Fmt + ' Teams · ≤3k Cap)';
+      I18N.th.graphic4_callout = 'Tier 1 พร้อมส่งมอบทันที · Tier 2 (Auto-Picks Live) รองรับ ' + t2Fmt + ' ทีม (สูงสุด 3,000 ทีม)';
+      I18N.en.graphic4_callout = 'Tier 1 ready to onboard · Tier 2 (Auto-Picks Live) running ' + t2Fmt + ' teams (≤3,000 cap)';
       I18N.th.kpi_managers_sub = 'Tier 1 ครบ ' + t1L + ' มินิลีก (รวม Tier 2 = ' + allFmt + ')';
       I18N.en.kpi_managers_sub = t1L + ' Tier 1 Leagues (' + allFmt + ' Total incl. Tier 2)';
       I18N.th.feat_comm_label = 'ลีกคอมมูนิตี้และพรีเมียม (เช่น 675290 · ' + commFmt + ' ทีม / Tier 2 · ' + t2Fmt + ' ทีม)';
@@ -4934,8 +4989,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       const row139836 = LEAGUE_PORTFOLIO.find((r) => String(r.id) === '139836');
       if (row139836) {
-        row139836.modulesTh = 'Tier 2 Standings & Leaderboard · ค้นหา ' + t2Fmt + ' ทีมทันที';
-        row139836.modulesEn = 'Tier 2 Standings & Leaderboard · ' + t2Fmt + '-Team Search';
+        row139836.modulesTh = 'Tier 2 Auto-Picks Live (กัปตัน/Hits/ผังสด) · ค้นหา ' + t2Fmt + ' ทีมทันที';
+        row139836.modulesEn = 'Tier 2 Auto-Picks Live (Cap/Hits/Pitch) · ' + t2Fmt + '-Team Search';
       }
     }
 
@@ -5021,8 +5076,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 pool: Number(liveMeta.pool || 0),
                 poolLabelTh: liveMeta.pool_label && liveMeta.pool_label !== '-' ? String(liveMeta.pool_label) : 'คอมมูนิตี้',
                 poolLabelEn: liveMeta.pool_label_en && liveMeta.pool_label_en !== '-' ? String(liveMeta.pool_label_en) : 'Community',
-                modulesTh: Number(liveMeta.tier) === 2 ? 'Tier 2 Standings & Leaderboard' : 'ตารางคะแนนสด · วิเคราะห์ทีม',
-                modulesEn: Number(liveMeta.tier) === 2 ? 'Tier 2 Standings & Leaderboard' : 'Live Standings & Analytics',
+                modulesTh: Number(liveMeta.tier) === 2 ? 'Tier 2 Auto-Picks Live (กัปตัน/Hits/ผังสด)' : 'ตารางคะแนนสด · วิเคราะห์ทีม',
+                modulesEn: Number(liveMeta.tier) === 2 ? 'Tier 2 Auto-Picks Live (Cap/Hits/Pitch)' : 'Live Standings & Analytics',
                 views: etLeague && typeof etLeague.views === 'number' ? Number(etLeague.views) : 0,
                 retention: 90.0,
                 plan: liveMeta.plan ? String(liveMeta.plan) : 'standard',
@@ -5324,6 +5379,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const prizeEl = document.getElementById('onbPrizeModel');
       const weeklyEl = document.getElementById('onbWeeklyPrize');
       const statusEl = document.getElementById('onbStatus');
+      const tierEl = document.getElementById('onbTier');
       const currencyEl = document.getElementById('onbCurrency');
       const entryFeeEl = document.getElementById('onbEntryFee');
       const totalPoolEl = document.getElementById('onbTotalPool');
@@ -5346,6 +5402,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (!idEl || !outCli || !outJson || !outLine) return;
 
       const lid = (idEl.value || '').replace(/[^0-9]+/g, '') || '40700';
+      const tierNum = (tierEl && Number(tierEl.value) === 2) ? 2 : 1;
       const plan = planEl ? planEl.value : 'standard';
       const prizeModel = prizeEl ? prizeEl.value : 'weekly';
       const currency = (currencyEl && currencyEl.value === 'USD') ? 'USD' : 'THB';
@@ -5382,6 +5439,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const cliParts = [
         'python3 onboard_league.py',
         '--league-id ' + lid,
+        '--tier ' + tierNum,
         '--plan ' + plan,
         '--prize-model ' + prizeModel,
         '--currency ' + currency,
@@ -5437,7 +5495,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         season: '2026/27',
         name: detectedName,
         short_name: shortName,
-        tier: 1,
+        tier: tierNum,
         plan: plan,
         status: accessStatus,
         currency: currency,
@@ -5516,13 +5574,19 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       const league = payload.league || {};
       const count = Number(payload.team_count || 0);
+      const needsTier2 = count > 30 || Boolean(payload.has_more_pages);
       const countLabel = payload.has_more_than_100 ? '100+ teams' : (payload.has_more_pages ? count + '+ teams' : count + ' teams');
       titleEl.textContent = (league.name || ('League ' + league.id)) + ' (ID: ' + (league.id || '-') + ')';
-      metaEl.textContent = countLabel + ' · ' + (count > 30 ? 'Exceeds 30-team Standard cap' : 'Fits Standard Package (<=30 teams)');
-      badgeEl.className = count > 30
+      metaEl.textContent = countLabel + ' · ' + (needsTier2 ? (count > 3000 ? 'Tier 2 Standings + On-Demand (>3,000 cap)' : 'Tier 2 Auto-Picks Live (31–3,000 teams)') : 'Fits Tier 1 Standard Package (<=30 teams)');
+      badgeEl.className = needsTier2
         ? 'px-2.5 py-1 rounded-md text-xs font-semibold mono bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30'
         : 'px-2.5 py-1 rounded-md text-xs font-semibold mono bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30';
-      badgeEl.textContent = count > 30 ? 'Custom Quote (31+)' : 'Standard Ready (<=30)';
+      badgeEl.textContent = needsTier2 ? (count > 3000 ? 'Tier 2 Standings (>3,000)' : 'Tier 2 Auto-Picks (31+)') : 'Tier 1 Standard Ready (<=30)';
+
+      const tierSelect = document.getElementById('onbTier');
+      const planSelect = document.getElementById('onbPlan');
+      if (tierSelect) tierSelect.value = needsTier2 ? '2' : '1';
+      if (planSelect) planSelect.value = needsTier2 ? 'tier2_quote' : 'standard';
 
       grid.innerHTML = '';
       (payload.teams || []).forEach((team) => {
@@ -5615,7 +5679,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         });
       }
       [
-        'onbLeagueId', 'onbPlan', 'onbPrizeModel', 'onbWeeklyPrize', 'onbStatus',
+        'onbLeagueId', 'onbTier', 'onbPlan', 'onbPrizeModel', 'onbWeeklyPrize', 'onbStatus',
         'onbCurrency', 'onbEntryFee', 'onbTotalPool', 'onbSeasonPrizes', 'onbCupPrize',
         'onbPenaltyTiers', 'onbMonthlyChamp', 'onbMonthlyRunner',
         'onbTenantGroup', 'onbVisibility', 'onbShortName', 'onbExpiresAt', 'onbNoCup'
@@ -6539,6 +6603,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
     // Keyboard shortcuts (R = Refresh, L = Language, T = Theme)
     document.addEventListener('keydown', (e) => {
+      if (!e || typeof e.key !== 'string') return;
       if (e.target && ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.tagName)) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const k = e.key.toLowerCase();

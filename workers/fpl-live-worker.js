@@ -5,6 +5,7 @@
  *   GET /live?event={gw}&slim=1   -> Optimized lightweight live payload (~85% smaller)
  *   GET /fixtures?event={gw}      -> Live Premier League match scores, minutes & BPS leaders
  *   GET /picks?entry={id}&gw={gw} -> On-Demand team squad lineup & picks for Tier 2 leagues
+ *   GET /standings?league={id}    -> Paginated classic league standings fallback for large Tier 2 leagues
  *   GET /health                   -> Edge health check & colocation status
  *
  * Executive Dashboard:
@@ -12,7 +13,7 @@
  *
  * Features:
  *   - Parallel Edge Fetch: Fetches FPL /event/{gw}/live/ and /fixtures/?event={gw} simultaneously
- *   - Smart Edge Cache (caches.default): 15s TTL during live matches (protects 100k/day free quota)
+ *   - Smart Edge Cache (caches.default): 15s TTL during live matches (paired with 20s/90s adaptive client polling)
  *   - Force Refresh Support (?force=1): 5s burst protection for manual user refreshes
  *   - Real-Time Provisional Bonus (BPS): Computes exact +3 / +2 / +1 bonus per fixture once >= 60 mins
  *   - Slim Mode (?slim=1): Strips unused FPL strings/floats, reducing payload from ~475KB to ~55KB
@@ -2832,6 +2833,7 @@ export default {
                     d1_daily_writes_used: estD1WritesToday > 0 ? estD1WritesToday : Math.min(Math.round((dynamicVisits / 7) * 5), 100000),
                     d1_daily_writes_limit: 100000,
                     edge_cache_hit_pct: 96.4,
+                    edge_cache_hit_is_benchmark: true,
                     edge_avg_latency_ms: 140,
                     sync: syncTelem,
                     scaling: {
@@ -2839,7 +2841,8 @@ export default {
                       tier1_safe_capacity_teams: 500,
                       tier1_headroom_teams: Math.max(0, 500 - data.portfolio.total_managers_tier1),
                       tier1_headroom_leagues: Math.max(0, 30 - data.portfolio.tier1_leagues_count),
-                      tier2_capacity: 'Unlimited (Decoupled JSON)',
+                      tier2_autopicks_max_teams: 3000,
+                      tier2_capacity: 'Auto-Picks Live ≤ 3,000 teams (Decoupled JSON)',
                       peak_concurrent_capacity: '3,000 - 5,000 users',
                     }
                   },
