@@ -537,126 +537,6 @@
       font-weight: 700;
     }
 
-    /* Returning Demo/Beta User Shortcut Bar */
-    .bm-return-bar {
-      background-color: var(--color-arena-surface);
-      color: var(--color-arena-ink);
-      border-bottom: 1px solid var(--color-arena-border);
-    }
-    .bm-return-bar.hidden {
-      display: none;
-    }
-    .bm-return-bar-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0.55rem 1.25rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.6rem 1rem;
-    }
-    .bm-return-bar-info {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.45rem;
-      min-width: 0;
-      font-size: 0.85rem;
-    }
-    .bm-return-dot {
-      width: 0.55rem;
-      height: 0.55rem;
-      border-radius: 9999px;
-      background-color: var(--color-live);
-      flex-shrink: 0;
-    }
-    .bm-return-prefix {
-      color: var(--color-arena-ink-2);
-    }
-    .bm-return-name {
-      color: var(--color-arena-ink);
-      font-weight: 700;
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-    .bm-return-bar-actions {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .bm-return-cta {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 44px;
-      padding: 0.4rem 0.9rem;
-      border-radius: 0.45rem;
-      background-color: var(--color-arena-ink);
-      color: var(--color-arena);
-      font-size: 0.82rem;
-      font-weight: 700;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: opacity 0.15s ease, transform 0.1s ease;
-    }
-    .bm-return-cta:hover {
-      opacity: 0.92;
-    }
-    .bm-return-cta:focus-visible {
-      outline: 2px solid var(--color-accent);
-      outline-offset: 2px;
-    }
-    .bm-return-all {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 44px;
-      padding: 0.4rem 0.8rem;
-      border-radius: 0.45rem;
-      border: 1px solid var(--color-arena-border-strong);
-      color: var(--color-arena-ink);
-      font-size: 0.82rem;
-      font-weight: 600;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: background-color 0.15s ease;
-    }
-    .bm-return-all:hover {
-      background-color: var(--color-arena-card);
-    }
-    .bm-return-close {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 44px;
-      min-height: 44px;
-      padding: 0;
-      border-radius: 0.45rem;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--color-arena-ink-2);
-      font-size: 1.25rem;
-      line-height: 1;
-      cursor: pointer;
-    }
-    .bm-return-close:hover {
-      background-color: var(--color-arena-card);
-      color: var(--color-arena-ink);
-    }
-    @media (max-width: 479px) {
-      .bm-return-bar-inner {
-        padding: 0.55rem 0.85rem;
-      }
-      .bm-return-bar-actions {
-        width: 100%;
-      }
-      .bm-return-cta {
-        flex: 1 1 auto;
-      }
-    }
-
     /* League Finder Modal (9 Showcase + Private ID Direct Jump) */
     .bm-lf-modal {
       position: fixed;
@@ -2418,7 +2298,6 @@
 
       <nav id="primary-nav-links" class="bm-nav-links" aria-label="หลัก">
         <a id="nav-link-features" href="#features" class="bm-nav-link">ฟีเจอร์หลัก</a>
-        <a id="nav-link-demos" href="#demos" class="bm-nav-link">ลีกตัวอย่างจริง</a>
         <a id="nav-link-pricing" href="#pricing" class="bm-nav-link">แพ็กเกจราคา</a>
         <a id="nav-link-order" href="#order" class="bm-nav-link">เปิดใช้งานลีก</a>
       </nav>
@@ -2429,7 +2308,7 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         </button>
         <a id="nav-cta-btn" href="./preview.html" onclick="event.preventDefault(); landingApp.openLeagueFinder(this);" class="bm-cta-nav">
-          <span>เข้าดูลีกสด (9 ลีก)</span>
+          <span>เข้าดูลีกตัวอย่าง</span>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
         </a>
         <button id="mobile-menu-toggle" type="button" onclick="landingApp.toggleMobileMenu()" class="bm-icon-btn bm-mobile-menu-btn" aria-expanded="false" aria-controls="mobile-nav-drawer" aria-label="เปิดเมนู">
@@ -2440,27 +2319,11 @@
 
     <div id="mobile-nav-drawer" class="bm-mobile-drawer hidden">
       <a id="m-nav-features" href="#features" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">ฟีเจอร์หลัก</a>
-      <a id="m-nav-demos" href="#demos" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">ลีกตัวอย่างจริง</a>
       <a id="m-nav-pricing" href="#pricing" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">แพ็กเกจราคา</a>
       <a id="m-nav-order" href="#order" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">เปิดใช้งานลีก</a>
-      <a id="m-nav-all-leagues" href="./preview.html" onclick="event.preventDefault(); landingApp.closeMobileMenu(); landingApp.openLeagueFinder(this);" class="bm-mobile-link bm-mobile-link-accent">เข้าดูลีกสดในระบบ (9 ลีก) →</a>
+      <a id="m-nav-all-leagues" href="./preview.html" onclick="event.preventDefault(); landingApp.closeMobileMenu(); landingApp.openLeagueFinder(this);" class="bm-mobile-link bm-mobile-link-accent">เข้าดูลีกตัวอย่าง →</a>
     </div>
   </header>
-
-  <div id="returning-league-bar" class="bm-return-bar hidden" role="region" aria-label="ทางลัดกลับเข้าลีกของคุณ">
-    <div class="bm-return-bar-inner">
-      <div class="bm-return-bar-info">
-        <span class="bm-return-dot" aria-hidden="true"></span>
-        <span id="return-bar-prefix" class="bm-return-prefix">เคยเข้าชมลีก:</span>
-        <strong id="return-bar-league-name" class="bm-return-name"></strong>
-      </div>
-      <div class="bm-return-bar-actions">
-        <a id="return-bar-go-btn" href="./preview.html" class="bm-return-cta">กลับเข้าลีกของคุณ →</a>
-        <a id="return-bar-all-link" href="./preview.html" onclick="event.preventDefault(); landingApp.openLeagueFinder(this);" class="bm-return-all">เปลี่ยนลีก (9 ลีก)</a>
-        <button id="return-bar-dismiss" type="button" onclick="landingApp.dismissReturningLeagueBar()" class="bm-return-close" aria-label="ซ่อนแถบนี้">×</button>
-      </div>
-    </div>
-  </div>
 
   <main id="main-content">
     <!-- Hero Arena -->
@@ -2503,7 +2366,7 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
             </a>
             <a id="hero-secondary-cta" href="./preview.html" onclick="event.preventDefault(); landingApp.openLeagueFinder(this);" class="bm-btn-outline-dark">
-              <span id="hero-secondary-cta-text">เข้าดูลีกสดในระบบ (9 ลีก)</span>
+              <span id="hero-secondary-cta-text">เข้าดูลีกตัวอย่าง</span>
             </a>
           </div>
 
@@ -2514,11 +2377,6 @@
             </div>
             <div class="bm-hero-meta-item tabular-nums">
               <span id="hero-views-inline">ยอดเข้าชม 2,850+ ครั้ง</span>
-            </div>
-            <div class="bm-hero-meta-item">
-              <a id="hero-open-demo-link" href="#features" class="bm-hero-link">
-                <span id="hero-open-demo-label">ดูห้องควบคุมหลัก ↓</span>
-              </a>
             </div>
           </div>
         </div>
@@ -2837,7 +2695,7 @@
     <div class="bm-lf-panel">
       <div class="bm-lf-head">
         <div>
-          <h2 id="lf-modal-title" class="bm-lf-title">เข้าดูลีกสดในระบบ (9 ลีก)</h2>
+          <h2 id="lf-modal-title" class="bm-lf-title">เข้าดูลีกตัวอย่าง (9 ลีก)</h2>
           <p id="lf-modal-sub" class="bm-lf-sub">เลือกลีกตัวอย่างจริงทั้ง 9 ลีก หรือพิมพ์ชื่อ/รหัส League ID เพื่อเปิดลีกของคุณทันที</p>
         </div>
         <button id="lf-close-btn" type="button" onclick="landingApp.closeLeagueFinder()" class="bm-lf-close" aria-label="ปิดหน้าต่าง">×</button>
@@ -2855,7 +2713,7 @@
   </div>
 
   <script>
-    window.LANDING_COPY = {"th": {"brand_sub": "ศูนย์ควบคุมมินิลีก FPL", "nav_features": "ฟีเจอร์หลัก", "nav_demos": "ลีกตัวอย่างจริง", "nav_pricing": "แพ็กเกจราคา", "nav_order": "เปิดใช้งานลีก", "nav_cta": "เข้าดูลีกสด (9 ลีก)", "hero_badge": "อัปเดตสดทุกวินาที", "hero_h1_line1": "มินิลีกของคุณ", "hero_h1_line2": "เดือดทุกวินาที", "hero_lead": "คะแนนสดเปลี่ยนตัวอัตโนมัติ เช็คชิปคู่แข่ง และสรุปเงินรางวัลครบ 38 วีค", "hero_cta_primary": "เปิดใช้งานลีกทันที", "hero_cta_secondary": "เข้าดูลีกสดในระบบ (9 ลีก)", "hero_metric_views": "ยอดเข้าชมระบบจริง", "hero_metric_sync": "รอบอัปเดตสด", "stats": [{"value": "ทุกวินาที", "label": "ปรับคะแนนสด"}, {"value": "100%", "label": "ลุ้นให้สุด ไม่ต้องหยุดมานั่งนับแต้ม"}, {"value": "38 GW", "label": "ปิดยอด พร้อมสถิติตอนจบฤดูกาล"}, {"value": "500฿", "label": "ต่อฤดูกาล (≤30 ทีม)"}], "stream_items": ["เช็คแต้มสดทันเกม", "เปลี่ยนตัวสำรองให้อัตโนมัติ", "รู้ทันชิปคู่แข่งทั้งลีก", "สรุปแชมป์วีคและแชมป์เดือน", "เก็บค่าปรับบ๊วยอัตโนมัติ", "จัดสายบอลถ้วยน็อคเอาท์", "ส่องผัง 11 ตัวจริงเพื่อนร่วมลีก", "พากย์ดราม่าหลังจบเกมสุดกวน", "ส่งออกตารางเป็น Excel (.xlsx)"], "drama_heading": "ลุ้นสด รู้ไว จบครบในหน้าเดียว", "drama_lead": "ไม่ต้องรอเว็บหลักอัปเดตช้า ไม่ต้องไล่บวกลบตัวสำรองหรือจดเงินใน Excel เอง แค่เปิดลิงก์ลีกก็รู้ผลครบทุกคน", "drama_cta": "เปิดดูลีกตัวอย่าง", "drama_feed": [{"kind": "goal", "tag": "แต้มสดพุ่ง", "time": "สดตอนนี้", "title": "กัปตัน Haaland ยิง 2 ลูก! สายเขียว FC แซงขึ้นที่ 1", "desc": "ขยับนำอันดับ 2 อยู่ +6 แต้ม ลุ้นคว้ารางวัลแชมป์ประจำสัปดาห์ (+500฿)"}, {"kind": "sub", "tag": "ออโต้ซับ", "time": "เมื่อสักครู่", "title": "ตัวจริงไม่ได้ลงสนาม สำรอง 11 แต้มลงแทนอัตโนมัติ", "desc": "ระบบคำนวณคะแนนสุทธิหลังเปลี่ยนตัวสำรองให้ทันที ไม่ต้องเดาเองจนจบเกม"}, {"kind": "chip", "tag": "เช็คชิป", "time": "ก่อนเตะ", "title": "ทีมอันดับ 2 แอบเปิด Triple Captain สัปดาห์นี้", "desc": "เช็คได้ครบทั้งลีกว่าใครเหลือ Wildcard, Free Hit หรือ Bench Boost กี่ใบ"}, {"kind": "line", "tag": "ปิดยอดกลุ่ม", "time": "จบสัปดาห์", "title": "ตารางรับจ่ายประจำสัปดาห์ครบจบในหน้าเดียวแล้ว", "desc": "สรุปยอดคนได้รางวัล คนโดนค่าปรับบ๊วย และยอดสุทธิครบทุกทีม พร้อมส่งออก Excel ได้ทันที"}], "screens_heading": "ห้องควบคุมหลัก", "screens_lead": "สลับดูทุกมุมมองที่ผู้จัดการลีกและสมาชิกใช้จริงตลอดสัปดาห์แข่งขัน\n(ภาพจำลองข้อมูลสมมติ สลับโหมดมืดและสว่าง)", "screens_note": "ภาพหน้าจอจากระบบจริง ปรับชื่อลีกและผู้จัดการทีมเป็นข้อมูลสมมติ", "screens": [{"key": "live", "num": "01", "theme": "Dark theme", "tab": "อัพเดทคะแนนสด", "title": "เช็คคะแนนสดพร้อมเปลี่ยนตัวอัตโนมัติทันเกม", "desc": "เห็นแต้มดิบ คะแนนลบ และตัวสำรองที่รอลงสนามแทนตัวจริงที่ไม่ได้ลงเล่นแบบเรียลไทม์", "spec": "รีเฟรชทุกวินาที"}, {"key": "pitch", "num": "02", "theme": "Dark theme", "tab": "แผน 11 ตัวจริง", "title": "ส่องแผนจัดทัพ 11 ตัวจริงของทุกทีมในลีก", "desc": "กดดูหน้าสนามเพื่อเทียบกัปตัน ฟอร์เมชัน และคะแนนตัวสำรองของคู่แข่งได้ในคลิกเดียว", "spec": "เทียบผังสนามทุกทีม"}, {"key": "transfers", "num": "03", "theme": "Light theme", "tab": "ย้ายตัว & ขุมกำลัง", "title": "วิเคราะห์การซื้อขายนักเตะและกำไรแต้มสุทธิ", "desc": "วัดผลทันทีว่าตัวที่ซื้อเข้ากับตัวที่ขายออกใครทำแต้มมากกว่า พร้อมสรุปดีลเด็ดประจำสัปดาห์", "spec": "หักลบแต้มฮิตอัตโนมัติ"}, {"key": "chips", "num": "04", "theme": "Dark theme", "tab": "สถานะชิปคู่แข่ง", "title": "ติดตามสถานะชิปคงเหลือของทั้งลีกในตารางเดียว", "desc": "เช็คทันทีว่าใครใช้ Wildcard, Free Hit, Triple Captain หรือ Bench Boost ไปแล้วในสัปดาห์ไหน", "spec": "เห็นชิปครบ 4 ใบ"}, {"key": "prizes", "num": "05", "theme": "Light theme", "tab": "เงินรางวัล & กองกลาง", "title": "คำนวณเงินรางวัลรายสัปดาห์ รายเดือน และค่าปรับบ๊วย", "desc": "ออกแบบตารางรับจ่ายยอดสุทธิ บริจาคการกุศล หรือหักยอดเข้ากองกลางอัตโนมัติ", "spec": "ส่งออก Excel (.xlsx) ได้"}, {"key": "radar", "num": "06", "theme": "Dark theme", "tab": "ทำเนียบแชมป์", "title": "บันทึกสถิติสูงสุดตลอดฤดูกาลและทำเนียบแชมป์", "desc": "รวมคะแนนสูงสุดต่อสัปดาห์ สถิติครองแชมป์สัปดาห์มากที่สุด และความสม่ำเสมอตลอด 38 นัด", "spec": "สถิติครบจบฤดูกาล"}], "demos_heading": "ลีกตัวอย่างจริงในระบบ", "demos_lead": "กดเข้าชมแดชบอร์ดของลีกตัวอย่างจริงทั้ง 5 รูปแบบกติกา เปิดใช้งานได้ทันทีทั้งบนมือถือและคอมพิวเตอร์", "demos_cta": "เปิดลีกจริง", "pricing_heading": "แพ็กเกจเปิดใช้งานรายฤดูกาล", "pricing_lead": "จ่ายครั้งเดียวดูแลครบทั้ง 38 Gameweeks สำหรับมินิลีกขนาดไม่เกิน 30 ทีม", "pricing_std_badge": "พร้อมเปิดใช้งาน", "pricing_std_desc": "เหมาะสำหรับลีกใช้กติการางวัล รายสัปดาห์ รายเดือน แชมป์ฤดูกาล แชมป์บอลถ้วย หรือเงินรางวัลอื่นๆ ที่หน้าแสดงผลมาตรฐานมีให้ สามารถนำมาคิดรวมเป็นรางวัลได้", "pricing_std_cta": "เลือก Standard", "pricing_cus_badge": "Roadmap • กำลังพัฒนา", "pricing_cus_desc": "อยู่ระหว่างพัฒนาระบบ (เพิ่มกฎเฉพาะของลีคขึ้นมาเองได้ เช่น ท้าชน หรือ ทายผล)", "pricing_cus_cta": "กำลังพัฒนา (Roadmap)", "pricing_tier2_title": "ลีกใหญ่ 50 ทีมขึ้นไป (ลีกคอมมูนิตี้ / กลุ่มใหญ่)", "pricing_tier2_desc": "รองรับตั้งแต่ 50 ถึง 1,000+ ทีม พร้อมระบบค้นหาเร็วและจัดสายบอลถ้วย", "faq_eyebrow": "FAQ", "faq_heading": "คำถามที่พบบ่อยก่อนเปิดลีก", "faq_lead": "คำตอบสำคัญสำหรับแอดมินและสมาชิกมินิลีก หากต้องการสอบถามกติกาเฉพาะกลุ่มทัก LINE หรือส่ง Email ได้ทันที", "faq_cta": "สอบถามเพิ่มเติมทาง LINE", "faqs": [{"q": "ต้องให้รหัสผ่านบัญชี FPL ของตัวเองไหม?", "a": "ไม่ต้องใช้รหัสผ่านใด ๆ ทั้งสิ้น ใช้เพียงเลข League ID สาธารณะจากหน้าเว็บ FPL ทางการเท่านั้น บัญชีของคุณปลอดภัย 100%"}, {"q": "ลีกเริ่มแข่งไปหลายสัปดาห์แล้ว เปิดใช้งานย้อนหลังได้ไหม?", "a": "ได้ทันที ระบบดึงข้อมูลย้อนหลังตั้งแต่ Gameweek 1 มาคำนวณคะแนน แชมป์ประจำสัปดาห์ ค่าปรับบ๊วย และสรุปยอดรวมให้ครบตั้งแต่วันแรก"}, {"q": "สมาชิกในกลุ่มต้องโหลดแอปหรือสมัครสมาชิกเพิ่มไหม?", "a": "ไม่ต้องโหลดแอปและไม่ต้องสมัครบัญชีเพิ่ม แค่เปิดลิงก์ผ่าน Safari หรือ Chrome จากกลุ่มแชทก็เช็คคะแนนสดและตารางเงินรางวัลได้ทันที"}, {"q": "หน้าเว็บลีกของเราจะถูกเปิดเป็นสาธารณะหรือค้นเจอบน Google ไหม?", "a": "ไม่เปิดเป็นสาธารณะ ลีกลูกค้าแต่ละกลุ่มแยกเฉพาะลิงก์ส่วนตัว ไม่แสดงในหน้าตัวอย่าง และปิดการค้นหา ไม่ให้ลิงก์ลีกของคุณไปแสดงบน Google"}, {"q": "หลังสั่งซื้อและแนบสลิปใช้เวลาตั้งค่านานแค่ไหน?", "a": "สำหรับแพ็กเกจ Standard เมื่อโอนผ่าน PromptPay QR และแนบสลิปเรียบร้อย ระบบจะส่งอีเมลแจ้งยืนยันและส่งมอบลิงก์ใช้งานจริงให้ภายใน 24 ชั่วโมง"}, {"q": "ในลีกมีเพื่อนบางคนขอจอยสนุกๆ ไม่ได้ร่วมลงเงินรางวัล แยกคิดเฉพาะคนลงขันได้ไหม?", "a": "ได้ทันที ระบบสามารถระบุชื่อทีมที่ 'ไม่ร่วมชิงรางวัล' แยกไว้ต่างหากได้ ดังนั้นแชมป์สัปดาห์ อันดับเงินรางวัล และค่าปรับบ๊วยจะคำนวณเฉพาะทีมที่ลงขันจริงเท่านั้น"}, {"q": "คะแนนสด ตัวสำรอง และตารางเงินรางวัล จะตรงกับเว็บ FPL ทางการ 100% ไหม?", "a": "ระหว่างแข่งขัน ระบบคำนวณคะแนนสด โบนัสจำลอง และตัวสำรองที่รอลงแทนให้ลุ้นแบบเรียลไทม์ จากนั้นเมื่อจบ Gameweek ทางการ ระบบจะยึดผลคะแนนและอันดับทางการ 100% เพื่อสรุปยอดเงินรางวัลอย่างยุติธรรม"}, {"q": "ราคา 500฿ ชำระเงินอย่างไร และปลอดภัยไหม?", "a": "จ่ายครั้งเดียว 500฿ ดูแลครบจนจบสัปดาห์ที่ 38 ไม่มีค่ารายเดือนแฝง กรอกฟอร์มแล้วสแกนจ่ายผ่าน PromptPay QR และแนบสลิปบนหน้าเว็บได้ทันที (รับประกันคืนเงิน 100% หากไม่สามารถเปิดใช้งานลีกได้ภายใน 24 ชม. • ลูกค้าต่างชาติ USD ติดต่อชำระได้ทาง Email หรือ LINE)"}], "order_heading": "เปิดใช้งานมินิลีก & ชำระเงิน", "order_lead": "กรอกรหัส League ID อีเมล และกติกาของลีก แล้วกดไปหน้าสแกน PromptPay QR เพื่อโอนและแนบสลิปได้ทันที (ไม่ต้องทัก LINE ก่อน)", "order_copy_btn": "ไปหน้าชำระเงิน (PromptPay QR)", "order_line_btn": "เปิดแชท LINE", "footer_note": "แดชบอร์ดอิสระสำหรับคอมมูนิตี้ Fantasy Premier League"}, "en": {"brand_sub": "FPL Mini-League Control Room", "nav_features": "Features", "nav_demos": "Live Demos", "nav_pricing": "Pricing", "nav_order": "Launch League", "nav_cta": "Live Leagues (9)", "hero_badge": "Live Every Second", "hero_h1_line1": "YOUR MINI-LEAGUE", "hero_h1_line2": "LIVE BROADCAST", "hero_lead": "Live auto-subs, rival chip tracking, and automated prize ledgers across 38 Gameweeks.", "hero_cta_primary": "Launch Your League", "hero_cta_secondary": "Explore Live Leagues (9)", "hero_metric_views": "Live System Views", "hero_metric_sync": "Live Poll Cycle", "stats": [{"value": "Every Second", "label": "Live Score Refresh"}, {"value": "100%", "label": "Pure thrill, zero manual score math"}, {"value": "38 GW", "label": "Season-end payouts & full stats"}, {"value": "$19", "label": "Season Pass (≤30 teams)"}], "stream_items": ["Real-Time Matchday Scores", "Instant Auto-Sub Projections", "Full League Chip Radar", "Weekly & Monthly Champions", "Automated Bottom-Place Fines", "Knockout Cup Brackets", "Spy Rival Starting XI", "Matchday Drama Recap", "One-Click Excel (.xlsx) Export"], "drama_heading": "Live Thrills, Instant Updates, All in One View", "drama_lead": "No slow official delays, no guessing bench points, and zero weekend spreadsheet math. Everyone tracks live drama in one shared link.", "drama_cta": "Open Demo League", "drama_feed": [{"kind": "goal", "tag": "Live Surge", "time": "Just now", "title": "Captain Haaland braces! GreenLine FC jumps to #1", "desc": "6 points ahead of 2nd place for this week's top-score prize pool (+500 THB)."}, {"kind": "sub", "tag": "Auto-Sub", "time": "2m ago", "title": "Starter benched: 11-pt first sub enters automatically", "desc": "Projected net score adjusts in real time so your group knows the true table early."}, {"kind": "chip", "tag": "Chip Watch", "time": "Kickoff", "title": "2nd place manager just triggered Triple Captain", "desc": "Track Wildcard, Free Hit, and Bench Boost availability across every rival squad."}, {"kind": "line", "tag": "Group Payout", "time": "Full Time", "title": "Weekly payout sheet is ready in one clean ledger", "desc": "Weekly winners, bottom fines, and cumulative balances ready to review or export to Excel (.xlsx)."}], "screens_heading": "Main Control Room", "screens_lead": "Switch through the core matchday modules used across the season\n(Captured with anonymized clubs in alternating dark and light themes)", "screens_note": "Real dashboard captures using fictional league IDs, clubs, and managers", "screens": [{"key": "live", "num": "01", "theme": "Dark theme", "tab": "Live Score Updates", "title": "Real-Time Points With Automatic Bench Substitutions", "desc": "Follow raw scores, transfer hits, provisional bonus points, and projected bench auto-subs as matches unfold.", "spec": "Live Every Second"}, {"key": "pitch", "num": "02", "theme": "Dark theme", "tab": "11-Player Pitch", "title": "Inspect Full Starting Lineups and Captaincy Choices", "desc": "Open any manager pitch modal to compare formations, active captains, vice-captains, and bench depth.", "spec": "Full Pitch Modal"}, {"key": "transfers", "num": "03", "theme": "Light theme", "tab": "Transfers Analytics", "title": "Net Transfer Gain and Squad Move Breakdown", "desc": "Measure points gained versus sold players after deducting hits across every squad in the league.", "spec": "Net Hit Audit"}, {"key": "chips", "num": "04", "theme": "Dark theme", "tab": "Chips Tracker", "title": "League-Wide Chip Availability Matrix", "desc": "Verify remaining Wildcard, Free Hit, Triple Captain, and Bench Boost chips before locking transfers.", "spec": "All 4 Chips Tracked"}, {"key": "prizes", "num": "05", "theme": "Light theme", "tab": "Prize Ledger", "title": "Automated Weekly, Monthly, and Season Prize Ledger", "desc": "Clean payout and penalty sheets supporting podium splits, charity pools, and head-to-head balance ledgers.", "spec": "Excel (.xlsx) Export"}, {"key": "radar", "num": "06", "theme": "Dark theme", "tab": "Hall of Fame", "title": "Season Records, Consistency Metrics, and Honors", "desc": "Preserve weekly high scores, number-one podium counts, bench records, and consistency variance all season.", "spec": "All-Season Records"}], "demos_heading": "Real Live Demo Leagues", "demos_lead": "Open five live production-style demo leagues covering weekly, monthly, penalty, balance-ledger, and 1,000+ team community formats.", "demos_cta": "Open Live League", "pricing_heading": "Simple Per-Season Pricing", "pricing_lead": "One season pass covers all 38 Gameweeks for leagues up to 30 teams.", "pricing_std_badge": "Ready to Launch", "pricing_std_desc": "Built for leagues using weekly, monthly, season champion, knockout cup, or any other standard dashboard views combined into your prize pool.", "pricing_std_cta": "Select Standard", "pricing_cus_badge": "Roadmap • Coming Soon", "pricing_cus_desc": "Currently in development (add custom league rules of your own, such as Head-to-Head challenges or weekly predictions).", "pricing_cus_cta": "On Roadmap (Not Yet Open)", "pricing_tier2_title": "Large Leagues 50+ Teams (Community / Large Groups)", "pricing_tier2_desc": "Supports 50 to 1,000+ teams with fast roster search and knockout cup brackets.", "faq_eyebrow": "FAQ", "faq_heading": "Frequently Asked Questions", "faq_lead": "Key answers for mini-league admins before getting started. Prefer email or LINE? Contact us anytime.", "faq_cta": "Ask Us on LINE", "faqs": [{"q": "Do I need to share my FPL account password?", "a": "Never. We only need your public numeric FPL League ID. Your official FPL login and credentials remain 100% private."}, {"q": "The season has already started. Can you backfill earlier Gameweeks?", "a": "Yes. The sync engine pulls historical points from Gameweek 1 onward so weekly winners, penalties, and season totals are complete immediately."}, {"q": "Do league members need to install an app or create an account?", "a": "No installs and no sign-ups. Everyone opens the private league link straight in Safari or Chrome from your group chat on mobile or desktop."}, {"q": "Will our private mini-league appear on Google or the public demo list?", "a": "No. Each customer league gets a private dedicated link excluded from public demos and hidden from Google search indexing."}, {"q": "How long does setup take after submitting my order?", "a": "For Standard leagues, once your PromptPay payment slip is verified (or USD request confirmed), setup and email delivery are completed within 24 hours."}, {"q": "Some friends joined just for fun without entering the prize pool. Can we exclude them from payouts?", "a": "Yes. We can mark non-prize teams separately so weekly winners, standings payouts, and bottom-place penalties are calculated strictly among paying participants."}, {"q": "Do live scores, auto-subs, and prize payouts match official FPL results 100%?", "a": "During matches, the dashboard shows real-time scores, provisional bonus points, and projected bench auto-subs. Once each Gameweek is finalized, payouts lock strictly to official FPL points and tie-breakers."}, {"q": "How does payment work, and what if my league cannot be launched?", "a": "Pay once for the entire season (500 THB / $19 USD) with zero monthly fees. THB orders redirect straight to PromptPay QR + slip upload on our website with a 100% money-back guarantee if not launched within 24 hours. International USD orders can reach us via Email (support@fplsawadika.com) or LINE."}], "order_heading": "Launch Your League & Pay Online", "order_lead": "Enter your official FPL League ID, email address, and league rules, then proceed straight to PromptPay QR payment & slip upload.", "order_copy_btn": "Continue to PromptPay QR", "order_line_btn": "Open LINE Chat", "footer_note": "Independent Fantasy Premier League community dashboard"}};
+    window.LANDING_COPY = {"th": {"brand_sub": "ศูนย์ควบคุมมินิลีก FPL", "nav_features": "ฟีเจอร์หลัก", "nav_pricing": "แพ็กเกจราคา", "nav_order": "เปิดใช้งานลีก", "nav_cta": "เข้าดูลีกตัวอย่าง", "hero_badge": "อัปเดตสดทุกวินาที", "hero_h1_line1": "มินิลีกของคุณ", "hero_h1_line2": "เดือดทุกวินาที", "hero_lead": "คะแนนสดเปลี่ยนตัวอัตโนมัติ เช็คชิปคู่แข่ง และสรุปเงินรางวัลครบ 38 วีค", "hero_cta_primary": "เปิดใช้งานลีกทันที", "hero_cta_secondary": "เข้าดูลีกตัวอย่าง", "hero_metric_views": "ยอดเข้าชมระบบจริง", "hero_metric_sync": "รอบอัปเดตสด", "stats": [{"value": "ทุกวินาที", "label": "ปรับคะแนนสด"}, {"value": "100%", "label": "ลุ้นให้สุด ไม่ต้องหยุดมานั่งนับแต้ม"}, {"value": "38 GW", "label": "ปิดยอด พร้อมสถิติตอนจบฤดูกาล"}, {"value": "500฿", "label": "ต่อฤดูกาล (≤30 ทีม)"}], "stream_items": ["เช็คแต้มสดทันเกม", "เปลี่ยนตัวสำรองให้อัตโนมัติ", "รู้ทันชิปคู่แข่งทั้งลีก", "สรุปแชมป์วีคและแชมป์เดือน", "เก็บค่าปรับบ๊วยอัตโนมัติ", "จัดสายบอลถ้วยน็อคเอาท์", "ส่องผัง 11 ตัวจริงเพื่อนร่วมลีก", "พากย์ดราม่าหลังจบเกมสุดกวน", "ส่งออกตารางเป็น Excel (.xlsx)"], "drama_heading": "ลุ้นสด รู้ไว จบครบในหน้าเดียว", "drama_lead": "ไม่ต้องรอเว็บหลักอัปเดตช้า ไม่ต้องไล่บวกลบตัวสำรองหรือจดเงินใน Excel เอง แค่เปิดลิงก์ลีกก็รู้ผลครบทุกคน", "drama_cta": "เปิดดูลีกตัวอย่าง", "drama_feed": [{"kind": "goal", "tag": "แต้มสดพุ่ง", "time": "สดตอนนี้", "title": "กัปตัน Haaland ยิง 2 ลูก! สายเขียว FC แซงขึ้นที่ 1", "desc": "ขยับนำอันดับ 2 อยู่ +6 แต้ม ลุ้นคว้ารางวัลแชมป์ประจำสัปดาห์ (+500฿)"}, {"kind": "sub", "tag": "ออโต้ซับ", "time": "เมื่อสักครู่", "title": "ตัวจริงไม่ได้ลงสนาม สำรอง 11 แต้มลงแทนอัตโนมัติ", "desc": "ระบบคำนวณคะแนนสุทธิหลังเปลี่ยนตัวสำรองให้ทันที ไม่ต้องเดาเองจนจบเกม"}, {"kind": "chip", "tag": "เช็คชิป", "time": "ก่อนเตะ", "title": "ทีมอันดับ 2 แอบเปิด Triple Captain สัปดาห์นี้", "desc": "เช็คได้ครบทั้งลีกว่าใครเหลือ Wildcard, Free Hit หรือ Bench Boost กี่ใบ"}, {"kind": "line", "tag": "ปิดยอดกลุ่ม", "time": "จบสัปดาห์", "title": "ตารางรับจ่ายประจำสัปดาห์ครบจบในหน้าเดียวแล้ว", "desc": "สรุปยอดคนได้รางวัล คนโดนค่าปรับบ๊วย และยอดสุทธิครบทุกทีม พร้อมส่งออก Excel ได้ทันที"}], "screens_heading": "ห้องควบคุมหลัก", "screens_lead": "สลับดูทุกมุมมองที่ผู้จัดการลีกและสมาชิกใช้จริงตลอดสัปดาห์แข่งขัน\n(ภาพจำลองข้อมูลสมมติ สลับโหมดมืดและสว่าง)", "screens_note": "ภาพหน้าจอจากระบบจริง ปรับชื่อลีกและผู้จัดการทีมเป็นข้อมูลสมมติ", "screens": [{"key": "live", "num": "01", "theme": "Dark theme", "tab": "อัพเดทคะแนนสด", "title": "เช็คคะแนนสดพร้อมเปลี่ยนตัวอัตโนมัติทันเกม", "desc": "เห็นแต้มดิบ คะแนนลบ และตัวสำรองที่รอลงสนามแทนตัวจริงที่ไม่ได้ลงเล่นแบบเรียลไทม์", "spec": "รีเฟรชทุกวินาที"}, {"key": "pitch", "num": "02", "theme": "Dark theme", "tab": "แผน 11 ตัวจริง", "title": "ส่องแผนจัดทัพ 11 ตัวจริงของทุกทีมในลีก", "desc": "กดดูหน้าสนามเพื่อเทียบกัปตัน ฟอร์เมชัน และคะแนนตัวสำรองของคู่แข่งได้ในคลิกเดียว", "spec": "เทียบผังสนามทุกทีม"}, {"key": "transfers", "num": "03", "theme": "Light theme", "tab": "ย้ายตัว & ขุมกำลัง", "title": "วิเคราะห์การซื้อขายนักเตะและกำไรแต้มสุทธิ", "desc": "วัดผลทันทีว่าตัวที่ซื้อเข้ากับตัวที่ขายออกใครทำแต้มมากกว่า พร้อมสรุปดีลเด็ดประจำสัปดาห์", "spec": "หักลบแต้มฮิตอัตโนมัติ"}, {"key": "chips", "num": "04", "theme": "Dark theme", "tab": "สถานะชิปคู่แข่ง", "title": "ติดตามสถานะชิปคงเหลือของทั้งลีกในตารางเดียว", "desc": "เช็คทันทีว่าใครใช้ Wildcard, Free Hit, Triple Captain หรือ Bench Boost ไปแล้วในสัปดาห์ไหน", "spec": "เห็นชิปครบ 4 ใบ"}, {"key": "prizes", "num": "05", "theme": "Light theme", "tab": "เงินรางวัล & กองกลาง", "title": "คำนวณเงินรางวัลรายสัปดาห์ รายเดือน และค่าปรับบ๊วย", "desc": "ออกแบบตารางรับจ่ายยอดสุทธิ บริจาคการกุศล หรือหักยอดเข้ากองกลางอัตโนมัติ", "spec": "ส่งออก Excel (.xlsx) ได้"}, {"key": "radar", "num": "06", "theme": "Dark theme", "tab": "ทำเนียบแชมป์", "title": "บันทึกสถิติสูงสุดตลอดฤดูกาลและทำเนียบแชมป์", "desc": "รวมคะแนนสูงสุดต่อสัปดาห์ สถิติครองแชมป์สัปดาห์มากที่สุด และความสม่ำเสมอตลอด 38 นัด", "spec": "สถิติครบจบฤดูกาล"}], "demos_heading": "ลีกตัวอย่างจริงในระบบ", "demos_lead": "กดเข้าชมแดชบอร์ดของลีกตัวอย่างจริงทั้ง 5 รูปแบบกติกา เปิดใช้งานได้ทันทีทั้งบนมือถือและคอมพิวเตอร์", "demos_cta": "เปิดลีกจริง", "pricing_heading": "แพ็กเกจเปิดใช้งานรายฤดูกาล", "pricing_lead": "จ่ายครั้งเดียวดูแลครบทั้ง 38 Gameweeks สำหรับมินิลีกขนาดไม่เกิน 30 ทีม", "pricing_std_badge": "พร้อมเปิดใช้งาน", "pricing_std_desc": "เหมาะสำหรับลีกใช้กติการางวัล รายสัปดาห์ รายเดือน แชมป์ฤดูกาล แชมป์บอลถ้วย หรือเงินรางวัลอื่นๆ ที่หน้าแสดงผลมาตรฐานมีให้ สามารถนำมาคิดรวมเป็นรางวัลได้", "pricing_std_cta": "เลือก Standard", "pricing_cus_badge": "Roadmap • กำลังพัฒนา", "pricing_cus_desc": "อยู่ระหว่างพัฒนาระบบ (เพิ่มกฎเฉพาะของลีคขึ้นมาเองได้ เช่น ท้าชน หรือ ทายผล)", "pricing_cus_cta": "กำลังพัฒนา (Roadmap)", "pricing_tier2_title": "ลีกใหญ่ 50 ทีมขึ้นไป (ลีกคอมมูนิตี้ / กลุ่มใหญ่)", "pricing_tier2_desc": "รองรับตั้งแต่ 50 ถึง 1,000+ ทีม พร้อมระบบค้นหาเร็วและจัดสายบอลถ้วย", "faq_eyebrow": "FAQ", "faq_heading": "คำถามที่พบบ่อยก่อนเปิดลีก", "faq_lead": "คำตอบสำคัญสำหรับแอดมินและสมาชิกมินิลีก หากต้องการสอบถามกติกาเฉพาะกลุ่มทัก LINE หรือส่ง Email ได้ทันที", "faq_cta": "สอบถามเพิ่มเติมทาง LINE", "faqs": [{"q": "ต้องให้รหัสผ่านบัญชี FPL ของตัวเองไหม?", "a": "ไม่ต้องใช้รหัสผ่านใด ๆ ทั้งสิ้น ใช้เพียงเลข League ID สาธารณะจากหน้าเว็บ FPL ทางการเท่านั้น บัญชีของคุณปลอดภัย 100%"}, {"q": "ลีกเริ่มแข่งไปหลายสัปดาห์แล้ว เปิดใช้งานย้อนหลังได้ไหม?", "a": "ได้ทันที ระบบดึงข้อมูลย้อนหลังตั้งแต่ Gameweek 1 มาคำนวณคะแนน แชมป์ประจำสัปดาห์ ค่าปรับบ๊วย และสรุปยอดรวมให้ครบตั้งแต่วันแรก"}, {"q": "สมาชิกในกลุ่มต้องโหลดแอปหรือสมัครสมาชิกเพิ่มไหม?", "a": "ไม่ต้องโหลดแอปและไม่ต้องสมัครบัญชีเพิ่ม แค่เปิดลิงก์ผ่าน Safari หรือ Chrome จากกลุ่มแชทก็เช็คคะแนนสดและตารางเงินรางวัลได้ทันที"}, {"q": "หน้าเว็บลีกของเราจะถูกเปิดเป็นสาธารณะหรือค้นเจอบน Google ไหม?", "a": "ไม่เปิดเป็นสาธารณะ ลีกลูกค้าแต่ละกลุ่มแยกเฉพาะลิงก์ส่วนตัว ไม่แสดงในหน้าตัวอย่าง และปิดการค้นหา ไม่ให้ลิงก์ลีกของคุณไปแสดงบน Google"}, {"q": "หลังสั่งซื้อและแนบสลิปใช้เวลาตั้งค่านานแค่ไหน?", "a": "สำหรับแพ็กเกจ Standard เมื่อโอนผ่าน PromptPay QR และแนบสลิปเรียบร้อย ระบบจะส่งอีเมลแจ้งยืนยันและส่งมอบลิงก์ใช้งานจริงให้ภายใน 24 ชั่วโมง"}, {"q": "ในลีกมีเพื่อนบางคนขอจอยสนุกๆ ไม่ได้ร่วมลงเงินรางวัล แยกคิดเฉพาะคนลงขันได้ไหม?", "a": "ได้ทันที ระบบสามารถระบุชื่อทีมที่ 'ไม่ร่วมชิงรางวัล' แยกไว้ต่างหากได้ ดังนั้นแชมป์สัปดาห์ อันดับเงินรางวัล และค่าปรับบ๊วยจะคำนวณเฉพาะทีมที่ลงขันจริงเท่านั้น"}, {"q": "คะแนนสด ตัวสำรอง และตารางเงินรางวัล จะตรงกับเว็บ FPL ทางการ 100% ไหม?", "a": "ระหว่างแข่งขัน ระบบคำนวณคะแนนสด โบนัสจำลอง และตัวสำรองที่รอลงแทนให้ลุ้นแบบเรียลไทม์ จากนั้นเมื่อจบ Gameweek ทางการ ระบบจะยึดผลคะแนนและอันดับทางการ 100% เพื่อสรุปยอดเงินรางวัลอย่างยุติธรรม"}, {"q": "ราคา 500฿ ชำระเงินอย่างไร และปลอดภัยไหม?", "a": "จ่ายครั้งเดียว 500฿ ดูแลครบจนจบสัปดาห์ที่ 38 ไม่มีค่ารายเดือนแฝง กรอกฟอร์มแล้วสแกนจ่ายผ่าน PromptPay QR และแนบสลิปบนหน้าเว็บได้ทันที (รับประกันคืนเงิน 100% หากไม่สามารถเปิดใช้งานลีกได้ภายใน 24 ชม. • ลูกค้าต่างชาติ USD ติดต่อชำระได้ทาง Email หรือ LINE)"}], "order_heading": "เปิดใช้งานมินิลีก & ชำระเงิน", "order_lead": "กรอกรหัส League ID อีเมล และกติกาของลีก แล้วกดไปหน้าสแกน PromptPay QR เพื่อโอนและแนบสลิปได้ทันที (ไม่ต้องทัก LINE ก่อน)", "order_copy_btn": "ไปหน้าชำระเงิน (PromptPay QR)", "order_line_btn": "เปิดแชท LINE", "footer_note": "แดชบอร์ดอิสระสำหรับคอมมูนิตี้ Fantasy Premier League"}, "en": {"brand_sub": "FPL Mini-League Control Room", "nav_features": "Features", "nav_pricing": "Pricing", "nav_order": "Launch League", "nav_cta": "Live Demo Leagues", "hero_badge": "Live Every Second", "hero_h1_line1": "YOUR MINI-LEAGUE", "hero_h1_line2": "LIVE BROADCAST", "hero_lead": "Live auto-subs, rival chip tracking, and automated prize ledgers across 38 Gameweeks.", "hero_cta_primary": "Launch Your League", "hero_cta_secondary": "Live Demo Leagues", "hero_metric_views": "Live System Views", "hero_metric_sync": "Live Poll Cycle", "stats": [{"value": "Every Second", "label": "Live Score Refresh"}, {"value": "100%", "label": "Pure thrill, zero manual score math"}, {"value": "38 GW", "label": "Season-end payouts & full stats"}, {"value": "$19", "label": "Season Pass (≤30 teams)"}], "stream_items": ["Real-Time Matchday Scores", "Instant Auto-Sub Projections", "Full League Chip Radar", "Weekly & Monthly Champions", "Automated Bottom-Place Fines", "Knockout Cup Brackets", "Spy Rival Starting XI", "Matchday Drama Recap", "One-Click Excel (.xlsx) Export"], "drama_heading": "Live Thrills, Instant Updates, All in One View", "drama_lead": "No slow official delays, no guessing bench points, and zero weekend spreadsheet math. Everyone tracks live drama in one shared link.", "drama_cta": "Open Demo League", "drama_feed": [{"kind": "goal", "tag": "Live Surge", "time": "Just now", "title": "Captain Haaland braces! GreenLine FC jumps to #1", "desc": "6 points ahead of 2nd place for this week's top-score prize pool (+500 THB)."}, {"kind": "sub", "tag": "Auto-Sub", "time": "2m ago", "title": "Starter benched: 11-pt first sub enters automatically", "desc": "Projected net score adjusts in real time so your group knows the true table early."}, {"kind": "chip", "tag": "Chip Watch", "time": "Kickoff", "title": "2nd place manager just triggered Triple Captain", "desc": "Track Wildcard, Free Hit, and Bench Boost availability across every rival squad."}, {"kind": "line", "tag": "Group Payout", "time": "Full Time", "title": "Weekly payout sheet is ready in one clean ledger", "desc": "Weekly winners, bottom fines, and cumulative balances ready to review or export to Excel (.xlsx)."}], "screens_heading": "Main Control Room", "screens_lead": "Switch through the core matchday modules used across the season\n(Captured with anonymized clubs in alternating dark and light themes)", "screens_note": "Real dashboard captures using fictional league IDs, clubs, and managers", "screens": [{"key": "live", "num": "01", "theme": "Dark theme", "tab": "Live Score Updates", "title": "Real-Time Points With Automatic Bench Substitutions", "desc": "Follow raw scores, transfer hits, provisional bonus points, and projected bench auto-subs as matches unfold.", "spec": "Live Every Second"}, {"key": "pitch", "num": "02", "theme": "Dark theme", "tab": "11-Player Pitch", "title": "Inspect Full Starting Lineups and Captaincy Choices", "desc": "Open any manager pitch modal to compare formations, active captains, vice-captains, and bench depth.", "spec": "Full Pitch Modal"}, {"key": "transfers", "num": "03", "theme": "Light theme", "tab": "Transfers Analytics", "title": "Net Transfer Gain and Squad Move Breakdown", "desc": "Measure points gained versus sold players after deducting hits across every squad in the league.", "spec": "Net Hit Audit"}, {"key": "chips", "num": "04", "theme": "Dark theme", "tab": "Chips Tracker", "title": "League-Wide Chip Availability Matrix", "desc": "Verify remaining Wildcard, Free Hit, Triple Captain, and Bench Boost chips before locking transfers.", "spec": "All 4 Chips Tracked"}, {"key": "prizes", "num": "05", "theme": "Light theme", "tab": "Prize Ledger", "title": "Automated Weekly, Monthly, and Season Prize Ledger", "desc": "Clean payout and penalty sheets supporting podium splits, charity pools, and head-to-head balance ledgers.", "spec": "Excel (.xlsx) Export"}, {"key": "radar", "num": "06", "theme": "Dark theme", "tab": "Hall of Fame", "title": "Season Records, Consistency Metrics, and Honors", "desc": "Preserve weekly high scores, number-one podium counts, bench records, and consistency variance all season.", "spec": "All-Season Records"}], "demos_heading": "Real Live Demo Leagues", "demos_lead": "Open five live production-style demo leagues covering weekly, monthly, penalty, balance-ledger, and 1,000+ team community formats.", "demos_cta": "Open Live League", "pricing_heading": "Simple Per-Season Pricing", "pricing_lead": "One season pass covers all 38 Gameweeks for leagues up to 30 teams.", "pricing_std_badge": "Ready to Launch", "pricing_std_desc": "Built for leagues using weekly, monthly, season champion, knockout cup, or any other standard dashboard views combined into your prize pool.", "pricing_std_cta": "Select Standard", "pricing_cus_badge": "Roadmap • Coming Soon", "pricing_cus_desc": "Currently in development (add custom league rules of your own, such as Head-to-Head challenges or weekly predictions).", "pricing_cus_cta": "On Roadmap (Not Yet Open)", "pricing_tier2_title": "Large Leagues 50+ Teams (Community / Large Groups)", "pricing_tier2_desc": "Supports 50 to 1,000+ teams with fast roster search and knockout cup brackets.", "faq_eyebrow": "FAQ", "faq_heading": "Frequently Asked Questions", "faq_lead": "Key answers for mini-league admins before getting started. Prefer email or LINE? Contact us anytime.", "faq_cta": "Ask Us on LINE", "faqs": [{"q": "Do I need to share my FPL account password?", "a": "Never. We only need your public numeric FPL League ID. Your official FPL login and credentials remain 100% private."}, {"q": "The season has already started. Can you backfill earlier Gameweeks?", "a": "Yes. The sync engine pulls historical points from Gameweek 1 onward so weekly winners, penalties, and season totals are complete immediately."}, {"q": "Do league members need to install an app or create an account?", "a": "No installs and no sign-ups. Everyone opens the private league link straight in Safari or Chrome from your group chat on mobile or desktop."}, {"q": "Will our private mini-league appear on Google or the public demo list?", "a": "No. Each customer league gets a private dedicated link excluded from public demos and hidden from Google search indexing."}, {"q": "How long does setup take after submitting my order?", "a": "For Standard leagues, once your PromptPay payment slip is verified (or USD request confirmed), setup and email delivery are completed within 24 hours."}, {"q": "Some friends joined just for fun without entering the prize pool. Can we exclude them from payouts?", "a": "Yes. We can mark non-prize teams separately so weekly winners, standings payouts, and bottom-place penalties are calculated strictly among paying participants."}, {"q": "Do live scores, auto-subs, and prize payouts match official FPL results 100%?", "a": "During matches, the dashboard shows real-time scores, provisional bonus points, and projected bench auto-subs. Once each Gameweek is finalized, payouts lock strictly to official FPL points and tie-breakers."}, {"q": "How does payment work, and what if my league cannot be launched?", "a": "Pay once for the entire season (500 THB / $19 USD) with zero monthly fees. THB orders redirect straight to PromptPay QR + slip upload on our website with a 100% money-back guarantee if not launched within 24 hours. International USD orders can reach us via Email (support@fplsawadika.com) or LINE."}], "order_heading": "Launch Your League & Pay Online", "order_lead": "Enter your official FPL League ID, email address, and league rules, then proceed straight to PromptPay QR payment & slip upload.", "order_copy_btn": "Continue to PromptPay QR", "order_line_btn": "Open LINE Chat", "footer_note": "Independent Fantasy Premier League community dashboard"}};
     window.PRICING_CONFIG = {"standard": {"thb": 500, "usd": 19}, "custom": {"thb": 900, "usd": 29}, "tier1_max_teams": 30, "line_url": "https://line.me/ti/p/lgWPeyIBR7", "support_email": "support@fplsawadika.com", "api_base_url": "https://api.fplsawadika.com"};
     window.SHOWCASE_DEMOS = [{"id": "40700", "tag_th": "ยอดนิยม • แชมป์วีค + บอลถ้วย", "tag_en": "Popular • Weekly + Cup", "title_th": "เซียนอยู่รู หมูอยู่ตึก", "title_en": "Sian Yoo Roo", "desc_th": "รางวัลแชมป์สัปดาห์ 6 รอบเคลียร์เงิน และถ้วยน็อคเอาท์", "desc_en": "Weekly payouts, 6 settlement rounds, and knockout cup bracket", "plan": "standard", "teams_count": 12}, {"id": "675290", "tag_th": "ลีกใหญ่ • รายเดือน + การกุศล", "tag_en": "Monthly • Charity Pool", "title_th": "NudNee League", "title_en": "NudNee League", "desc_th": "ระบบแชมป์ประจำเดือน 10 เดือน, ตาราง Top 5 ฤดูกาล, ถ้วย และสมทบการกุศล", "desc_en": "10 monthly leaderboards, overall top 5, cup & charity ledger", "plan": "standard", "teams_count": 60}, {"id": "438691", "tag_th": "สายฮา • ค่าปรับบ๊วย 5 อันดับ", "tag_en": "Penalties • Bottom-5 Fines", "title_th": "2 spade", "title_en": "2 spade", "desc_th": "เก็บค่าปรับ 5 อันดับสุดท้ายเข้ากองกลางอัตโนมัติ พร้อมระบบตัดสินอันดับเท่ากันทางการ", "desc_en": "Automated bottom-5 penalty ladder into central pool with official tie-breakers", "plan": "standard", "teams_count": 13}, {"id": "187827", "tag_th": "Custom • หักยอดหัวท้าย + ทายผล", "tag_en": "Custom • Balance Ledger + Picks", "title_th": "Shi62 Special", "title_en": "Shi62 Special", "desc_th": "อันดับบนรับเงินจากอันดับล่างเมื่อจบฤดูกาล พร้อมแท็บทายผลเฉพาะลีก", "desc_en": "End-of-season head-to-head balance ledger plus custom weekly picks tab", "plan": "custom", "teams_count": 13}, {"id": "139836", "tag_th": "ลีกใหญ่ • 1,000+ ทีม", "tag_en": "Large League • 1,000+ Teams", "title_th": "FPL Growth Mindset", "title_en": "FPL Growth Mindset", "desc_th": "ต้นแบบลีกคอมมูนิตี้สเกลใหญ่ 1,000+ ทีม ค้นหาทีมไวและเปิดดูผังสนามรายทีมทันที", "desc_en": "High-scale 1,000+ team community preview with fast search and instant team lineups", "plan": "tier2_roadmap", "teams_count": 1779}];
     window.SHOWCASE_LEAGUE_MAP = {"40700": "เซียนอยู่รู หมูอยู่ตึก", "675290": "NudNee", "38491": "รอ แมน โอน", "1101958": "Barley's Official League", "438691": "2 spade", "187827": "Shi62", "5349": "Bramann League", "567387": "Fantasy Nguan & friends cup", "139836": "FPL Growth Mindset 2026/27"};
@@ -3270,53 +3128,6 @@
         }
       },
 
-      renderReturningLeagueBar() {
-        const bar = document.getElementById('returning-league-bar');
-        if (!bar) return;
-        let dismissed = false;
-        try {
-          dismissed = sessionStorage.getItem('fpl_return_bar_dismissed') === '1';
-        } catch (_) {}
-        const recent = this.getRecentLeagues();
-        const top = recent.length > 0 ? recent[0] : null;
-        if (dismissed || !top || !/^[0-9]{1,10}$/.test(String(top.id))) {
-          bar.classList.add('hidden');
-          return;
-        }
-        const savedLid = String(top.id);
-        const isEn = this.lang === 'en';
-        const showcaseMap = window.SHOWCASE_LEAGUE_MAP || {};
-        const displayName = String(showcaseMap[savedLid] || top.name || ('League ' + savedLid));
-        const isFile = window.location.protocol === 'file:';
-
-        const prefixEl = document.getElementById('return-bar-prefix');
-        const nameEl = document.getElementById('return-bar-league-name');
-        const goBtn = document.getElementById('return-bar-go-btn');
-        const allLink = document.getElementById('return-bar-all-link');
-        const closeBtn = document.getElementById('return-bar-dismiss');
-        if (prefixEl) prefixEl.textContent = isEn ? 'Recently viewed league:' : 'เคยเข้าชมลีก:';
-        if (nameEl) nameEl.textContent = displayName;
-        if (goBtn) {
-          goBtn.textContent = isEn ? 'Return to Your League →' : 'กลับเข้าลีกของคุณ →';
-          goBtn.setAttribute('href', isFile ? ('./' + savedLid + '/index.html') : ('./' + savedLid + '/'));
-        }
-        if (allLink) {
-          allLink.textContent = isEn ? 'Switch League (9)' : 'เปลี่ยนลีก (9 ลีก)';
-          allLink.setAttribute('href', './preview.html');
-        }
-        if (closeBtn) {
-          closeBtn.setAttribute('aria-label', isEn ? 'Hide this bar' : 'ซ่อนแถบนี้');
-        }
-        bar.setAttribute('aria-label', isEn ? 'Shortcut to your last viewed league' : 'ทางลัดกลับเข้าลีกของคุณ');
-        bar.classList.remove('hidden');
-      },
-
-      dismissReturningLeagueBar() {
-        try { sessionStorage.setItem('fpl_return_bar_dismissed', '1'); } catch (_) {}
-        const bar = document.getElementById('returning-league-bar');
-        if (bar) bar.classList.add('hidden');
-      },
-
       setCurrency(curr) {
         this.currencyExplicit = true;
         this.currency = curr === 'USD' ? 'USD' : 'THB';
@@ -3360,24 +3171,21 @@
         setTxt('landing-lang-btn', this.lang === 'th' ? 'EN' : 'TH');
         setTxt('nav-brand-sub', copy.brand_sub);
         setTxt('nav-link-features', copy.nav_features);
-        setTxt('nav-link-demos', copy.nav_demos);
         setTxt('nav-link-pricing', copy.nav_pricing);
         setTxt('nav-link-order', copy.nav_order);
         setTxt('m-nav-features', copy.nav_features);
-        setTxt('m-nav-demos', copy.nav_demos);
         setTxt('m-nav-pricing', copy.nav_pricing);
         setTxt('m-nav-order', copy.nav_order);
         const ctaSpan = document.querySelector('#nav-cta-btn span');
         if (ctaSpan && copy.nav_cta) ctaSpan.textContent = copy.nav_cta;
         setTxt('m-nav-all-leagues', this.lang === 'en'
-          ? 'Explore Live Leagues (9) →'
-          : 'เข้าดูลีกสดในระบบ (9 ลีก) →');
-        this.renderReturningLeagueBar();
+          ? 'Live Demo Leagues →'
+          : 'เข้าดูลีกตัวอย่าง →');
 
         const lfIsEn = this.lang === 'en';
         setTxt('lf-modal-title', lfIsEn
-          ? 'Explore Live Leagues (9)'
-          : 'เข้าดูลีกสดในระบบ (9 ลีก)');
+          ? 'Live Demo Leagues (9)'
+          : 'เข้าดูลีกตัวอย่าง (9 ลีก)');
         setTxt('lf-modal-sub', lfIsEn
           ? 'Pick from all 9 real showcase leagues or enter your League ID to jump straight in.'
           : 'เลือกลีกตัวอย่างจริงทั้ง 9 ลีก หรือพิมพ์ชื่อ/รหัส League ID เพื่อเปิดลีกของคุณทันที');
@@ -3402,7 +3210,6 @@
         setTxt('hero-secondary-cta-text', copy.hero_cta_secondary);
         setTxt('hero-badge-text', copy.hero_badge);
         setTxt('hero-live-pill-text', this.lang === 'en' ? '1,942 Teams Online' : '1,942 ทีมออนไลน์ในระบบ');
-        setTxt('hero-open-demo-label', this.lang === 'en' ? 'Main Control Room ↓' : 'ดูห้องควบคุมหลัก ↓');
         setTxt('hero-all-preview-text', this.lang === 'en' ? 'View All 9 Leagues' : 'ดูครบทั้ง 9 ลีก');
 
         this.renderStats(copy.stats || []);

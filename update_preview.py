@@ -22792,126 +22792,6 @@ __STRUCTURED_DATA_JSON__
       font-weight: 700;
     }
 
-    /* Returning Demo/Beta User Shortcut Bar */
-    .bm-return-bar {
-      background-color: var(--color-arena-surface);
-      color: var(--color-arena-ink);
-      border-bottom: 1px solid var(--color-arena-border);
-    }
-    .bm-return-bar.hidden {
-      display: none;
-    }
-    .bm-return-bar-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0.55rem 1.25rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.6rem 1rem;
-    }
-    .bm-return-bar-info {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.45rem;
-      min-width: 0;
-      font-size: 0.85rem;
-    }
-    .bm-return-dot {
-      width: 0.55rem;
-      height: 0.55rem;
-      border-radius: 9999px;
-      background-color: var(--color-live);
-      flex-shrink: 0;
-    }
-    .bm-return-prefix {
-      color: var(--color-arena-ink-2);
-    }
-    .bm-return-name {
-      color: var(--color-arena-ink);
-      font-weight: 700;
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-    .bm-return-bar-actions {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .bm-return-cta {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 44px;
-      padding: 0.4rem 0.9rem;
-      border-radius: 0.45rem;
-      background-color: var(--color-arena-ink);
-      color: var(--color-arena);
-      font-size: 0.82rem;
-      font-weight: 700;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: opacity 0.15s ease, transform 0.1s ease;
-    }
-    .bm-return-cta:hover {
-      opacity: 0.92;
-    }
-    .bm-return-cta:focus-visible {
-      outline: 2px solid var(--color-accent);
-      outline-offset: 2px;
-    }
-    .bm-return-all {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 44px;
-      padding: 0.4rem 0.8rem;
-      border-radius: 0.45rem;
-      border: 1px solid var(--color-arena-border-strong);
-      color: var(--color-arena-ink);
-      font-size: 0.82rem;
-      font-weight: 600;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: background-color 0.15s ease;
-    }
-    .bm-return-all:hover {
-      background-color: var(--color-arena-card);
-    }
-    .bm-return-close {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 44px;
-      min-height: 44px;
-      padding: 0;
-      border-radius: 0.45rem;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--color-arena-ink-2);
-      font-size: 1.25rem;
-      line-height: 1;
-      cursor: pointer;
-    }
-    .bm-return-close:hover {
-      background-color: var(--color-arena-card);
-      color: var(--color-arena-ink);
-    }
-    @media (max-width: 479px) {
-      .bm-return-bar-inner {
-        padding: 0.55rem 0.85rem;
-      }
-      .bm-return-bar-actions {
-        width: 100%;
-      }
-      .bm-return-cta {
-        flex: 1 1 auto;
-      }
-    }
-
     /* League Finder Modal (9 Showcase + Private ID Direct Jump) */
     .bm-lf-modal {
       position: fixed;
@@ -24673,7 +24553,6 @@ __STRUCTURED_DATA_JSON__
 
       <nav id="primary-nav-links" class="bm-nav-links" aria-label="หลัก">
         <a id="nav-link-features" href="#features" class="bm-nav-link">ฟีเจอร์หลัก</a>
-        <a id="nav-link-demos" href="#demos" class="bm-nav-link">ลีกตัวอย่างจริง</a>
         <a id="nav-link-pricing" href="#pricing" class="bm-nav-link">แพ็กเกจราคา</a>
         <a id="nav-link-order" href="#order" class="bm-nav-link">เปิดใช้งานลีก</a>
       </nav>
@@ -24684,7 +24563,7 @@ __STRUCTURED_DATA_JSON__
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         </button>
         <a id="nav-cta-btn" href="./preview.html" onclick="event.preventDefault(); landingApp.openLeagueFinder(this);" class="bm-cta-nav">
-          <span>เข้าดูลีกสด (9 ลีก)</span>
+          <span>เข้าดูลีกตัวอย่าง</span>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
         </a>
         <button id="mobile-menu-toggle" type="button" onclick="landingApp.toggleMobileMenu()" class="bm-icon-btn bm-mobile-menu-btn" aria-expanded="false" aria-controls="mobile-nav-drawer" aria-label="เปิดเมนู">
@@ -24695,27 +24574,11 @@ __STRUCTURED_DATA_JSON__
 
     <div id="mobile-nav-drawer" class="bm-mobile-drawer hidden">
       <a id="m-nav-features" href="#features" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">ฟีเจอร์หลัก</a>
-      <a id="m-nav-demos" href="#demos" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">ลีกตัวอย่างจริง</a>
       <a id="m-nav-pricing" href="#pricing" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">แพ็กเกจราคา</a>
       <a id="m-nav-order" href="#order" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">เปิดใช้งานลีก</a>
-      <a id="m-nav-all-leagues" href="./preview.html" onclick="event.preventDefault(); landingApp.closeMobileMenu(); landingApp.openLeagueFinder(this);" class="bm-mobile-link bm-mobile-link-accent">เข้าดูลีกสดในระบบ (__TOTAL_SHOWCASE_LEAGUES__ ลีก) →</a>
+      <a id="m-nav-all-leagues" href="./preview.html" onclick="event.preventDefault(); landingApp.closeMobileMenu(); landingApp.openLeagueFinder(this);" class="bm-mobile-link bm-mobile-link-accent">เข้าดูลีกตัวอย่าง →</a>
     </div>
   </header>
-
-  <div id="returning-league-bar" class="bm-return-bar hidden" role="region" aria-label="ทางลัดกลับเข้าลีกของคุณ">
-    <div class="bm-return-bar-inner">
-      <div class="bm-return-bar-info">
-        <span class="bm-return-dot" aria-hidden="true"></span>
-        <span id="return-bar-prefix" class="bm-return-prefix">เคยเข้าชมลีก:</span>
-        <strong id="return-bar-league-name" class="bm-return-name"></strong>
-      </div>
-      <div class="bm-return-bar-actions">
-        <a id="return-bar-go-btn" href="./preview.html" class="bm-return-cta">กลับเข้าลีกของคุณ →</a>
-        <a id="return-bar-all-link" href="./preview.html" onclick="event.preventDefault(); landingApp.openLeagueFinder(this);" class="bm-return-all">เปลี่ยนลีก (__TOTAL_SHOWCASE_LEAGUES__ ลีก)</a>
-        <button id="return-bar-dismiss" type="button" onclick="landingApp.dismissReturningLeagueBar()" class="bm-return-close" aria-label="ซ่อนแถบนี้">×</button>
-      </div>
-    </div>
-  </div>
 
   <main id="main-content">
     <!-- Hero Arena -->
@@ -24758,7 +24621,7 @@ __STRUCTURED_DATA_JSON__
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
             </a>
             <a id="hero-secondary-cta" href="./preview.html" onclick="event.preventDefault(); landingApp.openLeagueFinder(this);" class="bm-btn-outline-dark">
-              <span id="hero-secondary-cta-text">เข้าดูลีกสดในระบบ (9 ลีก)</span>
+              <span id="hero-secondary-cta-text">เข้าดูลีกตัวอย่าง</span>
             </a>
           </div>
 
@@ -24769,11 +24632,6 @@ __STRUCTURED_DATA_JSON__
             </div>
             <div class="bm-hero-meta-item tabular-nums">
               <span id="hero-views-inline">ยอดเข้าชม 2,850+ ครั้ง</span>
-            </div>
-            <div class="bm-hero-meta-item">
-              <a id="hero-open-demo-link" href="#features" class="bm-hero-link">
-                <span id="hero-open-demo-label">ดูห้องควบคุมหลัก ↓</span>
-              </a>
             </div>
           </div>
         </div>
@@ -25092,8 +24950,8 @@ __STRUCTURED_DATA_JSON__
     <div class="bm-lf-panel">
       <div class="bm-lf-head">
         <div>
-          <h2 id="lf-modal-title" class="bm-lf-title">เข้าดูลีกสดในระบบ (9 ลีก)</h2>
-          <p id="lf-modal-sub" class="bm-lf-sub">เลือกลีกตัวอย่างจริงทั้ง 9 ลีก หรือพิมพ์ชื่อ/รหัส League ID เพื่อเปิดลีกของคุณทันที</p>
+          <h2 id="lf-modal-title" class="bm-lf-title">เข้าดูลีกตัวอย่าง (__TOTAL_SHOWCASE_LEAGUES__ ลีก)</h2>
+          <p id="lf-modal-sub" class="bm-lf-sub">เลือกลีกตัวอย่างจริงทั้ง __TOTAL_SHOWCASE_LEAGUES__ ลีก หรือพิมพ์ชื่อ/รหัส League ID เพื่อเปิดลีกของคุณทันที</p>
         </div>
         <button id="lf-close-btn" type="button" onclick="landingApp.closeLeagueFinder()" class="bm-lf-close" aria-label="ปิดหน้าต่าง">×</button>
       </div>
@@ -25525,53 +25383,6 @@ __STRUCTURED_DATA_JSON__
         }
       },
 
-      renderReturningLeagueBar() {
-        const bar = document.getElementById('returning-league-bar');
-        if (!bar) return;
-        let dismissed = false;
-        try {
-          dismissed = sessionStorage.getItem('fpl_return_bar_dismissed') === '1';
-        } catch (_) {}
-        const recent = this.getRecentLeagues();
-        const top = recent.length > 0 ? recent[0] : null;
-        if (dismissed || !top || !/^[0-9]{1,10}$/.test(String(top.id))) {
-          bar.classList.add('hidden');
-          return;
-        }
-        const savedLid = String(top.id);
-        const isEn = this.lang === 'en';
-        const showcaseMap = window.SHOWCASE_LEAGUE_MAP || {};
-        const displayName = String(showcaseMap[savedLid] || top.name || ('League ' + savedLid));
-        const isFile = window.location.protocol === 'file:';
-
-        const prefixEl = document.getElementById('return-bar-prefix');
-        const nameEl = document.getElementById('return-bar-league-name');
-        const goBtn = document.getElementById('return-bar-go-btn');
-        const allLink = document.getElementById('return-bar-all-link');
-        const closeBtn = document.getElementById('return-bar-dismiss');
-        if (prefixEl) prefixEl.textContent = isEn ? 'Recently viewed league:' : 'เคยเข้าชมลีก:';
-        if (nameEl) nameEl.textContent = displayName;
-        if (goBtn) {
-          goBtn.textContent = isEn ? 'Return to Your League →' : 'กลับเข้าลีกของคุณ →';
-          goBtn.setAttribute('href', isFile ? ('./' + savedLid + '/index.html') : ('./' + savedLid + '/'));
-        }
-        if (allLink) {
-          allLink.textContent = isEn ? 'Switch League (__TOTAL_SHOWCASE_LEAGUES__)' : 'เปลี่ยนลีก (__TOTAL_SHOWCASE_LEAGUES__ ลีก)';
-          allLink.setAttribute('href', './preview.html');
-        }
-        if (closeBtn) {
-          closeBtn.setAttribute('aria-label', isEn ? 'Hide this bar' : 'ซ่อนแถบนี้');
-        }
-        bar.setAttribute('aria-label', isEn ? 'Shortcut to your last viewed league' : 'ทางลัดกลับเข้าลีกของคุณ');
-        bar.classList.remove('hidden');
-      },
-
-      dismissReturningLeagueBar() {
-        try { sessionStorage.setItem('fpl_return_bar_dismissed', '1'); } catch (_) {}
-        const bar = document.getElementById('returning-league-bar');
-        if (bar) bar.classList.add('hidden');
-      },
-
       setCurrency(curr) {
         this.currencyExplicit = true;
         this.currency = curr === 'USD' ? 'USD' : 'THB';
@@ -25615,24 +25426,21 @@ __STRUCTURED_DATA_JSON__
         setTxt('landing-lang-btn', this.lang === 'th' ? 'EN' : 'TH');
         setTxt('nav-brand-sub', copy.brand_sub);
         setTxt('nav-link-features', copy.nav_features);
-        setTxt('nav-link-demos', copy.nav_demos);
         setTxt('nav-link-pricing', copy.nav_pricing);
         setTxt('nav-link-order', copy.nav_order);
         setTxt('m-nav-features', copy.nav_features);
-        setTxt('m-nav-demos', copy.nav_demos);
         setTxt('m-nav-pricing', copy.nav_pricing);
         setTxt('m-nav-order', copy.nav_order);
         const ctaSpan = document.querySelector('#nav-cta-btn span');
         if (ctaSpan && copy.nav_cta) ctaSpan.textContent = copy.nav_cta;
         setTxt('m-nav-all-leagues', this.lang === 'en'
-          ? 'Explore Live Leagues (__TOTAL_SHOWCASE_LEAGUES__) →'
-          : 'เข้าดูลีกสดในระบบ (__TOTAL_SHOWCASE_LEAGUES__ ลีก) →');
-        this.renderReturningLeagueBar();
+          ? 'Live Demo Leagues →'
+          : 'เข้าดูลีกตัวอย่าง →');
 
         const lfIsEn = this.lang === 'en';
         setTxt('lf-modal-title', lfIsEn
-          ? 'Explore Live Leagues (__TOTAL_SHOWCASE_LEAGUES__)'
-          : 'เข้าดูลีกสดในระบบ (__TOTAL_SHOWCASE_LEAGUES__ ลีก)');
+          ? 'Live Demo Leagues (__TOTAL_SHOWCASE_LEAGUES__)'
+          : 'เข้าดูลีกตัวอย่าง (__TOTAL_SHOWCASE_LEAGUES__ ลีก)');
         setTxt('lf-modal-sub', lfIsEn
           ? 'Pick from all __TOTAL_SHOWCASE_LEAGUES__ real showcase leagues or enter your League ID to jump straight in.'
           : 'เลือกลีกตัวอย่างจริงทั้ง __TOTAL_SHOWCASE_LEAGUES__ ลีก หรือพิมพ์ชื่อ/รหัส League ID เพื่อเปิดลีกของคุณทันที');
@@ -25657,7 +25465,6 @@ __STRUCTURED_DATA_JSON__
         setTxt('hero-secondary-cta-text', copy.hero_cta_secondary);
         setTxt('hero-badge-text', copy.hero_badge);
         setTxt('hero-live-pill-text', this.lang === 'en' ? '__TOTAL_ONLINE_TEAMS__ Teams Online' : '__TOTAL_ONLINE_TEAMS__ ทีมออนไลน์ในระบบ');
-        setTxt('hero-open-demo-label', this.lang === 'en' ? 'Main Control Room ↓' : 'ดูห้องควบคุมหลัก ↓');
         setTxt('hero-all-preview-text', this.lang === 'en' ? 'View All __TOTAL_SHOWCASE_LEAGUES__ Leagues' : 'ดูครบทั้ง __TOTAL_SHOWCASE_LEAGUES__ ลีก');
 
         this.renderStats(copy.stats || []);
