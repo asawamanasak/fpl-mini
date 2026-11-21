@@ -24258,6 +24258,58 @@ __STRUCTURED_DATA_JSON__
       line-height: 1.5;
       text-wrap: pretty;
     }
+    .bm-resume-banner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem 1rem;
+      margin-bottom: 1.25rem;
+      padding: 0.9rem 1.1rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--color-live-border);
+      background-color: var(--color-surface);
+      color: var(--color-ink);
+    }
+    .bm-resume-banner.hidden {
+      display: none;
+    }
+    .bm-resume-info {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.88rem;
+      min-width: 0;
+    }
+    .bm-resume-meta {
+      color: var(--color-ink-2);
+      font-size: 0.82rem;
+    }
+    .bm-resume-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .bm-resume-close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 0.45rem;
+      border: 1px solid var(--color-border);
+      background: transparent;
+      color: var(--color-ink-2);
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .bm-resume-close:hover {
+      background-color: var(--color-card);
+      color: var(--color-ink);
+    }
     .bm-order-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -24782,6 +24834,21 @@ __STRUCTURED_DATA_JSON__
           <div class="bm-launch-step">
             <span class="bm-launch-num tabular-nums">03</span>
             <span id="launch-step-3">แอดมินเปิดลีกและส่งลิงก์ส่วนตัวให้ภายใน 24 ชม.</span>
+          </div>
+        </div>
+
+        <div id="recent-order-resume-banner" class="bm-resume-banner hidden" role="region" aria-label="คำสั่งซื้อล่าสุดของคุณ">
+          <div class="bm-resume-info">
+            <span class="bm-live-dot" aria-hidden="true"></span>
+            <span id="resume-order-prefix">คุณมีคำสั่งซื้อที่สร้างไว้ล่าสุด:</span>
+            <strong id="resume-order-id" class="tabular-nums">-</strong>
+            <span id="resume-order-meta" class="bm-resume-meta"></span>
+          </div>
+          <div class="bm-resume-actions">
+            <a id="resume-order-link" href="./pay/" class="bm-btn-primary">
+              <span id="resume-order-link-text">กลับไปหน้าชำระเงิน / เช็กสถานะคำสั่งซื้อ →</span>
+            </a>
+            <button id="resume-order-dismiss" type="button" onclick="landingApp.dismissSavedOrderBanner()" class="bm-resume-close" aria-label="ซ่อนแถบคำสั่งซื้อล่าสุด">×</button>
           </div>
         </div>
 
@@ -25389,6 +25456,76 @@ __STRUCTURED_DATA_JSON__
         this.renderVisitorStat();
         this.renderLeagueLookupStatus();
         this.updateOrderSummary();
+        this.renderSavedOrderBanner();
+      },
+
+      renderSavedOrderBanner() {
+        const banner = document.getElementById('recent-order-resume-banner');
+        if (!banner) return;
+        let dismissed = false;
+        try {
+          dismissed = sessionStorage.getItem('fpl_resume_order_dismissed') === '1';
+        } catch (_) {}
+        if (dismissed) {
+          banner.classList.add('hidden');
+          return;
+        }
+        let saved = null;
+        try {
+          const raw = localStorage.getItem('fpl_last_order_tracking');
+          if (raw) saved = JSON.parse(raw);
+        } catch (_) {
+          saved = null;
+        }
+        const oid = saved && saved.order_id ? String(saved.order_id).trim() : '';
+        const tok = saved && saved.token ? String(saved.token).trim() : '';
+        const savedAt = saved && Number(saved.saved_at) ? Number(saved.saved_at) : 0;
+        if (!/^FPL-[A-Z0-9-]{4,24}$/.test(oid) || !/^[a-f0-9]{16,128}$/i.test(tok) || !savedAt || (Date.now() - savedAt) > 7 * 86400000) {
+          banner.classList.add('hidden');
+          return;
+        }
+        const isEn = this.lang === 'en';
+        const prefixEl = document.getElementById('resume-order-prefix');
+        const idEl = document.getElementById('resume-order-id');
+        const metaEl = document.getElementById('resume-order-meta');
+        const linkEl = document.getElementById('resume-order-link');
+        const linkTextEl = document.getElementById('resume-order-link-text');
+        const dismissEl = document.getElementById('resume-order-dismiss');
+        if (prefixEl) prefixEl.textContent = isEn ? 'Your recent order:' : 'คุณมีคำสั่งซื้อที่สร้างไว้ล่าสุด:';
+        if (idEl) idEl.textContent = oid;
+        if (metaEl) {
+          const lid = saved.league_id ? ('ID: ' + String(saved.league_id)) : '';
+          const lname = saved.league_name ? String(saved.league_name) : '';
+          const amt = saved.amount_display ? String(saved.amount_display) : '';
+          const parts = [lname || lid, lname && lid ? lid : '', amt].filter(Boolean);
+          metaEl.textContent = parts.length ? ('(' + parts.join(' · ') + ')') : '';
+        }
+        if (linkEl) {
+          const curParams = window.location.search ? new URLSearchParams(window.location.search) : null;
+          const apiParam = curParams ? (curParams.get('api') || '') : '';
+          const targetParams = new URLSearchParams();
+          targetParams.set('order', oid);
+          targetParams.set('token', tok);
+          if (apiParam) targetParams.set('api', apiParam);
+          const basePay = window.location.protocol === 'file:' ? './pay/index.html?' : './pay/?';
+          linkEl.setAttribute('href', basePay + targetParams.toString());
+        }
+        if (linkTextEl) {
+          linkTextEl.textContent = isEn
+            ? 'Resume Payment / Check Order Status →'
+            : 'กลับไปหน้าชำระเงิน / เช็กสถานะคำสั่งซื้อ →';
+        }
+        if (dismissEl) {
+          dismissEl.setAttribute('aria-label', isEn ? 'Hide recent order banner' : 'ซ่อนแถบคำสั่งซื้อล่าสุด');
+        }
+        banner.setAttribute('aria-label', isEn ? 'Your recent order' : 'คำสั่งซื้อล่าสุดของคุณ');
+        banner.classList.remove('hidden');
+      },
+
+      dismissSavedOrderBanner() {
+        try { sessionStorage.setItem('fpl_resume_order_dismissed', '1'); } catch (_) {}
+        const banner = document.getElementById('recent-order-resume-banner');
+        if (banner) banner.classList.add('hidden');
       },
 
       renderStats(stats) {
@@ -26070,6 +26207,17 @@ __STRUCTURED_DATA_JSON__
           if (!resp.ok || !data || !data.success || !data.order_id || !data.token) {
             throw new Error((data && data.error) || (isEn ? 'Unable to create order right now.' : 'ไม่สามารถสร้างคำสั่งซื้อได้ชั่วคราว'));
           }
+          try {
+            localStorage.setItem('fpl_last_order_tracking', JSON.stringify({
+              order_id: String(data.order_id),
+              token: String(data.token),
+              league_id: lidVal,
+              league_name: payload.league_name || '',
+              amount_display: (data && data.amount_display) ? String(data.amount_display) : '',
+              saved_at: Date.now()
+            }));
+            sessionStorage.removeItem('fpl_resume_order_dismissed');
+          } catch (_) {}
           const curParams = window.location.search ? new URLSearchParams(window.location.search) : null;
           const apiParam = curParams ? (curParams.get('api') || '') : '';
           const targetParams = new URLSearchParams();
@@ -26472,15 +26620,24 @@ def generate_pay_html(site_config):
     <div id="pay-content" class="hidden space-y-5">
       <!-- Top Order Summary Strip -->
       <section class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6 shadow-sm space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-zinc-800 pb-4">
-          <div class="space-y-1">
+        <div class="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 dark:border-zinc-800 pb-4">
+          <div class="space-y-1.5 min-w-0">
             <div class="flex flex-wrap items-center gap-2">
-              <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-md bg-slate-100 dark:bg-zinc-800 text-slate-800 dark:text-zinc-200" id="sum-order-id">FPL-XXXX</span>
+              <span class="text-sm sm:text-base font-mono font-black tracking-wide px-3 py-1 rounded-lg bg-slate-900 text-white dark:bg-zinc-100 dark:text-zinc-900 select-all" id="sum-order-id">FPL-XXXX</span>
               <span class="text-xs font-bold px-2.5 py-1 rounded-full" id="sum-status-badge">Awaiting Payment</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 pt-0.5">
+              <button id="btn-copy-order-id" type="button" onclick="payApp.copyOrderId()" class="min-h-[34px] px-2.5 py-1 rounded-lg border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700 text-xs font-bold text-slate-800 dark:text-zinc-100 inline-flex items-center gap-1.5 transition-colors cursor-pointer">
+                <span id="btn-copy-order-id-text">คัดลอกเลขที่คำสั่งซื้อ</span>
+              </button>
+              <button id="btn-copy-tracking-link" type="button" onclick="payApp.copyTrackingLink()" class="min-h-[34px] px-2.5 py-1 rounded-lg border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700 text-xs font-bold text-slate-800 dark:text-zinc-100 inline-flex items-center gap-1.5 transition-colors cursor-pointer">
+                <span id="btn-copy-tracking-link-text">คัดลอกลิงก์หน้านี้</span>
+              </button>
+              <span id="sum-copy-feedback" class="text-xs font-semibold text-emerald-700 dark:text-emerald-400" aria-live="polite"></span>
             </div>
             <h1 id="pay-page-heading" class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white pt-1">ชำระเงินและติดตามคำสั่งเปิดลีก</h1>
           </div>
-          <div class="text-left sm:text-right">
+          <div class="text-left sm:text-right shrink-0">
             <div id="sum-amount-lbl" class="text-xs text-slate-500 dark:text-zinc-400">ยอดรายการ</div>
             <div id="sum-amount-val" class="text-2xl font-extrabold text-rose-600 dark:text-rose-400 tabular-nums">500.00 ฿</div>
           </div>
@@ -26620,14 +26777,55 @@ def generate_pay_html(site_config):
         </div>
       </section>
 
+      <!-- Reference & Slip Receipt Card (Shown after slip submitted / paid / live) -->
+      <section id="pay-reference-card" class="hidden rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6 shadow-sm space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-zinc-800 pb-3.5">
+          <div class="space-y-0.5">
+            <h3 id="ref-card-title" class="text-base font-extrabold text-slate-900 dark:text-white">ข้อมูลอ้างอิงและสลิปของคำสั่งซื้อนี้</h3>
+            <p id="ref-card-sub" class="text-xs text-slate-500 dark:text-zinc-400">เก็บเลขที่คำสั่งซื้อและสลิปนี้ไว้ใช้อ้างอิงเมื่อสอบถามทีมงานผ่าน LINE หรืออีเมล</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="btn-copy-order-ref" type="button" onclick="payApp.copyOrderReference()" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 text-xs font-bold inline-flex items-center justify-center transition-colors cursor-pointer">
+              <span id="btn-copy-order-ref-text">คัดลอกข้อมูลอ้างอิงทั้งหมด</span>
+            </button>
+            <span id="ref-copy-feedback" class="text-xs font-semibold text-emerald-700 dark:text-emerald-400" aria-live="polite"></span>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+          <div class="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-zinc-950/70 border border-slate-200/80 dark:border-zinc-800">
+              <div id="ref-lbl-order" class="text-slate-500 dark:text-zinc-400">เลขที่คำสั่งซื้อ</div>
+              <div id="ref-card-order-id" class="font-mono font-bold text-sm text-slate-900 dark:text-white break-all mt-0.5">-</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-zinc-950/70 border border-slate-200/80 dark:border-zinc-800">
+              <div id="ref-lbl-league" class="text-slate-500 dark:text-zinc-400">ลีก FPL</div>
+              <div id="ref-card-league" class="font-bold text-sm text-slate-900 dark:text-white break-words mt-0.5">-</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-zinc-950/70 border border-slate-200/80 dark:border-zinc-800">
+              <div id="ref-lbl-amount" class="text-slate-500 dark:text-zinc-400">ยอดชำระ</div>
+              <div id="ref-card-amount" class="font-bold text-sm text-emerald-700 dark:text-emerald-400 tabular-nums mt-0.5">-</div>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-zinc-950/70 border border-slate-200/80 dark:border-zinc-800">
+              <div id="ref-lbl-time" class="text-slate-500 dark:text-zinc-400">เวลาแนบสลิป</div>
+              <div id="ref-card-time" class="font-mono font-semibold text-xs text-slate-800 dark:text-zinc-200 break-words mt-0.5">-</div>
+            </div>
+          </div>
+          <div class="md:col-span-5 flex flex-col items-center justify-center p-3 rounded-xl bg-slate-50 dark:bg-zinc-950/70 border border-slate-200/80 dark:border-zinc-800">
+            <img id="pay-submitted-slip-img" alt="Submitted transfer slip" class="hidden max-h-60 w-auto max-w-full rounded-lg border border-slate-200 dark:border-zinc-700 object-contain shadow-sm">
+            <div id="ref-slip-missing" class="hidden text-xs text-slate-500 dark:text-zinc-400 py-8 text-center">ยังไม่มีภาพสลิปสำหรับรายการนี้</div>
+          </div>
+        </div>
+      </section>
+
       <!-- Guarantee & Dual Support Strip -->
       <section class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div class="space-y-0.5">
           <div id="pay-sla-title" class="font-bold text-slate-900 dark:text-white">รับประกันเปิดใช้งานภายใน 24 ชม. หลังตรวจสลิป</div>
           <div id="pay-sla-sub" class="text-slate-600 dark:text-zinc-400">หากไม่สามารถเปิดใช้งานลีกได้ภายใน 24 ชม. คืนเงินเต็มจำนวน 100%</div>
+          <div id="pay-support-feedback" class="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 min-h-[16px]" aria-live="polite"></div>
         </div>
         <div class="flex flex-wrap items-center gap-2 shrink-0">
-          <a id="pay-support-line" href="__LINE_URL__" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold inline-flex items-center justify-center transition-colors">LINE Official ↗</a>
+          <a id="pay-support-line" href="__LINE_URL__" target="_blank" rel="noopener noreferrer" onclick="payApp.prepareSupportLineClick()" class="min-h-[40px] px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold inline-flex items-center justify-center transition-colors">LINE Official ↗</a>
           <a id="pay-support-email" href="mailto:__SUPPORT_EMAIL__" class="min-h-[40px] px-3.5 py-2 rounded-lg border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700 font-bold text-slate-800 dark:text-zinc-100 inline-flex items-center justify-center transition-colors">__SUPPORT_EMAIL__</a>
         </div>
       </section>
@@ -26796,6 +26994,16 @@ def generate_pay_html(site_config):
         setTxt('pay-sla-title', isEn ? 'Launched within 24h after slip verification' : 'รับประกันเปิดใช้งานภายใน 24 ชม. หลังตรวจสลิป');
         setTxt('pay-sla-sub', isEn ? '100% full refund guarantee if we cannot launch your league within 24 hours.' : 'หากไม่สามารถเปิดใช้งานลีกได้ภายใน 24 ชม. คืนเงินเต็มจำนวน 100%');
         setTxt('pay-error-home-text', isEn ? 'Create New Order →' : 'สร้างคำสั่งซื้อใหม่ →');
+        setTxt('btn-copy-order-id-text', isEn ? 'Copy Order ID' : 'คัดลอกเลขที่คำสั่งซื้อ');
+        setTxt('btn-copy-tracking-link-text', isEn ? 'Copy Page Link' : 'คัดลอกลิงก์หน้านี้');
+        setTxt('ref-card-title', isEn ? 'Order Reference & Submitted Slip' : 'ข้อมูลอ้างอิงและสลิปของคำสั่งซื้อนี้');
+        setTxt('ref-card-sub', isEn ? 'Keep your Order ID and slip for inquiries via LINE or Email.' : 'เก็บเลขที่คำสั่งซื้อและสลิปนี้ไว้ใช้อ้างอิงเมื่อสอบถามทีมงานผ่าน LINE หรืออีเมล');
+        setTxt('btn-copy-order-ref-text', isEn ? 'Copy Full Reference' : 'คัดลอกข้อมูลอ้างอิงทั้งหมด');
+        setTxt('ref-lbl-order', isEn ? 'Order ID' : 'เลขที่คำสั่งซื้อ');
+        setTxt('ref-lbl-league', isEn ? 'FPL League' : 'ลีก FPL');
+        setTxt('ref-lbl-amount', isEn ? 'Amount' : 'ยอดชำระ');
+        setTxt('ref-lbl-time', isEn ? 'Slip Submitted At' : 'เวลาแนบสลิป');
+        setTxt('ref-slip-missing', isEn ? 'No slip preview available for this order.' : 'ยังไม่มีภาพสลิปสำหรับรายการนี้');
       },
 
       showErrorState(title, desc) {
@@ -26819,6 +27027,15 @@ def generate_pay_html(site_config):
           const resp = await fetch(url, { cache: 'no-store' });
           const data = await resp.json().catch(() => null);
           if (!resp.ok || !data || !data.success) {
+            if (resp.status === 404 || (resp.status >= 400 && resp.status < 500)) {
+              try {
+                const rawSaved = localStorage.getItem('fpl_last_order_tracking');
+                const parsedSaved = rawSaved ? JSON.parse(rawSaved) : null;
+                if (parsedSaved && parsedSaved.order_id === this.orderId) {
+                  localStorage.removeItem('fpl_last_order_tracking');
+                }
+              } catch (_) {}
+            }
             this.showErrorState(
               isEn ? 'Order Not Found' : 'ไม่พบข้อมูลคำสั่งซื้อนี้',
               (data && data.error) || (isEn ? 'Check your tracking link from email or create a new order.' : 'ตรวจสอบลิงก์ติดตามสถานะจากอีเมลของคุณ หรือสร้างคำสั่งซื้อใหม่')
@@ -26876,10 +27093,64 @@ def generate_pay_html(site_config):
         setTxt('sum-contact-val', o.customer_email + (o.customer_line ? (' · LINE: ' + o.customer_line) : ''));
         setTxt('sum-rules-val', o.rules_text || (isEn ? '(Default / TBD)' : '(ระบุเพิ่มเติมภายหลัง)'));
 
+        try {
+          if (o && o.order_id && this.token && st !== 'expired') {
+            localStorage.setItem('fpl_last_order_tracking', JSON.stringify({
+              order_id: String(o.order_id),
+              token: String(this.token),
+              league_id: String(o.league_id || ''),
+              league_name: String(o.league_name || ''),
+              amount_display: String(o.amount_display || ''),
+              saved_at: Date.now()
+            }));
+          } else if (st === 'expired') {
+            const rawSaved = localStorage.getItem('fpl_last_order_tracking');
+            const parsedSaved = rawSaved ? JSON.parse(rawSaved) : null;
+            if (parsedSaved && parsedSaved.order_id === o.order_id) {
+              localStorage.removeItem('fpl_last_order_tracking');
+            }
+          }
+        } catch (_) {}
+
         const supportEmail = (window.PAY_CFG && window.PAY_CFG.support_email) || 'support@fplsawadika.com';
+        const refTextForMail = this.buildOrderReferenceText(o);
+        const mailHref = 'mailto:' + supportEmail
+          + '?subject=' + encodeURIComponent('FPLSaWaDiKa Order ' + o.order_id + ' (League ' + o.league_id + ')')
+          + '&body=' + encodeURIComponent(refTextForMail);
         const qEmail = document.getElementById('quote-email-btn');
         if (qEmail) {
-          qEmail.setAttribute('href', 'mailto:' + supportEmail + '?subject=' + encodeURIComponent('FPLSaWaDiKa Order ' + o.order_id));
+          qEmail.setAttribute('href', mailHref);
+        }
+        const pEmail = document.getElementById('pay-support-email');
+        if (pEmail) {
+          pEmail.setAttribute('href', mailHref);
+        }
+
+        const refCard = document.getElementById('pay-reference-card');
+        if (refCard) {
+          const showRef = (st === 'slip_submitted' || st === 'paid' || st === 'live') && Boolean(o.has_slip || o.slip_data_url);
+          refCard.classList.toggle('hidden', !showRef);
+          if (showRef) {
+            setTxt('ref-card-order-id', o.order_id || '-');
+            setTxt('ref-card-league', leagueLabel);
+            setTxt('ref-card-amount', o.amount_display || '-');
+            setTxt('ref-card-time', o.slip_uploaded_at || o.updated_at || '-');
+            const slipImg = document.getElementById('pay-submitted-slip-img');
+            const slipMissing = document.getElementById('ref-slip-missing');
+            const rawSlip = typeof o.slip_data_url === 'string' ? o.slip_data_url.trim() : '';
+            const safeSlip = /^data:image\\/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+\\/=\\s]+$/i.test(rawSlip) ? rawSlip : '';
+            if (slipImg && slipMissing) {
+              if (safeSlip) {
+                slipImg.src = safeSlip;
+                slipImg.classList.remove('hidden');
+                slipMissing.classList.add('hidden');
+              } else {
+                slipImg.removeAttribute('src');
+                slipImg.classList.add('hidden');
+                slipMissing.classList.remove('hidden');
+              }
+            }
+          }
         }
 
         ['panel-awaiting', 'panel-submitted', 'panel-paid', 'panel-live', 'panel-quote', 'panel-expired'].forEach((pid) => {
@@ -26966,6 +27237,72 @@ def generate_pay_html(site_config):
           document.execCommand('copy');
           ta.remove();
         } catch (_) {}
+      },
+
+      buildOrderReferenceText(oOpt) {
+        const o = oOpt || this.order;
+        if (!o) return '';
+        const isEn = this.lang === 'en';
+        const lines = [
+          (isEn ? 'Order ID: ' : 'เลขที่คำสั่งซื้อ: ') + (o.order_id || ''),
+          (isEn ? 'FPL League: ' : 'ลีก FPL: ') + (o.league_name ? (o.league_name + ' ') : '') + '(ID: ' + (o.league_id || '') + ')',
+          (isEn ? 'Amount: ' : 'ยอดชำระ: ') + (o.amount_display || ''),
+          (isEn ? 'Tracking URL: ' : 'ลิงก์ติดตามคำสั่งซื้อ: ') + window.location.href
+        ];
+        return lines.join('\\n');
+      },
+
+      copyPayTextWithFeedback(text, feedbackElId, msgEn, msgTh) {
+        if (!text) return;
+        const applyFeedback = () => {
+          const fbEl = document.getElementById(feedbackElId);
+          if (!fbEl) return;
+          fbEl.textContent = this.lang === 'en' ? msgEn : msgTh;
+          this._fbTimers = this._fbTimers || {};
+          if (this._fbTimers[feedbackElId]) clearTimeout(this._fbTimers[feedbackElId]);
+          this._fbTimers[feedbackElId] = setTimeout(() => {
+            const elNow = document.getElementById(feedbackElId);
+            if (elNow) elNow.textContent = '';
+          }, 2800);
+        };
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(String(text)).then(applyFeedback).catch(() => {
+              this._fallbackCopyText(text);
+              applyFeedback();
+            });
+            return;
+          }
+        } catch (_) {}
+        this._fallbackCopyText(text);
+        applyFeedback();
+      },
+
+      copyOrderId() {
+        const oid = (this.order && this.order.order_id) || this.orderId || '';
+        if (!oid) return;
+        this.copyPayTextWithFeedback(oid, 'sum-copy-feedback', 'Copied Order ID: ' + oid + ' ✓', 'คัดลอกเลขคำสั่งซื้อ ' + oid + ' แล้ว ✓');
+      },
+
+      copyTrackingLink() {
+        this.copyPayTextWithFeedback(window.location.href, 'sum-copy-feedback', 'Copied tracking link ✓', 'คัดลอกลิงก์ติดตามสถานะแล้ว ✓');
+      },
+
+      copyOrderReference() {
+        const txt = this.buildOrderReferenceText(this.order);
+        if (!txt) return;
+        this.copyPayTextWithFeedback(txt, 'ref-copy-feedback', 'Copied order reference ✓', 'คัดลอกข้อมูลอ้างอิงครบแล้ว ✓');
+      },
+
+      prepareSupportLineClick() {
+        const txt = this.buildOrderReferenceText(this.order);
+        if (!txt) return;
+        this.copyPayTextWithFeedback(
+          txt,
+          'pay-support-feedback',
+          'Copied your Order ID & link — paste into LINE chat ✓',
+          'คัดลอกเลขที่คำสั่งซื้อและลิงก์แล้ว — กดวางส่งในแชท LINE ได้เลย ✓'
+        );
       },
 
       copyExactAmount() {

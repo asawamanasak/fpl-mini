@@ -346,6 +346,46 @@ function getOrderPayUrl(siteOrigin, orderId, rawToken) {
   return `${base}/pay/?order=${encodeURIComponent(orderId)}&token=${encodeURIComponent(rawToken)}`;
 }
 
+async function computeOrderAdminLinkToken(orderId, accessTokenHash) {
+  const h = await sha256Hex(`fpl_pay_link:${String(orderId || '')}:${String(accessTokenHash || '')}`);
+  return h.slice(0, 32);
+}
+
+async function incrementLifetimeUnpaidStat(db, delta = 1) {
+  const n = Math.floor(Number(delta) || 0);
+  if (!db || n <= 0) return 0;
+  try {
+    await db.prepare(`
+      INSERT INTO telemetry_counters (metric, date, val, updated_at)
+      VALUES ('lifetime:orders_expired_unpaid', '9999-12-31', ?, CURRENT_TIMESTAMP)
+      ON CONFLICT(metric) DO UPDATE SET val = telemetry_counters.val + excluded.val, updated_at = CURRENT_TIMESTAMP
+    `).bind(n).run();
+    return n;
+  } catch (err) {
+    console.warn('incrementLifetimeUnpaidStat warning:', err);
+    return 0;
+  }
+}
+
+async function pruneExpiredOrdersToStats(db, nowIso = new Date().toISOString()) {
+  if (!db) return 0;
+  try {
+    const delRes = await db.prepare(`
+      DELETE FROM league_orders
+      WHERE status = 'expired'
+         OR (status IN ('awaiting_payment', 'rejected') AND expires_at < ?)
+    `).bind(nowIso).run();
+    const deletedCnt = (delRes && delRes.meta && Number(delRes.meta.changes)) || 0;
+    if (deletedCnt > 0) {
+      await incrementLifetimeUnpaidStat(db, deletedCnt);
+    }
+    return deletedCnt;
+  } catch (err) {
+    console.warn('pruneExpiredOrdersToStats warning:', err);
+    return 0;
+  }
+}
+
 async function sendTransactionalEmail(env, { to, subject, html, text, replyTo }) {
   const cleanTo = String(to || '').trim();
   if (!cleanTo) return { sent: false, reason: 'missing_recipient' };
@@ -1593,16 +1633,14 @@ export default {
         try {
           await ensureLeagueOrdersTable(env.DB);
           const nowIso = new Date().toISOString();
-          await env.DB.prepare(
-            "UPDATE league_orders SET status = 'expired', updated_at = CURRENT_TIMESTAMP WHERE status IN ('awaiting_payment', 'rejected') AND expires_at < ?"
-          ).bind(nowIso).run();
+          await pruneExpiredOrdersToStats(env.DB, nowIso);
 
           const statusFilter = (url.searchParams.get('status') || '').trim();
-          const allowedFilters = new Set(['awaiting_payment', 'slip_submitted', 'paid', 'live', 'quote_requested', 'rejected', 'expired']);
+          const allowedFilters = new Set(['awaiting_payment', 'slip_submitted', 'paid', 'live', 'quote_requested', 'rejected']);
           let qRows = null;
           if (statusFilter && allowedFilters.has(statusFilter)) {
             qRows = await env.DB.prepare(`
-              SELECT order_id, league_id, league_name, team_count, plan, currency, lang, amount_satang,
+              SELECT order_id, access_token_hash, league_id, league_name, team_count, plan, currency, lang, amount_satang,
                      customer_email, customer_line, rules_text, status,
                      (CASE WHEN slip_data_url IS NOT NULL AND slip_data_url != '' THEN 1 ELSE 0 END) AS has_slip,
                      slip_uploaded_at, slip_verify_provider, slip_verify_ref, verified_at,
@@ -1614,7 +1652,7 @@ export default {
             `).bind(statusFilter).all();
           } else {
             qRows = await env.DB.prepare(`
-              SELECT order_id, league_id, league_name, team_count, plan, currency, lang, amount_satang,
+              SELECT order_id, access_token_hash, league_id, league_name, team_count, plan, currency, lang, amount_satang,
                      customer_email, customer_line, rules_text, status,
                      (CASE WHEN slip_data_url IS NOT NULL AND slip_data_url != '' THEN 1 ELSE 0 END) AS has_slip,
                      slip_uploaded_at, slip_verify_provider, slip_verify_ref, verified_at,
@@ -1641,7 +1679,6 @@ export default {
             live: 0,
             quote_requested: 0,
             rejected: 0,
-            expired: 0,
           };
           if (countRows && Array.isArray(countRows.results)) {
             for (const c of countRows.results) {
@@ -1653,14 +1690,47 @@ export default {
               counts.all += val;
             }
           }
+          let expiredUnpaidTotal = 0;
+          try {
+            const statRow = await env.DB.prepare(
+              "SELECT val FROM telemetry_counters WHERE metric = 'lifetime:orders_expired_unpaid' LIMIT 1"
+            ).first();
+            expiredUnpaidTotal = statRow ? (Number(statRow.val) || 0) : 0;
+          } catch (_) {}
+
+          const paidOrLive = (counts.paid || 0) + (counts.live || 0);
+          const activePending = (counts.awaiting_payment || 0) + (counts.slip_submitted || 0) + (counts.quote_requested || 0) + (counts.rejected || 0);
+          const totalRecorded = (counts.all || 0) + expiredUnpaidTotal;
+          const conversionPct = totalRecorded > 0
+            ? Math.round(((paidOrLive + (counts.slip_submitted || 0)) / totalRecorded) * 100)
+            : 0;
+          const stats = {
+            total_recorded: totalRecorded,
+            paid_or_live: paidOrLive,
+            active_pending: activePending,
+            expired_unpaid_total: expiredUnpaidTotal,
+            conversion_pct: conversionPct,
+          };
+
+          const reqOrigin = request.headers.get('origin') || '';
+          const payOrigin = (env.ENVIRONMENT === 'staging' && reqOrigin && isLocalOrigin(reqOrigin))
+            ? reqOrigin
+            : 'https://www.fplsawadika.com';
           const orders = (qRows && Array.isArray(qRows.results))
-            ? qRows.results.map(r => ({
-                ...r,
-                has_slip: Boolean(r.has_slip),
-                amount_display: formatSatangDisplay(r.amount_satang, r.currency, r.lang),
+            ? await Promise.all(qRows.results.map(async (r) => {
+                const { access_token_hash: tokenHashVal, ...pubRow } = r;
+                const adminLinkTok = tokenHashVal
+                  ? await computeOrderAdminLinkToken(r.order_id, tokenHashVal)
+                  : '';
+                return {
+                  ...pubRow,
+                  has_slip: Boolean(r.has_slip),
+                  amount_display: formatSatangDisplay(r.amount_satang, r.currency, r.lang),
+                  customer_pay_url: adminLinkTok ? getOrderPayUrl(payOrigin, r.order_id, adminLinkTok) : '',
+                };
               }))
             : [];
-          return new Response(JSON.stringify({ success: true, counts, orders }), {
+          return new Response(JSON.stringify({ success: true, counts, stats, orders }), {
             status: 200,
             headers: ADMIN_JSON_HEADERS,
           });
@@ -1752,7 +1822,7 @@ export default {
             headers: ADMIN_JSON_HEADERS,
           });
         }
-        if (!new Set(['verify_payment', 'mark_live_and_notify', 'reject', 'delete_slip']).has(action)) {
+        if (!new Set(['verify_payment', 'mark_live_and_notify', 'reject', 'delete_slip', 'delete_unpaid', 'delete_test']).has(action)) {
           return new Response(JSON.stringify({ success: false, error: 'Invalid action' }), {
             status: 400,
             headers: ADMIN_JSON_HEADERS,
@@ -1965,6 +2035,25 @@ export default {
               status: 200,
               headers: ADMIN_JSON_HEADERS,
             });
+          }
+
+          if (action === 'delete_unpaid' || action === 'delete_test') {
+            const del = await env.DB.prepare(
+              'DELETE FROM league_orders WHERE order_id = ?'
+            ).bind(oid).run();
+            if (!del || !del.meta || del.meta.changes !== 1) {
+              return new Response(JSON.stringify({ success: false, error: 'Failed to delete order' }), {
+                status: 409,
+                headers: ADMIN_JSON_HEADERS,
+              });
+            }
+            if (action === 'delete_unpaid') {
+              await incrementLifetimeUnpaidStat(env.DB, 1);
+            }
+            return new Response(
+              JSON.stringify({ success: true, order_id: oid, deleted: true, counted_unpaid: action === 'delete_unpaid' }),
+              { status: 200, headers: ADMIN_JSON_HEADERS }
+            );
           }
         } catch (err) {
           console.warn('Admin order action error:', err);
@@ -3093,9 +3182,7 @@ export default {
 
         const nowMs = Date.now();
         const nowIso = new Date(nowMs).toISOString();
-        await env.DB.prepare(
-          "UPDATE league_orders SET status = 'expired', updated_at = CURRENT_TIMESTAMP WHERE status IN ('awaiting_payment', 'rejected') AND expires_at < ?"
-        ).bind(nowIso).run();
+        await pruneExpiredOrdersToStats(env.DB, nowIso);
 
         const existingOpen = await env.DB.prepare(`
           SELECT order_id, league_id, league_name, team_count, plan, currency, amount_satang, status, expires_at
@@ -3352,19 +3439,29 @@ export default {
           SELECT order_id, access_token_hash, league_id, league_name, team_count, plan, currency, lang,
                  amount_satang, customer_email, customer_line, rules_text, status,
                  (CASE WHEN slip_data_url IS NOT NULL AND slip_data_url != '' THEN 1 ELSE 0 END) AS has_slip,
-                 slip_uploaded_at, admin_note, delivered_url, created_at, expires_at
+                 slip_data_url, slip_uploaded_at, admin_note, delivered_url, created_at, expires_at
           FROM league_orders WHERE order_id = ?
         `).bind(orderId).first();
-        if (!row || row.access_token_hash !== tokenHash) {
+        if (!row) {
+          return new Response(JSON.stringify({ success: false, error: 'Order not found' }), {
+            status: 404,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+          });
+        }
+        const adminLinkToken = await computeOrderAdminLinkToken(row.order_id, row.access_token_hash);
+        if (row.access_token_hash !== tokenHash && rawToken !== adminLinkToken) {
           return new Response(JSON.stringify({ success: false, error: 'Order not found' }), {
             status: 404,
             headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
           });
         }
         let status = String(row.status || 'awaiting_payment');
-        if ((status === 'awaiting_payment' || status === 'rejected') && Date.now() > Date.parse(row.expires_at)) {
-          status = 'expired';
-          await env.DB.prepare("UPDATE league_orders SET status = 'expired', updated_at = CURRENT_TIMESTAMP WHERE order_id = ? AND status IN ('awaiting_payment', 'rejected')").bind(orderId).run();
+        if (status === 'expired' || ((status === 'awaiting_payment' || status === 'rejected') && Date.now() > Date.parse(row.expires_at))) {
+          await pruneExpiredOrdersToStats(env.DB, new Date().toISOString());
+          return new Response(JSON.stringify({ success: false, expired: true, error: 'Order expired after 24 hours. Please create a new order.' }), {
+            status: 404,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+          });
         }
         const payCfg = await loadPaymentSettings(env.DB, env);
         let paymentMode = 'quote';
@@ -3382,6 +3479,7 @@ export default {
           }
         }
         const orderLang = String(row.lang || 'th').toLowerCase() === 'en' ? 'en' : 'th';
+        const safeSlipDataUrl = (row.slip_data_url && /^data:image\//i.test(row.slip_data_url)) ? row.slip_data_url : null;
         const respBody = JSON.stringify({
           success: true,
           order_id: row.order_id,
@@ -3398,6 +3496,7 @@ export default {
           customer_line: row.customer_line,
           rules_text: row.rules_text,
           has_slip: Boolean(row.has_slip),
+          slip_data_url: safeSlipDataUrl,
           slip_uploaded_at: row.slip_uploaded_at || null,
           reject_reason: status === 'rejected' ? (row.admin_note || '') : '',
           delivered_url: status === 'live' ? (row.delivered_url || `https://www.fplsawadika.com/${row.league_id}/`) : '',
@@ -3493,7 +3592,14 @@ export default {
                  customer_email, customer_line, rules_text, status, expires_at
           FROM league_orders WHERE order_id = ?
         `).bind(orderId).first();
-        if (!row || row.access_token_hash !== tokenHash) {
+        if (!row) {
+          return new Response(JSON.stringify({ success: false, error: 'Order not found' }), {
+            status: 404,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+          });
+        }
+        const adminLinkToken = await computeOrderAdminLinkToken(row.order_id, row.access_token_hash);
+        if (row.access_token_hash !== tokenHash && rawToken !== adminLinkToken) {
           return new Response(JSON.stringify({ success: false, error: 'Order not found' }), {
             status: 404,
             headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },

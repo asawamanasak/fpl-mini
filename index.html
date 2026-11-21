@@ -2000,6 +2000,58 @@
       line-height: 1.5;
       text-wrap: pretty;
     }
+    .bm-resume-banner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem 1rem;
+      margin-bottom: 1.25rem;
+      padding: 0.9rem 1.1rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--color-live-border);
+      background-color: var(--color-surface);
+      color: var(--color-ink);
+    }
+    .bm-resume-banner.hidden {
+      display: none;
+    }
+    .bm-resume-info {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.88rem;
+      min-width: 0;
+    }
+    .bm-resume-meta {
+      color: var(--color-ink-2);
+      font-size: 0.82rem;
+    }
+    .bm-resume-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .bm-resume-close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 0.45rem;
+      border: 1px solid var(--color-border);
+      background: transparent;
+      color: var(--color-ink-2);
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .bm-resume-close:hover {
+      background-color: var(--color-card);
+      color: var(--color-ink);
+    }
     .bm-order-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -2524,6 +2576,21 @@
           <div class="bm-launch-step">
             <span class="bm-launch-num tabular-nums">03</span>
             <span id="launch-step-3">แอดมินเปิดลีกและส่งลิงก์ส่วนตัวให้ภายใน 24 ชม.</span>
+          </div>
+        </div>
+
+        <div id="recent-order-resume-banner" class="bm-resume-banner hidden" role="region" aria-label="คำสั่งซื้อล่าสุดของคุณ">
+          <div class="bm-resume-info">
+            <span class="bm-live-dot" aria-hidden="true"></span>
+            <span id="resume-order-prefix">คุณมีคำสั่งซื้อที่สร้างไว้ล่าสุด:</span>
+            <strong id="resume-order-id" class="tabular-nums">-</strong>
+            <span id="resume-order-meta" class="bm-resume-meta"></span>
+          </div>
+          <div class="bm-resume-actions">
+            <a id="resume-order-link" href="./pay/" class="bm-btn-primary">
+              <span id="resume-order-link-text">กลับไปหน้าชำระเงิน / เช็กสถานะคำสั่งซื้อ →</span>
+            </a>
+            <button id="resume-order-dismiss" type="button" onclick="landingApp.dismissSavedOrderBanner()" class="bm-resume-close" aria-label="ซ่อนแถบคำสั่งซื้อล่าสุด">×</button>
           </div>
         </div>
 
@@ -3131,6 +3198,76 @@
         this.renderVisitorStat();
         this.renderLeagueLookupStatus();
         this.updateOrderSummary();
+        this.renderSavedOrderBanner();
+      },
+
+      renderSavedOrderBanner() {
+        const banner = document.getElementById('recent-order-resume-banner');
+        if (!banner) return;
+        let dismissed = false;
+        try {
+          dismissed = sessionStorage.getItem('fpl_resume_order_dismissed') === '1';
+        } catch (_) {}
+        if (dismissed) {
+          banner.classList.add('hidden');
+          return;
+        }
+        let saved = null;
+        try {
+          const raw = localStorage.getItem('fpl_last_order_tracking');
+          if (raw) saved = JSON.parse(raw);
+        } catch (_) {
+          saved = null;
+        }
+        const oid = saved && saved.order_id ? String(saved.order_id).trim() : '';
+        const tok = saved && saved.token ? String(saved.token).trim() : '';
+        const savedAt = saved && Number(saved.saved_at) ? Number(saved.saved_at) : 0;
+        if (!/^FPL-[A-Z0-9-]{4,24}$/.test(oid) || !/^[a-f0-9]{16,128}$/i.test(tok) || !savedAt || (Date.now() - savedAt) > 7 * 86400000) {
+          banner.classList.add('hidden');
+          return;
+        }
+        const isEn = this.lang === 'en';
+        const prefixEl = document.getElementById('resume-order-prefix');
+        const idEl = document.getElementById('resume-order-id');
+        const metaEl = document.getElementById('resume-order-meta');
+        const linkEl = document.getElementById('resume-order-link');
+        const linkTextEl = document.getElementById('resume-order-link-text');
+        const dismissEl = document.getElementById('resume-order-dismiss');
+        if (prefixEl) prefixEl.textContent = isEn ? 'Your recent order:' : 'คุณมีคำสั่งซื้อที่สร้างไว้ล่าสุด:';
+        if (idEl) idEl.textContent = oid;
+        if (metaEl) {
+          const lid = saved.league_id ? ('ID: ' + String(saved.league_id)) : '';
+          const lname = saved.league_name ? String(saved.league_name) : '';
+          const amt = saved.amount_display ? String(saved.amount_display) : '';
+          const parts = [lname || lid, lname && lid ? lid : '', amt].filter(Boolean);
+          metaEl.textContent = parts.length ? ('(' + parts.join(' · ') + ')') : '';
+        }
+        if (linkEl) {
+          const curParams = window.location.search ? new URLSearchParams(window.location.search) : null;
+          const apiParam = curParams ? (curParams.get('api') || '') : '';
+          const targetParams = new URLSearchParams();
+          targetParams.set('order', oid);
+          targetParams.set('token', tok);
+          if (apiParam) targetParams.set('api', apiParam);
+          const basePay = window.location.protocol === 'file:' ? './pay/index.html?' : './pay/?';
+          linkEl.setAttribute('href', basePay + targetParams.toString());
+        }
+        if (linkTextEl) {
+          linkTextEl.textContent = isEn
+            ? 'Resume Payment / Check Order Status →'
+            : 'กลับไปหน้าชำระเงิน / เช็กสถานะคำสั่งซื้อ →';
+        }
+        if (dismissEl) {
+          dismissEl.setAttribute('aria-label', isEn ? 'Hide recent order banner' : 'ซ่อนแถบคำสั่งซื้อล่าสุด');
+        }
+        banner.setAttribute('aria-label', isEn ? 'Your recent order' : 'คำสั่งซื้อล่าสุดของคุณ');
+        banner.classList.remove('hidden');
+      },
+
+      dismissSavedOrderBanner() {
+        try { sessionStorage.setItem('fpl_resume_order_dismissed', '1'); } catch (_) {}
+        const banner = document.getElementById('recent-order-resume-banner');
+        if (banner) banner.classList.add('hidden');
       },
 
       renderStats(stats) {
@@ -3812,6 +3949,17 @@
           if (!resp.ok || !data || !data.success || !data.order_id || !data.token) {
             throw new Error((data && data.error) || (isEn ? 'Unable to create order right now.' : 'ไม่สามารถสร้างคำสั่งซื้อได้ชั่วคราว'));
           }
+          try {
+            localStorage.setItem('fpl_last_order_tracking', JSON.stringify({
+              order_id: String(data.order_id),
+              token: String(data.token),
+              league_id: lidVal,
+              league_name: payload.league_name || '',
+              amount_display: (data && data.amount_display) ? String(data.amount_display) : '',
+              saved_at: Date.now()
+            }));
+            sessionStorage.removeItem('fpl_resume_order_dismissed');
+          } catch (_) {}
           const curParams = window.location.search ? new URLSearchParams(window.location.search) : null;
           const apiParam = curParams ? (curParams.get('api') || '') : '';
           const targetParams = new URLSearchParams();

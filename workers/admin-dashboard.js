@@ -2156,6 +2156,29 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         </div>
       </div>
 
+      <!-- Conversion & 24h Unpaid Order Stats Monitor -->
+      <div id="ordersStatsMonitorStrip" class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1">
+          <div class="text-[11px] font-medium text-slate-500 dark:text-neutral-400" data-i18n="ord_stat_total_lbl">คำสั่งซื้อสะสมทั้งหมด</div>
+          <div id="ordStatTotal" class="text-xl font-bold mono text-slate-900 dark:text-white">0</div>
+        </div>
+        <div class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1">
+          <div class="text-[11px] font-medium text-slate-500 dark:text-neutral-400" data-i18n="ord_stat_paid_lbl">โอนแล้ว / เปิดลีกสำเร็จ</div>
+          <div class="flex items-center gap-2">
+            <span id="ordStatPaidLive" class="text-xl font-bold mono text-emerald-700 dark:text-emerald-400">0</span>
+            <span id="ordStatConvPct" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30">0%</span>
+          </div>
+        </div>
+        <div class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1">
+          <div class="text-[11px] font-medium text-slate-500 dark:text-neutral-400" data-i18n="ord_stat_active_lbl">คิวรอดำเนินการปัจจุบัน</div>
+          <div id="ordStatActive" class="text-xl font-bold mono text-sky-700 dark:text-sky-400">0</div>
+        </div>
+        <div class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1">
+          <div class="text-[11px] font-medium text-slate-500 dark:text-neutral-400" data-i18n="ord_stat_expired_lbl">ไม่โอนเกิน 24 ชม. / ยกเลิกสะสม</div>
+          <div id="ordStatExpiredTotal" class="text-xl font-bold mono text-amber-700 dark:text-amber-300">0</div>
+        </div>
+      </div>
+
       <div id="ordersFilterPills" class="flex flex-wrap gap-2">
         <button type="button" data-order-filter="all" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-emerald-500 bg-emerald-500/15 text-emerald-800 dark:text-emerald-300">
           <span data-i18n="ord_f_all">ทั้งหมด</span> (<span id="ordCnt_all">0</span>)
@@ -2177,9 +2200,6 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         </button>
         <button type="button" data-order-filter="rejected" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
           <span data-i18n="ord_f_rejected">ปฏิเสธ</span> (<span id="ordCnt_rejected">0</span>)
-        </button>
-        <button type="button" data-order-filter="expired" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
-          <span data-i18n="ord_f_expired">หมดอายุ</span> (<span id="ordCnt_expired">0</span>)
         </button>
       </div>
 
@@ -2209,13 +2229,35 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       <!-- Order Inspector & Slip Verification Panel -->
       <div id="orderDetailPanel" class="hidden p-5 sm:p-6 rounded-xl border border-sky-500/40 bg-cardLight dark:bg-cardDark space-y-5">
         <div class="flex flex-wrap items-start justify-between gap-3 border-b border-borderLight dark:border-borderDark pb-4">
-          <div class="space-y-1">
+          <div class="space-y-1.5">
             <div class="flex flex-wrap items-center gap-2">
-              <span id="ordDetId" class="px-2.5 py-1 rounded-md bg-raisedLight dark:bg-raisedDark font-mono text-xs font-bold text-slate-900 dark:text-white">-</span>
+              <a id="ordDetId" href="#" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-md bg-raisedLight dark:bg-raisedDark font-mono text-xs font-bold text-sky-700 dark:text-sky-300 underline underline-offset-2 hover:text-sky-600 dark:hover:text-sky-200">-</a>
               <span id="ordDetStatusBadge" class="px-2.5 py-1 rounded-full text-xs font-semibold">-</span>
+              <a id="ordDetOpenPayLink" href="#" target="_blank" rel="noopener noreferrer"
+                class="inline-flex items-center min-h-[30px] px-2.5 py-1 rounded-lg border border-sky-500/40 bg-sky-500/10 hover:bg-sky-500/20 text-[11px] font-semibold text-sky-800 dark:text-sky-300 transition-colors"
+                data-i18n="ord_det_open_pay">
+                เปิดหน้าออเดอร์ลูกค้า (/pay/) ↗
+              </a>
+              <button type="button" id="btnOrdCopyPayLink"
+                class="inline-flex items-center min-h-[30px] px-2.5 py-1 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:border-sky-500 text-[11px] font-semibold text-slate-800 dark:text-neutral-200 transition-colors"
+                data-i18n="ord_det_copy_pay">
+                คัดลอกลิงก์ออเดอร์
+              </button>
             </div>
             <h3 id="ordDetLeagueTitle" class="text-base font-semibold text-slate-900 dark:text-white">-</h3>
             <p id="ordDetContact" class="text-xs text-slate-600 dark:text-neutral-400 break-all">-</p>
+            <div class="flex flex-wrap gap-2 pt-0.5">
+              <button type="button" id="btnOrdCopyLineReply"
+                class="inline-flex items-center min-h-[34px] px-3 py-1 rounded-lg border border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-xs font-semibold text-emerald-800 dark:text-emerald-300 transition-colors"
+                data-i18n="ord_det_copy_line">
+                คัดลอกข้อความแจ้งสถานะ (ส่ง LINE)
+              </button>
+              <a id="btnOrdEmailCustomer" href="#"
+                class="inline-flex items-center min-h-[34px] px-3 py-1 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:border-sky-500 text-xs font-semibold text-slate-800 dark:text-neutral-200 transition-colors"
+                data-i18n="ord_det_email_cust">
+                เปิดร่างอีเมลตอบลูกค้า ↗
+              </a>
+            </div>
           </div>
           <div class="text-left sm:text-right">
             <div class="text-[11px] uppercase tracking-wider text-slate-500 dark:text-neutral-400" data-i18n="ord_det_amount_lbl">ยอดโอนที่ต้องตรงกัน</div>
@@ -2270,6 +2312,16 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 class="min-h-[42px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-neutral-300 text-xs font-semibold transition-colors"
                 data-i18n="ord_act_delslip">
                 ลบรูปสลิป
+              </button>
+              <button type="button" id="btnOrdDeleteUnpaid"
+                class="min-h-[42px] px-3.5 py-2 rounded-lg border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 text-xs font-semibold transition-colors"
+                data-i18n="ord_act_del_unpaid">
+                ลบออเดอร์ไม่โอน (+นับสถิติ)
+              </button>
+              <button type="button" id="btnOrdDeleteTest"
+                class="min-h-[42px] px-3.5 py-2 rounded-lg border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-300 text-xs font-semibold transition-colors"
+                data-i18n="ord_act_del_test">
+                ลบออเดอร์ทดสอบ (ไม่นับสถิติ)
               </button>
             </div>
 
@@ -2832,6 +2884,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         onb_out_cli: '1. คำสั่ง CLI (รันบนเครื่องเพื่อเปิดลีก)',
         onb_out_json: '2. Config JSON (leagues_config.json)',
         onb_out_line: '3. ข้อความส่งมอบลูกค้าทาง LINE',
+        ord_stat_total_lbl: 'คำสั่งซื้อสะสมทั้งหมด',
+        ord_stat_paid_lbl: 'โอนแล้ว / เปิดลีกสำเร็จ',
+        ord_stat_active_lbl: 'คิวรอดำเนินการปัจจุบัน',
+        ord_stat_expired_lbl: 'ไม่โอนเกิน 24 ชม. / ยกเลิกสะสม',
         ord_btn_refresh: 'รีเฟรชรายการออเดอร์',
         ord_f_all: 'ทั้งหมด',
         ord_f_slip: 'รอตรวจสลิป',
@@ -2840,7 +2896,6 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ord_f_quote: 'ขอราคา / USD',
         ord_f_live: 'เปิดลีกแล้ว',
         ord_f_rejected: 'ปฏิเสธ',
-        ord_f_expired: 'หมดอายุ',
         ord_col_id: 'รหัสออเดอร์',
         ord_col_league: 'ลีก FPL',
         ord_col_amount: 'ยอดชำระ',
@@ -2850,6 +2905,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ord_col_action: 'ตรวจสอบ',
         ord_det_amount_lbl: 'ยอดโอนที่ต้องตรงกัน',
         ord_det_rules_lbl: 'กติกาและรายละเอียดที่ลูกค้ากรอก',
+        ord_det_open_pay: 'เปิดหน้าออเดอร์ลูกค้า (/pay/) ↗',
+        ord_det_copy_pay: 'คัดลอกลิงก์ออเดอร์',
+        ord_det_copy_line: 'คัดลอกข้อความแจ้งสถานะ (ส่ง LINE)',
+        ord_det_email_cust: 'เปิดร่างอีเมลตอบลูกค้า ↗',
         ord_lbl_note: 'บันทึกแอดมิน / เหตุผลกรณีปฏิเสธสลิป',
         ord_lbl_url: 'ลิงก์ลีกที่จะส่งมอบ (Delivered URL)',
         ord_act_verify: '✓ ยืนยันรับยอดโอน (Paid)',
@@ -2857,6 +2916,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ord_act_live: 'เปิดลีกแล้ว & ส่งอีเมล (Mark Live)',
         ord_act_reject: 'ปฏิเสธสลิป + ส่งอีเมล',
         ord_act_delslip: 'ลบรูปสลิป',
+        ord_act_del_unpaid: 'ลบออเดอร์ไม่โอน (+นับสถิติ)',
+        ord_act_del_test: 'ลบออเดอร์ทดสอบ (ไม่นับสถิติ)',
         ord_slip_heading: 'รูปสลิปโอนเงินที่ลูกค้าแนบ',
         ord_btn_reload_slip: 'โหลดรูปสลิปอีกครั้ง',
         pay_qr_title: 'ตั้งค่า QR รับเงินส่วนตัว (ไม่ต้องใช้เบอร์โทร / บัตร ปชช. / e-Wallet)',
@@ -3185,6 +3246,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         onb_out_cli: '1. CLI Onboarding Command',
         onb_out_json: '2. Config JSON (leagues_config.json)',
         onb_out_line: '3. Customer LINE Handoff Message',
+        ord_stat_total_lbl: 'Total Lifetime Orders',
+        ord_stat_paid_lbl: 'Paid / Launched Leagues',
+        ord_stat_active_lbl: 'Active Open Queue',
+        ord_stat_expired_lbl: 'Unpaid Expired / Cancelled',
         ord_btn_refresh: 'Refresh Orders',
         ord_f_all: 'All',
         ord_f_slip: 'Slip Submitted',
@@ -3193,7 +3258,6 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ord_f_quote: 'Quote / USD',
         ord_f_live: 'Live',
         ord_f_rejected: 'Rejected',
-        ord_f_expired: 'Expired',
         ord_col_id: 'Order ID',
         ord_col_league: 'FPL League',
         ord_col_amount: 'Amount',
@@ -3203,6 +3267,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ord_col_action: 'Inspect',
         ord_det_amount_lbl: 'Exact Match Amount',
         ord_det_rules_lbl: 'Customer Rules & Notes',
+        ord_det_open_pay: 'Open Customer Checkout (/pay/) ↗',
+        ord_det_copy_pay: 'Copy Order Link',
+        ord_det_copy_line: 'Copy Status Reply (LINE)',
+        ord_det_email_cust: 'Draft Reply Email ↗',
         ord_lbl_note: 'Admin Note / Rejection Reason',
         ord_lbl_url: 'Delivered League URL',
         ord_act_verify: '✓ Verify Payment (Paid)',
@@ -3210,6 +3278,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ord_act_live: 'Mark Live & Email Customer',
         ord_act_reject: 'Reject Slip & Email',
         ord_act_delslip: 'Delete Slip Image',
+        ord_act_del_unpaid: 'Delete Unpaid (+Stats)',
+        ord_act_del_test: 'Delete Test Order (No Stats)',
         ord_slip_heading: 'Uploaded Transfer Slip',
         ord_btn_reload_slip: 'Reload Slip Image',
         pay_qr_title: 'Private Payment QR Settings (No Phone / ID / e-Wallet Required)',
@@ -5420,6 +5490,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     let currentOrderFilter = 'all';
     let ordersListCache = [];
     let ordersCountsCache = {};
+    let ordersStatsCache = {};
     let selectedOrderObj = null;
     let paymentSettingsCache = null;
     let stagedPaymentQrDataUrl = '';
@@ -5704,6 +5775,24 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       el.classList.remove('hidden');
     }
 
+    function getSafeAdminOrderPayUrl(rawUrl) {
+      const s = String(rawUrl || '').trim();
+      return /^https?:\\/\\/[^<>\\s"']+$/i.test(s) ? s : '';
+    }
+
+    function renderOrderStatsMonitor() {
+      const st = ordersStatsCache || {};
+      const setTxt = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = String(val);
+      };
+      setTxt('ordStatTotal', Number(st.total_recorded || 0).toLocaleString());
+      setTxt('ordStatPaidLive', Number(st.paid_or_live || 0).toLocaleString());
+      setTxt('ordStatConvPct', String(Number(st.conversion_pct || 0)) + '%');
+      setTxt('ordStatActive', Number(st.active_pending || 0).toLocaleString());
+      setTxt('ordStatExpiredTotal', Number(st.expired_unpaid_total || 0).toLocaleString());
+    }
+
     function renderOrderFilterButtons() {
       const btns = document.querySelectorAll('.ord-filter-btn');
       btns.forEach((btn) => {
@@ -5713,7 +5802,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           ? 'border-emerald-500 bg-emerald-500/15 text-emerald-800 dark:text-emerald-300'
           : 'border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark');
       });
-      ['all', 'slip_submitted', 'awaiting_payment', 'paid', 'quote_requested', 'live', 'rejected', 'expired'].forEach((k) => {
+      ['all', 'slip_submitted', 'awaiting_payment', 'paid', 'quote_requested', 'live', 'rejected'].forEach((k) => {
         const cEl = document.getElementById('ordCnt_' + k);
         if (cEl) cEl.textContent = String(ordersCountsCache[k] || 0);
       });
@@ -5749,8 +5838,23 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         tr.className = (isSel ? 'bg-sky-500/10 ' : 'hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 ') + 'transition-colors';
 
         const tdId = document.createElement('td');
-        tdId.className = 'px-4 py-3 font-mono font-semibold text-slate-900 dark:text-white whitespace-nowrap';
-        tdId.textContent = String(o.order_id || '');
+        tdId.className = 'px-4 py-3 font-mono font-semibold whitespace-nowrap';
+        const safePayUrl = getSafeAdminOrderPayUrl(o.customer_pay_url);
+        if (safePayUrl) {
+          const a = document.createElement('a');
+          a.href = safePayUrl;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.className = 'text-sky-700 dark:text-sky-300 hover:underline underline-offset-2';
+          a.title = isEn ? 'Open customer checkout/tracking page' : 'เปิดหน้าชำระเงิน/ติดตามสถานะของลูกค้า';
+          a.textContent = String(o.order_id || '') + ' ↗';
+          tdId.appendChild(a);
+        } else {
+          const sp = document.createElement('span');
+          sp.className = 'text-slate-900 dark:text-white';
+          sp.textContent = String(o.order_id || '');
+          tdId.appendChild(sp);
+        }
         tr.appendChild(tdId);
 
         const tdLeague = document.createElement('td');
@@ -5860,6 +5964,100 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       }
     }
 
+    function copyAdminText(text, okMsg) {
+      const val = String(text || '').trim();
+      if (!val) return;
+      const done = () => {
+        if (okMsg) {
+          setOrderActionFeedback(okMsg, false);
+          showToast(okMsg);
+        }
+      };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(val).then(done).catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = val;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+            done();
+          });
+          return;
+        }
+      } catch (_) {}
+      const ta = document.createElement('textarea');
+      ta.value = val;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (_) {}
+      ta.remove();
+      done();
+    }
+
+    function buildAdminOrderReplyText(o, lang) {
+      const isEn = lang === 'en';
+      const oid = String(o.order_id || '-');
+      const lid = String(o.league_id || '-');
+      const lname = String(o.league_name || ('League ' + lid));
+      const amt = String(o.amount_display || '-');
+      const payUrl = getSafeAdminOrderPayUrl(o.customer_pay_url);
+      const delivUrl = String(o.delivered_url || ('https://www.fplsawadika.com/' + lid + '/'));
+      const meta = getOrderStatusMeta(o.status, lang);
+      if (isEn) {
+        const lines = [
+          'FPLSaWaDiKa Order Status Update',
+          'Order ID: ' + oid,
+          'League: ' + lname + ' (ID: ' + lid + ')',
+          'Status: ' + meta.label,
+          'Amount: ' + amt,
+        ];
+        if (o.status === 'live') lines.push('Dashboard Link: ' + delivUrl);
+        if (payUrl) lines.push('Order Tracking Page: ' + payUrl);
+        return lines.join('\\n');
+      }
+      const lines = [
+        'อัปเดตสถานะคำสั่งซื้อ FPLSaWaDiKa',
+        'เลขที่คำสั่งซื้อ: ' + oid,
+        'ลีก: ' + lname + ' (ID: ' + lid + ')',
+        'สถานะล่าสุด: ' + meta.label,
+        'ยอดรายการ: ' + amt,
+      ];
+      if (o.status === 'live') lines.push('ลิงก์เข้าใช้งานลีก: ' + delivUrl);
+      if (payUrl) lines.push('หน้าชำระเงิน/ติดตามสถานะ: ' + payUrl);
+      return lines.join('\\n');
+    }
+
+    function copyAdminOrderPayLink() {
+      if (!selectedOrderObj) return;
+      const safeUrl = getSafeAdminOrderPayUrl(selectedOrderObj.customer_pay_url);
+      if (!safeUrl) return;
+      const isEn = getLang() === 'en';
+      copyAdminText(
+        safeUrl,
+        isEn
+          ? ('Copied checkout link for ' + selectedOrderObj.order_id + ' ✓')
+          : ('คัดลอกลิงก์หน้าออเดอร์ ' + selectedOrderObj.order_id + ' เรียบร้อย ✓')
+      );
+    }
+
+    function copyAdminOrderLineReply() {
+      if (!selectedOrderObj) return;
+      const lang = getLang();
+      const msg = buildAdminOrderReplyText(selectedOrderObj, lang);
+      copyAdminText(
+        msg,
+        lang === 'en'
+          ? ('Copied status reply for ' + selectedOrderObj.order_id + ' (ready to paste in LINE) ✓')
+          : ('คัดลอกข้อความแจ้งสถานะ ' + selectedOrderObj.order_id + ' แล้ว (วางส่ง LINE ได้ทันที) ✓')
+      );
+    }
+
     function renderOrderDetail(o) {
       const panel = document.getElementById('orderDetailPanel');
       if (!panel || !o) return;
@@ -5869,7 +6067,22 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         const el = document.getElementById(id);
         if (el) el.textContent = text;
       };
-      setTxt('ordDetId', String(o.order_id || '-'));
+      const safePayUrl = getSafeAdminOrderPayUrl(o.customer_pay_url);
+      const idEl = document.getElementById('ordDetId');
+      if (idEl) {
+        idEl.textContent = String(o.order_id || '-') + (safePayUrl ? ' ↗' : '');
+        idEl.setAttribute('href', safePayUrl || '#');
+      }
+      const openPayEl = document.getElementById('ordDetOpenPayLink');
+      if (openPayEl) {
+        openPayEl.setAttribute('href', safePayUrl || '#');
+        openPayEl.classList.toggle('hidden', !safePayUrl);
+      }
+      const copyPayBtn = document.getElementById('btnOrdCopyPayLink');
+      if (copyPayBtn) {
+        copyPayBtn.disabled = !safePayUrl;
+      }
+
       const meta = getOrderStatusMeta(o.status, lang);
       const badge = document.getElementById('ordDetStatusBadge');
       if (badge) {
@@ -5882,6 +6095,20 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       setTxt('ordDetCreated', o.created_at ? new Date(o.created_at).toLocaleString(isEn ? 'en-US' : 'th-TH') : '-');
       setTxt('ordDetRules', o.rules_text ? String(o.rules_text) : (isEn ? '(No custom rules note)' : '(ไม่ได้ระบุรายละเอียดเพิ่มเติม)'));
       setTxt('ordDetSlipUploadedAt', o.slip_uploaded_at ? new Date(o.slip_uploaded_at).toLocaleString(isEn ? 'en-US' : 'th-TH') : '-');
+
+      const emailCustBtn = document.getElementById('btnOrdEmailCustomer');
+      if (emailCustBtn) {
+        const cleanEmail = String(o.customer_email || '').trim();
+        if (cleanEmail && !/[<>\\s]/.test(cleanEmail)) {
+          const subj = (isEn ? '[FPLSaWaDiKa] Order Update: ' : '[FPLSaWaDiKa] แจ้งสถานะคำสั่งซื้อ ') + String(o.order_id || '');
+          const bodyTxt = buildAdminOrderReplyText(o, lang);
+          emailCustBtn.setAttribute('href', 'mailto:' + cleanEmail + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(bodyTxt));
+          emailCustBtn.classList.remove('hidden');
+        } else {
+          emailCustBtn.setAttribute('href', '#');
+          emailCustBtn.classList.add('hidden');
+        }
+      }
 
       const noteIn = document.getElementById('orderAdminNoteInput');
       if (noteIn && noteIn.getAttribute('data-loaded-for') !== o.order_id) {
@@ -5964,7 +6191,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         return;
       }
 
-      const actionBtnIds = ['btnOrdVerifyPaid', 'btnOrdMarkLive', 'btnOrdReject', 'btnOrdDeleteSlip', 'btnOrdPrefillOnb'];
+      const actionBtnIds = ['btnOrdVerifyPaid', 'btnOrdMarkLive', 'btnOrdReject', 'btnOrdDeleteSlip', 'btnOrdPrefillOnb', 'btnOrdDeleteUnpaid', 'btnOrdDeleteTest'];
       orderActionInFlight = true;
       actionBtnIds.forEach((id) => {
         const b = document.getElementById(id);
@@ -5988,6 +6215,19 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         if (!res.ok || !data || !data.success) {
           throw new Error((data && data.error) || ('HTTP ' + res.status));
         }
+
+        if (data.deleted) {
+          const delMsg = data.counted_unpaid
+            ? (isEn ? ('Deleted unpaid order ' + oid + ' (+stats) ✓') : ('ลบออเดอร์ไม่โอน ' + oid + ' และนับเข้าสถิติเรียบร้อย ✓'))
+            : (isEn ? ('Deleted test order ' + oid + ' (stats unchanged) ✓') : ('ลบออเดอร์ทดสอบ ' + oid + ' เรียบร้อย (ไม่นับสถิติ) ✓'));
+          selectedOrderObj = null;
+          const panel = document.getElementById('orderDetailPanel');
+          if (panel) panel.classList.add('hidden');
+          showToast(delMsg);
+          await loadOrdersData(currentOrderFilter);
+          return;
+        }
+
         if (data.status) selectedOrderObj.status = data.status;
         if (data.slip_deleted) selectedOrderObj.has_slip = false;
         if (adminNote) selectedOrderObj.admin_note = adminNote;
@@ -6039,13 +6279,19 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         if (!data || !data.success) throw new Error((data && data.error) || 'Failed to load orders');
         ordersListCache = Array.isArray(data.orders) ? data.orders : [];
         ordersCountsCache = data.counts || {};
+        ordersStatsCache = data.stats || {};
+        renderOrderStatsMonitor();
         renderOrderFilterButtons();
         if (selectedOrderObj) {
           const fresh = ordersListCache.find((item) => item.order_id === selectedOrderObj.order_id);
           if (fresh) {
             selectedOrderObj = fresh;
+            renderOrderDetail(selectedOrderObj);
+          } else {
+            selectedOrderObj = null;
+            const panel = document.getElementById('orderDetailPanel');
+            if (panel) panel.classList.add('hidden');
           }
-          renderOrderDetail(selectedOrderObj);
         }
         renderOrdersTable();
       } catch (err) {
@@ -6090,6 +6336,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           if (selectedOrderObj) loadOrderSlipImage(selectedOrderObj.order_id);
         });
       }
+      const btnCopyPay = document.getElementById('btnOrdCopyPayLink');
+      if (btnCopyPay) btnCopyPay.addEventListener('click', () => copyAdminOrderPayLink());
+      const btnCopyLine = document.getElementById('btnOrdCopyLineReply');
+      if (btnCopyLine) btnCopyLine.addEventListener('click', () => copyAdminOrderLineReply());
       const btnVerify = document.getElementById('btnOrdVerifyPaid');
       if (btnVerify) btnVerify.addEventListener('click', () => submitOrderAction('verify_payment'));
       const btnPrefill = document.getElementById('btnOrdPrefillOnb');
@@ -6100,6 +6350,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (btnReject) btnReject.addEventListener('click', () => submitOrderAction('reject'));
       const btnDelSlip = document.getElementById('btnOrdDeleteSlip');
       if (btnDelSlip) btnDelSlip.addEventListener('click', () => submitOrderAction('delete_slip'));
+      const btnDelUnpaid = document.getElementById('btnOrdDeleteUnpaid');
+      if (btnDelUnpaid) btnDelUnpaid.addEventListener('click', () => submitOrderAction('delete_unpaid'));
+      const btnDelTest = document.getElementById('btnOrdDeleteTest');
+      if (btnDelTest) btnDelTest.addEventListener('click', () => submitOrderAction('delete_test'));
     }
 
     // Keyboard shortcuts (R = Refresh, L = Language, T = Theme)
