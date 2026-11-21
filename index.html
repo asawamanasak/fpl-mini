@@ -567,10 +567,10 @@
     }
     .bm-lf-head {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
       gap: 0.75rem;
-      padding: 1rem 1.15rem 0.8rem;
+      padding: 0.85rem 1.15rem;
       border-bottom: 1px solid var(--color-border);
     }
     .bm-lf-title {
@@ -579,12 +579,6 @@
       font-weight: 800;
       color: var(--color-ink);
       line-height: 1.3;
-    }
-    .bm-lf-sub {
-      margin: 0.25rem 0 0;
-      font-size: 0.82rem;
-      color: var(--color-ink-2);
-      line-height: 1.45;
     }
     .bm-lf-close {
       display: inline-flex;
@@ -603,44 +597,6 @@
     }
     .bm-lf-close:hover {
       border-color: var(--color-border-strong);
-    }
-    .bm-lf-search-wrap {
-      padding: 0.75rem 1.15rem;
-      border-bottom: 1px solid var(--color-border);
-      background-color: var(--color-surface);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .bm-lf-search-input {
-      flex: 1 1 auto;
-      min-width: 0;
-      min-height: 44px;
-      padding: 0.5rem 0.85rem;
-      border-radius: 0.55rem;
-      border: 1px solid var(--color-border-strong);
-      background-color: var(--color-card);
-      color: var(--color-ink);
-      font-family: var(--font-sans);
-      font-size: 0.92rem;
-    }
-    .bm-lf-search-input:focus-visible {
-      outline: 2px solid var(--color-accent);
-      outline-offset: 2px;
-    }
-    .bm-lf-clear-btn {
-      min-width: 44px;
-      min-height: 44px;
-      padding: 0 0.75rem;
-      border-radius: 0.55rem;
-      border: 1px solid var(--color-border-strong);
-      background-color: var(--color-card);
-      color: var(--color-ink);
-      font-family: var(--font-sans);
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-      flex-shrink: 0;
     }
     .bm-lf-list {
       flex: 1 1 auto;
@@ -723,12 +679,6 @@
       flex-wrap: wrap;
       font-size: 0.78rem;
       color: var(--color-ink-2);
-    }
-    .bm-lf-foot-link {
-      color: var(--color-ink);
-      font-weight: 700;
-      text-decoration: underline;
-      text-underline-offset: 2px;
     }
 
     /* Hero Broadcast Arena */
@@ -2678,20 +2628,12 @@
   <div id="league-finder-modal" class="bm-lf-modal hidden" role="dialog" aria-modal="true" aria-labelledby="lf-modal-title">
     <div class="bm-lf-panel">
       <div class="bm-lf-head">
-        <div>
-          <h2 id="lf-modal-title" class="bm-lf-title">เข้าดูลีกตัวอย่าง (9 ลีก)</h2>
-          <p id="lf-modal-sub" class="bm-lf-sub">เลือกลีกตัวอย่างจริงทั้ง 9 ลีก หรือพิมพ์ชื่อ/รหัส League ID เพื่อเปิดลีกของคุณทันที</p>
-        </div>
+        <h2 id="lf-modal-title" class="bm-lf-title">เข้าดูลีกตัวอย่าง (9 ลีก)</h2>
         <button id="lf-close-btn" type="button" onclick="landingApp.closeLeagueFinder()" class="bm-lf-close" aria-label="ปิดหน้าต่าง">×</button>
-      </div>
-      <div class="bm-lf-search-wrap">
-        <input id="lf-search-input" type="search" autocomplete="off" inputmode="search" placeholder="ค้นหาชื่อลีก หรือพิมพ์รหัส League ID..." aria-label="ค้นหาชื่อลีกหรือรหัส League ID" class="bm-lf-search-input">
-        <button id="lf-search-clear" type="button" class="bm-lf-clear-btn hidden">ล้าง</button>
       </div>
       <div id="lf-league-list" class="bm-lf-list"></div>
       <div class="bm-lf-foot">
         <span id="lf-count-note">แสดงครบทั้ง 9 ลีกตัวอย่าง</span>
-        <a id="lf-preview-fallback" href="./preview.html" class="bm-lf-foot-link">เปิดดูตัวอย่างเร็ว (preview.html) ↗</a>
       </div>
     </div>
   </div>
@@ -2702,7 +2644,7 @@
     window.SHOWCASE_DEMOS = [{"id": "40700", "tag_th": "ยอดนิยม • แชมป์วีค + บอลถ้วย", "tag_en": "Popular • Weekly + Cup", "title_th": "เซียนอยู่รู หมูอยู่ตึก", "title_en": "Sian Yoo Roo", "desc_th": "รางวัลแชมป์สัปดาห์ 6 รอบเคลียร์เงิน และถ้วยน็อคเอาท์", "desc_en": "Weekly payouts, 6 settlement rounds, and knockout cup bracket", "plan": "standard", "teams_count": 12}, {"id": "675290", "tag_th": "ลีกใหญ่ • รายเดือน + การกุศล", "tag_en": "Monthly • Charity Pool", "title_th": "NudNee League", "title_en": "NudNee League", "desc_th": "ระบบแชมป์ประจำเดือน 10 เดือน, ตาราง Top 5 ฤดูกาล, ถ้วย และสมทบการกุศล", "desc_en": "10 monthly leaderboards, overall top 5, cup & charity ledger", "plan": "standard", "teams_count": 60}, {"id": "438691", "tag_th": "สายฮา • ค่าปรับบ๊วย 5 อันดับ", "tag_en": "Penalties • Bottom-5 Fines", "title_th": "2 spade", "title_en": "2 spade", "desc_th": "เก็บค่าปรับ 5 อันดับสุดท้ายเข้ากองกลางอัตโนมัติ พร้อมระบบตัดสินอันดับเท่ากันทางการ", "desc_en": "Automated bottom-5 penalty ladder into central pool with official tie-breakers", "plan": "standard", "teams_count": 13}, {"id": "187827", "tag_th": "Custom • หักยอดหัวท้าย + ทายผล", "tag_en": "Custom • Balance Ledger + Picks", "title_th": "Shi62 Special", "title_en": "Shi62 Special", "desc_th": "อันดับบนรับเงินจากอันดับล่างเมื่อจบฤดูกาล พร้อมแท็บทายผลเฉพาะลีก", "desc_en": "End-of-season head-to-head balance ledger plus custom weekly picks tab", "plan": "custom", "teams_count": 13}, {"id": "139836", "tag_th": "ลีกใหญ่ • 1,000+ ทีม", "tag_en": "Large League • 1,000+ Teams", "title_th": "FPL Growth Mindset", "title_en": "FPL Growth Mindset", "desc_th": "ต้นแบบลีกคอมมูนิตี้สเกลใหญ่ 1,000+ ทีม ค้นหาทีมไวและเปิดดูผังสนามรายทีมทันที", "desc_en": "High-scale 1,000+ team community preview with fast search and instant team lineups", "plan": "tier2_roadmap", "teams_count": 1779}];
     window.SHOWCASE_LEAGUE_MAP = {"40700": "เซียนอยู่รู หมูอยู่ตึก", "675290": "NudNee", "38491": "รอ แมน โอน", "1101958": "Barley's Official League", "438691": "2 spade", "187827": "Shi62", "5349": "Bramann League", "567387": "Fantasy Nguan & friends cup", "139836": "FPL Growth Mindset 2026/27"};
     window.SHOWCASE_LEAGUES = [{"id": "40700", "name": "เซียนอยู่รู หมูอยู่ตึก", "teams_count": 12, "tier": 1, "is_default": true}, {"id": "675290", "name": "NudNee", "teams_count": 60, "tier": 1, "is_default": false}, {"id": "38491", "name": "รอ แมน โอน", "teams_count": 16, "tier": 1, "is_default": false}, {"id": "1101958", "name": "Barley's Official League", "teams_count": 17, "tier": 1, "is_default": false}, {"id": "438691", "name": "2 spade", "teams_count": 13, "tier": 1, "is_default": false}, {"id": "187827", "name": "Shi62", "teams_count": 13, "tier": 1, "is_default": false}, {"id": "5349", "name": "Bramann League", "teams_count": 20, "tier": 1, "is_default": false}, {"id": "567387", "name": "Fantasy Nguan & friends cup", "teams_count": 12, "tier": 1, "is_default": false}, {"id": "139836", "name": "FPL Growth Mindset 2026/27", "teams_count": 1779, "tier": 2, "is_default": false}];
-    window.SAMPLE_PREVIEW = {"league_id": "40700", "league_name": "เซียนอยู่รู หมูอยู่ตึก", "max_gw": 11, "rows": [{"rank": 1, "last_rank": 3, "team": "GEMINI UNITED", "manager": "Micky Asawamanasak", "total": 694, "gw": 0}, {"rank": 2, "last_rank": 1, "team": "SUN-KUNG-JI", "manager": "Athit Rattanawipapong", "total": 693, "gw": 0}, {"rank": 3, "last_rank": 2, "team": "Some might say", "manager": "FAme Pakviwat", "total": 691, "gw": 0}, {"rank": 4, "last_rank": 4, "team": "Anjoni Iraola", "manager": "pilan liu", "total": 658, "gw": 0}, {"rank": 5, "last_rank": 5, "team": "Mary Jojibana", "manager": "Kavinjet Tantitanasap", "total": 630, "gw": 0}]};
+    window.SAMPLE_PREVIEW = {"league_id": "40700", "league_name": "เซียนอยู่รู หมูอยู่ตึก", "max_gw": 11, "rows": [{"rank": 1, "last_rank": 1, "team": "GEMINI UNITED", "manager": "Micky Asawamanasak", "total": 694, "gw": 0}, {"rank": 2, "last_rank": 2, "team": "SUN-KUNG-JI", "manager": "Athit Rattanawipapong", "total": 693, "gw": 0}, {"rank": 3, "last_rank": 3, "team": "Some might say", "manager": "FAme Pakviwat", "total": 691, "gw": 0}, {"rank": 4, "last_rank": 4, "team": "Anjoni Iraola", "manager": "pilan liu", "total": 658, "gw": 0}, {"rank": 5, "last_rank": 5, "team": "Mary Jojibana", "manager": "Kavinjet Tantitanasap", "total": 630, "gw": 0}]};
 
     const landingApp = {
       lang: window.INITIAL_LANG === 'en' ? 'en' : 'th',
@@ -2891,30 +2833,10 @@
 
       bindLeagueFinder() {
         const modal = document.getElementById('league-finder-modal');
-        const input = document.getElementById('lf-search-input');
-        const clearBtn = document.getElementById('lf-search-clear');
         if (modal && !modal._lfBackdropBound) {
           modal._lfBackdropBound = true;
           modal.addEventListener('click', (e) => {
             if (e.target === modal) this.closeLeagueFinder();
-          });
-        }
-        if (input && !input._lfInputBound) {
-          input._lfInputBound = true;
-          input.addEventListener('input', () => {
-            if (clearBtn) clearBtn.classList.toggle('hidden', !String(input.value || '').trim());
-            this.renderLeagueFinderList();
-          });
-        }
-        if (clearBtn && !clearBtn._lfClearBound) {
-          clearBtn._lfClearBound = true;
-          clearBtn.addEventListener('click', () => {
-            if (input) input.value = '';
-            clearBtn.classList.add('hidden');
-            this.renderLeagueFinderList();
-            if (input && !(window.matchMedia && window.matchMedia('(pointer: coarse)').matches)) {
-              input.focus();
-            }
           });
         }
       },
@@ -2923,10 +2845,6 @@
         const modal = document.getElementById('league-finder-modal');
         if (!modal) return;
         this._lfTriggerEl = triggerEl || document.activeElement;
-        const input = document.getElementById('lf-search-input');
-        const clearBtn = document.getElementById('lf-search-clear');
-        if (input) input.value = '';
-        if (clearBtn) clearBtn.classList.add('hidden');
         this.renderLeagueFinderList();
         modal.classList.remove('hidden');
         try { document.body.style.overflow = 'hidden'; } catch (_) {}
@@ -2939,10 +2857,6 @@
           };
         }
         document.addEventListener('keydown', this._lfEscHandler);
-        const isCoarse = Boolean(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
-        if (input && !isCoarse) {
-          try { input.focus(); } catch (_) {}
-        }
       },
 
       closeLeagueFinder() {
@@ -2962,12 +2876,9 @@
       renderLeagueFinderList() {
         const listEl = document.getElementById('lf-league-list');
         if (!listEl) return;
-        const input = document.getElementById('lf-search-input');
         const countEl = document.getElementById('lf-count-note');
         const isEn = this.lang === 'en';
         const isFile = window.location.protocol === 'file:';
-        const q = String((input && input.value) || '').trim();
-        const qLower = q.toLowerCase();
 
         const showcaseList = Array.isArray(window.SHOWCASE_LEAGUES) ? window.SHOWCASE_LEAGUES : [];
         const showcaseById = {};
@@ -3007,41 +2918,28 @@
           });
         }
 
-        const filtered = qLower
-          ? ordered.filter((it) => it.name.toLowerCase().includes(qLower) || it.id.toLowerCase().includes(qLower))
-          : ordered;
-
         listEl.textContent = '';
 
         const makeRow = (item) => {
           const a = document.createElement('a');
-          a.className = 'bm-lf-item' + (item.isDirect ? ' is-direct' : '');
+          a.className = 'bm-lf-item';
           a.setAttribute('href', isFile ? ('./' + item.id + '/index.html') : ('./' + item.id + '/'));
-          if (item.isDirect) a.id = 'lf-direct-jump-link';
 
           const left = document.createElement('div');
           left.className = 'bm-lf-item-main';
           const title = document.createElement('div');
           title.className = 'bm-lf-item-title';
-          title.textContent = item.isDirect
-            ? (isEn ? ('Open /' + item.id + '/ directly →') : ('เปิดลิงก์ลีก /' + item.id + '/ โดยตรง →'))
-            : item.name;
+          title.textContent = item.name;
           const meta = document.createElement('div');
           meta.className = 'bm-lf-item-meta tabular-nums';
-          if (item.isDirect) {
-            meta.textContent = isEn
-              ? 'For private customer leagues excluded from the public showcase list'
-              : 'สำหรับลีกลูกค้าส่วนตัวที่ไม่แสดงในรายชื่อสาธารณะ';
-          } else {
-            const parts = ['ID: ' + item.id];
-            if (item.teams_count > 0) {
-              parts.push(item.teams_count.toLocaleString() + (isEn ? ' teams' : ' ทีม'));
-            }
-            if (item.isPrivateLocal) {
-              parts.push(isEn ? 'Your private league' : 'ลีกส่วนตัวของคุณ');
-            }
-            meta.textContent = parts.join(' · ');
+          const parts = ['ID: ' + item.id];
+          if (item.teams_count > 0) {
+            parts.push(item.teams_count.toLocaleString() + (isEn ? ' teams' : ' ทีม'));
           }
+          if (item.isPrivateLocal) {
+            parts.push(isEn ? 'Your private league' : 'ลีกส่วนตัวของคุณ');
+          }
+          meta.textContent = parts.join(' · ');
           left.appendChild(title);
           left.appendChild(meta);
           a.appendChild(left);
@@ -3061,43 +2959,15 @@
           return a;
         };
 
-        for (let i = 0; i < filtered.length; i += 1) {
-          listEl.appendChild(makeRow(filtered[i]));
-        }
-
-        const isNumericQuery = /^[0-9]{1,10}$/.test(q);
-        const exactMatchExists = isNumericQuery && filtered.some((it) => it.id === q);
-        if (isNumericQuery && !showcaseById[q] && !exactMatchExists) {
-          listEl.appendChild(makeRow({ id: q, isDirect: true }));
-        }
-
-        if (listEl.children.length === 0) {
-          const empty = document.createElement('div');
-          empty.className = 'bm-lf-empty';
-          const msg = document.createElement('div');
-          msg.textContent = isEn
-            ? ('No showcase leagues matching "' + q + '". Enter a numeric League ID to open a private link.')
-            : ('ไม่พบชื่อลีก "' + q + '" ในรายการตัวอย่าง (หากเป็นลีกส่วนตัว กรุณาพิมพ์ตัวเลข League ID)');
-          const resetBtn = document.createElement('button');
-          resetBtn.type = 'button';
-          resetBtn.className = 'bm-lf-clear-btn';
-          resetBtn.textContent = isEn ? 'Show All 9 Leagues' : 'แสดงลีกทั้งหมด';
-          resetBtn.addEventListener('click', () => {
-            if (input) input.value = '';
-            const clearBtn = document.getElementById('lf-search-clear');
-            if (clearBtn) clearBtn.classList.add('hidden');
-            this.renderLeagueFinderList();
-          });
-          empty.appendChild(msg);
-          empty.appendChild(resetBtn);
-          listEl.appendChild(empty);
+        for (let i = 0; i < ordered.length; i += 1) {
+          listEl.appendChild(makeRow(ordered[i]));
         }
 
         if (countEl) {
           const total = showcaseList.length || 9;
           countEl.textContent = isEn
-            ? ('Showing ' + filtered.length + ' of ' + total + ' showcase leagues')
-            : ('แสดง ' + filtered.length + ' จาก ' + total + ' ลีกตัวอย่าง');
+            ? ('Showing ' + ordered.length + ' of ' + total + ' showcase leagues')
+            : ('แสดง ' + ordered.length + ' จาก ' + total + ' ลีกตัวอย่าง');
         }
       },
 
@@ -3159,18 +3029,8 @@
         setTxt('lf-modal-title', lfIsEn
           ? 'Live Demo Leagues (9)'
           : 'เข้าดูลีกตัวอย่าง (9 ลีก)');
-        setTxt('lf-modal-sub', lfIsEn
-          ? 'Pick from all 9 real showcase leagues or enter your League ID to jump straight in.'
-          : 'เลือกลีกตัวอย่างจริงทั้ง 9 ลีก หรือพิมพ์ชื่อ/รหัส League ID เพื่อเปิดลีกของคุณทันที');
         const lfClose = document.getElementById('lf-close-btn');
         if (lfClose) lfClose.setAttribute('aria-label', lfIsEn ? 'Close dialog' : 'ปิดหน้าต่าง');
-        const lfSearch = document.getElementById('lf-search-input');
-        if (lfSearch) {
-          lfSearch.placeholder = lfIsEn ? 'Search league name or League ID...' : 'ค้นหาชื่อลีก หรือพิมพ์รหัส League ID...';
-          lfSearch.setAttribute('aria-label', lfIsEn ? 'Search league name or League ID' : 'ค้นหาชื่อลีกหรือรหัส League ID');
-        }
-        setTxt('lf-search-clear', lfIsEn ? 'Clear' : 'ล้าง');
-        setTxt('lf-preview-fallback', lfIsEn ? 'Quick Demo Dashboard (preview.html) ↗' : 'เปิดดูตัวอย่างเร็ว (preview.html) ↗');
         const lfModal = document.getElementById('league-finder-modal');
         if (lfModal && !lfModal.classList.contains('hidden')) {
           this.renderLeagueFinderList();
