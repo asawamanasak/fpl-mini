@@ -53,7 +53,7 @@ const ADMIN_HTML_HEADERS = {
 };
 
 const TELEMETRY_MAX_BODY_BYTES = 4096;
-const TELEMETRY_ALLOWED_TYPES = new Set(['page_view', 'league_view', 'dwell_time', 'team_view', 'client_error']);
+const TELEMETRY_ALLOWED_TYPES = new Set(['page_view', 'league_view', 'landing_view', 'dwell_time', 'team_view', 'client_error']);
 const TELEMETRY_ERROR_CATEGORIES = new Set(['js_error', 'api_timeout', 'api_http', 'data_load']);
 const TELEMETRY_RATE_LIMIT_PER_MIN = 30;
 const LOGIN_RATE_LIMIT_PER_MIN = 8;
@@ -102,6 +102,232 @@ async function ensureAdminNotesTable(db) {
     _adminNotesTableReady = true;
   } catch (err) {
     console.warn('ensureAdminNotesTable warning:', err);
+  }
+}
+
+let _leagueOrdersTableReady = false;
+
+async function ensureLeagueOrdersTable(db) {
+  if (!db || _leagueOrdersTableReady) return;
+  try {
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS league_orders (
+        order_id TEXT PRIMARY KEY,
+        access_token_hash TEXT NOT NULL,
+        league_id TEXT NOT NULL,
+        league_name TEXT NOT NULL DEFAULT '',
+        team_count INTEGER NOT NULL DEFAULT 0,
+        plan TEXT NOT NULL DEFAULT 'standard',
+        currency TEXT NOT NULL DEFAULT 'THB',
+        lang TEXT NOT NULL DEFAULT 'th',
+        amount_satang INTEGER NOT NULL DEFAULT 50000,
+        customer_email TEXT NOT NULL,
+        customer_line TEXT NOT NULL DEFAULT '',
+        rules_text TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'awaiting_payment',
+        slip_data_url TEXT,
+        slip_uploaded_at TEXT,
+        slip_verify_provider TEXT DEFAULT '',
+        slip_verify_ref TEXT DEFAULT '',
+        verified_at TEXT,
+        delivered_url TEXT DEFAULT '',
+        admin_note TEXT DEFAULT '',
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        expires_at TEXT NOT NULL
+      )
+    `).run();
+    try {
+      await db.prepare("ALTER TABLE league_orders ADD COLUMN lang TEXT NOT NULL DEFAULT 'th'").run();
+    } catch (_) {}
+    await db.prepare('CREATE INDEX IF NOT EXISTS idx_league_orders_status_exp ON league_orders (status, expires_at)').run();
+    await db.prepare('CREATE INDEX IF NOT EXISTS idx_league_orders_created ON league_orders (created_at)').run();
+    try {
+      await db.prepare(`
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_league_orders_active_satang
+          ON league_orders (amount_satang)
+          WHERE currency = 'THB' AND amount_satang >= 50001 AND status IN ('awaiting_payment', 'slip_submitted', 'rejected')
+      `).run();
+    } catch (idxErr) {
+      console.warn('idx_league_orders_active_satang warning:', idxErr);
+    }
+    _leagueOrdersTableReady = true;
+  } catch (err) {
+    console.warn('ensureLeagueOrdersTable warning:', err);
+  }
+}
+
+function escapeHtmlEmail(str) {
+  return String(str == null ? '' : str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function tlvTag(tag, val) {
+  const s = String(val || '');
+  return `${tag}${String(s.length).padStart(2, '0')}${s}`;
+}
+
+function crc16CcittFalse(str) {
+  let crc = 0xFFFF;
+  for (let i = 0; i < str.length; i++) {
+    crc ^= (str.charCodeAt(i) & 0xFF) << 8;
+    for (let j = 0; j < 8; j++) {
+      crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) : (crc << 1);
+      crc &= 0xFFFF;
+    }
+  }
+  return crc.toString(16).toUpperCase().padStart(4, '0');
+}
+
+function buildPromptPayPayload(rawId, amountBahtStr) {
+  const digits = String(rawId || '').replace(/\D/g, '');
+  let subTag = '';
+  let targetVal = '';
+  if (digits.length === 10 && digits.startsWith('0')) {
+    subTag = '01';
+    targetVal = `0066${digits.slice(1)}`;
+  } else if (digits.length === 11 && digits.startsWith('66')) {
+    subTag = '01';
+    targetVal = `00${digits}`;
+  } else if (digits.length === 13 && digits.startsWith('0066')) {
+    subTag = '01';
+    targetVal = digits;
+  } else if (digits.length === 13) {
+    subTag = '02';
+    targetVal = digits;
+  } else if (digits.length === 15) {
+    subTag = '03';
+    targetVal = digits;
+  } else {
+    return '';
+  }
+  const merchantInfo = tlvTag('00', 'A000000677010111') + tlvTag(subTag, targetVal);
+  const amtClean = String(amountBahtStr || '').trim();
+  const body =
+    tlvTag('00', '01') +
+    tlvTag('01', amtClean ? '12' : '11') +
+    tlvTag('29', merchantInfo) +
+    tlvTag('53', '764') +
+    (amtClean ? tlvTag('54', amtClean) : '') +
+    tlvTag('58', 'TH') +
+    '6304';
+  return body + crc16CcittFalse(body);
+}
+
+async function sha256Hex(text) {
+  const data = new TextEncoder().encode(String(text || ''));
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function generateOrderId() {
+  const ict = new Date(Date.now() + 7 * 3600000);
+  const yy = String(ict.getUTCFullYear()).slice(-2);
+  const mm = String(ict.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(ict.getUTCDate()).padStart(2, '0');
+  const bytes = new Uint8Array(3);
+  crypto.getRandomValues(bytes);
+  const suffix = Array.from(bytes).map(b => b.toString(16).toUpperCase().padStart(2, '0')).join('');
+  return `FPL-${yy}${mm}${dd}-${suffix}`;
+}
+
+function generateAccessToken() {
+  const bytes = new Uint8Array(24);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function allocateUniqueSatangAmount(db, baseBaht = 500) {
+  if (!db) throw new Error('Database unavailable for satang allocation');
+  const baseSatang = Math.round(Number(baseBaht) * 100);
+  const used = new Set();
+  const rows = await db.prepare(`
+    SELECT amount_satang FROM league_orders
+    WHERE currency = 'THB'
+      AND (
+        status IN ('awaiting_payment', 'slip_submitted', 'rejected')
+        OR (status = 'expired' AND datetime(expires_at, '+24 hours') > datetime('now'))
+      )
+  `).all();
+  if (rows && Array.isArray(rows.results)) {
+    for (const r of rows.results) {
+      used.add(Number(r.amount_satang));
+    }
+  }
+  const available = [];
+  for (let offset = 1; offset <= 99; offset++) {
+    const candidate = baseSatang + offset;
+    if (!used.has(candidate)) available.push(candidate);
+  }
+  if (available.length > 0) {
+    const rand = new Uint32Array(1);
+    crypto.getRandomValues(rand);
+    return available[rand[0] % available.length];
+  }
+  return null;
+}
+
+function formatSatangDisplay(satang, currency = 'THB', lang = 'th') {
+  const cur = String(currency || 'THB').toUpperCase();
+  const isEn = String(lang || 'th').toLowerCase() === 'en';
+  if (cur === 'USD') {
+    return satang > 0 ? `$${(Number(satang) / 100).toFixed(0)} USD` : 'Custom Quote';
+  }
+  return satang > 0 ? `${(Number(satang) / 100).toFixed(2)} THB` : (isEn ? 'Custom Quote' : 'ประเมินราคา');
+}
+
+function getOrderPayUrl(siteOrigin, orderId, rawToken) {
+  const base = siteOrigin && /^https?:\/\//i.test(siteOrigin) ? siteOrigin.replace(/\/+$/, '') : 'https://www.fplsawadika.com';
+  return `${base}/pay/?order=${encodeURIComponent(orderId)}&token=${encodeURIComponent(rawToken)}`;
+}
+
+async function sendTransactionalEmail(env, { to, subject, html, text, replyTo }) {
+  const cleanTo = String(to || '').trim();
+  if (!cleanTo) return { sent: false, reason: 'missing_recipient' };
+  const fromAddr = (env && typeof env.EMAIL_FROM === 'string' && env.EMAIL_FROM.trim())
+    ? env.EMAIL_FROM.trim()
+    : 'FPLSaWaDiKa <noreply@fplsawadika.com>';
+  const apiKey = (env && typeof env.RESEND_API_KEY === 'string') ? env.RESEND_API_KEY.trim() : '';
+  if (!apiKey) {
+    console.log(`[EMAIL_MOCK] to=${cleanTo} subject="${subject}"`);
+    return { sent: false, mode: 'staging_mock' };
+  }
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 6000);
+  try {
+    const bodyObj = {
+      from: fromAddr,
+      to: [cleanTo],
+      subject: String(subject || 'FPLSaWaDiKa Notification'),
+      html: String(html || ''),
+      text: String(text || ''),
+    };
+    if (replyTo) bodyObj.reply_to = String(replyTo);
+    const resp = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyObj),
+      signal: ctrl.signal,
+    });
+    clearTimeout(timer);
+    if (!resp.ok) {
+      const errTxt = await resp.text().catch(() => '');
+      console.warn('Resend email failed:', resp.status, errTxt.slice(0, 200));
+      return { sent: false, mode: 'resend_error', status: resp.status };
+    }
+    const resJson = await resp.json().catch(() => ({}));
+    return { sent: true, mode: 'resend', id: resJson && resJson.id ? resJson.id : '' };
+  } catch (err) {
+    clearTimeout(timer);
+    console.warn('Resend email exception:', err && err.message ? err.message : err);
+    return { sent: false, mode: 'resend_exception' };
   }
 }
 
@@ -201,6 +427,127 @@ function isTelemetryOriginAllowed(originHeader, env) {
     );
   } catch (_) {
     return false;
+  }
+}
+
+function isOrderOriginAllowed(originHeader, env) {
+  if (!originHeader || originHeader === 'null') return false;
+  try {
+    const o = new URL(originHeader);
+    const h = o.hostname.toLowerCase();
+    if (env && env.ENVIRONMENT === 'staging' && (h === 'localhost' || h === '127.0.0.1' || h === '[::1]')) {
+      return true;
+    }
+    return h === 'fplsawadika.com' || h.endsWith('.fplsawadika.com');
+  } catch (_) {
+    return false;
+  }
+}
+
+async function fetchFplLeaguePreview(lid, cacheOrigin, colo, ctx, timeoutMs = 5000) {
+  const cleanLid = String(lid || '').trim();
+  const cache = (typeof caches !== 'undefined' && caches.default) ? caches.default : null;
+  const cacheKey = cacheOrigin ? new Request(`${cacheOrigin}/api/public/league-preview?id=${cleanLid}`, { method: 'GET' }) : null;
+  if (cache && cacheKey) {
+    try {
+      const cached = await cache.match(cacheKey);
+      if (cached) {
+        const cachedJson = await cached.clone().json().catch(() => null);
+        return {
+          ok: Boolean(cachedJson && cachedJson.success),
+          status: cached.status,
+          not_found: Boolean(cachedJson && cachedJson.not_found),
+          name: cachedJson && cachedJson.name ? String(cachedJson.name) : '',
+          team_count: Number(cachedJson && cachedJson.team_count) || 0,
+          has_more: Boolean(cachedJson && cachedJson.has_more),
+          tier_suggested: (cachedJson && cachedJson.tier_suggested === 'tier2') ? 'tier2' : 'tier1',
+          cachedResponse: cached,
+        };
+      }
+    } catch (_) {}
+  }
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const upstream = await fetch(
+      `https://fantasy.premierleague.com/api/leagues-classic/${cleanLid}/standings/?page_standings=1&page_new_entries=1`,
+      {
+        headers: FPL_HEADERS,
+        signal: ctrl.signal,
+        cf: { cacheTtl: 30, cacheEverything: true },
+      }
+    );
+    clearTimeout(timer);
+    if (upstream.status === 404) {
+      const nfPayload = JSON.stringify({ success: false, not_found: true, league_id: cleanLid });
+      if (cache && cacheKey && ctx && ctx.waitUntil) {
+        const nfResp = new Response(nfPayload, {
+          status: 404,
+          headers: {
+            ...CORS_HEADERS,
+            'Content-Type': 'application/json; charset=utf-8',
+            'Cache-Control': 'public, max-age=30, s-maxage=60, stale-while-revalidate=120',
+            'X-FPL-Edge-Cache': 'MISS',
+            'X-FPL-Edge-Colo': colo || 'EDGE',
+          },
+        });
+        ctx.waitUntil(cache.put(cacheKey, nfResp.clone()));
+      }
+      return { ok: false, status: 404, not_found: true, payload: nfPayload };
+    }
+    if (!upstream.ok) {
+      return { ok: false, status: 502, upstream_status: upstream.status };
+    }
+    const data = await upstream.json();
+    const leagueMeta = (data && data.league) || {};
+    const uniqueEntries = new Set();
+    for (const list of [data && data.standings && data.standings.results, data && data.new_entries && data.new_entries.results]) {
+      if (!Array.isArray(list)) continue;
+      for (const row of list) {
+        const eid = Number(row && row.entry);
+        if (eid > 0) uniqueEntries.add(eid);
+      }
+    }
+    const teamCount = uniqueEntries.size;
+    const hasMore = Boolean(
+      (data && data.standings && data.standings.has_next) ||
+      (data && data.new_entries && data.new_entries.has_next)
+    );
+    const tierSuggested = (hasMore || teamCount > 30) ? 'tier2' : 'tier1';
+    const name = String(leagueMeta.name || `League ${cleanLid}`).trim();
+    const payload = JSON.stringify({
+      success: true,
+      league_id: cleanLid,
+      name,
+      team_count: teamCount,
+      has_more: hasMore,
+      tier_suggested: tierSuggested,
+    });
+    if (cache && cacheKey && ctx && ctx.waitUntil) {
+      const putResp = new Response(payload, {
+        status: 200,
+        headers: {
+          ...CORS_HEADERS,
+          'Content-Type': 'application/json; charset=utf-8',
+          'Cache-Control': 'public, max-age=30, s-maxage=60, stale-while-revalidate=120',
+          'X-FPL-Edge-Cache': 'MISS',
+          'X-FPL-Edge-Colo': colo || 'EDGE',
+        },
+      });
+      ctx.waitUntil(cache.put(cacheKey, putResp.clone()));
+    }
+    return {
+      ok: true,
+      status: 200,
+      name,
+      team_count: teamCount,
+      has_more: hasMore,
+      tier_suggested: tierSuggested,
+      payload,
+    };
+  } catch (err) {
+    clearTimeout(timer);
+    return { ok: false, status: 502, error: err && err.name === 'AbortError' ? 'timeout' : 'upstream_error' };
   }
 }
 
@@ -553,12 +900,19 @@ export default {
                 );
               }
 
-              // League Views & Dwell Time Counter (numeric league IDs only; exclude landing / 404)
+              // League Views & Dwell Time Counter (numeric league IDs only; track landing page separately)
               const rawLeagueId = eventData.league_id !== undefined && eventData.league_id !== null
                 ? String(eventData.league_id).trim()
                 : '';
-              const isNonLeaguePage = rawLeagueId === 'landing' || rawLeagueId === '404'
-                || eventData.path === '/' || eventData.path === '/index.html' || eventData.path === '/404.html';
+              const isLandingPage = rawLeagueId === 'landing'
+                || eventData.type === 'landing_view'
+                || eventData.path === '/'
+                || eventData.path === '/index.html';
+              const isNonLeaguePage = isLandingPage || rawLeagueId === '404' || eventData.path === '/404.html';
+              if (isLandingPage && (eventData.type === 'page_view' || eventData.type === 'landing_view')) {
+                increments.push({ metric: `${pfx}:l:landing:views`, date: today, amount: 1 });
+                increments.push({ metric: `${pfx}:l:landing:h:${hour}`, date: today, amount: 1 });
+              }
               let targetLeague = '';
               if (!isNonLeaguePage && /^\d{1,10}$/.test(rawLeagueId)) {
                 targetLeague = rawLeagueId;
@@ -767,12 +1121,24 @@ export default {
           });
         }
         let pruned = 0;
+        let prunedSlips = 0;
         if (env && env.DB) {
           try {
             const res = await env.DB.prepare(`
               DELETE FROM telemetry_counters WHERE date < DATE('now', '-30 days') AND date != '9999-12-31' AND metric NOT LIKE 'lifetime:%'
             `).run();
             pruned = (res && res.meta && typeof res.meta.changes === 'number') ? res.meta.changes : 0;
+            try {
+              await ensureLeagueOrdersTable(env.DB);
+              const slipRes = await env.DB.prepare(`
+                UPDATE league_orders
+                SET slip_data_url = NULL, updated_at = CURRENT_TIMESTAMP
+                WHERE slip_data_url IS NOT NULL
+                  AND status IN ('live', 'rejected', 'expired')
+                  AND datetime(COALESCE(verified_at, updated_at, created_at)) < datetime('now', '-30 days')
+              `).run();
+              prunedSlips = (slipRes && slipRes.meta && typeof slipRes.meta.changes === 'number') ? slipRes.meta.changes : 0;
+            } catch (_) {}
           } catch (e) {
             return new Response(
               JSON.stringify({ success: false, error: e.message }),
@@ -781,7 +1147,7 @@ export default {
           }
         }
         return new Response(
-          JSON.stringify({ success: true, pruned_rows: pruned, message: `เคลียร์สถิติ D1 ที่เก่ากว่า 30 วันสำเร็จ (${pruned} แถว)` }),
+          JSON.stringify({ success: true, pruned_rows: pruned, pruned_slips: prunedSlips, message: `เคลียร์สถิติ D1 เก่ากว่า 30 วันสำเร็จ (${pruned} แถว, สลิป ${prunedSlips} รายการ)` }),
           { status: 200, headers: ADMIN_JSON_HEADERS }
         );
       }
@@ -1007,6 +1373,405 @@ export default {
         }
       }
 
+      // Admin Customer Order & Slip Inbox APIs
+      if (path === '/api/admin/orders') {
+        if (request.method !== 'GET') {
+          return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+            status: 405,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        if (!env || !env.DB) {
+          return new Response(JSON.stringify({ success: false, error: 'Cloudflare D1 database binding (DB) is not available' }), {
+            status: 503,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        try {
+          await ensureLeagueOrdersTable(env.DB);
+          const nowIso = new Date().toISOString();
+          await env.DB.prepare(
+            "UPDATE league_orders SET status = 'expired', updated_at = CURRENT_TIMESTAMP WHERE status IN ('awaiting_payment', 'rejected') AND expires_at < ?"
+          ).bind(nowIso).run();
+
+          const statusFilter = (url.searchParams.get('status') || '').trim();
+          const allowedFilters = new Set(['awaiting_payment', 'slip_submitted', 'paid', 'live', 'quote_requested', 'rejected', 'expired']);
+          let qRows = null;
+          if (statusFilter && allowedFilters.has(statusFilter)) {
+            qRows = await env.DB.prepare(`
+              SELECT order_id, league_id, league_name, team_count, plan, currency, lang, amount_satang,
+                     customer_email, customer_line, rules_text, status,
+                     (CASE WHEN slip_data_url IS NOT NULL AND slip_data_url != '' THEN 1 ELSE 0 END) AS has_slip,
+                     slip_uploaded_at, slip_verify_provider, slip_verify_ref, verified_at,
+                     delivered_url, admin_note, created_at, updated_at, expires_at
+              FROM league_orders
+              WHERE status = ?
+              ORDER BY datetime(created_at) DESC
+              LIMIT 100
+            `).bind(statusFilter).all();
+          } else {
+            qRows = await env.DB.prepare(`
+              SELECT order_id, league_id, league_name, team_count, plan, currency, lang, amount_satang,
+                     customer_email, customer_line, rules_text, status,
+                     (CASE WHEN slip_data_url IS NOT NULL AND slip_data_url != '' THEN 1 ELSE 0 END) AS has_slip,
+                     slip_uploaded_at, slip_verify_provider, slip_verify_ref, verified_at,
+                     delivered_url, admin_note, created_at, updated_at, expires_at
+              FROM league_orders
+              ORDER BY CASE status
+                WHEN 'slip_submitted' THEN 0
+                WHEN 'quote_requested' THEN 1
+                WHEN 'paid' THEN 2
+                WHEN 'awaiting_payment' THEN 3
+                ELSE 4
+              END, datetime(created_at) DESC
+              LIMIT 100
+            `).all();
+          }
+          const countRows = await env.DB.prepare(
+            'SELECT status, COUNT(*) AS cnt FROM league_orders GROUP BY status'
+          ).all();
+          const counts = {
+            all: 0,
+            awaiting_payment: 0,
+            slip_submitted: 0,
+            paid: 0,
+            live: 0,
+            quote_requested: 0,
+            rejected: 0,
+            expired: 0,
+          };
+          if (countRows && Array.isArray(countRows.results)) {
+            for (const c of countRows.results) {
+              const st = String(c.status || '');
+              const val = Number(c.cnt) || 0;
+              if (Object.prototype.hasOwnProperty.call(counts, st)) {
+                counts[st] = val;
+              }
+              counts.all += val;
+            }
+          }
+          const orders = (qRows && Array.isArray(qRows.results))
+            ? qRows.results.map(r => ({
+                ...r,
+                has_slip: Boolean(r.has_slip),
+                amount_display: formatSatangDisplay(r.amount_satang, r.currency, r.lang),
+              }))
+            : [];
+          return new Response(JSON.stringify({ success: true, counts, orders }), {
+            status: 200,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        } catch (err) {
+          console.warn('Admin fetch orders failed:', err);
+          return new Response(JSON.stringify({ success: false, error: 'Failed to fetch orders' }), {
+            status: 500,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+      }
+
+      if (path === '/api/admin/orders/slip') {
+        if (request.method !== 'GET') {
+          return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+            status: 405,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        if (!env || !env.DB) {
+          return new Response(JSON.stringify({ success: false, error: 'D1 not available' }), {
+            status: 503,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        const oid = String(url.searchParams.get('order') || '').trim();
+        if (!/^FPL-[A-Z0-9-]{4,24}$/.test(oid)) {
+          return new Response(JSON.stringify({ success: false, error: 'Invalid order id' }), {
+            status: 400,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        try {
+          await ensureLeagueOrdersTable(env.DB);
+          const row = await env.DB.prepare(
+            'SELECT order_id, slip_data_url, slip_uploaded_at FROM league_orders WHERE order_id = ?'
+          ).bind(oid).first();
+          if (!row) {
+            return new Response(JSON.stringify({ success: false, error: 'Order not found' }), {
+              status: 404,
+              headers: ADMIN_JSON_HEADERS,
+            });
+          }
+          return new Response(
+            JSON.stringify({
+              success: true,
+              order_id: row.order_id,
+              slip_data_url: row.slip_data_url || null,
+              slip_uploaded_at: row.slip_uploaded_at || null,
+            }),
+            { status: 200, headers: ADMIN_JSON_HEADERS }
+          );
+        } catch (err) {
+          return new Response(JSON.stringify({ success: false, error: err.message }), {
+            status: 500,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+      }
+
+      if (path === '/api/admin/orders/action') {
+        if (request.method !== 'POST') {
+          return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+            status: 405,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        if (!env || !env.DB) {
+          return new Response(JSON.stringify({ success: false, error: 'D1 not available' }), {
+            status: 503,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        let body = null;
+        try {
+          body = await request.json();
+        } catch (_) {
+          return new Response(JSON.stringify({ success: false, error: 'Invalid JSON body' }), {
+            status: 400,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        const oid = String((body && body.order_id) || '').trim();
+        const action = String((body && body.action) || '').trim();
+        const adminNote = String((body && body.admin_note) || '').trim().slice(0, 500);
+        if (!/^FPL-[A-Z0-9-]{4,24}$/.test(oid)) {
+          return new Response(JSON.stringify({ success: false, error: 'Invalid order_id' }), {
+            status: 400,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        if (!new Set(['verify_payment', 'mark_live_and_notify', 'reject', 'delete_slip']).has(action)) {
+          return new Response(JSON.stringify({ success: false, error: 'Invalid action' }), {
+            status: 400,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        try {
+          await ensureLeagueOrdersTable(env.DB);
+          const row = await env.DB.prepare(`
+            SELECT order_id, league_id, league_name, team_count, plan, currency, lang, amount_satang,
+                   customer_email, customer_line, rules_text, status,
+                   (CASE WHEN slip_data_url IS NOT NULL AND slip_data_url != '' THEN 1 ELSE 0 END) AS has_slip,
+                   slip_uploaded_at, verified_at, delivered_url, admin_note, expires_at
+            FROM league_orders WHERE order_id = ?
+          `).bind(oid).first();
+          if (!row) {
+            return new Response(JSON.stringify({ success: false, error: 'Order not found' }), {
+              status: 404,
+              headers: ADMIN_JSON_HEADERS,
+            });
+          }
+          const nowIso = new Date().toISOString();
+          const orderLang = String(row.lang || 'th').toLowerCase() === 'en' ? 'en' : 'th';
+          let emailRes = null;
+
+          if (action === 'verify_payment') {
+            const upd = await env.DB.prepare(`
+              UPDATE league_orders
+              SET status = 'paid',
+                  verified_at = COALESCE(verified_at, ?),
+                  admin_note = CASE WHEN ? != '' THEN ? ELSE admin_note END,
+                  updated_at = CURRENT_TIMESTAMP
+              WHERE order_id = ? AND status IN ('slip_submitted', 'awaiting_payment', 'rejected', 'expired', 'quote_requested')
+            `).bind(nowIso, adminNote, adminNote, oid).run();
+            if (!upd || !upd.meta || upd.meta.changes !== 1) {
+              return new Response(JSON.stringify({ success: false, error: `Cannot verify payment from status "${row.status}"` }), {
+                status: 409,
+                headers: ADMIN_JSON_HEADERS,
+              });
+            }
+            return new Response(JSON.stringify({ success: true, order_id: oid, status: 'paid' }), {
+              status: 200,
+              headers: ADMIN_JSON_HEADERS,
+            });
+          }
+
+          if (action === 'mark_live_and_notify') {
+            let deliveredUrl = String((body && body.delivered_url) || '').trim();
+            if (!deliveredUrl) {
+              deliveredUrl = `https://www.fplsawadika.com/${row.league_id}/`;
+            }
+            if (!/^https:\/\/(www\.)?fplsawadika\.com\/[A-Za-z0-9_\/-]*$/.test(deliveredUrl)) {
+              return new Response(JSON.stringify({ success: false, error: 'delivered_url must point to https://www.fplsawadika.com/...' }), {
+                status: 400,
+                headers: ADMIN_JSON_HEADERS,
+              });
+            }
+            const upd = await env.DB.prepare(`
+              UPDATE league_orders
+              SET status = 'live',
+                  verified_at = COALESCE(verified_at, ?),
+                  delivered_url = ?,
+                  admin_note = CASE WHEN ? != '' THEN ? ELSE admin_note END,
+                  updated_at = CURRENT_TIMESTAMP
+              WHERE order_id = ? AND status IN ('paid', 'slip_submitted', 'quote_requested')
+            `).bind(nowIso, deliveredUrl, adminNote, adminNote, oid).run();
+            if (!upd || !upd.meta || upd.meta.changes !== 1) {
+              return new Response(JSON.stringify({ success: false, error: `Cannot mark live from status "${row.status}"` }), {
+                status: 409,
+                headers: ADMIN_JSON_HEADERS,
+              });
+            }
+
+            const safeLid = escapeHtmlEmail(row.league_id);
+            const safeLname = escapeHtmlEmail(row.league_name || `League ${row.league_id}`);
+            const safeUrl = escapeHtmlEmail(deliveredUrl);
+            const safeOid = escapeHtmlEmail(oid);
+            const subj = orderLang === 'en'
+              ? `[FPLSaWaDiKa] Your Mini-League Dashboard is Live! — ${row.league_name || row.league_id}`
+              : `[FPLSaWaDiKa] ลีกของคุณพร้อมใช้งานแล้ว! — ${row.league_name || row.league_id}`;
+            const txtBody = orderLang === 'en'
+              ? `Hello,\n\nYour FPLSaWaDiKa dashboard for ${row.league_name || row.league_id} (ID: ${row.league_id}) is now live (Order: ${oid}).\n\nOpen your private league link here:\n${deliveredUrl}\n\nShare this link directly in your group chat. For custom adjustments, email support@fplsawadika.com or reach us via LINE.\n\nThank you for choosing FPLSaWaDiKa!`
+              : `สวัสดีครับ\n\nแดชบอร์ดมินิลีก ${row.league_name || row.league_id} (ID: ${row.league_id}) เปิดใช้งานเรียบร้อยแล้ว (Order: ${oid})\n\nเข้าใช้งานได้ทันทีที่:\n${deliveredUrl}\n\nสามารถส่งลิงก์นี้เข้ากลุ่ม LINE หรือแชทของเพื่อนในลีกได้เลยครับ\nหากต้องการปรับกติกาเพิ่มเติม ติดต่อได้ที่ support@fplsawadika.com หรือ LINE\n\nขอบคุณที่ไว้วางใจ FPLSaWaDiKa`;
+            const htmlBody = orderLang === 'en'
+              ? `
+                <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 20px; color: #0f172a;">
+                  <h2 style="color: #059669; margin: 0 0 12px;">Your Mini-League Dashboard is Live!</h2>
+                  <p style="margin: 0 0 12px;">Dashboard setup for <strong>${safeLname}</strong> (League ID: <code>${safeLid}</code>, Order: <code>${safeOid}</code>) is complete.</p>
+                  <p style="margin: 20px 0;">
+                    <a href="${safeUrl}" style="display: inline-block; background: #10b981; color: #ffffff; text-decoration: none; font-weight: bold; padding: 12px 20px; border-radius: 10px;">Open Your League Dashboard →</a>
+                  </p>
+                  <p style="font-size: 13px; color: #475569; margin: 0 0 8px;">Direct link: <a href="${safeUrl}">${safeUrl}</a></p>
+                  <p style="font-size: 13px; color: #475569;">Need rule tweaks? Reply to <a href="mailto:support@fplsawadika.com">support@fplsawadika.com</a> anytime.</p>
+                </div>
+              `
+              : `
+                <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 20px; color: #0f172a;">
+                  <h2 style="color: #059669; margin: 0 0 12px;">ลีกของคุณพร้อมใช้งานแล้ว!</h2>
+                  <p style="margin: 0 0 12px;">แดชบอร์ดมินิลีก <strong>${safeLname}</strong> (League ID: <code>${safeLid}</code>) สำหรับคำสั่งซื้อ <code>${safeOid}</code> เปิดใช้งานครบถ้วนเรียบร้อยแล้วครับ</p>
+                  <p style="margin: 20px 0;">
+                    <a href="${safeUrl}" style="display: inline-block; background: #10b981; color: #ffffff; text-decoration: none; font-weight: bold; padding: 12px 20px; border-radius: 10px;">เปิดดูแดชบอร์ดลีกของคุณ →</a>
+                  </p>
+                  <p style="font-size: 13px; color: #475569; margin: 0 0 8px;">ลิงก์ตรง: <a href="${safeUrl}">${safeUrl}</a></p>
+                  <p style="font-size: 13px; color: #475569;">หากต้องการปรับแก้ไขกติกาเพิ่มเติม สามารถตอบกลับอีเมลนี้มาที่ <a href="mailto:support@fplsawadika.com">support@fplsawadika.com</a> ได้ตลอดเวลาครับ</p>
+                </div>
+              `;
+            emailRes = await sendTransactionalEmail(env, {
+              to: row.customer_email,
+              replyTo: 'support@fplsawadika.com',
+              subject: subj,
+              text: txtBody,
+              html: htmlBody,
+            });
+            return new Response(
+              JSON.stringify({ success: true, order_id: oid, status: 'live', delivered_url: deliveredUrl, email: emailRes }),
+              { status: 200, headers: ADMIN_JSON_HEADERS }
+            );
+          }
+
+          if (action === 'reject') {
+            const reason = adminNote || (orderLang === 'en'
+              ? 'Transfer amount could not be confirmed or slip image is unclear. Please upload a new slip.'
+              : 'ไม่พบยอดโอนหรือสลิปไม่ชัดเจน กรุณาอัปโหลดสลิปใหม่อีกครั้ง');
+            const newExpIso = new Date(Date.now() + 24 * 3600000).toISOString();
+            const rawToken = generateAccessToken();
+            const newTokenHash = await sha256Hex(rawToken);
+            const upd = await env.DB.prepare(`
+              UPDATE league_orders
+              SET status = 'rejected',
+                  admin_note = ?,
+                  expires_at = ?,
+                  access_token_hash = ?,
+                  updated_at = CURRENT_TIMESTAMP
+              WHERE order_id = ? AND status = 'slip_submitted'
+            `).bind(reason, newExpIso, newTokenHash, oid).run();
+            if (!upd || !upd.meta || upd.meta.changes !== 1) {
+              return new Response(JSON.stringify({ success: false, error: `Cannot reject slip from status "${row.status}"` }), {
+                status: 409,
+                headers: ADMIN_JSON_HEADERS,
+              });
+            }
+
+            const reqOrigin = request.headers.get('origin') || '';
+            const payOrigin = (env.ENVIRONMENT === 'staging' && reqOrigin && isLocalOrigin(reqOrigin))
+              ? reqOrigin
+              : 'https://www.fplsawadika.com';
+            const payUrl = getOrderPayUrl(payOrigin, oid, rawToken);
+            const safeOid = escapeHtmlEmail(oid);
+            const safeReason = escapeHtmlEmail(reason);
+            const safeLname = escapeHtmlEmail(row.league_name || `League ${row.league_id}`);
+            const safePayUrl = escapeHtmlEmail(payUrl);
+            const rejSubj = orderLang === 'en'
+              ? `[FPLSaWaDiKa] Action Required: Please re-upload your transfer slip (${oid})`
+              : `[FPLSaWaDiKa] กรุณาตรวจสอบ/ส่งสลิปใหม่ (${oid})`;
+            const rejText = orderLang === 'en'
+              ? `Hello,\n\nYour transfer slip for order ${oid} (${row.league_name || row.league_id}) could not be verified.\nReason: ${reason}\n\nPlease upload a clearer slip using your updated link (valid for 24h):\n${payUrl}\n\nOr reply to support@fplsawadika.com with Order ${oid}.`
+              : `สวัสดีครับ\n\nคำสั่งซื้อ ${oid} (${row.league_name || row.league_id}) ยังไม่สามารถยืนยันยอดโอนได้\nเหตุผลจากแอดมิน: ${reason}\n\nกรุณาเปิดลิงก์นี้เพื่ออัปโหลดสลิปใหม่อีกครั้ง (เปิดใช้งานได้อีก 24 ชม.):\n${payUrl}\n\nหรือติดต่อกลับมาที่ support@fplsawadika.com พร้อมแจ้งรหัส Order ${oid} ครับ`;
+            const rejHtml = orderLang === 'en'
+              ? `
+                <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 20px; color: #0f172a;">
+                  <h2 style="color: #dc2626; margin: 0 0 12px;">Please Re-upload Your Payment Slip</h2>
+                  <p style="margin: 0 0 10px;">We could not verify the slip for order <code>${safeOid}</code> (${safeLname}).</p>
+                  <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 12px; border-radius: 8px; margin: 12px 0; color: #991b1b;">
+                    <strong>Reason:</strong> ${safeReason}
+                  </div>
+                  <p style="margin: 18px 0;">
+                    <a href="${safePayUrl}" style="display: inline-block; background: #0f172a; color: #ffffff; text-decoration: none; font-weight: bold; padding: 12px 18px; border-radius: 10px;">Upload New Slip →</a>
+                  </p>
+                  <p style="font-size: 13px; color: #475569;">Need help? Reply to <a href="mailto:support@fplsawadika.com">support@fplsawadika.com</a>.</p>
+                </div>
+              `
+              : `
+                <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 20px; color: #0f172a;">
+                  <h2 style="color: #dc2626; margin: 0 0 12px;">กรุณาตรวจสอบและอัปโหลดสลิปใหม่</h2>
+                  <p style="margin: 0 0 10px;">คำสั่งซื้อ <code>${safeOid}</code> (${safeLname}) ยังไม่สามารถยืนยันการโอนเงินได้ครับ</p>
+                  <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 12px; border-radius: 8px; margin: 12px 0; color: #991b1b;">
+                    <strong>รายละเอียด:</strong> ${safeReason}
+                  </div>
+                  <p style="margin: 18px 0;">
+                    <a href="${safePayUrl}" style="display: inline-block; background: #0f172a; color: #ffffff; text-decoration: none; font-weight: bold; padding: 12px 18px; border-radius: 10px;">อัปโหลดสลิปใหม่อีกครั้ง →</a>
+                  </p>
+                  <p style="font-size: 13px; color: #475569;">หากต้องการสอบถามเพิ่มเติม ตอบกลับอีเมลมาที่ <a href="mailto:support@fplsawadika.com">support@fplsawadika.com</a> ได้เลยครับ</p>
+                </div>
+              `;
+            emailRes = await sendTransactionalEmail(env, {
+              to: row.customer_email,
+              replyTo: 'support@fplsawadika.com',
+              subject: rejSubj,
+              text: rejText,
+              html: rejHtml,
+            });
+            return new Response(
+              JSON.stringify({ success: true, order_id: oid, status: 'rejected', admin_note: reason, expires_at: newExpIso, email: emailRes }),
+              { status: 200, headers: ADMIN_JSON_HEADERS }
+            );
+          }
+
+          if (action === 'delete_slip') {
+            const upd = await env.DB.prepare(`
+              UPDATE league_orders
+              SET slip_data_url = NULL, updated_at = CURRENT_TIMESTAMP
+              WHERE order_id = ? AND status IN ('live', 'rejected', 'expired', 'paid')
+            `).bind(oid).run();
+            if (!upd || !upd.meta || upd.meta.changes !== 1) {
+              return new Response(JSON.stringify({ success: false, error: `Cannot delete slip while status is "${row.status}" (reject or complete the order first)` }), {
+                status: 409,
+                headers: ADMIN_JSON_HEADERS,
+              });
+            }
+            return new Response(JSON.stringify({ success: true, order_id: oid, status: row.status, slip_deleted: true }), {
+              status: 200,
+              headers: ADMIN_JSON_HEADERS,
+            });
+          }
+        } catch (err) {
+          console.warn('Admin order action error:', err);
+          return new Response(JSON.stringify({ success: false, error: 'Order action failed' }), {
+            status: 500,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+      }
+
       // Live Telemetry & FPL Sync Data Endpoint
       if (path === '/api/admin/data' || path === '/api/admin/telemetry' || path === '/api/admin/metrics') {
         const isForce = url.searchParams.get('force') === '1';
@@ -1017,6 +1782,16 @@ export default {
               try {
                 await env.DB.prepare(`
                   DELETE FROM telemetry_counters WHERE date < DATE('now', '-30 days') AND date != '9999-12-31' AND metric NOT LIKE 'lifetime:%'
+                `).run();
+              } catch (_) {}
+              try {
+                await ensureLeagueOrdersTable(env.DB);
+                await env.DB.prepare(`
+                  UPDATE league_orders
+                  SET slip_data_url = NULL, updated_at = CURRENT_TIMESTAMP
+                  WHERE slip_data_url IS NOT NULL
+                    AND status IN ('live', 'rejected', 'expired')
+                    AND datetime(COALESCE(verified_at, updated_at, created_at)) < datetime('now', '-30 days')
                 `).run();
               } catch (_) {}
             })());
@@ -1181,7 +1956,7 @@ export default {
             data.portfolio = {
               total_managers: liveTier1Managers || 163,
               total_managers_tier1: liveTier1Managers || 163,
-              total_managers_all: liveAllManagers || liveTier1Managers || 1943,
+              total_managers_all: liveAllManagers || liveTier1Managers || 1942,
               total_pool_gmv: dynamicPoolGmv || 268700,
               tier1_leagues_count: tier1LeaguesCount,
               total_leagues_count: totalLeaguesCount,
@@ -1360,6 +2135,11 @@ export default {
                 });
 
                 let totalLeaguesVisits = 0;
+                let landingViews7d = 0;
+                const landingViewsToday = metricMap.get(`telem:${dates[0]}:l:landing:views`) || 0;
+                dates.forEach(d => {
+                  landingViews7d += metricMap.get(`telem:${d}:l:landing:views`) || 0;
+                });
                 let globalDwellSec = 0;
                 let globalDwellSess = 0;
                 const leaguesOutput = {};
@@ -1446,7 +2226,7 @@ export default {
                       else cityIntlCount += mVal;
                     }
                   }
-                  const hMatch = mKey.match(/:l:\d+:h:(\d{1,2})$/);
+                  const hMatch = mKey.match(/:l:(?:\d+|landing):h:(\d{1,2})$/);
                   if (hMatch) {
                     const hr = parseInt(hMatch[1], 10);
                     if (hr >= 0 && hr < 24) {
@@ -1578,7 +2358,7 @@ export default {
                 // Real 24-hour & 7-day Health & Error Monitor (Zero synthetic inflation)
                 const hourlyVisitsByUtcHour = new Map();
                 for (const [mKey, mVal] of metricMap.entries()) {
-                  const lhMatch = mKey.match(/^telem:(\d{4}-\d{2}-\d{2}):l:\d+:h:(\d{1,2})$/);
+                  const lhMatch = mKey.match(/^telem:(\d{4}-\d{2}-\d{2}):l:(?:\d+|landing):h:(\d{1,2})$/);
                   if (lhMatch) {
                     const key24 = `${lhMatch[1]}:${Number(lhMatch[2])}`;
                     hourlyVisitsByUtcHour.set(key24, (hourlyVisitsByUtcHour.get(key24) || 0) + mVal);
@@ -1749,6 +2529,11 @@ export default {
                     w30: devices30dObj,
                   },
                   leagues: leaguesOutput,
+                  landing_page: {
+                    views_7d: landingViews7d,
+                    views_today: landingViewsToday,
+                    league_views_7d: totalLeaguesVisits,
+                  },
                   features: featuresSummary,
                   system_performance: {
                     d1_row_count: d1RowCount,
@@ -1953,77 +2738,19 @@ export default {
           headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
         });
       }
-      const cache = caches.default;
-      const cacheKey = new Request(`${url.origin}/api/public/league-preview?id=${lid}`, { method: 'GET' });
-      const cached = await cache.match(cacheKey);
-      if (cached) {
-        const hitHeaders = new Headers(cached.headers);
+      const preview = await fetchFplLeaguePreview(lid, url.origin, colo, ctx, 6000);
+      if (preview.cachedResponse) {
+        const hitHeaders = new Headers(preview.cachedResponse.headers);
         hitHeaders.set('X-FPL-Edge-Cache', 'HIT');
         hitHeaders.set('X-FPL-Edge-Colo', colo);
-        return new Response(request.method === 'HEAD' ? null : cached.body, {
-          status: cached.status,
+        return new Response(request.method === 'HEAD' ? null : preview.cachedResponse.body, {
+          status: preview.cachedResponse.status,
           headers: hitHeaders,
         });
       }
-      const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), 6000);
-      try {
-        const upstream = await fetch(
-          `https://fantasy.premierleague.com/api/leagues-classic/${lid}/standings/?page_standings=1&page_new_entries=1`,
-          {
-            headers: FPL_HEADERS,
-            signal: ctrl.signal,
-            cf: { cacheTtl: 30, cacheEverything: true },
-          }
-        );
-        clearTimeout(timer);
-        if (upstream.status === 404) {
-          const nfPayload = JSON.stringify({ success: false, not_found: true, league_id: lid });
-          const nfResp = new Response(request.method === 'HEAD' ? null : nfPayload, {
-            status: 404,
-            headers: {
-              ...CORS_HEADERS,
-              'Content-Type': 'application/json; charset=utf-8',
-              'Cache-Control': 'public, max-age=30, s-maxage=60, stale-while-revalidate=120',
-              'X-FPL-Edge-Cache': 'MISS',
-              'X-FPL-Edge-Colo': colo,
-            },
-          });
-          if (request.method === 'GET' && ctx && ctx.waitUntil) ctx.waitUntil(cache.put(cacheKey, nfResp.clone()));
-          return nfResp;
-        }
-        if (!upstream.ok) {
-          return new Response(JSON.stringify({ success: false, league_id: lid, upstream_status: upstream.status }), {
-            status: 502,
-            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
-          });
-        }
-        const data = await upstream.json();
-        const leagueMeta = (data && data.league) || {};
-        const uniqueEntries = new Set();
-        for (const list of [data && data.standings && data.standings.results, data && data.new_entries && data.new_entries.results]) {
-          if (!Array.isArray(list)) continue;
-          for (const row of list) {
-            const eid = Number(row && row.entry);
-            if (eid > 0) uniqueEntries.add(eid);
-          }
-        }
-        const teamCount = uniqueEntries.size;
-        const hasMore = Boolean(
-          (data && data.standings && data.standings.has_next) ||
-          (data && data.new_entries && data.new_entries.has_next)
-        );
-        const tierSuggested = (hasMore || teamCount > 30) ? 'tier2' : 'tier1';
-        const payload = JSON.stringify({
-          success: true,
-          league_id: lid,
-          name: String(leagueMeta.name || `League ${lid}`).trim(),
-          team_count: teamCount,
-          has_more: hasMore,
-          tier_suggested: tierSuggested,
-        });
-        const resp = new Response(request.method === 'HEAD' ? null : payload, {
-          status: 200,
+      if (preview.not_found) {
+        return new Response(request.method === 'HEAD' ? null : preview.payload, {
+          status: 404,
           headers: {
             ...CORS_HEADERS,
             'Content-Type': 'application/json; charset=utf-8',
@@ -2032,12 +2759,654 @@ export default {
             'X-FPL-Edge-Colo': colo,
           },
         });
-        if (request.method === 'GET' && ctx && ctx.waitUntil) ctx.waitUntil(cache.put(cacheKey, resp.clone()));
-        return resp;
+      }
+      if (!preview.ok) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            league_id: lid,
+            ...(preview.upstream_status ? { upstream_status: preview.upstream_status } : { error: preview.error || 'upstream_error' }),
+          }),
+          {
+            status: 502,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+          }
+        );
+      }
+      return new Response(request.method === 'HEAD' ? null : preview.payload, {
+        status: 200,
+        headers: {
+          ...CORS_HEADERS,
+          'Content-Type': 'application/json; charset=utf-8',
+          'Cache-Control': 'public, max-age=30, s-maxage=60, stale-while-revalidate=120',
+          'X-FPL-Edge-Cache': 'MISS',
+          'X-FPL-Edge-Colo': colo,
+        },
+      });
+    }
+
+    // 1.7 Public Customer Order Creation, Status Tracking & Slip Upload (/api/public/orders*)
+    if (path === '/api/public/orders') {
+      if (request.method !== 'POST') {
+        return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+          status: 405,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      const reqOrigin = request.headers.get('origin');
+      if (!isOrderOriginAllowed(reqOrigin, env) && !(env && env.ENVIRONMENT === 'staging' && !reqOrigin)) {
+        return new Response(JSON.stringify({ success: false, error: 'Forbidden origin' }), {
+          status: 403,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      const clHeader = Number(request.headers.get('content-length') || '0');
+      if (clHeader > 8192) {
+        return new Response(JSON.stringify({ success: false, error: 'Payload too large' }), {
+          status: 413,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      if (!(await allowIpRateLimit(request, 'public_orders', 4))) {
+        return new Response(JSON.stringify({ success: false, error: 'Too many requests. Please wait a minute.' }), {
+          status: 429,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      if (!env || !env.DB) {
+        return new Response(JSON.stringify({ success: false, error: 'Order database temporarily unavailable' }), {
+          status: 503,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      const rawText = await request.text();
+      if (!rawText || rawText.length > 8192) {
+        return new Response(JSON.stringify({ success: false, error: rawText ? 'Payload too large' : 'Empty body' }), {
+          status: rawText ? 413 : 400,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      let body = null;
+      try {
+        body = JSON.parse(rawText);
+      } catch (_) {
+        return new Response(JSON.stringify({ success: false, error: 'Invalid JSON payload' }), {
+          status: 400,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+
+      const leagueId = String((body && body.league_id) || '').trim();
+      const customerEmail = String((body && body.email) || '').trim().toLowerCase();
+      const customerLine = String((body && body.line_id) || '').trim().slice(0, 80);
+      const rulesText = String((body && body.rules_text) || '').trim().slice(0, 1500);
+      let leagueName = String((body && body.league_name) || '').trim().slice(0, 120);
+      const teamCountRaw = Number(body && body.team_count);
+      let teamCount = (Number.isFinite(teamCountRaw) && teamCountRaw >= 0 && teamCountRaw <= 5000) ? Math.floor(teamCountRaw) : 0;
+      const currency = String((body && body.currency) || 'THB').toUpperCase() === 'USD' ? 'USD' : 'THB';
+      const teamTier = String((body && body.team_tier) || 'tier1') === 'tier2' ? 'tier2' : 'tier1';
+      const lang = String((body && body.lang) || 'th') === 'en' ? 'en' : 'th';
+
+      if (!/^\d{1,10}$/.test(leagueId)) {
+        return new Response(JSON.stringify({ success: false, error: 'กรุณาระบุรหัส League ID เป็นตัวเลข' }), {
+          status: 400,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      if (!customerEmail || customerEmail.length > 160 || !/^[^\s@<>()\[\]\\,;:\"]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(customerEmail)) {
+        return new Response(JSON.stringify({ success: false, error: 'กรุณากรอกอีเมลให้ถูกต้อง' }), {
+          status: 400,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+
+      let effectiveTier = teamTier;
+      if ((currency === 'THB' && teamTier === 'tier1') || !leagueName || teamCount === 0) {
+        const preview = await fetchFplLeaguePreview(leagueId, url.origin, colo, ctx, 4000);
+        if (preview && preview.ok) {
+          if (preview.name) leagueName = preview.name.slice(0, 120);
+          teamCount = preview.team_count;
+          if (preview.has_more || preview.team_count > 30) {
+            effectiveTier = 'tier2';
+          }
+        }
+      }
+
+      const isTier2 = (effectiveTier === 'tier2' || teamCount > 30);
+      const isPromptPayStandard = (currency === 'THB' && !isTier2);
+      const plan = isTier2 ? 'tier2_quote' : 'standard';
+      const ppId = (env && typeof env.PROMPTPAY_ID === 'string') ? env.PROMPTPAY_ID.trim() : '';
+      const accountName = (env && typeof env.PROMPTPAY_ACCOUNT_NAME === 'string' && env.PROMPTPAY_ACCOUNT_NAME.trim())
+        ? env.PROMPTPAY_ACCOUNT_NAME.trim()
+        : 'FPLSaWaDiKa';
+      if (isPromptPayStandard && !ppId) {
+        return new Response(JSON.stringify({ success: false, error: 'ระบบ PromptPay ยังไม่พร้อมใช้งาน กรุณาติดต่อแอดมินผ่าน LINE หรือ Email' }), {
+          status: 503,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+
+      try {
+        await ensureLeagueOrdersTable(env.DB);
+        const nowMs = Date.now();
+        const nowIso = new Date(nowMs).toISOString();
+        await env.DB.prepare(
+          "UPDATE league_orders SET status = 'expired', updated_at = CURRENT_TIMESTAMP WHERE status IN ('awaiting_payment', 'rejected') AND expires_at < ?"
+        ).bind(nowIso).run();
+
+        const existingOpen = await env.DB.prepare(`
+          SELECT order_id, league_id, league_name, team_count, plan, currency, amount_satang, status, expires_at
+          FROM league_orders
+          WHERE league_id = ? AND customer_email = ? AND currency = ? AND plan = ?
+            AND status = 'awaiting_payment' AND expires_at > ?
+          ORDER BY datetime(created_at) DESC
+          LIMIT 1
+        `).bind(leagueId, customerEmail, currency, plan, nowIso).first();
+
+        if (existingOpen) {
+          const freshToken = generateAccessToken();
+          const freshHash = await sha256Hex(freshToken);
+          const updReuse = await env.DB.prepare(`
+            UPDATE league_orders
+            SET access_token_hash = ?, customer_line = ?, rules_text = ?, lang = ?,
+                league_name = CASE WHEN ? != '' THEN ? ELSE league_name END,
+                team_count = CASE WHEN ? > 0 THEN ? ELSE team_count END,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE order_id = ? AND status = 'awaiting_payment'
+          `).bind(
+            freshHash, customerLine, rulesText, lang,
+            leagueName, leagueName, teamCount, teamCount,
+            existingOpen.order_id
+          ).run();
+          if (updReuse && updReuse.meta && updReuse.meta.changes === 1) {
+            const reusedPayload = isPromptPayStandard
+              ? buildPromptPayPayload(ppId, (Number(existingOpen.amount_satang) / 100).toFixed(2))
+              : '';
+            return new Response(
+              JSON.stringify({
+                success: true,
+                reused: true,
+                order_id: existingOpen.order_id,
+                token: freshToken,
+                status: 'awaiting_payment',
+                league_id: existingOpen.league_id,
+                league_name: leagueName || existingOpen.league_name,
+                team_count: teamCount || existingOpen.team_count,
+                plan: existingOpen.plan,
+                currency: existingOpen.currency,
+                amount_satang: Number(existingOpen.amount_satang),
+                amount_display: formatSatangDisplay(existingOpen.amount_satang, existingOpen.currency, lang),
+                expires_at: existingOpen.expires_at,
+                promptpay_payload: reusedPayload,
+                account_name: accountName,
+                lang,
+              }),
+              { status: 200, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } }
+            );
+          }
+        }
+
+        const rawToken = generateAccessToken();
+        const tokenHash = await sha256Hex(rawToken);
+        let status = isPromptPayStandard ? 'awaiting_payment' : 'quote_requested';
+        let expiresAt = new Date(nowMs + (isPromptPayStandard ? 24 * 3600000 : 7 * 86400000)).toISOString();
+        let amountSatang = isPromptPayStandard ? 0 : ((currency === 'USD' && !isTier2) ? 1900 : 0);
+        let promptpayPayload = '';
+        let orderId = '';
+        let inserted = false;
+
+        for (let attempt = 0; attempt < 3; attempt++) {
+          orderId = generateOrderId();
+          if (isPromptPayStandard) {
+            amountSatang = await allocateUniqueSatangAmount(env.DB, 500);
+            if (amountSatang === null) {
+              return new Response(
+                JSON.stringify({
+                  success: false,
+                  error: lang === 'en'
+                    ? 'PromptPay checkout slots are temporarily full. Please wait a moment or contact us via Email / LINE.'
+                    : 'ระบบ PromptPay มีรายการรอชำระเต็มชั่วคราว กรุณารอสักครู่หรือติดต่อแอดมินทาง Email / LINE',
+                }),
+                { status: 503, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } }
+              );
+            }
+            promptpayPayload = buildPromptPayPayload(ppId, (amountSatang / 100).toFixed(2));
+            if (!promptpayPayload) {
+              return new Response(JSON.stringify({ success: false, error: 'PromptPay ID configuration invalid' }), {
+                status: 503,
+                headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+              });
+            }
+          }
+          try {
+            await env.DB.prepare(`
+              INSERT INTO league_orders (
+                order_id, access_token_hash, league_id, league_name, team_count,
+                plan, currency, lang, amount_satang, customer_email, customer_line, rules_text,
+                status, expires_at
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `).bind(
+              orderId, tokenHash, leagueId, leagueName, teamCount,
+              plan, currency, lang, amountSatang, customerEmail, customerLine, rulesText,
+              status, expiresAt
+            ).run();
+            inserted = true;
+            break;
+          } catch (insErr) {
+            const msg = String((insErr && insErr.message) || insErr || '');
+            if (/UNIQUE constraint/i.test(msg) && attempt < 2) {
+              continue;
+            }
+            throw insErr;
+          }
+        }
+        if (!inserted) {
+          throw new Error('Failed to insert unique order');
+        }
+
+        const payOrigin = (env.ENVIRONMENT === 'staging' && reqOrigin && isLocalOrigin(reqOrigin))
+          ? reqOrigin
+          : 'https://www.fplsawadika.com';
+        const payUrl = getOrderPayUrl(payOrigin, orderId, rawToken);
+        const amountDisplay = formatSatangDisplay(amountSatang, currency, lang);
+        const safeOid = escapeHtmlEmail(orderId);
+        const safeLid = escapeHtmlEmail(leagueId);
+        const safeAmt = escapeHtmlEmail(amountDisplay);
+        const safePayUrl = escapeHtmlEmail(payUrl);
+        const safeRules = escapeHtmlEmail(rulesText || '-');
+        const safeLname = escapeHtmlEmail(leagueName || `League ${leagueId}`);
+
+        const custSubj = lang === 'en'
+          ? (status === 'awaiting_payment'
+              ? `[FPLSaWaDiKa] Order Confirmation & PromptPay Link (${orderId})`
+              : `[FPLSaWaDiKa] League Request Received (${orderId})`)
+          : (status === 'awaiting_payment'
+              ? `[FPLSaWaDiKa] ยืนยันคำสั่งซื้อและลิงก์ชำระเงิน (${orderId})`
+              : `[FPLSaWaDiKa] ได้รับคำขอเปิดลีกของคุณแล้ว (${orderId})`);
+        const custText = lang === 'en'
+          ? (status === 'awaiting_payment'
+              ? `Your order has been created.\nOrder ID: ${orderId}\nLeague ID: ${leagueId}\nExact transfer amount: ${amountDisplay}\n\nOpen your PromptPay QR & slip upload page here:\n${payUrl}\n\n100% money-back guarantee if not launched within 24h after slip verification.`
+              : `Your league request has been received.\nOrder ID: ${orderId}\nLeague ID: ${leagueId}\nWe will reply via Email or LINE within 24h.\n\nTrack order status here:\n${payUrl}`)
+          : (status === 'awaiting_payment'
+              ? `คำสั่งซื้อของคุณถูกสร้างเรียบร้อยแล้ว\nOrder ID: ${orderId}\nLeague ID: ${leagueId}\nยอดโอนเฉพาะออเดอร์นี้: ${amountDisplay}\n\nเปิดหน้าสแกน QR / แนบสลิป / เช็กสถานะได้ที่:\n${payUrl}\n\nรับประกันคืนเงิน 100% หากไม่สามารถเปิดใช้งานลีกได้ภายใน 24 ชั่วโมงหลังยืนยันยอดโอน`
+              : `ได้รับคำขอเปิดลีกของคุณแล้ว\nOrder ID: ${orderId}\nLeague ID: ${leagueId}\nติดต่อแอดมินได้ทาง support@fplsawadika.com หรือ LINE\n\nติดตามสถานะได้ที่:\n${payUrl}`);
+        const custHtml = lang === 'en'
+          ? `
+              <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 20px; color: #0f172a;">
+                <h2 style="margin: 0 0 12px;">${status === 'awaiting_payment' ? 'FPLSaWaDiKa Order Confirmation' : 'FPLSaWaDiKa Request Received'}</h2>
+                <p style="margin: 0 0 12px;">Order ID: <code>${safeOid}</code><br>League ID: <code>${safeLid}</code><br>Amount: <strong>${safeAmt}</strong></p>
+                <p style="margin: 18px 0;">
+                  <a href="${safePayUrl}" style="display: inline-block; background: #0f172a; color: #ffffff; text-decoration: none; font-weight: bold; padding: 12px 18px; border-radius: 10px;">Open Checkout &amp; Tracking Page →</a>
+                </p>
+                <p style="font-size: 12px; color: #64748b;">100% money-back guarantee if not launched within 24h after verification • Support: support@fplsawadika.com</p>
+              </div>
+            `
+          : `
+              <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 20px; color: #0f172a;">
+                <h2 style="margin: 0 0 12px;">${status === 'awaiting_payment' ? 'ยืนยันคำสั่งซื้อ FPLSaWaDiKa' : 'ได้รับคำขอเปิดลีกของคุณแล้ว'}</h2>
+                <p style="margin: 0 0 12px;">รหัสออเดอร์: <code>${safeOid}</code><br>League ID: <code>${safeLid}</code><br>ยอดชำระ: <strong>${safeAmt}</strong></p>
+                <p style="margin: 18px 0;">
+                  <a href="${safePayUrl}" style="display: inline-block; background: #0f172a; color: #ffffff; text-decoration: none; font-weight: bold; padding: 12px 18px; border-radius: 10px;">เปิดหน้าชำระเงิน / เช็กสถานะออเดอร์ →</a>
+                </p>
+                <p style="font-size: 12px; color: #64748b;">รับประกันคืนเงิน 100% หากไม่สามารถเปิดใช้งานลีกได้ภายใน 24 ชั่วโมงหลังยืนยันยอดโอน • ติดต่อ: support@fplsawadika.com</p>
+              </div>
+            `;
+
+        const emailTask = (async () => {
+          await sendTransactionalEmail(env, {
+            to: customerEmail,
+            replyTo: 'support@fplsawadika.com',
+            subject: custSubj,
+            text: custText,
+            html: custHtml,
+          });
+
+          if (status === 'quote_requested' && env.ADMIN_NOTIFY_EMAIL) {
+            await sendTransactionalEmail(env, {
+              to: env.ADMIN_NOTIFY_EMAIL,
+              subject: `[NEW QUOTE] ${orderId} — League ${leagueId} (${currency})`,
+              text: `New quote request:\nOrder: ${orderId}\nLeague: ${leagueName || leagueId} (${leagueId}, ${teamCount} teams)\nPlan: ${plan} (${currency})\nEmail: ${customerEmail}\nLINE: ${customerLine || '-'}\nRules: ${rulesText || '-'}\n\nOpen /admin#sec-orders`,
+              html: `<p><strong>New Quote Request:</strong> <code>${safeOid}</code></p><p>League: ${safeLname} (${safeLid}, ${teamCount} teams)<br>Plan: ${escapeHtmlEmail(plan)} (${escapeHtmlEmail(currency)})<br>Email: ${escapeHtmlEmail(customerEmail)}<br>LINE: ${escapeHtmlEmail(customerLine || '-')}</p><p>Rules:<br>${safeRules}</p>`,
+            });
+          }
+        })();
+        if (ctx && ctx.waitUntil) {
+          ctx.waitUntil(emailTask);
+        } else {
+          await emailTask;
+        }
+
+        return new Response(
+          JSON.stringify({
+            success: true,
+            order_id: orderId,
+            token: rawToken,
+            status,
+            league_id: leagueId,
+            league_name: leagueName,
+            team_count: teamCount,
+            plan,
+            currency,
+            amount_satang: amountSatang,
+            amount_display: amountDisplay,
+            expires_at: expiresAt,
+            promptpay_payload: promptpayPayload,
+            account_name: accountName,
+            lang,
+          }),
+          { status: 201, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } }
+        );
       } catch (err) {
-        clearTimeout(timer);
-        return new Response(JSON.stringify({ success: false, league_id: lid, error: err && err.name === 'AbortError' ? 'timeout' : 'upstream_error' }), {
-          status: 502,
+        console.warn('Public order creation failed:', err);
+        return new Response(JSON.stringify({ success: false, error: 'Order creation failed. Please try again or contact support.' }), {
+          status: 500,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+    }
+
+    if (path === '/api/public/orders/status') {
+      if (request.method !== 'GET' && request.method !== 'HEAD') {
+        return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+          status: 405,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      if (!(await allowIpRateLimit(request, 'public_order_status', 60))) {
+        return new Response(JSON.stringify({ success: false, error: 'Too many requests' }), {
+          status: 429,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      if (!env || !env.DB) {
+        return new Response(JSON.stringify({ success: false, error: 'Database unavailable' }), {
+          status: 503,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      const orderId = String(url.searchParams.get('order') || '').trim();
+      const rawToken = String(url.searchParams.get('token') || '').trim();
+      if (!/^FPL-[A-Z0-9-]{4,24}$/.test(orderId) || !/^[a-f0-9]{16,128}$/i.test(rawToken)) {
+        return new Response(JSON.stringify({ success: false, error: 'Invalid order or token' }), {
+          status: 404,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      try {
+        await ensureLeagueOrdersTable(env.DB);
+        const tokenHash = await sha256Hex(rawToken);
+        const row = await env.DB.prepare(`
+          SELECT order_id, access_token_hash, league_id, league_name, team_count, plan, currency, lang,
+                 amount_satang, customer_email, customer_line, rules_text, status,
+                 (CASE WHEN slip_data_url IS NOT NULL AND slip_data_url != '' THEN 1 ELSE 0 END) AS has_slip,
+                 slip_uploaded_at, admin_note, delivered_url, created_at, expires_at
+          FROM league_orders WHERE order_id = ?
+        `).bind(orderId).first();
+        if (!row || row.access_token_hash !== tokenHash) {
+          return new Response(JSON.stringify({ success: false, error: 'Order not found' }), {
+            status: 404,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+          });
+        }
+        let status = String(row.status || 'awaiting_payment');
+        if ((status === 'awaiting_payment' || status === 'rejected') && Date.now() > Date.parse(row.expires_at)) {
+          status = 'expired';
+          await env.DB.prepare("UPDATE league_orders SET status = 'expired', updated_at = CURRENT_TIMESTAMP WHERE order_id = ? AND status IN ('awaiting_payment', 'rejected')").bind(orderId).run();
+        }
+        let promptpayPayload = '';
+        if (status === 'awaiting_payment' && row.currency === 'THB' && Number(row.amount_satang) >= 50000) {
+          const ppId = (env && typeof env.PROMPTPAY_ID === 'string') ? env.PROMPTPAY_ID.trim() : '';
+          if (ppId) {
+            promptpayPayload = buildPromptPayPayload(ppId, (Number(row.amount_satang) / 100).toFixed(2));
+          }
+        }
+        const orderLang = String(row.lang || 'th').toLowerCase() === 'en' ? 'en' : 'th';
+        const respBody = JSON.stringify({
+          success: true,
+          order_id: row.order_id,
+          status,
+          league_id: row.league_id,
+          league_name: row.league_name,
+          team_count: row.team_count,
+          plan: row.plan,
+          currency: row.currency,
+          lang: orderLang,
+          amount_satang: row.amount_satang,
+          amount_display: formatSatangDisplay(row.amount_satang, row.currency, orderLang),
+          customer_email: row.customer_email,
+          customer_line: row.customer_line,
+          rules_text: row.rules_text,
+          has_slip: Boolean(row.has_slip),
+          slip_uploaded_at: row.slip_uploaded_at || null,
+          reject_reason: status === 'rejected' ? (row.admin_note || '') : '',
+          delivered_url: status === 'live' ? (row.delivered_url || `https://www.fplsawadika.com/${row.league_id}/`) : '',
+          created_at: row.created_at,
+          expires_at: row.expires_at,
+          promptpay_payload: promptpayPayload,
+          account_name: (env && typeof env.PROMPTPAY_ACCOUNT_NAME === 'string' && env.PROMPTPAY_ACCOUNT_NAME.trim())
+            ? env.PROMPTPAY_ACCOUNT_NAME.trim()
+            : 'FPLSaWaDiKa',
+        });
+        return new Response(request.method === 'HEAD' ? null : respBody, {
+          status: 200,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      } catch (err) {
+        console.warn('Public order status read failed:', err);
+        return new Response(JSON.stringify({ success: false, error: 'Failed to load order status' }), {
+          status: 500,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+    }
+
+    if (path === '/api/public/orders/slip') {
+      if (request.method !== 'POST') {
+        return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+          status: 405,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      const reqOrigin = request.headers.get('origin');
+      if (!isOrderOriginAllowed(reqOrigin, env) && !(env && env.ENVIRONMENT === 'staging' && !reqOrigin)) {
+        return new Response(JSON.stringify({ success: false, error: 'Forbidden origin' }), {
+          status: 403,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      const clHeader = Number(request.headers.get('content-length') || '0');
+      if (clHeader > 450000) {
+        return new Response(JSON.stringify({ success: false, error: 'Slip payload exceeds maximum size' }), {
+          status: 413,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      if (!(await allowIpRateLimit(request, 'public_order_slip', 10))) {
+        return new Response(JSON.stringify({ success: false, error: 'Too many uploads. Please wait a minute.' }), {
+          status: 429,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      if (!env || !env.DB) {
+        return new Response(JSON.stringify({ success: false, error: 'Database unavailable' }), {
+          status: 503,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      const rawText = await request.text();
+      if (!rawText || rawText.length > 450000) {
+        return new Response(JSON.stringify({ success: false, error: rawText ? 'Slip payload exceeds maximum size' : 'Empty body' }), {
+          status: rawText ? 413 : 400,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      let body = null;
+      try {
+        body = JSON.parse(rawText);
+      } catch (_) {
+        return new Response(JSON.stringify({ success: false, error: 'Invalid JSON payload' }), {
+          status: 400,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      const orderId = String((body && body.order_id) || '').trim();
+      const rawToken = String((body && body.token) || '').trim();
+      const slipDataUrl = String((body && body.slip_data_url) || '').trim();
+      if (!/^FPL-[A-Z0-9-]{4,24}$/.test(orderId) || !/^[a-f0-9]{16,128}$/i.test(rawToken)) {
+        return new Response(JSON.stringify({ success: false, error: 'Invalid order or token' }), {
+          status: 404,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      if (slipDataUrl.length > 380000 || !/^data:image\/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(slipDataUrl)) {
+        return new Response(JSON.stringify({ success: false, error: 'กรุณาแนบไฟล์รูปภาพสลิป (.jpg, .png, .webp) ที่ถูกต้อง' }), {
+          status: 400,
+          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+        });
+      }
+      try {
+        await ensureLeagueOrdersTable(env.DB);
+        const tokenHash = await sha256Hex(rawToken);
+        const row = await env.DB.prepare(`
+          SELECT order_id, access_token_hash, league_id, league_name, currency, lang, amount_satang,
+                 customer_email, customer_line, rules_text, status, expires_at
+          FROM league_orders WHERE order_id = ?
+        `).bind(orderId).first();
+        if (!row || row.access_token_hash !== tokenHash) {
+          return new Response(JSON.stringify({ success: false, error: 'Order not found' }), {
+            status: 404,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+          });
+        }
+        const GRACE_MS = 24 * 3600000;
+        const expMs = Date.parse(row.expires_at);
+        const nowMs = Date.now();
+        const canUpload =
+          ((row.status === 'awaiting_payment' || row.status === 'expired') && nowMs <= (expMs + GRACE_MS)) ||
+          (row.status === 'rejected' && nowMs <= expMs);
+
+        if (!canUpload) {
+          if (row.status === 'awaiting_payment' || row.status === 'rejected' || row.status === 'expired') {
+            if (row.status !== 'expired') {
+              await env.DB.prepare("UPDATE league_orders SET status = 'expired', updated_at = CURRENT_TIMESTAMP WHERE order_id = ?").bind(orderId).run();
+            }
+            return new Response(JSON.stringify({ success: false, error: 'Order expired. Please create a new order.' }), {
+              status: 410,
+              headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+            });
+          }
+          return new Response(JSON.stringify({ success: false, error: `Order is already in status: ${row.status}` }), {
+            status: 409,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+          });
+        }
+
+        const nowIso = new Date().toISOString();
+        const upd = await env.DB.prepare(`
+          UPDATE league_orders
+          SET status = 'slip_submitted', slip_data_url = ?, slip_uploaded_at = ?, updated_at = CURRENT_TIMESTAMP
+          WHERE order_id = ? AND status IN ('awaiting_payment', 'rejected', 'expired')
+        `).bind(slipDataUrl, nowIso, orderId).run();
+        if (!upd || !upd.meta || upd.meta.changes !== 1) {
+          return new Response(JSON.stringify({ success: false, error: 'Order status changed concurrently; please refresh' }), {
+            status: 409,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+          });
+        }
+
+        const payOrigin = (env.ENVIRONMENT === 'staging' && reqOrigin && isLocalOrigin(reqOrigin))
+          ? reqOrigin
+          : 'https://www.fplsawadika.com';
+        const payUrl = getOrderPayUrl(payOrigin, orderId, rawToken);
+        const orderLang = String(row.lang || 'th').toLowerCase() === 'en' ? 'en' : 'th';
+        const amountDisplay = formatSatangDisplay(row.amount_satang, row.currency, orderLang);
+        const safeOid = escapeHtmlEmail(orderId);
+        const safeLname = escapeHtmlEmail(row.league_name || `League ${row.league_id}`);
+        const safeLid = escapeHtmlEmail(row.league_id);
+        const safeAmt = escapeHtmlEmail(amountDisplay);
+        const safeEmail = escapeHtmlEmail(row.customer_email);
+        const safeLine = escapeHtmlEmail(row.customer_line || '-');
+        const safeRules = escapeHtmlEmail(row.rules_text || '-');
+        const safePayUrl = escapeHtmlEmail(payUrl);
+
+        const custSlipSubj = orderLang === 'en'
+          ? `[FPLSaWaDiKa] Payment Slip Received — Verifying (${orderId})`
+          : `[FPLSaWaDiKa] ได้รับสลิปโอนเงินแล้ว — กำลังตรวจสอบ (${orderId})`;
+        const custSlipText = orderLang === 'en'
+          ? `Hello,\n\nWe have received your payment slip for order ${orderId} (${amountDisplay}, League ${row.league_id}).\nOur team will verify the transfer and launch your league within 24 hours (100% money-back guarantee).\n\nTrack order status here:\n${payUrl}`
+          : `สวัสดีครับ\n\nเราได้รับสลิปโอนเงินของออเดอร์ ${orderId} (${amountDisplay}) สำหรับมินิลีก ${row.league_name || row.league_id} เรียบร้อยแล้ว\nแอดมินจะตรวจสอบและตั้งค่าเปิดใช้งานให้ภายใน 24 ชั่วโมง (รับประกันคืนเงิน 100% หากไม่สามารถเปิดใช้งานได้ภายใน 24 ชม.)\n\nติดตามสถานะได้ที่:\n${payUrl}`;
+        const custSlipHtml = orderLang === 'en'
+          ? `
+              <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 20px; color: #0f172a;">
+                <h2 style="color: #059669; margin: 0 0 12px;">Payment Slip Received</h2>
+                <p style="margin: 0 0 10px;">We received your slip for order <code>${safeOid}</code> (${safeAmt}, League <code>${safeLid}</code>).</p>
+                <p style="margin: 0 0 12px;">Our team is verifying the transfer and will email your private league link within <strong>24 hours</strong>.</p>
+                <p style="margin: 18px 0;">
+                  <a href="${safePayUrl}" style="display: inline-block; background: #10b981; color: #ffffff; text-decoration: none; font-weight: bold; padding: 11px 18px; border-radius: 10px;">Track Order Status →</a>
+                </p>
+                <p style="font-size: 12px; color: #64748b;">100% money-back guarantee if not launched within 24h • Support: support@fplsawadika.com</p>
+              </div>
+            `
+          : `
+              <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 20px; color: #0f172a;">
+                <h2 style="color: #059669; margin: 0 0 12px;">ได้รับสลิปโอนเงินเรียบร้อยแล้ว</h2>
+                <p style="margin: 0 0 10px;">ระบบได้รับสลิปของออเดอร์ <code>${safeOid}</code> (${safeAmt}) สำหรับ <strong>${safeLname}</strong> แล้วครับ</p>
+                <p style="margin: 0 0 12px;">แอดมินกำลังตรวจสอบยอดโอนและตั้งค่ากติกาให้คุณภายใน <strong>24 ชั่วโมง</strong> โดยจะส่งลิงก์เข้าลีกให้ทางอีเมลนี้ทันทีที่พร้อมใช้งานครับ</p>
+                <p style="margin: 18px 0;">
+                  <a href="${safePayUrl}" style="display: inline-block; background: #10b981; color: #ffffff; text-decoration: none; font-weight: bold; padding: 11px 18px; border-radius: 10px;">ติดตามสถานะออเดอร์ →</a>
+                </p>
+                <p style="font-size: 12px; color: #64748b;">รับประกันคืนเงิน 100% หากไม่สามารถเปิดใช้งานลีกได้ภายใน 24 ชั่วโมงหลังยืนยันยอดโอน • ติดต่อ: support@fplsawadika.com</p>
+              </div>
+            `;
+
+        const notifyTask = (async () => {
+          if (env.ADMIN_NOTIFY_EMAIL) {
+            await sendTransactionalEmail(env, {
+              to: env.ADMIN_NOTIFY_EMAIL,
+              subject: `[SLIP UPLOADED] ${orderId} • ${amountDisplay} • League ${row.league_id}`,
+              text: `ลูกค้าแนบสลิปโอนเงินแล้ว!\nOrder: ${orderId}\nยอดที่ต้องตรวจสอบ: ${amountDisplay}\nLeague: ${row.league_name || row.league_id} (ID: ${row.league_id})\nEmail: ${row.customer_email}\nLINE: ${row.customer_line || '-'}\nRules:\n${row.rules_text || '-'}\n\nตรวจสอบสลิปและอนุมัติได้ที่:\nhttps://api.fplsawadika.com/admin#sec-orders`,
+              html: `
+                <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 20px; color: #0f172a;">
+                  <h2 style="color: #059669; margin: 0 0 12px;">มีลูกค้าแจ้งโอนและแนบสลิปเข้ามาใหม่!</h2>
+                  <p style="margin: 0 0 10px;">
+                    <strong>Order:</strong> <code>${safeOid}</code><br>
+                    <strong>ยอดโอนเฉพาะออเดอร์:</strong> <span style="color: #059669; font-weight: bold;">${safeAmt}</span><br>
+                    <strong>มินิลีก:</strong> ${safeLname} (<code>${safeLid}</code>)<br>
+                    <strong>Email:</strong> ${safeEmail}<br>
+                    <strong>LINE:</strong> ${safeLine}
+                  </p>
+                  <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 12px; border-radius: 8px; margin: 12px 0;">
+                    <strong>กติกาที่ลูกค้าระบุ:</strong><br>${safeRules}
+                  </div>
+                  <p style="margin: 18px 0;">
+                    <a href="https://api.fplsawadika.com/admin#sec-orders" style="display: inline-block; background: #0f172a; color: #ffffff; text-decoration: none; font-weight: bold; padding: 12px 18px; border-radius: 10px;">เปิดหน้า /admin เพื่อตรวจสลิป →</a>
+                  </p>
+                </div>
+              `,
+            });
+          }
+          await sendTransactionalEmail(env, {
+            to: row.customer_email,
+            replyTo: 'support@fplsawadika.com',
+            subject: custSlipSubj,
+            text: custSlipText,
+            html: custSlipHtml,
+          });
+        })();
+        if (ctx && ctx.waitUntil) {
+          ctx.waitUntil(notifyTask);
+        } else {
+          await notifyTask;
+        }
+
+        return new Response(
+          JSON.stringify({ success: true, order_id: orderId, status: 'slip_submitted', slip_uploaded_at: nowIso }),
+          { status: 200, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } }
+        );
+      } catch (err) {
+        console.warn('Public slip upload failed:', err);
+        return new Response(JSON.stringify({ success: false, error: 'Slip upload failed. Please try again.' }), {
+          status: 500,
           headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
         });
       }

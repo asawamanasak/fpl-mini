@@ -421,13 +421,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       <!-- Right Action Controls (All >= 44x44px touch targets) -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
 
-        <!-- Quick League Switcher (Connects directly to all 9 leagues + Main Hub) -->
+        <!-- Quick League Switcher (Connects directly to Commercial Landing Page, Demo Hub, and all 9 leagues) -->
         <div class="relative">
-          <label for="quickLeagueSelect" class="sr-only" data-i18n="nav_jump_league_label">สลับไปหน้ามินิลีก</label>
+          <label for="quickLeagueSelect" class="sr-only" data-i18n="nav_jump_league_label">ทางลัดเปิดหน้าขาย เดโม และมินิลีก</label>
           <select id="quickLeagueSelect" onchange="jumpToLeague(this.value)"
             class="min-h-[44px] px-2.5 sm:px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark text-slate-800 dark:text-neutral-200 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 transition-colors duration-150 cursor-pointer max-w-[136px] sm:max-w-[200px]">
-            <option value="" data-i18n="nav_jump_placeholder">เปิดหน้าลีก (9 ลีก)...</option>
-            <option value="hub" data-i18n="nav_jump_hub">หน้าหลัก (Main Hub)</option>
+            <option value="" data-i18n="nav_jump_placeholder">ทางลัดเปิดหน้าเว็บ (9 ลีก)...</option>
+            <option value="landing" data-i18n="nav_jump_landing">🛒 หน้าขายสินค้า (Landing Page)</option>
+            <option value="preview" data-i18n="nav_jump_preview">🎮 หน้าเดโมรวมลีก (preview.html)</option>
             <option value="40700">40700 · เซียนอยู่รู หมูอยู่ตึก</option>
             <option value="675290">675290 · NudNee</option>
             <option value="38491">38491 · รอ แมน โอน</option>
@@ -499,6 +500,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         </a>
         <a href="#sec-onboarding" class="min-h-[44px] px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 hover:bg-amber-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-500 transition-colors shrink-0 inline-flex items-center gap-2 font-semibold">
           <span data-i18n="mod_nav_9">9. เพิ่มลีกลูกค้าใหม่ (Onboarding)</span>
+        </a>
+        <a href="#sec-orders" class="min-h-[44px] px-3 py-2 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-800 dark:text-sky-300 hover:bg-sky-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-500 transition-colors shrink-0 inline-flex items-center gap-2 font-semibold">
+          <span data-i18n="mod_nav_10">10. ออเดอร์ &amp; ตรวจสลิป</span>
+          <span id="navOrderPendingBadge" class="hidden px-1.5 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-mono leading-none">0</span>
         </a>
       </div>
     </nav>
@@ -613,8 +618,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" data-i18n="pitch_tier1_ready">
             Tier 1: พร้อมเปิดใช้งานทันที
           </span>
-          <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800" data-i18n="pitch_tier2_roadmap">
-            Tier 2: Live Beta (สเกล 1,780 ทีม)
+          <span id="pitchTier2Badge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800" data-i18n="pitch_tier2_roadmap">
+            Tier 2: Live Beta (สเกล 1,779 ทีม)
           </span>
         </div>
       </div>
@@ -927,7 +932,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </div>
 
             <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark flex items-center justify-between text-xs">
-              <span class="text-slate-600 dark:text-neutral-400" data-i18n="graphic4_callout">Tier 1 พร้อมส่งมอบทันที · Tier 2 (Live Beta) รองรับ 1,780 ทีม</span>
+              <span id="graphic4Callout" class="text-slate-600 dark:text-neutral-400" data-i18n="graphic4_callout">Tier 1 พร้อมส่งมอบทันที · Tier 2 (Live Beta) รองรับ 1,779 ทีม</span>
               <span class="mono font-bold text-indigo-600 dark:text-indigo-400">Turnkey Core</span>
             </div>
           </div>
@@ -998,7 +1003,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_4_title">เรดาร์ฟอร์มทุกลีก</div>
               <div class="text-[11px] text-slate-500 dark:text-neutral-400" data-i18n="jump_4_sub">เทียบดัชนีคะแนนรวม</div>
             </div>
-            <span class="text-[10px] mono text-slate-400 dark:text-neutral-500">Main Hub</span>
+            <span class="text-[10px] mono text-slate-400 dark:text-neutral-500">ลีก 40700 · Radar</span>
           </a>
 
           <!-- Jump 5: Cup Knockout -->
@@ -1033,16 +1038,22 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5">
         <!-- KPI 1: Tracked Managers -->
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
-          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_managers_label">ผู้จัดการทีมที่ติดตาม</div>
+          <div class="flex items-center justify-between gap-1.5">
+            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_managers_label">ผู้จัดการทีมที่ติดตาม</div>
+            <span class="px-1.5 py-0.5 rounded text-[10px] mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0" data-i18n="badge_live_sync">Live Sync</span>
+          </div>
           <div>
             <div id="kpiManagersCount" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">163</div>
-            <div id="kpiManagersSub" class="text-xs text-emerald-700 dark:text-emerald-400 mt-1" data-i18n="kpi_managers_sub">Tier 1 ครบ 8 มินิลีก (รวม Tier 2 = 1,943)</div>
+            <div id="kpiManagersSub" class="text-xs text-emerald-700 dark:text-emerald-400 mt-1" data-i18n="kpi_managers_sub">Tier 1 ครบ 8 มินิลีก (รวม Tier 2 = 1,942)</div>
           </div>
         </div>
 
         <!-- KPI 2: Matchday Active Users -->
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
-          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_mau_label">ผู้ใช้งานวันแข่งขัน (MAU)</div>
+          <div class="flex items-center justify-between gap-1.5">
+            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_mau_label">ผู้ใช้งานวันแข่งขัน (MAU)</div>
+            <span class="px-1.5 py-0.5 rounded text-[10px] mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0" data-i18n="badge_live_d1">Live D1</span>
+          </div>
           <div>
             <div id="kpiMatchdayActive" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">1,420</div>
             <div id="kpiMatchdaySub" class="text-xs text-emerald-700 dark:text-emerald-400 mt-1" data-i18n="kpi_mau_sub">รวมผู้ชม 3.7x ต่อผู้จัดการ 1 คน</div>
@@ -1051,7 +1062,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
         <!-- KPI 3: Off-Peak DAU -->
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
-          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_offpeak_label">ผู้ใช้งานนอกวันแข่ง (DAU)</div>
+          <div class="flex items-center justify-between gap-1.5">
+            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_offpeak_label">ผู้ใช้งานนอกวันแข่ง (DAU)</div>
+            <span class="px-1.5 py-0.5 rounded text-[10px] mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0" data-i18n="badge_live_d1">Live D1</span>
+          </div>
           <div>
             <div id="kpiOffPeakDau" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">310</div>
             <div class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="kpi_offpeak_sub">อังคาร–พฤหัส (วางแผนซื้อขาย)</div>
@@ -1060,25 +1074,34 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
         <!-- KPI 4: DAU / MAU Stickiness -->
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
-          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_stickiness_label">ความเหนียวแน่นวันแข่ง</div>
+          <div class="flex items-center justify-between gap-1.5">
+            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_stickiness_label">ความเหนียวแน่นวันแข่ง</div>
+            <span class="px-1.5 py-0.5 rounded text-[10px] mono font-medium bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/25 shrink-0" data-i18n="badge_benchmark">Benchmark</span>
+          </div>
           <div>
             <div id="kpiStickiness" class="text-2xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400">68.4%</div>
-            <div class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="kpi_stickiness_sub">เข้าเช็กซ้ำ > 3 ครั้งต่อสัปดาห์</div>
+            <div class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="kpi_stickiness_sub">ค่าอ้างอิงฤดูกาล (> 3 ครั้ง/สัปดาห์ · ไม่เก็บ Cookie)</div>
           </div>
         </div>
 
         <!-- KPI 5: GW-over-GW Retention -->
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
-          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_retention_label">อัตรากลับมาใช้งานต่อ GW</div>
+          <div class="flex items-center justify-between gap-1.5">
+            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_retention_label">อัตรากลับมาใช้งานต่อ GW</div>
+            <span class="px-1.5 py-0.5 rounded text-[10px] mono font-medium bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/25 shrink-0" data-i18n="badge_benchmark">Benchmark</span>
+          </div>
           <div>
             <div id="kpiRetention" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">94.2%</div>
-            <div class="text-xs text-emerald-700 dark:text-emerald-400 mt-1" data-i18n="kpi_retention_sub">อัตราเลิกเล่นต่ำมาก (< 6%)</div>
+            <div class="text-xs text-emerald-700 dark:text-emerald-400 mt-1" data-i18n="kpi_retention_sub">ค่าอ้างอิงฤดูกาล (อัตราเลิกเล่น < 6% · ไม่เก็บ Cookie)</div>
           </div>
         </div>
 
         <!-- KPI 6: Avg Session Screen Time -->
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
-          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_screentime_label">เวลาใช้งานเฉลี่ยต่อครั้ง</div>
+          <div class="flex items-center justify-between gap-1.5">
+            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_screentime_label">เวลาใช้งานเฉลี่ยต่อครั้ง</div>
+            <span class="px-1.5 py-0.5 rounded text-[10px] mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0" data-i18n="badge_live_d1">Live D1</span>
+          </div>
           <div>
             <div id="kpiScreenTime" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">6m 42s</div>
             <div class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="kpi_screentime_sub">เปิดหน้าจอค้างระหว่างบอลเตะสด</div>
@@ -1104,7 +1127,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       </div>
 
       <!-- Portfolio Summary KPIs -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3.5">
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex items-center justify-between gap-4">
           <div class="space-y-1">
             <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="port_gmv_label">มูลค่าเงินรางวัลรวมทั้งระบบ (GMV)</div>
@@ -1118,6 +1141,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="port_custom_label">ลีกที่ผูกกติกาพิเศษ (Custom Rules)</div>
             <div id="portCustomRulesVal" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">7 / 9 <span class="text-sm font-normal text-slate-600 dark:text-neutral-400">(78%)</span></div>
             <div class="text-xs text-emerald-700 dark:text-emerald-400" data-i18n="port_custom_sub">สร้าง Switching Cost สูงกว่าเว็บ FPL ทั่วไป</div>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex items-center justify-between gap-4">
+          <div class="space-y-1 w-full">
+            <div class="flex items-center justify-between gap-2">
+              <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="port_landing_label">ยอดเข้าชมหน้าขาย (Landing Page · 7 วัน)</div>
+              <span id="portLandingTodayBadge" class="px-1.5 py-0.5 rounded text-[10px] mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0">วันนี้: 0</span>
+            </div>
+            <div id="portLandingViews" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0 <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">ครั้ง</span></div>
+            <div id="portLandingSub" class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="port_landing_sub">แยกจากยอดเปิดดู 9 มินิลีก (วัดคนสนใจซื้อระบบ)</div>
           </div>
         </div>
 
@@ -1194,7 +1228,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                 </th>
                 <th scope="col" id="th-retention" aria-sort="none" class="p-0 text-right">
                   <button type="button" onclick="sortLeagueTable('retention')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-end gap-1.5 hover:text-slate-900 dark:hover:text-white font-medium">
-                    <span data-i18n="col_retention">ความเหนียวแน่น</span>
+                    <span data-i18n="col_retention">ความเหนียวแน่น (Benchmark)</span>
                     <span id="sort-icon-retention" class="text-slate-500 dark:text-neutral-400">${ICONS.sort}</span>
                   </button>
                 </th>
@@ -1301,9 +1335,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                   <a href="https://www.fplsawadika.com/139836/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">FPL Growth Mindset 2026/27</a>
                   <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 139836 · Tier 2</div>
                 </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">1,780</td>
+                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">1,779</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-600 dark:text-neutral-400">เสื้อบอลแท้</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Standings &amp; Leaderboard Only · Instant 1,780-Team Search</td>
+                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Standings &amp; Leaderboard Only · Instant 1,779-Team Search</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">0</td>
                 <td class="px-4 py-3 text-right mono tabular font-medium text-slate-800 dark:text-neutral-200">91.2%</td>
               </tr>
@@ -1476,7 +1510,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </div>
 
             <div class="py-3 space-y-1">
-              <div class="text-slate-600 dark:text-neutral-400" data-i18n="feat_comm_label">ลีกคอมมูนิตี้และพรีเมียม (เช่น 675290 · 60 ทีม / Tier 2 · 1,780 ทีม)</div>
+              <div id="featCommLabel" class="text-slate-600 dark:text-neutral-400" data-i18n="feat_comm_label">ลีกคอมมูนิตี้และพรีเมียม (เช่น 675290 · 60 ทีม / Tier 2 · 1,779 ทีม)</div>
               <div class="text-xl font-semibold mono tabular text-slate-900 dark:text-white" data-i18n="feat_comm_val">17.2 ครั้ง / ทีม / GW</div>
               <p class="text-slate-600 dark:text-neutral-400" data-i18n="feat_comm_sub">เน้นเช็กผลสรุปหลังจบแมตช์เป็นหลัก ความถี่น้อยกว่าลีกมีเงินรางวัล ~14 เท่า</p>
             </div>
@@ -1829,7 +1863,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <div id="sysGhSyncBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 16%"></div>
           </div>
           <div class="text-xs text-slate-600 dark:text-neutral-400 flex justify-between">
-            <span data-i18n="sys_gh_success_label">อัตราซิงก์สำเร็จ 30 วัน:</span>
+            <span data-i18n="sys_gh_success_label">อัตราซิงก์สำเร็จ (Benchmark):</span>
             <span class="mono font-semibold text-emerald-700 dark:text-emerald-400">99.8%</span>
           </div>
         </div>
@@ -2037,6 +2071,163 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               สรุปประเภท Error สะสม 7 วันล่าสุด
             </div>
             <div id="monitorCategoryBreakdown" class="space-y-2 text-xs"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 10: CUSTOMER ORDERS & PAYMENT SLIP INBOX                    -->
+    <!-- =================================================================== -->
+    <section id="sec-orders" class="space-y-4 scroll-mt-28" aria-labelledby="sec-orders-title">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div>
+          <h2 id="sec-orders-title" class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec10_title">
+            10. กล่องรับคำสั่งซื้อ &amp; ตรวจสลิป PromptPay
+          </h2>
+          <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec10_sub">
+            ตรวจสอบยอดโอน PromptPay ตามเศษสตางค์ ดูรูปสลิป ส่งคำสั่งซื้อเข้า Onboarding Wizard ด้านล่าง และแจ้งเปิดใช้งานทางอีเมลในคลิกเดียว
+          </p>
+        </div>
+        <button type="button" id="btnRefreshOrders"
+          class="min-h-[40px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark text-xs font-semibold text-slate-800 dark:text-neutral-200 transition-colors self-start sm:self-auto"
+          data-i18n="ord_btn_refresh">
+          รีเฟรชรายการออเดอร์
+        </button>
+      </div>
+
+      <div id="ordersFilterPills" class="flex flex-wrap gap-2">
+        <button type="button" data-order-filter="all" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-emerald-500 bg-emerald-500/15 text-emerald-800 dark:text-emerald-300">
+          <span data-i18n="ord_f_all">ทั้งหมด</span> (<span id="ordCnt_all">0</span>)
+        </button>
+        <button type="button" data-order-filter="slip_submitted" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
+          <span data-i18n="ord_f_slip">รอตรวจสลิป</span> (<span id="ordCnt_slip_submitted">0</span>)
+        </button>
+        <button type="button" data-order-filter="awaiting_payment" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
+          <span data-i18n="ord_f_await">รอโอน QR</span> (<span id="ordCnt_awaiting_payment">0</span>)
+        </button>
+        <button type="button" data-order-filter="paid" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
+          <span data-i18n="ord_f_paid">ตรวจยอดแล้ว</span> (<span id="ordCnt_paid">0</span>)
+        </button>
+        <button type="button" data-order-filter="quote_requested" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
+          <span data-i18n="ord_f_quote">ขอราคา / USD</span> (<span id="ordCnt_quote_requested">0</span>)
+        </button>
+        <button type="button" data-order-filter="live" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
+          <span data-i18n="ord_f_live">เปิดลีกแล้ว</span> (<span id="ordCnt_live">0</span>)
+        </button>
+        <button type="button" data-order-filter="rejected" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
+          <span data-i18n="ord_f_rejected">ปฏิเสธ</span> (<span id="ordCnt_rejected">0</span>)
+        </button>
+        <button type="button" data-order-filter="expired" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
+          <span data-i18n="ord_f_expired">หมดอายุ</span> (<span id="ordCnt_expired">0</span>)
+        </button>
+      </div>
+
+      <div class="rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-borderLight dark:divide-borderDark text-xs">
+            <thead class="bg-raisedLight dark:bg-raisedDark text-slate-700 dark:text-neutral-300">
+              <tr>
+                <th scope="col" class="px-4 py-3 text-left font-semibold" data-i18n="ord_col_id">รหัสออเดอร์</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold" data-i18n="ord_col_league">ลีก FPL</th>
+                <th scope="col" class="px-4 py-3 text-right font-semibold" data-i18n="ord_col_amount">ยอดชำระ</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold" data-i18n="ord_col_contact">ช่องทางติดต่อ</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold" data-i18n="ord_col_status">สถานะ</th>
+                <th scope="col" class="px-4 py-3 text-left font-semibold" data-i18n="ord_col_created">เวลาสั่งซื้อ</th>
+                <th scope="col" class="px-4 py-3 text-right font-semibold" data-i18n="ord_col_action">ตรวจสอบ</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody" class="divide-y divide-borderLight dark:divide-borderDark">
+              <tr>
+                <td colspan="7" class="px-4 py-8 text-center text-slate-500 dark:text-neutral-400">กำลังโหลดข้อมูลออเดอร์…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Order Inspector & Slip Verification Panel -->
+      <div id="orderDetailPanel" class="hidden p-5 sm:p-6 rounded-xl border border-sky-500/40 bg-cardLight dark:bg-cardDark space-y-5">
+        <div class="flex flex-wrap items-start justify-between gap-3 border-b border-borderLight dark:border-borderDark pb-4">
+          <div class="space-y-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <span id="ordDetId" class="px-2.5 py-1 rounded-md bg-raisedLight dark:bg-raisedDark font-mono text-xs font-bold text-slate-900 dark:text-white">-</span>
+              <span id="ordDetStatusBadge" class="px-2.5 py-1 rounded-full text-xs font-semibold">-</span>
+            </div>
+            <h3 id="ordDetLeagueTitle" class="text-base font-semibold text-slate-900 dark:text-white">-</h3>
+            <p id="ordDetContact" class="text-xs text-slate-600 dark:text-neutral-400 break-all">-</p>
+          </div>
+          <div class="text-left sm:text-right">
+            <div class="text-[11px] uppercase tracking-wider text-slate-500 dark:text-neutral-400" data-i18n="ord_det_amount_lbl">ยอดโอนที่ต้องตรงกัน</div>
+            <div id="ordDetAmount" class="text-2xl font-bold mono text-emerald-700 dark:text-emerald-400">-</div>
+            <div id="ordDetCreated" class="text-[11px] mono text-slate-500 dark:text-neutral-400">-</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          <!-- Controls & Rules -->
+          <div class="lg:col-span-7 space-y-4">
+            <div class="space-y-1.5">
+              <div class="text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="ord_det_rules_lbl">กติกาและรายละเอียดที่ลูกค้ากรอก</div>
+              <pre id="ordDetRules" class="p-3 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs text-slate-800 dark:text-neutral-200 whitespace-pre-wrap font-sans">-</pre>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="space-y-1.5">
+                <label for="orderAdminNoteInput" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="ord_lbl_note">บันทึกแอดมิน / เหตุผลกรณีปฏิเสธสลิป</label>
+                <input id="orderAdminNoteInput" type="text" placeholder="e.g. สลิปไม่ชัด / ยอดไม่ตรง"
+                  class="w-full min-h-[42px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs text-slate-900 dark:text-white" />
+              </div>
+              <div class="space-y-1.5">
+                <label for="orderDeliveredUrlInput" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="ord_lbl_url">ลิงก์ลีกที่จะส่งมอบ (Delivered URL)</label>
+                <input id="orderDeliveredUrlInput" type="text" placeholder="https://www.fplsawadika.com/40700/"
+                  class="w-full min-h-[42px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs mono text-slate-900 dark:text-white" />
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2 pt-1">
+              <button type="button" id="btnOrdVerifyPaid"
+                class="min-h-[42px] px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-colors"
+                data-i18n="ord_act_verify">
+                ✓ ยืนยันรับยอดโอน (Paid)
+              </button>
+              <button type="button" id="btnOrdPrefillOnb"
+                class="min-h-[42px] px-3.5 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold transition-colors"
+                data-i18n="ord_act_prefill">
+                Prefill Onboarding ↓
+              </button>
+              <button type="button" id="btnOrdMarkLive"
+                class="min-h-[42px] px-3.5 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold transition-colors"
+                data-i18n="ord_act_live">
+                เปิดลีกแล้ว &amp; ส่งอีเมล (Mark Live)
+              </button>
+              <button type="button" id="btnOrdReject"
+                class="min-h-[42px] px-3.5 py-2 rounded-lg border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-300 text-xs font-semibold transition-colors"
+                data-i18n="ord_act_reject">
+                ปฏิเสธสลิป + ส่งอีเมล
+              </button>
+              <button type="button" id="btnOrdDeleteSlip"
+                class="min-h-[42px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-neutral-300 text-xs font-semibold transition-colors"
+                data-i18n="ord_act_delslip">
+                ลบรูปสลิป
+              </button>
+            </div>
+
+            <div id="orderActionFeedback" role="status" class="hidden p-3 rounded-lg text-xs border"></div>
+          </div>
+
+          <!-- Slip Preview -->
+          <div class="lg:col-span-5 p-4 rounded-xl border border-borderLight dark:border-borderDark bg-raisedLight/70 dark:bg-raisedDark/70 space-y-3 text-center">
+            <div class="flex items-center justify-between text-xs">
+              <strong class="text-slate-800 dark:text-neutral-200" data-i18n="ord_slip_heading">รูปสลิปโอนเงินที่ลูกค้าแนบ</strong>
+              <span id="ordDetSlipUploadedAt" class="mono text-[11px] text-slate-500 dark:text-neutral-400">-</span>
+            </div>
+            <div id="ordDetSlipEmpty" class="py-8 text-xs text-slate-500 dark:text-neutral-400">ยังไม่มีรูปสลิปในคำสั่งซื้อนี้</div>
+            <div id="ordDetSlipLoading" class="hidden py-8 text-xs text-sky-600 dark:text-sky-400">กำลังโหลดรูปสลิปจากฐานข้อมูล…</div>
+            <img id="orderSlipImg" alt="Customer Transfer Slip" class="hidden max-h-[380px] w-auto mx-auto rounded-lg border border-borderLight dark:border-borderDark object-contain bg-white" />
+            <button type="button" id="btnLoadOrderSlip" class="hidden min-h-[36px] px-3 py-1 rounded border border-borderLight dark:border-borderDark text-xs font-medium hover:bg-cardLight dark:hover:bg-cardDark" data-i18n="ord_btn_reload_slip">
+              โหลดรูปสลิปอีกครั้ง
+            </button>
           </div>
         </div>
       </div>
@@ -2267,9 +2458,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       th: {
         skip_to_content: 'ข้ามไปยังเนื้อหาหลัก',
         nav_console_badge: 'ศูนย์วิเคราะห์ข้อมูลธุรกิจ',
-        nav_jump_league_label: 'สลับไปหน้ามินิลีก',
-        nav_jump_placeholder: 'เปิดหน้าลีก (9 ลีก)...',
-        nav_jump_hub: 'หน้าหลัก (Main Hub)',
+        nav_jump_league_label: 'ทางลัดเปิดหน้าขาย เดโม และมินิลีก',
+        nav_jump_placeholder: 'ทางลัดเปิดหน้าเว็บ (9 ลีก)...',
+        nav_jump_landing: '🛒 หน้าขายสินค้า (Landing Page)',
+        nav_jump_preview: '🎮 หน้าเดโมรวมลีก (preview.html)',
+        nav_jump_hub: '🛒 หน้าขายสินค้า (Landing Page)',
         mod_nav_0: '0. Pitch Deck ขายงานผู้จัดลีก',
         mod_nav_1: '1. ภาพรวมธุรกิจและ KPI',
         mod_nav_2: '2. พอร์ตโฟลิโอ 9 ลีก',
@@ -2280,9 +2473,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         mod_nav_7: '7. ประสิทธิภาพระบบและการขยายสเกล',
         mod_nav_8: '8. ตรวจสุขภาพระบบย้อนหลัง',
         mod_nav_9: '9. เพิ่มลีกลูกค้าใหม่',
+        mod_nav_10: '10. ออเดอร์ & ตรวจสลิป',
         header_subtitle: 'ศูนย์วิเคราะห์ข้อมูลธุรกิจและระบบ',
-        quick_league_placeholder: 'สลับไปหน้ามินิลีก (9 ลีก)...',
-        quick_hub_home: 'หน้าแรกศูนย์รวม (Main Hub)',
+        quick_league_placeholder: 'ทางลัดเปิดหน้าเว็บ (9 ลีก)...',
+        quick_hub_home: '🛒 หน้าขายสินค้า (Landing Page)',
         sign_out: 'ออกจากระบบ',
         nav_pitch: '00. Pitch Deck',
         nav_audience: '01. ผู้ใช้งาน',
@@ -2303,7 +2497,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sec0_title: '00. โซลูชันบริหารมินิลีกแบบ Zero-Touch และข้อเสนอทางธุรกิจ',
         sec0_sub: 'เปลี่ยนมินิลีกของคุณให้จัดการตัวเองอัตโนมัติ 100% · ลดเวลาทำ Excel 190+ ชม./ปี · สร้างการมีส่วนร่วมของลูกลีกเพิ่มขึ้น 5.7 เท่า พร้อมรองรับเงินรางวัลหมุนเวียนอย่างโปร่งใส',
         pitch_tier1_ready: 'Tier 1: พร้อมเปิดใช้งานทันที',
-        pitch_tier2_roadmap: 'Tier 2: Live Beta (สเกล 1,780+ ทีม)',
+        pitch_tier2_roadmap: 'Tier 2: Live Beta (สเกล 1,779 ทีม)',
         pitch_step1_title: 'ปัญหาใหญ่ของผู้จัดลีก (Organizer Pain Points) vs ทางออก FPLSaWaDiKa',
         pitch_step1_sub: 'เปรียบเทียบภาระงานจริง',
         pain_1_badge: 'ปัญหาแอดมิน',
@@ -2372,7 +2566,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         matrix_f3: 'บทพากย์กูรูลูกหนังสายดราม่า',
         matrix_f4: 'คำนวณเงินรางวัล/ค่าปรับอัตโนมัติ',
         matrix_f5: 'Interactive Squad Pitch Modal',
-        graphic4_callout: 'Tier 1 พร้อมส่งมอบทันที · Tier 2 (Live Beta) รองรับ 1,780 ทีม',
+        graphic4_callout: 'Tier 1 พร้อมส่งมอบทันที · Tier 2 (Live Beta) รองรับ 1,779 ทีม',
         pitch_step3_title: 'ทางลัดเปิดโชว์ระบบจริงต่อหน้าลูกค้า (Live Interactive Jump Links)',
         pitch_step3_sub: 'คลิกเพื่อเปิดหน้าจริงในแท็บใหม่',
         jump_1_title: 'คะแนนสด & ผัง 11 ตัวจริง',
@@ -2391,17 +2585,20 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         telem_runner_label: 'ตัวประมวลผล: ',
         telem_countdown_sub: 'นับถอยหลังปิดตลาดย้ายตัว',
         sec1_title: '01. ขนาดฐานผู้ใช้งานและอัตราการรักษาลูกค้า',
-        sec1_sub: 'ตัวชี้วัดการเติบโตและสัดส่วนความเหนียวแน่นของผู้ใช้งาน',
+        sec1_sub: 'ตัวชี้วัดการเติบโตและสัดส่วนความเหนียวแน่นของผู้ใช้งาน (แยกป้ายข้อมูลสด D1 กับค่าอ้างอิง Benchmark)',
+        badge_live_sync: 'Live Sync',
+        badge_live_d1: 'Live D1',
+        badge_benchmark: 'Benchmark',
         kpi_managers_label: 'ผู้จัดการทีมที่ติดตาม',
-        kpi_managers_sub: 'Tier 1 ครบ 8 มินิลีก (รวม Tier 2 = 1,943)',
+        kpi_managers_sub: 'Tier 1 ครบ 8 มินิลีก (รวม Tier 2 = 1,942)',
         kpi_mau_label: 'ผู้ใช้งานวันแข่งขัน (MAU)',
         kpi_mau_sub: 'รวมผู้ชม 3.7x ต่อผู้จัดการ 1 คน',
         kpi_offpeak_label: 'ผู้ใช้งานนอกวันแข่ง (DAU)',
         kpi_offpeak_sub: 'อังคาร–พฤหัส (วางแผนซื้อขาย)',
         kpi_stickiness_label: 'ความเหนียวแน่นวันแข่ง',
-        kpi_stickiness_sub: 'เข้าเช็กซ้ำ > 3 ครั้งต่อสัปดาห์',
+        kpi_stickiness_sub: 'ค่าอ้างอิงฤดูกาล (> 3 ครั้ง/สัปดาห์ · ไม่เก็บ Cookie)',
         kpi_retention_label: 'อัตรากลับมาใช้งานต่อ GW',
-        kpi_retention_sub: 'อัตราเลิกเล่นต่ำมาก (< 6%)',
+        kpi_retention_sub: 'ค่าอ้างอิงฤดูกาล (อัตราเลิกเล่น < 6% · ไม่เก็บ Cookie)',
         kpi_screentime_label: 'เวลาใช้งานเฉลี่ยต่อครั้ง',
         kpi_screentime_sub: 'เปิดหน้าจอค้างระหว่างบอลเตะสด',
         sec2_title: '02. พอร์ตโฟลิโอ 9 มินิลีก และเศรษฐศาสตร์เงินรางวัลรวม',
@@ -2410,6 +2607,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         port_gmv_sub: 'รวมเงินรางวัลประจำฤดูกาล + รางวัลรายสัปดาห์/เดือน',
         port_custom_label: 'ลีกที่ผูกกติกาพิเศษ (Custom Rules)',
         port_custom_sub: 'สร้าง Switching Cost สูงกว่าเว็บ FPL ทั่วไป',
+        port_landing_label: 'ยอดเข้าชมหน้าขาย (Landing Page · 7 วัน)',
+        port_landing_sub: 'แยกจากยอดเปิดดู 9 มินิลีก (วัดคนสนใจซื้อระบบ)',
         port_whitelabel_label: 'ศักยภาพขยาย White-Label ลีกใหม่',
         port_whitelabel_val: 'พร้อมขยาย 50+ ลีก',
         port_whitelabel_sub: 'ต้นทุนเซิร์ฟเวอร์ส่วนเพิ่ม ฿0 บนสถาปัตยกรรมปัจจุบัน',
@@ -2418,7 +2617,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         col_pool: 'เงินรางวัลรวม (GMV)',
         col_modules: 'โมดูลและกติกาที่เปิดใช้งาน',
         col_views: 'ยอดเปิดดู (7 วันล่าสุด)',
-        col_retention: 'ความเหนียวแน่น',
+        col_retention: 'ความเหนียวแน่น (Benchmark)',
         sec3_title: '03. พฤติกรรมการใช้งานฟีเจอร์และคุณค่าผลิตภัณฑ์',
         sec3_sub: 'ฟีเจอร์ใดดึงดูดผู้ใช้มากที่สุด และควรพัฒนาต่อยอดส่วนใดก่อน',
         feat_share_title: 'สัดส่วนการคลิกใช้งานแต่ละโมดูล (% ของเซสชันทั้งหมด)',
@@ -2437,7 +2636,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         feat_paid_label: 'ลีกที่มีเงินรางวัลสูง (เช่น 1101958 · ฿103,200)',
         feat_paid_val: '241 ครั้ง / ทีม / GW',
         feat_paid_sub: 'ผู้เล่นและกลุ่มเพื่อนเปิดเช็กตารางเงินรางวัลและอันดับสดตลอดเวลาที่บอลเตะ',
-        feat_comm_label: 'ลีกคอมมูนิตี้และพรีเมียม (เช่น 675290 · 60 ทีม / Tier 2 · 1,780 ทีม)',
+        feat_comm_label: 'ลีกคอมมูนิตี้และพรีเมียม (เช่น 675290 · 60 ทีม / Tier 2 · 1,779 ทีม)',
         feat_comm_val: '17.2 ครั้ง / ทีม / GW',
         feat_comm_sub: 'เน้นเช็กผลสรุปหลังจบแมตช์เป็นหลัก ความถี่น้อยกว่าลีกมีเงินรางวัล ~14 เท่า',
         feat_takeaway_title: 'ข้อสรุปเชิงกลยุทธ์ (Executive Takeaway)',
@@ -2495,7 +2694,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sec7_sub: 'ติดตามสุขภาพระบบจริงเพื่อประเมินเพดานรองรับผู้ใช้งานและควบคุมต้นทุน',
         sys_cache_hit_label: 'อัตราเสิร์ฟจากแคช (Cache Hit):',
         sys_d1_reads_label: 'โควตาอ่าน-เขียนรายวัน:',
-        sys_gh_success_label: 'อัตราซิงก์สำเร็จ 30 วัน:',
+        sys_gh_success_label: 'อัตราซิงก์สำเร็จ (Benchmark):',
         sys_scale_headroom_label: 'เพดานขยายสเกล (Headroom):',
         ops_title: 'ปุ่มดูแลและเช็กความพร้อมของเว็บ',
         ops_sub: 'กดเฉพาะตอนที่ต้องการตรวจสอบหรือแก้ไขปัญหา ผลลัพธ์จะแสดงใต้ปุ่มทันที (คนเข้าเว็บทั่วไปไม่ได้รับผลกระทบ)',
@@ -2570,14 +2769,45 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         onb_teams_hint: 'ติ๊กเลือกทีมที่ไม่ร่วมชิงรางวัล (non_prize_teams) หากมี:',
         onb_out_cli: '1. คำสั่ง CLI (รันบนเครื่องเพื่อเปิดลีก)',
         onb_out_json: '2. Config JSON (leagues_config.json)',
-        onb_out_line: '3. ข้อความส่งมอบลูกค้าทาง LINE'
+        onb_out_line: '3. ข้อความส่งมอบลูกค้าทาง LINE',
+        sec10_title: '10. กล่องรับคำสั่งซื้อ & ตรวจสลิป PromptPay',
+        sec10_sub: 'ตรวจสอบยอดโอน PromptPay ตามเศษสตางค์ ดูรูปสลิป ส่งคำสั่งซื้อเข้า Onboarding Wizard ด้านล่าง และแจ้งเปิดใช้งานทางอีเมลในคลิกเดียว',
+        ord_btn_refresh: 'รีเฟรชรายการออเดอร์',
+        ord_f_all: 'ทั้งหมด',
+        ord_f_slip: 'รอตรวจสลิป',
+        ord_f_await: 'รอโอน QR',
+        ord_f_paid: 'ตรวจยอดแล้ว',
+        ord_f_quote: 'ขอราคา / USD',
+        ord_f_live: 'เปิดลีกแล้ว',
+        ord_f_rejected: 'ปฏิเสธ',
+        ord_f_expired: 'หมดอายุ',
+        ord_col_id: 'รหัสออเดอร์',
+        ord_col_league: 'ลีก FPL',
+        ord_col_amount: 'ยอดชำระ',
+        ord_col_contact: 'ช่องทางติดต่อ',
+        ord_col_status: 'สถานะ',
+        ord_col_created: 'เวลาสั่งซื้อ',
+        ord_col_action: 'ตรวจสอบ',
+        ord_det_amount_lbl: 'ยอดโอนที่ต้องตรงกัน',
+        ord_det_rules_lbl: 'กติกาและรายละเอียดที่ลูกค้ากรอก',
+        ord_lbl_note: 'บันทึกแอดมิน / เหตุผลกรณีปฏิเสธสลิป',
+        ord_lbl_url: 'ลิงก์ลีกที่จะส่งมอบ (Delivered URL)',
+        ord_act_verify: '✓ ยืนยันรับยอดโอน (Paid)',
+        ord_act_prefill: 'Prefill Onboarding ↓',
+        ord_act_live: 'เปิดลีกแล้ว & ส่งอีเมล (Mark Live)',
+        ord_act_reject: 'ปฏิเสธสลิป + ส่งอีเมล',
+        ord_act_delslip: 'ลบรูปสลิป',
+        ord_slip_heading: 'รูปสลิปโอนเงินที่ลูกค้าแนบ',
+        ord_btn_reload_slip: 'โหลดรูปสลิปอีกครั้ง'
       },
       en: {
         skip_to_content: 'Skip to main content',
         nav_console_badge: 'Executive BI Console',
-        nav_jump_league_label: 'Switch Mini-League',
-        nav_jump_placeholder: 'Open League (9 Leagues)...',
-        nav_jump_hub: 'Main Hub (All Leagues)',
+        nav_jump_league_label: 'Quick Jump to Landing, Demo & Mini-Leagues',
+        nav_jump_placeholder: 'Quick Jump (Landing / Demo / 9 Leagues)...',
+        nav_jump_landing: '🛒 Commercial Landing Page (index.html)',
+        nav_jump_preview: '🎮 Showcase Demo Hub (preview.html)',
+        nav_jump_hub: '🛒 Commercial Landing Page (index.html)',
         mod_nav_0: '0. Organizer Pitch Deck',
         mod_nav_1: '1. Audience & KPIs',
         mod_nav_2: '2. 9-League Portfolio',
@@ -2587,9 +2817,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         mod_nav_6: '6. Matchday Traffic',
         mod_nav_7: '7. Cloud & Scaling',
         mod_nav_8: '8. Project Health Monitor',
+        mod_nav_9: '9. Onboarding Wizard',
+        mod_nav_10: '10. Orders & Slips',
         header_subtitle: 'Executive BI & Infrastructure Control',
-        quick_league_placeholder: 'Jump to League (9 Leagues)...',
-        quick_hub_home: 'Main League Hub (Home)',
+        quick_league_placeholder: 'Quick Jump (Landing / Demo / 9 Leagues)...',
+        quick_hub_home: '🛒 Commercial Landing Page (index.html)',
         sign_out: 'Sign Out',
         nav_pitch: '00. Pitch Deck',
         nav_audience: '01. Audience',
@@ -2610,7 +2842,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sec0_title: '00. Turnkey Platform Solution for Mini-League Organizers',
         sec0_sub: '100% Self-Managing Mini-Leagues · Saves 190+ hrs/year · 5.7x Higher Member Engagement with fully auditable prize settlements.',
         pitch_tier1_ready: 'Tier 1: Turnkey & Ready to Onboard',
-        pitch_tier2_roadmap: 'Tier 2: Live Beta (1,780+ Teams)',
+        pitch_tier2_roadmap: 'Tier 2: Live Beta (1,779 Teams)',
         pitch_step1_title: 'Organizer Pain Points vs FPLSaWaDiKa Zero-Touch Solution',
         pitch_step1_sub: 'Real-World Operational Comparison',
         pain_1_badge: 'Admin Pain',
@@ -2679,7 +2911,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         matrix_f3: 'Hardcore Pundit AI Match Commentary',
         matrix_f4: 'Automated Custom Prize/Penalty Engine',
         matrix_f5: 'One-Tap Squad Lineup Pitch Modal',
-        graphic4_callout: 'Tier 1 ready to onboard immediately · Tier 2 (Live Beta) scales to 1,780 teams',
+        graphic4_callout: 'Tier 1 ready to onboard immediately · Tier 2 (Live Beta) scales to 1,779 teams',
         pitch_step3_title: 'Live Interactive Demo Jump Links',
         pitch_step3_sub: 'Click any module to open live demo in new tab',
         jump_1_title: 'Live Scores & Squad Pitch',
@@ -2698,17 +2930,20 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         telem_runner_label: 'Pipeline Runner: ',
         telem_countdown_sub: 'Next Transfer Deadline Countdown',
         sec1_title: '01. Audience Scale & Retention Velocity',
-        sec1_sub: 'Core user growth, matchday concurrency, and week-over-week cohort stickiness',
+        sec1_sub: 'Core user growth, matchday concurrency, and cohort stickiness (Live D1 vs Season Benchmarks)',
+        badge_live_sync: 'Live Sync',
+        badge_live_d1: 'Live D1',
+        badge_benchmark: 'Benchmark',
         kpi_managers_label: 'Tracked Managers',
-        kpi_managers_sub: '8 Tier 1 Leagues (1,943 Total incl. Tier 2)',
+        kpi_managers_sub: '8 Tier 1 Leagues (1,942 Total incl. Tier 2)',
         kpi_mau_label: 'Matchday Active Users',
         kpi_mau_sub: 'Includes 3.7x spectator multiplier',
         kpi_offpeak_label: 'Off-Peak Daily Active',
         kpi_offpeak_sub: 'Tue–Thu transfer planning baseline',
         kpi_stickiness_label: 'Matchday Stickiness',
-        kpi_stickiness_sub: '> 3 repeat sessions per Gameweek',
+        kpi_stickiness_sub: 'Season Benchmark (> 3 visits/wk · Privacy-First)',
         kpi_retention_label: 'GW-over-GW Retention',
-        kpi_retention_sub: 'Ultra-low season churn (< 6%)',
+        kpi_retention_sub: 'Season Benchmark (< 6% churn · Privacy-First)',
         kpi_screentime_label: 'Avg Session Duration',
         kpi_screentime_sub: 'Second-screen live match tracking',
         sec2_title: '02. Multi-League Portfolio (9 Leagues) & Commercial Economics',
@@ -2717,6 +2952,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         port_gmv_sub: 'Combined season pot + weekly & monthly payouts across all leagues',
         port_custom_label: 'Leagues with Custom Prize Rules',
         port_custom_sub: 'High switching cost vs generic FPL trackers',
+        port_landing_label: 'Commercial Landing Page Views (7d)',
+        port_landing_sub: 'Separated from 9 mini-leagues (buyer acquisition traffic)',
         port_whitelabel_label: 'White-Label Expansion Capacity',
         port_whitelabel_val: 'Ready for 50+ Leagues',
         port_whitelabel_sub: '฿0 marginal server cost on current Edge + Static architecture',
@@ -2725,7 +2962,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         col_pool: 'Prize Pool (GMV)',
         col_modules: 'Active Modules & Rule Engine',
         col_views: 'Views (Last 7d)',
-        col_retention: 'Retention',
+        col_retention: 'Retention (Benchmark)',
         sec3_title: '03. Feature Adoption & Product Value Matrix',
         sec3_sub: 'Which modules drive repeat engagement and justify SaaS / White-Label monetization',
         feat_share_title: 'Module Interaction Share (% of Total User Sessions)',
@@ -2744,7 +2981,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         feat_paid_label: 'High-Stakes Prize Leagues (e.g., 1101958 · ฿103,200)',
         feat_paid_val: '241 Sessions / Team / GW',
         feat_paid_sub: 'Managers & friends refresh live standings and prize payouts continuously during matches.',
-        feat_comm_label: 'Community & Flagship Scale (e.g., 675290 · 60 Teams / Tier 2 · 1,780 Teams)',
+        feat_comm_label: 'Community & Flagship Scale (e.g., 675290 · 60 Teams / Tier 2 · 1,779 Teams)',
         feat_comm_val: '17.2 Sessions / Team / GW',
         feat_comm_sub: 'Primarily post-match checks; ~14x lower session frequency than prize-backed leagues.',
         feat_takeaway_title: 'Executive Strategic Takeaway',
@@ -2802,7 +3039,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         sec7_sub: 'Real-time infrastructure health, free-tier quota utilization, and multi-league scaling headroom',
         sys_cache_hit_label: 'Edge Cache Hit Ratio:',
         sys_d1_reads_label: 'Daily Read/Write Quota:',
-        sys_gh_success_label: '30-Day Sync Reliability:',
+        sys_gh_success_label: '30-Day Sync Reliability (Benchmark):',
         sys_scale_headroom_label: 'Scaling Headroom:',
         ops_title: 'Site Care & Quick Diagnostic Controls',
         ops_sub: 'Use only when checking or fixing live issues. Results appear directly under each button (zero impact on visitors).',
@@ -2877,7 +3114,36 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         onb_teams_hint: 'Select any teams excluded from prize calculations (non_prize_teams):',
         onb_out_cli: '1. CLI Onboarding Command',
         onb_out_json: '2. Config JSON (leagues_config.json)',
-        onb_out_line: '3. Customer LINE Handoff Message'
+        onb_out_line: '3. Customer LINE Handoff Message',
+        sec10_title: '10. Customer Orders & PromptPay Slip Inbox',
+        sec10_sub: 'Verify exact satang transfers, inspect customer slips, prefill the Onboarding Wizard below, and mark leagues live with instant email delivery.',
+        ord_btn_refresh: 'Refresh Orders',
+        ord_f_all: 'All',
+        ord_f_slip: 'Slip Submitted',
+        ord_f_await: 'Awaiting QR',
+        ord_f_paid: 'Paid',
+        ord_f_quote: 'Quote / USD',
+        ord_f_live: 'Live',
+        ord_f_rejected: 'Rejected',
+        ord_f_expired: 'Expired',
+        ord_col_id: 'Order ID',
+        ord_col_league: 'FPL League',
+        ord_col_amount: 'Amount',
+        ord_col_contact: 'Customer Contact',
+        ord_col_status: 'Status',
+        ord_col_created: 'Created',
+        ord_col_action: 'Inspect',
+        ord_det_amount_lbl: 'Exact Match Amount',
+        ord_det_rules_lbl: 'Customer Rules & Notes',
+        ord_lbl_note: 'Admin Note / Rejection Reason',
+        ord_lbl_url: 'Delivered League URL',
+        ord_act_verify: '✓ Verify Payment (Paid)',
+        ord_act_prefill: 'Prefill Onboarding ↓',
+        ord_act_live: 'Mark Live & Email Customer',
+        ord_act_reject: 'Reject Slip & Email',
+        ord_act_delslip: 'Delete Slip Image',
+        ord_slip_heading: 'Uploaded Transfer Slip',
+        ord_btn_reload_slip: 'Reload Slip Image'
       }
     };
 
@@ -2893,7 +3159,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       { id: '187827', name: 'Shi62', badge: '', teams: 13, pool: 3100, modulesTh: 'Zero-Sum ขั้นบันไดทั้งปี · พิเศษครึ่งฤดูกาลหลัง', modulesEn: 'Zero-Sum Annual Tiers · 2nd Half Special', views: 740, retention: 91.8, plan: 'custom', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
       { id: '5349', name: 'Bramann League', badge: '', teams: 20, pool: 9500, modulesTh: 'เงินรางวัลคู่ · ทายผล & ชาเลนจ์รายสัปดาห์', modulesEn: 'Dual Prize · Prediction & Challenge', views: 860, retention: 90.5, plan: 'custom', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
       { id: '567387', name: 'Fantasy Nguan & friends cup', badge: 'Community', teams: 12, pool: 0, poolLabelTh: 'คอมมูนิตี้', poolLabelEn: 'Community', modulesTh: 'ลีกคอมมูนิตี้ · ตารางคะแนนสด · ผัง 11 ตัวจริง', modulesEn: 'Community · Live Matrix · Pitch Modal', views: 2190, retention: 88.4, plan: 'standard', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
-      { id: '139836', name: 'FPL Growth Mindset 2026/27', badge: 'Tier 2', teams: 1780, pool: 0, poolLabelTh: 'เสื้อบอลแท้', poolLabelEn: 'Official Shirt', modulesTh: 'Tier 2 Standings & Leaderboard · ค้นหา 1,780 ทีมทันที', modulesEn: 'Tier 2 Standings & Leaderboard · 1,780-Team Search', views: 0, retention: 91.2, plan: 'tier2_beta', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' }
+      { id: '139836', name: 'FPL Growth Mindset 2026/27', badge: 'Tier 2', teams: 1779, pool: 0, poolLabelTh: 'เสื้อบอลแท้', poolLabelEn: 'Official Shirt', modulesTh: 'Tier 2 Standings & Leaderboard · ค้นหา 1,779 ทีมทันที', modulesEn: 'Tier 2 Standings & Leaderboard · 1,779-Team Search', views: 0, retention: 91.2, plan: 'tier2_beta', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' }
     ];
 
     let currentSortKey = 'pool';
@@ -3912,6 +4178,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (typeof renderMonitorChart === 'function') renderMonitorChart();
       if (typeof renderAllOpResults === 'function') renderAllOpResults();
       if (typeof refreshOnboardingOutputs === 'function') refreshOnboardingOutputs();
+      if (typeof renderOrderFilterButtons === 'function') renderOrderFilterButtons();
+      if (typeof renderOrdersTable === 'function') renderOrdersTable();
+      if (typeof renderOrderDetail === 'function' && selectedOrderObj) renderOrderDetail(selectedOrderObj);
       if (latestPayloadCache) applyAdminPayload(latestPayloadCache);
     }
 
@@ -3952,13 +4221,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const lang = getLang();
       const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
       let baseUrl = 'https://www.fplsawadika.com/';
-      if (val !== 'hub') {
-        if (val.startsWith('http')) {
-          baseUrl = val;
-        } else {
-          const clean = val.replace(/^\\/+|\\/+$/g, '');
-          baseUrl = 'https://www.fplsawadika.com/' + clean + '/';
-        }
+      if (val === 'landing' || val === 'hub') {
+        baseUrl = 'https://www.fplsawadika.com/';
+      } else if (val === 'preview') {
+        baseUrl = 'https://www.fplsawadika.com/preview.html';
+      } else if (val.startsWith('http')) {
+        baseUrl = val;
+      } else {
+        const clean = val.replace(/^\\/+|\\/+$/g, '');
+        baseUrl = 'https://www.fplsawadika.com/' + clean + '/';
       }
       const sep = baseUrl.includes('?') ? '&' : '?';
       window.open(baseUrl + sep + 'lang=' + lang + '&theme=' + theme, '_blank', 'noopener');
@@ -4333,6 +4604,36 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       el.replaceChildren(document.createTextNode(primaryText + ' '), unitSpan);
     }
 
+    function syncDynamicTeamCountCopy(tier1LeaguesCount, allTeamsCount, tier2TeamsCount, flag675290Teams) {
+      const lang = getLang();
+      const t1L = Number(tier1LeaguesCount || 8);
+      const allFmt = Number(allTeamsCount || 1942).toLocaleString();
+      const t2Fmt = Number(tier2TeamsCount || 1779).toLocaleString();
+      const commFmt = Number(flag675290Teams || 60).toLocaleString();
+
+      I18N.th.pitch_tier2_roadmap = 'Tier 2: Live Beta (สเกล ' + t2Fmt + ' ทีม)';
+      I18N.en.pitch_tier2_roadmap = 'Tier 2: Live Beta (' + t2Fmt + ' Teams)';
+      I18N.th.graphic4_callout = 'Tier 1 พร้อมส่งมอบทันที · Tier 2 (Live Beta) รองรับ ' + t2Fmt + ' ทีม';
+      I18N.en.graphic4_callout = 'Tier 1 ready to onboard immediately · Tier 2 (Live Beta) scales to ' + t2Fmt + ' teams';
+      I18N.th.kpi_managers_sub = 'Tier 1 ครบ ' + t1L + ' มินิลีก (รวม Tier 2 = ' + allFmt + ')';
+      I18N.en.kpi_managers_sub = t1L + ' Tier 1 Leagues (' + allFmt + ' Total incl. Tier 2)';
+      I18N.th.feat_comm_label = 'ลีกคอมมูนิตี้และพรีเมียม (เช่น 675290 · ' + commFmt + ' ทีม / Tier 2 · ' + t2Fmt + ' ทีม)';
+      I18N.en.feat_comm_label = 'Community & Flagship Scale (e.g., 675290 · ' + commFmt + ' Teams / Tier 2 · ' + t2Fmt + ' Teams)';
+
+      const dict = I18N[lang] || I18N.th;
+      ['pitch_tier2_roadmap', 'graphic4_callout', 'kpi_managers_sub', 'feat_comm_label'].forEach((key) => {
+        document.querySelectorAll('[data-i18n="' + key + '"]').forEach((el) => {
+          el.textContent = dict[key];
+        });
+      });
+
+      const row139836 = LEAGUE_PORTFOLIO.find((r) => String(r.id) === '139836');
+      if (row139836) {
+        row139836.modulesTh = 'Tier 2 Standings & Leaderboard · ค้นหา ' + t2Fmt + ' ทีมทันที';
+        row139836.modulesEn = 'Tier 2 Standings & Leaderboard · ' + t2Fmt + '-Team Search';
+      }
+    }
+
     function applyAdminPayload(data) {
       if (!data || typeof data !== 'object') return;
       latestPayloadCache = data;
@@ -4431,6 +4732,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               });
             }
           }
+          const liveTier2Row = LEAGUE_PORTFOLIO.find((r) => String(r.id) === '139836');
+          const live675290Row = LEAGUE_PORTFOLIO.find((r) => String(r.id) === '675290');
+          const liveTier2Count = (liveTier2Row && Number(liveTier2Row.teams) > 0)
+            ? Number(liveTier2Row.teams)
+            : Math.max(0, allCount - tier1Count) || 1779;
+          const live675290Count = (live675290Row && Number(live675290Row.teams) > 0)
+            ? Number(live675290Row.teams)
+            : 60;
+          syncDynamicTeamCountCopy(tier1LeaguesCount, allCount, liveTier2Count, live675290Count);
           renderLeagueTable();
           if (typeof renderLifecycleActionPanel === 'function' && selectedLifecycleLeagueId) {
             renderLifecycleActionPanel();
@@ -4440,6 +4750,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       if (data.edge_telemetry) {
         const et = data.edge_telemetry;
+        if (et.landing_page && typeof et.landing_page === 'object') {
+          const lp7d = Number(et.landing_page.views_7d || 0);
+          const lpToday = Number(et.landing_page.views_today || 0);
+          setValueWithUnit('portLandingViews', lp7d.toLocaleString(), lang === 'en' ? 'views' : 'ครั้ง');
+          const todayBadge = document.getElementById('portLandingTodayBadge');
+          if (todayBadge) {
+            todayBadge.textContent = (lang === 'en' ? 'Today: ' : 'วันนี้: ') + lpToday.toLocaleString();
+          }
+        }
         if (et.matchday_active_users) {
           const el = document.getElementById('kpiMatchdayActive');
           if (el) el.textContent = Number(et.matchday_active_users).toLocaleString();
@@ -4461,10 +4780,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           const live7d = Number(et.raw_live_visits_7d || 0).toLocaleString();
           const priorNum = Number(et.baseline_visits_prior || 0);
           const priorPart = priorNum > 0 ? (' + Prior: ' + priorNum.toLocaleString()) : '';
+          const landingPart = (et.landing_page && typeof et.landing_page.views_7d === 'number')
+            ? (' · Landing 7d: ' + Number(et.landing_page.views_7d).toLocaleString())
+            : '';
           const lifetimePart = (typeof et.lifetime_total_views === 'number' && et.lifetime_total_views > 0)
             ? (' · Total: ' + Number(et.lifetime_total_views).toLocaleString())
             : '';
-          modelBadge.textContent = (priorNum > 0 ? 'Live 7d: ' : 'Live D1 (7d): ') + live7d + priorPart + lifetimePart;
+          modelBadge.textContent = (priorNum > 0 ? 'Live 7d: ' : 'Live D1 (7d): ') + live7d + priorPart + landingPart + lifetimePart;
         }
 
         // Section 03: Feature Adoption Bars
@@ -4597,6 +4919,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         applyAdminPayload(data);
+        if (typeof loadOrdersData === 'function') loadOrdersData(currentOrderFilter);
         if (showBanner) showToast(I18N[lang].toast_refreshed);
       } catch (err) {
         if (showBanner) {
@@ -4632,6 +4955,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         applyAdminPayload(data);
+        if (typeof loadOrdersData === 'function') loadOrdersData(currentOrderFilter);
 
         const edgeColo = (data.edge_metadata && data.edge_metadata.colo) ? data.edge_metadata.colo : 'EDGE';
         const msg = lang === 'en'
@@ -4939,6 +5263,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         setOnbStatusMessage(getLang() === 'en' ? 'Please enter digits only for FPL League ID.' : 'กรุณากรอก FPL League ID เป็นตัวเลขเท่านั้น', true);
         return;
       }
+      const prevLid = (onbInspectedLeague && onbInspectedLeague.league && onbInspectedLeague.league.id)
+        ? String(onbInspectedLeague.league.id)
+        : '';
+      if (prevLid && prevLid !== lid) {
+        const shortInput = document.getElementById('onbShortName');
+        const tenantInput = document.getElementById('onbTenantGroup');
+        if (shortInput) shortInput.value = '';
+        if (tenantInput) tenantInput.value = '';
+      }
       if (btn) btn.disabled = true;
       setOnbStatusMessage(getLang() === 'en' ? 'Inspecting FPL league ' + lid + '...' : 'กำลังดึงข้อมูลลีก ' + lid + ' จาก FPL API...', false);
       try {
@@ -5004,6 +5337,429 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       refreshOnboardingOutputs();
     }
 
+    // =========================================================================
+    // 10. CUSTOMER ORDERS & PROMPTPAY SLIP INBOX (Cloudflare D1)
+    // =========================================================================
+    let currentOrderFilter = 'all';
+    let ordersListCache = [];
+    let ordersCountsCache = {};
+    let selectedOrderObj = null;
+
+    function getOrderStatusMeta(status, lang) {
+      const isEn = lang === 'en';
+      const map = {
+        awaiting_payment: { label: isEn ? 'Awaiting QR' : 'รอโอน QR', cls: 'bg-sky-500/15 text-sky-800 dark:text-sky-300 border border-sky-500/30' },
+        slip_submitted: { label: isEn ? 'Slip Submitted' : 'ส่งสลิปแล้ว', cls: 'bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/40' },
+        paid: { label: isEn ? 'Paid' : 'ยืนยันยอดแล้ว', cls: 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30' },
+        live: { label: isEn ? 'Live' : 'เปิดลีกแล้ว', cls: 'bg-emerald-600 text-white border border-emerald-500' },
+        quote_requested: { label: isEn ? 'Quote / USD' : 'ขอราคา / USD', cls: 'bg-sky-500/15 text-sky-800 dark:text-sky-300 border border-sky-500/30' },
+        rejected: { label: isEn ? 'Rejected' : 'ปฏิเสธสลิป', cls: 'bg-rose-500/15 text-rose-800 dark:text-rose-300 border border-rose-500/30' },
+        expired: { label: isEn ? 'Expired' : 'หมดอายุ', cls: 'bg-slate-500/15 text-slate-700 dark:text-neutral-300 border border-slate-500/30' }
+      };
+      return map[status] || map.awaiting_payment;
+    }
+
+    function setOrderActionFeedback(msg, isError) {
+      const el = document.getElementById('orderActionFeedback');
+      if (!el) return;
+      if (!msg) {
+        el.classList.add('hidden');
+        el.textContent = '';
+        return;
+      }
+      el.className = isError
+        ? 'p-3 rounded-lg text-xs border border-rose-500/40 bg-rose-500/10 text-rose-700 dark:text-rose-300'
+        : 'p-3 rounded-lg text-xs border border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300';
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function renderOrderFilterButtons() {
+      const btns = document.querySelectorAll('.ord-filter-btn');
+      btns.forEach((btn) => {
+        const f = btn.getAttribute('data-order-filter') || 'all';
+        const active = f === currentOrderFilter;
+        btn.className = 'ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors ' + (active
+          ? 'border-emerald-500 bg-emerald-500/15 text-emerald-800 dark:text-emerald-300'
+          : 'border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark');
+      });
+      ['all', 'slip_submitted', 'awaiting_payment', 'paid', 'quote_requested', 'live', 'rejected', 'expired'].forEach((k) => {
+        const cEl = document.getElementById('ordCnt_' + k);
+        if (cEl) cEl.textContent = String(ordersCountsCache[k] || 0);
+      });
+      const pendingBadge = document.getElementById('navOrderPendingBadge');
+      if (pendingBadge) {
+        const pendingCnt = (ordersCountsCache.slip_submitted || 0) + (ordersCountsCache.quote_requested || 0);
+        pendingBadge.textContent = String(pendingCnt);
+        pendingBadge.classList.toggle('hidden', pendingCnt <= 0);
+      }
+    }
+
+    function renderOrdersTable() {
+      const tbody = document.getElementById('ordersTableBody');
+      if (!tbody) return;
+      const lang = getLang();
+      const isEn = lang === 'en';
+      tbody.innerHTML = '';
+
+      if (!ordersListCache.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 7;
+        td.className = 'px-4 py-8 text-center text-xs text-slate-500 dark:text-neutral-400';
+        td.textContent = isEn ? 'No orders in this filter yet.' : 'ยังไม่มีรายการคำสั่งซื้อในสถานะนี้';
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+        return;
+      }
+
+      ordersListCache.forEach((o) => {
+        const tr = document.createElement('tr');
+        const isSel = selectedOrderObj && selectedOrderObj.order_id === o.order_id;
+        tr.className = (isSel ? 'bg-sky-500/10 ' : 'hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 ') + 'transition-colors';
+
+        const tdId = document.createElement('td');
+        tdId.className = 'px-4 py-3 font-mono font-semibold text-slate-900 dark:text-white whitespace-nowrap';
+        tdId.textContent = String(o.order_id || '');
+        tr.appendChild(tdId);
+
+        const tdLeague = document.createElement('td');
+        tdLeague.className = 'px-4 py-3 text-slate-800 dark:text-neutral-200';
+        const lName = document.createElement('div');
+        lName.className = 'font-medium';
+        lName.textContent = o.league_name ? (o.league_name + ' (ID: ' + o.league_id + ')') : ('League ' + o.league_id);
+        const lMeta = document.createElement('div');
+        lMeta.className = 'text-[11px] text-slate-500 dark:text-neutral-400';
+        lMeta.textContent = (o.team_count ? (o.team_count + (isEn ? ' teams · ' : ' ทีม · ')) : '') + String(o.plan || 'standard');
+        tdLeague.appendChild(lName);
+        tdLeague.appendChild(lMeta);
+        tr.appendChild(tdLeague);
+
+        const tdAmt = document.createElement('td');
+        tdAmt.className = 'px-4 py-3 text-right font-mono font-semibold text-emerald-700 dark:text-emerald-400 whitespace-nowrap';
+        tdAmt.textContent = String(o.amount_display || '-');
+        tr.appendChild(tdAmt);
+
+        const tdContact = document.createElement('td');
+        tdContact.className = 'px-4 py-3 text-slate-700 dark:text-neutral-300';
+        const cEmail = document.createElement('div');
+        cEmail.className = 'truncate max-w-[180px]';
+        cEmail.textContent = String(o.customer_email || '-');
+        tdContact.appendChild(cEmail);
+        if (o.customer_line) {
+          const cLine = document.createElement('div');
+          cLine.className = 'text-[11px] font-mono text-emerald-700 dark:text-emerald-400 truncate max-w-[180px]';
+          cLine.textContent = 'LINE: ' + String(o.customer_line);
+          tdContact.appendChild(cLine);
+        }
+        tr.appendChild(tdContact);
+
+        const tdStatus = document.createElement('td');
+        tdStatus.className = 'px-4 py-3 whitespace-nowrap';
+        const meta = getOrderStatusMeta(o.status, lang);
+        const stBadge = document.createElement('span');
+        stBadge.className = 'inline-block px-2 py-0.5 rounded-full text-[11px] font-semibold ' + meta.cls;
+        stBadge.textContent = meta.label;
+        tdStatus.appendChild(stBadge);
+        if (o.has_slip) {
+          const sDot = document.createElement('span');
+          sDot.className = 'ml-1.5 text-[10px] font-mono text-amber-700 dark:text-amber-300';
+          sDot.textContent = '[Slip]';
+          tdStatus.appendChild(sDot);
+        }
+        tr.appendChild(tdStatus);
+
+        const tdTime = document.createElement('td');
+        tdTime.className = 'px-4 py-3 text-[11px] font-mono text-slate-500 dark:text-neutral-400 whitespace-nowrap';
+        tdTime.textContent = o.created_at ? new Date(o.created_at).toLocaleString(isEn ? 'en-US' : 'th-TH') : '-';
+        tr.appendChild(tdTime);
+
+        const tdAct = document.createElement('td');
+        tdAct.className = 'px-4 py-3 text-right whitespace-nowrap';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'min-h-[36px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-800 dark:text-neutral-200 hover:border-sky-500 transition-colors';
+        btn.setAttribute('data-inspect-order', String(o.order_id || ''));
+        btn.textContent = isEn ? 'Inspect' : 'ตรวจสอบ';
+        btn.addEventListener('click', () => selectOrder(o));
+        tdAct.appendChild(btn);
+        tr.appendChild(tdAct);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function loadOrderSlipImage(orderId) {
+      const emptyEl = document.getElementById('ordDetSlipEmpty');
+      const loadEl = document.getElementById('ordDetSlipLoading');
+      const imgEl = document.getElementById('orderSlipImg');
+      const reloadBtn = document.getElementById('btnLoadOrderSlip');
+      if (emptyEl) emptyEl.classList.add('hidden');
+      if (imgEl) {
+        imgEl.classList.add('hidden');
+        imgEl.removeAttribute('src');
+      }
+      if (loadEl) loadEl.classList.remove('hidden');
+      try {
+        const res = await fetch('/api/admin/orders/slip?order=' + encodeURIComponent(orderId), { credentials: 'same-origin' });
+        const data = await res.json().catch(() => null);
+        if (loadEl) loadEl.classList.add('hidden');
+        if (!res.ok || !data || !data.success || !data.slip_data_url) {
+          if (emptyEl) {
+            emptyEl.textContent = getLang() === 'en' ? 'No slip image attached.' : 'ยังไม่มีรูปสลิปในคำสั่งซื้อนี้';
+            emptyEl.classList.remove('hidden');
+          }
+          if (reloadBtn) reloadBtn.classList.add('hidden');
+          return;
+        }
+        const safeDataUrl = String(data.slip_data_url);
+        if (!/^data:image\\/(jpeg|jpg|png|webp);base64,/i.test(safeDataUrl)) {
+          throw new Error('Invalid image format');
+        }
+        if (imgEl) {
+          imgEl.src = safeDataUrl;
+          imgEl.classList.remove('hidden');
+        }
+        if (reloadBtn) reloadBtn.classList.remove('hidden');
+      } catch (err) {
+        if (loadEl) loadEl.classList.add('hidden');
+        if (emptyEl) {
+          emptyEl.textContent = (err && err.message) || 'Failed to load slip image';
+          emptyEl.classList.remove('hidden');
+        }
+      }
+    }
+
+    function renderOrderDetail(o) {
+      const panel = document.getElementById('orderDetailPanel');
+      if (!panel || !o) return;
+      const lang = getLang();
+      const isEn = lang === 'en';
+      const setTxt = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+      };
+      setTxt('ordDetId', String(o.order_id || '-'));
+      const meta = getOrderStatusMeta(o.status, lang);
+      const badge = document.getElementById('ordDetStatusBadge');
+      if (badge) {
+        badge.textContent = meta.label;
+        badge.className = 'px-2.5 py-1 rounded-full text-xs font-semibold ' + meta.cls;
+      }
+      setTxt('ordDetLeagueTitle', (o.league_name ? (o.league_name + ' · ') : '') + 'League ID: ' + String(o.league_id || '-') + (o.team_count ? (' (' + o.team_count + (isEn ? ' teams)' : ' ทีม)')) : ''));
+      setTxt('ordDetContact', 'Email: ' + String(o.customer_email || '-') + (o.customer_line ? (' · LINE: ' + String(o.customer_line)) : ''));
+      setTxt('ordDetAmount', String(o.amount_display || '-'));
+      setTxt('ordDetCreated', o.created_at ? new Date(o.created_at).toLocaleString(isEn ? 'en-US' : 'th-TH') : '-');
+      setTxt('ordDetRules', o.rules_text ? String(o.rules_text) : (isEn ? '(No custom rules note)' : '(ไม่ได้ระบุรายละเอียดเพิ่มเติม)'));
+      setTxt('ordDetSlipUploadedAt', o.slip_uploaded_at ? new Date(o.slip_uploaded_at).toLocaleString(isEn ? 'en-US' : 'th-TH') : '-');
+
+      const noteIn = document.getElementById('orderAdminNoteInput');
+      if (noteIn && noteIn.getAttribute('data-loaded-for') !== o.order_id) {
+        noteIn.value = String(o.admin_note || '');
+        noteIn.setAttribute('data-loaded-for', String(o.order_id || ''));
+      }
+      const urlIn = document.getElementById('orderDeliveredUrlInput');
+      if (urlIn && urlIn.getAttribute('data-loaded-for') !== o.order_id) {
+        urlIn.value = String(o.delivered_url || ('https://www.fplsawadika.com/' + String(o.league_id || '') + '/'));
+        urlIn.setAttribute('data-loaded-for', String(o.order_id || ''));
+      }
+      if (!o.has_slip) {
+        const emptyEl = document.getElementById('ordDetSlipEmpty');
+        const imgEl = document.getElementById('orderSlipImg');
+        const loadEl = document.getElementById('ordDetSlipLoading');
+        const reloadBtn = document.getElementById('btnLoadOrderSlip');
+        if (loadEl) loadEl.classList.add('hidden');
+        if (imgEl) {
+          imgEl.classList.add('hidden');
+          imgEl.removeAttribute('src');
+        }
+        if (reloadBtn) reloadBtn.classList.add('hidden');
+        if (emptyEl) {
+          emptyEl.textContent = isEn ? 'No slip image attached yet.' : 'ยังไม่มีรูปสลิปในคำสั่งซื้อนี้';
+          emptyEl.classList.remove('hidden');
+        }
+      }
+      panel.classList.remove('hidden');
+    }
+
+    function selectOrder(o) {
+      if (!o) return;
+      selectedOrderObj = o;
+      setOrderActionFeedback('', false);
+      renderOrdersTable();
+      renderOrderDetail(o);
+      if (o.has_slip) {
+        loadOrderSlipImage(o.order_id);
+      }
+    }
+
+    function prefillOnboardingFromOrder(o) {
+      if (!o) return;
+      const lid = String(o.league_id || '').trim();
+      const lidEl = document.getElementById('onbLeagueId');
+      const planEl = document.getElementById('onbPlan');
+      const curEl = document.getElementById('onbCurrency');
+      const stEl = document.getElementById('onbStatus');
+      const visEl = document.getElementById('onbVisibility');
+      const tenEl = document.getElementById('onbTenantGroup');
+      const shortEl = document.getElementById('onbShortName');
+      if (lidEl) lidEl.value = lid;
+      if (planEl) planEl.value = 'standard';
+      if (curEl) curEl.value = o.currency === 'USD' ? 'USD' : 'THB';
+      if (stEl) stEl.value = 'active';
+      if (visEl) visEl.value = 'private';
+      if (tenEl) tenEl.value = lid ? ('private_' + lid) : '';
+      if (shortEl) shortEl.value = o.league_name ? String(o.league_name).slice(0, 12).trim() : '';
+      refreshOnboardingOutputs();
+      const sec9 = document.getElementById('sec-onboarding');
+      if (sec9) sec9.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (/^[0-9]{1,10}$/.test(lid)) {
+        inspectCustomerLeague();
+      }
+    }
+
+    let orderActionInFlight = false;
+
+    async function submitOrderAction(action) {
+      if (!selectedOrderObj || orderActionInFlight) return;
+      const isEn = getLang() === 'en';
+      const noteEl = document.getElementById('orderAdminNoteInput');
+      const urlEl = document.getElementById('orderDeliveredUrlInput');
+      const adminNote = noteEl ? noteEl.value.trim() : '';
+      const deliveredUrl = urlEl ? urlEl.value.trim() : '';
+
+      if (action === 'reject' && !adminNote) {
+        setOrderActionFeedback(isEn ? 'Please enter a rejection reason in Admin Note before rejecting.' : 'กรุณาระบุเหตุผลในช่องบันทึกแอดมินก่อนปฏิเสธสลิป', true);
+        if (noteEl) noteEl.focus();
+        return;
+      }
+
+      const actionBtnIds = ['btnOrdVerifyPaid', 'btnOrdMarkLive', 'btnOrdReject', 'btnOrdDeleteSlip', 'btnOrdPrefillOnb'];
+      orderActionInFlight = true;
+      actionBtnIds.forEach((id) => {
+        const b = document.getElementById(id);
+        if (b) b.disabled = true;
+      });
+      setOrderActionFeedback(isEn ? 'Saving action…' : 'กำลังบันทึกการดำเนินการ…', false);
+      try {
+        const oid = selectedOrderObj.order_id;
+        const res = await fetch('/api/admin/orders/action', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            order_id: oid,
+            action,
+            admin_note: adminNote,
+            delivered_url: deliveredUrl
+          })
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data || !data.success) {
+          throw new Error((data && data.error) || ('HTTP ' + res.status));
+        }
+        if (data.status) selectedOrderObj.status = data.status;
+        if (data.slip_deleted) selectedOrderObj.has_slip = false;
+        if (adminNote) selectedOrderObj.admin_note = adminNote;
+        if (data.delivered_url) selectedOrderObj.delivered_url = data.delivered_url;
+
+        let okMsg = '';
+        if (action === 'delete_slip') {
+          okMsg = isEn ? ('Deleted slip image for ' + oid) : ('ลบรูปสลิปของ ' + oid + ' เรียบร้อย');
+        } else {
+          okMsg = isEn
+            ? ('Updated ' + oid + ' → ' + (data.status || ''))
+            : ('อัปเดต ' + oid + ' เป็น ' + (data.status || '') + ' เรียบร้อย');
+        }
+        if (data.email) {
+          if (data.email.sent) {
+            okMsg += isEn ? ' (Email sent ✓)' : ' (ส่งอีเมลแจ้งลูกค้าแล้ว ✓)';
+          } else {
+            const emMode = data.email.mode || data.email.reason || 'disabled';
+            okMsg += isEn ? (' (Email NOT sent: ' + emMode + ')') : (' (ยังไม่ได้ส่งอีเมลอัตโนมัติ: ' + emMode + ')');
+          }
+        }
+        renderOrderDetail(selectedOrderObj);
+        setOrderActionFeedback(okMsg, false);
+        showToast(okMsg);
+        await loadOrdersData(currentOrderFilter);
+      } catch (err) {
+        const msg = (err && err.message) || 'Action failed';
+        setOrderActionFeedback(msg, true);
+        showToast(msg, true);
+      } finally {
+        orderActionInFlight = false;
+        actionBtnIds.forEach((id) => {
+          const b = document.getElementById(id);
+          if (b) b.disabled = false;
+        });
+      }
+    }
+
+    async function loadOrdersData(filterKey) {
+      if (filterKey) currentOrderFilter = filterKey;
+      renderOrderFilterButtons();
+      try {
+        const qs = (currentOrderFilter && currentOrderFilter !== 'all')
+          ? ('?status=' + encodeURIComponent(currentOrderFilter))
+          : '';
+        const res = await fetch('/api/admin/orders' + qs, { credentials: 'same-origin' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json().catch(() => null);
+        if (!data || !data.success) throw new Error((data && data.error) || 'Failed to load orders');
+        ordersListCache = Array.isArray(data.orders) ? data.orders : [];
+        ordersCountsCache = data.counts || {};
+        renderOrderFilterButtons();
+        if (selectedOrderObj) {
+          const fresh = ordersListCache.find((item) => item.order_id === selectedOrderObj.order_id);
+          if (fresh) {
+            selectedOrderObj = fresh;
+          }
+          renderOrderDetail(selectedOrderObj);
+        }
+        renderOrdersTable();
+      } catch (err) {
+        const tbody = document.getElementById('ordersTableBody');
+        if (tbody) {
+          tbody.innerHTML = '';
+          const tr = document.createElement('tr');
+          const td = document.createElement('td');
+          td.colSpan = 7;
+          td.className = 'px-4 py-6 text-center text-xs text-rose-600 dark:text-rose-400';
+          td.textContent = (err && err.message) || 'Unable to load orders';
+          tr.appendChild(td);
+          tbody.appendChild(tr);
+        }
+      }
+    }
+
+    function initOrdersInbox() {
+      const refBtn = document.getElementById('btnRefreshOrders');
+      if (refBtn) refBtn.addEventListener('click', () => loadOrdersData(currentOrderFilter));
+      document.querySelectorAll('.ord-filter-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const fk = btn.getAttribute('data-order-filter') || 'all';
+          loadOrdersData(fk);
+        });
+      });
+      const reloadSlipBtn = document.getElementById('btnLoadOrderSlip');
+      if (reloadSlipBtn) {
+        reloadSlipBtn.addEventListener('click', () => {
+          if (selectedOrderObj) loadOrderSlipImage(selectedOrderObj.order_id);
+        });
+      }
+      const btnVerify = document.getElementById('btnOrdVerifyPaid');
+      if (btnVerify) btnVerify.addEventListener('click', () => submitOrderAction('verify_payment'));
+      const btnPrefill = document.getElementById('btnOrdPrefillOnb');
+      if (btnPrefill) btnPrefill.addEventListener('click', () => prefillOnboardingFromOrder(selectedOrderObj));
+      const btnLive = document.getElementById('btnOrdMarkLive');
+      if (btnLive) btnLive.addEventListener('click', () => submitOrderAction('mark_live_and_notify'));
+      const btnReject = document.getElementById('btnOrdReject');
+      if (btnReject) btnReject.addEventListener('click', () => submitOrderAction('reject'));
+      const btnDelSlip = document.getElementById('btnOrdDeleteSlip');
+      if (btnDelSlip) btnDelSlip.addEventListener('click', () => submitOrderAction('delete_slip'));
+    }
+
     // Keyboard shortcuts (R = Refresh, L = Language, T = Theme)
     document.addEventListener('keydown', (e) => {
       if (e.target && ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.tagName)) return;
@@ -5017,11 +5773,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     // Initialize UI on DOM ready
     updateThemeUI();
     initPortfolioLifecycleControls();
+    initOrdersInbox();
     setLanguage(document.documentElement.lang || 'th');
     initOnboardingWizard();
     tickCountdown();
     setInterval(tickCountdown, 1000);
     loadLiveData(false);
+    loadOrdersData('all');
   </script>
 </body>
 </html>`;

@@ -5,7 +5,10 @@
   "contact": {
     "line_url": "https://line.me/ti/p/lgWPeyIBR7",
     "line_label_th": "ติดต่อเปิดลีกผ่าน LINE",
-    "line_label_en": "Chat on LINE to Launch"
+    "line_label_en": "Chat on LINE to Launch",
+    "email": "support@fplsawadika.com",
+    "email_label_th": "ส่งอีเมล support@fplsawadika.com",
+    "email_label_en": "Email support@fplsawadika.com"
   },
   "pricing": {
     "tier1_max_teams": 30,
@@ -114,7 +117,7 @@
         "จัดสายบอลถ้วยน็อคเอาท์",
         "ส่องผัง 11 ตัวจริงเพื่อนร่วมลีก",
         "พากย์ดราม่าหลังจบเกมสุดกวน",
-        "คัดลอกยอดโอนส่ง LINE ได้เลย"
+        "ส่งออกตารางเป็น Excel (.xlsx)"
       ],
       "drama_heading": "ลุ้นสด รู้ไว จบครบในหน้าเดียว",
       "drama_lead": "ไม่ต้องรอเว็บหลักอัปเดตช้า ไม่ต้องไล่บวกลบตัวสำรองหรือจดเงินใน Excel เอง แค่เปิดลิงก์ลีกก็รู้ผลครบทุกคน",
@@ -145,8 +148,8 @@
           "kind": "line",
           "tag": "ปิดยอดกลุ่ม",
           "time": "จบสัปดาห์",
-          "title": "ตารางรับจ่ายประจำสัปดาห์พร้อมส่งเข้ากลุ่ม LINE แล้ว",
-          "desc": "สรุปยอดคนได้รางวัล คนโดนค่าปรับบ๊วย และยอดสุทธิครบทุกทีมในหน้าเดียว"
+          "title": "ตารางรับจ่ายประจำสัปดาห์ครบจบในหน้าเดียวแล้ว",
+          "desc": "สรุปยอดคนได้รางวัล คนโดนค่าปรับบ๊วย และยอดสุทธิครบทุกทีม พร้อมส่งออก Excel ได้ทันที"
         }
       ],
       "screens_heading": "ห้องควบคุมหลัก",
@@ -196,7 +199,7 @@
           "tab": "เงินรางวัล & กองกลาง",
           "title": "คำนวณเงินรางวัลรายสัปดาห์ รายเดือน และค่าปรับบ๊วย",
           "desc": "ออกแบบตารางรับจ่ายยอดสุทธิ บริจาคการกุศล หรือหักยอดเข้ากองกลางอัตโนมัติ",
-          "spec": "ส่งออก Excel / LINE ได้"
+          "spec": "ส่งออก Excel (.xlsx) ได้"
         },
         {
           "key": "radar",
@@ -223,7 +226,7 @@
       "pricing_tier2_desc": "รองรับตั้งแต่ 50 ถึง 1,000+ ทีม พร้อมระบบค้นหาเร็วและจัดสายบอลถ้วย",
       "faq_eyebrow": "FAQ",
       "faq_heading": "คำถามที่พบบ่อยก่อนเปิดลีก",
-      "faq_lead": "คำตอบสำคัญสำหรับแอดมินและสมาชิกมินิลีก หากต้องการสอบถามกติกาเฉพาะกลุ่มทัก LINE ได้ทันที",
+      "faq_lead": "คำตอบสำคัญสำหรับแอดมินและสมาชิกมินิลีก หากต้องการสอบถามกติกาเฉพาะกลุ่มทัก LINE หรือส่ง Email ได้ทันที",
       "faq_cta": "สอบถามเพิ่มเติมทาง LINE",
       "faqs": [
         {
@@ -236,15 +239,15 @@
         },
         {
           "q": "สมาชิกในกลุ่มต้องโหลดแอปหรือสมัครสมาชิกเพิ่มไหม?",
-          "a": "ไม่ต้องโหลดแอปและไม่ต้องสมัครบัญชีเพิ่ม แค่เปิดลิงก์ผ่าน Safari หรือ Chrome จากกลุ่ม LINE ก็เช็คคะแนนสดและตารางเงินรางวัลได้ทันที"
+          "a": "ไม่ต้องโหลดแอปและไม่ต้องสมัครบัญชีเพิ่ม แค่เปิดลิงก์ผ่าน Safari หรือ Chrome จากกลุ่มแชทก็เช็คคะแนนสดและตารางเงินรางวัลได้ทันที"
         },
         {
           "q": "หน้าเว็บลีกของเราจะถูกเปิดเป็นสาธารณะหรือค้นเจอบน Google ไหม?",
           "a": "ไม่เปิดเป็นสาธารณะ ลีกลูกค้าแต่ละกลุ่มแยกเฉพาะลิงก์ส่วนตัว ไม่แสดงในหน้าตัวอย่าง และปิดการค้นหา ไม่ให้ลิงก์ลีกของคุณไปแสดงบน Google"
         },
         {
-          "q": "หลังส่งรหัสลีกทาง LINE ใช้เวลาตั้งค่านานแค่ไหน?",
-          "a": "สำหรับแพ็กเกจ Standard เมื่อยืนยันรายละเอียดกติกาครบ พร้อมส่งมอบลิงก์ใช้งานจริงภายใน 24 ชั่วโมง"
+          "q": "หลังสั่งซื้อและแนบสลิปใช้เวลาตั้งค่านานแค่ไหน?",
+          "a": "สำหรับแพ็กเกจ Standard เมื่อโอนผ่าน PromptPay QR และแนบสลิปเรียบร้อย ระบบจะส่งอีเมลแจ้งยืนยันและส่งมอบลิงก์ใช้งานจริงให้ภายใน 24 ชั่วโมง"
         },
         {
           "q": "ในลีกมีเพื่อนบางคนขอจอยสนุกๆ ไม่ได้ร่วมลงเงินรางวัล แยกคิดเฉพาะคนลงขันได้ไหม?",
@@ -255,13 +258,13 @@
           "a": "ระหว่างแข่งขัน ระบบคำนวณคะแนนสด โบนัสจำลอง และตัวสำรองที่รอลงแทนให้ลุ้นแบบเรียลไทม์ จากนั้นเมื่อจบ Gameweek ทางการ ระบบจะยึดผลคะแนนและอันดับทางการ 100% เพื่อสรุปยอดเงินรางวัลอย่างยุติธรรม"
         },
         {
-          "q": "ราคา 500฿ จ่ายครั้งเดียวจบถึงนัดสุดท้ายเลยไหม มีค่ารายเดือนแฝงหรือเปล่า?",
-          "a": "จ่ายครั้งเดียว 500฿ ดูแลครบทั้งลีกจนจบสัปดาห์ที่ 38 ไม่มีค่ารายเดือนและไม่เก็บเงินเพิ่มจากสมาชิกในกลุ่ม ชำระผ่าน PromptPay หรือโอนธนาคารได้หลังแอดมินตั้งค่าและส่งลิงก์ให้ตรวจเรียบร้อย"
+          "q": "ราคา 500฿ ชำระเงินอย่างไร และปลอดภัยไหม?",
+          "a": "จ่ายครั้งเดียว 500฿ ดูแลครบจนจบสัปดาห์ที่ 38 ไม่มีค่ารายเดือนแฝง กรอกฟอร์มแล้วสแกนจ่ายผ่าน PromptPay QR และแนบสลิปบนหน้าเว็บได้ทันที (รับประกันคืนเงิน 100% หากไม่สามารถเปิดใช้งานลีกได้ภายใน 24 ชม. • ลูกค้าต่างชาติ USD ติดต่อชำระได้ทาง Email หรือ LINE)"
         }
       ],
-      "order_heading": "สร้างข้อความสั่งเปิดลีกส่ง LINE",
-      "order_lead": "กรอกรหัส League ID จากเว็บไซต์ FPL ทางการ ระบบจะจัดข้อความสรุปรายการให้พร้อมส่งเข้า LINE ทันที",
-      "order_copy_btn": "คัดลอกข้อความสั่งซื้อ",
+      "order_heading": "เปิดใช้งานมินิลีก & ชำระเงิน",
+      "order_lead": "กรอกรหัส League ID อีเมล และกติกาของลีก แล้วกดไปหน้าสแกน PromptPay QR เพื่อโอนและแนบสลิปได้ทันที (ไม่ต้องทัก LINE ก่อน)",
+      "order_copy_btn": "ไปหน้าชำระเงิน (PromptPay QR)",
       "order_line_btn": "เปิดแชท LINE",
       "footer_note": "แดชบอร์ดอิสระสำหรับคอมมูนิตี้ Fantasy Premier League"
     },
@@ -295,7 +298,7 @@
         "Knockout Cup Brackets",
         "Spy Rival Starting XI",
         "Matchday Drama Recap",
-        "One-Click LINE Prize Sheet"
+        "One-Click Excel (.xlsx) Export"
       ],
       "drama_heading": "Live Thrills, Instant Updates, All in One View",
       "drama_lead": "No slow official delays, no guessing bench points, and zero weekend spreadsheet math. Everyone tracks live drama in one shared link.",
@@ -326,8 +329,8 @@
           "kind": "line",
           "tag": "Group Payout",
           "time": "Full Time",
-          "title": "Weekly payout sheet is ready to share in LINE",
-          "desc": "Weekly winners, bottom fines, and cumulative balances calculated across all teams."
+          "title": "Weekly payout sheet is ready in one clean ledger",
+          "desc": "Weekly winners, bottom fines, and cumulative balances ready to review or export to Excel (.xlsx)."
         }
       ],
       "screens_heading": "Main Control Room",
@@ -377,7 +380,7 @@
           "tab": "Prize Ledger",
           "title": "Automated Weekly, Monthly, and Season Prize Ledger",
           "desc": "Clean payout and penalty sheets supporting podium splits, charity pools, and head-to-head balance ledgers.",
-          "spec": "Excel & LINE Export"
+          "spec": "Excel (.xlsx) Export"
         },
         {
           "key": "radar",
@@ -404,7 +407,7 @@
       "pricing_tier2_desc": "Supports 50 to 1,000+ teams with fast roster search and knockout cup brackets.",
       "faq_eyebrow": "FAQ",
       "faq_heading": "Frequently Asked Questions",
-      "faq_lead": "Key answers for mini-league admins before getting started. Have a custom rule question? Message us on LINE.",
+      "faq_lead": "Key answers for mini-league admins before getting started. Prefer email or LINE? Contact us anytime.",
       "faq_cta": "Ask Us on LINE",
       "faqs": [
         {
@@ -417,15 +420,15 @@
         },
         {
           "q": "Do league members need to install an app or create an account?",
-          "a": "No installs and no sign-ups. Everyone opens the private league link straight from LINE in Safari or Chrome on mobile or desktop."
+          "a": "No installs and no sign-ups. Everyone opens the private league link straight in Safari or Chrome from your group chat on mobile or desktop."
         },
         {
           "q": "Will our private mini-league appear on Google or the public demo list?",
           "a": "No. Each customer league gets a private dedicated link excluded from public demos and hidden from Google search indexing."
         },
         {
-          "q": "How long does setup take after sending our League ID on LINE?",
-          "a": "For Standard leagues, setup and live link delivery are typically completed within 24 hours once your prize rules are confirmed."
+          "q": "How long does setup take after submitting my order?",
+          "a": "For Standard leagues, once your PromptPay payment slip is verified (or USD request confirmed), setup and email delivery are completed within 24 hours."
         },
         {
           "q": "Some friends joined just for fun without entering the prize pool. Can we exclude them from payouts?",
@@ -436,13 +439,13 @@
           "a": "During matches, the dashboard shows real-time scores, provisional bonus points, and projected bench auto-subs. Once each Gameweek is finalized, payouts lock strictly to official FPL points and tie-breakers."
         },
         {
-          "q": "Is 500 THB ($19) truly a one-time season pass with no hidden monthly fees?",
-          "a": "Yes. One payment covers your entire league through Gameweek 38 with zero recurring charges or per-member fees. Payment is made only after setup and live preview confirmation."
+          "q": "How does payment work, and what if my league cannot be launched?",
+          "a": "Pay once for the entire season (500 THB / $19 USD) with zero monthly fees. THB orders redirect straight to PromptPay QR + slip upload on our website with a 100% money-back guarantee if not launched within 24 hours. International USD orders can reach us via Email (support@fplsawadika.com) or LINE."
         }
       ],
-      "order_heading": "Build Your LINE Order Slip",
-      "order_lead": "Enter your official FPL League ID to generate a formatted setup slip ready to paste in our LINE chat.",
-      "order_copy_btn": "Copy Order Slip",
+      "order_heading": "Launch Your League & Pay Online",
+      "order_lead": "Enter your official FPL League ID, email address, and league rules, then proceed straight to PromptPay QR payment & slip upload.",
+      "order_copy_btn": "Continue to PromptPay QR",
       "order_line_btn": "Open LINE Chat",
       "footer_note": "Independent Fantasy Premier League community dashboard"
     }

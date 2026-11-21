@@ -31,7 +31,7 @@ workers_dev = true
 
 [env.staging.vars]
 ENVIRONMENT = "staging"
-GITHUB_BRANCH = "feat/commercial-landing"
+GITHUB_BRANCH = "main"
 CF_ACCESS_TEAM_DOMAIN = "super-water-8a1d.cloudflareaccess.com"
 CF_ACCESS_AUD = "f4e1047763eabc94f95f0741d46c804786bf657f1fbe8b5c034ac3a851ccc4f8"
 

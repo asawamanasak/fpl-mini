@@ -54,7 +54,7 @@ def main():
 
     # 1b. JavaScript & CLI Syntax Checks
     print("\nStep 1b: Running Node & Python Syntax Checks...")
-    for js_rel in ['assets/dashboard-app.js', 'workers/fpl-live-worker.js', 'workers/admin-dashboard.js']:
+    for js_rel in ['assets/dashboard-app.js', 'assets/qrcode.min.js', 'workers/fpl-live-worker.js', 'workers/admin-dashboard.js']:
         js_abs = os.path.join(base_dir, js_rel)
         res_js = subprocess.run(['node', '--check', js_abs], capture_output=True, text=True)
         if res_js.returncode == 0:
@@ -100,11 +100,12 @@ def main():
         'index.html',
         'preview.html',
         '404.html',
+        'pay/index.html',
         *configured_league_pages
     ]
     for rf in required_files:
         fpath = os.path.join(base_dir, rf)
-        min_bytes = 3000 if rf in ('index.html', '404.html') else 10000
+        min_bytes = 3000 if rf in ('index.html', '404.html', 'pay/index.html') else 10000
         if os.path.exists(fpath) and os.path.getsize(fpath) > min_bytes:
             print(f"  ✅ {rf} exists ({os.path.getsize(fpath):,} bytes)")
         else:
@@ -114,15 +115,18 @@ def main():
     # Landing Page semantic & commercial markers
     with open(os.path.join(base_dir, 'index.html'), 'r', encoding='utf-8') as f:
         landing_html = f.read()
-    for marker in ['order-form', 'pricing', 'line.me', 'preview.html', '500', '900']:
+    for marker in ['order-form', 'pricing', 'line.me', 'support@fplsawadika.com', 'preview.html', '500', '900']:
         if marker not in landing_html:
             print(f"  ❌ index.html missing expected Landing Page marker: {marker}")
             all_passed = False
-    print("  ✅ index.html verified as Product Landing Page (pricing, order form, LINE CTA, preview link)")
+    print("  ✅ index.html verified as Product Landing Page (pricing, order form, LINE & Email CTA, preview link)")
 
-    # Sitemap privacy check: private leagues must NOT appear in sitemap.xml
+    # Sitemap privacy check: private leagues and /pay/ must NOT appear in sitemap.xml
     with open(os.path.join(base_dir, 'sitemap.xml'), 'r', encoding='utf-8') as f:
         sitemap_xml = f.read()
+    if '/pay/' in sitemap_xml:
+        print("  ❌ Checkout page /pay/ leaked into sitemap.xml!")
+        all_passed = False
     for lid, lmeta in cfg.items():
         if lmeta.get('visibility', 'showcase') == 'private' and f"/{lid}/" in sitemap_xml:
             print(f"  ❌ Private league {lid} leaked into sitemap.xml!")
@@ -142,7 +146,7 @@ def main():
     print("\nStep 5: Testing Front-End JavaScript Runtime (Headless Chrome)...")
     chrome_bin = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
     if os.path.exists(chrome_bin):
-        pages_to_test = ['index.html', '404.html', 'preview.html', *configured_league_pages]
+        pages_to_test = ['index.html', '404.html', 'pay/index.html', 'preview.html', *configured_league_pages]
         for p in pages_to_test:
             target_url = f"file://{os.path.join(base_dir, p)}"
             try:

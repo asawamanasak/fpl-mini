@@ -2895,8 +2895,8 @@ __STRUCTURED_DATA_JSON__
           </p>
         </div>
 
-        <!-- Action Button -->
-        <div class="flex-shrink-0 w-full sm:w-auto">
+        <!-- Action Buttons (LINE + Email) -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-shrink-0 w-full sm:w-auto">
           <a 
             href="https://line.me/ti/p/lgWPeyIBR7" 
             target="_blank" 
@@ -2906,6 +2906,14 @@ __STRUCTURED_DATA_JSON__
           >
             <svg class="w-4 h-4 fill-current flex-shrink-0" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
             <span>เปิด LINE ทักหาเดฟ</span>
+          </a>
+          <a 
+            href="mailto:support@fplsawadika.com" 
+            aria-label="ส่งอีเมลติดต่อผู้พัฒนาที่ support@fplsawadika.com"
+            class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-3 min-h-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
+          >
+            <svg class="w-4 h-4 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <span>support@fplsawadika.com</span>
           </a>
         </div>
       </div>
@@ -18947,8 +18955,8 @@ __STRUCTURED_DATA_JSON__
                 </p>
               </div>
 
-              <!-- Action Button -->
-              <div class="flex-shrink-0 w-full sm:w-auto">
+              <!-- Action Buttons (LINE + Email) -->
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-shrink-0 w-full sm:w-auto">
                 <a 
                   href="https://line.me/ti/p/lgWPeyIBR7" 
                   target="_blank" 
@@ -18958,6 +18966,14 @@ __STRUCTURED_DATA_JSON__
                 >
                   <svg class="w-4 h-4 fill-current flex-shrink-0" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
                   <span>Chat with Developer</span>
+                </a>
+                <a 
+                  href="mailto:support@fplsawadika.com" 
+                  aria-label="Email developer support at support@fplsawadika.com"
+                  class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-3 min-h-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
+                >
+                  <svg class="w-4 h-4 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                  <span>support@fplsawadika.com</span>
                 </a>
               </div>
             </div>
@@ -19376,8 +19392,8 @@ __STRUCTURED_DATA_JSON__
                 </p>
               </div>
 
-              <!-- Action Button -->
-              <div class="flex-shrink-0 w-full sm:w-auto">
+              <!-- Action Buttons (LINE + Email) -->
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-shrink-0 w-full sm:w-auto">
                 <a 
                   href="https://line.me/ti/p/lgWPeyIBR7" 
                   target="_blank" 
@@ -19387,6 +19403,14 @@ __STRUCTURED_DATA_JSON__
                 >
                   <svg class="w-4 h-4 fill-current flex-shrink-0" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
                   <span>เปิด LINE ทักหาเดฟ</span>
+                </a>
+                <a 
+                  href="mailto:support@fplsawadika.com" 
+                  aria-label="ส่งอีเมลติดต่อผู้พัฒนาที่ support@fplsawadika.com"
+                  class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-3 min-h-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
+                >
+                  <svg class="w-4 h-4 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                  <span>support@fplsawadika.com</span>
                 </a>
               </div>
             </div>
@@ -22128,6 +22152,7 @@ def load_site_config(base_dir):
 
 def generate_landing_html(multi_data, leagues_config, site_config):
     line_url = (site_config.get('contact') or {}).get('line_url') or 'https://line.me/ti/p/lgWPeyIBR7'
+    support_email = (site_config.get('contact') or {}).get('email') or 'support@fplsawadika.com'
     pricing = site_config.get('pricing') or {}
     std_p = pricing.get('standard') or {'thb': 500, 'usd': 19}
     cus_p = pricing.get('custom') or {'thb': 900, 'usd': 29}
@@ -22171,6 +22196,7 @@ def generate_landing_html(multi_data, leagues_config, site_config):
         "custom": {"thb": int(cus_p.get('thb', 900)), "usd": int(cus_p.get('usd', 29))},
         "tier1_max_teams": max_teams,
         "line_url": line_url,
+        "support_email": support_email,
         "api_base_url": site_config.get('api_base_url') or 'https://api.fplsawadika.com'
     }, ensure_ascii=False).replace('</', '<\\/')
 
@@ -22226,7 +22252,7 @@ def generate_landing_html(multi_data, leagues_config, site_config):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>FPLSaWaDiKa: แดชบอร์ดมินิลีก FPL สดทุกวินาที พร้อมคำนวณเงินรางวัลอัตโนมัติ</title>
-  <meta name="description" content="เปลี่ยนมินิลีก Fantasy Premier League กลุ่มเพื่อนและออฟฟิศให้โปรกว่าที่เคย เช็คคะแนนสดทุกวินาที คำนวณเงินรางวัลรายสัปดาห์/รายเดือน/ค่าปรับบ๊วยอัตโนมัติ ส่งสรุปเข้า LINE ได้ทันที">
+  <meta name="description" content="เปลี่ยนมินิลีก Fantasy Premier League กลุ่มเพื่อนและออฟฟิศให้โปรกว่าที่เคย เช็คคะแนนสดทุกวินาที คำนวณเงินรางวัลรายสัปดาห์/รายเดือน/ค่าปรับบ๊วยอัตโนมัติ เปิดใช้งานออนไลน์พร้อม PromptPay QR ทันที">
   <meta name="keywords" content="FPL, Fantasy Premier League, มินิลีก FPL, แดชบอร์ด FPL, คะแนนสด FPL, คำนวณเงินรางวัลมินิลีก, FPLSaWaDiKa">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="theme-color" content="var(--theme-chrome)">
@@ -22885,6 +22911,40 @@ __STRUCTURED_DATA_JSON__
     .bm-btn-primary.is-line:hover {
       background-color: var(--color-line-hover);
       border-color: var(--color-line-hover);
+    }
+    .bm-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.85rem 1.35rem;
+      border-radius: 0.5rem;
+      background-color: var(--color-card);
+      color: var(--color-ink);
+      border: 1px solid var(--color-border-strong);
+      font-family: var(--font-sans);
+      font-size: 0.96rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+    .bm-btn-secondary:hover {
+      background-color: var(--color-surface);
+      border-color: var(--color-ink-2);
+    }
+    .bm-btn-secondary:active {
+      transform: scale(0.98);
+    }
+    .bm-btn-secondary:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+    .bm-faq-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
     }
     .bm-btn-primary:active {
       transform: scale(0.98);
@@ -24121,16 +24181,35 @@ __STRUCTURED_DATA_JSON__
       grid-template-columns: 1fr;
       gap: 0.65rem;
     }
-    @media (min-width: 480px) {
-      .bm-slip-actions {
-        grid-template-columns: 1fr 1fr;
-      }
+    .bm-slip-alt-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+    }
+    .bm-slip-alt-actions .bm-btn-secondary,
+    .bm-slip-alt-actions .bm-btn-primary {
+      flex: 1 1 135px;
+      min-height: 44px;
+      padding: 0.68rem 0.9rem;
+      font-size: 0.86rem;
+    }
+    .bm-slip-card .bm-btn-secondary {
+      background-color: var(--color-arena-surface);
+      color: var(--color-arena-ink);
+      border-color: var(--color-arena-border-strong);
+    }
+    .bm-slip-card .bm-btn-secondary:hover {
+      background-color: var(--color-arena-card);
+      border-color: var(--color-arena-ink-2);
     }
     .bm-copy-feedback {
       font-size: 0.88rem;
       font-weight: 700;
       color: var(--color-live);
       min-height: 1.25rem;
+    }
+    .bm-copy-feedback.is-error {
+      color: #fca5a5;
     }
     .bm-slip-reassure {
       margin: 0;
@@ -24471,37 +24550,42 @@ __STRUCTURED_DATA_JSON__
         <div class="bm-faq-layout">
           <div>
             <h2 id="faq-title" class="bm-h2">คำถามที่พบบ่อยก่อนเปิดลีก</h2>
-            <p id="faq-sub" class="bm-lead" style="margin-bottom: 1.25rem;">คำตอบสำคัญสำหรับแอดมินและสมาชิกมินิลีก หากต้องการสอบถามกติกาเฉพาะกลุ่มทัก LINE ได้ทันที</p>
-            <a id="faq-line-btn" href="__LINE_URL__" target="_blank" rel="noopener noreferrer" class="bm-btn-primary is-line">
-              <span id="faq-line-text">สอบถามเพิ่มเติมทาง LINE</span>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
-            </a>
+            <p id="faq-sub" class="bm-lead" style="margin-bottom: 1.25rem;">คำตอบสำคัญสำหรับแอดมินและสมาชิกมินิลีก หากต้องการสอบถามกติกาเฉพาะกลุ่มทัก LINE หรือส่งอีเมลได้ทันที</p>
+            <div class="bm-faq-actions">
+              <a id="faq-line-btn" href="__LINE_URL__" target="_blank" rel="noopener noreferrer" class="bm-btn-primary is-line">
+                <span id="faq-line-text">สอบถามเพิ่มเติมทาง LINE</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
+              </a>
+              <a id="faq-email-btn" href="mailto:__SUPPORT_EMAIL__" class="bm-btn-secondary">
+                <span id="faq-email-text">ส่งอีเมลสอบถาม</span>
+              </a>
+            </div>
           </div>
           <div id="faq-list" class="bm-faq-list"></div>
         </div>
       </div>
     </section>
 
-    <!-- Order Slip Builder -->
+    <!-- Order & Online Checkout -->
     <section id="order" class="bm-section" aria-labelledby="order-title">
       <div class="bm-container bm-reveal" data-reveal>
         <div class="bm-section-head">
-          <h2 id="order-title" class="bm-h2">สร้างข้อความสั่งเปิดลีกส่ง LINE</h2>
-          <p id="order-sub" class="bm-lead">กรอกรหัส League ID จากเว็บไซต์ FPL ทางการ ระบบจะจัดข้อความสรุปรายการให้พร้อมส่งเข้า LINE ทันที</p>
+          <h2 id="order-title" class="bm-h2">เปิดใช้งานมินิลีก &amp; ชำระเงิน</h2>
+          <p id="order-sub" class="bm-lead">กรอกรหัส League ID อีเมล และกติกาของลีก แล้วกดไปหน้าสแกน PromptPay QR เพื่อโอนและแนบสลิปได้ทันที</p>
         </div>
 
         <div class="bm-launch-steps" aria-label="ขั้นตอนเปิดใช้งานลีก">
           <div class="bm-launch-step">
             <span class="bm-launch-num tabular-nums">01</span>
-            <span id="launch-step-1">ส่งเลข League ID และกติกาลีกทาง LINE</span>
+            <span id="launch-step-1">กรอกเลข League ID อีเมล และกติกาลีก</span>
           </div>
           <div class="bm-launch-step">
             <span class="bm-launch-num tabular-nums">02</span>
-            <span id="launch-step-2">แอดมินตั้งค่าคะแนนสดและเงินรางวัลย้อนหลังครบ</span>
+            <span id="launch-step-2">สแกน PromptPay QR และแนบสลิปบนหน้าเว็บ</span>
           </div>
           <div class="bm-launch-step">
             <span class="bm-launch-num tabular-nums">03</span>
-            <span id="launch-step-3">รับลิงก์ส่วนตัวส่งเข้ากลุ่มเพื่อนได้ภายใน 24 ชม.</span>
+            <span id="launch-step-3">แอดมินเปิดลีกและส่งลิงก์ส่วนตัวให้ภายใน 24 ชม.</span>
           </div>
         </div>
 
@@ -24517,6 +24601,18 @@ __STRUCTURED_DATA_JSON__
 
             <div class="bm-field-row">
               <div class="bm-field">
+                <label id="lbl-email" for="order-email" class="bm-label">อีเมลสำหรับรับลิงก์และใบแจ้งสถานะ *</label>
+                <input id="order-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" class="bm-input" required>
+                <p id="order-email-error" class="bm-error hidden">กรุณากรอกอีเมลให้ถูกต้องเพื่อรับลิงก์เปิดลีก</p>
+              </div>
+              <div class="bm-field">
+                <label id="lbl-line-id" for="order-line-id" class="bm-label">LINE ID (ไม่บังคับ)</label>
+                <input id="order-line-id" name="line_id" type="text" placeholder="เช่น @myline (ถ้าสะดวกติดต่อ)" class="bm-input">
+              </div>
+            </div>
+
+            <div class="bm-field-row">
+              <div class="bm-field">
                 <label id="lbl-plan" for="order-plan" class="bm-label">แพ็กเกจที่ต้องการ</label>
                 <select id="order-plan" name="plan" class="bm-select">
                   <option value="standard">Standard (500฿)</option>
@@ -24527,20 +24623,20 @@ __STRUCTURED_DATA_JSON__
                 <label id="lbl-team-tier" for="order-team-tier" class="bm-label">จำนวนสมาชิกในลีก</label>
                 <select id="order-team-tier" name="team_tier" class="bm-select">
                   <option value="tier1">ไม่เกิน 30 ทีม (แพ็กเกจ Standard)</option>
-                  <option value="tier2">31 ทีมขึ้นไป / ลีกใหญ่ 50+ (ประเมินราคาทาง LINE)</option>
+                  <option value="tier2">31 ทีมขึ้นไป / ลีกใหญ่ 50+ (ประเมินราคาทาง Email / LINE)</option>
                 </select>
               </div>
             </div>
 
             <div class="bm-field" style="margin-bottom: 0;">
               <label id="lbl-prize-model" for="order-prize-model" class="bm-label">รูปแบบกติกาและเงินรางวัลของลีก</label>
-              <textarea id="order-prize-model" name="prize_model" rows="3" placeholder="เช่น แชมป์วีค 200฿, แชมป์เดือน 500฿, บ๊วยโดน 50฿, บอลถ้วย 500฿ (หรือระบุคร่าวๆ แล้วคุยต่อทาง LINE)" class="bm-input bm-textarea"></textarea>
+              <textarea id="order-prize-model" name="prize_model" rows="3" placeholder="เช่น แชมป์วีค 200฿, แชมป์เดือน 500฿, บ๊วยโดน 50฿, บอลถ้วย 500฿ (หรือระบุคร่าวๆ)" class="bm-input bm-textarea"></textarea>
             </div>
           </form>
 
           <div class="bm-slip-card">
             <div class="bm-slip-header">
-              <strong id="order-preview-label" style="font-size: 1rem;">ข้อความสรุปรายการส่ง LINE</strong>
+              <strong id="order-preview-label" style="font-size: 1rem;">สรุปรายการสั่งเปิดลีก</strong>
               <span id="order-price-badge" class="bm-price-badge tabular-nums">500฿ / ฤดูกาล</span>
             </div>
 
@@ -24549,15 +24645,23 @@ __STRUCTURED_DATA_JSON__
             <div id="order-copy-feedback" class="bm-copy-feedback" aria-live="polite"></div>
 
             <div class="bm-slip-actions">
-              <button id="btn-copy-order" type="submit" form="order-form" class="bm-btn-primary">
-                <span id="btn-copy-order-text">คัดลอกข้อความสั่งซื้อ</span>
+              <button id="btn-submit-order" type="submit" form="order-form" class="bm-btn-primary" style="width: 100%;">
+                <span id="btn-submit-order-text">ไปหน้าชำระเงิน PromptPay QR →</span>
               </button>
-              <a id="btn-open-line" href="__LINE_URL__" target="_blank" rel="noopener noreferrer" class="bm-btn-primary is-line" onclick="landingApp.prepareLineOpen()">
-                <span id="btn-open-line-text">เปิดแชท LINE</span>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
-              </a>
+              <div class="bm-slip-alt-actions">
+                <button id="btn-copy-order" type="button" class="bm-btn-secondary" onclick="landingApp.copyOrderSlip()">
+                  <span id="btn-copy-order-text">คัดลอกข้อความสรุป</span>
+                </button>
+                <a id="btn-open-line" href="__LINE_URL__" target="_blank" rel="noopener noreferrer" class="bm-btn-primary is-line" onclick="landingApp.prepareLineOpen()">
+                  <span id="btn-open-line-text">เปิดแชท LINE</span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
+                </a>
+                <a id="btn-open-email" href="mailto:__SUPPORT_EMAIL__" class="bm-btn-secondary">
+                  <span id="btn-open-email-text">ส่งอีเมล</span>
+                </a>
+              </div>
             </div>
-            <p id="order-reassure-note" class="bm-slip-reassure">ตั้งค่าและส่งลิงก์ให้ตรวจเช็กก่อน • ชำระเงินหลังลิงก์พร้อมใช้งานจริง</p>
+            <p id="order-reassure-note" class="bm-slip-reassure">เปิดใช้งานลีกภายใน 24 ชม. หลังตรวจสลิป • รับประกันคืนเงิน 100% หากไม่สามารถเปิดได้</p>
           </div>
         </div>
       </div>
@@ -24577,6 +24681,7 @@ __STRUCTURED_DATA_JSON__
         <a id="footer-link-pricing" href="#pricing">ราคา</a>
         <a id="footer-link-faq" href="#faq">คำถามที่พบบ่อย</a>
         <a id="footer-link-line" href="__LINE_URL__" target="_blank" rel="noopener noreferrer">LINE Official</a>
+        <a id="footer-link-email" href="mailto:__SUPPORT_EMAIL__">__SUPPORT_EMAIL__</a>
       </div>
     </div>
   </footer>
@@ -24830,30 +24935,40 @@ __STRUCTURED_DATA_JSON__
         setTxt('faq-title', copy.faq_heading);
         setTypo('faq-sub', copy.faq_lead);
         setTxt('faq-line-text', copy.faq_cta);
+        setTxt('faq-email-text', this.lang === 'en' ? 'Email Us' : 'ส่งอีเมลสอบถาม');
         this.renderFaq(copy);
 
         const isEn = this.lang === 'en';
         setTxt('order-title', copy.order_heading);
         setTypo('order-sub', copy.order_lead);
-        setTypo('launch-step-1', isEn ? 'Send League ID & prize rule via LINE' : 'ส่งเลข League ID และกติกาลีกทาง LINE');
-        setTypo('launch-step-2', isEn ? 'We backfill all prior Gameweeks & rules' : 'แอดมินตั้งค่าคะแนนสดและกติกาย้อนหลังครบ');
-        setTypo('launch-step-3', isEn ? 'Verify your private link before paying (within 24h)' : 'ตรวจเช็กลิงก์ส่วนตัวก่อนโอน ภายใน 24 ชม.');
-        setTxt('btn-copy-order-text', copy.order_copy_btn);
-        setTxt('btn-open-line-text', copy.order_line_btn);
-        setTypo('order-reassure-note', isEn ? 'Send your slip for setup & live link verification first • Pay only after your league link is ready' : 'ตั้งค่าและส่งลิงก์ให้ตรวจเช็กก่อน • ชำระเงินหลังลิงก์พร้อมใช้งานจริง');
-        setTxt('order-preview-label', isEn ? 'LINE Order Summary Slip' : 'ข้อความสรุปรายการส่ง LINE');
+        setTypo('launch-step-1', isEn ? 'Enter League ID, email & league rules' : 'กรอกเลข League ID อีเมล และกติกาลีก');
+        setTypo('launch-step-2', isEn ? 'Scan PromptPay QR & upload slip online' : 'สแกน PromptPay QR และแนบสลิปบนหน้าเว็บ');
+        setTypo('launch-step-3', isEn ? 'Receive your private dashboard link within 24h (100% refund guarantee)' : 'แอดมินเปิดลีกและส่งลิงก์ส่วนตัวให้ภายใน 24 ชม.');
+        setTxt('btn-copy-order-text', isEn ? 'Copy Summary' : 'คัดลอกข้อความสรุป');
+        setTxt('btn-open-line-text', copy.order_line_btn || (isEn ? 'Open LINE Chat' : 'เปิดแชท LINE'));
+        setTxt('btn-open-email-text', isEn ? 'Send Email' : 'ส่งอีเมล');
+        setTypo('order-reassure-note', isEn
+          ? 'Dashboard launched within 24h after verification • 100% money-back guarantee if not launched within 24h'
+          : 'เปิดใช้งานลีกภายใน 24 ชม. หลังตรวจสลิป • รับประกันคืนเงิน 100% หากไม่สามารถเปิดได้');
+        setTxt('order-preview-label', isEn ? 'Order Summary & Checkout' : 'สรุปรายการสั่งเปิดลีก');
         setTxt('lbl-league-id', isEn ? 'Official FPL League ID' : 'รหัส League ID ทางการ');
         setTypo('hint-league-id', isEn ? 'Enter digits e.g. 40700, or paste your league link (league name is fetched automatically from FPL)' : 'กรอกตัวเลข เช่น 40700 หรือวางลิงก์หน้าลีกเพื่อดึงรหัสอัตโนมัติ (ระบบดึงชื่อลีกให้จาก FPL)');
+        setTxt('lbl-email', isEn ? 'Email for Link & Receipt *' : 'อีเมลสำหรับรับลิงก์และใบแจ้งสถานะ *');
+        setTxt('lbl-line-id', isEn ? 'LINE ID (Optional)' : 'LINE ID (ไม่บังคับ)');
         setTxt('lbl-plan', isEn ? 'Selected Plan' : 'แพ็กเกจที่ต้องการ');
         setTxt('lbl-prize-model', isEn ? 'League Prize Rules & Amounts' : 'รูปแบบกติกาและเงินรางวัลของลีก');
         setTxt('lbl-team-tier', isEn ? 'League Size' : 'จำนวนสมาชิกในลีก');
 
         const lidInput = document.getElementById('order-league-id');
         if (lidInput) lidInput.placeholder = isEn ? 'e.g. 40700 or paste league URL' : 'เช่น 40700 หรือวางลิงก์หน้าลีก FPL';
+        const emailInput = document.getElementById('order-email');
+        if (emailInput) emailInput.placeholder = 'you@example.com';
+        const lineInput = document.getElementById('order-line-id');
+        if (lineInput) lineInput.placeholder = isEn ? 'e.g. @myline (optional)' : 'เช่น @myline (ถ้าสะดวกติดต่อ)';
         const prizeInput = document.getElementById('order-prize-model');
         if (prizeInput) prizeInput.placeholder = isEn
-          ? 'e.g. Weekly winner 200, Monthly 500, Season top 3, Bottom fine 50 (or summarize and finalize on LINE)'
-          : 'เช่น แชมป์วีค 200฿, แชมป์เดือน 500฿, บ๊วยโดน 50฿, บอลถ้วย 500฿ (หรือระบุคร่าวๆ แล้วคุยต่อทาง LINE)';
+          ? 'e.g. Weekly winner 200, Monthly 500, Season top 3, Bottom fine 50 (or brief summary)'
+          : 'เช่น แชมป์วีค 200฿, แชมป์เดือน 500฿, บ๊วยโดน 50฿, บอลถ้วย 500฿ (หรือระบุคร่าวๆ)';
 
         const setOpts = (selId, labels) => {
           const sel = document.getElementById(selId);
@@ -24866,8 +24981,8 @@ __STRUCTURED_DATA_JSON__
           ? { standard: 'Standard (500 THB / $19)', custom: 'Custom (Roadmap / Coming Soon, 900 THB / $29)' }
           : { standard: 'Standard (500฿)', custom: 'Custom (Roadmap / กำลังพัฒนา, 900฿)' });
         setOpts('order-team-tier', isEn
-          ? { tier1: 'Up to 30 Teams (Standard Pass)', tier2: '31+ Teams / 50+ Community (LINE Quote)' }
-          : { tier1: 'ไม่เกิน 30 ทีม (แพ็กเกจ Standard)', tier2: '31 ทีมขึ้นไป / ลีกใหญ่ 50+ (ประเมินราคาทาง LINE)' });
+          ? { tier1: 'Up to 30 Teams (Standard Pass)', tier2: '31+ Teams / 50+ Community (Email / LINE Quote)' }
+          : { tier1: 'ไม่เกิน 30 ทีม (แพ็กเกจ Standard)', tier2: '31 ทีมขึ้นไป / ลีกใหญ่ 50+ (ประเมินราคาทาง Email / LINE)' });
 
         setTypo('footer-note', copy.footer_note);
         setTxt('footer-link-features', isEn ? 'Main Control Room' : 'ห้องควบคุมหลัก');
@@ -25217,7 +25332,7 @@ __STRUCTURED_DATA_JSON__
         if (lidEl) {
           const handleLidInput = () => {
             const raw = lidEl.value.trim();
-            const urlMatch = raw.match(/leagues\/([0-9]{1,12})/i);
+            const urlMatch = raw.match(/leagues\\/([0-9]{1,12})/i);
             const hashMatch = raw.match(/^#([0-9]{1,12})$/);
             if (urlMatch && urlMatch[1]) {
               lidEl.value = urlMatch[1];
@@ -25229,16 +25344,16 @@ __STRUCTURED_DATA_JSON__
           lidEl.addEventListener('input', handleLidInput);
           lidEl.addEventListener('change', handleLidInput);
         }
-        ['order-league-id', 'order-plan', 'order-prize-model', 'order-team-tier'].forEach((id) => {
+        ['order-league-id', 'order-email', 'order-line-id', 'order-plan', 'order-prize-model', 'order-team-tier'].forEach((id) => {
           const el = document.getElementById(id);
           if (el) {
-            el.addEventListener('input', () => this.updateOrderSummary());
-            el.addEventListener('change', () => this.updateOrderSummary());
+            el.addEventListener('input', () => this.updateOrderSummary(false));
+            el.addEventListener('change', () => this.updateOrderSummary(false));
           }
         });
         form.addEventListener('submit', (e) => {
           e.preventDefault();
-          this.copyOrderSlip();
+          this.submitOrder();
         });
       },
 
@@ -25275,21 +25390,21 @@ __STRUCTURED_DATA_JSON__
             : (isEn ? `${cnt} teams` : `${cnt} ทีม`);
           const isTier2 = r.tier_suggested === 'tier2';
           el.textContent = isEn
-            ? `✓ Found: ${r.name} • ${countLabel} (${isTier2 ? '31+ teams — Custom LINE quote' : 'Fits Standard Pass $19'})`
-            : `✓ พบลีก: ${r.name} • ${countLabel} (${isTier2 ? 'ลีกใหญ่ 31+ ทีม — ประเมินราคาทาง LINE' : 'ตรงเงื่อนไขแพ็กเกจ Standard 500฿'})`;
+            ? `✓ Found: ${r.name} • ${countLabel} (${isTier2 ? '31+ teams — Email / LINE Quote' : 'Fits Standard Pass (PromptPay 500฿ / $19)'})`
+            : `✓ พบลีก: ${r.name} • ${countLabel} (${isTier2 ? 'ลีกใหญ่ 31+ ทีม — ส่งคำขอประเมินราคาทาง Email / LINE' : 'ตรงเงื่อนไขแพ็กเกจ Standard 500฿'})`;
           el.classList.add('is-ok');
           return;
         }
         if (this.lookupState === 'not_found') {
           el.textContent = isEn
-            ? 'League ID not found on FPL. Double-check the number (or still send it on LINE for us to verify).'
-            : 'ไม่พบลีกหมายเลขนี้ในระบบ FPL กรุณาเช็กตัวเลขอีกครั้ง (หรือคัดลอกส่งตรวจสอบทาง LINE ได้เลย)';
+            ? 'League ID not found on FPL. Double-check the number (or still submit / contact via Email or LINE for help).'
+            : 'ไม่พบลีกหมายเลขนี้ในระบบ FPL กรุณาเช็กตัวเลขอีกครั้ง (หรือติดต่อสอบถามทาง Email / LINE ได้เลย)';
           el.classList.add('is-warn');
           return;
         }
         el.textContent = isEn
-          ? 'Live lookup unavailable right now — you can still copy and send your ID via LINE.'
-          : 'ไม่สามารถเช็กชื่อลีกอัตโนมัติได้ชั่วคราว — สามารถคัดลอกส่งเลข ID ทาง LINE ได้เลย';
+          ? 'Live lookup unavailable right now — you can still enter your ID and submit your order.'
+          : 'ไม่สามารถเช็กชื่อลีกอัตโนมัติได้ชั่วคราว — สามารถกรอกเลข ID แล้วกดดำเนินการต่อได้เลย';
         el.classList.add('is-loading');
       },
 
@@ -25372,17 +25487,31 @@ __STRUCTURED_DATA_JSON__
         return '';
       },
 
+      isValidOrderEmail(rawEmail) {
+        const val = String(rawEmail || '').trim();
+        return Boolean(val) && val.length <= 160 && /^[^\\s@<>()\\[\\]\\\\,;:\\"]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$/.test(val);
+      },
+
       updateOrderSummary(forSubmit) {
         const lidEl = document.getElementById('order-league-id');
+        const emailEl = document.getElementById('order-email');
+        const lineEl = document.getElementById('order-line-id');
         const planEl = document.getElementById('order-plan');
         const modelEl = document.getElementById('order-prize-model');
         const tierEl = document.getElementById('order-team-tier');
         const errEl = document.getElementById('order-league-id-error');
+        const emailErrEl = document.getElementById('order-email-error');
         const badgeEl = document.getElementById('order-price-badge');
         const boxEl = document.getElementById('order-summary-preview');
+        const submitBtnTextEl = document.getElementById('btn-submit-order-text');
+        const openEmailEl = document.getElementById('btn-open-email');
 
         const rawLid = lidEl ? lidEl.value.trim() : '';
         const cleanLid = /^[0-9]+$/.test(rawLid) ? rawLid : rawLid.replace(/[^0-9]/g, '');
+        const emailVal = emailEl ? emailEl.value.trim() : '';
+        const lineVal = lineEl ? lineEl.value.trim() : '';
+        const isEn = this.lang === 'en';
+
         if (errEl) {
           const errMsg = this.getOrderIdError(rawLid, Boolean(forSubmit));
           if (errMsg) {
@@ -25392,30 +25521,50 @@ __STRUCTURED_DATA_JSON__
             errEl.classList.add('hidden');
           }
         }
+        if (emailErrEl) {
+          const emailOk = this.isValidOrderEmail(emailVal);
+          if (Boolean(forSubmit) && !emailOk) {
+            emailErrEl.textContent = isEn
+              ? 'Please enter a valid email address for receipt & league link delivery'
+              : 'กรุณากรอกอีเมลให้ถูกต้องเพื่อรับใบแจ้งสถานะและลิงก์เปิดลีก';
+            emailErrEl.classList.remove('hidden');
+          } else {
+            emailErrEl.classList.add('hidden');
+          }
+        }
 
         const plan = (planEl && planEl.value === 'custom') ? 'standard' : (planEl ? planEl.value : 'standard');
         if (planEl && planEl.value === 'custom') planEl.value = 'standard';
         const tier = tierEl ? tierEl.value : 'tier1';
-        const isEn = this.lang === 'en';
         const modelRaw = modelEl ? modelEl.value.trim() : '';
-        const modelText = modelRaw || (isEn ? '(To discuss details on LINE)' : '(คุยรายละเอียดกติกาทาง LINE)');
+        const modelText = modelRaw || (isEn ? '(Standard weekly/season — details after order)' : '(ระบุกติกาเพิ่มเติมภายหลัง)');
         const pCfg = window.PRICING_CONFIG || {};
         const isUsd = this.currency === 'USD';
+        const lidOut = (/^[0-9]+$/.test(rawLid) ? rawLid : '') || cleanLid || (isEn ? '(Pending ID)' : '(รอระบุเลข ID)');
+        const hasFoundLookup = this.lookupState === 'found' && this.lookupResult && String(this.lookupResult.league_id) === lidOut;
+        const lookupIsTier2 = Boolean(hasFoundLookup && (this.lookupResult.has_more || Number(this.lookupResult.team_count || 0) > 30));
+        const effectiveTier = (tier === 'tier2' || lookupIsTier2) ? 'tier2' : 'tier1';
+        const isQuoteOnly = effectiveTier === 'tier2' || isUsd;
+
+        if (submitBtnTextEl && !this._submittingOrder) {
+          submitBtnTextEl.textContent = isQuoteOnly
+            ? (isEn ? 'Submit League Request →' : 'ส่งคำขอประเมินราคา / เปิดลีก →')
+            : (isEn ? 'Continue to PromptPay QR →' : 'ไปหน้าชำระเงิน PromptPay QR →');
+        }
 
         let priceStr = '';
-        if (tier === 'tier2') {
-          priceStr = isEn ? 'Custom LINE Quote' : 'ประเมินราคาทาง LINE';
+        if (effectiveTier === 'tier2') {
+          priceStr = isEn ? 'Custom Email / LINE Quote' : 'ประเมินราคาทาง Email / LINE';
         } else {
           priceStr = isUsd ? `$${(pCfg.standard && pCfg.standard.usd) || 19} / season` : `${(pCfg.standard && pCfg.standard.thb) || 500}฿ / ฤดูกาล`;
         }
         if (badgeEl) badgeEl.textContent = priceStr;
 
         const planLabel = 'Standard';
-        const tierLabel = tier === 'tier2' ? (isEn ? '31+ Teams / 50+ Community' : '31 ทีมขึ้นไป / ลีกใหญ่ 50+') : (isEn ? 'Up to 30 Teams' : 'ไม่เกิน 30 ทีม');
-        const lidOut = (/^[0-9]+$/.test(rawLid) ? rawLid : '') || cleanLid || (isEn ? '(Pending ID)' : '(รอระบุเลข ID)');
+        const tierLabel = effectiveTier === 'tier2' ? (isEn ? '31+ Teams / 50+ Community' : '31 ทีมขึ้นไป / ลีกใหญ่ 50+') : (isEn ? 'Up to 30 Teams' : 'ไม่เกิน 30 ทีม');
 
+        let summaryText = '';
         if (boxEl) {
-          const hasFoundLookup = this.lookupState === 'found' && this.lookupResult && String(this.lookupResult.league_id) === lidOut;
           const cnt = hasFoundLookup ? Number(this.lookupResult.team_count || 0) : 0;
           const countLabel = hasFoundLookup
             ? (this.lookupResult.has_more
@@ -25427,21 +25576,119 @@ __STRUCTURED_DATA_JSON__
                 'FPLSaWaDiKa Setup Request',
                 'Official League ID: ' + lidOut,
                 ...(hasFoundLookup ? ['League Name (FPL): ' + this.lookupResult.name + ' (' + countLabel + ')'] : []),
+                'Email: ' + (emailVal || '(Pending Email)'),
+                ...(lineVal ? ['LINE ID: ' + lineVal] : []),
                 'Plan: ' + planLabel,
                 'Size: ' + tierLabel,
                 'Prize Rules & Amounts: ' + modelText,
-                'Starting Rate: ' + priceStr
+                'Rate / Payment: ' + priceStr + (isQuoteOnly ? '' : ' (PromptPay QR)')
               ]
             : [
                 'แจ้งขอเปิดแดชบอร์ด FPLSaWaDiKa',
                 'รหัส League ID: ' + lidOut,
                 ...(hasFoundLookup ? ['ชื่อลีก (จาก FPL): ' + this.lookupResult.name + ' (' + countLabel + ')'] : []),
+                'อีเมลติดต่อ: ' + (emailVal || '(รอระบุอีเมล)'),
+                ...(lineVal ? ['LINE ID: ' + lineVal] : []),
                 'แพ็กเกจ: ' + planLabel,
                 'ขนาดลีก: ' + tierLabel,
                 'กติกาและเงินรางวัล: ' + modelText,
-                'ราคาเริ่มต้น: ' + priceStr
+                'ราคา / ช่องทาง: ' + priceStr + (isQuoteOnly ? '' : ' (PromptPay QR)')
               ];
-          boxEl.textContent = lines.join('\\n');
+          summaryText = lines.join('\\n');
+          boxEl.textContent = summaryText;
+        }
+        if (openEmailEl) {
+          const supportEmail = (pCfg && pCfg.support_email) || 'support@fplsawadika.com';
+          if (/^[0-9]+$/.test(rawLid) && summaryText) {
+            const subj = 'FPLSaWaDiKa League ' + rawLid;
+            openEmailEl.setAttribute('href', 'mailto:' + supportEmail + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(summaryText));
+          } else {
+            openEmailEl.setAttribute('href', 'mailto:' + supportEmail);
+          }
+        }
+      },
+
+      async submitOrder() {
+        if (this._submittingOrder) return;
+        const lidEl = document.getElementById('order-league-id');
+        const emailEl = document.getElementById('order-email');
+        const lineEl = document.getElementById('order-line-id');
+        const modelEl = document.getElementById('order-prize-model');
+        const tierEl = document.getElementById('order-team-tier');
+        const fbEl = document.getElementById('order-copy-feedback');
+        const submitBtn = document.getElementById('btn-submit-order');
+        const submitTextEl = document.getElementById('btn-submit-order-text');
+        const isEn = this.lang === 'en';
+
+        if (fbEl) {
+          fbEl.textContent = '';
+          fbEl.classList.remove('is-error');
+        }
+        this.updateOrderSummary(true);
+
+        const lidVal = lidEl ? lidEl.value.trim() : '';
+        const emailVal = emailEl ? emailEl.value.trim() : '';
+        if (!/^[0-9]{1,10}$/.test(lidVal)) {
+          if (lidEl) lidEl.focus();
+          return;
+        }
+        if (!this.isValidOrderEmail(emailVal)) {
+          if (emailEl) emailEl.focus();
+          return;
+        }
+        if (window.location.protocol === 'file:') {
+          if (fbEl) {
+            fbEl.classList.add('is-error');
+            fbEl.textContent = isEn
+              ? 'Online checkout requires opening the website over HTTPS/HTTP. You can still copy the summary and send via LINE or Email.'
+              : 'การสร้างหน้าชำระเงินออนไลน์ต้องใช้งานผ่านหน้าเว็บออนไลน์ คุณสามารถคัดลอกสรุปรายการส่งทาง LINE หรืออีเมลได้ทันที';
+          }
+          return;
+        }
+
+        this._submittingOrder = true;
+        if (submitBtn) submitBtn.disabled = true;
+        if (submitTextEl) submitTextEl.textContent = isEn ? 'Creating your checkout page…' : 'กำลังสร้างหน้าชำระเงิน…';
+
+        try {
+          const apiBase = this.isPreviewOrigin() ? '' : this.resolveApiBase().base;
+          const hasLookup = this.lookupState === 'found' && this.lookupResult && String(this.lookupResult.league_id) === lidVal;
+          const payload = {
+            league_id: lidVal,
+            email: emailVal,
+            line_id: lineEl ? lineEl.value.trim() : '',
+            rules_text: modelEl ? modelEl.value.trim() : '',
+            league_name: hasLookup ? String(this.lookupResult.name || '') : '',
+            team_count: hasLookup ? Number(this.lookupResult.team_count || 0) : 0,
+            currency: this.currency === 'USD' ? 'USD' : 'THB',
+            team_tier: (tierEl && tierEl.value === 'tier2') ? 'tier2' : 'tier1',
+            lang: isEn ? 'en' : 'th'
+          };
+          const resp = await fetch(apiBase + '/api/public/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const data = await resp.json().catch(() => null);
+          if (!resp.ok || !data || !data.success || !data.order_id || !data.token) {
+            throw new Error((data && data.error) || (isEn ? 'Unable to create order right now.' : 'ไม่สามารถสร้างคำสั่งซื้อได้ชั่วคราว'));
+          }
+          const curParams = window.location.search ? new URLSearchParams(window.location.search) : null;
+          const apiParam = curParams ? (curParams.get('api') || '') : '';
+          const targetParams = new URLSearchParams();
+          targetParams.set('order', String(data.order_id));
+          targetParams.set('token', String(data.token));
+          if (apiParam) targetParams.set('api', apiParam);
+          window.location.href = './pay/?' + targetParams.toString();
+        } catch (err) {
+          this._submittingOrder = false;
+          if (submitBtn) submitBtn.disabled = false;
+          this.updateOrderSummary(false);
+          if (fbEl) {
+            fbEl.classList.add('is-error');
+            fbEl.textContent = (err && err.message ? err.message + ' — ' : '')
+              + (isEn ? 'Please try again or contact us via Email / LINE.' : 'กรุณาลองใหม่อีกครั้ง หรือติดต่อทาง Email / LINE');
+          }
         }
       },
 
@@ -25450,6 +25697,7 @@ __STRUCTURED_DATA_JSON__
         const boxEl = document.getElementById('order-summary-preview');
         const fbEl = document.getElementById('order-copy-feedback');
         const isEn = this.lang === 'en';
+        if (fbEl) fbEl.classList.remove('is-error');
 
         const lidVal = lidEl ? lidEl.value.trim() : '';
         if (!/^[0-9]+$/.test(lidVal)) {
@@ -25461,9 +25709,9 @@ __STRUCTURED_DATA_JSON__
         const text = boxEl ? boxEl.textContent : '';
         try {
           await navigator.clipboard.writeText(text);
-          if (fbEl) fbEl.textContent = isEn ? 'Order slip copied ✓ Paste in LINE chat to send.' : 'คัดลอกข้อความแล้ว ✓ กดปุ่มเปิดแชท LINE แล้ววางส่งได้เลย';
+          if (fbEl) fbEl.textContent = isEn ? 'Order slip copied ✓ Paste in LINE or Email.' : 'คัดลอกข้อความแล้ว ✓ นำไปวางส่งทาง LINE หรืออีเมลได้เลย';
         } catch (_) {
-          if (fbEl) fbEl.textContent = isEn ? 'Please copy the summary text above and send via LINE.' : 'กรุณาคัดลอกข้อความในกล่องด้านบนเพื่อส่งทาง LINE';
+          if (fbEl) fbEl.textContent = isEn ? 'Please copy the summary text above and send via LINE or Email.' : 'กรุณาคัดลอกข้อความในกล่องด้านบนเพื่อส่งทาง LINE หรืออีเมล';
         }
       },
 
@@ -25613,6 +25861,7 @@ __STRUCTURED_DATA_JSON__
     html = html.replace('__LAST_SYNC__', last_sync_str)
     html = html.replace('__MAX_TEAMS__', str(max_teams))
     html = html.replace('__LINE_URL__', line_url)
+    html = html.replace('__SUPPORT_EMAIL__', support_email)
     html = html.replace('__PRICING_JSON__', pricing_json)
     html = html.replace('__DEMOS_JSON__', demos_json)
     html = html.replace('__SAMPLE_PREVIEW_JSON__', sample_preview_json)
@@ -25620,6 +25869,7 @@ __STRUCTURED_DATA_JSON__
 
 def generate_404_html(site_config, leagues_config):
     line_url = (site_config.get('contact') or {}).get('line_url') or 'https://line.me/ti/p/lgWPeyIBR7'
+    support_email = (site_config.get('contact') or {}).get('email') or 'support@fplsawadika.com'
     demos = (site_config.get('showcase_demos') or [])[:3]
     quick_demos = [{"id": str(d.get("id", "")), "title_th": d.get("title_th", ""), "title_en": d.get("title_en", "")} for d in demos]
     quick_demos_json = json.dumps(quick_demos, ensure_ascii=False).replace('</', '<\\/')
@@ -25675,6 +25925,7 @@ def generate_404_html(site_config, leagues_config):
     <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-1">
       <a id="e404-home-btn" href="./" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-500 text-white text-xs sm:text-sm font-bold transition-colors">กลับหน้าแรก FPLSaWaDiKa</a>
       <a id="e404-line-btn" href="__LINE_URL__" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold transition-colors">ติดต่อเปิดลีกผ่าน LINE ↗</a>
+      <a id="e404-email-btn" href="mailto:__SUPPORT_EMAIL__" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs sm:text-sm font-bold transition-colors">ติดต่อทาง Email</a>
     </div>
 
     <div class="pt-4 border-t border-slate-200/80 dark:border-slate-800 space-y-2.5">
@@ -25695,6 +25946,8 @@ def generate_404_html(site_config, leagues_config):
         document.getElementById('e404-desc').textContent = 'This URL may be mistyped, expired, or this FPL mini-league has not been onboarded yet.';
         if (homeBtn) homeBtn.textContent = 'Back to Home';
         document.getElementById('e404-line-btn').textContent = 'Request League Setup via LINE ↗';
+        var emailBtn = document.getElementById('e404-email-btn');
+        if (emailBtn) emailBtn.textContent = 'Contact via Email';
         document.getElementById('e404-demos-lbl').textContent = 'Explore Live Demos';
       }
       const row = document.getElementById('e404-demos-row');
@@ -25711,7 +25964,790 @@ def generate_404_html(site_config, leagues_config):
 </html>"""
 
     html = html.replace('__LINE_URL__', line_url)
+    html = html.replace('__SUPPORT_EMAIL__', support_email)
     html = html.replace('__QUICK_DEMOS_JSON__', quick_demos_json)
+    return html
+
+def generate_pay_html(site_config):
+    line_url = (site_config.get('contact') or {}).get('line_url') or 'https://line.me/ti/p/lgWPeyIBR7'
+    support_email = (site_config.get('contact') or {}).get('email') or 'support@fplsawadika.com'
+    api_base_url = site_config.get('api_base_url') or 'https://api.fplsawadika.com'
+    pay_cfg_json = json.dumps({
+        "line_url": line_url,
+        "support_email": support_email,
+        "api_base_url": api_base_url,
+    }, ensure_ascii=False).replace('</', '<\\/')
+
+    html = """<!DOCTYPE html>
+<html lang="th" class="h-full transition-colors duration-150">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>ชำระเงินและติดตามคำสั่งซื้อ | FPLSaWaDiKa</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="shortcut icon" href="../favicon.ico?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/icons/favicon-32x32.png?v=2">
+  <link rel="icon" type="image/png" sizes="16x16" href="../images/icons/favicon-16x16.png?v=2">
+  <link rel="apple-touch-icon" sizes="180x180" href="../images/icons/apple-touch-icon.png?v=2">
+  <script>
+    (function() {
+      var dark = false;
+      var lang = 'th';
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var uTheme = params.get('theme');
+        var uLang = params.get('lang');
+        var savedTheme = null;
+        var savedLang = null;
+        try { savedTheme = localStorage.getItem('fpl_theme'); } catch (_) {}
+        try { savedLang = localStorage.getItem('fpl_lang'); } catch (_) {}
+        var sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        dark = uTheme ? (uTheme === 'dark') : (savedTheme ? savedTheme === 'dark' : sysDark);
+        lang = uLang ? (uLang === 'en' ? 'en' : 'th') : (savedLang === 'en' ? 'en' : 'th');
+      } catch (_) {}
+      document.documentElement.classList.toggle('dark', dark);
+      document.documentElement.lang = lang;
+    })();
+  </script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.5/dist/index.global.js"
+    integrity="sha384-t+qLIxS5zM/KF99/doWY+dxTsavdvgayaZt8A9ntLsUjEkiXzYl5M3Ij8zVFPL9j"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <style type="text/tailwindcss">
+    @variant dark (&:where(.dark, .dark *));
+  </style>
+  <script src="../assets/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      overflow-x: clip;
+    }
+    .tabular-nums { font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body class="min-h-full bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100 antialiased">
+  <header class="sticky top-0 z-30 border-b border-slate-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-950/95 backdrop-blur">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+      <a id="pay-home-link" href="../" class="inline-flex items-center gap-2 text-sm font-bold text-slate-800 dark:text-zinc-100 hover:text-rose-600 dark:hover:text-rose-400 transition-colors min-h-[40px]">
+        <span aria-hidden="true">←</span>
+        <span id="pay-back-text">FPLSaWaDiKa</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <button id="pay-lang-btn" type="button" onclick="payApp.toggleLang()" class="min-h-[40px] px-3 rounded-lg border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-900 text-xs font-bold hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer">
+          EN
+        </button>
+        <button id="pay-theme-btn" type="button" onclick="payApp.toggleTheme()" aria-label="Toggle Dark/Light Theme" class="min-h-[40px] min-w-[40px] px-2.5 rounded-lg border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-900 text-xs font-bold hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer">
+          ◐
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-6 sm:py-8 space-y-5">
+    <!-- Loading State -->
+    <section id="pay-loading" class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-8 text-center space-y-2 shadow-sm">
+      <div class="inline-block w-7 h-7 border-3 border-slate-300 dark:border-zinc-700 border-t-rose-600 rounded-full animate-spin"></div>
+      <p id="pay-loading-text" class="text-sm font-semibold text-slate-600 dark:text-zinc-300">กำลังโหลดข้อมูลคำสั่งซื้อ…</p>
+    </section>
+
+    <!-- Error / Invalid Link State -->
+    <section id="pay-error-card" class="hidden rounded-2xl border border-rose-200 dark:border-rose-900/60 bg-white dark:bg-zinc-900 p-6 sm:p-8 text-center space-y-4 shadow-sm">
+      <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-200">
+        <span id="pay-error-badge">ไม่พบคำสั่งซื้อ</span>
+      </div>
+      <h1 id="pay-error-title" class="text-xl font-extrabold text-slate-900 dark:text-white">ไม่สามารถแสดงรายการสั่งซื้อนี้ได้</h1>
+      <p id="pay-error-desc" class="text-sm text-slate-600 dark:text-zinc-300 max-w-md mx-auto">ลิงก์อาจไม่ถูกต้อง หรือคำสั่งซื้อหมดอายุแล้ว คุณสามารถสร้างคำสั่งซื้อใหม่ได้ทันที</p>
+      <div class="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+        <a id="pay-error-home-btn" href="../#order" class="min-h-[44px] px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-sm font-bold inline-flex items-center justify-center transition-colors">
+          <span id="pay-error-home-text">สร้างคำสั่งซื้อใหม่ →</span>
+        </a>
+        <a id="pay-error-line-btn" href="__LINE_URL__" target="_blank" rel="noopener noreferrer" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold inline-flex items-center justify-center transition-colors">LINE Official ↗</a>
+        <a id="pay-error-email-btn" href="mailto:__SUPPORT_EMAIL__" class="min-h-[44px] px-4 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 text-sm font-bold inline-flex items-center justify-center transition-colors">__SUPPORT_EMAIL__</a>
+      </div>
+    </section>
+
+    <!-- Order Main Content -->
+    <div id="pay-content" class="hidden space-y-5">
+      <!-- Top Order Summary Strip -->
+      <section class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6 shadow-sm space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-zinc-800 pb-4">
+          <div class="space-y-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-md bg-slate-100 dark:bg-zinc-800 text-slate-800 dark:text-zinc-200" id="sum-order-id">FPL-XXXX</span>
+              <span class="text-xs font-bold px-2.5 py-1 rounded-full" id="sum-status-badge">Awaiting Payment</span>
+            </div>
+            <h1 id="pay-page-heading" class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white pt-1">ชำระเงินและติดตามคำสั่งเปิดลีก</h1>
+          </div>
+          <div class="text-left sm:text-right">
+            <div id="sum-amount-lbl" class="text-xs text-slate-500 dark:text-zinc-400">ยอดรายการ</div>
+            <div id="sum-amount-val" class="text-2xl font-extrabold text-rose-600 dark:text-rose-400 tabular-nums">500.00 ฿</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs sm:text-sm">
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-zinc-950/70 border border-slate-200/80 dark:border-zinc-800">
+            <div id="sum-league-lbl" class="text-xs text-slate-500 dark:text-zinc-400">ลีก FPL</div>
+            <div id="sum-league-val" class="font-bold text-slate-900 dark:text-white break-words">-</div>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-zinc-950/70 border border-slate-200/80 dark:border-zinc-800">
+            <div id="sum-contact-lbl" class="text-xs text-slate-500 dark:text-zinc-400">ช่องทางรับลิงก์</div>
+            <div id="sum-contact-val" class="font-semibold text-slate-900 dark:text-white break-words [overflow-wrap:anywhere]">-</div>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-zinc-950/70 border border-slate-200/80 dark:border-zinc-800">
+            <div id="sum-rules-lbl" class="text-xs text-slate-500 dark:text-zinc-400">กติกาที่ระบุ</div>
+            <div id="sum-rules-val" class="font-medium text-slate-800 dark:text-zinc-200 break-words">-</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- State 1: Awaiting Payment / Rejected Re-upload -->
+      <section id="panel-awaiting" class="hidden space-y-4">
+        <div id="pay-reject-alert" class="hidden rounded-xl border border-rose-300 dark:border-rose-800 bg-rose-50 dark:bg-rose-950/60 p-4 text-sm text-rose-900 dark:text-rose-100">
+          <strong id="pay-reject-title" class="block font-bold mb-1">สลิปก่อนหน้ายังไม่ผ่านการตรวจสอบ</strong>
+          <span id="pay-reject-reason"></span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
+          <!-- QR Column -->
+          <div id="pay-qr-col" class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6 shadow-sm space-y-4 text-center">
+            <div class="space-y-1">
+              <div id="qr-step-badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-200">ขั้นตอนที่ 1 • สแกน PromptPay QR</div>
+              <div id="qr-exact-amount" class="text-3xl font-black text-rose-600 dark:text-rose-400 tabular-nums pt-1">500.00 ฿</div>
+              <p id="qr-exact-hint" class="text-xs font-semibold text-amber-700 dark:text-amber-300">กรุณาโอนตรงตามยอดสตางค์นี้เพื่อให้ตรวจสอบยอดได้แม่นยำ</p>
+            </div>
+
+            <div class="inline-block bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+              <canvas id="pay-qr-canvas" width="380" height="440" class="w-[220px] sm:w-[248px] h-auto block mx-auto"></canvas>
+            </div>
+
+            <div class="text-xs text-slate-600 dark:text-zinc-300 space-y-1">
+              <div><span id="qr-acct-lbl">ชื่อบัญชีผู้รับ:</span> <strong id="qr-acct-val" class="text-slate-900 dark:text-white">FPLSaWaDiKa</strong></div>
+              <div><span id="qr-timer-lbl">QR มีอายุถึง:</span> <strong id="pay-countdown" class="font-mono text-rose-600 dark:text-rose-400 tabular-nums">--:--</strong></div>
+            </div>
+
+            <button id="btn-save-qr" type="button" onclick="payApp.downloadQrPng()" class="w-full min-h-[44px] px-4 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700 text-sm font-bold text-slate-900 dark:text-white transition-colors cursor-pointer">
+              <span id="btn-save-qr-text">บันทึกรูป QR (Save QR)</span>
+            </button>
+          </div>
+
+          <!-- Slip Upload Column -->
+          <div class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6 shadow-sm space-y-4">
+            <div class="space-y-1">
+              <div id="slip-step-badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200">ขั้นตอนที่ 2 • แนบสลิปโอนเงิน</div>
+              <h2 id="slip-heading" class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white pt-1">อัปโหลดรูปสลิปเพื่อส่งเปิดลีกทันที</h2>
+              <p id="slip-desc" class="text-xs text-slate-600 dark:text-zinc-400">รองรับไฟล์ .jpg, .png, .webp ระบบจะย่อขนาดภาพอัตโนมัติในเครื่องของคุณก่อนส่ง</p>
+            </div>
+
+            <label for="pay-slip-input" class="block w-full rounded-xl border-2 border-dashed border-slate-300 dark:border-zinc-700 hover:border-rose-500 dark:hover:border-rose-400 p-4 text-center cursor-pointer bg-slate-50 dark:bg-zinc-950/60 transition-colors">
+              <span id="slip-drop-text" class="block text-sm font-bold text-slate-800 dark:text-zinc-100">เลือกรูปภาพสลิปจากเครื่อง</span>
+              <span id="slip-meta" class="block text-xs text-slate-500 dark:text-zinc-400 mt-1">ยังไม่ได้เลือกไฟล์</span>
+              <input id="pay-slip-input" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only">
+            </label>
+
+            <div id="pay-slip-preview-wrap" class="hidden rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 p-3 text-center">
+              <img id="pay-slip-preview" alt="Payment slip preview" class="max-h-64 mx-auto rounded-lg object-contain">
+            </div>
+
+            <button id="btn-submit-slip" type="button" onclick="payApp.uploadSlip()" disabled class="w-full min-h-[46px] px-5 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 disabled:opacity-45 disabled:cursor-not-allowed text-white text-sm font-extrabold transition-colors cursor-pointer">
+              <span id="btn-submit-slip-text">ส่งสลิปยืนยันการโอน</span>
+            </button>
+
+            <p id="pay-slip-status" class="text-xs font-bold min-h-[1.25rem]" aria-live="polite"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- State 2: Slip Submitted -->
+      <section id="panel-submitted" class="hidden rounded-2xl border border-amber-300 dark:border-amber-800/70 bg-white dark:bg-zinc-900 p-6 sm:p-8 text-center space-y-4 shadow-sm">
+        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200" id="submitted-badge">กำลังตรวจสอบสลิป</div>
+        <h2 id="submitted-title" class="text-xl font-extrabold text-slate-900 dark:text-white">ได้รับสลิปโอนเงินเรียบร้อยแล้ว!</h2>
+        <p id="submitted-desc" class="text-sm text-slate-600 dark:text-zinc-300 max-w-lg mx-auto">แอดมินกำลังตรวจสอบยอดเงินและตั้งค่าลีกให้คุณ คาดว่าจะส่งลิงก์ส่วนตัวให้ทางอีเมลภายใน 24 ชั่วโมง (หรือคืนเงินเต็มจำนวน 100% หากไม่สามารถเปิดใช้งานได้)</p>
+        <p class="text-xs font-mono text-slate-500 dark:text-zinc-400"><span id="submitted-at-lbl">ส่งสลิปเมื่อ:</span> <span id="submitted-at-val">-</span></p>
+        <button id="btn-refresh-status" type="button" onclick="payApp.loadOrder()" class="min-h-[44px] px-5 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700 text-sm font-bold transition-colors cursor-pointer">
+          <span id="btn-refresh-text">เช็กสถานะล่าสุด</span>
+        </button>
+      </section>
+
+      <!-- State 3: Paid (Setting up) -->
+      <section id="panel-paid" class="hidden rounded-2xl border border-emerald-300 dark:border-emerald-800/70 bg-white dark:bg-zinc-900 p-6 sm:p-8 text-center space-y-4 shadow-sm">
+        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200" id="paid-badge">ยืนยันยอดโอนแล้ว ✓</div>
+        <h2 id="paid-title" class="text-xl font-extrabold text-slate-900 dark:text-white">แอดมินยืนยันยอดเงินเรียบร้อย กำลังตั้งค่าลีกของคุณ</h2>
+        <p id="paid-desc" class="text-sm text-slate-600 dark:text-zinc-300 max-w-lg mx-auto">ระบบจะส่งอีเมลพร้อมลิงก์เข้าใช้งานให้ทันทีเมื่อตั้งค่าคะแนนสดและกติกาเงินรางวัลเสร็จ (ภายใน 24 ชม.)</p>
+        <button id="btn-refresh-status-paid" type="button" onclick="payApp.loadOrder()" class="min-h-[44px] px-5 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700 text-sm font-bold transition-colors cursor-pointer">
+          <span id="btn-refresh-paid-text">เช็กสถานะล่าสุด</span>
+        </button>
+      </section>
+
+      <!-- State 4: Live! -->
+      <section id="panel-live" class="hidden rounded-2xl border-2 border-emerald-500 bg-white dark:bg-zinc-900 p-6 sm:p-8 text-center space-y-4 shadow-md">
+        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200" id="live-badge">ลีกพร้อมใช้งานแล้ว 🎉</div>
+        <h2 id="live-title" class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">แดชบอร์ดมินิลีกของคุณเปิดใช้งานเรียบร้อย!</h2>
+        <p id="live-desc" class="text-sm text-slate-600 dark:text-zinc-300 max-w-lg mx-auto">บันทึกบุ๊กมาร์กและส่งลิงก์ส่วนตัวด้านล่างเข้ากลุ่มแชทเพื่อนได้ทันที (ซ่อนจากการค้นหา Google เพื่อความเป็นส่วนตัว)</p>
+        <div class="pt-1">
+          <a id="pay-live-link" href="../" target="_blank" rel="noopener noreferrer" class="min-h-[48px] px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-base font-extrabold inline-flex items-center justify-center transition-colors shadow-sm">
+            <span id="pay-live-link-text">เข้าสู่แดชบอร์ดลีกของคุณ →</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- State 5: Quote Requested (USD or 31+ teams) -->
+      <section id="panel-quote" class="hidden rounded-2xl border border-sky-300 dark:border-sky-800/70 bg-white dark:bg-zinc-900 p-6 sm:p-8 text-center space-y-4 shadow-sm">
+        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-200" id="quote-badge">ได้รับคำขอเปิดลีกแล้ว ✓</div>
+        <h2 id="quote-title" class="text-xl font-extrabold text-slate-900 dark:text-white">บันทึกคำขอประเมินราคา / ชำระเงิน USD แล้ว</h2>
+        <p id="quote-desc" class="text-sm text-slate-600 dark:text-zinc-300 max-w-lg mx-auto">สำหรับลีกขนาด 31+ ทีม หรือการชำระเงินสกุล USD ทีมงานได้รับข้อมูลและกติกาของคุณแล้ว และจะติดต่อกลับทาง Email หรือ LINE ภายใน 24 ชม. เพื่อแจ้งช่องทางชำระเงินที่สะดวก</p>
+        <div class="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+          <a id="quote-line-btn" href="__LINE_URL__" target="_blank" rel="noopener noreferrer" class="min-h-[44px] px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold inline-flex items-center justify-center transition-colors">LINE Official ↗</a>
+          <a id="quote-email-btn" href="mailto:__SUPPORT_EMAIL__" class="min-h-[44px] px-5 py-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700 text-sm font-bold inline-flex items-center justify-center transition-colors">Email: __SUPPORT_EMAIL__</a>
+        </div>
+      </section>
+
+      <!-- State 6: Expired -->
+      <section id="panel-expired" class="hidden rounded-2xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-6 sm:p-8 text-center space-y-4 shadow-sm">
+        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-200 text-slate-800 dark:bg-zinc-800 dark:text-zinc-200" id="expired-badge">QR หมดอายุ</div>
+        <h2 id="expired-title" class="text-xl font-extrabold text-slate-900 dark:text-white">คำสั่งซื้อนี้หมดเวลาชำระเงิน (24 ชม.) แล้ว</h2>
+        <p id="expired-desc" class="text-sm text-slate-600 dark:text-zinc-300 max-w-md mx-auto">เพื่อป้องกันยอดสตางค์ซ้ำซ้อน กรุณากลับไปสร้างคำสั่งซื้อใหม่ หรือทักทีมงานพร้อมแจ้งเลขคำสั่งซื้อหากโอนเงินไปแล้ว</p>
+        <div class="pt-1">
+          <a id="expired-new-btn" href="../#order" class="min-h-[44px] px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-sm font-bold inline-flex items-center justify-center transition-colors">
+            <span id="expired-new-text">สร้างคำสั่งซื้อใหม่ →</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Guarantee & Dual Support Strip -->
+      <section class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div class="space-y-0.5">
+          <div id="pay-sla-title" class="font-bold text-slate-900 dark:text-white">รับประกันเปิดใช้งานภายใน 24 ชม. หลังตรวจสลิป</div>
+          <div id="pay-sla-sub" class="text-slate-600 dark:text-zinc-400">หากไม่สามารถเปิดใช้งานลีกได้ภายใน 24 ชม. คืนเงินเต็มจำนวน 100%</div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 shrink-0">
+          <a id="pay-support-line" href="__LINE_URL__" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold inline-flex items-center justify-center transition-colors">LINE Official ↗</a>
+          <a id="pay-support-email" href="mailto:__SUPPORT_EMAIL__" class="min-h-[40px] px-3.5 py-2 rounded-lg border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700 font-bold text-slate-800 dark:text-zinc-100 inline-flex items-center justify-center transition-colors">__SUPPORT_EMAIL__</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    window.PAY_CFG = __PAY_CFG_JSON__;
+
+    const payApp = {
+      lang: document.documentElement.lang === 'en' ? 'en' : 'th',
+      orderId: '',
+      token: '',
+      order: null,
+      compressedDataUrl: '',
+      countdownTimer: null,
+
+      isLocalOrigin() {
+        if (typeof window === 'undefined' || !window.location) return true;
+        const proto = String(window.location.protocol || '').toLowerCase();
+        const host = String(window.location.hostname || '').toLowerCase();
+        return proto === 'file:' || !host || host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]' || host === '0.0.0.0' || host.endsWith('.local');
+      },
+
+      isPreviewOrigin() {
+        if (typeof window === 'undefined' || !window.location) return false;
+        const host = String(window.location.hostname || '').toLowerCase();
+        return host.endsWith('.pages.dev') || host.endsWith('.workers.dev');
+      },
+
+      resolveApiBase() {
+        const fallback = (window.PAY_CFG && window.PAY_CFG.api_base_url) || 'https://api.fplsawadika.com';
+        try {
+          if (!this.isLocalOrigin() || typeof window === 'undefined' || !window.location) {
+            return { base: fallback, isNonProdTarget: false };
+          }
+          let candidate = '';
+          if (window.location.search) {
+            const qp = new URLSearchParams(window.location.search).get('api');
+            if (qp !== null) {
+              const trimmed = qp.trim();
+              if (trimmed === 'reset' || trimmed === 'prod' || trimmed === '') {
+                try { sessionStorage.removeItem('fpl_dev_api_base'); } catch (_) {}
+              } else {
+                candidate = (trimmed === 'local' || trimmed === 'staging') ? 'http://127.0.0.1:8787' : trimmed;
+              }
+            }
+          }
+          if (!candidate) {
+            try { candidate = sessionStorage.getItem('fpl_dev_api_base') || ''; } catch (_) {}
+          }
+          if (candidate) {
+            const parsed = new URL(candidate);
+            const ch = parsed.hostname.toLowerCase();
+            const ok = (parsed.protocol === 'http:' && (ch === '127.0.0.1' || ch === 'localhost')) ||
+                       (parsed.protocol === 'https:' && (ch.endsWith('.workers.dev') || ch === 'api.fplsawadika.com' || ch.endsWith('.fplsawadika.com')));
+            if (ok) {
+              const clean = parsed.origin;
+              try { sessionStorage.setItem('fpl_dev_api_base', clean); } catch (_) {}
+              const isProdHost = ch === 'api.fplsawadika.com' || ch === 'fpl-live-relay.asawamanasak.workers.dev';
+              return { base: clean, isNonProdTarget: !isProdHost };
+            }
+          }
+        } catch (_) {}
+        return { base: fallback, isNonProdTarget: false };
+      },
+
+      init() {
+        const isFile = window.location.protocol === 'file:';
+        const homeHref = isFile ? '../index.html' : '../';
+        const orderHref = isFile ? '../index.html#order' : '../#order';
+        const homeEl = document.getElementById('pay-home-link');
+        if (homeEl) homeEl.setAttribute('href', homeHref);
+        const errHome = document.getElementById('pay-error-home-btn');
+        if (errHome) errHome.setAttribute('href', orderHref);
+        const expNew = document.getElementById('expired-new-btn');
+        if (expNew) expNew.setAttribute('href', orderHref);
+
+        const slipInput = document.getElementById('pay-slip-input');
+        if (slipInput) {
+          slipInput.addEventListener('change', (e) => {
+            const file = e && e.target && e.target.files ? e.target.files[0] : null;
+            this.handleSlipFile(file);
+          });
+        }
+
+        const params = window.location.search ? new URLSearchParams(window.location.search) : new URLSearchParams();
+        this.orderId = (params.get('order') || '').trim();
+        this.token = (params.get('token') || '').trim();
+        this.applyLanguage();
+
+        if (!this.orderId || !this.token) {
+          this.showErrorState(
+            this.lang === 'en' ? 'Order Link Missing Parameters' : 'ไม่พบรหัสคำสั่งซื้อในลิงก์',
+            this.lang === 'en'
+              ? 'Open the order form on the homepage to start a PromptPay checkout or request a quote.'
+              : 'กรุณากรอกรหัส League ID และอีเมลที่หน้าแรกเพื่อสร้างหน้าชำระเงินหรือเปิดลีกใหม่'
+          );
+          return;
+        }
+        this.loadOrder();
+      },
+
+      toggleLang() {
+        this.lang = this.lang === 'th' ? 'en' : 'th';
+        try { localStorage.setItem('fpl_lang', this.lang); } catch (_) {}
+        document.documentElement.lang = this.lang;
+        this.applyLanguage();
+        if (this.order) this.renderOrder(this.order);
+      },
+
+      toggleTheme() {
+        const isDark = !document.documentElement.classList.contains('dark');
+        document.documentElement.classList.toggle('dark', isDark);
+        try { localStorage.setItem('fpl_theme', isDark ? 'dark' : 'light'); } catch (_) {}
+      },
+
+      applyLanguage() {
+        const isEn = this.lang === 'en';
+        const setTxt = (id, text) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = text;
+        };
+        setTxt('pay-lang-btn', isEn ? 'TH' : 'EN');
+        setTxt('pay-loading-text', isEn ? 'Loading your order details…' : 'กำลังโหลดข้อมูลคำสั่งซื้อ…');
+        setTxt('pay-page-heading', isEn ? 'Mini-League Payment & Order Tracking' : 'ชำระเงินและติดตามคำสั่งเปิดลีก');
+        setTxt('sum-amount-lbl', isEn ? 'Amount' : 'ยอดรายการ');
+        setTxt('sum-league-lbl', isEn ? 'FPL League' : 'ลีก FPL');
+        setTxt('sum-contact-lbl', isEn ? 'Delivery Contact' : 'ช่องทางรับลิงก์');
+        setTxt('sum-rules-lbl', isEn ? 'Prize Rules' : 'กติกาที่ระบุ');
+        setTxt('qr-step-badge', isEn ? 'Step 1 • Scan PromptPay QR' : 'ขั้นตอนที่ 1 • สแกน PromptPay QR');
+        setTxt('qr-exact-hint', isEn ? 'Transfer the exact satang amount shown so your payment can be verified quickly' : 'กรุณาโอนตรงตามยอดสตางค์นี้เพื่อให้ตรวจสอบยอดได้แม่นยำ');
+        setTxt('qr-acct-lbl', isEn ? 'Account Name:' : 'ชื่อบัญชีผู้รับ:');
+        setTxt('qr-timer-lbl', isEn ? 'QR Expires In:' : 'QR มีอายุถึง:');
+        setTxt('btn-save-qr-text', isEn ? 'Save QR Image (PNG)' : 'บันทึกรูป QR (Save QR)');
+        setTxt('slip-step-badge', isEn ? 'Step 2 • Upload Payment Slip' : 'ขั้นตอนที่ 2 • แนบสลิปโอนเงิน');
+        setTxt('slip-heading', isEn ? 'Upload transfer slip to verify your order' : 'อัปโหลดรูปสลิปเพื่อส่งเปิดลีกทันที');
+        setTxt('slip-desc', isEn ? 'Supports .jpg, .png, .webp. Your browser resizes the image automatically before upload.' : 'รองรับไฟล์ .jpg, .png, .webp ระบบจะย่อขนาดภาพอัตโนมัติในเครื่องของคุณก่อนส่ง');
+        setTxt('slip-drop-text', isEn ? 'Choose transfer slip image' : 'เลือกรูปภาพสลิปจากเครื่อง');
+        if (!this.compressedDataUrl) {
+          setTxt('slip-meta', isEn ? 'No file selected yet' : 'ยังไม่ได้เลือกไฟล์');
+        }
+        setTxt('btn-submit-slip-text', isEn ? 'Submit Payment Slip' : 'ส่งสลิปยืนยันการโอน');
+        setTxt('pay-reject-title', isEn ? 'Previous slip could not be verified' : 'สลิปก่อนหน้ายังไม่ผ่านการตรวจสอบ');
+        setTxt('submitted-badge', isEn ? 'Verifying Payment Slip' : 'กำลังตรวจสอบสลิป');
+        setTxt('submitted-title', isEn ? 'Payment Slip Received!' : 'ได้รับสลิปโอนเงินเรียบร้อยแล้ว!');
+        setTxt('submitted-desc', isEn ? 'We are verifying your transfer and configuring your mini-league. Your private dashboard link will arrive by email within 24 hours (100% money-back guarantee if unable to launch).' : 'แอดมินกำลังตรวจสอบยอดเงินและตั้งค่าลีกให้คุณ คาดว่าจะส่งลิงก์ส่วนตัวให้ทางอีเมลภายใน 24 ชั่วโมง (หรือคืนเงินเต็มจำนวน 100% หากไม่สามารถเปิดใช้งานได้)');
+        setTxt('submitted-at-lbl', isEn ? 'Submitted at:' : 'ส่งสลิปเมื่อ:');
+        setTxt('btn-refresh-text', isEn ? 'Refresh Status' : 'เช็กสถานะล่าสุด');
+        setTxt('paid-badge', isEn ? 'Payment Verified ✓' : 'ยืนยันยอดโอนแล้ว ✓');
+        setTxt('paid-title', isEn ? 'Payment Confirmed — Configuring Your League' : 'แอดมินยืนยันยอดเงินเรียบร้อย กำลังตั้งค่าลีกของคุณ');
+        setTxt('paid-desc', isEn ? 'We are importing historical Gameweeks and setting up your rules. You will receive an email when live (within 24h).' : 'ระบบจะส่งอีเมลพร้อมลิงก์เข้าใช้งานให้ทันทีเมื่อตั้งค่าคะแนนสดและกติกาเงินรางวัลเสร็จ (ภายใน 24 ชม.)');
+        setTxt('btn-refresh-paid-text', isEn ? 'Refresh Status' : 'เช็กสถานะล่าสุด');
+        setTxt('live-badge', isEn ? 'League Dashboard Live 🎉' : 'ลีกพร้อมใช้งานแล้ว 🎉');
+        setTxt('live-title', isEn ? 'Your Mini-League Dashboard is Ready!' : 'แดชบอร์ดมินิลีกของคุณเปิดใช้งานเรียบร้อย!');
+        setTxt('live-desc', isEn ? 'Bookmark this private link and share it with your league members. Excluded from Google search indexing.' : 'บันทึกบุ๊กมาร์กและส่งลิงก์ส่วนตัวด้านล่างเข้ากลุ่มแชทเพื่อนได้ทันที (ซ่อนจากการค้นหา Google เพื่อความเป็นส่วนตัว)');
+        setTxt('pay-live-link-text', isEn ? 'Open Your League Dashboard →' : 'เข้าสู่แดชบอร์ดลีกของคุณ →');
+        setTxt('quote-badge', isEn ? 'Request Recorded ✓' : 'ได้รับคำขอเปิดลีกแล้ว ✓');
+        setTxt('quote-title', isEn ? 'Custom / USD Request Received' : 'บันทึกคำขอประเมินราคา / ชำระเงิน USD แล้ว');
+        setTxt('quote-desc', isEn ? 'For 31+ team leagues or USD ($19) orders, our team has recorded your rules and will reply via Email or LINE within 24h with payment details.' : 'สำหรับลีกขนาด 31+ ทีม หรือการชำระเงินสกุล USD ทีมงานได้รับข้อมูลและกติกาของคุณแล้ว และจะติดต่อกลับทาง Email หรือ LINE ภายใน 24 ชม. เพื่อแจ้งช่องทางชำระเงินที่สะดวก');
+        setTxt('expired-badge', isEn ? 'Order Expired' : 'QR หมดอายุ');
+        setTxt('expired-title', isEn ? 'This checkout session expired (24h limit)' : 'คำสั่งซื้อนี้หมดเวลาชำระเงิน (24 ชม.) แล้ว');
+        setTxt('expired-desc', isEn ? 'To prevent duplicate satang amounts, please create a new order or contact us with your Order ID if you already transferred.' : 'เพื่อป้องกันยอดสตางค์ซ้ำซ้อน กรุณากลับไปสร้างคำสั่งซื้อใหม่ หรือทักทีมงานพร้อมแจ้งเลขคำสั่งซื้อหากโอนเงินไปแล้ว');
+        setTxt('expired-new-text', isEn ? 'Create New Order →' : 'สร้างคำสั่งซื้อใหม่ →');
+        setTxt('pay-sla-title', isEn ? 'Launched within 24h after slip verification' : 'รับประกันเปิดใช้งานภายใน 24 ชม. หลังตรวจสลิป');
+        setTxt('pay-sla-sub', isEn ? '100% full refund guarantee if we cannot launch your league within 24 hours.' : 'หากไม่สามารถเปิดใช้งานลีกได้ภายใน 24 ชม. คืนเงินเต็มจำนวน 100%');
+        setTxt('pay-error-home-text', isEn ? 'Create New Order →' : 'สร้างคำสั่งซื้อใหม่ →');
+      },
+
+      showErrorState(title, desc) {
+        const loadEl = document.getElementById('pay-loading');
+        const contEl = document.getElementById('pay-content');
+        const errEl = document.getElementById('pay-error-card');
+        if (loadEl) loadEl.classList.add('hidden');
+        if (contEl) contEl.classList.add('hidden');
+        if (errEl) errEl.classList.remove('hidden');
+        const t = document.getElementById('pay-error-title');
+        const d = document.getElementById('pay-error-desc');
+        if (t && title) t.textContent = title;
+        if (d && desc) d.textContent = desc;
+      },
+
+      async loadOrder() {
+        const isEn = this.lang === 'en';
+        try {
+          const apiBase = this.isPreviewOrigin() ? '' : this.resolveApiBase().base;
+          const url = apiBase + '/api/public/orders/status?order=' + encodeURIComponent(this.orderId) + '&token=' + encodeURIComponent(this.token);
+          const resp = await fetch(url, { cache: 'no-store' });
+          const data = await resp.json().catch(() => null);
+          if (!resp.ok || !data || !data.success) {
+            this.showErrorState(
+              isEn ? 'Order Not Found' : 'ไม่พบข้อมูลคำสั่งซื้อนี้',
+              (data && data.error) || (isEn ? 'Check your tracking link from email or create a new order.' : 'ตรวจสอบลิงก์ติดตามสถานะจากอีเมลของคุณ หรือสร้างคำสั่งซื้อใหม่')
+            );
+            return;
+          }
+          this.order = data;
+          const loadEl = document.getElementById('pay-loading');
+          const errEl = document.getElementById('pay-error-card');
+          const contEl = document.getElementById('pay-content');
+          if (loadEl) loadEl.classList.add('hidden');
+          if (errEl) errEl.classList.add('hidden');
+          if (contEl) contEl.classList.remove('hidden');
+          this.renderOrder(data);
+        } catch (err) {
+          this.showErrorState(
+            isEn ? 'Connection Error' : 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ชั่วคราว',
+            (err && err.message) || ''
+          );
+        }
+      },
+
+      getStatusMeta(status) {
+        const isEn = this.lang === 'en';
+        const map = {
+          awaiting_payment: { label: isEn ? 'Awaiting Payment' : 'รอชำระเงิน PromptPay', cls: 'bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-200' },
+          slip_submitted: { label: isEn ? 'Slip Submitted' : 'ส่งสลิปแล้ว • รอตรวจสอบ', cls: 'bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200' },
+          paid: { label: isEn ? 'Paid • Setting Up' : 'ยืนยันยอดแล้ว • กำลังตั้งค่า', cls: 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200' },
+          live: { label: isEn ? 'Live' : 'เปิดใช้งานแล้ว', cls: 'bg-emerald-600 text-white' },
+          quote_requested: { label: isEn ? 'Quote Requested' : 'รอประเมินราคา / USD', cls: 'bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-200' },
+          rejected: { label: isEn ? 'Slip Rejected' : 'สลิปไม่ผ่าน • แนบใหม่ได้', cls: 'bg-rose-100 text-rose-900 dark:bg-rose-950 dark:text-rose-200' },
+          expired: { label: isEn ? 'Expired' : 'หมดอายุ (24 ชม.)', cls: 'bg-slate-200 text-slate-800 dark:bg-zinc-800 dark:text-zinc-200' }
+        };
+        return map[status] || map.awaiting_payment;
+      },
+
+      renderOrder(o) {
+        const isEn = this.lang === 'en';
+        const st = String(o.status || 'awaiting_payment');
+        const setTxt = (id, text) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = text;
+        };
+
+        setTxt('sum-order-id', o.order_id);
+        const stMeta = this.getStatusMeta(st);
+        const badgeEl = document.getElementById('sum-status-badge');
+        if (badgeEl) {
+          badgeEl.textContent = stMeta.label;
+          badgeEl.className = 'text-xs font-bold px-2.5 py-1 rounded-full ' + stMeta.cls;
+        }
+        setTxt('sum-amount-val', o.amount_display || '-');
+        const leagueLabel = (o.league_name ? (o.league_name + ' ') : '') + '(ID: ' + o.league_id + (o.team_count ? (', ' + o.team_count + (isEn ? ' teams' : ' ทีม')) : '') + ')';
+        setTxt('sum-league-val', leagueLabel);
+        setTxt('sum-contact-val', o.customer_email + (o.customer_line ? (' · LINE: ' + o.customer_line) : ''));
+        setTxt('sum-rules-val', o.rules_text || (isEn ? '(Default / TBD)' : '(ระบุเพิ่มเติมภายหลัง)'));
+
+        const supportEmail = (window.PAY_CFG && window.PAY_CFG.support_email) || 'support@fplsawadika.com';
+        const qEmail = document.getElementById('quote-email-btn');
+        if (qEmail) {
+          qEmail.setAttribute('href', 'mailto:' + supportEmail + '?subject=' + encodeURIComponent('FPLSaWaDiKa Order ' + o.order_id));
+        }
+
+        ['panel-awaiting', 'panel-submitted', 'panel-paid', 'panel-live', 'panel-quote', 'panel-expired'].forEach((pid) => {
+          const pEl = document.getElementById(pid);
+          if (pEl) pEl.classList.add('hidden');
+        });
+
+        if (this.countdownTimer) {
+          clearInterval(this.countdownTimer);
+          this.countdownTimer = null;
+        }
+
+        if (st === 'awaiting_payment' || st === 'rejected') {
+          const pA = document.getElementById('panel-awaiting');
+          if (pA) pA.classList.remove('hidden');
+          const qrCol = document.getElementById('pay-qr-col');
+          const rejAlert = document.getElementById('pay-reject-alert');
+          const rejReason = document.getElementById('pay-reject-reason');
+          if (rejAlert) {
+            if (st === 'rejected') {
+              rejAlert.classList.remove('hidden');
+              if (rejReason) rejReason.textContent = o.reject_reason || (isEn ? 'Please upload a clearer transfer slip showing amount & timestamp.' : 'กรุณาแนบรูปสลิปที่เห็นยอดเงินและวันเวลาโอนชัดเจนอีกครั้ง');
+            } else {
+              rejAlert.classList.add('hidden');
+            }
+          }
+          if (qrCol) {
+            qrCol.classList.toggle('hidden', st === 'rejected' || !o.promptpay_payload);
+          }
+          if (st === 'awaiting_payment' && o.promptpay_payload) {
+            setTxt('qr-exact-amount', o.amount_display || '500.00 ฿');
+            setTxt('qr-acct-val', o.account_name || 'FPLSaWaDiKa');
+            this.drawPromptPayCanvas(o);
+            this.startCountdown(o.expires_at);
+          }
+        } else if (st === 'slip_submitted') {
+          const pS = document.getElementById('panel-submitted');
+          if (pS) pS.classList.remove('hidden');
+          setTxt('submitted-at-val', o.slip_uploaded_at ? new Date(o.slip_uploaded_at).toLocaleString(isEn ? 'en-US' : 'th-TH') : '-');
+        } else if (st === 'paid') {
+          const pP = document.getElementById('panel-paid');
+          if (pP) pP.classList.remove('hidden');
+        } else if (st === 'live') {
+          const pL = document.getElementById('panel-live');
+          if (pL) pL.classList.remove('hidden');
+          const linkEl = document.getElementById('pay-live-link');
+          const rawUrl = String(o.delivered_url || ('https://www.fplsawadika.com/' + o.league_id + '/'));
+          if (linkEl) {
+            const okHref = /^https:\\/\\//i.test(rawUrl) || /^http:\\/\\/(127\\.0\\.0\\.1|localhost)(:|\\/)/i.test(rawUrl);
+            linkEl.setAttribute('href', okHref ? rawUrl : ('https://www.fplsawadika.com/' + encodeURIComponent(o.league_id) + '/'));
+          }
+        } else if (st === 'quote_requested') {
+          const pQ = document.getElementById('panel-quote');
+          if (pQ) pQ.classList.remove('hidden');
+        } else {
+          const pE = document.getElementById('panel-expired');
+          if (pE) pE.classList.remove('hidden');
+        }
+      },
+
+      drawPromptPayCanvas(o) {
+        const canvas = document.getElementById('pay-qr-canvas');
+        if (!canvas || typeof qrcode !== 'function' || !o || !o.promptpay_payload) return;
+        const qr = qrcode(0, 'M');
+        qr.addData(String(o.promptpay_payload));
+        qr.make();
+        const n = qr.getModuleCount();
+        const w = canvas.width;
+        const h = canvas.height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, w, 48);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 18px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Thai QR Payment • PromptPay', w / 2, 30);
+
+        const pad = 34;
+        const qrSize = w - pad * 2;
+        const cell = qrSize / n;
+        const topY = 66;
+        ctx.fillStyle = '#000000';
+        for (let r = 0; r < n; r += 1) {
+          for (let c = 0; c < n; c += 1) {
+            if (qr.isDark(r, c)) {
+              ctx.fillRect(
+                Math.floor(pad + c * cell),
+                Math.floor(topY + r * cell),
+                Math.ceil(cell),
+                Math.ceil(cell)
+              );
+            }
+          }
+        }
+
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 20px sans-serif';
+        ctx.fillText(String(o.amount_display || ''), w / 2, h - 34);
+        ctx.fillStyle = '#475569';
+        ctx.font = '13px monospace';
+        ctx.fillText(String(o.order_id || '') + ' · ' + String(o.account_name || 'FPLSaWaDiKa'), w / 2, h - 12);
+      },
+
+      downloadQrPng() {
+        const canvas = document.getElementById('pay-qr-canvas');
+        if (!canvas || !this.order) return;
+        try {
+          const url = canvas.toDataURL('image/png');
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'promptpay-' + String(this.order.order_id || 'order') + '.png';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        } catch (_) {}
+      },
+
+      startCountdown(expiresIso) {
+        const el = document.getElementById('pay-countdown');
+        if (!el) return;
+        const expMs = Date.parse(expiresIso);
+        if (!Number.isFinite(expMs)) {
+          el.textContent = '--:--';
+          return;
+        }
+        const update = () => {
+          const diff = expMs - Date.now();
+          if (diff <= 0) {
+            el.textContent = '00:00:00';
+            if (this.countdownTimer) {
+              clearInterval(this.countdownTimer);
+              this.countdownTimer = null;
+            }
+            if (this.order && this.order.status === 'awaiting_payment') {
+              this.order.status = 'expired';
+              this.renderOrder(this.order);
+            }
+            return;
+          }
+          const sec = Math.floor(diff / 1000);
+          const hh = String(Math.floor(sec / 3600)).padStart(2, '0');
+          const mm = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
+          const ss = String(sec % 60).padStart(2, '0');
+          el.textContent = hh + ':' + mm + ':' + ss;
+        };
+        update();
+        this.countdownTimer = setInterval(update, 1000);
+      },
+
+      setSlipStatus(msg, isError) {
+        const st = document.getElementById('pay-slip-status');
+        if (!st) return;
+        st.textContent = msg || '';
+        st.className = 'text-xs font-bold min-h-[1.25rem] ' + (isError ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400');
+      },
+
+      handleSlipFile(file) {
+        const isEn = this.lang === 'en';
+        const btn = document.getElementById('btn-submit-slip');
+        const prevWrap = document.getElementById('pay-slip-preview-wrap');
+        const prevImg = document.getElementById('pay-slip-preview');
+        const metaEl = document.getElementById('slip-meta');
+        this.compressedDataUrl = '';
+        if (btn) btn.disabled = true;
+        this.setSlipStatus('', false);
+
+        if (!file) {
+          if (prevWrap) prevWrap.classList.add('hidden');
+          if (metaEl) metaEl.textContent = isEn ? 'No file selected yet' : 'ยังไม่ได้เลือกไฟล์';
+          return;
+        }
+        if (!/^image\\/(jpeg|jpg|png|webp)$/i.test(file.type || '')) {
+          this.setSlipStatus(isEn ? 'Please choose a .jpg, .png, or .webp image file.' : 'กรุณาเลือกไฟล์รูปภาพ .jpg, .png หรือ .webp เท่านั้น', true);
+          return;
+        }
+        if (file.size > 15 * 1024 * 1024) {
+          this.setSlipStatus(isEn ? 'Image file is too large (max 15MB).' : 'ขนาดไฟล์ใหญ่เกินไป (ไม่เกิน 15MB)', true);
+          return;
+        }
+
+        const objUrl = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+          try {
+            let maxW = 1000;
+            let quality = 0.78;
+            let dataUrl = '';
+            const renderScaled = (mw, q) => {
+              const scale = img.width > mw ? (mw / img.width) : 1;
+              const tw = Math.max(1, Math.round(img.width * scale));
+              const th = Math.max(1, Math.round(img.height * scale));
+              const cvs = document.createElement('canvas');
+              cvs.width = tw;
+              cvs.height = th;
+              const ctx = cvs.getContext('2d');
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(0, 0, tw, th);
+              ctx.drawImage(img, 0, 0, tw, th);
+              return cvs.toDataURL('image/jpeg', q);
+            };
+            dataUrl = renderScaled(maxW, quality);
+            if (dataUrl.length > 360000) dataUrl = renderScaled(900, 0.62);
+            if (dataUrl.length > 360000) dataUrl = renderScaled(720, 0.55);
+            if (dataUrl.length > 380000) {
+              this.setSlipStatus(isEn ? 'Compressed image still too large. Please upload a cropped slip image.' : 'รูปภาพยังมีขนาดใหญ่เกินกำหนด กรุณาครอปเฉพาะหน้าสลิปแล้วลองใหม่', true);
+              return;
+            }
+            this.compressedDataUrl = dataUrl;
+            if (prevImg) prevImg.src = dataUrl;
+            if (prevWrap) prevWrap.classList.remove('hidden');
+            const kb = Math.round((dataUrl.length * 0.75) / 1024);
+            if (metaEl) metaEl.textContent = file.name + ' (' + kb + ' KB ready)';
+            if (btn) btn.disabled = false;
+          } finally {
+            URL.revokeObjectURL(objUrl);
+          }
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(objUrl);
+          this.setSlipStatus(isEn ? 'Unable to read this image file.' : 'ไม่สามารถอ่านไฟล์รูปภาพนี้ได้ กรุณาลองไฟล์อื่น', true);
+        };
+        img.src = objUrl;
+      },
+
+      async uploadSlip() {
+        const isEn = this.lang === 'en';
+        if (!this.compressedDataUrl || !this.orderId || !this.token) return;
+        const btn = document.getElementById('btn-submit-slip');
+        const txt = document.getElementById('btn-submit-slip-text');
+        if (btn) btn.disabled = true;
+        if (txt) txt.textContent = isEn ? 'Uploading slip…' : 'กำลังส่งรูปสลิป…';
+        this.setSlipStatus('', false);
+        try {
+          const apiBase = this.isPreviewOrigin() ? '' : this.resolveApiBase().base;
+          const resp = await fetch(apiBase + '/api/public/orders/slip', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              order_id: this.orderId,
+              token: this.token,
+              slip_data_url: this.compressedDataUrl
+            })
+          });
+          const data = await resp.json().catch(() => null);
+          if (!resp.ok || !data || !data.success) {
+            throw new Error((data && data.error) || (isEn ? 'Upload failed.' : 'อัปโหลดสลิปไม่สำเร็จ'));
+          }
+          await this.loadOrder();
+        } catch (err) {
+          this.setSlipStatus((err && err.message) || (isEn ? 'Upload failed.' : 'อัปโหลดสลิปไม่สำเร็จ กรุณาลองใหม่'), true);
+          if (btn) btn.disabled = false;
+          if (txt) txt.textContent = isEn ? 'Submit Payment Slip' : 'ส่งสลิปยืนยันการโอน';
+        }
+      }
+    };
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      payApp.init();
+    } else {
+      document.addEventListener('DOMContentLoaded', () => payApp.init());
+    }
+  </script>
+</body>
+</html>"""
+
+    html = html.replace('__LINE_URL__', line_url)
+    html = html.replace('__SUPPORT_EMAIL__', support_email)
+    html = html.replace('__PAY_CFG_JSON__', pay_cfg_json)
     return html
 
 def main():
@@ -26087,6 +27123,7 @@ def main():
 
     landing_html = generate_landing_html(multi_data, leagues_config, site_config)
     page_404_html = generate_404_html(site_config, leagues_config)
+    pay_html = generate_pay_html(site_config)
 
     with open(os.path.join(base_dir, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(landing_html)
@@ -26096,6 +27133,11 @@ def main():
 
     with open(os.path.join(base_dir, '404.html'), 'w', encoding='utf-8') as f:
         f.write(page_404_html)
+
+    pay_dir = os.path.join(base_dir, 'pay')
+    os.makedirs(pay_dir, exist_ok=True)
+    with open(os.path.join(pay_dir, 'index.html'), 'w', encoding='utf-8') as f:
+        f.write(pay_html)
 
     # 2. Generate dedicated folder entry points for all configured leagues (scoped by tenant_group)
     for lid in leagues_config.keys():

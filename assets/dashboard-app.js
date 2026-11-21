@@ -15768,8 +15768,8 @@
                 </p>
               </div>
 
-              <!-- Action Button -->
-              <div class="flex-shrink-0 w-full sm:w-auto">
+              <!-- Action Buttons (LINE + Email) -->
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-shrink-0 w-full sm:w-auto">
                 <a 
                   href="https://line.me/ti/p/lgWPeyIBR7" 
                   target="_blank" 
@@ -15779,6 +15779,14 @@
                 >
                   <svg class="w-4 h-4 fill-current flex-shrink-0" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
                   <span>Chat with Developer</span>
+                </a>
+                <a 
+                  href="mailto:support@fplsawadika.com" 
+                  aria-label="Email developer support at support@fplsawadika.com"
+                  class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-3 min-h-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
+                >
+                  <svg class="w-4 h-4 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                  <span>support@fplsawadika.com</span>
                 </a>
               </div>
             </div>
@@ -16370,8 +16378,8 @@
                 </p>
               </div>
 
-              <!-- Action Button -->
-              <div class="flex-shrink-0 w-full sm:w-auto">
+              <!-- Action Buttons (LINE + Email) -->
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-shrink-0 w-full sm:w-auto">
                 <a 
                   href="https://line.me/ti/p/lgWPeyIBR7" 
                   target="_blank" 
@@ -16381,6 +16389,14 @@
                 >
                   <svg class="w-4 h-4 fill-current flex-shrink-0" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.92 2 10.75c0 3.1 1.87 5.86 4.75 7.37-.21.78-.77 2.82-.88 3.25-.15.58.21.57.44.42.18-.12 2.5-1.7 3.51-2.4.72.11 1.45.16 2.18.16 5.52 0 10-3.92 10-8.75S17.52 2 12 2z"/></svg>
                   <span>เปิด LINE ทักหาเดฟ</span>
+                </a>
+                <a 
+                  href="mailto:support@fplsawadika.com" 
+                  aria-label="ส่งอีเมลติดต่อผู้พัฒนาที่ support@fplsawadika.com"
+                  class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-3 min-h-[44px] rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 font-bold text-xs sm:text-sm shadow-xs transition-colors active:scale-95 cursor-pointer font-display focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
+                >
+                  <svg class="w-4 h-4 flex-shrink-0" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                  <span>support@fplsawadika.com</span>
                 </a>
               </div>
             </div>

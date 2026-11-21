@@ -4,3 +4,8 @@
 
 ADMIN_SECRET_KEY=replace-with-local-staging-passkey
 ADMIN_SESSION_SECRET=replace-with-local-session-hmac-secret
+PROMPTPAY_ID=0812345678
+PROMPTPAY_ACCOUNT_NAME=FPLSaWaDiKa Local Staging
+RESEND_API_KEY=
+ADMIN_NOTIFY_EMAIL=staging-admin@fplsawadika.com
+EMAIL_FROM=FPLSaWaDiKa <noreply@fplsawadika.com>

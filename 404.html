@@ -49,6 +49,7 @@
     <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-1">
       <a id="e404-home-btn" href="./" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-500 text-white text-xs sm:text-sm font-bold transition-colors">กลับหน้าแรก FPLSaWaDiKa</a>
       <a id="e404-line-btn" href="https://line.me/ti/p/lgWPeyIBR7" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold transition-colors">ติดต่อเปิดลีกผ่าน LINE ↗</a>
+      <a id="e404-email-btn" href="mailto:support@fplsawadika.com" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs sm:text-sm font-bold transition-colors">ติดต่อทาง Email</a>
     </div>
 
     <div class="pt-4 border-t border-slate-200/80 dark:border-slate-800 space-y-2.5">
@@ -69,6 +70,8 @@
         document.getElementById('e404-desc').textContent = 'This URL may be mistyped, expired, or this FPL mini-league has not been onboarded yet.';
         if (homeBtn) homeBtn.textContent = 'Back to Home';
         document.getElementById('e404-line-btn').textContent = 'Request League Setup via LINE ↗';
+        var emailBtn = document.getElementById('e404-email-btn');
+        if (emailBtn) emailBtn.textContent = 'Contact via Email';
         document.getElementById('e404-demos-lbl').textContent = 'Explore Live Demos';
       }
       const row = document.getElementById('e404-demos-row');
