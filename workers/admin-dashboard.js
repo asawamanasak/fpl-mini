@@ -3829,6 +3829,22 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     // =========================================================================
     // 3. INTERACTIVE SVG CHART RENDERER (24H CONCURRENCY & 7D VOLUME)
     // =========================================================================
+    function canPlaceSvgLabel(placedList, centerX, y, textStr, charWidth, minGap, verticalBand) {
+      const halfW = (String(textStr || '').length * (charWidth || 6.6)) / 2;
+      const gap = typeof minGap === 'number' ? minGap : 4;
+      const vBand = typeof verticalBand === 'number' ? verticalBand : 15;
+      const left = centerX - halfW - gap;
+      const right = centerX + halfW + gap;
+      for (let i = 0; i < placedList.length; i++) {
+        const p = placedList[i];
+        if (Math.abs(p.y - y) < vBand && left < p.right && right > p.left) {
+          return false;
+        }
+      }
+      placedList.push({ left: centerX - halfW, right: centerX + halfW, y });
+      return true;
+    }
+
     function renderTrafficChart() {
       const svg = document.getElementById('trafficSvgChart');
       if (!svg) return;
@@ -3875,10 +3891,42 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           html += '<text x="2" y="' + (y + 4) + '" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + val + '%</text>';
         });
 
-        HOURLY_SERIES.forEach((pt, idx) => {
+        const placedTopLabels = [];
+        const placedXLabels = [];
+        const trafficPoints = HOURLY_SERIES.map((pt, idx) => {
           const x = chartLeft + idx * stepX + 3;
+          const center = x + barWidth / 2;
           const barH = Math.max(4, (pt.pct / 100) * chartHeight);
           const y = chartBottom - barH;
+          return {
+            pt,
+            idx,
+            x,
+            center,
+            barH,
+            y,
+            labelY: Math.max(12, y - 5),
+            topText: pt.pct + '%',
+            isPeak: pt.hour === peakPt.hour,
+            showTop: false,
+            showX: false
+          };
+        });
+
+        trafficPoints
+          .filter((item) => item.isPeak || (item.pt.pct >= 80 && item.idx % 2 === 0))
+          .sort((a, b) => {
+            if (a.isPeak !== b.isPeak) return a.isPeak ? -1 : 1;
+            return b.pt.pct - a.pt.pct || a.idx - b.idx;
+          })
+          .forEach((item) => {
+            if (canPlaceSvgLabel(placedTopLabels, item.center, item.labelY, item.topText, 6.6, 5, 15)) {
+              item.showTop = true;
+            }
+          });
+
+        trafficPoints.forEach((item) => {
+          const { pt, idx, x, center, barH, y } = item;
           const fill = pt.peak ? peakBarColor : normalBarColor;
           const tip = lang === 'en'
             ? (pt.hour + ' ICT: ' + pt.pct + '% of peak traffic load' + (pt.peak ? ' (Peak Window)' : ''))
@@ -3886,12 +3934,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           html += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + barH.toFixed(1) + '" rx="3" fill="' + fill + '">' +
             '<title>' + escHtml(tip) + '</title></rect>';
 
-          if (pt.hour === peakPt.hour || (pt.pct >= 80 && idx % 2 === 0)) {
-            html += '<text x="' + (x + barWidth / 2).toFixed(1) + '" y="' + (y - 5).toFixed(1) + '" text-anchor="middle" fill="' + peakBarColor + '" font-size="9.5" font-weight="600" font-family="JetBrains Mono, monospace">' + pt.pct + '%</text>';
+          if (item.showTop) {
+            html += '<text x="' + center.toFixed(1) + '" y="' + item.labelY.toFixed(1) + '" text-anchor="middle" fill="' + peakBarColor + '" font-size="9.5" font-weight="600" font-family="JetBrains Mono, monospace">' + item.topText + '</text>';
           }
 
-          if (idx % 3 === 0 || idx === 22) {
-            html += '<text x="' + (x + barWidth / 2).toFixed(1) + '" y="206" text-anchor="middle" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + pt.hour.slice(0, 2) + (lang === 'en' ? 'h' : ':00') + '</text>';
+          if ((idx % 3 === 0 && idx !== 21) || idx === 22) {
+            const xLabel = pt.hour.slice(0, 2) + (lang === 'en' ? 'h' : ':00');
+            if (canPlaceSvgLabel(placedXLabels, center, 206, xLabel, 6.6, 8, 16)) {
+              html += '<text x="' + center.toFixed(1) + '" y="206" text-anchor="middle" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + xLabel + '</text>';
+            }
           }
         });
 
@@ -4164,15 +4215,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       const thDays = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
       const enDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const placedTopLabels = [];
+      const placedXLabels = [];
 
-      series.forEach((pt, idx) => {
+      const monitorPoints = series.map((pt, idx) => {
         const act = Number(pt.activity || 0);
         const errCount = Number(pt.total_errors || 0);
         const center = chartLeft + idx * stepX + stepX / 2;
         const x = center - barWidth / 2;
         const actH = act > 0 ? Math.max(6, (act / maxVal) * chartHeight) : 4;
         const actY = chartBottom - actH;
-        const barFill = act > 0 ? okBarColor : idleBarColor;
+        const errH = errCount > 0 ? Math.max(12, Math.min(chartHeight, ((errCount * 4) / maxVal) * chartHeight)) : 0;
+        const errY = errCount > 0 ? chartBottom - errH : chartBottom;
 
         let xLabel = '';
         if (currentMonitorMode === '7d') {
@@ -4187,6 +4241,58 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           xLabel = String(pt.label || '').slice(0, 2) + (lang === 'en' ? 'h' : ':00');
         }
 
+        const actLabelText = currentMonitorMode === '7d'
+          ? (act.toLocaleString() + okUnit)
+          : act.toLocaleString();
+        const errLabelText = currentMonitorMode === '7d'
+          ? ('!' + errCount + ' Err')
+          : ('!' + errCount);
+
+        return {
+          pt,
+          idx,
+          act,
+          errCount,
+          center,
+          x,
+          actH,
+          actY,
+          errH,
+          errY,
+          actLabelY: Math.max(12, actY - 6),
+          errLabelY: Math.max(10, errY - 14),
+          actLabelText,
+          errLabelText,
+          xLabel,
+          showErrLabel: false,
+          showActLabel: false
+        };
+      });
+
+      // Reserve error labels first (highest error count takes priority on collision)
+      monitorPoints
+        .filter((item) => item.errCount > 0)
+        .sort((a, b) => b.errCount - a.errCount || a.idx - b.idx)
+        .forEach((item) => {
+          if (canPlaceSvgLabel(placedTopLabels, item.center, item.errLabelY, item.errLabelText, 6.6, 5, 16)) {
+            item.showErrLabel = true;
+          }
+        });
+
+      // Reserve normal-activity labels next (highest activity first, skip narrow collisions)
+      monitorPoints
+        .filter((item) => item.act > 0 && item.errCount === 0 && (currentMonitorMode === '7d' || item.act >= maxVal * 0.25))
+        .sort((a, b) => b.act - a.act || a.idx - b.idx)
+        .forEach((item) => {
+          if (canPlaceSvgLabel(placedTopLabels, item.center, item.actLabelY, item.actLabelText, 6.6, 4, 15)) {
+            item.showActLabel = true;
+          }
+        });
+
+      monitorPoints.forEach((item) => {
+        const { pt, idx, act, errCount, center, x, actH, actY, errH, errY, xLabel } = item;
+        const barFill = act > 0 ? okBarColor : idleBarColor;
+
         const tooltipText = lang === 'en'
           ? ((pt.label || pt.date || '') + ' | Normal Events: ' + act.toLocaleString() + ' | Total Errors: ' + errCount +
              ' (User Web: ' + Number(pt.client_errors || 0) + ', Upstream FPL 5xx: ' + Number(pt.upstream_errors || 0) + ')')
@@ -4196,22 +4302,23 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         html += '<rect x="' + x.toFixed(1) + '" y="' + actY.toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + actH.toFixed(1) + '" rx="3" fill="' + barFill + '" opacity="' + (act > 0 ? '0.88' : '0.45') + '">' +
           '<title>' + escHtml(tooltipText) + '</title></rect>';
 
-        if (act > 0 && errCount === 0 && (currentMonitorMode === '7d' || act >= maxVal * 0.25)) {
-          html += '<text x="' + center.toFixed(1) + '" y="' + Math.max(12, actY - 6).toFixed(1) + '" text-anchor="middle" fill="' + labelColor + '" font-size="9.5" font-weight="600" font-family="JetBrains Mono, monospace">' + act.toLocaleString() + okUnit + '</text>';
+        if (item.showActLabel) {
+          html += '<text x="' + center.toFixed(1) + '" y="' + item.actLabelY.toFixed(1) + '" text-anchor="middle" fill="' + labelColor + '" font-size="9.5" font-weight="600" font-family="JetBrains Mono, monospace">' + escHtml(item.actLabelText) + '</text>';
         }
 
         if (errCount > 0) {
-          const errH = Math.max(12, Math.min(chartHeight, ((errCount * 4) / maxVal) * chartHeight));
-          const errY = chartBottom - errH;
           html += '<rect x="' + x.toFixed(1) + '" y="' + errY.toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + errH.toFixed(1) + '" rx="3" fill="' + errBarColor + '" opacity="0.95">' +
             '<title>' + escHtml(tooltipText) + '</title></rect>';
           html += '<circle cx="' + center.toFixed(1) + '" cy="' + Math.max(10, errY - 7).toFixed(1) + '" r="4" fill="' + errBarColor + '" />';
-          const errLabel = '!' + errCount + ' Err';
-          html += '<text x="' + center.toFixed(1) + '" y="' + Math.max(10, errY - 14).toFixed(1) + '" text-anchor="middle" fill="' + errBarColor + '" font-size="9" font-weight="600" font-family="JetBrains Mono, monospace">' + escHtml(errLabel) + '</text>';
+          if (item.showErrLabel) {
+            html += '<text x="' + center.toFixed(1) + '" y="' + item.errLabelY.toFixed(1) + '" text-anchor="middle" fill="' + errBarColor + '" font-size="9" font-weight="600" font-family="JetBrains Mono, monospace">' + escHtml(item.errLabelText) + '</text>';
+          }
         }
 
         if (currentMonitorMode === '7d' || idx % 3 === 0 || idx === series.length - 1) {
-          html += '<text x="' + center.toFixed(1) + '" y="206" text-anchor="middle" fill="' + labelColor + '" font-size="' + (currentMonitorMode === '7d' ? '10' : '9.5') + '" font-family="JetBrains Mono, monospace">' + escHtml(xLabel) + '</text>';
+          if (canPlaceSvgLabel(placedXLabels, center, 206, xLabel, 6.6, 8, 16)) {
+            html += '<text x="' + center.toFixed(1) + '" y="206" text-anchor="middle" fill="' + labelColor + '" font-size="' + (currentMonitorMode === '7d' ? '10' : '9.5') + '" font-family="JetBrains Mono, monospace">' + escHtml(xLabel) + '</text>';
+          }
         }
       });
 
