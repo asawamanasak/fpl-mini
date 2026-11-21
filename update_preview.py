@@ -5298,7 +5298,9 @@ __STRUCTURED_DATA_JSON__
                 this.selectedGW = this.resolveDefaultGW(loaded);
               }
               await this.ensureTier2GWChunk(this.selectedGW);
-              if (!isTier2) {
+              if (isTier2) {
+                await this.ensureTier2PicksChunk(this.selectedGW, initialLidStr);
+              } else {
                 await this.ensureTier1GWSquads(this.selectedGW, initialLidStr);
               }
               this.updateHeaderInfo();
@@ -5318,8 +5320,11 @@ __STRUCTURED_DATA_JSON__
             }
           });
         } else if (isTier2) {
-          this.ensureTier2GWChunk(this.selectedGW).then(chunkLoaded => {
-            if (chunkLoaded && String(this.activeLeagueId) === initialLidStr) {
+          Promise.all([
+            this.ensureTier2GWChunk(this.selectedGW),
+            this.ensureTier2PicksChunk(this.selectedGW, initialLidStr)
+          ]).then(([chunkLoaded, picksLoaded]) => {
+            if ((chunkLoaded || picksLoaded) && String(this.activeLeagueId) === initialLidStr) {
               this.renderAll();
             }
           });
@@ -5579,15 +5584,22 @@ __STRUCTURED_DATA_JSON__
           const prevRank = Number(r.last_rank || 0);
           if (evPts > 0) anyPositive = true;
 
+          let resObj = resById.get(eid);
+          const isEnrichedRow = Boolean(resObj && resObj._squadEnriched);
+          const existingHits = resObj ? (Number(resObj.hits) || 0) : 0;
+          const netEvPts = evPts - existingHits;
+
           let teamObj = teamById.get(eid);
           if (teamObj) {
-            if (teamObj.total_points !== totPts || teamObj.event_total !== evPts || teamObj.rank !== curRank || teamObj.last_rank !== prevRank) {
-              anyChange = true;
+            if (!isEnrichedRow) {
+              if (teamObj.total_points !== totPts || teamObj.event_total !== netEvPts || teamObj.rank !== curRank || teamObj.last_rank !== prevRank) {
+                anyChange = true;
+              }
+              teamObj.rank = curRank;
+              teamObj.last_rank = prevRank;
+              teamObj.total_points = totPts;
+              teamObj.event_total = netEvPts;
             }
-            teamObj.rank = curRank;
-            teamObj.last_rank = prevRank;
-            teamObj.total_points = totPts;
-            teamObj.event_total = evPts;
             if (r.entry_name) teamObj.entry_name = r.entry_name;
             if (r.player_name) teamObj.player_name = r.player_name;
           } else {
@@ -5598,24 +5610,25 @@ __STRUCTURED_DATA_JSON__
               rank: curRank,
               last_rank: prevRank,
               total_points: totPts,
-              event_total: evPts,
-              total_hits: 0,
+              event_total: netEvPts,
+              total_hits: existingHits,
             };
             league.teams.push(teamObj);
             teamById.set(eid, teamObj);
             anyChange = true;
           }
 
-          let resObj = resById.get(eid);
           if (resObj) {
-            if (resObj.points !== evPts || resObj.net_points !== evPts || resObj.total_points !== totPts || resObj.overall_rank !== curRank) {
-              anyChange = true;
+            if (!isEnrichedRow) {
+              if (resObj.points !== evPts || resObj.net_points !== netEvPts || resObj.total_points !== totPts || resObj.overall_rank !== curRank) {
+                anyChange = true;
+              }
+              resObj.points = evPts;
+              resObj.net_points = netEvPts;
+              resObj.total_points = totPts;
+              resObj.overall_rank = curRank;
+              resObj.last_rank = prevRank;
             }
-            resObj.points = evPts;
-            resObj.net_points = evPts;
-            resObj.total_points = totPts;
-            resObj.overall_rank = curRank;
-            resObj.last_rank = prevRank;
           } else {
             resObj = {
               entry_id: eid,
@@ -5627,8 +5640,8 @@ __STRUCTURED_DATA_JSON__
               last_rank: prevRank,
               total_points: totPts,
               points: evPts,
-              net_points: evPts,
-              hits: 0,
+              net_points: netEvPts,
+              hits: existingHits,
               chip: null,
               captain: '-',
               team_value: null,
@@ -5782,37 +5795,41 @@ __STRUCTURED_DATA_JSON__
 
         try {
           if (isTier2Active) {
-            const [t2Ok, liveJson] = await Promise.all([
-              this.fetchTier2LiveStandings(lidStr, maxGW, force),
-              (!this._latestLiveMap || force) ? fetchLiveElementsJson() : Promise.resolve(this.lastLiveJson)
-            ]);
-            if (liveJson && Array.isArray(liveJson.elements)) {
-              this.lastLiveJson = liveJson;
-              this.lastLiveGw = maxGW;
-              const inPlayCount = Number(liveJson.in_play_count || 0);
-              const adaptiveIntervalMs = inPlayCount > 0 ? 20000 : 90000;
-              if (typeof this.setLivePollCadence === 'function') {
-                this.setLivePollCadence(adaptiveIntervalMs);
+            await this.ensureTier2PicksChunk(maxGW, lidStr);
+            const hasT2Picks = this.hasTier2PicksForGw(this.data, maxGW);
+            if (!hasT2Picks) {
+              const [t2Ok, liveJson] = await Promise.all([
+                this.fetchTier2LiveStandings(lidStr, maxGW, force),
+                (!this._latestLiveMap || force) ? fetchLiveElementsJson() : Promise.resolve(this.lastLiveJson)
+              ]);
+              if (liveJson && Array.isArray(liveJson.elements)) {
+                this.lastLiveJson = liveJson;
+                this.lastLiveGw = maxGW;
+                const inPlayCount = Number(liveJson.in_play_count || 0);
+                const adaptiveIntervalMs = inPlayCount > 0 ? 20000 : 90000;
+                if (typeof this.setLivePollCadence === 'function') {
+                  this.setLivePollCadence(adaptiveIntervalMs);
+                }
+                this._nextLivePollAt = Date.now() + (this._currentPollIntervalMs || adaptiveIntervalMs);
+                this.applyLiveElements(liveJson, maxGW);
               }
-              this._nextLivePollAt = Date.now() + (this._currentPollIntervalMs || adaptiveIntervalMs);
-              this.applyLiveElements(liveJson, maxGW);
-            }
-            if (!t2Ok) {
-              if (typeof window._reportClientError === 'function') {
-                window._reportClientError('api_http');
+              if (!t2Ok) {
+                if (typeof window._reportClientError === 'function') {
+                  window._reportClientError('api_http');
+                }
+                if (force && typeof this.showCopiedToast === 'function') {
+                  const isEn = (this.currentLang === 'en');
+                  this.showCopiedToast(isEn ? 'Unable to reach Cloudflare Live Edge' : 'ไม่สามารถเชื่อมต่อ Cloudflare Live Edge ได้ในขณะนี้');
+                }
+                return;
               }
-              if (force && typeof this.showCopiedToast === 'function') {
-                const isEn = (this.currentLang === 'en');
-                this.showCopiedToast(isEn ? 'Unable to reach Cloudflare Live Edge' : 'ไม่สามารถเชื่อมต่อ Cloudflare Live Edge ได้ในขณะนี้');
+              this.markHeaderLiveSynced(force);
+              const modal = document.getElementById('team-modal');
+              if (modal && !modal.classList.contains('hidden') && this.currentModalEntryId) {
+                this.openTeamModal(this.currentModalEntryId);
               }
               return;
             }
-            this.markHeaderLiveSynced(force);
-            const modal = document.getElementById('team-modal');
-            if (modal && !modal.classList.contains('hidden') && this.currentModalEntryId) {
-              this.openTeamModal(this.currentModalEntryId);
-            }
-            return;
           }
 
           const liveJson = await fetchLiveElementsJson();
@@ -6012,6 +6029,15 @@ __STRUCTURED_DATA_JSON__
           const squads = league.squads || {};
           const teams = league.teams || [];
           const results = gwData.results || [];
+          const isTier2League = Boolean(
+            league.tier === 2 ||
+            (this.configs && this.configs[String(league.id)] && this.configs[String(league.id)].tier === 2)
+          );
+          const resById = new Map();
+          results.forEach(r => {
+            if (r && r.entry_id) resById.set(Number(r.entry_id), r);
+          });
+          let anySquadProcessed = false;
 
           const syncPlayerStats = (p, multForPts) => {
             const liveStat = liveMap[p.id];
@@ -6049,7 +6075,7 @@ __STRUCTURED_DATA_JSON__
             const capMultTarget = (chip === '3xc' || chip === 'triple_captain') ? 3 : 2;
             const startingArr = Array.isArray(squad.starting) ? squad.starting : [];
             const benchArr = Array.isArray(squad.bench) ? squad.bench : [];
-            const res = results.find(r => Number(r.entry_id) === eid);
+            const res = resById.get(eid);
 
             // Update raw player stats first across starters & bench
             startingArr.forEach(p => {
@@ -6157,6 +6183,12 @@ __STRUCTURED_DATA_JSON__
             const benchDispPoints = isBBoost ? 0 : benchLivePoints;
 
             if (res) {
+              anySquadProcessed = true;
+              const activeCap = startingArr.find(p => p && p.is_captain) || benchArr.find(p => p && p.is_captain);
+              if (activeCap && activeCap.name && res.captain !== activeCap.name) {
+                res.captain = activeCap.name;
+                anyChange = true;
+              }
               const hits = Number(res.hits) || 0;
               const netPts = teamLivePoints - hits;
               const prevNetPts = Number(res.net_points) || 0;
@@ -6169,7 +6201,17 @@ __STRUCTURED_DATA_JSON__
               res.bench_points = benchDispPoints;
 
               // Keep league.teams overall total_points and event_total synced in real time
-              if (netDelta !== 0 && typeof t.total_points === 'number') {
+              const basePrevTotal = (res.prev_total !== undefined && res.prev_total !== null)
+                ? Number(res.prev_total)
+                : ((t.prev_total !== undefined && t.prev_total !== null) ? Number(t.prev_total) : null);
+              if (basePrevTotal !== null && !gwData.data_checked) {
+                const liveTotal = basePrevTotal + netPts;
+                if (t.total_points !== liveTotal || res.total_points !== liveTotal) {
+                  anyChange = true;
+                }
+                t.total_points = liveTotal;
+                res.total_points = liveTotal;
+              } else if (netDelta !== 0 && typeof t.total_points === 'number') {
                 t.total_points += netDelta;
               }
               t.event_total = netPts;
@@ -6213,6 +6255,28 @@ __STRUCTURED_DATA_JSON__
             }
           });
 
+          if (isTier2League && anySquadProcessed && !gwData.data_checked && teams.length > 0) {
+            teams.sort((a, b) => (Number(b.total_points || 0) - Number(a.total_points || 0)) || ((Number(a.last_rank) || 999999) - (Number(b.last_rank) || 999999)));
+            let curOvRank = 1;
+            let prevTotPts = null;
+            teams.forEach((tm, idx) => {
+              const tp = Number(tm.total_points || 0);
+              if (prevTotPts !== null && tp < prevTotPts) {
+                curOvRank = idx + 1;
+              }
+              prevTotPts = tp;
+              if (tm.rank !== curOvRank) {
+                tm.rank = curOvRank;
+                anyChange = true;
+              }
+              const rItem = resById.get(Number(tm.entry_id));
+              if (rItem) {
+                rItem.overall_rank = curOvRank;
+                rItem.total_points = tp;
+              }
+            });
+          }
+
           // Re-sort results descending
           results.sort((a, b) => (b.net_points - a.net_points) || (a.hits - b.hits));
           results.forEach((r, idx) => {
@@ -6220,6 +6284,9 @@ __STRUCTURED_DATA_JSON__
           });
         });
 
+        if (anyChange) {
+          this.invalidateRenderCache();
+        }
         return anyChange;
       }
 
@@ -7165,6 +7232,9 @@ __STRUCTURED_DATA_JSON__
                   targetLeague.gameweeks[gwKey].results = chunkJson.results;
                   if (chunkJson.is_finished !== undefined) targetLeague.gameweeks[gwKey].is_finished = chunkJson.is_finished;
                   if (chunkJson.is_started !== undefined) targetLeague.gameweeks[gwKey].is_started = chunkJson.is_started;
+                  if (chunkJson.data_checked !== undefined) targetLeague.gameweeks[gwKey].data_checked = chunkJson.data_checked;
+                  if (Array.isArray(chunkJson.unstarted_teams)) targetLeague.gameweeks[gwKey].unstarted_teams = chunkJson.unstarted_teams;
+                  if (chunkJson.picks_synced !== undefined) targetLeague.gameweeks[gwKey].picks_synced = chunkJson.picks_synced;
                 }
                 this.invalidateRenderCache();
                 return true;
@@ -7176,6 +7246,257 @@ __STRUCTURED_DATA_JSON__
             });
         }
         return this._tier2ChunkPromises[inflightKey];
+      }
+
+      async ensurePlayersDict() {
+        if (this.playersDict && Object.keys(this.playersDict).length > 0) {
+          return this.playersDict;
+        }
+        if (typeof PLAYERS_DICT !== 'undefined' && PLAYERS_DICT && Object.keys(PLAYERS_DICT).length > 0) {
+          this.playersDict = PLAYERS_DICT;
+          return this.playersDict;
+        }
+        try {
+          const pUrl = this.getPlayersDataUrl ? this.getPlayersDataUrl() : 'data/players.json';
+          const pResp = await fetch(pUrl);
+          if (pResp && pResp.ok) {
+            this.playersDict = await pResp.json();
+          }
+        } catch (_) {}
+        if (!this.playersDict) this.playersDict = {};
+        return this.playersDict;
+      }
+
+      buildSquadPlayerEntry(pid, opts = {}) {
+        const dict = this.playersDict || {};
+        const pInfo = dict[String(pid)] || dict[pid] || null;
+        let name, team, pos, teamCode;
+        if (Array.isArray(pInfo)) {
+          name = pInfo[0];
+          team = pInfo[1];
+          pos = pInfo[2];
+          teamCode = pInfo[3];
+        } else if (pInfo && typeof pInfo === 'object') {
+          name = pInfo.name;
+          team = pInfo.team;
+          pos = pInfo.pos;
+          teamCode = pInfo.team_code;
+        }
+        const fallbackPos = opts.elementType === 1 ? 'GKP' : (opts.elementType === 2 ? 'DEF' : (opts.elementType === 3 ? 'MID' : (opts.elementType === 4 ? 'FWD' : 'MID')));
+        pos = pos || fallbackPos;
+        name = name || `Player ${pid}`;
+        team = team || 'PL';
+        teamCode = teamCode || 0;
+
+        const isCap = Boolean(opts.isCaptain);
+        const isVice = Boolean(opts.isVice);
+        const mult = Number(opts.multiplier !== undefined ? opts.multiplier : (isCap ? 2 : 1));
+        const lMap = opts.liveMap || {};
+        const stat = lMap[pid] || null;
+        const rawPts = stat ? (Number(stat.total_points) || 0) : 0;
+        const provBonus = stat ? (Number(stat.provisional_bonus) || 0) : 0;
+        const unstartedTeams = Array.isArray(opts.unstartedTeams) ? opts.unstartedTeams : [];
+        const isGwFinished = Boolean(opts.isGwFinished);
+        const notPlayedYet = stat && stat.has_fixtures
+          ? Boolean(!isGwFinished && !stat.fixture_started)
+          : ((!isGwFinished) && (unstartedTeams.includes(team) || unstartedTeams.includes(teamCode)));
+
+        return {
+          id: pid,
+          name: name,
+          pos: pos,
+          team: team,
+          team_code: teamCode,
+          points: opts.isBench ? (rawPts * (mult > 0 ? mult : 1)) : (rawPts * mult),
+          raw_points: rawPts,
+          multiplier: mult,
+          is_captain: isCap,
+          is_vice: isVice,
+          provisional_bonus: provBonus,
+          is_sub: Boolean(opts.isSub),
+          is_sub_out: Boolean(opts.isSubOut),
+          not_played_yet: notPlayedYet
+        };
+      }
+
+      getTier2PicksChunkUrl(leagueId, gw) {
+        const lidStr = String(leagueId);
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          const configuredIds = Object.keys(this.configs || {});
+          const currentInSubdir = configuredIds.some(cid => window.location.pathname.includes('/' + cid));
+          const prefix = currentInSubdir ? '../' : './';
+          return `${prefix}data/leagues/${lidStr}/gw${gw}_picks.json`;
+        }
+        const pathname = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '';
+        const isGitHubPages = pathname.includes('/fpl-mini');
+        const basePath = isGitHubPages ? '/fpl-mini/' : '/';
+        return `${basePath}data/leagues/${lidStr}/gw${gw}_picks.json`;
+      }
+
+      hasTier2PicksForGw(leagueObj, gwNum) {
+        if (!leagueObj) return false;
+        const n = Number(gwNum);
+        return Array.isArray(leagueObj._loaded_t2_picks_gws) && leagueObj._loaded_t2_picks_gws.includes(n);
+      }
+
+      async ensureTier2PicksChunk(gw = this.selectedGW, leagueId = this.activeLeagueId) {
+        const lidStr = String(leagueId || this.activeLeagueId || '');
+        if (!lidStr || !this.multiData || !this.multiData.leagues) return false;
+        const targetLeague = this.multiData.leagues[lidStr] || (lidStr === String(this.activeLeagueId) ? this.data : null);
+        if (!targetLeague) return false;
+        const isTier2 = (targetLeague.tier === 2) || (this.configs && this.configs[lidStr] && this.configs[lidStr].tier === 2);
+        if (!isTier2) return false;
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          return false;
+        }
+
+        const gwNum = Number(gw);
+        const maxGW = Number(this.multiData && this.multiData.max_gw) || gwNum;
+        if (!gwNum || gwNum < 1 || gwNum > maxGW) return false;
+        if (this.hasTier2PicksForGw(targetLeague, gwNum)) return true;
+
+        const gwData = targetLeague.gameweeks ? targetLeague.gameweeks[String(gwNum)] : null;
+        if (!gwData || (gwNum < maxGW && !gwData.picks_synced)) {
+          return false;
+        }
+
+        const cacheKey = `${lidStr}_${gwNum}`;
+        if (!this._missingTier2PicksGws) this._missingTier2PicksGws = new Set();
+        if (this._missingTier2PicksGws.has(cacheKey)) return false;
+
+        if (!this._tier2PicksPromises) this._tier2PicksPromises = {};
+        if (!this._tier2PicksPromises[cacheKey]) {
+          const url = this.getTier2PicksChunkUrl(lidStr, gwNum);
+          this._tier2PicksPromises[cacheKey] = (async () => {
+            try {
+              const resp = await fetch(url);
+              if (!resp || !resp.ok) {
+                this._missingTier2PicksGws.add(cacheKey);
+                return false;
+              }
+              const picksJson = await resp.json();
+              const picksMap = picksJson && picksJson.picks;
+              if (!picksMap || typeof picksMap !== 'object' || Object.keys(picksMap).length === 0) {
+                this._missingTier2PicksGws.add(cacheKey);
+                return false;
+              }
+
+              await this.ensurePlayersDict();
+              const lMap = (this._liveMapsByGw && this._liveMapsByGw[gwNum]) || (Number(this.lastLiveGw) === gwNum ? this._latestLiveMap : null) || {};
+              const isGwFinished = Boolean(gwData && gwData.is_finished);
+              const isDataChecked = Boolean(gwData && gwData.data_checked);
+              const unstartedTeams = (gwData && Array.isArray(gwData.unstarted_teams)) ? gwData.unstarted_teams : [];
+
+              if (!targetLeague.squads) targetLeague.squads = {};
+              const resById = new Map();
+              (gwData.results || []).forEach(r => { if (r && r.entry_id) resById.set(Number(r.entry_id), r); });
+              const teamById = new Map();
+              (targetLeague.teams || []).forEach(t => { if (t && t.entry_id) teamById.set(Number(t.entry_id), t); });
+
+              for (const [eidStr, rec] of Object.entries(picksMap)) {
+                const eidNum = Number(eidStr);
+                if (!eidNum || !rec) continue;
+                const sqKey = `${eidNum}_${gwNum}`;
+                if (rec.dnp) {
+                  targetLeague.squads[sqKey] = { dnp: true, starting: [], bench: [], auto_subs: [] };
+                  continue;
+                }
+                const pids = Array.isArray(rec.p) ? rec.p : [];
+                if (pids.length === 0) continue;
+
+                const chip = rec.ch || null;
+                const isBB = (chip === 'bboost' || chip === 'bench_boost');
+                const capMult = (chip === '3xc' || chip === 'triple_captain') ? 3 : 2;
+                const capId = rec.c;
+                const vcId = rec.v;
+
+                const rawPickObjects = pids.map((pid, idx) => ({
+                  element: pid,
+                  position: idx + 1,
+                  is_captain: pid === capId,
+                  is_vice: pid === vcId,
+                  multiplier: pid === capId ? capMult : (idx < 11 || isBB ? 1 : 0)
+                }));
+                let starterPicks = rawPickObjects.slice(0, 11);
+                let benchPicks = rawPickObjects.slice(11);
+                const autoSubs = Array.isArray(rec.as)
+                  ? rec.as.filter(s => Array.isArray(s) && s.length >= 2).map(s => ({ element_in: s[0], element_out: s[1] }))
+                  : [];
+                if (autoSubs.length > 0) {
+                  for (const sub of autoSubs) {
+                    const sIdx = starterPicks.findIndex(p => p.element === sub.element_out);
+                    const bIdx = benchPicks.findIndex(p => p.element === sub.element_in);
+                    if (sIdx !== -1 && bIdx !== -1) {
+                      const sPick = starterPicks[sIdx];
+                      const bPick = benchPicks[bIdx];
+                      starterPicks[sIdx] = { ...bPick, multiplier: sPick.multiplier > 0 ? sPick.multiplier : 1, is_captain: sPick.is_captain, is_vice: sPick.is_vice, is_sub: true };
+                      benchPicks[bIdx] = { ...sPick, multiplier: 0, is_captain: false, is_vice: false, is_sub_out: true };
+                    }
+                  }
+                }
+
+                const starters = starterPicks.map(p => this.buildSquadPlayerEntry(p.element, {
+                  isCaptain: p.is_captain, isVice: p.is_vice, multiplier: p.multiplier,
+                  isBench: false, isSub: p.is_sub, liveMap: lMap,
+                  isGwFinished, unstartedTeams
+                }));
+                const bench = benchPicks.map(p => this.buildSquadPlayerEntry(p.element, {
+                  isCaptain: p.is_captain, isVice: p.is_vice, multiplier: p.multiplier,
+                  isBench: true, isSubOut: p.is_sub_out, liveMap: lMap,
+                  isGwFinished, unstartedTeams
+                }));
+
+                const hitsVal = Number(rec.h || 0);
+                targetLeague.squads[sqKey] = {
+                  starting: starters,
+                  bench: bench,
+                  auto_subs: autoSubs,
+                  chip: chip,
+                  hits: hitsVal,
+                  prev_total: rec.pt,
+                  summary_overall_rank: rec.ov || null,
+                  final_checked: Boolean(isGwFinished && isDataChecked)
+                };
+
+                const resObj = resById.get(eidNum);
+                const teamObj = teamById.get(eidNum);
+                if (resObj) {
+                  resObj._squadEnriched = true;
+                  if (resObj.prev_total === undefined && rec.pt !== undefined) resObj.prev_total = rec.pt;
+                  if (resObj.hits === undefined) resObj.hits = hitsVal;
+                  if (!resObj.chip && chip) resObj.chip = chip;
+                  if ((!resObj.captain || resObj.captain === '-') && capId) {
+                    const capEnt = starters.find(p => p.is_captain) || bench.find(p => p.is_captain);
+                    if (capEnt && capEnt.name) resObj.captain = capEnt.name;
+                  }
+                  if (!resObj.fpl_overall_rank && rec.ov) resObj.fpl_overall_rank = rec.ov;
+                }
+                if (teamObj) {
+                  if (teamObj.prev_total === undefined && rec.pt !== undefined) teamObj.prev_total = rec.pt;
+                  if (!teamObj.fpl_overall_rank && rec.ov) teamObj.fpl_overall_rank = rec.ov;
+                }
+              }
+
+              if (!Array.isArray(targetLeague._loaded_t2_picks_gws)) targetLeague._loaded_t2_picks_gws = [];
+              if (!targetLeague._loaded_t2_picks_gws.includes(gwNum)) targetLeague._loaded_t2_picks_gws.push(gwNum);
+
+              if (lidStr === String(this.activeLeagueId) && this.data && this.data !== targetLeague) {
+                this.data.squads = targetLeague.squads;
+                this.data._loaded_t2_picks_gws = targetLeague._loaded_t2_picks_gws;
+              }
+              if (this.lastLiveJson && Number(this.lastLiveGw) === gwNum) {
+                this.applyLiveElements(this.lastLiveJson, gwNum);
+              }
+              this.invalidateRenderCache();
+              return true;
+            } catch (_) {
+              return false;
+            } finally {
+              if (this._tier2PicksPromises) delete this._tier2PicksPromises[cacheKey];
+            }
+          })();
+        }
+        return this._tier2PicksPromises[cacheKey];
       }
 
       getLeagueSquadChunkUrl(leagueId, gw) {
@@ -7449,6 +7770,8 @@ __STRUCTURED_DATA_JSON__
         if (!this.config.features) this.config.features = {};
         if (isTier2) {
           await this.ensureTier2GWChunk(this.selectedGW);
+          if (this._switchingTargetId !== lidStr) return;
+          await this.ensureTier2PicksChunk(this.selectedGW, lidStr);
           if (this._switchingTargetId !== lidStr) return;
         } else {
           await this.ensureTier1GWSquads(this.selectedGW, lidStr);
@@ -9879,8 +10202,10 @@ __STRUCTURED_DATA_JSON__
           } catch (e) {}
         }
 
-        // On-Demand fetch for Tier-2 chunked historical gameweek & Tier-1 historical squads chunk
+        // On-Demand fetch for Tier-2 chunked historical gameweek & picks, and Tier-1 historical squads chunk
         await this.ensureTier2GWChunk(this.selectedGW);
+        if (this._selectGwSeq !== reqSeq) return;
+        await this.ensureTier2PicksChunk(this.selectedGW);
         if (this._selectGwSeq !== reqSeq) return;
         await this.ensureTier1GWSquads(this.selectedGW);
         if (this._selectGwSeq !== reqSeq) return;
@@ -10384,6 +10709,23 @@ __STRUCTURED_DATA_JSON__
           matchdayBody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs">${isEn ? 'No data available for this Gameweek' : 'ยังไม่มีข้อมูลในสัปดาห์นี้'}</td></tr>`;
         } else if (matchdayBody) {
           let mHtml = '';
+          const isTier2Matchday = Boolean(this.data && this.data.tier === 2) || Boolean(this.config && this.config.tier === 2);
+          const hasAnyEnrichedCap = Boolean(gwData && (gwData.picks_synced || this.hasTier2PicksForGw(this.data, this.selectedGW) || (sorted && sorted.some(tm => tm.captain && tm.captain !== '-'))));
+          if (isTier2Matchday && isStarted && !isFinished && !hasAnyEnrichedCap) {
+            const syncNoticeText = isEn
+              ? 'Syncing post-deadline captains & hits — tap any team to view lineup & update row'
+              : 'กำลังซิงก์ข้อมูลกัปตันและแต้มลบหลังเดดไลน์ — แตะชื่อทีมเพื่อดูผังและอัปเดตแถวนั้นทันที';
+            mHtml += `
+              <tr class="bg-amber-50/70 dark:bg-amber-950/25 border-b border-amber-200/70 dark:border-amber-800/40">
+                <td colspan="6" class="px-3 py-2 text-center">
+                  <span class="inline-flex items-center gap-1.5 text-[11px] font-medium text-amber-800 dark:text-amber-300 leading-snug">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shrink-0"></span>
+                    <span>${syncNoticeText}</span>
+                  </span>
+                </td>
+              </tr>
+            `;
+          }
           const weeklyPenaltiesMap = {};
           let weeklyWinnerPrize = 200;
           if (this.config.features && this.config.features.has_weekly_penalties) {
@@ -10529,7 +10871,7 @@ __STRUCTURED_DATA_JSON__
               const lastGwHits = r ? (Number(r.hits) || 0) : 0;
               const teamTotalHits = (r && r.total_hits !== undefined) ? Number(r.total_hits) : (Number(t.total_hits) || 0);
               const fplRank = (t.rank !== undefined && t.rank !== null) ? Number(t.rank) : 999;
-              const lastRank = (t.last_rank !== undefined && t.last_rank !== null) ? Number(t.last_rank) : null;
+              const lastRank = (t.last_rank !== undefined && t.last_rank !== null && Number(t.last_rank) > 0) ? Number(t.last_rank) : null;
 
               const isLatestGw = (targetGW >= maxGW);
               const teamTotalPoints = (isLatestGw || !r || r.total_points === undefined)
@@ -20063,20 +20405,7 @@ __STRUCTURED_DATA_JSON__
           const gwNum = Number(gw);
 
           // 1. Ensure players dictionary is loaded (cached in this.playersDict or fallback to embedded PLAYERS_DICT)
-          if (!this.playersDict || Object.keys(this.playersDict).length === 0) {
-            if (typeof PLAYERS_DICT !== 'undefined' && PLAYERS_DICT && Object.keys(PLAYERS_DICT).length > 0) {
-              this.playersDict = PLAYERS_DICT;
-            } else {
-              try {
-                const pUrl = this.getPlayersDataUrl ? this.getPlayersDataUrl() : 'data/players.json';
-                const pResp = await fetch(pUrl);
-                if (pResp.ok) {
-                  this.playersDict = await pResp.json();
-                }
-              } catch (_) {}
-            }
-            if (!this.playersDict) this.playersDict = {};
-          }
+          await this.ensurePlayersDict();
 
           // 2. Ensure live elements map is available for live points calculation
           const modalApiCfg = (typeof resolveWorkerApiBase === 'function')
@@ -20199,72 +20528,75 @@ __STRUCTURED_DATA_JSON__
           const unstartedTeams = (gwObj && Array.isArray(gwObj.unstarted_teams)) ? gwObj.unstarted_teams : [];
 
           const buildPlayerObj = (p, isBench = false) => {
-            const pid = p.element;
-            const pInfo = this.playersDict[String(pid)] || this.playersDict[pid] || null;
-            let name, team, pos, teamCode;
-            if (Array.isArray(pInfo)) {
-              name = pInfo[0];
-              team = pInfo[1];
-              pos = pInfo[2];
-              teamCode = pInfo[3];
-            } else if (pInfo && typeof pInfo === 'object') {
-              name = pInfo.name;
-              team = pInfo.team;
-              pos = pInfo.pos;
-              teamCode = pInfo.team_code;
-            }
-            const posType = p.element_type === 1 ? 'GKP' : (p.element_type === 2 ? 'DEF' : (p.element_type === 3 ? 'MID' : 'FWD'));
-            pos = pos || posType;
-            name = name || `Player ${pid}`;
-            team = team || 'PL';
-            teamCode = teamCode || 0;
             const isCap = Boolean(p.is_captain);
-            const isVice = Boolean(p.is_vice_captain);
             let mult = Number(p.multiplier !== undefined ? p.multiplier : (isCap ? 2 : 1));
-            if (picksData.active_chip === '3xc' && isCap) {
+            if ((picksData.active_chip === '3xc' || picksData.active_chip === 'triple_captain') && isCap) {
               mult = 3;
             }
-
-            let rawPts = 0;
-            let provBonus = 0;
-            if (lMap[pid]) {
-              rawPts = Number(lMap[pid].total_points || 0);
-              provBonus = Number(lMap[pid].provisional_bonus || 0);
-            }
-            const notPlayedYet = (!isGwFinished) && (unstartedTeams.includes(team) || unstartedTeams.includes(teamCode));
-
-            return {
-              id: pid,
-              name: name,
-              pos: pos,
-              team: team,
-              team_code: teamCode,
-              points: isBench ? (rawPts * (mult > 0 ? mult : 1)) : (rawPts * mult),
-              raw_points: rawPts,
+            return this.buildSquadPlayerEntry(p.element, {
+              elementType: p.element_type,
+              isCaptain: isCap,
+              isVice: Boolean(p.is_vice_captain),
               multiplier: mult,
-              is_captain: isCap,
-              is_vice: isVice,
-              provisional_bonus: provBonus,
-              is_sub: Boolean(p.is_sub),
-              is_sub_out: Boolean(p.is_sub_out),
-              not_played_yet: notPlayedYet
-            };
+              isBench: isBench,
+              isSub: Boolean(p.is_sub),
+              isSubOut: Boolean(p.is_sub_out),
+              liveMap: lMap,
+              isGwFinished,
+              unstartedTeams
+            });
           };
 
           const starters = actualStartersPicks.map(p => buildPlayerObj(p, false));
           const bench = actualBenchPicks.map(p => buildPlayerObj(p, true));
 
+          const eh = picksData.entry_history || {};
+          const chip = picksData.active_chip || null;
+          const chipNorm = String(chip || '').trim().toLowerCase().replace(/_/g, '');
+          const hitsVal = (chipNorm === 'wildcard' || chipNorm === 'freehit')
+            ? 0
+            : Number(eh.event_transfers_cost || 0);
+          const isBB = (chipNorm === 'bboost' || chipNorm === 'benchboost');
+          const capEntry = starters.find(p => p.is_captain) || bench.find(p => p.is_captain);
+          const capName = (capEntry && capEntry.name) ? capEntry.name : '-';
+
           const squadKey = `${entryIdNum}_${gwNum}`;
           const squadObj = {
             starting: starters,
             bench: bench,
-            chip: picksData.active_chip,
-            raw_hist: picksData.entry_history || {},
+            auto_subs: Array.isArray(autoSubs) ? autoSubs : [],
+            chip: chip,
+            hits: hitsVal,
+            raw_hist: eh,
             summary_overall_rank: picksData.summary_overall_rank || null
           };
 
           if (!this.data.squads) this.data.squads = {};
           this.data.squads[squadKey] = squadObj;
+
+          // Backfill row in active league results immediately (especially useful during pre-sync window)
+          const activeGwObj = (this.data.gameweeks || {})[String(gwNum)];
+          const matchRes = activeGwObj && Array.isArray(activeGwObj.results)
+            ? activeGwObj.results.find(r => Number(r.entry_id) === entryIdNum)
+            : null;
+          if (matchRes) {
+            if (capName && capName !== '-') matchRes.captain = capName;
+            matchRes.hits = hitsVal;
+            matchRes.chip = chip;
+            matchRes._squadEnriched = true;
+            if (!isGwFinished || Object.keys(lMap).length > 0) {
+              const startPts = starters.reduce((s, p) => s + (Number(p.points) || 0), 0);
+              const benchPts = bench.reduce((s, p) => s + (Number(p.points) || 0), 0);
+              const grossPts = isBB ? (startPts + benchPts) : startPts;
+              if (grossPts > 0 || Object.keys(lMap).length > 0) {
+                matchRes.points = grossPts;
+                matchRes.net_points = grossPts - hitsVal;
+                matchRes.bench_points = isBB ? 0 : benchPts;
+              } else if (matchRes.points !== undefined) {
+                matchRes.net_points = Number(matchRes.points) - hitsVal;
+              }
+            }
+          }
 
           // Propagate into multiData.leagues
           if (this.multiData && this.multiData.leagues) {
@@ -20274,6 +20606,14 @@ __STRUCTURED_DATA_JSON__
                 l.squads[squadKey] = squadObj;
               }
             }
+          }
+
+          if (this.lastLiveJson && Number(this.lastLiveGw) === gwNum) {
+            this.applyLiveElements(this.lastLiveJson, gwNum);
+          }
+          if (matchRes) {
+            this.invalidateRenderCache();
+            this.renderAll();
           }
 
           return true;
@@ -27941,6 +28281,9 @@ def main():
                                 "gw": int(gw_k),
                                 "is_finished": gw_v.get("is_finished", False),
                                 "is_started": gw_v.get("is_started", False),
+                                "data_checked": gw_v.get("data_checked", False),
+                                "unstarted_teams": gw_v.get("unstarted_teams", []),
+                                "picks_synced": gw_v.get("picks_synced", False),
                                 "results": gw_res
                             }, gf, ensure_ascii=False, separators=(',', ':'))
                 slim_t2_gws[gw_k] = {

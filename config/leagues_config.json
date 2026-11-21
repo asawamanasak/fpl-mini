@@ -1178,18 +1178,18 @@
         "footer": "* กิจกรรมร่วมสนุกโดยเพจ FPL Growth Mindset เล่นฟรี ไม่มีค่าใช้จ่าย"
       },
       {
-        "title": "สถาปัตยกรรมแสดงผล (Tier 2 High-Scale)",
+        "title": "สถาปัตยกรรมแสดงผล (Tier 2 High-Scale Live)",
         "items": [
           {
-            "label": "โหมดแสดงผล Standings & Leaderboard Only",
-            "desc": "• จำนวนทีมในลีก: 1,780 ทีม (สเกลคอมมูนิตี้สาธารณะ)\n• การทำงาน: ทำงานในโหมด Tier 2 เน้นความเร็วในการโหลดตารางคะแนนและอันดับสะสมแบบเรียลไทม์\n• การค้นหา: มีระบบค้นหาชื่อทีมและชื่อผู้จัดการแบบทันที (Instant Search) สำหรับค้นหาท่ามกลางสมาชิก 1,780 คน"
+            "label": "โหมดคะแนนสดครบองค์ประกอบ (สูงสุด 3,000 ทีม)",
+            "desc": "• จำนวนทีมในลีก: 1,779 ทีม (สเกลคอมมูนิตี้สาธารณะ)\n• คะแนนสดครบ 100%: ดึงข้อมูล 15 นักเตะ กัปตัน แต้มลบ (Hits) และชิปหลังเดดไลน์ครั้งเดียวต่อ GW แล้วคำนวณคะแนนสด โบนัสชั่วคราว ตัวสำรองอัตโนมัติ จำนวนนักเตะลงเตะ และตารางรวมสะสมแบบเรียลไทม์\n• ดูผัง 11 ตัวจริงทันที: แตะที่ชื่อทีมเพื่อเปิดดูผังสนามจริงได้ทันที พร้อมระบบค้นหา Instant Search ทั่วทั้ง 1,779 ทีม"
           },
           {
-            "label": "ข้อจำกัดและการแสดงผล",
-            "desc": "• เพื่อรักษาความเร็วในการโหลดและไม่ให้ชน Rate Limit ของ FPL ระบบจะไม่ดึงผังจัดทัพ 11 ตัวจริง (Picks) และการวิเคราะห์การย้ายตัวรายคน\n• แท็บสถานะชิปและการวิเคราะห์การย้ายตัวจะสงวนไว้สำหรับมินิลีกระดับ Tier 1"
+            "label": "ขอบเขตการแสดงผล Tier 2",
+            "desc": "• คงความเร็วในการโหลดระดับ <1 วินาทีด้วยชุดข้อมูลแบบ Decoupled Chunked JSON\n• แท็บสถานะชิปและการวิเคราะห์การย้ายตัวเชิงลึกสงวนไว้สำหรับมินิลีกระดับ Tier 1"
           }
         ],
-        "footer": "* สถาปัตยกรรม Tier 2 ออกแบบเพื่อรองรับสเกลระดับ 1,000+ ทีมอย่างมีประสิทธิภาพ"
+        "footer": "* สถาปัตยกรรม Tier 2 High-Scale Live รองรับมินิลีกระดับ 1,000–3,000 ทีมอย่างลื่นไหล"
       }
     ],
     "entry_fee_en": "Free Entry (Page Community Event)",
@@ -1211,18 +1211,18 @@
         "footer": "* Free public community event organized by FPL Growth Mindset page."
       },
       {
-        "title": "Tier 2 Large Community League Architecture",
+        "title": "Tier 2 Large Community Live Architecture",
         "items": [
           {
-            "label": "Standings & Leaderboard Only Mode",
-            "desc": "• League scale: 1,780 teams (Public Community)\n• Performance: Operates in Tier 2 mode optimized for high-speed live standings and leaderboard rendering\n• Instant Search: Quick manager and team name filter across all 1,780 entries"
+            "label": "Full Live Scoring & Instant Pitch View (Up to 3,000 Teams)",
+            "desc": "• League scale: 1,779 teams (Public Community)\n• Full Live Parity: Syncs locked 15-player picks, captains, hits, and chips once per GW after deadline, enabling real-time provisional bonus, auto-subs, played ratios, and live overall standings\n• Instant Pitch Modal & Search: Tap any manager for instant pitch formation view or filter across all 1,779 entries"
           },
           {
             "label": "Tier 2 Boundaries",
-            "desc": "• To protect FPL rate limits and mobile performance, detailed squad pitch formations and transfer logs are omitted in Tier 2\n• Chips inventory and transfer analytics are active for Tier 1 leagues"
+            "desc": "• Preserves sub-second mobile performance via Decoupled Chunked JSON loading\n• Dedicated Chip Inventory Matrix and Transfer Analytics tabs remain reserved for Tier 1 leagues"
           }
         ],
-        "footer": "* Tier 2 High-Scale architecture designed to support 1,000+ member leagues."
+        "footer": "* Tier 2 High-Scale Live architecture designed for 1,000–3,000 member leagues."
       }
     ],
     "tenant_group": "showcase",

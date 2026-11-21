@@ -63,18 +63,55 @@ def main() -> int:
         results = gw_obj.get("results") or []
 
         if tier == 2:
-            # Verify GW chunk exists and top/tail pages match Official FPL API
+            # Verify GW chunk + Tier 2 Auto-Picks coverage, captain/hits integrity, and sample against FPL API
             chunk_path = os.path.join(BASE_DIR, "data", "leagues", str(lid), f"gw{gw}.json")
             if not os.path.exists(chunk_path):
                 print(f"  FAIL [{lid}] Tier 2 missing chunk {chunk_path}")
                 total_errors += 1
                 continue
             chunk_data = json.load(open(chunk_path, "r", encoding="utf-8"))
-            chunk_res = {int(r["entry_id"]): r for r in chunk_data.get("results", []) if r.get("entry_id")}
+            chunk_results_list = chunk_data.get("results", [])
+            chunk_res = {int(r["entry_id"]): r for r in chunk_results_list if r.get("entry_id")}
             local_by_id = {int(t["entry_id"]): t for t in teams if t.get("entry_id")}
+
+            gw_started = bool(gw_obj.get("is_started") or chunk_data.get("is_started"))
+            gw_checked = bool(gw_obj.get("data_checked") or chunk_data.get("data_checked"))
+            tier2_err = 0
+
+            if gw_started and len(teams) <= 3000:
+                picks_path = os.path.join(BASE_DIR, "data", "leagues", str(lid), f"gw{gw}_picks.json")
+                if not os.path.exists(picks_path):
+                    print(f"  FAIL [{lid}] Tier 2 missing auto-picks file {picks_path}")
+                    total_errors += 1
+                    continue
+                picks_payload = json.load(open(picks_path, "r", encoding="utf-8"))
+                picks_map = picks_payload.get("picks") or {}
+                coverage_pct = (len(picks_map) / max(1, len(teams))) * 100.0
+                if coverage_pct < 99.0:
+                    tier2_err += 1
+                    print(f"    FAIL [{lid}] Tier 2 picks coverage too low: {len(picks_map)}/{len(teams)} ({coverage_pct:.1f}%)")
+
+                active_with_cap = sum(
+                    1 for r in chunk_results_list
+                    if r.get("captain") not in ("-", None, "")
+                )
+                cap_pct = (active_with_cap / max(1, len(chunk_results_list))) * 100.0
+                if cap_pct < 99.0:
+                    tier2_err += 1
+                    print(f"    FAIL [{lid}] Tier 2 captain populated too low: {active_with_cap}/{len(chunk_results_list)} ({cap_pct:.1f}%)")
+
+                for r in chunk_results_list:
+                    hits_v = int(r.get("hits") or 0)
+                    pts_v = int(r.get("points") or 0)
+                    net_v = int(r.get("net_points") or 0)
+                    if hits_v < 0 or net_v != (pts_v - hits_v):
+                        tier2_err += 1
+                        print(f"    MISMATCH [{lid}] entry {r.get('entry_id')} math: pts={pts_v} hits={hits_v} net={net_v}")
+                        break
+
             sample_pages = [1, 20] if len(teams) > 950 else [1]
             checked = 0
-            tier2_err = 0
+            hits_checked = 0
             for pg in sample_pages:
                 off = fetch_json(f"https://fantasy.premierleague.com/api/leagues-classic/{lid}/standings/?page_standings={pg}")
                 for r in off.get("standings", {}).get("results", [])[:10]:
@@ -85,11 +122,32 @@ def main() -> int:
                     if not lt or not cr:
                         tier2_err += 1
                         print(f"    MISMATCH [{lid}] entry {eid} missing in local Tier 2 files")
-                    elif int(lt.get("total_points") or 0) != int(r.get("total") or 0) or int(cr.get("net_points") or 0) != int(r.get("event_total") or 0):
+                        continue
+                    if gw_checked:
+                        if int(lt.get("total_points") or 0) != int(r.get("total") or 0) or int(cr.get("points") or 0) != int(r.get("event_total") or 0):
+                            tier2_err += 1
+                            print(f"    MISMATCH [{lid}] {r.get('entry_name')} ({eid}): official ev={r.get('event_total')} tot={r.get('total')} vs local gross={cr.get('points')} tot={lt.get('total_points')}")
+            # Cross-check sampled teams with non-zero hits against official /picks/ endpoint
+            if gw_started and len(teams) <= 3000:
+                sample_hits_rows = [r for r in chunk_results_list if int(r.get("hits") or 0) > 0][:3]
+                if not sample_hits_rows:
+                    sample_hits_rows = chunk_results_list[:3]
+                for hr in sample_hits_rows:
+                    heid = int(hr["entry_id"])
+                    hpicks = fetch_json(f"https://fantasy.premierleague.com/api/entry/{heid}/event/{gw}/picks/")
+                    off_chip = hpicks.get("active_chip")
+                    chip_norm = str(off_chip or "").strip().lower().replace("_", "")
+                    off_hits = 0 if chip_norm in ("wildcard", "freehit") else int((hpicks.get("entry_history") or {}).get("event_transfers_cost") or 0)
+                    if int(hr.get("hits") or 0) != off_hits or hr.get("chip") != off_chip:
                         tier2_err += 1
-                        print(f"    MISMATCH [{lid}] {r.get('entry_name')} ({eid}): official ev={r.get('event_total')} tot={r.get('total')} vs local ev={cr.get('net_points')} tot={lt.get('total_points')}")
+                        print(f"    MISMATCH [{lid}] entry {heid} hits/chip: local=({hr.get('hits')},{hr.get('chip')}) vs official=({off_hits},{off_chip})")
+                    hits_checked += 1
+
             if tier2_err == 0:
-                print(f"  PASS [{lid} Tier 2] {name}: {len(teams)} teams, sampled {checked} rows across page(s) {sample_pages} -> 100% match")
+                cap_count = sum(1 for r in chunk_results_list if r.get("captain") not in ("-", None, ""))
+                hits_count = sum(1 for r in chunk_results_list if int(r.get("hits") or 0) > 0)
+                chips_count = sum(1 for r in chunk_results_list if r.get("chip"))
+                print(f"  PASS [{lid} Tier 2] {name}: {len(teams)} teams, {cap_count} captains, {hits_count} hits, {chips_count} chips, sampled {checked} standings + {hits_checked} live /picks -> 100% match")
             else:
                 total_errors += tier2_err
         else:
