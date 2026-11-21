@@ -3622,6 +3622,9 @@
       }
 
       async _fetchJsonWithRetry(url, retryCount = 2, timeoutMs = 12000) {
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:' && !/^https?:\/\//i.test(String(url || ''))) {
+          return null;
+        }
         for (let attempt = 0; attempt <= retryCount; attempt++) {
           const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
           const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;

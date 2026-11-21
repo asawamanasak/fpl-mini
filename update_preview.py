@@ -6823,6 +6823,9 @@ __STRUCTURED_DATA_JSON__
       }
 
       async _fetchJsonWithRetry(url, retryCount = 2, timeoutMs = 12000) {
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:' && !/^https?:\\/\\//i.test(String(url || ''))) {
+          return null;
+        }
         for (let attempt = 0; attempt <= retryCount; attempt++) {
           const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
           const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
@@ -22952,22 +22955,6 @@ __STRUCTURED_DATA_JSON__
       gap: 0.45rem;
       flex-shrink: 0;
     }
-    .bm-lf-badge {
-      padding: 0.18rem 0.5rem;
-      border-radius: 9999px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-    .bm-lf-badge.is-recent {
-      background-color: var(--color-live-soft);
-      color: var(--color-ok-text);
-      border: 1px solid var(--color-live-border);
-    }
-    .bm-lf-badge.is-default {
-      background-color: var(--color-accent-soft);
-      color: var(--color-accent-text);
-    }
     .bm-lf-arrow {
       font-weight: 800;
       color: var(--color-ink-2);
@@ -25319,17 +25306,6 @@ __STRUCTURED_DATA_JSON__
 
           const right = document.createElement('div');
           right.className = 'bm-lf-item-right';
-          if (!item.isDirect && item.isRecent) {
-            const b = document.createElement('span');
-            b.className = 'bm-lf-badge is-recent';
-            b.textContent = isEn ? 'Recent' : 'ล่าสุด';
-            right.appendChild(b);
-          } else if (!item.isDirect && item.is_default) {
-            const b = document.createElement('span');
-            b.className = 'bm-lf-badge is-default';
-            b.textContent = isEn ? 'Featured' : 'ลีกหลัก';
-            right.appendChild(b);
-          }
           const arr = document.createElement('span');
           arr.className = 'bm-lf-arrow';
           arr.setAttribute('aria-hidden', 'true');
