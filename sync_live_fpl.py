@@ -409,6 +409,314 @@ def check_data_has_changed(cached_data, new_output):
 
     return False
 
+
+def _safe_float(val, default=0.0):
+    try:
+        if val is None or val == "":
+            return default
+        return float(val)
+    except (TypeError, ValueError):
+        return default
+
+
+def _safe_int(val, default=0):
+    try:
+        if val is None or val == "":
+            return default
+        return int(float(val))
+    except (TypeError, ValueError):
+        return default
+
+
+def build_hybrid_transfer_suggestions(
+    elements,
+    teams_by_id,
+    element_types,
+    max_gw,
+    upcoming_gw,
+    all_fixtures,
+    azure_ts_data,
+    leagues_output,
+):
+    """Build hybrid 1-GW and 3-GW transfer suggestions blending official FPL data, FDR fixtures, and Azure xP."""
+    horizon_gws = [upcoming_gw, upcoming_gw + 1, upcoming_gw + 2]
+    horizon_set = set(horizon_gws)
+
+    # 1. Build club -> gw -> fixture list map
+    team_gw_fixtures = {}
+    if isinstance(all_fixtures, list):
+        for fx in all_fixtures:
+            ev = fx.get("event")
+            if ev not in horizon_set or fx.get("postponed"):
+                continue
+            th = fx.get("team_h")
+            ta = fx.get("team_a")
+            if th and ta:
+                team_gw_fixtures.setdefault(th, {}).setdefault(ev, []).append({
+                    "gw": ev,
+                    "opp": teams_by_id.get(ta, "PL"),
+                    "h": True,
+                    "fdr": _safe_int(fx.get("team_h_difficulty"), 3),
+                })
+                team_gw_fixtures.setdefault(ta, {}).setdefault(ev, []).append({
+                    "gw": ev,
+                    "opp": teams_by_id.get(th, "PL"),
+                    "h": False,
+                    "fdr": _safe_int(fx.get("team_a_difficulty"), 3),
+                })
+
+    # 2. Index Azure player signals (when available)
+    azure_by_id = {}
+    if isinstance(azure_ts_data, dict):
+        for cat_key in ("GoalKeepers", "Defenders", "Midfielders", "Forwards"):
+            for item in azure_ts_data.get(cat_key) or []:
+                if not isinstance(item, dict):
+                    continue
+                for sub_key in ("ValuePlayer", "GoodPlayer"):
+                    sub = item.get(sub_key)
+                    if not isinstance(sub, dict):
+                        continue
+                    pid = _safe_int(sub.get("Id"), 0)
+                    if pid <= 0:
+                        continue
+                    prev = azure_by_id.get(pid)
+                    axp = _safe_float(sub.get("ExpectedPoints"), 0.0)
+                    apct = _safe_int(sub.get("PercentMinutesRecentMatches"), 0)
+                    if prev is None or axp > prev["xp"]:
+                        azure_by_id[pid] = {
+                            "xp": axp,
+                            "val": _safe_float(sub.get("PlayerValue"), 0.0),
+                            "recent_pct": apct,
+                        }
+
+    fdr_mult_map = {1: 1.22, 2: 1.14, 3: 1.00, 4: 0.86, 5: 0.74}
+    total_possible_mins = max(1, _safe_int(max_gw, 1) * 90)
+    all_records = {}
+
+    # Shared club fixture schedule across [upcoming_gw, upcoming_gw + 1, upcoming_gw + 2]
+    club_fx = {}
+    for tid_k, club_short in teams_by_id.items():
+        c_list = []
+        for gw_num in horizon_gws:
+            gw_matches = team_gw_fixtures.get(tid_k, {}).get(gw_num, [])
+            if not gw_matches:
+                c_list.append({"gw": gw_num, "opp": "BGW", "h": False, "fdr": 5, "bgw": True})
+            else:
+                for m in gw_matches:
+                    c_list.append(m)
+        club_fx[club_short] = c_list
+
+    # 3. Compute in-house + hybrid xP for every player
+    for pid, p in elements.items():
+        pos = element_types.get(p.get("element_type"), "MID")
+        tid = _safe_int(p.get("team"), 0)
+        cost = round(_safe_float(p.get("now_cost"), 0) / 10.0, 1)
+        ep_next = max(0.0, _safe_float(p.get("ep_next"), 0.0))
+        form = max(0.0, _safe_float(p.get("form"), 0.0))
+        ppg = max(0.0, _safe_float(p.get("points_per_game"), 0.0))
+        minutes = max(0, _safe_int(p.get("minutes"), 0))
+        sel_pct = max(0.0, _safe_float(p.get("selected_by_percent"), 0.0))
+        status = (p.get("status") or "a").strip().lower()
+        raw_chance = p.get("chance_of_playing_next_round")
+
+        if raw_chance is None:
+            chance = 0 if status in ("i", "s", "u") else 100
+        else:
+            chance = max(0, min(100, _safe_int(raw_chance, 100)))
+
+        min_pct = min(100, round((minutes / total_possible_mins) * 100))
+        az = azure_by_id.get(pid)
+        if az and az.get("recent_pct", 0) > min_pct:
+            min_pct = min(100, int(az["recent_pct"]))
+
+        cs90 = max(0.0, _safe_float(p.get("clean_sheets_per_90"), 0.0))
+        saves90 = max(0.0, _safe_float(p.get("saves_per_90"), 0.0))
+        xg90 = max(0.0, _safe_float(p.get("expected_goals_per_90"), 0.0))
+        xa90 = max(0.0, _safe_float(p.get("expected_assists_per_90"), 0.0))
+
+        if pos == "GKP":
+            underlying = 2.0 + 4.0 * cs90 + 0.33 * saves90 + 0.03 * form
+        elif pos == "DEF":
+            underlying = 2.0 + 4.0 * cs90 + 6.0 * xg90 + 3.0 * xa90
+        elif pos == "MID":
+            underlying = 2.0 + 1.0 * cs90 + 5.0 * xg90 + 3.0 * xa90
+        else:
+            underlying = 2.0 + 4.0 * xg90 + 3.0 * xa90
+
+        blended_base = 0.40 * ep_next + 0.30 * form + 0.15 * ppg + 0.15 * underlying
+        if minutes > 0:
+            base_match_pts = max(0.5, min(11.0, blended_base))
+        else:
+            base_match_pts = max(0.0, min(2.0, blended_base))
+
+        if status in ("i", "s", "u") and chance == 0:
+            mins_factor = 0.0
+        elif minutes == 0:
+            mins_factor = 0.2
+        else:
+            mins_factor = 0.45 + 0.55 * (min_pct / 100.0)
+
+        gw_xps = []
+        for idx, gw_num in enumerate(horizon_gws):
+            gw_matches = team_gw_fixtures.get(tid, {}).get(gw_num, [])
+            if not gw_matches:
+                gw_xps.append(0.0)
+                continue
+
+            gw_raw_xp = 0.0
+            for m in gw_matches:
+                mult = fdr_mult_map.get(m["fdr"], 1.0) * (1.05 if m["h"] else 0.96)
+                gw_raw_xp += base_match_pts * mult * mins_factor
+            if len(gw_matches) >= 2:
+                gw_raw_xp *= 0.94
+
+            if idx == 0:
+                avail = chance / 100.0
+            elif status == "d":
+                avail = min(1.0, (chance / 100.0) + 0.25)
+            elif status in ("i", "s", "u"):
+                avail = 0.35 * (chance / 100.0)
+            else:
+                avail = 1.0
+            gw_xps.append(gw_raw_xp * avail)
+
+        gw1_is_bgw = bool(team_gw_fixtures.get(tid, {}).get(upcoming_gw, []) == [])
+        if az and az["xp"] > 0 and not gw1_is_bgw and status == "a":
+            xp1 = round(0.55 * az["xp"] + 0.45 * gw_xps[0], 1)
+            xp3 = round(xp1 + gw_xps[1] + gw_xps[2], 1)
+            src = "hybrid"
+        else:
+            xp1 = round(gw_xps[0], 1)
+            xp3 = round(sum(gw_xps), 1)
+            src = "fpl"
+
+        val1 = round(xp1 / cost, 2) if cost > 0 else 0.0
+        val3 = round(xp3 / cost, 2) if cost > 0 else 0.0
+        news_str = (p.get("news") or "").strip()[:120]
+
+        rec = {
+            "id": pid,
+            "name": p.get("web_name", ""),
+            "team": teams_by_id.get(tid, "PL"),
+            "pos": pos,
+            "cost": cost,
+            "xp1": xp1,
+            "xp3": xp3,
+            "val1": val1,
+            "val3": val3,
+            "form": round(form, 1),
+            "min_pct": min_pct,
+            "chance": chance,
+            "status": status,
+            "sel_pct": round(sel_pct, 1),
+            "src": src,
+        }
+        if news_str:
+            rec["news"] = news_str
+        all_records[pid] = rec
+
+    # 4. Curate pool (~65-80 candidates across 4 positions)
+    pos_caps = {"GKP": 12, "DEF": 24, "MID": 26, "FWD": 18}
+    pool = []
+    pool_ids = set()
+    for pos, cap in pos_caps.items():
+        cands = [
+            rec for rec in all_records.values()
+            if rec["pos"] == pos
+            and rec["status"] in ("a", "d")
+            and rec["chance"] >= 50
+            and (rec["min_pct"] >= 25 or rec["id"] in azure_by_id)
+            and rec["xp3"] > 0
+        ]
+        chosen_ids = set()
+        slice_n = max(6, (cap * 2) // 3)
+        for sort_key in ("xp1", "xp3", "val1", "val3"):
+            top_slice = sorted(cands, key=lambda r: (r[sort_key], r["xp3"], -r["cost"]), reverse=True)[:slice_n]
+            chosen_ids.update(r["id"] for r in top_slice)
+        for r in cands:
+            if r["id"] in azure_by_id:
+                chosen_ids.add(r["id"])
+        curated = sorted(
+            [all_records[cid] for cid in chosen_ids if cid in all_records],
+            key=lambda r: (r["xp1"], r["xp3"], r["val1"]),
+            reverse=True,
+        )[:cap]
+        for r in curated:
+            pool.append(r)
+            pool_ids.add(r["id"])
+
+    # 5. Build squad_index ONLY from each Tier 1 team's latest GW squad
+    squad_index = {}
+    for l_obj in (leagues_output or {}).values():
+        if _safe_int(l_obj.get("tier"), 1) != 1:
+            continue
+        squads_map = l_obj.get("squads") or {}
+        latest_by_eid = {}
+        for s_key, s_data in squads_map.items():
+            if not isinstance(s_data, dict) or "_" not in str(s_key):
+                continue
+            parts = str(s_key).rsplit("_", 1)
+            eid_str, gw_num = parts[0], _safe_int(parts[1], 0)
+            prev = latest_by_eid.get(eid_str)
+            if prev is None or gw_num > prev[0]:
+                latest_by_eid[eid_str] = (gw_num, s_data)
+        for _gw_n, s_data in latest_by_eid.values():
+            for p_entry in (s_data.get("starting") or []) + (s_data.get("bench") or []):
+                pid = _safe_int(p_entry.get("id"), 0)
+                if pid > 0 and pid not in pool_ids and pid in all_records:
+                    squad_index[str(pid)] = all_records[pid]
+
+    # 6. Backward-compatible GoalKeepers/Defenders/Midfielders/Forwards lists
+    def _to_legacy_player(rec):
+        c_fx = club_fx.get(rec["team"], [])
+        return {
+            "Id": rec["id"],
+            "PlayerWebName": rec["name"],
+            "TeamName": rec["team"],
+            "Difficulty": c_fx[0]["fdr"] if c_fx else 0,
+            "ChanceOfPlaying": rec["chance"],
+            "MinutesLastMatch": 90 if rec["min_pct"] >= 60 else 0,
+            "PercentMinutesRecentMatches": rec["min_pct"],
+            "FplPlayerPosition": {"GKP": 1, "DEF": 2, "MID": 3, "FWD": 4}.get(rec["pos"], 3),
+            "Cost": rec["cost"],
+            "ExpectedPoints": rec["xp1"],
+            "PlayerValue": rec["val1"],
+        }
+
+    legacy_cats = {}
+    for cat_key, pos, count in (
+        ("GoalKeepers", "GKP", 2),
+        ("Defenders", "DEF", 5),
+        ("Midfielders", "MID", 5),
+        ("Forwards", "FWD", 3),
+    ):
+        az_list = azure_ts_data.get(cat_key) if isinstance(azure_ts_data, dict) else None
+        if az_list:
+            legacy_cats[cat_key] = az_list
+        else:
+            pos_pool = [r for r in pool if r["pos"] == pos]
+            by_best = sorted(pos_pool, key=lambda r: (r["xp1"], r["xp3"]), reverse=True)[:count]
+            by_val = sorted(pos_pool, key=lambda r: (r["val1"], r["xp1"]), reverse=True)[:count]
+            pairs = []
+            for idx in range(min(len(by_best), len(by_val))):
+                pairs.append({
+                    "ValuePlayer": _to_legacy_player(by_best[idx]),
+                    "GoodPlayer": _to_legacy_player(by_val[idx]),
+                })
+            legacy_cats[cat_key] = pairs
+
+    return {
+        "version": 2,
+        "engine": "hybrid" if azure_by_id else "fpl",
+        "gw": upcoming_gw,
+        "horizon_gws": horizon_gws,
+        "club_fx": club_fx,
+        "pool": pool,
+        "squad_index": squad_index,
+        **legacy_cats,
+    }
+
+
 def resolve_lineup_and_points(
     picks,
     chip,
@@ -1928,61 +2236,73 @@ def sync_once(args):
                 print(f" -> [Resilience] Restoring missing League {lid_str} from cache.")
                 multi_league_output["leagues"][lid_str] = cached_data["leagues"][lid_str]
 
-    # 4.4 Fetch Transfer Suggestions from FPL Gameweek
+    # 4.4 Hybrid Transfer Suggestions Engine (FPL Official Model + Fixtures FDR + Azure AI xP)
     has_changed = False
     next_event = next((e for e in events if e.get('is_next')), None)
     upcoming_gw = next_event['id'] if next_event else (max_gw + 1 if gw_status_map.get(max_gw) else max_gw)
-    print(f"Fetching Transfer Suggestions for upcoming GW {upcoming_gw}...")
+    print(f"Building Hybrid Transfer Suggestions for upcoming GW {upcoming_gw}...")
+    cached_ts = cached_data.get("transfer_suggestions", {}) if cached_data else {}
+    azure_ts_data = cached_ts if cached_ts.get("gw") == upcoming_gw else {}
+
     try:
         azure_key = os.environ.get('AZURE_TRANSFER_FUNCTION_KEY', '').strip()
-        if not azure_key:
-            print("Notice: AZURE_TRANSFER_FUNCTION_KEY is not configured. Preserving existing cached transfer suggestions.")
-            if cached_data and "transfer_suggestions" in cached_data:
-                multi_league_output["transfer_suggestions"] = cached_data["transfer_suggestions"]
-        else:
+        if azure_key:
             ts_url = f'https://fontendfunctionsnortheuropenew.azurewebsites.net/api/TransferSuggestionsFunction?gameweeks={upcoming_gw}&generalSuggestions=1'
             ts_headers = {
                 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
                 'FunctionKey': azure_key
             }
-            ts_data = fetch(ts_url, headers_override=ts_headers, retries=3, delay=1.5, timeout=12)
-            if ts_data and ts_data.get("Succeeded"):
-                new_gk = ts_data.get("GoalKeepers", [])
-                new_def = ts_data.get("Defenders", [])
-                new_mid = ts_data.get("Midfielders", [])
-                new_fwd = ts_data.get("Forwards", [])
-
-                cached_ts = cached_data.get("transfer_suggestions", {}) if cached_data else {}
-                content_changed = (
-                    new_gk != cached_ts.get("GoalKeepers") or
-                    new_def != cached_ts.get("Defenders") or
-                    new_mid != cached_ts.get("Midfielders") or
-                    new_fwd != cached_ts.get("Forwards") or
-                    upcoming_gw != cached_ts.get("gw")
-                )
-                updated_ts_time = datetime.now(timezone.utc).isoformat() if content_changed else cached_ts.get("updated_at", datetime.now(timezone.utc).isoformat())
-
-                multi_league_output["transfer_suggestions"] = {
-                    "gw": upcoming_gw,
-                    "updated_at": updated_ts_time,
-                    "GoalKeepers": new_gk,
-                    "Defenders": new_def,
-                    "Midfielders": new_mid,
-                    "Forwards": new_fwd
-                }
-                if content_changed:
-                    print(f" -> Successfully updated Transfer Suggestions for GW {upcoming_gw} (New data)!")
-                    has_changed = True
-                else:
-                    print(f" -> Transfer Suggestions for GW {upcoming_gw} unchanged. Preserving timestamp.")
-            else:
-                if cached_data and "transfer_suggestions" in cached_data:
-                    multi_league_output["transfer_suggestions"] = cached_data["transfer_suggestions"]
+            ts_resp = fetch(ts_url, headers_override=ts_headers, retries=3, delay=1.5, timeout=12)
+            if ts_resp and ts_resp.get("Succeeded"):
+                azure_ts_data = ts_resp
+        else:
+            print("Notice: AZURE_TRANSFER_FUNCTION_KEY is not configured. Using FPL In-House Model (+ cached Azure blend if matching GW).")
     except Exception as ts_err:
-        print(f"Notice: Could not fetch transfer suggestions: {ts_err}")
-        if cached_data and "transfer_suggestions" in cached_data:
+        print(f"Notice: Could not fetch Azure transfer suggestions (continuing with FPL In-House Model): {ts_err}")
+
+    all_fixtures = []
+    try:
+        fx_resp = fetch('https://fantasy.premierleague.com/api/fixtures/', retries=3, delay=1.0, timeout=15)
+        if isinstance(fx_resp, list):
+            all_fixtures = fx_resp
+            print(f" -> Loaded {len(all_fixtures)} fixtures for FDR / DGW / BGW analysis.")
+    except Exception as fx_err:
+        print(f"Notice: Could not fetch full FPL fixtures list: {fx_err}")
+
+    try:
+        built_ts = build_hybrid_transfer_suggestions(
+            elements=elements,
+            teams_by_id=teams_by_id,
+            element_types=element_types,
+            max_gw=max_gw,
+            upcoming_gw=upcoming_gw,
+            all_fixtures=all_fixtures,
+            azure_ts_data=azure_ts_data,
+            leagues_output=multi_league_output["leagues"],
+        )
+        content_changed = (
+            built_ts.get("gw") != cached_ts.get("gw") or
+            built_ts.get("engine") != cached_ts.get("engine") or
+            built_ts.get("club_fx") != cached_ts.get("club_fx") or
+            built_ts.get("pool") != cached_ts.get("pool") or
+            built_ts.get("squad_index") != cached_ts.get("squad_index") or
+            built_ts.get("GoalKeepers") != cached_ts.get("GoalKeepers") or
+            built_ts.get("Defenders") != cached_ts.get("Defenders") or
+            built_ts.get("Midfielders") != cached_ts.get("Midfielders") or
+            built_ts.get("Forwards") != cached_ts.get("Forwards")
+        )
+        updated_ts_time = datetime.now(timezone.utc).isoformat() if content_changed else cached_ts.get("updated_at", datetime.now(timezone.utc).isoformat())
+        built_ts["updated_at"] = updated_ts_time
+        multi_league_output["transfer_suggestions"] = built_ts
+
+        print(f" -> Hybrid Transfer Suggestions ready (engine={built_ts.get('engine')}, pool={len(built_ts.get('pool', []))}, squad_index={len(built_ts.get('squad_index', {}))})")
+        if content_changed:
+            has_changed = True
+    except Exception as hybrid_err:
+        print(f"Notice: Could not build hybrid transfer suggestions: {hybrid_err}")
+        if cached_ts:
             print(" -> [Resilience] Preserving existing cached transfer suggestions.")
-            multi_league_output["transfer_suggestions"] = cached_data["transfer_suggestions"]
+            multi_league_output["transfer_suggestions"] = cached_ts
 
     # 4.5 Smart Commit: Detect if any scores, standings, or GW status changed
     has_changed = check_data_has_changed(cached_data, multi_league_output) or has_changed

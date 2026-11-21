@@ -3502,21 +3502,27 @@
         // 7. Projected Points Modal
         const projModalTitle = document.querySelector('#projected-points-modal h3');
         if (projModalTitle) {
-          projModalTitle.innerText = isEn ? 'Projected Points' : 'คะแนนคาดการณ์';
+          projModalTitle.innerText = isEn ? 'Projected Points & Advisor Guide' : 'คะแนนคาดการณ์ & คำแนะนำย้ายตัว';
         }
-        const projModalDesc = document.querySelector('#projected-points-modal p');
+        const projModalDesc = document.getElementById('projected-points-desc');
         if (projModalDesc) {
           projModalDesc.innerText = isEn
-            ? 'Projected Points is an algorithmic estimate of expected fantasy points a player is likely to score in the upcoming gameweek, computed using predictive modeling.'
-            : 'คะแนนคาดการณ์ คือการประเมินคะแนนโดยประมาณที่นักเตะน่าจะทำได้ในสัปดาห์ถัดไป จาก AI Algorithm';
+            ? 'Projected Points (xP) uses our Hybrid Engine (recent form, xGI/CS stats, minutes consistency, injury status, and fixture difficulty FDR/DGW/BGW blended with AI projections) across 1 GW and 3 GWs horizons.'
+            : 'คะแนนคาดการณ์ (xP) คำนวณจากโมเดล Hybrid (ฟอร์มล่าสุด, สถิติ xGI/CS, โอกาสลงสนาม, ความยากโปรแกรม FDR/DGW/BGW ผสานค่าคาดการณ์ AI) รองรับทั้งระยะ 1 GW และ 3 GWs';
         }
-        const projModalAside = document.querySelector('#projected-points-modal aside');
+        const projModalFdr = document.getElementById('projected-points-fdr');
+        if (projModalFdr) {
+          projModalFdr.innerHTML = isEn
+            ? `<span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/80 font-mono font-bold">FDR 1–2 Easy</span><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 font-mono font-bold">FDR 3 Med</span><span class="px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/80 font-mono font-bold">FDR 4–5 Hard</span><span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/80 font-mono font-bold">BGW Blank</span>`
+            : `<span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/80 font-mono font-bold">FDR 1–2 ง่าย</span><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 font-mono font-bold">FDR 3 กลาง</span><span class="px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/80 font-mono font-bold">FDR 4–5 ยาก</span><span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/80 font-mono font-bold">BGW ว่าง</span>`;
+        }
+        const projModalAside = document.getElementById('projected-points-notice');
         if (projModalAside) {
           projModalAside.innerHTML = isEn
-            ? '<strong class="font-bold">Important Condition:</strong> This projection assumes the player starts the match. Managers should check team news, injuries, and rotation risk before confirming actual transfers.'
-            : '<strong class="font-bold">เงื่อนไขสำคัญ:</strong> ข้อมูลนี้สมมติว่าผู้เล่นมีชื่อลงเล่นเป็นตัวจริงในสนาม ผู้จัดการทีมควรตรวจสอบอาการบาดเจ็บหรือโอกาสการโรเตชันของนักเตะก่อนตัดสินใจกดย้ายทีมจริง';
+            ? '<strong class="font-bold">Squad Advisor (Sell → Buy):</strong> Estimated budget = current price + bank, enforcing FPL max 3 players per club. Always verify exact selling price and press-conference injury news before confirming transfers.'
+            : '<strong class="font-bold">คำแนะนำเฉพาะทีม (Sell → Buy):</strong> คำนวณงบโดยประมาณจากราคาปัจจุบัน + Bank พร้อมตรวจกฎไม่เกิน 3 คน/สโมสร ควรเช็กแถลงการณ์ความฟิตและราคาขายจริงในแอป FPL ก่อนกดยืนยัน';
         }
-        const projModalBtn = document.querySelector('#projected-points-modal div.flex.justify-end button');
+        const projModalBtn = document.getElementById('projected-points-btn');
         if (projModalBtn) {
           projModalBtn.innerText = isEn ? 'Got it' : 'เข้าใจแล้ว';
         }
@@ -9114,23 +9120,59 @@
 
       setCompTransferTeam(entryId) {
         this.compTransferTeam = entryId ? String(entryId) : '';
+        this.compAdvisorAltIdx = {};
+        if (!this.compTransferTeam) this.compTransferHideOwned = false;
+        const sel = document.getElementById('comp-transfers-team-select');
+        if (sel) sel.value = this.compTransferTeam;
+        this.renderCompetitionTransfersOnly();
+      }
+
+      setCompTransferHorizon(horizon) {
+        this.compTransferHorizon = (horizon === '3gw') ? '3gw' : '1gw';
+        this.renderCompetitionTransfersOnly();
+      }
+
+      setCompTransferMode(mode) {
+        if (mode === 'both') mode = 'dual';
+        if (!['dual', 'best', 'value', 'diff'].includes(mode)) mode = 'dual';
+        this.compTransferMode = mode;
+        this.compTransferMobileView = (mode === 'dual') ? 'both' : mode;
+        this.renderCompetitionTransfersOnly();
+      }
+
+      setCompTransferPos(pos) {
+        const valid = ['ALL', 'GKP', 'DEF', 'MID', 'FWD'];
+        this.compTransferPos = valid.includes(pos) ? pos : 'ALL';
+        this.renderCompetitionTransfersOnly();
+      }
+
+      setCompTransferMaxCost(cost) {
+        const valid = ['ALL', '5.5', '7.5', '9.5'];
+        this.compTransferMaxCost = valid.includes(String(cost)) ? String(cost) : 'ALL';
+        this.renderCompetitionTransfersOnly();
+      }
+
+      toggleCompTransferHideOwned() {
+        this.compTransferHideOwned = !this.compTransferHideOwned;
+        this.renderCompetitionTransfersOnly();
+      }
+
+      setCompAdvisorAlt(sellPid, altIdx) {
+        this.compAdvisorAltIdx = this.compAdvisorAltIdx || {};
+        this.compAdvisorAltIdx[String(sellPid)] = Number(altIdx) || 0;
+        this.renderCompetitionTransfersOnly();
+      }
+
+      resetCompTransferFilters() {
+        this.compTransferPos = 'ALL';
+        this.compTransferMaxCost = 'ALL';
+        this.compTransferHideOwned = false;
+        if (this.compTransferMode === 'diff') this.compTransferMode = 'dual';
         this.renderCompetitionTransfersOnly();
       }
 
       setCompTransferMobileView(view) {
-        this.compTransferMobileView = view;
-        const btnContainer = document.getElementById('comp-transfers-mobile-btns');
-        if (btnContainer) {
-          const btns = btnContainer.querySelectorAll('button');
-          if (btns.length === 3) {
-            const activeClass = 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs font-bold';
-            const inactiveClass = 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium';
-            ['both', 'best', 'value'].forEach((v, idx) => {
-              btns[idx].className = `flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${view === v ? activeClass : inactiveClass}`;
-            });
-          }
-        }
-        this.renderCompetitionTransfersOnly();
+        this.setCompTransferMode(view === 'both' ? 'dual' : view);
       }
 
       showProjectedPointsModal() {
@@ -9139,17 +9181,23 @@
           const isEn = (this.currentLang === 'en');
           const title = document.getElementById('projected-points-title');
           const desc = document.getElementById('projected-points-desc');
+          const fdrEl = document.getElementById('projected-points-fdr');
           const notice = document.getElementById('projected-points-notice');
           const btn = document.getElementById('projected-points-btn');
 
-          if (title) title.innerText = isEn ? 'Projected Points' : 'คะแนนคาดการณ์';
+          if (title) title.innerText = isEn ? 'Projected Points & Advisor Guide' : 'คะแนนคาดการณ์ & คำแนะนำย้ายตัว';
           if (desc) desc.innerText = isEn 
-            ? 'Projected Points represents an algorithm-driven estimate of the points each player is expected to score in the upcoming Gameweek.' 
-            : 'คะแนนคาดการณ์ คือการประเมินคะแนนโดยประมาณที่นักเตะน่าจะทำได้ในสัปดาห์ถัดไป จาก AI Algorithm';
+            ? 'Projected Points (xP) uses our Hybrid Engine (recent form, xGI/CS stats, minutes consistency, injury status, and fixture difficulty FDR/DGW/BGW blended with AI projections) across 1 GW and 3 GWs horizons.' 
+            : 'คะแนนคาดการณ์ (xP) คำนวณจากโมเดล Hybrid (ฟอร์มล่าสุด, สถิติ xGI/CS, โอกาสลงสนาม, ความยากโปรแกรม FDR/DGW/BGW ผสานค่าคาดการณ์ AI) รองรับทั้งระยะ 1 GW และ 3 GWs';
+          if (fdrEl) {
+            fdrEl.innerHTML = isEn
+              ? `<span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/80 font-mono font-bold">FDR 1–2 Easy</span><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 font-mono font-bold">FDR 3 Med</span><span class="px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/80 font-mono font-bold">FDR 4–5 Hard</span><span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/80 font-mono font-bold">BGW Blank</span>`
+              : `<span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/80 font-mono font-bold">FDR 1–2 ง่าย</span><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 font-mono font-bold">FDR 3 กลาง</span><span class="px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/80 font-mono font-bold">FDR 4–5 ยาก</span><span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/80 font-mono font-bold">BGW ว่าง</span>`;
+          }
           if (notice) {
             notice.innerHTML = isEn
-              ? '<strong class="font-bold">Important Notice:</strong> These estimates assume the player is in the starting eleven. Managers should check team news, injuries, and rotation risks before confirming any transfers.'
-              : '<strong class="font-bold">เงื่อนไขสำคัญ:</strong> ข้อมูลนี้สมมติว่าผู้เล่นมีชื่อลงเล่นเป็นตัวจริงในสนาม ผู้จัดการทีมควรตรวจสอบอาการบาดเจ็บหรือโอกาสการโรเตชันของนักเตะก่อนตัดสินใจกดย้ายทีมจริง';
+              ? '<strong class="font-bold">Squad Advisor (Sell → Buy):</strong> Estimated budget = current price + bank, enforcing FPL max 3 players per club. Always verify exact selling price and press-conference injury news before confirming transfers.'
+              : '<strong class="font-bold">คำแนะนำเฉพาะทีม (Sell → Buy):</strong> คำนวณงบโดยประมาณจากราคาปัจจุบัน + Bank พร้อมตรวจกฎไม่เกิน 3 คน/สโมสร ควรเช็กแถลงการณ์ความฟิตและราคาขายจริงในแอป FPL ก่อนกดยืนยัน';
           }
           if (btn) btn.innerText = isEn ? 'Got it' : 'เข้าใจแล้ว';
 
@@ -9310,6 +9358,12 @@
         this.compDiffPosFilter = this.compDiffPosFilter || 'ALL';
         this.compDiffSearch = this.compDiffSearch || '';
         this.compTransferTeam = this.compTransferTeam || '';
+        this.compTransferHorizon = this.compTransferHorizon || '1gw';
+        this.compTransferMode = this.compTransferMode || 'dual';
+        this.compTransferPos = this.compTransferPos || 'ALL';
+        this.compTransferMaxCost = this.compTransferMaxCost || 'ALL';
+        this.compTransferHideOwned = Boolean(this.compTransferHideOwned);
+        this.compAdvisorAltIdx = this.compAdvisorAltIdx || {};
         this.compTransferMobileView = this.compTransferMobileView || (typeof window !== 'undefined' && window.innerWidth < 640 ? 'best' : 'both');
 
         // Determine Matchday Status (Live vs Finished vs Upcoming)
@@ -10797,16 +10851,270 @@
         }).join('');
       }
 
-      // --- Part 3: Transfer Suggestions ---
+      // --- Part 3: Transfer Suggestions (Hybrid Engine + Smart Squad Advisor + Responsive Controls) ---
+      getTransferPoolFromSuggestions(sugg) {
+        const clubFx = (sugg && sugg.club_fx) ? sugg.club_fx : {};
+        if (sugg && Array.isArray(sugg.pool) && sugg.pool.length > 0) {
+          return sugg.pool.map(p => ({
+            ...p,
+            fx: p.fx || clubFx[p.team] || []
+          }));
+        }
+        // Fallback synthesis from legacy GoalKeepers/Defenders/Midfielders/Forwards arrays
+        const posMap = [
+          ['GoalKeepers', 'GKP'],
+          ['Defenders', 'DEF'],
+          ['Midfielders', 'MID'],
+          ['Forwards', 'FWD']
+        ];
+        const byId = new Map();
+        posMap.forEach(([key, pos]) => {
+          (sugg && Array.isArray(sugg[key]) ? sugg[key] : []).forEach(item => {
+            [item && item.ValuePlayer, item && item.GoodPlayer].forEach(raw => {
+              if (!raw || !raw.Id) return;
+              const id = Number(raw.Id);
+              const cost = Number(raw.Cost) || 0;
+              const xp1 = Number(raw.ExpectedPoints) || 0;
+              const minPct = Number(raw.PercentMinutesRecentMatches) || 0;
+              const chance = raw.ChanceOfPlaying != null ? Number(raw.ChanceOfPlaying) : 100;
+              const existing = byId.get(id);
+              if (!existing || xp1 > existing.xp1) {
+                byId.set(id, {
+                  id,
+                  name: raw.PlayerWebName || '-',
+                  team: raw.TeamName || 'PL',
+                  pos,
+                  cost,
+                  xp1,
+                  xp3: Number((xp1 * 2.85).toFixed(1)),
+                  val1: cost > 0 ? Number((xp1 / cost).toFixed(2)) : (Number(raw.PlayerValue) || 0),
+                  val3: cost > 0 ? Number(((xp1 * 2.85) / cost).toFixed(2)) : 0,
+                  form: xp1,
+                  min_pct: minPct,
+                  chance,
+                  status: chance === 0 ? 'i' : (chance < 100 ? 'd' : 'a'),
+                  sel_pct: 0,
+                  src: 'azure',
+                  fx: clubFx[raw.TeamName] || []
+                });
+              }
+            });
+          });
+        });
+        return Array.from(byId.values());
+      }
+
+      renderFdrPills(fxList, horizon) {
+        const isEn = (this.currentLang === 'en');
+        const list = Array.isArray(fxList) ? fxList : [];
+        if (list.length === 0) return '';
+        let shown = [];
+        if (horizon === '1gw') {
+          const firstGw = list[0].gw;
+          shown = list.filter(f => f.gw === firstGw);
+        } else {
+          shown = list.slice(0, 4);
+        }
+        const isDgwFirst = horizon === '1gw' && shown.length >= 2;
+        const dgwBadge = isDgwFirst
+          ? `<span class="px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/60 dark:text-indigo-300 dark:border-indigo-800/80 text-[9.5px] font-mono font-bold">DGW</span>`
+          : '';
+        const pills = shown.map(f => {
+          if (f.bgw) {
+            return `<span class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/80 text-[10px] font-mono font-bold" title="${isEn ? 'Blank Gameweek' : 'สัปดาห์ไม่มีแข่ง'}">BGW</span>`;
+          }
+          const fdr = Number(f.fdr) || 3;
+          let cls = 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700';
+          if (fdr <= 2) {
+            cls = 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/80';
+          } else if (fdr >= 4) {
+            cls = 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/80';
+          }
+          const opp = this.escapeHtml(f.opp || 'PL');
+          const loc = f.h ? 'H' : 'A';
+          return `<span class="px-1.5 py-0.5 rounded border text-[10px] font-mono font-bold tabular-nums ${cls}" title="GW ${f.gw} • FDR ${fdr}">${opp}(${loc})</span>`;
+        }).join('');
+        return `<span class="inline-flex items-center gap-1 flex-wrap">${dgwBadge}${pills}</span>`;
+      }
+
+      computeSquadTransferAdvice(entryId, sugg, horizon, currentGw, maxGw) {
+        const isEn = (this.currentLang === 'en');
+        const eid = Number(entryId);
+        if (!eid) return null;
+
+        const sq = this.data.squads
+          ? (this.data.squads[`${eid}_${currentGw}`] || this.data.squads[`${eid}_${maxGw}`])
+          : null;
+        if (!sq) return null;
+
+        const gwKey = String(currentGw);
+        const maxGwKey = String(maxGw);
+        const resList = (this.data.gameweeks && this.data.gameweeks[gwKey] && this.data.gameweeks[gwKey].results)
+          || (this.data.gameweeks && this.data.gameweeks[maxGwKey] && this.data.gameweeks[maxGwKey].results)
+          || [];
+        const teamRes = resList.find(r => Number(r.entry_id) === eid);
+        const bank = teamRes && teamRes.bank != null ? Number(teamRes.bank) : 0;
+
+        const pool = this.getTransferPoolFromSuggestions(sugg);
+        const clubFx = (sugg && sugg.club_fx) ? sugg.club_fx : {};
+        const squadIdx = (sugg && sugg.squad_index) ? sugg.squad_index : {};
+        const playerById = new Map();
+        pool.forEach(p => playerById.set(Number(p.id), p));
+        Object.keys(squadIdx).forEach(k => {
+          const p = squadIdx[k];
+          if (p && p.id && !playerById.has(Number(p.id))) {
+            playerById.set(Number(p.id), { ...p, fx: p.fx || clubFx[p.team] || [] });
+          }
+        });
+
+        const starting = (sq.starting || []).map(p => ({ ...p, isStarter: true }));
+        const bench = (sq.bench || []).map(p => ({ ...p, isStarter: false }));
+        const fullSquad = starting.concat(bench);
+        if (fullSquad.length === 0) return null;
+
+        const ownedIds = new Set();
+        const clubCounts = {};
+        let healthyCount = 0;
+        let flaggedCount = 0;
+
+        const enrichedOwned = fullSquad.map(raw => {
+          const pid = Number(raw.id);
+          ownedIds.add(pid);
+          const rec = playerById.get(pid);
+          const team = (rec && rec.team) || raw.team || 'PL';
+          clubCounts[team] = (clubCounts[team] || 0) + 1;
+          const pos = (rec && rec.pos) || raw.pos || 'MID';
+          const status = rec ? (rec.status || 'a') : 'a';
+          const chance = rec && rec.chance != null ? Number(rec.chance) : 100;
+          const fx = (rec && rec.fx) || clubFx[team] || [];
+          if ((status === 'i' || status === 's' || status === 'u' || status === 'd' || chance < 75 || (fx[0] && fx[0].bgw))) {
+            flaggedCount += 1;
+          } else {
+            healthyCount += 1;
+          }
+          return {
+            raw,
+            pid,
+            isStarter: raw.isStarter,
+            rec: rec || {
+              id: pid,
+              name: raw.name || 'Player',
+              team,
+              pos,
+              cost: 5.0,
+              xp1: 2.0,
+              xp3: 6.0,
+              val1: 0.4,
+              val3: 1.2,
+              min_pct: 60,
+              chance: 100,
+              status: 'a',
+              fx
+            }
+          };
+        });
+
+        const xpKey = (horizon === '3gw') ? 'xp3' : 'xp1';
+        const valKey = (horizon === '3gw') ? 'val3' : 'val1';
+        const minUpgradeGain = (horizon === '3gw') ? 3.5 : 1.5;
+        const candidates = [];
+
+        enrichedOwned.forEach(({ pid, isStarter, rec }) => {
+          const sellCost = Number(rec.cost) || 0;
+          const sellXp = Number(rec[xpKey]) || 0;
+          const fx = rec.fx || [];
+          const gw1Blank = Boolean(fx[0] && fx[0].bgw);
+          const next3 = fx.slice(0, 3);
+          const avgFdr = next3.length > 0
+            ? next3.reduce((acc, f) => acc + (Number(f.fdr) || 3), 0) / next3.length
+            : 3;
+
+          let urgency = 0;
+          let reason = '';
+          let severity = 'neutral';
+          if (rec.status === 'i' || rec.status === 's' || rec.status === 'u' || Number(rec.chance) === 0) {
+            urgency = 1;
+            severity = 'rose';
+            reason = isEn ? `Out (${rec.chance}%)` : `เจ็บ/แบน (${rec.chance}%)`;
+          } else if (rec.status === 'd' || Number(rec.chance) <= 50) {
+            urgency = 2;
+            severity = 'amber';
+            reason = isEn ? `Doubtful (${rec.chance}%)` : `เช็กฟิต (${rec.chance}%)`;
+          } else if (gw1Blank) {
+            urgency = 3;
+            severity = 'rose';
+            reason = isEn ? 'Blank GW' : 'ไม่มีแข่ง (BGW)';
+          } else if (Number(rec.min_pct) < 30 && (isStarter || sellCost >= 5.0)) {
+            urgency = 4;
+            severity = 'amber';
+            reason = isEn ? `Low Mins (${rec.min_pct}%)` : `ลงเล่นน้อย (${rec.min_pct}%)`;
+          } else {
+            urgency = 5;
+            severity = 'indigo';
+            reason = (avgFdr >= 3.65)
+              ? (isEn ? 'Tough Run / Upgrade' : 'โปรแกรมหนัก · อัปเกรดได้')
+              : (isEn ? 'Higher xP Upgrade' : 'อัปเกรดแต้มคาดการณ์');
+          }
+
+          const estBudget = Number((sellCost + bank).toFixed(1));
+          const alts = pool.filter(cand => {
+            if (cand.pos !== rec.pos) return false;
+            if (ownedIds.has(Number(cand.id))) return false;
+            if (Number(cand.cost) > estBudget + 0.001) return false;
+            if (cand.status !== 'a' || (cand.chance != null && Number(cand.chance) < 75)) return false;
+            const currentClubCnt = clubCounts[cand.team] || 0;
+            const afterClubCnt = currentClubCnt - (cand.team === rec.team ? 1 : 0);
+            return afterClubCnt < 3;
+          }).map(cand => {
+            const gain = Number(((Number(cand[xpKey]) || 0) - sellXp).toFixed(1));
+            return {
+              ...cand,
+              gain,
+              remBank: Number((estBudget - Number(cand.cost)).toFixed(1))
+            };
+          }).sort((a, b) => (b.gain - a.gain) || (Number(b[valKey]) - Number(a[valKey])));
+
+          if (alts.length === 0) return;
+          const topGain = alts[0].gain;
+          if (urgency === 5 && topGain < minUpgradeGain) return;
+          if (urgency <= 4 && topGain < -0.5) return;
+
+          candidates.push({
+            sell: rec,
+            urgency,
+            severity,
+            reason,
+            topGain,
+            estBudget,
+            alts: alts.slice(0, 3)
+          });
+        });
+
+        candidates.sort((a, b) => (a.urgency - b.urgency) || (b.topGain - a.topGain));
+
+        return {
+          bank: Number(bank.toFixed(1)),
+          healthyCount,
+          flaggedCount,
+          totalOwned: enrichedOwned.length,
+          suggestions: candidates.slice(0, 3),
+          rollFt: candidates.length === 0
+        };
+      }
+
       renderCompetitionTransfers(teams, totalTeams, currentGw) {
         const isEn = (this.currentLang === 'en');
-        const defaultShirtUrl = this.getDefaultShirtUrl();
         const container = document.getElementById('transfers-suggestions-section') || document.getElementById('competition-transfers-section');
         if (!container) return;
 
         const sugg = this.multiData.transfer_suggestions || {};
         const suggGw = sugg.gw || (currentGw + 1);
         const sortedTeams = this.getLeaderboardTeams();
+        const horizon = this.compTransferHorizon || '1gw';
+        const horizonBadge = (horizon === '3gw') ? `GW ${suggGw}–${suggGw + 2}` : `GW ${suggGw}`;
+        const engineTag = (sugg.engine === 'hybrid')
+          ? (isEn ? 'Hybrid xP + FDR' : 'โมเดล Hybrid + FDR')
+          : ((sugg.engine === 'fpl') ? (isEn ? 'FPL Model + FDR' : 'โมเดล FPL + FDR') : 'AI Algorithm');
 
         container.innerHTML = `
           <!-- Section Container with Light/Dark Mode support -->
@@ -10814,36 +11122,40 @@
             
             <!-- Header Row (03 / TRANSFER SUGGESTIONS) -->
             <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div>
-                <div class="flex items-center gap-2">
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
                   <span class="text-[11px] font-mono font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">03</span>
                   <span class="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600"></span>
-                  <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display flex items-center gap-2">
+                  <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display flex items-center gap-2 flex-wrap">
                     ${isEn ? 'Transfer Suggestions' : 'คำแนะนำการย้ายตัว'}
-                    <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                      GW ${suggGw}
+                    <span id="comp-transfers-gw-badge" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                      ${horizonBadge}
+                    </span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/80">
+                      ${this.escapeHtml(engineTag)}
                     </span>
                   </h3>
+                  <button onclick="app.showProjectedPointsModal()" class="w-6 h-6 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[11px] font-bold cursor-pointer border border-slate-200 dark:border-slate-700" title="${isEn ? 'Methodology & FDR Guide' : 'วิธีคำนวณและสีความยากโปรแกรม'}" aria-label="${isEn ? 'Projected points methodology' : 'อธิบายวิธีคำนวณคะแนนคาดการณ์'}">?</button>
                 </div>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  ${isEn ? 'Algorithm-selected Best Players and Best Value recommendations for upcoming fixtures' : 'วิเคราะห์ตัวเลือกที่ดีที่สุด และตัวเลือกสุดคุ้มค่า พร้อมคะแนนคาดการณ์ประจำสัปดาห์ถัดไป'}
+                  ${isEn ? 'Smart squad advisor (Sell → Buy), 1 GW & 3 GWs projections, fixture difficulty (FDR), and league ownership scouting' : 'วิเคราะห์จุดอ่อนรายทีม (ขายใคร → ซื้อใคร), คะแนนคาดการณ์ 1 GW / 3 GWs, ความยากโปรแกรม (FDR) และสถิติถือครองในลีก'}
                 </p>
               </div>
 
-              <!-- Team Highlighter Selector (Ordered by Total Leaderboard) -->
+              <!-- Team Highlighter / Squad Advisor Selector -->
               <div class="flex items-center gap-2 flex-wrap w-full sm:w-auto">
                 <label for="comp-transfers-team-select" class="text-xs text-slate-600 dark:text-slate-400 font-medium">
-                  ${isEn ? 'Highlight squad players:' : 'ไฮไลท์นักเตะในทีม:'}
+                  ${isEn ? 'Analyze my squad:' : 'วิเคราะห์เฉพาะทีม:'}
                 </label>
                 <select 
                   id="comp-transfers-team-select" 
                   onchange="app.setCompTransferTeam(this.value)"
-                  class="w-full sm:w-auto max-w-full bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 cursor-pointer shadow-2xs"
+                  class="w-full sm:w-auto max-w-full min-h-[40px] bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-xs border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 cursor-pointer shadow-2xs"
                 >
                   <option value="">${isEn ? '-- Full League Overview (League % Ownership) --' : '-- ภาพรวมทั้งลีก (แสดง % ถือครองในลีก) --'}</option>
                   ${sortedTeams.map(t => {
                     const isPrize = this.isPrizeEligible(t.entry_id);
-                    const rankLabel = isPrize ? `#${t.leaderboard_rank}` : (isEn ? '[Non-Prize]' : `[ร่วมสนุก]`);
+                    const rankLabel = isPrize ? `#${t.leaderboard_rank}` : (isEn ? '[Non-Prize]' : '[ร่วมสนุก]');
                     return `
                       <option value="${t.entry_id}" ${String(this.compTransferTeam) === String(t.entry_id) ? 'selected' : ''}>
                         ${rankLabel} ${this.escapeHtml(t.entry_name)} (${this.escapeHtml(t.player_name)})
@@ -10854,21 +11166,8 @@
               </div>
             </div>
 
-            <!-- Mobile View Switcher (< sm screens: Clean Segmented Control) -->
-            <div id="comp-transfers-mobile-btns" class="sm:hidden flex items-center p-1 bg-slate-100 dark:bg-slate-800/90 rounded-xl text-xs font-bold border border-slate-200/80 dark:border-slate-700/60">
-              <button onclick="app.setCompTransferMobileView('both')" class="flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${this.compTransferMobileView === 'both' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium'}">
-                ${isEn ? 'Side-by-Side' : 'ตารางคู่'}
-              </button>
-              <button onclick="app.setCompTransferMobileView('best')" class="flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${this.compTransferMobileView === 'best' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium'}">
-                ${isEn ? 'Best Players' : 'ตัวเลือกยอดเยี่ยม'}
-              </button>
-              <button onclick="app.setCompTransferMobileView('value')" class="flex-1 py-1.5 px-2 rounded-lg text-center transition-all ${this.compTransferMobileView === 'value' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium'}">
-                ${isEn ? 'Best Value' : 'ตัวเลือกสุดคุ้ม'}
-              </button>
-            </div>
-
-            <!-- Table Container -->
-            <div id="comp-transfers-table-container">
+            <!-- Dynamic Personalized Advisor + Controls + Recommendation Grid -->
+            <div id="comp-transfers-table-container" class="space-y-3 sm:space-y-4">
               <!-- Rendered by renderCompetitionTransfersOnly -->
             </div>
 
@@ -10876,6 +11175,60 @@
         `;
 
         this.renderCompetitionTransfersOnly();
+      }
+
+      renderPlayerRecRow(p, opts) {
+        const { isEn, horizon, xpKey, valKey, mode, totalTeams, pCounts, selectedTeamPlayerIds, compTransferTeam, defaultShirtUrl } = opts;
+        const pid = Number(p.id);
+        const isInTeam = selectedTeamPlayerIds.has(pid);
+        const ownerCount = pCounts[pid] ? pCounts[pid].count : 0;
+        const ownerPct = totalTeams > 0 ? Math.round((ownerCount / totalTeams) * 100) : 0;
+        const shirtUrl = this.getPlayerShirtUrl({ pos: p.pos, team: p.team });
+
+        const fitnessBadge = (p.status !== 'a' || Number(p.chance) < 100)
+          ? `<span class="px-1.5 py-0.5 rounded text-[9.5px] font-mono font-bold ${p.status === 'i' || p.status === 's' || p.status === 'u' || Number(p.chance) <= 25 ? 'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/80' : 'bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/80'}" title="${this.escapeHtml(p.news || '')}">${Number(p.chance)}%</span>`
+          : '';
+
+        const ownershipPill = compTransferTeam
+          ? (isInTeam ? `<span class="px-1.5 py-0.5 rounded text-[9.5px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">${isEn ? 'IN SQUAD' : 'ในทีม'}</span>` : '')
+          : `<span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono tabular-nums" title="${isEn ? `Owned by ${ownerCount}/${totalTeams} teams in league` : `ถือครองในลีก ${ownerCount}/${totalTeams} ทีม`}">${isEn ? `· ${ownerPct}% owned` : `· ลีก ${ownerPct}%`}</span>`;
+
+        const fdrHtml = this.renderFdrPills(p.fx, horizon);
+        const costStr = Number(p.cost) % 1 === 0 ? `${Number(p.cost)}m` : `${Number(p.cost).toFixed(1)}m`;
+        const xpVal = Number(p[xpKey] || 0).toFixed(1);
+        const valMetric = Number(p[valKey] || 0).toFixed(2);
+        const valSub = (mode === 'value')
+          ? `<span class="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 font-semibold">${valMetric}/m</span>`
+          : `<span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">£${costStr}</span>`;
+
+        return `
+          <div class="flex items-center justify-between gap-2.5 px-2.5 sm:px-3 py-2.5 rounded-xl border transition-colors ${isInTeam ? 'bg-emerald-50/40 dark:bg-emerald-950/20 border-emerald-200/80 dark:border-emerald-900/60' : 'bg-white dark:bg-slate-900/60 border-slate-200/70 dark:border-slate-800'}">
+            <div class="flex items-center gap-2.5 min-w-0 flex-1">
+              <img src="${shirtUrl}" alt="${this.escapeHtml(p.team || '')}" class="w-6 h-6 sm:w-7 sm:h-7 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+              <div class="min-w-0 flex-1 space-y-1">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-xs sm:text-[13px] ${isInTeam ? 'font-bold text-slate-900 dark:text-white' : 'font-semibold text-slate-800 dark:text-slate-100'} truncate max-w-[140px] sm:max-w-none" title="${this.escapeHtml(p.name || '')}">
+                    ${this.escapeHtml(p.name || '-')}
+                  </span>
+                  <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">${this.escapeHtml(p.team || '')}</span>
+                  ${fitnessBadge}
+                  ${ownershipPill}
+                </div>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  ${fdrHtml}
+                  <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400">${isEn ? `${p.min_pct}% min` : `ลง ${p.min_pct}%`}</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5 sm:gap-3 flex-shrink-0 text-right tabular-nums">
+              ${mode === 'value' ? `<div class="hidden sm:block text-right"><div class="text-[11px] font-mono text-slate-600 dark:text-slate-300">£${costStr}</div><div class="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 font-semibold">${valMetric} xP/£</div></div>` : ''}
+              <div class="text-right min-w-[46px]">
+                <div class="text-sm font-mono font-bold text-slate-900 dark:text-white leading-none">${xpVal} <span class="text-[10px] font-medium text-slate-400">xP</span></div>
+                <div class="mt-0.5 ${mode === 'value' ? 'sm:hidden' : ''}">${valSub}</div>
+              </div>
+            </div>
+          </div>
+        `;
       }
 
       renderCompetitionTransfersOnly() {
@@ -10890,9 +11243,33 @@
         const currentGw = this.selectedGW;
         const maxGw = Number(this.multiData.max_gw) || currentGw;
         const pCounts = this.cachedPlayerCounts || {};
-        const mobileView = this.compTransferMobileView || (typeof window !== 'undefined' && window.innerWidth < 640 ? 'best' : 'both');
+        const horizon = this.compTransferHorizon || '1gw';
+        const mode = this.compTransferMode || 'dual';
+        const posFilter = this.compTransferPos || 'ALL';
+        const maxCostFilter = this.compTransferMaxCost || 'ALL';
+        const hideOwned = Boolean(this.compTransferHideOwned && this.compTransferTeam);
+        const xpKey = (horizon === '3gw') ? 'xp3' : 'xp1';
+        const valKey = (horizon === '3gw') ? 'val3' : 'val1';
 
-        // If a team is selected, get its squad for highlighting
+        const suggGw = sugg.gw || (currentGw + 1);
+        const gwBadgeEl = document.getElementById('comp-transfers-gw-badge');
+        if (gwBadgeEl) {
+          gwBadgeEl.innerText = (horizon === '3gw') ? `GW ${suggGw}–${suggGw + 2}` : `GW ${suggGw}`;
+        }
+
+        const pool = this.getTransferPoolFromSuggestions(sugg);
+        if (pool.length === 0) {
+          tableContainer.innerHTML = `
+            <div class="py-8 px-4 text-center rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400">
+              <span class="text-3xl block mb-2">⏳</span>
+              <p class="font-bold text-sm text-slate-700 dark:text-slate-300">${isEn ? 'Processing transfer suggestions for upcoming Gameweek' : 'กำลังประมวลผลคำแนะนำการย้ายตัวสำหรับ Gameweek ถัดไป'}</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${isEn ? 'Best Players and Best Value lists will appear automatically once fixtures and player data are updated' : 'ระบบจะแสดงรายชื่อตัวเลือกยอดเยี่ยมและตัวเลือกสุดคุ้มค่าอัตโนมัติเมื่อข้อมูลโปรแกรมแข่งขันและสถิติอัปเดตเรียบร้อย'}</p>
+            </div>
+          `;
+          return;
+        }
+
+        // Selected team squad lookup
         let selectedTeamPlayerIds = new Set();
         let selectedTeamName = '';
         if (this.compTransferTeam) {
@@ -10905,343 +11282,334 @@
           }
         }
 
-        const formatCost = (c) => {
-          if (c == null) return '-';
-          const n = Number(c);
-          return (n % 1 === 0 ? n : n.toFixed(1)) + 'm';
-        };
+        // 1. Personalized Smart Squad Advisor Panel (when a team is selected)
+        let advisorHtml = '';
+        if (this.compTransferTeam) {
+          const advice = this.computeSquadTransferAdvice(this.compTransferTeam, sugg, horizon, currentGw, maxGw);
+          if (advice) {
+            const altIdxMap = this.compAdvisorAltIdx || {};
+            const bankStr = Number(advice.bank).toFixed(1);
+            const statusSummary = advice.flaggedCount > 0
+              ? (isEn ? `${advice.healthyCount}/${advice.totalOwned} Fit · ${advice.flaggedCount} Flagged` : `พร้อมลง ${advice.healthyCount}/${advice.totalOwned} · เฝ้าระวัง ${advice.flaggedCount}`)
+              : (isEn ? `${advice.healthyCount}/${advice.totalOwned} Fit` : `พร้อมลงครบ ${advice.healthyCount}/${advice.totalOwned}`);
 
-        const formatPts = (pts) => {
-          if (pts == null) return '-';
-          return Number(pts).toFixed(1);
-        };
-
-        const categories = [
-          { key: 'GoalKeepers', title: isEn ? 'Goalkeepers' : 'ผู้รักษาประตู (GKP)', pos: 'GKP' },
-          { key: 'Defenders', title: isEn ? 'Defenders' : 'กองหลัง (DEF)', pos: 'DEF' },
-          { key: 'Midfielders', title: isEn ? 'Midfielders' : 'กองกลาง (MID)', pos: 'MID' },
-          { key: 'Forwards', title: isEn ? 'Forwards' : 'กองหน้า (FWD)', pos: 'FWD' }
-        ];
-
-        const hasAnyItems = categories.some(cat => (sugg[cat.key] || []).length > 0);
-        if (!hasAnyItems) {
-          tableContainer.innerHTML = `
-            <div class="py-8 px-4 text-center rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400">
-              <span class="text-3xl block mb-2">⏳</span>
-              <p class="font-bold text-sm text-slate-700 dark:text-slate-300">${isEn ? 'Processing transfer suggestions for upcoming Gameweek' : 'กำลังประมวลผลคำแนะนำการย้ายตัวสำหรับ Gameweek ถัดไป'}</p>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${isEn ? 'Best Players and Best Value lists will appear automatically once fixtures and player data are updated' : 'ระบบจะแสดงรายชื่อตัวเลือกยอดเยี่ยมและตัวเลือกสุดคุ้มค่าอัตโนมัติเมื่อข้อมูลโปรแกรมแข่งขันและสถิติอัปเดตเรียบร้อย'}</p>
-            </div>
-          `;
-          return;
-        }
-
-        // 1. Single-column Mobile View: Best Players Only
-        if (mobileView === 'best') {
-          let rowsHtml = '';
-          categories.forEach(cat => {
-            const items = sugg[cat.key] || [];
-            if (items.length === 0) return;
-
-            rowsHtml += `
-              <tr>
-                <td colspan="3" class="pt-3 pb-1.5 px-2.5 text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
-                  ${this.escapeHtml(cat.title)}
-                </td>
-              </tr>
-            `;
-
-            items.forEach(item => {
-              const best = item.ValuePlayer || {};
-              const isBestInTeam = best.Id ? selectedTeamPlayerIds.has(Number(best.Id)) : false;
-              const bestOwnerCount = best.Id && pCounts[best.Id] ? pCounts[best.Id].count : 0;
-              const bestOwnerPct = totalTeams > 0 ? ((bestOwnerCount / totalTeams) * 100).toFixed(0) : 0;
-              const bestShirtUrl = this.getPlayerShirtUrl({ pos: cat.pos, team: best.TeamName });
-
-              const bestNameClass = isBestInTeam 
-                ? 'font-bold text-slate-900 dark:text-white' 
-                : 'text-slate-800 dark:text-slate-200';
-
-              const inSquadTag = isBestInTeam 
-                ? `<span class="px-1.5 py-0.5 rounded text-[9.5px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 ml-1.5 flex-shrink-0">${isEn ? 'IN SQUAD' : 'ในทีม'}</span>` 
-                : '';
-
-              const bestLeagueTag = (this.compTransferTeam === '') 
-                ? `<span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono ml-1.5" title="${isEn ? `Owned by ${bestOwnerCount}/${totalTeams} teams in this league` : `ถือครองในลีกนี้ ${bestOwnerCount}/${totalTeams} ทีม`}">${bestOwnerCount > 0 ? `${bestOwnerPct}%` : '0%'}</span>`
-                : inSquadTag;
-
-              rowsHtml += `
-                <tr class="transition-colors text-xs">
-                  <td class="py-2.5 px-2.5 text-left">
-                    <div class="flex items-center gap-2 min-w-0 flex-wrap">
-                      <img src="${bestShirtUrl}" alt="${this.escapeHtml(best.TeamName || '')}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
-                      <span class="${bestNameClass} truncate" title="${this.escapeHtml(best.PlayerWebName || '')}">
-                        ${this.escapeHtml(best.PlayerWebName || '-')}
-                      </span>
-                      ${bestLeagueTag}
+            const bodyHtml = advice.rollFt
+              ? `
+                <div class="rounded-xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/70 px-3.5 py-3 flex items-center justify-between gap-3 flex-wrap">
+                  <div class="space-y-0.5">
+                    <div class="text-xs sm:text-sm font-bold text-emerald-800 dark:text-emerald-200">
+                      ${isEn ? 'Squad Looks Strong — Consider Rolling Free Transfer' : 'ทีมสภาพพร้อมมาก — แนะนำเก็บ Free Transfer ไว้สัปดาห์หน้า'}
                     </div>
-                  </td>
-                  <td class="py-2.5 px-2 text-right font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap tabular-nums">
-                    ${formatCost(best.Cost)}
-                  </td>
-                  <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap tabular-nums">
-                    ${formatPts(best.ExpectedPoints)}
-                  </td>
-                </tr>
-              `;
-            });
-          });
+                    <p class="text-[11px] text-emerald-700/90 dark:text-emerald-300/80">
+                      ${isEn ? 'No injured/blank starters and no single-transfer swap clears the xP gain threshold.' : 'ไม่มีตัวหลักบาดเจ็บ/ไม่มีแข่ง และยังไม่มีตัวเปลี่ยนที่เพิ่มแต้มคาดการณ์คุ้มค่าพอจะเสียสิทธิ์ฟรี'}
+                    </p>
+                  </div>
+                </div>
+              `
+              : `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                  ${advice.suggestions.map(item => {
+                    const sell = item.sell;
+                    const activeIdx = Math.min(item.alts.length - 1, Math.max(0, Number(altIdxMap[String(sell.id)] || 0)));
+                    const buy = item.alts[activeIdx];
+                    const sellShirt = this.getPlayerShirtUrl({ pos: sell.pos, team: sell.team });
+                    const buyShirt = this.getPlayerShirtUrl({ pos: buy.pos, team: buy.team });
+                    const reasonCls = item.severity === 'rose'
+                      ? 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/80'
+                      : (item.severity === 'amber'
+                        ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/80'
+                        : 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/60 dark:text-indigo-300 dark:border-indigo-800/80');
+                    const buyOwnerCount = pCounts[buy.id] ? pCounts[buy.id].count : 0;
+                    const buyOwnerPct = totalTeams > 0 ? Math.round((buyOwnerCount / totalTeams) * 100) : 0;
+                    const gainSign = buy.gain >= 0 ? `+${buy.gain.toFixed(1)}` : buy.gain.toFixed(1);
 
-          tableContainer.innerHTML = `
-            <div class="w-full overflow-x-auto touch-scroll scrollbar-thin">
-              <table class="w-full min-w-[320px] text-left table-clean">
-                <thead>
-                  <tr class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider pb-2">
-                    <th style="width: 60%;" class="py-2 px-2.5 text-left">${isEn ? 'Best players' : 'ตัวเลือกยอดเยี่ยม'}</th>
-                    <th style="width: 20%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
-                    <th style="width: 20%;" class="py-2 px-2 text-right">
-                      <span class="inline-flex items-center justify-end gap-1">
-                        ${isEn ? 'xP' : 'แต้ม xP'}
-                        <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="${isEn ? 'Projected Points Info' : 'ข้อมูลคะแนนคาดการณ์'}">?</button>
-                      </span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${rowsHtml}
-                </tbody>
-              </table>
-            </div>
-          `;
-          return;
+                    return `
+                      <div class="rounded-xl bg-white dark:bg-slate-900/85 border border-slate-200/80 dark:border-slate-700/80 p-3 flex flex-col justify-between gap-2.5">
+                        <!-- SELL ROW -->
+                        <div class="space-y-1.5">
+                          <div class="flex items-center justify-between gap-2">
+                            <span class="px-1.5 py-0.5 rounded border text-[10px] font-mono font-bold ${reasonCls}">${this.escapeHtml(item.reason)}</span>
+                            <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500">${sell.pos} · £${Number(sell.cost).toFixed(1)}m</span>
+                          </div>
+                          <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2 min-w-0">
+                              <img src="${sellShirt}" alt="${this.escapeHtml(sell.team)}" class="w-5 h-5 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+                              <span class="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate" title="${this.escapeHtml(sell.name)}">${this.escapeHtml(sell.name)}</span>
+                            </div>
+                            <span class="text-xs font-mono text-slate-500 dark:text-slate-400 tabular-nums flex-shrink-0">${Number(sell[xpKey] || 0).toFixed(1)} xP</span>
+                          </div>
+                          ${sell.news ? `<p class="text-[10px] text-slate-500 dark:text-slate-400 truncate" title="${this.escapeHtml(sell.news)}">${this.escapeHtml(sell.news)}</p>` : ''}
+                        </div>
+
+                        <!-- SWAP BRIDGE -->
+                        <div class="flex items-center justify-between gap-2 py-1 border-y border-dashed border-slate-200 dark:border-slate-800 text-[10.5px] font-mono">
+                          <span class="text-slate-500 dark:text-slate-400 font-bold">SELL → BUY</span>
+                          <span class="px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/80 font-bold tabular-nums">
+                            ${gainSign} xP
+                          </span>
+                          <span class="text-slate-500 dark:text-slate-400 tabular-nums">${isEn ? `£${buy.remBank.toFixed(1)}m left` : `เหลือ £${buy.remBank.toFixed(1)}m`}</span>
+                        </div>
+
+                        <!-- BUY ROW -->
+                        <div class="space-y-1.5">
+                          <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2 min-w-0">
+                              <img src="${buyShirt}" alt="${this.escapeHtml(buy.team)}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
+                              <div class="min-w-0">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                  <span class="text-xs sm:text-[13px] font-bold text-slate-900 dark:text-white truncate">${this.escapeHtml(buy.name)}</span>
+                                  <span class="text-[10px] font-mono text-slate-400">${this.escapeHtml(buy.team)}</span>
+                                  <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400" title="${isEn ? `Owned by ${buyOwnerCount}/${totalTeams} teams in league` : `ถือครองในลีก ${buyOwnerCount}/${totalTeams} ทีม`}">${isEn ? `· ${buyOwnerPct}% owned` : `· ลีก ${buyOwnerPct}%`}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="text-right tabular-nums flex-shrink-0">
+                              <div class="text-xs sm:text-sm font-mono font-bold text-emerald-700 dark:text-emerald-400">${Number(buy[xpKey] || 0).toFixed(1)} xP</div>
+                              <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400">£${Number(buy.cost).toFixed(1)}m</div>
+                            </div>
+                          </div>
+                          <div>${this.renderFdrPills(buy.fx, horizon)}</div>
+                        </div>
+
+                        <!-- ALTERNATIVE OPTIONS -->
+                        ${item.alts.length > 1 ? `
+                          <div class="flex items-center gap-1.5 flex-wrap pt-1 border-t border-slate-100 dark:border-slate-800">
+                            ${item.alts.map((alt, idx) => `
+                              <button
+                                onclick="app.setCompAdvisorAlt(${sell.id}, ${idx})"
+                                class="px-2.5 py-1 min-h-[44px] sm:min-h-[32px] rounded-lg text-[10px] font-mono transition-colors cursor-pointer ${idx === activeIdx ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}"
+                              >
+                                #${idx + 1} ${this.escapeHtml(alt.name)} £${Number(alt.cost).toFixed(1)}m
+                              </button>
+                            `).join('')}
+                          </div>
+                        ` : ''}
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              `;
+
+            advisorHtml = `
+              <div id="comp-transfers-advisor" class="pb-4 border-b border-slate-100 dark:border-slate-800 space-y-2.5">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="text-xs font-bold text-slate-900 dark:text-white font-display">
+                      ${isEn ? `Smart Transfer Advisor — ${this.escapeHtml(selectedTeamName)}` : `ผู้ช่วยแนะนำย้ายตัว — ${this.escapeHtml(selectedTeamName)}`}
+                    </span>
+                    <span class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 tabular-nums">
+                      Bank £${bankStr}m
+                    </span>
+                    <span class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold ${advice.flaggedCount > 0 ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800' : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'}">
+                      ${statusSummary}
+                    </span>
+                  </div>
+                  <span class="text-[10.5px] text-slate-500 dark:text-slate-400">
+                    ${isEn ? 'Est. budget = current price + bank · Max 3/club enforced' : 'งบประมาณ = ราคาปัจจุบัน + Bank · เช็กกฎไม่เกิน 3 คน/สโมสร'}
+                  </span>
+                </div>
+                ${bodyHtml}
+              </div>
+            `;
+          }
         }
 
-        // 2. Single-column Mobile View: Best Value Only
-        if (mobileView === 'value') {
-          let rowsHtml = '';
-          categories.forEach(cat => {
-            const items = sugg[cat.key] || [];
-            if (items.length === 0) return;
+        // 2. Two-Row Clean Responsive Control Bar
+        const activeBtnCls = 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs font-bold';
+        const idleBtnCls = 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium';
+        const effectiveMobileMode = (mode === 'dual') ? 'best' : mode;
 
-            rowsHtml += `
-              <tr>
-                <td colspan="3" class="pt-3 pb-1.5 px-2.5 text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
-                  ${this.escapeHtml(cat.title)}
-                </td>
-              </tr>
-            `;
+        const controlsHtml = `
+          <div id="comp-transfers-controls" class="space-y-2">
+            <!-- Row 1: Horizon + Mode Switcher -->
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="inline-flex w-full sm:w-auto items-center p-1 bg-slate-100 dark:bg-slate-800/90 rounded-xl text-xs border border-slate-200/80 dark:border-slate-700/60">
+                <button onclick="app.setCompTransferHorizon('1gw')" class="flex-1 sm:flex-none min-h-[44px] sm:min-h-[36px] px-3 py-1.5 rounded-lg transition-all cursor-pointer ${horizon === '1gw' ? activeBtnCls : idleBtnCls}">
+                  ${isEn ? 'Next GW (1 GW)' : 'นัดถัดไป (1 GW)'}
+                </button>
+                <button onclick="app.setCompTransferHorizon('3gw')" class="flex-1 sm:flex-none min-h-[44px] sm:min-h-[36px] px-3 py-1.5 rounded-lg transition-all cursor-pointer ${horizon === '3gw' ? activeBtnCls : idleBtnCls}">
+                  ${isEn ? 'Next 3 GWs' : 'ระยะ 3 นัด (3 GWs)'}
+                </button>
+              </div>
 
-            items.forEach(item => {
-              const val = item.GoodPlayer || {};
-              const isValInTeam = val.Id ? selectedTeamPlayerIds.has(Number(val.Id)) : false;
-              const valOwnerCount = val.Id && pCounts[val.Id] ? pCounts[val.Id].count : 0;
-              const valOwnerPct = totalTeams > 0 ? ((valOwnerCount / totalTeams) * 100).toFixed(0) : 0;
-              const valShirtUrl = this.getPlayerShirtUrl({ pos: cat.pos, team: val.TeamName });
+              <!-- Desktop (>= lg) Mode Tabs -->
+              <div class="hidden lg:inline-flex items-center p-1 bg-slate-100 dark:bg-slate-800/90 rounded-xl text-xs border border-slate-200/80 dark:border-slate-700/60">
+                <button onclick="app.setCompTransferMode('dual')" class="min-h-[36px] px-3 py-1.5 rounded-lg transition-all cursor-pointer ${mode === 'dual' || mode === 'best' || mode === 'value' ? activeBtnCls : idleBtnCls}">
+                  ${isEn ? 'Best vs Value' : 'ยอดเยี่ยม & สุดคุ้ม'}
+                </button>
+                <button onclick="app.setCompTransferMode('diff')" class="min-h-[36px] px-3 py-1.5 rounded-lg transition-all cursor-pointer ${mode === 'diff' ? activeBtnCls : idleBtnCls}">
+                  ${isEn ? 'Differentials (<20%)' : 'ตัวทีเด็ด (<20%)'}
+                </button>
+              </div>
 
-              const valNameClass = isValInTeam 
-                ? 'font-bold text-slate-900 dark:text-white' 
-                : 'text-slate-800 dark:text-slate-200';
-
-              const inSquadTag = isValInTeam 
-                ? `<span class="px-1.5 py-0.5 rounded text-[9.5px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 ml-1.5 flex-shrink-0">${isEn ? 'IN SQUAD' : 'ในทีม'}</span>` 
-                : '';
-
-              const valLeagueTag = (this.compTransferTeam === '') 
-                ? `<span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono ml-1.5" title="${isEn ? `Owned by ${valOwnerCount}/${totalTeams} teams in this league` : `ถือครองในลีกนี้ ${valOwnerCount}/${totalTeams} ทีม`}">${valOwnerCount > 0 ? `${valOwnerPct}%` : '0%'}</span>`
-                : inSquadTag;
-
-              rowsHtml += `
-                <tr class="transition-colors text-xs">
-                  <td class="py-2.5 px-2.5 text-left">
-                    <div class="flex items-center gap-2 min-w-0 flex-wrap">
-                      <img src="${valShirtUrl}" alt="${this.escapeHtml(val.TeamName || '')}" class="w-6 h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
-                      <span class="${valNameClass} truncate" title="${this.escapeHtml(val.PlayerWebName || '')}">
-                        ${this.escapeHtml(val.PlayerWebName || '-')}
-                      </span>
-                      ${valLeagueTag}
-                    </div>
-                  </td>
-                  <td class="py-2.5 px-2 text-right font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap tabular-nums">
-                    ${formatCost(val.Cost)}
-                  </td>
-                  <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap tabular-nums">
-                    ${formatPts(val.ExpectedPoints)}
-                  </td>
-                </tr>
-              `;
-            });
-          });
-
-          tableContainer.innerHTML = `
-            <div class="w-full overflow-x-auto touch-scroll scrollbar-thin">
-              <table class="w-full min-w-[320px] text-left table-clean">
-                <thead>
-                  <tr class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider pb-2">
-                    <th style="width: 60%;" class="py-2 px-2.5 text-left">${isEn ? 'Best Value' : 'ตัวเลือกสุดคุ้ม'}</th>
-                    <th style="width: 20%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
-                    <th style="width: 20%;" class="py-2 px-2 text-right">
-                      <span class="inline-flex items-center justify-end gap-1">
-                        ${isEn ? 'xP' : 'แต้ม xP'}
-                        <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="${isEn ? 'Projected Points Info' : 'ข้อมูลคะแนนคาดการณ์'}">?</button>
-                      </span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${rowsHtml}
-                </tbody>
-              </table>
+              <!-- Mobile / Tablet (< lg) Mode Tabs -->
+              <div id="comp-transfers-mobile-btns" class="lg:hidden flex w-full sm:w-auto items-center p-1 bg-slate-100 dark:bg-slate-800/90 rounded-xl text-xs border border-slate-200/80 dark:border-slate-700/60">
+                <button onclick="app.setCompTransferMode('best')" class="flex-1 min-h-[44px] sm:min-h-[38px] py-1.5 px-2.5 rounded-lg text-center transition-all cursor-pointer ${effectiveMobileMode === 'best' ? activeBtnCls : idleBtnCls}">
+                  ${isEn ? 'Best' : 'ยอดเยี่ยม'}
+                </button>
+                <button onclick="app.setCompTransferMode('value')" class="flex-1 min-h-[44px] sm:min-h-[38px] py-1.5 px-2.5 rounded-lg text-center transition-all cursor-pointer ${effectiveMobileMode === 'value' ? activeBtnCls : idleBtnCls}">
+                  ${isEn ? 'Value' : 'สุดคุ้ม'}
+                </button>
+                <button onclick="app.setCompTransferMode('diff')" class="flex-1 min-h-[44px] sm:min-h-[38px] py-1.5 px-2.5 rounded-lg text-center transition-all cursor-pointer ${effectiveMobileMode === 'diff' ? activeBtnCls : idleBtnCls}">
+                  ${isEn ? 'Diff (<20%)' : 'ทีเด็ด (<20%)'}
+                </button>
+              </div>
             </div>
-          `;
-          return;
-        }
 
-        // 3. Side-by-Side Dual Comparison Table (Default & Desktop)
-        let tableRowsHtml = '';
+            <!-- Row 2: Position + Max Price + Hide Owned -->
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-1 flex-wrap">
+                ${['ALL', 'GKP', 'DEF', 'MID', 'FWD'].map(pos => {
+                  const posLabel = pos === 'ALL' ? (isEn ? 'All' : 'ทั้งหมด') : pos;
+                  const isAct = posFilter === pos;
+                  return `
+                    <button
+                      onclick="app.setCompTransferPos('${pos}')"
+                      class="min-h-[44px] sm:min-h-[36px] px-2.5 py-1 rounded-lg text-xs font-mono transition-colors cursor-pointer border ${isAct ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100 font-bold' : 'bg-white dark:bg-slate-900/60 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'}"
+                    >
+                      ${posLabel}
+                    </button>
+                  `;
+                }).join('')}
+              </div>
 
-        categories.forEach(cat => {
-          const items = sugg[cat.key] || [];
-          if (items.length === 0) return;
+              <div class="flex items-center gap-2 flex-wrap">
+                <select
+                  id="comp-transfers-max-cost"
+                  onchange="app.setCompTransferMaxCost(this.value)"
+                  aria-label="${isEn ? 'Maximum price filter' : 'กรองงบสูงสุด'}"
+                  class="min-h-[44px] sm:min-h-[36px] bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-mono border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 focus:outline-none cursor-pointer"
+                >
+                  <option value="ALL" ${maxCostFilter === 'ALL' ? 'selected' : ''}>${isEn ? 'Any Price' : 'ทุกงบประมาณ'}</option>
+                  <option value="5.5" ${maxCostFilter === '5.5' ? 'selected' : ''}>≤ £5.5m</option>
+                  <option value="7.5" ${maxCostFilter === '7.5' ? 'selected' : ''}>≤ £7.5m</option>
+                  <option value="9.5" ${maxCostFilter === '9.5' ? 'selected' : ''}>≤ £9.5m</option>
+                </select>
 
-          // Category Subheader Row
-          tableRowsHtml += `
-            <tr>
-              <td colspan="7" class="pt-3.5 pb-1.5 px-3 text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
-                ${this.escapeHtml(cat.title)}
-              </td>
-            </tr>
-          `;
-
-          items.forEach(item => {
-            const best = item.ValuePlayer || {};
-            const val = item.GoodPlayer || {};
-
-            const isBestInTeam = best.Id ? selectedTeamPlayerIds.has(Number(best.Id)) : false;
-            const isValInTeam = val.Id ? selectedTeamPlayerIds.has(Number(val.Id)) : false;
-
-            const bestOwnerCount = best.Id && pCounts[best.Id] ? pCounts[best.Id].count : 0;
-            const bestOwnerPct = totalTeams > 0 ? ((bestOwnerCount / totalTeams) * 100).toFixed(0) : 0;
-
-            const valOwnerCount = val.Id && pCounts[val.Id] ? pCounts[val.Id].count : 0;
-            const valOwnerPct = totalTeams > 0 ? ((valOwnerCount / totalTeams) * 100).toFixed(0) : 0;
-
-            // Shirt URLs
-            const bestShirtUrl = this.getPlayerShirtUrl({ pos: cat.pos, team: best.TeamName });
-            const valShirtUrl = this.getPlayerShirtUrl({ pos: cat.pos, team: val.TeamName });
-
-            // Badges or text highlighting
-            const bestNameClass = isBestInTeam 
-              ? 'font-bold text-slate-900 dark:text-white' 
-              : 'text-slate-800 dark:text-slate-200';
-            
-            const valNameClass = isValInTeam 
-              ? 'font-bold text-slate-900 dark:text-white' 
-              : 'text-slate-800 dark:text-slate-200';
-
-            const bestInSquadTag = isBestInTeam 
-              ? `<span class="px-1.5 py-0.5 rounded text-[9.5px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 ml-1.5 flex-shrink-0">${isEn ? 'IN SQUAD' : 'ในทีม'}</span>` 
-              : '';
-
-            const valInSquadTag = isValInTeam 
-              ? `<span class="px-1.5 py-0.5 rounded text-[9.5px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 ml-1.5 flex-shrink-0">${isEn ? 'IN SQUAD' : 'ในทีม'}</span>` 
-              : '';
-
-            const bestLeagueTag = (this.compTransferTeam === '') 
-              ? `<span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono ml-1.5" title="${isEn ? `Owned by ${bestOwnerCount}/${totalTeams} teams in this league` : `ถือครองในลีกนี้ ${bestOwnerCount}/${totalTeams} ทีม`}">${bestOwnerCount > 0 ? `${bestOwnerPct}%` : '0%'}</span>`
-              : bestInSquadTag;
-
-            const valLeagueTag = (this.compTransferTeam === '') 
-              ? `<span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono ml-1.5" title="${isEn ? `Owned by ${valOwnerCount}/${totalTeams} teams in this league` : `ถือครองในลีกนี้ ${valOwnerCount}/${totalTeams} ทีม`}">${valOwnerCount > 0 ? `${valOwnerPct}%` : '0%'}</span>`
-              : valInSquadTag;
-
-            tableRowsHtml += `
-              <tr class="transition-colors text-xs">
-                
-                <!-- Best Player: Shirt + Name -->
-                <td class="py-2.5 px-2.5 sm:px-3 text-left">
-                  <div class="flex items-center gap-2 min-w-0 flex-wrap">
-                    <img src="${bestShirtUrl}" alt="${this.escapeHtml(best.TeamName || '')}" class="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
-                    <span class="${bestNameClass} truncate" title="${this.escapeHtml(best.PlayerWebName || '')}">
-                      ${this.escapeHtml(best.PlayerWebName || '-')}
-                    </span>
-                    ${bestLeagueTag}
-                  </div>
-                </td>
-
-                <!-- Best Player: Price -->
-                <td class="py-2.5 px-2 text-right font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap tabular-nums">
-                  ${formatCost(best.Cost)}
-                </td>
-
-                <!-- Best Player: Pts -->
-                <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap tabular-nums">
-                  ${formatPts(best.ExpectedPoints)}
-                </td>
-
-                <!-- Divider Column -->
-                <td class="py-2.5 px-1 sm:px-2 border-r border-slate-200 dark:border-slate-800"></td>
-
-                <!-- Best Value: Shirt + Name -->
-                <td class="py-2.5 px-2.5 sm:px-3 text-left">
-                  <div class="flex items-center gap-2 min-w-0 flex-wrap">
-                    <img src="${valShirtUrl}" alt="${this.escapeHtml(val.TeamName || '')}" class="w-5 h-5 sm:w-6 sm:h-6 object-contain flex-shrink-0" onerror="this.onerror=null; this.src='${defaultShirtUrl}';" />
-                    <span class="${valNameClass} truncate" title="${this.escapeHtml(val.PlayerWebName || '')}">
-                      ${this.escapeHtml(val.PlayerWebName || '-')}
-                    </span>
-                    ${valLeagueTag}
-                  </div>
-                </td>
-
-                <!-- Best Value: Price -->
-                <td class="py-2.5 px-2 text-right font-mono text-slate-600 dark:text-slate-300 whitespace-nowrap tabular-nums">
-                  ${formatCost(val.Cost)}
-                </td>
-
-                <!-- Best Value: Pts -->
-                <td class="py-2.5 px-2 text-right font-mono font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap tabular-nums">
-                  ${formatPts(val.ExpectedPoints)}
-                </td>
-
-              </tr>
-            `;
-          });
-        });
-
-        tableContainer.innerHTML = `
-          <!-- Mobile Scroll Hint -->
-          <div class="sm:hidden flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pb-1.5 border-b border-slate-200 dark:border-slate-800 px-1">
-            <span>${isEn ? 'Dual Comparison' : 'เปรียบเทียบทั้งคู่'}</span>
-            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">${isEn ? '👈 Swipe to view Best Value 👉' : '👈 เลื่อนดูตัวเลือกสุดคุ้ม 👉'}</span>
-          </div>
-
-          <div class="overflow-x-auto touch-scroll scrollbar-thin w-full max-w-full">
-            <table class="min-w-[620px] w-full text-left table-clean">
-              <thead>
-                <tr class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider pb-2">
-                  <th style="width: 28%;" class="py-2 px-2.5 sm:px-3 text-left">${isEn ? 'Best Players' : 'ตัวเลือกยอดเยี่ยม'}</th>
-                  <th style="width: 10%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
-                  <th style="width: 11%;" class="py-2 px-2 text-right">
-                    <span class="inline-flex items-center justify-end gap-1">
-                      ${isEn ? 'xP' : 'แต้ม xP'}
-                      <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="${isEn ? 'Projected Points Info' : 'ข้อมูลคะแนนคาดการณ์'}">?</button>
-                    </span>
-                  </th>
-                  <th style="width: 2%;" class="py-2 px-1 border-r border-slate-200 dark:border-slate-800"></th>
-                  <th style="width: 28%;" class="py-2 px-2.5 sm:px-3 text-left">${isEn ? 'Best Value' : 'ตัวเลือกสุดคุ้ม'}</th>
-                  <th style="width: 10%;" class="py-2 px-2 text-right">${isEn ? 'Price' : 'ราคา'}</th>
-                  <th style="width: 11%;" class="py-2 px-2 text-right">
-                    <span class="inline-flex items-center justify-end gap-1">
-                      ${isEn ? 'xP' : 'แต้ม xP'}
-                      <button onclick="app.showProjectedPointsModal()" class="w-4 h-4 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white flex items-center justify-center text-[10px] cursor-pointer" title="${isEn ? 'Projected Points Info' : 'ข้อมูลคะแนนคาดการณ์'}">?</button>
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                ${tableRowsHtml}
-              </tbody>
-            </table>
+                ${this.compTransferTeam ? `
+                  <button
+                    id="comp-transfers-hide-owned"
+                    onclick="app.toggleCompTransferHideOwned()"
+                    class="min-h-[44px] sm:min-h-[36px] px-2.5 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer border ${hideOwned ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 font-bold' : 'bg-white dark:bg-slate-900/60 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'}"
+                  >
+                    ${hideOwned ? (isEn ? '✓ Hiding Owned' : '✓ ซ่อนตัวในทีม') : (isEn ? 'Hide Owned' : 'ซ่อนตัวในทีม')}
+                  </button>
+                ` : ''}
+              </div>
+            </div>
           </div>
         `;
+
+        // 3. Apply Active Filters
+        const maxCostNum = maxCostFilter === 'ALL' ? 999 : Number(maxCostFilter);
+        const filteredPool = pool.filter(p => {
+          if (posFilter !== 'ALL' && p.pos !== posFilter) return false;
+          if (Number(p.cost) > maxCostNum + 0.001) return false;
+          if (hideOwned && selectedTeamPlayerIds.has(Number(p.id))) return false;
+          return true;
+        });
+
+        const diffPool = filteredPool.filter(p => {
+          const cnt = pCounts[p.id] ? pCounts[p.id].count : 0;
+          const pct = totalTeams > 0 ? (cnt / totalTeams) * 100 : Number(p.sel_pct || 0);
+          return pct < 20;
+        });
+
+        const categories = [
+          { pos: 'GKP', title: isEn ? 'Goalkeepers' : 'ผู้รักษาประตู (GKP)', cap: posFilter === 'ALL' ? 2 : 10 },
+          { pos: 'DEF', title: isEn ? 'Defenders' : 'กองหลัง (DEF)', cap: posFilter === 'ALL' ? 5 : 10 },
+          { pos: 'MID', title: isEn ? 'Midfielders' : 'กองกลาง (MID)', cap: posFilter === 'ALL' ? 5 : 10 },
+          { pos: 'FWD', title: isEn ? 'Forwards' : 'กองหน้า (FWD)', cap: posFilter === 'ALL' ? 3 : 10 }
+        ].filter(c => posFilter === 'ALL' || c.pos === posFilter);
+
+        const buildColumnListHtml = (sourceList, sortField, colMode) => {
+          let html = '';
+          let totalCount = 0;
+          categories.forEach(cat => {
+            const items = sourceList
+              .filter(p => p.pos === cat.pos)
+              .sort((a, b) => (Number(b[sortField]) - Number(a[sortField])) || (Number(b[xpKey]) - Number(a[xpKey])))
+              .slice(0, cat.cap);
+            if (items.length === 0) return;
+            totalCount += items.length;
+            html += `
+              <div class="space-y-1.5">
+                <div class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-1 pt-1">
+                  ${this.escapeHtml(cat.title)}
+                </div>
+                <div class="space-y-1.5">
+                  ${items.map(p => this.renderPlayerRecRow(p, {
+                    isEn, horizon, xpKey, valKey, mode: colMode,
+                    totalTeams, pCounts, selectedTeamPlayerIds,
+                    compTransferTeam: this.compTransferTeam,
+                    defaultShirtUrl
+                  })).join('')}
+                </div>
+              </div>
+            `;
+          });
+          if (totalCount === 0) {
+            return `
+              <div class="py-6 px-4 text-center rounded-xl bg-slate-50 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 space-y-2">
+                <p class="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                  ${isEn ? 'No players match the current filters.' : 'ไม่พบนักเตะที่ตรงกับเงื่อนไขฟิลเตอร์'}
+                </p>
+                <button onclick="app.resetCompTransferFilters()" class="px-3 py-1.5 min-h-[36px] rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold cursor-pointer">
+                  ${isEn ? 'Reset Filters' : 'รีเซ็ตฟิลเตอร์'}
+                </button>
+              </div>
+            `;
+          }
+          return html;
+        };
+
+        let listContentHtml = '';
+        if (mode === 'diff') {
+          listContentHtml = `
+            <div class="space-y-2">
+              <div class="flex items-center justify-between px-1">
+                <span class="text-xs font-bold text-slate-900 dark:text-white font-display">
+                  ${isEn ? 'League Differentials (<20% Owned)' : 'ตัวทีเด็ดในลีก (ถือครอง < 20%)'}
+                </span>
+                <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400">${horizon === '3gw' ? (isEn ? 'Sorted by 3-GW xP' : 'เรียงตาม 3-GW xP') : (isEn ? 'Sorted by 1-GW xP' : 'เรียงตาม 1-GW xP')}</span>
+              </div>
+              <div class="space-y-3">
+                ${buildColumnListHtml(diffPool, xpKey, 'best')}
+              </div>
+            </div>
+          `;
+        } else {
+          const bestHtml = buildColumnListHtml(filteredPool, xpKey, 'best');
+          const valueHtml = buildColumnListHtml(filteredPool, valKey, 'value');
+          const bestPanelCls = (effectiveMobileMode === 'best') ? 'space-y-2' : 'hidden lg:block space-y-2';
+          const valuePanelCls = (effectiveMobileMode === 'value') ? 'space-y-2' : 'hidden lg:block space-y-2';
+
+          listContentHtml = `
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div class="${bestPanelCls}">
+                <div class="flex items-center justify-between px-1 pb-1 border-b border-slate-100 dark:border-slate-800">
+                  <span class="text-xs font-bold text-slate-900 dark:text-white font-display uppercase tracking-wide">
+                    ${isEn ? 'Best Players (Top xP)' : 'ตัวเลือกยอดเยี่ยม (xP สูงสุด)'}
+                  </span>
+                  <span class="text-[10.5px] font-mono text-slate-500 dark:text-slate-400">${horizon === '3gw' ? '3 GWs' : '1 GW'}</span>
+                </div>
+                <div class="space-y-2.5">${bestHtml}</div>
+              </div>
+
+              <div class="${valuePanelCls}">
+                <div class="flex items-center justify-between px-1 pb-1 border-b border-slate-100 dark:border-slate-800">
+                  <span class="text-xs font-bold text-slate-900 dark:text-white font-display uppercase tracking-wide">
+                    ${isEn ? 'Best Value (xP / £)' : 'ตัวเลือกสุดคุ้ม (แต้มต่อราคา)'}
+                  </span>
+                  <span class="text-[10.5px] font-mono text-slate-500 dark:text-slate-400">${horizon === '3gw' ? '3 GWs' : '1 GW'}</span>
+                </div>
+                <div class="space-y-2.5">${valueHtml}</div>
+              </div>
+            </div>
+          `;
+        }
+
+        tableContainer.innerHTML = `${advisorHtml}${controlsHtml}${listContentHtml}`;
       }
 
             renderPrizesView() {
