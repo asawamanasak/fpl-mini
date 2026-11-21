@@ -498,12 +498,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <a href="#sec-monitor" class="min-h-[44px] px-3 py-2 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2">
           <span data-i18n="mod_nav_8">8. ตรวจสุขภาพระบบย้อนหลัง</span>
         </a>
-        <a href="#sec-onboarding" class="min-h-[44px] px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 hover:bg-amber-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-500 transition-colors shrink-0 inline-flex items-center gap-2 font-semibold">
-          <span data-i18n="mod_nav_9">9. เพิ่มลีกลูกค้าใหม่ (Onboarding)</span>
-        </a>
         <a href="#sec-orders" class="min-h-[44px] px-3 py-2 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-800 dark:text-sky-300 hover:bg-sky-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-500 transition-colors shrink-0 inline-flex items-center gap-2 font-semibold">
-          <span data-i18n="mod_nav_10">10. ออเดอร์ &amp; ตรวจสลิป</span>
+          <span data-i18n="mod_nav_9">9. ออเดอร์ &amp; ตรวจสลิป</span>
           <span id="navOrderPendingBadge" class="hidden px-1.5 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-mono leading-none">0</span>
+        </a>
+        <a href="#sec-onboarding" class="min-h-[44px] px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 hover:bg-amber-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-500 transition-colors shrink-0 inline-flex items-center gap-2 font-semibold">
+          <span data-i18n="mod_nav_10">10. เพิ่มลีกลูกค้าใหม่ (Onboarding)</span>
         </a>
       </div>
     </nav>
@@ -2077,16 +2077,16 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     </section>
 
     <!-- =================================================================== -->
-    <!-- SECTION 10: CUSTOMER ORDERS & PAYMENT SLIP INBOX                    -->
+    <!-- SECTION 09: CUSTOMER ORDERS & PAYMENT SLIP INBOX                    -->
     <!-- =================================================================== -->
     <section id="sec-orders" class="space-y-4 scroll-mt-28" aria-labelledby="sec-orders-title">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
         <div>
-          <h2 id="sec-orders-title" class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec10_title">
-            10. กล่องรับคำสั่งซื้อ &amp; ตรวจสลิป PromptPay
+          <h2 id="sec-orders-title" class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec9_title">
+            09. กล่องรับคำสั่งซื้อ &amp; ตรวจสลิป
           </h2>
-          <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec10_sub">
-            ตรวจสอบยอดโอน PromptPay ตามเศษสตางค์ ดูรูปสลิป ส่งคำสั่งซื้อเข้า Onboarding Wizard ด้านล่าง และแจ้งเปิดใช้งานทางอีเมลในคลิกเดียว
+          <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec9_sub">
+            ตั้งค่ารูป QR รับเงิน ตรวจสอบยอดโอนตามเศษสตางค์ ดูรูปสลิป ส่งข้อมูลเข้าเครื่องมือเปิดลีกด้านล่าง และแจ้งเปิดใช้งานทางอีเมลในคลิกเดียว
           </p>
         </div>
         <button type="button" id="btnRefreshOrders"
@@ -2294,15 +2294,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     </section>
 
     <!-- =================================================================== -->
-    <!-- SECTION 9: CONCIERGE CUSTOMER LEAGUE ONBOARDING WIZARD              -->
+    <!-- SECTION 10: CONCIERGE CUSTOMER LEAGUE ONBOARDING WIZARD             -->
     <!-- =================================================================== -->
     <section id="sec-onboarding" class="space-y-4 scroll-mt-28" aria-labelledby="sec-onboarding-title">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
         <div>
-          <h2 id="sec-onboarding-title" class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec9_title">
-            09. เครื่องมือเปิดลีกลูกค้าใหม่ (Concierge Onboarding Wizard)
+          <h2 id="sec-onboarding-title" class="text-lg font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec10_title">
+            10. เครื่องมือเปิดลีกลูกค้าใหม่ (Concierge Onboarding Wizard)
           </h2>
-          <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec9_sub">
+          <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec10_sub">
             ตรวจสอบ FPL Classic League ID สดจากเซิร์ฟเวอร์พรีเมียร์ลีก เลือกทีมที่ไม่ร่วมชิงรางวัล ตั้งค่าแพ็กเกจ และสร้างสคริปต์เปิดใช้งานทันที
           </p>
         </div>
@@ -2532,8 +2532,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         mod_nav_6: '6. กราฟทราฟฟิกและช่วงเวลาพีค',
         mod_nav_7: '7. ประสิทธิภาพระบบและการขยายสเกล',
         mod_nav_8: '8. ตรวจสุขภาพระบบย้อนหลัง',
-        mod_nav_9: '9. เพิ่มลีกลูกค้าใหม่',
-        mod_nav_10: '10. ออเดอร์ & ตรวจสลิป',
+        mod_nav_9: '9. ออเดอร์ & ตรวจสลิป',
+        mod_nav_10: '10. เพิ่มลีกลูกค้าใหม่',
         header_subtitle: 'ศูนย์วิเคราะห์ข้อมูลธุรกิจและระบบ',
         quick_league_placeholder: 'ทางลัดเปิดหน้าเว็บ (9 ลีก)...',
         quick_hub_home: '🛒 หน้าขายสินค้า (Landing Page)',
@@ -2795,8 +2795,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         footer_rights: 'ศูนย์วิเคราะห์ข้อมูลธุรกิจและโครงสร้างพื้นฐานครบวงจร (9 มินิลีก)',
         toast_refreshed: 'อัปเดตข้อมูลสถานะล่าสุดจากเซิร์ฟเวอร์เรียบร้อยแล้ว',
         confirm_prune: 'ยืนยันการลบประวัติการเข้าชมเก่าที่เกิน 30 วันหรือไม่? (ยอดผู้เข้าชมรวมทั้งหมดจะยังอยู่ครบไม่ถูกลบ)',
-        sec9_title: '09. เครื่องมือเปิดลีกลูกค้าใหม่ (Concierge Onboarding Wizard)',
-        sec9_sub: 'ตรวจสอบ FPL Classic League ID สดจากเซิร์ฟเวอร์พรีเมียร์ลีก เลือกทีมที่ไม่ร่วมชิงรางวัล ตั้งค่าแพ็กเกจ และสร้างสคริปต์เปิดใช้งานทันที',
+        sec9_title: '09. กล่องรับคำสั่งซื้อ & ตรวจสลิป',
+        sec9_sub: 'ตั้งค่ารูป QR รับเงิน ตรวจสอบยอดโอนตามเศษสตางค์ ดูรูปสลิป ส่งข้อมูลเข้าเครื่องมือเปิดลีกด้านล่าง และแจ้งเปิดใช้งานทางอีเมลในคลิกเดียว',
+        sec10_title: '10. เครื่องมือเปิดลีกลูกค้าใหม่ (Concierge Onboarding Wizard)',
+        sec10_sub: 'ตรวจสอบ FPL Classic League ID สดจากเซิร์ฟเวอร์พรีเมียร์ลีก เลือกทีมที่ไม่ร่วมชิงรางวัล ตั้งค่าแพ็กเกจ และสร้างสคริปต์เปิดใช้งานทันที',
         onb_lbl_id: 'FPL Classic League ID (ตัวเลขเท่านั้น)',
         onb_btn_inspect: 'ดึงข้อมูลลีกสด',
         onb_lbl_plan: 'แพ็กเกจ (Plan)',
@@ -2830,8 +2832,6 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         onb_out_cli: '1. คำสั่ง CLI (รันบนเครื่องเพื่อเปิดลีก)',
         onb_out_json: '2. Config JSON (leagues_config.json)',
         onb_out_line: '3. ข้อความส่งมอบลูกค้าทาง LINE',
-        sec10_title: '10. กล่องรับคำสั่งซื้อ & ตรวจสลิป PromptPay',
-        sec10_sub: 'ตรวจสอบยอดโอน PromptPay ตามเศษสตางค์ ดูรูปสลิป ส่งคำสั่งซื้อเข้า Onboarding Wizard ด้านล่าง และแจ้งเปิดใช้งานทางอีเมลในคลิกเดียว',
         ord_btn_refresh: 'รีเฟรชรายการออเดอร์',
         ord_f_all: 'ทั้งหมด',
         ord_f_slip: 'รอตรวจสลิป',
@@ -2885,8 +2885,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         mod_nav_6: '6. Matchday Traffic',
         mod_nav_7: '7. Cloud & Scaling',
         mod_nav_8: '8. Project Health Monitor',
-        mod_nav_9: '9. Onboarding Wizard',
-        mod_nav_10: '10. Orders & Slips',
+        mod_nav_9: '9. Orders & Slips',
+        mod_nav_10: '10. Onboarding Wizard',
         header_subtitle: 'Executive BI & Infrastructure Control',
         quick_league_placeholder: 'Quick Jump (Landing / Demo / 9 Leagues)...',
         quick_hub_home: '🛒 Commercial Landing Page (index.html)',
@@ -3148,8 +3148,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         footer_rights: 'Executive Business Intelligence & Multi-League Infrastructure Suite',
         toast_refreshed: 'Live telemetry and portfolio metrics synchronized from Edge Worker.',
         confirm_prune: 'Remove daily visitor logs older than 30 days? (Your total lifetime views will NOT be deleted.)',
-        sec9_title: '09. Customer League Onboarding Wizard (Concierge Flow)',
-        sec9_sub: 'Inspect live FPL Classic League IDs from Premier League servers, exclude non-prize teams, pick package presets, and generate deploy commands.',
+        sec9_title: '09. Customer Orders & Payment Slip Inbox',
+        sec9_sub: 'Configure your private payment QR, verify exact satang transfers, inspect customer slips, prefill the Onboarding Wizard below, and mark leagues live.',
+        sec10_title: '10. Customer League Onboarding Wizard (Concierge Flow)',
+        sec10_sub: 'Inspect live FPL Classic League IDs, exclude non-prize teams, configure plan rules, and generate ready-to-run onboarding scripts.',
         onb_lbl_id: 'FPL Classic League ID (digits only)',
         onb_btn_inspect: 'Inspect Live League',
         onb_lbl_plan: 'Package Plan',
@@ -3183,8 +3185,6 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         onb_out_cli: '1. CLI Onboarding Command',
         onb_out_json: '2. Config JSON (leagues_config.json)',
         onb_out_line: '3. Customer LINE Handoff Message',
-        sec10_title: '10. Customer Orders & PromptPay Slip Inbox',
-        sec10_sub: 'Verify exact satang transfers, inspect customer slips, prefill the Onboarding Wizard below, and mark leagues live with instant email delivery.',
         ord_btn_refresh: 'Refresh Orders',
         ord_f_all: 'All',
         ord_f_slip: 'Slip Submitted',

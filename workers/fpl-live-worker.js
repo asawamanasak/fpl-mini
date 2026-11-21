@@ -845,12 +845,29 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, '') || '/';
     const colo = (request.cf && request.cf.colo) ? request.cf.colo : 'EDGE';
-    const isAdminDomain =
-      url.hostname === 'admin.fplsawadika.com' ||
-      path.startsWith('/admin') ||
-      path.startsWith('/api/admin') ||
+    const isAdminPath =
+      path === '/admin' ||
+      path.startsWith('/admin/') ||
+      path === '/api/admin' ||
+      path.startsWith('/api/admin/') ||
       path === '/login' ||
       path === '/logout';
+    const isProdNonAdminHost =
+      (!env || env.ENVIRONMENT !== 'staging') &&
+      url.hostname !== 'admin.fplsawadika.com';
+    if (isProdNonAdminHost && isAdminPath) {
+      return new Response(JSON.stringify({ error: 'Not Found' }), {
+        status: 404,
+        headers: {
+          ...SHARED_SECURITY_HEADERS,
+          'Content-Type': 'application/json; charset=utf-8',
+          'Cache-Control': 'no-store',
+        },
+      });
+    }
+    const isAdminDomain =
+      url.hostname === 'admin.fplsawadika.com' ||
+      (Boolean(env && env.ENVIRONMENT === 'staging') && isAdminPath);
 
     // ==========================================
     // Telemetry Beacon Handler (Validated + Rate-Guarded)
@@ -3258,7 +3275,7 @@ export default {
             await sendTransactionalEmail(env, {
               to: env.ADMIN_NOTIFY_EMAIL,
               subject: `[NEW QUOTE] ${orderId} — League ${leagueId} (${currency})`,
-              text: `New quote request:\nOrder: ${orderId}\nLeague: ${leagueName || leagueId} (${leagueId}, ${teamCount} teams)\nPlan: ${plan} (${currency})\nEmail: ${customerEmail}\nLINE: ${customerLine || '-'}\nRules: ${rulesText || '-'}\n\nOpen /admin#sec-orders`,
+              text: `New quote request:\nOrder: ${orderId}\nLeague: ${leagueName || leagueId} (${leagueId}, ${teamCount} teams)\nPlan: ${plan} (${currency})\nEmail: ${customerEmail}\nLINE: ${customerLine || '-'}\nRules: ${rulesText || '-'}\n\nOpen https://admin.fplsawadika.com/#sec-orders`,
               html: `<p><strong>New Quote Request:</strong> <code>${safeOid}</code></p><p>League: ${safeLname} (${safeLid}, ${teamCount} teams)<br>Plan: ${escapeHtmlEmail(plan)} (${escapeHtmlEmail(currency)})<br>Email: ${escapeHtmlEmail(customerEmail)}<br>LINE: ${escapeHtmlEmail(customerLine || '-')}</p><p>Rules:<br>${safeRules}</p>`,
             });
           }
@@ -3568,7 +3585,7 @@ export default {
             await sendTransactionalEmail(env, {
               to: env.ADMIN_NOTIFY_EMAIL,
               subject: `[SLIP UPLOADED] ${orderId} • ${amountDisplay} • League ${row.league_id}`,
-              text: `ลูกค้าแนบสลิปโอนเงินแล้ว!\nOrder: ${orderId}\nยอดที่ต้องตรวจสอบ: ${amountDisplay}\nLeague: ${row.league_name || row.league_id} (ID: ${row.league_id})\nEmail: ${row.customer_email}\nLINE: ${row.customer_line || '-'}\nRules:\n${row.rules_text || '-'}\n\nตรวจสอบสลิปและอนุมัติได้ที่:\nhttps://api.fplsawadika.com/admin#sec-orders`,
+              text: `ลูกค้าแนบสลิปโอนเงินแล้ว!\nOrder: ${orderId}\nยอดที่ต้องตรวจสอบ: ${amountDisplay}\nLeague: ${row.league_name || row.league_id} (ID: ${row.league_id})\nEmail: ${row.customer_email}\nLINE: ${row.customer_line || '-'}\nRules:\n${row.rules_text || '-'}\n\nตรวจสอบสลิปและอนุมัติได้ที่:\nhttps://admin.fplsawadika.com/#sec-orders`,
               html: `
                 <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; padding: 20px; color: #0f172a;">
                   <h2 style="color: #059669; margin: 0 0 12px;">มีลูกค้าแจ้งโอนและแนบสลิปเข้ามาใหม่!</h2>
@@ -3583,7 +3600,7 @@ export default {
                     <strong>กติกาที่ลูกค้าระบุ:</strong><br>${safeRules}
                   </div>
                   <p style="margin: 18px 0;">
-                    <a href="https://api.fplsawadika.com/admin#sec-orders" style="display: inline-block; background: #0f172a; color: #ffffff; text-decoration: none; font-weight: bold; padding: 12px 18px; border-radius: 10px;">เปิดหน้า /admin เพื่อตรวจสลิป →</a>
+                    <a href="https://admin.fplsawadika.com/#sec-orders" style="display: inline-block; background: #0f172a; color: #ffffff; text-decoration: none; font-weight: bold; padding: 12px 18px; border-radius: 10px;">เปิดหน้า admin.fplsawadika.com เพื่อตรวจสลิป →</a>
                   </p>
                 </div>
               `,
