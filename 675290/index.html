@@ -1419,7 +1419,7 @@
       <div class="inline-flex items-center max-w-full">
         <span id="header-deadline-badge" class="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 px-2 sm:px-2.5 py-0.5 rounded-full font-display shadow-2xs max-w-full" title="เส้นตายการจัดทีม Gameweek ถัดไป">
           <svg class="w-3 h-3 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          <span id="header-deadline-val" class="font-mono tabular-nums truncate">เส้นตาย GW 12: 5 วัน 20:27:00</span>
+          <span id="header-deadline-val" class="font-mono tabular-nums truncate">เส้นตาย GW 12: 5 วัน 19:42:08</span>
         </span>
       </div>
     </div>
@@ -1462,6 +1462,13 @@
           class="tab-nav-btn flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
         >
           วิเคราะห์การย้ายตัว
+        </button>
+        <button 
+          id="tab-btn-transfer-advisor"
+          data-tab-target="transfer-advisor-view" 
+          class="tab-nav-btn flex-shrink-0 px-3 sm:px-3.5 lg:px-2 xl:px-4 py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold transition-colors duration-200 text-slate-600 dark:text-slate-400 border border-transparent hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 cursor-pointer"
+        >
+          แนะนำการย้ายตัว
         </button>
         <button 
           id="tab-btn-shi62-special"
@@ -1790,15 +1797,14 @@
       <!-- Top Overview Banner -->
       <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs w-full max-w-full">
         <div>
-          <div class="flex items-center gap-2.5 flex-wrap">
-            <span id="transfers-live-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 motion-safe:animate-pulse"></span>
+          <div class="flex items-center gap-2.5">
+            <span id="transfers-live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-500"></span>
             <h2 id="transfers-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">
               วิเคราะห์การย้ายตัว
             </h2>
-            <span id="transfers-status-pill" class="text-[10px] font-bold px-2 py-0.5 rounded-lg border font-mono"></span>
           </div>
           <p id="transfers-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            สถิติการย้ายตัวประจำสัปดาห์, การถือครองนักเตะมหาชน, ตัวทีเด็ด และคำแนะนำการย้ายตัว
+            สถิติการย้ายตัวประจำสัปดาห์, แต้มได้-เสียสุทธิจากการย้ายตัว, การถือครองนักเตะมหาชน และตัวทีเด็ดในลีก
           </p>
         </div>
         <div class="flex items-center gap-2 flex-wrap">
@@ -1825,7 +1831,36 @@
         </div>
       </div>
 
-      <!-- Section 3: Transfer Suggestions (03 / TRANSFER SUGGESTIONS) -->
+      <!-- Section 3: Bridge CTA to dedicated Transfer Advisor tab -->
+      <div id="transfers-to-advisor-cta">
+        <!-- Rendered dynamically -->
+      </div>
+
+    </div>
+
+    <!-- ==================== TAB: TRANSFER ADVISOR VIEW (RECOMMENDED TRANSFERS) ==================== -->
+    <div id="transfer-advisor-view" class="tab-content hidden space-y-5 w-full max-w-full overflow-hidden">
+
+      <!-- Top Overview Banner -->
+      <div class="glass-card rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 sm:gap-4 shadow-2xs w-full max-w-full">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span id="transfer-advisor-live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-500"></span>
+            <h2 id="transfer-advisor-overview-title" class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">
+              แนะนำการย้ายตัว
+            </h2>
+          </div>
+          <p id="transfer-advisor-overview-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            วิเคราะห์จุดอ่อนรายทีม (ขายใคร → ซื้อใคร), คะแนนคาดการณ์ Hybrid xP 1 GW / 3 GWs และความยากโปรแกรม (FDR)
+          </p>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <span id="transfer-advisor-league-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
+          <span id="transfer-advisor-deadline-badge" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display"></span>
+        </div>
+      </div>
+
+      <!-- Transfer Advisor Sections (01 Smart Squad Advisor + 02 Ranked Recommendations) -->
       <div id="transfers-suggestions-section" class="space-y-4">
         <!-- Rendered dynamically -->
       </div>
@@ -2430,7 +2465,7 @@
               </li>
               <li class="flex items-start gap-1.5">
                 <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
-                <span>วิเคราะห์นักเตะมหาชน (&gt; 70%), นักเตะทีเด็ด (&lt; 20%) และคำแนะนำการย้ายตัว</span>
+                <span>วิเคราะห์นักเตะมหาชน (&gt; 70%), นักเตะทีเด็ด (&lt; 20%) และแนะนำการย้ายตัว</span>
               </li>
             </ul>
           </div>
@@ -3054,6 +3089,6 @@
     const APP_ASSET_PREFIX = '../';
     const SITE_LINE_URL = "https://line.me/ti/p/lgWPeyIBR7";
   </script>
-  <script src="../assets/dashboard-app.js?v=524f55d4"></script>
+  <script src="../assets/dashboard-app.js?v=38d689a5"></script>
 </body>
 </html>
