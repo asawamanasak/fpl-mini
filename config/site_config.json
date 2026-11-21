@@ -34,58 +34,6 @@
       "unit_en": "/ season"
     }
   },
-  "showcase_demos": [
-    {
-      "id": "40700",
-      "tag_th": "ยอดนิยม • แชมป์วีค + บอลถ้วย",
-      "tag_en": "Popular • Weekly + Cup",
-      "title_th": "เซียนอยู่รู หมูอยู่ตึก",
-      "title_en": "Sian Yoo Roo",
-      "desc_th": "รางวัลแชมป์สัปดาห์ 6 รอบเคลียร์เงิน และถ้วยน็อคเอาท์",
-      "desc_en": "Weekly payouts, 6 settlement rounds, and knockout cup bracket",
-      "plan": "standard"
-    },
-    {
-      "id": "675290",
-      "tag_th": "ลีกใหญ่ • รายเดือน + การกุศล",
-      "tag_en": "Monthly • Charity Pool",
-      "title_th": "NudNee League",
-      "title_en": "NudNee League",
-      "desc_th": "ระบบแชมป์ประจำเดือน 10 เดือน, ตาราง Top 5 ฤดูกาล, ถ้วย และสมทบการกุศล",
-      "desc_en": "10 monthly leaderboards, overall top 5, cup & charity ledger",
-      "plan": "standard"
-    },
-    {
-      "id": "438691",
-      "tag_th": "สายฮา • ค่าปรับบ๊วย 5 อันดับ",
-      "tag_en": "Penalties • Bottom-5 Fines",
-      "title_th": "2 spade",
-      "title_en": "2 spade",
-      "desc_th": "เก็บค่าปรับ 5 อันดับสุดท้ายเข้ากองกลางอัตโนมัติ พร้อมระบบตัดสินอันดับเท่ากันทางการ",
-      "desc_en": "Automated bottom-5 penalty ladder into central pool with official tie-breakers",
-      "plan": "standard"
-    },
-    {
-      "id": "187827",
-      "tag_th": "Custom • หักยอดหัวท้าย + ทายผล",
-      "tag_en": "Custom • Balance Ledger + Picks",
-      "title_th": "Shi62 Special",
-      "title_en": "Shi62 Special",
-      "desc_th": "อันดับบนรับเงินจากอันดับล่างเมื่อจบฤดูกาล พร้อมแท็บทายผลเฉพาะลีก",
-      "desc_en": "End-of-season head-to-head balance ledger plus custom weekly picks tab",
-      "plan": "custom"
-    },
-    {
-      "id": "139836",
-      "tag_th": "ลีกใหญ่ • 1,000+ ทีม",
-      "tag_en": "Large League • 1,000+ Teams",
-      "title_th": "FPL Growth Mindset",
-      "title_en": "FPL Growth Mindset",
-      "desc_th": "ต้นแบบลีกคอมมูนิตี้สเกลใหญ่ 1,000+ ทีม ค้นหาทีมไวและเปิดดูผังสนามรายทีมทันที",
-      "desc_en": "High-scale 1,000+ team community preview with fast search and instant team lineups",
-      "plan": "tier2_roadmap"
-    }
-  ],
   "landing_copy": {
     "th": {
       "brand_sub": "ศูนย์ควบคุมมินิลีก FPL",
@@ -210,9 +158,6 @@
           "spec": "สถิติครบจบฤดูกาล"
         }
       ],
-      "demos_heading": "ลีกตัวอย่างจริงในระบบ",
-      "demos_lead": "กดเข้าชมแดชบอร์ดของลีกตัวอย่างจริงทั้ง 5 รูปแบบกติกา เปิดใช้งานได้ทันทีทั้งบนมือถือและคอมพิวเตอร์",
-      "demos_cta": "เปิดลีกจริง",
       "pricing_heading": "แพ็กเกจเปิดใช้งานรายฤดูกาล",
       "pricing_lead": "จ่ายครั้งเดียวดูแลครบทั้ง 38 Gameweeks สำหรับมินิลีกขนาดไม่เกิน 30 ทีม",
       "pricing_std_badge": "พร้อมเปิดใช้งาน",
@@ -390,9 +335,6 @@
           "spec": "All-Season Records"
         }
       ],
-      "demos_heading": "Real Live Demo Leagues",
-      "demos_lead": "Open five live production-style demo leagues covering weekly, monthly, penalty, balance-ledger, and 1,000+ team community formats.",
-      "demos_cta": "Open Live League",
       "pricing_heading": "Simple Per-Season Pricing",
       "pricing_lead": "One season pass covers all 38 Gameweeks for leagues up to 30 teams.",
       "pricing_std_badge": "Ready to Launch",

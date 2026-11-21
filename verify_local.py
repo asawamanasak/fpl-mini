@@ -45,8 +45,9 @@ def main():
             data = json.load(f)
 
         leagues = data.get("leagues", {})
+        showcase_cnt = sum(1 for v in cfg.values() if isinstance(v, dict) and v.get("visibility", "showcase") == "showcase")
         print(f"  ✅ Config loaded: {len(cfg)} configured leagues ({', '.join(cfg.keys())})")
-        print(f"  ✅ Site config loaded: brand={site_cfg.get('brand_name')}, demos={len(site_cfg.get('showcase_demos', []))}")
+        print(f"  ✅ Site config loaded: brand={site_cfg.get('brand_name')}, showcase_leagues={showcase_cnt}")
         print(f"  ✅ Data JSON loaded: {len(leagues)} leagues cached, max_gw={data.get('max_gw')}")
     except Exception as e:
         print(f"  ❌ JSON validation failed: {e}")

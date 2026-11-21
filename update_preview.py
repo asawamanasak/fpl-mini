@@ -22180,8 +22180,7 @@ def load_site_config(base_dir):
             "tier1_flexible_max_teams": 60,
             "standard": {"id": "standard", "thb": 500, "usd": 19},
             "custom": {"id": "custom", "thb": 900, "usd": 29}
-        },
-        "showcase_demos": []
+        }
     }
 
 def generate_landing_html(multi_data, leagues_config, site_config):
@@ -22191,38 +22190,18 @@ def generate_landing_html(multi_data, leagues_config, site_config):
     std_p = pricing.get('standard') or {'thb': 500, 'usd': 19}
     cus_p = pricing.get('custom') or {'thb': 900, 'usd': 29}
     max_teams = int(pricing.get('tier1_max_teams') or 30)
-    demos = site_config.get('showcase_demos') or []
 
     showcase_lids = [
         str(k) for k, v in leagues_config.items()
         if isinstance(v, dict) and v.get('visibility', 'showcase') == 'showcase'
     ]
     total_showcase_leagues = len(showcase_lids)
-    total_showcase_teams = sum(len((multi_data.get('leagues') or {}).get(lid, {}).get('teams', [])) for lid in showcase_lids)
     all_active_lids = [
         str(k) for k, v in leagues_config.items()
         if isinstance(v, dict) and v.get('status', 'active') != 'archived'
     ]
-    total_online_teams = sum(len((multi_data.get('leagues') or {}).get(lid, {}).get('teams', [])) for lid in all_active_lids) or total_showcase_teams
+    total_online_teams = sum(len((multi_data.get('leagues') or {}).get(lid, {}).get('teams', [])) for lid in all_active_lids) or sum(len((multi_data.get('leagues') or {}).get(lid, {}).get('teams', [])) for lid in showcase_lids)
     max_gw = int(multi_data.get('max_gw') or 1)
-    last_sync_str = str(multi_data.get('last_sync') or 'Live Sync')
-
-    demo_cards = []
-    for d in demos:
-        did = str(d.get('id', ''))
-        l_meta = (multi_data.get('leagues') or {}).get(did, {})
-        real_teams = len(l_meta.get('teams', []))
-        demo_cards.append({
-            "id": did,
-            "tag_th": d.get('tag_th', ''),
-            "tag_en": d.get('tag_en', ''),
-            "title_th": d.get('title_th') or l_meta.get('name') or f"League {did}",
-            "title_en": d.get('title_en') or l_meta.get('name') or f"League {did}",
-            "desc_th": d.get('desc_th', ''),
-            "desc_en": d.get('desc_en', ''),
-            "plan": d.get('plan', 'standard'),
-            "teams_count": real_teams
-        })
 
     showcase_league_map = {
         lid: str((multi_data.get('leagues') or {}).get(lid, {}).get('name') or (leagues_config.get(lid) or {}).get('name') or f"League {lid}")
@@ -22241,7 +22220,6 @@ def generate_landing_html(multi_data, leagues_config, site_config):
         })
     showcase_league_map_json = json.dumps(showcase_league_map, ensure_ascii=False).replace('</', '<\\/')
     showcase_leagues_json = json.dumps(showcase_leagues_list, ensure_ascii=False).replace('</', '<\\/')
-    demos_json = json.dumps(demo_cards, ensure_ascii=False).replace('</', '<\\/')
     pricing_json = json.dumps({
         "standard": {"thb": int(std_p.get('thb', 500)), "usd": int(std_p.get('usd', 19))},
         "custom": {"thb": int(cus_p.get('thb', 900)), "usd": int(cus_p.get('usd', 29))},
@@ -23355,13 +23333,6 @@ __STRUCTURED_DATA_JSON__
     .bm-section {
       padding: 3.75rem 1.25rem;
     }
-    .bm-section-arena {
-      padding: 3.75rem 1.25rem;
-      background-color: var(--color-arena);
-      color: var(--color-arena-ink);
-      border-top: 1px solid var(--color-arena-border);
-      border-bottom: 1px solid var(--color-arena-border);
-    }
     .bm-section-alt {
       padding: 3.75rem 1.25rem;
       background-color: var(--color-surface);
@@ -23398,22 +23369,13 @@ __STRUCTURED_DATA_JSON__
     html[lang="th"] .bm-h2 {
       line-height: 1.44;
     }
-    .bm-h2 + .bm-lead,
-    .bm-h2 + .bm-lead-arena {
+    .bm-h2 + .bm-lead {
       margin-top: 0.85rem;
     }
     .bm-lead {
       font-size: 1rem;
       line-height: 1.65;
       color: var(--color-ink-2);
-      margin: 0;
-      max-width: 40rem;
-      text-wrap: pretty;
-    }
-    .bm-lead-arena {
-      font-size: 1rem;
-      line-height: 1.65;
-      color: var(--color-arena-ink-2);
       margin: 0;
       max-width: 40rem;
       text-wrap: pretty;
@@ -23650,100 +23612,6 @@ __STRUCTURED_DATA_JSON__
       display: inline-flex;
       align-items: center;
       gap: 0.45rem;
-    }
-
-    /* Broadcast Ranked Demo Bars */
-    .bm-demo-bars {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-    .bm-demo-row {
-      display: grid;
-      grid-template-columns: 3.25rem minmax(0, 1fr) auto;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem 1.25rem;
-      border-radius: 0.6rem;
-      background-color: var(--color-arena-surface);
-      border: 1px solid var(--color-arena-border);
-      color: var(--color-arena-ink);
-      text-decoration: none;
-      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
-    }
-    .bm-demo-row:hover {
-      background-color: var(--color-arena-card);
-      border-color: var(--color-accent);
-      transform: translateX(3px);
-    }
-    .bm-demo-row:focus-visible {
-      outline: 2px solid var(--color-accent);
-      outline-offset: 2px;
-    }
-    .bm-demo-rank {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--color-arena-accent);
-      line-height: 1;
-      text-align: center;
-    }
-    .bm-demo-main {
-      min-width: 0;
-    }
-    .bm-demo-top {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.2rem;
-    }
-    .bm-demo-title {
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: var(--color-arena-ink);
-    }
-    .bm-demo-badge {
-      font-size: 0.78rem;
-      font-weight: 700;
-      padding: 0.15rem 0.5rem;
-      border-radius: 0.3rem;
-      background-color: var(--color-accent-soft);
-      color: var(--color-arena-ink);
-      border: 1px solid var(--color-accent);
-    }
-    .bm-demo-desc {
-      font-size: 0.9rem;
-      line-height: 1.58;
-      color: var(--color-arena-ink-2);
-      margin: 0;
-      text-wrap: pretty;
-    }
-    .bm-demo-action {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--color-arena-ink);
-      padding: 0.45rem 0.85rem;
-      border-radius: 0.4rem;
-      background-color: var(--color-arena-card);
-      border: 1px solid var(--color-arena-border);
-      white-space: nowrap;
-    }
-    .bm-demo-row:hover .bm-demo-action {
-      background-color: var(--color-accent);
-      border-color: var(--color-accent);
-      color: var(--color-accent-ink);
-    }
-    @media (max-width: 639px) {
-      .bm-demo-row {
-        grid-template-columns: 2.5rem 1fr;
-      }
-      .bm-demo-action {
-        grid-column: 1 / -1;
-        justify-content: center;
-      }
     }
 
     /* Pricing Section */
@@ -24743,25 +24611,6 @@ __STRUCTURED_DATA_JSON__
       </div>
     </section>
 
-    <!-- 5 Real Showcase Demo Leagues -->
-    <section id="demos" class="bm-section-arena" aria-labelledby="demos-title">
-      <div class="bm-container bm-reveal" data-reveal>
-        <div class="bm-section-head bm-section-head-row">
-          <div>
-            <h2 id="demos-title" class="bm-h2">ลีกตัวอย่างจริงในระบบ</h2>
-            <p id="demos-sub" class="bm-lead-arena">กดเข้าชมแดชบอร์ดของลีกตัวอย่างจริงทั้ง 5 รูปแบบกติกา เปิดใช้งานได้ทันทีทั้งบนมือถือและคอมพิวเตอร์</p>
-          </div>
-          <a id="hero-all-preview-link" href="./preview.html" onclick="event.preventDefault(); landingApp.openLeagueFinder(this);" class="bm-btn-outline-dark">
-            <span id="hero-all-preview-text">ดูครบทั้ง __TOTAL_SHOWCASE_LEAGUES__ ลีก</span>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-          </a>
-        </div>
-
-        <div id="demos-list" class="bm-demo-bars"></div>
-        <p id="demos-note" class="bm-lead-arena" style="margin-top: 1rem; font-size: 0.86rem;">ข้อมูลการแข่งขันจริงในลีกสาธารณะทั้ง __TOTAL_SHOWCASE_LEAGUES__ ลีก (__TOTAL_SHOWCASE_TEAMS__ ทีม) ซิงค์ล่าสุด __LAST_SYNC__</p>
-      </div>
-    </section>
-
     <!-- Pricing -->
     <section id="pricing" class="bm-section" aria-labelledby="pricing-title">
       <div class="bm-container bm-reveal" data-reveal>
@@ -24940,7 +24789,7 @@ __STRUCTURED_DATA_JSON__
       <div class="bm-footer-links">
         <span id="landing-visitor-badge" class="tabular-nums">ผู้เข้าชม: …</span>
         <a id="footer-link-features" href="#features">ห้องควบคุมหลัก</a>
-        <a id="footer-link-demos" href="#demos">ลีกตัวอย่าง</a>
+        <a id="footer-link-demos" href="./preview.html" onclick="event.preventDefault(); landingApp.openLeagueFinder(this);">ลีกตัวอย่าง</a>
         <a id="footer-link-pricing" href="#pricing">ราคา</a>
         <a id="footer-link-faq" href="#faq">คำถามที่พบบ่อย</a>
         <a id="footer-link-line" href="__LINE_URL__" target="_blank" rel="noopener noreferrer">LINE Official</a>
@@ -24966,7 +24815,6 @@ __STRUCTURED_DATA_JSON__
   <script>
     window.LANDING_COPY = __LANDING_COPY_JSON__;
     window.PRICING_CONFIG = __PRICING_JSON__;
-    window.SHOWCASE_DEMOS = __DEMOS_JSON__;
     window.SHOWCASE_LEAGUE_MAP = __SHOWCASE_LEAGUE_MAP_JSON__;
     window.SHOWCASE_LEAGUES = __SHOWCASE_LEAGUES_JSON__;
     window.SAMPLE_PREVIEW = __SAMPLE_PREVIEW_JSON__;
@@ -25368,7 +25216,6 @@ __STRUCTURED_DATA_JSON__
         setTxt('hero-secondary-cta-text', copy.hero_cta_secondary);
         setTxt('hero-badge-text', copy.hero_badge);
         setTxt('hero-live-pill-text', this.lang === 'en' ? '__TOTAL_ONLINE_TEAMS__ Teams Online' : '__TOTAL_ONLINE_TEAMS__ ทีมออนไลน์ในระบบ');
-        setTxt('hero-all-preview-text', this.lang === 'en' ? 'View All __TOTAL_SHOWCASE_LEAGUES__ Leagues' : 'ดูครบทั้ง __TOTAL_SHOWCASE_LEAGUES__ ลีก');
 
         this.renderStats(copy.stats || []);
         this.renderStream(copy);
@@ -25381,13 +25228,6 @@ __STRUCTURED_DATA_JSON__
         setTxt('drama-cta-text', copy.drama_cta);
         setTxt('drama-screen-label', this.lang === 'en' ? 'Live Friend-League Moments' : 'เหตุการณ์สดในกลุ่มเพื่อน');
         this.renderDrama(copy);
-
-        setTxt('demos-title', copy.demos_heading);
-        setTypo('demos-sub', copy.demos_lead);
-        setTxt('demos-note', this.lang === 'en'
-          ? 'Real public showcase leagues (__TOTAL_SHOWCASE_LEAGUES__ leagues, __TOTAL_SHOWCASE_TEAMS__ teams), synced __LAST_SYNC__'
-          : 'ข้อมูลการแข่งขันจริงในลีกสาธารณะทั้ง __TOTAL_SHOWCASE_LEAGUES__ ลีก (__TOTAL_SHOWCASE_TEAMS__ ทีม) ซิงค์ล่าสุด __LAST_SYNC__');
-        this.renderDemos(copy);
 
         setTxt('pricing-title', copy.pricing_heading);
         setTypo('pricing-sub', copy.pricing_lead);
@@ -25735,39 +25575,6 @@ __STRUCTURED_DATA_JSON__
         if (spec) spec.textContent = current.spec;
         if (title) title.innerHTML = this.formatTypoHtml(current.title);
         if (desc) desc.innerHTML = this.formatTypoHtml(current.desc);
-      },
-
-      renderDemos(copy) {
-        const wrap = document.getElementById('demos-list');
-        if (!wrap) return;
-        const demos = window.SHOWCASE_DEMOS || [];
-        const isEn = this.lang === 'en';
-        const ctaText = copy.demos_cta || (isEn ? 'Open Live League' : 'เปิดลีกจริง');
-
-        wrap.innerHTML = demos.map((d, idx) => {
-          const rank = String(idx + 1).padStart(2, '0');
-          const tag = isEn ? d.tag_en : d.tag_th;
-          const title = isEn ? d.title_en : d.title_th;
-          const desc = isEn ? d.desc_en : d.desc_th;
-          const teamTxt = isEn ? `${d.teams_count} Teams` : `${d.teams_count} ทีม`;
-          return `
-            <a href="./${this.escapeHtml(d.id)}/" data-demo-lid="${this.escapeHtml(d.id)}" class="bm-demo-row">
-              <span class="bm-demo-rank tabular-nums">${rank}</span>
-              <span class="bm-demo-main">
-                <span class="bm-demo-top">
-                  <span class="bm-demo-title">${this.escapeHtml(title)}</span>
-                  <span class="bm-demo-badge">${this.escapeHtml(tag)}</span>
-                  <span class="tabular-nums" style="font-size:0.84rem;color:var(--color-arena-ink-2);">${this.escapeHtml(teamTxt)}</span>
-                </span>
-                <p class="bm-demo-desc">${this.formatTypoHtml(desc)}</p>
-              </span>
-              <span class="bm-demo-action">
-                <span>${this.escapeHtml(ctaText)}</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-              </span>
-            </a>
-          `;
-        }).join('');
       },
 
       renderPricing() {
@@ -26398,17 +26205,14 @@ __STRUCTURED_DATA_JSON__
     html = html.replace('__STRUCTURED_DATA_JSON__', structured_json)
     html = html.replace('__LANDING_COPY_JSON__', landing_copy_json)
     html = html.replace('__TOTAL_SHOWCASE_LEAGUES__', str(total_showcase_leagues))
-    html = html.replace('__TOTAL_SHOWCASE_TEAMS__', f"{total_showcase_teams:,}")
     html = html.replace('__TOTAL_ONLINE_TEAMS__', f"{total_online_teams:,}")
     html = html.replace('__MAX_GW__', str(max_gw))
     html = html.replace('__PREVIEW_LID__', preview_lid)
     html = html.replace('__PREVIEW_LEAGUE_NAME__', str(preview_league.get('name') or 'FPL Mini-League'))
-    html = html.replace('__LAST_SYNC__', last_sync_str)
     html = html.replace('__MAX_TEAMS__', str(max_teams))
     html = html.replace('__LINE_URL__', line_url)
     html = html.replace('__SUPPORT_EMAIL__', support_email)
     html = html.replace('__PRICING_JSON__', pricing_json)
-    html = html.replace('__DEMOS_JSON__', demos_json)
     html = html.replace('__SHOWCASE_LEAGUE_MAP_JSON__', showcase_league_map_json)
     html = html.replace('__SHOWCASE_LEAGUES_JSON__', showcase_leagues_json)
     html = html.replace('__SAMPLE_PREVIEW_JSON__', sample_preview_json)
@@ -26417,8 +26221,19 @@ __STRUCTURED_DATA_JSON__
 def generate_404_html(site_config, leagues_config):
     line_url = (site_config.get('contact') or {}).get('line_url') or 'https://line.me/ti/p/lgWPeyIBR7'
     support_email = (site_config.get('contact') or {}).get('email') or 'support@fplsawadika.com'
-    demos = (site_config.get('showcase_demos') or [])[:3]
-    quick_demos = [{"id": str(d.get("id", "")), "title_th": d.get("title_th", ""), "title_en": d.get("title_en", "")} for d in demos]
+    showcase_entries = [
+        (str(k), v) for k, v in (leagues_config or {}).items()
+        if isinstance(v, dict) and v.get('visibility', 'showcase') == 'showcase' and v.get('status', 'active') != 'archived'
+    ]
+    showcase_entries.sort(key=lambda kv: (0 if kv[1].get('is_default') else 1))
+    quick_demos = [
+        {
+            "id": lid,
+            "title_th": str(cfg.get('short_name') or cfg.get('name') or f"League {lid}"),
+            "title_en": str(cfg.get('name_en') or cfg.get('name') or cfg.get('short_name') or f"League {lid}"),
+        }
+        for lid, cfg in showcase_entries[:3]
+    ]
     quick_demos_json = json.dumps(quick_demos, ensure_ascii=False).replace('</', '<\\/')
 
     html = """<!DOCTYPE html>
