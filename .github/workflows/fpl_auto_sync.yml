@@ -94,7 +94,7 @@ jobs:
               cp "$f" _site/
             fi
           done
-          for d in assets data docs fonts images; do
+          for d in assets data docs fonts images pay; do
             if [ -d "$d" ]; then
               cp -R "$d" _site/
             fi

@@ -3750,7 +3750,7 @@ export default {
       );
     }
 
-    const ALLOWED_RELAY_PATHS = new Set(['/', '/live', '/picks', '/api/picks', '/fixtures']);
+    const ALLOWED_RELAY_PATHS = new Set(['/', '/live', '/picks', '/api/picks', '/fixtures', '/standings', '/api/standings']);
     if (!ALLOWED_RELAY_PATHS.has(path)) {
       return new Response(
         JSON.stringify({ error: 'Not found', path }),
@@ -3759,6 +3759,166 @@ export default {
           headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
         }
       );
+    }
+
+    // 2.2 Tier 2 Live Standings Relay Endpoint (/standings?league={id}&from=1&to=12)
+    if (path === '/standings' || path === '/api/standings') {
+      const leagueParam = String(url.searchParams.get('league') || '').trim();
+      if (!/^\d{1,10}$/.test(leagueParam)) {
+        return new Response(
+          JSON.stringify({ error: 'Invalid or missing league parameter' }),
+          {
+            status: 400,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+          }
+        );
+      }
+
+      const rawFrom = url.searchParams.get('from');
+      const rawTo = url.searchParams.get('to');
+      const fromPage = rawFrom !== null ? Number(rawFrom) : 1;
+      const requestedTo = rawTo !== null ? Number(rawTo) : (fromPage + 11);
+      if (
+        !Number.isInteger(fromPage) || fromPage < 1 || fromPage > 200 ||
+        !Number.isInteger(requestedTo) || requestedTo < fromPage
+      ) {
+        return new Response(
+          JSON.stringify({ error: 'Invalid from/to page range (1-200)' }),
+          {
+            status: 400,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
+          }
+        );
+      }
+      // Cap at 12 upstream pages per invocation so Worker stays well under Cloudflare's 50-subrequest limit
+      const toPage = Math.min(200, requestedTo, fromPage + 11);
+      const isForceStandings = url.searchParams.get('force') === '1';
+
+      const cacheKeyUrl = new URL(request.url);
+      if (isForceStandings) {
+        const forceBucket = Math.floor(Date.now() / 5000);
+        cacheKeyUrl.search = `?path=/standings&league=${leagueParam}&from=${fromPage}&to=${toPage}&force=1&b=${forceBucket}`;
+      } else {
+        cacheKeyUrl.search = `?path=/standings&league=${leagueParam}&from=${fromPage}&to=${toPage}`;
+      }
+      const standingsCacheKey = new Request(cacheKeyUrl.toString(), { method: 'GET' });
+      const cache = caches.default;
+
+      const cachedStandings = await cache.match(standingsCacheKey);
+      if (cachedStandings) {
+        const hitHeaders = new Headers(cachedStandings.headers);
+        hitHeaders.set('X-FPL-Edge-Cache', 'HIT');
+        hitHeaders.set('X-FPL-Edge-Colo', colo);
+        return new Response(cachedStandings.body, {
+          status: cachedStandings.status,
+          headers: hitHeaders,
+        });
+      }
+
+      try {
+        const allResults = [];
+        let lastFetchedPage = fromPage - 1;
+        let hasNext = false;
+
+        // Fetch in waves of 4 parallel pages and stop immediately once has_next is false
+        for (let waveStart = fromPage; waveStart <= toPage; waveStart += 4) {
+          const wavePages = [];
+          for (let p = waveStart; p <= Math.min(toPage, waveStart + 3); p++) {
+            wavePages.push(p);
+          }
+
+          const wavePayloads = await Promise.all(
+            wavePages.map(async (p) => {
+              const upstreamUrl = `https://fantasy.premierleague.com/api/leagues-classic/${leagueParam}/standings/?page_standings=${p}&page_new_entries=1`;
+              const resp = await fetch(upstreamUrl, { headers: FPL_HEADERS });
+              if (!resp.ok) {
+                throw new Error(`FPL standings upstream returned ${resp.status} for page ${p}`);
+              }
+              return resp.json();
+            })
+          );
+
+          let stopEarly = false;
+          for (let i = 0; i < wavePayloads.length; i++) {
+            const pNum = wavePages[i];
+            const st = wavePayloads[i] && wavePayloads[i].standings ? wavePayloads[i].standings : {};
+            const rows = Array.isArray(st.results) ? st.results : [];
+            for (let j = 0; j < rows.length; j++) {
+              const r = rows[j];
+              if (!r || !r.entry) continue;
+              allResults.push({
+                entry: Number(r.entry),
+                entry_name: String(r.entry_name || ''),
+                player_name: String(r.player_name || ''),
+                rank: Number(r.rank || 0),
+                last_rank: Number(r.last_rank || 0),
+                event_total: Number(r.event_total || 0),
+                total: Number(r.total || 0),
+              });
+            }
+            lastFetchedPage = pNum;
+            hasNext = Boolean(st.has_next);
+            if (!hasNext || rows.length === 0) {
+              hasNext = false;
+              stopEarly = true;
+              break;
+            }
+          }
+          if (stopEarly) break;
+        }
+
+        const standingsBody = JSON.stringify({
+          league_id: leagueParam,
+          from_page: fromPage,
+          to_page: toPage,
+          last_fetched_page: lastFetchedPage,
+          has_next: hasNext,
+          updated_at: new Date().toISOString(),
+          colo,
+          results: allResults,
+        });
+
+        const ttl = 60;
+        const standingsResp = new Response(standingsBody, {
+          status: 200,
+          headers: {
+            ...CORS_HEADERS,
+            'Content-Type': 'application/json; charset=utf-8',
+            'Cache-Control': `public, max-age=${ttl}, s-maxage=${ttl}, stale-while-revalidate=60`,
+            'X-FPL-Edge-Cache': 'MISS',
+            'X-FPL-Edge-Colo': colo,
+          },
+        });
+
+        if (isForceStandings) {
+          const normalUrl = new URL(request.url);
+          normalUrl.search = `?path=/standings&league=${leagueParam}&from=${fromPage}&to=${toPage}`;
+          const normalKey = new Request(normalUrl.toString(), { method: 'GET' });
+          ctx.waitUntil(Promise.all([
+            cache.put(standingsCacheKey, standingsResp.clone()),
+            cache.put(normalKey, standingsResp.clone()),
+          ]));
+        } else {
+          ctx.waitUntil(cache.put(standingsCacheKey, standingsResp.clone()));
+        }
+
+        scheduleWorkerHealthMetric(env, ctx, false);
+        return standingsResp;
+      } catch (err) {
+        scheduleWorkerHealthMetric(env, ctx, true, 'upstream_5xx');
+        return new Response(
+          JSON.stringify({
+            error: 'Upstream FPL standings unavailable',
+            message: err && err.message ? err.message : String(err),
+            league_id: leagueParam,
+            colo,
+          }),
+          {
+            status: 502,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+          }
+        );
+      }
     }
 
     // Parse Gameweek event parameter (strict integer 1..38; reject non-numeric or conflicting event/gw params)

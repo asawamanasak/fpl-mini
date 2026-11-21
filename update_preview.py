@@ -5514,6 +5514,217 @@ __STRUCTURED_DATA_JSON__
         return Boolean(gwData && (!gwData.is_finished || !gwData.data_checked));
       }
 
+      markHeaderLiveSynced(force = false) {
+        const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+        const thDate = new Date(Date.now() + (7 * 60 * 60 * 1000));
+        const dDay = thDate.getUTCDate();
+        const dMonth = thaiMonths[thDate.getUTCMonth()];
+        const dYear = thDate.getUTCFullYear();
+        const dHour = String(thDate.getUTCHours()).padStart(2, '0');
+        const dMin = String(thDate.getUTCMinutes()).padStart(2, '0');
+        const dSec = String(thDate.getUTCSeconds()).padStart(2, '0');
+        const liveSyncStrTh = `${dDay} ${dMonth} ${dYear}, ${dHour}:${dMin} น.`;
+        const liveIsoStr = `${dYear}-${String(thDate.getUTCMonth() + 1).padStart(2, '0')}-${String(dDay).padStart(2, '0')} ${dHour}:${dMin}:${dSec}`;
+        if (this.multiData) {
+          this.multiData.last_sync = liveSyncStrTh;
+          this.multiData.last_sync_iso = liveIsoStr;
+          this.multiData.sync_status = 'ok';
+        }
+        const formattedSyncStr = this.formatSyncDate(liveIsoStr) || liveSyncStrTh;
+        const lastSyncEl = document.getElementById('header-last-sync');
+        if (lastSyncEl) {
+          lastSyncEl.innerText = formattedSyncStr;
+        }
+        const lastSyncIcon = document.getElementById('header-last-sync-icon');
+        if (lastSyncIcon) {
+          const isEn = (this.currentLang === 'en');
+          const statusText = isEn ? 'Auto-Sync Online' : 'ระบบเชื่อมต่อ Auto-Sync ปกติ';
+          lastSyncIcon.setAttribute('title', `${statusText} (${formattedSyncStr})`);
+        }
+        if (force && typeof this.showCopiedToast === 'function') {
+          const isEn = (this.currentLang === 'en');
+          this.showCopiedToast(
+            isEn
+              ? `Live scores updated (${dHour}:${dMin}:${dSec})`
+              : `อัปเดตคะแนนสดเรียบร้อย (${dHour}:${dMin}:${dSec} น.)`
+          );
+        }
+      }
+
+      applyTier2StandingsRows(lidStr, rows, gw) {
+        if (!Array.isArray(rows) || rows.length === 0) return false;
+        const league = (this.multiData && this.multiData.leagues && this.multiData.leagues[lidStr]) || (String(this.activeLeagueId) === lidStr ? this.data : null);
+        if (!league) return false;
+        if (!Array.isArray(league.teams)) league.teams = [];
+        if (!league.gameweeks) league.gameweeks = {};
+        const gwKey = String(gw);
+        if (!league.gameweeks[gwKey]) league.gameweeks[gwKey] = { gw: Number(gw), results: [] };
+        const gwData = league.gameweeks[gwKey];
+        if (!Array.isArray(gwData.results)) gwData.results = [];
+
+        const teamById = new Map();
+        league.teams.forEach(t => { if (t && t.entry_id) teamById.set(Number(t.entry_id), t); });
+        const resById = new Map();
+        gwData.results.forEach(r => { if (r && r.entry_id) resById.set(Number(r.entry_id), r); });
+
+        let anyChange = false;
+        let anyPositive = false;
+        for (let i = 0; i < rows.length; i++) {
+          const r = rows[i];
+          const eid = Number(r && r.entry);
+          if (!eid) continue;
+          const evPts = Number(r.event_total || 0);
+          const totPts = Number(r.total || 0);
+          const curRank = Number(r.rank || 0);
+          const prevRank = Number(r.last_rank || 0);
+          if (evPts > 0) anyPositive = true;
+
+          let teamObj = teamById.get(eid);
+          if (teamObj) {
+            if (teamObj.total_points !== totPts || teamObj.event_total !== evPts || teamObj.rank !== curRank || teamObj.last_rank !== prevRank) {
+              anyChange = true;
+            }
+            teamObj.rank = curRank;
+            teamObj.last_rank = prevRank;
+            teamObj.total_points = totPts;
+            teamObj.event_total = evPts;
+            if (r.entry_name) teamObj.entry_name = r.entry_name;
+            if (r.player_name) teamObj.player_name = r.player_name;
+          } else {
+            teamObj = {
+              entry_id: eid,
+              entry_name: r.entry_name || `Team ${eid}`,
+              player_name: r.player_name || '-',
+              rank: curRank,
+              last_rank: prevRank,
+              total_points: totPts,
+              event_total: evPts,
+              total_hits: 0,
+            };
+            league.teams.push(teamObj);
+            teamById.set(eid, teamObj);
+            anyChange = true;
+          }
+
+          let resObj = resById.get(eid);
+          if (resObj) {
+            if (resObj.points !== evPts || resObj.net_points !== evPts || resObj.total_points !== totPts || resObj.overall_rank !== curRank) {
+              anyChange = true;
+            }
+            resObj.points = evPts;
+            resObj.net_points = evPts;
+            resObj.total_points = totPts;
+            resObj.overall_rank = curRank;
+            resObj.last_rank = prevRank;
+          } else {
+            resObj = {
+              entry_id: eid,
+              entry_name: r.entry_name || teamObj.entry_name,
+              team_name: r.entry_name || teamObj.entry_name,
+              player_name: r.player_name || teamObj.player_name,
+              rank: curRank,
+              overall_rank: curRank,
+              last_rank: prevRank,
+              total_points: totPts,
+              points: evPts,
+              net_points: evPts,
+              hits: 0,
+              chip: null,
+              captain: '-',
+              team_value: null,
+              transfers_count: 0,
+              transfers_pts_gain: 0,
+              transfers_net_impact: 0,
+              transfer_moves: [],
+            };
+            gwData.results.push(resObj);
+            resById.set(eid, resObj);
+            anyChange = true;
+          }
+        }
+
+        if (anyPositive && !gwData.is_started) {
+          gwData.is_started = true;
+          anyChange = true;
+        }
+        gwData.results.sort((a, b) => (Number(b.net_points || 0) - Number(a.net_points || 0)) || ((Number(a.overall_rank) || 999999) - (Number(b.overall_rank) || 999999)));
+        gwData.results.forEach((item, idx) => { item.rank = idx + 1; });
+        league.teams.sort((a, b) => ((Number(a.rank) || 999999) - (Number(b.rank) || 999999)) || (Number(b.total_points || 0) - Number(a.total_points || 0)));
+        if (anyChange) {
+          this.invalidateRenderCache();
+        }
+        return anyChange;
+      }
+
+      async fetchTier2LiveStandings(lidStr, gw, force = false) {
+        const apiCfg = (typeof resolveWorkerApiBase === 'function')
+          ? resolveWorkerApiBase()
+          : { base: 'https://api.fplsawadika.com', isOverride: false };
+        const forceQuery = force ? '&force=1' : '';
+        const fetchBatch = async (fromPage, toPage) => {
+          const urls = apiCfg.isOverride
+            ? [`${apiCfg.base}/standings?league=${lidStr}&from=${fromPage}&to=${toPage}${forceQuery}`]
+            : [
+                `${apiCfg.base}/standings?league=${lidStr}&from=${fromPage}&to=${toPage}${forceQuery}`,
+                `https://fpl-live-relay.asawamanasak.workers.dev/standings?league=${lidStr}&from=${fromPage}&to=${toPage}${forceQuery}`
+              ];
+          for (const url of urls) {
+            const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+            const timer = controller ? setTimeout(() => controller.abort(), 10000) : null;
+            try {
+              const resp = await fetch(url, {
+                cache: 'no-store',
+                signal: controller ? controller.signal : undefined
+              });
+              if (resp && resp.ok) {
+                const parsed = await resp.json();
+                if (parsed && Array.isArray(parsed.results)) {
+                  return parsed;
+                }
+              }
+            } catch (_) {
+            } finally {
+              if (timer) clearTimeout(timer);
+            }
+          }
+          return null;
+        };
+
+        const batch1 = await fetchBatch(1, 12);
+        if (!batch1) return false;
+
+        let changed = this.applyTier2StandingsRows(lidStr, batch1.results, gw);
+        if (!this._tier2LastFetchAt) this._tier2LastFetchAt = {};
+        this._tier2LastFetchAt[lidStr] = Date.now();
+        if (String(this.activeLeagueId) === lidStr && (changed || force)) {
+          this.liveNotesCache = {};
+          this.updateHeaderInfo();
+          this.renderAll();
+        }
+
+        // Continue fetching remaining pages sequentially in 12-page batches (up to 108 pages = 5,400 teams)
+        let hasMore = Boolean(batch1.has_next);
+        let nextFrom = (Number(batch1.last_fetched_page) || 12) + 1;
+        let tailChanged = false;
+        while (hasMore && nextFrom <= 108) {
+          const nextTo = nextFrom + 11;
+          const nextBatch = await fetchBatch(nextFrom, nextTo);
+          if (!nextBatch) break;
+          if (this.applyTier2StandingsRows(lidStr, nextBatch.results, gw)) {
+            tailChanged = true;
+          }
+          hasMore = Boolean(nextBatch.has_next);
+          nextFrom = (Number(nextBatch.last_fetched_page) || nextTo) + 1;
+        }
+        this._tier2LastFetchAt[lidStr] = Date.now();
+        if (String(this.activeLeagueId) === lidStr && tailChanged) {
+          this.liveNotesCache = {};
+          this.updateHeaderInfo();
+          this.renderAll();
+        }
+        return true;
+      }
+
       async fetchLivePoints(force = false) {
         if (this._isFetchingLive) return;
         const maxGW = Number(this.multiData && this.multiData.max_gw) || 8;
@@ -5521,6 +5732,9 @@ __STRUCTURED_DATA_JSON__
         const gwData = this.data && this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
         if (!gwData) return;
         if (!force && gwData.is_finished && gwData.data_checked) return;
+
+        const lidStr = String(this.activeLeagueId || '');
+        const isTier2Active = Boolean(this.data && this.data.tier === 2) || Boolean(this.config && this.config.tier === 2);
 
         this._isFetchingLive = true;
         this._nextLivePollAt = Date.now() + 20000;
@@ -5542,8 +5756,7 @@ __STRUCTURED_DATA_JSON__
             ]
           : defaultEndpoints;
 
-        try {
-          let liveJson = null;
+        const fetchLiveElementsJson = async () => {
           for (const url of endpoints) {
             const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
             const timer = controller ? setTimeout(() => controller.abort(), 6000) : null;
@@ -5555,9 +5768,8 @@ __STRUCTURED_DATA_JSON__
               if (resp && resp.ok) {
                 const parsed = await resp.json();
                 if (parsed && Array.isArray(parsed.elements)) {
-                  liveJson = parsed;
                   this._preferredWorkerEndpoint = url.split('?')[0];
-                  break;
+                  return parsed;
                 }
               }
             } catch (_) {
@@ -5565,7 +5777,45 @@ __STRUCTURED_DATA_JSON__
               if (timer) clearTimeout(timer);
             }
           }
+          return null;
+        };
 
+        try {
+          if (isTier2Active) {
+            const [t2Ok, liveJson] = await Promise.all([
+              this.fetchTier2LiveStandings(lidStr, maxGW, force),
+              (!this._latestLiveMap || force) ? fetchLiveElementsJson() : Promise.resolve(this.lastLiveJson)
+            ]);
+            if (liveJson && Array.isArray(liveJson.elements)) {
+              this.lastLiveJson = liveJson;
+              this.lastLiveGw = maxGW;
+              const inPlayCount = Number(liveJson.in_play_count || 0);
+              const adaptiveIntervalMs = inPlayCount > 0 ? 20000 : 90000;
+              if (typeof this.setLivePollCadence === 'function') {
+                this.setLivePollCadence(adaptiveIntervalMs);
+              }
+              this._nextLivePollAt = Date.now() + (this._currentPollIntervalMs || adaptiveIntervalMs);
+              this.applyLiveElements(liveJson, maxGW);
+            }
+            if (!t2Ok) {
+              if (typeof window._reportClientError === 'function') {
+                window._reportClientError('api_http');
+              }
+              if (force && typeof this.showCopiedToast === 'function') {
+                const isEn = (this.currentLang === 'en');
+                this.showCopiedToast(isEn ? 'Unable to reach Cloudflare Live Edge' : 'ไม่สามารถเชื่อมต่อ Cloudflare Live Edge ได้ในขณะนี้');
+              }
+              return;
+            }
+            this.markHeaderLiveSynced(force);
+            const modal = document.getElementById('team-modal');
+            if (modal && !modal.classList.contains('hidden') && this.currentModalEntryId) {
+              this.openTeamModal(this.currentModalEntryId);
+            }
+            return;
+          }
+
+          const liveJson = await fetchLiveElementsJson();
           if (!liveJson || !Array.isArray(liveJson.elements)) {
             if (typeof window._reportClientError === 'function') {
               window._reportClientError('api_http');
@@ -5591,33 +5841,7 @@ __STRUCTURED_DATA_JSON__
 
           const changed = this.applyLiveElements(liveJson, maxGW);
 
-          // Update Last Sync timestamp in header to reflect live Cloudflare sync time (Thailand UTC+7)
-          const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-          const thDate = new Date(Date.now() + (7 * 60 * 60 * 1000));
-          const dDay = thDate.getUTCDate();
-          const dMonth = thaiMonths[thDate.getUTCMonth()];
-          const dYear = thDate.getUTCFullYear();
-          const dHour = String(thDate.getUTCHours()).padStart(2, '0');
-          const dMin = String(thDate.getUTCMinutes()).padStart(2, '0');
-          const dSec = String(thDate.getUTCSeconds()).padStart(2, '0');
-          const liveSyncStrTh = `${dDay} ${dMonth} ${dYear}, ${dHour}:${dMin} น.`;
-          const liveIsoStr = `${dYear}-${String(thDate.getUTCMonth() + 1).padStart(2, '0')}-${String(dDay).padStart(2, '0')} ${dHour}:${dMin}:${dSec}`;
-          if (this.multiData) {
-            this.multiData.last_sync = liveSyncStrTh;
-            this.multiData.last_sync_iso = liveIsoStr;
-            this.multiData.sync_status = 'ok';
-          }
-          const formattedSyncStr = this.formatSyncDate(liveIsoStr) || liveSyncStrTh;
-          const lastSyncEl = document.getElementById('header-last-sync');
-          if (lastSyncEl) {
-            lastSyncEl.innerText = formattedSyncStr;
-          }
-          const lastSyncIcon = document.getElementById('header-last-sync-icon');
-          if (lastSyncIcon) {
-            const isEn = (this.currentLang === 'en');
-            const statusText = isEn ? 'Auto-Sync Online' : 'ระบบเชื่อมต่อ Auto-Sync ปกติ';
-            lastSyncIcon.setAttribute('title', `${statusText} (${formattedSyncStr})`);
-          }
+          this.markHeaderLiveSynced(force);
 
           if (changed || force) {
             this.liveNotesCache = {};
@@ -5629,15 +5853,6 @@ __STRUCTURED_DATA_JSON__
             if (modal && !modal.classList.contains('hidden') && this.currentModalEntryId) {
               this.openTeamModal(this.currentModalEntryId);
             }
-          }
-
-          if (force && typeof this.showCopiedToast === 'function') {
-            const isEn = (this.currentLang === 'en');
-            this.showCopiedToast(
-              isEn
-                ? `Live scores updated (${dHour}:${dMin}:${dSec})`
-                : `อัปเดตคะแนนสดเรียบร้อย (${dHour}:${dMin}:${dSec} น.)`
-            );
           }
         } catch (err) {
           console.warn('Live fetch notice:', err);
@@ -5718,12 +5933,15 @@ __STRUCTURED_DATA_JSON__
       applyLiveElements(liveJson, gw) {
         if (!liveJson || !Array.isArray(liveJson.elements)) return false;
 
-        // 1. Identify all fixture IDs that have kicked off in this Gameweek
+        // 1. Identify all started & finished fixture IDs in this Gameweek
         const startedFixtures = new Set();
-        if (Array.isArray(liveJson.fixtures)) {
+        const finishedFixtures = new Set();
+        const hasValidFixtures = Array.isArray(liveJson.fixtures) && liveJson.fixtures.length > 0;
+        if (hasValidFixtures) {
           liveJson.fixtures.forEach(f => {
-            if (f && f.started && f.id !== undefined) {
-              startedFixtures.add(f.id);
+            if (f && f.id !== undefined) {
+              if (f.started) startedFixtures.add(f.id);
+              if (f.finished || f.finished_provisional) finishedFixtures.add(f.id);
             }
           });
         }
@@ -5751,6 +5969,7 @@ __STRUCTURED_DATA_JSON__
             const explainArr = Array.isArray(el.explain) ? el.explain : [];
             const hasFixtures = explainArr.length > 0;
             const fixtureStarted = played || explainArr.some(ex => ex && startedFixtures.has(ex.fixture));
+            const fixtureFinished = Boolean(liveJson.all_finished) || (hasValidFixtures && (!hasFixtures || explainArr.every(ex => ex && finishedFixtures.has(ex.fixture))));
             const workerProvBonus = el.stats.provisional_bonus !== undefined ? (Number(el.stats.provisional_bonus) || 0) : null;
             const provBonus = workerProvBonus !== null ? workerProvBonus : (clientProvBonusMap[el.id] || 0);
             const rawTotalPoints = (workerProvBonus !== null)
@@ -5764,7 +5983,8 @@ __STRUCTURED_DATA_JSON__
               minutes: mins,
               played: played,
               has_fixtures: hasFixtures,
-              fixture_started: fixtureStarted
+              fixture_started: fixtureStarted,
+              fixture_finished: fixtureFinished
             };
           }
         });
@@ -5793,83 +6013,149 @@ __STRUCTURED_DATA_JSON__
           const teams = league.teams || [];
           const results = gwData.results || [];
 
+          const syncPlayerStats = (p, multForPts) => {
+            const liveStat = liveMap[p.id];
+            if (!liveStat) return;
+            const rawPts = liveStat.total_points;
+            const pts = rawPts * multForPts;
+            const notPlayed = Boolean(!gwData.is_finished && liveStat.has_fixtures && !liveStat.fixture_started);
+            if (p.points !== pts || p.not_played_yet !== notPlayed || p.provisional_bonus !== liveStat.provisional_bonus || p.raw_points !== rawPts) {
+              anyChange = true;
+            }
+            p.points = pts;
+            p.raw_points = rawPts;
+            p.provisional_bonus = liveStat.provisional_bonus;
+            p.bps = liveStat.bps;
+            p.minutes = liveStat.minutes;
+            p.not_played_yet = notPlayed;
+            if (p.name) nameToPts[p.name] = rawPts;
+            if (liveStat.fixture_started && p.team && Array.isArray(gwData.unstarted_teams)) {
+              const utIdx = gwData.unstarted_teams.indexOf(p.team);
+              if (utIdx !== -1) {
+                gwData.unstarted_teams.splice(utIdx, 1);
+                anyChange = true;
+              }
+            }
+          };
+
           teams.forEach(t => {
             const eid = Number(t.entry_id);
             const sKey = `${eid}_${gw}`;
             const squad = squads[sKey];
             if (!squad) return;
 
-            let teamLivePoints = 0;
-            if (Array.isArray(squad.starting)) {
-              squad.starting.forEach(p => {
-                const liveStat = liveMap[p.id];
-                if (liveStat) {
-                  const rawPts = liveStat.total_points;
-                  const mult = (p.multiplier !== undefined && p.multiplier !== null) ? Number(p.multiplier) : 1;
-                  const pts = rawPts * mult;
-                  const notPlayed = Boolean(!gwData.is_finished && liveStat.has_fixtures && !liveStat.fixture_started);
-                  if (p.points !== pts || p.not_played_yet !== notPlayed || p.provisional_bonus !== liveStat.provisional_bonus) {
-                    anyChange = true;
-                  }
-                  p.points = pts;
-                  p.raw_points = rawPts;
-                  p.provisional_bonus = liveStat.provisional_bonus;
-                  p.bps = liveStat.bps;
-                  p.minutes = liveStat.minutes;
-                  p.not_played_yet = notPlayed;
-                  if (p.name) nameToPts[p.name] = rawPts;
-                  if (liveStat.fixture_started && p.team && Array.isArray(gwData.unstarted_teams)) {
-                    const utIdx = gwData.unstarted_teams.indexOf(p.team);
-                    if (utIdx !== -1) {
-                      gwData.unstarted_teams.splice(utIdx, 1);
-                      anyChange = true;
-                    }
-                  }
-                  teamLivePoints += pts;
-                }
-              });
-            }
-
             const chip = squad.chip;
             const isBBoost = (chip === 'bboost' || chip === 'bench_boost');
+            const capMultTarget = (chip === '3xc' || chip === 'triple_captain') ? 3 : 2;
+            const startingArr = Array.isArray(squad.starting) ? squad.starting : [];
+            const benchArr = Array.isArray(squad.bench) ? squad.bench : [];
+            const res = results.find(r => Number(r.entry_id) === eid);
 
-            let benchLivePoints = 0;
-            if (Array.isArray(squad.bench)) {
-              squad.bench.forEach(p => {
-                const liveStat = liveMap[p.id];
-                if (liveStat) {
-                  const rawPts = liveStat.total_points;
-                  const mult = isBBoost ? (Number(p.multiplier) || 1) : 1;
-                  const pts = rawPts * mult;
-                  const notPlayed = Boolean(!gwData.is_finished && liveStat.has_fixtures && !liveStat.fixture_started);
-                  if (p.points !== pts || p.not_played_yet !== notPlayed || p.provisional_bonus !== liveStat.provisional_bonus) {
-                    anyChange = true;
-                  }
-                  p.points = pts;
-                  p.raw_points = rawPts;
-                  p.provisional_bonus = liveStat.provisional_bonus;
-                  p.bps = liveStat.bps;
-                  p.minutes = liveStat.minutes;
-                  p.not_played_yet = notPlayed;
-                  if (p.name) nameToPts[p.name] = rawPts;
-                  if (liveStat.fixture_started && p.team && Array.isArray(gwData.unstarted_teams)) {
-                    const utIdx = gwData.unstarted_teams.indexOf(p.team);
-                    if (utIdx !== -1) {
-                      gwData.unstarted_teams.splice(utIdx, 1);
+            // Update raw player stats first across starters & bench
+            startingArr.forEach(p => {
+              const mult = (p.multiplier !== undefined && p.multiplier !== null) ? Number(p.multiplier) : 1;
+              syncPlayerStats(p, mult);
+            });
+            benchArr.forEach(p => {
+              const mult = isBBoost ? (Number(p.multiplier) || 1) : 1;
+              syncPlayerStats(p, mult);
+            });
+
+            // Provisional real-time Auto-Subs & Captain -> Vice-Captain switch (parity with sync_live_fpl.py)
+            const hasConfirmedSubs = Array.isArray(squad.auto_subs) && squad.auto_subs.some(s => s && !s.is_provisional);
+            if (!squad.final_checked && !hasConfirmedSubs && hasValidFixtures) {
+              if (!Array.isArray(squad.auto_subs)) squad.auto_subs = [];
+
+              if (!isBBoost && startingArr.length === 11 && benchArr.length > 0) {
+                const usedBenchIds = new Set(
+                  squad.auto_subs.filter(s => s && s.element_in).map(s => Number(s.element_in))
+                );
+                for (let si = 0; si < startingArr.length; si++) {
+                  const sPick = startingArr[si];
+                  const sStat = sPick ? liveMap[sPick.id] : null;
+                  if (!sStat || !sStat.fixture_finished || sStat.minutes !== 0) continue;
+
+                  const sPos = sPick.pos || 'MID';
+                  for (let bi = 0; bi < benchArr.length; bi++) {
+                    const bPick = benchArr[bi];
+                    if (!bPick || usedBenchIds.has(Number(bPick.id))) continue;
+                    const bStat = liveMap[bPick.id];
+                    if (bStat && bStat.fixture_finished && bStat.minutes === 0) continue;
+
+                    const bPos = bPick.pos || 'MID';
+                    if ((sPos === 'GKP') !== (bPos === 'GKP')) continue;
+
+                    const counts = { GKP: 0, DEF: 0, MID: 0, FWD: 0 };
+                    for (let k = 0; k < startingArr.length; k++) {
+                      const posK = (k === si) ? bPos : (startingArr[k].pos || 'MID');
+                      counts[posK] = (counts[posK] || 0) + 1;
+                    }
+                    if (counts.GKP === 1 && counts.DEF >= 3 && counts.MID >= 2 && counts.FWD >= 1) {
+                      if (!bStat || (bStat.minutes === 0 && !bStat.fixture_finished)) {
+                        // Reserve highest-priority eligible bench slot until their match finishes
+                        usedBenchIds.add(Number(bPick.id));
+                        break;
+                      }
+                      // Swap active bench player in for finished 0-min starter
+                      if (sPick.is_captain) sPick._orig_captain = true;
+                      sPick.is_captain = false;
+                      sPick.multiplier = 0;
+                      sPick.points = 0;
+                      bPick.multiplier = 1;
+                      bPick.points = Number(bPick.raw_points) || 0;
+                      startingArr[si] = bPick;
+                      benchArr[bi] = sPick;
+                      usedBenchIds.add(Number(bPick.id));
+                      squad.auto_subs.push({
+                        element_in: bPick.id,
+                        element_out: sPick.id,
+                        is_provisional: true
+                      });
                       anyChange = true;
+                      break;
                     }
                   }
-                  benchLivePoints += pts;
                 }
-              });
+              }
+
+              // Captain -> Vice-Captain provisional switch when Captain's match finished with 0 minutes
+              const allPlayers = startingArr.concat(benchArr);
+              const capPick = allPlayers.find(p => p && (p.is_captain || p._orig_captain));
+              const vcPick = allPlayers.find(p => p && p.is_vice);
+              const capStat = capPick ? liveMap[capPick.id] : null;
+              const capFailed = Boolean(capPick && ((capStat && capStat.fixture_finished && capStat.minutes === 0) || capPick._orig_captain));
+              const vcStat = vcPick ? liveMap[vcPick.id] : null;
+              const vcInPool = Boolean(vcPick && (startingArr.includes(vcPick) || (isBBoost && benchArr.includes(vcPick))));
+              const vcPlayedZero = Boolean(vcStat && vcStat.fixture_finished && vcStat.minutes === 0);
+              if (capFailed && vcPick && vcInPool && !vcPlayedZero && Number(vcPick.multiplier || 1) < capMultTarget) {
+                capPick.is_captain = false;
+                capPick.multiplier = 0;
+                capPick.points = 0;
+                vcPick.is_captain = true;
+                vcPick.multiplier = capMultTarget;
+                vcPick.points = (Number(vcPick.raw_points) || 0) * capMultTarget;
+                if (res && vcPick.name) {
+                  res.captain = vcPick.name;
+                }
+                anyChange = true;
+              }
             }
+
+            let teamLivePoints = 0;
+            startingArr.forEach(p => {
+              teamLivePoints += (Number(p && p.points) || 0);
+            });
+
+            let benchLivePoints = 0;
+            benchArr.forEach(p => {
+              benchLivePoints += (Number(p && p.points) || 0);
+            });
 
             if (isBBoost) {
               teamLivePoints += benchLivePoints;
             }
             const benchDispPoints = isBBoost ? 0 : benchLivePoints;
 
-            const res = results.find(r => Number(r.entry_id) === eid);
             if (res) {
               const hits = Number(res.hits) || 0;
               const netPts = teamLivePoints - hits;
@@ -7230,6 +7516,12 @@ __STRUCTURED_DATA_JSON__
         this.renderAll();
         if (this.activeTab) {
           this.switchTab(this.activeTab, true);
+        }
+        if (isTier2 && this.isLiveWindowActive()) {
+          const lastT2 = (this._tier2LastFetchAt && this._tier2LastFetchAt[lidStr]) || 0;
+          if (Date.now() - lastT2 > 55000) {
+            this.fetchLivePoints(false);
+          }
         }
       }
 
