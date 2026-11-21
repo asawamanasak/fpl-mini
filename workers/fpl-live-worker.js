@@ -49,7 +49,7 @@ const ADMIN_HTML_HEADERS = {
   'X-Frame-Options': 'DENY',
   'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
   'Cross-Origin-Resource-Policy': 'same-origin',
-  'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
+  'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
 };
 
 const TELEMETRY_MAX_BODY_BYTES = 4096;
@@ -155,6 +155,67 @@ async function ensureLeagueOrdersTable(db) {
   } catch (err) {
     console.warn('ensureLeagueOrdersTable warning:', err);
   }
+}
+
+let _appSettingsTableReady = false;
+
+async function ensureAppSettingsTable(db) {
+  if (!db || _appSettingsTableReady) return;
+  try {
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS app_settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL DEFAULT '',
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run();
+    _appSettingsTableReady = true;
+  } catch (err) {
+    console.warn('ensureAppSettingsTable warning:', err);
+  }
+}
+
+async function loadPaymentSettings(db, env) {
+  let qrDataUrl = '';
+  let dbAccountName = '';
+  let updatedAt = null;
+  if (db) {
+    try {
+      await ensureAppSettingsTable(db);
+      const qRes = await db.prepare(
+        "SELECT key, value, updated_at FROM app_settings WHERE key IN ('payment_qr_data_url', 'payment_account_name')"
+      ).all();
+      const rows = (qRes && Array.isArray(qRes.results)) ? qRes.results : [];
+      for (const r of rows) {
+        const k = String((r && r.key) || '');
+        const v = String((r && r.value) || '').trim();
+        const ts = r && r.updated_at ? String(r.updated_at) : null;
+        if (k === 'payment_qr_data_url' && v.startsWith('data:image/')) {
+          qrDataUrl = v;
+        } else if (k === 'payment_account_name' && v) {
+          dbAccountName = v.slice(0, 120);
+        }
+        if (ts && (!updatedAt || ts > updatedAt)) {
+          updatedAt = ts;
+        }
+      }
+    } catch (err) {
+      console.warn('loadPaymentSettings warning:', err);
+    }
+  }
+  const envPpId = (env && typeof env.PROMPTPAY_ID === 'string') ? env.PROMPTPAY_ID.trim() : '';
+  const envAccountName = (env && typeof env.PROMPTPAY_ACCOUNT_NAME === 'string') ? env.PROMPTPAY_ACCOUNT_NAME.trim().slice(0, 120) : '';
+  const accountName = dbAccountName || envAccountName || 'FPLSaWaDiKa';
+  const mode = qrDataUrl ? 'static_qr' : (envPpId ? 'dynamic_qr' : 'unconfigured');
+  return {
+    qr_data_url: qrDataUrl,
+    account_name: accountName,
+    updated_at: updatedAt,
+    has_static_qr: Boolean(qrDataUrl),
+    has_dynamic_pp: Boolean(envPpId),
+    mode,
+    env_pp_id: envPpId,
+  };
 }
 
 function escapeHtmlEmail(str) {
@@ -1371,6 +1432,131 @@ export default {
             { status: 500, headers: ADMIN_JSON_HEADERS }
           );
         }
+      }
+
+      // Admin Payment QR Settings API (private static QR + display account name in D1)
+      if (path === '/api/admin/payment-settings') {
+        if (!env || !env.DB) {
+          return new Response(JSON.stringify({ success: false, error: 'Cloudflare D1 database binding (DB) is not available' }), {
+            status: 503,
+            headers: ADMIN_JSON_HEADERS,
+          });
+        }
+        if (request.method === 'GET') {
+          try {
+            await ensureAppSettingsTable(env.DB);
+            const cfg = await loadPaymentSettings(env.DB, env);
+            return new Response(
+              JSON.stringify({
+                success: true,
+                mode: cfg.mode,
+                has_static_qr: cfg.has_static_qr,
+                has_dynamic_pp: cfg.has_dynamic_pp,
+                account_name: cfg.account_name,
+                qr_data_url: cfg.qr_data_url,
+                updated_at: cfg.updated_at,
+              }),
+              { status: 200, headers: ADMIN_JSON_HEADERS }
+            );
+          } catch (err) {
+            return new Response(JSON.stringify({ success: false, error: err.message || 'Failed to load payment settings' }), {
+              status: 500,
+              headers: ADMIN_JSON_HEADERS,
+            });
+          }
+        }
+        if (request.method === 'POST') {
+          const clHeader = Number(request.headers.get('content-length') || '0');
+          if (clHeader > 450000) {
+            return new Response(JSON.stringify({ success: false, error: 'QR payload exceeds maximum allowed size' }), {
+              status: 413,
+              headers: ADMIN_JSON_HEADERS,
+            });
+          }
+          const rawText = await request.text();
+          if (!rawText || rawText.length > 450000) {
+            return new Response(
+              JSON.stringify({ success: false, error: rawText ? 'QR payload exceeds maximum allowed size' : 'Empty request body' }),
+              { status: rawText ? 413 : 400, headers: ADMIN_JSON_HEADERS }
+            );
+          }
+          let body = null;
+          try {
+            body = JSON.parse(rawText);
+          } catch (_) {
+            return new Response(JSON.stringify({ success: false, error: 'Invalid JSON body' }), {
+              status: 400,
+              headers: ADMIN_JSON_HEADERS,
+            });
+          }
+          if (!body || typeof body !== 'object' || Array.isArray(body)) {
+            return new Response(JSON.stringify({ success: false, error: 'Invalid JSON payload' }), {
+              status: 400,
+              headers: ADMIN_JSON_HEADERS,
+            });
+          }
+          try {
+            await ensureAppSettingsTable(env.DB);
+            if (body.clear_qr === true) {
+              await env.DB.prepare("DELETE FROM app_settings WHERE key = 'payment_qr_data_url'").run();
+            } else if (typeof body.qr_data_url === 'string' && body.qr_data_url.trim() !== '') {
+              const trimmedQr = body.qr_data_url.trim();
+              if (trimmedQr.length > 390000) {
+                return new Response(JSON.stringify({ success: false, error: 'QR image exceeds maximum allowed size' }), {
+                  status: 413,
+                  headers: ADMIN_JSON_HEADERS,
+                });
+              }
+              if (!/^data:image\/(png|jpeg|jpg|webp);base64,[A-Za-z0-9+/=]+$/i.test(trimmedQr)) {
+                return new Response(JSON.stringify({ success: false, error: 'Invalid QR image data URI (expected base64 PNG, JPG, or WebP)' }), {
+                  status: 400,
+                  headers: ADMIN_JSON_HEADERS,
+                });
+              }
+              await env.DB.prepare(`
+                INSERT INTO app_settings (key, value, updated_at)
+                VALUES ('payment_qr_data_url', ?, CURRENT_TIMESTAMP)
+                ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP
+              `).bind(trimmedQr).run();
+            }
+
+            if (typeof body.account_name === 'string') {
+              const trimmedName = body.account_name.trim().slice(0, 120);
+              if (!trimmedName) {
+                await env.DB.prepare("DELETE FROM app_settings WHERE key = 'payment_account_name'").run();
+              } else {
+                await env.DB.prepare(`
+                  INSERT INTO app_settings (key, value, updated_at)
+                  VALUES ('payment_account_name', ?, CURRENT_TIMESTAMP)
+                  ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP
+                `).bind(trimmedName).run();
+              }
+            }
+
+            const updated = await loadPaymentSettings(env.DB, env);
+            return new Response(
+              JSON.stringify({
+                success: true,
+                mode: updated.mode,
+                has_static_qr: updated.has_static_qr,
+                has_dynamic_pp: updated.has_dynamic_pp,
+                account_name: updated.account_name,
+                qr_data_url: updated.qr_data_url,
+                updated_at: updated.updated_at,
+              }),
+              { status: 200, headers: ADMIN_JSON_HEADERS }
+            );
+          } catch (err) {
+            return new Response(JSON.stringify({ success: false, error: err.message || 'Failed to save payment settings' }), {
+              status: 500,
+              headers: ADMIN_JSON_HEADERS,
+            });
+          }
+        }
+        return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+          status: 405,
+          headers: ADMIN_JSON_HEADERS,
+        });
       }
 
       // Admin Customer Order & Slip Inbox APIs
@@ -2875,19 +3061,19 @@ export default {
       const isTier2 = (effectiveTier === 'tier2' || teamCount > 30);
       const isPromptPayStandard = (currency === 'THB' && !isTier2);
       const plan = isTier2 ? 'tier2_quote' : 'standard';
-      const ppId = (env && typeof env.PROMPTPAY_ID === 'string') ? env.PROMPTPAY_ID.trim() : '';
-      const accountName = (env && typeof env.PROMPTPAY_ACCOUNT_NAME === 'string' && env.PROMPTPAY_ACCOUNT_NAME.trim())
-        ? env.PROMPTPAY_ACCOUNT_NAME.trim()
-        : 'FPLSaWaDiKa';
-      if (isPromptPayStandard && !ppId) {
-        return new Response(JSON.stringify({ success: false, error: 'ระบบ PromptPay ยังไม่พร้อมใช้งาน กรุณาติดต่อแอดมินผ่าน LINE หรือ Email' }), {
-          status: 503,
-          headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
-        });
-      }
 
       try {
         await ensureLeagueOrdersTable(env.DB);
+        await ensureAppSettingsTable(env.DB);
+        const payCfg = await loadPaymentSettings(env.DB, env);
+        const accountName = payCfg.account_name;
+        if (isPromptPayStandard && payCfg.mode === 'unconfigured') {
+          return new Response(JSON.stringify({ success: false, error: 'ระบบชำระเงินด้วย QR ยังไม่พร้อมใช้งาน กรุณาติดต่อแอดมินผ่าน LINE หรือ Email' }), {
+            status: 503,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+          });
+        }
+
         const nowMs = Date.now();
         const nowIso = new Date(nowMs).toISOString();
         await env.DB.prepare(
@@ -2919,8 +3105,11 @@ export default {
             existingOpen.order_id
           ).run();
           if (updReuse && updReuse.meta && updReuse.meta.changes === 1) {
-            const reusedPayload = isPromptPayStandard
-              ? buildPromptPayPayload(ppId, (Number(existingOpen.amount_satang) / 100).toFixed(2))
+            const reusedPayload = (isPromptPayStandard && payCfg.mode === 'dynamic_qr')
+              ? buildPromptPayPayload(payCfg.env_pp_id, (Number(existingOpen.amount_satang) / 100).toFixed(2))
+              : '';
+            const reusedQrImage = (isPromptPayStandard && payCfg.mode === 'static_qr')
+              ? payCfg.qr_data_url
               : '';
             return new Response(
               JSON.stringify({
@@ -2937,6 +3126,8 @@ export default {
                 amount_satang: Number(existingOpen.amount_satang),
                 amount_display: formatSatangDisplay(existingOpen.amount_satang, existingOpen.currency, lang),
                 expires_at: existingOpen.expires_at,
+                payment_mode: isPromptPayStandard ? payCfg.mode : 'quote',
+                qr_image_url: reusedQrImage,
                 promptpay_payload: reusedPayload,
                 account_name: accountName,
                 lang,
@@ -2970,12 +3161,14 @@ export default {
                 { status: 503, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } }
               );
             }
-            promptpayPayload = buildPromptPayPayload(ppId, (amountSatang / 100).toFixed(2));
-            if (!promptpayPayload) {
-              return new Response(JSON.stringify({ success: false, error: 'PromptPay ID configuration invalid' }), {
-                status: 503,
-                headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
-              });
+            if (payCfg.mode === 'dynamic_qr') {
+              promptpayPayload = buildPromptPayPayload(payCfg.env_pp_id, (amountSatang / 100).toFixed(2));
+              if (!promptpayPayload) {
+                return new Response(JSON.stringify({ success: false, error: 'PromptPay ID configuration invalid' }), {
+                  status: 503,
+                  headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+                });
+              }
             }
           }
           try {
@@ -3090,6 +3283,8 @@ export default {
             amount_satang: amountSatang,
             amount_display: amountDisplay,
             expires_at: expiresAt,
+            payment_mode: isPromptPayStandard ? payCfg.mode : 'quote',
+            qr_image_url: (isPromptPayStandard && payCfg.mode === 'static_qr') ? payCfg.qr_data_url : '',
             promptpay_payload: promptpayPayload,
             account_name: accountName,
             lang,
@@ -3134,6 +3329,7 @@ export default {
       }
       try {
         await ensureLeagueOrdersTable(env.DB);
+        await ensureAppSettingsTable(env.DB);
         const tokenHash = await sha256Hex(rawToken);
         const row = await env.DB.prepare(`
           SELECT order_id, access_token_hash, league_id, league_name, team_count, plan, currency, lang,
@@ -3153,11 +3349,19 @@ export default {
           status = 'expired';
           await env.DB.prepare("UPDATE league_orders SET status = 'expired', updated_at = CURRENT_TIMESTAMP WHERE order_id = ? AND status IN ('awaiting_payment', 'rejected')").bind(orderId).run();
         }
+        const payCfg = await loadPaymentSettings(env.DB, env);
+        let paymentMode = 'quote';
         let promptpayPayload = '';
+        let qrImageUrl = '';
         if (status === 'awaiting_payment' && row.currency === 'THB' && Number(row.amount_satang) >= 50000) {
-          const ppId = (env && typeof env.PROMPTPAY_ID === 'string') ? env.PROMPTPAY_ID.trim() : '';
-          if (ppId) {
-            promptpayPayload = buildPromptPayPayload(ppId, (Number(row.amount_satang) / 100).toFixed(2));
+          if (payCfg.mode === 'static_qr') {
+            paymentMode = 'static_qr';
+            qrImageUrl = payCfg.qr_data_url;
+          } else if (payCfg.mode === 'dynamic_qr') {
+            paymentMode = 'dynamic_qr';
+            promptpayPayload = buildPromptPayPayload(payCfg.env_pp_id, (Number(row.amount_satang) / 100).toFixed(2));
+          } else {
+            paymentMode = 'unconfigured';
           }
         }
         const orderLang = String(row.lang || 'th').toLowerCase() === 'en' ? 'en' : 'th';
@@ -3182,10 +3386,10 @@ export default {
           delivered_url: status === 'live' ? (row.delivered_url || `https://www.fplsawadika.com/${row.league_id}/`) : '',
           created_at: row.created_at,
           expires_at: row.expires_at,
+          payment_mode: paymentMode,
+          qr_image_url: qrImageUrl,
           promptpay_payload: promptpayPayload,
-          account_name: (env && typeof env.PROMPTPAY_ACCOUNT_NAME === 'string' && env.PROMPTPAY_ACCOUNT_NAME.trim())
-            ? env.PROMPTPAY_ACCOUNT_NAME.trim()
-            : 'FPLSaWaDiKa',
+          account_name: payCfg.account_name,
         });
         return new Response(request.method === 'HEAD' ? null : respBody, {
           status: 200,

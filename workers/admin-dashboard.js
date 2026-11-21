@@ -2096,6 +2096,66 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         </button>
       </div>
 
+      <!-- Private Payment QR Settings Card -->
+      <div id="paymentQrSettingsCard" class="rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark p-4 sm:p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
+          <h3 class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="pay_qr_title">
+            ตั้งค่า QR รับเงินส่วนตัว (ไม่ต้องใช้เบอร์โทร / บัตร ปชช. / e-Wallet)
+          </h3>
+          <span id="payQrModeBadge" class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-500/15 text-slate-700 dark:text-neutral-300 border border-slate-500/30">กำลังโหลด…</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+          <div class="lg:col-span-8 space-y-3">
+            <div class="space-y-1.5">
+              <label for="payQrAccountNameInput" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="pay_qr_acct_lbl">
+                ชื่อ-นามสกุลผู้รับเงิน (แสดงให้ลูกค้าตรวจเช็กก่อนโอน)
+              </label>
+              <input id="payQrAccountNameInput" type="text" maxlength="120" placeholder="เช่น นาย สมชาย ใจดี"
+                class="w-full min-h-[42px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs text-slate-900 dark:text-white" />
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="payQrFileInput" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="pay_qr_file_lbl">
+                อัปโหลดรูปภาพ QR Code รับเงิน
+              </label>
+              <input id="payQrFileInput" type="file" accept="image/png,image/jpeg,image/webp"
+                class="block w-full text-xs text-slate-700 dark:text-neutral-300 file:mr-3 file:min-h-[38px] file:px-3.5 file:py-1.5 file:rounded-lg file:border file:border-borderLight dark:file:border-borderDark file:bg-raisedLight dark:file:bg-raisedDark file:text-xs file:font-semibold file:text-slate-800 dark:file:text-neutral-200 hover:file:bg-slate-200 dark:hover:file:bg-slate-800 cursor-pointer" />
+              <p class="text-[11px] text-slate-500 dark:text-neutral-400 leading-relaxed" data-i18n="pay_qr_file_hint">
+                รองรับไฟล์ PNG / JPG / WebP (ย่อขนาดอัตโนมัติในเบราว์เซอร์) เก็บเป็นความลับในฐานข้อมูล D1 เท่านั้น ไม่บันทึกลง GitHub
+              </p>
+              <div id="payQrFileMeta" class="text-[11px] font-mono text-sky-700 dark:text-sky-400"></div>
+            </div>
+
+            <div class="flex flex-wrap gap-2 pt-1">
+              <button type="button" id="btnSavePaymentQr"
+                class="min-h-[42px] px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-colors"
+                data-i18n="pay_qr_btn_save">
+                บันทึกการตั้งค่า QR
+              </button>
+              <button type="button" id="btnClearPaymentQr"
+                class="hidden min-h-[42px] px-3.5 py-2 rounded-lg border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 dark:text-rose-300 text-xs font-semibold transition-colors"
+                data-i18n="pay_qr_btn_clear">
+                ลบรูป QR ออกจากฐานข้อมูล
+              </button>
+            </div>
+
+            <div id="payQrFeedback" role="status" class="hidden p-2.5 rounded-lg text-xs border"></div>
+          </div>
+
+          <div class="lg:col-span-4 p-3 rounded-xl border border-borderLight dark:border-borderDark bg-raisedLight/70 dark:bg-raisedDark/70 text-center space-y-2">
+            <div class="text-[11px] font-semibold text-slate-600 dark:text-neutral-300" data-i18n="pay_qr_preview_lbl">
+              ตัวอย่างรูป QR ที่แสดงให้ลูกค้า
+            </div>
+            <div id="payQrPreviewEmpty" class="py-8 text-xs text-slate-500 dark:text-neutral-400" data-i18n="pay_qr_preview_empty">
+              ยังไม่ได้อัปโหลดรูป QR ส่วนตัว
+            </div>
+            <img id="payQrPreviewImg" alt="Payment QR Preview" class="hidden max-h-[180px] w-auto mx-auto rounded-lg border border-borderLight dark:border-borderDark object-contain bg-white p-1.5" />
+            <div id="payQrUpdatedAt" class="text-[11px] mono text-slate-500 dark:text-neutral-400"></div>
+          </div>
+        </div>
+      </div>
+
       <div id="ordersFilterPills" class="flex flex-wrap gap-2">
         <button type="button" data-order-filter="all" class="ord-filter-btn min-h-[36px] px-3 py-1 rounded-lg border text-xs font-semibold transition-colors border-emerald-500 bg-emerald-500/15 text-emerald-800 dark:text-emerald-300">
           <span data-i18n="ord_f_all">ทั้งหมด</span> (<span id="ordCnt_all">0</span>)
@@ -2798,7 +2858,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ord_act_reject: 'ปฏิเสธสลิป + ส่งอีเมล',
         ord_act_delslip: 'ลบรูปสลิป',
         ord_slip_heading: 'รูปสลิปโอนเงินที่ลูกค้าแนบ',
-        ord_btn_reload_slip: 'โหลดรูปสลิปอีกครั้ง'
+        ord_btn_reload_slip: 'โหลดรูปสลิปอีกครั้ง',
+        pay_qr_title: 'ตั้งค่า QR รับเงินส่วนตัว (ไม่ต้องใช้เบอร์โทร / บัตร ปชช. / e-Wallet)',
+        pay_qr_acct_lbl: 'ชื่อ-นามสกุลผู้รับเงิน (แสดงให้ลูกค้าตรวจเช็กก่อนโอน)',
+        pay_qr_file_lbl: 'อัปโหลดรูปภาพ QR Code รับเงิน',
+        pay_qr_file_hint: 'รองรับไฟล์ PNG / JPG / WebP (ย่อขนาดอัตโนมัติในเบราว์เซอร์) เก็บเป็นความลับในฐานข้อมูล D1 เท่านั้น ไม่บันทึกลง GitHub',
+        pay_qr_btn_save: 'บันทึกการตั้งค่า QR',
+        pay_qr_btn_clear: 'ลบรูป QR ออกจากฐานข้อมูล',
+        pay_qr_preview_lbl: 'ตัวอย่างรูป QR ที่แสดงให้ลูกค้า',
+        pay_qr_preview_empty: 'ยังไม่ได้อัปโหลดรูป QR ส่วนตัว'
       },
       en: {
         skip_to_content: 'Skip to main content',
@@ -3143,7 +3211,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ord_act_reject: 'Reject Slip & Email',
         ord_act_delslip: 'Delete Slip Image',
         ord_slip_heading: 'Uploaded Transfer Slip',
-        ord_btn_reload_slip: 'Reload Slip Image'
+        ord_btn_reload_slip: 'Reload Slip Image',
+        pay_qr_title: 'Private Payment QR Settings (No Phone / ID / e-Wallet Required)',
+        pay_qr_acct_lbl: 'Recipient Account Name (Shown to Customers for Verification)',
+        pay_qr_file_lbl: 'Upload Payment QR Code Image',
+        pay_qr_file_hint: 'Supports PNG / JPG / WebP (auto-resized in your browser). Stored privately in Cloudflare D1 only — never committed to GitHub.',
+        pay_qr_btn_save: 'Save QR Settings',
+        pay_qr_btn_clear: 'Remove Stored QR Image',
+        pay_qr_preview_lbl: 'Customer Checkout QR Preview',
+        pay_qr_preview_empty: 'No private QR image uploaded yet'
       }
     };
 
@@ -4181,6 +4257,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (typeof renderOrderFilterButtons === 'function') renderOrderFilterButtons();
       if (typeof renderOrdersTable === 'function') renderOrdersTable();
       if (typeof renderOrderDetail === 'function' && selectedOrderObj) renderOrderDetail(selectedOrderObj);
+      if (typeof renderPaymentSettingsUI === 'function' && paymentSettingsCache) renderPaymentSettingsUI(paymentSettingsCache);
       if (latestPayloadCache) applyAdminPayload(latestPayloadCache);
     }
 
@@ -5344,6 +5421,259 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     let ordersListCache = [];
     let ordersCountsCache = {};
     let selectedOrderObj = null;
+    let paymentSettingsCache = null;
+    let stagedPaymentQrDataUrl = '';
+    let paymentQrInFlight = false;
+
+    function setPaymentQrFeedback(msg, isError) {
+      const el = document.getElementById('payQrFeedback');
+      if (!el) return;
+      if (!msg) {
+        el.classList.add('hidden');
+        el.textContent = '';
+        return;
+      }
+      el.className = isError
+        ? 'p-2.5 rounded-lg text-xs border border-rose-500/40 bg-rose-500/10 text-rose-700 dark:text-rose-300'
+        : 'p-2.5 rounded-lg text-xs border border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300';
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function renderPaymentSettingsUI(cfg) {
+      if (!cfg) return;
+      const isEn = getLang() === 'en';
+      const badge = document.getElementById('payQrModeBadge');
+      const acctInput = document.getElementById('payQrAccountNameInput');
+      const prevEmpty = document.getElementById('payQrPreviewEmpty');
+      const prevImg = document.getElementById('payQrPreviewImg');
+      const clearBtn = document.getElementById('btnClearPaymentQr');
+      const updatedEl = document.getElementById('payQrUpdatedAt');
+
+      if (badge) {
+        if (cfg.mode === 'static_qr') {
+          badge.textContent = isEn ? 'Static QR Active ✓' : 'โหมดรูป QR ส่วนตัวพร้อมใช้ ✓';
+          badge.className = 'px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30';
+        } else if (cfg.mode === 'dynamic_qr') {
+          badge.textContent = isEn ? 'Dynamic Secret Fallback' : 'ใช้ PromptPay Secret สำรอง';
+          badge.className = 'px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30';
+        } else {
+          badge.textContent = isEn ? 'Not Configured' : 'ยังไม่ตั้งค่ารูป QR';
+          badge.className = 'px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-500/15 text-rose-800 dark:text-rose-300 border border-rose-500/30';
+        }
+      }
+
+      if (acctInput && document.activeElement !== acctInput) {
+        acctInput.value = String(cfg.account_name || '');
+      }
+
+      const displaySrc = stagedPaymentQrDataUrl || (cfg.qr_data_url ? String(cfg.qr_data_url) : '');
+      const hasValidSrc = /^data:image\\/(png|jpeg|jpg|webp);base64,/i.test(displaySrc);
+      if (prevImg && prevEmpty) {
+        if (hasValidSrc) {
+          prevImg.src = displaySrc;
+          prevImg.classList.remove('hidden');
+          prevEmpty.classList.add('hidden');
+        } else {
+          prevImg.classList.add('hidden');
+          prevImg.removeAttribute('src');
+          prevEmpty.classList.remove('hidden');
+        }
+      }
+
+      if (clearBtn) {
+        clearBtn.classList.toggle('hidden', !cfg.has_static_qr);
+      }
+
+      if (updatedEl) {
+        if (cfg.updated_at) {
+          const parsed = new Date(cfg.updated_at.indexOf('T') !== -1 ? cfg.updated_at : cfg.updated_at.replace(' ', 'T') + 'Z');
+          updatedEl.textContent = (isEn ? 'Saved: ' : 'บันทึกล่าสุด: ') + (isNaN(parsed.getTime()) ? String(cfg.updated_at) : parsed.toLocaleString(isEn ? 'en-US' : 'th-TH'));
+        } else {
+          updatedEl.textContent = '';
+        }
+      }
+    }
+
+    function handlePaymentQrFile(file) {
+      const isEn = getLang() === 'en';
+      const metaEl = document.getElementById('payQrFileMeta');
+      stagedPaymentQrDataUrl = '';
+      setPaymentQrFeedback('', false);
+      if (metaEl) metaEl.textContent = '';
+      if (!file) {
+        if (paymentSettingsCache) renderPaymentSettingsUI(paymentSettingsCache);
+        return;
+      }
+      if (!/^image\\/(png|jpeg|jpg|webp)$/i.test(file.type || '')) {
+        setPaymentQrFeedback(isEn ? 'Please select a .png, .jpg, or .webp image file.' : 'กรุณาเลือกไฟล์รูปภาพ .png, .jpg หรือ .webp เท่านั้น', true);
+        return;
+      }
+      if (file.size > 15 * 1024 * 1024) {
+        setPaymentQrFeedback(isEn ? 'Image file exceeds 15MB limit.' : 'ขนาดไฟล์ใหญ่เกินไป (ไม่เกิน 15MB)', true);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const rawSrc = typeof reader.result === 'string' ? reader.result : '';
+        if (!rawSrc) {
+          setPaymentQrFeedback(isEn ? 'Unable to read this image file.' : 'ไม่สามารถอ่านไฟล์รูปภาพนี้ได้ กรุณาลองไฟล์อื่น', true);
+          return;
+        }
+        const img = new Image();
+        img.onload = () => {
+          const renderScaled = (maxDim, mime, quality) => {
+            const longest = Math.max(img.width || 1, img.height || 1);
+            const scale = longest > maxDim ? (maxDim / longest) : 1;
+            const tw = Math.max(1, Math.round((img.width || 1) * scale));
+            const th = Math.max(1, Math.round((img.height || 1) * scale));
+            const cvs = document.createElement('canvas');
+            cvs.width = tw;
+            cvs.height = th;
+            const ctx = cvs.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, tw, th);
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, tw, th);
+            return mime === 'image/png' ? cvs.toDataURL('image/png') : cvs.toDataURL('image/jpeg', quality);
+          };
+          let dataUrl = renderScaled(720, 'image/png', 1);
+          if (dataUrl.length > 280000) dataUrl = renderScaled(720, 'image/jpeg', 0.92);
+          if (dataUrl.length > 360000) dataUrl = renderScaled(600, 'image/jpeg', 0.86);
+          if (dataUrl.length > 380000) {
+            setPaymentQrFeedback(isEn ? 'Compressed QR image is still too large. Please crop closely around the QR code.' : 'รูปภาพยังมีขนาดใหญ่เกินกำหนด กรุณาครอปให้กระชับรอบตัว QR แล้วลองใหม่', true);
+            return;
+          }
+          stagedPaymentQrDataUrl = dataUrl;
+          const kb = Math.round((dataUrl.length * 0.75) / 1024);
+          if (metaEl) {
+            metaEl.textContent = (isEn ? 'Staged: ' : 'เตรียมอัปโหลด: ') + file.name + ' (' + kb + ' KB)';
+          }
+          const prevEmpty = document.getElementById('payQrPreviewEmpty');
+          const prevImg = document.getElementById('payQrPreviewImg');
+          if (prevImg && prevEmpty) {
+            prevImg.src = dataUrl;
+            prevImg.classList.remove('hidden');
+            prevEmpty.classList.add('hidden');
+          }
+        };
+        img.onerror = () => {
+          setPaymentQrFeedback(isEn ? 'Unable to decode this image file.' : 'ไม่สามารถอ่านไฟล์รูปภาพนี้ได้ กรุณาลองไฟล์อื่น', true);
+        };
+        img.src = rawSrc;
+      };
+      reader.onerror = () => {
+        setPaymentQrFeedback(isEn ? 'Unable to read this image file.' : 'ไม่สามารถอ่านไฟล์รูปภาพนี้ได้ กรุณาลองไฟล์อื่น', true);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function loadPaymentSettings() {
+      try {
+        const res = await fetch('/api/admin/payment-settings', { credentials: 'same-origin' });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data || !data.success) {
+          throw new Error((data && data.error) || ('HTTP ' + res.status));
+        }
+        paymentSettingsCache = data;
+        renderPaymentSettingsUI(data);
+      } catch (err) {
+        setPaymentQrFeedback((err && err.message) || 'Failed to load QR settings', true);
+      }
+    }
+
+    async function savePaymentSettings() {
+      if (paymentQrInFlight) return;
+      const isEn = getLang() === 'en';
+      const saveBtn = document.getElementById('btnSavePaymentQr');
+      const clearBtn = document.getElementById('btnClearPaymentQr');
+      const acctInput = document.getElementById('payQrAccountNameInput');
+      const fileInput = document.getElementById('payQrFileInput');
+      const metaEl = document.getElementById('payQrFileMeta');
+      const acctVal = acctInput ? acctInput.value.trim() : '';
+
+      paymentQrInFlight = true;
+      if (saveBtn) saveBtn.disabled = true;
+      if (clearBtn) clearBtn.disabled = true;
+      setPaymentQrFeedback(isEn ? 'Saving QR settings…' : 'กำลังบันทึกการตั้งค่า QR…', false);
+      try {
+        const payload = { account_name: acctVal };
+        if (stagedPaymentQrDataUrl) {
+          payload.qr_data_url = stagedPaymentQrDataUrl;
+        }
+        const res = await fetch('/api/admin/payment-settings', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data || !data.success) {
+          throw new Error((data && data.error) || ('HTTP ' + res.status));
+        }
+        stagedPaymentQrDataUrl = '';
+        if (fileInput) fileInput.value = '';
+        if (metaEl) metaEl.textContent = '';
+        paymentSettingsCache = data;
+        renderPaymentSettingsUI(data);
+        const msg = isEn ? 'Payment QR settings saved to Cloudflare D1 ✓' : 'บันทึกการตั้งค่า QR ลง Cloudflare D1 เรียบร้อย ✓';
+        setPaymentQrFeedback(msg, false);
+        showToast(msg);
+      } catch (err) {
+        const msg = (err && err.message) || 'Failed to save QR settings';
+        setPaymentQrFeedback(msg, true);
+        showToast(msg, true);
+      } finally {
+        paymentQrInFlight = false;
+        if (saveBtn) saveBtn.disabled = false;
+        if (clearBtn) clearBtn.disabled = false;
+      }
+    }
+
+    async function clearPaymentQr() {
+      if (paymentQrInFlight) return;
+      const isEn = getLang() === 'en';
+      const saveBtn = document.getElementById('btnSavePaymentQr');
+      const clearBtn = document.getElementById('btnClearPaymentQr');
+      const acctInput = document.getElementById('payQrAccountNameInput');
+      const fileInput = document.getElementById('payQrFileInput');
+      const metaEl = document.getElementById('payQrFileMeta');
+      const acctVal = acctInput ? acctInput.value.trim() : '';
+
+      paymentQrInFlight = true;
+      if (saveBtn) saveBtn.disabled = true;
+      if (clearBtn) clearBtn.disabled = true;
+      setPaymentQrFeedback(isEn ? 'Removing stored QR image…' : 'กำลังลบรูป QR จากฐานข้อมูล…', false);
+      try {
+        const res = await fetch('/api/admin/payment-settings', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ clear_qr: true, account_name: acctVal })
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data || !data.success) {
+          throw new Error((data && data.error) || ('HTTP ' + res.status));
+        }
+        stagedPaymentQrDataUrl = '';
+        if (fileInput) fileInput.value = '';
+        if (metaEl) metaEl.textContent = '';
+        paymentSettingsCache = data;
+        renderPaymentSettingsUI(data);
+        const msg = isEn ? 'Stored QR image removed ✓' : 'ลบรูป QR ออกจากฐานข้อมูลเรียบร้อย ✓';
+        setPaymentQrFeedback(msg, false);
+        showToast(msg);
+      } catch (err) {
+        const msg = (err && err.message) || 'Failed to remove QR image';
+        setPaymentQrFeedback(msg, true);
+        showToast(msg, true);
+      } finally {
+        paymentQrInFlight = false;
+        if (saveBtn) saveBtn.disabled = false;
+        if (clearBtn) clearBtn.disabled = false;
+      }
+    }
 
     function getOrderStatusMeta(status, lang) {
       const isEn = lang === 'en';
@@ -5734,6 +6064,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     }
 
     function initOrdersInbox() {
+      const qrFileIn = document.getElementById('payQrFileInput');
+      if (qrFileIn) {
+        qrFileIn.addEventListener('change', (e) => {
+          const f = e && e.target && e.target.files ? e.target.files[0] : null;
+          handlePaymentQrFile(f);
+        });
+      }
+      const btnSaveQr = document.getElementById('btnSavePaymentQr');
+      if (btnSaveQr) btnSaveQr.addEventListener('click', () => savePaymentSettings());
+      const btnClearQr = document.getElementById('btnClearPaymentQr');
+      if (btnClearQr) btnClearQr.addEventListener('click', () => clearPaymentQr());
+
       const refBtn = document.getElementById('btnRefreshOrders');
       if (refBtn) refBtn.addEventListener('click', () => loadOrdersData(currentOrderFilter));
       document.querySelectorAll('.ord-filter-btn').forEach((btn) => {
@@ -5779,6 +6121,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     tickCountdown();
     setInterval(tickCountdown, 1000);
     loadLiveData(false);
+    loadPaymentSettings();
     loadOrdersData('all');
   </script>
 </body>

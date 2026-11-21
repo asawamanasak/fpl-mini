@@ -134,8 +134,13 @@
           <!-- QR Column -->
           <div id="pay-qr-col" class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6 shadow-sm space-y-4 text-center">
             <div class="space-y-1">
-              <div id="qr-step-badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-200">ขั้นตอนที่ 1 • สแกน PromptPay QR</div>
+              <div id="qr-step-badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-200">ขั้นตอนที่ 1 • สแกน QR ชำระเงิน</div>
               <div id="qr-exact-amount" class="text-3xl font-black text-rose-600 dark:text-rose-400 tabular-nums pt-1">500.00 ฿</div>
+              <div class="pt-1">
+                <button id="btn-copy-exact-amount" type="button" onclick="payApp.copyExactAmount()" class="inline-flex items-center justify-center gap-1.5 min-h-[44px] px-4 py-2 rounded-xl border border-rose-300 dark:border-rose-800 bg-rose-50 dark:bg-rose-950/50 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-xs sm:text-sm font-bold text-rose-700 dark:text-rose-300 transition-colors cursor-pointer">
+                  <span id="btn-copy-exact-amount-text">คัดลอกยอดเงิน</span>
+                </button>
+              </div>
               <p id="qr-exact-hint" class="text-xs font-semibold text-amber-700 dark:text-amber-300">กรุณาโอนตรงตามยอดสตางค์นี้เพื่อให้ตรวจสอบยอดได้แม่นยำ</p>
             </div>
 
@@ -374,7 +379,8 @@
         setTxt('sum-league-lbl', isEn ? 'FPL League' : 'ลีก FPL');
         setTxt('sum-contact-lbl', isEn ? 'Delivery Contact' : 'ช่องทางรับลิงก์');
         setTxt('sum-rules-lbl', isEn ? 'Prize Rules' : 'กติกาที่ระบุ');
-        setTxt('qr-step-badge', isEn ? 'Step 1 • Scan PromptPay QR' : 'ขั้นตอนที่ 1 • สแกน PromptPay QR');
+        setTxt('qr-step-badge', isEn ? 'Step 1 • Scan Payment QR' : 'ขั้นตอนที่ 1 • สแกน QR ชำระเงิน');
+        setTxt('btn-copy-exact-amount-text', isEn ? 'Copy Exact Amount' : 'คัดลอกยอดเงิน');
         setTxt('qr-exact-hint', isEn ? 'Transfer the exact satang amount shown so your payment can be verified quickly' : 'กรุณาโอนตรงตามยอดสตางค์นี้เพื่อให้ตรวจสอบยอดได้แม่นยำ');
         setTxt('qr-acct-lbl', isEn ? 'Account Name:' : 'ชื่อบัญชีผู้รับ:');
         setTxt('qr-timer-lbl', isEn ? 'QR Expires In:' : 'QR มีอายุถึง:');
@@ -521,13 +527,26 @@
               rejAlert.classList.add('hidden');
             }
           }
+          const hasQr = Boolean(o.qr_image_url || o.promptpay_payload);
           if (qrCol) {
-            qrCol.classList.toggle('hidden', st === 'rejected' || !o.promptpay_payload);
+            qrCol.classList.toggle('hidden', st === 'rejected' || !hasQr);
           }
-          if (st === 'awaiting_payment' && o.promptpay_payload) {
+          if (st === 'awaiting_payment' && hasQr) {
             setTxt('qr-exact-amount', o.amount_display || '500.00 ฿');
+            const satNum = Number(o.amount_satang);
+            const exactDec = (Number.isFinite(satNum) && satNum > 0) ? (satNum / 100).toFixed(2) : '';
+            setTxt('btn-copy-exact-amount-text', exactDec
+              ? (isEn ? ('Copy Exact Amount (' + exactDec + ')') : ('คัดลอกยอดเงิน (' + exactDec + ')'))
+              : (isEn ? 'Copy Exact Amount' : 'คัดลอกยอดเงิน'));
+            setTxt('qr-exact-hint', o.payment_mode === 'static_qr'
+              ? (isEn
+                  ? 'Scan or save the QR image, enter the exact satang amount shown, and verify the account name before transferring'
+                  : 'สแกนหรือบันทึกรูป QR แล้วกรอกยอดให้ตรงตามเศษสตางค์นี้ และเช็กชื่อบัญชีผู้รับก่อนโอน')
+              : (isEn
+                  ? 'Transfer the exact satang amount shown so your payment can be verified quickly'
+                  : 'กรุณาโอนตรงตามยอดสตางค์นี้เพื่อให้ตรวจสอบยอดได้แม่นยำ'));
             setTxt('qr-acct-val', o.account_name || 'FPLSaWaDiKa');
-            this.drawPromptPayCanvas(o);
+            this.drawPaymentQrCanvas(o);
             this.startCountdown(o.expires_at);
           }
         } else if (st === 'slip_submitted') {
@@ -555,27 +574,118 @@
         }
       },
 
-      drawPromptPayCanvas(o) {
+      _fallbackCopyText(text) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = String(text || '');
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+        } catch (_) {}
+      },
+
+      copyExactAmount() {
+        if (!this.order) return;
+        const isEn = this.lang === 'en';
+        const sat = Number(this.order.amount_satang);
+        const exactStr = (Number.isFinite(sat) && sat > 0) ? (sat / 100).toFixed(2) : '';
+        if (!exactStr) return;
+        const btnTextEl = document.getElementById('btn-copy-exact-amount-text');
+        const applyCopied = () => {
+          if (!btnTextEl) return;
+          btnTextEl.textContent = isEn ? ('Copied ' + exactStr + ' ✓') : ('คัดลอกยอด ' + exactStr + ' แล้ว ✓');
+          if (this._copyAmountTimer) clearTimeout(this._copyAmountTimer);
+          this._copyAmountTimer = setTimeout(() => {
+            if (!btnTextEl) return;
+            const enNow = this.lang === 'en';
+            btnTextEl.textContent = enNow
+              ? ('Copy Exact Amount (' + exactStr + ')')
+              : ('คัดลอกยอดเงิน (' + exactStr + ')');
+          }, 2200);
+        };
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(exactStr).then(applyCopied).catch(() => {
+              this._fallbackCopyText(exactStr);
+              applyCopied();
+            });
+            return;
+          }
+        } catch (_) {}
+        this._fallbackCopyText(exactStr);
+        applyCopied();
+      },
+
+      drawPaymentQrCanvas(o) {
         const canvas = document.getElementById('pay-qr-canvas');
-        if (!canvas || typeof qrcode !== 'function' || !o || !o.promptpay_payload) return;
-        const qr = qrcode(0, 'M');
-        qr.addData(String(o.promptpay_payload));
-        qr.make();
-        const n = qr.getModuleCount();
+        if (!canvas || !o) return;
         const w = canvas.width;
         const h = canvas.height;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, w, h);
+        this._qrDrawSeq = (this._qrDrawSeq || 0) + 1;
+        const seq = this._qrDrawSeq;
 
-        ctx.fillStyle = '#0f172a';
-        ctx.fillRect(0, 0, w, 48);
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 18px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Thai QR Payment • PromptPay', w / 2, 30);
+        const drawFrame = (headerLabel) => {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(0, 0, w, 48);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 18px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(headerLabel, w / 2, 30);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = 'bold 20px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(String(o.amount_display || ''), w / 2, h - 34);
+          ctx.fillStyle = '#475569';
+          ctx.font = '13px monospace';
+          ctx.fillText(String(o.order_id || '') + ' · ' + String(o.account_name || 'FPLSaWaDiKa'), w / 2, h - 12);
+        };
+
+        if (o.qr_image_url) {
+          drawFrame('Thai QR Payment');
+          const img = new Image();
+          img.onload = () => {
+            if (seq !== this._qrDrawSeq) return;
+            drawFrame('Thai QR Payment');
+            const boxX = 24;
+            const boxY = 58;
+            const boxW = w - 48;
+            const boxH = h - 120;
+            const iw = img.naturalWidth || img.width || boxW;
+            const ih = img.naturalHeight || img.height || boxH;
+            const scale = Math.min(boxW / iw, boxH / ih);
+            const dw = Math.max(1, Math.round(iw * scale));
+            const dh = Math.max(1, Math.round(ih * scale));
+            const dx = Math.round(boxX + (boxW - dw) / 2);
+            const dy = Math.round(boxY + (boxH - dh) / 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(boxX, boxY, boxW, boxH);
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, dx, dy, dw, dh);
+          };
+          img.src = String(o.qr_image_url);
+          return;
+        }
+
+        if (!o.promptpay_payload || typeof qrcode !== 'function') return;
+        const qr = qrcode(0, 'M');
+        qr.addData(String(o.promptpay_payload));
+        qr.make();
+        const n = qr.getModuleCount();
+
+        drawFrame('Thai QR Payment • PromptPay');
 
         const pad = 34;
         const qrSize = w - pad * 2;
@@ -594,13 +704,6 @@
             }
           }
         }
-
-        ctx.fillStyle = '#0f172a';
-        ctx.font = 'bold 20px sans-serif';
-        ctx.fillText(String(o.amount_display || ''), w / 2, h - 34);
-        ctx.fillStyle = '#475569';
-        ctx.font = '13px monospace';
-        ctx.fillText(String(o.order_id || '') + ' · ' + String(o.account_name || 'FPLSaWaDiKa'), w / 2, h - 12);
       },
 
       downloadQrPng() {
@@ -610,7 +713,7 @@
           const url = canvas.toDataURL('image/png');
           const a = document.createElement('a');
           a.href = url;
-          a.download = 'promptpay-' + String(this.order.order_id || 'order') + '.png';
+          a.download = 'qr-payment-' + String(this.order.order_id || 'order') + '.png';
           document.body.appendChild(a);
           a.click();
           a.remove();

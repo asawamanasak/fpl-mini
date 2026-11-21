@@ -1698,6 +1698,13 @@
         this.data = this.multiData.leagues[this.activeLeagueId] || Object.values(this.multiData.leagues)[0] || {};
         this.config = this.configs[this.activeLeagueId] || Object.values(this.configs)[0] || {};
         if (!this.config.features) this.config.features = {};
+        try {
+          if (typeof localStorage !== 'undefined' && this.activeLeagueId) {
+            localStorage.setItem('fpl_mini_active_league', String(this.activeLeagueId));
+            const activeLeagueName = String((this.data && this.data.name) || (this.config && this.config.name) || '').slice(0, 80);
+            if (activeLeagueName) localStorage.setItem('fpl_mini_active_league_name', activeLeagueName);
+          }
+        } catch (e) {}
         
         const maxGW = Number(this.multiData.max_gw) || 2;
         const queryGWNum = Number(queryGW);
@@ -3944,7 +3951,9 @@
         
         try {
           if (typeof localStorage !== 'undefined') {
-            localStorage.setItem('fpl_mini_active_league', this.activeLeagueId);
+            localStorage.setItem('fpl_mini_active_league', String(this.activeLeagueId));
+            const switchedName = String((this.data && this.data.name) || (this.config && this.config.name) || '').slice(0, 80);
+            if (switchedName) localStorage.setItem('fpl_mini_active_league_name', switchedName);
           }
         } catch (e) {}
 

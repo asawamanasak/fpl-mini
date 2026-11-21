@@ -4899,6 +4899,13 @@ __STRUCTURED_DATA_JSON__
         this.data = this.multiData.leagues[this.activeLeagueId] || Object.values(this.multiData.leagues)[0] || {};
         this.config = this.configs[this.activeLeagueId] || Object.values(this.configs)[0] || {};
         if (!this.config.features) this.config.features = {};
+        try {
+          if (typeof localStorage !== 'undefined' && this.activeLeagueId) {
+            localStorage.setItem('fpl_mini_active_league', String(this.activeLeagueId));
+            const activeLeagueName = String((this.data && this.data.name) || (this.config && this.config.name) || '').slice(0, 80);
+            if (activeLeagueName) localStorage.setItem('fpl_mini_active_league_name', activeLeagueName);
+          }
+        } catch (e) {}
         
         const maxGW = Number(this.multiData.max_gw) || 2;
         const queryGWNum = Number(queryGW);
@@ -7145,7 +7152,9 @@ __STRUCTURED_DATA_JSON__
         
         try {
           if (typeof localStorage !== 'undefined') {
-            localStorage.setItem('fpl_mini_active_league', this.activeLeagueId);
+            localStorage.setItem('fpl_mini_active_league', String(this.activeLeagueId));
+            const switchedName = String((this.data && this.data.name) || (this.config && this.config.name) || '').slice(0, 80);
+            if (switchedName) localStorage.setItem('fpl_mini_active_league_name', switchedName);
           }
         } catch (e) {}
 
@@ -22190,6 +22199,11 @@ def generate_landing_html(multi_data, leagues_config, site_config):
             "teams_count": real_teams
         })
 
+    showcase_league_map = {
+        lid: str((multi_data.get('leagues') or {}).get(lid, {}).get('name') or (leagues_config.get(lid) or {}).get('name') or f"League {lid}")
+        for lid in showcase_lids
+    }
+    showcase_league_map_json = json.dumps(showcase_league_map, ensure_ascii=False).replace('</', '<\\/')
     demos_json = json.dumps(demo_cards, ensure_ascii=False).replace('</', '<\\/')
     pricing_json = json.dumps({
         "standard": {"thb": int(std_p.get('thb', 500)), "usd": int(std_p.get('usd', 19))},
@@ -22735,6 +22749,133 @@ __STRUCTURED_DATA_JSON__
     }
     .bm-mobile-link:hover {
       background-color: var(--color-arena-card);
+    }
+    .bm-mobile-link-accent {
+      margin-top: 0.45rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--color-arena-border);
+      color: var(--color-live);
+      font-weight: 700;
+    }
+
+    /* Returning Demo/Beta User Shortcut Bar */
+    .bm-return-bar {
+      background-color: var(--color-arena-surface);
+      color: var(--color-arena-ink);
+      border-bottom: 1px solid var(--color-arena-border);
+    }
+    .bm-return-bar.hidden {
+      display: none;
+    }
+    .bm-return-bar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0.55rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem 1rem;
+    }
+    .bm-return-bar-info {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      min-width: 0;
+      font-size: 0.85rem;
+    }
+    .bm-return-dot {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 9999px;
+      background-color: var(--color-live);
+      flex-shrink: 0;
+    }
+    .bm-return-prefix {
+      color: var(--color-arena-ink-2);
+    }
+    .bm-return-name {
+      color: var(--color-arena-ink);
+      font-weight: 700;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+    .bm-return-bar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .bm-return-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0.4rem 0.9rem;
+      border-radius: 0.45rem;
+      background-color: var(--color-arena-ink);
+      color: var(--color-arena);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: opacity 0.15s ease, transform 0.1s ease;
+    }
+    .bm-return-cta:hover {
+      opacity: 0.92;
+    }
+    .bm-return-cta:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+    .bm-return-all {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0.4rem 0.8rem;
+      border-radius: 0.45rem;
+      border: 1px solid var(--color-arena-border-strong);
+      color: var(--color-arena-ink);
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background-color 0.15s ease;
+    }
+    .bm-return-all:hover {
+      background-color: var(--color-arena-card);
+    }
+    .bm-return-close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 44px;
+      padding: 0;
+      border-radius: 0.45rem;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--color-arena-ink-2);
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .bm-return-close:hover {
+      background-color: var(--color-arena-card);
+      color: var(--color-arena-ink);
+    }
+    @media (max-width: 479px) {
+      .bm-return-bar-inner {
+        padding: 0.55rem 0.85rem;
+      }
+      .bm-return-bar-actions {
+        width: 100%;
+      }
+      .bm-return-cta {
+        flex: 1 1 auto;
+      }
     }
 
     /* Hero Broadcast Arena */
@@ -24298,8 +24439,8 @@ __STRUCTURED_DATA_JSON__
         <button id="landing-theme-btn" type="button" onclick="landingApp.toggleTheme()" class="bm-icon-btn" aria-label="สลับโหมดสี">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         </button>
-        <a id="nav-cta-btn" href="./__PREVIEW_LID__/" class="bm-cta-nav">
-          <span>เปิดดูลีกตัวอย่าง</span>
+        <a id="nav-cta-btn" href="./preview.html" class="bm-cta-nav">
+          <span>ลีกทั้งหมด (9 ลีก)</span>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
         </a>
         <button id="mobile-menu-toggle" type="button" onclick="landingApp.toggleMobileMenu()" class="bm-icon-btn bm-mobile-menu-btn" aria-expanded="false" aria-controls="mobile-nav-drawer" aria-label="เปิดเมนู">
@@ -24313,8 +24454,24 @@ __STRUCTURED_DATA_JSON__
       <a id="m-nav-demos" href="#demos" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">ลีกตัวอย่างจริง</a>
       <a id="m-nav-pricing" href="#pricing" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">แพ็กเกจราคา</a>
       <a id="m-nav-order" href="#order" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link">เปิดใช้งานลีก</a>
+      <a id="m-nav-all-leagues" href="./preview.html" onclick="landingApp.closeMobileMenu()" class="bm-mobile-link bm-mobile-link-accent">เข้าดูลีกทั้งหมด (__TOTAL_SHOWCASE_LEAGUES__ ลีก) →</a>
     </div>
   </header>
+
+  <div id="returning-league-bar" class="bm-return-bar hidden" role="region" aria-label="ทางลัดกลับเข้าลีกของคุณ">
+    <div class="bm-return-bar-inner">
+      <div class="bm-return-bar-info">
+        <span class="bm-return-dot" aria-hidden="true"></span>
+        <span id="return-bar-prefix" class="bm-return-prefix">เคยเข้าชมลีก:</span>
+        <strong id="return-bar-league-name" class="bm-return-name"></strong>
+      </div>
+      <div class="bm-return-bar-actions">
+        <a id="return-bar-go-btn" href="./preview.html" class="bm-return-cta">กลับเข้าลีกของคุณ →</a>
+        <a id="return-bar-all-link" href="./preview.html" class="bm-return-all">ดูทั้ง __TOTAL_SHOWCASE_LEAGUES__ ลีก</a>
+        <button id="return-bar-dismiss" type="button" onclick="landingApp.dismissReturningLeagueBar()" class="bm-return-close" aria-label="ซ่อนแถบนี้">×</button>
+      </div>
+    </div>
+  </div>
 
   <main id="main-content">
     <!-- Hero Arena -->
@@ -24690,6 +24847,7 @@ __STRUCTURED_DATA_JSON__
     window.LANDING_COPY = __LANDING_COPY_JSON__;
     window.PRICING_CONFIG = __PRICING_JSON__;
     window.SHOWCASE_DEMOS = __DEMOS_JSON__;
+    window.SHOWCASE_LEAGUE_MAP = __SHOWCASE_LEAGUE_MAP_JSON__;
     window.SAMPLE_PREVIEW = __SAMPLE_PREVIEW_JSON__;
 
     const landingApp = {
@@ -24843,6 +25001,54 @@ __STRUCTURED_DATA_JSON__
         if (btn) btn.setAttribute('aria-expanded', 'false');
       },
 
+      renderReturningLeagueBar() {
+        const bar = document.getElementById('returning-league-bar');
+        if (!bar) return;
+        let dismissed = false;
+        let savedLid = '';
+        let savedName = '';
+        try {
+          dismissed = sessionStorage.getItem('fpl_return_bar_dismissed') === '1';
+          savedLid = String(localStorage.getItem('fpl_mini_active_league') || '').trim();
+          savedName = String(localStorage.getItem('fpl_mini_active_league_name') || '').trim();
+        } catch (_) {}
+        if (dismissed || !/^[0-9]{1,10}$/.test(savedLid)) {
+          bar.classList.add('hidden');
+          return;
+        }
+        const isEn = this.lang === 'en';
+        const showcaseMap = window.SHOWCASE_LEAGUE_MAP || {};
+        const displayName = String(showcaseMap[savedLid] || savedName || ('League ' + savedLid));
+        const isFile = window.location.protocol === 'file:';
+
+        const prefixEl = document.getElementById('return-bar-prefix');
+        const nameEl = document.getElementById('return-bar-league-name');
+        const goBtn = document.getElementById('return-bar-go-btn');
+        const allLink = document.getElementById('return-bar-all-link');
+        const closeBtn = document.getElementById('return-bar-dismiss');
+        if (prefixEl) prefixEl.textContent = isEn ? 'Recently viewed league:' : 'เคยเข้าชมลีก:';
+        if (nameEl) nameEl.textContent = displayName;
+        if (goBtn) {
+          goBtn.textContent = isEn ? 'Return to Your League →' : 'กลับเข้าลีกของคุณ →';
+          goBtn.setAttribute('href', isFile ? ('./' + savedLid + '/index.html') : ('./' + savedLid + '/'));
+        }
+        if (allLink) {
+          allLink.textContent = isEn ? 'All __TOTAL_SHOWCASE_LEAGUES__ Leagues' : 'ดูทั้ง __TOTAL_SHOWCASE_LEAGUES__ ลีก';
+          allLink.setAttribute('href', './preview.html');
+        }
+        if (closeBtn) {
+          closeBtn.setAttribute('aria-label', isEn ? 'Hide this bar' : 'ซ่อนแถบนี้');
+        }
+        bar.setAttribute('aria-label', isEn ? 'Shortcut to your last viewed league' : 'ทางลัดกลับเข้าลีกของคุณ');
+        bar.classList.remove('hidden');
+      },
+
+      dismissReturningLeagueBar() {
+        try { sessionStorage.setItem('fpl_return_bar_dismissed', '1'); } catch (_) {}
+        const bar = document.getElementById('returning-league-bar');
+        if (bar) bar.classList.add('hidden');
+      },
+
       setCurrency(curr) {
         this.currencyExplicit = true;
         this.currency = curr === 'USD' ? 'USD' : 'THB';
@@ -24895,6 +25101,10 @@ __STRUCTURED_DATA_JSON__
         setTxt('m-nav-order', copy.nav_order);
         const ctaSpan = document.querySelector('#nav-cta-btn span');
         if (ctaSpan && copy.nav_cta) ctaSpan.textContent = copy.nav_cta;
+        setTxt('m-nav-all-leagues', this.lang === 'en'
+          ? 'View All __TOTAL_SHOWCASE_LEAGUES__ Leagues →'
+          : 'เข้าดูลีกทั้งหมด (__TOTAL_SHOWCASE_LEAGUES__ ลีก) →');
+        this.renderReturningLeagueBar();
 
         setTxt('hero-h1-line1', copy.hero_h1_line1);
         setTxt('hero-h1-line2', copy.hero_h1_line2);
@@ -25864,6 +26074,7 @@ __STRUCTURED_DATA_JSON__
     html = html.replace('__SUPPORT_EMAIL__', support_email)
     html = html.replace('__PRICING_JSON__', pricing_json)
     html = html.replace('__DEMOS_JSON__', demos_json)
+    html = html.replace('__SHOWCASE_LEAGUE_MAP_JSON__', showcase_league_map_json)
     html = html.replace('__SAMPLE_PREVIEW_JSON__', sample_preview_json)
     return html
 
@@ -26114,8 +26325,13 @@ def generate_pay_html(site_config):
           <!-- QR Column -->
           <div id="pay-qr-col" class="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 sm:p-6 shadow-sm space-y-4 text-center">
             <div class="space-y-1">
-              <div id="qr-step-badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-200">ขั้นตอนที่ 1 • สแกน PromptPay QR</div>
+              <div id="qr-step-badge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-200">ขั้นตอนที่ 1 • สแกน QR ชำระเงิน</div>
               <div id="qr-exact-amount" class="text-3xl font-black text-rose-600 dark:text-rose-400 tabular-nums pt-1">500.00 ฿</div>
+              <div class="pt-1">
+                <button id="btn-copy-exact-amount" type="button" onclick="payApp.copyExactAmount()" class="inline-flex items-center justify-center gap-1.5 min-h-[44px] px-4 py-2 rounded-xl border border-rose-300 dark:border-rose-800 bg-rose-50 dark:bg-rose-950/50 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-xs sm:text-sm font-bold text-rose-700 dark:text-rose-300 transition-colors cursor-pointer">
+                  <span id="btn-copy-exact-amount-text">คัดลอกยอดเงิน</span>
+                </button>
+              </div>
               <p id="qr-exact-hint" class="text-xs font-semibold text-amber-700 dark:text-amber-300">กรุณาโอนตรงตามยอดสตางค์นี้เพื่อให้ตรวจสอบยอดได้แม่นยำ</p>
             </div>
 
@@ -26354,7 +26570,8 @@ def generate_pay_html(site_config):
         setTxt('sum-league-lbl', isEn ? 'FPL League' : 'ลีก FPL');
         setTxt('sum-contact-lbl', isEn ? 'Delivery Contact' : 'ช่องทางรับลิงก์');
         setTxt('sum-rules-lbl', isEn ? 'Prize Rules' : 'กติกาที่ระบุ');
-        setTxt('qr-step-badge', isEn ? 'Step 1 • Scan PromptPay QR' : 'ขั้นตอนที่ 1 • สแกน PromptPay QR');
+        setTxt('qr-step-badge', isEn ? 'Step 1 • Scan Payment QR' : 'ขั้นตอนที่ 1 • สแกน QR ชำระเงิน');
+        setTxt('btn-copy-exact-amount-text', isEn ? 'Copy Exact Amount' : 'คัดลอกยอดเงิน');
         setTxt('qr-exact-hint', isEn ? 'Transfer the exact satang amount shown so your payment can be verified quickly' : 'กรุณาโอนตรงตามยอดสตางค์นี้เพื่อให้ตรวจสอบยอดได้แม่นยำ');
         setTxt('qr-acct-lbl', isEn ? 'Account Name:' : 'ชื่อบัญชีผู้รับ:');
         setTxt('qr-timer-lbl', isEn ? 'QR Expires In:' : 'QR มีอายุถึง:');
@@ -26501,13 +26718,26 @@ def generate_pay_html(site_config):
               rejAlert.classList.add('hidden');
             }
           }
+          const hasQr = Boolean(o.qr_image_url || o.promptpay_payload);
           if (qrCol) {
-            qrCol.classList.toggle('hidden', st === 'rejected' || !o.promptpay_payload);
+            qrCol.classList.toggle('hidden', st === 'rejected' || !hasQr);
           }
-          if (st === 'awaiting_payment' && o.promptpay_payload) {
+          if (st === 'awaiting_payment' && hasQr) {
             setTxt('qr-exact-amount', o.amount_display || '500.00 ฿');
+            const satNum = Number(o.amount_satang);
+            const exactDec = (Number.isFinite(satNum) && satNum > 0) ? (satNum / 100).toFixed(2) : '';
+            setTxt('btn-copy-exact-amount-text', exactDec
+              ? (isEn ? ('Copy Exact Amount (' + exactDec + ')') : ('คัดลอกยอดเงิน (' + exactDec + ')'))
+              : (isEn ? 'Copy Exact Amount' : 'คัดลอกยอดเงิน'));
+            setTxt('qr-exact-hint', o.payment_mode === 'static_qr'
+              ? (isEn
+                  ? 'Scan or save the QR image, enter the exact satang amount shown, and verify the account name before transferring'
+                  : 'สแกนหรือบันทึกรูป QR แล้วกรอกยอดให้ตรงตามเศษสตางค์นี้ และเช็กชื่อบัญชีผู้รับก่อนโอน')
+              : (isEn
+                  ? 'Transfer the exact satang amount shown so your payment can be verified quickly'
+                  : 'กรุณาโอนตรงตามยอดสตางค์นี้เพื่อให้ตรวจสอบยอดได้แม่นยำ'));
             setTxt('qr-acct-val', o.account_name || 'FPLSaWaDiKa');
-            this.drawPromptPayCanvas(o);
+            this.drawPaymentQrCanvas(o);
             this.startCountdown(o.expires_at);
           }
         } else if (st === 'slip_submitted') {
@@ -26535,27 +26765,118 @@ def generate_pay_html(site_config):
         }
       },
 
-      drawPromptPayCanvas(o) {
+      _fallbackCopyText(text) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = String(text || '');
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+        } catch (_) {}
+      },
+
+      copyExactAmount() {
+        if (!this.order) return;
+        const isEn = this.lang === 'en';
+        const sat = Number(this.order.amount_satang);
+        const exactStr = (Number.isFinite(sat) && sat > 0) ? (sat / 100).toFixed(2) : '';
+        if (!exactStr) return;
+        const btnTextEl = document.getElementById('btn-copy-exact-amount-text');
+        const applyCopied = () => {
+          if (!btnTextEl) return;
+          btnTextEl.textContent = isEn ? ('Copied ' + exactStr + ' ✓') : ('คัดลอกยอด ' + exactStr + ' แล้ว ✓');
+          if (this._copyAmountTimer) clearTimeout(this._copyAmountTimer);
+          this._copyAmountTimer = setTimeout(() => {
+            if (!btnTextEl) return;
+            const enNow = this.lang === 'en';
+            btnTextEl.textContent = enNow
+              ? ('Copy Exact Amount (' + exactStr + ')')
+              : ('คัดลอกยอดเงิน (' + exactStr + ')');
+          }, 2200);
+        };
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(exactStr).then(applyCopied).catch(() => {
+              this._fallbackCopyText(exactStr);
+              applyCopied();
+            });
+            return;
+          }
+        } catch (_) {}
+        this._fallbackCopyText(exactStr);
+        applyCopied();
+      },
+
+      drawPaymentQrCanvas(o) {
         const canvas = document.getElementById('pay-qr-canvas');
-        if (!canvas || typeof qrcode !== 'function' || !o || !o.promptpay_payload) return;
-        const qr = qrcode(0, 'M');
-        qr.addData(String(o.promptpay_payload));
-        qr.make();
-        const n = qr.getModuleCount();
+        if (!canvas || !o) return;
         const w = canvas.width;
         const h = canvas.height;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, w, h);
+        this._qrDrawSeq = (this._qrDrawSeq || 0) + 1;
+        const seq = this._qrDrawSeq;
 
-        ctx.fillStyle = '#0f172a';
-        ctx.fillRect(0, 0, w, 48);
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 18px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Thai QR Payment • PromptPay', w / 2, 30);
+        const drawFrame = (headerLabel) => {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(0, 0, w, 48);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 18px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(headerLabel, w / 2, 30);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = 'bold 20px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(String(o.amount_display || ''), w / 2, h - 34);
+          ctx.fillStyle = '#475569';
+          ctx.font = '13px monospace';
+          ctx.fillText(String(o.order_id || '') + ' · ' + String(o.account_name || 'FPLSaWaDiKa'), w / 2, h - 12);
+        };
+
+        if (o.qr_image_url) {
+          drawFrame('Thai QR Payment');
+          const img = new Image();
+          img.onload = () => {
+            if (seq !== this._qrDrawSeq) return;
+            drawFrame('Thai QR Payment');
+            const boxX = 24;
+            const boxY = 58;
+            const boxW = w - 48;
+            const boxH = h - 120;
+            const iw = img.naturalWidth || img.width || boxW;
+            const ih = img.naturalHeight || img.height || boxH;
+            const scale = Math.min(boxW / iw, boxH / ih);
+            const dw = Math.max(1, Math.round(iw * scale));
+            const dh = Math.max(1, Math.round(ih * scale));
+            const dx = Math.round(boxX + (boxW - dw) / 2);
+            const dy = Math.round(boxY + (boxH - dh) / 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(boxX, boxY, boxW, boxH);
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, dx, dy, dw, dh);
+          };
+          img.src = String(o.qr_image_url);
+          return;
+        }
+
+        if (!o.promptpay_payload || typeof qrcode !== 'function') return;
+        const qr = qrcode(0, 'M');
+        qr.addData(String(o.promptpay_payload));
+        qr.make();
+        const n = qr.getModuleCount();
+
+        drawFrame('Thai QR Payment • PromptPay');
 
         const pad = 34;
         const qrSize = w - pad * 2;
@@ -26574,13 +26895,6 @@ def generate_pay_html(site_config):
             }
           }
         }
-
-        ctx.fillStyle = '#0f172a';
-        ctx.font = 'bold 20px sans-serif';
-        ctx.fillText(String(o.amount_display || ''), w / 2, h - 34);
-        ctx.fillStyle = '#475569';
-        ctx.font = '13px monospace';
-        ctx.fillText(String(o.order_id || '') + ' · ' + String(o.account_name || 'FPLSaWaDiKa'), w / 2, h - 12);
       },
 
       downloadQrPng() {
@@ -26590,7 +26904,7 @@ def generate_pay_html(site_config):
           const url = canvas.toDataURL('image/png');
           const a = document.createElement('a');
           a.href = url;
-          a.download = 'promptpay-' + String(this.order.order_id || 'order') + '.png';
+          a.download = 'qr-payment-' + String(this.order.order_id || 'order') + '.png';
           document.body.appendChild(a);
           a.click();
           a.remove();

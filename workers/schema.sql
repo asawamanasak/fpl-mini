@@ -58,3 +58,10 @@ CREATE INDEX IF NOT EXISTS idx_league_orders_created
 CREATE UNIQUE INDEX IF NOT EXISTS idx_league_orders_active_satang
   ON league_orders (amount_satang)
   WHERE currency = 'THB' AND amount_satang >= 50001 AND status IN ('awaiting_payment', 'slip_submitted', 'rejected');
+
+-- Private application settings managed via /admin (e.g., static payment QR image & display account name)
+CREATE TABLE IF NOT EXISTS app_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL DEFAULT '',
+  updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
