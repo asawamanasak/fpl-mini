@@ -461,7 +461,7 @@ def main() -> int:
     parser.add_argument("--league-id", default="", help="Numeric FPL Classic League ID")
     parser.add_argument("--list-leagues", action="store_true", help="Print all configured leagues with lifecycle status and exit")
     parser.add_argument("--update-lifecycle", action="store_true", help="Update only supplied lifecycle fields without overwriting existing features/rules")
-    parser.add_argument("--plan", choices=["standard", "custom"], default=None, help="Commercial tier plan")
+    parser.add_argument("--plan", choices=["standard", "custom", "tier2_quote"], default=None, help="Commercial tier plan")
     parser.add_argument(
         "--prize-model",
         choices=["weekly", "standard", "monthly", "penalties", "none"],
@@ -575,12 +575,13 @@ def main() -> int:
         tenant_group = args.tenant_group.strip() or f"private_{lid}"
         non_prize = parse_non_prize_teams(args.non_prize_teams)
         existing_created = str((leagues_cfg.get(lid) or {}).get("created_at") or "")
+        effective_tier = 2 if (args.plan == "tier2_quote" and "--tier" not in sys.argv) else args.tier
         entry = build_league_entry(
             league_id=lid,
             league_name=resolved_name,
             short_name=args.short_name.strip(),
-            tier=args.tier,
-            plan=args.plan or "standard",
+            tier=effective_tier,
+            plan=args.plan or ("tier2_quote" if effective_tier == 2 else "standard"),
             status=args.status or "active",
             tenant_group=tenant_group,
             visibility=args.visibility or "private",

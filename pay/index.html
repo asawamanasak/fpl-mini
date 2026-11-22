@@ -1045,9 +1045,42 @@
           if (btn) btn.disabled = false;
           if (txt) txt.textContent = isEn ? 'Submit Payment Slip' : 'ส่งสลิปยืนยันการโอน';
         }
+      },
+
+      initClientErrorHook() {
+        if (window.__fplPayErrHooked) return;
+        window.__fplPayErrHooked = true;
+        var sentCount = 0;
+        var self = this;
+        var report = function(cat, msg) {
+          if (sentCount >= 3 || typeof navigator === 'undefined' || !navigator.sendBeacon) return;
+          var apiCfg = self.resolveApiBase();
+          if ((self.isLocalOrigin() || self.isPreviewOrigin()) && !apiCfg.isNonProdTarget) return;
+          sentCount += 1;
+          try {
+            navigator.sendBeacon(
+              apiCfg.base + '/api/telemetry/event',
+              JSON.stringify({
+                type: 'client_error',
+                category: cat || 'js_error',
+                league_id: 'pay',
+                path: window.location.pathname,
+                msg: String(msg || '').slice(0, 120)
+              })
+            );
+          } catch (_) {}
+        };
+        window.addEventListener('error', function(e) {
+          report('js_error', e && e.message ? e.message : 'window_error');
+        });
+        window.addEventListener('unhandledrejection', function(e) {
+          var r = e && e.reason;
+          report('js_error', (r && r.message) ? r.message : String(r || 'promise_rejection'));
+        });
       }
     };
 
+    payApp.initClientErrorHook();
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
       payApp.init();
     } else {

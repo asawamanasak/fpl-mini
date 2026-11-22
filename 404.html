@@ -82,6 +82,37 @@
           return '<a href="' + href + '" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 hover:border-blue-500 text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors">' + label + '</a>';
         }).join('');
       }
+      var errSent = 0;
+      function send404Error(msg) {
+        if (errSent >= 3 || typeof navigator === 'undefined' || !navigator.sendBeacon) return;
+        var host = (window.location && window.location.hostname || '').toLowerCase();
+        var isLocal = window.location.protocol === 'file:' || host === 'localhost' || host === '127.0.0.1' || host === '[::1]';
+        var isPrev = host.endsWith('.pages.dev') || host.endsWith('.workers.dev');
+        var devBase = '';
+        if (isLocal) {
+          try {
+            var qp = new URLSearchParams(window.location.search || '').get('api');
+            devBase = (qp === 'local' || qp === 'staging') ? 'http://127.0.0.1:8787' : (sessionStorage.getItem('fpl_dev_api_base') || '');
+          } catch (_) {}
+        }
+        if ((isLocal && !devBase) || isPrev) return;
+        var target = (devBase || 'https://api.fplsawadika.com') + '/api/telemetry/event';
+        errSent += 1;
+        try {
+          navigator.sendBeacon(target, JSON.stringify({
+            type: 'client_error',
+            category: 'js_error',
+            league_id: '404',
+            path: window.location.pathname,
+            msg: String(msg || '').slice(0, 120)
+          }));
+        } catch (_) {}
+      }
+      window.addEventListener('error', function(e) { send404Error(e && e.message ? e.message : 'window_error'); });
+      window.addEventListener('unhandledrejection', function(e) {
+        var r = e && e.reason;
+        send404Error((r && r.message) ? r.message : String(r || 'promise_rejection'));
+      });
     })();
   </script>
 </body>

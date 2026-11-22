@@ -278,7 +278,10 @@ export async function isRequestAuthenticated(request, env) {
 /**
  * Render Executive Summary Report & Business Intelligence Dashboard HTML
  */
-export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zero Trust') {
+export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zero Trust', authIdentity = '') {
+  const safeIdentity = escapeHtmlAttr(authIdentity || ADMIN_EMAIL);
+  const safeColo = escapeHtmlAttr(colo || 'EDGE');
+  const safeProvider = escapeHtmlAttr(authProvider || 'Cloudflare Zero Trust');
   return `<!DOCTYPE html>
 <html lang="th" class="dark h-full scroll-smooth">
 <head>
@@ -422,8 +425,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
           <div class="text-xs mono text-slate-600 dark:text-neutral-400 flex items-center gap-1.5 truncate">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
-            <span>${colo} Edge</span>
-            <span class="hidden md:inline">· ${ADMIN_EMAIL}</span>
+            <span>${safeColo} Edge</span>
+            <span class="hidden md:inline">· ${safeIdentity}</span>
           </div>
         </div>
       </div>
@@ -431,23 +434,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       <!-- Right Action Controls (All >= 42x42px touch targets) -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
 
-        <!-- Quick League Switcher (Connects directly to Commercial Landing Page, Demo Hub, and all 9 leagues) -->
+        <!-- Dynamic Quick League Switcher (Landing, Preview, and all live leagues) -->
         <div class="relative">
           <label for="quickLeagueSelect" class="sr-only" data-i18n="nav_jump_league_label">ทางลัดเปิดหน้าขาย เดโม และมินิลีก</label>
           <select id="quickLeagueSelect" onchange="jumpToLeague(this.value)"
-            class="min-h-[42px] px-2.5 sm:px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark text-slate-800 dark:text-neutral-200 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 transition-colors duration-150 cursor-pointer max-w-[140px] sm:max-w-[210px]">
-            <option value="" data-i18n="nav_jump_placeholder">ทางลัดเปิดหน้าเว็บ (9 ลีก)...</option>
+            class="min-h-[42px] px-2.5 sm:px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark text-slate-800 dark:text-neutral-200 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 transition-colors duration-150 cursor-pointer max-w-[140px] sm:max-w-[220px]">
+            <option value="" data-i18n="nav_jump_placeholder">ทางลัดเปิดหน้าเว็บ...</option>
             <option value="landing" data-i18n="nav_jump_landing">🛒 หน้าขายสินค้า (Landing Page)</option>
             <option value="preview" data-i18n="nav_jump_preview">🎮 หน้าเดโมรวมลีก (preview.html)</option>
-            <option value="40700">40700 · เซียนอยู่รู หมูอยู่ตึก</option>
-            <option value="675290">675290 · NudNee</option>
-            <option value="38491">38491 · รอ แมน โอน</option>
-            <option value="1101958">1101958 · Barley's Official League</option>
-            <option value="438691">438691 · 2 spade</option>
-            <option value="187827">187827 · Shi62</option>
-            <option value="5349">5349 · Bramann League</option>
-            <option value="567387">567387 · Fantasy Nguan & friends cup</option>
-            <option value="139836">139836 · FPL Growth Mindset 2026/27 (Tier 2)</option>
           </select>
         </div>
 
@@ -476,44 +470,43 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       </div>
     </div>
 
-    <!-- Sticky Module Navigation Strip (Operations First · Compact Chrome) -->
+    <!-- Sticky Module Navigation Strip (Ordered 01 -> 11 matching page flow 100%) -->
     <nav aria-label="Dashboard modules" class="border-t border-borderLight dark:border-borderDark bg-raisedLight/80 dark:bg-cardDark/90">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1.5 overflow-x-auto touch-scroll py-1 text-xs mono">
+        <a href="#sec-audience" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-800 dark:text-neutral-200 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 font-medium whitespace-nowrap">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span data-i18n="mod_nav_1">01. ภาพรวม KPI</span>
+        </a>
+        <a href="#sec-portfolio" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-800 dark:text-neutral-200 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 font-medium whitespace-nowrap">
+          <span data-i18n="mod_nav_2">02. พอร์ตโฟลิโอลีก</span>
+        </a>
         <a href="#sec-orders" class="min-h-[40px] px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-800 dark:text-sky-300 hover:bg-sky-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-500 transition-colors shrink-0 inline-flex items-center gap-2 font-semibold whitespace-nowrap">
-          <span data-i18n="mod_nav_9">9. ออเดอร์ &amp; ตรวจสลิป</span>
+          <span data-i18n="mod_nav_3">03. ออเดอร์ &amp; ตรวจสลิป</span>
           <span id="navOrderPendingBadge" class="hidden px-2 py-0.5 rounded-full bg-rose-700 text-white text-xs font-mono leading-none">0</span>
         </a>
         <a href="#sec-onboarding" class="min-h-[40px] px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 hover:bg-amber-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-amber-500 transition-colors shrink-0 inline-flex items-center gap-2 font-semibold whitespace-nowrap">
-          <span data-i18n="mod_nav_10">10. เพิ่มลีกลูกค้าใหม่ (Onboarding)</span>
-        </a>
-        <a href="#sec-portfolio" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-800 dark:text-neutral-200 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 font-medium whitespace-nowrap">
-          <span data-i18n="mod_nav_2">2. พอร์ตโฟลิโอ 9 ลีก</span>
-        </a>
-        <a href="#sec-audience" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-800 dark:text-neutral-200 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 font-medium whitespace-nowrap">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-          <span data-i18n="mod_nav_1">1. ภาพรวมธุรกิจและ KPI</span>
+          <span data-i18n="mod_nav_4">04. เพิ่มลีกลูกค้าใหม่</span>
         </a>
         <a href="#sec-features" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 whitespace-nowrap">
-          <span data-i18n="mod_nav_3">3. พฤติกรรมฟีเจอร์</span>
+          <span data-i18n="mod_nav_5">05. พฤติกรรมฟีเจอร์</span>
         </a>
         <a href="#sec-distribution" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 whitespace-nowrap">
-          <span data-i18n="mod_nav_4">4. ช่องทางและภูมิภาค</span>
+          <span data-i18n="mod_nav_6">06. เบราว์เซอร์ &amp; ภาษา</span>
         </a>
         <a href="#sec-devices" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 whitespace-nowrap">
-          <span data-i18n="mod_nav_5">5. อุปกรณ์ที่ใช้งาน</span>
+          <span data-i18n="mod_nav_7">07. อุปกรณ์</span>
         </a>
         <a href="#sec-timing" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 whitespace-nowrap">
-          <span data-i18n="mod_nav_6">6. กราฟทราฟฟิกและช่วงเวลาพีค</span>
+          <span data-i18n="mod_nav_8">08. ช่วงเวลาพีค</span>
         </a>
         <a href="#sec-system" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 whitespace-nowrap">
-          <span data-i18n="mod_nav_7">7. ประสิทธิภาพระบบและการขยายสเกล</span>
+          <span data-i18n="mod_nav_9">09. ระบบ &amp; โควตา</span>
         </a>
         <a href="#sec-monitor" class="min-h-[40px] px-3 py-1.5 rounded-lg text-slate-700 dark:text-neutral-300 hover:bg-cardLight dark:hover:bg-raisedDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 whitespace-nowrap">
-          <span data-i18n="mod_nav_8">8. ตรวจสุขภาพระบบย้อนหลัง</span>
+          <span data-i18n="mod_nav_10">10. Monitor</span>
         </a>
         <a href="#sec-pitch" class="min-h-[40px] px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-500/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500 transition-colors shrink-0 inline-flex items-center gap-2 font-semibold whitespace-nowrap">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-          <span data-i18n="mod_nav_0">0. โซลูชันผู้จัดลีก & Pitch Deck</span>
+          <span data-i18n="mod_nav_11">11. Pitch Deck</span>
         </a>
       </div>
     </nav>
@@ -529,12 +522,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <h1 id="page-main-heading" class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900 dark:text-white leading-tight" data-i18n="page_title">
             สรุปภาพรวมผู้บริหารและข้อมูลวิเคราะห์ธุรกิจสด
           </h1>
-          <p class="text-sm text-slate-600 dark:text-neutral-300 leading-relaxed" data-i18n="page_subtitle">
-            ศูนย์ควบคุมข้อมูลระบบ พฤติกรรมผู้ใช้งานทั้ง 9 มินิลีก (8 Tier 1 + 1 Tier 2) เศรษฐศาสตร์เงินรางวัล และการประเมินความจุคลาวด์เพื่อขยายสเกลโปรเจกต์
+          <p id="pageSubtitleDesc" class="text-sm text-slate-600 dark:text-neutral-300 leading-relaxed" data-i18n="page_subtitle">
+            ศูนย์ควบคุมข้อมูลระบบ พฤติกรรมผู้ใช้งาน เศรษฐศาสตร์เงินรางวัล และการประเมินความจุคลาวด์จากข้อมูลสด 100%
           </p>
         </div>
 
-        <!-- Copy Executive Report Action + Security Status -->
+        <!-- Copy Executive Report Action + Live Refresh -->
         <div class="flex flex-wrap items-center gap-2.5 shrink-0">
           <button type="button" id="copyExecReportBtn" onclick="copyExecutiveSummary()"
             class="min-h-[44px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 text-slate-800 dark:text-neutral-200 text-xs font-medium inline-flex items-center gap-2 transition-colors duration-150">
@@ -544,9 +537,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
           <button type="button" id="refreshDataBtn" onclick="triggerLivePitchRefresh()"
             class="min-h-[44px] px-4 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-neutral-950 font-bold active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 text-xs inline-flex items-center gap-2 whitespace-nowrap transition-all duration-150 shadow-sm"
-            title="ดึงข้อมูลสดทันทีจาก Cloudflare Edge & D1 (โชว์ข้อมูลสดทันทีต่อหน้าลูกค้า)">
+            title="ดึงข้อมูลสดทันทีจาก Cloudflare Edge & D1">
             <span id="refreshIcon">${ICONS.bolt}</span>
-            <span id="refreshBtnText" data-i18n="btn_live_pitch_refresh">⚡ Live Pitch Refresh</span>
+            <span id="refreshBtnText" data-i18n="btn_live_pitch_refresh">⚡ Live Refresh</span>
           </button>
         </div>
       </div>
@@ -555,15 +548,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       <div class="p-4 sm:p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div class="space-y-1.5">
           <div class="flex flex-wrap items-center gap-2 text-xs">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
-            <span class="font-medium text-slate-900 dark:text-white" data-i18n="telem_live_active">ระบบตรวจวัดข้อมูลสดทำงานปกติ</span>
-            <span class="mono text-slate-600 dark:text-neutral-400" data-i18n="telem_auto_sync">(ซิงก์อัตโนมัติ 1 ชม./4 ชม. · ${authProvider})</span>
-            <span id="telemetryModelBadge" class="px-2 py-0.5 rounded bg-slate-100 dark:bg-neutral-800 text-xs mono text-slate-700 dark:text-neutral-300">Baseline + Live D1</span>
+            <span id="telemetrySyncDot" class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+            <span id="telemetryLiveStatusText" class="font-medium text-slate-900 dark:text-white" data-i18n="telem_live_active">ระบบตรวจวัดข้อมูลสดทำงานปกติ</span>
+            <span class="mono text-slate-600 dark:text-neutral-400" data-i18n="telem_auto_sync">(ซิงก์ 1 ชม. ศ.–จ. / 4 ชม. อ.–พฤ. · ${safeProvider})</span>
+            <span id="telemetryModelBadge" class="px-2 py-0.5 rounded bg-slate-100 dark:bg-neutral-800 text-xs mono text-slate-700 dark:text-neutral-300">Live D1</span>
           </div>
           <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 dark:text-neutral-400">
             <div>
               <span data-i18n="telem_last_sync_label">ซิงก์ข้อมูลล่าสุด: </span>
-              <span id="telemetryLastSync" class="text-slate-900 dark:text-neutral-100 mono tabular font-medium">8 พ.ย. 2026, 11:18 น.</span>
+              <span id="telemetryLastSync" class="text-slate-900 dark:text-neutral-100 mono tabular font-medium">—</span>
               <span id="telemetryTimeAgo" class="mono tabular ml-1 text-slate-600 dark:text-neutral-400"></span>
             </div>
             <span aria-hidden="true" class="hidden sm:inline text-slate-600 dark:text-neutral-400">·</span>
@@ -577,7 +570,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <!-- Keycap Deadline Countdown -->
         <div class="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-3 pt-3 lg:pt-0 border-t lg:border-t-0 border-borderLight dark:border-borderDark">
           <div class="text-xs">
-            <div id="telemetryNextDeadlineName" class="font-medium text-slate-900 dark:text-neutral-100" data-gw-name="Gameweek 11">เดดไลน์ Gameweek 11</div>
+            <div id="telemetryNextDeadlineName" class="font-medium text-slate-900 dark:text-neutral-100" data-gw-name="Gameweek">เดดไลน์ถัดไป</div>
             <div class="text-slate-600 dark:text-neutral-400 mono text-xs" data-i18n="telem_countdown_sub">นับถอยหลังปิดตลาดย้ายตัว</div>
           </div>
           <div class="flex items-center gap-1.5 mono tabular text-slate-900 dark:text-white text-xs font-medium" aria-label="Deadline countdown">
@@ -608,447 +601,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 00. EXECUTIVE PITCH FLOW & VALUE PROPOSITION FOR MINI-LEAGUE ORGANIZERS   -->
+    <!-- 01. LIVE AUDIENCE & TRAFFIC KPIS (100% REAL D1 & SYNC DATA)               -->
     <!-- ========================================================================= -->
-    <section id="sec-pitch" class="space-y-5 scroll-mt-24" aria-labelledby="sec-pitch-title">
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-borderLight dark:border-borderDark pb-4">
-        <div class="space-y-1.5">
-          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs font-bold tracking-wide">
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span data-i18n="pitch_badge">Executive Pitch Deck · For Mini-League Organizers</span>
-          </div>
-          <h2 id="sec-pitch-title" class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white" data-i18n="sec0_title">
-            00. โซลูชันบริหารมินิลีกแบบ Zero-Touch และข้อเสนอทางธุรกิจ
-          </h2>
-          <p class="text-sm text-slate-600 dark:text-neutral-300 max-w-3xl leading-relaxed" data-i18n="sec0_sub">
-            เปลี่ยนมินิลีกของคุณให้จัดการตัวเองอัตโนมัติ 100% · ลดเวลาทำ Excel 190+ ชม./ปี · สร้างการมีส่วนร่วมของลูกลีกเพิ่มขึ้น 5.7 เท่า พร้อมรองรับเงินรางวัลหมุนเวียนอย่างโปร่งใส
-          </p>
-        </div>
-        <div class="flex flex-wrap items-center gap-2 shrink-0">
-          <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" data-i18n="pitch_tier1_ready">
-            Tier 1: พร้อมเปิดใช้งานทันที
-          </span>
-          <span id="pitchTier2Badge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800" data-i18n="pitch_tier2_roadmap">
-            Tier 2: Live Auto-Picks (1,779 ทีม · สูงสุด 3,000)
-          </span>
-          <button type="button" id="btnTogglePitchBody" aria-expanded="true"
-            class="min-h-[42px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark text-xs font-semibold text-slate-800 dark:text-neutral-200 whitespace-nowrap transition-colors"
-            data-i18n="btn_collapse_pitch">
-            ซ่อนรายละเอียด Pitch
-          </button>
-        </div>
-      </div>
-
-      <div id="secPitchBody" class="space-y-6">
-      <!-- Step 1: The Organizer Dilemma (Pain Points vs Solution Cards) -->
-      <div class="space-y-3">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <h3 class="text-sm font-bold tracking-wide text-slate-900 dark:text-white flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full bg-rose-500/10 text-rose-700 dark:text-rose-400 flex items-center justify-center text-xs font-bold shrink-0">1</span>
-            <span data-i18n="pitch_step1_title">ปัญหาใหญ่ของผู้จัดลีก (Organizer Pain Points) vs ทางออก FPLSaWaDiKa</span>
-          </h3>
-          <span class="text-xs text-slate-600 dark:text-neutral-400 whitespace-nowrap" data-i18n="pitch_step1_sub">เปรียบเทียบภาระงานจริง</span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-          <!-- Card 1: Time & Workload -->
-          <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3 shadow-2xs">
-            <div class="space-y-2">
-              <div class="flex items-center justify-between gap-2">
-                <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300" data-i18n="pain_1_badge">ปัญหาแอดมิน</span>
-                <span class="text-xs mono text-rose-700 dark:text-rose-300 font-semibold whitespace-nowrap" data-i18n="pain_1_metric">เสียเวลา 5 ชม./วีค</span>
-              </div>
-              <h4 class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="pain_1_title">ทำ Excel สรุปคะแนน & เช็กแต้มลบ</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-300 leading-relaxed" data-i18n="pain_1_desc">
-                ต้องมานั่งไล่ดูว่าใครย้ายกี่ตัว โดนลบกี่แต้ม ใครใช้ชิปอะไร สรุปผลช้า 1-2 วันหลังบอลจบ
-              </p>
-            </div>
-            <div class="pt-3 border-t border-emerald-500/20 space-y-1 bg-emerald-50/50 dark:bg-emerald-950/20 -mx-4 -mb-4 p-3.5 rounded-b-xl">
-              <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5" data-i18n="sol_1_badge">
-                ${ICONS.check} FPLSaWaDiKa Solution
-              </span>
-              <p class="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed" data-i18n="sol_1_desc">
-                คำนวณแต้มสด Net Pts หัก Transfer Hit อัตโนมัติทุก 20 วินาที (Edge Cache 15s) พร้อมตารางคะแนนสดไม่ต้องแตะ Excel
-              </p>
-            </div>
-          </div>
-
-          <!-- Card 2: Financial Transparency -->
-          <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3 shadow-2xs">
-            <div class="space-y-2">
-              <div class="flex items-center justify-between gap-2">
-                <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300" data-i18n="pain_2_badge">ปัญหาเหรัญญิก</span>
-                <span class="text-xs mono text-rose-700 dark:text-rose-300 font-semibold whitespace-nowrap" data-i18n="pain_2_metric">ข้อพิพาทเงินรางวัล</span>
-              </div>
-              <h4 class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="pain_2_title">คำนวณเงินรางวัล & ค่าปรับผิดพลาด</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-300 leading-relaxed" data-i18n="pain_2_desc">
-                กติกาซับซ้อน เช่น ค่าปรับบ๊วย 5 อันดับ, รางวัลแต้มสูงสุดรายสัปดาห์, จ่ายเงินก้อนกลางฤดูกาล
-              </p>
-            </div>
-            <div class="pt-3 border-t border-emerald-500/20 space-y-1 bg-emerald-50/50 dark:bg-emerald-950/20 -mx-4 -mb-4 p-3.5 rounded-b-xl">
-              <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5" data-i18n="sol_2_badge">
-                ${ICONS.check} FPLSaWaDiKa Solution
-              </span>
-              <p class="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed" data-i18n="sol_2_desc">
-                Automated Prize Ledger คำนวณเงินรางวัลและค่าปรับอัตโนมัติ 100% โปร่งใสตรวจสอบได้ทันที
-              </p>
-            </div>
-          </div>
-
-          <!-- Card 3: Player Churn & Boredom -->
-          <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3 shadow-2xs">
-            <div class="space-y-2">
-              <div class="flex items-center justify-between gap-2">
-                <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300" data-i18n="pain_3_badge">ปัญหาคอมมูนิตี้</span>
-                <span class="text-xs mono text-rose-700 dark:text-rose-300 font-semibold whitespace-nowrap" data-i18n="pain_3_metric">คนทิ้งทีมกลางคัน</span>
-              </div>
-              <h4 class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="pain_3_title">แต้มตามเยอะ ถอดใจ ไม่เข้าดูแอป</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-300 leading-relaxed" data-i18n="pain_3_desc">
-                ถ้าลุ้นแค่แชมป์สิ้นปี พอผ่านไป 10 นัด คนตาม 50+ แต้มก็เลิกเล่น ลีกกลายเป็นป่าช้า
-              </p>
-            </div>
-            <div class="pt-3 border-t border-emerald-500/20 space-y-1 bg-emerald-50/50 dark:bg-emerald-950/20 -mx-4 -mb-4 p-3.5 rounded-b-xl">
-              <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5" data-i18n="sol_3_badge">
-                ${ICONS.check} FPLSaWaDiKa Solution
-              </span>
-              <p class="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed" data-i18n="sol_3_desc">
-                Weekly Micro-Stakes + บทพากย์กูรูลูกหนังสายดราม่า ปลุกกระแสลุ้นทุกสัปดาห์ พร้อมเรดาร์ฟอร์มและบอลถ้วย Knockout
-              </p>
-            </div>
-          </div>
-
-          <!-- Card 4: Scouting & Social Banter -->
-          <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3 shadow-2xs">
-            <div class="space-y-2">
-              <div class="flex items-center justify-between gap-2">
-                <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300" data-i18n="pain_4_badge">ปัญหาแอปหลัก</span>
-                <span class="text-xs mono text-rose-700 dark:text-rose-300 font-semibold whitespace-nowrap" data-i18n="pain_4_metric">UX ส่องทีมคู่แข่งช้า</span>
-              </div>
-              <h4 class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="pain_4_title">ส่องทีมคู่แข่งยาก ขาดม้านั่งสำรอง</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-300 leading-relaxed" data-i18n="pain_4_desc">
-                ในแอปทางการต้องกดเข้าออกทีละคน ไม่เห็นม้านั่งและแต้มสดของคู่แข่งพร้อมกัน
-              </p>
-            </div>
-            <div class="pt-3 border-t border-emerald-500/20 space-y-1 bg-emerald-50/50 dark:bg-emerald-950/20 -mx-4 -mb-4 p-3.5 rounded-b-xl">
-              <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5" data-i18n="sol_4_badge">
-                ${ICONS.check} FPLSaWaDiKa Solution
-              </span>
-              <p class="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed" data-i18n="sol_4_desc">
-                Interactive Squad Pitch Modal คลิกเดียวเห็นผัง 11 ตัวจริง + ม้านั่ง Auto-Sub และแต้มสดทันที
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 2: Visual Proof & Business Hard Metrics (The 4 Visual Graphics) -->
-      <div class="space-y-4 pt-2">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <h3 class="text-sm font-bold tracking-wide text-slate-900 dark:text-white flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-xs font-bold shrink-0">2</span>
-            <span data-i18n="pitch_step2_title">หลักฐานเชิงประจักษ์ 4 มิติ (Visual Proof & Analytics)</span>
-          </h3>
-          <span class="text-xs text-slate-600 dark:text-neutral-400 whitespace-nowrap" data-i18n="pitch_step2_sub">ข้อมูลจริงจาก 9 มินิลีก</span>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <!-- Graphic 1: Workload Comparison -->
-          <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-4 shadow-2xs">
-            <div>
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <span class="text-xs font-bold tracking-wide text-emerald-700 dark:text-emerald-400" data-i18n="graphic1_eyebrow">มิติที่ 1 · ความคุ้มค่าด้านเวลา</span>
-                <span class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 whitespace-nowrap" data-i18n="graphic1_badge">ประหยัด 190 ชม./ปี</span>
-              </div>
-              <h4 class="text-base font-semibold text-slate-900 dark:text-white mt-1.5" data-i18n="graphic1_title">ภาระงานแอดมิน: จัดการเอง (Excel) vs FPLSaWaDiKa</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-300 mt-1" data-i18n="graphic1_sub">คำนวณจากลีกขนาด 20–80 ทีม ตลอด 38 สัปดาห์การแข่งขัน</p>
-            </div>
-
-            <!-- Visual Bar Comparison -->
-            <div class="space-y-4 py-2">
-              <div class="space-y-1.5">
-                <div class="flex flex-wrap justify-between gap-2 text-xs font-medium">
-                  <span class="text-rose-700 dark:text-rose-300" data-i18n="bar_manual_label">ทำตาราง Excel มือ + ไล่ตรวจแต้มลบ</span>
-                  <span class="mono font-bold text-rose-700 dark:text-rose-300 whitespace-nowrap">5.0 ชม. / GW (190 ชม./ปี)</span>
-                </div>
-                <div class="w-full bg-slate-200 dark:bg-neutral-800 h-4 rounded-full overflow-hidden">
-                  <div class="bg-rose-500 h-full rounded-full" style="width: 100%"></div>
-                </div>
-              </div>
-
-              <div class="space-y-1.5">
-                <div class="flex flex-wrap justify-between gap-2 text-xs font-medium">
-                  <span class="text-emerald-700 dark:text-emerald-400 font-bold" data-i18n="bar_fpl_label">FPLSaWaDiKa Zero-Touch Platform</span>
-                  <span class="mono font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">0 วินาที (อัตโนมัติ 100%)</span>
-                </div>
-                <div class="w-full bg-slate-200 dark:bg-neutral-800 h-4 rounded-full overflow-hidden p-0.5">
-                  <div class="bg-emerald-500 h-full rounded-full" style="width: 2%"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="pt-3 border-t border-borderLight dark:border-borderDark flex flex-wrap items-center justify-between gap-2 text-xs">
-              <span class="text-slate-600 dark:text-neutral-300" data-i18n="graphic1_callout">ประหยัดเวลาแอดมินได้ปีละกว่า 24 วันทำการ!</span>
-              <span class="mono font-bold text-emerald-700 dark:text-emerald-400 whitespace-nowrap">ROI 100% Infinite</span>
-            </div>
-          </div>
-
-          <!-- Graphic 2: Engagement Multiplier -->
-          <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-4 shadow-2xs">
-            <div>
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <span class="text-xs font-bold tracking-wide text-blue-700 dark:text-blue-400" data-i18n="graphic2_eyebrow">มิติที่ 2 · การมีส่วนร่วมของลูกลีก</span>
-                <span class="px-2 py-0.5 rounded text-xs font-bold bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 whitespace-nowrap" data-i18n="graphic2_badge">พุ่งสูงขึ้น 5.7 เท่า</span>
-              </div>
-              <h4 class="text-base font-semibold text-slate-900 dark:text-white mt-1.5" data-i18n="graphic2_title">ความถี่การเข้าชมเฉลี่ย: ลีกทางการ vs ลีกบน FPLSaWaDiKa</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-300 mt-1" data-i18n="graphic2_sub">ยอดเปิดดูเฉลี่ยต่อผู้จัดการทีม 1 คน ในแต่ละสัปดาห์ (Visits/Team/GW)</p>
-            </div>
-
-            <!-- SVG Engagement Chart -->
-            <div class="py-2 space-y-1.5">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 dark:text-neutral-400">
-                <span data-i18n="graphic2_axis_y">แกนตั้ง: ความถี่เปิดดูเฉลี่ยต่อทีม (ครั้ง / สัปดาห์)</span>
-                <span class="mono" data-i18n="graphic2_axis_x">กลุ่มผู้ใช้</span>
-              </div>
-              <svg viewBox="0 0 440 128" class="w-full h-32 overflow-visible" role="img" aria-label="Engagement comparison chart">
-                <!-- Bar 1: Standard FPL -->
-                <rect x="20" y="74" width="76" height="32" rx="4" fill="#94a3b8" class="transition-all"><title>Official FPL App: 21.8 visits/team/GW</title></rect>
-                <text id="g2Val1" x="58" y="64" text-anchor="middle" font-size="11" font-family="monospace" font-weight="bold" fill="#64748b">21.8 ครั้ง/วีค</text>
-                <text x="58" y="122" text-anchor="middle" font-size="10" fill="#64748b">Official App</text>
-
-                <!-- Arrow / Multiplier -->
-                <path d="M116 78 L172 48" stroke="#10b981" stroke-width="2" stroke-dasharray="3,3" fill="none"></path>
-                <text id="g2Mult" x="144" y="45" font-size="11" font-weight="bold" fill="#10b981" text-anchor="middle">+471% (5.7x)</text>
-
-                <!-- Bar 2: FPLSaWaDiKa -->
-                <rect x="186" y="24" width="76" height="82" rx="4" fill="#10b981" class="transition-all"><title>FPLSaWaDiKa Average: 124.6 visits/team/GW</title></rect>
-                <text id="g2Val2" x="224" y="15" text-anchor="middle" font-size="11.5" font-family="monospace" font-weight="bold" fill="#10b981">124.6 ครั้ง/วีค</text>
-                <text x="224" y="122" text-anchor="middle" font-size="10" font-weight="bold" fill="#047857">FPLSaWaDiKa</text>
-
-                <!-- Bar 3: Peak Weekly Stakes (e.g. 40700) -->
-                <rect x="302" y="14" width="76" height="92" rx="4" fill="#3b82f6" class="transition-all"><title>Weekly Stakes League (40700): 137.4 visits/team/GW</title></rect>
-                <text id="g2Val3" x="340" y="7" text-anchor="middle" font-size="11.5" font-family="monospace" font-weight="bold" fill="#3b82f6">137.4 ครั้ง/วีค</text>
-                <text x="340" y="122" text-anchor="middle" font-size="10" font-weight="bold" fill="#1d4ed8">Weekly Stakes</text>
-              </svg>
-            </div>
-
-            <div class="pt-3 border-t border-borderLight dark:border-borderDark flex flex-wrap items-center justify-between gap-2 text-xs">
-              <span class="text-slate-600 dark:text-neutral-300" data-i18n="graphic2_callout">Weekly Stakes + บทวิเคราะห์กูรูลูกหนังสายดราม่า ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์</span>
-              <span class="mono font-bold text-blue-700 dark:text-blue-400 whitespace-nowrap">5.7x Stickiness</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <!-- Graphic 3: Automated Prize Flow -->
-          <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-4 shadow-2xs">
-            <div>
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <span class="text-xs font-bold tracking-wide text-amber-700 dark:text-amber-400" data-i18n="graphic3_eyebrow">มิติที่ 3 · การเงินและความโปร่งใส</span>
-                <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 whitespace-nowrap" data-i18n="graphic3_badge">GMV รวม ฿268,700</span>
-              </div>
-              <h4 class="text-base font-semibold text-slate-900 dark:text-white mt-1.5" data-i18n="graphic3_title">ระบบรองรับโมเดลเงินรางวัลและค่าปรับ 5 รูปแบบ</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-300 mt-1" data-i18n="graphic3_sub">ยืดหยุ่นตามกติกาของแต่ละมินิลีก จัดการอัตโนมัติ 0 ข้อผิดพลาด</p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div class="py-1.5 flex items-start gap-2.5">
-                <span class="w-6 h-6 rounded-md bg-amber-500/15 text-amber-700 dark:text-amber-300 flex items-center justify-center font-bold text-xs shrink-0">1</span>
-                <div>
-                  <div class="font-semibold text-slate-900 dark:text-white" data-i18n="pmodel_1_title">Weekly Top-Score</div>
-                  <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="pmodel_1_sub">จ่ายรางวัลผู้ชนะประจำสัปดาห์</div>
-                </div>
-              </div>
-
-              <div class="py-1.5 flex items-start gap-2.5">
-                <span class="w-6 h-6 rounded-md bg-rose-500/15 text-rose-700 dark:text-rose-300 flex items-center justify-center font-bold text-xs shrink-0">2</span>
-                <div>
-                  <div class="font-semibold text-slate-900 dark:text-white" data-i18n="pmodel_2_title">Bottom 5 Penalties</div>
-                  <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="pmodel_2_sub">ระบบค่าปรับบ๊วย (2 spade)</div>
-                </div>
-              </div>
-
-              <div class="py-1.5 flex items-start gap-2.5">
-                <span class="w-6 h-6 rounded-md bg-blue-500/15 text-blue-700 dark:text-blue-300 flex items-center justify-center font-bold text-xs shrink-0">3</span>
-                <div>
-                  <div class="font-semibold text-slate-900 dark:text-white" data-i18n="pmodel_3_title">Zero-Sum Ladder</div>
-                  <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="pmodel_3_sub">หัวตารางกินท้ายตาราง (Shi62)</div>
-                </div>
-              </div>
-
-              <div class="py-1.5 flex items-start gap-2.5">
-                <span class="w-6 h-6 rounded-md bg-purple-500/15 text-purple-700 dark:text-purple-300 flex items-center justify-center font-bold text-xs shrink-0">4</span>
-                <div>
-                  <div class="font-semibold text-slate-900 dark:text-white" data-i18n="pmodel_4_title">Dual Milestones</div>
-                  <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="pmodel_4_sub">แบ่งจ่ายงวด GW18 & GW38</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="pt-3 border-t border-borderLight dark:border-borderDark flex flex-wrap items-center justify-between gap-2 text-xs">
-              <span class="text-slate-600 dark:text-neutral-300" data-i18n="graphic3_callout">ตรวจสอบย้อนหลังได้ทุกบาทผ่าน Open Ledger</span>
-              <span class="mono font-bold text-amber-700 dark:text-amber-400 whitespace-nowrap">100% Auditable</span>
-            </div>
-          </div>
-
-          <!-- Graphic 4: Feature Matrix & Roadmap Tiering -->
-          <div class="min-w-0 p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-4 shadow-2xs">
-            <div>
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <span class="text-xs font-bold tracking-wide text-indigo-700 dark:text-indigo-400" data-i18n="graphic4_eyebrow">มิติที่ 4 · ความครบครันของระบบ</span>
-                <span class="px-2 py-0.5 rounded text-xs font-bold bg-indigo-100 dark:bg-indigo-950/80 text-indigo-800 dark:text-indigo-300 whitespace-nowrap" data-i18n="graphic4_badge">Tier 1 vs Tier 2</span>
-              </div>
-              <h4 class="text-base font-semibold text-slate-900 dark:text-white mt-1.5" data-i18n="graphic4_title">ตารางเปรียบเทียบฟังก์ชันและความพร้อมใช้งาน</h4>
-              <p class="text-xs text-slate-600 dark:text-neutral-300 mt-1" data-i18n="graphic4_sub">เปรียบเทียบระหว่าง Official FPL, Tier 2 (Live Beta), และ Tier 1 Core</p>
-            </div>
-
-            <!-- Mini Matrix Table (Fits cleanly at 390px mobile without right-edge clipping) -->
-            <div id="graphic4MatrixWrap" class="overflow-x-auto touch-scroll text-[10.5px] sm:text-xs leading-tight">
-              <table class="w-full text-left border-collapse">
-                <thead>
-                  <tr class="border-b border-borderLight dark:border-borderDark text-[10.5px] sm:text-[11px] mono text-slate-600 dark:text-neutral-300">
-                    <th class="py-2 pr-1 sm:pr-2 font-medium" data-i18n="col_feat">ฟังก์ชัน</th>
-                    <th class="py-2 px-0.5 sm:px-1 text-center sm:whitespace-nowrap" data-i18n="col_fpl_app">Official App</th>
-                    <th class="py-2 px-0.5 sm:px-1 text-center sm:whitespace-nowrap" data-i18n="col_tier2">Tier 2 (≤3k)</th>
-                    <th class="py-2 pl-0.5 sm:pl-1 text-center font-bold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="col_tier1">Tier 1 (พร้อมขาย)</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-borderLight dark:divide-borderDark">
-                  <tr>
-                    <td class="py-2 pr-1 sm:pr-2 font-medium" data-i18n="matrix_f1">แต้มสด &amp; BPS (20s/90s)</td>
-                    <td class="py-2 px-0.5 sm:px-1 text-center text-slate-600 dark:text-neutral-400 sm:whitespace-nowrap" data-i18n="matrix_f1_app">3-5 นาที</td>
-                    <td class="py-2 px-0.5 sm:px-1 text-center font-semibold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f1_t2">✅ สด 20s</td>
-                    <td class="py-2 pl-0.5 sm:pl-1 text-center font-bold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f1_t1">✅ สด 20s</td>
-                  </tr>
-                  <tr>
-                    <td class="py-2 pr-1 sm:pr-2 font-medium" data-i18n="matrix_f2">หักแต้มย้ายตัว Net Pts สด</td>
-                    <td class="py-2 px-0.5 sm:px-1 text-center text-rose-600 dark:text-rose-400 sm:whitespace-nowrap" data-i18n="matrix_none">❌ ไม่มี</td>
-                    <td class="py-2 px-0.5 sm:px-1 text-center font-semibold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f2_t2">✅ สด (≤3k ทีม)</td>
-                    <td class="py-2 pl-0.5 sm:pl-1 text-center font-bold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f2_t1">✅ สดทันที</td>
-                  </tr>
-                  <tr>
-                    <td class="py-2 pr-1 sm:pr-2 font-medium" data-i18n="matrix_f3">บทพากย์กูรูลูกหนัง</td>
-                    <td class="py-2 px-0.5 sm:px-1 text-center text-rose-600 dark:text-rose-400 sm:whitespace-nowrap" data-i18n="matrix_none">❌ ไม่มี</td>
-                    <td class="py-2 px-0.5 sm:px-1 text-center font-semibold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f3_t2">✅ พากย์สด</td>
-                    <td class="py-2 pl-0.5 sm:pl-1 text-center font-bold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f3_t1">✅ ครบทุกแท็บ</td>
-                  </tr>
-                  <tr>
-                    <td class="py-2 pr-1 sm:pr-2 font-medium" data-i18n="matrix_f4">คำนวณเงินรางวัล/ค่าปรับ</td>
-                    <td class="py-2 px-0.5 sm:px-1 text-center text-rose-600 dark:text-rose-400 sm:whitespace-nowrap" data-i18n="matrix_none">❌ ไม่มี</td>
-                    <td class="py-2 px-0.5 sm:px-1 text-center text-slate-600 dark:text-neutral-400 sm:whitespace-nowrap" data-i18n="matrix_f4_t2">⚠️ พื้นฐาน</td>
-                    <td class="py-2 pl-0.5 sm:pl-1 text-center font-bold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f4_t1">✅ 100% Custom</td>
-                  </tr>
-                  <tr>
-                    <td class="py-2 pr-1 sm:pr-2 font-medium" data-i18n="matrix_f5">Interactive Pitch Modal</td>
-                    <td class="py-2 px-0.5 sm:px-1 text-center text-slate-600 dark:text-neutral-400 sm:whitespace-nowrap" data-i18n="matrix_f5_app">ดูช้า</td>
-                    <td class="py-2 px-0.5 sm:px-1 text-center font-semibold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f5_t2">✅ ทันที (≤3k)</td>
-                    <td class="py-2 pl-0.5 sm:pl-1 text-center font-bold text-emerald-700 dark:text-emerald-400 sm:whitespace-nowrap" data-i18n="matrix_f5_t1">✅ คลิกเดียวครบ</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div class="pt-3 border-t border-borderLight dark:border-borderDark flex flex-wrap items-center justify-between gap-2 text-xs">
-              <span id="graphic4Callout" class="text-slate-600 dark:text-neutral-300" data-i18n="graphic4_callout">Tier 1 พร้อมส่งมอบทันที · Tier 2 (Auto-Picks Live) รองรับ 1,779 ทีม (สูงสุด 3,000 ทีม)</span>
-              <span class="mono font-bold text-indigo-700 dark:text-indigo-400 whitespace-nowrap">Turnkey Core</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 3: Live Interactive Demo Links (Instant Client Showcases) -->
-      <div class="space-y-3 pt-2">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <h3 class="text-sm font-bold tracking-wide text-slate-900 dark:text-white flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-400 flex items-center justify-center text-xs font-bold shrink-0">3</span>
-            <span data-i18n="pitch_step3_title">ทางลัดเปิดโชว์ระบบจริงต่อหน้าลูกค้า (Live Interactive Jump Links)</span>
-          </h3>
-          <span class="text-xs text-slate-600 dark:text-neutral-400 whitespace-nowrap" data-i18n="pitch_step3_sub">คลิกเพื่อเปิดหน้าจริงในแท็บใหม่</span>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-          <!-- Jump 1: Live Points & Pitch Modal -->
-          <a href="https://www.fplsawadika.com/40700" target="_blank" rel="noopener"
-            class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-emerald-500/50 hover:bg-emerald-50/20 dark:hover:bg-emerald-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
-            <div class="space-y-1">
-              <div class="text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center justify-between">
-                <span>01. Live Scores</span>
-                <span class="group-hover:translate-x-0.5 transition-transform">↗</span>
-              </div>
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_1_title">คะแนนสด & ผัง 11 ตัวจริง</div>
-              <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="jump_1_sub">เปิดดูผังทีมจริง & แต้ม Net</div>
-            </div>
-            <span class="text-xs mono text-slate-600 dark:text-neutral-400">ลีก 40700</span>
-          </a>
-
-          <!-- Jump 2: Highlights & Pundit Banter -->
-          <a href="https://www.fplsawadika.com/40700?tab=highlights" target="_blank" rel="noopener"
-            class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-blue-500/50 hover:bg-blue-50/20 dark:hover:bg-blue-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
-            <div class="space-y-1">
-              <div class="text-xs font-bold text-blue-700 dark:text-blue-400 flex items-center justify-between">
-                <span>02. Commentary</span>
-                <span class="group-hover:translate-x-0.5 transition-transform">↗</span>
-              </div>
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_2_title">บทวิเคราะห์กูรูสายดราม่า</div>
-              <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="jump_2_sub">พากย์เกมดราม่าสุดกวน</div>
-            </div>
-            <span class="text-xs mono text-slate-600 dark:text-neutral-400">ลีก 40700</span>
-          </a>
-
-          <!-- Jump 3: Prize & Penalties -->
-          <a href="https://www.fplsawadika.com/438691?tab=prizes" target="_blank" rel="noopener"
-            class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-amber-500/50 hover:bg-amber-50/20 dark:hover:bg-amber-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
-            <div class="space-y-1">
-              <div class="text-xs font-bold text-amber-700 dark:text-amber-400 flex items-center justify-between">
-                <span>03. Automated Payouts</span>
-                <span class="group-hover:translate-x-0.5 transition-transform">↗</span>
-              </div>
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_3_title">ระบบค่าปรับ & รางวัล</div>
-              <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="jump_3_sub">บ๊วย 5 อันดับโดนปรับสด</div>
-            </div>
-            <span class="text-xs mono text-slate-600 dark:text-neutral-400">ลีก 438691</span>
-          </a>
-
-          <!-- Jump 4: Global Radar -->
-          <a href="https://www.fplsawadika.com/40700/?tab=radar" target="_blank" rel="noopener"
-            class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-purple-500/50 hover:bg-purple-50/20 dark:hover:bg-purple-950/20 transition-all flex flex-col justify-between gap-2 group shadow-2xs">
-            <div class="space-y-1">
-              <div class="text-xs font-bold text-purple-700 dark:text-purple-400 flex items-center justify-between">
-                <span>04. Form Radar</span>
-                <span class="group-hover:translate-x-0.5 transition-transform">↗</span>
-              </div>
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_4_title">เรดาร์ฟอร์มทุกลีก</div>
-              <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="jump_4_sub">เทียบดัชนีคะแนนรวม</div>
-            </div>
-            <span class="text-xs mono text-slate-600 dark:text-neutral-400">ลีก 40700 · Radar</span>
-          </a>
-
-          <!-- Jump 5: Cup Knockout -->
-          <a href="https://www.fplsawadika.com/675290?tab=cup" target="_blank" rel="noopener"
-            class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:border-rose-500/50 hover:bg-rose-50/20 dark:hover:bg-rose-950/20 transition-all flex flex-col justify-between gap-2 group sm:col-span-2 md:col-span-1 shadow-2xs">
-            <div class="space-y-1">
-              <div class="text-xs font-bold text-rose-700 dark:text-rose-400 flex items-center justify-between">
-                <span>05. Knockout Cup</span>
-                <span class="group-hover:translate-x-0.5 transition-transform">↗</span>
-              </div>
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="jump_5_title">บอลถ้วยแพ้คัดออก</div>
-              <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="jump_5_sub">สายการแข่งขันอัตโนมัติ</div>
-            </div>
-            <span class="text-xs mono text-slate-600 dark:text-neutral-400">ลีก 675290</span>
-          </a>
-        </div>
-      </div>
-      </div>
-    </section>
-    <section id="sec-audience" class="space-y-4 scroll-mt-24" aria-labelledby="sec-audience-title">
+    <section id="sec-audience" class="space-y-4 scroll-mt-28" aria-labelledby="sec-audience-title">
       <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
         <div class="flex items-center gap-2.5">
           <span class="text-slate-700 dark:text-neutral-300">${ICONS.users}</span>
           <h2 id="sec-audience-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec1_title">
-            01. ขนาดฐานผู้ใช้งานและอัตราการรักษาลูกค้า
+            01. ภาพรวมทราฟฟิกและตัวชี้วัดผู้ใช้งานสด
           </h2>
         </div>
         <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="sec1_sub">
-          ตัวชี้วัดการเติบโตและสัดส่วนความเหนียวแน่นของผู้ใช้งาน
+          ตัวเลขจริง 100% จากการซิงก์ลีกและฐานข้อมูล Cloudflare D1 (ไม่เก็บ Cookie · ไม่มีเลขสมมติ)
         </span>
       </div>
 
@@ -1060,56 +624,56 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <span class="px-2 py-0.5 rounded text-xs mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0 whitespace-nowrap" data-i18n="badge_live_sync">Live Sync</span>
           </div>
           <div>
-            <div id="kpiManagersCount" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">163</div>
-            <div id="kpiManagersSub" class="text-xs text-emerald-700 dark:text-emerald-400 mt-1" data-i18n="kpi_managers_sub">Tier 1 ครบ 8 มินิลีก (รวม Tier 2 = 1,942)</div>
+            <div id="kpiManagersCount" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">—</div>
+            <div id="kpiManagersSub" class="text-xs text-emerald-700 dark:text-emerald-400 mt-1" data-i18n="kpi_managers_sub">กำลังโหลดจำนวนทีมจากระบบ...</div>
           </div>
         </div>
 
-        <!-- KPI 2: Matchday Active Users -->
+        <!-- KPI 2: 7-Day Peak Daily Views -->
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
           <div class="flex items-center justify-between gap-1.5">
-            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_mau_label">ผู้ใช้งานวันแข่งขัน (MAU)</div>
+            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_mau_label">ยอดเข้าชมสูงสุดรายวัน (7 วัน)</div>
             <span class="px-2 py-0.5 rounded text-xs mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0 whitespace-nowrap" data-i18n="badge_live_d1">Live D1</span>
           </div>
           <div>
-            <div id="kpiMatchdayActive" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">1,420</div>
-            <div id="kpiMatchdaySub" class="text-xs text-emerald-700 dark:text-emerald-400 mt-1" data-i18n="kpi_mau_sub">รวมผู้ชม 3.7x ต่อผู้จัดการ 1 คน</div>
+            <div id="kpiMatchdayActive" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0</div>
+            <div id="kpiMatchdaySub" class="text-xs text-emerald-700 dark:text-emerald-400 mt-1" data-i18n="kpi_mau_sub">จำนวนเข้าชมลีกสูงสุดใน 1 วัน (รอบ 7 วัน)</div>
           </div>
         </div>
 
-        <!-- KPI 3: Off-Peak DAU -->
+        <!-- KPI 3: Off-Peak Weekday Average -->
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
           <div class="flex items-center justify-between gap-1.5">
-            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_offpeak_label">ผู้ใช้งานนอกวันแข่ง (DAU)</div>
+            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_offpeak_label">ยอดเข้าชมเฉลี่ยวันธรรมดา (อ.–พฤ.)</div>
             <span class="px-2 py-0.5 rounded text-xs mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0 whitespace-nowrap" data-i18n="badge_live_d1">Live D1</span>
           </div>
           <div>
-            <div id="kpiOffPeakDau" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">310</div>
-            <div class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="kpi_offpeak_sub">อังคาร–พฤหัส (วางแผนซื้อขาย)</div>
+            <div id="kpiOffPeakDau" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0</div>
+            <div class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="kpi_offpeak_sub">ค่าเฉลี่ยจริงช่วงอังคาร–พฤหัส (วางแผนซื้อขาย)</div>
           </div>
         </div>
 
-        <!-- KPI 4: DAU / MAU Stickiness -->
+        <!-- KPI 4: Matchday vs Off-Peak Share -->
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
           <div class="flex items-center justify-between gap-1.5">
-            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_stickiness_label">ความเหนียวแน่นวันแข่ง</div>
-            <span class="px-2 py-0.5 rounded text-xs mono font-medium bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/25 shrink-0 whitespace-nowrap" data-i18n="badge_benchmark">Benchmark</span>
+            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_stickiness_label">สัดส่วนวันแข่ง (ศ.–จ.) vs วันธรรมดา</div>
+            <span class="px-2 py-0.5 rounded text-xs mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0 whitespace-nowrap" data-i18n="badge_live_d1">Live D1</span>
           </div>
           <div>
-            <div id="kpiStickiness" class="text-2xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400">68.4%</div>
-            <div class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="kpi_stickiness_sub">ค่าอ้างอิงฤดูกาล (> 3 ครั้ง/สัปดาห์ · ไม่เก็บ Cookie)</div>
+            <div id="kpiMatchdaySplit" class="text-2xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400">—</div>
+            <div id="kpiMatchdaySplitSub" class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="kpi_stickiness_sub">เปรียบเทียบยอดเข้าชม 7 วันจริงระหว่างวันแข่งกับกลางสัปดาห์</div>
           </div>
         </div>
 
-        <!-- KPI 5: GW-over-GW Retention -->
+        <!-- KPI 5: Lifetime Total Site Views -->
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-2">
           <div class="flex items-center justify-between gap-1.5">
-            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_retention_label">อัตรากลับมาใช้งานต่อ GW</div>
-            <span class="px-2 py-0.5 rounded text-xs mono font-medium bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/25 shrink-0 whitespace-nowrap" data-i18n="badge_benchmark">Benchmark</span>
+            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="kpi_retention_label">ยอดเข้าชมสะสมตลอดกาล (Lifetime)</div>
+            <span class="px-2 py-0.5 rounded text-xs mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0 whitespace-nowrap" data-i18n="badge_live_d1">Live D1</span>
           </div>
           <div>
-            <div id="kpiRetention" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">94.2%</div>
-            <div class="text-xs text-emerald-700 dark:text-emerald-400 mt-1" data-i18n="kpi_retention_sub">ค่าอ้างอิงฤดูกาล (อัตราเลิกเล่น < 6% · ไม่เก็บ Cookie)</div>
+            <div id="kpiLifetimeViews" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0</div>
+            <div id="kpiLifetimeSub" class="text-xs text-emerald-700 dark:text-emerald-400 mt-1" data-i18n="kpi_retention_sub">นับจริงแบบลดซ้ำ 30 นาที (ตั้งแต่ พ.ย. 2026)</div>
           </div>
         </div>
 
@@ -1120,8 +684,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             <span class="px-2 py-0.5 rounded text-xs mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0 whitespace-nowrap" data-i18n="badge_live_d1">Live D1</span>
           </div>
           <div>
-            <div id="kpiScreenTime" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">6m 42s</div>
-            <div class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="kpi_screentime_sub">เปิดหน้าจอค้างระหว่างบอลเตะสด</div>
+            <div id="kpiScreenTime" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">—</div>
+            <div id="kpiScreenTimeSub" class="text-xs text-slate-600 dark:text-neutral-400 mt-1" data-i18n="kpi_screentime_sub">วัดจริงจาก Dwell Time Beacon (รอบ 7 วัน)</div>
           </div>
         </div>
       </div>
@@ -1130,12 +694,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     <!-- ========================================================================= -->
     <!-- 02. MULTI-LEAGUE PORTFOLIO & COMMERCIAL ECONOMICS                         -->
     <!-- ========================================================================= -->
-    <section id="sec-portfolio" class="space-y-4 scroll-mt-24" aria-labelledby="sec-portfolio-title">
+    <section id="sec-portfolio" class="space-y-4 scroll-mt-28" aria-labelledby="sec-portfolio-title">
       <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
         <div class="flex items-center gap-2.5">
           <span class="text-slate-700 dark:text-neutral-300">${ICONS.layers}</span>
           <h2 id="sec-portfolio-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec2_title">
-            02. พอร์ตโฟลิโอ 9 มินิลีก และเศรษฐศาสตร์เงินรางวัลรวม
+            02. พอร์ตโฟลิโอมินิลีกและเศรษฐศาสตร์เงินรางวัลรวม
           </h2>
         </div>
         <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="sec2_sub">
@@ -1148,7 +712,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex items-center justify-between gap-4">
           <div class="space-y-1">
             <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="port_gmv_label">มูลค่าเงินรางวัลรวมทั้งระบบ (GMV)</div>
-            <div id="kpiTotalGmv" class="text-2xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400">฿268,700</div>
+            <div id="kpiTotalGmv" class="text-2xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400">฿0</div>
             <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="port_gmv_sub">รวมเงินรางวัลประจำฤดูกาล + รางวัลรายสัปดาห์/เดือน</div>
           </div>
         </div>
@@ -1156,7 +720,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex items-center justify-between gap-4">
           <div class="space-y-1">
             <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="port_custom_label">ลีกที่ผูกกติกาพิเศษ (Custom Rules)</div>
-            <div id="portCustomRulesVal" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">7 / 9 <span class="text-sm font-normal text-slate-600 dark:text-neutral-400">(78%)</span></div>
+            <div id="portCustomRulesVal" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">—</div>
             <div class="text-xs text-emerald-700 dark:text-emerald-400" data-i18n="port_custom_sub">สร้าง Switching Cost สูงกว่าเว็บ FPL ทั่วไป</div>
           </div>
         </div>
@@ -1168,15 +732,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               <span id="portLandingTodayBadge" class="px-2 py-0.5 rounded text-xs mono font-medium bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 shrink-0 whitespace-nowrap">วันนี้: 0</span>
             </div>
             <div id="portLandingViews" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0 <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">ครั้ง</span></div>
-            <div id="portLandingSub" class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="port_landing_sub">แยกจากยอดเปิดดู 9 มินิลีก (วัดคนสนใจซื้อระบบ)</div>
+            <div id="portLandingSub" class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="port_landing_sub">แยกจากยอดเปิดดูมินิลีก (วัดคนสนใจซื้อระบบ)</div>
           </div>
         </div>
 
         <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex items-center justify-between gap-4">
           <div class="space-y-1">
-            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="port_whitelabel_label">ศักยภาพขยาย White-Label ลีกใหม่</div>
-            <div class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white" data-i18n="port_whitelabel_val">พร้อมขยาย 50+ ลีก</div>
-            <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="port_whitelabel_sub">ต้นทุนเซิร์ฟเวอร์ส่วนเพิ่ม ฿0 บนสถาปัตยกรรมปัจจุบัน</div>
+            <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="port_whitelabel_label">ความจุที่รองรับเพิ่ม (Tier 1 Headroom)</div>
+            <div id="portWhiteLabelVal" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">—</div>
+            <div id="portWhiteLabelSub" class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="port_whitelabel_sub">คำนวณตรงกับเพดาน 30 ลีก / 500 ทีม Tier 1 (ต้นทุนเพิ่ม ฿0)</div>
           </div>
         </div>
       </div>
@@ -1188,7 +752,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <button type="button" data-portfolio-filter="all" aria-pressed="true"
           class="pf-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg text-xs font-medium border border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 inline-flex items-center gap-1.5 whitespace-nowrap transition-colors">
           <span data-i18n="pf_filter_all">ทั้งหมด</span>
-          <span id="pfCount-all" class="mono text-xs px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">9</span>
+          <span id="pfCount-all" class="mono text-xs px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">0</span>
         </button>
         <button type="button" data-portfolio-filter="private" aria-pressed="false"
           class="pf-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 whitespace-nowrap transition-colors">
@@ -1208,7 +772,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <button type="button" data-portfolio-filter="showcase" aria-pressed="false"
           class="pf-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg text-xs font-medium border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark inline-flex items-center gap-1.5 whitespace-nowrap transition-colors">
           <span data-i18n="pf_filter_showcase">ลีกตัวอย่าง (Showcase)</span>
-          <span id="pfCount-showcase" class="mono text-xs px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">9</span>
+          <span id="pfCount-showcase" class="mono text-xs px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10">0</span>
         </button>
       </div>
 
@@ -1243,10 +807,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
                     <span id="sort-icon-views" class="text-slate-500 dark:text-neutral-400 shrink-0">${ICONS.sort}</span>
                   </button>
                 </th>
-                <th scope="col" id="th-retention" aria-sort="none" class="p-0 text-right whitespace-nowrap">
-                  <button type="button" onclick="sortLeagueTable('retention')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-end gap-1.5 hover:text-slate-900 dark:hover:text-white font-medium whitespace-nowrap">
-                    <span data-i18n="col_retention">ความเหนียวแน่น (Benchmark)</span>
-                    <span id="sort-icon-retention" class="text-slate-500 dark:text-neutral-400 shrink-0">${ICONS.sort}</span>
+                <th scope="col" id="th-vpt" aria-sort="none" class="p-0 text-right whitespace-nowrap">
+                  <button type="button" onclick="sortLeagueTable('vpt')" class="w-full min-h-[44px] px-4 py-2.5 inline-flex items-center justify-end gap-1.5 hover:text-slate-900 dark:hover:text-white font-medium whitespace-nowrap">
+                    <span data-i18n="col_engagement">เวลาดูเฉลี่ย / ต่อทีม</span>
+                    <span id="sort-icon-vpt" class="text-slate-500 dark:text-neutral-400 shrink-0">${ICONS.sort}</span>
                   </button>
                 </th>
                 <th scope="col" id="th-status" aria-sort="none" class="p-0 whitespace-nowrap">
@@ -1259,104 +823,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               </tr>
             </thead>
             <tbody id="leagueTableBody" class="divide-y divide-borderLight dark:divide-borderDark text-xs">
-              <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
-                <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://www.fplsawadika.com/40700/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">เซียนอยู่รู หมูอยู่ตึก</a>
-                  <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 40700 · Flagship</div>
-                </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">12</td>
-                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿20,000</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Weekly 300 THB · Cup · Settlement Phases</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">4,820</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">98.5%</td>
-              </tr>
-              <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
-                <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://www.fplsawadika.com/675290/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">NudNee</a>
-                  <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 675290</div>
-                </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">60</td>
-                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿36,000</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Monthly · Knock-out Cup · Charity</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">3,610</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">94.8%</td>
-              </tr>
-              <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
-                <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://www.fplsawadika.com/38491/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">รอ แมน โอน</a>
-                  <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 38491</div>
-                </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">16</td>
-                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿28,500</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Weekly · Cup · Settlement Phases</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">1,490</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">93.2%</td>
-              </tr>
-              <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
-                <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://www.fplsawadika.com/1101958/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">Barley's Official League</a>
-                  <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 1101958</div>
-                </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">17</td>
-                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿103,200</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Weekly Tier Prizes · Cup · Ledger</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">980</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">95.0%</td>
-              </tr>
-              <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
-                <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://www.fplsawadika.com/438691/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">2 spade</a>
-                  <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 438691</div>
-                </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">13</td>
-                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿68,400</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Weekly · Bottom-5 Penalty · Cup</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">810</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">92.4%</td>
-              </tr>
-              <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
-                <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://www.fplsawadika.com/187827/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">Shi62</a>
-                  <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 187827</div>
-                </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">13</td>
-                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿3,100</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Zero-Sum Annual Tiers · 2nd Half Special</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">740</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">91.8%</td>
-              </tr>
-              <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
-                <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://www.fplsawadika.com/5349/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">Bramann League</a>
-                  <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 5349</div>
-                </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">20</td>
-                <td class="px-4 py-3 text-right mono tabular font-semibold text-emerald-700 dark:text-emerald-400">฿9,500</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Dual Prize · Prediction & Challenge</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">860</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-emerald-700 dark:text-emerald-400">90.5%</td>
-              </tr>
-              <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
-                <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://www.fplsawadika.com/567387/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">Fantasy Nguan & friends cup</a>
-                  <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 567387 · Community</div>
-                </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">12</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-600 dark:text-neutral-400">Community</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Community · Cup · Live Matrix</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">2,190</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-800 dark:text-neutral-200">88.4%</td>
-              </tr>
-              <tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">
-                <th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-3 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">
-                  <a href="https://www.fplsawadika.com/139836/" target="_blank" rel="noopener" class="hover:text-emerald-700 dark:hover:text-emerald-400 underline-offset-4 hover:underline">FPL Growth Mindset 2026/27</a>
-                  <div class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: 139836 · Tier 2</div>
-                </th>
-                <td class="px-4 py-3 text-right mono tabular text-slate-800 dark:text-neutral-200">1,779</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-600 dark:text-neutral-400">เสื้อบอลแท้</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-neutral-300">Tier 2 Auto-Picks Live (Cap/Hits/Pitch) · 1,779-Team Search</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-900 dark:text-white">0</td>
-                <td class="px-4 py-3 text-right mono tabular font-medium text-slate-800 dark:text-neutral-200">91.2%</td>
+              <tr>
+                <td colspan="8" class="px-4 py-8 text-center text-slate-600 dark:text-neutral-400">กำลังโหลดข้อมูลพอร์ตโฟลิโอลีกจากระบบ…</td>
               </tr>
             </tbody>
           </table>
@@ -1430,687 +898,28 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 03. FEATURE ADOPTION & PRODUCT VALUE MATRIX                               -->
+    <!-- 03. CUSTOMER ORDERS & PAYMENT SLIP INBOX                                  -->
     <!-- ========================================================================= -->
-    <section id="sec-features" class="space-y-4 scroll-mt-28" aria-labelledby="sec-features-title">
-      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
-        <div class="flex items-center gap-2.5">
-          <span class="text-slate-700 dark:text-neutral-300">${ICONS.chart}</span>
-          <h2 id="sec-features-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec3_title">
-            03. พฤติกรรมการใช้งานฟีเจอร์และคุณค่าผลิตภัณฑ์
-          </h2>
-        </div>
-        <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="sec3_sub">
-          ฟีเจอร์ใดดึงดูดผู้ใช้มากที่สุด และควรพัฒนาต่อยอดส่วนใดก่อน
-        </span>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <!-- Card 3A: Feature Share Bars -->
-        <div class="lg:col-span-2 p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4">
-          <div class="flex items-center justify-between gap-2">
-            <h3 class="text-base font-semibold text-slate-900 dark:text-white" data-i18n="feat_share_title">สัดส่วนการคลิกใช้งานแต่ละโมดูล (% ของเซสชันทั้งหมด)</h3>
-            <span class="text-xs mono text-emerald-700 dark:text-emerald-400" data-i18n="feat_share_badge">วัดผลจาก Event จริง</span>
-          </div>
-
-          <div class="divide-y divide-borderLight dark:divide-borderDark text-xs">
-            <div class="py-3 space-y-1.5">
-              <div class="flex justify-between items-baseline gap-2">
-                <span class="font-medium text-slate-900 dark:text-white" data-i18n="feat_1_name">1. ตารางคะแนนสด & คำนวณโบนัสเรียลไทม์ (Live Standings & BPS)</span>
-                <span id="featMod1Pct" class="mono tabular font-semibold text-emerald-700 dark:text-emerald-400">44.2%</span>
-              </div>
-              <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div id="featMod1Bar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 44.2%"></div>
-              </div>
-              <p class="text-slate-600 dark:text-neutral-400" data-i18n="feat_1_desc">คุณค่าหลัก: ผู้ใช้เปิดค้างไว้ดูอันดับขึ้น-ลงทุกครั้งที่มีประตูหรือคลีนชีตหลุด</p>
-            </div>
-
-            <div class="py-3 space-y-1.5">
-              <div class="flex justify-between items-baseline gap-2">
-                <span class="font-medium text-slate-900 dark:text-white" data-i18n="feat_2_name">2. สรุปเงินรางวัลรายสัปดาห์ / รายเดือน / สุทธิ (Prize & Financial Ledger)</span>
-                <span id="featMod2Pct" class="mono tabular font-semibold text-slate-900 dark:text-white">23.8%</span>
-              </div>
-              <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div id="featMod2Bar" class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full transition-all duration-300" style="width: 23.8%"></div>
-              </div>
-              <p class="text-slate-600 dark:text-neutral-400" data-i18n="feat_2_desc">เหตุผลที่ชนะแอปหลัก: แอป FPL ทางการไม่มีระบบคำนวณเงินรางวัลและค่าปรับโดนหักแต้ม</p>
-            </div>
-
-            <div class="py-3 space-y-1.5">
-              <div class="flex justify-between items-baseline gap-2">
-                <span class="font-medium text-slate-900 dark:text-white" data-i18n="feat_3_name">3. เจาะลึก 11 ตัวจริง & เทียบทีมคู่แข่ง (Squad Modal & H2H Matrix)</span>
-                <span id="featMod3Pct" class="mono tabular font-semibold text-slate-900 dark:text-white">16.5%</span>
-              </div>
-              <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div id="featMod3Bar" class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full transition-all duration-300" style="width: 16.5%"></div>
-              </div>
-              <p class="text-slate-600 dark:text-neutral-400" data-i18n="feat_3_desc">พฤติกรรมเด่น: กดส่องตัวจริงสำรองอัตโนมัติ (Auto-Sub) ของคู่แข่งที่ลุ้นแชมป์ด้วยกัน</p>
-            </div>
-
-            <div class="py-3 space-y-1.5">
-              <div class="flex justify-between items-baseline gap-2">
-                <span class="font-medium text-slate-900 dark:text-white" data-i18n="feat_4_name">4. จำลองสถานการณ์ & วางแผนซื้อขายล่วงหน้า (What-If & Planner)</span>
-                <span id="featMod4Pct" class="mono tabular font-semibold text-slate-900 dark:text-white">9.4%</span>
-              </div>
-              <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div id="featMod4Bar" class="bg-slate-500 dark:bg-neutral-500 h-full rounded-full transition-all duration-300" style="width: 9.4%"></div>
-              </div>
-              <p class="text-slate-600 dark:text-neutral-400" data-i18n="feat_4_desc">โอกาสเติบโต: ดึงผู้ใช้ให้เข้าเว็บวันอังคาร–ศุกร์ ก่อนเดดไลน์ปิดตลาด</p>
-            </div>
-
-            <div class="pt-3 space-y-1.5">
-              <div class="flex justify-between items-baseline gap-2">
-                <span class="font-medium text-slate-900 dark:text-white" data-i18n="feat_5_name">5. ประวัติศาสตร์ลีก & ทำเนียบแชมป์ (Hall of Fame & Records)</span>
-                <span id="featMod5Pct" class="mono tabular font-semibold text-slate-900 dark:text-white">6.1%</span>
-              </div>
-              <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div id="featMod5Bar" class="bg-slate-500 dark:bg-neutral-500 h-full rounded-full transition-all duration-300" style="width: 6.1%"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 3B: Paid vs Community Value Analysis -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-4">
-          <div class="space-y-2">
-            <h3 class="text-base font-semibold text-slate-900 dark:text-white" data-i18n="feat_insight_title">ความต่างพฤติกรรม: ลีกมีเงินรางวัล vs ลีกคอมมูนิตี้</h3>
-            <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="feat_insight_desc">
-              เปรียบเทียบความถี่การเปิดใช้งานต่อผู้จัดการทีม 1 คน เพื่อกำหนดแพ็กเกจราคา SaaS / White-Label
-            </p>
-          </div>
-
-          <div class="divide-y divide-borderLight dark:divide-borderDark text-xs">
-            <div class="py-3 space-y-1">
-              <div class="text-slate-600 dark:text-neutral-400" data-i18n="feat_paid_label">ลีกที่มีเงินรางวัลสูง (เช่น 1101958 · ฿103,200)</div>
-              <div class="text-xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400" data-i18n="feat_paid_val">241 ครั้ง / ทีม / GW</div>
-              <p class="text-slate-600 dark:text-neutral-400" data-i18n="feat_paid_sub">ผู้เล่นและกลุ่มเพื่อนเปิดเช็กตารางเงินรางวัลและอันดับสดตลอดเวลาที่บอลเตะ</p>
-            </div>
-
-            <div class="py-3 space-y-1">
-              <div id="featCommLabel" class="text-slate-600 dark:text-neutral-400" data-i18n="feat_comm_label">ลีกคอมมูนิตี้และพรีเมียม (เช่น 675290 · 60 ทีม / Tier 2 · 1,779 ทีม)</div>
-              <div class="text-xl font-semibold mono tabular text-slate-900 dark:text-white" data-i18n="feat_comm_val">17.2 ครั้ง / ทีม / GW</div>
-              <p class="text-slate-600 dark:text-neutral-400" data-i18n="feat_comm_sub">เน้นเช็กผลสรุปหลังจบแมตช์เป็นหลัก ความถี่น้อยกว่าลีกมีเงินรางวัล ~14 เท่า</p>
-            </div>
-
-            <div class="pt-3 space-y-1">
-              <div class="font-semibold text-emerald-700 dark:text-emerald-400" data-i18n="feat_takeaway_title">ข้อสรุปเชิงกลยุทธ์ (Executive Takeaway)</div>
-              <p class="text-slate-700 dark:text-neutral-300 leading-relaxed" data-i18n="feat_takeaway_body">
-                ฟีเจอร์ “คำนวณเงินรางวัลอัตโนมัติ (Prize Engine)” คือจุดขายทำเงินอันดับ 1 สำหรับขยายตลาดสู่ประธานมินิลีกทั่วไทย
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 04. ACQUISITION CHANNELS & GEOGRAPHIC REACH                               -->
-    <!-- ========================================================================= -->
-    <section id="sec-distribution" class="space-y-4 scroll-mt-28" aria-labelledby="sec-distribution-title">
-      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
-        <div class="flex items-center gap-2.5">
-          <span class="text-slate-700 dark:text-neutral-300">${ICONS.share}</span>
-          <h2 id="sec-distribution-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec4_title">
-            04. ช่องทางการเข้าถึงและพิกัดภูมิศาสตร์ผู้ใช้งาน
-          </h2>
-        </div>
-        <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="sec4_sub">
-          ผู้ใช้มาจากช่องทางไหน และกระจายตัวอยู่ในพื้นที่ใด
-        </span>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <!-- Acquisition Channels -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4">
-          <h3 class="text-base font-semibold text-slate-900 dark:text-white" data-i18n="chan_title">สัดส่วนช่องทางที่ดึงผู้ใช้งานเข้าสู่ระบบ (Traffic Sources)</h3>
-          <div class="divide-y divide-borderLight dark:divide-borderDark text-xs">
-            <div class="py-3 space-y-1.5">
-              <div class="flex justify-between font-medium">
-                <span class="text-slate-900 dark:text-white" data-i18n="chan_1_name">LINE Group Links & In-App Browser (ลิงก์ในกลุ่มไลน์มินิลีก)</span>
-                <span id="chan1Pct" class="mono tabular text-emerald-700 dark:text-emerald-400 font-semibold">52.4%</span>
-              </div>
-              <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div id="chan1Bar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 52.4%"></div>
-              </div>
-              <p class="text-slate-600 dark:text-neutral-400" data-i18n="chan_1_desc">ไวรัลลูปหลัก: ประธานลีกและเพื่อนส่งลิงก์ตารางคะแนนลงกลุ่ม LINE ทุกสัปดาห์</p>
-            </div>
-
-            <div class="py-3 space-y-1.5">
-              <div class="flex justify-between font-medium">
-                <span class="text-slate-900 dark:text-white" data-i18n="chan_2_name">Direct / Home Screen Bookmark (เข้าตรง & ปักหมุดหน้าจอ)</span>
-                <span id="chan2Pct" class="mono tabular text-slate-900 dark:text-white font-semibold">34.8%</span>
-              </div>
-              <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div id="chan2Bar" class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full transition-all duration-300" style="width: 34.8%"></div>
-              </div>
-              <p class="text-slate-600 dark:text-neutral-400" data-i18n="chan_2_desc">กลุ่มแฟนพันธุ์แท้ที่บันทึกเว็บไว้บนหน้าจอมือถือเหมือนแอปเนทีฟ</p>
-            </div>
-
-            <div class="pt-3 space-y-1.5">
-              <div class="flex justify-between font-medium">
-                <span class="text-slate-900 dark:text-white" data-i18n="chan_3_name">Deep-Link Direct &amp; Smart Text Summary (แชร์ลิงก์ตรงและข้อความสรุปผล)</span>
-                <span id="chan3Pct" class="mono tabular text-slate-900 dark:text-white font-semibold">12.8%</span>
-              </div>
-              <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-                <div id="chan3Bar" class="bg-slate-500 dark:bg-neutral-500 h-full rounded-full transition-all duration-300" style="width: 12.8%"></div>
-              </div>
-              <p class="text-slate-600 dark:text-neutral-400" data-i18n="chan_3_desc">พร้อมใช้งานแล้ว: คัดลอกสรุปยอดรับ–จ่ายเข้า LINE กลุ่ม และส่งลิงก์เฉพาะลีก (/{id}/) โดยตรง</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Geographic & Language Distribution -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-4">
-          <div class="space-y-3">
-            <h3 class="text-base font-semibold text-slate-900 dark:text-white" data-i18n="geo_title">การกระจายตัวตามภูมิศาสตร์และภาษา (Geo & Locale)</h3>
-            <div class="divide-y divide-borderLight dark:divide-borderDark text-xs">
-              <div class="py-2.5 flex items-center justify-between">
-                <span class="text-slate-800 dark:text-neutral-200 font-medium" data-i18n="geo_1">กรุงเทพมหานครและปริมณฑล (BKK & Metro)</span>
-                <span id="geoBkkPct" class="mono tabular font-semibold text-emerald-700 dark:text-emerald-400">68.5%</span>
-              </div>
-              <div class="py-2.5 flex items-center justify-between">
-                <span class="text-slate-800 dark:text-neutral-200 font-medium" data-i18n="geo_2">หัวเมืองใหญ่ (เชียงใหม่ · ชลบุรี · ขอนแก่น · ภูเก็ต)</span>
-                <span id="geoRegPct" class="mono tabular font-semibold text-slate-900 dark:text-white">23.7%</span>
-              </div>
-              <div class="py-2.5 flex items-center justify-between">
-                <span class="text-slate-800 dark:text-neutral-200 font-medium" data-i18n="geo_3">ต่างประเทศ (UK · Singapore · Australia · Japan)</span>
-                <span id="geoIntlPct" class="mono tabular font-semibold text-slate-900 dark:text-white">7.8%</span>
-              </div>
-              <div class="py-2.5 flex items-center justify-between">
-                <span class="text-slate-600 dark:text-neutral-400" data-i18n="geo_lang_label">สัดส่วนภาษาที่เลือกใช้งาน (TH / EN)</span>
-                <span class="mono tabular font-semibold text-slate-900 dark:text-white">TH 84% · EN 16%</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="pt-3 border-t border-borderLight dark:border-borderDark text-xs text-slate-600 dark:text-neutral-400">
-            <span class="font-semibold text-slate-900 dark:text-white" data-i18n="geo_edge_title">Cloudflare Bangkok Edge (BKK): </span>
-            <span data-i18n="geo_edge_desc">ทราฟฟิก 92.2% ในไทยวิ่งเข้า Data Center กรุงเทพฯ โดยตรง ค่าความหน่วงเฉลี่ยต่ำเพียง 18–26 ms</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 05. DEVICE, VIEWPORT & CLIENT ENVIRONMENT                                 -->
-    <!-- ========================================================================= -->
-    <section id="sec-devices" class="space-y-4 scroll-mt-28" aria-labelledby="sec-devices-title">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-borderLight dark:border-borderDark pb-3">
+    <section id="sec-orders" class="space-y-4 scroll-mt-28" aria-labelledby="sec-orders-title">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
         <div>
-          <div class="flex items-center gap-2.5">
-            <span class="text-slate-700 dark:text-neutral-300">${ICONS.smartphone}</span>
-            <h2 id="sec-devices-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec5_title">
-              05. อุปกรณ์ หน้าจอ และสภาพแวดล้อมของผู้ใช้งาน
-            </h2>
-          </div>
-          <p class="text-xs mono text-slate-600 dark:text-neutral-400 mt-1" data-i18n="sec5_sub">
-            เลือกดูข้อมูลจริงจาก D1 Telemetry เพื่อการออกแบบ UX/UI ให้เหมาะกับอุปกรณ์หลัก
-          </p>
-        </div>
-        <div class="inline-flex items-center gap-2 self-start sm:self-auto shrink-0" role="group" aria-label="Device telemetry window">
-          <button type="button" id="btnDev7d" onclick="switchDeviceWindow('7d')"
-            class="min-h-[44px] px-4 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap shrink-0 transition-colors"
-            data-i18n="dev_btn_7d">
-            7 วันล่าสุด
-          </button>
-          <button type="button" id="btnDev30d" onclick="switchDeviceWindow('30d')"
-            class="min-h-[44px] px-4 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 whitespace-nowrap shrink-0 transition-colors"
-            data-i18n="dev_btn_30d">
-            30 วันล่าสุด
-          </button>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Mobile -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="dev_mobile_label">สมาร์ตโฟน (Mobile Phones)</span>
-            <span id="devMobileBadge" class="text-xs mono text-slate-600 dark:text-neutral-400">-</span>
-          </div>
-          <div id="deviceMobilePct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">-</div>
-          <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div id="deviceMobileBar" class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
-          </div>
-          <p id="devMobileDesc" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_mobile_desc">
-            หน้าจอมือถือขนาด 375px–430px (กำลังโหลดสถิติจริง 30 วันล่าสุด...)
-          </p>
-        </div>
-
-        <!-- Desktop -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="dev_desktop_label">คอมพิวเตอร์ตั้งโต๊ะ / โน้ตบุ๊ก (Desktop)</span>
-            <span id="devDesktopBadge" class="text-xs mono text-slate-600 dark:text-neutral-400">-</span>
-          </div>
-          <div id="deviceDesktopPct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">-</div>
-          <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div id="deviceDesktopBar" class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
-          </div>
-          <p id="devDesktopDesc" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_desktop_desc">
-            หน้าจอคอมพิวเตอร์และโน้ตบุ๊ก 1024px+ (กำลังโหลดสถิติจริง 30 วันล่าสุด...)
-          </p>
-        </div>
-
-        <!-- Tablet / iPad -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="dev_tablet_label">ไอแพดและแท็บเล็ต (iPad / Tablet)</span>
-            <span id="devTabletBadge" class="text-xs mono text-slate-600 dark:text-neutral-400">-</span>
-          </div>
-          <div id="deviceTabletPct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">-</div>
-          <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div id="deviceTabletBar" class="bg-slate-500 dark:bg-neutral-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
-          </div>
-          <p id="devTabletDesc" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_tablet_desc">
-            หน้าจอแท็บเล็ต 768px–1024px (กำลังโหลดสถิติจริง 30 วันล่าสุด...)
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 06. MATCHDAY TRAFFIC RHYTHM & CONCURRENCY WINDOWS                         -->
-    <!-- ========================================================================= -->
-    <section id="sec-timing" class="space-y-4 scroll-mt-28" aria-labelledby="sec-timing-title">
-      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
-        <div class="flex items-center gap-2.5">
-          <span class="text-slate-700 dark:text-neutral-300">${ICONS.clock}</span>
-          <h2 id="sec-timing-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec6_title">
-            06. จังหวะทราฟฟิกวันแข่งขันและช่วงเวลาใช้งานสูงสุด
+          <h2 id="sec-orders-title" class="text-lg sm:text-xl font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec3_title">
+            03. กล่องรับคำสั่งซื้อ &amp; ตรวจสลิป
           </h2>
-        </div>
-        <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="sec6_sub">
-          กราฟวิเคราะห์ความหนาแน่นทราฟฟิกรายวัน (7 วัน) และรายชั่วโมงวันแข่ง (เวลาไทย ICT)
-        </span>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <!-- SVG Chart Card (2/3 width on desktop) -->
-        <div class="lg:col-span-2 p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-4">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <h3 id="trafficChartTitle" class="text-base font-semibold text-slate-900 dark:text-white" data-i18n="chart_title_hourly">
-                กราฟความหนาแน่นทราฟฟิกรายชั่วโมงในวันแข่งขัน (24 ชั่วโมง · ICT)
-              </h3>
-              <p id="trafficChartSub" class="text-xs text-slate-600 dark:text-neutral-400 mt-0.5" data-i18n="chart_sub_hourly">
-                พุ่งสูงสุดช่วงคู่ดึกวันเสาร์ 21:00–23:30 น. (68% ของทราฟฟิกทั้งสัปดาห์)
-              </p>
-            </div>
-
-            <!-- Chart View Switcher (44px touch targets) -->
-            <div class="inline-flex items-center gap-2 self-start sm:self-auto shrink-0" role="group" aria-label="Traffic chart mode">
-              <button type="button" id="btnChartHourly" onclick="switchChartMode('hourly')"
-                class="min-h-[44px] px-4 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 whitespace-nowrap shrink-0 transition-colors"
-                data-i18n="chart_btn_24h">
-                24 ชม. (วันแข่ง)
-              </button>
-              <button type="button" id="btnChartDaily" onclick="switchChartMode('daily')"
-                class="min-h-[44px] px-4 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap shrink-0 transition-colors"
-                data-i18n="chart_btn_7d">
-                7 วันย้อนหลัง
-              </button>
-            </div>
-          </div>
-
-          <!-- Responsive SVG Chart Container -->
-          <div class="w-full pt-2 space-y-1.5">
-            <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 dark:text-neutral-400">
-              <span id="trafficYAxisUnit" class="font-medium">แกนตั้ง (Y): ดัชนีความหนาแน่นเทียบช่วงพีคสูงสุด (%)</span>
-              <span id="trafficXAxisUnit" class="mono">แกนนอน (X): เวลาไทย (ICT)</span>
-            </div>
-            <svg id="trafficSvgChart" viewBox="0 0 680 220" class="w-full h-48 sm:h-56 overflow-visible" role="img" aria-label="Matchday traffic distribution chart"></svg>
-          </div>
-
-          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-borderLight dark:border-borderDark text-xs text-slate-600 dark:text-neutral-400">
-            <div class="flex items-center gap-4">
-              <span class="inline-flex items-center gap-1.5">
-                <span class="w-2.5 h-2.5 rounded-sm bg-emerald-500"></span>
-                <span data-i18n="chart_legend_peak">ช่วงพีคบอลเตะสด / เดดไลน์</span>
-              </span>
-              <span class="inline-flex items-center gap-1.5">
-                <span class="w-2.5 h-2.5 rounded-sm bg-slate-400 dark:bg-neutral-600"></span>
-                <span data-i18n="chart_legend_normal">ช่วงเวลาปกติ</span>
-              </span>
-            </div>
-            <span id="chartPeakCallout" class="mono text-slate-800 dark:text-neutral-200 font-medium">Peak: 22:00 ICT (100% Index)</span>
-          </div>
-        </div>
-
-        <!-- 3 Peak Windows Ledger (1/3 width on desktop) -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-4">
-          <h3 class="text-base font-semibold text-slate-900 dark:text-white" data-i18n="peak_windows_title">3 ช่วงเวลาวิกฤตที่ระบบรับโหลดสูงสุด</h3>
-
-          <div class="divide-y divide-borderLight dark:divide-borderDark text-xs">
-            <div class="py-3 space-y-1">
-              <div class="flex items-center justify-between font-semibold">
-                <span class="text-emerald-700 dark:text-emerald-400" data-i18n="peak_1_time">เสาร์ 21:00 – 00:30 น. (ICT)</span>
-                <span class="mono tabular text-emerald-700 dark:text-emerald-400">68% Share</span>
-              </div>
-              <div class="font-medium text-slate-900 dark:text-white" data-i18n="peak_1_title">ช่วงบอลคู่หลักเตะพร้อมกัน 5–6 คู่</div>
-              <p class="text-slate-600 dark:text-neutral-400" data-i18n="peak_1_desc">ผู้ใช้เปิดหน้าตารางคะแนนสดค้างไว้และกดรีเฟรชถี่ที่สุด ระบบ Edge Cache ช่วยรับโหลดแทนต้นทาง 94%</p>
-            </div>
-
-            <div class="py-3 space-y-1">
-              <div class="flex items-center justify-between font-semibold">
-                <span class="text-slate-900 dark:text-white" data-i18n="peak_2_time">ก่อนเดดไลน์ 90 นาที (ศุกร์/เสาร์)</span>
-                <span class="mono tabular text-slate-900 dark:text-white">19% Share</span>
-              </div>
-              <div class="font-medium text-slate-900 dark:text-white" data-i18n="peak_2_title">ช่วงเช็กข่าวตัวจริงหลุด & ส่องกัปตัน</div>
-              <p class="text-slate-600 dark:text-neutral-400" data-i18n="peak_2_desc">ทราฟฟิกพุ่งสูงก่อนปิดตลาดและทันทีหลังตลาดเปิดเมื่อทุกคนเข้ามาส่องกัปตันคู่แข่ง</p>
-            </div>
-
-            <div class="pt-3 space-y-1">
-              <div class="flex items-center justify-between font-semibold">
-                <span class="text-slate-900 dark:text-white" data-i18n="peak_3_time">จันทร์ / อังคาร 06:30 – 10:00 น.</span>
-                <span class="mono tabular text-slate-900 dark:text-white">13% Share</span>
-              </div>
-              <div class="font-medium text-slate-900 dark:text-white" data-i18n="peak_3_title">ช่วงสรุปผู้ชนะรายสัปดาห์และเคลียร์บิล</div>
-              <p class="text-slate-600 dark:text-neutral-400" data-i18n="peak_3_desc">เหรัญญิกและสมาชิกเข้ามาตรวจผลรางวัลประจำสัปดาห์หลัง GitHub Actions ซิงก์ข้อมูลจบ</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 07. SYSTEM PERFORMANCE, CLOUD QUOTA & SCALING CAPACITY                    -->
-    <!-- ========================================================================= -->
-    <section id="sec-system" class="space-y-4 scroll-mt-28" aria-labelledby="sec-system-title">
-      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
-        <div class="flex items-center gap-2.5">
-          <span class="text-slate-700 dark:text-neutral-300">${ICONS.activity}</span>
-          <h2 id="sec-system-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec7_title">
-            07. ประสิทธิภาพระบบ โควตาคลาวด์ และความจุในการขยายสเกล
-          </h2>
-        </div>
-        <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="sec7_sub">
-          ติดตามสุขภาพระบบจริงเพื่อประเมินเพดานรองรับผู้ใช้งานและควบคุมต้นทุน
-        </span>
-      </div>
-
-      <!-- 4 Cloud Quota Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- 7.1 Cloudflare Worker & Edge Cache -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3">
-          <div class="space-y-1">
-            <div class="flex items-center justify-between text-xs">
-              <span class="font-medium text-slate-600 dark:text-neutral-400">Cloudflare Workers</span>
-              <span class="mono font-semibold text-emerald-700 dark:text-emerald-400">Free Tier OK</span>
-            </div>
-            <div id="sysWorkerReqs" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">8,420 <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">/ 100k req/d</span></div>
-          </div>
-          <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div id="sysWorkerBar" class="bg-emerald-500 h-full rounded-full" style="width: 8.4%"></div>
-          </div>
-          <div class="text-xs text-slate-600 dark:text-neutral-400 flex justify-between">
-            <span data-i18n="sys_cache_hit_label">อัตราเสิร์ฟจากแคช (Benchmark):</span>
-            <span id="sysWorkerCacheHit" class="mono font-semibold text-emerald-700 dark:text-emerald-400">96.4%</span>
-          </div>
-        </div>
-
-        <!-- 7.2 Cloudflare D1 SQLite Telemetry -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3">
-          <div class="space-y-1">
-            <div class="flex items-center justify-between text-xs">
-              <span class="font-medium text-slate-600 dark:text-neutral-400">Cloudflare D1 Database</span>
-              <span id="sysD1Badge" class="mono font-semibold text-emerald-700 dark:text-emerald-400">Connected</span>
-            </div>
-            <div id="sysD1RowsCount" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">12,480 <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">rows</span></div>
-          </div>
-          <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div id="sysD1ReadsBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 6.2%"></div>
-          </div>
-          <div class="text-xs text-slate-600 dark:text-neutral-400 flex justify-between">
-            <span data-i18n="sys_d1_reads_label">โควตาอ่าน-เขียนรายวัน:</span>
-            <span id="sysD1ReadsPct" class="mono font-semibold text-slate-900 dark:text-white">4.1% of 100k</span>
-          </div>
-        </div>
-
-        <!-- 7.3 GitHub Actions CI/CD Runner -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3">
-          <div class="space-y-1">
-            <div class="flex items-center justify-between text-xs">
-              <span class="font-medium text-slate-600 dark:text-neutral-400">GitHub Actions Cron</span>
-              <span class="mono font-semibold text-emerald-700 dark:text-emerald-400" title="Matchdays (Fri–Mon): every 1h · Off-days (Tue–Thu): every 4h">1h / 4h Cron</span>
-            </div>
-            <div id="sysGhSyncTime" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">15.9s <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">/ build</span></div>
-          </div>
-          <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div id="sysGhSyncBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 16%"></div>
-          </div>
-          <div class="text-xs text-slate-600 dark:text-neutral-400 flex justify-between">
-            <span data-i18n="sys_gh_success_label">อัตราซิงก์สำเร็จ (Benchmark):</span>
-            <span class="mono font-semibold text-emerald-700 dark:text-emerald-400">99.8%</span>
-          </div>
-        </div>
-
-        <!-- 7.4 FPL Upstream API Health & Latency -->
-        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3">
-          <div class="space-y-1">
-            <div class="flex items-center justify-between text-xs">
-              <span class="font-medium text-slate-600 dark:text-neutral-400">FPL Upstream Proxy</span>
-              <span id="sysUpstreamBadge" class="mono font-semibold text-slate-600 dark:text-neutral-400" data-i18n="sys_upstream_ready">พร้อมเช็ก</span>
-            </div>
-            <div id="sysUpstreamLatency" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">— <span class="text-xs font-normal font-sans text-slate-500 dark:text-neutral-400" data-i18n="sys_upstream_tap_hint">(กดเช็กด้านล่าง)</span></div>
-          </div>
-          <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
-            <div id="sysUpstreamBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
-          </div>
-          <div class="text-xs text-slate-600 dark:text-neutral-400 flex justify-between">
-            <span data-i18n="sys_scale_headroom_label">เพดานขยายสเกล (Headroom):</span>
-            <span id="sysScalingHeadroom" class="mono font-semibold text-emerald-700 dark:text-emerald-400">+22 Leagues</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Operational Command Controls (Real Edge Actions with >=44px Touch Targets) -->
-      <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div>
-            <h3 class="text-base font-semibold text-slate-900 dark:text-white" data-i18n="ops_title">ปุ่มดูแลและเช็กความพร้อมของเว็บ</h3>
-            <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="ops_sub">กดเฉพาะตอนที่ต้องการตรวจสอบหรือแก้ไขปัญหา ผลลัพธ์จะแสดงใต้ปุ่มทันที (คนเข้าเว็บทั่วไปไม่ได้รับผลกระทบ)</p>
-          </div>
-          <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="ops_shortcut_hint">คีย์ลัด: R รีเฟรช · L สลับภาษา · T สลับธีม</span>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-borderLight dark:divide-borderDark pt-2 border-t border-borderLight dark:border-borderDark">
-          <!-- Op 1: Flush Edge Cache -->
-          <div class="flex flex-col justify-between gap-3 py-3 sm:py-1 sm:pr-4">
-            <div class="space-y-1">
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_flush_title">รีเฟรชคะแนนสดใหม่ทั้งเว็บ</div>
-              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="op_flush_desc">ใช้เมื่อคะแนนหรือโบนัสบนหน้าเว็บค้างไม่ขยับ กดเพื่อล้างข้อมูลค้างเก่าและดึงผลล่าสุดให้ทุกคนทันที</p>
-            </div>
-            <div class="space-y-2">
-              <button type="button" id="btnFlushCache" onclick="runEdgeAction('flush-cache')"
-                class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200/70 dark:hover:bg-neutral-800 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-xs font-medium text-slate-900 dark:text-white transition-colors"
-                data-i18n="op_flush_btn">
-                รีเฟรชคะแนนสดทันที
-              </button>
-              <div id="opResult-flush-cache" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-xs leading-relaxed"></div>
-            </div>
-          </div>
-
-          <!-- Op 2: Ping Upstream FPL API -->
-          <div class="flex flex-col justify-between gap-3 py-3 sm:py-1 sm:px-4">
-            <div class="space-y-1">
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_ping_title">เช็กว่าระบบ FPL ล่มหรือช้าไหม</div>
-              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="op_ping_desc">ใช้ตรวจดูว่าปัญหาคะแนนไม่ขึ้นเกิดจากเว็บพรีเมียร์ลีกต้นทางช้าหรือล่มอยู่หรือไม่</p>
-            </div>
-            <div class="space-y-2">
-              <button type="button" id="btnPingUpstream" onclick="runEdgeAction('ping-upstream')"
-                class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200/70 dark:hover:bg-neutral-800 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-xs font-medium text-slate-900 dark:text-white transition-colors"
-                data-i18n="op_ping_btn">
-                เช็กสถานะเว็บ FPL
-              </button>
-              <div id="opResult-ping-upstream" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-xs leading-relaxed"></div>
-            </div>
-          </div>
-
-          <!-- Op 3: Export JSON Snapshot -->
-          <div class="flex flex-col justify-between gap-3 py-3 sm:py-1 sm:px-4">
-            <div class="space-y-1">
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_export_title">ดาวน์โหลดไฟล์สถิติเก็บไว้</div>
-              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="op_export_desc">เก็บข้อมูลยอดคนดูและรายละเอียดทั้ง 9 ลีกลงเครื่องไว้ดูย้อนหลังหรือสรุปรายงาน</p>
-            </div>
-            <div class="space-y-2">
-              <button type="button" id="btnExportJson" onclick="exportDashboardJson()"
-                class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200/70 dark:hover:bg-neutral-800 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-xs font-medium text-slate-900 dark:text-white transition-colors"
-                data-i18n="op_export_btn">
-                ดาวน์โหลดไฟล์สถิติ
-              </button>
-              <div id="opResult-export-json" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-xs leading-relaxed"></div>
-            </div>
-          </div>
-
-          <!-- Op 4: Prune D1 Telemetry (>30d) -->
-          <div class="flex flex-col justify-between gap-3 py-3 sm:py-1 sm:pl-4">
-            <div class="space-y-1">
-              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_prune_title">ลบประวัติคนดูเก่าที่เกิน 30 วัน</div>
-              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="op_prune_desc">ช่วยเคลียร์บันทึกเก่าที่ไม่ใช้แล้วให้ระบบลื่นและประหยัดพื้นที่ (ยอดคนดูรวมทั้งหมดยังอยู่ครบ)</p>
-            </div>
-            <div class="space-y-2">
-              <button type="button" id="btnPruneD1" onclick="runEdgeAction('prune-telemetry')"
-                class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-xs font-medium text-rose-700 dark:text-rose-300 transition-colors"
-                data-i18n="op_prune_btn">
-                ลบประวัติเก่าเกิน 30 วัน
-              </button>
-              <div id="opResult-prune-telemetry" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-xs leading-relaxed"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ======================================================================= -->
-    <!-- SECTION 8: PROJECT HEALTH & ERROR MONITOR (1 DAY & 7 DAYS)              -->
-    <!-- ======================================================================= -->
-    <section id="sec-monitor" aria-labelledby="sec8-heading" class="space-y-4 scroll-mt-24">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h2 id="sec8-heading" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec8_title">
-            08. ตรวจสุขภาพระบบและ Error ย้อนหลัง (Monitor)
-          </h2>
-          <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec8_sub">
-            เช็กย้อนหลัง 1 วัน (รายชั่วโมง) และ 1 สัปดาห์ (รายวัน) ว่าช่วงเวลาไหนทำงานปกติหรือมี Error เกิดขึ้นกับผู้ใช้
-          </p>
-        </div>
-        <div id="monitorOverallBadge" class="inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-xs font-medium text-emerald-700 dark:text-emerald-300 shrink-0 whitespace-nowrap">
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span id="monitorOverallBadgeText" data-i18n="mon_status_healthy">ทำงานปกติ 100%</span>
-        </div>
-      </div>
-
-      <!-- 4 Health Summary KPI Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
-          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_24h_label">ความพร้อมใช้งาน 1 วัน (24 ชม.)</div>
-          <div id="mon24hUptime" class="text-2xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400">100.0%</div>
-          <div id="mon24hSub" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">0 Error จากกิจกรรมทั้งหมด</div>
-        </div>
-
-        <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
-          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_7d_label">ความพร้อมใช้งาน 1 สัปดาห์ (7 วัน)</div>
-          <div id="mon7dUptime" class="text-2xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400">100.0%</div>
-          <div id="mon7dSub" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">0 Error ตลอด 7 วันที่ผ่านมา</div>
-        </div>
-
-        <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
-          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_client_label">ปัญหาฝั่งผู้ใช้งาน (หน้าเว็บ)</div>
-          <div id="monClientErrTotal" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0</div>
-          <div id="monClientErrSub" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="mon_kpi_client_sub">หน้าเว็บค้าง โหลดข้อมูลไม่ขึ้น หรือ JS Error</div>
-        </div>
-
-        <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
-          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_upstream_label">ปัญหาเว็บ FPL ต้นทาง (5xx)</div>
-          <div id="monUpstreamErrTotal" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0</div>
-          <div id="monUpstreamErrSub" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="mon_kpi_upstream_sub">เว็บพรีเมียร์ลีกต้นทางตอบช้าหรือล่มชั่วคราว</div>
-        </div>
-      </div>
-
-      <!-- Interactive Chart & Anomaly Timeline -->
-      <div class="p-5 sm:p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-5">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <h3 id="monitorChartTitle" class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="mon_chart_title_24h">
-              บันทึกการทำงานย้อนหลัง 24 ชั่วโมงล่าสุด (เวลาไทย · ICT)
-            </h3>
-            <p id="monitorChartSub" class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="mon_chart_sub_24h">
-              เปรียบเทียบช่วงเวลาที่ระบบทำงานปกติ กับช่วงเวลาที่ตรวจพบ Error
-            </p>
-          </div>
-          <div class="flex items-center gap-2 shrink-0" role="group" aria-label="Monitor time range">
-            <button type="button" id="btnMon24h" onclick="switchMonitorMode('24h')"
-              class="min-h-[44px] px-4 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 whitespace-nowrap shrink-0 transition-colors"
-              data-i18n="mon_btn_24h">
-              1 วัน (24 ชม.)
-            </button>
-            <button type="button" id="btnMon7d" onclick="switchMonitorMode('7d')"
-              class="min-h-[44px] px-4 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap shrink-0 transition-colors"
-              data-i18n="mon_btn_7d">
-              1 สัปดาห์ (7 วัน)
-            </button>
-          </div>
-        </div>
-
-        <div class="w-full space-y-1.5">
-          <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 dark:text-neutral-400">
-            <span id="monitorYAxisUnit" class="font-medium">แกนตั้ง (Y): จำนวนเหตุการณ์ใช้งานจริง &amp; Error (ครั้ง/ชม.)</span>
-            <span id="monitorXAxisUnit" class="mono">แกนนอน (X): ช่วงเวลา 24 ชม. ล่าสุด (เวลาไทย · น.)</span>
-          </div>
-          <svg id="monitorSvgChart" viewBox="0 0 680 220" class="w-full h-52 sm:h-60 overflow-visible" role="img" aria-label="Project Health and Error Log Chart"></svg>
-        </div>
-
-        <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600 dark:text-neutral-400 pt-2 border-t border-borderLight dark:border-borderDark">
-          <div class="flex flex-wrap items-center gap-4">
-            <span class="inline-flex items-center gap-1.5">
-              <span class="w-3 h-3 rounded-sm bg-emerald-500 inline-block"></span>
-              <span data-i18n="mon_legend_ok">ใช้งานปกติ (จำนวนครั้ง)</span>
-            </span>
-            <span class="inline-flex items-center gap-1.5">
-              <span class="w-3 h-3 rounded-sm bg-rose-500 inline-block"></span>
-              <span data-i18n="mon_legend_err">ช่วงเวลาที่พบ Error</span>
-            </span>
-          </div>
-          <span id="monitorWindowCallout" class="mono text-emerald-700 dark:text-emerald-400 font-medium">ไม่มีช่วงเวลาผิดปกติ</span>
-        </div>
-
-        <!-- Anomaly Windows & Error Breakdown Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-2 border-t border-borderLight dark:border-borderDark">
-          <div class="lg:col-span-7 space-y-2">
-            <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="mon_anomaly_title">
-              ประวัติช่วงเวลาที่ทำงานผิดปกติ (Anomaly Timeline)
-            </div>
-            <div id="monitorAnomalyList" class="space-y-2 text-xs"></div>
-          </div>
-          <div class="lg:col-span-5 space-y-2">
-            <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="mon_cat_title">
-              สรุปประเภท Error สะสม 7 วันล่าสุด
-            </div>
-            <div id="monitorCategoryBreakdown" class="space-y-2 text-xs"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =================================================================== -->
-    <!-- SECTION 09: CUSTOMER ORDERS & PAYMENT SLIP INBOX                    -->
-    <!-- =================================================================== -->
-    <section id="sec-orders" class="space-y-4 scroll-mt-24" aria-labelledby="sec-orders-title">
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
-        <div>
-          <h2 id="sec-orders-title" class="text-lg sm:text-xl font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec9_title">
-            09. กล่องรับคำสั่งซื้อ &amp; ตรวจสลิป
-          </h2>
-          <p class="text-xs sm:text-sm text-slate-600 dark:text-neutral-400" data-i18n="sec9_sub">
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-neutral-400" data-i18n="sec3_sub">
             ตั้งค่ารูป QR รับเงิน ตรวจสอบยอดโอนตามเศษสตางค์ ดูรูปสลิป ส่งข้อมูลเข้าเครื่องมือเปิดลีกด้านล่าง และแจ้งเปิดใช้งานทางอีเมลในคลิกเดียว
           </p>
         </div>
-        <button type="button" id="btnRefreshOrders"
-          class="min-h-[42px] px-4 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark text-xs font-semibold text-slate-800 dark:text-neutral-200 whitespace-nowrap shrink-0 transition-colors self-start sm:self-auto"
-          data-i18n="ord_btn_refresh">
-          รีเฟรชรายการออเดอร์
-        </button>
+        <div class="flex flex-wrap items-center gap-2 self-start sm:self-auto shrink-0">
+          <span id="ordersEmailStatusBadge" class="px-2.5 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs mono text-slate-700 dark:text-neutral-300 whitespace-nowrap">
+            Email: Checking…
+          </span>
+          <button type="button" id="btnRefreshOrders"
+            class="min-h-[42px] px-4 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark hover:bg-raisedLight dark:hover:bg-raisedDark text-xs font-semibold text-slate-800 dark:text-neutral-200 whitespace-nowrap shrink-0 transition-colors"
+            data-i18n="ord_btn_refresh">
+            รีเฟรชรายการออเดอร์
+          </button>
+        </div>
       </div>
 
       <!-- Private Payment QR Settings Card -->
@@ -2376,16 +1185,16 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       </div>
     </section>
 
-    <!-- =================================================================== -->
-    <!-- SECTION 10: CONCIERGE CUSTOMER LEAGUE ONBOARDING WIZARD             -->
-    <!-- =================================================================== -->
-    <section id="sec-onboarding" class="space-y-4 scroll-mt-24" aria-labelledby="sec-onboarding-title">
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+    <!-- ========================================================================= -->
+    <!-- 04. CONCIERGE CUSTOMER LEAGUE ONBOARDING WIZARD                           -->
+    <!-- ========================================================================= -->
+    <section id="sec-onboarding" class="space-y-4 scroll-mt-28" aria-labelledby="sec-onboarding-title">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
         <div>
-          <h2 id="sec-onboarding-title" class="text-lg sm:text-xl font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec10_title">
-            10. เครื่องมือเปิดลีกลูกค้าใหม่ (Concierge Onboarding Wizard)
+          <h2 id="sec-onboarding-title" class="text-lg sm:text-xl font-semibold tracking-tight text-slate-900 dark:text-white" data-i18n="sec4_title">
+            04. เครื่องมือเปิดลีกลูกค้าใหม่ (Concierge Onboarding Wizard)
           </h2>
-          <p class="text-xs sm:text-sm text-slate-600 dark:text-neutral-400" data-i18n="sec10_sub">
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-neutral-400" data-i18n="sec4_sub">
             ตรวจสอบ FPL Classic League ID สดจากเซิร์ฟเวอร์พรีเมียร์ลีก เลือกทีมที่ไม่ร่วมชิงรางวัล ตั้งค่าแพ็กเกจ และสร้างสคริปต์เปิดใช้งานทันที
           </p>
         </div>
@@ -2431,7 +1240,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           </div>
 
           <div class="lg:col-span-2 space-y-1.5">
-            <label for="onbWeeklyPrize" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_weekly">รางวัล/สัปดาห์ (บาท)</label>
+            <label id="onbWeeklyPrizeLbl" for="onbWeeklyPrize" class="block text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_weekly">รางวัล/สัปดาห์ (บาท)</label>
             <input id="onbWeeklyPrize" type="text" inputmode="numeric" value="300"
               class="w-full min-h-[44px] px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-sm mono text-slate-900 dark:text-white" />
           </div>
@@ -2585,15 +1394,751 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         </div>
       </div>
     </section>
+
+    <!-- ========================================================================= -->
+    <!-- 05. FEATURE ADOPTION & REAL SEGMENT ENGAGEMENT                            -->
+    <!-- ========================================================================= -->
+    <section id="sec-features" class="space-y-4 scroll-mt-28" aria-labelledby="sec-features-title">
+      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-slate-700 dark:text-neutral-300">${ICONS.chart}</span>
+          <h2 id="sec-features-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec5_title">
+            05. พฤติกรรมการใช้งานฟีเจอร์และคุณค่าผลิตภัณฑ์ (สด 7 วัน)
+          </h2>
+        </div>
+        <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="sec5_sub">
+          รวมทุกแท็บจริงบนเว็บ รวมถึง Transfer Advisor · คำนวณ 100% จาก D1 Beacon
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- Card 5A: Real Feature Adoption List -->
+        <div class="lg:col-span-2 p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-base font-semibold text-slate-900 dark:text-white" data-i18n="feat_share_title">สัดส่วนการคลิกใช้งานแต่ละโมดูลจริง (รอบ 7 วัน)</h3>
+            <span id="featTotalHitsBadge" class="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/25 text-xs mono text-emerald-700 dark:text-emerald-400">0 events</span>
+          </div>
+
+          <div id="featureAdoptionList" class="divide-y divide-borderLight dark:divide-borderDark text-xs">
+            <div class="py-6 text-center text-slate-600 dark:text-neutral-400">กำลังรอข้อมูลกิจกรรมฟีเจอร์จาก Cloudflare D1…</div>
+          </div>
+        </div>
+
+        <!-- Card 5B: Real Segment Engagement Comparison -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-4">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between gap-2">
+              <h3 class="text-base font-semibold text-slate-900 dark:text-white" data-i18n="feat_seg_title">การมีส่วนร่วม: ลีกเงินรางวัล vs ลีกทั่วไป</h3>
+              <span id="segMultiplierBadge" class="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/25 text-xs mono font-semibold text-emerald-800 dark:text-emerald-300">—</span>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="feat_seg_desc">
+              เปรียบเทียบอัตราการเปิดดูต่อทีม (Visits / Team · 7 วัน) จากยอดเข้าชมจริงใน D1 แยกตามลีกที่ตั้งเงินรางวัลและลีกคอมมูนิตี้
+            </p>
+
+            <div class="space-y-3 pt-2 border-t border-borderLight dark:border-borderDark">
+              <div class="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/25 space-y-1">
+                <div class="flex items-center justify-between gap-2 text-xs">
+                  <span class="font-medium text-emerald-900 dark:text-emerald-200" data-i18n="seg_prize_lbl">ลีกเงินรางวัล (Prize Leagues)</span>
+                  <span id="segPrizeVpt" class="text-lg font-bold mono tabular text-emerald-700 dark:text-emerald-400">0</span>
+                </div>
+                <div id="segPrizeMeta" class="text-xs mono text-slate-600 dark:text-neutral-400">—</div>
+              </div>
+
+              <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark space-y-1">
+                <div class="flex items-center justify-between gap-2 text-xs">
+                  <span class="font-medium text-slate-800 dark:text-neutral-200" data-i18n="seg_comm_lbl">ลีกทั่วไป / ฟรีลีก (Community)</span>
+                  <span id="segCommVpt" class="text-lg font-bold mono tabular text-slate-900 dark:text-white">0</span>
+                </div>
+                <div id="segCommMeta" class="text-xs mono text-slate-600 dark:text-neutral-400">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="segTopPrizeDesc" class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
+            กำลังคำนวณลีกที่มีการมีส่วนร่วมสูงสุดจากฐานข้อมูล…
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 06. BROWSER / IN-APP, GEO & LANGUAGE (TH / EN)                            -->
+    <!-- ========================================================================= -->
+    <section id="sec-distribution" class="space-y-4 scroll-mt-28" aria-labelledby="sec-distribution-title">
+      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-slate-700 dark:text-neutral-300">${ICONS.globe}</span>
+          <h2 id="sec-distribution-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec6_title">
+            06. ช่องทางเข้าใช้งาน (Browser), ภูมิภาค และภาษา (TH / EN)
+          </h2>
+        </div>
+        <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="sec6_sub">
+          จำแนก LINE In-App Browser, Safari, Chrome · พื้นที่จริงจาก Edge · สัดส่วน TH vs EN
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- Card 6A: Browser & In-App Client Breakdown -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4">
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="text-base font-semibold text-slate-900 dark:text-white" data-i18n="dist_src_title">เบราว์เซอร์และแอปที่ผู้ใช้เปิดลิงก์ (7 วัน)</h3>
+            <span id="browserTotalBadge" class="text-xs mono text-slate-600 dark:text-neutral-400">0 events</span>
+          </div>
+          <div id="browserDistributionList" class="space-y-3 text-xs">
+            <div class="py-4 text-center text-slate-600 dark:text-neutral-400">กำลังโหลดข้อมูล User-Agent จาก D1…</div>
+          </div>
+        </div>
+
+        <!-- Card 6B: Real Geo Split + Live Language Preference (TH / EN) -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-4">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between gap-2">
+              <h3 class="text-base font-semibold text-slate-900 dark:text-white" data-i18n="dist_geo_title">พื้นที่เชื่อมต่อและสัดส่วนภาษาที่ใช้งานจริง</h3>
+              <span id="geoTotalBadge" class="text-xs mono text-emerald-700 dark:text-emerald-400">CF Geo + Locale</span>
+            </div>
+
+            <!-- Geo 3-Bucket Grid -->
+            <div class="grid grid-cols-3 gap-2.5 text-center">
+              <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark">
+                <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="geo_bkk_lbl">กทม. &amp; ปริมณฑล</div>
+                <div id="geoBkkPct" class="text-lg font-bold mono tabular text-slate-900 dark:text-white mt-0.5">0.0%</div>
+                <div id="geoBkkCount" class="text-xs mono text-slate-600 dark:text-neutral-400">0 hits</div>
+              </div>
+              <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark">
+                <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="geo_reg_lbl">ต่างจังหวัด</div>
+                <div id="geoRegPct" class="text-lg font-bold mono tabular text-slate-900 dark:text-white mt-0.5">0.0%</div>
+                <div id="geoRegCount" class="text-xs mono text-slate-600 dark:text-neutral-400">0 hits</div>
+              </div>
+              <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark">
+                <div class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="geo_intl_lbl">ต่างประเทศ</div>
+                <div id="geoIntlPct" class="text-lg font-bold mono tabular text-slate-900 dark:text-white mt-0.5">0.0%</div>
+                <div id="geoIntlCount" class="text-xs mono text-slate-600 dark:text-neutral-400">0 hits</div>
+              </div>
+            </div>
+
+            <!-- Real Locale Split (TH vs EN) -->
+            <div class="space-y-2 pt-2 border-t border-borderLight dark:border-borderDark">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-medium text-slate-800 dark:text-neutral-200" data-i18n="dist_locale_lbl">ภาษาหน้าเว็บที่ผู้ใช้เลือก (TH vs EN)</span>
+                <span id="geoLocaleSplit" class="mono font-semibold text-slate-900 dark:text-white">ยังไม่มีข้อมูลสลับภาษา</span>
+              </div>
+              <div class="w-full h-2.5 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden flex">
+                <div id="localeThBar" class="bg-emerald-500 h-full transition-all duration-300" style="width: 0%"></div>
+                <div id="localeEnBar" class="bg-sky-500 h-full transition-all duration-300" style="width: 0%"></div>
+              </div>
+              <div id="localeCountsMeta" class="flex justify-between text-xs mono text-slate-600 dark:text-neutral-400">
+                <span>TH: 0</span>
+                <span>EN: 0</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="geoEdgeFooter" class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark text-xs mono text-slate-600 dark:text-neutral-400">
+            Edge Colo: ${safeColo} · กำลังรอสัญญาณ Geo จาก Edge Request
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 07. CLIENT DEVICES & VIEWPORT READINESS                                   -->
+    <!-- ========================================================================= -->
+    <section id="sec-devices" class="space-y-4 scroll-mt-28" aria-labelledby="sec-devices-title">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-borderLight dark:border-borderDark pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-slate-700 dark:text-neutral-300">${ICONS.smartphone}</span>
+          <div>
+            <h2 id="sec-devices-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec7_title">
+              07. สัดส่วนอุปกรณ์ผู้ใช้งานจริง (รองรับ iPadOS แท็บเล็ต)
+            </h2>
+            <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec7_sub">
+              ตรวจจับหน้าจอ + Touch เพื่อแยก iPad ออกจาก Desktop ไม่รวมปนกัน
+            </p>
+          </div>
+        </div>
+        <div class="inline-flex items-center gap-2 self-start sm:self-auto shrink-0" role="group" aria-label="Device telemetry window">
+          <button type="button" id="btnDev7d" onclick="switchDeviceWindow('7d')"
+            class="min-h-[44px] px-4 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 whitespace-nowrap shrink-0 transition-colors"
+            data-i18n="dev_btn_7d">
+            7 วันล่าสุด
+          </button>
+          <button type="button" id="btnDev30d" onclick="switchDeviceWindow('30d')"
+            class="min-h-[44px] px-4 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap shrink-0 transition-colors"
+            data-i18n="dev_btn_30d">
+            30 วันล่าสุด
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-3">
+          <div class="flex items-center justify-between text-xs">
+            <span class="inline-flex items-center gap-2 font-medium text-slate-800 dark:text-neutral-200">${ICONS.deviceMobile} <span data-i18n="dev_mobile_label">สมาร์ตโฟน (Mobile Phones)</span></span>
+            <span id="devMobileBadge" class="mono text-slate-600 dark:text-neutral-400">0</span>
+          </div>
+          <div id="deviceMobilePct" class="text-3xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400">0.0%</div>
+          <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
+            <div id="deviceMobileBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <p id="devMobileDesc" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_mobile_desc">iOS / Android &lt; 768px</p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-3">
+          <div class="flex items-center justify-between text-xs">
+            <span class="inline-flex items-center gap-2 font-medium text-slate-800 dark:text-neutral-200">${ICONS.deviceDesktop} <span data-i18n="dev_desktop_label">คอมพิวเตอร์ตั้งโต๊ะ / โน้ตบุ๊ก (Desktop)</span></span>
+            <span id="devDesktopBadge" class="mono text-slate-600 dark:text-neutral-400">0</span>
+          </div>
+          <div id="deviceDesktopPct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">0.0%</div>
+          <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
+            <div id="deviceDesktopBar" class="bg-slate-600 dark:bg-neutral-400 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <p id="devDesktopDesc" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_desktop_desc">macOS / Windows Non-Touch</p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-3">
+          <div class="flex items-center justify-between text-xs">
+            <span class="inline-flex items-center gap-2 font-medium text-slate-800 dark:text-neutral-200">${ICONS.deviceTablet} <span data-i18n="dev_tablet_label">ไอแพดและแท็บเล็ต (iPadOS / Tablet)</span></span>
+            <span id="devTabletBadge" class="mono text-slate-600 dark:text-neutral-400">0</span>
+          </div>
+          <div id="deviceTabletPct" class="text-3xl font-semibold mono tabular text-slate-900 dark:text-white">0.0%</div>
+          <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
+            <div id="deviceTabletBar" class="bg-sky-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <p id="devTabletDesc" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="dev_tablet_desc">iPadOS Touch &amp; Tablets</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 08. MATCHDAY TRAFFIC RHYTHM & REAL PEAK WINDOWS                           -->
+    <!-- ========================================================================= -->
+    <section id="sec-timing" class="space-y-4 scroll-mt-28" aria-labelledby="sec-timing-title">
+      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-slate-700 dark:text-neutral-300">${ICONS.clock}</span>
+          <h2 id="sec-timing-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec8_title">
+            08. ช่วงเวลาใช้งานพีคและพฤติกรรมวันแข่งขัน (ICT · 7 วันล่าสุด)
+          </h2>
+        </div>
+        <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="sec8_sub">
+          กราฟจากเวลาเข้าชมจริงใน Cloudflare D1 (ไม่มีเส้นจำลอง)
+        </span>
+      </div>
+
+      <div class="p-5 sm:p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 id="trafficChartTitle" class="text-base font-semibold text-slate-900 dark:text-white" data-i18n="chart_title_hourly">
+              กราฟความหนาแน่นทราฟฟิกรายชั่วโมง (24 ชั่วโมง · ICT)
+            </h3>
+            <p id="trafficChartSub" class="text-xs text-slate-600 dark:text-neutral-400 mt-0.5" data-i18n="chart_sub_hourly">
+              รวมยอดเข้าชมจริง 7 วันย้อนหลังตามชั่วโมง (00:00–23:59 ICT)
+            </p>
+          </div>
+          <div class="inline-flex items-center gap-2 self-start sm:self-auto shrink-0" role="group" aria-label="Traffic chart mode">
+            <button type="button" id="btnChartHourly" onclick="switchChartMode('hourly')"
+              class="min-h-[44px] px-4 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 whitespace-nowrap shrink-0 transition-colors"
+              data-i18n="chart_btn_24h">
+              รายชั่วโมง (24 ชม.)
+            </button>
+            <button type="button" id="btnChartDaily" onclick="switchChartMode('daily')"
+              class="min-h-[44px] px-4 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap shrink-0 transition-colors"
+              data-i18n="chart_btn_7d">
+              รายวัน (7 วัน)
+            </button>
+          </div>
+        </div>
+
+        <div class="w-full space-y-1.5">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 dark:text-neutral-400">
+            <span id="trafficYAxisUnit" class="font-medium">แกนตั้ง (Y): จำนวนการเข้าชมจริง (ครั้ง)</span>
+            <span id="trafficXAxisUnit" class="mono">แกนนอน (X): ชั่วโมงเวลาไทย 00:00–23:00 น.</span>
+          </div>
+          <svg id="trafficSvgChart" viewBox="0 0 680 220" class="w-full h-48 sm:h-56 overflow-visible" role="img" aria-label="Matchday traffic distribution chart"></svg>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-borderLight dark:border-borderDark text-xs text-slate-600 dark:text-neutral-400">
+          <div class="flex items-center gap-4">
+            <span class="inline-flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-sm bg-emerald-500"></span>
+              <span data-i18n="chart_legend_peak">ชั่วโมงพีคสูงสุด (Peak)</span>
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-sm bg-slate-400 dark:bg-neutral-600"></span>
+              <span data-i18n="chart_legend_normal">ช่วงเวลาปกติ</span>
+            </span>
+          </div>
+          <span id="chartPeakCallout" class="mono text-slate-800 dark:text-neutral-200 font-medium">กำลังรอข้อมูลทราฟฟิกรายชั่วโมงจาก D1…</span>
+        </div>
+
+        <!-- 3 Real D1 Time-of-Day Windows -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 border-t border-borderLight dark:border-borderDark">
+          <div class="p-4 rounded-xl bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark space-y-1">
+            <div class="flex items-center justify-between text-xs gap-2">
+              <span class="font-semibold text-slate-900 dark:text-white" data-i18n="win_evening_title">ช่วงค่ำ–ดึกแข่งขัน (18:00–02:59 น.)</span>
+              <span id="peakWinEveningPct" class="mono font-bold text-emerald-700 dark:text-emerald-400 shrink-0">0.0%</span>
+            </div>
+            <div id="peakWinEveningHits" class="text-xs mono text-slate-600 dark:text-neutral-400">0 visits (7d)</div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark space-y-1">
+            <div class="flex items-center justify-between text-xs gap-2">
+              <span class="font-semibold text-slate-900 dark:text-white" data-i18n="win_daytime_title">ช่วงกลางวัน &amp; วางแผน (11:00–17:59 น.)</span>
+              <span id="peakWinDaytimePct" class="mono font-bold text-slate-900 dark:text-white shrink-0">0.0%</span>
+            </div>
+            <div id="peakWinDaytimeHits" class="text-xs mono text-slate-600 dark:text-neutral-400">0 visits (7d)</div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark space-y-1">
+            <div class="flex items-center justify-between text-xs gap-2">
+              <span class="font-semibold text-slate-900 dark:text-white" data-i18n="win_morning_title">ช่วงเช้า &amp; สรุปผล (03:00–10:59 น.)</span>
+              <span id="peakWinMorningPct" class="mono font-bold text-slate-900 dark:text-white shrink-0">0.0%</span>
+            </div>
+            <div id="peakWinMorningHits" class="text-xs mono text-slate-600 dark:text-neutral-400">0 visits (7d)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 09. SYSTEM PERFORMANCE, CLOUD QUOTA & SCALING CAPACITY                    -->
+    <!-- ========================================================================= -->
+    <section id="sec-system" class="space-y-4 scroll-mt-28" aria-labelledby="sec-system-title">
+      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-borderLight dark:border-borderDark pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-slate-700 dark:text-neutral-300">${ICONS.activity}</span>
+          <h2 id="sec-system-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec9_title">
+            09. ประสิทธิภาพระบบ โควตาคลาวด์ และความจุในการขยายสเกล
+          </h2>
+        </div>
+        <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="sec9_sub">
+          ติดตามโควตา Worker (สุ่ม Cache HIT 10%), จำนวนแถว D1 ครบ 4 ตาราง และผลซิงก์ GitHub Actions จริง
+        </span>
+      </div>
+
+      <!-- 4 Cloud Quota Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- 9.1 Cloudflare Worker & Sampled Edge Cache -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3">
+          <div class="space-y-1">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-medium text-slate-600 dark:text-neutral-400">Cloudflare Workers</span>
+              <span class="mono font-semibold text-emerald-700 dark:text-emerald-400">Free 100k/d</span>
+            </div>
+            <div id="sysWorkerReqs" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0 <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">/ 100k req/d</span></div>
+          </div>
+          <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
+            <div id="sysWorkerBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <div class="text-xs text-slate-600 dark:text-neutral-400 flex justify-between gap-2">
+            <span data-i18n="sys_cache_hit_label">Edge Cache Hit (7d):</span>
+            <span id="sysWorkerCacheHit" class="mono font-semibold text-emerald-700 dark:text-emerald-400">—</span>
+          </div>
+        </div>
+
+        <!-- 9.2 Cloudflare D1 SQLite Telemetry (All 4 Tables) -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3">
+          <div class="space-y-1">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-medium text-slate-600 dark:text-neutral-400">Cloudflare D1 Database</span>
+              <span id="sysD1Badge" class="mono font-semibold text-emerald-700 dark:text-emerald-400">Connected</span>
+            </div>
+            <div id="sysD1RowsCount" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0 <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">rows</span></div>
+            <div id="sysD1TablesBreakdown" class="text-xs mono text-slate-600 dark:text-neutral-400 truncate">—</div>
+          </div>
+          <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
+            <div id="sysD1ReadsBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <div class="text-xs text-slate-600 dark:text-neutral-400 flex justify-between gap-2">
+            <span data-i18n="sys_d1_reads_label">D1 Writes วันนี้:</span>
+            <span id="sysD1ReadsPct" class="mono font-semibold text-slate-900 dark:text-white">0% of 100k</span>
+          </div>
+        </div>
+
+        <!-- 9.3 GitHub Actions Sync Engine -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3">
+          <div class="space-y-1">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-medium text-slate-600 dark:text-neutral-400">GitHub Actions Cron</span>
+              <span class="mono font-semibold text-emerald-700 dark:text-emerald-400" title="Matchdays (Fri–Mon): every 1h · Off-days (Tue–Thu): every 4h">1h / 4h Cron</span>
+            </div>
+            <div id="sysGhSyncTime" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">— <span class="text-xs font-normal text-slate-600 dark:text-neutral-400">/ build</span></div>
+          </div>
+          <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
+            <div id="sysGhSyncBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <div id="sysGhSyncDetail" class="text-xs text-slate-600 dark:text-neutral-400 truncate">
+            รอข้อมูล sync_telemetry ล่าสุด
+          </div>
+        </div>
+
+        <!-- 9.4 FPL Upstream API Health & Scaling Headroom -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark flex flex-col justify-between gap-3">
+          <div class="space-y-1">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-medium text-slate-600 dark:text-neutral-400">FPL Upstream Proxy</span>
+              <span id="sysUpstreamBadge" class="mono font-semibold text-slate-600 dark:text-neutral-400" data-i18n="sys_upstream_ready">พร้อมเช็ก</span>
+            </div>
+            <div id="sysUpstreamLatency" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">— <span class="text-xs font-normal font-sans text-slate-500 dark:text-neutral-400" data-i18n="sys_upstream_tap_hint">(กดเช็กด้านล่าง)</span></div>
+          </div>
+          <div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">
+            <div id="sysUpstreamBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <div class="text-xs text-slate-600 dark:text-neutral-400 flex justify-between gap-2">
+            <span data-i18n="sys_scale_headroom_label">เพดานขยายสเกล (Headroom):</span>
+            <span id="sysScalingHeadroom" class="mono font-semibold text-emerald-700 dark:text-emerald-400">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Operational Command Controls -->
+      <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base font-semibold text-slate-900 dark:text-white" data-i18n="ops_title">ปุ่มดูแลและเช็กความพร้อมของเว็บ</h3>
+            <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="ops_sub">กดเฉพาะตอนที่ต้องการตรวจสอบหรือแก้ไขปัญหา ผลลัพธ์จะแสดงใต้ปุ่มทันที (คนเข้าเว็บทั่วไปไม่ได้รับผลกระทบ)</p>
+          </div>
+          <span class="text-xs mono text-slate-600 dark:text-neutral-400" data-i18n="ops_shortcut_hint">คีย์ลัด: R รีเฟรช · L สลับภาษา · T สลับธีม</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-borderLight dark:divide-borderDark pt-2 border-t border-borderLight dark:border-borderDark">
+          <!-- Op 1: Flush Edge Cache -->
+          <div class="flex flex-col justify-between gap-3 py-3 sm:py-1 sm:pr-4">
+            <div class="space-y-1">
+              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_flush_title">รีเฟรชคะแนนสดใหม่ทั้งเว็บ</div>
+              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="op_flush_desc">ใช้เมื่อคะแนนหรือโบนัสบนหน้าเว็บค้างไม่ขยับ ล้างแคช /live, /fixtures, /visitors และ /standings ทันที</p>
+            </div>
+            <div class="space-y-2">
+              <button type="button" id="btnFlushCache" onclick="runEdgeAction('flush-cache')"
+                class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200/70 dark:hover:bg-neutral-800 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-xs font-medium text-slate-900 dark:text-white transition-colors"
+                data-i18n="op_flush_btn">
+                รีเฟรชคะแนนสดทันที
+              </button>
+              <div id="opResult-flush-cache" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-xs leading-relaxed"></div>
+            </div>
+          </div>
+
+          <!-- Op 2: Ping Upstream FPL API -->
+          <div class="flex flex-col justify-between gap-3 py-3 sm:py-1 sm:px-4">
+            <div class="space-y-1">
+              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_ping_title">เช็กว่าระบบ FPL ล่มหรือช้าไหม</div>
+              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="op_ping_desc">ใช้ตรวจดูว่าปัญหาคะแนนไม่ขึ้นเกิดจากเว็บพรีเมียร์ลีกต้นทางช้าหรือล่มอยู่หรือไม่</p>
+            </div>
+            <div class="space-y-2">
+              <button type="button" id="btnPingUpstream" onclick="runEdgeAction('ping-upstream')"
+                class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200/70 dark:hover:bg-neutral-800 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-xs font-medium text-slate-900 dark:text-white transition-colors"
+                data-i18n="op_ping_btn">
+                เช็กสถานะเว็บ FPL
+              </button>
+              <div id="opResult-ping-upstream" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-xs leading-relaxed"></div>
+            </div>
+          </div>
+
+          <!-- Op 3: Export JSON Snapshot -->
+          <div class="flex flex-col justify-between gap-3 py-3 sm:py-1 sm:px-4">
+            <div class="space-y-1">
+              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_export_title">ดาวน์โหลดไฟล์สถิติเก็บไว้</div>
+              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="op_export_desc">เก็บข้อมูลยอดคนดูและรายละเอียดมินิลีกทั้งหมดในระบบลงเครื่องไว้ดูย้อนหลังหรือสรุปรายงาน</p>
+            </div>
+            <div class="space-y-2">
+              <button type="button" id="btnExportJson" onclick="exportDashboardJson()"
+                class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:bg-slate-200/70 dark:hover:bg-neutral-800 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-xs font-medium text-slate-900 dark:text-white transition-colors"
+                data-i18n="op_export_btn">
+                ดาวน์โหลดไฟล์สถิติ
+              </button>
+              <div id="opResult-export-json" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-xs leading-relaxed"></div>
+            </div>
+          </div>
+
+          <!-- Op 4: Prune D1 Telemetry (>30d) -->
+          <div class="flex flex-col justify-between gap-3 py-3 sm:py-1 sm:pl-4">
+            <div class="space-y-1">
+              <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="op_prune_title">ลบประวัติคนดูเก่าที่เกิน 30 วัน</div>
+              <p class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="op_prune_desc">ช่วยเคลียร์บันทึกเก่าที่ไม่ใช้แล้วให้ระบบลื่นและประหยัดพื้นที่ (ยอดคนดูสะสมตลอดกาลยังอยู่ครบ)</p>
+            </div>
+            <div class="space-y-2">
+              <button type="button" id="btnPruneD1" onclick="runEdgeAction('prune-telemetry')"
+                class="min-h-[44px] w-full px-3 py-2 rounded-lg border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-xs font-medium text-rose-700 dark:text-rose-300 transition-colors"
+                data-i18n="op_prune_btn">
+                ลบประวัติเก่าเกิน 30 วัน
+              </button>
+              <div id="opResult-prune-telemetry" role="status" aria-live="polite" class="hidden rounded-lg border p-2.5 text-xs leading-relaxed"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 10. PROJECT HEALTH, SYNC FRESHNESS & ERROR MONITOR (24H / 7D)             -->
+    <!-- ========================================================================= -->
+    <section id="sec-monitor" aria-labelledby="sec10-heading" class="space-y-4 scroll-mt-28">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-borderLight dark:border-borderDark pb-3">
+        <div>
+          <h2 id="sec10-heading" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec10_title">
+            10. ตรวจสุขภาพระบบ ความสดใหม่การซิงก์ และ Error ย้อนหลัง (Monitor)
+          </h2>
+          <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec10_sub">
+            เช็กย้อนหลัง 1 วัน (รายชั่วโมง) และ 1 สัปดาห์ (รายวัน) พร้อมตรวจจับความสดใหม่ของการซิงก์ GitHub Actions
+          </p>
+        </div>
+        <div id="monitorOverallBadge" class="inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-xs font-medium text-emerald-700 dark:text-emerald-300 shrink-0 whitespace-nowrap">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span id="monitorOverallBadgeText" data-i18n="mon_status_healthy">ทำงานปกติ 100%</span>
+        </div>
+      </div>
+
+      <!-- Sync Freshness Banner -->
+      <div id="monitorSyncHealthBanner" role="status" class="p-3.5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-xs mono text-slate-700 dark:text-neutral-300 flex flex-wrap items-center justify-between gap-2">
+        <span>กำลังตรวจสอบความสดใหม่ของตารางซิงก์อัตโนมัติ (GitHub Actions)…</span>
+      </div>
+
+      <!-- 4 Health Summary KPI Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
+          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_24h_label">ความพร้อมใช้งาน 1 วัน (24 ชม.)</div>
+          <div id="mon24hUptime" class="text-2xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400">100.0%</div>
+          <div id="mon24hSub" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">0 Error จากกิจกรรมทั้งหมด</div>
+        </div>
+
+        <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
+          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_7d_label">ความพร้อมใช้งาน 1 สัปดาห์ (7 วัน)</div>
+          <div id="mon7dUptime" class="text-2xl font-semibold mono tabular text-emerald-700 dark:text-emerald-400">100.0%</div>
+          <div id="mon7dSub" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">0 Error ตลอด 7 วันที่ผ่านมา</div>
+        </div>
+
+        <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
+          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_client_label">ปัญหาฝั่งผู้ใช้งาน (หน้าเว็บ/ชำระเงิน)</div>
+          <div id="monClientErrTotal" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0</div>
+          <div id="monClientErrSub" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="mon_kpi_client_sub">หน้าเว็บค้าง โหลดข้อมูลไม่ขึ้น หรือ JS Error</div>
+        </div>
+
+        <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-1.5">
+          <div class="text-xs font-medium text-slate-600 dark:text-neutral-400" data-i18n="mon_kpi_upstream_label">ปัญหาเว็บ FPL ต้นทาง (5xx/Fixtures)</div>
+          <div id="monUpstreamErrTotal" class="text-2xl font-semibold mono tabular text-slate-900 dark:text-white">0</div>
+          <div id="monUpstreamErrSub" class="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed" data-i18n="mon_kpi_upstream_sub">เว็บพรีเมียร์ลีกต้นทางตอบช้าหรือล่มชั่วคราว</div>
+        </div>
+      </div>
+
+      <!-- Interactive Chart & Anomaly Timeline -->
+      <div class="p-5 sm:p-6 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 id="monitorChartTitle" class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="mon_chart_title_24h">
+              บันทึกการทำงานย้อนหลัง 24 ชั่วโมงล่าสุด (เวลาไทย · ICT)
+            </h3>
+            <p id="monitorChartSub" class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="mon_chart_sub_24h">
+              เปรียบเทียบช่วงเวลาที่ระบบทำงานปกติ กับช่วงเวลาที่ตรวจพบ Error
+            </p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0" role="group" aria-label="Monitor time range">
+            <button type="button" id="btnMon24h" onclick="switchMonitorMode('24h')"
+              class="min-h-[44px] px-4 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-xs font-medium text-emerald-800 dark:text-emerald-300 whitespace-nowrap shrink-0 transition-colors"
+              data-i18n="mon_btn_24h">
+              1 วัน (24 ชม.)
+            </button>
+            <button type="button" id="btnMon7d" onclick="switchMonitorMode('7d')"
+              class="min-h-[44px] px-4 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white whitespace-nowrap shrink-0 transition-colors"
+              data-i18n="mon_btn_7d">
+              1 สัปดาห์ (7 วัน)
+            </button>
+          </div>
+        </div>
+
+        <div class="w-full space-y-1.5">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 dark:text-neutral-400">
+            <span id="monitorYAxisUnit" class="font-medium">แกนตั้ง (Y): จำนวนเหตุการณ์ใช้งานจริง &amp; Error (ครั้ง/ชม.)</span>
+            <span id="monitorXAxisUnit" class="mono">แกนนอน (X): ช่วงเวลา 24 ชม. ล่าสุด (เวลาไทย · น.)</span>
+          </div>
+          <svg id="monitorSvgChart" viewBox="0 0 680 220" class="w-full h-52 sm:h-60 overflow-visible" role="img" aria-label="Project Health and Error Log Chart"></svg>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600 dark:text-neutral-400 pt-2 border-t border-borderLight dark:border-borderDark">
+          <div class="flex flex-wrap items-center gap-4">
+            <span class="inline-flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-sm bg-emerald-500 inline-block"></span>
+              <span data-i18n="mon_legend_ok">ใช้งานปกติ (จำนวนครั้ง)</span>
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-sm bg-rose-500 inline-block"></span>
+              <span data-i18n="mon_legend_err">ช่วงเวลาที่พบ Error</span>
+            </span>
+          </div>
+          <span id="monitorWindowCallout" class="mono text-emerald-700 dark:text-emerald-400 font-medium">ไม่มีช่วงเวลาผิดปกติ</span>
+        </div>
+
+        <!-- Anomaly Windows & Error Breakdown Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-2 border-t border-borderLight dark:border-borderDark">
+          <div class="lg:col-span-7 space-y-2">
+            <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="mon_anomaly_title">
+              ประวัติช่วงเวลาที่ทำงานผิดปกติ (Anomaly Timeline)
+            </div>
+            <div id="monitorAnomalyList" class="space-y-2 text-xs"></div>
+          </div>
+          <div class="lg:col-span-5 space-y-2">
+            <div class="text-xs font-semibold text-slate-900 dark:text-white" data-i18n="mon_cat_title">
+              สรุปประเภท Error สะสม 7 วันล่าสุด
+            </div>
+            <div id="monitorCategoryBreakdown" class="space-y-2 text-xs"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 11. LIVE DEMO PITCH & COMMERCIAL PLAYBOOK (COLLAPSED BY DEFAULT)          -->
+    <!-- ========================================================================= -->
+    <section id="sec-pitch" class="space-y-4 scroll-mt-28" aria-labelledby="sec-pitch-title">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-borderLight dark:border-borderDark pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-emerald-600 dark:text-emerald-400">${ICONS.trendUp}</span>
+          <div>
+            <h2 id="sec-pitch-title" class="text-lg sm:text-xl font-semibold text-slate-900 dark:text-white" data-i18n="sec11_title">
+              11. คู่มือ Live Pitch และสไลด์นำเสนอลูกค้า (ตัวเลขสด 100%)
+            </h2>
+            <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="sec11_sub">
+              พับเก็บเป็นค่าเริ่มต้น กดปุ่มเปิดเมื่อเตรียมแชร์หน้าจอพรีเซนต์ลูกค้า — กราฟและแพ็กเกจซิงก์กับระบบจริง
+            </p>
+          </div>
+        </div>
+        <button type="button" id="btnTogglePitchBody" aria-expanded="false" aria-controls="secPitchBody"
+          class="min-h-[44px] px-4 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-xs font-semibold text-emerald-800 dark:text-emerald-300 whitespace-nowrap shrink-0 transition-colors self-start sm:self-auto"
+          data-i18n="btn_expand_pitch">
+          เปิดคู่มือ Live Pitch ↓
+        </button>
+      </div>
+
+      <div id="secPitchBody" class="space-y-6 hidden">
+        <!-- Row 1: Graphic 2 (Live SVG Engagement Bar) + Graphic 3 (5 Prize Models) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <!-- Graphic 2: Real D1 Segment Engagement Chart -->
+          <div class="lg:col-span-6 p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="pitch_g2_title">
+                  กราฟเปรียบเทียบการมีส่วนร่วมจริงต่อทีม (Visits / Team · 7 วัน)
+                </h3>
+                <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="pitch_g2_sub">คำนวณจากยอดเข้าชม D1 จริง ไม่มีค่าสมมติ</p>
+              </div>
+              <span id="g2Badge" class="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-xs mono font-semibold text-emerald-800 dark:text-emerald-300">Live D1</span>
+            </div>
+
+            <svg viewBox="0 0 460 155" class="w-full h-40 overflow-visible" role="img" aria-label="Segment engagement comparison chart">
+              <text x="4" y="28" class="fill-slate-600 dark:fill-neutral-400 text-[11px]" font-family="sans-serif">ฟรีลีก / ทั่วไป</text>
+              <rect x="115" y="14" width="230" height="20" rx="5" class="fill-slate-200 dark:fill-neutral-800"></rect>
+              <rect id="g2Bar1" x="115" y="14" width="0" height="20" rx="5" class="fill-slate-500 dark:fill-neutral-500 transition-all duration-300"></rect>
+              <text id="g2Val1" x="355" y="28" class="fill-slate-800 dark:fill-neutral-200 text-[11px] font-semibold" font-family="monospace">—</text>
+
+              <text x="4" y="70" class="fill-slate-800 dark:fill-neutral-200 text-[11px] font-medium" font-family="sans-serif">ลีกเงินรางวัล (เฉลี่ย)</text>
+              <rect x="115" y="56" width="230" height="20" rx="5" class="fill-slate-200 dark:fill-neutral-800"></rect>
+              <rect id="g2Bar2" x="115" y="56" width="0" height="20" rx="5" class="fill-emerald-500 transition-all duration-300"></rect>
+              <text id="g2Val2" x="355" y="70" class="fill-emerald-700 dark:fill-emerald-400 text-[11px] font-semibold" font-family="monospace">—</text>
+
+              <text x="4" y="112" class="fill-slate-800 dark:fill-neutral-200 text-[11px] font-medium" font-family="sans-serif">Top Prize League</text>
+              <rect x="115" y="98" width="230" height="20" rx="5" class="fill-slate-200 dark:fill-neutral-800"></rect>
+              <rect id="g2Bar3" x="115" y="98" width="0" height="20" rx="5" class="fill-emerald-400 transition-all duration-300"></rect>
+              <text id="g2Val3" x="355" y="112" class="fill-emerald-700 dark:fill-emerald-300 text-[11px] font-semibold" font-family="monospace">—</text>
+
+              <text id="g2Mult" x="4" y="146" class="fill-slate-600 dark:fill-neutral-400 text-[11px]" font-family="monospace">รอเปรียบเทียบจากทราฟฟิกจริง…</text>
+            </svg>
+          </div>
+
+          <!-- Graphic 3: 5 Supported Prize & League Models -->
+          <div class="lg:col-span-6 p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="pitch_g3_title">5 รูปแบบกติกาลีกที่ระบบคำนวณให้อัตโนมัติ</h3>
+                <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="pitch_g3_sub">ครอบคลุมทั้งลีกเงินรางวัลเต็มรูปแบบและลีกคอมมูนิตี้ขนาดใหญ่</p>
+              </div>
+              <span id="pitchGmvBadge" class="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-xs mono font-semibold text-emerald-800 dark:text-emerald-300">GMV ฿0</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+              <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark">
+                <div class="font-semibold text-slate-900 dark:text-white">1. Weekly Top-Score</div>
+                <div class="text-slate-600 dark:text-neutral-400">แชมป์วีค (THB/USD) + สรุปยอดรับสุทธิ</div>
+              </div>
+              <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark">
+                <div class="font-semibold text-slate-900 dark:text-white">2. Weekly + Bottom Penalties</div>
+                <div class="text-slate-600 dark:text-neutral-400">หักค่าปรับ N อันดับบ๊วยอัตโนมัติ (เช่น 40700)</div>
+              </div>
+              <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark">
+                <div class="font-semibold text-slate-900 dark:text-white">3. Monthly Top-Score</div>
+                <div class="text-slate-600 dark:text-neutral-400">แชมป์ &amp; รองแชมป์ประจำเดือน (เช่น 38491)</div>
+              </div>
+              <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark">
+                <div class="font-semibold text-slate-900 dark:text-white">4. Season Top &amp; Cup Only</div>
+                <div class="text-slate-600 dark:text-neutral-400">แชมป์ฤดูกาล + ถ้วยน็อคเอาท์ (THB/USD)</div>
+              </div>
+              <div class="sm:col-span-2 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-between gap-2">
+                <div>
+                  <div class="font-semibold text-emerald-900 dark:text-emerald-200">5. Community / Large League (Tier 2 Quote)</div>
+                  <div class="text-slate-700 dark:text-neutral-300">Auto-Picks Live รองรับ 31–3,000 ทีม (เช่น 139836)</div>
+                </div>
+                <span id="pitchTier2Badge" class="px-2 py-0.5 rounded bg-emerald-700 text-white text-xs mono shrink-0">Live</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Graphic 4: Verified Product Matrix & Tier Pricing -->
+        <div class="p-5 rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-sm font-semibold text-slate-900 dark:text-white" data-i18n="pitch_g4_title">แพ็กเกจและฟีเจอร์เด่นที่เปิดใช้งานจริงบนระบบ</h3>
+            <span id="graphic4Callout" class="text-xs mono text-emerald-700 dark:text-emerald-400">Standard ฿500/$19 · Tier 2 Quote · Custom Roadmap ฿900/$29</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            <div class="p-4 rounded-xl border border-emerald-500/35 bg-emerald-500/5 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-slate-900 dark:text-white">Standard (≤30 ทีม · Tier 1)</span>
+                <span class="mono font-bold text-emerald-700 dark:text-emerald-400">฿500 / $19</span>
+              </div>
+              <p class="text-slate-600 dark:text-neutral-400">ตารางคะแนนสด + BPS, บัญชีเงินรางวัล &amp; ค่าปรับ, Transfer Advisor v2, Provisional Auto-Subs, Global Radar, บอลถ้วย</p>
+            </div>
+            <div class="p-4 rounded-xl border border-sky-500/35 bg-sky-500/5 space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-slate-900 dark:text-white">Large League (31–3,000 ทีม · Tier 2)</span>
+                <span class="mono font-bold text-sky-700 dark:text-sky-400">Quote</span>
+              </div>
+              <p class="text-slate-600 dark:text-neutral-400">Auto-Picks Live Edge Proxy โหลดเร็วระดับมิลลิวินาที แยก JSON รายทีม ลดภาระโหลดไฟล์ขนาดใหญ่</p>
+            </div>
+            <div class="p-4 rounded-xl border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-slate-900 dark:text-white">Custom H2H / Predict (Roadmap)</span>
+                <span class="mono font-semibold text-amber-700 dark:text-amber-300">฿900 / $29</span>
+              </div>
+              <p class="text-slate-600 dark:text-neutral-400">กำลังพัฒนาเพิ่มเติมใน Roadmap (ตาราง H2H / ทายผลเฉพาะกิจ) ปิดการสั่งซื้ออัตโนมัติชั่วคราว</p>
+            </div>
+          </div>
+
+          <!-- Step 3: Live Demo Jump Links -->
+          <div class="pt-3 border-t border-borderLight dark:border-borderDark space-y-2">
+            <div class="text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="pitch_demo_links_title">
+              ทางลัดเปิดหน้าเดโมจริงระหว่างพรีเซนต์ลูกค้า:
+            </div>
+            <div class="flex flex-wrap gap-2 text-xs mono">
+              <a href="https://www.fplsawadika.com/40700/?tab=transfer-advisor" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-500/20 inline-flex items-center gap-1.5">Transfer Advisor (40700) ↗</a>
+              <a href="https://www.fplsawadika.com/40700/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">40700 · Weekly + Penalties ↗</a>
+              <a href="https://www.fplsawadika.com/675290/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">675290 · Weekly + Shi'62 ↗</a>
+              <a href="https://www.fplsawadika.com/38491/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">38491 · Monthly Split ↗</a>
+              <a href="https://www.fplsawadika.com/1101958/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">1101958 · USD Currency ↗</a>
+              <a href="https://www.fplsawadika.com/139836/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">139836 · Tier 2 (1,779 Teams) ↗</a>
+              <a href="https://www.fplsawadika.com/preview.html" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">Showcase Preview Hub ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="border-t border-borderLight dark:border-borderDark py-8 mt-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600 dark:text-neutral-400">
       <div class="flex items-center gap-2">
         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-        <span class="mono font-medium text-slate-800 dark:text-neutral-200">FPL SaWaDiKa Executive BI v2.4</span>
+        <span class="mono font-medium text-slate-800 dark:text-neutral-200">FPL SaWaDiKa Executive BI</span>
         <span>·</span>
-        <span data-i18n="footer_rights">ศูนย์วิเคราะห์ข้อมูลธุรกิจและโครงสร้างพื้นฐานครบวงจร (9 มินิลีก)</span>
+        <span id="footerLeagueSummary" data-i18n="footer_rights">ศูนย์วิเคราะห์ข้อมูลธุรกิจและโครงสร้างพื้นฐานครบวงจร (Live Config)</span>
       </div>
       <div class="mono">
         <span>Cloudflare Workers + D1 Edge Telemetry</span>
@@ -2610,340 +2155,88 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         skip_to_content: 'ข้ามไปยังเนื้อหาหลัก',
         nav_console_badge: 'ศูนย์วิเคราะห์ข้อมูลธุรกิจ',
         nav_jump_league_label: 'ทางลัดเปิดหน้าขาย เดโม และมินิลีก',
-        nav_jump_placeholder: 'ทางลัดเปิดหน้าเว็บ (9 ลีก)...',
+        nav_jump_placeholder: 'ทางลัดเปิดหน้าเว็บ (ลีก & หน้าขาย)...',
         nav_jump_landing: '🛒 หน้าขายสินค้า (Landing Page)',
         nav_jump_preview: '🎮 หน้าเดโมรวมลีก (preview.html)',
-        nav_jump_hub: '🛒 หน้าขายสินค้า (Landing Page)',
-        mod_nav_0: '0. Pitch Deck ขายงานผู้จัดลีก',
-        mod_nav_1: '1. ภาพรวมธุรกิจและ KPI',
-        mod_nav_2: '2. พอร์ตโฟลิโอ 9 ลีก',
-        mod_nav_3: '3. พฤติกรรมฟีเจอร์',
-        mod_nav_4: '4. ช่องทางและภูมิภาค',
-        mod_nav_5: '5. อุปกรณ์ที่ใช้งาน',
-        mod_nav_6: '6. กราฟทราฟฟิกและช่วงเวลาพีค',
-        mod_nav_7: '7. ประสิทธิภาพระบบและการขยายสเกล',
-        mod_nav_8: '8. ตรวจสุขภาพระบบย้อนหลัง',
-        mod_nav_9: '9. ออเดอร์ & ตรวจสลิป',
-        mod_nav_10: '10. เพิ่มลีกลูกค้าใหม่',
-        header_subtitle: 'ศูนย์วิเคราะห์ข้อมูลธุรกิจและระบบ',
-        quick_league_placeholder: 'ทางลัดเปิดหน้าเว็บ (9 ลีก)...',
-        quick_hub_home: '🛒 หน้าขายสินค้า (Landing Page)',
+        mod_nav_1: '01. ภาพรวม KPI',
+        mod_nav_2: '02. พอร์ตโฟลิโอลีก',
+        mod_nav_3: '03. ออเดอร์ & ตรวจสลิป',
+        mod_nav_4: '04. เพิ่มลีกลูกค้าใหม่',
+        mod_nav_5: '05. พฤติกรรมฟีเจอร์',
+        mod_nav_6: '06. เบราว์เซอร์ & ภาษา',
+        mod_nav_7: '07. อุปกรณ์',
+        mod_nav_8: '08. ช่วงเวลาพีค',
+        mod_nav_9: '09. ระบบ & โควตา',
+        mod_nav_10: '10. Monitor',
+        mod_nav_11: '11. Pitch Deck',
         sign_out: 'ออกจากระบบ',
-        nav_pitch: '00. Pitch Deck',
-        nav_audience: '01. ผู้ใช้งาน',
-        nav_portfolio: '02. พอร์ต 9 ลีก',
-        nav_features: '03. ฟีเจอร์',
-        nav_channels: '04. ช่องทางเข้าถึง',
-        nav_devices: '05. อุปกรณ์',
-        nav_timing: '06. ช่วงเวลาพีค',
-        nav_system: '07. ระบบ & โควตา',
-        nav_monitor: '08. Monitor',
         page_title: 'สรุปภาพรวมผู้บริหารและข้อมูลวิเคราะห์ธุรกิจสด',
-        page_subtitle: 'ศูนย์ควบคุมข้อมูลระบบ พฤติกรรมผู้ใช้งานทั้ง 9 มินิลีก (8 Tier 1 + 1 Tier 2) เศรษฐศาสตร์เงินรางวัล และการประเมินความจุคลาวด์เพื่อขยายสเกลโปรเจกต์',
+        page_subtitle: 'ศูนย์ควบคุมข้อมูลระบบ พฤติกรรมผู้ใช้งาน เศรษฐศาสตร์เงินรางวัล และการประเมินความจุคลาวด์จากข้อมูลสด 100%',
         btn_copy_exec: 'คัดลอกสรุปผู้บริหาร',
         btn_copied_exec: 'คัดลอกสรุปลงคลิปบอร์ดแล้ว!',
-        btn_refresh: 'รีเฟรชข้อมูลสด',
-        btn_live_pitch_refresh: '⚡ Live Pitch Refresh',
-        pitch_badge: 'Executive Pitch Deck · สำหรับผู้จัดมินิลีก',
-        sec0_title: '00. โซลูชันบริหารมินิลีกแบบ Zero-Touch และข้อเสนอทางธุรกิจ',
-        sec0_sub: 'เปลี่ยนมินิลีกของคุณให้จัดการตัวเองอัตโนมัติ 100% · ลดเวลาทำ Excel 190+ ชม./ปี · สร้างการมีส่วนร่วมของลูกลีกเพิ่มขึ้น 5.7 เท่า พร้อมรองรับเงินรางวัลหมุนเวียนอย่างโปร่งใส',
-        pitch_tier1_ready: 'Tier 1: พร้อมเปิดใช้งานทันที',
-        pitch_tier2_roadmap: 'Tier 2: Live Auto-Picks (1,779 ทีม · สูงสุด 3,000)',
-        pitch_step1_title: 'ปัญหาใหญ่ของผู้จัดลีก (Organizer Pain Points) vs ทางออก FPLSaWaDiKa',
-        pitch_step1_sub: 'เปรียบเทียบภาระงานจริง',
-        pain_1_badge: 'ปัญหาแอดมิน',
-        pain_1_metric: 'เสียเวลา 5 ชม./วีค',
-        pain_1_title: 'ทำ Excel สรุปคะแนน & เช็กแต้มลบ',
-        pain_1_desc: 'ต้องมานั่งไล่ดูว่าใครย้ายกี่ตัว โดนลบกี่แต้ม ใครใช้ชิปอะไร สรุปผลช้า 1-2 วันหลังบอลจบ',
-        sol_1_badge: 'FPLSaWaDiKa Solution',
-        sol_1_desc: 'คำนวณแต้มสด Net Pts หัก Transfer Hit อัตโนมัติทุก 20 วินาที (Edge Cache 15s) พร้อมตารางคะแนนสดไม่ต้องแตะ Excel',
-        pain_2_badge: 'ปัญหาเหรัญญิก',
-        pain_2_metric: 'ข้อพิพาทเงินรางวัล',
-        pain_2_title: 'คำนวณเงินรางวัล & ค่าปรับผิดพลาด',
-        pain_2_desc: 'กติกาซับซ้อน เช่น ค่าปรับบ๊วย 5 อันดับ, รางวัลแต้มสูงสุดรายสัปดาห์, จ่ายเงินก้อนกลางฤดูกาล',
-        sol_2_badge: 'FPLSaWaDiKa Solution',
-        sol_2_desc: 'Automated Prize Ledger คำนวณเงินรางวัลและค่าปรับอัตโนมัติ 100% โปร่งใสตรวจสอบได้ทันที',
-        pain_3_badge: 'ปัญหาคอมมูนิตี้',
-        pain_3_metric: 'คนทิ้งทีมกลางคัน',
-        pain_3_title: 'แต้มตามเยอะ ถอดใจ ไม่เข้าดูแอป',
-        pain_3_desc: 'ถ้าลุ้นแค่แชมป์สิ้นปี พอผ่านไป 10 นัด คนตาม 50+ แต้มก็เลิกเล่น ลีกกลายเป็นป่าช้า',
-        sol_3_badge: 'FPLSaWaDiKa Solution',
-        sol_3_desc: 'Weekly Micro-Stakes + บทพากย์กูรูลูกหนังสายดราม่า ปลุกกระแสลุ้นทุกสัปดาห์ พร้อมเรดาร์ฟอร์มและบอลถ้วย Knockout',
-        pain_4_badge: 'ปัญหาแอปหลัก',
-        pain_4_metric: 'UX ส่องทีมคู่แข่งช้า',
-        pain_4_title: 'ส่องทีมคู่แข่งยาก ขาดม้านั่งสำรอง',
-        pain_4_desc: 'ในแอปทางการต้องกดเข้าออกทีละคน ไม่เห็นม้านั่งและแต้มสดของคู่แข่งพร้อมกัน',
-        sol_4_badge: 'FPLSaWaDiKa Solution',
-        sol_4_desc: 'Interactive Squad Pitch Modal คลิกเดียวเห็นผัง 11 ตัวจริง + ม้านั่ง Auto-Sub และแต้มสดทันที',
-        pitch_step2_title: 'หลักฐานเชิงประจักษ์ 4 มิติ (Visual Proof & Analytics)',
-        pitch_step2_sub: 'ข้อมูลจริงจาก 9 มินิลีก',
-        graphic1_eyebrow: 'มิติที่ 1 · ความคุ้มค่าด้านเวลา',
-        graphic1_badge: 'ประหยัด 190 ชม./ปี',
-        graphic1_title: 'ภาระงานแอดมิน: จัดการเอง (Excel) vs FPLSaWaDiKa',
-        graphic1_sub: 'คำนวณจากลีกขนาด 20–80 ทีม ตลอด 38 สัปดาห์การแข่งขัน',
-        bar_manual_label: 'ทำตาราง Excel มือ + ไล่ตรวจแต้มลบ',
-        bar_fpl_label: 'FPLSaWaDiKa Zero-Touch Platform',
-        graphic1_callout: 'ประหยัดเวลาแอดมินได้ปีละกว่า 24 วันทำการ!',
-        graphic2_eyebrow: 'มิติที่ 2 · การมีส่วนร่วมของลูกลีก',
-        graphic2_badge: 'พุ่งสูงขึ้น 5.7 เท่า',
-        graphic2_title: 'ความถี่การเข้าชมเฉลี่ย: ลีกทางการ vs ลีกบน FPLSaWaDiKa',
-        graphic2_sub: 'ยอดเปิดดูเฉลี่ยต่อผู้จัดการทีม 1 คน ในแต่ละสัปดาห์ (Visits/Team/GW)',
-        graphic2_axis_y: 'แกนตั้ง: ความถี่เปิดดูเฉลี่ยต่อทีม (ครั้ง / สัปดาห์)',
-        graphic2_axis_x: 'กลุ่มผู้ใช้',
-        graphic2_callout: 'Weekly Stakes + บทวิเคราะห์กูรูลูกหนังสายดราม่า ทำให้สมาชิกคุยกันใน LINE ตลอดสัปดาห์',
-        graphic3_eyebrow: 'มิติที่ 3 · การเงินและความโปร่งใส',
-        graphic3_badge: 'GMV รวม ฿268,700',
-        graphic3_title: 'ระบบรองรับโมเดลเงินรางวัลและค่าปรับ 5 รูปแบบ',
-        graphic3_sub: 'ยืดหยุ่นตามกติกาของแต่ละมินิลีก จัดการอัตโนมัติ 0 ข้อผิดพลาด',
-        pmodel_1_title: 'Weekly Top-Score',
-        pmodel_1_sub: 'จ่ายรางวัลผู้ชนะประจำสัปดาห์',
-        pmodel_2_title: 'Bottom 5 Penalties',
-        pmodel_2_sub: 'ระบบค่าปรับบ๊วย (2 spade)',
-        pmodel_3_title: 'Zero-Sum Ladder',
-        pmodel_3_sub: 'หัวตารางกินท้ายตาราง (Shi62)',
-        pmodel_4_title: 'Dual Milestones',
-        pmodel_4_sub: 'แบ่งจ่ายงวด GW18 & GW38',
-        graphic3_callout: 'ตรวจสอบย้อนหลังได้ทุกบาทผ่าน Open Ledger',
-        graphic4_eyebrow: 'มิติที่ 4 · ความครบครันของระบบ',
-        graphic4_badge: 'Tier 1 vs Tier 2',
-        graphic4_title: 'ตารางเปรียบเทียบฟังก์ชันและความพร้อมใช้งาน',
-        graphic4_sub: 'เปรียบเทียบระหว่าง Official FPL, Tier 2 Live Beta, และ Tier 1 Core',
-        col_feat: 'ฟังก์ชัน',
-        col_fpl_app: 'Official App',
-        col_tier2: 'Tier 2 (≤3k)',
-        col_tier1: 'Tier 1 (พร้อมขาย)',
-        matrix_none: '❌ ไม่มี',
-        matrix_f1: 'แต้มสด & BPS (20s/90s)',
-        matrix_f1_app: '3-5 นาที',
-        matrix_f1_t2: '✅ สด 20s',
-        matrix_f1_t1: '✅ สด 20s',
-        matrix_f2: 'หักแต้มย้ายตัว Net Pts สด',
-        matrix_f2_t2: '✅ สด (≤3k)',
-        matrix_f2_t1: '✅ สดทันที',
-        matrix_f3: 'บทพากย์กูรูลูกหนัง',
-        matrix_f3_t2: '✅ พากย์สด',
-        matrix_f3_t1: '✅ ครบทุกแท็บ',
-        matrix_f4: 'คำนวณเงินรางวัล/ค่าปรับ',
-        matrix_f4_t2: '⚠️ พื้นฐาน',
-        matrix_f4_t1: '✅ 100% Custom',
-        matrix_f5: 'Interactive Pitch Modal',
-        matrix_f5_app: 'ดูช้า',
-        matrix_f5_t2: '✅ ทันที (≤3k)',
-        matrix_f5_t1: '✅ คลิกเดียวครบ',
-        graphic4_callout: 'Tier 1 พร้อมส่งมอบทันที · Tier 2 (Auto-Picks Live) รองรับ 1,779 ทีม (สูงสุด 3,000 ทีม)',
-        pitch_step3_title: 'ทางลัดเปิดโชว์ระบบจริงต่อหน้าลูกค้า (Live Interactive Jump Links)',
-        pitch_step3_sub: 'คลิกเพื่อเปิดหน้าจริงในแท็บใหม่',
-        jump_1_title: 'คะแนนสด & ผัง 11 ตัวจริง',
-        jump_1_sub: 'เปิดดูผังทีมจริง & แต้ม Net',
-        jump_2_title: 'บทวิเคราะห์กูรูสายดราม่า',
-        jump_2_sub: 'พากย์เกมดราม่าสุดกวน',
-        jump_3_title: 'ระบบค่าปรับ & รางวัล',
-        jump_3_sub: 'บ๊วย 5 อันดับโดนปรับสด',
-        jump_4_title: 'เรดาร์ฟอร์มทุกลีก',
-        jump_4_sub: 'เทียบดัชนีคะแนนรวม',
-        jump_5_title: 'บอลถ้วยแพ้คัดออก',
-        jump_5_sub: 'สายการแข่งขันอัตโนมัติ',
+        btn_live_pitch_refresh: '⚡ Live Refresh',
         telem_live_active: 'ระบบตรวจวัดข้อมูลสดทำงานปกติ',
-        telem_auto_sync: '(ซิงก์อัตโนมัติ 1 ชม. / 4 ชม. · ${authProvider})',
+        telem_auto_sync: '(ซิงก์ 1 ชม. ศ.–จ. / 4 ชม. อ.–พฤ.)',
         telem_last_sync_label: 'ซิงก์ข้อมูลล่าสุด: ',
         telem_runner_label: 'ตัวประมวลผล: ',
         telem_countdown_sub: 'นับถอยหลังปิดตลาดย้ายตัว',
-        sec1_title: '01. ขนาดฐานผู้ใช้งานและอัตราการรักษาลูกค้า',
-        sec1_sub: 'ตัวชี้วัดการเติบโตและสัดส่วนความเหนียวแน่นของผู้ใช้งาน (แยกป้ายข้อมูลสด D1 กับค่าอ้างอิง Benchmark)',
+        toast_refreshed: 'อัปเดตข้อมูลสถานะล่าสุดจากเซิร์ฟเวอร์เรียบร้อยแล้ว',
         badge_live_sync: 'Live Sync',
         badge_live_d1: 'Live D1',
-        badge_benchmark: 'Benchmark',
+        sec1_title: '01. ภาพรวมทราฟฟิกและตัวชี้วัดผู้ใช้งานสด',
+        sec1_sub: 'ตัวเลขจริง 100% จากการซิงก์ลีกและฐานข้อมูล Cloudflare D1 (ไม่เก็บ Cookie · ไม่มีเลขสมมติ)',
         kpi_managers_label: 'ผู้จัดการทีมที่ติดตาม',
-        kpi_managers_sub: 'Tier 1 ครบ 8 มินิลีก (รวม Tier 2 = 1,942)',
-        kpi_mau_label: 'ผู้ใช้งานวันแข่งขัน (MAU)',
-        kpi_mau_sub: 'รวมผู้ชม 3.7x ต่อผู้จัดการ 1 คน',
-        kpi_offpeak_label: 'ผู้ใช้งานนอกวันแข่ง (DAU)',
-        kpi_offpeak_sub: 'อังคาร–พฤหัส (วางแผนซื้อขาย)',
-        kpi_stickiness_label: 'ความเหนียวแน่นวันแข่ง',
-        kpi_stickiness_sub: 'ค่าอ้างอิงฤดูกาล (> 3 ครั้ง/สัปดาห์ · ไม่เก็บ Cookie)',
-        kpi_retention_label: 'อัตรากลับมาใช้งานต่อ GW',
-        kpi_retention_sub: 'ค่าอ้างอิงฤดูกาล (อัตราเลิกเล่น < 6% · ไม่เก็บ Cookie)',
+        kpi_managers_sub: 'กำลังโหลดจำนวนทีมจากระบบ...',
+        kpi_mau_label: 'ยอดเข้าชมสูงสุดรายวัน (7 วัน)',
+        kpi_mau_sub: 'จำนวนเข้าชมลีกสูงสุดใน 1 วัน (รอบ 7 วัน)',
+        kpi_offpeak_label: 'ยอดเข้าชมเฉลี่ยวันธรรมดา (อ.–พฤ.)',
+        kpi_offpeak_sub: 'ค่าเฉลี่ยจริงช่วงอังคาร–พฤหัส (วางแผนซื้อขาย)',
+        kpi_stickiness_label: 'สัดส่วนวันแข่ง (ศ.–จ.) vs วันธรรมดา',
+        kpi_stickiness_sub: 'เปรียบเทียบยอดเข้าชม 7 วันจริงระหว่างวันแข่งกับกลางสัปดาห์',
+        kpi_retention_label: 'ยอดเข้าชมสะสมตลอดกาล (Lifetime)',
+        kpi_retention_sub: 'นับจริงแบบลดซ้ำ 30 นาที (ตั้งแต่ พ.ย. 2026)',
         kpi_screentime_label: 'เวลาใช้งานเฉลี่ยต่อครั้ง',
-        kpi_screentime_sub: 'เปิดหน้าจอค้างระหว่างบอลเตะสด',
-        sec2_title: '02. พอร์ตโฟลิโอ 9 มินิลีก และเศรษฐศาสตร์เงินรางวัลรวม',
+        kpi_screentime_sub: 'วัดจริงจาก Dwell Time Beacon (รอบ 7 วัน)',
+        sec2_title: '02. พอร์ตโฟลิโอมินิลีกและเศรษฐศาสตร์เงินรางวัลรวม',
         sec2_sub: 'คลิกหัวตารางเพื่อเรียงลำดับ · คอลัมน์ชื่อลีกตรึงอยู่กับที่เมื่อเลื่อนแนวนอนบนมือถือ',
         port_gmv_label: 'มูลค่าเงินรางวัลรวมทั้งระบบ (GMV)',
         port_gmv_sub: 'รวมเงินรางวัลประจำฤดูกาล + รางวัลรายสัปดาห์/เดือน',
         port_custom_label: 'ลีกที่ผูกกติกาพิเศษ (Custom Rules)',
         port_custom_sub: 'สร้าง Switching Cost สูงกว่าเว็บ FPL ทั่วไป',
         port_landing_label: 'ยอดเข้าชมหน้าขาย (Landing Page · 7 วัน)',
-        port_landing_sub: 'แยกจากยอดเปิดดู 9 มินิลีก (วัดคนสนใจซื้อระบบ)',
-        port_whitelabel_label: 'ศักยภาพขยาย White-Label ลีกใหม่',
-        port_whitelabel_val: 'พร้อมขยาย 50+ ลีก',
-        port_whitelabel_sub: 'ต้นทุนเซิร์ฟเวอร์ส่วนเพิ่ม ฿0 บนสถาปัตยกรรมปัจจุบัน',
-        col_league_name: 'ชื่อมินิลีก & รหัส',
-        col_teams: 'จำนวนทีม',
-        col_pool: 'เงินรางวัลรวม (GMV)',
-        col_modules: 'โมดูลและกติกาที่เปิดใช้งาน',
-        col_views: 'ยอดเปิดดู (7 วันล่าสุด)',
-        col_retention: 'ความเหนียวแน่น (Benchmark)',
-        sec3_title: '03. พฤติกรรมการใช้งานฟีเจอร์และคุณค่าผลิตภัณฑ์',
-        sec3_sub: 'ฟีเจอร์ใดดึงดูดผู้ใช้มากที่สุด และควรพัฒนาต่อยอดส่วนใดก่อน',
-        feat_share_title: 'สัดส่วนการคลิกใช้งานแต่ละโมดูล (% ของเซสชันทั้งหมด)',
-        feat_share_badge: 'วัดผลจาก Event จริง',
-        feat_1_name: '1. ตารางคะแนนสด & คำนวณโบนัสเรียลไทม์ (Live Standings & BPS)',
-        feat_1_desc: 'คุณค่าหลัก: ผู้ใช้เปิดค้างไว้ดูอันดับขึ้น-ลงทุกครั้งที่มีประตูหรือคลีนชีตหลุด',
-        feat_2_name: '2. สรุปเงินรางวัลรายสัปดาห์ / รายเดือน / สุทธิ (Prize & Financial Ledger)',
-        feat_2_desc: 'เหตุผลที่ชนะแอปหลัก: แอป FPL ทางการไม่มีระบบคำนวณเงินรางวัลและค่าปรับโดนหักแต้ม',
-        feat_3_name: '3. เจาะลึก 11 ตัวจริง & เทียบทีมคู่แข่ง (Squad Modal & H2H Matrix)',
-        feat_3_desc: 'พฤติกรรมเด่น: กดส่องตัวจริงสำรองอัตโนมัติ (Auto-Sub) ของคู่แข่งที่ลุ้นแชมป์ด้วยกัน',
-        feat_4_name: '4. จำลองสถานการณ์ & วางแผนซื้อขายล่วงหน้า (What-If & Planner)',
-        feat_4_desc: 'โอกาสเติบโต: ดึงผู้ใช้ให้เข้าเว็บวันอังคาร–ศุกร์ ก่อนเดดไลน์ปิดตลาด',
-        feat_5_name: '5. ประวัติศาสตร์ลีก & ทำเนียบแชมป์ (Hall of Fame & Records)',
-        feat_insight_title: 'ความต่างพฤติกรรม: ลีกมีเงินรางวัล vs ลีกคอมมูนิตี้',
-        feat_insight_desc: 'เปรียบเทียบความถี่การเปิดใช้งานต่อผู้จัดการทีม 1 คน เพื่อกำหนดแพ็กเกจราคา SaaS / White-Label',
-        feat_paid_label: 'ลีกที่มีเงินรางวัลสูง (เช่น 1101958 · ฿103,200)',
-        feat_paid_val: '241 ครั้ง / ทีม / GW',
-        feat_paid_sub: 'ผู้เล่นและกลุ่มเพื่อนเปิดเช็กตารางเงินรางวัลและอันดับสดตลอดเวลาที่บอลเตะ',
-        feat_comm_label: 'ลีกคอมมูนิตี้และพรีเมียม (เช่น 675290 · 60 ทีม / Tier 2 · 1,779 ทีม)',
-        feat_comm_val: '17.2 ครั้ง / ทีม / GW',
-        feat_comm_sub: 'เน้นเช็กผลสรุปหลังจบแมตช์เป็นหลัก ความถี่น้อยกว่าลีกมีเงินรางวัล ~14 เท่า',
-        feat_takeaway_title: 'ข้อสรุปเชิงกลยุทธ์ (Executive Takeaway)',
-        feat_takeaway_body: 'ฟีเจอร์ “คำนวณเงินรางวัลอัตโนมัติ (Prize Engine)” คือจุดขายทำเงินอันดับ 1 สำหรับขยายตลาดสู่ประธานมินิลีกทั่วไทย',
-        sec4_title: '04. ช่องทางการเข้าถึงและพิกัดภูมิศาสตร์ผู้ใช้งาน',
-        sec4_sub: 'ผู้ใช้มาจากช่องทางไหน และกระจายตัวอยู่ในพื้นที่ใด',
-        chan_title: 'สัดส่วนช่องทางที่ดึงผู้ใช้งานเข้าสู่ระบบ (Traffic Sources)',
-        chan_1_name: 'LINE Group Links & In-App Browser (ลิงก์ในกลุ่มไลน์มินิลีก)',
-        chan_1_desc: 'ไวรัลลูปหลัก: ประธานลีกและเพื่อนส่งลิงก์ตารางคะแนนลงกลุ่ม LINE ทุกสัปดาห์',
-        chan_2_name: 'Direct / Home Screen Bookmark (เข้าตรง & ปักหมุดหน้าจอ)',
-        chan_2_desc: 'กลุ่มแฟนพันธุ์แท้ที่บันทึกเว็บไว้บนหน้าจอมือถือเหมือนแอปเนทีฟ',
-        chan_3_name: 'Deep-Link Direct & Smart Text Summary (แชร์ลิงก์ตรงและข้อความสรุปผล)',
-        chan_3_desc: 'พร้อมใช้งานแล้ว: คัดลอกสรุปยอดรับ–จ่ายเข้า LINE กลุ่ม และส่งลิงก์เฉพาะลีก (/{id}/) โดยตรง',
-        geo_title: 'การกระจายตัวตามภูมิศาสตร์และภาษา (Geo & Locale)',
-        geo_1: 'กรุงเทพมหานครและปริมณฑล (BKK & Metro)',
-        geo_2: 'หัวเมืองใหญ่ (เชียงใหม่ · ชลบุรี · ขอนแก่น · ภูเก็ต)',
-        geo_3: 'ต่างประเทศ (UK · Singapore · Australia · Japan)',
-        geo_lang_label: 'สัดส่วนภาษาที่เลือกใช้งาน (TH / EN)',
-        geo_edge_title: 'Cloudflare Bangkok Edge (BKK): ',
-        geo_edge_desc: 'ทราฟฟิก 92.2% ในไทยวิ่งเข้า Data Center กรุงเทพฯ โดยตรง ค่าความหน่วงเฉลี่ยต่ำเพียง 18–26 ms',
-        sec5_title: '05. อุปกรณ์ หน้าจอ และสภาพแวดล้อมของผู้ใช้งาน',
-        sec5_sub: 'เลือกดูสถิติอุปกรณ์จริงจาก D1 Telemetry ได้ทั้ง 7 วัน และ 30 วันล่าสุด',
-        dev_btn_7d: '7 วันล่าสุด',
-        dev_btn_30d: '30 วันล่าสุด',
-        dev_mobile_label: 'สมาร์ตโฟน (Mobile Phones)',
-        dev_primary_badge: 'อันดับ 1 (30 วันล่าสุด)',
-        dev_mobile_desc: 'หน้าจอมือถือขนาด 375px–430px (กำลังโหลดสถิติจริง 30 วันล่าสุด...)',
-        dev_desktop_label: 'คอมพิวเตอร์ตั้งโต๊ะ / โน้ตบุ๊ก (Desktop)',
-        dev_desktop_badge: 'ใช้งานบนจอ 1024px+',
-        dev_desktop_desc: 'หน้าจอคอมพิวเตอร์และโน้ตบุ๊ก 1024px+ (กำลังโหลดสถิติจริง 30 วันล่าสุด...)',
-        dev_tablet_label: 'ไอแพดและแท็บเล็ต (iPad / Tablet)',
-        dev_tablet_badge: 'หน้าจอ 768px–1024px',
-        dev_tablet_desc: 'หน้าจอแท็บเล็ต 768px–1024px (กำลังโหลดสถิติจริง 30 วันล่าสุด...)',
-        sec6_title: '06. จังหวะทราฟฟิกวันแข่งขันและช่วงเวลาใช้งานสูงสุด',
-        sec6_sub: 'กราฟวิเคราะห์ความหนาแน่นทราฟฟิกรายวัน (7 วัน) และรายชั่วโมงวันแข่ง (เวลาไทย ICT)',
-        chart_title_hourly: 'กราฟความหนาแน่นทราฟฟิกรายชั่วโมงในวันแข่งขัน (24 ชั่วโมง · ICT)',
-        chart_sub_hourly: 'พุ่งสูงสุดช่วงคู่ดึกวันเสาร์ 21:00–23:30 น. (68% ของทราฟฟิกทั้งสัปดาห์)',
-        chart_title_daily: 'กราฟจำนวนการเข้าใช้งานย้อนหลัง 7 วัน (Daily Sessions)',
-        chart_sub_daily: 'เปรียบเทียบวันแข่งขันเสาร์–อาทิตย์ เทียบกับวันธรรมดาอังคาร–ศุกร์',
-        chart_btn_24h: '24 ชม. (วันแข่ง)',
-        chart_btn_7d: '7 วันย้อนหลัง',
-        chart_legend_peak: 'ช่วงพีคบอลเตะสด / เดดไลน์',
-        chart_legend_normal: 'ช่วงเวลาปกติ',
-        peak_windows_title: '3 ช่วงเวลาวิกฤตที่ระบบรับโหลดสูงสุด',
-        peak_1_time: 'เสาร์ 21:00 – 00:30 น. (ICT)',
-        peak_1_title: 'ช่วงบอลคู่หลักเตะพร้อมกัน 5–6 คู่',
-        peak_1_desc: 'ผู้ใช้เปิดหน้าตารางคะแนนสดค้างไว้และกดรีเฟรชถี่ที่สุด ระบบ Edge Cache ช่วยรับโหลดแทนต้นทาง 94%',
-        peak_2_time: 'ก่อนเดดไลน์ 90 นาที (ศุกร์/เสาร์)',
-        peak_2_title: 'ช่วงเช็กข่าวตัวจริงหลุด & ส่องกัปตัน',
-        peak_2_desc: 'ทราฟฟิกพุ่งสูงก่อนปิดตลาดและทันทีหลังตลาดเปิดเมื่อทุกคนเข้ามาส่องกัปตันคู่แข่ง',
-        peak_3_time: 'จันทร์ / อังคาร 06:30 – 10:00 น.',
-        peak_3_title: 'ช่วงสรุปผู้ชนะรายสัปดาห์และเคลียร์บิล',
-        peak_3_desc: 'เหรัญญิกและสมาชิกเข้ามาตรวจผลรางวัลประจำสัปดาห์หลัง GitHub Actions ซิงก์ข้อมูลจบ',
-        sec7_title: '07. ประสิทธิภาพระบบ โควตาคลาวด์ และความจุในการขยายสเกล',
-        sec7_sub: 'ติดตามสุขภาพระบบจริงเพื่อประเมินเพดานรองรับผู้ใช้งานและควบคุมต้นทุน',
-        sys_cache_hit_label: 'อัตราเสิร์ฟจากแคช (Benchmark):',
-        sys_d1_reads_label: 'โควตาอ่าน-เขียนรายวัน:',
-        sys_gh_success_label: 'อัตราซิงก์สำเร็จ (Benchmark):',
-        sys_scale_headroom_label: 'เพดานขยายสเกล (Headroom):',
-        sys_upstream_ready: 'พร้อมเช็ก',
-        sys_upstream_tap_hint: '(กดเช็กด้านล่าง)',
-        ops_title: 'ปุ่มดูแลและเช็กความพร้อมของเว็บ',
-        ops_sub: 'กดเฉพาะตอนที่ต้องการตรวจสอบหรือแก้ไขปัญหา ผลลัพธ์จะแสดงใต้ปุ่มทันที (คนเข้าเว็บทั่วไปไม่ได้รับผลกระทบ)',
-        ops_shortcut_hint: 'คีย์ลัด: R รีเฟรช · L สลับภาษา · T สลับธีม',
-        op_flush_title: 'รีเฟรชคะแนนสดใหม่ทั้งเว็บ',
-        op_flush_desc: 'ใช้เมื่อคะแนนหรือโบนัสบนหน้าเว็บค้างไม่ขยับ กดเพื่อล้างข้อมูลค้างเก่าและดึงผลล่าสุดให้ทุกคนทันที',
-        op_flush_btn: 'รีเฟรชคะแนนสดทันที',
-        op_ping_title: 'เช็กว่าระบบ FPL ล่มหรือช้าไหม',
-        op_ping_desc: 'ใช้ตรวจดูว่าปัญหาคะแนนไม่ขึ้นเกิดจากเว็บพรีเมียร์ลีกต้นทางช้าหรือล่มอยู่หรือไม่',
-        op_ping_btn: 'เช็กสถานะเว็บ FPL',
-        op_export_title: 'ดาวน์โหลดไฟล์สถิติเก็บไว้',
-        op_export_desc: 'เก็บข้อมูลยอดคนดูและรายละเอียดทั้ง 9 ลีกลงเครื่องไว้ดูย้อนหลังหรือสรุปรายงาน',
-        op_export_btn: 'ดาวน์โหลดไฟล์สถิติ',
-        op_prune_title: 'ลบประวัติคนดูเก่าที่เกิน 30 วัน',
-        op_prune_desc: 'ช่วยเคลียร์บันทึกเก่าที่ไม่ใช้แล้วให้ระบบลื่นและประหยัดพื้นที่ (ยอดคนดูรวมทั้งหมดยังอยู่ครบ)',
-        op_prune_btn: 'ลบประวัติเก่าเกิน 30 วัน',
-        sec8_title: '08. ตรวจสุขภาพระบบและ Error ย้อนหลัง (Monitor)',
-        sec8_sub: 'เช็กย้อนหลัง 1 วัน (รายชั่วโมง) และ 1 สัปดาห์ (รายวัน) ว่าช่วงเวลาไหนทำงานปกติหรือมี Error เกิดขึ้นกับผู้ใช้',
-        mon_status_healthy: 'ทำงานปกติ 100%',
-        mon_status_warning: 'พบปัญหาเล็กน้อยบางช่วง',
-        mon_status_incident: 'พบความผิดปกติ — ควรตรวจสอบ',
-        mon_kpi_24h_label: 'ความพร้อมใช้งาน 1 วัน (24 ชม.)',
-        mon_kpi_7d_label: 'ความพร้อมใช้งาน 1 สัปดาห์ (7 วัน)',
-        mon_kpi_client_label: 'ปัญหาฝั่งผู้ใช้งาน (หน้าเว็บ)',
-        mon_kpi_client_sub: 'หน้าเว็บค้าง โหลดข้อมูลไม่ขึ้น หรือ JS Error',
-        mon_kpi_upstream_label: 'ปัญหาเว็บ FPL ต้นทาง (5xx)',
-        mon_kpi_upstream_sub: 'เว็บพรีเมียร์ลีกต้นทางตอบช้าหรือล่มชั่วคราว',
-        mon_chart_title_24h: 'บันทึกการทำงานย้อนหลัง 24 ชั่วโมงล่าสุด (เวลาไทย · ICT)',
-        mon_chart_sub_24h: 'เปรียบเทียบช่วงเวลาที่ระบบทำงานปกติ กับช่วงเวลาที่ตรวจพบ Error รายชั่วโมง',
-        mon_chart_title_7d: 'บันทึกการทำงานย้อนหลัง 7 วันล่าสุด (1 สัปดาห์)',
-        mon_chart_sub_7d: 'สรุปปริมาณการใช้งานและจำนวน Error แยกตามวันย้อนหลัง 7 วัน',
-        mon_btn_24h: '1 วัน (24 ชม.)',
-        mon_btn_7d: '1 สัปดาห์ (7 วัน)',
-        mon_legend_ok: 'ใช้งานปกติ (จำนวนครั้ง)',
-        mon_legend_err: 'ช่วงเวลาที่พบ Error',
-        mon_anomaly_title: 'ประวัติช่วงเวลาที่ทำงานผิดปกติ (Anomaly Timeline)',
-        mon_cat_title: 'สรุปประเภท Error สะสม 7 วันล่าสุด',
-        footer_rights: 'ศูนย์วิเคราะห์ข้อมูลธุรกิจและโครงสร้างพื้นฐานครบวงจร (9 มินิลีก)',
-        toast_refreshed: 'อัปเดตข้อมูลสถานะล่าสุดจากเซิร์ฟเวอร์เรียบร้อยแล้ว',
-        confirm_prune: 'ยืนยันการลบประวัติการเข้าชมเก่าที่เกิน 30 วันหรือไม่? (ยอดผู้เข้าชมรวมทั้งหมดจะยังอยู่ครบไม่ถูกลบ)',
-        sec9_title: '09. กล่องรับคำสั่งซื้อ & ตรวจสลิป',
-        sec9_sub: 'ตั้งค่ารูป QR รับเงิน ตรวจสอบยอดโอนตามเศษสตางค์ ดูรูปสลิป ส่งข้อมูลเข้าเครื่องมือเปิดลีกด้านล่าง และแจ้งเปิดใช้งานทางอีเมลในคลิกเดียว',
-        sec10_title: '10. เครื่องมือเปิดลีกลูกค้าใหม่ (Concierge Onboarding Wizard)',
-        sec10_sub: 'ตรวจสอบ FPL Classic League ID สดจากเซิร์ฟเวอร์พรีเมียร์ลีก เลือกทีมที่ไม่ร่วมชิงรางวัล ตั้งค่าแพ็กเกจ และสร้างสคริปต์เปิดใช้งานทันที',
-        onb_lbl_id: 'FPL Classic League ID (ตัวเลขเท่านั้น)',
-        onb_btn_inspect: 'ดึงข้อมูลลีกสด',
-        onb_lbl_plan: 'แพ็กเกจ (Plan)',
-        onb_lbl_prize: 'รูปแบบรางวัล',
-        onb_lbl_weekly: 'รางวัล/สัปดาห์ (บาท)',
-        onb_lbl_status: 'สถานะสิทธิ์ (Status)',
-        onb_lbl_tier: 'ระดับสถาปัตยกรรม (Tier)',
-        onb_lbl_tenant: 'Tenant Group (แยกการมองเห็น)',
-        onb_lbl_visibility: 'การมองเห็น & SEO',
-        onb_lbl_short: 'ชื่อย่อหน้าลีก (Short Name)',
-        onb_lbl_expires: 'วันหมดอายุ (Expires At)',
-        onb_lbl_billing: 'บันทึกแอดมิน (Admin Only)',
-        onb_lbl_nocup: 'ปิดแท็บบอลถ้วย (--no-cup สำหรับลีกที่ไม่ได้เตะบอลถ้วย)',
-        onb_lbl_currency: 'สกุลเงินรางวัล (Currency)',
-        onb_lbl_entry_fee: 'ค่าสมัคร/ทีม (ไม่บังคับ)',
-        onb_lbl_total_pool: 'เงินกองกลางรวม (ไม่บังคับ)',
-        onb_lbl_season_prizes: 'รางวัลแชมป์ฤดูกาล (ไม่บังคับ)',
-        onb_lbl_cup_prize: 'รางวัลบอลถ้วย (แชมป์ หรือ แชมป์/รอง)',
-        onb_lbl_penalty_tiers: 'ขั้นค่าปรับบ๊วย N อันดับท้าย (คั่นด้วยจุลภาค จากบ๊วยสุดไปอันดับถัดขึ้นไป)',
-        onb_penalty_hint: 'รองรับกี่อันดับก็ได้ (เช่น 3 อันดับท้าย = 300,200,100) ระบบจะปรับหัวตารางและการ์ดสรุปอัตโนมัติ',
-        onb_lbl_monthly_champ: 'รางวัลแชมป์ประจำเดือน (ต่อเดือน)',
-        onb_lbl_monthly_runner: 'รางวัลรองแชมป์ประจำเดือน (ใส่ 0 หากมีเฉพาะแชมป์)',
-        onb_d1_note_tip: '🔒 โน้ตข้อมูลลูกค้าส่วนตัว (ชื่อ LINE / วันโอนเงิน) ให้บันทึกในตารางข้อ 02 ด้านบน (เก็บใน Cloudflare D1 ปลอดภัย 100% ไม่ถูก commit ลง Git)',
-        col_lifecycle: 'สถานะ & หมดอายุ',
-        col_actions: 'จัดการสิทธิ์',
+        port_landing_sub: 'แยกจากยอดเปิดดูมินิลีก (วัดคนสนใจซื้อระบบ)',
+        port_whitelabel_label: 'ความจุที่รองรับเพิ่ม (Tier 1 Headroom)',
+        port_whitelabel_sub: 'คำนวณตรงกับเพดาน 30 ลีก / 500 ทีม Tier 1 (ต้นทุนเพิ่ม ฿0)',
         pf_filter_all: 'ทั้งหมด',
         pf_filter_private: 'ลูกค้าส่วนตัว (Private)',
         pf_filter_expiring: 'ทดลองใช้ / ใกล้หมดอายุ',
         pf_filter_paused: 'พักระบบ (Paused)',
         pf_filter_showcase: 'ลีกตัวอย่าง (Showcase)',
-        onb_teams_hint: 'ติ๊กเลือกทีมที่ไม่ร่วมชิงรางวัล (non_prize_teams) หากมี:',
-        onb_out_cli: '1. คำสั่ง CLI (รันบนเครื่องเพื่อเปิดลีก)',
-        onb_out_json: '2. Config JSON (leagues_config.json)',
-        onb_out_line: '3. ข้อความส่งมอบลูกค้าทาง LINE',
+        col_league_name: 'ชื่อมินิลีก & รหัส',
+        col_teams: 'จำนวนทีม',
+        col_pool: 'เงินรางวัลรวม (GMV)',
+        col_modules: 'โมดูลและกติกาที่เปิดใช้งาน',
+        col_views: 'ยอดเปิดดู (7 วันล่าสุด)',
+        col_engagement: 'เวลาดูเฉลี่ย / ต่อทีม',
+        col_lifecycle: 'สถานะ & หมดอายุ',
+        col_actions: 'จัดการสิทธิ์',
+        sec3_title: '03. กล่องรับคำสั่งซื้อ & ตรวจสลิป',
+        sec3_sub: 'ตั้งค่ารูป QR รับเงิน ตรวจสอบยอดโอนตามเศษสตางค์ ดูรูปสลิป ส่งข้อมูลเข้าเครื่องมือเปิดลีกด้านล่าง และแจ้งเปิดใช้งานทางอีเมลในคลิกเดียว',
+        ord_btn_refresh: 'รีเฟรชรายการออเดอร์',
+        pay_qr_title: 'ตั้งค่า QR รับเงินส่วนตัว (ไม่ต้องใช้เบอร์โทร / บัตร ปชช. / e-Wallet)',
+        btn_toggle_qr_hide: 'ซ่อนตั้งค่า QR',
+        btn_toggle_qr_show: 'แก้ไข / แสดงตั้งค่า QR',
+        pay_qr_acct_lbl: 'ชื่อ-นามสกุลผู้รับเงิน (แสดงให้ลูกค้าตรวจเช็กก่อนโอน)',
+        pay_qr_file_lbl: 'อัปโหลดรูปภาพ QR Code รับเงิน',
+        pay_qr_file_hint: 'รองรับไฟล์ PNG / JPG / WebP (ย่อขนาดอัตโนมัติในเบราว์เซอร์) เก็บเป็นความลับในฐานข้อมูล D1 เท่านั้น ไม่บันทึกลง GitHub',
+        pay_qr_btn_save: 'บันทึกการตั้งค่า QR',
+        pay_qr_btn_clear: 'ลบรูป QR ออกจากฐานข้อมูล',
+        pay_qr_preview_lbl: 'ตัวอย่างรูป QR ที่แสดงให้ลูกค้า',
+        pay_qr_preview_empty: 'ยังไม่ได้อัปโหลดรูป QR ส่วนตัว',
         ord_stat_total_lbl: 'คำสั่งซื้อสะสมทั้งหมด',
         ord_stat_paid_lbl: 'โอนแล้ว / เปิดลีกสำเร็จ',
         ord_stat_active_lbl: 'คิวรอดำเนินการปัจจุบัน',
         ord_stat_expired_lbl: 'ไม่โอนเกิน 24 ชม. / ยกเลิกสะสม',
-        ord_btn_refresh: 'รีเฟรชรายการออเดอร์',
         ord_f_all: 'ทั้งหมด',
         ord_f_slip: 'รอตรวจสลิป',
         ord_f_await: 'รอโอน QR',
@@ -2975,361 +2268,218 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ord_act_del_test: 'ลบออเดอร์ทดสอบ (ไม่นับสถิติ)',
         ord_slip_heading: 'รูปสลิปโอนเงินที่ลูกค้าแนบ',
         ord_btn_reload_slip: 'โหลดรูปสลิปอีกครั้ง',
-        pay_qr_title: 'ตั้งค่า QR รับเงินส่วนตัว (ไม่ต้องใช้เบอร์โทร / บัตร ปชช. / e-Wallet)',
-        pay_qr_acct_lbl: 'ชื่อ-นามสกุลผู้รับเงิน (แสดงให้ลูกค้าตรวจเช็กก่อนโอน)',
-        pay_qr_file_lbl: 'อัปโหลดรูปภาพ QR Code รับเงิน',
-        pay_qr_file_hint: 'รองรับไฟล์ PNG / JPG / WebP (ย่อขนาดอัตโนมัติในเบราว์เซอร์) เก็บเป็นความลับในฐานข้อมูล D1 เท่านั้น ไม่บันทึกลง GitHub',
-        pay_qr_btn_save: 'บันทึกการตั้งค่า QR',
-        pay_qr_btn_clear: 'ลบรูป QR ออกจากฐานข้อมูล',
-        pay_qr_preview_lbl: 'ตัวอย่างรูป QR ที่แสดงให้ลูกค้า',
-        pay_qr_preview_empty: 'ยังไม่ได้อัปโหลดรูป QR ส่วนตัว',
-        btn_collapse_pitch: 'ซ่อนรายละเอียด Pitch',
-        btn_expand_pitch: 'แสดงรายละเอียด Pitch',
-        btn_toggle_qr_hide: 'ซ่อนตั้งค่า QR',
-        btn_toggle_qr_show: 'แก้ไข / แสดงตั้งค่า QR'
+        sec4_title: '04. เครื่องมือเปิดลีกลูกค้าใหม่ (Concierge Onboarding Wizard)',
+        sec4_sub: 'ตรวจสอบ FPL Classic League ID สดจากเซิร์ฟเวอร์พรีเมียร์ลีก เลือกทีมที่ไม่ร่วมชิงรางวัล ตั้งค่าแพ็กเกจ และสร้างสคริปต์เปิดใช้งานทันที',
+        onb_lbl_id: 'FPL Classic League ID (ตัวเลขเท่านั้น)',
+        onb_btn_inspect: 'ดึงข้อมูลลีกสด',
+        onb_lbl_plan: 'แพ็กเกจ (Plan)',
+        onb_lbl_prize: 'รูปแบบรางวัล',
+        onb_lbl_weekly: 'รางวัล/สัปดาห์ (บาท)',
+        onb_lbl_status: 'สถานะสิทธิ์ (Status)',
+        onb_lbl_tier: 'ระดับสถาปัตยกรรม (Tier)',
+        onb_lbl_currency: 'สกุลเงินรางวัล (Currency)',
+        onb_lbl_entry_fee: 'ค่าสมัคร/ทีม (ไม่บังคับ)',
+        onb_lbl_total_pool: 'เงินกองกลางรวม (ไม่บังคับ)',
+        onb_lbl_season_prizes: 'รางวัลแชมป์ฤดูกาล (ไม่บังคับ)',
+        onb_lbl_cup_prize: 'รางวัลบอลถ้วย (แชมป์ หรือ แชมป์/รอง)',
+        onb_lbl_penalty_tiers: 'ขั้นค่าปรับบ๊วย N อันดับท้าย (คั่นด้วยจุลภาค จากบ๊วยสุดไปอันดับถัดขึ้นไป)',
+        onb_penalty_hint: 'รองรับกี่อันดับก็ได้ (เช่น 3 อันดับท้าย = 300,200,100) ระบบจะปรับหัวตารางและการ์ดสรุปอัตโนมัติ',
+        onb_lbl_monthly_champ: 'รางวัลแชมป์ประจำเดือน (ต่อเดือน)',
+        onb_lbl_monthly_runner: 'รางวัลรองแชมป์ประจำเดือน (ใส่ 0 หากมีเฉพาะแชมป์)',
+        onb_lbl_tenant: 'Tenant Group (แยกการมองเห็น)',
+        onb_lbl_visibility: 'การมองเห็น & SEO',
+        onb_lbl_short: 'ชื่อย่อหน้าลีก (Short Name)',
+        onb_lbl_expires: 'วันหมดอายุ (Expires At)',
+        onb_lbl_nocup: 'ปิดแท็บบอลถ้วย (--no-cup สำหรับลีกที่ไม่ได้เตะบอลถ้วย)',
+        onb_d1_note_tip: '🔒 โน้ตข้อมูลลูกค้าส่วนตัว (ชื่อ LINE / วันโอนเงิน) ให้บันทึกในตารางข้อ 02 ด้านบน (เก็บใน Cloudflare D1 ปลอดภัย 100% ไม่ถูก commit ลง Git)',
+        onb_teams_hint: 'ติ๊กเลือกทีมที่ไม่ร่วมชิงรางวัล (non_prize_teams) หากมี:',
+        onb_out_cli: '1. คำสั่ง CLI (รันบนเครื่องเพื่อเปิดลีก)',
+        onb_out_json: '2. Config JSON (leagues_config.json)',
+        onb_out_line: '3. ข้อความส่งมอบลูกค้าทาง LINE',
+        sec5_title: '05. พฤติกรรมการใช้งานฟีเจอร์และคุณค่าผลิตภัณฑ์ (สด 7 วัน)',
+        sec5_sub: 'รวมทุกแท็บจริงบนเว็บ รวมถึง Transfer Advisor · คำนวณ 100% จาก D1 Beacon',
+        feat_share_title: 'สัดส่วนการคลิกใช้งานแต่ละโมดูลจริง (รอบ 7 วัน)',
+        feat_seg_title: 'การมีส่วนร่วม: ลีกเงินรางวัล vs ลีกทั่วไป',
+        feat_seg_desc: 'เปรียบเทียบอัตราการเปิดดูต่อทีม (Visits / Team · 7 วัน) จากยอดเข้าชมจริงใน D1 แยกตามลีกที่ตั้งเงินรางวัลและลีกคอมมูนิตี้',
+        seg_prize_lbl: 'ลีกเงินรางวัล (Prize Leagues)',
+        seg_comm_lbl: 'ลีกทั่วไป / ฟรีลีก (Community)',
+        sec6_title: '06. ช่องทางเข้าใช้งาน (Browser), ภูมิภาค และภาษา (TH / EN)',
+        sec6_sub: 'จำแนก LINE In-App Browser, Safari, Chrome · พื้นที่จริงจาก Edge · สัดส่วน TH vs EN',
+        dist_src_title: 'เบราว์เซอร์และแอปที่ผู้ใช้เปิดลิงก์ (7 วัน)',
+        dist_geo_title: 'พื้นที่เชื่อมต่อและสัดส่วนภาษาที่ใช้งานจริง',
+        geo_bkk_lbl: 'กทม. & ปริมณฑล',
+        geo_reg_lbl: 'ต่างจังหวัด',
+        geo_intl_lbl: 'ต่างประเทศ',
+        dist_locale_lbl: 'ภาษาหน้าเว็บที่ผู้ใช้เลือก (TH vs EN)',
+        sec7_title: '07. สัดส่วนอุปกรณ์ผู้ใช้งานจริง (รองรับ iPadOS แท็บเล็ต)',
+        sec7_sub: 'ตรวจจับหน้าจอ + Touch เพื่อแยก iPad ออกจาก Desktop ไม่รวมปนกัน',
+        dev_btn_7d: '7 วันล่าสุด',
+        dev_btn_30d: '30 วันล่าสุด',
+        dev_mobile_label: 'สมาร์ตโฟน (Mobile Phones)',
+        dev_desktop_label: 'คอมพิวเตอร์ตั้งโต๊ะ / โน้ตบุ๊ก (Desktop)',
+        dev_tablet_label: 'ไอแพดและแท็บเล็ต (iPadOS / Tablet)',
+        dev_mobile_desc: 'iOS / Android < 768px',
+        dev_desktop_desc: 'macOS / Windows Non-Touch',
+        dev_tablet_desc: 'iPadOS Touch & Tablets',
+        sec8_title: '08. ช่วงเวลาใช้งานพีคและพฤติกรรมวันแข่งขัน (ICT · 7 วันล่าสุด)',
+        sec8_sub: 'กราฟจากเวลาเข้าชมจริงใน Cloudflare D1 (ไม่มีเส้นจำลอง)',
+        chart_title_hourly: 'กราฟความหนาแน่นทราฟฟิกรายชั่วโมง (24 ชั่วโมง · ICT)',
+        chart_sub_hourly: 'รวมยอดเข้าชมจริง 7 วันย้อนหลังตามชั่วโมง (00:00–23:59 ICT)',
+        chart_title_daily: 'กราฟจำนวนการเข้าใช้งานย้อนหลัง 7 วัน (Daily Visits)',
+        chart_sub_daily: 'เปรียบเทียบยอดเข้าชมรายวันจริงตลอด 7 วันที่ผ่านมา (เวลาไทย ICT)',
+        chart_btn_24h: 'รายชั่วโมง (24 ชม.)',
+        chart_btn_7d: 'รายวัน (7 วัน)',
+        chart_legend_peak: 'ชั่วโมงพีคสูงสุด (Peak)',
+        chart_legend_normal: 'ช่วงเวลาปกติ',
+        win_evening_title: 'ช่วงค่ำ–ดึกแข่งขัน (18:00–02:59 น.)',
+        win_daytime_title: 'ช่วงกลางวัน & วางแผน (11:00–17:59 น.)',
+        win_morning_title: 'ช่วงเช้า & สรุปผล (03:00–10:59 น.)',
+        sec9_title: '09. ประสิทธิภาพระบบ โควตาคลาวด์ และความจุในการขยายสเกล',
+        sec9_sub: 'ติดตามโควตา Worker (สุ่ม Cache HIT 10%), จำนวนแถว D1 ครบ 4 ตาราง และผลซิงก์ GitHub Actions จริง',
+        sys_cache_hit_label: 'Edge Cache Hit (7d):',
+        sys_d1_reads_label: 'D1 Writes วันนี้:',
+        sys_upstream_ready: 'พร้อมเช็ก',
+        sys_upstream_tap_hint: '(กดเช็กด้านล่าง)',
+        sys_scale_headroom_label: 'เพดานขยายสเกล (Headroom):',
+        ops_title: 'ปุ่มดูแลและเช็กความพร้อมของเว็บ',
+        ops_sub: 'กดเฉพาะตอนที่ต้องการตรวจสอบหรือแก้ไขปัญหา ผลลัพธ์จะแสดงใต้ปุ่มทันที (คนเข้าเว็บทั่วไปไม่ได้รับผลกระทบ)',
+        ops_shortcut_hint: 'คีย์ลัด: R รีเฟรช · L สลับภาษา · T สลับธีม',
+        op_flush_title: 'รีเฟรชคะแนนสดใหม่ทั้งเว็บ',
+        op_flush_desc: 'ใช้เมื่อคะแนนหรือโบนัสบนหน้าเว็บค้างไม่ขยับ ล้างแคช /live, /fixtures, /visitors และ /standings ทันที',
+        op_flush_btn: 'รีเฟรชคะแนนสดทันที',
+        op_ping_title: 'เช็กว่าระบบ FPL ล่มหรือช้าไหม',
+        op_ping_desc: 'ใช้ตรวจดูว่าปัญหาคะแนนไม่ขึ้นเกิดจากเว็บพรีเมียร์ลีกต้นทางช้าหรือล่มอยู่หรือไม่',
+        op_ping_btn: 'เช็กสถานะเว็บ FPL',
+        op_export_title: 'ดาวน์โหลดไฟล์สถิติเก็บไว้',
+        op_export_desc: 'เก็บข้อมูลยอดคนดูและรายละเอียดมินิลีกทั้งหมดในระบบลงเครื่องไว้ดูย้อนหลังหรือสรุปรายงาน',
+        op_export_btn: 'ดาวน์โหลดไฟล์สถิติ',
+        op_prune_title: 'ลบประวัติคนดูเก่าที่เกิน 30 วัน',
+        op_prune_desc: 'ช่วยเคลียร์บันทึกเก่าที่ไม่ใช้แล้วให้ระบบลื่นและประหยัดพื้นที่ (ยอดคนดูสะสมตลอดกาลยังอยู่ครบ)',
+        op_prune_btn: 'ลบประวัติเก่าเกิน 30 วัน',
+        confirm_prune: 'ยืนยันการลบประวัติการเข้าชมเก่าที่เกิน 30 วันหรือไม่? (ยอดเข้าชมสะสมตลอดกาลจะยังอยู่ครบไม่ถูกลบ)',
+        sec10_title: '10. ตรวจสุขภาพระบบ ความสดใหม่การซิงก์ และ Error ย้อนหลัง (Monitor)',
+        sec10_sub: 'เช็กย้อนหลัง 1 วัน (รายชั่วโมง) และ 1 สัปดาห์ (รายวัน) พร้อมตรวจจับความสดใหม่ของการซิงก์ GitHub Actions',
+        mon_status_healthy: 'ทำงานปกติ 100%',
+        mon_status_warning: 'พบคำเตือน / ซิงก์ล่าช้า',
+        mon_status_incident: 'พบความผิดปกติ — ควรตรวจสอบ',
+        mon_kpi_24h_label: 'ความพร้อมใช้งาน 1 วัน (24 ชม.)',
+        mon_kpi_7d_label: 'ความพร้อมใช้งาน 1 สัปดาห์ (7 วัน)',
+        mon_kpi_client_label: 'ปัญหาฝั่งผู้ใช้งาน (หน้าเว็บ/ชำระเงิน)',
+        mon_kpi_client_sub: 'หน้าเว็บค้าง โหลดข้อมูลไม่ขึ้น หรือ JS Error',
+        mon_kpi_upstream_label: 'ปัญหาเว็บ FPL ต้นทาง (5xx/Fixtures)',
+        mon_kpi_upstream_sub: 'เว็บพรีเมียร์ลีกต้นทางตอบช้าหรือล่มชั่วคราว',
+        mon_chart_title_24h: 'บันทึกการทำงานย้อนหลัง 24 ชั่วโมงล่าสุด (เวลาไทย · ICT)',
+        mon_chart_sub_24h: 'เปรียบเทียบช่วงเวลาที่ระบบทำงานปกติ กับช่วงเวลาที่ตรวจพบ Error รายชั่วโมง',
+        mon_chart_title_7d: 'บันทึกการทำงานย้อนหลัง 7 วันล่าสุด (1 สัปดาห์)',
+        mon_chart_sub_7d: 'สรุปปริมาณการใช้งานและจำนวน Error แยกตามวันย้อนหลัง 7 วัน',
+        mon_btn_24h: '1 วัน (24 ชม.)',
+        mon_btn_7d: '1 สัปดาห์ (7 วัน)',
+        mon_legend_ok: 'ใช้งานปกติ (จำนวนครั้ง)',
+        mon_legend_err: 'ช่วงเวลาที่พบ Error',
+        mon_anomaly_title: 'ประวัติช่วงเวลาที่ทำงานผิดปกติ (Anomaly Timeline)',
+        mon_cat_title: 'สรุปประเภท Error สะสม 7 วันล่าสุด',
+        sec11_title: '11. คู่มือ Live Pitch และสไลด์นำเสนอลูกค้า (ตัวเลขสด 100%)',
+        sec11_sub: 'พับเก็บเป็นค่าเริ่มต้น กดปุ่มเปิดเมื่อเตรียมแชร์หน้าจอพรีเซนต์ลูกค้า — กราฟและแพ็กเกจซิงก์กับระบบจริง',
+        btn_expand_pitch: 'เปิดคู่มือ Live Pitch ↓',
+        btn_collapse_pitch: 'ซ่อนคู่มือ Live Pitch ↑',
+        pitch_g2_title: 'กราฟเปรียบเทียบการมีส่วนร่วมจริงต่อทีม (Visits / Team · 7 วัน)',
+        pitch_g2_sub: 'คำนวณจากยอดเข้าชม D1 จริง ไม่มีค่าสมมติ',
+        pitch_g3_title: '5 รูปแบบกติกาลีกที่ระบบคำนวณให้อัตโนมัติ',
+        pitch_g3_sub: 'ครอบคลุมทั้งลีกเงินรางวัลเต็มรูปแบบและลีกคอมมูนิตี้ขนาดใหญ่',
+        pitch_g4_title: 'แพ็กเกจและฟีเจอร์เด่นที่เปิดใช้งานจริงบนระบบ',
+        pitch_demo_links_title: 'ทางลัดเปิดหน้าเดโมจริงระหว่างพรีเซนต์ลูกค้า:',
+        footer_rights: 'ศูนย์วิเคราะห์ข้อมูลธุรกิจและโครงสร้างพื้นฐานครบวงจร (Live Config)'
       },
       en: {
         skip_to_content: 'Skip to main content',
         nav_console_badge: 'Executive BI Console',
         nav_jump_league_label: 'Quick Jump to Landing, Demo & Mini-Leagues',
-        nav_jump_placeholder: 'Quick Jump (Landing / Demo / 9 Leagues)...',
+        nav_jump_placeholder: 'Quick Jump (Landing / Demo / Leagues)...',
         nav_jump_landing: '🛒 Commercial Landing Page (index.html)',
         nav_jump_preview: '🎮 Showcase Demo Hub (preview.html)',
-        nav_jump_hub: '🛒 Commercial Landing Page (index.html)',
-        mod_nav_0: '0. Organizer Pitch Deck',
-        mod_nav_1: '1. Audience & KPIs',
-        mod_nav_2: '2. 9-League Portfolio',
-        mod_nav_3: '3. Feature Value',
-        mod_nav_4: '4. Channels & Geo',
-        mod_nav_5: '5. Client Devices',
-        mod_nav_6: '6. Matchday Traffic',
-        mod_nav_7: '7. Cloud & Scaling',
-        mod_nav_8: '8. Project Health Monitor',
-        mod_nav_9: '9. Orders & Slips',
-        mod_nav_10: '10. Onboarding Wizard',
-        header_subtitle: 'Executive BI & Infrastructure Control',
-        quick_league_placeholder: 'Quick Jump (Landing / Demo / 9 Leagues)...',
-        quick_hub_home: '🛒 Commercial Landing Page (index.html)',
+        mod_nav_1: '01. Audience KPIs',
+        mod_nav_2: '02. Portfolio',
+        mod_nav_3: '03. Orders & Slips',
+        mod_nav_4: '04. Onboarding',
+        mod_nav_5: '05. Features',
+        mod_nav_6: '06. Browser & Geo',
+        mod_nav_7: '07. Devices',
+        mod_nav_8: '08. Peak Traffic',
+        mod_nav_9: '09. System & Quota',
+        mod_nav_10: '10. Monitor',
+        mod_nav_11: '11. Pitch Deck',
         sign_out: 'Sign Out',
-        nav_pitch: '00. Pitch Deck',
-        nav_audience: '01. Audience',
-        nav_portfolio: '02. 9-League Portfolio',
-        nav_features: '03. Product Value',
-        nav_channels: '04. Acquisition',
-        nav_devices: '05. Devices',
-        nav_timing: '06. Traffic Rhythm',
-        nav_system: '07. Cloud & Scaling',
-        nav_monitor: '08. Health Monitor',
         page_title: 'Executive Summary & Live Business Intelligence',
-        page_subtitle: 'Real-time portfolio economics across all 9 mini-leagues (8 Tier 1 + 1 Tier 2), user retention behavior, product adoption, and cloud scaling headroom.',
+        page_subtitle: '100% live system telemetry, member engagement, prize pool economics, and cloud scaling capacity.',
         btn_copy_exec: 'Copy Executive Brief',
         btn_copied_exec: 'Copied Brief to Clipboard!',
-        btn_refresh: 'Refresh Live Data',
-        btn_live_pitch_refresh: '⚡ Live Pitch Refresh',
-        pitch_badge: 'Executive Pitch Deck · For Mini-League Organizers',
-        sec0_title: '00. Turnkey Platform Solution for Mini-League Organizers',
-        sec0_sub: '100% Self-Managing Mini-Leagues · Saves 190+ hrs/year · 5.7x Higher Member Engagement with fully auditable prize settlements.',
-        pitch_tier1_ready: 'Tier 1: Turnkey & Ready to Onboard',
-        pitch_tier2_roadmap: 'Tier 2: Live Auto-Picks (1,779 Teams · ≤3k Cap)',
-        pitch_step1_title: 'Organizer Pain Points vs FPLSaWaDiKa Zero-Touch Solution',
-        pitch_step1_sub: 'Real-World Operational Comparison',
-        pain_1_badge: 'Admin Pain',
-        pain_1_metric: '5 hrs/wk wasted',
-        pain_1_title: 'Manual Excel & Transfer Hit Audits',
-        pain_1_desc: 'Manually cross-referencing transfers, deduction hits, and chip activations. Standings delayed 1-2 days.',
-        sol_1_badge: 'FPLSaWaDiKa Solution',
-        sol_1_desc: 'Automated 20s adaptive live polling (15s Edge Cache) with real-time Net Pts transfer hit deductions and live bonus rankings.',
-        pain_2_badge: 'Treasurer Pain',
-        pain_2_metric: 'Prize Disputes',
-        pain_2_title: 'Complex Prize & Penalty Calculation Errors',
-        pain_2_desc: 'Complex custom league rules like bottom 5 penalties, weekly high-score payouts, and multi-tier prizes.',
-        sol_2_badge: 'FPLSaWaDiKa Solution',
-        sol_2_desc: 'Automated Prize Ledger calculating every payout and penalty with 100% auditable open transparency.',
-        pain_3_badge: 'Community Pain',
-        pain_3_metric: 'Mid-Season Churn',
-        pain_3_title: 'Trailers Quit Early When Deficit Grows',
-        pain_3_desc: 'If only annual prizes exist, trailing managers quit by GW10 when behind by 50+ points.',
-        sol_3_badge: 'FPLSaWaDiKa Solution',
-        sol_3_desc: 'Weekly Micro-Stakes + Pundit AI Banter keeps everyone fighting every gameweek till GW38.',
-        pain_4_badge: 'App UX Pain',
-        pain_4_metric: 'Cumbersome Scouting',
-        pain_4_title: 'Slow Opponent Squad Scouting',
-        pain_4_desc: 'Official app requires endless back-and-forth clicks without side-by-side bench and live points.',
-        sol_4_badge: 'FPLSaWaDiKa Solution',
-        sol_4_desc: 'Interactive Squad Pitch Modal shows complete 11 starters + bench auto-subs in one single tap.',
-        pitch_step2_title: '4 Visual Proof Dimensions & Proven Analytics',
-        pitch_step2_sub: 'Audited Data Across 9 Mini-Leagues',
-        graphic1_eyebrow: 'Dimension 1 · Operational ROI',
-        graphic1_badge: '190 hrs/yr saved',
-        graphic1_title: 'Organizer Workload: Manual (Excel) vs FPLSaWaDiKa',
-        graphic1_sub: 'Benchmarked on 20–80 team leagues across 38 gameweeks',
-        bar_manual_label: 'Manual Excel Spreadsheet Auditing',
-        bar_fpl_label: 'FPLSaWaDiKa Zero-Touch Platform',
-        graphic1_callout: 'Saves over 24 full working days per season for organizers!',
-        graphic2_eyebrow: 'Dimension 2 · Member Stickiness',
-        graphic2_badge: '5.7x Higher Visits',
-        graphic2_title: 'Weekly Visit Intensity: Official FPL vs FPLSaWaDiKa',
-        graphic2_sub: 'Average weekly pageviews per manager (Visits/Team/GW)',
-        graphic2_axis_y: 'Y-Axis: Avg Visits per Team (visits / GW)',
-        graphic2_axis_x: 'Platform Segment',
-        graphic2_callout: 'Weekly Stakes + Pundit AI Banter sparks non-stop chat group banter',
-        graphic3_eyebrow: 'Dimension 3 · Financial Integrity',
-        graphic3_badge: 'Total GMV ฿268,700',
-        graphic3_title: 'Supports 5 Automated Prize & Penalty Frameworks',
-        graphic3_sub: 'Flexible to any custom mini-league rules with zero human error',
-        pmodel_1_title: 'Weekly Top-Score',
-        pmodel_1_sub: 'Highest weekly scorer payout',
-        pmodel_2_title: 'Bottom 5 Penalties',
-        pmodel_2_sub: 'Relegation penalty tier',
-        pmodel_3_title: 'Zero-Sum Ladder',
-        pmodel_3_sub: 'End-of-season bilateral settlement',
-        pmodel_4_title: 'Dual Milestones',
-        pmodel_4_sub: 'Half-season & final milestone prizes',
-        graphic3_callout: 'Fully auditable financial history with zero disputed baht',
-        graphic4_eyebrow: 'Dimension 4 · Feature Matrix',
-        graphic4_badge: 'Tier 1 vs Tier 2',
-        graphic4_title: 'Feature Comparison Matrix & Live Readiness',
-        graphic4_sub: 'Official App vs Tier 2 Live Beta vs Tier 1 Turnkey Core',
-        col_feat: 'Feature',
-        col_fpl_app: 'Official App',
-        col_tier2: 'Tier 2 (≤3k)',
-        col_tier1: 'Tier 1 (Turnkey)',
-        matrix_none: '❌ None',
-        matrix_f1: 'Live Score & BPS (20s/90s)',
-        matrix_f1_app: '3-5 min',
-        matrix_f1_t2: '✅ Live 20s',
-        matrix_f1_t1: '✅ Live 20s',
-        matrix_f2: 'Live Net Pts (Hits Deducted)',
-        matrix_f2_t2: '✅ Live (≤3k)',
-        matrix_f2_t1: '✅ Real-Time',
-        matrix_f3: 'Pundit AI Match Banter',
-        matrix_f3_t2: '✅ Live Note',
-        matrix_f3_t1: '✅ Full Tabs',
-        matrix_f4: 'Automated Prize/Penalty Engine',
-        matrix_f4_t2: '⚠️ Basic',
-        matrix_f4_t1: '✅ 100% Custom',
-        matrix_f5: 'Interactive Pitch Modal',
-        matrix_f5_app: 'Slow',
-        matrix_f5_t2: '✅ Instant (≤3k)',
-        matrix_f5_t1: '✅ One-Tap Full',
-        graphic4_callout: 'Tier 1 ready to onboard · Tier 2 (Auto-Picks Live) running 1,779 teams (≤3,000 cap)',
-        pitch_step3_title: 'Live Interactive Demo Jump Links',
-        pitch_step3_sub: 'Click any module to open live demo in new tab',
-        jump_1_title: 'Live Scores & Squad Pitch',
-        jump_1_sub: 'Scout starting 11 & bench live',
-        jump_2_title: 'Pundit AI Commentary',
-        jump_2_sub: 'Authentic matchday drama',
-        jump_3_title: 'Automated Payouts & Penalties',
-        jump_3_sub: 'Bottom penalty ledger',
-        jump_4_title: 'Global Form Radar',
-        jump_4_sub: 'Cross-league benchmark',
-        jump_5_title: 'Knockout Cup Bracket',
-        jump_5_sub: 'Automated tournament grid',
-        telem_live_active: 'Live Edge Telemetry Active',
-        telem_auto_sync: '(Auto-sync Hourly / 4h · ${authProvider})',
-        telem_last_sync_label: 'Last Data Sync: ',
-        telem_runner_label: 'Pipeline Runner: ',
-        telem_countdown_sub: 'Next Transfer Deadline Countdown',
-        sec1_title: '01. Audience Scale & Retention Velocity',
-        sec1_sub: 'Core user growth, matchday concurrency, and cohort stickiness (Live D1 vs Season Benchmarks)',
+        btn_live_pitch_refresh: '⚡ Live Refresh',
+        telem_live_active: 'Live telemetry active',
+        telem_auto_sync: '(Syncs 1h Fri–Mon / 4h Tue–Thu)',
+        telem_last_sync_label: 'Last sync: ',
+        telem_runner_label: 'Runner: ',
+        telem_countdown_sub: 'Countdown to transfer deadline',
+        toast_refreshed: 'Refreshed live metrics from Cloudflare Edge & D1',
         badge_live_sync: 'Live Sync',
         badge_live_d1: 'Live D1',
-        badge_benchmark: 'Benchmark',
+        sec1_title: '01. Live Audience & Traffic KPIs',
+        sec1_sub: '100% real data from league sync and Cloudflare D1 (cookieless · zero synthetic fallbacks)',
         kpi_managers_label: 'Tracked Managers',
-        kpi_managers_sub: '8 Tier 1 Leagues (1,942 Total incl. Tier 2)',
-        kpi_mau_label: 'Matchday Active Users',
-        kpi_mau_sub: 'Includes 3.7x spectator multiplier',
-        kpi_offpeak_label: 'Off-Peak Daily Active',
-        kpi_offpeak_sub: 'Tue–Thu transfer planning baseline',
-        kpi_stickiness_label: 'Matchday Stickiness',
-        kpi_stickiness_sub: 'Season Benchmark (> 3 visits/wk · Privacy-First)',
-        kpi_retention_label: 'GW-over-GW Retention',
-        kpi_retention_sub: 'Season Benchmark (< 6% churn · Privacy-First)',
-        kpi_screentime_label: 'Avg Session Duration',
-        kpi_screentime_sub: 'Second-screen live match tracking',
-        sec2_title: '02. Multi-League Portfolio (9 Leagues) & Commercial Economics',
-        sec2_sub: 'Click column headers to sort · League name column stays pinned on mobile horizontal scroll',
-        port_gmv_label: 'Total Prize Pool Under Management (GMV)',
-        port_gmv_sub: 'Combined season pot + weekly & monthly payouts across all leagues',
-        port_custom_label: 'Leagues with Custom Prize Rules',
-        port_custom_sub: 'High switching cost vs generic FPL trackers',
-        port_landing_label: 'Commercial Landing Page Views (7d)',
-        port_landing_sub: 'Separated from 9 mini-leagues (buyer acquisition traffic)',
-        port_whitelabel_label: 'White-Label Expansion Capacity',
-        port_whitelabel_val: 'Ready for 50+ Leagues',
-        port_whitelabel_sub: '฿0 marginal server cost on current Edge + Static architecture',
-        col_league_name: 'League Name & ID',
-        col_teams: 'Teams',
-        col_pool: 'Prize Pool (GMV)',
-        col_modules: 'Active Modules & Rule Engine',
-        col_views: 'Views (Last 7d)',
-        col_retention: 'Retention (Benchmark)',
-        sec3_title: '03. Feature Adoption & Product Value Matrix',
-        sec3_sub: 'Which modules drive repeat engagement and justify SaaS / White-Label monetization',
-        feat_share_title: 'Module Interaction Share (% of Total User Sessions)',
-        feat_share_badge: 'Verified Edge Events',
-        feat_1_name: '1. Live Standings & Real-Time Bonus System (Live BPS Matrix)',
-        feat_1_desc: 'Core hook: Managers keep the table open during live matches to watch rank swings on every goal.',
-        feat_2_name: '2. Weekly / Monthly / Net Prize Ledger (Financial Engine)',
-        feat_2_desc: 'Primary moat: Official FPL apps do not track custom mini-league payouts or transfer hit penalties.',
-        feat_3_name: '3. Starting XI Inspector & Rival H2H Matrix (Squad Modal)',
-        feat_3_desc: 'High engagement: Checking rival bench auto-subs and captain differentials right after deadline.',
-        feat_4_name: '4. What-If Simulator & Transfer Planner',
-        feat_4_desc: 'Growth lever: Drives mid-week traffic (Tue–Fri) prior to the Gameweek deadline.',
-        feat_5_name: '5. League History & Hall of Fame Records',
-        feat_insight_title: 'Behavioral Split: Prize-Pool vs. Community Leagues',
-        feat_insight_desc: 'Comparing session intensity per manager to guide SaaS / White-Label tier pricing.',
-        feat_paid_label: 'High-Stakes Prize Leagues (e.g., 1101958 · ฿103,200)',
-        feat_paid_val: '241 Sessions / Team / GW',
-        feat_paid_sub: 'Managers & friends refresh live standings and prize payouts continuously during matches.',
-        feat_comm_label: 'Community & Flagship Scale (e.g., 675290 · 60 Teams / Tier 2 · 1,779 Teams)',
-        feat_comm_val: '17.2 Sessions / Team / GW',
-        feat_comm_sub: 'Primarily post-match checks; ~14x lower session frequency than prize-backed leagues.',
-        feat_takeaway_title: 'Executive Strategic Takeaway',
-        feat_takeaway_body: 'The automated “Prize & Financial Ledger” is the #1 monetization driver for onboarding Thai mini-league chairmen.',
-        sec4_title: '04. Acquisition Channels & Geographic Reach',
-        sec4_sub: 'Where users originate and how traffic routes across regional edge nodes',
-        chan_title: 'User Acquisition & Referral Channels (Traffic Sources)',
-        chan_1_name: 'LINE Group Links & In-App Browser (Mini-League Group Chats)',
-        chan_1_desc: 'Primary viral loop: League admins share live standings links into LINE group chats every GW.',
-        chan_2_name: 'Direct / Home Screen Bookmark (PWA-style Launch)',
-        chan_2_desc: 'Core power users who pin the dashboard directly to their iOS/Android home screen.',
-        chan_3_name: 'Deep-Link Direct & Smart Text Summary (LINE / URL Sharing)',
-        chan_3_desc: 'Live Today: Copy LINE payout summaries and share direct mini-league deep links (/{id}/).',
-        geo_title: 'Geographic & Language Distribution (Geo & Locale)',
-        geo_1: 'Bangkok & Greater Metropolitan Area (BKK)',
-        geo_2: 'Major Thai Regional Hubs (Chiang Mai · Chonburi · Khon Kaen · Phuket)',
-        geo_3: 'International Expats (UK · Singapore · Australia · Japan)',
-        geo_lang_label: 'Interface Language Preference (TH / EN)',
-        geo_edge_title: 'Cloudflare Bangkok Edge (BKK): ',
-        geo_edge_desc: '92.2% of traffic is served directly from the Bangkok PoP with 18–26 ms average latency.',
-        sec5_title: '05. Device, Viewport & Client Environment',
-        sec5_sub: 'Switch between 7-day and 30-day live device telemetry from Cloudflare D1',
-        dev_btn_7d: 'Last 7d',
-        dev_btn_30d: 'Last 30d',
-        dev_mobile_label: 'Mobile Smartphones',
-        dev_primary_badge: '#1 Top Device (30d)',
-        dev_mobile_desc: 'Mobile viewports 375px–430px (loading 30d live telemetry...)',
-        dev_desktop_label: 'Desktop & Laptop Workstations',
-        dev_desktop_badge: '1024px+ Screen',
-        dev_desktop_desc: 'Desktop & laptop screens 1024px+ (loading 30d live telemetry...)',
-        dev_tablet_label: 'iPad & Tablet Devices',
-        dev_tablet_badge: '768px–1024px Screen',
-        dev_tablet_desc: 'Tablet screens 768px–1024px (loading 30d live telemetry...)',
-        sec6_title: '06. Matchday Traffic Rhythm & Concurrency Windows',
-        sec6_sub: 'Interactive 24-hour matchday concurrency curve (ICT) and 7-day rolling session volume',
-        chart_title_hourly: '24-Hour Matchday Concurrency Curve (Thailand Time · ICT)',
-        chart_sub_hourly: 'Peaks Saturday 21:00–23:30 ICT during simultaneous kickoffs (68% of weekly load)',
-        chart_title_daily: '7-Day Rolling Session Volume (Daily Visits)',
-        chart_sub_daily: 'Weekend matchday surge vs. mid-week transfer planning baseline',
-        chart_btn_24h: '24h Matchday',
-        chart_btn_7d: '7-Day Volume',
-        chart_legend_peak: 'Live Match / Deadline Peak',
-        chart_legend_normal: 'Baseline Window',
-        peak_windows_title: '3 Critical Concurrency Windows',
-        peak_1_time: 'Sat 21:00 – 00:30 ICT',
-        peak_1_title: 'Simultaneous 5–6 Match Kickoff Window',
-        peak_1_desc: 'Highest refresh velocity as goals and bonus points fluctuate; Edge Cache absorbs 94% of requests.',
-        peak_2_time: '90m Pre-Deadline (Fri / Sat)',
-        peak_2_title: 'Team News Leaks & Captaincy Reveal',
-        peak_2_desc: 'Sharp spike before deadline lock and immediately after when managers inspect rival captains.',
-        peak_3_time: 'Mon / Tue 06:30 – 10:00 ICT',
-        peak_3_title: 'Weekly Prize Settlement & Treasurer Audit',
-        peak_3_desc: 'League treasurers and members verify final weekly winners after GitHub Actions completes sync.',
-        sec7_title: '07. System Performance, Cloud Quota & Scaling Capacity',
-        sec7_sub: 'Real-time infrastructure health, free-tier quota utilization, and multi-league scaling headroom',
-        sys_cache_hit_label: 'Edge Cache Hit Ratio (Benchmark):',
-        sys_d1_reads_label: 'Daily Read/Write Quota:',
-        sys_gh_success_label: '30-Day Sync Reliability (Benchmark):',
-        sys_scale_headroom_label: 'Scaling Headroom:',
-        sys_upstream_ready: 'Ready',
-        sys_upstream_tap_hint: '(Tap Ping)',
-        ops_title: 'Site Care & Quick Diagnostic Controls',
-        ops_sub: 'Use only when checking or fixing live issues. Results appear directly under each button (zero impact on visitors).',
-        ops_shortcut_hint: 'Shortcuts: R Refresh · L Language · T Theme',
-        op_flush_title: 'Refresh Live Scores Across Site',
-        op_flush_desc: 'Use when live scores or bonus points appear stuck so everyone gets fresh data right away.',
-        op_flush_btn: 'Refresh Live Scores Now',
-        op_ping_title: 'Check Premier League Server Status',
-        op_ping_desc: 'Verify whether score delays are coming from the official FPL website being slow or down.',
-        op_ping_btn: 'Check FPL Server',
-        op_export_title: 'Save Full Stats Snapshot',
-        op_export_desc: 'Download a backup file of all 9 leagues and visitor stats for your records or sharing.',
-        op_export_btn: 'Download Stats File',
-        op_prune_title: 'Clean Up Old Visitor Logs (>30 Days)',
-        op_prune_desc: 'Remove old daily logs to keep the system fast (total lifetime visitor count stays completely safe).',
-        op_prune_btn: 'Clean Old Logs (>30d)',
-        sec8_title: '08. Project Health & Error Monitor (1 Day / 7 Days)',
-        sec8_sub: 'Track 24-hour (hourly) and 7-day (daily) project stability, uptime, and exact timestamps of any user-facing errors',
-        mon_status_healthy: 'All Systems Healthy (100%)',
-        mon_status_warning: 'Minor Errors Detected',
-        mon_status_incident: 'Anomalies Detected — Review Needed',
-        mon_kpi_24h_label: '24-Hour Availability (1 Day)',
-        mon_kpi_7d_label: '7-Day Availability (1 Week)',
-        mon_kpi_client_label: 'User-Facing Web Errors',
-        mon_kpi_client_sub: 'Browser JS exceptions, timeouts, or data fetch failures',
-        mon_kpi_upstream_label: 'FPL Upstream Errors (5xx)',
-        mon_kpi_upstream_sub: 'Official FPL API slowdowns or temporary 5xx outages',
-        mon_chart_title_24h: 'Last 24 Hours Health & Error Log (Thailand Time · ICT)',
-        mon_chart_sub_24h: 'Hourly normal activity vs. detected client/upstream errors',
-        mon_chart_title_7d: 'Last 7 Days Health & Error Log (1 Week)',
-        mon_chart_sub_7d: 'Daily system activity vs. client/upstream errors across 7 days',
-        mon_btn_24h: '1 Day (24h)',
-        mon_btn_7d: '1 Week (7d)',
-        mon_legend_ok: 'Normal Activity (events)',
-        mon_legend_err: 'Window with Errors',
-        mon_anomaly_title: 'Anomaly & Error Timeline',
-        mon_cat_title: '7-Day Error Breakdown by Type',
-        footer_rights: 'Executive Business Intelligence & Multi-League Infrastructure Suite',
-        toast_refreshed: 'Live telemetry and portfolio metrics synchronized from Edge Worker.',
-        confirm_prune: 'Remove daily visitor logs older than 30 days? (Your total lifetime views will NOT be deleted.)',
-        sec9_title: '09. Customer Orders & Payment Slip Inbox',
-        sec9_sub: 'Configure your private payment QR, verify exact satang transfers, inspect customer slips, prefill the Onboarding Wizard below, and mark leagues live.',
-        sec10_title: '10. Customer League Onboarding Wizard (Concierge Flow)',
-        sec10_sub: 'Inspect live FPL Classic League IDs, exclude non-prize teams, configure plan rules, and generate ready-to-run onboarding scripts.',
-        onb_lbl_id: 'FPL Classic League ID (digits only)',
-        onb_btn_inspect: 'Inspect Live League',
-        onb_lbl_plan: 'Package Plan',
-        onb_lbl_prize: 'Prize Model',
-        onb_lbl_weekly: 'Weekly Prize (THB)',
-        onb_lbl_status: 'Access Status',
-        onb_lbl_tier: 'Architecture Tier',
-        onb_lbl_tenant: 'Tenant Group (Visibility Scope)',
-        onb_lbl_visibility: 'Visibility & SEO',
-        onb_lbl_short: 'Short Display Name',
-        onb_lbl_expires: 'Expiry Date (Expires At)',
-        onb_lbl_billing: 'Admin Note (Private Only)',
-        onb_lbl_nocup: 'Disable Knockout Cup Tab (--no-cup)',
-        onb_lbl_currency: 'Prize Currency',
-        onb_lbl_entry_fee: 'Entry Fee / Team (Optional)',
-        onb_lbl_total_pool: 'Total Prize Pool (Optional)',
-        onb_lbl_season_prizes: 'Season Podium Prizes (Optional)',
-        onb_lbl_cup_prize: 'Cup Prize (Champ or Champ/Runner)',
-        onb_lbl_penalty_tiers: 'Bottom-N Penalty Tiers (comma-separated, last place first)',
-        onb_penalty_hint: 'Supports any N bottom ranks (e.g. Bottom 3 = 300,200,100). Headers and cards adapt automatically.',
-        onb_lbl_monthly_champ: 'Monthly Champion Prize (per month)',
-        onb_lbl_monthly_runner: 'Monthly Runner-up Prize (0 for Champ only)',
-        onb_d1_note_tip: '🔒 Store private customer notes (LINE handle / payment date) in Section 02 above (saved in Cloudflare D1, 0% Git exposure).',
-        col_lifecycle: 'Lifecycle & Expiry',
-        col_actions: 'Manage',
-        pf_filter_all: 'All Leagues',
+        kpi_managers_sub: 'Loading league counts from system...',
+        kpi_mau_label: '7-Day Peak Daily Views',
+        kpi_mau_sub: 'Highest single-day league views in rolling 7 days',
+        kpi_offpeak_label: 'Weekday Avg Views (Tue–Thu)',
+        kpi_offpeak_sub: 'Actual Tue–Thu off-peak planning baseline',
+        kpi_stickiness_label: 'Matchday (Fri–Mon) vs Weekday Share',
+        kpi_stickiness_sub: 'Real 7-day visit split between matchdays and mid-week',
+        kpi_retention_label: 'Lifetime Total Site Views',
+        kpi_retention_sub: '30-min deduped counter (since Nov 2026)',
+        kpi_screentime_label: 'Avg Session Screen Time',
+        kpi_screentime_sub: 'Measured directly via Dwell Time Beacon (7d)',
+        sec2_title: '02. Multi-League Portfolio & Commercial Economics',
+        sec2_sub: 'Click column headers to sort · League column stays sticky on horizontal scroll',
+        port_gmv_label: 'Total Prize Pool (GMV)',
+        port_gmv_sub: 'Combined season + weekly/monthly league prize pools',
+        port_custom_label: 'Custom Rules Leagues',
+        port_custom_sub: 'Higher switching cost vs standard FPL tables',
+        port_landing_label: 'Landing Page Views (7d)',
+        port_landing_sub: 'Isolated from mini-league dashboard traffic',
+        port_whitelabel_label: 'Tier 1 Capacity Headroom',
+        port_whitelabel_sub: 'Remaining capacity under 30 leagues / 500 teams Tier 1 cap (฿0 marginal cost)',
+        pf_filter_all: 'All',
         pf_filter_private: 'Private Customers',
-        pf_filter_expiring: 'Trial / Expiring ≤14d',
+        pf_filter_expiring: 'Trial / Expiring Soon',
         pf_filter_paused: 'Paused',
         pf_filter_showcase: 'Showcase Demos',
-        onb_teams_hint: 'Select any teams excluded from prize calculations (non_prize_teams):',
-        onb_out_cli: '1. CLI Onboarding Command',
-        onb_out_json: '2. Config JSON (leagues_config.json)',
-        onb_out_line: '3. Customer LINE Handoff Message',
-        ord_stat_total_lbl: 'Total Lifetime Orders',
-        ord_stat_paid_lbl: 'Paid / Launched Leagues',
-        ord_stat_active_lbl: 'Active Open Queue',
-        ord_stat_expired_lbl: 'Unpaid Expired / Cancelled',
+        col_league_name: 'League & ID',
+        col_teams: 'Teams',
+        col_pool: 'Prize Pool (GMV)',
+        col_modules: 'Active Modules & Rules',
+        col_views: '7d Views',
+        col_engagement: 'Avg Time / Per Team',
+        col_lifecycle: 'Status & Expiry',
+        col_actions: 'Manage',
+        sec3_title: '03. Customer Orders & Payment Slip Inbox',
+        sec3_sub: 'Configure private payment QR, verify exact satang transfers, inspect customer slips, prefill Onboarding below, and mark leagues live.',
         ord_btn_refresh: 'Refresh Orders',
+        pay_qr_title: 'Private Payment QR Settings (No Phone / ID / e-Wallet Required)',
+        btn_toggle_qr_hide: 'Hide QR Settings',
+        btn_toggle_qr_show: 'Edit / Show QR Settings',
+        pay_qr_acct_lbl: 'Recipient Account Name (Shown to Customers for Verification)',
+        pay_qr_file_lbl: 'Upload Payment QR Code Image',
+        pay_qr_file_hint: 'Supports PNG / JPG / WebP (auto-resized in your browser). Stored privately in Cloudflare D1 only — never committed to GitHub.',
+        pay_qr_btn_save: 'Save QR Settings',
+        pay_qr_btn_clear: 'Remove Stored QR Image',
+        pay_qr_preview_lbl: 'Customer Checkout QR Preview',
+        pay_qr_preview_empty: 'No private QR image uploaded yet',
+        ord_stat_total_lbl: 'Total Recorded Orders',
+        ord_stat_paid_lbl: 'Paid / Live Orders',
+        ord_stat_active_lbl: 'Active Pending Queue',
+        ord_stat_expired_lbl: 'Unpaid >24h / Canceled',
         ord_f_all: 'All',
-        ord_f_slip: 'Slip Submitted',
-        ord_f_await: 'Awaiting QR',
-        ord_f_paid: 'Paid',
+        ord_f_slip: 'Slip Uploaded',
+        ord_f_await: 'Awaiting QR Pay',
+        ord_f_paid: 'Verified Paid',
         ord_f_quote: 'Quote / USD',
         ord_f_live: 'Live',
         ord_f_rejected: 'Rejected',
@@ -3357,35 +2507,134 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ord_act_del_test: 'Delete Test Order (No Stats)',
         ord_slip_heading: 'Uploaded Transfer Slip',
         ord_btn_reload_slip: 'Reload Slip Image',
-        pay_qr_title: 'Private Payment QR Settings (No Phone / ID / e-Wallet Required)',
-        pay_qr_acct_lbl: 'Recipient Account Name (Shown to Customers for Verification)',
-        pay_qr_file_lbl: 'Upload Payment QR Code Image',
-        pay_qr_file_hint: 'Supports PNG / JPG / WebP (auto-resized in your browser). Stored privately in Cloudflare D1 only — never committed to GitHub.',
-        pay_qr_btn_save: 'Save QR Settings',
-        pay_qr_btn_clear: 'Remove Stored QR Image',
-        pay_qr_preview_lbl: 'Customer Checkout QR Preview',
-        pay_qr_preview_empty: 'No private QR image uploaded yet',
-        btn_collapse_pitch: 'Collapse Pitch',
-        btn_expand_pitch: 'Show Pitch',
-        btn_toggle_qr_hide: 'Hide QR Settings',
-        btn_toggle_qr_show: 'Edit QR Settings'
+        sec4_title: '04. Concierge Customer League Onboarding Wizard',
+        sec4_sub: 'Inspect live FPL Classic League IDs, exclude non-prize teams, configure rules/tiers, and generate instant setup scripts.',
+        onb_lbl_id: 'FPL Classic League ID (Numbers only)',
+        onb_btn_inspect: 'Inspect Live League',
+        onb_lbl_plan: 'Plan',
+        onb_lbl_prize: 'Prize Model',
+        onb_lbl_weekly: 'Weekly Prize (THB)',
+        onb_lbl_status: 'License Status',
+        onb_lbl_tier: 'Architecture Tier',
+        onb_lbl_currency: 'Prize Currency',
+        onb_lbl_entry_fee: 'Entry Fee / Team (Optional)',
+        onb_lbl_total_pool: 'Total Pool (Optional)',
+        onb_lbl_season_prizes: 'Season Prizes (Optional)',
+        onb_lbl_cup_prize: 'Cup Prize (Champion or C/R)',
+        onb_lbl_penalty_tiers: 'Bottom N Penalty Tiers (comma-separated, worst rank first)',
+        onb_penalty_hint: 'Supports any N bottom ranks (e.g. 300,200,100); table columns & summary cards adapt automatically.',
+        onb_lbl_monthly_champ: 'Monthly Champion Prize',
+        onb_lbl_monthly_runner: 'Monthly Runner-up Prize (0 if none)',
+        onb_lbl_tenant: 'Tenant Group (Isolation)',
+        onb_lbl_visibility: 'Visibility & SEO',
+        onb_lbl_short: 'League Short Name',
+        onb_lbl_expires: 'Expires At',
+        onb_lbl_nocup: 'Disable Cup tab (--no-cup for leagues without FPL Cup)',
+        onb_d1_note_tip: '🔒 Store private customer notes (LINE contact / payment dates) in Section 02 above (kept securely in Cloudflare D1, never committed to Git).',
+        onb_teams_hint: 'Check teams excluded from prizes (non_prize_teams) if applicable:',
+        onb_out_cli: '1. CLI Command (Run locally to provision)',
+        onb_out_json: '2. Config JSON (leagues_config.json)',
+        onb_out_line: '3. Customer Handoff Message (LINE)',
+        sec5_title: '05. Feature Adoption & Product Value (Live 7d)',
+        sec5_sub: 'Tracks every live tab including Transfer Advisor · 100% from D1 Beacon events',
+        feat_share_title: 'Actual Feature Interactions Share (7d)',
+        feat_seg_title: 'Engagement: Prize vs Community Leagues',
+        feat_seg_desc: 'Real 7-day Visits/Team comparison from D1 separating prize-pool leagues and community leagues.',
+        seg_prize_lbl: 'Prize Leagues',
+        seg_comm_lbl: 'Community / Free Leagues',
+        sec6_title: '06. Browsers, Geo & Locale Preference (TH / EN)',
+        sec6_sub: 'LINE In-App Browser, Safari, Chrome · Cloudflare Edge Geo · Live TH vs EN language split',
+        dist_src_title: 'Browser & In-App Client Distribution (7d)',
+        dist_geo_title: 'Edge Geography & Active Language Preference',
+        geo_bkk_lbl: 'Bangkok & Metro',
+        geo_reg_lbl: 'Regional Thailand',
+        geo_intl_lbl: 'International',
+        dist_locale_lbl: 'Active UI Language (TH vs EN)',
+        sec7_title: '07. Client Devices (with iPadOS Touch Detection)',
+        sec7_sub: 'Combines screen & touch detection so iPadOS is categorized as Tablet rather than Desktop',
+        dev_btn_7d: 'Last 7 Days',
+        dev_btn_30d: 'Last 30 Days',
+        dev_mobile_label: 'Mobile Phones',
+        dev_desktop_label: 'Desktop & Laptop',
+        dev_tablet_label: 'Tablets / iPadOS',
+        dev_mobile_desc: 'iOS / Android < 768px',
+        dev_desktop_desc: 'macOS / Windows Non-Touch',
+        dev_tablet_desc: 'iPadOS Touch & Tablets',
+        sec8_title: '08. Matchday Traffic Rhythm & Real Peak Windows (ICT · 7d)',
+        sec8_sub: 'Plotted strictly from Cloudflare D1 visit timestamps (zero synthetic curves)',
+        chart_title_hourly: '24-Hour Visit Density (Thailand Time · ICT)',
+        chart_sub_hourly: 'Aggregated real D1 league & landing views across hours 00:00–23:59 ICT (7d)',
+        chart_title_daily: '7-Day Rolling Session Volume (Daily Visits)',
+        chart_sub_daily: 'Real daily visit counts over the last 7 ICT calendar days',
+        chart_btn_24h: 'Hourly (24h)',
+        chart_btn_7d: 'Daily (7d)',
+        chart_legend_peak: 'Peak Hour',
+        chart_legend_normal: 'Normal Hour',
+        win_evening_title: 'Evening Match Window (18:00–02:59 ICT)',
+        win_daytime_title: 'Daytime & Planning (11:00–17:59 ICT)',
+        win_morning_title: 'Morning Settlement (03:00–10:59 ICT)',
+        sec9_title: '09. System Performance, Cloud Quota & Scaling Capacity',
+        sec9_sub: 'Live Worker quota (10%-sampled HIT tracking), 4-table D1 breakdown & GitHub Actions sync telemetry',
+        sys_cache_hit_label: 'Edge Cache Hit (7d):',
+        sys_d1_reads_label: 'D1 Writes Today:',
+        sys_upstream_ready: 'Ready',
+        sys_upstream_tap_hint: '(Tap below to test)',
+        sys_scale_headroom_label: 'Scaling Headroom:',
+        ops_title: 'Edge Operations & Health Check Controls',
+        ops_sub: 'Run on demand to troubleshoot live issues. Results appear inline without disrupting public visitors.',
+        ops_shortcut_hint: 'Shortcuts: R Refresh · L Language · T Theme',
+        op_flush_title: 'Flush Live Edge Cache',
+        op_flush_desc: 'Clear /live, /fixtures, /visitors & /standings edge caches immediately if live scores lag.',
+        op_flush_btn: 'Flush Edge Cache Now',
+        op_ping_title: 'Ping Upstream FPL API',
+        op_ping_desc: 'Verify whether Premier League upstream API is reachable and measure edge latency.',
+        op_ping_btn: 'Ping FPL Upstream',
+        op_export_title: 'Download JSON Snapshot',
+        op_export_desc: 'Export complete live metrics, portfolio details and D1 breakdown as a JSON file.',
+        op_export_btn: 'Export Metrics JSON',
+        op_prune_title: 'Prune Old D1 Telemetry (>30d)',
+        op_prune_desc: 'Delete telemetry rows older than 30 days to keep D1 lean (lifetime total views remain preserved).',
+        op_prune_btn: 'Prune Telemetry >30d',
+        confirm_prune: 'Remove daily visitor logs older than 30 days? (Your lifetime total views counter will NOT be deleted.)',
+        sec10_title: '10. Project Health, Sync Freshness & Error Monitor (24h / 7d)',
+        sec10_sub: 'Real 24h hourly & 7d daily incident logs plus GitHub Actions schedule freshness check',
+        mon_status_healthy: 'All Systems Healthy (100%)',
+        mon_status_warning: 'Warnings / Sync Delay',
+        mon_status_incident: 'Anomalies Detected — Review Needed',
+        mon_kpi_24h_label: '24-Hour Uptime',
+        mon_kpi_7d_label: '7-Day Uptime',
+        mon_kpi_client_label: 'Client Errors (Site / Checkout)',
+        mon_kpi_client_sub: 'Frontend freezes, data load failures, or JS errors',
+        mon_kpi_upstream_label: 'FPL Upstream Errors (5xx/Fixtures)',
+        mon_kpi_upstream_sub: 'Premier League API timeouts or 5xx responses',
+        mon_chart_title_24h: 'Last 24 Hours Health & Error Log (ICT)',
+        mon_chart_sub_24h: 'Hourly normal activity vs detected client/upstream errors',
+        mon_chart_title_7d: 'Last 7 Days Health & Error Log (1 Week)',
+        mon_chart_sub_7d: 'Daily system activity vs client/upstream errors across 7 days',
+        mon_btn_24h: '24 Hours',
+        mon_btn_7d: '7 Days',
+        mon_legend_ok: 'Normal Activity',
+        mon_legend_err: 'Errors Detected',
+        mon_anomaly_title: 'Anomaly Timeline Windows',
+        mon_cat_title: '7-Day Error Category Breakdown',
+        sec11_title: '11. Live Demo Pitch & Commercial Playbook (100% Live Figures)',
+        sec11_sub: 'Collapsed by default — expand during live customer walkthroughs with live-synced metrics & pricing',
+        btn_expand_pitch: 'Expand Live Pitch ↓',
+        btn_collapse_pitch: 'Collapse Live Pitch ↑',
+        pitch_g2_title: 'Live Segment Engagement Comparison (Visits / Team · 7d)',
+        pitch_g2_sub: 'Calculated directly from Cloudflare D1 views (zero synthetic numbers)',
+        pitch_g3_title: '5 Automated Prize & League Models Supported',
+        pitch_g3_sub: 'Built for both high-engagement prize leagues and large community leagues',
+        pitch_g4_title: 'Live Product Matrix & Package Pricing',
+        pitch_demo_links_title: 'Live Demo Jump Links During Customer Calls:',
+        footer_rights: 'Executive BI & Infrastructure Control (Live Config)'
       }
     };
 
     // =========================================================================
     // 2. PORTFOLIO DATASET & SORTING ENGINE
     // =========================================================================
-    let LEAGUE_PORTFOLIO = [
-      { id: '40700', name: 'เซียนอยู่รู หมูอยู่ตึก', badge: 'Flagship', teams: 12, pool: 20000, modulesTh: 'รางวัลรายสัปดาห์ 300 บ. · บอลถ้วย · หักชำระรายงวด', modulesEn: 'Weekly 300 THB · Cup · Settlement Phases', views: 4820, retention: 98.5, plan: 'standard', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
-      { id: '675290', name: 'NudNee', badge: '', teams: 60, pool: 36000, modulesTh: 'รางวัลรายเดือน · บอลถ้วย Knock-out · การกุศล', modulesEn: 'Monthly · Knock-out Cup · Charity', views: 3610, retention: 94.8, plan: 'standard', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
-      { id: '38491', name: 'รอ แมน โอน', badge: '', teams: 16, pool: 28500, modulesTh: 'รางวัลรายสัปดาห์ · บอลถ้วย · หักชำระรายงวด', modulesEn: 'Weekly · Cup · Settlement Phases', views: 1490, retention: 93.2, plan: 'standard', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
-      { id: '1101958', name: "Barley's Official League", badge: '', teams: 17, pool: 103200, modulesTh: 'ตารางรางวัลรายสัปดาห์หลายขั้น · บอลถ้วย · บัญชีเงินรางวัล', modulesEn: 'Weekly Tier Prizes · Cup · Ledger', views: 980, retention: 95.0, plan: 'standard', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
-      { id: '438691', name: '2 spade', badge: '', teams: 13, pool: 68400, modulesTh: 'รางวัลรายสัปดาห์ · ค่าปรับบ๊วย 5 อันดับ · บอลถ้วย', modulesEn: 'Weekly · Bottom-5 Penalty · Cup', views: 810, retention: 92.4, plan: 'standard', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
-      { id: '187827', name: 'Shi62', badge: '', teams: 13, pool: 3100, modulesTh: 'Zero-Sum ขั้นบันไดทั้งปี · พิเศษครึ่งฤดูกาลหลัง', modulesEn: 'Zero-Sum Annual Tiers · 2nd Half Special', views: 740, retention: 91.8, plan: 'custom', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
-      { id: '5349', name: 'Bramann League', badge: '', teams: 20, pool: 9500, modulesTh: 'เงินรางวัลคู่ · ทายผล & ชาเลนจ์รายสัปดาห์', modulesEn: 'Dual Prize · Prediction & Challenge', views: 860, retention: 90.5, plan: 'custom', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
-      { id: '567387', name: 'Fantasy Nguan & friends cup', badge: 'Community', teams: 12, pool: 0, poolLabelTh: 'คอมมูนิตี้', poolLabelEn: 'Community', modulesTh: 'ลีกคอมมูนิตี้ · ตารางคะแนนสด · ผัง 11 ตัวจริง', modulesEn: 'Community · Live Matrix · Pitch Modal', views: 2190, retention: 88.4, plan: 'standard', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' },
-      { id: '139836', name: 'FPL Growth Mindset 2026/27', badge: 'Tier 2', teams: 1779, pool: 0, poolLabelTh: 'เสื้อบอลแท้', poolLabelEn: 'Official Shirt', modulesTh: 'Tier 2 Auto-Picks Live (กัปตัน/Hits/ผังสด) · ค้นหา 1,779 ทีมทันที', modulesEn: 'Tier 2 Auto-Picks Live (Cap/Hits/Pitch) · 1,779-Team Search', views: 0, retention: 91.2, plan: 'tier2_beta', status: 'active', visibility: 'showcase', tenant_group: 'showcase', expires_at: null, days_remaining: null, expiry_alert: 'none', billing_note: '' }
-    ];
+    let LEAGUE_PORTFOLIO = [];
 
     let currentSortKey = 'pool';
     let currentSortDir = 'desc';
@@ -3398,9 +2647,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     let DEVICES_STATE = { w7: null, w30: null };
 
     let MONITOR_STATE = {
+      sync_health: { status: 'unknown', age_minutes: null, expected_interval_min: null },
       summary_24h: { activity_count: 0, client_errors: 0, upstream_errors: 0, total_errors: 0, error_rate_pct: '0.00', uptime_pct: '100.00', status: 'healthy' },
       summary_7d: { activity_count: 0, client_errors: 0, upstream_errors: 0, total_errors: 0, error_rate_pct: '0.00', uptime_pct: '100.00', status: 'healthy' },
-      error_categories_7d: { js_error: 0, api_timeout: 0, api_http: 0, data_load: 0, upstream_5xx: 0 },
+      error_categories_7d: { js_error: 0, api_timeout: 0, api_http: 0, data_load: 0, upstream_5xx: 0, upstream_fixtures: 0 },
       anomaly_windows_24h: [],
       anomaly_windows_7d: [],
       series_24h: Array.from({ length: 24 }, (_, idx) => ({
@@ -3415,7 +2665,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         total_errors: 0,
         status: 'healthy'
       })),
-      series_7d: Array.from({ length: 7 }, (_, idx) => ({
+      series_7d: Array.from({ length: 7 }, () => ({
         date: '',
         visits: 0,
         api_ok: 0,
@@ -3427,30 +2677,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       }))
     };
 
-    let HOURLY_SERIES = [
-      { hour: '00:00', pct: 48, peak: true }, { hour: '01:00', pct: 32, peak: false },
-      { hour: '02:00', pct: 19, peak: false }, { hour: '03:00', pct: 9, peak: false },
-      { hour: '04:00', pct: 4, peak: false },  { hour: '05:00', pct: 3, peak: false },
-      { hour: '06:00', pct: 8, peak: false },  { hour: '07:00', pct: 16, peak: false },
-      { hour: '08:00', pct: 24, peak: false }, { hour: '09:00', pct: 28, peak: false },
-      { hour: '10:00', pct: 22, peak: false }, { hour: '11:00', pct: 18, peak: false },
-      { hour: '12:00', pct: 25, peak: false }, { hour: '13:00', pct: 21, peak: false },
-      { hour: '14:00', pct: 19, peak: false }, { hour: '15:00', pct: 23, peak: false },
-      { hour: '16:00', pct: 29, peak: false }, { hour: '17:00', pct: 42, peak: false },
-      { hour: '18:00', pct: 68, peak: true },  { hour: '19:00', pct: 76, peak: true },
-      { hour: '20:00', pct: 84, peak: true },  { hour: '21:00', pct: 96, peak: true },
-      { hour: '22:00', pct: 100, peak: true }, { hour: '23:00', pct: 82, peak: true }
-    ];
+    let HOURLY_SERIES = Array.from({ length: 24 }, (_, idx) => ({
+      hour: String(idx).padStart(2, '0') + ':00',
+      count: 0,
+      pct: 0,
+      peak: false
+    }));
 
-    let DAILY_SERIES = [
-      { dayTh: 'จ.', dayEn: 'Mon', visits: 620, peak: false },
-      { dayTh: 'อ.', dayEn: 'Tue', visits: 340, peak: false },
-      { dayTh: 'พ.', dayEn: 'Wed', visits: 310, peak: false },
-      { dayTh: 'พฤ.', dayEn: 'Thu', visits: 390, peak: false },
-      { dayTh: 'ศ.', dayEn: 'Fri', visits: 890, peak: true },
-      { dayTh: 'ส.', dayEn: 'Sat', visits: 1420, peak: true },
-      { dayTh: 'อา.', dayEn: 'Sun', visits: 1180, peak: true }
-    ];
+    let DAILY_SERIES = [];
 
     function escHtml(str) {
       return String(str == null ? '' : str)
@@ -3802,7 +3036,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         return currentSortDir === 'asc' ? va - vb : vb - va;
       });
 
-      ['name', 'teams', 'pool', 'views', 'retention', 'status'].forEach((k) => {
+      ['name', 'teams', 'pool', 'views', 'vpt', 'status'].forEach((k) => {
         const th = document.getElementById('th-' + k);
         const icon = document.getElementById('sort-icon-' + k);
         if (th) {
@@ -3816,7 +3050,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       });
 
       if (!sorted.length) {
-        const emptyText = lang === 'en' ? 'No leagues match this lifecycle filter.' : 'ยังไม่มีลีกในกลุ่มสถานะที่เลือก';
+        const emptyText = LEAGUE_PORTFOLIO.length === 0
+          ? (lang === 'en' ? 'Loading live league portfolio…' : 'กำลังโหลดข้อมูลพอร์ตโฟลิโอลีกสดจากระบบ…')
+          : (lang === 'en' ? 'No leagues match this lifecycle filter.' : 'ยังไม่มีลีกในกลุ่มสถานะที่เลือก');
         tbody.innerHTML = '<tr><td colspan="8" class="px-4 py-8 text-center text-xs text-slate-600 dark:text-neutral-400">' + escHtml(emptyText) + '</td></tr>';
         return;
       }
@@ -3828,10 +3064,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         const poolClass = row.pool > 0
           ? 'font-semibold text-emerald-700 dark:text-emerald-400'
           : 'font-medium text-slate-600 dark:text-neutral-400';
-        const modulesText = lang === 'en' ? (row.modulesEn || row.modulesTh) : (row.modulesTh || row.modulesEn);
+        const modulesText = lang === 'en' ? (row.modulesEn || row.modulesTh || '—') : (row.modulesTh || row.modulesEn || '—');
         const badgePart = row.badge ? ' · ' + row.badge : '';
         const targetUrl = 'https://www.fplsawadika.com/' + encodeURIComponent(row.id) + '/?lang=' + lang + '&theme=' + theme;
         const manageText = lang === 'en' ? 'Manage' : 'จัดการสิทธิ์';
+        const avgTimeText = lang === 'en' ? (row.avgScreenTimeEn || '—') : (row.avgScreenTime || '—');
+        const vptText = Number(row.vpt || 0).toFixed(1) + (lang === 'en' ? '/team (7d)' : '/ทีม (7d)');
 
         return '<tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">' +
           '<th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-1.5 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">' +
@@ -3843,8 +3081,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           '<td class="px-4 py-3 text-right mono tabular whitespace-nowrap text-slate-800 dark:text-neutral-200">' + Number(row.teams).toLocaleString() + '</td>' +
           '<td class="px-4 py-3 text-right mono tabular whitespace-nowrap ' + poolClass + '">' + poolText + '</td>' +
           '<td class="px-4 py-3 min-w-[220px] max-w-[300px] text-slate-700 dark:text-neutral-300">' + escHtml(modulesText) + '</td>' +
-          '<td class="px-4 py-3 text-right mono tabular whitespace-nowrap font-medium text-slate-900 dark:text-white">' + Number(row.views).toLocaleString() + '</td>' +
-          '<td class="px-4 py-3 text-right mono tabular whitespace-nowrap font-medium text-emerald-700 dark:text-emerald-400">' + Number(row.retention || 90).toFixed(1) + '%</td>' +
+          '<td class="px-4 py-3 text-right mono tabular whitespace-nowrap font-medium text-slate-900 dark:text-white">' + Number(row.views || 0).toLocaleString() + '</td>' +
+          '<td class="px-4 py-3 text-right mono tabular whitespace-nowrap">' +
+            '<div class="font-medium text-emerald-700 dark:text-emerald-400">' + escHtml(avgTimeText) + '</div>' +
+            '<div class="text-xs text-slate-600 dark:text-neutral-400">' + escHtml(vptText) + '</div>' +
+          '</td>' +
           '<td class="px-4 py-2.5 whitespace-nowrap">' + getLifecycleBadgeHtml(row, lang) + '</td>' +
           '<td class="px-4 py-2.5 text-right whitespace-nowrap">' +
             '<button type="button" data-manage-league-id="' + escHtml(row.id) + '" class="min-h-[42px] px-3.5 py-2 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs font-medium text-slate-800 dark:text-neutral-200 hover:border-emerald-500/50 hover:text-emerald-700 dark:hover:text-emerald-300 whitespace-nowrap transition-colors">' + escHtml(manageText) + '</button>' +
@@ -3906,59 +3147,75 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         if (titleEl) titleEl.textContent = dict.chart_title_hourly;
         if (subEl) subEl.textContent = dict.chart_sub_hourly;
         if (yAxisEl) yAxisEl.textContent = lang === 'en'
-          ? 'Y-Axis: Traffic Load Index (% of peak hour)'
-          : 'แกนตั้ง (Y): ดัชนีความหนาแน่นเทียบพีคสูงสุด (% ของจุดพีค)';
+          ? 'Y-Axis: Real Recorded Visits (7d Sum)'
+          : 'แกนตั้ง (Y): จำนวนการเข้าชมจริง (รวม 7 วัน)';
         if (xAxisEl) xAxisEl.textContent = lang === 'en'
           ? 'X-Axis: Time of Day (ICT)'
           : 'แกนนอน (X): ช่วงเวลาในวัน (เวลาไทย · น.)';
-        const peakPt = HOURLY_SERIES.reduce((best, cur) => (cur.pct > best.pct ? cur : best), { hour: '22:00', pct: 100 });
-        if (calloutEl) calloutEl.textContent = lang === 'en'
-          ? ('Peak: ' + peakPt.hour + ' ICT (' + peakPt.pct + '% Load Index)')
-          : ('จุดพีคสูงสุด: ' + peakPt.hour + ' น. (' + peakPt.pct + '% ของจุดพีค)');
 
-        const chartLeft = 40;
+        const series24 = (Array.isArray(HOURLY_SERIES) && HOURLY_SERIES.length === 24)
+          ? HOURLY_SERIES
+          : Array.from({ length: 24 }, (_, idx) => ({ hour: String(idx).padStart(2, '0') + ':00', count: 0, pct: 0, peak: false }));
+        const maxHourlyCount = Math.max(...series24.map((pt) => Number(pt.count || 0)), 0);
+
+        if (maxHourlyCount === 0) {
+          if (calloutEl) calloutEl.textContent = lang === 'en'
+            ? 'No hourly visit data recorded in Cloudflare D1 over the past 7 days yet.'
+            : 'ยังไม่มีข้อมูลทราฟฟิกรายชั่วโมงใน Cloudflare D1 รอบ 7 วันล่าสุด';
+          svg.innerHTML = '<text x="340" y="110" text-anchor="middle" fill="' + labelColor + '" font-size="12" font-family="sans-serif">' +
+            escHtml(lang === 'en' ? 'Waiting for live D1 visit events…' : 'ยังไม่มีข้อมูลทราฟฟิกรายชั่วโมงในรอบ 7 วัน (รอ Beacon จริง)') +
+            '</text>';
+          return;
+        }
+
+        const peakPt = series24.reduce((best, cur) => (Number(cur.count || 0) > Number(best.count || 0) ? cur : best), series24[0]);
+        const peakCount = Number(peakPt.count || 0);
+        if (calloutEl) calloutEl.textContent = lang === 'en'
+          ? ('Peak Hour: ' + peakPt.hour + ' ICT (' + peakCount.toLocaleString() + ' visits · ' + (peakPt.pct || 100) + '%)')
+          : ('ชั่วโมงพีคสูงสุด: ' + peakPt.hour + ' น. (' + peakCount.toLocaleString() + ' ครั้ง · ' + (peakPt.pct || 100) + '%)');
+
+        const chartLeft = 44;
         const chartRight = 668;
         const chartTop = 22;
         const chartBottom = 184;
         const chartHeight = chartBottom - chartTop;
-        const stepX = (chartRight - chartLeft) / HOURLY_SERIES.length;
+        const stepX = (chartRight - chartLeft) / series24.length;
         const barWidth = Math.max(10, stepX - 7);
 
         let html = '';
-        [0, 25, 50, 75, 100].forEach((val) => {
-          const y = chartBottom - (val / 100) * chartHeight;
+        [0, 0.25, 0.5, 0.75, 1].forEach((ratio) => {
+          const val = Math.round(maxHourlyCount * ratio);
+          const y = chartBottom - ratio * chartHeight;
           html += '<line x1="' + chartLeft + '" y1="' + y + '" x2="' + chartRight + '" y2="' + y + '" stroke="' + gridColor + '" stroke-dasharray="3 3" stroke-width="1" />';
-          html += '<text x="2" y="' + (y + 4) + '" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + val + '%</text>';
+          html += '<text x="2" y="' + (y + 4) + '" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + val.toLocaleString() + '</text>';
         });
 
         const placedTopLabels = [];
         const placedXLabels = [];
-        const trafficPoints = HOURLY_SERIES.map((pt, idx) => {
+        const trafficPoints = series24.map((pt, idx) => {
+          const cnt = Number(pt.count || 0);
+          const pct = Number(pt.pct != null ? pt.pct : Math.round((cnt / maxHourlyCount) * 100));
           const x = chartLeft + idx * stepX + 3;
           const center = x + barWidth / 2;
-          const barH = Math.max(4, (pt.pct / 100) * chartHeight);
+          const barH = cnt > 0 ? Math.max(4, (cnt / maxHourlyCount) * chartHeight) : 2;
           const y = chartBottom - barH;
           return {
-            pt,
+            pt: { ...pt, count: cnt, pct },
             idx,
             x,
             center,
             barH,
             y,
             labelY: Math.max(12, y - 5),
-            topText: pt.pct + '%',
-            isPeak: pt.hour === peakPt.hour,
+            topText: String(cnt),
+            isPeak: pt.hour === peakPt.hour && cnt > 0,
             showTop: false,
-            showX: false
           };
         });
 
         trafficPoints
-          .filter((item) => item.isPeak || (item.pt.pct >= 80 && item.idx % 2 === 0))
-          .sort((a, b) => {
-            if (a.isPeak !== b.isPeak) return a.isPeak ? -1 : 1;
-            return b.pt.pct - a.pt.pct || a.idx - b.idx;
-          })
+          .filter((item) => item.pt.count > 0 && (item.isPeak || item.pt.pct >= 75))
+          .sort((a, b) => (b.pt.count - a.pt.count) || (a.idx - b.idx))
           .forEach((item) => {
             if (canPlaceSvgLabel(placedTopLabels, item.center, item.labelY, item.topText, 6.6, 5, 15)) {
               item.showTop = true;
@@ -3967,15 +3224,15 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
         trafficPoints.forEach((item) => {
           const { pt, idx, x, center, barH, y } = item;
-          const fill = pt.peak ? peakBarColor : normalBarColor;
+          const fill = pt.count > 0 && (item.isPeak || pt.peak) ? peakBarColor : normalBarColor;
           const tip = lang === 'en'
-            ? (pt.hour + ' ICT: ' + pt.pct + '% of peak traffic load' + (pt.peak ? ' (Peak Window)' : ''))
-            : ('เวลา ' + pt.hour + ' น. · ความหนาแน่น ' + pt.pct + '% ของจุดพีค' + (pt.peak ? ' (ช่วงพีค)' : ''));
+            ? (pt.hour + ' ICT: ' + pt.count.toLocaleString() + ' visits (' + pt.pct + '% of peak)')
+            : ('เวลา ' + pt.hour + ' น. · ' + pt.count.toLocaleString() + ' ครั้ง (' + pt.pct + '% ของจุดพีค)');
           html += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + barH.toFixed(1) + '" rx="3" fill="' + fill + '">' +
             '<title>' + escHtml(tip) + '</title></rect>';
 
           if (item.showTop) {
-            html += '<text x="' + center.toFixed(1) + '" y="' + item.labelY.toFixed(1) + '" text-anchor="middle" fill="' + peakBarColor + '" font-size="9.5" font-weight="600" font-family="JetBrains Mono, monospace">' + item.topText + '</text>';
+            html += '<text x="' + center.toFixed(1) + '" y="' + item.labelY.toFixed(1) + '" text-anchor="middle" fill="' + peakBarColor + '" font-size="9.5" font-weight="600" font-family="JetBrains Mono, monospace">' + escHtml(item.topText) + '</text>';
           }
 
           if ((idx % 3 === 0 && idx !== 21) || idx === 22) {
@@ -3996,40 +3253,53 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         if (xAxisEl) xAxisEl.textContent = lang === 'en'
           ? 'X-Axis: Day of Week (Last 7 Days)'
           : 'แกนนอน (X): วันในสัปดาห์ (ย้อนหลัง 7 วัน)';
-        const maxVisits = Math.max(...DAILY_SERIES.map((d) => d.visits), 100);
+
+        const days = Array.isArray(DAILY_SERIES) ? DAILY_SERIES : [];
+        const maxDailyVisits = Math.max(...days.map((d) => Number(d.visits || 0)), 0);
+        if (!days.length || maxDailyVisits === 0) {
+          if (calloutEl) calloutEl.textContent = lang === 'en'
+            ? 'No daily visit data recorded over the past 7 days yet.'
+            : 'ยังไม่มีข้อมูลการเข้าชมรายวันในรอบ 7 วันล่าสุด (D1)';
+          svg.innerHTML = '<text x="340" y="110" text-anchor="middle" fill="' + labelColor + '" font-size="12" font-family="sans-serif">' +
+            escHtml(lang === 'en' ? 'Waiting for daily visit records in D1…' : 'ยังไม่มีข้อมูลการเข้าชมรายวันในรอบ 7 วัน') +
+            '</text>';
+          return;
+        }
+
         if (calloutEl) calloutEl.textContent = lang === 'en'
-          ? 'Weekend Peak: ' + maxVisits.toLocaleString() + ' visits/day'
-          : 'พีคสูงสุด: ' + maxVisits.toLocaleString() + ' ครั้ง/วัน';
+          ? 'Peak Day (7d): ' + maxDailyVisits.toLocaleString() + ' visits/day'
+          : 'พีคสูงสุด (7 วัน): ' + maxDailyVisits.toLocaleString() + ' ครั้ง/วัน';
 
         const chartLeft = 52;
         const chartRight = 660;
         const chartTop = 24;
         const chartBottom = 184;
         const chartHeight = chartBottom - chartTop;
-        const stepX = (chartRight - chartLeft) / DAILY_SERIES.length;
+        const stepX = (chartRight - chartLeft) / days.length;
         const barWidth = Math.min(48, stepX - 24);
         const unitSuffix = lang === 'en' ? ' visits' : ' ครั้ง';
 
         let html = '';
         [0, 0.25, 0.5, 0.75, 1].forEach((ratio) => {
-          const val = Math.round(maxVisits * ratio);
+          const val = Math.round(maxDailyVisits * ratio);
           const y = chartBottom - ratio * chartHeight;
           html += '<line x1="' + chartLeft + '" y1="' + y + '" x2="' + chartRight + '" y2="' + y + '" stroke="' + gridColor + '" stroke-dasharray="3 3" stroke-width="1" />';
           html += '<text x="2" y="' + (y + 4) + '" fill="' + labelColor + '" font-size="10" font-family="JetBrains Mono, monospace">' + val.toLocaleString() + '</text>';
         });
 
-        DAILY_SERIES.forEach((pt, idx) => {
+        days.forEach((pt, idx) => {
+          const cnt = Number(pt.visits || 0);
           const center = chartLeft + idx * stepX + stepX / 2;
           const x = center - barWidth / 2;
-          const barH = Math.max(6, (pt.visits / maxVisits) * chartHeight);
+          const barH = cnt > 0 ? Math.max(6, (cnt / maxDailyVisits) * chartHeight) : 2;
           const y = chartBottom - barH;
-          const fill = pt.peak ? peakBarColor : normalBarColor;
-          const label = lang === 'en' ? pt.dayEn : pt.dayTh;
-          const tip = label + ': ' + pt.visits.toLocaleString() + (lang === 'en' ? ' visits/day' : ' ครั้ง/วัน');
+          const fill = cnt === maxDailyVisits || pt.peak ? peakBarColor : normalBarColor;
+          const label = lang === 'en' ? (pt.dayEn || '-') : (pt.dayTh || '-');
+          const tip = label + ': ' + cnt.toLocaleString() + (lang === 'en' ? ' visits/day' : ' ครั้ง/วัน');
 
           html += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + barWidth.toFixed(1) + '" height="' + barH.toFixed(1) + '" rx="4" fill="' + fill + '">' +
             '<title>' + escHtml(tip) + '</title></rect>';
-          html += '<text x="' + center.toFixed(1) + '" y="' + (y - 6).toFixed(1) + '" text-anchor="middle" fill="' + labelColor + '" font-size="10" font-weight="600" font-family="JetBrains Mono, monospace">' + pt.visits.toLocaleString() + unitSuffix + '</text>';
+          html += '<text x="' + center.toFixed(1) + '" y="' + (y - 6).toFixed(1) + '" text-anchor="middle" fill="' + labelColor + '" font-size="10" font-weight="600" font-family="JetBrains Mono, monospace">' + cnt.toLocaleString() + unitSuffix + '</text>';
           html += '<text x="' + center.toFixed(1) + '" y="206" text-anchor="middle" fill="' + labelColor + '" font-size="11" font-family="JetBrains Mono, monospace">' + escHtml(label) + '</text>';
         });
 
@@ -4053,26 +3323,71 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const dict = I18N[lang];
       const s24 = MONITOR_STATE.summary_24h || {};
       const s7 = MONITOR_STATE.summary_7d || {};
+      const sh = MONITOR_STATE.sync_health || { status: 'unknown', age_minutes: null, expected_interval_min: null };
       const activeSummary = currentMonitorMode === '7d' ? s7 : s24;
 
-      const overallStatus = (s24.status === 'incident' || s7.status === 'incident')
+      let overallStatus = (s24.status === 'incident' || s7.status === 'incident')
         ? 'incident'
         : ((s24.status === 'warning' || s7.status === 'warning') ? 'warning' : 'healthy');
+      if (sh.status === 'incident') overallStatus = 'incident';
+      else if (sh.status === 'stale' && overallStatus === 'healthy') overallStatus = 'warning';
+
+      const syncBanner = document.getElementById('monitorSyncHealthBanner');
+      if (syncBanner) {
+        const ageTxt = typeof sh.age_minutes === 'number'
+          ? (sh.age_minutes >= 60
+              ? (Math.floor(sh.age_minutes / 60) + (lang === 'en' ? 'h ' : ' ชม. ') + (sh.age_minutes % 60) + (lang === 'en' ? 'm' : ' นาที'))
+              : (sh.age_minutes + (lang === 'en' ? 'm' : ' นาที')))
+          : '—';
+        const cadenceTxt = sh.is_matchday_cadence === true
+          ? (lang === 'en' ? 'Matchday Cadence (Fri–Mon · 60m)' : 'ตารางวันแข่ง (ศ.–จ. · ทุก 60 นาที)')
+          : (sh.is_matchday_cadence === false
+              ? (lang === 'en' ? 'Weekday Cadence (Tue–Thu · 240m)' : 'ตารางวันธรรมดา (อ.–พฤ. · ทุก 4 ชม.)')
+              : (lang === 'en' ? 'Auto Cron Schedule' : 'ตารางซิงก์อัตโนมัติ'));
+        let cls = 'p-3.5 rounded-xl border text-xs mono flex flex-wrap items-center justify-between gap-2 ';
+        let msg = '';
+        if (sh.status === 'healthy') {
+          cls += 'border-emerald-500/30 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300';
+          msg = lang === 'en'
+            ? ('✓ GitHub Actions Sync Fresh (' + ageTxt + ' ago · Expected ≤ ' + (sh.expected_interval_min || 60) + 'm)')
+            : ('✓ ซิงก์ GitHub Actions สดใหม่ (ซิงก์เมื่อ ' + ageTxt + ' ก่อน · รอบปกติทุก ' + (sh.expected_interval_min || 60) + ' นาที)');
+        } else if (sh.status === 'stale') {
+          cls += 'border-amber-500/35 bg-amber-500/10 text-amber-800 dark:text-amber-300';
+          msg = lang === 'en'
+            ? ('⚠ Sync Delayed (' + ageTxt + ' ago > ' + (sh.stale_threshold_min || 150) + 'm threshold)')
+            : ('⚠ ซิงก์ล่าช้ากว่ากำหนด (' + ageTxt + ' ก่อน · เกณฑ์ ' + (sh.stale_threshold_min || 150) + ' นาที)');
+        } else if (sh.status === 'incident') {
+          cls += 'border-rose-500/40 bg-rose-500/10 text-rose-800 dark:text-rose-300';
+          msg = lang === 'en'
+            ? ('⚠ Sync Stale Alert (' + ageTxt + ' ago >= ' + (sh.incident_threshold_min || 240) + 'm — Check GitHub Actions)')
+            : ('⚠ ซิงก์หยุดค้าง (' + ageTxt + ' ก่อน · เกิน ' + (sh.incident_threshold_min || 240) + ' นาที — ควรตรวจสอบ GitHub Actions)');
+        } else {
+          cls += 'border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300';
+          msg = lang === 'en' ? 'Sync Freshness: Waiting for admin_summary timestamp…' : 'ความสดใหม่การซิงก์: รอ Timestamp ล่าสุด…';
+        }
+        syncBanner.className = cls;
+        const leftSpan = document.createElement('span');
+        leftSpan.textContent = msg;
+        const rightSpan = document.createElement('span');
+        rightSpan.className = 'opacity-80';
+        rightSpan.textContent = cadenceTxt;
+        syncBanner.replaceChildren(leftSpan, rightSpan);
+      }
 
       const badge = document.getElementById('monitorOverallBadge');
       const badgeText = document.getElementById('monitorOverallBadgeText');
       if (badge && badgeText) {
         const dot = badge.querySelector('span:first-child');
         if (overallStatus === 'healthy') {
-          badge.className = 'inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-xs font-medium text-emerald-700 dark:text-emerald-300 shrink-0';
+          badge.className = 'inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-xs font-medium text-emerald-700 dark:text-emerald-300 shrink-0 whitespace-nowrap';
           if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-500';
           badgeText.textContent = dict.mon_status_healthy;
         } else if (overallStatus === 'warning') {
-          badge.className = 'inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-xs font-medium text-amber-700 dark:text-amber-300 shrink-0';
+          badge.className = 'inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-xs font-medium text-amber-700 dark:text-amber-300 shrink-0 whitespace-nowrap';
           if (dot) dot.className = 'w-2 h-2 rounded-full bg-amber-500';
           badgeText.textContent = dict.mon_status_warning;
         } else {
-          badge.className = 'inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full border border-rose-500/30 bg-rose-500/10 text-xs font-medium text-rose-700 dark:text-rose-300 shrink-0';
+          badge.className = 'inline-flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-full border border-rose-500/30 bg-rose-500/10 text-xs font-medium text-rose-700 dark:text-rose-300 shrink-0 whitespace-nowrap';
           if (dot) dot.className = 'w-2 h-2 rounded-full bg-rose-500 animate-pulse';
           badgeText.textContent = dict.mon_status_incident;
         }
@@ -4136,8 +3451,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               ? 'border-rose-500/30 bg-rose-500/10 text-rose-800 dark:text-rose-300'
               : 'border-amber-500/30 bg-amber-500/10 text-amber-800 dark:text-amber-300';
             const detailText = lang === 'en'
-              ? (Number(item.client_errors || 0) + ' web errors · ' + Number(item.upstream_errors || 0) + ' FPL upstream 5xx')
-              : ('ฝั่งผู้ใช้ ' + Number(item.client_errors || 0) + ' ครั้ง · เว็บ FPL ล่ม/ช้า ' + Number(item.upstream_errors || 0) + ' ครั้ง');
+              ? (Number(item.client_errors || 0) + ' web errors · ' + Number(item.upstream_errors || 0) + ' FPL upstream errors')
+              : ('ฝั่งผู้ใช้ ' + Number(item.client_errors || 0) + ' ครั้ง · เว็บ FPL ต้นทาง ' + Number(item.upstream_errors || 0) + ' ครั้ง');
             return '<div class="flex items-center justify-between gap-2 p-2.5 rounded-lg border ' + sevCls + '">' +
               '<div class="font-medium mono">' + whenLabel + '</div>' +
               '<div>' + escHtml(detailText) + '</div>' +
@@ -4150,19 +3465,20 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (breakdownEl) {
         const cats = MONITOR_STATE.error_categories_7d || {};
         const items = [
-          { key: 'js_error', val: Number(cats.js_error || 0), labelTh: 'สคริปต์หน้าเว็บขัดข้อง (JS Error)', labelEn: 'Frontend JS Exception' },
+          { key: 'js_error', val: Number(cats.js_error || 0), labelTh: 'สคริปต์หน้าเว็บ/ชำระเงิน (JS Error)', labelEn: 'Frontend JS Exception' },
           { key: 'api_timeout', val: Number(cats.api_timeout || 0), labelTh: 'เชื่อมต่อช้าเกินกำหนด (Timeout)', labelEn: 'API Request Timeout' },
           { key: 'api_http', val: Number(cats.api_http || 0), labelTh: 'ดึงคะแนนสดไม่สำเร็จ (Live API)', labelEn: 'Live Edge Fetch Failure' },
           { key: 'data_load', val: Number(cats.data_load || 0), labelTh: 'เปิดดูข้อมูลทีมไม่ขึ้น (Picks Load)', labelEn: 'Squad Picks Load Failure' },
-          { key: 'upstream_5xx', val: Number(cats.upstream_5xx || 0), labelTh: 'เว็บ FPL ต้นทางล่มชั่วคราว (5xx)', labelEn: 'Upstream FPL 5xx Outage' }
+          { key: 'upstream_5xx', val: Number(cats.upstream_5xx || 0), labelTh: 'เว็บ FPL ต้นทางล่ม (5xx / Picks)', labelEn: 'Upstream FPL 5xx / Picks' },
+          { key: 'upstream_fixtures', val: Number(cats.upstream_fixtures || 0), labelTh: 'ตารางแข่ง FPL ต้นทางขัดข้อง (Fixtures)', labelEn: 'Upstream Fixtures Error' }
         ];
         const totalCatErr = items.reduce((s, x) => s + x.val, 0);
         if (totalCatErr === 0) {
           breakdownEl.innerHTML =
             '<div class="p-3 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-600 dark:text-neutral-400 leading-relaxed">' +
             (lang === 'en'
-              ? '0 errors recorded across all 5 categories during the past 7 days.'
-              : 'ยังไม่มี Error สะสมในทุกหมวดหมู่ตลอด 7 วันที่ผ่านมา') +
+              ? '0 errors recorded across all 6 categories during the past 7 days.'
+              : 'ยังไม่มี Error สะสมในทั้ง 6 หมวดหมู่ตลอด 7 วันที่ผ่านมา') +
             '</div>';
         } else {
           breakdownEl.innerHTML = items.map((c) => {
@@ -4459,8 +3775,317 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     }
 
     // =========================================================================
-    // 4. LANGUAGE, THEME & CROSS-LEAGUE SWITCHER
+    // 4. LANGUAGE, THEME, CROSS-LEAGUE SWITCHER & LIVE SECTION RENDERERS
     // =========================================================================
+    function formatTimeAgo(isoStr, lang) {
+      const raw = typeof isoStr === 'string' ? isoStr.trim() : '';
+      if (!raw) return '';
+      const norm = /^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}$/.test(raw)
+        ? raw.replace(/\s+/, 'T') + '+07:00'
+        : raw;
+      const ms = Date.parse(norm);
+      if (Number.isNaN(ms)) return '';
+      const diffMin = Math.max(0, Math.round((Date.now() - ms) / 60000));
+      if (diffMin < 1) return lang === 'en' ? '(just now)' : '(เมื่อสักครู่)';
+      if (diffMin < 60) return lang === 'en' ? ('(' + diffMin + 'm ago)') : ('(' + diffMin + ' นาทีที่แล้ว)');
+      const hrs = Math.floor(diffMin / 60);
+      const mins = diffMin % 60;
+      if (hrs < 48) {
+        return lang === 'en'
+          ? ('(' + hrs + 'h ' + mins + 'm ago)')
+          : ('(' + hrs + ' ชม. ' + mins + ' นาทีที่แล้ว)');
+      }
+      const days = Math.floor(hrs / 24);
+      return lang === 'en' ? ('(' + days + 'd ago)') : ('(' + days + ' วันที่แล้ว)');
+    }
+
+    function renderQuickLeagueOptions() {
+      const sel = document.getElementById('quickLeagueSelect');
+      if (!sel) return;
+      const lang = getLang();
+      const dict = I18N[lang] || I18N.th;
+      const curVal = sel.value || '';
+
+      const opts = [];
+      const optPh = document.createElement('option');
+      optPh.value = '';
+      optPh.textContent = dict.nav_jump_placeholder || (lang === 'en' ? 'Quick Jump...' : 'ทางลัดเปิดหน้าเว็บ...');
+      opts.push(optPh);
+
+      const optLanding = document.createElement('option');
+      optLanding.value = 'landing';
+      optLanding.textContent = dict.nav_jump_landing || 'Landing Page (index.html)';
+      opts.push(optLanding);
+
+      const optPreview = document.createElement('option');
+      optPreview.value = 'preview';
+      optPreview.textContent = dict.nav_jump_preview || 'Showcase Demo Hub (preview.html)';
+      opts.push(optPreview);
+
+      (LEAGUE_PORTFOLIO || []).forEach((row) => {
+        const o = document.createElement('option');
+        o.value = String(row.id);
+        const visTag = row.visibility === 'private' ? ' [Private]' : '';
+        o.textContent = String(row.id) + ' · ' + String(row.name || row.id) + ' (' + Number(row.teams || 0).toLocaleString() + ')' + visTag;
+        opts.push(o);
+      });
+
+      sel.replaceChildren(...opts);
+      if (curVal && Array.from(sel.options).some((o) => o.value === curVal)) {
+        sel.value = curVal;
+      }
+    }
+
+    function renderFeatureAdoption(features, lang) {
+      const listEl = document.getElementById('featureAdoptionList');
+      const badgeEl = document.getElementById('featTotalHitsBadge');
+      if (!listEl) return;
+      const fObj = features || {};
+      const items = Array.isArray(fObj.items) ? fObj.items : [];
+      const totalHits = Number(fObj.total_interactions || 0);
+      if (badgeEl) {
+        badgeEl.textContent = totalHits.toLocaleString() + (lang === 'en' ? ' events (7d)' : ' ครั้ง (7 วัน)');
+      }
+      if (!items.length || totalHits === 0) {
+        listEl.innerHTML = '<div class="py-6 text-center text-slate-600 dark:text-neutral-400">' +
+          escHtml(lang === 'en'
+            ? 'No feature tab or pitch modal events recorded in Cloudflare D1 during the past 7 days yet.'
+            : 'ยังไม่มีการบันทึกสถิติการเปิดแท็บฟีเจอร์ใน Cloudflare D1 รอบ 7 วันล่าสุด') +
+          '</div>';
+        return;
+      }
+      listEl.innerHTML = items.map((item, idx) => {
+        const pctNum = Math.max(0, Math.min(100, parseFloat(item.pct || 0) || 0));
+        const label = lang === 'en' ? (item.label_en || item.key) : (item.label_th || item.key);
+        const isFirst = idx === 0 && Number(item.count || 0) > 0;
+        const barColor = isFirst ? 'bg-emerald-500' : (item.is_new ? 'bg-sky-500' : 'bg-slate-500 dark:bg-neutral-400');
+        const newTag = item.is_new
+          ? ' <span class="ml-1.5 px-1.5 py-0.5 rounded bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-500/30 text-[10px] mono">NEW</span>'
+          : '';
+        return '<div class="py-2.5 space-y-1.5">' +
+          '<div class="flex items-baseline justify-between gap-2">' +
+            '<span class="font-medium text-slate-900 dark:text-white">' + (idx + 1) + '. ' + escHtml(label) + newTag + '</span>' +
+            '<span class="mono tabular text-xs shrink-0 font-semibold ' + (isFirst ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-800 dark:text-neutral-200') + '">' +
+              Number(item.count || 0).toLocaleString() + ' (' + pctNum.toFixed(1) + '%)' +
+            '</span>' +
+          '</div>' +
+          '<div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">' +
+            '<div class="h-full rounded-full transition-all duration-300 ' + barColor + '" style="width:' + (Number(item.count || 0) > 0 ? Math.max(2, pctNum) : 0) + '%"></div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function renderSegmentComparison(seg, lang) {
+      const s = seg || {};
+      const prize = s.prize_leagues || {};
+      const comm = s.community_leagues || {};
+      const multEl = document.getElementById('segMultiplierBadge');
+      const pVptEl = document.getElementById('segPrizeVpt');
+      const pMetaEl = document.getElementById('segPrizeMeta');
+      const cVptEl = document.getElementById('segCommVpt');
+      const cMetaEl = document.getElementById('segCommMeta');
+      const topEl = document.getElementById('segTopPrizeDesc');
+      const unitTxt = lang === 'en' ? ' visits/team' : ' ครั้ง/ทีม';
+
+      if (pVptEl) pVptEl.textContent = Number(prize.visits_per_team_7d || 0).toFixed(1) + unitTxt;
+      if (pMetaEl) {
+        pMetaEl.textContent = lang === 'en'
+          ? (Number(prize.leagues_count || 0) + ' leagues · ' + Number(prize.total_teams || 0).toLocaleString() + ' teams · ' + Number(prize.total_views_7d || 0).toLocaleString() + ' views (7d)')
+          : (Number(prize.leagues_count || 0) + ' ลีก · ' + Number(prize.total_teams || 0).toLocaleString() + ' ทีม · ' + Number(prize.total_views_7d || 0).toLocaleString() + ' ครั้ง (7 วัน)');
+      }
+      if (cVptEl) cVptEl.textContent = Number(comm.visits_per_team_7d || 0).toFixed(1) + unitTxt;
+      if (cMetaEl) {
+        cMetaEl.textContent = lang === 'en'
+          ? (Number(comm.leagues_count || 0) + ' leagues · ' + Number(comm.total_teams || 0).toLocaleString() + ' teams · ' + Number(comm.total_views_7d || 0).toLocaleString() + ' views (7d)')
+          : (Number(comm.leagues_count || 0) + ' ลีก · ' + Number(comm.total_teams || 0).toLocaleString() + ' ทีม · ' + Number(comm.total_views_7d || 0).toLocaleString() + ' ครั้ง (7 วัน)');
+      }
+      if (multEl) {
+        multEl.textContent = (typeof s.multiplier === 'number' && s.multiplier > 0)
+          ? (s.multiplier.toFixed(1) + 'x')
+          : '—';
+      }
+      if (topEl) {
+        const top = s.top_prize_league;
+        if (top && Number(top.views_7d || 0) > 0) {
+          topEl.textContent = lang === 'en'
+            ? ('Top active prize league (7d): "' + top.name + '" (' + top.id + ') — ' + Number(top.visits_per_team_7d || 0).toFixed(1) + ' visits/team (' + Number(top.views_7d || 0).toLocaleString() + ' views across ' + Number(top.teams || 0) + ' teams).')
+            : ('ลีกเงินรางวัลที่เปิดดูต่อทีมสูงสุด (7 วัน): "' + top.name + '" (' + top.id + ') เฉลี่ย ' + Number(top.visits_per_team_7d || 0).toFixed(1) + ' ครั้ง/ทีม (' + Number(top.views_7d || 0).toLocaleString() + ' ครั้ง จาก ' + Number(top.teams || 0) + ' ทีม)');
+        } else {
+          topEl.textContent = lang === 'en'
+            ? 'No 7-day prize-league views recorded in D1 yet.'
+            : 'ยังไม่มีข้อมูลการเข้าชมของลีกเงินรางวัลในรอบ 7 วันล่าสุด';
+        }
+      }
+    }
+
+    function renderBrowserAndLocale(browsers, locale, geo, lang) {
+      const bList = document.getElementById('browserDistributionList');
+      const bTotalEl = document.getElementById('browserTotalBadge');
+      const bObj = browsers || {};
+      const bTotal = Number(bObj.total || 0);
+      if (bTotalEl) {
+        bTotalEl.textContent = bTotal.toLocaleString() + (lang === 'en' ? ' events (7d)' : ' ครั้ง (7 วัน)');
+      }
+      if (bList) {
+        if (bTotal === 0) {
+          bList.innerHTML = '<div class="py-4 text-center text-slate-600 dark:text-neutral-400">' +
+            escHtml(lang === 'en' ? 'No browser User-Agent telemetry recorded in D1 (7d).' : 'ยังไม่มีข้อมูล User-Agent ในรอบ 7 วันล่าสุด (D1)') +
+            '</div>';
+        } else {
+          const rows = [
+            { key: 'line', data: bObj.line || {}, labelTh: 'LINE In-App Browser (ลิงก์ในกลุ่ม LINE)', labelEn: 'LINE In-App Browser', accent: 'bg-emerald-500' },
+            { key: 'safari', data: bObj.safari || {}, labelTh: 'Safari (iOS / macOS)', labelEn: 'Safari (iOS / macOS)', accent: 'bg-sky-500' },
+            { key: 'chrome', data: bObj.chrome || {}, labelTh: 'Chrome / Edge / Android Browser', labelEn: 'Chrome / Edge / Android', accent: 'bg-slate-600 dark:bg-neutral-400' },
+            { key: 'fb', data: bObj.fb || {}, labelTh: 'Facebook / Messenger In-App', labelEn: 'Facebook / Messenger In-App', accent: 'bg-slate-500 dark:bg-neutral-500' },
+            { key: 'other', data: bObj.other || {}, labelTh: 'เบราว์เซอร์อื่น / บอต (Other)', labelEn: 'Other Browsers', accent: 'bg-slate-400 dark:bg-neutral-600' }
+          ];
+          bList.innerHTML = rows.map((r) => {
+            const cnt = Number(r.data.count || 0);
+            const pct = Math.max(0, Math.min(100, parseFloat(r.data.pct || 0) || 0));
+            return '<div class="space-y-1">' +
+              '<div class="flex justify-between items-baseline gap-2">' +
+                '<span class="font-medium text-slate-900 dark:text-white">' + escHtml(lang === 'en' ? r.labelEn : r.labelTh) + '</span>' +
+                '<span class="mono tabular font-semibold text-slate-800 dark:text-neutral-200">' + cnt.toLocaleString() + ' (' + pct.toFixed(1) + '%)</span>' +
+              '</div>' +
+              '<div class="w-full h-2 bg-raisedLight dark:bg-raisedDark rounded-full overflow-hidden">' +
+                '<div class="h-full rounded-full transition-all duration-300 ' + r.accent + '" style="width:' + (cnt > 0 ? Math.max(2, pct) : 0) + '%"></div>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+        }
+      }
+
+      const gObj = geo || {};
+      const bkkPctEl = document.getElementById('geoBkkPct');
+      const regPctEl = document.getElementById('geoRegPct');
+      const intlPctEl = document.getElementById('geoIntlPct');
+      const bkkCntEl = document.getElementById('geoBkkCount');
+      const regCntEl = document.getElementById('geoRegCount');
+      const intlCntEl = document.getElementById('geoIntlCount');
+      if (bkkPctEl) bkkPctEl.textContent = (parseFloat((gObj.bkk_metro && gObj.bkk_metro.pct) || 0) || 0).toFixed(1) + '%';
+      if (regPctEl) regPctEl.textContent = (parseFloat((gObj.regional && gObj.regional.pct) || 0) || 0).toFixed(1) + '%';
+      if (intlPctEl) intlPctEl.textContent = (parseFloat((gObj.intl && gObj.intl.pct) || 0) || 0).toFixed(1) + '%';
+      if (bkkCntEl) bkkCntEl.textContent = Number((gObj.bkk_metro && gObj.bkk_metro.count) || 0).toLocaleString() + ' hits';
+      if (regCntEl) regCntEl.textContent = Number((gObj.regional && gObj.regional.count) || 0).toLocaleString() + ' hits';
+      if (intlCntEl) intlCntEl.textContent = Number((gObj.intl && gObj.intl.count) || 0).toLocaleString() + ' hits';
+
+      const locObj = locale || {};
+      const locTotal = Number(locObj.total || 0);
+      const thCnt = Number((locObj.th && locObj.th.count) || 0);
+      const enCnt = Number((locObj.en && locObj.en.count) || 0);
+      const thPct = parseFloat((locObj.th && locObj.th.pct) || 0) || 0;
+      const enPct = parseFloat((locObj.en && locObj.en.pct) || 0) || 0;
+      const splitEl = document.getElementById('geoLocaleSplit');
+      const thBarEl = document.getElementById('localeThBar');
+      const enBarEl = document.getElementById('localeEnBar');
+      const locMetaEl = document.getElementById('localeCountsMeta');
+      if (splitEl) {
+        splitEl.textContent = locTotal > 0
+          ? ('TH ' + thPct.toFixed(1) + '% · EN ' + enPct.toFixed(1) + '%')
+          : (lang === 'en' ? 'Waiting for language signals…' : 'ยังไม่มีข้อมูลสลับภาษา (รอ Beacon)');
+      }
+      if (thBarEl) thBarEl.style.width = (locTotal > 0 ? thPct : 0) + '%';
+      if (enBarEl) enBarEl.style.width = (locTotal > 0 ? enPct : 0) + '%';
+      if (locMetaEl) {
+        const thS = document.createElement('span');
+        thS.textContent = 'TH: ' + thCnt.toLocaleString();
+        const enS = document.createElement('span');
+        enS.textContent = 'EN: ' + enCnt.toLocaleString();
+        locMetaEl.replaceChildren(thS, enS);
+      }
+
+      const geoFoot = document.getElementById('geoEdgeFooter');
+      if (geoFoot) {
+        const colo = gObj.colo || 'EDGE';
+        const gTot = Number(gObj.total || 0);
+        geoFoot.textContent = gTot > 0
+          ? ('Edge Colo: ' + colo + ' · ' + gTot.toLocaleString() + (lang === 'en' ? ' geo-tagged requests (7d)' : ' คำขอที่ระบุพื้นที่จริง (7 วัน)'))
+          : ('Edge Colo: ' + colo + ' · ' + (lang === 'en' ? 'Local / No CF city header yet' : 'ยังไม่มี CF City Header จากผู้เข้าชมจริง'));
+      }
+    }
+
+    function renderPeakWindows(pw, lang) {
+      const obj = pw || {};
+      const ev = obj.evening_matchday || {};
+      const dy = obj.daytime_planning || {};
+      const mo = obj.morning_settlement || {};
+      const unit = lang === 'en' ? ' visits (7d)' : ' ครั้ง (7 วัน)';
+      const ePct = document.getElementById('peakWinEveningPct');
+      const eHits = document.getElementById('peakWinEveningHits');
+      const dPct = document.getElementById('peakWinDaytimePct');
+      const dHits = document.getElementById('peakWinDaytimeHits');
+      const mPct = document.getElementById('peakWinMorningPct');
+      const mHits = document.getElementById('peakWinMorningHits');
+      if (ePct) ePct.textContent = (parseFloat(ev.pct || 0) || 0).toFixed(1) + '%';
+      if (eHits) eHits.textContent = Number(ev.hits || 0).toLocaleString() + unit;
+      if (dPct) dPct.textContent = (parseFloat(dy.pct || 0) || 0).toFixed(1) + '%';
+      if (dHits) dHits.textContent = Number(dy.hits || 0).toLocaleString() + unit;
+      if (mPct) mPct.textContent = (parseFloat(mo.pct || 0) || 0).toFixed(1) + '%';
+      if (mHits) mHits.textContent = Number(mo.hits || 0).toLocaleString() + unit;
+    }
+
+    function renderPitchDeckLiveMetrics(et, portfolio, lang) {
+      const seg = (et && et.features && et.features.segment_comparison) ? et.features.segment_comparison : {};
+      const comm = seg.community_leagues || {};
+      const prize = seg.prize_leagues || {};
+      const top = seg.top_prize_league || null;
+      const v1 = Number(comm.visits_per_team_7d || 0);
+      const v2 = Number(prize.visits_per_team_7d || 0);
+      const v3 = top ? Number(top.visits_per_team_7d || 0) : 0;
+      const maxV = Math.max(v1, v2, v3, 0);
+      const unit = lang === 'en' ? '/team (7d)' : '/ทีม (7d)';
+
+      const bar1 = document.getElementById('g2Bar1');
+      const val1 = document.getElementById('g2Val1');
+      const bar2 = document.getElementById('g2Bar2');
+      const val2 = document.getElementById('g2Val2');
+      const bar3 = document.getElementById('g2Bar3');
+      const val3 = document.getElementById('g2Val3');
+      const multEl = document.getElementById('g2Mult');
+      const g2Badge = document.getElementById('g2Badge');
+
+      const setSvgW = (el, v) => {
+        if (!el) return;
+        const w = maxV > 0 && v > 0 ? Math.max(6, Math.round((v / maxV) * 230)) : 0;
+        el.setAttribute('width', String(w));
+      };
+      setSvgW(bar1, v1);
+      setSvgW(bar2, v2);
+      setSvgW(bar3, v3);
+      if (val1) val1.textContent = maxV > 0 ? (v1.toFixed(1) + unit) : '—';
+      if (val2) val2.textContent = maxV > 0 ? (v2.toFixed(1) + unit) : '—';
+      if (val3) val3.textContent = (top && maxV > 0) ? (v3.toFixed(1) + unit) : '—';
+      if (g2Badge) {
+        g2Badge.textContent = (typeof seg.multiplier === 'number' && seg.multiplier > 0)
+          ? (seg.multiplier.toFixed(1) + 'x Higher')
+          : 'Live D1';
+      }
+      if (multEl) {
+        if (maxV === 0) {
+          multEl.textContent = lang === 'en' ? 'Waiting for live 7-day visits in D1…' : 'รอข้อมูลทราฟฟิก 7 วันจาก D1…';
+        } else if (typeof seg.multiplier === 'number' && seg.multiplier > 0) {
+          multEl.textContent = lang === 'en'
+            ? ('Prize leagues see ' + seg.multiplier.toFixed(1) + 'x more visits/team than community leagues (7d).')
+            : ('ลีกเงินรางวัลมียอดเปิดดูต่อทีมสูงกว่าลีกทั่วไป ' + seg.multiplier.toFixed(1) + ' เท่า (รอบ 7 วัน)');
+        } else {
+          multEl.textContent = lang === 'en' ? 'Computed strictly from real D1 7-day visits.' : 'คำนวณจากยอดเปิดดู D1 จริงในรอบ 7 วัน';
+        }
+      }
+
+      const gmvBadge = document.getElementById('pitchGmvBadge');
+      if (gmvBadge && portfolio) {
+        gmvBadge.textContent = 'GMV ฿' + Number(portfolio.total_pool_gmv || 0).toLocaleString();
+      }
+      const g4Callout = document.getElementById('graphic4Callout');
+      if (g4Callout && et && et.system_performance && et.system_performance.scaling) {
+        const sc = et.system_performance.scaling;
+        g4Callout.textContent = lang === 'en'
+          ? ('Tier 1 Cap: ' + Number(sc.tier1_used_teams || 0) + '/' + Number(sc.tier1_safe_capacity_teams || 500) + ' teams · Tier 2 Cap: ≤' + Number(sc.tier2_autopicks_max_teams || 3000).toLocaleString())
+          : ('ความจุ Tier 1 ใช้แล้ว ' + Number(sc.tier1_used_teams || 0) + '/' + Number(sc.tier1_safe_capacity_teams || 500) + ' ทีม · Tier 2 สูงสุด ' + Number(sc.tier2_autopicks_max_teams || 3000).toLocaleString() + ' ทีม');
+      }
+    }
+
     function setLanguage(lang) {
       const normalized = lang === 'en' ? 'en' : 'th';
       document.documentElement.lang = normalized;
@@ -4480,6 +4105,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       }
 
       const lastSyncEl = document.getElementById('telemetryLastSync');
+      const timeAgoEl = document.getElementById('telemetryTimeAgo');
       if (lastSyncEl) {
         if (latestPayloadCache && latestPayloadCache.last_sync) {
           lastSyncEl.textContent = latestPayloadCache.last_sync;
@@ -4487,25 +4113,23 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           lastSyncEl.textContent = normalized === 'en' ? 'Sync Ready (Live)' : 'ข้อมูลซิงก์ล่าสุดพร้อมใช้งาน';
         }
       }
+      if (timeAgoEl && latestPayloadCache) {
+        timeAgoEl.textContent = formatTimeAgo(latestPayloadCache.last_sync_iso || (latestPayloadCache.edge_telemetry && latestPayloadCache.edge_telemetry.system_performance && latestPayloadCache.edge_telemetry.system_performance.sync && latestPayloadCache.edge_telemetry.system_performance.sync.last_sync_iso), normalized);
+      }
 
       const gwEl = document.getElementById('telemetryNextDeadlineName');
       if (gwEl) {
-        const gwName = gwEl.getAttribute('data-gw-name') || 'Gameweek 11';
+        const gwName = gwEl.getAttribute('data-gw-name') || 'Gameweek';
         gwEl.textContent = normalized === 'en' ? (gwName + ' Deadline') : ('เดดไลน์ ' + gwName);
       }
 
+      renderQuickLeagueOptions();
       renderLeagueTable();
       if (typeof renderLifecycleActionPanel === 'function' && selectedLifecycleLeagueId) {
         renderLifecycleActionPanel();
       }
       renderTrafficChart();
-      const g2Unit = normalized === 'en' ? ' visits/wk' : ' ครั้ง/วีค';
-      const g2v1 = document.getElementById('g2Val1');
-      const g2v2 = document.getElementById('g2Val2');
-      const g2v3 = document.getElementById('g2Val3');
-      if (g2v1) g2v1.textContent = '21.8' + g2Unit;
-      if (g2v2) g2v2.textContent = '124.6' + g2Unit;
-      if (g2v3) g2v3.textContent = '137.4' + g2Unit;
+      if (typeof renderDeviceCards === 'function') renderDeviceCards();
       if (typeof renderMonitorSummary === 'function') renderMonitorSummary();
       if (typeof renderMonitorChart === 'function') renderMonitorChart();
       if (typeof renderAllOpResults === 'function') renderAllOpResults();
@@ -4514,6 +4138,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (typeof renderOrdersTable === 'function') renderOrdersTable();
       if (typeof renderOrderDetail === 'function' && selectedOrderObj) renderOrderDetail(selectedOrderObj);
       if (typeof renderPaymentSettingsUI === 'function' && paymentSettingsCache) renderPaymentSettingsUI(paymentSettingsCache);
+      if (typeof renderOrdersEmailBadge === 'function') renderOrdersEmailBadge();
       const pitchBtn = document.getElementById('btnTogglePitchBody');
       const pitchBody = document.getElementById('secPitchBody');
       if (pitchBtn && pitchBody) {
@@ -4526,7 +4151,14 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         const isClosed = qrBody.classList.contains('hidden');
         qrBtn.textContent = dict[isClosed ? 'btn_toggle_qr_show' : 'btn_toggle_qr_hide'] || qrBtn.textContent;
       }
-      if (latestPayloadCache) applyAdminPayload(latestPayloadCache);
+      if (latestPayloadCache) {
+        applyAdminPayload(latestPayloadCache);
+      } else {
+        renderFeatureAdoption(null, normalized);
+        renderSegmentComparison(null, normalized);
+        renderBrowserAndLocale(null, null, null, normalized);
+        renderPeakWindows(null, normalized);
+      }
     }
 
     function toggleLanguage() {
@@ -4604,29 +4236,31 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
     function copyExecutiveSummary() {
       const lang = getLang();
-      const managers = document.getElementById('kpiManagersCount')?.textContent || '163';
-      const mau = document.getElementById('kpiMatchdayActive')?.textContent || '1,420';
-      const gmv = document.getElementById('kpiTotalGmv')?.textContent || '฿268,700';
-      const retention = document.getElementById('kpiRetention')?.textContent || '94.2%';
-      const stickiness = document.getElementById('kpiStickiness')?.textContent || '68.4%';
+      const managers = document.getElementById('kpiManagersCount')?.textContent || '0';
+      const peakDaily = document.getElementById('kpiMatchdayActive')?.textContent || '0';
+      const lifetime = document.getElementById('kpiLifetimeViews')?.textContent || '0';
+      const matchSplit = document.getElementById('kpiMatchdaySplit')?.textContent || '—';
+      const gmv = document.getElementById('kpiTotalGmv')?.textContent || '฿0';
       const totalLeagues = (latestPayloadCache && latestPayloadCache.portfolio && latestPayloadCache.portfolio.total_leagues_count) || LEAGUE_PORTFOLIO.length;
-      const customPct = (latestPayloadCache && latestPayloadCache.portfolio && latestPayloadCache.portfolio.custom_rules_pct) || 78;
-      const cacheHit = document.getElementById('sysWorkerCacheHit')?.textContent || '96.4%';
+      const customPct = (latestPayloadCache && latestPayloadCache.portfolio && typeof latestPayloadCache.portfolio.custom_rules_pct === 'number')
+        ? latestPayloadCache.portfolio.custom_rules_pct
+        : 0;
+      const cacheHit = document.getElementById('sysWorkerCacheHit')?.textContent || '—';
 
       const summary = lang === 'en'
         ? [
-            'FPL SaWaDiKa — Executive BI Brief',
-            '• Active Portfolio: ' + totalLeagues + ' Mini-Leagues (' + managers + ' Tier-1 Managers / ' + mau + ' Matchday Active Users)',
+            'FPL SaWaDiKa — Live Executive BI Brief',
+            '• Active Portfolio: ' + totalLeagues + ' Mini-Leagues (' + managers + ' Tier-1 Managers · Peak 7d Day: ' + peakDaily + ')',
             '• Total Prize Pool (GMV): ' + gmv + ' (' + customPct + '% Custom Rule Attachment)',
-            '• Retention & Stickiness: ' + retention + ' GW-over-GW Retention | ' + stickiness + ' Matchday Stickiness',
-            '• Infrastructure: Cloudflare Edge Cache ' + cacheHit + ' Hit Rate | Free-Tier Scaling Ready'
+            '• Traffic & Lifetime: Matchday vs Weekday ' + matchSplit + ' | Lifetime Views: ' + lifetime,
+            '• Infrastructure: Edge Cache Hit ' + cacheHit + ' | Cloudflare Workers + D1 Live'
           ].join('\\n')
         : [
-            'สรุปผู้บริหาร FPL SaWaDiKa (Executive BI Brief)',
-            '• พอร์ตโฟลิโอปัจจุบัน: ' + totalLeagues + ' มินิลีก (' + managers + ' ผู้จัดการทีม Tier 1 / ผู้ใช้งานวันแข่ง ' + mau + ' คน)',
+            'สรุปผู้บริหาร FPL SaWaDiKa (ข้อมูลสด 100%)',
+            '• พอร์ตโฟลิโอปัจจุบัน: ' + totalLeagues + ' มินิลีก (' + managers + ' ผู้จัดการทีม Tier 1 · พีครายวัน 7 วัน: ' + peakDaily + ')',
             '• มูลค่าเงินรางวัลรวม (GMV): ' + gmv + ' (ผูกกติกาพิเศษ ' + customPct + '% ของลีกทั้งหมด)',
-            '• อัตราความเหนียวแน่น: กลับมาใช้งาน ' + retention + ' ต่อสัปดาห์ | เปิดเช็กซ้ำวันแข่ง ' + stickiness,
-            '• ความพร้อมระบบ: Cloudflare Edge Cache รับโหลด ' + cacheHit + ' | พร้อมขยายสเกลต่อบน Free Tier'
+            '• ทราฟฟิกจริง: สัดส่วนวันแข่ง/วันธรรมดา ' + matchSplit + ' | ยอดเข้าชมสะสมตลอดกาล: ' + lifetime,
+            '• โครงสร้างพื้นฐาน: Edge Cache Hit ' + cacheHit + ' | Cloudflare Workers + D1 Live'
           ].join('\\n');
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -4737,17 +4371,21 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const at = Date.now();
       if (action === 'flush-cache') {
         const keys = Number(data.deleted_keys || 0);
+        const coloTxt = data.colo ? (' [' + data.colo + ']') : '';
+        const scopesTxt = Array.isArray(data.flushed_scopes) && data.flushed_scopes.length
+          ? (' (' + data.flushed_scopes.join(', ') + ')')
+          : '';
         return {
           ok: true,
           at,
-          titleTh: '✓ ล้างข้อมูลค้างเรียบร้อย (ไม่ต้องกดซ้ำ)',
-          titleEn: '✓ Live Cache Cleared (No need to repeat)',
+          titleTh: '✓ ล้างข้อมูลค้างเรียบร้อย' + coloTxt + ' (ไม่ต้องกดซ้ำ)',
+          titleEn: '✓ Live Cache Cleared' + coloTxt + ' (No need to repeat)',
           detailTh: keys > 0
-            ? ('ล้างแคชที่ค้างไปแล้ว ' + keys + ' จุด — หน้าเว็บจะดึงคะแนนล่าสุดให้ทุกคนอัตโนมัติในรอบถัดไป')
-            : 'เคลียร์สถานะเรียบร้อยแล้ว — หน้าเว็บจะดึงข้อมูลสดล่าสุดให้ทุกคนทันทีที่เปิดดูใหม่',
+            ? ('ล้างแคชไปแล้ว ' + keys + ' รายการ' + scopesTxt + ' — หน้าเว็บจะดึงคะแนนล่าสุดให้ทุกคนอัตโนมัติในรอบถัดไป')
+            : ('เคลียร์สถานะเรียบร้อยแล้ว' + scopesTxt + ' — หน้าเว็บจะดึงข้อมูลสดล่าสุดให้ทุกคนทันทีที่เปิดดูใหม่'),
           detailEn: keys > 0
-            ? ('Cleared ' + keys + ' cached entries — visitors will receive fresh live scores on the next refresh.')
-            : 'Cache is clean — visitors will receive fresh live scores immediately.',
+            ? ('Cleared ' + keys + ' cached entries' + scopesTxt + ' — visitors will receive fresh live scores immediately.')
+            : ('Cache is clean' + scopesTxt + ' — visitors will receive fresh live scores immediately.'),
         };
       }
       if (action === 'ping-upstream') {
@@ -4898,7 +4536,6 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const filename = 'fplsawadika-executive-bi-snapshot.json';
       const payload = latestPayloadCache || {
         exported_at: new Date().toISOString(),
-        total_pool_gmv: 268700,
         leagues: LEAGUE_PORTFOLIO
       };
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -4964,65 +4601,48 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       el.replaceChildren(document.createTextNode(primaryText + ' '), unitSpan);
     }
 
-    function syncDynamicTeamCountCopy(tier1LeaguesCount, allTeamsCount, tier2TeamsCount, flag675290Teams) {
-      const lang = getLang();
-      const t1L = Number(tier1LeaguesCount || 8);
-      const allFmt = Number(allTeamsCount || 1942).toLocaleString();
-      const t2Fmt = Number(tier2TeamsCount || 1779).toLocaleString();
-      const commFmt = Number(flag675290Teams || 60).toLocaleString();
-
-      I18N.th.pitch_tier2_roadmap = 'Tier 2: Live Auto-Picks (' + t2Fmt + ' ทีม · สูงสุด 3,000)';
-      I18N.en.pitch_tier2_roadmap = 'Tier 2: Live Auto-Picks (' + t2Fmt + ' Teams · ≤3k Cap)';
-      I18N.th.graphic4_callout = 'Tier 1 พร้อมส่งมอบทันที · Tier 2 (Auto-Picks Live) รองรับ ' + t2Fmt + ' ทีม (สูงสุด 3,000 ทีม)';
-      I18N.en.graphic4_callout = 'Tier 1 ready to onboard · Tier 2 (Auto-Picks Live) running ' + t2Fmt + ' teams (≤3,000 cap)';
-      I18N.th.kpi_managers_sub = 'Tier 1 ครบ ' + t1L + ' มินิลีก (รวม Tier 2 = ' + allFmt + ')';
-      I18N.en.kpi_managers_sub = t1L + ' Tier 1 Leagues (' + allFmt + ' Total incl. Tier 2)';
-      I18N.th.feat_comm_label = 'ลีกคอมมูนิตี้และพรีเมียม (เช่น 675290 · ' + commFmt + ' ทีม / Tier 2 · ' + t2Fmt + ' ทีม)';
-      I18N.en.feat_comm_label = 'Community & Flagship Scale (e.g., 675290 · ' + commFmt + ' Teams / Tier 2 · ' + t2Fmt + ' Teams)';
-
-      const dict = I18N[lang] || I18N.th;
-      ['pitch_tier2_roadmap', 'graphic4_callout', 'kpi_managers_sub', 'feat_comm_label'].forEach((key) => {
-        document.querySelectorAll('[data-i18n="' + key + '"]').forEach((el) => {
-          el.textContent = dict[key];
-        });
-      });
-
-      const row139836 = LEAGUE_PORTFOLIO.find((r) => String(r.id) === '139836');
-      if (row139836) {
-        row139836.modulesTh = 'Tier 2 Auto-Picks Live (กัปตัน/Hits/ผังสด) · ค้นหา ' + t2Fmt + ' ทีมทันที';
-        row139836.modulesEn = 'Tier 2 Auto-Picks Live (Cap/Hits/Pitch) · ' + t2Fmt + '-Team Search';
-      }
-    }
-
     function applyAdminPayload(data) {
       if (!data || typeof data !== 'object') return;
       latestPayloadCache = data;
       const lang = getLang();
 
+      const syncIso = data.last_sync_iso ||
+        (data.edge_telemetry && data.edge_telemetry.system_performance && data.edge_telemetry.system_performance.sync && data.edge_telemetry.system_performance.sync.last_sync_iso) ||
+        '';
       if (data.last_sync) {
         const lastSyncEl = document.getElementById('telemetryLastSync');
         if (lastSyncEl) lastSyncEl.textContent = data.last_sync;
       }
+      const timeAgoEl = document.getElementById('telemetryTimeAgo');
+      if (timeAgoEl) {
+        timeAgoEl.textContent = formatTimeAgo(syncIso, lang);
+      }
 
       if (data.portfolio) {
-        const tier1Count = Number(data.portfolio.total_managers_tier1 || data.portfolio.total_managers || 0);
+        const tier1Count = Number(data.portfolio.total_managers_tier1 || 0);
         const allCount = Number(data.portfolio.total_managers_all || tier1Count || 0);
-        const tier1LeaguesCount = Number(data.portfolio.tier1_leagues_count || 8);
-        const totalLeaguesCount = Number(data.portfolio.total_leagues_count || LEAGUE_PORTFOLIO.length);
-        if (tier1Count > 0) {
-          const el = document.getElementById('kpiManagersCount');
-          if (el) el.textContent = tier1Count.toLocaleString();
-          const subEl = document.getElementById('kpiManagersSub');
-          if (subEl && allCount > tier1Count) {
-            subEl.textContent = lang === 'en'
-              ? (tier1LeaguesCount + ' Tier 1 Leagues (' + allCount.toLocaleString() + ' Total incl. Tier 2)')
-              : ('Tier 1 ครบ ' + tier1LeaguesCount + ' มินิลีก (รวม Tier 2 = ' + allCount.toLocaleString() + ')');
-          }
+        const tier1LeaguesCount = Number(data.portfolio.tier1_leagues_count || 0);
+        const totalLeaguesCount = Number(data.portfolio.total_leagues_count || 0);
+
+        const kpiMgrEl = document.getElementById('kpiManagersCount');
+        if (kpiMgrEl) kpiMgrEl.textContent = tier1Count.toLocaleString();
+        const kpiMgrSub = document.getElementById('kpiManagersSub');
+        if (kpiMgrSub) {
+          kpiMgrSub.textContent = lang === 'en'
+            ? (tier1LeaguesCount + ' Tier 1 Leagues (' + allCount.toLocaleString() + ' Total across ' + totalLeaguesCount + ' leagues)')
+            : ('Tier 1 ' + tier1LeaguesCount + ' มินิลีก (รวมทั้งหมด ' + allCount.toLocaleString() + ' ทีม / ' + totalLeaguesCount + ' ลีก)');
         }
-        if (data.portfolio.total_pool_gmv) {
-          const el = document.getElementById('kpiTotalGmv');
-          if (el) el.textContent = '฿' + Number(data.portfolio.total_pool_gmv).toLocaleString();
+
+        const gmvEl = document.getElementById('kpiTotalGmv');
+        if (gmvEl) gmvEl.textContent = '฿' + Number(data.portfolio.total_pool_gmv || 0).toLocaleString();
+
+        const footEl = document.getElementById('footerLeagueSummary');
+        if (footEl) {
+          footEl.textContent = lang === 'en'
+            ? ('Executive BI & Infrastructure Control (' + totalLeaguesCount + ' Mini-Leagues · ' + allCount.toLocaleString() + ' Teams)')
+            : ('ศูนย์วิเคราะห์ข้อมูลธุรกิจและโครงสร้างพื้นฐานครบวงจร (' + totalLeaguesCount + ' มินิลีก · ' + allCount.toLocaleString() + ' ทีม)');
         }
+
         if (typeof data.portfolio.custom_rules_count === 'number') {
           const customEl = document.getElementById('portCustomRulesVal');
           if (customEl) {
@@ -5038,69 +4658,48 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             );
           }
         }
+
         if (data.portfolio.leagues && typeof data.portfolio.leagues === 'object') {
-          const knownIds = new Set(LEAGUE_PORTFOLIO.map((r) => r.id));
-          LEAGUE_PORTFOLIO = LEAGUE_PORTFOLIO.map((row) => {
-            const liveMeta = data.portfolio.leagues[row.id];
-            const etLeague = (data.edge_telemetry && data.edge_telemetry.leagues)
-              ? data.edge_telemetry.leagues[row.id]
-              : null;
+          const etLeagues = (data.edge_telemetry && data.edge_telemetry.leagues) || {};
+          LEAGUE_PORTFOLIO = Object.entries(data.portfolio.leagues).map(([lid, liveMeta]) => {
+            const m = liveMeta || {};
+            const etL = etLeagues[lid] || {};
+            const tierVal = Number(m.tier || 1);
+            const tCount = Number(m.teams || 0);
+            const poolVal = Number(m.pool || 0);
+            const vptVal = Number(etL.visits_per_team_7d != null ? etL.visits_per_team_7d : 0);
+            const avgTimeTh = etL.avg_screen_time || '—';
+            const avgTimeEn = etL.avg_screen_time_en || '—';
+            const badgeStr = tierVal === 2
+              ? 'Tier 2'
+              : (m.visibility === 'private' ? 'Private' : (lid === '40700' ? 'Flagship' : ''));
             return {
-              ...row,
-              name: (liveMeta && liveMeta.name) ? String(liveMeta.name) : row.name,
-              teams: (liveMeta && Number(liveMeta.teams) > 0) ? Number(liveMeta.teams) : row.teams,
-              pool: (liveMeta && typeof liveMeta.pool === 'number' && liveMeta.pool > 0) ? liveMeta.pool : row.pool,
-              poolLabelTh: (liveMeta && liveMeta.pool_label && liveMeta.pool === 0 && liveMeta.pool_label !== '-') ? String(liveMeta.pool_label) : row.poolLabelTh,
-              poolLabelEn: (liveMeta && liveMeta.pool_label_en && liveMeta.pool === 0 && liveMeta.pool_label_en !== '-') ? String(liveMeta.pool_label_en) : row.poolLabelEn,
-              views: (etLeague && typeof etLeague.views === 'number') ? Number(etLeague.views) : row.views,
-              plan: (liveMeta && liveMeta.plan) ? String(liveMeta.plan) : (row.plan || 'standard'),
-              status: (liveMeta && liveMeta.status) ? String(liveMeta.status) : (row.status || 'active'),
-              visibility: (liveMeta && liveMeta.visibility) ? String(liveMeta.visibility) : (row.visibility || 'showcase'),
-              tenant_group: (liveMeta && liveMeta.tenant_group) ? String(liveMeta.tenant_group) : (row.tenant_group || 'showcase'),
-              created_at: (liveMeta && liveMeta.created_at) ? String(liveMeta.created_at) : (row.created_at || null),
-              expires_at: (liveMeta && liveMeta.expires_at) ? String(liveMeta.expires_at) : null,
-              days_remaining: (liveMeta && typeof liveMeta.days_remaining === 'number') ? liveMeta.days_remaining : null,
-              expiry_alert: (liveMeta && liveMeta.expiry_alert) ? String(liveMeta.expiry_alert) : 'none',
-              billing_note: (liveMeta && liveMeta.billing_note) ? String(liveMeta.billing_note) : '',
+              id: lid,
+              name: String(m.name || lid),
+              badge: badgeStr,
+              teams: tCount,
+              pool: poolVal,
+              poolLabelTh: (m.pool_label && m.pool_label !== '-') ? String(m.pool_label) : 'คอมมูนิตี้',
+              poolLabelEn: (m.pool_label_en && m.pool_label_en !== '-') ? String(m.pool_label_en) : 'Community',
+              modulesTh: String(m.modules_th || (tierVal === 2 ? 'Tier 2 Auto-Picks Live' : 'ตารางคะแนนสด')),
+              modulesEn: String(m.modules_en || (tierVal === 2 ? 'Tier 2 Auto-Picks Live' : 'Live Standings')),
+              views: Number(etL.views || 0),
+              vpt: vptVal,
+              avgScreenTime: avgTimeTh,
+              avgScreenTimeEn: avgTimeEn,
+              avgScreenTimeSec: etL.avg_screen_time_sec != null ? Number(etL.avg_screen_time_sec) : null,
+              plan: m.plan ? String(m.plan) : (tierVal === 2 ? 'tier2_quote' : 'standard'),
+              status: m.status ? String(m.status) : 'active',
+              visibility: m.visibility ? String(m.visibility) : 'showcase',
+              tenant_group: m.tenant_group ? String(m.tenant_group) : 'showcase',
+              created_at: m.created_at ? String(m.created_at) : null,
+              expires_at: m.expires_at ? String(m.expires_at) : null,
+              days_remaining: typeof m.days_remaining === 'number' ? m.days_remaining : null,
+              expiry_alert: m.expiry_alert ? String(m.expiry_alert) : 'none',
+              billing_note: m.billing_note ? String(m.billing_note) : '',
             };
           });
-          // Append any newly onboarded league present in live data or config
-          for (const [lid, liveMeta] of Object.entries(data.portfolio.leagues)) {
-            if (!knownIds.has(lid) && liveMeta && typeof liveMeta === 'object') {
-              const etLeague = (data.edge_telemetry && data.edge_telemetry.leagues) ? data.edge_telemetry.leagues[lid] : null;
-              LEAGUE_PORTFOLIO.push({
-                id: lid,
-                name: String(liveMeta.name || lid),
-                badge: Number(liveMeta.tier) === 2 ? 'Tier 2' : (liveMeta.visibility === 'private' ? 'Private' : 'New'),
-                teams: Number(liveMeta.teams || 0),
-                pool: Number(liveMeta.pool || 0),
-                poolLabelTh: liveMeta.pool_label && liveMeta.pool_label !== '-' ? String(liveMeta.pool_label) : 'คอมมูนิตี้',
-                poolLabelEn: liveMeta.pool_label_en && liveMeta.pool_label_en !== '-' ? String(liveMeta.pool_label_en) : 'Community',
-                modulesTh: Number(liveMeta.tier) === 2 ? 'Tier 2 Auto-Picks Live (กัปตัน/Hits/ผังสด)' : 'ตารางคะแนนสด · วิเคราะห์ทีม',
-                modulesEn: Number(liveMeta.tier) === 2 ? 'Tier 2 Auto-Picks Live (Cap/Hits/Pitch)' : 'Live Standings & Analytics',
-                views: etLeague && typeof etLeague.views === 'number' ? Number(etLeague.views) : 0,
-                retention: 90.0,
-                plan: liveMeta.plan ? String(liveMeta.plan) : 'standard',
-                status: liveMeta.status ? String(liveMeta.status) : 'active',
-                visibility: liveMeta.visibility ? String(liveMeta.visibility) : 'private',
-                tenant_group: liveMeta.tenant_group ? String(liveMeta.tenant_group) : ('private_' + lid),
-                created_at: liveMeta.created_at ? String(liveMeta.created_at) : null,
-                expires_at: liveMeta.expires_at ? String(liveMeta.expires_at) : null,
-                days_remaining: typeof liveMeta.days_remaining === 'number' ? liveMeta.days_remaining : null,
-                expiry_alert: liveMeta.expiry_alert ? String(liveMeta.expiry_alert) : 'none',
-                billing_note: liveMeta.billing_note ? String(liveMeta.billing_note) : '',
-              });
-            }
-          }
-          const liveTier2Row = LEAGUE_PORTFOLIO.find((r) => String(r.id) === '139836');
-          const live675290Row = LEAGUE_PORTFOLIO.find((r) => String(r.id) === '675290');
-          const liveTier2Count = (liveTier2Row && Number(liveTier2Row.teams) > 0)
-            ? Number(liveTier2Row.teams)
-            : Math.max(0, allCount - tier1Count) || 1779;
-          const live675290Count = (live675290Row && Number(live675290Row.teams) > 0)
-            ? Number(live675290Row.teams)
-            : 60;
-          syncDynamicTeamCountCopy(tier1LeaguesCount, allCount, liveTier2Count, live675290Count);
+          renderQuickLeagueOptions();
           renderLeagueTable();
           if (typeof renderLifecycleActionPanel === 'function' && selectedLifecycleLeagueId) {
             renderLifecycleActionPanel();
@@ -5110,6 +4709,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       if (data.edge_telemetry) {
         const et = data.edge_telemetry;
+
+        // Section 02 Landing Card
         if (et.landing_page && typeof et.landing_page === 'object') {
           const lp7d = Number(et.landing_page.views_7d || 0);
           const lpToday = Number(et.landing_page.views_today || 0);
@@ -5119,62 +4720,65 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             todayBadge.textContent = (lang === 'en' ? 'Today: ' : 'วันนี้: ') + lpToday.toLocaleString();
           }
         }
-        if (et.matchday_active_users) {
-          const el = document.getElementById('kpiMatchdayActive');
-          if (el) el.textContent = Number(et.matchday_active_users).toLocaleString();
+
+        // Section 01 Live KPIs
+        const peakDailyEl = document.getElementById('kpiMatchdayActive');
+        if (peakDailyEl) peakDailyEl.textContent = Number(et.matchday_active_users || 0).toLocaleString();
+        const peakSubEl = document.getElementById('kpiMatchdaySub');
+        if (peakSubEl && et.peak_day_date) {
+          peakSubEl.textContent = lang === 'en'
+            ? ('Peak 7d date: ' + et.peak_day_date + ' (live league views)')
+            : ('วันที่ยอดเข้าชมสูงสุด (7 วัน): ' + et.peak_day_date);
         }
-        if (et.off_peak_dau) {
-          const el = document.getElementById('kpiOffPeakDau');
-          if (el) el.textContent = Number(et.off_peak_dau).toLocaleString();
+
+        const offPeakEl = document.getElementById('kpiOffPeakDau');
+        if (offPeakEl) offPeakEl.textContent = Number(et.off_peak_dau || 0).toLocaleString();
+
+        const splitEl = document.getElementById('kpiMatchdaySplit');
+        const splitSubEl = document.getElementById('kpiMatchdaySplitSub');
+        const mv = et.matchday_vs_offpeak || {};
+        const mvTot = Number(mv.matchday_visits || 0) + Number(mv.offpeak_visits || 0);
+        if (splitEl) {
+          splitEl.textContent = mvTot > 0
+            ? (Number(mv.matchday_pct || 0) + '% / ' + Number(mv.offpeak_pct || 0) + '%')
+            : '0% / 0%';
         }
-        if (typeof et.avg_session_sec === 'number' && et.avg_session_sec > 0) {
-          const el = document.getElementById('kpiScreenTime');
-          if (el) {
+        if (splitSubEl) {
+          splitSubEl.textContent = lang === 'en'
+            ? ('Fri–Mon: ' + Number(mv.matchday_visits || 0).toLocaleString() + ' vs Tue–Thu: ' + Number(mv.offpeak_visits || 0).toLocaleString() + ' (7d)')
+            : ('ศ.–จ.: ' + Number(mv.matchday_visits || 0).toLocaleString() + ' vs อ.–พฤ.: ' + Number(mv.offpeak_visits || 0).toLocaleString() + ' (7 วัน)');
+        }
+
+        const lifeEl = document.getElementById('kpiLifetimeViews');
+        if (lifeEl) lifeEl.textContent = Number(et.lifetime_total_views || 0).toLocaleString();
+
+        const screenEl = document.getElementById('kpiScreenTime');
+        if (screenEl) {
+          if (typeof et.avg_session_sec === 'number' && et.avg_session_sec > 0) {
             const mins = Math.floor(et.avg_session_sec / 60);
             const secs = et.avg_session_sec % 60;
-            el.textContent = mins + 'm ' + String(secs).padStart(2, '0') + 's';
+            screenEl.textContent = mins + 'm ' + String(secs).padStart(2, '0') + 's';
+          } else {
+            screenEl.textContent = '—';
           }
         }
+
         const modelBadge = document.getElementById('telemetryModelBadge');
-        if (modelBadge && (typeof et.raw_live_visits_7d === 'number' || typeof et.baseline_visits_prior === 'number')) {
+        if (modelBadge) {
           const live7d = Number(et.raw_live_visits_7d || 0).toLocaleString();
-          const priorNum = Number(et.baseline_visits_prior || 0);
-          const priorPart = priorNum > 0 ? (' + Prior: ' + priorNum.toLocaleString()) : '';
-          const landingPart = (et.landing_page && typeof et.landing_page.views_7d === 'number')
-            ? (' · Landing 7d: ' + Number(et.landing_page.views_7d).toLocaleString())
-            : '';
-          const lifetimePart = (typeof et.lifetime_total_views === 'number' && et.lifetime_total_views > 0)
-            ? (' · Total: ' + Number(et.lifetime_total_views).toLocaleString())
-            : '';
-          modelBadge.textContent = (priorNum > 0 ? 'Live 7d: ' : 'Live D1 (7d): ') + live7d + priorPart + landingPart + lifetimePart;
+          const landing7d = Number((et.landing_page && et.landing_page.views_7d) || 0).toLocaleString();
+          const lifetime = Number(et.lifetime_total_views || 0).toLocaleString();
+          modelBadge.textContent = 'Live 7d: ' + live7d + ' · Landing: ' + landing7d + ' · Total: ' + lifetime;
         }
 
-        // Section 03: Feature Adoption Bars
-        if (et.features && et.features.modules) {
-          const mods = et.features.modules;
-          if (mods.standings) setMetricBar('featMod1Pct', 'featMod1Bar', mods.standings.pct);
-          if (mods.prizes) setMetricBar('featMod2Pct', 'featMod2Bar', mods.prizes.pct);
-          if (mods.squad) setMetricBar('featMod3Pct', 'featMod3Bar', mods.squad.pct);
-          if (mods.planner) setMetricBar('featMod4Pct', 'featMod4Bar', mods.planner.pct);
-          if (mods.hof) setMetricBar('featMod5Pct', 'featMod5Bar', mods.hof.pct);
-        }
+        // Section 05 Feature Adoption + Segment Comparison
+        renderFeatureAdoption(et.features, lang);
+        renderSegmentComparison(et.features ? et.features.segment_comparison : null, lang);
 
-        // Section 04: Traffic Sources & Geographic Split
-        if (et.sources) {
-          if (et.sources.line) setMetricBar('chan1Pct', 'chan1Bar', et.sources.line.pct);
-          if (et.sources.safari) setMetricBar('chan2Pct', 'chan2Bar', et.sources.safari.pct);
-          if (et.sources.chrome) setMetricBar('chan3Pct', 'chan3Bar', et.sources.chrome.pct);
-        }
-        if (et.geo) {
-          const bkkEl = document.getElementById('geoBkkPct');
-          const regEl = document.getElementById('geoRegPct');
-          const intlEl = document.getElementById('geoIntlPct');
-          if (bkkEl && et.geo.bkk_metro) bkkEl.textContent = parseFloat(et.geo.bkk_metro.pct).toFixed(1) + '%';
-          if (regEl && et.geo.regional) regEl.textContent = parseFloat(et.geo.regional.pct).toFixed(1) + '%';
-          if (intlEl && et.geo.intl) intlEl.textContent = parseFloat(et.geo.intl.pct).toFixed(1) + '%';
-        }
+        // Section 06 Browser, Geo & Locale
+        renderBrowserAndLocale(et.browsers, et.locale, et.geo, lang);
 
-        // Section 05: Device Distribution (Stores both 7d and 30d windows for instant toggle)
+        // Section 07 Devices
         if (et.devices) {
           DEVICES_STATE = {
             w7: et.devices.w7 || et.devices,
@@ -5183,52 +4787,96 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           renderDeviceCards();
         }
 
-        // Section 07: Cloud & Scaling Performance
+        // Section 08 Peak Windows
+        renderPeakWindows(et.peak_windows, lang);
+
+        // Section 09 Cloud Quota, 4-table D1 & Scaling Headroom (+ Section 02 Headroom card)
         if (et.system_performance) {
           const sp = et.system_performance;
           if (typeof sp.d1_row_count === 'number') {
             setValueWithUnit('sysD1RowsCount', Number(sp.d1_row_count).toLocaleString(), 'rows');
           }
+          const d1TblEl = document.getElementById('sysD1TablesBreakdown');
+          if (d1TblEl && sp.d1_tables) {
+            const dt = sp.d1_tables;
+            d1TblEl.textContent = 'telem:' + Number(dt.telemetry_counters || 0)
+              + ' · ord:' + Number(dt.league_orders || 0)
+              + ' · notes:' + Number(dt.league_admin_notes || 0)
+              + ' · cfg:' + Number(dt.app_settings || 0);
+          }
           if (typeof sp.d1_daily_writes_used === 'number' && typeof sp.d1_daily_writes_limit === 'number' && sp.d1_daily_writes_limit > 0) {
             const d1Pct = ((sp.d1_daily_writes_used / sp.d1_daily_writes_limit) * 100).toFixed(1);
             const d1PctEl = document.getElementById('sysD1ReadsPct');
             const d1BarEl = document.getElementById('sysD1ReadsBar');
-            if (d1PctEl) d1PctEl.textContent = d1Pct + '% of ' + Math.round(sp.d1_daily_writes_limit / 1000) + 'k';
-            if (d1BarEl) d1BarEl.style.width = Math.min(100, Math.max(2, parseFloat(d1Pct))) + '%';
+            if (d1PctEl) d1PctEl.textContent = Number(sp.d1_daily_writes_used).toLocaleString() + ' (' + d1Pct + '% / ' + Math.round(sp.d1_daily_writes_limit / 1000) + 'k)';
+            if (d1BarEl) d1BarEl.style.width = Math.min(100, parseFloat(d1Pct)) + '%';
           }
-          if (typeof et.daily_reach === 'number') {
-            const estDailyReqs = Math.max(100, Math.round(et.daily_reach * 14));
-            setValueWithUnit('sysWorkerReqs', '~' + estDailyReqs.toLocaleString(), '/ 100k req/d');
-            const wBar = document.getElementById('sysWorkerBar');
-            if (wBar) wBar.style.width = Math.min(100, Math.max(2, (estDailyReqs / 100000) * 100)).toFixed(1) + '%';
+          const workerReqs = Number(sp.worker_reqs_today || 0);
+          setValueWithUnit('sysWorkerReqs', workerReqs.toLocaleString(), '/ 100k req/d');
+          const wBar = document.getElementById('sysWorkerBar');
+          if (wBar) wBar.style.width = Math.min(100, (workerReqs / 100000) * 100).toFixed(1) + '%';
+
+          const cacheEl = document.getElementById('sysWorkerCacheHit');
+          if (cacheEl) {
+            if (typeof sp.edge_cache_hit_pct === 'number') {
+              const sTot = Number(sp.edge_cache_sample_total_7d || 0).toLocaleString();
+              cacheEl.textContent = sp.edge_cache_hit_pct.toFixed(1) + '% (' + sTot + ')';
+            } else {
+              cacheEl.textContent = '—';
+            }
           }
-          if (sp.sync && typeof sp.sync.sync_duration_sec === 'number') {
-            setValueWithUnit('sysGhSyncTime', sp.sync.sync_duration_sec.toFixed(1) + 's', '/ build');
-            const ghBar = document.getElementById('sysGhSyncBar');
-            if (ghBar) ghBar.style.width = Math.min(100, Math.max(4, (sp.sync.sync_duration_sec / 60) * 100)).toFixed(1) + '%';
+
+          if (sp.sync) {
+            if (typeof sp.sync.sync_duration_sec === 'number') {
+              setValueWithUnit('sysGhSyncTime', sp.sync.sync_duration_sec.toFixed(1) + 's', '/ build');
+              const ghBar = document.getElementById('sysGhSyncBar');
+              if (ghBar) ghBar.style.width = Math.min(100, Math.max(4, (sp.sync.sync_duration_sec / 60) * 100)).toFixed(1) + '%';
+            }
+            const ghDetEl = document.getElementById('sysGhSyncDetail');
+            if (ghDetEl) {
+              const calls = sp.sync.api_calls_count != null ? Number(sp.sync.api_calls_count).toLocaleString() : '—';
+              const retries = sp.sync.api_retry_count != null ? Number(sp.sync.api_retry_count) : 0;
+              const rl = sp.sync.api_rate_limit_count != null ? Number(sp.sync.api_rate_limit_count) : 0;
+              const kb = sp.sync.master_payload_bytes ? Math.round(Number(sp.sync.master_payload_bytes) / 1024) + ' KB' : '—';
+              ghDetEl.textContent = lang === 'en'
+                ? (calls + ' API calls · ' + retries + ' retries · ' + rl + ' 429s · ' + kb)
+                : (calls + ' API calls · retry ' + retries + ' · 429: ' + rl + ' · ' + kb);
+            }
           }
-          if (sp.scaling && typeof sp.scaling.tier1_headroom_leagues === 'number') {
+
+          if (sp.scaling) {
+            const hl = Number(sp.scaling.tier1_headroom_leagues || 0);
+            const ht = Number(sp.scaling.tier1_headroom_teams || 0);
             const headEl = document.getElementById('sysScalingHeadroom');
-            if (headEl) headEl.textContent = '+' + sp.scaling.tier1_headroom_leagues + ' Leagues';
-          }
-          if (typeof sp.edge_cache_hit_pct === 'number') {
-            const cacheEl = document.getElementById('sysWorkerCacheHit');
-            if (cacheEl) cacheEl.textContent = sp.edge_cache_hit_pct.toFixed(1) + '%';
+            if (headEl) {
+              headEl.textContent = lang === 'en'
+                ? ('+' + hl + ' Leagues / +' + ht + ' Teams')
+                : ('+' + hl + ' ลีก / +' + ht + ' ทีม');
+            }
+            const wlEl = document.getElementById('portWhiteLabelVal');
+            if (wlEl) {
+              wlEl.textContent = lang === 'en'
+                ? ('+' + hl + ' Leagues (' + ht + ' teams left)')
+                : ('+' + hl + ' ลีก (' + ht + ' ทีม)');
+            }
           }
         }
 
         if (Array.isArray(et.hourly_series) && et.hourly_series.length === 24) {
-          if (typeof et.hourly_series[0] === 'number') {
-            const maxH = Math.max(...et.hourly_series, 1);
-            HOURLY_SERIES = et.hourly_series.map((val, idx) => {
-              const pct = Math.round((Number(val) / maxH) * 100);
-              return { hour: String(idx).padStart(2, '0') + ':00', pct, peak: pct >= 48 };
-            });
-          } else {
-            HOURLY_SERIES = et.hourly_series;
-          }
+          HOURLY_SERIES = et.hourly_series.map((pt, idx) => {
+            if (typeof pt === 'number') {
+              return { hour: String(idx).padStart(2, '0') + ':00', count: pt, pct: 0, peak: false };
+            }
+            return {
+              hour: String((pt && pt.hour) || (String(idx).padStart(2, '0') + ':00')),
+              count: Number((pt && pt.count) || 0),
+              pct: Number((pt && pt.pct) || 0),
+              peak: Boolean(pt && pt.peak),
+            };
+          });
         }
-        if (Array.isArray(et.daily_series) && et.daily_series.length > 0) {
+
+        if (Array.isArray(et.daily_series)) {
           const thDays = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
           const enDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
           DAILY_SERIES = et.daily_series.map((item) => {
@@ -5238,6 +4886,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               return {
                 dayTh: thDays[dow],
                 dayEn: enDays[dow],
+                date: item.date,
                 visits: Number(item.visits || 0),
                 peak: dow === 5 || dow === 6 || dow === 0,
               };
@@ -5245,9 +4894,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             return item;
           });
         }
+
         if (et.monitor) {
           MONITOR_STATE = et.monitor;
         }
+
+        renderPitchDeckLiveMetrics(et, data.portfolio, lang);
       }
 
       if (data.fpl_upstream && data.fpl_upstream.next_deadline_time) {
@@ -5401,11 +5053,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const outLine = document.getElementById('onbOutLine');
       if (!idEl || !outCli || !outJson || !outLine) return;
 
-      const lid = (idEl.value || '').replace(/[^0-9]+/g, '') || '40700';
+      const rawLid = (idEl.value || '').replace(/[^0-9]+/g, '');
+      const lid = rawLid || '<LEAGUE_ID>';
       const tierNum = (tierEl && Number(tierEl.value) === 2) ? 2 : 1;
       const plan = planEl ? planEl.value : 'standard';
       const prizeModel = prizeEl ? prizeEl.value : 'weekly';
       const currency = (currencyEl && currencyEl.value === 'USD') ? 'USD' : 'THB';
+      const weeklyLbl = document.getElementById('onbWeeklyPrizeLbl');
+      if (weeklyLbl) {
+        weeklyLbl.textContent = getLang() === 'en'
+          ? ('Weekly Prize (' + currency + ')')
+          : ('รางวัล/สัปดาห์ (' + (currency === 'USD' ? 'USD' : 'บาท') + ')');
+      }
       const weeklyVal = parseInt((weeklyEl ? weeklyEl.value : '300').replace(/[^0-9]+/g, ''), 10) || 0;
       const accessStatus = statusEl ? statusEl.value : 'active';
       const entryFeeRaw = (entryFeeEl && entryFeeEl.value) ? entryFeeEl.value.trim() : '';
@@ -5491,7 +5150,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         }
       }
       const leagueRecord = {
-        id: Number(lid),
+        id: rawLid ? Number(rawLid) : '<LEAGUE_ID>',
         season: '2026/27',
         name: detectedName,
         short_name: shortName,
@@ -6377,13 +6036,16 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const lid = String(o.league_id || '').trim();
       const lidEl = document.getElementById('onbLeagueId');
       const planEl = document.getElementById('onbPlan');
+      const tierEl = document.getElementById('onbTier');
       const curEl = document.getElementById('onbCurrency');
       const stEl = document.getElementById('onbStatus');
       const visEl = document.getElementById('onbVisibility');
       const tenEl = document.getElementById('onbTenantGroup');
       const shortEl = document.getElementById('onbShortName');
+      const isTier2Quote = o.plan === 'tier2_quote';
       if (lidEl) lidEl.value = lid;
-      if (planEl) planEl.value = 'standard';
+      if (planEl) planEl.value = isTier2Quote ? 'tier2_quote' : 'standard';
+      if (tierEl) tierEl.value = isTier2Quote ? '2' : '1';
       if (curEl) curEl.value = o.currency === 'USD' ? 'USD' : 'THB';
       if (stEl) stEl.value = 'active';
       if (visEl) visEl.value = 'private';
@@ -6488,6 +6150,23 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       }
     }
 
+    let ordersEmailStatusCache = null;
+
+    function renderOrdersEmailBadge() {
+      const el = document.getElementById('ordersEmailStatusBadge');
+      if (!el || !ordersEmailStatusCache) return;
+      const lang = getLang();
+      const es = ordersEmailStatusCache;
+      if (es.ready) {
+        const modeTxt = es.mode === 'resend' ? 'Resend Ready' : 'MailChannels Ready';
+        el.className = 'px-2.5 py-1.5 rounded-lg border border-emerald-500/35 bg-emerald-500/10 text-xs mono text-emerald-800 dark:text-emerald-300 whitespace-nowrap';
+        el.textContent = lang === 'en' ? ('✓ Email: ' + modeTxt) : ('✓ อีเมลพร้อมส่ง (' + modeTxt + ')');
+      } else {
+        el.className = 'px-2.5 py-1.5 rounded-lg border border-amber-500/40 bg-amber-500/10 text-xs mono text-amber-800 dark:text-amber-300 whitespace-nowrap';
+        el.textContent = lang === 'en' ? '⚠ Email: Not Configured' : '⚠ อีเมลอัตโนมัติ: ยังไม่ตั้งค่า Key';
+      }
+    }
+
     async function loadOrdersData(filterKey) {
       if (filterKey) currentOrderFilter = filterKey;
       renderOrderFilterButtons();
@@ -6502,6 +6181,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ordersListCache = Array.isArray(data.orders) ? data.orders : [];
         ordersCountsCache = data.counts || {};
         ordersStatsCache = data.stats || {};
+        if (data.email_status) {
+          ordersEmailStatusCache = data.email_status;
+          renderOrdersEmailBadge();
+        }
         renderOrderStatsMonitor();
         renderOrderFilterButtons();
         if (selectedOrderObj) {
@@ -6693,7 +6376,7 @@ export function renderLoginHtml(errorMessage = '') {
           เข้าสู่ระบบศูนย์ข้อมูลผู้บริหาร
         </h1>
         <p id="loginSub" class="text-xs sm:text-sm text-slate-600 dark:text-neutral-400 leading-relaxed">
-          กรุณายืนยันตัวตนเพื่อเข้าถึงข้อมูลวิเคราะห์ธุรกิจและสถานะระบบของทั้ง 9 มินิลีก
+          กรุณายืนยันตัวตนเพื่อเข้าถึงข้อมูลวิเคราะห์ธุรกิจและสถานะระบบของมินิลีกทั้งหมดในระบบ
         </p>
         <div class="inline-flex items-center gap-2 text-xs font-mono text-emerald-700 dark:text-emerald-400 pt-1">
           <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
@@ -6744,8 +6427,8 @@ export function renderLoginHtml(errorMessage = '') {
         ? 'Executive BI Sign In'
         : 'เข้าสู่ระบบศูนย์ข้อมูลผู้บริหาร';
       document.getElementById('loginSub').textContent = next === 'en'
-        ? 'Authenticate to access real-time portfolio economics and cloud telemetry across all 9 leagues.'
-        : 'กรุณายืนยันตัวตนเพื่อเข้าถึงข้อมูลวิเคราะห์ธุรกิจและสถานะระบบของทั้ง 9 มินิลีก';
+        ? 'Authenticate to access real-time portfolio economics and cloud telemetry across all configured mini-leagues.'
+        : 'กรุณายืนยันตัวตนเพื่อเข้าถึงข้อมูลวิเคราะห์ธุรกิจและสถานะระบบของมินิลีกทั้งหมดในระบบ';
       document.getElementById('loginLabel').textContent = next === 'en'
         ? 'Admin Access Key'
         : 'รหัสผ่านผู้ดูแลระบบ (Admin Access Key)';

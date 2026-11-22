@@ -20339,6 +20339,29 @@
           } catch (_) {}
         };
 
+        function getTelemetryEnvHints() {
+          var langHint = "th";
+          var devHint = "desktop";
+          try {
+            if (typeof localStorage !== "undefined" && localStorage.getItem("fpl_lang") === "en") {
+              langHint = "en";
+            } else if (typeof document !== "undefined" && document.documentElement && document.documentElement.lang === "en") {
+              langHint = "en";
+            }
+          } catch (_) {}
+          try {
+            var ua = (typeof navigator !== "undefined" && navigator.userAgent) ? navigator.userAgent : "";
+            var touchPts = (typeof navigator !== "undefined" && navigator.maxTouchPoints) ? navigator.maxTouchPoints : 0;
+            var minSide = (typeof screen !== "undefined") ? Math.min(screen.width || 0, screen.height || 0) : 0;
+            if (/ipad|tablet|playbook|silk/i.test(ua) || (/macintosh/i.test(ua) && touchPts > 1) || (touchPts > 0 && minSide >= 768 && minSide <= 1366)) {
+              devHint = "tablet";
+            } else if (/mobi|android|iphone|ipod|blackberry|iemobile|opera mini/i.test(ua) || (touchPts > 0 && minSide > 0 && minSide < 768)) {
+              devHint = "mobile";
+            }
+          } catch (_) {}
+          return { lang: langHint, device_hint: devHint };
+        }
+
         function sendBeaconEvent(payload) {
           if (typeof navigator !== "undefined" && navigator.sendBeacon) {
             navigator.sendBeacon(telemEndpoint, JSON.stringify(payload));
@@ -20359,10 +20382,13 @@
           }
         } catch (_) {}
 
+        var envHints = getTelemetryEnvHints();
         sendBeaconEvent({
           type: shouldCountSiteVisit ? "page_view" : "league_view",
           league_id: currentLeague,
-          path: window.location.pathname
+          path: window.location.pathname,
+          lang: envHints.lang,
+          device_hint: envHints.device_hint
         });
 
         // 2. Batched Dwell Time & Feature Usage Flush
@@ -20404,10 +20430,13 @@
           flushDwellTime();
           currentLeague = String(newLeagueId);
           sessionStartTime = Date.now();
+          var swHints = getTelemetryEnvHints();
           sendBeaconEvent({
             type: "league_view",
             league_id: currentLeague,
-            path: "/" + currentLeague + "/"
+            path: "/" + currentLeague + "/",
+            lang: swHints.lang,
+            device_hint: swHints.device_hint
           });
         };
 

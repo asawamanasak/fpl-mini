@@ -23221,6 +23221,29 @@ __STRUCTURED_DATA_JSON__
           } catch (_) {}
         };
 
+        function getTelemetryEnvHints() {
+          var langHint = "th";
+          var devHint = "desktop";
+          try {
+            if (typeof localStorage !== "undefined" && localStorage.getItem("fpl_lang") === "en") {
+              langHint = "en";
+            } else if (typeof document !== "undefined" && document.documentElement && document.documentElement.lang === "en") {
+              langHint = "en";
+            }
+          } catch (_) {}
+          try {
+            var ua = (typeof navigator !== "undefined" && navigator.userAgent) ? navigator.userAgent : "";
+            var touchPts = (typeof navigator !== "undefined" && navigator.maxTouchPoints) ? navigator.maxTouchPoints : 0;
+            var minSide = (typeof screen !== "undefined") ? Math.min(screen.width || 0, screen.height || 0) : 0;
+            if (/ipad|tablet|playbook|silk/i.test(ua) || (/macintosh/i.test(ua) && touchPts > 1) || (touchPts > 0 && minSide >= 768 && minSide <= 1366)) {
+              devHint = "tablet";
+            } else if (/mobi|android|iphone|ipod|blackberry|iemobile|opera mini/i.test(ua) || (touchPts > 0 && minSide > 0 && minSide < 768)) {
+              devHint = "mobile";
+            }
+          } catch (_) {}
+          return { lang: langHint, device_hint: devHint };
+        }
+
         function sendBeaconEvent(payload) {
           if (typeof navigator !== "undefined" && navigator.sendBeacon) {
             navigator.sendBeacon(telemEndpoint, JSON.stringify(payload));
@@ -23241,10 +23264,13 @@ __STRUCTURED_DATA_JSON__
           }
         } catch (_) {}
 
+        var envHints = getTelemetryEnvHints();
         sendBeaconEvent({
           type: shouldCountSiteVisit ? "page_view" : "league_view",
           league_id: currentLeague,
-          path: window.location.pathname
+          path: window.location.pathname,
+          lang: envHints.lang,
+          device_hint: envHints.device_hint
         });
 
         // 2. Batched Dwell Time & Feature Usage Flush
@@ -23286,10 +23312,13 @@ __STRUCTURED_DATA_JSON__
           flushDwellTime();
           currentLeague = String(newLeagueId);
           sessionStartTime = Date.now();
+          var swHints = getTelemetryEnvHints();
           sendBeaconEvent({
             type: "league_view",
             league_id: currentLeague,
-            path: "/" + currentLeague + "/"
+            path: "/" + currentLeague + "/",
+            lang: swHints.lang,
+            device_hint: swHints.device_hint
           });
         };
 
@@ -27587,6 +27616,27 @@ __STRUCTURED_DATA_JSON__
         }
       },
 
+      getTelemetryEnvHints() {
+        var langHint = 'th';
+        var devHint = 'desktop';
+        try {
+          if (localStorage.getItem('fpl_lang') === 'en' || document.documentElement.lang === 'en') {
+            langHint = 'en';
+          }
+        } catch (_) {}
+        try {
+          var ua = (typeof navigator !== 'undefined' && navigator.userAgent) ? navigator.userAgent : '';
+          var touchPts = (typeof navigator !== 'undefined' && navigator.maxTouchPoints) ? navigator.maxTouchPoints : 0;
+          var minSide = (typeof screen !== 'undefined') ? Math.min(screen.width || 0, screen.height || 0) : 0;
+          if (/ipad|tablet|playbook|silk/i.test(ua) || (/macintosh/i.test(ua) && touchPts > 1) || (touchPts > 0 && minSide >= 768 && minSide <= 1366)) {
+            devHint = 'tablet';
+          } else if (/mobi|android|iphone|ipod|blackberry|iemobile|opera mini/i.test(ua) || (touchPts > 0 && minSide > 0 && minSide < 768)) {
+            devHint = 'mobile';
+          }
+        } catch (_) {}
+        return { lang: langHint, device_hint: devHint };
+      },
+
       sendLandingTelemetry() {
         if (typeof navigator === 'undefined' || !navigator.sendBeacon) return;
         const apiCfg = this.resolveApiBase();
@@ -27602,18 +27652,54 @@ __STRUCTURED_DATA_JSON__
               localStorage.setItem('fpl_visit_dedup_ts', String(Date.now()));
             }
           } catch (_) {}
+          var envHints = this.getTelemetryEnvHints();
           navigator.sendBeacon(
             apiCfg.base + '/api/telemetry/event',
             JSON.stringify({
               type: shouldCount ? 'page_view' : 'landing_view',
               league_id: 'landing',
-              path: window.location.pathname
+              path: window.location.pathname,
+              lang: envHints.lang,
+              device_hint: envHints.device_hint
             })
           );
         } catch (_) {}
+      },
+
+      initClientErrorHook() {
+        if (window.__fplLandingErrHooked) return;
+        window.__fplLandingErrHooked = true;
+        var sentCount = 0;
+        var self = this;
+        var report = function(cat, msg) {
+          if (sentCount >= 3 || typeof navigator === 'undefined' || !navigator.sendBeacon) return;
+          var apiCfg = self.resolveApiBase();
+          if ((self.isLocalOrigin() || self.isPreviewOrigin()) && !apiCfg.isNonProdTarget) return;
+          sentCount += 1;
+          try {
+            navigator.sendBeacon(
+              apiCfg.base + '/api/telemetry/event',
+              JSON.stringify({
+                type: 'client_error',
+                category: cat || 'js_error',
+                league_id: 'landing',
+                path: window.location.pathname,
+                msg: String(msg || '').slice(0, 120)
+              })
+            );
+          } catch (_) {}
+        };
+        window.addEventListener('error', function(e) {
+          report('js_error', e && e.message ? e.message : 'window_error');
+        });
+        window.addEventListener('unhandledrejection', function(e) {
+          var r = e && e.reason;
+          report('js_error', (r && r.message) ? r.message : String(r || 'promise_rejection'));
+        });
       }
     };
 
+    landingApp.initClientErrorHook();
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
       landingApp.init();
     } else {
@@ -27741,6 +27827,37 @@ def generate_404_html(site_config, leagues_config):
           return '<a href="' + href + '" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 hover:border-blue-500 text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors">' + label + '</a>';
         }).join('');
       }
+      var errSent = 0;
+      function send404Error(msg) {
+        if (errSent >= 3 || typeof navigator === 'undefined' || !navigator.sendBeacon) return;
+        var host = (window.location && window.location.hostname || '').toLowerCase();
+        var isLocal = window.location.protocol === 'file:' || host === 'localhost' || host === '127.0.0.1' || host === '[::1]';
+        var isPrev = host.endsWith('.pages.dev') || host.endsWith('.workers.dev');
+        var devBase = '';
+        if (isLocal) {
+          try {
+            var qp = new URLSearchParams(window.location.search || '').get('api');
+            devBase = (qp === 'local' || qp === 'staging') ? 'http://127.0.0.1:8787' : (sessionStorage.getItem('fpl_dev_api_base') || '');
+          } catch (_) {}
+        }
+        if ((isLocal && !devBase) || isPrev) return;
+        var target = (devBase || 'https://api.fplsawadika.com') + '/api/telemetry/event';
+        errSent += 1;
+        try {
+          navigator.sendBeacon(target, JSON.stringify({
+            type: 'client_error',
+            category: 'js_error',
+            league_id: '404',
+            path: window.location.pathname,
+            msg: String(msg || '').slice(0, 120)
+          }));
+        } catch (_) {}
+      }
+      window.addEventListener('error', function(e) { send404Error(e && e.message ? e.message : 'window_error'); });
+      window.addEventListener('unhandledrejection', function(e) {
+        var r = e && e.reason;
+        send404Error((r && r.message) ? r.message : String(r || 'promise_rejection'));
+      });
     })();
   </script>
 </body>
@@ -28808,9 +28925,42 @@ def generate_pay_html(site_config):
           if (btn) btn.disabled = false;
           if (txt) txt.textContent = isEn ? 'Submit Payment Slip' : 'ส่งสลิปยืนยันการโอน';
         }
+      },
+
+      initClientErrorHook() {
+        if (window.__fplPayErrHooked) return;
+        window.__fplPayErrHooked = true;
+        var sentCount = 0;
+        var self = this;
+        var report = function(cat, msg) {
+          if (sentCount >= 3 || typeof navigator === 'undefined' || !navigator.sendBeacon) return;
+          var apiCfg = self.resolveApiBase();
+          if ((self.isLocalOrigin() || self.isPreviewOrigin()) && !apiCfg.isNonProdTarget) return;
+          sentCount += 1;
+          try {
+            navigator.sendBeacon(
+              apiCfg.base + '/api/telemetry/event',
+              JSON.stringify({
+                type: 'client_error',
+                category: cat || 'js_error',
+                league_id: 'pay',
+                path: window.location.pathname,
+                msg: String(msg || '').slice(0, 120)
+              })
+            );
+          } catch (_) {}
+        };
+        window.addEventListener('error', function(e) {
+          report('js_error', e && e.message ? e.message : 'window_error');
+        });
+        window.addEventListener('unhandledrejection', function(e) {
+          var r = e && e.reason;
+          report('js_error', (r && r.message) ? r.message : String(r || 'promise_rejection'));
+        });
       }
     };
 
+    payApp.initClientErrorHook();
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
       payApp.init();
     } else {

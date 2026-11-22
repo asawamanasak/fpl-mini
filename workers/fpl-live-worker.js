@@ -504,6 +504,154 @@ function scheduleWorkerHealthMetric(env, ctx, isError, category = 'upstream_5xx'
   );
 }
 
+function scheduleWorkerCacheMetric(env, ctx, isHit, includeApiOk = false) {
+  if (!env || (!env.DB && !env.ANALYTICS_KV) || !ctx || !ctx.waitUntil) return;
+  if (isHit && Math.random() >= 0.1) return; // 10% sampling on Edge Cache HIT to protect D1 free write quota
+  const { date: today, hour } = getIctNowParts();
+  const pfx = `telem:${today}`;
+  const increments = isHit
+    ? [
+        { metric: `${pfx}:edge:hit`, date: today, amount: 10 },
+        { metric: `${pfx}:api:ok`, date: today, amount: 10 },
+        { metric: `${pfx}:api:ok:h:${hour}`, date: today, amount: 10 },
+      ]
+    : [
+        { metric: `${pfx}:edge:miss`, date: today, amount: 1 },
+        ...(includeApiOk
+          ? [
+              { metric: `${pfx}:api:ok`, date: today, amount: 1 },
+              { metric: `${pfx}:api:ok:h:${hour}`, date: today, amount: 1 },
+            ]
+          : []),
+      ];
+  ctx.waitUntil(
+    recordTelemetryIncrements(env, increments).catch((err) => {
+      console.warn('Worker cache metric warning:', err);
+    })
+  );
+}
+
+function buildLeagueModulesSummary(cfgItem, teamsCount) {
+  const tier = (cfgItem && cfgItem.tier) ? Number(cfgItem.tier) : 1;
+  const tCountFmt = Number(teamsCount || 0).toLocaleString();
+  if (tier === 2) {
+    return {
+      modules_th: `Tier 2 Auto-Picks Live (กัปตัน/Hits/ผังสด) · ค้นหา ${tCountFmt} ทีมทันที`,
+      modules_en: `Tier 2 Auto-Picks Live (Cap/Hits/Pitch) · ${tCountFmt}-Team Search`,
+    };
+  }
+  const feats = (cfgItem && cfgItem.features && typeof cfgItem.features === 'object') ? cfgItem.features : {};
+  const cur = String((cfgItem && cfgItem.currency) || feats.currency || 'THB').toUpperCase();
+  const curSym = cur === 'USD' ? '$' : '฿';
+  const thParts = [];
+  const enParts = [];
+
+  if (feats.prize_model === 'bramann_dual_prize') {
+    thParts.push('เงินรางวัลคู่ (GW18/GW38)');
+    enParts.push('Dual Milestone Prizes (GW18/GW38)');
+  } else if (feats.prize_model === 'annual_zero_sum') {
+    thParts.push('Zero-Sum ขั้นบันไดทั้งปี');
+    enParts.push('Zero-Sum Annual Tiers');
+  } else if (feats.has_monthly_prizes) {
+    thParts.push('รางวัลรายเดือน');
+    enParts.push('Monthly Prizes');
+  } else if (feats.has_weekly_prizes) {
+    if (feats.weekly_prizes && typeof feats.weekly_prizes === 'object') {
+      thParts.push('รางวัลรายสัปดาห์หลายขั้น');
+      enParts.push('Weekly Tier Prizes');
+    } else if (Number(feats.weekly_prize_amount) > 0) {
+      const amtFmt = Number(feats.weekly_prize_amount).toLocaleString();
+      thParts.push(`รางวัลรายสัปดาห์ ${curSym}${amtFmt}`);
+      enParts.push(`Weekly ${curSym}${amtFmt}`);
+    } else {
+      thParts.push('รางวัลรายสัปดาห์');
+      enParts.push('Weekly Prizes');
+    }
+  } else {
+    thParts.push('คอมมูนิตี้ · ตารางคะแนนสด');
+    enParts.push('Community · Live Standings');
+  }
+
+  if (feats.has_weekly_penalties) {
+    const tierLen = feats.weekly_penalty_tiers ? Object.keys(feats.weekly_penalty_tiers).length : 0;
+    thParts.push(tierLen > 0 ? `ค่าปรับบ๊วย ${tierLen} อันดับ` : 'ค่าปรับบ๊วย');
+    enParts.push(tierLen > 0 ? `Bottom-${tierLen} Penalty` : 'Bottom Penalty');
+  }
+  if (feats.has_settlement_phases) {
+    thParts.push('เคลียร์เงินรายงวด');
+    enParts.push('Settlement Phases');
+  }
+  if (feats.has_cup) {
+    thParts.push('บอลถ้วย');
+    enParts.push('Cup');
+  }
+  if (feats.charity_donation) {
+    thParts.push('การกุศล');
+    enParts.push('Charity');
+  }
+  if (feats.has_shi62_special) {
+    thParts.push("Shi'62 Special");
+    enParts.push("Shi'62 Special");
+  }
+  if (feats.has_bramann_prediction || feats.has_bramann_challenge) {
+    thParts.push('ทายผล & ท้าชน');
+    enParts.push('Prediction & Challenge');
+  }
+
+  return {
+    modules_th: thParts.join(' · '),
+    modules_en: enParts.join(' · '),
+  };
+}
+
+function computeSyncHealth(lastSyncIso, now = new Date()) {
+  const raw = typeof lastSyncIso === 'string' ? lastSyncIso.trim() : '';
+  if (!raw) {
+    return {
+      last_sync_iso: null,
+      age_minutes: null,
+      expected_interval_min: null,
+      stale_threshold_min: null,
+      incident_threshold_min: null,
+      is_matchday_cadence: null,
+      status: 'unknown',
+    };
+  }
+  const normalized = /^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}$/.test(raw)
+    ? `${raw.replace(/\s+/, 'T')}+07:00`
+    : raw;
+  const parsedMs = Date.parse(normalized);
+  if (Number.isNaN(parsedMs)) {
+    return {
+      last_sync_iso: raw,
+      age_minutes: null,
+      expected_interval_min: null,
+      stale_threshold_min: null,
+      incident_threshold_min: null,
+      is_matchday_cadence: null,
+      status: 'unknown',
+    };
+  }
+  const ageMinutes = Math.max(0, Math.round((now.getTime() - parsedMs) / 60000));
+  const ictDow = new Date(now.getTime() + 7 * 3600000).getUTCDay();
+  const isMatchdayCadence = ictDow === 5 || ictDow === 6 || ictDow === 0 || ictDow === 1;
+  const expectedIntervalMin = isMatchdayCadence ? 60 : 240;
+  const staleThresholdMin = isMatchdayCadence ? 150 : 360;
+  const incidentThresholdMin = isMatchdayCadence ? 240 : 540;
+  const status = ageMinutes >= incidentThresholdMin
+    ? 'incident'
+    : (ageMinutes >= staleThresholdMin ? 'warning' : 'healthy');
+  return {
+    last_sync_iso: raw,
+    age_minutes: ageMinutes,
+    expected_interval_min: expectedIntervalMin,
+    stale_threshold_min: staleThresholdMin,
+    incident_threshold_min: incidentThresholdMin,
+    is_matchday_cadence: isMatchdayCadence,
+    status,
+  };
+}
+
 function isLocalOrigin(originHeader) {
   if (!originHeader || originHeader === 'null') return false;
   try {
@@ -991,9 +1139,14 @@ export default {
         const isChrome = /chrome|crios|crmo/i.test(userAgent);
         const browser = isLine ? 'line' : (isFb ? 'fb' : (isSafari ? 'safari' : (isChrome ? 'chrome' : 'other')));
 
-        const isTablet = /ipad|tablet/i.test(userAgent);
-        const isMobile = !isTablet && /mobile|iphone|ipod|android/i.test(userAgent);
-        const device = isTablet ? 'tablet' : (isMobile ? 'mobile' : 'desktop');
+        const isTabletUa = /ipad|tablet/i.test(userAgent);
+        const isMobileUa = !isTabletUa && /mobile|iphone|ipod|android/i.test(userAgent);
+        const rawDeviceHint = typeof eventData.device_hint === 'string' ? eventData.device_hint.trim().toLowerCase() : '';
+        const device = (rawDeviceHint === 'mobile' || rawDeviceHint === 'tablet' || rawDeviceHint === 'desktop')
+          ? rawDeviceHint
+          : (isTabletUa ? 'tablet' : (isMobileUa ? 'mobile' : 'desktop'));
+        const rawLang = typeof eventData.lang === 'string' ? eventData.lang.trim().toLowerCase() : '';
+        const trackedLang = (rawLang === 'th' || rawLang === 'en') ? rawLang : '';
 
         const rawCity = (request.cf && request.cf.city) ? String(request.cf.city) : 'Bangkok';
         const city = rawCity.replace(/[^a-zA-Z0-9 _-]/g, '').trim().slice(0, 40) || 'Bangkok';
@@ -1017,6 +1170,9 @@ export default {
                   { metric: `${pfx}:dev:${device}`, date: today, amount: 1 },
                   { metric: `${pfx}:city:${city}`, date: today, amount: 1 }
                 );
+              }
+              if ((isViewEvent || eventData.type === 'landing_view') && trackedLang) {
+                increments.push({ metric: `${pfx}:lang:${trackedLang}`, date: today, amount: 1 });
               }
 
               // League Views & Dwell Time Counter (numeric league IDs only; track landing page separately)
@@ -1214,6 +1370,11 @@ export default {
           ]));
           const deletePromises = [];
           for (const orig of origins) {
+            deletePromises.push(cache.delete(new Request(`${orig}/visitors`)));
+            deletePromises.push(cache.delete(new Request(`${orig}/api/visitors`)));
+            for (const [f, t] of [[1, 12], [13, 24], [25, 36], [37, 48]]) {
+              deletePromises.push(cache.delete(new Request(`${orig}/standings?path=/standings&league=139836&from=${f}&to=${t}`)));
+            }
             for (let gw = 1; gw <= 38; gw++) {
               deletePromises.push(cache.delete(new Request(`${orig}/live?path=/live&gw=${gw}&slim=1`)));
               deletePromises.push(cache.delete(new Request(`${orig}/live?path=/live&gw=${gw}&slim=0`)));
@@ -1226,7 +1387,14 @@ export default {
           deletedCount = results.filter(Boolean).length;
         } catch (_) {}
         return new Response(
-          JSON.stringify({ success: true, deleted_keys: deletedCount, message: 'Edge cache flushed successfully' }),
+          JSON.stringify({
+            success: true,
+            deleted_keys: deletedCount,
+            colo,
+            flushed_scopes: ['/live', '/fixtures', '/standings', '/visitors'],
+            picks_ttl_sec: 1800,
+            message: `Edge cache flushed on ${colo} PoP (/live, /fixtures, /standings, /visitors; /picks TTL 30m)`,
+          }),
           { status: 200, headers: ADMIN_JSON_HEADERS }
         );
       }
@@ -1703,7 +1871,7 @@ export default {
           const activePending = (counts.awaiting_payment || 0) + (counts.slip_submitted || 0) + (counts.quote_requested || 0) + (counts.rejected || 0);
           const totalRecorded = (counts.all || 0) + expiredUnpaidTotal;
           const conversionPct = totalRecorded > 0
-            ? Math.round(((paidOrLive + (counts.slip_submitted || 0)) / totalRecorded) * 100)
+            ? Math.round((paidOrLive / totalRecorded) * 100)
             : 0;
           const stats = {
             total_recorded: totalRecorded,
@@ -1711,6 +1879,14 @@ export default {
             active_pending: activePending,
             expired_unpaid_total: expiredUnpaidTotal,
             conversion_pct: conversionPct,
+          };
+          const resendKey = (env && typeof env.RESEND_API_KEY === 'string') ? env.RESEND_API_KEY.trim() : '';
+          const emailStatus = {
+            ready: Boolean(resendKey),
+            mode: resendKey ? 'resend_live' : 'staging_mock',
+            from: (env && typeof env.EMAIL_FROM === 'string' && env.EMAIL_FROM.trim())
+              ? env.EMAIL_FROM.trim()
+              : 'FPLSaWaDiKa <noreply@fplsawadika.com>',
           };
 
           const reqOrigin = request.headers.get('origin') || '';
@@ -1731,7 +1907,7 @@ export default {
                 };
               }))
             : [];
-          return new Response(JSON.stringify({ success: true, counts, stats, orders }), {
+          return new Response(JSON.stringify({ success: true, counts, stats, email_status: emailStatus, orders }), {
             status: 200,
             headers: ADMIN_JSON_HEADERS,
           });
@@ -2177,6 +2353,7 @@ export default {
                 pool_label_en: typeof cfgItem.total_pool_en === 'string' ? cfgItem.total_pool_en : (poolStr || '-'),
                 has_custom_rules: hasCustomRules,
                 tier: cfgItem.tier ? Number(cfgItem.tier) : 1,
+                raw_cfg: cfgItem,
               };
             }
           }
@@ -2198,6 +2375,7 @@ export default {
               const d1Note = d1NotesMap && d1NotesMap.has(String(lid)) ? d1NotesMap.get(String(lid)) : '';
               const effectiveNote = d1Note || cfgMeta.billing_note || '';
               const noteSource = d1Note ? 'd1' : (cfgMeta.billing_note ? 'config' : 'none');
+              const modsSummary = buildLeagueModulesSummary(cfgMeta.raw_cfg || { tier }, teamsCount);
               liveAllManagers += teamsCount;
               if (tier !== 2) liveTier1Managers += teamsCount;
               liveLeagueSummaries[lid] = {
@@ -2208,6 +2386,8 @@ export default {
                 pool: typeof cfgMeta.pool === 'number' ? cfgMeta.pool : 0,
                 pool_label: cfgMeta.pool_label || '-',
                 pool_label_en: cfgMeta.pool_label_en || '-',
+                modules_th: modsSummary.modules_th,
+                modules_en: modsSummary.modules_en,
                 has_custom_rules: Boolean(cfgMeta.has_custom_rules),
                 plan: cfgMeta.plan || 'standard',
                 status: cfgMeta.status || (lObj && lObj.status) || 'active',
@@ -2243,18 +2423,18 @@ export default {
               else if (item.expiry_alert === 'expired') lifecycleSummary.expired += 1;
             }
 
-            const totalLeaguesCount = Object.keys(liveLeagueSummaries).length || 9;
-            const tier1LeaguesCount = Object.values(liveLeagueSummaries).filter(x => x.tier !== 2).length || 8;
-            const effectiveCustomCount = customRulesCount || 7;
+            const totalLeaguesCount = Object.keys(liveLeagueSummaries).length;
+            const tier1LeaguesCount = Object.values(liveLeagueSummaries).filter(x => x.tier !== 2).length;
+            const effectiveCustomCount = customRulesCount;
             data.portfolio = {
-              total_managers: liveTier1Managers || 163,
-              total_managers_tier1: liveTier1Managers || 163,
-              total_managers_all: liveAllManagers || liveTier1Managers || 1942,
-              total_pool_gmv: dynamicPoolGmv || 268700,
+              total_managers: liveTier1Managers,
+              total_managers_tier1: liveTier1Managers,
+              total_managers_all: liveAllManagers,
+              total_pool_gmv: dynamicPoolGmv,
               tier1_leagues_count: tier1LeaguesCount,
               total_leagues_count: totalLeaguesCount,
               custom_rules_count: effectiveCustomCount,
-              custom_rules_pct: Math.round((effectiveCustomCount / totalLeaguesCount) * 100),
+              custom_rules_pct: totalLeaguesCount > 0 ? Math.round((effectiveCustomCount / totalLeaguesCount) * 100) : 0,
               lifecycle_summary: lifecycleSummary,
               leagues: liveLeagueSummaries,
             };
@@ -2329,6 +2509,10 @@ export default {
                 let mobileCount = 0;
                 let desktopCount = 0;
                 let tabletCount = 0;
+                let langThCount = 0;
+                let langEnCount = 0;
+                let hit7d = 0;
+                let miss7d = 0;
 
                 for (let i = 0; i < dates.length; i++) {
                   const d = dates[i];
@@ -2342,48 +2526,42 @@ export default {
                   mobileCount += metricMap.get(`${pfx}:dev:mobile`) || 0;
                   desktopCount += metricMap.get(`${pfx}:dev:desktop`) || 0;
                   tabletCount += metricMap.get(`${pfx}:dev:tablet`) || 0;
+                  langThCount += metricMap.get(`${pfx}:lang:th`) || 0;
+                  langEnCount += metricMap.get(`${pfx}:lang:en`) || 0;
+                  hit7d += metricMap.get(`${pfx}:edge:hit`) || 0;
+                  miss7d += metricMap.get(`${pfx}:edge:miss`) || 0;
                 }
 
-                if (otherSrcCount > 0) {
-                  safariCount += Math.round(otherSrcCount * 0.65);
-                  chromeCount += otherSrcCount - Math.round(otherSrcCount * 0.65);
-                }
-
-                const totalKvVisits = totalVisitsKV > 0 ? totalVisitsKV : (lineCount + safariCount + chromeCount + fbCount);
-                const usePureRealTelemetry = totalKvVisits > 0;
-                const baselineVisits = usePureRealTelemetry ? 0 : 4280;
-                const dynamicVisits = baselineVisits + totalKvVisits;
+                const totalKvVisits = totalVisitsKV > 0 ? totalVisitsKV : (lineCount + safariCount + chromeCount + fbCount + otherSrcCount);
+                const dynamicVisits = totalKvVisits;
                 const dailyAvgReach = Math.round(dynamicVisits / 7);
 
-                // Direct 7-day real telemetry (only falls back to priors when D1 has 0 visits)
-                const baseLineHits = usePureRealTelemetry ? 0 : Math.round(baselineVisits * 0.524);
-                const baseSafariHits = usePureRealTelemetry ? 0 : Math.round(baselineVisits * 0.348);
-                const baseChromeHits = usePureRealTelemetry ? 0 : (baselineVisits - baseLineHits - baseSafariHits);
+                // Honest 7-day browser & in-app breakdown (0% synthetic split)
+                const activeSrcTotal = lineCount + safariCount + chromeCount + fbCount + otherSrcCount;
+                const srcDenom = Math.max(1, activeSrcTotal);
+                const linePct = activeSrcTotal > 0 ? ((lineCount / srcDenom) * 100).toFixed(1) : '0.0';
+                const safariPct = activeSrcTotal > 0 ? ((safariCount / srcDenom) * 100).toFixed(1) : '0.0';
+                const chromePct = activeSrcTotal > 0 ? ((chromeCount / srcDenom) * 100).toFixed(1) : '0.0';
+                const fbPct = activeSrcTotal > 0 ? ((fbCount / srcDenom) * 100).toFixed(1) : '0.0';
+                const otherPct = activeSrcTotal > 0
+                  ? Math.max(0, 100.0 - parseFloat(linePct) - parseFloat(safariPct) - parseFloat(chromePct) - parseFloat(fbPct)).toFixed(1)
+                  : '0.0';
 
-                const activeLineHits = baseLineHits + lineCount;
-                const activeSafariHits = baseSafariHits + safariCount;
-                const activeChromeHits = baseChromeHits + chromeCount + fbCount;
-                const activeSrcTotal = Math.max(1, activeLineHits + activeSafariHits + activeChromeHits);
+                // Honest TH / EN locale breakdown (0% synthetic)
+                const localeTotal = langThCount + langEnCount;
+                const langThPct = localeTotal > 0 ? ((langThCount / localeTotal) * 100).toFixed(1) : '0.0';
+                const langEnPct = localeTotal > 0 ? Math.max(0, 100.0 - parseFloat(langThPct)).toFixed(1) : '0.0';
 
-                const linePct = ((activeLineHits / activeSrcTotal) * 100).toFixed(1);
-                const safariPct = ((activeSafariHits / activeSrcTotal) * 100).toFixed(1);
-                const chromePct = Math.max(0, 100.0 - parseFloat(linePct) - parseFloat(safariPct)).toFixed(1);
-
-                // Device distribution (compute both 7d and 30d rolling real D1 windows)
-                const buildDeviceWindow = (mob, desk, tab, winDays, allowFallback) => {
-                  const rawSum = mob + desk + tab;
-                  const baseMob = (allowFallback && rawSum === 0) ? Math.round(baselineVisits * 0.764) : 0;
-                  const baseDesk = (allowFallback && rawSum === 0) ? Math.round(baselineVisits * 0.182) : 0;
-                  const baseTab = (allowFallback && rawSum === 0) ? (baselineVisits - baseMob - baseDesk) : 0;
-                  const mHits = baseMob + mob;
-                  const dHits = baseDesk + desk;
-                  const tHits = baseTab + tab;
-                  const tot = Math.max(1, mHits + dHits + tHits);
-                  const mPct = ((mHits / tot) * 100).toFixed(1);
-                  const dPct = ((dHits / tot) * 100).toFixed(1);
-                  const tPct = Math.max(0, 100.0 - parseFloat(mPct) - parseFloat(dPct)).toFixed(1);
+                // Device distribution (compute both 7d and 30d rolling real D1 windows, 0% synthetic)
+                const buildDeviceWindow = (mob, desk, tab, winDays) => {
+                  const tot = mob + desk + tab;
+                  const denom = Math.max(1, tot);
+                  const mPct = tot > 0 ? ((mob / denom) * 100).toFixed(1) : '0.0';
+                  const dPct = tot > 0 ? ((desk / denom) * 100).toFixed(1) : '0.0';
+                  const tPct = tot > 0 ? Math.max(0, 100.0 - parseFloat(mPct) - parseFloat(dPct)).toFixed(1) : '0.0';
                   return {
                     window_days: winDays,
+                    total: tot,
                     mobile: { count: mob, pct: mPct },
                     desktop: { count: desk, pct: dPct },
                     tablet: { count: tab, pct: tPct },
@@ -2391,30 +2569,17 @@ export default {
                 };
 
                 const hasDev30d = dev30d.hasData && (dev30d.mobile + dev30d.desktop + dev30d.tablet) > 0;
-                const devices7dObj = buildDeviceWindow(mobileCount, desktopCount, tabletCount, 7, !usePureRealTelemetry);
+                const devices7dObj = buildDeviceWindow(mobileCount, desktopCount, tabletCount, 7);
                 const devices30dObj = hasDev30d
-                  ? buildDeviceWindow(dev30d.mobile, dev30d.desktop, dev30d.tablet, 30, false)
+                  ? buildDeviceWindow(dev30d.mobile, dev30d.desktop, dev30d.tablet, 30)
                   : { ...devices7dObj, window_days: 7 };
                 const activeDevicesDefault = hasDev30d ? devices30dObj : devices7dObj;
-
-                // League metadata (real 7-day views & dwell directly from D1 without synthetic baseline skew)
-                const LEAGUE_BASELINES = {
-                  '40700': { name: 'เซียนอยู่รู หมูอยู่ตึก', baseDwellSec: 384, peakWindow: 'เสาร์ 21:00 - 23:00 น.', peakWindowEn: 'Sat 21:00 - 23:00' },
-                  '675290': { name: 'NudNee', baseDwellSec: 312, peakWindow: 'เสาร์ 18:30 - 21:00 น.', peakWindowEn: 'Sat 18:30 - 21:00' },
-                  '38491': { name: 'รอ แมน โอน', baseDwellSec: 246, peakWindow: 'ศุกร์ 17:00 - 18:30 น.', peakWindowEn: 'Fri 17:00 - 18:30' },
-                  '1101958': { name: "Barley's Official League", baseDwellSec: 276, peakWindow: 'อาทิตย์ 20:00 - 22:30 น.', peakWindowEn: 'Sun 20:00 - 22:30' },
-                  '438691': { name: '2 spade', baseDwellSec: 234, peakWindow: 'เสาร์ 20:00 - 22:00 น.', peakWindowEn: 'Sat 20:00 - 22:00' },
-                  '187827': { name: 'Shi62', baseDwellSec: 210, peakWindow: 'จันทร์ 12:00 - 13:30 น.', peakWindowEn: 'Mon 12:00 - 13:30' },
-                  '5349': { name: 'Bramann League', baseDwellSec: 192, peakWindow: 'เสาร์ 18:00 - 20:00 น.', peakWindowEn: 'Sat 18:00 - 20:00' },
-                  '567387': { name: 'Fantasy Nguan & friends cup', baseDwellSec: 180, peakWindow: 'เสาร์ 21:00 - 23:00 น.', peakWindowEn: 'Sat 21:00 - 23:00' },
-                  '139836': { name: 'FPL Growth Mindset 2026/27', baseDwellSec: 180, peakWindow: 'เสาร์ 20:00 - 22:30 น.', peakWindowEn: 'Sat 20:00 - 22:30' },
-                };
 
                 const extraQueryLeagues = (url.searchParams.get('extra_leagues') || '')
                   .split(',')
                   .map(s => s.trim())
                   .filter(s => /^\d{1,10}$/.test(s));
-                const leagueIds = Array.from(new Set([...Object.keys(LEAGUE_BASELINES), ...Object.keys(liveLeagueSummaries), ...extraQueryLeagues]));
+                const leagueIds = Array.from(new Set([...Object.keys(liveLeagueSummaries), ...extraQueryLeagues]));
 
                 const leagueStats = {};
                 leagueIds.forEach(lid => {
@@ -2438,43 +2603,51 @@ export default {
                 const leaguesOutput = {};
 
                 leagueIds.forEach(lid => {
-                  const base = LEAGUE_BASELINES[lid] || { peakWindow: '-', peakWindowEn: '-', baseDwellSec: 180 };
                   const st = leagueStats[lid];
                   const actViews = st.kvViews;
+                  const metaRow = liveLeagueSummaries[lid];
+                  const tCount = metaRow && Number(metaRow.teams) > 0 ? Number(metaRow.teams) : 0;
                   totalLeaguesVisits += actViews;
 
                   globalDwellSec += st.kvDwellSec;
                   globalDwellSess += st.kvDwellSess;
                   const avgDwellSec = st.kvDwellSess > 0
                     ? Math.round(st.kvDwellSec / st.kvDwellSess)
-                    : 0;
-                  const avgMins = (avgDwellSec / 60).toFixed(1);
+                    : null;
+                  const avgMins = avgDwellSec !== null ? (avgDwellSec / 60).toFixed(1) : null;
+                  const vpt7d = tCount > 0 ? Number((actViews / tCount).toFixed(1)) : 0;
 
                   leaguesOutput[lid] = {
                     views: actViews,
                     raw_live_views: st.kvViews,
-                    peak_window: base.peakWindow,
-                    peak_window_en: base.peakWindowEn,
-                    avg_screen_time: st.kvDwellSess > 0 ? (avgMins + ' นาที / ครั้ง') : '-',
-                    avg_screen_time_en: st.kvDwellSess > 0 ? (avgMins + ' min / visit') : '-',
-                    avg_screen_time_mins: parseFloat(avgMins),
+                    visits_per_team_7d: vpt7d,
+                    avg_screen_time_sec: avgDwellSec,
+                    avg_screen_time: avgMins !== null ? (avgMins + ' นาที / ครั้ง') : '—',
+                    avg_screen_time_en: avgMins !== null ? (avgMins + ' min / visit') : '—',
+                    avg_screen_time_mins: avgMins !== null ? parseFloat(avgMins) : 0,
                   };
                 });
 
                 leagueIds.forEach(lid => {
-                  const share = ((leaguesOutput[lid].views / (totalLeaguesVisits > 0 ? totalLeaguesVisits : 1)) * 100).toFixed(1);
+                  const share = totalLeaguesVisits > 0
+                    ? ((leaguesOutput[lid].views / totalLeaguesVisits) * 100).toFixed(1)
+                    : '0.0';
                   leaguesOutput[lid].share_pct = share;
                 });
 
-                // Feature Adoption, City Geo & Hourly Traffic Aggregation (7 Days)
+                // Feature Adoption, City Geo & Hourly Traffic Aggregation (7 Days, 100% real D1)
                 let featTabLive = 0;
                 let featTabHighlight = 0;
                 let featTabComp = 0;
+                let featTabGlobalRadar = 0;
                 let featTabPrizes = 0;
                 let featTabSpecial = 0;
+                let featTabTransferAdvisor = 0;
                 let featTabTransfers = 0;
-                let featTabChips = 0;
+                let featTabCup = 0;
                 let featTabHof = 0;
+                let featTabRules = 0;
+                let featTabAbout = 0;
                 let featPitchOpens = 0;
 
                 const BKK_METRO_CITIES = new Set(['bangkok', 'nonthaburi', 'pathum thani', 'samut prakan', 'samut sakhon', 'nakhon pathom', 'pak kret', 'bang kruai', 'bangใหญ่', 'bang yai', 'rangsit', 'bang phli', 'bang bo', 'thanyaburi', 'khlong luang', 'lam luk ka']);
@@ -2496,19 +2669,22 @@ export default {
                 let cityIntlCount = 0;
 
                 // Hourly traffic aggregation (0..23 ICT) directly from real D1 visits
-                const hourlyBase = [42, 28, 14, 8, 6, 9, 18, 34, 62, 95, 118, 145, 190, 165, 140, 155, 198, 265, 390, 485, 620, 740, 580, 210];
                 const realHourlySeries = new Array(24).fill(0);
                 let totalRealHourlyHits = 0;
 
                 for (const [mKey, mVal] of metricMap.entries()) {
-                  if (mKey.includes(':feat:tab:gameweek-view') || mKey.includes(':feat:tab:live')) featTabLive += mVal;
+                  if (mKey.includes(':feat:tab:transfer-advisor-view')) featTabTransferAdvisor += mVal;
+                  else if (mKey.includes(':feat:tab:transfers-view') || mKey.includes(':feat:tab:transfers')) featTabTransfers += mVal;
+                  else if (mKey.includes(':feat:tab:gameweek-view') || mKey.includes(':feat:tab:live')) featTabLive += mVal;
                   else if (mKey.includes(':feat:tab:highlight')) featTabHighlight += mVal;
-                  else if (mKey.includes(':feat:tab:competition') || mKey.includes(':feat:tab:global-radar')) featTabComp += mVal;
+                  else if (mKey.includes(':feat:tab:competition')) featTabComp += mVal;
+                  else if (mKey.includes(':feat:tab:global-radar')) featTabGlobalRadar += mVal;
                   else if (mKey.includes(':feat:tab:prizes')) featTabPrizes += mVal;
                   else if (mKey.includes(':feat:tab:shi62') || mKey.includes(':feat:tab:bramann')) featTabSpecial += mVal;
-                  else if (mKey.includes(':feat:tab:transfers')) featTabTransfers += mVal;
-                  else if (mKey.includes(':feat:tab:chips')) featTabChips += mVal;
-                  else if (mKey.includes(':feat:tab:hall-of-fame') || mKey.includes(':feat:tab:cup') || mKey.includes(':feat:tab:rules') || mKey.includes(':feat:tab:about')) featTabHof += mVal;
+                  else if (mKey.includes(':feat:tab:cup')) featTabCup += mVal;
+                  else if (mKey.includes(':feat:tab:hall-of-fame')) featTabHof += mVal;
+                  else if (mKey.includes(':feat:tab:rules')) featTabRules += mVal;
+                  else if (mKey.includes(':feat:tab:about')) featTabAbout += mVal;
                   else if (mKey.includes(':feat:pitch_opens')) featPitchOpens += mVal;
                   else {
                     const cMatch = mKey.match(/:city:(.+)$/);
@@ -2528,123 +2704,226 @@ export default {
                     }
                   }
                 }
-                const hourlySeries = totalRealHourlyHits > 0 ? realHourlySeries : [...hourlyBase];
-
-                // Geographic split (pure real D1 city hits when recorded)
-                const hasRealGeo = (cityBkkCount + cityRegionalCount + cityIntlCount) > 0;
-                const activeBkkHits = hasRealGeo ? cityBkkCount : Math.round(baselineVisits * 0.685);
-                const activeRegHits = hasRealGeo ? cityRegionalCount : Math.round(baselineVisits * 0.237);
-                const activeIntlHits = hasRealGeo ? cityIntlCount : (baselineVisits - Math.round(baselineVisits * 0.685) - Math.round(baselineVisits * 0.237));
-                const activeGeoTotal = Math.max(1, activeBkkHits + activeRegHits + activeIntlHits);
-                const geoBkkPct = ((activeBkkHits / activeGeoTotal) * 100).toFixed(1);
-                const geoRegPct = ((activeRegHits / activeGeoTotal) * 100).toFixed(1);
-                const geoIntlPct = Math.max(0, 100.0 - parseFloat(geoBkkPct) - parseFloat(geoRegPct)).toFixed(1);
-
-                // 7-Day Rolling Daily Visits Series (oldest to newest ICT date)
-                const dailyBaseWeights = [0.095, 0.082, 0.078, 0.088, 0.142, 0.285, 0.230];
-                const dailySeries = dates.slice().reverse().map((d, idx) => {
-                  const kvDay = metricMap.get(`telem:${d}:total_visits`) || 0;
-                  if (usePureRealTelemetry) {
-                    return { date: d, visits: kvDay };
+                const hourlySeries = realHourlySeries;
+                let peakHour = 0;
+                let peakHourVisits = 0;
+                for (let hr = 0; hr < 24; hr++) {
+                  if (hourlySeries[hr] > peakHourVisits) {
+                    peakHourVisits = hourlySeries[hr];
+                    peakHour = hr;
                   }
-                  const dt = new Date(d + 'T12:00:00Z');
-                  const dow = Number.isNaN(dt.getTime()) ? idx : dt.getUTCDay();
-                  const dowWeights = [0.230, 0.125, 0.078, 0.074, 0.088, 0.145, 0.260];
-                  const calDay = Math.round(baselineVisits * (dowWeights[dow] ?? dailyBaseWeights[idx] ?? 0.14));
-                  return { date: d, visits: calDay + kvDay };
-                });
+                }
 
-                // Peak daily visits & off-peak Tue-Thu avg directly from dailySeries
-                let weekendMaxVisits = 0;
+                // Real 3 time-of-day windows from 7-day hourly distribution (ICT)
+                let winEveningHits = 0; // 18:00 - 01:59 (Live matches & pre-deadline)
+                let winDaytimeHits = 0; // 10:00 - 17:59 (Daytime planning & checks)
+                let winMorningHits = 0; // 02:00 - 09:59 (Late-night / morning settlement)
+                for (let hr = 0; hr < 24; hr++) {
+                  const hVal = hourlySeries[hr] || 0;
+                  if (hr >= 18 || hr <= 1) winEveningHits += hVal;
+                  else if (hr >= 10 && hr <= 17) winDaytimeHits += hVal;
+                  else winMorningHits += hVal;
+                }
+                const winTotal = winEveningHits + winDaytimeHits + winMorningHits;
+                const winEveningPct = winTotal > 0 ? ((winEveningHits / winTotal) * 100).toFixed(1) : '0.0';
+                const winDaytimePct = winTotal > 0 ? ((winDaytimeHits / winTotal) * 100).toFixed(1) : '0.0';
+                const winMorningPct = winTotal > 0
+                  ? Math.max(0, 100.0 - parseFloat(winEveningPct) - parseFloat(winDaytimePct)).toFixed(1)
+                  : '0.0';
+
+                // Geographic split (100% pure real D1 city hits)
+                const activeGeoTotal = cityBkkCount + cityRegionalCount + cityIntlCount;
+                const hasRealGeo = activeGeoTotal > 0;
+                const geoDenom = Math.max(1, activeGeoTotal);
+                const geoBkkPct = hasRealGeo ? ((cityBkkCount / geoDenom) * 100).toFixed(1) : '0.0';
+                const geoRegPct = hasRealGeo ? ((cityRegionalCount / geoDenom) * 100).toFixed(1) : '0.0';
+                const geoIntlPct = hasRealGeo ? Math.max(0, 100.0 - parseFloat(geoBkkPct) - parseFloat(geoRegPct)).toFixed(1) : '0.0';
+                const geoThTotalPct = hasRealGeo ? (parseFloat(geoBkkPct) + parseFloat(geoRegPct)).toFixed(1) : '0.0';
+
+                // 7-Day Rolling Daily Visits Series (oldest to newest ICT date, 100% real D1)
+                const dailySeries = dates.slice().reverse().map((d) => ({
+                  date: d,
+                  visits: metricMap.get(`telem:${d}:total_visits`) || 0,
+                }));
+
+                // Real 7d Peak Day, Off-Peak Tue-Thu Avg, and Matchday (Fri-Mon) vs Weekday (Tue-Thu) Share
                 let overallMaxVisits = 0;
+                let peakDayDate = '';
                 let offPeakSum = 0;
                 let offPeakDays = 0;
+                let matchdaySum = 0;
                 dailySeries.forEach((item) => {
-                  if (item.visits > overallMaxVisits) overallMaxVisits = item.visits;
+                  if (item.visits >= overallMaxVisits && (item.visits > 0 || !peakDayDate)) {
+                    overallMaxVisits = item.visits;
+                    peakDayDate = item.date;
+                  }
                   const dt = new Date(item.date + 'T12:00:00Z');
                   const dow = Number.isNaN(dt.getTime()) ? 0 : dt.getUTCDay();
-                  if (dow === 5 || dow === 6 || dow === 0) {
-                    if (item.visits > weekendMaxVisits) weekendMaxVisits = item.visits;
-                  } else if (dow >= 2 && dow <= 4) {
+                  if (dow >= 2 && dow <= 4) {
                     offPeakSum += item.visits;
                     offPeakDays += 1;
+                  } else {
+                    matchdaySum += item.visits;
                   }
                 });
-                const matchdayActiveUsers = usePureRealTelemetry
-                  ? (overallMaxVisits || totalKvVisits)
-                  : (weekendMaxVisits || Math.round(dynamicVisits * 0.28));
-                const offPeakDau = offPeakDays > 0
-                  ? Math.round(offPeakSum / offPeakDays)
-                  : Math.round(dynamicVisits * 0.08);
+                const matchdayActiveUsers = overallMaxVisits;
+                const offPeakDau = offPeakDays > 0 ? Math.round(offPeakSum / offPeakDays) : 0;
+                const splitTotal = matchdaySum + offPeakSum;
+                const matchdaySharePct = splitTotal > 0 ? Math.round((matchdaySum / splitTotal) * 100) : 0;
+                const offpeakSharePct = splitTotal > 0 ? (100 - matchdaySharePct) : 0;
                 const avgSessionSec = globalDwellSess > 0
                   ? Math.round(globalDwellSec / globalDwellSess)
-                  : 402;
+                  : null;
 
-                // Pure 7-Day Real Feature Adoption (only falls back if D1 has 0 feature clicks)
-                const rawLiveHits = featTabLive + featTabHighlight;
-                const rawPrizesHits = featTabPrizes + featTabSpecial;
-                const rawSquadHits = featTabComp + featPitchOpens;
-                const rawPlannerHits = featTabTransfers + featTabChips;
-                const rawHofHits = featTabHof;
-                const rawFeatTotal = rawLiveHits + rawPrizesHits + rawSquadHits + rawPlannerHits + rawHofHits;
-                const hasRealFeat = rawFeatTotal > 0;
+                // Real 7-Day Feature Adoption (Every active tab + Pitch Modal, sorted desc)
+                const rawFeatureDefs = [
+                  { key: 'gameweek-view', count: featTabLive, label_th: 'คะแนนสด & โบนัส (Live Standings & BPS)', label_en: 'Live Standings & BPS' },
+                  { key: 'pitch_opens', count: featPitchOpens, label_th: 'ส่องผัง 11 ตัวจริงคู่แข่ง (Squad Pitch Modal)', label_en: 'Squad Pitch Modal' },
+                  { key: 'prizes-view', count: featTabPrizes, label_th: 'เงินรางวัล & บัญชีรับจ่าย (Prizes & Ledger)', label_en: 'Prizes & Ledger' },
+                  { key: 'transfer-advisor-view', count: featTabTransferAdvisor, is_new: true, label_th: 'แนะนำการย้ายตัว (Transfer Advisor)', label_en: 'Transfer Advisor' },
+                  { key: 'transfers-view', count: featTabTransfers, label_th: 'วิเคราะห์การย้ายตัว (Transfers Analytics)', label_en: 'Transfers Analytics' },
+                  { key: 'highlights-view', count: featTabHighlight, label_th: 'ไฮไลท์ & พากย์กูรู (Highlights & Pundit)', label_en: 'Highlights & Pundit' },
+                  { key: 'competition-view', count: featTabComp, label_th: 'สถานะชิปทั้งลีก (Chips Matrix)', label_en: 'Chips Matrix' },
+                  { key: 'global-radar-view', count: featTabGlobalRadar, label_th: 'เรดาร์ฟอร์มรวม (Global Radar)', label_en: 'Global Radar' },
+                  { key: 'cup-view', count: featTabCup, label_th: 'บอลถ้วยน็อคเอาท์ (Knockout Cup)', label_en: 'Knockout Cup' },
+                  { key: 'hall-of-fame-view', count: featTabHof, label_th: 'ทำเนียบแชมป์ & สถิติ (Hall of Fame)', label_en: 'Hall of Fame' },
+                  { key: 'special_minigames', count: featTabSpecial, label_th: "มินิเกมพิเศษ (Shi'62 / Bramann)", label_en: "Special Mini-Games (Shi'62 / Bramann)" },
+                  { key: 'rules-view', count: featTabRules, label_th: 'กติกามินิลีก (League Rules)', label_en: 'League Rules' },
+                  { key: 'about-view', count: featTabAbout, label_th: 'Dev Corner & สถาปัตยกรรม', label_en: 'Dev Corner & Architecture' },
+                ];
+                const totalFeatHits = rawFeatureDefs.reduce((acc, it) => acc + it.count, 0);
+                const featureItemsSorted = rawFeatureDefs
+                  .map((it) => ({
+                    ...it,
+                    pct: totalFeatHits > 0 ? ((it.count / totalFeatHits) * 100).toFixed(1) : '0.0',
+                  }))
+                  .sort((a, b) => (b.count - a.count));
 
-                const baseLiveHits = hasRealFeat ? rawLiveHits : Math.round(dynamicVisits * 0.442);
-                const basePrizesHits = hasRealFeat ? rawPrizesHits : Math.round(dynamicVisits * 0.238);
-                const baseSquadHits = hasRealFeat ? rawSquadHits : Math.round(dynamicVisits * 0.165);
-                const basePlannerHits = hasRealFeat ? rawPlannerHits : Math.round(dynamicVisits * 0.094);
-                const baseHofHits = hasRealFeat ? rawHofHits : Math.round(dynamicVisits * 0.061);
-                const totalFeatHits = Math.max(1, baseLiveHits + basePrizesHits + baseSquadHits + basePlannerHits + baseHofHits);
+                // Real Paid/Prize vs Community/Tier-2 Segment Comparison (7d D1 views)
+                let prizeTeamsSum = 0;
+                let prizeViewsSum = 0;
+                let prizeLeaguesCnt = 0;
+                let commAllTeamsSum = 0;
+                let commAllViewsSum = 0;
+                let commAllLeaguesCnt = 0;
+                let commT1TeamsSum = 0;
+                let commT1ViewsSum = 0;
+                let commT1LeaguesCnt = 0;
+                let allT1TeamsSum = 0;
+                let allT1ViewsSum = 0;
+                let allT1LeaguesCnt = 0;
+                let topPrizeLeague = null;
 
-                const modStandingsPct = ((baseLiveHits / totalFeatHits) * 100).toFixed(1);
-                const modPrizesPct = ((basePrizesHits / totalFeatHits) * 100).toFixed(1);
-                const modSquadPct = ((baseSquadHits / totalFeatHits) * 100).toFixed(1);
-                const modPlannerPct = ((basePlannerHits / totalFeatHits) * 100).toFixed(1);
-                const modHofPct = Math.max(0, 100.0 - parseFloat(modStandingsPct) - parseFloat(modPrizesPct) - parseFloat(modSquadPct) - parseFloat(modPlannerPct)).toFixed(1);
+                for (const lMeta of Object.values(liveLeagueSummaries)) {
+                  const lid = String(lMeta.id);
+                  const views7d = (leaguesOutput[lid] && Number(leaguesOutput[lid].views)) || 0;
+                  const tCnt = Number(lMeta.teams || 0);
+                  const poolVal = Number(lMeta.pool || 0);
+                  const isTier2 = Number(lMeta.tier) === 2;
+                  if (!isTier2) {
+                    allT1LeaguesCnt += 1;
+                    allT1TeamsSum += tCnt;
+                    allT1ViewsSum += views7d;
+                  }
+                  if (poolVal > 0) {
+                    prizeLeaguesCnt += 1;
+                    prizeTeamsSum += tCnt;
+                    prizeViewsSum += views7d;
+                    const vpt = tCnt > 0 ? Number((views7d / tCnt).toFixed(1)) : 0;
+                    if (!topPrizeLeague || vpt > topPrizeLeague.visits_per_team_7d) {
+                      topPrizeLeague = { id: lid, name: lMeta.name, teams: tCnt, views_7d: views7d, pool: poolVal, visits_per_team_7d: vpt };
+                    }
+                  } else {
+                    commAllLeaguesCnt += 1;
+                    commAllTeamsSum += tCnt;
+                    commAllViewsSum += views7d;
+                    if (!isTier2) {
+                      commT1LeaguesCnt += 1;
+                      commT1TeamsSum += tCnt;
+                      commT1ViewsSum += views7d;
+                    }
+                  }
+                }
+                const prizeVpt = prizeTeamsSum > 0 ? Number((prizeViewsSum / prizeTeamsSum).toFixed(1)) : 0;
+                const commAllVpt = commAllTeamsSum > 0 ? Number((commAllViewsSum / commAllTeamsSum).toFixed(1)) : 0;
+                const commT1Vpt = commT1TeamsSum > 0 ? Number((commT1ViewsSum / commT1TeamsSum).toFixed(1)) : 0;
+                const allT1Vpt = allT1TeamsSum > 0 ? Number((allT1ViewsSum / allT1TeamsSum).toFixed(1)) : 0;
+                const segMultiplier = (prizeVpt > 0 && commAllVpt > 0) ? Number((prizeVpt / commAllVpt).toFixed(1)) : null;
 
                 const featuresSummary = {
-                  modules: {
-                    standings: { count: baseLiveHits, pct: modStandingsPct },
-                    prizes: { count: basePrizesHits, pct: modPrizesPct },
-                    squad: { count: baseSquadHits, pct: modSquadPct },
-                    planner: { count: basePlannerHits, pct: modPlannerPct },
-                    hof: { count: baseHofHits, pct: modHofPct },
-                  },
-                  tabs: {
-                    live: { count: featTabLive || baseLiveHits, pct: modStandingsPct },
-                    highlight: { count: featTabHighlight, pct: (((hasRealFeat ? featTabHighlight : Math.round(dynamicVisits * 0.224)) / totalFeatHits) * 100).toFixed(1) },
-                    competition: { count: baseSquadHits, pct: modSquadPct },
-                    prizes: { count: featTabPrizes || basePrizesHits, pct: modPrizesPct },
-                    special: { count: featTabSpecial, pct: (((hasRealFeat ? featTabSpecial : Math.round(dynamicVisits * 0.051)) / totalFeatHits) * 100).toFixed(1) },
-                    hof_cup: { count: baseHofHits, pct: modHofPct },
-                  },
+                  total_interactions: totalFeatHits,
+                  items: featureItemsSorted,
                   pitch_opens: featPitchOpens,
+                  segment_comparison: {
+                    prize_leagues: {
+                      leagues_count: prizeLeaguesCnt,
+                      total_teams: prizeTeamsSum,
+                      total_views_7d: prizeViewsSum,
+                      visits_per_team_7d: prizeVpt,
+                    },
+                    community_leagues: {
+                      leagues_count: commAllLeaguesCnt,
+                      total_teams: commAllTeamsSum,
+                      total_views_7d: commAllViewsSum,
+                      visits_per_team_7d: commAllVpt,
+                    },
+                    community_tier1_only: {
+                      leagues_count: commT1LeaguesCnt,
+                      total_teams: commT1TeamsSum,
+                      total_views_7d: commT1ViewsSum,
+                      visits_per_team_7d: commT1Vpt,
+                    },
+                    all_tier1: {
+                      leagues_count: allT1LeaguesCnt,
+                      total_teams: allT1TeamsSum,
+                      total_views_7d: allT1ViewsSum,
+                      visits_per_team_7d: allT1Vpt,
+                    },
+                    top_prize_league: topPrizeLeague,
+                    multiplier: segMultiplier,
+                  },
                 };
 
-                // Cloudflare D1 & Storage Telemetry
+                // Cloudflare D1 & Storage Telemetry (All 4 tables)
                 let d1RowCount = 0;
+                const d1Tables = {
+                  telemetry_counters: 0,
+                  league_orders: 0,
+                  league_admin_notes: 0,
+                  app_settings: 0,
+                };
                 if (env.DB) {
                   try {
-                    const rowQuery = await env.DB.prepare('SELECT COUNT(*) as cnt FROM telemetry_counters').first();
-                    if (rowQuery && typeof rowQuery.cnt === 'number') d1RowCount = rowQuery.cnt;
+                    const [tc, lo, lan, aps] = await Promise.all([
+                      env.DB.prepare('SELECT COUNT(*) as cnt FROM telemetry_counters').first().catch(() => null),
+                      env.DB.prepare('SELECT COUNT(*) as cnt FROM league_orders').first().catch(() => null),
+                      env.DB.prepare('SELECT COUNT(*) as cnt FROM league_admin_notes').first().catch(() => null),
+                      env.DB.prepare('SELECT COUNT(*) as cnt FROM app_settings').first().catch(() => null),
+                    ]);
+                    d1Tables.telemetry_counters = Number(tc && tc.cnt) || 0;
+                    d1Tables.league_orders = Number(lo && lo.cnt) || 0;
+                    d1Tables.league_admin_notes = Number(lan && lan.cnt) || 0;
+                    d1Tables.app_settings = Number(aps && aps.cnt) || 0;
+                    d1RowCount = d1Tables.telemetry_counters + d1Tables.league_orders + d1Tables.league_admin_notes + d1Tables.app_settings;
                   } catch (_) {}
                 }
 
-                // FPL Sync Engine Telemetry
+                // FPL Sync Engine Telemetry (from data/admin_summary.json only)
                 const syncTelem = data.sync_telemetry || {
-                  sync_duration_sec: 15.92,
-                  api_calls_count: 174,
-                  api_retry_count: 0,
-                  api_rate_limit_count: 0,
-                  master_payload_bytes: 6330950,
+                  sync_duration_sec: null,
+                  api_calls_count: null,
+                  api_retry_count: null,
+                  api_rate_limit_count: null,
+                  master_payload_bytes: null,
                   tier1_teams_count: data.portfolio.total_managers_tier1,
                   total_teams_count: data.portfolio.total_managers_all,
                   tier1_leagues_count: data.portfolio.tier1_leagues_count,
                   total_leagues_count: data.portfolio.total_leagues_count,
                   smart_commit_active: true,
-                  last_sync: data.last_sync || '8 พ.ย. 2026, 11:18 น.',
-                  last_sync_iso: data.last_sync_iso || '2026-11-08 11:18:28',
+                  last_sync: data.last_sync || null,
+                  last_sync_iso: data.last_sync_iso || null,
                 };
+                const syncHealth = computeSyncHealth(data.last_sync_iso || syncTelem.last_sync_iso, now);
 
                 const lifetimeTotalViews = metricMap.get('lifetime:total_views') || 0;
 
@@ -2769,6 +3048,7 @@ export default {
                   api_http: 0,
                   data_load: 0,
                   upstream_5xx: 0,
+                  upstream_fixtures: 0,
                 };
                 for (const d of dates) {
                   const pfx = `telem:${d}`;
@@ -2777,38 +3057,80 @@ export default {
                   errCats7d.api_http += metricMap.get(`${pfx}:err:cat:api_http`) || 0;
                   errCats7d.data_load += metricMap.get(`${pfx}:err:cat:data_load`) || 0;
                   errCats7d.upstream_5xx += (metricMap.get(`${pfx}:err:cat:upstream_5xx`) || 0) + (metricMap.get(`${pfx}:err:cat:upstream_picks`) || 0);
+                  errCats7d.upstream_fixtures += metricMap.get(`${pfx}:err:cat:upstream_fixtures`) || 0;
                 }
 
                 const todayIctPfx = `telem:${dates[0]}`;
                 const todayVisitsD1 = metricMap.get(`${todayIctPfx}:total_visits`) || 0;
                 const todayApiOkD1 = metricMap.get(`${todayIctPfx}:api:ok`) || 0;
                 const todayErrD1 = (metricMap.get(`${todayIctPfx}:err:client`) || 0) + (metricMap.get(`${todayIctPfx}:err:upstream`) || 0);
+                const todayEdgeHit = metricMap.get(`${todayIctPfx}:edge:hit`) || 0;
+                const todayEdgeMiss = metricMap.get(`${todayIctPfx}:edge:miss`) || 0;
+                const workerReqsToday = todayEdgeHit + todayEdgeMiss + todayVisitsD1;
+                const cacheSampleTotal7d = hit7d + miss7d;
+                const edgeCacheHitPct = cacheSampleTotal7d > 0
+                  ? Number(((hit7d / cacheSampleTotal7d) * 100).toFixed(1))
+                  : null;
                 const estD1WritesToday = Math.min(
-                  (todayVisitsD1 * 5) + (todayApiOkD1 * 2) + (todayErrD1 * 3),
+                  (todayVisitsD1 * 5) + (Math.round(todayEdgeHit / 10) * 3) + (todayEdgeMiss * 3) + (todayApiOkD1 > 0 && todayEdgeHit === 0 && todayEdgeMiss === 0 ? todayApiOkD1 * 2 : 0) + (todayErrD1 * 3),
                   100000
                 );
 
                 data.edge_telemetry = {
                   is_live: true,
-                  telemetry_model: usePureRealTelemetry ? 'real_d1_live_7d' : 'fallback_prior',
-                  baseline_visits_prior: baselineVisits,
+                  telemetry_model: 'real_d1_live_100',
                   raw_live_visits_7d: totalKvVisits,
                   lifetime_total_views: lifetimeTotalViews,
                   weekly_visits: dynamicVisits,
                   daily_reach: dailyAvgReach,
                   matchday_active_users: matchdayActiveUsers,
+                  peak_day_visits_7d: matchdayActiveUsers,
+                  peak_day_date: peakDayDate || null,
                   off_peak_dau: offPeakDau,
+                  matchday_vs_offpeak: {
+                    matchday_visits: matchdaySum,
+                    offpeak_visits: offPeakSum,
+                    matchday_pct: matchdaySharePct,
+                    offpeak_pct: offpeakSharePct,
+                  },
                   avg_session_sec: avgSessionSec,
-                  peak_live_audience: 284,
-                  total_pool_gmv: data.portfolio.total_pool_gmv, // Summed dynamically from config/leagues_config.json with safe fallback
+                  total_pool_gmv: data.portfolio.total_pool_gmv,
                   daily_series: dailySeries,
                   hourly_series: hourlySeries,
+                  has_hourly_data: totalRealHourlyHits > 0,
+                  peak_hour: totalRealHourlyHits > 0 ? peakHour : null,
+                  peak_hour_visits: peakHourVisits,
+                  peak_windows: {
+                    total_hits: winTotal,
+                    evening_matchday: { hits: winEveningHits, pct: winEveningPct },
+                    daytime_planning: { hits: winDaytimeHits, pct: winDaytimePct },
+                    morning_settlement: { hits: winMorningHits, pct: winMorningPct },
+                  },
+                  browsers: {
+                    total: activeSrcTotal,
+                    line: { count: lineCount, pct: linePct },
+                    safari: { count: safariCount, pct: safariPct },
+                    chrome: { count: chromeCount, pct: chromePct },
+                    fb: { count: fbCount, pct: fbPct },
+                    other: { count: otherSrcCount, pct: otherPct },
+                  },
                   sources: {
                     line: { count: lineCount, pct: linePct },
                     safari: { count: safariCount, pct: safariPct },
-                    chrome: { count: chromeCount + fbCount, pct: chromePct },
+                    chrome: { count: chromeCount, pct: chromePct },
+                    fb: { count: fbCount, pct: fbPct },
+                    other: { count: otherSrcCount, pct: otherPct },
+                  },
+                  locale: {
+                    total: localeTotal,
+                    th: { count: langThCount, pct: langThPct },
+                    en: { count: langEnCount, pct: langEnPct },
                   },
                   geo: {
+                    total: activeGeoTotal,
+                    has_data: hasRealGeo,
+                    colo,
+                    th_total_pct: geoThTotalPct,
                     bkk_metro: { count: cityBkkCount, pct: geoBkkPct },
                     regional: { count: cityRegionalCount, pct: geoRegPct },
                     intl: { count: cityIntlCount, pct: geoIntlPct },
@@ -2830,14 +3152,20 @@ export default {
                   features: featuresSummary,
                   system_performance: {
                     d1_row_count: d1RowCount,
-                    d1_daily_writes_used: estD1WritesToday > 0 ? estD1WritesToday : Math.min(Math.round((dynamicVisits / 7) * 5), 100000),
+                    d1_tables: d1Tables,
+                    d1_daily_writes_used: estD1WritesToday,
                     d1_daily_writes_limit: 100000,
-                    edge_cache_hit_pct: 96.4,
-                    edge_cache_hit_is_benchmark: true,
-                    edge_avg_latency_ms: 140,
+                    worker_reqs_today: workerReqsToday,
+                    worker_reqs_today_hit: todayEdgeHit,
+                    worker_reqs_today_miss: todayEdgeMiss,
+                    edge_cache_hit_pct: edgeCacheHitPct,
+                    edge_cache_sample_total_7d: cacheSampleTotal7d,
+                    edge_cache_hit_7d: hit7d,
+                    edge_cache_miss_7d: miss7d,
                     sync: syncTelem,
                     scaling: {
                       tier1_used_teams: data.portfolio.total_managers_tier1,
+                      tier1_safe_capacity_leagues: 30,
                       tier1_safe_capacity_teams: 500,
                       tier1_headroom_teams: Math.max(0, 500 - data.portfolio.total_managers_tier1),
                       tier1_headroom_leagues: Math.max(0, 30 - data.portfolio.tier1_leagues_count),
@@ -2847,6 +3175,7 @@ export default {
                     }
                   },
                   monitor: {
+                    sync_health: syncHealth,
                     summary_24h: {
                       activity_count: m24Activity,
                       visits_count: m24Visits,
@@ -2916,7 +3245,7 @@ export default {
       }
 
       // 5. Render Executive Summary Dashboard
-      return new Response(renderDashboardHtml(colo, auth.provider), {
+      return new Response(renderDashboardHtml(colo, auth.provider, auth.identity), {
         status: 200,
         headers: ADMIN_HTML_HEADERS,
       });
@@ -2962,6 +3291,7 @@ export default {
       const visitorsCacheKey = new Request(visitorsCacheUrl.toString(), { method: 'GET' });
       const cachedVisitors = await cache.match(visitorsCacheKey);
       if (cachedVisitors) {
+        scheduleWorkerCacheMetric(env, ctx, true);
         const hitHeaders = new Headers(cachedVisitors.headers);
         hitHeaders.set('X-FPL-Edge-Cache', 'HIT');
         hitHeaders.set('X-FPL-Edge-Colo', colo);
@@ -3014,6 +3344,7 @@ export default {
       });
       if (request.method === 'GET' && source !== 'unavailable' && ctx && ctx.waitUntil) {
         ctx.waitUntil(cache.put(visitorsCacheKey, resp.clone()));
+        scheduleWorkerCacheMetric(env, ctx, false, true);
       }
       return resp;
     }
@@ -3809,6 +4140,7 @@ export default {
 
       const cachedStandings = await cache.match(standingsCacheKey);
       if (cachedStandings) {
+        scheduleWorkerCacheMetric(env, ctx, true);
         const hitHeaders = new Headers(cachedStandings.headers);
         hitHeaders.set('X-FPL-Edge-Cache', 'HIT');
         hitHeaders.set('X-FPL-Edge-Colo', colo);
@@ -3906,6 +4238,7 @@ export default {
         }
 
         scheduleWorkerHealthMetric(env, ctx, false);
+        scheduleWorkerCacheMetric(env, ctx, false);
         return standingsResp;
       } catch (err) {
         scheduleWorkerHealthMetric(env, ctx, true, 'upstream_5xx');
@@ -3972,6 +4305,7 @@ export default {
 
     let cachedResponse = await cache.match(cacheKey);
     if (cachedResponse) {
+      scheduleWorkerCacheMetric(env, ctx, true);
       const hitHeaders = new Headers(cachedResponse.headers);
       hitHeaders.set('X-FPL-Edge-Cache', 'HIT');
       hitHeaders.set('X-FPL-Edge-Colo', colo);
@@ -4077,6 +4411,7 @@ export default {
         }
 
         scheduleWorkerHealthMetric(env, ctx, false);
+        scheduleWorkerCacheMetric(env, ctx, false);
         return picksResponse;
       }
       // 3. Fetch Fixtures Only endpoint (/fixtures?event={gw})
@@ -4135,6 +4470,7 @@ export default {
           ctx.waitUntil(cache.put(cacheKey, response.clone()));
         }
         scheduleWorkerHealthMetric(env, ctx, false);
+        scheduleWorkerCacheMetric(env, ctx, false);
         return response;
       }
 
@@ -4246,6 +4582,7 @@ export default {
           ctx.waitUntil(cache.put(cacheKey, response.clone()));
         }
         scheduleWorkerHealthMetric(env, ctx, false);
+        scheduleWorkerCacheMetric(env, ctx, false);
       } else {
         scheduleWorkerHealthMetric(env, ctx, true, 'upstream_fixtures');
       }
