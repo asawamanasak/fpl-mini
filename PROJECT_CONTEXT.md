@@ -78,7 +78,7 @@ flowchart TD
     end
 
     subgraph CI/CD Layer [4. Automation & Hosting]
-        J[GitHub Actions Cron: 3,18,33,48 * * * * 15m] -->|Run sync & build| B
+        J[GitHub Actions Dual-Cadence Sync: 1h Fri-Mon / 4h Tue-Thu] -->|Run sync & build| B
         J -->|git add -A & Push| K[GitHub Pages + Cloudflare CDN]
     end
 ```
@@ -92,7 +92,7 @@ flowchart TD
 ├── GEMINI.md                     # กฎ Workspace ที่ Antigravity โหลดอัตโนมัติทุกแชทใหม่
 ├── PROJECT_CONTEXT.md            # [ไฟล์นี้] สรุปพิมพ์เขียวและบริบทโปรเจกต์ทั้งหมด
 ├── .github/workflows/
-│   └── fpl_auto_sync.yml         # GitHub Actions รัน Auto-Sync ทุก 15 นาที (3, 18, 33, 48)
+│   └── fpl_auto_sync.yml         # GitHub Actions Smart Dual-Cadence Sync (ศุกร์-จันทร์ ทุก 1 ชม. / อังคาร-พฤหัส ทุก 4 ชม.)
 ├── config/
 │   ├── leagues_config.json       # ตั้งค่ามินิลีก 9 ลีก (ID, ชื่อลีก, กติกา, Tier 1/2)
 │   ├── bramann_prediction.txt    # บันทึกทายผล Bramann Prediction รายสัปดาห์
@@ -276,7 +276,7 @@ flowchart TD
 
 ### ลีก 9: 139836 - "FPL Growth Mindset 2026/27" (Tier 2 Community)
 * **สมาชิก:** ~1,780 ทีม (คอมมูนิตี้สาธารณะ)
-* **สถาปัตยกรรม:** **Tier 2 (`Standings & Leaderboard Only`)** — ข้ามการดึง Squad Picks และปิดแท็บ Chips/Transfers เพื่อป้องกัน FPL API Rate Limit 429 และรักษาความเร็วการโหลดบนมือถือ รองรับ Instant Search ค้นหาชื่อทีม/ผู้จัดการท่ามกลาง 1,780 ทีม
+* **สถาปัตยกรรม:** **Tier 2 (`Post-Deadline Auto-Picks Live`)** — ซิงก์ Squad Picks **เพียงครั้งเดียวต่อ GW** หลังเดดไลน์ลงไฟล์ `data/leagues/139836/gw{N}.json` (`sync_status: "picks_cached"`) ร่วมกับ Worker `/standings` & `/live` relay เพื่อคำนวณคะแนนสด กัปตัน (`C`/`V`) แต้มลบ (`-4`/`-8`) ชิป สำรองอัตโนมัติ (Provisional Auto-Subs) และตาราง Overall Standings ครบทั้ง ~1,780 ทีม พร้อม Instant Search ค้นหาทันใจ และซ่อนแท็บ Chips / Transfers / Transfer Advisor เพื่อรักษาความเร็วและไม่ชน Rate Limit 429
 * **ค่าสมัคร & รางวัล:** ร่วมสนุกฟรี (กิจกรรมเพจ FPL Growth Mindset), รางวัลใหญ่เสื้อบอลแท้ถูกลิขสิทธิ์ (ฤดูกาล 2026/27) + รางวัลพิเศษตลอดฤดูกาล วัดผลคะแนนรวมจบ GW 38
 * **Direct League URL:** `https://www.fplsawadika.com/139836`
 
@@ -303,7 +303,7 @@ flowchart TD
    - **Card Available:** ตารางวิเคราะห์ชิป/การ์ดคงเหลือของทุกทีมในลีก (WC1, WC2, FH, 3xC, BB) พร้อมการ์ดสรุปยอดคงเหลือของทั้งลีก ช่วยให้ประเมินการ์ดคู่แข่งได้ทันที
    - **Important Players (> 70%):** แสดงนักเตะมหาชนที่ถูกเลือกเกิน 70% ในลีก พร้อม % ถือครอง, จำนวนทีม และรายชื่อทีมที่เลือก
    - **Differential Players (< 20%):** แสดงนักเตะทีเด็ดที่ถูกเลือกน้อยกว่า 20% ในลีก พร้อมฟิลเตอร์แยกตำแหน่ง (GKP, DEF, MID, FWD) และแท็กแสดงชื่อทีมที่เป็นเจ้าของ
-   - **Transfer Suggestions:** คำแนะนำการย้ายตัวประจำสัปดาห์ (Best Players & Best Value) จาก FPL Gameweek พร้อม Projected Points, % ถือครองในลีก และระบบดร็อปดาวน์ไฮไลท์นักเตะในทีมตนเอง (Bold + Badge ในทีม)
+   - **Transfer Advisor (`แนะนำการย้ายตัว` — Dedicated Tab `?tab=transfer-advisor`):** อัปเกรดจากเดิมและแยกเป็นแท็บหลักต่อจาก `วิเคราะห์การย้ายตัว` ประกอบด้วย `01 • ผู้ช่วยวิเคราะห์ทีม (ขายใคร → ซื้อใคร)` พร้อมระบบจำทีม (`localStorage`) + 1-Tap Quick-Pick และ `02 • จัดอันดับนักเตะแนะนำ (ตัวเลือกยอดเยี่ยม & สุดคุ้ม)` ขับเคลื่อนด้วยโมเดล Hybrid xP + FDR (รายละเอียดใน Section 12.4–12.5)
 
 ---
 
@@ -315,11 +315,11 @@ flowchart TD
      - `/api/bootstrap-static/` (รายชื่อนักเตะ, ทีม, สถานะ GW)
      - `/api/event/{gw}/live/` (แต้มสดและโบนัส BPS)
      - `/api/leagues-classic/{lid}/standings/` (ตารางอันดับลีก)
-     - `/api/entry/{eid}/event/{gw}/picks/` (11 ตัวจริง, ตัวสำรอง, กัปตัน, Hits, ชิป — เฉพาะ Tier 1)
+     - `/api/entry/{eid}/event/{gw}/picks/` (11 ตัวจริง, ตัวสำรอง, กัปตัน, Hits, ชิป — Tier 1 ดึงตามรอบซิงก์ / Tier 2 ดึงครั้งเดียวต่อ GW หลังเดดไลน์)
    - คำนวณ Net Points = `Raw Points - Transfer Cost (Hits)` อย่างแม่นยำ
    - **ข้อควรระวังกรณีสัปดาห์เริ่มเตะคืนวันศุกร์คู่เดียว (`raw_points == 0` Invariant):** ในฟังก์ชัน `process_team_picks()` ต้องประกาศค่าเริ่มต้นของ `s_key`, `c_gw`, `c_res`, `c_sq` ก่อนเข้าบล็อก `try:` และตรวจสอบ `(gw in live_fetch_failed_gws or not live_pts_gw)` ก่อนตรวจ `c_res` เพื่อป้องกัน `UnboundLocalError` ซึ่งเคยทำให้ทีมที่มี 0 แต้ม (เพราะไม่มีนักเตะลงเตะวันศุกร์) ถูกตัดออกจาก GW results และพลาดการหัก `-4`/`-8`/`-12` hits ใน Overall Standings (แก้ไขแล้วตั้งแต่ GW10)
 2. **การทำงานของ GitHub Actions Workflow (`fpl_auto_sync.yml`):**
-   - Trigger: รันอัตโนมัติทุกๆ 15 นาที (`cron: '3,18,33,48 * * * *'`) หรือกดรันมือได้ (`workflow_dispatch`)
+   - Trigger: **Smart Dual-Cadence Sync** — วันแข่งและเดดไลน์ (ศุกร์–จันทร์) รันทุก 1 ชั่วโมง (`cron: '18 * * * 5,6,0,1'`) และวันธรรมดาไม่มีแข่ง (อังคาร–พฤหัส) รันทุก 4 ชั่วโมง (`cron: '18 */4 * * 2,3,4'`) หรือกดรันมือได้ (`workflow_dispatch`)
    - ขั้นตอน: Stagger 58s -> Checkout (Pinned Action SHAs) -> Python 3.11 -> `python3 sync_live_fpl.py` -> `python3 update_preview.py` -> `git add -A` -> Auto Commit & Rebase-safe Push `[skip ci]`
 
 ---
@@ -335,7 +335,7 @@ flowchart TD
 * **แนวทางแก้ไขที่เสร็จสิ้น:** ปรับให้ส่งเฉพาะ `entry_id` (Number) เท่านั้น และค้นหาข้อมูลจาก JSON Object โดยตรง พร้อมเพิ่มการจัดการกรณีไม่มีข้อมูลแผนในสัปดาห์นั้นให้แสดงกล่องว่างแบบสวยงาม (Graceful Empty State) แทนการดึงข้อมูลทีมอื่นมาแสดง
 
 ### เรื่อง: การบันทึกไฟล์อัตโนมัติใน GitHub Actions (`.github/workflows/fpl_auto_sync.yml`) `[RESOLVED]`
-* **ประวัติการแก้ไข:** workflow เวอร์ชันแรกเคยใช้ `git add` แบบเจาะจงแค่บางไฟล์ ปัจจุบันแก้ไขเป็น `git add -A` พร้อม Auto Rebase Recovery และปัก Commit SHA ของ GitHub Actions ครบทุกตัวแล้ว ทำให้ทุกลีก (`data/leagues/*.json`, `assets/dashboard-app.js`, `{id}/index.html`) อัปเดตครบถ้วนอัตโนมัติทุก 15 นาที
+* **ประวัติการแก้ไข:** workflow เวอร์ชันแรกเคยใช้ `git add` แบบเจาะจงแค่บางไฟล์ ปัจจุบันแก้ไขเป็น `git add -A` พร้อม Auto Rebase Recovery และปัก Commit SHA ของ GitHub Actions ครบทุกตัวแล้ว ทำให้ทุกลีก (`data/leagues/*.json`, `assets/dashboard-app.js`, `{id}/index.html`) อัปเดตครบถ้วนอัตโนมัติตามรอบ Dual-Cadence Sync (ศุกร์–จันทร์ ทุก 1 ชม. / อังคาร–พฤหัส ทุก 4 ชม.)
 
 
 ### เรื่อง: ฟังก์ชัน Competition (ข้อมูลเจาะลึกคู่แข่ง & การวิเคราะห์ขุมกำลัง)
@@ -344,10 +344,10 @@ flowchart TD
   1. **Card Available:** ตารางและ Matrix แสดงการ์ดคงเหลือของทุกทีมในลีก (WC1, FH, 3xC, BB) โดยซ่อน WC2 จนกว่าจะถึง GW20 พร้อมฟิลเตอร์ Active State และ Sticky Column สำหรับจอมือถือ
   2. **Important Players:** รายชื่อนักเตะยอดนิยมที่ถูกเลือกมากกว่า 70% พร้อมระบุจำนวนทีมและ %
   3. **Differential Players:** รายชื่อตัวทีเด็ดดิฟเฟอเรนเชียลที่ถูกเลือกน้อยกว่า 20%
-  4. **Transfer Suggestions:** แนะนำการย้ายทีม (Best Players / Best Value) รายตำแหน่ง อ้างอิงจาก AI Algorithm พร้อมไฮไลต์ทีมในลีกตามลำดับ Total Leaderboard
+  4. **Transfer Advisor (`แนะนำการย้ายตัว`):** เดิมอยู่ในแท็บ `วิเคราะห์การย้ายตัว` ปัจจุบันอัปเกรดเป็นโมเดล Hybrid xP + FDR + Smart Squad Advisor (`ขายใคร → ซื้อใคร`) และแยกเป็นแท็บหลักของตัวเองต่อจาก `วิเคราะห์การย้ายตัว` (`?tab=transfer-advisor`) เพื่อดึงทราฟฟิกระหว่างสัปดาห์ (ดูรายละเอียดใน Section 12.4–12.5)
 * **ระบบการกระพริบของแท็บเมนู (Tab Blinking Logic):**
-  * **ขณะเกมวีคกำลังแข่งขัน (`is_finished = false`):** แท็บ `LIVE` และ `Weekly Highlight` กระพริบสีเขียว เพื่อดึงดูดให้ผู้ใช้ติดตามผลสด ส่วนแท็บ `Competition` หยุดกระพริบ
-  * **เมื่อจบการแข่งขันเกมวีคนั้นแล้ว (`is_finished = true`):** แท็บ `LIVE` และ `Weekly Highlight` หยุดกระพริบ ส่วนแท็บ `Competition` จะขึ้นกระพริบแทน เพื่อเตือนให้ผู้จัดการทีมเข้ามาดูการ์ดคู่แข่งและวางแผนย้ายตัวก่อนเกมวีคถัดไปจะเริ่ม
+  * **ขณะเกมวีคกำลังแข่งขัน (`is_finished = false`):** แท็บ `คะแนนสด` และ `ไฮไลท์` กระพริบสีเขียว (`tab-pulse-live`) เพื่อดึงดูดให้ผู้ใช้ติดตามผลสด ส่วนแท็บ `แนะนำการย้ายตัว` หยุดกระพริบ
+  * **เมื่อจบการแข่งขันเกมวีคนั้นแล้ว (`is_finished = true`):** แท็บ `คะแนนสด` และ `ไฮไลท์` หยุดกระพริบ และย้ายไฟกระพริบสีเขียวไปเน้นที่แท็บ **`แนะนำการย้ายตัว`** แทน เพื่อชวนผู้จัดการทีมเข้ามาสแกนจุดอ่อนและวางแผนย้ายตัวก่อนเดดไลน์ GW ถัดไป (ในขณะที่ยังคงเช็คการ์ดชิปคู่แข่งได้ในแท็บ `สถานะชิป`)
 * **การจัดเรียงลำดับทีม (Team Ordering & Non-prize Separation):**
   * ทีมที่แข่งขันชิงเงินรางวัลจะถูกจัดเรียงตามลำดับ Total Leaderboard (อันดับ 1, 2, 3...) อยู่ด้านบน
   * ทีมร่วมสนุก (`non_prize_teams`) จะถูกแยกนำไปไว้ด้านล่างทั้งหมด คั่นด้วยแถบหัวข้อ `ทีมร่วมสนุก (ไม่นำมาคิดคำนวณเงินรางวัล)` พร้อมแสดงป้าย `[ ร่วมสนุก ]` และสัญลักษณ์วงกลมแบบไม่มีตัวเลขอันดับ เช่นเดียวกับหน้าสรุปรางวัล
@@ -422,10 +422,9 @@ flowchart TD
    * **Tier 1: Mini-League (1 – 30 ทีม):**
      * โหมด Full Analytics & Pitch View (ดึง Picks, 11 ตัวจริง, ตัวสำรอง, กัปตัน, Hits, ชิป, สถิติเงินรางวัล)
      * รองรับได้สูงสุด ~20 – 30 ลีก (300 – 500 ทีมรวม) ต่อรอบการรัน เพื่อไม่ให้ชน Rate Limit 429 ของ FPL
-   * **Tier 2: Large League (31 – 1,000+ ทีม):**
-     * โหมด Standings & Leaderboard Only
-     * ข้ามการดึง Squad และ Picks รายทีมทั้งหมด (`squads = {}`) ดึงเฉพาะตารางคะแนน `/api/leagues-classic/{lid}/standings/` (หน้าละ 50 ทีม)
-     * ลดการเรียก Network API ลงมากกว่า 85% และลดการประมวลผลให้เบาเป็นศูนย์ รองรับลีกขนาดใหญ่ 1,000+ ทีมได้ทันทีโดยไม่ติดโควตา
+   * **Tier 2: Large League (31 – 1,000+ ทีม) - [UPGRADED → Post-Deadline Auto-Picks Live]:**
+     * โหมด Hybrid Live Leaderboard: ซิงก์ Squad Picks **เพียงครั้งเดียวต่อ GW** หลังเดดไลน์ลงไฟล์ `data/leagues/{id}/gw{N}.json` (`sync_status: "picks_cached"`) แล้วนำแต้มสดจาก Worker `/live` + `/standings` มาคำนวณคะแนนสด กัปตัน (`C`/`V`) แต้มลบ (`-4`/`-8`) ชิป สำรองอัตโนมัติ และ Overall Standings ครบทุกทีม โดยไม่ต้องดึง Picks ซ้ำทุกรอบซิงก์
+     * ซ่อนแท็บ Chips / Transfers / Transfer Advisor และลดการเรียก Network API ลง > 85% รองรับลีกขนาดใหญ่ 1,700+ ทีมได้โดยไม่ติดโควตา 429 (ดูรายละเอียดใน Section 12.2)
 2. **Decoupled Data Architecture (แยกไฟล์ข้อมูลรายลีก) - [ACTIVE & VERIFIED]:**
    * บันทึกไฟล์ข้อมูลแยกรายลีกแบบเพียว JSON ลงที่ `data/leagues/{id}.json` (ขนาดเพียง ~280 KB - 1.4 MB ต่อลีก)
    * หน้า HTML ของแต่ละลีก (`40700/index.html`, `675290/index.html`, ฯลฯ) รวมเฉพาะข้อมูล Squads ของลีกตัวเองเท่านั้น โดยตัด Squads ของลีกอื่นออกทั้งหมด
@@ -593,5 +592,74 @@ flowchart TD
   * เพิ่มตาราง `league_admin_notes` ใน Cloudflare D1 พร้อม Authenticated Endpoint `POST /api/admin/league-note` ให้แอดมินบันทึก/แก้ไขโน้ตข้อมูลลูกค้าส่วนตัว (เช่น ชื่อ LINE / วันโอนเงิน) ได้โดยตรงจากแผงจัดการลีกใน `/admin` ข้อ `02` โดยไม่บันทึกลงไฟล์ใน Git (`0% Git exposure`)
   * อัปเกรด `onboard_league.py` และ `/admin` ข้อ `09` ให้รองรับ `--currency`, `--entry-fee`, `--total-pool`, `--season-prizes`, `--cup-prize`, `--penalty-tiers`, `--monthly-champ`, `--monthly-runner`, สร้างการ์ดกติกา 2 ภาษา (`rules_cards` / `rules_cards_en`) อัตโนมัติ และรัน `verify_built_league()` ตรวจความถูกต้องของไฟล์ HTML หลัง build ทุกครั้ง
 
+---
+
+## ✨ 12. อัปเดตล่าสุด (Nov 21–22, 2026 — Tier 2 Live Auto-Picks, Admin Parity, Hybrid xP+FDR & แท็บ 'แนะนำการย้ายตัว')
+
+### 12.1 Commercial Landing Page Light Mode & Demo Cleanup (Commits `cac97dcc`, `f834d517`, `5ccffe28`)
+* **Daylight Light Mode Backdrop:** เพิ่มภาพพื้นหลังสนามกีฬาช่วงกลางวัน (Desktop & Mobile Daylight Stadium) พร้อมปรับสี Hero, Navbar และ Stream Ticker Ribbon บน `index.html` ให้สอดคล้องกับโหมดสว่างอย่างสมบูรณ์แบบ
+* **Landing & 404 Demo Cleanup:** ถอดส่วน `#demos` ที่ซ้ำซ้อนออกจาก `index.html` และปรับหน้า `404.html` ให้ดึงรายการลีกตัวอย่าง Showcase แบบไดนามิกจาก `config/leagues_config.json`
+
+### 12.2 Tier 2 Live Auto-Picks, Worker `/standings` Relay & Provisional Auto-Subs (Commits `a5a7d9f0`, `14f8a0ca`, `ecd8c911`)
+* **Worker `/standings` Relay & Build Guard:** เพิ่ม Endpoint `/standings` ใน `workers/fpl-live-worker.js` สำหรับลีก Tier 2, เพิ่มระบบคำนวณตัวสำรองอัตโนมัติชั่วคราว (Provisional Auto-Subs) ฝั่ง Client ให้ Tier 1 ระหว่างเกมวีคยังไม่ปิด, และรักษาไฟล์ `pay/index.html` ระหว่างรอบ `auto-sync`
+* **Compact Player Match Ratio:** ปรับตัวเลขจำนวนนักเตะที่ลงเตะแล้วบนการ์ดตารางคะแนนสดให้อยู่ในรูปแบบกะทัดรัด `played/total` (ตัดคำนำหน้าส่วนเกินออก)
+* **Tier 2 Post-Deadline Auto-Picks Live (ลีก `139836` — ~1,780 ทีม):**
+  * อัปเกรด `sync_live_fpl.py` ให้ดึง Squad Picks ของลีก Tier 2 **เพียงครั้งเดียวต่อ GW** หลังเดดไลน์ แล้วบันทึกแบบบีบอัดใน `data/leagues/139836/gw{N}.json` (`sync_status: "picks_cached"`) ทำให้ทุกรอบซิงก์ถัดไปไม่จำเป็นต้องยิง API ดึง Picks ซ้ำอีก
+  * แสดงคะแนนสดครบทุกองค์ประกอบ (คะแนนรวมสุทธิ, กัปตัน `(C)` / รองกัปตัน `(V)`, แต้มลบ `-4`/`-8`, ชิปที่เปิดใช้, สำรองอัตโนมัติ และอันดับ Overall Standings สด) ครบทุกทีมในลีก `139836`
+
+### 12.3 Admin Dashboard Truth & Parity Sync (Commit `753decef`)
+* ปรับหน้า `/admin` (`workers/admin-dashboard.js`) ให้ตรงกับโค้ดและสถานะจริงบน Production 100%:
+  * แสดงสถานะ **Tier 2 Auto-Picks Live** และตารางซิงก์จริง **Smart Dual-Cadence Cron** (ศุกร์–จันทร์ ทุก 1 ชั่วโมง / อังคาร–พฤหัส ทุก 4 ชั่วโมง)
+  * อัปเดต **Section `07` System Telemetry & Metrics** ให้รายงานตัวเลขตรงตามจริงของ D1 & Worker และปรับตัวเลือก **Tier 1 / Tier 2 Onboarding** ให้ครบถ้วน
+
+### 12.4 Transfer Advisor Engine v2 — Hybrid xP + FDR & Smart Squad Advisor (Commit `38ad1353`)
+* **Backend Engine (`sync_live_fpl.py`):**
+  * พัฒนาโมเดล **Hybrid xP + FDR** คำนวณคะแนนคาดการณ์ `1 GW` (`xp1`) และ `3 GWs` (`xp3`) โดยผสานค่า Official `ep_next`, ฟอร์มล่าสุด, `xGI/90`, ความสม่ำเสมอของนาทีลงสนาม และความยากโปรแกรมล่วงหน้า 3 นัด (FDR)
+  * จัดโครงสร้าง JSON แบบประหยัดพื้นที่: แยกตารางโปรแกรม 20 สโมสรไว้ระดับบน (`club_fx`) และจัดเก็บ `squad_index` เฉพาะ GW ล่าสุด (ขนาด `transfer_suggestions` เหลือเพียง ~49 KB ต่อลีก)
+* **Personalization (`Smart Squad Advisor`):**
+  * สแกนขุมกำลังทั้ง 15 ตัวของทีมที่เลือก เพื่อระบุคำแนะนำ **`ขายใคร → ซื้อใคร`** (ระบุนักเตะเจ็บ/แบน, 0% โอกาสลง, หรือโปรแกรมหนัก)
+  * คำนวณงบประมาณจริง (`selling_price + bank`), ตรวจสอบกฎไม่เกิน 3 คนต่อสโมสรอัตโนมัติ, และเสนอตัวแทน 3 อันดับแรกพร้อมส่วนต่าง xP ที่เพิ่มขึ้นและเงิน Bank คงเหลือ
+* **Responsive 2-Row Filter Bar:** รองรับตัวสลับระยะเวลา (`1 GW` / `3 GWs`), โหมดจัดอันดับ (`ยอดเยี่ยม & สุดคุ้ม` / `ตัวทีเด็ด <20%`), ฟิลเตอร์ตำแหน่ง (`ทั้งหมด` / `GKP` / `DEF` / `MID` / `FWD`), งบประมาณ, และปุ่ม `ซ่อนตัวในทีม` ครบทุกอุปกรณ์โดยไม่มี Horizontal Overflow
+
+### 12.5 Dedicated Top-Level Tab `แนะนำการย้ายตัว` & Clean Header Standard (Commit `74b58370`, Worker `46178e20-3f01-423d-b21d-7967261af27d`)
+* **Dedicated Top-Level Tab (`?tab=transfer-advisor`):**
+  * เปลี่ยนชื่อหัวข้อจาก `'คำแนะนำการย้ายตัว'` เป็น **`'แนะนำการย้ายตัว'`** (EN: **`Transfer Advisor`**) และยกระดับขึ้นเป็นแท็บหลักต่อจาก **`วิเคราะห์การย้ายตัว`** (`#tab-btn-transfer-advisor` → `#transfer-advisor-view`, ซ่อนอัตโนมัติบนลีก Tier 2 `139836`)
+  * **Off-Matchday Traffic Pulse (`tab-pulse-live`):** ช่วงกำลังแข่ง (`isFinished === false`) ไฟกระพริบสีเขียวอยู่ที่ `คะแนนสด` + `ไฮไลท์` และเมื่อจบ GW (`isFinished === true`) จะย้ายมากระพริบที่ **`แนะนำการย้ายตัว`** เพื่อกระตุ้นการใช้งานระหว่างสัปดาห์
+* **Clean Two-Tab Split & Team Memory:**
+  * แท็บ **`วิเคราะห์การย้ายตัว`**: แสดง `01 • สถิติการย้ายตัวประจำสัปดาห์` + `02 • นักเตะตัวสำคัญ (>70%) & ตัวทีเด็ด (<20%)` พร้อมการ์ดปุ่มลัดด้านล่างเชื่อมต่อไปยัง `แนะนำการย้ายตัว`
+  * แท็บ **`แนะนำการย้ายตัว`**: แสดง `01 • ผู้ช่วยวิเคราะห์ทีม (ขายใคร → ซื้อใคร)` พร้อมระบบจำทีมอัตโนมัติใน `localStorage` (`fpl_advisor_team_${leagueId}`), ปุ่ม **Quick-Pick** เลือกทีม Top 5 ได้ในคลิกเดียว, และ `02 • จัดอันดับนักเตะแนะนำ (ตัวเลือกยอดเยี่ยม & สุดคุ้ม)` (เสริม `ensureLeaguePlayerCounts()` ให้คำนวณสัดส่วนถือครองในลีกทันทีเมื่อเปิด URL `?tab=transfer-advisor` โดยตรง)
+* **Clean Section Header Standard (กฎการออกแบบ UI จากผู้ใช้):**
+  * **ห้าม** ใส่กล่องสี่เหลี่ยม/เม็ดยาสีเขียวหรืออีโมจิ (`⚡`, `✓`) แทรกต่อท้ายชื่อหัวข้อเด็ดขาด (เช่น `[ ⚡ กำลังแข่งขัน ]`, `[ GW 11 ] [ ⚡ กำไรสด ]`, `[ GW 12 ] [ โมเดล Hybrid + FDR ]`)
+  * ให้ชื่อหัวข้อสะอาดเรียบร้อย และใช้ **ป้าย `Gameweek` มาตรฐานชิดขวาเพียงจุดเดียว** ด้วยคลาสเดียวกับ `สถานะชิป` และ `ทำเนียบแชมป์` (`bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display`, งดอีโมจิ 100%)
+
+---
+
+## 🗺️ 13. แผนงานที่ต้องทำต่อ (Next Action Plan & Product Roadmap)
+
+### 13.1 ระยะเร่งด่วน / รอบถัดไป (Immediate Next Steps — Active Beta & Pre-Launch)
+1. **Live Matchday Validation (GW 12+):**
+   * ตรวจเช็กการทำงานจริงของ **Tier 2 Post-Deadline Auto-Picks Live** (`139836`, ~1,780 ทีม) หลังเดดไลน์ GW 12 เพื่อยืนยันการซิงก์ Picks ครั้งเดียว + คะแนนสด กัปตัน แต้มลบ ชิป และสำรองอัตโนมัติครบถ้วนโดยไม่ติด Rate Limit 429
+   * ตรวจจังหวะไฟกระพริบสีเขียว (`tab-pulse-live`) ของแท็บ **`แนะนำการย้ายตัว`** ช่วงก่อน–หลังจบสัปดาห์ และติดตามสถิติการเข้าชมจริงบนหน้า `/admin`
+2. **Landing Page Showcase Update (`index.html` & `config/site_config.json`):**
+   * อัปเดตข้อความจุดขายและหน้าจอตัวอย่างบนหน้าแรกเชิงพาณิชย์ ให้สะท้อนฟีเจอร์ใหม่ **`แนะนำการย้ายตัว` (Hybrid xP + FDR + Smart Squad Advisor)** และ **Tier 2 Live Auto-Picks**
+3. **Mobile Micro-Polish (`update_preview.py`):**
+   * เก็บรายละเอียดปุ่ม `(?)` ข้างหัวข้อ `01 • ผู้ช่วยวิเคราะห์ทีม (ขายใคร → ซื้อใคร)` บนจอมือถือ `390px` ไม่ให้ตกบรรทัดใหม่โดดเดี่ยว (เช่น ปรับขนาดหัวข้อ `text-lg sm:text-xl` หรือจัดปุ่มชิดขวา)
+4. **Pending League Rules:**
+   * บันทึกกติกาและโครงสร้างรางวัลจริงของลีก `5349` (Bramann League) และ `567387` (Fantasy Nguan & friends cup) ลง `config/leagues_config.json` เมื่อผู้ดูแลลีกประกาศชัดเจน
+
+### 13.2 ระยะกลาง — เปิดขายเชิงพาณิชย์เต็มรูปแบบ (Commercial Launch — Standard & Custom Tiers)
+1. **Standard Tier End-to-End Dry Run (`฿500` / `$19` ต่อฤดูกาล):**
+   * ทดสอบรับลีกลูกค้าแบบ Private Tenant (`visibility: "private"`, `tenant_group: "private_<id>"`) ครบวงจร: ฟอร์มสั่งซื้อ `index.html` → `/admin` ข้อ `09` → `onboard_league.py` → หน้าชำระเงิน `/pay` → บันทึกโน้ตใน D1 → จัดการสถานะ `trial` / `active` / `paused`
+   * วางแผนแยกกลุ่ม Showcase Demo ออกจากกลุ่ม Live Beta ภายหลังเปิดขายจริง
+2. **Custom Tier Dynamic Engine (`฿900` / `$29` ต่อฤดูกาล — ปัจจุบัน `disabled`):**
+   * ยกระดับ **Head-to-Head Challenge Engine (ระบบท้าชน)** และ **Weekly Prediction Engine (ระบบทายผล)** จากเดิมที่ผูกเฉพาะลีก `5349`/`187827` ให้เป็นระบบ Dynamic Config สำหรับลีกลูกค้าใหม่โดยไม่กระทบความเร็วซิงก์ แล้วจึงเปิดสถานะ `custom` จาก `"roadmap"` เป็น `"active"` ใน `config/site_config.json`
+
+### 13.3 ระยะยาว — ต่อยอด Traffic & Scale (Post-Launch Growth)
+1. **Transfer Advisor v3 (Mid-Week Retention):**
+   * เพิ่ม **Captaincy Picker (แนะนำกัปตันประจำสัปดาห์)**, ระบบแจ้งเตือน **BGW / DGW (Blank & Double Gameweek)**, และ Watchlist นักเตะที่เก็บใน `localStorage` ภายในแท็บ `แนะนำการย้ายตัว`
+2. **Enterprise / Large League Tier (`31–2,000+` ทีม):**
+   * นำระบบ **Tier 2 Auto-Picks Live** มาเปิดเป็นแพ็กเกจขายสำหรับคอมมูนิตี้และเพจฟุตบอลผ่าน `onboard_league.py`
+3. **Interactive Cup Bracket (ก่อน GW 35):**
+   * พัฒนาผังสายบอลถ้วยรอบน็อคเอาท์แบบ Interactive เตรียมพร้อมช่วงโค้งสุดท้ายของฤดูกาล
 
 
