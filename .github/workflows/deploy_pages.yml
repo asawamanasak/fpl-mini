@@ -1,0 +1,107 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.nojekyll'
+      - 'CNAME'
+      - 'favicon.ico'
+      - 'robots.txt'
+      - 'sitemap.xml'
+      - 'site.webmanifest'
+      - 'index.html'
+      - 'preview.html'
+      - '404.html'
+      - 'assets/**'
+      - 'data/**'
+      - 'docs/**'
+      - 'fonts/**'
+      - 'images/**'
+      - 'pay/**'
+      - '[0-9]*/**'
+      - '.github/workflows/deploy_pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment_retry2.outputs.page_url || steps.deployment_retry1.outputs.page_url || steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+
+      - name: Stage Public Pages Artifact
+        run: |
+          rm -rf _site
+          mkdir -p _site
+          for f in .nojekyll CNAME favicon.ico robots.txt sitemap.xml site.webmanifest index.html preview.html 404.html; do
+            if [ -f "$f" ]; then
+              cp "$f" _site/
+            fi
+          done
+          for d in assets data docs fonts images pay; do
+            if [ -d "$d" ]; then
+              cp -R "$d" _site/
+            fi
+          done
+          for d in [0-9]*/; do
+            d_clean="${d%/}"
+            if [ -d "$d_clean" ]; then
+              cp -R "$d_clean" _site/
+            fi
+          done
+          find _site -name '*.bak' -type f -delete
+          test -f _site/index.html
+          if [ -e _site/workers ] || [ -e _site/config ]; then
+            echo "Error: Private directories leaked into _site!" >&2
+            exit 1
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: '_site'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        continue-on-error: true
+        uses: actions/deploy-pages@368f82528645a54fb793d4d404e342629a3f51346 # v5.0.1
+
+      - name: Wait before Deploy Retry 1 (30s)
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 30
+
+      - name: Deploy to GitHub Pages (Retry 1)
+        id: deployment_retry1
+        if: steps.deployment.outcome == 'failure'
+        continue-on-error: true
+        uses: actions/deploy-pages@368f82528645a54fb793d4d404e342629a3f51346 # v5.0.1
+
+      - name: Wait before Deploy Retry 2 (60s)
+        if: steps.deployment.outcome == 'failure' && steps.deployment_retry1.outcome == 'failure'
+        run: sleep 60
+
+      - name: Deploy to GitHub Pages (Retry 2, final)
+        id: deployment_retry2
+        if: steps.deployment.outcome == 'failure' && steps.deployment_retry1.outcome == 'failure'
+        uses: actions/deploy-pages@368f82528645a54fb793d4d404e342629a3f51346 # v5.0.1
