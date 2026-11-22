@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 25
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment_retry2.outputs.page_url || steps.deployment_retry1.outputs.page_url || steps.deployment.outputs.page_url }}
 
     steps:
       - name: Stagger Schedule Offset (58s Delay)
@@ -120,6 +120,29 @@ jobs:
         with:
           path: '_site'
 
+      # GitHub บางครั้งยังจัดดัชนี artifact ไม่เสร็จทันที ทำให้ deploy-pages หาไฟล์ไม่เจอ
+      # ("No artifacts named github-pages"). จึง retry 2 ครั้ง (รอ 30 วิ / 60 วิ)
+      # ก่อนยอมแพ้ — ถ้าล้มทั้ง 3 ครั้งจะยังแจ้ง Error ตามเดิม
       - name: Deploy to GitHub Pages
         id: deployment
+        continue-on-error: true
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+
+      - name: Wait before Deploy Retry 1 (30s)
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 30
+
+      - name: Deploy to GitHub Pages (Retry 1)
+        id: deployment_retry1
+        if: steps.deployment.outcome == 'failure'
+        continue-on-error: true
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+
+      - name: Wait before Deploy Retry 2 (60s)
+        if: steps.deployment.outcome == 'failure' && steps.deployment_retry1.outcome == 'failure'
+        run: sleep 60
+
+      - name: Deploy to GitHub Pages (Retry 2, final)
+        id: deployment_retry2
+        if: steps.deployment.outcome == 'failure' && steps.deployment_retry1.outcome == 'failure'
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
