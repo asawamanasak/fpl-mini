@@ -85,7 +85,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         continue-on-error: true
-        uses: actions/deploy-pages@368f82528645a54fb793d4d404e342629a3f51346 # v5.0.1
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
 
       - name: Wait before Deploy Retry 1 (30s)
         if: steps.deployment.outcome == 'failure'
@@ -95,7 +95,7 @@ jobs:
         id: deployment_retry1
         if: steps.deployment.outcome == 'failure'
         continue-on-error: true
-        uses: actions/deploy-pages@368f82528645a54fb793d4d404e342629a3f51346 # v5.0.1
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
 
       - name: Wait before Deploy Retry 2 (60s)
         if: steps.deployment.outcome == 'failure' && steps.deployment_retry1.outcome == 'failure'
@@ -104,4 +104,4 @@ jobs:
       - name: Deploy to GitHub Pages (Retry 2, final)
         id: deployment_retry2
         if: steps.deployment.outcome == 'failure' && steps.deployment_retry1.outcome == 'failure'
-        uses: actions/deploy-pages@368f82528645a54fb793d4d404e342629a3f51346 # v5.0.1
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
