@@ -130,13 +130,13 @@
 </head>
 <body>
   <div class="frame">
-    <p class="eyebrow">Architecture Workflow · FPLSaWaDiKa (Season 2026/27)</p>
-    <h1>สถาปัตยกรรมระบบเบื้องหลังและการประมวลผลข้อมูล (Dual-Layer System Architecture)</h1>
+    <p class="eyebrow">Architecture Workflow · FPLSaWaDiKa v3.0 Hybrid Edge (Season 2026/27)</p>
+    <h1>สถาปัตยกรรมระบบเบื้องหลังและการประมวลผลข้อมูล (v3.0 Hybrid Edge)</h1>
 
     <div class="diagram-container">
       <svg viewBox="0 0 1020 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fpl-arch-title fpl-arch-desc">
-        <title id="fpl-arch-title">สถาปัตยกรรมระบบเบื้องหลังและเวิร์กโฟลว์การประมวลผลข้อมูล FPLSaWaDiKa (Season 2026/27)</title>
-        <desc id="fpl-arch-desc">ไดอะแกรมแสดงโฟลว์การทำงานแบบ Hybrid Dual-Layer Serverless Jamstack: Tier 1 (8 ลีก 146 ทีม) ซิงก์คู่ขนานเต็มรูปแบบ และ Tier 2 (1 ลีก 1,780 ทีม) แบบ Decoupled Chunks พร้อมดึงคะแนนสดและจัดทัพ On-Demand ผ่าน Cloudflare Edge Live Relay</desc>
+        <title id="fpl-arch-title">สถาปัตยกรรมระบบเบื้องหลังและเวิร์กโฟลว์การประมวลผลข้อมูล FPLSaWaDiKa v3.0 Hybrid Edge (Season 2026/27)</title>
+        <desc id="fpl-arch-desc">ไดอะแกรมแสดงโฟลว์การทำงานแบบ Hybrid Edge v3.0 (9 ลีก 1,921 ทีม): Smart Dual-Cadence 1h/4h, Tier 2 Auto-Picks Live (รองรับสูงสุด 3,000 ทีม), In-House Hybrid xP+FDR, Shared Bundle และ Cloudflare Workers + D1/KV</desc>
 
         <defs>
           <pattern id="bg-dots" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -250,32 +250,32 @@
         <rect x="744" y="330" width="84" height="14" rx="2" fill="var(--color-paper)"/>
         <text x="786" y="340" fill="var(--color-muted)" font-size="7" font-family="var(--font-mono)" font-weight="500" text-anchor="middle" letter-spacing="0.06em">LAZY &amp; CHUNKS</text>
 
-        <!-- Label C8: 15s LIVE POLL & ON-DEMAND /PICKS -->
-        <rect x="340" y="413" width="320" height="14" rx="2" fill="var(--color-paper)"/>
-        <text x="500" y="423" fill="var(--color-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">15s LIVE POLL &amp; ON-DEMAND /PICKS • ZERO-CORS RELAY</text>
+        <!-- Label C8: 15s EDGE TTL • 20s/90s POLL • /PICKS & /STANDINGS -->
+        <rect x="300" y="413" width="400" height="14" rx="2" fill="var(--color-paper)"/>
+        <text x="500" y="423" fill="var(--color-link)" font-size="7.5" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">15s EDGE TTL • 20s/90s POLL • /PICKS &amp; /STANDINGS</text>
 
         <!-- ========================================== -->
         <!-- NODES                                      -->
         <!-- ========================================== -->
 
-        <!-- Node 1A: Official FPL & Azure API (External Cloud) -->
+        <!-- Node 1A: Official FPL API (External Cloud) -->
         <g id="node-fpl-api">
           <rect x="24" y="92" width="156" height="72" rx="6" fill="var(--color-paper)"/>
           <rect x="24" y="92" width="156" height="72" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--color-link)" stroke-width="1.2"/>
           <rect x="32" y="100" width="64" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
           <text x="64" y="109" fill="var(--color-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EXTERNAL API</text>
-          <text x="102" y="130" fill="var(--color-ink)" font-size="11.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Official FPL &amp; Azure</text>
-          <text x="102" y="148" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">Live / Picks / Transfer AI</text>
+          <text x="102" y="130" fill="var(--color-ink)" font-size="11.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Official FPL API</text>
+          <text x="102" y="148" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">Live / Picks / Fixtures</text>
         </g>
 
-        <!-- Node 1B: Cloudflare Live Relay (Edge Worker) -->
+        <!-- Node 1B: Cloudflare Edge + D1/KV (Edge Worker) -->
         <g id="node-cf-worker">
           <rect x="24" y="252" width="156" height="72" rx="6" fill="var(--color-paper)"/>
           <rect x="24" y="252" width="156" height="72" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--color-link)" stroke-width="1.2"/>
-          <rect x="32" y="260" width="66" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
-          <text x="65" y="269" fill="var(--color-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EDGE WORKER</text>
-          <text x="102" y="290" fill="var(--color-ink)" font-size="11.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Cloudflare Live Relay</text>
-          <text x="102" y="308" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">15s Live Poll • /picks On-Demand</text>
+          <rect x="32" y="260" width="76" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
+          <text x="70" y="269" fill="var(--color-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EDGE &amp; STORAGE</text>
+          <text x="102" y="290" fill="var(--color-ink)" font-size="11" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Cloudflare Edge + D1/KV</text>
+          <text x="102" y="308" fill="var(--color-muted)" font-size="7.8" font-family="var(--font-mono)" text-anchor="middle">15s TTL • /picks • Analytics</text>
         </g>
 
         <!-- Node 2: sync_live_fpl.py (Focal Accent 1) -->
@@ -285,7 +285,7 @@
           <rect x="248" y="100" width="88" height="12" rx="2" fill="var(--color-accent)" opacity="0.18"/>
           <text x="292" y="109" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">HYBRID PIPELINE</text>
           <text x="364" y="130" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">sync_live_fpl.py</text>
-          <text x="364" y="148" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">Tier 1: 8 ลีก (146 ทีม) • Tier 2: 1 ลีก (1.7k ทีม)</text>
+          <text x="364" y="148" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">Tier 1: 8 ลีก (146) • Tier 2: 1,779 ทีม</text>
         </g>
 
         <!-- Node 3: POSIX Atomic Write -->
@@ -295,7 +295,7 @@
           <rect x="248" y="204" width="74" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
           <text x="285" y="213" fill="var(--color-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">DATA INTEGRITY</text>
           <text x="364" y="234" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">POSIX Atomic Store</text>
-          <text x="364" y="252" fill="var(--color-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">multi_fpl_data.json • Decoupled Chunks</text>
+          <text x="364" y="252" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">multi_fpl_data.json • Hybrid xP+FDR</text>
         </g>
 
         <!-- Node 4: Smart Commit & Cache -->
@@ -305,7 +305,7 @@
           <rect x="248" y="308" width="74" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
           <text x="285" y="317" fill="var(--color-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">GIT ZERO-CHURN</text>
           <text x="364" y="338" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Smart Commit Engine</text>
-          <text x="364" y="356" fill="var(--color-muted)" font-size="8.5" font-family="var(--font-mono)" text-anchor="middle">15m Cron • ข้าม Commit ถ้าไร้แต้มเปลี่ยน</text>
+          <text x="364" y="356" fill="var(--color-muted)" font-size="7.8" font-family="var(--font-mono)" text-anchor="middle">Dual-Cadence 1h/4h • ข้าม Commit ไร้แต้มเปลี่ยน</text>
         </g>
 
         <!-- Node 5: update_preview.py -->
@@ -315,17 +315,17 @@
           <rect x="556" y="140" width="80" height="12" rx="2" fill="rgba(148, 163, 184, 0.15)"/>
           <text x="596" y="149" fill="var(--color-soft)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">JAMSTACK BUILD</text>
           <text x="652" y="170" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">update_preview.py</text>
-          <text x="652" y="188" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">Config-Driven • /{id}.json &amp; gw{gw}.json</text>
+          <text x="652" y="188" fill="var(--color-muted)" font-size="7.5" font-family="var(--font-mono)" text-anchor="middle">Shared Bundle • /{id}.json &amp; gw{gw}.json</text>
         </g>
 
-        <!-- Node 6: Fastly Global Edge CDN -->
+        <!-- Node 6: Cloudflare DNS & Edge CDN -->
         <g id="node-edge-cdn">
           <rect x="548" y="252" width="208" height="72" rx="6" fill="var(--color-paper)"/>
           <rect x="548" y="252" width="208" height="72" rx="6" fill="rgba(96, 165, 250, 0.08)" stroke="var(--color-link)" stroke-width="1.2"/>
           <rect x="556" y="260" width="60" height="12" rx="2" fill="rgba(96, 165, 250, 0.15)"/>
           <text x="586" y="269" fill="var(--color-link)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">EDGE CDN</text>
           <text x="652" y="290" fill="var(--color-ink)" font-size="11.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Cloudflare DNS &amp; Edge CDN</text>
-          <text x="652" y="308" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">fplsawadika.com • /{id}/ Routes • Brotli</text>
+          <text x="652" y="308" fill="var(--color-muted)" font-size="7.6" font-family="var(--font-mono)" text-anchor="middle">fplsawadika.com • Multi-Tenant • Brotli</text>
         </g>
 
         <!-- Node 7: Vanilla ES6+ Client (Focal Accent 2) -->
@@ -335,7 +335,7 @@
           <rect x="824" y="200" width="64" height="12" rx="2" fill="var(--color-accent)" opacity="0.18"/>
           <text x="856" y="209" fill="var(--color-accent)" font-size="7" font-family="var(--font-mono)" font-weight="600" text-anchor="middle" letter-spacing="0.08em">BROWSER SPA</text>
           <text x="900" y="230" fill="var(--color-ink)" font-size="12.5" font-weight="600" font-family="var(--font-sans)" text-anchor="middle">Vanilla Client App</text>
-          <text x="900" y="248" fill="var(--color-muted)" font-size="8" font-family="var(--font-mono)" text-anchor="middle">0kb SPA • 15s Poll • Lazy &amp; Chunks</text>
+          <text x="900" y="248" fill="var(--color-muted)" font-size="7.5" font-family="var(--font-mono)" text-anchor="middle">Zero-Framework • 20s/90s Poll • SRI</text>
         </g>
       </svg>
     </div>
