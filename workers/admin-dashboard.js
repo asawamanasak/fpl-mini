@@ -3330,7 +3330,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ? 'incident'
         : ((s24.status === 'warning' || s7.status === 'warning') ? 'warning' : 'healthy');
       if (sh.status === 'incident') overallStatus = 'incident';
-      else if (sh.status === 'stale' && overallStatus === 'healthy') overallStatus = 'warning';
+      else if ((sh.status === 'stale' || sh.status === 'warning') && overallStatus === 'healthy') overallStatus = 'warning';
 
       const syncBanner = document.getElementById('monitorSyncHealthBanner');
       if (syncBanner) {
@@ -3351,7 +3351,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           msg = lang === 'en'
             ? ('✓ GitHub Actions Sync Fresh (' + ageTxt + ' ago · Expected ≤ ' + (sh.expected_interval_min || 60) + 'm)')
             : ('✓ ซิงก์ GitHub Actions สดใหม่ (ซิงก์เมื่อ ' + ageTxt + ' ก่อน · รอบปกติทุก ' + (sh.expected_interval_min || 60) + ' นาที)');
-        } else if (sh.status === 'stale') {
+        } else if (sh.status === 'stale' || sh.status === 'warning') {
           cls += 'border-amber-500/35 bg-amber-500/10 text-amber-800 dark:text-amber-300';
           msg = lang === 'en'
             ? ('⚠ Sync Delayed (' + ageTxt + ' ago > ' + (sh.stale_threshold_min || 150) + 'm threshold)')
@@ -4378,21 +4378,32 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const at = Date.now();
       if (action === 'flush-cache') {
         const keys = Number(data.deleted_keys || 0);
+        const failedKeys = Number(data.failed_keys || 0);
+        const attempted = Number(data.attempted_keys || keys);
+        const ok = Boolean(data.success) && failedKeys === 0;
         const coloTxt = data.colo ? (' [' + data.colo + ']') : '';
         const scopesTxt = Array.isArray(data.flushed_scopes) && data.flushed_scopes.length
           ? (' (' + data.flushed_scopes.join(', ') + ')')
           : '';
         return {
-          ok: true,
+          ok,
           at,
-          titleTh: '✓ ล้างข้อมูลค้างเรียบร้อย' + coloTxt + ' (ไม่ต้องกดซ้ำ)',
-          titleEn: '✓ Live Cache Cleared' + coloTxt + ' (No need to repeat)',
-          detailTh: keys > 0
-            ? ('ล้างแคชไปแล้ว ' + keys + ' รายการ' + scopesTxt + ' — หน้าเว็บจะดึงคะแนนล่าสุดให้ทุกคนอัตโนมัติในรอบถัดไป')
-            : ('เคลียร์สถานะเรียบร้อยแล้ว' + scopesTxt + ' — หน้าเว็บจะดึงข้อมูลสดล่าสุดให้ทุกคนทันทีที่เปิดดูใหม่'),
-          detailEn: keys > 0
-            ? ('Cleared ' + keys + ' cached entries' + scopesTxt + ' — visitors will receive fresh live scores immediately.')
-            : ('Cache is clean' + scopesTxt + ' — visitors will receive fresh live scores immediately.'),
+          titleTh: ok
+            ? ('✓ ล้างข้อมูลค้างเรียบร้อย' + coloTxt + ' (ไม่ต้องกดซ้ำ)')
+            : ('⚠️ ล้างแคชได้บางส่วน' + coloTxt + ' (ล้มเหลว ' + failedKeys + '/' + attempted + ')'),
+          titleEn: ok
+            ? ('✓ Live Cache Cleared' + coloTxt + ' (No need to repeat)')
+            : ('⚠️ Partial Cache Flush' + coloTxt + ' (' + failedKeys + '/' + attempted + ' failed)'),
+          detailTh: !ok
+            ? ('ลบแคชสำเร็จ ' + keys + ' รายการ แต่มีข้อผิดพลาด ' + failedKeys + ' รายการ' + scopesTxt)
+            : (keys > 0
+                ? ('ล้างแคชไปแล้ว ' + keys + ' รายการ' + scopesTxt + ' — หน้าเว็บจะดึงคะแนนล่าสุดให้ทุกคนอัตโนมัติในรอบถัดไป')
+                : ('เคลียร์สถานะเรียบร้อยแล้ว' + scopesTxt + ' — หน้าเว็บจะดึงข้อมูลสดล่าสุดให้ทุกคนทันทีที่เปิดดูใหม่')),
+          detailEn: !ok
+            ? ('Cleared ' + keys + ' keys but encountered ' + failedKeys + ' cache delete errors' + scopesTxt + '.')
+            : (keys > 0
+                ? ('Cleared ' + keys + ' cached entries' + scopesTxt + ' — visitors will receive fresh live scores immediately.')
+                : ('Cache is clean' + scopesTxt + ' — visitors will receive fresh live scores immediately.')),
         };
       }
       if (action === 'ping-upstream') {
@@ -6165,7 +6176,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const lang = getLang();
       const es = ordersEmailStatusCache;
       if (es.ready) {
-        const modeTxt = es.mode === 'resend' ? 'Resend Ready' : 'MailChannels Ready';
+        const modeTxt = (es.mode === 'resend' || es.mode === 'resend_live') ? 'Resend Ready' : 'MailChannels Ready';
         el.className = 'px-2.5 py-1.5 rounded-lg border border-emerald-500/35 bg-emerald-500/10 text-xs mono text-emerald-800 dark:text-emerald-300 whitespace-nowrap';
         el.textContent = lang === 'en' ? ('✓ Email: ' + modeTxt) : ('✓ อีเมลพร้อมส่ง (' + modeTxt + ')');
       } else {

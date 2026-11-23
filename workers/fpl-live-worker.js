@@ -552,10 +552,16 @@ function buildLeagueModulesSummary(cfgItem, teamsCount) {
   } else if (feats.prize_model === 'annual_zero_sum') {
     thParts.push('Zero-Sum ขั้นบันไดทั้งปี');
     enParts.push('Zero-Sum Annual Tiers');
-  } else if (feats.has_monthly_prizes) {
+  } else if (feats.has_monthly_prizes || feats.prize_model === 'monthly') {
     thParts.push('รางวัลรายเดือน');
     enParts.push('Monthly Prizes');
-  } else if (feats.has_weekly_prizes) {
+  } else if (
+    feats.prize_model === 'weekly' ||
+    feats.prize_model === 'penalties' ||
+    feats.has_weekly_prizes ||
+    (feats.weekly_prizes && typeof feats.weekly_prizes === 'object') ||
+    Number(feats.weekly_prize_amount) > 0
+  ) {
     if (feats.weekly_prizes && typeof feats.weekly_prizes === 'object') {
       thParts.push('รางวัลรายสัปดาห์หลายขั้น');
       enParts.push('Weekly Tier Prizes');
@@ -640,7 +646,7 @@ function computeSyncHealth(lastSyncIso, now = new Date()) {
   const incidentThresholdMin = isMatchdayCadence ? 240 : 540;
   const status = ageMinutes >= incidentThresholdMin
     ? 'incident'
-    : (ageMinutes >= staleThresholdMin ? 'warning' : 'healthy');
+    : (ageMinutes >= staleThresholdMin ? 'stale' : 'healthy');
   return {
     last_sync_iso: raw,
     age_minutes: ageMinutes,
@@ -1372,42 +1378,125 @@ export default {
             headers: ADMIN_JSON_HEADERS,
           });
         }
-        let deletedCount = 0;
-        try {
-          const cache = caches.default;
-          const origins = Array.from(new Set([
-            url.origin,
-            'https://api.fplsawadika.com',
-            'https://fpl-live-relay.asawamanasak.workers.dev',
-          ]));
-          const deletePromises = [];
-          for (const orig of origins) {
-            deletePromises.push(cache.delete(new Request(`${orig}/visitors`)));
-            deletePromises.push(cache.delete(new Request(`${orig}/api/visitors`)));
-            for (const [f, t] of [[1, 12], [13, 24], [25, 36], [37, 48]]) {
-              deletePromises.push(cache.delete(new Request(`${orig}/standings?path=/standings&league=139836&from=${f}&to=${t}`)));
+        const bodyPayload = await request.json().catch(() => ({}));
+        let targetGw = Number(bodyPayload && bodyPayload.gw);
+        let tier2Leagues = Array.isArray(bodyPayload && bodyPayload.leagues)
+          ? bodyPayload.leagues.map((id) => String(id).trim()).filter((id) => /^[0-9]{1,10}$/.test(id))
+          : [];
+
+        if (!Number.isInteger(targetGw) || targetGw < 1 || targetGw > 38 || tier2Leagues.length === 0) {
+          try {
+            const sumResp = await fetchUpstreamWithTimeout(
+              'https://www.fplsawadika.com/data/admin_summary.json',
+              { headers: { Accept: 'application/json' } },
+              4000
+            );
+            if (sumResp && sumResp.ok) {
+              const sumJson = await sumResp.json();
+              if (!Number.isInteger(targetGw) || targetGw < 1 || targetGw > 38) {
+                const parsedGw = Number(sumJson && sumJson.max_gw);
+                if (Number.isInteger(parsedGw) && parsedGw >= 1 && parsedGw <= 38) {
+                  targetGw = parsedGw;
+                }
+              }
+              if (tier2Leagues.length === 0 && sumJson && sumJson.leagues && typeof sumJson.leagues === 'object') {
+                tier2Leagues = Object.entries(sumJson.leagues)
+                  .filter(([, meta]) => Number(meta && meta.tier) === 2)
+                  .map(([lid]) => String(lid).trim())
+                  .filter((lid) => /^[0-9]{1,10}$/.test(lid));
+              }
             }
-            for (let gw = 1; gw <= 38; gw++) {
-              deletePromises.push(cache.delete(new Request(`${orig}/live?path=/live&gw=${gw}&slim=1`)));
-              deletePromises.push(cache.delete(new Request(`${orig}/live?path=/live&gw=${gw}&slim=0`)));
-              deletePromises.push(cache.delete(new Request(`${orig}/?path=/&gw=${gw}&slim=1`)));
-              deletePromises.push(cache.delete(new Request(`${orig}/fixtures?path=/fixtures&gw=${gw}&slim=0`)));
-              deletePromises.push(cache.delete(new Request(`${orig}/live?event=${gw}&slim=1`)));
+          } catch (_) {}
+        }
+        if (!Number.isInteger(targetGw) || targetGw < 1 || targetGw > 38) {
+          targetGw = 11;
+        }
+        if (tier2Leagues.length === 0) {
+          tier2Leagues = ['139836'];
+        }
+
+        const isLocalReq = isLocalOrigin(url.origin);
+        const primaryOrigins = isLocalReq
+          ? [url.origin]
+          : ['https://api.fplsawadika.com'];
+        const targetGws = Array.from(new Set([
+          Math.max(1, targetGw - 1),
+          targetGw,
+          Math.min(38, targetGw + 1),
+        ]));
+        const standingsBatches = [
+          [1, 12], [13, 24], [25, 36], [37, 48], [49, 60],
+          [61, 72], [73, 84], [85, 96], [97, 108],
+        ];
+
+        let rawUrls = [];
+        for (const orig of primaryOrigins) {
+          rawUrls.push(`${orig}/visitors`, `${orig}/api/visitors`);
+          for (const gw of targetGws) {
+            rawUrls.push(
+              `${orig}/live?path=/live&gw=${gw}&slim=1`,
+              `${orig}/live?path=/live&gw=${gw}&slim=0`,
+              `${orig}/?path=/&gw=${gw}&slim=1`,
+              `${orig}/fixtures?path=/fixtures&gw=${gw}&slim=0`,
+              `${orig}/live?event=${gw}&slim=1`
+            );
+          }
+          for (const t2Lid of tier2Leagues) {
+            for (const [f, t] of standingsBatches) {
+              rawUrls.push(`${orig}/standings?path=/standings&league=${t2Lid}&from=${f}&to=${t}`);
             }
           }
-          const results = await Promise.all(deletePromises);
-          deletedCount = results.filter(Boolean).length;
-        } catch (_) {}
+        }
+        if (!isLocalReq) {
+          const relayOrig = 'https://fpl-live-relay.asawamanasak.workers.dev';
+          rawUrls.push(
+            `${relayOrig}/visitors`,
+            `${relayOrig}/api/visitors`,
+            `${relayOrig}/live?path=/live&gw=${targetGw}&slim=1`,
+            `${relayOrig}/live?path=/live&gw=${targetGw}&slim=0`,
+            `${relayOrig}/?path=/&gw=${targetGw}&slim=1`,
+            `${relayOrig}/fixtures?path=/fixtures&gw=${targetGw}&slim=0`,
+            `${relayOrig}/live?event=${targetGw}&slim=1`
+          );
+          for (const t2Lid of tier2Leagues) {
+            for (const [f, t] of standingsBatches.slice(0, 4)) {
+              rawUrls.push(`${relayOrig}/standings?path=/standings&league=${t2Lid}&from=${f}&to=${t}`);
+            }
+          }
+        }
+
+        // Hard-cap Cache API deletes <= 44 so total subrequests stay safely below Workers Free 50-call limit
+        const keysToDelete = Array.from(new Set(rawUrls)).slice(0, 44);
+        const cache = caches.default;
+        const settled = await Promise.allSettled(
+          keysToDelete.map((cacheUrl) => cache.delete(new Request(cacheUrl)))
+        );
+        let deletedCount = 0;
+        let failedCount = 0;
+        for (const res of settled) {
+          if (res.status === 'fulfilled') {
+            if (res.value) deletedCount += 1;
+          } else {
+            failedCount += 1;
+          }
+        }
+        const ok = failedCount === 0;
         return new Response(
           JSON.stringify({
-            success: true,
+            success: ok,
             deleted_keys: deletedCount,
+            attempted_keys: keysToDelete.length,
+            failed_keys: failedCount,
+            target_gws: targetGws,
+            tier2_leagues: tier2Leagues,
             colo,
             flushed_scopes: ['/live', '/fixtures', '/standings', '/visitors'],
             picks_ttl_sec: 1800,
-            message: `Edge cache flushed on ${colo} PoP (/live, /fixtures, /standings, /visitors; /picks TTL 30m)`,
+            message: ok
+              ? `Edge cache flushed on ${colo} PoP (${deletedCount}/${keysToDelete.length} keys across GW ${targetGws.join(',')})`
+              : `Edge cache partially failed on ${colo} PoP (${failedCount} delete errors out of ${keysToDelete.length})`,
           }),
-          { status: 200, headers: ADMIN_JSON_HEADERS }
+          { status: ok ? 200 : 207, headers: ADMIN_JSON_HEADERS }
         );
       }
 
@@ -2727,13 +2816,13 @@ export default {
                 }
 
                 // Real 3 time-of-day windows from 7-day hourly distribution (ICT)
-                let winEveningHits = 0; // 18:00 - 01:59 (Live matches & pre-deadline)
-                let winDaytimeHits = 0; // 10:00 - 17:59 (Daytime planning & checks)
-                let winMorningHits = 0; // 02:00 - 09:59 (Late-night / morning settlement)
+                let winEveningHits = 0; // 18:00 - 02:59 (Live matches & pre-deadline)
+                let winDaytimeHits = 0; // 11:00 - 17:59 (Daytime planning & checks)
+                let winMorningHits = 0; // 03:00 - 10:59 (Late-night / morning settlement)
                 for (let hr = 0; hr < 24; hr++) {
                   const hVal = hourlySeries[hr] || 0;
-                  if (hr >= 18 || hr <= 1) winEveningHits += hVal;
-                  else if (hr >= 10 && hr <= 17) winDaytimeHits += hVal;
+                  if (hr >= 18 || hr <= 2) winEveningHits += hVal;
+                  else if (hr >= 11 && hr <= 17) winDaytimeHits += hVal;
                   else winMorningHits += hVal;
                 }
                 const winTotal = winEveningHits + winDaytimeHits + winMorningHits;

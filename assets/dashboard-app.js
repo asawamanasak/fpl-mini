@@ -2293,7 +2293,7 @@
           this._currentPollIntervalMs = LIVE_POLL_IN_PLAY_MS;
         }
         const checkAndPoll = () => {
-          if (!this.isLiveWindowActive()) {
+          if (this.isLeaguePaused() || !this.isLiveWindowActive()) {
             if (this.livePollInterval) {
               clearInterval(this.livePollInterval);
               this.livePollInterval = null;
@@ -2517,7 +2517,7 @@
               return { data: null, reason: 'offline' };
             }
             const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-            const timer = controller ? setTimeout(() => controller.abort(), 10000) : null;
+            const timer = controller ? setTimeout(() => controller.abort(), 26000) : null;
             try {
               const resp = await fetch(url, {
                 cache: 'no-store',
@@ -2581,10 +2581,14 @@
         let hasMore = Boolean(batch1.has_next);
         let nextFrom = (Number(batch1.last_fetched_page) || 12) + 1;
         let tailChanged = false;
+        let partialFailed = false;
         while (hasMore && nextFrom <= 108) {
           const nextTo = nextFrom + 11;
           const nextBatch = await fetchBatch(nextFrom, nextTo, false);
-          if (!nextBatch) break;
+          if (!nextBatch) {
+            partialFailed = true;
+            break;
+          }
           if (this.applyTier2StandingsRows(lidStr, nextBatch.results, gw)) {
             tailChanged = true;
           }
@@ -2597,11 +2601,11 @@
           this.updateHeaderInfo();
           this.renderAll();
         }
-        return true;
+        return !partialFailed;
       }
 
       async fetchLivePoints(force = false) {
-        if (this._isFetchingLive) return;
+        if (this._isFetchingLive || this.isLeaguePaused()) return;
         const maxGW = Number(this.multiData && this.multiData.max_gw) || 8;
         const gwKey = String(maxGW);
         const gwData = this.data && this.data.gameweeks ? this.data.gameweeks[gwKey] : null;
@@ -2651,7 +2655,7 @@
               return { data: null, reason: 'offline' };
             }
             const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-            const timer = controller ? setTimeout(() => controller.abort(), 8000) : null;
+            const timer = controller ? setTimeout(() => controller.abort(), 11000) : null;
             try {
               const resp = await fetch(url, {
                 cache: 'no-store',
@@ -2702,11 +2706,11 @@
           return { data: null, reason: second.reason, attempts: 2 };
         };
 
-        const reportActionableLiveError = (reason, attempts = 2) => {
+        const reportActionableLiveError = (reason, attempts = 1) => {
           if (reason === 'offline' || reason === 'hidden') return;
           if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
           if (typeof document !== 'undefined' && document.hidden) return;
-          this._liveFetchConsecutiveFails = (this._liveFetchConsecutiveFails || 0) + Math.max(1, attempts);
+          this._liveFetchConsecutiveFails = (this._liveFetchConsecutiveFails || 0) + 1;
           if (this._liveFetchConsecutiveFails >= 2 && typeof window._reportClientError === 'function') {
             window._reportClientError(reason === 'timeout' ? 'api_timeout' : 'api_http');
           }
@@ -2715,26 +2719,35 @@
         try {
           if (isTier2Active) {
             await this.ensureTier2PicksChunk(maxGW, lidStr);
+            if (String(this.activeLeagueId || '') !== lidStr) return;
             const hasT2Picks = this.hasTier2PicksForGw(this.data, maxGW);
             if (!hasT2Picks) {
+              const needLiveElements = (!this._latestLiveMap || force);
               const [t2Ok, liveRes] = await Promise.all([
                 this.fetchTier2LiveStandings(lidStr, maxGW, force),
-                (!this._latestLiveMap || force) ? fetchLiveElementsJson() : Promise.resolve({ data: this.lastLiveJson, reason: null, attempts: 0 })
+                needLiveElements ? fetchLiveElementsJson() : Promise.resolve({ data: this.lastLiveJson, reason: null, attempts: 0 })
               ]);
               const liveJson = liveRes && liveRes.data ? liveRes.data : null;
               if (liveJson && Array.isArray(liveJson.elements)) {
                 this.lastLiveJson = liveJson;
                 this.lastLiveGw = maxGW;
-                const inPlayCount = Number(liveJson.in_play_count || 0);
-                const adaptiveIntervalMs = inPlayCount > 0 ? 20000 : 90000;
-                if (typeof this.setLivePollCadence === 'function') {
-                  this.setLivePollCadence(adaptiveIntervalMs);
+                if (String(this.activeLeagueId || '') === lidStr) {
+                  const inPlayCount = Number(liveJson.in_play_count || 0);
+                  const adaptiveIntervalMs = inPlayCount > 0 ? 20000 : 90000;
+                  if (typeof this.setLivePollCadence === 'function') {
+                    this.setLivePollCadence(adaptiveIntervalMs);
+                  }
+                  this._nextLivePollAt = Date.now() + (this._currentPollIntervalMs || adaptiveIntervalMs);
                 }
-                this._nextLivePollAt = Date.now() + (this._currentPollIntervalMs || adaptiveIntervalMs);
                 this.applyLiveElements(liveJson, maxGW);
               }
-              if (!t2Ok) {
-                reportActionableLiveError(this._lastTier2FailReason || 'http', 2);
+              if (String(this.activeLeagueId || '') !== lidStr) return;
+              const liveOk = !needLiveElements || Boolean(liveJson && Array.isArray(liveJson.elements));
+              if (!t2Ok || !liveOk) {
+                reportActionableLiveError(
+                  !t2Ok ? (this._lastTier2FailReason || 'http') : ((liveRes && liveRes.reason) || 'http'),
+                  1
+                );
                 if (force && typeof this.showCopiedToast === 'function') {
                   const isEn = (this.currentLang === 'en');
                   this.showCopiedToast(isEn ? 'Unable to reach Cloudflare Live Edge' : 'ไม่สามารถเชื่อมต่อ Cloudflare Live Edge ได้ในขณะนี้');
@@ -2754,7 +2767,8 @@
           const liveRes = await fetchLiveElementsJson();
           const liveJson = liveRes && liveRes.data ? liveRes.data : null;
           if (!liveJson || !Array.isArray(liveJson.elements)) {
-            reportActionableLiveError(liveRes ? liveRes.reason : 'http', liveRes ? liveRes.attempts : 2);
+            if (String(this.activeLeagueId || '') !== lidStr) return;
+            reportActionableLiveError(liveRes ? liveRes.reason : 'http', liveRes ? liveRes.attempts : 1);
             if (force && typeof this.showCopiedToast === 'function') {
               const isEn = (this.currentLang === 'en');
               this.showCopiedToast(isEn ? 'Unable to reach Cloudflare Live Edge' : 'ไม่สามารถเชื่อมต่อ Cloudflare Live Edge ได้ในขณะนี้');
@@ -2762,11 +2776,14 @@
             return;
           }
 
-          this._liveFetchConsecutiveFails = 0;
-
           // Cache latest live payload in memory so switching leagues applies live scores in 0ms
           this.lastLiveJson = liveJson;
           this.lastLiveGw = maxGW;
+
+          const changed = this.applyLiveElements(liveJson, maxGW);
+
+          if (String(this.activeLeagueId || '') !== lidStr) return;
+          this._liveFetchConsecutiveFails = 0;
 
           // Adaptive Edge polling: 20s during live play, 90s between match slots until FPL marks data_checked
           const inPlayCount = Number(liveJson.in_play_count || 0);
@@ -2775,8 +2792,6 @@
             this.setLivePollCadence(adaptiveIntervalMs);
           }
           this._nextLivePollAt = Date.now() + (this._currentPollIntervalMs || adaptiveIntervalMs);
-
-          const changed = this.applyLiveElements(liveJson, maxGW);
 
           this.markHeaderLiveSynced(force);
 
@@ -4733,6 +4748,20 @@
         if (!fromPopstate) {
           try {
             if (window.history && (window.history.pushState || window.history.replaceState)) {
+              const urlParams = new URLSearchParams(window.location.search || '');
+              const curQueryTab = urlParams.get('tab');
+              if (curQueryTab) {
+                const normQueryTab = this.normalizeTab(curQueryTab);
+                const unsupportedTier2Tabs = ['highlights-view', 'competition-view', 'transfers-view', 'transfer-advisor-view', 'hall-of-fame-view', 'global-radar-view'];
+                const tabUnavailable =
+                  (normQueryTab === 'about-view' && !this.hasDevCornerFeature()) ||
+                  (normQueryTab === 'shi62-special-view' && !this.hasShi62Feature()) ||
+                  (normQueryTab === 'bramann-prediction-view' && !this.hasBramannPredFeature()) ||
+                  (normQueryTab === 'bramann-challenge-view' && !this.hasBramannChalFeature()) ||
+                  (isTier2 && unsupportedTier2Tabs.includes(normQueryTab));
+                if (tabUnavailable) urlParams.delete('tab');
+              }
+
               if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
                 const isGitHubPages = window.location.pathname.includes('/fpl-mini');
                 const basePath = isGitHubPages ? '/fpl-mini/' : '/';
@@ -4744,16 +4773,15 @@
                   configuredIds.forEach(lid => {
                     newPath = newPath.replace(new RegExp('/' + lid + '(/index\.html|/)?$'), '/' + this.activeLeagueId + '/');
                   });
-                  window.history.pushState(null, '', newPath + (window.location.search || ''));
+                  const cleanSearch = urlParams.toString();
+                  window.history.pushState(null, '', newPath + (cleanSearch ? '?' + cleanSearch : ''));
                 } else {
-                  const urlParams = new URLSearchParams(window.location.search || '');
                   urlParams.set('league', this.activeLeagueId);
                   window.history.pushState(null, '', basePath + '?' + urlParams.toString());
                 }
               } else {
                 // Local file:// protocol: never strip directories or trigger SecurityError
                 const currentPath = window.location.pathname;
-                const urlParams = new URLSearchParams(window.location.search || '');
                 urlParams.set('league', this.activeLeagueId);
                 window.history.replaceState(null, '', currentPath + '?' + urlParams.toString());
               }
@@ -4866,6 +4894,10 @@
           if (this.livePollInterval) {
             clearInterval(this.livePollInterval);
             this.livePollInterval = null;
+          }
+          if (this._visibilityPollTimer) {
+            clearTimeout(this._visibilityPollTimer);
+            this._visibilityPollTimer = null;
           }
         }
         const platformSub = document.getElementById('header-platform-sub');
@@ -5020,7 +5052,7 @@
         if (aboutTabBtn) {
           aboutTabBtn.classList.toggle('hidden', !hasDevCorner);
           if (!hasDevCorner && this.activeTab === 'about-view') {
-            this.switchTab('gameweek-view', true);
+            this.switchTab('gameweek-view', false);
           }
         }
 
@@ -5076,7 +5108,7 @@
         } else if (!hasBramannChal && this.activeTab === 'bramann-challenge-view') {
           this.switchTab('gameweek-view', true);
         } else if (!hasDevCorner && this.activeTab === 'about-view') {
-          this.switchTab('gameweek-view', true);
+          this.switchTab('gameweek-view', false);
         } else {
           this.switchTab(this.activeTab, true, true);
         }
@@ -7783,12 +7815,12 @@
                 <td class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">
                   <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">${team.captain && team.captain !== '-' ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 mr-1">(C)</span>${this.escapeHtml(team.captain.replace(/\s*\(C\)/gi, '').trim())}` : '-'}</span>
                 </td>
-                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold tabular-nums text-xs sm:text-sm ${isStarted ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300'}">
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold tabular-nums whitespace-nowrap text-xs sm:text-sm ${isStarted ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300'}">
                   <div>${team.points}</div>
                   ${playedInfo}
                 </td>
-                <td class="py-2.5 px-1 sm:px-2 text-center tabular-nums text-xs sm:text-sm">${hits}</td>
-                <td class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right font-display font-bold tabular-nums text-xs sm:text-sm text-slate-900 dark:text-white">${team.net_points}</td>
+                <td class="py-2.5 px-1 sm:px-2 text-center tabular-nums whitespace-nowrap text-xs sm:text-sm">${hits}</td>
+                <td class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right font-display font-bold tabular-nums whitespace-nowrap text-xs sm:text-sm text-slate-900 dark:text-white">${team.net_points}</td>
               </tr>
             `;
           });
@@ -16837,10 +16869,10 @@
         const isLive = isStarted && !isFinished;
 
         const footerEl = document.getElementById('site-footer');
-        const dynLeaguesCount = Number(footerEl && footerEl.dataset && footerEl.dataset.leagues) || Object.keys(this.leaguesConfig || {}).length || 9;
+        const dynLeaguesCount = Number(footerEl && footerEl.dataset && footerEl.dataset.leagues) || Object.keys(this.configs || {}).length || 9;
         const dynTeamsCount = Number(footerEl && footerEl.dataset && footerEl.dataset.teams) || 1921;
         const dynTeamsFormatted = dynTeamsCount.toLocaleString('en-US');
-        const dynTier1Leagues = Object.values(this.leaguesConfig || {}).filter(c => c && Number(c.tier || 1) === 1 && c.visibility !== 'private' && c.status !== 'archived').length || Object.values(this.leaguesConfig || {}).filter(c => c && Number(c.tier || 1) === 1).length || 8;
+        const dynTier1Leagues = Object.values(this.configs || {}).filter(c => c && Number(c.tier || 1) === 1 && c.visibility !== 'private' && c.status !== 'archived').length || Object.values(this.configs || {}).filter(c => c && Number(c.tier || 1) === 1).length || 8;
 
         const statusPill = isLive
           ? `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold font-mono bg-emerald-50 text-emerald-700 border border-emerald-200/80 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-800 shadow-2xs">
