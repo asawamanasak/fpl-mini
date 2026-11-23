@@ -4983,6 +4983,9 @@ __STRUCTURED_DATA_JSON__
         if (!this.hasBramannChalFeature() && initialTab === 'bramann-challenge-view') {
           initialTab = 'gameweek-view';
         }
+        if (!this.hasDevCornerFeature() && initialTab === 'about-view') {
+          initialTab = 'gameweek-view';
+        }
         this.activeTab = initialTab;
         this.liveNotesCache = {};
         this.shi62Data = (typeof SHI62_SPECIAL_DATA !== 'undefined') ? SHI62_SPECIAL_DATA : null;
@@ -5214,6 +5217,12 @@ __STRUCTURED_DATA_JSON__
         return Boolean((c && c.features && c.features.has_bramann_challenge) || ((!c || !c.features) && String(lid) === '5349'));
       }
 
+      hasDevCornerFeature(lid = this.activeLeagueId) {
+        const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null);
+        if (c && c.visibility === 'private') return false;
+        return Boolean((c && c.features && c.features.has_dev_corner) || ((!c || !c.features) && String(lid) === '40700'));
+      }
+
       getTeamLogoUrl(logoOrCode) {
         if (!logoOrCode) return '';
         let clean = String(logoOrCode).trim();
@@ -5298,7 +5307,9 @@ __STRUCTURED_DATA_JSON__
           return 'gameweek-view';
         }
         if (clean === 'rule' || clean === 'rules') return 'rules-view';
-        if (clean === 'about' || clean === 'about-us' || clean === 'about-me' || clean === 'feature' || clean === 'features' || clean === 'function' || clean === 'functions' || clean === 'capabilities' || clean === 'dev' || clean === 'dev-corner') return 'about-view';
+        if (clean === 'about' || clean === 'about-us' || clean === 'about-me' || clean === 'feature' || clean === 'features' || clean === 'function' || clean === 'functions' || clean === 'capabilities' || clean === 'dev' || clean === 'dev-corner') {
+          return this.hasDevCornerFeature() ? 'about-view' : 'gameweek-view';
+        }
         if (!t.endsWith('-view')) return t + '-view';
         return t;
       }
@@ -8256,13 +8267,13 @@ __STRUCTURED_DATA_JSON__
           }
         }
 
-        // Hide Dev Corner tab on private customer tenants (visibility === 'private')
+        // Show Dev Corner tab only on leagues explicitly enabled via features.has_dev_corner (e.g. 40700)
         const aboutTabBtn = document.getElementById('tab-btn-about');
-        const isPrivateTenant = Boolean(this.config && this.config.visibility === 'private');
+        const hasDevCorner = this.hasDevCornerFeature();
         if (aboutTabBtn) {
-          aboutTabBtn.classList.toggle('hidden', isPrivateTenant);
-          if (isPrivateTenant && this.activeTab === 'about-view') {
-            this.switchTab('gameweek-view');
+          aboutTabBtn.classList.toggle('hidden', !hasDevCorner);
+          if (!hasDevCorner && this.activeTab === 'about-view') {
+            this.switchTab('gameweek-view', true);
           }
         }
 
@@ -8317,6 +8328,8 @@ __STRUCTURED_DATA_JSON__
           this.switchTab('gameweek-view', true);
         } else if (!hasBramannChal && this.activeTab === 'bramann-challenge-view') {
           this.switchTab('gameweek-view', true);
+        } else if (!hasDevCorner && this.activeTab === 'about-view') {
+          this.switchTab('gameweek-view', true);
         } else {
           this.switchTab(this.activeTab, true, true);
         }
@@ -8341,8 +8354,7 @@ __STRUCTURED_DATA_JSON__
           return;
         }
         let normalized = this.normalizeTab(target);
-        const isPrivateTenant = Boolean(this.config && this.config.visibility === 'private');
-        if (isPrivateTenant && normalized === 'about-view') {
+        if (!this.hasDevCornerFeature() && normalized === 'about-view') {
           normalized = 'gameweek-view';
         }
         let targetView = document.getElementById(normalized);
@@ -8397,7 +8409,7 @@ __STRUCTURED_DATA_JSON__
           if (btn.id === 'tab-btn-bramann-challenge' && !this.hasBramannChalFeature()) {
             cls += ' hidden';
           }
-          if (btn.id === 'tab-btn-about' && Boolean(this.config && this.config.visibility === 'private')) {
+          if (btn.id === 'tab-btn-about' && !this.hasDevCornerFeature()) {
             cls += ' hidden';
           }
           btn.className = cls;
@@ -8599,7 +8611,12 @@ __STRUCTURED_DATA_JSON__
           }
         }
         else if (tab === 'about-view') {
-          this.renderAboutView();
+          if (this.hasDevCornerFeature()) {
+            this.renderAboutView();
+          } else {
+            this.switchTab('gameweek-view');
+            return;
+          }
         } else {
           this.renderGameweekView();
         }
@@ -20045,6 +20062,7 @@ __STRUCTURED_DATA_JSON__
 
       
       renderAboutView() {
+        if (!this.hasDevCornerFeature()) return;
         const container = document.getElementById('about-view');
         if (!container) return;
         const isEn = (this.currentLang === 'en');
@@ -23515,6 +23533,10 @@ __STRUCTURED_DATA_JSON__
         (bool(target_cfg.get('total_pool')) and target_cfg.get('total_pool') != '-' and 'เสื้อบอล' not in str(target_cfg.get('total_pool')) and 'ฟรี' not in str(target_cfg.get('entry_fee', '')))
     )
     has_initial_cup = bool(target_features.get('has_cup'))
+    has_initial_dev_corner = (
+        target_cfg.get('visibility', 'showcase') != 'private'
+        and (bool(target_features.get('has_dev_corner')) or (not target_features and str(effective_lid) == '40700'))
+    )
 
     # Compute live showcase fleet stats for Architecture Diagram & Dev Corner static HTML
     t1_arch_ids = set()
@@ -23576,7 +23598,7 @@ __STRUCTURED_DATA_JSON__
     html = html.replace('__TIER2_TAB_HIDDEN__', ' hidden' if is_initial_tier2 else '')
     html = html.replace('__PRIZES_TAB_HIDDEN__', '' if has_initial_prizes else ' hidden')
     html = html.replace('__CUP_TAB_HIDDEN__', '' if has_initial_cup else ' hidden')
-    html = html.replace('__ABOUT_TAB_HIDDEN__', ' hidden' if not is_showcase_visible else '')
+    html = html.replace('__ABOUT_TAB_HIDDEN__', '' if has_initial_dev_corner else ' hidden')
     html = html.replace('__MULTI_DATA_JSON__', multi_data_json_str)
     html = html.replace('__LEAGUES_CONFIG_JSON__', leagues_config_json_str)
     html = html.replace('__SHI62_SPECIAL_DATA_JSON__', shi62_data_json_str or 'null')

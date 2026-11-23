@@ -18,6 +18,7 @@
       "has_settlement_phases": true,
       "has_monthly_prizes": false,
       "has_cup": true,
+      "has_dev_corner": true,
       "cup_champion_prize": "1,000 THB",
       "cup_runner_up_prize": "550 THB"
     },

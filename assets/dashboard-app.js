@@ -1730,6 +1730,9 @@
         if (!this.hasBramannChalFeature() && initialTab === 'bramann-challenge-view') {
           initialTab = 'gameweek-view';
         }
+        if (!this.hasDevCornerFeature() && initialTab === 'about-view') {
+          initialTab = 'gameweek-view';
+        }
         this.activeTab = initialTab;
         this.liveNotesCache = {};
         this.shi62Data = (typeof SHI62_SPECIAL_DATA !== 'undefined') ? SHI62_SPECIAL_DATA : null;
@@ -1961,6 +1964,12 @@
         return Boolean((c && c.features && c.features.has_bramann_challenge) || ((!c || !c.features) && String(lid) === '5349'));
       }
 
+      hasDevCornerFeature(lid = this.activeLeagueId) {
+        const c = (this.configs && this.configs[String(lid)]) || (String(lid) === String(this.activeLeagueId) ? this.config : null);
+        if (c && c.visibility === 'private') return false;
+        return Boolean((c && c.features && c.features.has_dev_corner) || ((!c || !c.features) && String(lid) === '40700'));
+      }
+
       getTeamLogoUrl(logoOrCode) {
         if (!logoOrCode) return '';
         let clean = String(logoOrCode).trim();
@@ -2045,7 +2054,9 @@
           return 'gameweek-view';
         }
         if (clean === 'rule' || clean === 'rules') return 'rules-view';
-        if (clean === 'about' || clean === 'about-us' || clean === 'about-me' || clean === 'feature' || clean === 'features' || clean === 'function' || clean === 'functions' || clean === 'capabilities' || clean === 'dev' || clean === 'dev-corner') return 'about-view';
+        if (clean === 'about' || clean === 'about-us' || clean === 'about-me' || clean === 'feature' || clean === 'features' || clean === 'function' || clean === 'functions' || clean === 'capabilities' || clean === 'dev' || clean === 'dev-corner') {
+          return this.hasDevCornerFeature() ? 'about-view' : 'gameweek-view';
+        }
         if (!t.endsWith('-view')) return t + '-view';
         return t;
       }
@@ -5003,13 +5014,13 @@
           }
         }
 
-        // Hide Dev Corner tab on private customer tenants (visibility === 'private')
+        // Show Dev Corner tab only on leagues explicitly enabled via features.has_dev_corner (e.g. 40700)
         const aboutTabBtn = document.getElementById('tab-btn-about');
-        const isPrivateTenant = Boolean(this.config && this.config.visibility === 'private');
+        const hasDevCorner = this.hasDevCornerFeature();
         if (aboutTabBtn) {
-          aboutTabBtn.classList.toggle('hidden', isPrivateTenant);
-          if (isPrivateTenant && this.activeTab === 'about-view') {
-            this.switchTab('gameweek-view');
+          aboutTabBtn.classList.toggle('hidden', !hasDevCorner);
+          if (!hasDevCorner && this.activeTab === 'about-view') {
+            this.switchTab('gameweek-view', true);
           }
         }
 
@@ -5064,6 +5075,8 @@
           this.switchTab('gameweek-view', true);
         } else if (!hasBramannChal && this.activeTab === 'bramann-challenge-view') {
           this.switchTab('gameweek-view', true);
+        } else if (!hasDevCorner && this.activeTab === 'about-view') {
+          this.switchTab('gameweek-view', true);
         } else {
           this.switchTab(this.activeTab, true, true);
         }
@@ -5088,8 +5101,7 @@
           return;
         }
         let normalized = this.normalizeTab(target);
-        const isPrivateTenant = Boolean(this.config && this.config.visibility === 'private');
-        if (isPrivateTenant && normalized === 'about-view') {
+        if (!this.hasDevCornerFeature() && normalized === 'about-view') {
           normalized = 'gameweek-view';
         }
         let targetView = document.getElementById(normalized);
@@ -5144,7 +5156,7 @@
           if (btn.id === 'tab-btn-bramann-challenge' && !this.hasBramannChalFeature()) {
             cls += ' hidden';
           }
-          if (btn.id === 'tab-btn-about' && Boolean(this.config && this.config.visibility === 'private')) {
+          if (btn.id === 'tab-btn-about' && !this.hasDevCornerFeature()) {
             cls += ' hidden';
           }
           btn.className = cls;
@@ -5346,7 +5358,12 @@
           }
         }
         else if (tab === 'about-view') {
-          this.renderAboutView();
+          if (this.hasDevCornerFeature()) {
+            this.renderAboutView();
+          } else {
+            this.switchTab('gameweek-view');
+            return;
+          }
         } else {
           this.renderGameweekView();
         }
@@ -16806,6 +16823,7 @@
 
       
       renderAboutView() {
+        if (!this.hasDevCornerFeature()) return;
         const container = document.getElementById('about-view');
         if (!container) return;
         const isEn = (this.currentLang === 'en');
