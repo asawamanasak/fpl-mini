@@ -3450,9 +3450,16 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             const sevCls = item.status === 'incident'
               ? 'border-rose-500/30 bg-rose-500/10 text-rose-800 dark:text-rose-300'
               : 'border-amber-500/30 bg-amber-500/10 text-amber-800 dark:text-amber-300';
+            const cErrNum = Number(item.client_errors || 0);
+            const uErrNum = Number(item.upstream_errors || 0);
+            const isMinorClientHiccup = item.status === 'warning' && uErrNum === 0 && cErrNum > 0 && cErrNum <= 2;
             const detailText = lang === 'en'
-              ? (Number(item.client_errors || 0) + ' web errors · ' + Number(item.upstream_errors || 0) + ' FPL upstream errors')
-              : ('ฝั่งผู้ใช้ ' + Number(item.client_errors || 0) + ' ครั้ง · เว็บ FPL ต้นทาง ' + Number(item.upstream_errors || 0) + ' ครั้ง');
+              ? (isMinorClientHiccup
+                  ? (cErrNum + ' minor client hiccup(s) (likely mobile network/tab switch) · 0 FPL upstream errors')
+                  : (cErrNum + ' web errors · ' + uErrNum + ' FPL upstream errors'))
+              : (isMinorClientHiccup
+                  ? ('ฝั่งผู้ใช้ ' + cErrNum + ' ครั้ง (อาการสะดุดเฉพาะเครื่อง/เน็ตมือถือ) · เว็บ FPL ต้นทาง 0 ครั้ง')
+                  : ('ฝั่งผู้ใช้ ' + cErrNum + ' ครั้ง · เว็บ FPL ต้นทาง ' + uErrNum + ' ครั้ง'));
             return '<div class="flex items-center justify-between gap-2 p-2.5 rounded-lg border ' + sevCls + '">' +
               '<div class="font-medium mono">' + whenLabel + '</div>' +
               '<div>' + escHtml(detailText) + '</div>' +

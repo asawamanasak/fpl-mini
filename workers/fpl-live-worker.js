@@ -858,6 +858,18 @@ const FPL_HEADERS = {
   'Accept': 'application/json',
 };
 
+const UPSTREAM_FETCH_TIMEOUT_MS = 8000;
+
+async function fetchUpstreamWithTimeout(url, options = {}, timeoutMs = UPSTREAM_FETCH_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 /**
  * Compute Official FPL Provisional Bonus (+3, +2, +1) from BPS per fixture.
  * Only applies to fixtures where:
@@ -2964,7 +2976,7 @@ export default {
                   const totalEvents = activity + totalErr;
                   const bucketStatus = totalErr === 0
                     ? 'healthy'
-                    : (uErr > 0 || totalErr >= 5 || (totalEvents > 0 && (totalErr / totalEvents) >= 0.05) ? 'incident' : 'warning');
+                    : (uErr > 0 || totalErr >= 5 || (cErr >= 3 && totalEvents > 0 && (totalErr / totalEvents) >= 0.05) ? 'incident' : 'warning');
 
                   m24Visits += visits;
                   m24ApiOk += apiOk;
@@ -2994,7 +3006,7 @@ export default {
                 const m24UptimePct = m24TotalErr === 0 ? '100.00' : Math.max(0, 100 - (m24TotalErr / m24Denom) * 100).toFixed(2);
                 const m24Status = m24TotalErr === 0
                   ? 'healthy'
-                  : (m24UpstreamErr > 0 || m24TotalErr >= 10 || parseFloat(m24ErrPct) >= 2.0 ? 'incident' : 'warning');
+                  : (m24UpstreamErr > 0 || m24TotalErr >= 10 || (m24ClientErr >= 3 && parseFloat(m24ErrPct) >= 2.0) ? 'incident' : 'warning');
 
                 let m7Visits = 0;
                 let m7ApiOk = 0;
@@ -3012,7 +3024,7 @@ export default {
                   const totalEvents = activity + totalErr;
                   const dayStatus = totalErr === 0
                     ? 'healthy'
-                    : (uErr >= 3 || totalErr >= 10 || (totalEvents > 0 && (totalErr / totalEvents) >= 0.05) ? 'incident' : 'warning');
+                    : (uErr >= 3 || totalErr >= 10 || (cErr >= 3 && totalEvents > 0 && (totalErr / totalEvents) >= 0.05) ? 'incident' : 'warning');
 
                   m7Visits += visits;
                   m7ApiOk += apiOk;
@@ -3040,7 +3052,7 @@ export default {
                 const m7UptimePct = m7TotalErr === 0 ? '100.00' : Math.max(0, 100 - (m7TotalErr / m7Denom) * 100).toFixed(2);
                 const m7Status = m7TotalErr === 0
                   ? 'healthy'
-                  : (m7UpstreamErr >= 3 || m7TotalErr >= 20 || parseFloat(m7ErrPct) >= 2.0 ? 'incident' : 'warning');
+                  : (m7UpstreamErr >= 3 || m7TotalErr >= 20 || (m7ClientErr >= 5 && parseFloat(m7ErrPct) >= 2.0) ? 'incident' : 'warning');
 
                 const errCats7d = {
                   js_error: 0,
@@ -4165,7 +4177,7 @@ export default {
           const wavePayloads = await Promise.all(
             wavePages.map(async (p) => {
               const upstreamUrl = `https://fantasy.premierleague.com/api/leagues-classic/${leagueParam}/standings/?page_standings=${p}&page_new_entries=1`;
-              const resp = await fetch(upstreamUrl, { headers: FPL_HEADERS });
+              const resp = await fetchUpstreamWithTimeout(upstreamUrl, { headers: FPL_HEADERS });
               if (!resp.ok) {
                 throw new Error(`FPL standings upstream returned ${resp.status} for page ${p}`);
               }
@@ -4330,10 +4342,10 @@ export default {
         }
 
         const [picksResp, entryResp] = await Promise.all([
-          fetch(`https://fantasy.premierleague.com/api/entry/${entryId}/event/${gw}/picks/`, {
+          fetchUpstreamWithTimeout(`https://fantasy.premierleague.com/api/entry/${entryId}/event/${gw}/picks/`, {
             headers: FPL_HEADERS,
           }),
-          fetch(`https://fantasy.premierleague.com/api/entry/${entryId}/`, {
+          fetchUpstreamWithTimeout(`https://fantasy.premierleague.com/api/entry/${entryId}/`, {
             headers: FPL_HEADERS,
           }).catch(() => null),
         ]);
@@ -4416,7 +4428,7 @@ export default {
       }
       // 3. Fetch Fixtures Only endpoint (/fixtures?event={gw})
       if (path === '/fixtures') {
-        const fixResp = await fetch(`https://fantasy.premierleague.com/api/fixtures/?event=${gw}`, {
+        const fixResp = await fetchUpstreamWithTimeout(`https://fantasy.premierleague.com/api/fixtures/?event=${gw}`, {
           headers: FPL_HEADERS,
         });
         if (!fixResp.ok) {
@@ -4476,8 +4488,8 @@ export default {
 
       // 4. Default Live Endpoint (/ or /live) -> Fetch Live Elements + Fixtures in parallel
       const [liveResp, fixResp] = await Promise.all([
-        fetch(`https://fantasy.premierleague.com/api/event/${gw}/live/`, { headers: FPL_HEADERS }),
-        fetch(`https://fantasy.premierleague.com/api/fixtures/?event=${gw}`, { headers: FPL_HEADERS }).catch(() => null),
+        fetchUpstreamWithTimeout(`https://fantasy.premierleague.com/api/event/${gw}/live/`, { headers: FPL_HEADERS }),
+        fetchUpstreamWithTimeout(`https://fantasy.premierleague.com/api/fixtures/?event=${gw}`, { headers: FPL_HEADERS }).catch(() => null),
       ]);
 
       if (!liveResp.ok) {

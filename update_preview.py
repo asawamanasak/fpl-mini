@@ -5540,10 +5540,23 @@ __STRUCTURED_DATA_JSON__
         this._checkAndPollLiveFn = checkAndPoll;
 
         // Visibility listener to save device battery and bandwidth (deduplicated)
+        // Delay 500ms after returning to foreground so mobile Wi-Fi/cellular finishes reconnecting
         if (this._boundVisibilityHandler) {
           document.removeEventListener('visibilitychange', this._boundVisibilityHandler);
         }
-        this._boundVisibilityHandler = checkAndPoll;
+        this._boundVisibilityHandler = () => {
+          if (this._visibilityPollTimer) {
+            clearTimeout(this._visibilityPollTimer);
+            this._visibilityPollTimer = null;
+          }
+          if (document.hidden) return;
+          this._visibilityPollTimer = setTimeout(() => {
+            this._visibilityPollTimer = null;
+            if (!document.hidden) {
+              checkAndPoll();
+            }
+          }, 500);
+        };
         document.addEventListener('visibilitychange', this._boundVisibilityHandler);
 
         // Fetch immediately on load if matchday is active or awaiting official data_checked confirmation
@@ -5712,18 +5725,28 @@ __STRUCTURED_DATA_JSON__
       }
 
       async fetchTier2LiveStandings(lidStr, gw, force = false) {
+        this._lastTier2FailReason = null;
+        if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+          this._lastTier2FailReason = 'offline';
+          return false;
+        }
         const apiCfg = (typeof resolveWorkerApiBase === 'function')
           ? resolveWorkerApiBase()
           : { base: 'https://api.fplsawadika.com', isOverride: false };
         const forceQuery = force ? '&force=1' : '';
-        const fetchBatch = async (fromPage, toPage) => {
+        const fetchBatchOnce = async (fromPage, toPage) => {
           const urls = apiCfg.isOverride
             ? [`${apiCfg.base}/standings?league=${lidStr}&from=${fromPage}&to=${toPage}${forceQuery}`]
             : [
                 `${apiCfg.base}/standings?league=${lidStr}&from=${fromPage}&to=${toPage}${forceQuery}`,
                 `https://fpl-live-relay.asawamanasak.workers.dev/standings?league=${lidStr}&from=${fromPage}&to=${toPage}${forceQuery}`
               ];
+          let sawHttpError = false;
+          let sawTimeout = false;
           for (const url of urls) {
+            if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+              return { data: null, reason: 'offline' };
+            }
             const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
             const timer = controller ? setTimeout(() => controller.abort(), 10000) : null;
             try {
@@ -5734,18 +5757,46 @@ __STRUCTURED_DATA_JSON__
               if (resp && resp.ok) {
                 const parsed = await resp.json();
                 if (parsed && Array.isArray(parsed.results)) {
-                  return parsed;
+                  return { data: parsed, reason: null };
                 }
+                sawHttpError = true;
+              } else {
+                sawHttpError = true;
               }
-            } catch (_) {
+            } catch (err) {
+              if (err && err.name === 'AbortError') sawTimeout = true;
             } finally {
               if (timer) clearTimeout(timer);
             }
           }
+          if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+            return { data: null, reason: 'offline' };
+          }
+          if (typeof document !== 'undefined' && document.hidden) {
+            return { data: null, reason: 'hidden' };
+          }
+          return { data: null, reason: sawHttpError ? 'http' : (sawTimeout ? 'timeout' : 'network') };
+        };
+
+        const fetchBatch = async (fromPage, toPage, allowRetry = false) => {
+          const first = await fetchBatchOnce(fromPage, toPage);
+          if (first.data) return first.data;
+          if (!allowRetry || first.reason === 'offline' || first.reason === 'hidden') {
+            this._lastTier2FailReason = first.reason;
+            return null;
+          }
+          await new Promise((r) => setTimeout(r, 1500));
+          if ((typeof navigator !== 'undefined' && navigator.onLine === false) || (typeof document !== 'undefined' && document.hidden)) {
+            this._lastTier2FailReason = (typeof navigator !== 'undefined' && navigator.onLine === false) ? 'offline' : 'hidden';
+            return null;
+          }
+          const second = await fetchBatchOnce(fromPage, toPage);
+          if (second.data) return second.data;
+          this._lastTier2FailReason = second.reason;
           return null;
         };
 
-        const batch1 = await fetchBatch(1, 12);
+        const batch1 = await fetchBatch(1, 12, true);
         if (!batch1) return false;
 
         let changed = this.applyTier2StandingsRows(lidStr, batch1.results, gw);
@@ -5763,7 +5814,7 @@ __STRUCTURED_DATA_JSON__
         let tailChanged = false;
         while (hasMore && nextFrom <= 108) {
           const nextTo = nextFrom + 11;
-          const nextBatch = await fetchBatch(nextFrom, nextTo);
+          const nextBatch = await fetchBatch(nextFrom, nextTo, false);
           if (!nextBatch) break;
           if (this.applyTier2StandingsRows(lidStr, nextBatch.results, gw)) {
             tailChanged = true;
@@ -5788,6 +5839,16 @@ __STRUCTURED_DATA_JSON__
         if (!gwData) return;
         if (!force && gwData.is_finished && gwData.data_checked) return;
 
+        // Skip automatic live polling while device is offline or tab is hidden to avoid false client error alerts
+        if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+          if (force && typeof this.showCopiedToast === 'function') {
+            const isEn = (this.currentLang === 'en');
+            this.showCopiedToast(isEn ? 'You appear to be offline' : 'ไม่พบการเชื่อมต่ออินเทอร์เน็ตในขณะนี้');
+          }
+          return;
+        }
+        if (!force && typeof document !== 'undefined' && document.hidden) return;
+
         const lidStr = String(this.activeLeagueId || '');
         const isTier2Active = Boolean(this.data && this.data.tier === 2) || Boolean(this.config && this.config.tier === 2);
 
@@ -5804,17 +5865,24 @@ __STRUCTURED_DATA_JSON__
               `${apiCfg.base}/live?event=${maxGW}&slim=1${forceQuery}`,
               `https://fpl-live-relay.asawamanasak.workers.dev/?event=${maxGW}&slim=1${forceQuery}`
             ];
-        const endpoints = this._preferredWorkerEndpoint
-          ? [
-              `${this._preferredWorkerEndpoint}?event=${maxGW}&slim=1${forceQuery}`,
-              ...defaultEndpoints
-            ]
-          : defaultEndpoints;
+        const endpoints = Array.from(new Set(
+          this._preferredWorkerEndpoint
+            ? [
+                `${this._preferredWorkerEndpoint}?event=${maxGW}&slim=1${forceQuery}`,
+                ...defaultEndpoints
+              ]
+            : defaultEndpoints
+        ));
 
-        const fetchLiveElementsJson = async () => {
+        const fetchLiveElementsOnce = async () => {
+          let sawHttpError = false;
+          let sawTimeout = false;
           for (const url of endpoints) {
+            if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+              return { data: null, reason: 'offline' };
+            }
             const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-            const timer = controller ? setTimeout(() => controller.abort(), 6000) : null;
+            const timer = controller ? setTimeout(() => controller.abort(), 8000) : null;
             try {
               const resp = await fetch(url, {
                 cache: 'no-store',
@@ -5824,15 +5892,55 @@ __STRUCTURED_DATA_JSON__
                 const parsed = await resp.json();
                 if (parsed && Array.isArray(parsed.elements)) {
                   this._preferredWorkerEndpoint = url.split('?')[0];
-                  return parsed;
+                  return { data: parsed, reason: null };
                 }
+                sawHttpError = true;
+              } else {
+                sawHttpError = true;
               }
-            } catch (_) {
+            } catch (err) {
+              if (err && err.name === 'AbortError') sawTimeout = true;
             } finally {
               if (timer) clearTimeout(timer);
             }
           }
-          return null;
+          if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+            return { data: null, reason: 'offline' };
+          }
+          if (typeof document !== 'undefined' && document.hidden) {
+            return { data: null, reason: 'hidden' };
+          }
+          return { data: null, reason: sawHttpError ? 'http' : (sawTimeout ? 'timeout' : 'network') };
+        };
+
+        const fetchLiveElementsJson = async () => {
+          const first = await fetchLiveElementsOnce();
+          if (first.data) {
+            return { data: first.data, reason: null, attempts: 1 };
+          }
+          if (first.reason === 'offline' || first.reason === 'hidden') {
+            return { data: null, reason: first.reason, attempts: 0 };
+          }
+          // Single resilience retry after 1.5s to absorb transient mobile network hiccups
+          await new Promise((r) => setTimeout(r, 1500));
+          if ((typeof navigator !== 'undefined' && navigator.onLine === false) || (typeof document !== 'undefined' && document.hidden)) {
+            return { data: null, reason: (typeof navigator !== 'undefined' && navigator.onLine === false) ? 'offline' : 'hidden', attempts: 0 };
+          }
+          const second = await fetchLiveElementsOnce();
+          if (second.data) {
+            return { data: second.data, reason: null, attempts: 2 };
+          }
+          return { data: null, reason: second.reason, attempts: 2 };
+        };
+
+        const reportActionableLiveError = (reason, attempts = 2) => {
+          if (reason === 'offline' || reason === 'hidden') return;
+          if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
+          if (typeof document !== 'undefined' && document.hidden) return;
+          this._liveFetchConsecutiveFails = (this._liveFetchConsecutiveFails || 0) + Math.max(1, attempts);
+          if (this._liveFetchConsecutiveFails >= 2 && typeof window._reportClientError === 'function') {
+            window._reportClientError(reason === 'timeout' ? 'api_timeout' : 'api_http');
+          }
         };
 
         try {
@@ -5840,10 +5948,11 @@ __STRUCTURED_DATA_JSON__
             await this.ensureTier2PicksChunk(maxGW, lidStr);
             const hasT2Picks = this.hasTier2PicksForGw(this.data, maxGW);
             if (!hasT2Picks) {
-              const [t2Ok, liveJson] = await Promise.all([
+              const [t2Ok, liveRes] = await Promise.all([
                 this.fetchTier2LiveStandings(lidStr, maxGW, force),
-                (!this._latestLiveMap || force) ? fetchLiveElementsJson() : Promise.resolve(this.lastLiveJson)
+                (!this._latestLiveMap || force) ? fetchLiveElementsJson() : Promise.resolve({ data: this.lastLiveJson, reason: null, attempts: 0 })
               ]);
+              const liveJson = liveRes && liveRes.data ? liveRes.data : null;
               if (liveJson && Array.isArray(liveJson.elements)) {
                 this.lastLiveJson = liveJson;
                 this.lastLiveGw = maxGW;
@@ -5856,15 +5965,14 @@ __STRUCTURED_DATA_JSON__
                 this.applyLiveElements(liveJson, maxGW);
               }
               if (!t2Ok) {
-                if (typeof window._reportClientError === 'function') {
-                  window._reportClientError('api_http');
-                }
+                reportActionableLiveError(this._lastTier2FailReason || 'http', 2);
                 if (force && typeof this.showCopiedToast === 'function') {
                   const isEn = (this.currentLang === 'en');
                   this.showCopiedToast(isEn ? 'Unable to reach Cloudflare Live Edge' : 'ไม่สามารถเชื่อมต่อ Cloudflare Live Edge ได้ในขณะนี้');
                 }
                 return;
               }
+              this._liveFetchConsecutiveFails = 0;
               this.markHeaderLiveSynced(force);
               const modal = document.getElementById('team-modal');
               if (modal && !modal.classList.contains('hidden') && this.currentModalEntryId) {
@@ -5874,17 +5982,18 @@ __STRUCTURED_DATA_JSON__
             }
           }
 
-          const liveJson = await fetchLiveElementsJson();
+          const liveRes = await fetchLiveElementsJson();
+          const liveJson = liveRes && liveRes.data ? liveRes.data : null;
           if (!liveJson || !Array.isArray(liveJson.elements)) {
-            if (typeof window._reportClientError === 'function') {
-              window._reportClientError('api_http');
-            }
+            reportActionableLiveError(liveRes ? liveRes.reason : 'http', liveRes ? liveRes.attempts : 2);
             if (force && typeof this.showCopiedToast === 'function') {
               const isEn = (this.currentLang === 'en');
               this.showCopiedToast(isEn ? 'Unable to reach Cloudflare Live Edge' : 'ไม่สามารถเชื่อมต่อ Cloudflare Live Edge ได้ในขณะนี้');
             }
             return;
           }
+
+          this._liveFetchConsecutiveFails = 0;
 
           // Cache latest live payload in memory so switching leagues applies live scores in 0ms
           this.lastLiveJson = liveJson;
