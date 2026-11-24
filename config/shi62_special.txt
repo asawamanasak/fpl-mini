@@ -1,3 +1,51 @@
+GW11
+MCI -1.5 v FUL
+MCI / Oo Sia
+FUL / Dow Totti ✅
+
+AVL -1 v SUN
+AVL / Dow Oo
+d / Totti
+SUN / ✅
+
+BOU -0.5 v NFO
+BOU / Oo Sia ✅
+NFO / Dow Totti
+
+CHE -1 v LEE
+CHE / Nod Oo boy
+d / poang Totti
+LEE / Dow ✅
+
+COV v CRY
+COV / Dow ✅
+d / Oo
+CRY / Totti
+
+TOT -1 v IPS
+TOT / Riin Totti boy ✅
+d / Oo
+IPS / Dow
+
+NEW v ARS -1
+NEW / Dow ✅
+d / poang Totti
+ARS / Oo boy
+
+HUL v BHA -1
+HUL / Dow ✅
+d / Totti
+BHA / Oo
+
+LIV -1 v MUN
+LIV / Boy Sia ✅
+d / Totti
+MUN / Dow Oo
+
+BRE -0.5 v EVE
+BRE / Sia Totti ✅
+EVE / Dow Oo
+
 GW10
 LEE v TOT
 LEE / poang ✅

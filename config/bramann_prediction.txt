@@ -398,3 +398,43 @@ CHE 4OURx5 Oo Bx5 feex5 Hong
 MUN -0.5 vs AVL
 MUN 4OURx5 Oo Dotmanx5 Bx5
 AVL jrj Hong feex5 ✅
+GW11
+MCI -1.5 vs FUL
+MCI Oo 4OURx5 Bx5 Hong
+FUL Dotmanx5 feex5 ✅
+
+AVL -1 vs SUN
+AVL oakx5 jrj
+SUN feex5 Dotmanx5 ✅
+
+BOU -0.5 vs NFO
+BOU B feex5 ✅
+NFO Dotmanx5
+
+CHE -1 vs LEE
+CHE Oo Bx5 oakx5
+LEE Dotmanx5 feex5 ✅
+
+COV vs CRY
+COV feex5 jrj ✅
+CRY oakx5 Dotmanx5
+
+TOT -1 vs IPS
+TOT Dotmanx5
+IPS
+
+NEW vs ARS -1
+NEW jrj Dotmanx5 feex5 4OURx5 ✅
+ARS Oo Bx5 oakx5 Hong
+
+HUL vs BHA -1
+HUL Dotmanx5 4OURx5 ✅
+BHA oakx5 feex5 Bx5 Hongx5 jrj
+
+LIV -1 vs MUN
+LIV kwang jrj feex2 ✅
+MUN Oo oakx5 4OURx5 Bx5 Dotmanx5 Hongx5
+
+BRE -0.5 vs EVE
+BRE
+EVE 4OURx5 Dotmanx5
