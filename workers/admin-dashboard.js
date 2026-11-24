@@ -1103,7 +1103,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <!-- Controls & Rules -->
           <div class="lg:col-span-7 space-y-4">
             <div class="space-y-1.5">
-              <div class="text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="ord_det_rules_lbl">กติกาและรายละเอียดที่ลูกค้ากรอก</div>
+              <div class="flex items-center justify-between gap-2">
+                <div class="text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="ord_det_rules_lbl">กติกาและรายละเอียดที่ลูกค้ากรอก</div>
+                <button type="button" id="btnOrdCopyRules" class="min-h-[36px] px-3 py-1 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark hover:border-sky-500 text-xs font-medium text-slate-800 dark:text-neutral-200 whitespace-nowrap shrink-0 transition-colors disabled:opacity-40 disabled:cursor-not-allowed" data-i18n="ord_btn_copy_rules">คัดลอกกติกา</button>
+              </div>
               <pre id="ordDetRules" class="p-3.5 rounded-lg bg-raisedLight dark:bg-raisedDark text-xs text-slate-800 dark:text-neutral-200 whitespace-pre-wrap font-sans">-</pre>
             </div>
 
@@ -1367,7 +1370,33 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           <div id="onbTeamsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-60 overflow-y-auto pr-1"></div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="pt-4 border-t border-borderLight dark:border-borderDark space-y-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <label for="onbCustomerRules" class="text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_lbl_customer_rules">ข้อความกติกาที่ลูกค้าเขียนมา (วางจาก LINE / ออเดอร์)</label>
+              <span id="onbRulesSourceBadge" class="hidden px-2 py-0.5 rounded-md text-xs mono bg-sky-500/10 text-sky-800 dark:text-sky-300 border border-sky-500/30"></span>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button type="button" id="btnOnbCopyRules" data-copy-target="onbCustomerRules" class="onb-copy-btn min-h-[42px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark text-xs font-medium whitespace-nowrap shrink-0 hover:bg-raisedLight dark:hover:bg-raisedDark transition-colors" data-i18n="onb_btn_copy_rules">คัดลอกกติกา</button>
+              <button type="button" id="btnOnbClearRules" class="min-h-[42px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark text-xs font-medium text-slate-700 dark:text-neutral-300 whitespace-nowrap shrink-0 hover:bg-raisedLight dark:hover:bg-raisedDark transition-colors" data-i18n="onb_btn_clear_rules">ล้างข้อความ</button>
+            </div>
+          </div>
+          <textarea id="onbCustomerRules" rows="4" placeholder="วางข้อความกติกาที่ลูกค้าพิมพ์ส่งมาทาง LINE หรือกด Prefill จากออเดอร์ข้อ 03 เช่น ค่าสมัคร รางวัลรายสัปดาห์/รายเดือน เงื่อนไข Tie-breaker รอบเคลียร์เงิน บอลถ้วย หรือรายชื่อทีมร่วมสนุก..." class="w-full p-3 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-xs text-slate-900 dark:text-neutral-100 leading-relaxed focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+          <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="onb_customer_rules_hint">ข้อความในช่องนี้จะถูกรวมเข้าไปใน "Prompt สั่ง AI เปิดลีกใหม่" ด้านล่างโดยอัตโนมัติ เพื่อให้ AI อ่านกติกาเฉพาะและตั้งค่าลีกให้ครบในครั้งเดียว</p>
+        </div>
+
+        <div class="pt-4 border-t border-borderLight dark:border-borderDark space-y-2.5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div class="space-y-0.5">
+              <label for="onbOutAiPrompt" class="text-sm font-semibold text-slate-900 dark:text-white inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span><span data-i18n="onb_out_ai_prompt">Prompt สั่ง AI เปิดลีกใหม่ (สรุปครบจบใน Prompt เดียว)</span></label>
+              <p class="text-xs text-slate-600 dark:text-neutral-400" data-i18n="onb_out_ai_prompt_sub">คัดลอกข้อความนี้ไปวางในแชทสั่ง AI ได้เลย รวมครบทั้ง League ID, แพ็กเกจ, โครงสร้างรางวัล, ทีมไม่ชิงรางวัล, กติกาจากลูกค้า และคำสั่ง CLI ตั้งต้น</p>
+            </div>
+            <button type="button" id="btnOnbCopyAiPrompt" data-copy-target="onbOutAiPrompt" class="onb-copy-btn min-h-[44px] px-4 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-neutral-950 text-xs font-semibold inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0 active:scale-[0.98] transition-colors">${ICONS.copy}<span data-i18n="onb_btn_copy_ai_prompt">คัดลอก Prompt สั่ง AI</span></button>
+          </div>
+          <textarea id="onbOutAiPrompt" readonly rows="11" class="w-full p-3.5 rounded-lg border border-emerald-500/40 bg-raisedLight dark:bg-slate-950 text-slate-900 dark:text-emerald-200 text-xs mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 pt-2">
           <div class="space-y-2">
             <div class="flex items-center justify-between gap-2">
               <label for="onbOutCli" class="text-xs font-semibold text-slate-800 dark:text-neutral-200" data-i18n="onb_out_cli">1. คำสั่ง CLI (รันบนเครื่องเพื่อเปิดลีก)</label>
@@ -2253,6 +2282,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ord_col_action: 'ตรวจสอบ',
         ord_det_amount_lbl: 'ยอดโอนที่ต้องตรงกัน',
         ord_det_rules_lbl: 'กติกาและรายละเอียดที่ลูกค้ากรอก',
+        ord_btn_copy_rules: 'คัดลอกกติกา',
         ord_det_open_pay: 'เปิดหน้าออเดอร์ลูกค้า (/pay/) ↗',
         ord_det_copy_pay: 'คัดลอกลิงก์ออเดอร์',
         ord_det_copy_line: 'คัดลอกข้อความแจ้งสถานะ (ส่ง LINE)',
@@ -2293,6 +2323,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         onb_lbl_nocup: 'ปิดแท็บบอลถ้วย (--no-cup สำหรับลีกที่ไม่ได้เตะบอลถ้วย)',
         onb_d1_note_tip: '🔒 โน้ตข้อมูลลูกค้าส่วนตัว (ชื่อ LINE / วันโอนเงิน) ให้บันทึกในตารางข้อ 02 ด้านบน (เก็บใน Cloudflare D1 ปลอดภัย 100% ไม่ถูก commit ลง Git)',
         onb_teams_hint: 'ติ๊กเลือกทีมที่ไม่ร่วมชิงรางวัล (non_prize_teams) หากมี:',
+        onb_lbl_customer_rules: 'ข้อความกติกาที่ลูกค้าเขียนมา (วางจาก LINE / ออเดอร์)',
+        onb_customer_rules_hint: 'ข้อความในช่องนี้จะถูกรวมเข้าไปใน "Prompt สั่ง AI เปิดลีกใหม่" ด้านล่างโดยอัตโนมัติ เพื่อให้ AI อ่านกติกาเฉพาะและตั้งค่าลีกให้ครบในครั้งเดียว',
+        onb_btn_copy_rules: 'คัดลอกกติกา',
+        onb_btn_clear_rules: 'ล้างข้อความ',
+        onb_out_ai_prompt: 'Prompt สั่ง AI เปิดลีกใหม่ (สรุปครบจบใน Prompt เดียว)',
+        onb_out_ai_prompt_sub: 'คัดลอกข้อความนี้ไปวางในแชทสั่ง AI ได้เลย รวมครบทั้ง League ID, แพ็กเกจ, โครงสร้างรางวัล, ทีมไม่ชิงรางวัล, กติกาจากลูกค้า และคำสั่ง CLI ตั้งต้น',
+        onb_btn_copy_ai_prompt: 'คัดลอก Prompt สั่ง AI',
         onb_out_cli: '1. คำสั่ง CLI (รันบนเครื่องเพื่อเปิดลีก)',
         onb_out_json: '2. Config JSON (leagues_config.json)',
         onb_out_line: '3. ข้อความส่งมอบลูกค้าทาง LINE',
@@ -2492,6 +2529,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ord_col_action: 'Inspect',
         ord_det_amount_lbl: 'Exact Match Amount',
         ord_det_rules_lbl: 'Customer Rules & Notes',
+        ord_btn_copy_rules: 'Copy Rules',
         ord_det_open_pay: 'Open Customer Checkout (/pay/) ↗',
         ord_det_copy_pay: 'Copy Order Link',
         ord_det_copy_line: 'Copy Status Reply (LINE)',
@@ -2532,6 +2570,13 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         onb_lbl_nocup: 'Disable Cup tab (--no-cup for leagues without FPL Cup)',
         onb_d1_note_tip: '🔒 Store private customer notes (LINE contact / payment dates) in Section 02 above (kept securely in Cloudflare D1, never committed to Git).',
         onb_teams_hint: 'Check teams excluded from prizes (non_prize_teams) if applicable:',
+        onb_lbl_customer_rules: 'Customer League Rules Text (Paste from LINE / Order)',
+        onb_customer_rules_hint: 'Text entered here is automatically embedded into the All-in-One AI Prompt below so the AI can reconcile custom rules in one step.',
+        onb_btn_copy_rules: 'Copy Rules',
+        onb_btn_clear_rules: 'Clear',
+        onb_out_ai_prompt: 'All-in-One AI Prompt (Ready to Paste & Provision League)',
+        onb_out_ai_prompt_sub: 'Copy and paste directly to your AI assistant — combines League ID, plan, prizes, excluded teams, customer rules, and starter CLI command in one prompt.',
+        onb_btn_copy_ai_prompt: 'Copy AI Prompt',
         onb_out_cli: '1. CLI Command (Run locally to provision)',
         onb_out_json: '2. Config JSON (leagues_config.json)',
         onb_out_line: '3. Customer Handoff Message (LINE)',
@@ -5023,6 +5068,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     // =========================================================================
     let onbInspectedLeague = null;
     let onbExcludedEntryIds = new Set();
+    let onbSourceOrder = null;
 
     function setOnbStatusMessage(text, isError) {
       const box = document.getElementById('onbInspectStatus');
@@ -5065,11 +5111,21 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const shortEl = document.getElementById('onbShortName');
       const expiresEl = document.getElementById('onbExpiresAt');
       const noCupEl = document.getElementById('onbNoCup');
+      const customerRulesEl = document.getElementById('onbCustomerRules');
+      const rulesBadgeEl = document.getElementById('onbRulesSourceBadge');
 
+      const outAiPrompt = document.getElementById('onbOutAiPrompt');
       const outCli = document.getElementById('onbOutCli');
       const outJson = document.getElementById('onbOutJson');
       const outLine = document.getElementById('onbOutLine');
       if (!idEl || !outCli || !outJson || !outLine) return;
+
+      const isEn = getLang() === 'en';
+      if (customerRulesEl) {
+        customerRulesEl.placeholder = isEn
+          ? 'Paste the customer rules message from LINE or prefill from Section 03 (e.g., entry fee, weekly/monthly splits, tie-breaker rules, settlement phases, cup format, or excluded teams)...'
+          : 'วางข้อความกติกาที่ลูกค้าพิมพ์ส่งมาทาง LINE หรือกด Prefill จากออเดอร์ข้อ 03 เช่น ค่าสมัคร รางวัลรายสัปดาห์/รายเดือน เงื่อนไข Tie-breaker รอบเคลียร์เงิน บอลถ้วย หรือรายชื่อทีมร่วมสนุก...';
+      }
 
       const rawLid = (idEl.value || '').replace(/[^0-9]+/g, '');
       const lid = rawLid || '<LEAGUE_ID>';
@@ -5079,7 +5135,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const currency = (currencyEl && currencyEl.value === 'USD') ? 'USD' : 'THB';
       const weeklyLbl = document.getElementById('onbWeeklyPrizeLbl');
       if (weeklyLbl) {
-        weeklyLbl.textContent = getLang() === 'en'
+        weeklyLbl.textContent = isEn
           ? ('Weekly Prize (' + currency + ')')
           : ('รางวัล/สัปดาห์ (' + (currency === 'USD' ? 'USD' : 'บาท') + ')');
       }
@@ -5096,9 +5152,35 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const visibility = visEl ? visEl.value : 'private';
       const expiresVal = (expiresEl && expiresEl.value) ? expiresEl.value.trim() : '';
       const noCup = Boolean(noCupEl && noCupEl.checked);
-      const detectedName = (onbInspectedLeague && onbInspectedLeague.league && onbInspectedLeague.league.name)
-        ? onbInspectedLeague.league.name
-        : ('League ' + lid);
+      const customerRulesRaw = (customerRulesEl && customerRulesEl.value) ? customerRulesEl.value.trim() : '';
+
+      const inspectedMatches = Boolean(
+        onbInspectedLeague &&
+        onbInspectedLeague.league &&
+        rawLid &&
+        String(onbInspectedLeague.league.id) === rawLid
+      );
+      const orderMatches = Boolean(
+        onbSourceOrder &&
+        onbSourceOrder.order_id &&
+        (!rawLid || String(onbSourceOrder.league_id || '').trim() === rawLid)
+      );
+
+      if (rulesBadgeEl) {
+        if (orderMatches && customerRulesRaw) {
+          rulesBadgeEl.textContent = isEn
+            ? ('Prefilled from ' + onbSourceOrder.order_id)
+            : ('ดึงจากออเดอร์ ' + onbSourceOrder.order_id);
+          rulesBadgeEl.classList.remove('hidden');
+        } else {
+          rulesBadgeEl.textContent = '';
+          rulesBadgeEl.classList.add('hidden');
+        }
+      }
+
+      const detectedName = (inspectedMatches && onbInspectedLeague.league.name)
+        ? String(onbInspectedLeague.league.name)
+        : ((orderMatches && onbSourceOrder.league_name) ? String(onbSourceOrder.league_name) : ('League ' + lid));
       const shortName = (shortEl && shortEl.value.trim()) ? shortEl.value.trim() : detectedName.slice(0, 12).trim();
       const nonPrizeArr = Array.from(onbExcludedEntryIds);
 
@@ -5228,7 +5310,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       outJson.value = JSON.stringify(cfgObj, null, 2);
 
       const urlStr = 'https://www.fplsawadika.com/' + lid + '/';
-      if (getLang() === 'en') {
+      if (isEn) {
         outLine.value = 'FPLSaWaDiKa Dashboard is ready for ' + detectedName + ' (ID ' + lid + ')!\\n'
           + 'URL: ' + urlStr + '\\n'
           + 'Plan: ' + plan.toUpperCase() + ' (' + currency + ') | Status: ' + accessStatus + (expiresVal ? (' (valid til ' + expiresVal + ')') : '') + '\\n'
@@ -5238,6 +5320,142 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           + 'ลิงก์เข้าดูคะแนนสด: ' + urlStr + '\\n'
           + 'แพ็กเกจ: ' + plan.toUpperCase() + ' (' + currency + ') | สถานะ: ' + accessStatus + (expiresVal ? (' (ใช้งานได้ถึง ' + expiresVal + ')') : '') + '\\n'
           + 'หมายเหตุ: ลิงก์นี้ตั้งค่า Private (noindex) เพื่อความเป็นส่วนตัวเฉพาะสมาชิกในกลุ่ม LINE ครับ';
+      }
+
+      if (outAiPrompt) {
+        const teamMap = {};
+        if (inspectedMatches && Array.isArray(onbInspectedLeague.teams)) {
+          onbInspectedLeague.teams.forEach((t) => {
+            if (t && t.entry != null) teamMap[String(t.entry)] = t;
+          });
+        }
+        const teamCountVal = inspectedMatches
+          ? (onbInspectedLeague.has_more_than_100
+              ? '100+'
+              : (onbInspectedLeague.has_more_pages ? (String(onbInspectedLeague.team_count || 0) + '+') : String(onbInspectedLeague.team_count || 0)))
+          : ((orderMatches && onbSourceOrder.team_count) ? String(onbSourceOrder.team_count) : '');
+        const nonPrizeDetailed = nonPrizeArr.map((eid) => {
+          const info = teamMap[String(eid)];
+          if (info) {
+            return String(eid) + ' - ' + (info.entry_name || ('Team ' + eid)) + ' (' + (info.player_name || '-') + ')';
+          }
+          return String(eid);
+        });
+        const curSym = currency === 'USD' ? '$' : '฿';
+        const prizeModelNames = {
+          weekly: isEn ? 'Weekly Top-Score (weekly)' : 'แชมป์ประจำสัปดาห์ (weekly)',
+          standard: isEn ? 'Season Top Only (standard)' : 'แชมป์คะแนนรวมฤดูกาลเท่านั้น (standard)',
+          monthly: isEn ? 'Monthly Top-Score (monthly)' : 'แชมป์ประจำเดือน (monthly)',
+          penalties: isEn ? 'Weekly + Bottom Penalties (penalties)' : 'แชมป์ประจำสัปดาห์ + ค่าปรับบ๊วย (penalties)'
+        };
+        const tierLabel = tierNum === 2
+          ? 'Tier 2 — Auto-Picks Live (31-3,000 teams)'
+          : 'Tier 1 — Full Analytics (<=30 teams)';
+        const promptLines = [];
+        if (isEn) {
+          promptLines.push('Please onboard a new FPLSaWaDiKa customer mini-league using all details below:');
+          promptLines.push('Update config/leagues_config.json, run python3 sync_live_fpl.py --league ' + lid + ' and python3 update_preview.py, verify locally across Desktop (1440px), Laptop (1055px), Touch Tablet (820px), and Touch Mobile (390px) in Dark/Light modes and TH/EN with 0 overflow and 0 console errors, and stop before git commit / git push / wrangler deploy to await my approval.');
+          promptLines.push('');
+          promptLines.push('1) League & Access Profile:');
+          promptLines.push('- FPL Classic League ID: ' + lid);
+          promptLines.push('- League Name: ' + detectedName + (shortName ? (' (Short Name: ' + shortName + ')') : ''));
+          if (teamCountVal) promptLines.push('- Team Count: ' + teamCountVal);
+          promptLines.push('- Target URL: ' + urlStr);
+          promptLines.push('- Plan & Tier: ' + plan + ' | ' + tierLabel);
+          promptLines.push('- License Status: ' + accessStatus + (expiresVal ? (' (expires_at: ' + expiresVal + ')') : ''));
+          promptLines.push('- Visibility & Tenant Isolation: visibility="' + visibility + '", tenant_group="' + tenantGroup + '"' + (visibility === 'private' ? ' (noindex, nofollow; isolated from the 9 showcase leagues)' : ''));
+          if (orderMatches) promptLines.push('- Order Reference ID: ' + onbSourceOrder.order_id);
+          promptLines.push('');
+          promptLines.push('2) Configured Prize & Feature Settings:');
+          promptLines.push('- Prize Model: ' + (prizeModelNames[prizeModel] || prizeModel));
+          promptLines.push('- Currency: ' + currency + ' (' + curSym + ')');
+          if (isWeeklyLike) promptLines.push('- Weekly Prize: ' + weeklyVal.toLocaleString() + ' ' + currency);
+          if (prizeModel === 'monthly') promptLines.push('- Monthly Prizes: Champion ' + monthlyChampVal.toLocaleString() + ' ' + currency + ' / Runner-up ' + monthlyRunnerVal.toLocaleString() + ' ' + currency);
+          if (prizeModel === 'penalties') promptLines.push('- Bottom-N Penalty Tiers (worst rank first): ' + penaltyTiersRaw);
+          if (entryFeeRaw) promptLines.push('- Entry Fee / Team: ' + entryFeeRaw);
+          if (totalPoolRaw) promptLines.push('- Total Prize Pool: ' + totalPoolRaw);
+          if (seasonPrizesRaw) promptLines.push('- Season Overall Prizes: ' + seasonPrizesRaw);
+          if (noCup) {
+            promptLines.push('- Mini-League Cup: Disabled (--no-cup)');
+          } else {
+            promptLines.push('- Mini-League Cup: Enabled' + (cupPrizeRaw ? (' (Cup Prize: ' + cupPrizeRaw + ')') : ''));
+          }
+          if (nonPrizeDetailed.length > 0) {
+            promptLines.push('- Excluded Teams (non_prize_teams): ' + nonPrizeDetailed.join('; '));
+          } else {
+            promptLines.push('- Excluded Teams (non_prize_teams): None (all teams eligible for prizes)');
+          }
+          promptLines.push('');
+          promptLines.push('3) Customer Rules Text (Source of Truth):');
+          if (customerRulesRaw) {
+            promptLines.push('"""');
+            promptLines.push(customerRulesRaw);
+            promptLines.push('"""');
+            promptLines.push('- Treat the raw customer rules above as the primary source of truth for custom rules (tie-breakers, settlement phases, prize splits, cup rules, or non-prize teams). Generate accurate bilingual rules_cards and rules_cards_en, and flag any discrepancy with Section 2.');
+          } else {
+            promptLines.push('(No extra customer rules pasted — use the configured defaults in Section 2)');
+          }
+          promptLines.push('');
+          promptLines.push('4) Starter CLI Command:');
+          promptLines.push(outCli.value);
+          promptLines.push('');
+          promptLines.push('5) Verification & Delivery Checklist:');
+          promptLines.push('- Ensure zero customer PII (no emails, LINE IDs, phone numbers, or bank accounts) is written to config/leagues_config.json or any HTML/JSON output.');
+          promptLines.push('- Verify visibility/tenant_group isolation, bilingual TH/EN rendering, Dark/Light mode, and all 4 viewport checks pass.');
+          promptLines.push('- Return a concise summary of configured rules, verification results, and the final LINE handoff message ready for me to copy (wait for my "push git" command).');
+        } else {
+          promptLines.push('ช่วยเปิดลีกลูกค้าใหม่บนระบบ FPLSaWaDiKa ตามข้อมูลครบชุดด้านล่างนี้:');
+          promptLines.push('อัปเดต config/leagues_config.json, รัน python3 sync_live_fpl.py --league ' + lid + ' และ python3 update_preview.py, ตรวจสอบบนเครื่อง Local ให้ครบ 4 ขนาดจอ (Desktop 1440px, Laptop 1055px, Touch Tablet 820px, Touch Mobile 390px) ทั้ง Dark/Light และ TH/EN โดยต้องไม่มี Horizontal Overflow และ 0 Console Errors จากนั้นรอคำสั่ง "push git" จากผมก่อน commit/push/deploy');
+          promptLines.push('');
+          promptLines.push('1) ข้อมูลลีกและสิทธิ์การใช้งาน:');
+          promptLines.push('- FPL Classic League ID: ' + lid);
+          promptLines.push('- ชื่อลีก: ' + detectedName + (shortName ? (' (ชื่อย่อ: ' + shortName + ')') : ''));
+          if (teamCountVal) promptLines.push('- จำนวนทีม: ' + teamCountVal + ' ทีม');
+          promptLines.push('- ลิงก์ปลายทาง: ' + urlStr);
+          promptLines.push('- แพ็กเกจและระดับระบบ: ' + plan + ' | ' + tierLabel);
+          promptLines.push('- สถานะสิทธิ์ (Status): ' + accessStatus + (expiresVal ? (' (expires_at: ' + expiresVal + ')') : ''));
+          promptLines.push('- การแยกสิทธิ์ & SEO: visibility="' + visibility + '", tenant_group="' + tenantGroup + '"' + (visibility === 'private' ? ' (ตั้ง noindex, nofollow และแยกขาดจากกลุ่ม 9 ลีก showcase)' : ''));
+          if (orderMatches) promptLines.push('- เลขอ้างอิงออเดอร์: ' + onbSourceOrder.order_id);
+          promptLines.push('');
+          promptLines.push('2) โครงสร้างเงินรางวัลและการตั้งค่าเบื้องต้น:');
+          promptLines.push('- รูปแบบรางวัล: ' + (prizeModelNames[prizeModel] || prizeModel));
+          promptLines.push('- สกุลเงินรางวัล: ' + currency + ' (' + curSym + ')');
+          if (isWeeklyLike) promptLines.push('- รางวัลประจำสัปดาห์: ' + weeklyVal.toLocaleString() + ' ' + currency);
+          if (prizeModel === 'monthly') promptLines.push('- รางวัลประจำเดือน: แชมป์ ' + monthlyChampVal.toLocaleString() + ' ' + currency + ' / รองแชมป์ ' + monthlyRunnerVal.toLocaleString() + ' ' + currency);
+          if (prizeModel === 'penalties') promptLines.push('- ค่าปรับบ๊วย N อันดับท้าย (จากบ๊วยสุดขึ้นไป): ' + penaltyTiersRaw);
+          if (entryFeeRaw) promptLines.push('- ค่าสมัคร/ทีม: ' + entryFeeRaw);
+          if (totalPoolRaw) promptLines.push('- เงินกองกลางรวม: ' + totalPoolRaw);
+          if (seasonPrizesRaw) promptLines.push('- รางวัลแชมป์ฤดูกาล: ' + seasonPrizesRaw);
+          if (noCup) {
+            promptLines.push('- บอลถ้วย: ปิดใช้งาน (--no-cup)');
+          } else {
+            promptLines.push('- บอลถ้วย: เปิดใช้งาน' + (cupPrizeRaw ? (' (รางวัลบอลถ้วย: ' + cupPrizeRaw + ')') : ''));
+          }
+          if (nonPrizeDetailed.length > 0) {
+            promptLines.push('- ทีมที่ไม่ร่วมชิงรางวัล (non_prize_teams): ' + nonPrizeDetailed.join('; '));
+          } else {
+            promptLines.push('- ทีมที่ไม่ร่วมชิงรางวัล (non_prize_teams): ไม่มี (ทุกทีมร่วมชิงรางวัล)');
+          }
+          promptLines.push('');
+          promptLines.push('3) ข้อความกติกาต้นฉบับจากลูกค้า:');
+          if (customerRulesRaw) {
+            promptLines.push('"""');
+            promptLines.push(customerRulesRaw);
+            promptLines.push('"""');
+            promptLines.push('- ให้ยึดข้อความกติกาที่ลูกค้าเขียนมาด้านบนเป็นหลักในการตั้งค่ากติกาเฉพาะ (เช่น Tie-breaker, รอบเคลียร์เงิน, การแบ่งรางวัล, กติกาบอลถ้วย, หรือรายชื่อทีมร่วมสนุก) พร้อมสร้าง rules_cards / rules_cards_en 2 ภาษาให้ตรงกับกติกาจริง และแจ้งเตือนหากพบจุดที่ขัดกับค่าตั้งต้นในข้อ 2');
+          } else {
+            promptLines.push('(ยังไม่ได้วางข้อความกติกาเพิ่มเติม — ใช้ค่าตั้งต้นในข้อ 2 ได้เลย)');
+          }
+          promptLines.push('');
+          promptLines.push('4) คำสั่ง CLI ตั้งต้น:');
+          promptLines.push(outCli.value);
+          promptLines.push('');
+          promptLines.push('5) สิ่งที่ต้องตรวจสอบและส่งกลับ:');
+          promptLines.push('- ยืนยันว่าไม่มีข้อมูลส่วนบุคคลลูกค้า (อีเมล, LINE ID, เบอร์โทร, เลขบัญชี) หลุดลงใน config/leagues_config.json หรือไฟล์ HTML/JSON สาธารณะ');
+          promptLines.push('- ตรวจสอบ visibility/tenant_group, การแสดงผล 2 ภาษา TH/EN, Light/Dark Mode และผลทดสอบ Local CDP ทั้ง 4 อุปกรณ์');
+          promptLines.push('- สรุปผลการตั้งค่า ผลทดสอบ และแนบข้อความส่งมอบลิงก์สำหรับส่งให้ลูกค้าทาง LINE (รอผมสั่ง "push git" ก่อน deploy)');
+        }
+        outAiPrompt.value = promptLines.join('\\n');
       }
     }
 
@@ -5359,7 +5577,8 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         'onbLeagueId', 'onbTier', 'onbPlan', 'onbPrizeModel', 'onbWeeklyPrize', 'onbStatus',
         'onbCurrency', 'onbEntryFee', 'onbTotalPool', 'onbSeasonPrizes', 'onbCupPrize',
         'onbPenaltyTiers', 'onbMonthlyChamp', 'onbMonthlyRunner',
-        'onbTenantGroup', 'onbVisibility', 'onbShortName', 'onbExpiresAt', 'onbNoCup'
+        'onbTenantGroup', 'onbVisibility', 'onbShortName', 'onbExpiresAt', 'onbNoCup',
+        'onbCustomerRules'
       ].forEach((id) => {
         const el = document.getElementById(id);
         if (el) {
@@ -5367,17 +5586,68 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           el.addEventListener('change', refreshOnboardingOutputs);
         }
       });
+      const clearRulesBtn = document.getElementById('btnOnbClearRules');
+      if (clearRulesBtn) {
+        clearRulesBtn.addEventListener('click', () => {
+          const rulesEl = document.getElementById('onbCustomerRules');
+          if (rulesEl) {
+            rulesEl.value = '';
+            rulesEl.focus();
+          }
+          onbSourceOrder = null;
+          refreshOnboardingOutputs();
+        });
+      }
       document.querySelectorAll('.onb-copy-btn').forEach((copyBtn) => {
         copyBtn.addEventListener('click', async () => {
           const targetId = copyBtn.getAttribute('data-copy-target');
           const ta = targetId ? document.getElementById(targetId) : null;
           if (!ta) return;
+          const isEn = getLang() === 'en';
+          const rawVal = typeof ta.value === 'string' ? ta.value : (ta.textContent || '');
+          if (!rawVal.trim()) {
+            showToast(isEn ? 'Nothing to copy yet.' : 'ยังไม่มีข้อความสำหรับคัดลอก', true);
+            return;
+          }
+          let copiedOk = false;
           try {
-            await navigator.clipboard.writeText(ta.value);
-            const prev = copyBtn.textContent;
-            copyBtn.textContent = getLang() === 'en' ? 'Copied!' : 'คัดลอกแล้ว';
-            setTimeout(() => { copyBtn.textContent = prev; }, 1400);
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              await navigator.clipboard.writeText(rawVal);
+              copiedOk = true;
+            }
           } catch (_) {}
+          if (!copiedOk) {
+            const tmp = document.createElement('textarea');
+            tmp.value = rawVal;
+            tmp.style.position = 'fixed';
+            tmp.style.opacity = '0';
+            document.body.appendChild(tmp);
+            tmp.select();
+            try { copiedOk = document.execCommand('copy'); } catch (_) {}
+            tmp.remove();
+          }
+          const labelEl = copyBtn.querySelector('span[data-i18n]') || copyBtn;
+          if (!copyBtn.dataset.origLabel) {
+            copyBtn.dataset.origLabel = labelEl.textContent;
+          }
+          if (copyBtn._copyTimer) {
+            clearTimeout(copyBtn._copyTimer);
+          }
+          labelEl.textContent = isEn ? 'Copied! ✓' : 'คัดลอกแล้ว ✓';
+          if (targetId === 'onbOutAiPrompt') {
+            showToast(isEn ? 'Copied All-in-One AI Prompt ✓' : 'คัดลอก Prompt สั่ง AI เปิดลีกใหม่แล้ว ✓');
+          } else if (targetId === 'onbCustomerRules') {
+            showToast(isEn ? 'Copied customer rules ✓' : 'คัดลอกกติกาลูกค้าแล้ว ✓');
+          } else {
+            showToast(isEn ? 'Copied to clipboard ✓' : 'คัดลอกลงคลิปบอร์ดแล้ว ✓');
+          }
+          copyBtn._copyTimer = setTimeout(() => {
+            const i18nKey = labelEl.getAttribute && labelEl.getAttribute('data-i18n');
+            const dict = I18N[getLang()] || I18N.th;
+            labelEl.textContent = (i18nKey && dict[i18nKey]) ? dict[i18nKey] : (copyBtn.dataset.origLabel || 'Copy');
+            delete copyBtn.dataset.origLabel;
+            copyBtn._copyTimer = null;
+          }, 1500);
         });
       });
       refreshOnboardingOutputs();
@@ -5993,6 +6263,10 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       setTxt('ordDetAmount', String(o.amount_display || '-'));
       setTxt('ordDetCreated', o.created_at ? new Date(o.created_at).toLocaleString(isEn ? 'en-US' : 'th-TH') : '-');
       setTxt('ordDetRules', o.rules_text ? String(o.rules_text) : (isEn ? '(No custom rules note)' : '(ไม่ได้ระบุรายละเอียดเพิ่มเติม)'));
+      const copyRulesBtn = document.getElementById('btnOrdCopyRules');
+      if (copyRulesBtn) {
+        copyRulesBtn.disabled = !(o.rules_text && String(o.rules_text).trim());
+      }
       setTxt('ordDetSlipUploadedAt', o.slip_uploaded_at ? new Date(o.slip_uploaded_at).toLocaleString(isEn ? 'en-US' : 'th-TH') : '-');
 
       const emailCustBtn = document.getElementById('btnOrdEmailCustomer');
@@ -6052,6 +6326,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
     function prefillOnboardingFromOrder(o) {
       if (!o) return;
       const lid = String(o.league_id || '').trim();
+      onbSourceOrder = {
+        order_id: String(o.order_id || ''),
+        league_id: lid,
+        league_name: String(o.league_name || ''),
+        team_count: Number(o.team_count || 0)
+      };
       const lidEl = document.getElementById('onbLeagueId');
       const planEl = document.getElementById('onbPlan');
       const tierEl = document.getElementById('onbTier');
@@ -6060,6 +6340,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       const visEl = document.getElementById('onbVisibility');
       const tenEl = document.getElementById('onbTenantGroup');
       const shortEl = document.getElementById('onbShortName');
+      const rulesEl = document.getElementById('onbCustomerRules');
       const isTier2Quote = o.plan === 'tier2_quote';
       if (lidEl) lidEl.value = lid;
       if (planEl) planEl.value = isTier2Quote ? 'tier2_quote' : 'standard';
@@ -6069,6 +6350,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (visEl) visEl.value = 'private';
       if (tenEl) tenEl.value = lid ? ('private_' + lid) : '';
       if (shortEl) shortEl.value = o.league_name ? String(o.league_name).slice(0, 12).trim() : '';
+      if (rulesEl) rulesEl.value = String(o.rules_text || '').trim();
       refreshOnboardingOutputs();
       const sec9 = document.getElementById('sec-onboarding');
       if (sec9) sec9.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -6263,6 +6545,17 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
       if (btnCopyPay) btnCopyPay.addEventListener('click', () => copyAdminOrderPayLink());
       const btnCopyLine = document.getElementById('btnOrdCopyLineReply');
       if (btnCopyLine) btnCopyLine.addEventListener('click', () => copyAdminOrderLineReply());
+      const btnCopyRules = document.getElementById('btnOrdCopyRules');
+      if (btnCopyRules) {
+        btnCopyRules.addEventListener('click', () => {
+          if (!selectedOrderObj || !selectedOrderObj.rules_text) return;
+          const isEn = getLang() === 'en';
+          copyAdminText(
+            String(selectedOrderObj.rules_text),
+            isEn ? 'Copied customer rules text ✓' : 'คัดลอกข้อความกติกาของลูกค้าแล้ว ✓'
+          );
+        });
+      }
       const btnVerify = document.getElementById('btnOrdVerifyPaid');
       if (btnVerify) btnVerify.addEventListener('click', () => submitOrderAction('verify_payment'));
       const btnPrefill = document.getElementById('btnOrdPrefillOnb');
