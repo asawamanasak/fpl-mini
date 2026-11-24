@@ -7793,8 +7793,10 @@
               }
             }
 
+            const isDeparted = this.isTeamDeparted(team.entry_id);
+            const departedBadge = isDeparted ? this.getDepartedBadge(team.entry_id, true) : '';
             mHtml += `
-              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isWinner ? 'font-semibold' : ''}">
+              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isWinner ? 'font-semibold' : ''} ${isDeparted ? 'opacity-70' : ''}">
                 <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-2 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
@@ -7803,6 +7805,7 @@
                     </span>
                     ${chip}
                     ${prizeBadge}
+                    ${departedBadge}
                     ${penaltyBadgeHtml}
                   </div>
                   <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
@@ -7924,6 +7927,7 @@
                   gData.results.forEach(r => {
                     if (seenInGw.has(r.entry_id)) return;
                     seenInGw.add(r.entry_id);
+                    if (this.isDepartedNonPrize(r.entry_id)) return;
                     if (!overallMap[r.entry_id]) {
                       overallMap[r.entry_id] = {
                         entry_id: r.entry_id,
@@ -7969,6 +7973,7 @@
                     gData.results.forEach(r => {
                       if (seenInGw.has(r.entry_id)) return;
                       seenInGw.add(r.entry_id);
+                      if (this.isDepartedNonPrize(r.entry_id)) return;
                       if (!prevOverallMap[r.entry_id]) {
                         prevOverallMap[r.entry_id] = { entry_id: r.entry_id, fpl_rank: 999, total_points: 0 };
                       }
@@ -7977,12 +7982,17 @@
                   }
                 }
               }
-              const prevSorted = Object.values(prevOverallMap).sort((a, b) => (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999)));
+              const prevSorted = Object.values(prevOverallMap).sort((a, b) => {
+                const aDep = this.isTeamDeparted(a.entry_id) ? 1 : 0;
+                const bDep = this.isTeamDeparted(b.entry_id) ? 1 : 0;
+                if (aDep !== bDep) return aDep - bDep;
+                return (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999));
+              });
               let curPrevRank = 1;
               let prevEligibleCount = 0;
               let prevTot = null;
               prevSorted.forEach(team => {
-                if (!this.isPrizeEligible(team.entry_id)) {
+                if (!this.isActivePrizeEligible(team.entry_id)) {
                   team.prev_rank = null;
                   return;
                 }
@@ -8001,14 +8011,19 @@
 
           const overallSorted = isTier2
             ? Object.values(overallMap).sort((a, b) => ((a.overall_rank || 999) - (b.overall_rank || 999)) || (b.total_points - a.total_points))
-            : Object.values(overallMap).sort((a, b) => (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999)));
+            : Object.values(overallMap).sort((a, b) => {
+                const aDep = this.isTeamDeparted(a.entry_id) ? 1 : 0;
+                const bDep = this.isTeamDeparted(b.entry_id) ? 1 : 0;
+                if (aDep !== bDep) return aDep - bDep;
+                return (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999));
+              });
 
           if (!isTier2) {
             let curOverallRank = 1;
             let eligibleCount = 0;
             let prevEligibleTotal = null;
             overallSorted.forEach((team) => {
-              if (!this.isPrizeEligible(team.entry_id)) {
+              if (!this.isActivePrizeEligible(team.entry_id)) {
                 team.overall_rank = null;
                 return;
               }
@@ -8034,17 +8049,21 @@
 
           displayOverall.forEach((team) => {
             const isPrize = this.isPrizeEligible(team.entry_id);
+            const isDeparted = this.isTeamDeparted(team.entry_id);
             const prizeBadge = this.getPrizeBadge(team.entry_id);
+            const departedBadge = isDeparted ? this.getDepartedBadge(team.entry_id) : '';
 
             let rankBadge = '';
             if (!isPrize) {
               rankBadge = this.getNonPrizeRankBadge();
+            } else if (isDeparted) {
+              rankBadge = this.getDepartedRankBadge();
             } else {
               rankBadge = this.getRankBadge(team.overall_rank);
             }
 
             let rankDeltaHtml = '';
-            if (targetGW > 1 && isPrize && team.overall_rank !== null && team.prev_rank !== null && team.prev_rank !== undefined) {
+            if (targetGW > 1 && isPrize && !isDeparted && team.overall_rank !== null && team.prev_rank !== null && team.prev_rank !== undefined) {
               const delta = team.prev_rank - team.overall_rank;
               if (delta > 0) {
                 rankDeltaHtml = `<span class="inline-flex items-center text-[9.5px] font-extrabold text-emerald-600 dark:text-emerald-400 font-display" title="${isEn ? `Up ${delta} ranks` : `ขึ้น ${delta} อันดับ`}">▲${delta}</span>`;
@@ -8062,7 +8081,7 @@
               : `<span class="text-slate-400 dark:text-slate-500 font-medium font-display">-</span>`;
 
             oHtml += `
-              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors">
+              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isDeparted ? 'opacity-70' : ''}">
                 <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">
                   <div class="flex flex-col items-center justify-center">
                     ${rankBadge}
@@ -8075,6 +8094,7 @@
                       ${this.escapeHtml(team.team_name)}
                     </span>
                     ${prizeBadge}
+                    ${departedBadge}
                   </div>
                   <span class="text-[11px] text-slate-500 dark:text-slate-400 block truncate">${this.escapeHtml(team.player_name)}</span>
                 </td>
@@ -8446,6 +8466,44 @@
         const isEn = (this.currentLang === 'en');
         const bTitle = isEn ? 'Non-prize participant (no official rank)' : 'ทีมร่วมสนุก (ไม่นับอันดับ)';
         return `<span class="w-5 h-5 inline-flex items-center justify-center text-slate-400 dark:text-slate-500 font-bold text-xs flex-shrink-0" title="${bTitle}">-</span>`;
+      }
+
+      getDepartedMeta(entryId, leagueData = this.data) {
+        if (!leagueData || !leagueData.departed_teams || typeof leagueData.departed_teams !== 'object') return null;
+        const key = String(entryId);
+        return leagueData.departed_teams[key] || null;
+      }
+
+      isTeamDeparted(entryId, leagueData = this.data) {
+        return Boolean(this.getDepartedMeta(entryId, leagueData));
+      }
+
+      isDepartedNonPrize(entryId, leagueData = this.data) {
+        return this.isTeamDeparted(entryId, leagueData) && !this.isPrizeEligible(entryId);
+      }
+
+      isActivePrizeEligible(entryId, leagueData = this.data) {
+        return this.isPrizeEligible(entryId) && !this.isTeamDeparted(entryId, leagueData);
+      }
+
+      getDepartedBadge(entryId, compact = false, leagueData = this.data) {
+        const meta = this.getDepartedMeta(entryId, leagueData);
+        if (!meta) return '';
+        const isEn = (this.currentLang === 'en');
+        const lastGw = Number(meta.last_gw || 0);
+        const label = compact
+          ? (isEn ? 'Left' : 'ออกจากลีก')
+          : (lastGw > 0 ? (isEn ? `Left (GW ${lastGw})` : `ออกจากลีก (GW ${lastGw})`) : (isEn ? 'Left League' : 'ออกจากลีก'));
+        const title = lastGw > 0
+          ? (isEn ? `Left league after Gameweek ${lastGw} (historical stats preserved)` : `ออกจากลีกหลังจบ GW ${lastGw} (เก็บสถิติย้อนหลังครบ)`)
+          : (isEn ? 'Left league mid-season (historical stats preserved)' : 'ออกจากลีกกลางฤดูกาล (เก็บสถิติย้อนหลังครบ)');
+        return `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-500 border border-slate-200/80 dark:bg-slate-800/80 dark:text-slate-400 dark:border-slate-700/80 ml-1" title="${title}">${label}</span>`;
+      }
+
+      getDepartedRankBadge() {
+        const isEn = (this.currentLang === 'en');
+        const bTitle = isEn ? 'Left league mid-season (unranked)' : 'ออกจากลีกกลางฤดูกาล (ไม่นับอันดับ)';
+        return `<span class="w-5 h-5 inline-flex items-center justify-center text-slate-400 dark:text-slate-500 font-bold text-xs flex-shrink-0" title="${bTitle}">—</span>`;
       }
 
       getRankBadge(rank, label = null) {
@@ -9185,6 +9243,7 @@
                 gData.results.forEach(r => {
                   if (seenInGw.has(r.entry_id)) return;
                   seenInGw.add(r.entry_id);
+                  if (this.isTeamDeparted(r.entry_id, leagueData)) return;
                   if (!overallMap[r.entry_id]) {
                     overallMap[r.entry_id] = {
                       entry_id: r.entry_id,
@@ -12177,10 +12236,28 @@
             }
           }
 
-          const sortedTeams = [...(this.data.teams || [])].sort((a, b) => {
+          const ledgerTeamsMap = {};
+          (this.data.teams || []).forEach(t => {
+            ledgerTeamsMap[Number(t.entry_id)] = t;
+          });
+          Object.values(this.data.departed_teams || {}).forEach(dt => {
+            const eid = Number(dt && dt.entry_id);
+            if (!eid || ledgerTeamsMap[eid]) return;
+            if (!this.isDepartedNonPrize(eid)) {
+              ledgerTeamsMap[eid] = {
+                entry_id: eid,
+                entry_name: dt.entry_name || `Team ${eid}`,
+                player_name: dt.player_name || ''
+              };
+            }
+          });
+          const sortedTeams = Object.values(ledgerTeamsMap).sort((a, b) => {
             const aEligible = this.isPrizeEligible(a.entry_id) ? 1 : 0;
             const bEligible = this.isPrizeEligible(b.entry_id) ? 1 : 0;
             if (aEligible !== bEligible) return bEligible - aEligible;
+            const aDep = this.isTeamDeparted(a.entry_id) ? 1 : 0;
+            const bDep = this.isTeamDeparted(b.entry_id) ? 1 : 0;
+            if (aDep !== bDep) return aDep - bDep;
             if (hasWeeklyPenalties) {
               const netA = (prizeEarnings[a.entry_id] || 0) - (finesPaid[a.entry_id] || 0);
               const netB = (prizeEarnings[b.entry_id] || 0) - (finesPaid[b.entry_id] || 0);
@@ -12367,10 +12444,13 @@
               `;
             }
 
+            const isDepTeam = this.isTeamDeparted(t.entry_id);
             const trueRank = prizeRankMap[t.entry_id] || (idx + 1);
             let rankBadge = '';
             if (!isEligible) {
               rankBadge = this.getNonPrizeRankBadge();
+            } else if (isDepTeam) {
+              rankBadge = this.getDepartedRankBadge();
             } else if (trueRank === 1) {
               rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400 text-slate-950 font-black text-xs shadow-2xs">1</span>`;
             } else if (trueRank === 2) {
@@ -12381,7 +12461,7 @@
               rankBadge = `<span class="text-xs font-bold text-slate-500 dark:text-slate-400 font-display">${trueRank}</span>`;
             }
 
-            const wRankClass = !isEligible ? 'is-non-prize opacity-70' : '';
+            const wRankClass = (!isEligible || isDepTeam) ? 'is-non-prize opacity-70' : '';
 
             tableRows += `
               <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer ${wRankClass}">
@@ -12390,6 +12470,7 @@
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <button onclick="event.stopPropagation(); app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-400 transition-colors cursor-pointer block truncate max-w-[125px] xs:max-w-[175px] sm:max-w-none">${this.escapeHtml(t.entry_name)}</button>
                     ${this.getPrizeBadge(t.entry_id)}
+                    ${isDepTeam ? this.getDepartedBadge(t.entry_id) : ''}
                   </div>
                   <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(t.player_name)}</div>
                 </td>
@@ -12968,6 +13049,7 @@
                   gData.results.forEach(r => {
                     if (seenInGw.has(r.entry_id)) return;
                     seenInGw.add(r.entry_id);
+                    if (this.isDepartedNonPrize(r.entry_id)) return;
                     if (!monthlyMap[r.entry_id]) {
                       monthlyMap[r.entry_id] = {
                         entry_id: r.entry_id,
@@ -12986,17 +13068,27 @@
             });
           }
 
+          const curMonthGWList = curMonth.gw_list || [];
+          const curMonthIsFinished = (curMonthGWList.length > 0 && curMonthGWList.every(g => {
+            const gd = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+            return gd && gd.is_finished;
+          }));
+          const isCurMonthEligible = (eid) => (curMonthIsFinished ? this.isPrizeEligible(eid) : this.isActivePrizeEligible(eid));
+
           const monthlySorted = Object.values(monthlyMap).sort((a, b) => {
-            const aEligible = this.isPrizeEligible(a.entry_id) ? 1 : 0;
-            const bEligible = this.isPrizeEligible(b.entry_id) ? 1 : 0;
+            const aEligible = isCurMonthEligible(a.entry_id) ? 1 : 0;
+            const bEligible = isCurMonthEligible(b.entry_id) ? 1 : 0;
             if (aEligible !== bEligible) return bEligible - aEligible;
+            const aDep = this.isTeamDeparted(a.entry_id) ? 1 : 0;
+            const bDep = this.isTeamDeparted(b.entry_id) ? 1 : 0;
+            if (aDep !== bDep) return aDep - bDep;
             return (b.month_total - a.month_total) || (a.team_name || '').localeCompare(b.team_name || '') || (a.entry_id - b.entry_id);
           });
           let curMonthlyRank = 1;
           let eligibleMonthlyCount = 0;
           let prevEligibleMonthTotal = null;
           monthlySorted.forEach((t) => {
-            if (!this.isPrizeEligible(t.entry_id)) {
+            if (!isCurMonthEligible(t.entry_id)) {
               t.rank = null;
               t.eligible_monthly_rank = null;
               return;
@@ -13010,11 +13102,6 @@
             t.eligible_monthly_rank = curMonthlyRank;
           });
 
-          const curMonthGWList = curMonth.gw_list || [];
-          const curMonthIsFinished = (curMonthGWList.length > 0 && curMonthGWList.every(g => {
-            const gd = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
-            return gd && gd.is_finished;
-          }));
           const curMonthIsStarted = curMonthGWList.some(g => {
             const gd = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
             return gd ? (gd.is_started !== undefined ? Boolean(gd.is_started) : (Boolean(gd.is_finished) || (gd.results && gd.results.some(r => r.points > 0)))) : false;
@@ -13069,7 +13156,7 @@
 
           let monthlyTableRows = '';
           let hasRenderedMonthlyNonPrizeHeader = false;
-          const eligibleMonthSorted = curMonthIsStarted ? monthlySorted.filter(x => this.isPrizeEligible(x.entry_id)) : [];
+          const eligibleMonthSorted = curMonthIsStarted ? monthlySorted.filter(x => isCurMonthEligible(x.entry_id)) : [];
           const hasPositiveScores = eligibleMonthSorted.length > 0 && eligibleMonthSorted[0].month_total > 0;
           const topChampsInMonth = hasPositiveScores ? eligibleMonthSorted.filter(x => x.eligible_monthly_rank === 1) : [];
           const topRunnersInMonth = hasPositiveScores ? eligibleMonthSorted.filter(x => x.eligible_monthly_rank === 2) : [];
@@ -13086,6 +13173,8 @@
 
           filteredMonthly.forEach((t) => {
             const isEligible = this.isPrizeEligible(t.entry_id);
+            const isDeparted = this.isTeamDeparted(t.entry_id);
+            const canWinCurMonth = isCurMonthEligible(t.entry_id);
 
             if (!isEligible && !hasRenderedMonthlyNonPrizeHeader && filterMode === 'all') {
               hasRenderedMonthlyNonPrizeHeader = true;
@@ -13097,12 +13186,14 @@
                 </tr>
               `;
             }
-            const isLeader = isEligible && curMonthIsStarted && hasPositiveScores && (t.eligible_monthly_rank === 1);
-            const isRunnerUp = isEligible && curMonthIsStarted && hasPositiveScores && (t.eligible_monthly_rank === 2);
+            const isLeader = canWinCurMonth && curMonthIsStarted && hasPositiveScores && (t.eligible_monthly_rank === 1);
+            const isRunnerUp = canWinCurMonth && curMonthIsStarted && hasPositiveScores && (t.eligible_monthly_rank === 2);
             let rankBadge = '';
 
             if (!isEligible) {
               rankBadge = this.getNonPrizeRankBadge();
+            } else if (!canWinCurMonth && isDeparted) {
+              rankBadge = this.getDepartedRankBadge();
             } else if (isLeader) {
               rankBadge = `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400 text-slate-950 font-black text-xs shadow-2xs">1</span>`;
             } else if (isRunnerUp) {
@@ -13120,12 +13211,13 @@
             });
 
             monthlyTableRows += `
-              <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer">
+              <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer ${isDeparted ? 'opacity-70' : ''}">
                 <td class="sticky-col-rank py-2.5 px-2 text-center font-display">${rankBadge}</td>
                 <td class="sticky-col-team py-2.5 px-3 min-w-[140px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <button onclick="event.stopPropagation(); app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-blue-700 dark:hover:text-blue-400 transition-colors cursor-pointer block truncate max-w-[125px] xs:max-w-[175px] sm:max-w-none">${this.escapeHtml(t.team_name)}</button>
                     ${this.getPrizeBadge(t.entry_id)}
+                    ${isDeparted ? this.getDepartedBadge(t.entry_id) : ''}
                   </div>
                   <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(t.player_name)}</div>
                 </td>
@@ -13595,6 +13687,7 @@
                 gData.results.forEach(r => {
                   if (seenInGw.has(r.entry_id)) return;
                   seenInGw.add(r.entry_id);
+                  if (this.isDepartedNonPrize(r.entry_id)) return;
                   if (!overallMap[r.entry_id]) {
                     overallMap[r.entry_id] = {
                       entry_id: r.entry_id,
@@ -13614,10 +13707,13 @@
             const aEligible = this.isPrizeEligible(a.entry_id) ? 1 : 0;
             const bEligible = this.isPrizeEligible(b.entry_id) ? 1 : 0;
             if (aEligible !== bEligible) return bEligible - aEligible;
+            const aDep = this.isTeamDeparted(a.entry_id) ? 1 : 0;
+            const bDep = this.isTeamDeparted(b.entry_id) ? 1 : 0;
+            if (aDep !== bDep) return aDep - bDep;
             return (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999));
           });
 
-          const eligibleTeams = overallSorted.filter(t => this.isPrizeEligible(t.entry_id));
+          const eligibleTeams = overallSorted.filter(t => this.isActivePrizeEligible(t.entry_id));
           const eligibleCount = eligibleTeams.length;
           let currentIdx = 0;
           while (currentIdx < eligibleTeams.length) {
@@ -13648,7 +13744,7 @@
           }
 
           overallSorted.forEach(team => {
-            if (!this.isPrizeEligible(team.entry_id)) {
+            if (!this.isActivePrizeEligible(team.entry_id)) {
               team.overall_rank = null;
               team.is_joint = false;
               team.payout = 0;
@@ -13720,18 +13816,23 @@
 
           filteredOverall.forEach((team) => {
             const isPrize = this.isPrizeEligible(team.entry_id);
+            const isDeparted = this.isTeamDeparted(team.entry_id);
+            const isActivePrize = isPrize && !isDeparted;
             const prizeBadge = this.getPrizeBadge(team.entry_id);
+            const departedBadge = isDeparted ? this.getDepartedBadge(team.entry_id) : '';
             const r = team.overall_rank;
-            const payout = isPrize ? team.payout : 0;
+            const payout = isActivePrize ? team.payout : 0;
             const extraNet = (extraMapByEntryId[team.entry_id] !== undefined)
               ? extraMapByEntryId[team.entry_id]
               : (extraMapByName[(team.player_name || '').toLowerCase()] || 0);
-            const grandTotal = isPrize ? (payout + extraNet) : 0;
+            const grandTotal = isActivePrize ? (payout + extraNet) : (isPrize ? extraNet : 0);
 
             let rankBadge = '';
 
             if (!isPrize) {
               rankBadge = this.getNonPrizeRankBadge();
+            } else if (isDeparted) {
+              rankBadge = this.getDepartedRankBadge();
             } else if (team.is_joint) {
               rankBadge = `<span class="text-slate-600 dark:text-slate-300 font-bold" title="${isEn ? `Tied with ${team.joint_count} teams` : `คะแนนเท่ากัน ${team.joint_count} ทีม`}">${team.overall_rank} <span class="text-[9px] text-slate-400 font-mono">${isEn ? 'T' : 'ร่วม'}</span></span>`;
             } else if (r === 1) {
@@ -13763,7 +13864,7 @@
                 ? `<span class="font-bold text-slate-700 dark:text-slate-300">${shortName}</span> <span class="text-slate-400">(${this.escapeHtml(team.player_name)})</span>`
                 : this.escapeHtml(team.player_name);
 
-              const sRankClass = !isPrize ? 'is-non-prize opacity-70' : '';
+              const sRankClass = (!isPrize || isDeparted) ? 'is-non-prize opacity-70' : '';
               tableRowsHtml += `
                 <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer ${sRankClass}">
                   <td class="sticky-col-rank py-3 px-2 text-center font-display">${rankBadge}</td>
@@ -13773,17 +13874,18 @@
                         ${this.escapeHtml(team.team_name)}
                       </button>
                       ${prizeBadge}
+                      ${departedBadge}
                     </div>
-                    <span class="text-[11px] block truncate text-slate-500 dark:text-slate-400">${dispManager}</span>
+                    <div class="text-[11px] block truncate text-slate-500 dark:text-slate-400">${dispManager}</div>
                   </td>
                   <td class="py-3 px-2 text-center font-mono tabular-nums font-black text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
-                  <td class="py-3 px-3 text-right font-display text-xs sm:text-sm">${isPrize ? fmtCol(payout) : '<span class="text-slate-400 font-mono text-xs">-</span>'}</td>
+                  <td class="py-3 px-3 text-right font-display text-xs sm:text-sm">${isActivePrize ? fmtCol(payout) : '<span class="text-slate-400 font-mono text-xs">-</span>'}</td>
                   <td class="py-3 px-3 text-right font-display text-xs sm:text-sm">${isPrize ? fmtCol(extraNet) : '<span class="text-slate-400 font-mono text-xs">-</span>'}</td>
                   <td class="py-3 px-3 text-right font-display">${isPrize ? fmtGrandCol(grandTotal) : '<span class="text-slate-400 font-mono text-xs">-</span>'}</td>
                 </tr>
               `;
             } else {
-              const sNonRankClass = !isPrize ? 'is-non-prize opacity-70' : '';
+              const sNonRankClass = (!isPrize || isDeparted) ? 'is-non-prize opacity-70' : '';
               tableRowsHtml += `
                 <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer ${sNonRankClass}">
                   <td class="sticky-col-rank py-3 px-2 text-center font-display">${rankBadge}</td>
@@ -13793,11 +13895,12 @@
                         ${this.escapeHtml(team.team_name)}
                       </button>
                       ${prizeBadge}
+                      ${departedBadge}
                     </div>
                     <span class="text-[11px] text-slate-500 dark:text-slate-400 block truncate">${this.escapeHtml(team.player_name)}</span>
                   </td>
                   <td class="py-3 px-2 text-center font-mono tabular-nums font-black text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
-                  <td class="py-3 px-3 text-right font-display">${isPrize ? fmtGrandCol(payout) : '<span class="text-slate-400 font-mono text-xs">-</span>'}</td>
+                  <td class="py-3 px-3 text-right font-display">${isActivePrize ? fmtGrandCol(payout) : '<span class="text-slate-400 font-mono text-xs">-</span>'}</td>
                 </tr>
               `;
             }
@@ -14257,6 +14360,7 @@
           const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
           if (gData && gData.results && gData.is_finished) {
             gData.results.forEach(r => {
+              if (this.isDepartedNonPrize(r.entry_id)) return;
               if (!teamStats[r.entry_id]) {
                 teamStats[r.entry_id] = {
                   entry_id: r.entry_id,
@@ -14297,7 +14401,8 @@
             }
             const winCredit = topEligibleWinners.length > 0 ? 1 / topEligibleWinners.length : 0;
 
-            const sorted = [...gData.results].sort((a, b) => {
+            const hofGwResults = gData.results.filter(r => !this.isDepartedNonPrize(r.entry_id));
+            const sorted = [...hofGwResults].sort((a, b) => {
               const diff = b.net_points - a.net_points;
               if (diff !== 0) return diff;
               if (useTieBreaker) {
@@ -14307,6 +14412,7 @@
             });
             sorted.forEach((r, idx) => {
               const ts = teamStats[r.entry_id];
+              if (!ts) return;
               ts.total_net += r.net_points;
               ts.scores.push(r.net_points);
               if (this.isPrizeEligible(r.entry_id) && topEligibleWinners.some(w => w.entry_id === r.entry_id)) {
@@ -14324,14 +14430,20 @@
           }
         }
 
-        const sortedStats = Object.values(teamStats).sort((a, b) => b.total_net - a.total_net);
+        const sortedStats = Object.values(teamStats).sort((a, b) => {
+          const aDep = this.isTeamDeparted(a.entry_id) ? 1 : 0;
+          const bDep = this.isTeamDeparted(b.entry_id) ? 1 : 0;
+          if (aDep !== bDep) return aDep - bDep;
+          return b.total_net - a.total_net;
+        });
         const overallTopLeader = sortedStats[0] || { team_name: '-', total_net: 0, scores: [0], entry_id: null };
-        const eligibleSortedStats = sortedStats.filter(t => this.isPrizeEligible(t.entry_id));
+        const activeEligibleStats = sortedStats.filter(t => this.isActivePrizeEligible(t.entry_id));
+        const eligibleSortedStats = activeEligibleStats.length > 0 ? activeEligibleStats : sortedStats.filter(t => this.isPrizeEligible(t.entry_id));
         const eligibleLeader = eligibleSortedStats[0] || overallTopLeader;
         const leader = eligibleLeader;
         const isNonPrizeOverallLead = (overallTopLeader.entry_id !== eligibleLeader.entry_id);
 
-        // Accurately compute team(s) with most GW #1 finishes (prize eligible only)
+        // Accurately compute team(s) with most GW #1 finishes (prize eligible only; preserves historical winners)
         let mostWinsCount = 0;
         let mostWinsTeams = [];
         sortedStats.forEach(t => {
@@ -14352,7 +14464,8 @@
         let prevHofTotal = null;
         sortedStats.forEach((t) => {
           const isPrize = this.isPrizeEligible(t.entry_id);
-          if (!isPrize) {
+          const isDeparted = this.isTeamDeparted(t.entry_id);
+          if (!isPrize || isDeparted) {
             t.hof_rank = null;
           } else {
             eligibleCount++;
@@ -14367,6 +14480,7 @@
           t.low = t.scores.length > 0 ? Math.min(...t.scores) : 0;
           t.spread = t.scores.length > 0 ? (t.high - t.low) : 0;
           t.isPrize = isPrize;
+          t.isDeparted = isDeparted;
         });
 
         this.hofCachedStats = sortedStats;
@@ -14568,6 +14682,11 @@
         const sortKey = this.hofSortBy || 'total_net';
         const isAsc = (this.hofSortOrder === 'asc');
         list.sort((a, b) => {
+          if (sortKey === 'total_net' && !isAsc) {
+            const aDep = a.isDeparted ? 1 : 0;
+            const bDep = b.isDeparted ? 1 : 0;
+            if (aDep !== bDep) return aDep - bDep;
+          }
           let diff = 0;
           if (sortKey === 'total_net') diff = a.total_net - b.total_net;
           else if (sortKey === 'wins') diff = a.wins - b.wins;
@@ -14659,6 +14778,8 @@
           let rankBadge = '';
           if (!t.isPrize) {
             rankBadge = this.getNonPrizeRankBadge();
+          } else if (t.isDeparted) {
+            rankBadge = this.getDepartedRankBadge();
           } else if (t.hof_rank === 1) {
             rankBadge = `<span class="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-black text-xs font-display">1</span>`;
           } else if (t.hof_rank === 2) {
@@ -14676,12 +14797,13 @@
           const winsDisp = (t.wins % 1 === 0) ? t.wins : t.wins.toFixed(1);
 
           html += `
-            <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer">
+            <tr onclick="app.toggleTrackedRow(this)" class="group transition-colors cursor-pointer ${t.isDeparted ? 'opacity-70' : ''}">
               <td class="sticky-col-rank py-2.5 px-2 text-center whitespace-nowrap">${rankBadge}</td>
               <td class="sticky-col-team py-2.5 px-2 sm:px-3 min-w-[130px] sm:min-w-0 max-w-[165px] sm:max-w-none">
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <button onclick="event.stopPropagation(); app.openTeamModal(${t.entry_id})" class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer block truncate max-w-[110px] xs:max-w-[140px] sm:max-w-[180px] md:max-w-none">${this.escapeHtml(t.team_name)}</button>
                   ${this.getPrizeBadge(t.entry_id)}
+                  ${t.isDeparted ? this.getDepartedBadge(t.entry_id) : ''}
                 </div>
                 <div class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 truncate">${this.escapeHtml(t.player_name || '')}</div>
               </td>
@@ -14797,6 +14919,7 @@
           if (!lData) return;
           if (lData.tier === 2 || (leaguesConfig[lid] && leaguesConfig[lid].tier === 2)) return;
           const teams = lData.teams || [];
+          const activeTeamIds = new Set(teams.map(t => Number(t.entry_id)));
           const gws = lData.gameweeks || {};
           let totalNet = 0;
           let finGWCount = 0;
@@ -14805,6 +14928,7 @@
             if (gData && gData.is_finished) {
               finGWCount++;
               (gData.results || []).forEach(r => {
+                if (!activeTeamIds.has(Number(r.entry_id))) return;
                 totalNet += (r.net_points || 0);
               });
             }

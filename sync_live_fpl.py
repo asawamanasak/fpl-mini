@@ -116,10 +116,11 @@ def fetch(url, headers_override=None, retries=5, delay=2.0, timeout=15):
             wait_time = delay * (2 ** attempt) + random.uniform(0.5, 1.5)
             time.sleep(wait_time)
 
-def recover_missing_teams_from_cache(current_results, cached_results):
+def recover_missing_teams_from_cache(current_results, cached_results, allowed_eids=None):
     """
-    Ensure no teams are dropped from gameweek results due to transient fetch timeouts.
-    If a team was in cached_results but is missing from current_results, recover it.
+    Ensure no active teams are dropped from gameweek results due to transient fetch timeouts.
+    When allowed_eids is provided (e.g. active standings for current unfinalized GW),
+    teams that left the league are not resurrected into new gameweeks.
     """
     if not cached_results:
         return list(current_results)
@@ -130,10 +131,110 @@ def recover_missing_teams_from_cache(current_results, cached_results):
     for c_r in cached_results:
         c_eid = c_r.get("entry_id")
         if c_eid is not None and c_eid not in current_eids:
-            merged_results.append(c_r)
-            current_eids.add(c_eid)
+            if allowed_eids is None or int(c_eid) in allowed_eids:
+                merged_results.append(c_r)
+                current_eids.add(c_eid)
             
     return merged_results
+
+
+def compute_departed_teams(standings_teams, cached_league, gameweeks_dict, non_prize_ids, standings_fetch_complete=True):
+    """
+    Detect and maintain per-league mid-season departed teams without polluting sibling leagues.
+    Removes any team back in active standings (auto-rejoin), and refreshes per-league is_non_prize.
+    """
+    active_eids = set()
+    for t in (standings_teams or []):
+        eid = t.get("entry") or t.get("entry_id")
+        if eid is not None:
+            active_eids.add(int(eid))
+
+    non_prize_set = set()
+    for np_id in (non_prize_ids or []):
+        try:
+            non_prize_set.add(int(np_id))
+        except (TypeError, ValueError):
+            pass
+
+    cached_departed = (cached_league or {}).get("departed_teams") or {}
+    departed_map = {}
+
+    # Preserve existing departed records unless team rejoined active standings
+    for k, meta in cached_departed.items():
+        if not isinstance(meta, dict):
+            continue
+        raw_eid = meta.get("entry_id", k)
+        try:
+            eid_int = int(raw_eid)
+        except (TypeError, ValueError):
+            continue
+        if eid_int in active_eids:
+            continue
+        row = dict(meta)
+        row["entry_id"] = eid_int
+        row["is_non_prize"] = eid_int in non_prize_set
+        departed_map[str(eid_int)] = row
+
+    prev_active_count = len((cached_league or {}).get("teams") or [])
+    safe_standings_snapshot = (
+        bool(standings_fetch_complete)
+        and len(active_eids) > 0
+        and (prev_active_count == 0 or len(active_eids) >= max(1, int(prev_active_count * 0.7)))
+    )
+
+    if safe_standings_snapshot:
+        hist_info = {}
+        # Seed fallback names from cached active teams list before departure
+        for ct in ((cached_league or {}).get("teams") or []):
+            eid = ct.get("entry_id") or ct.get("entry")
+            if eid is None:
+                continue
+            eid_int = int(eid)
+            if eid_int not in active_eids:
+                hist_info[eid_int] = {
+                    "entry_id": eid_int,
+                    "entry_name": ct.get("entry_name") or ct.get("team_name") or f"Team {eid_int}",
+                    "player_name": ct.get("player_name") or "",
+                    "last_gw": 0,
+                }
+
+        # Walk all recorded gameweeks to find actual last_gw & latest names
+        for gw_k, gw_obj in (gameweeks_dict or {}).items():
+            try:
+                gw_num = int(gw_k)
+            except (TypeError, ValueError):
+                continue
+            if not isinstance(gw_obj, dict):
+                continue
+            for r in (gw_obj.get("results") or []):
+                eid = r.get("entry_id")
+                if eid is None:
+                    continue
+                eid_int = int(eid)
+                if eid_int in active_eids:
+                    continue
+                prev = hist_info.get(eid_int)
+                if prev is None or gw_num >= prev.get("last_gw", 0):
+                    hist_info[eid_int] = {
+                        "entry_id": eid_int,
+                        "entry_name": r.get("team_name") or r.get("entry_name") or (prev or {}).get("entry_name") or f"Team {eid_int}",
+                        "player_name": r.get("player_name") or (prev or {}).get("player_name") or "",
+                        "last_gw": max(gw_num, (prev or {}).get("last_gw", 0)),
+                    }
+
+        for eid_int, info in hist_info.items():
+            key_str = str(eid_int)
+            existing_last_gw = int((departed_map.get(key_str) or {}).get("last_gw") or 0)
+            last_gw = max(existing_last_gw, int(info.get("last_gw") or 0))
+            departed_map[key_str] = {
+                "entry_id": eid_int,
+                "entry_name": info["entry_name"],
+                "player_name": info["player_name"],
+                "last_gw": last_gw,
+                "is_non_prize": eid_int in non_prize_set,
+            }
+
+    return departed_map
 
 def load_cached_data(json_path):
     """Load JSON cache, automatically falling back to .bak if corrupted or missing."""
@@ -346,8 +447,10 @@ def check_data_has_changed(cached_data, new_output):
     for lid, new_l in new_leagues.items():
         cached_l = cached_leagues.get(lid, {})
         
-        # Compare teams count
+        # Compare teams count and departed teams map
         if len(cached_l.get("teams", [])) != len(new_l.get("teams", [])):
+            return True
+        if (cached_l.get("departed_teams") or {}) != (new_l.get("departed_teams") or {}):
             return True
 
         # Compare gameweeks results
@@ -1289,6 +1392,7 @@ def sync_once(args):
             page = 1
             standings_teams = []
             league_name = league_name_cfg
+            has_next = False
             while True:
                 league_resp = fetch(f'https://fantasy.premierleague.com/api/leagues-classic/{lid}/standings/?page_standings={page}')
                 if 'league' in league_resp and 'name' in league_resp['league']:
@@ -1299,6 +1403,7 @@ def sync_once(args):
                 if not has_next or not results:
                     break
                 page += 1
+            standings_fetch_complete = (not has_next and len(standings_teams) > 0)
 
             # Deduplicate by entry_id if needed
             seen_entries = set()
@@ -1309,18 +1414,18 @@ def sync_once(args):
                     unique_standings_teams.append(t)
             standings_teams = unique_standings_teams
 
-            # If non-prize teams are configured but missing from standings (e.g. GEMINI UNITED unranked in 187827), append them
-            non_prize_cfg = lcfg.get('non_prize_teams', [])
-            for np_id in non_prize_cfg:
-                np_id_int = int(np_id)
-                if not any(t['entry'] == np_id_int for t in standings_teams):
+            # Only force-append teams explicitly configured under pinned_teams (never resurrect departed non_prize_teams)
+            pinned_cfg = lcfg.get('pinned_teams', [])
+            for pin_id in pinned_cfg:
+                pin_id_int = int(pin_id)
+                if not any(t['entry'] == pin_id_int for t in standings_teams):
                     try:
-                        e_info = fetch(f'https://fantasy.premierleague.com/api/entry/{np_id_int}/')
+                        e_info = fetch(f'https://fantasy.premierleague.com/api/entry/{pin_id_int}/')
                         with picks_lock:
-                            global_entry_cache[np_id_int] = e_info
+                            global_entry_cache[pin_id_int] = e_info
                         p_name = f"{e_info.get('player_first_name', '')} {e_info.get('player_last_name', '')}".strip()
                         standings_teams.append({
-                            'entry': np_id_int,
+                            'entry': pin_id_int,
                             'entry_name': e_info.get('name', 'GEMINI UNITED'),
                             'player_name': p_name or 'GEMINI UNITED',
                             'rank': 999,
@@ -1328,9 +1433,9 @@ def sync_once(args):
                             'total': e_info.get('summary_overall_points', 0),
                             'event_total': e_info.get('summary_event_points', 0)
                         })
-                        print(f" -> [Non-Prize] Appended {e_info.get('name')} ({np_id_int}) to standings for league {lid}.")
+                        print(f" -> [Pinned] Appended {e_info.get('name')} ({pin_id_int}) to standings for league {lid}.")
                     except Exception as e:
-                        print(f"Notice fetching non_prize team {np_id_int}: {e}")
+                        print(f"Notice fetching pinned team {pin_id_int}: {e}")
 
             cached_league = cached_data.get("leagues", {}).get(lid_str, {}) if cached_data else {}
             league_tier = int(lcfg.get('tier', 1 if len(standings_teams) <= 30 else 2))
@@ -1967,12 +2072,24 @@ def sync_once(args):
                                 squads_dict[f"{eid}_{gw}"] = squad_item
 
                 # Cache Corruption Prevention: Recover any missing teams from previous cache
+                # Historical finalized GWs keep departed teams intact; active/current unfinalized GW restricts recovery to active standings
+                active_eids_t1 = {int(t["entry"]) for t in standings_teams}
+                prev_t1_count = len((cached_league or {}).get("teams") or [])
+                safe_t1_standings = (
+                    bool(standings_fetch_complete)
+                    and len(active_eids_t1) > 0
+                    and (prev_t1_count == 0 or len(active_eids_t1) >= max(1, int(prev_t1_count * 0.7)))
+                )
                 for gw_idx in range(1, max_gw + 1):
                     gw_k = str(gw_idx)
-                    cached_gw_res = cached_gw_data.get(gw_k, {}).get("results", []) if cached_gw_data else []
+                    c_gw_obj = cached_gw_data.get(gw_k, {}) if cached_gw_data else {}
+                    cached_gw_res = c_gw_obj.get("results", [])
+                    is_hist_finalized = (gw_idx < max_gw) or (bool(c_gw_obj.get("is_finished")) and bool(c_gw_obj.get("data_checked")))
+                    allowed_recovery = None if (is_hist_finalized or not safe_t1_standings) else active_eids_t1
                     gameweeks_dict[gw_k]["results"] = recover_missing_teams_from_cache(
                         gameweeks_dict[gw_k]["results"],
-                        cached_gw_res
+                        cached_gw_res,
+                        allowed_eids=allowed_recovery,
                     )
 
                 # Preserve any existing cached squads that were not refreshed
@@ -2198,12 +2315,22 @@ def sync_once(args):
                 print(f" -> [Resilience] Fetched teams empty for League {lid}. Safely falling back to cached league data.")
                 multi_league_output["leagues"][str(lid)] = cached_league
             else:
+                departed_teams_map = compute_departed_teams(
+                    standings_teams=standings_teams,
+                    cached_league=cached_league,
+                    gameweeks_dict=gameweeks_dict,
+                    non_prize_ids=lcfg.get('non_prize_teams', []),
+                    standings_fetch_complete=standings_fetch_complete,
+                )
+                if departed_teams_map:
+                    print(f" -> [Departed] Tracked {len(departed_teams_map)} mid-season departed team(s) in League {lid}: {list(departed_teams_map.keys())}")
                 multi_league_output["leagues"][str(lid)] = {
                     "id": lid,
                     "name": league_name,
                     "season": "2026/27",
                     "tier": league_tier,
                     "teams": teams_list,
+                    "departed_teams": departed_teams_map,
                     "gameweeks": gameweeks_dict,
                     "squads": squads_dict
                 }
