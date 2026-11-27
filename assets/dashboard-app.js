@@ -53,27 +53,128 @@
     }
 
     /**
-     * Dynamic Live Commentary Engine (Hardcore Football Pundit Style)
-     * ระบบวิเคราะห์สด 3 ตอนสไตล์กูรูลูกหนังสายฮาร์ดคอร์: ประโยคเปิดหัวตามสถานการณ์ + เจาะลึกดราม่าแท็กติก + หมัดฮุกกวนๆ ปิดท้าย
+     * Dynamic Live Commentary Engine v2 (4-Persona Anti-Repetition & Matchup Verdict Engine)
+     * 4 บุคลิกนักพากษ์: พากษ์สดข้างสนาม / กูรูคอลัมนิสต์ / นักวิเคราะห์แท็กติก / สายปั่นวงเพื่อน
      */
     class LiveCommentaryEngine {
       static _refreshStep = 0;
+      static _recentSignatures = new Map();
+      static _personaCursor = new Map();
 
-      static generateFreshNote(gwNumber, gwData, leagueName, forceRandom = false, nonPrizeTeams = [], leagueData = null, isWeeklyPrize = true, useTieBreaker = false, isEn = false) {
+      static PERSONAS = [
+        { id: 'broadcaster', labelTh: 'พากษ์สดข้างสนาม', labelEn: 'Live Broadcaster', tone: 'clean' },
+        { id: 'columnist', labelTh: 'กูรูคอลัมนิสต์', labelEn: 'Veteran Columnist', tone: 'clean' },
+        { id: 'analyst', labelTh: 'นักวิเคราะห์แท็กติก', labelEn: 'Tactical Analyst', tone: 'clean' },
+        { id: 'banter', labelTh: 'สายปั่นวงเพื่อน', labelEn: 'Locker-Room Banter', tone: 'spicy' }
+      ];
+
+      static getPersonaMeta(personaId, isEn = false) {
+        const found = LiveCommentaryEngine.PERSONAS.find(p => p.id === personaId) || LiveCommentaryEngine.PERSONAS[0];
+        return {
+          id: found.id,
+          label: isEn ? found.labelEn : found.labelTh,
+          tone: found.tone
+        };
+      }
+
+      static _clean(s) {
+        return String(s || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      static _c(id, tags, text) {
+        return { id, tags: Array.isArray(tags) ? tags : [tags], text };
+      }
+
+      static _pickNonRepeating(candidates, usedTags, recentIds, baseHash, stepOffset, salt) {
+        if (!Array.isArray(candidates) || candidates.length === 0) return null;
+        let pool = candidates.filter(c => !c.tags.some(t => usedTags.has(t)) && !recentIds.has(c.id));
+        if (pool.length === 0) {
+          pool = candidates.filter(c => !c.tags.some(t => usedTags.has(t)));
+        }
+        if (pool.length === 0) {
+          pool = candidates.filter(c => !recentIds.has(c.id));
+        }
+        if (pool.length === 0) {
+          pool = candidates;
+        }
+        const x = Math.sin(baseHash * 13.37 + stepOffset * 93.17 + salt * 37.71) * 43758.5453;
+        const idx = Math.floor((x - Math.floor(x)) * pool.length);
+        const chosen = pool[Math.max(0, Math.min(pool.length - 1, idx))];
+        chosen.tags.forEach(t => usedTags.add(t));
+        recentIds.add(chosen.id);
+        return chosen;
+      }
+
+      static _pickPlain(arr, baseHash, stepOffset, salt) {
+        if (!Array.isArray(arr) || arr.length === 0) return '';
+        const x = Math.sin(baseHash * 17.13 + stepOffset * 71.29 + salt * 41.53) * 43758.5453;
+        const idx = Math.floor((x - Math.floor(x)) * arr.length);
+        return arr[Math.max(0, Math.min(arr.length - 1, idx))];
+      }
+
+      static generateFreshNote(gwNumber, gwData, leagueName, forceRandom = false, nonPrizeTeams = [], leagueData = null, isWeeklyPrize = true, useTieBreaker = false, isEn = false, extraContext = null) {
+        return LiveCommentaryEngine.generateNoteObject(
+          gwNumber, gwData, leagueName, forceRandom, nonPrizeTeams, leagueData, isWeeklyPrize, useTieBreaker, isEn, extraContext
+        ).text;
+      }
+
+      static generateNoteObject(gwNumber, gwData, leagueName, forceRandom = false, nonPrizeTeams = [], leagueData = null, isWeeklyPrize = true, useTieBreaker = false, isEn = false, extraContext = null) {
+        const defaultPersona = LiveCommentaryEngine.getPersonaMeta('broadcaster', isEn);
         if (!gwData || !gwData.results || gwData.results.length === 0) {
-          return isEn 
-            ? `Gameweek ${gwNumber} is awaiting verified match results from the pitch.`
-            : `Gameweek นี้กำลังรอผลการแข่งขันจากสนามจริง`;
+          return {
+            text: isEn
+              ? `Gameweek ${gwNumber} is awaiting verified match results from the pitch.`
+              : `Gameweek ${gwNumber} กำลังรอข้อมูลผลคะแนนจากสนามจริง`,
+            personaId: defaultPersona.id,
+            personaLabel: defaultPersona.label,
+            personaTone: defaultPersona.tone
+          };
         }
 
         if (forceRandom) {
           LiveCommentaryEngine._refreshStep = (LiveCommentaryEngine._refreshStep + 1) % 997;
         }
         const stepOffset = forceRandom ? LiveCommentaryEngine._refreshStep : 0;
+        const clean = LiveCommentaryEngine._clean;
+        const leagueIdStr = String(leagueData?.id || leagueName || '40700');
+        const leagueSeed = leagueIdStr.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+        const baseHash = Math.abs(Number(gwNumber) * 37 + leagueSeed * 13);
 
-        const clean = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        const personaKey = `${leagueIdStr}_${gwNumber}`;
+        let pIdx;
+        if (forceRandom) {
+          const prevIdx = LiveCommentaryEngine._personaCursor.has(personaKey)
+            ? LiveCommentaryEngine._personaCursor.get(personaKey)
+            : (baseHash % LiveCommentaryEngine.PERSONAS.length);
+          pIdx = (prevIdx + 1) % LiveCommentaryEngine.PERSONAS.length;
+        } else {
+          pIdx = LiveCommentaryEngine._personaCursor.has(personaKey)
+            ? LiveCommentaryEngine._personaCursor.get(personaKey)
+            : (baseHash % LiveCommentaryEngine.PERSONAS.length);
+        }
+        LiveCommentaryEngine._personaCursor.set(personaKey, pIdx);
+        const persona = LiveCommentaryEngine.getPersonaMeta(LiveCommentaryEngine.PERSONAS[pIdx].id, isEn);
+
+        const sigKey = `${leagueIdStr}_${gwNumber}_${isEn ? 'en' : 'th'}`;
+        const historyList = LiveCommentaryEngine._recentSignatures.get(sigKey) || [];
+        const recentIds = new Set();
+        historyList.forEach(h => {
+          if (h.leadId) recentIds.add(h.leadId);
+          (h.midIds || []).forEach(id => recentIds.add(id));
+          if (h.endId) recentIds.add(h.endId);
+        });
+        const usedTags = new Set();
+        const pick = (candidates, salt) => LiveCommentaryEngine._pickNonRepeating(candidates, usedTags, recentIds, baseHash, stepOffset, salt);
+
         const isFinished = Boolean(gwData.is_finished);
-        const isStarted = gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || (gwData.results && gwData.results.some(r => r.points > 0)));
+        const isStarted = gwData.is_started !== undefined
+          ? Boolean(gwData.is_started)
+          : (isFinished || (gwData.results && gwData.results.some(r => r.points > 0)));
         const isLive = isStarted && !isFinished;
         const scoreKey = (isFinished || isWeeklyPrize) ? 'net_points' : 'points';
 
@@ -86,10 +187,8 @@
           if (!sq || !sq.starting) return null;
           return sq.starting.filter(p => Boolean(p.not_played_yet)).length;
         };
-
         const getPlayerScores = (eid) => {
-          if (!leagueData || !leagueData.squads) return [];
-          const sq = leagueData.squads[`${eid}_${gwNumber}`];
+          const sq = getSquad(eid);
           if (!sq || !sq.starting) return [];
           const pts = sq.starting.map(p => Number(p.raw_points !== undefined ? p.raw_points : p.points) || 0);
           if ((sq.chip === 'bboost' || sq.chip === 'bench_boost') && sq.bench) {
@@ -119,24 +218,8 @@
           return 0;
         });
 
-        const leagueSeed = String(leagueData?.id || leagueName || '40700').split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
-        const baseHash = Math.abs(Number(gwNumber) * 37 + leagueSeed * 13);
-
-        // High-dispersion pseudo-random selector to guarantee zero repetitive cycling
-        const pickRnd = (salt, arr) => {
-          if (!arr || arr.length === 0) return '';
-          const x = Math.sin(baseHash * 13.37 + stepOffset * 93.17 + salt * 37.71) * 43758.5453;
-          const idx = Math.floor((x - Math.floor(x)) * arr.length);
-          return arr[idx];
-        };
-
-        // Pre-Match Preview (when GW has not kicked off yet)
+        // Pre-Match Preview (!isStarted)
         if (!isStarted) {
-          if (isEn) {
-            return LiveCommentaryEngine._generateEnglishPreMatchNote({
-              gwNumber, sorted, stepOffset, baseHash, pickRnd
-            });
-          }
           const capMap = {};
           let chipCnt = 0;
           let hitCnt = 0;
@@ -147,22 +230,11 @@
             if (r.hits > 0) hitCnt++;
           });
           const topCapEntry = Object.entries(capMap).sort((a, b) => b[1] - a[1])[0];
-          const popCapText = topCapEntry ? `กัปตันมหาชนประจำสัปดาห์นี้เทใจไปที่ ${topCapEntry[0]} (${topCapEntry[1]} ทีม)` : `ต่างคนต่างจัดกัปตันทีเด็ดมาวัดดวง`;
-          const tacticalSubText = chipCnt > 0
-            ? `แถมมีกุนซือใจเด็ดงัดชิปพิเศษมาขยี้ถึง ${chipCnt} ทีม`
-            : (hitCnt > 0 ? `มีพวกใจถึงยอมโดนตัดแต้มลบจัดตัวใหม่ถึง ${hitCnt} ทีม` : `ทุกทีมจัดตัวนิ่งกริ๊บไม่มีใครยอมเสียแต้มลบแม้แต่คนเดียว`);
-
-          const preMatchNotes = [
-            `เดดไลน์ส่งรายชื่อเรียบร้อย! คืนนี้เตรียมเปิดศึก Gameweek ${gwNumber} ${popCapText} ${tacticalSubText} ใครจะเฮสนั่นหรือใครจะหน้ามืดคาสนาม เดี๋ยวรู้เรื่อง!`,
-            `ส่องขุมกำลัง Gameweek ${gwNumber} ส่งชื่อครบทุกทีม! ${popCapText} ${tacticalSubText} บอลยังไม่เตะแต่กลิ่นความเดือดโชยมาแต่ไกล ใครเลือกกัปตันถูกตัวเตรียมเดินยืดอกได้เลย!`,
-            `จัดทัพพร้อมรบ Gameweek ${gwNumber}! ${popCapText} ${tacticalSubText} รอดูกระสุนนัดแรกคิกออฟ ใครของจริงหรือใครจะโดนตบกบาลแยก เดี๋ยวสนามจริงให้คำตอบ!`,
-            `เข้าสู่โหมดรอคิกออฟ Gameweek ${gwNumber}! ${popCapText} ${tacticalSubText} เตรียมลุ้นกันจนเยี่ยวเหนียว ใครกึ๋นถึงเดี๋ยวแต้มลั่นทุ่งแน่นอน!`,
-            `ระฆังเดดไลน์ดังแล้วพี่น้อง! ${popCapText} ${tacticalSubText} สัปดาห์นี้ใครจะสะเด่าไปเลยอีน้อง หรือใครจะซดน้ำใบบัวบก เดี๋ยวรอดู!`,
-            `เปิดโผขุมกำลัง GW ${gwNumber} อย่างเป็นทางการ! ${popCapText} ${tacticalSubText} กูรูลูกหนังฟันธงเลยว่าสัปดาห์นี้มีคนน้ำตาตกในแน่นอน เตรียมป๊อปคอร์นรอดูได้เลย!`,
-            `ศึกดวลกึ๋นลูกหนัง GW ${gwNumber} กำลังจะระเบิด! ${popCapText} ${tacticalSubText} จัดตัวเสร็จแยกย้ายไปสวดมนต์ ใครตาถึงได้เฮ ใครตาถั่วได้นอนกุมขมับ!`,
-            `เสียงนกหวีดกำลังจะดัง สมรภูมิแข้งพร้อมเปิดศึก! ${popCapText} ${tacticalSubText} บอลลูกกลมๆ มีลมอยู่ข้างใน ทีมใครจะรุ่งหรือจะร่วง เดี๋ยวได้เห็นดีกัน!`
-          ];
-          return pickRnd(1, preMatchNotes);
+          const text = isEn
+            ? LiveCommentaryEngine._buildEnglishPreMatch({ gwNumber, topCapEntry, chipCnt, hitCnt, persona, pick })
+            : LiveCommentaryEngine._buildThaiPreMatch({ gwNumber, topCapEntry, chipCnt, hitCnt, persona, pick });
+          LiveCommentaryEngine._recordSignature(sigKey, { personaId: persona.id, leadId: `pre_${persona.id}`, midIds: [], endId: '' });
+          return { text, personaId: persona.id, personaLabel: persona.label, personaTone: persona.tone };
         }
 
         const isNonPrize = (eid) => nonPrizeTeams && nonPrizeTeams.some(id => Number(id) === Number(eid));
@@ -170,14 +242,13 @@
         const overallTop = sorted[0];
         const isTopNonPrize = isNonPrize(overallTop.entry_id) && eligibleSorted.length > 0 && overallTop[scoreKey] > eligibleSorted[0][scoreKey];
 
-        // Primary spotlight team (prize leader if eligible teams exist, otherwise overall top)
         const top = eligibleSorted.length > 0 ? eligibleSorted[0] : overallTop;
         const second = eligibleSorted.length > 1 ? eligibleSorted[1] : sorted[1];
         const bottom = sorted[sorted.length - 1];
-        const topPts = top[scoreKey];
-        const secondPts = second ? second[scoreKey] : 0;
+        const topPts = Number(top[scoreKey]) || 0;
+        const secondPts = second ? (Number(second[scoreKey]) || 0) : 0;
         const diff = topPts - secondPts;
-        let winners = (eligibleSorted.length > 0 ? eligibleSorted : sorted).filter(r => r[scoreKey] === topPts);
+        let winners = (eligibleSorted.length > 0 ? eligibleSorted : sorted).filter(r => Number(r[scoreKey]) === topPts);
         if (useTieBreaker && winners.length > 1) {
           const topLeader = winners[0];
           winners = winners.filter(w => cmpPlayerScores(w.entry_id, topLeader.entry_id) === 0);
@@ -186,178 +257,26 @@
         const captName = (top.captain || '-').replace(/\s*\(C\)/gi, '').trim();
         const isCentury = topPts >= 100;
         const chip = (top.chip || '').toLowerCase();
-        const avgScore = Math.round(sorted.reduce((s, r) => s + r[scoreKey], 0) / sorted.length);
-        const secName = second ? second.team_name : 'อันดับสอง';
-
+        const avgScore = Math.round(sorted.reduce((s, r) => s + (Number(r[scoreKey]) || 0), 0) / Math.max(1, sorted.length));
+        const secName = second ? second.team_name : (isEn ? 'second place' : 'อันดับสอง');
         const topRem = getStartersRemaining(top.entry_id);
         const secRem = second ? getStartersRemaining(second.entry_id) : 0;
 
-        // Dynamic close-margin verbs (Strictly NO 'ทิ้งห่าง' when diff <= 5)
-        const closeVerbs = isLive
-          ? ['เบียดนำ', 'เฉือนนำ', 'เฉือนหวิวนำ', 'เบียดปลายจมูกนำ', 'ปาดหน้านำ', 'เบียดไหล่นำ', 'เฉือนเส้นยาแดงนำ']
-          : ['เบียดชนะ', 'เฉือนชนะ', 'เฉือนหวิว', 'เบียดปลายจมูกชนะ', 'ปาดหน้าเฉือน', 'เบียดไหล่เอาชนะ', 'เฉือนเส้นยาแดงชนะ', 'ซิวชัยหวุดหวิดเหนือ', 'เฉือนเข้าวินเหนือ'];
-        const closeVerb = pickRnd(2, closeVerbs);
-
-        let marginPhrase = '';
-        if (!second || diff <= 0) {
-          marginPhrase = isLive
-            ? `แต้มสดเท่ากับ "${secName}" แบบกินกันไม่ลง`
-            : `ทำแต้มเท่ากับ "${secName}" แบบกินกันไม่ลง`;
-        } else if (diff <= 2) {
-          if (isLive) {
-            const liveClosePhrases = [
-              `เฉือนนำ "${secName}" (${secondPts} pts) แค่เส้นยาแดงผ่าแปด ${diff} แต้ม`,
-              `เกาะนำ "${secName}" (${secondPts} pts) อยู่แค่ปลายจมูก ${diff} แต้ม`,
-              `หายใจรดต้นคอนำ "${secName}" (${secondPts} pts) อยู่แค่ ${diff} แต้ม`,
-              `ชิงจังหวะนำ "${secName}" (${secondPts} pts) แค่ก้าวเดียวเพียง ${diff} แต้ม`,
-              `เบียดนำ "${secName}" (${secondPts} pts) อยู่จึ๋งเดียวแค่ ${diff} แต้ม`,
-              `นำ "${secName}" (${secondPts} pts) ห่างกันแค่ก้าวเดียว ${diff} แต้ม`
-            ];
-            marginPhrase = pickRnd(3, liveClosePhrases);
-          } else {
-            const closePhrases = [
-              `${closeVerb} "${secName}" (${secondPts} pts) ไปแบบเฉียดฉิวแค่ ${diff} แต้ม`,
-              `เฉือน "${secName}" (${secondPts} pts) เข้าป้ายแค่ปลายจมูก ${diff} แต้ม`,
-              `เบียด "${secName}" (${secondPts} pts) เส้นยาแดงผ่าแปดเพียง ${diff} แต้ม`,
-              `ปาดหน้าเฉือน "${secName}" (${secondPts} pts) ไปแบบลุ้นตัวโก่งแค่ ${diff} แต้ม`,
-              `หายใจรดต้นคอเอาชนะ "${secName}" (${secondPts} pts) ไปแค่ ${diff} แต้ม`,
-              `เฉือนชนะ "${secName}" (${secondPts} pts) แค่ก้าวเดียวเพียง ${diff} แต้ม`,
-              `เบียดหน้าเค้กคว้าชัยเหนือ "${secName}" (${secondPts} pts) ไปหวุดหวิดแค่ ${diff} แต้ม`,
-              `ตัดสินด้วยภาพช้าเอาชนะ "${secName}" (${secondPts} pts) ไปเพียง ${diff} แต้ม`
-            ];
-            marginPhrase = pickRnd(3, closePhrases);
-          }
-        } else if (diff <= 5) {
-          if (isLive) {
-            const liveMidClosePhrases = [
-              `ขยับแต้มนำ "${secName}" (${secondPts} pts) อยู่ ${diff} แต้มแบบสูสี`,
-              `ชิงความได้เปรียบนำ "${secName}" (${secondPts} pts) อยู่ ${diff} แต้ม`,
-              `เกาะจ่าฝูงสดนำ "${secName}" (${secondPts} pts) แค่ ${diff} แต้ม`,
-              `เปิดเกมรุกนำ "${secName}" (${secondPts} pts) ไป ${diff} แต้ม`,
-              `กุมความได้เปรียบสดๆ เหนือ "${secName}" (${secondPts} pts) อยู่ ${diff} แต้ม`
-            ];
-            marginPhrase = pickRnd(4, liveMidClosePhrases);
-          } else {
-            const midClosePhrases = [
-              `เบียดหนี "${secName}" (${secondPts} pts) ไปแบบสูสี ${diff} แต้ม`,
-              `ชิงจังหวะทำแต้มนำ "${secName}" (${secondPts} pts) อยู่ ${diff} แต้ม`,
-              `ขยับนำ "${secName}" (${secondPts} pts) ไปแบบได้ลุ้น ${diff} แต้ม`,
-              `กุมความได้เปรียบเหนือ "${secName}" (${secondPts} pts) อยู่ ${diff} แต้ม`,
-              `เกาะหัวแถวเฉือนนำ "${secName}" (${secondPts} pts) แค่ ${diff} แต้ม`,
-              `ขยับแต้มกุมชัยเหนือ "${secName}" (${secondPts} pts) ไป ${diff} แต้ม`,
-              `เปิดเกมรุกนำ "${secName}" (${secondPts} pts) ไปแบบมีลุ้น ${diff} แต้ม`,
-              `ชิงความได้เปรียบโค้งนี้เหนือ "${secName}" (${secondPts} pts) ไป ${diff} แต้ม`
-            ];
-            marginPhrase = pickRnd(4, midClosePhrases);
-          }
-        } else if (diff <= 14) {
-          if (isLive) {
-            const liveClearLeadPhrases = [
-              `โกยแต้มสดฉีกนำ "${secName}" ไป ${diff} แต้ม`,
-              `ทิ้งระยะห่างนำ "${secName}" อยู่ ${diff} แต้ม`,
-              `เปิดช่องว่างนำ "${secName}" อยู่ ${diff} แต้ม`,
-              `เว้นระยะปลอดภัยนำ "${secName}" ไป ${diff} แต้ม`
-            ];
-            marginPhrase = pickRnd(5, liveClearLeadPhrases);
-          } else {
-            const clearLeadPhrases = [
-              `ขยับหนี "${secName}" ไป ${diff} แต้ม`,
-              `นำห่าง "${secName}" ไป ${diff} แต้ม`,
-              `ฉีกหนี "${secName}" ออกไป ${diff} แต้ม`,
-              `ทิ้งระยะห่างจาก "${secName}" ไป ${diff} แต้ม`,
-              `เปิดช่องว่างนำ "${secName}" อยู่ ${diff} แต้ม`,
-              `เว้นระยะปลอดภัยนำ "${secName}" ไป ${diff} แต้ม`
-            ];
-            marginPhrase = pickRnd(5, clearLeadPhrases);
-          }
-        } else {
-          if (isLive) {
-            const liveBlowoutPhrases = [
-              `ทิ้งห่างสดๆ ขาดลอยถึง ${diff} แต้มเหนือ "${secName}"`,
-              `ฉีกหนีสดๆ แบบไม่เห็นฝุ่นถึง ${diff} แต้มเหนือ "${secName}"`,
-              `นำโด่งไร้คู่ต่อกรถึง ${diff} แต้มเหนือ "${secName}"`,
-              `เปิดช่องว่างแบบฟ้ากับเหวหนี "${secName}" ไปถึง ${diff} แต้ม`
-            ];
-            marginPhrase = pickRnd(6, liveBlowoutPhrases);
-          } else {
-            const blowoutPhrases = [
-              `ทิ้งห่าง "${secName}" ขาดลอยถึง ${diff} แต้ม`,
-              `ฉีกหนี "${secName}" แบบไม่เห็นฝุ่นถึง ${diff} แต้ม`,
-              `ทิ้งห่าง "${secName}" แบบไร้คู่ต่อกรถึง ${diff} แต้ม`,
-              `ถล่มคู่แข่งกระจุยทิ้งห่าง "${secName}" ถึง ${diff} แต้ม`,
-              `เปิดช่องว่างแบบฟ้ากับเหวหนี "${secName}" ไปถึง ${diff} แต้ม`,
-              `ทิ้งห่างขาดกระจุย "${secName}" ถึง ${diff} แต้มแบบมองไม่เห็นหลัง`
-            ];
-            marginPhrase = pickRnd(6, blowoutPhrases);
-          }
-        }
-
-        // Inspect winner's squad for Hero Player (MVP) and Second Star
+        // Winner MVP / Duo
         let heroPlayer = null;
         let secondHero = null;
-        if (leagueData && leagueData.squads) {
-          const sq = leagueData.squads[`${top.entry_id}_${gwNumber}`];
-          if (sq && sq.starting && sq.starting.length > 0) {
-            const stSorted = [...sq.starting].sort((a, b) => (b.points || 0) - (a.points || 0));
-            if (stSorted[0] && stSorted[0].points >= 10) {
-              heroPlayer = { name: clean(stSorted[0].name), pts: stSorted[0].points, isCap: stSorted[0].is_captain };
-            }
-            if (stSorted[1] && stSorted[1].points >= 10) {
-              secondHero = { name: clean(stSorted[1].name), pts: stSorted[1].points };
-            }
+        const topSq = getSquad(top.entry_id);
+        if (topSq && topSq.starting && topSq.starting.length > 0) {
+          const stSorted = [...topSq.starting].sort((a, b) => (Number(b.points) || 0) - (Number(a.points) || 0));
+          if (stSorted[0] && Number(stSorted[0].points) >= 10) {
+            heroPlayer = { name: clean(stSorted[0].name), pts: Number(stSorted[0].points), isCap: Boolean(stSorted[0].is_captain) };
           }
-        }
-        let heroPhrase = '';
-        if (heroPlayer) {
-          if (secondHero) {
-            const duoPhrases = isLive ? [
-              `ได้คู่หูร่างทอง ${heroPlayer.name} (${heroPlayer.pts} pts) ผนึกกำลัง ${secondHero.name} (${secondHero.pts} pts) ผลิตแต้มสด`,
-              `ได้สองตัวตึง ${heroPlayer.name} (${heroPlayer.pts} pts) จูงมือ ${secondHero.name} (${secondHero.pts} pts) ระเบิดฟอร์มสดสะเด่า`,
-              `ได้คู่หูมหาประลัย ${heroPlayer.name} (${heroPlayer.pts} pts) แท็กทีม ${secondHero.name} (${secondHero.pts} pts) ซัดแต้มสดเต็มข้อ ล่อเต็มแข้ง`
-            ] : [
-              `ได้คู่หูร่างทอง ${heroPlayer.name} (${heroPlayer.pts} pts) ผนึกกำลัง ${secondHero.name} (${secondHero.pts} pts)`,
-              `ได้สองตัวตึง ${heroPlayer.name} (${heroPlayer.pts} pts) จูงมือ ${secondHero.name} (${secondHero.pts} pts) ระเบิดฟอร์มสะเด่า`,
-              `ได้คู่หูมหาประลัย ${heroPlayer.name} (${heroPlayer.pts} pts) แท็กทีม ${secondHero.name} (${secondHero.pts} pts) ซัดเต็มข้อ ล่อเต็มแข้ง`,
-              `อาศัยขุมกำลังหลัก ${heroPlayer.name} (${heroPlayer.pts} pts) ควงแขน ${secondHero.name} (${secondHero.pts} pts) ยิงไส้แตกแจกแต้มงามหยด`
-            ];
-            heroPhrase = pickRnd(7, duoPhrases);
-          } else if (heroPlayer.pts >= 14) {
-            const soloSuperPhrases = isLive ? [
-              `ได้เดอะแบกอย่าง ${heroPlayer.name} ระเบิดฟอร์มสดกดคนเดียว ${heroPlayer.pts} แต้ม สะเด่าไปเลยอีน้อง`,
-              `ได้ ${heroPlayer.name} สวมวิญญาณซุปตาร์กดเหน่งๆ คนเดียว ${heroPlayer.pts} แต้มสด แดกเต็มข้อ ล่อเต็มแข้ง`,
-              `อาศัยตัวพ่ออย่าง ${heroPlayer.name} ยิงไส้แตกคนเดียว ${heroPlayer.pts} แต้มสด หวานเจี๊ยบบบ`
-            ] : [
-              `ได้เดอะแบกอย่าง ${heroPlayer.name} ระเบิดฟอร์มกดคนเดียว ${heroPlayer.pts} แต้ม สะเด่าไปเลยอีน้อง`,
-              `ได้ ${heroPlayer.name} สวมวิญญาณซุปตาร์กดเหน่งๆ คนเดียว ${heroPlayer.pts} แต้ม แดกเต็มข้อ ล่อเต็มแข้ง`,
-              `อาศัยตัวพ่ออย่าง ${heroPlayer.name} ยิงไส้แตกคนเดียว ${heroPlayer.pts} แต้ม หวานเจี๊ยบบบ`,
-              `ได้ทีเด็ดอย่าง ${heroPlayer.name} ซัดกวาดคนเดียว ${heroPlayer.pts} แต้ม สยบปากหมาทั้งลีก`
-            ];
-            heroPhrase = pickRnd(8, soloSuperPhrases);
-          } else {
-            const soloNormalPhrases = isLive ? [
-              `ได้ ${heroPlayer.name} กดไปเน้นๆ ${heroPlayer.pts} แต้มสด ช่วยค้ำทีมได้อย่างยอดเยี่ยม`,
-              `ได้ฟอร์มมาตรฐานของ ${heroPlayer.name} จัดให้ ${heroPlayer.pts} แต้มสด ค้ำจ่าฝูงเหนียวแน่น`
-            ] : [
-              `ได้ ${heroPlayer.name} กดไปเน้นๆ ${heroPlayer.pts} แต้ม ช่วยค้ำทีมได้อย่างยอดเยี่ยม`,
-              `ได้ฟอร์มมาตรฐานของ ${heroPlayer.name} จัดให้ ${heroPlayer.pts} แต้ม ค้ำจ่าฝูงเหนียวแน่น`,
-              `อาศัยความเก๋าของ ${heroPlayer.name} เก็บไป ${heroPlayer.pts} แต้ม เข้าป้ายแบบเนียนตา`
-            ];
-            heroPhrase = pickRnd(9, soloNormalPhrases);
+          if (stSorted[1] && Number(stSorted[1].points) >= 10) {
+            secondHero = { name: clean(stSorted[1].name), pts: Number(stSorted[1].points) };
           }
-        } else {
-          const capTacticalPhrases = isLive ? [
-            `วางหมากกัปตัน ${captName} ลุยศึกได้อย่างเฉียบคม`,
-            `จัดทัพมอบปลอกแขนให้ ${captName} คุมเกมสด`,
-            `อาศัยความสม่ำเสมอของขุมกำลังนำทัพโดย ${captName}`
-          ] : [
-            `วางหมากกัปตัน ${captName} ได้อย่างเฉียบคม`,
-            `จัดทัพมอบปลอกแขนให้ ${captName} ได้ลงตัว`,
-            `อาศัยความสม่ำเสมอของขุมกำลังนำทัพโดย ${captName}`
-          ];
-          heroPhrase = pickRnd(10, capTacticalPhrases);
         }
 
-        // Count consecutive Gameweek winning streak (2+ weeks in a row)
+        // Win Streak
         let winStreak = 1;
         if (leagueData && leagueData.gameweeks && Number(gwNumber) > 1) {
           for (let g = Number(gwNumber) - 1; g >= 1; g--) {
@@ -380,1203 +299,1226 @@
         }
         const isStreak = winStreak >= 2;
 
-        if (isEn) {
-          return LiveCommentaryEngine._generateEnglishNote({
-            gwNumber, gwData, leagueName, leagueData, stepOffset, baseHash,
-            sorted, eligibleSorted, top, second, bottom, topPts, secondPts, diff,
-            scoreKey, isStarted, isLive, isFinished, isJoint, winners,
-            isCentury, chip, captName, avgScore, secName, topRem, secRem,
-            heroPlayer, secondHero, winStreak, isStreak, isTopNonPrize, overallTop,
-            clean, pickRnd, getSquad
-          });
-        }
+        // Compute tactical signals shared by TH and EN engines
+        const signals = LiveCommentaryEngine._extractSignals({
+          gwNumber, sorted, top, second, bottom, topPts, secondPts, diff,
+          scoreKey, isLive, isFinished, leagueData, getSquad, clean, avgScore, extraContext
+        });
 
-        // =========================================================
-        // 1. LEAD PHRASE (ประโยคเปิดหัวตามสถานการณ์จริง สไตล์กูรูลูกหนังสายดุเดือด)
-        // =========================================================
-        let leadOptions = [];
+        const built = isEn
+          ? LiveCommentaryEngine._buildEnglishCommentary({
+              gwNumber, leagueName, persona, pick, clean, getSquad,
+              sorted, eligibleSorted, top, second, bottom, topPts, secondPts, diff,
+              scoreKey, isLive, isFinished, isJoint, winners, isCentury, chip, captName,
+              avgScore, secName, topRem, secRem, heroPlayer, secondHero, winStreak,
+              isStreak, isTopNonPrize, overallTop, signals, baseHash, stepOffset
+            })
+          : LiveCommentaryEngine._buildThaiCommentary({
+              gwNumber, leagueName, persona, pick, clean, getSquad,
+              sorted, eligibleSorted, top, second, bottom, topPts, secondPts, diff,
+              scoreKey, isLive, isFinished, isJoint, winners, isCentury, chip, captName,
+              avgScore, secName, topRem, secRem, heroPlayer, secondHero, winStreak,
+              isStreak, isTopNonPrize, overallTop, signals, baseHash, stepOffset
+            });
 
-        if (isLive) {
-          // LIVE MATCH LEAD (บทพากษ์เปิดหัวระหว่างเกมสด)
-          if (isTopNonPrize) {
-            const funPts = overallTop[scoreKey];
-            leadOptions = [
-              `ท็อปสกอร์คะแนนสดเวลานี้คือทีมร่วมสนุก "${overallTop.team_name}" (${funPts} pts) ขณะที่สมรภูมิชิงรางวัลสดๆ "${top.team_name}" (${topPts} pts) ${heroPhrase} กำลังขึ้นนำหัวแถว ${marginPhrase}!`,
-              `"${overallTop.team_name}" ลงเล่นชิลๆ ไร้ความกดดันแต่แต้มสดพุ่งทะลุ ${funPts} แต้ม เปิดทางให้ผู้ท้าชิงรางวัลอย่าง "${top.team_name}" (${topPts} pts) ยึดจ่าฝูงสด ${marginPhrase}!`,
-              `หัวตารางคะแนนดิบสดๆ เป็นของทีมร่วมสนุก "${overallTop.team_name}" (${funPts} pts) ส่วนศึกชิงรางวัลสัปดาห์นี้ "${top.team_name}" (${topPts} pts) ${heroPhrase} กำลังเกาะเบอร์หนึ่งสดๆ ร้อนๆ!`,
-              `ของแทร่สายเอ็นเตอร์เทน! "${overallTop.team_name}" นำโด่ง ${funPts} แต้มสดในโหมดร่วมสนุก ขณะที่ "${top.team_name}" (${topPts} pts) ${heroPhrase} กำลังรั้งจ่าฝูงสายเงินรางวัล!`
-            ];
-          } else if (diff <= 0 || isJoint || topPts === secondPts) {
-            if (secRem > topRem && topRem !== null) {
-              leadOptions = [
-                `แต้มสดเสมอเดือดบนบัลลังก์จ่าฝูง! "${top.team_name}" กับ "${secName}" กอดคอแต้มเท่ากันเป๊ะที่ ${topPts} แต้ม แต่ "${secName}" แอบกุมความได้เปรียบเรื่องตัวผู้เล่น เพราะยังมีทีเด็ดรอลงเตะอีก ${secRem} คน (ขณะที่ "${top.team_name}" เหลือ ${topRem} คน) คืนนี้ใครจะฉีกหนีต้องวัดกันที่คู่ดึก!`,
-                `ดวลเดือดแต้มชนกันที่ ${topPts} คะแนน! "${top.team_name}" และ "${secName}" ยึดจ่าฝูงสดร่วมกัน แต่ฝ่าย "${secName}" กุมไพ่ตายตัวเตะในมือเหลือถึง ${secRem} คน ลุ้นแซงนำเดี่ยวในคู่ต่อไป!`,
-                `เสมอกันสุดมันส์หัวตาราง! "${top.team_name}" กับ "${secName}" ฟาดแต้มเท่ากันที่ ${topPts} แต้ม แต่ขุมกำลัง "${secName}" ยังสดชื่นกว่า มีตัวรอลงสนามอีก ${secRem} ตัว งานนี้จ่าฝูงร่วมต้องนั่งลุ้นตัวเกร็ง!`
-              ];
-            } else if (topRem > secRem && secRem !== null) {
-              leadOptions = [
-                `กอดคอยึดจ่าฝูงสดร่วมกันที่ ${topPts} แต้ม! แต่สถานการณ์ของ "${top.team_name}" ดูได้เปรียบกว่าเห็นๆ เพราะยังมีตัวเตะตกค้างรอลงสนามอีกถึง ${topRem} คน ขณะที่ "${secName}" ตัวเตะร่อยหรอเหลือแค่ ${secRem} คน!`,
-                `แต้มสดเท่ากันเป๊ะที่ ${topPts} แต้ม! "${top.team_name}" กับ "${secName}" ดวลเดือดเบียดชิงบัลลังก์ โดยฝั่ง "${top.team_name}" กุมความได้เปรียบเรื่องตัวผู้เล่นเหลือมากกว่า (${topRem} vs ${secRem} ตัว)!`,
-                `จ่าฝูงร่วมคะแนนชนกันที่ ${topPts} แต้ม! แต่ "${top.team_name}" ยิ้มกว้างกว่าเพราะยังมีกำลังพลในมือเหลือถึง ${topRem} ตำแหน่ง ขณะที่ "${secName}" เหลือรอเตะแค่ ${secRem} คน!`
-              ];
-            } else {
-              leadOptions = [
-                `กินกันไม่ลงโว้ย! "${top.team_name}" กับ "${secName}" แต้มสดเท่ากันเป๊ะที่ ${topPts} แต้ม กอดคอยึดจ่าฝูงสดร่วมกัน รอดูกันต่อว่าคู่ดึกใครจะมีทีเด็ดฉีกหนีไปก่อน!`,
-                `เสมอเดือดกลางตารางคะแนนสด! "${top.team_name}" กับ "${secName}" ทำแต้มเท่ากันที่ ${topPts} คะแนน บี้กันสุดมันส์ ใครจะคว้าชัยชั่วคราวต้องวัดกันที่ตัวที่เหลือ!`,
-                `สูสีระดับมิลลิเมตร! "${top.team_name}" กับ "${secName}" แต้มสดชนกันที่ ${topPts} แต้ม ไม่มีใครยอมใคร สู้กันยันหยดสุดท้าย!`
-              ];
-            }
-          } else if (secRem > topRem && topRem !== null) {
-            leadOptions = [
-              `เก้าอี้ร้อนฉ่าพี่น้อง! "${top.team_name}" (${topPts} pts) ยึดจ่าฝูงสดนำ "${secName}" อยู่ ${diff} แต้ม แต่ขุมกำลังเหลือในมือแค่ ${topRem} ตัว! งานนี้นั่งสวดมนต์รอปาฏิหาริย์ได้เลย เพราะ "${secName}" (${secondPts} pts) ตามหลังอยู่ไม่ไกล แถมยังมีตัวทีเด็ดรอลงสนามอีกถึง ${secRem} คนในคู่ดึก ระวังโดนยิงแสกหน้าปาดหน้าเค้กนาทีบาป!`,
-              `ตูดไหม้แน่นอนโว้ย! "${top.team_name}" ซัดนำสดไปแล้ว ${topPts} แต้ม แต่ตัวเตะใกล้หมดทีมเหลือแค่ ${topRem} คน ขณะที่ "${secName}" (${secondPts} pts) ยังมีกระสุนในรังเพลิงเหลืออีก ${secRem} นัด ถ้าคู่ดึกมีเบิ้ลสกอร์ จ่าฝูงสดมีหวังร่วงจากยอดดอย!`,
-              `นำจริงแต่ยังไม่ปลอดภัย! "${top.team_name}" (${topPts} pts) เกาะหัวตารางสดนำ "${secName}" อยู่ ${diff} แต้ม แต่ "${secName}" ยังกุมความได้เปรียบเรื่องตัวผู้เล่น เหลือรอลงเตะอีก ${secRem} คน บอลยังไม่จบอย่าเพิ่งรีบโม้!`,
-              `เสียวสันหลังวาบ! "${top.team_name}" กดคะแนนสดแตะ ${topPts} แต้ม นำ "${secName}" (${secondPts} pts) อยู่ ${diff} แต้ม แต่ตัวผู้เล่นเหลือแค่ ${topRem} คน ขณะที่ผู้ตามยังมีทีเด็ดตกค้างอีก ${secRem} ตัว ระวังโดนแซงโค้งสุดท้าย!`,
-              `จ่าฝูงสดเริ่มนั่งไม่ติดเก้าอี้! "${top.team_name}" (${topPts} pts) นำ "${secName}" (${secondPts} pts) อยู่ ${diff} แต้ม แต่ฝ่ายตามหลังยังมีตัวรอปล่อยของอีก ${secRem} คน คืนนี้มีลุ้นพลิกผันจนเยี่ยวเหนียว!`,
-              `ระวังโดนยิงแสกหน้า! "${top.team_name}" นำอยู่ ${diff} แต้ม (${topPts} vs ${secondPts} pts) แต่ฝ่ายตามหลังอย่าง "${secName}" กุมไพ่ตายตัวเตะตกค้างอีก ${secRem} ใบ รอดูกันต่อว่าจ่าฝูงสดจะรอดไหม!`
-            ];
-          } else if (topRem !== null && topRem >= secRem && topRem > 0) {
-            leadOptions = [
-              `หวานเจี๊ยบบบ! "${top.team_name}" ซัดนำจ่าฝูงสดไปแล้ว ${topPts} แต้ม (${marginPhrase}) แถมขุมกำลังยังสดชื่น มีตัวรอระเบิดแต้มเพิ่มอีก ${topRem} คน ขณะที่ "${secName}" ตัวเตะร่อยหรอเหลือแค่ ${secRem} คน งานนี้จ่าฝูงสดเดินยืดอกได้สบายใจเฉิบ!`,
-              `สะเด่าไปเลยอีน้องงง! "${top.team_name}" โกยแต้มสดแตะ ${topPts} แต้ม ${marginPhrase} แถมยังมีไพ่ตายรอปล่อยของอีก ${topRem} ใบในคู่ดึก แบบนี้คู่แข่งเตรียมนอนกุมขมับ!`,
-              `สถานการณ์สดโคตรได้เปรียบ! "${top.team_name}" (${topPts} pts) ยึดหัวตารางสดๆ ร้อนๆ ${marginPhrase} ขุมกำลังยังเหลือให้เก็บแต้มอีก ${topRem} ตัว ใครคิดจะแซงบอกเลยว่าเหนื่อย!`,
-              `เครื่องติดเทอร์โบไม่รอใคร! "${top.team_name}" (${topPts} pts) โกยแต้มสดนำ "${secName}" (${secondPts} pts) อยู่ ${diff} แต้ม แถมยังมีตัวรอลงเตะอีก ${topRem} คน ลอยลำยึดจ่าฝูงสดแบบหล่อๆ!`,
-              `แดกเต็มข้อ ล่อเต็มแข้ง! "${top.team_name}" ซัดไปแล้ว ${topPts} แต้มสด ${marginPhrase} กำลังพลยังไม่หมด มีคิวลงล่าแต้มต่ออีก ${topRem} คน เดินหน้ากดดันคู่แข่งเต็มสูบ!`,
-              `ของแทร่สายดุ! "${top.team_name}" ซัดไป ${topPts} แต้มสด ${marginPhrase} มีผู้เล่นในมือรอเบิ้ลแต้มเพิ่มอีก ${topRem} ตำแหน่ง จ่าฝูงสดเก้าอี้เหนียวหนึบ!`
-            ];
-          } else if (topRem === 0 && secRem === 0 && topRem !== null) {
-            leadOptions = [
-              `ตัวเตะของคู่หัวตารางลงครบ 11 คนหมดแล้ว! "${top.team_name}" ทำแต้มสดตุนไว้ ${topPts} แต้ม ${marginPhrase} ตอนนี้เหลือแค่รอกรรมการเป่านกหวีดกับเคาะคะแนนโบนัส 3-2-1 อย่างเป็นทางการ ถ้าแต้มโบนัสไม่หักมุม มีสิทธิ์เดินแอ็คหล่อได้รอบหมู่บ้าน!`,
-              `ปิดจ็อบลงสนามครบทั้งคู่! "${top.team_name}" (${topPts} pts) เบียดนำ "${secName}" (${secondPts} pts) อยู่ ${diff} แต้ม นั่งเกาะขอบจอรอดูแต้มโบนัสกับออโต้ซับ ใครจะเฮหรือใครจะน้ำตาตก เดี๋ยวได้รู้กัน!`,
-              `หมดโควตาตัวเล่นทั้งสองฝั่ง! "${top.team_name}" ปิดสกอร์สดที่ ${topPts} แต้ม นำ "${secName}" (${secondPts} pts) อยู่ ${diff} แต้ม ทำได้แค่นั่งสวดมนต์รอผลคะแนนโบนัสทางการ!`
-            ];
-          } else if (diff <= 2) {
-            leadOptions = [
-              `ลุ้นกันจนเยี่ยวเหนียวพี่น้อง! "${top.team_name}" (${topPts} pts) เบียดนำ "${secName}" (${secondPts} pts) แค่เส้นยาแดงผ่าแปด ${diff} แต้ม หายใจรดต้นคอแบบเสียวสันหลังวาบ ลูกเดียวในสนามจริงอาจเปลี่ยนจ่าฝูงสดได้ทันที!`,
-              `ดวลกันสดๆ ชนิดตาต่อตาฟันต่อฟัน! "${top.team_name}" กับ "${secName}" บี้แต้มสดกันอยู่แค่ ${diff} แต้ม (${topPts} vs ${secondPts} pts) ใครกัปตันเข้าเป้าในคู่ต่อไป เตรียมพลิกสถานการณ์ได้ทันที!`,
-              `ตึงเปรี๊ยะระดับห้าดาว! "${top.team_name}" ชิงจังหวะนำสดเหนือ "${secName}" แค่ก้าวเดียว ${diff} แต้ม ลุ้นกันลูกต่อลูก ห้ามกะพริบตาเด็ดขาด!`,
-              `หายใจรดต้นคอแบบแต้มเดียวก็เสียวได้! "${top.team_name}" (${topPts} pts) เฉือนนำ "${secName}" (${secondPts} pts) แค่ ${diff} แต้ม นั่งเกาะขอบจอเชียร์จนหัวใจจะวาย!`,
-              `เฉือนปลายเล็บขบสดๆ! "${top.team_name}" (${topPts} pts) เบียดปลายจมูกนำ "${secName}" (${secondPts} pts) แค่ ${diff} แต้ม ใครพลาดจังหวะเดียวมีสิทธิ์หลังหัก!`
-            ];
-          } else if (diff <= 5) {
-            leadOptions = [
-              `บี้กันไฟแลบ! "${top.team_name}" ${heroPhrase} กดไป ${topPts} แต้มสด เบียดนำ "${secName}" (${secondPts} pts) อยู่ ${diff} แต้ม เกมยังเปิดกว้างสุดๆ!`,
-              `เกมตึงเปรี๊ยะระดับห้าดาว! "${top.team_name}" เก็บไป ${topPts} แต้มสด นำ "${secName}" ที่ไล่บี้มาติดๆ ที่ ${secondPts} แต้ม (ห่างกันแค่ ${diff} แต้ม) ยังไว้ใจอะไรไม่ได้!`,
-              `ชิงจังหวะกันสนุก! "${top.team_name}" อาศัยทีเด็ด${heroPhrase} นำหัวแถวสดๆ ที่ ${topPts} แต้ม ขยับนำ "${secName}" อยู่ ${diff} แต้ม ลุ้นกันจนนัดสุดท้าย!`,
-              `วัดกึ๋นกันตัวต่อตัวสดๆ! "${top.team_name}" ยืนระยะที่ ${topPts} แต้มสด กุมความได้เปรียบเหนือ "${secName}" (${secondPts} pts) อยู่ ${diff} แต้ม บี้กันดุเดือดเลือดพล่าน!`
-            ];
-          } else if (diff >= 15) {
-            leadOptions = [
-              `สะเด่าไปเลยอีน้องงง! "${top.team_name}" เครื่องติดเทอร์โบ ซัดแต้มสดไปถึง ${topPts} แต้ม ทิ้งห่าง "${secName}" (${secondPts} pts) ขาดลอยถึง ${diff} แต้ม สยบปากหมาทั้งลีกตั้งแต่ยังเตะไม่ครบทุกคู่!`,
-              `ฟอร์มสดอย่างโหด โกรธใครมา! "${top.team_name}" โกยแต้มสดนำโด่ง ${topPts} แต้ม ${marginPhrase} ลอยลำยึดจ่าฝูงสดแบบไร้คู่ต่อกร!`,
-              `พับสนามบุกอยู่ฝ่ายเดียว! "${top.team_name}" ซัดไปแล้ว ${topPts} แต้มสด ทิ้งห่าง "${secName}" ถึง ${diff} แต้ม แดกเต็มข้อ ล่อเต็มแข้ง!`,
-              `ตบกบาลสั่งสอนรุ่นน้องสดๆ! "${top.team_name}" ฟาดแต้มสดไป ${topPts} แต้ม ${marginPhrase} ขยี้คู่แข่งจนหาทางกลับบ้านไม่ถูก!`
-            ];
-          } else {
-            leadOptions = [
-              `ฟอร์มสดกำลังเข้าฝัก! "${top.team_name}" ${heroPhrase} โกยไป ${topPts} แต้มสด ${marginPhrase} ยึดจ่าฝูงสด Gameweek ${gwNumber} อย่างสง่างาม!`,
-              `จ่าฝูงสดของแทร่! "${top.team_name}" กดสกอร์เน้นๆ ${topPts} แต้มสด ${marginPhrase} ขึ้นนำหัวแถวชั่วคราวอย่างมั่นใจ!`,
-              `วางหมากระดับปรมาจารย์! "${top.team_name}" ${heroPhrase} พาทีมซัด ${topPts} แต้มสด ${marginPhrase} เดินหน้ากดดันคู่แข่งใน GW ${gwNumber}!`,
-              `เครื่องร้อนหยุดไม่อยู่! "${top.team_name}" จัดทัพลงล็อก ซัดไป ${topPts} แต้มสด ${marginPhrase} ยึดพื้นที่หัวหาดได้อย่างเหนียวแน่น!`
-            ];
-          }
-        } else if (isTopNonPrize) {
-          const funPts = overallTop[scoreKey];
-          leadOptions = [
-            `ท็อปสกอร์สนามจริงสัปดาห์นี้คือ "${overallTop.team_name}" ที่กดไปถึง ${funPts} แต้มในฐานะทีมร่วมสนุก ส่งผลให้สิทธิ์แชมป์เงินรางวัลตกเป็นของ "${top.team_name}" (${topPts} pts) ที่${heroPhrase} คว้าชัยไปครองเต็มๆ!`,
-            `"${overallTop.team_name}" ลงเล่นขำๆ แต่แต้มทะลัก ซัดไป ${funPts} แต้ม ก่อนส่งไม้ต่อบัลลังก์รางวัลสัปดาห์นี้ให้ "${top.team_name}" (${topPts} pts) ที่${heroPhrase} คว้าแชมป์ไปแบบหวานเจี๊ยบ!`,
-            `หัวตารางคะแนนดิบเป็นของทีมร่วมสนุก "${overallTop.team_name}" (${funPts} pts) ส่วนศึกชิงรางวัลสัปดาห์นี้ "${top.team_name}" (${topPts} pts) ${heroPhrase} ผงาดเข้าป้ายอันดับ 1 แบบไร้ข้อกังขา!`,
-            `"${overallTop.team_name}" โชว์เหนือไร้ความกดดันกดไป ${funPts} แต้ม ขณะที่แชมป์สายชิงรางวัลสัปดาห์นี้ตกเป็นของ "${top.team_name}" (${topPts} pts) ที่${marginPhrase} ด้วยฟอร์มสุดสะเด่า!`,
-            `ของแทร่สายเอ็นเตอร์เทน! "${overallTop.team_name}" นำโด่ง ${funPts} แต้มในโหมดร่วมสนุก เปิดทางให้ "${top.team_name}" (${topPts} pts) ที่${heroPhrase} กวาดแชมป์ประจำสัปดาห์ไปครองอย่างหล่อ!`,
-            `โชว์ฟอร์มสมราคาเซียน! "${overallTop.team_name}" ลงเล่นขำๆ แต่ซัดไป ${funPts} แต้ม เปิดโอกาสให้ผู้ท้าชิงรางวัลอย่าง "${top.team_name}" (${topPts} pts) ${heroPhrase} เข้าวินอย่างภาคภูมิ!`
-          ];
-        } else if (isStreak && !isJoint) {
-          const streakBadge = winStreak >= 3
-            ? `แฮตทริกแชมป์ ${winStreak} สัปดาห์รวด`
-            : `เบิ้ลแชมป์ ${winStreak} สัปดาห์ซ้อน (Back-to-Back)`;
-          leadOptions = [
-            `${streakBadge}โว้ยพี่น้อง! "${top.team_name}" ฟอร์มโคตรอมตะไร้เทียมทาน ป้องกันบัลลังก์ได้สำเร็จด้วยสกอร์ ${topPts} แต้ม โดย${heroPhrase} และ${marginPhrase} ใครจะหยุดเครื่องจักรสังหารแต้มทีมนี้อยู่!`,
-            `สถาปนาความยิ่งใหญ่ไร้พ่าย! "${top.team_name}" เครื่องติดเทอร์โบรัว${streakBadge} ซัดไปอีก ${topPts} แต้ม ${marginPhrase} ประกาศศักดาเจ้าพ่อเบอร์หนึ่งประจำลีก!`,
-            `ฟอร์มเทพประทานสะเด่าทรวง! "${top.team_name}" ยึดสัมปทานจ่าฝูงแบบผูกขาด กวาด${streakBadge} ด้วยสกอร์ ${topPts} แต้ม โดย${heroPhrase} เดินแอ็คหล่อได้รอบหมู่บ้าน!`,
-            `ขึ้นแท่นบอสใหญ่ไร้คู่ต่อกร! "${top.team_name}" โชว์ความนิ่งระดับอาจารย์ปู่ คว้า${streakBadge} ที่ ${topPts} แต้ม ${marginPhrase} ยืนหนึ่งบนยอดเขาแบบโคตรหล่อ!`,
-            `ไร้เทียมทานของแทร่! "${top.team_name}" ฟอร์มร้อนแรงดั่งไฟบรรลัยกัลป์ จัดหนัก ${topPts} แต้ม ครอง${streakBadge} โดย${heroPhrase} และ${marginPhrase}!`,
-            `ร้อนแรงกว่าไฟนรก! "${top.team_name}" ยึดแชมป์มินิลีก ${streakBadge} ฟาดไปเหนาะๆ ${topPts} แต้ม ${marginPhrase} ทำเอาคู่แข่งเริ่มถอดใจกันหมดแล้ว!`,
-            `สะเด่าไปเลยอีน้องงง! "${top.team_name}" จัด${streakBadge} ซัดเน้นๆ ${topPts} แต้ม ${marginPhrase} แดกเต็มข้อล่อเต็มแข้งแบบไม่มีกั๊ก!`,
-            `ของจริงเขาไม่โม้เยอะ! "${top.team_name}" ครอง${streakBadge} ฟาด ${topPts} แต้ม ${marginPhrase} สยบทุกเสียงวิจารณ์ราบคาบ!`
-          ];
-        } else if (chip === 'bboost' || chip === 'bench_boost') {
-          leadOptions = [
-            `"${top.team_name}" งัดชิป Bench Boost บ้าพลัง ขนกำลังพลมาถล่มทั้ง 15 คน กวาด ${topPts} แต้ม ${marginPhrase} ตัวจริงก็ยิง ตัวสำรองก็จ่าย ยึดหัวหาดแบบหล่อๆ!`,
-            `ของแทร่ไม่ต้องพูดเยอะ! "${top.team_name}" กดชิป Bench Boost ได้จังหวะระดับเซียน ตัวจริงระเบิดฟอร์ม สำรองบวกเพิ่ม ซัดไปเน้นๆ ${topPts} แต้ม หวานเจี๊ยบบบ!`,
-            `จังหวะกางการ์ดระดับตำนาน! "${top.team_name}" เปิด Bench Boost โกยแต้มยกแผง ${topPts} คะแนน ${marginPhrase} ผงาดคว้าชัยสัปดาห์นี้แบบไร้ข้อกังขา!`,
-            `สะเด่าไปเลยอีน้อง! "${top.team_name}" ใช้ชิป Bench Boost ได้คุ้มค่าทุกเม็ดแต้ม โกยทะลุ ${topPts} แต้ม ${marginPhrase} ขึ้นนำอย่างยิ่งใหญ่!`
-          ];
-        } else if (chip === '3xc' || chip === 'triple_captain') {
-          leadOptions = [
-            `"${top.team_name}" มอบปลอกแขน Triple Captain ให้ ${captName} เต็มข้อ ล่อไป ${topPts} แต้ม ${marginPhrase} คว้าแชมป์สัปดาห์แบบไม่ต้องสืบ!`,
-            `ตาถึงระดับเทพจุติ! "${top.team_name}" กดชิป Triple Captain ใส่ ${captName} แต้มคูณสามระเบิดเถิดเทิง แตะ ${topPts} แต้ม ${marginPhrase} สะเด่าไปเลยอีน้องงง!`,
-            `กระสุนคูณสามทำงานเต็มระบบ! "${top.team_name}" งัดการ์ด 3XC พาทีมโกย ${topPts} แต้ม ${marginPhrase} แดกเต็มข้อ ล่อเต็มแข้ง!`,
-            `ใจถึงพึ่งได้ของจริง! "${top.team_name}" มอบปลอกแขน Triple Captain พาทีมซัด ${topPts} แต้ม ${marginPhrase} สยบคู่แข่งทั้งลีก!`
-          ];
-        } else if (chip === 'freehit') {
-          leadOptions = [
-            `"${top.team_name}" งัดชิป Free Hit สลับผู้เล่นยกแผงเฉพาะกิจ ${heroPhrase} กวาด ${topPts} แต้ม ${marginPhrase} ทะยานขึ้นนำอย่างหล่อ!`,
-            `เปิดการ์ด Free Hit แก้เกมแบบเซียน! "${top.team_name}" จัดชุดเฉพาะกิจโกย ${topPts} แต้ม ${marginPhrase} คว้าชัยสัปดาห์นี้อย่างงดงาม!`,
-            `ยืมมือตัวท็อปมาช่วยยิง! "${top.team_name}" ปล่อยการ์ด Free Hit ฟาดไป ${topPts} แต้ม ${marginPhrase} ยึดหัวตารางประจำสัปดาห์!`
-          ];
-        } else if (chip === 'wildcard') {
-          leadOptions = [
-            `"${top.team_name}" ผ่าตัดทีมยกชุดด้วย Wildcard ชุบชีวิตใหม่ ${heroPhrase} ซัดไป ${topPts} แต้ม ${marginPhrase} ยึดจ่าฝูงแบบสะใจโก๋!`,
-            `ยกเครื่องใหม่ไฉไลกว่าเดิม! "${top.team_name}" งัด Wildcard ดึงตัวเด็ดเข้าทีม กวาดไปเน้นๆ ${topPts} แต้ม ${marginPhrase} สะเด่าไปเลยอีน้องงง!`,
-            `ผ่าตัดใหญ่ได้ผลทันตาเห็น! "${top.team_name}" ล้างไพ่ด้วยชิป Wildcard โกย ${topPts} แต้ม ${marginPhrase} ทะยานสู่อันดับหนึ่งแบบสดชื่น!`
-          ];
-        } else if (isJoint && winners.length > 1) {
-          let names = '';
-          if (winners.length === 2) {
-            names = `"${winners[0].team_name}" กับ "${winners[1].team_name}"`;
-          } else if (winners.length <= 5) {
-            const head = winners.slice(0, -1).map(w => `"${w.team_name}"`).join(', ');
-            names = `${head} และ "${winners[winners.length - 1].team_name}"`;
-          } else {
-            const head = winners.slice(0, 3).map(w => `"${w.team_name}"`).join(', ');
-            names = `${head} และเพื่อนร่วมลีกอีก ${winners.length - 3} ทีม`;
-          }
-          leadOptions = [
-            `กินกันไม่ลงโว้ย! ${names} ซัดไปคนละ ${topPts} แต้มเท่ากันเป๊ะ กอดคอคว้าแชมป์ร่วม GW ${gwNumber} แบ่งเงินรางวัลกันอย่างสมานฉันท์!`,
-            `ดวลกันเดือดจนตาข่ายแทบขาด! ${names} รัวคนละ ${topPts} pts ไม่มีใครยอมใคร จับมือครองบัลลังก์ร่วมกันในสัปดาห์นี้!`,
-            `บทสรุปสุดดราม่า GW ${gwNumber}! ${names} เข้าป้ายที่ ${topPts} แต้มเท่ากันทุกเม็ด สู้กันจนหยดสุดท้ายแบบสมศักดิ์ศรี!`,
-            `เสมอเดือดทะลุปรอท! ${names} กดสกอร์เท่ากันเป๊ะที่ ${topPts} แต้ม ครองบัลลังก์ร่วมแบบไม่มีใครยอมหลีกทางให้ใคร!`,
-            `สู้กันจนหยดสุดท้าย! ${names} กดสกอร์เท่ากันเป๊ะที่ ${topPts} แต้ม จับมือขึ้นแท่นรับถ้วยร่วมแบบสุดคลาสสิก!`
-          ];
-        } else if (isCentury) {
-          leadOptions = [
-            `สะเด่าไปเลยอีน้องงง!! "${top.team_name}" ระเบิดฟอร์มทะลุร้อย กดไปถึง ${topPts} แต้ม โดย${heroPhrase} และ${marginPhrase} หวานเจี๊ยบบบ!`,
-            `ร้อยแต้มแตกเฉยพี่น้อง! "${top.team_name}" ฟอร์มระดับสิบกะโหลก ${heroPhrase} ซัด ${topPts} แต้ม ${marginPhrase} เดินยืดอกอย่างราชา!`,
-            `แต้มทะลักล้นตะกร้า! "${top.team_name}" กดสกอร์สามหลัก ${topPts} แต้ม (เฉลี่ยทั้งลีกแค่ ${avgScore} pts) ${marginPhrase} แดกเต็มข้อ ล่อเต็มแข้ง!`,
-            `ขึ้นหิ้งระดับตำนาน! "${top.team_name}" ทะยานแตะหลักร้อยที่ ${topPts} แต้ม ${heroPhrase} และ${marginPhrase} แบบเต็มคาราเบล!`,
-            `ฟอร์มปีศาจลงมาจุติ! "${top.team_name}" ยิงแหลกแจกแต้มร้อยทะลุ ${topPts} แต้ม ${marginPhrase} สถาปนาตัวเองเป็นบอสใหญ่ประจำสัปดาห์!`,
-            `ตารางแทบระเบิด! "${top.team_name}" กวาดสามหลักเน้นๆ ${topPts} แต้ม ${heroPhrase} และ${marginPhrase} ไร้เทียมทานอย่างแท้จริง!`,
-            `กูรูลูกหนังขอคารวะ! "${top.team_name}" จัดสกอร์ประวัติศาสตร์ ${topPts} แต้ม ${marginPhrase} แดกเต็มข้อล่อเต็มแข้งจนคู่แข่งร้องไห้ระงม!`
-          ];
-        } else if (diff <= 2 && second) {
-          leadOptions = [
-            `หัวใจจะวาย! "${top.team_name}" ${closeVerb} "${second.team_name}" ปลายจมูกแค่ ${diff} แต้ม (${topPts} ต่อ ${secondPts} pts) โดย${heroPhrase} เข้าป้ายแชมป์แบบสะใจโก๋!`,
-            `ปาดหน้าเค้กวินาทีสุดท้าย! "${top.team_name}" ซัด ${topPts} แต้ม เฉือน "${second.team_name}" (${secondPts} pts) แค่ ${diff} แต้ม ชนะแต้มเดียวก็คือแชมป์ ร้องไห้ทำไม!`,
-            `ดราม่าเฉือนกันเลือดซิป! "${top.team_name}" อาศัยทีเด็ด${heroPhrase} เบียดเข้าป้าย ${topPts} แต้ม เฉือนหวิว "${second.team_name}" แค่ก้าวเดียว (${diff} pt)!`,
-            `ต้องตัดสินด้วยภาพช้า! "${top.team_name}" กด ${topPts} แต้ม เบียดไหล่ชนะ "${second.team_name}" (${secondPts} pts) ไปแบบเฉียดฉิวเส้นยาแดงผ่าแปดแค่ ${diff} แต้ม ลุ้นกันเยี่ยวเหนียว!`,
-            `หายใจรดต้นคอแบบเสียวสันหลังวาบ! "${top.team_name}" เฉือนเอาตัวรอดที่ ${topPts} แต้ม กุมชัยเหนือ "${second.team_name}" (${secondPts} pts) แค่ ${diff} แต้มเท่านั้น!`,
-            `บี้กันไฟแลบยันนกหวีดหมดเวลา! "${top.team_name}" ปาดหน้า "${second.team_name}" แค่ก้าวเดียว ${diff} แต้ม (${topPts} vs ${secondPts} pts) ยึดบัลลังก์อย่างสุดระทึก!`,
-            `สงครามแต้มเฉือนหวิว! "${top.team_name}" คว้าแชมป์สัปดาห์ด้วยสกอร์ ${topPts} แต้ม เหนือ "${second.team_name}" ที่ตามมาติดๆ ที่ ${secondPts} แต้ม (ห่างกันจึ๋งเดียวแค่ ${diff} แต้ม)!`,
-            `ลุ้นกันจนเยี่ยวเหนียวพี่น้อง! "${top.team_name}" ยื้อแต้มเข้าวินที่ ${topPts} แต้ม ปาดหน้า "${second.team_name}" (${secondPts} pts) ไปเส้นยาแดงผ่าแปดแค่ ${diff} แต้ม!`,
-            `เฉือนปลายเล็บขบ! "${top.team_name}" (${topPts} pts) ${closeVerb} "${second.team_name}" (${secondPts} pts) แค่ ${diff} คะแนน เข้าป้ายแชมป์ประจำสัปดาห์แบบหัวใจจะวาย!`
-          ];
-        } else if (diff <= 5 && second) {
-          leadOptions = [
-            `บี้กันไฟแลบ! "${top.team_name}" ${heroPhrase} กดไป ${topPts} แต้ม เบียดหนี "${second.team_name}" (${secondPts} pts) ไปแบบสูสี ${diff} แต้ม ยึดบัลลังก์ GW ${gwNumber} อย่างสุดมันส์!`,
-            `เกมตึงเปรี๊ยะระดับห้าดาว! "${top.team_name}" เก็บไป ${topPts} แต้ม เอาชนะ "${second.team_name}" ที่ไล่บี้มาติดๆ ที่ ${secondPts} แต้ม (ห่างกันแค่ ${diff} แต้ม) ด้วยความเฉียบคมของขุมกำลัง!`,
-            `ชิงจังหวะกันสนุก! "${top.team_name}" อาศัยทีเด็ด${heroPhrase} พาทีมเข้าวินที่ ${topPts} แต้ม ขยับนำ "${second.team_name}" ไป ${diff} แต้มแบบได้ลุ้นจนนัดสุดท้าย!`,
-            `วัดกึ๋นกันตัวต่อตัว! "${top.team_name}" ยืนระยะสุดแกร่งที่ ${topPts} แต้ม กุมความได้เปรียบเหนือ "${second.team_name}" (${secondPts} pts) อยู่ ${diff} แต้มไม่ให้แซงได้สำเร็จ!`,
-            `สู้กันสมศักดิ์ศรี! "${top.team_name}" ชิงจังหวะทำแต้ม ${topPts} แต้ม ขยับนำ "${second.team_name}" (${secondPts} pts) ไป ${diff} แต้ม คว้าชัยสัปดาห์นี้อย่างงดงาม!`,
-            `เกมวัดความนิ่ง! "${top.team_name}" เก็บสกอร์เน้นๆ ${topPts} แต้ม ${marginPhrase} ยึดหัวหาด GW ${gwNumber} เอาไว้ได้อย่างเหนียวแน่น!`,
-            `สูสีระดับมิลลิเมตร! "${top.team_name}" ${heroPhrase} คว้าชัยที่ ${topPts} แต้ม กุมความได้เปรียบเหนือ "${second.team_name}" (${secondPts} pts) ไป ${diff} คะแนน!`,
-            `ชิงเหลี่ยมลูกหนังสุดมันส์! "${top.team_name}" อาศัยจังหวะแม่นยำโกย ${topPts} แต้ม ${marginPhrase} คว้าชัยสัปดาห์นี้ไปครองแบบมีคลาส!`
-          ];
-        } else if (diff >= 15) {
-          leadOptions = [
-            `พับสนามบุกอยู่ฝ่ายเดียว! "${top.team_name}" ${heroPhrase} ระเบิดฟอร์มโหด ซัดไป ${topPts} แต้ม ${marginPhrase} กินเต็มข้อ ล่อเต็มแข้ง!`,
-            `ฟอร์มอย่างโหด โกรธใครมา! "${top.team_name}" ฟาด ${topPts} แต้ม ${marginPhrase} ยืนหนึ่งบนยอดเขาแบบไร้คู่ต่อกร!`,
-            `ม้วนเดียวจบไม่ต้องพึ่งยาดม! "${top.team_name}" จัดหนัก ${topPts} แต้ม ${marginPhrase} คว้าแชมป์สัปดาห์แบบสบายเกือก!`,
-            `สอนบอลเชิงลึก! "${top.team_name}" ${heroPhrase} กดสกอร์นำโด่ง ${topPts} แต้ม ${marginPhrase} ขยี้คู่แข่งจนหาทางกลับบ้านไม่ถูก!`,
-            `ฉีกกระจายไร้ร่องรอย! "${top.team_name}" โชว์ขุมกำลังโหดเหี้ยม กวาด ${topPts} แต้ม ${marginPhrase} ทิ้งคู่ต่อสู้แบบไม่เห็นฝุ่น!`,
-            `ระเบิดฟอร์มขั้นเทพ! "${top.team_name}" ซัดเน้นๆ ${topPts} แต้ม ${marginPhrase} ลอยลำเข้าป้ายอันดับหนึ่งแบบกินนิ่มๆ!`,
-            `ตบกบาลสั่งสอนรุ่นน้อง! "${top.team_name}" ฟาดไม่ยั้ง ${topPts} แต้ม ${marginPhrase} สยบทุกเสียงวิจารณ์แบบเด็ดขาด!`
-          ];
-        } else if (topPts < 50) {
-          leadOptions = [
-            `สัปดาห์แห่งความฝืดเคือง! ค่าเฉลี่ยทั้งลีกอยู่ที่ ${avgScore} แต้ม แต่ "${top.team_name}" เอาตัวรอดได้ยอดเยี่ยม ${heroPhrase} เก็บ ${topPts} แต้ม (${marginPhrase}) ซิวแชมป์สัปดาห์ท่ามกลางพายุแต้มบอด!`,
-            `สัปดาห์นี้พากันนัดบอดทั้งบาง แต่ "${top.team_name}" ยังเก๋าพอ กดไป ${topPts} แต้ม (เฉลี่ยลีก ${avgScore} pts) ${marginPhrase} ผงาดคว้าแชมป์แบบหล่อท่ามกลางซากปรักหักพัง!`,
-            `สงครามคนอึด GW ${gwNumber}! ในวันที่นักเตะตัวใหญ่พากันตีนบอด "${top.team_name}" ${heroPhrase} โกย ${topPts} แต้ม ${marginPhrase} เข้าป้ายอันดับ 1 แบบเหนือชั้น!`,
-            `เอาตัวรอดได้ยอดเยี่ยม! สัปดาห์ที่แต้มทั้งลีกฝืดเคือง "${top.team_name}" ประคองขุมกำลังคว้าไป ${topPts} แต้ม ${marginPhrase} ซิวแชมป์สัปดาห์แบบเหนียวแน่น!`,
-            `บอลน่าเบื่อแต่แต้มเข้าเป้า! "${top.team_name}" ประคองตัวท่ามกลางเกมฝืดเคือง เก็บ ${topPts} แต้ม ${marginPhrase} คว้าชัยแบบคนรู้จังหวะ!`,
-            `ในวันที่แต้มไม่เป็นใจให้ใคร "${top.team_name}" ยังอุตส่าห์เก็บได้ ${topPts} แต้ม ${marginPhrase} ซิวแชมป์แบบลุ้นเหงื่อตกกีบ!`
-          ];
-        } else {
-          leadOptions = [
-            `ฟอร์มกำลังเข้าฝัก! "${top.team_name}" ${heroPhrase} โกยไป ${topPts} แต้ม ${marginPhrase} คว้าชัย GW ${gwNumber} อย่างสมศักดิ์ศรี!`,
-            `จ่าฝูงสัปดาห์นี้ของแทร่! "${top.team_name}" กดสกอร์เน้นๆ ${topPts} แต้ม (สูงกว่าค่าเฉลี่ยลีกที่ ${avgScore} pts) ${marginPhrase} นอนกอดตำแหน่งแชมป์สบายใจเฉิบ!`,
-            `วางหมากระดับปรมาจารย์! "${top.team_name}" ${heroPhrase} พาทีมซัด ${topPts} แต้ม ${marginPhrase} เดินหน้าประกาศศักดาใน GW ${gwNumber}!`,
-            `เครื่องร้อนหยุดไม่อยู่! "${top.team_name}" จัดทัพลงล็อกทุกตำแหน่ง ซัดไป ${topPts} แต้ม ${marginPhrase} แบบไร้ที่ติ!`,
-            `สะเด่าไปเลยอีน้องงง! "${top.team_name}" ${heroPhrase} กวาดชัยชนะที่ ${topPts} แต้ม ${marginPhrase} ยึดบัลลังก์อย่างสมบูรณ์แบบ!`,
-            `แดกเต็มข้อ ล่อเต็มแข้ง! "${top.team_name}" โชว์กึ๋นลูกหนังซัดไป ${topPts} แต้ม ${marginPhrase} เดินยืดอกหล่อที่สุดในตำบล!`,
-            `ของแทร่ไม่ต้องสาธยายเยอะ! "${top.team_name}" ${heroPhrase} โกยไป ${topPts} แต้ม ${marginPhrase} คว้าแชมป์สัปดาห์นี้แบบไร้รอยต่อ!`,
-            `เปิดฟลอร์เต้นรำอย่างเหนือชั้น! "${top.team_name}" นำทัพจัดไป ${topPts} แต้ม ${marginPhrase} ตบกบาลคู่แข่งเข้าป้ายอย่างสง่างาม!`
-          ];
-        }
+        LiveCommentaryEngine._recordSignature(sigKey, {
+          personaId: persona.id,
+          leadId: built.leadId,
+          midIds: built.midIds,
+          endId: built.endId
+        });
 
-        const leadSentence = pickRnd(11, leadOptions);
+        return {
+          text: built.text,
+          personaId: persona.id,
+          personaLabel: persona.label,
+          personaTone: persona.tone
+        };
+      }
 
-        // =========================================================
-        // 2. TACTICAL & DRAMA STORYLINES (เจาะลึก 12 มิติดราม่าลูกหนังแท้ๆ สไตล์กูรูลูกหนังสายฮาร์ดคอร์)
-        // =========================================================
-        let midOptions = [];
+      static _recordSignature(sigKey, entry) {
+        const list = LiveCommentaryEngine._recentSignatures.get(sigKey) || [];
+        list.push(entry);
+        if (list.length > 8) list.shift();
+        LiveCommentaryEngine._recentSignatures.set(sigKey, list);
+      }
 
-        // Storyline 0: Live Captain Battle & Live Player Standings (เฉพาะช่วงระหว่างแข่งขันสด)
-        if (isLive) {
-          const getCap = (eid) => {
-            const sq = getSquad(eid);
-            if (!sq || !sq.starting) return null;
-            const c = sq.starting.find(p => p.is_captain) || sq.starting.find(p => p.multiplier > 1);
-            if (!c) return null;
-            return {
-              name: clean(c.name),
-              pts: Number(c.points) || 0,
-              notPlayedYet: Boolean(c.not_played_yet),
-              mins: Number(c.minutes) || 0
-            };
-          };
-
-          const topCap = getCap(top.entry_id);
-          const secCap = second ? getCap(second.entry_id) : null;
-
-          if (topCap && topCap.notPlayedYet) {
-            midOptions.push(
-              `ที่น่าจับตาคือ กัปตัน ${topCap.name} ของ "${top.team_name}" ยังไม่ทันได้ลงสนาม คืนนี้เตรียมลงมาแบกทีม ชี้ชะตาตารางคะแนนสด!`,
-              `จ่าฝูงสดยังมีไพ่ตายเด็ด! กัปตัน ${topCap.name} ของ "${top.team_name}" มีคิวลงล่าแต้มในคู่ดึก ถ้าเกิดร่างทองขึ้นมา งานนี้อาจมีทิ้งห่าง!`
-            );
-          } else if (topCap && !topCap.notPlayedYet && topCap.pts >= 12) {
-            midOptions.push(
-              `เดอะแบกทำงานเต็มสูบ! กัปตัน ${topCap.name} สวมวิญญาณตัวพ่อ ซัดเหน่งๆ คนเดียว ${topCap.pts} แต้มสด แดกเต็มข้อ ล่อเต็มแข้ง ช่วยพาทีมยึดจ่าฝูง!`,
-              `กัปตันร่างทองแผลงฤทธิ์! "${top.team_name}" มอบปลอกแขนให้ ${topCap.name} ไม่ผิดหวัง กดไปเน้นๆ ${topCap.pts} แต้มสด สะเด่าไปเลยอีน้อง!`
-            );
-          } else if (topCap && !topCap.notPlayedYet && topCap.pts <= 4 && topCap.mins > 0) {
-            midOptions.push(
-              `ด้านดราม่ากัปตัน "${top.team_name}" ถึงกับกุมขมับ จิ้ม ${topCap.name} เป็นกัปตันแต่เจอตีนบอดคาสนาม เก็บไปแค่ ${topCap.pts} แต้ม โดนล้อตายห่า แต่ยังดีที่ลูกทีมคนอื่นช่วยประคองแต้มนำไว้ได้!`,
-              `กัปตันพังไม่เป็นท่า! "${top.team_name}" ฝากความหวังไว้ที่ ${topCap.name} แต่ตีนบอดสนิทได้แค่ ${topCap.pts} แต้ม ทำเอาแฟนๆ นั่งกุมขมับคาจอ!`
-            );
-          }
-
-          if (secCap && secCap.notPlayedYet && diff <= 10) {
-            midOptions.push(
-              `ดราม่าคู่ชิงยังไม่จบ! กัปตัน ${secCap.name} ของ "${secName}" ยังไม่ลงสนาม คืนนี้มีคิวลงมาล่าแต้ม ถ้าเกิดร่างทองยิงเบิ้ล มีสิทธิ์พลิกแซงจ่าฝูงสดทันที!`,
-              `ทางฝั่งผู้ตาม "${secName}" แอบยิ้มมุมปาก เพราะกัปตัน ${secCap.name} ยังไม่ลงเตะ คืนนี้ถ้าปล่อยของระเบิด อาจมีปาดหน้าเค้กคาจอ!`
-            );
-          }
-        }
-
-        // Storyline A: Transfer Masterclass (เปลี่ยนตัวแม่น ยิงเป้าแตก)
-        const txMaster = [...sorted].filter(t => (t.transfers_net_impact || 0) >= 6).sort((a, b) => (b.transfers_net_impact || 0) - (a.transfers_net_impact || 0))[0];
-        if (txMaster) {
-          const bestMoveIn = (txMaster.transfer_moves || []).filter(m => m && m.in && m.in !== '-').sort((a, b) => (b.in_pts || 0) - (a.in_pts || 0))[0];
-          const inPts = bestMoveIn ? (bestMoveIn.in_pts || 0) : 0;
-          const inName = bestMoveIn ? clean(bestMoveIn.in) : '';
-          const mv = (bestMoveIn && inPts >= 4) ? ` (ดึง ${inName} เข้ามาซัดทันที ${inPts} pts)` : '';
-          if (txMaster.transfers_net_impact >= 8) {
-            midOptions.push(
-              `ไฮไลท์ตลาดนักเตะต้องยกให้กุนซือตาเพชร "${txMaster.team_name}" ที่ดึงตัวใหม่เข้ามาได้ถูกที่ถูกเวลา พาทีมบวกแต้มสุทธิจากการย้ายตัวถึง +${txMaster.transfers_net_impact} แต้ม${mv}`,
-              `ดึงปุ๊บยิงปั๊บ! "${txMaster.team_name}" โชว์กึ๋นลูกหนัง ดึง ${inName || 'ตัวทีเด็ด'} เข้ามาผลิตสกอร์ทันที บวกแต้มสุทธิ +${txMaster.transfers_net_impact} แต้ม หวานเจี๊ยบบบ!`,
-              `เซียนลูกหนังตัวจริง! "${txMaster.team_name}" ขยับเปลี่ยนตัวทีเดียวฟันแต้มบวกเน็ตไปถึง +${txMaster.transfers_net_impact} แต้ม${mv} จัดการขุมกำลังได้ระดับมืออาชีพ!`
-            );
-          } else {
-            midOptions.push(
-              `ด้านตลาดนักเตะ "${txMaster.team_name}" ปรับทัพได้เข้าเป้า ฟันแต้มสุทธิจากการย้ายตัวไป +${txMaster.transfers_net_impact} แต้ม${mv}`,
-              `ส่วน "${txMaster.team_name}" ดึงตัวใหม่เข้าทีมได้ถูกจังหวะ ฟันแต้มบวกเน็ตไป +${txMaster.transfers_net_impact} คะแนน${mv}`,
-              `วางหมากเปลี่ยนตัวได้เฉียบคม! "${txMaster.team_name}" คว้าแต้มสุทธิจากการย้ายตัวไป +${txMaster.transfers_net_impact} แต้ม${mv}`
-            );
-          }
-        }
-
-        // Storyline B: Transfer Regret / ขายเด็กเก่าแล้วโดนยิงใส่หน้า
-        const txBust = [...sorted].filter(t => (t.transfers_net_impact || 0) <= -6).sort((a, b) => (a.transfers_net_impact || 0) - (b.transfers_net_impact || 0))[0];
-        if (txBust) {
-          const worstMoveOut = (txBust.transfer_moves || []).filter(m => m && m.out && m.out !== '-').sort((a, b) => (b.out_pts || 0) - (a.out_pts || 0))[0];
-          if (worstMoveOut && worstMoveOut.out_pts >= 6) {
-            midOptions.push(
-              `ส่วนดราม่าเจ็บกระดองใจต้องเห็นใจ "${txBust.team_name}" ที่เพิ่งปล่อย ${clean(worstMoveOut.out)} ออกจากทีมปุ๊บ เจ้าตัวดันยิงแสกหน้าไป ${worstMoveOut.out_pts} แต้ม ทำเอาแต้มติดลบสุทธิไป ${txBust.transfers_net_impact} คะแนน ร้องไห้ทำไม!`,
-              `ขณะที่ "${txBust.team_name}" เจออาถรรพ์เด็กเก่าเล่นงาน ปล่อย ${clean(worstMoveOut.out)} ทิ้งแล้วดันระเบิดฟอร์มกด ${worstMoveOut.out_pts} แต้ม แถมตัวที่ดึงมาใหม่ดันตีนบอด แต้มหายวับไป ${Math.abs(txBust.transfers_net_impact)} คะแนน`,
-              `ตลกร้ายแห่งวงการลูกหนัง! "${txBust.team_name}" ตัดหางปล่อยวัด ${clean(worstMoveOut.out)} ทิ้ง ปรากฏว่าระเบิดฟอร์มยิงใส่หน้า ${worstMoveOut.out_pts} แต้ม ทำเอาแต้มติดลบสุทธิ ${txBust.transfers_net_impact} แต้ม น้ำตาแทบไหลเป็นสายเลือด!`,
-              `ดวงกุดแท้ๆ! "${txBust.team_name}" ถอด ${clean(worstMoveOut.out)} ออกปุ๊บ ยิงกระจายทันที ${worstMoveOut.out_pts} แต้ม ทำแต้มติดลบสุทธิ ${txBust.transfers_net_impact} แต้ม เจ็บใจจนนอนไม่หลับ!`
-            );
-          } else {
-            midOptions.push(
-              `ส่วนดราม่าตลาดนักเตะต้องเห็นใจ "${txBust.team_name}" ที่ขยับปรับทีมแล้วฟอร์มสะดุด แต้มติดลบไป ${txBust.transfers_net_impact} คะแนน`,
-              `ขณะที่ "${txBust.team_name}" วางหมากผิดทิศ เปลี่ยนตัวเข้าทีมปุ๊บแต้มหายไป ${Math.abs(txBust.transfers_net_impact)} คะแนน นั่งกุมขมับเลยทีเดียว`,
-              `ปรับทีมผิดชีวิตเปลี่ยน! "${txBust.team_name}" ดึงตัวใหม่มาแล้วผลงานไม่เป็นใจ ติดลบจากการย้ายตัวไป ${Math.abs(txBust.transfers_net_impact)} แต้ม ต้องรีบจุดธูปขอพรสัปดาห์หน้า!`
-            );
-          }
-        }
-
-        // Storyline C: Bench Tragedy (ดองแต้มสำรองคาเบาะ)
-        const benchCandidates = sorted.filter(t => (t.bench_points || 0) >= 10 && !['bboost', 'bench_boost'].includes((t.chip || '').toLowerCase()));
-        const benchKing = benchCandidates.sort((a, b) => (b.bench_points || 0) - (a.bench_points || 0))[0];
-        if (benchKing) {
-          let benchHeroText = '';
-          if (leagueData && leagueData.squads) {
-            const bSq = leagueData.squads[`${benchKing.entry_id}_${gwNumber}`];
-            if (bSq && bSq.bench && bSq.bench.length > 0) {
-              const topB = [...bSq.bench].sort((a, b) => (b.points || 0) - (a.points || 0))[0];
-              if (topB && topB.points >= 6) benchHeroText = ` (โดยเฉพาะ ${clean(topB.name)} ที่ระเบิดฟอร์มกดไป ${topB.points} pts บนม้านั่ง)`;
-            }
-          }
-          midOptions.push(
-            `ขณะที่ "${benchKing.team_name}" กุมขมับแทบสำลักน้ำตา หลังดองแต้มตัวสำรองไว้ข้างสนามถึง ${benchKing.bench_points} แต้มคาเบาะ${benchHeroText}`,
-            `ด้าน "${benchKing.team_name}" น้ำตาตกใน ตัวสำรองพร้อมใจกันองค์ลงกดรวมกัน ${benchKing.bench_points} แต้ม${benchHeroText} แต่นั่งมองตาปริบๆ อยู่ข้างสนาม`,
-            `เสียดายของสุดๆ! "${benchKing.team_name}" ปล่อยให้ขุมกำลังบนม้านั่งกลายเป็นปุ๋ย ดองแต้มรวมไว้ถึง ${benchKing.bench_points} แต้ม${benchHeroText} ถ้าเอาลงมาคงแซงขึ้นหัวตารางไปแล้ว!`,
-            `จัดตัวพลาดแบบเจ็บกระดองใจ! "${benchKing.team_name}" วาง 11 ตัวจริงพลาด ปล่อยสำรองโกย ${benchKing.bench_points} แต้ม${benchHeroText} นั่งหนาวเหน็บอยู่ข้างสนามคนเดียว!`,
-            `ก้นชาคาซุ้มม้านั่ง! "${benchKing.team_name}" ปล่อยแต้มหลุดมือไปถึง ${benchKing.bench_points} แต้ม${benchHeroText} โดนสำรองตบหน้าฉาดใหญ่!`
-          );
-        }
-
-        // Storyline D: Differential Captain (กัปตันตัวแรร์)
+      static _extractSignals({ gwNumber, sorted, bottom, scoreKey, isLive, isFinished, leagueData, getSquad, clean, avgScore, extraContext }) {
         const capCountMap = {};
         sorted.forEach(t => {
           const cn = (t.captain || '-').replace(/\s*\(C\)/gi, '').trim();
           if (cn && cn !== '-') capCountMap[cn] = (capCountMap[cn] || 0) + 1;
         });
+        const mostPopCap = Object.entries(capCountMap).sort((a, b) => b[1] - a[1])[0] || null;
         const diffCapTeams = sorted.slice(0, 8).filter(t => {
           const cn = (t.captain || '-').replace(/\s*\(C\)/gi, '').trim();
           return cn && cn !== '-' && (capCountMap[cn] || 0) <= 2;
         });
-        if (diffCapTeams.length > 0) {
-          const dc = pickRnd(12, diffCapTeams);
-          const dcName = (dc.captain || '-').replace(/\s*\(C\)/gi, '').trim();
-          let dcCapPts = 0;
-          let dcRawPts = 0;
-          let isDcUnplayed = false;
-          if (leagueData && leagueData.squads) {
-            const dSq = leagueData.squads[`${dc.entry_id}_${gwNumber}`];
-            if (dSq && dSq.starting) {
-              const cPlayer = dSq.starting.find(p => p.is_captain);
-              if (cPlayer) {
-                dcCapPts = Number(cPlayer.points) || 0;
-                dcRawPts = Number(cPlayer.raw_points) || (Number(cPlayer.points) < 0 ? Number(cPlayer.points) : Math.floor(dcCapPts / 2));
-                isDcUnplayed = isLive && (Boolean(cPlayer.not_played_yet) || Number(cPlayer.minutes || 0) === 0);
-              }
+
+        const provBonusMap = {};
+        const autoSubHeroes = [];
+        const redCardVictims = [];
+        const vcRegrets = [];
+        const goalHeroesMap = {};
+        const playerPtsMap = {};
+        const defPerformance = [];
+
+        sorted.forEach(t => {
+          const sq = getSquad(t.entry_id);
+          if (!sq || !sq.starting) return;
+
+          if (Array.isArray(sq.auto_subs) && sq.auto_subs.length > 0) {
+            const subInIds = new Set(sq.auto_subs.map(s => Number(s.element_in)));
+            const inPlayers = sq.starting.filter(p => subInIds.has(Number(p.id)));
+            const subGain = inPlayers.reduce((sum, p) => sum + (Number(p.points) || 0), 0);
+            if (subGain >= 5 && inPlayers[0]) {
+              autoSubHeroes.push({ team: t.team_name, player: clean(inPlayers[0].name), pts: subGain });
             }
           }
 
-          if (isDcUnplayed) {
-            midOptions.push(
-              `ส่วน "${dc.team_name}" เลือกแหวกม่านประเพณี มอบปลอกแขนให้ ${dcName} กัปตันตัวแรร์ที่มีแค่ไม่กี่ทีมในลีกกล้าจิ้ม เจ้าตัวยังไม่ได้ลงสนาม เตรียมนั่งลุ้นใจสั่นในคู่ดึก!`,
-              `ด้าน "${dc.team_name}" จิ้ม ${dcName} เป็นกัปตันตัวแรร์สวนกระแสลีก กำลังรอคอยลงสนามล่าแต้มในคู่ที่เหลือ หากระเบิดฟอร์มขึ้นมามีสิทธิ์แซงโค้งหัวตารางทันที!`
-            );
-          } else if (dcCapPts >= 14) {
-            midOptions.push(
-              `ส่วน "${dc.team_name}" โชว์กึ๋นไม่ซ้ำรอยใคร มอบปลอกแขนให้ ${dcName} กัปตันตัวแรร์ที่มีแค่ไม่กี่ทีมในลีกกล้าจิ้ม แล้วเจ้าตัวก็ระเบิดฟอร์มกดไป ${dcCapPts} แต้ม สะเด่าไปเลยอีน้องงง!`,
-              `ความใจถึงต้องยกให้ "${dc.team_name}" ที่ไม่แห่ตามกระแสมหาชน จิ้ม ${dcName} สวมปลอกแขนแล้วซัดไปเน้นๆ ${dcCapPts} แต้ม กลายเป็นหมากเด็ดสยบปากหมาทั้งลีก!`,
-              `ฉีกตำราแบบเซียนเหยียบเมฆ! "${dc.team_name}" สวนกระแสมวลชนตั้ง ${dcName} เป็นกัปตัน ฟาดคะแนนก้อนโต ${dcCapPts} แต้ม หวานเจี๊ยบ!`,
-              `กึ๋นระดับปรมาจารย์! "${dc.team_name}" ฉีกแนวเลือก ${dcName} ตัวทีเด็ด ซัดแฮตทริกแต้มไป ${dcCapPts} คะแนน ตบหน้ากัปตันมหาชนกระจุย!`
-            );
-          } else if (dcCapPts < 0 || dcRawPts < 0) {
-            midOptions.push(
-              `ฝันร้ายขั้นสุด! "${dc.team_name}" สวนกระแสจิ้ม ${dcName} เป็นกัปตัน แต่ดันโดนใบแดงไล่ออกจนแต้มติดลบ ${dcCapPts} แต้ม (${dcRawPts} ดิบ) ดิ่งเหวแบบไม่ต้องสืบ!`,
-              `สวนกระแสจนเจอดี! "${dc.team_name}" มอบปลอกแขนให้ ${dcName} แต่ดันโดนไล่ออกทำแต้มติดลบ ${dcCapPts} แต้ม นั่งกุมขมับแทบสิ้นสติ!`,
-              `ด้าน "${dc.team_name}" หวังโชว์เหนือตั้ง ${dcName} เป็นกัปตันตัวแรร์ ปรากฏว่าโดนถล่มเละเทะ แต้มติดลบคาตา ${dcCapPts} คะแนน ร้องไห้ทำไม!`,
-              `ตลกร้ายแห่งฤดูกาล! "${dc.team_name}" มอบปลอกแขนให้ ${dcName} นึกว่าจะแบกทีม ที่ไหนได้โดนใบแดงสังเวยแต้มลบ ${dcCapPts} แต้ม พังยับเยิน!`
-            );
-          } else if (dcCapPts <= 4) {
-            midOptions.push(
-              `ส่วน "${dc.team_name}" หวังโชว์กึ๋นไม่ซ้ำใคร มอบปลอกแขนให้ ${dcName} กัปตันตัวอินดี้ แต่ดันตีนบอดสนิทเก็บได้แค่ ${dcCapPts} แต้ม ปล่อยให้เพื่อนในลีกหัวเราะเยาะลั่นรู!`,
-              `ขณะที่สายแหวกกระแสอย่าง "${dc.team_name}" จิ้ม ${dcName} เป็นกัปตัน แต่เจอตีนบอดเก็บได้แค่ ${dcCapPts} แต้ม ไปไม่เป็นกันเลยทีเดียว!`,
-              `ฉีกแนวแต่ดันแป๊ก! "${dc.team_name}" จิ้มกัปตันตัวแหวกกระแสอย่าง ${dcName} ปรากฏว่านัดบอดสนิทได้ไปแค่ ${dcCapPts} แต้ม ร้องไห้ทำไม!`
-            );
-          } else {
-            midOptions.push(
-              `ด้าน "${dc.team_name}" สวนกระแสจิ้ม ${dcName} เป็นกัปตันตัวแรร์ไม่ซ้ำใคร เก็บไปเบาๆ ${dcCapPts} แต้ม พอประคองตัวรักษาระยะได้เรื่อยๆ`,
-              `ส่วนสายฉีกแนวอย่าง "${dc.team_name}" มอบปลอกแขนให้ ${dcName} เก็บแต้มประคองทีมไป ${dcCapPts} แต้ม ไม่หวือหวาแต่ก็เอาตัวรอดได้`
-            );
-          }
-        }
-
-        // Storyline E: Popular Captain Drama (กัปตันมหาชน)
-        const mostPopCap = Object.entries(capCountMap).sort((a, b) => b[1] - a[1])[0];
-        if (mostPopCap && mostPopCap[1] >= 3 && leagueData && leagueData.squads) {
-          const popCapName = mostPopCap[0];
-          const sampleTeam = sorted.find(t => (t.captain || '').includes(popCapName));
-          const sampleSq = sampleTeam ? leagueData.squads[`${sampleTeam.entry_id}_${gwNumber}`] : null;
-          const capPlayerObj = sampleSq && sampleSq.starting ? sampleSq.starting.find(p => p.is_captain) : null;
-          if (capPlayerObj) {
-            const popPts = Number(capPlayerObj.points) || 0;
-            const isPopUnplayed = isLive && (Boolean(capPlayerObj.not_played_yet) || Number(capPlayerObj.minutes || 0) === 0);
-            if (isPopUnplayed) {
-              midOptions.push(
-                `ที่น่าจับตาคือ กัปตันมหาชน ${popCapName} (${mostPopCap[1]} ทีมในลีก) ยังไม่ได้ลงเตะ แฟนคลับเตรียมนั่งสวดมนต์รอระเบิดฟอร์มในคู่ดึก!`,
-                `จุดชี้ชะตาสัปดาห์นี้อยู่ที่กัปตันขวัญใจมหาชน ${popCapName} (${mostPopCap[1]} ทีม) ขุมกำลังยังไม่ลงสนาม หากแผลงฤทธิ์ยิงระเบิดเมื่อไหร่ อันดับมีสิทธิ์พลิกคว่ำทั้งตาราง!`,
-                `คอลูกหนังทั้งลีกกำลังจับตา ${popCapName} กัปตันมหาชนที่คนไว้ใจถึง ${mostPopCap[1]} ทีม ซึ่งยังรอคอยลงสนามในคู่ต่อไป รอดูว่าจะพากองทัพแฟนๆ บินสูงหรือพากันดิ่งเหว!`
-              );
-            } else if (popPts < 0) {
-              midOptions.push(
-                `มหันตภัยกัปตันมหาชน! ${popCapName} ที่มีคนในลีกตั้งถึง ${mostPopCap[1]} ทีม ดันโดนใบแดงแต้มติดลบ ${popPts} แต้ม ทำเอากุนซือครึ่งลีกกอดคอกันร้องไห้ระงม!`,
-                `หายนะแห่งสัปดาห์! กัปตันมหาชน ${popCapName} (${mostPopCap[1]} ทีม) ทำแต้มติดลบ ${popPts} แต้ม พากองทัพแฟนคลับดิ่งลงเหวพร้อมกันทั้งตาราง!`
-              );
-            } else if (popPts <= 6) {
-              midOptions.push(
-                `สัปดาห์นี้คนที่แห่ตั้งกัปตันมหาชน ${popCapName} (${mostPopCap[1]} ทีมในลีก) ต้องกอดคอกันน้ำตาคลอเบ้า หลังทำแต้มคูณสองได้แค่ ${popPts} คะแนน นัดบอดสนิท!`,
-                `แถมวีคนี้กัปตันขวัญใจมหาชน ${popCapName} ที่คนแห่เลือกกันถึง ${mostPopCap[1]} ทีม ดันกระสุนด้านเก็บไปแค่ ${popPts} แต้ม พากันหน้าแห้งทั้งตาราง`,
-                `อาถรรพ์กัปตันมหาชนเล่นงาน! ${popCapName} มีคนจิ้มถึง ${mostPopCap[1]} ทีม แต่ผลงานยิงไม่ออกได้แค่ ${popPts} แต้ม ซดน้ำใบบัวบกกันถ้วนหน้า!`,
-                `มหาชนพาพัง! ${popCapName} (${mostPopCap[1]} ทีม) ทำแต้มคูณสองบอดสนิทแค่ ${popPts} แต้ม ร้องไห้ทำไม พากันกอดคอร้องระงม!`
-              );
-            } else if (popPts >= 18) {
-              midOptions.push(
-                `กัปตันมหาชนทำงานเต็มคาราเบล! ${popCapName} (${mostPopCap[1]} ทีมในลีก) ฟาดไป ${popPts} แต้ม แจกแต้มก้อนโตเข้ากระเป๋าแฟนๆ อย่างทั่วถึง!`,
-                `ส่วนใครที่ไม่มีกัปตันมหาชน ${popCapName} (${mostPopCap[1]} ทีม) บอกเลยว่าเจ็บปวดกระดองใจ เพราะพี่แกซัดคูณสองไปเน้นๆ ถึง ${popPts} แต้ม หวานเจี๊ยบ!`,
-                `แดกเต็มข้อ ล่อเต็มแข้ง! กัปตันมหาชน ${popCapName} (${mostPopCap[1]} ทีม) ซัดไป ${popPts} แต้ม สะเด่าไปเลยอีน้อง สยบขาแช่งทั้งลีก!`
-              );
-            } else {
-              midOptions.push(
-                `ด้านกัปตันมหาชน ${popCapName} (${mostPopCap[1]} ทีมในลีก) ทำหน้าที่ตามมาตรฐานเก็บไป ${popPts} แต้ม ไม่หวือหวาแต่ก็ไม่ทำให้ผิดหวัง รักษาระดับคะแนนได้ต่อเนื่อง`,
-                `ส่วนใครที่เลือกกัปตันมหาชน ${popCapName} (${mostPopCap[1]} ทีม) รอดตัวไปตามระเบียบ ฟันแต้มคูณสองเหนาะๆ ${popPts} แต้ม เกาะกลุ่มผู้นำได้ต่อเนื่อง`,
-                `กัปตันมหาชน ${popCapName} ที่คนในลีกจัดกันถึง ${mostPopCap[1]} ทีม ทำหน้าที่ได้ตามเป้า กดไป ${popPts} แต้ม ไม่ทำให้แฟนๆ ต้องผิดหวัง`
-              );
-            }
-          }
-        }
-
-        // Storyline F: Heavy Hit Takers (สายแลกแต้มลบผ่าตัดทีม)
-        const hitTakers = sorted.filter(t => t.hits > 0).sort((a, b) => b.hits - a.hits);
-        if (hitTakers.length > 0) {
-          const profitingHits = hitTakers.filter(t => t[scoreKey] >= avgScore);
-          const strugglingHits = hitTakers.filter(t => t[scoreKey] < avgScore);
-          if (profitingHits.length > 0) {
-            const hitNames = profitingHits.slice(0, 2).map(t => `"${t.team_name}" (-${t.hits})`).join(' และ ');
-            midOptions.push(
-              `ด้านสายซิ่งใจถึงอย่าง ${hitNames} ยอมกัดฟันเสียแต้มลบผ่าตัดทีม แต่ผลงานในสนามจริงตอบแทนคุ้มค่า ซัดแต้มกระฉูดเหนือค่าเฉลี่ยของลีกได้สำเร็จ!`,
-              `ยอมเจ็บแต่จบ! ${hitNames} ยอมแลกแต้มลบเพื่อจัดทัพใหม่ แล้วผลลัพธ์ก็หวานเจี๊ยบ แต้มพุ่งแซงคู่แข่งทันตาเห็น!`
-            );
-          } else if (strugglingHits.length > 0) {
-            const hitNames = strugglingHits.slice(0, 2).map(t => `"${t.team_name}" (-${t.hits})`).join(' และ ');
-            midOptions.push(
-              `ส่วนแก๊งมือลั่นยอมเสียค่าปรับแต้มลบอย่าง ${hitNames} ผ่าตัดทีมแล้วแต่ยังไม่ฟื้น ฟอร์มยังฝืดเคือง ต้องรอลุ้นแก้ตัวใหม่สัปดาห์หน้า!`,
-              `เคราะห์ซ้ำกรรมซัด! ${hitNames} ยอมเฉือนเนื้อเสียแต้มลบจัดตัวใหม่ แต่ตัวที่ดึงเข้ามาดันพากันตีนบอดซ้ำสอง ร้องไห้ทำไม!`
-            );
-          }
-        }
-
-        // Storyline G: Active Chip Drama (ดราม่าคนเปิดชิป)
-        const chipUsers = sorted.filter(t => t.chip && !['', '-', 'none'].includes(String(t.chip).toLowerCase()));
-        if (chipUsers.length > 0) {
-          const cu = pickRnd(13, chipUsers);
-          const cuChip = String(cu.chip).toLowerCase();
-          if (cuChip === '3xc' || cuChip === 'triple_captain') {
-            let tcPts = 0;
-            let tcCap = cu.captain || 'กัปตัน';
-            if (leagueData && leagueData.squads) {
-              const sq = leagueData.squads[`${cu.entry_id}_${gwNumber}`];
-              if (sq && sq.starting) {
-                const cp = sq.starting.find(p => p.is_captain);
-                if (cp) { tcPts = Number(cp.points) || 0; tcCap = clean(cp.name) || tcCap; }
-              }
-            }
-            if (tcPts >= 24) {
-              midOptions.push(
-                `จังหวะกดชิปบันลือโลก! "${cu.team_name}" รวยแต้มเละเทะจากการใช้ Triple Captain ใส่ ${tcCap} กวาดแต้มคูณสามทะลักถึง ${tcPts} แต้ม สะเด่าไปเลยอีน้องงง!`,
-                `สะเด่าไปเลยอีน้องงง! "${cu.team_name}" เปิดการ์ด Triple Captain ซัดไป ${tcPts} แต้ม แดกเต็มข้อล่อเต็มแข้ง สยบคู่แข่งทั้งลีก!`
-              );
-            } else if (tcPts <= 9) {
-              midOptions.push(
-                `ชิปทำพิษเต็มๆ! "${cu.team_name}" งัด Triple Captain ใส่ ${tcCap} หวังถล่มคู่แข่ง แต่ดันนัดบอดได้ไปแค่ ${tcPts} แต้ม เสียของแบบน่าเขกกะโหลก ร้องไห้ทำไม ไปนอนได้แล้ว!`,
-                `ดวงกุดแห่งปี! "${cu.team_name}" กด Triple Captain เสียของไปกับ ${tcCap} ได้แต้มคูณสามแค่ ${tcPts} แต้ม ร้องไห้ทำไม!`
-              );
-            } else {
-              midOptions.push(
-                `ด้าน "${cu.team_name}" เลือกงัดชิป Triple Captain ออกมาสู้ ได้แต้มคูณสามจาก ${tcCap} ไป ${tcPts} แต้ม เก็บแต้มเข้ากระเป๋าตามเป้า`
-              );
-            }
-          } else if (cuChip === 'bboost' || cuChip === 'bench_boost') {
-            const bp = cu.bench_points || 0;
-            if (bp >= 12) {
-              midOptions.push(
-                `งัดการ์ด Bench Boost ได้จังหวะเทพ! "${cu.team_name}" โกยแต้มกระหน่ำจากซุ้มสำรองเข้ากระเป๋าถึง +${bp} แต้ม แดกเต็มข้อ ล่อเต็มแข้ง!`,
-                `ของแทร่ไม่ต้องพูดเยอะ! "${cu.team_name}" เปิด Bench Boost โกยแต้มสำรองบวกเน็ตไป +${bp} แต้ม กินอิ่มนอนหลับสบายใจเฉิบ!`
-              );
-            } else if (bp <= 5) {
-              midOptions.push(
-                `ด้าน "${cu.team_name}" ใช้ชิป Bench Boost แต่โชคไม่เข้าข้าง ตัวสำรองพร้อมใจกันตีนบอดเก็บเพิ่มได้แค่ ${bp} แต้ม เสียดายชิปแทนจริงๆ!`,
-                `เปิดการ์ดสำรองแต่แป๊ก! "${cu.team_name}" งัด Bench Boost ได้แต้มกลับมาแค่ ${bp} แต้ม เสียของแบบน่าเขกกะโหลก!`
-              );
-            }
-          } else if (cuChip === 'freehit') {
-            midOptions.push(
-              `สายจัดทัพเฉพาะกิจ "${cu.team_name}" ใช้ชิป Free Hit สลับผู้เล่นยกแผง หวังถล่มคู่แข่งประจำสัปดาห์ ต้องรอดูว่าจะคุ้มค่าแค่ไหน!`,
-              `ยืมมือตัวท็อปมาช่วยยิง! "${cu.team_name}" จัดแผนเฉพาะกิจด้วย Free Hit หวังปั่นป่วนหัวตารางให้สั่นสะเทือน!`
-            );
-          } else if (cuChip === 'wildcard') {
-            midOptions.push(
-              `ส่วนสายปฏิวัติทีม "${cu.team_name}" ชิงกด Wildcard โละนักเตะทิ้งยกชุด ปูทางสร้างขุมกำลังใหม่ระยะยาว!`,
-              `ล้างไพ่ชุบชีวิตใหม่! "${cu.team_name}" กางการ์ด Wildcard ผ่าตัดทีมยกชุด เตรียมความพร้อมโกยแต้มรอบหน้า!`
-            );
-          }
-        }
-
-        // Storyline H: League Highest Scorer (ตัวท็อปยิงระเบิดประจำสัปดาห์)
-        if (leagueData && leagueData.squads) {
-          const playerPtsMap = {};
-          sorted.forEach(t => {
-            const sq = leagueData.squads[`${t.entry_id}_${gwNumber}`];
-            if (sq && sq.starting) {
-              sq.starting.forEach(p => {
-                const raw = Number(p.raw_points) || (p.is_captain ? Math.floor((Number(p.points) || 0) / (Number(p.multiplier) || 2)) : (Number(p.points) || 0));
-                const pName = clean(p.name);
-                if (pName) {
-                  if (!playerPtsMap[pName] || playerPtsMap[pName].pts < raw) {
-                    playerPtsMap[pName] = { name: pName, pts: raw, owners: [t.team_name] };
-                  } else if (playerPtsMap[pName].pts === raw && !playerPtsMap[pName].owners.includes(t.team_name)) {
-                    playerPtsMap[pName].owners.push(t.team_name);
-                  }
-                }
-              });
-            }
-          });
-          const sortedBest = Object.values(playerPtsMap).sort((a, b) => b.pts - a.pts);
-          if (sortedBest[0] && sortedBest[0].pts >= 12) {
-            const bestP = sortedBest[0];
-            const owCount = bestP.owners.length;
-            if (owCount <= 2) {
-              const owText = bestP.owners.map(o => `"${o}"`).join(' และ ');
-              midOptions.push(
-                `นักเตะฟอร์มสะเด่าประจำสัปดาห์ต้องยกให้ ${bestP.name} ที่ระเบิดฟอร์มกดเดี่ยวไปถึง ${bestP.pts} แต้ม ซึ่งมีแค่ทีมตาเพชรอย่าง ${owText} เท่านั้นที่เลือกติดทีมไว้ได้!`,
-                `ใครมีก็ยิ้มแก้มปริ! ${bestP.name} สวมวิญญาณร่างทองซัดไปเน้นๆ ${bestP.pts} แต้ม แจกแต้มให้ผู้ถือครองหายากอย่าง ${owText} เดินยืดอกหล่อๆ ไปเลย!`,
-                `สมบัติผลัดกันชม! ${bestP.name} ร่างทองระเบิด ${bestP.pts} แต้ม มีเพียง ${owText} ที่ตาถึงกล้าจัดเข้าทีม รวยแต้มอยู่ไม่กี่คน!`
-              );
-            } else if (owCount >= 5) {
-              midOptions.push(
-                `ด้าน ${bestP.name} ทำหน้าที่เป็นตัวแบกมหาชนอย่างสมบูรณ์แบบ ซัดคนเดียว ${bestP.pts} แต้ม แจกจ่ายคะแนนให้ถึง ${owCount} ทีมในลีกเฮสนั่นกันถ้วนหน้า!`,
-                `ตัวแบกมหาชนของแทร่! ${bestP.name} ฟาดไปคนเดียว ${bestP.pts} แต้ม แจกจ่ายคะแนนให้ถึง ${owCount} ทีมยิ้มหน้าบานถ้วนหน้า!`
-              );
-            }
-          }
-        }
-
-        // Storyline I: Defensive Wall vs Clean Sheet Collapse
-        if (leagueData && leagueData.squads) {
-          const defPerformance = [];
-          sorted.forEach(t => {
-            const sq = leagueData.squads[`${t.entry_id}_${gwNumber}`];
-            if (sq && sq.starting) {
-              const defs = sq.starting.filter(p => ['GKP', 'DEF', '1', '2'].includes(String(p.pos || p.position || p.element_type)));
-              const defPts = defs.reduce((sum, p) => sum + (Number(p.points) || 0), 0);
-              const playedDefs = defs.filter(p => !p.not_played_yet && Number(p.minutes || 0) > 0);
-              const totalDefMins = defs.reduce((sum, p) => sum + (Number(p.minutes) || 0), 0);
-              defPerformance.push({
+          const capP = sq.starting.find(p => p.is_captain);
+          const vcP = sq.starting.concat(sq.bench || []).find(p => p.is_vice);
+          if (capP && vcP && !capP.not_played_yet && !vcP.not_played_yet) {
+            const capRaw = Number(capP.raw_points !== undefined ? capP.raw_points : Math.floor((Number(capP.points) || 0) / (Number(capP.multiplier) || 2)));
+            const vcRaw = Number(vcP.raw_points !== undefined ? vcP.raw_points : Number(vcP.points) || 0);
+            const capMins = Number(capP.minutes || 0);
+            if ((isFinished || capMins > 0) && vcRaw - capRaw >= 6) {
+              vcRegrets.push({
                 team: t.team_name,
-                defPts,
-                playedCount: playedDefs.length,
-                totalDefs: defs.length,
-                totalMins: totalDefMins
+                capName: clean(capP.name),
+                capRaw,
+                vcName: clean(vcP.name),
+                vcRaw,
+                lostPts: (vcRaw - capRaw) * ((Number(capP.multiplier) || 2) - 1)
               });
             }
-          });
-          defPerformance.sort((a, b) => b.defPts - a.defPts);
-          const bestDef = defPerformance[0];
-          // Filter worstDef to only teams where defense has actually played (at least 3 played or 180+ minutes, or GW finished)
-          const validWorstDefs = defPerformance.filter(d => isFinished || (d.playedCount >= 3 && d.totalMins >= 180));
-          const worstDef = validWorstDefs.length > 0 ? validWorstDefs[validWorstDefs.length - 1] : null;
-
-          if (bestDef && bestDef.defPts >= 24) {
-            midOptions.push(
-              `เกมรับคือหัวใจของความสำเร็จ! "${bestDef.team}" วางแผงหลังเหนียวแน่นระดับกำแพงเมืองจีน โกยแต้มเกมรับรวมถึง ${bestDef.defPts} แต้ม สยบเกมรุกคู่แข่งกระจุย!`,
-              `กำแพงเหล็กสุดแกร่ง! "${bestDef.team}" แนวรับเหนียวหนึบโกยแต้มคลีนชีทไปถึง ${bestDef.defPts} แต้ม เดินแอ็คหล่อได้เลย!`
-            );
           }
-          if (worstDef && worstDef.defPts <= 4 && sorted.length > 5) {
-            midOptions.push(
-              `ขณะที่ "${worstDef.team}" เจอวิกฤตคลีนชีทแตกกระจาย แผงหลังโดนเจาะพรุนเก็บแต้มรวมได้แค่ ${worstDef.defPts} แต้ม น้ำตาแทบไหลเป็นสายเลือด!`,
-              `คลีนชีทแตกนาทีบาป! "${worstDef.team}" แผงหลังนัดบอดเสียประตูกราวรูด เก็บแต้มเกมรับรวมได้แค่ ${worstDef.defPts} แต้ม หมดคำจะพูด!`
-            );
-          }
-        }
 
-        // Storyline J: Red Card / Negative Points Disaster (โดนใบแดง)
-        if (leagueData && leagueData.squads) {
-          const redCardVictims = [];
-          sorted.forEach(t => {
-            const sq = leagueData.squads[`${t.entry_id}_${gwNumber}`];
-            if (sq && sq.starting) {
-              const badP = sq.starting.find(p => (Number(p.points) || 0) < 0 || (Number(p.raw_points) || 0) < 0);
-              if (badP) {
-                redCardVictims.push({ team: t.team_name, player: clean(badP.name), pts: badP.points, isCap: badP.is_captain });
+          let defPts = 0;
+          let playedDefs = 0;
+          let totalDefMins = 0;
+
+          sq.starting.forEach(p => {
+            const raw = Number(p.raw_points !== undefined ? p.raw_points : (p.is_captain ? Math.floor((Number(p.points) || 0) / (Number(p.multiplier) || 2)) : (Number(p.points) || 0)));
+            const pName = clean(p.name);
+            if (pName) {
+              if (!playerPtsMap[pName] || playerPtsMap[pName].pts < raw) {
+                playerPtsMap[pName] = { name: pName, pts: raw, owners: [t.team_name] };
+              } else if (playerPtsMap[pName].pts === raw && !playerPtsMap[pName].owners.includes(t.team_name)) {
+                playerPtsMap[pName].owners.push(t.team_name);
               }
             }
-          });
-          if (redCardVictims.length > 0) {
-            const rcv = pickRnd(14, redCardVictims);
-            if (rcv.isCap) {
-              midOptions.push(
-                `เคราะห์ร้ายประจำสัปดาห์ต้องเห็นใจ "${rcv.team}" เมื่อกัปตัน ${rcv.player} โดนใบแดงไล่ออกจนแต้มติดลบ ${rcv.pts} แต้ม นั่งกุมขมับแทบสำลักน้ำตา!`,
-                `ดวงกุดแห่งปีต้องยกให้ "${rcv.team}" มอบปลอกแขนให้ ${rcv.player} แต่ดันโดนใบแดงสังเวยแต้มติดลบ ${rcv.pts} คะแนน นั่งกุมขมับแทบสิ้นสติ!`,
-                `พังยับเยิน! "${rcv.team}" เจออาถรรพ์กัปตัน ${rcv.player} โดนไล่ออกจากสนาม แต้มติดลบคาตา ${rcv.pts} แต้ม ดิ่งเหวแบบหมดคำจะพูด!`
-              );
-            } else {
-              midOptions.push(
-                `ส่วนเคราะห์ร้ายประจำสัปดาห์ต้องเห็นใจ "${rcv.team}" ที่เจอแจ็คพอต ${rcv.player} โดนใบแดงทำแต้มติดลบ ${rcv.pts} แต้ม ฉุดคะแนนทรุดฮวบ!`,
-                `ดวงกุดแห่งปีต้องยกให้ "${rcv.team}" ส่ง ${rcv.player} ลงสนามแต่ดันเจอแจ็คพอตโดนไล่ออกแถมแต้มติดลบ ${rcv.pts} แต้ม หมดคำจะพูด!`,
-                `ซวยซ้ำซาก! "${rcv.team}" ส่ง ${rcv.player} ลงสนามแต่ดันได้ใบแดงแถมแต้มติดลบ ${rcv.pts} แต้ม ฉุดทีมดำดิ่งแบบไม่ทันตั้งตัว!`
-              );
-            }
-          }
-        }
-
-        // Storyline K: Dark Horse Surge (ม้ามืดล้มยักษ์)
-        if (leagueData && leagueData.teams && sorted.length >= 6) {
-          const top2 = sorted.slice(0, 2);
-          const allOverall = [...leagueData.teams].sort((a, b) => (b.total_points || 0) - (a.total_points || 0));
-          const darkHorse = top2.find(t => {
-            const tid = Number(t.entry_id);
-            const ovRank = allOverall.findIndex(o => Number(o.entry_id) === tid) + 1;
-            return ovRank > Math.floor(allOverall.length / 2);
-          });
-          if (darkHorse) {
-            midOptions.push(
-              `ม้ามืดประจำสัปดาห์ต้องยกให้ "${darkHorse.team_name}" แม้อันดับตารางรวมจะอยู่โซนล่าง แต่วีคนี้งัดฟอร์มเทพกดไปถึง ${darkHorse[scoreKey]} แต้ม ตบกบาลหัวแถวฉลองชัยประจำสัปดาห์อย่างสะใจโก๋!`,
-              `ของแทร่ตื่นจากหลับไหล! "${darkHorse.team_name}" ระเบิดฟอร์มสะเด่า ${darkHorse[scoreKey]} แต้ม ส่งสัญญาณเตือนคู่แข่งทั้งลีกว่าอย่าเพิ่งกาชื่อทิ้ง!`,
-              `ม้ามืดของแทร่! "${darkHorse.team_name}" ระเบิดฟอร์มสะเด่า ${darkHorse[scoreKey]} แต้ม ล้มยักษ์ฉลองชัยประจำสัปดาห์อย่างสะใจโก๋!`
-            );
-          }
-        }
-
-        // Storyline L: Tough Week / Bottom of the Table (ท้ายตาราง)
-        if (bottom && bottom.entry_id !== top.entry_id && sorted.length > 3) {
-          const bottomRem = Number(bottom.players_remaining !== undefined ? bottom.players_remaining : (bottom.live_rem !== undefined ? bottom.live_rem : 0));
-          const bottomPts = Number(bottom[scoreKey] || 0);
-          if (isLive && bottomPts <= 4 && bottomRem >= 7) {
-            midOptions.push(
-              `ส่วน "${bottom.team_name}" ที่แต้มยังนิ่งอยู่ที่ ${bottomPts} แต้ม เป็นเพราะขุมกำลังส่วนใหญ่ (${bottomRem} ตัว) ยังไม่ได้ลงเตะ รอดูคู่ดึกว่าจะเร่งเครื่องหนีโซนล่างได้หรือไม่!`,
-              `ด้าน "${bottom.team_name}" แต้มสดเปิดหัวที่ ${bottomPts} แต้ม แต่ยังมีผู้เล่นรอปล่อยของอีกถึง ${bottomRem} คน คอยจับตาดูการขยับอันดับคืนนี้!`
-            );
-          } else {
-            midOptions.push(
-              `ด้านท้ายตารางสัปดาห์นี้ "${bottom.team_name}" ตีนบอดสนิท เก็บไปได้แค่ ${bottom[scoreKey]} แต้ม รั้งตำแหน่งบ๊วยประจำสัปดาห์ ต้องรีบจุดธูปขอพรแก้เคล็ดด่วน!`,
-              `ส่วนตำแหน่งสู้ชีวิตประจำสัปดาห์ตกเป็นของ "${bottom.team_name}" ที่แต้มสะดุดอยู่ที่ ${bottom[scoreKey]} คะแนน นั่งเหงาอยู่ก้นตาราง สัปดาห์หน้าค่อยว่ากันใหม่!`,
-              `เคราะห์ซ้ำกรรมซัด! "${bottom.team_name}" แต้มฝืดเคืองอยู่ที่ ${bottom[scoreKey]} แต้ม นั่งหนาวเหน็บอยู่ก้นตาราง รอวันฟื้นตัวในสัปดาห์หน้า!`,
-              `ยับเยินสุดขีด! "${bottom.team_name}" เก็บไปได้แค่ ${bottom[scoreKey]} แต้ม จมบ๊วยสนิทแบบเดียวดาย รีบหาทางแก้หน้าสัปดาห์หน้าด่วน!`
-            );
-          }
-        }
-
-        // Multi-Storyline Dynamic Permutation & Composition
-        let midSentence = '';
-        if (midOptions.length > 0) {
-          const story1 = pickRnd(15, midOptions);
-          midSentence = story1;
-
-          // If there are 4+ diverse options and offset indicates a rich combo, join a second contrasting storyline
-          if (midOptions.length >= 4 && (stepOffset % 2 === 1 || midOptions.length >= 7)) {
-            const available2 = midOptions.filter(m => m !== story1);
-            if (available2.length > 0) {
-              const story2 = pickRnd(16, available2);
-              const connectors = isLive
-                ? ['ส่วนดราม่าสดอีกมุม', 'ตัดภาพไปที่', 'ขณะที่ไฮไลท์ฝั่ง', 'แต่ที่พีคไปกว่านั้นคือ', 'หันมามองอีกด้าน', 'ด้านความบันเทิงสดๆ ระหว่างแข่ง']
-                : ['ส่วนดราม่าอีกมุม', 'ตัดภาพไปที่', 'ขณะที่ไฮไลท์ฝั่ง', 'แต่ที่พีคไปกว่านั้นคือ', 'หันมามองอีกด้าน', 'ด้านความบันเทิงประจำสัปดาห์'];
-              const conn = pickRnd(17, connectors);
-              if (story2.startsWith('ส่วน') || story2.startsWith('ด้าน') || story2.startsWith('ขณะที่')) {
-                midSentence += ` ${story2}`;
-              } else {
-                midSentence += ` ${conn} ${story2}`;
+            if ((Number(p.provisional_bonus) || 0) >= 2 && pName) {
+              if (!provBonusMap[pName]) {
+                provBonusMap[pName] = { name: pName, bonus: Number(p.provisional_bonus), owners: [] };
+              }
+              if (!provBonusMap[pName].owners.includes(t.team_name)) {
+                provBonusMap[pName].owners.push(t.team_name);
               }
             }
-          }
-        }
-
-        // =========================================================
-        // 3. ENDING PUNCHLINE (คลังประโยคปิดท้าย 38 ประโยค สไตล์กูรูลูกหนังสายฮาร์ดคอร์)
-        // =========================================================
-        let endOptions = [];
-        if (isFinished) {
-          endOptions = [
-            `ของแทร่ไม่ต้องพูดเยอะ สัปดาห์หน้าดวลกันใหม่!`,
-            `ของจริงวัดกันที่ผลงานบนตารางคะแนนล้วนๆ!`,
-            `แดกเต็มข้อ ล่อเต็มแข้ง หวานเจี๊ยบบบ!`,
-            `ใครจัดตัวพลาดสัปดาห์นี้ รีบไปอาบน้ำมนต์ล้างซวยก่อนลงสนามรอบหน้าด่วน!`,
-            `สัปดาห์หน้าเดดไลน์มาไว อย่ามัวแต่เหม่อเดี๋ยวตกรถด่วนขบวนแชมป์!`,
-            `นี่แหละเสน่ห์แฟนตาซี วันนี้แพ้ สัปดาห์หน้าอาจระเบิดฟอร์มแชมป์!`,
-            `คนชนะเดินแอ็คหล่อได้เต็มที่ ส่วนคนแพ้ซุ่มจัดทัพรอล้างตา!`,
-            `สามแต้มในสนามจริงยังสู้ความสะใจที่ได้เหยียบเพื่อนในมินิลีกไม่ได้เลยโว้ย!`,
-            `กูรูข้างสนามขอซูฮกให้หนึ่งจอก จัดตัวได้สะเด่าทรวงจริงๆ!`,
-            `แต้มเป็นเรื่องของวาสนา แต่กึ๋นจัดทัพเป็นเรื่องของฝีมือล้วนๆ!`,
-            `จบสัปดาห์นี้แยกย้ายไปเลียแผลใจ แล้วเจอกันใหม่แมตช์หน้า!`,
-            `ตารางคะแนนไม่เคยโกหกใคร ตัวตึงหรือตัวตลกเขาวัดกันตรงนี้!`,
-            `บอลเตะจบแยกย้าย ใครแพ้รีบหาพระเครื่องมาคล้องคอแก้เคล็ดด่วน!`,
-            `ความสะใจที่ได้เหยียบเพื่อนร่วมลีกในสัปดาห์นี้ มันประเมินค่าไม่ได้!`,
-            `ชนะรอบนี้รับรางวัลเต็มคาราเบล คนแพ้ก็ก้มหน้าซดน้ำใบบัวบกกันไป!`,
-            `เล่นแฟนตาซีต้องใจนิ่งเหมือนพระเอกหนังแอ็คชั่น สัปดาห์หน้าเจอกันใหม่!`,
-            `จ่าฝูงเขาเดินยืดอก ส่วนแก๊งท้ายตารางรอกัปตันตัวใหม่มากู้วิกฤต!`,
-            `ร้องไห้ทำไม ไปนอนได้แล้ว สัปดาห์หน้าค่อยมาแก้ตัวใหม่!`,
-            `สยบปากหมาประจำสัปดาห์ จ่าฝูงเดินแอ็คหล่อแบบไม่ต้องเกรงใจใคร!`,
-            `บอลจบ อารมณ์ไม่จบ ใครโดนแซงนาทีบาปคืนนี้นอนไม่หลับแน่นอน!`,
-            `สะเด่าไปเลยอีน้องงง! วันนี้พี่ขอเดินยืดอก สัปดาห์หน้าว่ากันใหม่!`,
-            `ของจริงเขาไม่โม้เยอะ ตารางคะแนนมันฟ้องอยู่ทนโท่!`,
-            `ใครแพ้ยับเยินสัปดาห์นี้ รีบไปทำบุญล้างซวยก่อนลงแข่งสัปดาห์หน้าด่วน!`,
-            `แพ้แต้มเดียวก็คือแพ้ ร้องไห้ทำไม ลูกผู้ชายเขาไม่ร้องไห้กันหรอกโว้ย!`,
-            `วงการนี้เข้าแล้วออกยาก แต้มจะบอดแค่ไหน สัปดาห์หน้าก็กดเข้ามาจัดตัวใหม่อยู่ดี!`
-          ];
-        } else {
-          endOptions = [
-            `แต่บอลยังเตะไม่ครบทุกคู่ อย่าเพิ่งรีบโม้ เดี๋ยวโดนยิงนาทีบาปจะหาว่าไม่เตือน!`,
-            `บอลยังไม่จบอย่าเพิ่งนับแต้ม รอดูบทสรุปหลังเสียงนกหวีดสุดท้าย!`,
-            `จ่าฝูงชั่วคราวอย่าเพิ่งเหลิง ลูกกลมๆ มีลมอยู่ข้างใน อะไรก็เกิดขึ้นได้เสมอ!`,
-            `ยังเหลือตัวทีเด็ดในคู่อื่นให้ลุ้น ระวังโดนปาดหน้าเค้กตอนจบสัปดาห์!`,
-            `เกมยังไม่จบ 90 นาที ใครมีตัวเหลือในมือเตรียมสวดมนต์รอปาฏิหาริย์ได้เลย!`,
-            `คะแนนโบนัสยังไม่นิ่ง เกาะขอบจอรอดูกันต่อห้ามกะพริบตา!`,
-            `สงครามยังไม่จบ อย่าเพิ่งรีบฉลอง เดี๋ยวเจอทีเด็ดคู่ดึกแซงทางโค้ง!`,
-            `ลุ้นกันนัดต่อนัด ตัวสำรองออโต้ซับยังอาจเปลี่ยนชีวิตได้!`,
-            `คะแนนโบนัส 3-2-1 ยังไม่เข้ากระเป๋า ใครมีตัวเต็งสายโบนัสเตรียมนั่งลุ้น!`,
-            `สงครามยังไม่จบ อย่าเพิ่งนับศพทหาร คู่ดึกยังมีทีเด็ดพลิกสถานการณ์ได้ตลอดเวลา!`,
-            `อย่าเพิ่งรีบดีใจ จ่าฝูงชั่วคราวระวังเจอแซงโค้งสุดท้ายตอนจบเกม!`,
-            `ใครที่มีตัวแข่งคู่วันอาทิตย์ กุมมือสวดมนต์รอปาฏิหาริย์ช่วยชีวิตได้เลย!`,
-            `เกมยังไม่จบ ทำใจร่มๆ รอดูว่าตัวสำรองจะถูกส่งลงมาเปลี่ยนชะตาหรือไม่!`,
-            `ลุ้นแต้มสดกันตาแทบค้าง ใครมีตัวชนกันในคู่ต่อไปมีหวังบี้กันตายไปข้าง!`,
-            `นกหวีดยังไม่หมดเวลา อย่าเพิ่งรีบเดินแอ็คหล่อ เดี๋ยวเจอแซงนาทีบาปจะร้องไม่ออก!`,
-            `บอลลูกกลมๆ อะไรก็เกิดขึ้นได้ คู่ดึกยังมีทีเด็ดซ่อนอยู่อีกเพียบ!`,
-            `ลุ้นกันจนเยี่ยวเหนียว ใครถือตัวคู่ดึกนั่งสวดมนต์ขอให้ยิงแสกหน้าด่วน!`,
-            `จ่าฝูงชั่วคราวเตรียมยาพาราไว้ได้เลย บอลยังไม่จบ ระวังโดนปาดหน้าเค้ก!`
-          ];
-        }
-
-        const endSentence = pickRnd(18, endOptions);
-
-        if (midSentence) {
-          return `${leadSentence} ${midSentence} ${endSentence}`;
-        }
-        return `${leadSentence} ${endSentence}`;
-      }
-
-      static _generateEnglishPreMatchNote({ gwNumber, sorted, stepOffset, baseHash, pickRnd }) {
-        const capMap = {};
-        let chipCnt = 0;
-        let hitCnt = 0;
-        sorted.forEach(r => {
-          const c = (r.captain || '-').replace(/\s*\(C\)/gi, '').trim();
-          if (c && c !== '-') capMap[c] = (capMap[c] || 0) + 1;
-          if (r.chip && r.chip !== '-') chipCnt++;
-          if (r.hits > 0) hitCnt++;
+            if (((Number(p.goals_scored) || 0) >= 2 || (Number(p.goals_scored) || 0) + (Number(p.assists) || 0) >= 2) && pName) {
+              if (!goalHeroesMap[pName]) {
+                goalHeroesMap[pName] = {
+                  name: pName,
+                  goals: Number(p.goals_scored) || 0,
+                  assists: Number(p.assists) || 0,
+                  pts: raw,
+                  owners: []
+                };
+              }
+              if (!goalHeroesMap[pName].owners.includes(t.team_name)) {
+                goalHeroesMap[pName].owners.push(t.team_name);
+              }
+            }
+            if ((Number(p.points) || 0) < 0 || raw < 0 || (Number(p.red_cards) || 0) > 0 || (Number(p.penalties_missed) || 0) > 0) {
+              redCardVictims.push({
+                team: t.team_name,
+                player: pName,
+                pts: Number(p.points) || 0,
+                isCap: Boolean(p.is_captain),
+                isRed: (Number(p.red_cards) || 0) > 0,
+                isPenMiss: (Number(p.penalties_missed) || 0) > 0
+              });
+            }
+            if (['GKP', 'DEF', '1', '2'].includes(String(p.pos || p.position || p.element_type))) {
+              defPts += (Number(p.points) || 0);
+              if (!p.not_played_yet && Number(p.minutes || 0) > 0) playedDefs++;
+              totalDefMins += Number(p.minutes || 0);
+            }
+          });
+          defPerformance.push({ team: t.team_name, defPts, playedCount: playedDefs, totalMins: totalDefMins });
         });
-        const topCapEntry = Object.entries(capMap).sort((a, b) => b[1] - a[1])[0];
-        const popCapText = topCapEntry 
-          ? `armband favorite is ${topCapEntry[0]} (${topCapEntry[1]} teams)`
-          : `captain picks are scattered all over the shop`;
-        const tacticalSub = chipCnt > 0
-          ? `with ${chipCnt} managers blowing their chips early`
-          : (hitCnt > 0 ? `while ${hitCnt} brave bastards took point hits to panic-buy new players` : `with not a single point hit taken across the whole league`);
 
-        const versionIdx = Math.abs(baseHash * 7 + stepOffset * 19) % 4;
-        let preNotes = [];
-        if (versionIdx === 0) {
-          preNotes = [
-            `Deadline locked for Gameweek ${gwNumber}! The ${popCapText}, ${tacticalSub}. Stop whining about rotation rumors and get on with it. Let's see who actually understands football and who's just an armchair amateur!`,
-            `Pencils down for GW ${gwNumber}! The ${popCapText}, ${tacticalSub}. If your captain blanks this weekend, do me a favor and don't come crying to the group chat. Kickoff approaches!`,
-            `Teams are in for Gameweek ${gwNumber}. The ${popCapText}, ${tacticalSub}. Lots of big talk down the pub all week — now let's see if anyone has the bollocks to back it up on the pitch!`
-          ];
-        } else if (versionIdx === 1) {
-          preNotes = [
-            `Gameweek ${gwNumber} deadline passed and the FPL servers survived! The ${popCapText}, ${tacticalSub}. Prepare your emotional support spreadsheets, lads. Someone is definitely getting mudded by Sunday evening!`,
-            `Locked and loaded for GW ${gwNumber}! The ${popCapText}, ${tacticalSub}. Half of you probably kneejerked at 10:59 AM. May the FPL gods have mercy on our delusional souls!`,
-            `Pencils down, degenerates! Gameweek ${gwNumber} is underway. The ${popCapText}, ${tacticalSub}. Time to turn off phone notifications and pray your differentials don't get benched by Pep roulette!`
-          ];
-        } else if (versionIdx === 2) {
-          preNotes = [
-            `The weekly parade of terrible decisions is officially locked in for GW ${gwNumber}! The ${popCapText}, ${tacticalSub}. Can't wait to watch second place choke and the wooden spoon candidates cry their eyes out!`,
-            `Lineups locked for Gameweek ${gwNumber}! The ${popCapText}, ${tacticalSub}. Some of you spent 10 hours staring at underlying xG stats just to pick the wrong captain anyway. Proper donkey behavior!`,
-            `Brace yourselves for GW ${gwNumber}! The ${popCapText}, ${tacticalSub}. Don't panic if your squad looks like hot garbage — there's always the luxury of blaming the referee later!`
-          ];
-        } else {
-          preNotes = [
-            `The stage is set! Gameweek ${gwNumber} arrives with breathtaking tension! The ${popCapText}, ${tacticalSub}. Reputations on the line, glory within touching distance. Let the beautiful madness begin!`,
-            `Silence descends across the league as Gameweek ${gwNumber} locks in! The ${popCapText}, ${tacticalSub}. Destinies will be forged, heroes will rise, and pretenders will be exposed. Kickoff awaits!`,
-            `The gladiators have entered the colosseum for Gameweek ${gwNumber}! The ${popCapText}, ${tacticalSub}. Thirty-eight chapters of unadulterated drama, and this battle begins right now!`
-          ];
+        defPerformance.sort((a, b) => b.defPts - a.defPts);
+        const validWorstDefs = defPerformance.filter(d => isFinished || (d.playedCount >= 3 && d.totalMins >= 180));
+        const bestDef = defPerformance[0] || null;
+        const worstDef = validWorstDefs.length > 0 ? validWorstDefs[validWorstDefs.length - 1] : null;
+        const sortedBestPlayer = Object.values(playerPtsMap).sort((a, b) => b.pts - a.pts)[0] || null;
+        const topProvBonus = Object.values(provBonusMap).sort((a, b) => (b.bonus - a.bonus) || (b.owners.length - a.owners.length))[0] || null;
+        const topGoalHero = Object.values(goalHeroesMap).sort((a, b) => (b.goals - a.goals) || (b.pts - a.pts))[0] || null;
+
+        const txMaster = [...sorted].filter(t => (t.transfers_net_impact || 0) >= 6).sort((a, b) => (b.transfers_net_impact || 0) - (a.transfers_net_impact || 0))[0] || null;
+        const txBust = [...sorted].filter(t => (t.transfers_net_impact || 0) <= -6).sort((a, b) => (a.transfers_net_impact || 0) - (b.transfers_net_impact || 0))[0] || null;
+        const benchKing = [...sorted].filter(t => (t.bench_points || 0) >= 10 && !['bboost', 'bench_boost'].includes((t.chip || '').toLowerCase())).sort((a, b) => (b.bench_points || 0) - (a.bench_points || 0))[0] || null;
+        const hitTakers = sorted.filter(t => t.hits > 0).sort((a, b) => b.hits - a.hits);
+        const chipUsers = sorted.filter(t => t.chip && !['', '-', 'none'].includes(String(t.chip).toLowerCase()));
+
+        let darkHorse = null;
+        if (leagueData && leagueData.teams && sorted.length >= 6) {
+          const allOverall = [...leagueData.teams].sort((a, b) => (b.total_points || 0) - (a.total_points || 0));
+          darkHorse = sorted.slice(0, 2).find(t => {
+            const ovRank = allOverall.findIndex(o => Number(o.entry_id) === Number(t.entry_id)) + 1;
+            return ovRank > Math.floor(allOverall.length / 2);
+          }) || null;
         }
-        return `${pickRnd(101, preNotes)}`;
+
+        const overallContext = (extraContext && extraContext.overallContext) ? extraContext.overallContext : null;
+
+        return {
+          capCountMap, mostPopCap, diffCapTeams, topProvBonus, topGoalHero,
+          autoSubHeroes, redCardVictims, vcRegrets, bestDef, worstDef,
+          sortedBestPlayer, txMaster, txBust, benchKing, hitTakers, chipUsers,
+          darkHorse, overallContext, bottom, avgScore
+        };
       }
 
-      static _generateEnglishNote(params) {
+      static _buildThaiPreMatch({ gwNumber, topCapEntry, chipCnt, hitCnt, persona, pick }) {
+        const popCap = topCapEntry
+          ? `กัปตันมหาชนรอบนี้เทไปที่ ${topCapEntry[0]} (${topCapEntry[1]} ทีม)`
+          : `ต่างคนต่างแยกสายเลือกกัปตันวัดใจ`;
+        const tact = chipCnt > 0
+          ? `มีกุนซือเปิดชิปตั้งแต่ก่อนคิกออฟ ${chipCnt} ทีม`
+          : (hitCnt > 0 ? `มีทีมยอมแลกแต้มลบเสริมทัพ ${hitCnt} ทีม` : `ทุกทีมเก็บแต้มลบไว้มิดชิดไม่มีใครยอมเสียฟรี`);
+
+        const byPersona = {
+          broadcaster: [
+            LiveCommentaryEngine._c('pre_th_b1', 'pre', `สัญญาณสดก่อนคิกออฟ Gameweek ${gwNumber}! ${popCap} และ${tact} แฟนแฟนตาซีเตรียมลุ้นระทึกตั้งแต่คู่เปิดสนามได้เลย!`),
+            LiveCommentaryEngine._c('pre_th_b2', 'pre', `เข้าสู่โค้งนับถอยหลัง GW ${gwNumber} อย่างเป็นทางการ ${popCap} ขณะที่${tact} ใครจะออกตัวแรงตั้งแต่วันแรก เดี๋ยวรู้กันบนสนามจริง!`),
+            LiveCommentaryEngine._c('pre_th_b3', 'pre', `รายชื่อทั้ง 11 ตัวจริงของทุกลีกพร้อมรบใน Gameweek ${gwNumber} แล้ว ${popCap} ส่วน${tact} จับตาดูหมากเด็ดในคู่แรกให้ดี!`)
+          ],
+          columnist: [
+            LiveCommentaryEngine._c('pre_th_c1', 'pre', `ม่านแห่ง Gameweek ${gwNumber} กำลังจะเปิดฉาก ${popCap} และ${tact} สัปดาห์นี้ไม่ใช่แค่เรื่องของตัวเต็ง แต่เป็นบททดสอบความนิ่งของคนจัดทัพ`),
+            LiveCommentaryEngine._c('pre_th_c2', 'pre', `ก่อนเสียงนกหวีดแรกของ GW ${gwNumber} จะดังขึ้น ${popCap} ขณะที่${tact} ตัวเลขบนกระดาษสวยแค่ไหน สุดท้ายต้องวัดกันที่ 90 นาทีในสนาม`),
+            LiveCommentaryEngine._c('pre_th_c3', 'pre', `หน้ากระดานหมากรุก GW ${gwNumber} วางตัวครบทุกตำแหน่ง ${popCap} และ${tact} รอดูว่าใครอ่านเกมขาดและใครจะเดินหลงทาง`)
+          ],
+          analyst: [
+            LiveCommentaryEngine._c('pre_th_a1', 'pre', `สรุปภาพรวมหลังเดดไลน์ GW ${gwNumber}: ${popCap} และ${tact} จุดชี้วัดรอบนี้อยู่ที่ผลงานของตัวต่างนอกกระแส`),
+            LiveCommentaryEngine._c('pre_th_a2', 'pre', `เช็กโครงสร้างขุมกำลัง GW ${gwNumber} เรียบร้อย ${popCap} พร้อมข้อมูลเสริมว่า${tact} คู่ไหนจะพลิกค่าเฉลี่ยลีกต้องติดตามจากตัวทีเด็ดที่ถือครองน้อย`),
+            LiveCommentaryEngine._c('pre_th_a3', 'pre', `เข้าสู่ช่วงพรีแมตช์ GW ${gwNumber} ${popCap} และ${tact} ทีมที่กัปตันตรงกันจะต้องไปตัดสินกันที่กองหลังและม้านั่งสำรอง`)
+          ],
+          banter: [
+            LiveCommentaryEngine._c('pre_th_x1', 'pre', `ระฆังเดดไลน์ GW ${gwNumber} ปิดฉากแล้ว! ${popCap} แถม${tact} คืนนี้เตรียมป๊อปคอร์นรอได้เลย มีคนหน้ามืดคาสนามแน่นอน!`),
+            LiveCommentaryEngine._c('pre_th_x2', 'pre', `จัดตัวเสร็จแล้วก็แยกย้ายไปสวดมนต์สำหรับ GW ${gwNumber}! ${popCap} และ${tact} ใครกัปตันบอดเตรียมโดนล้อในกลุ่มแชทจนถึงเช้า!`),
+            LiveCommentaryEngine._c('pre_th_x3', 'pre', `เปิดโผความบันเทิง GW ${gwNumber} ครบทุกทีม! ${popCap} ส่วน${tact} ใครมือลั่นนาทีสุดท้าย เดี๋ยวสนามจริงตบหน้าสั่งสอนให้เอง!`)
+          ]
+        };
+        return pick(byPersona[persona.id] || byPersona.broadcaster, 101).text;
+      }
+
+      static _buildEnglishPreMatch({ gwNumber, topCapEntry, chipCnt, hitCnt, persona, pick }) {
+        const popCap = topCapEntry
+          ? `${topCapEntry[0]} takes the popular armband (${topCapEntry[1]} teams)`
+          : `captaincy choices are split across the board`;
+        const tact = chipCnt > 0
+          ? `with ${chipCnt} managers firing chips right out of the gate`
+          : (hitCnt > 0 ? `while ${hitCnt} managers took point hits to reshape their squads` : `with zero point hits taken across the league`);
+
+        const byPersona = {
+          broadcaster: [
+            LiveCommentaryEngine._c('pre_en_b1', 'pre', `Welcome to Gameweek ${gwNumber} kickoff coverage! ${popCap}, ${tact}. Strap in for every goal, bonus swing, and late twist!`),
+            LiveCommentaryEngine._c('pre_en_b2', 'pre', `Teams are locked in for GW ${gwNumber}! ${popCap}, ${tact}. First whistle is moments away and the live table is poised to move!`),
+            LiveCommentaryEngine._c('pre_en_b3', 'pre', `All squads are set for Gameweek ${gwNumber}! ${popCap}, ${tact}. Keep an eye on those early differentials!`)
+          ],
+          columnist: [
+            LiveCommentaryEngine._c('pre_en_c1', 'pre', `The curtain rises on Gameweek ${gwNumber}. ${popCap}, ${tact}. Conviction meets reality the moment the opening ball is kicked.`),
+            LiveCommentaryEngine._c('pre_en_c2', 'pre', `Lineups are sealed for GW ${gwNumber}. ${popCap}, ${tact}. Reputations mean nothing once ninety minutes begin.`),
+            LiveCommentaryEngine._c('pre_en_c3', 'pre', `A fascinating tactical puzzle awaits in Gameweek ${gwNumber}: ${popCap}, ${tact}.`)
+          ],
+          analyst: [
+            LiveCommentaryEngine._c('pre_en_a1', 'pre', `GW ${gwNumber} pre-match readout: ${popCap}, ${tact}. When armbands cluster, rank movement shifts onto differential slots and defensive returns.`),
+            LiveCommentaryEngine._c('pre_en_a2', 'pre', `Deadline lock complete for GW ${gwNumber}. ${popCap}, ${tact}. Expect tight early variance until late-fixture assets feature.`),
+            LiveCommentaryEngine._c('pre_en_a3', 'pre', `Pre-kickoff telemetry for GW ${gwNumber}: ${popCap}, ${tact}. Watch the low-owned picks to decide the weekly margin.`)
+          ],
+          banter: [
+            LiveCommentaryEngine._c('pre_en_x1', 'pre', `Deadline locked for GW ${gwNumber} — no take-backs now! ${popCap}, ${tact}. Half the league is already sweating before kickoff!`),
+            LiveCommentaryEngine._c('pre_en_x2', 'pre', `Pencils down for Gameweek ${gwNumber}! ${popCap}, ${tact}. Whoever kneejerked five minutes before lock is about to learn a painful lesson!`),
+            LiveCommentaryEngine._c('pre_en_x3', 'pre', `Lineups are official for GW ${gwNumber}! ${popCap}, ${tact}. Group chat excuses start in 3, 2, 1!`)
+          ]
+        };
+        return pick(byPersona[persona.id] || byPersona.broadcaster, 102).text;
+      }
+
+      static _buildThaiCommentary(ctx) {
         const {
-          gwNumber, gwData, leagueName, leagueData, stepOffset, baseHash,
-          sorted, eligibleSorted, top, second, bottom, topPts, secondPts, diff,
-          scoreKey, isStarted, isLive, isFinished, isJoint, winners,
-          isCentury, chip, captName, avgScore, secName, topRem, secRem,
-          heroPlayer, secondHero, winStreak, isStreak, isTopNonPrize, overallTop,
-          clean, pickRnd, getSquad
-        } = params;
+          gwNumber, persona, pick, clean, getSquad,
+          sorted, top, second, bottom, topPts, secondPts, diff,
+          scoreKey, isLive, isFinished, isJoint, winners, isCentury, chip, captName,
+          avgScore, secName, topRem, secRem, heroPlayer, secondHero, winStreak,
+          isStreak, isTopNonPrize, overallTop, signals, baseHash, stepOffset
+        } = ctx;
 
-        const versionIdx = Math.abs(baseHash * 7 + stepOffset * 19) % 4;
-        const bottomPts = bottom ? (bottom[scoreKey] !== undefined ? bottom[scoreKey] : (bottom.net_points || bottom.points || 0)) : 0;
+        const pId = persona.id;
+        const heroTxt = heroPlayer
+          ? (secondHero
+              ? `${heroPlayer.name} (${heroPlayer.pts} pts) กับ ${secondHero.name} (${secondHero.pts} pts)`
+              : `${heroPlayer.name} (${heroPlayer.pts} pts)`)
+          : `กัปตัน ${captName}`;
 
-        // 1. LEAD SENTENCE (Opening Punch)
-        let leadOptions = [];
+        const pickPersonaLead = (byPersona) => byPersona[pId] || byPersona.broadcaster;
+
+        // 1. LEAD CANDIDATES (All 4 personas deeply populated for Live & Post-Game)
+        let leads = [];
         if (isLive) {
           if (isTopNonPrize) {
-            leadOptions = [
-              `Exhibition squad "${overallTop.team_name}" is running wild with ${overallTop[scoreKey]} pts live, while the official prize battle is currently commanded by "${top.team_name}" on ${topPts} pts!`,
-              `"${overallTop.team_name}" is playing with zero fear and leads the raw board on ${overallTop[scoreKey]} pts, clearing the runway for prize front-runner "${top.team_name}" (${topPts} pts)!`
-            ];
+            const funPts = overallTop[scoreKey];
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('ld_th_np_b1', 'nonprize', `คะแนนดิบสูงสุดเวลานี้เป็นของทีมร่วมสนุก "${overallTop.team_name}" (${funPts} pts) ส่วนโควตาชิงรางวัลมี "${top.team_name}" (${topPts} pts) นำ "${secName}" อยู่ ${diff} แต้ม`),
+                LiveCommentaryEngine._c('ld_th_np_b2', 'nonprize', `"${overallTop.team_name}" ออกตัวแรงแต้มสดพุ่งถึง ${funPts} คะแนน แต่ผู้นำฝั่งชิงรางวัลสดๆ คือ "${top.team_name}" (${topPts} pts)!`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('ld_th_np_c1', 'nonprize', `"${overallTop.team_name}" ลงสนามไร้ความกดดันแต้มทะยานไป ${funPts} แต้ม เปิดเวทีให้ "${top.team_name}" (${topPts} pts) ถือธงนำฝั่งชิงรางวัล GW ${gwNumber}`),
+                LiveCommentaryEngine._c('ld_th_np_c2', 'nonprize', `ในขณะที่ "${overallTop.team_name}" โชว์ฟอร์มสะสม ${funPts} แต้มในฐานะทีมร่วมสนุก การแย่งตำแหน่งบนโพเดียมจริงมี "${top.team_name}" (${topPts} pts) ยืนจ่าฝูง`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('ld_th_np_a1', 'nonprize', `ทีมร่วมสนุก "${overallTop.team_name}" ทำคะแนนสดสูงสุดที่ ${funPts} pts ส่วนอันดับ 1 สายเงินรางวัลคือ "${top.team_name}" (${topPts} pts, นำอันดับ 2 อยู่ +${diff})`),
+                LiveCommentaryEngine._c('ld_th_np_a2', 'nonprize', `ตารางคะแนนชิงรางวัล GW ${gwNumber} นำโดย "${top.team_name}" (${topPts} pts) ขณะที่สกอร์รวมสูงสุดของสัปดาห์อยู่ที่ "${overallTop.team_name}" (${funPts} pts)`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('ld_th_np_x1', 'nonprize', `เล่นขำๆ แต่ยิงโหดเฉย! "${overallTop.team_name}" กดไป ${funPts} แต้มสด ปล่อยให้พวกชิงตังค์นำโดย "${top.team_name}" (${topPts} pts) บี้กันต่อ!`),
+                LiveCommentaryEngine._c('ld_th_np_x2', 'nonprize', `ทีมรับเชิญอย่าง "${overallTop.team_name}" แอบป่วนหัวตารางที่ ${funPts} แต้ม ส่วนตัวตึงสายรางวัลยกให้ "${top.team_name}" (${topPts} pts) ที่กำลังนำอยู่!`)
+              ]
+            });
           } else if (diff <= 0 || isJoint || topPts === secondPts) {
             if (secRem > topRem && topRem !== null) {
-              leadOptions = [
-                `Deadlock at the summit! "${top.team_name}" and "${secName}" are level on ${topPts} pts, but "${secName}" holds the tactical upper hand with ${secRem} players left to play vs ${topRem}! A massive showdown looms in the late kickoff!`,
-                `Tied at the top! "${top.team_name}" and "${secName}" both stand on ${topPts} pts, but "${secName}" has ${secRem} bullets left in the chamber compared to ${topRem}. High tension as the night unfolds!`,
-                `Locked together on ${topPts} pts! "${secName}" has more artillery left with ${secRem} players remaining vs ${topRem} for "${top.team_name}". The chaser has the golden opportunity to snatch the lead!`
-              ];
-            } else if (topRem > secRem && secRem !== null) {
-              leadOptions = [
-                `Joint leaders on ${topPts} pts! However, "${top.team_name}" enjoys the upper hand with ${topRem} players waiting in reserve while "${secName}" only has ${secRem} left to roll!`,
-                `Level on ${topPts} pts at the summit, but "${top.team_name}" commands more artillery with ${topRem} players remaining against ${secRem} for "${secName}"!`,
-                `All square at ${topPts} pts, but "${top.team_name}" looks primed to break away with ${topRem} players in hand against ${secRem} for "${secName}"!`
-              ];
+              leads = pickPersonaLead({
+                broadcaster: [
+                  LiveCommentaryEngine._c('ld_th_tc_b1', ['tie', 'chasers_left'], `หัวตารางคะแนนสดเสมอกันที่ ${topPts} แต้ม! "${top.team_name}" กับ "${secName}" กอดคอกันแน่น แต่ฝั่ง "${secName}" ยังมีตัวรอลงสนามอีก ${secRem} คน`),
+                  LiveCommentaryEngine._c('ld_th_tc_b2', ['tie', 'chasers_left'], `แต้มสดชนกันเป๊ะที่ ${topPts} คะแนนระหว่าง "${top.team_name}" และ "${secName}" จุดเปลี่ยนอยู่ที่ "${secName}" เหลือตัวเตะมากกว่า (${secRem} ต่อ ${topRem} คน)`)
+                ],
+                columnist: [
+                  LiveCommentaryEngine._c('ld_th_tc_c1', ['tie', 'chasers_left'], `ความสมดุลชั่วคราวที่ ${topPts} แต้มระหว่าง "${top.team_name}" และ "${secName}" อาจอยู่ไม่นาน เมื่อ "${secName}" ยังเหลือขุมกำลังรอลงเล่นถึง ${secRem} ตำแหน่ง`),
+                  LiveCommentaryEngine._c('ld_th_tc_c2', ['tie', 'chasers_left'], `แม้คะแนนสดจะเท่ากันที่ ${topPts} แต้ม แต่ความได้เปรียบเชิงขุมกำลังเทไปฝั่ง "${secName}" ที่เหลือตัวเล่นอีก ${secRem} คน`)
+                ],
+                analyst: [
+                  LiveCommentaryEngine._c('ld_th_tc_a1', ['tie', 'chasers_left'], `คะแนนสดเสมอกันที่ ${topPts} pts แต่ "${secName}" ได้เปรียบด้านจำนวนตัวลงสนามที่เหลือ (${secRem} vs ${topRem} คน) มีโอกาสขยับแซงสูงกว่า`),
+                  LiveCommentaryEngine._c('ld_th_tc_a2', ['tie', 'chasers_left'], `สถานะ Tie ที่ ${topPts} คะแนน: โมเมนตัมอยู่ฝั่ง "${secName}" เพราะยังมีผู้เล่นที่ยังไม่คิกออฟอีก ${secRem} ราย`)
+                ],
+                banter: [
+                  LiveCommentaryEngine._c('ld_th_tc_x1', ['tie', 'chasers_left'], `แต้มชนกันเป๊ะที่ ${topPts} คะแนน! แต่ "${secName}" นั่งยิ้มมุมปากเพราะยังเหลือตัวปล่อยของอีก ${secRem} คน เตรียมแซงเข้าป้ายได้เลย!`),
+                  LiveCommentaryEngine._c('ld_th_tc_x2', ['tie', 'chasers_left'], `เสมอกันอยู่ ${topPts} แต้มก็จริง แต่ "${top.team_name}" เหลือตัวแค่ ${topRem} คน เทียบกับ ${secRem} คนของ "${secName}" งานนี้มีเสียว!`)
+                ]
+              });
             } else {
-              leadOptions = [
-                `Dead bloody heat! "${top.team_name}" and "${secName}" are locked level on ${topPts} pts apiece. You couldn't slip a cigarette paper between them!`,
-                `Deadlock at the top! "${top.team_name}" and "${secName}" are dead level on ${topPts} pts. Pure drama as we await the remaining matches!`,
-                `Nothing to separate the top two! "${top.team_name}" and "${secName}" are locked together on ${topPts} pts. Anyone's game!`
-              ];
+              leads = pickPersonaLead({
+                broadcaster: [
+                  LiveCommentaryEngine._c('ld_th_tie_b1', 'tie', `เบียดกันแบบหายใจรดต้นคอที่ ${topPts} แต้ม! "${top.team_name}" กับ "${secName}" เกาะจ่าฝูงสดร่วมกัน รอตัดสินกันต่อในคู่ที่เหลือ`),
+                  LiveCommentaryEngine._c('ld_th_tie_b2', 'tie', `ยังไม่มีใครยอมหลีกทาง! "${top.team_name}" และ "${secName}" ยืนจ่าฝูงสดคู่กันที่ ${topPts} แต้มใน GW ${gwNumber}`)
+                ],
+                columnist: [
+                  LiveCommentaryEngine._c('ld_th_tie_c1', 'tie', `บนยอดตาราง GW ${gwNumber} มีชื่อของ "${top.team_name}" และ "${secName}" ยืนเคียงคู่กันที่ ${topPts} แต้ม — เกมนี้ยังเปิดกว้างเต็มที่`),
+                  LiveCommentaryEngine._c('ld_th_tie_c2', 'tie', `กินกันไม่ลงแม้แต่คะแนนเดียวที่ ${topPts} แต้มระหว่าง "${top.team_name}" กับ "${secName}" ทุกจังหวะจากนี้คือตัวตัดสิน`)
+                ],
+                analyst: [
+                  LiveCommentaryEngine._c('ld_th_tie_a1', 'tie', `จ่าฝูงสดเสมอกันที่ ${topPts} pts ("${top.team_name}" และ "${secName}") ต้องติดตามตัวต่างและแต้มโบนัสในนัดที่เหลือ`),
+                  LiveCommentaryEngine._c('ld_th_tie_a2', 'tie', `สมดุลหัวตารางที่ ${topPts} คะแนน แนะนำเปิดเทียบ 1v1 เพื่อเช็กว่าใครถือไพ่ตัวต่างเหนือกว่า`)
+                ],
+                banter: [
+                  LiveCommentaryEngine._c('ld_th_tie_x1', 'tie', `กอดคอกันแน่นที่ ${topPts} แต้ม! "${top.team_name}" กับ "${secName}" ไม่มีใครยอมใคร คู่ดึกเดี๋ยวรู้เลยใครจะร่วงก่อน!`),
+                  LiveCommentaryEngine._c('ld_th_tie_x2', 'tie', `แต้มเท่ากันที่ ${topPts} คะแนนแบบนี้ มีหวังนั่งลุ้นทุกใบเหลืองทุกแอสซิสต์กันจนตาค้าง!`)
+                ]
+              });
             }
           } else if (secRem > topRem && topRem !== null) {
-            if (versionIdx === 0) {
-              leadOptions = [
-                `"${top.team_name}" leads on ${topPts} pts, but only has ${topRem} players left while "${secName}" (${secondPts} pts) has ${secRem} to come! Bloody squeaky bum time — if "${secName}" bottles this with that many players in hand, they should be thoroughly ashamed!`,
-                `Hot seats at the summit! "${top.team_name}" is holding onto #1 with ${topPts} pts, but has nearly run out of players (${topRem} left). Meanwhile "${secName}" (${secondPts} pts) has ${secRem} bullets left in the chamber!`
-              ];
-            } else if (versionIdx === 1) {
-              leadOptions = [
-                `Danger zone for "${top.team_name}"! Leading live on ${topPts} pts, but "${secName}" (${secondPts} pts) still has ${secRem} players lurking in the late games vs "${top.team_name}"'s lonely ${topRem}. The sweating has officially begun!`,
-                `Peak live drama! "${top.team_name}" holds the high ground on ${topPts} pts, but "${secName}" has ${secRem} players left to play. Someone is about to get mudded in the late kickoff!`
-              ];
-            } else if (versionIdx === 2) {
-              leadOptions = [
-                `"${top.team_name}" is clinging to top spot with ${topPts} pts, but "${secName}" has ${secRem} players left to roll the dice. Don't start celebrating yet, mate, you might be crying yourself to sleep in a few hours!`,
-                `Second place is lurking! "${secName}" trails "${top.team_name}" (${topPts} pts) by ${diff} points, but has ${secRem} players waiting in the wings. Time to find out if "${secName}" has what it takes or is just a professional choker!`
-              ];
-            } else {
-              leadOptions = [
-                `A precarious summit! "${top.team_name}" holds the high ground on ${topPts} pts, but the storm gathers as "${secName}" unleashes ${secRem} remaining warriors into the night!`,
-                `The chase is on! "${top.team_name}" (${topPts} pts) braces for impact as "${secName}" brings ${secRem} reinforcements to the late kickoff battlefield!`
-              ];
-            }
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('ld_th_lv_b1', 'chasers_left', `เกมสดกำลังเข้มข้น! "${top.team_name}" นำอยู่ ${topPts} แต้ม เหนือ "${secName}" ${diff} แต้ม แต่ฝ่ายตามหลังยังมีนักเตะรอลงสนามถึง ${secRem} คน (จ่าฝูงเหลือ ${topRem} คน)`),
+                LiveCommentaryEngine._c('ld_th_lv_b2', 'chasers_left', `ยังไม่การันตีแชมป์! "${top.team_name}" ถือแต้มสด ${topPts} แต้มนำ "${secName}" (${secondPts} pts) ทว่าผู้ตามยังเหลือกระสุนอีก ${secRem} นัดในคู่ดึก!`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('ld_th_lv_c1', 'chasers_left', `บัลลังก์จ่าฝูงสดของ "${top.team_name}" (${topPts} pts) ยังสั่นคลอน เพราะระยะห่าง ${diff} แต้มอาจไม่พอรับมือกับ ${secRem} ตัวจริงที่เหลือของ "${secName}"`),
+                LiveCommentaryEngine._c('ld_th_lv_c2', 'chasers_left', `"${top.team_name}" ออกตัวแรงเก็บ ${topPts} แต้มนำหน้าก็จริง แต่ฝ่ายไล่ล่าอย่าง "${secName}" กุมความได้เปรียบเรื่องตัวเหลือ (${secRem} ต่อ ${topRem} คน)`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('ld_th_lv_a1', 'chasers_left', `สถานะสด: "${top.team_name}" นำ "${secName}" อยู่ +${diff} แต้ม (${topPts} vs ${secondPts}) แต่เสียเปรียบจำนวนนักเตะที่ยังไม่เตะ ${topRem} ต่อ ${secRem} คน`),
+                LiveCommentaryEngine._c('ld_th_lv_a2', 'chasers_left', `ช่องว่าง ${diff} แต้มของ "${top.team_name}" (${topPts} pts) กำลังถูกท้าทายโดย "${secName}" ที่มีผู้เล่นรอลงสนามอีก ${secRem} ราย`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('ld_th_lv_x1', 'chasers_left', `เก้าอี้ร้อนฉ่าแล้วโว้ย! "${top.team_name}" นำอยู่ ${diff} แต้ม (${topPts} pts) แต่ตัวเตะใกล้หมดมือเหลือ ${topRem} คน ส่วน "${secName}" ยังซ่อนไพ่อีกตั้ง ${secRem} ใบในคู่ดึก!`),
+                LiveCommentaryEngine._c('ld_th_lv_x2', 'chasers_left', `อย่าเพิ่งรีบเดินแอ็ค! "${top.team_name}" (${topPts} pts) นำ "${secName}" แค่ ${diff} แต้ม แต่ผู้ตามยังมีตัวรอปล่อยของอีก ${secRem} คน ระวังโดนปาดหน้าเค้กคาจอ!`)
+              ]
+            });
           } else if (topRem !== null && topRem >= secRem && topRem > 0) {
-            if (versionIdx === 0) {
-              leadOptions = [
-                `Lovely stuff! "${top.team_name}" is sitting pretty on ${topPts} pts live, leading "${secName}" by ${diff} points with ${topRem} players still to kick a ball. Men against boys right now!`,
-                `Dominant display! "${top.team_name}" has racked up ${topPts} pts live and still holds ${topRem} players in hand. Absolutely clinical authority!`
-              ];
-            } else if (versionIdx === 1) {
-              leadOptions = [
-                `We are so back! "${top.team_name}" is taking the absolute piss at the top with ${topPts} pts, ${diff} clear of "${secName}", and STILL has ${topRem} players in hand. Pure cheat code vibes!`,
-                `Certified cheat code! "${top.team_name}" is crushing the live leaderboard on ${topPts} pts with ${topRem} players yet to play. Chasers are in the mud!`
-              ];
-            } else if (versionIdx === 2) {
-              leadOptions = [
-                `Look at "${top.team_name}" cruising on ${topPts} pts (+${diff} pts over "${secName}") with ${topRem} players left. Second place might as well pack their bags and go home early!`,
-                `Men against boys! "${top.team_name}" is comfortably clear on ${topPts} pts with ${topRem} players in hand. "${secName}" is chasing ghosts!`
-              ];
-            } else {
-              leadOptions = [
-                `Commanding and relentless! "${top.team_name}" dictates terms on ${topPts} pts, outstripping "${secName}" by ${diff} points with ${topRem} players yet to grace the pitch!`,
-                `An unstoppable momentum! "${top.team_name}" surges to ${topPts} pts live with reinforcements still waiting to enter the fray!`
-              ];
-            }
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('ld_th_cr_b1', 'leader_cruising', `"${top.team_name}" กุมความได้เปรียบเต็มมือ! นำสดที่ ${topPts} แต้ม (เหนือ "${secName}" ${diff} แต้ม) แถมยังมีตัวเตะรอลงสนามอีก ${topRem} คน!`),
+                LiveCommentaryEngine._c('ld_th_cr_b2', 'leader_cruising', `ฟอร์มสดไหลลื่น! "${top.team_name}" ขึ้นนำ "${secName}" อยู่ ${diff} แต้ม และยังเหลือกำลังเสริมในมืออีก ${topRem} ตำแหน่ง`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('ld_th_cr_c1', 'leader_cruising', `ไม่เพียงนำในตารางสดที่ ${topPts} แต้ม (+${diff} เหนือ "${secName}") แต่ "${top.team_name}" ยังถือไพ่เหนือกว่าด้วยตัวจริงที่รอลงอีก ${topRem} คน`),
+                LiveCommentaryEngine._c('ld_th_cr_c2', 'leader_cruising', `"${top.team_name}" ยึดทั้งคะแนนนำ (${topPts} pts) และความได้เปรียบด้านจำนวนผู้เล่น (${topRem} vs ${secRem} คน) ยากที่คู่แข่งจะไล่ทัน`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('ld_th_cr_a1', 'leader_cruising', `โอกาสคว้าแชมป์สัปดาห์ของ "${top.team_name}" สูงมาก: นำ ${diff} แต้ม (${topPts} vs ${secondPts}) พร้อมจำนวนตัวเหลือมากกว่า (${topRem} ต่อ ${secRem})`),
+                LiveCommentaryEngine._c('ld_th_cr_a2', 'leader_cruising', `สถานการณ์เอื้อต่อ "${top.team_name}" เต็มรูปแบบ — สกอร์นำ +${diff} และเหลือ ${topRem} ตัวลงสนาม`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('ld_th_cr_x1', 'leader_cruising', `กินเต็มข้อลอยลำ! "${top.team_name}" นำไปแล้ว ${topPts} แต้ม (+${diff}) แถมยังมีตัวเหลือให้กดแต้มเพิ่มอีก ${topRem} คน คู่แข่งเตรียมทำใจได้เลย!`),
+                LiveCommentaryEngine._c('ld_th_cr_x2', 'leader_cruising', `เครื่องติดเทอร์โบไม่รอใคร! "${top.team_name}" นำ "${secName}" อยู่ ${diff} แต้ม แล้วยังเหลือตัวรอลงอีก ${topRem} คน เดินยืดอกรอรับถ้วยได้เลย!`)
+              ]
+            });
+          } else if (topRem === 0 && secRem === 0 && topRem !== null) {
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('ld_th_dn_b1', 'bps_wait', `ตัวจริงของคู่ชิงลงสนามครบ 11 คนเรียบร้อย! "${top.team_name}" นำ "${secName}" อยู่ ${diff} แต้ม (${topPts} vs ${secondPts}) เหลือลุ้นเพียงคะแนนโบนัสและออโต้ซับชี้ขาด`),
+                LiveCommentaryEngine._c('ld_th_dn_b2', 'bps_wait', `ปิดจ็อบครบทุกตำแหน่งในสนาม! "${top.team_name}" ถือไพ่เหนือกว่า "${secName}" อยู่ ${diff} แต้ม (${topPts} pts) รอแค่ผลโบนัสทางการเคาะปิดเกม`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('ld_th_dn_c1', 'bps_wait', `ไพ่ทุกใบของ "${top.team_name}" (${topPts} pts) และ "${secName}" (${secondPts} pts) ถูกเปิดบนโต๊ะหมดแล้ว เหลือเพียงบทสรุปจากโบนัส BPS`),
+                LiveCommentaryEngine._c('ld_th_dn_c2', 'bps_wait', `ครบ 11 ตำแหน่งทั้งสองฝั่งกับระยะห่าง ${diff} แต้ม — ชะตากรรมของ GW ${gwNumber} ขึ้นอยู่กับตัวเลขโบนัสทางการเท่านั้น`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('ld_th_dn_a1', 'bps_wait', `ทั้ง "${top.team_name}" และ "${secName}" ไม่มีผู้เล่นเหลือค้างแข่ง ช่องว่าง ${diff} แต้มรอการยืนยันโบนัสและออโต้ซับสุดท้าย`),
+                LiveCommentaryEngine._c('ld_th_dn_a2', 'bps_wait', `จบการลงสนามครบ 100% ของคู่จ่าฝูง: "${top.team_name}" (${topPts}) นำ "${secName}" (${secondPts}) รอประมวลผลทางการ`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('ld_th_dn_x1', 'bps_wait', `ตัวเล่นหมดเกลี้ยงทั้งคู่! "${top.team_name}" นำอยู่ ${diff} แต้ม ตอนนี้นั่งจ้องจอภาวนาให้กรรมการไม่ริบโบนัสคืนอย่างเดียว!`),
+                LiveCommentaryEngine._c('ld_th_dn_x2', 'bps_wait', `ลงครบหมดแล้วจ้า! "${top.team_name}" ตุนไว้ ${topPts} แต้ม เหนือ "${secName}" ${diff} แต้ม ถ้าระบบไม่หักมุมก็เตรียมเฮได้เลย!`)
+              ]
+            });
           } else if (diff <= 2) {
-            leadOptions = [
-              `Sweating absolute buckets! "${top.team_name}" leads live with ${topPts} pts, barely ${diff} pt ahead of "${secName}". One deflected goal or rogue bonus point will turn this whole table upside down!`,
-              `On a razor's edge! "${top.team_name}" holds the live lead by literally ${diff} point over "${secName}" (${topPts} vs ${secondPts} pts). Don't you dare blink!`
-            ];
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('ld_th_cl_b1', 'nailbiter', `เฉือนกันระดับเส้นยาแดง! "${top.team_name}" (${topPts} pts) นำสด "${secName}" (${secondPts} pts) เพียง ${diff} แต้ม แค่ประตูเดียวหรือโบนัสเปลี่ยนฝั่งก็พลิกทันที!`),
+                LiveCommentaryEngine._c('ld_th_cl_b2', 'nailbiter', `เกมตึงสุดขีด! "${top.team_name}" เกาะจ่าฝูงสดห่าง "${secName}" แค่ ${diff} แต้ม (${topPts} ต่อ ${secondPts} pts) ลุ้นกันลูกต่อลูก`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('ld_th_cl_c1', 'nailbiter', `ระยะห่างเพียง ${diff} คะแนนระหว่าง "${top.team_name}" และ "${secName}" สะท้อนความสูสีระดับห้าดาวของเกมวีคนี้`),
+                LiveCommentaryEngine._c('ld_th_cl_c2', 'nailbiter', `บัลลังก์สดใน GW ${gwNumber} แขวนอยู่บนเส้นด้ายแค่ ${diff} แต้ม ("${top.team_name}" ${topPts} vs "${secName}" ${secondPts})`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('ld_th_cl_a1', 'nailbiter', `Margin แค่ ${diff} แต้ม (${topPts} vs ${secondPts}) อยู่ในระยะพลิกได้จากโบนัสหรือคลีนชีตเดียว`),
+                LiveCommentaryEngine._c('ld_th_cl_a2', 'nailbiter', `ส่วนต่าง ${diff} pts ระหว่างอันดับ 1-2 ถือว่าบางมาก ความเสี่ยงสลับตำแหน่งสูงทุกนาที`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('ld_th_cl_x1', 'nailbiter', `หายใจรดต้นคอกันแค่ ${diff} แต้ม! "${top.team_name}" กับ "${secName}" บี้กันแบบกระพริบตาไม่ได้แม้แต่วินาทีเดียว!`),
+                LiveCommentaryEngine._c('ld_th_cl_x2', 'nailbiter', `ห่างกันจึ๋งเดียว ${diff} แต้ม! ใครโดนใบเหลืองท้ายเกมมีหวังหลังหักตกจ่าฝูงคาจอ!`)
+              ]
+            });
           } else if (diff >= 15) {
-            leadOptions = [
-              `Bloody hell, stop the fight! "${top.team_name}" is running riot with ${topPts} pts live, leaving "${secName}" in the dust by a massive ${diff} points. An absolute demolition job!`,
-              `Total destruction! "${top.team_name}" is ${diff} points clear of "${secName}" on ${topPts} pts. The rest of the league is officially in the mud!`
-            ];
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('ld_th_bl_b1', 'blowout', `ฉีกหนีตั้งแต่ไก่โห่! "${top.team_name}" พาทีมโกย ${topPts} แต้มสด นำ "${secName}" ขาดลอย ${diff} แต้ม โดยได้ ${heroTxt} ช่วยแบกเต็มกำลัง`),
+                LiveCommentaryEngine._c('ld_th_bl_b2', 'blowout', `"${top.team_name}" ฟอร์มร้อนเกินต้าน กดไปแล้ว ${topPts} แต้มสด ทิ้งห่างอันดับสองอย่าง "${secName}" ถึง ${diff} แต้ม`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('ld_th_bl_c1', 'blowout', `การคุมเกมที่เด็ดขาดพา "${top.team_name}" พุ่งสู่ ${topPts} แต้มสด สร้างระยะปลอดภัยเหนือ "${secName}" ถึง ${diff} แต้ม`),
+                LiveCommentaryEngine._c('ld_th_bl_c2', 'blowout', `ในขณะที่ทีมอื่นยังไล่ตามจังหวะ "${top.team_name}" ก็ทิ้งขาดไป ${diff} แต้มแล้วด้วยแรงขับเคลื่อนจาก ${heroTxt}`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('ld_th_bl_a1', 'blowout', `ระยะห่าง +${diff} แต้มของ "${top.team_name}" (${topPts} vs ${secondPts}) มาจากจุดแข็งของ ${heroTxt} ที่สร้างผลต่างชัดเจน`),
+                LiveCommentaryEngine._c('ld_th_bl_a2', 'blowout', `"${top.team_name}" ทำแต้มสดทิ้งค่าเฉลี่ยลีกไปไกล แตะ ${topPts} pts นำอันดับ 2 ถึง ${diff} คะแนน`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('ld_th_bl_x1', 'blowout', `โหดเกินไปแล้ว! "${top.team_name}" ฟาดแต้มสดไป ${topPts} แต้ม ทิ้ง "${secName}" ขาดลอย ${diff} แต้ม เล่นเอาคู่แข่งเริ่มท้อใจตั้งแต่ยังไม่จบวีค!`),
+                LiveCommentaryEngine._c('ld_th_bl_x2', 'blowout', `พับสนามบุกอยู่ทีมเดียว! "${top.team_name}" กดไป ${topPts} แต้ม นำห่าง ${diff} แต้ม สัปดาห์นี้ขอเดินแอ็คหล่อล่วงหน้าเลยละกัน!`)
+              ]
+            });
           } else {
-            leadOptions = [
-              `"${top.team_name}" takes charge of Gameweek ${gwNumber} with ${topPts} pts live, sitting ${diff} points clear of "${secName}". Strong, disciplined, and in pole position!`,
-              `Cruising at the top! "${top.team_name}" posts ${topPts} pts live, keeping "${secName}" (${secondPts} pts) firmly at arm's length.`
-            ];
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('ld_th_st_b1', 'lead_std', `"${top.team_name}" ขึ้นแท่นผู้นำสด GW ${gwNumber} ที่ ${topPts} แต้ม นำ "${secName}" (${secondPts} pts) อยู่ ${diff} แต้ม โดยมี ${heroTxt} เป็นกำลังหลัก`),
+                LiveCommentaryEngine._c('ld_th_st_b2', 'lead_std', `จ่าฝูงชั่วคราวเป็นของ "${top.team_name}" ด้วยสกอร์สด ${topPts} แต้ม ทิ้งระยะจาก "${secName}" ${diff} แต้ม`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('ld_th_st_c1', 'lead_std', `จังหวะเกมสดเทมาทาง "${top.team_name}" ที่เก็บไปแล้ว ${topPts} แต้ม นำ "${secName}" อยู่ ${diff} แต้มอย่างมั่นคง`),
+                LiveCommentaryEngine._c('ld_th_st_c2', 'lead_std', `"${top.team_name}" วางหมากได้ลงตัวใน GW ${gwNumber} นำจ่าฝูงสดที่ ${topPts} แต้ม จากผลงานเด่นของ ${heroTxt}`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('ld_th_st_a1', 'lead_std', `สรุปตารางสด: "${top.team_name}" ยืนหัวตารางที่ ${topPts} pts (นำ "${secName}" +${diff}) โดยมี ${heroTxt} เป็นแกนทำคะแนน`),
+                LiveCommentaryEngine._c('ld_th_st_a2', 'lead_std', `สถานะ GW ${gwNumber}: "${top.team_name}" ทำคะแนนนำค่าเฉลี่ยลีกอยู่ที่ ${topPts} แต้ม กุมระยะห่าง +${diff}`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('ld_th_st_x1', 'lead_std', `เครื่องติดแล้ว! "${top.team_name}" กดแต้มสดไป ${topPts} แต้ม นำ "${secName}" อยู่ ${diff} แต้ม อาศัย ${heroTxt} ไล่ตบคู่แข่งเรียงตัว!`),
+                LiveCommentaryEngine._c('ld_th_st_x2', 'lead_std', `จ่าฝูงสดหน้าใหม่หรือหน้าเดิมไม่รู้ แต่ตอนนี้ "${top.team_name}" จองหัวแถวที่ ${topPts} แต้ม นำอยู่ ${diff} คะแนนแบบหล่อๆ!`)
+              ]
+            });
           }
         } else {
-          // FULL TIME (Finished GW)
+          // FINISHED (Post-Game)
           if (isTopNonPrize) {
-            leadOptions = [
-              `Exhibition squad "${overallTop.team_name}" hit a sensational ${overallTop[scoreKey]} pts for fun, while the official weekly cash prize heads straight to "${top.team_name}" (${topPts} pts)!`,
-              `"${overallTop.team_name}" racked up ${overallTop[scoreKey]} pts with no pressure, handing the championship spotlight to "${top.team_name}" (${topPts} pts) who takes the weekly crown!`
-            ];
+            const funPts = overallTop[scoreKey];
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('fn_th_np_b1', 'nonprize', `คะแนนสูงสุดบนกระดานเป็นของทีมร่วมสนุก "${overallTop.team_name}" (${funPts} pts) ทำให้สิทธิ์แชมป์ประจำสัปดาห์ตกเป็นของ "${top.team_name}" (${topPts} pts) อย่างเป็นทางการ`),
+                LiveCommentaryEngine._c('fn_th_np_b2', 'nonprize', `"${overallTop.team_name}" ระเบิดฟอร์มไร้แรงกดดันเก็บ ${funPts} แต้ม ก่อนส่งไม้ต่อบัลลังก์แชมป์ GW ${gwNumber} ให้ "${top.team_name}" (${topPts} pts)`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('fn_th_np_c1', 'nonprize', `แม้ "${overallTop.team_name}" จะปิดสกอร์ดิบสูงสุดที่ ${funPts} แต้มในโหมดร่วมสนุก แต่ผู้รับเกียรติยศแชมป์สายรางวัล GW ${gwNumber} คือ "${top.team_name}" (${topPts} pts)`),
+                LiveCommentaryEngine._c('fn_th_np_c2', 'nonprize', `บทสรุป GW ${gwNumber}: "${overallTop.team_name}" โชว์เหนือที่ ${funPts} แต้ม ส่วนแชมป์ที่มีสิทธิ์รับรางวัลตกเป็นของ "${top.team_name}" (${topPts} pts)`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('fn_th_np_a1', 'nonprize', `อันดับ 1 คะแนนรวมสัปดาห์คือทีมร่วมสนุก "${overallTop.team_name}" (${funPts} pts) สิทธิ์แชมป์เงินรางวัลจึงเลื่อนให้ "${top.team_name}" (${topPts} pts)`),
+                LiveCommentaryEngine._c('fn_th_np_a2', 'nonprize', `ผลทางการ GW ${gwNumber}: "${top.team_name}" คว้าอันดับ 1 สายเงินรางวัลที่ ${topPts} pts (+${diff} เหนือ "${secName}")`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('fn_th_np_x1', 'nonprize', `ทีมรับเชิญอย่าง "${overallTop.team_name}" เล่นชิลแต่ดันกดไป ${funPts} แต้ม! ส่วนเงินรางวัลสัปดาห์นี้โอนตรงเข้ากระเป๋า "${top.team_name}" (${topPts} pts) เต็มๆ!`),
+                LiveCommentaryEngine._c('fn_th_np_x2', 'nonprize', `"${overallTop.team_name}" ขโมยซีนกด ${funPts} แต้มแบบไม่เอาตังค์ ปล่อยให้ "${top.team_name}" (${topPts} pts) เดินรับแชมป์ประจำสัปดาห์ไปแบบยิ้มกว้าง!`)
+              ]
+            });
           } else if (isStreak && !isJoint) {
-            const streakText = winStreak >= 3 ? `a sensational ${winStreak}-week winning streak` : `back-to-back weekly titles`;
-            leadOptions = [
-              `UNSTOPPABLE! "${top.team_name}" locks in ${streakText} with ${topPts} pts, leaving "${secName}" in the dust by ${diff} points. Someone check their squad for performance-enhancing spreadsheets!`,
-              `Dynasty in the making! "${top.team_name}" secures ${streakText} on ${topPts} pts. The rest of this league is playing for second place!`
-            ];
+            const stText = winStreak >= 3 ? `แฮตทริกแชมป์ ${winStreak} วีคติด` : `เบิ้ลแชมป์ ${winStreak} สัปดาห์ซ้อน`;
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('fn_th_sk_b1', 'streak', `ฟอร์มไร้เทียมทาน! "${top.team_name}" คว้า${stText}ด้วยสกอร์ ${topPts} แต้ม เฉือน "${secName}" ไป ${diff} แต้ม โดยมี ${heroTxt} เป็นฟันเฟืองสำคัญ`),
+                LiveCommentaryEngine._c('fn_th_sk_b2', 'streak', `ยังหาคนหยุดไม่อยู่! "${top.team_name}" ครอง${stText}ใน GW ${gwNumber} จบที่ ${topPts} แต้ม นำอันดับสอง ${diff} แต้ม`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('fn_th_sk_c1', 'streak', `ความสม่ำเสมอระดับราชวงศ์: "${top.team_name}" สร้างผลงาน${stText}ด้วยสกอร์ ${topPts} แต้ม เหนือกว่า "${secName}" ${diff} แต้ม`),
+                LiveCommentaryEngine._c('fn_th_sk_c2', 'streak', `สัปดาห์แล้วสัปดาห์เล่าที่ "${top.team_name}" ไม่ยอมปล่อยบัลลังก์ คว้า${stText}ที่ ${topPts} แต้มอย่างสง่างาม`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('fn_th_sk_a1', 'streak', `"${top.team_name}" รักษาโมเมนตัมคว้า${stText}ได้สำเร็จ ปิดสกอร์ ${topPts} pts (+${diff} เหนือ "${secName}") จากแรงหนุนของ ${heroTxt}`),
+                LiveCommentaryEngine._c('fn_th_sk_a2', 'streak', `อัตราการยืนระยะของ "${top.team_name}" โดดเด่นที่สุดในลีก กวาด${stText}ด้วยแต้มสุทธิ ${topPts} คะแนน`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('fn_th_sk_x1', 'streak', `ผูกขาดบัลลังก์แล้วมั้ง! "${top.team_name}" กด${stText}ที่ ${topPts} แต้ม ทิ้ง "${secName}" ไป ${diff} แต้ม ใครก็ได้ช่วยมาหยุดทีมนี้ที!`),
+                LiveCommentaryEngine._c('fn_th_sk_x2', 'streak', `ยึดสัมปทานแชมป์ประจำสัปดาห์! "${top.team_name}" จัด${stText}ไปอีก ${topPts} แต้ม ทำเอาเพื่อนร่วมลีกเริ่มมองบนกันหมดแล้ว!`)
+              ]
+            });
           } else if (chip === 'bboost' || chip === 'bench_boost') {
-            leadOptions = [
-              `"${top.team_name}" played the Bench Boost like an absolute tactical mastermind, mobilizing all 15 men to plunder ${topPts} pts and conquer GW ${gwNumber}!`,
-              `Bench Boost perfection! "${top.team_name}" unleashed their entire 15-man army to amass a devastating ${topPts} pts. Pure tactical supremacy!`
-            ];
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('fn_th_bb_b1', 'chip_win', `จังหวะเปิด Bench Boost ระดับตำรา! "${top.team_name}" ระดมกำลังทั้ง 15 คนโกย ${topPts} แต้ม คว้าแชมป์ GW ${gwNumber} เหนือ "${secName}" ${diff} แต้ม`),
+                LiveCommentaryEngine._c('fn_th_bb_b2', 'chip_win', `ส่งสำรองลงสนามได้คุ้มค่าทุกแต้ม! "${top.team_name}" ใช้ชิป Bench Boost พุ่งทะยานสู่ ${topPts} แต้ม ซิวแชมป์ประจำสัปดาห์`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('fn_th_bb_c1', 'chip_win', `ชิป Bench Boost ถูกใช้งานในเวลาที่เหมาะสมที่สุด "${top.team_name}" เก็บเกี่ยวแต้มครบทั้ง 15 ช่อง ปิดสกอร์แชมป์ที่ ${topPts} แต้ม`),
+                LiveCommentaryEngine._c('fn_th_bb_c2', 'chip_win', `การวางแผนม้านั่งสำรองของ "${top.team_name}" ออกดอกออกผล กวาด ${topPts} แต้มคว้าชัย GW ${gwNumber}`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('fn_th_bb_a1', 'chip_win', `ROI จากชิป Bench Boost ของ "${top.team_name}" ทำงานเต็มประสิทธิภาพ ดันแต้มรวมสัปดาห์แตะ ${topPts} pts (+${diff} เหนือ "${secName}")`),
+                LiveCommentaryEngine._c('fn_th_bb_a2', 'chip_win', `ผลต่างจากการเปิด Bench Boost ทำให้ "${top.team_name}" ก้าวข้าม "${secName}" และปิดเกมที่ ${topPts} คะแนน`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('fn_th_bb_x1', 'chip_win', `กางการ์ด Bench Boost ทีเดียวแต้มทะลัก! "${top.team_name}" ขนมาทั้ง 15 ตัวไล่ถล่มถึง ${topPts} แต้ม คว้าแชมป์แบบโคตรคุ้ม!`),
+                LiveCommentaryEngine._c('fn_th_bb_x2', 'chip_win', `สำรองไม่ได้มีไว้นั่งตบยุง! "${top.team_name}" กด Bench Boost กวาด ${topPts} แต้ม ยืนหนึ่งแบบไม่ต้องสืบ!`)
+              ]
+            });
           } else if (chip === '3xc' || chip === 'triple_captain') {
-            leadOptions = [
-              `"${top.team_name}" slammed the Triple Captain armband on ${captName} and hit the jackpot, cruising to victory on ${topPts} pts!`,
-              `Triple Captain masterclass! "${top.team_name}" trusted ${captName} with the 3XC chip and walked away with a monstrous ${topPts} pts!`
-            ];
-          } else if (chip === 'freehit') {
-            leadOptions = [
-              `Mercenary masterclass! "${top.team_name}" brought in a one-week hit squad via Free Hit to loot ${topPts} pts and seize the crown!`,
-              `"${top.team_name}" deployed the Free Hit chip to perfection, racking up ${topPts} pts to snatch Gameweek ${gwNumber} honours!`
-            ];
-          } else if (chip === 'wildcard') {
-            leadOptions = [
-              `Ripped up the blueprint and took over! "${top.team_name}" activated the Wildcard revolution, storming to #1 with ${topPts} pts!`,
-              `Wildcard dividend paid in full! "${top.team_name}" overhauled the entire squad and instantly took top spot with ${topPts} pts!`
-            ];
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('fn_th_tc_b1', 'chip_win', `ปลอกแขนคูณสามแผลงฤทธิ์! "${top.team_name}" กด Triple Captain ใส่ ${captName} พาทีมเข้าป้าย ${topPts} แต้ม เหนือ "${secName}" ${diff} แต้ม`),
+                LiveCommentaryEngine._c('fn_th_tc_b2', 'chip_win', `เดิมพัน Triple Captain เข้าเป้าเต็มๆ! "${top.team_name}" มอบภารกิจให้ ${captName} ก่อนปิดจ็อบแชมป์ GW ${gwNumber} ที่ ${topPts} แต้ม`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('fn_th_tc_c1', 'chip_win', `ความกล้าเดิมพัน Triple Captain กับ ${captName} ตอบแทน "${top.team_name}" อย่างงดงาม ปิดสัปดาห์แชมป์ที่ ${topPts} แต้ม`),
+                LiveCommentaryEngine._c('fn_th_tc_c2', 'chip_win', `หนึ่งสัปดาห์กับหนึ่งการตัดสินใจที่เฉียบขาด: "${top.team_name}" ใช้ Triple Captain พาทีมสู่ ${topPts} แต้มเหนือ "${secName}" ${diff} แต้ม`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('fn_th_tc_a1', 'chip_win', `ตัวคูณ 3x จาก Triple Captain ของ ${captName} ช่วยส่ง "${top.team_name}" แซงเข้าวินที่ ${topPts} pts (+${diff} เหนือ "${secName}")`),
+                LiveCommentaryEngine._c('fn_th_tc_a2', 'chip_win', `จังหวะเลือก ${captName} เป็น Triple Captain ของ "${top.team_name}" สร้างมูลค่าแต้มสูงจนปิดแชมป์สัปดาห์ที่ ${topPts} แต้ม`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('fn_th_tc_x1', 'chip_win', `กัปตันคูณสามยิงไส้แตก! "${top.team_name}" ยัด Triple Captain ใส่ ${captName} แล้วโกยไป ${topPts} แต้ม เดินหัวเราะดังๆ ได้ทั้งอาทิตย์!`),
+                LiveCommentaryEngine._c('fn_th_tc_x2', 'chip_win', `ตาถึงระดับเทพ! "${top.team_name}" กาง 3XC ใส่ ${captName} เก็บไป ${topPts} แต้ม ทิ้งคู่แข่งนั่งตาปริบๆ!`)
+              ]
+            });
+          } else if (chip === 'freehit' || chip === 'wildcard') {
+            const cName = chip === 'freehit' ? 'Free Hit' : 'Wildcard';
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('fn_th_wc_b1', 'chip_win', `เปิดการ์ด ${cName} เปลี่ยนเกมทันที! "${top.team_name}" จัดชุดใหม่เข้าป้ายแชมป์ GW ${gwNumber} ที่ ${topPts} แต้ม นำ "${secName}" ${diff} แต้ม`),
+                LiveCommentaryEngine._c('fn_th_wc_b2', 'chip_win', `ลงทุน ${cName} แล้วได้คืนทันที! "${top.team_name}" เก็บไป ${topPts} แต้ม คว้าแชมป์สัปดาห์แบบทันตาเห็น`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('fn_th_wc_c1', 'chip_win', `การรีเซ็ตขุมกำลังด้วย ${cName} ของ "${top.team_name}" ให้ผลลัพธ์ระดับมาสเตอร์พีซ จบที่ ${topPts} แต้มครองแชมป์ GW ${gwNumber}`),
+                LiveCommentaryEngine._c('fn_th_wc_c2', 'chip_win', `"${top.team_name}" ใช้สิทธิ์ ${cName} อย่างเฉียบแหลม ฉีกหนี "${secName}" ไป ${diff} แต้มที่สกอร์ ${topPts} คะแนน`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('fn_th_wc_a1', 'chip_win', `โครงสร้างทีมใหม่จาก ${cName} ของ "${top.team_name}" ทำคะแนนรวม ${topPts} pts สูงสุดในลีก (+${diff} เหนือ "${secName}")`),
+                LiveCommentaryEngine._c('fn_th_wc_a2', 'chip_win', `การใช้ ${cName} ใน GW ${gwNumber} ของ "${top.team_name}" ตอบโจทย์ทันทีด้วยผลงาน ${topPts} แต้ม`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('fn_th_wc_x1', 'chip_win', `ล้างไพ่ด้วย ${cName} ปุ๊บแชมป์ปั๊บ! "${top.team_name}" กวาดไป ${topPts} แต้ม เล่นเอาเพื่อนร่วมลีกอยากกดตามแทบไม่ทัน!`),
+                LiveCommentaryEngine._c('fn_th_wc_x2', 'chip_win', `ผ่าตัดทีมใหม่ด้วย ${cName} แล้วปังทันที! "${top.team_name}" ซัด ${topPts} แต้ม คว้าแชมป์สัปดาห์แบบสบายมือ!`)
+              ]
+            });
           } else if (isJoint && winners.length > 1) {
-            const jointNames = winners.slice(0, 3).map(w => `"${w.team_name}"`).join(', ');
-            leadOptions = [
-              `Share the spoils, lads! ${jointNames} finished dead level on ${topPts} pts apiece. A brutal dogfight where nobody refused to blink!`,
-              `Dead heat at the summit! ${jointNames} tied on ${topPts} pts. Split the prize money, shake hands, and get ready for next week!`
-            ];
+            const jNames = winners.slice(0, 3).map(w => `"${w.team_name}"`).join(' และ ');
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('fn_th_jt_b1', 'joint', `เสมอกันสุดมันส์! ${jNames} ปิดสกอร์เท่ากันเป๊ะที่ ${topPts} แต้ม กอดคอครองแชมป์ร่วม GW ${gwNumber}`),
+                LiveCommentaryEngine._c('fn_th_jt_b2', 'joint', `บทสรุปแบ่งครึ่งบัลลังก์! ${jNames} ทำแต้มเท่ากันที่ ${topPts} แต้ม ไม่มีใครยอมใครในสัปดาห์นี้`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('fn_th_jt_c1', 'joint', `ใน GW ${gwNumber} ไม่มีผู้แพ้ที่แท้จริงบนยอดตาราง เมื่อ ${jNames} จบลงด้วยคะแนนเท่ากันที่ ${topPts} แต้ม`),
+                LiveCommentaryEngine._c('fn_th_jt_c2', 'joint', `การดวลที่สมน้ำสมเนื้อจบลงด้วยการครองบัลลังก์ร่วมของ ${jNames} ที่ ${topPts} คะแนน`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('fn_th_jt_a1', 'joint', `ผลสรุป GW ${gwNumber} เกิด Tie ที่อันดับ 1: ${jNames} ทำคะแนนสุทธิเท่ากันที่ ${topPts} pts`),
+                LiveCommentaryEngine._c('fn_th_jt_a2', 'joint', `จ่าฝูงประจำสัปดาห์มีผู้ทำคะแนนสูงสุดร่วมกันที่ ${topPts} แต้ม ได้แก่ ${jNames}`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('fn_th_jt_x1', 'joint', `กินกันไม่ลงต้องหารรางวัลแล้ว! ${jNames} ซัดเท่ากันเป๊ะ ${topPts} แต้ม จับมือขึ้นรับถ้วยร่วมกันไปเลย!`),
+                LiveCommentaryEngine._c('fn_th_jt_x2', 'joint', `เสมอแบบเส้นยาแดง! ${jNames} ปิดที่ ${topPts} แต้มเท่ากันทุกเม็ด แบ่งตังค์กันคนละครึ่งแบบสมานฉันท์!`)
+              ]
+            });
           } else if (isCentury) {
-            if (versionIdx === 0) {
-              leadOptions = [
-                `One hundred bloody points! "${top.team_name}" delivered a proper football masterclass with ${topPts} pts. Take notes, lads, because that is how you run a football team!`,
-                `Triple-digit demolition! "${top.team_name}" smashed through the century barrier with ${topPts} pts. Men against boys!`
-              ];
-            } else if (versionIdx === 1) {
-              leadOptions = [
-                `TRIPLE DIGIT BANGER! "${top.team_name}" joins the century club with an unreal ${topPts} pts! Touch grass, mate, you're making the rest of us look like clowns!`,
-                `One hundred points on the board! "${top.team_name}" went nuclear with ${topPts} pts. The entire mini-league is officially in the mud!`
-              ];
-            } else if (versionIdx === 2) {
-              leadOptions = [
-                `Holy hell, 100+ points! "${top.team_name}" went full god-mode with ${topPts} pts. Smashed everyone into next week. The rest of you should just pay your fines and stay quiet!`,
-                `Century club robbery! "${top.team_name}" dropped ${topPts} pts and utterly embarrassed the entire league. Class dismissed!`
-              ];
-            } else {
-              leadOptions = [
-                `ONE HUNDRED POINTS OF FOOTBALLING MAJESTY! "${top.team_name}" delivers a legendary ${topPts} pts masterclass. Stand, applaud, and bow before perfection!`,
-                `A historic monument of points! "${top.team_name}" breaches the century ceiling with ${topPts} pts. Breathtaking greatness!`
-              ];
-            }
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('fn_th_ct_b1', 'century', `ทะลุหลักร้อยอย่างยิ่งใหญ่! "${top.team_name}" กวาดไปถึง ${topPts} แต้ม (ค่าเฉลี่ยลีก ${avgScore} pts) ทิ้ง "${secName}" ไป ${diff} แต้ม โดยมี ${heroTxt} เป็นพระเอก`),
+                LiveCommentaryEngine._c('fn_th_ct_b2', 'century', `สกอร์สามหลักลงบันทึกประวัติศาสตร์! "${top.team_name}" ระเบิดพลัง ${topPts} แต้ม ซิวแชมป์ GW ${gwNumber} ไปแบบเหนือชั้น`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('fn_th_ct_c1', 'century', `หลัก 100 คะแนนคือหมุดหมายของสัปดาห์ระดับตำนาน และ "${top.team_name}" ทำได้สำเร็จที่ ${topPts} แต้ม ทิ้งค่าเฉลี่ยลีก (${avgScore}) ไว้เบื้องหลัง`),
+                LiveCommentaryEngine._c('fn_th_ct_c2', 'century', `เข้าสู่ทำเนียบ Century Club อย่างสง่างามสำหรับ "${top.team_name}" ที่สกอร์ ${topPts} แต้ม ด้วยฟอร์มของ ${heroTxt}`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('fn_th_ct_a1', 'century', `สกอร์ ${topPts} pts ของ "${top.team_name}" สูงกว่าค่าเฉลี่ยลีก (${avgScore}) ถึง +${topPts - avgScore} แต้ม ทะลุเกณฑ์ 100+ สมบูรณ์แบบ`),
+                LiveCommentaryEngine._c('fn_th_ct_a2', 'century', `ประสิทธิภาพระดับสูงในทุกตำแหน่งส่งให้ "${top.team_name}" แตะหลักร้อยที่ ${topPts} แต้ม (+${diff} เหนือ "${secName}")`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('fn_th_ct_x1', 'century', `ร้อยแต้มแตกเฉย! "${top.team_name}" กดไป ${topPts} แต้ม ทำเอาค่าเฉลี่ยลีก (${avgScore} pts) ดูเหมือนทีมคนละดิวิชัน!`),
+                LiveCommentaryEngine._c('fn_th_ct_x2', 'century', `นี่คนหรือเครื่องจักรผลิตแต้ม! "${top.team_name}" ซัดทะลุร้อยที่ ${topPts} แต้ม เหยียบคันเร่งหนี "${secName}" ไป ${diff} แต้มเต็มๆ!`)
+              ]
+            });
           } else if (diff <= 2 && second) {
-            if (versionIdx === 0) {
-              leadOptions = [
-                `Bloody hell, that was tight! "${top.team_name}" nicked it with ${topPts} pts, beating "${second.team_name}" (${secondPts} pts) by a razor-thin ${diff} point margin. A win is a win, stop crying into your pints!`,
-                `Snatched it by a whisker! "${top.team_name}" pipped "${second.team_name}" by a single ${diff} pt (${topPts} vs ${secondPts} pts). Absolute heartbreak for second place!`
-              ];
-            } else if (versionIdx === 1) {
-              leadOptions = [
-                `You jammy bastard! "${top.team_name}" (${topPts} pts) snatches the gameweek from "${second.team_name}" by literally ${diff} point! Somewhere, a keyboard has just been launched through a window!`,
-                `Robbery in broad daylight! "${top.team_name}" edges "${second.team_name}" by ${diff} pt (${topPts} vs ${secondPts} pts). Pure cinema in the group chat!`
-              ];
-            } else if (versionIdx === 2) {
-              leadOptions = [
-                `The ultimate dagger to the heart! "${top.team_name}" (${topPts} pts) snatches the crown right under "${second.team_name}"'s nose by a pathetic ${diff} point! That's gotta hurt worse than stepping on a Lego!`,
-                `Choke of the century! "${second.team_name}" missed out on top spot by just ${diff} point as "${top.team_name}" took the loot on ${topPts} pts!`
-              ];
-            } else {
-              leadOptions = [
-                `DRAMA AT THE DEATH! "${top.team_name}" (${topPts} pts) pip "${second.team_name}" at the line by the thinnest sliver of ${diff} point! Heartbreak, ecstasy, and absolute pandemonium!`,
-                `Decided by a millimeter! "${top.team_name}" claims the gameweek on ${topPts} pts, leaving "${second.team_name}" heartbroken by ${diff} solitary point!`
-              ];
-            }
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('fn_th_cl_b1', 'nailbiter', `ตัดสินกันที่เส้นชัย! "${top.team_name}" (${topPts} pts) เฉือน "${secName}" (${secondPts} pts) เพียง ${diff} แต้ม คว้าแชมป์ GW ${gwNumber} ไปแบบสุดระทึก!`),
+                LiveCommentaryEngine._c('fn_th_cl_b2', 'nailbiter', `เกมบีบหัวใจจนวินาทีสุดท้าย! "${top.team_name}" เบียดเข้าวินเหนือ "${secName}" แค่ ${diff} แต้ม ด้วยแรงหนุนจาก ${heroTxt}`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('fn_th_cl_c1', 'nailbiter', `เส้นแบ่งระหว่างผู้ชนะกับรองแชมป์บางเฉียบเพียง ${diff} คะแนน! "${top.team_name}" (${topPts} pts) อาศัยความนิ่งเฉือน "${secName}" (${secondPts} pts) เข้าป้าย`),
+                LiveCommentaryEngine._c('fn_th_cl_c2', 'nailbiter', `บทสรุป GW ${gwNumber} วัดกันด้วยรายละเอียดเล็กน้อย "${top.team_name}" เก็บ ${topPts} แต้ม เหนือกว่า "${secName}" เพียง ${diff} แต้มเท่านั้น`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('fn_th_cl_a1', 'nailbiter', `ผลต่างแค่ ${diff} แต้ม (${topPts} vs ${secondPts}) ตัดสินแชมป์ GW ${gwNumber} ให้ "${top.team_name}" โดยได้ ${heroTxt} สร้างความแตกต่าง`),
+                LiveCommentaryEngine._c('fn_th_cl_a2', 'nailbiter', `มินิลีกสัปดาห์นี้สูสีมาก "${top.team_name}" จบที่ ${topPts} แต้ม เหนือ "${secName}" แค่ ${diff} แต้ม — หนึ่งคลีนชีตหรือโบนัสเดียวก็เปลี่ยนผู้ชนะได้`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('fn_th_cl_x1', 'nailbiter', `ปาดหน้าเค้กปลายเล็บขบ! "${top.team_name}" (${topPts} pts) ปล้นแชมป์จากมือ "${secName}" (${secondPts} pts) ไปแค่ ${diff} แต้ม เจ็บใจกว่าเดินเหยียบเลโก้!`),
+                LiveCommentaryEngine._c('fn_th_cl_x2', 'nailbiter', `ชนะแต้มเดียวก็ขึ้นแท่นแชมป์โว้ย! "${top.team_name}" (${topPts} pts) เฉือน "${secName}" (${secondPts} pts) ไปแค่ ${diff} แต้ม งานนี้มีคนนอนไม่หลับ!`)
+              ]
+            });
           } else if (diff <= 5 && second) {
-            leadOptions = [
-              `Fierce battle at the summit! "${top.team_name}" edges "${second.team_name}" by ${diff} points (${topPts} vs ${secondPts} pts), proving cooler heads prevail when the pressure mounts.`,
-              `Nail-biter down to the wire! "${top.team_name}" holds off a spirited charge from "${second.team_name}" (${secondPts} pts) to lock up GW ${gwNumber} on ${topPts} pts.`
-            ];
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('fn_th_md_b1', 'mid_close', `สู้กันสมศักดิ์ศรี! "${top.team_name}" เก็บไป ${topPts} แต้ม เบียดหนี "${secName}" (${secondPts} pts) ไปแบบสูสี ${diff} แต้ม`),
+                LiveCommentaryEngine._c('fn_th_md_b2', 'mid_close', `บี้กันสนุกยันคู่สุดท้าย! "${top.team_name}" ยึดแชมป์ GW ${gwNumber} ที่ ${topPts} แต้ม นำ "${secName}" ${diff} แต้ม`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('fn_th_md_c1', 'mid_close', `"${top.team_name}" ยืนระยะได้อย่างแข็งแกร่งในสัปดาห์ที่ตึงเครียด ปิดบัญชี ${topPts} แต้มเหนือ "${secName}" อยู่ ${diff} แต้ม`),
+                LiveCommentaryEngine._c('fn_th_md_c2', 'mid_close', `ความเฉียบคมในตำแหน่งสำคัญอย่าง ${heroTxt} ช่วยให้ "${top.team_name}" (${topPts} pts) กัน "${secName}" (${secondPts} pts) ออกไปได้ ${diff} แต้ม`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('fn_th_md_a1', 'mid_close', `ช่องว่าง ${diff} แต้ม (${topPts} vs ${secondPts}) แสดงให้เห็นการแข่งขันที่เข้มข้นระหว่าง "${top.team_name}" และ "${secName}"`),
+                LiveCommentaryEngine._c('fn_th_md_a2', 'mid_close', `"${top.team_name}" คุมเกมได้นิ่งกว่าเล็กน้อย ปิดที่ ${topPts} pts เหนือกว่าอันดับ 2 อยู่ +${diff} แต้ม`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('fn_th_md_x1', 'mid_close', `ไล่บี้มาเกือบทันแต่ยังไม่พอ! "${top.team_name}" (${topPts} pts) ตบเกียร์หนี "${secName}" ไป ${diff} แต้ม คว้าชัยสัปดาห์นี้แบบตึงมือ!`),
+                LiveCommentaryEngine._c('fn_th_md_x2', 'mid_close', `เกือบโดนแซงโค้งสุดท้ายแต่ยังรอด! "${top.team_name}" เอาตัวรอดที่ ${topPts} แต้ม เหนือ "${secName}" อยู่ ${diff} แต้ม`)
+              ]
+            });
           } else if (diff >= 15) {
-            if (versionIdx === 0) {
-              leadOptions = [
-                `Absolute bloody battering! "${top.team_name}" racked up ${topPts} pts and wiped the floor with "${secName}" by a staggering ${diff} points. The rest of this league looked like a bunch of Sunday league amateurs!`,
-                `Utter humiliation! "${top.team_name}" destroyed the competition on ${topPts} pts (+${diff} pts over "${secName}"). Men against boys!`
-              ];
-            } else if (versionIdx === 1) {
-              leadOptions = [
-                `Total nuclear explosion! "${top.team_name}" smashed ${topPts} pts and left "${secName}" choking in the mud by ${diff} points. Absolute cinema, tears flowing in the group chat!`,
-                `Certified demolition! "${top.team_name}" destroyed everyone on ${topPts} pts, ${diff} clear of "${secName}". Pack it up, lads, it's over!`
-              ];
-            } else if (versionIdx === 2) {
-              leadOptions = [
-                `Good lord, that wasn't a contest, that was a crime scene! "${top.team_name}" dropped ${topPts} pts and utterly humiliated "${secName}" by ${diff} points. Someone call an ambulance for second place!`,
-                `Stop, stop, they're already dead! "${top.team_name}" crushed "${secName}" by ${diff} points on ${topPts} pts. A savage public spanking!`
-              ];
-            } else {
-              leadOptions = [
-                `Pure, majestic, unadulterated carnage! "${top.team_name}" paints a masterpiece with ${topPts} pts, utterly crushing "${secName}" underfoot by ${diff} points! A victory carved in stone and bathed in glory!`,
-                `Annihilation on grand display! "${top.team_name}" storms to ${topPts} pts, opening an unbridgeable ${diff}-point chasm over "${secName}"!`
-              ];
-            }
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('fn_th_bl_b1', 'blowout', `ชนะขาดลอยไร้ข้อกังขา! "${top.team_name}" กวาด ${topPts} แต้ม ทิ้งห่าง "${secName}" ถึง ${diff} แต้ม จากผลงานเด่นของ ${heroTxt}`),
+                LiveCommentaryEngine._c('fn_th_bl_b2', 'blowout', `"${top.team_name}" เดินเครื่องเต็มกำลังใน GW ${gwNumber} ปิดสกอร์ที่ ${topPts} แต้ม นำอันดับสอง ${diff} แต้ม`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('fn_th_bl_c1', 'blowout', `สัปดาห์นี้เป็นเวทีเดี่ยวของ "${top.team_name}" ที่ทะยานสู่ ${topPts} แต้ม ทิ้งระยะห่างจาก "${secName}" ถึง ${diff} คะแนน`),
+                LiveCommentaryEngine._c('fn_th_bl_c2', 'blowout', `ชัยชนะที่แทบไม่ต้องลุ้นในช่วงท้าย: "${top.team_name}" กดไป ${topPts} แต้ม เหนือกว่าอันดับสอง ${diff} แต้มเต็ม`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('fn_th_bl_a1', 'blowout', `ค่าความต่าง +${diff} แต้มเหนืออันดับสองของ "${top.team_name}" (${topPts} pts) ถือเป็นหนึ่งในชัยชนะที่ขาดลอยที่สุดของรอบนี้`),
+                LiveCommentaryEngine._c('fn_th_bl_a2', 'blowout', `"${top.team_name}" กวาด ${topPts} pts (+${topPts - avgScore} เหนือค่าเฉลี่ยลีก) ทิ้ง "${secName}" ขาดถึง ${diff} คะแนน`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('fn_th_bl_x1', 'blowout', `ตบเด็กโชว์ทั้งลีก! "${top.team_name}" กดไป ${topPts} แต้ม ทิ้ง "${secName}" ขาดกระจุย ${diff} แต้ม นั่งดูคู่แข่งวิ่งตามหลังแบบไม่เห็นฝุ่น!`),
+                LiveCommentaryEngine._c('fn_th_bl_x2', 'blowout', `นี่มันมินิลีกหรือเกมอุ่นเครื่อง! "${top.team_name}" ซัด ${topPts} แต้ม ฉีกหนี "${secName}" ไป ${diff} แต้มแบบไร้คู่ต่อกร!`)
+              ]
+            });
           } else if (topPts < 50) {
-            if (versionIdx === 0) {
-              leadOptions = [
-                `What an absolute pile of shite this gameweek was. But "${top.team_name}" scraped through on ${topPts} pts while everyone else was tripping over their own laces. Disgraceful scoring, but points are points!`,
-                `Tough, ugly, but effective! In a gameweek full of blanks, "${top.team_name}" survived the mud on ${topPts} pts to take the cash.`
-              ];
-            } else if (versionIdx === 1) {
-              leadOptions = [
-                `Pure trench warfare! League average was an abysmal ${avgScore} pts, but "${top.team_name}" somehow crawled out alive with ${topPts} pts. Ugly as hell, but we take those!`,
-                `Slop fest of the highest order! "${top.team_name}" dragged themselves to #1 on ${topPts} pts amidst widespread carnage.`
-              ];
-            } else if (versionIdx === 2) {
-              leadOptions = [
-                `What a painful slog of a gameweek! "${top.team_name}" sneaks away with the win on ${topPts} pts while everyone else looked like they were playing blindfolded. Truly tragic stuff!`,
-                `A win is a win, even if it was ugly as sin! "${top.team_name}" takes the honors on ${topPts} pts.`
-              ];
-            } else {
-              leadOptions = [
-                `From the barren wasteland of a brutal gameweek, one soul emerges triumphant! "${top.team_name}" claims victory with ${topPts} pts through sheer grit, iron will, and stubborn defiance!`,
-                `A gritty triumph in the desert! "${top.team_name}" weathers the storm to claim the summit on ${topPts} pts.`
-              ];
-            }
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('fn_th_lw_b1', 'grind', `สัปดาห์ที่แต้มทั้งลีกฝืดหนัก (เฉลี่ย ${avgScore} pts) แต่ "${top.team_name}" ยังประคองตัวคว้าชัยที่ ${topPts} แต้ม เหนือ "${secName}" ${diff} แต้ม`),
+                LiveCommentaryEngine._c('fn_th_lw_b2', 'grind', `เกมที่แนวรุกพร้อมใจกันเงียบ "${top.team_name}" เอาตัวรอดด้วยสกอร์ ${topPts} แต้ม ซิวแชมป์ GW ${gwNumber} แบบเหนียวแน่น`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('fn_th_lw_c1', 'grind', `ในสัปดาห์ที่ดาวดังพากันเงียบงัน "${top.team_name}" คือคนที่ผิดพลาดน้อยที่สุด คว้าแชมป์ไปด้วย ${topPts} แต้ม`),
+                LiveCommentaryEngine._c('fn_th_lw_c2', 'grind', `ไม่จำเป็นต้องสวยงามทุกสัปดาห์: "${top.team_name}" เก็บ ${topPts} แต้มท่ามกลางค่าเฉลี่ย ${avgScore} pts เพื่อครองอันดับ 1`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('fn_th_lw_a1', 'grind', `GW ${gwNumber} มีค่าเฉลี่ยต่ำเพียง ${avgScore} pts แต่ "${top.team_name}" ทำได้ ${topPts} แต้ม เพียงพอสำหรับชัยชนะ (+${diff})`),
+                LiveCommentaryEngine._c('fn_th_lw_a2', 'grind', `สัปดาห์คะแนนต่ำ (Low-scoring GW): "${top.team_name}" ยืนระยะดีกว่าค่าเฉลี่ยที่ ${topPts} pts`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('fn_th_lw_x1', 'grind', `สัปดาห์สุดฝืดที่ทั้งลีกเฉลี่ยแค่ ${avgScore} แต้ม แต่ "${top.team_name}" ดันลากสังขารไปถึง ${topPts} แต้ม คว้าถ้วยไปแบบงงๆ!`),
+                LiveCommentaryEngine._c('fn_th_lw_x2', 'grind', `เตะกันแบบง่วงทั้งลีก! แต่ "${top.team_name}" ยังมีแต้มพอฟาดแชมป์ที่ ${topPts} แต้ม ชนะก็คือชนะไม่เกี่ยงคะแนน!`)
+              ]
+            });
           } else {
-            if (versionIdx === 0) {
-              leadOptions = [
-                `Clinical job from "${top.team_name}". Dropped ${topPts} pts, dealt with "${secName}" by ${diff} points, and took the spoils. No excuses, no nonsense, just pure professionalism.`,
-                `Top-drawer execution! "${top.team_name}" delivered the goods with ${topPts} pts (${diff} ahead of "${secName}"). Solid, ruthless, and job done!`
-              ];
-            } else if (versionIdx === 1) {
-              leadOptions = [
-                `Easy money! "${top.team_name}" locked in the win with ${topPts} pts (${diff} ahead of "${secName}"). You love to see it when a plan actually works out!`,
-                `Pure swagger! "${top.team_name}" bags ${topPts} pts to claim Gameweek ${gwNumber} glory. High vibes in the camp!`
-              ];
-            } else if (versionIdx === 2) {
-              leadOptions = [
-                `Top of the pile and loving it! "${top.team_name}" bags ${topPts} pts and leaves "${secName}" staring into the abyss. Second place is just the first loser, after all!`,
-                `Locked down and dusted! "${top.team_name}" takes the spoils on ${topPts} pts while "${secName}" goes home with nothing!`
-              ];
-            } else {
-              leadOptions = [
-                `A performance of supreme authority! "${top.team_name}" claims the throne on ${topPts} pts, standing ${diff} points clear of the chasing pack!`,
-                `Victory with style! "${top.team_name}" rises above the rest with ${topPts} pts to etch their name on Gameweek ${gwNumber}!`
-              ];
+            leads = pickPersonaLead({
+              broadcaster: [
+                LiveCommentaryEngine._c('fn_th_st_b1', 'lead_std', `เสียงนกหวีดสุดท้ายดังขึ้น! "${top.team_name}" ปิดจ็อบแชมป์ GW ${gwNumber} ที่ ${topPts} แต้ม เหนือ "${secName}" อยู่ ${diff} แต้ม โดยมี ${heroTxt} ช่วยสร้างจังหวะสำคัญ`),
+                LiveCommentaryEngine._c('fn_th_st_b2', 'lead_std', `จบศึก GW ${gwNumber} อย่างสวยงาม! "${top.team_name}" เข้าป้ายอันดับหนึ่งที่ ${topPts} แต้ม ฉีก "${secName}" ออกไป ${diff} แต้ม`)
+              ],
+              columnist: [
+                LiveCommentaryEngine._c('fn_th_st_c1', 'lead_std', `การจัดทัพที่สมดุลพา "${top.team_name}" คว้าแชมป์ GW ${gwNumber} ด้วยสกอร์ ${topPts} แต้ม ทิ้ง "${secName}" (${secondPts} pts) ไป ${diff} แต้ม`),
+                LiveCommentaryEngine._c('fn_th_st_c2', 'lead_std', `"${top.team_name}" อ่านเกมสัปดาห์นี้ได้ขาดลอย ปิดบัญชีที่ ${topPts} แต้ม สูงกว่าค่าเฉลี่ยลีก (${avgScore} pts) และได้ ${heroTxt} เป็นตัวชูโรง`)
+              ],
+              analyst: [
+                LiveCommentaryEngine._c('fn_th_st_a1', 'lead_std', `บทสรุป GW ${gwNumber}: "${top.team_name}" ทำได้ ${topPts} แต้ม (+${topPts - avgScore} เหนือค่าเฉลี่ยลีก) ชนะ "${secName}" ${diff} แต้ม จากแกนหลัก ${heroTxt}`),
+                LiveCommentaryEngine._c('fn_th_st_a2', 'lead_std', `ประสิทธิภาพขุมกำลังของ "${top.team_name}" พาทีมคว้าชัยที่ ${topPts} แต้ม เหนือกว่าอันดับสอง "${secName}" อยู่ ${diff} แต้ม`)
+              ],
+              banter: [
+                LiveCommentaryEngine._c('fn_th_st_x1', 'lead_std', `"${top.team_name}" เดินรับถ้วยประจำสัปดาห์หล่อๆ ที่ ${topPts} แต้ม ปล่อยให้ "${secName}" (${secondPts} pts) ยืนมองตาปริบๆ ห่างออกไป ${diff} แต้ม`),
+                LiveCommentaryEngine._c('fn_th_st_x2', 'lead_std', `จบ GW ${gwNumber} แบบกินนิ่ม! "${top.team_name}" ฟาด ${topPts} แต้ม เหนือกว่า "${secName}" ${diff} แต้ม สบายใจเฉิบ`)
+              ]
+            });
+          }
+        }
+        const chosenLead = pick(leads, 11);
+
+        // 2. MID STORYLINES (Expanded & Persona-Aware)
+        const mids = [];
+
+        if (signals.overallContext && signals.overallContext.leaderChanged) {
+          const oc = signals.overallContext;
+          mids.push(
+            LiveCommentaryEngine._c('md_th_ov1', 'overall_swing', `จุดเปลี่ยนสำคัญของตารางรวม: "${oc.currLeaderName}" แซง "${oc.prevLeaderName}" ขึ้นยึดจ่าฝูงสะสมคนใหม่ที่ ${oc.currLeaderPts} แต้มแล้ว!`),
+            LiveCommentaryEngine._c('md_th_ov2', 'overall_swing', `บัลลังก์คะแนนรวมเปลี่ยนมือ! "${oc.currLeaderName}" ทะยานขึ้นนำฝูงสะสมเหนือ "${oc.prevLeaderName}" ในสัปดาห์นี้`)
+          );
+        } else if (signals.overallContext && signals.overallContext.gap <= 5 && signals.overallContext.runnerName) {
+          const oc = signals.overallContext;
+          mids.push(
+            LiveCommentaryEngine._c('md_th_ov3', 'overall_tight', `ขณะที่หัวตารางคะแนนรวมบี้กันสุดเดือด "${oc.currLeaderName}" นำ "${oc.runnerName}" ห่างแค่ ${oc.gap} แต้มเท่านั้น`)
+          );
+        }
+
+        if (isLive && signals.topProvBonus) {
+          const pb = signals.topProvBonus;
+          mids.push(
+            LiveCommentaryEngine._c('md_th_pb1', 'bonus_watch', `จับตาโบนัสชั่วคราว! ${pb.name} กำลังลุ้นบวกเพิ่ม +${pb.bonus} BPS โดยมีถึง ${pb.owners.length} ทีมในลีกรอรับส้มหล่น`),
+            LiveCommentaryEngine._c('md_th_pb2', 'bonus_watch', `คะแนนโบนัสยังไม่นิ่ง แต่ตอนนี้ ${pb.name} กวาด BPS นำจ่อรับ +${pb.bonus} แต้ม เข้ากระเป๋า ${pb.owners.length} ทีม`)
+          );
+        }
+
+        if (isLive && signals.topGoalHero) {
+          const gh = signals.topGoalHero;
+          mids.push(
+            LiveCommentaryEngine._c('md_th_gh1', 'goal_shock', `ช็อตระเบิดสนามของ ${gh.name} (${gh.goals} ประตู ${gh.assists} แอสซิสต์ · ${gh.pts} pts) ทำเอา ${gh.owners.length} ทีมในลีกเฮลั่นจอ`),
+            LiveCommentaryEngine._c('md_th_gh2', 'goal_shock', `${gh.name} โชว์ฟอร์มสะเด่า (${gh.pts} pts) ส่งผลให้ ${gh.owners.length} ทีมที่มีติดทัพได้แต้มพุ่งทันที`)
+          );
+        }
+
+        if (signals.autoSubHeroes.length > 0) {
+          const ash = signals.autoSubHeroes[0];
+          mids.push(
+            LiveCommentaryEngine._c('md_th_as1', 'autosub', `ม้านั่งช่วยชีวิต! "${ash.team}" ได้ ${ash.player} ขยับขึ้นมาช่วยทีมแทนตัวที่ไม่ลงสนาม บวกคืนให้ +${ash.pts} แต้มเต็มๆ`)
+          );
+        }
+
+        if (signals.vcRegrets.length > 0) {
+          const vr = signals.vcRegrets[0];
+          mids.push(
+            LiveCommentaryEngine._c('md_th_vc1', 'captain_regret', `ช็อต "รู้งี้..." ประจำสัปดาห์เป็นของ "${vr.team}" ที่รองกัปตัน ${vr.vcName} กดไป ${vr.vcRaw} แต้ม แต่กัปตัน ${vr.capName} ได้แค่ ${vr.capRaw} แต้ม เสียดายแต้มที่หลุดมือไป ${vr.lostPts} คะแนน`),
+            LiveCommentaryEngine._c('md_th_vc2', 'captain_regret', `"${vr.team}" แทบอยากสลับปลอกแขนย้อนหลัง เมื่อรองกัปตัน ${vr.vcName} (${vr.vcRaw} pts) ทำแต้มแซงกัปตัน ${vr.capName} (${vr.capRaw} pts)`)
+          );
+        }
+
+        if (signals.txMaster) {
+          const tm = signals.txMaster;
+          const mv = (tm.transfer_moves || []).filter(m => m && m.in && m.in !== '-').sort((a, b) => (b.in_pts || 0) - (a.in_pts || 0))[0];
+          const mvTxt = mv && mv.in_pts >= 4 ? ` (ดึง ${clean(mv.in)} มายิง ${mv.in_pts} pts)` : '';
+          mids.push(
+            LiveCommentaryEngine._c('md_th_tx1', 'tx_win', `ดีลเปลี่ยนตัวสุดคมต้องยกให้ "${tm.team_name}" ที่ขยับตลาดแล้วบวกกำไรสุทธิทันที +${tm.transfers_net_impact} แต้ม${mvTxt}`),
+            LiveCommentaryEngine._c('md_th_tx2', 'tx_win', `กุนซือตาเพชรประจำสัปดาห์คือ "${tm.team_name}" ซื้อขายรอบเดียวโกยกำไรส่วนต่าง +${tm.transfers_net_impact} แต้ม${mvTxt}`)
+          );
+        }
+        if (signals.txBust) {
+          const tb = signals.txBust;
+          const outMv = (tb.transfer_moves || []).filter(m => m && m.out && m.out !== '-').sort((a, b) => (b.out_pts || 0) - (a.out_pts || 0))[0];
+          const outTxt = outMv && outMv.out_pts >= 6 ? `ขาย ${clean(outMv.out)} ทิ้งแล้วเจ้าตัวดันกด ${outMv.out_pts} pts` : `ตัวที่ดึงเข้ามายังเงียบ`;
+          mids.push(
+            LiveCommentaryEngine._c('md_th_tb1', 'tx_bust', `ส่วน "${tb.team_name}" เจออาถรรพ์ตลาดนักเตะ (${outTxt}) ขาดทุนสุทธิจากการย้ายตัวไป ${tb.transfers_net_impact} แต้ม`),
+            LiveCommentaryEngine._c('md_th_tb2', 'tx_bust', `ด้าน "${tb.team_name}" ขยับตัวผิดจังหวะ (${outTxt}) โดนส่วนต่างย้ายตัวหักหายไป ${Math.abs(tb.transfers_net_impact)} แต้ม`)
+          );
+        }
+
+        if (signals.benchKing) {
+          const bk = signals.benchKing;
+          const bSq = getSquad(bk.entry_id);
+          const topB = bSq && bSq.bench ? [...bSq.bench].sort((a, b) => (b.points || 0) - (a.points || 0))[0] : null;
+          const bHero = (topB && topB.points >= 6) ? ` โดยเฉพาะ ${clean(topB.name)} (${topB.points} pts)` : '';
+          mids.push(
+            LiveCommentaryEngine._c('md_th_bn1', 'bench_pain', `ขณะที่ "${bk.team_name}" นั่งมองตาปริบๆ เมื่อซุ้มตัวสำรองเก็บรวมกันถึง ${bk.bench_points} แต้ม${bHero} แต่นั่งอยู่ข้างสนาม`),
+            LiveCommentaryEngine._c('md_th_bn2', 'bench_pain', `ดราม่าม้านั่งตกเป็นของ "${bk.team_name}" ที่ปล่อยให้ตัวสำรองทำแต้มหลุดมือไป ${bk.bench_points} แต้ม${bHero}`),
+            LiveCommentaryEngine._c('md_th_bn3', 'bench_pain', `"${bk.team_name}" มีขุมกำลังสำรองที่ร้อนแรงถึง ${bk.bench_points} แต้ม${bHero} แต่น่าเสียดายที่ไม่ได้ส่งลงเป็นตัวจริง`)
+          );
+        }
+
+        if (signals.mostPopCap && signals.mostPopCap[1] >= 3) {
+          const [pcName, pcCount] = signals.mostPopCap;
+          const sTeam = sorted.find(t => (t.captain || '').includes(pcName));
+          const sSq = sTeam ? getSquad(sTeam.entry_id) : null;
+          const cObj = sSq && sSq.starting ? sSq.starting.find(p => p.is_captain) : null;
+          if (cObj) {
+            const cPts = Number(cObj.points) || 0;
+            const cUnplayed = isLive && (Boolean(cObj.not_played_yet) || Number(cObj.minutes || 0) === 0);
+            if (cUnplayed) {
+              mids.push(
+                LiveCommentaryEngine._c('md_th_pc1', 'cap_pop', `จุดชี้ชะตาอยู่ที่กัปตันมหาชน ${pcName} (${pcCount} ทีม) ที่ยังรอลงสนาม — ถ้ามาเต็มเมื่อไหร่มีสิทธิ์เขย่าทั้งตาราง`)
+              );
+            } else if (cPts <= 6) {
+              mids.push(
+                LiveCommentaryEngine._c('md_th_pc2', 'cap_pop', `กัปตันขวัญใจมหาชนอย่าง ${pcName} (${pcCount} ทีม) รอบนี้ฟอร์มฝืดได้แค่ ${cPts} แต้ม ทำเอาเกินครึ่งลีกต้องถอนหายใจ`),
+                LiveCommentaryEngine._c('md_th_pc2b', 'cap_pop', `คนที่ฝากปลอกแขนไว้ที่ ${pcName} (${pcCount} ทีม) ต่างผิดหวังไปตามๆ กัน หลังทำได้เพียง ${cPts} คะแนน`)
+              );
+            } else if (cPts >= 18) {
+              mids.push(
+                LiveCommentaryEngine._c('md_th_pc3', 'cap_pop', `กัปตันมหาชน ${pcName} (${pcCount} ทีม) ไม่ทำให้ผิดหวัง จัดไป ${cPts} แต้ม พาขบวนคนเชื่อใจยิ้มกว้างทั้งลีก`),
+                LiveCommentaryEngine._c('md_th_pc3b', 'cap_pop', `ใครไม่ได้จับ ${pcName} (${pcCount} ทีม) เป็นกัปตันรอบนี้มีจุก เพราะเจ้าตัวแจกคะแนนคูณสองไปถึง ${cPts} แต้ม`)
+              );
             }
           }
         }
-        const leadSentence = pickRnd(111, leadOptions);
 
-        // 2. MID SENTENCE (Tactical Drama, MVP, Transfer Gossip, Roasts)
-        let midOptions = [];
-
-        // Story 1: Hero Player
-        if (heroPlayer) {
-          if (secondHero) {
-            midOptions.push(
-              `The deadly dynamic duo of ${heroPlayer.name} (${heroPlayer.pts} pts) and ${secondHero.name} (${secondHero.pts} pts) wreaked absolute havoc across the pitch.`,
-              `Powered by ${heroPlayer.name} (${heroPlayer.pts} pts) and ${secondHero.name} (${secondHero.pts} pts), operating in terrifying harmony.`
-            );
-          } else if (heroPlayer.pts >= 14) {
-            if (versionIdx === 0) {
-              midOptions.push(`Carried by ${heroPlayer.name} with ${heroPlayer.pts} bloody points. Did the job of three men while everyone else stood around picking their noses!`);
-            } else if (versionIdx === 1) {
-              midOptions.push(`${heroPlayer.name} went absolutely ballistic for ${heroPlayer.pts} pts. Give that man the Ballon d'Or and build him a statue right now!`);
-            } else if (versionIdx === 2) {
-              midOptions.push(`All praise goes to ${heroPlayer.name} (${heroPlayer.pts} pts) for dragging this entire squad on his back like a bloody tractor!`);
-            } else {
-              midOptions.push(`Blessed by the football gods, ${heroPlayer.name} exploded for ${heroPlayer.pts} breathtaking points of pure magic!`);
-            }
-          } else {
-            midOptions.push(`Anchored by a rock-solid ${heroPlayer.pts} points from ${heroPlayer.name} to keep the ship sailing smoothly.`);
-          }
+        if (signals.redCardVictims.length > 0) {
+          const rcv = LiveCommentaryEngine._pickPlain(signals.redCardVictims, baseHash, stepOffset, 22);
+          const reason = rcv.isRed ? 'โดนใบแดงไล่ออก' : (rcv.isPenMiss ? 'พลาดจุดโทษ' : 'แต้มติดลบ');
+          mids.push(
+            LiveCommentaryEngine._c('md_th_rc1', 'red_card', `โชคร้ายสุดๆ สำหรับ "${rcv.team}" เมื่อ ${rcv.player} ${reason} จนแต้มหล่นไป ${rcv.pts} คะแนน`)
+          );
         }
 
-        // Story 2: Captain Blank
-        const winnerSq = leagueData && leagueData.squads ? leagueData.squads[`${top.entry_id}_${gwNumber}`] : null;
-        const winnerCap = winnerSq && winnerSq.starting ? winnerSq.starting.find(p => p.is_captain) : null;
-        const winnerCapPts = winnerCap ? (Number(winnerCap.points) || 0) : 0;
-        if (winnerCap && !winnerCap.not_played_yet && winnerCapPts <= 4 && winnerCap.minutes > 0) {
-          midOptions.push(`Meanwhile, captain ${captName} blanked like a complete fraud on just ${winnerCapPts} pts — lucky his teammates bailed him out!`);
-        }
-
-        // Story 3: Transfer Masterclass
-        const txMaster = [...sorted].filter(t => (t.transfers_net_impact || 0) >= 6).sort((a, b) => (b.transfers_net_impact || 0) - (a.transfers_net_impact || 0))[0];
-        if (txMaster) {
-          const bestMoveIn = (txMaster.transfer_moves || []).filter(m => m && m.in && m.in !== '-').sort((a, b) => (b.in_pts || 0) - (a.in_pts || 0))[0];
-          const inTxt = bestMoveIn && bestMoveIn.in_pts >= 4 ? ` (bringing in ${clean(bestMoveIn.in)} for ${bestMoveIn.in_pts} pts)` : '';
-          midOptions.push(`Transfer masterclass goes to "${txMaster.team_name}" with a juicy +${txMaster.transfers_net_impact} net profit from market moves${inTxt}.`);
-        }
-
-        // Story 4: Transfer Curse
-        const txBust = [...sorted].filter(t => (t.transfers_net_impact || 0) <= -6).sort((a, b) => (a.transfers_net_impact || 0) - (b.transfers_net_impact || 0))[0];
-        if (txBust) {
-          const worstOut = (txBust.transfer_moves || []).filter(m => m && m.out && m.out !== '-').sort((a, b) => (b.out_pts || 0) - (a.out_pts || 0))[0];
-          const outTxt = worstOut && worstOut.out_pts >= 6 ? `selling ${clean(worstOut.out)} who immediately scored ${worstOut.out_pts} pts` : `unlucky squad moves`;
-          midOptions.push(`Spare a thought for "${txBust.team_name}" who suffered a savage transfer curse (${outTxt}), suffering a painful -${Math.abs(txBust.transfers_net_impact)} net hit!`);
-        }
-
-        // Story 5: Bench Agony
-        const benchKing = [...sorted].filter(t => (t.bench_points || 0) >= 10 && !['bboost', 'bench_boost'].includes((t.chip || '').toLowerCase())).sort((a, b) => (b.bench_points || 0) - (a.bench_points || 0))[0];
-        if (benchKing) {
-          if (versionIdx === 0) {
-            midOptions.push(`"${benchKing.team_name}" left ${benchKing.bench_points} pts rotting on the bench. Unbelievable clown behavior — what's the point of owning good players if you bench them?!`);
-          } else if (versionIdx === 1) {
-            midOptions.push(`"${benchKing.team_name}" is crying into their pillow after benching a whopping ${benchKing.bench_points} pts. Truly sick in the head!`);
-          } else {
-            midOptions.push(`Tactical comedy of the week: "${benchKing.team_name}" left ${benchKing.bench_points} valuable points freezing on the substitute pine.`);
-          }
-        }
-
-        // Story 6: Bottom Table Wooden Spoon
         if (bottom && bottom.entry_id !== top.entry_id && sorted.length > 3) {
-          const bottomRem = Number(bottom.players_remaining !== undefined ? bottom.players_remaining : (bottom.live_rem !== undefined ? bottom.live_rem : 0));
-          const bottomScore = Number(bottom[scoreKey] || 0);
-          if (isLive && bottomScore <= 4 && bottomRem >= 7) {
-            midOptions.push(`Down at the foot of the live table, "${bottom.team_name}" currently sits on ${bottomScore} pts, but with ${bottomRem} players still to feature, their real gameweek has barely started!`);
+          const bRem = Number(bottom.players_remaining !== undefined ? bottom.players_remaining : (bottom.live_rem || 0));
+          const bPts = Number(bottom[scoreKey] || 0);
+          if (isLive && bPts <= 6 && bRem >= 6) {
+            mids.push(
+              LiveCommentaryEngine._c('md_th_bt_l', 'bottom', `ส่วนท้ายตาราง "${bottom.team_name}" (${bPts} pts) ยังไม่ต้องรีบตกใจ เพราะยังมีผู้เล่นรอลงเตะอีกถึง ${bRem} คน`)
+            );
+          } else if (pId === 'banter') {
+            mids.push(
+              LiveCommentaryEngine._c('md_th_bt_x1', 'bottom', `ฝั่งก้นตารางสัปดาห์นี้ "${bottom.team_name}" เก็บได้แค่ ${bPts} แต้ม ครองบ๊วยอย่างเหงาๆ รอเพื่อนมาแซวในแชทได้เลย!`),
+              LiveCommentaryEngine._c('md_th_bt_x2', 'bottom', `ตำแหน่งผู้กล้าท้ายตารางยกให้ "${bottom.team_name}" ที่หยุดอยู่ที่ ${bPts} แต้ม สัปดาห์หน้าค่อยมาแก้มือใหม่นะเพื่อน!`)
+            );
           } else {
-            if (versionIdx === 0) {
-              midOptions.push(`Meanwhile down in the gutter, "${bottom.team_name}" managed a miserable ${bottomPts} pts. That's not bad luck, that's just downright embarrassing!`);
-            } else if (versionIdx === 1) {
-              midOptions.push(`Down in the basement, "${bottom.team_name}" registered a tragic ${bottomPts} pts. Someone check for a pulse, because that squad is clinically dead!`);
-            } else if (versionIdx === 2) {
-              midOptions.push(`Wooden spoon donkey of the week goes to "${bottom.team_name}" with ${bottomPts} pts. Even my dead nan could score more than that from a wheelchair!`);
-            } else {
-              midOptions.push(`And in the darkest depths of the table lies "${bottom.team_name}" with a hollow ${bottomPts} pts — a tragedy written in red ink!`);
+            mids.push(
+              LiveCommentaryEngine._c('md_th_bt_c1', 'bottom', `ด้านท้ายตาราง "${bottom.team_name}" สัปดาห์นี้เจองานหนัก จบที่ ${bPts} แต้ม ต้องรีบปรับขบวนก่อนเดดไลน์หน้า`),
+              LiveCommentaryEngine._c('md_th_bt_c2', 'bottom', `ส่วน "${bottom.team_name}" (${bPts} pts) ต้องเร่งแก้เกมในตลาดรอบหน้าหลังรั้งอันดับสุดท้ายของสัปดาห์`)
+            );
+          }
+        }
+
+        let midIds = [];
+        let midText = '';
+        if (mids.length > 0) {
+          const m1 = pick(mids, 21);
+          if (m1) {
+            midText = m1.text;
+            midIds.push(m1.id);
+          }
+          if (mids.length >= 3 && (stepOffset % 2 === 1 || isLive)) {
+            const remMids = mids.filter(m => m.id !== m1?.id);
+            const m2 = pick(remMids, 25);
+            if (m2) {
+              midText += ` ${m2.text}`;
+              midIds.push(m2.id);
             }
           }
         }
 
-        let midSentence = '';
-        if (midOptions.length > 0) {
-          midSentence = pickRnd(121, midOptions);
-        }
+        // 3. ENDINGS (4+ distinct options per persona in both Finished & Live)
+        const endsByPersona = isFinished ? {
+          broadcaster: [
+            LiveCommentaryEngine._c('ed_th_fb1', 'end', `ครบ 90 นาทีทุกสนามของสัปดาห์นี้ เตรียมนับถอยหลังสู่เกมวีคถัดไปกันต่อ!`),
+            LiveCommentaryEngine._c('ed_th_fb2', 'end', `สัปดาห์นี้ปิดฉากอย่างเร้าใจ ใครจะรักษาโมเมนตัมได้ต่อต้องไปวัดกันรอบหน้า!`),
+            LiveCommentaryEngine._c('ed_th_fb3', 'end', `คะแนนทางการยืนยันเรียบร้อย เจอกันใหม่ในแมตช์เดย์ถัดไป!`),
+            LiveCommentaryEngine._c('ed_th_fb4', 'end', `เสียงนกหวีดสุดท้ายปิดม่าน GW ${gwNumber} อย่างสมบูรณ์ พร้อมเปิดฉากศึกหน้าทันที!`)
+          ],
+          columnist: [
+            LiveCommentaryEngine._c('ed_th_fc1', 'end', `ตารางคะแนนไม่เคยโกหกใคร สัปดาห์หน้าคือบทพิสูจน์บทใหม่ของคนจัดทัพ`),
+            LiveCommentaryEngine._c('ed_th_fc2', 'end', `ความสม่ำเสมอใน 38 สัปดาห์ต่างหากที่เป็นตัวตัดสินแชมป์ตัวจริง`),
+            LiveCommentaryEngine._c('ed_th_fc3', 'end', `จบหนึ่งสัปดาห์ก็ถึงเวลาทบทวนบทเรียน ก่อนตลาดนักเตะรอบหน้าจะปิดลง`),
+            LiveCommentaryEngine._c('ed_th_fc4', 'end', `ทุกคะแนนที่เกิดขึ้นในเกมวีคนี้จะถูกจารึกเป็นจุดเปลี่ยนสำคัญเมื่อจบฤดูกาล`)
+          ],
+          analyst: [
+            LiveCommentaryEngine._c('ed_th_fa1', 'end', `ถึงเวลาสแกนโปรแกรม 3 นัดถัดไปและจัดการงบประมาณก่อนราคาขยับ`),
+            LiveCommentaryEngine._c('ed_th_fa2', 'end', `เก็บข้อมูลฟอร์มและนาทีลงสนามสัปดาห์นี้ไว้ใช้ชิงความได้เปรียบในรอบถัดไป`),
+            LiveCommentaryEngine._c('ed_th_fa3', 'end', `ทุกแต้มที่เสียหรือได้ในสัปดาห์นี้จะสะท้อนผลชัดเจนเมื่อเข้าสู่ช่วงโค้งสุดท้าย`),
+            LiveCommentaryEngine._c('ed_th_fa4', 'end', `เช็กแท็บแนะนำการย้ายตัวเพื่อเตรียมวางแผนก่อนตลาดรอบใหม่เปิดทำการ`)
+          ],
+          banter: [
+            LiveCommentaryEngine._c('ed_th_fx1', 'end', `คนชนะเดินยืดอกแคปจอไปลงกลุ่มได้เลย ส่วนคนแพ้ซุ่มเงียบจัดตัวใหม่แก้ตัวสัปดาห์หน้า!`),
+            LiveCommentaryEngine._c('ed_th_fx2', 'end', `บทสรุปออกแล้ว ใครโดนเพื่อนล้อวันนี้สัปดาห์หน้าค่อยกลับมาเอาคืน!`),
+            LiveCommentaryEngine._c('ed_th_fx3', 'end', `วงการนี้เข้าแล้วออกยาก สัปดาห์นี้จะพังแค่ไหนเดี๋ยวพรุ่งนี้ก็เปิดดูราคาตัวใหม่ต่ออยู่ดี!`),
+            LiveCommentaryEngine._c('ed_th_fx4', 'end', `ผลออกมาชัดขนาดนี้ คืนนี้กลุ่มแชทมีประเด็นให้แซวกันยาวแน่นอน!`)
+          ]
+        } : {
+          broadcaster: [
+            LiveCommentaryEngine._c('ed_th_lb1', 'end', `เกมยังไม่จบครบทุกคู่ รอติดตามจังหวะเปลี่ยนอันดับแบบเรียลไทม์กันต่อ!`),
+            LiveCommentaryEngine._c('ed_th_lb2', 'end', `ยังเหลือเวลาให้ลุ้นทั้งโบนัสและออโต้ซับ ห้ามกะพริบตาเด็ดขาด!`),
+            LiveCommentaryEngine._c('ed_th_lb3', 'end', `ความสนุกของแมตช์เดย์เพิ่งเริ่มต้น คู่ที่เหลือยังพลิกกระดานได้เสมอ`),
+            LiveCommentaryEngine._c('ed_th_lb4', 'end', `เกาะติดทุกประตูและคะแนนโบนัสสดๆ ที่จะอัปเดตให้เห็นทุก 20 วินาที!`)
+          ],
+          columnist: [
+            LiveCommentaryEngine._c('ed_th_lc1', 'end', `บอลยังไม่ครบ 90 นาทีทุกสนาม อันดับชั่วคราวอาจเปลี่ยนหน้าได้ในพริบตา`),
+            LiveCommentaryEngine._c('ed_th_lc2', 'end', `ความแน่นอนยังไม่เกิดจนกว่าผู้ตัดสินจะเป่านกหวีดสุดท้ายของเกมวีค`),
+            LiveCommentaryEngine._c('ed_th_lc3', 'end', `ระหว่างทางของเกมวีคมักซ่อนเรื่องราวพลิกผันไว้ในคู่สุดท้ายเสมอ`),
+            LiveCommentaryEngine._c('ed_th_lc4', 'end', `ผู้ชนะตัวจริงไม่ได้ตัดสินที่วันแรก แต่ตัดสินเมื่อเสียงนกหวีดคู่สุดท้ายดังขึ้น`)
+          ],
+          analyst: [
+            LiveCommentaryEngine._c('ed_th_la1', 'end', `ตัวแปรสำคัญยังอยู่ที่คะแนนโบนัสชั่วคราวและจำนวนนักเตะที่เหลือของกลุ่มหัวตาราง`),
+            LiveCommentaryEngine._c('ed_th_la2', 'end', `แนะนำเช็กหน้าเทียบคู่แข่ง 1v1 เพื่อดูตัวต่างที่ยังเหลือลงสนามในช่วงเวลาที่เหลือ`),
+            LiveCommentaryEngine._c('ed_th_la3', 'end', `อัปเดตตัวสำรองอัตโนมัติชั่วคราวจะช่วยสะท้อนคะแนนสุทธิจริงทันทีที่แต่ละคู่จบ`),
+            LiveCommentaryEngine._c('ed_th_la4', 'end', `จับตาค่า BPS ในคู่ที่กำลังแข่ง เพราะโบนัส +3 สามารถเปลี่ยนอันดับหัวตารางได้ทันที`)
+          ],
+          banter: [
+            LiveCommentaryEngine._c('ed_th_lx1', 'end', `บอลยังไม่จบอย่าเพิ่งรีบโม้ ระวังโดนลูกยิงนาทีบาปปาดหน้าเค้กคาจอ!`),
+            LiveCommentaryEngine._c('ed_th_lx2', 'end', `จ่าฝูงชั่วคราวเตรียมยาดมรอไว้เลย คู่ดึกยังมีสิทธิ์พลิกตารางได้ตลอดเวลา!`),
+            LiveCommentaryEngine._c('ed_th_lx3', 'end', `ตอนนี้ใครมีตัวเหลืออยู่ในมือก็เตรียมลุ้นให้สุดเสียง คืนนี้ยังไม่รู้ใครจะหัวเราะทีหลัง!`),
+            LiveCommentaryEngine._c('ed_th_lx4', 'end', `เปิดโหมดเทียบ 1v1 แล้วแคปจอไปกดดันเพื่อนที่นั่งตามหลังได้เลย!`)
+          ]
+        };
 
-        // 3. ENDING PUNCHLINE (Section 3)
-        let endOptions = [];
-        if (isFinished) {
-          if (versionIdx === 0) {
-            endOptions = [
-              `Table doesn't lie, lads. Stop whining and sort yourselves out for next week!`,
-              `Take the beating like a man and try not to embarrass yourselves next round!`,
-              `Bragging rights earned. Everyone else can sod off and think about what they've done!`,
-              `Drink up your pints, swallow the pain, and pray you don't cock it up next weekend!`
-            ];
-          } else if (versionIdx === 1) {
-            endOptions = [
-              `You love to bloody see it! Group chat banter is going to be completely unhinged tonight!`,
-              `FPL is a mental illness and we are all suffering together. See you next deadline, degenerates!`,
-              `Points in the bag, rivals in the mud. Life doesn't get much sweeter than this!`,
-              `Time to talk endless shit in the group chat until the next deadline ruins our lives again!`
-            ];
-          } else if (versionIdx === 2) {
-            endOptions = [
-              `Winner takes the cash, losers take the trash talk. Standard procedure around here!`,
-              `Dry your eyes, lads. There's always next week to embarrass yourselves all over again!`,
-              `Bragging rights locked in. Don't even think about making eye contact with the champ!`,
-              `Someone get second place a box of tissues and a warm blanket. You're gonna need it!`
-            ];
+        const chosenEnd = pick(endsByPersona[pId] || endsByPersona.broadcaster, 31);
+        const text = midText
+          ? `${chosenLead.text} ${midText} ${chosenEnd.text}`
+          : `${chosenLead.text} ${chosenEnd.text}`;
+
+        return {
+          text,
+          leadId: chosenLead.id,
+          midIds,
+          endId: chosenEnd.id
+        };
+      }
+
+      static _buildEnglishCommentary(ctx) {
+        const {
+          gwNumber, persona, pick, clean, getSquad,
+          sorted, top, second, bottom, topPts, secondPts, diff,
+          scoreKey, isLive, isFinished, isJoint, winners, isCentury, chip, captName,
+          avgScore, secName, topRem, secRem, heroPlayer, secondHero, winStreak,
+          isStreak, isTopNonPrize, overallTop, signals, baseHash, stepOffset
+        } = ctx;
+
+        const pId = persona.id;
+        const heroTxt = heroPlayer
+          ? (secondHero ? `${heroPlayer.name} (${heroPlayer.pts} pts) and ${secondHero.name} (${secondHero.pts} pts)` : `${heroPlayer.name} (${heroPlayer.pts} pts)`)
+          : `captain ${captName}`;
+        const pickPersonaLead = (byPersona) => byPersona[pId] || byPersona.broadcaster;
+
+        let leads = [];
+        if (isLive) {
+          if (isTopNonPrize) {
+            leads = pickPersonaLead({
+              broadcaster: [LiveCommentaryEngine._c('ld_en_np_b', 'nonprize', `Exhibition side "${overallTop.team_name}" leads raw scoring on ${overallTop[scoreKey]} pts, while "${top.team_name}" (${topPts} pts) fronts the prize race by ${diff} pts.`)],
+              columnist: [LiveCommentaryEngine._c('ld_en_np_c', 'nonprize', `"${overallTop.team_name}" plays with total freedom on ${overallTop[scoreKey]} pts, leaving "${top.team_name}" (${topPts} pts) to set the official prize pace.`)],
+              analyst: [LiveCommentaryEngine._c('ld_en_np_a', 'nonprize', `Guest leader: "${overallTop.team_name}" (${overallTop[scoreKey]} pts). Official prize leader: "${top.team_name}" (${topPts} pts, +${diff} over "${secName}").`)],
+              banter: [LiveCommentaryEngine._c('ld_en_np_x', 'nonprize', `"${overallTop.team_name}" is tearing it up for pure vibes on ${overallTop[scoreKey]} pts while "${top.team_name}" (${topPts} pts) leads the cash race!`)]
+            });
+          } else if (diff <= 0 || isJoint || topPts === secondPts) {
+            leads = (secRem > topRem && topRem !== null)
+              ? pickPersonaLead({
+                  broadcaster: [LiveCommentaryEngine._c('ld_en_tc_b', ['tie', 'chasers_left'], `Deadlock at ${topPts} pts! "${top.team_name}" and "${secName}" share the summit, though "${secName}" holds ${secRem} players left vs ${topRem}.`)],
+                  columnist: [LiveCommentaryEngine._c('ld_en_tc_c', ['tie', 'chasers_left'], `Level on ${topPts} pts for now, yet "${secName}" carries superior late-game firepower (${secRem} vs ${topRem} remaining).`)],
+                  analyst: [LiveCommentaryEngine._c('ld_en_tc_a', ['tie', 'chasers_left'], `Tie at ${topPts} pts: "${secName}" projects higher remaining ceiling with ${secRem} starters left against ${topRem}.`)],
+                  banter: [LiveCommentaryEngine._c('ld_en_tc_x', ['tie', 'chasers_left'], `Locked at ${topPts} pts, except "${secName}" still has ${secRem} players in reserve vs ${topRem} — somebody is about to get overtaken!`)]
+                })
+              : pickPersonaLead({
+                  broadcaster: [LiveCommentaryEngine._c('ld_en_tie_b', 'tie', `All square at ${topPts} pts between "${top.team_name}" and "${secName}"! Everything hinges on the remaining fixtures.`)],
+                  columnist: [LiveCommentaryEngine._c('ld_en_tie_c', 'tie', `Nothing separates "${top.team_name}" and "${secName}" on ${topPts} pts as GW ${gwNumber} enters its decisive stretch.`)],
+                  analyst: [LiveCommentaryEngine._c('ld_en_tie_a', 'tie', `Co-leaders at ${topPts} pts ("${top.team_name}" & "${secName}"). Differential picks and BPS will break the deadlock.`)],
+                  banter: [LiveCommentaryEngine._c('ld_en_tie_x', 'tie', `Dead bloody heat on ${topPts} pts! "${top.team_name}" and "${secName}" are refusing to blink!`)]
+                });
+          } else if (secRem > topRem && topRem !== null) {
+            leads = pickPersonaLead({
+              broadcaster: [LiveCommentaryEngine._c('ld_en_lv_b', 'chasers_left', `High drama! "${top.team_name}" leads on ${topPts} pts (+${diff}), but "${secName}" still has ${secRem} players to play vs ${topRem}.`)],
+              columnist: [LiveCommentaryEngine._c('ld_en_lv_c', 'chasers_left', `"${top.team_name}" holds #1 on ${topPts} pts (+${diff}), yet "${secName}" keeps the pressure on with ${secRem} players left to feature vs ${topRem}.`)],
+              analyst: [LiveCommentaryEngine._c('ld_en_lv_a', 'chasers_left', `Lead vulnerability alert: "${top.team_name}" is +${diff} pts ahead (${topPts} vs ${secondPts}) but trails ${topRem} to ${secRem} in remaining starters.`)],
+              banter: [LiveCommentaryEngine._c('ld_en_lv_x', 'chasers_left', `Hold that celebration! "${top.team_name}" leads on ${topPts} pts, but "${secName}" (${secondPts} pts) still has ${secRem} players lurking in the late games vs ${topRem}.`)]
+            });
+          } else if (topRem !== null && topRem >= secRem && topRem > 0) {
+            leads = pickPersonaLead({
+              broadcaster: [LiveCommentaryEngine._c('ld_en_cr_b', 'leader_cruising', `"${top.team_name}" is in full command on ${topPts} pts (+${diff} over "${secName}") with ${topRem} players still to kick a ball!`)],
+              columnist: [LiveCommentaryEngine._c('ld_en_cr_c', 'leader_cruising', `Strength on top of strength: "${top.team_name}" leads on ${topPts} pts and still holds ${topRem} starters in reserve vs ${secRem}.`)],
+              analyst: [LiveCommentaryEngine._c('ld_en_cr_a', 'leader_cruising', `Strong live equity for "${top.team_name}": +${diff} pts clear (${topPts} vs ${secondPts}) with a ${topRem}-to-${secRem} starter advantage.`)],
+              banter: [LiveCommentaryEngine._c('ld_en_cr_x', 'leader_cruising', `"${top.team_name}" is cruising on ${topPts} pts (+${diff}) and STILL has ${topRem} players left — chasers are in trouble!`)]
+            });
+          } else if (topRem === 0 && secRem === 0 && topRem !== null) {
+            leads = pickPersonaLead({
+              broadcaster: [LiveCommentaryEngine._c('ld_en_dn_b', 'bps_wait', `All eleven starters have played for both contenders! "${top.team_name}" leads "${secName}" by ${diff} pts (${topPts} vs ${secondPts}) pending final bonus.`)],
+              columnist: [LiveCommentaryEngine._c('ld_en_dn_c', 'bps_wait', `Every card is on the table: "${top.team_name}" (${topPts}) holds a ${diff}-point edge over "${secName}" (${secondPts}) awaiting final BPS confirmation.`)],
+              analyst: [LiveCommentaryEngine._c('ld_en_dn_a', 'bps_wait', `0 starters remaining for both top sides. "${top.team_name}" leads by ${diff} pts subject to provisional bonus and auto-subs.`)],
+              banter: [LiveCommentaryEngine._c('ld_en_dn_x', 'bps_wait', `Zero players left for either side! "${top.team_name}" is up ${diff} pts — now just pray the bonus gods don't flip it!`)]
+            });
+          } else if (diff <= 2) {
+            leads = pickPersonaLead({
+              broadcaster: [LiveCommentaryEngine._c('ld_en_cl_b', 'nailbiter', `Razor-thin live race! "${top.team_name}" (${topPts} pts) edges "${secName}" (${secondPts} pts) by just ${diff} pt!`)],
+              columnist: [LiveCommentaryEngine._c('ld_en_cl_c', 'nailbiter', `Only ${diff} point separates "${top.team_name}" and "${secName}" in a riveting live duel at the top.`)],
+              analyst: [LiveCommentaryEngine._c('ld_en_cl_a', 'nailbiter', `Live margin is just ${diff} pt (${topPts} vs ${secondPts}) — single bonus swing territory.`)],
+              banter: [LiveCommentaryEngine._c('ld_en_cl_x', 'nailbiter', `Sweating buckets at the top! "${top.team_name}" clings to a ${diff}-point lead over "${secName}". Don't blink!`)]
+            });
+          } else if (diff >= 15) {
+            leads = pickPersonaLead({
+              broadcaster: [LiveCommentaryEngine._c('ld_en_bl_b', 'blowout', `Statement live display from "${top.team_name}" on ${topPts} pts, opening a ${diff}-point cushion over "${secName}" behind ${heroTxt}.`)],
+              columnist: [LiveCommentaryEngine._c('ld_en_bl_c', 'blowout', `"${top.team_name}" has turned GW ${gwNumber} into a procession, surging ${diff} pts clear on ${topPts} pts.`)],
+              analyst: [LiveCommentaryEngine._c('ld_en_bl_a', 'blowout', `Commanding +${diff} pts live lead for "${top.team_name}" (${topPts} vs ${secondPts}), anchored by ${heroTxt}.`)],
+              banter: [LiveCommentaryEngine._c('ld_en_bl_x', 'blowout', `Total demolition! "${top.team_name}" is ${diff} pts clear on ${topPts} pts while the rest of the league watches from the mud!`)]
+            });
           } else {
-            endOptions = [
-              `History remembers the victors! The rest are merely dust in the wind until next weekend!`,
-              `That wasn't just a gameweek — that was bloody football opera! Take a bow, champion!`,
-              `Rejoice in your triumph, for Monday morning banter will be utterly devastating!`,
-              `The curtain falls on a sensational chapter. Stand tall and savor the glory!`
-            ];
+            leads = pickPersonaLead({
+              broadcaster: [LiveCommentaryEngine._c('ld_en_st_b', 'lead_std', `"${top.team_name}" commands GW ${gwNumber} live on ${topPts} pts, sitting ${diff} pts ahead of "${secName}" with ${heroTxt} leading the charge.`)],
+              columnist: [LiveCommentaryEngine._c('ld_en_st_c', 'lead_std', `Steady authority from "${top.team_name}" on ${topPts} pts live, holding "${secName}" at bay by ${diff} pts.`)],
+              analyst: [LiveCommentaryEngine._c('ld_en_st_a', 'lead_std', `Live GW ${gwNumber} leader: "${top.team_name}" (${topPts} pts, +${diff} over "${secName}") powered by ${heroTxt}.`)],
+              banter: [LiveCommentaryEngine._c('ld_en_st_x', 'lead_std', `"${top.team_name}" is bossing GW ${gwNumber} live on ${topPts} pts (+${diff} over "${secName}") — vibes are immaculate!`)]
+            });
           }
         } else {
-          endOptions = [
-            `Matches aren't over yet, don't celebrate too early or karma will smack you right in the teeth!`,
-            `Still players to play in the late kickoff — prepare for squeaky bum time!`,
-            `One dodgy VAR penalty in the 90th minute could turn this whole table upside down!`,
-            `Hold onto your pints, this live shit is getting ridiculous!`
-          ];
+          if (isTopNonPrize) {
+            leads = pickPersonaLead({
+              broadcaster: [LiveCommentaryEngine._c('fn_en_np_b', 'nonprize', `Guest squad "${overallTop.team_name}" topped raw points on ${overallTop[scoreKey]} pts, passing the official GW ${gwNumber} crown to "${top.team_name}" (${topPts} pts).`)],
+              columnist: [LiveCommentaryEngine._c('fn_en_np_c', 'nonprize', `While exhibition side "${overallTop.team_name}" posted ${overallTop[scoreKey]} pts, "${top.team_name}" (${topPts} pts) claims the official weekly honours.`)],
+              analyst: [LiveCommentaryEngine._c('fn_en_np_a', 'nonprize', `Top raw score: "${overallTop.team_name}" (${overallTop[scoreKey]} pts, guest). Official prize winner: "${top.team_name}" (${topPts} pts).`)],
+              banter: [LiveCommentaryEngine._c('fn_en_np_x', 'nonprize', `"${overallTop.team_name}" dropped ${overallTop[scoreKey]} pts just for fun, handing the cash crown straight to "${top.team_name}" (${topPts} pts)!`)]
+            });
+          } else if (isStreak && !isJoint) {
+            leads = pickPersonaLead({
+              broadcaster: [LiveCommentaryEngine._c('fn_en_sk_b', 'streak', `Relentless consistency! "${top.team_name}" locks up ${winStreak} straight weekly wins with ${topPts} pts (+${diff} over "${secName}").`)],
+              columnist: [LiveCommentaryEngine._c('fn_en_sk_c', 'streak', `A mini-dynasty in the making as "${top.team_name}" captures ${winStreak} consecutive gameweeks on ${topPts} pts.`)],
+              analyst: [LiveCommentaryEngine._c('fn_en_sk_a', 'streak', `${winStreak}-week winning streak confirmed for "${top.team_name}" (${topPts} pts, +${diff} margin) behind ${heroTxt}.`)],
+              banter: [LiveCommentaryEngine._c('fn_en_sk_x', 'streak', `Someone stop "${top.team_name}"! ${winStreak} weekly wins in a row (${topPts} pts) — rest of the league is playing for second!`)]
+            });
+          } else if (chip === 'bboost' || chip === 'bench_boost') {
+            leads = [LiveCommentaryEngine._c('fn_en_bb', 'chip_win', `Bench Boost timed to perfection — "${top.team_name}" mobilized all 15 players to claim GW ${gwNumber} on ${topPts} pts.`)];
+          } else if (chip === '3xc' || chip === 'triple_captain') {
+            leads = [LiveCommentaryEngine._c('fn_en_tc', 'chip_win', `Triple Captain jackpot! "${top.team_name}" trusted ${captName} with the 3x armband and swept the week on ${topPts} pts.`)];
+          } else if (isJoint && winners.length > 1) {
+            const jNames = winners.slice(0, 3).map(w => `"${w.team_name}"`).join(' & ');
+            leads = [LiveCommentaryEngine._c('fn_en_jt', 'joint', `Impossible to separate! ${jNames} share top honours in GW ${gwNumber} level on ${topPts} pts.`)];
+          } else if (isCentury) {
+            leads = pickPersonaLead({
+              broadcaster: [LiveCommentaryEngine._c('fn_en_ct_b', 'century', `Century club unlocked! "${top.team_name}" smashed ${topPts} pts (league avg ${avgScore}) to take GW ${gwNumber} powered by ${heroTxt}.`)],
+              columnist: [LiveCommentaryEngine._c('fn_en_ct_c', 'century', `A triple-digit masterpiece: "${top.team_name}" breaches 100 with ${topPts} pts to tower over GW ${gwNumber}.`)],
+              analyst: [LiveCommentaryEngine._c('fn_en_ct_a', 'century', `"${top.team_name}" hit ${topPts} pts (+${topPts - avgScore} above league avg ${avgScore}) to claim GW ${gwNumber} in style.`)],
+              banter: [LiveCommentaryEngine._c('fn_en_ct_x', 'century', `TRIPLE DIGIT BANGER! "${top.team_name}" dropped ${topPts} pts and embarrassed the entire mini-league!`)]
+            });
+          } else if (diff <= 2 && second) {
+            leads = pickPersonaLead({
+              broadcaster: [LiveCommentaryEngine._c('fn_en_cl_b', 'nailbiter', `Decided at the wire! "${top.team_name}" (${topPts} pts) edged "${secName}" (${secondPts} pts) by just ${diff} pt in GW ${gwNumber}.`)],
+              columnist: [LiveCommentaryEngine._c('fn_en_cl_c', 'nailbiter', `Decided by the finest margin: "${top.team_name}" (${topPts} pts) outlasted "${secName}" (${secondPts} pts) by ${diff} pt.`)],
+              analyst: [LiveCommentaryEngine._c('fn_en_cl_a', 'nailbiter', `GW ${gwNumber} settled by ${diff} pt (${topPts} vs ${secondPts}), with ${heroTxt} providing the winning margin.`)],
+              banter: [LiveCommentaryEngine._c('fn_en_cl_x', 'nailbiter', `Daylight robbery! "${top.team_name}" (${topPts} pts) snatched GW ${gwNumber} from "${secName}" (${secondPts} pts) by ${diff} pt. Brutal way to lose!`)]
+            });
+          } else if (diff <= 5 && second) {
+            leads = pickPersonaLead({
+              broadcaster: [LiveCommentaryEngine._c('fn_en_md_b', 'mid_close', `Tight battle to the end! "${top.team_name}" took GW ${gwNumber} on ${topPts} pts, ${diff} ahead of "${secName}".`)],
+              columnist: [LiveCommentaryEngine._c('fn_en_md_c', 'mid_close', `Cool heads prevailed as "${top.team_name}" (${topPts} pts) fended off "${secName}" (${secondPts} pts) by ${diff} pts.`)],
+              analyst: [LiveCommentaryEngine._c('fn_en_md_a', 'mid_close', `Competitive ${diff}-pt margin (${topPts} vs ${secondPts}) gives "${top.team_name}" the GW ${gwNumber} win.`)],
+              banter: [LiveCommentaryEngine._c('fn_en_md_x', 'mid_close', `Close, but no cigar for "${secName}"! "${top.team_name}" locked it up on ${topPts} pts (+${diff}).`)]
+            });
+          } else if (diff >= 15) {
+            leads = pickPersonaLead({
+              broadcaster: [LiveCommentaryEngine._c('fn_en_bl_b', 'blowout', `Commanding win in GW ${gwNumber}! "${top.team_name}" posted ${topPts} pts to finish ${diff} pts clear of "${secName}".`)],
+              columnist: [LiveCommentaryEngine._c('fn_en_bl_c', 'blowout', `Utter dominance from "${top.team_name}" on ${topPts} pts, leaving "${secName}" ${diff} pts adrift.`)],
+              analyst: [LiveCommentaryEngine._c('fn_en_bl_a', 'blowout', `Decisive +${diff} pts gap for "${top.team_name}" (${topPts} pts vs avg ${avgScore}) led by ${heroTxt}.`)],
+              banter: [LiveCommentaryEngine._c('fn_en_bl_x', 'blowout', `Not a contest, a crime scene! "${top.team_name}" dropped ${topPts} pts and buried "${secName}" by ${diff} pts!`)]
+            });
+          } else if (topPts < 50) {
+            leads = pickPersonaLead({
+              broadcaster: [LiveCommentaryEngine._c('fn_en_lw_b', 'grind', `In a low-scoring grind (league avg ${avgScore} pts), "${top.team_name}" ground out ${topPts} pts to take the week by ${diff} pts.`)],
+              columnist: [LiveCommentaryEngine._c('fn_en_lw_c', 'grind', `Survival of the steadiest: "${top.team_name}" scraped ${topPts} pts amidst widespread blanks to win GW ${gwNumber}.`)],
+              analyst: [LiveCommentaryEngine._c('fn_en_lw_a', 'grind', `Low league baseline (${avgScore} pts avg) made "${top.team_name}"'s ${topPts} pts enough for #1 (+${diff}).`)],
+              banter: [LiveCommentaryEngine._c('fn_en_lw_x', 'grind', `Ugly slog of a week (avg ${avgScore} pts), yet "${top.team_name}" crawled out alive on ${topPts} pts to take the win!`)]
+            });
+          } else {
+            leads = pickPersonaLead({
+              broadcaster: [LiveCommentaryEngine._c('fn_en_st_b', 'lead_std', `Full-time triumph for "${top.team_name}", claiming GW ${gwNumber} on ${topPts} pts (${diff} ahead of "${secName}") behind ${heroTxt}.`)],
+              columnist: [LiveCommentaryEngine._c('fn_en_st_c', 'lead_std', `Composed execution from "${top.team_name}", sealing GW ${gwNumber} on ${topPts} pts ahead of "${secName}" by ${diff} pts.`)],
+              analyst: [LiveCommentaryEngine._c('fn_en_st_a', 'lead_std', `GW ${gwNumber} winner: "${top.team_name}" (${topPts} pts, +${topPts - avgScore} vs avg) driven by ${heroTxt}.`)],
+              banter: [LiveCommentaryEngine._c('fn_en_st_x', 'lead_std', `Easy work for "${top.team_name}", banking ${topPts} pts and leaving "${secName}" ${diff} pts behind!`)]
+            });
+          }
         }
-        const endSentence = pickRnd(131, endOptions);
+        const chosenLead = pick(leads, 111);
 
-        if (midSentence) {
-          return `${leadSentence} ${midSentence} ${endSentence}`;
+        const mids = [];
+        if (signals.overallContext && signals.overallContext.leaderChanged) {
+          const oc = signals.overallContext;
+          mids.push(LiveCommentaryEngine._c('md_en_ov1', 'overall_swing', `Big movement at the top overall: "${oc.currLeaderName}" overtakes "${oc.prevLeaderName}" to seize #1 on ${oc.currLeaderPts} pts.`));
         }
-        return `${leadSentence} ${endSentence}`;
+        if (isLive && signals.topProvBonus) {
+          const pb = signals.topProvBonus;
+          const sqUnit = pb.owners.length === 1 ? 'league squad' : 'league squads';
+          mids.push(LiveCommentaryEngine._c('md_en_pb1', 'bonus_watch', `Bonus watch: ${pb.name} currently holds +${pb.bonus} provisional BPS for ${pb.owners.length} ${sqUnit}.`));
+        }
+        if (signals.autoSubHeroes.length > 0) {
+          const ash = signals.autoSubHeroes[0];
+          mids.push(LiveCommentaryEngine._c('md_en_as1', 'autosub', `Auto-sub lifeline: ${ash.player} stepped off the bench for "${ash.team}" to deliver +${ash.pts} pts.`));
+        }
+        if (signals.vcRegrets.length > 0) {
+          const vr = signals.vcRegrets[0];
+          mids.push(LiveCommentaryEngine._c('md_en_vc1', 'captain_regret', `Captaincy regret for "${vr.team}" — vice-captain ${vr.vcName} (${vr.vcRaw} pts) outscored captain ${vr.capName} (${vr.capRaw} pts), leaving ${vr.lostPts} pts behind.`));
+        }
+        if (signals.txMaster) {
+          mids.push(LiveCommentaryEngine._c('md_en_tx1', 'tx_win', `Sharpest transfer business belongs to "${signals.txMaster.team_name}" with +${signals.txMaster.transfers_net_impact} net gain.`));
+        }
+        if (signals.benchKing) {
+          mids.push(LiveCommentaryEngine._c('md_en_bn1', 'bench_pain', `"${signals.benchKing.team_name}" watched ${signals.benchKing.bench_points} points go unused on the substitutes bench.`));
+        }
+        if (signals.redCardVictims.length > 0) {
+          const rcv = signals.redCardVictims[0];
+          mids.push(LiveCommentaryEngine._c('md_en_rc1', 'red_card', `Ouch for "${rcv.team}" as ${rcv.player} suffered a negative haul (${rcv.pts} pts).`));
+        }
+        if (bottom && bottom.entry_id !== top.entry_id && sorted.length > 3) {
+          const bPts = Number(bottom[scoreKey] || 0);
+          mids.push(LiveCommentaryEngine._c('md_en_bt1', 'bottom', `Down in last place this week sits "${bottom.team_name}" on ${bPts} pts.`));
+        }
+
+        let midIds = [];
+        let midText = '';
+        if (mids.length > 0) {
+          const m1 = pick(mids, 121);
+          if (m1) {
+            midText = m1.text;
+            midIds.push(m1.id);
+          }
+          if (mids.length >= 3 && (stepOffset % 2 === 1 || isLive)) {
+            const m2 = pick(mids.filter(m => m.id !== m1?.id), 125);
+            if (m2) {
+              midText += ` ${m2.text}`;
+              midIds.push(m2.id);
+            }
+          }
+        }
+
+        const endsByPersona = isFinished ? {
+          broadcaster: [
+            LiveCommentaryEngine._c('ed_en_fb1', 'end', `Full-time across the league — on to the next deadline!`),
+            LiveCommentaryEngine._c('ed_en_fb2', 'end', `That wraps up GW ${gwNumber} in dramatic fashion — see you next weekend!`),
+            LiveCommentaryEngine._c('ed_en_fb3', 'end', `Official scores locked in; reset the watchlist and go again next round!`),
+            LiveCommentaryEngine._c('ed_en_fb4', 'end', `The final whistle sounds on GW ${gwNumber} — momentum carries straight into next week!`)
+          ],
+          columnist: [
+            LiveCommentaryEngine._c('ed_en_fc1', 'end', `The table never lies; next week writes a fresh chapter.`),
+            LiveCommentaryEngine._c('ed_en_fc2', 'end', `Thirty-eight chapters make a champion, and this one left plenty to ponder.`),
+            LiveCommentaryEngine._c('ed_en_fc3', 'end', `Form is temporary, positioning is everything as the next deadline approaches.`),
+            LiveCommentaryEngine._c('ed_en_fc4', 'end', `Lessons learned in red ink often pay dividends by spring.`)
+          ],
+          analyst: [
+            LiveCommentaryEngine._c('ed_en_fa1', 'end', `Time to review 3-week fixture swings before prices shift.`),
+            LiveCommentaryEngine._c('ed_en_fa2', 'end', `Check the Transfer Advisor tab to spot undervalued targets ahead of price changes.`),
+            LiveCommentaryEngine._c('ed_en_fa3', 'end', `Audit minutes played and underlying xGI before committing early transfers.`),
+            LiveCommentaryEngine._c('ed_en_fa4', 'end', `Every point gained now compounds across the upcoming fixture turn.`)
+          ],
+          banter: [
+            LiveCommentaryEngine._c('ed_en_fx1', 'end', `Screenshot the table and enjoy the group chat fallout!`),
+            LiveCommentaryEngine._c('ed_en_fx2', 'end', `Winner takes the bragging rights, everyone else back to the drawing board!`),
+            LiveCommentaryEngine._c('ed_en_fx3', 'end', `Dry your eyes, lads — there's always next weekend to bottle it all over again!`),
+            LiveCommentaryEngine._c('ed_en_fx4', 'end', `No excuses left on the board; see you before the next deadline!`)
+          ]
+        } : {
+          broadcaster: [
+            LiveCommentaryEngine._c('ed_en_lb1', 'end', `Plenty of live minutes still left — keep watching the bonus and auto-subs!`),
+            LiveCommentaryEngine._c('ed_en_lb2', 'end', `Live action keeps rolling with every goal and BPS update!`),
+            LiveCommentaryEngine._c('ed_en_lb3', 'end', `Stay tuned as late fixtures threaten to shake up the standings!`),
+            LiveCommentaryEngine._c('ed_en_lb4', 'end', `Still plenty of twists waiting before full-time across the league!`)
+          ],
+          columnist: [
+            LiveCommentaryEngine._c('ed_en_lc1', 'end', `Nothing is settled until the final whistle of the gameweek.`),
+            LiveCommentaryEngine._c('ed_en_lc2', 'end', `Provisional tables flatter early leaders; true verdicts arrive on Monday night.`),
+            LiveCommentaryEngine._c('ed_en_lc3', 'end', `Late drama has a habit of rewriting the most comfortable scripts.`),
+            LiveCommentaryEngine._c('ed_en_lc4', 'end', `Patience remains a virtue until every starter has left the pitch.`)
+          ],
+          analyst: [
+            LiveCommentaryEngine._c('ed_en_la1', 'end', `Open the 1v1 Rival view to track every remaining differential player.`),
+            LiveCommentaryEngine._c('ed_en_la2', 'end', `Provisional bonus and pending auto-subs remain the biggest live variance drivers.`),
+            LiveCommentaryEngine._c('ed_en_la3', 'end', `Track remaining starters in the pinned My Team bar to gauge comeback odds.`),
+            LiveCommentaryEngine._c('ed_en_la4', 'end', `Watch BPS thresholds closely — a single +3 swing can flip tight matchups.`)
+          ],
+          banter: [
+            LiveCommentaryEngine._c('ed_en_lx1', 'end', `Don't celebrate early — one late goal can ruin someone's entire weekend!`),
+            LiveCommentaryEngine._c('ed_en_lx2', 'end', `Fire up the 1v1 Battle Card and screenshot it straight to your rival!`),
+            LiveCommentaryEngine._c('ed_en_lx3', 'end', `Hold onto your hats, late kickoffs are coming for someone's lead!`),
+            LiveCommentaryEngine._c('ed_en_lx4', 'end', `Still plenty of time for chaos and questionable VAR decisions!`)
+          ]
+        };
+
+        const chosenEnd = pick(endsByPersona[pId] || endsByPersona.broadcaster, 131);
+        const text = midText ? `${chosenLead.text} ${midText} ${chosenEnd.text}` : `${chosenLead.text} ${chosenEnd.text}`;
+        return { text, leadId: chosenLead.id, midIds, endId: chosenEnd.id };
+      }
+      /**
+       * Generate concise 1-line matchup verdict for 1v1 Rival Battle Card (Screenshot-friendly, clean)
+       */
+      static generateMatchupVerdict({ nameA, nameB, scoreA, scoreB, remA, remB, overallDiff, isLive, isFinished, diffCountA, diffCountB, isEn }) {
+        const clean = LiveCommentaryEngine._clean;
+        const a = clean(nameA);
+        const b = clean(nameB);
+        const gap = scoreA - scoreB;
+        const absGap = Math.abs(gap);
+
+        if (isFinished) {
+          if (gap === 0) {
+            const ovEdgeEn = overallDiff >= 0 ? `"${a}" holds the overall edge` : `"${b}" stays ahead overall`;
+            const ovEdgeTh = overallDiff >= 0 ? `"${a}" ยังคุมความได้เปรียบในตารางรวม` : `"${b}" ยังนำในตารางรวมอยู่`;
+            return isEn
+              ? `Dead even at ${scoreA} pts apiece — ${ovEdgeEn}.`
+              : `คู่นี้เสมอกันเป๊ะ ${scoreA} แต้ม — ${ovEdgeTh}`;
+          }
+          const winner = gap > 0 ? a : b;
+          const loser = gap > 0 ? b : a;
+          if (absGap <= 3) {
+            return isEn
+              ? `"${winner}" edged "${loser}" by a razor-thin ${absGap} pts in a thriller decided by tiny margins.`
+              : `"${winner}" เฉือน "${loser}" ไปแบบหวุดหวิดแค่ ${absGap} แต้ม ตัดสินกันที่รายละเอียดเล็กน้อย!`;
+          }
+          if (absGap >= 18) {
+            return isEn
+              ? `Dominant week for "${winner}", outscoring "${loser}" by ${absGap} pts across their differential picks.`
+              : `สัปดาห์นี้ "${winner}" ทิ้งขาด "${loser}" ถึง ${absGap} แต้ม จากความต่างของตัวทีเด็ดชัดเจน!`;
+          }
+          return isEn
+            ? `"${winner}" took the head-to-head by ${absGap} pts (${scoreA} vs ${scoreB}).`
+            : `"${winner}" ชนะศึกดวลตัวต่อตัวสัปดาห์นี้ไป ${absGap} แต้ม (${scoreA} ต่อ ${scoreB})`;
+        }
+
+        if (isLive) {
+          if (gap === 0) {
+            if (remA !== remB) {
+              const edgeName = remA > remB ? a : b;
+              const edgeRem = Math.max(remA, remB);
+              return isEn
+                ? `Level on ${scoreA} pts live, but "${edgeName}" holds ${edgeRem} starters left to swing it.`
+                : `แต้มสดเท่ากันที่ ${scoreA} แต้ม แต่ "${edgeName}" มีตัวรอลงเตะเหลือ ${edgeRem} คน ได้เปรียบลุ้นแซง!`;
+            }
+            return isEn
+              ? `Locked at ${scoreA} pts live with ${diffCountA + diffCountB} differential slots set to decide it.`
+              : `แต้มสดชนกันที่ ${scoreA} แต้ม วัดกันที่ตัวต่าง ${diffCountA + diffCountB} จุดในเกมที่เหลือ`;
+          }
+          const leader = gap > 0 ? a : b;
+          const trailer = gap > 0 ? b : a;
+          const leaderRem = gap > 0 ? remA : remB;
+          const trailerRem = gap > 0 ? remB : remA;
+          if (trailerRem > leaderRem) {
+            return isEn
+              ? `"${leader}" leads by ${absGap} pts live, yet "${trailer}" still has ${trailerRem} players left vs ${leaderRem} to stage a comeback!`
+              : `"${leader}" นำสดอยู่ ${absGap} แต้ม แต่ "${trailer}" ยังเหลือตัวรอเตะอีก ${trailerRem} คน (เทียบกับ ${leaderRem}) มีลุ้นพลิก!`;
+          }
+          return isEn
+            ? `"${leader}" leads by ${absGap} pts live with ${leaderRem} players left vs ${trailerRem} for "${trailer}".`
+            : `"${leader}" คุมความได้เปรียบนำสด ${absGap} แต้ม และเหลือตัวเตะ ${leaderRem} คน ต่อ ${trailerRem} คนของ "${trailer}"`;
+        }
+
+        // Pre-match
+        return isEn
+          ? `${diffCountA + diffCountB} differential positions separate "${a}" and "${b}" heading into kickoff.`
+          : `คู่นี้มีตัวต่างชี้ชะตารวม ${diffCountA + diffCountB} ตำแหน่ง รอวัดกันหลังนกหวีดเริ่มเกม!`;
       }
     }
 
@@ -2170,6 +2112,9 @@
             try {
               if (this.currentModalEntryId) {
                 this.closeTeamModal();
+              }
+              if (this._rivalState && this._rivalState.isOpen && typeof this.closeRivalModal === 'function') {
+                this.closeRivalModal();
               }
               const urlParams = new URLSearchParams((window.location && window.location.search) ? window.location.search : '');
               const qLeague = urlParams.get('league') || this.detectPathLeague();
@@ -2933,6 +2878,16 @@
               provisional_bonus: provBonus,
               bps: Number(el.stats.bps) || 0,
               minutes: mins,
+              goals_scored: Number(el.stats.goals_scored) || 0,
+              assists: Number(el.stats.assists) || 0,
+              clean_sheets: Number(el.stats.clean_sheets) || 0,
+              goals_conceded: Number(el.stats.goals_conceded) || 0,
+              own_goals: Number(el.stats.own_goals) || 0,
+              penalties_saved: Number(el.stats.penalties_saved) || 0,
+              penalties_missed: Number(el.stats.penalties_missed) || 0,
+              yellow_cards: Number(el.stats.yellow_cards) || 0,
+              red_cards: Number(el.stats.red_cards) || 0,
+              saves: Number(el.stats.saves) || 0,
               played: played,
               has_fixtures: hasFixtures,
               fixture_started: fixtureStarted,
@@ -2941,6 +2896,8 @@
           }
         });
         this._latestLiveMap = liveMap;
+        this._latestLiveElements = liveMap;
+        this._latestLiveFixtureBonus = liveJson.provisional_bonus_by_fixture || null;
 
         const gwKey = String(gw);
         const anyMatchStarted = startedFixtures.size > 0;
@@ -2988,6 +2945,16 @@
             p.provisional_bonus = liveStat.provisional_bonus;
             p.bps = liveStat.bps;
             p.minutes = liveStat.minutes;
+            p.goals_scored = liveStat.goals_scored;
+            p.assists = liveStat.assists;
+            p.clean_sheets = liveStat.clean_sheets;
+            p.goals_conceded = liveStat.goals_conceded;
+            p.own_goals = liveStat.own_goals;
+            p.penalties_saved = liveStat.penalties_saved;
+            p.penalties_missed = liveStat.penalties_missed;
+            p.yellow_cards = liveStat.yellow_cards;
+            p.red_cards = liveStat.red_cards;
+            p.saves = liveStat.saves;
             p.not_played_yet = notPlayed;
             if (p.name) nameToPts[p.name] = rawPts;
             if (liveStat.fixture_started && p.team && Array.isArray(gwData.unstarted_teams)) {
@@ -3264,6 +3231,12 @@
           const modal = document.getElementById('team-modal');
           if (modal && !modal.classList.contains('hidden')) {
             this.openTeamModal(this.currentModalEntryId);
+          }
+        }
+        if (this._rivalState && this._rivalState.isOpen) {
+          const rModal = document.getElementById('rival-modal');
+          if (rModal && !rModal.classList.contains('hidden')) {
+            this.renderRivalModal();
           }
         }
       }
@@ -4801,6 +4774,10 @@
 
         this.renderLeagueDropdown();
         this.updateHeaderInfo();
+        this._openDramaEventId = null;
+        if (this._rivalState && this._rivalState.isOpen && typeof this.closeRivalModal === 'function') {
+          this.closeRivalModal();
+        }
         this.renderAll();
         if (this.activeTab) {
           this.switchTab(this.activeTab, true);
@@ -7235,6 +7212,10 @@
         if (String(this._isLoadingLeague || '') === String(this.activeLeagueId)) {
           const loadingText = isEn ? 'Loading league data...' : 'กำลังโหลดข้อมูลลีก...';
           if (championCard) championCard.innerHTML = '';
+          const dramaEl = document.getElementById('live-drama-strip-container');
+          if (dramaEl) { dramaEl.innerHTML = ''; dramaEl.classList.add('hidden'); }
+          const pinEl = document.getElementById('my-team-strip-container');
+          if (pinEl) { pinEl.innerHTML = ''; pinEl.classList.add('hidden'); }
           if (matchdayBody) matchdayBody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs animate-pulse">${loadingText}</td></tr>`;
           if (overallBody) overallBody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs animate-pulse">${loadingText}</td></tr>`;
           return;
@@ -7365,15 +7346,26 @@
         const nonPrizePodiumTeams = sorted.slice(0, Math.min(sorted.length, tierPrizeCount)).filter(t => !this.isPrizeEligible(t.entry_id));
         const hasPassedPrize = nonPrizePodiumTeams.length > 0;
         const leader = prizeLeader;
+        const { overallSorted, overallContext, targetGW } = this.computeGameweekOverallStandings(this.selectedGW);
+        const isTier2View = this.isTier2League();
+        const myTeamId = !isTier2View ? this.getMyTeamId() : '';
 
         // 1. Render Spotlight Card (Pre-Match Lineup Preview OR Live Leader / Weekly Winner)
         if (championCard && !hasMatchdayResults) {
           championCard.innerHTML = '';
         } else if (championCard && leader) {
-          const cacheKey = `${this.activeLeagueId}_${this.selectedGW}_${this.currentLang}_${isFinished}_${isStarted}`;
+          const cacheKey = this.getLiveNoteCacheKey(this.selectedGW, isFinished, isStarted);
           const nonPrizeList = (this.config && this.config.non_prize_teams) || [];
-          const currentLiveNote = this.liveNotesCache[cacheKey] || LiveCommentaryEngine.generateFreshNote(this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeeklyPrize, useHighestPlayerTieBreaker, isEn);
-          this.liveNotesCache[cacheKey] = currentLiveNote;
+          let currentNoteObj = this.liveNotesCache[cacheKey];
+          if (!currentNoteObj || typeof currentNoteObj === 'string') {
+            currentNoteObj = LiveCommentaryEngine.generateNoteObject(
+              this.selectedGW, gwData, this.data.name, false, nonPrizeList, this.data, isWeeklyPrize, useHighestPlayerTieBreaker, isEn, { overallContext }
+            );
+            this.liveNotesCache[cacheKey] = currentNoteObj;
+          }
+          const currentLiveNote = currentNoteObj.text;
+          const currentPersonaLabel = currentNoteObj.personaLabel;
+          const leagueContextPill = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 font-display truncate max-w-[180px] sm:max-w-[260px]">${this.escapeHtml(this.data.name || '')} · GW ${this.selectedGW}</span>`;
 
           if (!isStarted) {
             // Render PRE-MATCH Tactical Lineup Preview
@@ -7406,12 +7398,12 @@
               <div class="prematch-spotlight-card rounded-2xl p-4 sm:p-5 relative overflow-hidden transition-all duration-200">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                   <div>
-                    <div class="flex items-center gap-2 mb-1">
+                    <div class="flex items-center gap-2 flex-wrap mb-1">
                       <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-indigo-500/15 text-indigo-900 dark:text-indigo-200 border border-indigo-300/60 dark:border-indigo-500/30 font-display shadow-2xs">
-                        <span>📋</span>
                         <span>${isEn ? 'GAMEWEEK PREVIEW' : 'พรีวิวสัปดาห์การแข่งขัน'}</span>
                       </span>
                       <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">${isEn ? 'Upcoming' : 'รอคิกออฟ'}</span>
+                      ${leagueContextPill}
                     </div>
                     <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight mt-0.5">${isEn ? `Gameweek ${this.selectedGW} Lineups Locked` : `Gameweek ${this.selectedGW} ส่งรายชื่อเรียบร้อยแล้ว`}</h2>
                     <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-0.5">${isEn ? 'Awaiting opening match kickoff • Tactical overview & league stats' : 'รอคู่เปิดสนามคิกออฟ • สถิติการจัดทีมและวางหมากในลีก'}</p>
@@ -7441,22 +7433,16 @@
                   </div>
                 </div>
 
-                <!-- Highlight Note (Pundit Banter Style with Copy & Refresh Buttons) -->
+                <!-- Highlight Note (4-Persona Commentary, Screenshot-Ready) -->
                 <div class="mt-3 pt-3 border-t border-indigo-100/80 dark:border-slate-700/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600 dark:text-slate-400">
-                  <div class="min-w-0 pr-1 flex items-start sm:items-center gap-2 flex-wrap sm:flex-nowrap">
-                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/15 text-indigo-800 dark:text-indigo-300 border border-indigo-400/40 shrink-0 font-display">
-                      <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-                      <span>${isEn ? 'Pre-Match Preview' : 'พรีวิวก่อนแข่ง'}</span>
-                    </span>
+                  <div class="min-w-0 pr-1 flex items-start gap-2 flex-col sm:flex-row sm:items-center">
+                    <span id="current-gw-persona-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/15 text-indigo-800 dark:text-indigo-300 border border-indigo-400/40 shrink-0 font-display"><span id="current-gw-persona-label">${this.escapeHtml(currentPersonaLabel)}</span></span>
                     <span id="current-gw-note-text" class="font-medium text-slate-700 dark:text-slate-300 leading-relaxed break-words">${currentLiveNote}</span>
                   </div>
-                  <div class="flex items-center justify-end gap-1 flex-shrink-0 self-end sm:self-center pt-1 sm:pt-0">
-                    <span id="quote-copy-indicator" class="text-[11px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 inline-block font-display">${isEn ? 'Copied!' : 'คัดลอกแล้ว!'}</span>
-                    <button onclick="app.copyHighlightQuote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Copy Analysis Quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}" aria-label="${isEn ? 'Copy analysis quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                    </button>
-                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์กูรูสายดุเดือด'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์กูรูสายดุเดือด'}">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                  <div class="flex items-center justify-end flex-shrink-0 self-end sm:self-center">
+                    <button type="button" onclick="app.regenerateLiveNote()" class="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[38px] text-[11px] font-bold text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white rounded-xl bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 transition-colors cursor-pointer active:scale-95 shadow-2xs font-display" title="${isEn ? 'Switch Pundit Style' : 'เปลี่ยนมุมพากษ์'}" aria-label="${isEn ? 'Switch pundit style' : 'เปลี่ยนมุมพากษ์'}">
+                      <svg class="w-3.5 h-3.5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                      <span>${isEn ? 'Switch Style' : 'เปลี่ยนมุมพากษ์'}</span>
                     </button>
                   </div>
                 </div>
@@ -7647,6 +7633,7 @@
                         <span class="inline-flex items-center">${badgeIcon}</span>
                         <span>${badgeTitle}</span>
                       </span>
+                      ${leagueContextPill}
                     </div>
                     ${winnerHeaderHtml}
                     ${managerNamesHtml}
@@ -7675,24 +7662,19 @@
                 ${multiTierPayoutsHtml}
                 ${penaltyPayoutsHtml}
 
-                <!-- Highlight Note (Pundit Banter Style with Copy & Refresh Buttons) -->
+                <!-- Highlight Note (4-Persona Commentary, Screenshot-Ready) -->
                 <div class="mt-3.5 pt-3 border-t ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/70 dark:border-slate-700/60'} flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600 dark:text-slate-400">
-                  <div class="min-w-0 pr-1 flex items-start sm:items-center gap-2 flex-wrap sm:flex-nowrap">
-                    ${!isFinished ? `
-                      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-400/40 shrink-0 font-display">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                        <span>${isEn ? 'Live Match' : 'พากษ์สด'}</span>
-                      </span>
-                    ` : ''}
+                  <div class="min-w-0 pr-1 flex items-start gap-2 flex-col sm:flex-row sm:items-center">
+                    <span id="current-gw-persona-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${!isFinished ? 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-400/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300/70 dark:border-slate-700'} shrink-0 font-display">
+                      ${!isFinished ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>' : ''}
+                      <span id="current-gw-persona-label">${this.escapeHtml(currentPersonaLabel)}</span>
+                    </span>
                     <span id="current-gw-note-text" class="font-medium text-slate-700 dark:text-slate-300 leading-relaxed break-words">${currentLiveNote}</span>
                   </div>
-                  <div class="flex items-center justify-end gap-1 flex-shrink-0 self-end sm:self-center pt-1 sm:pt-0">
-                    <span id="quote-copy-indicator" class="text-[11px] font-bold text-emerald-600 opacity-0 transition-opacity duration-200 inline-block font-display">${isEn ? 'Copied!' : 'คัดลอกแล้ว!'}</span>
-                    <button onclick="app.copyHighlightQuote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Copy Analysis Quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}" aria-label="${isEn ? 'Copy analysis quote' : 'คัดลอกพาดหัวบทวิเคราะห์'}">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                    </button>
-                    <button onclick="app.regenerateLiveNote()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer active:scale-95" title="${isEn ? 'Refresh Analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์กูรูสายดุเดือด'}" aria-label="${isEn ? 'Refresh analysis' : 'สุ่มบทวิเคราะห์ใหม่สไตล์กูรูสายดุเดือด'}">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                  <div class="flex items-center justify-end flex-shrink-0 self-end sm:self-center">
+                    <button type="button" onclick="app.regenerateLiveNote()" class="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[38px] text-[11px] font-bold text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white rounded-xl bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 transition-colors cursor-pointer active:scale-95 shadow-2xs font-display" title="${isEn ? 'Switch Pundit Style' : 'เปลี่ยนมุมพากษ์'}" aria-label="${isEn ? 'Switch pundit style' : 'เปลี่ยนมุมพากษ์'}">
+                      <svg class="w-3.5 h-3.5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                      <span>${isEn ? 'Switch Style' : 'เปลี่ยนมุมพากษ์'}</span>
                     </button>
                   </div>
                 </div>
@@ -7701,6 +7683,10 @@
             `;
           }
         }
+
+        // 1b. Render Tier 1 Live Drama Feed Strip & My Team Pin Strip
+        this.renderLiveDramaStrip(gwData, sorted, overallSorted, isStarted, isFinished);
+        this.renderMyTeamStrip(sorted, overallSorted, gwData, isStarted, isFinished);
 
         // 2. Render Matchday Table Body
         if (matchdayBody && !hasMatchdayResults) {
@@ -7795,21 +7781,32 @@
 
             const isDeparted = this.isTeamDeparted(team.entry_id);
             const departedBadge = isDeparted ? this.getDepartedBadge(team.entry_id, true) : '';
+            const isMyRow = Boolean(!isTier2View && myTeamId && Number(team.entry_id) === Number(myTeamId));
+            const myBadge = isMyRow ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-blue-600 text-white font-display">${isEn ? 'ME' : 'ทีมฉัน'}</span>` : '';
+            const rowActionPill = !isTier2View
+              ? (myTeamId
+                  ? (!isMyRow ? `<button type="button" onclick="event.stopPropagation(); app.openRivalModal(${Number(myTeamId)}, ${Number(team.entry_id)})" class="inline-flex items-center px-1.5 py-0.5 min-h-[24px] rounded-md text-[9.5px] font-extrabold bg-slate-100 hover:bg-slate-900 text-slate-700 hover:text-white dark:bg-slate-800 dark:hover:bg-blue-600 dark:text-slate-300 dark:hover:text-white border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer flex-shrink-0" title="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}" aria-label="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}">VS</button>` : '')
+                  : `<button type="button" onclick="event.stopPropagation(); app.setMyTeamId(${Number(team.entry_id)})" class="inline-flex items-center px-1.5 py-0.5 min-h-[24px] rounded-md text-[9.5px] font-bold bg-slate-100 hover:bg-blue-600 text-slate-600 hover:text-white dark:bg-slate-800 dark:hover:bg-blue-600 dark:text-slate-300 dark:hover:text-white border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer flex-shrink-0" title="${isEn ? 'Pin My Team' : 'ปักหมุดทีมฉัน'}" aria-label="${isEn ? 'Pin my team' : 'ปักหมุดทีมฉัน'}">${isEn ? 'Pin' : 'ปักหมุด'}</button>`)
+              : '';
             mHtml += `
-              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isWinner ? 'font-semibold' : ''} ${isDeparted ? 'opacity-70' : ''}">
+              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isWinner ? 'font-semibold' : ''} ${isDeparted ? 'opacity-70' : ''} ${isMyRow ? 'bg-blue-50/70 dark:bg-blue-950/25 border-l-2 border-l-blue-500' : ''}">
                 <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-2 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <span class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors max-w-[150px] xs:max-w-[200px] sm:max-w-none truncate block">
                       ${this.escapeHtml(team.team_name)}
                     </span>
+                    ${myBadge}
                     ${chip}
                     ${prizeBadge}
                     ${departedBadge}
                     ${penaltyBadgeHtml}
                   </div>
                   <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                    <div class="truncate">${this.escapeHtml(team.player_name)}</div>
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <span class="truncate">${this.escapeHtml(team.player_name)}</span>
+                      ${rowActionPill}
+                    </div>
                     <div class="sm:hidden text-[10px] text-slate-600 dark:text-slate-400 font-medium mt-0.5 truncate">
                       <span class="inline-flex items-center px-1 py-0.2 rounded text-[9px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 mr-0.5">(C)</span> ${this.escapeHtml((team.captain || '-').replace(/\s*\(C\)/gi, '').trim())}
                     </div>
@@ -7851,191 +7848,6 @@
 
         // 3. Render Overall Standings Body
         if (overallBody) {
-          const overallMap = {};
-          const maxGW = Number(this.multiData.max_gw) || 2;
-          const targetGW = Math.min(Number(this.selectedGW) || maxGW, maxGW);
-          const isTier2 = Boolean(this.data && this.data.tier === 2) || Boolean(this.config && this.config.tier === 2);
-
-          if (isTier2) {
-            // Tier 2 Direct Official Binding: Directly bind to official FPL total_points, rank, last_rank, and event_total
-            const currentGwResultsMap = {};
-            if (gwData && Array.isArray(gwData.results)) {
-              gwData.results.forEach(r => {
-                currentGwResultsMap[r.entry_id] = r;
-              });
-            }
-
-            (this.data.teams || []).forEach(t => {
-              const r = currentGwResultsMap[t.entry_id];
-              const lastGwPts = r ? (Number(r.net_points) || 0) : (Number(t.event_total) || 0);
-              const lastGwRaw = r ? (Number(r.points) || 0) : (Number(t.event_total) || 0);
-              const lastGwHits = r ? (Number(r.hits) || 0) : 0;
-              const teamTotalHits = (r && r.total_hits !== undefined) ? Number(r.total_hits) : (Number(t.total_hits) || 0);
-              const fplRank = (t.rank !== undefined && t.rank !== null) ? Number(t.rank) : 999;
-              const lastRank = (t.last_rank !== undefined && t.last_rank !== null && Number(t.last_rank) > 0) ? Number(t.last_rank) : null;
-
-              const isLatestGw = (targetGW >= maxGW);
-              const teamTotalPoints = (isLatestGw || !r || r.total_points === undefined)
-                ? (Number(t.total_points) || 0)
-                : (Number(r.total_points) || 0);
-              const teamOverallRank = (isLatestGw || !r || r.overall_rank === undefined)
-                ? fplRank
-                : (Number(r.overall_rank) || fplRank);
-              const teamPrevRank = (isLatestGw || !r || r.last_rank === undefined)
-                ? lastRank
-                : (Number(r.last_rank) || null);
-
-              overallMap[t.entry_id] = {
-                entry_id: t.entry_id,
-                team_name: t.entry_name,
-                player_name: t.player_name,
-                fpl_rank: teamOverallRank,
-                overall_rank: teamOverallRank,
-                prev_rank: teamPrevRank,
-                total_points: teamTotalPoints,
-                total_hits: teamTotalHits,
-                last_gw_pts: lastGwPts,
-                last_gw_raw: lastGwRaw,
-                last_gw_hits: lastGwHits
-              };
-            });
-          } else {
-            (this.data.teams || []).forEach(t => {
-              overallMap[t.entry_id] = {
-                entry_id: t.entry_id,
-                team_name: t.entry_name,
-                player_name: t.player_name,
-                fpl_rank: t.rank || 999,
-                total_points: 0,
-                total_hits: 0,
-                last_gw_pts: 0,
-                last_gw_raw: 0,
-                last_gw_hits: 0
-              };
-            });
-
-            for (let g = 1; g <= targetGW; g++) {
-              const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
-              if (gData && gData.results) {
-                const gIsStarted = gData.is_started !== undefined 
-                  ? Boolean(gData.is_started) 
-                  : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
-
-                // Only accumulate into overall total if gameweek has actually started!
-                if (gIsStarted) {
-                  const seenInGw = new Set();
-                  gData.results.forEach(r => {
-                    if (seenInGw.has(r.entry_id)) return;
-                    seenInGw.add(r.entry_id);
-                    if (this.isDepartedNonPrize(r.entry_id)) return;
-                    if (!overallMap[r.entry_id]) {
-                      overallMap[r.entry_id] = {
-                        entry_id: r.entry_id,
-                        team_name: r.team_name,
-                        player_name: r.player_name,
-                        fpl_rank: 999,
-                        total_points: 0,
-                        total_hits: 0,
-                        last_gw_pts: 0,
-                        last_gw_raw: 0,
-                        last_gw_hits: 0
-                      };
-                    }
-                    overallMap[r.entry_id].total_points += (Number(r.net_points) || 0);
-                    overallMap[r.entry_id].total_hits = (overallMap[r.entry_id].total_hits || 0) + (Number(r.hits) || 0);
-                  });
-                }
-
-                if (g === this.selectedGW) {
-                  gData.results.forEach(r => {
-                    if (overallMap[r.entry_id]) {
-                      overallMap[r.entry_id].last_gw_pts = (Number(r.net_points) || 0);
-                      overallMap[r.entry_id].last_gw_raw = (Number(r.points) || 0);
-                      overallMap[r.entry_id].last_gw_hits = Number(r.hits) || 0;
-                    }
-                  });
-                }
-              }
-            }
-
-            // Also calculate standings up to targetGW - 1 for rank movement delta
-            if (targetGW > 1) {
-              const prevOverallMap = {};
-              (this.data.teams || []).forEach(t => {
-                prevOverallMap[t.entry_id] = { entry_id: t.entry_id, fpl_rank: t.rank || 999, total_points: 0 };
-              });
-              for (let g = 1; g < targetGW; g++) {
-                const gData = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
-                if (gData && gData.results) {
-                  const gIsStarted = gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
-                  if (gIsStarted) {
-                    const seenInGw = new Set();
-                    gData.results.forEach(r => {
-                      if (seenInGw.has(r.entry_id)) return;
-                      seenInGw.add(r.entry_id);
-                      if (this.isDepartedNonPrize(r.entry_id)) return;
-                      if (!prevOverallMap[r.entry_id]) {
-                        prevOverallMap[r.entry_id] = { entry_id: r.entry_id, fpl_rank: 999, total_points: 0 };
-                      }
-                      prevOverallMap[r.entry_id].total_points += (Number(r.net_points) || 0);
-                    });
-                  }
-                }
-              }
-              const prevSorted = Object.values(prevOverallMap).sort((a, b) => {
-                const aDep = this.isTeamDeparted(a.entry_id) ? 1 : 0;
-                const bDep = this.isTeamDeparted(b.entry_id) ? 1 : 0;
-                if (aDep !== bDep) return aDep - bDep;
-                return (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999));
-              });
-              let curPrevRank = 1;
-              let prevEligibleCount = 0;
-              let prevTot = null;
-              prevSorted.forEach(team => {
-                if (!this.isActivePrizeEligible(team.entry_id)) {
-                  team.prev_rank = null;
-                  return;
-                }
-                prevEligibleCount++;
-                if (prevTot !== null && team.total_points < prevTot) {
-                  curPrevRank = prevEligibleCount;
-                }
-                prevTot = team.total_points;
-                team.prev_rank = curPrevRank;
-                if (overallMap[team.entry_id]) {
-                  overallMap[team.entry_id].prev_rank = curPrevRank;
-                }
-              });
-            }
-          }
-
-          const overallSorted = isTier2
-            ? Object.values(overallMap).sort((a, b) => ((a.overall_rank || 999) - (b.overall_rank || 999)) || (b.total_points - a.total_points))
-            : Object.values(overallMap).sort((a, b) => {
-                const aDep = this.isTeamDeparted(a.entry_id) ? 1 : 0;
-                const bDep = this.isTeamDeparted(b.entry_id) ? 1 : 0;
-                if (aDep !== bDep) return aDep - bDep;
-                return (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999));
-              });
-
-          if (!isTier2) {
-            let curOverallRank = 1;
-            let eligibleCount = 0;
-            let prevEligibleTotal = null;
-            overallSorted.forEach((team) => {
-              if (!this.isActivePrizeEligible(team.entry_id)) {
-                team.overall_rank = null;
-                return;
-              }
-              eligibleCount++;
-              if (prevEligibleTotal !== null && team.total_points < prevEligibleTotal) {
-                curOverallRank = eligibleCount;
-              }
-              prevEligibleTotal = team.total_points;
-              team.overall_rank = curOverallRank;
-            });
-          }
-
           let oHtml = '';
           const isLargeOverall = overallSorted.length > 100;
           this.overallChunkLimit = this.overallChunkLimit || 100;
@@ -8052,6 +7864,11 @@
             const isDeparted = this.isTeamDeparted(team.entry_id);
             const prizeBadge = this.getPrizeBadge(team.entry_id);
             const departedBadge = isDeparted ? this.getDepartedBadge(team.entry_id) : '';
+            const isMyRow = Boolean(!isTier2View && myTeamId && Number(team.entry_id) === Number(myTeamId));
+            const myBadge = isMyRow ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-blue-600 text-white font-display">${isEn ? 'ME' : 'ทีมฉัน'}</span>` : '';
+            const ovActionPill = (!isTier2View && myTeamId && !isMyRow)
+              ? `<button type="button" onclick="event.stopPropagation(); app.openRivalModal(${Number(myTeamId)}, ${Number(team.entry_id)})" class="inline-flex items-center px-1.5 py-0.5 min-h-[24px] rounded-md text-[9.5px] font-extrabold bg-slate-100 hover:bg-slate-900 text-slate-700 hover:text-white dark:bg-slate-800 dark:hover:bg-blue-600 dark:text-slate-300 dark:hover:text-white border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer flex-shrink-0" title="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}" aria-label="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}">VS</button>`
+              : '';
 
             let rankBadge = '';
             if (!isPrize) {
@@ -8081,7 +7898,7 @@
               : `<span class="text-slate-400 dark:text-slate-500 font-medium font-display">-</span>`;
 
             oHtml += `
-              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isDeparted ? 'opacity-70' : ''}">
+              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isDeparted ? 'opacity-70' : ''} ${isMyRow ? 'bg-blue-50/70 dark:bg-blue-950/25 border-l-2 border-l-blue-500' : ''}">
                 <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">
                   <div class="flex flex-col items-center justify-center">
                     ${rankBadge}
@@ -8093,10 +7910,14 @@
                     <span class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors block truncate max-w-[150px] xs:max-w-[200px] sm:max-w-none">
                       ${this.escapeHtml(team.team_name)}
                     </span>
+                    ${myBadge}
                     ${prizeBadge}
                     ${departedBadge}
                   </div>
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block truncate">${this.escapeHtml(team.player_name)}</span>
+                  <div class="flex items-center gap-1.5 min-w-0 mt-0.5">
+                    <span class="text-[11px] text-slate-500 dark:text-slate-400 block truncate">${this.escapeHtml(team.player_name)}</span>
+                    ${ovActionPill}
+                  </div>
                 </td>
                 <td class="py-2.5 px-1 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-700 dark:text-slate-300 tabular-nums whitespace-nowrap"><span class="font-semibold">${rawScore}</span>${hitsBadge}</td>
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display text-xs sm:text-sm tabular-nums whitespace-nowrap">${cumHitsText}</td>
@@ -9443,6 +9264,7 @@
         } catch (_) {}
         const sel = document.getElementById('comp-transfers-team-select');
         if (sel) sel.value = this.compTransferTeam;
+        this.invalidateRenderCache();
         this.renderCompetitionTransfersOnly();
       }
 
@@ -16782,7 +16604,6 @@
           const quickNavPrizesText = isEn ? 'Prizes Tab' : 'แท็บเงินรางวัล';
           const quickNavChipsText = isEn ? 'Chips Matrix' : 'สถานะชิป';
           const quickNavHofText = isEn ? 'Hall of Fame' : 'ทำเนียบแชมป์';
-          const copyRulesText = isEn ? 'Copy Rules for Chat' : 'คัดลอกสรุปกติกาเพื่อส่งแชท';
 
           govContainer.innerHTML = `
             <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/40 shadow-2xs w-full min-w-0 overflow-hidden">
@@ -16840,7 +16661,7 @@
                 </div>
               </div>
 
-              <!-- Quick Cross-Tab Navigation & Admin Share Utility -->
+              <!-- Quick Cross-Tab Navigation -->
               <div class="mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
                 <div class="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-semibold text-slate-600 dark:text-slate-400">
                   <span class="text-slate-400 dark:text-slate-500 text-[11px] uppercase tracking-wider font-display font-bold">${isEn ? 'JUMP TO:' : 'ไปยังแท็บ:'}</span>
@@ -16857,69 +16678,9 @@
                     <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                   </button>
                 </div>
-                <button type="button" onclick="app.copyRulesSummary()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-black dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 text-xs sm:text-[13px] font-bold shadow-xs hover:shadow-sm transition-all cursor-pointer active:scale-95 w-full sm:w-auto justify-center">
-                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
-                  <span>${copyRulesText}</span>
-                </button>
               </div>
             </div>
           `;
-        }
-      }
-
-      copyRulesSummary() {
-        const isEn = (this.currentLang === 'en');
-        const name = this.data.name || '';
-        const season = this.data.season || '2026/27';
-        const fee = (isEn && this.config.entry_fee_en) ? this.config.entry_fee_en : (this.config.entry_fee || '-');
-        const pool = (isEn && this.config.total_pool_en) ? this.config.total_pool_en : (this.config.total_pool || '-');
-        const teams = (this.data.teams || []).length;
-        const nonPrizeCount = (this.config && this.config.non_prize_teams) ? this.config.non_prize_teams.length : 0;
-        const prizeTeamsCount = teams - nonPrizeCount;
-        const memberInfo = nonPrizeCount > 0 
-          ? (isEn ? `${teams} Teams (${prizeTeamsCount} Contenders, ${nonPrizeCount} Casual)` : `${teams} ทีม (ชิงรางวัล ${prizeTeamsCount} ทีม, ร่วมสนุก ${nonPrizeCount} ทีม)`)
-          : (isEn ? `${teams} Teams` : `${teams} ทีม`);
-
-        let text = isEn 
-          ? `📋 [Official FPL Rules Summary] ${name} (${season})
-` +
-            `• League ID: ${this.activeLeagueId}
-` +
-            `• Participants: ${memberInfo}
-` +
-            `• Entry Fee: ${fee}
-` +
-            `• Prize Pool: ${pool}
-` +
-            `• Duration: 38 Gameweeks
-` +
-            `• Data Standards: Official FPL Rules & Tie-breaker apply.
-` +
-            `👉 View Full Rules Dashboard: ${window.location.href}`
-          : `📋 [สรุปกติกาแฟนตาซีพรีเมียร์ลีก] ${name} (${season})
-` +
-            `• รหัสลีก (League ID): ${this.activeLeagueId}
-` +
-            `• สมาชิก: ${memberInfo}
-` +
-            `• ค่าสมัคร: ${fee}
-` +
-            `• เงินรางวัลกองกลาง: ${pool}
-` +
-            `• ระยะเวลาแข่งขัน: 38 สัปดาห์
-` +
-            `• มาตรฐานการตัดสิน: อ้างอิงตามกติกาและคะแนนทางการของ Premier League
-` +
-            `👉 ดูรายละเอียดกติกาฉบับเต็ม: ${window.location.href}`;
-
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(() => {
-            this.showToast(isEn ? 'Rules summary copied to clipboard!' : 'คัดลอกสรุปกติกาลง Clipboard เรียบร้อย!');
-          }).catch(() => {
-            prompt(isEn ? 'Copy rules summary:' : 'คัดลอกสรุปกติกา:', text);
-          });
-        } else {
-          prompt(isEn ? 'Copy rules summary:' : 'คัดลอกสรุปกติกา:', text);
         }
       }
 
@@ -17284,7 +17045,7 @@
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
-                      <span>One-click league rules &amp; pundit quote copy, plus lazy-loaded Excel (.xlsx) export.</span>
+                      <span>Screenshot-ready 4-persona matchday commentary, 1v1 rival battle cards, and lazy-loaded Excel (.xlsx) export.</span>
                     </li>
                   </ul>
                 </div>
@@ -17894,7 +17655,7 @@
                     </li>
                     <li class="flex items-start gap-1.5">
                       <span class="text-slate-400 dark:text-slate-500 font-bold flex-shrink-0">•</span>
-                      <span>ปุ่มคัดลอกสรุปกติกาลีก พาดหัววิเคราะห์ และส่งออกตารางข้อมูลเป็นไฟล์ Excel (.xlsx)</span>
+                      <span>การ์ดสรุปพากษ์สด 4 บุคลิก เทียบคู่แข่ง 1v1 พร้อมแคปหน้าจอแชร์ และส่งออกไฟล์ Excel (.xlsx)</span>
                     </li>
                   </ul>
                 </div>
@@ -18836,6 +18597,33 @@
           }
         }
 
+        const actionsWrap = document.getElementById('team-modal-actions');
+        if (actionsWrap) {
+          if (!this.isTier2League() && String(targetLeagueId || this.activeLeagueId) === String(this.activeLeagueId)) {
+            const myId = this.getMyTeamId();
+            const isPinnedMe = myId && Number(myId) === entryIdNum;
+            const pinBtnCls = isPinnedMe
+              ? 'bg-blue-600 text-white border-blue-600 dark:bg-blue-500 dark:border-blue-500'
+              : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700';
+            const pinLabel = isPinnedMe
+              ? (isEn ? 'My Team ✓' : 'ทีมฉัน ✓')
+              : (isEn ? 'Pin My Team' : 'ปักหมุดทีมฉัน');
+            const pinBtnHtml = `<button type="button" onclick="app.${isPinnedMe ? 'clearMyTeamId()' : `setMyTeamId(${entryIdNum})`}; app.openTeamModal(${entryIdNum});" class="inline-flex items-center gap-1 px-2.5 py-1 min-h-[32px] rounded-xl text-[11px] font-bold border transition-colors cursor-pointer active:scale-95 ${pinBtnCls}">${pinLabel}</button>`;
+            let vsBtnHtml = '';
+            if (!isPinnedMe) {
+              const vsA = myId || entryIdNum;
+              const vsB = myId ? entryIdNum : null;
+              const vsLabel = isEn ? 'VS Compare' : 'เทียบ 1v1';
+              vsBtnHtml = `<button type="button" onclick="app.openRivalModal(${vsA}, ${vsB !== null ? vsB : 'null'})" class="inline-flex items-center gap-1 px-2.5 py-1 min-h-[32px] rounded-xl text-[11px] font-bold bg-slate-900 hover:bg-black dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 transition-colors cursor-pointer active:scale-95 shadow-2xs">${vsLabel}</button>`;
+            }
+            actionsWrap.innerHTML = pinBtnHtml + vsBtnHtml;
+            actionsWrap.classList.remove('hidden');
+          } else {
+            actionsWrap.innerHTML = '';
+            actionsWrap.classList.add('hidden');
+          }
+        }
+
         const gkpLine = document.getElementById('pitch-line-gkp');
         const defLine = document.getElementById('pitch-line-def');
         const midLine = document.getElementById('pitch-line-mid');
@@ -19161,6 +18949,253 @@
         }
       }
 
+      isTier2League(lid = this.activeLeagueId) {
+        const lidStr = String(lid || this.activeLeagueId || '');
+        const lObj = (this.multiData && this.multiData.leagues && this.multiData.leagues[lidStr]) || (lidStr === String(this.activeLeagueId) ? this.data : null);
+        const cfg = (this.configs && this.configs[lidStr]) || (lidStr === String(this.activeLeagueId) ? this.config : null);
+        return Boolean((lObj && lObj.tier === 2) || (cfg && cfg.tier === 2));
+      }
+
+      getMyTeamId(teams) {
+        if (this.isTier2League()) return '';
+        try {
+          if (typeof localStorage === 'undefined' || !this.activeLeagueId) return '';
+          const saved = localStorage.getItem('fpl_advisor_team_' + this.activeLeagueId) || '';
+          if (!saved) return '';
+          const list = Array.isArray(teams) ? teams : ((this.data && this.data.teams) || []);
+          const exists = list.some(t => String(t.entry_id) === String(saved));
+          return exists ? String(saved) : '';
+        } catch (_) {
+          return '';
+        }
+      }
+
+      setMyTeamId(entryId, silent = false) {
+        if (this.isTier2League()) return;
+        const cleanId = entryId ? String(entryId) : '';
+        this.compTransferTeam = cleanId;
+        try {
+          if (typeof localStorage !== 'undefined' && this.activeLeagueId) {
+            if (cleanId) {
+              localStorage.setItem('fpl_advisor_team_' + this.activeLeagueId, cleanId);
+            } else {
+              localStorage.removeItem('fpl_advisor_team_' + this.activeLeagueId);
+            }
+          }
+        } catch (_) {}
+        const selAdv = document.getElementById('comp-transfers-team-select');
+        if (selAdv) selAdv.value = cleanId;
+        this.invalidateRenderCache();
+        if (this.activeTab === 'gameweek-view') {
+          this.renderGameweekView();
+        }
+        if (!silent && cleanId && typeof this.showToast === 'function') {
+          const isEn = (this.currentLang === 'en');
+          const tm = ((this.data && this.data.teams) || []).find(t => String(t.entry_id) === cleanId);
+          const name = tm ? tm.entry_name : '';
+          this.showToast(isEn ? `Pinned "${name}" as My Team` : `ปักหมุด "${name}" เป็นทีมของคุณแล้ว`, 'success', 2000);
+        }
+      }
+
+      clearMyTeamId() {
+        this.setMyTeamId('', true);
+      }
+
+      getLiveNoteCacheKey(gw = this.selectedGW, isFinished = false, isStarted = false) {
+        return `${this.activeLeagueId}_${gw}_${this.currentLang}_${Boolean(isFinished)}_${Boolean(isStarted)}`;
+      }
+
+      computeGameweekOverallStandings(targetGWInput = this.selectedGW) {
+        const maxGW = Number((this.multiData && this.multiData.max_gw) || 2);
+        const targetGW = Math.min(Number(targetGWInput) || maxGW, maxGW);
+        const isTier2 = this.isTier2League();
+        const gwKey = String(targetGW);
+        const gwData = (this.data && this.data.gameweeks) ? this.data.gameweeks[gwKey] : null;
+        const overallMap = {};
+        let overallContext = null;
+
+        if (isTier2) {
+          const currentGwResultsMap = {};
+          if (gwData && Array.isArray(gwData.results)) {
+            gwData.results.forEach(r => { currentGwResultsMap[r.entry_id] = r; });
+          }
+          ((this.data && this.data.teams) || []).forEach(t => {
+            const r = currentGwResultsMap[t.entry_id];
+            const lastGwPts = r ? (Number(r.net_points) || 0) : (Number(t.event_total) || 0);
+            const lastGwRaw = r ? (Number(r.points) || 0) : (Number(t.event_total) || 0);
+            const lastGwHits = r ? (Number(r.hits) || 0) : 0;
+            const teamTotalHits = (r && r.total_hits !== undefined) ? Number(r.total_hits) : (Number(t.total_hits) || 0);
+            const fplRank = (t.rank !== undefined && t.rank !== null) ? Number(t.rank) : 999;
+            const lastRank = (t.last_rank !== undefined && t.last_rank !== null && Number(t.last_rank) > 0) ? Number(t.last_rank) : null;
+            const isLatestGw = (targetGW >= maxGW);
+            const teamTotalPoints = (isLatestGw || !r || r.total_points === undefined) ? (Number(t.total_points) || 0) : (Number(r.total_points) || 0);
+            const teamOverallRank = (isLatestGw || !r || r.overall_rank === undefined) ? fplRank : (Number(r.overall_rank) || fplRank);
+            const teamPrevRank = (isLatestGw || !r || r.last_rank === undefined) ? lastRank : (Number(r.last_rank) || null);
+            overallMap[t.entry_id] = {
+              entry_id: t.entry_id,
+              team_name: t.entry_name,
+              player_name: t.player_name,
+              fpl_rank: teamOverallRank,
+              overall_rank: teamOverallRank,
+              prev_rank: teamPrevRank,
+              total_points: teamTotalPoints,
+              total_hits: teamTotalHits,
+              last_gw_pts: lastGwPts,
+              last_gw_raw: lastGwRaw,
+              last_gw_hits: lastGwHits
+            };
+          });
+        } else {
+          ((this.data && this.data.teams) || []).forEach(t => {
+            overallMap[t.entry_id] = {
+              entry_id: t.entry_id,
+              team_name: t.entry_name,
+              player_name: t.player_name,
+              fpl_rank: t.rank || 999,
+              total_points: 0,
+              total_hits: 0,
+              last_gw_pts: 0,
+              last_gw_raw: 0,
+              last_gw_hits: 0
+            };
+          });
+
+          for (let g = 1; g <= targetGW; g++) {
+            const gData = this.data && this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+            if (gData && gData.results) {
+              const gIsStarted = gData.is_started !== undefined
+                ? Boolean(gData.is_started)
+                : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+              if (gIsStarted) {
+                const seenInGw = new Set();
+                gData.results.forEach(r => {
+                  if (seenInGw.has(r.entry_id)) return;
+                  seenInGw.add(r.entry_id);
+                  if (this.isDepartedNonPrize(r.entry_id)) return;
+                  if (!overallMap[r.entry_id]) {
+                    overallMap[r.entry_id] = {
+                      entry_id: r.entry_id,
+                      team_name: r.team_name,
+                      player_name: r.player_name,
+                      fpl_rank: 999,
+                      total_points: 0,
+                      total_hits: 0,
+                      last_gw_pts: 0,
+                      last_gw_raw: 0,
+                      last_gw_hits: 0
+                    };
+                  }
+                  overallMap[r.entry_id].total_points += (Number(r.net_points) || 0);
+                  overallMap[r.entry_id].total_hits = (overallMap[r.entry_id].total_hits || 0) + (Number(r.hits) || 0);
+                });
+              }
+              if (g === targetGW) {
+                gData.results.forEach(r => {
+                  if (overallMap[r.entry_id]) {
+                    overallMap[r.entry_id].last_gw_pts = (Number(r.net_points) || 0);
+                    overallMap[r.entry_id].last_gw_raw = (Number(r.points) || 0);
+                    overallMap[r.entry_id].last_gw_hits = Number(r.hits) || 0;
+                  }
+                });
+              }
+            }
+          }
+
+          let prevTopTeam = null;
+          if (targetGW > 1) {
+            const prevOverallMap = {};
+            ((this.data && this.data.teams) || []).forEach(t => {
+              prevOverallMap[t.entry_id] = { entry_id: t.entry_id, team_name: t.entry_name, fpl_rank: t.rank || 999, total_points: 0 };
+            });
+            for (let g = 1; g < targetGW; g++) {
+              const gData = this.data && this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+              if (gData && gData.results) {
+                const gIsStarted = gData.is_started !== undefined ? Boolean(gData.is_started) : (Boolean(gData.is_finished) || gData.results.some(r => r.points > 0));
+                if (gIsStarted) {
+                  const seenInGw = new Set();
+                  gData.results.forEach(r => {
+                    if (seenInGw.has(r.entry_id)) return;
+                    seenInGw.add(r.entry_id);
+                    if (this.isDepartedNonPrize(r.entry_id)) return;
+                    if (!prevOverallMap[r.entry_id]) {
+                      prevOverallMap[r.entry_id] = { entry_id: r.entry_id, team_name: r.team_name, fpl_rank: 999, total_points: 0 };
+                    }
+                    prevOverallMap[r.entry_id].total_points += (Number(r.net_points) || 0);
+                  });
+                }
+              }
+            }
+            const prevSorted = Object.values(prevOverallMap).sort((a, b) => {
+              const aDep = this.isTeamDeparted(a.entry_id) ? 1 : 0;
+              const bDep = this.isTeamDeparted(b.entry_id) ? 1 : 0;
+              if (aDep !== bDep) return aDep - bDep;
+              return (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999));
+            });
+            let curPrevRank = 1;
+            let prevEligibleCount = 0;
+            let prevTot = null;
+            prevSorted.forEach(team => {
+              if (!this.isActivePrizeEligible(team.entry_id)) {
+                team.prev_rank = null;
+                return;
+              }
+              prevEligibleCount++;
+              if (prevTot !== null && team.total_points < prevTot) {
+                curPrevRank = prevEligibleCount;
+              }
+              prevTot = team.total_points;
+              team.prev_rank = curPrevRank;
+              if (overallMap[team.entry_id]) {
+                overallMap[team.entry_id].prev_rank = curPrevRank;
+              }
+            });
+            prevTopTeam = prevSorted.find(t => t.prev_rank === 1) || prevSorted[0] || null;
+          }
+
+          const sortedTmp = Object.values(overallMap).sort((a, b) => {
+            const aDep = this.isTeamDeparted(a.entry_id) ? 1 : 0;
+            const bDep = this.isTeamDeparted(b.entry_id) ? 1 : 0;
+            if (aDep !== bDep) return aDep - bDep;
+            return (b.total_points - a.total_points) || ((a.fpl_rank || 999) - (b.fpl_rank || 999));
+          });
+          let curOverallRank = 1;
+          let eligibleCount = 0;
+          let prevEligibleTotal = null;
+          sortedTmp.forEach(team => {
+            if (!this.isActivePrizeEligible(team.entry_id)) {
+              team.overall_rank = null;
+              return;
+            }
+            eligibleCount++;
+            if (prevEligibleTotal !== null && team.total_points < prevEligibleTotal) {
+              curOverallRank = eligibleCount;
+            }
+            prevEligibleTotal = team.total_points;
+            team.overall_rank = curOverallRank;
+          });
+
+          const eligOv = sortedTmp.filter(t => t.overall_rank !== null);
+          const currTop = eligOv[0] || sortedTmp[0] || null;
+          const runner = eligOv[1] || sortedTmp[1] || null;
+          if (currTop) {
+            const changed = Boolean(prevTopTeam && Number(prevTopTeam.entry_id) !== Number(currTop.entry_id));
+            overallContext = {
+              leaderChanged: changed,
+              prevLeaderName: prevTopTeam ? prevTopTeam.team_name : '',
+              currLeaderName: currTop.team_name,
+              currLeaderPts: currTop.total_points,
+              runnerName: runner ? runner.team_name : '',
+              runnerPts: runner ? runner.total_points : 0,
+              gap: runner ? (currTop.total_points - runner.total_points) : 0
+            };
+          }
+          return { overallSorted: sortedTmp, overallContext, targetGW };
+        }
+
+        const overallSorted = Object.values(overallMap).sort((a, b) => ((a.overall_rank || 999) - (b.overall_rank || 999)) || (b.total_points - a.total_points));
+        return { overallSorted, overallContext, targetGW };
+      }
+
       regenerateLiveNote() {
         const gw = this.selectedGW;
         const gwData = this.data.gameweeks ? this.data.gameweeks[String(gw)] : null;
@@ -19168,56 +19203,953 @@
         const isWeeklyPrize = (this.config && this.config.features && this.config.features.prize_model === 'weekly');
         const useTieBreaker = Boolean(this.config && this.config.features && this.config.features.tie_breaker === 'highest_player');
         const isEn = (this.currentLang === 'en');
-        
-        const newNote = LiveCommentaryEngine.generateFreshNote(gw, gwData, this.data.name, true, nonPrizeList, this.data, isWeeklyPrize, useTieBreaker, isEn);
-        const cacheKey = `${this.activeLeagueId}_${gw}_${this.currentLang}`;
-        this.liveNotesCache[cacheKey] = newNote;
-        
+        const isFinished = gwData ? Boolean(gwData.is_finished) : false;
+        const hasMatchdayResults = Boolean(gwData && Array.isArray(gwData.results) && gwData.results.length > 0);
+        const isStarted = hasMatchdayResults
+          ? (gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || gwData.results.some(r => r.points > 0)))
+          : Boolean(gwData && gwData.is_started);
+        const { overallContext } = this.computeGameweekOverallStandings(gw);
+
+        const noteObj = LiveCommentaryEngine.generateNoteObject(
+          gw, gwData, this.data.name, true, nonPrizeList, this.data, isWeeklyPrize, useTieBreaker, isEn, { overallContext }
+        );
+        const cacheKey = this.getLiveNoteCacheKey(gw, isFinished, isStarted);
+        this.liveNotesCache[cacheKey] = noteObj;
+
         const noteEl = document.getElementById('current-gw-note-text');
         if (noteEl) {
-          noteEl.innerHTML = newNote;
+          noteEl.innerHTML = noteObj.text;
         }
-      }
-
-      copyHighlightQuote() {
-        const noteEl = document.getElementById('current-gw-note-text');
-        if (!noteEl) return;
-        const text = noteEl.innerText.replace(/^"|"$/g, '').trim();
-        if (!text) return;
-
-        if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(() => this.showQuoteCopyIndicator()).catch(() => this.fallbackCopyQuote(text));
+        const personaLabelEl = document.getElementById('current-gw-persona-label');
+        if (personaLabelEl) {
+          personaLabelEl.textContent = noteObj.personaLabel;
         } else {
-          this.fallbackCopyQuote(text);
+          const personaEl = document.getElementById('current-gw-persona-badge');
+          if (personaEl) personaEl.textContent = noteObj.personaLabel;
         }
       }
 
-      fallbackCopyQuote(text) {
-        if (typeof document !== 'undefined') {
-          const ta = document.createElement('textarea');
-          ta.value = text;
-          document.body.appendChild(ta);
-          ta.select();
-          try {
-            document.execCommand('copy');
-            this.showQuoteCopyIndicator();
-          } catch (e) {}
-          document.body.removeChild(ta);
+      renderMyTeamStrip(sorted, overallSorted, gwData, isStarted, isFinished) {
+        const container = document.getElementById('my-team-strip-container');
+        if (!container) return;
+        if (this.isTier2League() || !this.data || !Array.isArray(this.data.teams) || this.data.teams.length === 0) {
+          container.innerHTML = '';
+          container.classList.add('hidden');
+          return;
         }
-      }
 
-      showQuoteCopyIndicator() {
         const isEn = (this.currentLang === 'en');
-        const copiedText = isEn ? 'Copied!' : 'คัดลอกแล้ว!';
-        const ind = document.getElementById('quote-copy-indicator');
-        if (ind) {
-          ind.innerText = copiedText;
-          ind.classList.remove('opacity-0');
-          setTimeout(() => {
-            ind.classList.add('opacity-0');
-          }, 1800);
+        const teamsList = [...this.data.teams].sort((a, b) => (a.entry_name || '').localeCompare(b.entry_name || ''));
+        const myId = this.getMyTeamId(teamsList);
+
+        container.classList.remove('hidden');
+
+        if (!myId) {
+          container.innerHTML = `
+            <div class="glass-card rounded-2xl p-3 sm:px-4 sm:py-3 border border-slate-200/90 dark:border-slate-800 bg-white/85 dark:bg-slate-900/60 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/60 text-blue-600 dark:text-blue-400 inline-flex items-center justify-center flex-shrink-0">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                </span>
+                <div class="min-w-0">
+                  <div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display truncate">${isEn ? 'Pin My Team for Live Tracking & 1v1 Rival Battle' : 'ปักหมุด "ทีมฉัน" เพื่อเช็กอันดับสดและดวลเทียบคู่แข่ง 1v1'}</div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${isEn ? 'Saved in your browser across tabs (synced with Transfer Advisor)' : 'จำทีมให้อัตโนมัติทั้งเว็บ (เชื่อมกับแท็บแนะนำการย้ายตัว)'}</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 w-full sm:w-auto flex-shrink-0">
+                <select id="my-team-pin-select" aria-label="${isEn ? 'Select my team' : 'เลือกทีมของคุณ'}" onchange="if(this.value) app.setMyTeamId(this.value)" class="w-full sm:w-56 min-h-[40px] px-3 py-1.5 text-xs font-semibold rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                  <option value="">${isEn ? 'Select your team...' : 'เลือกทีมของคุณเพื่อปักหมุด...'}</option>
+                  ${teamsList.map(t => `<option value="${t.entry_id}">${this.escapeHtml(t.entry_name)} (${this.escapeHtml(t.player_name)})</option>`).join('')}
+                </select>
+              </div>
+            </div>
+          `;
+          return;
         }
-        this.showToast(copiedText, 'success', 1600);
+
+        const myIdNum = Number(myId);
+        const mdIdx = sorted.findIndex(r => Number(r.entry_id) === myIdNum);
+        const myMd = mdIdx >= 0 ? sorted[mdIdx] : null;
+        const ovIdx = overallSorted.findIndex(r => Number(r.entry_id) === myIdNum);
+        const myOv = ovIdx >= 0 ? overallSorted[ovIdx] : null;
+        const myTeamObj = teamsList.find(t => Number(t.entry_id) === myIdNum) || {};
+        const teamName = (myMd && myMd.team_name) || (myOv && myOv.team_name) || myTeamObj.entry_name || '';
+        const playerName = (myMd && myMd.player_name) || (myOv && myOv.player_name) || myTeamObj.player_name || '';
+
+        const gwScore = myMd ? Number(myMd.net_points ?? myMd.points ?? 0) : 0;
+        const gwRankDisplay = myMd ? (myMd.rank ? `#${myMd.rank}` : `#${mdIdx + 1}`) : '-';
+        const ovRankDisplay = myOv && myOv.overall_rank ? `#${myOv.overall_rank}` : (ovIdx >= 0 ? `#${ovIdx + 1}` : '-');
+        const ovTotal = myOv ? Number(myOv.total_points || 0) : 0;
+
+        let ovDeltaBadge = '';
+        if (myOv && myOv.overall_rank && myOv.prev_rank) {
+          const d = myOv.prev_rank - myOv.overall_rank;
+          if (d > 0) ovDeltaBadge = `<span class="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400">▲${d}</span>`;
+          else if (d < 0) ovDeltaBadge = `<span class="text-[10px] font-extrabold text-rose-600 dark:text-rose-400">▼${Math.abs(d)}</span>`;
+        }
+
+        let remText = '';
+        if (isStarted && !isFinished && this.data.squads) {
+          const sq = this.data.squads[`${myIdNum}_${this.selectedGW}`];
+          if (sq && Array.isArray(sq.starting)) {
+            const isBB = myMd && myMd.chip && ['bboost', 'bench_boost'].includes(String(myMd.chip).toLowerCase());
+            const pool = isBB ? sq.starting.concat(sq.bench || []) : sq.starting;
+            const left = pool.filter(p => Boolean(p.not_played_yet)).length;
+            remText = isEn ? `${left} left` : `เหลือ ${left} ตัว`;
+          }
+        }
+
+        // Gap context against person ahead in Overall (or #2 if user is #1)
+        const activeOvList = overallSorted.filter(t => !this.isTeamDeparted(t.entry_id));
+        const myActiveIdx = activeOvList.findIndex(t => Number(t.entry_id) === myIdNum);
+        let defaultRival = null;
+        let gapPillHtml = '';
+        if (myActiveIdx === 0 && activeOvList.length > 1) {
+          defaultRival = activeOvList[1];
+          const leadGap = ovTotal - Number(defaultRival.total_points || 0);
+          gapPillHtml = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 text-[11px] font-bold font-display tabular-nums">${isEn ? `Leading #2 by +${leadGap} pts` : `นำอันดับ 2 อยู่ +${leadGap} pts`}</span>`;
+        } else if (myActiveIdx > 0) {
+          defaultRival = activeOvList[myActiveIdx - 1];
+          const leaderOv = activeOvList[0];
+          const aheadGap = Number(defaultRival.total_points || 0) - ovTotal;
+          const topGap = Number(leaderOv.total_points || 0) - ovTotal;
+          const aheadLabel = isEn
+            ? `Chase #${defaultRival.overall_rank || myActiveIdx} (-${aheadGap})`
+            : `ตามคนข้างหน้า (-${aheadGap} pts)`;
+          const topLabel = (myActiveIdx > 1 && topGap > aheadGap)
+            ? (isEn ? ` · #1 (-${topGap})` : ` · จ่าฝูง (-${topGap})`)
+            : '';
+          gapPillHtml = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 text-[11px] font-bold font-display tabular-nums">${aheadLabel}${topLabel}</span>`;
+        } else if (sorted.length > 1) {
+          defaultRival = sorted.find(r => Number(r.entry_id) !== myIdNum) || null;
+        }
+        const defaultRivalId = defaultRival ? Number(defaultRival.entry_id) : 'null';
+
+        container.innerHTML = `
+          <div class="glass-card rounded-2xl p-3 sm:px-4 sm:py-3 border border-blue-200/90 dark:border-blue-900/60 bg-gradient-to-r from-blue-50/70 via-white/95 to-white dark:from-blue-950/25 dark:via-slate-900/90 dark:to-slate-900/80 shadow-2xs">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
+              <div class="flex items-start sm:items-center gap-2.5 min-w-0">
+                <span class="w-8 h-8 rounded-xl bg-blue-600 text-white inline-flex items-center justify-center flex-shrink-0 shadow-2xs mt-0.5 sm:mt-0">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                </span>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded bg-blue-600/10 text-blue-700 dark:text-blue-300 border border-blue-300/60 dark:border-blue-700/60 font-display">${isEn ? 'MY TEAM' : 'ทีมฉัน'}</span>
+                    <span class="text-xs sm:text-sm font-black text-slate-900 dark:text-white font-display truncate max-w-[190px] sm:max-w-[260px]">${this.escapeHtml(teamName)}</span>
+                    <span class="text-[11px] text-slate-500 dark:text-slate-400 truncate hidden xs:inline">· ${this.escapeHtml(playerName)}</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 flex-wrap mt-1.5">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 text-[11px] font-bold font-display tabular-nums">
+                      <span>GW ${this.selectedGW}: ${gwRankDisplay}</span>
+                      <span class="text-emerald-600 dark:text-emerald-400">· ${gwScore} pts</span>
+                      ${remText ? `<span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400">(${remText})</span>` : ''}
+                    </span>
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60 text-[11px] font-bold font-display tabular-nums">
+                      <span>${isEn ? 'Overall' : 'รวม'} ${ovRankDisplay}</span>
+                      <span>· ${ovTotal} pts</span>
+                      ${ovDeltaBadge}
+                    </span>
+                    ${gapPillHtml}
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end flex-shrink-0 pt-1.5 lg:pt-0 border-t lg:border-t-0 border-slate-200/70 dark:border-slate-800">
+                <button type="button" onclick="app.openTeamModal(${myIdNum})" class="inline-flex items-center gap-1 px-3 py-1.5 min-h-[36px] rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer active:scale-95 shadow-2xs">
+                  <span>${isEn ? 'View Pitch' : 'ส่องทีม'}</span>
+                </button>
+                <button type="button" onclick="app.openRivalModal(${myIdNum}, ${defaultRivalId})" class="inline-flex items-center gap-1 px-3 py-1.5 min-h-[36px] rounded-xl text-xs font-bold bg-slate-900 hover:bg-black dark:bg-blue-600 dark:hover:bg-blue-500 text-white transition-colors cursor-pointer active:scale-95 shadow-2xs">
+                  <span>${isEn ? '1v1 Battle' : 'เทียบ 1v1'}</span>
+                </button>
+                <button type="button" onclick="app.clearMyTeamId()" class="inline-flex items-center gap-1 px-2.5 py-1.5 min-h-[36px] rounded-xl text-[11px] font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" title="${isEn ? 'Change My Team' : 'เปลี่ยนทีมที่ปักหมุด'}">
+                  <span>${isEn ? 'Switch' : 'เปลี่ยนทีม'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      computeLeagueDramaEvents(gwData, sorted, overallSorted, isStarted, isFinished) {
+        if (!gwData || !Array.isArray(sorted) || sorted.length === 0) return [];
+        const isEn = (this.currentLang === 'en');
+        const isLive = isStarted && !isFinished;
+        const squads = (this.data && this.data.squads) ? this.data.squads : {};
+        const events = [];
+
+        // Pre-match key highlights
+        if (!isStarted) {
+          const capGroups = {};
+          const chipTeams = [];
+          const hitTeams = [];
+          sorted.forEach(t => {
+            const cn = (t.captain || '-').replace(/\s*\(C\)/gi, '').trim();
+            if (cn && cn !== '-') {
+              if (!capGroups[cn]) capGroups[cn] = [];
+              capGroups[cn].push({ entry_id: t.entry_id, team_name: t.team_name, player_name: t.player_name, meta: `(C) ${cn}` });
+            }
+            if (t.chip && t.chip !== '-') {
+              chipTeams.push({ entry_id: t.entry_id, team_name: t.team_name, player_name: t.player_name, meta: String(t.chip).toUpperCase() });
+            }
+            if ((t.hits || 0) > 0) {
+              hitTeams.push({ entry_id: t.entry_id, team_name: t.team_name, player_name: t.player_name, meta: `-${t.hits} pts` });
+            }
+          });
+          const capArr = Object.entries(capGroups).sort((a, b) => b[1].length - a[1].length);
+          if (capArr[0]) {
+            const [name, list] = capArr[0];
+            events.push({
+              id: 'pre_pop_cap',
+              tone: 'emerald',
+              badge: isEn ? 'POPULAR (C)' : 'กัปตันมหาชน',
+              headline: isEn ? `${name} (${list.length} teams)` : `${name} (${list.length} ทีมเลือก)`,
+              detail: isEn ? `${Math.round((list.length / sorted.length) * 100)}% of the league handed the armband to ${name}.` : `คิดเป็น ${Math.round((list.length / sorted.length) * 100)}% ของลีกที่ฝากความหวังไว้กับ ${name}`,
+              teams: list
+            });
+          }
+          const diffCaps = capArr.filter(([, list]) => list.length <= 2);
+          if (diffCaps.length > 0) {
+            const flatDiff = diffCaps.slice(0, 4).flatMap(([, list]) => list);
+            events.push({
+              id: 'pre_diff_cap',
+              tone: 'amber',
+              badge: isEn ? 'DIFFERENTIAL (C)' : 'กัปตันสายวัดใจ',
+              headline: isEn ? `${diffCaps.length} unique armbands` : `กัปตันแหวกแนว ${diffCaps.length} ตัว`,
+              detail: isEn ? `Bold differential captain picks ready to swing the table.` : `ทีมที่กล้าเลือกกัปตันสวนกระแสเพื่อฉีกหนีคู่แข่ง`,
+              teams: flatDiff
+            });
+          }
+          if (chipTeams.length > 0) {
+            events.push({
+              id: 'pre_chips',
+              tone: 'amber',
+              badge: isEn ? 'CHIPS ACTIVE' : 'เปิดชิปประจำวีค',
+              headline: isEn ? `${chipTeams.length} chips deployed` : `เปิดการ์ดพิเศษ ${chipTeams.length} ทีม`,
+              detail: isEn ? `Active chips locked in ahead of kickoff.` : `รายชื่อทีมที่งัดการ์ดพิเศษออกมาใช้ในสัปดาห์นี้`,
+              teams: chipTeams
+            });
+          }
+          if (hitTeams.length > 0) {
+            events.push({
+              id: 'pre_hits',
+              tone: 'rose',
+              badge: isEn ? 'HITS TAKEN' : 'ยอมแลกแต้มลบ',
+              headline: isEn ? `${hitTeams.length} managers took hits` : `ผ่าตัดทีมติดลบ ${hitTeams.length} ทีม`,
+              detail: isEn ? `Managers sacrificing points for early squad surgery.` : `ทีมที่ยอมหักแต้มลบเพื่อดึงนักเตะใหม่เข้าทัพ`,
+              teams: hitTeams
+            });
+          }
+          return events.slice(0, 6);
+        }
+
+        // Aggregate squad player stats for Live & Finished
+        const playerImpact = {};
+        const badEvents = [];
+        const provBonusPlayers = {};
+        const autoSubList = [];
+
+        sorted.forEach(t => {
+          const sq = squads[`${t.entry_id}_${this.selectedGW}`];
+          if (!sq || !Array.isArray(sq.starting)) return;
+
+          if (Array.isArray(sq.auto_subs) && sq.auto_subs.length > 0) {
+            const subInIds = new Set(sq.auto_subs.map(s => Number(s.element_in)));
+            const subbed = sq.starting.filter(p => subInIds.has(Number(p.id)));
+            const gain = subbed.reduce((s, p) => s + (Number(p.points) || 0), 0);
+            if (gain >= 4 && subbed[0]) {
+              autoSubList.push({
+                entry_id: t.entry_id,
+                team_name: t.team_name,
+                player_name: t.player_name,
+                meta: `${subbed[0].name} (+${gain} pts)`,
+                gain
+              });
+            }
+          }
+
+          sq.starting.forEach(p => {
+            const pid = Number(p.id);
+            const raw = Number(p.raw_points !== undefined ? p.raw_points : (p.is_captain ? Math.floor((Number(p.points) || 0) / (Number(p.multiplier) || 2)) : (Number(p.points) || 0)));
+            const goals = Number(p.goals_scored) || 0;
+            const assists = Number(p.assists) || 0;
+            const provB = Number(p.provisional_bonus) || 0;
+            const red = Number(p.red_cards) || 0;
+            const penMiss = Number(p.penalties_missed) || 0;
+            const og = Number(p.own_goals) || 0;
+
+            if (!playerImpact[pid]) {
+              playerImpact[pid] = {
+                id: pid,
+                name: p.name,
+                team: p.team,
+                raw,
+                goals,
+                assists,
+                owners: [],
+                captainsCount: 0
+              };
+            }
+            playerImpact[pid].owners.push({
+              entry_id: t.entry_id,
+              team_name: t.team_name,
+              player_name: t.player_name,
+              meta: `${p.points} pts${p.is_captain ? ' (C)' : ''}`
+            });
+            if (p.is_captain) playerImpact[pid].captainsCount += 1;
+
+            if (isLive && provB >= 3) {
+              if (!provBonusPlayers[pid]) provBonusPlayers[pid] = { name: p.name, bonus: provB, owners: [] };
+              provBonusPlayers[pid].owners.push({
+                entry_id: t.entry_id,
+                team_name: t.team_name,
+                player_name: t.player_name,
+                meta: `+${provB} BPS${p.is_captain ? ' (C)' : ''}`
+              });
+            }
+
+            if (red > 0 || penMiss > 0 || og > 0 || raw < 0) {
+              badEvents.push({
+                player: p.name,
+                reason: red > 0 ? (isEn ? 'Red Card' : 'ใบแดง') : (penMiss > 0 ? (isEn ? 'Pen Missed' : 'พลาดจุดโทษ') : (og > 0 ? (isEn ? 'Own Goal' : 'ทำเข้าประตูตัวเอง') : (isEn ? 'Minus Pts' : 'แต้มติดลบ'))),
+                entry_id: t.entry_id,
+                team_name: t.team_name,
+                player_name: t.player_name,
+                meta: `${p.points} pts${p.is_captain ? ' (C)' : ''}`
+              });
+            }
+          });
+        });
+
+        // 1. Biggest Scoring Star / Live Goal Shockwave
+        const topStars = Object.values(playerImpact).filter(pl => pl.raw >= 8).sort((a, b) => (b.raw - a.raw) || (b.owners.length - a.owners.length));
+        if (topStars[0]) {
+          const st = topStars[0];
+          const gaTxt = (st.goals > 0 || st.assists > 0)
+            ? ` (${st.goals}G ${st.assists}A)`
+            : '';
+          const nonOwners = sorted.length - st.owners.length;
+          events.push({
+            id: `star_${st.id}`,
+            tone: 'emerald',
+            badge: isLive ? (isEn ? 'LIVE BOOM' : 'ระเบิดฟอร์มสด') : (isEn ? 'GW MVP' : 'ตัวท็อปประจำวีค'),
+            headline: `${st.name} · ${st.raw} pts${gaTxt}`,
+            detail: isEn
+              ? `${st.owners.length} teams celebrate (${st.captainsCount} C) · ${nonOwners} teams sweating without him.`
+              : `${st.owners.length} ทีมเฮ (${st.captainsCount} กัปตัน) · ${nonOwners} ทีมนั่งลุ้นตัวโก่งเพราะไม่มี`,
+            teams: st.owners
+          });
+        }
+
+        // 2. Red Card / Penalty Miss / Negative Points Disaster
+        if (badEvents.length > 0) {
+          const groupedByReason = badEvents.slice(0, 8);
+          const firstBad = groupedByReason[0];
+          events.push({
+            id: 'disaster_card',
+            tone: 'rose',
+            badge: isEn ? 'DISASTER ALERT' : 'ช็อตฝันร้าย',
+            headline: `${firstBad.player} (${firstBad.reason})`,
+            detail: isEn
+              ? `${groupedByReason.length} squad spot(s) hit by negative points or card penalties.`
+              : `กระทบ ${groupedByReason.length} ทีมที่ส่งลงสนาม`,
+            teams: groupedByReason
+          });
+        }
+
+        // 3. Live Provisional +3 Bonus Watch
+        if (isLive) {
+          const provList = Object.values(provBonusPlayers).sort((a, b) => b.owners.length - a.owners.length);
+          if (provList[0]) {
+            const pb = provList[0];
+            events.push({
+              id: `prov_bps_${pb.name}`,
+              tone: 'emerald',
+              badge: isEn ? 'BPS +3 WATCH' : 'ลุ้นโบนัส +3',
+              headline: `${pb.name} (+3 BPS)`,
+              detail: isEn
+                ? `Currently on maximum provisional bonus for ${pb.owners.length} teams.`
+                : `จ่อรับโบนัสเต็ม +3 แต้มสด ส่งผลต่อ ${pb.owners.length} ทีมในลีก`,
+              teams: pb.owners
+            });
+          }
+        }
+
+        // 4. Provisional / Official Auto-Sub Rescue
+        if (autoSubList.length > 0) {
+          autoSubList.sort((a, b) => b.gain - a.gain);
+          events.push({
+            id: 'autosub_rescue',
+            tone: 'amber',
+            badge: isLive ? (isEn ? 'LIVE AUTO-SUB' : 'ออโต้ซับช่วยชีวิต') : (isEn ? 'AUTO-SUB GAIN' : 'สำรองลงมาแบก'),
+            headline: isEn ? `${autoSubList.length} bench rescues` : `สำรองขยับช่วย ${autoSubList.length} ทีม`,
+            detail: isEn
+              ? `Top boost: ${autoSubList[0].team_name} via ${autoSubList[0].meta}.`
+              : `คุ้มสุดคือ ${autoSubList[0].team_name} ได้ ${autoSubList[0].meta}`,
+            teams: autoSubList
+          });
+        }
+
+        // 5. Bench Tragedy (Non-BB >= 10 pts)
+        const benchPain = [...sorted]
+          .filter(t => (t.bench_points || 0) >= 10 && !['bboost', 'bench_boost'].includes(String(t.chip || '').toLowerCase()))
+          .sort((a, b) => (b.bench_points || 0) - (a.bench_points || 0));
+        if (benchPain.length > 0) {
+          events.push({
+            id: 'bench_tragedy',
+            tone: 'rose',
+            badge: isEn ? 'BENCH PAIN' : 'ดองแต้มสำรอง',
+            headline: isEn ? `${benchPain[0].bench_points} pts stranded` : `ดองไว้ข้างสนาม ${benchPain[0].bench_points} pts`,
+            detail: isEn
+              ? `${benchPain[0].team_name} left big points sitting on the bench.`
+              : `${benchPain[0].team_name} และอีก ${Math.max(0, benchPain.length - 1)} ทีมเสียแต้มบนม้านั่ง`,
+            teams: benchPain.slice(0, 5).map(t => ({
+              entry_id: t.entry_id,
+              team_name: t.team_name,
+              player_name: t.player_name,
+              meta: `${t.bench_points} bench pts`
+            }))
+          });
+        }
+
+        // 6. Transfer Masterclass OR Tight Race Fallback
+        const txWinners = [...sorted].filter(t => (t.transfers_net_impact || 0) >= 6).sort((a, b) => (b.transfers_net_impact || 0) - (a.transfers_net_impact || 0));
+        if (txWinners.length > 0) {
+          events.push({
+            id: 'tx_swing',
+            tone: 'emerald',
+            badge: isEn ? 'SMART TRANSFER' : 'ย้ายตัวเข้าเป้า',
+            headline: `${txWinners[0].team_name} (+${txWinners[0].transfers_net_impact} net)`,
+            detail: isEn
+              ? `Best net transfer impact across the league this gameweek.`
+              : `กำไรส่วนต่างย้ายตัวสูงสุดประจำสัปดาห์นี้`,
+            teams: txWinners.slice(0, 4).map(t => ({
+              entry_id: t.entry_id,
+              team_name: t.team_name,
+              player_name: t.player_name,
+              meta: `+${t.transfers_net_impact} net`
+            }))
+          });
+        } else if (sorted.length >= 2) {
+          const gapTop = Number(sorted[0].net_points || 0) - Number(sorted[1].net_points || 0);
+          events.push({
+            id: 'top_duel',
+            tone: 'amber',
+            badge: isLive ? (isEn ? 'TITLE SWEAT' : 'ลุ้นแชมป์วีค') : (isEn ? 'GW PODIUM' : 'ท็อปประจำวีค'),
+            headline: gapTop === 0
+              ? (isEn ? `Tied on ${sorted[0].net_points} pts` : `นำร่วม ${sorted[0].net_points} แต้ม`)
+              : (isEn ? `${gapTop} pts separates #1 & #2` : `อันดับ 1-2 ห่าง ${gapTop} แต้ม`),
+            detail: `${sorted[0].team_name} vs ${sorted[1].team_name}`,
+            teams: sorted.slice(0, 3).map(t => ({
+              entry_id: t.entry_id,
+              team_name: t.team_name,
+              player_name: t.player_name,
+              meta: `${t.net_points} pts`
+            }))
+          });
+        }
+
+        return events.slice(0, 6);
+      }
+
+      renderLiveDramaStrip(gwData, sorted, overallSorted, isStarted, isFinished) {
+        const container = document.getElementById('live-drama-strip-container');
+        if (!container) return;
+        if (this.isTier2League() || !gwData || !Array.isArray(sorted) || sorted.length === 0) {
+          container.innerHTML = '';
+          container.classList.add('hidden');
+          return;
+        }
+
+        const events = this.computeLeagueDramaEvents(gwData, sorted, overallSorted, isStarted, isFinished);
+        this._latestDramaEvents = events;
+        if (!events || events.length === 0) {
+          container.innerHTML = '';
+          container.classList.add('hidden');
+          return;
+        }
+
+        const isEn = (this.currentLang === 'en');
+        const isLive = isStarted && !isFinished;
+        const sectionTitle = !isStarted
+          ? (isEn ? 'Pre-Kickoff Watchlist' : 'โฟกัสก่อนคิกออฟ')
+          : (isLive ? (isEn ? 'Live Matchday Drama Feed' : 'ดราม่าสดกระทบอันดับลีก') : (isEn ? 'Gameweek Key Moments' : 'ช็อตเด็ดประจำสัปดาห์'));
+
+        if (this._openDramaEventId && !events.some(e => e.id === this._openDramaEventId)) {
+          this._openDramaEventId = null;
+        }
+
+        const toneMap = {
+          emerald: {
+            dot: 'bg-emerald-500',
+            badge: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200/80 dark:border-emerald-800/70'
+          },
+          rose: {
+            dot: 'bg-rose-500',
+            badge: 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200/80 dark:border-rose-800/70'
+          },
+          amber: {
+            dot: 'bg-amber-500',
+            badge: 'bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200/80 dark:border-amber-800/70'
+          }
+        };
+
+        const selectedEv = this._openDramaEventId ? events.find(e => e.id === this._openDramaEventId) : null;
+
+        container.classList.remove('hidden');
+        container.innerHTML = `
+          <div class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200/90 dark:border-slate-800 shadow-2xs overflow-hidden min-w-0 max-w-full">
+            <div class="flex items-center justify-between gap-2 mb-2.5">
+              <div class="flex items-center gap-2 min-w-0">
+                ${isLive ? '<span class="w-2 h-2 rounded-full bg-emerald-500 motion-safe:animate-pulse flex-shrink-0"></span>' : ''}
+                <h3 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display truncate">${sectionTitle}</h3>
+              </div>
+              <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display flex-shrink-0">GW ${this.selectedGW}</span>
+            </div>
+
+            <div class="flex gap-2.5 overflow-x-auto touch-scroll scrollbar-thin pb-1 snap-x md:grid md:grid-cols-2 xl:grid-cols-3 md:overflow-visible">
+              ${events.map(ev => {
+                const tCls = toneMap[ev.tone] || toneMap.amber;
+                const isActive = this._openDramaEventId === ev.id;
+                const teamCountLabel = ev.teams && ev.teams.length > 0
+                  ? (isEn ? `${ev.teams.length} ${ev.teams.length === 1 ? 'team' : 'teams'}` : `${ev.teams.length} ทีม`)
+                  : '';
+                return `
+                  <button type="button" onclick="app.toggleDramaEventDetail('${this.escapeHtml(ev.id)}')" aria-expanded="${isActive ? 'true' : 'false'}" class="w-[245px] xs:w-[265px] md:w-auto flex-shrink-0 snap-start text-left p-2.5 sm:p-3 rounded-xl border transition-all cursor-pointer active:scale-[0.99] ${isActive ? 'bg-slate-100/90 dark:bg-slate-800 border-slate-400 dark:border-slate-500 ring-1 ring-slate-300 dark:ring-slate-600' : 'bg-white/85 dark:bg-slate-900/60 border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'}">
+                    <div class="flex items-center justify-between gap-1.5 mb-1">
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${tCls.badge} font-display">
+                        <span class="w-1.5 h-1.5 rounded-full ${tCls.dot}"></span>
+                        <span>${this.escapeHtml(ev.badge)}</span>
+                      </span>
+                      ${teamCountLabel ? `<span class="text-[10px] font-semibold text-slate-400 dark:text-slate-500 font-display">${teamCountLabel} ${isActive ? '▲' : '▼'}</span>` : ''}
+                    </div>
+                    <div class="text-xs sm:text-[13px] font-black text-slate-900 dark:text-white font-display truncate">${this.escapeHtml(ev.headline)}</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2 leading-snug">${this.escapeHtml(ev.detail)}</div>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            ${selectedEv ? `
+              <div id="live-drama-detail-panel" class="mt-2.5 pt-2.5 border-t border-slate-200/80 dark:border-slate-800">
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <span class="text-[11px] font-bold text-slate-700 dark:text-slate-300 font-display">${isEn ? 'Affected League Teams' : 'รายชื่อทีมที่ได้รับผลกระทบ'}: ${this.escapeHtml(selectedEv.headline)}</span>
+                  <button type="button" onclick="app.toggleDramaEventDetail('${this.escapeHtml(selectedEv.id)}')" class="text-[11px] font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white px-2 py-1 rounded-lg cursor-pointer">${isEn ? 'Close ✕' : 'ปิด ✕'}</button>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  ${(selectedEv.teams || []).map(tm => `
+                    <button type="button" onclick="app.openTeamModal(${Number(tm.entry_id)})" class="inline-flex items-center gap-1.5 px-2.5 py-1 min-h-[32px] rounded-xl text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 transition-colors cursor-pointer">
+                      <span class="font-bold truncate max-w-[140px]">${this.escapeHtml(tm.team_name)}</span>
+                      <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400">${this.escapeHtml(tm.meta || '')}</span>
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      toggleDramaEventDetail(eventId) {
+        this._openDramaEventId = (this._openDramaEventId === eventId) ? null : eventId;
+        this.renderGameweekView();
+      }
+
+      async openRivalModal(teamAId = null, teamBId = null) {
+        if (this.isTier2League()) return;
+        const teams = (this.data && this.data.teams) || [];
+        if (teams.length < 2) return;
+
+        // Close team-modal first so modals never overlap
+        const tModal = document.getElementById('team-modal');
+        if (tModal && !tModal.classList.contains('hidden')) {
+          this.closeTeamModal();
+        }
+
+        const { overallSorted } = this.computeGameweekOverallStandings(this.selectedGW);
+        const activeOv = overallSorted.filter(t => !this.isTeamDeparted(t.entry_id));
+        const mySaved = this.getMyTeamId(teams);
+        let aId = Number(teamAId || mySaved || (activeOv[0] && activeOv[0].entry_id) || teams[0].entry_id);
+        let bId = teamBId !== null && teamBId !== undefined ? Number(teamBId) : null;
+
+        if (!bId || bId === aId) {
+          const aIdx = activeOv.findIndex(t => Number(t.entry_id) === aId);
+          if (aIdx > 0) bId = Number(activeOv[aIdx - 1].entry_id);
+          else if (activeOv.length > 1) bId = Number(activeOv[1].entry_id);
+          else {
+            const alt = teams.find(t => Number(t.entry_id) !== aId);
+            bId = alt ? Number(alt.entry_id) : aId;
+          }
+        }
+
+        this._rivalState = { isOpen: true, teamAId: aId, teamBId: bId };
+
+        const modal = document.getElementById('rival-modal');
+        if (modal) {
+          if (modal.classList.contains('hidden')) {
+            this._rivalLastFocus = document.activeElement;
+          }
+          modal.classList.remove('hidden');
+          this.lockBodyScroll();
+          modal.focus({ preventScroll: true });
+          if (!this._rivalModalEscBound) {
+            this._rivalModalEscBound = (e) => {
+              if (e.key === 'Escape') this.closeRivalModal();
+            };
+            window.addEventListener('keydown', this._rivalModalEscBound);
+          }
+        }
+
+        if (!this.hasTier1SquadsForGw(this.data, this.selectedGW)) {
+          const body = document.getElementById('rival-modal-body');
+          const isEn = (this.currentLang === 'en');
+          if (body) {
+            body.innerHTML = `<div class="py-10 text-center text-xs font-bold text-slate-500 dark:text-slate-400 animate-pulse">${isEn ? `Loading GW ${this.selectedGW} squads...` : `กำลังโหลดขุมกำลัง GW ${this.selectedGW}...`}</div>`;
+          }
+          await this.ensureTier1GWSquads(this.selectedGW, this.activeLeagueId);
+        }
+
+        if (this._rivalState && this._rivalState.isOpen) {
+          this.renderRivalModal();
+        }
+      }
+
+      setRivalQuickPreset(preset) {
+        if (!this._rivalState) return;
+        const { overallSorted } = this.computeGameweekOverallStandings(this.selectedGW);
+        const activeOv = overallSorted.filter(t => !this.isTeamDeparted(t.entry_id));
+        const aId = Number(this._rivalState.teamAId);
+        const aIdx = activeOv.findIndex(t => Number(t.entry_id) === aId);
+        let target = null;
+        if (preset === 'leader') {
+          target = activeOv.find(t => Number(t.entry_id) !== aId) || activeOv[0];
+        } else if (preset === 'ahead') {
+          target = aIdx > 0 ? activeOv[aIdx - 1] : (activeOv[1] || null);
+        } else if (preset === 'behind') {
+          target = (aIdx >= 0 && aIdx + 1 < activeOv.length) ? activeOv[aIdx + 1] : (activeOv[aIdx - 1] || null);
+        }
+        if (target && Number(target.entry_id) !== aId) {
+          this._rivalState.teamBId = Number(target.entry_id);
+          this.renderRivalModal();
+        }
+      }
+
+      swapRivalTeams() {
+        if (!this._rivalState) return;
+        const tmp = this._rivalState.teamAId;
+        this._rivalState.teamAId = this._rivalState.teamBId;
+        this._rivalState.teamBId = tmp;
+        this.renderRivalModal();
+      }
+
+      closeRivalModal() {
+        if (this._rivalState) this._rivalState.isOpen = false;
+        if (this._rivalModalEscBound) {
+          window.removeEventListener('keydown', this._rivalModalEscBound);
+          this._rivalModalEscBound = null;
+        }
+        const modal = document.getElementById('rival-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+          modal.classList.add('hidden');
+          this.unlockBodyScroll();
+          if (this._rivalLastFocus && this._rivalLastFocus !== document.body && typeof this._rivalLastFocus.focus === 'function') {
+            this._rivalLastFocus.focus({ preventScroll: true });
+          }
+          this._rivalLastFocus = null;
+        }
+      }
+
+      renderRivalModal() {
+        if (!this._rivalState || !this._rivalState.isOpen) return;
+        const body = document.getElementById('rival-modal-body');
+        if (!body) return;
+
+        const isEn = (this.currentLang === 'en');
+        const gwKey = String(this.selectedGW);
+        const gwData = (this.data && this.data.gameweeks) ? this.data.gameweeks[gwKey] : null;
+        const isFinished = Boolean(gwData && gwData.is_finished);
+        const isStarted = gwData
+          ? (gwData.is_started !== undefined ? Boolean(gwData.is_started) : (isFinished || (gwData.results || []).some(r => r.points > 0)))
+          : false;
+        const isLive = isStarted && !isFinished;
+
+        const leaguePill = document.getElementById('rival-modal-league-pill');
+        if (leaguePill) {
+          leaguePill.textContent = `${this.data?.name || 'Mini-League'}`;
+        }
+        const statusPill = document.getElementById('rival-modal-status-pill');
+        if (statusPill) {
+          statusPill.textContent = isLive
+            ? (isEn ? `GW ${this.selectedGW} · LIVE` : `GW ${this.selectedGW} · สด`)
+            : (isFinished ? (isEn ? `GW ${this.selectedGW} · OFFICIAL` : `GW ${this.selectedGW} · ทางการ`) : (isEn ? `GW ${this.selectedGW} · PRE-MATCH` : `GW ${this.selectedGW} · ก่อนคิกออฟ`));
+          statusPill.className = isLive
+            ? 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold font-display bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/70'
+            : 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold font-display bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700';
+        }
+
+        const { overallSorted } = this.computeGameweekOverallStandings(this.selectedGW);
+        const results = (gwData && Array.isArray(gwData.results)) ? gwData.results : [];
+        const teams = (this.data && this.data.teams) || [];
+        const aId = Number(this._rivalState.teamAId);
+        const bId = Number(this._rivalState.teamBId);
+
+        const resA = results.find(r => Number(r.entry_id) === aId) || {};
+        const resB = results.find(r => Number(r.entry_id) === bId) || {};
+        const ovIdxA = overallSorted.findIndex(t => Number(t.entry_id) === aId);
+        const ovIdxB = overallSorted.findIndex(t => Number(t.entry_id) === bId);
+        const ovA = ovIdxA >= 0 ? overallSorted[ovIdxA] : {};
+        const ovB = ovIdxB >= 0 ? overallSorted[ovIdxB] : {};
+        const ovRankA = ovA.overall_rank ? `#${ovA.overall_rank}` : (ovIdxA >= 0 ? (isEn ? 'Guest' : 'ร่วมสนุก') : '-');
+        const ovRankB = ovB.overall_rank ? `#${ovB.overall_rank}` : (ovIdxB >= 0 ? (isEn ? 'Guest' : 'ร่วมสนุก') : '-');
+        const tmA = teams.find(t => Number(t.entry_id) === aId) || {};
+        const tmB = teams.find(t => Number(t.entry_id) === bId) || {};
+
+        const nameA = resA.team_name || ovA.team_name || tmA.entry_name || '-';
+        const mgrA = resA.player_name || ovA.player_name || tmA.player_name || '-';
+        const nameB = resB.team_name || ovB.team_name || tmB.entry_name || '-';
+        const mgrB = resB.player_name || ovB.player_name || tmB.player_name || '-';
+
+        const scoreA = Number(resA.net_points ?? resA.points ?? 0);
+        const scoreB = Number(resB.net_points ?? resB.points ?? 0);
+        const gwDiff = scoreA - scoreB;
+        const ovTotA = Number(ovA.total_points || 0);
+        const ovTotB = Number(ovB.total_points || 0);
+        const ovDiff = ovTotA - ovTotB;
+
+        const sqA = (this.data.squads && this.data.squads[`${aId}_${gwKey}`]) || null;
+        const sqB = (this.data.squads && this.data.squads[`${bId}_${gwKey}`]) || null;
+
+        const buildEffectiveMap = (sq, res) => {
+          const map = new Map();
+          if (!sq || !Array.isArray(sq.starting)) return { map, rem: 0, cap: null };
+          const chipStr = String(res.chip || sq.chip || '').toLowerCase();
+          const isBB = (chipStr === 'bboost' || chipStr === 'bench_boost');
+          const pool = isBB ? sq.starting.concat(sq.bench || []) : sq.starting;
+          let rem = 0;
+          let cap = null;
+          pool.forEach(p => {
+            if (!p || !p.id) return;
+            const mult = (p.multiplier !== undefined && p.multiplier !== null) ? Number(p.multiplier) : (p.is_captain ? 2 : 1);
+            if (mult <= 0) return;
+            if (p.not_played_yet) rem++;
+            const rawPts = Number(p.raw_points !== undefined ? p.raw_points : Math.round((Number(p.points) || 0) / Math.max(1, mult)));
+            if (p.is_captain) {
+              cap = { id: Number(p.id), name: p.name, mult, pts: Number(p.points) || 0, raw: rawPts, notPlayed: Boolean(p.not_played_yet) };
+            }
+            map.set(Number(p.id), {
+              id: Number(p.id),
+              name: p.name,
+              pos: p.pos || 'MID',
+              team: p.team || '',
+              mult,
+              rawPts,
+              totalPts: Number(p.points) || 0,
+              provBonus: Number(p.provisional_bonus) || 0,
+              notPlayed: Boolean(p.not_played_yet),
+              mins: Number(p.minutes) || 0,
+              isCap: Boolean(p.is_captain)
+            });
+          });
+          return { map, rem, cap };
+        };
+
+        const effA = buildEffectiveMap(sqA, resA);
+        const effB = buildEffectiveMap(sqB, resB);
+        const allIds = new Set([...effA.map.keys(), ...effB.map.keys()]);
+
+        const cheerList = [];
+        const fearList = [];
+        const sharedList = [];
+
+        allIds.forEach(pid => {
+          const pA = effA.map.get(pid);
+          const pB = effB.map.get(pid);
+          const mA = pA ? pA.mult : 0;
+          const mB = pB ? pB.mult : 0;
+          const base = pA || pB;
+          const edge = mA - mB;
+          if (edge > 0) {
+            cheerList.push({ ...base, edgeMult: edge, netImpact: base.rawPts * edge, ownMult: mA, rivalMult: mB });
+          } else if (edge < 0) {
+            fearList.push({ ...base, edgeMult: Math.abs(edge), netImpact: base.rawPts * Math.abs(edge), ownMult: mA, rivalMult: mB });
+          }
+          const sharedMult = Math.min(mA, mB);
+          if (sharedMult > 0) {
+            sharedList.push({ ...base, sharedMult });
+          }
+        });
+
+        const sortDiffs = (arr) => arr.sort((x, y) => {
+          if (isLive) {
+            const xActive = x.notPlayed ? 1 : (x.mins > 0 ? 2 : 0);
+            const yActive = y.notPlayed ? 1 : (y.mins > 0 ? 2 : 0);
+            if (xActive !== yActive) return yActive - xActive;
+          }
+          return (y.netImpact - x.netImpact) || (y.edgeMult - x.edgeMult);
+        });
+        sortDiffs(cheerList);
+        sortDiffs(fearList);
+        sharedList.sort((x, y) => (y.rawPts - x.rawPts));
+
+        const verdictText = LiveCommentaryEngine.generateMatchupVerdict({
+          nameA, nameB, scoreA, scoreB,
+          remA: effA.rem, remB: effB.rem,
+          overallDiff: ovDiff, isLive, isFinished,
+          diffCountA: cheerList.length, diffCountB: fearList.length, isEn
+        });
+
+        const renderDiffRow = (item, side) => {
+          const statusLabel = isFinished
+            ? (isEn ? 'FT' : 'จบ')
+            : (item.notPlayed ? (isEn ? 'Yet' : 'รอเตะ') : (isEn ? 'Play' : 'เตะ'));
+          const statusCls = item.notPlayed
+            ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+            : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300';
+          const multTag = item.rivalMult > 0 && item.ownMult > 0
+            ? (side === 'cheer' ? `+${item.edgeMult}x (C)` : `+${item.edgeMult}x (C)`)
+            : (item.edgeMult >= 3 ? '3x (TC)' : (item.edgeMult === 2 ? '2x (C)' : '1x'));
+          const provBadge = (isLive && item.provBonus > 0)
+            ? `<span class="text-[9px] font-bold px-1 py-0.2 rounded bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300">+${item.provBonus} BPS</span>`
+            : '';
+          const ptsDisplay = item.notPlayed ? '-' : `${item.netImpact} pts`;
+          const ptsColor = side === 'cheer' ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400';
+
+          return `
+            <div class="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 text-xs">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono flex-shrink-0">${this.escapeHtml(item.pos)}</span>
+                <span class="font-bold text-slate-900 dark:text-white truncate">${this.escapeHtml(item.name)}</span>
+                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex-shrink-0">${multTag}</span>
+                ${provBadge}
+              </div>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <span class="text-[9px] font-semibold px-1.5 py-0.5 rounded ${statusCls}">${statusLabel}</span>
+                <span class="font-black font-mono tabular-nums ${ptsColor}">${ptsDisplay}</span>
+              </div>
+            </div>
+          `;
+        };
+
+        const sortedOvList = [...teams].sort((a, b) => (a.entry_name || '').localeCompare(b.entry_name || ''));
+        const gapBadgeText = gwDiff === 0
+          ? (isEn ? 'TIED' : 'เสมอกัน')
+          : (gwDiff > 0 ? `+${gwDiff}` : `${gwDiff}`);
+        const gapBadgeCls = gwDiff > 0
+          ? 'bg-emerald-600 text-white'
+          : (gwDiff < 0 ? 'bg-rose-600 text-white' : 'bg-slate-700 text-white');
+
+        const capSame = effA.cap && effB.cap && effA.cap.id === effB.cap.id && effA.cap.mult === effB.cap.mult;
+        const capBannerHtml = (effA.cap || effB.cap)
+          ? (capSame
+              ? `<div class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800 text-xs text-center text-slate-600 dark:text-slate-300 font-medium">${isEn ? `Shared Captain: <strong>${this.escapeHtml(effA.cap.name)}</strong> (${effA.cap.mult}x · ${effA.cap.pts} pts) — neutralized` : `กัปตันเหมือนกัน: <strong>${this.escapeHtml(effA.cap.name)}</strong> (${effA.cap.mult}x · ${effA.cap.pts} pts) — หักล้างกัน`}</div>`
+              : `<div class="grid grid-cols-2 gap-2 text-xs">
+                  <div class="px-2.5 py-2 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/25 border border-emerald-200/70 dark:border-emerald-800/50 flex items-center justify-between gap-1 min-w-0">
+                    <span class="truncate font-semibold text-slate-700 dark:text-slate-200">(C) ${effA.cap ? this.escapeHtml(effA.cap.name) : '-'}</span>
+                    <span class="font-black font-mono tabular-nums text-emerald-700 dark:text-emerald-400 flex-shrink-0">${effA.cap ? `${effA.cap.pts}p` : '-'}</span>
+                  </div>
+                  <div class="px-2.5 py-2 rounded-xl bg-rose-50/60 dark:bg-rose-950/25 border border-rose-200/70 dark:border-rose-800/50 flex items-center justify-between gap-1 min-w-0">
+                    <span class="truncate font-semibold text-slate-700 dark:text-slate-200">(C) ${effB.cap ? this.escapeHtml(effB.cap.name) : '-'}</span>
+                    <span class="font-black font-mono tabular-nums text-rose-600 dark:text-rose-400 flex-shrink-0">${effB.cap ? `${effB.cap.pts}p` : '-'}</span>
+                  </div>
+                </div>`)
+          : '';
+
+        body.innerHTML = `
+          <!-- Quick Opponent Switcher -->
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-slate-100 dark:border-slate-800/80">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <button type="button" onclick="app.setRivalQuickPreset('leader')" class="px-2.5 py-1 min-h-[32px] rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 cursor-pointer">${isEn ? 'Leader' : 'จ่าฝูง'}</button>
+              <button type="button" onclick="app.setRivalQuickPreset('ahead')" class="px-2.5 py-1 min-h-[32px] rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 cursor-pointer">${isEn ? 'Next Ahead' : 'คนข้างหน้า'}</button>
+              <button type="button" onclick="app.setRivalQuickPreset('behind')" class="px-2.5 py-1 min-h-[32px] rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 cursor-pointer">${isEn ? 'Next Behind' : 'คนข้างหลัง'}</button>
+            </div>
+            <div class="flex items-center gap-1.5 flex-1 sm:flex-initial justify-end min-w-0">
+              <select aria-label="${isEn ? 'Select rival team' : 'เลือกทีมคู่แข่ง'}" onchange="if(this.value){ app._rivalState.teamBId = Number(this.value); app.renderRivalModal(); }" class="min-w-0 max-w-[180px] sm:max-w-[200px] min-h-[32px] px-2 py-1 text-[11px] font-semibold rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 cursor-pointer">
+                ${sortedOvList.map(t => `<option value="${t.entry_id}" ${Number(t.entry_id) === bId ? 'selected' : ''}>${this.escapeHtml(t.entry_name)}</option>`).join('')}
+              </select>
+              <button type="button" onclick="app.swapRivalTeams()" class="px-2.5 py-1 min-h-[32px] rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 cursor-pointer" title="${isEn ? 'Swap sides' : 'สลับฝั่ง'}" aria-label="${isEn ? 'Swap sides' : 'สลับฝั่ง'}">⇄</button>
+            </div>
+          </div>
+
+          <!-- Scoreboard Hero -->
+          <div class="rounded-2xl p-3 sm:p-4 bg-slate-50/90 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800">
+            <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4">
+              <div class="min-w-0">
+                <div class="flex items-center gap-1 flex-wrap">
+                  <span class="text-[9.5px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-display">${isEn ? 'SIDE A' : 'ฝั่งเชียร์'}</span>
+                  ${resA.chip ? `<span class="chip-badge badge-${String(resA.chip).toLowerCase()} text-[9px]">${String(resA.chip).toUpperCase()}</span>` : ''}
+                </div>
+                <div class="text-sm sm:text-base font-black text-slate-900 dark:text-white font-display truncate mt-1">${this.escapeHtml(nameA)}</div>
+                <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(mgrA)}</div>
+                <div class="text-2xl sm:text-3xl font-black font-mono tabular-nums text-slate-900 dark:text-white mt-1.5">${scoreA} <span class="text-xs font-bold text-slate-400">pts</span></div>
+                <div class="text-[10.5px] text-slate-500 dark:text-slate-400 font-display mt-0.5">
+                  ${resA.hits > 0 ? `<span class="text-rose-600 dark:text-rose-400 font-bold">-${resA.hits} hits</span> · ` : ''}${isLive ? (isEn ? `${effA.rem} left` : `เหลือ ${effA.rem} ตัว`) : (isEn ? `Overall ${ovRankA}` : `รวม ${ovRankA}`)}
+                </div>
+              </div>
+
+              <div class="flex flex-col items-center justify-center px-1">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 font-display">VS</span>
+                <span class="mt-1 px-2.5 py-1 rounded-xl text-xs font-black font-mono tabular-nums shadow-2xs ${gapBadgeCls}">${gapBadgeText}</span>
+              </div>
+
+              <div class="min-w-0 text-right">
+                <div class="flex items-center justify-end gap-1 flex-wrap">
+                  ${resB.chip ? `<span class="chip-badge badge-${String(resB.chip).toLowerCase()} text-[9px]">${String(resB.chip).toUpperCase()}</span>` : ''}
+                  <span class="text-[9.5px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 font-display">${isEn ? 'RIVAL' : 'ฝั่งแช่ง'}</span>
+                </div>
+                <div class="text-sm sm:text-base font-black text-slate-900 dark:text-white font-display truncate mt-1">${this.escapeHtml(nameB)}</div>
+                <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${this.escapeHtml(mgrB)}</div>
+                <div class="text-2xl sm:text-3xl font-black font-mono tabular-nums text-slate-900 dark:text-white mt-1.5">${scoreB} <span class="text-xs font-bold text-slate-400">pts</span></div>
+                <div class="text-[10.5px] text-slate-500 dark:text-slate-400 font-display mt-0.5">
+                  ${resB.hits > 0 ? `<span class="text-rose-600 dark:text-rose-400 font-bold">-${resB.hits} hits</span> · ` : ''}${isLive ? (isEn ? `${effB.rem} left` : `เหลือ ${effB.rem} ตัว`) : (isEn ? `Overall ${ovRankB}` : `รวม ${ovRankB}`)}
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-2.5 pt-2 border-t border-slate-200/80 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-600 dark:text-slate-400 font-display tabular-nums flex-wrap gap-1">
+              <span>${isEn ? `Overall: ${ovRankA} (${ovTotA}) vs ${ovRankB} (${ovTotB})` : `คะแนนรวมสะสม: ${ovRankA} (${ovTotA}) เทียบ ${ovRankB} (${ovTotB})`}</span>
+              <span class="font-bold ${ovDiff >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">${ovDiff === 0 ? (isEn ? 'Overall Level' : 'รวมเท่ากัน') : (ovDiff > 0 ? `+${ovDiff} pts` : `${ovDiff} pts`)}</span>
+            </div>
+          </div>
+
+          ${capBannerHtml}
+
+          <!-- Differentials Arena -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="rounded-2xl p-3 bg-emerald-50/40 dark:bg-emerald-950/15 border border-emerald-200/70 dark:border-emerald-900/40 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold text-emerald-800 dark:text-emerald-300 font-display">${isEn ? 'Cheer For (Your Edge)' : 'ฝั่งเชียร์ (ตัวต่างฝั่งซ้าย)'}</span>
+                <span class="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400">${cheerList.length}</span>
+              </div>
+              <div class="space-y-1.5">
+                ${cheerList.length > 0 ? cheerList.map(it => renderDiffRow(it, 'cheer')).join('') : `<div class="text-[11px] text-slate-400 py-2 text-center">${isEn ? 'No unique differentials' : 'ไม่มีตัวต่างฝั่งนี้'}</div>`}
+              </div>
+            </div>
+
+            <div class="rounded-2xl p-3 bg-rose-50/40 dark:bg-rose-950/15 border border-rose-200/70 dark:border-rose-900/40 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold text-rose-800 dark:text-rose-300 font-display">${isEn ? 'Fear / Sweat (Rival Edge)' : 'ฝั่งแช่ง (ตัวต่างคู่แข่ง)'}</span>
+                <span class="text-[10px] font-mono font-bold text-rose-600 dark:text-rose-400">${fearList.length}</span>
+              </div>
+              <div class="space-y-1.5">
+                ${fearList.length > 0 ? fearList.map(it => renderDiffRow(it, 'fear')).join('') : `<div class="text-[11px] text-slate-400 py-2 text-center">${isEn ? 'No unique differentials' : 'ไม่มีตัวต่างฝั่งนี้'}</div>`}
+              </div>
+            </div>
+          </div>
+
+          <!-- 1-Line Tailored Verdict -->
+          <div class="px-3.5 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-slate-800/95 border border-slate-800 dark:border-slate-700 text-xs font-medium leading-relaxed">
+            ${verdictText}
+          </div>
+
+          <!-- Collapsible Shared Players -->
+          <details class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/50 px-3 py-2">
+            <summary class="text-xs font-bold text-slate-600 dark:text-slate-300 cursor-pointer select-none font-display">
+              ${isEn ? `Shared Players (${sharedList.length} — neutralized)` : `ตัวที่เหมือนกัน (${sharedList.length} คน — หักล้างกัน)`}
+            </summary>
+            <div class="mt-2 pt-2 border-t border-slate-200/70 dark:border-slate-800 flex flex-wrap gap-1.5">
+              ${sharedList.map(sp => `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-medium">${this.escapeHtml(sp.name)} <span class="font-mono font-bold text-slate-500 dark:text-slate-400">${sp.notPlayed ? '-' : `${sp.rawPts}p`}</span></span>`).join('')}
+            </div>
+          </details>
+        `;
       }
 
       showToast(msg, type = 'success', durationMs = 2500) {
