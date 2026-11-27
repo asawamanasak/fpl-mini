@@ -42,6 +42,9 @@ workers/.dev.vars.*
 # Temporary design audit artifacts
 .hallmark/
 
-# Generated audit output
+# Node build tooling
+node_modules/
+
+# Temporary audit output
 deep_audit_report.json
 

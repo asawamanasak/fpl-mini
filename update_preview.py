@@ -14,6 +14,8 @@ Build Version: 2026.08.31.01
 import hashlib
 import json
 import os
+import shutil
+import subprocess
 from parse_shi62_special import parse_shi62_file
 from parse_bramann_games import parse_bramann_prediction_file, parse_bramann_challenge_file
 
@@ -400,10 +402,11 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <meta name="apple-mobile-web-app-title" content="FPLSaWaDiKa">
 
   <!-- Preconnect & DNS Prefetch for Speed & Core Web Vitals (Zero-UI Background Boost) -->
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
   <link rel="preconnect" href="https://api.fplsawadika.com" crossorigin>
   <link rel="dns-prefetch" href="https://api.fplsawadika.com">
   <link rel="dns-prefetch" href="https://fantasy.premierleague.com">
+__PRELOAD_TIER2_TAG__
 
   <!-- Canonical URL & Search Engine Optimization -->
   <link rel="canonical" href="__CANONICAL_URL__">
@@ -494,23 +497,12 @@ __STRUCTURED_DATA_JSON__
     };
   </script>
 
-  <!-- Tailwind CSS CDN -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.5/dist/index.global.js"
-    integrity="sha384-t+qLIxS5zM/KF99/doWY+dxTsavdvgayaZt8A9ntLsUjEkiXzYl5M3Ij8zVFPL9j"
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  ></script>
-  <style type="text/tailwindcss">
-    @theme {
-      --breakpoint-xs: 380px;
-    }
-    @variant dark (&:where(.dark, .dark *));
-  </style>
+  <!-- Pre-Compiled Static Tailwind CSS v4 -->
+  <link rel="stylesheet" href="__ASSET_PREFIX__assets/styles.css?v=__STYLES_CSS_HASH__">
 
   <!-- SheetJS (xlsx) is lazy-loaded on demand when Export Excel is clicked -->
 
-  <!-- Google Fonts: Sarabun (non-render-blocking; critical @font-face glyphs inlined below) -->
+  <!-- Google Fonts: Sarabun (non-render-blocking) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&display=swap">
@@ -518,101 +510,6 @@ __STRUCTURED_DATA_JSON__
   <noscript><link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&display=swap" rel="stylesheet"></noscript>
 
   <style>
-    /* Sarabun Font-Face Declarations */
-    @font-face {
-      font-family: 'Sarabun';
-      src: local('Sarabun'),
-           local('Sarabun Regular'),
-           url('./fonts/Sarabun-Regular.ttf') format('truetype'),
-           url('../fonts/Sarabun-Regular.ttf') format('truetype'),
-           url('https://fonts.gstatic.com/s/sarabun/v17/DtVjJx26TKEr37c9WBI.ttf') format('truetype');
-      font-weight: 400;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Sarabun';
-      src: local('Sarabun Medium'),
-           url('./fonts/Sarabun-Medium.ttf') format('truetype'),
-           url('../fonts/Sarabun-Medium.ttf') format('truetype'),
-           url('https://fonts.gstatic.com/s/sarabun/v17/DtVmJx26TKEr37c9YOZqulw.ttf') format('truetype');
-      font-weight: 500;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Sarabun';
-      src: local('Sarabun SemiBold'),
-           url('./fonts/Sarabun-SemiBold.ttf') format('truetype'),
-           url('../fonts/Sarabun-SemiBold.ttf') format('truetype'),
-           url('https://fonts.gstatic.com/s/sarabun/v17/DtVmJx26TKEr37c9YMptulw.ttf') format('truetype');
-      font-weight: 600;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Sarabun';
-      src: local('Sarabun Bold'),
-           url('./fonts/Sarabun-Bold.ttf') format('truetype'),
-           url('../fonts/Sarabun-Bold.ttf') format('truetype'),
-           url('https://fonts.gstatic.com/s/sarabun/v17/DtVmJx26TKEr37c9YK5sulw.ttf') format('truetype');
-      font-weight: 700;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    /* Sukhumvit Set Font-Face Declarations (Fallback) */
-    @font-face {
-      font-family: 'Sukhumvit Set';
-      src: local('Sukhumvit Set'),
-           local('SukhumvitSet-Text'),
-           url('./fonts/SukhumvitSet-Text.ttf') format('truetype'),
-           url('../fonts/SukhumvitSet-Text.ttf') format('truetype'),
-           url('https://raw.githubusercontent.com/bluenex/baansuan_prannok/master/fonts/sukhumvit-set/SukhumvitSet-Text.ttf') format('truetype');
-      font-weight: 400;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Sukhumvit Set';
-      src: local('Sukhumvit Set Medium'),
-           local('SukhumvitSet-Medium'),
-           url('./fonts/SukhumvitSet-Medium.ttf') format('truetype'),
-           url('../fonts/SukhumvitSet-Medium.ttf') format('truetype'),
-           url('https://raw.githubusercontent.com/bluenex/baansuan_prannok/master/fonts/sukhumvit-set/SukhumvitSet-Medium.ttf') format('truetype');
-      font-weight: 500;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Sukhumvit Set';
-      src: local('Sukhumvit Set SemiBold'),
-           local('SukhumvitSet-SemiBold'),
-           url('./fonts/SukhumvitSet-SemiBold.ttf') format('truetype'),
-           url('../fonts/SukhumvitSet-SemiBold.ttf') format('truetype'),
-           url('https://raw.githubusercontent.com/bluenex/baansuan_prannok/master/fonts/sukhumvit-set/SukhumvitSet-SemiBold.ttf') format('truetype');
-      font-weight: 600;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    @font-face {
-      font-family: 'Sukhumvit Set';
-      src: local('Sukhumvit Set Bold'),
-           local('SukhumvitSet-Bold'),
-           url('./fonts/SukhumvitSet-Bold.ttf') format('truetype'),
-           url('../fonts/SukhumvitSet-Bold.ttf') format('truetype'),
-           url('https://raw.githubusercontent.com/bluenex/baansuan_prannok/master/fonts/sukhumvit-set/SukhumvitSet-Bold.ttf') format('truetype');
-      font-weight: 700;
-      font-style: normal;
-      font-display: swap;
-    }
-
     :root {
       --font-family: 'Sarabun', 'Sukhumvit Set', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
@@ -1881,24 +1778,27 @@ __STRUCTURED_DATA_JSON__
           </span>
           <span id="gw-range-status" class="text-xs font-bold text-emerald-700 dark:text-emerald-400"><span class="hidden min-[380px]:inline">สัปดาห์ที่ </span>1 - 38</span>
         </div>
-        <div id="gw-selector-container" class="flex space-x-1.5 overflow-x-auto touch-scroll scrollbar-thin py-1 pb-2">
+        <div id="gw-selector-container" class="flex space-x-1.5 overflow-x-auto touch-scroll scrollbar-thin py-1 pb-2 min-h-[56px]">
           <!-- Rendered dynamically -->
         </div>
       </div>
 
-      <!-- 2.2 การ์ดไฮไลท์ผู้นำ (Spotlight Card - รูปแบบคลีนตัดไอคอนซ้ายออก) -->
-      <div id="champion-card-container">
-        <!-- Rendered dynamically -->
-      </div>
+      <!-- Hero Spotlight + Matchday Strips Slot (pre-reserved min-height prevents CLS on initial hydration) -->
+      <div id="gw-hero-strips-slot" class="space-y-4 __GW_HERO_MIN_H__">
+        <!-- 2.2 การ์ดไฮไลท์ผู้นำ (Spotlight Card - รูปแบบคลีนตัดไอคอนซ้ายออก) -->
+        <div id="champion-card-container" class="min-h-[124px]">
+          <!-- Rendered dynamically -->
+        </div>
 
-      <!-- 2.2b แถบดราม่าสด & ช็อตเด็ดประจำสัปดาห์ (Tier 1 Only) -->
-      <div id="live-drama-strip-container" class="hidden min-w-0 max-w-full">
-        <!-- Rendered dynamically -->
-      </div>
+        <!-- 2.2b แถบดราม่าสด & ช็อตเด็ดประจำสัปดาห์ (Tier 1 Only) -->
+        <div id="live-drama-strip-container" class="hidden min-w-0 max-w-full">
+          <!-- Rendered dynamically -->
+        </div>
 
-      <!-- 2.2c แถบปักหมุดทีมฉัน & ลัดเทียบคู่แข่ง 1v1 (Tier 1 Only) -->
-      <div id="my-team-strip-container" class="hidden min-w-0 max-w-full">
-        <!-- Rendered dynamically -->
+        <!-- 2.2c แถบปักหมุดทีมฉัน & ลัดเทียบคู่แข่ง 1v1 (Tier 1 Only) -->
+        <div id="my-team-strip-container" class="hidden min-w-0 max-w-full">
+          <!-- Rendered dynamically -->
+        </div>
       </div>
 
       <!-- 2.3 ตัวควบคุมตาราง: ช่องค้นหาทีม & แท็บสลับตารางบนมือถือ (Search & Mobile Switcher) -->
@@ -1957,7 +1857,7 @@ __STRUCTURED_DATA_JSON__
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
         
         <!-- ซ้าย: ตารางคะแนนสัปดาห์ปัจจุบัน (Matchday Standings - Emerald Live Theme) -->
-        <div id="matchday-table-card" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs relative">
+        <div id="matchday-table-card" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs relative min-h-[460px]">
           <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3">
             <div>
               <span id="matchday-sub-label" class="hidden"></span>
@@ -1993,7 +1893,7 @@ __STRUCTURED_DATA_JSON__
         </div>
 
         <!-- ขวา: ตารางคะแนนรวมสะสม (Overall Standings - Royal Blue Championship Theme) -->
-        <div id="overall-table-card" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs relative hidden xl:block">
+        <div id="overall-table-card" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs relative hidden xl:block min-h-[460px]">
           <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3">
             <div>
               <span id="overall-sub-label" class="hidden"></span>
@@ -4949,8 +4849,8 @@ __STRUCTURED_DATA_JSON__
         }
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
-        this.matchdayChunkLimit = 100;
-        this.overallChunkLimit = 100;
+        this.matchdayChunkLimit = 40;
+        this.overallChunkLimit = 40;
         this.prizesSearchQuery = '';
         this.prizesFilterMode = 'all';
         this.prizesHistoryExpanded = false;
@@ -5324,15 +5224,17 @@ __STRUCTURED_DATA_JSON__
         if (this.activeTab) {
           this.switchTab(this.activeTab, true, true);
         }
-        this.initLivePolling();
         this.initDeadlineCountdown();
 
-        // Proactively fetch squads/data + special league datasets for active league if not yet embedded (e.g. index.html with savedLeague)
+        // Proactively fetch squads/data + special league datasets for active league if not yet embedded (e.g. Tier 2 decoupled or index.html with savedLeague)
         const initialLidStr = String(this.activeLeagueId);
         const isTier2 = Boolean(this.config && this.config.tier === 2) || Boolean(this.data && this.data.tier === 2);
         const hasData = isTier2
           ? Boolean(this.data && this.data.teams && this.data.teams.length > 0)
           : Boolean(this.data && this.data.squads && Object.keys(this.data.squads).length > 0);
+        if (hasData) {
+          this.initLivePolling();
+        }
         if (!hasData) {
           this._isLoadingLeague = initialLidStr;
           this.renderAll();
@@ -5355,7 +5257,8 @@ __STRUCTURED_DATA_JSON__
               this.renderAll();
             } else if (!loaded && String(this.activeLeagueId) === initialLidStr) {
               this.renderAll();
-              if (typeof this.showToast === 'function') {
+              const isFileProto = typeof window !== 'undefined' && window.location && window.location.protocol === 'file:';
+              if (!isFileProto && typeof this.showToast === 'function') {
                 const isEn = (this.currentLang === 'en');
                 this.showToast(
                   isEn
@@ -5387,16 +5290,12 @@ __STRUCTURED_DATA_JSON__
             this.renderAll();
           }
         });
-        if (typeof window !== 'undefined' && window.location && window.location.protocol !== 'file:') {
-          setTimeout(() => {
-            if (typeof this.ensureRadarData === 'function') {
-              this.ensureRadarData().then(loaded => {
-                if (loaded && this.activeTab === 'global-radar-view') {
-                  this.renderCurrentTab(true);
-                }
-              });
+        if (this.activeTab === 'transfer-advisor-view' && typeof this.ensureTransferSuggestionsData === 'function') {
+          this.ensureTransferSuggestionsData().then(loaded => {
+            if (loaded && this.activeTab === 'transfer-advisor-view') {
+              this.renderCurrentTab(true);
             }
-          }, 1500);
+          });
         }
 
         // Listen for browser Back/Forward navigation
@@ -7798,6 +7697,34 @@ __STRUCTURED_DATA_JSON__
         return this._tier1SquadChunkPromises[inflightKey];
       }
 
+      async ensureTransferSuggestionsData(retryCount = 1) {
+        if (!this.multiData) return false;
+        const cur = this.multiData.transfer_suggestions;
+        if (cur && typeof cur === 'object' && Array.isArray(cur.pool) && cur.pool.length > 0) {
+          return false;
+        }
+        if (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') {
+          return false;
+        }
+        if (!this._transferSuggPromise) {
+          const prefix = this.getAssetPrefix();
+          const url = `${prefix}data/transfer_suggestions.json`;
+          this._transferSuggPromise = this._fetchJsonWithRetry(url, retryCount, 12000)
+            .then(jsonData => {
+              if (jsonData && typeof jsonData === 'object' && (Array.isArray(jsonData.pool) || jsonData.gw)) {
+                this.multiData.transfer_suggestions = jsonData;
+                this.invalidateRenderCache();
+                return true;
+              }
+              return false;
+            })
+            .finally(() => {
+              this._transferSuggPromise = null;
+            });
+        }
+        return this._transferSuggPromise;
+      }
+
       async ensureRadarData(retryCount = 1) {
         if (!this.multiData || !this.multiData.leagues) return false;
         const isPrivateTenant = Boolean(this.config && this.config.visibility === 'private') || Object.keys(this.multiData.leagues).length <= 1;
@@ -7998,8 +7925,8 @@ __STRUCTURED_DATA_JSON__
         }
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
-        this.matchdayChunkLimit = 100;
-        this.overallChunkLimit = 100;
+        this.matchdayChunkLimit = 40;
+        this.overallChunkLimit = 40;
         this.prizesSearchQuery = '';
         this.prizesFilterMode = 'all';
         this.prizesHistoryExpanded = false;
@@ -8492,6 +8419,12 @@ __STRUCTURED_DATA_JSON__
         if (this.activeTab === 'global-radar-view' && typeof this.ensureRadarData === 'function') {
           this.ensureRadarData().then(loaded => {
             if (loaded && this.activeTab === 'global-radar-view') {
+              this.renderCurrentTab(true);
+            }
+          });
+        } else if ((this.activeTab === 'transfer-advisor-view' || this.activeTab === 'transfers-view') && typeof this.ensureTransferSuggestionsData === 'function') {
+          this.ensureTransferSuggestionsData().then(loaded => {
+            if (loaded && (this.activeTab === 'transfer-advisor-view' || this.activeTab === 'transfers-view')) {
               this.renderCurrentTab(true);
             }
           });
@@ -10896,7 +10829,10 @@ __STRUCTURED_DATA_JSON__
                     <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> ${isEn ? `Bottom ${penaltyCountN} Penalties (Total ${totalWeeklyFines.toLocaleString()} ${cur.code} - Weekly Champ ${weeklyChampPrize.toLocaleString()} ${cur.code})` : `ผู้เสียค่าปรับ ${penaltyCountN} อันดับท้าย (รวม ${totalWeeklyFines.toLocaleString()} ${cur.code} - หักจ่ายแชมป์ ${weeklyChampPrize.toLocaleString()} ${cur.code})`}</span>
                     <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">${isEn ? `+${netWeeklyAccumulated.toLocaleString()} ${cur.code} to Prize Pool` : `+${netWeeklyAccumulated.toLocaleString()} ${cur.code} สะสมเข้ากองกลาง`}</span>
                   </div>
-                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-${Math.min(Math.max(penaltyCountN, 1), 5)} gap-2">
+                  ${(() => {
+                    const xlPenaltyCols = ({ 1: 'xl:grid-cols-1', 2: 'xl:grid-cols-2', 3: 'xl:grid-cols-3', 4: 'xl:grid-cols-4', 5: 'xl:grid-cols-5' })[Math.min(Math.max(penaltyCountN, 1), 5)] || 'xl:grid-cols-3';
+                    return `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${xlPenaltyCols} gap-2">`;
+                  })()}
                     ${weeklyPenalties.map((p, i) => {
                       const cardStyle = p.bottomTierIndex === 0 
                         ? 'bg-rose-100/80 dark:bg-rose-950/50 border-rose-300 dark:border-rose-700/60 text-rose-950 dark:text-rose-200' 
@@ -11018,7 +10954,7 @@ __STRUCTURED_DATA_JSON__
           }
 
           const isLargeMatchday = sorted.length > 100;
-          this.matchdayChunkLimit = this.matchdayChunkLimit || 100;
+          this.matchdayChunkLimit = this.matchdayChunkLimit || 40;
 
           let displaySorted = sorted;
           if (searchTerm) {
@@ -11144,7 +11080,7 @@ __STRUCTURED_DATA_JSON__
         if (overallBody) {
           let oHtml = '';
           const isLargeOverall = overallSorted.length > 100;
-          this.overallChunkLimit = this.overallChunkLimit || 100;
+          this.overallChunkLimit = this.overallChunkLimit || 40;
 
           let displayOverall = overallSorted;
           if (searchTerm) {
@@ -14748,6 +14684,20 @@ __STRUCTURED_DATA_JSON__
         if (!tableContainer) return;
 
         const sugg = this.multiData.transfer_suggestions || {};
+        if ((!Array.isArray(sugg.pool) || sugg.pool.length === 0) && typeof this.ensureTransferSuggestionsData === 'function') {
+          if (typeof window !== 'undefined' && window.location && window.location.protocol !== 'file:') {
+            this.ensureTransferSuggestionsData().then(loaded => {
+              if (loaded && (this.activeTab === 'transfer-advisor-view' || this.activeTab === 'transfers-view')) {
+                this.renderCurrentTab(true);
+              }
+            });
+            const loadingMsg = isEn ? 'Loading transfer recommendations & Hybrid xP...' : 'กำลังโหลดข้อมูลแนะนำการย้ายตัวและคะแนนคาดการณ์ Hybrid xP...';
+            const advWrap = document.getElementById('comp-transfers-advisor-wrapper');
+            if (advWrap) advWrap.innerHTML = `<div class="py-6 text-center text-xs text-slate-400 dark:text-slate-500 animate-pulse">${loadingMsg}</div>`;
+            tableContainer.innerHTML = `<div class="py-8 text-center text-xs text-slate-400 dark:text-slate-500 animate-pulse">${loadingMsg}</div>`;
+            return;
+          }
+        }
         const teams = this.getLeaderboardTeams();
         const totalTeams = teams.length;
         const currentGw = this.selectedGW;
@@ -23158,7 +23108,7 @@ __STRUCTURED_DATA_JSON__
         if (amount === 'all') {
           this.matchdayChunkLimit = 999999;
         } else {
-          this.matchdayChunkLimit = (this.matchdayChunkLimit || 100) + Number(amount || 100);
+          this.matchdayChunkLimit = (this.matchdayChunkLimit || 40) + Number(amount || 100);
         }
         this.renderGameweekView();
       }
@@ -23167,7 +23117,7 @@ __STRUCTURED_DATA_JSON__
         if (amount === 'all') {
           this.overallChunkLimit = 999999;
         } else {
-          this.overallChunkLimit = (this.overallChunkLimit || 100) + Number(amount || 100);
+          this.overallChunkLimit = (this.overallChunkLimit || 40) + Number(amount || 100);
         }
         this.renderGameweekView();
       }
@@ -24720,16 +24670,21 @@ __STRUCTURED_DATA_JSON__
         if precomputed_app_js_hash is None or export_app_js_path:
             app_js_code = app_js_raw.replace('__ARCHITECTURE_DIAGRAM_TH__', get_architecture_diagram_html('th', '${this.getAssetPrefix()}', arch_stats))
             app_js_code = app_js_code.replace('__ARCHITECTURE_DIAGRAM_EN__', get_architecture_diagram_html('en', '${this.getAssetPrefix()}', arch_stats))
-            app_js_hash = hashlib.sha256(app_js_code.encode('utf-8')).hexdigest()[:8]
             if export_app_js_path:
-                os.makedirs(os.path.dirname(export_app_js_path), exist_ok=True)
-                with open(export_app_js_path, 'w', encoding='utf-8') as jsf:
-                    jsf.write(app_js_code)
+                app_js_hash = write_minified_dashboard_js(app_js_code, export_app_js_path)
+            else:
+                app_js_hash = hashlib.sha256(app_js_code.encode('utf-8')).hexdigest()[:8]
         else:
             app_js_hash = precomputed_app_js_hash
     else:
         html_shell = html_template
         app_js_hash = precomputed_app_js_hash or '1'
+
+    preload_tier2_tag = (
+        f'  <link rel="preload" as="fetch" href="{asset_prefix}data/leagues/{effective_lid}.json" crossorigin>\n'
+        if is_initial_tier2 and default_league_id else ''
+    )
+    gw_hero_min_h = 'min-h-[124px]' if is_initial_tier2 else 'min-h-[460px] sm:min-h-[480px]'
 
     html = html_shell.replace('__LAST_SYNC__', last_sync_str)
     html = html.replace('__NEXT_DEADLINE_TEXT__', next_deadline_text)
@@ -24742,6 +24697,8 @@ __STRUCTURED_DATA_JSON__
     html = html.replace('__PRIZES_TAB_HIDDEN__', '' if has_initial_prizes else ' hidden')
     html = html.replace('__CUP_TAB_HIDDEN__', '' if has_initial_cup else ' hidden')
     html = html.replace('__ABOUT_TAB_HIDDEN__', '' if has_initial_dev_corner else ' hidden')
+    html = html.replace('__PRELOAD_TIER2_TAG__', preload_tier2_tag)
+    html = html.replace('__GW_HERO_MIN_H__', gw_hero_min_h)
     html = html.replace('__MULTI_DATA_JSON__', multi_data_json_str)
     html = html.replace('__LEAGUES_CONFIG_JSON__', leagues_config_json_str)
     html = html.replace('__SHI62_SPECIAL_DATA_JSON__', shi62_data_json_str or 'null')
@@ -24890,7 +24847,6 @@ def generate_landing_html(multi_data, leagues_config, site_config):
   <link rel="canonical" href="https://www.fplsawadika.com/">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://api.fplsawadika.com" crossorigin>
   <link rel="shortcut icon" href="./favicon.ico?v=2">
   <link rel="icon" type="image/png" sizes="32x32" href="./images/icons/favicon-32x32.png?v=2">
@@ -24959,23 +24915,13 @@ __STRUCTURED_DATA_JSON__
     })();
   </script>
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.5/dist/index.global.js"
-    integrity="sha384-t+qLIxS5zM/KF99/doWY+dxTsavdvgayaZt8A9ntLsUjEkiXzYl5M3Ij8zVFPL9j"
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  ></script>
-  <style type="text/tailwindcss">
-    @theme {
-      --breakpoint-xs: 380px;
-    }
-    @variant dark (&:where(.dark, .dark *));
-  </style>
+  <link rel="stylesheet" href="./assets/styles.css?v=__STYLES_CSS_HASH__">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap">
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 
   <style>
     /* Hallmark · shape: Matchday Broadcast · genre: modern-minimal · theme: custom · redesign: full · job: buy · idea: High-contrast black-white-racing-red broadcast arena with anonymized 6-scene product switcher and MotoGP-style live demo ladder
@@ -24983,35 +24929,6 @@ __STRUCTURED_DATA_JSON__
      * axes: custom/sans-sarabun/racing-red · posture: bold-editorial · contrast: pass · fold: pass · v2.0.0 */
     /* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5 · weakest: S, resolved via dedicated broadcast telemetry strip and horizontal ranked bars instead of repetitive 3-card grids */
     /* Hallmark · dropped "tab-screen-mobile", "hero-edition-line", "features-columns", "fig-leagues-lbl", "fig-price-lbl", "fig-price-val", "fig-refresh-lbl", "fig-teams-lbl", "iso-desc", "iso-preview-link", "iso-preview-text", "iso-secondary-link", "iso-title", "shot-chips-desc", "shot-chips-title", "shot-cup-desc", "shot-cup-title", "shot-prizes-desc", "shot-prizes-title", "step-1", "step-2", "step-3", "setHeroScreen('mobile')", "theme-color" · replaced static Sport scaffold with Matchday Broadcast 6-screen anonymized switcher and telemetry architecture (meta theme-color remains in head) */
-
-    @font-face {
-      font-family: 'Sarabun';
-      src: local('Sarabun'), local('Sarabun Regular'), url('./fonts/Sarabun-Regular.ttf') format('truetype');
-      font-weight: 400;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: 'Sarabun';
-      src: local('Sarabun Medium'), url('./fonts/Sarabun-Medium.ttf') format('truetype');
-      font-weight: 500;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: 'Sarabun';
-      src: local('Sarabun SemiBold'), url('./fonts/Sarabun-SemiBold.ttf') format('truetype');
-      font-weight: 600;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: 'Sarabun';
-      src: local('Sarabun Bold'), url('./fonts/Sarabun-Bold.ttf') format('truetype');
-      font-weight: 700;
-      font-style: normal;
-      font-display: swap;
-    }
 
     :root {
       --font-sans: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -25539,20 +25456,9 @@ __STRUCTURED_DATA_JSON__
       object-fit: cover;
       object-position: center top;
       z-index: 0;
+      opacity: 1;
       pointer-events: none;
       transition: opacity 0.45s ease;
-    }
-    .bm-hero-backdrop-img.is-dark-backdrop {
-      opacity: 0;
-    }
-    .bm-hero-backdrop-img.is-light-backdrop {
-      opacity: 1;
-    }
-    html.dark .bm-hero-backdrop-img.is-dark-backdrop {
-      opacity: 1;
-    }
-    html.dark .bm-hero-backdrop-img.is-light-backdrop {
-      opacity: 0;
     }
       .bm-hero-scrim {
         position: absolute;
@@ -27187,28 +27093,29 @@ __STRUCTURED_DATA_JSON__
   <main id="main-content">
     <!-- Hero Arena -->
     <section class="bm-hero" aria-labelledby="hero-title">
-      <picture>
-        <source media="(max-width: 699px)" srcset="./images/screens/hero-stadium-mobile.jpg">
+      <picture id="hero-backdrop-picture">
+        <source id="hero-backdrop-source" media="(max-width: 699px)" srcset="./images/screens/hero-stadium-mobile-day.webp" type="image/webp">
         <img
-          src="./images/screens/hero-stadium-broadcast.jpg"
-          alt="Night football stadium broadcast atmosphere"
-          class="bm-hero-backdrop-img is-dark-backdrop"
+          id="hero-backdrop-img"
+          src="./images/screens/hero-stadium-broadcast-day.webp"
+          alt="Football stadium broadcast atmosphere"
+          class="bm-hero-backdrop-img"
           width="1376"
           height="768"
+          fetchpriority="high"
           decoding="async"
         >
       </picture>
-      <picture aria-hidden="true">
-        <source media="(max-width: 699px)" srcset="./images/screens/hero-stadium-mobile-day.jpg">
-        <img
-          src="./images/screens/hero-stadium-broadcast-day.jpg"
-          alt=""
-          class="bm-hero-backdrop-img is-light-backdrop"
-          width="1376"
-          height="768"
-          decoding="async"
-        >
-      </picture>
+      <script>
+        (function() {
+          if (document.documentElement.classList.contains('dark')) {
+            var s = document.getElementById('hero-backdrop-source');
+            var i = document.getElementById('hero-backdrop-img');
+            if (s) s.srcset = './images/screens/hero-stadium-mobile.webp';
+            if (i) i.src = './images/screens/hero-stadium-broadcast.webp';
+          }
+        })();
+      </script>
       <div class="bm-hero-scrim" aria-hidden="true"></div>
 
       <div class="bm-hero-bg">
@@ -27331,11 +27238,12 @@ __STRUCTURED_DATA_JSON__
               </div>
               <img
                 id="hero-stage-img"
-                src="./images/screens/demo-live-th.png"
+                src="./images/screens/demo-live-th.webp"
                 alt="Live dashboard preview with fictional club data"
                 class="bm-stage-img"
                 width="1440"
                 height="900"
+                decoding="async"
               >
               <div id="hero-stage-caption" class="bm-stage-caption">
                 <h3 id="stage-caption-title" class="bm-stage-caption-title">เช็คคะแนนสดพร้อมเปลี่ยนตัวอัตโนมัติทันเกม</h3>
@@ -27709,9 +27617,21 @@ __STRUCTURED_DATA_JSON__
         this.renderAll();
       },
 
+      syncHeroBackdrop(isDark) {
+        const srcEl = document.getElementById('hero-backdrop-source');
+        const imgEl = document.getElementById('hero-backdrop-img');
+        if (srcEl) {
+          srcEl.srcset = isDark ? './images/screens/hero-stadium-mobile.webp' : './images/screens/hero-stadium-mobile-day.webp';
+        }
+        if (imgEl) {
+          imgEl.src = isDark ? './images/screens/hero-stadium-broadcast.webp' : './images/screens/hero-stadium-broadcast-day.webp';
+        }
+      },
+
       toggleTheme() {
         const isDark = !document.documentElement.classList.contains('dark');
         document.documentElement.classList.toggle('dark', isDark);
+        this.syncHeroBackdrop(isDark);
         try { localStorage.setItem('fpl_theme', isDark ? 'dark' : 'light'); } catch (_) {}
       },
 
@@ -28324,7 +28244,7 @@ __STRUCTURED_DATA_JSON__
         const desc = document.getElementById('stage-caption-desc');
 
         if (img) {
-          img.src = `./images/screens/demo-${current.key}-${this.lang}.png`;
+          img.src = `./images/screens/demo-${current.key}-${this.lang}.webp`;
           img.alt = current.title;
         }
         if (badge) {
@@ -29077,15 +28997,7 @@ def generate_404_html(site_config, leagues_config):
       document.documentElement.lang = lang;
     })();
   </script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.5/dist/index.global.js"
-    integrity="sha384-t+qLIxS5zM/KF99/doWY+dxTsavdvgayaZt8A9ntLsUjEkiXzYl5M3Ij8zVFPL9j"
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  ></script>
-  <style type="text/tailwindcss">
-    @variant dark (&:where(.dark, .dark *));
-  </style>
+  <link rel="stylesheet" href="./assets/styles.css?v=__STYLES_CSS_HASH__">
   <style>
     body { font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
   </style>
@@ -29219,15 +29131,7 @@ def generate_pay_html(site_config):
       document.documentElement.lang = lang;
     })();
   </script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.5/dist/index.global.js"
-    integrity="sha384-t+qLIxS5zM/KF99/doWY+dxTsavdvgayaZt8A9ntLsUjEkiXzYl5M3Ij8zVFPL9j"
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  ></script>
-  <style type="text/tailwindcss">
-    @variant dark (&:where(.dark, .dark *));
-  </style>
+  <link rel="stylesheet" href="../assets/styles.css?v=__STYLES_CSS_HASH__">
   <script src="../assets/qrcode.min.js"></script>
   <style>
     body {
@@ -30284,6 +30188,68 @@ def generate_pay_html(site_config):
     html = html.replace('__PAY_CFG_JSON__', pay_cfg_json)
     return html
 
+def write_minified_dashboard_js(app_js_code, export_app_js_path):
+    """Minify dashboard-app.js via local esbuild when available, reusing existing output if source SHA matches."""
+    os.makedirs(os.path.dirname(export_app_js_path), exist_ok=True)
+    src_hash = hashlib.sha256(app_js_code.encode('utf-8')).hexdigest()[:16]
+    marker = f"/* src-sha256:{src_hash} */\n"
+    if os.path.exists(export_app_js_path):
+        try:
+            with open(export_app_js_path, 'r', encoding='utf-8') as ef:
+                existing_txt = ef.read()
+            if existing_txt.startswith(marker):
+                return hashlib.sha256(existing_txt.encode('utf-8')).hexdigest()[:8]
+        except OSError:
+            pass
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    local_esbuild = os.path.join(base_dir, 'node_modules', '.bin', 'esbuild')
+    esbuild_bin = local_esbuild if os.path.isfile(local_esbuild) else shutil.which('esbuild')
+    out_code = app_js_code
+    if esbuild_bin:
+        try:
+            res = subprocess.run(
+                [esbuild_bin, '--loader=js', '--minify', '--target=es2020', '--charset=utf8', '--legal-comments=none'],
+                input=app_js_code.encode('utf-8'),
+                capture_output=True,
+                check=True,
+            )
+            minified = res.stdout.decode('utf-8')
+            out_code = marker + minified
+        except Exception as err:
+            print(f"Notice: esbuild minification skipped ({err}); writing unminified dashboard-app.js.")
+    else:
+        print("Notice: esbuild not found; writing unminified dashboard-app.js.")
+
+    with open(export_app_js_path, 'w', encoding='utf-8') as jsf:
+        jsf.write(out_code)
+    return hashlib.sha256(out_code.encode('utf-8')).hexdigest()[:8]
+
+
+def compile_tailwind_css(base_dir):
+    """Compile static Tailwind CSS v4 bundle to assets/styles.css if @tailwindcss/cli is installed."""
+    css_in = os.path.join(base_dir, 'assets', 'tailwind-input.css')
+    css_out = os.path.join(base_dir, 'assets', 'styles.css')
+    local_tw = os.path.join(base_dir, 'node_modules', '.bin', 'tailwindcss')
+    tw_bin = local_tw if os.path.isfile(local_tw) else shutil.which('tailwindcss')
+    if tw_bin and os.path.exists(css_in):
+        try:
+            subprocess.run(
+                [tw_bin, '-i', css_in, '-o', css_out, '--minify'],
+                cwd=base_dir,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+        except subprocess.CalledProcessError as err:
+            print(f"Warning: Tailwind CSS compile failed: {err.stderr}")
+            raise
+    elif not os.path.exists(css_out):
+        raise RuntimeError("Neither tailwindcss binary nor prebuilt assets/styles.css was found.")
+    with open(css_out, 'rb') as cf:
+        return hashlib.sha256(cf.read()).hexdigest()[:8]
+
+
 def main():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     
@@ -30555,14 +30521,13 @@ def main():
 
     def get_pruned_data_for_target(target_lid, inline_full=False):
         allowed = get_tenant_lids(target_lid)
-        is_tier2_target = (not inline_full) and (leagues_config.get(str(target_lid), {}).get("tier", 1) == 2)
         page_pruned = {
             "last_sync": pruned_data["last_sync"],
             "last_sync_iso": pruned_data["last_sync_iso"],
             "sync_status": pruned_data["sync_status"],
             "max_gw": pruned_data["max_gw"],
             "league_order": [lid for lid in pruned_data["league_order"] if str(lid) in allowed],
-            "transfer_suggestions": {} if is_tier2_target else pruned_data["transfer_suggestions"],
+            "transfer_suggestions": {},
             "next_deadline": pruned_data["next_deadline"],
             "events_deadlines": pruned_data["events_deadlines"],
             "leagues": {}
@@ -30576,11 +30541,29 @@ def main():
                 if t.get("entry_id"):
                     unique_entry_ids.add(t.get("entry_id"))
             l_tier = l_dict.get("tier") or leagues_config.get(str(lid), {}).get("tier", 1)
-            if str(lid) == str(target_lid) or inline_full:
+            if (str(lid) == str(target_lid) and l_tier != 2) or inline_full:
                 target_obj = dict(l_dict)
                 target_obj["tier"] = l_tier
                 target_obj["member_count"] = member_count
                 page_pruned["leagues"][lid] = target_obj
+            elif str(lid) == str(target_lid) and l_tier == 2:
+                # Tier 2 Decoupled Skeleton: loads data/leagues/{lid}.json (preloaded) + gw{gw}.json on demand
+                slim_t2_gw_meta = {
+                    gw_k: {**{k: v for k, v in gw_v.items() if k != "results"}, "results": []}
+                    for gw_k, gw_v in l_dict.get("gameweeks", {}).items()
+                    if isinstance(gw_v, dict)
+                }
+                page_pruned["leagues"][lid] = {
+                    "id": l_dict["id"],
+                    "name": l_dict["name"],
+                    "season": l_dict["season"],
+                    "tier": l_tier,
+                    "member_count": member_count,
+                    "teams": [],
+                    "departed_teams": l_dict.get("departed_teams", {}),
+                    "gameweeks": slim_t2_gw_meta,
+                    "squads": {}
+                }
             else:
                 # Decoupled Skeleton: sibling leagues load on demand via data/radar.json or data/leagues/{lid}.json
                 page_pruned["leagues"][lid] = {
@@ -30635,6 +30618,7 @@ def main():
         ('shi62_special.json', shi62_special_data),
         ('bramann_prediction.json', bramann_pred_data),
         ('bramann_challenge.json', bramann_chal_data),
+        ('transfer_suggestions.json', pruned_data.get("transfer_suggestions", {})),
     ]:
         with open(os.path.join(data_root_dir, fname), 'w', encoding='utf-8') as sf:
             json.dump(payload_obj, sf, ensure_ascii=False, separators=(',', ':'))
@@ -30653,7 +30637,7 @@ def main():
     )
     app_js_out_path = os.path.join(base_dir, 'assets', 'dashboard-app.js')
     root_s62, root_bpred, root_bchal = get_special_jsons_for_target(default_root_lid)
-    root_json_str, root_l_cnt, root_t_cnt = get_pruned_data_for_target(default_root_lid, inline_full=True)
+    root_json_str, root_l_cnt, root_t_cnt = get_pruned_data_for_target(default_root_lid, inline_full=False)
     root_cfg_str = get_scoped_config_for_target(default_root_lid)
     preview_html = generate_html(
         multi_data, leagues_config, default_league_id=None,
@@ -30671,19 +30655,19 @@ def main():
     page_404_html = generate_404_html(site_config, leagues_config)
     pay_html = generate_pay_html(site_config)
 
-    with open(os.path.join(base_dir, 'index.html'), 'w', encoding='utf-8') as f:
-        f.write(landing_html)
+    html_targets = [
+        (os.path.join(base_dir, 'index.html'), landing_html),
+        (os.path.join(base_dir, 'preview.html'), preview_html),
+        (os.path.join(base_dir, '404.html'), page_404_html),
+        (os.path.join(base_dir, 'pay', 'index.html'), pay_html),
+    ]
 
-    with open(os.path.join(base_dir, 'preview.html'), 'w', encoding='utf-8') as f:
-        f.write(preview_html)
-
-    with open(os.path.join(base_dir, '404.html'), 'w', encoding='utf-8') as f:
-        f.write(page_404_html)
-
+    # Write pass 1 so Tailwind CLI can scan all updated HTML + minified dashboard-app.js
     pay_dir = os.path.join(base_dir, 'pay')
     os.makedirs(pay_dir, exist_ok=True)
-    with open(os.path.join(pay_dir, 'index.html'), 'w', encoding='utf-8') as f:
-        f.write(pay_html)
+    for out_path, out_html in html_targets:
+        with open(out_path, 'w', encoding='utf-8') as f:
+            f.write(out_html)
 
     # 2. Generate dedicated folder entry points for all configured leagues (scoped by tenant_group)
     for lid in leagues_config.keys():
@@ -30701,8 +30685,16 @@ def main():
             radar_leagues_count=lid_l_cnt, radar_teams_count=lid_t_cnt,
             footer_leagues_count=footer_leagues_total, footer_teams_count=footer_teams_total
         )
-        with open(os.path.join(dir_league, 'index.html'), 'w', encoding='utf-8') as f:
+        out_league_path = os.path.join(dir_league, 'index.html')
+        html_targets.append((out_league_path, html_league))
+        with open(out_league_path, 'w', encoding='utf-8') as f:
             f.write(html_league)
+
+    styles_css_hash = compile_tailwind_css(base_dir)
+    for out_path, out_html in html_targets:
+        stamped_html = out_html.replace('__STYLES_CSS_HASH__', styles_css_hash)
+        with open(out_path, 'w', encoding='utf-8') as f:
+            f.write(stamped_html)
 
     # 3. Auto-cleanup retired numeric league directories from previous seasons
     import shutil

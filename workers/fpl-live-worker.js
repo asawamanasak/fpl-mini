@@ -20,14 +20,14 @@
  *   - Executive Admin Terminal: Protected by Cloudflare Zero Trust & Session Key
  */
 
-import {
-  isRequestAuthenticated,
-  renderDashboardHtml,
-  renderLoginHtml,
-  getSessionSigningSecret,
-  verifyAdminPasskey,
-  signAdminSession,
-} from './admin-dashboard.js';
+// Lazy-load heavy admin dashboard (~442 KB) only on admin routes so public /live, /picks, and /telemetry hot paths stay lean
+let _adminModulePromise = null;
+function loadAdminModule() {
+  if (!_adminModulePromise) {
+    _adminModulePromise = import('./admin-dashboard.js');
+  }
+  return _adminModulePromise;
+}
 
 const SHARED_SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',
@@ -813,7 +813,7 @@ function isAutomatedTelemetryUa(userAgent) {
 
 const RATE_LIMIT_MEM = new Map();
 
-async function allowIpRateLimit(request, namespace, maxPerMin) {
+async function allowIpRateLimit(request, namespace, maxPerMin, ctx = null) {
   try {
     const rawIp =
       request.headers.get('cf-connecting-ip') ||
@@ -839,12 +839,17 @@ async function allowIpRateLimit(request, namespace, maxPerMin) {
     if (count >= maxPerMin) return false;
     const nextCount = count + 1;
     RATE_LIMIT_MEM.set(memKey, nextCount);
-    await caches.default.put(
+    const putPromise = caches.default.put(
       keyReq,
       new Response(JSON.stringify({ count: nextCount }), {
         headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=65' },
       })
-    );
+    ).catch(() => {});
+    if (ctx && ctx.waitUntil) {
+      ctx.waitUntil(putPromise);
+    } else {
+      await putPromise;
+    }
     return true;
   } catch (_) {
     return true;
@@ -1144,7 +1149,7 @@ export default {
           });
         }
 
-        if (!(await allowIpRateLimit(request, 'telemetry', TELEMETRY_RATE_LIMIT_PER_MIN))) {
+        if (!(await allowIpRateLimit(request, 'telemetry', TELEMETRY_RATE_LIMIT_PER_MIN, ctx))) {
           return new Response(JSON.stringify({ ok: true, throttled: true }), {
             status: 202,
             headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8' },
@@ -1292,6 +1297,14 @@ export default {
     // Executive Admin Terminal Routing
     // ==========================================
     if (isAdminDomain) {
+      const {
+        isRequestAuthenticated,
+        renderDashboardHtml,
+        renderLoginHtml,
+        getSessionSigningSecret,
+        verifyAdminPasskey,
+        signAdminSession,
+      } = await loadAdminModule();
       const isHttps = url.protocol === 'https:';
       const secureFlag = isHttps ? '; Secure' : '';
       const adminRedirectTarget = url.hostname === 'admin.fplsawadika.com' ? '/' : '/admin';
@@ -1311,7 +1324,7 @@ export default {
 
       // 2. Login Form Submission Handler
       if (request.method === 'POST' && (path === '/login' || path === '/admin/login')) {
-        if (!(await allowIpRateLimit(request, 'admin-login', LOGIN_RATE_LIMIT_PER_MIN))) {
+        if (!(await allowIpRateLimit(request, 'admin-login', LOGIN_RATE_LIMIT_PER_MIN, ctx))) {
           return new Response(
             renderLoginHtml('พยายามเข้าสู่ระบบบ่อยเกินไป กรุณารอ 1 นาทีแล้วลองใหม่อีกครั้ง'),
             {
@@ -3534,7 +3547,7 @@ export default {
           headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
         });
       }
-      if (!(await allowIpRateLimit(request, 'public_orders', 4))) {
+      if (!(await allowIpRateLimit(request, 'public_orders', 4, ctx))) {
         return new Response(JSON.stringify({ success: false, error: 'Too many requests. Please wait a minute.' }), {
           status: 429,
           headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
@@ -3846,7 +3859,7 @@ export default {
           headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
         });
       }
-      if (!(await allowIpRateLimit(request, 'public_order_status', 60))) {
+      if (!(await allowIpRateLimit(request, 'public_order_status', 60, ctx))) {
         return new Response(JSON.stringify({ success: false, error: 'Too many requests' }), {
           status: 429,
           headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
@@ -3976,7 +3989,7 @@ export default {
           headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
         });
       }
-      if (!(await allowIpRateLimit(request, 'public_order_slip', 10))) {
+      if (!(await allowIpRateLimit(request, 'public_order_slip', 10, ctx))) {
         return new Response(JSON.stringify({ success: false, error: 'Too many uploads. Please wait a minute.' }), {
           status: 429,
           headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
@@ -4338,8 +4351,7 @@ export default {
           ctx.waitUntil(cache.put(standingsCacheKey, standingsResp.clone()));
         }
 
-        scheduleWorkerHealthMetric(env, ctx, false);
-        scheduleWorkerCacheMetric(env, ctx, false);
+        scheduleWorkerCacheMetric(env, ctx, false, true);
         return standingsResp;
       } catch (err) {
         scheduleWorkerHealthMetric(env, ctx, true, 'upstream_5xx');
@@ -4511,8 +4523,7 @@ export default {
           ctx.waitUntil(cache.put(cacheKey, picksResponse.clone()));
         }
 
-        scheduleWorkerHealthMetric(env, ctx, false);
-        scheduleWorkerCacheMetric(env, ctx, false);
+        scheduleWorkerCacheMetric(env, ctx, false, true);
         return picksResponse;
       }
       // 3. Fetch Fixtures Only endpoint (/fixtures?event={gw})
@@ -4570,8 +4581,7 @@ export default {
         } else {
           ctx.waitUntil(cache.put(cacheKey, response.clone()));
         }
-        scheduleWorkerHealthMetric(env, ctx, false);
-        scheduleWorkerCacheMetric(env, ctx, false);
+        scheduleWorkerCacheMetric(env, ctx, false, true);
         return response;
       }
 
@@ -4682,8 +4692,7 @@ export default {
         } else {
           ctx.waitUntil(cache.put(cacheKey, response.clone()));
         }
-        scheduleWorkerHealthMetric(env, ctx, false);
-        scheduleWorkerCacheMetric(env, ctx, false);
+        scheduleWorkerCacheMetric(env, ctx, false, true);
       } else {
         scheduleWorkerHealthMetric(env, ctx, true, 'upstream_fixtures');
       }

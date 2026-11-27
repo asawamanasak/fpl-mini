@@ -36,7 +36,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0
+          fetch-depth: 2
 
       - name: Setup Python
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
@@ -49,11 +49,35 @@ jobs:
         run: |
           python3 sync_live_fpl.py
 
+      - name: Check If Sync Changed Data
+        id: sync_check
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ -n "$(git status --porcelain -- multi_fpl_data.json data/players.json data/leagues/)" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Live data or manual dispatch triggered rebuild & Pages deploy."
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No live score changes detected; skipping Node setup, rebuild, commit, and Pages deploy."
+          fi
+
+      - name: Setup Node.js
+        if: steps.sync_check.outputs.changed == 'true'
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Build Tooling
+        if: steps.sync_check.outputs.changed == 'true'
+        run: npm ci
+
       - name: Regenerate Dashboard Presentation
+        if: steps.sync_check.outputs.changed == 'true'
         run: |
           python3 update_preview.py
 
       - name: Commit and Push Updates
+        if: steps.sync_check.outputs.changed == 'true'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -86,6 +110,7 @@ jobs:
           fi
 
       - name: Stage Public Pages Artifact
+        if: steps.sync_check.outputs.changed == 'true'
         run: |
           rm -rf _site
           mkdir -p _site
@@ -113,9 +138,11 @@ jobs:
           fi
 
       - name: Setup Pages
+        if: steps.sync_check.outputs.changed == 'true'
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 
       - name: Upload Pages artifact
+        if: steps.sync_check.outputs.changed == 'true'
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: '_site'
@@ -125,24 +152,25 @@ jobs:
       # ก่อนยอมแพ้ — ถ้าล้มทั้ง 3 ครั้งจะยังแจ้ง Error ตามเดิม
       - name: Deploy to GitHub Pages
         id: deployment
+        if: steps.sync_check.outputs.changed == 'true'
         continue-on-error: true
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
 
       - name: Wait before Deploy Retry 1 (30s)
-        if: steps.deployment.outcome == 'failure'
+        if: steps.sync_check.outputs.changed == 'true' && steps.deployment.outcome == 'failure'
         run: sleep 30
 
       - name: Deploy to GitHub Pages (Retry 1)
         id: deployment_retry1
-        if: steps.deployment.outcome == 'failure'
+        if: steps.sync_check.outputs.changed == 'true' && steps.deployment.outcome == 'failure'
         continue-on-error: true
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
 
       - name: Wait before Deploy Retry 2 (60s)
-        if: steps.deployment.outcome == 'failure' && steps.deployment_retry1.outcome == 'failure'
+        if: steps.sync_check.outputs.changed == 'true' && steps.deployment.outcome == 'failure' && steps.deployment_retry1.outcome == 'failure'
         run: sleep 60
 
       - name: Deploy to GitHub Pages (Retry 2, final)
         id: deployment_retry2
-        if: steps.deployment.outcome == 'failure' && steps.deployment_retry1.outcome == 'failure'
+        if: steps.sync_check.outputs.changed == 'true' && steps.deployment.outcome == 'failure' && steps.deployment_retry1.outcome == 'failure'
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

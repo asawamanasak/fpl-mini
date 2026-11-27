@@ -1,0 +1,17 @@
+@import "tailwindcss";
+@source "../index.html";
+@source "../404.html";
+@source "../pay/index.html";
+@source "../preview.html";
+@source "../40700/index.html";
+@source "../139836/index.html";
+@source "../187827/index.html";
+@source "../5349/index.html";
+@source "../assets/dashboard-app.js";
+@source inline("xl:grid-cols-{1,2,3,4,5}");
+
+@theme {
+  --breakpoint-xs: 380px;
+}
+
+@variant dark (&:where(.dark, .dark *));

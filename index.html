@@ -11,7 +11,6 @@
   <link rel="canonical" href="https://www.fplsawadika.com/">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://api.fplsawadika.com" crossorigin>
   <link rel="shortcut icon" href="./favicon.ico?v=2">
   <link rel="icon" type="image/png" sizes="32x32" href="./images/icons/favicon-32x32.png?v=2">
@@ -121,23 +120,13 @@
     })();
   </script>
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.5/dist/index.global.js"
-    integrity="sha384-t+qLIxS5zM/KF99/doWY+dxTsavdvgayaZt8A9ntLsUjEkiXzYl5M3Ij8zVFPL9j"
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  ></script>
-  <style type="text/tailwindcss">
-    @theme {
-      --breakpoint-xs: 380px;
-    }
-    @variant dark (&:where(.dark, .dark *));
-  </style>
+  <link rel="stylesheet" href="./assets/styles.css?v=f6aa5847">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap">
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 
   <style>
     /* Hallmark · shape: Matchday Broadcast · genre: modern-minimal · theme: custom · redesign: full · job: buy · idea: High-contrast black-white-racing-red broadcast arena with anonymized 6-scene product switcher and MotoGP-style live demo ladder
@@ -145,35 +134,6 @@
      * axes: custom/sans-sarabun/racing-red · posture: bold-editorial · contrast: pass · fold: pass · v2.0.0 */
     /* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5 · weakest: S, resolved via dedicated broadcast telemetry strip and horizontal ranked bars instead of repetitive 3-card grids */
     /* Hallmark · dropped "tab-screen-mobile", "hero-edition-line", "features-columns", "fig-leagues-lbl", "fig-price-lbl", "fig-price-val", "fig-refresh-lbl", "fig-teams-lbl", "iso-desc", "iso-preview-link", "iso-preview-text", "iso-secondary-link", "iso-title", "shot-chips-desc", "shot-chips-title", "shot-cup-desc", "shot-cup-title", "shot-prizes-desc", "shot-prizes-title", "step-1", "step-2", "step-3", "setHeroScreen('mobile')", "theme-color" · replaced static Sport scaffold with Matchday Broadcast 6-screen anonymized switcher and telemetry architecture (meta theme-color remains in head) */
-
-    @font-face {
-      font-family: 'Sarabun';
-      src: local('Sarabun'), local('Sarabun Regular'), url('./fonts/Sarabun-Regular.ttf') format('truetype');
-      font-weight: 400;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: 'Sarabun';
-      src: local('Sarabun Medium'), url('./fonts/Sarabun-Medium.ttf') format('truetype');
-      font-weight: 500;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: 'Sarabun';
-      src: local('Sarabun SemiBold'), url('./fonts/Sarabun-SemiBold.ttf') format('truetype');
-      font-weight: 600;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: 'Sarabun';
-      src: local('Sarabun Bold'), url('./fonts/Sarabun-Bold.ttf') format('truetype');
-      font-weight: 700;
-      font-style: normal;
-      font-display: swap;
-    }
 
     :root {
       --font-sans: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -701,20 +661,9 @@
       object-fit: cover;
       object-position: center top;
       z-index: 0;
+      opacity: 1;
       pointer-events: none;
       transition: opacity 0.45s ease;
-    }
-    .bm-hero-backdrop-img.is-dark-backdrop {
-      opacity: 0;
-    }
-    .bm-hero-backdrop-img.is-light-backdrop {
-      opacity: 1;
-    }
-    html.dark .bm-hero-backdrop-img.is-dark-backdrop {
-      opacity: 1;
-    }
-    html.dark .bm-hero-backdrop-img.is-light-backdrop {
-      opacity: 0;
     }
       .bm-hero-scrim {
         position: absolute;
@@ -2349,28 +2298,29 @@
   <main id="main-content">
     <!-- Hero Arena -->
     <section class="bm-hero" aria-labelledby="hero-title">
-      <picture>
-        <source media="(max-width: 699px)" srcset="./images/screens/hero-stadium-mobile.jpg">
+      <picture id="hero-backdrop-picture">
+        <source id="hero-backdrop-source" media="(max-width: 699px)" srcset="./images/screens/hero-stadium-mobile-day.webp" type="image/webp">
         <img
-          src="./images/screens/hero-stadium-broadcast.jpg"
-          alt="Night football stadium broadcast atmosphere"
-          class="bm-hero-backdrop-img is-dark-backdrop"
+          id="hero-backdrop-img"
+          src="./images/screens/hero-stadium-broadcast-day.webp"
+          alt="Football stadium broadcast atmosphere"
+          class="bm-hero-backdrop-img"
           width="1376"
           height="768"
+          fetchpriority="high"
           decoding="async"
         >
       </picture>
-      <picture aria-hidden="true">
-        <source media="(max-width: 699px)" srcset="./images/screens/hero-stadium-mobile-day.jpg">
-        <img
-          src="./images/screens/hero-stadium-broadcast-day.jpg"
-          alt=""
-          class="bm-hero-backdrop-img is-light-backdrop"
-          width="1376"
-          height="768"
-          decoding="async"
-        >
-      </picture>
+      <script>
+        (function() {
+          if (document.documentElement.classList.contains('dark')) {
+            var s = document.getElementById('hero-backdrop-source');
+            var i = document.getElementById('hero-backdrop-img');
+            if (s) s.srcset = './images/screens/hero-stadium-mobile.webp';
+            if (i) i.src = './images/screens/hero-stadium-broadcast.webp';
+          }
+        })();
+      </script>
       <div class="bm-hero-scrim" aria-hidden="true"></div>
 
       <div class="bm-hero-bg">
@@ -2493,11 +2443,12 @@
               </div>
               <img
                 id="hero-stage-img"
-                src="./images/screens/demo-live-th.png"
+                src="./images/screens/demo-live-th.webp"
                 alt="Live dashboard preview with fictional club data"
                 class="bm-stage-img"
                 width="1440"
                 height="900"
+                decoding="async"
               >
               <div id="hero-stage-caption" class="bm-stage-caption">
                 <h3 id="stage-caption-title" class="bm-stage-caption-title">เช็คคะแนนสดพร้อมเปลี่ยนตัวอัตโนมัติทันเกม</h3>
@@ -2871,9 +2822,21 @@
         this.renderAll();
       },
 
+      syncHeroBackdrop(isDark) {
+        const srcEl = document.getElementById('hero-backdrop-source');
+        const imgEl = document.getElementById('hero-backdrop-img');
+        if (srcEl) {
+          srcEl.srcset = isDark ? './images/screens/hero-stadium-mobile.webp' : './images/screens/hero-stadium-mobile-day.webp';
+        }
+        if (imgEl) {
+          imgEl.src = isDark ? './images/screens/hero-stadium-broadcast.webp' : './images/screens/hero-stadium-broadcast-day.webp';
+        }
+      },
+
       toggleTheme() {
         const isDark = !document.documentElement.classList.contains('dark');
         document.documentElement.classList.toggle('dark', isDark);
+        this.syncHeroBackdrop(isDark);
         try { localStorage.setItem('fpl_theme', isDark ? 'dark' : 'light'); } catch (_) {}
       },
 
@@ -3486,7 +3449,7 @@
         const desc = document.getElementById('stage-caption-desc');
 
         if (img) {
-          img.src = `./images/screens/demo-${current.key}-${this.lang}.png`;
+          img.src = `./images/screens/demo-${current.key}-${this.lang}.webp`;
           img.alt = current.title;
         }
         if (badge) {

@@ -3,6 +3,17 @@ main = "fpl-live-worker.js"
 compatibility_date = "2026-10-01"
 workers_dev = true
 
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+
+[observability.traces]
+enabled = true
+head_sampling_rate = 0.05
+
 [vars]
 ENVIRONMENT = "production"
 GITHUB_BRANCH = "main"
@@ -28,6 +39,17 @@ database_id = "b37459ac-6632-4db5-8afa-822b76b26184"
 [env.staging]
 name = "fpl-live-relay-staging"
 workers_dev = true
+
+[env.staging.observability]
+enabled = true
+
+[env.staging.observability.logs]
+enabled = true
+head_sampling_rate = 1
+
+[env.staging.observability.traces]
+enabled = true
+head_sampling_rate = 0.05
 
 [env.staging.vars]
 ENVIRONMENT = "staging"

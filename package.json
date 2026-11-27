@@ -1,0 +1,12 @@
+{
+  "name": "fplsawadika",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i ./assets/tailwind-input.css -o ./assets/styles.css --minify",
+    "build": "python3 update_preview.py"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.5",
+    "esbuild": "0.25.1"
+  }
+}
