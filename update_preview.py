@@ -4961,11 +4961,23 @@ __STRUCTURED_DATA_JSON__
         const cfg = this.config || {};
         const isEn = (this.currentLang === 'en');
         if (Array.isArray(cfg.monthly_schedule) && cfg.monthly_schedule.length > 0) {
-          return cfg.monthly_schedule.map((m, idx) => ({
-            ...m,
-            id: m.id !== undefined ? m.id : (m.month !== undefined && typeof m.month === 'number' ? m.month : idx + 1),
-            month: String((isEn && m.month_en) ? m.month_en : (m.month || m.name || `Month ${idx + 1}`)),
-          }));
+          const thMonthToEn = {
+            'สิงหาคม': 'Aug', 'กันยายน': 'Sep', 'ตุลาคม': 'Oct', 'พฤศจิกายน': 'Nov', 'ธันวาคม': 'Dec',
+            'มกราคม': 'Jan', 'กุมภาพันธ์': 'Feb', 'มีนาคม': 'Mar', 'เมษายน': 'Apr', 'พฤษภาคม': 'May'
+          };
+          return cfg.monthly_schedule.map((m, idx) => {
+            let monthName = String((isEn && m.month_en) ? m.month_en : (m.month || m.name || `Month ${idx + 1}`));
+            if (isEn && !m.month_en) {
+              Object.entries(thMonthToEn).forEach(([th, en]) => {
+                if (monthName.includes(th)) monthName = monthName.replace(th, en);
+              });
+            }
+            return {
+              ...m,
+              id: m.id !== undefined ? m.id : (m.month !== undefined && typeof m.month === 'number' ? m.month : idx + 1),
+              month: monthName,
+            };
+          });
         }
         const feat = cfg.features || {};
         const cur = this.getLeagueCurrency();
@@ -5498,10 +5510,6 @@ __STRUCTURED_DATA_JSON__
           this.multiData.sync_status = 'ok';
         }
         const formattedSyncStr = this.formatSyncDate(liveIsoStr) || liveSyncStrTh;
-        const lastSyncEl = document.getElementById('header-last-sync');
-        if (lastSyncEl) {
-          lastSyncEl.innerText = formattedSyncStr;
-        }
         const lastSyncIcon = document.getElementById('header-last-sync-icon');
         if (lastSyncIcon) {
           const isEn = (this.currentLang === 'en');
@@ -5951,32 +5959,41 @@ __STRUCTURED_DATA_JSON__
         }
       }
 
-      computeClientProvisionalBonus(elements) {
+      computeClientProvisionalBonus(elements, fixtures = null) {
         const fixturePlayers = {};
         const fixtureMaxMins = {};
         const fixtureHasOfficialBonus = {};
+
+        if (Array.isArray(fixtures)) {
+          fixtures.forEach(f => {
+            if (f && f.id !== undefined && f.id !== null) {
+              fixtureMaxMins[f.id] = Math.max(fixtureMaxMins[f.id] || 0, Number(f.minutes) || 0);
+            }
+          });
+        }
 
         elements.forEach(el => {
           if (!el || !el.stats) return;
           // If the upgraded Worker already computed provisional_bonus, skip client re-computation
           if (el.stats.provisional_bonus !== undefined) return;
-          const mins = Number(el.stats.minutes) || 0;
           const bps = Number(el.stats.bps) || 0;
-          const officialBonus = Number(el.stats.bonus) || 0;
           const explainArr = Array.isArray(el.explain) ? el.explain : [];
+          const isSingleFixture = explainArr.length === 1;
 
           explainArr.forEach(ex => {
             if (!ex || ex.fixture === undefined || ex.fixture === null) return;
             const fid = ex.fixture;
+            const exStats = Array.isArray(ex.stats) ? ex.stats : [];
+            const minStat = exStats.find(s => s && s.identifier === 'minutes');
+            const mins = minStat ? (Number(minStat.value) || 0) : (isSingleFixture ? (Number(el.stats.minutes) || 0) : 0);
             if (mins > (fixtureMaxMins[fid] || 0)) {
               fixtureMaxMins[fid] = mins;
             }
-            const exStats = Array.isArray(ex.stats) ? ex.stats : [];
-            const hasExBonus = officialBonus > 0 || exStats.some(s => s && s.identifier === 'bonus' && Number(s.points) > 0);
+            const hasExBonus = exStats.some(s => s && s.identifier === 'bonus' && Number(s.points) > 0);
             if (hasExBonus) {
               fixtureHasOfficialBonus[fid] = true;
             }
-            if (mins > 0 && bps > 0) {
+            if (isSingleFixture && mins > 0 && bps > 0) {
               if (!fixturePlayers[fid]) fixturePlayers[fid] = [];
               fixturePlayers[fid].push({ id: el.id, bps: bps });
             }
@@ -6048,7 +6065,7 @@ __STRUCTURED_DATA_JSON__
         });
 
         // 2. Compute Provisional Bonus (BPS -> +3, +2, +1) if not already enriched by Worker
-        const clientProvBonusMap = this.computeClientProvisionalBonus(liveJson.elements);
+        const clientProvBonusMap = this.computeClientProvisionalBonus(liveJson.elements, liveJson.fixtures);
 
         // 3. Build live stats lookup map by player element ID
         const liveMap = {};
@@ -6713,10 +6730,6 @@ __STRUCTURED_DATA_JSON__
         const benchmarkClear = document.getElementById('benchmark-clear-filter');
         if (benchmarkClear) {
           benchmarkClear.innerText = isEn ? 'Clear Filter ✕' : 'ล้างตัวกรอง ✕';
-        }
-        const radarGuideTitle = document.getElementById('radar-guide-title');
-        if (radarGuideTitle) {
-          radarGuideTitle.innerText = isEn ? 'Consistency Tiers Criteria' : 'เกณฑ์การจัดอันดับความสม่ำเสมอ';
         }
         const radarMatrixTitle = document.getElementById('radar-matrix-title');
         if (radarMatrixTitle) {
@@ -7431,6 +7444,18 @@ __STRUCTURED_DATA_JSON__
           is_captain: isCap,
           is_vice: isVice,
           provisional_bonus: provBonus,
+          bps: stat ? (Number(stat.bps) || 0) : 0,
+          minutes: stat ? (Number(stat.minutes) || 0) : 0,
+          goals_scored: stat ? (Number(stat.goals_scored) || 0) : 0,
+          assists: stat ? (Number(stat.assists) || 0) : 0,
+          clean_sheets: stat ? (Number(stat.clean_sheets) || 0) : 0,
+          goals_conceded: stat ? (Number(stat.goals_conceded) || 0) : 0,
+          own_goals: stat ? (Number(stat.own_goals) || 0) : 0,
+          penalties_saved: stat ? (Number(stat.penalties_saved) || 0) : 0,
+          penalties_missed: stat ? (Number(stat.penalties_missed) || 0) : 0,
+          yellow_cards: stat ? (Number(stat.yellow_cards) || 0) : 0,
+          red_cards: stat ? (Number(stat.red_cards) || 0) : 0,
+          saves: stat ? (Number(stat.saves) || 0) : 0,
           is_sub: Boolean(opts.isSub),
           is_sub_out: Boolean(opts.isSubOut),
           not_played_yet: notPlayedYet
@@ -7857,7 +7882,6 @@ __STRUCTURED_DATA_JSON__
         }
 
         this._switchingTargetId = lidStr;
-        const selectorContainer = (typeof document !== 'undefined') ? document.getElementById('league-selector-container') : null;
 
         // Decoupled loading: Check if target league needs squads/data fetched
         const targetLeague = this.multiData.leagues[lidStr];
@@ -7868,10 +7892,6 @@ __STRUCTURED_DATA_JSON__
 
         if (!hasData) {
           this._isLoadingLeague = lidStr;
-          if (selectorContainer) {
-            selectorContainer.classList.add('opacity-60', 'pointer-events-none');
-            selectorContainer.setAttribute('aria-busy', 'true');
-          }
           try {
             const [fetched] = await Promise.all([
               this.fetchLeagueData(lidStr, 2),
@@ -7899,10 +7919,6 @@ __STRUCTURED_DATA_JSON__
           } finally {
             if (this._isLoadingLeague === lidStr) {
               this._isLoadingLeague = null;
-            }
-            if (selectorContainer && this._switchingTargetId === lidStr) {
-              selectorContainer.classList.remove('opacity-60', 'pointer-events-none');
-              selectorContainer.removeAttribute('aria-busy');
             }
           }
         } else {
@@ -8108,7 +8124,6 @@ __STRUCTURED_DATA_JSON__
         const idBadge = document.getElementById('header-league-id-badge');
         const seasonEl = document.getElementById('header-season');
         const memberEl = document.getElementById('header-member-count');
-        const lastSyncEl = document.getElementById('header-last-sync');
         const cupTabBtn = document.getElementById('tab-btn-cup');
 
         if (nameEl) nameEl.innerText = this.data.name;
@@ -8122,11 +8137,6 @@ __STRUCTURED_DATA_JSON__
         if (idBadge) idBadge.innerText = `LEAGUE ${this.activeLeagueId}`;
         if (seasonEl) seasonEl.innerText = isEn ? `Season ${this.data.season || '2026/27'}` : `ฤดูกาล ${this.data.season || '2026/27'}`;
         if (memberEl) memberEl.innerText = isEn ? `${(this.data.teams || []).length} Members` : `${(this.data.teams || []).length} ทีมสมาชิก`;
-        if (lastSyncEl) {
-          lastSyncEl.innerText = (this.multiData && this.multiData.last_sync_iso)
-            ? this.formatSyncDate(this.multiData.last_sync_iso)
-            : (this.multiData.last_sync || '');
-        }
 
         // Check if latest gameweek is currently live, finished, or upcoming (pre-match)
         const maxGW = Number(this.multiData.max_gw) || 2;
@@ -8138,7 +8148,6 @@ __STRUCTURED_DATA_JSON__
         const gwStatusBox = document.getElementById('api-status-text');
         const gwStatusDot = document.getElementById('header-gw-status-dot');
         const lastSyncIcon = document.getElementById('header-last-sync-icon');
-        const lastSyncBadge = document.getElementById('header-last-sync-badge');
 
         if (gwStatusEl) {
           if (isCurFinished) {
@@ -10591,7 +10600,6 @@ __STRUCTURED_DATA_JSON__
             this.liveNotesCache[cacheKey] = currentNoteObj;
           }
           const currentLiveNote = currentNoteObj.text;
-          const currentPersonaLabel = currentNoteObj.personaLabel;
           const leagueContextPill = `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 font-display truncate max-w-[180px] sm:max-w-[260px]">${this.escapeHtml(this.data.name || '')} · GW ${this.selectedGW}</span>`;
 
           if (!isStarted) {
@@ -10662,8 +10670,7 @@ __STRUCTURED_DATA_JSON__
 
                 <!-- Highlight Note (4-Persona Commentary, Screenshot-Ready) -->
                 <div class="mt-3 pt-3 border-t border-indigo-100/80 dark:border-slate-700/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600 dark:text-slate-400">
-                  <div class="min-w-0 pr-1 flex items-start gap-2 flex-col sm:flex-row sm:items-center">
-                    <span id="current-gw-persona-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/15 text-indigo-800 dark:text-indigo-300 border border-indigo-400/40 shrink-0 font-display"><span id="current-gw-persona-label">${this.escapeHtml(currentPersonaLabel)}</span></span>
+                  <div class="min-w-0 pr-1">
                     <span id="current-gw-note-text" class="font-medium text-slate-700 dark:text-slate-300 leading-relaxed break-words">${currentLiveNote}</span>
                   </div>
                   <div class="flex items-center justify-end flex-shrink-0 self-end sm:self-center">
@@ -10894,11 +10901,7 @@ __STRUCTURED_DATA_JSON__
 
                 <!-- Highlight Note (4-Persona Commentary, Screenshot-Ready) -->
                 <div class="mt-3.5 pt-3 border-t ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/70 dark:border-slate-700/60'} flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600 dark:text-slate-400">
-                  <div class="min-w-0 pr-1 flex items-start gap-2 flex-col sm:flex-row sm:items-center">
-                    <span id="current-gw-persona-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${!isFinished ? 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-400/40' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300/70 dark:border-slate-700'} shrink-0 font-display">
-                      ${!isFinished ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>' : ''}
-                      <span id="current-gw-persona-label">${this.escapeHtml(currentPersonaLabel)}</span>
-                    </span>
+                  <div class="min-w-0 pr-1">
                     <span id="current-gw-note-text" class="font-medium text-slate-700 dark:text-slate-300 leading-relaxed break-words">${currentLiveNote}</span>
                   </div>
                   <div class="flex items-center justify-end flex-shrink-0 self-end sm:self-center">
@@ -13998,7 +14001,7 @@ __STRUCTURED_DATA_JSON__
         const pCounts = this.ensureLeaguePlayerCounts(teams, currentGw);
 
         // 1. Important Players (> 70%)
-        const importantSection = document.getElementById('transfers-important-section') || document.getElementById('competition-important-section');
+        const importantSection = document.getElementById('transfers-important-section');
         if (importantSection) {
           const importantList = Object.values(pCounts)
             .filter(p => (p.count / totalTeams) > 0.70)
@@ -14100,7 +14103,7 @@ __STRUCTURED_DATA_JSON__
       renderCompetitionDiffPlayersOnly() {
         const isEn = (this.currentLang === 'en');
         const defaultShirtUrl = this.getDefaultShirtUrl();
-        const diffSection = document.getElementById('transfers-differential-section') || document.getElementById('competition-differential-section');
+        const diffSection = document.getElementById('transfers-differential-section');
         if (!diffSection) return;
 
         const pCounts = this.cachedPlayerCounts || {};
@@ -14534,7 +14537,7 @@ __STRUCTURED_DATA_JSON__
 
       renderCompetitionTransfers(teams, totalTeams, currentGw) {
         const isEn = (this.currentLang === 'en');
-        const container = document.getElementById('transfers-suggestions-section') || document.getElementById('competition-transfers-section');
+        const container = document.getElementById('transfers-suggestions-section');
         if (!container) return;
 
         const sugg = this.multiData.transfer_suggestions || {};
@@ -21097,6 +21100,23 @@ __STRUCTURED_DATA_JSON__
             : { base: 'https://api.fplsawadika.com', isOverride: false };
           this._liveMapsByGw = this._liveMapsByGw || {};
           if (!this._liveMapsByGw[gwNum] || Object.keys(this._liveMapsByGw[gwNum]).length === 0) {
+            const buildLiveStatEntry = (st) => ({
+              total_points: Number(st.total_points) || 0,
+              provisional_bonus: Number(st.provisional_bonus) || 0,
+              bps: Number(st.bps) || 0,
+              minutes: Number(st.minutes) || 0,
+              goals_scored: Number(st.goals_scored) || 0,
+              assists: Number(st.assists) || 0,
+              clean_sheets: Number(st.clean_sheets) || 0,
+              goals_conceded: Number(st.goals_conceded) || 0,
+              own_goals: Number(st.own_goals) || 0,
+              penalties_saved: Number(st.penalties_saved) || 0,
+              penalties_missed: Number(st.penalties_missed) || 0,
+              yellow_cards: Number(st.yellow_cards) || 0,
+              red_cards: Number(st.red_cards) || 0,
+              saves: Number(st.saves) || 0,
+              played: Boolean(st.played || Number(st.minutes) > 0)
+            });
             try {
               const liveResp = await fetch(`${modalApiCfg.base}/live?event=${gwNum}&slim=1`);
               if (liveResp.ok) {
@@ -21105,12 +21125,7 @@ __STRUCTURED_DATA_JSON__
                   const lMap = {};
                   liveJson.elements.forEach(el => {
                     if (el && el.id && el.stats) {
-                      lMap[el.id] = {
-                        total_points: Number(el.stats.total_points) || 0,
-                        provisional_bonus: Number(el.stats.provisional_bonus) || 0,
-                        bps: Number(el.stats.bps) || 0,
-                        played: Boolean(el.stats.played)
-                      };
+                      lMap[el.id] = buildLiveStatEntry(el.stats);
                     }
                   });
                   this._liveMapsByGw[gwNum] = lMap;
@@ -21126,12 +21141,7 @@ __STRUCTURED_DATA_JSON__
                     const lMap = {};
                     fbLiveJson.elements.forEach(el => {
                       if (el && el.id && el.stats) {
-                        lMap[el.id] = {
-                          total_points: Number(el.stats.total_points) || 0,
-                          provisional_bonus: Number(el.stats.provisional_bonus) || 0,
-                          bps: Number(el.stats.bps) || 0,
-                          played: Boolean(el.stats.played)
-                        };
+                        lMap[el.id] = buildLiveStatEntry(el.stats);
                       }
                     });
                     this._liveMapsByGw[gwNum] = lMap;
@@ -21200,7 +21210,8 @@ __STRUCTURED_DATA_JSON__
               if (sIdx !== -1 && bIdx !== -1) {
                 const sPick = actualStartersPicks[sIdx];
                 const bPick = actualBenchPicks[bIdx];
-                actualStartersPicks[sIdx] = { ...bPick, multiplier: sPick.multiplier, is_captain: sPick.is_captain, is_vice_captain: sPick.is_vice_captain, is_sub: true };
+                const subMult = (bPick.multiplier !== undefined && bPick.multiplier !== null && Number(bPick.multiplier) > 0) ? Number(bPick.multiplier) : 1;
+                actualStartersPicks[sIdx] = { ...bPick, multiplier: subMult, is_captain: Boolean(bPick.is_captain), is_vice_captain: Boolean(bPick.is_vice_captain), is_sub: true };
                 actualBenchPicks[bIdx] = { ...sPick, multiplier: 0, is_captain: false, is_vice_captain: false, is_sub_out: true };
               }
             }
@@ -22118,13 +22129,6 @@ __STRUCTURED_DATA_JSON__
         if (noteEl) {
           noteEl.innerHTML = noteObj.text;
         }
-        const personaLabelEl = document.getElementById('current-gw-persona-label');
-        if (personaLabelEl) {
-          personaLabelEl.textContent = noteObj.personaLabel;
-        } else {
-          const personaEl = document.getElementById('current-gw-persona-badge');
-          if (personaEl) personaEl.textContent = noteObj.personaLabel;
-        }
       }
 
       renderMyTeamStrip(sorted, overallSorted, gwData, isStarted, isFinished) {
@@ -22396,7 +22400,7 @@ __STRUCTURED_DATA_JSON__
             if (p.is_captain) playerImpact[pid].captainsCount += 1;
 
             if (isLive && provB >= 3) {
-              if (!provBonusPlayers[pid]) provBonusPlayers[pid] = { name: p.name, bonus: provB, owners: [] };
+              if (!provBonusPlayers[pid]) provBonusPlayers[pid] = { id: pid, name: p.name, bonus: provB, owners: [] };
               provBonusPlayers[pid].owners.push({
                 entry_id: t.entry_id,
                 team_name: t.team_name,
@@ -22460,7 +22464,7 @@ __STRUCTURED_DATA_JSON__
           if (provList[0]) {
             const pb = provList[0];
             events.push({
-              id: `prov_bps_${pb.name}`,
+              id: `prov_bps_${pb.id}`,
               tone: 'emerald',
               badge: isEn ? 'BPS +3 WATCH' : 'ลุ้นโบนัส +3',
               headline: `${pb.name} (+3 BPS)`,
@@ -23335,6 +23339,18 @@ __STRUCTURED_DATA_JSON__
           }
 
           const teams = this.data.teams || [];
+          const isTier2 = Boolean((this.data && this.data.tier === 2) || (this.config && this.config.tier === 2));
+          let hasCompleteGwHistory = !isTier2;
+          if (hasCompleteGwHistory) {
+            for (let g = 1; g <= maxGW; g++) {
+              const gObj = this.data.gameweeks ? this.data.gameweeks[String(g)] : null;
+              const gStartedOrFinished = Boolean(gObj && (gObj.is_finished || gObj.is_started));
+              if (gStartedOrFinished && (!Array.isArray(gObj.results) || gObj.results.length === 0)) {
+                hasCompleteGwHistory = false;
+                break;
+              }
+            }
+          }
           const teamStats = teams.map(t => {
             const eid = Number(t.entry_id);
             const isPrize = this.isPrizeEligible(eid);
@@ -23371,6 +23387,10 @@ __STRUCTURED_DATA_JSON__
               }
             }
 
+            if ((!hasCompleteGwHistory || isTier2) && t.total_points !== undefined && t.total_points !== null && Number.isFinite(Number(t.total_points))) {
+              totalNet = Number(t.total_points);
+            }
+
             return {
               entry_id: eid,
               team_name: t.entry_name || t.team_name,
@@ -23394,7 +23414,7 @@ __STRUCTURED_DATA_JSON__
           let prevTotal = null;
           teamStats.forEach(t => {
             if (!t.is_prize) {
-              t.displayRank = 'ร่วมสนุก';
+              t.displayRank = isEn ? 'Guest' : 'ร่วมสนุก';
               return;
             }
             eligibleCount++;
@@ -23412,7 +23432,7 @@ __STRUCTURED_DATA_JSON__
               t.team_name,
               t.player_name,
               t.entry_id,
-              t.is_prize ? 'แข่งขันชิงรางวัล' : 'ร่วมสนุก',
+              t.is_prize ? (isEn ? 'Prize Eligible' : 'แข่งขันชิงรางวัล') : (isEn ? 'Guest' : 'ร่วมสนุก'),
               t.total_net
             ];
             for (let g = 1; g <= maxGW; g++) {
@@ -23495,7 +23515,7 @@ __STRUCTURED_DATA_JSON__
             sortedGWResults.forEach(r => {
               const isPrize = this.isPrizeEligible(r.entry_id);
               if (!isPrize) {
-                rankMap[r.entry_id] = 'ร่วมสนุก';
+                rankMap[r.entry_id] = isEn ? 'Guest' : 'ร่วมสนุก';
                 return;
               }
               eCount++;
@@ -23525,7 +23545,7 @@ __STRUCTURED_DATA_JSON__
                 r.team_name,
                 r.player_name,
                 r.entry_id,
-                isPrize ? 'แข่งขันชิงรางวัล' : 'ร่วมสนุก',
+                isPrize ? (isEn ? 'Prize Eligible' : 'แข่งขันชิงรางวัล') : (isEn ? 'Guest' : 'ร่วมสนุก'),
                 r.points !== undefined ? r.points : 0,
                 r.hits !== undefined ? r.hits : 0,
                 r.net_points !== undefined ? r.net_points : 0,
@@ -29700,7 +29720,12 @@ def generate_pay_html(site_config):
             setTxt('ref-card-order-id', o.order_id || '-');
             setTxt('ref-card-league', leagueLabel);
             setTxt('ref-card-amount', o.amount_display || '-');
-            setTxt('ref-card-time', o.slip_uploaded_at || o.updated_at || '-');
+            const rawRefTime = o.slip_uploaded_at || o.updated_at || '';
+            const parsedRefDate = rawRefTime ? new Date(rawRefTime) : null;
+            const formattedRefTime = (parsedRefDate && !isNaN(parsedRefDate.getTime()))
+              ? parsedRefDate.toLocaleString(isEn ? 'en-US' : 'th-TH')
+              : (rawRefTime || '-');
+            setTxt('ref-card-time', formattedRefTime);
             const slipImg = document.getElementById('pay-submitted-slip-img');
             const slipMissing = document.getElementById('ref-slip-missing');
             const rawSlip = typeof o.slip_data_url === 'string' ? o.slip_data_url.trim() : '';
@@ -29745,9 +29770,9 @@ def generate_pay_html(site_config):
           }
           const hasQr = Boolean(o.qr_image_url || o.promptpay_payload);
           if (qrCol) {
-            qrCol.classList.toggle('hidden', st === 'rejected' || !hasQr);
+            qrCol.classList.toggle('hidden', !hasQr);
           }
-          if (st === 'awaiting_payment' && hasQr) {
+          if (hasQr) {
             setTxt('qr-exact-amount', o.amount_display || '500.00 ฿');
             const satNum = Number(o.amount_satang);
             const exactDec = (Number.isFinite(satNum) && satNum > 0) ? (satNum / 100).toFixed(2) : '';
@@ -29787,6 +29812,14 @@ def generate_pay_html(site_config):
         } else {
           const pE = document.getElementById('panel-expired');
           if (pE) pE.classList.remove('hidden');
+          if (o.grace_slip_allowed) {
+            const pA = document.getElementById('panel-awaiting');
+            const qrCol = document.getElementById('pay-qr-col');
+            const rejAlert = document.getElementById('pay-reject-alert');
+            if (pA) pA.classList.remove('hidden');
+            if (qrCol) qrCol.classList.add('hidden');
+            if (rejAlert) rejAlert.classList.add('hidden');
+          }
         }
       },
 
@@ -30018,7 +30051,8 @@ def generate_pay_html(site_config):
               clearInterval(this.countdownTimer);
               this.countdownTimer = null;
             }
-            if (this.order && this.order.status === 'awaiting_payment') {
+            if (this.order && (this.order.status === 'awaiting_payment' || this.order.status === 'rejected')) {
+              this.order.grace_slip_allowed = (this.order.status === 'awaiting_payment');
               this.order.status = 'expired';
               this.renderOrder(this.order);
             }

@@ -30,7 +30,7 @@
       document.documentElement.lang = lang;
     })();
   </script>
-  <link rel="stylesheet" href="../assets/styles.css?v=f6aa5847">
+  <link rel="stylesheet" href="../assets/styles.css?v=988c99b0">
   <script src="../assets/qrcode.min.js"></script>
   <style>
     body {
@@ -599,7 +599,12 @@
             setTxt('ref-card-order-id', o.order_id || '-');
             setTxt('ref-card-league', leagueLabel);
             setTxt('ref-card-amount', o.amount_display || '-');
-            setTxt('ref-card-time', o.slip_uploaded_at || o.updated_at || '-');
+            const rawRefTime = o.slip_uploaded_at || o.updated_at || '';
+            const parsedRefDate = rawRefTime ? new Date(rawRefTime) : null;
+            const formattedRefTime = (parsedRefDate && !isNaN(parsedRefDate.getTime()))
+              ? parsedRefDate.toLocaleString(isEn ? 'en-US' : 'th-TH')
+              : (rawRefTime || '-');
+            setTxt('ref-card-time', formattedRefTime);
             const slipImg = document.getElementById('pay-submitted-slip-img');
             const slipMissing = document.getElementById('ref-slip-missing');
             const rawSlip = typeof o.slip_data_url === 'string' ? o.slip_data_url.trim() : '';
@@ -644,9 +649,9 @@
           }
           const hasQr = Boolean(o.qr_image_url || o.promptpay_payload);
           if (qrCol) {
-            qrCol.classList.toggle('hidden', st === 'rejected' || !hasQr);
+            qrCol.classList.toggle('hidden', !hasQr);
           }
-          if (st === 'awaiting_payment' && hasQr) {
+          if (hasQr) {
             setTxt('qr-exact-amount', o.amount_display || '500.00 ฿');
             const satNum = Number(o.amount_satang);
             const exactDec = (Number.isFinite(satNum) && satNum > 0) ? (satNum / 100).toFixed(2) : '';
@@ -686,6 +691,14 @@
         } else {
           const pE = document.getElementById('panel-expired');
           if (pE) pE.classList.remove('hidden');
+          if (o.grace_slip_allowed) {
+            const pA = document.getElementById('panel-awaiting');
+            const qrCol = document.getElementById('pay-qr-col');
+            const rejAlert = document.getElementById('pay-reject-alert');
+            if (pA) pA.classList.remove('hidden');
+            if (qrCol) qrCol.classList.add('hidden');
+            if (rejAlert) rejAlert.classList.add('hidden');
+          }
         }
       },
 
@@ -917,7 +930,8 @@
               clearInterval(this.countdownTimer);
               this.countdownTimer = null;
             }
-            if (this.order && this.order.status === 'awaiting_payment') {
+            if (this.order && (this.order.status === 'awaiting_payment' || this.order.status === 'rejected')) {
+              this.order.grace_slip_allowed = (this.order.status === 'awaiting_payment');
               this.order.status = 'expired';
               this.renderOrder(this.order);
             }

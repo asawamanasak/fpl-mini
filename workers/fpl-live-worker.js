@@ -371,11 +371,14 @@ async function incrementLifetimeUnpaidStat(db, delta = 1) {
 async function pruneExpiredOrdersToStats(db, nowIso = new Date().toISOString()) {
   if (!db) return 0;
   try {
+    const parsedNow = Date.parse(nowIso);
+    const safeNowMs = Number.isFinite(parsedNow) ? parsedNow : Date.now();
+    const graceCutoffIso = new Date(safeNowMs - 24 * 3600000).toISOString();
     const delRes = await db.prepare(`
       DELETE FROM league_orders
-      WHERE status = 'expired'
-         OR (status IN ('awaiting_payment', 'rejected') AND expires_at < ?)
-    `).bind(nowIso).run();
+      WHERE (status IN ('awaiting_payment', 'expired') AND expires_at < ?)
+         OR (status = 'rejected' AND expires_at < ?)
+    `).bind(graceCutoffIso, nowIso).run();
     const deletedCnt = (delRes && delRes.meta && Number(delRes.meta.changes)) || 0;
     if (deletedCnt > 0) {
       await incrementLifetimeUnpaidStat(db, deletedCnt);
@@ -887,57 +890,13 @@ async function fetchUpstreamWithTimeout(url, options = {}, timeoutMs = UPSTREAM_
  *   1. Official bonus has NOT been awarded yet (all players in fixture have bonus === 0)
  *   2. At least one player in the fixture has played >= 60 minutes
  */
-function computeProvisionalBonusByFixture(elements) {
-  const fixturePlayers = new Map(); // fixtureId -> Array<{ id, bps, minutes, bonus }>
-  const fixtureMaxMins = new Map();
-  const fixtureHasOfficialBonus = new Map();
-
-  for (const el of elements) {
-    if (!el || !el.stats) continue;
-    const mins = Number(el.stats.minutes) || 0;
-    const bps = Number(el.stats.bps) || 0;
-    const officialBonus = Number(el.stats.bonus) || 0;
-    const explainList = Array.isArray(el.explain) ? el.explain : [];
-
-    for (const ex of explainList) {
-      const fixId = ex && ex.fixture;
-      if (fixId === undefined || fixId === null) continue;
-
-      const curMax = fixtureMaxMins.get(fixId) || 0;
-      if (mins > curMax) fixtureMaxMins.set(fixId, mins);
-
-      const exStats = Array.isArray(ex.stats) ? ex.stats : [];
-      const hasExBonus = officialBonus > 0 || exStats.some(s => s && s.identifier === 'bonus' && Number(s.points) > 0);
-      if (hasExBonus) {
-        fixtureHasOfficialBonus.set(fixId, true);
-      }
-
-      if (mins > 0 && bps > 0) {
-        if (!fixturePlayers.has(fixId)) {
-          fixturePlayers.set(fixId, []);
-        }
-        fixturePlayers.get(fixId).push({
-          id: el.id,
-          bps,
-          minutes: mins,
-        });
-      }
-    }
-  }
-
+function computeProvisionalBonusByFixture(elements, fixturesRaw = null) {
   const playerProvBonus = new Map(); // elementId -> total provisional bonus across fixtures
   const fixtureBonusSummary = {};    // fixtureId -> Array<{ id, bps, bonus }>
 
-  for (const [fixId, players] of fixturePlayers.entries()) {
-    if (fixtureHasOfficialBonus.get(fixId)) continue;
-    const maxMins = fixtureMaxMins.get(fixId) || 0;
-    if (maxMins < 60) continue;
-
-    // Sort descending by BPS
+  const assignFixtureBonus = (fixId, players) => {
+    if (!Array.isArray(players) || players.length === 0) return;
     players.sort((a, b) => b.bps - a.bps);
-    if (players.length === 0) continue;
-
-    // Group by unique BPS scores descending
     const bpsGroups = [];
     for (const p of players) {
       if (bpsGroups.length === 0 || bpsGroups[bpsGroups.length - 1].bps !== p.bps) {
@@ -946,9 +905,8 @@ function computeProvisionalBonusByFixture(elements) {
         bpsGroups[bpsGroups.length - 1].ids.push(p.id);
       }
     }
-
     // Safety guard against abnormal mass ties
-    if (bpsGroups[0].ids.length > 4) continue;
+    if (bpsGroups.length === 0 || bpsGroups[0].ids.length > 4) return;
 
     const awarded = [];
     const rank1 = bpsGroups[0];
@@ -983,6 +941,76 @@ function computeProvisionalBonusByFixture(elements) {
     }
 
     fixtureBonusSummary[fixId] = awarded;
+  };
+
+  // Primary path: read per-fixture BPS and official bonus strictly from each fixture's stats (DGW-safe)
+  if (Array.isArray(fixturesRaw) && fixturesRaw.length > 0) {
+    for (const f of fixturesRaw) {
+      if (!f || f.postponed || !f.started || Number(f.minutes || 0) < 60) continue;
+      const fStats = Array.isArray(f.stats) ? f.stats : [];
+      const bonusEntry = fStats.find(s => s && s.identifier === 'bonus');
+      const bonusRows = bonusEntry ? (bonusEntry.h || []).concat(bonusEntry.a || []) : [];
+      if (bonusRows.some(x => x && Number(x.value) > 0)) continue;
+
+      const bpsEntry = fStats.find(s => s && s.identifier === 'bps');
+      const bpsRows = bpsEntry ? (bpsEntry.h || []).concat(bpsEntry.a || []) : [];
+      const players = [];
+      for (const row of bpsRows) {
+        const bpsVal = Number(row && row.value) || 0;
+        const pid = Number(row && row.element) || 0;
+        if (pid > 0 && bpsVal > 0) {
+          players.push({ id: pid, bps: bpsVal });
+        }
+      }
+      assignFixtureBonus(f.id, players);
+    }
+    return { playerProvBonus, fixtureBonusSummary };
+  }
+
+  // Fallback path (only when fixtures upstream failed): avoid using cumulative DGW el.stats across fixtures
+  const fixturePlayers = new Map();
+  const fixtureMaxMins = new Map();
+  const fixtureHasOfficialBonus = new Map();
+
+  for (const el of elements) {
+    if (!el || !el.stats) continue;
+    const bps = Number(el.stats.bps) || 0;
+    const explainList = Array.isArray(el.explain) ? el.explain : [];
+    const isSingleFixture = explainList.length === 1;
+
+    for (const ex of explainList) {
+      const fixId = ex && ex.fixture;
+      if (fixId === undefined || fixId === null) continue;
+
+      const exStats = Array.isArray(ex.stats) ? ex.stats : [];
+      const minStat = exStats.find(s => s && s.identifier === 'minutes');
+      const mins = minStat ? (Number(minStat.value) || 0) : (isSingleFixture ? (Number(el.stats.minutes) || 0) : 0);
+      if (mins > (fixtureMaxMins.get(fixId) || 0)) {
+        fixtureMaxMins.set(fixId, mins);
+      }
+
+      const hasExBonus = exStats.some(s => s && s.identifier === 'bonus' && Number(s.points) > 0);
+      if (hasExBonus) {
+        fixtureHasOfficialBonus.set(fixId, true);
+      }
+
+      if (isSingleFixture && mins > 0 && bps > 0) {
+        if (!fixturePlayers.has(fixId)) {
+          fixturePlayers.set(fixId, []);
+        }
+        fixturePlayers.get(fixId).push({
+          id: el.id,
+          bps,
+          minutes: mins,
+        });
+      }
+    }
+  }
+
+  for (const [fixId, players] of fixturePlayers.entries()) {
+    if (fixtureHasOfficialBonus.get(fixId)) continue;
+    if ((fixtureMaxMins.get(fixId) || 0) < 60) continue;
+    assignFixtureBonus(fixId, players);
   }
 
   return { playerProvBonus, fixtureBonusSummary };
@@ -3904,18 +3932,38 @@ export default {
           });
         }
         let status = String(row.status || 'awaiting_payment');
-        if (status === 'expired' || ((status === 'awaiting_payment' || status === 'rejected') && Date.now() > Date.parse(row.expires_at))) {
-          await pruneExpiredOrdersToStats(env.DB, new Date().toISOString());
+        const GRACE_MS = 24 * 3600000;
+        const nowMs = Date.now();
+        const expMs = Date.parse(row.expires_at);
+        let graceSlipAllowed = false;
+        let graceExpiresAt = null;
+        if (status === 'rejected' && Number.isFinite(expMs) && nowMs > expMs) {
+          await pruneExpiredOrdersToStats(env.DB, new Date(nowMs).toISOString());
           return new Response(JSON.stringify({ success: false, expired: true, error: 'Order expired after 24 hours. Please create a new order.' }), {
             status: 404,
             headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
           });
         }
+        if ((status === 'awaiting_payment' || status === 'expired') && Number.isFinite(expMs) && nowMs > (expMs + GRACE_MS)) {
+          await pruneExpiredOrdersToStats(env.DB, new Date(nowMs).toISOString());
+          return new Response(JSON.stringify({ success: false, expired: true, error: 'Order expired after 24 hours. Please create a new order.' }), {
+            status: 404,
+            headers: { ...CORS_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+          });
+        }
+        if ((status === 'awaiting_payment' || status === 'expired') && Number.isFinite(expMs) && nowMs > expMs && nowMs <= (expMs + GRACE_MS)) {
+          if (status !== 'expired') {
+            await env.DB.prepare("UPDATE league_orders SET status = 'expired', updated_at = CURRENT_TIMESTAMP WHERE order_id = ? AND status = 'awaiting_payment'").bind(orderId).run();
+            status = 'expired';
+          }
+          graceSlipAllowed = true;
+          graceExpiresAt = new Date(expMs + GRACE_MS).toISOString();
+        }
         const payCfg = await loadPaymentSettings(env.DB, env);
         let paymentMode = 'quote';
         let promptpayPayload = '';
         let qrImageUrl = '';
-        if (status === 'awaiting_payment' && row.currency === 'THB' && Number(row.amount_satang) >= 50000) {
+        if ((status === 'awaiting_payment' || status === 'rejected') && row.currency === 'THB' && Number(row.amount_satang) >= 50000) {
           if (payCfg.mode === 'static_qr') {
             paymentMode = 'static_qr';
             qrImageUrl = payCfg.qr_data_url;
@@ -3950,6 +3998,8 @@ export default {
           delivered_url: status === 'live' ? (row.delivered_url || `https://www.fplsawadika.com/${row.league_id}/`) : '',
           created_at: row.created_at,
           expires_at: row.expires_at,
+          grace_slip_allowed: graceSlipAllowed,
+          grace_expires_at: graceExpiresAt,
           payment_mode: paymentMode,
           qr_image_url: qrImageUrl,
           promptpay_payload: promptpayPayload,
@@ -4599,6 +4649,7 @@ export default {
       const rawElements = Array.isArray(liveData.elements) ? liveData.elements : [];
 
       let fixtures = [];
+      let fixturesRawForBonus = null;
       let inPlayCount = 0;
       let allFinished = false;
       let anyStarted = false;
@@ -4609,6 +4660,7 @@ export default {
           const fixturesRaw = await fixResp.json();
           if (Array.isArray(fixturesRaw)) {
             fixturesOk = true;
+            fixturesRawForBonus = fixturesRaw;
             const activeFixtures = fixturesRaw.filter(f => !f.postponed);
             anyStarted = activeFixtures.some(f => Boolean(f.started));
             allFinished =
@@ -4636,7 +4688,7 @@ export default {
       }
 
       // 5. Compute Provisional Bonus (BPS) per fixture
-      const { playerProvBonus, fixtureBonusSummary } = computeProvisionalBonusByFixture(rawElements);
+      const { playerProvBonus, fixtureBonusSummary } = computeProvisionalBonusByFixture(rawElements, fixturesRawForBonus);
 
       // 6. Enrich & optionally slim elements
       const enrichedElements = rawElements.map(el =>
