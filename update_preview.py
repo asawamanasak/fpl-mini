@@ -1768,158 +1768,160 @@ __STRUCTURED_DATA_JSON__
     <div id="paused-league-overlay" class="hidden"></div>
 
     <!-- ==================== TAB 1: LIVE (GAMEWEEK VIEW) ==================== -->
-    <div id="gameweek-view" class="tab-content space-y-4">
+    <div id="gameweek-view" class="tab-content space-y-3 sm:space-y-4">
       
-      <!-- 2.1 แถบเลือกสัปดาห์ GW 1 - 38 -->
-      <div class="glass-card rounded-2xl p-2.5 sm:p-3 border border-slate-200">
-        <div class="flex flex-wrap items-center justify-between gap-y-1 mb-2 px-1">
-          <span id="gw-selector-title" class="text-xs font-bold text-slate-500 uppercase tracking-wider font-display">
+      <!-- 2.1 แถบเลือกสัปดาห์ GW 1 - 38 (Calm Secondary Toolbar) -->
+      <div id="gw-selector-shell" class="rounded-2xl px-3 py-2 sm:px-3.5 sm:py-2.5 bg-slate-50/90 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/90">
+        <div class="flex items-center justify-between gap-2 mb-1.5 px-0.5">
+          <span id="gw-selector-title" class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
             <span id="gw-selector-main-label">เลือกสัปดาห์การแข่งขัน</span>
           </span>
-          <span id="gw-range-status" class="text-xs font-bold text-emerald-700 dark:text-emerald-400"><span class="hidden min-[380px]:inline">สัปดาห์ที่ </span>1 - 38</span>
+          <span id="gw-range-status" class="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 tabular-nums"><span class="hidden min-[380px]:inline">สัปดาห์ที่ </span>1 - 38</span>
         </div>
-        <div id="gw-selector-container" class="flex space-x-1.5 overflow-x-auto touch-scroll scrollbar-thin py-1 pb-2 min-h-[56px]">
+        <div id="gw-selector-container" class="flex space-x-1.5 overflow-x-auto touch-scroll scrollbar-thin py-0.5 pb-1 min-h-[46px]">
           <!-- Rendered dynamically -->
         </div>
       </div>
 
       <!-- Hero Spotlight + Matchday Strips Slot (pre-reserved min-height prevents CLS on initial hydration) -->
-      <div id="gw-hero-strips-slot" class="space-y-4 __GW_HERO_MIN_H__">
-        <!-- 2.2 การ์ดไฮไลท์ผู้นำ (Spotlight Card - รูปแบบคลีนตัดไอคอนซ้ายออก) -->
-        <div id="champion-card-container" class="min-h-[124px]">
+      <div id="gw-hero-strips-slot" class="space-y-2.5 sm:space-y-3 __GW_HERO_MIN_H__">
+        <!-- 2.2 การ์ดไฮไลท์ผู้นำ (Spotlight Card - Compact Flat Hierarchy) -->
+        <div id="champion-card-container" class="min-h-[96px]">
           <!-- Rendered dynamically -->
         </div>
 
-        <!-- 2.2b แถบดราม่าสด & ช็อตเด็ดประจำสัปดาห์ (Tier 1 Only) -->
+        <!-- 2.2b แถบดราม่าสด & ช็อตเด็ดประจำสัปดาห์ (Desktop Expanded / <xl Collapsible) -->
         <div id="live-drama-strip-container" class="hidden min-w-0 max-w-full">
           <!-- Rendered dynamically -->
         </div>
       </div>
 
-      <!-- 2.3 ตัวควบคุมตาราง: ช่องค้นหาทีม & แท็บสลับตารางบนมือถือ (Search & Mobile Switcher) -->
-      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
-        <div class="relative flex-1 max-w-md flex items-center gap-2">
-          <div class="relative flex-1">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      <!-- 2.3–2.5 ตัวควบคุมและตารางคะแนนคู่หลัก (Tight Proximity Group) -->
+      <div class="space-y-2.5 pt-0.5">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+          <div class="relative flex-1 max-w-md flex items-center gap-2">
+            <div class="relative flex-1">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              </div>
+              <input 
+                type="text" 
+                id="live-team-search" 
+                oninput="app.onLiveSearchInput(this.value)" 
+                aria-label="ค้นหาชื่อทีม / ผู้จัดการ"
+                placeholder="ค้นหาชื่อทีม / ผู้จัดการ..." 
+                class="w-full pl-9 pr-8 py-2 min-h-[40px] text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 shadow-2xs transition-colors"
+              >
+              <button 
+                id="live-team-search-clear" 
+                type="button"
+                onclick="app.clearLiveSearch()" 
+                class="hidden absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                aria-label="Clear search"
+              >
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+              </button>
             </div>
-            <input 
-              type="text" 
-              id="live-team-search" 
-              oninput="app.onLiveSearchInput(this.value)" 
-              aria-label="ค้นหาชื่อทีม / ผู้จัดการ"
-              placeholder="ค้นหาชื่อทีม / ผู้จัดการ..." 
-              class="w-full pl-9 pr-8 py-2 min-h-[40px] text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 shadow-2xs transition-all"
-            >
+            <span id="live-search-count" class="hidden text-[11px] font-bold text-blue-600 dark:text-blue-400 font-display whitespace-nowrap px-1"></span>
+          </div>
+
+          <div class="xl:hidden flex w-full sm:w-auto p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs" role="tablist">
             <button 
-              id="live-team-search-clear" 
-              type="button"
-              onclick="app.clearLiveSearch()" 
-              class="hidden absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-              aria-label="Clear search"
+              id="btn-switch-matchday-table" 
+              type="button" 
+              role="tab"
+              aria-selected="true"
+              onclick="app.switchLiveMobileTable('matchday')"
+              class="flex-1 sm:flex-initial px-3 py-1.5 min-h-[38px] rounded-lg text-xs font-bold font-display transition-colors cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs"
             >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+              ตารางประจำสัปดาห์
+            </button>
+            <button 
+              id="btn-switch-overall-table" 
+              type="button" 
+              role="tab"
+              aria-selected="false"
+              onclick="app.switchLiveMobileTable('overall')"
+              class="flex-1 sm:flex-initial px-3 py-1.5 min-h-[38px] rounded-lg text-xs font-semibold font-display transition-colors cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+            >
+              ตารางคะแนนรวม
             </button>
           </div>
-          <span id="live-search-count" class="hidden text-[11px] font-bold text-blue-600 dark:text-blue-400 font-display whitespace-nowrap px-1"></span>
         </div>
 
-        <div class="xl:hidden flex w-full sm:w-auto p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs" role="tablist">
-          <button 
-            id="btn-switch-matchday-table" 
-            type="button" 
-            role="tab"
-            aria-selected="true"
-            onclick="app.switchLiveMobileTable('matchday')"
-            class="flex-1 sm:flex-initial px-3 py-1.5 min-h-[38px] rounded-lg text-xs font-bold font-display transition-all cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs"
-          >
-            ตารางประจำสัปดาห์
-          </button>
-          <button 
-            id="btn-switch-overall-table" 
-            type="button" 
-            role="tab"
-            aria-selected="false"
-            onclick="app.switchLiveMobileTable('overall')"
-            class="flex-1 sm:flex-initial px-3 py-1.5 min-h-[38px] rounded-lg text-xs font-semibold font-display transition-all cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-          >
-            ตารางคะแนนรวม
-          </button>
-        </div>
-      </div>
-
-      <!-- 2.4 ตารางคะแนนประจำสัปดาห์ & 2.5 ตารางคะแนนรวมสะสม (Distinct Visual Theming) -->
-      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        
-        <!-- ซ้าย: ตารางคะแนนสัปดาห์ปัจจุบัน (Matchday Standings - Emerald Live Theme) -->
-        <div id="matchday-table-card" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs relative min-h-[460px]">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3">
-            <div>
-              <span id="matchday-sub-label" class="hidden"></span>
-              <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
-                <span id="matchday-table-title">ตารางคะแนน Gameweek 2</span>
-              </h3>
+        <!-- 2.4 ตารางคะแนนประจำสัปดาห์ & 2.5 ตารางคะแนนรวมสะสม (Hero Tables) -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-3.5 sm:gap-4">
+          
+          <!-- ซ้าย: ตารางคะแนนสัปดาห์ปัจจุบัน (Matchday Standings - Emerald Live Theme) -->
+          <div id="matchday-table-card" class="rounded-2xl bg-white dark:bg-[#0d0d0f] border border-slate-200/95 dark:border-slate-800 shadow-xs relative p-3.5 sm:p-5 min-h-[460px]">
+            <div class="flex items-center justify-between gap-2 pb-2.5 sm:pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-2.5 sm:mb-3">
+              <div class="min-w-0">
+                <span id="matchday-sub-label" class="hidden"></span>
+                <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display flex items-center gap-2 min-w-0">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
+                  <span id="matchday-table-title" class="truncate">ตารางคะแนน Gameweek 2</span>
+                </h3>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <span id="matchday-table-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                  ผลการแข่งขัน
+                </span>
+              </div>
             </div>
-            <div class="flex items-center gap-2">
-              <span id="matchday-table-badge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                ผลการแข่งขัน
+
+            <div class="overflow-x-auto scrollbar-thin -mx-3.5 sm:mx-0 touch-scroll">
+              <table class="w-full text-left table-clean">
+                <thead>
+                  <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
+                    <th scope="col" class="py-2.5 pl-3.5 sm:pl-3 pr-1 sm:pr-2 text-center w-8 sm:w-10 whitespace-nowrap">#</th>
+                    <th scope="col" id="th-matchday-team" class="py-2.5 px-2 sm:px-3 min-w-0 whitespace-nowrap">ทีม & ผู้จัดการ</th>
+                    <th scope="col" id="th-matchday-captain" class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell whitespace-nowrap">กัปตัน</th>
+                    <th scope="col" id="th-matchday-points" class="py-2.5 px-1 sm:px-2 text-center text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-400 font-bold whitespace-nowrap tabular-nums"><span class="hidden sm:inline">คะแนนสด</span><span class="sm:hidden">สด</span></th>
+                    <th scope="col" id="th-matchday-hits" class="py-2.5 px-1 sm:px-2 text-center w-9 sm:w-14 text-[10px] sm:text-[11px] whitespace-nowrap tabular-nums"><span class="hidden sm:inline">คะแนนลบ</span><span class="sm:hidden">ลบ</span></th>
+                    <th scope="col" id="th-matchday-net" class="py-2.5 pl-1.5 sm:pl-2 pr-3.5 sm:pr-3 text-right w-14 sm:w-16 text-[10px] sm:text-[11px] text-slate-700 dark:text-slate-300 font-bold whitespace-nowrap tabular-nums"><span class="hidden sm:inline">คะแนนสุทธิ</span><span class="sm:hidden">สุทธิ</span></th>
+                  </tr>
+                </thead>
+                <tbody id="matchday-table-body" class="text-xs sm:text-sm">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ขวา: ตารางคะแนนรวมสะสม (Overall Standings - Royal Blue Championship Theme) -->
+          <div id="overall-table-card" class="rounded-2xl bg-white dark:bg-[#0d0d0f] border border-slate-200/95 dark:border-slate-800 shadow-xs relative p-3.5 sm:p-5 hidden xl:block min-h-[460px]">
+            <div class="flex items-center justify-between gap-2 pb-2.5 sm:pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-2.5 sm:mb-3">
+              <div class="min-w-0">
+                <span id="overall-sub-label" class="hidden"></span>
+                <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display flex items-center gap-2 min-w-0">
+                  <span class="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0"></span>
+                  <span id="overall-table-title" class="truncate">ตารางคะแนนรวมสะสม</span>
+                </h3>
+              </div>
+              <span id="overall-gw-pill" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 font-display flex-shrink-0 tabular-nums">
+                หลังจบ GW <span id="overall-gw-num">2</span>
               </span>
             </div>
-          </div>
 
-          <div class="overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 touch-scroll">
-            <table class="w-full text-left table-clean">
-              <thead>
-                <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
-                  <th scope="col" class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center w-8 sm:w-10 whitespace-nowrap">#</th>
-                  <th scope="col" id="th-matchday-team" class="py-2.5 px-2 sm:px-3 min-w-0 whitespace-nowrap">ทีม & ผู้จัดการ</th>
-                  <th scope="col" id="th-matchday-captain" class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell whitespace-nowrap">กัปตัน</th>
-                  <th scope="col" id="th-matchday-points" class="py-2.5 px-1 sm:px-2 text-center text-[10px] sm:text-[11px] text-emerald-700 dark:text-emerald-400 font-bold whitespace-nowrap"><span class="hidden sm:inline">คะแนนสด</span><span class="sm:hidden">สด</span></th>
-                  <th scope="col" id="th-matchday-hits" class="py-2.5 px-1 sm:px-2 text-center w-9 sm:w-14 text-[10px] sm:text-[11px] whitespace-nowrap"><span class="hidden sm:inline">คะแนนลบ</span><span class="sm:hidden">ลบ</span></th>
-                  <th scope="col" id="th-matchday-net" class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right w-14 sm:w-16 text-[10px] sm:text-[11px] text-slate-700 dark:text-slate-300 font-bold whitespace-nowrap"><span class="hidden sm:inline">คะแนนสุทธิ</span><span class="sm:hidden">สุทธิ</span></th>
-                </tr>
-              </thead>
-              <tbody id="matchday-table-body" class="text-xs sm:text-sm">
-                <!-- Rendered dynamically -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- ขวา: ตารางคะแนนรวมสะสม (Overall Standings - Royal Blue Championship Theme) -->
-        <div id="overall-table-card" class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs relative hidden xl:block min-h-[460px]">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80 mb-3">
-            <div>
-              <span id="overall-sub-label" class="hidden"></span>
-              <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-display flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0"></span>
-                <span id="overall-table-title">ตารางคะแนนรวมสะสม</span>
-              </h3>
+            <div class="overflow-x-auto scrollbar-thin -mx-3.5 sm:mx-0 touch-scroll">
+              <table class="w-full text-left table-clean">
+                <thead>
+                  <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
+                    <th scope="col" class="py-2.5 pl-3.5 sm:pl-3 pr-1 sm:pr-2 text-center w-8 sm:w-10 whitespace-nowrap">#</th>
+                    <th scope="col" id="th-overall-team" class="py-2.5 px-2 sm:px-3 min-w-0 whitespace-nowrap">ทีม & ผู้จัดการ</th>
+                    <th scope="col" id="th-overall-lastgw" class="py-2.5 px-1 sm:px-3 text-center w-14 sm:w-18 text-[10px] sm:text-[11px] whitespace-nowrap tabular-nums">GW ล่าสุด</th>
+                    <th scope="col" id="th-overall-hits" class="py-2.5 px-1 sm:px-2 text-center w-12 sm:w-16 text-[10px] sm:text-[11px] whitespace-nowrap tabular-nums"><span class="hidden sm:inline">คะแนนลบสะสม</span><span class="sm:hidden">ลบสะสม</span></th>
+                    <th scope="col" id="th-overall-total" class="py-2.5 pl-1.5 sm:pl-2 pr-3.5 sm:pr-3 text-right w-14 sm:w-16 text-slate-900 dark:text-white font-bold whitespace-nowrap tabular-nums">คะแนนรวม</th>
+                  </tr>
+                </thead>
+                <tbody id="overall-standings-body" class="text-xs sm:text-sm">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
             </div>
-            <span id="overall-gw-pill" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 font-display">
-              หลังจบ GW <span id="overall-gw-num">2</span>
-            </span>
           </div>
 
-          <div class="overflow-x-auto scrollbar-thin -mx-4 sm:mx-0 touch-scroll">
-            <table class="w-full text-left table-clean">
-              <thead>
-                <tr class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display">
-                  <th scope="col" class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center w-8 sm:w-10 whitespace-nowrap">#</th>
-                  <th scope="col" id="th-overall-team" class="py-2.5 px-2 sm:px-3 min-w-0 whitespace-nowrap">ทีม & ผู้จัดการ</th>
-                  <th scope="col" id="th-overall-lastgw" class="py-2.5 px-1 sm:px-3 text-center w-14 sm:w-18 text-[10px] sm:text-[11px] whitespace-nowrap">GW ล่าสุด</th>
-                  <th scope="col" id="th-overall-hits" class="py-2.5 px-1 sm:px-2 text-center w-12 sm:w-16 text-[10px] sm:text-[11px] whitespace-nowrap"><span class="hidden sm:inline">คะแนนลบสะสม</span><span class="sm:hidden">ลบสะสม</span></th>
-                  <th scope="col" id="th-overall-total" class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right w-14 sm:w-16 text-slate-900 dark:text-white font-bold whitespace-nowrap">คะแนนรวม</th>
-                </tr>
-              </thead>
-              <tbody id="overall-standings-body" class="text-xs sm:text-sm">
-                <!-- Rendered dynamically -->
-              </tbody>
-            </table>
-          </div>
         </div>
-
       </div>
     </div>
 
@@ -8007,6 +8009,7 @@ __STRUCTURED_DATA_JSON__
         this.renderLeagueDropdown();
         this.updateHeaderInfo();
         this._openDramaEventId = null;
+        this._dramaStripExpandedMobile = false;
         if (this._rivalState && this._rivalState.isOpen && typeof this.closeRivalModal === 'function') {
           this.closeRivalModal();
         }
@@ -10623,51 +10626,50 @@ __STRUCTURED_DATA_JSON__
             const hitsText = totalHitsCount > 0 ? (isEn ? `${totalHitsCount} Teams (-${totalHitsPoints} pts)` : `${totalHitsCount} ทีม (-${totalHitsPoints} pts)`) : (isEn ? 'No Hits Taken' : 'ไม่มีทีมเสียแต้มลบ');
 
             championCard.innerHTML = `
-              <div class="prematch-spotlight-card rounded-2xl p-4 sm:p-5 relative overflow-hidden transition-all duration-200">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-                  <div>
-                    <div class="flex items-center gap-2 flex-wrap mb-1">
-                      <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-indigo-500/15 text-indigo-900 dark:text-indigo-200 border border-indigo-300/60 dark:border-indigo-500/30 font-display shadow-2xs">
-                        <span>${isEn ? 'GAMEWEEK PREVIEW' : 'พรีวิวสัปดาห์การแข่งขัน'}</span>
+              <div class="prematch-spotlight-card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden transition-colors duration-200">
+                <div class="flex items-start justify-between gap-3 sm:gap-4">
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold bg-indigo-500/15 text-indigo-900 dark:text-indigo-200 border border-indigo-300/60 dark:border-indigo-500/30 font-display">
+                        <span>${isEn ? 'Gameweek Preview' : 'พรีวิวสัปดาห์การแข่งขัน'}</span>
                       </span>
-                      <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">${isEn ? 'Upcoming' : 'รอคิกออฟ'}</span>
+                      <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100/90 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800">${isEn ? 'Upcoming' : 'รอคิกออฟ'}</span>
                       ${leagueContextPill}
                     </div>
-                    <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight mt-0.5">${isEn ? `Gameweek ${this.selectedGW} Lineups Locked` : `Gameweek ${this.selectedGW} ส่งรายชื่อเรียบร้อยแล้ว`}</h2>
-                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-0.5">${isEn ? 'Awaiting opening match kickoff • Tactical overview & league stats' : 'รอคู่เปิดสนามคิกออฟ • สถิติการจัดทีมและวางหมากในลีก'}</p>
+                    <h2 class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight mt-1 leading-snug">${isEn ? `Gameweek ${this.selectedGW} Lineups Locked` : `Gameweek ${this.selectedGW} ส่งรายชื่อเรียบร้อยแล้ว`}</h2>
+                    <p class="text-xs sm:text-sm text-indigo-950/75 dark:text-indigo-100/75 font-medium mt-0.5 truncate">${isEn ? 'Awaiting opening match kickoff • Tactical overview & league stats' : 'รอคู่เปิดสนามคิกออฟ • สถิติการจัดทีมและวางหมากในลีก'}</p>
                   </div>
 
-                  <div class="w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 border-indigo-100 dark:border-slate-700 flex items-center justify-end gap-3 text-right">
-                    <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-xs px-3.5 py-2 rounded-xl border border-indigo-200/90 dark:border-slate-700 shadow-2xs ml-auto sm:ml-0">
-                      <span class="text-[10px] text-indigo-900/80 dark:text-slate-400 uppercase font-bold font-display block">${isEn ? 'League Teams' : 'จำนวนทีมในลีก'}</span>
-                      <span class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display">${gwData.results.length} <span class="text-xs font-bold text-slate-500 dark:text-slate-400">${isEn ? 'Teams' : 'ทีม'}</span></span>
-                    </div>
+                  <div class="flex-shrink-0 text-right pl-3 border-l border-indigo-200/70 dark:border-indigo-800/50 tabular-nums">
+                    <span class="text-[10px] text-indigo-900/75 dark:text-indigo-200/75 font-bold font-display block leading-tight">${isEn ? 'League Teams' : 'ทีมในลีก'}</span>
+                    <span class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-display leading-none">${gwData.results.length}</span>
+                    <span class="text-[10px] font-bold text-indigo-900/70 dark:text-indigo-200/70 block mt-0.5">${isEn ? 'Teams' : 'ทีม'}</span>
                   </div>
                 </div>
 
-                <!-- Tactical Grid for Pre-Match -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-3.5 pt-3 border-t border-indigo-100/80 dark:border-slate-700 text-xs">
-                  <div class="bg-white/90 dark:bg-slate-800/90 rounded-xl p-2.5 border border-indigo-100/90 dark:border-slate-700 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 font-display block">${isEn ? 'Top Captains' : 'กัปตันยอดฮิต'}</span>
+                <!-- Tactical Strip for Pre-Match (Flat Divided Row) -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-indigo-200/60 dark:divide-indigo-800/40 mt-2.5 pt-2.5 border-t border-indigo-200/60 dark:border-indigo-800/40 text-xs">
+                  <div class="py-1.5 sm:py-0 sm:pr-3 min-w-0">
+                    <span class="text-[10px] font-bold text-indigo-900/75 dark:text-indigo-200/75 font-display block">${isEn ? 'Top Captains' : 'กัปตันยอดฮิต'}</span>
                     <span class="font-bold text-slate-900 dark:text-white text-xs mt-0.5 block truncate">${topCaptainsText}</span>
                   </div>
-                  <div class="bg-white/90 dark:bg-slate-800/90 rounded-xl p-2.5 border border-indigo-100/90 dark:border-slate-700 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 font-display block">${isEn ? 'Active Chips' : 'ชิปที่ใช้งาน'}</span>
+                  <div class="py-1.5 sm:py-0 sm:px-3 min-w-0">
+                    <span class="text-[10px] font-bold text-indigo-900/75 dark:text-indigo-200/75 font-display block">${isEn ? 'Active Chips' : 'ชิปที่ใช้งาน'}</span>
                     <span class="font-bold text-slate-900 dark:text-white text-xs mt-0.5 block truncate">${chipsList}</span>
                   </div>
-                  <div class="bg-white/90 dark:bg-slate-800/90 rounded-xl p-2.5 border border-indigo-100/90 dark:border-slate-700 shadow-2xs">
-                    <span class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 font-display block">${isEn ? 'Hits Taken' : 'คะแนนลบย้ายตัว'}</span>
+                  <div class="py-1.5 sm:py-0 sm:pl-3 min-w-0">
+                    <span class="text-[10px] font-bold text-indigo-900/75 dark:text-indigo-200/75 font-display block">${isEn ? 'Hits Taken' : 'คะแนนลบย้ายตัว'}</span>
                     <span class="font-bold text-slate-900 dark:text-white text-xs mt-0.5 block truncate">${hitsText}</span>
                   </div>
                 </div>
 
                 <!-- Highlight Note (4-Persona Commentary, Screenshot-Ready) -->
-                <div class="mt-3 pt-3 border-t border-indigo-100/80 dark:border-slate-700/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600 dark:text-slate-400">
+                <div class="mt-2.5 pt-2.5 border-t border-indigo-200/60 dark:border-indigo-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-indigo-950/80 dark:text-indigo-100/80">
                   <div class="min-w-0 pr-1">
-                    <span id="current-gw-note-text" class="font-medium text-slate-700 dark:text-slate-300 leading-relaxed break-words">${currentLiveNote}</span>
+                    <span id="current-gw-note-text" class="font-medium text-slate-800 dark:text-slate-200 leading-relaxed break-words">${currentLiveNote}</span>
                   </div>
                   <div class="flex items-center justify-end flex-shrink-0 self-end sm:self-center">
-                    <button type="button" onclick="app.regenerateLiveNote()" class="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[38px] text-[11px] font-bold text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white rounded-xl bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 transition-colors cursor-pointer active:scale-95 shadow-2xs font-display" title="${isEn ? 'Switch Pundit Style' : 'เปลี่ยนมุมพากษ์'}" aria-label="${isEn ? 'Switch pundit style' : 'เปลี่ยนมุมพากษ์'}">
+                    <button type="button" onclick="app.regenerateLiveNote()" class="inline-flex items-center gap-1.5 px-2.5 py-1 min-h-[36px] text-[11px] font-bold text-slate-700 hover:text-slate-900 dark:text-slate-200 dark:hover:text-white rounded-xl bg-white/75 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 border border-indigo-200/70 dark:border-slate-700 transition-colors cursor-pointer active:scale-95 font-display focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" title="${isEn ? 'Switch Pundit Style' : 'เปลี่ยนมุมพากษ์'}" aria-label="${isEn ? 'Switch pundit style' : 'เปลี่ยนมุมพากษ์'}">
                       <svg class="w-3.5 h-3.5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                       <span>${isEn ? 'Switch Style' : 'เปลี่ยนมุมพากษ์'}</span>
                     </button>
@@ -10702,12 +10704,12 @@ __STRUCTURED_DATA_JSON__
 
             if (eligibleTopWinners.length <= 1) {
               winnerHeaderHtml = `
-                <button onclick="app.openTeamModal(${prizeLeader.entry_id})" class="text-left group cursor-pointer inline-flex items-center min-h-[44px] py-1">
-                  <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white group-hover:text-amber-700 dark:group-hover:text-amber-400 tracking-tight transition-colors">${this.escapeHtml(prizeLeader.team_name)}</h2>
+                <button onclick="app.openTeamModal(${prizeLeader.entry_id})" class="text-left group cursor-pointer inline-flex items-center min-h-[36px] sm:min-h-[40px] py-0.5 max-w-full">
+                  <h2 class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white group-hover:text-amber-700 dark:group-hover:text-amber-400 tracking-tight leading-snug transition-colors truncate">${this.escapeHtml(prizeLeader.team_name)}</h2>
                 </button>
               `;
               managerNamesHtml = `
-                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-0.5">
+                <p class="text-xs sm:text-sm ${isFinished ? 'text-amber-950/75 dark:text-amber-100/80' : 'text-emerald-950/75 dark:text-emerald-100/80'} font-medium truncate">
                   ${this.escapeHtml(prizeLeader.player_name)} • (C) <strong>${this.escapeHtml((prizeLeader.captain || '-').replace(/\s*\(C\)/gi, '').trim())}</strong>
                 </p>
               `;
@@ -10716,16 +10718,16 @@ __STRUCTURED_DATA_JSON__
               const remainingCount = eligibleTopWinners.length - maxDisplayWinners;
 
               winnerHeaderHtml = `
-                <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                   ${displayList.map((w, idx) => {
                     const isLast = (idx === displayList.length - 1) && remainingCount <= 0;
                     const isPenultimate = (idx === displayList.length - 2) && remainingCount <= 0;
                     const separator = isLast ? '' : (isPenultimate ? '&' : ',');
                     return `
-                      <button onclick="app.openTeamModal(${w.entry_id})" class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white hover:text-amber-700 dark:hover:text-amber-400 tracking-tight transition-colors cursor-pointer text-left min-h-[44px] inline-flex items-center">
+                      <button onclick="app.openTeamModal(${w.entry_id})" class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white hover:text-amber-700 dark:hover:text-amber-400 tracking-tight transition-colors cursor-pointer text-left min-h-[36px] sm:min-h-[40px] inline-flex items-center">
                         ${this.escapeHtml(w.team_name)}
                       </button>
-                      ${separator ? `<span class="text-slate-400 dark:text-slate-500 font-bold text-lg sm:text-xl">${separator}</span>` : ''}
+                      ${separator ? `<span class="text-slate-400 dark:text-slate-500 font-bold text-base sm:text-xl">${separator}</span>` : ''}
                     `;
                   }).join('')}
                   ${remainingCount > 0 ? `<span class="text-sm sm:text-base font-bold text-slate-500 self-center">${isEn ? `and ${remainingCount} more teams` : `และอีก ${remainingCount} ทีม`}</span>` : ''}
@@ -10733,17 +10735,17 @@ __STRUCTURED_DATA_JSON__
               `;
 
               managerNamesHtml = `
-                <div class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1 space-y-0.5">
+                <div class="text-xs sm:text-sm ${isFinished ? 'text-amber-950/75 dark:text-amber-100/80' : 'text-emerald-950/75 dark:text-emerald-100/80'} font-medium mt-0.5 space-y-0.5">
                   ${displayList.map(w => `
                     <div class="flex items-center gap-1.5 flex-wrap">
-                      <button onclick="app.openTeamModal(${w.entry_id})" class="hover:text-amber-600 dark:hover:text-amber-400 cursor-pointer font-semibold text-slate-700 dark:text-slate-300 transition-colors">
+                      <button onclick="app.openTeamModal(${w.entry_id})" class="hover:text-amber-600 dark:hover:text-amber-400 cursor-pointer font-semibold text-slate-800 dark:text-slate-200 transition-colors">
                         ${this.escapeHtml(w.player_name)}
                       </button>
-                      <span class="text-slate-400">•</span>
+                      <span class="opacity-60">•</span>
                       <span>(C) <strong>${this.escapeHtml((w.captain || '-').replace(/\s*\(C\)/gi, '').trim())}</strong></span>
                     </div>
                   `).join('')}
-                  ${remainingCount > 0 ? `<div class="text-xs text-slate-500">${isEn ? `and ${remainingCount} more managers` : `และอีก ${remainingCount} คน`}</div>` : ''}
+                  ${remainingCount > 0 ? `<div class="text-xs opacity-75">${isEn ? `and ${remainingCount} more managers` : `และอีก ${remainingCount} คน`}</div>` : ''}
                 </div>
               `;
             }
@@ -10854,12 +10856,12 @@ __STRUCTURED_DATA_JSON__
             }
 
             championCard.innerHTML = `
-              <div class="${isFinished ? 'winner-spotlight-card' : 'live-leader-spotlight-card'} rounded-2xl p-4 sm:p-5 relative overflow-hidden transition-all duration-200">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+              <div class="${isFinished ? 'winner-spotlight-card' : 'live-leader-spotlight-card'} rounded-2xl p-3.5 sm:p-4 relative overflow-hidden transition-colors duration-200">
+                <div class="flex items-start justify-between gap-3 sm:gap-4">
                   
-                  <div>
-                    <div class="flex items-center gap-2 flex-wrap mb-1">
-                      <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider ${isFinished ? 'bg-amber-500/20 text-amber-900 dark:text-amber-200 border border-amber-400/50 dark:border-amber-500/40' : 'bg-emerald-500/20 text-emerald-900 dark:text-emerald-200 border border-emerald-400/50 dark:border-emerald-500/40'} font-display shadow-2xs">
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold ${isFinished ? 'bg-amber-500/20 text-amber-900 dark:text-amber-200 border border-amber-400/50 dark:border-amber-500/40' : 'bg-emerald-500/20 text-emerald-900 dark:text-emerald-200 border border-emerald-400/50 dark:border-emerald-500/40'} font-display">
                         <span class="inline-flex items-center">${badgeIcon}</span>
                         <span>${badgeTitle}</span>
                       </span>
@@ -10869,22 +10871,18 @@ __STRUCTURED_DATA_JSON__
                     ${managerNamesHtml}
                   </div>
 
-                  <div class="flex items-center justify-end gap-2.5 sm:gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 ${isFinished ? 'border-slate-200/80 dark:border-slate-800' : 'border-emerald-200/70 dark:border-slate-700'}">
-                    <div class="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xs px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl border ${isFinished ? 'border-amber-300/80 dark:border-amber-700/60 shadow-xs' : 'border-emerald-300/80 dark:border-emerald-700/60 shadow-xs'} flex items-center gap-2.5 sm:gap-3 ml-auto sm:ml-0">
-                      <div class="text-right">
-                        <span class="text-[10px] sm:text-[11px] ${isFinished ? 'text-amber-800 dark:text-amber-300' : 'text-emerald-800 dark:text-emerald-300'} uppercase font-bold font-display block leading-tight">
-                          ${isEn 
-                            ? (isFinished ? (isWeeklyPrize ? 'Net Pts' : 'Official Score') : (isWeeklyPrize ? 'Live Net Pts' : 'Live Pts'))
-                            : (isFinished ? (isWeeklyPrize ? 'แต้มสุทธิ' : 'คะแนนทางการ') : (isWeeklyPrize ? 'แต้มสุทธิสด' : 'คะแนนสด'))
-                          }
-                        </span>
-                        <span class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-display leading-none">${prizeLeader[scoreProp]} <span class="text-xs font-bold text-slate-500 dark:text-slate-400">pts</span></span>
-                      </div>
-                      <div class="text-right pl-2.5 sm:pl-3 border-l ${isFinished ? 'border-amber-200/90 dark:border-slate-700' : 'border-emerald-200/90 dark:border-slate-700'}">
-                        <span class="text-[10px] ${prizeLeader.hits > 0 ? 'text-rose-600 font-bold' : 'text-slate-500 dark:text-slate-400'} block font-display">${isEn ? 'Hits:' : 'แต้มลบ:'} ${prizeLeader.hits > 0 ? `-${prizeLeader.hits}` : '-'}</span>
-                        <span class="text-[9px] text-slate-500 dark:text-slate-400 block font-display">${prizeLeader.hits > 0 ? (isEn ? ((isFinished || isWeeklyPrize) ? 'Deducted in Net' : 'Deducted in Total') : ((isFinished || isWeeklyPrize) ? 'หักในแต้มสุทธิแล้ว' : 'หักในแต้มรวม')) : (isEn ? 'No Hits' : 'ไม่มีแต้มลบ')}</span>
-                      </div>
+                  <div class="flex-shrink-0 text-right pl-3 border-l ${isFinished ? 'border-amber-300/70 dark:border-amber-700/50' : 'border-emerald-300/70 dark:border-emerald-700/50'} tabular-nums">
+                    <span class="text-[10px] sm:text-[11px] ${isFinished ? 'text-amber-800 dark:text-amber-300' : 'text-emerald-800 dark:text-emerald-300'} font-bold font-display block leading-tight">
+                      ${isEn 
+                        ? (isFinished ? (isWeeklyPrize ? 'Net Pts' : 'Official') : (isWeeklyPrize ? 'Live Net' : 'Live Pts'))
+                        : (isFinished ? (isWeeklyPrize ? 'แต้มสุทธิ' : 'ทางการ') : (isWeeklyPrize ? 'แต้มสุทธิสด' : 'คะแนนสด'))
+                      }
+                    </span>
+                    <div class="flex items-baseline justify-end gap-1 mt-0.5">
+                      <span class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-display leading-none">${prizeLeader[scoreProp]}</span>
+                      <span class="text-[11px] font-bold ${isFinished ? 'text-amber-900/70 dark:text-amber-200/70' : 'text-emerald-900/70 dark:text-emerald-200/70'}">pts</span>
                     </div>
+                    <span class="text-[10px] font-display block mt-0.5 ${prizeLeader.hits > 0 ? 'text-rose-600 dark:text-rose-400 font-bold' : (isFinished ? 'text-amber-900/65 dark:text-amber-200/65' : 'text-emerald-900/65 dark:text-emerald-200/65')}">${prizeLeader.hits > 0 ? (isEn ? `Hits -${prizeLeader.hits}` : `ลบ -${prizeLeader.hits}`) : (isEn ? 'No hits' : 'ไม่เสียแต้มลบ')}</span>
                   </div>
 
                 </div>
@@ -10893,12 +10891,12 @@ __STRUCTURED_DATA_JSON__
                 ${penaltyPayoutsHtml}
 
                 <!-- Highlight Note (4-Persona Commentary, Screenshot-Ready) -->
-                <div class="mt-3.5 pt-3 border-t ${isFinished ? 'border-slate-200 dark:border-slate-800' : 'border-emerald-200/70 dark:border-slate-700/60'} flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs text-slate-600 dark:text-slate-400">
+                <div class="mt-2.5 pt-2.5 border-t ${isFinished ? 'border-amber-200/70 dark:border-amber-800/40' : 'border-emerald-200/70 dark:border-emerald-800/40'} flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                   <div class="min-w-0 pr-1">
-                    <span id="current-gw-note-text" class="font-medium text-slate-700 dark:text-slate-300 leading-relaxed break-words">${currentLiveNote}</span>
+                    <span id="current-gw-note-text" class="font-medium text-slate-800 dark:text-slate-200 leading-relaxed break-words">${currentLiveNote}</span>
                   </div>
                   <div class="flex items-center justify-end flex-shrink-0 self-end sm:self-center">
-                    <button type="button" onclick="app.regenerateLiveNote()" class="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-[38px] text-[11px] font-bold text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white rounded-xl bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 transition-colors cursor-pointer active:scale-95 shadow-2xs font-display" title="${isEn ? 'Switch Pundit Style' : 'เปลี่ยนมุมพากษ์'}" aria-label="${isEn ? 'Switch pundit style' : 'เปลี่ยนมุมพากษ์'}">
+                    <button type="button" onclick="app.regenerateLiveNote()" class="inline-flex items-center gap-1.5 px-2.5 py-1 min-h-[36px] text-[11px] font-bold text-slate-700 hover:text-slate-900 dark:text-slate-200 dark:hover:text-white rounded-xl bg-white/75 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 border ${isFinished ? 'border-amber-200/80 dark:border-slate-700' : 'border-emerald-200/80 dark:border-slate-700'} transition-colors cursor-pointer active:scale-95 font-display focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" title="${isEn ? 'Switch Pundit Style' : 'เปลี่ยนมุมพากษ์'}" aria-label="${isEn ? 'Switch pundit style' : 'เปลี่ยนมุมพากษ์'}">
                       <svg class="w-3.5 h-3.5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                       <span>${isEn ? 'Switch Style' : 'เปลี่ยนมุมพากษ์'}</span>
                     </button>
@@ -11010,12 +11008,12 @@ __STRUCTURED_DATA_JSON__
             const myBadge = isMyRow ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-blue-600 text-white font-display">${isEn ? 'ME' : 'ทีมฉัน'}</span>` : '';
             const rowActionPill = !isTier2View
               ? (myTeamId
-                  ? (!isMyRow ? `<button type="button" onclick="event.stopPropagation(); app.openRivalModal(${Number(myTeamId)}, ${Number(team.entry_id)})" class="inline-flex items-center px-1.5 py-0.5 min-h-[24px] rounded-md text-[9.5px] font-extrabold bg-slate-100 hover:bg-slate-900 text-slate-700 hover:text-white dark:bg-slate-800 dark:hover:bg-blue-600 dark:text-slate-300 dark:hover:text-white border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer flex-shrink-0" title="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}" aria-label="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}">VS</button>` : '')
-                  : `<button type="button" onclick="event.stopPropagation(); app.setMyTeamId(${Number(team.entry_id)})" class="inline-flex items-center px-1.5 py-0.5 min-h-[24px] rounded-md text-[9.5px] font-bold bg-slate-100 hover:bg-blue-600 text-slate-600 hover:text-white dark:bg-slate-800 dark:hover:bg-blue-600 dark:text-slate-300 dark:hover:text-white border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer flex-shrink-0" title="${isEn ? 'Pin My Team' : 'ปักหมุดทีมฉัน'}" aria-label="${isEn ? 'Pin my team' : 'ปักหมุดทีมฉัน'}">${isEn ? 'Pin' : 'ปักหมุด'}</button>`)
+                  ? (!isMyRow ? `<button type="button" onclick="event.stopPropagation(); app.openRivalModal(${Number(myTeamId)}, ${Number(team.entry_id)})" class="inline-flex items-center px-1.5 py-0.5 min-h-[24px] rounded text-[10px] font-bold text-slate-500 bg-slate-100/80 hover:bg-slate-900 hover:text-white dark:text-slate-400 dark:bg-slate-800/80 dark:hover:bg-blue-600 dark:hover:text-white transition-colors cursor-pointer flex-shrink-0" title="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}" aria-label="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}">VS</button>` : '')
+                  : `<button type="button" onclick="event.stopPropagation(); app.setMyTeamId(${Number(team.entry_id)})" class="inline-flex items-center px-1.5 py-0.5 min-h-[24px] rounded text-[10px] font-semibold text-slate-400 hover:text-blue-600 hover:bg-blue-50/90 dark:text-slate-500 dark:hover:text-blue-400 dark:hover:bg-blue-950/60 transition-colors cursor-pointer flex-shrink-0" title="${isEn ? 'Pin My Team' : 'ปักหมุดทีมฉัน'}" aria-label="${isEn ? 'Pin my team' : 'ปักหมุดทีมฉัน'}">${isEn ? 'Pin' : 'ปักหมุด'}</button>`)
               : '';
             mHtml += `
-              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isWinner ? 'font-semibold' : ''} ${isDeparted ? 'opacity-70' : ''} ${isMyRow ? 'bg-blue-50/70 dark:bg-blue-950/25 border-l-2 border-l-blue-500' : ''}">
-                <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
+              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isWinner ? 'font-semibold' : ''} ${isDeparted ? 'opacity-70' : ''} ${isMyRow ? 'bg-blue-50/60 dark:bg-blue-950/25 border-l-2 border-l-blue-500' : ''}">
+                <td class="py-2.5 pl-3.5 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-2 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <span class="text-left font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors max-w-[150px] xs:max-w-[200px] sm:max-w-none truncate block">
@@ -11040,12 +11038,12 @@ __STRUCTURED_DATA_JSON__
                 <td class="py-2.5 px-2 sm:px-3 text-center hidden sm:table-cell">
                   <span class="text-xs text-slate-600 dark:text-slate-300 font-medium">${team.captain && team.captain !== '-' ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 mr-1">(C)</span>${this.escapeHtml(team.captain.replace(/\s*\(C\)/gi, '').trim())}` : '-'}</span>
                 </td>
-                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-bold tabular-nums whitespace-nowrap text-xs sm:text-sm ${isStarted ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300'}">
+                <td class="py-2.5 px-1 sm:px-2 text-center font-display font-semibold tabular-nums whitespace-nowrap text-xs sm:text-sm ${isStarted ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-300'}">
                   <div>${team.points}</div>
                   ${playedInfo}
                 </td>
                 <td class="py-2.5 px-1 sm:px-2 text-center tabular-nums whitespace-nowrap text-xs sm:text-sm">${hits}</td>
-                <td class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right font-display font-bold tabular-nums whitespace-nowrap text-xs sm:text-sm text-slate-900 dark:text-white">${team.net_points}</td>
+                <td class="py-2.5 pl-1.5 sm:pl-2 pr-3.5 sm:pr-3 text-right font-display font-black tabular-nums whitespace-nowrap text-[13px] sm:text-sm text-slate-900 dark:text-white">${team.net_points}</td>
               </tr>
             `;
           });
@@ -11092,7 +11090,7 @@ __STRUCTURED_DATA_JSON__
             const isMyRow = Boolean(!isTier2View && myTeamId && Number(team.entry_id) === Number(myTeamId));
             const myBadge = isMyRow ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-blue-600 text-white font-display">${isEn ? 'ME' : 'ทีมฉัน'}</span>` : '';
             const ovActionPill = (!isTier2View && myTeamId && !isMyRow)
-              ? `<button type="button" onclick="event.stopPropagation(); app.openRivalModal(${Number(myTeamId)}, ${Number(team.entry_id)})" class="inline-flex items-center px-1.5 py-0.5 min-h-[24px] rounded-md text-[9.5px] font-extrabold bg-slate-100 hover:bg-slate-900 text-slate-700 hover:text-white dark:bg-slate-800 dark:hover:bg-blue-600 dark:text-slate-300 dark:hover:text-white border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer flex-shrink-0" title="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}" aria-label="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}">VS</button>`
+              ? `<button type="button" onclick="event.stopPropagation(); app.openRivalModal(${Number(myTeamId)}, ${Number(team.entry_id)})" class="inline-flex items-center px-1.5 py-0.5 min-h-[24px] rounded text-[10px] font-bold text-slate-500 bg-slate-100/80 hover:bg-slate-900 hover:text-white dark:text-slate-400 dark:bg-slate-800/80 dark:hover:bg-blue-600 dark:hover:text-white transition-colors cursor-pointer flex-shrink-0" title="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}" aria-label="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}">VS</button>`
               : '';
 
             let rankBadge = '';
@@ -11123,8 +11121,8 @@ __STRUCTURED_DATA_JSON__
               : `<span class="text-slate-400 dark:text-slate-500 font-medium font-display">-</span>`;
 
             oHtml += `
-              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isDeparted ? 'opacity-70' : ''} ${isMyRow ? 'bg-blue-50/70 dark:bg-blue-950/25 border-l-2 border-l-blue-500' : ''}">
-                <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">
+              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isDeparted ? 'opacity-70' : ''} ${isMyRow ? 'bg-blue-50/60 dark:bg-blue-950/25 border-l-2 border-l-blue-500' : ''}">
+                <td class="py-2.5 pl-3.5 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">
                   <div class="flex flex-col items-center justify-center">
                     ${rankBadge}
                     ${rankDeltaHtml ? `<span class="mt-0.5 leading-none">${rankDeltaHtml}</span>` : ''}
@@ -11146,7 +11144,7 @@ __STRUCTURED_DATA_JSON__
                 </td>
                 <td class="py-2.5 px-1 sm:px-3 text-center font-display text-xs sm:text-sm text-slate-700 dark:text-slate-300 tabular-nums whitespace-nowrap"><span class="font-semibold">${rawScore}</span>${hitsBadge}</td>
                 <td class="py-2.5 px-1 sm:px-2 text-center font-display text-xs sm:text-sm tabular-nums whitespace-nowrap">${cumHitsText}</td>
-                <td class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right font-display font-black tabular-nums text-xs sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
+                <td class="py-2.5 pl-1.5 sm:pl-2 pr-3.5 sm:pr-3 text-right font-display font-black tabular-nums text-[13px] sm:text-sm text-slate-900 dark:text-white">${team.total_points}</td>
               </tr>
             `;
           });
@@ -22448,58 +22446,81 @@ __STRUCTURED_DATA_JSON__
 
         const selectedEv = this._openDramaEventId ? events.find(e => e.id === this._openDramaEventId) : null;
 
+        const isExpandedMobile = Boolean(this._dramaStripExpandedMobile);
+        const momentCountLabel = isEn
+          ? `${events.length} ${events.length === 1 ? 'moment' : 'moments'}`
+          : `${events.length} ช็อตเด็ด`;
+
         container.classList.remove('hidden');
         container.innerHTML = `
-          <div class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-200/90 dark:border-slate-800 shadow-2xs overflow-hidden min-w-0 max-w-full">
-            <div class="flex items-center justify-between gap-2 mb-2.5">
+          <div class="rounded-2xl border border-slate-200/85 dark:border-slate-800 bg-slate-50/85 dark:bg-slate-900/60 overflow-hidden min-w-0 max-w-full">
+            <button
+              type="button"
+              id="live-drama-toggle-btn"
+              onclick="app.toggleLiveDramaStripMobile()"
+              aria-expanded="${isExpandedMobile ? 'true' : 'false'}"
+              aria-controls="live-drama-body"
+              class="w-full flex items-center justify-between gap-2 px-3.5 py-2.5 sm:px-4 min-h-[44px] text-left cursor-pointer xl:cursor-default xl:pointer-events-none hover:bg-slate-100/70 dark:hover:bg-slate-800/40 xl:hover:bg-transparent xl:dark:hover:bg-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500"
+            >
               <div class="flex items-center gap-2 min-w-0">
                 ${isLive ? '<span class="w-2 h-2 rounded-full bg-emerald-500 motion-safe:animate-pulse flex-shrink-0"></span>' : ''}
-                <h3 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display truncate">${sectionTitle}</h3>
+                <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display truncate">${sectionTitle}</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/90 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 font-display flex-shrink-0 tabular-nums">${momentCountLabel}</span>
               </div>
-              <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs px-3 py-1 rounded-xl font-bold font-display flex-shrink-0">GW ${this.selectedGW}</span>
-            </div>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-display tabular-nums">GW ${this.selectedGW}</span>
+                <svg class="w-4 h-4 text-slate-400 dark:text-slate-500 xl:hidden transition-transform duration-200 ${isExpandedMobile ? 'rotate-180' : ''}" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </button>
 
-            <div class="flex gap-2.5 overflow-x-auto touch-scroll scrollbar-thin pb-1 snap-x md:grid md:grid-cols-2 xl:grid-cols-3 md:overflow-visible">
-              ${events.map(ev => {
-                const tCls = toneMap[ev.tone] || toneMap.amber;
-                const isActive = this._openDramaEventId === ev.id;
-                const teamCountLabel = ev.teams && ev.teams.length > 0
-                  ? (isEn ? `${ev.teams.length} ${ev.teams.length === 1 ? 'team' : 'teams'}` : `${ev.teams.length} ทีม`)
-                  : '';
-                return `
-                  <button type="button" onclick="app.toggleDramaEventDetail('${this.escapeHtml(ev.id)}')" aria-expanded="${isActive ? 'true' : 'false'}" class="w-[245px] xs:w-[265px] md:w-auto flex-shrink-0 snap-start text-left p-2.5 sm:p-3 rounded-xl border transition-all cursor-pointer active:scale-[0.99] ${isActive ? 'bg-slate-100/90 dark:bg-slate-800 border-slate-400 dark:border-slate-500 ring-1 ring-slate-300 dark:ring-slate-600' : 'bg-white/85 dark:bg-slate-900/60 border-slate-200/90 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'}">
-                    <div class="flex items-center justify-between gap-1.5 mb-1">
-                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${tCls.badge} font-display">
-                        <span class="w-1.5 h-1.5 rounded-full ${tCls.dot}"></span>
-                        <span>${this.escapeHtml(ev.badge)}</span>
-                      </span>
-                      ${teamCountLabel ? `<span class="text-[10px] font-semibold text-slate-400 dark:text-slate-500 font-display">${teamCountLabel} ${isActive ? '▲' : '▼'}</span>` : ''}
-                    </div>
-                    <div class="text-xs sm:text-[13px] font-black text-slate-900 dark:text-white font-display truncate">${this.escapeHtml(ev.headline)}</div>
-                    <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2 leading-snug">${this.escapeHtml(ev.detail)}</div>
-                  </button>
-                `;
-              }).join('')}
-            </div>
-
-            ${selectedEv ? `
-              <div id="live-drama-detail-panel" class="mt-2.5 pt-2.5 border-t border-slate-200/80 dark:border-slate-800">
-                <div class="flex items-center justify-between gap-2 mb-2">
-                  <span class="text-[11px] font-bold text-slate-700 dark:text-slate-300 font-display">${isEn ? 'Affected League Teams' : 'รายชื่อทีมที่ได้รับผลกระทบ'}: ${this.escapeHtml(selectedEv.headline)}</span>
-                  <button type="button" onclick="app.toggleDramaEventDetail('${this.escapeHtml(selectedEv.id)}')" class="text-[11px] font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white px-2 py-1 rounded-lg cursor-pointer">${isEn ? 'Close ✕' : 'ปิด ✕'}</button>
-                </div>
-                <div class="flex flex-wrap gap-1.5">
-                  ${(selectedEv.teams || []).map(tm => `
-                    <button type="button" onclick="app.openTeamModal(${Number(tm.entry_id)})" class="inline-flex items-center gap-1.5 px-2.5 py-1 min-h-[32px] rounded-xl text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 transition-colors cursor-pointer">
-                      <span class="font-bold truncate max-w-[140px]">${this.escapeHtml(tm.team_name)}</span>
-                      <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400">${this.escapeHtml(tm.meta || '')}</span>
+            <div id="live-drama-body" class="${isExpandedMobile ? 'block' : 'hidden xl:block'} border-t border-slate-200/75 dark:border-slate-800/80 px-3 py-2.5 sm:px-4 sm:py-3">
+              <div class="flex gap-2.5 overflow-x-auto touch-scroll scrollbar-thin pb-1 snap-x md:grid md:grid-cols-2 xl:grid-cols-3 md:overflow-visible">
+                ${events.map(ev => {
+                  const tCls = toneMap[ev.tone] || toneMap.amber;
+                  const isActive = this._openDramaEventId === ev.id;
+                  const teamCountLabel = ev.teams && ev.teams.length > 0
+                    ? (isEn ? `${ev.teams.length} ${ev.teams.length === 1 ? 'team' : 'teams'}` : `${ev.teams.length} ทีม`)
+                    : '';
+                  return `
+                    <button type="button" onclick="app.toggleDramaEventDetail('${this.escapeHtml(ev.id)}')" aria-expanded="${isActive ? 'true' : 'false'}" class="w-[245px] xs:w-[265px] md:w-auto flex-shrink-0 snap-start text-left p-3 rounded-xl border transition-colors cursor-pointer active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${isActive ? 'bg-white dark:bg-slate-800 border-slate-400 dark:border-slate-500 ring-1 ring-slate-300 dark:ring-slate-600' : 'bg-white/95 dark:bg-slate-950/60 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'}">
+                      <div class="flex items-center justify-between gap-1.5 mb-1">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${tCls.badge} font-display">
+                          <span class="w-1.5 h-1.5 rounded-full ${tCls.dot}"></span>
+                          <span>${this.escapeHtml(ev.badge)}</span>
+                        </span>
+                        ${teamCountLabel ? `<span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 font-display">${teamCountLabel} ${isActive ? '▲' : '▼'}</span>` : ''}
+                      </div>
+                      <div class="text-xs sm:text-[13px] font-black text-slate-900 dark:text-white font-display truncate">${this.escapeHtml(ev.headline)}</div>
+                      <div class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5 line-clamp-2 leading-snug">${this.escapeHtml(ev.detail)}</div>
                     </button>
-                  `).join('')}
-                </div>
+                  `;
+                }).join('')}
               </div>
-            ` : ''}
+
+              ${selectedEv ? `
+                <div id="live-drama-detail-panel" class="mt-2.5 pt-2.5 border-t border-slate-200/80 dark:border-slate-800">
+                  <div class="flex items-center justify-between gap-2 mb-2">
+                    <span class="text-[11px] font-bold text-slate-700 dark:text-slate-300 font-display">${isEn ? 'Affected League Teams' : 'รายชื่อทีมที่ได้รับผลกระทบ'}: ${this.escapeHtml(selectedEv.headline)}</span>
+                    <button type="button" onclick="app.toggleDramaEventDetail('${this.escapeHtml(selectedEv.id)}')" class="text-[11px] font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white px-2 py-1 rounded-lg cursor-pointer">${isEn ? 'Close ✕' : 'ปิด ✕'}</button>
+                  </div>
+                  <div class="flex flex-wrap gap-1.5">
+                    ${(selectedEv.teams || []).map(tm => `
+                      <button type="button" onclick="app.openTeamModal(${Number(tm.entry_id)})" class="inline-flex items-center gap-1.5 px-2.5 py-1 min-h-[32px] rounded-xl text-[11px] font-semibold bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 transition-colors cursor-pointer">
+                        <span class="font-bold truncate max-w-[140px]">${this.escapeHtml(tm.team_name)}</span>
+                        <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400">${this.escapeHtml(tm.meta || '')}</span>
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
+              ` : ''}
+            </div>
           </div>
         `;
+      }
+
+      toggleLiveDramaStripMobile() {
+        this._dramaStripExpandedMobile = !this._dramaStripExpandedMobile;
+        this.renderGameweekView();
       }
 
       toggleDramaEventDetail(eventId) {
@@ -23050,8 +23071,8 @@ __STRUCTURED_DATA_JSON__
 
         if (!matchdayCard || !overallCard) return;
 
-        const activeBtnClass = 'flex-1 sm:flex-initial px-3 py-1.5 min-h-[38px] rounded-lg text-xs font-bold font-display transition-all cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs';
-        const inactiveBtnClass = 'flex-1 sm:flex-initial px-3 py-1.5 min-h-[38px] rounded-lg text-xs font-semibold font-display transition-all cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+        const activeBtnClass = 'flex-1 sm:flex-initial px-3 py-1.5 min-h-[38px] rounded-lg text-xs font-bold font-display transition-colors cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs';
+        const inactiveBtnClass = 'flex-1 sm:flex-initial px-3 py-1.5 min-h-[38px] rounded-lg text-xs font-semibold font-display transition-colors cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
 
         if (tab === 'matchday') {
           matchdayCard.classList.remove('hidden', 'max-xl:hidden');
@@ -24555,7 +24576,7 @@ __STRUCTURED_DATA_JSON__
         f'  <link rel="preload" as="fetch" href="{asset_prefix}data/leagues/{effective_lid}.json" crossorigin>\n'
         if is_initial_tier2 and default_league_id else ''
     )
-    gw_hero_min_h = 'min-h-[124px]' if is_initial_tier2 else 'min-h-[460px] sm:min-h-[480px]'
+    gw_hero_min_h = 'min-h-[96px]' if is_initial_tier2 else 'min-h-[160px] xl:min-h-[280px]'
 
     html = html_shell.replace('__LAST_SYNC__', last_sync_str)
     html = html.replace('__NEXT_DEADLINE_TEXT__', next_deadline_text)
