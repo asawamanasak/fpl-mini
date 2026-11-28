@@ -30432,6 +30432,12 @@ def main():
             continue
         l_raw = multi_data.get("leagues", {}).get(str(lid_str), {})
         t_list = l_raw.get("teams", []) if isinstance(l_raw, dict) else []
+        dep_map = l_raw.get("departed_teams", {}) if isinstance(l_raw, dict) else {}
+        if not isinstance(dep_map, dict):
+            dep_map = {}
+        dep_count = len(dep_map)
+        dep_non_prize_count = sum(1 for v in dep_map.values() if isinstance(v, dict) and v.get("is_non_prize"))
+        dep_prize_count = max(0, dep_count - dep_non_prize_count)
         admin_leagues_summary[str(lid_str)] = {
             "id": int(lid_str) if str(lid_str).isdigit() else lid_str,
             "name": (l_raw.get("name") if isinstance(l_raw, dict) and l_raw.get("name") else l_cfg.get("name", str(lid_str))),
@@ -30439,6 +30445,9 @@ def main():
             "tier": int(l_raw.get("tier") if isinstance(l_raw, dict) and l_raw.get("tier") else l_cfg.get("tier", 1)),
             "status": str(l_cfg.get("status", "active")),
             "teams_count": len(t_list),
+            "departed_count": dep_count,
+            "departed_prize_count": dep_prize_count,
+            "departed_non_prize_count": dep_non_prize_count,
         }
     admin_summary_payload = {
         "last_sync": multi_data.get("last_sync"),

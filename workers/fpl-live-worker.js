@@ -613,13 +613,17 @@ function buildLeagueModulesSummary(cfgItem, teamsCount) {
   };
 }
 
-function computeSyncHealth(lastSyncIso, now = new Date()) {
+function computeSyncHealth(lastSyncIso, now = new Date(), smartCommitActive = true) {
   const raw = typeof lastSyncIso === 'string' ? lastSyncIso.trim() : '';
+  const isSmart = smartCommitActive !== false;
+  const heartbeatIntervalMin = isSmart ? 360 : 0;
   if (!raw) {
     return {
       last_sync_iso: null,
       age_minutes: null,
       expected_interval_min: null,
+      heartbeat_interval_min: heartbeatIntervalMin,
+      smart_commit_active: isSmart,
       stale_threshold_min: null,
       incident_threshold_min: null,
       is_matchday_cadence: null,
@@ -635,6 +639,8 @@ function computeSyncHealth(lastSyncIso, now = new Date()) {
       last_sync_iso: raw,
       age_minutes: null,
       expected_interval_min: null,
+      heartbeat_interval_min: heartbeatIntervalMin,
+      smart_commit_active: isSmart,
       stale_threshold_min: null,
       incident_threshold_min: null,
       is_matchday_cadence: null,
@@ -645,8 +651,12 @@ function computeSyncHealth(lastSyncIso, now = new Date()) {
   const ictDow = new Date(now.getTime() + 7 * 3600000).getUTCDay();
   const isMatchdayCadence = ictDow === 5 || ictDow === 6 || ictDow === 0 || ictDow === 1;
   const expectedIntervalMin = isMatchdayCadence ? 60 : 240;
-  const staleThresholdMin = isMatchdayCadence ? 150 : 360;
-  const incidentThresholdMin = isMatchdayCadence ? 240 : 540;
+  const staleThresholdMin = isSmart
+    ? (isMatchdayCadence ? 450 : 660)
+    : (isMatchdayCadence ? 150 : 360);
+  const incidentThresholdMin = isSmart
+    ? (isMatchdayCadence ? 600 : 840)
+    : (isMatchdayCadence ? 240 : 540);
   const status = ageMinutes >= incidentThresholdMin
     ? 'incident'
     : (ageMinutes >= staleThresholdMin ? 'stale' : 'healthy');
@@ -654,6 +664,8 @@ function computeSyncHealth(lastSyncIso, now = new Date()) {
     last_sync_iso: raw,
     age_minutes: ageMinutes,
     expected_interval_min: expectedIntervalMin,
+    heartbeat_interval_min: heartbeatIntervalMin,
+    smart_commit_active: isSmart,
     stale_threshold_min: staleThresholdMin,
     incident_threshold_min: incidentThresholdMin,
     is_matchday_cadence: isMatchdayCadence,
@@ -1947,7 +1959,7 @@ export default {
           await pruneExpiredOrdersToStats(env.DB, nowIso);
 
           const statusFilter = (url.searchParams.get('status') || '').trim();
-          const allowedFilters = new Set(['awaiting_payment', 'slip_submitted', 'paid', 'live', 'quote_requested', 'rejected']);
+          const allowedFilters = new Set(['awaiting_payment', 'slip_submitted', 'paid', 'live', 'quote_requested', 'rejected', 'expired']);
           let qRows = null;
           if (statusFilter && allowedFilters.has(statusFilter)) {
             qRows = await env.DB.prepare(`
@@ -1990,6 +2002,7 @@ export default {
             live: 0,
             quote_requested: 0,
             rejected: 0,
+            expired: 0,
           };
           if (countRows && Array.isArray(countRows.results)) {
             for (const c of countRows.results) {
@@ -2001,17 +2014,19 @@ export default {
               counts.all += val;
             }
           }
-          let expiredUnpaidTotal = 0;
+          let prunedExpiredUnpaid = 0;
           try {
             const statRow = await env.DB.prepare(
               "SELECT val FROM telemetry_counters WHERE metric = 'lifetime:orders_expired_unpaid' LIMIT 1"
             ).first();
-            expiredUnpaidTotal = statRow ? (Number(statRow.val) || 0) : 0;
+            prunedExpiredUnpaid = statRow ? (Number(statRow.val) || 0) : 0;
           } catch (_) {}
 
+          const graceExpiredCount = counts.expired || 0;
+          const expiredUnpaidTotal = prunedExpiredUnpaid + graceExpiredCount;
           const paidOrLive = (counts.paid || 0) + (counts.live || 0);
           const activePending = (counts.awaiting_payment || 0) + (counts.slip_submitted || 0) + (counts.quote_requested || 0) + (counts.rejected || 0);
-          const totalRecorded = (counts.all || 0) + expiredUnpaidTotal;
+          const totalRecorded = (counts.all || 0) + prunedExpiredUnpaid;
           const conversionPct = totalRecorded > 0
             ? Math.round((paidOrLive / totalRecorded) * 100)
             : 0;
@@ -2019,6 +2034,7 @@ export default {
             total_recorded: totalRecorded,
             paid_or_live: paidOrLive,
             active_pending: activePending,
+            expired_in_grace: graceExpiredCount,
             expired_unpaid_total: expiredUnpaidTotal,
             conversion_pct: conversionPct,
           };
@@ -2505,6 +2521,8 @@ export default {
             const rawLeagues = (data && data.leagues && typeof data.leagues === 'object') ? data.leagues : {};
             let liveTier1Managers = 0;
             let liveAllManagers = 0;
+            let totalDepartedTeams = 0;
+            let leaguesWithDeparted = 0;
             const liveLeagueSummaries = {};
             const allLeagueIds = new Set([...Object.keys(rawLeagues), ...Object.keys(configMetaByLeague)]);
             for (const lid of allLeagueIds) {
@@ -2512,6 +2530,18 @@ export default {
               const teamsCount = (lObj && typeof lObj.teams_count === 'number')
                 ? lObj.teams_count
                 : ((lObj && Array.isArray(lObj.teams)) ? lObj.teams.length : 0);
+              const depObj = (lObj && lObj.departed_teams && typeof lObj.departed_teams === 'object') ? lObj.departed_teams : null;
+              const departedCount = (lObj && typeof lObj.departed_count === 'number')
+                ? lObj.departed_count
+                : (depObj ? Object.keys(depObj).length : 0);
+              const departedNonPrizeCount = (lObj && typeof lObj.departed_non_prize_count === 'number')
+                ? lObj.departed_non_prize_count
+                : (depObj ? Object.values(depObj).filter(v => v && v.is_non_prize).length : 0);
+              const departedPrizeCount = (lObj && typeof lObj.departed_prize_count === 'number')
+                ? lObj.departed_prize_count
+                : Math.max(0, departedCount - departedNonPrizeCount);
+              totalDepartedTeams += departedCount;
+              if (departedCount > 0) leaguesWithDeparted += 1;
               const cfgMeta = configMetaByLeague[lid] || {};
               const tier = (lObj && lObj.tier) ? Number(lObj.tier) : (cfgMeta.tier || 1);
               const d1Note = d1NotesMap && d1NotesMap.has(String(lid)) ? d1NotesMap.get(String(lid)) : '';
@@ -2524,6 +2554,9 @@ export default {
                 id: lid,
                 name: (lObj && lObj.name) ? String(lObj.name) : (cfgMeta.name || lid),
                 teams: teamsCount,
+                departed_teams: departedCount,
+                departed_prize: departedPrizeCount,
+                departed_non_prize: departedNonPrizeCount,
                 tier,
                 pool: typeof cfgMeta.pool === 'number' ? cfgMeta.pool : 0,
                 pool_label: cfgMeta.pool_label || '-',
@@ -2572,6 +2605,8 @@ export default {
               total_managers: liveTier1Managers,
               total_managers_tier1: liveTier1Managers,
               total_managers_all: liveAllManagers,
+              total_departed_teams: totalDepartedTeams,
+              leagues_with_departed: leaguesWithDeparted,
               total_pool_gmv: dynamicPoolGmv,
               tier1_leagues_count: tier1LeaguesCount,
               total_leagues_count: totalLeaguesCount,
@@ -3065,7 +3100,11 @@ export default {
                   last_sync: data.last_sync || null,
                   last_sync_iso: data.last_sync_iso || null,
                 };
-                const syncHealth = computeSyncHealth(data.last_sync_iso || syncTelem.last_sync_iso, now);
+                const syncHealth = computeSyncHealth(
+                  data.last_sync_iso || syncTelem.last_sync_iso,
+                  now,
+                  syncTelem.smart_commit_active !== false
+                );
 
                 const lifetimeTotalViews = metricMap.get('lifetime:total_views') || 0;
 

@@ -1034,6 +1034,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         <button type="button" data-order-filter="rejected" class="ord-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg border text-xs font-semibold whitespace-nowrap transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
           <span data-i18n="ord_f_rejected">ปฏิเสธ</span> (<span id="ordCnt_rejected">0</span>)
         </button>
+        <button type="button" data-order-filter="expired" class="ord-filter-btn min-h-[42px] px-3.5 py-2 rounded-lg border text-xs font-semibold whitespace-nowrap transition-colors border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300">
+          <span data-i18n="ord_f_expired">หมดอายุ (24 ชม.)</span> (<span id="ordCnt_expired">0</span>)
+        </button>
       </div>
 
       <div class="rounded-xl border border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark overflow-hidden">
@@ -2084,20 +2087,20 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
               <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark">
-                <div class="font-semibold text-slate-900 dark:text-white">1. Weekly Top-Score</div>
-                <div class="text-slate-600 dark:text-neutral-400">แชมป์วีค (THB/USD) + สรุปยอดรับสุทธิ</div>
+                <div class="font-semibold text-slate-900 dark:text-white">1. Weekly Top-Score &amp; Phases</div>
+                <div class="text-slate-600 dark:text-neutral-400">แชมป์วีค + เคลียร์เงิน 6 งวด / Top-3 (เช่น 40700, 38491, 1101958)</div>
               </div>
               <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark">
                 <div class="font-semibold text-slate-900 dark:text-white">2. Weekly + Bottom Penalties</div>
-                <div class="text-slate-600 dark:text-neutral-400">หักค่าปรับ N อันดับบ๊วยอัตโนมัติ (เช่น 40700)</div>
+                <div class="text-slate-600 dark:text-neutral-400">หักค่าปรับ 5 อันดับบ๊วยอัตโนมัติ (เช่น 438691)</div>
               </div>
               <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark">
-                <div class="font-semibold text-slate-900 dark:text-white">3. Monthly Top-Score</div>
-                <div class="text-slate-600 dark:text-neutral-400">แชมป์ &amp; รองแชมป์ประจำเดือน (เช่น 38491)</div>
+                <div class="font-semibold text-slate-900 dark:text-white">3. Monthly Split &amp; Charity</div>
+                <div class="text-slate-600 dark:text-neutral-400">แชมป์ &amp; รองแชมป์ประจำเดือน + บริจาค (เช่น 675290)</div>
               </div>
               <div class="p-3 rounded-lg bg-raisedLight dark:bg-raisedDark border border-borderLight dark:border-borderDark">
-                <div class="font-semibold text-slate-900 dark:text-white">4. Season Top &amp; Cup Only</div>
-                <div class="text-slate-600 dark:text-neutral-400">แชมป์ฤดูกาล + ถ้วยน็อคเอาท์ (THB/USD)</div>
+                <div class="font-semibold text-slate-900 dark:text-white">4. Annual Zero-Sum / Dual Prize</div>
+                <div class="text-slate-600 dark:text-neutral-400">Zero-Sum สิ้นปี, รางวัล 2 ช่วง &amp; มินิเกม (เช่น 187827, 5349)</div>
               </div>
               <div class="sm:col-span-2 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-between gap-2">
                 <div>
@@ -2148,10 +2151,12 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
             </div>
             <div class="flex flex-wrap gap-2 text-xs mono">
               <a href="https://www.fplsawadika.com/40700/?tab=transfer-advisor" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-500/20 inline-flex items-center gap-1.5">Transfer Advisor (40700) ↗</a>
-              <a href="https://www.fplsawadika.com/40700/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">40700 · Weekly + Penalties ↗</a>
-              <a href="https://www.fplsawadika.com/675290/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">675290 · Weekly + Shi'62 ↗</a>
-              <a href="https://www.fplsawadika.com/38491/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">38491 · Monthly Split ↗</a>
-              <a href="https://www.fplsawadika.com/1101958/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">1101958 · USD Currency ↗</a>
+              <a href="https://www.fplsawadika.com/40700/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">40700 · Weekly + 6 Phases + Cup ↗</a>
+              <a href="https://www.fplsawadika.com/438691/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">438691 · Weekly + Bottom-5 Penalties ↗</a>
+              <a href="https://www.fplsawadika.com/675290/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">675290 · Monthly Split + Charity ↗</a>
+              <a href="https://www.fplsawadika.com/187827/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">187827 · Annual Zero-Sum + Shi'62 ↗</a>
+              <a href="https://www.fplsawadika.com/1101958/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">1101958 · Top-3 Weekly (THB) ↗</a>
+              <a href="https://www.fplsawadika.com/5349/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">5349 · Dual Prize + Mini-Games ↗</a>
               <a href="https://www.fplsawadika.com/139836/" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">139836 · Tier 2 (1,779 Teams) ↗</a>
               <a href="https://www.fplsawadika.com/preview.html" target="_blank" rel="noopener noreferrer" class="min-h-[40px] px-3 py-1.5 rounded-lg border border-borderLight dark:border-borderDark bg-raisedLight dark:bg-raisedDark text-slate-800 dark:text-neutral-200 hover:border-emerald-500 inline-flex items-center gap-1.5">Showcase Preview Hub ↗</a>
             </div>
@@ -2273,6 +2278,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ord_f_quote: 'ขอราคา / USD',
         ord_f_live: 'เปิดลีกแล้ว',
         ord_f_rejected: 'ปฏิเสธ',
+        ord_f_expired: 'หมดอายุ (24 ชม.)',
         ord_col_id: 'รหัสออเดอร์',
         ord_col_league: 'ลีก FPL',
         ord_col_amount: 'ยอดชำระ',
@@ -2520,6 +2526,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         ord_f_quote: 'Quote / USD',
         ord_f_live: 'Live',
         ord_f_rejected: 'Rejected',
+        ord_f_expired: 'Expired (24h)',
         ord_col_id: 'Order ID',
         ord_col_league: 'FPL League',
         ord_col_amount: 'Amount',
@@ -2911,8 +2918,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         const expText = row.expires_at
           ? (row.expires_at + (typeof row.days_remaining === 'number' ? ' (' + row.days_remaining + 'd)' : ''))
           : (lang === 'en' ? 'No expiry set' : 'ยังไม่กำหนดวันหมดอายุ');
+        const depPart = row.departed > 0
+          ? (lang === 'en' ? (' · Departed: ' + row.departed) : (' · ออกกลางคัน: ' + row.departed + ' ทีม'))
+          : '';
         metaEl.textContent = 'Tenant: ' + (row.tenant_group || 'showcase') +
-          (lang === 'en' ? ' · Expires: ' : ' · วันหมดอายุ: ') + expText;
+          (lang === 'en' ? ' · Expires: ' : ' · วันหมดอายุ: ') + expText + depPart;
       }
       if (noteEl) {
         if (row.billing_note) {
@@ -3116,6 +3126,11 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         const avgTimeText = lang === 'en' ? (row.avgScreenTimeEn || '—') : (row.avgScreenTime || '—');
         const vptText = Number(row.vpt || 0).toFixed(1) + (lang === 'en' ? '/team (7d)' : '/ทีม (7d)');
 
+        const depCount = Number(row.departed || 0);
+        const depSubHtml = depCount > 0
+          ? ('<div class="text-[11px] text-amber-700 dark:text-amber-300/90 mt-0.5" title="' + escHtml((lang === 'en' ? 'Prize: ' : 'ชิงรางวัล: ') + Number(row.departedPrize || 0) + (lang === 'en' ? ' · Guest: ' : ' · ร่วมสนุก: ') + Number(row.departedNonPrize || 0)) + '">' + escHtml(lang === 'en' ? (depCount + ' left') : ('ออกกลางคัน ' + depCount)) + '</div>')
+          : '';
+
         return '<tr class="hover:bg-raisedLight/60 dark:hover:bg-raisedDark/60 transition-colors">' +
           '<th scope="row" class="sticky left-0 z-10 bg-cardLight dark:bg-cardDark px-4 py-1.5 font-medium text-slate-900 dark:text-white border-r border-borderLight dark:border-borderDark whitespace-nowrap">' +
             '<a href="' + targetUrl + '" target="_blank" rel="noopener" class="min-h-[44px] flex flex-col justify-center hover:text-emerald-700 dark:hover:text-emerald-400">' +
@@ -3123,7 +3138,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               '<span class="text-xs mono text-slate-600 dark:text-neutral-400 font-normal">ID: ' + escHtml(row.id + badgePart) + '</span>' +
             '</a>' +
           '</th>' +
-          '<td class="px-4 py-3 text-right mono tabular whitespace-nowrap text-slate-800 dark:text-neutral-200">' + Number(row.teams).toLocaleString() + '</td>' +
+          '<td class="px-4 py-3 text-right mono tabular whitespace-nowrap text-slate-800 dark:text-neutral-200"><div>' + Number(row.teams).toLocaleString() + '</div>' + depSubHtml + '</td>' +
           '<td class="px-4 py-3 text-right mono tabular whitespace-nowrap ' + poolClass + '">' + poolText + '</td>' +
           '<td class="px-4 py-3 min-w-[220px] max-w-[300px] text-slate-700 dark:text-neutral-300">' + escHtml(modulesText) + '</td>' +
           '<td class="px-4 py-3 text-right mono tabular whitespace-nowrap font-medium text-slate-900 dark:text-white">' + Number(row.views || 0).toLocaleString() + '</td>' +
@@ -3379,33 +3394,52 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
 
       const syncBanner = document.getElementById('monitorSyncHealthBanner');
       if (syncBanner) {
-        const ageTxt = typeof sh.age_minutes === 'number'
-          ? (sh.age_minutes >= 60
-              ? (Math.floor(sh.age_minutes / 60) + (lang === 'en' ? 'h ' : ' ชม. ') + (sh.age_minutes % 60) + (lang === 'en' ? 'm' : ' นาที'))
-              : (sh.age_minutes + (lang === 'en' ? 'm' : ' นาที')))
-          : '—';
+        const formatAgeOrThreshold = (mins) => {
+          if (typeof mins !== 'number' || Number.isNaN(mins)) return '—';
+          if (mins >= 60) {
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+            if (m === 0) return h + (lang === 'en' ? 'h' : ' ชม.');
+            return h + (lang === 'en' ? 'h ' : ' ชม. ') + m + (lang === 'en' ? 'm' : ' นาที');
+          }
+          return mins + (lang === 'en' ? 'm' : ' นาที');
+        };
+        const isSmart = sh.smart_commit_active !== false;
+        const hbMin = Number(sh.heartbeat_interval_min || 360);
+        const ageTxt = formatAgeOrThreshold(sh.age_minutes);
+        const staleThrTxt = formatAgeOrThreshold(sh.stale_threshold_min || (isSmart ? 450 : 150));
+        const incThrTxt = formatAgeOrThreshold(sh.incident_threshold_min || (isSmart ? 600 : 240));
+        const hbTxt = formatAgeOrThreshold(hbMin);
         const cadenceTxt = sh.is_matchday_cadence === true
-          ? (lang === 'en' ? 'Matchday Cadence (Fri–Mon · 60m)' : 'ตารางวันแข่ง (ศ.–จ. · ทุก 60 นาที)')
+          ? (isSmart
+              ? (lang === 'en' ? 'Matchday Cron (Fri–Mon · 1h / 6h Heartbeat)' : 'ตารางวันแข่ง (ศ.–จ. · 1 ชม. / Heartbeat 6 ชม.)')
+              : (lang === 'en' ? 'Matchday Cadence (Fri–Mon · 60m)' : 'ตารางวันแข่ง (ศ.–จ. · ทุก 60 นาที)'))
           : (sh.is_matchday_cadence === false
-              ? (lang === 'en' ? 'Weekday Cadence (Tue–Thu · 240m)' : 'ตารางวันธรรมดา (อ.–พฤ. · ทุก 4 ชม.)')
+              ? (isSmart
+                  ? (lang === 'en' ? 'Weekday Cron (Tue–Thu · 4h / 6h Heartbeat)' : 'ตารางวันธรรมดา (อ.–พฤ. · 4 ชม. / Heartbeat 6 ชม.)')
+                  : (lang === 'en' ? 'Weekday Cadence (Tue–Thu · 240m)' : 'ตารางวันธรรมดา (อ.–พฤ. · ทุก 4 ชม.)'))
               : (lang === 'en' ? 'Auto Cron Schedule' : 'ตารางซิงก์อัตโนมัติ'));
         let cls = 'p-3.5 rounded-xl border text-xs mono flex flex-wrap items-center justify-between gap-2 ';
         let msg = '';
         if (sh.status === 'healthy') {
           cls += 'border-emerald-500/30 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300';
-          msg = lang === 'en'
-            ? ('✓ GitHub Actions Sync Fresh (' + ageTxt + ' ago · Expected ≤ ' + (sh.expected_interval_min || 60) + 'm)')
-            : ('✓ ซิงก์ GitHub Actions สดใหม่ (ซิงก์เมื่อ ' + ageTxt + ' ก่อน · รอบปกติทุก ' + (sh.expected_interval_min || 60) + ' นาที)');
+          msg = isSmart
+            ? (lang === 'en'
+                ? ('✓ GitHub Actions Sync Healthy (' + ageTxt + ' ago · Smart Commit Heartbeat ≤ ' + hbTxt + ')')
+                : ('✓ ซิงก์ GitHub Actions ปกติ (อัปเดตล่าสุดเมื่อ ' + ageTxt + ' ก่อน · Smart Commit Heartbeat ≤ ' + hbTxt + ')'))
+            : (lang === 'en'
+                ? ('✓ GitHub Actions Sync Fresh (' + ageTxt + ' ago · Expected ≤ ' + (sh.expected_interval_min || 60) + 'm)')
+                : ('✓ ซิงก์ GitHub Actions สดใหม่ (ซิงก์เมื่อ ' + ageTxt + ' ก่อน · รอบปกติทุก ' + (sh.expected_interval_min || 60) + ' นาที)'));
         } else if (sh.status === 'stale' || sh.status === 'warning') {
           cls += 'border-amber-500/35 bg-amber-500/10 text-amber-800 dark:text-amber-300';
           msg = lang === 'en'
-            ? ('⚠ Sync Delayed (' + ageTxt + ' ago > ' + (sh.stale_threshold_min || 150) + 'm threshold)')
-            : ('⚠ ซิงก์ล่าช้ากว่ากำหนด (' + ageTxt + ' ก่อน · เกณฑ์ ' + (sh.stale_threshold_min || 150) + ' นาที)');
+            ? ('⚠ Sync Delayed (' + ageTxt + ' ago > ' + staleThrTxt + ' threshold)')
+            : ('⚠ ซิงก์ล่าช้ากว่ากำหนด (' + ageTxt + ' ก่อน · เกินเกณฑ์ ' + staleThrTxt + ')');
         } else if (sh.status === 'incident') {
           cls += 'border-rose-500/40 bg-rose-500/10 text-rose-800 dark:text-rose-300';
           msg = lang === 'en'
-            ? ('⚠ Sync Stale Alert (' + ageTxt + ' ago >= ' + (sh.incident_threshold_min || 240) + 'm — Check GitHub Actions)')
-            : ('⚠ ซิงก์หยุดค้าง (' + ageTxt + ' ก่อน · เกิน ' + (sh.incident_threshold_min || 240) + ' นาที — ควรตรวจสอบ GitHub Actions)');
+            ? ('⚠ Sync Stale Alert (' + ageTxt + ' ago >= ' + incThrTxt + ' — Check GitHub Actions)')
+            : ('⚠ ซิงก์หยุดค้าง (' + ageTxt + ' ก่อน · เกิน ' + incThrTxt + ' — ควรตรวจสอบ GitHub Actions)');
         } else {
           cls += 'border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300';
           msg = lang === 'en' ? 'Sync Freshness: Waiting for admin_summary timestamp…' : 'ความสดใหม่การซิงก์: รอ Timestamp ล่าสุด…';
@@ -4686,14 +4720,18 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
         const allCount = Number(data.portfolio.total_managers_all || tier1Count || 0);
         const tier1LeaguesCount = Number(data.portfolio.tier1_leagues_count || 0);
         const totalLeaguesCount = Number(data.portfolio.total_leagues_count || 0);
+        const totalDepartedCount = Number(data.portfolio.total_departed_teams || 0);
 
         const kpiMgrEl = document.getElementById('kpiManagersCount');
         if (kpiMgrEl) kpiMgrEl.textContent = tier1Count.toLocaleString();
         const kpiMgrSub = document.getElementById('kpiManagersSub');
         if (kpiMgrSub) {
+          const depSuffix = totalDepartedCount > 0
+            ? (lang === 'en' ? (' · ' + totalDepartedCount + ' departed') : (' · ออกกลางคัน ' + totalDepartedCount))
+            : '';
           kpiMgrSub.textContent = lang === 'en'
-            ? (tier1LeaguesCount + ' Tier 1 Leagues (' + allCount.toLocaleString() + ' Total across ' + totalLeaguesCount + ' leagues)')
-            : ('Tier 1 ' + tier1LeaguesCount + ' มินิลีก (รวมทั้งหมด ' + allCount.toLocaleString() + ' ทีม / ' + totalLeaguesCount + ' ลีก)');
+            ? (tier1LeaguesCount + ' Tier 1 Leagues (' + allCount.toLocaleString() + ' Total across ' + totalLeaguesCount + ' leagues' + depSuffix + ')')
+            : ('Tier 1 ' + tier1LeaguesCount + ' มินิลีก (รวมทั้งหมด ' + allCount.toLocaleString() + ' ทีม / ' + totalLeaguesCount + ' ลีก' + depSuffix + ')');
         }
 
         const gmvEl = document.getElementById('kpiTotalGmv');
@@ -4741,6 +4779,9 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
               name: String(m.name || lid),
               badge: badgeStr,
               teams: tCount,
+              departed: Number(m.departed_teams || 0),
+              departedPrize: Number(m.departed_prize || 0),
+              departedNonPrize: Number(m.departed_non_prize || 0),
               pool: poolVal,
               poolLabelTh: (m.pool_label && m.pool_label !== '-') ? String(m.pool_label) : 'คอมมูนิตี้',
               poolLabelEn: (m.pool_label_en && m.pool_label_en !== '-') ? String(m.pool_label_en) : 'Community',
@@ -5971,7 +6012,7 @@ export function renderDashboardHtml(colo = 'BKK', authProvider = 'Cloudflare Zer
           ? 'border-emerald-500 bg-emerald-500/15 text-emerald-800 dark:text-emerald-300'
           : 'border-borderLight dark:border-borderDark bg-cardLight dark:bg-cardDark text-slate-700 dark:text-neutral-300 hover:bg-raisedLight dark:hover:bg-raisedDark');
       });
-      ['all', 'slip_submitted', 'awaiting_payment', 'paid', 'quote_requested', 'live', 'rejected'].forEach((k) => {
+      ['all', 'slip_submitted', 'awaiting_payment', 'paid', 'quote_requested', 'live', 'rejected', 'expired'].forEach((k) => {
         const cEl = document.getElementById('ordCnt_' + k);
         if (cEl) cEl.textContent = String(ordersCountsCache[k] || 0);
       });
