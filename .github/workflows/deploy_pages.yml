@@ -11,6 +11,7 @@ on:
       - 'robots.txt'
       - 'sitemap.xml'
       - 'site.webmanifest'
+      - 'sw.js'
       - 'index.html'
       - 'preview.html'
       - '404.html'
@@ -51,7 +52,7 @@ jobs:
         run: |
           rm -rf _site
           mkdir -p _site
-          for f in .nojekyll CNAME favicon.ico robots.txt sitemap.xml site.webmanifest index.html preview.html 404.html; do
+          for f in .nojekyll CNAME favicon.ico robots.txt sitemap.xml site.webmanifest sw.js index.html preview.html 404.html; do
             if [ -f "$f" ]; then
               cp "$f" _site/
             fi
