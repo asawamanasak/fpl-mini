@@ -1794,11 +1794,6 @@ __STRUCTURED_DATA_JSON__
         <div id="live-drama-strip-container" class="hidden min-w-0 max-w-full">
           <!-- Rendered dynamically -->
         </div>
-
-        <!-- 2.2c แถบปักหมุดทีมฉัน & ลัดเทียบคู่แข่ง 1v1 (Tier 1 Only) -->
-        <div id="my-team-strip-container" class="hidden min-w-0 max-w-full">
-          <!-- Rendered dynamically -->
-        </div>
       </div>
 
       <!-- 2.3 ตัวควบคุมตาราง: ช่องค้นหาทีม & แท็บสลับตารางบนมือถือ (Search & Mobile Switcher) -->
@@ -10450,8 +10445,6 @@ __STRUCTURED_DATA_JSON__
           if (championCard) championCard.innerHTML = '';
           const dramaEl = document.getElementById('live-drama-strip-container');
           if (dramaEl) { dramaEl.innerHTML = ''; dramaEl.classList.add('hidden'); }
-          const pinEl = document.getElementById('my-team-strip-container');
-          if (pinEl) { pinEl.innerHTML = ''; pinEl.classList.add('hidden'); }
           if (matchdayBody) matchdayBody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs animate-pulse">${loadingText}</td></tr>`;
           if (overallBody) overallBody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs animate-pulse">${loadingText}</td></tr>`;
           return;
@@ -10917,9 +10910,8 @@ __STRUCTURED_DATA_JSON__
           }
         }
 
-        // 1b. Render Tier 1 Live Drama Feed Strip & My Team Pin Strip
+        // 1b. Render Tier 1 Live Drama Feed Strip
         this.renderLiveDramaStrip(gwData, sorted, overallSorted, isStarted, isFinished);
-        this.renderMyTeamStrip(sorted, overallSorted, gwData, isStarted, isFinished);
 
         // 2. Render Matchday Table Body
         if (matchdayBody && !hasMatchdayResults) {
@@ -22129,147 +22121,6 @@ __STRUCTURED_DATA_JSON__
         if (noteEl) {
           noteEl.innerHTML = noteObj.text;
         }
-      }
-
-      renderMyTeamStrip(sorted, overallSorted, gwData, isStarted, isFinished) {
-        const container = document.getElementById('my-team-strip-container');
-        if (!container) return;
-        if (this.isTier2League() || !this.data || !Array.isArray(this.data.teams) || this.data.teams.length === 0) {
-          container.innerHTML = '';
-          container.classList.add('hidden');
-          return;
-        }
-
-        const isEn = (this.currentLang === 'en');
-        const teamsList = [...this.data.teams].sort((a, b) => (a.entry_name || '').localeCompare(b.entry_name || ''));
-        const myId = this.getMyTeamId(teamsList);
-
-        container.classList.remove('hidden');
-
-        if (!myId) {
-          container.innerHTML = `
-            <div class="glass-card rounded-2xl p-3 sm:px-4 sm:py-3 border border-slate-200/90 dark:border-slate-800 bg-white/85 dark:bg-slate-900/60 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-              <div class="flex items-center gap-2.5 min-w-0">
-                <span class="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/60 text-blue-600 dark:text-blue-400 inline-flex items-center justify-center flex-shrink-0">
-                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
-                </span>
-                <div class="min-w-0">
-                  <div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white font-display truncate">${isEn ? 'Pin My Team for Live Tracking & 1v1 Rival Battle' : 'ปักหมุด "ทีมฉัน" เพื่อเช็กอันดับสดและดวลเทียบคู่แข่ง 1v1'}</div>
-                  <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${isEn ? 'Saved in your browser across tabs (synced with Transfer Advisor)' : 'จำทีมให้อัตโนมัติทั้งเว็บ (เชื่อมกับแท็บแนะนำการย้ายตัว)'}</div>
-                </div>
-              </div>
-              <div class="flex items-center gap-2 w-full sm:w-auto flex-shrink-0">
-                <select id="my-team-pin-select" aria-label="${isEn ? 'Select my team' : 'เลือกทีมของคุณ'}" onchange="if(this.value) app.setMyTeamId(this.value)" class="w-full sm:w-56 min-h-[40px] px-3 py-1.5 text-xs font-semibold rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
-                  <option value="">${isEn ? 'Select your team...' : 'เลือกทีมของคุณเพื่อปักหมุด...'}</option>
-                  ${teamsList.map(t => `<option value="${t.entry_id}">${this.escapeHtml(t.entry_name)} (${this.escapeHtml(t.player_name)})</option>`).join('')}
-                </select>
-              </div>
-            </div>
-          `;
-          return;
-        }
-
-        const myIdNum = Number(myId);
-        const mdIdx = sorted.findIndex(r => Number(r.entry_id) === myIdNum);
-        const myMd = mdIdx >= 0 ? sorted[mdIdx] : null;
-        const ovIdx = overallSorted.findIndex(r => Number(r.entry_id) === myIdNum);
-        const myOv = ovIdx >= 0 ? overallSorted[ovIdx] : null;
-        const myTeamObj = teamsList.find(t => Number(t.entry_id) === myIdNum) || {};
-        const teamName = (myMd && myMd.team_name) || (myOv && myOv.team_name) || myTeamObj.entry_name || '';
-        const playerName = (myMd && myMd.player_name) || (myOv && myOv.player_name) || myTeamObj.player_name || '';
-
-        const gwScore = myMd ? Number(myMd.net_points ?? myMd.points ?? 0) : 0;
-        const gwRankDisplay = myMd ? (myMd.rank ? `#${myMd.rank}` : `#${mdIdx + 1}`) : '-';
-        const ovRankDisplay = myOv && myOv.overall_rank ? `#${myOv.overall_rank}` : (ovIdx >= 0 ? `#${ovIdx + 1}` : '-');
-        const ovTotal = myOv ? Number(myOv.total_points || 0) : 0;
-
-        let ovDeltaBadge = '';
-        if (myOv && myOv.overall_rank && myOv.prev_rank) {
-          const d = myOv.prev_rank - myOv.overall_rank;
-          if (d > 0) ovDeltaBadge = `<span class="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400">▲${d}</span>`;
-          else if (d < 0) ovDeltaBadge = `<span class="text-[10px] font-extrabold text-rose-600 dark:text-rose-400">▼${Math.abs(d)}</span>`;
-        }
-
-        let remText = '';
-        if (isStarted && !isFinished && this.data.squads) {
-          const sq = this.data.squads[`${myIdNum}_${this.selectedGW}`];
-          if (sq && Array.isArray(sq.starting)) {
-            const isBB = myMd && myMd.chip && ['bboost', 'bench_boost'].includes(String(myMd.chip).toLowerCase());
-            const pool = isBB ? sq.starting.concat(sq.bench || []) : sq.starting;
-            const left = pool.filter(p => Boolean(p.not_played_yet)).length;
-            remText = isEn ? `${left} left` : `เหลือ ${left} ตัว`;
-          }
-        }
-
-        // Gap context against person ahead in Overall (or #2 if user is #1)
-        const activeOvList = overallSorted.filter(t => !this.isTeamDeparted(t.entry_id));
-        const myActiveIdx = activeOvList.findIndex(t => Number(t.entry_id) === myIdNum);
-        let defaultRival = null;
-        let gapPillHtml = '';
-        if (myActiveIdx === 0 && activeOvList.length > 1) {
-          defaultRival = activeOvList[1];
-          const leadGap = ovTotal - Number(defaultRival.total_points || 0);
-          gapPillHtml = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 text-[11px] font-bold font-display tabular-nums">${isEn ? `Leading #2 by +${leadGap} pts` : `นำอันดับ 2 อยู่ +${leadGap} pts`}</span>`;
-        } else if (myActiveIdx > 0) {
-          defaultRival = activeOvList[myActiveIdx - 1];
-          const leaderOv = activeOvList[0];
-          const aheadGap = Number(defaultRival.total_points || 0) - ovTotal;
-          const topGap = Number(leaderOv.total_points || 0) - ovTotal;
-          const aheadLabel = isEn
-            ? `Chase #${defaultRival.overall_rank || myActiveIdx} (-${aheadGap})`
-            : `ตามคนข้างหน้า (-${aheadGap} pts)`;
-          const topLabel = (myActiveIdx > 1 && topGap > aheadGap)
-            ? (isEn ? ` · #1 (-${topGap})` : ` · จ่าฝูง (-${topGap})`)
-            : '';
-          gapPillHtml = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 text-[11px] font-bold font-display tabular-nums">${aheadLabel}${topLabel}</span>`;
-        } else if (sorted.length > 1) {
-          defaultRival = sorted.find(r => Number(r.entry_id) !== myIdNum) || null;
-        }
-        const defaultRivalId = defaultRival ? Number(defaultRival.entry_id) : 'null';
-
-        container.innerHTML = `
-          <div class="glass-card rounded-2xl p-3 sm:px-4 sm:py-3 border border-blue-200/90 dark:border-blue-900/60 bg-gradient-to-r from-blue-50/70 via-white/95 to-white dark:from-blue-950/25 dark:via-slate-900/90 dark:to-slate-900/80 shadow-2xs">
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
-              <div class="flex items-start sm:items-center gap-2.5 min-w-0">
-                <span class="w-8 h-8 rounded-xl bg-blue-600 text-white inline-flex items-center justify-center flex-shrink-0 shadow-2xs mt-0.5 sm:mt-0">
-                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
-                </span>
-                <div class="min-w-0 flex-1">
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="text-[10px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded bg-blue-600/10 text-blue-700 dark:text-blue-300 border border-blue-300/60 dark:border-blue-700/60 font-display">${isEn ? 'MY TEAM' : 'ทีมฉัน'}</span>
-                    <span class="text-xs sm:text-sm font-black text-slate-900 dark:text-white font-display truncate max-w-[190px] sm:max-w-[260px]">${this.escapeHtml(teamName)}</span>
-                    <span class="text-[11px] text-slate-500 dark:text-slate-400 truncate hidden xs:inline">· ${this.escapeHtml(playerName)}</span>
-                  </div>
-                  <div class="flex items-center gap-1.5 flex-wrap mt-1.5">
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 text-[11px] font-bold font-display tabular-nums">
-                      <span>GW ${this.selectedGW}: ${gwRankDisplay}</span>
-                      <span class="text-emerald-600 dark:text-emerald-400">· ${gwScore} pts</span>
-                      ${remText ? `<span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400">(${remText})</span>` : ''}
-                    </span>
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60 text-[11px] font-bold font-display tabular-nums">
-                      <span>${isEn ? 'Overall' : 'รวม'} ${ovRankDisplay}</span>
-                      <span>· ${ovTotal} pts</span>
-                      ${ovDeltaBadge}
-                    </span>
-                    ${gapPillHtml}
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end flex-shrink-0 pt-1.5 lg:pt-0 border-t lg:border-t-0 border-slate-200/70 dark:border-slate-800">
-                <button type="button" onclick="app.openTeamModal(${myIdNum})" class="inline-flex items-center gap-1 px-3 py-1.5 min-h-[36px] rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer active:scale-95 shadow-2xs">
-                  <span>${isEn ? 'View Pitch' : 'ส่องทีม'}</span>
-                </button>
-                <button type="button" onclick="app.openRivalModal(${myIdNum}, ${defaultRivalId})" class="inline-flex items-center gap-1 px-3 py-1.5 min-h-[36px] rounded-xl text-xs font-bold bg-slate-900 hover:bg-black dark:bg-blue-600 dark:hover:bg-blue-500 text-white transition-colors cursor-pointer active:scale-95 shadow-2xs">
-                  <span>${isEn ? '1v1 Battle' : 'เทียบ 1v1'}</span>
-                </button>
-                <button type="button" onclick="app.clearMyTeamId()" class="inline-flex items-center gap-1 px-2.5 py-1.5 min-h-[36px] rounded-xl text-[11px] font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" title="${isEn ? 'Change My Team' : 'เปลี่ยนทีมที่ปักหมุด'}">
-                  <span>${isEn ? 'Switch' : 'เปลี่ยนทีม'}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
       }
 
       computeLeagueDramaEvents(gwData, sorted, overallSorted, isStarted, isFinished) {
