@@ -396,7 +396,7 @@ def generate_html(multi_data, leagues_config, default_league_id=None, precompute
   <meta name="description" content="__PAGE_DESCRIPTION__">
   <meta name="keywords" content="__PAGE_KEYWORDS__">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta id="meta-theme-color" name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#0f172a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FPLSaWaDiKa">
@@ -420,7 +420,7 @@ __PRELOAD_TIER2_TAG__
   <link rel="icon" type="image/png" sizes="192x192" href="__ASSET_PREFIX__images/icons/favicon-192x192.png?v=2">
   <link rel="icon" type="image/png" sizes="512x512" href="__ASSET_PREFIX__images/icons/favicon-512x512.png?v=2">
   <link rel="apple-touch-icon" sizes="180x180" href="__ASSET_PREFIX__images/icons/apple-touch-icon.png?v=2">
-  <link id="pwa-manifest-link" rel="manifest" href="__MANIFEST_HREF__">
+  <link rel="manifest" href="__ASSET_PREFIX__site.webmanifest?v=2">
 
   <!-- Open Graph / Social Media Share Thumbnail -->
   <meta property="og:type" content="website">
@@ -1246,36 +1246,6 @@ __STRUCTURED_DATA_JSON__
       border: 1px solid #34d399 !important;
     }
 
-    @keyframes liveScoreUp {
-      0% { background-color: rgba(16, 185, 129, 0.28); }
-      100% { background-color: transparent; }
-    }
-    @keyframes liveScoreDown {
-      0% { background-color: rgba(244, 63, 94, 0.24); }
-      100% { background-color: transparent; }
-    }
-    @keyframes myRowJumpPulse {
-      0% { box-shadow: inset 0 0 0 2px rgba(37, 99, 235, 0.9); background-color: rgba(59, 130, 246, 0.24); }
-      100% { box-shadow: inset 0 0 0 0 rgba(37, 99, 235, 0); background-color: rgba(59, 130, 246, 0.08); }
-    }
-    .live-score-up {
-      animation: liveScoreUp 2.2s ease-out 1;
-    }
-    .live-score-down {
-      animation: liveScoreDown 2.2s ease-out 1;
-    }
-    .my-row-jump-flash {
-      animation: myRowJumpPulse 1.9s ease-out 1;
-    }
-    .mobile-bottom-nav-safe {
-      padding-bottom: env(safe-area-inset-bottom, 0px);
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .live-score-up { animation: none !important; background-color: rgba(16, 185, 129, 0.14); }
-      .live-score-down { animation: none !important; background-color: rgba(244, 63, 94, 0.14); }
-      .my-row-jump-flash { animation: none !important; box-shadow: inset 0 0 0 2px rgba(37, 99, 235, 0.75); }
-    }
-
     @keyframes tabBluePulse {
       0%, 100% {
         border-color: rgba(59, 130, 246, 0.85);
@@ -1664,24 +1634,13 @@ __STRUCTURED_DATA_JSON__
         <span id="header-member-count" class="font-bold text-slate-700 dark:text-slate-300">12 ทีมสมาชิก</span>
         <span class="text-slate-300 dark:text-slate-600">•</span>
         <span id="header-season">ฤดูกาล 2026/27</span>
-        <!-- Auto-Sync / Live Refresh Pill (Click to Force Live Sync) -->
-        <button
-          type="button"
-          id="header-last-sync-icon"
-          onclick="window.app && window.app.fetchLivePoints(true)"
-          class="inline-flex items-center gap-1.5 px-2 py-0.5 min-h-[26px] rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200/80 dark:border-emerald-800/70 text-[10px] sm:text-[11px] font-bold text-emerald-800 dark:text-emerald-300 cursor-pointer active:scale-95 transition-all ml-0.5 hover:bg-emerald-100/80 dark:hover:bg-emerald-900/60"
-          title="ระบบเชื่อมต่อ Auto-Sync ปกติ (__LAST_SYNC__) • คลิกเพื่อดึงคะแนนสดทันที"
-          aria-label="รีเฟรชคะแนนสด"
-        >
-          <span id="header-sync-dot-wrap" class="relative flex items-center justify-center w-2 h-2 flex-shrink-0">
+        <!-- Auto-Sync Connection Status Indicator (Green/Red Heartbeat - Click to Force Live Sync) -->
+        <span id="header-last-sync-icon" onclick="window.app && window.app.fetchLivePoints(true)" class="inline-flex items-center cursor-pointer py-0.5 active:scale-90 transition-transform ml-0.5" title="ระบบเชื่อมต่อ Auto-Sync ปกติ (__LAST_SYNC__) • คลิกเพื่อดึงคะแนนสดทันที">
+          <span class="relative flex items-center justify-center w-2.5 h-2.5">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60"></span>
             <span class="relative inline-flex rounded-full w-2 h-2 bg-emerald-500 heartbeat-green shadow-xs"></span>
           </span>
-          <span id="header-last-sync-label" class="font-display tabular-nums leading-none">สด · อัปเดต</span>
-          <svg id="header-sync-spin-icon" class="w-3 h-3 opacity-75 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-          </svg>
-        </button>
+        </span>
       </div>
 
       <span class="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
@@ -1696,8 +1655,8 @@ __STRUCTURED_DATA_JSON__
     </div>
   </div>
 
-    <!-- 1.4 แถบเมนูแท็บหลัก (Desktop/Tablet Horizontal Tabs; Mobile uses Bottom Nav) -->
-    <div id="header-tabs-bar" class="hidden md:block max-w-7xl mx-auto px-2 sm:px-6 lg:px-4 xl:px-8 border-t border-slate-200/80 dark:border-slate-800/80">
+    <!-- 1.4 แถบเมนูแท็บหลัก (จัดหมวดหมู่และเรียงลำดับภาษาไทย) -->
+    <div id="header-tabs-bar" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-4 xl:px-8 border-t border-slate-200/80 dark:border-slate-800/80">
       <nav class="flex space-x-1 sm:space-x-2 lg:space-x-1 xl:space-x-2 overflow-x-auto touch-scroll scrollbar-thin py-1.5 sm:py-2 pr-4 sm:pr-0">
         <button 
           id="tab-btn-live"
@@ -1804,25 +1763,6 @@ __STRUCTURED_DATA_JSON__
 
   <!-- 2. Main Content Container -->
   <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 flex-1 w-full space-y-4 sm:space-y-6">
-
-    <!-- PWA Install Promo Banner (Mobile Only, Dismissible 14 days, Hidden in Standalone) -->
-    <div id="pwa-install-banner" class="hidden md:hidden glass-card rounded-2xl p-3 border border-blue-200/90 dark:border-blue-900/70 bg-gradient-to-r from-blue-50/90 via-white to-white dark:from-blue-950/40 dark:via-slate-900/95 dark:to-slate-900 shadow-2xs">
-      <div class="flex items-center justify-between gap-2.5">
-        <div class="flex items-center gap-2.5 min-w-0">
-          <img src="__ASSET_PREFIX__images/icons/favicon-192x192.png?v=2" alt="App Icon" width="36" height="36" class="w-9 h-9 rounded-xl border border-slate-200/80 dark:border-slate-700/80 flex-shrink-0 object-cover">
-          <div class="min-w-0">
-            <div id="pwa-banner-title" class="text-xs font-extrabold text-slate-900 dark:text-white font-display leading-snug">เพิ่มแอปมินิลีกนี้ลงหน้าจอโฮม</div>
-            <div id="pwa-banner-sub" class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">เปิดเช็กแต้มสดเต็มจอเหมือนแอป Native</div>
-          </div>
-        </div>
-        <div class="flex items-center gap-1.5 flex-shrink-0">
-          <button type="button" id="pwa-banner-install-btn" onclick="app.triggerPwaInstall()" class="px-3 py-1.5 min-h-[38px] rounded-xl bg-slate-900 hover:bg-black dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-[11px] font-bold font-display transition-colors cursor-pointer active:scale-95">ติดตั้ง</button>
-          <button type="button" id="pwa-banner-dismiss-btn" onclick="app.dismissPwaBanner()" class="w-10 h-10 min-w-[40px] min-h-[40px] flex-shrink-0 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 inline-flex items-center justify-center transition-colors cursor-pointer" aria-label="ปิดแถบแนะนำการติดตั้ง">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
 
     <!-- Paused League Renewal Screen (shown only when status === 'paused') -->
     <div id="paused-league-overlay" class="hidden"></div>
@@ -3074,7 +3014,7 @@ __STRUCTURED_DATA_JSON__
   </main>
 
   <!-- 5.5 Footer (Product Credit + Soft Dev Corner CTA) -->
-  <footer id="site-footer" data-leagues="__FOOTER_LEAGUES_COUNT__" data-teams="__FOOTER_TEAMS_COUNT__" class="w-full py-6 pb-24 md:pb-6 text-center select-none">
+  <footer id="site-footer" data-leagues="__FOOTER_LEAGUES_COUNT__" data-teams="__FOOTER_TEAMS_COUNT__" class="w-full py-6 text-center select-none">
     <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-normal tracking-wide tabular-nums">
       <span id="footer-brand-copy">FPLSaWaDiKa • ใช้งานจริง __FOOTER_LEAGUES_COUNT__ มินิลีก (__FOOTER_TEAMS_FORMATTED__ ทีม)</span>
       <span class="text-slate-300 dark:text-slate-600" aria-hidden="true">·</span>
@@ -3084,45 +3024,6 @@ __STRUCTURED_DATA_JSON__
       </button>
     </div>
   </footer>
-
-  <!-- 5.6 Fixed Mobile Bottom Navigation Bar (< 768px) -->
-  <nav id="mobile-bottom-nav" aria-label="เมนูหลักบนมือถือ" class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-[#0d0d0f]/95 backdrop-blur-md border-t border-slate-200/90 dark:border-slate-800/90 shadow-[0_-6px_24px_-6px_rgba(15,23,42,0.12)] mobile-bottom-nav-safe">
-    <div id="mobile-bottom-nav-inner" class="grid grid-cols-5 max-w-lg mx-auto px-1 py-1"></div>
-  </nav>
-
-  <!-- 5.7 Mobile "More" Bottom Sheet Menu -->
-  <div id="mobile-more-sheet" role="dialog" aria-modal="true" aria-labelledby="mobile-more-sheet-title" tabindex="-1" class="hidden md:hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-end justify-center transition-opacity duration-150 focus:outline-none" onclick="if (event.target === this) app.closeMobileMoreSheet()">
-    <div class="w-full max-w-lg bg-white dark:bg-[#0d0d0f] rounded-t-3xl border-t border-x border-slate-200 dark:border-slate-800 shadow-2xl p-4 pb-6 mobile-bottom-nav-safe space-y-4 max-h-[82dvh] overflow-y-auto touch-scroll" onclick="event.stopPropagation()">
-      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-        <div class="flex items-center gap-2">
-          <span class="w-1.5 h-5 rounded-full bg-blue-600"></span>
-          <h3 id="mobile-more-sheet-title" class="text-sm font-black text-slate-900 dark:text-white font-display">เมนูทั้งหมด</h3>
-        </div>
-        <button type="button" onclick="app.closeMobileMoreSheet()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex-shrink-0 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 inline-flex items-center justify-center cursor-pointer" aria-label="Close menu">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      </div>
-      <div id="mobile-more-tabs-grid" class="grid grid-cols-2 gap-2"></div>
-      <div id="mobile-more-actions" class="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2"></div>
-    </div>
-  </div>
-
-  <!-- 5.8 iOS Add to Home Screen Guide Modal -->
-  <div id="pwa-ios-guide-modal" role="dialog" aria-modal="true" aria-labelledby="pwa-ios-guide-title" tabindex="-1" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm focus:outline-none" onclick="if (event.target === this) app.closePwaIosGuide()">
-    <div class="bg-white dark:bg-[#0d0d0f] rounded-3xl max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4" onclick="event.stopPropagation()">
-      <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100 dark:border-slate-800">
-        <div class="flex items-center gap-2.5 min-w-0">
-          <img src="__ASSET_PREFIX__images/icons/apple-touch-icon.png?v=2" alt="FPLSaWaDiKa" width="32" height="32" class="w-8 h-8 rounded-xl border border-slate-200 dark:border-slate-700 flex-shrink-0">
-          <h3 id="pwa-ios-guide-title" class="text-sm font-black text-slate-900 dark:text-white font-display leading-snug">เพิ่มลงหน้าจอโฮม (iOS)</h3>
-        </div>
-        <button type="button" onclick="app.closePwaIosGuide()" class="w-11 h-11 min-w-[44px] min-h-[44px] flex-shrink-0 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white inline-flex items-center justify-center cursor-pointer" aria-label="Close">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      </div>
-      <ol id="pwa-ios-steps-list" class="space-y-3 text-xs text-slate-700 dark:text-slate-300 leading-relaxed"></ol>
-      <button type="button" id="pwa-ios-done-btn" onclick="app.closePwaIosGuide()" class="w-full min-h-[40px] rounded-xl bg-slate-900 hover:bg-black dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-xs font-bold font-display cursor-pointer transition-colors">เข้าใจแล้ว</button>
-    </div>
-  </div>
 
   <!-- 6. Interactive Modal Systems -->
 
@@ -4992,10 +4893,6 @@ __STRUCTURED_DATA_JSON__
         this.cupFilterMode = 'all';
         this._dataVersion = 0;
         this._renderedState = {};
-        this._hasLiveBaseline = false;
-        this._liveScoreFlashMap = {};
-        this._lastLiveSyncMs = null;
-        this._deferredInstallPrompt = null;
       }
 
       resolveDefaultGW(leagueObj = this.data) {
@@ -5149,16 +5046,8 @@ __STRUCTURED_DATA_JSON__
         const overlay = document.getElementById('paused-league-overlay');
         const tabsBar = document.getElementById('header-tabs-bar');
         const tabContents = document.querySelectorAll('.tab-content');
-        if (tabsBar) {
-          tabsBar.classList.add('hidden');
-          tabsBar.classList.toggle('md:block', !isPaused);
-          tabsBar.style.display = isPaused ? 'none' : '';
-        }
-        const mNav = document.getElementById('mobile-bottom-nav');
-        if (mNav) {
-          mNav.classList.toggle('hidden', isPaused);
-          mNav.style.display = isPaused ? 'none' : '';
-        }
+        if (tabsBar) tabsBar.classList.toggle('hidden', isPaused);
+        if (tabsBar) tabsBar.style.display = isPaused ? 'none' : '';
         if (!overlay) return;
 
         if (!isPaused) {
@@ -5348,8 +5237,6 @@ __STRUCTURED_DATA_JSON__
           this.switchTab(this.activeTab, true, true);
         }
         this.initDeadlineCountdown();
-        this.initPwa();
-        this.renderMobileBottomNav();
 
         // Proactively fetch squads/data + special league datasets for active league if not yet embedded (e.g. Tier 2 decoupled or index.html with savedLeague)
         const initialLidStr = String(this.activeLeagueId);
@@ -5608,9 +5495,7 @@ __STRUCTURED_DATA_JSON__
 
       markHeaderLiveSynced(force = false) {
         const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-        const nowMs = Date.now();
-        this._lastLiveSyncMs = nowMs;
-        const thDate = new Date(nowMs + (7 * 60 * 60 * 1000));
+        const thDate = new Date(Date.now() + (7 * 60 * 60 * 1000));
         const dDay = thDate.getUTCDate();
         const dMonth = thaiMonths[thDate.getUTCMonth()];
         const dYear = thDate.getUTCFullYear();
@@ -5624,7 +5509,13 @@ __STRUCTURED_DATA_JSON__
           this.multiData.last_sync_iso = liveIsoStr;
           this.multiData.sync_status = 'ok';
         }
-        this.updateSyncPillLabel(true);
+        const formattedSyncStr = this.formatSyncDate(liveIsoStr) || liveSyncStrTh;
+        const lastSyncIcon = document.getElementById('header-last-sync-icon');
+        if (lastSyncIcon) {
+          const isEn = (this.currentLang === 'en');
+          const statusText = isEn ? 'Auto-Sync Online' : 'ระบบเชื่อมต่อ Auto-Sync ปกติ';
+          lastSyncIcon.setAttribute('title', `${statusText} (${formattedSyncStr})`);
+        }
         if (force && typeof this.showCopiedToast === 'function') {
           const isEn = (this.currentLang === 'en');
           this.showCopiedToast(
@@ -5632,66 +5523,6 @@ __STRUCTURED_DATA_JSON__
               ? `Live scores updated (${dHour}:${dMin}:${dSec})`
               : `อัปเดตคะแนนสดเรียบร้อย (${dHour}:${dMin}:${dSec} น.)`
           );
-        }
-      }
-
-      isHeaderSyncHealthy() {
-        if (this.multiData && this.multiData.sync_status === 'offline') return false;
-        if (this.multiData && this.multiData.last_sync_iso) {
-          try {
-            const syncTime = new Date(this.multiData.last_sync_iso.replace(' ', 'T') + '+07:00');
-            if ((Date.now() - syncTime.getTime()) / (1000 * 60 * 60) > 24) return false;
-          } catch (_) {}
-        }
-        return true;
-      }
-
-      updateSyncPillLabel(forceHealthy = null) {
-        if (typeof document === 'undefined') return;
-        const pillBtn = document.getElementById('header-last-sync-icon');
-        const labelEl = document.getElementById('header-last-sync-label');
-        const dotWrap = document.getElementById('header-sync-dot-wrap');
-        if (!pillBtn || !labelEl) return;
-
-        const isEn = (this.currentLang === 'en');
-        const isHealthy = (forceHealthy === null) ? this.isHeaderSyncHealthy() : Boolean(forceHealthy);
-        const formattedSyncStr = (this.multiData && this.multiData.last_sync_iso)
-          ? (this.formatSyncDate(this.multiData.last_sync_iso) || this.multiData.last_sync || '')
-          : ((this.multiData && this.multiData.last_sync) || '');
-        const statusTitle = isHealthy
-          ? (isEn ? 'Auto-Sync Online • Tap to refresh live scores' : 'ระบบเชื่อมต่อ Auto-Sync ปกติ • แตะเพื่อดึงคะแนนสดทันที')
-          : (isEn ? 'Auto-Sync Offline / >24h • Tap to retry' : 'ไม่พบสัญญาณ Auto-Sync • แตะเพื่อลองดึงคะแนนสด');
-        pillBtn.setAttribute('title', formattedSyncStr ? `${statusTitle} (${formattedSyncStr})` : statusTitle);
-
-        let shortText = '';
-        if (!isHealthy) {
-          shortText = isEn ? 'Offline · Retry' : 'ออฟไลน์ · ลองใหม่';
-        } else if (this._lastLiveSyncMs) {
-          const sec = Math.max(0, Math.floor((Date.now() - this._lastLiveSyncMs) / 1000));
-          if (sec < 5) shortText = isEn ? 'Live · Just now' : 'สด · เมื่อสักครู่';
-          else if (sec < 60) shortText = isEn ? `Live · ${sec}s ago` : `สด · ${sec} วิก่อน`;
-          else {
-            const min = Math.floor(sec / 60);
-            shortText = isEn ? `Live · ${min}m ago` : `สด · ${min} นาทีก่อน`;
-          }
-        } else if (this.multiData && this.multiData.last_sync_iso) {
-          const hmMatch = String(this.multiData.last_sync_iso).match(/(\d{2}:\d{2})/);
-          const hm = hmMatch ? hmMatch[1] : '';
-          shortText = hm ? (isEn ? `Sync ${hm}` : `ซิงก์ ${hm}`) : (isEn ? 'Live Sync' : 'ซิงก์สด');
-        } else {
-          shortText = isEn ? 'Refresh' : 'รีเฟรชสด';
-        }
-        labelEl.textContent = shortText;
-
-        const baseCls = 'inline-flex items-center gap-1.5 px-2 py-0.5 min-h-[26px] rounded-full border text-[10px] sm:text-[11px] font-bold cursor-pointer active:scale-95 transition-all ml-0.5 ';
-        pillBtn.className = baseCls + (isHealthy
-          ? 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200/80 dark:border-emerald-800/70 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100/80 dark:hover:bg-emerald-900/60'
-          : 'bg-rose-50 dark:bg-rose-950/50 border-rose-200/80 dark:border-rose-800/70 text-rose-800 dark:text-rose-300 hover:bg-rose-100/80 dark:hover:bg-rose-900/60');
-
-        if (dotWrap) {
-          dotWrap.innerHTML = isHealthy
-            ? '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60"></span><span class="relative inline-flex rounded-full w-2 h-2 bg-emerald-500 heartbeat-green shadow-xs"></span>'
-            : '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-60"></span><span class="relative inline-flex rounded-full w-2 h-2 bg-rose-500 heartbeat-rose shadow-xs"></span>';
         }
       }
 
@@ -5942,10 +5773,6 @@ __STRUCTURED_DATA_JSON__
 
         this._isFetchingLive = true;
         this._nextLivePollAt = Date.now() + 20000;
-        if (typeof document !== 'undefined') {
-          const spinIcon = document.getElementById('header-sync-spin-icon');
-          if (spinIcon) spinIcon.classList.add('animate-spin');
-        }
 
         const forceQuery = force ? '&force=1' : '';
         const apiCfg = (typeof resolveWorkerApiBase === 'function')
@@ -6129,10 +5956,6 @@ __STRUCTURED_DATA_JSON__
           console.warn('Live fetch notice:', err);
         } finally {
           this._isFetchingLive = false;
-          if (typeof document !== 'undefined') {
-            const spinIcon = document.getElementById('header-sync-spin-icon');
-            if (spinIcon) spinIcon.classList.remove('animate-spin');
-          }
         }
       }
 
@@ -6482,10 +6305,6 @@ __STRUCTURED_DATA_JSON__
               const netPts = teamLivePoints - hits;
               const prevNetPts = Number(res.net_points) || 0;
               const netDelta = netPts - prevNetPts;
-              if (this._hasLiveBaseline && String(league.id) === String(this.activeLeagueId) && Number(gw) === Number(this.selectedGW) && netDelta !== 0) {
-                this._liveScoreFlashMap = this._liveScoreFlashMap || {};
-                this._liveScoreFlashMap[eid] = { delta: netDelta, expiresAt: Date.now() + 2600 };
-              }
               if (res.points !== teamLivePoints || res.net_points !== netPts || res.bench_points !== benchDispPoints) {
                 anyChange = true;
               }
@@ -6580,21 +6399,6 @@ __STRUCTURED_DATA_JSON__
         if (anyChange) {
           this.invalidateRenderCache();
         }
-        this._hasLiveBaseline = true;
-        if (this._liveScoreFlashMap && Object.keys(this._liveScoreFlashMap).length > 0 && typeof document !== 'undefined') {
-          if (this._flashClearTimer) clearTimeout(this._flashClearTimer);
-          this._flashClearTimer = setTimeout(() => {
-            const nowT = Date.now();
-            Object.keys(this._liveScoreFlashMap || {}).forEach(k => {
-              if (!this._liveScoreFlashMap[k] || this._liveScoreFlashMap[k].expiresAt <= nowT) {
-                delete this._liveScoreFlashMap[k];
-              }
-            });
-            document.querySelectorAll('.live-score-up, .live-score-down').forEach(el => {
-              el.classList.remove('live-score-up', 'live-score-down');
-            });
-          }, 2600);
-        }
         return anyChange;
       }
 
@@ -6632,8 +6436,6 @@ __STRUCTURED_DATA_JSON__
         this.updateLanguageUI();
         this.updateHeaderInfo();
         this.renderLeagueDropdown();
-        this.renderMobileBottomNav();
-        if (typeof this.updatePwaBannerText === 'function') this.updatePwaBannerText();
         this.renderAll();
         if (this.currentModalEntryId) {
           const modal = document.getElementById('team-modal');
@@ -7374,341 +7176,6 @@ __STRUCTURED_DATA_JSON__
             sunIcon.classList.add('hidden');
             sunIcon.classList.remove('block');
           }
-        }
-        const metaTheme = document.getElementById('meta-theme-color');
-        if (metaTheme) {
-          metaTheme.setAttribute('content', isDark ? '#0f172a' : '#ffffff');
-        }
-      }
-
-      isPwaStandalone() {
-        if (typeof window === 'undefined') return false;
-        try {
-          if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return true;
-          if (window.navigator && window.navigator.standalone === true) return true;
-        } catch (_) {}
-        return false;
-      }
-
-      initPwa() {
-        if (typeof window === 'undefined' || typeof document === 'undefined') return;
-        const proto = String(window.location && window.location.protocol || '').toLowerCase();
-        const host = String(window.location && window.location.hostname || '').toLowerCase();
-        const canRegisterSw = (proto === 'https:' || host === 'localhost' || host === '127.0.0.1');
-
-        if (canRegisterSw && typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
-          const swPath = (window.location.pathname && window.location.pathname.includes('/fpl-mini/')) ? '/fpl-mini/sw.js' : '/sw.js';
-          navigator.serviceWorker.register(swPath, { scope: './' }).catch(() => {});
-        }
-
-        if (!this._pwaListenersBound) {
-          this._pwaListenersBound = true;
-          window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            this._deferredInstallPrompt = e;
-            this.updatePwaBannerVisibility();
-            this.renderMobileBottomNav();
-          });
-          window.addEventListener('appinstalled', () => {
-            this._deferredInstallPrompt = null;
-            this.updatePwaBannerVisibility();
-            this.renderMobileBottomNav();
-            const isEn = (this.currentLang === 'en');
-            if (typeof this.showToast === 'function') {
-              this.showToast(isEn ? 'Added to Home Screen ✓' : 'ติดตั้งลงหน้าจอโฮมแล้ว ✓', 'success', 2400);
-            }
-          });
-        }
-
-        if (this._syncLabelTimer) clearInterval(this._syncLabelTimer);
-        this._syncLabelTimer = setInterval(() => {
-          if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
-            this.updateSyncPillLabel();
-          }
-        }, 15000);
-
-        this.updatePwaBannerText();
-        this.updatePwaBannerVisibility();
-      }
-
-      updatePwaBannerText() {
-        if (typeof document === 'undefined') return;
-        const isEn = (this.currentLang === 'en');
-        const lName = (this.data && this.data.name) ? String(this.data.name) : 'FPLSaWaDiKa';
-        const titleEl = document.getElementById('pwa-banner-title');
-        const subEl = document.getElementById('pwa-banner-sub');
-        const btnEl = document.getElementById('pwa-banner-install-btn');
-        if (titleEl) {
-          titleEl.textContent = isEn ? `Add ${lName} App` : `เพิ่มแอป "${lName}"`;
-        }
-        if (subEl) {
-          subEl.textContent = isEn
-            ? 'Open full-screen like a native app'
-            : 'เปิดเช็กแต้มสดเต็มจอเหมือนแอป Native';
-        }
-        if (btnEl) {
-          btnEl.textContent = isEn ? 'Install' : 'ติดตั้ง';
-        }
-        const iosTitle = document.getElementById('pwa-ios-guide-title');
-        if (iosTitle) {
-          iosTitle.textContent = isEn ? 'Add to Home Screen (iOS)' : 'เพิ่มลงหน้าจอโฮม (iOS)';
-        }
-        const iosSteps = document.getElementById('pwa-ios-steps-list');
-        if (iosSteps) {
-          iosSteps.innerHTML = isEn
-            ? `<li class="flex items-start gap-2.5"><span class="w-5 h-5 rounded-full bg-blue-600 text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0">1</span><span>Tap the <strong>Share</strong> icon <span class="inline-block px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono text-[10px]">↑</span> in Safari's toolbar.</span></li>
-               <li class="flex items-start gap-2.5"><span class="w-5 h-5 rounded-full bg-blue-600 text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0">2</span><span>Scroll down and tap <strong>"Add to Home Screen"</strong>, then tap <strong>Add</strong>.</span></li>`
-            : `<li class="flex items-start gap-2.5"><span class="w-5 h-5 rounded-full bg-blue-600 text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0">1</span><span>แตะปุ่ม <strong>แชร์ (Share)</strong> <span class="inline-block px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono text-[10px]">↑</span> ที่แถบด้านล่างหรือมุมขวาบนของ Safari</span></li>
-               <li class="flex items-start gap-2.5"><span class="w-5 h-5 rounded-full bg-blue-600 text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0">2</span><span>เลื่อนลงแล้วเลือก <strong>"เพิ่มไปยังหน้าจอโฮม" (Add to Home Screen)</strong> จากนั้นกด <strong>เพิ่ม (Add)</strong></span></li>`;
-        }
-        const iosDoneBtn = document.getElementById('pwa-ios-done-btn');
-        if (iosDoneBtn) iosDoneBtn.textContent = isEn ? 'Got it' : 'เข้าใจแล้ว';
-      }
-
-      updatePwaBannerVisibility() {
-        if (typeof document === 'undefined') return;
-        const banner = document.getElementById('pwa-install-banner');
-        if (!banner) return;
-        const isFile = window.location && window.location.protocol === 'file:';
-        if (isFile || this.isPwaStandalone() || this.isLeaguePaused()) {
-          banner.classList.add('hidden');
-          return;
-        }
-        let dismissedRecently = false;
-        try {
-          const ts = parseInt(localStorage.getItem('fpl_pwa_dismissed_at') || '0', 10);
-          if (!isNaN(ts) && ts > 0 && (Date.now() - ts) < (14 * 86400000)) {
-            dismissedRecently = true;
-          }
-        } catch (_) {}
-        banner.classList.toggle('hidden', dismissedRecently);
-      }
-
-      dismissPwaBanner() {
-        try {
-          localStorage.setItem('fpl_pwa_dismissed_at', String(Date.now()));
-        } catch (_) {}
-        const banner = document.getElementById('pwa-install-banner');
-        if (banner) banner.classList.add('hidden');
-      }
-
-      async triggerPwaInstall() {
-        this.closeMobileMoreSheet();
-        if (this._deferredInstallPrompt) {
-          try {
-            const promptEvt = this._deferredInstallPrompt;
-            promptEvt.prompt();
-            const choice = await promptEvt.userChoice;
-            if (choice && choice.outcome === 'accepted') {
-              this._deferredInstallPrompt = null;
-              this.updatePwaBannerVisibility();
-            }
-            return;
-          } catch (_) {}
-        }
-        this.openPwaIosGuide();
-      }
-
-      openPwaIosGuide() {
-        const modal = document.getElementById('pwa-ios-guide-modal');
-        if (!modal) return;
-        this.updatePwaBannerText();
-        this._pwaLastFocus = document.activeElement;
-        modal.classList.remove('hidden');
-        this.lockBodyScroll();
-        modal.focus({ preventScroll: true });
-        if (!this._pwaIosEscBound) {
-          this._pwaIosEscBound = (e) => {
-            if (e.key === 'Escape') this.closePwaIosGuide();
-          };
-          window.addEventListener('keydown', this._pwaIosEscBound);
-        }
-      }
-
-      closePwaIosGuide() {
-        const modal = document.getElementById('pwa-ios-guide-modal');
-        if (modal && !modal.classList.contains('hidden')) {
-          modal.classList.add('hidden');
-          this.unlockBodyScroll();
-          if (this._pwaLastFocus && typeof this._pwaLastFocus.focus === 'function') {
-            this._pwaLastFocus.focus({ preventScroll: true });
-          }
-          this._pwaLastFocus = null;
-        }
-      }
-
-      getHasPrizesFlag(isTier2) {
-        return !isTier2 && Boolean(
-          (this.config && this.config.features && (
-            this.config.features.prize_model === 'bramann_dual_prize' ||
-            this.config.features.has_weekly_prizes ||
-            this.config.features.has_monthly_prizes ||
-            this.config.features.has_settlement_phases ||
-            this.config.features.has_weekly_penalties
-          )) ||
-          (this.config && this.config.total_pool && this.config.total_pool !== '-' && !String(this.config.total_pool).includes('เสื้อบอล') && !String(this.config.entry_fee).includes('ฟรี'))
-        );
-      }
-
-      getMobileMoreTabs(isTier2, hasPrizes) {
-        const isEn = (this.currentLang === 'en');
-        if (isTier2) return [];
-        const items = [];
-        if (hasPrizes) {
-          items.push({ id: 'highlights-view', label: isEn ? 'Highlights' : 'ไฮไลท์', desc: isEn ? 'Weekly summary & drama' : 'สรุปไฮไลท์ประจำวีค' });
-        }
-        items.push({ id: 'global-radar-view', label: isEn ? 'Form Radar' : 'เรดาร์ฟอร์ม', desc: isEn ? 'Consistency tier matrix' : 'วัดความสม่ำเสมอข้ามลีก' });
-        items.push({ id: 'competition-view', label: isEn ? 'Chips' : 'สถานะชิป', desc: isEn ? 'League chips remaining' : 'เช็กชิปคู่แข่งที่เหลือ' });
-        items.push({ id: 'transfers-view', label: isEn ? 'Transfers' : 'วิเคราะห์ย้ายตัว', desc: isEn ? 'GW transfer ROI tracker' : 'กำไร-ขาดทุนการย้ายตัว' });
-        if (this.config && this.config.features && this.config.features.has_cup) {
-          items.push({ id: 'cup-view', label: isEn ? 'Cup' : 'บอลถ้วย', desc: isEn ? 'Knockout bracket status' : 'ตารางประกบคู่บอลถ้วย' });
-        }
-        if (this.hasShi62Feature()) {
-          items.push({ id: 'shi62-special-view', label: isEn ? 'Prediction' : 'ทายผล', desc: isEn ? 'Special match prediction' : 'ทายผลประจำสัปดาห์' });
-        }
-        if (this.hasBramannPredFeature()) {
-          items.push({ id: 'bramann-prediction-view', label: isEn ? 'Prediction' : 'ทายผล', desc: isEn ? 'Weekly score prediction' : 'ตารางคะแนนทายผล' });
-        }
-        if (this.hasBramannChalFeature()) {
-          items.push({ id: 'bramann-challenge-view', label: isEn ? 'Challenge' : 'ท้าชน', desc: isEn ? 'Head-to-head challenge' : 'ดวลท้าชนสัปดาห์' });
-        }
-        items.push({ id: 'rules-view', label: isEn ? 'Rules' : 'กติกา', desc: isEn ? 'League rules & payouts' : 'กติกาและเงินรางวัล' });
-        if (this.hasDevCornerFeature()) {
-          items.push({ id: 'about-view', label: 'Dev Corner', desc: isEn ? 'System specs & contact' : 'สเปกระบบ & ติดต่อเดฟ' });
-        }
-        return items;
-      }
-
-      renderMobileBottomNav() {
-        if (typeof document === 'undefined') return;
-        const nav = document.getElementById('mobile-bottom-nav');
-        const inner = document.getElementById('mobile-bottom-nav-inner');
-        if (!nav || !inner) return;
-        if (this.isLeaguePaused()) {
-          nav.classList.add('hidden');
-          return;
-        }
-        nav.classList.remove('hidden');
-
-        const isEn = (this.currentLang === 'en');
-        const isTier2 = this.isTier2League();
-        const hasPrizes = this.getHasPrizesFlag(isTier2);
-        const curTab = this.activeTab || 'gameweek-view';
-        const moreTabs = this.getMobileMoreTabs(isTier2, hasPrizes);
-        const isMoreActive = moreTabs.some(t => t.id === curTab);
-
-        const icons = {
-          live: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
-          advisor: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>',
-          prizes: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-          highlights: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>',
-          hof: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>',
-          rules: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>',
-          more: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>',
-        };
-
-        const slots = isTier2
-          ? [
-              { id: 'gameweek-view', label: isEn ? 'Live' : 'คะแนนสด', icon: icons.live, action: "app.switchTab('gameweek-view')", active: curTab === 'gameweek-view' },
-              { id: 'rules-view', label: isEn ? 'Rules' : 'กติกา', icon: icons.rules, action: "app.switchTab('rules-view')", active: curTab === 'rules-view' },
-              { id: 'more', label: isEn ? 'More' : 'เพิ่มเติม', icon: icons.more, action: 'app.openMobileMoreSheet()', active: false },
-            ]
-          : [
-              { id: 'gameweek-view', label: isEn ? 'Live' : 'คะแนนสด', icon: icons.live, action: "app.switchTab('gameweek-view')", active: curTab === 'gameweek-view' },
-              { id: 'transfer-advisor-view', label: isEn ? 'Advisor' : 'แนะนำย้าย', icon: icons.advisor, action: "app.switchTab('transfer-advisor-view')", active: curTab === 'transfer-advisor-view' },
-              hasPrizes
-                ? { id: 'prizes-view', label: isEn ? 'Prizes' : 'เงินรางวัล', icon: icons.prizes, action: "app.switchTab('prizes-view')", active: curTab === 'prizes-view' }
-                : { id: 'highlights-view', label: isEn ? 'Highlights' : 'ไฮไลท์', icon: icons.highlights, action: "app.switchTab('highlights-view')", active: curTab === 'highlights-view' },
-              { id: 'hall-of-fame-view', label: isEn ? 'Hall of Fame' : 'ทำเนียบ', icon: icons.hof, action: "app.switchTab('hall-of-fame-view')", active: curTab === 'hall-of-fame-view' },
-              { id: 'more', label: isEn ? 'More' : 'เพิ่มเติม', icon: icons.more, action: 'app.openMobileMoreSheet()', active: isMoreActive },
-            ];
-
-        inner.className = `grid ${isTier2 ? 'grid-cols-3' : 'grid-cols-5'} max-w-lg mx-auto px-1 py-1`;
-        inner.innerHTML = slots.map(s => `
-          <button
-            type="button"
-            id="mob-nav-${s.id}"
-            onclick="${s.action}"
-            aria-current="${s.active ? 'page' : 'false'}"
-            class="flex flex-col items-center justify-center gap-0.5 py-1.5 px-1 min-h-[50px] rounded-xl transition-colors cursor-pointer active:scale-95 ${s.active ? 'text-blue-600 dark:text-blue-400 font-extrabold bg-blue-50/70 dark:bg-blue-950/35' : 'text-slate-500 dark:text-slate-400 font-semibold hover:text-slate-900 dark:hover:text-white'}"
-          >
-            ${s.icon}
-            <span class="text-[10px] font-display leading-tight truncate max-w-full">${this.escapeHtml(s.label)}</span>
-          </button>
-        `).join('');
-      }
-
-      openMobileMoreSheet() {
-        const sheet = document.getElementById('mobile-more-sheet');
-        const grid = document.getElementById('mobile-more-tabs-grid');
-        const actions = document.getElementById('mobile-more-actions');
-        const titleEl = document.getElementById('mobile-more-sheet-title');
-        if (!sheet || !grid || !actions) return;
-
-        const isEn = (this.currentLang === 'en');
-        const isTier2 = this.isTier2League();
-        const hasPrizes = this.getHasPrizesFlag(isTier2);
-        const tabs = this.getMobileMoreTabs(isTier2, hasPrizes);
-        const curTab = this.activeTab || 'gameweek-view';
-
-        if (titleEl) {
-          titleEl.textContent = isEn ? 'All Menu & Tools' : 'เมนูทั้งหมด & เครื่องมือ';
-        }
-
-        if (tabs.length > 0) {
-          grid.classList.remove('hidden');
-          grid.innerHTML = tabs.map(t => {
-            const isAct = (t.id === curTab);
-            return `
-              <button
-                type="button"
-                onclick="app.closeMobileMoreSheet(); app.switchTab('${t.id}')"
-                class="text-left p-3 rounded-2xl border transition-colors cursor-pointer active:scale-[0.98] ${isAct ? 'bg-blue-50 dark:bg-blue-950/50 border-blue-300 dark:border-blue-700 text-blue-800 dark:text-blue-200' : 'bg-slate-50 dark:bg-slate-900/70 border-slate-200/80 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'}"
-              >
-                <div class="text-xs font-black font-display truncate">${this.escapeHtml(t.label)}</div>
-                <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">${this.escapeHtml(t.desc)}</div>
-              </button>
-            `;
-          }).join('');
-        } else {
-          grid.classList.add('hidden');
-          grid.innerHTML = '';
-        }
-
-        const showPwaBtn = !this.isPwaStandalone() && (typeof window !== 'undefined' && window.location && window.location.protocol !== 'file:');
-        actions.innerHTML = `
-          ${showPwaBtn ? `
-          <button type="button" id="mobile-more-pwa-btn" onclick="app.triggerPwaInstall()" class="w-full flex items-center justify-between gap-2 px-3.5 py-2.5 min-h-[44px] rounded-2xl bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200 text-xs font-bold font-display cursor-pointer transition-colors">
-            <span>${isEn ? 'Add to Home Screen (Install App)' : 'เพิ่มลงหน้าจอโฮม (ติดตั้งเป็นแอป)'}</span>
-            <span>+</span>
-          </button>` : ''}
-          <button type="button" onclick="app.closeMobileMoreSheet(); app.exportToExcel()" class="w-full flex items-center justify-between gap-2 px-3.5 py-2.5 min-h-[44px] rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-xs font-bold font-display cursor-pointer transition-colors">
-            <span>${isEn ? 'Export League Data (.xlsx)' : 'ส่งออกตารางคะแนนเป็นไฟล์ Excel (.xlsx)'}</span>
-            <span>↓</span>
-          </button>
-        `;
-
-        this._moreSheetLastFocus = document.activeElement;
-        sheet.classList.remove('hidden');
-        this.lockBodyScroll();
-        sheet.focus({ preventScroll: true });
-        if (!this._moreSheetEscBound) {
-          this._moreSheetEscBound = (e) => {
-            if (e.key === 'Escape') this.closeMobileMoreSheet();
-          };
-          window.addEventListener('keydown', this._moreSheetEscBound);
-        }
-      }
-
-      closeMobileMoreSheet() {
-        const sheet = document.getElementById('mobile-more-sheet');
-        if (sheet && !sheet.classList.contains('hidden')) {
-          sheet.classList.add('hidden');
-          this.unlockBodyScroll();
-          if (this._moreSheetLastFocus && typeof this._moreSheetLastFocus.focus === 'function') {
-            this._moreSheetLastFocus.focus({ preventScroll: true });
-          }
-          this._moreSheetLastFocus = null;
         }
       }
 
@@ -8704,8 +8171,46 @@ __STRUCTURED_DATA_JSON__
         }
 
         // Auto-Sync Connection Status (Green = Connected/Healthy, Red = Disconnected/Error)
-        const isSyncHealthy = this.isHeaderSyncHealthy();
-        this.updateSyncPillLabel(isSyncHealthy);
+        let isSyncHealthy = true;
+        let syncStatusTitle = isEn ? 'Auto-Sync System Online' : 'ระบบเชื่อมต่อ Auto-Sync ปกติ';
+
+        if (this.multiData && this.multiData.sync_status === 'offline') {
+          isSyncHealthy = false;
+          syncStatusTitle = isEn ? 'Auto-Sync Offline / Error' : 'ไม่สามารถเชื่อมต่อระบบ Auto-Sync ได้';
+        } else if (this.multiData && this.multiData.last_sync_iso) {
+          try {
+            const syncTime = new Date(this.multiData.last_sync_iso.replace(' ', 'T') + '+07:00');
+            const now = new Date();
+            const diffHours = (now - syncTime) / (1000 * 60 * 60);
+            if (diffHours > 24) {
+              isSyncHealthy = false;
+              syncStatusTitle = isEn ? 'No Auto-Sync signal for > 24h (Offline)' : 'ไม่พบสัญญาณ Auto-Sync นานกว่า 24 ชม.';
+            }
+          } catch (e) {}
+        }
+
+        if (lastSyncIcon) {
+          const syncTimeStr = (this.multiData && this.multiData.last_sync_iso)
+            ? this.formatSyncDate(this.multiData.last_sync_iso)
+            : (this.multiData.last_sync || '');
+          const fullTitle = syncTimeStr ? `${syncStatusTitle} (${syncTimeStr})` : syncStatusTitle;
+          if (isSyncHealthy) {
+            lastSyncIcon.innerHTML = `
+              <span class="relative flex items-center justify-center w-2.5 h-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60"></span>
+                <span class="relative inline-flex rounded-full w-2 h-2 bg-emerald-500 heartbeat-green shadow-xs"></span>
+              </span>
+            `;
+          } else {
+            lastSyncIcon.innerHTML = `
+              <span class="relative flex items-center justify-center w-2.5 h-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-60"></span>
+                <span class="relative inline-flex rounded-full w-2 h-2 bg-rose-500 heartbeat-rose shadow-xs"></span>
+              </span>
+            `;
+          }
+          lastSyncIcon.setAttribute('title', fullTitle);
+        }
 
         this.updateHeaderDeadline();
 
@@ -8827,7 +8332,6 @@ __STRUCTURED_DATA_JSON__
           });
         }
         this.updateHighlightsTabBlink();
-        if (typeof this.renderMobileBottomNav === 'function') this.renderMobileBottomNav();
       }
 
       switchTab(target, fromPopstate = false, skipRender = false) {
@@ -8918,7 +8422,6 @@ __STRUCTURED_DATA_JSON__
         }
 
         this.updateHighlightsTabBlink();
-        if (typeof this.renderMobileBottomNav === 'function') this.renderMobileBottomNav();
         if (!skipRender) {
           this.renderCurrentTab(false);
         }
@@ -9055,7 +8558,6 @@ __STRUCTURED_DATA_JSON__
         this.renderGWSelector();
         this.renderCurrentTab(true);
         this.updateHighlightsTabBlink();
-        if (typeof this.renderMobileBottomNav === 'function') this.renderMobileBottomNav();
       }
 
       renderCurrentTab(force = false) {
@@ -10921,7 +10423,6 @@ __STRUCTURED_DATA_JSON__
 
         this.renderGWSelector();
         this.updateHighlightsTabBlink();
-        if (typeof this.renderMobileBottomNav === 'function') this.renderMobileBottomNav();
         if (!skipRender) {
           this.renderCurrentTab(true);
         }
@@ -11083,7 +10584,7 @@ __STRUCTURED_DATA_JSON__
         const leader = prizeLeader;
         const { overallSorted, overallContext, targetGW } = this.computeGameweekOverallStandings(this.selectedGW);
         const isTier2View = this.isTier2League();
-        const myTeamId = this.getMyTeamId();
+        const myTeamId = !isTier2View ? this.getMyTeamId() : '';
 
         // 1. Render Spotlight Card (Pre-Match Lineup Preview OR Live Leader / Weekly Winner)
         if (championCard && !hasMatchdayResults) {
@@ -11513,20 +11014,15 @@ __STRUCTURED_DATA_JSON__
 
             const isDeparted = this.isTeamDeparted(team.entry_id);
             const departedBadge = isDeparted ? this.getDepartedBadge(team.entry_id, true) : '';
-            const isMyRow = Boolean(myTeamId && Number(team.entry_id) === Number(myTeamId));
+            const isMyRow = Boolean(!isTier2View && myTeamId && Number(team.entry_id) === Number(myTeamId));
             const myBadge = isMyRow ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-blue-600 text-white font-display">${isEn ? 'ME' : 'ทีมฉัน'}</span>` : '';
-            const flashEntry = (this._liveScoreFlashMap && this._liveScoreFlashMap[team.entry_id] && this._liveScoreFlashMap[team.entry_id].expiresAt > Date.now()) ? this._liveScoreFlashMap[team.entry_id] : null;
-            const flashRowCls = flashEntry ? (flashEntry.delta > 0 ? ' live-score-up' : ' live-score-down') : '';
-            const flashDeltaPill = flashEntry
-              ? `<span class="inline-flex items-center px-1 py-0.2 rounded text-[9px] font-mono font-extrabold ml-1 ${flashEntry.delta > 0 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300' : 'bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300'}">${flashEntry.delta > 0 ? '+' : ''}${flashEntry.delta}</span>`
-              : '';
             const rowActionPill = !isTier2View
               ? (myTeamId
                   ? (!isMyRow ? `<button type="button" onclick="event.stopPropagation(); app.openRivalModal(${Number(myTeamId)}, ${Number(team.entry_id)})" class="inline-flex items-center px-1.5 py-0.5 min-h-[24px] rounded-md text-[9.5px] font-extrabold bg-slate-100 hover:bg-slate-900 text-slate-700 hover:text-white dark:bg-slate-800 dark:hover:bg-blue-600 dark:text-slate-300 dark:hover:text-white border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer flex-shrink-0" title="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}" aria-label="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}">VS</button>` : '')
                   : `<button type="button" onclick="event.stopPropagation(); app.setMyTeamId(${Number(team.entry_id)})" class="inline-flex items-center px-1.5 py-0.5 min-h-[24px] rounded-md text-[9.5px] font-bold bg-slate-100 hover:bg-blue-600 text-slate-600 hover:text-white dark:bg-slate-800 dark:hover:bg-blue-600 dark:text-slate-300 dark:hover:text-white border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer flex-shrink-0" title="${isEn ? 'Pin My Team' : 'ปักหมุดทีมฉัน'}" aria-label="${isEn ? 'Pin my team' : 'ปักหมุดทีมฉัน'}">${isEn ? 'Pin' : 'ปักหมุด'}</button>`)
               : '';
             mHtml += `
-              <tr tabindex="0" role="button" data-entry-id="${Number(team.entry_id)}" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isWinner ? 'font-semibold' : ''} ${isDeparted ? 'opacity-70' : ''} ${isMyRow ? 'bg-blue-50/70 dark:bg-blue-950/25 border-l-2 border-l-blue-500' : ''}${flashRowCls}">
+              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isWinner ? 'font-semibold' : ''} ${isDeparted ? 'opacity-70' : ''} ${isMyRow ? 'bg-blue-50/70 dark:bg-blue-950/25 border-l-2 border-l-blue-500' : ''}">
                 <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">${rankBadge}</td>
                 <td class="py-2.5 px-2 sm:px-3 min-w-0">
                   <div class="flex items-center gap-1.5 flex-wrap">
@@ -11557,7 +11053,7 @@ __STRUCTURED_DATA_JSON__
                   ${playedInfo}
                 </td>
                 <td class="py-2.5 px-1 sm:px-2 text-center tabular-nums whitespace-nowrap text-xs sm:text-sm">${hits}</td>
-                <td class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right font-display font-bold tabular-nums whitespace-nowrap text-xs sm:text-sm text-slate-900 dark:text-white">${team.net_points}${flashDeltaPill}</td>
+                <td class="py-2.5 pl-1.5 sm:pl-2 pr-4 sm:pr-3 text-right font-display font-bold tabular-nums whitespace-nowrap text-xs sm:text-sm text-slate-900 dark:text-white">${team.net_points}</td>
               </tr>
             `;
           });
@@ -11601,10 +11097,8 @@ __STRUCTURED_DATA_JSON__
             const isDeparted = this.isTeamDeparted(team.entry_id);
             const prizeBadge = this.getPrizeBadge(team.entry_id);
             const departedBadge = isDeparted ? this.getDepartedBadge(team.entry_id) : '';
-            const isMyRow = Boolean(myTeamId && Number(team.entry_id) === Number(myTeamId));
+            const isMyRow = Boolean(!isTier2View && myTeamId && Number(team.entry_id) === Number(myTeamId));
             const myBadge = isMyRow ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-blue-600 text-white font-display">${isEn ? 'ME' : 'ทีมฉัน'}</span>` : '';
-            const flashEntry = (this._liveScoreFlashMap && this._liveScoreFlashMap[team.entry_id] && this._liveScoreFlashMap[team.entry_id].expiresAt > Date.now()) ? this._liveScoreFlashMap[team.entry_id] : null;
-            const flashRowCls = flashEntry ? (flashEntry.delta > 0 ? ' live-score-up' : ' live-score-down') : '';
             const ovActionPill = (!isTier2View && myTeamId && !isMyRow)
               ? `<button type="button" onclick="event.stopPropagation(); app.openRivalModal(${Number(myTeamId)}, ${Number(team.entry_id)})" class="inline-flex items-center px-1.5 py-0.5 min-h-[24px] rounded-md text-[9.5px] font-extrabold bg-slate-100 hover:bg-slate-900 text-slate-700 hover:text-white dark:bg-slate-800 dark:hover:bg-blue-600 dark:text-slate-300 dark:hover:text-white border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer flex-shrink-0" title="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}" aria-label="${isEn ? 'Compare 1v1' : 'เทียบ 1v1'}">VS</button>`
               : '';
@@ -11637,7 +11131,7 @@ __STRUCTURED_DATA_JSON__
               : `<span class="text-slate-400 dark:text-slate-500 font-medium font-display">-</span>`;
 
             oHtml += `
-              <tr tabindex="0" role="button" data-entry-id="${Number(team.entry_id)}" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isDeparted ? 'opacity-70' : ''} ${isMyRow ? 'bg-blue-50/70 dark:bg-blue-950/25 border-l-2 border-l-blue-500' : ''}${flashRowCls}">
+              <tr tabindex="0" role="button" data-team-name="${this.escapeHtml(team.team_name)}" data-manager-name="${this.escapeHtml(team.player_name)}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();app.openTeamModal(${team.entry_id});}" onclick="app.openTeamModal(${team.entry_id})" class="group cursor-pointer transition-colors ${isDeparted ? 'opacity-70' : ''} ${isMyRow ? 'bg-blue-50/70 dark:bg-blue-950/25 border-l-2 border-l-blue-500' : ''}">
                 <td class="py-2.5 pl-4 sm:pl-3 pr-1 sm:pr-2 text-center font-display font-bold text-xs sm:text-sm">
                   <div class="flex flex-col items-center justify-center">
                     ${rankBadge}
@@ -12125,7 +11619,6 @@ __STRUCTURED_DATA_JSON__
         if (prevLabel) prevLabel.innerText = isEn ? 'Prev' : 'ก่อนหน้า';
         if (nextLabel) nextLabel.innerText = isEn ? 'Next' : 'ถัดไป';
         this.updateHighlightsTabBlink();
-        if (typeof this.renderMobileBottomNav === 'function') this.renderMobileBottomNav();
 
         if (!grid) return;
 
@@ -12768,7 +12261,6 @@ __STRUCTURED_DATA_JSON__
         grid.innerHTML = [heroHtml, sec1, sec2, sec3].filter(Boolean).join('');
 
         this.updateHighlightsTabBlink();
-        if (typeof this.renderMobileBottomNav === 'function') this.renderMobileBottomNav();
       }
 
       // ==================== TAB: COMPETITION VIEW ====================
@@ -22016,7 +21508,7 @@ __STRUCTURED_DATA_JSON__
 
         const actionsWrap = document.getElementById('team-modal-actions');
         if (actionsWrap) {
-          if (String(targetLeagueId || this.activeLeagueId) === String(this.activeLeagueId)) {
+          if (!this.isTier2League() && String(targetLeagueId || this.activeLeagueId) === String(this.activeLeagueId)) {
             const myId = this.getMyTeamId();
             const isPinnedMe = myId && Number(myId) === entryIdNum;
             const pinBtnCls = isPinnedMe
@@ -22027,7 +21519,7 @@ __STRUCTURED_DATA_JSON__
               : (isEn ? 'Pin My Team' : 'ปักหมุดทีมฉัน');
             const pinBtnHtml = `<button type="button" onclick="app.${isPinnedMe ? 'clearMyTeamId()' : `setMyTeamId(${entryIdNum})`}; app.openTeamModal(${entryIdNum});" class="inline-flex items-center gap-1 px-2.5 py-1 min-h-[32px] rounded-xl text-[11px] font-bold border transition-colors cursor-pointer active:scale-95 ${pinBtnCls}">${pinLabel}</button>`;
             let vsBtnHtml = '';
-            if (!this.isTier2League() && !isPinnedMe) {
+            if (!isPinnedMe) {
               const vsA = myId || entryIdNum;
               const vsB = myId ? entryIdNum : null;
               const vsLabel = isEn ? 'VS Compare' : 'เทียบ 1v1';
@@ -22374,6 +21866,7 @@ __STRUCTURED_DATA_JSON__
       }
 
       getMyTeamId(teams) {
+        if (this.isTier2League()) return '';
         try {
           if (typeof localStorage === 'undefined' || !this.activeLeagueId) return '';
           const saved = localStorage.getItem('fpl_advisor_team_' + this.activeLeagueId) || '';
@@ -22387,6 +21880,7 @@ __STRUCTURED_DATA_JSON__
       }
 
       setMyTeamId(entryId, silent = false) {
+        if (this.isTier2League()) return;
         const cleanId = entryId ? String(entryId) : '';
         this.compTransferTeam = cleanId;
         try {
@@ -22414,65 +21908,6 @@ __STRUCTURED_DATA_JSON__
 
       clearMyTeamId() {
         this.setMyTeamId('', true);
-      }
-
-      jumpToMyTeamRow() {
-        const myId = this.getMyTeamId();
-        if (!myId || typeof document === 'undefined') return;
-        const myIdNum = Number(myId);
-        if (this.activeTab !== 'gameweek-view') {
-          this.switchTab('gameweek-view');
-        }
-        if (this.liveSearchQuery) {
-          this.clearLiveSearch();
-        }
-
-        const isNarrow = (typeof window !== 'undefined' && window.innerWidth < 1280);
-        const mode = isNarrow ? (this.mobileLiveTableMode || 'matchday') : 'matchday';
-        const tbodyId = mode === 'overall' ? 'overall-table-body' : 'matchday-table-body';
-        let row = document.querySelector(`#${tbodyId} tr[data-entry-id="${myIdNum}"]`);
-
-        if (!row && this.data && Array.isArray(this.data.teams) && this.data.teams.length > 100) {
-          const gwData = (this.data.gameweeks && this.data.gameweeks[String(this.selectedGW)]) || null;
-          if (mode === 'overall') {
-            const { overallSorted } = this.computeGameweekOverallStandings(this.selectedGW);
-            const idx = overallSorted.findIndex(t => Number(t.entry_id) === myIdNum);
-            if (idx >= 0) {
-              this.overallChunkLimit = Math.max(this.overallChunkLimit || 40, idx + 20);
-              this.invalidateRenderCache();
-              this.renderGameweekView();
-            }
-          } else if (gwData && Array.isArray(gwData.results)) {
-            const idx = gwData.results.findIndex(r => Number(r.entry_id) === myIdNum);
-            if (idx >= 0) {
-              this.matchdayChunkLimit = Math.max(this.matchdayChunkLimit || 40, idx + 20);
-              this.invalidateRenderCache();
-              this.renderGameweekView();
-            } else {
-              this.matchdayChunkLimit = 999999;
-              this.invalidateRenderCache();
-              this.renderGameweekView();
-            }
-          }
-          row = document.querySelector(`#${tbodyId} tr[data-entry-id="${myIdNum}"]`);
-        }
-
-        if (row) {
-          try {
-            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          } catch (_) {
-            row.scrollIntoView();
-          }
-          row.classList.remove('my-row-jump-flash');
-          void row.offsetWidth;
-          row.classList.add('my-row-jump-flash');
-          setTimeout(() => {
-            if (row) row.classList.remove('my-row-jump-flash');
-          }, 2000);
-        } else if (typeof this.showToast === 'function') {
-          const isEn = (this.currentLang === 'en');
-          this.showToast(isEn ? 'Your team was not found in this Gameweek table.' : 'ไม่พบทีมของคุณในตารางสัปดาห์นี้', 'info', 2200);
-        }
       }
 
       getLiveNoteCacheKey(gw = this.selectedGW, isFinished = false, isStarted = false) {
@@ -22699,24 +22134,19 @@ __STRUCTURED_DATA_JSON__
       renderMyTeamStrip(sorted, overallSorted, gwData, isStarted, isFinished) {
         const container = document.getElementById('my-team-strip-container');
         if (!container) return;
-        if (!this.data || !Array.isArray(this.data.teams) || this.data.teams.length === 0) {
+        if (this.isTier2League() || !this.data || !Array.isArray(this.data.teams) || this.data.teams.length === 0) {
           container.innerHTML = '';
           container.classList.add('hidden');
           return;
         }
 
-        const isTier2 = this.isTier2League();
         const isEn = (this.currentLang === 'en');
-        const teamsList = isTier2 ? this.data.teams : [...this.data.teams].sort((a, b) => (a.entry_name || '').localeCompare(b.entry_name || ''));
+        const teamsList = [...this.data.teams].sort((a, b) => (a.entry_name || '').localeCompare(b.entry_name || ''));
         const myId = this.getMyTeamId(teamsList);
 
+        container.classList.remove('hidden');
+
         if (!myId) {
-          if (isTier2) {
-            container.innerHTML = '';
-            container.classList.add('hidden');
-            return;
-          }
-          container.classList.remove('hidden');
           container.innerHTML = `
             <div class="glass-card rounded-2xl p-3 sm:px-4 sm:py-3 border border-slate-200/90 dark:border-slate-800 bg-white/85 dark:bg-slate-900/60 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
               <div class="flex items-center gap-2.5 min-w-0">
@@ -22738,7 +22168,6 @@ __STRUCTURED_DATA_JSON__
           `;
           return;
         }
-        container.classList.remove('hidden');
 
         const myIdNum = Number(myId);
         const mdIdx = sorted.findIndex(r => Number(r.entry_id) === myIdNum);
@@ -22828,18 +22257,14 @@ __STRUCTURED_DATA_JSON__
               </div>
 
               <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end flex-shrink-0 pt-1.5 lg:pt-0 border-t lg:border-t-0 border-slate-200/70 dark:border-slate-800">
-                <button type="button" onclick="app.jumpToMyTeamRow()" class="inline-flex items-center gap-1 px-3 py-1.5 min-h-[36px] rounded-xl text-xs font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/90 dark:border-blue-800/70 hover:bg-blue-100 dark:hover:bg-blue-900/60 transition-colors cursor-pointer active:scale-95 shadow-2xs">
-                  <span>${isEn ? 'Find Row' : 'ไปที่แถวฉัน'}</span>
-                </button>
                 <button type="button" onclick="app.openTeamModal(${myIdNum})" class="inline-flex items-center gap-1 px-3 py-1.5 min-h-[36px] rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer active:scale-95 shadow-2xs">
                   <span>${isEn ? 'View Pitch' : 'ส่องทีม'}</span>
                 </button>
-                ${!isTier2 ? `
                 <button type="button" onclick="app.openRivalModal(${myIdNum}, ${defaultRivalId})" class="inline-flex items-center gap-1 px-3 py-1.5 min-h-[36px] rounded-xl text-xs font-bold bg-slate-900 hover:bg-black dark:bg-blue-600 dark:hover:bg-blue-500 text-white transition-colors cursor-pointer active:scale-95 shadow-2xs">
                   <span>${isEn ? '1v1 Battle' : 'เทียบ 1v1'}</span>
-                </button>` : ''}
-                <button type="button" onclick="app.clearMyTeamId()" class="inline-flex items-center gap-1 px-2.5 py-1.5 min-h-[36px] rounded-xl text-[11px] font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" title="${isEn ? (isTier2 ? 'Unpin My Team' : 'Change My Team') : (isTier2 ? 'เลิกปักหมุด' : 'เปลี่ยนทีมที่ปักหมุด')}">
-                  <span>${isEn ? (isTier2 ? 'Unpin' : 'Switch') : (isTier2 ? 'เลิกปักหมุด' : 'เปลี่ยนทีม')}</span>
+                </button>
+                <button type="button" onclick="app.clearMyTeamId()" class="inline-flex items-center gap-1 px-2.5 py-1.5 min-h-[36px] rounded-xl text-[11px] font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" title="${isEn ? 'Change My Team' : 'เปลี่ยนทีมที่ปักหมุด'}">
+                  <span>${isEn ? 'Switch' : 'เปลี่ยนทีม'}</span>
                 </button>
               </div>
             </div>
@@ -23637,7 +23062,7 @@ __STRUCTURED_DATA_JSON__
           toast.id = 'global-copied-toast';
           document.body.appendChild(toast);
         }
-        toast.className = 'fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white font-bold text-xs px-4 py-2 rounded-full shadow-2xl border border-slate-700/80 z-[70] flex items-center gap-1.5 transition-all duration-200 opacity-0 pointer-events-none translate-y-2 backdrop-blur-xs font-display';
+        toast.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900/95 text-white font-bold text-xs px-4 py-2 rounded-full shadow-2xl border border-slate-700/80 z-[70] flex items-center gap-1.5 transition-all duration-200 opacity-0 pointer-events-none translate-y-2 backdrop-blur-xs font-display';
 
         let icon = '<svg class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>';
         if (type === 'error') {
@@ -25301,8 +24726,6 @@ __STRUCTURED_DATA_JSON__
     html = html.replace('__BRAMANN_CHALLENGE_DATA_JSON__', bramann_chal_json_str or 'null')
     html = html.replace('__DEFAULT_LID__', default_lid_code)
     html = html.replace('__PLAYERS_DICT_JSON__', players_dict_json_str)
-    manifest_href = './manifest.webmanifest?v=3' if default_league_id else './site.webmanifest?v=3'
-    html = html.replace('__MANIFEST_HREF__', manifest_href)
     html = html.replace('__ASSET_PREFIX__', asset_prefix)
     html = html.replace('__SITE_LINE_URL_JSON__', json.dumps(site_line_url, ensure_ascii=False))
     html = html.replace('__APP_JS_HASH__', app_js_hash)
@@ -31280,7 +30703,7 @@ def main():
         with open(out_path, 'w', encoding='utf-8') as f:
             f.write(out_html)
 
-    # 2. Generate dedicated folder entry points & PWA manifests for all configured leagues (scoped by tenant_group)
+    # 2. Generate dedicated folder entry points for all configured leagues (scoped by tenant_group)
     for lid in leagues_config.keys():
         dir_league = os.path.join(base_dir, str(lid))
         os.makedirs(dir_league, exist_ok=True)
@@ -31301,128 +30724,11 @@ def main():
         with open(out_league_path, 'w', encoding='utf-8') as f:
             f.write(html_league)
 
-        l_cfg_meta = leagues_config.get(str(lid), {})
-        l_data_meta = (multi_data.get('leagues') or {}).get(str(lid), {})
-        l_display_name = str(l_data_meta.get('name') or l_cfg_meta.get('name') or f"League {lid}").strip()
-        short_name = (l_display_name[:15].strip() if len(l_display_name) > 15 else l_display_name) or "FPLSaWaDiKa"
-        league_manifest = {
-            "id": f"/{lid}/",
-            "name": f"{l_display_name} — FPLSaWaDiKa",
-            "short_name": short_name,
-            "description": f"คะแนนสด ตารางคะแนน และเงินรางวัล {l_display_name} — FPLSaWaDiKa",
-            "start_url": f"/{lid}/",
-            "scope": "/",
-            "display": "standalone",
-            "background_color": "#0f172a",
-            "theme_color": "#0f172a",
-            "icons": [
-                {"src": "/images/icons/favicon-192x192.png?v=2", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-                {"src": "/images/icons/favicon-192x192.png?v=2", "sizes": "192x192", "type": "image/png", "purpose": "maskable"},
-                {"src": "/images/icons/favicon-512x512.png?v=2", "sizes": "512x512", "type": "image/png", "purpose": "any"},
-                {"src": "/images/icons/favicon-512x512.png?v=2", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
-                {"src": "/images/icons/apple-touch-icon.png?v=2", "sizes": "180x180", "type": "image/png", "purpose": "any"}
-            ]
-        }
-        with open(os.path.join(dir_league, 'manifest.webmanifest'), 'w', encoding='utf-8') as mf:
-            json.dump(league_manifest, mf, ensure_ascii=False, indent=2)
-
     styles_css_hash = compile_tailwind_css(base_dir)
     for out_path, out_html in html_targets:
         stamped_html = out_html.replace('__STYLES_CSS_HASH__', styles_css_hash)
         with open(out_path, 'w', encoding='utf-8') as f:
             f.write(stamped_html)
-
-    root_manifest = {
-        "id": "/",
-        "name": "FPLSaWaDiKa - มินิลีกแฟนตาซี",
-        "short_name": "FPLSaWaDiKa",
-        "description": "ระบบรายงานผลคะแนนสด ตารางคะแนน และเงินรางวัล FPLSaWaDiKa มินิลีกแฟนตาซี",
-        "start_url": "./",
-        "scope": "/",
-        "display": "standalone",
-        "background_color": "#0f172a",
-        "theme_color": "#0f172a",
-        "icons": [
-            {"src": "/images/icons/favicon-192x192.png?v=2", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-            {"src": "/images/icons/favicon-192x192.png?v=2", "sizes": "192x192", "type": "image/png", "purpose": "maskable"},
-            {"src": "/images/icons/favicon-512x512.png?v=2", "sizes": "512x512", "type": "image/png", "purpose": "any"},
-            {"src": "/images/icons/favicon-512x512.png?v=2", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
-            {"src": "/images/icons/apple-touch-icon.png?v=2", "sizes": "180x180", "type": "image/png", "purpose": "any"}
-        ]
-    }
-    with open(os.path.join(base_dir, 'site.webmanifest'), 'w', encoding='utf-8') as rmf:
-        json.dump(root_manifest, rmf, ensure_ascii=False, indent=2)
-
-    sw_code = f"""/* FPLSaWaDiKa App-Shell Service Worker */
-const CACHE_VERSION = 'fpl-shell-{app_js_hash}-{styles_css_hash}';
-
-self.addEventListener('install', (event) => {{
-  self.skipWaiting();
-}});
-
-self.addEventListener('activate', (event) => {{
-  event.waitUntil((async () => {{
-    const keys = await caches.keys();
-    await Promise.all(
-      keys
-        .filter((k) => k.startsWith('fpl-shell-') && k !== CACHE_VERSION)
-        .map((k) => caches.delete(k))
-    );
-    await self.clients.claim();
-  }})());
-}});
-
-self.addEventListener('fetch', (event) => {{
-  const req = event.request;
-  if (!req || req.method !== 'GET') return;
-
-  let url;
-  try {{
-    url = new URL(req.url);
-  }} catch (_) {{
-    return;
-  }}
-
-  if (url.origin !== self.location.origin) return;
-  const p = url.pathname || '';
-  if (p.startsWith('/api/') || p === '/pay' || p.startsWith('/pay/') || p === '/sw.js') return;
-
-  // Cache-First for versioned static assets & icons/images
-  if (p.startsWith('/assets/') || p.startsWith('/images/') || p.endsWith('manifest.webmanifest') || p.endsWith('site.webmanifest')) {{
-    event.respondWith((async () => {{
-      const cache = await caches.open(CACHE_VERSION);
-      const hit = await cache.match(req);
-      if (hit) return hit;
-      const resp = await fetch(req);
-      if (resp && resp.status === 200 && resp.type === 'basic') {{
-        cache.put(req, resp.clone()).catch(() => {{}});
-      }}
-      return resp;
-    }})());
-    return;
-  }}
-
-  // Network-First with offline fallback for HTML navigations & league JSON data
-  if (req.mode === 'navigate' || p.startsWith('/data/')) {{
-    event.respondWith((async () => {{
-      const cache = await caches.open(CACHE_VERSION);
-      try {{
-        const fresh = await fetch(req);
-        if (fresh && fresh.status === 200 && fresh.type === 'basic') {{
-          cache.put(req, fresh.clone()).catch(() => {{}});
-        }}
-        return fresh;
-      }} catch (err) {{
-        const fallback = await cache.match(req);
-        if (fallback) return fallback;
-        throw err;
-      }}
-    }})());
-  }}
-}});
-"""
-    with open(os.path.join(base_dir, 'sw.js'), 'w', encoding='utf-8') as swf:
-        swf.write(sw_code)
 
     # 3. Auto-cleanup retired numeric league directories from previous seasons
     import shutil
