@@ -4838,11 +4838,35 @@ __STRUCTURED_DATA_JSON__
         
         const maxGW = Number(this.multiData.max_gw) || 2;
         const queryGWNum = Number(queryGW);
-        this._hasExplicitQueryGW = (queryGWNum >= 1 && queryGWNum <= maxGW);
+        let isPageReload = false;
+        try {
+          if (typeof performance !== 'undefined') {
+            const navEntries = performance.getEntriesByType ? performance.getEntriesByType('navigation') : [];
+            if (navEntries && navEntries[0] && navEntries[0].type === 'reload') {
+              isPageReload = true;
+            } else if (performance.navigation && performance.navigation.type === 1) {
+              isPageReload = true;
+            }
+          }
+        } catch (e) {}
+
+        this._userManuallySelectedGW = false;
+        this._hasExplicitQueryGW = !isPageReload && (queryGWNum >= 1 && queryGWNum <= maxGW);
         if (this._hasExplicitQueryGW) {
           this.selectedGW = queryGWNum;
         } else {
           this.selectedGW = this.resolveDefaultGW(this.data);
+          if (isPageReload && queryGW) {
+            try {
+              if (typeof window !== 'undefined' && window.history && window.history.replaceState && typeof URLSearchParams !== 'undefined') {
+                const cleanParams = new URLSearchParams(window.location.search || '');
+                cleanParams.delete('gw');
+                const newSearch = cleanParams.toString();
+                const newUrl = window.location.pathname + (newSearch ? '?' + newSearch : '') + (window.location.hash || '');
+                window.history.replaceState(null, '', newUrl);
+              }
+            } catch (e) {}
+          }
         }
         const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
         this.selectedMonthId = activeMonth ? activeMonth.id : 1;
@@ -4894,13 +4918,35 @@ __STRUCTURED_DATA_JSON__
 
       resolveDefaultGW(leagueObj = this.data) {
         const maxGW = Number(this.multiData && this.multiData.max_gw) || 2;
-        const latestGWData = leagueObj && leagueObj.gameweeks ? leagueObj.gameweeks[String(maxGW)] : null;
-        const isLatestStarted = latestGWData
-          ? (latestGWData.is_started !== undefined
-              ? Boolean(latestGWData.is_started)
-              : (Boolean(latestGWData.is_finished) || (latestGWData.results && latestGWData.results.some(r => r.points > 0))))
-          : false;
-        return (!isLatestStarted && maxGW > 1) ? (maxGW - 1) : maxGW;
+        const gws = (leagueObj && leagueObj.gameweeks) ? leagueObj.gameweeks : null;
+        if (gws) {
+          // Priority 1: Any GW currently in play (started & not finished), highest first
+          for (let gw = maxGW; gw >= 1; gw--) {
+            const gd = gws[String(gw)];
+            if (!gd) continue;
+            const isFin = Boolean(gd.is_finished);
+            const isStart = gd.is_started !== undefined
+              ? Boolean(gd.is_started)
+              : (isFin || (Array.isArray(gd.results) && gd.results.some(r => Number(r.points) > 0)));
+            if (isStart && !isFin) {
+              return gw;
+            }
+          }
+        }
+        // Priority 2: Latest available GW (max_gw = FPL's is_current event, whether finished or pre-kickoff locked)
+        return maxGW;
+      }
+
+      syncAutoSelectedGWOnLiveUpdate() {
+        if (this._userManuallySelectedGW || this._hasExplicitQueryGW) return false;
+        const liveDefaultGw = this.resolveDefaultGW(this.data);
+        if (this.selectedGW !== liveDefaultGw) {
+          this.selectedGW = liveDefaultGw;
+          const activeMonth = (this.config && this.config.monthly_schedule || []).find(m => m.gw_list && m.gw_list.includes(this.selectedGW));
+          if (activeMonth) this.selectedMonthId = activeMonth.id;
+          return true;
+        }
+        return false;
       }
 
       getDefaultLeagueId() {
@@ -5883,6 +5929,16 @@ __STRUCTURED_DATA_JSON__
                   this._nextLivePollAt = Date.now() + (this._currentPollIntervalMs || adaptiveIntervalMs);
                 }
                 this.applyLiveElements(liveJson, maxGW);
+                if (this.syncAutoSelectedGWOnLiveUpdate()) {
+                  await Promise.all([
+                    this.ensureTier2GWChunk(this.selectedGW),
+                    this.ensureTier2PicksChunk(this.selectedGW, lidStr)
+                  ]);
+                  if (String(this.activeLeagueId || '') !== lidStr) return;
+                  this.renderGWSelector();
+                  this.updateHighlightsTabBlink();
+                  this.renderCurrentTab(true);
+                }
               }
               if (String(this.activeLeagueId || '') !== lidStr) return;
               const liveOk = !needLiveElements || Boolean(liveJson && Array.isArray(liveJson.elements));
@@ -5924,6 +5980,15 @@ __STRUCTURED_DATA_JSON__
           this.lastLiveGw = maxGW;
 
           const changed = this.applyLiveElements(liveJson, maxGW);
+          const gwAutoSwitched = this.syncAutoSelectedGWOnLiveUpdate();
+          if (gwAutoSwitched) {
+            if (isTier2Active) {
+              await this.ensureTier2GWChunk(this.selectedGW);
+              await this.ensureTier2PicksChunk(this.selectedGW, lidStr);
+            } else {
+              await this.ensureTier1GWSquads(this.selectedGW, lidStr);
+            }
+          }
 
           if (String(this.activeLeagueId || '') !== lidStr) return;
           this._liveFetchConsecutiveFails = 0;
@@ -5938,7 +6003,7 @@ __STRUCTURED_DATA_JSON__
 
           this.markHeaderLiveSynced(force);
 
-          if (changed || force) {
+          if (changed || gwAutoSwitched || force) {
             this.liveNotesCache = {};
             this.updateHeaderInfo();
             this.renderAll();
@@ -7927,6 +7992,11 @@ __STRUCTURED_DATA_JSON__
         this.data = this.multiData.leagues[this.activeLeagueId] || {};
         this.config = this.configs[this.activeLeagueId] || {};
         if (!this.config.features) this.config.features = {};
+        if (!fromPopstate) {
+          this._hasExplicitQueryGW = false;
+          this._userManuallySelectedGW = false;
+          this.selectedGW = this.resolveDefaultGW(this.data);
+        }
         if (isTier2) {
           await this.ensureTier2GWChunk(this.selectedGW);
           if (this._switchingTargetId !== lidStr) return;
@@ -7956,6 +8026,7 @@ __STRUCTURED_DATA_JSON__
           try {
             if (window.history && (window.history.pushState || window.history.replaceState)) {
               const urlParams = new URLSearchParams(window.location.search || '');
+              urlParams.delete('gw');
               const curQueryTab = urlParams.get('tab');
               if (curQueryTab) {
                 const normQueryTab = this.normalizeTab(curQueryTab);
@@ -10399,11 +10470,17 @@ __STRUCTURED_DATA_JSON__
           this.selectedMonthId = activeMonth.id;
         }
 
+        const defaultGw = this.resolveDefaultGW(this.data);
         if (!fromPopstate) {
+          this._userManuallySelectedGW = (this.selectedGW !== defaultGw);
           try {
             if (typeof window !== 'undefined' && window.history && window.history.replaceState) {
               const urlParams = new URLSearchParams(window.location.search || '');
-              urlParams.set('gw', this.selectedGW);
+              if (this.selectedGW === defaultGw) {
+                urlParams.delete('gw');
+              } else {
+                urlParams.set('gw', this.selectedGW);
+              }
               const newSearch = urlParams.toString();
               const newUrl = window.location.pathname + (newSearch ? '?' + newSearch : '') + window.location.hash;
               window.history.replaceState(null, '', newUrl);
